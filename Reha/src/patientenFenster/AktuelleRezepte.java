@@ -303,6 +303,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 			}
 		});
+		tabaktrez.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode()==10){
+					arg0.consume();
+					neuanlageRezept(false,"");
+				}
+				if(arg0.getKeyCode()==27){
+					arg0.consume();
+				}
+			}
+
+		});
 		//tabaktrez.getSelectionModel().addListSelectionListener(this);
 		//dtblm.addTableModelListener(this);
 		dummypan.setPreferredSize(new Dimension(0,100));
