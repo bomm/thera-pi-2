@@ -36,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -815,6 +816,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			}
 			if(cmd.equals("rezedit")){
+				if(aktPanel.equals("leerPanel")){
+					JOptionPane.showMessageDialog(null,"D E P P ");
+					return;
+				}
 				neuanlageRezept(false,"");
 				break;
 			}
