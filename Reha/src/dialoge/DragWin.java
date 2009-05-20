@@ -37,11 +37,11 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 	public DragWin(Container xowner){
 		this.owner = xowner;
 	}
-	private boolean WertZwischen(int punkt,int kleinerWert,int großerWert){
+	private boolean WertZwischen(int punkt,int kleinerWert,int grosserWert){
 		if (punkt < kleinerWert){
 			return false;
 		}
-		if (punkt > großerWert){
+		if (punkt > grosserWert){
 			return false;
 		}
 		return true;
@@ -170,7 +170,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					owner.setCursor(cnsize);
 					break;
 				}	
-				if(sizeart==4){ //süd-west
+				if(sizeart==4){ //sï¿½d-west
 					dim.width = (oX > orgbounds[0] ? dim.width-(oX-orgbounds[0]) : dim.width+(orgbounds[0]-oX));
 					dim.height = (oY > orgbounds[1] ? dim.height+(oY-orgbounds[1]) : dim.height-(orgbounds[1]-oY));						
 					dim.width = (dim.width < 185 ? 185 : dim.width);
@@ -193,7 +193,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					owner.setCursor(cwsize);
 					break;
 				}
-				if(sizeart==6){ //süd-ost
+				if(sizeart==6){ //sï¿½d-ost
 					dim.width = (oX > orgbounds[0] ? dim.width+(oX-orgbounds[0]) : dim.width-(orgbounds[0]-oX));
 					dim.height = (oY > orgbounds[1] ? dim.height+(oY-orgbounds[1]) : dim.height-(orgbounds[1]-oY));						
 					dim.width = (dim.width < 185 ? 185 : dim.width);
@@ -205,7 +205,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					owner.setCursor(cwsize);
 					break;
 				}
-				if(sizeart==7){ //süd
+				if(sizeart==7){ //sï¿½d
 					dim.height = (oY > orgbounds[1] ? dim.height+(oY-orgbounds[1]) : dim.height-(orgbounds[1]-oY));						
 					dim.width = (dim.width < 185 ? 185 : dim.width);
 					dim.height = (dim.height < 125 ? 125 : dim.height);
@@ -270,7 +270,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				owner.setCursor(cnsize);
 				break;
 			}
-			if ((e.getX() <= 4 && e.getY() >= (((JComponent) e.getSource()).getHeight()-4))){ //süd-west
+			if ((e.getX() <= 4 && e.getY() >= (((JComponent) e.getSource()).getHeight()-4))){ //sï¿½d-west
 				insize = true;
 				sizeart = 4;
 				orgbounds[0]=e.getXOnScreen();
@@ -286,7 +286,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				owner.setCursor(cwsize);
 				break;
 			}
-			if ((e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && //süd-ost
+			if ((e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && //sï¿½d-ost
 					e.getY() >= (((JComponent) e.getSource()).getHeight()-4)){ 
 				insize = true;
 				sizeart = 6;
@@ -295,7 +295,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				owner.setCursor(csesize);
 				break;
 			}
-			if (e.getY() >= (((JComponent) e.getSource()).getHeight()-4) && WertZwischen(e.getX(),waagrecht[0],waagrecht[1])){ //süd
+			if (e.getY() >= (((JComponent) e.getSource()).getHeight()-4) && WertZwischen(e.getX(),waagrecht[0],waagrecht[1])){ //sï¿½d
 				insize = true;
 				sizeart = 7;
 				orgbounds[0]=e.getXOnScreen();

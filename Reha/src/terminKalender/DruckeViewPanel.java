@@ -67,7 +67,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         Graphics2D g2d = bufimg.createGraphics();
         printPan.paint(g2d); 
     	g2d.dispose();
-    	speichernQualität("",1.0F);
+    	speichernQualitaet("",1.0F);
     	
     	String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/terminshot_.ott";
     	IDocumentService documentService = Reha.officeapplication.getDocumentService();
@@ -95,14 +95,14 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         	test2y = 19000.00F*100.0F/testy;
         	fx = rasterx/100*test2y;
         	fy = 19000.00F;
-        	System.out.println("Höhentest = "+test2y);
+        	System.out.println("Hï¿½hentest = "+test2y);
         	
         }else{
         	fx = rasterx;
         	fy = testy;
         }
         
-        System.out.println("Die neuen Maße sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
+        System.out.println("Die neuen Maï¿½e sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
 
         if(!useStream) {
           //with url
@@ -120,7 +120,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
                      TextContentAnchorType.AS_CHARACTER);
 */                     
         	System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
-        	System.out.println("Seitenverhältnis = "+verhaeltnis);
+        	System.out.println("Seitenverhï¿½ltnis = "+verhaeltnis);
         	
             graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
@@ -175,7 +175,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		}
 	}
 	
-	private void speichernQualität(String stitel,Float fQuality){
+	private void speichernQualitaet(String stitel,Float fQuality){
 //		img, "jpg", new File("C:\\ScreenShots\\"+stitel+".jpg")
 		IIOImage imgq = new IIOImage((RenderedImage) bufimg, null, null);
         ImageWriter writer = ImageIO.getImageWritersBySuffix("jpg").next();
