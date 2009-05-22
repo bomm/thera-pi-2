@@ -865,14 +865,15 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				tabelleAusschalten();
 				jxSucheTable.repaint();
 
-				
+
+				/*
 				try {
 					Reha.thisClass.conn.setAutoCommit(true);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				*/
 				WorkerSuchenInKalenderTagen WsIT = new WorkerSuchenInKalenderTagen();
 				WsIT.setzeStatement();
 				WsIT.execute();

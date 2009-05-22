@@ -315,7 +315,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	private void setzeStatement(){
 		try {
-			Reha.thisClass.conn.setAutoCommit(false);
+			//Reha.thisClass.conn.setAutoCommit(false);
 			this.privstmt = Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE); //ResultSet.CONCUR_READ_ONLY);//
 			this.privstmt.setQueryTimeout(1);		
