@@ -279,10 +279,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[26] = new JRtaTextField("",false); //id von Patient
 		jtf[27] = new JRtaTextField("",false); //pat_intern von Patient
 		jtf[28] = new JRtaTextField("",false); //zzstatus
-
+		/*
 		if(this.neu){
 			ladeZusatzDaten();
 		}
+		*/
 		jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
 		jpan.addLabel("Rezeptklasse auswählen",cc.xy(1, 3));
 		jpan.add(jcmb[0],cc.xyw(3, 3,5));
@@ -311,14 +312,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		jtf[0].setName("ktraeger");
 		jtf[0].addKeyListener(this);
-		jtf[0].setText(PatGrundPanel.thisClass.patDaten.get(13));
 		jpan.addLabel("Kostenträger (?)",cc.xy(1,7));
 		jpan.add(jtf[0],cc.xy(3,7));
 		
 
 		jtf[1].setName("arzt");
 		jtf[1].addKeyListener(this);		
-		jtf[1].setText(PatGrundPanel.thisClass.patDaten.get(25));
 		jpan.addLabel("verordn. Arzt (?)",cc.xy(5,7));
 		jpan.add(jtf[1],cc.xy(7,7));
 		
@@ -399,6 +398,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("Indikationsschlüssel",cc.xy(1, 29));		
 		jcmb[6] = new JRtaComboBox();
 		jpan.add(jcmb[6],cc.xy(3, 29));
+		
+		klassenReady = true;
+		fuelleIndis((String)jcmb[0].getSelectedItem());		
+		/*
 		if(this.neu){
 			klassenReady = true;
 			fuelleIndis((String)jcmb[0].getSelectedItem());			
@@ -406,8 +409,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			klassenReady = true;
 			fuelleIndis((String)jcmb[0].getSelectedItem());			
 		}
-
-		
+		*/
 		jpan.addLabel("Barcode-Format",cc.xy(5, 29));
 		jcmb[7] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
 		jpan.add(jcmb[7],cc.xy(7, 29));
@@ -431,69 +433,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(span,cc.xywh(1, 35,7,2));
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(jpan.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
-		if(!this.neu){
-			String test = StringTools.NullTest(this.vec.get(36));
-			jtf[0].setText(test); //kasse
-			test = StringTools.NullTest(this.vec.get(37));
-			jtf[11].setText(test);  //kid
-			test = StringTools.NullTest(this.vec.get(15));
-			jtf[1].setText(test); //arzt
-			test = StringTools.NullTest(this.vec.get(16));
-			jtf[12].setText(test); //arztid
-			test = StringTools.NullTest(this.vec.get(2));
-			if(!test.equals("")){
-				jtf[2].setText(datFunk.sDatInDeutsch(test));
-			}
-			test = StringTools.NullTest(this.vec.get(40));
-			if(!test.equals("")){
-				jtf[3].setText(datFunk.sDatInDeutsch(test));
-			}
-			int itest = StringTools.ZahlTest(this.vec.get(27));
-			if(itest >=0){
-				jcmb[1].setSelectedIndex(itest);
-			}
-			test = StringTools.NullTest(this.vec.get(42));
-			jcb[0].setSelected((test.equals("T")?true:false));
-			test = StringTools.NullTest(this.vec.get(43));
-			jcb[1].setSelected((test.equals("T")?true:false));
-			test = StringTools.NullTest(this.vec.get(55));
-			jcb[2].setSelected((test.equals("T")?true:false));
-			test = StringTools.NullTest(this.vec.get(3));
-			jtf[4].setText(test);
-			test = StringTools.NullTest(this.vec.get(4));
-			jtf[5].setText(test);
-			test = StringTools.NullTest(this.vec.get(5));
-			jtf[6].setText(test);
-			test = StringTools.NullTest(this.vec.get(6));
-			jtf[7].setText(test);
-			itest = StringTools.ZahlTest(this.vec.get(8));
-			jcmb[2].setSelectedIndex(leistungTesten(itest));
-			itest = StringTools.ZahlTest(this.vec.get(9));
-			jcmb[3].setSelectedIndex(leistungTesten(itest));
-			itest = StringTools.ZahlTest(this.vec.get(10));
-			jcmb[4].setSelectedIndex(leistungTesten(itest));
-			itest = StringTools.ZahlTest(this.vec.get(11));
-			jcmb[5].setSelectedIndex(leistungTesten(itest));
-			test = StringTools.NullTest(this.vec.get(52));
-			jtf[8].setText(test);
-			test = StringTools.NullTest(this.vec.get(47));
-			jtf[9].setText(test);
-			test = StringTools.NullTest(this.vec.get(44));
-			jcmb[6].setSelectedItem(test);
-			itest = StringTools.ZahlTest(this.vec.get(46));
-			jcmb[7].setSelectedIndex(itest);
-			test = StringTools.NullTest(this.vec.get(45));
-			jtf[10].setText(test);
-			if(!test.trim().equals("")){
-				jtf[10].setEnabled(false);				
-			}
-			jta.setText( StringTools.NullTest(this.vec.get(23)) );
-			if(!jtf[11].getText().equals("")){
-				holePreisGruppe(new Integer(jtf[11].getText()));				
-			}
-
+		if(this.neu){
+			ladeZusatzDatenNeu();
 		}else{
-			//jtf[11].setText()
+			ladeZusatzDatenAlt();
 		}
 		jscr.validate();
 		return jscr;
@@ -520,11 +463,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("rezeptklasse") && klassenReady){
 			fuelleIndis((String)jcmb[0].getSelectedItem());
 			return;
 		}
+		/*********************/		
 		if(e.getActionCommand().equals("verordnungsart") && klassenReady){
 			if(jcmb[1].getSelectedIndex()==2){
 				jcb[0].setEnabled(true);
@@ -534,6 +477,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			return;
 		}
+		/*********************/		
 		if(e.getActionCommand().equals("speichern") ){
 			if(this.neu){
 				doSpeichernNeu();
@@ -542,19 +486,19 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				}
 				
 			}else{
-				doSpeichern();				
+				doSpeichernAlt();
+				for(int i = 0 ; i < 27;i++){
+					System.out.println("Inhalt von feld jtf["+i+"] = "+jtf[i].getText());
+				}
 			}
-			/*
-			for(int i = 0 ; i < 27;i++){
-				System.out.println("Inhalt von feld jtf["+i+"] = "+jtf[i].getText());
-			}
-			*/
 			return;
 		}
+		/*********************/
 		if(e.getActionCommand().equals("abbrechen") ){
 			doAbbrechen();
 			return;
 		}
+		/*********************/		
 		if(e.getActionCommand().contains("leistung") && initReady){
 			int lang = e.getActionCommand().length();
 			doRechnen( new Integer( e.getActionCommand().substring(lang-1 ) ) );
@@ -777,39 +721,104 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			
 		}.execute();
 	}
-	private void ladeZusatzDaten(){
-		/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-			*/
-					jtf[11].setText(PatGrundPanel.thisClass.patDaten.get(68)); //kassenid
-					if(jtf[11].getText().trim().equals("")){
-						//JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
-					}else{
-						Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+jtf[11].getText()+"'", Arrays.asList(new String[] {}));
-						if(vec.size()>0){
-							jtf[13].setText((String)vec.get(0));
-						}else{
-							JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
-						}
-					}
-					jtf[12].setText(PatGrundPanel.thisClass.patDaten.get(67)); //arztid					
-					jtf[14].setText(PatGrundPanel.thisClass.patDaten.get(44)); //heimbewohn
-					jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
-					jtf[26].setText(PatGrundPanel.thisClass.patDaten.get(66)); //id von Patient
-					jtf[27].setText(PatGrundPanel.thisClass.patDaten.get(29)); //pat_intern von Patient
-					//System.out.println("Kassen-ID = "+PatGrundPanel.thisClass.patDaten.get(68));
-					/*
-					return null;
+	/***********
+	 * 
+	 * 
+	 */
+	private void ladeZusatzDatenNeu(){
+		jtf[11].setText(PatGrundPanel.thisClass.patDaten.get(68)); //kassenid
+		if(jtf[11].getText().trim().equals("")){
+			//JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
+		}else{
+			Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+jtf[11].getText()+"'", Arrays.asList(new String[] {}));
+			if(vec.size()>0){
+				jtf[13].setText((String)vec.get(0));
+			}else{
+				JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln!\nFunktion -> ladeZusatzDaten()\n\n"+
+						"Bitte informieren Sie sofort den Administrator über diese Fehler-Meldung");
 			}
-			
-		}.execute();
-		*/
-		
+		}
+		jtf[12].setText(PatGrundPanel.thisClass.patDaten.get(67)); //arztid					
+		jtf[14].setText(PatGrundPanel.thisClass.patDaten.get(44)); //heimbewohn
+		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
+		jtf[26].setText(PatGrundPanel.thisClass.patDaten.get(66)); //id von Patient
+		jtf[27].setText(PatGrundPanel.thisClass.patDaten.get(29)); //pat_intern von Patient
+
 	}
+	/***********
+	 * 
+	 * 
+	 */
+	
+	private void ladeZusatzDatenAlt(){
+		String test = StringTools.NullTest(this.vec.get(36));
+		jtf[0].setText(test); //kasse
+		test = StringTools.NullTest(this.vec.get(37));
+		jtf[11].setText(test);  //kid
+		test = StringTools.NullTest(this.vec.get(15));
+		jtf[1].setText(test); //arzt
+		test = StringTools.NullTest(this.vec.get(16));
+		jtf[12].setText(test); //arztid
+		test = StringTools.NullTest(this.vec.get(2));
+		if(!test.equals("")){
+			jtf[2].setText(datFunk.sDatInDeutsch(test));
+		}
+		test = StringTools.NullTest(this.vec.get(40));
+		if(!test.equals("")){
+			jtf[3].setText(datFunk.sDatInDeutsch(test));
+		}
+		int itest = StringTools.ZahlTest(this.vec.get(27));
+		if(itest >=0){
+			jcmb[1].setSelectedIndex(itest);
+		}
+		test = StringTools.NullTest(this.vec.get(42));
+		jcb[0].setSelected((test.equals("T")?true:false));
+		test = StringTools.NullTest(this.vec.get(43));
+		jcb[1].setSelected((test.equals("T")?true:false));
+		test = StringTools.NullTest(this.vec.get(55));
+		jcb[2].setSelected((test.equals("T")?true:false));
+		test = StringTools.NullTest(this.vec.get(3));
+		jtf[4].setText(test);
+		test = StringTools.NullTest(this.vec.get(4));
+		jtf[5].setText(test);
+		test = StringTools.NullTest(this.vec.get(5));
+		jtf[6].setText(test);
+		test = StringTools.NullTest(this.vec.get(6));
+		jtf[7].setText(test);
+		itest = StringTools.ZahlTest(this.vec.get(8));
+		jcmb[2].setSelectedIndex(leistungTesten(itest));
+		itest = StringTools.ZahlTest(this.vec.get(9));
+		jcmb[3].setSelectedIndex(leistungTesten(itest));
+		itest = StringTools.ZahlTest(this.vec.get(10));
+		jcmb[4].setSelectedIndex(leistungTesten(itest));
+		itest = StringTools.ZahlTest(this.vec.get(11));
+		jcmb[5].setSelectedIndex(leistungTesten(itest));
+		test = StringTools.NullTest(this.vec.get(52));
+		jtf[8].setText(test);
+		test = StringTools.NullTest(this.vec.get(47));
+		jtf[9].setText(test);
+		test = StringTools.NullTest(this.vec.get(44));
+		jcmb[6].setSelectedItem(test);
+		itest = StringTools.ZahlTest(this.vec.get(46));
+		jcmb[7].setSelectedIndex(itest);
+		test = StringTools.NullTest(this.vec.get(45));
+		jtf[10].setText(test);
+		if(!test.trim().equals("")){
+			jtf[10].setEnabled(false);				
+		}
+		jta.setText( StringTools.NullTest(this.vec.get(23)) );
+		if(!jtf[11].getText().equals("")){
+			holePreisGruppe(new Integer(jtf[11].getText()));				
+		}else{
+			JOptionPane.showMessageDialog(null, "Ermittlung der Preisgruppen erforderlich");				
+		}
+	}
+	/***********
+	 * 
+	 * 
+	 */
 	/**************************************/
-	private void doSpeichern(){
+	private void doSpeichernAlt(){
 		if(!komplettTest()){
 			return;
 		}
