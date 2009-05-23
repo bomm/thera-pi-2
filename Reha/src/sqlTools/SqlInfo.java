@@ -132,7 +132,7 @@ public class SqlInfo {
 							 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );						 
 						 }
 					 }else{
-						 retvec.add(rs.getString(i));
+						 retvec.add((rs.getString(i)==null  ? "" :  rs.getString(i)));
 					 }
 				 }
 			}
@@ -189,7 +189,7 @@ public class SqlInfo {
 							 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );						 
 						 }
 					 }else{
-						 retvec.add(rs.getString(i));
+						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 					 }
 				 }
 				 retkomplett.add((Vector)retvec.clone());

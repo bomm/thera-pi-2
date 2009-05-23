@@ -161,6 +161,11 @@ public Vector vecaktrez = null;
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
 
+public Font font = null;
+public Font fehler = new Font("Courier",Font.ITALIC,13);
+public int aid = -1;
+public int kid = -1;
+
 public PatGrundPanel(JPatientInternal jry){
 	super();
 	thisClass = this;
@@ -310,7 +315,8 @@ public PatGrundPanel(JPatientInternal jry){
 	 	   public  void run()
 	 	   {
 	 		    Vector<Component> newPolicy = new Vector<Component>();
-	 		   Font font = new Font("Courier",Font.BOLD,13);
+	 		   font = new Font("Courier",Font.BOLD,13);
+	 		   
 	 		    //Font font = new Font("Tahoma",Font.BOLD,11);
 	 		    for(int i = 0;i < ptfield.length;i++){
 	 		    	newPolicy.add(ptfield[i]);
@@ -967,6 +973,23 @@ class DatenHolen{
 			}else{
 				PatGrundPanel.thisClass.pmemo[1].setText(instring);				
 			}
+			PatGrundPanel.thisClass.aid = StringTools.ZahlTest(rs.getString("arztid"));
+			PatGrundPanel.thisClass.kid = StringTools.ZahlTest(rs.getString("kassenid"));
+			if(PatGrundPanel.thisClass.aid < 0){
+				PatGrundPanel.thisClass.ptfield[13].setForeground(Color.RED);
+				PatGrundPanel.thisClass.ptfield[13].setFont(PatGrundPanel.thisClass.fehler);
+			}else{
+				PatGrundPanel.thisClass.ptfield[13].setForeground(Color.BLUE);
+				PatGrundPanel.thisClass.ptfield[13].setFont(PatGrundPanel.thisClass.font);
+			}
+			if(PatGrundPanel.thisClass.kid < 0){
+				PatGrundPanel.thisClass.ptfield[14].setForeground(Color.RED);				
+				PatGrundPanel.thisClass.ptfield[14].setFont(PatGrundPanel.thisClass.fehler);
+			}else{
+				PatGrundPanel.thisClass.ptfield[14].setForeground(Color.BLUE);				
+				PatGrundPanel.thisClass.ptfield[14].setFont(PatGrundPanel.thisClass.font);
+			}
+
 		}
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
@@ -1200,15 +1223,15 @@ class StammDatenPanel extends JXPanel{
 		PatGrundPanel.thisClass.ptfield[12].setName("ORT");		
 		pbui.add(PatGrundPanel.thisClass.ptfield[12],cc.xyw(25,5,4));		
 		
-		pbui.add(new JLabel("Hausarzt"),cc.xy(20,7));
-		PatGrundPanel.thisClass.ptfield[13] = new JPatTextField("XROSS",false);
-		PatGrundPanel.thisClass.ptfield[13].setName("ARZT");
-		pbui.add(PatGrundPanel.thisClass.ptfield[13],cc.xyw(22,7,6));		
-		
-		pbui.add(new JLabel("Krankenkasse"),cc.xy(20,9));
+		pbui.add(new JLabel("Krankenkasse"),cc.xy(20,7));
 		PatGrundPanel.thisClass.ptfield[14] = new JPatTextField("XROSS",false);
 		PatGrundPanel.thisClass.ptfield[14].setName("KASSE");
-		pbui.add(PatGrundPanel.thisClass.ptfield[14],cc.xyw(22,9,6));		
+		pbui.add(PatGrundPanel.thisClass.ptfield[14],cc.xyw(22,7,6));		
+		
+		pbui.add(new JLabel("Hausarzt"),cc.xy(20,9));
+		PatGrundPanel.thisClass.ptfield[13] = new JPatTextField("XROSS",false);
+		PatGrundPanel.thisClass.ptfield[13].setName("ARZT");
+		pbui.add(PatGrundPanel.thisClass.ptfield[13],cc.xyw(22,9,6));		
 
 		/*
 		JLabel patlab = new JLabel("");

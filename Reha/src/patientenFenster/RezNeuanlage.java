@@ -15,6 +15,7 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -80,6 +81,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private boolean initReady = false;
 	private static final long serialVersionUID = 1L;
 	private int preisgruppe;
+	private String nummer = null;
 	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 		
 		super();
@@ -127,29 +129,57 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 	   public  void run()
 		 	   {
 		 		   if(neu){
-
-		 			  if(StringTools.ZahlTest(jtf[11].getText()) < 0){
-		 				 JOptionPane.showMessageDialog(null,"Achtung diesem Rezept (und dem Patient) ist noch kein korrekter(!) Kostenträger zugeordnet!");
-		 			  }else{
-		 				  holePreisGruppe(new Integer(jtf[11].getText()));
-		 			  }
-		 			  if(StringTools.ZahlTest(jtf[12].getText()) < 0){
-		 				  System.out.println("Zum Startzeipunkt ist der Inhalt von jtf[12] = "+jtf[12].getText()+" / jtf[11] = "+jtf[11].getText()+" / jtf[13] = "+jtf[13].getText() );
-			 				 JOptionPane.showMessageDialog(null,"Achtung diesem Rezept (und dem Patient) ist noch kein korrekter(!) Arzt zugeordnet!");
-		 			  }
-
-		 			  SwingUtilities.invokeLater(new Runnable(){
-		 				  public  void run()
-		 				  {
-		 					  jcmb[0].requestFocus();
-		 				  }
-		 			  });	   		
+		 			   int aid,kid;
+		 			   boolean beenden = false;
+		 			   String meldung = "";
+		 			   kid = StringTools.ZahlTest(jtf[11].getText());
+		 			   aid = StringTools.ZahlTest(jtf[12].getText());
+		 			   if(kid < 0 && aid < 0){
+		 				   beenden = true;
+		 				   meldung = "Achtung - dem Patientenstamm ist keine verwertbare Krankenkasse\n"+
+		 				    "sowie kein verwertbarer Arzt zugeordnet\n\n"+
+		 				    "Gehen Sie im Patientenstamm auf ->Ändern/Editieren<- und ordnen Sie verwertaber Daten zu!";
+		 			   }else if(kid >= 0 && aid < 0){
+		 				   beenden = true;
+		 				   meldung = "Achtung - dem Patientenstamm ist kein verwertbarer Arzt zugeordnet\n\n"+
+		 				    "Gehen Sie im Patientenstamm auf ->Ändern/Editieren<- und ordnen Sie verwertaber Daten zu!";
+		 			   }else if(kid < 0 && aid >= 0){
+		 				   beenden = true;
+		 				   meldung = "Achtung - dem Patientenstamm ist keine verwertbare Krankenkasse zugeordnet\n\n"+
+		 				    "Gehen Sie im Patientenstamm auf ->Ändern/Editieren<- und ordnen Sie verwertaber Daten zu!";
+		 			   }
+		 			   if(beenden){
+		 				  JOptionPane.showMessageDialog(null,meldung); 
+		 				  ((JXDialog)getParent().getParent().getParent().getParent().getParent()).dispose();
+		 			   }else{
+			 			   holePreisGruppe(new Integer(jtf[11].getText()));
+				 			  SwingUtilities.invokeLater(new Runnable(){
+				 				  public  void run()
+				 				  {
+				 					  jcmb[0].requestFocus();
+				 				  }
+				 			  });	   		
+		 			   }
+	 			   // else bedeutet nicht neu - sondern ändern
 		 		   }else{
-		 			  int itest = StringTools.ZahlTest(vec.get(41));
-		 			  if(itest < 0){
-		 				  JOptionPane.showMessageDialog(null,"Achtung diesem Rezept ist noch kein korrekter(!) Kostenträger zugeordnet!");
-		 			  }
-			 			 SwingUtilities.invokeLater(new Runnable(){
+		 			   int aid,kid;
+		 			   boolean beenden = false;
+		 			   String meldung = "";
+		 			   kid = StringTools.ZahlTest(jtf[11].getText());
+		 			   aid = StringTools.ZahlTest(jtf[12].getText());
+		 			   if(kid < 0 && aid < 0){
+		 				   jtf[11].setText(new Integer(PatGrundPanel.thisClass.kid).toString());
+		 				   jtf[12].setText(new Integer(PatGrundPanel.thisClass.aid).toString());
+		 				   holePreisGruppe(new Integer(PatGrundPanel.thisClass.kid));
+		 			   }else if(kid >= 0 && aid < 0){
+		 				   jtf[12].setText(new Integer(PatGrundPanel.thisClass.aid).toString());
+		 			   }else if(kid < 0 && aid >= 0){
+		 				   jtf[11].setText(new Integer(PatGrundPanel.thisClass.kid).toString());
+		 				   holePreisGruppe(new Integer(PatGrundPanel.thisClass.kid));		 				   
+		 			   }
+		 			   
+
+		 			   SwingUtilities.invokeLater(new Runnable(){
 			 			 	   public  void run()
 			 			 	   {
 			 			 		   jtf[0].requestFocus();
@@ -535,12 +565,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private void doRechnen(int comb){
 		System.out.println("Betroffen = Leistungscombo Nr. - "+comb);
 	}
-	/**************************************/	
-	private void doSpeichernNeu(){
-		if(!komplettTest()){
-			return;
-		}
-	}
+
+	
 	private boolean komplettTest(){
 		if(jtf[0].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Kostenträger' kann ein Rezept nicht abgespeichert werden.");
@@ -576,9 +602,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		return true;
 	}
 
-	private void doAbbrechen(){
-		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
-	}
 	private void fuelleIndis(String item){
 		if(jcmb[6].getItemCount() > 0){
 			jcmb[6].removeAllItems();
@@ -588,13 +611,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcmb[3].removeAllItems();
 		jcmb[4].removeAllItems();
 		jcmb[5].removeAllItems();
+		
 		if(item.contains("REHA")){
 			preisvec = ParameterLaden.vRHPreise;
+			nummer="rh";
 			ladePreise();			
 			return;
 		}
 		if(item.contains("Physio")){
-			
+			nummer="kg";
 			int anz = AktuelleRezepte.aktRez.indphysio.length;
 			for(int i = 0; i < anz; i++){
 				jcmb[6].addItem(AktuelleRezepte.aktRez.indphysio[i]);
@@ -604,6 +629,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return;
 		}
 		if(item.contains("Massage")){
+			nummer="ma";
 			int anz = AktuelleRezepte.aktRez.indphysio.length;
 			for(int i = 0; i < anz; i++){
 				jcmb[6].addItem(AktuelleRezepte.aktRez.indphysio[i]);
@@ -613,6 +639,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return;
 		}		
 		if(item.contains("Ergo")){
+			nummer="er";
 			int anz = AktuelleRezepte.aktRez.indergo.length;
 			for(int i = 0; i < anz; i++){
 				jcmb[6].addItem(AktuelleRezepte.aktRez.indergo[i]);
@@ -622,6 +649,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return;			
 		}
 		if(item.contains("Logo")){
+			nummer="lo";
 			int anz = AktuelleRezepte.aktRez.indlogo.length;
 			for(int i = 0; i < anz; i++){
 				jcmb[6].addItem(AktuelleRezepte.aktRez.indlogo[i]);
@@ -716,8 +744,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		kwahl.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 		   	holePreisGruppe(new Integer(jtf[11].getText()));
-		 			jtf[1].requestFocus();
+		 		   if(jtf[11].getText().equals("")){
+		 			   String meldung = "Achtung - kann Preisgruppe nicht ermitteln!\n"+
+		 			   "Das bedeutet diese Rezept kann später nicht abgerechnet werden!\n\n"+
+		 			   "Und bedenken Sie bitte Ihr Kürzel wird dauerhaft diesem Rezept zugeordnet....";
+			 			  JOptionPane.showMessageDialog(null,meldung);		 			   
+		 		   }else{
+			 		   	holePreisGruppe(new Integer(jtf[11].getText()));
+			 			jtf[1].requestFocus();
+		 		   }
 		 	   }
 		});
 		kwahl.dispose();
@@ -749,11 +784,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			protected Void doInBackground() throws Exception {
 			*/
 					jtf[11].setText(PatGrundPanel.thisClass.patDaten.get(68)); //kassenid
-					Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+jtf[11].getText()+"'", Arrays.asList(new String[] {}));
-					if(vec.size()>0){
-						jtf[13].setText((String)vec.get(0));
+					if(jtf[11].getText().trim().equals("")){
+						//JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
 					}else{
-						JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
+						Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+jtf[11].getText()+"'", Arrays.asList(new String[] {}));
+						if(vec.size()>0){
+							jtf[13].setText((String)vec.get(0));
+						}else{
+							JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
+						}
 					}
 					jtf[12].setText(PatGrundPanel.thisClass.patDaten.get(67)); //arztid					
 					jtf[14].setText(PatGrundPanel.thisClass.patDaten.get(44)); //heimbewohn
@@ -840,6 +879,44 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 	}
+	/**************************************/	
+	private void doSpeichernNeu(){
+		/*
+		if(!komplettTest()){
+			return;
+		}
+		*/
+		
+		Vector numvec = null;
+		try {
+			Reha.thisClass.conn.setAutoCommit(false);
+			numvec = SqlInfo.holeSatz("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE", Arrays.asList(new String[] {}));
+			System.out.println(Reha.aktIK);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(numvec.size() > 0){
+			int reznr = new Integer( (String)((Vector) numvec).get(0) );
+			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
+			System.out.println("Kommando = "+cmd);
+			new ExUndHop().setzeStatement(cmd);
+			System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+		}else{
+			try {
+				Reha.thisClass.conn.rollback();
+				Reha.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 
+	}
+	private void doAbbrechen(){
+		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
+	}
 
 }

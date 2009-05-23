@@ -157,6 +157,12 @@ boolean inNeu = false;
 						if(inNeu || feldname.equals("")){
 							setzeFocus();
 						}else{
+							if(PatGrundPanel.thisClass.kid < 0 && feldname.equals("KASSE")){
+								jtf[12].setText("?"+jtf[12].getText());
+							}
+							if(PatGrundPanel.thisClass.aid < 0 && feldname.equals("ARZT")){
+								jtf[17].setText("?"+jtf[17].getText());
+							}
 							geheAufFeld(feldname);
 						}
 						removeFocusListener(this);

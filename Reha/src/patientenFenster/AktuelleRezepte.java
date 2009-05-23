@@ -921,6 +921,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		   
 	}
 	public void neuanlageRezept(boolean lneu,String feldname){
+		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){
+			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
+			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
+			"Bitte korrigieren Sie die entsprechenden Angaben";
+			JOptionPane.showMessageDialog(null, meldung);
+			return;	
+		}		
 		if(neuDlgOffen){
 			return;
 		}
