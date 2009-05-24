@@ -61,8 +61,20 @@ public class RezeptDaten extends JXPanel{
 					PatGrundPanel.thisClass.rezlabs[1].setIcon(null);
 				}
 				PatGrundPanel.thisClass.rezlabs[2].setText("angelegt von: "+StringTools.NullTest((String)vecaktrez.get(45)));
+				if(StringTools.ZahlTest( (String)vecaktrez.get(37)) >= 0 ){
+					PatGrundPanel.thisClass.rezlabs[3].setForeground(Color.BLACK);
+				}else{
+					PatGrundPanel.thisClass.rezlabs[3].setForeground(Color.RED);					
+				}
 				PatGrundPanel.thisClass.rezlabs[3].setText(StringTools.NullTest((String)vecaktrez.get(36)));
+
+				if(StringTools.ZahlTest( (String)vecaktrez.get(16)) >= 0 ){
+					PatGrundPanel.thisClass.rezlabs[4].setForeground(Color.BLACK);
+				}else{
+					PatGrundPanel.thisClass.rezlabs[4].setForeground(Color.RED);					
+				}
 				PatGrundPanel.thisClass.rezlabs[4].setText(StringTools.NullTest((String)vecaktrez.get(15)));
+
 				int test = StringTools.ZahlTest((String)vecaktrez.get(27));
 				if(test >= 0){
 					PatGrundPanel.thisClass.rezlabs[5].setText(rezart[test]);
@@ -106,12 +118,39 @@ public class RezeptDaten extends JXPanel{
 					preisvec = ParameterLaden.vRHPreise;
 				}
 				PatGrundPanel.thisClass.rezlabs[8].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
-				PatGrundPanel.thisClass.rezlabs[9].setText(StringTools.NullTest((String)vecaktrez.get(52))+" / Wo.");
+
+				stest = StringTools.NullTest((String)vecaktrez.get(52));
+				if(stest.equals("")){
+					PatGrundPanel.thisClass.rezlabs[9].setForeground(Color.RED);
+					PatGrundPanel.thisClass.rezlabs[9].setText(stest+"??? / Wo.");					
+				}else{
+					PatGrundPanel.thisClass.rezlabs[9].setForeground(Color.BLACK);
+					PatGrundPanel.thisClass.rezlabs[9].setText(stest+" / Wo.");					
+				}
+
 				PatGrundPanel.thisClass.rezlabs[10].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(9))) );				
 				PatGrundPanel.thisClass.rezlabs[11].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(10))) );				
 				PatGrundPanel.thisClass.rezlabs[12].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(11))) );				
-				PatGrundPanel.thisClass.rezlabs[13].setText(StringTools.NullTest((String)vecaktrez.get(44)));
-				PatGrundPanel.thisClass.rezlabs[14].setText(StringTools.NullTest((String)vecaktrez.get(47))+" Min.");				
+
+				stest = StringTools.NullTest((String)vecaktrez.get(44));
+				if(stest.equals("") || stest.equals("kein IndiSchl.") ){
+					PatGrundPanel.thisClass.rezlabs[13].setForeground(Color.RED);
+					PatGrundPanel.thisClass.rezlabs[13].setText("??? "+stest);					
+				}else{
+					PatGrundPanel.thisClass.rezlabs[13].setForeground(Color.BLACK);
+					PatGrundPanel.thisClass.rezlabs[13].setText(stest);					
+				}
+
+				
+				stest = StringTools.NullTest((String)vecaktrez.get(47));
+				if(stest.equals("") ){
+					PatGrundPanel.thisClass.rezlabs[14].setForeground(Color.RED);
+					PatGrundPanel.thisClass.rezlabs[14].setText("??? Min.");
+				}else{
+					PatGrundPanel.thisClass.rezlabs[14].setForeground(Color.BLACK);
+					PatGrundPanel.thisClass.rezlabs[14].setText(stest+" Min.");
+				}
+				
 				PatGrundPanel.thisClass.rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
 				/*
 				return null;
@@ -127,13 +166,13 @@ public class RezeptDaten extends JXPanel{
 		if(veczahl <= preisevec.size()){
 			int idtest =  new Integer( (String) ((ArrayList)preisevec.get(veczahl-1)).get(35) );
 			if(idtest == veczahl){
-				return StringTools.NullTest((String)vecaktrez.get(3))+" x "+
+				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
 				(String) ((ArrayList)preisevec.get(veczahl-1)).get(1);
 			}
 		}
 		for(int i = 0;i<preisevec.size();i++){
 			if( new Integer( (String) ((ArrayList)preisevec.get(i)).get(35)) == veczahl ){
-				return StringTools.NullTest((String)vecaktrez.get(3))+" x "+
+				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
 				(String) ((ArrayList)preisevec.get(i)).get(1);
 			}
 		}
