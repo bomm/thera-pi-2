@@ -43,7 +43,9 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 	JCheckBox optimize = null;
 	JComboBox zuza = null;
 	
-	
+	/***Neuer Kommentar
+	 * 
+	 */
 	
 	public SysUtilKrankenkasse(){
 		super(new BorderLayout());
