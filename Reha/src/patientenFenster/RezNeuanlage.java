@@ -893,10 +893,43 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
 		
+
+		System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
+		Integer izuzahl = new Integer(jtf[13].getText());
+		String szzstatus = "0";
+		System.out.println(izuzahl.toString());
+		for(int i = 0; i < 1;i++){
+			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
+				System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				break;
+			}else{
+				System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
+			}
+			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
+				System.out.println("ZuzahlStatus = Patient ist befreit");
+				if(this.vec.get(14).equals("T")){
+					szzstatus = "2";
+				}else{
+					szzstatus = "0";				
+				}
+				break;
+			}
+			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
+				System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				break;
+			}
+			if(this.vec.get(14).equals("T")){
+				szzstatus = "1";
+			}else{
+				szzstatus = "2";				
+			}			
+		}
+		System.out.println("ZuzahlStatus = "+szzstatus);		
+		sbuf.append("zzstatus='"+szzstatus+"', ");		
 		sbuf.append("diagnose='"+jta.getText()+"' ");
-		
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
-		System.out.println(sbuf.toString());
+		System.out.println(sbuf.toString());		
+		
 		new ExUndHop().setzeStatement(sbuf.toString());
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -934,8 +967,40 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			
 		}
+		System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
+		Integer izuzahl = new Integer(jtf[13].getText());
+		System.out.println(izuzahl.toString());
+		String szzstatus = "";
+		for(int i = 0; i < 1;i++){
+			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
+				System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				szzstatus = "0";
+				break;
+			}else{
+				System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
+			}
+			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
+				System.out.println("ZuzahlStatus = Patient ist befreit");
+				// evtl. prüfen ob bereits bezahlt;
+				if(this.vec.get(14).equals("T")){
+					szzstatus = "2";
+				}else{
+					szzstatus = "0";				
+				}
+				break;
+			}
+			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
+				System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				szzstatus = "0";				
+				break;
+			}
+			if(this.vec.get(14).equals("T")){
+				szzstatus = "1";
+			}else{
+				szzstatus = "2";				
+			}
+		}
 		
-
 	}
 	private void doAbbrechen(){
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		

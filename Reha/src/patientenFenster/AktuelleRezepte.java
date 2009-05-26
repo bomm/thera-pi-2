@@ -111,6 +111,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public String[] indergo = null;
 	public String[] indlogo = null;
 	public RezeptDaten jpan1 = null;
+	public static boolean inRezeptDaten = false;
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
 		super();
@@ -300,6 +301,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2){
+					while(inRezeptDaten){
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 					neuanlageRezept(false,"");
 				}
 			}
@@ -617,15 +626,22 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
 	                	final int ix = i;
-	                    new Thread(){
-	                    	public void run(){
+	                	new SwingWorker<Void,Void>(){
+
+							@Override
+							protected Void doInBackground() throws Exception {
+								// TODO Auto-generated method stub
+								inRezeptDaten = true;
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                    		holeEinzelTermine(ix);
 	    						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 6));
 	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	                    	}
-	                    }.start();
+	    						inRezeptDaten = false;
+								return null;
+							}
+	                		
+	                	}.execute();
 	                    break;
 	                }
 	            }
@@ -974,7 +990,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.dispose();
 		neuRez = null;
 		if(tabaktrez.getRowCount()>0){
-			jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));			
+			jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));
+			System.out.println("Bild Einstellen -> "+new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39)) );
+			dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39))], 
+								tabaktrez.getSelectedRow(),1);
+			tabaktrez.validate();
+			tabaktrez.repaint();
 		}
 
 		SwingUtilities.invokeLater(new Runnable(){
