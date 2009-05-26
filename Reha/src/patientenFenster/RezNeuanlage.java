@@ -170,11 +170,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			   if(kid < 0 && aid < 0){
 		 				   jtf[11].setText(new Integer(PatGrundPanel.thisClass.kid).toString());
 		 				   jtf[12].setText(new Integer(PatGrundPanel.thisClass.aid).toString());
+		 				   jtf[0].setText(PatGrundPanel.thisClass.patDaten.get(13));
 		 				   holePreisGruppe(new Integer(PatGrundPanel.thisClass.kid));
 		 			   }else if(kid >= 0 && aid < 0){
 		 				   jtf[12].setText(new Integer(PatGrundPanel.thisClass.aid).toString());
 		 			   }else if(kid < 0 && aid >= 0){
 		 				   jtf[11].setText(new Integer(PatGrundPanel.thisClass.kid).toString());
+		 				   jtf[0].setText(PatGrundPanel.thisClass.patDaten.get(13));
 		 				   holePreisGruppe(new Integer(PatGrundPanel.thisClass.kid));		 				   
 		 			   }
 		 			   
@@ -249,8 +251,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		rezlbl.setFont(fontreznr);
 		jpan.add(rezlbl,cc.xyw(3, 1,3));
 		*/
-		jtf[0] = new JRtaTextField("NIX",true); // kasse/kostenträger
-		jtf[1] = new JRtaTextField("NIX",true); // arzt
+		jtf[0] = new JRtaTextField("NIX",false); // kasse/kostenträger
+		jtf[1] = new JRtaTextField("NIX",false); // arzt
 		jtf[2] = new JRtaTextField("DATUM",true); // rezeptdatum
 		jtf[3] = new JRtaTextField("DATUM",true); // spätester beginn
 		jtf[4] = new JRtaTextField("ZAHLEN",true); // Anzahl 1
@@ -481,13 +483,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		if(e.getActionCommand().equals("speichern") ){
 			if(this.neu){
 				doSpeichernNeu();
-				for(int i = 0 ; i < 27;i++){
+				for(int i = 0 ; i < 28;i++){
 					System.out.println("Inhalt von feld jtf["+i+"] = "+jtf[i].getText());
 				}
 				
 			}else{
 				doSpeichernAlt();
-				for(int i = 0 ; i < 27;i++){
+				for(int i = 0 ; i < 28;i++){
 					System.out.println("Inhalt von feld jtf["+i+"] = "+jtf[i].getText());
 				}
 			}
@@ -726,6 +728,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	 * 
 	 */
 	private void ladeZusatzDatenNeu(){
+		String tests = "";
+		jtf[0].setText(PatGrundPanel.thisClass.patDaten.get(13));
 		jtf[11].setText(PatGrundPanel.thisClass.patDaten.get(68)); //kassenid
 		if(jtf[11].getText().trim().equals("")){
 			//JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
@@ -738,8 +742,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 						"Bitte informieren Sie sofort den Administrator über diese Fehler-Meldung");
 			}
 		}
+		jtf[1].setText(PatGrundPanel.thisClass.patDaten.get(25));
 		jtf[12].setText(PatGrundPanel.thisClass.patDaten.get(67)); //arztid					
+		tests = PatGrundPanel.thisClass.patDaten.get(31);		// bef_dat = Datum der Befreiung
 		jtf[14].setText(PatGrundPanel.thisClass.patDaten.get(44)); //heimbewohn
+		jtf[15].setText(PatGrundPanel.thisClass.patDaten.get(30)); //heimbewohn
 		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
 		jtf[26].setText(PatGrundPanel.thisClass.patDaten.get(66)); //id von Patient
 		jtf[27].setText(PatGrundPanel.thisClass.patDaten.get(29)); //pat_intern von Patient

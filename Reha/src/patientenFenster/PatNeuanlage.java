@@ -357,9 +357,21 @@ boolean inNeu = false;
 					name.contains("er_dat")){
 				if(jtf[fedits[i]].getText().trim().equals(".  .")){
 					buf.append(name+"=NULL, ");	
+					if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
+						buf.append("befreit ='F', ");
+						System.out.println("Patient ist -> nicht <- befreit!");
+					}
 				}else{
 					try{
 						buf.append(name+"='"+datFunk.sDatInSQL(jtf[fedits[i]].getText())+"', ");
+						if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
+							if( datFunk.DatumsWert(jtf[fedits[i]].getText()) >= datFunk.DatumsWert(datFunk.sHeute()) ){
+								buf.append("befreit ='T', ");	
+								System.out.println("Patient ist befreit!");
+							}else{
+								buf.append("befreit ='F', ");
+							}
+						}
 					}catch(java.lang.ArrayIndexOutOfBoundsException ex){
 						buf.append(name+"='"+"*****Problem"+jtf[fedits[i]].getText()+"', ");
 					}
