@@ -121,7 +121,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 	   }
 		});	
 		initReady = true;
-
+		
 
 	}
 	public void setzeFocus(){
@@ -744,9 +744,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		jtf[1].setText(PatGrundPanel.thisClass.patDaten.get(25));
 		jtf[12].setText(PatGrundPanel.thisClass.patDaten.get(67)); //arztid					
-		tests = PatGrundPanel.thisClass.patDaten.get(31);		// bef_dat = Datum der Befreiung
+		//tests = PatGrundPanel.thisClass.patDaten.get(31);		// bef_dat = Datum der Befreiung
 		jtf[14].setText(PatGrundPanel.thisClass.patDaten.get(44)); //heimbewohn
-		jtf[15].setText(PatGrundPanel.thisClass.patDaten.get(30)); //heimbewohn
+		jtf[15].setText(PatGrundPanel.thisClass.patDaten.get(30)); //befreit
 		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
 		jtf[26].setText(PatGrundPanel.thisClass.patDaten.get(66)); //id von Patient
 		jtf[27].setText(PatGrundPanel.thisClass.patDaten.get(29)); //pat_intern von Patient
@@ -819,6 +819,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}else{
 			JOptionPane.showMessageDialog(null, "Ermittlung der Preisgruppen erforderlich");				
 		}
+		
+		jtf[14].setText(PatGrundPanel.thisClass.patDaten.get(44)); //heimbewohn
+		jtf[15].setText(PatGrundPanel.thisClass.patDaten.get(30)); //befreit
+		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
+		jtf[26].setText(this.vec.get(38)); //id von Patient
+		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
 	}
 	/***********
 	 * 

@@ -98,6 +98,7 @@ public class SystemConfig {
 	public static HashMap<String,Integer> hmContainer = null;
 	
 	public static Vector<String> vPreisGruppen;
+	public static Vector<Integer> vZuzahlRegeln;
 	public static Vector<String> vPatMerker = null;
 	
 	public static HashMap<String,String> hmKVKDaten = null;
@@ -532,11 +533,13 @@ public class SystemConfig {
 		oGruppen = new GruppenEinlesen().init();
 	}
 	public static void TarifeLesen(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/tarife.ini");
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		int tarife = inif.getIntegerProperty("PreisGruppen", "AnzahlPreisGruppen");
 		vPreisGruppen = new Vector<String>() ;
+		vZuzahlRegeln = new Vector<Integer>();
 		for(int i = 1; i <= tarife; i++){
-			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));			
+			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
+			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
 		}
 		
 	}
