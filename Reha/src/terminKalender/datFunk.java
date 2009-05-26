@@ -211,6 +211,16 @@ public class datFunk {
 	public static boolean GeradeWoche(String sdatum){
 		return ((KalenderWoche(sdatum) % 2)!= 0 ? false : true);
 	}
+	public static boolean Unter18(String bezugdat,String geburtstag){
+		String[] datsplit = bezugdat.split("\\.");
+		int jahr = new Integer(datsplit[2]) - 18;
+		String testdatum = datsplit[0]+"."+datsplit[1]+"."+new Integer(jahr).toString();
+		if(DatumsWert(testdatum) < DatumsWert(geburtstag)){
+			return true;
+		}else{
+			return false;			
+		}
+	}
 	
 	public static boolean Schaltjahr(int jahr) {
 		if( jahr == 0 ) {
