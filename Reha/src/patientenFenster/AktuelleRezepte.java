@@ -61,6 +61,7 @@ import jxTableTools.DateFieldDocument;
 import jxTableTools.DateInputVerifier;
 import jxTableTools.DateTableCellEditor;
 import jxTableTools.DatumTableCellEditor;
+import jxTableTools.TableTool;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -475,6 +476,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 						tabaktrez.setRowSelectionInterval(row, row);
 						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 6));
+						tabaktrez.scrollRowToVisible(row);
 						holeEinzelTermine(row,null);
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
@@ -848,11 +850,25 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			if(cmd.equals("rezedit")){
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"D E P P ");
+					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön ändern....");
 					return;
 				}
 				neuanlageRezept(false,"");
 				break;
+			}
+			if(cmd.equals("rezdelete")){
+				int currow = tabaktrez.getSelectedRow();
+				int anzrow = tabaktrez.getRowCount();
+				if(currow == -1){
+					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> löschen <- ausgewählt");
+				}
+				String reznr = (String)tabaktrez.getValueAt(currow, 0);
+				int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Rezept "+reznr+" wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.NO_OPTION){
+					return;
+				}
+				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
 			}
 			
 		}
