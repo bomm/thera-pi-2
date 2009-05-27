@@ -464,9 +464,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
 					if(xrez_nr.length() > 0){
+						int row = 0;
 						rezneugefunden = true;
-						tabaktrez.setRowSelectionInterval(new Integer(xrez_nr), new Integer(xrez_nr));
-						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(new Integer(xrez_nr), 0),(String)tabaktrez.getValueAt(new Integer(xrez_nr), 6));
+						for(int ii = 0; ii < anz;ii++){
+							if(tabaktrez.getValueAt(ii,0).equals(xrez_nr)){
+								row = ii;
+								break;
+							}
+							
+						}
+						tabaktrez.setRowSelectionInterval(row, row);
+						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 6));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
@@ -945,6 +953,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			return;	
 		}		
 		if(neuDlgOffen){
+			JOptionPane.showMessageDialog(null, "neuDlgOffen hat den wert true");
 			return;
 		}
 		neuDlgOffen = true;
@@ -989,13 +998,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//neuPat = null;
 		neuRez.dispose();
 		neuRez = null;
-		if(tabaktrez.getRowCount()>0){
-			jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));
-			System.out.println("Bild Einstellen -> "+new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39)) );
-			dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39))], 
-								tabaktrez.getSelectedRow(),1);
-			tabaktrez.validate();
-			tabaktrez.repaint();
+		if(!lneu){
+			if(tabaktrez.getRowCount()>0){
+				jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));
+				System.out.println("Bild Einstellen -> "+new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39)) );
+				dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39))], 
+									tabaktrez.getSelectedRow(),1);
+				tabaktrez.validate();
+				tabaktrez.repaint();
+			}
 		}
 
 		SwingUtilities.invokeLater(new Runnable(){

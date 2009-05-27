@@ -483,15 +483,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		if(e.getActionCommand().equals("speichern") ){
 			if(this.neu){
 				doSpeichernNeu();
-				for(int i = 0 ; i < 28;i++){
-					System.out.println("Inhalt von feld jtf["+i+"] = "+jtf[i].getText());
-				}
-				
 			}else{
 				doSpeichernAlt();
-				for(int i = 0 ; i < 28;i++){
-					System.out.println("Inhalt von feld jtf["+i+"] = "+jtf[i].getText());
-				}
 			}
 			return;
 		}
@@ -509,7 +502,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 	}
 	private void doRechnen(int comb){
-		System.out.println("Betroffen = Leistungscombo Nr. - "+comb);
+		//System.out.println("Betroffen = Leistungscombo Nr. - "+comb);
 	}
 
 	
@@ -540,6 +533,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			 	   public  void run()
 			 	   {
 						jtf[10].requestFocus();
+			 	   }
+			});	   		
+			return false;
+		}
+		if(jtf[9].getText().trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Behandlungsdauer' kann ein Rezept nicht abgespeichert werden.");
+			 SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run()
+			 	   {
+						jtf[9].requestFocus();
 			 	   }
 			});	   		
 			return false;
@@ -703,8 +706,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		});
 		kwahl.dispose();
 		kwahl = null;
-		//System.out.println("jtf[0]="+jtf[0].getText()+" / "+"jtf[26]="+jtf[26].getText()+" / "+"jtf[11]="+jtf[11].getText());
-		
 	}
 	private void holePreisGruppe(int id){
 		final int xid = id;
@@ -826,6 +827,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
 	}
+	private String[] holePreis(int ivec,int ipreisgruppe){
+		if(ivec > 0){
+			ArrayList xvec = ((ArrayList)this.preisvec.get(ivec-1));
+			int preispos = ((ipreisgruppe*4)-4)+3;
+			return new String[] {(String)xvec.get(preispos),(String)xvec.get(preispos-1)};
+		}else{
+			return new String[] {"0.00",""};
+		}
+	}
 	/***********
 	 * 
 	 * 
@@ -894,19 +904,20 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
 		
 
-		System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
+		//System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
 		Integer izuzahl = new Integer(jtf[13].getText());
-		String szzstatus = "0";
-		System.out.println(izuzahl.toString());
+		String szzstatus = "";
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
-				System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				//System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				szzstatus = "0";
 				break;
-			}else{
-				System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			}
+			System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
-				System.out.println("ZuzahlStatus = Patient ist befreit");
+				//System.out.println("ZuzahlStatus = Patient ist befreit");
+				//laut Patientenstamm befreit aber evtl. noch nicht für dieses Rezept.
+				//deshalb prüfen ob bereits bezahlt;
 				if(this.vec.get(14).equals("T")){
 					szzstatus = "2";
 				}else{
@@ -915,20 +926,37 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				break;
 			}
 			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
-				System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				szzstatus = "0";				
 				break;
 			}
 			if(this.vec.get(14).equals("T")){
 				szzstatus = "1";
 			}else{
 				szzstatus = "2";				
-			}			
+			}
 		}
-		System.out.println("ZuzahlStatus = "+szzstatus);		
-		sbuf.append("zzstatus='"+szzstatus+"', ");		
+		//System.out.println("ZuzahlStatus = "+szzstatus);		
+		sbuf.append("zzstatus='"+szzstatus+"', ");
+		int leistung;
+		String[] str;
+		for(int i = 0;i < 4;i++){
+			leistung = leistungTesten(jcmb[i+2].getSelectedIndex());
+			if(leistung >= 0){
+				str = holePreis(leistung,new Integer(jtf[13].getText()) );
+				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
+				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
+				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
+				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
+			}else{
+				sbuf.append("preise"+(i+1)+"='0.00'");
+				sbuf.append("pos"+(i+1)+"='', ");
+			}
+		}
+		
 		sbuf.append("diagnose='"+jta.getText()+"' ");
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
-		System.out.println(sbuf.toString());		
+		//System.out.println(sbuf.toString());	
 		
 		new ExUndHop().setzeStatement(sbuf.toString());
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
@@ -936,27 +964,37 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	/**************************************/	
 	private void doSpeichernNeu(){
-		/*
+		int reznr = -1;
 		if(!komplettTest()){
 			return;
 		}
-		*/
+		String stest = "";
+		int itest = -1;
+		StringBuffer sbuf = new StringBuffer();
 		
+/*******************************************/
+		/****** Zunächst eine neue Rezeptnummer holen ******/
 		Vector numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
 			numvec = SqlInfo.holeSatz("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE", Arrays.asList(new String[] {}));
-			System.out.println(Reha.aktIK);
+			//System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(numvec.size() > 0){
-			int reznr = new Integer( (String)((Vector) numvec).get(0) );
+			reznr = new Integer( (String)((Vector) numvec).get(0) );
 			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
-			System.out.println("Kommando = "+cmd);
+			//System.out.println("Kommando = "+cmd);
 			new ExUndHop().setzeStatement(cmd);
-			System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+			//System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+			try {
+				Reha.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else{
 			try {
 				Reha.thisClass.conn.rollback();
@@ -967,39 +1005,142 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			
 		}
-		System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
+		if(reznr < 0){
+			JOptionPane.showMessageDialog(null,"Schwerwiegender Fehler beim Bezug einer neuen Rezeptnummer!");
+			return;
+		}
+/*******************************************/
+		int rezidneu = SqlInfo.holeId("verordn", "diagnose");
+		sbuf.append("update verordn set rez_nr='"+nummer.toUpperCase()+
+				new Integer(reznr).toString()+"', ");
+		sbuf.append("pat_intern='"+jtf[27].getText()+"', ");
+		sbuf.append("patid='"+jtf[26].getText()+"', ");
+		sbuf.append("ktraeger='"+jtf[0].getText()+"', ");
+		sbuf.append("kid='"+jtf[11].getText()+"', ");
+		sbuf.append("arzt='"+jtf[1].getText()+"', ");
+		sbuf.append("arztid='"+jtf[12].getText()+"', ");
+		stest = datFunk.sHeute();
+		sbuf.append("datum='"+datFunk.sDatInSQL(stest)+"', ");
+		stest = jtf[2].getText().trim();
+		if(stest.equals(".  .")){
+			stest = datFunk.sHeute();
+		}
+		sbuf.append("rez_datum='"+datFunk.sDatInSQL(stest)+"', ");
+		stest = jtf[3].getText().trim();
+		if(stest.equals(".  .")){
+			stest = datFunk.sHeute();
+		}
+		sbuf.append("lastdate='"+datFunk.sDatInSQL(stest)+"', ");
+		sbuf.append("lasteddate='"+datFunk.sDatInSQL(datFunk.sHeute())+"', ");
+		sbuf.append("lastedit='"+Reha.aktUser+"', ");
+		sbuf.append("rezeptart='"+new Integer(jcmb[1].getSelectedIndex()).toString()+"', ");
+		sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
+		sbuf.append("hausbes='"+(jcb[1].isSelected() ? "T" : "F")+"', ");
+		sbuf.append("arztbericht='"+(jcb[2].isSelected() ? "T" : "F")+"', ");
+		sbuf.append("anzahl1='"+jtf[4].getText()+"', ");		
+		sbuf.append("anzahl2='"+jtf[5].getText()+"', ");
+		sbuf.append("anzahl3='"+jtf[6].getText()+"', ");
+		sbuf.append("anzahl4='"+jtf[7].getText()+"', ");
+		itest = jcmb[2].getSelectedIndex();
+		if(itest > 0){
+			sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(35)+"', ");
+		}else{
+			sbuf.append("art_dbeh1='0', ");
+		}
+		itest = jcmb[3].getSelectedIndex();
+		if(itest > 0){
+			sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(35)+"', ");
+		}else{
+			sbuf.append("art_dbeh2='0', ");
+		}
+		itest = jcmb[4].getSelectedIndex();
+		if(itest > 0){
+			sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(35)+"', ");
+		}else{
+			sbuf.append("art_dbeh3='0', ");
+		}
+		itest = jcmb[5].getSelectedIndex();
+		if(itest > 0){
+			sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(35)+"', ");
+		}else{
+			sbuf.append("art_dbeh4='0', ");
+		}
+		sbuf.append("frequenz='"+jtf[8].getText()+"', ");
+		sbuf.append("dauer='"+jtf[9].getText()+"', ");		
+		sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");
+		sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
+		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
+		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
+		
+/*******************************************/		
 		Integer izuzahl = new Integer(jtf[13].getText());
-		System.out.println(izuzahl.toString());
+		//System.out.println(izuzahl.toString());
 		String szzstatus = "";
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
-				System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				//System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
 				szzstatus = "0";
 				break;
-			}else{
-				System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			}
+			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
-				System.out.println("ZuzahlStatus = Patient ist befreit");
-				// evtl. prüfen ob bereits bezahlt;
-				if(this.vec.get(14).equals("T")){
-					szzstatus = "2";
-				}else{
-					szzstatus = "0";				
-				}
-				break;
-			}
-			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
-				System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				//System.out.println("ZuzahlStatus = Patient ist befreit");
 				szzstatus = "0";				
 				break;
 			}
-			if(this.vec.get(14).equals("T")){
-				szzstatus = "1";
+			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
+				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				szzstatus = "0";				
+				break;
+			}
+			szzstatus = "2";				
+		}
+		sbuf.append("zzstatus='"+szzstatus+"', ");
+		int leistung;
+		String[] str;
+		for(int i = 0;i < 4;i++){
+			leistung = leistungTesten(jcmb[i+2].getSelectedIndex());
+			if(leistung >= 0){
+				str = holePreis(leistung,new Integer(jtf[13].getText()) );
+				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
+				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
+				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
+				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
 			}else{
-				szzstatus = "2";				
+				sbuf.append("preise"+(i+1)+"='0.00'");
+				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
+		
+		sbuf.append("diagnose='"+jta.getText()+"' ");
+		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
+		//System.out.println(sbuf.toString());
+		new ExUndHop().setzeStatement(sbuf.toString());
+		/*
+		Vector tabvec = new Vector();
+		tabvec.add(nummer.toUpperCase()+new Integer(reznr).toString());
+		tabvec.add(PatGrundPanel.thisClass.imgzuzahl[new Integer(szzstatus)]);
+		tabvec.add(jtf[2].getText());
+		tabvec.add(datFunk.sHeute());
+		tabvec.add(jtf[3].getText());
+		tabvec.add(jtf[27].getText());		
+		tabvec.add(new Integer(rezidneu).toString());
+		*/
+		final int xreznr = reznr;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				// TODO Auto-generated method stub
+				AktuelleRezepte.aktRez.holeRezepte(jtf[27].getText(),nummer.toUpperCase()+new Integer(xreznr).toString());
+				return null;
+			}
+		}.execute();
+
+		//AktuelleRezepte.aktRez.dtblm.addRow((Vector)tabvec.clone());
+		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
+		
+		
 		
 	}
 	private void doAbbrechen(){
