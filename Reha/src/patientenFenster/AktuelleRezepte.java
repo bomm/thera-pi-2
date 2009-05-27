@@ -862,13 +862,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				int anzrow = tabaktrez.getRowCount();
 				if(currow == -1){
 					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> löschen <- ausgewählt");
+					return;
 				}
 				String reznr = (String)tabaktrez.getValueAt(currow, 0);
+				String rezid = (String)tabaktrez.getValueAt(currow, 6);
 				int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Rezept "+reznr+" wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.NO_OPTION){
 					return;
 				}
+				String sqlcmd = "delete from verordn where id='"+rezid+"'";
+				new ExUndHop().setzeStatement(sqlcmd);
 				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
+				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(tabaktrez.getRowCount()).toString());				
 			}
 			
 		}

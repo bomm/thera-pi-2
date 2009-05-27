@@ -626,10 +626,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		// TODO Auto-generated method stub
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("arzt")){
 			String[] suchkrit = new String[] {jtf[1].getText().replaceAll("\\?", ""),jtf[12].getText()};
+			jtf[1].setText(new String(suchkrit[0]));
 			arztAuswahl(suchkrit);
 		}
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("ktraeger")){
 			String[] suchkrit = new String[] {jtf[0].getText().replaceAll("\\?", ""),jtf[11].getText()};
+			jtf[0].setText(new String(suchkrit[0]));
 			kassenAuswahl(suchkrit);
 		}
 	}
