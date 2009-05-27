@@ -430,9 +430,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			protected Void doInBackground() throws Exception {
 		
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS rez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
+				Vector vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER by rez_datum", Arrays.asList(new String[]{}));
+						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
 				int anz = vec.size();
 				for(int i = 0; i < anz;i++){
 					if(i==0){
@@ -455,7 +455,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						final int ix = i;
 	                    new Thread(){
 	                    	public void run(){
-	                    		holeEinzelTermine(ix);
+	                    		holeEinzelTermine(ix,null);
 	                    	}
 	                    }.start();
 					}
@@ -475,6 +475,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 						tabaktrez.setRowSelectionInterval(row, row);
 						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 6));
+						holeEinzelTermine(row,null);
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
@@ -500,9 +501,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}.execute();
 		
 	}
-	private void holeEinzelTermine(int row){
-		Vector vec = SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,6)+"'", Arrays.asList(new String[] {}));
-		String terms = (String) vec.get(0);
+	private void holeEinzelTermine(int row,Vector vvec){
+		Vector xvec = null;
+		if(vvec == null){
+			xvec = SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,6)+"'", Arrays.asList(new String[] {}));			
+		}else{
+			xvec = vvec;
+		}
+
+		String terms = (String) xvec.get(0);
 		//System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
 		//System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
 		if(terms==null){
@@ -641,7 +648,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 								// TODO Auto-generated method stub
 								inRezeptDaten = true;
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-	                    		holeEinzelTermine(ix);
+	                    		holeEinzelTermine(ix,null);
 	    						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 6));
 	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
