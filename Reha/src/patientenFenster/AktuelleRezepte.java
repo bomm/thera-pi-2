@@ -19,7 +19,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,6 +90,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemTools.Colors;
 
+import systemTools.DoubleTools;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import terminKalender.datFunk;
@@ -268,6 +271,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jbut.setActionCommand("rezdelete");
 		jbut.addActionListener(this);		
 		jtb.add(jbut);
+		jtb.addSeparator(new Dimension(40,0));
+		jbut = new JButton();
+		jbut.setIcon(new ImageIcon(Reha.proghome+"icons/rezeptgebuehr.png"));
+		jbut.setToolTipText("Rezeptgebühren kassieren");
+		jbut.setActionCommand("rezeptgebuehr");
+		jbut.addActionListener(this);		
+		jtb.add(jbut);
+		
 		return jtb;
 	}
 	public JXPanel getTabelle(){
@@ -875,6 +886,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
 				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(tabaktrez.getRowCount()).toString());				
 			}
+			if(cmd.equals("rezeptgebuehr")){
+				if(aktPanel.equals("leerPanel")){
+					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+							"....und von welchem der nicht vorhandenen Rezepte wollen Sie Rezeptgebühren kassieren....");
+					return;
+				}
+				int currow = tabaktrez.getSelectedRow();
+				int anzrow = tabaktrez.getRowCount();
+				if(currow == -1){
+					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewählt");
+					return;
+				}				
+				doRezeptGebuehr();
+			}
 			
 		}
 	}
@@ -971,6 +996,37 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		        }
 		      }
 		   
+	}
+	public void doRezeptGebuehr(){
+		Double[] preise = {0.00,0.00,0.00,0.00};
+		Double rezgeb = new Double(0.00);
+		int[] anzahl = {0,0,0,0};
+		int[] artdbeh = {0,0,0,0};
+		int i;
+		Double einzelpreis = 0.00;
+		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
+		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
+		for(i = 0;i < 4;i++){
+			anzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
+			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
+			preise[i] = new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18));
+		}
+		rezgeb = 10.00;
+		for(i = 0; i < 4; i++){
+			System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
+					new Integer(artdbeh[i]).toString()+" / "+
+					preise[i].toString() );
+			if(artdbeh[i] > 0){
+				einzelpreis = DoubleTools.Runde(new Double(preise[i]/100.*10.), 2);
+				System.out.println("RG für eine Behandlung Nr. "+i+"  -> "+einzelpreis.toString());
+				rezgeb = new Double(rezgeb+(einzelpreis*new Double(anzahl[i])));
+				System.out.println("Rezeptgebühren für dieses Rezept = "+rezgeb.toString());
+			}
+		}
+		DecimalFormat df = new DecimalFormat( "0.00" );
+		String s = df.format( rezgeb );
+		System.out.println("----------------------------------------------------");
+		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 	}
 	public void neuanlageRezept(boolean lneu,String feldname){
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){
