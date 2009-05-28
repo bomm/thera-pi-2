@@ -108,6 +108,8 @@ public class SystemConfig {
 	public static String[] arztGruppen = null;
 	public static String[] rezeptKlassen = null;
 	public static String initRezeptKlasse = null;
+	public static String rezGebVorlageNeu = null;
+	public static String rezGebVorlageAlt = null;
 	
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
 	                     
@@ -562,7 +564,8 @@ public class SystemConfig {
 		hmAdrRDaten = new HashMap<String,String>();
 		lAdrRDaten = Arrays.asList(new String[]{"<Rnummer>","<Rdatum>","<Rposition1>","<Rposition2>","<Rposition3>"
 				,"<Rposition4>","<Rpreise1>","<Rpreise2>","<Rpreise3>","<Rpreise4>","<Rproz1>","<Rproz2>","<Rproz3>"
-				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag"});
+				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag>","<Ranzahl1>"
+				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>"});
 		for(int i = 0; i < lAdrRDaten.size(); i++){
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
 		}
@@ -631,6 +634,9 @@ public class SystemConfig {
 		for(int i = 0;i < args;i++){
 			rezeptKlassen[i] = inif.getStringProperty("RezeptKlassen", "Klasse"+new Integer(i+1).toString()); 
 		}
+		rezGebVorlageNeu = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageNeu");
+		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");
+
 	}
 	public static void SystemIconsInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/toolbar.ini");

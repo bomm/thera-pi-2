@@ -1031,35 +1031,75 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		   
 	}
 	public void doRezeptGebuehr(){
-		Double[] preise = {0.00,0.00,0.00,0.00};
-		Double rezgeb = new Double(0.00);
+		// noch zu erledigen
+		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
+		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
+		Double rezgeb = new Double(0.000);
+		BigDecimal[] preise = {null,null,null,null};
+		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
+		
+		System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
 		int i;
-		Double einzelpreis = 0.00;
-		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
-		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
+		BigDecimal einzelpreis = null;
+		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
 		for(i = 0;i < 4;i++){
 			anzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
 			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
-			preise[i] = new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18));
+			preise[i] = BigDecimal.valueOf(new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18)));
 		}
+		xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
 		rezgeb = 10.00;
+		System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
+		String runden;
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		BigDecimal endpos;
+		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
+		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
+		
 		for(i = 0; i < 4; i++){
+			/*
 			System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
 					new Integer(artdbeh[i]).toString()+" / "+
 					preise[i].toString() );
+			*/		
 			if(artdbeh[i] > 0){
-				einzelpreis = DoubleTools.Runde(new Double(preise[i]/100.*10.), 2);
-				System.out.println("RG für eine Behandlung Nr. "+i+"  -> "+einzelpreis.toString());
-				rezgeb = new Double(rezgeb+(einzelpreis*new Double(anzahl[i])));
-				System.out.println("Rezeptgebühren für dieses Rezept = "+rezgeb.toString());
+				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)PatGrundPanel.thisClass.vecaktrez.get(48+i) );
+				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
+				
+				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
+
+				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
+				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
+				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
+
+				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
+				
+				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
+				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
+				rezgeb = rezgeb + endpos.doubleValue();
+				System.out.println(rezgeb.toString());
+
+			}else{
+				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");
+				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", "" );
+				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", "");				
+				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", "" );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", "" );
+						
 			}
 		}
+		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
 		DecimalFormat df = new DecimalFormat( "0.00" );
-		String s = df.format( rezgeb );
+		String s = df.format( rezgeb);
 		System.out.println("----------------------------------------------------");
 		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
+		System.out.println(SystemConfig.hmAdrRDaten);
+		new RezeptGebuehren(false,false);
 	}
 	public void neuanlageRezept(boolean lneu,String feldname){
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){
