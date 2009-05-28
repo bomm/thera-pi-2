@@ -884,7 +884,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String sqlcmd = "delete from verordn where id='"+rezid+"'";
 				new ExUndHop().setzeStatement(sqlcmd);
 				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
-				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(tabaktrez.getRowCount()).toString());				
+				int uebrig = tabaktrez.getRowCount();
+				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(uebrig).toString());
+				if(uebrig <= 0){
+					holeRezepte(PatGrundPanel.thisClass.patDaten.get(29),"");
+				}
 			}
 			if(cmd.equals("rezeptgebuehr")){
 				if(aktPanel.equals("leerPanel")){
@@ -1090,6 +1094,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 									tabaktrez.getSelectedRow(),1);
 				tabaktrez.validate();
 				tabaktrez.repaint();
+			}
+		}else{
+			if(aktPanel.equals("leerPanel")){
+				holeRezepte(PatGrundPanel.thisClass.patDaten.get(29),"");
 			}
 		}
 
