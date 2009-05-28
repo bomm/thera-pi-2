@@ -917,13 +917,19 @@ boolean inNeu = false;
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);
+		awahl.dispose();
+		awahl = null;
+
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
 		 			jtf[19].requestFocus();
 		 	   }
 		});
-		awahl.dispose();
-		awahl = null;
+		if(jtf[17].getText().indexOf("\\?") >= 0){
+			String text = jtf[17].getText().replaceAll("\\?","");
+			jtf[17].setText(text);
+		}
+
 
 	}
 	private void kassenAuswahl(String[] suchenach){
@@ -932,14 +938,17 @@ boolean inNeu = false;
 		kwahl.setModal(true);
 		kwahl.setLocationRelativeTo(this);
 		kwahl.setVisible(true);
+		kwahl.dispose();
+		kwahl = null;
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
 		 			jtf[14].requestFocus();
 		 	   }
 		});
-		kwahl.dispose();
-		kwahl = null;
-		
+		if(jtf[12].getText().indexOf("\\?") >= 0){
+			String text = jtf[12].getText().replaceAll("\\?","");
+			jtf[12].setText(text);
+		}
 	}
 	
 	private boolean testObDialog(String string){

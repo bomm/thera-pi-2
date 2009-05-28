@@ -246,7 +246,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		try{
 			grundPanel.remove(knk);
 		}catch(java.lang.NullPointerException ex){
-			
+			System.out.println(ex);
 		}
 		grundPanel.add(this.content);
 		SwingUtilities.invokeLater(new Runnable(){
