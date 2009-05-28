@@ -291,9 +291,9 @@ public PatGrundPanel(JPatientInternal jry){
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
-			imgzuzahl[0] = new ImageIcon(Reha.proghome+"icons/frei.png");
-			imgzuzahl[1] = new ImageIcon(Reha.proghome+"icons/Haken_klein.gif");			
-			imgzuzahl[2] = new ImageIcon(Reha.proghome+"icons/Kreuz.png");
+			imgzuzahl[0] = SystemConfig.hmSysIcons.get("zuzahlfrei");
+			imgzuzahl[1] = SystemConfig.hmSysIcons.get("zuzahlok");			
+			imgzuzahl[2] = SystemConfig.hmSysIcons.get("zuzahlnichtok");
 			return null;
 		}
 		
@@ -666,7 +666,8 @@ class SuchePanel extends JXPanel implements ActionListener{
 		
 		lbl = new JLabel("Suche");
 		lbl.setName("Suchen");
-		lbl.setIcon(new ImageIcon(Reha.proghome+"icons/mag.png"));
+		//lbl.setIcon(new ImageIcon(Reha.proghome+"icons/mag.png"));
+		lbl.setIcon(SystemConfig.hmSysIcons.get("find"));
 		lbl.addMouseListener(ml);
 		add(lbl,cc.xy(13,2));
 		tfsuchen = new JFormattedTextField();
@@ -693,19 +694,22 @@ class SuchePanel extends JXPanel implements ActionListener{
 		};
 		*/
 		jbut[0] = new JButton();
-		jbut[0].setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
+		//jbut[0].setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
+		jbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
 		jbut[0].setToolTipText("neuen Patient anlegen (Alt+N)");
 		jbut[0].setActionCommand("neu");
 		jbut[0].addActionListener(this);
 		jtb.add(jbut[0]);
 		jbut[1] = new JButton();
-		jbut[1].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
+		//jbut[1].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
+		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
 		jbut[1].setToolTipText("aktuellen Patient ändern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
 		jbut[2] = new JButton();
-		jbut[2].setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
+		//jbut[2].setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
+		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
 		jbut[2].setToolTipText("Patient löschen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
@@ -713,7 +717,8 @@ class SuchePanel extends JXPanel implements ActionListener{
 		jtb.addSeparator(new Dimension(40,0));
 		jbut[3] = new JButton();
 		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/mail_write_22.png"));
-		jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/drucker22.png"));
+		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/drucker22.png"));
+		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
 		jbut[3].setToolTipText("Brief/Formular für Patient erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);

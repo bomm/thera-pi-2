@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -107,6 +108,8 @@ public class SystemConfig {
 	public static String[] arztGruppen = null;
 	public static String[] rezeptKlassen = null;
 	public static String initRezeptKlasse = null;
+	
+	public static HashMap<String,ImageIcon> hmSysIcons = null;
 	                     
 	public SystemConfig(){
 	
@@ -624,7 +627,29 @@ public class SystemConfig {
 			rezeptKlassen[i] = inif.getStringProperty("RezeptKlassen", "Klasse"+new Integer(i+1).toString()); 
 		}
 	}
+	public static void SystemIconsInit(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/toolbar.ini");
+		hmSysIcons = new HashMap<String,ImageIcon>();
+		hmSysIcons.put("neu", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "neu")));
+		hmSysIcons.put("edit", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "edit")));		
+		hmSysIcons.put("delete", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "delete")));		
+		hmSysIcons.put("print", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "print")));		
+		hmSysIcons.put("save", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "save")));		
+		hmSysIcons.put("find", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "find")));		
+		hmSysIcons.put("stop", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "stop")));		
+		hmSysIcons.put("zuzahlfrei", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlfrei")));		
+		hmSysIcons.put("zuzahlok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")));		
+		hmSysIcons.put("zuzahlnichtok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")));		
+		hmSysIcons.put("zuzahlok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")));		
+		hmSysIcons.put("nichtgesperrt", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")));		
+		hmSysIcons.put("gesperrt", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "gesperrt")));		
+		hmSysIcons.put("rezeptgebuehr", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rezeptgebuehr")));		
+		hmSysIcons.put("ausfallrechnung", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ausfallrechnung")));		
+		hmSysIcons.put("arztbericht", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "arztbericht")));		
+		hmSysIcons.put("privatrechnung", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "privatrechnung")));		
+		hmSysIcons.put("sort", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sort")));		
 
+	}
 	
 }
 

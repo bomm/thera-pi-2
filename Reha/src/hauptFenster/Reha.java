@@ -2044,6 +2044,8 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.ArztGruppenInit();
 			new SocketClient().setzeInitStand("Rezeptparameter einlesen");
 			SystemConfig.RezeptInit();
+			new SocketClient().setzeInitStand("SystemIcons laden");
+			SystemConfig.SystemIconsInit();
 
 
 
