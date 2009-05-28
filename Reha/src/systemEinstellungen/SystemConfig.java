@@ -110,6 +110,7 @@ public class SystemConfig {
 	public static String initRezeptKlasse = null;
 	public static String rezGebVorlageNeu = null;
 	public static String rezGebVorlageAlt = null;
+	public static boolean rezGebDirektDruck = false;
 	
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
 	                     
@@ -636,6 +637,7 @@ public class SystemConfig {
 		}
 		rezGebVorlageNeu = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageNeu");
 		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");
+		rezGebDirektDruck = (inif.getIntegerProperty("DruckOptionen", "DirektDruck") <= 0 ? false : true);
 
 	}
 	public static void SystemIconsInit(){

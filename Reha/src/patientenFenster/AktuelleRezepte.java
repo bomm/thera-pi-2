@@ -1057,7 +1057,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2) )  );		
 		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
 		
 		for(i = 0; i < 4; i++){
@@ -1086,10 +1086,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 			}else{
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");
-				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", "" );
-				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", "");				
-				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", "" );
-				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", "" );
+				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", "0,00" );
+				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", "0,00");				
+				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", "0,00" );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", "----" );
 						
 			}
 		}
