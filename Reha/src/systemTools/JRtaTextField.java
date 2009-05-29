@@ -103,12 +103,24 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		setDisabledTextColor(Color.RED);		
 	}
 	public double getDValueFromS(){
-		double fielddbl = new Double(getText());
+		String test;
+		test = getText();
+		if(test.equals("")){
+			return new Double("0.00");
+		}
+		if(test.indexOf(".") < 0 && test.indexOf(",") < 0 ){
+			return (new Double(test.trim()+".00"));
+			
+		}
+		double fielddbl = new Double(test.replaceAll(",", "."));
 		return fielddbl;
 	}
 	public void setDValueFromS(String value){
+		String wert = value.replaceAll(",","."); 
+		//System.out.println(wert);
+		
 		DecimalFormat df = new DecimalFormat ( "#########0.00" );
-		setText( (value.trim().equals("") ? df.format(new Double(0.00)) : df.format(new Double(value)) )  );
+		setText( (wert.trim().equals("") ? df.format(new Double(0.00)) : df.format(new Double(wert)) )  );
 		return;
 	}
 
