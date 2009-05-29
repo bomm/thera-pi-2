@@ -137,6 +137,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	
 	private JLabel trefferLbl = null;	
 	private JLabel ausgewaehltLbl = null;
+	public  static JLabel verarbeitetLbl = null;
 	
 	public JXTable jxSucheTable = null;
 	
@@ -576,15 +577,23 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		CellConstraints cc = new CellConstraints();
 		JXPanel fpan = new JXPanel(new FlowLayout(FlowLayout.LEFT));
 		fpan.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		fpan.add(new JLabel("Treffer: "));
+		JLabel lab = new JLabel("Treffer: ");
+		lab.setForeground(Color.BLUE);
+		fpan.add(lab);
 		trefferLbl = new JLabel("0");
 		trefferLbl.setForeground(Color.BLUE);
 		fpan.add(trefferLbl);
 		fpan.add(new JLabel("           "));
 		fpan.add(new JLabel("Ausgewählt: "));
 		ausgewaehltLbl = new JLabel("0");
-		ausgewaehltLbl.setForeground(Color.BLUE);
 		fpan.add(ausgewaehltLbl);
+		fpan.add(new JLabel("           "));
+		JLabel verarb = new JLabel("Verarbeitet: ");
+		verarb.setForeground(Color.RED);
+		fpan.add(verarb);
+		verarbeitetLbl = new JLabel("0");
+		verarbeitetLbl.setForeground(Color.RED);
+		fpan.add(verarbeitetLbl);
 		builder.add(fpan,cc.xy(2,1));
 		
 /*
@@ -923,6 +932,14 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	private void roogleZuruecksetzen(){
 		mussUnterbrechen = true;
+		/*
+		if(trefferLbl.getText().equals(verarbeitetLbl.getText())){
+			verarbeitetLbl.setText("0");
+		}else{
+			JOptionPane.showMessageDialog(null, "Die Verarbeitung des Suchergebnisses ist noch nicht beendet....");
+			return;
+		}
+		*/
 		dtblm.getDataVector().clear();
 		jxSucheTable.removeAll();
 		sucheDaten.clear();
@@ -3040,6 +3057,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 	
 	protected Void doInBackground() throws Exception {
 		int anzahl;
+		int verarbeitet;
 		sperrDatum.clear();
 		while(true){
 			anzahl = SuchenSeite.sucheDaten.size();
@@ -3057,7 +3075,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 				if(aktuell != (anzahl-1)){
 					 	
 						aktuell++;
-						
+						SuchenSeite.verarbeitetLbl.setText(new Integer(aktuell+1).toString());
+						//xxxx
 						Vector nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
 						
 						String sperre;
