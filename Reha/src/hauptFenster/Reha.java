@@ -1933,7 +1933,7 @@ final class DatenbankStarten implements Runnable{
 	    				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
 	    				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
 	    				//SplashPanel.labelSetzen("Datenbank initialisieren und öffnen");
-	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1),
+	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false",
 	    						SystemConfig.vDatenBank.get(0).get(3),SystemConfig.vDatenBank.get(0).get(4));
 	    			}else{	
 	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
@@ -2071,7 +2071,7 @@ final class DbNachladen implements Runnable{
 		try {
 			if (sDB=="SQL"){
 				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
-				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1),"entwickler","entwickler");
+				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false","entwickler","entwickler");
 				JOptionPane.showMessageDialog(null,"Die Wiederherstellung der Datenbankverbindung war - erfolgreich!");
 			}else{	
 				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
