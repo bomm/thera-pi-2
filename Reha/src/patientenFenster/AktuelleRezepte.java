@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -931,7 +932,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewählt");
 					return;
 				}				
-				doRezeptGebuehr();
+				doRezeptGebuehr( ((JComponent)arg0.getSource()).getLocationOnScreen() );
 			}
 			
 		}
@@ -1030,7 +1031,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		      }
 		   
 	}
-	public void doRezeptGebuehr(){
+	public void doRezeptGebuehr(Point pt){
 		// noch zu erledigen
 		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
 		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
@@ -1099,7 +1100,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		System.out.println("----------------------------------------------------");
 		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		System.out.println(SystemConfig.hmAdrRDaten);
-		new RezeptGebuehren(false,false);
+		new RezeptGebuehren(false,false,pt);
 	}
 	public void neuanlageRezept(boolean lneu,String feldname){
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){
