@@ -232,7 +232,9 @@ public static void ProgBenutzerVerwaltung(int setPos) {
 
 }
 /**************Roogle Echtfunktion***********************/
-public static void ProgRoogleFenster(int setPos) {
+public static void ProgRoogleFenster(int setPos,String droptext) {
+	final String xdroptext = droptext;
+	
 	new Thread(){
 		public void run(){
 			
@@ -240,7 +242,7 @@ public static void ProgRoogleFenster(int setPos) {
  	  // public  void run()
  	   //{	
  		   	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
- 			RoogleFenster roogle = new RoogleFenster(Reha.thisFrame);
+ 			RoogleFenster roogle = new RoogleFenster(Reha.thisFrame,xdroptext);
  			roogle.setSize(940,680);
  			roogle.setLocationRelativeTo(null);
  			roogle.setVisible(true);

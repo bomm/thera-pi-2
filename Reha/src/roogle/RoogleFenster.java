@@ -130,16 +130,21 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	private ButtonGroup[] schichtGruppe = {null,null}; 
 	private Object[][] kollegenWahl = null;
 	private int gewaehlt = 0;
+	public String droptext = null;
+	public boolean gedropt = false;
 	public static boolean schicht = false;
 	public static boolean select =  false;
 	public String[] kollegenAbteilung = null;
 	public boolean[] kollegenSuchen = new boolean[ParameterLaden.maxKalZeile+1];
 	private MouseAdapter mymouse = null;
-	public RoogleFenster(JXFrame owner) {
+	public RoogleFenster(JXFrame owner,String drops) {
 		super(owner,"Roogle");
 		setPreferredSize(new Dimension(300,300));
 		thisClass = this;
-
+		if(! (drops==null)){
+			droptext = drops;
+			gedropt = true;
+		}
 		eigenName = "Roogle"+WinNum.NeueNummer(); 
 		this.setName("Roogle"+WinNum.NeueNummer());
 		
@@ -228,7 +233,27 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	}
 	/******************************************/
 	/******************************************/
-  
+	private void macheDrop(){
+		String[] teilen; 
+		teilen = droptext.split("°");
+		teilen[2] = teilen[2].toUpperCase();
+		teilen[2] = teilen[2].replaceAll(" MIN.", "");
+		if(teilen[1].indexOf("KG") >= 0){
+			gruppenCombo[0].setSelectedItem(teilen[2]);
+		}
+		if(teilen[1].indexOf("MA") >= 0){
+			gruppenCombo[1].setSelectedItem(teilen[2]);
+		}
+		if(teilen[1].indexOf("ER") >= 0){
+			gruppenCombo[2].setSelectedItem(teilen[2]);
+		}
+		if(teilen[1].indexOf("LO") >= 0){
+			gruppenCombo[3].setSelectedItem(teilen[2]);
+		}
+		SuchenSeite.drops = teilen;
+
+		
+	}
 	private void macheTabedPane1(JXPanel haupt){
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
@@ -378,6 +403,20 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
         tp1.addFocusListener(this);
         tp2.addFocusListener(this);
         haupt.add(tabbedPane);
+		if(gedropt){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					macheDrop();
+					return null;
+				}
+				
+			}.execute();
+		}else{
+			SuchenSeite.drops = new String[] {null,null,null};
+		}
+			
+
 	}
 	public void setStartFocus(){
 		setTableSelection(jxTable,0,0);

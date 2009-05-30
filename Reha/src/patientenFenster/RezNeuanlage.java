@@ -81,6 +81,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private boolean initReady = false;
 	private static final long serialVersionUID = 1L;
 	private int preisgruppe;
+	public boolean feldergefuellt = false;
 	private String nummer = null;
 	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 		

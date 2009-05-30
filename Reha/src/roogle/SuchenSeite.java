@@ -138,7 +138,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	private JLabel trefferLbl = null;	
 	private JLabel ausgewaehltLbl = null;
 	public  static JLabel verarbeitetLbl = null;
-	
+	public static String[] drops = {null,null,null};
 	public JXTable jxSucheTable = null;
 	
 	//private MyRoogleSuche myTable = null;
@@ -424,8 +424,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		//				  28   29  30     31    32   33   34    35   36    37  38  39
 						"2dlu , p, 2dlu , p ,  8dlu,  p , 2dlu, p , 8dlu , p, 8dlu,p";
 		*/
-		//                1      2  3  4   5  6    7  8   9  10 11  12   13  14  15   16   17     f1   f2    18   19   20   21   22   23   24    25  26   27
-		String reihen = "10dlu,2dlu, p,2dlu,p,13dlu,p,2dlu,p,2dlu,p,10dlu, p, 2dlu,p, 10dlu, p  ,2px,  8dlu ,2px, p , 2dlu, p , 2dlu , p, 8dlu, p, 8dlu, p ,"  +
+		//                1      2   3  4   5  6    7  8   9  10 11  12   13  14  15   16   17     f1   f2    18   19   20   21   22   23   24    25  26   27
+		String reihen = "10dlu,2dlu, p,2dlu,p,13dlu,p,2dlu,p,2dlu,p,10dlu, p, 2dlu,p, 10dlu, p  ,2px,  8dlu ,2px, p , 2dlu, p , 8dlu , p, 8dlu, p, 8dlu, p ,"  +
 		//				  28   29  30     31    32   33   34    35   36    37  38  39
 						"2dlu , p, 2dlu , p ,  8dlu,  p , 2dlu, p , 8dlu , p";
 		
@@ -439,8 +439,20 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 
 		//builder.addLabel("Name suchen (leer = freie Termine)",cc.xy(2, 3));
 		//builder.addLabel("Rez.Nr.",cc.xy(4, 3));
+		
 		sucheName = new JRtaTextField("GROSS",true);
 		sucheName.setToolTipText("Geben Sie hier Ihr Suchkriterim ein, leer = freie Termine suchen!");
+		if(drops[0] != null){
+			if(drops[0].length() > 10){
+				SuchenSeite.thisClass.sucheName.setText(new String(drops[0].substring(0,10)));			
+			}else{
+				SuchenSeite.thisClass.sucheName.setText(new String(drops[0]));
+			}
+			
+		}
+		//SuchenSeite.thisClass.schreibeName.setText(drops[0]);
+		//SuchenSeite.thisClass.schreibeNummer.setText(drops[1]);
+
 		builder.add(sucheName,cc.xy(2,5));
 
 		sucheNummer = new JRtaTextField("GROSS",true);
@@ -456,6 +468,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		schreibeNummer = new JRtaTextField("GROSS",true);
 		schreibeNummer.setToolTipText("Mit diesem Feld geben Sie an welche Rezeptnummer (evtl.) sp‰ter eingetragen werden soll");
 		builder.add(schreibeNummer,cc.xyw(4,11,3));
+
+		if(drops[0] != null){
+			SuchenSeite.thisClass.schreibeName.setText(new String(drops[0]));
+			SuchenSeite.thisClass.schreibeNummer.setText(new String(drops[1]));
+		}
 		
 		builder.addSeparator("suche von / bis...", cc.xyw(1, 13,5));
 		
@@ -497,11 +514,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		sucheStarten.setActionCommand("sstart");
 		sucheStarten.addActionListener(this);
 		
-		sucheWeiter = new JButton("Suchlauf fortsetzen");
+		sucheWeiter = new JButton("Auswahl nur(!!) drucken");
 		sucheWeiter.setEnabled(false);
-		sucheWeiter.setName("fortsetzen");
+		sucheWeiter.setName("sucheWeiter");
 		sucheWeiter.addKeyListener(this);		
-		sucheWeiter.setActionCommand("sweiter");
+		sucheWeiter.setActionCommand("nurdrucken");
 		sucheWeiter.addActionListener(this);
 		
 		sucheStoppen = new JButton("Suche unterbrechen");
@@ -815,6 +832,33 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				});	
 				break;
 			}
+			if(name.equals("nurdrucken")){
+				if(gewaehlt==0){
+					JOptionPane.showMessageDialog(null,"So so...,Sie haben zwar nix gew‰hlt wollen es aber schon mal drucken - das NIX....\nOh Herr schmeiﬂ Hirn ra!");
+					return;
+				}
+				String fragestring = "Achtung Sie schreiben keinerlei Daten in den Kalender!!!!!!\n"+
+				"Sie erstellen lediglich einen Ausdruck Ihrer derzeitigen Auswahl\n\n"+
+				"Wollen Sie den Vorgang fortsetzen ?";
+				int anfrage = JOptionPane.showConfirmDialog(null, fragestring, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION); 
+				if(anfrage == JOptionPane.NO_OPTION){
+					sucheWeiter.setEnabled(false);
+					return;
+				}
+				cursorWait(true);
+				SwingUtilities.invokeLater(new Runnable(){
+					public  void run(){
+						new Thread(){
+							public void run(){
+								druckVectorInit();
+								auswahlDrucken(true);								
+							}
+						}.start();
+					}
+				});	
+				break;
+				
+			}
 			if(name.equals("email")){
 				if(gewaehlt==0){
 					JOptionPane.showMessageDialog(null,"So so...,Sie haben zwar nix gew‰hlt wollen es aber schon mal drucken - das NIX....\nOh Herr schmeiﬂ Hirn ra!");
@@ -941,6 +985,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		}
 		*/
 		dtblm.getDataVector().clear();
+		dtblm.setRowCount(0);
 		jxSucheTable.removeAll();
 		sucheDaten.clear();
 		jxSucheTable.clearSelection();
@@ -1046,6 +1091,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								auswahlDrucken.setEnabled(true);
 								auswahlPerEmail.setEnabled(true);
 								auswahlInDatei.setEnabled(true);
+								sucheWeiter.setEnabled(true);
 							}
 						}else{
 							this.zeilengewaehlt--;
@@ -1055,6 +1101,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								auswahlDrucken.setEnabled(false);
 								auswahlPerEmail.setEnabled(false);
 								auswahlInDatei.setEnabled(false);
+								sucheWeiter.setEnabled(false);
 							}
 						}
 					}	
@@ -1148,6 +1195,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			auswahlDrucken.setEnabled(true);
 			auswahlPerEmail.setEnabled(true);
 			auswahlInDatei.setEnabled(true);
+			sucheWeiter.setEnabled(true);
 		}else{
 			listenerAusschalten();			
 			for(i=0;i<bis;i++){
@@ -1160,8 +1208,31 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			auswahlDrucken.setEnabled(false);
 			auswahlPerEmail.setEnabled(false);
 			auswahlInDatei.setEnabled(false);
+			sucheWeiter.setEnabled(false);
 		}
 		
+	}
+	private void druckVectorInit(){
+		int lang = dtblm.getRowCount(),i;
+		int durchlauf = 0;
+		Vector vec = null;
+		String name,nummer;
+		vecWahl.clear();
+
+		name = new String(schreibeName.getText().trim());
+		nummer = new String(schreibeNummer.getText().trim().replace("\\", "\\\\") );
+		//System.out.println("Rezeptnummer = "+nummer);
+
+		for(i=0;i<lang;i++){
+			
+			if((Boolean)dtblm.getValueAt(i,0)){
+
+				SuchenSeite.setFortschrittSetzen(durchlauf++);
+				vecWahl.add(sucheDaten.get(i));
+				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
+				((Vector)vecWahl.get(vecWahl.size()-1)).set(6, (String) dtblm.getValueAt(i,6));		
+			}
+		}	
 	}
 	/********************************************************/
 	class SchreibeAuswahl extends SwingWorker<Void,Void>{

@@ -253,7 +253,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 		for (int i = 0; i < placeholders.length; i++) {
 			String placeholderDisplayText = placeholders[i].getDisplayText();
-			System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+			//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 			placeholders[i].getTextRange().setText(SystemConfig.hmAdrRDaten.get(placeholderDisplayText));
 		}
 		if(direktdruck.isSelected()){

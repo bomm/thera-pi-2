@@ -31,7 +31,13 @@ import java.awt.PointerInfo;
 import java.awt.Toolkit;
 //import java.awt.Toolkit;
 //import java.awt.Window;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -45,6 +51,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.TooManyListenersException;
 import java.util.Vector;
 
 import javax.swing.AbstractButton;
@@ -77,6 +84,7 @@ import patientenFenster.PatNeuanlage;
 
 import com.sun.star.awt.Key;
 
+import DragAndDropTools.DnDTermine;
 import RehaInternalFrame.JRehaInternal;
 //import org.jdesktop.swingx.plaf.TitledPanelUI;
 
@@ -89,7 +97,7 @@ import systemEinstellungen.SystemConfig;
 //import systemTools.SystemTools;
 
 
-public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener{
+public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener{
 
 	private JRehaInternal eltern;
 	private int setOben; //Position im Grundfenster 0=Flying Window,1=rechts oben,2=rechts unten
@@ -242,8 +250,17 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		ViewPanel.add(GrundFlaeche,BorderLayout.CENTER);
 		ViewPanel.setBackground(SystemConfig.KalenderHintergrund);
-		ViewPanel.setDropTarget(new DropTarget());
-
+		/****************************/
+		DropTarget dndt = new DropTarget();
+		try {
+			dndt.addDropTargetListener(this);
+		} catch (TooManyListenersException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		TerminFlaeche.setDropTarget(dndt);
+		//ViewPanel.setDropTarget(dndt);
+		/****************************/
 		setCombos();
 
 		
@@ -1847,8 +1864,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				oSpalten[i].spalteDeaktivieren();
 			}
 			AnsichtStatement(ansicht,aktuellerTag);
-			Normalanzeige.setEnabled(true);
-			Wochenanzeige.setEnabled(false);					
+			try{
+				Normalanzeige.setEnabled(true);
+				Wochenanzeige.setEnabled(false);
+			}catch(java.lang.NullPointerException ex){
+				
+			}
 		}
 /**************************************/			
 		public int[] getGruppierenClipBoard(){
@@ -2977,13 +2998,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		datenSpeicher[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		datenSpeicher[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);		
 		//System.out.println("Inhalt des Speichers = "+datenSpeicher[0]+" / "+datenSpeicher[1]+" / "+datenSpeicher[2]);
-		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"-"+datenSpeicher[1]+"-"+datenSpeicher[3]+"Min.");
+		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
 	}
 	public void setDatenSpeicher(String[] speicher){
 		datenSpeicher[0]= speicher[0];		
 		datenSpeicher[1]= speicher[1];		
 		datenSpeicher[3]= speicher[3];		
-		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"-"+datenSpeicher[1]+"-"+datenSpeicher[3]+"Min.");		
+		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");		
 	}
 	/********
 	 *  Shift+Einfg.
@@ -3725,6 +3746,85 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	public void setAktiverBlock(int block){
 		aktiveSpalte[0] = block;
+	}
+	@Override
+	public void dragEnter(DropTargetDragEvent dtde) {
+		// TODO Auto-generated method stub
+		//System.out.println("Drop Enter an Position "+dtde.getLocation());
+	}
+	@Override
+	public void dragExit(DropTargetEvent dte) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void dragOver(DropTargetDragEvent dtde) {
+		// TODO Auto-generated method stub
+		//System.out.println("Drop Drag Event an Position "+dtde.getLocation());		
+	}
+	@Override
+	public void drop(DropTargetDropEvent dtde) {
+		String mitgebracht = null;
+		try {
+	        Transferable tr = dtde.getTransferable();
+	        DataFlavor[] flavors = tr.getTransferDataFlavors();
+	        for (int i = 0; i < flavors.length; i++){
+	        	System.out.println(flavors[i]);
+	        	if(flavors[i].getRepresentationClass().toString().equals("java.lang.String")){
+	        		mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+	        	}
+	        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+	        }
+	      } catch (Throwable t) { t.printStackTrace(); }
+	      // Ein Problem ist aufgetreten
+	      dtde.dropComplete(true);
+
+		
+		// TODO Auto-generated method stub
+				
+		System.out.println("gedroppt an Position "+dtde.getLocation());
+		int x = dtde.getLocation().x;
+		int breit = TerminFlaeche.getWidth()/7;
+		for(int i = 0; i < 7;i++){
+			if( (x>=(i*breit)) && (x<=((i*breit)+breit)) ){
+
+				aktiveSpalte = oSpalten[i].BlockTest(dtde.getLocation().x-(i*breit),dtde.getLocation().y,aktiveSpalte);
+				oSpalten[i].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
+				System.out.println("Nachher -> "+aktiveSpalte[0]+"/"+aktiveSpalte[1]+"/"+aktiveSpalte[2]+"/"+aktiveSpalte[3]);
+				int behandler=-1;
+				if(ansicht==NORMAL_ANSICHT){
+					behandler = belegung[i];
+				}else if(ansicht==WOCHEN_ANSICHT){
+					behandler = i;
+				}else if(ansicht==MASKEN_ANSICHT){
+					behandler = i;
+				}
+				String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]);
+				String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]);
+				String[] teilen;
+				if(mitgebracht.indexOf("°") >= 0 ){
+					teilen = mitgebracht.split("°");
+					teilen[2] = teilen[2].toUpperCase();
+					teilen[2] = teilen[2].replaceAll(" MIN.", "");
+					System.out.println(teilen[0]+" - "+teilen[1]+" - "+teilen[2]);
+					datenSpeicher[0]= teilen[0];		
+					datenSpeicher[1]= teilen[1];		
+					datenSpeicher[3]= teilen[2];		
+					datenAusSpeicherHolen();
+				}
+				//datenAusSpeicherHolen();
+				System.out.println("Belegt mit -> "+sname+" - "+sreznum);
+			}else{
+				oSpalten[i].spalteDeaktivieren();
+			}
+			
+		}
+		
+	}
+	@Override
+	public void dropActionChanged(DropTargetDragEvent dtde) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/********************************************************************************************/

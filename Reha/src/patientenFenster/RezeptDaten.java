@@ -6,14 +6,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.TransferHandler;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -31,6 +35,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class RezeptDaten extends JXPanel{
 	//public JLabel[] rezlabs = {null,null,null,null,null,null,null,null,null};
 	public JRtaTextField reznum = null;
+	public JRtaTextField draghandler = null;
 	public ImageIcon hbimg = null; 
 	public Vector vecaktrez = null;
 
@@ -200,6 +205,19 @@ public class RezeptDaten extends JXPanel{
 		reznum.setEditable(false);
 		reznum.setBorder(null);
 		reznum.setDragEnabled(true);
+		reznum.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent e) {
+		    	draghandler.setText(((String)PatGrundPanel.thisClass.patDaten.get(0)).substring(0,1)+
+		    			"-"+PatGrundPanel.thisClass.patDaten.get(2)+","+PatGrundPanel.thisClass.patDaten.get(3)+"°"+
+		    			reznum.getText()+"°"+PatGrundPanel.thisClass.rezlabs[14].getText()
+		    			);
+		      JComponent c = (JComponent)draghandler;
+		      TransferHandler th = c.getTransferHandler();
+		      th.exportAsDrag(c, e, TransferHandler.COPY); //TransferHandler.COPY
+		    }
+		  });
+		draghandler = new JRtaTextField("GROSS",true);
+		draghandler.setTransferHandler(new TransferHandler("text"));		
 		/*
 		PatGrundPanel.thisClass.rezlabs[0] = new JLabel();
 		PatGrundPanel.thisClass.rezlabs[0].setFont(fontreznr);

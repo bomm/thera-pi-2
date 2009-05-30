@@ -79,7 +79,7 @@ public class TerminMenu {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				System.out.println("Roogle"); // TODO Auto-generated Event stub actionPerformed()
 				Reha.thisClass.messageLabel.setText("Roogle");
-				ProgLoader.ProgRoogleFenster(0);
+				ProgLoader.ProgRoogleFenster(0,null);
 				/*
 				JComponent termin = AktiveFenster.getFenster("TerminFenster");
 				if(termin == null){

@@ -78,6 +78,8 @@ JButton knopf4 = null;
 JButton knopf5 = null;
 JRtaComboBox cbanrede = null;
 
+public boolean feldergefuellt = false;
+
 Font font = null;
 JScrollPane jscr = null;
 List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_name","strasse","plz","ort","geboren","telefonp",
@@ -158,10 +160,14 @@ boolean inNeu = false;
 							setzeFocus();
 						}else{
 							if(PatGrundPanel.thisClass.kid < 0 && feldname.equals("KASSE")){
-								jtf[12].setText("?"+jtf[12].getText());
+								if(feldergefuellt){
+									jtf[12].setText("?"+jtf[12].getText());
+								}
 							}
 							if(PatGrundPanel.thisClass.aid < 0 && feldname.equals("ARZT")){
-								jtf[17].setText("?"+jtf[17].getText());
+								if(feldergefuellt){
+									jtf[17].setText("?"+jtf[17].getText());
+								}
 							}
 							geheAufFeld(feldname);
 						}
@@ -273,10 +279,12 @@ boolean inNeu = false;
 	
 	private void fuelleFelder(){
 		final String xfeld = this.feldname;
+
 		new SwingWorker<Void,Void>(){
 
 			@Override
 			protected Void doInBackground() throws Exception {
+
 		 		List<String> nichtlesen = Arrays.asList(new String[] {"anamnese","pat_text"});
 				Vector felder = SqlInfo.holeSatz("pat5", "*", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'",nichtlesen);
 				int gros = felder.size();
@@ -319,6 +327,7 @@ boolean inNeu = false;
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run(){
 								System.out.println("Gehe auf Feld 2 -> "+xfeld);
+								feldergefuellt = true;
 								geheAufFeld(xfeld);
 					 	   }
 					}); 	   
@@ -392,9 +401,10 @@ boolean inNeu = false;
 			buf.append(" where pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'");
 			spatintern = PatGrundPanel.thisClass.aktPatID;
 		}else{
-			// Hier muﬂ noch Anlagedatum und Angelegt von aufgenommen werden
+			// Angelegt von aufgenommen werden
 			int neuid = SqlInfo.holeId("pat5", "n_name");
 			patintern = neuid+Reha.thisClass.patiddiff;
+			buf.append(",anl_datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' ");
 			buf.append(",pat_intern='"+new Integer(patintern).toString() +"' where id='"+new Integer(neuid).toString()+"'");
 			spatintern = new Integer(patintern).toString();
 		}

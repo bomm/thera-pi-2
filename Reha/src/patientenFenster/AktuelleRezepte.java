@@ -1032,9 +1032,23 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		   
 	}
 	public void doRezeptGebuehr(Point pt){
+		boolean bereitsbezahlt = false;
 		// noch zu erledigen
 		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
 		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
+		if( (boolean)PatGrundPanel.thisClass.vecaktrez.get(39).equals("0") ){
+			JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
+			return;
+		}
+		if( (boolean)PatGrundPanel.thisClass.vecaktrez.get(39).equals("1") ){
+			String reznr = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung für Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			if(frage == JOptionPane.NO_OPTION){
+				return;
+			}
+			bereitsbezahlt = true;
+		}
+
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
 		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
@@ -1058,6 +1072,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
+		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)PatGrundPanel.thisClass.vecaktrez.get(0) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2) )  );		
 		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
 		
@@ -1100,7 +1115,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		System.out.println("----------------------------------------------------");
 		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		System.out.println(SystemConfig.hmAdrRDaten);
-		new RezeptGebuehren(false,false,pt);
+		new RezeptGebuehren(bereitsbezahlt,false,pt);
 	}
 	public void neuanlageRezept(boolean lneu,String feldname){
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){

@@ -10,7 +10,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -30,6 +36,7 @@ import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.TooManyListenersException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -79,7 +86,7 @@ import terminKalender.SchnellSuche;
 import terminKalender.TagWahlNeu;
 import terminKalender.datFunk;
 
-public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener {
+public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener, DropTargetListener {
 	/**
 	 * 
 	 */
@@ -209,7 +216,39 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setDropTarget(new DropTarget());
+		DropTarget dndt = new DropTarget();
+		DropTargetListener dropTargetListener =
+			 new DropTargetListener() {
+			  public void dragEnter(DropTargetDragEvent e) {}
+			  public void dragExit(DropTargetEvent e) {}
+			  public void dragOver(DropTargetDragEvent e) {}
+			  public void drop(DropTargetDropEvent e) {
+				  String mitgebracht = "";
+			    try {
+			      Transferable tr = e.getTransferable();
+			      DataFlavor[] flavors = tr.getTransferDataFlavors();
+			      for (int i = 0; i < flavors.length; i++){
+			        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+			      }
+			      if(mitgebracht.indexOf("°") >= 0){
+			    	  ProgLoader.ProgRoogleFenster(0, mitgebracht);
+			      }
+			      System.out.println(mitgebracht);
+			    } catch (Throwable t) { t.printStackTrace(); }
+			    // Ein Problem ist aufgetreten
+			    e.dropComplete(true);
+			  }
+			  public void dropActionChanged(
+			         DropTargetDragEvent e) {}
+		};
+		try {
+			dndt.addDropTargetListener(dropTargetListener);
+		} catch (TooManyListenersException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		jxLink.setDropTarget(dndt);
+		jxLink.setName("Rugl");
 		jxLink.setText("[Ru:gl] - Die Terminsuchmaschine  (Strg+R)");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
@@ -404,7 +443,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("[Ru:gl] - Die Terminsuchmaschine  (Strg+R)")){
-				ProgLoader.ProgRoogleFenster(0);
+				ProgLoader.ProgRoogleFenster(0,null);
 				break;
 			}
 			if (cmd.equals("RTA-Wisssen das Universalwissen")){
@@ -672,6 +711,34 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		}
  
 	}
+@Override
+public void dragEnter(DropTargetDragEvent arg0) {
+	// TODO Auto-generated method stub
+	System.out.println("Enter---->"+arg0);
+	System.out.println(((JComponent)arg0.getSource()).getName());
+	
+}
+@Override
+public void dragExit(DropTargetEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void dragOver(DropTargetDragEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void drop(DropTargetDropEvent arg0) {
+	// TODO Auto-generated method stub
+	System.out.println(arg0);
+	
+}
+@Override
+public void dropActionChanged(DropTargetDragEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
 	
 /************************************************************/
 }

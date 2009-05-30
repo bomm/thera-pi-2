@@ -9,6 +9,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
@@ -18,6 +25,8 @@ import javax.swing.*;
 
 //import org.eclipse.swt.internal.win32.POINT;
 import org.jdesktop.swingx.JXPanel;
+
+import DragAndDropTools.DnDTermine;
 
 import systemEinstellungen.SystemConfig;
 
@@ -59,7 +68,7 @@ private boolean inGruppierung = false;
 private int[] positionScreen = {-1,-1,-1,-1};
 //public Composite xoriginal;
 //public AlphaComposite xac1;
-public  kalenderPanel KalenderPanel(){
+public  kalenderPanel KalenderPanel() {
 
 		this.setBackground(SystemConfig.KalenderHintergrund);
 		kPanel = new JXPanel();
@@ -72,6 +81,8 @@ public  kalenderPanel KalenderPanel(){
 		});
 */		
 		//addMouseListener(this);
+
+		
 	return this;
 	}
 public void  ListenerSetzen(int aktPanel){
