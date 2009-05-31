@@ -138,7 +138,6 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	private JLabel trefferLbl = null;	
 	private JLabel ausgewaehltLbl = null;
 	public  static JLabel verarbeitetLbl = null;
-	public static String[] drops = {null,null,null};
 	public JXTable jxSucheTable = null;
 	
 	//private MyRoogleSuche myTable = null;
@@ -442,14 +441,6 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		
 		sucheName = new JRtaTextField("GROSS",true);
 		sucheName.setToolTipText("Geben Sie hier Ihr Suchkriterim ein, leer = freie Termine suchen!");
-		if(drops[0] != null){
-			if(drops[0].length() > 10){
-				SuchenSeite.thisClass.sucheName.setText(new String(drops[0].substring(0,10)));			
-			}else{
-				SuchenSeite.thisClass.sucheName.setText(new String(drops[0]));
-			}
-			
-		}
 		//SuchenSeite.thisClass.schreibeName.setText(drops[0]);
 		//SuchenSeite.thisClass.schreibeNummer.setText(drops[1]);
 
@@ -469,11 +460,15 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		schreibeNummer.setToolTipText("Mit diesem Feld geben Sie an welche Rezeptnummer (evtl.) später eingetragen werden soll");
 		builder.add(schreibeNummer,cc.xyw(4,11,3));
 
-		if(drops[0] != null){
-			SuchenSeite.thisClass.schreibeName.setText(new String(drops[0]));
-			SuchenSeite.thisClass.schreibeNummer.setText(new String(drops[1]));
+		if(RoogleFenster.gedropt){
+			if(RoogleFenster.sldrops[0].length() > 10){
+				sucheName.setText(new String(RoogleFenster.sldrops[0].substring(0,10)));			
+			}else{
+				sucheName.setText(new String(RoogleFenster.sldrops[0]));
+			}
+			schreibeName.setText(new String(RoogleFenster.sldrops[0]));
+			schreibeNummer.setText(new String(RoogleFenster.sldrops[1]));
 		}
-		
 		builder.addSeparator("suche von / bis...", cc.xyw(1, 13,5));
 		
 		JXPanel dummy = new JXPanel();

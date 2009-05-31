@@ -130,8 +130,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	private ButtonGroup[] schichtGruppe = {null,null}; 
 	private Object[][] kollegenWahl = null;
 	private int gewaehlt = 0;
-	public String droptext = null;
-	public boolean gedropt = false;
+	public static boolean gedropt = false;
+	public static String[] sldrops = {null,null,null};
 	public static boolean schicht = false;
 	public static boolean select =  false;
 	public String[] kollegenAbteilung = null;
@@ -142,8 +142,13 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		setPreferredSize(new Dimension(300,300));
 		thisClass = this;
 		if(! (drops==null)){
-			droptext = drops;
 			gedropt = true;
+			sldrops = drops.split("°");
+			sldrops[2] = sldrops[2].toUpperCase();
+			sldrops[2] = sldrops[2].replaceAll(" MIN.", "");
+		}else{
+			gedropt = false;
+			sldrops = new String[] {null,null,null};
 		}
 		eigenName = "Roogle"+WinNum.NeueNummer(); 
 		this.setName("Roogle"+WinNum.NeueNummer());
@@ -234,25 +239,22 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	/******************************************/
 	/******************************************/
 	private void macheDrop(){
-		String[] teilen; 
-		teilen = droptext.split("°");
-		teilen[2] = teilen[2].toUpperCase();
-		teilen[2] = teilen[2].replaceAll(" MIN.", "");
-		if(teilen[1].indexOf("KG") >= 0){
-			gruppenCombo[0].setSelectedItem(teilen[2]);
+		if(sldrops[1].indexOf("KG") >= 0){
+			gruppenCombo[0].setSelectedItem(sldrops[2]);
+			return;
 		}
-		if(teilen[1].indexOf("MA") >= 0){
-			gruppenCombo[1].setSelectedItem(teilen[2]);
+		if(sldrops[1].indexOf("MA") >= 0){
+			gruppenCombo[1].setSelectedItem(sldrops[2]);
+			return;			
 		}
-		if(teilen[1].indexOf("ER") >= 0){
-			gruppenCombo[2].setSelectedItem(teilen[2]);
+		if(sldrops[1].indexOf("ER") >= 0){
+			gruppenCombo[2].setSelectedItem(sldrops[2]);
+			return;			
 		}
-		if(teilen[1].indexOf("LO") >= 0){
-			gruppenCombo[3].setSelectedItem(teilen[2]);
+		if(sldrops[1].indexOf("LO") >= 0){
+			gruppenCombo[3].setSelectedItem(sldrops[2]);
+			return;			
 		}
-		SuchenSeite.drops = teilen;
-
-		
 	}
 	private void macheTabedPane1(JXPanel haupt){
 		tabbedPane = new JTabbedPane();
@@ -403,19 +405,6 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
         tp1.addFocusListener(this);
         tp2.addFocusListener(this);
         haupt.add(tabbedPane);
-		if(gedropt){
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					macheDrop();
-					return null;
-				}
-				
-			}.execute();
-		}else{
-			SuchenSeite.drops = new String[] {null,null,null};
-		}
-			
 
 	}
 	public void setStartFocus(){
@@ -657,6 +646,16 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		gruppenCombo[4] = jc;
 		builder.add(jc,cc.xy(4,11));	
 		
+		if(gedropt){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					macheDrop();
+					return null;
+				}
+			}.execute();
+		}
+
 		builder.addSeparator("Selbstdefinierte Gruppen einbeziehen", cc.xyw(1, 13,4));
 
 		jxGruppen = new JXTable(new DefaultTableModel());
