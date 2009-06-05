@@ -126,9 +126,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		setBorder(null);
 		setLayout(new BorderLayout());
 		
-		leerPanel = new KeinRezept();
+		leerPanel = new KeinRezept("Keine Rezepte angelegt für diesen Patient");
 		leerPanel.setName("leerpanel");
-		leerPanel.setOpaque(true);
+		leerPanel.setOpaque(false);
 		
 		JXPanel allesrein = new JXPanel(new BorderLayout());
 		allesrein.setOpaque(false);
@@ -143,7 +143,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		wechselPanel = new JXPanel(new BorderLayout());
 		wechselPanel.setOpaque(false);
 		wechselPanel.setBorder(null);
-		leerPanel = new KeinRezept();
+		//leerPanel = new KeinRezept();
 
 		wechselPanel.add(leerPanel,BorderLayout.CENTER);
 

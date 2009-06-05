@@ -23,6 +23,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
@@ -46,16 +47,17 @@ public class RezeptDaten extends JXPanel{
 		setBorder(null);
 		setLayout(new BorderLayout());
 		add(getDatenPanel(),BorderLayout.CENTER);
-		hbimg = new ImageIcon(Reha.proghome+"icons/home.gif");
+		hbimg = SystemConfig.hmSysIcons.get("hausbesuch");
 	}
 	public void setRezeptDaten(String reznummer,String sid){
 		reznum.setText(reznummer);
 		final String xreznummer = reznummer;
 		final String xsid = sid;
-		/*new SwingWorker<Void,Void>(){
+		/*
+		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-			*/
+		*/
 
 				vecaktrez = SqlInfo.holeSatz("verordn", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				PatGrundPanel.thisClass.vecaktrez = vecaktrez;
@@ -162,6 +164,7 @@ public class RezeptDaten extends JXPanel{
 			}
 		}.execute();
 		*/
+		
 	}
 	public String leistungTesten(Vector<ArrayList> preisevec,int veczahl){
 		String retwert = "----";

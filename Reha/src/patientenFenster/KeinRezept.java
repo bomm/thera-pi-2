@@ -9,16 +9,19 @@ import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.JXPanel;
 
+import systemEinstellungen.SystemConfig;
+
 public class KeinRezept extends JXPanel{
 ImageIcon hgicon = null;
 int icx;
 int icy;
-	public KeinRezept(){
+String itext = null;
+	public KeinRezept(String txt){
 		super();
-		hgicon = new ImageIcon(Reha.proghome+"icons/KeineRezepte.png");
+		hgicon = SystemConfig.hmSysIcons.get("keinerezepte");
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
-
+		itext = txt;
 		setOpaque(false);
 		setBorder(null);
 	}
@@ -30,7 +33,7 @@ int icy;
 		if(hgicon != null){
 
 			g2d.drawImage(hgicon.getImage(), (getWidth()/2)-icx , (getHeight()/2)-icy,null);
-			g2d.drawString("Keine Rezepte angelegt für diesen Patient", 50, 50);
+			g2d.drawString(itext, 50, 50);
 
 		}
 	}

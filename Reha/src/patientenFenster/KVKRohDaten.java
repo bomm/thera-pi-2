@@ -95,7 +95,8 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		
 		public JXRohDaten(){
 			super();
-			hgicon = new ImageIcon(Reha.proghome+"icons/ChipKarte.png");
+			hgicon = SystemConfig.hmSysIcons.get("kvkarte"); 
+			//hgicon = new ImageIcon(Reha.proghome+"icons/ChipKarte.png");
 			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;

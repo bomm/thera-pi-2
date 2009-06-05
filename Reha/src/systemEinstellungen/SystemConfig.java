@@ -641,7 +641,7 @@ public class SystemConfig {
 
 	}
 	public static void SystemIconsInit(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/toolbar.ini");
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		hmSysIcons.put("neu", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "neu")));
 		hmSysIcons.put("edit", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "edit")));		
@@ -661,7 +661,13 @@ public class SystemConfig {
 		hmSysIcons.put("arztbericht", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "arztbericht")));		
 		hmSysIcons.put("privatrechnung", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "privatrechnung")));		
 		hmSysIcons.put("sort", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sort")));		
-
+		hmSysIcons.put("historieumsatz", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieumsatz")));		
+		hmSysIcons.put("historietage", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historietage")));		
+		hmSysIcons.put("historieinfo", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieinfo")));
+		hmSysIcons.put("keinerezepte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "keinerezepte")));
+		hmSysIcons.put("hausbesuch", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "hausbesuch")));
+		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));
+		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));		
 	}
 	
 }
