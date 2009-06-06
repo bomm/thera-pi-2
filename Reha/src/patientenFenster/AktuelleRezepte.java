@@ -919,6 +919,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(uebrig <= 0){
 					holeRezepte(PatGrundPanel.thisClass.patDaten.get(29),"");
 				}
+				
 			}
 			if(cmd.equals("rezeptgebuehr")){
 				if(aktPanel.equals("leerPanel")){
@@ -933,6 +934,26 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}				
 				doRezeptGebuehr( ((JComponent)arg0.getSource()).getLocationOnScreen() );
+
+			}
+			if(cmd.equals("arztbericht")){
+				// hier  muß noch getestet werden:
+				// 1 ist es eine Neuanlage oder soll ein bestehender Ber. editiert werden
+				// 2 ist ein Ber. überhaupt angefordert
+				// 3 gibt es einen Rezeptbezug oder nicht
+				boolean neuber = true;
+				int berid = 0;
+				String xreznr;
+				int currow = tabaktrez.getSelectedRow();
+				if(currow >=0){
+					xreznr = (String)tabaktrez.getValueAt(currow,0);
+				}else{
+					xreznr = ""; 
+				}
+				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid);
+				ab.setModal(true);
+				ab.setLocationRelativeTo(null);
+				ab.setVisible(true);
 			}
 			
 		}
@@ -1135,7 +1156,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.setName("RezeptNeuanlage");
 		pinPanel.getGruen().setVisible(false);
-		neuRez.setPinPanel(pinPanel);
+		//neuRez.setPinPanel(pinPanel);
 		if(lneu){
 			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");	
 		}else{
