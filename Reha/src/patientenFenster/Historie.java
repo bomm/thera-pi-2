@@ -19,15 +19,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
@@ -279,7 +283,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}
 				if(arg0.getKeyCode()==27){
 					//System.out.println("cancel in tabelle");
-					tbl.cancelCellEditing();
+					//tbl.cancelCellEditing();
 				}
 			}
 			
@@ -386,7 +390,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		JButton jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Nachträglich Arztbericht erstellen/ändern");
+		jbut.setToolTipText("Nachträglich Arztbericht Rezept erstellen");
 		jbut.setActionCommand("arztbericht");
 		jbut.addActionListener(this);		
 		jtb.add(jbut);
@@ -394,7 +398,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("historieinfo"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Zusatzinfos zum aktuellen Historien-Rezept");
+		jbut.setToolTipText("Zusatzinfos zum Rezept in der Historie");
 		jbut.setActionCommand("historinfo");
 		jbut.addActionListener(this);		
 		jtb.add(jbut);
@@ -402,7 +406,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Gesamtumsatz der in der Historie befindlichen Rezepte");
+		jbut.setToolTipText("Gesamtumsatz des Patienten (aller in der Historie befindlichen Rezepte)");
 		jbut.setActionCommand("historumsatz");
 		jbut.addActionListener(this);		
 		jtb.add(jbut);
@@ -414,7 +418,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jbut.setActionCommand("historprinttage");
 		jbut.addActionListener(this);		
 		jtb.add(jbut);
-
+		
+		
 		return jtb;
 	}
 	
@@ -479,10 +484,80 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		
 		
 	}
+	/******************
+	 * 
+	 * 
+	 */
+	public void doRechneHistorie(){
+		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		int rows = tabhistorie.getRowCount();
+		if(rows <= 0){
+			JOptionPane.showMessageDialog(null, "Für diesen Patient wurde noch keine Verordnung abgerechnet!");
+			return;
+		}
+		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
+		Double gesamtumsatz = new Double(0.00); 
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		for(int i = 0; i < rows;i++){
+			String suchrez = (String)tabhistorie.getValueAt(i,6);
+			Vector vec = SqlInfo.holeSatz("lza", felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
+			if(vec.size() > 0){
+				BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
+				for(int anz = 0;anz <4;anz++){
+					preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
+//					System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
+//					System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
+					gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+				}
+			}
+		}
+		/*
+		String ums = "Gesamtumsatz von Patient "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
+		(String) PatGrundPanel.thisClass.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
+		JOptionPane.showMessageDialog(null,ums);
+		*/
+		String msg = "<html>Gesamtumsatz von Patient --> "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
+		(String) PatGrundPanel.thisClass.patDaten.get(3)+"   <br><br><p><b><font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br>";
 
+	    JOptionPane optionPane = new JOptionPane();
+	    optionPane.setMessage(msg);
+	    optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+	    String xtitel = "";
+	    if(gesamtumsatz < 1000.00){
+	    	xtitel ="könnte besser sein...";
+	    }else if(gesamtumsatz > 1000.00 && gesamtumsatz < 2000.00){
+	    	xtitel ="geht doch...";
+	    }else if(gesamtumsatz > 2000.00){
+	    	xtitel ="'Sternle-Patient' bitte warmhalten...";
+	    }
+	    JDialog dialog = optionPane.createDialog(null, xtitel);
+	    dialog.setVisible(true);
+	}
+	/******************
+	 * 
+	 * 
+	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		String cmd = arg0.getActionCommand();
+		if(cmd.equals("arztbericht")){
+			return;
+		}else if(cmd.equals("historinfo")){
+			return;			
+		}else if(cmd.equals("historumsatz")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					// TODO Auto-generated method stub
+					doRechneHistorie();
+					return null;
+				}
+			}.execute();
+			return;			
+		}else if(cmd.equals("historprinttage")){
+			return;			
+		}
 		
 	}
 	@Override
@@ -507,7 +582,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 				Vector vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
+						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
 				int anz = vec.size();
 				for(int i = 0; i < anz;i++){
 					if(i==0){
