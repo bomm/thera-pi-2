@@ -66,7 +66,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public JRtaCheckBox[] jcb = {null,null,null,null,null};
 	
 	//public JRtaRadioButton[] jrb = {null,null,null,null,null}; 
-	public JRtaComboBox[] jcmb = {null,null,null,null,null,null,null,null};
+	public JRtaComboBox[] jcmb = {null,null,null,null,null,null,null,null,null};
 	
 	public JTextArea jta = null;
 	
@@ -83,14 +83,23 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private int preisgruppe;
 	public boolean feldergefuellt = false;
 	private String nummer = null;
+	private String[] farbcodes = {null,null,null,null,null,null,null,null,null,null};
 	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
+ 	
 		
 		super();
 		this.neu = neu;
 		this.feldname = sfeldname;
 		this.vec = vec;
 		
-		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				macheFarbcodes();
+				return null;
+			}
+			
+		}.execute();
 		setLayout(new BorderLayout());
 		setOpaque(true);
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -123,7 +132,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		});	
 		initReady = true;
 		
+		
 
+	}
+	public void macheFarbcodes(){
+		//System.out.println(SystemConfig.vSysColsBedeut.get(14));
+		// 14 und < 23
+		farbcodes[0] = "kein Farbcode";
+		for (int i = 0;i < 9;i++){
+			farbcodes[i+1] = SystemConfig.vSysColsBedeut.get(i+14);
+		}
+		
 	}
 	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -417,8 +436,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcmb[7] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
 		jpan.add(jcmb[7],cc.xy(7, 29));
 		
-		jpan.addLabel("Angelegt von",cc.xy(1, 31));
-		jpan.add(jtf[10],cc.xy(3, 31));
+		jpan.addLabel("FarbCode im TK",cc.xy(1, 31));
+		jcmb[8] = new JRtaComboBox(farbcodes);
+		jpan.add(jcmb[8],cc.xy(3, 31));
+
+		jpan.addLabel("Angelegt von",cc.xy(5, 31));
+		jpan.add(jtf[10],cc.xy(7, 31));
+		
 		
 		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,33,7));
 		
@@ -528,22 +552,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			});	   		
 			return false;
 		}
-		if(jtf[10].getText().trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Angelegt von' kann ein Rezept nicht abgespeichert werden.");
-			 SwingUtilities.invokeLater(new Runnable(){
-			 	   public  void run()
-			 	   {
-						jtf[10].requestFocus();
-			 	   }
-			});	   		
-			return false;
-		}
 		if(jtf[9].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Behandlungsdauer' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
 						jtf[9].requestFocus();
+			 	   }
+			});	   		
+			return false;
+		}
+		if(jtf[10].getText().trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Angelegt von' kann ein Rezept nicht abgespeichert werden.");
+			 SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run()
+			 	   {
+						jtf[10].requestFocus();
 			 	   }
 			});	   		
 			return false;
@@ -829,6 +853,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
+
+		itest = StringTools.ZahlTest(this.vec.get(57));
+		if(itest >0){
+			jcmb[8].setSelectedItem( (String)SystemConfig.vSysColsBedeut.get(itest) );			
+		}else{
+			jcmb[8].setSelectedIndex(0);
+		}
+
 	}
 	private String[] holePreis(int ivec,int ipreisgruppe){
 		if(ivec > 0){
@@ -905,6 +937,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
 		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
+		if(jcmb[8].getSelectedIndex() > 0){
+			sbuf.append("farbcode='"+new Integer(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
+		}else{
+			sbuf.append("farbcode='-1', ");
+		}
 		
 
 		//System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
@@ -1074,6 +1111,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
 		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
+		if(jcmb[8].getSelectedIndex() > 0){
+			sbuf.append("farbcode='"+new Integer(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
+		}else{
+			sbuf.append("farbcode='-1', ");
+		}
 		
 /*******************************************/		
 		Integer izuzahl = new Integer(jtf[13].getText());

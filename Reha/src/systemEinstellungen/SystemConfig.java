@@ -653,7 +653,6 @@ public class SystemConfig {
 		hmSysIcons.put("zuzahlfrei", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlfrei")));		
 		hmSysIcons.put("zuzahlok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")));		
 		hmSysIcons.put("zuzahlnichtok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")));		
-		hmSysIcons.put("zuzahlok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")));		
 		hmSysIcons.put("nichtgesperrt", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")));		
 		hmSysIcons.put("gesperrt", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "gesperrt")));		
 		hmSysIcons.put("rezeptgebuehr", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rezeptgebuehr")));		
@@ -666,8 +665,8 @@ public class SystemConfig {
 		hmSysIcons.put("historieinfo", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieinfo")));
 		hmSysIcons.put("keinerezepte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "keinerezepte")));
 		hmSysIcons.put("hausbesuch", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "hausbesuch")));
-		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));
-		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));		
+		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));
+		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));		
 	}
 	
 }
