@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -17,10 +18,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+
+import patientenFenster.ArztAuswahl.ArztWahlAction;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -124,6 +129,17 @@ public class RezeptDaten extends JXPanel{
 				}else if(reznummer.contains("RH")){
 					preisvec = ParameterLaden.vRHPreise;
 				}
+
+				SwingUtilities.invokeLater(new Runnable(){
+					public  void run(){
+						int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
+						if(farbcode > 0){
+							reznum.setForeground( (SystemConfig.vSysColsObject.get(0).get(farbcode)[0]) );
+						}else{
+							reznum.setForeground(Color.BLUE);
+						}
+					}
+				});				
 				PatGrundPanel.thisClass.rezlabs[8].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
 
 				stest = StringTools.NullTest((String)vecaktrez.get(52));
@@ -210,9 +226,14 @@ public class RezeptDaten extends JXPanel{
 		reznum.setDragEnabled(true);
 		reznum.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent e) {
-		    	draghandler.setText(((String)PatGrundPanel.thisClass.patDaten.get(0)).substring(0,1)+
-		    			"-"+PatGrundPanel.thisClass.patDaten.get(2)+","+PatGrundPanel.thisClass.patDaten.get(3)+"°"+
-		    			reznum.getText()+"°"+PatGrundPanel.thisClass.rezlabs[14].getText()
+		    	int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
+		    	draghandler.setText(
+		    			((String)PatGrundPanel.thisClass.patDaten.get(0)).substring(0,1)+
+		    			"-"+PatGrundPanel.thisClass.patDaten.get(2)+","+
+		    			PatGrundPanel.thisClass.patDaten.get(3)+"°"+
+		    			reznum.getText()+
+		    			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
+		    			"°"+PatGrundPanel.thisClass.rezlabs[14].getText()
 		    			);
 		      JComponent c = (JComponent)draghandler;
 		      TransferHandler th = c.getTransferHandler();

@@ -35,6 +35,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import sqlTools.SqlInfo;
 import systemTools.Colors;
 import systemTools.JCompTools;
+import systemTools.JRtaTextField;
 import terminKalender.datFunk;
 
 import dialoge.PinPanel;
@@ -55,6 +56,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JComboBox tbwahl;
 	private JComboBox verfasser;
 	private int arztid;
+	public  JRtaTextField[] jtf = {null,null,null};
 	private JTextPane[] icfblock = {null,null,null,null};
 
 
@@ -243,6 +245,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		
 		pb.addLabel("Textbausteine für",cc.xy(2,28));
 		tbwahl = new JComboBox(new String[] {"KG-Wirbelsäule"});
+		tbwahl.setActionCommand("tbladen");
+		tbwahl.addActionListener(this);
 		pb.add(tbwahl,cc.xy(2,30));
 		
 		pb.addSeparator("",cc.xyw(2,32,3));
@@ -285,7 +289,19 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("neuerempfaenger")){
-			// hier die Arztauswahl starten;
+			jtf[0] = new JRtaTextField("NORMAL",false);
+			jtf[1] = new JRtaTextField("NORMAL",false);
+			jtf[2] = new JRtaTextField("NORMAL",false);
+			ArztAuswahl awahl = new ArztAuswahl(null,"arztwahlfuerbericht",
+					new String[] {rlab[2].getText(),new Integer(arztid).toString()},
+					jtf,rlab[2].getText());
+			awahl.setModal(true);
+			awahl.setLocationRelativeTo(this);
+			awahl.setVisible(true);
+			if(!jtf[2].equals("")){
+				rlab[2].setText(jtf[0].getText());
+				arztid = new Integer(jtf[2].getText());
+			}
 		}
 		
 	}
