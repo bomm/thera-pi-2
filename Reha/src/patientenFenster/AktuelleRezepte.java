@@ -950,7 +950,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}else{
 					xreznr = ""; 
 				}
-				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid);
+				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,0);
 				ab.setModal(true);
 				ab.setLocationRelativeTo(null);
 				ab.setVisible(true);

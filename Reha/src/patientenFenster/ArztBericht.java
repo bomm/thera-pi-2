@@ -36,6 +36,7 @@ import sqlTools.SqlInfo;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import terminKalender.datFunk;
 
 import dialoge.PinPanel;
@@ -49,6 +50,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private boolean neu;
 	private String reznr;
 	private int berichtid;
+	private int aufrufvon;
 	private JXPanel grundPanel;
 	private JPanel content;
 	private JLabel[] rlab = {null,null,null,null,null,null,null,null,null,null,null,null};
@@ -60,7 +62,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JTextPane[] icfblock = {null,null,null,null};
 
 
-	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid) {
+	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
@@ -80,7 +82,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		this.neu = bneu;
 		this.reznr = reznr;
 		this.berichtid = iberichtid;
-		
+		this.aufrufvon = aufruf;
 		setSize(new Dimension(900,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
@@ -101,18 +103,25 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		grundPanel.add(content,BorderLayout.CENTER);
 		grundPanel.add(getFunktionsPanel(),BorderLayout.WEST);
 		getSmartTitledPanel().setContentContainer(grundPanel);	
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				fuelleBericht();
-				return null;
+		new Thread(){
+			public void run(){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						fuelleBericht();
+						return null;
+					}
+				}.execute();
 			}
-		}.execute();
+		}.start();
 
 	}
 	private void fuelleBericht(){
+		if(this.berichtid <= 0){
+			return;
+		}
 		String felder = "BERSTAND,BERBESO,BERPROG,BERVORS";
-		Vector vec = SqlInfo.holeSatz("bericht1",felder , "id='1074'", Arrays.asList(new String[]{}));
+		Vector vec = SqlInfo.holeSatz("bericht1",felder , "berichtid='"+new Integer(this.berichtid).toString()+"'", Arrays.asList(new String[]{}));
 		for(int i = 0;i < 4;i++){
 			icfblock[i].setText((String)vec.get(i));
 		}
@@ -197,12 +206,20 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		lab = new JLabel("Berichtsempfänger");
 		pb.add(lab,cc.xy(2,10));
 		// hier testen ob ohne Rezeptbezug, wenn ja kann der Vector nicht verwendet werden
-		if(! this.reznr.equals("")){
+		if((! this.reznr.equals("")) && (this.aufrufvon < 3)){
 			name = (String)PatGrundPanel.thisClass.vecaktrez.get(15);
 			arztid = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(16));
-		}else{
+		}else if((this.reznr.equals("")) && (this.aufrufvon < 3)){
 			name = (String)PatGrundPanel.thisClass.patDaten.get(25);
-			arztid = new Integer((String)PatGrundPanel.thisClass.patDaten.get(26));			
+			try{
+				arztid = new Integer((String)PatGrundPanel.thisClass.patDaten.get(26));
+			}catch(java.lang.NumberFormatException ex){
+				arztid = new Integer(-1);
+			}
+		}else{
+			Vector vec;
+			name =  (String)(vec = SqlInfo.holeSatz("berhist", "empfaenger,empfid", "berichtid='"+new Integer(this.berichtid).toString()+"'", Arrays.asList(new String[] {}))).get(0) ;
+			arztid =StringTools.ZahlTest((String) vec.get(1));						
 		}
 		rlab[2] = new JLabel(name);
 		rlab[2].setForeground(Color.BLUE);
@@ -235,8 +252,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		diagnose.setEditable(true);
 		diagnose.setOpaque(false);
 		diagnose.setForeground(Color.BLUE);
-		if(! this.reznr.equals("")){
+		if((! this.reznr.equals("")) && (this.aufrufvon < 3)){
 			diagnose.setText((String)PatGrundPanel.thisClass.vecaktrez.get(23));
+		}else{
+			diagnose.setText( (String) SqlInfo.holeSatz("lza", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {})).get(0) ); 
 		}
 		JScrollPane span = JCompTools.getTransparentScrollPane(diagnose);
 		pb.add(span,cc.xyw(2,24,3));

@@ -392,7 +392,9 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		PatGrundPanel.thisClass.historie = new Historie();
 		jtab.addTab("Historie", PatGrundPanel.thisClass.historie);		
 
-		jtab.addTab("Berichte", new JXPanel());
+		PatGrundPanel.thisClass.berichte = new TherapieBerichte();
+		jtab.addTab("Berichte", PatGrundPanel.thisClass.berichte);
+		
 		jtab.addTab("Doku", new JXPanel());		
 		jtab.addTab("Fremd-Doku", new JXPanel());
 		jtab.addTab("Arzt & KK", new JXPanel());		

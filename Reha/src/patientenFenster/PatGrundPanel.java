@@ -138,9 +138,11 @@ private Component reverseFocus = null;
 static MyStammFocusTraversalPolicy myPolicy;
 public JPatientInternal jry = null;
 public JComponent lastFocus = null;
-/****AktRezept******/
+/*********Die einzelnen Tab-Seiten***********/
 AktuelleRezepte aktRezept = null;
 Historie historie = null;
+TherapieBerichte berichte = null;
+/********************/
 public JButton[] memobut = {null,null,null,null,null,null};
 public JTextArea[] pmemo = {null,null};
 public JTabbedPane memotab = null;
@@ -876,6 +878,17 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 					@Override
 					protected Void doInBackground() throws Exception {
 						historie.holeRezepte(xpatint,"");
+						return null;
+					}
+				}.execute();
+			}
+		}.start();
+		new Thread(){
+			public void run(){		
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						berichte.holeBerichte(xpatint,"");
 						return null;
 					}
 				}.execute();
