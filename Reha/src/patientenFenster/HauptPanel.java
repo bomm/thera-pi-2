@@ -287,14 +287,14 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		PatGrundPanel.thisClass.memobut[3] = new JButton();
 		PatGrundPanel.thisClass.memobut[3].setIcon(SystemConfig.hmSysIcons.get("edit"));
 		PatGrundPanel.thisClass.memobut[3].setToolTipText("Langtext editieren");		
-		PatGrundPanel.thisClass.memobut[3].setActionCommand("kedit");
+		PatGrundPanel.thisClass.memobut[3].setActionCommand("kedit2");
 		//memobut[0].addActionListener(this);
 		jtoolb2.add(PatGrundPanel.thisClass.memobut[3]);
 		PatGrundPanel.thisClass.memobut[4] = new JButton();
 		PatGrundPanel.thisClass.memobut[4].setIcon(SystemConfig.hmSysIcons.get("save"));
 		//PatGrundPanel.thisClass.memobut[4].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
 		PatGrundPanel.thisClass.memobut[4].setToolTipText("Langtext speichern");		
-		PatGrundPanel.thisClass.memobut[4].setActionCommand("ksave");
+		PatGrundPanel.thisClass.memobut[4].setActionCommand("ksave2");
 		//PatGrundPanel.thisClass.memobut[1].addActionListener(this);
 		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
 		jtoolb2.add(PatGrundPanel.thisClass.memobut[4]);
@@ -304,7 +304,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		//PatGrundPanel.thisClass.memobut[5].setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
 		//memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/cancel.png"));
 		PatGrundPanel.thisClass.memobut[5].setToolTipText("Langtext bearbeiten abbrechen");		
-		PatGrundPanel.thisClass.memobut[5].setActionCommand("kbreak");
+		PatGrundPanel.thisClass.memobut[5].setActionCommand("kbreak2");
 		//PatGrundPanel.thisClass.memobut[2].addActionListener(this);
 		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
 		jtoolb2.add(PatGrundPanel.thisClass.memobut[5]);

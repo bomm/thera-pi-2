@@ -229,19 +229,19 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		jtb.addSeparator(new Dimension(40,25));
 		
 		jbut[0] = new JButton();
-		jbut[0].setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
+		jbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
 		jbut[0].setToolTipText("neue Kasse anlegen (Alt+N)");
 		jbut[0].setActionCommand("neu");
 		jbut[0].addActionListener(this);
 		jtb.add(jbut[0]);
 		jbut[1] = new JButton();
-		jbut[1].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
+		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
 		jbut[1].setToolTipText("aktuelle Kasse ändern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
 		jbut[2] = new JButton();
-		jbut[2].setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
+		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
 		jbut[2].setToolTipText("Kasse löschen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
@@ -249,7 +249,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		jtb.addSeparator(new Dimension(40,0));
 		jbut[3] = new JButton();
 		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/mail_write_22.png"));
-		jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/drucker22.png"));
+		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
 		jbut[3].setToolTipText("Brief/Formular für Kasse erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);
@@ -423,13 +423,13 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		kedit.setBorder(null);
 		
 		memobut[0] = new JButton();
-		memobut[0].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
+		memobut[0].setIcon(SystemConfig.hmSysIcons.get("edit"));
 		memobut[0].setToolTipText("Langtext editieren");		
 		memobut[0].setActionCommand("kedit");
 		memobut[0].addActionListener(this);
 		kedit.add(memobut[0]);
 		memobut[1] = new JButton();
-		memobut[1].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
+		memobut[1].setIcon(SystemConfig.hmSysIcons.get("save"));
 		memobut[1].setToolTipText("Langtext speichern");		
 		memobut[1].setActionCommand("ksave");
 		memobut[1].addActionListener(this);
@@ -437,7 +437,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		kedit.add(memobut[1]);
 		kedit.addSeparator(new Dimension(40,0));
 		memobut[2] = new JButton();
-		memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
+		memobut[2].setIcon(SystemConfig.hmSysIcons.get("stop"));
 		//memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/cancel.png"));
 		memobut[2].setToolTipText("Langtext bearbeiten abbrechen");		
 		memobut[2].setActionCommand("kbreak");

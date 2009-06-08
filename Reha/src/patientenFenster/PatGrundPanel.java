@@ -666,7 +666,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		add(jcom,cc.xyw(15, 2, 3));
 		add(jcom,cc.xyw(4,2,8));
 		
-		lbl = new JLabel("Suche");
+		lbl = new JLabel("finde Pat. -->");
 		lbl.setName("Suchen");
 		//lbl.setIcon(new ImageIcon(Reha.proghome+"icons/mag.png"));
 		lbl.setIcon(SystemConfig.hmSysIcons.get("find"));

@@ -91,15 +91,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		this.neu = neu;
 		this.feldname = sfeldname;
 		this.vec = vec;
-		
+
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 				macheFarbcodes();
 				return null;
 			}
-			
 		}.execute();
+
+		
 		setLayout(new BorderLayout());
 		setOpaque(true);
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -373,7 +374,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 		jcb[2] = new JRtaCheckBox("angefordert");
 		jcb[2].setOpaque(false);
-		jpan.addLabel("Arztbericht",cc.xy(5, 13));
+		jpan.addLabel("Therapiebericht",cc.xy(5, 13));
 		jpan.add(jcb[2],cc.xy(7, 13));
 		
 		jpan.addSeparator("Verordnete Heilmittel", cc.xyw(1,15,7));
@@ -439,7 +440,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("FarbCode im TK",cc.xy(1, 31));
 		jcmb[8] = new JRtaComboBox(farbcodes);
 		jpan.add(jcmb[8],cc.xy(3, 31));
-
 		jpan.addLabel("Angelegt von",cc.xy(5, 31));
 		jpan.add(jtf[10],cc.xy(7, 31));
 		
@@ -465,6 +465,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}else{
 			ladeZusatzDatenAlt();
 		}
+
+		
 		jscr.validate();
 		return jscr;
 		
