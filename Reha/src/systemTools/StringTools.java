@@ -170,5 +170,10 @@ public class StringTools {
 			return zahl;
 		}
 	}
+	public static String Escaped(String string){
+		String escaped = string.replaceAll("\'", "\\\\'");
+		escaped = escaped.replaceAll("\"", "\\\\\"");
+		return new String(escaped);
+	}
 
 }

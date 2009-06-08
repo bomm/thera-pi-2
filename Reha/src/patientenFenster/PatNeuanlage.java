@@ -48,6 +48,7 @@ import systemTools.Colors;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import terminKalender.datFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -386,7 +387,8 @@ boolean inNeu = false;
 				}
 
 			}else{
-				buf.append(name+"='"+jtf[fedits[i]].getText()+"', ");
+				buf.append(name+"='"+StringTools.Escaped(jtf[fedits[i]].getText())+"', ");
+				//buf.append(name+"='"+jtf[fedits[i]].getText()+"', "); // bislang o.k. 
 
 			}
 		}

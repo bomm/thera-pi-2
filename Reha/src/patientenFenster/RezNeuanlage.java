@@ -995,8 +995,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
-		
-		sbuf.append("diagnose='"+jta.getText()+"' ");
+		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"' ");
+		//sbuf.append("diagnose='"+jta.getText()+"' ");
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
 		//System.out.println(sbuf.toString());	
 		
@@ -1008,6 +1008,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private void doSpeichernNeu(){
 		int reznr = -1;
 		if(!komplettTest()){
+			System.out.println("Komplett-Test fehlgeschlagen");
 			return;
 		}
 		String stest = "";
@@ -1019,6 +1020,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		Vector numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
+			String numcmd = nummer+",id";
+			System.out.println("numcmd = "+numcmd);
 			numvec = SqlInfo.holeSatz("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE", Arrays.asList(new String[] {}));
 			//System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
@@ -1027,6 +1030,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		if(numvec.size() > 0){
 			reznr = new Integer( (String)((Vector) numvec).get(0) );
+			System.out.println("Neue Rezeptnummer = "+reznr);
 			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
 			//System.out.println("Kommando = "+cmd);
 			new ExUndHop().setzeStatement(cmd);
@@ -1053,6 +1057,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 /*******************************************/
 		int rezidneu = SqlInfo.holeId("verordn", "diagnose");
+		System.out.println("Neu ID für verordn = "+rezidneu);
 		sbuf.append("update verordn set rez_nr='"+nummer.toUpperCase()+
 				new Integer(reznr).toString()+"', ");
 		sbuf.append("pat_intern='"+jtf[27].getText()+"', ");
@@ -1158,10 +1163,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
-		
-		sbuf.append("diagnose='"+jta.getText()+"' ");
+		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"' ");
 		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
-		//System.out.println(sbuf.toString());
+		System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
+		System.out.println(sbuf.toString());
+		
 		new ExUndHop().setzeStatement(sbuf.toString());
 		/*
 		Vector tabvec = new Vector();
