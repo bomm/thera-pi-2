@@ -146,6 +146,8 @@ TherapieBerichte berichte = null;
 public JButton[] memobut = {null,null,null,null,null,null};
 public JTextArea[] pmemo = {null,null};
 public JTabbedPane memotab = null;
+public int inMemo = -1;
+
 public JButton[] jbut = {null,null,null,null}; 
 public Vector<String> patDaten = new Vector<String>();
 public String lastseek = "";
@@ -167,6 +169,7 @@ public Font font = null;
 public Font fehler = new Font("Courier",Font.ITALIC,13);
 public int aid = -1;
 public int kid = -1;
+public int autoid = -1;
 
 public PatGrundPanel(JPatientInternal jry){
 	super();
@@ -227,8 +230,7 @@ public PatGrundPanel(JPatientInternal jry){
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			
+			doMemoAction(arg0);
 		}
 		
 	};
@@ -489,6 +491,11 @@ public FocusListener getTextFieldFocusListener(){
 		public void focusGained(FocusEvent e) {
 			// TODO Auto-generated method stub
 			//System.out.println(((JComponent)e.getSource()).getParent().getParent());
+			if(((JComponent)e.getSource()).getName().equals("suchenach") && inMemo > -1 ){
+				//JOptionPane.showMessageDialog(null,"Bitte zuerst das Memofeld abspeichern");
+				PatGrundPanel.thisClass.pmemo[inMemo].requestFocus();
+				//return;
+			}
 			if(!jry.getActive()){
 				jry.setSpecialActive(true);
 
@@ -548,6 +555,83 @@ public void starteSuche(){
 	}
 	
 }
+
+public void doMemoAction(ActionEvent arg0){
+	if(autoid == -1){
+		return;
+	}
+	String sc = arg0.getActionCommand();
+	if(sc.equals("kedit")){
+		inMemo = 0;
+		PatGrundPanel.thisClass.memobut[0].setEnabled(false);
+		PatGrundPanel.thisClass.memobut[1].setEnabled(true);
+		PatGrundPanel.thisClass.memobut[2].setEnabled(true);
+		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.RED);
+		PatGrundPanel.thisClass.pmemo[0].setEditable(true);
+		PatGrundPanel.thisClass.pmemo[0].setCaretPosition(0);
+		PatGrundPanel.thisClass.memobut[3].setEnabled(false);
+		return;
+	}
+	if(sc.equals("kedit2")){
+		inMemo = 1;
+		PatGrundPanel.thisClass.memobut[3].setEnabled(false);
+		PatGrundPanel.thisClass.memobut[4].setEnabled(true);
+		PatGrundPanel.thisClass.memobut[5].setEnabled(true);
+		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.RED);
+		PatGrundPanel.thisClass.pmemo[1].setEditable(true);
+		PatGrundPanel.thisClass.pmemo[1].setCaretPosition(0);
+		PatGrundPanel.thisClass.memobut[0].setEnabled(false);
+		return;
+	}
+	if(sc.equals("ksave")){
+		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
+		PatGrundPanel.thisClass.memobut[1].setEnabled(false);
+		PatGrundPanel.thisClass.memobut[2].setEnabled(false);
+		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
+		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
+		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
+		String cmd = "update pat5 set anamnese='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[0].getText())+"'";
+		new ExUndHop().setzeStatement(cmd);
+		inMemo = -1;
+		return;
+	}
+	if(sc.equals("ksave2")){
+		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
+		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
+		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
+		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
+		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
+		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
+		String cmd = "update pat5 set pat_text='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[1].getText())+"'";
+		new ExUndHop().setzeStatement(cmd);
+		inMemo = -1;
+		return;
+	}
+	if(sc.equals("kbreak")){
+		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
+		PatGrundPanel.thisClass.memobut[1].setEnabled(false);
+		PatGrundPanel.thisClass.memobut[2].setEnabled(false);
+		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
+		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
+		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
+		PatGrundPanel.thisClass.pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+autoid+"'", Arrays.asList(new String[] {})).get(0) );
+		inMemo = -1;
+		return;
+	}
+	if(sc.equals("kbreak2")){
+		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
+		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
+		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
+		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
+		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
+		PatGrundPanel.thisClass.memobut[0].setEnabled(true);		
+		PatGrundPanel.thisClass.pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+autoid+"'", Arrays.asList(new String[] {})).get(0) );
+		inMemo = -1;
+		return;
+	}
+
+}
+
 
 public void neuanlagePatient(boolean lneu,String feldname){
 	if(neuDlgOffen){
@@ -611,6 +695,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 
 	System.out.println("Pat Neu/Ändern ist disposed");
 	neuDlgOffen = false;
+	
 
 }
 /*********************************
@@ -768,7 +853,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		if(sc.equals("formulare")){
 			setzeFocus();
 		}
-	
+		System.out.println("ActionCommand = "+sc);
 	}
 }
 /*********************************
@@ -991,6 +1076,7 @@ class DatenHolen{
 			}else{
 				PatGrundPanel.thisClass.pmemo[1].setText(instring);				
 			}
+			PatGrundPanel.thisClass.autoid = rs.getInt("id");
 			PatGrundPanel.thisClass.aid = StringTools.ZahlTest(rs.getString("arztid"));
 			PatGrundPanel.thisClass.kid = StringTools.ZahlTest(rs.getString("kassenid"));
 			if(PatGrundPanel.thisClass.aid < 0){

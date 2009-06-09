@@ -215,7 +215,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	private JXRootPane JXRootPane = null;
 	public JXStatusBar jXStatusBar = null;
 
-
 	private int dividerLocLR = 0; 
 	private int dividerLocOU = 0;
 	

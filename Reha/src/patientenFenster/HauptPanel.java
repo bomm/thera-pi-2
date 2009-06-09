@@ -180,7 +180,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		 dummy.setOpaque(false);
 		 dummy.setBorder(BorderFactory.createEmptyBorder(5, 10, 0, 5));
 		 PatGrundPanel.thisClass.imglabs[0] = new JLabel("");
-		 PatGrundPanel.thisClass.imglabs[0].setIcon(new ImageIcon(Reha.proghome+"icons/achtung.gif"));
+		 //PatGrundPanel.thisClass.imglabs[0].setIcon(new ImageIcon(Reha.proghome+"icons/achtung.gif"));
 		 dummy.add(PatGrundPanel.thisClass.imglabs[0]);
 		 PatGrundPanel.thisClass.imglabs[1] = new JLabel("");
 		 //jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/nogo.gif"));
@@ -232,13 +232,14 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		//PatGrundPanel.thisClass.memobut[0].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
 		PatGrundPanel.thisClass.memobut[0].setToolTipText("Langtext editieren");		
 		PatGrundPanel.thisClass.memobut[0].setActionCommand("kedit");
-		//memobut[0].addActionListener(this);
+		PatGrundPanel.thisClass.memobut[0].addActionListener(PatGrundPanel.thisClass.gplst);
 		jtoolb.add(PatGrundPanel.thisClass.memobut[0]);
 		PatGrundPanel.thisClass.memobut[1] = new JButton();
 		PatGrundPanel.thisClass.memobut[1].setIcon(SystemConfig.hmSysIcons.get("save"));		
 		//PatGrundPanel.thisClass.memobut[1].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
 		PatGrundPanel.thisClass.memobut[1].setToolTipText("Langtext speichern");		
 		PatGrundPanel.thisClass.memobut[1].setActionCommand("ksave");
+		PatGrundPanel.thisClass.memobut[1].addActionListener(PatGrundPanel.thisClass.gplst);			
 		//PatGrundPanel.thisClass.memobut[1].addActionListener(this);
 		PatGrundPanel.thisClass.memobut[1].setEnabled(false);
 		jtoolb.add(PatGrundPanel.thisClass.memobut[1]);
@@ -249,7 +250,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		//memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/cancel.png"));
 		PatGrundPanel.thisClass.memobut[2].setToolTipText("Langtext bearbeiten abbrechen");		
 		PatGrundPanel.thisClass.memobut[2].setActionCommand("kbreak");
-		//PatGrundPanel.thisClass.memobut[2].addActionListener(this);
+		PatGrundPanel.thisClass.memobut[2].addActionListener(PatGrundPanel.thisClass.gplst);
 		PatGrundPanel.thisClass.memobut[2].setEnabled(false);
 		jtoolb.add(PatGrundPanel.thisClass.memobut[2]);
 		
@@ -288,14 +289,14 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		PatGrundPanel.thisClass.memobut[3].setIcon(SystemConfig.hmSysIcons.get("edit"));
 		PatGrundPanel.thisClass.memobut[3].setToolTipText("Langtext editieren");		
 		PatGrundPanel.thisClass.memobut[3].setActionCommand("kedit2");
-		//memobut[0].addActionListener(this);
+		PatGrundPanel.thisClass.memobut[3].addActionListener(PatGrundPanel.thisClass.gplst);
 		jtoolb2.add(PatGrundPanel.thisClass.memobut[3]);
 		PatGrundPanel.thisClass.memobut[4] = new JButton();
 		PatGrundPanel.thisClass.memobut[4].setIcon(SystemConfig.hmSysIcons.get("save"));
 		//PatGrundPanel.thisClass.memobut[4].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
 		PatGrundPanel.thisClass.memobut[4].setToolTipText("Langtext speichern");		
 		PatGrundPanel.thisClass.memobut[4].setActionCommand("ksave2");
-		//PatGrundPanel.thisClass.memobut[1].addActionListener(this);
+		PatGrundPanel.thisClass.memobut[4].addActionListener(PatGrundPanel.thisClass.gplst);
 		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
 		jtoolb2.add(PatGrundPanel.thisClass.memobut[4]);
 		jtoolb2.addSeparator(new Dimension(40,0));
@@ -305,7 +306,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		//memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/cancel.png"));
 		PatGrundPanel.thisClass.memobut[5].setToolTipText("Langtext bearbeiten abbrechen");		
 		PatGrundPanel.thisClass.memobut[5].setActionCommand("kbreak2");
-		//PatGrundPanel.thisClass.memobut[2].addActionListener(this);
+		PatGrundPanel.thisClass.memobut[5].addActionListener(PatGrundPanel.thisClass.gplst);
 		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
 		jtoolb2.add(PatGrundPanel.thisClass.memobut[5]);
 		
