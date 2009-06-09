@@ -169,7 +169,7 @@ public Font font = null;
 public Font fehler = new Font("Courier",Font.ITALIC,13);
 public int aid = -1;
 public int kid = -1;
-public int autoid = -1;
+public int autoPatid = -1;
 
 public PatGrundPanel(JPatientInternal jry){
 	super();
@@ -447,6 +447,7 @@ private void allesAufNull(){
 	}
 	// aktPatID zurücksetzten dann ist in weiteres löschen nicht mehr möglich
 	aktPatID = "";
+	autoPatid = -1;
 	// jetzt das RezeptPanel KeinRezept anhängen
 	aktRezept.setzeRezeptPanelAufNull(true);
 	// dann die Icons löschen
@@ -557,7 +558,7 @@ public void starteSuche(){
 }
 
 public void doMemoAction(ActionEvent arg0){
-	if(autoid == -1){
+	if(autoPatid == -1){
 		return;
 	}
 	String sc = arg0.getActionCommand();
@@ -614,7 +615,7 @@ public void doMemoAction(ActionEvent arg0){
 		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
 		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
 		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
-		PatGrundPanel.thisClass.pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+autoid+"'", Arrays.asList(new String[] {})).get(0) );
+		PatGrundPanel.thisClass.pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
 		inMemo = -1;
 		return;
 	}
@@ -625,7 +626,7 @@ public void doMemoAction(ActionEvent arg0){
 		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
 		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
 		PatGrundPanel.thisClass.memobut[0].setEnabled(true);		
-		PatGrundPanel.thisClass.pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+autoid+"'", Arrays.asList(new String[] {})).get(0) );
+		PatGrundPanel.thisClass.pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
 		inMemo = -1;
 		return;
 	}
@@ -1076,7 +1077,7 @@ class DatenHolen{
 			}else{
 				PatGrundPanel.thisClass.pmemo[1].setText(instring);				
 			}
-			PatGrundPanel.thisClass.autoid = rs.getInt("id");
+			PatGrundPanel.thisClass.autoPatid = rs.getInt("id");
 			PatGrundPanel.thisClass.aid = StringTools.ZahlTest(rs.getString("arztid"));
 			PatGrundPanel.thisClass.kid = StringTools.ZahlTest(rs.getString("kassenid"));
 			if(PatGrundPanel.thisClass.aid < 0){

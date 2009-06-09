@@ -113,7 +113,7 @@ public class RezeptDaten extends JXPanel{
 					}else{
 						PatGrundPanel.thisClass.rezlabs[7].setForeground(Color.RED);
 					}
-					PatGrundPanel.thisClass.rezlabs[7].setText("Arztbericht");
+					PatGrundPanel.thisClass.rezlabs[7].setText("Therapiebericht");
 				}else{
 					PatGrundPanel.thisClass.rezlabs[7].setText(" ");
 				}
