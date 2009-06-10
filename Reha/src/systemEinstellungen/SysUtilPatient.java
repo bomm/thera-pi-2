@@ -250,7 +250,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		builder.add(jscr, cc.xyw(1,9,6));
 		builder.addLabel("aus Liste entfernen", cc.xy(1, 11));
 		builder.add(button[6], cc.xy(6, 11));
-		builder.addLabel("neue Vorlagenbezeichnung", cc.xy(1, 13));
+		builder.addLabel("Titel der neuen Vorlagen", cc.xy(1, 13));
 		builder.add(vorlage, cc.xyw(3,13,4));
 		builder.addLabel("Datei auswählen", cc.xy(1, 15));
 		datLabel = new JLabel();
@@ -337,7 +337,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 			}
 			if(cmd.equals("vorlagenneu")){
 				if(vorlage.getText().equals("") || datLabel.getText().equals("")){
-					JOptionPane.showMessageDialog(null,"Sie müssen eine Vorlagendatei wählen, sowie der gewählten Vorlage eine Bezeichnung verpassen");
+					JOptionPane.showMessageDialog(null,"Sie müssen eine Vorlagendatei wählen und einen Titel für die neue Vorlage eingeben");
 					return;
 				}
 				Vector vec = new Vector();
@@ -369,6 +369,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 			if(cmd.equals("speichern")){
 				System.out.println("Es wird abgespeichert");
 				doSpeichern();
+				JOptionPane.showMessageDialog(null,"Daten wurden in Datei 'patient.ini' erfolgreich gespeichert!");
 			}
 			
 		}
