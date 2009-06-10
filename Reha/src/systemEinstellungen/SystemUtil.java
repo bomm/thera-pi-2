@@ -369,11 +369,11 @@ private JScrollPane getParameterListe(){
 	node = new DefaultMutableTreeNode( "Stammdaten Optionen");
 	treeitem = new DefaultMutableTreeNode("Patient");
 	node.add(treeitem);
-	treeitem = new DefaultMutableTreeNode("Arzt");
+	treeitem = new DefaultMutableTreeNode("Rezepte");
 	node.add(treeitem);
 	treeitem = new DefaultMutableTreeNode("Krankenkasse");
 	node.add(treeitem);
-	treeitem = new DefaultMutableTreeNode("Rezepte");
+	treeitem = new DefaultMutableTreeNode("Arzt");
 	node.add(treeitem);
 	root.add(node);
 	/***/

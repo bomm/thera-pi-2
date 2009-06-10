@@ -95,6 +95,7 @@ import events.RehaTPEventListener;
 import rehaContainer.RehaTP;
 import systemEinstellungen.SystemConfig;
 //import systemTools.SystemTools;
+import systemTools.JRtaTextField;
 
 
 public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener{
@@ -259,6 +260,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			e2.printStackTrace();
 		}
 		TerminFlaeche.setDropTarget(dndt);
+
+		//TerminFlaeche.setDragEnabled(true);
+
+
 		//ViewPanel.setDropTarget(dndt);
 		/****************************/
 		setCombos();

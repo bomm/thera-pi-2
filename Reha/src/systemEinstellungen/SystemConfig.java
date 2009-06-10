@@ -101,6 +101,7 @@ public class SystemConfig {
 	public static Vector<String> vPreisGruppen;
 	public static Vector<Integer> vZuzahlRegeln;
 	public static Vector<String> vPatMerker = null;
+	public static Vector<ImageIcon> vPatMerkerIcon = null;
 	
 	public static HashMap<String,String> hmKVKDaten = null;
 	public static String sReaderName = null;
@@ -596,9 +597,16 @@ public class SystemConfig {
 	}
 	public static void PatientLesen(){
 		vPatMerker = new Vector<String>();
+		vPatMerkerIcon = new Vector<ImageIcon>();
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		for(int i = 1; i < 7;i++){
 			vPatMerker.add(inif.getStringProperty("Kriterien", "Krit"+i));
+			String simg = inif.getStringProperty("Kriterien", "Image"+i);
+			if(simg.equals("")){
+				vPatMerkerIcon.add(null);
+			}else{
+				vPatMerkerIcon.add(new ImageIcon(Reha.proghome+"icons/"+simg));
+			}
 		}
 	}
 	public static void GeraeteInit(){

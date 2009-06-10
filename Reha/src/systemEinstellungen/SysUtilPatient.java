@@ -4,6 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -18,12 +22,16 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
+
+import jxTableTools.TableTool;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -49,7 +57,8 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		JRadioButton unten = null;
 		JCheckBox optimize = null;
 		ButtonGroup bgroup = new ButtonGroup();
-		
+		JLabel datLabel = null;
+		JLabel[] kritlab = {null,null,null,null,null,null};
 	
 	public SysUtilPatient(){
 		super(new BorderLayout());
@@ -101,7 +110,11 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		
 	
 		button[9] = new JButton("abbrechen");
+		button[9].setActionCommand("abbrechen");
+		button[9].addActionListener(this);
 		button[10] = new JButton("speichern");
+		button[10].setActionCommand("speichern");
+		button[10].addActionListener(this);
 		
 									//      1.                      2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout jpanlay = new FormLayout("right:max(126dlu;p), 60dlu, 40dlu, 4dlu, 40dlu",
@@ -148,7 +161,22 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		}
 		vorlagen.validate();
 
-
+		for(int i = 0;i < 9;i++){
+			button[i].addActionListener(this);
+		}
+		for(int i = 0;i < 6;i++){
+			krit[i].setText((String)SystemConfig.vPatMerker.get(i));
+			String sico = ""; 
+			if(SystemConfig.vPatMerkerIcon.get(i)==null){
+				sico = "";
+			}else{
+				sico = inif.getStringProperty("Kriterien","Image"+(i+1));
+				kritlab[0].setIcon(SystemConfig.vPatMerkerIcon.get(i));
+			}
+			icon[i].setText(sico);
+			icon[i].setEditable(false);
+		}
+		
 
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
@@ -161,10 +189,13 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		optimize = new JCheckBox();
 		defvorlagen.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});
 		vorlagen = new JXTable(defvorlagen);
-		vorlage = new JRtaTextField("GROSS", true);
+		vorlage = new JRtaTextField("NIX", true);
 		button[6] = new JButton("entfernen");
+		button[6].setActionCommand("entfernen");
 		button[7] = new JButton("auswählen");
+		button[7].setActionCommand("vorlagenwahl");
 		button[8] = new JButton("hinzufügen");
+		button[8].setActionCommand("vorlagenneu");
 		
 		krit[0] = new JRtaTextField("", true);
 		krit[1] = new JRtaTextField("", true);
@@ -173,18 +204,29 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		krit[4] = new JRtaTextField("", true);
 		krit[5] = new JRtaTextField("", true);
 		button[0] = new JButton("auswählen");
+		button[0].setActionCommand("iwahl0");
 		button[1] = new JButton("auswählen");
+		button[1].setActionCommand("iwahl1");
 		button[2] = new JButton("auswählen");
+		button[2].setActionCommand("iwahl2");		
 		button[3] = new JButton("auswählen");
+		button[3].setActionCommand("iwahl3");		
 		button[4] = new JButton("auswählen");
+		button[4].setActionCommand("iwahl4");		
 		button[5] = new JButton("auswählen");
+		button[5].setActionCommand("iwahl5");		
 		icon[0] = new JRtaTextField("", true);
 		icon[1] = new JRtaTextField("", true);
 		icon[2] = new JRtaTextField("", true);
 		icon[3] = new JRtaTextField("", true);
 		icon[4] = new JRtaTextField("", true);
 		icon[5] = new JRtaTextField("", true);
-		
+		kritlab[0] = new JLabel("1. Icon"); 
+		kritlab[1] = new JLabel("2. Icon");
+		kritlab[2] = new JLabel("3. Icon");
+		kritlab[3] = new JLabel("4. Icon");
+		kritlab[4] = new JLabel("5. Icon");
+		kritlab[5] = new JLabel("6. Icon");
 										//      1.            2.     3.     4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 40dlu,0dlu",
        //1.    2. 3.   4.   5.   6.   7.  8.     9.    10.  11. 12.   13.  14. 15. 16.  17. 18.  19.    20. 21.  22.  23. 24   25  26   27  28  29  30   31   32   33  34   35  36   37 38   39    40  41  42  43  44
@@ -211,39 +253,41 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		builder.addLabel("neue Vorlagenbezeichnung", cc.xy(1, 13));
 		builder.add(vorlage, cc.xyw(3,13,4));
 		builder.addLabel("Datei auswählen", cc.xy(1, 15));
-		builder.addLabel("DatLabel", cc.xyw(3, 15, 2));
+		datLabel = new JLabel();
+		datLabel.setForeground(Color.BLUE);
+		builder.add(datLabel, cc.xyw(3, 15, 2));
 		builder.add(button[7], cc.xy(6, 15));
 		builder.addLabel("zu Liste hinzufügen", cc.xy(1, 17));
 		builder.add(button[8], cc.xy(6, 17));
 		builder.addSeparator("Kriteriendefinitionen / Icons", cc.xyw(1, 19, 6));
 		builder.addLabel("1. Kriterium", cc.xy(1, 21));
 		builder.add(krit[0], cc.xyw(3, 21, 4));
-		builder.addLabel("1. Icon", cc.xy(1, 23));
+		builder.add(kritlab[0], cc.xy(1, 23));
 		builder.add(icon[0], cc.xyw(3, 23, 2));
 		builder.add(button[0], cc.xy(6, 23));
 		builder.addLabel("2. Kriterium", cc.xy(1, 25));
 		builder.add(krit[1], cc.xyw(3, 25, 4));
-		builder.addLabel("2. Icon", cc.xy(1, 27));
+		builder.add(kritlab[1], cc.xy(1, 27));
 		builder.add(icon[1], cc.xyw(3, 27, 2));
 		builder.add(button[1], cc.xy(6, 27));
 		builder.addLabel("3. Kriterium", cc.xy(1, 29));
 		builder.add(krit[2], cc.xyw(3, 29, 4));
-		builder.addLabel("3. Icon", cc.xy(1, 31));
+		builder.add(kritlab[2], cc.xy(1, 31));
 		builder.add(icon[2], cc.xyw(3, 31, 2));
 		builder.add(button[2], cc.xy(6, 31));
 		builder.addLabel("4. Kriterium", cc.xy(1, 33));
 		builder.add(krit[3], cc.xyw(3, 33, 4));
-		builder.addLabel("4. Icon", cc.xy(1, 35));
+		builder.add(kritlab[3], cc.xy(1, 35));
 		builder.add(icon[3], cc.xyw(3, 35, 2));
 		builder.add(button[3], cc.xy(6, 35));
 		builder.addLabel("5. Kriterium", cc.xy(1, 37));
 		builder.add(krit[4], cc.xyw(3, 37, 4));
-		builder.addLabel("5. Icon", cc.xy(1, 39));
+		builder.add(kritlab[4], cc.xy(1, 39));
 		builder.add(icon[4], cc.xyw(3, 39, 2));
 		builder.add(button[4], cc.xy(6, 39));
 		builder.addLabel("6. Kriterium", cc.xy(1, 41));
 		builder.add(krit[5], cc.xyw(3, 41, 4));
-		builder.addLabel("6. Icon", cc.xy(1, 43));
+		builder.add(kritlab[5], cc.xy(1, 43));
 		builder.add(icon[5], cc.xyw(3, 43, 2));
 		builder.add(button[5], cc.xy(6, 43));
 		
@@ -272,7 +316,134 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		String cmd = e.getActionCommand();
+		for(int i = 0;i < 1;i++){
+			if(cmd.equals("entfernen")){
+				int row = vorlagen.getSelectedRow();
+				if(row >=0){
+					TableTool.loescheRow(vorlagen, row);
+				}
+				break;
+			}
+			if(cmd.equals("vorlagenwahl")){
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
+				if(! svorlage.equals("")){
+					datLabel.setText(svorlage);
+				}else{
+					datLabel.setText("");
+				}
+				break;
+			}
+			if(cmd.equals("vorlagenneu")){
+				if(vorlage.getText().equals("") || datLabel.getText().equals("")){
+					JOptionPane.showMessageDialog(null,"Sie müssen eine Vorlagendatei wählen, sowie der gewählten Vorlage eine Bezeichnung verpassen");
+					return;
+				}
+				Vector vec = new Vector();
+				vec.add(vorlage.getText());
+				vec.add(datLabel.getText());
+				defvorlagen.addRow((Vector)vec.clone());
+				vorlagen.validate();
+				vorlage.setText("");
+				datLabel.setText("");
+				break;
+			}
+			if(cmd.contains("iwahl")){
+				int wahl = new Integer(cmd.substring(cmd.length()-1));
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				String sicon = dateiDialog(Reha.proghome+"icons/");
+				if(! sicon.equals("")){
+					icon[wahl].setText(sicon);
+					kritlab[wahl].setIcon(new ImageIcon(Reha.proghome+"icons/"+sicon));
+				}else{
+					icon[wahl].setText("");
+					kritlab[wahl].setIcon(null);
+				}
+				break;
+			}
+			if(cmd.equals("abbrechen")){
+				SystemUtil.abbrechen();
+				SystemUtil.thisClass.parameterScroll.requestFocus();
+			}
+			if(cmd.equals("speichern")){
+				System.out.println("Es wird abgespeichert");
+				doSpeichern();
+			}
+			
+		}
 	}
+	
+	private void doSpeichern(){
+		String wert = "";
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+		System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+		wert = (unten.isSelected() ? "1" : "0");
+		SystemConfig.hmContainer.put("Patient", new Integer(wert));
+		inif.setStringProperty("Container", "StarteIn",wert , null);
+		
+		wert = (optimize.isSelected() ? "1" : "0");
+		SystemConfig.hmContainer.put("PatientOpti",new Integer(wert));
+		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
+
+		int rows = vorlagen.getRowCount();
+		inif.setStringProperty("Formulare", "PatientFormulareAnzahl",new Integer(rows).toString() , null);
+		
+		for(int i = 0;i<rows;i++){
+			inif.setStringProperty("Formulare", "PFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
+			inif.setStringProperty("Formulare", "PFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+		}
+		for(int i = 0;i<6;i++){
+			wert = krit[i].getText();
+			inif.setStringProperty("Kriterien", "Krit"+(i+1),wert , null);
+			SystemConfig.vPatMerker.set(i, wert);
+			
+			wert = icon[i].getText();
+			inif.setStringProperty("Kriterien", "Image"+(i+1),icon[i].getText() , null);
+			SystemConfig.vPatMerkerIcon.set(i, (wert.equals("") ? null : new ImageIcon(Reha.proghome+"icons/"+wert)));
+			
+		}
+		inif.save();
+	}	
+	
+	private String dateiDialog(String pfad){
+		String sret = "";
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        final File file = new File(pfad);
+
+        chooser.setCurrentDirectory(file);
+
+        chooser.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
+                        || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
+                    final File f = (File) e.getNewValue();
+                }
+            }
+        });
+        chooser.setVisible(true);
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        final int result = chooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File inputVerzFile = chooser.getSelectedFile();
+            String inputVerzStr = inputVerzFile.getPath();
+            
+
+            if(inputVerzFile.getName().trim().equals("")){
+            	sret = "";
+            }else{
+            	sret = inputVerzFile.getName().trim();	
+            }
+        }else{
+        	sret = ""; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
+        }
+        chooser.setVisible(false); 
+
+        return sret;
+	}
+	
 
 }

@@ -289,6 +289,7 @@ public static void KassenFenster(int setPos) {
 	jry.setLocation(comps*10, comps*10);
 	jry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(jry);
+	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("KasseOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JKasseInternal)jry).aktiviereDiesenFrame( ((JKasseInternal)jry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -323,6 +324,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	jry.setLocation(comps*10, comps*10);
 	jry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(jry);
+	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	((JPatientInternal)jry).aktiviereDiesenFrame(((JPatientInternal)jry).getName());
