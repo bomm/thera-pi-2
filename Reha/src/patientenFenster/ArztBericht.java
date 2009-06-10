@@ -185,7 +185,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 
 		FormLayout lay = new FormLayout(
         //  1 2  3   4       5
-		"2dlu,p,2dlu,30dlu,10dlu",
+		"2dlu,p,2dlu,30dlu,0dlu",
 		// 1  2  3   4  5   6  7    8  9   10  11  12  13   14  15   16  17   18    19   20  21   22  23   24
 		"5dlu,p,2dlu,p,0dlu,p,10dlu,p,10dlu,p ,2dlu,p ,1dlu, p,10dlu, p,10dlu, p, 2dlu,  p, 5dlu, p, 1dlu,40dlu,"+
 		//25   26  27   28   29  30  31   32  33  34 35  36  37   38 39  40 41   42   43 44 45  46   
@@ -194,7 +194,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
-		pb.getPanel().setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		pb.getPanel().setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 0));
 		JLabel lab = new JLabel("Arzbericht für Patient:");
 		pb.add(lab,cc.xy(2,2));
 
