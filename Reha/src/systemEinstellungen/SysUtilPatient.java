@@ -1,5 +1,7 @@
 package systemEinstellungen;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -9,8 +11,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,12 +22,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -37,10 +44,11 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		JRtaTextField[] krit = {null,null,null,null,null,null};
 		JRtaTextField[] icon = {null,null,null,null,null,null};
 		JXTable vorlagen = null;
+		DefaultTableModel defvorlagen = new DefaultTableModel();
 		JRadioButton oben = null;
 		JRadioButton unten = null;
 		JCheckBox optimize = null;
-		
+		ButtonGroup bgroup = new ButtonGroup();
 		
 	
 	public SysUtilPatient(){
@@ -48,14 +56,22 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		System.out.println("Aufruf SysUtilPatient");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
-	     Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(400,500);
-	     float[] dist = {0.0f, 0.5f};
-	     Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));
+		new SwingWorker<Void,Void>(){
+
+			@Override
+			protected Void doInBackground() throws Exception {
+			     Point2D start = new Point2D.Float(0, 0);
+			     Point2D end = new Point2D.Float(400,500);
+			     float[] dist = {0.0f, 0.5f};
+			     Color[] colors = {Color.WHITE,getBackground()};
+			     LinearGradientPaint p =
+			         new LinearGradientPaint(start, end, dist, colors);
+			     MattePainter mp = new MattePainter(p);
+			     setBackgroundPainter(new CompoundPainter(mp));
+				return null;
+			}
+			
+		}.execute();
 	     
 	     JScrollPane jscr = new JScrollPane();
 	     jscr.setBorder(null);
@@ -67,6 +83,16 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	     
 	     add(jscr,BorderLayout.CENTER);
 	     add(getKnopfPanel(),BorderLayout.SOUTH);
+			new SwingWorker<Void,Void>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					fuelleMitWerten();
+					return null;
+				}
+				
+			}.execute();
+	     
 
 
 		return;
@@ -94,13 +120,47 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		
 		return jpan.getPanel();
 	}
+	private void fuelleMitWerten(){
+		//hmContainer.put("Patient", inif.getIntegerProperty("Container", "StarteIn"));	
+		//hmContainer.put("PatientOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
+		if(SystemConfig.hmContainer.get("Patient") == 0){
+			oben.setSelected(true);
+		}else{
+			unten.setSelected(true);
+		}
+		System.out.println("Patient optimierung = "+SystemConfig.hmContainer.get("PatientOpti"));
+		if(SystemConfig.hmContainer.get("PatientOpti") == 0){
+			optimize.setSelected(false);
+		}else{
+			optimize.setSelected(true);
+		}
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+		int forms = inif.getIntegerProperty("Formulare", "PatientFormulareAnzahl");
+		Vector<String> vec = new Vector<String>();
+		for(int i = 1; i <= forms; i++){
+			vec.clear();
+			vec.add(inif.getStringProperty("Formulare","PFormularText"+i));
+			vec.add(inif.getStringProperty("Formulare","PFormularName"+i));
+			defvorlagen.addRow((Vector)vec.clone());
+		}
+		if(defvorlagen.getRowCount() > 0){
+			vorlagen.setRowSelectionInterval(0, 0);
+		}
+		vorlagen.validate();
+
+
+
+	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
 		oben = new JRadioButton();
+		bgroup.add(oben);
 		unten = new JRadioButton();
+		bgroup.add(unten);
 		optimize = new JCheckBox();
-		vorlagen = new JXTable();
+		defvorlagen.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});
+		vorlagen = new JXTable(defvorlagen);
 		vorlage = new JRtaTextField("GROSS", true);
 		button[6] = new JButton("entfernen");
 		button[7] = new JButton("auswählen");
@@ -126,9 +186,9 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		icon[5] = new JRtaTextField("", true);
 		
 										//      1.            2.     3.     4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 40dlu",
-       //1.    2. 3.   4.   5.   6.   7.   8.     9.    10.  11. 12.   13.  14. 15. 16.  17. 18.  19.    20. 21.  22.  23. 24   25  26   27  28  29  30   31   32   33  34   35  36   37 38   39    40  41  42  43  44
-		"p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, 40dlu, 2dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p,  2dlu , p, 5dlu, p, 2dlu, p, 5dlu,p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 10dlu");
+		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 40dlu,0dlu",
+       //1.    2. 3.   4.   5.   6.   7.  8.     9.    10.  11. 12.   13.  14. 15. 16.  17. 18.  19.    20. 21.  22.  23. 24   25  26   27  28  29  30   31   32   33  34   35  36   37 38   39    40  41  42  43  44
+		"p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, 100dlu, 2dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p,  2dlu , p, 5dlu, p, 2dlu, p, 5dlu,p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 10dlu");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -143,7 +203,9 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		builder.addLabel("Fenstergröße automatisch optimieren", cc.xy(1, 5));
 		builder.add(optimize, cc.xy(6,5, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addSeparator("Vorlagen-Verwaltung", cc.xyw(1,7,6));
-		builder.add(vorlagen, cc.xyw(1,9,5));
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(vorlagen);
+		jscr.validate();
+		builder.add(jscr, cc.xyw(1,9,6));
 		builder.addLabel("aus Liste entfernen", cc.xy(1, 11));
 		builder.add(button[6], cc.xy(6, 11));
 		builder.addLabel("neue Vorlagenbezeichnung", cc.xy(1, 13));

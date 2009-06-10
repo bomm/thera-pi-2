@@ -551,16 +551,23 @@ public class SystemConfig {
 	}
 	public static void HashMapsVorbereiten(){
 		hmAdrKDaten = new HashMap<String,String>();
-		lAdrKDaten = Arrays.asList(new String[]{"<KAdr1>","<KAdr2>","<KAdr3>","<KAdr4>"});
+		lAdrKDaten = Arrays.asList(new String[]{"<Kadr1>","<Kadr2>","<Kadr3>","<Kadr4>"});
 		for(int i = 0; i < lAdrKDaten.size(); i++){
 			hmAdrKDaten.put(lAdrKDaten.get(i),"");
 		}
 
 		hmAdrADaten = new HashMap<String,String>();
-		lAdrADaten = Arrays.asList(new String[]{"<AAdr1>","<AAdr2>","<AAdr3>","<AAdr4>","<AAdr5>"});
+		lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>"});
+		for(int i = 0; i < lAdrADaten.size(); i++){
+			hmAdrADaten.put(lAdrADaten.get(i),"");
+		}
+		
 		
 		hmAdrPDaten = new HashMap<String,String>();
-		lAdrPDaten = Arrays.asList(new String[]{"<PAdr1>","<PAdr2>","<PAdr3>","<PAdr4>","<PAdr5>","<PGeboren>","<PNname>","<PVname>","<PGeboren>"});
+		lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>","<Pgeboren>","<Panrede>","<Pnname>","<Pvname>"});
+		for(int i = 0; i < lAdrPDaten.size(); i++){
+			hmAdrPDaten.put(lAdrPDaten.get(i),"");
+		}
 
 		hmAdrRDaten = new HashMap<String,String>();
 		lAdrRDaten = Arrays.asList(new String[]{"<Rpatid>","<Rnummer>","<Rdatum>","<Rposition1>","<Rposition2>","<Rposition3>"
@@ -576,13 +583,16 @@ public class SystemConfig {
 		hmContainer = new HashMap<String,Integer>();
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		hmContainer.put("Kasse", inif.getIntegerProperty("Container", "StarteIn"));	
+		hmContainer.put("KasseOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		hmContainer.put("Patient", inif.getIntegerProperty("Container", "StarteIn"));	
+		hmContainer.put("PatientOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
-		hmContainer.put("Kalender", inif.getIntegerProperty("Container", "StarteIn"));	
+		hmContainer.put("Kalender", inif.getIntegerProperty("Container", "StarteIn"));
+		hmContainer.put("KalenderOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
 		hmContainer.put("Arzt", inif.getIntegerProperty("Container", "StarteIn"));	
-
+		hmContainer.put("ArztOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 	}
 	public static void PatientLesen(){
 		vPatMerker = new Vector<String>();

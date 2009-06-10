@@ -66,7 +66,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-		String xtitel = "<html>Arztbericht erstellen / ändern   -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>Tip:&nbsp;&nbsp;&nbsp;<img src='file:///C:/RehaVerwaltung/icons/Haken_klein.gif'>&nbsp;&nbsp;&nbsp;entscheiden Sie sich für das ICF-Schema</font></b>";
+		String xtitel = "<html>Arztbericht erstellen / ändern   -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>Tip:&nbsp;&nbsp;&nbsp;&nbsp;entscheiden Sie sich für das ICF-Schema</font></b>&nbsp;&nbsp;<img src='file:///C:/RehaVerwaltung/icons/Haken_klein.gif'>";
 	    super.getSmartTitledPanel().setTitle(xtitel);
 		setName(name);
 		
@@ -86,19 +86,24 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		setSize(new Dimension(900,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
-		/************BackgroundPainter basteln************/
-		Point2D start = new Point2D.Float(0, 0);
-		Point2D end = new Point2D.Float(0,getHeight());
-	    float[] dist = {0.0f, 0.75f};
-	    // Color[] colors = {Color.WHITE,new Color(231,120,23)};
-	    Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.25f)};
-	    //Color[] colors = {Color.WHITE,getBackground()};
-	    LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	    MattePainter mp = new MattePainter(p);
-	    /************Ende BackgroundPainter basteln************/
-	    
-		grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+	    new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				/************BackgroundPainter basteln************/
+				Point2D start = new Point2D.Float(0, 0);
+				Point2D end = new Point2D.Float(0,getHeight());
+			    float[] dist = {0.0f, 0.75f};
+			    // Color[] colors = {Color.WHITE,new Color(231,120,23)};
+			    Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.25f)};
+			    //Color[] colors = {Color.WHITE,getBackground()};
+			    LinearGradientPaint p =
+			         new LinearGradientPaint(start, end, dist, colors);
+			    MattePainter mp = new MattePainter(p);
+			    /************Ende BackgroundPainter basteln************/
+				grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+			    return null;
+			}
+	    }.execute();
 		content = getBerichtPanel();
 		grundPanel.add(content,BorderLayout.CENTER);
 		grundPanel.add(getFunktionsPanel(),BorderLayout.WEST);

@@ -716,10 +716,10 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 					protected Void doInBackground() throws Exception {
 						List<String> nichtlesen = Arrays.asList(new String[] {""});
 						Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,kassen_nam2,strasse,plz,ort", "id='"+xid+"'", new ArrayList());
-						SystemConfig.hmAdrKDaten.put("<KAdr1>", ((String) vec.get(0)).trim());
-						SystemConfig.hmAdrKDaten.put("<KAdr2>", ((String)vec.get(1)).trim());
-						SystemConfig.hmAdrKDaten.put("<KAdr3>", ((String)vec.get(2)).trim());
-						SystemConfig.hmAdrKDaten.put("<KAdr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
+						SystemConfig.hmAdrKDaten.put("<Kadr1>", ((String) vec.get(0)).trim());
+						SystemConfig.hmAdrKDaten.put("<Kadr2>", ((String)vec.get(1)).trim());
+						SystemConfig.hmAdrKDaten.put("<Kadr3>", ((String)vec.get(2)).trim());
+						SystemConfig.hmAdrKDaten.put("<Kadr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
 						/*
 						SystemConfig.hmAdrKDaten.put("<KAdr1>", StringTools.EGross(((String) vec.get(0)).trim()));
 						SystemConfig.hmAdrKDaten.put("<KAdr2>", StringTools.EGross(((String)vec.get(1)).trim()));

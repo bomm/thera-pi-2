@@ -373,9 +373,9 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem);
 	treeitem = new DefaultMutableTreeNode("Krankenkasse");
 	node.add(treeitem);
-	root.add(node);	
-	//node = new DefaultMutableTreeNode( "Externe Emailparameter");
-	//root.add(node);
+	treeitem = new DefaultMutableTreeNode("Rezepte");
+	node.add(treeitem);
+	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Emailparameter");
 	root.add(node);

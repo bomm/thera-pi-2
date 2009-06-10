@@ -29,13 +29,15 @@ import org.jdesktop.swingx.JXPanel;
 import DragAndDropTools.DnDTermine;
 
 import systemEinstellungen.SystemConfig;
+import systemTools.JRtaTextField;
 
 public class kalenderPanel extends JXPanel{
 /**
 	 * 
 	 */
 private static final long serialVersionUID = 7354087866079956906L;
-private JXPanel kPanel; 
+private JXPanel kPanel;
+public JRtaTextField aktiverDrop = new JRtaTextField("NORMAL",false);
 //private long vonUhr;
 //private long bisUhr;
 //private long Spaltendaten;
@@ -74,15 +76,7 @@ public  kalenderPanel KalenderPanel() {
 		kPanel = new JXPanel();
 		kPanel.setBorder(null);
 		kPanel.setBackground(SystemConfig.KalenderHintergrund);
-		//xoriginal = (Composite) ((Graphics2D)kPanel.getGraphics()).getComposite();
-		/*		this.addComponentListener(new java.awt.event.ComponentAdapter() {
-			public = void componentResized(java.awt.event.ComponentEvent e) {
-			}
-		});
-*/		
-		//addMouseListener(this);
-
-		
+		aktiverDrop.setDragEnabled(true);
 	return this;
 	}
 public void  ListenerSetzen(int aktPanel){
@@ -273,6 +267,26 @@ public void paintComponent( Graphics g ) {
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 							}
 							g2d.setFont(altfont);
+							/*
+							final int dragy = yStartMin;
+							final int ix = i1;
+							final String xname = sName;
+							new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+									aktiverDrop.setLocation(xStart,dragy);
+									aktiverDrop.setVisible(true);
+									aktiverDrop.setText(ix+"-"+ix);
+									aktiverDrop.setText(ix+"-"+ix);
+									System.out.println(xname);
+									System.out.println("in Drag "+ix);
+									return null;
+								}
+								
+							}.execute();
+							*/
+							
 							break;
 						}
 
@@ -774,6 +788,7 @@ public void paintComponent( Graphics g ) {
 			aktivPunkt[1] = -1;
 			aktivPunkt[2] = -1;
 			aktivPunkt[3] = -1;
+			
 
 		}
 		return this.maleSchwarz;

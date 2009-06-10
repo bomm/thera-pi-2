@@ -703,6 +703,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				cb.setBackground(SystemConfig.KalenderHintergrund);
 				//cb.setAlpha(0.5f);
 				oSpalten[i] =  new kalenderPanel();
+
 				oSpalten[i].setName("Spalte"+i);
 				oSpalten[i].setDoubleBuffered(true);
 				oSpalten[i].setAlpha(SystemConfig.KalenderAlpha);
