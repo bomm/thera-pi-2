@@ -29,4 +29,26 @@ public class TableTool {
 			return (int) table.getSelectedRow();
 		}
 	}
+	public static int loescheRowAusModel(JXTable table,int row){
+		int ret = -1;
+		int currow = table.convertRowIndexToModel(table.getSelectedRow());
+		int countrow = table.getRowCount()-1;
+		if(currow == -1){
+			return -1;
+		}
+		
+		((DefaultTableModel)table.getModel()).removeRow(currow);
+		
+		if(countrow > currow){
+			table.setRowSelectionInterval(currow, currow);
+			return (int) table.getSelectedRow();
+		}else if(countrow==0){
+			return -1;
+			
+		}else{
+			table.setRowSelectionInterval(countrow-1, countrow-1);
+			return (int) table.getSelectedRow();
+		}
+	}
+
 }

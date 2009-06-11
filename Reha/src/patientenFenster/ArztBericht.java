@@ -83,7 +83,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		this.reznr = reznr;
 		this.berichtid = iberichtid;
 		this.aufrufvon = aufruf;
-		setSize(new Dimension(900,650));
+		setSize(new Dimension(950,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
 	    new SwingWorker<Void,Void>(){
@@ -119,8 +119,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				}.execute();
 			}
 		}.start();
-
+		pack();
 	}
+	
 	private void fuelleBericht(){
 		if(this.berichtid <= 0){
 			return;
@@ -131,8 +132,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			icfblock[i].setText((String)vec.get(i));
 		}
 	}
-	private JPanel getBerichtPanel(){  // 1   2     3                  4              5
-		FormLayout lay = new FormLayout("0dlu,p,fill:0:grow(1.00),right:max(40dlu;p),0dlu",
+	private JPanel getBerichtPanel(){  // 1   2     3                  4              5              6
+		FormLayout lay = new FormLayout("0dlu,p,fill:0:grow(1.00),right:max(40dlu;p),30dlu,right:max(50dlu;p),0dlu",
 		//1   2   3       4            5    6   7        8             9  10 11         12          13   14 15       16
 		"0dlu,p,2dlu,fill:0:grow(0.27),4dlu,p ,2dlu,fill:0:grow(0.27),4dlu,p,2dlu,fill:0:grow(0.27),4dlu,p,2dlu,fill:0:grow(0.15)");
 		Font fon = new Font("Courier", Font.PLAIN,12);
@@ -144,13 +145,13 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		JLabel lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,2));
 		lab = new JLabel("F2 für Textblock-Aufruf");
-		pb.add(lab,cc.xy(4,2));
+		pb.add(lab,cc.xy(6,2));
 		icfblock[0] = new JTextPane();
 		icfblock[0].setFont(fon);
 		icfblock[0].setForeground(Color.BLUE);
 		JScrollPane span = JCompTools.getTransparentScrollPane(icfblock[0]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
-		pb.add(span,cc.xyw(2,4,3));
+		pb.add(span,cc.xyw(2,4,5));
 		lbltext ="<html>2.Block: weitere therapierelevante Aspekte&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Aktivitäten / Teilhabe)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,6));		
@@ -159,7 +160,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		icfblock[1].setForeground(Color.BLUE);
 		span = JCompTools.getTransparentScrollPane(icfblock[1]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));		
-		pb.add(span,cc.xyw(2,8,3));
+		pb.add(span,cc.xyw(2,8,5));
 		lbltext = "<html>3.Block: prognostische Einschätzung&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,10));		
@@ -168,7 +169,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		icfblock[2].setForeground(Color.BLUE);
 		span = JCompTools.getTransparentScrollPane(icfblock[2]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
-		pb.add(span,cc.xyw(2,12,3));
+		pb.add(span,cc.xyw(2,12,5));
 		lbltext = "<html>4.Block: Reserveblock&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - personbezogene Faktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,14));		
@@ -177,7 +178,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		icfblock[3].setForeground(Color.BLUE);
 		span = JCompTools.getTransparentScrollPane(icfblock[3]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
-		pb.add(span,cc.xyw(2,16,3));
+		pb.add(span,cc.xyw(2,16,5));
 
 		return pb.getPanel();
 	}

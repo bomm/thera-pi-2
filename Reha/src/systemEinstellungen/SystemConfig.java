@@ -100,6 +100,8 @@ public class SystemConfig {
 	
 	public static Vector<String> vPreisGruppen;
 	public static Vector<Integer> vZuzahlRegeln;
+	public static Vector<String> vNeuePreiseAb;
+	public static Vector<Integer> vNeuePreiseRegel;
 	public static Vector<String> vPatMerker = null;
 	public static Vector<ImageIcon> vPatMerkerIcon = null;
 	
@@ -108,6 +110,7 @@ public class SystemConfig {
 	
 	public static String[] arztGruppen = null;
 	public static String[] rezeptKlassen = null;
+	public static Vector<Vector<String>> rezeptKlassenAktiv = null;
 	public static String initRezeptKlasse = null;
 	public static String rezGebVorlageNeu = null;
 	public static String rezGebVorlageAlt = null;
@@ -544,9 +547,14 @@ public class SystemConfig {
 		int tarife = inif.getIntegerProperty("PreisGruppen", "AnzahlPreisGruppen");
 		vPreisGruppen = new Vector<String>() ;
 		vZuzahlRegeln = new Vector<Integer>();
+		vNeuePreiseAb = new Vector<String>();
+		vNeuePreiseRegel = new Vector<Integer>();
+
 		for(int i = 1; i <= tarife; i++){
 			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
+			vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
+			vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}
 		
 	}
@@ -650,8 +658,19 @@ public class SystemConfig {
 		initRezeptKlasse = inif.getStringProperty("RezeptKlassen", "InitKlasse");
 		args = inif.getIntegerProperty("RezeptKlassen", "KlassenAnzahl");
 		rezeptKlassen = new String[args];
+		rezeptKlassenAktiv = new Vector<Vector<String>>();
+
+		int aktiv;
+		Vector<String> vec = new Vector<String>();
 		for(int i = 0;i < args;i++){
-			rezeptKlassen[i] = inif.getStringProperty("RezeptKlassen", "Klasse"+new Integer(i+1).toString()); 
+			rezeptKlassen[i] = inif.getStringProperty("RezeptKlassen", "Klasse"+new Integer(i+1).toString());
+			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+new Integer(i+1).toString());
+			if(aktiv > 0){
+				vec.clear();
+				vec.add(new String(rezeptKlassen[i]));
+				vec.add(inif.getStringProperty("RezeptKlassen", "KlasseKurz"+new Integer(i+1).toString())  );
+				rezeptKlassenAktiv.add((Vector<String>)vec.clone());
+			}
 		}
 		rezGebVorlageNeu = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageNeu");
 		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");

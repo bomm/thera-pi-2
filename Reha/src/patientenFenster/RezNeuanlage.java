@@ -84,8 +84,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public boolean feldergefuellt = false;
 	private String nummer = null;
 	private String[] farbcodes = {null,null,null,null,null,null,null,null,null,null};
+	private String[] heilmittel = {"KG","MA","ER","LO","RH"};
 	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
- 	
+	
 		
 		super();
 		this.neu = neu;
@@ -307,14 +308,27 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			ladeZusatzDaten();
 		}
 		*/
-		jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
+		//*** vorher gültig ginge immer noch jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
+		jcmb[0] = new JRtaComboBox();
+		int lang = SystemConfig.rezeptKlassenAktiv.size();
+		for(int i = 0;i < lang;i++){
+			jcmb[0].addItem(SystemConfig.rezeptKlassenAktiv.get(i).get(0));	
+		}
+		
 		jpan.addLabel("Rezeptklasse auswählen",cc.xy(1, 3));
 		jpan.add(jcmb[0],cc.xyw(3, 3,5));
 		jcmb[0].setActionCommand("rezeptklasse");
 		jcmb[0].addActionListener(this);
+		/********************/
 		if(this.neu){
 			jcmb[0].setSelectedItem(SystemConfig.initRezeptKlasse);
 		}else{
+			for(int i = 0;i < lang;i++){
+				if(this.vec.get(1).substring(0,2).equals(SystemConfig.rezeptKlassenAktiv.get(i).get(1))){
+					jcmb[0].setSelectedIndex(i);
+				}
+			}
+			/*
 			if(this.vec.get(1).contains("KG") ){
 				jcmb[0].setSelectedIndex(0);
 			}else if(this.vec.get(1).contains("MA") ){
@@ -326,6 +340,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else if(this.vec.get(1).contains("RH") ){
 				jcmb[0].setSelectedIndex(4);
 			}
+			*/
 			jcmb[0].setEnabled(false);
 		}			
 

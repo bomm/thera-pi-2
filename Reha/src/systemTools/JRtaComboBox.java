@@ -89,7 +89,11 @@ public void keyTyped(KeyEvent arg0) {
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
-	this.getParent().dispatchEvent(arg0);	
+	try{
+		this.getParent().dispatchEvent(arg0);
+	}catch(java.lang.NullPointerException ex){
+		
+	}
 }
 
 }

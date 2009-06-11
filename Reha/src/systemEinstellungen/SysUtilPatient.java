@@ -4,34 +4,53 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.text.ParseException;
+import java.util.EventObject;
 import java.util.Vector;
 
+import javax.swing.AbstractButton;
+import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.CellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.text.DefaultFormatterFactory;
 
 import jxTableTools.TableTool;
+import jxTableTools.ZeitTableCellEditor;
+import kvKarte.KVKWrapper;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -45,21 +64,21 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SysUtilPatient extends JXPanel implements KeyListener, ActionListener {
+public class SysUtilPatient extends JXPanel implements KeyListener, ActionListener, CellEditorListener {
 	
 		JButton[] button = {null,null,null,null,null,null,null,null,null,null,null};
 		JRtaTextField vorlage = null;
 		JRtaTextField[] krit = {null,null,null,null,null,null};
 		JRtaTextField[] icon = {null,null,null,null,null,null};
 		JXTable vorlagen = null;
-		DefaultTableModel defvorlagen = new DefaultTableModel();
+		MyDefaultTableModel defvorlagen = new MyDefaultTableModel();
 		JRadioButton oben = null;
 		JRadioButton unten = null;
 		JCheckBox optimize = null;
 		ButtonGroup bgroup = new ButtonGroup();
 		JLabel datLabel = null;
 		JLabel[] kritlab = {null,null,null,null,null,null};
-	
+		boolean formok = true;
 	public SysUtilPatient(){
 		super(new BorderLayout());
 		System.out.println("Aufruf SysUtilPatient");
@@ -83,7 +102,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		}.execute();
 	     
 	     JScrollPane jscr = new JScrollPane();
-	     jscr.setBorder(null);
+	     jscr.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 	     jscr.setOpaque(false);
 	     jscr.getViewport().setOpaque(false);
 	     jscr.setViewportView(getVorlagenSeite());
@@ -134,6 +153,9 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		return jpan.getPanel();
 	}
 	private void fuelleMitWerten(){
+		if(!formok){
+			return;
+		}
 		//hmContainer.put("Patient", inif.getIntegerProperty("Container", "StarteIn"));	
 		//hmContainer.put("PatientOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 		if(SystemConfig.hmContainer.get("Patient") == 0){
@@ -141,7 +163,6 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		}else{
 			unten.setSelected(true);
 		}
-		System.out.println("Patient optimierung = "+SystemConfig.hmContainer.get("PatientOpti"));
 		if(SystemConfig.hmContainer.get("PatientOpti") == 0){
 			optimize.setSelected(false);
 		}else{
@@ -189,6 +210,9 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		optimize = new JCheckBox();
 		defvorlagen.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});
 		vorlagen = new JXTable(defvorlagen);
+		//vorlagen.setDefaultEditor(new Object().getClass(), new MyEditor());
+		vorlagen.getColumn(0).setCellEditor((TableCellEditor) new TitelEditor());
+		vorlagen.getColumn(0).getCellEditor().addCellEditorListener(this);
 		vorlage = new JRtaTextField("NIX", true);
 		button[6] = new JButton("entfernen");
 		button[6].setActionCommand("entfernen");
@@ -229,8 +253,8 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		kritlab[5] = new JLabel("6. Icon");
 										//      1.            2.     3.     4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 40dlu,0dlu",
-       //1.    2. 3.   4.   5.   6.   7.  8.     9.    10.  11. 12.   13.  14. 15. 16.  17. 18.  19.    20. 21.  22.  23. 24   25  26   27  28  29  30   31   32   33  34   35  36   37 38   39    40  41  42  43  44
-		"p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, 100dlu, 2dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p,  2dlu , p, 5dlu, p, 2dlu, p, 5dlu,p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 10dlu");
+       //1.    2. 3.   4.   5.   6.   7.  8.     9.     10.  11. 12.   13.     14.  15. 16.  17. 18.  19.    20. 21.  22.  23. 24   25  26   27  28  29  30   31   32   33  34   35  36   37 38   39    40  41  42  43  44
+		"p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, 80dlu, 2dlu, p, 2dlu, 0dlu, 0dlu, 0dlu, 0dlu, p, 10dlu, p, 10dlu, p,  2dlu , p, 5dlu, p, 2dlu, p, 5dlu,p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 5dlu, p, 2dlu, p, 10dlu");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -250,14 +274,14 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		builder.add(jscr, cc.xyw(1,9,6));
 		builder.addLabel("aus Liste entfernen", cc.xy(1, 11));
 		builder.add(button[6], cc.xy(6, 11));
-		builder.addLabel("Titel der neuen Vorlagen", cc.xy(1, 13));
-		builder.add(vorlage, cc.xyw(3,13,4));
-		builder.addLabel("Datei auswählen", cc.xy(1, 15));
+		//builder.addLabel("Titel der neuen Vorlagen", cc.xy(1, 13));
+		//builder.add(vorlage, cc.xyw(3,13,4));
+		//builder.addLabel("Datei auswählen", cc.xy(1, 15));
 		datLabel = new JLabel();
-		datLabel.setForeground(Color.BLUE);
-		builder.add(datLabel, cc.xyw(3, 15, 2));
-		builder.add(button[7], cc.xy(6, 15));
-		builder.addLabel("zu Liste hinzufügen", cc.xy(1, 17));
+		//datLabel.setForeground(Color.BLUE);
+		//builder.add(datLabel, cc.xyw(3, 15, 2));
+		//builder.add(button[7], cc.xy(6, 15));
+		builder.addLabel("neue Vorlagendatei hinzufügen", cc.xy(1, 17));
 		builder.add(button[8], cc.xy(6, 17));
 		builder.addSeparator("Kriteriendefinitionen / Icons", cc.xyw(1, 19, 6));
 		builder.addLabel("1. Kriterium", cc.xy(1, 21));
@@ -336,19 +360,43 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 				break;
 			}
 			if(cmd.equals("vorlagenneu")){
+				
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
+				if(! svorlage.equals("")){
+					datLabel.setText(svorlage);
+				}else{
+					datLabel.setText("");
+					break;
+				}
+
+
 				if(vorlage.getText().equals("") || datLabel.getText().equals("")){
-					JOptionPane.showMessageDialog(null,"Sie müssen eine Vorlagendatei wählen und einen Titel für die neue Vorlage eingeben");
-					return;
+					JOptionPane.showMessageDialog(null,"Geben Sie jetzt einen Titel für die neue Text-Vorlage ein");
+					//return;
 				}
 				Vector vec = new Vector();
-				vec.add(vorlage.getText());
+				vec.add("");
 				vec.add(datLabel.getText());
 				defvorlagen.addRow((Vector)vec.clone());
 				vorlagen.validate();
-				vorlage.setText("");
-				datLabel.setText("");
+				int rows = defvorlagen.getRowCount(); 
+		
+				//vorlagen.setCellSelectionEnabled(true);
+				final int xrows = rows -1;
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run(){
+				 		  vorlagen.requestFocus();
+				 		  vorlagen.setRowSelectionInterval(xrows, xrows);
+				 		  startCellEditing(xrows);
+				 	   }
+				});
+				
+				//vorlage.setText("");
+				//datLabel.setText("");
 				break;
 			}
+			
 			if(cmd.contains("iwahl")){
 				int wahl = new Integer(cmd.substring(cmd.length()-1));
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -369,10 +417,21 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 			if(cmd.equals("speichern")){
 				System.out.println("Es wird abgespeichert");
 				doSpeichern();
-				JOptionPane.showMessageDialog(null,"Daten wurden in Datei 'patient.ini' erfolgreich gespeichert!");
+				if(formok){
+					JOptionPane.showMessageDialog(null,"Konfiguration wurden in Datei 'patient.ini' erfolgreich gespeichert!");					
+				}
+
 			}
 			
 		}
+	}
+	private void startCellEditing(int row){
+		final int xrows = row;
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+		 				vorlagen.editCellAt(xrows, 0);
+		 	   }
+		});
 	}
 	
 	private void doSpeichern(){
@@ -388,11 +447,26 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
 
 		int rows = vorlagen.getRowCount();
-		inif.setStringProperty("Formulare", "PatientFormulareAnzahl",new Integer(rows).toString() , null);
 		
+		formok = true;
 		for(int i = 0;i<rows;i++){
-			inif.setStringProperty("Formulare", "PFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
-			inif.setStringProperty("Formulare", "PFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+			String test = (String)vorlagen.getValueAt(i, 0);
+			if(test.equals("")){
+				String datei = (String)vorlagen.getValueAt(i, 1);
+				String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
+				JOptionPane.showMessageDialog(null,msg);
+				formok = false;
+				break;
+			}else{
+				formok = true;
+				inif.setStringProperty("Formulare", "PatientFormulareAnzahl",new Integer(rows).toString() , null);				
+			}
+		}
+		if(formok){
+			for(int i = 0;i<rows;i++){
+				inif.setStringProperty("Formulare", "PFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
+				inif.setStringProperty("Formulare", "PFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+			}
 		}
 		for(int i = 0;i<6;i++){
 			wert = krit[i].getText();
@@ -446,5 +520,99 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
         return sret;
 	}
 	
+	class MyDefaultTableModel extends DefaultTableModel{
+		   /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
+		public Class getColumnClass(int columnIndex) {
+			   return String.class;
+	       }
+
+	    public boolean isCellEditable(int row, int col) {
+	        if (col == 0){
+	        	return true;
+	        }else{
+	        	return false;
+	        }
+	    }
+		   
+	}
+	
+	/**********************************************/
+	class TitelEditor extends AbstractCellEditor implements TableCellEditor{
+		Object value;
+		JComponent component = new JFormattedTextField();
+	   public TitelEditor(){
+		   //component = new JRtaTextField("NIX",true);
+		   System.out.println("editor-Component wurde initialisiert");
+		   component.addKeyListener(new KeyAdapter(){
+			   public void keyPressed(KeyEvent arg0) {
+					//System.out.println("********Button in KeyPressed*********");	
+					if(arg0.getKeyCode()== 10){
+						arg0.consume();
+						stopCellEditing();
+					}
+			   }
+		   });
+	    }
+		@Override
+		public Component getTableCellEditorComponent(JTable table,
+				Object value, boolean isSelected, int row, int column) {
+			((JFormattedTextField)component).setText((String)value);
+			((JFormattedTextField)component).requestFocus();
+			((JFormattedTextField)component).setCaretPosition(0);
+			return component;
+		}
+
+		@Override
+		public Object getCellEditorValue() {
+			// TODO Auto-generated method stub
+			return  ((JFormattedTextField)component).getText();
+		}
+
+		public boolean isCellEditable(EventObject anEvent) {
+			if(anEvent instanceof MouseEvent)
+	          {
+	             MouseEvent me = (MouseEvent)anEvent;
+	             if(me.getClickCount() != 2){
+	            	 return false;
+	             }
+	          }
+			System.out.println("isCellEditable");
+			return true;
+		}
+
+
+		@Override
+		public boolean shouldSelectCell(EventObject anEvent) {
+			System.out.println("in schouldCellSelect"+anEvent);
+			return super.shouldSelectCell(anEvent);
+		}
+
+		@Override
+		public boolean stopCellEditing() {
+			value = ((JFormattedTextField) component).getText();
+			System.out.println("in stopCellediting");
+			super.stopCellEditing();
+			return true;
+		}
+		public boolean startCellEditing() {
+	        return false;//super.startCellEditing();//false;
+		}
+		
+		
+	}
+	@Override
+	public void editingCanceled(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("In Hauptprogramm-Listener editingCanceled");
+	}
+	@Override
+	public void editingStopped(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("In Hauptprogramm-Listener editingStopped");
+	}
+	
 }

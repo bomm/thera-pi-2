@@ -665,7 +665,7 @@ private void auswertenSysUtil(String util){
 					}.start();
 		 	  	}
 			});*/			
-			setHeader("RoogleGrundeinstellungen");
+			setHeader("PatientStammdaten");
 			break;
 		}
 		if(util.equals("Arzt")){
@@ -703,6 +703,16 @@ private void auswertenSysUtil(String util){
 					}.start();
 		 	  	}
 			});*/			
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
+		if(util.equals("Rezepte")){
+
+							jxInhaltRechts = new SysUtilRezepte();
+							jxInhaltRechts.setVisible(true);
+							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+							jxRechts.revalidate();
+							cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
@@ -763,7 +773,7 @@ private void headerInfos(){
 	"Der Refreshtakt definiert, in welchem Zyklus die Bildschirmanzeige mit der Datenbank abgeglichen wird. Einzelplatzinstallationen\n "+
 	"arbeiten dabei ohne zeitliche Verzögerung.";
 	hdescription.put("TKGrundeinstellungen", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("TKGrundeinstellungen", icodummy);
 
 	/***********Numero due***********/
@@ -773,7 +783,7 @@ private void headerInfos(){
 	"Der Matchcode ist die dargestellte Überschrift bzw. der in der Terminsuche verwendete Begriff. Er kann frei vergeben werden\n"+
 	"und ist der Form nicht festgelegt. ´Peter´, ´Müller Martina´ oder ´Gewürzgurke007´ - Alles erlaubt!";
 	hdescription.put("Kalenderbenutzer", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderbenutzer", icodummy);
 
 	/***********Numero tre***********/
@@ -783,7 +793,7 @@ private void headerInfos(){
 	"nebeneinander dargestellt werden sollen. Im Terminkalender kann über F12 schnell zwischen den verschiedenen Sets\n"+
 	"umgeschaltet werden.";
 	hdescription.put("Behandlersets", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Behandlersets", icodummy);
 
 	/***********Numero vier***********/
@@ -795,7 +805,7 @@ private void headerInfos(){
 	"Strukturparameter unbedingt hier ebenfalls angepasst werden, da die Daten sonst nicht korrekt übergeben werden können."+
 	"Angaben zu Papierformat und verwendetem Druckereinzug werden in der Vorlagendatei mit OpenOffice eingestellt.";
 	hdescription.put("DruckvorlageTerminliste", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("DruckvorlageTerminliste", icodummy);
 
 	/***********Numero fünef***********/
@@ -808,7 +818,7 @@ private void headerInfos(){
 	"Diese Codes können dann wie in der Tabelle angegeben in den Terminen hinter der Rezeptnummer eingetragen werden\n"+
 	"und bestimmen die Farbgebung (der Code für die Behandlungszeit wird dann nachrangig).";
 	hdescription.put("Kalenderfarben", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderfarben", icodummy);
 
 	/***********Numero sex***********/
@@ -818,7 +828,7 @@ private void headerInfos(){
 	"Der wird dann auch den Text schreiben....\n"+
 	"...und beim Hilfetext richtig ins Zeugs legen!";
 	hdescription.put("Gruppentermine", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Gruppentermine", icodummy);
 
 	/***********Numero siebene***********/
@@ -828,7 +838,7 @@ private void headerInfos(){
 	"die Arbeitszeitpläne inklusive der Dauertermine auf den aktuellen Stand gebracht wurden (sofern gewünscht). \n"+
 	"Die Feiertagsliste kann importiert werden und durch eigene Daten (z.B. Betriebsausflug, -ferien) ergänzt werden.";
 	hdescription.put("Kalenderjahranlegen", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderjahranlegen", icodummy);
 
 	/***********Numero achte***********/
@@ -837,9 +847,17 @@ private void headerInfos(){
 	sdummy = "Die Grundeinstellungen für die Terminsuchmaschine [Ru:gl] legen die Vorgaben fest, mit denen\n"+
 	"Ru:gl startet. Sie können natürlich für jeden Suchvorgang im Ru:gl-Fenster ´individueller Zeitraum´ angepasst werden.\n";
 	hdescription.put("RoogleGrundeinstellungen", sdummy);
-	icodummy = new ImageIcon("icons/header-image.png");
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("RoogleGrundeinstellungen", icodummy);
 
+	/***********Numero neune***********/
+	sdummy = "Stammdaten - Patienten";
+	htitel.put("PatientStammdaten", sdummy);
+	sdummy = "Hier legen Sie fest in welchem Container das Patientenfenster erscheinen soll.\n"+
+	"Sie können Textvorlagen definieren, und individuelle Merkmale aufnehmen, die Sie späger dem Patienten zuordnen.\n";
+	hdescription.put("PatientStammdaten", sdummy);
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
+	hicon.put("PatientStammdaten", icodummy);	
 	}
 
 /******************************************/

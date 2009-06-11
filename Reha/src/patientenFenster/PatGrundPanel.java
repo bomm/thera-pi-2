@@ -657,8 +657,6 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	neuPat.getSmartTitledPanel().setContentContainer(new PatNeuanlage(new Vector(),lneu,feldname));
 	neuPat.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
     neuPat.setName("PatientenNeuanlage");
-	//neuPat.setContentPane(new PatNeuanlage(new Vector()));
-	neuPat.pack();
 	/*
 	try {
 		Thread.sleep(100);
@@ -670,6 +668,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	neuPat.setModal(true);
 	neuPat.setLocationRelativeTo(null);
 	neuPat.setTitle("Patienten Neuanlage");
+	neuPat.pack();
 	neuPat.setVisible(true);
 
 	repaint();

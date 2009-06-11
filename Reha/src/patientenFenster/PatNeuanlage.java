@@ -224,7 +224,11 @@ boolean inNeu = false;
 		});
  	   		
 		validate();
+		
 	}
+	
+	
+	
 	public void geheAufFeld(String feld){
 		//System.out.println("Focus setzen auf "+feld);
 		final String xfeld = feld;

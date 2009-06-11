@@ -1175,10 +1175,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		neuRez.getSmartTitledPanel().getContentContainer().setName("RezeptNeuanlage");
 		neuRez.setName("RezeptNeuanlage");
-		neuRez.pack();
 		neuRez.setModal(true);
 		neuRez.setLocationRelativeTo(null);
 		//neuRez.setTitle("Patienten Neuanlage");
+		neuRez.pack();
 		neuRez.setVisible(true);
 
 		repaint();
