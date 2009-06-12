@@ -40,7 +40,7 @@ public class JKasseInternal extends JRehaInternal{
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
 		System.out.println("Lösche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		
+		Reha.thisClass.aktiviereNaechsten(this.desktop);
 	}
 	public void setzeTitel(String stitel){
 		super.setzeTitel(stitel);

@@ -60,6 +60,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener{
 		pEvt.setDetails(s1,s2,"") ;
 		PatStammEventClass.firePatStammEvent(pEvt);	
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
+		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		
 	}
 	public void setzeSuche(){

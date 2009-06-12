@@ -468,6 +468,43 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		 * und der Terminkalender nicht betrieben werden!!!!!
 		 */
 	}
+	public void aktiviereNaechsten(int welchen){
+		JInternalFrame[] frame = desktops[welchen].getAllFrames();
+		System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+		if(frame.length > 0){
+			for(int i = 0; i < frame.length;i++){
+				System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+				((JRehaInternal)frame[0]).toFront();
+				((JRehaInternal)frame[0]).setActive(true);
+				((JRehaInternal)frame[0]).getContent().requestFocus();
+				break;
+			}
+		}else{
+			if(welchen==0){
+				frame = desktops[1].getAllFrames();
+				for(int i = 0; i < frame.length;i++){
+					System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					((JRehaInternal)frame[0]).toFront();
+					((JRehaInternal)frame[0]).setActive(true);
+					((JRehaInternal)frame[0]).getContent().requestFocus();
+					ProgLoader.containerHandling(1);
+					break;
+				}
+			}else{
+				frame = desktops[0].getAllFrames();
+				for(int i = 0; i < frame.length;i++){
+					System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					((JRehaInternal)frame[0]).toFront();
+					((JRehaInternal)frame[0]).setActive(true);
+					((JRehaInternal)frame[0]).getContent().requestFocus();
+					ProgLoader.containerHandling(0);
+					break;
+				}
+				
+			}
+		}
+		
+	}
 	public void setzeDivider(){
 		//jSplitRechtsOU.setDividerLocation((jxLinks.getHeight()/2)-3);
 	}
@@ -2045,9 +2082,8 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.RezeptInit();
 			new SocketClient().setzeInitStand("SystemIcons laden");
 			SystemConfig.SystemIconsInit();
-
-
-
+			new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
+			SystemConfig.TherapBausteinInit();
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");

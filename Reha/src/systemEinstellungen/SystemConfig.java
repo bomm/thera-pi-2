@@ -115,6 +115,8 @@ public class SystemConfig {
 	public static String rezGebVorlageNeu = null;
 	public static String rezGebVorlageAlt = null;
 	public static boolean rezGebDirektDruck = false;
+
+	public static HashMap<String,Vector> hmTherapBausteine = null; 
 	
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
 	                     
@@ -677,6 +679,24 @@ public class SystemConfig {
 		rezGebDirektDruck = (inif.getIntegerProperty("DruckOptionen", "DirektDruck") <= 0 ? false : true);
 
 	}
+	public static void TherapBausteinInit(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");
+		hmTherapBausteine = new HashMap<String,Vector>();
+		int lang = rezeptKlassenAktiv.size();
+		Vector<String> vec = new Vector<String>();
+		for(int i = 0; i<lang;i++){
+			vec.clear();
+			String prop = "Anzahl"+rezeptKlassenAktiv.get(i).get(1);
+			int lang2 = inif.getIntegerProperty("Textbausteine", prop);
+			String prop2 = rezeptKlassenAktiv.get(i).get(1);
+			for(int i2 = 0; i2 < lang2;i2++ ){
+				vec.add(inif.getStringProperty("Textbausteine", prop2+(i2+1)));
+			}
+			hmTherapBausteine.put(prop2, (Vector) vec.clone());
+		}
+		
+	}
+	
 	public static void SystemIconsInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();

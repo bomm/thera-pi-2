@@ -40,8 +40,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
+import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.TerminFenster;
@@ -64,12 +66,13 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JPanel content;
 	private JLabel[] rlab = {null,null,null,null,null,null,null,null,null,null,null,null};
 	private JTextArea diagnose;
-	private JComboBox tbwahl;
+	private JRtaComboBox tbwahl;
 	private JComboBox verfasser;
 	private int arztid;
 	public  JRtaTextField[] jtf = {null,null,null};
 	private JTextPane[] icfblock = {null,null,null,null};
 	private ThTextBlock thblock = null;
+	private String disziplin = null;
 
 
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf) {
@@ -88,10 +91,13 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
-
+		
 		this.neu = bneu;
 		this.reznr = reznr;
+		//this.disziplin = this.reznr.substring(0,2);		
+		// hier den Fall für ohne Rezeptbezug einbauen!!!!!
 		this.berichtid = iberichtid;
+ 
 		this.aufrufvon = aufruf;
 		setSize(new Dimension(950,650));
 		
@@ -261,6 +267,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		name = "";
 		if(! this.reznr.equals("")){
 			name = this.reznr;
+			this.disziplin = name.substring(0,2);
 		}else{
 			name = "ohne Rezeptbezug";
 		}
@@ -288,7 +295,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pb.addSeparator("",cc.xyw(2,26,3));
 		
 		pb.addLabel("Textbausteine für",cc.xy(2,28));
-		tbwahl = new JComboBox(new String[] {"KG-Wirbelsäule"});
+		tbwahl = new JRtaComboBox(SystemConfig.hmTherapBausteine.get(this.disziplin));
 		tbwahl.setActionCommand("tbladen");
 		tbwahl.addActionListener(this);
 		pb.add(tbwahl,cc.xy(2,30));
@@ -346,6 +353,19 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				rlab[2].setText(jtf[0].getText());
 				arztid = new Integer(jtf[2].getText());
 			}
+			return;
+		}
+		if(cmd.equals("tbladen")){
+			if(thblock != null){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						thblock.fuelleTabelle((String)tbwahl.getSelectedItem());
+						return null;
+					}
+					
+				}.execute();
+			}
 		}
 		
 	}
@@ -354,7 +374,7 @@ class TextBausteine extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(thblock == null){
-			thblock = new ThTextBlock(null,"textblock","Knie");
+			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem());
 			thblock.setModal(true);
 			thblock.setLocationRelativeTo(grundPanel);
 			thblock.pack();

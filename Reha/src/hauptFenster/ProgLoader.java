@@ -510,7 +510,7 @@ public static int PosTest(int pos){
 	}
 	return pos;
 }
-private static void containerHandling(int cont){
+public static void containerHandling(int cont){
 	if(Reha.thisClass.vollsichtbar == -1){
 		return;
 	}

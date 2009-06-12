@@ -331,6 +331,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		AktiveFenster.loescheFenster(this.getName());
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
+		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		//this.getParent().getParent().requestFocus();
 		//System.out.println("Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		// TODO Auto-generated method stub

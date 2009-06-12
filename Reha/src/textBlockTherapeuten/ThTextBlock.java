@@ -92,8 +92,8 @@ public class ThTextBlock extends RehaSmartDialog{
 				
 			}.execute();
 		    super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+suchkrit+"</font></b>";
-		    super.getSmartTitledPanel().setTitle(xtitel);
+//		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+suchkrit+"</font></b>";
+//		    super.getSmartTitledPanel().setTitle(xtitel);
 			content = getAuswahl();
 			grundPanel.add(content,BorderLayout.CENTER);
 			getSmartTitledPanel().setContentContainer(grundPanel);
@@ -115,7 +115,7 @@ public class ThTextBlock extends RehaSmartDialog{
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
-							fuelleTabelle("Knie");
+							fuelleTabelle(suchkrit);
 							return null;
 						}
 					}.execute();
@@ -132,7 +132,7 @@ public class ThTextBlock extends RehaSmartDialog{
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
-								String mwk = macheWhereKlausel(" (tbthema='Knie') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
+								String mwk = macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
 								fuelleSucheInTabelle(mwk);
 								return null;
 							}
@@ -188,10 +188,14 @@ public class ThTextBlock extends RehaSmartDialog{
 			pb.getPanel().validate();
 			return pb.getPanel();
 		}
-		private void fuelleTabelle(String diag){
+		public void fuelleTabelle(String diag){
+		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+diag+"</font></b>";
+		    super.getSmartTitledPanel().setTitle(xtitel);
+		    this.suchkrit = diag;
 			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			Vector<String> vec2 = new Vector<String>();
+			modtextblock.setRowCount(0);
 			if(anz>0){
 				for(int i = 0;i<anz;i++){
 					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
@@ -201,6 +205,7 @@ public class ThTextBlock extends RehaSmartDialog{
 				}
 				textblock.setRowSelectionInterval(0, 0);
 			}
+			textblock.validate();
 		}
 		private void fuelleSucheInTabelle(String whereKlausel){
 			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));

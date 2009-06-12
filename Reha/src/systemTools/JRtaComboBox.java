@@ -31,10 +31,22 @@ public JRtaComboBox(String[] ss){
 public JRtaComboBox(Vector ve){
 	super();
 	this.vec = ve;
-	fillCombo(this.vec);
+	if(this.vec.get(0) instanceof Vector){
+		fillCombo(this.vec);		
+	}else{
+		fillOneDimension(this.vec);
+	}
+
 	addKeyListener(this);
 	addActionListener(this);
 }
+private void fillOneDimension(Vector ve){
+	int lang = ve.size();
+	for(int i = 0;i < lang;i++){
+		addItem( (String) ve.get(i));
+	}
+}
+
 private void fillCombo(Vector ve){
 	int lang = ve.size()-1;
 	for(int i = 0;i < lang;i++){
@@ -42,7 +54,7 @@ private void fillCombo(Vector ve){
 	}
 	
 }
-public Object getValue(){
+public Object getSecValue(){
 	return ((Object)((Vector)vec.get(this.getSelectedIndex())).get(1) );
 }
 
