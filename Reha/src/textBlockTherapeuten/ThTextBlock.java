@@ -8,12 +8,14 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.LinearGradientPaint;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -72,38 +74,41 @@ public class ThTextBlock extends RehaSmartDialog{
 			//setSize(430,300);
 			setSize(450,600);
 			this.suchkrit = diag;
-			Point2D start = new Point2D.Float(0, 0);
-		     Point2D end = new Point2D.Float(0,getHeight());
-		     float[] dist = {0.0f, 0.75f};
-		     // Color[] colors = {Color.WHITE,new Color(231,120,23)};
-		     Color[] colors = {Colors.Yellow.alpha(0.15f),Color.WHITE};
-		     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
-		     //Color[] colors = {Color.WHITE,getBackground()};
-		     LinearGradientPaint p =
-		         new LinearGradientPaint(start, end, dist, colors);
-		     MattePainter mp = new MattePainter(p);
-		     super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-		     String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+diag+"</font></b>";
-		     super.getSmartTitledPanel().setTitle(xtitel);
-		     
-		  
-			grundPanel = new JXPanel(new BorderLayout());
-			grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+			
+			grundPanel = new JXPanel(new BorderLayout());			
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					Point2D start = new Point2D.Float(0, 0);
+				    Point2D end = new Point2D.Float(0,getHeight());
+				    float[] dist = {0.0f, 0.75f};
+				    Color[] colors = {Colors.Yellow.alpha(0.15f),Color.WHITE};
+				    LinearGradientPaint p =
+				         new LinearGradientPaint(start, end, dist, colors);
+				    MattePainter mp = new MattePainter(p);
+					grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+					return null;
+				}
+				
+			}.execute();
+		    super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
+		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+suchkrit+"</font></b>";
+		    super.getSmartTitledPanel().setTitle(xtitel);
 			content = getAuswahl();
 			grundPanel.add(content,BorderLayout.CENTER);
 			getSmartTitledPanel().setContentContainer(grundPanel);
 
 			//this.getContentPanel().add(content);
-			/*
-			final JXPanel thispan = content;
+			
+			final JPanel thispan = content;
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);
-					((JComponent)getContentPanel()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
-					((JComponent)getContentPanel()).getActionMap().put("doSuchen", new ArztWahlAction());
+					grundPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
+					grundPanel.getActionMap().put("doSuchen", new BausteinAction());
 				}
 			});
-			*/
+			
 			//pack();
 			new Thread(){
 				public void run(){
@@ -127,7 +132,7 @@ public class ThTextBlock extends RehaSmartDialog{
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
-								String mwk = macheWhereKlausel(" tbthema='Knie' AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
+								String mwk = macheWhereKlausel(" (tbthema='Knie') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
 								fuelleSucheInTabelle(mwk);
 								return null;
 							}
@@ -321,6 +326,13 @@ public class ThTextBlock extends RehaSmartDialog{
 		    }
 		}
 
+		class BausteinAction extends AbstractAction {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				suchenach.requestFocus();
+			}
+			 
+		}
 		
 /*************************************************/		
 }		
