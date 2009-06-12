@@ -7,26 +7,33 @@ import java.awt.Font;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
+import patientenFenster.PatGrundPanel.PatientAction;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -37,7 +44,9 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
+import terminKalender.TerminFenster;
 import terminKalender.datFunk;
+import textBlockTherapeuten.ThTextBlock;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -60,6 +69,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private int arztid;
 	public  JRtaTextField[] jtf = {null,null,null};
 	private JTextPane[] icfblock = {null,null,null,null};
+	private ThTextBlock thblock = null;
 
 
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf) {
@@ -119,6 +129,15 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				}.execute();
 			}
 		}.start();
+		final JXPanel ab = grundPanel;
+		SwingUtilities.invokeLater(new Runnable(){
+			public  void run(){
+				KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0);
+				ab.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doTextBausteine");
+				ab.getActionMap().put("doTextBausteine", new TextBausteine());
+	   	  	}
+		});
+		
 		pack();
 	}
 	
@@ -330,6 +349,22 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 		
 	}
+
+class TextBausteine extends AbstractAction {
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(thblock == null){
+			thblock = new ThTextBlock(null,"textblock","Knie");
+			thblock.setModal(true);
+			thblock.setLocationRelativeTo(grundPanel);
+			thblock.pack();
+			thblock.setVisible(true);
+		}else{
+			thblock.setVisible(true);
+		}
+	}
+	 
+}
 
 /*********************************
  * 

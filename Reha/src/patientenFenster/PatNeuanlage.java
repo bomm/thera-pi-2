@@ -223,7 +223,7 @@ boolean inNeu = false;
 		 	   }
 		});
  	   		
-		validate();
+		//validate();
 		
 	}
 	

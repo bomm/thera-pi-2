@@ -116,11 +116,18 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
-		 		   setzeFocus();
+		 		   setVisible(true);
 		 	   }
 		});
-		pack();
-	    setVisible(true);
+		
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run()
+		 	   {
+		 		 setzeFocus();
+		 	   }
+		});
+				
+	    
 
 
 	}
