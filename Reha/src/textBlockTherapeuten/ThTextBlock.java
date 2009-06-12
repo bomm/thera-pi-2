@@ -224,9 +224,10 @@ public class ThTextBlock extends RehaSmartDialog{
 		private String macheWhereKlausel(String praefix,String test,String[] suchein){
 			String ret = praefix;
 			String cmd = test;
+			cmd = new String(cmd.replaceAll("   ", " "));
 			cmd = new String(cmd.replaceAll("  ", " "));
+			// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daﬂ er nix finder!!!
 			String[] felder = suchein;
-			System.out.println(cmd);
 			String[] split = cmd.split(" ");
 			if(split.length==1){
 				ret = ret +" (";
@@ -259,7 +260,6 @@ public class ThTextBlock extends RehaSmartDialog{
 				
 			}
 			ret = ret +") ";
-			
 			return ret;
 		}
 
