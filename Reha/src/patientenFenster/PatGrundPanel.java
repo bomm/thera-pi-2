@@ -665,13 +665,16 @@ public void neuanlagePatient(boolean lneu,String feldname){
 		e.printStackTrace();
 	}
 	*/
-	neuPat.setModal(true);
+    
+	
 	neuPat.setLocationRelativeTo(null);
 	neuPat.setTitle("Patienten Neuanlage");
-	neuPat.pack();
+
+	neuPat.setModal(true);
+	neuPat.pack();	
 	neuPat.setVisible(true);
 
-	repaint();
+	
 	//neuPat.setVisible(false);
 
 	SwingUtilities.invokeLater(new Runnable(){

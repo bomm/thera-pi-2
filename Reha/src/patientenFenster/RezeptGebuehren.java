@@ -119,7 +119,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		 		   setzeFocus();
 		 	   }
 		});
-
+		pack();
 	    setVisible(true);
 
 
