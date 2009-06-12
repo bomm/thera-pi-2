@@ -123,6 +123,15 @@ public class ThTextBlock extends RehaSmartDialog{
 				public void keyPressed(KeyEvent arg0) {
 					if(arg0.getKeyCode()==10){
 						arg0.consume();
+						suchenach.requestFocus();
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								String mwk = macheWhereKlausel(" tbthema='Knie' AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
+								fuelleSucheInTabelle(mwk);
+								return null;
+							}
+						}.execute();
 					}
 					/*
 					if(arg0.getKeyCode()==27){
@@ -188,8 +197,65 @@ public class ThTextBlock extends RehaSmartDialog{
 				textblock.setRowSelectionInterval(0, 0);
 			}
 		}
+		private void fuelleSucheInTabelle(String whereKlausel){
+			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));
+			int anz = vec.size();
+			modtextblock.setRowCount(0);
+			Vector<String> vec2 = new Vector<String>();
+			if(anz>0){
+				for(int i = 0;i<anz;i++){
+					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
+					if(i==0){
+						holeTbText( new Integer((String)((Vector)vec.get(i)).get(2)) );
+					}
+				}
+				textblock.setRowSelectionInterval(0, 0);
+			}
+			textblock.validate();
+		}		
 		private void holeTbText(int tbid){
 			tbtext.setText((String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0) );
+		}
+		private String macheWhereKlausel(String praefix,String test,String[] suchein){
+			String ret = praefix;
+			String cmd = test;
+			cmd = new String(cmd.replaceAll("  ", " "));
+			String[] felder = suchein;
+			System.out.println(cmd);
+			String[] split = cmd.split(" ");
+			if(split.length==1){
+				ret = ret +" (";
+				for(int i = 0; i < felder.length;i++){
+					ret = ret+felder[i]+" like '%"+cmd+"%'";
+					if(i < felder.length-1){
+						ret = ret+ " OR ";
+					}
+				}
+				ret = ret +") ";
+				return ret;
+			}
+			
+			
+			ret = ret +"( ";
+			for(int i = 0; i < split.length;i++){
+				if(! split[i].equals("")){
+					ret = ret +" (";
+					for(int i2 = 0; i2 < felder.length;i2++){
+						ret = ret+felder[i2]+" like '%"+split[i]+"%'";
+						if(i2 < felder.length-1){
+							ret = ret+ " OR ";
+						}
+					}
+					ret = ret +") ";
+					if(i < split.length-1){
+						ret = ret+ " AND ";
+					}
+				}
+				
+			}
+			ret = ret +") ";
+			
+			return ret;
 		}
 
 		class MyTextBlockModel extends DefaultTableModel{
