@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -42,6 +43,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import patientenFenster.ArztBericht;
 import patientenFenster.ArztNeuKurz;
 import patientenFenster.PatGrundPanel;
 
@@ -66,19 +68,26 @@ public class ThTextBlock extends RehaSmartDialog{
 	public MyTextBlockModel modtextblock = null;
 	public JTextArea tbtext = null;
 	boolean blockneugefunden = true;
+	boolean incheckundstart = false;
+	boolean invecbuild = false;
+	boolean inholetext = false;
 	int akttbid = -1;
+	Vector<String> vectb = null;
+	TbEingabeNeu tbEingabeNeu = null;
+	String alttitel = "";
+	JRtaTextField jtfrueck = null;
 	/***************/	
 	JPanel content = null;
 	public JXPanel grundPanel = null;
 	public String arztbisher;
-	
+	ArztBericht abr = null;
 
-		public ThTextBlock(JXFrame owner, String name,String diag) {
+		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr) {
 			super(owner, name);
 			//setSize(430,300);
 			setSize(450,600);
 			this.suchkrit = diag;
-			
+			this.abr = abr;
 			grundPanel = new JXPanel(new BorderLayout());			
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -171,7 +180,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			textblock.addMouseListener(new MouseAdapter(){
 				public void mousePressed(MouseEvent arg0) {
 					if(arg0.getClickCount()==2){
-						//testeTbText(tbtext.getText());						
+						tbCheckundStart();						
 					}
 				}	
 			});
@@ -179,7 +188,7 @@ public class ThTextBlock extends RehaSmartDialog{
 				public void keyPressed(KeyEvent arg0) {
 					if(arg0.getKeyCode()==10){
 						arg0.consume();
-						//testeTbText(tbtext.getText());
+						tbCheckundStart();
 					}
 				}	
 			});
@@ -269,7 +278,8 @@ public class ThTextBlock extends RehaSmartDialog{
 					}
 				}
 			}
-			System.out.println("Variablen Vector = "+tbvars);
+			vectb = (Vector)tbvars.clone();
+			//System.out.println("Variablen Vector = "+tbvars);
 		}
 		private void holeTbText(int tbid){
 			String text = (String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
@@ -278,12 +288,92 @@ public class ThTextBlock extends RehaSmartDialog{
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
+					invecbuild = true;
 					testeTbText(tbtext.getText());
 					akttbid = xtbid;
+					invecbuild = false;
+					inholetext = false;
 					return null;
 				}
 			}.execute();
 		}
+		public void setzeSucheAufNull(){
+			suchenach.setText("");
+		}
+		public void setzeEingabeTitel(String titel){
+			super.getSmartTitledPanel().setTitle(titel);
+		}
+		/******************************************************/
+		private void tbCheckundStart(){
+			if(incheckundstart){
+				return;
+			}
+			incheckundstart = true;
+			int row = textblock.getSelectedRow();
+			if(row < 0){
+				System.out.println("Keine Tabellenzeile ausgewählt");
+				incheckundstart = false;
+				return;
+			}
+			//int testeid1 = textblock.convertRowIndexToModel(row);
+			int testeid2 = new Integer((String)textblock.getValueAt(row, 2));
+			if(testeid2 != akttbid){
+				long zeit = System.currentTimeMillis();
+				while( akttbid != testeid2 ){
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if((System.currentTimeMillis()-zeit) > 2000){
+						System.out.println("Zwangsabbruch akttbid immer noch nicht identisch");
+						break;
+					}
+				}
+				if(akttbid != testeid2){
+					JOptionPane.showMessageDialog(null,"Konnte den Platzhalter-Vector nicht erstellen");
+					incheckundstart = false;
+					return;
+				}
+			}
+			
+			if(tbEingabeNeu == null){
+				jtfrueck = new JRtaTextField("NIX",false);
+				tbEingabeNeu = new TbEingabeNeu(tbtext.getText(),vectb,this,jtfrueck);			
+			}else{
+				tbEingabeNeu.neueDaten(tbtext.getText(),vectb);
+			}
+			alttitel = super.getSmartTitledPanel().getTitle();
+			grundPanel.remove(this.content);
+			grundPanel.add(tbEingabeNeu,BorderLayout.CENTER);
+			//ank.setzteFocus();
+			grundPanel.validate();
+			incheckundstart = false;
+			repaint();
+			
+		}
+		public void wechsleRueckwaerts(){
+			grundPanel.remove(tbEingabeNeu);
+			grundPanel.add(content,BorderLayout.CENTER);
+			super.getSmartTitledPanel().setTitle(alttitel);
+			grundPanel.validate();
+			repaint();
+			if(!jtfrueck.getText().equals("")){
+				String sblock = (String) textblock.getValueAt(textblock.getSelectedRow(), 0);
+				int block = new Integer(sblock.substring(0,1))-1;
+				abr.schreibeTextBlock(block,new String(jtfrueck.getText()) );
+				incheckundstart = false;
+				inholetext = false;
+				this.dispose();
+			}
+			//JOptionPane.showMessageDialog(null,jtfrueck.getText());
+			inholetext = false;
+			incheckundstart = false;
+			textblock.requestFocus();
+		}
+		/******************************************************/
+		
 		private String macheWhereKlausel(String praefix,String test,String[] suchein){
 			String ret = praefix;
 			String cmd = test;
@@ -354,12 +444,12 @@ public class ThTextBlock extends RehaSmartDialog{
 		class TblockListSelectionHandler implements ListSelectionListener {
 
 		    public void valueChanged(ListSelectionEvent e) {
-				if(blockneugefunden){
+				if(blockneugefunden || inholetext){
 					blockneugefunden = false;
 					return;
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-		        
+
 		        int firstIndex = e.getFirstIndex();
 		        int lastIndex = e.getLastIndex();
 		        boolean isAdjusting = e.getValueIsAdjusting();
@@ -378,6 +468,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		                	new SwingWorker<Void,Void>(){
 								@Override
 								protected Void doInBackground() throws Exception {
+									inholetext = true;
 									holeTbText(new Integer((String)textblock.getValueAt(ix, 2)));
 									return null;
 								}

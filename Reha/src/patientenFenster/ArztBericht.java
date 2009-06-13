@@ -73,6 +73,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JTextPane[] icfblock = {null,null,null,null};
 	private ThTextBlock thblock = null;
 	private String disziplin = null;
+	private int zuletztaktiv = 0;
 
 
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf) {
@@ -99,6 +100,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		this.berichtid = iberichtid;
  
 		this.aufrufvon = aufruf;
+
 		setSize(new Dimension(950,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
@@ -361,6 +363,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					@Override
 					protected Void doInBackground() throws Exception {
 						thblock.fuelleTabelle((String)tbwahl.getSelectedItem());
+						thblock.setzeSucheAufNull();
 						return null;
 					}
 					
@@ -369,18 +372,59 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 		
 	}
-
+	
+	
+	public ArztBericht getInstance(){
+		return this;
+	}
+	public void schreibeTextBlock(int block,String text){
+		String icftext = icfblock[block].getText();
+		if(icftext.equals("")){
+			icfblock[block].setText(text);
+			zuletztaktiv = block;
+			final int xblock = block;
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					icfblock[xblock].requestFocus();
+					icfblock[xblock].setCaretPosition(icfblock[xblock].getText().length());
+		   	  	}
+			});
+		}else{
+			icfblock[block].setText(icftext+text);
+			zuletztaktiv = block;
+			final int xblock = block;
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					icfblock[xblock].requestFocus();
+					icfblock[xblock].setCaretPosition(icfblock[xblock].getText().length());
+		   	  	}
+			});
+		}
+	}
 class TextBausteine extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(thblock == null){
-			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem());
+			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem(),getInstance());
 			thblock.setModal(true);
 			thblock.setLocationRelativeTo(grundPanel);
 			thblock.pack();
 			thblock.setVisible(true);
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					icfblock[zuletztaktiv].requestFocus();
+					icfblock[zuletztaktiv].setCaretPosition(icfblock[zuletztaktiv].getText().length());
+		   	  	}
+			});
+			
 		}else{
 			thblock.setVisible(true);
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					icfblock[zuletztaktiv].requestFocus();
+					icfblock[zuletztaktiv].setCaretPosition(icfblock[zuletztaktiv].getText().length());
+		   	  	}
+			});
 		}
 	}
 	 
