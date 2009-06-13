@@ -11,6 +11,8 @@ import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
@@ -64,10 +66,12 @@ public class ThTextBlock extends RehaSmartDialog{
 	public MyTextBlockModel modtextblock = null;
 	public JTextArea tbtext = null;
 	boolean blockneugefunden = true;
+	int akttbid = -1;
 	/***************/	
 	JPanel content = null;
 	public JXPanel grundPanel = null;
 	public String arztbisher;
+	
 
 		public ThTextBlock(JXFrame owner, String name,String diag) {
 			super(owner, name);
@@ -164,7 +168,21 @@ public class ThTextBlock extends RehaSmartDialog{
 			textblock.getColumn(2).setMaxWidth(0);
 			textblock.setSelectionMode(0);
 			textblock.getSelectionModel().addListSelectionListener( new TblockListSelectionHandler());
-			
+			textblock.addMouseListener(new MouseAdapter(){
+				public void mousePressed(MouseEvent arg0) {
+					if(arg0.getClickCount()==2){
+						//testeTbText(tbtext.getText());						
+					}
+				}	
+			});
+			textblock.addKeyListener(new KeyAdapter(){
+				public void keyPressed(KeyEvent arg0) {
+					if(arg0.getKeyCode()==10){
+						arg0.consume();
+						//testeTbText(tbtext.getText());
+					}
+				}	
+			});
 
 			FormLayout lay = new FormLayout(
 				//x   1    2          3           4         5          6    
@@ -222,9 +240,49 @@ public class ThTextBlock extends RehaSmartDialog{
 				textblock.setRowSelectionInterval(0, 0);
 			}
 			textblock.validate();
-		}		
+		}
+		private void testeTbText(String text){
+			Vector<String> tbvars = new Vector<String>();
+			int lang =  text.length();
+			int i = 0;
+			boolean start = false;
+			boolean stop = false;
+			String var = "";
+			String test = "";
+			for(i = 0;i < lang;i++){
+				for(int i2 = 0; i2 < 1;i2++){
+					test = text.substring(i,i+1);
+					if(test.equals("^") && (!start)){
+						var = var+test;
+						start = true;
+						break;
+					}
+					if(start){
+						var = var+test;
+						if(test.equals("^")){
+							tbvars.add(new String(var));
+							//System.out.println("Variable gefunden -> "+var);
+							start = false;
+							var = "";
+						}
+						break;
+					}
+				}
+			}
+			System.out.println("Variablen Vector = "+tbvars);
+		}
 		private void holeTbText(int tbid){
-			tbtext.setText((String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0) );
+			String text = (String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
+			tbtext.setText(text );
+			final int xtbid = tbid;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					testeTbText(tbtext.getText());
+					akttbid = xtbid;
+					return null;
+				}
+			}.execute();
 		}
 		private String macheWhereKlausel(String praefix,String test,String[] suchein){
 			String ret = praefix;
@@ -298,7 +356,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		    public void valueChanged(ListSelectionEvent e) {
 				if(blockneugefunden){
 					blockneugefunden = false;
-					//return;
+					return;
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 		        
