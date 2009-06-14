@@ -251,6 +251,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			textblock.validate();
 		}
 		private void testeTbText(String text){
+			/// Hier den SytemVariablen-Check einbauen!!!!!!!!!!!!!!!!!!!!
 			Vector<String> tbvars = new Vector<String>();
 			int lang =  text.length();
 			int i = 0;
@@ -337,21 +338,29 @@ public class ThTextBlock extends RehaSmartDialog{
 					return;
 				}
 			}
-			
-			if(tbEingabeNeu == null){
-				jtfrueck = new JRtaTextField("NIX",false);
-				tbEingabeNeu = new TbEingabeNeu(tbtext.getText(),vectb,this,jtfrueck);			
+			if(vectb.size() > 0){
+				if(tbEingabeNeu == null){
+					jtfrueck = new JRtaTextField("NIX",false);
+					tbEingabeNeu = new TbEingabeNeu(tbtext.getText(),vectb,this,jtfrueck);			
+				}else{
+					tbEingabeNeu.neueDaten(tbtext.getText(),vectb);
+				}
+				alttitel = super.getSmartTitledPanel().getTitle();
+				grundPanel.remove(this.content);
+				grundPanel.add(tbEingabeNeu,BorderLayout.CENTER);
+				grundPanel.validate();
+				repaint();
 			}else{
-				tbEingabeNeu.neueDaten(tbtext.getText(),vectb);
+				
+				String sblock = (String) textblock.getValueAt(textblock.getSelectedRow(), 0);
+				int block = new Integer(sblock.substring(0,1))-1;
+				abr.schreibeTextBlock(block,new String(tbtext.getText()) );
+				incheckundstart = false;
+				inholetext = false;
+				this.dispose();
 			}
-			alttitel = super.getSmartTitledPanel().getTitle();
-			grundPanel.remove(this.content);
-			grundPanel.add(tbEingabeNeu,BorderLayout.CENTER);
-			//ank.setzteFocus();
-			grundPanel.validate();
 			incheckundstart = false;
-			repaint();
-			
+			inholetext = false;
 		}
 		public void wechsleRueckwaerts(){
 			grundPanel.remove(tbEingabeNeu);
@@ -415,6 +424,14 @@ public class ThTextBlock extends RehaSmartDialog{
 			ret = ret +") ";
 			return ret;
 		}
+		
+		private void macheSysVars(){
+			String[] sysVars = {"^Anrede^","^PatName^","^Heute^","^DerPat/DiePat^","^derPat/diePat^",
+					"^DemPat/DerPat^","^demPat/derPat^","^DenPat/DiePat^","^denPat/diePat^",
+					"^desPat/derPat^","^ihm/ihr^","^Sein/Ihr^","^sein/ihr^","^Seine/Ihre^","^seine/ihre^",
+					"^Er/Sie^","^er/sie^","^ErstDatum^","^LetztDatum^","^RezDatum^"
+			};
+		}
 
 		class MyTextBlockModel extends DefaultTableModel{
 			   /**
@@ -446,6 +463,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		    public void valueChanged(ListSelectionEvent e) {
 				if(blockneugefunden || inholetext){
 					blockneugefunden = false;
+					System.out.println("Wert von inholetext = "+inholetext);
 					return;
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
