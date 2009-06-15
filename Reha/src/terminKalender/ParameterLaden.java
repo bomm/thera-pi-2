@@ -21,8 +21,8 @@ public static Vector<Kollegen> vKKollegen = new Vector<Kollegen>();
 public static Vector<ArrayList> pKollegen = new Vector<ArrayList>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();
 
-//public static Vector<Vector> vKGPreise = new Vector<Vector>();
-public static Vector<ArrayList<String>> vKGPreise = new Vector<ArrayList<String>>();
+public static Vector<Vector> vKGPreise = new Vector<Vector>();
+//public static Vector<ArrayList> vKGPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vMAPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vERPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vLOPreise = new Vector<ArrayList>();
@@ -357,8 +357,9 @@ public static void PreiseEinlesen(String preisklasse) {
 	 		}
 	 		for(i = 0;i<1;i++){
 	 			if(preisklasse == "KG"){
-	 				//vKGPreise.add((Vector)vPreise.clone());
-	 				vKGPreise.add((ArrayList)aPreise.clone());
+	 				vKGPreise.add((Vector)vPreise.clone());
+	 				//vKGPreise.add((ArrayList)aPreise.clone());
+	 				vPreise.clear();
 	 			 	aPreise.clear();
 	 				break;
 	 			}
@@ -385,13 +386,13 @@ public static void PreiseEinlesen(String preisklasse) {
 	 		}
 	 		
 		}
-	 	Comparator<Vector<ArrayList<String>>> comparator = new Comparator<Vector<ArrayList<String>>>() {
+	 	Comparator<Vector> comparator = new Comparator<Vector>() {
 
 			@Override
-			public int compare(Vector<ArrayList<String>> o1, Vector<ArrayList<String>> o2) {
+			public int compare(Vector o1, Vector o2) {
 				
-				String s1 = (String)((Vector<ArrayList<String>>)o1).get(0).toString();
-				String s2 = (String)((Vector<ArrayList<String>>)o2).get(0).toString();
+				String s1 = (String)((Vector)o1).get(0).toString();
+				String s2 = (String)((Vector)o2).get(0).toString();
 				return s1.compareTo(s2);
 			}
 		};
