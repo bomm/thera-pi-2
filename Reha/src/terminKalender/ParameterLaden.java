@@ -22,11 +22,18 @@ public static Vector<ArrayList> pKollegen = new Vector<ArrayList>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();
 
 public static Vector<Vector> vKGPreise = new Vector<Vector>();
-//public static Vector<ArrayList> vKGPreise = new Vector<ArrayList>();
+public static Vector<Vector> vMAPreise = new Vector<Vector>();
+public static Vector<Vector> vERPreise = new Vector<Vector>();
+public static Vector<Vector> vLOPreise = new Vector<Vector>();
+public static Vector<Vector> vRHPreise = new Vector<Vector>();
+
+/*
+public static Vector<ArrayList> vKGPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vMAPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vERPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vLOPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vRHPreise = new Vector<ArrayList>();
+*/
 
 public static String[][] col;	
 public static Kollegen [] cKollegen[]; 
@@ -343,7 +350,7 @@ public static void PreiseEinlesen(String preisklasse) {
 			rs = stmt.executeQuery("SELECT * from rhtarif");
 		}
 		
-		ArrayList<String> aPreise = new ArrayList<String>();
+		//ArrayList<String> aPreise = new ArrayList<String>();
 		Vector<String> vPreise = new Vector<String>();
 	 	String test = new String();
 	 	while( rs.next()){
@@ -352,35 +359,46 @@ public static void PreiseEinlesen(String preisklasse) {
 	 		int start;
 	 		for(start=1;start<=i;start++){
 		 		test = rs.getString(start);
-		 		aPreise.add((test != null ?  test : "" ));
+		 		//aPreise.add((test != null ?  test : "" ));
 		 		vPreise.add((test != null ?  test : "" ));
 	 		}
 	 		for(i = 0;i<1;i++){
 	 			if(preisklasse == "KG"){
-	 				vKGPreise.add((Vector)vPreise.clone());
 	 				//vKGPreise.add((ArrayList)aPreise.clone());
+	 			 	//aPreise.clear();
+	 				vKGPreise.add((Vector)vPreise.clone());
 	 				vPreise.clear();
-	 			 	aPreise.clear();
 	 				break;
 	 			}
 	 			if(preisklasse == "MA"){
-	 				vMAPreise.add((ArrayList)aPreise.clone());
-	 			 	aPreise.clear();
+	 				//vMAPreise.add((ArrayList)aPreise.clone());
+	 			 	//aPreise.clear();
+	 				vMAPreise.add((Vector)vPreise.clone());
+	 			 	vPreise.clear();
+
 	 				break;
 	 			}
 	 			if(preisklasse == "ER"){
-	 				vERPreise.add((ArrayList)aPreise.clone());
-	 			 	aPreise.clear();
+	 				//vERPreise.add((ArrayList)aPreise.clone());
+	 			 	//aPreise.clear();
+	 				vERPreise.add((Vector)vPreise.clone());
+	 			 	vPreise.clear();
+
 	 				break;
 	 			}
 	 			if(preisklasse == "LO"){
-	 				vLOPreise.add((ArrayList)aPreise.clone());
-	 			 	aPreise.clear();
+	 				//vLOPreise.add((ArrayList)aPreise.clone());
+	 			 	//aPreise.clear();
+	 				vLOPreise.add((Vector)vPreise.clone());
+	 			 	vPreise.clear();
+	 			 	
 	 				break;
 	 			}
 	 			if(preisklasse == "RH"){
-	 				vRHPreise.add((ArrayList)aPreise.clone());
-	 			 	aPreise.clear();
+	 				//vRHPreise.add((ArrayList)aPreise.clone());
+	 			 	//aPreise.clear();
+	 				vRHPreise.add((Vector)vPreise.clone());
+	 			 	vPreise.clear();	 			 	
 	 				break;
 	 			}
 	 		}
@@ -396,10 +414,28 @@ public static void PreiseEinlesen(String preisklasse) {
 				return s1.compareTo(s2);
 			}
 		};
-		if(preisklasse.equals("KG")){
-			Collections.sort((Vector)vKGPreise,comparator);
-			System.out.println(vKGPreise);
-		}
+		for(int i = 0;i < 1;i++){
+			if(preisklasse.equals("KG")){
+				Collections.sort((Vector)vKGPreise,comparator);
+				break;
+			}
+			if(preisklasse.equals("MA")){
+				Collections.sort((Vector)vMAPreise,comparator);
+				break;
+			}
+			if(preisklasse.equals("ER")){
+				Collections.sort((Vector)vERPreise,comparator);
+				break;
+			}
+			if(preisklasse.equals("LO")){
+				Collections.sort((Vector)vLOPreise,comparator);
+				break;
+			}
+			if(preisklasse.equals("RH")){
+				Collections.sort((Vector)vRHPreise,comparator);
+				break;
+			}
+		}		
 		
 
 		}catch(SQLException ex){

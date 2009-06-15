@@ -76,7 +76,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public boolean neu = false;
 	public String feldname = "";
 	public Vector<String> vec = null;
-	public Vector<ArrayList> preisvec = null;
+	public Vector<Vector> preisvec = null;
 	private boolean klassenReady = false;
 	private boolean initReady = false;
 	private static final long serialVersionUID = 1L;
@@ -85,6 +85,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private String nummer = null;
 	private String[] farbcodes = {null,null,null,null,null,null,null,null,null,null};
 	private String[] heilmittel = {"KG","MA","ER","LO","RH"};
+	int[] comboid = {-1,-1,-1,-1}; 
 	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 	
 		
@@ -486,20 +487,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		return jscr;
 		
 	}
-	public int leistungTesten(int veczahl){
+	public int leistungTesten(int combo,int veczahl){
 		int retwert = 0;
 		if(veczahl==-1 || veczahl==0){
 			return retwert;
 		}
+		/*
 		if(veczahl <= preisvec.size()){
-			int idtest =  new Integer( (String) ((ArrayList)preisvec.get(veczahl-1)).get(35) );
+			int idtest =  new Integer( (String) ((Vector)preisvec.get(veczahl-1)).get(35) );
 			if(idtest == veczahl){
 				return veczahl;
 			}
 		}
+		*/
 		for(int i = 0;i<preisvec.size();i++){
-			if( new Integer( (String) ((ArrayList)preisvec.get(i)).get(35)) == veczahl ){
-				return veczahl;
+			if( new Integer( (String) ((Vector)preisvec.get(i)).get(35)) == veczahl ){
+				return i+1;
 			}
 		}
 		
@@ -838,13 +841,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		test = StringTools.NullTest(this.vec.get(6));
 		jtf[7].setText(test);
 		itest = StringTools.ZahlTest(this.vec.get(8));
-		jcmb[2].setSelectedIndex(leistungTesten(itest));
+		jcmb[2].setSelectedIndex(leistungTesten(0,itest));
+		System.out.println("Leistung 1 = "+itest);
 		itest = StringTools.ZahlTest(this.vec.get(9));
-		jcmb[3].setSelectedIndex(leistungTesten(itest));
+		jcmb[3].setSelectedIndex(leistungTesten(1,itest));
+		System.out.println("Leistung 2 = "+itest);
 		itest = StringTools.ZahlTest(this.vec.get(10));
-		jcmb[4].setSelectedIndex(leistungTesten(itest));
+		jcmb[4].setSelectedIndex(leistungTesten(2,itest));
+		System.out.println("Leistung 3 = "+itest);
 		itest = StringTools.ZahlTest(this.vec.get(11));
-		jcmb[5].setSelectedIndex(leistungTesten(itest));
+		jcmb[5].setSelectedIndex(leistungTesten(3,itest));
+		System.out.println("Leistung 4 = "+itest);
 		test = StringTools.NullTest(this.vec.get(52));
 		jtf[8].setText(test);
 		test = StringTools.NullTest(this.vec.get(47));
@@ -881,10 +888,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	private String[] holePreis(int ivec,int ipreisgruppe){
 		if(ivec > 0){
-			ArrayList xvec = ((ArrayList)this.preisvec.get(ivec-1));
+			int prid = new Integer((String) this.preisvec.get(ivec).get(35));
+			System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
+			System.out.println("ID der Position = "+prid);
+			Vector xvec = ((Vector)this.preisvec.get(ivec));
 			int preispos = ((ipreisgruppe*4)-4)+3;
 			return new String[] {(String)xvec.get(preispos),(String)xvec.get(preispos-1)};
 		}else{
+			System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
 			return new String[] {"0.00",""};
 		}
 	}
@@ -997,16 +1008,25 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("zzstatus='"+szzstatus+"', ");
 		int leistung;
 		String[] str;
+		int xid;
 		for(int i = 0;i < 4;i++){
-			leistung = leistungTesten(jcmb[i+2].getSelectedIndex());
+			xid = ( jcmb[i+2].getSelectedIndex()-1);
+			if(xid >= 0){
+				leistung = leistungTesten(i, new Integer( (String)preisvec.get(xid).get(35)) ) ;	
+			}else{
+				leistung = -1;
+			}
+			System.out.println("Leistungsart "+i+" = "+leistung);
+			//leistung = leistungTesten(i,jcmb[i+2].getSelectedIndex()-1 );
 			if(leistung >= 0){
-				str = holePreis(leistung,new Integer(jtf[13].getText()) );
+				str = holePreis(xid,new Integer(jtf[13].getText()) );
+				//str = holePreis(leistung,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
-				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
-				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
+				System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
+				System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
 			}else{
-				sbuf.append("preise"+(i+1)+"='0.00'");
+				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
@@ -1019,7 +1039,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 	}
-	/**************************************/	
+	/**************************************/
+	/**************************************/
+	/**************************************/
+	/**************************************/
+	/**************************************/
 	private void doSpeichernNeu(){
 		int reznr = -1;
 		if(!komplettTest()){
@@ -1165,8 +1189,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("zzstatus='"+szzstatus+"', ");
 		int leistung;
 		String[] str;
+		int xid;
 		for(int i = 0;i < 4;i++){
-			leistung = leistungTesten(jcmb[i+2].getSelectedIndex());
+			//preisvec.get(itest-1).get(35)
+			xid = ( jcmb[i+2].getSelectedIndex()-1);
+			leistung = leistungTesten(i, new Integer( (String)preisvec.get(xid).get(35)) ) ;
+			//leistung = leistungTesten(i,jcmb[i+2].getSelectedIndex());
 			if(leistung >= 0){
 				str = holePreis(leistung,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");

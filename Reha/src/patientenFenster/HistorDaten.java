@@ -154,7 +154,7 @@ public class HistorDaten extends JXPanel{
 				}else{
 					rezlabs[7].setText(" ");
 				}
-				Vector<ArrayList> preisvec = null;
+				Vector<Vector> preisvec = null;
 				if(reznummer.contains("KG")){
 					preisvec = ParameterLaden.vKGPreise;
 				}else if(reznummer.contains("MA")){
@@ -208,22 +208,24 @@ public class HistorDaten extends JXPanel{
 		*/
 		
 	}
-	public String leistungTesten(Vector<ArrayList> preisevec,int veczahl){
+	public String leistungTesten(Vector<Vector> preisevec,int veczahl){
 		String retwert = "----";
 		if(veczahl==-1 || veczahl==0){
 			return retwert;
 		}
+		/*
 		if(veczahl <= preisevec.size()){
-			int idtest =  new Integer( (String) ((ArrayList)preisevec.get(veczahl-1)).get(35) );
+			int idtest =  new Integer( (String) ((Vector)preisevec.get(veczahl-1)).get(35) );
 			if(idtest == veczahl){
 				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
-				(String) ((ArrayList)preisevec.get(veczahl-1)).get(1);
+				(String) ((Vector)preisevec.get(veczahl-1)).get(1);
 			}
 		}
+		*/
 		for(int i = 0;i<preisevec.size();i++){
-			if( new Integer( (String) ((ArrayList)preisevec.get(i)).get(35)) == veczahl ){
+			if( new Integer( (String) ((Vector)preisevec.get(i)).get(35)) == veczahl ){
 				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
-				(String) ((ArrayList)preisevec.get(i)).get(1);
+				(String) ((Vector)preisevec.get(i)).get(1);
 			}
 		}
 		
