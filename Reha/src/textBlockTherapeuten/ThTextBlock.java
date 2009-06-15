@@ -425,13 +425,25 @@ public class ThTextBlock extends RehaSmartDialog{
 			return ret;
 		}
 		
-		private void macheSysVars(){
-			String[] sysVars = {"^Anrede^","^PatName^","^Heute^","^DerPat/DiePat^","^derPat/diePat^",
+		private void macheSysVars1(){
+			String[] sysVars1 = {"^DerPat/DiePat^","^derPat/diePat^",
 					"^DemPat/DerPat^","^demPat/derPat^","^DenPat/DiePat^","^denPat/diePat^",
 					"^desPat/derPat^","^ihm/ihr^","^Sein/Ihr^","^sein/ihr^","^Seine/Ihre^","^seine/ihre^",
-					"^Er/Sie^","^er/sie^","^ErstDatum^","^LetztDatum^","^RezDatum^"
+					"^Er/Sie^","^er/sie^"
+		
+			};
+			String[][] sysInhalt1 = {{"Der Patient","Die Patientin"},{"der Patient","die Patientin"},
+					{"Dem Patient","Der Patientin"},{"dem Patient","der Patientin"},{"Den Patient","Die Patientin"},
+					{"den Patient","die Patientin"},{"des Patient","der Patientin"},{"ihm","ihr"},
+					{"Sein","Ihr"},{"sein","ihr"},{"Seine","Ihre"},{"seine","ihre"},
+					{"Er","Sie"},{"er","sie"}};
+		}
+		private void macheSysVars2(){
+			String[] sysVars2 = {
+					"^ErstDatum^","^LetztDatum^","^RezDatum^","^Anrede^","^PatName^","^Heute^"	
 			};
 		}
+		
 
 		class MyTextBlockModel extends DefaultTableModel{
 			   /**

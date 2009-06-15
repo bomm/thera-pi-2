@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -20,7 +21,8 @@ public static Vector<Kollegen> vKKollegen = new Vector<Kollegen>();
 public static Vector<ArrayList> pKollegen = new Vector<ArrayList>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();
 
-public static Vector<ArrayList> vKGPreise = new Vector<ArrayList>();
+//public static Vector<Vector> vKGPreise = new Vector<Vector>();
+public static Vector<ArrayList<String>> vKGPreise = new Vector<ArrayList<String>>();
 public static Vector<ArrayList> vMAPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vERPreise = new Vector<ArrayList>();
 public static Vector<ArrayList> vLOPreise = new Vector<ArrayList>();
@@ -197,8 +199,8 @@ public static void Init(){
 		 	aKollegen.clear();
 		 	durchlauf++;
 		}
-	 	Collections.sort(vKKollegen);
-	 	//System.out.println(vKKollegen);
+	 	//Collections.sort(vKKollegen);
+	 	System.out.println(vKKollegen);
 	 	
 	 	//System.out.println("Index von a-Wolf = "+suchen("Verwaltung"));
 		}catch(SQLException ex){
@@ -339,8 +341,10 @@ public static void PreiseEinlesen(String preisklasse) {
 			rs = stmt.executeQuery("SELECT * from lotarif");
 		}else if(preisklasse=="RH"){
 			rs = stmt.executeQuery("SELECT * from rhtarif");
-		}	
-		ArrayList aPreise = new ArrayList();
+		}
+		
+		ArrayList<String> aPreise = new ArrayList<String>();
+		Vector<String> vPreise = new Vector<String>();
 	 	String test = new String();
 	 	while( rs.next()){
 	 		//System.out.println("Anzahl Spalten "+rs.getMetaData().getColumnCount());
@@ -349,11 +353,12 @@ public static void PreiseEinlesen(String preisklasse) {
 	 		for(start=1;start<=i;start++){
 		 		test = rs.getString(start);
 		 		aPreise.add((test != null ?  test : "" ));
+		 		vPreise.add((test != null ?  test : "" ));
 	 		}
 	 		for(i = 0;i<1;i++){
 	 			if(preisklasse == "KG"){
+	 				//vKGPreise.add((Vector)vPreise.clone());
 	 				vKGPreise.add((ArrayList)aPreise.clone());
-	 				//System.out.println(vKGPreise);	 				
 	 			 	aPreise.clear();
 	 				break;
 	 			}
@@ -378,8 +383,23 @@ public static void PreiseEinlesen(String preisklasse) {
 	 				break;
 	 			}
 	 		}
+	 		
 		}
+	 	Comparator<Vector<ArrayList<String>>> comparator = new Comparator<Vector<ArrayList<String>>>() {
 
+			@Override
+			public int compare(Vector<ArrayList<String>> o1, Vector<ArrayList<String>> o2) {
+				
+				String s1 = (String)((Vector<ArrayList<String>>)o1).get(0).toString();
+				String s2 = (String)((Vector<ArrayList<String>>)o2).get(0).toString();
+				return s1.compareTo(s2);
+			}
+		};
+		if(preisklasse.equals("KG")){
+			Collections.sort((Vector)vKGPreise,comparator);
+			System.out.println(vKGPreise);
+		}
+		
 
 		}catch(SQLException ex){
 			System.out.println("Kollegen1="+ex);

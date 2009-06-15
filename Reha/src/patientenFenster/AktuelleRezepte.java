@@ -89,6 +89,7 @@ import events.RehaTPEventListener;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 
@@ -558,13 +559,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(terms==null){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");			
+			anzahlTermine.setText("Anzahl Terimine: 0");
+			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
+			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
 			return;
 		}
 		if(terms.equals("")){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
 			anzahlTermine.setText("Anzahl Terimine: 0");
+			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
+			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
 			return;
 		}
 		String[] tlines = terms.split("\n");
@@ -572,15 +577,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//System.out.println("Anzahl Termine = "+lines);
 		Vector tvec = new Vector();
 		dtermm.setRowCount(0);
+		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
-			String[] terdat = tlines[i].split("@");
+			terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
 			//System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
-					
 					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
 				}else{
 					tvec.add(new String(terdat[y]));					
 				}
@@ -590,9 +596,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			dtermm.addRow((Vector)tvec.clone());
 		}
 		anzahlTermine.setText("Anzahl Terimine: "+lines);
-		
+		SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
+	
 		
 	}
+
 	public void termineSpeichern(){
 		int reihen = dtermm.getRowCount();
 		StringBuffer sb = new StringBuffer();
@@ -696,6 +704,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	    						inRezeptDaten = false;
+	    						new Thread(){
+	    							public void run(){
+	    	    						RezTools.constructRezHMap();	    								
+	    							}
+	    						}.start();
+
 								return null;
 							}
 	                		
@@ -886,6 +900,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			}
 			if(cmd.equals("rezneu")){
+				
+				if(PatGrundPanel.thisClass.autoPatid <= 0){
+					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+							"....und für welchen Patient wollen Sie ein neues Rezept anlegen....");
+					return;
+				}
 				neuanlageRezept(true,"");
 				break;
 			}
@@ -899,6 +919,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			}
 			if(cmd.equals("rezdelete")){
+				if(aktPanel.equals("leerPanel")){
+					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön löschen....");
+					return;
+				}
 				int currow = tabaktrez.getSelectedRow();
 				int anzrow = tabaktrez.getRowCount();
 				if(currow == -1){
@@ -941,6 +966,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				// 1 ist es eine Neuanlage oder soll ein bestehender Ber. editiert werden
 				// 2 ist ein Ber. überhaupt angefordert
 				// 3 gibt es einen Rezeptbezug oder nicht
+				if(aktPanel.equals("leerPanel")){
+					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+							"....und für welches der nicht vorhandenen Rezepte wollen einen Therapiebericht erstellen....");
+					return;
+				}
+
 				boolean neuber = true;
 				int berid = 0;
 				String xreznr;

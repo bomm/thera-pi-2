@@ -11,6 +11,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -562,20 +564,24 @@ public class SystemConfig {
 	}
 	public static void HashMapsVorbereiten(){
 		hmAdrKDaten = new HashMap<String,String>();
-		lAdrKDaten = Arrays.asList(new String[]{"<Kadr1>","<Kadr2>","<Kadr3>","<Kadr4>"});
+		lAdrKDaten = Arrays.asList(new String[]{"<Kadr1>","<Kadr2>","<Kadr3>","<Kadr4>","<Kadr5>",
+												"<Ktel>","<Kfax>","<Kemail>","<Kid>"});
 		for(int i = 0; i < lAdrKDaten.size(); i++){
 			hmAdrKDaten.put(lAdrKDaten.get(i),"");
 		}
 
 		hmAdrADaten = new HashMap<String,String>();
-		lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>"});
+		lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
+												"<Atel>","<Afax>","<Aemail>","<Aid>"});
 		for(int i = 0; i < lAdrADaten.size(); i++){
 			hmAdrADaten.put(lAdrADaten.get(i),"");
 		}
 		
 		
 		hmAdrPDaten = new HashMap<String,String>();
-		lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>","<Pgeboren>","<Panrede>","<Pnname>","<Pvname>"});
+		lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>",
+											"<Pgeboren>","<Panrede>","<Pnname>","<Pvname>","<Pbanrede>",
+											"<Ptelp>","<Ptelg>","<Ptelmob>","<Pfax>","<Pemail>","<Ptitel>","<Pihrem>","<Pihnen>","<Pid>"});
 		for(int i = 0; i < lAdrPDaten.size(); i++){
 			hmAdrPDaten.put(lAdrPDaten.get(i),"");
 		}
@@ -584,7 +590,7 @@ public class SystemConfig {
 		lAdrRDaten = Arrays.asList(new String[]{"<Rpatid>","<Rnummer>","<Rdatum>","<Rposition1>","<Rposition2>","<Rposition3>"
 				,"<Rposition4>","<Rpreise1>","<Rpreise2>","<Rpreise3>","<Rpreise4>","<Rproz1>","<Rproz2>","<Rproz3>"
 				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag>","<Ranzahl1>"
-				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>"});
+				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>","<Rerstdat>","<Rletztdat>","<Rid>"});
 		for(int i = 0; i < lAdrRDaten.size(); i++){
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
 		}
@@ -694,7 +700,6 @@ public class SystemConfig {
 			}
 			hmTherapBausteine.put(prop2, (Vector) vec.clone());
 		}
-		
 	}
 	
 	public static void SystemIconsInit(){
@@ -725,6 +730,43 @@ public class SystemConfig {
 		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));
 		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));		
 	}
+	
+	public static void compTest(){
+		Vector<Vector> vec = new Vector<Vector>();
+		Vector<String> ve2 = new Vector<String>();
+		ve2.add("Zundermann");
+		ve2.add("0");
+		vec.add((Vector)ve2.clone());
+		ve2.clear();
+		ve2.add("Maier");
+		ve2.add("1");
+		vec.add((Vector)ve2.clone());
+		ve2.clear();
+		ve2.add("Ammann");
+		ve2.add("2");
+		vec.add((Vector)ve2.clone());
+		Comparator<Vector> comparator = new Comparator<Vector>() {
+		    public int compare(String s1, String s2) {
+		        String[] strings1 = s1.split("\\s");
+		        String[] strings2 = s2.split("\\s");
+		        return strings1[strings1.length - 1]
+		            .compareTo(strings2[strings2.length - 1]);
+		    }
+
+			@Override
+			public int compare(Vector o1, Vector o2) {
+				// TODO Auto-generated method stub
+				String s1 = (String)o1.get(0);
+				String s2 = (String)o2.get(0);
+				return s1.compareTo(s2);
+			}
+		};
+		Collections.sort(vec,comparator);
+		System.out.println("Sortierter Vector = "+vec);
+	}
+	
+
+	
 	
 }
 

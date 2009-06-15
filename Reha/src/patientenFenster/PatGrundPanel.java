@@ -43,6 +43,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -75,6 +78,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.rtf.RTFEditorKit;
 
+import krankenKasse.KassenFormulare;
+
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -85,6 +90,8 @@ import org.jdesktop.swingx.painter.MattePainter;
 import rehaContainer.RehaTP;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.PatTools;
+import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
@@ -152,6 +159,8 @@ public JButton[] jbut = {null,null,null,null};
 public Vector<String> patDaten = new Vector<String>();
 public String lastseek = "";
 public boolean neuDlgOffen = false;
+private Vector<String> titel = new Vector<String>();
+private Vector<String> formular = new Vector<String>();
 
 public JLabel[] rezlabs = {null,null,null,null,null,
 							null,null,null,null,null,
@@ -171,6 +180,9 @@ public int aid = -1;
 public int kid = -1;
 public int autoPatid = -1;
 
+
+private JRtaTextField formularid = new JRtaTextField("NIX",false);
+private int iformular;
 public PatGrundPanel(JPatientInternal jry){
 	super();
 	thisClass = this;
@@ -359,8 +371,8 @@ public PatGrundPanel(JPatientInternal jry){
 			PatGrundPanel.thisClass.getActionMap().put("doDelete", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_MASK);
 			PatGrundPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFormulare");
-			PatGrundPanel.thisClass.getActionMap().put("dodoFormulare", new PatientAction());
-
+			PatGrundPanel.thisClass.getActionMap().put("doFormulare", new PatientAction());
+			holeFormulare();
 			if(TerminFenster.thisClass != null){
 		    	//TerminFenster.thisClass.setUpdateVerbot(true);
 		    }
@@ -409,6 +421,44 @@ public boolean sucheHatFocus(){
 		return false;
 	}
 }
+
+public void holeFormulare(){
+	new SwingWorker<Void,Void>(){
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			// TODO Auto-generated method stub
+			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+			int forms = inif.getIntegerProperty("Formulare", "PatientFormulareAnzahl");
+			for(int i = 1; i <= forms; i++){
+				titel.add(inif.getStringProperty("Formulare","PFormularText"+i));			
+				formular.add(inif.getStringProperty("Formulare","PFormularName"+i));
+			}	
+			return null;
+		}
+		
+	}.execute();
+	
+}
+private void starteFormulare(){
+	iformular = -1;
+	KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
+	Point pt = jbut[3].getLocationOnScreen();
+	kf.setLocation(pt.x-100,pt.y+25);
+	kf.setModal(true);
+	kf.setVisible(true);
+	iformular = new Integer(formularid.getText());
+	kf = null;
+	/*
+	Set entries = SystemConfig.hmAdrPDaten.entrySet();
+    Iterator it = entries.iterator();
+    while (it.hasNext()) {
+      Map.Entry entry = (Map.Entry) it.next();
+      System.out.println(entry.getKey() + "-->" + entry.getValue());
+    }
+    */
+}
+
 public void delete(){
 	if(!aktPatID.equals("")){
 		String spat = ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geb.am "+ptfield[4].getText().trim();
@@ -481,6 +531,7 @@ class PatientAction extends AbstractAction {
        		delete();
         }	            
         if(e.getActionCommand().equals("b")){
+        	PatGrundPanel.thisClass.starteFormulare();
         }	            
     }
 }
@@ -854,6 +905,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 			delete();
 		}
 		if(sc.equals("formulare")){
+			starteFormulare();
 			setzeFocus();
 		}
 		System.out.println("ActionCommand = "+sc);
@@ -941,7 +993,11 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 									PatGrundPanel.thisClass.patDaten.clear();
 									PatGrundPanel.thisClass.patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+xpatint+"'", Arrays.asList(new String[] {}));
 									//System.out.println("Fertig mit einlesen der kompletten Pat-Daten");
-				
+									new Thread(){
+										public void run(){
+											PatTools.constructPatHMap();		
+										}
+									}.start();
 						return null;
 					}
 				}.execute();

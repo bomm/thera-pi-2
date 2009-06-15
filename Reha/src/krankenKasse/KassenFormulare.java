@@ -22,6 +22,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -46,6 +47,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 
 import rehaContainer.RehaTP;
 import systemEinstellungen.SystemConfig;
+import systemTools.JRtaTextField;
 import systemTools.WinNum;
 
 import terminKalender.TerminFenster;
@@ -73,10 +75,15 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	private MouseAdapter mymouse = null;
 	private RehaTPEventClass rtp = null;
 	int wahl;
+	Vector<String>titel = null;
+	Vector<String>formular = null;
 	private JXTitledPanel jtp = null;
-	public KassenFormulare(JXFrame owner){
+	private JRtaTextField tfrueck = null;
+	public KassenFormulare(JXFrame owner,Vector<String>titel,JRtaTextField rueckform){
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
-
+		this.titel = titel;
+		this.formular = formular;
+		tfrueck = rueckform;
 		this.setUndecorated(true);
 		this.setName("KFormularWahl");
 		jtp = new JXTitledPanel();
@@ -147,7 +154,8 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 				public void mouseClicked(MouseEvent arg0) {
 					// TODO Auto-generated method stub
 					if (arg0.getClickCount() == 2){
-						KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
+						tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+						//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 						KassenFormulare.thisClass.FensterSchliessen("dieses");
 					}
 				}
@@ -158,10 +166,12 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	}
 	private void ListeFuellen(DefaultListModel model){
 		int i,max = 0;
-		max = KassenPanel.thisClass.titel.size();
+		//max = KassenPanel.thisClass.titel.size();
+		max = titel.size();
 		String[] fach = new String[max];
 		for(i=0;i<max;i++){
-			model.add(i,(String)KassenPanel.thisClass.titel.get(i));
+			//model.add(i,(String)KassenPanel.thisClass.titel.get(i));
+			model.add(i,(String)titel.get(i));
 		}
 		return;
 	}
@@ -199,19 +209,22 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 			//arg0.consume();
 			if(ret != -1){
 				System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
-				KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
+				tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+				//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}else{
 				System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
-				KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
+				tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+				//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}	
 		}
 		if (arg0.getKeyCode()==27){
-			System.out.println("ESC gedrückt");			
-			KassenPanel.thisClass.iformular = -1;
+			System.out.println("ESC gedrückt");	
+			tfrueck.setText(new Integer(-1).toString());
+			//KassenPanel.thisClass.iformular = -1;
 			DialogBeenden(-1);
 			return;
 		}
@@ -289,11 +302,13 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("ok")){
-			KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
+			tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+			//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 			FensterSchliessen("Dieses");
 		}
 		if(cmd.equals("abbrechen")){
-			KassenPanel.thisClass.iformular = -1;
+			tfrueck.setText(new Integer(-1).toString());
+			//KassenPanel.thisClass.iformular = -1;
 			FensterSchliessen("Dieses");
 		}
 	}

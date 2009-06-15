@@ -124,6 +124,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	//public JRtaTextField[] tf = {null,null,null,null,null,null,null,null,null,null,null,null,null,null,null};
 	public JTextArea ta;
 	public boolean inMemoEdit = false; 
+	private JRtaTextField formularid = new JRtaTextField("NIX",false);
 	Vector titel = new Vector<String>() ;
 	Vector formular = new Vector<String>();
 	int iformular = -1;
@@ -702,11 +703,12 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		if(row >= 0){
 			String sid = new Integer((String) kassentbl.getValueAt(row, 7)).toString();
     		iformular = -1;
-    		KassenFormulare kf = new KassenFormulare(Reha.thisFrame);
+    		KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
     		Point pt = jbut[3].getLocationOnScreen();
     		kf.setLocation(pt.x-100,pt.y+25);
     		kf.setModal(true);
     		kf.setVisible(true);
+    		iformular = new Integer(formularid.getText());
     		kf = null;
     		final String xid = sid;
     		if(iformular >= 0){
