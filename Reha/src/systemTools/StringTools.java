@@ -142,6 +142,11 @@ public class StringTools {
 			neuString = test.replaceAll("Dak", "DAK");
 			test = new String(neuString);
 		}
+		if(test.indexOf("str.") > -1){
+			neuString = test.replaceAll(" str.", " Str.");
+			test = new String(neuString);
+		}
+
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
 			//System.out.println(ex);
 			return ""+test;

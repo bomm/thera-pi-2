@@ -40,7 +40,7 @@ public class PatTools {
 		//System.out.println(lang);
 		//SystemConfig.hmAdrPDaten.put("<Padr1>", PatGrundPanel.thisClass.patDaten.get(0));
 		String anrede = StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(0));
-		if(anrede.equals("Herr")){
+		if(anrede.toUpperCase().equals("HERR")){
 			isherr = true;
 		}
 		String titel =  StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(1));

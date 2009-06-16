@@ -80,6 +80,8 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import krankenKasse.KassenFormulare;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -449,6 +451,10 @@ private void starteFormulare(){
 	kf.setVisible(true);
 	iformular = new Integer(formularid.getText());
 	kf = null;
+	if(iformular >=0){
+		String sdatei = formular.get(iformular);
+		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei);
+	}
 	/*
 	Set entries = SystemConfig.hmAdrPDaten.entrySet();
     Iterator it = entries.iterator();
