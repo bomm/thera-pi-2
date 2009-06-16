@@ -206,8 +206,8 @@ public static void Init(){
 		 	aKollegen.clear();
 		 	durchlauf++;
 		}
-	 	//Collections.sort(vKKollegen);
-	 	System.out.println(vKKollegen);
+	 	Collections.sort(vKKollegen);
+	 	//System.out.println(vKKollegen);
 	 	
 	 	//System.out.println("Index von a-Wolf = "+suchen("Verwaltung"));
 		}catch(SQLException ex){
