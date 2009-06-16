@@ -17,6 +17,8 @@ import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.presentation.IPresentationDocument;
+import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
@@ -134,4 +136,46 @@ public class OOTools {
 		
 		
 	}
+	public static void starteLeerenWriter(){
+		try {
+			IDocumentService documentService = Reha.officeapplication.getDocumentService();
+			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
+			ITextDocument textDocument = (ITextDocument)document;
+		} 
+		catch (OfficeApplicationException exception) {
+			exception.printStackTrace();
+		} 
+		catch (NOAException exception) {
+			exception.printStackTrace();
+		}
+	}
+		
+
+	public static void starteLeerenCalc(){
+		try {
+			IDocumentService documentService = Reha.officeapplication.getDocumentService();
+			IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
+			ISpreadsheetDocument spreadsheetDocument = (ISpreadsheetDocument) document;
+		} 
+		catch (Throwable exception) {
+			exception.printStackTrace();
+		} 
+	}
+		
+		
+	
+	public static void starteLeerenImpress(){
+		try {
+			IDocumentService documentService = Reha.officeapplication.getDocumentService();
+			IDocument document = documentService.constructNewDocument(IDocument.IMPRESS, DocumentDescriptor.DEFAULT);
+			IPresentationDocument presentationDocument = (IPresentationDocument) document;
+		}
+		catch(Throwable throwable) {
+			throwable.printStackTrace();
+		}
+		
+		
+	}
+	
+	
 }

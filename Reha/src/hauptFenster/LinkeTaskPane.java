@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -46,6 +47,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+
+import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXPanel;
@@ -168,7 +171,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	 */
 	
 	private JXTaskPane getPatientenStamm(){
-
+		Image img = null;
 		tp1 = new JXTaskPane();
 		UIManager.put("TaskPane.titleBackgroundGradientStart",Color.WHITE);
 		UIManager.put("TaskPane.titleBackgroundGradientEnd",new Color(200,212,247));
@@ -178,21 +181,28 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp1.setUI(wui);
 		tp1.setTitle("Stammdaten");
-		tp1.setIcon(new ImageIcon(Reha.proghome+"icons/personen16.gif"));				
+		//tp1.setIcon(new ImageIcon(Reha.proghome+"icons/personen16.gif"));				
 		JXHyperlink jxLink = new JXHyperlink();
-		jxLink.setText("Patienten und Rezepte  (Strg+P)");
+		jxLink.setText("Patienten und Rezepte");
+		jxLink.setToolTipText("Strg+P = Patienten-/Rezeptstamm starten");
+		img = new ImageIcon(Reha.proghome+"icons/kontact_contacts.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		jxLink.setEnabled(true);
 		tp1.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Ärzte - Stammdaten  (Strg+A)");
+		jxLink.setText("Ärzte");
+		jxLink.setToolTipText("Strg+A = Arztstamm starten");
+		img = new ImageIcon(Reha.proghome+"icons/system-users.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));				
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
-		jxLink.setEnabled(false);
+		//jxLink.setEnabled(false);
 		tp1.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Krankenkassen  (Strg+K)");
+		jxLink.setText("Krankenkassen");
+		jxLink.setToolTipText("Strg+K = Kassenstamm starten");		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp1.add(jxLink);
@@ -208,10 +218,11 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		UIManager.put("TaskPane.useGradient", Boolean.TRUE);
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp4.setUI(wui);		
-		tp4.setTitle("Termine");
+		tp4.setTitle("Termine-Management");
 		tp4.setIcon(new ImageIcon(Reha.proghome+"icons/table_mode.png"));				
 		JXHyperlink jxLink = new JXHyperlink();
-		jxLink.setText("Terminkalender starten  (Strg+T)");
+		jxLink.setText("Terminkalender starten");
+		jxLink.setToolTipText("Strg+T = Terminkalender starten");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
@@ -249,7 +260,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		}
 		jxLink.setDropTarget(dndt);
 		jxLink.setName("Rugl");
-		jxLink.setText("[Ru:gl] - Die Terminsuchmaschine  (Strg+R)");
+		jxLink.setText("[Ru:gl] - Die Terminsuchmaschine");
+		jxLink.setToolTipText("Strg+R = [Ru:gl] starten");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
@@ -282,23 +294,27 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp3.setIcon(SystemConfig.hmSysIcons.get("openoffice"));				
 		oo1 = new JXHyperlink();
 		oo1.setText("OpenOffice-Writer");
+		oo1.setClickedColor(new Color(0, 0x33, 0xFF));
 		oo1.setIcon(SystemConfig.hmSysIcons.get("ooowriter"));
 		oo1.addActionListener(this);
 		tp3.add(oo1);
 		oo2 = new JXHyperlink();
 		oo2.setIcon(SystemConfig.hmSysIcons.get("ooocalc"));
 		oo2.setText("OpenOffice-Calc");
+		oo2.setClickedColor(new Color(0, 0x33, 0xFF));		
 		oo2.addActionListener(this);
 		tp3.add(oo2);
 		oo2 = new JXHyperlink();
 		oo2.setIcon(SystemConfig.hmSysIcons.get("oooimpress"));
 		oo2.setText("OpenOffice-Impress");
+		oo2.setClickedColor(new Color(0, 0x33, 0xFF));		
 		oo2.addActionListener(this);
 		tp3.add(oo2);
 		return tp3;
 	}
 	
 	private JXTaskPane getNuetzliches(){
+		Image img = null;
 		tp5 = new JXTaskPane();
 		UIManager.put("TaskPane.titleBackgroundGradientStart",Color.WHITE);
 		UIManager.put("TaskPane.titleBackgroundGradientEnd",new Color(200,212,247));
@@ -311,22 +327,26 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		//tp3.setIcon(new ImageIcon("icons/pdf.gif"));				
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Thera-PI - Browser");
-		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));		
-		jxLink.setIcon(new ImageIcon(Reha.proghome+"icons/home.gif"));		
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
+		img = new ImageIcon(Reha.proghome+"icons/home.gif").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.addActionListener(this);
 		tp5.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("piTool - ScreenShots");
-		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));		
-		jxLink.setIcon(new ImageIcon(Reha.proghome+"icons/cameraklein.png"));
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
+		img = new ImageIcon(Reha.proghome+"icons/camera_unmount.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		//Reha.proghome+"icons/cameraklein.png"
+		jxLink.setIcon(new ImageIcon(img));
 		jxLink.setActionCommand("piTool");
 		jxLink.addActionListener(this);
 		//jxLink.setEnabled(false);
 		tp5.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("piHelp - Hifetextgenerator");
-		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));		
-		jxLink.setIcon(new ImageIcon(Reha.proghome+"icons/fragezeichenklein.png"));
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));	
+		img = new ImageIcon(Reha.proghome+"icons/fragezeichenklein.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));
 		jxLink.setActionCommand("piHelp");
 		jxLink.addActionListener(this);
 		//jxLink.setEnabled(false);
@@ -336,6 +356,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 
 
 	private JXTaskPane getSystemEinstellungen(){
+		Image img = null;
 		tp2 = new JXTaskPane();
 		UIManager.put("TaskPane.titleBackgroundGradientStart",Color.WHITE);
 		UIManager.put("TaskPane.titleBackgroundGradientEnd",new Color(200,212,247));
@@ -358,6 +379,9 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp2.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("System Initialisierung");
+		img = new ImageIcon(Reha.proghome+"icons/galternatives.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp2.add(jxLink);
 		jxLink = new JXHyperlink();
@@ -403,12 +427,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			
-			if (cmd.equals("Krankenkassen  (Strg+K)")){
+			if (cmd.equals("Krankenkassen")){
 				ProgLoader.KassenFenster(0);
 				break;
 			}
 			
-			if (cmd.equals("Terminkalender starten  (Strg+T)")){
+			if (cmd.equals("Terminkalender starten")){
 				ProgLoader.ProgTerminFenster(1,0);
 				break;
 			}
@@ -427,17 +451,17 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			
 			
 			if (cmd.equals("OpenOffice-Writer")){
-				//ProgLoader.ProgOOWriterFenster(1);
+				OOTools.starteLeerenWriter();
 				break;
 			}
 			
 			if (cmd.equals("OpenOffice-Calc")){
-				//berichtTest(true);
+				OOTools.starteLeerenCalc();
 				break;
 			}
 
-			if (cmd.equals("OpenOffice-Calc")){
-				//berichtTest(true);
+			if (cmd.equals("OpenOffice-Impress")){
+				OOTools.starteLeerenImpress();
 				break;
 			}
 
@@ -445,7 +469,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				ProgLoader.ProgBenutzerVerwaltung(0);				
 				break;
 			}
-			if (cmd.equals("[Ru:gl] - Die Terminsuchmaschine  (Strg+R)")){
+			if (cmd.equals("[Ru:gl] - Die Terminsuchmaschine")){
 				ProgLoader.ProgRoogleFenster(0,null);
 				break;
 			}
@@ -479,7 +503,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 						"nicht installiert - oder konnte nicht gefunden werden...\n\n");
 				break;
 			}
-			if (cmd.equals("Patienten und Rezepte  (Strg+P)")){
+			if (cmd.equals("Patienten und Rezepte")){
 				ProgLoader.ProgPatientenVerwaltung(1);
 				break;
 			}

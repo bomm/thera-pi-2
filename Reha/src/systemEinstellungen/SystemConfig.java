@@ -791,13 +791,13 @@ public class SystemConfig {
 		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));
 		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooowriter")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooowriter")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
 		hmSysIcons.put("ooowriter", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooocalc")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooocalc")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
 		hmSysIcons.put("ooocalc", new ImageIcon(ico));
 		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oooimpress")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oooimpress")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
 		hmSysIcons.put("oooimpress", new ImageIcon(ico));
 		
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "openoffice")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
