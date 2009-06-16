@@ -79,10 +79,12 @@ public class PatTools {
 		if(isherr){
 			if(!iskind){
 				branrede = "Sehr geehrter Herr "+(titel.length() > 0 ? " "+titel : "")+nachname;
+				SystemConfig.hmAdrPDaten.put("<Panrede>", anrede);
 				SystemConfig.hmAdrPDaten.put("<Pihnen>", "Ihnen");
 				SystemConfig.hmAdrPDaten.put("<Pihrem>", "Ihrem");
 			}else{
 				branrede = "Lieber "+vorname;
+				SystemConfig.hmAdrPDaten.put("<Panrede>", "");				
 				SystemConfig.hmAdrPDaten.put("<Pihnen>", "Dir");
 				SystemConfig.hmAdrPDaten.put("<Pihrem>", "Deinem");
 			}
@@ -90,15 +92,17 @@ public class PatTools {
 		}else{
 			if(!iskind){
 				branrede = "Sehr geehrte Frau "+(titel.length() > 0 ? " "+titel : "")+nachname;
+				SystemConfig.hmAdrPDaten.put("<Panrede>", anrede);
 				SystemConfig.hmAdrPDaten.put("<Pihnen>", "Ihnen");
 				SystemConfig.hmAdrPDaten.put("<Pihrem>", "Ihrem");
 			}else{
 				branrede = "Liebe "+vorname;
+				SystemConfig.hmAdrPDaten.put("<Panrede>", "");
 				SystemConfig.hmAdrPDaten.put("<Pihnen>", "Dir");
 				SystemConfig.hmAdrPDaten.put("<Pihrem>", "Deinem");
 			}
 		}
-		SystemConfig.hmAdrPDaten.put("<Panrede>", anrede);		
+				
 		SystemConfig.hmAdrPDaten.put("<Padr1>", zeile1);
 		SystemConfig.hmAdrPDaten.put("<Padr2>", zeile2);
 		SystemConfig.hmAdrPDaten.put("<Padr3>", zeile3);
@@ -114,7 +118,6 @@ public class PatTools {
 		SystemConfig.hmAdrPDaten.put("<Pemail>", PatGrundPanel.thisClass.patDaten.get(50));
 		SystemConfig.hmAdrPDaten.put("<Ptitel>", titel);
 		SystemConfig.hmAdrPDaten.put("<Pid>", PatGrundPanel.thisClass.patDaten.get(66));
-		System.out.println("Feddisch mit constructPatHMap()");
 	}
 	
 
