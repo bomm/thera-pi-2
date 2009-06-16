@@ -178,7 +178,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp1.setUI(wui);
 		tp1.setTitle("Stammdaten");
-		tp1.setIcon(new ImageIcon("icons/personen16.gif"));				
+		tp1.setIcon(new ImageIcon(Reha.proghome+"icons/personen16.gif"));				
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Patienten und Rezepte  (Strg+P)");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
@@ -209,7 +209,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp4.setUI(wui);		
 		tp4.setTitle("Termine");
-		tp4.setIcon(new ImageIcon("icons/table_mode.png"));				
+		tp4.setIcon(new ImageIcon(Reha.proghome+"icons/table_mode.png"));				
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Terminkalender starten  (Strg+T)");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
@@ -278,24 +278,22 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		UIManager.put("TaskPane.useGradient", Boolean.TRUE);
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp3.setUI(wui);
-
 		tp3.setTitle("OpenOffice.org");
-		tp3.setIcon(new ImageIcon("icons/pdf.gif"));				
+		tp3.setIcon(SystemConfig.hmSysIcons.get("openoffice"));				
 		oo1 = new JXHyperlink();
 		oo1.setText("OpenOffice-Writer");
-		if(!OOok){
-			oo1.setEnabled(false);
-		}	
-		//oo1.addActionListener(this);
-		oo1.setEnabled(false);
+		oo1.setIcon(SystemConfig.hmSysIcons.get("ooowriter"));
+		oo1.addActionListener(this);
 		tp3.add(oo1);
 		oo2 = new JXHyperlink();
+		oo2.setIcon(SystemConfig.hmSysIcons.get("ooocalc"));
 		oo2.setText("OpenOffice-Calc");
-		if(!OOok){
-			oo2.setEnabled(false);
-		}	
-		//oo2.addActionListener(this);
-		oo2.setEnabled(false);
+		oo2.addActionListener(this);
+		tp3.add(oo2);
+		oo2 = new JXHyperlink();
+		oo2.setIcon(SystemConfig.hmSysIcons.get("oooimpress"));
+		oo2.setText("OpenOffice-Impress");
+		oo2.addActionListener(this);
 		tp3.add(oo2);
 		return tp3;
 	}
@@ -429,12 +427,17 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			
 			
 			if (cmd.equals("OpenOffice-Writer")){
-				ProgLoader.ProgOOWriterFenster(1);
+				//ProgLoader.ProgOOWriterFenster(1);
 				break;
 			}
 			
 			if (cmd.equals("OpenOffice-Calc")){
-				berichtTest(true);
+				//berichtTest(true);
+				break;
+			}
+
+			if (cmd.equals("OpenOffice-Calc")){
+				//berichtTest(true);
 				break;
 			}
 

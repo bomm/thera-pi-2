@@ -288,7 +288,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean terminFirstStart = true;
 	public static boolean kassenFirstStart = true;	
 	public static boolean arztFirstStart = true;
-	
+	public static boolean iconsOk = false;
 	public static ImageIcon rehaBackImg = null; 
 	
 	/**************************/
@@ -359,6 +359,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
+		new Thread(){
+			public void run(){
+				new SocketClient().setzeInitStand("SystemIcons laden");
+				SystemConfig.SystemIconsInit();
+				iconsOk = true;
+			}
+		}.start();
+
 		System.out.println("RehaxSwing wurde gestartet");
 		/*********/
 			SystemConfig sysConf = new SystemConfig();
@@ -693,10 +701,24 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			/**
 			 * Jetzt erstellen wir die TaskPanes der linken Seite
 			 */
-			jxLinks.add(new LinkeTaskPane(),BorderLayout.CENTER);
-
-			jxLinks.validate();
-			jFrame.getContentPane().validate();
+			new  Thread(){
+				public void run(){
+					int i=0;
+					while((!iconsOk) && (i < 50)){
+					try {
+						Thread.sleep(100);
+						// System.out.println("In warten");
+						i++;
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					jxLinks.add(new LinkeTaskPane(),BorderLayout.CENTER);
+					jxLinks.validate();
+					jFrame.getContentPane().validate();
+				}
+			}.start();
 		}
 		/**
 		 *  Referenzen für spätere Parameterübergaben schaffen 
@@ -2080,8 +2102,7 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.ArztGruppenInit();
 			new SocketClient().setzeInitStand("Rezeptparameter einlesen");
 			SystemConfig.RezeptInit();
-			new SocketClient().setzeInitStand("SystemIcons laden");
-			SystemConfig.SystemIconsInit();
+			//SystemConfig.SystemIconsInit();
 			new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
 			SystemConfig.TherapBausteinInit();
 			SystemConfig.compTest();
