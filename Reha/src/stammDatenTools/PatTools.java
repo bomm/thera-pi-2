@@ -29,6 +29,8 @@ public class PatTools {
 		"<Pfax>",
 		"<Pemail>",
 		"<Pid>"});
+		"<Palter>",
+		"<Pzigsten>"}
 		hmAdrPDaten.put(lAdrPDaten.get(i),"");
  
 	 * 
@@ -55,9 +57,19 @@ public class PatTools {
 		String branrede = "";
 		int jahrheute = new Integer(datFunk.sHeute().substring(6));
 		int jahrgeboren = new Integer(geboren.substring(6));
-		if( (jahrheute - jahrgeboren) <= 13){
+		int ialter = jahrheute - jahrgeboren;
+		
+		
+		if( ialter <= 13){
 			iskind = true;
 		}
+		SystemConfig.hmAdrPDaten.put("<Palter>", new Integer(ialter).toString());
+		if(ialter >= 20){
+			SystemConfig.hmAdrPDaten.put("<Pzigsten>", new Integer(ialter).toString()+"-sten");	
+		}else{
+			SystemConfig.hmAdrPDaten.put("<Pzigsten>", new Integer(ialter).toString()+"-ten");
+		}
+
 		zeile1 = new String(vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname);
 		zeile2 = strasse;
 		zeile3 = plzort;

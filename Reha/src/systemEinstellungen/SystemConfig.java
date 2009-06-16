@@ -581,7 +581,7 @@ public class SystemConfig {
 		hmAdrPDaten = new HashMap<String,String>();
 		lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>",
 											"<Pgeboren>","<Panrede>","<Pnname>","<Pvname>","<Pbanrede>",
-											"<Ptelp>","<Ptelg>","<Ptelmob>","<Pfax>","<Pemail>","<Ptitel>","<Pihrem>","<Pihnen>","<Pid>"});
+											"<Ptelp>","<Ptelg>","<Ptelmob>","<Pfax>","<Pemail>","<Ptitel>","<Pihrem>","<Pihnen>","<Pid>","<Palter>","<Pzigsten>"});
 		for(int i = 0; i < lAdrPDaten.size(); i++){
 			hmAdrPDaten.put(lAdrPDaten.get(i),"");
 		}
