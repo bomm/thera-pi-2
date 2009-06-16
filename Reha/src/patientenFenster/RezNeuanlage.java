@@ -1016,7 +1016,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				leistung = -1;
 			}
-			System.out.println("Leistungsart "+i+" = "+leistung);
+			//System.out.println("Leistungsart "+i+" = "+leistung);
 			//leistung = leistungTesten(i,jcmb[i+2].getSelectedIndex()-1 );
 			if(leistung >= 0){
 				str = holePreis(xid,new Integer(jtf[13].getText()) );
@@ -1191,18 +1191,23 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		String[] str;
 		int xid;
 		for(int i = 0;i < 4;i++){
-			//preisvec.get(itest-1).get(35)
 			xid = ( jcmb[i+2].getSelectedIndex()-1);
-			leistung = leistungTesten(i, new Integer( (String)preisvec.get(xid).get(35)) ) ;
-			//leistung = leistungTesten(i,jcmb[i+2].getSelectedIndex());
+			if(xid >= 0){
+				leistung = leistungTesten(i, new Integer( (String)preisvec.get(xid).get(35)) ) ;	
+			}else{
+				leistung = -1;
+			}
+			//System.out.println("Leistungsart "+i+" = "+leistung);
+			//leistung = leistungTesten(i,jcmb[i+2].getSelectedIndex()-1 );
 			if(leistung >= 0){
-				str = holePreis(leistung,new Integer(jtf[13].getText()) );
+				str = holePreis(xid,new Integer(jtf[13].getText()) );
+				//str = holePreis(leistung,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
 				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
 				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
 			}else{
-				sbuf.append("preise"+(i+1)+"='0.00'");
+				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}

@@ -140,7 +140,7 @@ public class RezeptDaten extends JXPanel{
 						}
 					}
 				});				
-				PatGrundPanel.thisClass.rezlabs[8].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
+				PatGrundPanel.thisClass.rezlabs[8].setText( leistungTesten(0,preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
 
 				stest = StringTools.NullTest((String)vecaktrez.get(52));
 				if(stest.equals("")){
@@ -151,9 +151,9 @@ public class RezeptDaten extends JXPanel{
 					PatGrundPanel.thisClass.rezlabs[9].setText(stest+" / Wo.");					
 				}
 
-				PatGrundPanel.thisClass.rezlabs[10].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(9))) );				
-				PatGrundPanel.thisClass.rezlabs[11].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(10))) );				
-				PatGrundPanel.thisClass.rezlabs[12].setText( leistungTesten(preisvec,StringTools.ZahlTest((String)vecaktrez.get(11))) );				
+				PatGrundPanel.thisClass.rezlabs[10].setText( leistungTesten(1,preisvec,StringTools.ZahlTest((String)vecaktrez.get(9))) );				
+				PatGrundPanel.thisClass.rezlabs[11].setText( leistungTesten(2,preisvec,StringTools.ZahlTest((String)vecaktrez.get(10))) );				
+				PatGrundPanel.thisClass.rezlabs[12].setText( leistungTesten(3,preisvec,StringTools.ZahlTest((String)vecaktrez.get(11))) );				
 
 				stest = StringTools.NullTest((String)vecaktrez.get(44));
 				if(stest.equals("") || stest.equals("kein IndiSchl.") ){
@@ -182,7 +182,7 @@ public class RezeptDaten extends JXPanel{
 		*/
 		
 	}
-	public String leistungTesten(Vector<Vector> preisevec,int veczahl){
+	public String leistungTesten(int leistung,Vector<Vector> preisevec,int veczahl){
 		String retwert = "----";
 		if(veczahl==-1 || veczahl==0){
 			return retwert;
@@ -196,9 +196,10 @@ public class RezeptDaten extends JXPanel{
 			}
 		}
 		*/
+		int pos = 0;
 		for(int i = 0;i<preisevec.size();i++){
 			if( new Integer( (String) ((Vector)preisevec.get(i)).get(35)) == veczahl ){
-				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
+				return StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
 				(String) ((Vector)preisevec.get(i)).get(1);
 			}
 		}
