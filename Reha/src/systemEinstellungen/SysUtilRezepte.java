@@ -13,10 +13,13 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
 import java.util.Vector;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,6 +42,10 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	JButton[] button = {null,null,null,null,null,null,null};
 	JRtaCheckBox[] heilmittel = {null,null,null,null,null};
 	JRtaComboBox voreinstellung = null;
+	JComboBox druckername = null;
+	PrintService[] services = null;	
+	String[] drucker = null;
+	
 	public SysUtilRezepte(){
 		
 		super(new BorderLayout());
@@ -54,6 +61,11 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	     MattePainter mp = new MattePainter(p);
 	     setBackgroundPainter(new CompoundPainter(mp));
 		/****/
+	     services = PrintServiceLookup.lookupPrintServices(null, null);
+	     drucker = new String[services.length];
+	     for (int i = 0 ; i < services.length; i++){
+	    	 drucker[i] = services[i].getName();
+	     }
 	     JScrollPane jscr = new JScrollPane();
 	     jscr.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 	     jscr.setOpaque(false);
@@ -100,8 +112,8 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			
 		//                                      1.             2.     3.     4.     5.     6.    7. 
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 70dlu, 4dlu, 10dlu,0dlu",
-       //1.    2. 3.   4.   5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
-		"p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p,  10dlu ,10dlu, 10dlu, p");
+       //1.    2. 3.   4.   5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.   20.    21.   22.   23.
+		"p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p,  10dlu ,10dlu, 10dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -123,6 +135,17 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 
 		builder.addLabel("Rezeptklasse", cc.xy(1, 15));
 		builder.add(voreinstellung,cc.xyw(3,15,4));
+		
+		builder.addSeparator("Quittungsdrucker f. Rezeptgebühren", cc.xyw(1, 17, 6));
+		
+		builder.addLabel("Drucker auswählen", cc.xy(1, 19));
+		druckername = new JComboBox(drucker);
+		if(SystemConfig.rezGebDrucker.trim().equals("")){
+			druckername.setSelectedIndex(0);
+		}else{
+			druckername.setSelectedItem(SystemConfig.rezGebDrucker.trim());
+		}
+		builder.add(druckername,cc.xyw(3, 19,4));
 		
 		return builder.getPanel();
 	}
@@ -200,7 +223,9 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			inif.setIntegerProperty("RezeptKlassen", "KlasseAktiv"+new Integer(i+1).toString(),iwert,null);
 			
 		}
+		inif.setStringProperty("DruckOptionen", "RezGebDrucker",(String)druckername.getSelectedItem(),null);
 		inif.save();
+		SystemConfig.rezGebDrucker = (String)druckername.getSelectedItem();
 		SystemConfig.RezeptInit();
 	}
 

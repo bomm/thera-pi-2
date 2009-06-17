@@ -1110,6 +1110,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		int[] artdbeh = {0,0,0,0};
 		int i;
 		BigDecimal einzelpreis = null;
+		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
 		for(i = 0;i < 4;i++){

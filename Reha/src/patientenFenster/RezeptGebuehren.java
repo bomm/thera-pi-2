@@ -52,10 +52,13 @@ import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
+import ag.ion.noa.printing.IPrinter;
 import hauptFenster.Reha;
+import sqlTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
+import terminKalender.datFunk;
 
 public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
 	boolean nurkopie;
@@ -158,7 +161,9 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		pb.getPanel().setOpaque(false);
 		direktdruck = new JCheckBox("Quittung direkt drucken");
 		direktdruck.setOpaque(false);
-		direktdruck.setSelected(true);
+		direktdruck.setSelected(true);			
+
+
 		pb.add(direktdruck,cc.xyw(3,2,3));
 
 		pb.addSeparator("Für Rechenkünstler",cc.xyw(2,4,5));
@@ -209,8 +214,11 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		rueckgeld.setFont(new Font("Tahoma",Font.BOLD,14));
 		rueckgeld.setForeground(Color.BLUE);
 		pb.add(rueckgeld,cc.xy(5,10));
-		
-		okknopf = new JButton("Quittung drucken & buchen");
+		if(this.nurkopie){
+			okknopf = new JButton("Quittung drucken (Kopie)");			
+		}else{
+			okknopf = new JButton("Quittung drucken & buchen");	
+		}
 		okknopf.addActionListener(this);
 		okknopf.setActionCommand("okknopf");
 		okknopf.setName("okknopf");
@@ -250,6 +258,31 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 		/**********************/
 		ITextDocument textDocument = (ITextDocument)document;
+		String druckerName = null;
+		try {
+			druckerName = textDocument.getPrintService().getActivePrinter().getName();
+		} catch (NOAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
+		IPrinter iprint = null;
+		if(! druckerName.equals(SystemConfig.rezGebDrucker)){
+			try {
+				iprint = (IPrinter) textDocument.getPrintService().createPrinter(SystemConfig.rezGebDrucker);
+			} catch (NOAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				textDocument.getPrintService().setActivePrinter(iprint);
+			} catch (NOAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
 		try {
@@ -312,6 +345,9 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		if(arg0.getActionCommand().equals("okknopf")){
 			new Thread(){
 				public void run(){
+					if(!nurkopie){
+						doBuchen();
+					}
 					rezGebDrucken();
 				}
 			}.start();
@@ -325,12 +361,37 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			if( ((JComponent)event.getSource()).getName().equals("okknopf")){
 				new Thread(){
 					public void run(){
+						if(!nurkopie){
+							doBuchen();
+						}
 						rezGebDrucken();
 					}
 				}.start();
 				this.dispose();
 			}
 			System.out.println("Return Gedrückt");
+		}
+	}
+	public void doBuchen(){
+		String cmd = "insert into kasse set einnahme='"+
+		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
+		datFunk.sDatInSQL(datFunk.sHeute())+"', ktext='"+
+		PatGrundPanel.thisClass.patDaten.get(2)+","+
+		SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
+		"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
+		"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
+		new ExUndHop().setzeStatement(cmd);
+		//System.out.println("Kassenbuch -> "+cmd);
+		
+		cmd = "update verordn set rez_geb='"+
+		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', "+
+		"rez_bez='T', zzstatus='1' where id='"+SystemConfig.hmAdrRDaten.get("<Rid>")+"'";
+		new ExUndHop().setzeStatement(cmd);
+		//System.out.println("Rezeptstamm -> "+cmd);
+		int row = AktuelleRezepte.aktRez.tabaktrez.getSelectedRow();
+		if(row >= 0){
+			AktuelleRezepte.aktRez.dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[1],row,1);
+			AktuelleRezepte.aktRez.tabaktrez.repaint();
 		}
 	}
 	

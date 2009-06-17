@@ -221,7 +221,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		UIManager.put("TaskPane.useGradient", Boolean.TRUE);
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp4.setUI(wui);		
-		tp4.setTitle("Termine-Management");
+		tp4.setTitle("Termin-Management");
 		tp4.setIcon(new ImageIcon(Reha.proghome+"icons/table_mode.png"));				
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Terminkalender starten");
@@ -265,15 +265,20 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		}
 		jxLink.setDropTarget(dndt);
 		jxLink.setName("Rugl");
-		jxLink.setText("[Ru:gl] - Die Terminsuchmaschine");
+		String srugl = "<html><font color='#000000'>[</font><font color='#0000ff'>R</font><font color='#ff0000'>u</font>"+
+		"<font color='#00ffff'><b>:</b></font><font color='#0000ff'>g</font><font color='#00ff00'>l</font>"+
+		"<font color='#000000'>]</font>&nbsp;- Die Terminsuchmaschine";
+		jxLink.setText(srugl);
+		//jxLink.setText("[Ru:gl] - Die Terminsuchmaschine");
 		jxLink.setToolTipText("Strg+R = [Ru:gl] starten");
 		img = new ImageIcon(Reha.proghome+"icons/orca.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
 		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
+		jxLink.setActionCommand("[Ru:gl] - Die Terminsuchmaschine");
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Wocharbeitszeiten definieren");
+		jxLink.setText("Wochenarbeitszeiten definieren");
 		img = new ImageIcon(Reha.proghome+"icons/alacarte.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
 		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
@@ -448,7 +453,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				ProgLoader.ProgTerminFenster(1,0);
 				break;
 			}
-			if (cmd.equals("Wocharbeitszeiten definieren")){
+			if (cmd.equals("Wochenarbeitszeiten definieren")){
 				JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 				if(termin != null){
 					JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nWährend der Arbeitszeit-Definition\n" +

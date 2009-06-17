@@ -118,6 +118,7 @@ public class SystemConfig {
 	public static String rezGebVorlageNeu = null;
 	public static String rezGebVorlageAlt = null;
 	public static boolean rezGebDirektDruck = false;
+	public static String rezGebDrucker = null;
 
 	public static HashMap<String,Vector> hmTherapBausteine = null; 
 	
@@ -681,10 +682,11 @@ public class SystemConfig {
 				rezeptKlassenAktiv.add((Vector<String>)vec.clone());
 			}
 		}
+		rezGebDrucker = inif.getStringProperty("DruckOptionen", "RezGebDrucker");
 		rezGebVorlageNeu = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageNeu");
 		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");
 		rezGebDirektDruck = (inif.getIntegerProperty("DruckOptionen", "DirektDruck") <= 0 ? false : true);
-
+		
 	}
 	public static void TherapBausteinInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");
