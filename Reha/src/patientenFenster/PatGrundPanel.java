@@ -595,6 +595,15 @@ public FocusListener getFocusListener(){
 
 public void starteSuche(){
 	//System.out.println("Suche wurde aktiviert");
+	if(tfsuchen.getText().trim().equals("")){
+		String cmd = "<html>Sie haben <b>kein</b> Suchkriterium eingegeben.<br>"+
+		"Das bedeutet Sie laden den <b>kompletten Patientenstamm!!!<b><br><br>"+
+		"Wollen Sie das wirklich?";
+		int anfrage = JOptionPane.showConfirmDialog(null, cmd,"Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		if(anfrage == JOptionPane.NO_OPTION){
+			return;
+		}
+	}
 	if (sucheComponent != null){
 		Point thispoint = PatGrundPanel.thisClass.getLocationOnScreen();
 		((SuchenDialog) sucheComponent).setLocation(thispoint.x+30, thispoint.y+80);
