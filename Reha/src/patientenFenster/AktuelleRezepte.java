@@ -230,20 +230,22 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
 				aktrbut[0].setEnabled(true);
-				for(int i = 1; i < 6;i++){
+				for(int i = 1; i < 7;i++){
 					aktrbut[i].setEnabled(false);	
 				}
+			}else{
+				aktrbut[0].setEnabled(true);
 			}
 		}else{
 			if(aktPanel.equals("leerPanel")){
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
-				for(int i = 0; i < 6;i++){
+				for(int i = 0; i < 7;i++){
 					aktrbut[i].setEnabled(true);	
 				}
 			}
-		}
+		}	
 	}
 	
 	public JXPanel getDatenpanel(){
@@ -303,12 +305,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[5].addActionListener(this);		
 		jtb.add(aktrbut[5]);
 		aktrbut[6] = new JButton();
-		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		aktrbut[5].setToolTipText("Arztbericht erstellen/ändern");
-		aktrbut[5].setActionCommand("arztbericht");
-		aktrbut[5].addActionListener(this);		
-		jtb.add(aktrbut[5]);
-		for(int i = 0; i < 6;i++){
+		aktrbut[6].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
+		aktrbut[6].setToolTipText("Arztbericht erstellen/ändern");
+		aktrbut[6].setActionCommand("arztbericht");
+		aktrbut[6].addActionListener(this);		
+		jtb.add(aktrbut[6]);
+		for(int i = 0; i < 7;i++){
 			aktrbut[i].setEnabled(false);
 		}
 		return jtb;
@@ -986,10 +988,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}else{
 					xreznr = ""; 
 				}
+				System.out.println("ArztberichtFenster erzeugen!");
 				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,0);
 				ab.setModal(true);
 				ab.setLocationRelativeTo(null);
 				ab.setVisible(true);
+				ab = null;
 			}
 			
 		}

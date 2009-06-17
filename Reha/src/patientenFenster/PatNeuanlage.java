@@ -162,12 +162,12 @@ boolean inNeu = false;
 						}else{
 							if(PatGrundPanel.thisClass.kid < 0 && feldname.equals("KASSE")){
 								if(feldergefuellt){
-									jtf[12].setText("?"+jtf[12].getText());
+									//jtf[12].setText("?"+jtf[12].getText());
 								}
 							}
 							if(PatGrundPanel.thisClass.aid < 0 && feldname.equals("ARZT")){
 								if(feldergefuellt){
-									jtf[17].setText("?"+jtf[17].getText());
+									//jtf[17].setText("?"+jtf[17].getText());
 								}
 							}
 							geheAufFeld(feldname);

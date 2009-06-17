@@ -82,12 +82,13 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
 		String xtitel = "<html>Arztbericht erstellen / ändern   -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>Tip:&nbsp;&nbsp;&nbsp;&nbsp;entscheiden Sie sich für das ICF-Schema</font></b>&nbsp;&nbsp;<img src='file:///C:/RehaVerwaltung/icons/Haken_klein.gif'>";
 	    super.getSmartTitledPanel().setTitle(xtitel);
-		setName(name);
+		this.setName(name);
 		
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName(name);
 		setPinPanel(pinPanel);
+		super.getPinPanel().setName(name);
 		
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -377,6 +378,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	public ArztBericht getInstance(){
 		return this;
 	}
+	
 	public void schreibeTextBlock(int block,String text){
 		String icftext = icfblock[block].getText();
 		if(icftext.equals("")){
@@ -444,8 +446,9 @@ class TextBausteine extends AbstractAction {
 					this.setVisible(false);
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
+					super.dispose();
 					this.dispose();
-					System.out.println("****************Arztbericht -> Listener entfernt**************");				
+					System.out.println("****************Arztbericht -> Listener entfernt**************"+this.getName());				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -458,8 +461,9 @@ class TextBausteine extends AbstractAction {
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
-			dispose();
-			System.out.println("****************Arztbericht -> Listener entfernt (Closed)**********");
+			super.dispose();
+			this.dispose();
+			System.out.println("****************Arztbericht -> Listener entfernt (Closed)**********"+this.getName());
 		}
 		
 		
