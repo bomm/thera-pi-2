@@ -361,7 +361,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}
 		new Thread(){
 			public void run(){
-				new SocketClient().setzeInitStand("SystemIcons laden");
+				new SocketClient().setzeInitStand("System-Parameter laden");
 				SystemConfig.SystemIconsInit();
 				iconsOk = true;
 			}

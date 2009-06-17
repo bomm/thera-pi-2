@@ -202,7 +202,9 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp1.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("Krankenkassen");
-		jxLink.setToolTipText("Strg+K = Kassenstamm starten");		
+		jxLink.setToolTipText("Strg+K = Kassenstamm starten");
+		img = new ImageIcon(Reha.proghome+"icons/krankenkasse.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));				
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp1.add(jxLink);
@@ -211,6 +213,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	}
 	
 	private JXTaskPane getTerminKalender(){
+		Image img = null;
 		tp4 = new JXTaskPane();
 		UIManager.put("TaskPane.titleBackgroundGradientStart",Color.WHITE);
 		UIManager.put("TaskPane.titleBackgroundGradientEnd",new Color(200,212,247));
@@ -223,6 +226,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Terminkalender starten");
 		jxLink.setToolTipText("Strg+T = Terminkalender starten");
+		img = new ImageIcon(Reha.proghome+"icons/evolution-addressbook.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
@@ -262,11 +267,15 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setName("Rugl");
 		jxLink.setText("[Ru:gl] - Die Terminsuchmaschine");
 		jxLink.setToolTipText("Strg+R = [Ru:gl] starten");
+		img = new ImageIcon(Reha.proghome+"icons/orca.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("Wocharbeitszeiten definieren");
+		img = new ImageIcon(Reha.proghome+"icons/alacarte.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
@@ -369,6 +378,9 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp2.setIcon(new ImageIcon(Reha.proghome+"icons/pdf.gif"));				
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Benutzerverwaltung");
+		img = new ImageIcon(Reha.proghome+"icons/contact-new.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
+
 		jxLink.addActionListener(this);
 		if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
 				(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
