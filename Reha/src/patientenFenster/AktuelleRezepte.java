@@ -118,6 +118,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public String[] indergo = null;
 	public String[] indlogo = null;
 	public RezeptDaten jpan1 = null;
+	public JButton[] aktrbut = {null,null,null,null,null,null,null};
 	public static boolean inRezeptDaten = false;
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
@@ -221,19 +222,26 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void getAktDates(){
 		
 	}
-	
+
 	public void setzeRezeptPanelAufNull(boolean aufnull){
 		if(aufnull){
 			if(aktPanel.equals("vollPanel")){
 				wechselPanel.remove(vollPanel);
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
+				aktrbut[0].setEnabled(true);
+				for(int i = 1; i < 6;i++){
+					aktrbut[i].setEnabled(false);	
+				}
 			}
 		}else{
 			if(aktPanel.equals("leerPanel")){
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
-				aktPanel = "vollPanel";				
+				aktPanel = "vollPanel";
+				for(int i = 0; i < 6;i++){
+					aktrbut[i].setEnabled(true);	
+				}
 			}
 		}
 	}
@@ -255,58 +263,54 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jtb.setRollover(true);
 		jtb.setBorder(null);
 		jtb.setOpaque(false);
-
-		JButton jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("neu"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
-		jbut.setToolTipText("neues Rezept anlegen");
-		jbut.setActionCommand("rezneu");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("edit"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
-		jbut.setToolTipText("aktuelles Rezept ändern/editieren");
-		jbut.setActionCommand("rezedit");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
-		jbut.setToolTipText("aktuelles Rezept löschen");
-		jbut.setActionCommand("rezdelete");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
+		
+		aktrbut[0] = new JButton();
+		aktrbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
+		aktrbut[0].setToolTipText("neues Rezept anlegen");
+		aktrbut[0].setActionCommand("rezneu");
+		aktrbut[0].addActionListener(this);		
+		jtb.add(aktrbut[0]);
+		aktrbut[1] = new JButton();
+		aktrbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
+		aktrbut[1].setToolTipText("aktuelles Rezept ändern/editieren");
+		aktrbut[1].setActionCommand("rezedit");
+		aktrbut[1].addActionListener(this);		
+		jtb.add(aktrbut[1]);
+		aktrbut[2] = new JButton();
+		aktrbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
+		aktrbut[2].setToolTipText("aktuelles Rezept löschen");
+		aktrbut[2].setActionCommand("rezdelete");
+		aktrbut[2].addActionListener(this);		
+		jtb.add(aktrbut[2]);
 		jtb.addSeparator(new Dimension(40,0));
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/rezeptgebuehr.png"));
-		jbut.setToolTipText("Rezeptgebühren kassieren");
-		jbut.setActionCommand("rezeptgebuehr");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("ausfallrechnung"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/ausfallrechnung.png"));
-		jbut.setToolTipText("Ausfallrechnung erstellen");
-		jbut.setActionCommand("ausfallrechnung");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("privatrechnung"));
+		aktrbut[3] = new JButton();
+		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
+		aktrbut[3].setToolTipText("Rezeptgebühren kassieren");
+		aktrbut[3].setActionCommand("rezeptgebuehr");
+		aktrbut[3].addActionListener(this);		
+		jtb.add(aktrbut[3]);
+		aktrbut[4] = new JButton();
+		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("ausfallrechnung"));
+		aktrbut[4].setToolTipText("Ausfallrechnung erstellen");
+		aktrbut[4].setActionCommand("ausfallrechnung");
+		aktrbut[4].addActionListener(this);		
+		jtb.add(aktrbut[4]);
+		aktrbut[5] = new JButton();
+		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("privatrechnung"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/privatrechnung.png"));
-		jbut.setToolTipText("Privatrechnung erstellen");
-		jbut.setActionCommand("privatrechnung");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Arztbericht erstellen/ändern");
-		jbut.setActionCommand("arztbericht");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-
+		aktrbut[5].setToolTipText("Privatrechnung erstellen");
+		aktrbut[5].setActionCommand("privatrechnung");
+		aktrbut[5].addActionListener(this);		
+		jtb.add(aktrbut[5]);
+		aktrbut[6] = new JButton();
+		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
+		aktrbut[5].setToolTipText("Arztbericht erstellen/ändern");
+		aktrbut[5].setActionCommand("arztbericht");
+		aktrbut[5].addActionListener(this);		
+		jtb.add(aktrbut[5]);
+		for(int i = 0; i < 6;i++){
+			aktrbut[i].setEnabled(false);
+		}
 		return jtb;
 	}
 	public JXPanel getTabelle(){
@@ -527,9 +531,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 6));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
+					
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
 					wechselPanel.revalidate();
-					wechselPanel.repaint();					
+					wechselPanel.repaint();
 				}else{
 					setzeRezeptPanelAufNull(true);
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);

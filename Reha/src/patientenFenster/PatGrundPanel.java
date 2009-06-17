@@ -153,6 +153,7 @@ Historie historie = null;
 TherapieBerichte berichte = null;
 /********************/
 public JButton[] memobut = {null,null,null,null,null,null};
+
 public JTextArea[] pmemo = {null,null};
 public JTabbedPane memotab = null;
 public int inMemo = -1;
