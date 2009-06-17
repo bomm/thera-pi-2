@@ -50,6 +50,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	JXPanel leerPanel = null;
 	JXPanel vollPanel = null;
 	JXPanel wechselPanel = null;
+	JButton[] tberbut = {null,null,null};
 	public JXTable tabbericht = null;
 	public MyBerichtTableModel dtblm;
 
@@ -126,12 +127,18 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				wechselPanel.remove(vollPanel);
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
+				for(int i = 0; i < 3; i++){
+					tberbut[i].setEnabled(false);
+				}
 			}
 		}else{
 			if(aktPanel.equals("leerPanel")){
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
-				aktPanel = "vollPanel";				
+				aktPanel = "vollPanel";
+				for(int i = 0; i < 3; i++){
+					tberbut[i].setEnabled(true);
+				}
 			}
 		}
 	}
@@ -237,27 +244,27 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		jtb.setBorder(null);
 		jtb.setOpaque(false);
 
-		JButton jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("neu"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
-		jbut.setToolTipText("neues Rezept anlegen");
-		jbut.setActionCommand("rezneu");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("edit"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
-		jbut.setToolTipText("aktuelles Rezept ändern/editieren");
-		jbut.setActionCommand("rezedit");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
-		jbut.setToolTipText("aktuelles Rezept löschen");
-		jbut.setActionCommand("rezdelete");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
+		tberbut[0] = new JButton();
+		tberbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
+		tberbut[0].setToolTipText("neues Rezept anlegen");
+		tberbut[0].setActionCommand("rezneu");
+		tberbut[0].addActionListener(this);		
+		jtb.add(tberbut[0]);
+		tberbut[1] = new JButton();
+		tberbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
+		tberbut[1].setToolTipText("aktuelles Rezept ändern/editieren");
+		tberbut[1].setActionCommand("rezedit");
+		tberbut[1].addActionListener(this);		
+		jtb.add(tberbut[1]);
+		tberbut[2] = new JButton();
+		tberbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
+		tberbut[2].setToolTipText("aktuelles Rezept löschen");
+		tberbut[2].setActionCommand("rezdelete");
+		tberbut[2].addActionListener(this);		
+		jtb.add(tberbut[2]);
+		for(int i = 0; i < 3; i++){
+			tberbut[i].setEnabled(false);
+		}
 		return jtb;
 	}
 	

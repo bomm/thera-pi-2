@@ -88,6 +88,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	public String[] indergo = null;
 	public String[] indlogo = null;
 	public HistorDaten jpan1 = null;
+	public JButton[] histbut = {null,null,null,null};
 	public static boolean inRezeptDaten = false;
 	public Historie(){
 		super();
@@ -369,12 +370,18 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				wechselPanel.remove(vollPanel);
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
+				for(int i = 0; i < 4;i++){
+					histbut[i].setEnabled(false);
+				}
 			}
 		}else{
 			if(aktPanel.equals("leerPanel")){
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
-				aktPanel = "vollPanel";				
+				aktPanel = "vollPanel";
+				for(int i = 0; i < 4;i++){
+					histbut[i].setEnabled(true);
+				}
 			}
 		}
 	}
@@ -387,37 +394,36 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jtb.setBorder(null);
 		jtb.setOpaque(false);
 
-		JButton jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Nachträglich Arztbericht Rezept erstellen");
-		jbut.setActionCommand("arztbericht");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
+		histbut[0] = new JButton();
+		histbut[0].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
+		histbut[0].setToolTipText("Nachträglich Arztbericht Rezept erstellen");
+		histbut[0].setActionCommand("arztbericht");
+		histbut[0].addActionListener(this);		
+		jtb.add(histbut[0]);
 
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("historieinfo"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Zusatzinfos zum Rezept in der Historie");
-		jbut.setActionCommand("historinfo");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
+		histbut[1] = new JButton();
+		histbut[1].setIcon(SystemConfig.hmSysIcons.get("historieinfo"));
+		histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
+		histbut[1].setActionCommand("historinfo");
+		histbut[1].addActionListener(this);		
+		jtb.add(histbut[1]);
 
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Gesamtumsatz des Patienten (aller in der Historie befindlichen Rezepte)");
-		jbut.setActionCommand("historumsatz");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
+		histbut[2] = new JButton();
+		histbut[2].setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
+		histbut[2].setToolTipText("Gesamtumsatz des Patienten (aller in der Historie befindlichen Rezepte)");
+		histbut[2].setActionCommand("historumsatz");
+		histbut[2].addActionListener(this);		
+		jtb.add(histbut[2]);
 		
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("historietage"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/arztbericht.png"));
-		jbut.setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
-		jbut.setActionCommand("historprinttage");
-		jbut.addActionListener(this);		
-		jtb.add(jbut);
+		histbut[3] = new JButton();
+		histbut[3].setIcon(SystemConfig.hmSysIcons.get("historietage"));
+		histbut[3].setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
+		histbut[3].setActionCommand("historprinttage");
+		histbut[3].addActionListener(this);		
+		jtb.add(histbut[3]);
+		for(int i = 0; i < 4;i++){
+			histbut[i].setEnabled(false);
+		}
 		
 		
 		return jtb;

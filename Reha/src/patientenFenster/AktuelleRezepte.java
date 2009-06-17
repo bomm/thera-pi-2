@@ -601,7 +601,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			dtermm.addRow((Vector)tvec.clone());
 		}
 		anzahlTermine.setText("Anzahl Terimine: "+lines);
-		SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
+		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
 	
 		
 	}

@@ -658,7 +658,8 @@ public void doMemoAction(ActionEvent arg0){
 		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
 		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
 		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
-		String cmd = "update pat5 set anamnese='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[0].getText())+"'";
+		String cmd = "update pat5 set anamnese='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[0].getText())+"' where id='"+
+		PatGrundPanel.thisClass.autoPatid+"'";
 		new ExUndHop().setzeStatement(cmd);
 		inMemo = -1;
 		return;
@@ -670,7 +671,8 @@ public void doMemoAction(ActionEvent arg0){
 		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
 		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
 		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
-		String cmd = "update pat5 set pat_text='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[1].getText())+"'";
+		String cmd = "update pat5 set pat_text='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[1].getText())+"' where id='"+
+		PatGrundPanel.thisClass.autoPatid+"'";
 		new ExUndHop().setzeStatement(cmd);
 		inMemo = -1;
 		return;
@@ -1131,21 +1133,16 @@ class DatenHolen{
 				}
 				PatGrundPanel.thisClass.ptfield[i].setText(StringTools.EGross(colvalue));
 			}
-			InputStream ins = null;
-			String instring = rs.getString("ANAMNESE");
-			if(instring == null){
-				instring = "";
-			}
+			//InputStream ins = null;
+			String instring = (rs.getString("ANAMNESE")==null ? "" : rs.getString("ANAMNESE"));
+			System.out.println("Anamnese inhalt = "+instring);
 			if(instring.equals("")){
 				PatGrundPanel.thisClass.pmemo[0].setText("");
-				
 			}else{
 				PatGrundPanel.thisClass.pmemo[0].setText(instring);				
 			}
-			instring = rs.getString("PAT_TEXT");
-			if(instring == null){
-				instring = "";
-			}
+			instring = (rs.getString("PAT_TEXT")==null ? "" : rs.getString("PAT_TEXT"));
+			System.out.println("Pat_text inhalt = "+instring);			
 			if(instring.equals("")){
 				PatGrundPanel.thisClass.pmemo[1].setText("");
 			}else{
