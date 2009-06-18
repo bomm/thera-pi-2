@@ -760,7 +760,8 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlfrei")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
 		hmSysIcons.put("zuzahlfrei", new ImageIcon(ico));				
 		
-		hmSysIcons.put("zuzahlok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")));		
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
+		hmSysIcons.put("zuzahlok", new ImageIcon(ico));				
 
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
 		hmSysIcons.put("zuzahlnichtok", new ImageIcon(ico));

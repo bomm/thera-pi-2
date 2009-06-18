@@ -33,6 +33,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import jxTableTools.RechtsRenderer;
+
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -168,13 +170,14 @@ public class ThTextBlock extends RehaSmartDialog{
 			
 
 			modtextblock = new MyTextBlockModel();
-			modtextblock.setColumnIdentifiers(new String[] {"Block-Rang","Titel",""});
+			modtextblock.setColumnIdentifiers(new String[] {"Block-Rang","Titel","ID"});
 			textblock = new JXTable(modtextblock);
 			textblock.setEditable(false);
 			textblock.setSortable(true);
 			textblock.getColumn(0).setMaxWidth(75);
-			textblock.getColumn(2).setMinWidth(0);
-			textblock.getColumn(2).setMaxWidth(0);
+			//textblock.getColumn(2).setMinWidth(0);
+			textblock.getColumn(2).setMaxWidth(40);
+			textblock.getColumn(2).setCellRenderer(new RechtsRenderer());			
 			textblock.setSelectionMode(0);
 			textblock.getSelectionModel().addListSelectionListener( new TblockListSelectionHandler());
 			textblock.addMouseListener(new MouseAdapter(){

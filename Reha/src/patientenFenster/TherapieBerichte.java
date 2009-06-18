@@ -161,7 +161,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 							dtblm.setRowCount(0);						
 						}
 
-						int zzbild = 0;
+						//int zzbild = 0;
 						dtblm.addRow((Vector)vec.get(i));
 					}
 					if(anz > 0){
@@ -190,11 +190,18 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		String xreznr = (String) dtblm.getValueAt(row, 2);
 		String[] splitrez = xreznr.split(" ");
 		int bid = new Integer((String) dtblm.getValueAt(row, 8));
-		System.out.println("aufruf des Berichtes mit der ID "+bid);
-		ArztBericht ab = new ArztBericht(null,"arztberichterstellen",false,splitrez[2],bid,3);
+		String xverfasser = (String) dtblm.getValueAt(row, 3);
+		String xtitel = (String) dtblm.getValueAt(row, 2);
+		//System.out.println("aufruf des Berichtes mit der ID "+bid);
+		
+		String[] splitdiag1 = xreznr.split("\\(");
+		String[] splitdiag2 = splitdiag1[1].split("\\)");
+		System.out.println("Die Diagnose = --------------->"+splitdiag2[0]);
+		ArztBericht ab = new ArztBericht(null,"arztberichterstellen",false,splitrez[2],bid,3,xverfasser,splitdiag2[0]);
 		ab.setModal(true);
 		ab.setLocationRelativeTo(null);
 		ab.setVisible(true);
+		ab = null;
 	}
 
 	private JXPanel getBerichteTbl(){

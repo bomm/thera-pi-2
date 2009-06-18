@@ -46,6 +46,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
+import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import terminKalender.datFunk;
 import textBlockTherapeuten.ThTextBlock;
@@ -74,9 +75,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private ThTextBlock thblock = null;
 	private String disziplin = null;
 	private int zuletztaktiv = 0;
+	String altverfasser = "";
+	String diag = "";
 
-
-	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf) {
+	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
@@ -101,6 +103,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		this.berichtid = iberichtid;
  
 		this.aufrufvon = aufruf;
+		this.altverfasser = xverfasser;
+		this.diag = xdiag;
 
 		setSize(new Dimension(950,650));
 		
@@ -298,7 +302,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pb.addSeparator("",cc.xyw(2,26,3));
 		
 		pb.addLabel("Textbausteine für",cc.xy(2,28));
-		tbwahl = new JRtaComboBox(SystemConfig.hmTherapBausteine.get(this.disziplin));
+		try{
+			tbwahl = new JRtaComboBox(SystemConfig.hmTherapBausteine.get(this.disziplin));
+		}catch(java.lang.ArrayIndexOutOfBoundsException ex){
+			tbwahl = new JRtaComboBox();
+		}
 		tbwahl.setActionCommand("tbladen");
 		tbwahl.addActionListener(this);
 		pb.add(tbwahl,cc.xy(2,30));
@@ -306,7 +314,23 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pb.addSeparator("",cc.xyw(2,32,3));
 		
 		pb.addLabel("Verfasser des Berichtes",cc.xy(2,34));
-		verfasser = new JComboBox(new String[] {"Beate Maute-Steinhilber"});
+		verfasser = new JComboBox();
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				int lang = ParameterLaden.vKKollegen.size(); 
+				for(int i =0; i < lang;i++){
+					verfasser.addItem((String) ParameterLaden.getMatchcode(i)  );					
+				}
+				if(!neu){
+					verfasser.setSelectedItem(altverfasser);
+					tbwahl.setSelectedItem(diag);
+				}
+				return null;
+			}
+			
+		}.execute();
+		
 		pb.add(verfasser,cc.xy(2,36));
 		
 		pb.addSeparator("",cc.xyw(2,38,3));
@@ -354,7 +378,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			awahl.setVisible(true);
 			if(!jtf[2].equals("")){
 				rlab[2].setText(jtf[0].getText());
-				arztid = new Integer(jtf[2].getText());
+				if(!jtf[2].getText().equals("")){
+					arztid = new Integer(jtf[2].getText());					
+				}
 			}
 			return;
 		}
@@ -415,7 +441,11 @@ class TextBausteine extends AbstractAction {
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					icfblock[zuletztaktiv].requestFocus();
+					try{
 					icfblock[zuletztaktiv].setCaretPosition(icfblock[zuletztaktiv].getText().length());
+					}catch(java.lang.IllegalArgumentException ex){
+						// da passiert jetzt halt nix
+					}
 		   	  	}
 			});
 			
@@ -424,7 +454,11 @@ class TextBausteine extends AbstractAction {
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					icfblock[zuletztaktiv].requestFocus();
-					icfblock[zuletztaktiv].setCaretPosition(icfblock[zuletztaktiv].getText().length());
+					try{
+						icfblock[zuletztaktiv].setCaretPosition(icfblock[zuletztaktiv].getText().length());
+					}catch(java.lang.IllegalArgumentException ex){
+						// da passiert jetzt halt nix						
+					}
 		   	  	}
 			});
 		}

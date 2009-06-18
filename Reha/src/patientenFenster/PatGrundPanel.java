@@ -1135,14 +1135,14 @@ class DatenHolen{
 			}
 			//InputStream ins = null;
 			String instring = (rs.getString("ANAMNESE")==null ? "" : rs.getString("ANAMNESE"));
-			System.out.println("Anamnese inhalt = "+instring);
+			//System.out.println("Anamnese inhalt = "+instring);
 			if(instring.equals("")){
 				PatGrundPanel.thisClass.pmemo[0].setText("");
 			}else{
 				PatGrundPanel.thisClass.pmemo[0].setText(instring);				
 			}
 			instring = (rs.getString("PAT_TEXT")==null ? "" : rs.getString("PAT_TEXT"));
-			System.out.println("Pat_text inhalt = "+instring);			
+			//System.out.println("Pat_text inhalt = "+instring);			
 			if(instring.equals("")){
 				PatGrundPanel.thisClass.pmemo[1].setText("");
 			}else{
