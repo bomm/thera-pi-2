@@ -847,7 +847,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		for (int i = 0; i < placeholders.length; i++) {
 
 			String placeholderDisplayText = placeholders[i].getDisplayText();
-			System.out.println(placeholderDisplayText);			
+			System.out.println(placeholderDisplayText);	
+			/*
 			int index1 = SystemConfig.lAdrKDaten.indexOf(placeholderDisplayText);
 			int index2 = SystemConfig.lAdrADaten.indexOf(placeholderDisplayText);
 			int index3 = SystemConfig.lAdrPDaten.indexOf(placeholderDisplayText);
@@ -884,6 +885,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 					placeholders[i].getTextRange().setText(ph);					
 				}
 			}
+			*/
 
 		}
 	}	

@@ -94,11 +94,13 @@ public class SystemConfig {
 	public static HashMap<String,String> hmAdrADaten = null;
 	public static HashMap<String,String> hmAdrPDaten = null;
 	public static HashMap<String,String> hmAdrRDaten = null;
+	public static HashMap<String,String> hmAdrBDaten = null;
+	/*
 	public static List<String> lAdrKDaten = null;
 	public static List<String> lAdrADaten = null;
 	public static List<String> lAdrPDaten = null;
 	public static List<String> lAdrRDaten = null;
-
+	*/
 	public static HashMap<String,Integer> hmContainer = null;
 	
 	public static Vector<String> vPreisGruppen;
@@ -566,14 +568,14 @@ public class SystemConfig {
 	}
 	public static void HashMapsVorbereiten(){
 		hmAdrKDaten = new HashMap<String,String>();
-		lAdrKDaten = Arrays.asList(new String[]{"<Kadr1>","<Kadr2>","<Kadr3>","<Kadr4>","<Kadr5>",
+		List<String> lAdrKDaten = Arrays.asList(new String[]{"<Kadr1>","<Kadr2>","<Kadr3>","<Kadr4>","<Kadr5>",
 												"<Ktel>","<Kfax>","<Kemail>","<Kid>"});
 		for(int i = 0; i < lAdrKDaten.size(); i++){
 			hmAdrKDaten.put(lAdrKDaten.get(i),"");
 		}
 
 		hmAdrADaten = new HashMap<String,String>();
-		lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
+		List<String> lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
 												"<Atel>","<Afax>","<Aemail>","<Aid>"});
 		for(int i = 0; i < lAdrADaten.size(); i++){
 			hmAdrADaten.put(lAdrADaten.get(i),"");
@@ -581,7 +583,7 @@ public class SystemConfig {
 		
 		
 		hmAdrPDaten = new HashMap<String,String>();
-		lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>",
+		List<String> lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>",
 											"<Pgeboren>","<Panrede>","<Pnname>","<Pvname>","<Pbanrede>",
 											"<Ptelp>","<Ptelg>","<Ptelmob>","<Pfax>","<Pemail>","<Ptitel>","<Pihrem>","<Pihnen>","<Pid>","<Palter>","<Pzigsten>"});
 		for(int i = 0; i < lAdrPDaten.size(); i++){
@@ -589,7 +591,7 @@ public class SystemConfig {
 		}
 
 		hmAdrRDaten = new HashMap<String,String>();
-		lAdrRDaten = Arrays.asList(new String[]{"<Rpatid>","<Rnummer>","<Rdatum>","<Rposition1>","<Rposition2>","<Rposition3>"
+		List<String> lAdrRDaten = Arrays.asList(new String[]{"<Rpatid>","<Rnummer>","<Rdatum>","<Rposition1>","<Rposition2>","<Rposition3>"
 				,"<Rposition4>","<Rpreise1>","<Rpreise2>","<Rpreise3>","<Rpreise4>","<Rproz1>","<Rproz2>","<Rproz3>"
 				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag>","<Ranzahl1>"
 				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>","<Rerstdat>","<Rletztdat>","<Rid>"});
@@ -597,7 +599,16 @@ public class SystemConfig {
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
 		}
 		
+		hmAdrBDaten = new HashMap<String,String>();
+		
+		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
+				"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
+		for(int i = 0; i < lAdrBDaten.size(); i++){
+			hmAdrBDaten.put(lAdrBDaten.get(i),"");
+		}	
 	}
+		
+
 	public static void DesktopLesen(){
 		hmContainer = new HashMap<String,Integer>();
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");

@@ -989,7 +989,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					xreznr = ""; 
 				}
 				System.out.println("ArztberichtFenster erzeugen!");
-				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,0,"","");
+				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,0,"","",currow);
 				ab.setModal(true);
 				ab.setLocationRelativeTo(null);
 				ab.setVisible(true);

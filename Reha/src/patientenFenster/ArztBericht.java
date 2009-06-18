@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -39,6 +41,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
@@ -69,16 +72,18 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JTextArea diagnose;
 	private JRtaComboBox tbwahl;
 	private JComboBox verfasser;
-	private int arztid;
+	int arztid;
+	JButton jbutbericht = null;
 	public  JRtaTextField[] jtf = {null,null,null};
 	private JTextPane[] icfblock = {null,null,null,null};
 	private ThTextBlock thblock = null;
 	private String disziplin = null;
 	private int zuletztaktiv = 0;
+	private boolean gespeichert = false;
 	String altverfasser = "";
 	String diag = "";
-
-	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag) {
+	int tblreihe;
+	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
@@ -95,16 +100,19 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
-		
+		this.berichtid = iberichtid;
 		this.neu = bneu;
 		this.reznr = reznr;
-		//this.disziplin = this.reznr.substring(0,2);		
-		// hier den Fall für ohne Rezeptbezug einbauen!!!!!
-		this.berichtid = iberichtid;
- 
 		this.aufrufvon = aufruf;
 		this.altverfasser = xverfasser;
 		this.diag = xdiag;
+		this.tblreihe = row;
+		/**
+		 * 
+		 * this.disziplin = this.reznr.substring(0,2);		
+		 * hier den Fall für ohne Rezeptbezug einbauen!!!!!
+		 * 
+		 */
 
 		setSize(new Dimension(950,650));
 		
@@ -323,6 +331,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					verfasser.addItem((String) ParameterLaden.getMatchcode(i)  );					
 				}
 				if(!neu){
+					System.out.println("Verfasser bisher = "+altverfasser);
 					verfasser.setSelectedItem(altverfasser);
 					tbwahl.setSelectedItem(diag);
 				}
@@ -340,10 +349,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		jbut.addActionListener(this);
 		pb.add(jbut,cc.xy(2, 40));
 
-		jbut = new JButton("Bericht drucken");
-		jbut.setActionCommand("berichtdrucken");
-		jbut.addActionListener(this);
-		pb.add(jbut,cc.xy(2, 42));
+		jbutbericht = new JButton("Bericht drucken");
+		jbutbericht.setActionCommand("berichtdrucken");
+		jbutbericht.addActionListener(this);
+		jbutbericht.setEnabled(false);
+		pb.add(jbutbericht,cc.xy(2, 42));
 		
 		jbut = new JButton("Text aus Vorbericht");
 		jbut.setActionCommand("berichtvorbericht");
@@ -367,21 +377,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("neuerempfaenger")){
-			jtf[0] = new JRtaTextField("NORMAL",false);
-			jtf[1] = new JRtaTextField("NORMAL",false);
-			jtf[2] = new JRtaTextField("NORMAL",false);
-			ArztAuswahl awahl = new ArztAuswahl(null,"arztwahlfuerbericht",
-					new String[] {rlab[2].getText(),new Integer(arztid).toString()},
-					jtf,rlab[2].getText());
-			awahl.setModal(true);
-			awahl.setLocationRelativeTo(this);
-			awahl.setVisible(true);
-			if(!jtf[2].equals("")){
-				rlab[2].setText(jtf[0].getText());
-				if(!jtf[2].getText().equals("")){
-					arztid = new Integer(jtf[2].getText());					
-				}
-			}
+			neuerArzt();
 			return;
 		}
 		if(cmd.equals("tbladen")){
@@ -397,10 +393,128 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				}.execute();
 			}
 		}
+		if(cmd.equals("berichtspeichern")){
+			// unterscheidung alt und neu
+			if(this.neu){
+				SwingUtilities.invokeLater(new Runnable(){
+					public  void run(){
+						doSpeichernNeu();
+						neu = false;
+						gespeichert = true;
+			   	  	}
+				});
+			}else{
+				if(doSpeichernAlt()){
+					neu = false;
+					gespeichert = true;
+					jbutbericht.setEnabled(true);
+				}
+			}
+		}
+		if(cmd.equals("berichtspeichern")){
+			doBerichtDrucken();
+		}
+		
+	}
+	private void neuerArzt(){
+		jtf[0] = new JRtaTextField("NORMAL",false);
+		jtf[1] = new JRtaTextField("NORMAL",false);
+		jtf[2] = new JRtaTextField("NORMAL",false);
+		ArztAuswahl awahl = new ArztAuswahl(null,"arztwahlfuerbericht",
+				new String[] {rlab[2].getText(),new Integer(arztid).toString()},
+				jtf,rlab[2].getText());
+		awahl.setModal(true);
+		awahl.setLocationRelativeTo(this);
+		awahl.setVisible(true);
+		if(!jtf[2].equals("")){
+			rlab[2].setText(jtf[0].getText());
+			if(!jtf[2].getText().equals("")){
+				arztid = new Integer(jtf[2].getText());					
+			}else{
+				arztid = -1;
+			}
+		}
+	}
+	private void doSpeichernNeu(){
+		
+	}
+	private boolean doSpeichernAlt(){
+		String empfaenger = "";
+		if(arztid <= 0){
+			String cmd = "Der angegebene Arzt kann als Berichtsempfänger nicht verwendet werden.\n\n"+
+			"Bitte wählen Sie den korrekten Arzt aus.";
+			JOptionPane.showMessageDialog(null,cmd);
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					neuerArzt();
+		   	  	}
+			});
+			return false;
+		}else{
+			empfaenger = rlab[2].getText();
+		}
+ 
+		String xverf = (String)verfasser.getSelectedItem();
+		if(xverf.equals("./.")){
+			xverf = (String)verfasser.getItemAt(1);
+		}
+		//System.out.println("************************************************************************************");
+		String tbs = (String) tbwahl.getSelectedItem(); 
+		String cmd = "update berhist set editdat='"+datFunk.sDatInSQL(datFunk.sHeute())+"', verfasser='"+xverf+"', "+
+		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
+		"empfaenger='"+empfaenger+"', empfid='"+arztid+"' where berichtid='"+this.berichtid+"'";
+		new ExUndHop().setzeStatement(new String(cmd));
+		//System.out.println(cmd);
+		//System.out.println("************************************************************************************");
+		///*****************hier noch die Tabelle aktualisieren*******************/
+		cmd = "update bericht1 set verfasser='"+xverf+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
+		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
+		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
+		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"' where berichtid='"+this.berichtid+"'";
+		new ExUndHop().setzeStatement(new String(cmd));
+		//System.out.println(cmd);		
+		//System.out.println("************************************************************************************");
+		JOptionPane.showMessageDialog(null,"Der Bericht wurde erfolgreich gespeichert");
+		final String xtbs = tbs;
+		final String xxverf = xverf;
+		final String xempfaenger = empfaenger;
+
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+
+				if(aufrufvon==3){
+					//tabbericht
+					//{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung",""};
+					TherapieBerichte.aktBericht.dtblm.setValueAt("Bericht zu "+reznr+" ("+xtbs+")", tblreihe, 1);
+					TherapieBerichte.aktBericht.dtblm.setValueAt(xxverf, tblreihe, 2);
+					TherapieBerichte.aktBericht.dtblm.setValueAt(xempfaenger, tblreihe,4);
+					TherapieBerichte.aktBericht.dtblm.setValueAt(datFunk.sHeute(), tblreihe,5);
+					TherapieBerichte.aktBericht.tabbericht.revalidate();
+				}else if(aufrufvon==0){
+					
+				}
+
+				return null;
+			}
+			
+		}.execute();
+		return true;
 		
 	}
 	
-	
+	public void doBerichtDrucken(){
+		/*
+		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
+				"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
+		*/
+		Vector vec = SqlInfo.holeSatz("arzt", 
+				"anede,titel,nachname,vorname,strasse,plz,ort",
+				" id='"+arztid+"'", 
+				Arrays.asList(new String[] {}));
+		
+		
+	}
 	public ArztBericht getInstance(){
 		return this;
 	}

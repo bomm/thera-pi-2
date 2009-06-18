@@ -153,7 +153,14 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				protected Void doInBackground() throws Exception {
 			
 					//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-					Vector vec = SqlInfo.holeSaetze("berhist", "berichtid,berichttyp,bertitel,verfasser,DATE_FORMAT(erstelldat,'%d.%m.%Y') AS derstelldat,empfaenger,DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat,empfid,berichtid",
+					Vector vec = SqlInfo.holeSaetze("berhist", 
+							"berichtid," +
+							"bertitel," +
+							"verfasser," +
+							"DATE_FORMAT(erstelldat,'%d.%m.%Y') AS derstelldat," +
+							"empfaenger," +
+							"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat," +
+							"empfid",
 							"pat_intern='"+xpatint+"' ORDER BY erstelldat", Arrays.asList(new String[]{}));
 					int anz = vec.size();
 					for(int i = 0; i < anz;i++){
@@ -182,22 +189,31 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				
 			}.execute();
 			
+			
 	}
 		
 		
 /*********/
 	private void doThBerichtEdit(int row){
-		String xreznr = (String) dtblm.getValueAt(row, 2);
+		String xreznr = (String) dtblm.getValueAt(row, 1);
 		String[] splitrez = xreznr.split(" ");
-		int bid = new Integer((String) dtblm.getValueAt(row, 8));
-		String xverfasser = (String) dtblm.getValueAt(row, 3);
-		String xtitel = (String) dtblm.getValueAt(row, 2);
+		int bid = new Integer((String) dtblm.getValueAt(row, 0));
+		String xverfasser = (String) dtblm.getValueAt(row, 2);
+		//String xtitel = (String) dtblm.getValueAt(row, 1);
 		//System.out.println("aufruf des Berichtes mit der ID "+bid);
 		
 		String[] splitdiag1 = xreznr.split("\\(");
 		String[] splitdiag2 = splitdiag1[1].split("\\)");
-		System.out.println("Die Diagnose = --------------->"+splitdiag2[0]);
-		ArztBericht ab = new ArztBericht(null,"arztberichterstellen",false,splitrez[2],bid,3,xverfasser,splitdiag2[0]);
+		/*
+		System.out.println("Die BerichtsID = ----------------->"+bid);
+		System.out.println("Die Rezeptnummer = --------------->"+splitrez[2]);
+		System.out.println("Die TB-Grupper = ----------------->"+splitdiag2[0]);
+		System.out.println("Der Verfasser = ------------------>"+xverfasser);
+		System.out.println("Aufruf aus Fenser Nr. = ---------->"+3);
+		System.out.println("Tabellenreihe = ------------------>"+row);
+		*/
+
+		ArztBericht ab = new ArztBericht(null,"arztberichterstellen",false,splitrez[2],bid,3,xverfasser,splitdiag2[0],row);
 		ab.setModal(true);
 		ab.setLocationRelativeTo(null);
 		ab.setVisible(true);
@@ -209,10 +225,10 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyBerichtTableModel();
-		String[] column = 	{"ID","Bericht-Typ","Titel","Verfasser","erstellt","Empfänger","letzte Änderung","",""};
+		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung",""};
 		dtblm.setColumnIdentifiers(column);
 		tabbericht = new JXTable(dtblm);
-		tabbericht.setEditable(false);
+		tabbericht.setEditable(true);
 		tabbericht.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
@@ -230,12 +246,22 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				}
 			}
 		});
+/*
+		0		"berichtid," +
+		1		"bertitel," +
+		2		"verfasser," +
+		3		"DATE_FORMAT(erstelldat,'%d.%m.%Y') AS derstelldat," +
+		4		"empfaenger," +
+		5		"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat,
+		6		"empfid",
+*/
 		tabbericht.getColumn(0).setMinWidth(50);
 		tabbericht.getColumn(0).setMaxWidth(50);
-		tabbericht.getColumn(7).setMinWidth(0);
-		tabbericht.getColumn(7).setMaxWidth(0);
-		tabbericht.getColumn(8).setMinWidth(0);
-		tabbericht.getColumn(8).setMaxWidth(0);
+		tabbericht.getColumn(1).setMinWidth(140);
+		tabbericht.getColumn(3).setMaxWidth(80);
+		tabbericht.getColumn(5).setMaxWidth(80);
+		tabbericht.getColumn(6).setMinWidth(0);
+		tabbericht.getColumn(6).setMaxWidth(0);
 
 		tabbericht.validate();
 
@@ -359,7 +385,8 @@ class MyBerichtTableModel extends DefaultTableModel{
 	    public boolean isCellEditable(int row, int col) {
 	        //Note that the data/cell address is constant,
 	        //no matter where the cell appears onscreen.
-
+	    	return false;
+	    	/*
 	        if (col == 0){
 	        	return true;
 	        }else if(col == 3){
@@ -371,6 +398,7 @@ class MyBerichtTableModel extends DefaultTableModel{
 	        } else{
 	          return false;
 	        }
+	        */
 	      }
 	   
 }
