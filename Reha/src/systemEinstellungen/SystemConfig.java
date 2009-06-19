@@ -603,9 +603,9 @@ public class SystemConfig {
 		
 		hmAdrBDaten = new HashMap<String,String>();
 		
-		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
+		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Bbanrede>",
 				"<Bihrenpat>","<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>",
-				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>","<Bnname>","<Bvnname>","<Bgeboren>"});
+				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>","<Bnname>","<Bvnname>","<Bgeboren>","<Btherapeut>"});
 		for(int i = 0; i < lAdrBDaten.size(); i++){
 			hmAdrBDaten.put(lAdrBDaten.get(i),"");
 		}	
@@ -720,7 +720,7 @@ public class SystemConfig {
 		for(int i = 0; i<4;i++){
 			berichttitel[i] = inif.getStringProperty("Bericht", "Block"+(i+1));	
 		}
-		thberichtdatei = Reha.proghome+"volagen/"+Reha.aktIK+"/"+inif.getStringProperty("Datei", "BerichtsDatei");
+		thberichtdatei = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Datei", "BerichtsDatei");
 		
 
 	}

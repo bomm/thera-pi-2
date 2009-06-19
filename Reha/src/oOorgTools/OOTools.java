@@ -136,6 +136,91 @@ public class OOTools {
 		
 		
 	}
+	public static void starteTherapieBericht(String url){
+		IDocumentService documentService = null;;
+		System.out.println("Starte Datei -> "+url);
+		try {
+			documentService = Reha.officeapplication.getDocumentService();
+		} catch (OfficeApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        IDocumentDescriptor docdescript = new DocumentDescriptor();
+       	docdescript.setHidden(false);
+        docdescript.setAsTemplate(true);
+		IDocument document = null;
+		//ITextTable[] tbl = null;
+		try {
+			document = documentService.loadDocument(url,docdescript);
+		} catch (NOAException e) {
+
+			e.printStackTrace();
+		}
+		ITextDocument textDocument = (ITextDocument)document;
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for (int i = 0; i < placeholders.length; i++) {
+			boolean loeschen = false;
+			boolean schonersetzt = false;
+			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+
+			//System.out.println(placeholderDisplayText);	
+			//System.out.println("Oiginal-Placeholder-Text = "+placeholders[i].getDisplayText());
+		    /*****************/
+			
+			Set entries = SystemConfig.hmAdrBDaten.entrySet();
+		    Iterator it = entries.iterator();
+		    while (it.hasNext()) {
+		      Map.Entry entry = (Map.Entry) it.next();
+		      String key = entry.getKey().toString().toLowerCase();
+		      if( (key.contains("<bblock") || key.contains("<btitel")) && key.equals(placeholderDisplayText) ){
+		    	  //System.out.println("enthält block oder titel");
+		    	  int bblock;
+		    	  if(key.contains("<bblock")){
+			    	  System.out.println("enthält block");
+		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
+		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
+		    			  if(((String)entry.getValue()).trim().equals("")){
+		    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    				  break;
+		    			  }else{
+		    				  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    				  break;
+		    			  }
+		    		  }
+		    	  }
+		    	  if(key.contains("<btitel")){
+			    	  //System.out.println("enthält titel");
+		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
+		    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
+		    			  if(((String)entry.getValue()).trim().equals("")){
+		    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    				  break;
+		    			  }else{
+		    				  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    				  break;
+		    			  }
+		    		  }
+		    	  }
+		    	  
+		      }else if( (!(key.contains("<bblock") || key.contains("<btitel"))) && key.equals(placeholderDisplayText)  ){
+			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+			    	  break;
+			      }
+		      }else{
+		    	  //System.out.println("in keinem von Beidem "+entry.getKey()+" - "+key+" - "+placeholderDisplayText);
+		      }
+		    }
+		}
+	}
+
 	public static void starteLeerenWriter(){
 		try {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();

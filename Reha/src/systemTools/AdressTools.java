@@ -4,13 +4,13 @@ public class AdressTools {
 	public static String[] machePrivatAdresse(Object[] oin){
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
 		String[] str = {null,null,null,null,null,null,null};
-		String anrede =  ( ((String)oin[0]) == null ? "" : ((String)oin[0]) );
-		String titel = ( ((String)oin[1]) == null ? "" : ((String)oin[1]) );
-		String nname = ( ((String)oin[2]) == null ? "" : ((String)oin[2]) );
-		String vname = ( ((String)oin[3]) == null ? "" : ((String)oin[3]) );
-		String strasse = ( ((String)oin[4]) == null ? "" : ((String)oin[4]) );
-		String plz = ( ((String)oin[5]) == null ? "" : ((String)oin[5]) );
-		String ort = ( ((String)oin[6]) == null ? "" : ((String)oin[6]) );
+		String anrede =  ( ((String)oin[0]) == null ? "" : ((String)oin[0]) ).trim();
+		String titel = ( ((String)oin[1]) == null ? "" : ((String)oin[1]) ).trim();
+		String nname = ( ((String)oin[2]) == null ? "" : ((String)oin[2]) ).trim();
+		String vname = ( ((String)oin[3]) == null ? "" : ((String)oin[3]) ).trim();
+		String strasse = ( ((String)oin[4]) == null ? "" : ((String)oin[4]) ).trim();
+		String plz = ( ((String)oin[5]) == null ? "" : ((String)oin[5]) ).trim();
+		String ort = ( ((String)oin[6]) == null ? "" : ((String)oin[6]) ).trim();
 		
 		String banrede = ""; 
 		boolean isherr = false;
@@ -41,9 +41,9 @@ public class AdressTools {
 		if(isnosex){
 			str[4] = "Sehr geehrte Damen und Herren";
 		}else if((!isnosex) && (isherr)){
-			str[4] = "Sehr geehrter Herr"+(anredetitel.length() > 0 ? " "+anredetitel : "")+" "+nname;
+			str[4] = "Sehr geehrter Herr"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+nname;
 		}else if((!isnosex) && (!isherr)){
-			str[4] = "Sehr geehrte Frau"+(anredetitel.length() > 0 ? " "+anredetitel : "")+" "+nname;
+			str[4] = "Sehr geehrte Frau"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+nname;
 		}
 		return str;
 	}

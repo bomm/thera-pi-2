@@ -386,7 +386,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		jbutbericht = new JButton("Bericht drucken");
 		jbutbericht.setActionCommand("berichtdrucken");
 		jbutbericht.addActionListener(this);
-		jbutbericht.setEnabled(false);
+		if(this.neu){
+			jbutbericht.setEnabled(false);			
+		}
 		pb.add(jbutbericht,cc.xy(2, 42));
 		
 		jbut = new JButton("Text aus Vorbericht");
@@ -555,7 +557,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		SystemConfig.hmAdrBDaten.put("<Badr2>", str[1]);
 		SystemConfig.hmAdrBDaten.put("<Badr3>", str[2]);
 		SystemConfig.hmAdrBDaten.put("<Badr4>", str[3]);
-		SystemConfig.hmAdrBDaten.put("<Banrede>", str[4]);
+		SystemConfig.hmAdrBDaten.put("<Bbanrede>", str[4]);
 		if(PatGrundPanel.thisClass.patDaten.get(0).toUpperCase().equals("HERR")){
 			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihren Patieten");
 		}else{
@@ -565,8 +567,12 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
 			if(this.icfblock[i].getText().trim().equals("")){
 				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", "");	
+				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", "");
 			}else{
-				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", icfblock[i].getText());			
+				String sblock = icfblock[i].getText().replaceAll("\\n", "")+"\r";
+				//String sblock = icfblock[i].getText().replaceAll(System.getProperty("line.separator"), "")+"\r";
+				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">",sblock);
+				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
 			}
 			
 		}
@@ -575,6 +581,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		SystemConfig.hmAdrBDaten.put("<Bgeboren>", datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
 		SystemConfig.hmAdrBDaten.put("<Brezdatum>", datFunk.sDatInDeutsch(rezdatum));
 		SystemConfig.hmAdrBDaten.put("<Breznr>",reznr);
+		SystemConfig.hmAdrBDaten.put("<Bdiagnose>",diagnose.getText());
+		SystemConfig.hmAdrBDaten.put("<Btherapeut>",(String) verfasser.getSelectedItem());
 		System.out.println("Berichtsdatei = ------->"+SystemConfig.thberichtdatei);
 
 		/*
@@ -585,6 +593,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	      System.out.println("Key = "+(String)entry.getKey()+"\n"+"Wert = "+entry.getValue());
 	    }
 	    */
+	    OOTools.starteTherapieBericht(SystemConfig.thberichtdatei);
 
 		
 	}
