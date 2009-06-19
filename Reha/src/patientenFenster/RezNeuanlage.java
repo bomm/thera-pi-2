@@ -1055,7 +1055,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		StringBuffer sbuf = new StringBuffer();
 		
 /*******************************************/
+		
 		/****** Zunächst eine neue Rezeptnummer holen ******/
+		/*
 		Vector numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
@@ -1090,6 +1092,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			
 		}
+		*/
+		reznr = SqlInfo.erzeugeNummer(nummer);
 		if(reznr < 0){
 			JOptionPane.showMessageDialog(null,"Schwerwiegender Fehler beim Bezug einer neuen Rezeptnummer!");
 			return;

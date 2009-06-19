@@ -173,7 +173,17 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 					}
 					if(anz > 0){
 						setzeRezeptPanelAufNull(false);
-						tabbericht.setRowSelectionInterval(0,0);
+						if(xrez_nr.equals("")){
+							tabbericht.setRowSelectionInterval(0,0);							
+						}else{
+							for(int i = 0;i<anz;i++){
+								if(((String)dtblm.getValueAt(i,1)).contains(xrez_nr)){
+									tabbericht.setRowSelectionInterval(i,i);
+									break;
+								}
+							}
+						}
+
 						int anzeigen = -1;
 						wechselPanel.revalidate();
 						wechselPanel.repaint();					

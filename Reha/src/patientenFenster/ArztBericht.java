@@ -100,6 +100,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private int zuletztaktiv = 0;
 	private boolean gespeichert = false;
 	private boolean ishmnull = true;
+	private String pat_intern = "";
 	String altverfasser = "";
 	String diag = "";
 	int tblreihe;
@@ -128,6 +129,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		this.altverfasser = xverfasser;
 		this.diag = xdiag;
 		this.tblreihe = row;
+		this.pat_intern = PatGrundPanel.thisClass.patDaten.get(29);
 		/**
 		 * 
 		 * this.disziplin = this.reznr.substring(0,2);		
@@ -435,8 +437,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						doSpeichernNeu();
-						neu = false;
-						gespeichert = true;
+						//neu = false;
+						//gespeichert = true;
 			   	  	}
 				});
 			}else{
@@ -472,6 +474,98 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 	}
 	private void doSpeichernNeu(){
+		if(arztid <= 0){
+			JOptionPane.showMessageDialog(null,"Angabe des Empfängers ist ungültig!\nBitte neuen Arzt auswählen");
+			return;
+		}
+		//verfasser testen
+		String xverfasser = (String)verfasser.getSelectedItem();
+		if(xverfasser.equals("./.")){
+			JOptionPane.showMessageDialog(null,"Angabe des Verfassers ist ungültig!");
+			return;
+		}
+		//testen ob alles leer
+		boolean gefuellt = false;
+		for(int i = 0; i < 3; i++){
+			if(! icfblock[i].getText().trim().equals("")){
+				gefuellt = true;
+				break;
+			}
+		}
+		if(!gefuellt){
+			JOptionPane.showMessageDialog(null,"Ein bisschen Text zum Speichern wäre nicht schlecht....");
+			return;
+		}
+		//id holen
+		int berichtnr = SqlInfo.erzeugeNummer("bericht");
+		if(berichtnr < 0){
+			JOptionPane.showMessageDialog(null,"Schwerwiegender Fehler beim Bezug einer neuen Berichts-ID!");
+			return;
+		}
+		
+		System.out.println("************************************************************************************");
+		String tbs = (String) tbwahl.getSelectedItem(); 
+		String cmd = "insert into berhist set erstelldat='"+datFunk.sDatInSQL(datFunk.sHeute())+"', verfasser='"+xverfasser+"', "+
+		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
+		"empfaenger='"+rlab[2].getText()+"', empfid='"+arztid+"', berichtid='"+berichtnr+"', "+
+		"pat_intern='"+this.pat_intern+"'";
+		new ExUndHop().setzeStatement(new String(cmd));
+		System.out.println(cmd);
+		System.out.println("************************************************************************************");		
+		cmd = "insert into bericht1 set verfasser='"+xverfasser+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
+		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
+		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
+		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', berichtid='"+berichtnr+"', pat_intern='"+this.pat_intern+"'";
+		new ExUndHop().setzeStatement(new String(cmd));
+		System.out.println(cmd);
+		/*
+		0		"berichtid," +
+		1		"bertitel," +
+		2		"verfasser," +
+		3		"DATE_FORMAT(erstelldat,'%d.%m.%Y') AS derstelldat," +
+		4		"empfaenger," +
+		5		"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat,
+		6		"empfid",
+		*/
+		/*
+		Vector bervec = new Vector(); 
+		bervec.add(new Integer(berichtnr).toString());
+		bervec.add("Bericht zu "+this.reznr+" ("+tbs+")");
+		bervec.add(xverfasser);
+		bervec.add(datFunk.sHeute());
+		bervec.add(rlab[2].getText());
+		bervec.add("");
+		bervec.add(new Integer(arztid).toString());
+		*/
+		final int xberichtnr = berichtnr;
+		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				if(aufrufvon==0){
+					String cmd = "update verordn set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
+					AktuelleRezepte.aktRez.holeRezepte(pat_intern, reznr);
+					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
+					return null;
+				}
+				if(aufrufvon==1){
+					
+				}
+				return null;
+			}
+			
+		}.execute();
+		
+		
+		if(this.aufrufvon==0){
+			
+		}else{
+			
+		}
+
+
+		
+
 		
 	}
 	private boolean doSpeichernAlt(){

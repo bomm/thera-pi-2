@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -266,6 +267,48 @@ public class SqlInfo {
 		ret = ret +") ";
 		return ret;
 	}
+	
+	public static int erzeugeNummer(String nummer){
+		int reznr = -1;
+		/****** Zunächst eine neue Rezeptnummer holen ******/
+		Vector numvec = null;
+		try {
+			Reha.thisClass.conn.setAutoCommit(false);
+			String numcmd = nummer+",id";
+			//System.out.println("numcmd = "+numcmd);
+			numvec = SqlInfo.holeSatz("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE", Arrays.asList(new String[] {}));
+			//System.out.println(Reha.aktIK);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(numvec.size() > 0){
+			reznr = new Integer( (String)((Vector) numvec).get(0) );
+			//System.out.println("Neue Rezeptnummer = "+reznr);
+			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
+			//System.out.println("Kommando = "+cmd);
+			new ExUndHop().setzeStatement(cmd);
+			//System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+			try {
+				Reha.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				Reha.thisClass.conn.rollback();
+				Reha.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return reznr;
+
+	}
+	
 
 
 }

@@ -138,7 +138,7 @@ public class OOTools {
 	}
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
-		System.out.println("Starte Datei -> "+url);
+		//System.out.println("Starte Datei -> "+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
@@ -183,7 +183,7 @@ public class OOTools {
 		    	  //System.out.println("enthält block oder titel");
 		    	  int bblock;
 		    	  if(key.contains("<bblock")){
-			    	  System.out.println("enthält block");
+			    	  //System.out.println("enthält block");
 		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
