@@ -188,6 +188,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 private int iformular;
 public PatGrundPanel(JPatientInternal jry){
 	super();
+	
 	thisClass = this;
 	ptp = new PatStammEventClass();
 	ptp.addPatStammEventListener((PatStammEventListener)this);

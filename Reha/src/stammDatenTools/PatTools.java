@@ -78,7 +78,7 @@ public class PatTools {
 		}
 		if(isherr){
 			if(!iskind){
-				branrede = "Sehr geehrter Herr "+(titel.length() > 0 ? " "+titel : "")+nachname;
+				branrede = "Sehr geehrter Herr"+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
 				SystemConfig.hmAdrPDaten.put("<Panrede>", anrede);
 				SystemConfig.hmAdrPDaten.put("<Pihnen>", "Ihnen");
 				SystemConfig.hmAdrPDaten.put("<Pihrem>", "Ihrem");
@@ -91,7 +91,7 @@ public class PatTools {
 
 		}else{
 			if(!iskind){
-				branrede = "Sehr geehrte Frau "+(titel.length() > 0 ? " "+titel : "")+nachname;
+				branrede = "Sehr geehrte Frau"+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
 				SystemConfig.hmAdrPDaten.put("<Panrede>", anrede);
 				SystemConfig.hmAdrPDaten.put("<Pihnen>", "Ihnen");
 				SystemConfig.hmAdrPDaten.put("<Pihrem>", "Ihrem");

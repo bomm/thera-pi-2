@@ -212,7 +212,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		System.out.println("Aufruf aus Fenser Nr. = ---------->"+3);
 		System.out.println("Tabellenreihe = ------------------>"+row);
 		*/
-
+		
 		ArztBericht ab = new ArztBericht(null,"arztberichterstellen",false,splitrez[2],bid,3,xverfasser,splitdiag2[0],row);
 		ab.setModal(true);
 		ab.setLocationRelativeTo(null);

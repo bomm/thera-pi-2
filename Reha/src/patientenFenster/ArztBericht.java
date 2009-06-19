@@ -1,5 +1,7 @@
 package patientenFenster;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,7 +14,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -30,12 +35,25 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.PatGrundPanel.PatientAction;
+
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -44,6 +62,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.AdressTools;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
@@ -80,9 +99,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private String disziplin = null;
 	private int zuletztaktiv = 0;
 	private boolean gespeichert = false;
+	private boolean ishmnull = true;
 	String altverfasser = "";
 	String diag = "";
 	int tblreihe;
+	String rezdatum = "";
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
@@ -156,12 +177,25 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0);
 				ab.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doTextBausteine");
 				ab.getActionMap().put("doTextBausteine", new TextBausteine());
+				setzeHmAufNull();
+				setzeRezDatum();
 	   	  	}
 		});
 		
 		pack();
 	}
-	
+	private void setzeRezDatum(){
+		Vector vec = null;
+		if(  (vec = SqlInfo.holeSatz("verordn", "rez_datum", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}) )).size() > 0 ){
+			rezdatum = (String) vec.get(0);
+		}else if((vec = SqlInfo.holeSatz("lza", "rez_datum", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}) )).size() > 0){
+			rezdatum = (String) vec.get(0);
+		}else{
+			rezdatum = "nicht relevant";
+		}
+		
+		//rezdatum = SqlInfo
+	}
 	private void fuelleBericht(){
 		if(this.berichtid <= 0){
 			return;
@@ -411,7 +445,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				}
 			}
 		}
-		if(cmd.equals("berichtspeichern")){
+		if(cmd.equals("berichtdrucken")){
 			doBerichtDrucken();
 		}
 		
@@ -507,12 +541,51 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		/*
 		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
 				"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
+				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>"});
 		*/
 		Vector vec = SqlInfo.holeSatz("arzt", 
-				"anede,titel,nachname,vorname,strasse,plz,ort",
+				"anrede,titel,nachname,vorname,strasse,plz,ort",
 				" id='"+arztid+"'", 
 				Arrays.asList(new String[] {}));
-		
+		String[] str = AdressTools.machePrivatAdresse(vec.toArray());
+		for(int i = 0; i < str.length; i++){
+			System.out.println("Ergebnis von str"+i+" = "+str[i]);
+		}
+		SystemConfig.hmAdrBDaten.put("<Badr1>", str[0]);
+		SystemConfig.hmAdrBDaten.put("<Badr2>", str[1]);
+		SystemConfig.hmAdrBDaten.put("<Badr3>", str[2]);
+		SystemConfig.hmAdrBDaten.put("<Badr4>", str[3]);
+		SystemConfig.hmAdrBDaten.put("<Banrede>", str[4]);
+		if(PatGrundPanel.thisClass.patDaten.get(0).toUpperCase().equals("HERR")){
+			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihren Patieten");
+		}else{
+			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihre Patietin");
+		}
+		for(int i = 0; i < 4; i++){
+			SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
+			if(this.icfblock[i].getText().trim().equals("")){
+				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", "");	
+			}else{
+				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", icfblock[i].getText());			
+			}
+			
+		}
+		SystemConfig.hmAdrBDaten.put("<Bnname>", StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2)));
+		SystemConfig.hmAdrBDaten.put("<Bvname>", StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3)));
+		SystemConfig.hmAdrBDaten.put("<Bgeboren>", datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
+		SystemConfig.hmAdrBDaten.put("<Brezdatum>", datFunk.sDatInDeutsch(rezdatum));
+		SystemConfig.hmAdrBDaten.put("<Breznr>",reznr);
+		System.out.println("Berichtsdatei = ------->"+SystemConfig.thberichtdatei);
+
+		/*
+		Set entries = SystemConfig.hmAdrBDaten.entrySet();
+	    Iterator it = entries.iterator();
+	    while (it.hasNext()) {
+	      Map.Entry entry = (Map.Entry) it.next();
+	      System.out.println("Key = "+(String)entry.getKey()+"\n"+"Wert = "+entry.getValue());
+	    }
+	    */
+
 		
 	}
 	public ArztBericht getInstance(){
@@ -580,6 +653,94 @@ class TextBausteine extends AbstractAction {
 	 
 }
 
+private void jetztBerichtStarten(String url){
+	IDocumentService documentService = null;;
+	System.out.println("Starte Datei -> "+url);
+	try {
+		documentService = Reha.officeapplication.getDocumentService();
+	} catch (OfficeApplicationException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    IDocumentDescriptor docdescript = new DocumentDescriptor();
+   	docdescript.setHidden(false);
+    docdescript.setAsTemplate(true);
+	IDocument document = null;
+	//ITextTable[] tbl = null;
+	try {
+		document = documentService.loadDocument(url,docdescript);
+	} catch (NOAException e) {
+
+		e.printStackTrace();
+	}
+	ITextDocument textDocument = (ITextDocument)document;
+	ITextFieldService textFieldService = textDocument.getTextFieldService();
+	ITextField[] placeholders = null;
+	try {
+		placeholders = textFieldService.getPlaceholderFields();
+	} catch (TextException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	for (int i = 0; i < placeholders.length; i++) {
+		boolean loeschen = false;
+		boolean schonersetzt = false;
+		String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+		//System.out.println(placeholderDisplayText);	
+	    /*****************/			
+		Set entries = SystemConfig.hmAdrPDaten.entrySet();
+	    Iterator it = entries.iterator();
+	    while (it.hasNext()) {
+	      Map.Entry entry = (Map.Entry) it.next();
+	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+	    	  schonersetzt = true;
+	    	  break;
+	      }
+	    }
+	    /*****************/
+	    entries = SystemConfig.hmAdrKDaten.entrySet();
+	    it = entries.iterator();
+	    while (it.hasNext() && (!schonersetzt)) {
+	      Map.Entry entry = (Map.Entry) it.next();
+	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+	    	  schonersetzt = true;
+	    	  break;
+	      }
+	    }
+	    /*****************/
+	    entries = SystemConfig.hmAdrADaten.entrySet();
+	    it = entries.iterator();
+	    while (it.hasNext() && (!schonersetzt)) {
+	      Map.Entry entry = (Map.Entry) it.next();
+	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+	    	  schonersetzt = true;
+	    	  break;
+	      }
+	    }
+	    /*****************/
+	    entries = SystemConfig.hmAdrRDaten.entrySet();
+	    it = entries.iterator();
+	    while (it.hasNext() && (!schonersetzt)) {
+	      Map.Entry entry = (Map.Entry) it.next();
+	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+	    	  schonersetzt = true;
+	    	  break;
+	      }
+	    }
+	    if(!schonersetzt){
+	    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+	    }
+	    /*****************/
+	}
+	
+	
+	
+}
+
 /*********************************
  * 
  * 
@@ -594,6 +755,13 @@ class TextBausteine extends AbstractAction {
 					this.setVisible(false);
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
+					new Thread(){
+						public void run(){
+							if(! ishmnull){
+								setzeHmAufNull();						
+							}
+						}
+					}.start();
 					super.dispose();
 					this.dispose();
 					System.out.println("****************Arztbericht -> Listener entfernt**************"+this.getName());				
@@ -609,12 +777,29 @@ class TextBausteine extends AbstractAction {
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
+			new Thread(){
+				public void run(){
+					if(! ishmnull){
+						setzeHmAufNull();						
+					}
+				}
+			}.start();
 			super.dispose();
 			this.dispose();
 			System.out.println("****************Arztbericht -> Listener entfernt (Closed)**********"+this.getName());
 		}
 		
 		
+	}
+	private void setzeHmAufNull(){
+		Set entries = SystemConfig.hmAdrBDaten.entrySet();
+	    Iterator it = entries.iterator();
+	    while (it.hasNext()) {
+	      Map.Entry entry = (Map.Entry) it.next();
+	      SystemConfig.hmAdrBDaten.put((String)entry.getKey(),"");
+	      
+	    }
+	    ishmnull = true;
 	}
 	/*********************************
 	 * 

@@ -95,6 +95,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmAdrPDaten = null;
 	public static HashMap<String,String> hmAdrRDaten = null;
 	public static HashMap<String,String> hmAdrBDaten = null;
+
 	/*
 	public static List<String> lAdrKDaten = null;
 	public static List<String> lAdrADaten = null;
@@ -123,7 +124,8 @@ public class SystemConfig {
 	public static String rezGebDrucker = null;
 
 	public static HashMap<String,Vector> hmTherapBausteine = null; 
-	
+	public static String[] berichttitel = {null,null,null,null};
+	public static String  thberichtdatei = "";
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
 	                     
 	public SystemConfig(){
@@ -602,7 +604,8 @@ public class SystemConfig {
 		hmAdrBDaten = new HashMap<String,String>();
 		
 		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
-				"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
+				"<Bihrenpat>","<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>",
+				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>","<Bnname>","<Bvnname>","<Bgeboren>"});
 		for(int i = 0; i < lAdrBDaten.size(); i++){
 			hmAdrBDaten.put(lAdrBDaten.get(i),"");
 		}	
@@ -714,6 +717,12 @@ public class SystemConfig {
 			}
 			hmTherapBausteine.put(prop2, (Vector) vec.clone());
 		}
+		for(int i = 0; i<4;i++){
+			berichttitel[i] = inif.getStringProperty("Bericht", "Block"+(i+1));	
+		}
+		thberichtdatei = Reha.proghome+"volagen/"+Reha.aktIK+"/"+inif.getStringProperty("Datei", "BerichtsDatei");
+		
+
 	}
 	
 	public static void SystemIconsInit(){
