@@ -564,14 +564,16 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			}else{
 				xreznr = ""; 
 			}
-			System.out.println(xreznr+"------------->");
-			Vector vec = SqlInfo.holeSatz("berhist","berichtid" , "bertitel like '%"+xreznr+"%'", Arrays.asList(new String[] {}));
-			if(vec.size() > 0){
-				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nGehen Sie auf die Seite Berichte und starten Sie den Bericht an dieser Stelle";
+			
+			int  iexistiert = TherapieBerichte.aktBericht.berichtExistiert(xreznr);
+			if(iexistiert > 0){
+				neuber = false;
+				berid = iexistiert;
+				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
 				JOptionPane.showMessageDialog(null, meldung);
-				return;
 			}
-			System.out.println("ArztberichtFenster erzeugen!");
+
+
 			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,1,"","",currow);
 			ab.setModal(true);
 			ab.setLocationRelativeTo(null);

@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
@@ -25,6 +26,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import jxTableTools.TableTool;
+
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -33,6 +36,7 @@ import org.jdesktop.swingx.event.TableColumnModelExtListener;
 import patientenFenster.AktuelleRezepte.MyAktRezeptTableModel;
 import patientenFenster.AktuelleRezepte.MyTermTableModel;
 
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
@@ -120,7 +124,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 
 	}
 	
-
+	
 	public void setzeRezeptPanelAufNull(boolean aufnull){
 		if(aufnull){
 			if(aktPanel.equals("vollPanel")){
@@ -136,7 +140,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
-				for(int i = 0; i < 3; i++){
+				for(int i = 1; i < 3; i++){
 					tberbut[i].setEnabled(true);
 				}
 			}
@@ -202,8 +206,66 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			
 	}
 		
+	public int berichtExistiert(String xrez){
+		int ret = -1;
+		int iberichte = dtblm.getRowCount();
+		if(iberichte <= 0){
+			return ret;
+		}else{
+			for(int i = 0; i < iberichte; i++){
+				if(((String)dtblm.getValueAt(i,1)).contains(xrez)){
+					tabbericht.setRowSelectionInterval(i, i);
+					ret = new Integer(((String)dtblm.getValueAt(i,0)));
+					break;
+				}
+			}
+		}
+		return ret;
 		
+	}
 /*********/
+	private void doBerichtDelete(){
+		int wahl = tabbericht.getSelectedRow();
+		if(wahl < 0){
+			return;
+		}
+		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den ausgewählten Bericht wirklich löschen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		if(anfrage == JOptionPane.NO_OPTION){
+			return;
+		}
+		String xpat_int = PatGrundPanel.thisClass.patDaten.get(29);
+		String berid = (String)tabbericht.getValueAt(wahl,0);
+		// zunächst aus der berhist löschen
+		String xcmd = "delete from berhist where berichtid='"+berid+"'";
+		new ExUndHop().setzeStatement(xcmd);
+		// jetzt ermitteln ob tabelle bericht1 (Therapeuten) oder bericht2 (Arzt) betroffen ist. 
+		String verfas = (String)dtblm.getValueAt(wahl, 3); 
+		Vector vec = null;
+		if(! verfas.toUpperCase().contains("REHA-ARZT")){
+			// rez_nr ermitteln
+			vec = SqlInfo.holeSatz("bericht1", "bertyp", " berichtid='"+berid+"'", Arrays.asList(new String[] {}));
+			xcmd = "delete from bericht1 where berichtid='"+berid+"'";
+			new ExUndHop().setzeStatement(xcmd);
+		}else{
+			xcmd = "delete from bericht2 where berichtid='"+berid+"'";
+			new ExUndHop().setzeStatement(xcmd);
+		}
+		if(vec.size()>0){
+			// in verordn und in lza löschversuch
+			xcmd = "update verordn set berid='-1' where rez_nr='"+vec.get(0)+"'";
+			System.out.println(xcmd);
+			new ExUndHop().setzeStatement(xcmd);
+			xcmd = "update lza set berid='-1' where rez_nr='"+vec.get(0)+"'";
+			System.out.println(xcmd);
+			new ExUndHop().setzeStatement(xcmd);			
+		}else{
+			System.out.println("Rezeptnummer konnte nicht ermittelt werden");
+		}
+		//tabbericht
+		TableTool.loescheRow(tabbericht, wahl);
+		
+		
+	}
 	private void doThBerichtEdit(int row){
 		String xreznr = (String) dtblm.getValueAt(row, 1);
 		String[] splitrez = xreznr.split(" ");
@@ -289,20 +351,21 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 
 		tberbut[0] = new JButton();
 		tberbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
-		tberbut[0].setToolTipText("neues Rezept anlegen");
-		tberbut[0].setActionCommand("rezneu");
+		tberbut[0].setToolTipText("neuer Bericht anlegen");
+		tberbut[0].setActionCommand("berneu");
+		tberbut[0].setEnabled(false);
 		tberbut[0].addActionListener(this);		
 		jtb.add(tberbut[0]);
 		tberbut[1] = new JButton();
 		tberbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		tberbut[1].setToolTipText("aktuelles Rezept ändern/editieren");
-		tberbut[1].setActionCommand("rezedit");
+		tberbut[1].setToolTipText("ausgewählten Bericht ändern//editieren");
+		tberbut[1].setActionCommand("beredit");
 		tberbut[1].addActionListener(this);		
 		jtb.add(tberbut[1]);
 		tberbut[2] = new JButton();
 		tberbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		tberbut[2].setToolTipText("aktuelles Rezept löschen");
-		tberbut[2].setActionCommand("rezdelete");
+		tberbut[2].setToolTipText("ausgewählten Bericht löschen");
+		tberbut[2].setActionCommand("berdelete");
 		tberbut[2].addActionListener(this);		
 		jtb.add(tberbut[2]);
 		for(int i = 0; i < 3; i++){
@@ -373,6 +436,20 @@ public void propertyChange(PropertyChangeEvent arg0) {
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
+	String cmd = arg0.getActionCommand();
+	if(cmd.equals("beredit")){
+		int wahl = tabbericht.getSelectedRow();
+		if(wahl < 0){
+			return;
+		}
+		String verfas = (String)dtblm.getValueAt(wahl, 3); 
+		if(! verfas.toUpperCase().contains("REHA-ARZT")){
+			doThBerichtEdit(wahl);						
+		}
+	}
+	if(cmd.equals("berdelete")){
+		doBerichtDelete();
+	}
 	
 }
 

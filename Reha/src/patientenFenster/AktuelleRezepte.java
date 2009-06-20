@@ -994,6 +994,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 
+
 				boolean neuber = true;
 				int berid = 0;
 				String xreznr;
@@ -1002,6 +1003,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
 				}else{
 					xreznr = ""; 
+				}
+				int  iexistiert = TherapieBerichte.aktBericht.berichtExistiert(xreznr);
+				if(iexistiert > 0){
+					neuber = false;
+					berid = iexistiert;
+					String meldung = "<html>Für das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
+					JOptionPane.showMessageDialog(null, meldung);
 				}
 				System.out.println("ArztberichtFenster erzeugen!");
 				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,0,"","",currow);

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.LinearGradientPaint;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -91,6 +92,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JTextArea diagnose;
 	private JRtaComboBox tbwahl;
 	private JComboBox verfasser;
+	public int vorberichtid = -1;
+	public boolean vorberichtdiagnose = false;
 	int arztid;
 	JButton jbutbericht = null;
 	public  JRtaTextField[] jtf = {null,null,null};
@@ -136,7 +139,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		 * hier den Fall für ohne Rezeptbezug einbauen!!!!!
 		 * 
 		 */
-
+		System.out.println(berichtid+" - "+neu+" - "+reznr);
 		setSize(new Dimension(950,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
@@ -451,8 +454,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						doSpeichernNeu();
-						//neu = false;
-						//gespeichert = true;
+						neu = false;
+						gespeichert = true;
+						jbutbericht.setEnabled(true);
 			   	  	}
 				});
 			}else{
@@ -464,12 +468,36 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			}
 		}
 		if(cmd.equals("berichtvorbericht")){
-				JOptionPane.showMessageDialog(null, "Funktion ist noch nicht implementiert");
+			doBerichtVorbericht(arg0);
 		}
 		if(cmd.equals("berichtdrucken")){
 			doBerichtDrucken();
+
 		}
 		
+	}
+	private void doBerichtVorbericht(ActionEvent arg0){
+		vorberichtid = -1;
+		vorberichtdiagnose = false;
+		int wieviel = SqlInfo.zaehleSaetze("berhist", "pat_intern='"+PatGrundPanel.thisClass.patDaten.get(29)+"'");
+		if(wieviel > 0){
+			System.out.println("Bericht bereits vorhanden: "+wieviel);
+			Point pos = (Point) ((JComponent)arg0.getSource()).getLocation();
+			pos.x = pos.x+40;
+			VorBerichte vbe = new VorBerichte(false, false, pos,this);
+			if(vorberichtid > 0){
+				
+			}
+			//vbe.setVisible(true);
+
+		}else{
+			JOptionPane.showMessageDialog(null,"Für diesen Patient wurden noch keine Berichte angelegt!");
+			return;
+		}
+		/*
+			//JOptionPane.showMessageDialog(null, "Funktion ist noch nicht implementiert");
+			 * 
+			 */
 	}
 	private void neuerArzt(){
 		jtf[0] = new JRtaTextField("NORMAL",false);
@@ -533,7 +561,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		cmd = "insert into bericht1 set verfasser='"+xverfasser+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
 		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
-		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', berichtid='"+berichtnr+"', pat_intern='"+this.pat_intern+"'";
+		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', berichtid='"+berichtnr+"', pat_intern='"+this.pat_intern+"', "+
+		"bertyp='"+reznr+"'";
 		new ExUndHop().setzeStatement(new String(cmd));
 		//System.out.println(cmd);
 		//System.out.println("************************************************************************************");
@@ -541,6 +570,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			cmd = "update verordn set berid='"+berichtid+"' where rez_nr='"+this.reznr+"'";
 		}else if(aufrufvon==1){
 			cmd = "update lza set berid='"+berichtid+"' where rez_nr='"+this.reznr+"'";
+		}
+		else if(aufrufvon==3){
+			
 		}
 		final int xberichtnr = berichtnr;
 		
@@ -553,6 +585,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					}
 					String cmd = "update verordn set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
 					new ExUndHop().setzeStatement(new String(cmd));
+					cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
+					new ExUndHop().setzeStatement(new String(cmd));
+
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
 					return null;
 				}
@@ -570,7 +605,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			
 		}.execute();
 		
-		
+		JOptionPane.showMessageDialog(null,"Der Bericht wurde erfolgreich gespeichert");
 		if(this.aufrufvon==0){
 			
 		}else{
@@ -614,7 +649,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		cmd = "update bericht1 set verfasser='"+xverf+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
 		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
-		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"' where berichtid='"+this.berichtid+"'";
+		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', bertyp='"+reznr+"' where berichtid='"+this.berichtid+"'";
 		new ExUndHop().setzeStatement(new String(cmd));
 		//System.out.println(cmd);		
 		//System.out.println("************************************************************************************");
