@@ -998,6 +998,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				boolean neuber = true;
 				int berid = 0;
 				String xreznr;
+				String xverfasser = "";
 				int currow = tabaktrez.getSelectedRow();
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
@@ -1006,17 +1007,48 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				int  iexistiert = TherapieBerichte.aktBericht.berichtExistiert(xreznr);
 				if(iexistiert > 0){
+					xverfasser = TherapieBerichte.aktBericht.holeVerfasser();
 					neuber = false;
 					berid = iexistiert;
 					String meldung = "<html>Für das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
 					JOptionPane.showMessageDialog(null, meldung);
 				}
-				System.out.println("ArztberichtFenster erzeugen!");
-				ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,0,"","",currow);
-				ab.setModal(true);
-				ab.setLocationRelativeTo(null);
-				ab.setVisible(true);
-				ab = null;
+				//System.out.println("ArztberichtFenster erzeugen!");
+				final boolean xneuber = neuber;
+				final String xxreznr = xreznr;
+				final int xberid = berid;
+				final int xcurrow = currow;
+				final String xxverfasser = xverfasser;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,0,xxverfasser,"",xcurrow);
+						ab.setModal(true);
+						ab.setLocationRelativeTo(null);
+						ab.toFront();
+						ab.setVisible(true);
+						ab = null;
+						return null;
+					}
+					
+				}.execute();
+			}
+			if(cmd.equals("ausfallrechnung")){
+				final JComponent comp = ((JComponent)arg0.getSource());
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						System.out.println("in Ausfallrechnung");
+						AusfallRechnung ausfall = new AusfallRechnung( (Point)comp.getLocationOnScreen() );
+						ausfall.setModal(true);
+						//#ausfall.setLocationRelativeTo(null);
+						ausfall.toFront();
+						ausfall.setVisible(true);
+						ausfall = null;
+						return null;
+					}
+					
+				}.execute();
 			}
 			
 		}

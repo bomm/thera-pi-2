@@ -139,7 +139,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		 * hier den Fall für ohne Rezeptbezug einbauen!!!!!
 		 * 
 		 */
-		System.out.println(berichtid+" - "+neu+" - "+reznr);
+		System.out.println("In Arztbericht erstellen - ändern -> "+berichtid+" - "+neu+" - "+reznr);
 		setSize(new Dimension(950,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
@@ -485,10 +485,51 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			Point pos = (Point) ((JComponent)arg0.getSource()).getLocation();
 			pos.x = pos.x+40;
 			VorBerichte vbe = new VorBerichte(false, false, pos,this);
+			vbe.setModal(true);
+			vbe.setVisible(true);
+			System.out.println("rückgabewerte = "+vorberichtid+"  auch diagnose = "+vorberichtdiagnose);
 			if(vorberichtid > 0){
-				
+				if(vorberichtid == this.berichtid){
+					JOptionPane.showMessageDialog(null,"Sie können nicht den akutellen Bericht auf sich selbst kopieren....\n"+
+							"(das wäre ganz nebenbei bemerkt auch reichlich idiotisch)");
+				}else{
+					final String xvorberichtid = new Integer(vorberichtid).toString();
+					final boolean xvorberichtdiagnose = vorberichtdiagnose;
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							Vector vec = SqlInfo.holeSatz("bericht1",
+									"berstand,berbeso,berprog,bervors,diagnose", 
+									"berichtid='"+vorberichtid+"'", 
+									Arrays.asList(new String[] {})
+									);
+
+							for(int i = 0; i < 4; i++){
+								if(! ((String)vec.get(i)).trim().equals("") ){
+									StringBuffer stbuf = new StringBuffer();
+									stbuf.append("**********Anfang übernommener Text**************\n");
+									stbuf.append(((String)vec.get(i)).trim()+"\n");
+									stbuf.append("**********Ende übernommener Text**************\n");
+									stbuf.append(icfblock[i].getText().trim());
+									icfblock[i].setText(stbuf.toString());
+								}
+							}
+							if(xvorberichtdiagnose){
+								StringBuffer stbuf = new StringBuffer();
+								stbuf.append("**********Anfang übernommene Diagnose**************\n");
+								stbuf.append(((String)vec.get(4)).trim()+"\n");
+								stbuf.append("**********Ende übernommene Diagnose**************\n");
+								stbuf.append(diagnose.getText());
+								diagnose.setText(stbuf.toString());
+							}
+							System.out.println(vec);
+							return null;
+						}
+						
+					}.execute();
+					
+				}
 			}
-			//vbe.setVisible(true);
 
 		}else{
 			JOptionPane.showMessageDialog(null,"Für diesen Patient wurden noch keine Berichte angelegt!");
@@ -646,7 +687,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		//System.out.println(cmd);
 		//System.out.println("************************************************************************************");
 		///*****************hier noch die Tabelle aktualisieren*******************/
-		cmd = "update bericht1 set verfasser='"+xverf+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
+		cmd = "update bericht1 set verfasser='"+xverf+"', krbild='"+tbs+"', diagnose='"+StringTools.Escaped(diagnose.getText())+"' ,"+
 		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
 		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', bertyp='"+reznr+"' where berichtid='"+this.berichtid+"'";
@@ -724,7 +765,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		SystemConfig.hmAdrBDaten.put("<Bgeboren>", datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
 		SystemConfig.hmAdrBDaten.put("<Brezdatum>", datFunk.sDatInDeutsch(rezdatum));
 		SystemConfig.hmAdrBDaten.put("<Breznr>",reznr);
-		SystemConfig.hmAdrBDaten.put("<Bdiagnose>",diagnose.getText());
+		String sblock = diagnose.getText().replaceAll("\\n", "");
+		SystemConfig.hmAdrBDaten.put("<Bdiagnose>",sblock);
 		SystemConfig.hmAdrBDaten.put("<Btherapeut>",(String) verfasser.getSelectedItem());
 		System.out.println("Berichtsdatei = ------->"+SystemConfig.thberichtdatei);
 

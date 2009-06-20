@@ -558,6 +558,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			boolean neuber = true;
 			int berid = 0;
 			String xreznr;
+			String xverfasser = "";
 			int currow = tabhistorie.getSelectedRow();
 			if(currow >=0){
 				xreznr = (String)tabhistorie.getValueAt(currow,0);
@@ -567,6 +568,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			
 			int  iexistiert = TherapieBerichte.aktBericht.berichtExistiert(xreznr);
 			if(iexistiert > 0){
+				xverfasser = TherapieBerichte.aktBericht.holeVerfasser();
 				neuber = false;
 				berid = iexistiert;
 				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
@@ -574,12 +576,31 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			}
 
 
+			final boolean xneuber = neuber;
+			final String xxreznr = xreznr;
+			final int xberid = berid;
+			final int xcurrow = currow;
+			final String xxverfasser = xverfasser;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,1,xxverfasser,"",xcurrow);
+					ab.setModal(true);
+					ab.setLocationRelativeTo(null);
+					ab.toFront();
+					ab.setVisible(true);
+					ab = null;
+					return null;
+				}
+				
+			}.execute();
+			/*
 			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,1,"","",currow);
 			ab.setModal(true);
 			ab.setLocationRelativeTo(null);
 			ab.setVisible(true);
 			ab = null;
-			
+			*/
 			return;
 		}else if(cmd.equals("historinfo")){
 			return;			

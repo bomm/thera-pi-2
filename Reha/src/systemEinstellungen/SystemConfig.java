@@ -95,6 +95,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmAdrPDaten = null;
 	public static HashMap<String,String> hmAdrRDaten = null;
 	public static HashMap<String,String> hmAdrBDaten = null;
+	public static HashMap<String,String> hmAdrAFRDaten = null;
 
 	/*
 	public static List<String> lAdrKDaten = null;
@@ -609,6 +610,13 @@ public class SystemConfig {
 		for(int i = 0; i < lAdrBDaten.size(); i++){
 			hmAdrBDaten.put(lAdrBDaten.get(i),"");
 		}	
+		hmAdrAFRDaten = new HashMap<String,String>();
+		List<String> lAdrAFRDaten = Arrays.asList(new String[]{"<AFRposition1>","<AFRposition2>","<AFRposition3>"
+				,"<AFRposition4>","<AFRpreis1>","<AFRpreis2>","<AFRpreis3>","<AFRpreis4>","<AFRgesamt>","<AFRnummer>"});
+		for(int i = 0; i < lAdrAFRDaten.size(); i++){
+			hmAdrAFRDaten.put(lAdrAFRDaten.get(i),"");
+		}
+		
 	}
 		
 

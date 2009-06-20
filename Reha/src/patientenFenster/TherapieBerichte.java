@@ -266,6 +266,14 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		
 		
 	}
+	public String holeVerfasser(){
+		String verf = "";
+		int row = tabbericht.getSelectedRow();
+		if(row >=0){
+			verf = (String) dtblm.getValueAt(row, 2);
+		}
+		return verf;
+	}
 	private void doThBerichtEdit(int row){
 		String xreznr = (String) dtblm.getValueAt(row, 1);
 		String[] splitrez = xreznr.split(" ");
