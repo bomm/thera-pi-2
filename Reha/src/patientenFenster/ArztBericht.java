@@ -509,7 +509,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 									StringBuffer stbuf = new StringBuffer();
 									stbuf.append("**********Anfang übernommener Text**************\n");
 									stbuf.append(((String)vec.get(i)).trim()+"\n");
-									stbuf.append("**********Ende übernommener Text**************\n");
+									stbuf.append("**********Ende übernommener Text**************\n\n");
 									stbuf.append(icfblock[i].getText().trim());
 									icfblock[i].setText(stbuf.toString());
 								}
@@ -518,7 +518,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 								StringBuffer stbuf = new StringBuffer();
 								stbuf.append("**********Anfang übernommene Diagnose**************\n");
 								stbuf.append(((String)vec.get(4)).trim()+"\n");
-								stbuf.append("**********Ende übernommene Diagnose**************\n");
+								stbuf.append("**********Ende übernommene Diagnose**************\n\n");
 								stbuf.append(diagnose.getText());
 								diagnose.setText(stbuf.toString());
 							}
