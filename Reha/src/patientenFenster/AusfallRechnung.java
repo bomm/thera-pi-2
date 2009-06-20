@@ -21,7 +21,10 @@ import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,6 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+
+import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -44,6 +49,17 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
+
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -241,10 +257,20 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		// TODO Auto-generated method stub
 		if(arg0.getActionCommand().equals("uebernahme")){
 			macheAFRHmap();
-			System.out.println(SystemConfig.hmAdrPDaten);
-			System.out.println(SystemConfig.hmAdrAFRDaten);
-			
-			//doUebernahme();
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					starteAusfallRechnung(Reha.proghome+"vorlagen/"+Reha.aktIK+"/AusfallRechnung.ott");
+					return null;
+				}
+			}.execute();
+
+			this.dispose();
+			/********
+			 * 
+			 * Hier noch schnell buchen entwickeln und feddisch...
+			 * 
+			 */
 		}
 		if(arg0.getActionCommand().equals("abbrechen")){
 			this.dispose();
@@ -293,6 +319,71 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			System.out.println("Return Gedrückt");
 		}
 	}
+	public static void starteAusfallRechnung(String url){
+		IDocumentService documentService = null;;
+		System.out.println("Starte Datei -> "+url);
+		try {
+			documentService = Reha.officeapplication.getDocumentService();
+		} catch (OfficeApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        IDocumentDescriptor docdescript = new DocumentDescriptor();
+       	docdescript.setHidden(false);
+        docdescript.setAsTemplate(true);
+		IDocument document = null;
+		//ITextTable[] tbl = null;
+		try {
+			document = documentService.loadDocument(url,docdescript);
+		} catch (NOAException e) {
+
+			e.printStackTrace();
+		}
+		ITextDocument textDocument = (ITextDocument)document;
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for (int i = 0; i < placeholders.length; i++) {
+			boolean loeschen = false;
+			boolean schonersetzt = false;
+			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			//System.out.println(placeholderDisplayText);	
+		    /*****************/			
+			Set entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator it = entries.iterator();
+		    while (it.hasNext()) {
+		      Map.Entry entry = (Map.Entry) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    /*****************/
+		    entries = SystemConfig.hmAdrAFRDaten.entrySet();
+		    it = entries.iterator();
+		    while (it.hasNext() && (!schonersetzt)) {
+		      Map.Entry entry = (Map.Entry) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    if(!schonersetzt){
+		    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    }
+		    /*****************/
+		}
+		
+		
+	}
+	
 	
 }
 class AusfallRechnungHintergrund extends JXPanel{
