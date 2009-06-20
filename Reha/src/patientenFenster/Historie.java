@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -90,6 +91,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	public HistorDaten jpan1 = null;
 	public JButton[] histbut = {null,null,null,null};
 	public static boolean inRezeptDaten = false;
+
 	public Historie(){
 		super();
 		historie = this;
@@ -548,6 +550,34 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("arztbericht")){
+			if(aktPanel.equals("leerPanel")){
+				JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+						"....und für welches der nicht vorhandenen Rezepte in der Historie wollen Sie einen Therapiebericht erstellen....");
+				return;
+			}
+			boolean neuber = true;
+			int berid = 0;
+			String xreznr;
+			int currow = tabhistorie.getSelectedRow();
+			if(currow >=0){
+				xreznr = (String)tabhistorie.getValueAt(currow,0);
+			}else{
+				xreznr = ""; 
+			}
+			System.out.println(xreznr+"------------->");
+			Vector vec = SqlInfo.holeSatz("berhist","berichtid" , "bertitel like '%"+xreznr+"%'", Arrays.asList(new String[] {}));
+			if(vec.size() > 0){
+				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nGehen Sie auf die Seite Berichte und starten Sie den Bericht an dieser Stelle";
+				JOptionPane.showMessageDialog(null, meldung);
+				return;
+			}
+			System.out.println("ArztberichtFenster erzeugen!");
+			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,1,"","",currow);
+			ab.setModal(true);
+			ab.setLocationRelativeTo(null);
+			ab.setVisible(true);
+			ab = null;
+			
 			return;
 		}else if(cmd.equals("historinfo")){
 			return;			
@@ -576,6 +606,22 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		// TODO Auto-generated method stub
 		
 	}
+	
+	void setRezeptDaten(){
+		int row = this.tabhistorie.getSelectedRow();
+		if(row >= 0){
+			final int xrow = row;
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					String reznr = (String)tabhistorie.getValueAt(xrow,0);
+					String id = (String)tabhistorie.getValueAt(xrow,6);
+					jpan1.setRezeptDaten(reznr,id);
+					System.out.println("Aus Bericht....."+reznr+"....."+id);
+				}
+			});	
+
+		}
+	}	
 	/*************************************************/
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;

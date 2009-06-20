@@ -552,6 +552,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}.execute();
 		
 	}
+	void setRezeptDaten(){
+		int row = this.tabaktrez.getSelectedRow();
+		if(row >= 0){
+			final int xrow = row;
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					String reznr = (String)tabaktrez.getValueAt(xrow,0);
+					String id = (String)tabaktrez.getValueAt(xrow,6);
+					jpan1.setRezeptDaten(reznr,id);
+					System.out.println("Aus Bericht....."+reznr+"....."+id);
+				}
+			});	
+
+		}
+	}
 	private void holeEinzelTermine(int row,Vector vvec){
 		Vector xvec = null;
 		if(vvec == null){
@@ -975,7 +990,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				// 3 gibt es einen Rezeptbezug oder nicht
 				if(aktPanel.equals("leerPanel")){
 					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
-							"....und für welches der nicht vorhandenen Rezepte wollen einen Therapiebericht erstellen....");
+							"....und für welches der nicht vorhandenen Rezepte wollen Sie einen Therapiebericht erstellen....");
 					return;
 				}
 

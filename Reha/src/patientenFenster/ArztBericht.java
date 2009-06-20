@@ -335,10 +335,24 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		diagnose.setEditable(true);
 		diagnose.setOpaque(false);
 		diagnose.setForeground(Color.BLUE);
-		if((! this.reznr.equals("")) && (this.aufrufvon < 3)){
+		if((! this.reznr.equals("")) && (this.aufrufvon == 0)){
 			diagnose.setText((String)PatGrundPanel.thisClass.vecaktrez.get(23));
+		}else if((!this.reznr.equals("")) && (this.aufrufvon == 1)){
+			
 		}else{
-			diagnose.setText( (String) SqlInfo.holeSatz("lza", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {})).get(0) ); 
+			Vector vec = null;
+			vec = SqlInfo.holeSatz("verordn", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
+			if(vec.size() > 0){
+				diagnose.setText((String)vec.get(0));
+			}else{
+				vec = SqlInfo.holeSatz("lza", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
+				if(vec.size()>0){
+					diagnose.setText((String)vec.get(0));	
+				}else{
+					diagnose.setText("Diagnose kann nicht ermittelt werden bitte von Originalrezept übernehmen!!!!!!!!!");
+				}
+					
+			}
 		}
 		JScrollPane span = JCompTools.getTransparentScrollPane(diagnose);
 		pb.add(span,cc.xyw(2,24,3));
@@ -449,6 +463,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				}
 			}
 		}
+		if(cmd.equals("berichtvorbericht")){
+				JOptionPane.showMessageDialog(null, "Funktion ist noch nicht implementiert");
+		}
 		if(cmd.equals("berichtdrucken")){
 			doBerichtDrucken();
 		}
@@ -503,53 +520,50 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			return;
 		}
 		
-		System.out.println("************************************************************************************");
+		//System.out.println("************************************************************************************");
 		String tbs = (String) tbwahl.getSelectedItem(); 
 		String cmd = "insert into berhist set erstelldat='"+datFunk.sDatInSQL(datFunk.sHeute())+"', verfasser='"+xverfasser+"', "+
 		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
 		"empfaenger='"+rlab[2].getText()+"', empfid='"+arztid+"', berichtid='"+berichtnr+"', "+
 		"pat_intern='"+this.pat_intern+"'";
+		
 		new ExUndHop().setzeStatement(new String(cmd));
-		System.out.println(cmd);
-		System.out.println("************************************************************************************");		
+		//System.out.println(cmd);
+		//System.out.println("************************************************************************************");		
 		cmd = "insert into bericht1 set verfasser='"+xverfasser+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
 		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
 		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', berichtid='"+berichtnr+"', pat_intern='"+this.pat_intern+"'";
 		new ExUndHop().setzeStatement(new String(cmd));
-		System.out.println(cmd);
-		/*
-		0		"berichtid," +
-		1		"bertitel," +
-		2		"verfasser," +
-		3		"DATE_FORMAT(erstelldat,'%d.%m.%Y') AS derstelldat," +
-		4		"empfaenger," +
-		5		"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat,
-		6		"empfid",
-		*/
-		/*
-		Vector bervec = new Vector(); 
-		bervec.add(new Integer(berichtnr).toString());
-		bervec.add("Bericht zu "+this.reznr+" ("+tbs+")");
-		bervec.add(xverfasser);
-		bervec.add(datFunk.sHeute());
-		bervec.add(rlab[2].getText());
-		bervec.add("");
-		bervec.add(new Integer(arztid).toString());
-		*/
+		//System.out.println(cmd);
+		//System.out.println("************************************************************************************");
+		if(aufrufvon==0){
+			cmd = "update verordn set berid='"+berichtid+"' where rez_nr='"+this.reznr+"'";
+		}else if(aufrufvon==1){
+			cmd = "update lza set berid='"+berichtid+"' where rez_nr='"+this.reznr+"'";
+		}
 		final int xberichtnr = berichtnr;
 		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 				if(aufrufvon==0){
+					while(! ExUndHop.processdone){
+						Thread.sleep(20);
+					}
 					String cmd = "update verordn set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
-					AktuelleRezepte.aktRez.holeRezepte(pat_intern, reznr);
+					new ExUndHop().setzeStatement(new String(cmd));
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
 					return null;
 				}
 				if(aufrufvon==1){
-					
+					while(! ExUndHop.processdone){
+						Thread.sleep(20);
+					}
+					String cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
+					new ExUndHop().setzeStatement(new String(cmd));
+					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
+					return null;
 				}
 				return null;
 			}
@@ -756,94 +770,6 @@ class TextBausteine extends AbstractAction {
 	 
 }
 
-private void jetztBerichtStarten(String url){
-	IDocumentService documentService = null;;
-	System.out.println("Starte Datei -> "+url);
-	try {
-		documentService = Reha.officeapplication.getDocumentService();
-	} catch (OfficeApplicationException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-    IDocumentDescriptor docdescript = new DocumentDescriptor();
-   	docdescript.setHidden(false);
-    docdescript.setAsTemplate(true);
-	IDocument document = null;
-	//ITextTable[] tbl = null;
-	try {
-		document = documentService.loadDocument(url,docdescript);
-	} catch (NOAException e) {
-
-		e.printStackTrace();
-	}
-	ITextDocument textDocument = (ITextDocument)document;
-	ITextFieldService textFieldService = textDocument.getTextFieldService();
-	ITextField[] placeholders = null;
-	try {
-		placeholders = textFieldService.getPlaceholderFields();
-	} catch (TextException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	for (int i = 0; i < placeholders.length; i++) {
-		boolean loeschen = false;
-		boolean schonersetzt = false;
-		String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-		//System.out.println(placeholderDisplayText);	
-	    /*****************/			
-		Set entries = SystemConfig.hmAdrPDaten.entrySet();
-	    Iterator it = entries.iterator();
-	    while (it.hasNext()) {
-	      Map.Entry entry = (Map.Entry) it.next();
-	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
-	    	  schonersetzt = true;
-	    	  break;
-	      }
-	    }
-	    /*****************/
-	    entries = SystemConfig.hmAdrKDaten.entrySet();
-	    it = entries.iterator();
-	    while (it.hasNext() && (!schonersetzt)) {
-	      Map.Entry entry = (Map.Entry) it.next();
-	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
-	    	  schonersetzt = true;
-	    	  break;
-	      }
-	    }
-	    /*****************/
-	    entries = SystemConfig.hmAdrADaten.entrySet();
-	    it = entries.iterator();
-	    while (it.hasNext() && (!schonersetzt)) {
-	      Map.Entry entry = (Map.Entry) it.next();
-	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
-	    	  schonersetzt = true;
-	    	  break;
-	      }
-	    }
-	    /*****************/
-	    entries = SystemConfig.hmAdrRDaten.entrySet();
-	    it = entries.iterator();
-	    while (it.hasNext() && (!schonersetzt)) {
-	      Map.Entry entry = (Map.Entry) it.next();
-	      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-	    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
-	    	  schonersetzt = true;
-	    	  break;
-	      }
-	    }
-	    if(!schonersetzt){
-	    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-	    }
-	    /*****************/
-	}
-	
-	
-	
-}
-
 /*********************************
  * 
  * 
@@ -861,7 +787,13 @@ private void jetztBerichtStarten(String url){
 					new Thread(){
 						public void run(){
 							if(! ishmnull){
-								setzeHmAufNull();						
+								setzeHmAufNull();
+							}
+							if(aufrufvon==0){
+								System.out.println("Aufgerufen von "+aufrufvon);
+								AktuelleRezepte.aktRez.setRezeptDaten();
+							}else if(aufrufvon==1){
+								Historie.historie.setRezeptDaten();									
 							}
 						}
 					}.start();
@@ -883,7 +815,13 @@ private void jetztBerichtStarten(String url){
 			new Thread(){
 				public void run(){
 					if(! ishmnull){
-						setzeHmAufNull();						
+						setzeHmAufNull();	
+					}
+					if(aufrufvon==0){
+						System.out.println("Aufgerufen von "+aufrufvon);
+						AktuelleRezepte.aktRez.setRezeptDaten();
+					}else if(aufrufvon==1){
+						Historie.historie.setRezeptDaten();									
 					}
 				}
 			}.start();

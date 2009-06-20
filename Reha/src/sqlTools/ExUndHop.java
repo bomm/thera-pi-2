@@ -11,12 +11,14 @@ public class ExUndHop extends Thread implements Runnable{
 	ResultSet rs = null;
 	String statement;
 	boolean geklappt = false;
- 
+	public static boolean processdone = false;
 	public void setzeStatement(String statement){
+		processdone = false;
 		this.statement = statement;
 		start();
 	}
 	public synchronized void run(){
+		
 		//Vector treadVect = new Vector();
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -52,6 +54,8 @@ public class ExUndHop extends Thread implements Runnable{
 				}
 			}
 		}
+		processdone = true;
 	}
+	
 	
 }
