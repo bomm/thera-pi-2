@@ -49,6 +49,7 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
+import systemTools.LeistungTools;
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -280,6 +281,11 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	private void macheAFRHmap(){
 		String mappos = "";
 		String mappreis = "";
+		String mapkurz = "";
+		String maplang = "";
+		String[] inpos = {null,null};
+		String spos = "";
+		String sart = "";
 		Double gesamt = new Double(0.00); 
 		/*
 		List<String> lAdrAFRDaten = Arrays.asList(new String[]{"<AFRposition1>","<AFRposition2>","<AFRposition3>"
@@ -290,16 +296,35 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		for(int i = 0 ; i < 4; i++){
 			mappos = "<AFRposition"+(i+1)+">";
 			mappreis = "<AFRpreis"+(i+1)+">";
+			mapkurz = "<AFRkurz"+(i+1)+">";
+			maplang = "<AFRlang"+(i+1)+">";
 			if(leistung[i].isSelected()){
 				Double preis = new Double( (String)PatGrundPanel.thisClass.vecaktrez.get(18+i));
 				String s = df.format( preis);
 				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,s);
-
 				gesamt = gesamt+preis;
+				
+				spos = (String)PatGrundPanel.thisClass.vecaktrez.get(8+i);
+				sart = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+				sart = sart.substring(0,2);
+				inpos = LeistungTools.getLeistung(sart, spos);	
+				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
+				SystemConfig.hmAdrAFRDaten.put(mapkurz,inpos[1]);
+				//System.out.println(inpos[0]);
+				//System.out.println(inpos[1]);
+				
 			}else{
-				SystemConfig.hmAdrAFRDaten.put(mappos,"----");
+				spos = (String)PatGrundPanel.thisClass.vecaktrez.get(8+i);
+				sart = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+				sart = sart.substring(0,2);
+				inpos = LeistungTools.getLeistung(sart, spos);	
+
+				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,"0,00");
+				SystemConfig.hmAdrAFRDaten.put(maplang,(!inpos[0].equals("") ? inpos[0] : "----") );
+				SystemConfig.hmAdrAFRDaten.put(mapkurz,(!inpos[1].equals("") ? inpos[1] : "----") );
+
 			}
 			
 		}

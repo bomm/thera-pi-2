@@ -612,7 +612,8 @@ public class SystemConfig {
 		}	
 		hmAdrAFRDaten = new HashMap<String,String>();
 		List<String> lAdrAFRDaten = Arrays.asList(new String[]{"<AFRposition1>","<AFRposition2>","<AFRposition3>"
-				,"<AFRposition4>","<AFRpreis1>","<AFRpreis2>","<AFRpreis3>","<AFRpreis4>","<AFRgesamt>","<AFRnummer>"});
+				,"<AFRposition4>","<AFRpreis1>","<AFRpreis2>","<AFRpreis3>","<AFRpreis4>","<AFRgesamt>","<AFRnummer>",
+				"<AFRkurz1>","<AFRkurz2>","<AFRkurz3>","<AFRkurz4>","<AFRlang1>","<AFRlang2>","<AFRlang3>","<AFRlang4>"});
 		for(int i = 0; i < lAdrAFRDaten.size(); i++){
 			hmAdrAFRDaten.put(lAdrAFRDaten.get(i),"");
 		}
