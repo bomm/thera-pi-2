@@ -48,6 +48,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import kurzAufrufe.KurzAufrufe;
+
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXHyperlink;
@@ -286,10 +288,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Zeitrechner");
+		jxLink.setText("Akutliste - kurzfristige Termine");
+		jxLink.setActionCommand("Akutliste");
+		img = new ImageIcon(Reha.proghome+"icons/chronometer.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
-		jxLink.setEnabled(false);
 		tp4.add(jxLink);
 
 		//tp4.setExpanded(true);
@@ -536,6 +540,33 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			}
 			if (cmd.equals("piTool")){
 				new ladeProg(Reha.proghome+"piTool.jar");				
+				break;
+			}
+			if (cmd.equals("Akutliste")){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						KurzAufrufe.starteFunktion("Akutliste");
+						return null;
+					}
+				}.execute();
+				
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						RehaSplash rspl = new RehaSplash(null,"Akutliste starten -  dieser Vorgang kann einige Sekunden dauern...");
+						long zeit = System.currentTimeMillis();
+						while(true){
+							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 2000){
+								break;
+							}
+						}
+						rspl.dispose();
+						return null;
+					}
+					
+				}.execute();
 				break;
 			}
 

@@ -7,10 +7,22 @@ import java.util.Set;
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
 
+import com.sun.star.beans.PropertyVetoException;
+import com.sun.star.beans.UnknownPropertyException;
+import com.sun.star.beans.XPropertySet;
+import com.sun.star.container.NoSuchElementException;
+import com.sun.star.container.XNameContainer;
 import com.sun.star.frame.XController;
+import com.sun.star.lang.IllegalArgumentException;
+import com.sun.star.lang.WrappedTargetException;
+import com.sun.star.style.XStyle;
+import com.sun.star.style.XStyleFamiliesSupplier;
+import com.sun.star.text.XTextDocument;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.view.XLineCursor;
+import com.sun.xml.internal.bind.v2.runtime.property.Property;
+
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -260,6 +272,27 @@ public class OOTools {
 		}
 		
 		
+	}
+	public static void setzePapierFormat(ITextDocument textDocument,int hoch,int breit) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
+		XTextDocument xTextDocument = textDocument.getXTextDocument();
+		XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
+		xTextDocument);
+		XNameContainer family = (XNameContainer) UnoRuntime.queryInterface(XNameContainer.class,
+		xSupplier.getStyleFamilies().getByName("PageStyles"));
+		XStyle xStyle = (XStyle) UnoRuntime.queryInterface(XStyle.class, family.getByName("Standard"));
+		XPropertySet xStyleProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+		xStyle);
+		/*
+		com.sun.star.beans.Property[] props = xStyleProps.getPropertySetInfo().getProperties();
+		for (int i = 0; i < props.length; i++) {
+		System.out.println(props[i] .Name + " = "
+		+ xStyleProps.getPropertyValue(props[i].Name));
+		}
+		//z.B. für A5
+		 * 
+		 */
+		xStyleProps.setPropertyValue("Height", new Integer(hoch));
+		xStyleProps.setPropertyValue("Width", new Integer(breit));
 	}
 	
 	
