@@ -960,8 +960,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("art_dbeh4='0', ");
 		}
 		sbuf.append("frequenz='"+jtf[8].getText()+"', ");
-		sbuf.append("dauer='"+jtf[9].getText()+"', ");		
-		sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");
+		sbuf.append("dauer='"+jtf[9].getText()+"', ");
+		if(jcmb[6].getSelectedIndex() > 0){
+			sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");			
+		}else{
+			sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
+		}
 		sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
 		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
@@ -1156,8 +1160,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("art_dbeh4='0', ");
 		}
 		sbuf.append("frequenz='"+jtf[8].getText()+"', ");
-		sbuf.append("dauer='"+jtf[9].getText()+"', ");		
-		sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");
+		sbuf.append("dauer='"+jtf[9].getText()+"', ");
+		if(jcmb[6].getSelectedIndex() > 0){
+			sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");			
+		}else{
+			sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
+		}
+//		sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");
 		sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
 		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
