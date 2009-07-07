@@ -401,6 +401,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				UIManager.setLookAndFeel(laf);
 				aktLookAndFeel = (String) laf.getName();
 				*/
+				//UIManager.setLookAndFeel((aktLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"));
+				
 				UIManager.setLookAndFeel((aktLookAndFeel = SystemConfig.aHauptFenster.get(4)));
 
 	} catch (ClassNotFoundException e1) {

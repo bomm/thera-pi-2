@@ -33,9 +33,6 @@ public class RezTools {
 		return (Vector)retvec.clone();
 	}
 	public static void constructRezHMap(){
-		//int lang = SystemConfig.hmAdrPDaten.hashCode();
-		//System.out.println(lang);
-		//SystemConfig.hmAdrPDaten.put("<Padr1>", PatGrundPanel.thisClass.patDaten.get(0));
 		
 	}
 

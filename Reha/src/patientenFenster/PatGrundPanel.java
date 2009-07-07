@@ -92,7 +92,10 @@ import org.jdesktop.swingx.painter.MattePainter;
 import rehaContainer.RehaTP;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.ArztTools;
+import stammDatenTools.KasseTools;
 import stammDatenTools.PatTools;
+import stammDatenTools.RezTools;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
@@ -1015,6 +1018,9 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 									new Thread(){
 										public void run(){
 											PatTools.constructPatHMap();		
+											ArztTools.constructArztHMap();
+											KasseTools.constructKasseHMap();
+											//RezTools.constructRezHMap();
 										}
 									}.start();
 						return null;

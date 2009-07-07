@@ -120,5 +120,4 @@ public class PatTools {
 		SystemConfig.hmAdrPDaten.put("<Pid>", PatGrundPanel.thisClass.patDaten.get(66));
 	}
 	
-
 }
