@@ -34,6 +34,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import com.mysql.jdbc.ResultSetMetaData;
 
 import systemEinstellungen.SystemConfig;
+import systemTools.StringTools;
 import terminKalender.datFunk;
 
 //import com.mysql.jdbc.Statement;
@@ -655,20 +656,20 @@ public class SuchenDialog extends JXDialog {
 //			suche[0] +"%' AND v_name LIKE '"+suche[1]+"%' order by n_name,v_name";			
 			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 				sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern  from pat5 where n_name LIKE '"+
-				suche[0].trim() +"%' AND v_name LIKE '"+suche[1].trim()+"%' order by n_name,v_name";
+				StringTools.Escaped(suche[0].trim()) +"%' AND v_name LIKE '"+StringTools.Escaped(suche[1].trim())+"%' order by n_name,v_name";
 			}else{ //ADS
 				sstmt = "Select n_name,v_name,geboren,pat_intern  from pat5 where n_name LIKE UPPER('"+
-				suche[0].trim() + "%') AND v_name LIKE UPPER('" + suche[1].trim() +"%') order by n_name,v_name";
-				System.out.println("Statement = "+sstmt);
+				suche[0].trim() + "%') AND v_name LIKE UPPER('" + StringTools.Escaped(suche[1].trim()) +"%') order by n_name,v_name";
+				System.out.println("Statement = "+StringTools.Escaped(sstmt));
 			}
 		}else{
 			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 				sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where n_name LIKE '"+
-				jTextField.getText().trim() +"%'  order by n_name,v_name";
+				StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
 			}else{ //ADS
 				System.out.println("in der richtigen Suche DbType = "+SystemConfig.vDatenBank.get(0).get(2));
 				sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where n_name LIKE UPPER('"+
-				jTextField.getText().trim() +"%') order by n_name,v_name";
+				StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
 				System.out.println("Statement = "+sstmt);
 			}
 

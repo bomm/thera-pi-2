@@ -594,7 +594,12 @@ class NurGrossDocument extends javax.swing.text.PlainDocument
 			//	super.insertString(offs, str, a);
 			//System.out.println("Offset: "+offs);
 			text = textField.getText();
-			super.insertString(offs,str.toUpperCase(), a);
+			if(!str.contains("ß")){
+				super.insertString(offs,str.toUpperCase(), a);
+			}else{
+				super.insertString(offs,str, a);				
+			}
+			
 			return;
 			//Integer.parseInt(text);
 		}

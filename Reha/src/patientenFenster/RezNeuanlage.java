@@ -283,7 +283,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[6] = new JRtaTextField("ZAHLEN",true); // Anzahl 3
 		jtf[7] = new JRtaTextField("ZAHLEN",true); // Anzahl 4
 		jtf[8] = new JRtaTextField("GROSS",true); // Frequenz		
-		jtf[9] = new JRtaTextField("GROSS",true); // Dauer		
+		jtf[9] = new JRtaTextField("ZAHLEN",true); // Dauer		
 		jtf[10] = new JRtaTextField("GROSS",true); // angelegt von
 		jtf[11] = new JRtaTextField("GROSS",false); //kassenid
 		jtf[12] = new JRtaTextField("GROSS",false); //arztid
