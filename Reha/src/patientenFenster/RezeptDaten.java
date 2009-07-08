@@ -28,6 +28,10 @@ import org.jdesktop.swingx.JXPanel;
 import patientenFenster.ArztAuswahl.ArztWahlAction;
 
 import sqlTools.SqlInfo;
+import stammDatenTools.ArztTools;
+import stammDatenTools.KasseTools;
+import stammDatenTools.PatTools;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
@@ -44,6 +48,7 @@ public class RezeptDaten extends JXPanel{
 	public JRtaTextField draghandler = null;
 	public ImageIcon hbimg = null; 
 	public Vector vecaktrez = null;
+	public static boolean feddisch = false;
 
 	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. auﬂerhalb d.R."};
 	public RezeptDaten(){
@@ -55,14 +60,16 @@ public class RezeptDaten extends JXPanel{
 		hbimg = SystemConfig.hmSysIcons.get("hausbesuch");
 	}
 	public void setRezeptDaten(String reznummer,String sid){
+		//RezeptDaten.feddisch = false;		
 		reznum.setText(reznummer);
 		final String xreznummer = reznummer;
 		final String xsid = sid;
-		/*
+		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-		*/
+		
+
 
 				vecaktrez = SqlInfo.holeSatz("verordn", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				PatGrundPanel.thisClass.vecaktrez = vecaktrez;
@@ -118,15 +125,15 @@ public class RezeptDaten extends JXPanel{
 					PatGrundPanel.thisClass.rezlabs[7].setText(" ");
 				}
 				Vector<Vector> preisvec = null;
-				if(reznummer.contains("KG")){
+				if(xreznummer.contains("KG")){
 					preisvec = ParameterLaden.vKGPreise;
-				}else if(reznummer.contains("MA")){
+				}else if(xreznummer.contains("MA")){
 					preisvec = ParameterLaden.vMAPreise;
-				}else if(reznummer.contains("ER")){
+				}else if(xreznummer.contains("ER")){
 					preisvec = ParameterLaden.vERPreise;
-				}else if(reznummer.contains("LO")){
+				}else if(xreznummer.contains("LO")){
 					preisvec = ParameterLaden.vLOPreise;
-				}else if(reznummer.contains("RH")){
+				}else if(xreznummer.contains("RH")){
 					preisvec = ParameterLaden.vRHPreise;
 				}
 
@@ -175,11 +182,20 @@ public class RezeptDaten extends JXPanel{
 				}
 				
 				PatGrundPanel.thisClass.rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
-				/*
+
+				RezeptDaten.feddisch = true;
+
+				new Thread(){
+					public void run(){
+						RezTools.constructRezHMap();
+					}
+				}.start();
+				
+				
 				return null;
 			}
 		}.execute();
-		*/
+		
 		
 	}
 	public String leistungTesten(int leistung,Vector<Vector> preisevec,int veczahl){

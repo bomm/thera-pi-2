@@ -347,9 +347,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2){
-					while(inRezeptDaten){
+					//while(inRezeptDaten && !RezeptDaten.feddisch){					
+					while(!RezeptDaten.feddisch){
 						try {
 							Thread.sleep(20);
+							//System.out.println("in der warteschleife....");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -713,25 +715,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
+	                	RezeptDaten.feddisch = false;
 	                	final int ix = i;
 	                	new SwingWorker<Void,Void>(){
-
 							@Override
 							protected Void doInBackground() throws Exception {
 								// TODO Auto-generated method stub
-								inRezeptDaten = true;
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                    		holeEinzelTermine(ix,null);
+	                    		
 	    						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 6));
-	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	    						inRezeptDaten = false;
-	    						new Thread(){
-	    							public void run(){
-	    	    						RezTools.constructRezHMap();	    								
-	    							}
-	    						}.start();
-
 								return null;
 							}
 	                		
@@ -1164,7 +1158,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			bereitsbezahlt = true;
 		}
-
+		/************************************/
+		/*
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
 		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
@@ -1194,20 +1189,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
 		
 		for(i = 0; i < 4; i++){
-			/*
-			System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
-					new Integer(artdbeh[i]).toString()+" / "+
-					preise[i].toString() );
-			*/		
 			if(artdbeh[i] > 0){
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)PatGrundPanel.thisClass.vecaktrez.get(48+i) );
 				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
 				
 				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
 
-				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
 				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
-				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
+
 
 				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
 				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
@@ -1232,8 +1221,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		System.out.println("----------------------------------------------------");
 		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		System.out.println(SystemConfig.hmAdrRDaten);
+		*/
+		/***********************/
+		RezTools.constructRezHMap();
 		new RezeptGebuehren(bereitsbezahlt,false,pt);
 	}
+ 
 	public void neuanlageRezept(boolean lneu,String feldname){
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+

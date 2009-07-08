@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import patientenFenster.PatGrundPanel;
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 import terminKalender.datFunk;
 
@@ -32,10 +33,34 @@ public class ArztTools {
 		String vorname =  StringTools.EGross((String) vec.get(3));
 		String nachname =  StringTools.EGross((String) vec.get(2));
 		String strasse = StringTools.EGross((String) vec.get(4));
-		String plzort = (String) vec.get(5)+" "+StringTools.EGross((String) vec.get(5));
+		String plzort = (String) vec.get(5)+" "+StringTools.EGross((String) vec.get(6));
 		String zeile1 = "";
 		String zeile2 = "";
 		String zeile3 = "";
 		String branrede = "";
+		
+		
+		SystemConfig.hmAdrADaten.put("<Aadr1>", anrede);
+
+		zeile1 = new String(vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname);
+		SystemConfig.hmAdrADaten.put("<Aadr2>", zeile1);
+		
+		SystemConfig.hmAdrADaten.put("<Aadr3>", strasse);
+		SystemConfig.hmAdrADaten.put("<Aadr4>", plzort);
+
+		if(titel.indexOf("med.") > 0){
+			titel = titel.replace("med.", "");				
+		}
+		if(isherr){
+			branrede = "Sehr geehrter Herr"+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+		}else{
+			branrede = "Sehr geehrte "+anrede+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+		}
+		SystemConfig.hmAdrADaten.put("<Aadr5>", branrede);
+		
+		SystemConfig.hmAdrADaten.put("<Atel>", (String) vec.get(8));
+		SystemConfig.hmAdrADaten.put("<Afax>", (String) vec.get(9));		
+		SystemConfig.hmAdrADaten.put("<Aemail>", (String) vec.get(14));		
+		SystemConfig.hmAdrADaten.put("<Aid>", (String) vec.get(16));
 	}
 }
