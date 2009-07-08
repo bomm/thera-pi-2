@@ -85,7 +85,23 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		this.addKeyListener(this);
 		setDisabledTextColor(Color.RED);
 	}
-
+	/*****************/
+	public static String toRtaUpper(String s){
+		StringBuffer sbuf = new StringBuffer();
+		char[] cha = s.toCharArray();
+		int i,len=s.length();
+		
+		for (i = 0; i < len; i++) {
+			   char ch = cha[i];
+			   if (ch == '\u00DF') { // sharp s
+			      sbuf.append("ß");
+			      continue;
+			   }
+			   sbuf.append(Character.toUpperCase(ch));
+			}
+		return sbuf.toString();
+	}
+	/*****************/
 	public JRtaTextField(String type,boolean selectWhenFocus,String gleitkomma,String xalign){
 		
 		this.nachkommas = new Integer(gleitkomma.split("\\.")[1]); 
@@ -594,11 +610,14 @@ class NurGrossDocument extends javax.swing.text.PlainDocument
 			//	super.insertString(offs, str, a);
 			//System.out.println("Offset: "+offs);
 			text = textField.getText();
+			/*
 			if(!str.contains("ß")){
 				super.insertString(offs,str.toUpperCase(), a);
 			}else{
 				super.insertString(offs,str, a);				
 			}
+			*/
+			super.insertString(offs,JRtaTextField.toRtaUpper(str), a);
 			
 			return;
 			//Integer.parseInt(text);

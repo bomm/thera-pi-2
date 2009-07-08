@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import systemEinstellungen.SystemConfig;
+import systemTools.StringTools;
 
 
 
@@ -908,7 +909,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 				split = backtest.split("\\\\");
 				backtest = split[0]+"\\\\"+split[1];
 			  }
-			  buff.append("T" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,0,i).trim()+"', " );
+			  buff.append("T" + Integer.toString(i+1) + "='" +StringTools.Escaped(vKalDaten.getFeld(iKoll,0,i).trim())+"', " );
 			  buff.append("N" + Integer.toString(i+1) + "='" +backtest+"', "  );
 			  buff.append("TS" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,2,i).trim()+"', "  );
 			  buff.append("TD" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,3,i).trim()+"', "  );
@@ -960,7 +961,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 				split = backtest.split("\\\\");
 				backtest = split[0]+"\\\\"+split[1];
 			  }
-			  buff.append("T" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,0,i).trim()+"', " );
+			  buff.append("T" + Integer.toString(i+1) + "='" +StringTools.Escaped(vKalDaten.getFeld(iKoll,0,i).trim())+"', " );
 			  buff.append("N" + Integer.toString(i+1) + "='" +backtest+"', "  );
 			  buff.append("TS" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,2,i).trim()+"', "  );
 			  buff.append("TD" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,3,i).trim()+"', "  );

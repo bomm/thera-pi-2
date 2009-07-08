@@ -96,6 +96,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.datFunk;
 import terminKalender.zeitFunk;
@@ -1301,7 +1302,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 							}else{
 								// nur Statement bilden und weg damit... kein Vector gedönse
 								String snum = new Integer(((Integer) jxSucheTable.getValueAt(i, 16))).toString();
-								String stmt = "Update flexkc set T"+snum+"='"+name+"', N"+snum+"='"+nummer+"' where id='"+
+								String stmt = "Update flexkc set T"+snum+"='"+StringTools.EscapedDouble(name)+"', N"+snum+"='"+nummer+"' where id='"+
 								((String)jxSucheTable.getValueAt(i, 17)).trim()+"'";
 								//System.out.println(stmt);
 								try {
@@ -1444,6 +1445,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				String stmt = macheStat(newvec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 				//System.out.println("Nur mit Nachblock "+stmt);
 				try {
+					System.out.println("EscapedDouble String = "+stmt);
 					schreibeZeile(stmt);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -1675,7 +1677,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		System.out.println(name+"  -  "+nummer);
 		for(i=0;i<gross;i++){
 			System.out.println(vec.get(i));
-			stmt = stmt +"T"+(i+1)+" = '"+((String)((Vector)vec.get(i)).get(0))+"'"+", ";
+			stmt = stmt +"T"+(i+1)+" = '"+StringTools.Escaped(((String)((Vector)vec.get(i)).get(0)))+"'"+", ";
 			rnummer = ((String)((Vector)vec.get(i)).get(1));
 			snummer = new String(rnummer.trim().replace("\\", "\\\\") );
 			rnummer = snummer.replace("\\\\\\\\", "\\\\");

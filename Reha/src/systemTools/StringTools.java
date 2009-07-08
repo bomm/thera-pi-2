@@ -180,5 +180,9 @@ public class StringTools {
 		escaped = escaped.replaceAll("\"", "\\\\\"");
 		return new String(escaped);
 	}
+	public static String EscapedDouble(String string){
+		String escaped = string.replaceAll("\'", "\\\\\\'");
+		return new String(escaped);
+	}
 
 }
