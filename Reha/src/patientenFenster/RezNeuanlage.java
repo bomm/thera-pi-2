@@ -842,16 +842,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[7].setText(test);
 		itest = StringTools.ZahlTest(this.vec.get(8));
 		jcmb[2].setSelectedIndex(leistungTesten(0,itest));
-		System.out.println("Leistung 1 = "+itest);
+		//System.out.println("Leistung 1 = "+itest);
 		itest = StringTools.ZahlTest(this.vec.get(9));
 		jcmb[3].setSelectedIndex(leistungTesten(1,itest));
-		System.out.println("Leistung 2 = "+itest);
+		//System.out.println("Leistung 2 = "+itest);
 		itest = StringTools.ZahlTest(this.vec.get(10));
 		jcmb[4].setSelectedIndex(leistungTesten(2,itest));
-		System.out.println("Leistung 3 = "+itest);
+		//System.out.println("Leistung 3 = "+itest);
 		itest = StringTools.ZahlTest(this.vec.get(11));
 		jcmb[5].setSelectedIndex(leistungTesten(3,itest));
-		System.out.println("Leistung 4 = "+itest);
+		//System.out.println("Leistung 4 = "+itest);
 		test = StringTools.NullTest(this.vec.get(52));
 		jtf[8].setText(test);
 		test = StringTools.NullTest(this.vec.get(47));
@@ -889,13 +889,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private String[] holePreis(int ivec,int ipreisgruppe){
 		if(ivec > 0){
 			int prid = new Integer((String) this.preisvec.get(ivec).get(35));
-			System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
-			System.out.println("ID der Position = "+prid);
+			//System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
+			//System.out.println("ID der Position = "+prid);
 			Vector xvec = ((Vector)this.preisvec.get(ivec));
 			int preispos = ((ipreisgruppe*4)-4)+3;
 			return new String[] {(String)xvec.get(preispos),(String)xvec.get(preispos-1)};
 		}else{
-			System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
+			//System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
 			return new String[] {"0.00",""};
 		}
 	}
@@ -985,7 +985,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";
 				break;
 			}
-			System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
+			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
 				//System.out.println("ZuzahlStatus = Patient ist befreit");
 				//laut Patientenstamm befreit aber evtl. noch nicht für dieses Rezept.
@@ -1027,8 +1027,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				//str = holePreis(leistung,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
-				System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
-				System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
+				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
+				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
 			}else{
 				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
@@ -1051,7 +1051,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private void doSpeichernNeu(){
 		int reznr = -1;
 		if(!komplettTest()){
-			System.out.println("Komplett-Test fehlgeschlagen");
+			//System.out.println("Komplett-Test fehlgeschlagen");
 			return;
 		}
 		String stest = "";

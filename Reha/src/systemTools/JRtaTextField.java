@@ -346,7 +346,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
           }
           return true;
         }
-        JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
+        //JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
         
         return false;
       }
