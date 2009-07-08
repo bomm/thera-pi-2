@@ -474,6 +474,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			doBerichtDrucken();
 
 		}
+		if(cmd.equals("berichtabbrechen")){
+			this.dispose();
+		}
+
+		
 		
 	}
 	private void doBerichtVorbericht(ActionEvent arg0){

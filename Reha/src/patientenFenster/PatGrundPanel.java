@@ -836,7 +836,8 @@ class SuchePanel extends JXPanel implements ActionListener{
 		tfsuchen = new JFormattedTextField();
 		tfsuchen.setFont(new Font("Tahoma",Font.BOLD,11));
 		tfsuchen.setBackground(Colors.PiOrange.alpha(0.15f));
-		tfsuchen.setForeground(Color.WHITE);
+		tfsuchen.setForeground(new Color(51,51,51));
+		//tfsuchen.setForeground(Color.WHITE);
 		tfsuchen.setName("suchenach");
 		tfsuchen.addKeyListener(kli);
     	tfsuchen.addFocusListener(getTextFieldFocusListener());		
