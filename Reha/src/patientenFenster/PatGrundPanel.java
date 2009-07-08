@@ -836,7 +836,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		tfsuchen = new JFormattedTextField();
 		tfsuchen.setFont(new Font("Tahoma",Font.BOLD,11));
 		tfsuchen.setBackground(Colors.PiOrange.alpha(0.15f));
-		tfsuchen.setForeground(new Color(51,51,51));
+		tfsuchen.setForeground(new Color(136,136,136));
 		//tfsuchen.setForeground(Color.WHITE);
 		tfsuchen.setName("suchenach");
 		tfsuchen.addKeyListener(kli);
@@ -1021,7 +1021,6 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 											PatTools.constructPatHMap();		
 											ArztTools.constructArztHMap();
 											KasseTools.constructKasseHMap();
-											//RezTools.constructRezHMap();
 										}
 									}.start();
 						return null;
