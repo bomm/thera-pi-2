@@ -96,7 +96,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmAdrRDaten = null;
 	public static HashMap<String,String> hmAdrBDaten = null;
 	public static HashMap<String,String> hmAdrAFRDaten = null;
-
+	public static HashMap<String,String> hmAdrHMRDaten = null;
 	/*
 	public static List<String> lAdrKDaten = null;
 	public static List<String> lAdrADaten = null;
@@ -618,7 +618,7 @@ public class SystemConfig {
 		for(int i = 0; i < lAdrAFRDaten.size(); i++){
 			hmAdrAFRDaten.put(lAdrAFRDaten.get(i),"");
 		}
-		
+		hmAdrHMRDaten = new HashMap<String,String>();
 		
 	}
 		
