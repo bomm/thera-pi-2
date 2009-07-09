@@ -56,7 +56,7 @@ public class RezTools {
 		}
 		xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
 		rezgeb = 10.00;
-		System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
+		//System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
 		String runden;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;

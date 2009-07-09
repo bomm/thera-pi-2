@@ -604,7 +604,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		new ExUndHop().setzeStatement(new String(cmd));
 		//System.out.println(cmd);
 		//System.out.println("************************************************************************************");		
-		cmd = "insert into bericht1 set verfasser='"+xverfasser+"', krbild='"+tbs+"', diagnose='"+diagnose.getText()+"' ,"+
+		cmd = "insert into bericht1 set verfasser='"+xverfasser+"', krbild='"+tbs+"', diagnose='"+StringTools.Escaped(diagnose.getText())+"' ,"+
 		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
 		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', berichtid='"+berichtnr+"', pat_intern='"+this.pat_intern+"', "+
@@ -759,7 +759,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", "");
 			}else{
 				String sblock = icfblock[i].getText().replaceAll("\\n", "")+"\r";
-				//String sblock = icfblock[i].getText().replaceAll(System.getProperty("line.separator"), "")+"\r";
+				//String sblock = icfblock[i].getText();
 				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">",sblock);
 				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
 			}
@@ -800,7 +800,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					icfblock[xblock].requestFocus();
-					icfblock[xblock].setCaretPosition(icfblock[xblock].getText().length());
+					//icfblock[xblock].setCaretPosition(icfblock[xblock].getText().length()-1);
 		   	  	}
 			});
 		}else{
@@ -810,7 +810,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					icfblock[xblock].requestFocus();
-					icfblock[xblock].setCaretPosition(icfblock[xblock].getText().length());
+					//icfblock[xblock].setCaretPosition( icfblock[xblock].getText().length()-1 );
 		   	  	}
 			});
 		}

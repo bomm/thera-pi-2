@@ -1254,8 +1254,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 		
-		
-		
 	}
 	private void doAbbrechen(){
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
