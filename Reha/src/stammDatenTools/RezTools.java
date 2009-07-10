@@ -41,7 +41,7 @@ public class RezTools {
 		BigDecimal[] preise = {null,null,null,null};
 		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
 		
-		System.out.println("nach nullzuweisung " +xrezgeb.toString());
+		//System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
 		int i;
@@ -87,7 +87,7 @@ public class RezTools {
 				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
 				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
 				rezgeb = rezgeb + endpos.doubleValue();
-				System.out.println(rezgeb.toString());
+				//System.out.println(rezgeb.toString());
 
 			}else{
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");

@@ -1176,12 +1176,27 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						for (i=0;i<1;i++){
 							if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
 								final java.awt.event.MouseEvent me = e;
+								KlickSetzen(oSpalten[tspalte], me);
+								
+								/*
 								SwingUtilities.invokeLater(new Runnable(){
 								 	   public  void run()
 								 	   {
 								 		   KlickSetzen(oSpalten[tspalte], me);
 								 	   }
-								}); 	   
+								});
+								*/
+								/* 	
+								new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+											KlickSetzen(oSpalten[tspalte], me);
+										return null;
+									}
+									
+								}.execute();
+								*/
 								//KlickSetzen(oSpalten[tspalte], e);
 								dragDaten.y = e.getY();
 								dragDaten.x = e.getX();
@@ -1368,7 +1383,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										}
 									}.start();
 								}else{
-									//System.out.println("dragPanel = null");
+									System.out.println("dragPanel = null");
 								}
 								//Reha.thisClass.shiftLabel.setText("Drag:X="+e.getX()+" Y="+e.getY());
 							}
@@ -3457,6 +3472,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}else  if(ansicht == WOCHEN_ANSICHT){
 			xaktBehandler = aktiveSpalte[2]; 
 		}else  if(ansicht == MASKEN_ANSICHT){
+			JOptionPane.showMessageDialog(null,"Patientenzuordnung in Definition der Wochenarbeitszeit nicht möglich");
 			return;
 		}
 		
@@ -3468,21 +3484,20 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		System.out.println("****************Rezeptnummer = "+reznr);
 		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
 		if(vec.size() == 0){
+			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
 			return;
 		}
 		
 		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List) new ArrayList() );
 		if(vec.size() == 0){
+			JOptionPane.showMessageDialog(null,"Patient mit zugeordneter Rezeptnummer -> "+reznr+" <- wurde nicht gefunden");
 			return;
 		}
 		pat_int = (String) vec.get(0);
-		//String reznr = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(1).get(block));
-		//Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+"sss"+"'", new ArrayList() );
-		//PatGrundPanel.DatenHolen(xpatint);
-		System.out.println("in der Funktion doPatSuchen");
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		final String xreznr = reznr;
 		if(patient == null){
-			final String xreznr = reznr;
+			//sfinal String xreznr = reznr;
 			final String xpat_int = pat_int;
 			new SwingWorker<Void,Void>(){
 				protected Void doInBackground() throws Exception {
@@ -3490,13 +3505,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					ProgLoader.ProgPatientenVerwaltung(1);
 					while( xpatient == null ){
+						Thread.sleep(20);
 						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					}
 					String s1 = new String("#PATSUCHEN");
 					String s2 = new String((String) xpat_int);
 					PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
 					pEvt.setPatStammEvent("PatSuchen");
-					pEvt.setDetails(s1,s2,xpatient.getName()) ;
+					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+					//pEvt.setDetails(s1,s2,xpatient.getName()) ;
 					PatStammEventClass.firePatStammEvent(pEvt);
 					//PatGrundPanel.thisClass.aktRezept.holeRezepte(xpat_int,xreznr);
 					return null;
@@ -3509,7 +3526,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			String s2 = new String((String) pat_int);
 			PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
 			pEvt.setPatStammEvent("PatSuchen");
-			pEvt.setDetails(s1,s2,patient.getName()) ;
+			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+			//pEvt.setDetails(s1,s2,patient.getName()) ;
 			PatStammEventClass.firePatStammEvent(pEvt);
 			//PatGrundPanel.thisClass.aktRezept.holeRezepte(pat_int,reznr);
 		}

@@ -985,6 +985,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 	if(evt.getDetails()[0].equals("#PATSUCHEN")){
 		final String xpatint = evt.getDetails()[1].trim();
 		aktPatID = new String(xpatint);
+		final String xrez = evt.getDetails()[2].trim();
 		// Anzeigedaten holen
 		new Thread(){
 			public void run(){
@@ -1034,7 +1035,11 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						aktRezept.holeRezepte(xpatint,"");
+						if(!xrez.contains("#REZHOLEN-")){
+							aktRezept.holeRezepte(xpatint,"");	
+						}else{
+							aktRezept.holeRezepte(xpatint,xrez.split("#REZHOLEN-")[1].trim());
+						}
 						return null;
 					}
 				}.execute();
