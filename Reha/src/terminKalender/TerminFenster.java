@@ -43,6 +43,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
@@ -65,19 +67,23 @@ import javax.swing.JComboBox;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
+import javax.swing.TransferHandler;
 //import javax.swing.JScrollPane;
 //import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import javax.swing.text.JTextComponent;
 //import javax.swing.plaf.PanelUI;
 
 //import org.jdesktop.swingx.JXDialog;
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -221,6 +227,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	
 	public boolean intagWahl = false;
 	public boolean interminEdit = false;
+	
+	public JLabel[] dragLab = {null,null,null,null,null,null,null};
 	
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
@@ -714,12 +722,25 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				cb.setBackground(SystemConfig.KalenderHintergrund);
 				//cb.setAlpha(0.5f);
 				oSpalten[i] =  new kalenderPanel();
-
 				oSpalten[i].setName("Spalte"+i);
 				oSpalten[i].setDoubleBuffered(true);
 				oSpalten[i].setAlpha(SystemConfig.KalenderAlpha);
 				//oSpalten[i].setBorder(dropShadow);
 				//oSpalten[i].setBackgroundPainter(Reha.RehaPainter[0]);
+				dragLab[i] = new JLabel();
+				dragLab[i].setTransferHandler(new TransferHandler("text"));
+				dragLab[i].setBounds(0,0,oSpalten[i].getWidth(),oSpalten[i].getHeight());
+				dragLab[i].addMouseListener(new MouseAdapter() {
+				    public void mousePressed(MouseEvent e) {
+				    	System.out.println("mouse pressed");
+				    	System.out.println(e.getSource());
+				      JComponent c = (JComponent)e.getSource();
+				      TransferHandler th = c.getTransferHandler();
+				      th.exportAsDrag(c, e, TransferHandler.COPY);
+				    }
+				  });
+				oSpalten[i].add(dragLab[i]);
+				
 				PanelListenerInit(i);
 				oSpalten[i].ListenerSetzen(i);
 				cb.add(oSpalten[i],BorderLayout.CENTER);
@@ -1177,7 +1198,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
 								final java.awt.event.MouseEvent me = e;
 								KlickSetzen(oSpalten[tspalte], me);
-								
 								/*
 								SwingUtilities.invokeLater(new Runnable(){
 								 	   public  void run()
@@ -1312,6 +1332,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 					if (Math.max(dragDaten.x, e.getX())- Math.min(dragDaten.x, e.getX()) >= 4 ||
 							Math.max(dragDaten.y, e.getY())- Math.min(dragDaten.y, e.getY()) >= 4	){
+						
 						
 						if(dragAllowed){
 							if(ctrlGedrueckt || altGedrueckt){

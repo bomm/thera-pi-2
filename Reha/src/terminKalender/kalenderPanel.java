@@ -16,6 +16,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
@@ -68,6 +69,7 @@ private int[] gruppe = {-1,-1};
 private int[] rahmen = {-1,-1,-1,-1};
 private boolean inGruppierung = false;
 private int[] positionScreen = {-1,-1,-1,-1};
+private Font fon = new Font("Tahoma", Font.BOLD, 10);
 //public Composite xoriginal;
 //public AlphaComposite xac1;
 public  kalenderPanel KalenderPanel() {
@@ -75,6 +77,8 @@ public  kalenderPanel KalenderPanel() {
 		this.setBackground(SystemConfig.KalenderHintergrund);
 		kPanel = new JXPanel();
 		kPanel.setBorder(null);
+		kPanel.setLayout(null);
+
 		kPanel.setBackground(SystemConfig.KalenderHintergrund);
 	return this;
 	}
@@ -244,8 +248,9 @@ public void paintComponent( Graphics g ) {
 						if((this.maleSchwarz >= 0) && (this.maleSchwarz == i) ){
 							//System.out.println("in male Schwarz zeichnen");
 							Font altfont = g2d.getFont();
-							g2d.setFont(new Font("Verdana", Font.BOLD, 11));
-
+							
+							//g2d.setFont(new Font("Verdana", Font.BOLD, 11));
+							g2d.setFont(fon);
 							g2d.setColor( SystemConfig.aktTkCol.get("aktBlock")[0]);
 							//g2d.setColor( oCol.colAktiv);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
@@ -256,18 +261,28 @@ public void paintComponent( Graphics g ) {
 							aktivPunkt[2] = xEnde;
 							aktivPunkt[3] = yDifferenz;
 							if (sReznr.contains("@FREI")){
+								TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sName, 5, (baseline));
 						
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 							}else{
-								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sStart.substring(0,5)+"-"+
+								
+								g2d.drawString(sStart.substring(0,5)+"-"+
 										sName
 										, 5, (baseline));
+										
+								
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 								
+								/*
+								TerminFenster.thisClass.dragLab[this.panelNummer].setFont(fon);
+								TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart,yStartMin,xEnde-3, yDifferenz-1);
+								TerminFenster.thisClass.dragLab[this.panelNummer].setText(sStart.substring(0,5)+"-"+
+											sName);
+								*/
+
 							}
 							g2d.setFont(altfont);
-							
 							
 							
 							break;
@@ -787,6 +802,7 @@ public void paintComponent( Graphics g ) {
 			aktivPunkt[1] = -1;
 			aktivPunkt[2] = -1;
 			aktivPunkt[3] = -1;
+			TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 	}
 
 	
