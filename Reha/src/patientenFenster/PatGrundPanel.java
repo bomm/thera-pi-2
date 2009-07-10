@@ -151,7 +151,7 @@ static MyStammFocusTraversalPolicy myPolicy;
 public JPatientInternal jry = null;
 public JComponent lastFocus = null;
 /*********Die einzelnen Tab-Seiten***********/
-AktuelleRezepte aktRezept = null;
+public AktuelleRezepte aktRezept = null;
 Historie historie = null;
 TherapieBerichte berichte = null;
 /********************/

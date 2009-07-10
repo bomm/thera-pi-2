@@ -6,6 +6,7 @@ import hauptFenster.AktiveFenster;
 
 import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
+import hauptFenster.SuchenDialog;
 //import hauptFenster.SystemLookAndFeel;
 
 import hilfsFenster.TerminEinpassen;
@@ -43,12 +44,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyVetoException;
+import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.TooManyListenersException;
@@ -79,7 +82,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
-
+import patientenFenster.PatGrundPanel;
 import patientenFenster.PatNeuanlage;
 
 import com.sun.star.awt.Key;
@@ -88,11 +91,14 @@ import DragAndDropTools.DnDTermine;
 import RehaInternalFrame.JRehaInternal;
 //import org.jdesktop.swingx.plaf.TitledPanelUI;
 
+import events.PatStammEvent;
+import events.PatStammEventClass;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 import rehaContainer.RehaTP;
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 //import systemTools.SystemTools;
 import systemTools.JRtaTextField;
@@ -1689,6 +1695,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (Patientsuchen == null) {
 				Patientsuchen = new JMenuItem();
 				Patientsuchen.setText("Patient suchen (über Rezept-Nummer)");
+				Terminedespatsuchen.setActionCommand("PatRezSuchen");				
 				Patientsuchen.setRolloverEnabled(true);
 				Patientsuchen.addActionListener(this);
 			}
@@ -3436,9 +3443,77 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				oSpalten[aktiveSpalte[2]].requestFocus();
 				break;
 			}
+			if(((AbstractButton) arg0.getSource()).getText() == "Patient suchen (über Rezept-Nummer)"){
+			//if(arg0.getActionCommand().equals("PatRezSuchen")){
+				doPatSuchen();
+			}
 		}
 	}
-
+	private void doPatSuchen(){
+		String pat_int;
+		int xaktBehandler= 0;
+		if(ansicht == NORMAL_ANSICHT){
+			xaktBehandler = belegung[aktiveSpalte[2]];
+		}else  if(ansicht == WOCHEN_ANSICHT){
+			xaktBehandler = aktiveSpalte[2]; 
+		}else  if(ansicht == MASKEN_ANSICHT){
+			return;
+		}
+		
+		String reznr = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(1).get(aktiveSpalte[0]));
+		int ind = reznr.indexOf("\\");
+		if(ind >= 0){
+			reznr = reznr.substring(0,ind);
+		}
+		System.out.println("****************Rezeptnummer = "+reznr);
+		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+		if(vec.size() == 0){
+			return;
+		}
+		
+		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List) new ArrayList() );
+		if(vec.size() == 0){
+			return;
+		}
+		pat_int = (String) vec.get(0);
+		//String reznr = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(1).get(block));
+		//Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+"sss"+"'", new ArrayList() );
+		//PatGrundPanel.DatenHolen(xpatint);
+		System.out.println("in der Funktion doPatSuchen");
+		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		if(patient == null){
+			final String xreznr = reznr;
+			final String xpat_int = pat_int;
+			new SwingWorker<Void,Void>(){
+				protected Void doInBackground() throws Exception {
+					System.out.println("in der Funktion doPatSuchen  SwingWorker");
+					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					ProgLoader.ProgPatientenVerwaltung(1);
+					while( xpatient == null ){
+						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					}
+					String s1 = new String("#PATSUCHEN");
+					String s2 = new String((String) xpat_int);
+					PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
+					pEvt.setPatStammEvent("PatSuchen");
+					pEvt.setDetails(s1,s2,xpatient.getName()) ;
+					PatStammEventClass.firePatStammEvent(pEvt);
+					//PatGrundPanel.thisClass.aktRezept.holeRezepte(xpat_int,xreznr);
+					return null;
+				}
+				
+			}.execute();
+		}else{
+			ProgLoader.ProgPatientenVerwaltung(1);
+			String s1 = new String("#PATSUCHEN");
+			String s2 = new String((String) pat_int);
+			PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
+			pEvt.setPatStammEvent("PatSuchen");
+			pEvt.setDetails(s1,s2,patient.getName()) ;
+			PatStammEventClass.firePatStammEvent(pEvt);
+			//PatGrundPanel.thisClass.aktRezept.holeRezepte(pat_int,reznr);
+		}
+	}
 	private void tauscheTermin(int richtung){
 		String[][] tauschTermine = {{null,null,null,null,null},{null,null,null,null,null}};
 		int behandler=-1,block=-1,blockanzahl=-1,blockmax;
