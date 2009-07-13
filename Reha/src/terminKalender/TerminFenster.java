@@ -94,6 +94,8 @@ import patientenFenster.PatNeuanlage;
 
 import com.sun.star.awt.Key;
 
+import dialoge.AaarghHinweis;
+
 import DragAndDropTools.DnDTermine;
 import RehaInternalFrame.JRehaInternal;
 //import org.jdesktop.swingx.plaf.TitledPanelUI;
@@ -738,43 +740,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[i].addMouseListener(new MouseAdapter() {
 					
 					public void mousePressed(MouseEvent e) {
-				    	System.out.println("mouse pressed");
-				    	System.out.println(e.getSource());
+				    //	System.out.println("mouse pressed");
+				    //	System.out.println(e.getSource());
 				      JComponent c = (JComponent)e.getSource();
-				      datenInSpeicherNehmen();
-				      draghandler.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
+				      String[] sdaten = datenInDragSpeicherNehmen();
+				      if(sdaten[0]==null){
+				    	  return;
+				      }
+				      draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
 				      ((JLabel)c).setText(draghandler.getText());
 				      TransferHandler th = c.getTransferHandler();
 				      th.exportAsDrag(c, e, TransferHandler.COPY);
-				      
-				      /*
-				      draghandler.setText("NAME-REZEPTNUMMER-DAUER-BEHANDLER-WOCHENANSICHT"	);
-				      JComponent c = (JComponent)draghandler;
-				      TransferHandler th = c.getTransferHandler();
-				      th.exportAsDrag(c, e, TransferHandler.COPY); //TransferHandler.COPY
-				}
-				});
-
-					draghandler = new JRtaTextField("GROSS",true);
-				draghandler.setTransferHandler(new TransferHandler("text"));		
-*/
-					
+				      //new AaarghHinweis("<html><b><font color='#ff0000'>Wollen Sie Ihr Gehirn jetzt von Standby auf Normalbetrieb umschalten</b>","Wichtige Benutzeranfrage");
 					}
-
-					/*
-					public void mouseClicked(MouseEvent e) {
-						if(e.getClickCount()==1){
-							//super.mouseClicked(e);
-							System.out.println("Einfachklick auf DragLab");
-						      JComponent c = (JComponent)e.getSource();
-						      TransferHandler th = c.getTransferHandler();
-						      th.exportAsDrag(c, e, TransferHandler.COPY);
-						}else if(e.getClickCount()==2){
-							System.out.println("Doppelklick auf DragLab");
-							TerminFenster.thisClass.oSpalten[new Integer(((JComponent)e.getSource()).getName().split("-")[1])].dispatchEvent(e);
-						}
-					}
-					*/
 				  });
 				dragLab[i].addMouseMotionListener(new MouseMotionListener(){
 					@Override
@@ -3108,6 +3086,26 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		//System.out.println("Inhalt des Speichers = "+datenSpeicher[0]+" / "+datenSpeicher[1]+" / "+datenSpeicher[2]);
 		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
 	}
+	private String[] datenInDragSpeicherNehmen(){
+		String[] srueck = {null,null,null,null,null};
+		int aktbehandler = -1;
+		if(ansicht==NORMAL_ANSICHT){
+			aktbehandler = belegung[aktiveSpalte[2]];
+		}else if(ansicht==WOCHEN_ANSICHT){
+			aktbehandler = aktiveSpalte[2];
+		}else if(ansicht==MASKEN_ANSICHT){
+			aktbehandler = aktiveSpalte[2];
+		}
+		int aktblock = aktiveSpalte[0];
+		if (aktbehandler == -1){
+			return srueck;
+		}
+		srueck[0]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock);		
+		srueck[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
+		srueck[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);
+		return srueck;
+	}
+
 	public void setDatenSpeicher(String[] speicher){
 		datenSpeicher[0]= speicher[0];		
 		datenSpeicher[1]= speicher[1];		
@@ -3978,6 +3976,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					behandler = i;
 				}else if(ansicht==MASKEN_ANSICHT){
 					behandler = i;
+				}
+				if(behandler <= -1){
+					return;
 				}
 				String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]);
 				String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]);
