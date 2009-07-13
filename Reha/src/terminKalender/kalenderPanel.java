@@ -9,6 +9,7 @@ import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -70,7 +71,8 @@ private int[] gruppe = {-1,-1};
 private int[] rahmen = {-1,-1,-1,-1};
 private boolean inGruppierung = false;
 private int[] positionScreen = {-1,-1,-1,-1};
-private Font fon = new Font("Tahoma", Font.BOLD, 10);
+private Font fon = new Font("Tahoma", Font.PLAIN, 10);
+//private Font fon = new Font("Tahoma", Font.BOLD, 10);
 private ImageIcon dragImage = null;
 //public Composite xoriginal;
 //public AlphaComposite xac1;
@@ -271,6 +273,7 @@ public void paintComponent( Graphics g ) {
 						
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 							}else{
+								/*
 								g2d.drawString(sStart.substring(0,5)+"-"+
 										sName
 										, 5, (baseline));
@@ -278,11 +281,55 @@ public void paintComponent( Graphics g ) {
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 
 								if(this.spalteAktiv && (!sName.equals(""))){
-									TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(dragImage);
-									TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xEnde-13,yStartMin,xEnde, yDifferenz-1);
+									if(yDifferenz < 12){
+										TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
+										TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xEnde-(yDifferenz+1),yStartMin,xEnde, yDifferenz-1);
+									}else{
+										TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(dragImage);
+										TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xEnde-13,yStartMin,xEnde, yDifferenz-1);
+									}
+
+									
 								}else{
 									TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 									TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+								}
+								*/
+								if(this.spalteAktiv){
+									if(!sName.equals("")){
+										if(yDifferenz < 12){
+											TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
+											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+(yDifferenz), yDifferenz-1);
+											g2d.drawString(sStart.substring(0,5)+"-"+
+													sName
+													, xStart+(yDifferenz+5), (baseline));
+
+										}else{
+											TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(dragImage);
+											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
+											g2d.drawString(sStart.substring(0,5)+"-"+
+													sName
+													, xStart+16, (baseline));
+
+										}
+										g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
+
+									}else{
+										g2d.drawString(sStart.substring(0,5)+"-"+
+												sName
+												, 5, (baseline));
+									
+										g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
+										TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+										TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+									}
+									
+								}else{
+									g2d.drawString(sStart.substring(0,5)+"-"+
+											sName
+											, 5, (baseline));
+								
+									g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 								}
 							}
 							g2d.setFont(altfont);

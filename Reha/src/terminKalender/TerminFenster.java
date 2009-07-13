@@ -753,6 +753,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				      th.exportAsDrag(c, e, TransferHandler.COPY);
 				      //new AaarghHinweis("<html><b><font color='#ff0000'>Wollen Sie Ihr Gehirn jetzt von Standby auf Normalbetrieb umschalten</b>","Wichtige Benutzeranfrage");
 					}
+					public void mouseReleased(MouseEvent e) {
+					    //	System.out.println("mouse pressed");
+					    //	System.out.println(e.getSource());
+					      JComponent c = (JComponent)e.getSource();
+					      int v = new Integer(c.getName().split("-")[1]);
+					      dragLab[v].setText("");
+					      oSpalten[v].repaint();
+						}
+
 				  });
 				dragLab[i].addMouseMotionListener(new MouseMotionListener(){
 					@Override
@@ -2039,6 +2048,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(dragLab[aktiveSpalte[2]].getIcon()!= null){
 							dragLab[aktiveSpalte[2]].setIcon(null);
 							dragLab[aktiveSpalte[2]].setText("");
+							oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 						}
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 
@@ -2058,6 +2068,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
 						dragLab[aktiveSpalte[2]].setIcon(null);
 						dragLab[aktiveSpalte[2]].setText("");
+						oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 					}
 					oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
 				}					
@@ -2094,6 +2105,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(dragLab[aktiveSpalte[2]].getIcon()!= null){
 							dragLab[aktiveSpalte[2]].setIcon(null);
 							dragLab[aktiveSpalte[2]].setText("");
+							oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 						}
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 					}
@@ -2113,6 +2125,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
 						dragLab[aktiveSpalte[2]].setIcon(null);
 						dragLab[aktiveSpalte[2]].setText("");
+						oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 					}
 					oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
 				}	

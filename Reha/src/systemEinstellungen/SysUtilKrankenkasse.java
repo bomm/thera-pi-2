@@ -140,7 +140,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 				optimize.setSelected(true);
 			}
 			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
-			int forms = inif.getIntegerProperty("Formulare", "KasenFormulareAnzahl");
+			int forms = inif.getIntegerProperty("Formulare", "KassenFormulareAnzahl");
 			Vector<String> vec = new Vector<String>();
 			for(int i = 1; i <= forms; i++){
 				vec.clear();
@@ -415,13 +415,13 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 				break;
 			}else{
 				formok = true;
-				inif.setStringProperty("Formulare", "ArztFormulareAnzahl",new Integer(rows).toString() , null);				
+				inif.setStringProperty("Formulare", "KassenFormulareAnzahl",new Integer(rows).toString() , null);				
 			}
 		}
 		if(formok){
 			for(int i = 0;i<rows;i++){
-				inif.setStringProperty("Formulare", "AFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
-				inif.setStringProperty("Formulare", "AFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+				inif.setStringProperty("Formulare", "KFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
+				inif.setStringProperty("Formulare", "KFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
 			}
 		}
 		
