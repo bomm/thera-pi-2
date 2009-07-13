@@ -1,5 +1,6 @@
 package terminKalender;
 import hauptFenster.ProgLoader;
+import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -70,6 +71,7 @@ private int[] rahmen = {-1,-1,-1,-1};
 private boolean inGruppierung = false;
 private int[] positionScreen = {-1,-1,-1,-1};
 private Font fon = new Font("Tahoma", Font.BOLD, 10);
+private ImageIcon dragImage = null;
 //public Composite xoriginal;
 //public AlphaComposite xac1;
 public  kalenderPanel KalenderPanel() {
@@ -78,12 +80,12 @@ public  kalenderPanel KalenderPanel() {
 		kPanel = new JXPanel();
 		kPanel.setBorder(null);
 		kPanel.setLayout(null);
-
 		kPanel.setBackground(SystemConfig.KalenderHintergrund);
 	return this;
 	}
 public void  ListenerSetzen(int aktPanel){
 	this.panelNummer = aktPanel;
+	this.dragImage = new ImageIcon(Reha.proghome+"icons/buttongreen.png");
 	return;
 }
 
@@ -155,8 +157,10 @@ public void paintComponent( Graphics g ) {
 			/**********************************************/
 			g2d.setColor( SystemConfig.KalenderHintergrund);
 			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
-			
-			
+			if(!this.spalteAktiv){
+				TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+				TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+			}
 			//System.out.println("Anzahl Blöcke in kPanel "+this.panelNummer+" = "+anzahl);
 			for(i=0;i<anzahl;i++){
 				/*
@@ -261,26 +265,25 @@ public void paintComponent( Graphics g ) {
 							aktivPunkt[2] = xEnde;
 							aktivPunkt[3] = yDifferenz;
 							if (sReznr.contains("@FREI")){
+								TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 								TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sName, 5, (baseline));
 						
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 							}else{
-								
 								g2d.drawString(sStart.substring(0,5)+"-"+
 										sName
 										, 5, (baseline));
-										
-								
+							
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
-								
-								/*
-								TerminFenster.thisClass.dragLab[this.panelNummer].setFont(fon);
-								TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart,yStartMin,xEnde-3, yDifferenz-1);
-								TerminFenster.thisClass.dragLab[this.panelNummer].setText(sStart.substring(0,5)+"-"+
-											sName);
-								*/
 
+								if(this.spalteAktiv && (!sName.equals(""))){
+									TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(dragImage);
+									TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xEnde-13,yStartMin,xEnde, yDifferenz-1);
+								}else{
+									TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+									TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+								}
 							}
 							g2d.setFont(altfont);
 							

@@ -1038,7 +1038,9 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 						if(!xrez.contains("#REZHOLEN-")){
 							aktRezept.holeRezepte(xpatint,"");	
 						}else{
+							aktRezept.suchePatUeberRez = true;
 							aktRezept.holeRezepte(xpatint,xrez.split("#REZHOLEN-")[1].trim());
+							System.out.println("Suche Patient über Rezeptnummer "+xrez.split("#REZHOLEN-")[1].trim());
 						}
 						return null;
 					}

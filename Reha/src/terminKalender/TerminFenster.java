@@ -45,6 +45,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
 import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
@@ -229,6 +230,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public boolean interminEdit = false;
 	
 	public JLabel[] dragLab = {null,null,null,null,null,null,null};
+	public JRtaTextField draghandler = new JRtaTextField("GROSS",false);
+
 	
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
@@ -728,17 +731,61 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				//oSpalten[i].setBorder(dropShadow);
 				//oSpalten[i].setBackgroundPainter(Reha.RehaPainter[0]);
 				dragLab[i] = new JLabel();
+				dragLab[i].setName("draLab-"+i);
+				dragLab[i].setForeground(SystemConfig.aktTkCol.get("aktBlock")[1]);
 				dragLab[i].setTransferHandler(new TransferHandler("text"));
 				dragLab[i].setBounds(0,0,oSpalten[i].getWidth(),oSpalten[i].getHeight());
 				dragLab[i].addMouseListener(new MouseAdapter() {
-				    public void mousePressed(MouseEvent e) {
+					
+					public void mousePressed(MouseEvent e) {
 				    	System.out.println("mouse pressed");
 				    	System.out.println(e.getSource());
 				      JComponent c = (JComponent)e.getSource();
+				      datenInSpeicherNehmen();
+				      draghandler.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
+				      ((JLabel)c).setText(draghandler.getText());
 				      TransferHandler th = c.getTransferHandler();
 				      th.exportAsDrag(c, e, TransferHandler.COPY);
-				    }
+				      
+				      /*
+				      draghandler.setText("NAME-REZEPTNUMMER-DAUER-BEHANDLER-WOCHENANSICHT"	);
+				      JComponent c = (JComponent)draghandler;
+				      TransferHandler th = c.getTransferHandler();
+				      th.exportAsDrag(c, e, TransferHandler.COPY); //TransferHandler.COPY
+				}
+				});
+
+					draghandler = new JRtaTextField("GROSS",true);
+				draghandler.setTransferHandler(new TransferHandler("text"));		
+*/
+					
+					}
+
+					/*
+					public void mouseClicked(MouseEvent e) {
+						if(e.getClickCount()==1){
+							//super.mouseClicked(e);
+							System.out.println("Einfachklick auf DragLab");
+						      JComponent c = (JComponent)e.getSource();
+						      TransferHandler th = c.getTransferHandler();
+						      th.exportAsDrag(c, e, TransferHandler.COPY);
+						}else if(e.getClickCount()==2){
+							System.out.println("Doppelklick auf DragLab");
+							TerminFenster.thisClass.oSpalten[new Integer(((JComponent)e.getSource()).getName().split("-")[1])].dispatchEvent(e);
+						}
+					}
+					*/
 				  });
+				dragLab[i].addMouseMotionListener(new MouseMotionListener(){
+					@Override
+					public void mouseDragged(MouseEvent arg0) {
+						//System.out.println("DragLab mouse dragged");
+					}
+					@Override
+					public void mouseMoved(MouseEvent arg0) {
+						//System.out.println("DragLab mouse moved");
+					}
+				});
 				oSpalten[i].add(dragLab[i]);
 				
 				PanelListenerInit(i);
@@ -1198,6 +1245,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
 								final java.awt.event.MouseEvent me = e;
 								KlickSetzen(oSpalten[tspalte], me);
+								/********
+								 * 
+								 * 
+								 * 
+								 */
+								//e.setSource(dragLab[i]);
+								//dragLab[i].dispatchEvent(e);
+								/*******
+								 * 
+								 * 
+								 * 
+								 */
 								/*
 								SwingUtilities.invokeLater(new Runnable(){
 								 	   public  void run()
@@ -3894,6 +3953,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        		mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
 	        	}
 	        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+	        	System.out.println("Mitgebracht = "+mitgebracht);
 	        }
 	      } catch (Throwable t) { t.printStackTrace(); }
 	      // Ein Problem ist aufgetreten

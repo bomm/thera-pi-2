@@ -119,6 +119,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public String[] indlogo = null;
 	public RezeptDaten jpan1 = null;
 	public JButton[] aktrbut = {null,null,null,null,null,null,null};
+	public boolean suchePatUeberRez = false;
 	public static boolean inRezeptDaten = false;
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
@@ -506,7 +507,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						final int ix = i;
 	                    new Thread(){
 	                    	public void run(){
-	                    		holeEinzelTermine(ix,null);
+								if(suchePatUeberRez){
+									suchePatUeberRez = false;
+									return;
+								}else{
+		                    		holeEinzelTermine(ix,null);									
+								}
 	                    	}
 	                    }.start();
 					}
@@ -621,8 +627,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		anzahlTermine.setText("Anzahl Terimine: "+lines);
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
-	
-		
+
 	}
 
 	public void termineSpeichern(){
@@ -721,6 +726,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							@Override
 							protected Void doInBackground() throws Exception {
 								// TODO Auto-generated method stub
+								if(suchePatUeberRez){
+									suchePatUeberRez = false;
+									return null;
+								}
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                    		holeEinzelTermine(ix,null);
 	                    		
