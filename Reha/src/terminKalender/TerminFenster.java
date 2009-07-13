@@ -2036,7 +2036,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							aktiveSpalte[0] = aktiveSpalte[0]-1;
 								aktiveSpalte[1] = aktiveSpalte[0]-1;
 						}
+						if(dragLab[aktiveSpalte[2]].getIcon()!= null){
+							dragLab[aktiveSpalte[2]].setIcon(null);
+							dragLab[aktiveSpalte[2]].setText("");
+						}
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
+
 					}	
 					//TestFenster.LabelSetzen(1, new Integer(aktiveSpalte[0]).toString());
 				}
@@ -2050,6 +2055,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 				if( (gruppierenBloecke[1] >0) && (anz>0) ){
 					gruppierenBloecke[1]=gruppierenBloecke[1]-1;
+					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
+						dragLab[aktiveSpalte[2]].setIcon(null);
+						dragLab[aktiveSpalte[2]].setText("");
+					}
 					oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
 				}					
 			}
@@ -2082,6 +2091,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							aktiveSpalte[0] =aktiveSpalte[0]+1;	
 							aktiveSpalte[1] =aktiveSpalte[0]+1;					
 						}
+						if(dragLab[aktiveSpalte[2]].getIcon()!= null){
+							dragLab[aktiveSpalte[2]].setIcon(null);
+							dragLab[aktiveSpalte[2]].setText("");
+						}
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 					}
 					//TestFenster.LabelSetzen(1, new Integer(aktiveSpalte[0]).toString());
@@ -2097,6 +2110,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				//System.out.println("Gruppierung abwärts");
 				if( (gruppierenBloecke[1]< anz-1) && anz > 0){
 					gruppierenBloecke[1]=gruppierenBloecke[1]+1;
+					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
+						dragLab[aktiveSpalte[2]].setIcon(null);
+						dragLab[aktiveSpalte[2]].setText("");
+					}
 					oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
 				}	
 			}

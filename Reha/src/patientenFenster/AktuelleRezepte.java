@@ -552,6 +552,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
 					dtermm.setRowCount(0);
+					PatGrundPanel.thisClass.vecaktrez.clear();
+					PatGrundPanel.thisClass.vecaktrez = null;
 				}
 				
 				return null;
