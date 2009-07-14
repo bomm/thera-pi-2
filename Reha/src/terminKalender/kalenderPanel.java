@@ -298,8 +298,13 @@ public void paintComponent( Graphics g ) {
 								if(this.spalteAktiv){
 									if(!sName.equals("")){
 										if(yDifferenz < 12){
+											if(yDifferenz > 0){
 											TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
 											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+(yDifferenz), yDifferenz-1);
+											}else{
+												TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+												TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+											}
 											g2d.drawString(sStart.substring(0,5)+"-"+
 													sName
 													, xStart+(yDifferenz+5), (baseline));

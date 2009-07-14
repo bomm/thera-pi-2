@@ -148,6 +148,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private JMenuItem Behandlerset = null;
 	private JMenuItem Tauschemitvorherigem = null;	
 	private JMenuItem Tauschemitnachfolger = null;	
+	private JMenuItem Telefonliste = null;	
 	
 	public static TerminFenster thisClass = null;
 	private Zeitfenster zf;
@@ -511,7 +512,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						//Normalansicht
 						setNormalanzeige();
 						break;
-					}						
+					}
+					if(e.getKeyCode()==80 && e.isAltDown()){
+						doPatSuchen();
+					}
+
 					
 				}	
 				
@@ -916,7 +921,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							//Normalansicht
 							setNormalanzeige();
 							break;
-						}						
+						}
+						if(ec==80 && e.isAltDown()){
+							doPatSuchen();
+						}
 						if ( (e.getKeyCode()==155) && (e.isControlDown()) ){
 							//Daten in Speicher (füher Aufruf über F2)
 							//System.out.println("Strg+Einfg");
@@ -1536,7 +1544,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					jPopupMenu.add(getBehandlerset());
 					jPopupMenu.addSeparator();					
 					jPopupMenu.add(getTerminedespatsuchen());
-					jPopupMenu.add(getPatientsuchen());
+					jPopupMenu.addSeparator();
+					submenu = new JMenu("Patient suchen / Telefonliste");
+					submenu.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/personen16.gif"));
+					submenu.add(getPatientsuchen());
+					submenu.add(getTelefonliste());
+					jPopupMenu.add(submenu);
+					//jPopupMenu.add(getPatientsuchen());
 					jPopupMenu.addSeparator();
 					jPopupMenu.add(getTerminliste());				
 					jPopupMenu.addSeparator();
@@ -1776,13 +1790,24 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		private JMenuItem getPatientsuchen() {
 			if (Patientsuchen == null) {
 				Patientsuchen = new JMenuItem();
-				Patientsuchen.setText("Patient suchen (über Rezept-Nummer)");
+				Patientsuchen.setText("Patient suchen - Alt+P (über Rezept-Nummer)");
 				Terminedespatsuchen.setActionCommand("PatRezSuchen");				
 				Patientsuchen.setRolloverEnabled(true);
 				Patientsuchen.addActionListener(this);
 			}
 			return Patientsuchen;
 		}
+		private JMenuItem getTelefonliste() {
+			if (Telefonliste == null) {
+				Telefonliste = new JMenuItem();
+				Telefonliste.setText("Telefonliste aller Patienten (über Rezept-Nummer)");
+				Telefonliste.setActionCommand("TelefonListe");				
+				Telefonliste.setRolloverEnabled(true);
+				Telefonliste.addActionListener(this);
+			}
+			return Telefonliste;
+		}
+		
 		private JMenuItem getTerminedespatsuchen() {
 			if (Terminedespatsuchen == null) {
 				Terminedespatsuchen = new JMenuItem();
@@ -3575,12 +3600,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private void doPatSuchen(){
 		String pat_int;
 		int xaktBehandler= 0;
+		if(aktiveSpalte[0] < 0){
+			return;
+		}
 		if(ansicht == NORMAL_ANSICHT){
 			xaktBehandler = belegung[aktiveSpalte[2]];
 		}else  if(ansicht == WOCHEN_ANSICHT){
 			xaktBehandler = aktiveSpalte[2]; 
 		}else  if(ansicht == MASKEN_ANSICHT){
 			JOptionPane.showMessageDialog(null,"Patientenzuordnung in Definition der Wochenarbeitszeit nicht möglich");
+			return;
+		}
+		if(xaktBehandler < 0){
 			return;
 		}
 		
