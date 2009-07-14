@@ -240,6 +240,7 @@ class TelefonListe{
 				daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(i)).substring(0,5)+ " Uhr";
 				daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(i))+"\r\rKeine Zuordnung möglich!";
 				daten[2] = "keine RezNr.";
+				daten[4] = "???";
 				dvec.add(daten.clone());
 				continue;
 			}
@@ -265,6 +266,7 @@ class TelefonListe{
 			daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
 			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, falsche Rezeptnummer???";
 			daten[2] = new String(xreznr);
+			daten[4] = "???";
 			dvec.add(daten.clone());
 			return;
 		}
@@ -274,6 +276,7 @@ class TelefonListe{
 			daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ "Uhr";
 			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, Patient nicht gefunden";
 			daten[2] = new String(xreznr);
+			daten[4] = "???";
 			dvec.add(daten.clone());
 			return;
 		}
