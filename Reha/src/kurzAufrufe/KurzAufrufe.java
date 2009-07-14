@@ -280,10 +280,10 @@ class TelefonListe{
 		daten[0] =  ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
 		daten[1] = vec2.get(0)+", "+vec2.get(1);
 		daten[2] = new String(xreznr);
-		String telefon = ( ((String)vec2.get(2)).length() > 0 ? "p:"+((String)vec2.get(2)) : "" );
-		telefon = telefon + ( ((String)vec2.get(3)).length() > 0 ? "\r"+"g:"+((String)vec2.get(3)) : "" );
-		telefon = telefon + ( ((String)vec2.get(4)).length() > 0 ? "\r"+"m:"+((String)vec2.get(4)) : "" );		
-		telefon = telefon + ( ((String)vec2.get(5)).length() > 0 ? "\r"+"e:"+((String)vec2.get(5)) : "" );
+		String telefon = ( ((String)vec2.get(2)).trim().length() > 0  ? "p:"+((String)vec2.get(2)) : "" );
+		telefon = telefon + ( ((String)vec2.get(3)).trim().length() > 0 ? "\r"+"g:"+((String)vec2.get(3)) : "" );
+		telefon = telefon + ( ((String)vec2.get(4)).trim().length() > 0 ? "\r"+"m:"+((String)vec2.get(4)) : "" );		
+		telefon = telefon + ( ((String)vec2.get(5)).trim().length() > 0 ? "\r"+"e:"+((String)vec2.get(5)) : "" );
 		daten[3] = new String(telefon);
 		daten[4] = ( ((String)vec2.get(6)).equals("T") ? "JA!!!!" : "nein");
 		dvec.add(daten.clone());
