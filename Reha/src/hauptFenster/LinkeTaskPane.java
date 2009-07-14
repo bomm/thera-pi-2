@@ -546,7 +546,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						KurzAufrufe.starteFunktion("Akutliste");
+						KurzAufrufe.starteFunktion("Akutliste",null,null);
 						return null;
 					}
 				}.execute();

@@ -2,6 +2,7 @@ package terminKalender;
 
 
 
+import generalSplash.RehaSplash;
 import hauptFenster.AktiveFenster;
 
 import hauptFenster.ProgLoader;
@@ -81,6 +82,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.JTextComponent;
+
+import kurzAufrufe.KurzAufrufe;
 //import javax.swing.plaf.PanelUI;
 
 //import org.jdesktop.swingx.JXDialog;
@@ -3591,11 +3594,60 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				oSpalten[aktiveSpalte[2]].requestFocus();
 				break;
 			}
-			if(((AbstractButton) arg0.getSource()).getText() == "Patient suchen (über Rezept-Nummer)"){
+			if(((AbstractButton) arg0.getSource()).getText() == "Patient suchen - Alt+P (über Rezept-Nummer)"){
 			//if(arg0.getActionCommand().equals("PatRezSuchen")){
 				doPatSuchen();
 			}
+			if(((AbstractButton) arg0.getSource()).getText() == "Telefonliste aller Patienten (über Rezept-Nummer)"){
+				//if(arg0.getActionCommand().equals("PatRezSuchen")){
+					doTelefonListe();
+			}
+
 		}
+	}
+	private void doTelefonListe(){
+		int xaktBehandler= 0;
+		if(aktiveSpalte[0] < 0){
+			return;
+		}
+		if(ansicht == NORMAL_ANSICHT){
+			xaktBehandler = belegung[aktiveSpalte[2]];
+		}else  if(ansicht == WOCHEN_ANSICHT){
+			xaktBehandler = aktiveSpalte[2]; 
+		}else  if(ansicht == MASKEN_ANSICHT){
+			JOptionPane.showMessageDialog(null,"Patientenzuordnung in Definition der Wochenarbeitszeit nicht möglich");
+			return;
+		}
+		if(xaktBehandler < 0){
+			return;
+		}
+		final int fxaktBehandler = xaktBehandler;
+		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				KurzAufrufe.starteFunktion("Telefonliste",vTerm.get(fxaktBehandler),null);
+				return null;
+			}
+		}.execute();
+
+		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				RehaSplash rspl = new RehaSplash(null,"Telefonliste starten -  dieser Vorgang kann einige Sekunden dauern...");
+				long zeit = System.currentTimeMillis();
+				while(true){
+					Thread.sleep(20);
+					if(System.currentTimeMillis()-zeit > 2000){
+						break;
+					}
+				}
+				rspl.dispose();
+				return null;
+			}
+			
+		}.execute();
 	}
 	private void doPatSuchen(){
 		String pat_int;
