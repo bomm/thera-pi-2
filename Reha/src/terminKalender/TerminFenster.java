@@ -65,6 +65,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -126,7 +127,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 
 
-public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener,DragSourceListener{
+public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener,DragSourceListener,DragGestureListener{
 
 	private JRehaInternal eltern;
 	private int setOben; //Position im Grundfenster 0=Flying Window,1=rechts oben,2=rechts unten
@@ -251,6 +252,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public JLabel[] dragLab = {null,null,null,null,null,null,null};
 	public JRtaTextField draghandler = new JRtaTextField("GROSS",false);
 	public DragAndMove dragAndMove = null;
+	public HashMap<String,String> hmDragSource = new HashMap<String,String>();
 	
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
@@ -768,6 +770,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				      if(sdaten[0]==null){
 				    	  return;
 				      }
+				      if(e.isAltDown()){
+				    	  System.out.println("DragModus-Move");
+				      }else if(e.isControlDown()){
+				    	  System.out.println("DragModus-Copy");
+				      }else{
+				    	  System.out.println("DragModus-None");
+				      }
 				      draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
 				      ((JLabel)c).setText(draghandler.getText());
 				      TransferHandler th = c.getTransferHandler();
@@ -1142,6 +1151,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				public void mouseReleased(java.awt.event.MouseEvent e) {
 					dragStart = false;
 					//System.out.println("Maus-Taste losgelassen");
+					/*
 					if(dragPanel != null){
 						dragPanel.setBeenden(true);
 						dragPanel = null;
@@ -1194,7 +1204,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								aktiveSpalte = altaktiveSpalte.clone();
 								return;
 							}
-							/********* Termin per Drag verschieben *********/
+							//Termin per Drag verschieben/
 							boolean geloescht = false;
 							if(altGedrueckt){
 								altGedrueckt = false;
@@ -1249,7 +1259,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							datenSpeicher[3] = null;
 							terminVergabe.clear();
 						}
-					}	
+					}*/	
 				}
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 						int i = 0;
@@ -1389,6 +1399,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			oSpalten[tspalte].addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
 				public void mouseDragged(java.awt.event.MouseEvent e) {
 					Reha.thisClass.shiftLabel.setText("Spalte"+tspalte+"  / Drag:X="+e.getX()+" Y="+e.getY());
+					/*
 					if (Math.max(dragDaten.x, e.getX())- Math.min(dragDaten.x, e.getX()) <= 1 &&
 							Math.max(dragDaten.y, e.getY())- Math.min(dragDaten.y, e.getY()) <= 1	){
 						final java.awt.event.MouseEvent me = e;
@@ -1436,23 +1447,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								dragStartObject[0] = aktiveSpalte[0];
 								dragStartObject[1] = aktiveSpalte[2];
 								altaktiveSpalte= aktiveSpalte.clone();
-
-								/*
-								String name = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).get(aktiveSpalte[0]);
-								String reznr = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(1)).get(aktiveSpalte[0]);
-								int dauer = new Integer ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(3)).get(aktiveSpalte[0]));
-								int breite = oSpalten[tspalte].getWidth();
-								dragInhalt[0] = name;
-								dragInhalt[1] = reznr;
-								dragInhalt[2] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(2)).get(aktiveSpalte[0]);
-								dragInhalt[3] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(3)).get(aktiveSpalte[0]);
-								dragInhalt[4] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(4)).get(aktiveSpalte[0]);								
-								dragPanel = new DragPanel();
-								dragPanel.dragPanelInit(name,reznr,dauer,breite,oSpalten[tspalte].getFloatPixelProMinute());
-								dragPanel.setPoint(new Point(e.getXOnScreen(),e.getYOnScreen()));
-								dragStartObject[0] = aktiveSpalte[0];
-								dragStartObject[1] = aktiveSpalte[2];
-								*/
 								dragStart = true;
 								Reha.thisFrame.setCursor(Cursor.CROSSHAIR_CURSOR);
 							}else{
@@ -1483,7 +1477,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}else{
 							JOptionPane.showMessageDialog(null,"Drag & Drop ist für Sie nicht freigegeben");
 						}
-
+*/
 						/*
 						final java.awt.event.MouseEvent me = e;
 						SwingUtilities.invokeLater(new Runnable(){
@@ -1495,12 +1489,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						Reha.thisClass.shiftLabel.setText("Drag:X="+e.getX()+" Y="+e.getY());
 						oSpalten[tspalte].requestFocus();
 						*/					
+/*
 					}
 
 					if(gruppierenAktiv){
 						//System.out.println("In MouseMotion -> Block 1 = "+gruppierenBloecke[0]+"  / Block 2 = "+gruppierenBloecke[1]);
 					}	
-
+*/
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
@@ -4069,7 +4064,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
+
 		try {
+			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+
 	        Transferable tr = dtde.getTransferable();
 	        DataFlavor[] flavors = tr.getTransferDataFlavors();
 	        for (int i = 0; i < flavors.length; i++){
@@ -4161,6 +4159,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void dropActionChanged(DragSourceDragEvent dsde) {
 		// TODO Auto-generated method stub
 		System.out.println("Changed-Source");
+	}
+	@Override
+	public void dragGestureRecognized(DragGestureEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("gesture "+arg0);
+		
 	}
 
 	/********************************************************************************************/

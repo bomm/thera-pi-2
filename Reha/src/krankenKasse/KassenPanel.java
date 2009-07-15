@@ -945,6 +945,11 @@ class HoleKassen{
 			KassenPanel.thisClass.macheTabelle((Vector)xvec.clone());
 			xvec.clear();
 		}
+		if(KassenPanel.thisClass.ktblm.getRowCount() > 0){
+			KassenPanel.thisClass.kassentbl.setRowSelectionInterval(0, 0);
+			KassenPanel.thisClass.holeText();
+		}
+		
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		KassenPanel.thisClass.setzeFocus();
 	}catch(SQLException ev){
