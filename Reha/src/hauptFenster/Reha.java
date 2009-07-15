@@ -290,7 +290,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean arztFirstStart = true;
 	public static boolean iconsOk = false;
 	public static ImageIcon rehaBackImg = null; 
-	public static boolean inDrag = true;
+	
 	
 	/**************************/
 	public JXPanel desktop = null;

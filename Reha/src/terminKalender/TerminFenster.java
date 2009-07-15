@@ -253,7 +253,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public JRtaTextField draghandler = new JRtaTextField("GROSS",false);
 	public DragAndMove dragAndMove = null;
 	public HashMap<String,String> hmDragSource = new HashMap<String,String>();
-	
+	public int DRAG_COPY = 0;
+	public int DRAG_MOVE = 1;
+	public int DRAG_NONE = -1;
+	public int DRAG_MODE = -1;
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
 		this.eltern = eltern;
@@ -4097,8 +4100,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		
 		// TODO Auto-generated method stub
-	    DragAndMove.PixelzuMinute = -1;
-		dragAndMove = null;
+	    //DragAndMove.PixelzuMinute = -1;
+		//dragAndMove = null;
 		
 		System.out.println("gedroppt an Position "+dtde.getLocation());
 		int x = dtde.getLocation().x;
@@ -4460,9 +4463,20 @@ class DragAndMove extends Thread implements Runnable{
 	public void run()  {
 		// TODO Auto-generated method stub
 		System.out.println("Starte DragAndMove");
-		while(PixelzuMinute >= 0){
-			Reha.thisClass.shiftLabel.setText(""+PixelzuMinute);
-		}
+		new SwingWorker<Void,Void>(){
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				// TODO Auto-generated method stub
+				while(PixelzuMinute >= 0){
+					Reha.thisClass.shiftLabel.setText(""+PixelzuMinute);
+					sleep(40);
+				}
+
+				return null;
+			}
+			
+		}.execute();
 		System.out.println("Stoppe DragAndMove");
 
 	}
