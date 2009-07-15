@@ -687,7 +687,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
 				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
-				int forms = inif.getIntegerProperty("Formulare", "KasenFormulareAnzahl");
+				int forms = inif.getIntegerProperty("Formulare", "KassenFormulareAnzahl");
 				for(int i = 1; i <= forms; i++){
 					titel.add(inif.getStringProperty("Formulare","KFormularText"+i));			
 					formular.add(inif.getStringProperty("Formulare","KFormularName"+i));
