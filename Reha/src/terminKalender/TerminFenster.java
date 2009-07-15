@@ -34,7 +34,17 @@ import java.awt.Toolkit;
 //import java.awt.Toolkit;
 //import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -116,7 +126,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 
 
-public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener{
+public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener,DragSourceListener{
 
 	private JRehaInternal eltern;
 	private int setOben; //Position im Grundfenster 0=Flying Window,1=rechts oben,2=rechts unten
@@ -222,13 +232,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private int gruppierenSpalte;	
 	private int[] gruppierenClipBoard = {-1,-1,-1,-1};
 	private boolean gruppierenKopiert = false;
+	
+	public int iPixelProMinute = 0;
+	
 	//private String[] sTerminVergabe = {null,null,null,null,null,null,null,null,null,null};
 	//private Object[][] sTerminVergabe = {{null,null,null,null,null,null,null,null,null,null}};
 	private ArrayList<String[]> terminVergabe = new ArrayList<String[]>();
 	
 	private Thread db_Aktualisieren;
 	public boolean indrag = false;
-	
+	public static boolean inTerminDrag = false;
 	public String datGewaehlt = null;
 	public boolean wartenAufReady = false;
 	
@@ -237,7 +250,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	
 	public JLabel[] dragLab = {null,null,null,null,null,null,null};
 	public JRtaTextField draghandler = new JRtaTextField("GROSS",false);
-
+	public DragAndMove dragAndMove = null;
 	
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
@@ -729,6 +742,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			TerminFlaeche.setBorder(null);
 			DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 5, 1, 3, false, true, true, true);
 			JXPanel cb = null;
+
 			for(int i = 0;i<7;i++){
 				cb = new JXPanel(new BorderLayout());
 				cb.setBorder(null);
@@ -738,8 +752,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				oSpalten[i].setName("Spalte"+i);
 				oSpalten[i].setDoubleBuffered(true);
 				oSpalten[i].setAlpha(SystemConfig.KalenderAlpha);
-				//oSpalten[i].setBorder(dropShadow);
-				//oSpalten[i].setBackgroundPainter(Reha.RehaPainter[0]);
+
 				dragLab[i] = new JLabel();
 				dragLab[i].setName("draLab-"+i);
 				dragLab[i].setForeground(SystemConfig.aktTkCol.get("aktBlock")[1]);
@@ -759,28 +772,25 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				      ((JLabel)c).setText(draghandler.getText());
 				      TransferHandler th = c.getTransferHandler();
 				      th.exportAsDrag(c, e, TransferHandler.COPY);
+				      //dragAndMove = new DragAndMove();
+				      //dragAndMove.setzeMinute(0);
+
+				      
+
 				      //new AaarghHinweis("<html><b><font color='#ff0000'>Wollen Sie Ihr Gehirn jetzt von Standby auf Normalbetrieb umschalten</b>","Wichtige Benutzeranfrage");
 					}
 					public void mouseReleased(MouseEvent e) {
-					    //	System.out.println("mouse pressed");
+					    	System.out.println("mouse released");
 					    //	System.out.println(e.getSource());
 					      JComponent c = (JComponent)e.getSource();
 					      int v = new Integer(c.getName().split("-")[1]);
 					      dragLab[v].setText("");
 					      oSpalten[v].repaint();
+					
+					      
 						}
 
 				  });
-				dragLab[i].addMouseMotionListener(new MouseMotionListener(){
-					@Override
-					public void mouseDragged(MouseEvent arg0) {
-						//System.out.println("DragLab mouse dragged");
-					}
-					@Override
-					public void mouseMoved(MouseEvent arg0) {
-						//System.out.println("DragLab mouse moved");
-					}
-				});
 				oSpalten[i].add(dragLab[i]);
 				
 				PanelListenerInit(i);
@@ -799,6 +809,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					oSpalten[5].zeitSpanne();
 					oSpalten[6].zeitSpanne();		
 					GrundFlaeche.revalidate();
+					int iMaxHoehe = TerminFlaeche.getHeight();
+					float fPixelProMinute = (float) iMaxHoehe;
+					fPixelProMinute =(float) fPixelProMinute / 900;
+					iPixelProMinute = ((int) (fPixelProMinute));
 				}
 			});
 			TerminFlaeche.revalidate();
@@ -1491,8 +1505,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
 					dragDaten.x = e.getX();
-					//Reha.thisClass.shiftLabel.setText("Move:X="+e.getX()+" Y="+e.getY());					
-
 				}				
 			});
 			oSpalten[tspalte].addFocusListener(new java.awt.event.FocusAdapter() {   
@@ -4038,19 +4050,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		aktiveSpalte[0] = block;
 	}
 	@Override
+	public void dragExit(DropTargetEvent dte) {
+		// TODO Auto-generated method stub
+		//DragAndMove.PixelzuMinute = -1;
+		//dragAndMove = null;
+		System.out.println(dte.getSource());
+	}
+	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
 		//System.out.println("Drop Enter an Position "+dtde.getLocation());
 	}
 	@Override
-	public void dragExit(DropTargetEvent dte) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public void dragOver(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
-		//System.out.println("Drop Drag Event an Position "+dtde.getLocation());		
+		//DragAndMove.PixelzuMinute = dtde.getLocation().y; 
 	}
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
@@ -4072,7 +4086,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		
 		// TODO Auto-generated method stub
-				
+	    DragAndMove.PixelzuMinute = -1;
+		dragAndMove = null;
+		
 		System.out.println("gedroppt an Position "+dtde.getLocation());
 		int x = dtde.getLocation().x;
 		int breit = TerminFlaeche.getWidth()/7;
@@ -4118,7 +4134,33 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void dropActionChanged(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
+		System.out.println("Changed-Target");
+	}
+	@Override
+	public void dragDropEnd(DragSourceDropEvent dsde) {
+		// TODO Auto-generated method stub
+		System.out.println("End");
 		
+	}
+	@Override
+	public void dragEnter(DragSourceDragEvent dsde) {
+		// TODO Auto-generated method stub
+		System.out.println("Enter");		
+	}
+	@Override
+	public void dragExit(DragSourceEvent dse) {
+		// TODO Auto-generated method stub
+		System.out.println("Exit");		
+	}
+	@Override
+	public void dragOver(DragSourceDragEvent dsde) {
+		// TODO Auto-generated method stub
+		System.out.println("Over");
+	}
+	@Override
+	public void dropActionChanged(DragSourceDragEvent dsde) {
+		// TODO Auto-generated method stub
+		System.out.println("Changed-Source");
 	}
 
 	/********************************************************************************************/
@@ -4388,5 +4430,24 @@ class TerminDrag extends SwingWorker{
 		return null;
 	}
 
+	
+}
+
+class DragAndMove extends Thread implements Runnable{
+	public static int PixelzuMinute = 0;
+	public void setzeMinute(int min){
+		PixelzuMinute = min;
+		start();
+	}
+
+	public void run()  {
+		// TODO Auto-generated method stub
+		System.out.println("Starte DragAndMove");
+		while(PixelzuMinute >= 0){
+			Reha.thisClass.shiftLabel.setText(""+PixelzuMinute);
+		}
+		System.out.println("Stoppe DragAndMove");
+
+	}
 	
 }
