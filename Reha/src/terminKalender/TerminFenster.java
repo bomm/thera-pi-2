@@ -298,6 +298,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			e2.printStackTrace();
 		}
 		TerminFlaeche.setDropTarget(dndt);
+		/*
+		DragSource dragSource = DragSource.getDefaultDragSource();
+		dragSource.createDefaultDragGestureRecognizer(TerminFlaeche, 
+	               DnDConstants.ACTION_COPY_OR_MOVE, new DragSupport());
+	     new DropTarget(TerminFlaeche,new DropSupport());
+		*/
 
 		//TerminFlaeche.setDragEnabled(true);
 
@@ -1261,6 +1267,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 					}*/	
 				}
+				public void mouseMoved(java.awt.event.MouseEvent e) {
+					dragDaten.y = e.getY();
+					dragDaten.x = e.getX();
+					System.out.println("-----"+dragDaten.x);
+				}				
+
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 						int i = 0;
 						for (i=0;i<1;i++){
@@ -1500,6 +1512,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
 					dragDaten.x = e.getX();
+					//System.out.println(dragDaten.x);
 				}				
 			});
 			oSpalten[tspalte].addFocusListener(new java.awt.event.FocusAdapter() {   
@@ -4452,6 +4465,69 @@ class DragAndMove extends Thread implements Runnable{
 		}
 		System.out.println("Stoppe DragAndMove");
 
+	}
+	
+}
+class DropSupport implements DropTargetListener
+{
+    private boolean fAccept;
+    
+    public void dragEnter(DropTargetDragEvent dtde)
+    {
+        fAccept = false;
+        DataFlavor flavors[] = dtde.getCurrentDataFlavors();
+        
+        int i;
+        fAccept = true;
+    }
+
+    public void dragExit(DropTargetEvent dte)
+    {
+        if (!fAccept) return;
+ 
+    }
+
+    public void dragOver(DropTargetDragEvent dtde)
+    {
+    	Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
+    	//System.out.println("Drag-Support"+dtde);
+    	if (!fAccept) return;
+ 
+    }
+
+    public void drop(DropTargetDropEvent dtde)
+    {
+        if (!fAccept) return;
+
+ 
+        dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+        
+        // actually do the drop
+        Transferable trans = dtde.getTransferable();
+        DataFlavor flavors[] = trans.getTransferDataFlavors();
+
+        // go through all the flavors and find one I handle.
+        // depending on what you're accepting, you may wish to
+        // do this a different way.
+        for (int i = 0; i < flavors.length; ++i) {
+        }
+        
+        dtde.dropComplete(true);
+ 
+    }
+
+    public void dropActionChanged(DropTargetDragEvent dtde)
+    {
+        dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
+    }
+}
+class DragSupport implements DragGestureListener{
+
+	@Override
+	public void dragGestureRecognized(DragGestureEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("in datGasture "+arg0);
+		
 	}
 	
 }
