@@ -170,7 +170,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private SchnellSuche sf;
 	private MaskeInKalenderSchreiben mb = null;
 	
-	private int ansicht = 0; // 0=Normalansicht 1=Wochenansicht
+	public int ansicht = 0; // 0=Normalansicht 1=Wochenansicht
 	private int[] belegung = {-1,-1,-1,-1,-1,-1,-1}; //Welcher Kollege(Nr. ist in der jeweiligen Spalte sichtbar
 	private int wochenbelegung = 0; // nimmt die KollegenNr auf dessen Woche angezeigt wird
 	private int maskenbelegung = 0; // nimmt die KollegenNr auf dessen Maske erstellt/editiert wird
@@ -573,7 +573,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						System.out.println("Kollege =  BEHANDLER"+(belegung[welche] < 10 ? "0"+belegung[welche] : belegung[welche]));
 						//System.out.println("Belegung der Spalte "+welche+" ist Behandler - " +belegung[welche]);
 						oSpalten[welche].datenZeichnen(vTerm,belegung[welche]);
-						//oSpalten[welche].requestFocus();
+						oSpalten[aktiveSpalte[2]].requestFocus();
 						if (welche==0){
 							//System.out.println("Aktion im ComboListener-Tagesbelegung");						
 							wochenbelegung = ParameterLaden.vKKollegen.get(wahl).Reihe ;
@@ -605,6 +605,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					String maskenbehandler = (maskenbelegung < 10 ? "0"+maskenbelegung+"BEHANDLER" : new Integer(maskenbelegung).toString()+"BEHANDLER");
 					String stmtmaske = "select * from masken where behandler = '"+maskenbehandler+"' ORDER BY art";
 					MaskenStatement(stmtmaske);
+					
 				}
 			}
 		});
@@ -776,48 +777,40 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[i].addMouseListener(new MouseAdapter() {
 					
 					public void mousePressed(MouseEvent e) {
-				    //	System.out.println("mouse pressed");
-				    //	System.out.println(e.getSource());
-				      JComponent c = (JComponent)e.getSource();
-				      String[] sdaten = datenInDragSpeicherNehmen();
-				      if(sdaten[0]==null){
-				    	  return;
-				      }
-				      if(e.isAltDown()){
-				    	  System.out.println("DragModus-Move");
-				    	  DRAG_MODE = DRAG_MOVE;
-				      }else if(e.isControlDown()){
-				    	  System.out.println("DragModus-Copy");
-				    	  DRAG_MODE = DRAG_COPY;
-				      }else{
-				    	  System.out.println("DragModus-None");
-				    	  DRAG_MODE = DRAG_NONE;
-				      }
-						int behandler=-1;
-						if(ansicht==NORMAL_ANSICHT){
-							behandler = belegung[aktiveSpalte[2]];
-						}else if(ansicht==WOCHEN_ANSICHT){
-							behandler = aktiveSpalte[2];
-						}else if(ansicht==MASKEN_ANSICHT){
-							behandler = aktiveSpalte[2];
-						}
-						if(behandler <= -1){
-							return;
-						}
-						DRAG_PAT = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) );
-						DRAG_NUMMER = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) );
-					DRAG_UHR =  new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) );
-						altaktiveSpalte = aktiveSpalte.clone();
-				      draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
-				      ((JLabel)c).setText(draghandler.getText());
-				      TransferHandler th = c.getTransferHandler();
-				      th.exportAsDrag(c, e, TransferHandler.COPY);
-				      //dragAndMove = new DragAndMove();
-				      //dragAndMove.setzeMinute(0);
-
-				      
-
-				      //new AaarghHinweis("<html><b><font color='#ff0000'>Wollen Sie Ihr Gehirn jetzt von Standby auf Normalbetrieb umschalten</b>","Wichtige Benutzeranfrage");
+					      JComponent c = (JComponent)e.getSource();
+					      String[] sdaten = datenInDragSpeicherNehmen();
+					      if(sdaten[0]==null){
+					    	  return;
+					      }
+					      if(e.isAltDown()){
+					    	  System.out.println("DragModus-Move");
+					    	  DRAG_MODE = DRAG_MOVE;
+					      }else if(e.isControlDown()){
+					    	  System.out.println("DragModus-Copy");
+					    	  DRAG_MODE = DRAG_COPY;
+					      }else{
+					    	  System.out.println("DragModus-None");
+					    	  DRAG_MODE = DRAG_NONE;
+					      }
+					      int behandler=-1;
+					      if(ansicht==NORMAL_ANSICHT){
+					    	  behandler = belegung[aktiveSpalte[2]];
+					      }else if(ansicht==WOCHEN_ANSICHT){
+					    	  behandler = aktiveSpalte[2];
+					      }else if(ansicht==MASKEN_ANSICHT){
+					    	  behandler = aktiveSpalte[2];
+					      }
+					      if(behandler <= -1){
+					    	  return;
+					      }
+					      DRAG_PAT = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) );
+					      DRAG_NUMMER = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) );
+					      DRAG_UHR =  new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) );
+					      altaktiveSpalte = aktiveSpalte.clone();
+					      draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
+					      ((JLabel)c).setText(draghandler.getText());
+					      TransferHandler th = c.getTransferHandler();
+					      th.exportAsDrag(c, e, TransferHandler.COPY);
 					}
 					public void mouseReleased(MouseEvent e) {
 					    	System.out.println("mouse released");
@@ -911,6 +904,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(!e.isAltDown()){
 							altGedrueckt=false;
 						}
+						if(!e.isShiftDown()){
+							shiftGedrueckt=false;
+						}
+
 						if (ec==17){
 							ctrlGedrueckt=true;
 							break;
@@ -1191,6 +1188,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					for(int i = 0; i < 1; i++){
 						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
 							KlickSetzen(oSpalten[tspalte], e);
+							oSpalten[tspalte].requestFocus();
 							break;
 						}
 						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON3) ){
@@ -1268,6 +1266,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									//System.out.println("Maskenansicht-Doppelklick");
 									lockok = 1;
 									Zeiteinstellen(e.getLocationOnScreen(),aktiveSpalte[2],aktiveSpalte[0]);
+									oSpalten[tspalte].requestFocus();
 									lockok = 0;
 								}	
 							}	
@@ -2741,6 +2740,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if(maxblock > 0){
 			datenZeichnen(aSpaltenDaten);
 			TerminFenster.rechneMaske();
+			if(ansicht==MASKEN_ANSICHT){
+				oSpalten[aktiveSpalte[2]].requestFocus(true);
+				oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
+			}
 			//System.out.println("Anzahl Tage = "+aSpaltenDaten.size());
 			}
 			} catch(SQLException ex){
@@ -3862,6 +3865,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
+
 		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
 			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 			return;
@@ -3898,15 +3902,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if( (x>=(i*breit)) && (x<=((i*breit)+breit)) ){
 				int[] neuint = oSpalten[i].BlockTestOhneAktivierung(dtde.getLocation().x-(i*breit),dtde.getLocation().y);
 
-				System.out.println("Blockposition bisher -> "+altaktiveSpalte[0]+"/"+altaktiveSpalte[1]+"/"+altaktiveSpalte[2]+"/"+altaktiveSpalte[3]);
-
-				System.out.println("Neue Position -> Nachher -> "+neuint[0]+"/"+neuint[1]+"/"+neuint[2]+"/"+neuint[3]);
 
 				aktiveSpalte = oSpalten[i].BlockTest(dtde.getLocation().x-(i*breit),dtde.getLocation().y,aktiveSpalte);
 
 				oSpalten[i].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
-
-				System.out.println("Nachher -> "+aktiveSpalte[0]+"/"+aktiveSpalte[1]+"/"+aktiveSpalte[2]+"/"+aktiveSpalte[3]);
  
 				if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_COPY){
 					//JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demnächst an diese Stelle kopiert");

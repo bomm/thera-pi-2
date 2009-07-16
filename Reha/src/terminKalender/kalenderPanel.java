@@ -296,7 +296,7 @@ public void paintComponent( Graphics g ) {
 								}
 								*/
 								if(this.spalteAktiv){
-									if(!sName.equals("")){
+									if(!sName.equals("") || TerminFenster.thisClass.ansicht==TerminFenster.thisClass.MASKEN_ANSICHT){
 										if(yDifferenz < 12){
 											if(yDifferenz > 0){
 											TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
