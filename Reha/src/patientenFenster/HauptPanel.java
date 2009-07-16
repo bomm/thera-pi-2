@@ -353,10 +353,10 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 
 		rechts.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
-		JTabbedPane jtab = new JTabbedPane();
-		jtab.setBorder(null);
-		jtab.addFocusListener(PatGrundPanel.thisClass.getFocusListener());
-		jtab.setUI(new WindowsTabbedPaneUI());
+		PatGrundPanel.thisClass.jtab = new JTabbedPane();
+		PatGrundPanel.thisClass.jtab.setBorder(null);
+		PatGrundPanel.thisClass.jtab.addFocusListener(PatGrundPanel.thisClass.getFocusListener());
+		PatGrundPanel.thisClass.jtab.setUI(new WindowsTabbedPaneUI());
 		JXPanel tabpan = new JXPanel(new BorderLayout());
 		tabpan.setBorder(BorderFactory.createEmptyBorder(0,0, 0, 0));
 		tabpan.setOpaque(true);
@@ -385,24 +385,27 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	     }.execute();
 		*/
 	     
-	     PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
+	    PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
 	     
 	    tabpan.add(PatGrundPanel.thisClass.aktRezept);
-		jtab.addTab("akt.Rezepte", tabpan);
+	    
+	    PatGrundPanel.thisClass.jtab.addTab("akt.Rezepte", tabpan);
 
+	    //System.out.println("Aktuelle Rezepte!   "  );
 		PatGrundPanel.thisClass.historie = new Historie();
 		//new ImageIcon(SystemConfig.hmSysIcons.get("historie").getImage().getScaledInstance(22, 22, 0))
-		jtab.addTab("Historie", PatGrundPanel.thisClass.historie);
+		PatGrundPanel.thisClass.jtab.addTab("Historie", PatGrundPanel.thisClass.historie);
 		//jtab.addTab("Historie", PatGrundPanel.thisClass.historie);		
 
 		PatGrundPanel.thisClass.berichte = new TherapieBerichte();
-		jtab.addTab("Berichte", PatGrundPanel.thisClass.berichte);
+		PatGrundPanel.thisClass.jtab.addTab("Berichte", PatGrundPanel.thisClass.berichte);
 		
-		jtab.addTab("Doku", new JXPanel());		
-		jtab.addTab("Fremd-Doku", new JXPanel());
-		jtab.addTab("Arzt & KK", new JXPanel());		
-		jtab.addTab("Plandaten", new JXPanel());		
-		rechts.add(jtab,BorderLayout.CENTER);
+		PatGrundPanel.thisClass.jtab.addTab("Doku", new JXPanel());		
+		PatGrundPanel.thisClass.jtab.addTab("Fremd-Doku", new JXPanel());
+		PatGrundPanel.thisClass.jtab.addTab("Arzt & KK", new JXPanel());		
+		PatGrundPanel.thisClass.jtab.addTab("Plandaten", new JXPanel());
+		//PatGrundPanel.thisClass.jtab.setTitleAt(0, "Riesenscheiﬂe");
+		rechts.add(PatGrundPanel.thisClass.jtab,BorderLayout.CENTER);
 		rechts.revalidate();
 		return rechts;
 	}

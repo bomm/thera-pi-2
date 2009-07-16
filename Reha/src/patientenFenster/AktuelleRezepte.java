@@ -237,6 +237,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}else{
 				aktrbut[0].setEnabled(true);
 			}
+
+
+			
 		}else{
 			if(aktPanel.equals("leerPanel")){
 				wechselPanel.remove(leerPanel);

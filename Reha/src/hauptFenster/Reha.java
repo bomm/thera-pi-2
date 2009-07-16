@@ -279,7 +279,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static String osVersion = ""; 
 	public int vollsichtbar = 0; 
 	public JDesktopPane deskrechts = new JDesktopPane();
-	public JDesktopPane[] desktops = {null,null};
+	public JDesktopPane[] desktops = {null,null,null,null};
 	public JDesktopPane desktopUnten = new JDesktopPane();
 	public JXPanel jpOben = null;
 	public JXPanel jpUnten = null;

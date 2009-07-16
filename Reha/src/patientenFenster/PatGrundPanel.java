@@ -180,6 +180,8 @@ public Vector vecaktrez = null;
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
 
+public JTabbedPane jtab = null;
+
 public Font font = null;
 public Font fehler = new Font("Courier",Font.ITALIC,13);
 public int aid = -1;
@@ -387,7 +389,7 @@ public PatGrundPanel(JPatientInternal jry){
    	  	}
 	});
 	
-	
+
 	validate();
 }
 public void setzeFocus(){
