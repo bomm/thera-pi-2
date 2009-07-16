@@ -796,6 +796,34 @@ public void paintComponent( Graphics g ) {
 		return (int[]) ret.clone();
 	}
 /********************************/
+	public int[] BlockTestOhneAktivierung(int x,int y){
+		int[] ret = {-1,-1,-1,-1};
+		if ( (vectorzahl = ((Vector<?>)dat).size()) > 0){
+			String sStart=""; //Startzeit			
+			int dauer;    //Termin Dauer
+			int yStartMin;
+			float fStartPix;
+			float fEndePix;
+			for(i=0;i<anzahl;i++){
+				sStart = (String)((Vector<?>)dat.get(2)).get(i);
+				dauer = Integer.parseInt((String)((Vector<?>)dat.get(3)).get(i));
+				
+				yStartMin = (int) ((int) zeitFunk.MinutenSeitMitternacht(sStart))-zeitSpanneVon  ;
+				fStartPix = ((float)yStartMin)*fPixelProMinute;
+				fEndePix  = fStartPix+((float) dauer * fPixelProMinute);
+				if ((y >= fStartPix) && (y <= fEndePix)){
+					ret[3] = ret[2];
+					ret[2] = panelNummer;
+					ret[1] = i;
+					ret[0] = i;
+					break;
+				}	
+			}
+		}
+		return (int[]) ret.clone();
+	}
+/********************************/
+		
 	public int blockInSpalte(int x,int y,int spalte){
 		int trefferblock = -1;
 		if ( (vectorzahl = ((Vector<?>)dat).size()) > 0){

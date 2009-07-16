@@ -253,10 +253,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public JRtaTextField draghandler = new JRtaTextField("GROSS",false);
 	public DragAndMove dragAndMove = null;
 	public HashMap<String,String> hmDragSource = new HashMap<String,String>();
-	public int DRAG_COPY = 0;
-	public int DRAG_MOVE = 1;
-	public int DRAG_NONE = -1;
-	public int DRAG_MODE = -1;
+	public static int DRAG_COPY = 0;
+	public static int DRAG_MOVE = 1;
+	public static int DRAG_NONE = -1;
+	public static int DRAG_MODE = -1;
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
 		this.eltern = eltern;
@@ -781,10 +781,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				      }
 				      if(e.isAltDown()){
 				    	  System.out.println("DragModus-Move");
+				    	  DRAG_MODE = DRAG_MOVE;
 				      }else if(e.isControlDown()){
 				    	  System.out.println("DragModus-Copy");
+				    	  DRAG_MODE = DRAG_COPY;
 				      }else{
 				    	  System.out.println("DragModus-None");
+				    	  DRAG_MODE = DRAG_NONE;
 				      }
 				      draghandler.setText(sdaten[0]+"∞"+sdaten[1]+"∞"+sdaten[3]+" Min.");
 				      ((JLabel)c).setText(draghandler.getText());
@@ -1159,363 +1162,112 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}				
 				public void mouseReleased(java.awt.event.MouseEvent e) {
 					dragStart = false;
-					//System.out.println("Maus-Taste losgelassen");
-					/*
-					if(dragPanel != null){
-						dragPanel.setBeenden(true);
-						dragPanel = null;
-						indrag = false;
-						int dragBlock = -1;
-						int spalte = -1;
-						int[] pos = {-1,-1,-1,-1};
-						int punkt = e.getXOnScreen();
-						Reha.thisFrame.setCursor(Cursor.DEFAULT_CURSOR);
-						//int rechts = links+oSpalten[0].getWidth();
-						for(int i = 0; i < 7; i++){
-							pos = oSpalten[i].getPosInScreen();
-							//System.out.println("Werte = "+"0="+pos[0]+" / 1="+pos[1]+" / 2="+pos[2]+" / 3="+pos[3]);
-							//System.out.println("x-Punkt = "+punkt);
-							if (punkt >= pos[0] && punkt <= pos[2]){
-								spalte = i;
-								break;
-							}
-						}
-						if(spalte > -1){
-							int behandler=-1;
-							if(ansicht==NORMAL_ANSICHT){
-								behandler = belegung[spalte];
-							}else if(ansicht==WOCHEN_ANSICHT){
-								behandler = spalte;
-							}else if(ansicht==MASKEN_ANSICHT){
-								behandler = spalte;
-							}
-							//System.out.println("Aktuelle Position = "+e.getX()+" / "+e.getY());
-							dragBlock = oSpalten[spalte].blockInSpalte(e.getX(),e.getY(),spalte); 
-							String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(dragBlock);
-							String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(dragBlock);
-							//String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[spalte])).get(0)).get(dragBlock); 
-							//System.out.println("Name de Termins = "+sname);
-							if( (!sname.trim().equals(""))   ){
-								if( (dragInhalt[0].trim().equals(sname.trim())) && (dragInhalt[1].trim().equals(sreznum.trim()))) {
-									return;
-								}
-								int joption = JOptionPane.showConfirmDialog(null,
-														"Der Terminblock ist derzeit mit "+sname+" belegt.\n"+
-														"Mˆchten Sie den Termin "+dragInhalt[0]+" hier eintragen.",
-														"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
-								if(joption == JOptionPane.NO_OPTION){
-									dragStartObject[0] = -1;
-									dragStartObject[1] = -1;
-									return;
-								}	
-							}
-							if(!altGedrueckt && !ctrlGedrueckt){
-								aktiveSpalte = altaktiveSpalte.clone();
-								return;
-							}
-							//Termin per Drag verschieben/
-							boolean geloescht = false;
-							if(altGedrueckt){
-								altGedrueckt = false;
-								ctrlGedrueckt = false;
-								if(! (altaktiveSpalte[2] == spalte)){
-									wartenAufReady = true;
-									blockSetzen(11);						
-								}
-								geloescht = true;								
-							}
-							if(ctrlGedrueckt){
-								ctrlGedrueckt = false;
-								altGedrueckt = false;
-							}
-
-							//System.out.println("aktiveSpale[2] = "+aktiveSpalte[2]+" / aktiveSpale[0] = "+aktiveSpalte[0]+" / aktiveSpale[1] = "+aktiveSpalte[0]);
-							aktiveSpalte[2] = spalte;
-							aktiveSpalte[0] = dragBlock;
-							aktiveSpalte[1] = dragBlock;
-							if( (altaktiveSpalte[2] == aktiveSpalte[2]) && (geloescht)){
-								JOptionPane.showMessageDialog(null,"Aus Sicherheitsgr¸nden ist in der selben Terminspalte lediglich kopieren erlaubt!");
-								aktiveSpalte = altaktiveSpalte.clone();
-								oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
-								return;
-							}
-							oSpalten[dragStartObject[1]].spalteDeaktivieren();
-							oSpalten[spalte].schwarzAbgleich(dragBlock,dragBlock);
-							datenSpeicher[0] = dragInhalt[0];
-							datenSpeicher[1] = dragInhalt[1];
-							datenSpeicher[3] = dragInhalt[3];
-							long zeit = System.currentTimeMillis();
-							boolean grobRaus = false;
-							while(wartenAufReady){
-								try {
-									Thread.sleep(20);
-									if( (System.currentTimeMillis()-zeit) > 1500){
-										grobRaus = true;
-										break;
-									}
-								} catch (InterruptedException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-							}
-							if(! grobRaus){
-								datenAusSpeicherHolen();								
-							}else{
-								JOptionPane.showMessageDialog(null,"Achtung Daten konnten aufgrund eines Fehlers im Lock-Mechanismus nicht geschrieben werden!\nFunktion: wartenAufReady()");								
-							}
-							datenSpeicher[0] = null;
-							datenSpeicher[1] = null;
-							datenSpeicher[3] = null;
-							terminVergabe.clear();
-						}
-					}*/	
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
 					dragDaten.x = e.getX();
-					System.out.println("-----"+dragDaten.x);
 				}				
 
-				public void mouseClicked(java.awt.event.MouseEvent e) {
-						int i = 0;
-						for (i=0;i<1;i++){
-							if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
-								final java.awt.event.MouseEvent me = e;
-								KlickSetzen(oSpalten[tspalte], me);
-								/********
-								 * 
-								 * 
-								 * 
-								 */
-								//e.setSource(dragLab[i]);
-								//dragLab[i].dispatchEvent(e);
-								/*******
-								 * 
-								 * 
-								 * 
-								 */
-								/*
-								SwingUtilities.invokeLater(new Runnable(){
-								 	   public  void run()
-								 	   {
-								 		   KlickSetzen(oSpalten[tspalte], me);
-								 	   }
-								});
-								*/
-								/* 	
-								new SwingWorker<Void,Void>(){
-									@Override
-									protected Void doInBackground()
-											throws Exception {
-											KlickSetzen(oSpalten[tspalte], me);
-										return null;
-									}
-									
-								}.execute();
-								*/
-								//KlickSetzen(oSpalten[tspalte], e);
-								dragDaten.y = e.getY();
-								dragDaten.x = e.getX();
-								SetzeLabel();
-								oSpalten[tspalte].requestFocus();
-								//System.out.println("einfacher Klick");
-								break;
-							}	
-							if ( (e.getClickCount() == 2) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
-								final java.awt.event.MouseEvent me = e;
-								SwingUtilities.invokeLater(new Runnable(){
-								 	   public  void run()
-								 	   {
-								 		   KlickSetzen(oSpalten[tspalte], me);
-								 	   }
-								}); 	   
-								dragDaten.y = e.getY();
-								dragDaten.x = e.getX();
-								if(aktiveSpalte[0]>=0){
-									if(ansicht==NORMAL_ANSICHT){
-										setLockStatement((belegung[tspalte]+1 >=10 ? new Integer(belegung[tspalte]+1).toString()+"BEHANDLER" : "0"+(belegung[tspalte]+1)+"BEHANDLER"),aktuellerTag);
-										new Thread(new LockRecord()).start();
-										while(lockok == 0){
-											try {
-												Thread.sleep(20);
-											} catch (InterruptedException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
-										}
-										if (lockok > 0){
-											setUpdateVerbot(true);
-											Zeiteinstellen(e.getLocationOnScreen(),belegung[tspalte],aktiveSpalte[0]);
-											oSpalten[tspalte].requestFocus();
-											setUpdateVerbot(false);
-										}else{
-											lockok = 0;
-											sperreAnzeigen();
-											setUpdateVerbot(false);
-										}
-									}else if(ansicht==WOCHEN_ANSICHT){	//WOCHEN_ANSICHT muﬂ noch entwickelt werden!
-										if(aktiveSpalte[2] == 0){
-
-											setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
-										}else{
-											setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
-										}
-										//System.out.println("Statement == :"+(wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"));
-										//System.out.println("Datum f¸r Statement == "+datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]));
-										//System.out.println("Inhalt f¸r getWocheErster == "+getWocheErster());
-										//System.out.println("Inhalt von aktiveSpalte[2] == "+aktiveSpalte[2]);
-										new Thread(new LockRecord()).start();
-										while(lockok == 0){
-											try {
-												Thread.sleep(20);
-											} catch (InterruptedException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
-										}
-										if (lockok > 0){
-											//System.out.println("Belegung:"+belegung[tspalte]+" Aktiver Block:"+aktiveSpalte[0]);
-											setUpdateVerbot(true);
-											Zeiteinstellen(e.getLocationOnScreen(),aktiveSpalte[2],aktiveSpalte[0]);
-											oSpalten[tspalte].requestFocus();
-											setUpdateVerbot(false);
-										}else{
-											lockok = 0;
-											sperreAnzeigen();
-											setUpdateVerbot(false);
-										}
-									}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT muﬂ noch entwickelt werden!
-										//System.out.println("Maskenansicht-Doppelklick");
-										lockok = 1;
-										Zeiteinstellen(e.getLocationOnScreen(),aktiveSpalte[2],aktiveSpalte[0]);
-										lockok = 0;
-									}	
-								}	
-								break;
-							}
-							if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON3) ){
-								if(!gruppierenAktiv){
-									KlickSetzen(oSpalten[tspalte], e);
-									dragDaten.y = e.getY();
-									dragDaten.x = e.getX();
-									ZeigePopupMenu(e);
-									break;
-								}else{
-									dragDaten.y = e.getY();
-									dragDaten.x = e.getX();
-									ZeigePopupMenu(e);
-									oSpalten[tspalte].requestFocus();
-								}
-							}
-
+				public void mousePressed(java.awt.event.MouseEvent e) {
+					for(int i = 0; i < 1; i++){
+						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
+							KlickSetzen(oSpalten[tspalte], e);
+							break;
 						}
+						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON3) ){
+							if(!gruppierenAktiv){
+								KlickSetzen(oSpalten[tspalte], e);
+								dragDaten.y = e.getY();
+								dragDaten.x = e.getX();
+								ZeigePopupMenu(e);
+								break;
+							}else{
+								dragDaten.y = e.getY();
+								dragDaten.x = e.getX();
+								ZeigePopupMenu(e);
+								oSpalten[tspalte].requestFocus();
+								break;
+							}
+						}
+						if ( (e.getClickCount() == 2) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
+							final java.awt.event.MouseEvent me = e;
+							SwingUtilities.invokeLater(new Runnable(){
+							 	   public  void run()
+							 	   {
+							 		   KlickSetzen(oSpalten[tspalte], me);
+							 	   }
+							}); 	   
+							dragDaten.y = e.getY();
+							dragDaten.x = e.getX();
+							if(aktiveSpalte[0]>=0){
+								if(ansicht==NORMAL_ANSICHT){
+									setLockStatement((belegung[tspalte]+1 >=10 ? new Integer(belegung[tspalte]+1).toString()+"BEHANDLER" : "0"+(belegung[tspalte]+1)+"BEHANDLER"),aktuellerTag);
+									new Thread(new LockRecord()).start();
+									while(lockok == 0){
+										try {
+											Thread.sleep(20);
+										} catch (InterruptedException e1) {
+											e1.printStackTrace();
+										}
+									}
+									if (lockok > 0){
+										setUpdateVerbot(true);
+										Zeiteinstellen(e.getLocationOnScreen(),belegung[tspalte],aktiveSpalte[0]);
+										oSpalten[tspalte].requestFocus();
+										setUpdateVerbot(false);
+									}else{
+										lockok = 0;
+										sperreAnzeigen();
+										setUpdateVerbot(false);
+									}
+								}else if(ansicht==WOCHEN_ANSICHT){	//WOCHEN_ANSICHT muﬂ noch entwickelt werden!
+									if(aktiveSpalte[2] == 0){
+
+										setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
+									}else{
+										setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+									}
+									new Thread(new LockRecord()).start();
+									while(lockok == 0){
+										try {
+											Thread.sleep(20);
+										} catch (InterruptedException e1) {
+											e1.printStackTrace();
+										}
+									}
+									if (lockok > 0){
+										setUpdateVerbot(true);
+										Zeiteinstellen(e.getLocationOnScreen(),aktiveSpalte[2],aktiveSpalte[0]);
+										oSpalten[tspalte].requestFocus();
+										setUpdateVerbot(false);
+									}else{
+										lockok = 0;
+										sperreAnzeigen();
+										setUpdateVerbot(false);
+									}
+								}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT muﬂ noch entwickelt werden!
+									//System.out.println("Maskenansicht-Doppelklick");
+									lockok = 1;
+									Zeiteinstellen(e.getLocationOnScreen(),aktiveSpalte[2],aktiveSpalte[0]);
+									lockok = 0;
+								}	
+							}	
+							break;
+						}
+						
+					}
+
+				}
+				public void mouseClicked(java.awt.event.MouseEvent e) {
 				}
 			});
 			oSpalten[tspalte].addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
 				public void mouseDragged(java.awt.event.MouseEvent e) {
 					Reha.thisClass.shiftLabel.setText("Spalte"+tspalte+"  / Drag:X="+e.getX()+" Y="+e.getY());
-					/*
-					if (Math.max(dragDaten.x, e.getX())- Math.min(dragDaten.x, e.getX()) <= 1 &&
-							Math.max(dragDaten.y, e.getY())- Math.min(dragDaten.y, e.getY()) <= 1	){
-						final java.awt.event.MouseEvent me = e;
-						SwingUtilities.invokeLater(new Runnable(){
-						 	   public  void run()
-						 	   {
-						 		   KlickSetzen(oSpalten[tspalte], me);
-						 	   }
-						}); 	   
-						Reha.thisClass.shiftLabel.setText("Drag:X="+e.getX()+" Y="+e.getY());
-						oSpalten[tspalte].requestFocus();					
-					}
-					if (Math.max(dragDaten.x, e.getX())- Math.min(dragDaten.x, e.getX()) >= 4 ||
-							Math.max(dragDaten.y, e.getY())- Math.min(dragDaten.y, e.getY()) >= 4	){
-						
-						
-						if(dragAllowed){
-							if(ctrlGedrueckt || altGedrueckt){
-						
-
-							int behandler=-1,block=-1;
-							if(!dragStart){
-								if(ansicht==NORMAL_ANSICHT){
-									behandler = belegung[aktiveSpalte[2]];
-									block = aktiveSpalte[0];
-								}else if(ansicht==WOCHEN_ANSICHT){
-									behandler = aktiveSpalte[2];
-									block = aktiveSpalte[0];
-								}else if(ansicht==MASKEN_ANSICHT){
-									behandler = aktiveSpalte[2];
-									block = aktiveSpalte[0];
-								}
-								String name = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(block);
-								String reznr = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(block);
-								int dauer = new Integer ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(3)).get(block));
-								int breite = oSpalten[tspalte].getWidth();
-								dragInhalt[0] = name;
-								dragInhalt[1] = reznr;
-								dragInhalt[2] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(block);
-								dragInhalt[3] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(3)).get(block);
-								dragInhalt[4] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(4)).get(block);								
-								dragPanel = new DragPanel();
-								dragPanel.dragPanelInit(name,reznr,dauer,breite,oSpalten[tspalte].getFloatPixelProMinute());
-								dragPanel.setPoint(new Point(e.getXOnScreen(),e.getYOnScreen()));
-								dragStartObject[0] = aktiveSpalte[0];
-								dragStartObject[1] = aktiveSpalte[2];
-								altaktiveSpalte= aktiveSpalte.clone();
-								dragStart = true;
-								Reha.thisFrame.setCursor(Cursor.CROSSHAIR_CURSOR);
-							}else{
-								if( (dragPanel != null) && (ctrlGedrueckt || altGedrueckt) ){
-									final java.awt.event.MouseEvent ex = e;
-									if(!indrag){
-										indrag = true;
-										TerminDrag td = new TerminDrag();
-										td.execute();
-										//new TerminDrag().execute();
-										
-										//xxxx
-									}
-									new Thread(){
-										public void run(){
-											setPriority(Thread.MAX_PRIORITY);
-//muﬂ aktiviert werden						dragPanel.setPoint(new Point(ex.getXOnScreen(),ex.getYOnScreen()));
-									tdragObjekt.init(new Point(ex.getXOnScreen(),ex.getYOnScreen()),
-											new Point(ex.getX(),ex.getY()), tspalte);
-										}
-									}.start();
-								}else{
-									System.out.println("dragPanel = null");
-								}
-								//Reha.thisClass.shiftLabel.setText("Drag:X="+e.getX()+" Y="+e.getY());
-							}
-						}	
-						}else{
-							JOptionPane.showMessageDialog(null,"Drag & Drop ist f¸r Sie nicht freigegeben");
-						}
-*/
-						/*
-						final java.awt.event.MouseEvent me = e;
-						SwingUtilities.invokeLater(new Runnable(){
-						 	   public  void run()
-						 	   {
-						 		   KlickSetzen(oSpalten[tspalte], me);
-						 	   }
-						}); 	   
-						Reha.thisClass.shiftLabel.setText("Drag:X="+e.getX()+" Y="+e.getY());
-						oSpalten[tspalte].requestFocus();
-						*/					
-/*
-					}
-
-					if(gruppierenAktiv){
-						//System.out.println("In MouseMotion -> Block 1 = "+gruppierenBloecke[0]+"  / Block 2 = "+gruppierenBloecke[1]);
-					}	
-*/
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
 					dragDaten.x = e.getX();
-					//System.out.println(dragDaten.x);
 				}				
 			});
 			oSpalten[tspalte].addFocusListener(new java.awt.event.FocusAdapter() {   
@@ -4080,6 +3832,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
+		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
+			return;
+		}
 
 		try {
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
@@ -4097,6 +3852,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	      } catch (Throwable t) { t.printStackTrace(); }
 	      // Ein Problem ist aufgetreten
 	      dtde.dropComplete(true);
+	      
 
 		
 		// TODO Auto-generated method stub
@@ -4108,10 +3864,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		int breit = TerminFlaeche.getWidth()/7;
 		for(int i = 0; i < 7;i++){
 			if( (x>=(i*breit)) && (x<=((i*breit)+breit)) ){
-
+				int[] neuint = oSpalten[i].BlockTestOhneAktivierung(dtde.getLocation().x-(i*breit),dtde.getLocation().y);
+				System.out.println("Neuint -> Nachher -> "+neuint[0]+"/"+neuint[1]+"/"+neuint[2]+"/"+neuint[3]);
 				aktiveSpalte = oSpalten[i].BlockTest(dtde.getLocation().x-(i*breit),dtde.getLocation().y,aktiveSpalte);
 				oSpalten[i].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 				System.out.println("Nachher -> "+aktiveSpalte[0]+"/"+aktiveSpalte[1]+"/"+aktiveSpalte[2]+"/"+aktiveSpalte[3]);
+
+				if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_COPY){
+					JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demn‰chst an diese Stelle kopiert");
+					return;
+				}
+				if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_MOVE){
+					JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demn‰chst an diese Stelle verschoben");
+					return;
+				}
+
 				int behandler=-1;
 				if(ansicht==NORMAL_ANSICHT){
 					behandler = belegung[i];
