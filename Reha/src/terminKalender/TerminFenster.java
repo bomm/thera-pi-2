@@ -258,6 +258,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public static int DRAG_UNKNOWN = 2;
 	public static int DRAG_NONE = -1;
 	public static int DRAG_MODE = -1;
+	public String DRAG_UHR;
+	public String DRAG_PAT;	
+	public String DRAG_NUMMER;	
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
 
 		this.eltern = eltern;
@@ -790,7 +793,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				    	  System.out.println("DragModus-None");
 				    	  DRAG_MODE = DRAG_NONE;
 				      }
-				      altaktiveSpalte = aktiveSpalte.clone();
+						int behandler=-1;
+						if(ansicht==NORMAL_ANSICHT){
+							behandler = belegung[aktiveSpalte[2]];
+						}else if(ansicht==WOCHEN_ANSICHT){
+							behandler = aktiveSpalte[2];
+						}else if(ansicht==MASKEN_ANSICHT){
+							behandler = aktiveSpalte[2];
+						}
+						if(behandler <= -1){
+							return;
+						}
+						DRAG_PAT = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) );
+						DRAG_NUMMER = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) );
+					DRAG_UHR =  new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) );
+						altaktiveSpalte = aktiveSpalte.clone();
 				      draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
 				      ((JLabel)c).setText(draghandler.getText());
 				      TransferHandler th = c.getTransferHandler();
@@ -3911,8 +3928,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				if(behandler <= -1){
 					return;
 				}
+				if((altaktiveSpalte[0]==aktiveSpalte[0]) && (altaktiveSpalte[2]==aktiveSpalte[2])){
+					return;
+				}
+
 				String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]);
 				String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]);
+
 				// Hier testen ob alter Block mit Daten gefüllt war
 				if(!sname.equals("")){
 					int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie den bisherigen Eintrag -> "+sname+
@@ -3929,14 +3951,126 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					System.out.println(teilen[0]+" - "+teilen[1]+" - "+teilen[2]);
 					datenSpeicher[0]= teilen[0];		
 					datenSpeicher[1]= teilen[1];		
-					datenSpeicher[3]= teilen[2];		
+					datenSpeicher[3]= teilen[2];
+					
 					datenAusSpeicherHolen();
+
+					int[] spaltneu = aktiveSpalte.clone();
+					if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_MOVE){
+
+						long zeit = System.currentTimeMillis();
+						boolean grobRaus = false;
+						while(getUpdateVerbot()){
+							try {
+								Thread.sleep(20);
+								if( (System.currentTimeMillis()-zeit) > 2500){
+									grobRaus = true;
+									break;
+								}
+							} catch (InterruptedException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+						
+						if(!grobRaus){
+							System.out.println("Stufe 1 - o.k.");
+							String sbeginnneu = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(spaltneu[0]); 
+							int spAktiv = new Integer(aktiveSpalte[2]);
+							aktiveSpalte = altaktiveSpalte.clone();
+							wartenAufReady = true;
+							grobRaus = false;
+							setUpdateVerbot(true);
+							while(getUpdateVerbot()){
+								try {
+									Thread.sleep(20);
+									if( (System.currentTimeMillis()-zeit) > 2500){
+										grobRaus = true;
+										break;
+									}
+								} catch (InterruptedException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+							}
+							if(!grobRaus){
+								System.out.println("Stufe 2 - o.k.");
+								if(altaktiveSpalte[2]==spAktiv){
+									String sbeginn = new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(altaktiveSpalte[0]) );
+									int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
+									System.out.println("Suche nach Uhrzeit -> "+sbeginn);
+									for(int i2 = 0 ; i2 < lang; i2++){
+										System.out.println("kontrolliere Uhrzeit -> "+((Vector<?>)((ArrayList<?>)vTerm.get(behandler)).get(2)).get(i2) );
+										if( ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2).equals(DRAG_UHR)){
+										//if( ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2).equals(sbeginn)){
+											aktiveSpalte[0] = i2;
+											aktiveSpalte[1] = i2;
+											System.out.println("Uhrzeit gefunden auf Block -> "+i2);
+											wartenAufReady = true;
+											blockSetzen(11);
+											break;
+										}
+									}
+								}else{
+									wartenAufReady = true;
+									blockSetzen(11);
+									aktiveSpalte = spaltneu.clone();
+								}
+								
+								int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
+								System.out.println("Suche nach neuer Uhrzeit -> "+sbeginnneu);
+									for(int i2 = 0 ; i2 < lang; i2++){
+										if( ((String)((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2)).trim().equals(sbeginnneu.trim())){
+											aktiveSpalte[0] = i2;
+											aktiveSpalte[1] = i2;
+											System.out.println("Setze aktiven Block neu auf Block -> "+i2);
+											break;
+										}
+									}
+							}else{
+								System.out.println("Grober Austritt aus Löschenfunktion->MoveFunktion");
+								aktiveSpalte = spaltneu.clone();
+								wartenAufReady = false;		
+							}
+							aktiveSpalte = spaltneu.clone();							
+						}else{
+							System.out.println("Grober Austritt aus BlockSchreibenFunktion->MoveFunktion");
+							aktiveSpalte = spaltneu.clone();
+							wartenAufReady = false;								
+						}					
+					}
+					if(spaltneu[2] != altaktiveSpalte[2]){
+						oSpalten[altaktiveSpalte[2]].spalteDeaktivieren();
+					}
+					
 				}
 				//datenAusSpeicherHolen();
 				System.out.println("Belegt mit -> "+sname+" - "+sreznum);
+				try{
+					for(int x2 = 0; x2 < 1; x2++){
+						String name = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]+1);
+						String nummer = (String)((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]+1);
+						if(name.trim().equals(DRAG_PAT.trim()) && nummer.equals(DRAG_NUMMER.trim())){
+							aktiveSpalte[0]++;
+							aktiveSpalte[1]++;
+							break;
+						}
+						name = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]-1);
+						nummer = (String)((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]-1);
+						if(name.trim().equals(DRAG_PAT.trim()) && nummer.equals(DRAG_NUMMER.trim())){
+							aktiveSpalte[0]--;
+							aktiveSpalte[1]--;
+							break;
+						}
+					}
+
+				}catch(Exception ex){}
+				System.out.println("Endwerte aktive Spalte = "+aktiveSpalte[0]+" / "+aktiveSpalte[1]+" / "+aktiveSpalte[2]+" / "+aktiveSpalte[3]);
+				oSpalten[i].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0] );
 			}else{
 				oSpalten[i].spalteDeaktivieren();
 			}
+
 			
 		}
 		
