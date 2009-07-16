@@ -255,6 +255,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public HashMap<String,String> hmDragSource = new HashMap<String,String>();
 	public static int DRAG_COPY = 0;
 	public static int DRAG_MOVE = 1;
+	public static int DRAG_UNKNOWN = 2;
 	public static int DRAG_NONE = -1;
 	public static int DRAG_MODE = -1;
 	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
@@ -789,6 +790,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				    	  System.out.println("DragModus-None");
 				    	  DRAG_MODE = DRAG_NONE;
 				      }
+				      altaktiveSpalte = aktiveSpalte.clone();
 				      draghandler.setText(sdaten[0]+"∞"+sdaten[1]+"∞"+sdaten[3]+" Min.");
 				      ((JLabel)c).setText(draghandler.getText());
 				      TransferHandler th = c.getTransferHandler();
@@ -3084,8 +3086,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						zeit3 = (int) zeitFunk.MinutenSeitMitternacht(datenSpeicher[2]);
 						zeit4 = (int) zeitFunk.MinutenSeitMitternacht(aktstart);
 						if ((zeit1 < zeit2) && (zeit3 > zeit4) ){
+							//System.out.println("case 4: blockSetzen(5)  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							blockSetzen(5);
+							break;
+						}else if((zeit1 == zeit2) && (zeit3 > zeit4)){
+							blockSetzen(3);
+							//System.out.println("case 4: muﬂ unten andocken  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
+							break;
+						}else if((zeit1 < zeit2) && (zeit3 == zeit4)){
+							blockSetzen(2);
+							//System.out.println("case 4: muﬂ oben andocken  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
+							break;							
 						}else{
+							//System.out.println("case 4: paﬂt nicht  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							JOptionPane.showMessageDialog (null, "Die von Ihnen angegebene Startzeit "+datenSpeicher[2]+"\n"+
 									" und die Dauer des Termines von "+datenSpeicher[3]+" Minuten, passt hinten und\n"+
 									"verne nicht. Entweder ergibt dies Startzeit eine ‹berschneidung mit \n"+
@@ -3833,6 +3846,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
 		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
+			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 			return;
 		}
 
@@ -3840,6 +3854,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 
 	        Transferable tr = dtde.getTransferable();
+	        System.out.println("Transferable Name = "+tr);
 	        DataFlavor[] flavors = tr.getTransferDataFlavors();
 	        for (int i = 0; i < flavors.length; i++){
 	        	System.out.println(flavors[i]);
@@ -3865,18 +3880,24 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		for(int i = 0; i < 7;i++){
 			if( (x>=(i*breit)) && (x<=((i*breit)+breit)) ){
 				int[] neuint = oSpalten[i].BlockTestOhneAktivierung(dtde.getLocation().x-(i*breit),dtde.getLocation().y);
-				System.out.println("Neuint -> Nachher -> "+neuint[0]+"/"+neuint[1]+"/"+neuint[2]+"/"+neuint[3]);
-				aktiveSpalte = oSpalten[i].BlockTest(dtde.getLocation().x-(i*breit),dtde.getLocation().y,aktiveSpalte);
-				oSpalten[i].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
-				System.out.println("Nachher -> "+aktiveSpalte[0]+"/"+aktiveSpalte[1]+"/"+aktiveSpalte[2]+"/"+aktiveSpalte[3]);
 
+				System.out.println("Blockposition bisher -> "+altaktiveSpalte[0]+"/"+altaktiveSpalte[1]+"/"+altaktiveSpalte[2]+"/"+altaktiveSpalte[3]);
+
+				System.out.println("Neue Position -> Nachher -> "+neuint[0]+"/"+neuint[1]+"/"+neuint[2]+"/"+neuint[3]);
+
+				aktiveSpalte = oSpalten[i].BlockTest(dtde.getLocation().x-(i*breit),dtde.getLocation().y,aktiveSpalte);
+
+				oSpalten[i].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
+
+				System.out.println("Nachher -> "+aktiveSpalte[0]+"/"+aktiveSpalte[1]+"/"+aktiveSpalte[2]+"/"+aktiveSpalte[3]);
+ 
 				if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_COPY){
-					JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demn‰chst an diese Stelle kopiert");
-					return;
+					//JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demn‰chst an diese Stelle kopiert");
+					//break;
 				}
 				if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_MOVE){
-					JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demn‰chst an diese Stelle verschoben");
-					return;
+					//JOptionPane.showMessageDialog(null, "Der 'gedropte' Termin wird demn‰chst an diese Stelle verschoben");
+					//break;
 				}
 
 				int behandler=-1;
@@ -3892,6 +3913,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 				String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]);
 				String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]);
+				// Hier testen ob alter Block mit Daten gef¸llt war
+				if(!sname.equals("")){
+					int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie den bisherigen Eintrag -> "+sname+
+							" <- tats‰chlich ¸berschreiben?", "Achtung wichtige Benutzeranfrage!!!", JOptionPane.YES_NO_OPTION);
+					if(frage==JOptionPane.NO_OPTION){
+						break;
+					}
+				}
 				String[] teilen;
 				if(mitgebracht.indexOf("∞") >= 0 ){
 					teilen = mitgebracht.split("∞");

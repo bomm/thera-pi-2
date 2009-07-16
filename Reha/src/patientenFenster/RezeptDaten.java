@@ -247,7 +247,7 @@ public class RezeptDaten extends JXPanel{
 		reznum.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent e) {
 		    	int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
-		    	TerminFenster.DRAG_MODE = TerminFenster.DRAG_COPY;
+		    	TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
 		    	draghandler.setText(
 		    			((String)PatGrundPanel.thisClass.patDaten.get(0)).substring(0,1)+
 		    			"-"+PatGrundPanel.thisClass.patDaten.get(2)+","+
