@@ -93,14 +93,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		this.neu = neu;
 		this.feldname = sfeldname;
 		this.vec = vec;
-
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				macheFarbcodes();
+			*/
+				//macheFarbcodes();
+			/*	
 				return null;
 			}
 		}.execute();
+		*/
 
 		
 		setLayout(new BorderLayout());
@@ -142,8 +145,25 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		//System.out.println(SystemConfig.vSysColsBedeut.get(14));
 		// 14 und < 23
 		farbcodes[0] = "kein Farbcode";
+		jcmb[8].addItem(farbcodes[0]);
+		
 		for (int i = 0;i < 9;i++){
+			//System.out.println("Farbcode "+(i+1)+" = "+ SystemConfig.vSysColsBedeut.get(i+14)+" - "+(i+14));
 			farbcodes[i+1] = SystemConfig.vSysColsBedeut.get(i+14);
+			jcmb[8].addItem(farbcodes[i+1]);
+		}
+		if(! this.neu){
+			int itest = StringTools.ZahlTest(this.vec.get(57));
+			
+			if(itest >= 0){
+				//System.out.println("itest = "+itest);
+				jcmb[8].setSelectedItem( (String)SystemConfig.vSysColsBedeut.get(itest) );			
+			}else{
+				//System.out.println("itest = "+itest);				
+				jcmb[8].setSelectedIndex(0);
+			}
+		}else{
+			jcmb[8].setSelectedIndex(0);			
 		}
 		
 	}
@@ -454,7 +474,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(jcmb[7],cc.xy(7, 29));
 		
 		jpan.addLabel("FarbCode im TK",cc.xy(1, 31));
-		jcmb[8] = new JRtaComboBox(farbcodes);
+		jcmb[8] = new JRtaComboBox();
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				macheFarbcodes();
+				return null;
+			}
+		}.execute();
+
 		jpan.add(jcmb[8],cc.xy(3, 31));
 		jpan.addLabel("Angelegt von",cc.xy(5, 31));
 		jpan.add(jtf[10],cc.xy(7, 31));
@@ -878,12 +906,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
 
-		itest = StringTools.ZahlTest(this.vec.get(57));
-		if(itest >0){
-			jcmb[8].setSelectedItem( (String)SystemConfig.vSysColsBedeut.get(itest) );			
-		}else{
-			jcmb[8].setSelectedIndex(0);
-		}
 
 	}
 	private String[] holePreis(int ivec,int ipreisgruppe){
@@ -969,11 +991,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
 		sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 		sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
+		
 		if(jcmb[8].getSelectedIndex() > 0){
 			sbuf.append("farbcode='"+new Integer(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
 		}else{
 			sbuf.append("farbcode='-1', ");
 		}
+		
 		
 
 		//System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
