@@ -1204,7 +1204,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String ik = "510884019";
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
 		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)PatGrundPanel.thisClass.vecaktrez.get(1)+"*");
-		String url = SystemConfig.rezBarCodForm.get(new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(46)));
+		int iurl = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(46));
+		String url = SystemConfig.rezBarCodForm.get((iurl < 0 ? 0 : iurl));
 		SystemConfig.hmAdrRDaten.put("<Bzu>",StringTools.fuelleMitZeichen(
 				SystemConfig.hmAdrRDaten.get("<Rendbetrag>"), " ", true, 5));
 		SystemConfig.hmAdrRDaten.put("<Bges>",StringTools.fuelleMitZeichen(

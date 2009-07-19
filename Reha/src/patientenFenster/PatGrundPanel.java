@@ -176,6 +176,7 @@ public JTextArea rezdiag = null;
 public ImageIcon[] imgzuzahl = {null,null,null};
 
 public Vector vecaktrez = null;
+public Vector vecakthistor = null;
 
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};

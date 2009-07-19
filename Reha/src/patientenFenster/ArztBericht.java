@@ -356,7 +356,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		if((! this.reznr.equals("")) && (this.aufrufvon == 0)){
 			diagnose.setText((String)PatGrundPanel.thisClass.vecaktrez.get(23));
 		}else if((!this.reznr.equals("")) && (this.aufrufvon == 1)){
-			
+			diagnose.setText((String)PatGrundPanel.thisClass.vecakthistor.get(23));
 		}else{
 			Vector vec = null;
 			vec = SqlInfo.holeSatz("verordn", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));

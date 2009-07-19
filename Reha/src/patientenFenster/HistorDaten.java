@@ -104,6 +104,7 @@ public class HistorDaten extends JXPanel{
 
 				vecaktrez = SqlInfo.holeSatz("lza", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				String stest = StringTools.NullTest((String)vecaktrez.get(43));
+				PatGrundPanel.thisClass.vecakthistor = vecaktrez;
 				if( stest.equals("T") ){
 					rezlabs[1].setIcon(hbimg);
 				}else{

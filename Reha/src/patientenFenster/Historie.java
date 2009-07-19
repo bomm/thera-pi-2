@@ -665,6 +665,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				Vector vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
+
 				int anz = vec.size();
 
 				for(int i = 0; i < anz;i++){
