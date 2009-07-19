@@ -66,6 +66,8 @@ import jxTableTools.DateTableCellEditor;
 import jxTableTools.DatumTableCellEditor;
 import jxTableTools.TableTool;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -96,6 +98,7 @@ import systemTools.Colors;
 import systemTools.DoubleTools;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import terminKalender.datFunk;
 
 
@@ -118,7 +121,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public String[] indergo = null;
 	public String[] indlogo = null;
 	public RezeptDaten jpan1 = null;
-	public JButton[] aktrbut = {null,null,null,null,null,null,null};
+	public JButton[] aktrbut = {null,null,null,null,null,null,null,null};
 	public boolean suchePatUeberRez = false;
 	public static boolean inRezeptDaten = false;
 	//public boolean lneu = false;
@@ -175,6 +178,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 				Font font = new Font("Tahome",Font.PLAIN,11);
 				anzahlRezepte = new JLabel("Anzahl Rezepte: 0");
+				PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - 0");
 				anzahlRezepte.setFont(font);
 				//anzahlRezepte.setForeground(Color.RED);
 				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
@@ -231,9 +235,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
 				aktrbut[0].setEnabled(true);
-				for(int i = 1; i < 7;i++){
+				for(int i = 1; i < 8;i++){
 					aktrbut[i].setEnabled(false);	
 				}
+				//PatGrundPanel.thisClass.jtab.setIconAt(0, SystemConfig.hmSysIcons.get("zuzahlnichtok"));
 			}else{
 				aktrbut[0].setEnabled(true);
 			}
@@ -245,9 +250,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
-				for(int i = 0; i < 7;i++){
+				for(int i = 0; i < 8;i++){
 					aktrbut[i].setEnabled(true);	
 				}
+				//PatGrundPanel.thisClass.jtab.setIconAt(0, SystemConfig.hmSysIcons.get("zuzahlok"));
 			}
 		}	
 	}
@@ -290,31 +296,37 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jtb.add(aktrbut[2]);
 		jtb.addSeparator(new Dimension(40,0));
 		aktrbut[3] = new JButton();
-		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
-		aktrbut[3].setToolTipText("Rezeptgebühren kassieren");
-		aktrbut[3].setActionCommand("rezeptgebuehr");
-		aktrbut[3].addActionListener(this);		
-		jtb.add(aktrbut[3]);
+		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("barcode"));
+		aktrbut[3].setToolTipText("Rezept mit Barcode bedrucken");
+		aktrbut[3].setActionCommand("barcode");
+		aktrbut[3].addActionListener(this);
+		jtb.add(aktrbut[3]);		
 		aktrbut[4] = new JButton();
-		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("ausfallrechnung"));
-		aktrbut[4].setToolTipText("Ausfallrechnung erstellen");
-		aktrbut[4].setActionCommand("ausfallrechnung");
+		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
+		aktrbut[4].setToolTipText("Rezeptgebühren kassieren");
+		aktrbut[4].setActionCommand("rezeptgebuehr");
 		aktrbut[4].addActionListener(this);		
 		jtb.add(aktrbut[4]);
 		aktrbut[5] = new JButton();
-		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("privatrechnung"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/privatrechnung.png"));
-		aktrbut[5].setToolTipText("Privatrechnung erstellen");
-		aktrbut[5].setActionCommand("privatrechnung");
+		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("ausfallrechnung"));
+		aktrbut[5].setToolTipText("Ausfallrechnung erstellen");
+		aktrbut[5].setActionCommand("ausfallrechnung");
 		aktrbut[5].addActionListener(this);		
 		jtb.add(aktrbut[5]);
 		aktrbut[6] = new JButton();
-		aktrbut[6].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		aktrbut[6].setToolTipText("Arztbericht erstellen/ändern");
-		aktrbut[6].setActionCommand("arztbericht");
+		aktrbut[6].setIcon(SystemConfig.hmSysIcons.get("privatrechnung"));
+		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/privatrechnung.png"));
+		aktrbut[6].setToolTipText("Privatrechnung erstellen");
+		aktrbut[6].setActionCommand("privatrechnung");
 		aktrbut[6].addActionListener(this);		
 		jtb.add(aktrbut[6]);
-		for(int i = 0; i < 7;i++){
+		aktrbut[7] = new JButton();
+		aktrbut[7].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
+		aktrbut[7].setToolTipText("Arztbericht erstellen/ändern");
+		aktrbut[7].setActionCommand("arztbericht");
+		aktrbut[7].addActionListener(this);		
+		jtb.add(aktrbut[7]);
+		for(int i = 0; i < 8;i++){
 			aktrbut[i].setEnabled(false);
 		}
 		return jtb;
@@ -489,6 +501,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
 				int anz = vec.size();
+				
 				for(int i = 0; i < anz;i++){
 					if(i==0){
 						dtblm.setRowCount(0);						
@@ -548,13 +561,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
+					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#ff0000'>"+anz+"</font>");					
 				}else{
 					setzeRezeptPanelAufNull(true);
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
+					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#000000'>"+anz+"</font>");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
 					dtermm.setRowCount(0);
+					
 					PatGrundPanel.thisClass.vecaktrez.clear();
 					PatGrundPanel.thisClass.vecaktrez = null;
 				}
@@ -970,9 +986,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				new ExUndHop().setzeStatement(sqlcmd);
 				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
 				int uebrig = tabaktrez.getRowCount();
+				
 				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(uebrig).toString());
 				if(uebrig <= 0){
+					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#000000'>"+uebrig+"</font>");
 					holeRezepte(PatGrundPanel.thisClass.patDaten.get(29),"");
+				}else{
+					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#ff0000'>"+uebrig+"</font>");					
 				}
 				
 			}
@@ -991,6 +1011,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				doRezeptGebuehr( ((JComponent)arg0.getSource()).getLocationOnScreen() );
 
 			}
+			if(cmd.equals("barcode")){
+				doBarcode();
+			}
+			
 			if(cmd.equals("arztbericht")){
 				// hier  muß noch getestet werden:
 				// 1 ist es eine Neuanlage oder soll ein bestehender Ber. editiert werden
@@ -1172,74 +1196,25 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			bereitsbezahlt = true;
 		}
-		/************************************/
-		/*
-		Double rezgeb = new Double(0.000);
-		BigDecimal[] preise = {null,null,null,null};
-		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
-		
-		System.out.println("nach nullzuweisung " +xrezgeb.toString());
-		int[] anzahl = {0,0,0,0};
-		int[] artdbeh = {0,0,0,0};
-		int i;
-		BigDecimal einzelpreis = null;
-		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
-		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
-		for(i = 0;i < 4;i++){
-			anzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
-			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
-			preise[i] = BigDecimal.valueOf(new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18)));
-		}
-		xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
-		rezgeb = 10.00;
-		System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
-		String runden;
-		DecimalFormat dfx = new DecimalFormat( "0.00" );
-		BigDecimal endpos;
-		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)PatGrundPanel.thisClass.vecaktrez.get(0) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2) )  );		
-		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
-		
-		for(i = 0; i < 4; i++){
-			if(artdbeh[i] > 0){
-				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)PatGrundPanel.thisClass.vecaktrez.get(48+i) );
-				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
-				
-				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
-
-				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
-
-
-				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
-				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
-				
-				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
-				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
-				rezgeb = rezgeb + endpos.doubleValue();
-				System.out.println(rezgeb.toString());
-
-			}else{
-				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");
-				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", "0,00" );
-				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", "0,00");				
-				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", "0,00" );
-				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", "----" );
-						
-			}
-		}
-		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
-		DecimalFormat df = new DecimalFormat( "0.00" );
-		String s = df.format( rezgeb);
-		System.out.println("----------------------------------------------------");
-		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
-		System.out.println(SystemConfig.hmAdrRDaten);
-		*/
-		/***********************/
-		RezTools.constructRezHMap();
+		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1));
 		new RezeptGebuehren(bereitsbezahlt,false,pt);
 	}
+	private void doBarcode(){
+		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1));
+		String ik = "510884019";
+		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
+		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)PatGrundPanel.thisClass.vecaktrez.get(1)+"*");
+		String url = SystemConfig.rezBarCodForm.get(new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(46)));
+		SystemConfig.hmAdrRDaten.put("<Bzu>",StringTools.fuelleMitZeichen(
+				SystemConfig.hmAdrRDaten.get("<Rendbetrag>"), " ", true, 5));
+		SystemConfig.hmAdrRDaten.put("<Bges>",StringTools.fuelleMitZeichen(
+				SystemConfig.hmAdrRDaten.get("<Rwert>"), " ", true, 6));
+		SystemConfig.hmAdrRDaten.put("<Bnr>",SystemConfig.hmAdrRDaten.get("<Rnummer>"));
+		
+		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url);
+		
+	}
+
  
 	public void neuanlageRezept(boolean lneu,String feldname){
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){

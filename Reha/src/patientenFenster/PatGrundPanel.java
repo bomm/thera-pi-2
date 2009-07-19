@@ -179,6 +179,7 @@ public Vector vecaktrez = null;
 
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
+public String[] tabTitel = {"<html>akt. Rezepte","<html>Historie","<html>Berichte","<html>Doku","<html>Fremd-Doku","Arzt & KK","Plandaten"};
 
 public JTabbedPane jtab = null;
 

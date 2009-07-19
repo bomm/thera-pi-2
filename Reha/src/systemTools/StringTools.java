@@ -184,5 +184,27 @@ public class StringTools {
 		String escaped = string.replaceAll("\'", "\\\\\\'");
 		return new String(escaped);
 	}
+	public static String fuelleMitZeichen(String string,String zeichen,boolean vorne,int endlang){
+		String orig = string;
+		String praefi = zeichen;
+		String dummy = "";
+		String sret = ""; 
+		int solllang = endlang;
+		int istlang = orig.length();
+		int differenz = solllang - istlang;
+		if(differenz > 0){
+			for(int i = 0; i < differenz;i++){
+				dummy = dummy+praefi;
+			}
+			if(vorne){
+				sret = dummy+orig;
+			}else{
+				sret = orig+dummy;
+			}
+		}else{
+			sret = new String(orig);
+		}
+		return sret;
+	}
 
 }

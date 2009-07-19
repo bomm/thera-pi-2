@@ -581,19 +581,26 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			final int xberid = berid;
 			final int xcurrow = currow;
 			final String xxverfasser = xverfasser;
+			/*
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
+				*/
+					System.out.println("Vor arzbericht-aufruf");
 					ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,1,xxverfasser,"",xcurrow);
 					ab.setModal(true);
 					ab.setLocationRelativeTo(null);
-					ab.toFront();
+					//ab.toFront();
+					System.out.println("vor Arzbericht set Visible");
 					ab.setVisible(true);
 					ab = null;
+					System.out.println("Arzbericht=null");
+				/*	
 					return null;
 				}
 				
 			}.execute();
+			*/
 			/*
 			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,1,"","",currow);
 			ab.setModal(true);
@@ -659,6 +666,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
 				int anz = vec.size();
+
 				for(int i = 0; i < anz;i++){
 					if(i==0){
 						dtblm.setRowCount(0);						
@@ -710,11 +718,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
 					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
+					PatGrundPanel.thisClass.jtab.setTitleAt(1, PatGrundPanel.thisClass.tabTitel[1]+" - <font color='#ff0000'>"+anz+"</font>");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();					
 				}else{
 					setzeRezeptPanelAufNull(true);
 					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
+					PatGrundPanel.thisClass.jtab.setTitleAt(1, PatGrundPanel.thisClass.tabTitel[1]+" - <font color='#000000'>"+anz+"</font>");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);

@@ -470,7 +470,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		*/
 		jpan.addLabel("Barcode-Format",cc.xy(5, 29));
-		jcmb[7] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
+		//jcmb[7] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
+		jcmb[7] = new JRtaComboBox(SystemConfig.rezBarCodName);
 		jpan.add(jcmb[7],cc.xy(7, 29));
 		
 		jpan.addLabel("FarbCode im TK",cc.xy(1, 31));

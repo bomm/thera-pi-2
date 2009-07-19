@@ -188,7 +188,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private boolean altGedrueckt;	
 	private Point dragDaten = new Point(0,0);
 	private String[] dragInhalt = {null,null,null,null,null};
-	private boolean dragStart = false;
+	public boolean dragStart = false;
 	private boolean dragAllowed = true;
 	public DragPanel dragPanel = null;
 	private Point dragPosition = new Point(0,0);
@@ -782,6 +782,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      if(sdaten[0]==null){
 					    	  return;
 					      }
+					      dragStart = true;
 					      if(e.isAltDown()){
 					    	  System.out.println("DragModus-Move");
 					    	  DRAG_MODE = DRAG_MOVE;
@@ -818,6 +819,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      JComponent c = (JComponent)e.getSource();
 					      int v = new Integer(c.getName().split("-")[1]);
 					      dragLab[v].setText("");
+					      dragLab[v].setIcon(null);
+					      dragStart = false;
 					      oSpalten[v].repaint();
 					
 					      
@@ -1185,6 +1188,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}				
 
 				public void mousePressed(java.awt.event.MouseEvent e) {
+					
 					for(int i = 0; i < 1; i++){
 						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
 							KlickSetzen(oSpalten[tspalte], e);
@@ -2955,10 +2959,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if (aktbehandler == -1){
 			return srueck;
 		}
+		try{
 		srueck[0]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock);		
 		srueck[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		srueck[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);
 		return srueck;
+		}catch(java.lang.ArrayIndexOutOfBoundsException ex){
+			return new String[]{null,null,null,null,null};
+		}
 	}
 
 	public void setDatenSpeicher(String[] speicher){
@@ -3597,6 +3605,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				tagWahlNeu.setVisible(true);
 				tagWahlNeu.dispose();
 				intagWahl = false;
+				dragLab[aktiveSpalte[2]].setIcon(null);
+				dragLab[aktiveSpalte[2]].setText("");
 				//tagWahlNeu = null;
 				System.out.println("intagWahl ="+intagWahl);
 				/*
@@ -3627,6 +3637,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        		this.wocheAktuellerTag = this.aktuellerTag;
 	        	}
 	        	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
+				dragLab[aktiveSpalte[2]].setIcon(null);
+				dragLab[aktiveSpalte[2]].setText("");
 	        	String sstmt = 	AnsichtStatement(this.ansicht,this.wocheAktuellerTag);
 	        }
 
@@ -3868,6 +3880,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
 			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
+			dragLab[aktiveSpalte[2]].setIcon(null);
+			dragLab[aktiveSpalte[2]].setText("");
 			return;
 		}
 
@@ -4064,6 +4078,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 
 				}catch(Exception ex){}
+				dragLab[aktiveSpalte[2]].setIcon(null);
+				dragLab[aktiveSpalte[2]].setText("");
+				dragLab[altaktiveSpalte[2]].setIcon(null);
+				dragLab[altaktiveSpalte[2]].setText("");
+
 				System.out.println("Endwerte aktive Spalte = "+aktiveSpalte[0]+" / "+aktiveSpalte[1]+" / "+aktiveSpalte[2]+" / "+aktiveSpalte[3]);
 				oSpalten[i].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0] );
 			}else{

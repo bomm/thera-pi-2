@@ -96,7 +96,6 @@ public void paintComponent( Graphics g ) {
 		Graphics2D g2d = (Graphics2D)g;
 		//String sname = "";
 		vectorzahl = ((Vector)dat).size();
-
 		/*
 		if(this.xoriginal == null){
 			this.xoriginal = g2d.getComposite();
@@ -157,12 +156,14 @@ public void paintComponent( Graphics g ) {
 			//g2d.setComposite(original);
 			 */
 			/**********************************************/
-			g2d.setColor( SystemConfig.KalenderHintergrund);
-			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
-			if(!this.spalteAktiv){
+			
+			if((!this.spalteAktiv) || (!TerminFenster.thisClass.dragStart)){
 				TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 				TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 			}
+			g2d.setColor( SystemConfig.KalenderHintergrund);
+			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
+
 			//System.out.println("Anzahl Blöcke in kPanel "+this.panelNummer+" = "+anzahl);
 			for(i=0;i<anzahl;i++){
 				/*
@@ -273,34 +274,12 @@ public void paintComponent( Graphics g ) {
 						
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 							}else{
-								/*
-								g2d.drawString(sStart.substring(0,5)+"-"+
-										sName
-										, 5, (baseline));
-							
-								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
-
-								if(this.spalteAktiv && (!sName.equals(""))){
-									if(yDifferenz < 12){
-										TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
-										TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xEnde-(yDifferenz+1),yStartMin,xEnde, yDifferenz-1);
-									}else{
-										TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(dragImage);
-										TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xEnde-13,yStartMin,xEnde, yDifferenz-1);
-									}
-
-									
-								}else{
-									TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
-									TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
-								}
-								*/
 								if(this.spalteAktiv){
 									if(!sName.equals("") || TerminFenster.thisClass.ansicht==TerminFenster.thisClass.MASKEN_ANSICHT){
 										if(yDifferenz < 12){
 											if(yDifferenz > 0){
-											TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
-											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+(yDifferenz), yDifferenz-1);
+												TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
+												TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+(yDifferenz), yDifferenz-1);
 											}else{
 												TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 												TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
@@ -886,6 +865,7 @@ public void paintComponent( Graphics g ) {
 			aktivPunkt[2] = -1;
 			aktivPunkt[3] = -1;
 			TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+			TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 	}
 
 	

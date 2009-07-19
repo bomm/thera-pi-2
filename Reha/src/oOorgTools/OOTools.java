@@ -95,7 +95,7 @@ public class OOTools {
 			boolean loeschen = false;
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			//System.out.println(placeholderDisplayText);	
+			System.out.println(placeholderDisplayText);	
 		    /*****************/			
 			Set entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator it = entries.iterator();
@@ -135,6 +135,7 @@ public class OOTools {
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  System.out.println("Gefunden ->"+((String)entry.getValue()));
 		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;

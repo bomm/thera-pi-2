@@ -154,7 +154,7 @@ public String arztbisher;
 		arztwahltbl.getColumn(5).setMinWidth(0);
 		arztwahltbl.getColumn(5).setMaxWidth(0);
 		arztwahltbl.setHorizontalScrollEnabled(true);
-		if(this.suchid.length() > 0){
+		if( (this.suchid.length()) > 0 && (!this.suchid.equals("-1")) ){
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {

@@ -188,7 +188,7 @@ public class RezeptDaten extends JXPanel{
 
 				new Thread(){
 					public void run(){
-						RezTools.constructRezHMap();
+						int i = RezTools.testeRezGebArt(reznum.getText().trim());
 					}
 				}.start();
 				

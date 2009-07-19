@@ -124,6 +124,9 @@ public class SystemConfig {
 	public static boolean rezGebDirektDruck = false;
 	public static String rezGebDrucker = null;
 
+	public static String[] rezBarCodName = null;
+	public static Vector<String>rezBarCodForm = null;
+	
 	public static HashMap<String,Vector> hmTherapBausteine = null; 
 	public static String[] berichttitel = {null,null,null,null};
 	public static String  thberichtdatei = "";
@@ -598,7 +601,7 @@ public class SystemConfig {
 				,"<Rposition4>","<Rpreise1>","<Rpreise2>","<Rpreise3>","<Rpreise4>","<Rproz1>","<Rproz2>","<Rproz3>"
 				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag>","<Ranzahl1>"
 				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>","<Rerstdat>","<Rletztdat>","<Rid>","<Rtage>","<Rkurz1>","<Rkurz2"
-				,"<Rkurz3>","<Rkurz4>","<Rlang1>","<Rlang2>","<Rlang3>","<Rlang4>"});
+				,"<Rkurz3>","<Rkurz4>","<Rlang1>","<Rlang2>","<Rlang3>","<Rlang4>","<Rbarcode>","<Systemik>","<Rwert>"});
 		for(int i = 0; i < lAdrRDaten.size(); i++){
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
 		}
@@ -712,6 +715,19 @@ public class SystemConfig {
 		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");
 		rezGebDirektDruck = (inif.getIntegerProperty("DruckOptionen", "DirektDruck") <= 0 ? false : true);
 		
+		args = inif.getIntegerProperty("BarcodeForm", "BarcodeFormAnzahl");
+		if(args > 0){
+			rezBarCodName = new String[args];
+			rezBarCodForm = new Vector<String>();
+			for(int i = 0; i < args; i++){
+				rezBarCodName[i] = inif.getStringProperty("BarcodeForm", "FormName"+(i+1));
+				rezBarCodForm.add(inif.getStringProperty("BarcodeForm", "FormVorlage"+(i+1)));
+			}
+		}else{
+			rezBarCodName = new String[] {null};
+			rezBarCodForm = new Vector<String>();
+		}
+
 	}
 	public static void TherapBausteinInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");
@@ -837,6 +853,8 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "openoffice")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
 		hmSysIcons.put("openoffice", new ImageIcon(ico));
 		
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "barcode")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("barcode", new ImageIcon(ico));
 		System.out.println("System-Icons wurden geladen");
 
 		

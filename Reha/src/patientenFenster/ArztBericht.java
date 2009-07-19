@@ -137,9 +137,16 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		 * 
 		 * this.disziplin = this.reznr.substring(0,2);		
 		 * hier den Fall für ohne Rezeptbezug einbauen!!!!!
-		 * 
+		 * JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		 */
 		System.out.println("In Arztbericht erstellen - ändern -> "+berichtid+" - "+neu+" - "+reznr);
+		System.out.println("Die BerichtsID = ----------------->"+iberichtid);
+		System.out.println("Die Rezeptnummer = --------------->"+reznr);
+		System.out.println("Neuer Bericht = ------------------>"+bneu);
+		System.out.println("Der Verfasser = ------------------>"+xverfasser);
+		System.out.println("Aufruf aus Fenser Nr. = ---------->"+aufruf);
+		System.out.println("Tabellenreihe = ------------------>"+row);
+
 		setSize(new Dimension(950,650));
 		
 	    grundPanel = new JXPanel(new BorderLayout());
@@ -167,6 +174,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		getSmartTitledPanel().setContentContainer(grundPanel);	
 		new Thread(){
 			public void run(){
+				
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -186,7 +194,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				setzeRezDatum();
 	   	  	}
 		});
-		
+		System.out.println("vor Pack");
 		pack();
 	}
 	private void setzeRezDatum(){
@@ -258,7 +266,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		span = JCompTools.getTransparentScrollPane(icfblock[3]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
 		pb.add(span,cc.xyw(2,16,5));
-
+		System.out.println("Rückgabe des JPanels");
 		return pb.getPanel();
 	}
 	private JScrollPane getFunktionsPanel(){
@@ -291,9 +299,16 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		lab = new JLabel("Berichtsempfänger");
 		pb.add(lab,cc.xy(2,10));
 		// hier testen ob ohne Rezeptbezug, wenn ja kann der Vector nicht verwendet werden
-		if((! this.reznr.equals("")) && (this.aufrufvon < 3)){
+		if((! this.reznr.equals("")) && (this.aufrufvon < 1)){
 			name = (String)PatGrundPanel.thisClass.vecaktrez.get(15);
 			arztid = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(16));
+		}else if((! this.reznr.equals("")) && (this.aufrufvon == 1)){
+			name = (String)PatGrundPanel.thisClass.patDaten.get(25);
+			try{
+				arztid = new Integer((String)PatGrundPanel.thisClass.patDaten.get(26));
+			}catch(java.lang.NumberFormatException ex){
+				arztid = new Integer(-1);
+			}
 		}else if((this.reznr.equals("")) && (this.aufrufvon < 3)){
 			name = (String)PatGrundPanel.thisClass.patDaten.get(25);
 			try{
@@ -376,9 +391,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		
 		pb.addLabel("Verfasser des Berichtes",cc.xy(2,34));
 		verfasser = new JComboBox();
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+			*/
 				int lang = ParameterLaden.vKKollegen.size(); 
 				for(int i =0; i < lang;i++){
 					verfasser.addItem((String) ParameterLaden.getMatchcode(i)  );					
@@ -388,11 +405,12 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					verfasser.setSelectedItem(altverfasser);
 					tbwahl.setSelectedItem(diag);
 				}
+			/*	
 				return null;
 			}
 			
 		}.execute();
-		
+		*/
 		pb.add(verfasser,cc.xy(2,36));
 		
 		pb.addSeparator("",cc.xyw(2,38,3));
@@ -453,18 +471,26 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			if(this.neu){
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
-						doSpeichernNeu();
-						neu = false;
-						gespeichert = true;
-						jbutbericht.setEnabled(true);
+						if(doSpeichernNeu()){
+							neu = false;
+							gespeichert = true;
+							jbutbericht.setEnabled(true);
+							JOptionPane.showMessageDialog(null, "Therapiebericht wurde erfolgreich gespeichert");
+							return;
+						}
 			   	  	}
 				});
 			}else{
-				if(doSpeichernAlt()){
-					neu = false;
-					gespeichert = true;
-					jbutbericht.setEnabled(true);
-				}
+				SwingUtilities.invokeLater(new Runnable(){
+					public  void run(){
+						if(doSpeichernAlt()){
+							neu = false;
+							gespeichert = true;
+							jbutbericht.setEnabled(true);
+							return;
+						}
+			   	  	}
+				});
 			}
 		}
 		if(cmd.equals("berichtvorbericht")){
@@ -564,16 +590,17 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			}
 		}
 	}
-	private void doSpeichernNeu(){
+	private boolean doSpeichernNeu(){
+		boolean saveok = true;
 		if(arztid <= 0){
-			JOptionPane.showMessageDialog(null,"Angabe des Empfängers ist ungültig!\nBitte neuen Arzt auswählen");
-			return;
+			JOptionPane.showMessageDialog(null,"Fehler - Angabe des Empfängers ist ungültig!\nBitte neuen Arzt auswählen");
+			return false;
 		}
 		//verfasser testen
 		String xverfasser = (String)verfasser.getSelectedItem();
 		if(xverfasser.equals("./.")){
-			JOptionPane.showMessageDialog(null,"Angabe des Verfassers ist ungültig!");
-			return;
+			JOptionPane.showMessageDialog(null,"Fehler - Angabe des Verfassers ist ungültig!");
+			return false;
 		}
 		//testen ob alles leer
 		boolean gefuellt = false;
@@ -585,13 +612,13 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 		if(!gefuellt){
 			JOptionPane.showMessageDialog(null,"Ein bisschen Text zum Speichern wäre nicht schlecht....");
-			return;
+			return false;
 		}
 		//id holen
 		int berichtnr = SqlInfo.erzeugeNummer("bericht");
 		if(berichtnr < 0){
 			JOptionPane.showMessageDialog(null,"Schwerwiegender Fehler beim Bezug einer neuen Berichts-ID!");
-			return;
+			return false;
 		}
 		
 		//System.out.println("************************************************************************************");
@@ -602,6 +629,20 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		"pat_intern='"+this.pat_intern+"'";
 		
 		new ExUndHop().setzeStatement(new String(cmd));
+		long zeit = System.currentTimeMillis();
+		while(! ExUndHop.processdone){
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if((System.currentTimeMillis() - zeit) > 2500){
+				return false;
+			}
+		}
+
+		System.out.println("Bericht-Historie wurde gespeichert");
 		//System.out.println(cmd);
 		//System.out.println("************************************************************************************");		
 		cmd = "insert into bericht1 set verfasser='"+xverfasser+"', krbild='"+tbs+"', diagnose='"+StringTools.Escaped(diagnose.getText())+"' ,"+
@@ -609,59 +650,67 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
 		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', berichtid='"+berichtnr+"', pat_intern='"+this.pat_intern+"', "+
 		"bertyp='"+reznr+"'";
+		while(! ExUndHop.processdone){
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if((System.currentTimeMillis() - zeit) > 2500){
+				return false;
+			}
+		}
+
 		new ExUndHop().setzeStatement(new String(cmd));
-		//System.out.println(cmd);
-		//System.out.println("************************************************************************************");
-		if(aufrufvon==0){
-			cmd = "update verordn set berid='"+berichtid+"' where rez_nr='"+this.reznr+"'";
-		}else if(aufrufvon==1){
-			cmd = "update lza set berid='"+berichtid+"' where rez_nr='"+this.reznr+"'";
-		}
-		else if(aufrufvon==3){
-			
-		}
+		System.out.println("Bericht-wurde gespeichert");
+
 		final int xberichtnr = berichtnr;
-		
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
+		// hier war vorher ein SwinWorker aufruf;
 				if(aufrufvon==0){
 					while(! ExUndHop.processdone){
-						Thread.sleep(20);
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						if((System.currentTimeMillis() - zeit) > 2500){
+							JOptionPane.showMessageDialog(null, "Abbruch der Speichernfunktion - 3");
+							return false;
+						}
 					}
-					String cmd = "update verordn set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
+					cmd = "update verordn set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
 					new ExUndHop().setzeStatement(new String(cmd));
 					cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
 					new ExUndHop().setzeStatement(new String(cmd));
 
+					System.out.println("BerichtNr - "+xberichtnr+" - wurde in verordn und lza gespeichert");
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
-					return null;
+					//return null;
+					return true;
 				}
 				if(aufrufvon==1){
 					while(! ExUndHop.processdone){
-						Thread.sleep(20);
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						if((System.currentTimeMillis() - zeit) > 2500){
+							return false;
+						}
 					}
-					String cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
+					cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
 					new ExUndHop().setzeStatement(new String(cmd));
+					System.out.println("BerichtNr - "+xberichtnr+" - wurde nur in lza gespeichert");
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
-					return null;
+					//return null;
+					return true;
 				}
-				return null;
-			}
-			
-		}.execute();
-		
-		JOptionPane.showMessageDialog(null,"Der Bericht wurde erfolgreich gespeichert");
-		if(this.aufrufvon==0){
-			
-		}else{
-			
-		}
 
-
-		
-
-		
+		return true;
 	}
 	private boolean doSpeichernAlt(){
 		String empfaenger = "";
@@ -738,6 +787,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				"anrede,titel,nachname,vorname,strasse,plz,ort",
 				" id='"+arztid+"'", 
 				Arrays.asList(new String[] {}));
+		if(vec.size()<=0){
+			JOptionPane.showMessageDialog(null,"Der zugeordnete Arzt ist nicht gültig bitte wählen Sie einen neuen Arzt!");
+			return;
+		}
 		String[] str = AdressTools.machePrivatAdresse(vec.toArray());
 		for(int i = 0; i < str.length; i++){
 			System.out.println("Ergebnis von str"+i+" = "+str[i]);

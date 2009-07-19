@@ -35,7 +35,21 @@ public class RezTools {
 		}
 		return (Vector)retvec.clone();
 	}
-	public static void constructRezHMap(){
+	public static int testeRezGebArt(String srez){
+		int iret = 0;
+		// 0 = ganz normale Rezeptgebührenberechnung ohne HB
+		// 1 = normale Rezeptgebühren mit HB normal
+		// 2 = normale Rezeptgebühren mit HB aber in soz. Einrichtung
+		// 3 = zu Beginn befreit und jetzt ZuZahl-pflichtig
+		// 4 = zu Beginn befreit und jetzt ZuZahl-pflichtig mitHB normal
+		// 5 = zu Beginn befreit und jetzt ZuZahl-pflichtig mitHB in soz. Einrichtung		
+		// 6 = Preisumstellung der Krankenkasse		
+		if(iret==0){
+			constructNormalRezHMap();
+		}
+		return iret;
+	}
+	public static void constructNormalRezHMap(){
 		/************************************/
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
@@ -46,6 +60,8 @@ public class RezTools {
 		int[] artdbeh = {0,0,0,0};
 		int i;
 		BigDecimal einzelpreis = null;
+		BigDecimal poswert = null;
+		BigDecimal rezwert = BigDecimal.valueOf(new Double(0.000));
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
@@ -77,6 +93,8 @@ public class RezTools {
 				
 				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
 
+				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
+				rezwert = rezwert.add(poswert);
 				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
 				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
 				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
@@ -98,7 +116,9 @@ public class RezTools {
 						
 			}
 		}
+		Double drezwert = rezwert.doubleValue();
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
+		SystemConfig.hmAdrRDaten.put("<Rwert>", dfx.format(drezwert) );
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
 		//System.out.println("----------------------------------------------------");
@@ -106,7 +126,8 @@ public class RezTools {
 		//System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 		
-		
+		// Hier muß noch Hausbesuchshandling eingebaut werden
+		// Ebenso das Wegegeldhandling
 	}
 
 }
