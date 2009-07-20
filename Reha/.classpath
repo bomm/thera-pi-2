@@ -35,5 +35,7 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-0.9.7.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/looks-2.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/forms-1.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/uk.co.mmscomputing.device.twain.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/iText-2.1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
