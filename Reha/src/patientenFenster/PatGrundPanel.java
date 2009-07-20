@@ -180,7 +180,7 @@ public Vector vecakthistor = null;
 
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
-public String[] tabTitel = {"<html>akt. Rezepte","<html>Historie","<html>Berichte","<html>Doku","<html>Fremd-Doku","Arzt & KK","Plandaten"};
+public String[] tabTitel = {"<html>aktuelle Rezepte","<html>Rezept-Historie","<html>Therapieberichte","<html>Dokumentation","<html>Gutachten","Arzt & KK","Plandaten"};
 
 public JTabbedPane jtab = null;
 
@@ -462,7 +462,7 @@ private void starteFormulare(){
 	kf = null;
 	if(iformular >=0){
 		String sdatei = formular.get(iformular);
-		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei);
+		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei,null);
 	}
 	/*
 	Set entries = SystemConfig.hmAdrPDaten.entrySet();

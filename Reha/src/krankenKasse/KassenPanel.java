@@ -728,7 +728,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 						SystemConfig.hmAdrKDaten.put("<KAdr3>", StringTools.EGross(((String)vec.get(2)).trim()));
 						SystemConfig.hmAdrKDaten.put("<KAdr4>", StringTools.EGross(  ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim() ) );
 						*/
-						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
+						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 						//ladeSchreiben(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
 						// TODO Auto-generated method stub
 						return null;

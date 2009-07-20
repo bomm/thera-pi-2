@@ -123,6 +123,7 @@ public class SystemConfig {
 	public static String rezGebVorlageAlt = null;
 	public static boolean rezGebDirektDruck = false;
 	public static String rezGebDrucker = null;
+	public static String rezBarcodeDrucker = null;
 
 	public static String[] rezBarCodName = null;
 	public static Vector<String>rezBarCodForm = null;
@@ -714,7 +715,7 @@ public class SystemConfig {
 		rezGebVorlageNeu = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageNeu");
 		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");
 		rezGebDirektDruck = (inif.getIntegerProperty("DruckOptionen", "DirektDruck") <= 0 ? false : true);
-		
+		rezBarcodeDrucker = inif.getStringProperty("DruckOptionen", "BarCodeDrucker");
 		args = inif.getIntegerProperty("BarcodeForm", "BarcodeFormAnzahl");
 		if(args > 0){
 			rezBarCodName = new String[args];

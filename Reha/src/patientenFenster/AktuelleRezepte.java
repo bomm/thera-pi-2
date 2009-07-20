@@ -1212,7 +1212,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				SystemConfig.hmAdrRDaten.get("<Rwert>"), " ", true, 6));
 		SystemConfig.hmAdrRDaten.put("<Bnr>",SystemConfig.hmAdrRDaten.get("<Rnummer>"));
 		
-		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url);
+		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		
 	}
 

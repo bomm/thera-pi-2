@@ -38,6 +38,7 @@ import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
+import ag.ion.noa.printing.IPrinter;
 
 public class OOTools {
 
@@ -62,7 +63,7 @@ public class OOTools {
 		textCursor.setString(""); 		
 	}
 	
-	public static void starteStandardFormular(String url){
+	public static void starteStandardFormular(String url,String drucker){
 		IDocumentService documentService = null;;
 		System.out.println("Starte Datei -> "+url);
 		try {
@@ -83,6 +84,33 @@ public class OOTools {
 			e.printStackTrace();
 		}
 		ITextDocument textDocument = (ITextDocument)document;
+		/**********************/
+		if(drucker != null){
+			String druckerName = null;
+			try {
+				druckerName = textDocument.getPrintService().getActivePrinter().getName();
+			} catch (NOAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
+			IPrinter iprint = null;
+			if(! druckerName.equals(drucker)){
+				try {
+					iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
+				} catch (NOAException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					textDocument.getPrintService().setActivePrinter(iprint);
+				} catch (NOAException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
 		try {

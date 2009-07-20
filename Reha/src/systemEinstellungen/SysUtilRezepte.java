@@ -43,6 +43,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	JRtaCheckBox[] heilmittel = {null,null,null,null,null};
 	JRtaComboBox voreinstellung = null;
 	JComboBox druckername = null;
+	JComboBox barcodedrucker = null;
 	PrintService[] services = null;	
 	String[] drucker = null;
 	
@@ -113,7 +114,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		//                                      1.             2.     3.     4.     5.     6.    7. 
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 70dlu, 4dlu, 10dlu,0dlu",
        //1.    2. 3.   4.   5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.   20.    21.   22.   23.
-		"p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p,  10dlu ,10dlu, 10dlu, p");
+		"p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p,  10dlu ,  p, 10dlu,  p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -146,6 +147,16 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			druckername.setSelectedItem(SystemConfig.rezGebDrucker.trim());
 		}
 		builder.add(druckername,cc.xyw(3, 19,4));
+		
+		builder.addSeparator("Barcodedrucker (nur sofern Sie Barcode verwenden)", cc.xyw(1, 21, 6));
+		builder.addLabel("Drucker auswählen", cc.xy(1, 23));
+		barcodedrucker = new JComboBox(drucker);
+		if(SystemConfig.rezBarcodeDrucker.trim().equals("")){
+			barcodedrucker.setSelectedIndex(0);
+		}else{
+			barcodedrucker.setSelectedItem(SystemConfig.rezBarcodeDrucker.trim());
+		}		
+		builder.add(barcodedrucker,cc.xyw(3, 23,4));
 		
 		return builder.getPanel();
 	}
@@ -224,8 +235,10 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			
 		}
 		inif.setStringProperty("DruckOptionen", "RezGebDrucker",(String)druckername.getSelectedItem(),null);
+		inif.setStringProperty("DruckOptionen", "BarCodeDrucker",(String)barcodedrucker.getSelectedItem(),null);
 		inif.save();
 		SystemConfig.rezGebDrucker = (String)druckername.getSelectedItem();
+		SystemConfig.rezBarcodeDrucker = (String)barcodedrucker.getSelectedItem();
 		SystemConfig.RezeptInit();
 	}
 

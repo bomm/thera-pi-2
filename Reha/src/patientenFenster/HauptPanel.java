@@ -403,8 +403,8 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", new JXPanel());		
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", new JXPanel());
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[5], new JXPanel());		
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[6]+" - 0", new JXPanel());
+		//PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[5], new JXPanel());		
+		//PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[6]+" - 0", new JXPanel());
 		//PatGrundPanel.thisClass.jtab.setTitleAt(0, "Riesenscheiﬂe");
 		rechts.add(PatGrundPanel.thisClass.jtab,BorderLayout.CENTER);
 		rechts.revalidate();
