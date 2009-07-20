@@ -161,7 +161,7 @@ public JTextArea[] pmemo = {null,null};
 public JTabbedPane memotab = null;
 public int inMemo = -1;
 
-public JButton[] jbut = {null,null,null,null}; 
+public JButton[] jbut = {null,null,null,null,null}; 
 public Vector<String> patDaten = new Vector<String>();
 public String lastseek = "";
 public boolean neuDlgOffen = false;
@@ -815,10 +815,10 @@ class SuchePanel extends JXPanel implements ActionListener{
 		
 		setBorder(BorderFactory.createEmptyBorder());
 		setPreferredSize(new Dimension(0,35));
-		
+		//                                 1        2              3  4  5       6              7         8              9    10  11   12          
 		FormLayout lay = new FormLayout("3dlu,right:max(35dlu;p),3dlu,p,45dlu,fill:0:grow(0.10),0dlu ,right:max(39dlu;p),3dlu, p,45dlu,7dlu,"+
 				//  2-teSpalte (13)  14  15 16     17            18   19      20             21   22  23    24 25  26      27                28
-				"right:max(39dlu;p),3dlu,p,90,fill:0:grow(0.60),0dlu,7dlu,right:max(39dlu;p),3dlu,p,40dlu,2dlu,p,50dlu,fill:0:grow(0.30),0dlu,10dlu",
+				"right:max(39dlu;p),3dlu,p,90,fill:0:grow(0.60),0dlu,7dlu,right:max(39dlu;p),3dlu,p,40dlu,2dlu,p,50dlu,fill:0:grow(0.30),5dlu,10dlu",
 				// 1                 2  3  4   5  6	  7  8   9 10     11
 		"fill:0:grow(0.50),p,fill:0:grow(0.50)");
 
@@ -891,7 +891,13 @@ class SuchePanel extends JXPanel implements ActionListener{
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);
 		jtb.add(jbut[3]);
- 
+
+		jbut[4] = new JButton();
+		jbut[4].setIcon(SystemConfig.hmSysIcons.get("info"));
+		jbut[4].setToolTipText("Zusatzinformationen zum aktuellen Patient (Alt+I)");
+		jbut[4].setActionCommand("zusatzinfo");
+		jbut[4].addActionListener(this);
+		jtb.add(jbut[4]);
 
 		/*
 		JButton jbut = new JButton();
@@ -914,7 +920,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		jbut.setToolTipText("Änderungen speichern");		
 		jtb.add(jbut);
 */
-		add(jtb,cc.xyw(20,2,7));
+		add(jtb,cc.xyw(20,2,8));
 		
 	}
 

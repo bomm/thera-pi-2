@@ -855,6 +855,10 @@ public class SystemConfig {
 		
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "barcode")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		hmSysIcons.put("barcode", new ImageIcon(ico));
+
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("info", new ImageIcon(ico));
+
 		System.out.println("System-Icons wurden geladen");
 
 		
