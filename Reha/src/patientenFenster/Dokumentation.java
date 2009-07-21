@@ -178,6 +178,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				jpan1.add(getToolBereich(),BorderLayout.CENTER);
 				//jpan1.setBackground(Color.RED);
 				vollPanel.add(jpan1,vpcc.xyw(1,5,3));
+				jpan1.validate();
+				
 				//indiSchluessel();
 				setzeRezeptPanelAufNull(false);
 				/*
@@ -214,7 +216,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;
-			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.175f); 
+			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f); 
 			xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
 			
 		}
