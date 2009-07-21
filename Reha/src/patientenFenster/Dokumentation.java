@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -82,6 +83,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public HistorDaten jpan1 = null;
 	public JButton[] dokubut = {null,null,null,null,null};
 	public static boolean inDokuDaten = false;
+	public JComboBox seitengroesse = null;
+	public JComboBox aufloesung = null;
+	public JComboBox farbe = null;
 
 	public Dokumentation(){
 		super();
@@ -388,7 +392,18 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setActionCommand("scannen");
 		dokubut[0].addActionListener(this);		
 		jtb.add(dokubut[0]);
-
+		farbe = new JComboBox(new String[]{"Schwarz/Weiﬂ","Graustufen","Farbe"});
+		farbe.setSelectedIndex(1);
+		jtb.add(farbe);
+		aufloesung = new JComboBox(new String[]{"75dpi","100dpi","150dpi","200dpi","400dpi"});
+		aufloesung.setSelectedIndex(2);
+		jtb.add(aufloesung);
+		seitengroesse = new JComboBox(new String[]{"Din A6","Din A5","Din A4"});
+		seitengroesse.setSelectedIndex(1);
+		jtb.add(seitengroesse);
+		
+		/*
+		jtb.add(aufloesung);
 		dokubut[1] = new JButton();
 		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("historieinfo"));
 		dokubut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
@@ -409,6 +424,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[3].setActionCommand("historprinttage");
 		dokubut[3].addActionListener(this);		
 		jtb.add(dokubut[3]);
+		*/
+
 		for(int i = 0; i < 4;i++){
 			//dokubut[i].setEnabled(false);
 		}
