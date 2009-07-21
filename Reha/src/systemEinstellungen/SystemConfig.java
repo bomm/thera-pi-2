@@ -125,7 +125,8 @@ public class SystemConfig {
 	public static boolean rezGebDirektDruck = false;
 	public static String rezGebDrucker = null;
 	public static String rezBarcodeDrucker = null;
-
+	public static HashMap<String,String> hmDokuScanner = null;
+	
 	public static String[] rezBarCodName = null;
 	public static Vector<String>rezBarCodForm = null;
 	
@@ -446,7 +447,6 @@ public class SystemConfig {
 				colv.add(farbe);
 			}
 			vSysColsObject.add((Vector<Color[]>)colv.clone());
-			
 		}
 
 		JLabel BeispielDummi = new JLabel("so sieht's aus");		
@@ -681,10 +681,20 @@ public class SystemConfig {
 			hmKVKDaten.put("Fehlertext", "");
 		}
 		if(inif.getIntegerProperty("BarcodeScanner", "BarcodeScannerAktivieren") > 0){
-			sDokuScanner = inif.getStringProperty("BarcodeScanner", "BarcodeScannerName");
+			sBarcodeScanner = inif.getStringProperty("BarcodeScanner", "BarcodeScannerName");
+		}else{
+			sBarcodeScanner = "";
 		}
+		hmDokuScanner = new HashMap<String,String>();
 		if(inif.getIntegerProperty("DokumentenScanner", "DokumentenScannerAktivieren") > 0){
 			sDokuScanner = inif.getStringProperty("DokumentenScanner", "DokumentenScannerName");
+			hmDokuScanner.put("aktivieren", "1");
+			hmDokuScanner.put("aufloesung", inif.getStringProperty("DokumentenScanner", "DokumentenScannerAufloesung"));
+			hmDokuScanner.put("farben",inif.getStringProperty("DokumentenScanner", "DokumentenScannerFarben") );
+			hmDokuScanner.put("seiten", inif.getStringProperty("DokumentenScanner", "DokumentenScannerSeiten"));
+			hmDokuScanner.put("dialog", inif.getStringProperty("DokumentenScanner", "DokumentenScannerDialog"));
+		}else{
+			sDokuScanner = "";
 		}
 	}
 	public static void ArztGruppenInit(){

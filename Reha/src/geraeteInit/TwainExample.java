@@ -29,6 +29,7 @@ import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
 import uk.co.mmscomputing.device.scanner.ScannerListener;
+import uk.co.mmscomputing.device.twain.TwainConstants;
 import uk.co.mmscomputing.device.twain.TwainIOMetadata;
 import uk.co.mmscomputing.device.twain.TwainImageInfo;
 import uk.co.mmscomputing.device.twain.TwainImageLayout;
@@ -43,8 +44,6 @@ public class TwainExample
     imagePanel.setStyle( Style.SCALED_KEEP_ASPECT_RATIO );
     //final Scanner scanner = Scanner.getDevice();
     final Scanner scanner = Scanner.getDevice();
-    
-    
    
     /*
     try {
@@ -98,15 +97,15 @@ public class TwainExample
             			try{
                 			source.setCapability(TwainSource.ICAP_XRESOLUTION, 200.0);
                 			source.setCapability(TwainSource.ICAP_YRESOLUTION, 200.0);
-
-            	            TwainImageInfo imageInfo=new TwainImageInfo(source);            
-            	            imageInfo.get();
+                			source.setRegionOfInterest(0.0, 0.0, 215.0, 297.0);
+            	            TwainImageInfo imageInfo=new TwainImageInfo(source); 
+            	            //imageInfo.get();
             	            System.out.println("******ImageInfo******\n"+imageInfo.toString());
             	          }catch(Exception e){
             	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
             	          }
             	          try{
-            	            TwainImageLayout imageLayout=new TwainImageLayout(source);      
+            	            TwainImageLayout imageLayout=new TwainImageLayout(source);
             	            imageLayout.get();
             	            System.out.println("******ImageLayout******\n"+imageLayout.toString());            	            
             	          }catch(Exception e){
@@ -115,8 +114,9 @@ public class TwainExample
             		}
             	      
             	      try{
-            	        device.setShowUserInterface(false);
-            	        device.setShowProgressBar(true);
+            	    	  //device.setRegionOfInterest(0.0, 0.0, 215.0, 297.0);
+            	    	  device.setShowUserInterface(false);
+            	    	  device.setShowProgressBar(true);
             	        //device.setResolution(200);
             	        //device.setResolution(100);
             	      }catch(Exception e){
@@ -153,14 +153,22 @@ public class TwainExample
 	  try {
 			byte[] bild = bufferedImageToByteArray(img);
 			Image jpg1 = Image.getInstance(bild);  
-			float imgHeight = jpg1.getPlainHeight();  
-			float imgWidth = jpg1.getPlainWidth();  
+			float imgHeight = jpg1.getPlainHeight();
+			imgHeight = jpg1.getScaledHeight();
+			float imgWidth = jpg1.getPlainWidth();
+			imgWidth = jpg1.getScaledWidth();
+			System.out.println("Höhe   = "+imgHeight);
+			System.out.println("Breite = "+imgWidth);
 			Rectangle pageSize = new Rectangle(imgWidth, imgHeight); 
-			Document document = new Document(pageSize);          
+			//Rectangle pageSize = new Rectangle(2150.0f, 2970.0f);
+			Document document = new Document(pageSize);
+			document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
+			//Document document = new Document(pageSize);          
 
 			PdfWriter.getInstance(document, new FileOutputStream("C:/rtadoku.pdf"));  
       
-			document.open();  
+			document.open(); 
+
 			document.add(jpg1);  
 			document.close();  
 		} catch (ImageFormatException e) {

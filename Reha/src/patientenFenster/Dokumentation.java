@@ -2,6 +2,7 @@ package patientenFenster;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -80,7 +81,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public String[] indphysio = null;
 	public String[] indergo = null;
 	public String[] indlogo = null;
-	public HistorDaten jpan1 = null;
+	public JXPanel jpan1 = null;
 	public JButton[] dokubut = {null,null,null,null,null};
 	public static boolean inDokuDaten = false;
 	public JComboBox seitengroesse = null;
@@ -130,40 +131,44 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				//HistorPanel vollPanel = new HistorPanel();
 				vollPanel = new DokuPanel();
 
-				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu",
+						"13dlu,75dlu,5dlu,fill:0:grow(1.00),0dlu");
 				CellConstraints vpcc = new CellConstraints();
 				vollPanel.setLayout(vplay);
 				vollPanel.setOpaque(false);
 				vollPanel.setBorder(null);
 				
 				Font font = new Font("Tahome",Font.PLAIN,11);
-				anzahlRezepte = new JLabel("Anzahl Rezepte in Historie: 0");
+				anzahlRezepte = new JLabel("Anzahl gespeicherter Dokumentationen: 0");
 				anzahlRezepte.setFont(font);
 				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
 				
-				vollPanel.add(getTabelle(),vpcc.xywh(1,2,1,1));
+				vollPanel.add(getTabelle(),vpcc.xywh(1,2,3,1));
 
-				anzahlTermine = new JLabel("Anzahl Termine: 0");
-				anzahlTermine.setFont(font);
-				anzahlTermine.setOpaque(false);
-				vollPanel.add(anzahlTermine,vpcc.xywh(3,1,1,1));
 				
+				
+				/*
 				JXPanel dummy = new JXPanel();
 				dummy.setOpaque(false);
-				//dummy.setBackground(Color.BLACK);
+				dummy.setBackground(Color.BLACK);
 				FormLayout dumlay = new FormLayout("fill:0:grow(0.25),p,fill:0:grow(0.25),p,fill:0:grow(0.25),p,fill:0:grow(0.25)",
 													"fill:0:grow(1.00),2dlu,p,2dlu");
 				CellConstraints dumcc = new CellConstraints();
 				dummy.setLayout(dumlay);
 				vollPanel.add(dummy,vpcc.xywh(3,2,1,3));
-				
-				
 				dummy.add(getTermine(),dumcc.xyw(1, 1, 7));
 				dummy.add(getTerminToolbar(),dumcc.xyw(1, 3, 7));
+				*/
+				
+				
 
-				jpan1 = new HistorDaten();
-				vollPanel.add(jpan1,vpcc.xyw(1,4,1));
+				jpan1 = new JXPanel();
+				jpan1.setOpaque(false);
+				jpan1.add(getToolBereich());
+				//jpan1.setBackground(Color.RED);
+				vollPanel.add(jpan1,vpcc.xyw(1,4,3));
 				//indiSchluessel();
+				setzeRezeptPanelAufNull(false);
 			
 				return null;
 			}
@@ -171,6 +176,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}.execute();
 		
 
+	}
+	public JScrollPane getToolBereich(){
+		return JCompTools.getTransparentScrollPane(null);
 	}
 	class DokuPanel extends JXPanel{
 		ImageIcon hgicon;
@@ -180,7 +188,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		DokuPanel(){
 			super();
 			setOpaque(false);
-			hgicon = SystemConfig.hmSysIcons.get("historie"); 
+			hgicon = SystemConfig.hmSysIcons.get("scanner"); 
 			//hgicon = new ImageIcon(Reha.proghome+"icons/ChipKarte.png");
 			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
@@ -241,61 +249,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		return jtb;		
 		
 	}	
-	public JScrollPane getTermine(){
-		
-		dtermm = new MyDokuTermTableModel();
-		dtermm.addTableModelListener(this);
-		String[] column = 	{"Beh.Datum","Behandler","Text","Beh.Art",""};
-		dtermm.setColumnIdentifiers(column);
-		tabaktterm = new JXTable(dtermm);
-		tabaktterm.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
-		tabaktterm.setDoubleBuffered(true);
-		tabaktterm.addPropertyChangeListener(this);
-		tabaktterm.setEditable(false);
-		tabaktterm.setSortable(false);
-		SortOrder setSort = SortOrder.ASCENDING;
-		tabaktterm.setSortOrder(4,(SortOrder) setSort);
-		tabaktterm.setSelectionMode(0);
-		tabaktterm.setHorizontalScrollEnabled(true);
-		tbl = new DateTableCellEditor();
-		tabaktterm.getColumnModel().getColumn(0).setCellEditor(tbl);
-		tabaktterm.getColumn(0).setMinWidth(60);
-		tabaktterm.getColumn(1).setMinWidth(60);
-		tabaktterm.getColumn(2).setMinWidth(40);
-		tabaktterm.getColumn(3).setMinWidth(40);
-		tabaktterm.getColumn(4).setMinWidth(0);
-		tabaktterm.getColumn(4).setMaxWidth(0);
-		tabaktterm.setOpaque(true);
-		tabaktterm.addKeyListener(new KeyAdapter(){
-			public void keyPressed(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				//System.out.println("keypressed in Editor");
-				if(arg0.getKeyCode()==10){
-					//arg0.consume();
-					//tbl.stopCellEditing();
-				}
-				if(arg0.getKeyCode()==27){
-					//System.out.println("cancel in tabelle");
-					//tbl.cancelCellEditing();
-				}
-			}
-			
-		});
-		tabaktterm.validate();
-		tabaktterm.setName("AktTerm");
-		//tabaktterm.setPreferredSize(new Dimension(300,300));
-		//tabaktterm.addPropertyChangeListener(this);
-		JScrollPane termscr = JCompTools.getTransparentScrollPane(tabaktterm);
-		termscr.getVerticalScrollBar().setUnitIncrement(15);
-		return termscr;
-	}
 
 	public JXPanel getTabelle(){
 		JXPanel dummypan = new JXPanel(new BorderLayout());
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyDoku2TableModel();
-		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","sp‰t.Beginn","Pat-Nr.",""};
+		String[] column = 	{"Doku-Id","Titel","erfaﬂt am","von","","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabhistorie = new JXTable(dtblm);
 		tabhistorie.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
@@ -305,8 +265,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		tabhistorie.getColumn(0).setMaxWidth(75);
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 		tabhistorie.getColumn(1).setCellRenderer(renderer);
-		tabhistorie.getColumn(1).setMaxWidth(45);
-		tabhistorie.getColumn(2).setMaxWidth(75);
+		tabhistorie.getColumn(1).setMaxWidth(40);
+		tabhistorie.getColumn(2).setMinWidth(275);
 		tabhistorie.getColumn(3).setMaxWidth(75);
 		//tabaktrez.getColumn(4).setMaxWidth(70);
 		tabhistorie.getColumn(5).setMinWidth(0);
@@ -390,7 +350,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setIcon(SystemConfig.hmSysIcons.get("scanner"));
 		dokubut[0].setToolTipText("Papierbericht einscannen");
 		dokubut[0].setActionCommand("scannen");
-		dokubut[0].addActionListener(this);		
+		dokubut[0].addActionListener(this);
+		jtb.add(dokubut[0]);
+		/*
 		jtb.add(dokubut[0]);
 		farbe = new JComboBox(new String[]{"Schwarz/Weiﬂ","Graustufen","Farbe"});
 		farbe.setSelectedIndex(1);
@@ -401,7 +363,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		seitengroesse = new JComboBox(new String[]{"Din A6","Din A5","Din A4"});
 		seitengroesse.setSelectedIndex(1);
 		jtb.add(seitengroesse);
-		
+		*/
 		/*
 		jtb.add(aufloesung);
 		dokubut[1] = new JButton();
@@ -650,7 +612,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				public  void run(){
 					String reznr = (String)tabhistorie.getValueAt(xrow,0);
 					String id = (String)tabhistorie.getValueAt(xrow,6);
-					jpan1.setRezeptDaten(reznr,id);
+					//jpan1.setRezeptDaten(reznr,id);
 					System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
 			});	
@@ -713,14 +675,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							
 						}
 						tabhistorie.setRowSelectionInterval(row, row);
-						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
+						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
 						tabhistorie.scrollRowToVisible(row);
 						holeEinzelTermine(row,null);
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
 						tabhistorie.setRowSelectionInterval(0, 0);
-						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
+						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
 					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
@@ -780,7 +742,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 								inDokuDaten = true;
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                    		holeEinzelTermine(ix,null);
-	    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
+	    						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
 	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	    						inDokuDaten = false;
