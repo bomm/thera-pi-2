@@ -25,9 +25,14 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import sun.awt.image.ImageFormatException;
 import uk.co.mmscomputing.device.scanner.Scanner;
+import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
 import uk.co.mmscomputing.device.scanner.ScannerListener;
+import uk.co.mmscomputing.device.twain.TwainIOMetadata;
+import uk.co.mmscomputing.device.twain.TwainImageInfo;
+import uk.co.mmscomputing.device.twain.TwainImageLayout;
+import uk.co.mmscomputing.device.twain.TwainSource;
 public class TwainExample
 {
   @SuppressWarnings("serial")
@@ -39,9 +44,32 @@ public class TwainExample
     //final Scanner scanner = Scanner.getDevice();
     final Scanner scanner = Scanner.getDevice();
     
+    
+   
+    /*
+    try {
+		device.setShowUserInterface(false);
+	    device.setShowProgressBar(true);
+	} catch (ScannerIOException e3) {
+		// TODO Auto-generated catch block
+		e3.printStackTrace();
+	}
+	*/
+    
+    try {
+		String[] names = scanner.getDeviceNames();
+		for(int i = 0; i < names.length;i++){
+			System.out.println("Device["+i+"] = "+names[i]);
+		}
+	} catch (ScannerIOException e2) {
+		// TODO Auto-generated catch block
+		e2.printStackTrace();
+	}
+    
     try {
     	scanner.select("CanoScan 5600F");
 		System.out.println("*********************"+scanner.getSelectedDeviceName());
+		
 	} catch (ScannerIOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -60,16 +88,61 @@ public class TwainExample
     {
         public void update( ScannerIOMetadata.Type type, ScannerIOMetadata metadata )
         {
-      	  if ( ScannerIOMetadata.STATECHANGE.equals(type)){
-      		System.out.println(metadata.getStateStr());    		
-      	  }
-            if ( ScannerIOMetadata.ACQUIRED.equals( type ) ){
+        	
+        	  if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
+            		System.out.println("in NEGOTIATE"+metadata.getStateStr());    		
+            	      ScannerDevice device=metadata.getDevice();
+              		if(metadata instanceof TwainIOMetadata){
+            			System.out.println("TwainIOMetadata");
+            			TwainSource source = ((TwainIOMetadata)metadata).getSource();
+            			try{
+                			source.setCapability(TwainSource.ICAP_XRESOLUTION, 200.0);
+                			source.setCapability(TwainSource.ICAP_YRESOLUTION, 200.0);
+
+            	            TwainImageInfo imageInfo=new TwainImageInfo(source);            
+            	            imageInfo.get();
+            	            System.out.println("******ImageInfo******\n"+imageInfo.toString());
+            	          }catch(Exception e){
+            	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
+            	          }
+            	          try{
+            	            TwainImageLayout imageLayout=new TwainImageLayout(source);      
+            	            imageLayout.get();
+            	            System.out.println("******ImageLayout******\n"+imageLayout.toString());            	            
+            	          }catch(Exception e){
+            	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image layout.\n\t"+e);
+            	          }
+            		}
+            	      
+            	      try{
+            	        device.setShowUserInterface(false);
+            	        device.setShowProgressBar(true);
+            	        //device.setResolution(200);
+            	        //device.setResolution(100);
+            	      }catch(Exception e){
+            	        e.printStackTrace();
+            	      }
+            	      
+
+           	  }else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
+            		System.out.println(metadata.getStateStr());   
+            		if(metadata.isFinished()){
+            	        System.out.println("Scanvorgang wurde beendet");
+            	      }
+            		
+            		   
+            	        
+           	  }else if ( ScannerIOMetadata.ACQUIRED.equals( type ) ){
                	System.out.println("Metadata-Info"+metadata.getInfo());
                   BufferedImage img = metadata.getImage();
                 //  BufferedImage img2 = img;
                   imagePanel.setImage( img.getScaledInstance(100, 150,4)  );
                   doPDF(img);
-            }
+           	  }else if(type.equals(ScannerIOMetadata.EXCEPTION)){
+           	      System.out.println("9\b"+metadata.getException().getMessage());
+           	      metadata.getException().printStackTrace();
+           	  }
+
         }
     } );
     

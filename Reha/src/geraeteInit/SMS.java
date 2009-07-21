@@ -14,8 +14,8 @@ class SMS
 
 		String phone	="00491792925261"; 
 		String message	="SMS-Test"; 
-		String ppgHost	="http://t-online.t-online.de/t-on/dien/sms/star/CP/start.html"; 
-		String username ="1970223872";
+		String ppgHost	="http://datasync.t-online.de/syncml.osp"; 
+		String username ="Steinhilber.J@t-online.de	";
 		String password ="81867590";
 		
 		try
