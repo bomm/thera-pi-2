@@ -329,6 +329,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		oo2.setClickedColor(new Color(0, 0x33, 0xFF));		
 		oo2.addActionListener(this);
 		tp3.add(oo2);
+		tp3.setCollapsed(true);
 		return tp3;
 	}
 	

@@ -45,15 +45,6 @@ public class TwainExample
     //final Scanner scanner = Scanner.getDevice();
     final Scanner scanner = Scanner.getDevice();
    
-    /*
-    try {
-		device.setShowUserInterface(false);
-	    device.setShowProgressBar(true);
-	} catch (ScannerIOException e3) {
-		// TODO Auto-generated catch block
-		e3.printStackTrace();
-	}
-	*/
     
     try {
 		String[] names = scanner.getDeviceNames();

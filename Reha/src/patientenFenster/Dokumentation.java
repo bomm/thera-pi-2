@@ -1,5 +1,7 @@
 package patientenFenster;
 
+import hauptFenster.Reha;
+
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,6 +24,8 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -43,6 +47,7 @@ import javax.swing.table.TableCellRenderer;
 
 import jxTableTools.DateTableCellEditor;
 
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -58,6 +63,10 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
+import uk.co.mmscomputing.device.scanner.Scanner;
+import uk.co.mmscomputing.device.scanner.ScannerIOException;
+import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
+import uk.co.mmscomputing.device.scanner.ScannerListener;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -66,7 +75,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public static Dokumentation dokumentation = null;
 	JXPanel leerPanel = null;
 	//JXPanel vollPanel = null;
-	DokuPanel vollPanel = null;
+	JXPanel vollPanel = null;
 	JXPanel wechselPanel = null;
 	public JLabel anzahlTermine= null;
 	public JLabel anzahlRezepte= null;
@@ -129,10 +138,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				// TODO Auto-generated method stub
 				//vollPanel = new JXPanel();
 				//HistorPanel vollPanel = new HistorPanel();
-				vollPanel = new DokuPanel();
+				vollPanel = new JXPanel();
 
 				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu",
-						"13dlu,75dlu,5dlu,fill:0:grow(1.00),0dlu");
+						"p,2dlu,125dlu,5dlu,fill:0:grow(1.00),0dlu");
 				CellConstraints vpcc = new CellConstraints();
 				vollPanel.setLayout(vplay);
 				vollPanel.setOpaque(false);
@@ -143,7 +152,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				anzahlRezepte.setFont(font);
 				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
 				
-				vollPanel.add(getTabelle(),vpcc.xywh(1,2,3,1));
+				vollPanel.add(getTabelle(),vpcc.xywh(1,3,3,1));
 
 				
 				
@@ -162,18 +171,30 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				
 				
 
-				jpan1 = new JXPanel();
+				//jpan1 = new JXPanel(new BorderLayout());
+				jpan1 = new DokuPanel();
+				jpan1.setLayout(new BorderLayout());
 				jpan1.setOpaque(false);
-				jpan1.add(getToolBereich());
+				jpan1.add(getToolBereich(),BorderLayout.CENTER);
 				//jpan1.setBackground(Color.RED);
-				vollPanel.add(jpan1,vpcc.xyw(1,4,3));
+				vollPanel.add(jpan1,vpcc.xyw(1,5,3));
 				//indiSchluessel();
 				setzeRezeptPanelAufNull(false);
-			
+				/*
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+					*/
+						scanStarten();
+					/*	
+						return null;
+					}
+				}.execute();
+				*/
 				return null;
 			}
-			
 		}.execute();
+		
 		
 
 	}
@@ -188,12 +209,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		DokuPanel(){
 			super();
 			setOpaque(false);
-			hgicon = SystemConfig.hmSysIcons.get("scanner"); 
+			hgicon = new ImageIcon(Reha.proghome+"icons/xsane.png"); 
 			//hgicon = new ImageIcon(Reha.proghome+"icons/ChipKarte.png");
 			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;
-			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.075f); 
+			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.175f); 
 			xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
 			
 		}
@@ -255,20 +276,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyDoku2TableModel();
-		String[] column = 	{"Doku-Id","Titel","erfaﬂt am","von","","",""};
+		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaﬂt am","von","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabhistorie = new JXTable(dtblm);
 		tabhistorie.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
 		tabhistorie.setDoubleBuffered(true);
 		tabhistorie.setEditable(false);
 		tabhistorie.setSortable(false);
-		tabhistorie.getColumn(0).setMaxWidth(75);
+		tabhistorie.getColumn(0).setMaxWidth(50);
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 		tabhistorie.getColumn(1).setCellRenderer(renderer);
-		tabhistorie.getColumn(1).setMaxWidth(40);
+		tabhistorie.getColumn(1).setMaxWidth(50);
 		tabhistorie.getColumn(2).setMinWidth(275);
-		tabhistorie.getColumn(3).setMaxWidth(75);
-		//tabaktrez.getColumn(4).setMaxWidth(70);
+		tabhistorie.getColumn(3).setMaxWidth(50);
+		//tabhistorie.getColumn(4).setMinWidth(0);
+		//tabhistorie.getColumn(4).setMaxWidth(0);		
 		tabhistorie.getColumn(5).setMinWidth(0);
 		tabhistorie.getColumn(5).setMaxWidth(0);		
 		tabhistorie.getColumn(6).setMinWidth(0);
@@ -308,8 +330,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		});
 		//tabaktrez.getSelectionModel().addListSelectionListener(this);
 		//dtblm.addTableModelListener(this);
-		dummypan.setPreferredSize(new Dimension(0,100));
-		JScrollPane aktrezscr = JCompTools.getTransparentScrollPane((Component)tabhistorie); 
+		//dummypan.setPreferredSize(new Dimension(0,100));
+		JScrollPane aktrezscr = JCompTools.getTransparentScrollPane((Component)tabhistorie);
+		aktrezscr.validate(); 
 		aktrezscr.getVerticalScrollBar().setUnitIncrement(15);
 		dummypan.add(aktrezscr,BorderLayout.CENTER);
 		dummypan.validate();
@@ -363,16 +386,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		seitengroesse = new JComboBox(new String[]{"Din A6","Din A5","Din A4"});
 		seitengroesse.setSelectedIndex(1);
 		jtb.add(seitengroesse);
-		*/
-		/*
 		jtb.add(aufloesung);
+		*/
+		
+		
 		dokubut[1] = new JButton();
-		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("historieinfo"));
-		dokubut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
-		dokubut[1].setActionCommand("historinfo");
+		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		dokubut[1].setToolTipText("Scannereinstellungen ‰ndern");
+		dokubut[1].setActionCommand("scanedit");
 		dokubut[1].addActionListener(this);		
 		jtb.add(dokubut[1]);
-
+		/*
 		dokubut[2] = new JButton();
 		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
 		dokubut[2].setToolTipText("Gesamtumsatz des Patienten (aller in der Historie befindlichen Rezepte)");
@@ -619,6 +643,37 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		}
 	}	
+	public void scanStarten(){
+		if(SystemConfig.sDokuScanner.equals("")){
+			System.out.println("Scanner = null");
+			return;
+		}
+	    final Scanner scanner = Scanner.getDevice();
+	    try {
+			String[] names = scanner.getDeviceNames();
+			for(int i = 0; i < names.length;i++){
+				System.out.println("Device["+i+"] = "+names[i]);
+			}
+		} catch (ScannerIOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+	    
+	    try {
+	    	scanner.select(SystemConfig.sDokuScanner);
+		} catch (ScannerIOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    scanner.addListener( new ScannerListener()
+	    {
+	        public void update( ScannerIOMetadata.Type type, ScannerIOMetadata metadata )
+	        {
+	        	
+	        }
+	    });    
+		
+	}
 	/*************************************************/
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;

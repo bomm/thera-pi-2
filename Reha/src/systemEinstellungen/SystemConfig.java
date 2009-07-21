@@ -886,6 +886,9 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sms")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		hmSysIcons.put("sms", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "tools")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
+		hmSysIcons.put("tools", new ImageIcon(ico));
+
 		System.out.println("System-Icons wurden geladen");
 
 		
