@@ -154,6 +154,7 @@ public JComponent lastFocus = null;
 public AktuelleRezepte aktRezept = null;
 Historie historie = null;
 TherapieBerichte berichte = null;
+Dokumentation dokumentation = null;
 /********************/
 public JButton[] memobut = {null,null,null,null,null,null};
 
@@ -161,7 +162,7 @@ public JTextArea[] pmemo = {null,null};
 public JTabbedPane memotab = null;
 public int inMemo = -1;
 
-public JButton[] jbut = {null,null,null,null,null}; 
+public JButton[] jbut = {null,null,null,null,null,null,null}; 
 public Vector<String> patDaten = new Vector<String>();
 public String lastseek = "";
 public boolean neuDlgOffen = false;
@@ -265,6 +266,23 @@ public PatGrundPanel(JPatientInternal jry){
 			if(arg0.getSource() instanceof JLabel){
 				if(((JComponent)arg0.getSource()).getName().equals("Suchen")){
 					PatGrundPanel.thisClass.starteSuche();
+					return;
+				}
+			}
+			if(arg0.getButton()==3){
+				if(arg0.getSource() instanceof JPatTextField){
+					if(((JComponent)arg0.getSource()).getName()== null){
+						return;
+					}
+					if( ((JComponent)arg0.getSource()).getName().equals("EMAILA") ){
+						System.out.println("hier folgt das PopUpMenu für email");
+						return;
+					}
+					if( ((JComponent)arg0.getSource()).getName().equals("TELEFONM") ){
+						System.out.println("hier folgt das PopUpMenu für sms");
+						return;
+					}
+
 				}
 			}
 		}
@@ -862,30 +880,29 @@ class SuchePanel extends JXPanel implements ActionListener{
 		};
 		*/
 		jbut[0] = new JButton();
-		//jbut[0].setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
 		jbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
 		jbut[0].setToolTipText("neuen Patient anlegen (Alt+N)");
 		jbut[0].setActionCommand("neu");
 		jbut[0].addActionListener(this);
 		jtb.add(jbut[0]);
+
 		jbut[1] = new JButton();
-		//jbut[1].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
 		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
 		jbut[1].setToolTipText("aktuellen Patient ändern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
+
 		jbut[2] = new JButton();
-		//jbut[2].setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
 		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
 		jbut[2].setToolTipText("Patient löschen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
 		jtb.add(jbut[2]);
-		jtb.addSeparator(new Dimension(40,0));
+
+		jtb.addSeparator(new Dimension(15,25));
+
 		jbut[3] = new JButton();
-		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/mail_write_22.png"));
-		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/drucker22.png"));
 		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
 		jbut[3].setToolTipText("Brief/Formular für Patient erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
@@ -893,33 +910,26 @@ class SuchePanel extends JXPanel implements ActionListener{
 		jtb.add(jbut[3]);
 
 		jbut[4] = new JButton();
-		jbut[4].setIcon(SystemConfig.hmSysIcons.get("info"));
-		jbut[4].setToolTipText("Zusatzinformationen zum aktuellen Patient (Alt+I)");
-		jbut[4].setActionCommand("zusatzinfo");
+		jbut[4].setIcon(SystemConfig.hmSysIcons.get("email"));
+		jbut[4].setToolTipText("(e)Mail für Patient erstellen (Alt+M)");
+		jbut[4].setActionCommand("email");
 		jbut[4].addActionListener(this);
 		jtb.add(jbut[4]);
 
-		/*
-		JButton jbut = new JButton();
-		jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
-		jbut.setToolTipText("neuen Patienten anlegen");
-		jbut.setActionCommand("patneuanlage");
-		jbut.addActionListener(lst);
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
-		jbut.setToolTipText("aktuellen Patienten löschen");
-		jtb.add(jbut);
-		jtb.addSeparator(new Dimension(20,0));
-		jbut = new JButton();
-		jbut.setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
-		jbut.setToolTipText("aktuellen Patienten ändern");		
-		jtb.add(jbut);
-		jbut = new JButton();
-		jbut.setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
-		jbut.setToolTipText("Änderungen speichern");		
-		jtb.add(jbut);
-*/
+		jbut[5] = new JButton();
+		jbut[5].setIcon(SystemConfig.hmSysIcons.get("sms"));
+		jbut[5].setToolTipText("SMS für Patient erstellen (Alt+S)");
+		jbut[5].setActionCommand("sms");
+		jbut[5].addActionListener(this);
+		jtb.add(jbut[5]);
+		
+		jbut[6] = new JButton();
+		jbut[6].setIcon(SystemConfig.hmSysIcons.get("info"));
+		jbut[6].setToolTipText("Zusatzinformationen zum aktuellen Patient (Alt+I)");
+		jbut[6].setActionCommand("zusatzinfo");
+		jbut[6].addActionListener(this);
+		jtb.add(jbut[6]);
+
 		add(jtb,cc.xyw(20,2,8));
 		
 	}
@@ -941,6 +951,15 @@ class SuchePanel extends JXPanel implements ActionListener{
 			starteFormulare();
 			setzeFocus();
 		}
+		if(sc.equals("email")){
+			starteFormulare();
+			setzeFocus();
+		}
+		if(sc.equals("sms")){
+			//new SMS();
+			setzeFocus();
+		}
+
 		System.out.println("ActionCommand = "+sc);
 	}
 }
@@ -1401,11 +1420,13 @@ class StammDatenPanel extends JXPanel{
 		pbui.add(new JLabel("Mobil"),cc.xy(13,7));
 		PatGrundPanel.thisClass.ptfield[8] = new JPatTextField("XGROSS",false);
 		PatGrundPanel.thisClass.ptfield[8].setName("TELEFONM");
+		PatGrundPanel.thisClass.ptfield[8].addMouseListener(PatGrundPanel.thisClass.ml);		
 		pbui.add(PatGrundPanel.thisClass.ptfield[8],cc.xyw(15,7,3));		
 
 		pbui.add(new JLabel("Email"),cc.xy(13,9));
 		PatGrundPanel.thisClass.ptfield[9] = new JPatTextField("KLEIN",false);
 		PatGrundPanel.thisClass.ptfield[9].setName("EMAILA");
+		PatGrundPanel.thisClass.ptfield[9].addMouseListener(PatGrundPanel.thisClass.ml);
 		pbui.add(PatGrundPanel.thisClass.ptfield[9],cc.xyw(15,9,3));		
 
 /**********3-te Spalte**************/
@@ -1540,7 +1561,7 @@ class JPatTextField extends JRtaTextField{
 		setBorder(null);
 		addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
-				if(arg0.getClickCount()==2){
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					final String xname = getName();
 					new SwingWorker<Void,Void>(){
 						@Override

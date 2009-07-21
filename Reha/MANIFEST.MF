@@ -32,5 +32,5 @@ Class-Path: RTAJars/adsjdbc.jar
  RTAJars/javaxpcom.jar 
  RTAJars/mail.jar 
  RTAJars/smtp.jar 
- 
-
+ RTAJars/iText-2.1.6.jar 
+ RTAJars/uk.co.mmscomputing.device.twain.jar 

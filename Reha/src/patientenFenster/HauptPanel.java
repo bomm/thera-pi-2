@@ -354,7 +354,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		rechts.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
 		PatGrundPanel.thisClass.jtab = new JTabbedPane();
-		PatGrundPanel.thisClass.jtab.setBorder(null);
+		//PatGrundPanel.thisClass.jtab.setBorder(null);
 		PatGrundPanel.thisClass.jtab.addFocusListener(PatGrundPanel.thisClass.getFocusListener());
 		PatGrundPanel.thisClass.jtab.setUI(new WindowsTabbedPaneUI());
 		JXPanel tabpan = new JXPanel(new BorderLayout());
@@ -386,26 +386,21 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		*/
 	     
 	    PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
-	     
 	    tabpan.add(PatGrundPanel.thisClass.aktRezept);
-	    
 	    PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[0]+" - 0", tabpan);
-	    //PatGrundPanel.thisClass.jtab.addTab("akt.Rezepte", tabpan);
 
-	    //System.out.println("Aktuelle Rezepte!   "  );
 		PatGrundPanel.thisClass.historie = new Historie();
-		//new ImageIcon(SystemConfig.hmSysIcons.get("historie").getImage().getScaledInstance(22, 22, 0))
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[1]+" - 0", PatGrundPanel.thisClass.historie);
-		//jtab.addTab("Historie", PatGrundPanel.thisClass.historie);		
+	
 
 		PatGrundPanel.thisClass.berichte = new TherapieBerichte();
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[2]+" - 0", PatGrundPanel.thisClass.berichte);
 		
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", new JXPanel());		
+		PatGrundPanel.thisClass.dokumentation = new Dokumentation();
+		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", PatGrundPanel.thisClass.dokumentation);
+		
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", new JXPanel());
-		//PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[5], new JXPanel());		
-		//PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[6]+" - 0", new JXPanel());
-		//PatGrundPanel.thisClass.jtab.setTitleAt(0, "Riesenscheiﬂe");
+
 		rechts.add(PatGrundPanel.thisClass.jtab,BorderLayout.CENTER);
 		rechts.revalidate();
 		return rechts;

@@ -114,7 +114,8 @@ public class SystemConfig {
 	
 	public static HashMap<String,String> hmKVKDaten = null;
 	public static String sReaderName = null;
-	
+	public static String sDokuScanner = null;
+	public static String sBarcodeScanner = null;
 	public static String[] arztGruppen = null;
 	public static String[] rezeptKlassen = null;
 	public static Vector<Vector<String>> rezeptKlassenAktiv = null;
@@ -679,6 +680,12 @@ public class SystemConfig {
 			hmKVKDaten.put("Fehlercode", "");
 			hmKVKDaten.put("Fehlertext", "");
 		}
+		if(inif.getIntegerProperty("BarcodeScanner", "BarcodeScannerAktivieren") > 0){
+			sDokuScanner = inif.getStringProperty("BarcodeScanner", "BarcodeScannerName");
+		}
+		if(inif.getIntegerProperty("DokumentenScanner", "DokumentenScannerAktivieren") > 0){
+			sDokuScanner = inif.getStringProperty("DokumentenScanner", "DokumentenScannerName");
+		}
 	}
 	public static void ArztGruppenInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
@@ -859,6 +866,15 @@ public class SystemConfig {
 
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		hmSysIcons.put("info", new ImageIcon(ico));
+
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "scanner")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("scanner", new ImageIcon(ico));
+		
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "email")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("email", new ImageIcon(ico));
+		
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sms")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("sms", new ImageIcon(ico));
 
 		System.out.println("System-Icons wurden geladen");
 
