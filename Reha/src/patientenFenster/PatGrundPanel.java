@@ -952,7 +952,6 @@ class SuchePanel extends JXPanel implements ActionListener{
 			setzeFocus();
 		}
 		if(sc.equals("email")){
-			starteFormulare();
 			setzeFocus();
 		}
 		if(sc.equals("sms")){

@@ -496,36 +496,18 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	 * 
 	 * 
 	 */
-	public void doRechneHistorie(){
-		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
-		int rows = tabhistorie.getRowCount();
-		if(rows <= 0){
-			JOptionPane.showMessageDialog(null, "Für diesen Patient wurde noch keine Verordnung abgerechnet!");
-			return;
-		}
-		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
-		Double gesamtumsatz = new Double(0.00); 
+	public void doRechneAlles(){
+		double gesamtHistor = new Double(0.00);
+		double gesamtAkt = new Double(0.00);
+		gesamtHistor = doRechneHistorie("lza");
+		gesamtAkt = doRechneHistorie("verordn");
+		double gesamtumsatz = gesamtHistor+gesamtAkt;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
-		for(int i = 0; i < rows;i++){
-			String suchrez = (String)tabhistorie.getValueAt(i,6);
-			Vector vec = SqlInfo.holeSatz("lza", felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
-			if(vec.size() > 0){
-				BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
-				for(int anz = 0;anz <4;anz++){
-					preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
-//					System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
-//					System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
-					gesamtumsatz = gesamtumsatz+preispos.doubleValue();
-				}
-			}
-		}
-		/*
-		String ums = "Gesamtumsatz von Patient "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
-		JOptionPane.showMessageDialog(null,ums);
-		*/
 		String msg = "<html>Gesamtumsatz von Patient --> "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+"   <br><br><p><b><font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br>";
+		(String) PatGrundPanel.thisClass.patDaten.get(3)+   
+		"<br><br>Historie = "+dfx.format(gesamtHistor)+" EUR"+
+		"<br>Aktuell  =   "+dfx.format(gesamtAkt)+" EUR"+
+		"<br><br><p><b>Gesamt = <font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br>";
 
 	    JOptionPane optionPane = new JOptionPane();
 	    optionPane.setMessage(msg);
@@ -540,6 +522,61 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	    }
 	    JDialog dialog = optionPane.createDialog(null, xtitel);
 	    dialog.setVisible(true);
+
+		
+		
+	}
+	public double doRechneHistorie(String db){
+		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		int rows = tabhistorie.getRowCount();
+		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
+		Double gesamtumsatz = new Double(0.00); 
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		if(db.equals("lza")){
+			if(rows <= 0){
+				//JOptionPane.showMessageDialog(null, "Für diesen Patient wurde noch keine Verordnung abgerechnet!");
+				return new Double(0.00);
+			}
+			for(int i = 0; i < rows;i++){
+				String suchrez = (String)tabhistorie.getValueAt(i,6);
+				Vector vec = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
+				if(vec.size() > 0){
+					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
+					for(int anz = 0;anz <4;anz++){
+						preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
+//						System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
+//						System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
+						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+					}
+				}
+			}
+		}else{
+			String cmd = "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'";
+			System.out.println(cmd);
+			Vector<String> vec = SqlInfo.holeSaetze(db, "id",cmd , Arrays.asList(new String[] {}));
+			rows = vec.size();
+			System.out.println("Gefundene aktuelle Rezepte: "+rows);
+			for(int i = 0; i < rows;i++){
+				String suchrez = (String)tabhistorie.getValueAt(i,6);
+				Vector vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
+				if(vec2.size() > 0){
+					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
+					for(int anz = 0;anz <4;anz++){
+						preispos = BigDecimal.valueOf(new Double((String)vec2.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec2.get(anz)))) ;
+//						System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
+//						System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
+						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+					}
+				}
+			}
+			
+		}
+		return gesamtumsatz;
+		/*
+		String ums = "Gesamtumsatz von Patient "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
+		(String) PatGrundPanel.thisClass.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
+		JOptionPane.showMessageDialog(null,ums);
+		*/
 	}
 	/******************
 	 * 
@@ -616,7 +653,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				@Override
 				protected Void doInBackground() throws Exception {
 					// TODO Auto-generated method stub
-					doRechneHistorie();
+					doRechneAlles();
 					return null;
 				}
 			}.execute();

@@ -13,6 +13,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,15 +21,22 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -65,18 +73,31 @@ import org.jdesktop.swingx.renderer.StringValues;
 import patientenFenster.Historie.HistorPanel;
 import patientenFenster.Historie.HistorRezepteListSelectionHandler;
 import sqlTools.SqlInfo;
+import sun.awt.image.ImageFormatException;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.GrafikTools;
 import systemTools.JCompTools;
 import uk.co.mmscomputing.device.scanner.Scanner;
+import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
 import uk.co.mmscomputing.device.scanner.ScannerListener;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata.Type;
+import uk.co.mmscomputing.device.twain.TwainIOMetadata;
+import uk.co.mmscomputing.device.twain.TwainImageInfo;
+import uk.co.mmscomputing.device.twain.TwainImageLayout;
+import uk.co.mmscomputing.device.twain.TwainSource;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfWriter;
+//import com.lowagie.text.Image;
 
 public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
 	public static Dokumentation dokumentation = null;
@@ -103,8 +124,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JComboBox seitengroesse = null;
 	public JComboBox aufloesung = null;
 	public JComboBox farbe = null;
-	public Vector<byte[]>Bilder;
+	public Vector<String> LabName = new Vector<String>();
+	int bildnummer=0;
+	public Vector<BufferedImage>Bilder = new Vector<BufferedImage>();
+	public Vector<JLabel>Labels = new Vector<JLabel>();
+	public JXPanel bilder = null;
+	public JScrollPane bildscroll = null;
 	public JLabel[] infolab = {null,null,null,null,null};
+	public MouseListener mlist = null;
+	
 	Scanner scanner;
 	public Dokumentation(){
 		super();
@@ -203,6 +231,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					protected Void doInBackground() throws Exception {
 					*/
 						scanStarten();
+						setzeListener();
 					/*	
 						return null;
 					}
@@ -223,7 +252,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JXPanel getToolBereich(){
 		JXPanel tbereich = new JXPanel();
 		tbereich.setOpaque(false);
-		FormLayout lay = new FormLayout("0dlu,fill:0:grow(1.00),0dlu","0dlu,fill:40:grow(1.00),60dlu");
+		FormLayout lay = new FormLayout("0dlu,fill:0:grow(1.00),0dlu","0dlu,fill:40:grow(1.00),59dlu");
 		CellConstraints cc = new CellConstraints();
 		tbereich.setLayout(lay);
 
@@ -234,15 +263,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		return tbereich;
 	}
 	public JScrollPane getBildPanel(){
-		JXPanel dummy1 = new JXPanel(new FlowLayout());
+		bilder = new JXPanel(new FlowLayout());
 		//dummy1.setBackground(Color.RED);
-		dummy1.setOpaque(false);
-		JScrollPane jscr = JCompTools.getTransparentScrollPane(dummy1);
-		jscr.validate();
-		return jscr;
+		bilder.setOpaque(false);
+		JScrollPane bildscroll = JCompTools.getTransparentScrollPane(bilder);
+		bildscroll.validate();
+		return bildscroll;
 	}
 	public JPanel getInfoPanel(){      // 1   2  3        4                5  6   7         8            9    10
-		FormLayout lay = new FormLayout("5dlu,p,20dlu,right:max(50dlu;p),2dlu,p,20dlu,right:max(50dlu;p),2dlu,p",
+		FormLayout lay = new FormLayout("2dlu,p,20dlu,right:max(50dlu;p),2dlu,p,20dlu,right:max(50dlu;p),2dlu,p",
        // 1    2  3    4   5  6   7  8   9
 		"10dlu,p,5dlu,p,1dlu,p,1dlu,p,10dlu");
 		CellConstraints cc = new CellConstraints();
@@ -415,6 +444,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setActionCommand("scannen");
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
+		dokubut[1] = new JButton();
+		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("save"));
+		dokubut[1].setToolTipText("Speichern der eingescannten Dokumentation");
+		dokubut[1].setActionCommand("dokusave");
+		dokubut[1].addActionListener(this);
+		jtb.add(dokubut[1]);
+
+		jtb.addSeparator(new Dimension(20,0));
 		/*
 		jtb.add(dokubut[0]);
 		farbe = new JComboBox(new String[]{"Schwarz/Weiﬂ","Graustufen","Farbe"});
@@ -430,12 +467,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		*/
 		
 		
-		dokubut[1] = new JButton();
-		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		dokubut[1].setToolTipText("Scannereinstellungen ‰ndern");
-		dokubut[1].setActionCommand("scanedit");
-		dokubut[1].addActionListener(this);		
-		jtb.add(dokubut[1]);
+		dokubut[2] = new JButton();
+		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		dokubut[2].setToolTipText("Scannereinstellungen ‰ndern");
+		dokubut[2].setActionCommand("scanedit");
+		dokubut[2].addActionListener(this);		
+		jtb.add(dokubut[2]);
 		/*
 		dokubut[2] = new JButton();
 		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
@@ -470,55 +507,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			dtblm.setRowCount(0);
 			tabhistorie.validate();
 		}
-		
-	}
-	private void holeEinzelTermine(int row,Vector vvec){
-		Vector xvec = null;
-		if(vvec == null){
-			xvec = SqlInfo.holeSatz("lza", "termine", "id='"+tabhistorie.getValueAt(row,6)+"'", Arrays.asList(new String[] {}));			
-		}else{
-			xvec = vvec;
-		}
-
-		String terms = (String) xvec.get(0);
-		//System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
-		//System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
-		if(terms==null){
-			dtermm.setRowCount(0);
-			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");			
-			return;
-		}
-		if(terms.equals("")){
-			dtermm.setRowCount(0);
-			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");
-			return;
-		}
-		String[] tlines = terms.split("\n");
-		int lines = tlines.length;
-		//System.out.println("Anzahl Termine = "+lines);
-		Vector tvec = new Vector();
-		dtermm.setRowCount(0);
-		for(int i = 0;i<lines;i++){
-			String[] terdat = tlines[i].split("@");
-			int ieinzel = terdat.length;
-			//System.out.println("Anzahl Splits = "+ieinzel);
-			tvec.clear();
-			for(int y = 0; y < ieinzel;y++){
-				if(y==0){
-					
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
-				}else{
-					tvec.add(new String(terdat[y]));					
-				}
-				//System.out.println("Feld "+y+" = "+terdat[y]);	
-			}
-			//System.out.println("Termivector = "+tvec);
-			dtermm.addRow((Vector)tvec.clone());
-		}
-		anzahlTermine.setText("Anzahl Terimine: "+lines);
-		
 		
 	}
 	/******************
@@ -581,6 +569,20 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		if(cmd.equals("arztbericht")){
 			
 		}else if(cmd.equals("scannen")){
+			if(SystemConfig.sDokuScanner.equals("Scanner nicht aktiviert!")){
+				return;
+			}
+			if(aktPanel.equals("leerPanel")){
+				this.setzeRezeptPanelAufNull(false);
+			}
+			try {
+				scanner.acquire();
+			} catch (ScannerIOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("***************Fehler beim scannen*******************");
+				e.printStackTrace();
+			}
+				
 			return;			
 		}else if(cmd.equals("scanedit")){
 			Point pt = ((JComponent)arg0.getSource()).getLocationOnScreen();
@@ -591,6 +593,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
+	
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 		// TODO Auto-generated method stub
@@ -622,7 +625,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 */
 	public void scanStarten(){
-		if(SystemConfig.sDokuScanner.equals("")){
+		if(SystemConfig.sDokuScanner.equals("Scanner nicht aktiviert!") || 
+				SystemConfig.sDokuScanner.equals("") ){
 			System.out.println("Scanner = null");
 			return;
 		}
@@ -648,13 +652,40 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	        public void update( ScannerIOMetadata.Type type, ScannerIOMetadata metadata )
 	        {
 				if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
+					ScannerDevice device=metadata.getDevice();
+              		if(metadata instanceof TwainIOMetadata){
+            			TwainSource source = ((TwainIOMetadata)metadata).getSource();
+            			try{
+                			source.setCapability(TwainSource.ICAP_XRESOLUTION, new Double(SystemConfig.hmDokuScanner.get("aufloesung")));
+                			source.setCapability(TwainSource.ICAP_YRESOLUTION, new Double(SystemConfig.hmDokuScanner.get("aufloesung")));
+                			source.setRegionOfInterest(0.0, 0.0, 215.0, 297.0);
+            	            TwainImageInfo imageInfo=new TwainImageInfo(source); 
+            			}catch(Exception e){
+            	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
+            			}
+            			try{
+            				TwainImageLayout imageLayout=new TwainImageLayout(source);
+            				imageLayout.get();
+            			}catch(Exception e){
+            	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image layout.\n\t"+e);
+            			}
+              	      try{
+            	    	  device.setShowUserInterface((SystemConfig.hmDokuScanner.get("dialog").equals("1") ? true :false) );
+            	    	  device.setShowProgressBar(true);
+            	      }catch(Exception e){
+            	        e.printStackTrace();
+            	      }
+            			
+            		}
 					
 				}else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
-					
+            		if(metadata.isFinished()){
+            	        System.out.println("Scanvorgang wurde beendet");
+            	      }
 				}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
 					
 				}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
-					
+	                  zeigeBilder(metadata.getImage());
 				}
 	        }
 	    });    
@@ -664,6 +695,116 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 * 
 	 */
+	public void zeigeBilder(BufferedImage img){
+		bildnummer++;
+		String name = "Bildnummer-"+bildnummer; 
+		LabName.add(name);
+		ImageIcon icon = new ImageIcon((Image)img.getScaledInstance(50, 65,Image.SCALE_SMOOTH));
+		Bilder.add(img);
+		JLabel lab = new JLabel("Seite-"+Bilder.size());
+		lab.addMouseListener(mlist);
+		lab.setName(name);
+		lab.setHorizontalTextPosition(JLabel.CENTER);
+		lab.setVerticalTextPosition(JLabel.BOTTOM);
+		lab.setIcon(icon);
+		Labels.add(lab);
+		bilder.add(lab);
+		bilder.validate();
+	}
+	public void pdfZeigen(int seite){
+		  try {
+			  	
+				byte[] bild = GrafikTools.bufferedImageToByteArray(Bilder.get(seite));
+				com.lowagie.text.Image jpg1 = com.lowagie.text.Image.getInstance(bild);  
+				float imgHeight = jpg1.getPlainHeight();
+				imgHeight = jpg1.getScaledHeight();
+				float imgWidth = jpg1.getPlainWidth();
+				imgWidth = jpg1.getScaledWidth();
+				System.out.println("Hˆhe   = "+imgHeight);
+				System.out.println("Breite = "+imgWidth);
+				Rectangle pageSize = new Rectangle(imgWidth, imgHeight); 
+				//Rectangle pageSize = new Rectangle(2150.0f, 2970.0f);
+				Document document = new Document(pageSize);
+				document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
+				//Document document = new Document(pageSize);          
+				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/Temp.pdf";
+				PdfWriter.getInstance(document, new FileOutputStream(datname));  
+	      
+				document.open(); 
+
+				document.add(jpg1);  
+				document.close();
+				try {
+		            Runtime.getRuntime().exec("C:/Programme/Adobe/Reader 9.0/Reader/AcroRd32.exe "+datname);
+		        } catch(IOException e) {
+		            e.printStackTrace();
+		        }
+		        /*
+				String pfad = "C:/Programme/Adobe/Acrobat 8.0/Acrobat/";
+				ProcessBuilder processBuilder = new ProcessBuilder("Arcobat","" ,"datname");
+				processBuilder.directory(new File(pfad));
+				try {
+					processBuilder.start();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				*/				
+			
+			} catch (ImageFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (BadElementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	  
+		
+	}
+	
+	public void setzeListener(){
+		mlist = new MouseListener(){
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				if(arg0.getClickCount()==2){
+					System.out.println("LabeName = "+((JComponent)arg0.getSource()).getName());
+					int seite = new Integer( ((JComponent)arg0.getSource()).getName().split("-")[1] );
+					pdfZeigen(seite-1);
+				}
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				((JComponent)arg0.getSource()).setBorder(BorderFactory.createLineBorder(Color.RED));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				((JComponent)arg0.getSource()).setBorder(null);				
+			}
+
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			
+		};
+		
+	}
 	class DokuListener implements ScannerListener{
 		@Override
 		public void update(ScannerIOMetadata.Type type, ScannerIOMetadata metadata) {
@@ -688,7 +829,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			protected Void doInBackground() throws Exception {
 		*/
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
+				Vector vec = SqlInfo.holeSaetze("doku", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
 
@@ -715,7 +856,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						final int ix = i;
 	                    new Thread(){
 	                    	public void run(){
-	                    		holeEinzelTermine(ix,null);
+	                    		//holeEinzelTermine(ix,null);
 	                    	}
 	                    }.start();
 					}
@@ -736,7 +877,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						tabhistorie.setRowSelectionInterval(row, row);
 						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
 						tabhistorie.scrollRowToVisible(row);
-						holeEinzelTermine(row,null);
+						//holeEinzelTermine(row,null);
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
@@ -800,7 +941,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 								// TODO Auto-generated method stub
 								inDokuDaten = true;
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-	                    		holeEinzelTermine(ix,null);
+	                    		//holeEinzelTermine(ix,null);
 	    						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
 	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

@@ -81,7 +81,7 @@ public class TwainExample
         	
         	  if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
             		System.out.println("in NEGOTIATE"+metadata.getStateStr());    		
-            	      ScannerDevice device=metadata.getDevice();
+            	    ScannerDevice device=metadata.getDevice();
               		if(metadata instanceof TwainIOMetadata){
             			System.out.println("TwainIOMetadata");
             			TwainSource source = ((TwainIOMetadata)metadata).getSource();
@@ -105,11 +105,11 @@ public class TwainExample
             		}
             	      
             	      try{
-            	    	  //device.setRegionOfInterest(0.0, 0.0, 215.0, 297.0);
             	    	  device.setShowUserInterface(false);
             	    	  device.setShowProgressBar(true);
-            	        //device.setResolution(200);
-            	        //device.setResolution(100);
+              	        //device.setResolution(200);
+              	        //device.setResolution(100);
+
             	      }catch(Exception e){
             	        e.printStackTrace();
             	      }
