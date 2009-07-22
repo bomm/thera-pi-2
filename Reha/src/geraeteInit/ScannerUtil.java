@@ -135,76 +135,13 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	*/
 
 	private JPanel getGebuehren(){     // 1     2                   3         4     5        6              7
-		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.50),right:80dlu,10dlu,80dlu,fill:0:grow(0.50),10dlu",
+		FormLayout lay = new FormLayout("",
 									//     1   2  3    4  5   6  7   8  9   10  11  12  13
-										"15dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,p, 20dlu,p,20dlu");
+										"");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
-
 		pb.getPanel().setOpaque(false);
 		
-		pb.addLabel("Bitte die Positionen auswählen die Sie berechnen wollen",cc.xyw(2, 2, 4));
-
-		pb.addLabel("Heilmittel 1",cc.xy(3, 4));
-		String lab = (String)PatGrundPanel.thisClass.vecaktrez.get(48);
-		leistung[0] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[0].setOpaque(false);
-		if(!lab.equals("")){
-			leistung[0].setSelected(true);			
-		}else{
-			leistung[0].setSelected(false);
-			leistung[0].setEnabled(false);
-		}
-		pb.add(leistung[0],cc.xyw(5, 4, 2));
-		
-		pb.addLabel("Heilmittel 2",cc.xy(3, 6));
-		lab = (String)PatGrundPanel.thisClass.vecaktrez.get(49);
-		leistung[1] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[1].setOpaque(false);
-		if(!lab.equals("")){
-						
-		}else{
-			leistung[1].setSelected(false);
-			leistung[1].setEnabled(false);
-		}
-		pb.add(leistung[1],cc.xyw(5, 6, 2));
-
-		pb.addLabel("Heilmittel 3",cc.xy(3, 8));
-		lab = (String)PatGrundPanel.thisClass.vecaktrez.get(50);
-		leistung[2] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[2].setOpaque(false);
-		if(!lab.equals("")){
-						
-		}else{
-			leistung[2].setSelected(false);
-			leistung[2].setEnabled(false);
-		}
-		pb.add(leistung[2],cc.xyw(5, 8, 2));
-
-		pb.addLabel("Heilmittel 4",cc.xy(3, 10));
-		lab = (String)PatGrundPanel.thisClass.vecaktrez.get(51);
-		leistung[3] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[3].setOpaque(false);
-		if(!lab.equals("")){
-						
-		}else{
-			leistung[3].setSelected(false);
-			leistung[3].setEnabled(false);
-		}
-		pb.add(leistung[3],cc.xyw(5, 10, 2));
-
-		
-		uebernahme = new JButton("drucken & buchen");
-		uebernahme.setActionCommand("uebernahme");
-		uebernahme.addActionListener(this);
-		uebernahme.addKeyListener(this);
-		pb.add(uebernahme,cc.xy(3,12));
-		
-		abbrechen = new JButton("abbrechen");
-		abbrechen.setActionCommand("abbrechen");
-		abbrechen.addActionListener(this);
-		abbrechen.addKeyListener(this);
-		pb.add(abbrechen,cc.xy(5,12));
 		
 		pb.getPanel().validate();
 		return pb.getPanel();
@@ -221,7 +158,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 					rtp = null;
 					super.dispose();
 					this.dispose();
-					System.out.println("****************Ausfallrechnung -> Listener entfernt**************");				
+					System.out.println("****************Scanner-Util -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -236,7 +173,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			rtp = null;
 			super.dispose();
 			dispose();
-			System.out.println("****************Ausfallrechnung -> Listener entfernt (Closed)**********");
+			System.out.println("****************Scanner-Util -> Listener entfernt (Closed)**********");
 		}
 		
 		
