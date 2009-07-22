@@ -95,6 +95,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
 //import com.lowagie.text.Image;
@@ -724,7 +725,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				System.out.println("Breite = "+imgWidth);
 				Rectangle pageSize = new Rectangle(imgWidth, imgHeight); 
 				//Rectangle pageSize = new Rectangle(2150.0f, 2970.0f);
-				Document document = new Document(pageSize);
+				//Document document = new Document(pageSize);
+				Document document = new Document();
+				if(imgWidth > imgHeight){
+					document.setPageSize(PageSize.A4.rotate());					
+				}else{
+					document.setPageSize(PageSize.A4);
+				}
+
 				document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
 				//Document document = new Document(pageSize);          
 				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/Temp.pdf";
@@ -740,6 +748,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					return;
 				}
 				try {
+					//Runtime.getRuntime().exec("Temp.pdf");
 		            Runtime.getRuntime().exec(file.getAbsolutePath()+" "+datname);
 		        } catch(IOException e) {
 		            e.printStackTrace();

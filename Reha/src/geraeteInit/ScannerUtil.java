@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +40,10 @@ import patientenFenster.PatGrundPanel;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaCheckBox;
+import systemTools.JRtaComboBox;
 import systemTools.LeistungTools;
+import uk.co.mmscomputing.device.scanner.Scanner;
+import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -69,7 +74,9 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	public JButton uebernahme;
 	public JButton abbrechen;
 	
-
+	public JRtaComboBox[] jcmbscan = {null,null,null,null,null};
+	public JRtaCheckBox[] jcbscan = {null,null,null,null,null};
+	
 	public ScannerUtil(Point pt){
 		super(null,"ScannerUtil");		
 
@@ -80,9 +87,9 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		setPinPanel(pinPanel);
 		getSmartTitledPanel().setTitle("Scanner-Einstellung");
 
-		setSize(300,250);
-		setPreferredSize(new Dimension(300,250));
-		getSmartTitledPanel().setPreferredSize(new Dimension (300,250));
+		setSize(400,350);
+		setPreferredSize(new Dimension(400,350));
+		getSmartTitledPanel().setPreferredSize(new Dimension (400,350));
 		setPinPanel(pinPanel);
 		rgb = new ScannerUtilHintergrund();
 		rgb.setLayout(new BorderLayout());
@@ -96,7 +103,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				Point2D start = new Point2D.Float(0, 0);
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
-			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
+			     Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.05f)};
 			     LinearGradientPaint p =
 			         new LinearGradientPaint(start, end, dist, colors);
 			     MattePainter mp = new MattePainter(p);
@@ -117,6 +124,25 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	    
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+		new SwingWorker<String,String>(){
+			@Override
+			protected String doInBackground() throws Exception {
+				 Scanner scanner = Scanner.getDevice();
+				    try {
+						String[] names = scanner.getDeviceNames();
+						for(int i = 0; i < names.length;i++){
+						
+			
+							jcmbscan[0].addItem(names[i]);
+						}
+						jcmbscan[0].setSelectedItem(SystemConfig.sDokuScanner);
+					} catch (ScannerIOException e2) {
+						e2.printStackTrace();
+					}
+				return null;
+			}
+			
+		}.execute();
 
 		pack();
 		
@@ -134,14 +160,51 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	public JCheckBox direktdruck;
 	*/
 
-	private JPanel getGebuehren(){     // 1     2                   3         4     5        6              7
-		FormLayout lay = new FormLayout("",
-									//     1   2  3    4  5   6  7   8  9   10  11  12  13
-										"");
+	private JPanel getGebuehren(){     // 1        2               3   4     5   6    7
+		FormLayout lay = new FormLayout("40dlu, right:max(70dlu;p),5dlu,p,fill:0:grow(1.00)",
+									//     1   2  3    4   5   6   7    8   9    10   11     12   13    14       15
+										"30dlu,p,3dlu, p,3dlu, p, 3dlu, p, 10dlu, p,  10dlu, p,  20dlu,40dlu,fill:0:grow(1.00) ");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
 		
+		pb.addLabel("installierte Geräte",cc.xy(2, 2));
+		jcmbscan[0] = new JRtaComboBox();
+		pb.add(jcmbscan[0],cc.xy(4, 2));
+		
+		pb.addLabel("Scanmodus",cc.xy(2, 4));
+		jcmbscan[1] = new JRtaComboBox(new String[] {"Schwarz/Weiß","Graustufen","Farbe"} );
+		jcmbscan[1].setSelectedItem(SystemConfig.hmDokuScanner.get("farben"));
+		pb.add(jcmbscan[1],cc.xy(4, 4));
+
+		pb.addLabel("Auflösung",cc.xy(2, 6));
+		jcmbscan[2] = new JRtaComboBox(new String[]{"75dpi","100dpi","150dpi","200dpi","400dpi","600dpi"});		
+		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung"));
+		pb.add(jcmbscan[2],cc.xy(4, 6));
+		
+		pb.addLabel("Seitenformat",cc.xy(2, 8));
+		jcmbscan[3] = new JRtaComboBox(new String[]{"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"});		
+		jcmbscan[3].setSelectedItem(SystemConfig.hmDokuScanner.get("seiten"));
+		pb.add(jcmbscan[3],cc.xy(4, 8));
+		
+		pb.addLabel("Scandialog",cc.xy(2, 10));
+		jcbscan[0] = new JRtaCheckBox("verwenden");
+		jcbscan[0].setOpaque(false);
+		jcbscan[0].setSelected((SystemConfig.hmDokuScanner.get("dialog").equals("1") ? true : false));
+		pb.add(jcbscan[0],cc.xy(4, 10));
+		
+		pb.addLabel("Einstellungen als",cc.xy(2, 12));
+		jcbscan[1] = new JRtaCheckBox("Standard verwenden");
+		jcbscan[1].setOpaque(false);		
+		pb.add(jcbscan[1],cc.xy(4, 12));
+		
+		JXPanel jpan = new JXPanel();
+		//jpan.setBackground(Color.RED);
+		jpan.setOpaque(false);
+		pb.add(jpan,cc.xywh(1, 14,5,2));
+
+		//public JRtaComboBox[] jcmbscan = {null,null,null,null,null};
+		//public JRtaCheckBox[] jcbscan = {null,null,null,null,null};
 		
 		pb.getPanel().validate();
 		return pb.getPanel();
@@ -343,7 +406,7 @@ class ScannerUtilHintergrund extends JXPanel{
 	AlphaComposite xac2 = null;		
 	public ScannerUtilHintergrund(){
 		super();
-		hgicon = new ImageIcon(Reha.proghome+"icons/xsane.png");
+		hgicon = new ImageIcon(new ImageIcon(Reha.proghome+"icons/xsane.png").getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH));
 		//hgicon = new ImageIcon(Reha.proghome+"icons/geld.png");
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
