@@ -694,7 +694,12 @@ public class SystemConfig {
 			hmDokuScanner.put("seiten", inif.getStringProperty("DokumentenScanner", "DokumentenScannerSeiten"));
 			hmDokuScanner.put("dialog", inif.getStringProperty("DokumentenScanner", "DokumentenScannerDialog"));
 		}else{
-			sDokuScanner = "";
+			sDokuScanner = "Scanner nicht aktiviert!";
+			hmDokuScanner.put("aufloesung", "---");
+			hmDokuScanner.put("farben","---");
+			hmDokuScanner.put("seiten", "---");
+			hmDokuScanner.put("dialog", "---");
+
 		}
 	}
 	public static void ArztGruppenInit(){

@@ -2,6 +2,7 @@ package patientenFenster;
 
 import hauptFenster.Reha;
 
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -18,6 +19,7 @@ int icy;
 String itext = null;
 	public KeinRezept(String txt){
 		super();
+		setLayout(new BorderLayout());
 		hgicon = SystemConfig.hmSysIcons.get("keinerezepte");
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;

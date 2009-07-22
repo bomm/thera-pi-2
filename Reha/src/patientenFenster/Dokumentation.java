@@ -1,5 +1,6 @@
 package patientenFenster;
 
+import geraeteInit.ScannerUtil;
 import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
@@ -8,9 +9,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -29,9 +32,11 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
@@ -67,7 +72,9 @@ import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
 import uk.co.mmscomputing.device.scanner.ScannerListener;
+import uk.co.mmscomputing.device.scanner.ScannerIOMetadata.Type;
 
+import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -96,16 +103,19 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JComboBox seitengroesse = null;
 	public JComboBox aufloesung = null;
 	public JComboBox farbe = null;
-
+	public Vector<byte[]>Bilder;
+	public JLabel[] infolab = {null,null,null,null,null};
+	Scanner scanner;
 	public Dokumentation(){
 		super();
 		dokumentation = this;
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
-		leerPanel = new KeinRezept("noch keine Rezepte in der Historie für diesen Patient");
+		leerPanel = new KeinRezept("noch keine Dokumentation angelegt für diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
+		leerPanel.add(getInfoPanel(),BorderLayout.SOUTH);
 		
 		/********dann das volle**************/		
 		JXPanel allesrein = new JXPanel(new BorderLayout());
@@ -129,11 +139,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		add(JCompTools.getTransparentScrollPane(allesrein),BorderLayout.CENTER);
 		validate();
-
+		/*
 		new SwingWorker<Void,Void>(){
 
 			@Override
 			protected Void doInBackground() throws Exception {
+			*/
 		
 				// TODO Auto-generated method stub
 				//vollPanel = new JXPanel();
@@ -180,8 +191,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				vollPanel.add(jpan1,vpcc.xyw(1,5,3));
 				jpan1.validate();
 				
-				//indiSchluessel();
-				setzeRezeptPanelAufNull(false);
+				
+				//setzeRezeptPanelAufNull(false);
+
+				/*
+			
+
 				/*
 				new SwingWorker<Void,Void>(){
 					@Override
@@ -193,15 +208,75 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					}
 				}.execute();
 				*/
+				/*
 				return null;
 			}
 		}.execute();
+
+		*/
+
 		
 		
 
+
 	}
-	public JScrollPane getToolBereich(){
-		return JCompTools.getTransparentScrollPane(null);
+	public JXPanel getToolBereich(){
+		JXPanel tbereich = new JXPanel();
+		tbereich.setOpaque(false);
+		FormLayout lay = new FormLayout("0dlu,fill:0:grow(1.00),0dlu","0dlu,fill:40:grow(1.00),60dlu");
+		CellConstraints cc = new CellConstraints();
+		tbereich.setLayout(lay);
+
+		tbereich.add(getBildPanel(),cc.xy(2,2));
+		
+		tbereich.add(getInfoPanel(),cc.xy(2,3));
+		tbereich.validate();
+		return tbereich;
+	}
+	public JScrollPane getBildPanel(){
+		JXPanel dummy1 = new JXPanel(new FlowLayout());
+		//dummy1.setBackground(Color.RED);
+		dummy1.setOpaque(false);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(dummy1);
+		jscr.validate();
+		return jscr;
+	}
+	public JPanel getInfoPanel(){      // 1   2  3        4                5  6   7         8            9    10
+		FormLayout lay = new FormLayout("5dlu,p,20dlu,right:max(50dlu;p),2dlu,p,20dlu,right:max(50dlu;p),2dlu,p",
+       // 1    2  3    4   5  6   7  8   9
+		"10dlu,p,5dlu,p,1dlu,p,1dlu,p,10dlu");
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder pb = new PanelBuilder(lay);
+		//JPanel dummy2 = new JXPanel();
+		//dummy2.setBackground(Color.RED);
+		Font fon = new Font("Tahoma",Font.BOLD,10);
+		JLabel jlab = new JLabel("Geräte-Info");
+		jlab.setFont(new Font("Tahoma",Font.BOLD,14));
+		jlab.setForeground(Color.BLUE);
+		pb.add(jlab,cc.xy(2,2));
+		pb.addLabel("aktives Gerät:",cc.xy(4, 4));
+		infolab[0] = new JLabel(SystemConfig.sDokuScanner);
+		infolab[0].setFont(fon);
+		pb.add(infolab[0],cc.xy(6,4));
+		pb.addLabel("Scanmodus:",cc.xy(4, 6));
+		infolab[1] = new JLabel(SystemConfig.hmDokuScanner.get("farben"));
+		infolab[1].setFont(fon);		
+		pb.add(infolab[1],cc.xy(6,6));
+		pb.addLabel("Auflösung:",cc.xy(8, 4));
+		infolab[2] = new JLabel(SystemConfig.hmDokuScanner.get("aufloesung"));
+		infolab[2].setFont(fon);		
+		pb.add(infolab[2],cc.xy(10,4));
+		pb.addLabel("Seitenformat:",cc.xy(8, 6));
+		infolab[3] = new JLabel(SystemConfig.hmDokuScanner.get("seiten"));
+		infolab[3].setFont(fon);		
+		pb.add(infolab[3],cc.xy(10,6));
+		pb.addLabel("Scannerdialog verwenden:",cc.xy(8, 8));
+		infolab[4] = new JLabel( (SystemConfig.hmDokuScanner.get("dialog").equals("1") ? "ja" : "nein"));
+		infolab[4].setFont(fon);		
+		pb.add(infolab[4],cc.xy(10,8));
+		pb.getPanel().setOpaque(false);
+		pb.getPanel().setPreferredSize(new Dimension(500,100));
+		return pb.getPanel();
 	}
 	class DokuPanel extends JXPanel{
 		ImageIcon hgicon;
@@ -216,7 +291,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;
-			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.5f); 
+			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.25f); 
 			xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
 			
 		}
@@ -235,43 +310,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 	}	
 	
-	public JToolBar getTerminToolbar(){
-		JToolBar jtb = new JToolBar();
-		jtb.setOpaque(false);
-		jtb.setRollover(true);
-		jtb.setBorder(null);
-		jtb.setOpaque(false);
-		
-		JButton jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("neu"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
-		jbut.setToolTipText("Neuen Termin eintragen");
-		jbut.setActionCommand("terminplus");
-		jbut.addActionListener(this);
-		jbut.setEnabled(false);
-		jtb.add(jbut);
-
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
-		jbut.setToolTipText("Termin löschen");
-		jbut.setActionCommand("terminminus");
-		jbut.addActionListener(this);
-		jbut.setEnabled(false);		
-		jtb.add(jbut);
-		
-		jtb.addSeparator(new Dimension(40,0));
-		jbut = new JButton();
-		jbut.setIcon(SystemConfig.hmSysIcons.get("sort"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/alphab_sort_22.png"));
-		jbut.setActionCommand("terminsortieren");
-		jbut.addActionListener(this);		
-		jbut.setToolTipText("Termine nach Datum sortieren");
-		jbut.setEnabled(false);		
-		jtb.add(jbut);
-		return jtb;		
-		
-	}	
 
 	public JXPanel getTabelle(){
 		JXPanel dummypan = new JXPanel(new BorderLayout());
@@ -357,7 +395,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
 				for(int i = 0; i < 4;i++){
-					dokubut[i].setEnabled(true);
+					//dokubut[i].setEnabled(true);
 				}
 			}
 		}
@@ -541,80 +579,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("arztbericht")){
-			if(aktPanel.equals("leerPanel")){
-				JOptionPane.showMessageDialog(null,"D E P P \n\n"+
-						"....und für welches der nicht vorhandenen Rezepte in der Historie wollen Sie einen Therapiebericht erstellen....");
-				return;
-			}
-			boolean neuber = true;
-			int berid = 0;
-			String xreznr;
-			String xverfasser = "";
-			int currow = tabhistorie.getSelectedRow();
-			if(currow >=0){
-				xreznr = (String)tabhistorie.getValueAt(currow,0);
-			}else{
-				xreznr = ""; 
-			}
 			
-			int  iexistiert = TherapieBerichte.aktBericht.berichtExistiert(xreznr);
-			if(iexistiert > 0){
-				xverfasser = TherapieBerichte.aktBericht.holeVerfasser();
-				neuber = false;
-				berid = iexistiert;
-				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
-				JOptionPane.showMessageDialog(null, meldung);
-			}
-
-
-			final boolean xneuber = neuber;
-			final String xxreznr = xreznr;
-			final int xberid = berid;
-			final int xcurrow = currow;
-			final String xxverfasser = xverfasser;
-			/*
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-				*/
-					System.out.println("Vor arzbericht-aufruf");
-					ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,1,xxverfasser,"",xcurrow);
-					ab.setModal(true);
-					ab.setLocationRelativeTo(null);
-					//ab.toFront();
-					System.out.println("vor Arzbericht set Visible");
-					ab.setVisible(true);
-					ab = null;
-					System.out.println("Arzbericht=null");
-				/*	
-					return null;
-				}
-				
-			}.execute();
-			*/
-			/*
-			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,1,"","",currow);
-			ab.setModal(true);
-			ab.setLocationRelativeTo(null);
-			ab.setVisible(true);
-			ab = null;
-			*/
-			return;
-		}else if(cmd.equals("historinfo")){
-			return;			
-		}else if(cmd.equals("historumsatz")){
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					// TODO Auto-generated method stub
-					doRechneHistorie();
-					return null;
-				}
-			}.execute();
-			return;			
-		}else if(cmd.equals("historprinttage")){
-			return;			
 		}else if(cmd.equals("scannen")){
+			return;			
+		}else if(cmd.equals("scanedit")){
+			Point pt = ((JComponent)arg0.getSource()).getLocationOnScreen();
+			ScannerUtil su = new ScannerUtil(new Point(pt.x,pt.y+32));
+			su.setModal(true);
+			su.setVisible(true);
 			return;			
 		}
 		
@@ -645,12 +617,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		}
 	}	
+	/**************************************************
+	 * 
+	 * 
+	 */
 	public void scanStarten(){
 		if(SystemConfig.sDokuScanner.equals("")){
 			System.out.println("Scanner = null");
 			return;
 		}
-	    final Scanner scanner = Scanner.getDevice();
+	    scanner = Scanner.getDevice();
 	    try {
 			String[] names = scanner.getDeviceNames();
 			for(int i = 0; i < names.length;i++){
@@ -671,12 +647,38 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	    {
 	        public void update( ScannerIOMetadata.Type type, ScannerIOMetadata metadata )
 	        {
-	        	
+				if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
+					
+				}else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
+					
+				}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
+					
+				}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
+					
+				}
 	        }
 	    });    
 		
 	}
-	/*************************************************/
+	/**************************************************
+	 * 
+	 * 
+	 */
+	class DokuListener implements ScannerListener{
+		@Override
+		public void update(ScannerIOMetadata.Type type, ScannerIOMetadata metadata) {
+			if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
+				
+			}else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
+				
+			}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
+				
+			}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
+				
+			}
+		}
+		
+	}
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;
 		final String xrez_nr = rez_nr;
