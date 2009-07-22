@@ -734,8 +734,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 				document.add(jpg1);  
 				document.close();
+				File file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
+				if(!file.exists()){
+					JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Adobe-Acrobatreader ist nicht korrekt konfiguriert");
+					return;
+				}
 				try {
-		            Runtime.getRuntime().exec("C:/Programme/Adobe/Reader 9.0/Reader/AcroRd32.exe "+datname);
+		            Runtime.getRuntime().exec(file.getAbsolutePath()+" "+datname);
 		        } catch(IOException e) {
 		            e.printStackTrace();
 		        }

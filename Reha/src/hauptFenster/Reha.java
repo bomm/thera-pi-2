@@ -2115,6 +2115,8 @@ final class DatenbankStarten implements Runnable{
 			new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
 			SystemConfig.TherapBausteinInit();
 			SystemConfig.compTest();
+			new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
+			SystemConfig.FremdProgs();
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");

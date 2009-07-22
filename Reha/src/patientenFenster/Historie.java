@@ -503,11 +503,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		gesamtAkt = doRechneHistorie("verordn");
 		double gesamtumsatz = gesamtHistor+gesamtAkt;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
-		String msg = "<html>Gesamtumsatz von Patient --> "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+   
-		"<br><br>Historie = "+dfx.format(gesamtHistor)+" EUR"+
-		"<br>Aktuell  =   "+dfx.format(gesamtAkt)+" EUR"+
-		"<br><br><p><b>Gesamt = <font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br>";
+		String msg = "<html><font font-family='Courier New'>Gesamtumsatz von Patient --> "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
+		(String) PatGrundPanel.thisClass.patDaten.get(3)+"&nbsp;&nbsp;&nbsp;&nbsp;"+   
+		"<br><br>Historie&nbsp;=&nbsp;"+dfx.format(gesamtHistor)+" EUR"+
+		"<br>Aktuell&nbsp;&nbsp;=&nbsp;"+dfx.format(gesamtAkt)+" EUR"+
+		"<br><br><p><b>Gesamt = <font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br></font>";
 
 	    JOptionPane optionPane = new JOptionPane();
 	    optionPane.setMessage(msg);
@@ -553,11 +553,12 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}else{
 			String cmd = "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'";
 			System.out.println(cmd);
-			Vector<String> vec = SqlInfo.holeSaetze(db, "id",cmd , Arrays.asList(new String[] {}));
+			Vector vec = SqlInfo.holeSaetze(db, "id,rez_nr",cmd , Arrays.asList(new String[] {}));
 			rows = vec.size();
 			System.out.println("Gefundene aktuelle Rezepte: "+rows);
 			for(int i = 0; i < rows;i++){
-				String suchrez = (String)tabhistorie.getValueAt(i,6);
+				System.out.println(((Vector)vec.get(i)).get(1));
+				String suchrez = (String)((Vector)vec.get(i)).get(0);//(String)tabhistorie.getValueAt(i,6);
 				Vector vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
 				if(vec2.size() > 0){
 					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));

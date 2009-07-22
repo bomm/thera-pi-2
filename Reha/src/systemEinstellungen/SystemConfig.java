@@ -29,6 +29,7 @@ import terminKalender.zeitFunk;
 
 
 public class SystemConfig {
+ 
 	public static Vector<ArrayList<String>> vDatenBank;
 	public static Vector<ArrayList<String>> vSystemKollegen;
 	public static Vector<String> vComboKollegen;
@@ -126,6 +127,8 @@ public class SystemConfig {
 	public static String rezGebDrucker = null;
 	public static String rezBarcodeDrucker = null;
 	public static HashMap<String,String> hmDokuScanner = null;
+	
+	public static HashMap<String,String> hmFremdProgs = null;
 	
 	public static String[] rezBarCodName = null;
 	public static Vector<String>rezBarCodForm = null;
@@ -773,6 +776,18 @@ public class SystemConfig {
 		thberichtdatei = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Datei", "BerichtsDatei");
 		
 
+	}
+	public static void FremdProgs(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
+		hmFremdProgs = new HashMap<String,String>();
+		int anzahl =  inif.getIntegerProperty("FremdProgramme", "FremdProgrammeAnzahl");
+		for(int i = 0; i < anzahl; i++){
+			hmFremdProgs.put(
+					inif.getStringProperty("FremdProgramme", "FremdProgrammName"+(i+1)),
+					inif.getStringProperty("FremdProgramme", "FremdProgrammPfad"+(i+1))
+			);
+			
+		}
 	}
 	
 	public static void SystemIconsInit(){
