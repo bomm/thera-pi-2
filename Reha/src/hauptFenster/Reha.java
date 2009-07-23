@@ -104,7 +104,6 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import krankenKasse.KasseEinlesen;
 import kvKarte.KVKWrapper;
 
-
 import menus.TerminMenu;
 import openOfficeorg.OoStart;
 
@@ -126,10 +125,7 @@ import org.jdesktop.swingx.plaf.basic.BasicStatusBarUI;
 import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI;
 
-
-
 import rehaContainer.RehaTP;
-
 
 import sqlTools.ExUndHop;
 import systemEinstellungen.INIFile;
@@ -171,7 +167,6 @@ import com.jgoodies.looks.plastic.theme.ExperienceBlue;
 import com.jgoodies.looks.plastic.theme.LightGray;
 import com.jgoodies.looks.plastic.theme.Silver;
 import com.jgoodies.looks.windows.WindowsSplitPaneUI;
-
 
 import dialoge.RehaSmartDialog;
 

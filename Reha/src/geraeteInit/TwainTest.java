@@ -34,7 +34,7 @@ import uk.co.mmscomputing.device.twain.TwainIOMetadata;
 import uk.co.mmscomputing.device.twain.TwainImageInfo;
 import uk.co.mmscomputing.device.twain.TwainImageLayout;
 import uk.co.mmscomputing.device.twain.TwainSource;
-public class TwainExample
+public class TwainTest
 {
   @SuppressWarnings("serial")
   public static void main( String[] args )

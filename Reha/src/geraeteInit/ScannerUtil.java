@@ -162,8 +162,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 
 	private JPanel getGebuehren(){     // 1        2               3   4     5   6    7
 		FormLayout lay = new FormLayout("40dlu, right:max(70dlu;p),5dlu,p,fill:0:grow(1.00)",
-									//     1   2  3    4   5   6   7    8   9    10   11     12   13    14       15
-										"30dlu,p,3dlu, p,3dlu, p, 3dlu, p, 10dlu, p,  10dlu, p,  20dlu,40dlu,fill:0:grow(1.00) ");
+									//     1   2  3    4   5   6   7    8   9    10   11     12   13    14       15             16
+										"30dlu,p,3dlu, p,3dlu, p, 3dlu, p, 10dlu, p,  10dlu, p,  20dlu,40dlu,fill:0:grow(1.00),40dlu ");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
@@ -203,6 +203,16 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		jpan.setOpaque(false);
 		pb.add(jpan,cc.xywh(1, 14,5,2));
 
+		FormLayout lay2 = new FormLayout("fill:0:grow(0.33),80dlu,fill:0:grow(0.33),80dlu,fill:0:grow(0.33)",
+				"fill:0:grow(0.50),p,fill:0:grow(0.50)");
+		CellConstraints cc2 = new CellConstraints();
+		PanelBuilder pb2 = new PanelBuilder(lay2);
+		pb2.getPanel().setOpaque(false);
+		uebernahme = new JButton("übernehmen");
+		abbrechen = new JButton("abbrechen");
+		pb2.add(uebernahme,cc2.xy(2,2));
+		pb2.add(abbrechen,cc2.xy(4,2));
+		pb.add(pb2.getPanel(),cc.xyw(1, 14,5));
 		//public JRtaComboBox[] jcmbscan = {null,null,null,null,null};
 		//public JRtaCheckBox[] jcbscan = {null,null,null,null,null};
 		
