@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 
 import patientenFenster.PatGrundPanel;
+import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaCheckBox;
@@ -76,7 +78,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	
 	public JRtaComboBox[] jcmbscan = {null,null,null,null,null};
 	public JRtaCheckBox[] jcbscan = {null,null,null,null,null};
-	
+	Scanner scanner;	
 	public ScannerUtil(Point pt){
 		super(null,"ScannerUtil");		
 
@@ -124,18 +126,22 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	    
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+		
 		new SwingWorker<String,String>(){
 			@Override
 			protected String doInBackground() throws Exception {
-				 Scanner scanner = Scanner.getDevice();
+				 scanner = Scanner.getDevice();
 				    try {
 						String[] names = scanner.getDeviceNames();
 						for(int i = 0; i < names.length;i++){
-						
-			
 							jcmbscan[0].addItem(names[i]);
 						}
-						jcmbscan[0].setSelectedItem(SystemConfig.sDokuScanner);
+						if(!scanner.getSelectedDeviceName().equals(SystemConfig.sDokuScanner)){
+							jcmbscan[0].setSelectedItem(scanner.getSelectedDeviceName());
+						}else{
+							jcmbscan[0].setSelectedItem(SystemConfig.sDokuScanner);	
+						}
+						
 					} catch (ScannerIOException e2) {
 						e2.printStackTrace();
 					}
@@ -178,8 +184,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		pb.add(jcmbscan[1],cc.xy(4, 4));
 
 		pb.addLabel("Auflösung",cc.xy(2, 6));
-		jcmbscan[2] = new JRtaComboBox(new String[]{"75dpi","100dpi","150dpi","200dpi","400dpi","600dpi"});		
-		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung"));
+		jcmbscan[2] = new JRtaComboBox(new String[]{"75dpi","100dpi","150dpi","200dpi","300dpi","400dpi","600dpi"});		
+		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		pb.add(jcmbscan[2],cc.xy(4, 6));
 		
 		pb.addLabel("Seitenformat",cc.xy(2, 8));
@@ -209,7 +215,13 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		PanelBuilder pb2 = new PanelBuilder(lay2);
 		pb2.getPanel().setOpaque(false);
 		uebernahme = new JButton("übernehmen");
+		uebernahme.setActionCommand("uebernahme");
+		uebernahme.addActionListener(this);
+		uebernahme.addKeyListener(this);
 		abbrechen = new JButton("abbrechen");
+		abbrechen.setActionCommand("abbrechen");
+		abbrechen.addActionListener(this);
+		abbrechen.addKeyListener(this);
 		pb2.add(uebernahme,cc2.xy(2,2));
 		pb2.add(abbrechen,cc2.xy(4,2));
 		pb.add(pb2.getPanel(),cc.xyw(1, 14,5));
@@ -248,6 +260,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			dispose();
 			System.out.println("****************Scanner-Util -> Listener entfernt (Closed)**********");
 		}
+		scanner = null;
+
 		
 		
 	}
@@ -255,15 +269,14 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		if(arg0.getActionCommand().equals("uebernahme")){
-			macheAFRHmap();
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					starteAusfallRechnung(Reha.proghome+"vorlagen/"+Reha.aktIK+"/AusfallRechnung.ott");
+					 
 					return null;
 				}
 			}.execute();
-
+			doSpeichernScanner();
 			this.dispose();
 			/********
 			 * 
@@ -274,6 +287,51 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		if(arg0.getActionCommand().equals("abbrechen")){
 			this.dispose();
 		}
+
+	}
+	private void doSpeichernScanner(){
+		String item = "";
+		if(jcbscan[1].isSelected()){
+			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+
+			item = (String) jcmbscan[0].getSelectedItem();
+			SystemConfig.sDokuScanner = item;
+			inif.setStringProperty("DokumentenScanner","DokumentenScannerName" , item, null);
+
+			item = (String) jcmbscan[1].getSelectedItem();
+			SystemConfig.hmDokuScanner.put("farben",item);
+			inif.setStringProperty("DokumentenScanner","DokumentenScannerFarben" , item, null);
+			
+
+			item = (String) jcmbscan[2].getSelectedItem();
+			SystemConfig.hmDokuScanner.put("aufloesung",item.replaceAll("dpi", "") );
+			inif.setStringProperty("DokumentenScanner","DokumentenScannerAufloesung" , item.replaceAll("dpi", ""), null);
+
+			item = (String) jcmbscan[3].getSelectedItem();
+			inif.setStringProperty("DokumentenScanner","DokumentenScannerSeiten" , item , null);
+			SystemConfig.hmDokuScanner.put("seiten", item);
+			
+			item = (jcbscan[0].isSelected() ? "1" : "0");
+			SystemConfig.hmDokuScanner.put("dialog", item);
+			inif.setStringProperty("DokumentenScanner","DokumentenScannerDialog" , item , null);		
+			inif.save();
+		}else{
+			item = (String) jcmbscan[0].getSelectedItem();
+			SystemConfig.sDokuScanner = item;
+
+			item = (String) jcmbscan[1].getSelectedItem();
+			SystemConfig.hmDokuScanner.put("farben",item);
+
+			item = (String) jcmbscan[2].getSelectedItem();
+			SystemConfig.hmDokuScanner.put("aufloesung",item.replaceAll("dpi", "") );
+
+			item = (String) jcmbscan[3].getSelectedItem();
+			SystemConfig.hmDokuScanner.put("seiten", item);
+			
+			item = (jcbscan[0].isSelected() ? "1" : "0");
+			SystemConfig.hmDokuScanner.put("dialog", item);
+		}
+		this.dispose();
 
 	}
 	private void macheAFRHmap(){

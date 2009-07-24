@@ -1,5 +1,6 @@
 package patientenFenster;
 
+
 import geraeteInit.ScannerUtil;
 import hauptFenster.Reha;
 
@@ -23,17 +24,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -127,17 +132,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JComboBox farbe = null;
 	public Vector<String> LabName = new Vector<String>();
 	int bildnummer=0;
-	public Vector<BufferedImage>Bilder = new Vector<BufferedImage>();
+	public Vector<String>Bilder = new Vector<String>();
 	public Vector<JLabel>Labels = new Vector<JLabel>();
 	public JXPanel bilder = null;
 	public JScrollPane bildscroll = null;
 	public JLabel[] infolab = {null,null,null,null,null};
 	public MouseListener mlist = null;
-	
+	public boolean deviceinstalled = false;
+	public boolean scanaktiv = false;
+	public int aktivesBild = 0;
+	public JXPanel plusminus;
 	Scanner scanner;
 	public Dokumentation(){
 		super();
 		dokumentation = this;
+		scanaktiv = (SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1") ? true : false );
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
@@ -179,7 +188,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				//vollPanel = new JXPanel();
 				//HistorPanel vollPanel = new HistorPanel();
 				vollPanel = new JXPanel();
-
+				
+				
 				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu",
 						"p,2dlu,125dlu,5dlu,fill:0:grow(1.00),0dlu");
 				CellConstraints vpcc = new CellConstraints();
@@ -227,12 +237,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			
 
 				/*
+				 * 
+				 
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
 					*/
-						scanStarten();
-						setzeListener();
+
+				if(scanaktiv){
+					scanStarten();
+				}
+				setzeListener();
 					/*	
 						return null;
 					}
@@ -264,7 +279,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		return tbereich;
 	}
 	public JScrollPane getBildPanel(){
-		bilder = new JXPanel(new FlowLayout());
+		bilder = new JXPanel(new FlowLayout(FlowLayout.LEFT));
 		//dummy1.setBackground(Color.RED);
 		bilder.setOpaque(false);
 		JScrollPane bildscroll = JCompTools.getTransparentScrollPane(bilder);
@@ -285,6 +300,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		jlab.setForeground(Color.BLUE);
 		pb.add(jlab,cc.xy(2,2));
 		pb.addLabel("aktives Gerät:",cc.xy(4, 4));
+		if(! scanaktiv){
+			infolab[0] = new JLabel("Scanner nicht aktiviert");
+			infolab[0].setFont(fon);
+			pb.add(infolab[0],cc.xy(6,4));
+			return pb.getPanel();
+		}
 		infolab[0] = new JLabel(SystemConfig.sDokuScanner);
 		infolab[0].setFont(fon);
 		pb.add(infolab[0],cc.xy(6,4));
@@ -293,7 +314,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		infolab[1].setFont(fon);		
 		pb.add(infolab[1],cc.xy(6,6));
 		pb.addLabel("Auflösung:",cc.xy(8, 4));
-		infolab[2] = new JLabel(SystemConfig.hmDokuScanner.get("aufloesung"));
+		infolab[2] = new JLabel(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		infolab[2].setFont(fon);		
 		pb.add(infolab[2],cc.xy(10,4));
 		pb.addLabel("Seitenformat:",cc.xy(8, 6));
@@ -434,7 +455,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	
 	public JToolBar getToolbar(){
 		JToolBar jtb = new JToolBar();
-		jtb.setOpaque(false);
 		jtb.setRollover(true);
 		jtb.setBorder(null);
 		jtb.setOpaque(false);
@@ -445,14 +465,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setActionCommand("scannen");
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
+		/*
 		dokubut[1] = new JButton();
 		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("save"));
 		dokubut[1].setToolTipText("Speichern der eingescannten Dokumentation");
 		dokubut[1].setActionCommand("dokusave");
 		dokubut[1].addActionListener(this);
 		jtb.add(dokubut[1]);
+		*/
+		
 
-		jtb.addSeparator(new Dimension(20,0));
+		//jtb.addSeparator(new Dimension(20,0));
 		/*
 		jtb.add(dokubut[0]);
 		farbe = new JComboBox(new String[]{"Schwarz/Weiß","Graustufen","Farbe"});
@@ -468,12 +491,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		*/
 		
 		
-		dokubut[2] = new JButton();
-		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		dokubut[2].setToolTipText("Scannereinstellungen ändern");
-		dokubut[2].setActionCommand("scanedit");
-		dokubut[2].addActionListener(this);		
-		jtb.add(dokubut[2]);
+		dokubut[1] = new JButton();
+		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		dokubut[1].setToolTipText("Scannereinstellungen ändern");
+		dokubut[1].setActionCommand("scanedit");
+		dokubut[1].addActionListener(this);		
+		jtb.add(dokubut[1]);
+		if(!scanaktiv){
+			dokubut[0].setEnabled(false);
+			dokubut[1].setEnabled(false);
+			//dokubut[2].setEnabled(false);
+		}
 		/*
 		dokubut[2] = new JButton();
 		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
@@ -514,51 +542,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 * 
 	 */
-	public void doRechneHistorie(){
-		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
-		int rows = tabhistorie.getRowCount();
-		if(rows <= 0){
-			JOptionPane.showMessageDialog(null, "Für diesen Patient wurde noch keine Verordnung abgerechnet!");
-			return;
-		}
-		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
-		Double gesamtumsatz = new Double(0.00); 
-		DecimalFormat dfx = new DecimalFormat( "0.00" );
-		for(int i = 0; i < rows;i++){
-			String suchrez = (String)tabhistorie.getValueAt(i,6);
-			Vector vec = SqlInfo.holeSatz("lza", felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
-			if(vec.size() > 0){
-				BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
-				for(int anz = 0;anz <4;anz++){
-					preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
-//					System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
-//					System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
-					gesamtumsatz = gesamtumsatz+preispos.doubleValue();
-				}
-			}
-		}
-		/*
-		String ums = "Gesamtumsatz von Patient "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
-		JOptionPane.showMessageDialog(null,ums);
-		*/
-		String msg = "<html>Gesamtumsatz von Patient --> "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+"   <br><br><p><b><font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br>";
-
-	    JOptionPane optionPane = new JOptionPane();
-	    optionPane.setMessage(msg);
-	    optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
-	    String xtitel = "";
-	    if(gesamtumsatz < 1000.00){
-	    	xtitel ="könnte besser sein...";
-	    }else if(gesamtumsatz > 1000.00 && gesamtumsatz < 2000.00){
-	    	xtitel ="geht doch...";
-	    }else if(gesamtumsatz > 2000.00){
-	    	xtitel ="'Sternle-Patient' bitte warmhalten...";
-	    }
-	    JDialog dialog = optionPane.createDialog(null, xtitel);
-	    dialog.setVisible(true);
-	}
 	/******************
 	 * 
 	 * 
@@ -590,9 +573,25 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			ScannerUtil su = new ScannerUtil(new Point(pt.x,pt.y+32));
 			su.setModal(true);
 			su.setVisible(true);
+			updateInfoLab();
 			return;			
 		}
 		
+	}
+	private void updateInfoLab(){
+		if(!infolab[0].getText().equals(SystemConfig.sDokuScanner)){
+			try {
+				scanner.select(SystemConfig.sDokuScanner);
+			} catch (ScannerIOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			infolab[0].setText(SystemConfig.sDokuScanner);
+		}
+		infolab[1].setText(SystemConfig.hmDokuScanner.get("farben"));
+		infolab[2].setText(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
+		infolab[3].setText(SystemConfig.hmDokuScanner.get("seiten"));
+		infolab[4].setText( (SystemConfig.hmDokuScanner.get("dialog").equals("1") ? "ja" : "nein"));
 	}
 	
 	@Override
@@ -626,16 +625,41 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 */
 	public void scanStarten(){
-		if(SystemConfig.sDokuScanner.equals("Scanner nicht aktiviert!") || 
+		if((!scanaktiv) || 
 				SystemConfig.sDokuScanner.equals("") ){
 			System.out.println("Scanner = null");
 			return;
 		}
-	    scanner = Scanner.getDevice();
+		if(scanner == null){
+			scanner = Scanner.getDevice();	
+		}
+	    
 	    try {
 			String[] names = scanner.getDeviceNames();
 			for(int i = 0; i < names.length;i++){
-				System.out.println("Device["+i+"] = "+names[i]);
+				//System.out.println("Device["+i+"] = "+names[i]);
+				char[] c1 = names[0].toCharArray();
+				byte[] b1 = names[0].getBytes();
+
+				try {
+					char[] c2 = URLDecoder.decode(names[0],"UTF-8").toCharArray();
+					byte[] b2 = URLDecoder.decode(names[0],"UTF-8").getBytes();
+					for(int y = 0; y < c1.length; y++){
+						System.out.println("Char "+(y+1)+" = "+c1[y]);	
+						System.out.println("Byte "+(y+1)+" = "+b1[y]);
+						System.out.println("Char "+(y+1)+" = "+c2[y]);
+						System.out.println("Byte "+(y+1)+" = "+b2[y]);
+					}
+
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				if(names[i].equals(SystemConfig.sDokuScanner)){
+					deviceinstalled = true;
+				}
 			}
 		} catch (ScannerIOException e2) {
 			// TODO Auto-generated catch block
@@ -643,7 +667,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 	    
 	    try {
-	    	scanner.select(SystemConfig.sDokuScanner);
+	    	if(deviceinstalled){
+	    		scanner.select(SystemConfig.sDokuScanner);	
+	    	}else{
+	    		if(infolab[0] != null){
+	    			infolab[0].setText(scanner.getSelectedDeviceName());
+	    		}
+	    		/*
+	    		String meldung = "Der in der System-Initialisierung angegebene Dokumentenscanner\n"+
+	    		"-> "+SystemConfig.sDokuScanner+" <-\n"+
+	    		"ist auf Ihrem Computersystem nicht installiert!\n"+
+	    		"Bitte ändern Sie die Einstellung inder System-Initialisierung gemäß Ihrem Computersystem";
+	    		JOptionPane.showMessageDialog(null,meldung);
+	    		*/
+	    	}
+	    	
 		} catch (ScannerIOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -660,7 +698,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
                 			source.setCapability(TwainSource.ICAP_XRESOLUTION, new Double(SystemConfig.hmDokuScanner.get("aufloesung")));
                 			source.setCapability(TwainSource.ICAP_YRESOLUTION, new Double(SystemConfig.hmDokuScanner.get("aufloesung")));
                 			source.setRegionOfInterest(0.0, 0.0, 215.0, 297.0);
-            	            TwainImageInfo imageInfo=new TwainImageInfo(source); 
+            	            TwainImageInfo imageInfo=new TwainImageInfo(source);
+            	            source.setImageFileFormat(TwainSource.DAT_JPEGCOMPRESSION);
             			}catch(Exception e){
             	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
             			}
@@ -681,12 +720,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					
 				}else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
             		if(metadata.isFinished()){
+            			if(metadata.getImage() != null){
+            				zeigeBilder(metadata.getImage());
+        					BufferedImage img = metadata.getImage();	
+        	                img = null;
+        	                Runtime r = Runtime.getRuntime();
+        	        	    r.gc();
+        	        	    long freeMem = r.freeMemory();
+        	        	    System.out.println("Freier Speicher "+freeMem);
+            			}
             	        System.out.println("Scanvorgang wurde beendet");
             	      }
 				}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
 					
 				}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
-	                  zeigeBilder(metadata.getImage());
+					//zeigeBilder(metadata.getImage());
 				}
 	        }
 	    });    
@@ -697,26 +745,53 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 */
 	public void zeigeBilder(BufferedImage img){
+		if(bildnummer==0){
+			bilder.add(setzePlusMinus());
+			bilder.validate();
+		}
+
 		bildnummer++;
 		String name = "Bildnummer-"+bildnummer; 
 		LabName.add(name);
 		ImageIcon icon = new ImageIcon((Image)img.getScaledInstance(50, 65,Image.SCALE_SMOOTH));
-		Bilder.add(img);
-		JLabel lab = new JLabel("Seite-"+Bilder.size());
+
+		JLabel lab = new JLabel("Seite-"+(Bilder.size()+1));
+		lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
 		lab.addMouseListener(mlist);
 		lab.setName(name);
+		lab.setToolTipText("Doppelklick um "+lab.getText()+" zu öffnen");
 		lab.setHorizontalTextPosition(JLabel.CENTER);
 		lab.setVerticalTextPosition(JLabel.BOTTOM);
 		lab.setIcon(icon);
 		Labels.add(lab);
+	  	String tempName = SystemConfig.hmVerzeichnisse.get("Temp")+"/doku"+System.currentTimeMillis()+".jpg";
+		try {
+			ImageIO.write((RenderedImage) img,
+					"jpg", 
+					new File(tempName) ) ;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Bilder.add(tempName);  
+
 		bilder.add(lab);
 		bilder.validate();
 	}
 	public void pdfZeigen(int seite){
 		  try {
 			  	
-				byte[] bild = GrafikTools.bufferedImageToByteArray(Bilder.get(seite));
-				com.lowagie.text.Image jpg1 = com.lowagie.text.Image.getInstance(bild);  
+				//byte[] bild = GrafikTools.bufferedImageToByteArray(Bilder.get(seite));
+			  	//String tempName = SystemConfig.hmVerzeichnisse.get("Temp")+"/doku"+System.currentTimeMillis()+".jpg";
+			  	/*
+			  	ImageIO.write((RenderedImage) Bilder.get(seite),
+						"jpg", 
+						new File(tempName) ) ;
+			  	*/
+
+				com.lowagie.text.Image jpg1 = com.lowagie.text.Image.getInstance(Bilder.get(seite));  
 				float imgHeight = jpg1.getPlainHeight();
 				imgHeight = jpg1.getScaledHeight();
 				float imgWidth = jpg1.getPlainWidth();
@@ -733,9 +808,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					document.setPageSize(PageSize.A4);
 				}
 
-				document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
 				//Document document = new Document(pageSize);          
-				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/Temp.pdf";
+				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+System.currentTimeMillis()+".pdf";
 				PdfWriter.getInstance(document, new FileOutputStream(datname));  
 	      
 				document.open(); 
@@ -765,9 +839,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				*/				
 			
-			} catch (ImageFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -780,6 +851,51 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}	  
 		
 	}
+	public JXPanel setzePlusMinus(){
+		plusminus = new JXPanel();
+		plusminus.setOpaque(false);
+		JToolBar jtbpm = new JToolBar();
+		jtbpm.setRollover(true);
+		jtbpm.setBorder(null);
+		jtbpm.setOpaque(false);
+		
+		JButton jbt = new JButton();
+		jbt.setIcon(SystemConfig.hmSysIcons.get("save"));
+		jbt.setToolTipText("Seiten zusammenführen und Dokumentation erstellen");
+		jbt.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Doku speichern");
+				scanner = null;
+                Runtime r = Runtime.getRuntime();
+        	    r.gc();
+        	    long freeMem = r.freeMemory();
+        	    System.out.println("Freier Speicher "+freeMem);
+				
+			}
+		});
+		jtbpm.add(jbt);
+		
+		jbt = new JButton();
+		jbt.setIcon(SystemConfig.hmSysIcons.get("delete"));
+		jbt.setToolTipText("Aktive Dokuseite löschen");
+		jbt.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Doku - löschen");
+				scanner = null;
+                Runtime r = Runtime.getRuntime();
+        	    r.gc();
+        	    long freeMem = r.freeMemory();
+        	    System.out.println("Freier Speicher "+freeMem);
+
+			}
+		});
+		jtbpm.add(jbt);
+		jtbpm.addSeparator(new Dimension(15,0));
+		plusminus.add(jtbpm);
+		return plusminus;
+	}
 	
 	public void setzeListener(){
 		mlist = new MouseListener(){
@@ -790,18 +906,25 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					System.out.println("LabeName = "+((JComponent)arg0.getSource()).getName());
 					int seite = new Integer( ((JComponent)arg0.getSource()).getName().split("-")[1] );
 					pdfZeigen(seite-1);
+				}else if(arg0.getClickCount()==1){
+					if(aktivesBild > 0){
+						int bild = new Integer( Labels.get(aktivesBild-1).getText().split("-")[1]); 
+						Labels.get(bild-1).setBorder(BorderFactory.createLineBorder(Color.BLACK));
+					}
+					aktivesBild = new Integer( ((JLabel)((JComponent)arg0.getSource())).getText().split("-")[1] );
+					Labels.get(aktivesBild-1).setBorder(BorderFactory.createLineBorder(Color.RED));
 				}
 				
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				((JComponent)arg0.getSource()).setBorder(BorderFactory.createLineBorder(Color.RED));
+				
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				((JComponent)arg0.getSource()).setBorder(null);				
+								
 			}
 
 
