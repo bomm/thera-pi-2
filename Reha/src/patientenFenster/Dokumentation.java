@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +37,7 @@ import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -89,6 +91,7 @@ import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
 import uk.co.mmscomputing.device.scanner.ScannerListener;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata.Type;
+import uk.co.mmscomputing.device.twain.TwainConstants;
 import uk.co.mmscomputing.device.twain.TwainIOMetadata;
 import uk.co.mmscomputing.device.twain.TwainImageInfo;
 import uk.co.mmscomputing.device.twain.TwainImageLayout;
@@ -105,7 +108,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
 //import com.lowagie.text.Image;
 
-public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
+public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener, ScannerListener{
 	public static Dokumentation dokumentation = null;
 	JXPanel leerPanel = null;
 	//JXPanel vollPanel = null;
@@ -142,6 +145,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public boolean scanaktiv = false;
 	public int aktivesBild = 0;
 	public JXPanel plusminus;
+	public JPanel leerInfo = null;
 	Scanner scanner;
 	public Dokumentation(){
 		super();
@@ -153,7 +157,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		leerPanel = new KeinRezept("noch keine Dokumentation angelegt für diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
-		leerPanel.add(getInfoPanel(),BorderLayout.SOUTH);
+		leerInfo = getInfoPanel();
+		leerPanel.add(leerInfo,BorderLayout.SOUTH);
 		
 		/********dann das volle**************/		
 		JXPanel allesrein = new JXPanel(new BorderLayout());
@@ -560,10 +565,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				this.setzeRezeptPanelAufNull(false);
 			}
 			try {
+				if(scanner==null){
+					System.out.println("Neustart des Scannersystems erforderlich");
+					scanStarten();					
+				}
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				scanner.acquire();
 			} catch (ScannerIOException e) {
 				// TODO Auto-generated catch block
 				System.out.println("***************Fehler beim scannen*******************");
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				e.printStackTrace();
 			}
 				
@@ -573,7 +584,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			ScannerUtil su = new ScannerUtil(new Point(pt.x,pt.y+32));
 			su.setModal(true);
 			su.setVisible(true);
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			updateInfoLab();
+			
 			return;			
 		}
 		
@@ -592,6 +610,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		infolab[2].setText(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		infolab[3].setText(SystemConfig.hmDokuScanner.get("seiten"));
 		infolab[4].setText( (SystemConfig.hmDokuScanner.get("dialog").equals("1") ? "ja" : "nein"));
+		bilder.validate();
+		leerInfo.validate();
 	}
 	
 	@Override
@@ -637,25 +657,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	    try {
 			String[] names = scanner.getDeviceNames();
 			for(int i = 0; i < names.length;i++){
-				//System.out.println("Device["+i+"] = "+names[i]);
-				char[] c1 = names[0].toCharArray();
-				byte[] b1 = names[0].getBytes();
-
-				try {
-					char[] c2 = URLDecoder.decode(names[0],"UTF-8").toCharArray();
-					byte[] b2 = URLDecoder.decode(names[0],"UTF-8").getBytes();
-					for(int y = 0; y < c1.length; y++){
-						System.out.println("Char "+(y+1)+" = "+c1[y]);	
-						System.out.println("Byte "+(y+1)+" = "+b1[y]);
-						System.out.println("Char "+(y+1)+" = "+c2[y]);
-						System.out.println("Byte "+(y+1)+" = "+b2[y]);
-					}
-
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 				
 				if(names[i].equals(SystemConfig.sDokuScanner)){
 					deviceinstalled = true;
@@ -686,65 +687,169 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	    scanner.addListener( new ScannerListener()
-	    {
-	        public void update( ScannerIOMetadata.Type type, ScannerIOMetadata metadata )
-	        {
-				if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
-					ScannerDevice device=metadata.getDevice();
-              		if(metadata instanceof TwainIOMetadata){
-            			TwainSource source = ((TwainIOMetadata)metadata).getSource();
-            			try{
-                			source.setCapability(TwainSource.ICAP_XRESOLUTION, new Double(SystemConfig.hmDokuScanner.get("aufloesung")));
-                			source.setCapability(TwainSource.ICAP_YRESOLUTION, new Double(SystemConfig.hmDokuScanner.get("aufloesung")));
-                			source.setRegionOfInterest(0.0, 0.0, 215.0, 297.0);
-            	            TwainImageInfo imageInfo=new TwainImageInfo(source);
-            	            source.setImageFileFormat(TwainSource.DAT_JPEGCOMPRESSION);
-            			}catch(Exception e){
-            	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
-            			}
-            			try{
-            				TwainImageLayout imageLayout=new TwainImageLayout(source);
-            				imageLayout.get();
-            			}catch(Exception e){
-            	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image layout.\n\t"+e);
-            			}
-              	      try{
-            	    	  device.setShowUserInterface((SystemConfig.hmDokuScanner.get("dialog").equals("1") ? true :false) );
-            	    	  device.setShowProgressBar(true);
-            	      }catch(Exception e){
-            	        e.printStackTrace();
-            	      }
-            			
-            		}
-					
-				}else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
-            		if(metadata.isFinished()){
-            			if(metadata.getImage() != null){
-            				zeigeBilder(metadata.getImage());
-        					BufferedImage img = metadata.getImage();	
-        	                img = null;
-        	                Runtime r = Runtime.getRuntime();
-        	        	    r.gc();
-        	        	    long freeMem = r.freeMemory();
-        	        	    System.out.println("Freier Speicher "+freeMem);
-            			}
-            	        System.out.println("Scanvorgang wurde beendet");
-            	      }
-				}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
-					
-				}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
-					//zeigeBilder(metadata.getImage());
-				}
-	        }
-	    });    
+	    scanner.addListener( this);    
 		
 	}
+	private Double[] getDims(String seite){
+		List list = Arrays.asList( new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"});
+		String[] dims = new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"};
+		Double[][] d =  new Double[][]  {{4.23,5.82},{4.23,5.82},{5.82,8.26},{5.82,8.26},{8.26,11.69},{8.26,11.69}};
+		Double[] ret = {8.26,11.69};		
+		System.out.println(seite);
+		String vergleich = seite;
+		String seiten = "";
+		ret = d[list.indexOf(seite)].clone();
+		
+		return ret;
+	}
+	@Override
+	public void update( ScannerIOMetadata.Type type, ScannerIOMetadata metadata ) {
+		
+		// TODO Auto-generated method stub
+		if ( ScannerIOMetadata.NEGOTIATE.equals(type)){
+			ScannerDevice device=metadata.getDevice();
+      		if(metadata instanceof TwainIOMetadata){
+      			System.out.println(" Übergebe Seite an Funktion "+SystemConfig.hmDokuScanner.get("seiten"));
+      			Double[] setDim = getDims(SystemConfig.hmDokuScanner.get("seiten"));
+    			TwainSource source = ((TwainIOMetadata)metadata).getSource();
+    			try{
+    				int dpi= new Integer(SystemConfig.hmDokuScanner.get("aufloesung"));
+    				source.getCapability(TwainConstants.ICAP_UNITS,TwainConstants.MSG_GETCURRENT).setCurrentValue(TwainConstants.TWUN_INCHES);
+    				source.getCapability(TwainConstants.ICAP_XRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi);
+    				source.getCapability(TwainConstants.ICAP_YRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi); 
+
+    				if(SystemConfig.hmDokuScanner.get("farben").equals("Schwarz/Weiß")){
+    					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_BW); 
+    				}else if(SystemConfig.hmDokuScanner.get("farben").equals("Graustufen")){
+    					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_GRAY); 
+    				}else{
+    					SystemConfig.hmDokuScanner.get("farben").equals("Farbe");
+    					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_RGB); 
+    				}
+    				 
+    				TwainImageLayout imageLayout=new TwainImageLayout(source);
+    				imageLayout.get();
+    				//System.out.println(imageLayout);
+    				
+                                             
+    				imageLayout.setLeft(0.0);
+    				imageLayout.setTop(0.0);
+    				imageLayout.setRight(setDim[0]);
+    				imageLayout.setBottom(setDim[1]);
+    				imageLayout.set();
+					
+    				
+    				
+    				System.out.println("Seitenbreite = "+setDim[0]+" / Seitenhöhe = "+setDim[1]);
+
+    				source.getCapability(TwainConstants.ICAP_UNITS,TwainConstants.MSG_GETCURRENT).setCurrentValue(TwainConstants.TWUN_INCHES);
+    				//source.getCapability(TwainConstants.ICAP_PHYSICALWIDTH,TwainConstants.MSG_GETCURRENT).setCurrentValue(setDim[0]);
+    				//source.getCapability(TwainConstants.ICAP_PHYSICALHEIGHT,TwainConstants.MSG_GETCURRENT).setCurrentValue(setDim[1]);  
+    				//source.setRegionOfInterest(0.0, 0.0, setDim[0], setDim[1]);
+
+
+      	    	  device.setShowUserInterface((SystemConfig.hmDokuScanner.get("dialog").equals("1") ? true :false) );
+    	    	  device.setShowProgressBar(true);
+    	    	  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+    			}catch(Exception e){
+    	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
+    			}
+    			
+    		}
+			
+		}else if ( ScannerIOMetadata.STATECHANGE.equals(type)){
+    		if(metadata.isFinished()){
+    			if(metadata.getImage() != null){
+    				/*
+					String fname = "scan"+System.currentTimeMillis()+".jpg";
+			        File file = new File(SystemConfig.hmVerzeichnisse.get("Temp"),fname);
+			        final Image img = metadata.getImage().getScaledInstance(50, 65,Image.SCALE_SMOOTH);
+			        final String pfad = file.getAbsolutePath();
+			        new Thread(){
+			        	public void run(){
+			        		zeigeBilder(img,pfad);		
+			        	}
+			        }.start();
+			        //zeigeBilder(metadata.getImage().getScaledInstance(50, 65,Image.SCALE_SMOOTH),file.getAbsolutePath());        			        
+			        try {
+						ImageIO.write( metadata.getImage(),
+								"jpg", 
+								file ) ;
+						System.out.println("Fertig mit Image schreiben");
+						
+					} catch (IOException e) {
+						System.out.println("Exception in Statechange - isFinished");
+						e.printStackTrace();
+					}
+					*/
+	        	    //scanner.removeListener(this);
+	        	    //scanner = null;
+    				metadata.setImage(null);
+	                Runtime r = Runtime.getRuntime();
+	        	    r.gc();
+	        	    long freeMem = r.freeMemory();
+	        	    System.out.println("Freier Speicher "+freeMem);
+    			}else{
+	                Runtime r = Runtime.getRuntime();
+	        	    r.gc();
+	        	    long freeMem = r.freeMemory();
+    			}
+    	        System.out.println("Scanvorgang wurde beendet");
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    	      }
+		}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
+			System.out.println("Exception in EXEPTION");
+    	    scanner.removeListener(this);
+    	    scanner = null;
+            Runtime r = Runtime.getRuntime();
+    	    r.gc();
+    	    long freeMem = r.freeMemory();
+    	    JOptionPane.showMessageDialog(null,"Bezug des Scans fehlgeschlagen.\nVersuchen Sie es mit einer niedrigeren Auflösung\n\n"+
+    	    		"Ideale Auflösung für Dokumentation: 150dpi");
+    	    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
+			System.out.println("ACUIRED");
+			System.out.println(metadata.getStateStr());
+			if(metadata.getStateStr().contains("Transferring Data")){
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				if(metadata.getImage() != null){
+					String fname = "scan"+System.currentTimeMillis()+".jpg";
+			        File file = new File(SystemConfig.hmVerzeichnisse.get("Temp"),fname);
+			        //zeigeBilder(metadata.getImage().getScaledInstance(50, 65,Image.SCALE_SMOOTH),file.getAbsolutePath());        			        
+			        try {
+						ImageIO.write( metadata.getImage(),
+								"jpg", 
+								file ) ;
+						System.out.println("Fertig mit Image schreiben");
+				        final Image img = metadata.getImage().getScaledInstance(50, 65,Image.SCALE_SMOOTH);
+				        final String pfad = file.getAbsolutePath();
+				        new Thread(){
+				        	public void run(){
+				        		zeigeBilder(img,pfad);		
+				        	}
+				        }.start();
+					} catch (IOException e) {
+						System.out.println("Exception in Statechange - ACOUIRED");
+						e.printStackTrace();
+					}
+				}else{
+					System.out.println("ImageDate = null");
+				}
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+
+			//zeigeBilder(metadata.getImage());
+		}
+
+		
+	}   
+
 	/**************************************************
 	 * 
 	 * 
 	 */
-	public void zeigeBilder(BufferedImage img){
+	public void zeigeBilder(Image img,String datei){
 		if(bildnummer==0){
 			bilder.add(setzePlusMinus());
 			bilder.validate();
@@ -753,7 +858,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		bildnummer++;
 		String name = "Bildnummer-"+bildnummer; 
 		LabName.add(name);
-		ImageIcon icon = new ImageIcon((Image)img.getScaledInstance(50, 65,Image.SCALE_SMOOTH));
+		ImageIcon icon = new ImageIcon(img);
 
 		JLabel lab = new JLabel("Seite-"+(Bilder.size()+1));
 		lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -765,7 +870,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		lab.setVerticalTextPosition(JLabel.BOTTOM);
 		lab.setIcon(icon);
 		Labels.add(lab);
-	  	String tempName = SystemConfig.hmVerzeichnisse.get("Temp")+"/doku"+System.currentTimeMillis()+".jpg";
+		/*
+		String tempName = SystemConfig.hmVerzeichnisse.get("Temp")+"/doku"+System.currentTimeMillis()+".jpg";
 		try {
 			ImageIO.write((RenderedImage) img,
 					"jpg", 
@@ -775,7 +881,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Bilder.add(tempName);  
+
+		Bilder.add(tempName);
+		*/
+		Bilder.add(datei);
 
 		bilder.add(lab);
 		bilder.validate();
@@ -790,7 +899,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						"jpg", 
 						new File(tempName) ) ;
 			  	*/
-
+			  	
 				com.lowagie.text.Image jpg1 = com.lowagie.text.Image.getInstance(Bilder.get(seite));  
 				float imgHeight = jpg1.getPlainHeight();
 				imgHeight = jpg1.getScaledHeight();
@@ -798,23 +907,33 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				imgWidth = jpg1.getScaledWidth();
 				System.out.println("Höhe   = "+imgHeight);
 				System.out.println("Breite = "+imgWidth);
-				Rectangle pageSize = new Rectangle(imgWidth, imgHeight); 
+				//Rectangle pageSize = new Rectangle(imgWidth, imgHeight); 
+				
 				//Rectangle pageSize = new Rectangle(2150.0f, 2970.0f);
 				//Document document = new Document(pageSize);
 				Document document = new Document();
-				if(imgWidth > imgHeight){
-					document.setPageSize(PageSize.A4.rotate());					
-				}else{
+				if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A4")){
 					document.setPageSize(PageSize.A4);
+				}else if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A5")){
+					document.setPageSize(PageSize.A5);
+				}else if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A6")){
+					document.setPageSize(PageSize.A6);
 				}
-
+				document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
 				//Document document = new Document(pageSize);          
 				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+System.currentTimeMillis()+".pdf";
 				PdfWriter.getInstance(document, new FileOutputStream(datname));  
 	      
 				document.open(); 
-
-				document.add(jpg1);  
+				if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+					document.getPageSize().rotate();
+					jpg1.rotate();
+				}
+				
+				jpg1.scaleAbsoluteHeight(document.getPageSize().getHeight());
+				jpg1.scaleAbsoluteWidth(document.getPageSize().getWidth());
+				document.add(jpg1);
+				
 				document.close();
 				File file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
 				if(!file.exists()){
@@ -1095,7 +1214,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	        }
 	        //System.out.println(output.toString());
 	    }
-	}   
+	}
+
+
 	
 
 }

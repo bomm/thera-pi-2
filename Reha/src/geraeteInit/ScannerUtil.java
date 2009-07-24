@@ -184,7 +184,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		pb.add(jcmbscan[1],cc.xy(4, 4));
 
 		pb.addLabel("Auflösung",cc.xy(2, 6));
-		jcmbscan[2] = new JRtaComboBox(new String[]{"75dpi","100dpi","150dpi","200dpi","300dpi","400dpi","600dpi"});		
+		jcmbscan[2] = new JRtaComboBox(new String[]{"50","75dpi","100dpi","150dpi","200dpi","300dpi"});		
 		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		pb.add(jcmbscan[2],cc.xy(4, 6));
 		
@@ -331,7 +331,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			item = (jcbscan[0].isSelected() ? "1" : "0");
 			SystemConfig.hmDokuScanner.put("dialog", item);
 		}
-		this.dispose();
+		//this.dispose();
 
 	}
 	private void macheAFRHmap(){
