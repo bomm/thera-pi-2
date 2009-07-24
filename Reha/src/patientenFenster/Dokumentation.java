@@ -140,6 +140,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JXPanel bilder = null;
 	public JScrollPane bildscroll = null;
 	public JLabel[] infolab = {null,null,null,null,null};
+	public JLabel[] infolabLeer = {null,null,null,null,null};
 	public MouseListener mlist = null;
 	public boolean deviceinstalled = false;
 	public boolean scanaktiv = false;
@@ -157,7 +158,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		leerPanel = new KeinRezept("noch keine Dokumentation angelegt für diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
-		leerInfo = getInfoPanel();
+		leerInfo = getInfoPanelLeer();
 		leerPanel.add(leerInfo,BorderLayout.SOUTH);
 		
 		/********dann das volle**************/		
@@ -182,12 +183,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		add(JCompTools.getTransparentScrollPane(allesrein),BorderLayout.CENTER);
 		validate();
-		/*
+		
 		new SwingWorker<Void,Void>(){
 
 			@Override
 			protected Void doInBackground() throws Exception {
-			*/
+			
 		
 				// TODO Auto-generated method stub
 				//vollPanel = new JXPanel();
@@ -238,32 +239,24 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				
 				//setzeRezeptPanelAufNull(false);
 
-				/*
-			
-
-				/*
-				 * 
 				 
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-					*/
-
-				if(scanaktiv){
-					scanStarten();
-				}
-				setzeListener();
-					/*	
+						if(scanaktiv){
+							scanStarten();
+						}
+						setzeListener();
 						return null;
 					}
 				}.execute();
-				*/
-				/*
+				
+				
 				return null;
 			}
 		}.execute();
 
-		*/
+
 
 		
 		
@@ -334,6 +327,50 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		pb.getPanel().setPreferredSize(new Dimension(500,100));
 		return pb.getPanel();
 	}
+	public JPanel getInfoPanelLeer(){      // 1   2  3        4                5  6   7         8            9    10
+		FormLayout lay = new FormLayout("2dlu,p,20dlu,right:max(50dlu;p),2dlu,p,20dlu,right:max(50dlu;p),2dlu,p",
+       // 1    2  3    4   5  6   7  8   9
+		"10dlu,p,5dlu,p,1dlu,p,1dlu,p,10dlu");
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder pb = new PanelBuilder(lay);
+		//JPanel dummy2 = new JXPanel();
+		//dummy2.setBackground(Color.RED);
+		Font fon = new Font("Tahoma",Font.BOLD,10);
+		JLabel jlab = new JLabel("Geräte-Info");
+		jlab.setFont(new Font("Tahoma",Font.BOLD,14));
+		jlab.setForeground(Color.BLUE);
+		pb.add(jlab,cc.xy(2,2));
+		pb.addLabel("aktives Gerät:",cc.xy(4, 4));
+		if(! scanaktiv){
+			infolabLeer[0] = new JLabel("Scanner nicht aktiviert");
+			infolabLeer[0].setFont(fon);
+			pb.add(infolabLeer[0],cc.xy(6,4));
+			return pb.getPanel();
+		}
+		infolabLeer[0] = new JLabel(SystemConfig.sDokuScanner);
+		infolabLeer[0].setFont(fon);
+		pb.add(infolabLeer[0],cc.xy(6,4));
+		pb.addLabel("Scanmodus:",cc.xy(4, 6));
+		infolabLeer[1] = new JLabel(SystemConfig.hmDokuScanner.get("farben"));
+		infolabLeer[1].setFont(fon);		
+		pb.add(infolabLeer[1],cc.xy(6,6));
+		pb.addLabel("Auflösung:",cc.xy(8, 4));
+		infolabLeer[2] = new JLabel(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
+		infolabLeer[2].setFont(fon);		
+		pb.add(infolabLeer[2],cc.xy(10,4));
+		pb.addLabel("Seitenformat:",cc.xy(8, 6));
+		infolabLeer[3] = new JLabel(SystemConfig.hmDokuScanner.get("seiten"));
+		infolabLeer[3].setFont(fon);		
+		pb.add(infolabLeer[3],cc.xy(10,6));
+		pb.addLabel("Scannerdialog verwenden:",cc.xy(8, 8));
+		infolabLeer[4] = new JLabel( (SystemConfig.hmDokuScanner.get("dialog").equals("1") ? "ja" : "nein"));
+		infolabLeer[4].setFont(fon);		
+		pb.add(infolabLeer[4],cc.xy(10,8));
+		pb.getPanel().setOpaque(false);
+		pb.getPanel().setPreferredSize(new Dimension(500,100));
+		return pb.getPanel();
+	}
+
 	class DokuPanel extends JXPanel{
 		ImageIcon hgicon;
 		int icx,icy;
@@ -611,7 +648,22 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		infolab[3].setText(SystemConfig.hmDokuScanner.get("seiten"));
 		infolab[4].setText( (SystemConfig.hmDokuScanner.get("dialog").equals("1") ? "ja" : "nein"));
 		bilder.validate();
+
+		if(!infolabLeer[0].getText().equals(SystemConfig.sDokuScanner)){
+			try {
+				scanner.select(SystemConfig.sDokuScanner);
+			} catch (ScannerIOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			infolabLeer[0].setText(SystemConfig.sDokuScanner);
+		}
+		infolabLeer[1].setText(SystemConfig.hmDokuScanner.get("farben"));
+		infolabLeer[2].setText(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
+		infolabLeer[3].setText(SystemConfig.hmDokuScanner.get("seiten"));
+		infolabLeer[4].setText( (SystemConfig.hmDokuScanner.get("dialog").equals("1") ? "ja" : "nein"));
 		leerInfo.validate();
+		
 	}
 	
 	@Override
@@ -849,7 +901,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 * 
 	 */
-	public void zeigeBilder(Image img,String datei){
+	public void zeigeBilder(Image imgx,String datei){
+		Image img = imgx;
 		if(bildnummer==0){
 			bilder.add(setzePlusMinus());
 			bilder.validate();
@@ -858,6 +911,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		bildnummer++;
 		String name = "Bildnummer-"+bildnummer; 
 		LabName.add(name);
+		if(SystemConfig.hmDokuScanner.get("seiten").contains("quer")){
+			BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+			Graphics g = bimage.createGraphics();
+		    
+	        // Paint the image onto the buffered image
+	        g.drawImage(img, 0, 0, null);
+	        g.dispose();
+	        img = GrafikTools.rotate90DX(bimage).getScaledInstance(img.getWidth(null), img.getHeight(null), Image.SCALE_SMOOTH);
+		}
 		ImageIcon icon = new ImageIcon(img);
 
 		JLabel lab = new JLabel("Seite-"+(Bilder.size()+1));
@@ -891,82 +953,76 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	public void pdfZeigen(int seite){
 		  try {
-			  	
-				//byte[] bild = GrafikTools.bufferedImageToByteArray(Bilder.get(seite));
-			  	//String tempName = SystemConfig.hmVerzeichnisse.get("Temp")+"/doku"+System.currentTimeMillis()+".jpg";
-			  	/*
-			  	ImageIO.write((RenderedImage) Bilder.get(seite),
-						"jpg", 
-						new File(tempName) ) ;
-			  	*/
-			  	
-				com.lowagie.text.Image jpg1 = com.lowagie.text.Image.getInstance(Bilder.get(seite));  
-				float imgHeight = jpg1.getPlainHeight();
-				imgHeight = jpg1.getScaledHeight();
-				float imgWidth = jpg1.getPlainWidth();
-				imgWidth = jpg1.getScaledWidth();
-				System.out.println("Höhe   = "+imgHeight);
-				System.out.println("Breite = "+imgWidth);
-				//Rectangle pageSize = new Rectangle(imgWidth, imgHeight); 
-				
-				//Rectangle pageSize = new Rectangle(2150.0f, 2970.0f);
-				//Document document = new Document(pageSize);
+			  setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
 				Document document = new Document();
 				if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A4")){
-					document.setPageSize(PageSize.A4);
+					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+						document.setPageSize(PageSize.A4.rotate());
+					}else{
+						document.setPageSize(PageSize.A4);	
+					}
 				}else if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A5")){
-					document.setPageSize(PageSize.A5);
+					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+						document.setPageSize(PageSize.A5.rotate());
+					}else{
+						document.setPageSize(PageSize.A5);	
+					}
 				}else if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A6")){
-					document.setPageSize(PageSize.A6);
+					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+						document.setPageSize(PageSize.A6.rotate());
+					}else{
+						document.setPageSize(PageSize.A6);	
+					}
 				}
 				document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
-				//Document document = new Document(pageSize);          
 				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+System.currentTimeMillis()+".pdf";
 				PdfWriter.getInstance(document, new FileOutputStream(datname));  
 	      
+				/***************************/
 				document.open(); 
 				if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
-					document.getPageSize().rotate();
-					jpg1.rotate();
+					Image jpg1 = ImageIO.read(new File(Bilder.get(seite)));
+					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+						jpg1 = GrafikTools.rotateImage90SX(jpg1);				}
+					
+					com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(jpg1,null);
+					jpg2.scaleAbsoluteHeight(document.getPageSize().getWidth());
+					jpg2.scaleAbsoluteWidth(document.getPageSize().getHeight());
+					document.add(jpg2);
+				}else{
+					com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(Bilder.get(seite));
+					jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+					jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
+					document.add(jpg2);
 				}
-				
-				jpg1.scaleAbsoluteHeight(document.getPageSize().getHeight());
-				jpg1.scaleAbsoluteWidth(document.getPageSize().getWidth());
-				document.add(jpg1);
-				
 				document.close();
+				/***************************/				
+				
 				File file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
 				if(!file.exists()){
 					JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Adobe-Acrobatreader ist nicht korrekt konfiguriert");
 					return;
 				}
 				try {
-					//Runtime.getRuntime().exec("Temp.pdf");
 		            Runtime.getRuntime().exec(file.getAbsolutePath()+" "+datname);
 		        } catch(IOException e) {
 		            e.printStackTrace();
 		        }
-		        /*
-				String pfad = "C:/Programme/Adobe/Acrobat 8.0/Acrobat/";
-				ProcessBuilder processBuilder = new ProcessBuilder("Arcobat","" ,"datname");
-				processBuilder.directory(new File(pfad));
-				try {
-					processBuilder.start();
-				} catch (IOException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-				*/				
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			} catch (BadElementException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			} catch (DocumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}	  
 		
 	}
