@@ -909,6 +909,15 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "tools")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
 		hmSysIcons.put("tools", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "links")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("links", new ImageIcon(ico));
+
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rechts")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("rechts", new ImageIcon(ico));
+
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "abbruch")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
+		hmSysIcons.put("abbruch", new ImageIcon(ico));
+
 		System.out.println("System-Icons wurden geladen");
 
 		

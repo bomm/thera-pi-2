@@ -476,20 +476,14 @@ private void starteFormulare(){
 	kf.setLocation(pt.x-100,pt.y+25);
 	kf.setModal(true);
 	kf.setVisible(true);
-	iformular = new Integer(formularid.getText());
-	kf = null;
-	if(iformular >=0){
-		String sdatei = formular.get(iformular);
-		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei,null);
+	if(! formularid.getText().equals("") ){
+		iformular = new Integer(formularid.getText());
+		kf = null;
+		if(iformular >=0){
+			String sdatei = formular.get(iformular);
+			OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei,null);
+		}
 	}
-	/*
-	Set entries = SystemConfig.hmAdrPDaten.entrySet();
-    Iterator it = entries.iterator();
-    while (it.hasNext()) {
-      Map.Entry entry = (Map.Entry) it.next();
-      System.out.println(entry.getKey() + "-->" + entry.getValue());
-    }
-    */
 }
 
 public void delete(){
