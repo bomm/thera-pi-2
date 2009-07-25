@@ -1,6 +1,7 @@
 package patientenFenster;
 
 
+
 import geraeteInit.ScannerUtil;
 import hauptFenster.Reha;
 
@@ -30,11 +31,16 @@ import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +48,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -84,6 +91,7 @@ import sqlTools.SqlInfo;
 import sun.awt.image.ImageFormatException;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.JCompTools;
 import uk.co.mmscomputing.device.scanner.Scanner;
@@ -106,8 +114,12 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 //import com.lowagie.text.Image;
+import com.mysql.jdbc.PreparedStatement;
 
 public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener, ScannerListener{
 	public static Dokumentation dokumentation = null;
@@ -138,6 +150,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public Vector<String> LabName = new Vector<String>();
 	int bildnummer=0;
 	public Vector<String>vecBilderPfad = new Vector<String>();
+	public Vector<String>vecBilderFormat = new Vector<String>();
 	public Vector<String>vecPdfPfad = new Vector<String>();
 	public Vector<JLabel>Labels = new Vector<JLabel>();
 	public JXPanel bilderPan = null;
@@ -447,8 +460,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				wechselPanel.remove(vollPanel);
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
+				dokubut[2].setEnabled(false);
+				wechselPanel.validate();
+				wechselPanel.repaint();
 				for(int i = 0; i < 4;i++){
-					dokubut[i].setEnabled(false);
+					//dokubut[i].setEnabled(false);
 				}
 			}
 		}else{
@@ -456,9 +472,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
+				dokubut[1].setEnabled(true);
 				for(int i = 0; i < 4;i++){
 					//dokubut[i].setEnabled(true);
 				}
+				wechselPanel.validate();
+				wechselPanel.repaint();
 			}
 		}
 	}
@@ -514,6 +533,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[2].setToolTipText("Kompletten Vorgang abbrechen");
 		dokubut[2].setActionCommand("Dokuabbruch");
 		dokubut[2].addActionListener(this);
+		dokubut[2].setEnabled(false);
 		jtb.add(dokubut[2]);
 		
 		
@@ -580,6 +600,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				this.setzeRezeptPanelAufNull(false);
 			}
 			try {
+				setzeRezeptPanelAufNull(false);
+//				vollpanel.validate();
 				if(scanner==null){
 					System.out.println("Neustart des Scannersystems erforderlich");
 					scanStarten();					
@@ -607,6 +629,153 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			updateInfoLab();
 			
 			return;			
+		}else if(cmd.equals("Dokusave")){
+			doDokusave();
+			return;
+		}else if(cmd.equals("Dokudelete")){
+			doDokudelete();
+			return;
+		}else if(cmd.equals("Dokuabbruch")){
+			loescheBilderPan();
+			return;
+		}
+		
+		
+	}
+	private void doDokudelete(){
+		if(this.aktivesBild <= 0){
+			JOptionPane.showMessageDialog(null, "Es wurde keine Seite zum Löschen ausgewählt");	
+			return;
+		}
+		if(vecBilderPfad.size()==1){
+			loescheBilderPan();
+			return;
+		}
+		bilderPan.remove(Labels.get(aktivesBild-1));
+		vecBilderPfad.removeElementAt(aktivesBild-1);
+		vecBilderPfad.trimToSize();
+		vecPdfPfad.removeElementAt(aktivesBild-1);
+		vecPdfPfad.trimToSize();
+		vecBilderFormat.removeElementAt(aktivesBild-1);
+		vecBilderFormat.trimToSize();
+		Labels.removeElementAt(aktivesBild-1);
+		Labels.trimToSize();
+		aktivesBild = 0;
+		for(int i = 0;i < Labels.size();i++){
+			Labels.get(i).setText("Seite-"+(i+1));
+			Labels.get(i).setName("Label-"+(i+1));
+		}
+		bilderPan.validate();
+		bilderPan.repaint();
+		
+	}
+	private Rectangle getLowagieForm(String format){
+		Rectangle[] rec = {PageSize.A6,PageSize.A6.rotate(),
+				PageSize.A5,PageSize.A5.rotate(),PageSize.A4,PageSize.A4.rotate()};
+		String[] forms ={"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"};
+		for(int i = 0;i< forms.length;i++){
+			if(forms[i].equals(format)){
+				return rec[i];
+			}
+		}
+		return rec[0];
+	}
+	private void doDokusave(){
+		Document document = null;
+		for(int i = 0;i<vecBilderPfad.size();i++){
+			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
+			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
+			System.out.println("Das Format = "+format);
+			document = new Document();
+			document.setPageSize(format);	
+			document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
+			try {
+				PdfWriter writer = PdfWriter.getInstance(document, new  FileOutputStream(SystemConfig.hmVerzeichnisse.get("Temp")+"/pdfDokuSeite"+(i+1)+".pdf"));
+			document.open(); 
+			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
+			jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+			jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
+			document.add(jpg2);
+
+			document.close();
+			Thread.sleep(100);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	
+		
+		PdfReader reader = null;
+		PdfCopy copy = null;
+		for(int i = 0;i<vecBilderPfad.size();i++){
+			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
+			System.out.println("Das Format = "+format);
+			
+			try {
+				reader = new PdfReader(SystemConfig.hmVerzeichnisse.get("Temp")+"/pdfDokuSeite"+(i+1)+".pdf");
+				if(i==0){
+					document = new Document(reader.getPageSizeWithRotation(1));
+					copy = new PdfCopy(document,
+							new FileOutputStream(SystemConfig.hmVerzeichnisse.get("Temp")+"/FertigeDoku.pdf"));
+					document.open();
+				}
+				copy.addPage(copy.getImportedPage(reader,1));
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		document.close();
+		document = null;
+		
+		loescheBilderPan();
+	}
+	private void loescheBilderPan(){
+		System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "scan",".jpg"));
+		System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "pdf",".pdf"));
+		for(int i = 0 ; i < Labels.size(); i++){
+			bilderPan.remove(Labels.get(i));
+			Labels.get(i).setVisible(false);
+		}
+		bilderPan.remove(plusminus);
+		plusminus.setVisible(false);
+		plusminus = null;
+		Labels.clear();
+		vecBilderPfad.clear();
+		vecPdfPfad.clear();
+		vecBilderFormat.clear();
+		bildnummer = 0;
+		if(scanner != null){
+			scanner.removeListener(this);
+			scanner = null;
+
+		}
+		for(int i = 0 ; i < Labels.size(); i++){
+			Labels.set(i,null);
+		}
+		dokubut[2].setEnabled(false);
+		bilderPan.validate();
+		bilderPan.repaint();
+		
+		if(this.dtblm.getRowCount()==0){
+			this.setzeRezeptPanelAufNull(true);
 		}
 		
 	}
@@ -759,6 +928,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	        	    long freeMem = r.freeMemory();
 	        	    System.out.println("Freier Speicher "+freeMem);
     			}else{
+        			try {
+    					scanner.getDevice().setCancel(true);
+    				} catch (ScannerIOException e) {
+    					// TODO Auto-generated catch block
+    					e.printStackTrace();
+    				}
 	                Runtime r = Runtime.getRuntime();
 	        	    r.gc();
 	        	    long freeMem = r.freeMemory();
@@ -844,42 +1019,49 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		lab.setIcon(icon);
 		Labels.add(lab);
 		vecBilderPfad.add(datei);
+		vecBilderFormat.add(infolabLeer[3].getText());
 		String pdfPfad = "pdf"+commonname+".pdf";
 		vecPdfPfad.add(pdfPfad);
 		if(vecBilderPfad.size()==1){
 			bilderPan.add(setzePlusMinus());
-			pmbut[0].setEnabled(false);
+			dokubut[2].setEnabled(true);
+			pmbut[0].setEnabled(true);
 			pmbut[2].setEnabled(false);
 			pmbut[3].setEnabled(false);
 			bilderPan.validate();
 		}else if(vecBilderPfad.size() >1 ){
 			pmbut[0].setEnabled(true);
-			pmbut[2].setEnabled(true);
-			pmbut[3].setEnabled(true);
+			pmbut[2].setEnabled(false);
+			pmbut[3].setEnabled(false);
 		}
 		
 		bilderPan.add(lab);
 		bilderPan.validate();
 	}
+	/*********************
+	 * 
+	 * 
+	 * 
+	 */
 	public void pdfZeigen(int seite){
 		  try {
 			  setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
 				Document document = new Document();
-				if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A4")){
-					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+				if(vecBilderFormat.get(seite).contains("Din A4")){
+					if( vecBilderFormat.get(seite).contains("quer") ){
 						document.setPageSize(PageSize.A4.rotate());
 					}else{
 						document.setPageSize(PageSize.A4);	
 					}
-				}else if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A5")){
-					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+				}else if(vecBilderFormat.get(seite).contains("Din A5")){
+					if( vecBilderFormat.get(seite).contains("quer") ){
 						document.setPageSize(PageSize.A5.rotate());
 					}else{
 						document.setPageSize(PageSize.A5);	
 					}
-				}else if(SystemConfig.hmDokuScanner.get("seiten").contains("Din A6")){
-					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
+				}else if(vecBilderFormat.get(seite).contains("Din A5")){
+					if(  vecBilderFormat.get(seite).contains("quer") ){
 						document.setPageSize(PageSize.A6.rotate());
 					}else{
 						document.setPageSize(PageSize.A6);	
@@ -982,6 +1164,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		pmbut[2].setToolTipText("Seiten nach links verschieben");
 		pmbut[2].setActionCommand("Dokulinks");
 		pmbut[2].addActionListener(this);
+		pmbut[2].setEnabled(false);
 		jtbpm.add(pmbut[2]);
 
 		pmbut[3] = new JButton();
@@ -989,6 +1172,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		pmbut[3].setToolTipText("Seiten nach rechts verschieben");
 		pmbut[3].setActionCommand("Dokurechts");
 		pmbut[3].addActionListener(this);
+		pmbut[3].setEnabled(false);		
 		jtbpm.add(pmbut[3]);
 		plusminus.add(jtbpm,cc.xy(1,2));
 		
@@ -1227,6 +1411,46 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 
 
+	public static void SpeichereBilder(){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		boolean ret = false;
+		int bilder = 0;
+	
+		//piTool.app.conn.setAutoCommit(true);
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE );
+			
+			String select = "Insert into doku1 set dokuid = ? , datum = ?, dokutitel = ?,"+
+			"benutzer = ?, pat_intern = ?, format = ?,"+
+			"dokutext = ?, dokublob = ? ";
+			  PreparedStatement ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+
+			  ps.execute();
+			  
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+				if (stmt != null) {
+					try {
+						stmt.close();
+					} catch (SQLException sqlEx) { // ignore }
+						stmt = null;
+					}
+				}
+			}
+		}
+		
+	}
 	
 
 }

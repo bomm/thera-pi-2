@@ -189,7 +189,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		pb.add(jcmbscan[2],cc.xy(4, 6));
 		
 		pb.addLabel("Seitenformat",cc.xy(2, 8));
-		jcmbscan[3] = new JRtaComboBox(new String[]{"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"});		
+		//jcmbscan[3] = new JRtaComboBox(new String[]{"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"});
+		jcmbscan[3] = new JRtaComboBox(new String[]{"Din A6","Din A5","Din A4"});		
 		jcmbscan[3].setSelectedItem(SystemConfig.hmDokuScanner.get("seiten"));
 		pb.add(jcmbscan[3],cc.xy(4, 8));
 		
