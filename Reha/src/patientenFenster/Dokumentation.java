@@ -443,8 +443,28 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/pdf"+tabdokus.getValueAt(row, 0)+".pdf";
 					System.out.println("Starte doku holen");
 					String sid = (String)tabdokus.getValueAt(row, 6);
-					rehaSplash = new RehaSplash(null,"Hole Dokumentation "+sid+" vom Server");
 					setCursor(new Cursor(Cursor.WAIT_CURSOR));
+					final String xid = sid;
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							rehaSplash = new RehaSplash(null,"Hole Dokumentation "+xid+" vom Server");
+							rehaSplash.setVisible(true);
+							long zeit = System.currentTimeMillis();
+							while(rehaSplash != null){
+								Thread.sleep(100);
+								rehaSplash.toFront();
+								rehaSplash.setVisible(true);
+								if(System.currentTimeMillis()-zeit > 2000){
+									break;
+								}
+								
+							}
+							return null;
+						}
+						
+					}.execute();
+					
 					holeDoku(sdatei,sid);
 					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
@@ -689,6 +709,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			return;			
 		}else if(cmd.equals("Dokusave")){
 			rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
+			rehaSplash.setVisible(true);
 			doDokusave();
 			rehaSplash.dispose();
 			rehaSplash = null;
