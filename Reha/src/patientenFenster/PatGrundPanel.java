@@ -181,7 +181,13 @@ public Vector vecakthistor = null;
 
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
-public String[] tabTitel = {"<html>aktuelle Rezepte","<html>Rezept-Historie","<html>Therapieberichte","<html>Dokumentation","<html>Gutachten","Arzt & KK","Plandaten"};
+final public String[] tabTitel = {"<html>aktuelle Rezepte",
+									"<html>Rezept-Historie",
+									"<html>Therapieberichte",
+									"<html>Dokumentation",
+									"<html>Gutachten",
+									"<html>Arzt & KK",
+									"<html>Plandaten"};
 
 public JTabbedPane jtab = null;
 
@@ -1009,6 +1015,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 		aktPatID = new String(xpatint);
 		final String xrez = evt.getDetails()[2].trim();
 		// Anzeigedaten holen
+
 		new Thread(){
 			public void run(){
 				new SwingWorker<Void,Void>(){
@@ -1051,6 +1058,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
+
 		// Rezeptdaten holen
 		new Thread(){
 			public void run(){		
@@ -1069,6 +1077,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
+				
 		// Historie holen
 		new Thread(){
 			public void run(){		
@@ -1081,6 +1090,9 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
+		
+		
+		// Berichte holen
 		new Thread(){
 			public void run(){		
 				new SwingWorker<Void,Void>(){
@@ -1092,7 +1104,20 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
-
+		// Dokumentation holen
+		new Thread(){
+			public void run(){		
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						//dokumentation.holeDokus(xpatint);
+						
+						return null;
+					}
+				}.execute();
+			}
+		}.start();
+		
 	}
 	if(evt.getDetails()[0].equals("#CLOSING")){
 		if(sucheComponent != null){
@@ -1116,7 +1141,6 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 			}
 		}.execute();
 	}
-
 
 }
 

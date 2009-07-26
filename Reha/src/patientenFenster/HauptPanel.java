@@ -395,12 +395,14 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 
 		PatGrundPanel.thisClass.berichte = new TherapieBerichte();
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[2]+" - 0", PatGrundPanel.thisClass.berichte);
-		
+
+
 		PatGrundPanel.thisClass.dokumentation = new Dokumentation();
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", PatGrundPanel.thisClass.dokumentation);
-		
+/*
+		PatGrundPanel.thisClass.jtab.addTab("Probetitel", new JXPanel());
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", new JXPanel());
-
+*/
 		rechts.add(PatGrundPanel.thisClass.jtab,BorderLayout.CENTER);
 		rechts.revalidate();
 		return rechts;

@@ -94,6 +94,7 @@ import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.JCompTools;
+import terminKalender.datFunk;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
@@ -127,19 +128,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	//JXPanel vollPanel = null;
 	JXPanel vollPanel = null;
 	JXPanel wechselPanel = null;
-	public JLabel anzahlTermine= null;
-	public JLabel anzahlRezepte= null;
+	public JLabel anzahlDokus= null;
+	//public JLabel anzahlRezepte= null;
 	public String aktPanel = "";
-	public JXTable tabhistorie = null;
-	public JXTable tabaktterm = null;
+	public JXTable tabdokus= null;
 	public MyDoku2TableModel dtblm;
-	public MyDokuTermTableModel dtermm;
 	public TableCellEditor tbl = null;
-	public boolean rezneugefunden = false;
-	public boolean neuDlgOffen = false;
-	public String[] indphysio = null;
-	public String[] indergo = null;
-	public String[] indlogo = null;
+	//public boolean rezneugefunden = false;
+	//public boolean neuDlgOffen = false;
+	//public String[] indphysio = null;
+	//public String[] indergo = null;
+	//public String[] indlogo = null;
 	public JXPanel jpan1 = null;
 	public JButton[] dokubut = {null,null,null,null,null};
 	public JButton[] pmbut = {null,null,null,null,null};
@@ -215,9 +214,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				vollPanel.setBorder(null);
 				
 				Font font = new Font("Tahome",Font.PLAIN,11);
-				anzahlRezepte = new JLabel("Anzahl gespeicherter Dokumentationen: 0");
-				anzahlRezepte.setFont(font);
-				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
+				anzahlDokus = new JLabel("Anzahl gespeicherter Dokumentationen: 0");
+				anzahlDokus.setFont(font);
+				vollPanel.add(anzahlDokus,vpcc.xy(1,1));
 				
 				vollPanel.add(getTabelle(),vpcc.xywh(1,3,3,1));
 
@@ -393,29 +392,29 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dtblm = new MyDoku2TableModel();
 		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaﬂt am","von","",""};
 		dtblm.setColumnIdentifiers(column);
-		tabhistorie = new JXTable(dtblm);
-		tabhistorie.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
-		tabhistorie.setDoubleBuffered(true);
-		tabhistorie.setEditable(false);
-		tabhistorie.setSortable(false);
-		tabhistorie.getColumn(0).setMaxWidth(50);
+		tabdokus = new JXTable(dtblm);
+		tabdokus.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
+		tabdokus.setDoubleBuffered(true);
+		tabdokus.setEditable(false);
+		tabdokus.setSortable(false);
+		tabdokus.getColumn(0).setMaxWidth(50);
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
-		tabhistorie.getColumn(1).setCellRenderer(renderer);
-		tabhistorie.getColumn(1).setMaxWidth(50);
-		tabhistorie.getColumn(2).setMinWidth(275);
-		tabhistorie.getColumn(3).setMaxWidth(50);
+		tabdokus.getColumn(1).setCellRenderer(renderer);
+		tabdokus.getColumn(1).setMaxWidth(50);
+		tabdokus.getColumn(2).setMinWidth(275);
+		tabdokus.getColumn(3).setMaxWidth(50);
 		//tabhistorie.getColumn(4).setMinWidth(0);
 		//tabhistorie.getColumn(4).setMaxWidth(0);		
-		tabhistorie.getColumn(5).setMinWidth(0);
-		tabhistorie.getColumn(5).setMaxWidth(0);		
-		tabhistorie.getColumn(6).setMinWidth(0);
-		tabhistorie.getColumn(6).setMaxWidth(0);		
-		tabhistorie.validate();
-		tabhistorie.setName("AktRez");
-		tabhistorie.setSelectionMode(0);
+		tabdokus.getColumn(5).setMinWidth(0);
+		tabdokus.getColumn(5).setMaxWidth(0);		
+		tabdokus.getColumn(6).setMinWidth(0);
+		tabdokus.getColumn(6).setMaxWidth(0);		
+		tabdokus.validate();
+		tabdokus.setName("AktRez");
+		tabdokus.setSelectionMode(0);
 		//tabaktrez.addPropertyChangeListener(this);
-		tabhistorie.getSelectionModel().addListSelectionListener( new DokuListSelectionHandler());
-		tabhistorie.addMouseListener(new MouseAdapter(){
+		tabdokus.getSelectionModel().addListSelectionListener( new DokuListSelectionHandler());
+		tabdokus.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2){
@@ -431,7 +430,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 			}
 		});
-		tabhistorie.addKeyListener(new KeyAdapter(){
+		tabdokus.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode()==10){
 					arg0.consume();
@@ -446,7 +445,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		//tabaktrez.getSelectionModel().addListSelectionListener(this);
 		//dtblm.addTableModelListener(this);
 		//dummypan.setPreferredSize(new Dimension(0,100));
-		JScrollPane aktrezscr = JCompTools.getTransparentScrollPane((Component)tabhistorie);
+		JScrollPane aktrezscr = JCompTools.getTransparentScrollPane((Component)tabdokus);
 		aktrezscr.validate(); 
 		aktrezscr.getVerticalScrollBar().setUnitIncrement(15);
 		dummypan.add(aktrezscr,BorderLayout.CENTER);
@@ -574,7 +573,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			dtblm.addRow(vec);	
 		}else{
 			dtblm.setRowCount(0);
-			tabhistorie.validate();
+			tabdokus.validate();
 		}
 		
 	}
@@ -744,7 +743,40 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		document.close();
 		document = null;
+		int dokuid = SqlInfo.erzeugeNummer("doku");
 		
+		  /*
+		   * 
+		    ps.setBytes(1,   //dokuid - integer
+		    ps.setBytes(2,   //datum - date
+		    ps.setBytes(3,   //dokutitel - longtext			    
+		    ps.setBytes(4,   //benutzer - zeichen
+			ps.setBytes(5,   //pat_intern - integer			    			    
+			ps.setBytes(6,   //format - integer
+			ps.setBytes(7,   //dokutext - longtext								
+			ps.setBytes(8,   //dokublob - longblog /bin‰r	
+			public static void doSpeichernDoku(
+			int dokuid,
+			int pat_intern, 
+			String dateiname,
+			int format,
+			Vector<String> vec,
+			boolean neu){			
+		   */
+		try {
+			doSpeichernDoku(
+					dokuid,
+					999999,
+					SystemConfig.hmVerzeichnisse.get("Temp")+"/FertigeDoku.pdf",
+					0,
+					new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},
+					true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("Speichern hat nicht geklappt");
+			e.printStackTrace();
+		}
+
 		loescheBilderPan();
 	}
 	private void loescheBilderPan(){
@@ -822,13 +854,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	
 	void setRezeptDaten(){
-		int row = this.tabhistorie.getSelectedRow();
+		int row = this.tabdokus.getSelectedRow();
 		if(row >= 0){
 			final int xrow = row;
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
-					String reznr = (String)tabhistorie.getValueAt(xrow,0);
-					String id = (String)tabhistorie.getValueAt(xrow,6);
+					String reznr = (String)tabdokus.getValueAt(xrow,0);
+					String id = (String)tabdokus.getValueAt(xrow,6);
 					//jpan1.setRezeptDaten(reznr,id);
 					System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
@@ -1270,18 +1302,20 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
-	public void holeRezepte(String patint,String rez_nr){
+	public void holeDokus(String patint){
 		final String xpatint = patint;
-		final String xrez_nr = rez_nr;
+
 /*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 		*/
+		//{"Doku-Id","Doku-Art","Titel","erfaﬂt am","von","",""};
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("doku", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
-						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
+				Vector vec = SqlInfo.holeSaetze("doku1", 
+						"dokuid,format,dokutitel,DATE_FORMAT(datum,'%d.%m.%Y') AS dokudatum," +
+						"benutzer,pat_intern,id", 
+						"pat_intern='"+xpatint+"' ORDER BY date", Arrays.asList(new String[]{}));
 
 				int anz = vec.size();
 
@@ -1296,57 +1330,24 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					}else if(!((Vector)vec.get(i)).get(1).equals("")){
 						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
 					}
-					//((Vector)vec.get(i)).set(3, PatGrundPanel.thisClass.imgzuzahl[zzbild]);
-					
-					//System.out.println("Inhalt von zzstatus ="+zzbild);
 					dtblm.addRow((Vector)vec.get(i));
 					
 					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[zzbild], i, 1);
-					if(i==0){
-						final int ix = i;
-	                    new Thread(){
-	                    	public void run(){
-	                    		//holeEinzelTermine(ix,null);
-	                    	}
-	                    }.start();
-					}
 				}
 				if(anz > 0){
-					setzeRezeptPanelAufNull(false);
+					this.setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
-					if(xrez_nr.length() > 0){
-						int row = 0;
-						rezneugefunden = true;
-						for(int ii = 0; ii < anz;ii++){
-							if(tabhistorie.getValueAt(ii,0).equals(xrez_nr)){
-								row = ii;
-								break;
-							}
-							
-						}
-						tabhistorie.setRowSelectionInterval(row, row);
-						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
-						tabhistorie.scrollRowToVisible(row);
-						//holeEinzelTermine(row,null);
-						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
-					}else{
-						rezneugefunden = true;
-						tabhistorie.setRowSelectionInterval(0, 0);
-						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
-						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
-					}
-					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
-					PatGrundPanel.thisClass.jtab.setTitleAt(1, PatGrundPanel.thisClass.tabTitel[1]+" - <font color='#ff0000'>"+anz+"</font>");
+					PatGrundPanel.thisClass.jtab.setTitleAt(3, PatGrundPanel.thisClass.tabTitel[3]+" - <font color='#ff0000'>"+anz+"</font>");					
+					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);					
 					wechselPanel.revalidate();
 					wechselPanel.repaint();					
 				}else{
 					setzeRezeptPanelAufNull(true);
-					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
-					PatGrundPanel.thisClass.jtab.setTitleAt(1, PatGrundPanel.thisClass.tabTitel[1]+" - <font color='#000000'>"+anz+"</font>");
+					PatGrundPanel.thisClass.jtab.setTitleAt(3, PatGrundPanel.thisClass.tabTitel[3]+" - <font color='#000000'>"+anz+"</font>");					
+					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: 0");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
-					dtermm.setRowCount(0);
 				}
 				/*					
 				return null;
@@ -1361,10 +1362,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	class DokuListSelectionHandler implements ListSelectionListener {
 
 	    public void valueChanged(ListSelectionEvent e) {
+	    	/*
 			if(rezneugefunden){
 				rezneugefunden = false;
 				return;
 			}
+			*/
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	        
 	        int firstIndex = e.getFirstIndex();
@@ -1411,7 +1414,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 
 
-	public static void SpeichereBilder(){
+	public static void doSpeichernDoku(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
 		Statement stmt = null;;
 		ResultSet rs = null;
 		boolean ret = false;
@@ -1426,13 +1429,33 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			"benutzer = ?, pat_intern = ?, format = ?,"+
 			"dokutext = ?, dokublob = ? ";
 			  PreparedStatement ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
-
+			  /*
+			   * 
+			    ps.setBytes(1,   //dokuid - integer
+			    ps.setBytes(2,   //datum - date
+			    ps.setBytes(3,   //dokutitel - longtext			    
+			    ps.setBytes(4,   //benutzer - zeichen
+				ps.setBytes(5,   //pat_intern - integer			    			    
+				ps.setBytes(6,   //format - integer
+				ps.setBytes(7,   //dokutext - longtext								
+				ps.setBytes(8,   //dokublob - longblog /bin‰r
+				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
+			   */
+			  ps.setInt(1, dokuid);
+			  ps.setString(2, str[0]);			  
+			  ps.setString(3, str[1]);
+			  ps.setString(4, str[2]);			  
+			  ps.setInt(5, pat_intern);
+			  ps.setInt(6, format);			  
+			  ps.setString(7, str[3]);
+			  ps.setBytes(8, FileTools.File2ByteArray(new File(dateiname)));
 			  ps.execute();
-			  
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			  } catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			  }			  
+	  
+							  
 		finally {
 			if (rs != null) {
 				try {
