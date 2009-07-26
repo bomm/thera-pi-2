@@ -17,7 +17,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class RehaSplash extends JXDialog{
-	
+	public JLabel lbl = null;
 	public static RehaSplash thisClass;
 	public RehaSplash(Image img,String string){
 		super((JComponent)Reha.thisFrame.getGlassPane());
@@ -39,11 +39,23 @@ public class RehaSplash extends JXDialog{
 		FormLayout lay = new FormLayout("fill:0:grow(0.50),p,fill:0:grow(0.50)","fill:0:grow(0.50),p,fill:0:grow(0.50)");
 		CellConstraints cc = new CellConstraints();
 		jpan.setLayout(lay);
-		JLabel lbl = new JLabel(string);
+		lbl = new JLabel(string);
 		lbl.setForeground(Color.RED);
 		lbl.setFont(new Font("Tahoma",Font.BOLD,12));
 		jpan.add(lbl,cc.xy(2,2));
 		return jpan;
+	}
+	
+	public void setNewText(String txt){
+		lbl.setText(txt);
+		lbl.repaint();
+		try {
+			Thread.sleep(30);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 	public static void splashBeenden(boolean beenden){

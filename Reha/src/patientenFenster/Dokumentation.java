@@ -3,6 +3,7 @@ package patientenFenster;
 
 
 
+import generalSplash.RehaSplash;
 import geraeteInit.ScannerUtil;
 import hauptFenster.Reha;
 
@@ -173,6 +174,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JXPanel plusminus;
 	public JPanel leerInfo = null;
 	public String commonName = "";
+	public RehaSplash rehaSplash =  null;
 	Scanner scanner;
 	public Dokumentation(){
 		super();
@@ -436,16 +438,18 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							e.printStackTrace();
 						}
 					}
+					
 					int row = tabdokus.getSelectedRow();
 					String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/pdf"+tabdokus.getValueAt(row, 0)+".pdf";
 					System.out.println("Starte doku holen");
 					String sid = (String)tabdokus.getValueAt(row, 6);
+					rehaSplash = new RehaSplash(null,"Hole Dokumentation "+sid+" vom Server");
 					setCursor(new Cursor(Cursor.WAIT_CURSOR));
 					holeDoku(sdatei,sid);
 					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
-					
-					
+					rehaSplash.dispose();
+					rehaSplash = null;
 				}
 			}
 		});
@@ -684,7 +688,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			
 			return;			
 		}else if(cmd.equals("Dokusave")){
+			rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
 			doDokusave();
+			rehaSplash.dispose();
+			rehaSplash = null;
 			return;
 		}else if(cmd.equals("Dokudelete")){
 			doDokudelete();
@@ -741,6 +748,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Document document = null;
 		FileOutputStream fout = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
+			rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
 			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
 			try {
@@ -786,6 +794,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		PdfReader reader = null;
 		PdfCopy copy = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
+			rehaSplash.setNewText("Seiten zusammenführen - Seite"+(i+1)+" von "+vecBilderPfad.size());
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
 			System.out.println("Das Format = "+format);
 			
@@ -833,6 +842,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			boolean neu){			
 		   */
 		System.out.println("Beginne speichern");
+		rehaSplash.setNewText("Dokumentation auf Server transferieren");
 		try {
 			doSpeichernDoku(
 					dokuid,
