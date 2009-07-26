@@ -2,6 +2,7 @@ package patientenFenster;
 
 
 
+
 import geraeteInit.ScannerUtil;
 import hauptFenster.Reha;
 
@@ -30,14 +31,22 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -91,6 +100,7 @@ import sqlTools.SqlInfo;
 import sun.awt.image.ImageFormatException;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.FileComparator;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.JCompTools;
@@ -123,7 +133,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.mysql.jdbc.PreparedStatement;
 
 public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener, ScannerListener{
-	public static Dokumentation dokumentation = null;
+	public static Dokumentation doku = null;
 	JXPanel leerPanel = null;
 	//JXPanel vollPanel = null;
 	JXPanel vollPanel = null;
@@ -166,7 +176,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	Scanner scanner;
 	public Dokumentation(){
 		super();
-		dokumentation = this;
+		doku = this;
 		scanaktiv = (SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1") ? true : false );
 		setOpaque(false);
 		setLayout(new BorderLayout());
@@ -426,7 +436,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							e.printStackTrace();
 						}
 					}
-					//neuanlageRezept(false,"");
+					int row = tabdokus.getSelectedRow();
+					String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/pdf"+tabdokus.getValueAt(row, 0)+".pdf";
+					System.out.println("Starte doku holen");
+					String sid = (String)tabdokus.getValueAt(row, 6);
+					setCursor(new Cursor(Cursor.WAIT_CURSOR));
+					holeDoku(sdatei,sid);
+					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
+					
+					
 				}
 			}
 		});
@@ -480,8 +499,83 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 		}
 	}
-	
-	
+////////////////////////////
+////////////////////////////
+////////////////////////////
+////////////////////////////
+	public void holeDoku(String datei,String id){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		int bilder = 0;
+		
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE );
+					String test = "select dokublob from doku1 where id='"+id+"'";
+				rs = (ResultSet) stmt.executeQuery(test);
+				if(rs.next()){
+					FileTools.ByteArray2File(rs.getBytes(1), datei);
+					/*
+					InputStreamReader isr = new InputStreamReader( rs.getBinaryStream(1) ); 
+					
+				      FileOutputStream fos = new FileOutputStream( new File( datei ) );
+				      
+				      int ch;
+				      while( (ch = isr.read()) != -1){
+				    	  fos.write(ch);
+				      }
+				      fos.flush();
+				      isr.close();
+				      fos.close();
+				     */ 
+				}
+				
+				//FileComparator com = new FileComparator(1024);
+				//int ce = com.compareFiles(new File( datei ), new File("C:/RehaVerwaltung/temp/510841109/FertigeDoku.pdf.pdf"));
+				//System.out.println("Ergebnis von Compare = "+ce);
+				final String xdatei = datei;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+					       InputStream is = process.getInputStream();
+					       InputStreamReader isr = new InputStreamReader(is);
+					       BufferedReader br = new BufferedReader(isr);
+					       String line;
+					       while ((line = br.readLine()) != null) {
+					         System.out.println(line);
+					       }
+					       is.close();
+					       isr.close();
+					       br.close();
+
+						return null;
+					}
+					
+				}.execute();
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+				if (stmt != null) {
+					try {
+						stmt.close();
+					} catch (SQLException sqlEx) { // ignore }
+						stmt = null;
+					}
+				}
+			}
+		}
+	}
 	public JToolBar getToolbar(){
 		JToolBar jtb = new JToolBar();
 		jtb.setRollover(true);
@@ -494,31 +588,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setActionCommand("scannen");
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
-		/*
-		dokubut[1] = new JButton();
-		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("save"));
-		dokubut[1].setToolTipText("Speichern der eingescannten Dokumentation");
-		dokubut[1].setActionCommand("dokusave");
-		dokubut[1].addActionListener(this);
-		jtb.add(dokubut[1]);
-		*/
-		
-
-		//jtb.addSeparator(new Dimension(20,0));
-		/*
-		jtb.add(dokubut[0]);
-		farbe = new JComboBox(new String[]{"Schwarz/Weiß","Graustufen","Farbe"});
-		farbe.setSelectedIndex(1);
-		jtb.add(farbe);
-		aufloesung = new JComboBox(new String[]{"75dpi","100dpi","150dpi","200dpi","400dpi"});
-		aufloesung.setSelectedIndex(2);
-		jtb.add(aufloesung);
-		seitengroesse = new JComboBox(new String[]{"Din A6","Din A5","Din A4"});
-		seitengroesse.setSelectedIndex(1);
-		jtb.add(seitengroesse);
-		jtb.add(aufloesung);
-		*/
-		
+	
 		
 		dokubut[1] = new JButton();
 		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
@@ -541,21 +611,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			dokubut[1].setEnabled(false);
 			dokubut[2].setEnabled(false);
 		}
-		/*
-		dokubut[2] = new JButton();
-		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
-		dokubut[2].setToolTipText("Gesamtumsatz des Patienten (aller in der Historie befindlichen Rezepte)");
-		dokubut[2].setActionCommand("historumsatz");
-		dokubut[2].addActionListener(this);		
-		jtb.add(dokubut[2]);
-		
-		dokubut[3] = new JButton();
-		dokubut[3].setIcon(SystemConfig.hmSysIcons.get("historietage"));
-		dokubut[3].setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
-		dokubut[3].setActionCommand("historprinttage");
-		dokubut[3].addActionListener(this);		
-		jtb.add(dokubut[3]);
-		*/
 
 		for(int i = 0; i < 4;i++){
 			//dokubut[i].setEnabled(false);
@@ -670,8 +725,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	private Rectangle getLowagieForm(String format){
 		Rectangle[] rec = {PageSize.A6,PageSize.A6.rotate(),
-				PageSize.A5,PageSize.A5.rotate(),PageSize.A4,PageSize.A4.rotate()};
-		String[] forms ={"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"};
+				PageSize.A5,PageSize.A5.rotate(),PageSize.A4,PageSize.A4.rotate(),null};
+		String[] forms ={"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer","angepasst"};
 		for(int i = 0;i< forms.length;i++){
 			if(forms[i].equals(format)){
 				return rec[i];
@@ -680,23 +735,35 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		return rec[0];
 	}
 	private void doDokusave(){
+		dokubut[0].setEnabled(false);
+		dokubut[1].setEnabled(false);
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		Document document = null;
+		FileOutputStream fout = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
+			try {
+			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
+			if(format==null){
+				format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight()); 
+			}
 			System.out.println("Das Format = "+format);
 			document = new Document();
 			document.setPageSize(format);	
 			document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
-			try {
-				PdfWriter writer = PdfWriter.getInstance(document, new  FileOutputStream(SystemConfig.hmVerzeichnisse.get("Temp")+"/pdfDokuSeite"+(i+1)+".pdf"));
+				fout = new  FileOutputStream(SystemConfig.hmVerzeichnisse.get("Temp")+"/pdfDokuSeite"+(i+1)+".pdf");
+				PdfWriter writer = PdfWriter.getInstance(document, fout);
 			document.open(); 
-			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
+
 			jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
 			jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
 			document.add(jpg2);
 
 			document.close();
+			writer.close();
+			fout.flush();
+			fout.close();
 			Thread.sleep(100);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -742,8 +809,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			
 		}
 		document.close();
+		copy.close();
 		document = null;
 		int dokuid = SqlInfo.erzeugeNummer("doku");
+		
 		
 		  /*
 		   * 
@@ -763,6 +832,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			Vector<String> vec,
 			boolean neu){			
 		   */
+		System.out.println("Beginne speichern");
 		try {
 			doSpeichernDoku(
 					dokuid,
@@ -776,8 +846,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			System.out.println("Speichern hat nicht geklappt");
 			e.printStackTrace();
 		}
-
+		System.out.println("Fertig mit speichern");
 		loescheBilderPan();
+		dokubut[0].setEnabled(true);
+		dokubut[1].setEnabled(true);
+		this.holeDokus("999999");
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert");
 	}
 	private void loescheBilderPan(){
 		System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "scan",".jpg"));
@@ -812,9 +887,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 	}
 	private void updateInfoLab(){
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if(!infolab[0].getText().equals(SystemConfig.sDokuScanner)){
+			System.out.println("Dokuscanner = "+SystemConfig.sDokuScanner);
 			try {
-				scanner.select(SystemConfig.sDokuScanner);
+				if(scanner==null){
+					scanStarten();
+				}else{
+					scanner.select(SystemConfig.sDokuScanner);					
+				}
+
 			} catch (ScannerIOException e) {
 				e.printStackTrace();
 			}
@@ -904,9 +991,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 	}
 	private Double[] getDims(String seite){
-		List list = Arrays.asList( new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"});
+		List list = Arrays.asList( new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer","angepasst"});
 		String[] dims = new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"};
-		Double[][] d =  new Double[][]  {{4.23,5.82},{4.23,5.82},{5.82,8.26},{5.82,8.26},{8.26,11.69},{8.26,11.69}};
+		Double[][] d =  new Double[][]  {{4.23,5.82},{4.23,5.82},{5.82,8.26},{5.82,8.26},{8.26,11.69},{8.26,11.69},{8.26,11.69}};
 		Double[] ret = {8.26,11.69};		
 		ret = d[list.indexOf(seite)].clone();
 		return ret;
@@ -959,20 +1046,19 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	        	    r.gc();
 	        	    long freeMem = r.freeMemory();
 	        	    System.out.println("Freier Speicher "+freeMem);
+      	    	  	System.out.println("finished und nicht null = "+metadata.getStateStr());
     			}else{
-        			try {
-    					scanner.getDevice().setCancel(true);
-    				} catch (ScannerIOException e) {
-    					// TODO Auto-generated catch block
-    					e.printStackTrace();
-    				}
+      	    	  	System.out.println("finished aber null = "+metadata.getStateStr());
 	                Runtime r = Runtime.getRuntime();
 	        	    r.gc();
 	        	    long freeMem = r.freeMemory();
     			}
     	        System.out.println("Scanvorgang wurde beendet");
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    	      }else{
+    	    	  System.out.println("nicht finished = "+metadata.getStateStr());	  
     	      }
+    		
     		/*****************************************************/    		
 		}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
 			System.out.println("Exception in EXEPTION");
@@ -1076,53 +1162,55 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	 * 
 	 */
 	public void pdfZeigen(int seite){
-		  try {
-			  setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-				Document document = new Document();
-				if(vecBilderFormat.get(seite).contains("Din A4")){
-					if( vecBilderFormat.get(seite).contains("quer") ){
-						document.setPageSize(PageSize.A4.rotate());
-					}else{
-						document.setPageSize(PageSize.A4);	
-					}
-				}else if(vecBilderFormat.get(seite).contains("Din A5")){
-					if( vecBilderFormat.get(seite).contains("quer") ){
-						document.setPageSize(PageSize.A5.rotate());
-					}else{
-						document.setPageSize(PageSize.A5);	
-					}
-				}else if(vecBilderFormat.get(seite).contains("Din A5")){
-					if(  vecBilderFormat.get(seite).contains("quer") ){
-						document.setPageSize(PageSize.A6.rotate());
-					}else{
-						document.setPageSize(PageSize.A6);	
-					}
-				}
-				document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
-				String datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+vecPdfPfad.get(seite);
-				
-				PdfWriter.getInstance(document, new FileOutputStream(datname));  
-	      
-				/***************************/
-				document.open(); 
-				if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
-					Image jpg1 = ImageIO.read(new File(vecBilderPfad.get(seite)));
-					if( SystemConfig.hmDokuScanner.get("seiten").contains("quer") ){
-						jpg1 = GrafikTools.rotateImage90SX(jpg1);				}
-					
-					com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(jpg1,null);
-					jpg2.scaleAbsoluteHeight(document.getPageSize().getWidth());
-					jpg2.scaleAbsoluteWidth(document.getPageSize().getHeight());
-					document.add(jpg2);
-				}else{
+			  setCursor(new Cursor(Cursor.WAIT_CURSOR));
+/*****************/
+				Document document = null;
+					String datname = "";
+					System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(seite));
+					Rectangle format = getLowagieForm(vecBilderFormat.get(seite));
+					try {
 					com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(seite));
+					if(format==null){
+						format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight()); 
+					}
+					System.out.println("Das Format = "+format);
+					document = new Document();
+					document.setPageSize(format);	
+					document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
+					datname = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+vecPdfPfad.get(seite);
+					FileOutputStream fout = new FileOutputStream(datname);
+					PdfWriter writer = PdfWriter.getInstance(document, fout);  
+					document.open(); 
+
 					jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
 					jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
 					document.add(jpg2);
-				}
-				document.close();
-				Thread.sleep(100);
+
+					document.close();
+					writer.close();
+					fout.flush();
+					fout.close();
+					
+					Thread.sleep(100);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (DocumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+			  
 				/***************************/				
 				
 				File file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
@@ -1130,31 +1218,32 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Adobe-Acrobatreader ist nicht korrekt konfiguriert");
 					return;
 				}
+				final String xdatname = datname;
 				/*
-				try {
-		            Runtime.getRuntime().exec(file.getAbsolutePath()+" "+datname);
-		        } catch(IOException e) {
-		            e.printStackTrace();
-		        }
-		        */
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatname).start();
+					       InputStream is = process.getInputStream();
+					       InputStreamReader isr = new InputStreamReader(is);
+					       BufferedReader br = new BufferedReader(isr);
+					       String line;
+					       while ((line = br.readLine()) != null) {
+					         System.out.println(line);
+					       }
+					       is.close();
+					       isr.close();
+					       br.close();
+
+						return null;
+					}
+					
+				}.execute();
+				*/
+		        
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			} catch (BadElementException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				  setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	  
+			
 		
 	}
 	public JXPanel setzePlusMinus(){
@@ -1302,6 +1391,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
+	private String macheHtmlTitel(int anz,String titel){
+		
+		String ret = titel+" - "+new Integer(anz).toString();
+		
+		/*
+		String ret = "<html>"+titel+
+		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		*/
+		return ret;
+	}
 	public void holeDokus(String patint){
 		final String xpatint = patint;
 
@@ -1315,7 +1414,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				Vector vec = SqlInfo.holeSaetze("doku1", 
 						"dokuid,format,dokutitel,DATE_FORMAT(datum,'%d.%m.%Y') AS dokudatum," +
 						"benutzer,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER BY date", Arrays.asList(new String[]{}));
+						"pat_intern='"+xpatint+"' ORDER BY datum", Arrays.asList(new String[]{}));
 
 				int anz = vec.size();
 
@@ -1334,16 +1433,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					
 					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[zzbild], i, 1);
 				}
+				PatGrundPanel.thisClass.jtab.setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
 				if(anz > 0){
 					this.setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
-					PatGrundPanel.thisClass.jtab.setTitleAt(3, PatGrundPanel.thisClass.tabTitel[3]+" - <font color='#ff0000'>"+anz+"</font>");					
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);					
 					wechselPanel.revalidate();
 					wechselPanel.repaint();					
 				}else{
 					setzeRezeptPanelAufNull(true);
-					PatGrundPanel.thisClass.jtab.setTitleAt(3, PatGrundPanel.thisClass.tabTitel[3]+" - <font color='#000000'>"+anz+"</font>");					
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: 0");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
@@ -1419,7 +1517,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		ResultSet rs = null;
 		boolean ret = false;
 		int bilder = 0;
-	
+		FileInputStream fis = null;
 		//piTool.app.conn.setAutoCommit(true);
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -1427,7 +1525,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			
 			String select = "Insert into doku1 set dokuid = ? , datum = ?, dokutitel = ?,"+
 			"benutzer = ?, pat_intern = ?, format = ?,"+
-			"dokutext = ?, dokublob = ? ";
+			"dokutext = ?, dokublob = ? , groesse = ? ";
 			  PreparedStatement ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 			  /*
 			   * 
@@ -1441,6 +1539,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(8,   //dokublob - longblog /binär
 				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
+			  System.out.println("Setze InputStream "+dateiname);
 			  ps.setInt(1, dokuid);
 			  ps.setString(2, str[0]);			  
 			  ps.setString(3, str[1]);
@@ -1448,12 +1547,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			  ps.setInt(5, pat_intern);
 			  ps.setInt(6, format);			  
 			  ps.setString(7, str[3]);
-			  ps.setBytes(8, FileTools.File2ByteArray(new File(dateiname)));
+			  File f = new File(dateiname);
+			  byte[] b = FileTools.File2ByteArray(f);
+			  ps.setBytes(8,b);
+			  ps.setInt(9, (int)b.length);
 			  ps.execute();
-			  } catch (SQLException e) {
+
+			} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-			  }			  
+			  }	
+
+			   
+
+
+			  
 	  
 							  
 		finally {

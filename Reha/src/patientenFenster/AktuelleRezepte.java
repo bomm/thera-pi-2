@@ -178,7 +178,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 				Font font = new Font("Tahome",Font.PLAIN,11);
 				anzahlRezepte = new JLabel("Anzahl Rezepte: 0");
-				PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - 0");
+				//PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - 0");
 				anzahlRezepte.setFont(font);
 				//anzahlRezepte.setForeground(Color.RED);
 				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
@@ -486,7 +486,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	}
 
 	
-	
+	private String macheHtmlTitel(int anz,String titel){
+		
+		String ret = titel+" - "+new Integer(anz).toString();
+		
+		/*
+		String ret = "<html>"+titel+
+		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		*/
+		return ret;
+	}
 	
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;
@@ -533,6 +542,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	                    }.start();
 					}
 				}
+				PatGrundPanel.thisClass.jtab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
@@ -561,11 +571,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
-					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#ff0000'>"+anz+"</font>");					
+
 				}else{
 					setzeRezeptPanelAufNull(true);
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
-					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#000000'>"+anz+"</font>");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
@@ -948,7 +957,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(cmd.equals("rezneu")){
 				
 				if(PatGrundPanel.thisClass.autoPatid <= 0){
-					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
 							"....und für welchen Patient wollen Sie ein neues Rezept anlegen....");
 					return;
 				}
@@ -957,7 +966,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			if(cmd.equals("rezedit")){
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
 							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön ändern....");
 					return;
 				}
@@ -966,7 +975,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			if(cmd.equals("rezdelete")){
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
+					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
 							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön löschen....");
 					return;
 				}
@@ -988,11 +997,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				int uebrig = tabaktrez.getRowCount();
 				
 				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(uebrig).toString());
+				PatGrundPanel.thisClass.jtab.setTitleAt(0,macheHtmlTitel(uebrig,"aktuelle Rezepte"));
 				if(uebrig <= 0){
-					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#000000'>"+uebrig+"</font>");
 					holeRezepte(PatGrundPanel.thisClass.patDaten.get(29),"");
 				}else{
-					PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - <font color='#ff0000'>"+uebrig+"</font>");					
 				}
 				
 			}

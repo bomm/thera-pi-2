@@ -146,6 +146,17 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			}
 		}
 	}
+	private String macheHtmlTitel(int anz,String titel){
+		
+		String ret = titel+" - "+new Integer(anz).toString();
+		
+		/*
+		String ret = "<html>"+titel+
+		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		*/
+		return ret;
+	}
+	
 	public void holeBerichte(String patint,String rez){
 /**********/
 
@@ -175,6 +186,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						//int zzbild = 0;
 						dtblm.addRow((Vector)vec.get(i));
 					}
+					PatGrundPanel.thisClass.jtab.setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
 					if(anz > 0){
 						setzeRezeptPanelAufNull(false);
 						if(xrez_nr.equals("")){
@@ -189,12 +201,10 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 
 						int anzeigen = -1;
-						PatGrundPanel.thisClass.jtab.setTitleAt(2, PatGrundPanel.thisClass.tabTitel[2]+" - <font color='#ff0000'>"+anz+"</font>");
 						wechselPanel.revalidate();
 						wechselPanel.repaint();					
 					}else{
 						setzeRezeptPanelAufNull(true);
-						PatGrundPanel.thisClass.jtab.setTitleAt(2, PatGrundPanel.thisClass.tabTitel[2]+" - <font color='#000000'>"+anz+"</font>");
 						wechselPanel.revalidate();
 						wechselPanel.repaint();
 						dtblm.setRowCount(0);
@@ -266,10 +276,9 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		//tabbericht
 		TableTool.loescheRow(tabbericht, wahl);
 		int anzber = tabbericht.getRowCount();
+		PatGrundPanel.thisClass.jtab.setTitleAt(2,macheHtmlTitel(anzber,"Therapieberichte"));
 		if(anzber > 0){
-			PatGrundPanel.thisClass.jtab.setTitleAt(2, PatGrundPanel.thisClass.tabTitel[2]+" - <font color='#ff0000'>"+tabbericht.getRowCount()+"</font>");			
 		}else{
-			PatGrundPanel.thisClass.jtab.setTitleAt(2, PatGrundPanel.thisClass.tabTitel[2]+" - <font color='#000000'>"+tabbericht.getRowCount()+"</font>");			
 		}
 
 		

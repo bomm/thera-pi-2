@@ -181,13 +181,23 @@ public Vector vecakthistor = null;
 
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
+/*
 final public String[] tabTitel = {"<html>aktuelle Rezepte",
-									"<html>Rezept-Historie",
-									"<html>Therapieberichte",
-									"<html>Dokumentation",
-									"<html>Gutachten",
-									"<html>Arzt & KK",
-									"<html>Plandaten"};
+		"<html>Rezept-Historie",
+		"<html>Therapieberichte",
+		"<html>Dokumentation",
+		"<html>Gutachten",
+		"<html>Arzt & KK",
+		"<html>Plandaten"};
+*/		
+
+final public String[] tabTitel = {"aktuelle Rezepte",
+									"Rezept-Historie",
+									"Therapieberichte",
+									"Dokumentation",
+									"Gutachten",
+									"Arzt & KK",
+									"Plandaten"};
 
 public JTabbedPane jtab = null;
 
@@ -1058,7 +1068,12 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
-
+		/*
+		if(true){
+			System.out.println("Abbruch der Threads");
+			return;
+		}
+		 */
 		// Rezeptdaten holen
 		new Thread(){
 			public void run(){		
@@ -1077,7 +1092,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
-				
+		
 		// Historie holen
 		new Thread(){
 			public void run(){		
@@ -1090,7 +1105,6 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				}.execute();
 			}
 		}.start();
-		
 		
 		// Berichte holen
 		new Thread(){
@@ -1110,14 +1124,20 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
+						
 						//dokumentation.holeDokus(xpatint);
+						dokumentation.holeDokus("999999");
 						
 						return null;
 					}
 				}.execute();
 			}
 		}.start();
-		
+		//PatGrundPanel.thisClass.jtab.validate();
+		int i = jtab.getTabCount();
+		for(int y = 0;y < i;y++){
+			//System.out.println("Tabtitel von "+y+" = "+jtab.getTitleAt(y));
+		}
 	}
 	if(evt.getDetails()[0].equals("#CLOSING")){
 		if(sucheComponent != null){

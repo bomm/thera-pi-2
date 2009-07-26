@@ -76,7 +76,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	HistorPanel vollPanel = null;
 	JXPanel wechselPanel = null;
 	public JLabel anzahlTermine= null;
-	public JLabel anzahlRezepte= null;
+	public JLabel anzahlHistorie= null;
 	public String aktPanel = "";
 	public JXTable tabhistorie = null;
 	public JXTable tabaktterm = null;
@@ -142,9 +142,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				vollPanel.setBorder(null);
 				
 				Font font = new Font("Tahome",Font.PLAIN,11);
-				anzahlRezepte = new JLabel("Anzahl Rezepte in Historie: 0");
-				anzahlRezepte.setFont(font);
-				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
+				anzahlHistorie = new JLabel("Anzahl Rezepte in Historie: 0");
+				anzahlHistorie.setFont(font);
+				vollPanel.add(anzahlHistorie,vpcc.xy(1,1));
 				
 				vollPanel.add(getTabelle(),vpcc.xywh(1,2,1,1));
 
@@ -690,6 +690,16 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 		}
 	}	
+	private String macheHtmlTitel(int anz,String titel){
+		
+		String ret = titel+" - "+new Integer(anz).toString();
+		
+		/*
+		String ret = "<html>"+titel+
+		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		*/
+		return ret;
+	}
 	/*************************************************/
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;
@@ -732,6 +742,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	                    }.start();
 					}
 				}
+				PatGrundPanel.thisClass.jtab.setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
@@ -756,14 +767,12 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
-					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
-					PatGrundPanel.thisClass.jtab.setTitleAt(1, PatGrundPanel.thisClass.tabTitel[1]+" - <font color='#ff0000'>"+anz+"</font>");
+					anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();					
 				}else{
 					setzeRezeptPanelAufNull(true);
-					anzahlRezepte.setText("Anzahl Rezepte in Historie: "+anz);
-					PatGrundPanel.thisClass.jtab.setTitleAt(1, PatGrundPanel.thisClass.tabTitel[1]+" - <font color='#000000'>"+anz+"</font>");
+					anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
