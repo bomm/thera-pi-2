@@ -175,6 +175,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JPanel leerInfo = null;
 	public String commonName = "";
 	public RehaSplash rehaSplash =  null;
+	public ImageIcon[] tabIcons = {null,null,null,null};
 	Scanner scanner;
 	public Dokumentation(){
 		super();
@@ -401,6 +402,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		JXPanel dummypan = new JXPanel(new BorderLayout());
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
+		System.out.println("Image icon bei Tabellenerstellung = "+(SystemConfig.hmSysIcons.get("pdf")==null));
+		tabIcons[0]= SystemConfig.hmSysIcons.get("pdf");
+		tabIcons[1]= SystemConfig.hmSysIcons.get("pdf");
+		tabIcons[2]= SystemConfig.hmSysIcons.get("pdf");
+
 		dtblm = new MyDoku2TableModel();
 		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaßt am","von","",""};
 		dtblm.setColumnIdentifiers(column);
@@ -725,6 +731,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}else if(cmd.equals("Dokusave")){
 			//rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
 			//rehaSplash.setVisible(true);
+			
 			doDokusave();
 			//rehaSplash.dispose();
 			//rehaSplash = null;
@@ -1461,7 +1468,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				Vector vec = SqlInfo.holeSaetze("doku1", 
 						"dokuid,format,dokutitel,DATE_FORMAT(datum,'%d.%m.%Y') AS dokudatum," +
 						"benutzer,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER BY datum", Arrays.asList(new String[]{}));
+						"pat_intern='"+xpatint+"' ORDER BY dokuid", Arrays.asList(new String[]{}));
 
 				int anz = vec.size();
 
@@ -1477,8 +1484,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
 					}
 					dtblm.addRow((Vector)vec.get(i));
-					
-					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[zzbild], i, 1);
+					dtblm.setValueAt(tabIcons[zzbild], i, 1);
+					//dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[zzbild], i, 1);
 				}
 				PatGrundPanel.thisClass.jtab.setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
 				if(anz > 0){
