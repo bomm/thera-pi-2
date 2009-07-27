@@ -443,33 +443,48 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/pdf"+tabdokus.getValueAt(row, 0)+".pdf";
 					System.out.println("Starte doku holen");
 					String sid = (String)tabdokus.getValueAt(row, 6);
-					setCursor(new Cursor(Cursor.WAIT_CURSOR));
-					final String xid = sid;
-					new SwingWorker<Void,Void>(){
-						@Override
-						protected Void doInBackground() throws Exception {
-							rehaSplash = new RehaSplash(null,"Hole Dokumentation "+xid+" vom Server");
-							rehaSplash.setVisible(true);
-							long zeit = System.currentTimeMillis();
-							while(rehaSplash != null){
-								Thread.sleep(100);
-								rehaSplash.toFront();
-								rehaSplash.setVisible(true);
-								if(System.currentTimeMillis()-zeit > 2000){
-									break;
-								}
-								
+					File file = new File(sdatei);
+					if(file.exists()){
+						final String xdatei = sdatei;
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+							       InputStream is = process.getInputStream();
+							       InputStreamReader isr = new InputStreamReader(is);
+							       BufferedReader br = new BufferedReader(isr);
+							       String line;
+							       while ((line = br.readLine()) != null) {
+							         System.out.println(line);
+							       }
+							       is.close();
+							       isr.close();
+							       br.close();
+
+								return null;
 							}
-							return null;
-						}
+							
+						}.execute();
+					}else{
+						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						final String xid = sid;
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								//rehaSplash = new RehaSplash(null,"Hole Dokumentation "+xid+" vom Server");
+								//rehaSplash.setVisible(true);
+								long zeit = System.currentTimeMillis();
+								return null;
+							}
+							
+						}.execute();
 						
-					}.execute();
-					
-					holeDoku(sdatei,sid);
-					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-					System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
-					rehaSplash.dispose();
-					rehaSplash = null;
+						holeDoku(sdatei,sid);
+						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
+						//rehaSplash.dispose();
+						//rehaSplash = null;
+					}
 				}
 			}
 		});
@@ -708,11 +723,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			
 			return;			
 		}else if(cmd.equals("Dokusave")){
-			rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
-			rehaSplash.setVisible(true);
+			//rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
+			//rehaSplash.setVisible(true);
 			doDokusave();
-			rehaSplash.dispose();
-			rehaSplash = null;
+			//rehaSplash.dispose();
+			//rehaSplash = null;
 			return;
 		}else if(cmd.equals("Dokudelete")){
 			doDokudelete();
@@ -769,7 +784,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Document document = null;
 		FileOutputStream fout = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
-			rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
+			//rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
 			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
 			try {
@@ -815,7 +830,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		PdfReader reader = null;
 		PdfCopy copy = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
-			rehaSplash.setNewText("Seiten zusammenführen - Seite"+(i+1)+" von "+vecBilderPfad.size());
+			//rehaSplash.setNewText("Seiten zusammenführen - Seite"+(i+1)+" von "+vecBilderPfad.size());
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
 			System.out.println("Das Format = "+format);
 			
@@ -863,7 +878,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			boolean neu){			
 		   */
 		System.out.println("Beginne speichern");
-		rehaSplash.setNewText("Dokumentation auf Server transferieren");
+		//rehaSplash.setNewText("Dokumentation auf Server transferieren");
 		try {
 			doSpeichernDoku(
 					dokuid,
@@ -911,6 +926,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[2].setEnabled(false);
 		bilderPan.validate();
 		bilderPan.repaint();
+		aktivesBild=0;
 		
 		if(this.dtblm.getRowCount()==0){
 			this.setzeRezeptPanelAufNull(true);

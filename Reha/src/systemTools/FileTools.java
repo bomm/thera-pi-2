@@ -11,6 +11,16 @@ import java.util.ArrayList;
 import javax.swing.filechooser.FileFilter;
 
 public class FileTools {
+	public static boolean deleteAllFiles(File dir){
+		File[] files = dir.listFiles();
+		for (int x=0;x<files.length;x++){
+			//System.out.println(files[x]);
+			files[x].delete();
+		}
+		
+		return true;
+	}	
+
 	public static boolean delDirAndFile(File dir){
 		if (dir.isDirectory()){
 				String[] entries = dir.list();

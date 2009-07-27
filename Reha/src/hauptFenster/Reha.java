@@ -131,6 +131,7 @@ import sqlTools.ExUndHop;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.FileTools;
 import systemTools.PassWort;
 import systemTools.RehaPainters;
 import systemTools.SplashPanel;
@@ -2112,6 +2113,7 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.compTest();
 			new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
 			SystemConfig.FremdProgs();
+			FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");
