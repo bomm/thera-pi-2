@@ -167,7 +167,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 			@Override
 			protected Void doInBackground() throws Exception {
-		
+				try{
 				// TODO Auto-generated method stub
 				vollPanel = new JXPanel();
 				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
@@ -218,6 +218,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				jpan1 = new RezeptDaten();
 				vollPanel.add(jpan1,vpcc.xyw(1,4,1));
 				indiSchluessel();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 			

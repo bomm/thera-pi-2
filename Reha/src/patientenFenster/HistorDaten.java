@@ -96,11 +96,11 @@ public class HistorDaten extends JXPanel{
 		reznum.setText(reznummer);
 		final String xreznummer = reznummer;
 		final String xsid = sid;
-		/*
+
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-		*/
+				try{
 
 				vecaktrez = SqlInfo.holeSatz("lza", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				String stest = StringTools.NullTest((String)vecaktrez.get(43));
@@ -127,6 +127,9 @@ public class HistorDaten extends JXPanel{
 
 				int test = StringTools.ZahlTest((String)vecaktrez.get(27));
 				if(test >= 0){
+					if(test > 2){
+						test = 2;
+					}
 					rezlabs[5].setText(rezart[test]);
 					if(test==2){
 						stest = StringTools.NullTest((String)vecaktrez.get(42));
@@ -156,15 +159,15 @@ public class HistorDaten extends JXPanel{
 					rezlabs[7].setText(" ");
 				}
 				Vector<Vector> preisvec = null;
-				if(reznummer.contains("KG")){
+				if(xreznummer.contains("KG")){
 					preisvec = ParameterLaden.vKGPreise;
-				}else if(reznummer.contains("MA")){
+				}else if(xreznummer.contains("MA")){
 					preisvec = ParameterLaden.vMAPreise;
-				}else if(reznummer.contains("ER")){
+				}else if(xreznummer.contains("ER")){
 					preisvec = ParameterLaden.vERPreise;
-				}else if(reznummer.contains("LO")){
+				}else if(xreznummer.contains("LO")){
 					preisvec = ParameterLaden.vLOPreise;
-				}else if(reznummer.contains("RH")){
+				}else if(xreznummer.contains("RH")){
 					preisvec = ParameterLaden.vRHPreise;
 				}
 				rezlabs[8].setText( leistungTesten(0,preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
@@ -202,11 +205,13 @@ public class HistorDaten extends JXPanel{
 				}
 				
 				rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
-				/*
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 		}.execute();
-		*/
+
 		
 	}
 	public String leistungTesten(int leistung,Vector<Vector> preisevec,int veczahl){

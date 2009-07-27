@@ -166,7 +166,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-			
+					try{
 					//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 					Vector vec = SqlInfo.holeSaetze("berhist", 
 							"berichtid," +
@@ -208,6 +208,9 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						wechselPanel.revalidate();
 						wechselPanel.repaint();
 						dtblm.setRowCount(0);
+					}
+					}catch(Exception ex){
+						ex.printStackTrace();
 					}
 					
 					return null;

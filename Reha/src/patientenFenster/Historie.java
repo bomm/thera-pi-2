@@ -129,7 +129,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 			@Override
 			protected Void doInBackground() throws Exception {
-		
+				try{
 				// TODO Auto-generated method stub
 				//vollPanel = new JXPanel();
 				//HistorPanel vollPanel = new HistorPanel();
@@ -169,6 +169,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				jpan1 = new HistorDaten();
 				vollPanel.add(jpan1,vpcc.xyw(1,4,1));
 				//indiSchluessel();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			
 				return null;
 			}
@@ -404,7 +407,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jtb.add(histbut[0]);
 
 		histbut[1] = new JButton();
-		histbut[1].setIcon(SystemConfig.hmSysIcons.get("info"));
+		histbut[1].setIcon(SystemConfig.hmSysIcons.get("info2"));
 		histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
 		histbut[1].setActionCommand("historinfo");
 		histbut[1].addActionListener(this);		
@@ -817,7 +820,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 							@Override
 							protected Void doInBackground() throws Exception {
-						
+								try{
+									
+
 								// TODO Auto-generated method stub
 								inRezeptDaten = true;
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -826,6 +831,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	    						inRezeptDaten = false;
+								}catch(Exception ex){
+									ex.printStackTrace();
+									setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								}
 
 	    						return null;
 							}

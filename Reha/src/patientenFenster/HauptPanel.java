@@ -383,13 +383,17 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 			}
 	    	 
 	     }.execute();
-		*/
-	     
-	     
-	     PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
-	    tabpan.add(PatGrundPanel.thisClass.aktRezept);
-	    PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[0]+" - 0", tabpan);
+	      */
+	     final JXPanel xtabpan = tabpan;
+	     new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
 	    
+	     try{
+	     PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
+	    xtabpan.add(PatGrundPanel.thisClass.aktRezept);
+	    PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[0]+" - 0", xtabpan);
+	     
 	     PatGrundPanel.thisClass.historie = new Historie();
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[1]+" - 0", PatGrundPanel.thisClass.historie);
 	
@@ -402,6 +406,13 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", PatGrundPanel.thisClass.dokumentation);
 	
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", new JXPanel());
+	     }catch(Exception ex){
+	    	 ex.printStackTrace();
+	     }
+		return null;
+				}
+		    	 
+     }.execute();
 
 		rechts.add(PatGrundPanel.thisClass.jtab,BorderLayout.CENTER);
 		rechts.revalidate();

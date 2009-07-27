@@ -1476,11 +1476,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public void holeDokus(String patint){
 		final String xpatint = patint;
 
-/*
+
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-		*/
+				try{
 		//{"Doku-Id","Doku-Art","Titel","erfaßt am","von","",""};
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 				Vector vec = SqlInfo.holeSaetze("doku1", 
@@ -1507,7 +1507,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				PatGrundPanel.thisClass.jtab.setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
 				if(anz > 0){
-					this.setzeRezeptPanelAufNull(false);
+					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);	
 					tabdokus.setRowSelectionInterval(0, 0);
@@ -1520,12 +1520,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
 				}
-				/*					
+				
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 		
 		}.execute();
-*/		
+		
 	}
 	
 	

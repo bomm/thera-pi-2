@@ -69,8 +69,8 @@ public class RezeptDaten extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-		
-
+				try{
+	
 
 				vecaktrez = SqlInfo.holeSatz("verordn", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				PatGrundPanel.thisClass.vecaktrez = vecaktrez;
@@ -191,6 +191,10 @@ public class RezeptDaten extends JXPanel{
 						int i = RezTools.testeRezGebArt(reznum.getText().trim());
 					}
 				}.start();
+				
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				
 				
 				return null;
