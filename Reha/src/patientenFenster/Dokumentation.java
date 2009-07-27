@@ -414,7 +414,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		tabdokus.getColumn(1).setCellRenderer(renderer);
 		tabdokus.getColumn(1).setMaxWidth(50);
 		tabdokus.getColumn(2).setMinWidth(275);
-		tabdokus.getColumn(3).setMaxWidth(50);
+		tabdokus.getColumn(3).setMaxWidth(80);
 		//tabhistorie.getColumn(4).setMinWidth(0);
 		//tabhistorie.getColumn(4).setMaxWidth(0);		
 		tabdokus.getColumn(5).setMinWidth(0);
