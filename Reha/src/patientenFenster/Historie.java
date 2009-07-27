@@ -404,21 +404,21 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jtb.add(histbut[0]);
 
 		histbut[1] = new JButton();
-		histbut[1].setIcon(SystemConfig.hmSysIcons.get("historieinfo"));
+		histbut[1].setIcon(SystemConfig.hmSysIcons.get("info"));
 		histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
 		histbut[1].setActionCommand("historinfo");
 		histbut[1].addActionListener(this);		
 		jtb.add(histbut[1]);
 
 		histbut[2] = new JButton();
-		histbut[2].setIcon(SystemConfig.hmSysIcons.get("historieumsatz"));
-		histbut[2].setToolTipText("Gesamtumsatz des Patienten (aller in der Historie befindlichen Rezepte)");
+		histbut[2].setIcon(SystemConfig.hmSysIcons.get("euro"));
+		histbut[2].setToolTipText("Gesamtumsatz des Patienten (aller aktuellen und in der Historie befindlichen Rezepte)");
 		histbut[2].setActionCommand("historumsatz");
 		histbut[2].addActionListener(this);		
 		jtb.add(histbut[2]);
 		
 		histbut[3] = new JButton();
-		histbut[3].setIcon(SystemConfig.hmSysIcons.get("historietage"));
+		histbut[3].setIcon(SystemConfig.hmSysIcons.get("einzeltage"));
 		histbut[3].setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
 		histbut[3].setActionCommand("historprinttage");
 		histbut[3].addActionListener(this);		

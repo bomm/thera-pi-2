@@ -84,6 +84,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import jxTableTools.DateTableCellEditor;
+import kurzAufrufe.KurzAufrufe;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
@@ -411,6 +412,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaﬂt am","von","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabdokus = new JXTable(dtblm);
+		tabdokus.setRowHeight(tabdokus.getRowHeight()+10);
 		tabdokus.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
 		tabdokus.setDoubleBuffered(true);
 		tabdokus.setEditable(false);
@@ -717,22 +719,38 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			return;			
 		}else if(cmd.equals("scanedit")){
 			Point pt = ((JComponent)arg0.getSource()).getLocationOnScreen();
-			ScannerUtil su = new ScannerUtil(new Point(pt.x,pt.y+32));
-			su.setModal(true);
-			su.setVisible(true);
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			updateInfoLab();
+			final Point ptx = pt;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					ScannerUtil su = new ScannerUtil(new Point(ptx.x,ptx.y+32));
+					su.setModal(true);
+					su.setVisible(true);
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					updateInfoLab();
+
+					return null;
+				}
+			}.execute();
+
 			
 			return;			
 		}else if(cmd.equals("Dokusave")){
 			//rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
 			//rehaSplash.setVisible(true);
+			String value = (String)JOptionPane.showInputDialog(null,
+					"Bitte einen Titel f¸r die Dokumentation eingeben\n\n", "Benutzereingabe erforderlich....", JOptionPane.PLAIN_MESSAGE, null,
+					null, "Eingescannte Papierdoku");
+			if( (value == null) || (value.length()==0)){
+				JOptionPane.showMessageDialog(null, "Kein Titel - kein speichern. Ganz einfach!!");
+				return;
+			}
+			doDokusave(value);
 			
-			doDokusave();
 			//rehaSplash.dispose();
 			//rehaSplash = null;
 			return;
@@ -784,7 +802,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		return rec[0];
 	}
-	private void doDokusave(){
+	private void doDokusave(String dokuTitel){
 		dokubut[0].setEnabled(false);
 		dokubut[1].setEnabled(false);
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -892,7 +910,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					999999,
 					SystemConfig.hmVerzeichnisse.get("Temp")+"/FertigeDoku.pdf",
 					0,
-					new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},
+					new String[] {datFunk.sDatInSQL(datFunk.sHeute()),dokuTitel,Reha.aktUser,""},
 					true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1491,7 +1509,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				if(anz > 0){
 					this.setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
-					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);					
+					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);	
+					tabdokus.setRowSelectionInterval(0, 0);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();					
 				}else{

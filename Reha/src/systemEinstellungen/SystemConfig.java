@@ -918,10 +918,14 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "abbruch")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
 		hmSysIcons.put("abbruch", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "pdf")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "pdf")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
 		hmSysIcons.put("pdf", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "euro")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
+		hmSysIcons.put("euro", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "einzeltage")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("einzeltage", new ImageIcon(ico));
 
 		System.out.println("System-Icons wurden geladen");
 
