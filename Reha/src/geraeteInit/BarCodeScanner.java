@@ -55,7 +55,8 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE ); //     
 
 		} catch (PortInUseException e) {
-			System.out.println("Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits bele?");
+			System.out.println("Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits belegt?");
+			System.out.println("Derzeitiger Besitzer = "+e.currentOwner);
 			//JOptionPane.showMessageDialog(null, "Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits bele?");
 		}
 		
@@ -86,13 +87,14 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 
 	@Override
 	public void run() {
+		/*
 		while(Reha.thisClass != null){
 			try {
-			    Thread.sleep(50);
+			    Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				
 			}
-		}
+		}*/
 		System.out.println("Scanner-Thread beendet");
 	}
 
@@ -147,7 +149,13 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 					}
 				}
 				if(sb.length()> 0){
-					JOptionPane.showMessageDialog(null,"Scan angekommen\nScaninhalt = -> "+sb.toString());
+					String in = sb.toString();
+					//JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());
+					if("KGMALOERRH".contains(in.substring(0,2))){
+						JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());	
+					}else{
+						JOptionPane.showMessageDialog(null,"Kein Rezeptscan\nScaninhalt = -> "+sb.toString());
+					}
 					//System.out.println("*****Bytes angekommen = "+sb.toString()+"****************");					
 				}
 
