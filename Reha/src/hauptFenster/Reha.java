@@ -178,6 +178,7 @@ import events.RehaEventClass;
 import events.RehaEventListener;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
+import geraeteInit.BarCodeScanner;
 import grad.GradientPainter;
 import grad.GradientSegment;
 
@@ -2114,6 +2115,12 @@ final class DatenbankStarten implements Runnable{
 			new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
 			SystemConfig.FremdProgs();
 			FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
+			try {
+				new BarCodeScanner("COM1");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println("Barcode-Scanner konnte nicht installiert werden");
+			}
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");
