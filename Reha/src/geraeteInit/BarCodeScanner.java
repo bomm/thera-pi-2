@@ -75,6 +75,9 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		} catch (TooManyListenersException e) {}
 
 		serialPort.notifyOnDataAvailable(true);
+        //serialPort.enableReceiveThreshold(1);
+        //serialPort.enableReceiveTimeout(1000);
+
 		
 
 		try {
@@ -190,7 +193,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 	    }
 	}
 	public void erfasseTermin(String reznum){
-		Vector<String> pat_int = SqlInfo.holeSatz("verordn", "pat_int,anzahl1", "rez_nr='"+reznum+"'", Arrays.asList(new String[] {}));
+		Vector<String> pat_int = SqlInfo.holeSatz("verordn", "pat_intern,anzahl1,termine", "rez_nr='"+reznum+"'", Arrays.asList(new String[] {}));
 		if(pat_int.size()==0){
 			return;
 		}
