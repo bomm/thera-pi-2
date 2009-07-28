@@ -2,11 +2,14 @@ package geraeteInit;
 
 import hauptFenster.Reha;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
+import java.util.Vector;
 
 import javax.comm.CommPortIdentifier;
 import javax.comm.PortInUseException;
@@ -15,6 +18,8 @@ import javax.comm.SerialPortEvent;
 import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 import javax.swing.JOptionPane;
+
+import sqlTools.SqlInfo;
 
 
 
@@ -70,6 +75,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		} catch (TooManyListenersException e) {}
 
 		serialPort.notifyOnDataAvailable(true);
+		
 
 		try {
 		    serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, 
@@ -95,11 +101,11 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 				
 			}
 		}*/
-		System.out.println("Scanner-Thread beendet");
+		//System.out.println("Scanner-Thread beendet");
 	}
 
 	@Override
-	public void serialEvent(SerialPortEvent event) {
+	public void serialEvent(SerialPortEvent event)  {
 		switch (event.getEventType()) {
 
 		case SerialPortEvent.BI:
@@ -135,11 +141,11 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    String sout = null;
 		    StringBuffer sb = new StringBuffer();
 		    char[] zeichen = new char[1];  
-		    byte[] outByte = new byte[1];
-		    
+		    byte[] buffer = new byte[1024];
+		    String outString = "";
 		    try {
 		    	int numBytes = 0;
-		    	
+		    	/*
 				while (inputStream.available() > 0 ) {
 					numBytes = inputStream.read();
 					if(numBytes >= 32){
@@ -147,23 +153,47 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						sb.append(zeichen); 
 						
 					}
+				}*/
+
+	    		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	    		while (inputStream.available() > 0 ){
+	    			numBytes = inputStream.read(buffer);
+		    		byteArrayOutputStream.write(buffer, 0, numBytes);
+		    		Thread.sleep(50);
 				}
-				if(sb.length()> 0){
-					String in = sb.toString();
-					//JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());
-					if("KGMALOERRH".contains(in.substring(0,2))){
-						JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());	
+		    	
+		    	byteArrayOutputStream.flush();
+		    	outString = sb.append( byteArrayOutputStream.toString() ).toString();
+		    	//System.out.println("String2 = "+outString);
+		    	byteArrayOutputStream.close();
+				if(outString.length()>= 2){
+					if("KGMALOERRH".contains(outString.substring(0,2))){
+						final String xoutString = outString;
+						new Thread(){
+							public void run(){
+								erfasseTermin(xoutString);
+							}
+						}.start();
+						JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());
 					}else{
 						JOptionPane.showMessageDialog(null,"Kein Rezeptscan\nScaninhalt = -> "+sb.toString());
 					}
-					//System.out.println("*****Bytes angekommen = "+sb.toString()+"****************");					
 				}
 
 		    } catch (IOException e){
-				System.out.println("****in Catch-Clause****");
+				System.out.println("****in Catch-Clause - Fehler in IO-System****");
 				e.printStackTrace();
-		    }
+		    } catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		    break;
 	    }
+	}
+	public void erfasseTermin(String reznum){
+		Vector<String> pat_int = SqlInfo.holeSatz("verordn", "pat_int,anzahl1", "rez_nr='"+reznum+"'", Arrays.asList(new String[] {}));
+		if(pat_int.size()==0){
+			return;
+		}
+		
 	}
 }
