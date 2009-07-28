@@ -52,9 +52,6 @@ public class TermineErfassen implements Runnable {
 				System.out.println(stmt);
 				int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
 				if( gesperrt == 0 ){
-
-						
-
 					System.out.println("Datensatz ist nicht gesperrt");
 					String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
 					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
