@@ -102,6 +102,7 @@ import terminKalender.datFunk;
 import terminKalender.zeitFunk;
 
 import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -3220,18 +3221,24 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 	private int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 		Statement stmtx = null;
 		ResultSet rsx = null;
-
-		/*
-		try {
-			Reha.thisClass.conn.setAutoCommit(true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		*/
+		boolean neu = true;
+		
 		String sperre;
 		sperre = new String((String)((Vector)vecx).get(13)+
-							(String)((Vector)vecx).get(14) ); 
+							(String)((Vector)vecx).get(14) );
+		
+		if(neu){
+			String cmd = "sperre='"+sperre+"'";
+			if(SqlInfo.zaehleSaetze("flexlock", cmd)==0){
+				cmd = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
+				"zeit='"+zeit+"'";
+				new ExUndHop().setzeStatement(cmd);
+				return(0); 
+			}else{
+				return(1);				
+			}
+		}
+
 
 			//if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine)){
 				stmtx = null;

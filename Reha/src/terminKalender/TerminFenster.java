@@ -2878,6 +2878,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void setLockStatement(String sBehandler,String sDatum){
 		lockStatement = sBehandler+sDatum;
 		lockedRecord = lockStatement;
+		System.out.println(lockStatement);
 		//lockStatement = "select behandler from flexkc where datum='"+datFunk.sDatInSQL(sDatum)+"'"+" AND behandler='"+sBehandler+"'"+" for update"; 
 	}
 

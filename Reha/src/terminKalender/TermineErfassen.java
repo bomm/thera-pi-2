@@ -5,17 +5,22 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 
 public class TermineErfassen implements Runnable {
 	String scanrez = null;
 	Vector alleterm;
+	String copyright = null;
+	String heute = null;
 	public TermineErfassen(String reznr){
 		scanrez = reznr;
 
 	}
 	@Override
 	public void run() {
+		heute = datFunk.sHeute();
+		copyright = "© ";
 		testeTermine();
 		// TODO Auto-generated method stub
 		
@@ -30,29 +35,41 @@ public class TermineErfassen implements Runnable {
 	}
 	private boolean testeTermine(){
 		long zeit1 = System.currentTimeMillis();
+		boolean ret;
 		alleterm = new Vector();
 		alleterm = SqlInfo.holeSaetze("flexkc", " * ", 
-				"datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"'", 
+				"datum='"+datFunk.sDatInSQL(heute)+"'", 
 				Arrays.asList(new String[] {}));
 		Object[] obj = untersucheTermine();
 		String string = null;
 		if(! (Boolean) obj[0]){
+			ret = false;
 			System.out.println("Rezeptnummer wurde nicht gefunden");
 		}else{
-			string = "Rezeptnummer wurde gefunden bei Kollege "+(String)obj[1]+" an Block "+(Integer)obj[2]+" Rezeptnummer:"+(String)obj[3];
+			if( !((String)obj[4]).contains(copyright.trim())){
+				string = "Rezeptnummer wurde gefunden bei Kollege "+(String)obj[1]+" an Block "+(Integer)obj[2]+" Rezeptnummer:"+(String)obj[3];
+				String stmt = " sperre = '"+(String)obj[1]+heute+"'";
+				System.out.println(stmt);
+				int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
+				if( gesperrt == 0 ){
 
-			String stmt = "sperre='"+(String)obj[1]+datFunk.sDatInDeutsch((String)obj[7])+"'";
-			System.out.println(stmt);
-			if( SqlInfo.holeSatz("flexlock", "sperre", stmt, Arrays.asList(new String[]{})).size() == 0 ){
-				System.out.println("Datensatz ist nicht gesperrt");
-				//"update flexlock set "
-			}else{
-				System.out.println("Datensatz ist nicht gesperrt!!!!!!!!!!!!!!!!!!!!!!!!");
+						
+
+					System.out.println("Datensatz ist nicht gesperrt");
+					String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
+					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
+						"behandler ='"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"'";
+					new ExUndHop().setzeStatement(new String(stmt));
+					System.out.println(stmt);	
+				}else{
+					System.out.println("Achtung Datensatz ist gesperrt!!!!!!!!!!!!!!!!!!!!!!!!");
+				}
 			}
-		}
-		JOptionPane.showMessageDialog(null,string+"\n\nDauer für das Einlesen aller akutellen Termindaten = "+(System.currentTimeMillis()-zeit1)+" Millisekunden");
+			ret = true;
+		}	
 		alleterm = null;
-		return true;
+		System.out.println("**********feddisch***********");
+		return ret;
 	}
 	private Object[] untersucheTermine(){
 		
@@ -72,7 +89,7 @@ public class TermineErfassen implements Runnable {
 					obj[2] = new Integer(((y*5)+1));//Blocknummer
 					obj[3] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )); // Rezeptnummer
 					obj[4] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
-					obj[5] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Beginn
+					obj[5] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5))+2 )); // Beginn
 					obj[6] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
 					obj[7] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-2) );//Datum
 					gefunden = true;
