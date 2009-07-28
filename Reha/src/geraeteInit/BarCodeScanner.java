@@ -20,6 +20,7 @@ import javax.comm.UnsupportedCommOperationException;
 import javax.swing.JOptionPane;
 
 import sqlTools.SqlInfo;
+import terminKalender.TermineErfassen;
 
 
 
@@ -171,13 +172,10 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    	byteArrayOutputStream.close();
 				if(outString.length()>= 2){
 					if("KGMALOERRH".contains(outString.substring(0,2))){
-						final String xoutString = outString;
-						new Thread(){
-							public void run(){
-								erfasseTermin(xoutString);
-							}
-						}.start();
-						JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());
+						final String xoutString = outString.trim();
+							//JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());
+						Thread erfassen = new Thread(new TermineErfassen(xoutString));
+						erfassen.start();
 					}else{
 						JOptionPane.showMessageDialog(null,"Kein Rezeptscan\nScaninhalt = -> "+sb.toString());
 					}
@@ -191,12 +189,5 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 			}
 		    break;
 	    }
-	}
-	public void erfasseTermin(String reznum){
-		Vector<String> pat_int = SqlInfo.holeSatz("verordn", "pat_intern,anzahl1,termine", "rez_nr='"+reznum+"'", Arrays.asList(new String[] {}));
-		if(pat_int.size()==0){
-			return;
-		}
-		
 	}
 }
