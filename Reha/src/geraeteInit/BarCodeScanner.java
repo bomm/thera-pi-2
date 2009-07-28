@@ -1,5 +1,7 @@
 package geraeteInit;
 
+import hauptFenster.Reha;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +32,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
 		    portId = (CommPortIdentifier) portList.nextElement();
-		    System.out.println(portId);
+		    //System.out.println(portId);
 		    if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (portId.getName().equals(port)) {
 				    System.out.println("Port gefunden und intitialisiert. Port = "+port);
@@ -45,9 +47,16 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		}
 		
 		try {
+			
 		    serialPort = (SerialPort) portId.open("Thera-Pi", 2000);
+		    serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1, 
+                    SerialPort.PARITY_NONE); //     
+		    serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE ); //     
+
 		} catch (PortInUseException e) {
-			JOptionPane.showMessageDialog(null, "Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits bele?");
+			System.out.println("Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits bele?");
+			//JOptionPane.showMessageDialog(null, "Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits bele?");
 		}
 		
 
@@ -77,13 +86,14 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 
 	@Override
 	public void run() {
-		while(true){
+		while(Reha.thisClass != null){
 			try {
 			    Thread.sleep(50);
 			} catch (InterruptedException e) {
 				
 			}
 		}
+		System.out.println("Scanner-Thread beendet");
 	}
 
 	@Override
@@ -117,7 +127,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
 			System.out.println("Event Type "+event.getEventType());
 		case SerialPortEvent.DATA_AVAILABLE:
-			System.out.println("Data available");
+			//System.out.println("Data available");
 		    byte[] readBuffer = new byte[30];
 		    byte[] outBuffer = null;
 		    String sout = null;
