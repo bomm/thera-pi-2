@@ -1126,7 +1126,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 					protected Void doInBackground() throws Exception {
 						
 						//dokumentation.holeDokus(xpatint);
-						dokumentation.holeDokus("999999");
+						dokumentation.holeDokus(xpatint,"");
 						
 						return null;
 					}

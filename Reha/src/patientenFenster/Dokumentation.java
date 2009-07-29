@@ -623,6 +623,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 		}
 	}
+	/*****************************
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * */
 	public JToolBar getToolbar(){
 		JToolBar jtb = new JToolBar();
 		jtb.setRollover(true);
@@ -633,6 +641,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setIcon(SystemConfig.hmSysIcons.get("scanner"));
 		dokubut[0].setToolTipText("Papierbericht einscannen");
 		dokubut[0].setActionCommand("scannen");
+		dokubut[0].setEnabled(false);
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
 	
@@ -921,7 +930,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		loescheBilderPan();
 		dokubut[0].setEnabled(true);
 		dokubut[1].setEnabled(true);
-		this.holeDokus("999999");
+		this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert");
 	}
@@ -1473,7 +1482,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		*/
 		return ret;
 	}
-	public void holeDokus(String patint){
+	public void holeDokus(String patint,String doku){
 		final String xpatint = patint;
 
 
@@ -1512,13 +1521,20 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);	
 					tabdokus.setRowSelectionInterval(0, 0);
 					wechselPanel.revalidate();
-					wechselPanel.repaint();					
+					wechselPanel.repaint();	
+					if(!dokubut[0].isEnabled()){
+						dokubut[0].setEnabled(true);						
+					}
+
 				}else{
 					setzeRezeptPanelAufNull(true);
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: 0");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
+					if(!dokubut[0].isEnabled()){
+						dokubut[0].setEnabled(true);						
+					}
 				}
 				
 				}catch(Exception ex){

@@ -121,7 +121,7 @@ public class SqlInfo {
 		}
 		try{
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			String sstmt = "select "+felder+" from "+tabelle+" where "+kriterium;
+			String sstmt = "select "+felder+" from "+tabelle+" where "+kriterium+" LIMIT 1";
 			rs = stmt.executeQuery(sstmt);
 			int nichtlesen = ausschliessen.size();
 			if(rs.next()){
@@ -162,6 +162,51 @@ public class SqlInfo {
 		return (Vector)retvec.clone();
 	}
 /*****************************************/
+	public static Vector holeFeldForUpdate(String tabelle, String feld, String kriterium){
+		Statement stmt = null;
+		ResultSet rs = null;
+		Vector<String> retvec = new Vector<String>();
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium;
+			rs = stmt.executeQuery(sstmt);
+			if(rs.next()){
+				 retvec.add( (rs.getString(1)==null  ? "" :  rs.getString(1)) );						 
+				 retvec.add( (rs.getString(2)==null  ? "" :  rs.getString(2)) );
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return (Vector)retvec.clone();
+	}
+
 	/*******************************/
 	public static Vector holeSaetze(String tabelle, String felder, String kriterium, List ausschliessen){
 		Statement stmt = null;
@@ -276,7 +321,7 @@ public class SqlInfo {
 			Reha.thisClass.conn.setAutoCommit(false);
 			String numcmd = nummer+",id";
 			//System.out.println("numcmd = "+numcmd);
-			numvec = SqlInfo.holeSatz("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE", Arrays.asList(new String[] {}));
+			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
 			//System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

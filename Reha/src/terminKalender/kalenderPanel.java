@@ -74,6 +74,8 @@ private int[] positionScreen = {-1,-1,-1,-1};
 private Font fon = new Font("Tahoma", Font.PLAIN, 10);
 //private Font fon = new Font("Tahoma", Font.BOLD, 10);
 private ImageIcon dragImage = null;
+private Image dragImage2 = null;
+public boolean neuzeichnen;
 //public Composite xoriginal;
 //public AlphaComposite xac1;
 public  kalenderPanel KalenderPanel() {
@@ -88,6 +90,8 @@ public  kalenderPanel KalenderPanel() {
 public void  ListenerSetzen(int aktPanel){
 	this.panelNummer = aktPanel;
 	this.dragImage = new ImageIcon(Reha.proghome+"icons/buttongreen.png");
+	this.dragImage2 = new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(8,8,Image.SCALE_SMOOTH);
+	//this.
 	return;
 }
 
@@ -158,8 +162,8 @@ public void paintComponent( Graphics g ) {
 			/**********************************************/
 			
 			if((!this.spalteAktiv) || (!TerminFenster.thisClass.dragStart)){
-				TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
-				TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+				//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+				//TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 			}
 			g2d.setColor( SystemConfig.KalenderHintergrund);
 			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
@@ -253,6 +257,7 @@ public void paintComponent( Graphics g ) {
 					for(i1=0;i1<1;i1++){
 
 						if((this.maleSchwarz >= 0) && (this.maleSchwarz == i) ){
+							
 							//System.out.println("in male Schwarz zeichnen");
 							Font altfont = g2d.getFont();
 							
@@ -268,35 +273,49 @@ public void paintComponent( Graphics g ) {
 							aktivPunkt[2] = xEnde;
 							aktivPunkt[3] = yDifferenz;
 							if (sReznr.contains("@FREI")){
-								TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+								//TerminFenster.thisClass.dragLab[this.panelNummer].setVisible(false);
+								//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 								TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+
 								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sName, 5, (baseline));
 						
 								g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
 							}else{
 								if(this.spalteAktiv){
-									if(!sName.equals("") || TerminFenster.thisClass.ansicht==TerminFenster.thisClass.MASKEN_ANSICHT){
+									
+									if((!sName.equals("") || TerminFenster.thisClass.ansicht==TerminFenster.thisClass.MASKEN_ANSICHT) ){
 										if(yDifferenz < 12){
+											System.out.println("Y-Differenz ist kleiner 12: "+yDifferenz);
 											if(yDifferenz > 0){
-												TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(new ImageIcon( new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(yDifferenz, yDifferenz, Image.SCALE_SMOOTH)));
-												TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+(yDifferenz), yDifferenz-1);
+												System.out.println("Y-Differenz ist kleiner 12 und größer 0: "+yDifferenz);
+												//g2d.drawImage(skaliereImage(yDifferenz-1),xStart+1,yStartMin+1,null);
+												TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
+												//TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin+1,xStart+yDifferenz-1, yDifferenz-2);
+												g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											}else{
-												TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
-												TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+												System.out.println("Y-Differenz ist kleiner 12 und kleiner 0: "+yDifferenz);
+												//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+												//TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 											}
 											g2d.drawString(sStart.substring(0,5)+"-"+
 													sName
-													, xStart+(yDifferenz+5), (baseline));
-
+													, xStart+16, (baseline));
+											/*
+											g2d.drawString(sStart.substring(0,5)+"-"+
+													sName
+													, xStart+(yDifferenz), (baseline)-2);
+											*/
 										}else{
-											TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(dragImage);
+											System.out.println("Y-Differenz ist größer 12: "+yDifferenz);
 											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
+											g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											g2d.drawString(sStart.substring(0,5)+"-"+
 													sName
 													, xStart+16, (baseline));
 
 										}
 										g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
+										//gezeichnet = true;
 
 									}else{
 										g2d.drawString(sStart.substring(0,5)+"-"+
@@ -317,8 +336,6 @@ public void paintComponent( Graphics g ) {
 								}
 							}
 							g2d.setFont(altfont);
-							
-							
 							break;
 						}
 
@@ -721,6 +738,10 @@ public void paintComponent( Graphics g ) {
 		positionScreen[3]=posInScreen.y+this.getHeight();		
 		this.repaint();
 	}
+	private Image skaliereImage(int faktor){
+		Image skal = this.dragImage.getImage().getScaledInstance(faktor-2, faktor-2, Image.SCALE_FAST);
+		return skal;
+	}
 	public int[] getPosInScreen(){
 		return positionScreen;
 	}
@@ -867,7 +888,10 @@ public void paintComponent( Graphics g ) {
 			TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 			TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 	}
-
+	public void  setSpalteaktiv(boolean aktiv){
+		
+		this.spalteAktiv = aktiv;
+	}
 	
 	public void schwarzAbgleich(int block, int schwarz){
 		this.blockAktiv = block;

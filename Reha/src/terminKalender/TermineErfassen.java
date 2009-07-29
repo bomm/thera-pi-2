@@ -55,7 +55,8 @@ public class TermineErfassen implements Runnable {
 					System.out.println("Datensatz ist nicht gesperrt");
 					String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
 					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
-						"behandler ='"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"'";
+						"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
+						"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
 					new ExUndHop().setzeStatement(new String(stmt));
 					System.out.println(stmt);	
 				}else{

@@ -529,7 +529,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						break;
 					}
 					if(e.getKeyCode()==68 && e.isControlDown()){
-						System.out.println("in Terminplan drucken");
+						//System.out.println("in Terminplan drucken");
 						DruckeViewPanel dvp = new DruckeViewPanel();
 						dvp.setPrintPanel((JXPanel) thisClass.ViewPanel);
 						break;	
@@ -565,12 +565,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				if (ansicht == NORMAL_ANSICHT){
 					//System.out.println("Aktion im ComboListener");
 					try{
-						System.out.println("Wahl = "+wahl);
+						//System.out.println("Wahl = "+wahl);
 						//belegung[welche] = ParameterLaden.getPosUeberDB(ParameterLaden.vKKollegen.get(wahl).Reihe-1);ParameterLaden.vKKollegen.get(wahl).Position) ;
 						//belegung[welche] = ParameterLaden.getPosUeberDB(ParameterLaden.vKKollegen.get(wahl).Reihe-1);
 						//belegung[welche] = ParameterLaden.getDBZeile(ParameterLaden.vKKollegen.get(wahl).Reihe -1);
 						belegung[welche] = ParameterLaden.vKKollegen.get(wahl).Reihe -1 ;
-						System.out.println("Kollege =  BEHANDLER"+(belegung[welche] < 10 ? "0"+belegung[welche] : belegung[welche]));
+						//System.out.println("Kollege =  BEHANDLER"+(belegung[welche] < 10 ? "0"+belegung[welche] : belegung[welche]));
 						//System.out.println("Belegung der Spalte "+welche+" ist Behandler - " +belegung[welche]);
 						oSpalten[welche].datenZeichnen(vTerm,belegung[welche]);
 						oSpalten[aktiveSpalte[2]].requestFocus();
@@ -772,7 +772,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[i] = new JLabel();
 				dragLab[i].setName("draLab-"+i);
 				dragLab[i].setForeground(SystemConfig.aktTkCol.get("aktBlock")[1]);
-				dragLab[i].setTransferHandler(new TransferHandler("text"));
+				//dragLab[i].setTransferHandler(new TransferHandler("text"));
 				dragLab[i].setBounds(0,0,oSpalten[i].getWidth(),oSpalten[i].getHeight());
 				dragLab[i].addMouseListener(new MouseAdapter() {
 					
@@ -804,17 +804,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      if(behandler <= -1){
 					    	  return;
 					      }
-					      DRAG_PAT = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) );
+					      DRAG_PAT = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("© ", "");
 					      DRAG_NUMMER = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) );
 					      DRAG_UHR =  new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) );
 					      altaktiveSpalte = aktiveSpalte.clone();
-					      draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
-					      ((JLabel)c).setText(draghandler.getText());
-					      TransferHandler th = c.getTransferHandler();
-					      th.exportAsDrag(c, e, TransferHandler.COPY);
+					      //new J
+					      //draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
+					      //((JLabel)c).setText(draghandler.getText());
+					      JLabel lab = new JLabel(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
+					      lab.setTransferHandler(new TransferHandler("text"));
+					      TransferHandler th = lab.getTransferHandler();
+					      th.exportAsDrag(lab, e, TransferHandler.COPY);
+					      
 					}
 					public void mouseReleased(MouseEvent e) {
-					    	System.out.println("mouse released");
+					    	//System.out.println("mouse released");
 					    //	System.out.println(e.getSource());
 					      JComponent c = (JComponent)e.getSource();
 					      int v = new Integer(c.getName().split("-")[1]);
@@ -921,7 +925,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 
 						if(ec==68 && e.isControlDown()){
-							System.out.println("in Terminplan drucken");
+							//System.out.println("in Terminplan drucken");
 							DruckeViewPanel dvp = new DruckeViewPanel();
 							dvp.setPrintPanel((JXPanel) thisClass.ViewPanel);
 							break;	
@@ -1017,12 +1021,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								}
 							}
 							if(!grobRaus){
-								System.out.println("grobRaus = "+grobRaus);
+								//System.out.println("grobRaus = "+grobRaus);
 								wartenAufReady = true;
 								datenAusSpeicherHolen();								
 							}else{
 								wartenAufReady = false;						
-								System.out.println("grobRaus = "+grobRaus);
+								//System.out.println("grobRaus = "+grobRaus);
 							}
 							shiftGedrueckt = false;
 							gruppierenAktiv = false;
@@ -1180,7 +1184,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					//oSpalten[tspalte].requestFocus();
 				}				
 				public void mouseReleased(java.awt.event.MouseEvent e) {
+					System.out.println("Maus losgelassen");
+					//dragLab[tspalte].setText("");
 					dragStart = false;
+					SwingUtilities.invokeLater(new Runnable(){
+						public  void run(){
+							//oSpalten[tspalte].setSpalteaktiv(false);
+						}
+					});
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
@@ -1192,7 +1203,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					for(int i = 0; i < 1; i++){
 						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1) ){
 							KlickSetzen(oSpalten[tspalte], e);
+							oSpalten[tspalte].neuzeichnen = true;
 							oSpalten[tspalte].requestFocus();
+							dragLab[i].setVisible(true);
+							
+							
 							break;
 						}
 						if ( (e.getClickCount() == 1) && (e.getButton() == java.awt.event.MouseEvent.BUTTON3) ){
@@ -1827,6 +1842,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			intagWahl = true;
 			tagSprung(this.aktuellerTag,1);
+			if(aktiveSpalte[2]>=0){
+				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);				
+			}
 			intagWahl = false;
 			//SetzeLabel();
 			break;
@@ -1836,6 +1854,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			intagWahl = true;
 			tagSprung(this.aktuellerTag,-1);
+			if(aktiveSpalte[2]>=0){
+				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);				
+			}
 			intagWahl = false;
 			//SetzeLabel();
 			break;
@@ -1875,6 +1896,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							dragLab[aktiveSpalte[2]].setText("");
 							oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 						}
+						oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 
 					}	
@@ -1932,6 +1954,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							dragLab[aktiveSpalte[2]].setText("");
 							oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 						}
+						oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 					}
 					//TestFenster.LabelSetzen(1, new Integer(aktiveSpalte[0]).toString());
@@ -1962,14 +1985,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				aktiveSpalte[2] = 6;
 				aktiveSpalte[0]=0;
 				aktiveSpalte[1]=0;
-				oSpalten[aktiveSpalte[2]].requestFocus();				
+				oSpalten[aktiveSpalte[2]].requestFocus();	
+				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 				oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[1]);				
 			}else{
 				oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 				aktiveSpalte[2] = aktiveSpalte[2]-1;
 				aktiveSpalte[0]=0;
 				aktiveSpalte[1]=0;
-				oSpalten[aktiveSpalte[2]].requestFocus();				
+				oSpalten[aktiveSpalte[2]].requestFocus();	
+				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 				oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[1]);				
 			}
 			break;
@@ -2026,6 +2051,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setUpdateVerbot(true);
 					Zeiteinstellen(new Point(x,y),belegung[aktiveSpalte[2]],aktiveSpalte[0]);
 					interminEdit = false;
+					oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 					oSpalten[aktiveSpalte[2]].repaint();
 					oSpalten[aktiveSpalte[2]].requestFocus();
 					setUpdateVerbot(false);
@@ -2056,6 +2082,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setUpdateVerbot(true);
 					Zeiteinstellen(new Point(x,y),aktiveSpalte[2],aktiveSpalte[0]);
 					interminEdit = false;
+					oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 					oSpalten[aktiveSpalte[2]].requestFocus();
 					oSpalten[aktiveSpalte[2]].repaint();					
 					setUpdateVerbot(false);
@@ -2073,6 +2100,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 				Zeiteinstellen(new Point(x,y),aktiveSpalte[2],aktiveSpalte[0]);
 				interminEdit = false;
+				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 				oSpalten[aktiveSpalte[2]].repaint();
 				lockok = 0;
 			}	
@@ -2266,7 +2294,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			terminrueckgabe[4] = "";
 			terminrueckgabe[5] = new Integer(-1).toString();
 			neuerBlockAktiv(  ((ArrayList)vTerm.get(behandler)).size());
-			System.out.println("Aktiver Block = ");			
+			//System.out.println("Aktiver Block = ");			
 		}
 	}
 	
@@ -2878,7 +2906,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void setLockStatement(String sBehandler,String sDatum){
 		lockStatement = sBehandler+sDatum;
 		lockedRecord = lockStatement;
-		System.out.println(lockStatement);
+		//System.out.println(lockStatement);
 		//lockStatement = "select behandler from flexkc where datum='"+datFunk.sDatInSQL(sDatum)+"'"+" AND behandler='"+sBehandler+"'"+" for update"; 
 	}
 
@@ -2940,7 +2968,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if (aktbehandler == -1){
 			return;
 		}
-		datenSpeicher[0]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock);		
+		datenSpeicher[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("© ", "");		
 		datenSpeicher[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		datenSpeicher[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);		
 		//System.out.println("Inhalt des Speichers = "+datenSpeicher[0]+" / "+datenSpeicher[1]+" / "+datenSpeicher[2]);
@@ -2961,7 +2989,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			return srueck;
 		}
 		try{
-		srueck[0]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock);		
+		srueck[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("© ", "");		
 		srueck[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		srueck[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);
 		return srueck;
@@ -3489,7 +3517,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if(ind >= 0){
 			reznr = reznr.substring(0,ind);
 		}
-		System.out.println("****************Rezeptnummer = "+reznr);
+		//System.out.println("****************Rezeptnummer = "+reznr);
 		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
 		if(vec.size() == 0){
 			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
@@ -3509,7 +3537,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			final String xpat_int = pat_int;
 			new SwingWorker<Void,Void>(){
 				protected Void doInBackground() throws Exception {
-					System.out.println("in der Funktion doPatSuchen  SwingWorker");
+					//System.out.println("in der Funktion doPatSuchen  SwingWorker");
 					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					ProgLoader.ProgPatientenVerwaltung(1);
 					while( xpatient == null ){
@@ -3609,7 +3637,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[aktiveSpalte[2]].setIcon(null);
 				dragLab[aktiveSpalte[2]].setText("");
 				//tagWahlNeu = null;
-				System.out.println("intagWahl ="+intagWahl);
+				//System.out.println("intagWahl ="+intagWahl);
 				/*
 	        	new Thread(){
 	        		public void run(){
@@ -3890,15 +3918,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 
 	        Transferable tr = dtde.getTransferable();
-	        System.out.println("Transferable Name = "+tr);
+	        //System.out.println("Transferable Name = "+tr);
 	        DataFlavor[] flavors = tr.getTransferDataFlavors();
 	        for (int i = 0; i < flavors.length; i++){
-	        	System.out.println(flavors[i]);
+	        	//System.out.println(flavors[i]);
 	        	if(flavors[i].getRepresentationClass().toString().equals("java.lang.String")){
 	        		mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
 	        	}
 	        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
-	        	System.out.println("Mitgebracht = "+mitgebracht);
+	        	//System.out.println("Mitgebracht = "+mitgebracht);
 	        }
 	      } catch (Throwable t) { t.printStackTrace(); }
 	      // Ein Problem ist aufgetreten
@@ -3910,7 +3938,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	    //DragAndMove.PixelzuMinute = -1;
 		//dragAndMove = null;
 		
-		System.out.println("gedroppt an Position "+dtde.getLocation());
+		//System.out.println("gedroppt an Position "+dtde.getLocation());
 		int x = dtde.getLocation().x;
 		int breit = TerminFlaeche.getWidth()/7;
 		for(int i = 0; i < 7;i++){
@@ -3962,7 +3990,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					teilen = mitgebracht.split("°");
 					teilen[2] = teilen[2].toUpperCase();
 					teilen[2] = teilen[2].replaceAll(" MIN.", "");
-					System.out.println(teilen[0]+" - "+teilen[1]+" - "+teilen[2]);
+					//System.out.println(teilen[0]+" - "+teilen[1]+" - "+teilen[2]);
 					datenSpeicher[0]= teilen[0];		
 					datenSpeicher[1]= teilen[1];		
 					datenSpeicher[3]= teilen[2];
@@ -3988,7 +4016,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						
 						if(!grobRaus){
-							System.out.println("Stufe 1 - o.k.");
+							//System.out.println("Stufe 1 - o.k.");
 							String sbeginnneu = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(spaltneu[0]); 
 							int spAktiv = new Integer(aktiveSpalte[2]);
 							aktiveSpalte = altaktiveSpalte.clone();
@@ -4008,18 +4036,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								}
 							}
 							if(!grobRaus){
-								System.out.println("Stufe 2 - o.k.");
+								//System.out.println("Stufe 2 - o.k.");
 								if(altaktiveSpalte[2]==spAktiv){
 									String sbeginn = new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(altaktiveSpalte[0]) );
 									int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
-									System.out.println("Suche nach Uhrzeit -> "+sbeginn);
+									//System.out.println("Suche nach Uhrzeit -> "+sbeginn);
 									for(int i2 = 0 ; i2 < lang; i2++){
-										System.out.println("kontrolliere Uhrzeit -> "+((Vector<?>)((ArrayList<?>)vTerm.get(behandler)).get(2)).get(i2) );
+										//System.out.println("kontrolliere Uhrzeit -> "+((Vector<?>)((ArrayList<?>)vTerm.get(behandler)).get(2)).get(i2) );
 										if( ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2).equals(DRAG_UHR)){
 										//if( ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2).equals(sbeginn)){
 											aktiveSpalte[0] = i2;
 											aktiveSpalte[1] = i2;
-											System.out.println("Uhrzeit gefunden auf Block -> "+i2);
+											//System.out.println("Uhrzeit gefunden auf Block -> "+i2);
 											wartenAufReady = true;
 											blockSetzen(11);
 											break;
@@ -4032,23 +4060,23 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								}
 								
 								int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
-								System.out.println("Suche nach neuer Uhrzeit -> "+sbeginnneu);
+								//System.out.println("Suche nach neuer Uhrzeit -> "+sbeginnneu);
 									for(int i2 = 0 ; i2 < lang; i2++){
 										if( ((String)((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2)).trim().equals(sbeginnneu.trim())){
 											aktiveSpalte[0] = i2;
 											aktiveSpalte[1] = i2;
-											System.out.println("Setze aktiven Block neu auf Block -> "+i2);
+											//System.out.println("Setze aktiven Block neu auf Block -> "+i2);
 											break;
 										}
 									}
 							}else{
-								System.out.println("Grober Austritt aus Löschenfunktion->MoveFunktion");
+								//System.out.println("Grober Austritt aus Löschenfunktion->MoveFunktion");
 								aktiveSpalte = spaltneu.clone();
 								wartenAufReady = false;		
 							}
 							aktiveSpalte = spaltneu.clone();							
 						}else{
-							System.out.println("Grober Austritt aus BlockSchreibenFunktion->MoveFunktion");
+							//System.out.println("Grober Austritt aus BlockSchreibenFunktion->MoveFunktion");
 							aktiveSpalte = spaltneu.clone();
 							wartenAufReady = false;								
 						}					
@@ -4059,7 +4087,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					
 				}
 				//datenAusSpeicherHolen();
-				System.out.println("Belegt mit -> "+sname+" - "+sreznum);
+				//System.out.println("Belegt mit -> "+sname+" - "+sreznum);
 				try{
 					for(int x2 = 0; x2 < 1; x2++){
 						String name = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]+1);
@@ -4084,7 +4112,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[altaktiveSpalte[2]].setIcon(null);
 				dragLab[altaktiveSpalte[2]].setText("");
 
-				System.out.println("Endwerte aktive Spalte = "+aktiveSpalte[0]+" / "+aktiveSpalte[1]+" / "+aktiveSpalte[2]+" / "+aktiveSpalte[3]);
+				//System.out.println("Endwerte aktive Spalte = "+aktiveSpalte[0]+" / "+aktiveSpalte[1]+" / "+aktiveSpalte[2]+" / "+aktiveSpalte[3]);
 				oSpalten[i].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0] );
 			}else{
 				oSpalten[i].spalteDeaktivieren();
@@ -4097,38 +4125,38 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void dropActionChanged(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
-		System.out.println("Changed-Target");
+		//System.out.println("Changed-Target");
 	}
 	@Override
 	public void dragDropEnd(DragSourceDropEvent dsde) {
 		// TODO Auto-generated method stub
-		System.out.println("End");
+		//System.out.println("End");
 		
 	}
 	@Override
 	public void dragEnter(DragSourceDragEvent dsde) {
 		// TODO Auto-generated method stub
-		System.out.println("Enter");		
+		//System.out.println("Enter");		
 	}
 	@Override
 	public void dragExit(DragSourceEvent dse) {
 		// TODO Auto-generated method stub
-		System.out.println("Exit");		
+		//System.out.println("Exit");		
 	}
 	@Override
 	public void dragOver(DragSourceDragEvent dsde) {
 		// TODO Auto-generated method stub
-		System.out.println("Over");
+		//System.out.println("Over");
 	}
 	@Override
 	public void dropActionChanged(DragSourceDragEvent dsde) {
 		// TODO Auto-generated method stub
-		System.out.println("Changed-Source");
+		//System.out.println("Changed-Source");
 	}
 	@Override
 	public void dragGestureRecognized(DragGestureEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("gesture "+arg0);
+		//System.out.println("gesture "+arg0);
 		
 	}
 
@@ -4411,7 +4439,7 @@ class DragAndMove extends Thread implements Runnable{
 
 	public void run()  {
 		// TODO Auto-generated method stub
-		System.out.println("Starte DragAndMove");
+		//System.out.println("Starte DragAndMove");
 		new SwingWorker<Void,Void>(){
 
 			@Override
@@ -4426,7 +4454,7 @@ class DragAndMove extends Thread implements Runnable{
 			}
 			
 		}.execute();
-		System.out.println("Stoppe DragAndMove");
+		//System.out.println("Stoppe DragAndMove");
 
 	}
 	
@@ -4489,7 +4517,7 @@ class DragSupport implements DragGestureListener{
 	@Override
 	public void dragGestureRecognized(DragGestureEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("in datGasture "+arg0);
+		//System.out.println("in datGasture "+arg0);
 		
 	}
 	

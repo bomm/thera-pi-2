@@ -1479,7 +1479,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         					if(termin == null){
         						//
         					}else{
-        						//ProgLoader.ProgTerminFenster(0,0);
+        						//ProgLoader.ProgTerminFenster(0,0);//
         					}
                     }
                     if(keyEvent.isControlDown() &&
