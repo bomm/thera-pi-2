@@ -380,15 +380,11 @@ private JScrollPane getParameterListe(){
 	node = new DefaultMutableTreeNode( "Emailparameter");
 	root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Geräteverwaltung"); 
-	treeitem = new DefaultMutableTreeNode("KV-Kartenlesegerät");
+	node = new DefaultMutableTreeNode( "Geräte/Anschlüsse"); 
+	treeitem = new DefaultMutableTreeNode("angeschlossene Geraete");
 	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Dokumentenscanner");
+	treeitem = new DefaultMutableTreeNode("Anschlüsse");
 	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Barcode-Scanner/Drucker");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("EC-Karten Lesegerät");
-	node.add(treeitem );
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Preislisten");
@@ -716,8 +712,24 @@ private void auswertenSysUtil(String util){
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
-		
-		
+		if(util.equals("angeschlossene Geraete")){
+			jxInhaltRechts = new SysUtilGeraete();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
+		if(util.equals("Anschlüsse")){
+			jxInhaltRechts = new SysUtilAnschluesse();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
 		
 
 		jxInhaltRechts = new SysUtilVorlage();
