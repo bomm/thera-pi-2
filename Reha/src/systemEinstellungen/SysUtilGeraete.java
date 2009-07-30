@@ -20,10 +20,14 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
+import uk.co.mmscomputing.device.scanner.Scanner;
+import uk.co.mmscomputing.device.scanner.ScannerIOException;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -48,7 +52,8 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	
 	JButton knopf1 = null;
 	JButton knopf2 = null;
-
+	String[] anschluesse = new String[] {"./.", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "COM10","USB"};
+	Scanner scanner;
 	public SysUtilGeraete(){
 		
 		
@@ -74,6 +79,7 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	     jscr.validate();
 	     
 	     add(jscr,BorderLayout.CENTER);
+
 	     add(getKnopfPanel(),BorderLayout.SOUTH);
 		return;
 	}
@@ -115,17 +121,58 @@ private JPanel getKnopfPanel(){
 	private JPanel getVorlagenSeite(){
 		
 		kvkakt = new JCheckBox();
+		kvkakt.setSelected((SystemConfig.sReaderAktiv.equals("1") ? true : false));
+
 		docscanakt = new JCheckBox();
-		barcodeakt = new JCheckBox();
-		ecakt = new JCheckBox();
+		docscanakt.setSelected((SystemConfig.hmDokuScanner.get("aktivieren").equals("1") ? true : false));
 		
-		kvkgeraet = new JComboBox(new String[]{"eins","zwei","drei","vier","fuenf","sex","sieben","acht","neun"});
-		kvkan = new JComboBox(new String[] {"USB", "COM 1", "COM 2", "COM 3", "COM 4", "COM 5", "COM 6", "COM 7", "COM 8", "COM 9", "COM 10"});
-		docscangeraet = new JComboBox(new String[] {"eins","zwei","drei","vier","fuenf","sex","sieben","acht","neun"});
-		barcodegeraet = new JComboBox(new String[] {"eins","zwei","drei","vier","fuenf","sex","sieben","acht","neun"});
-		barcodean = new JComboBox(new String[] {"USB", "COM 1", "COM 2", "COM 3", "COM 4", "COM 5", "COM 6", "COM 7", "COM 8", "COM 9", "COM 10"});
-		ecgeraet = new JComboBox(new String[] {"eins","zwei","drei","vier","fuenf","sex","sieben","acht","neun"});
-		ecan = new JComboBox(new String[] {"USB", "COM 1", "COM 2", "COM 3", "COM 4", "COM 5", "COM 6", "COM 7", "COM 8", "COM 9", "COM 10"});
+		barcodeakt = new JCheckBox();
+		barcodeakt.setSelected((SystemConfig.sBarcodeAktiv.equals("1") ? true : false));
+
+		ecakt = new JCheckBox();
+		ecakt.setEnabled(false);
+		
+		kvkgeraet = new JComboBox( (String[]) SystemConfig.hmGeraete.get("Kartenleser"));
+		kvkgeraet.setSelectedItem(SystemConfig.sReaderName);
+		
+		kvkan = new JComboBox(anschluesse);
+		kvkan.setSelectedItem(SystemConfig.sReaderCom);
+		
+		docscangeraet = new JComboBox();
+		new SwingWorker<String,String>(){
+			@Override
+			protected String doInBackground() throws Exception {
+				 scanner = Scanner.getDevice();
+				    try {
+						String[] names = scanner.getDeviceNames();
+						for(int i = 0; i < names.length;i++){
+							docscangeraet.addItem(names[i]);
+						}
+						if(!scanner.getSelectedDeviceName().equals(SystemConfig.sDokuScanner)){
+							docscangeraet.setSelectedItem(scanner.getSelectedDeviceName());
+						}else{
+							docscangeraet.setSelectedItem(SystemConfig.sDokuScanner);	
+						}
+						
+					} catch (ScannerIOException e2) {
+						e2.printStackTrace();
+					}
+				return null;
+			}
+			
+		}.execute();
+
+
+		barcodegeraet = new JComboBox(SystemConfig.hmGeraete.get("Barcode"));
+		barcodegeraet.setSelectedItem(SystemConfig.sBarcodeScanner);
+
+		barcodean = new JComboBox(anschluesse);
+		barcodean.setSelectedItem(SystemConfig.sBarcodeCom);
+		
+		ecgeraet = new JComboBox(SystemConfig.hmGeraete.get("ECKarte"));
+		ecgeraet.setEnabled(false);
+		ecan = new JComboBox(anschluesse);
+		ecan.setEnabled(false);
 		
 		
         //                                      1.            2.    3.      4.    5.     6.                   7.      8.     9.
