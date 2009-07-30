@@ -33,6 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
@@ -44,12 +45,14 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.TherapieBerichte.MyBerichtTableModel;
+import sqlTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
 import systemTools.LeistungTools;
+import terminKalender.datFunk;
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -73,7 +76,7 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
-	public JRtaCheckBox[] leistung = {null,null,null,null}; 
+	public JRtaCheckBox[] leistung = {null,null,null,null,null}; 
 
 	private RehaTPEventClass rtp = null;
 	private AusfallRechnungHintergrund rgb;	
@@ -92,9 +95,9 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		setPinPanel(pinPanel);
 		getSmartTitledPanel().setTitle("Ausfallrechnung erstellen");
 
-		setSize(300,250);
-		setPreferredSize(new Dimension(300,250));
-		getSmartTitledPanel().setPreferredSize(new Dimension (300,250));
+		setSize(300,270);
+		setPreferredSize(new Dimension(300,270));
+		getSmartTitledPanel().setPreferredSize(new Dimension (300,270));
 		setPinPanel(pinPanel);
 		rgb = new AusfallRechnungHintergrund();
 		rgb.setLayout(new BorderLayout());
@@ -148,8 +151,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 
 	private JPanel getGebuehren(){     // 1     2                   3         4     5        6              7
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.50),right:80dlu,10dlu,80dlu,fill:0:grow(0.50),10dlu",
-									//     1   2  3    4  5   6  7   8  9   10  11  12  13
-										"15dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,p, 20dlu,p,20dlu");
+									//     1   2  3    4  5   6  7   8  9   10  11    12  13    14  15
+										"15dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,p, 10dlu, p,  20dlu, p ,20dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 
@@ -205,18 +208,23 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		}
 		pb.add(leistung[3],cc.xyw(5, 10, 2));
 
+		pb.addLabel("Eintragen in Memo",cc.xy(3, 12));
+		leistung[4] = new JRtaCheckBox("Fehldaten");
+		leistung[4].setOpaque(false);
+		leistung[4].setSelected(true);
+		pb.add(leistung[4],cc.xyw(5, 12, 2));
 		
 		uebernahme = new JButton("drucken & buchen");
 		uebernahme.setActionCommand("uebernahme");
 		uebernahme.addActionListener(this);
 		uebernahme.addKeyListener(this);
-		pb.add(uebernahme,cc.xy(3,12));
+		pb.add(uebernahme,cc.xy(3,14));
 		
 		abbrechen = new JButton("abbrechen");
 		abbrechen.setActionCommand("abbrechen");
 		abbrechen.addActionListener(this);
 		abbrechen.addKeyListener(this);
-		pb.add(abbrechen,cc.xy(5,12));
+		pb.add(abbrechen,cc.xy(5,14));
 		
 		pb.getPanel().validate();
 		return pb.getPanel();
@@ -265,6 +273,16 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 					return null;
 				}
 			}.execute();
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					if(leistung[4].isSelected()){
+						macheMemoEintrag();
+					}
+					return null;
+				}
+			}.execute();
+
 
 			this.dispose();
 			/********
@@ -277,6 +295,14 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			this.dispose();
 		}
 
+	}
+	private void macheMemoEintrag(){
+		StringBuffer sb = new StringBuffer();
+		sb.append(datFunk.sHeute()+" - unentschuldigt oder zu spät abgesagt\n");
+		sb.append(PatGrundPanel.thisClass.pmemo[1].getText());
+		PatGrundPanel.thisClass.pmemo[1].setText(sb.toString());
+		String cmd = "update pat5 set pat_text='"+sb.toString()+"' where pat_intern = '"+PatGrundPanel.thisClass.aktPatID+"'";
+		new ExUndHop().setzeStatement(cmd);
 	}
 	private void macheAFRHmap(){
 		String mappos = "";

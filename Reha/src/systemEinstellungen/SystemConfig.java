@@ -952,6 +952,9 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		hmSysIcons.put("bild", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "patbild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("patbild", new ImageIcon(ico));
+
 		System.out.println("System-Icons wurden geladen");
 
 		
