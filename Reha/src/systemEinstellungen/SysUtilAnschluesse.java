@@ -80,29 +80,30 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		
 	
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(60dlu;p), 10dlu, 60dlu",
+		FormLayout lay = new FormLayout("60dlu, right:max(90dlu;p), 10dlu, 60dlu",
 	   //1.    2.   3.   4.  5.   6. 7.  8.  9.   10.  11.  12.  13. 14.  15. 16.  17. 18.  19. 20. 21.  22.  23.  24.  25   26  27  28   29  30   31   32  33    34  35  36     37
-		"p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
+		"p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addLabel("Anschluss auswählen", cc.xy(1,1));
-		builder.add(anschluss, cc.xy(3,1));
-		builder.addLabel("Baudrate", cc.xy(1,3));
-		builder.add(baud, cc.xy(3,3));
-		builder.addLabel("Datenbits", cc.xy(1,5));
-		builder.add(datenbits, cc.xy(3,5));
-		builder.addLabel("Parity", cc.xy(1,7));
-		builder.add(parity, cc.xy(3,7));
-		builder.addLabel("Stopbits", cc.xy(1,9));
-		builder.add(stopbits, cc.xy(3,9));
+		builder.addSeparator("Anschlussdaten", cc.xyw(1, 1, 4));
+		builder.addLabel("Anschluss auswählen", cc.xy(2,3));
+		builder.add(anschluss, cc.xy(4,3));
+		builder.addLabel("Baudrate", cc.xy(2,5));
+		builder.add(baud, cc.xy(4,5));
+		builder.addLabel("Datenbits", cc.xy(2,7));
+		builder.add(datenbits, cc.xy(4,7));
+		builder.addLabel("Parity", cc.xy(2,9));
+		builder.add(parity, cc.xy(4,9));
+		builder.addLabel("Stopbits", cc.xy(2,11));
+		builder.add(stopbits, cc.xy(4,11));
 		
-		builder.addSeparator("Vorgenommene Änderungen werden erst nach Übernahme wirksam.", cc.xyw(1,11,3));
-		builder.add(knopf2, cc.xy(1,13));
-		builder.add(knopf1, cc.xy(3,13));
+		builder.addSeparator("Vorgenommene Änderungen übernehmen...", cc.xyw(1,13,4));
+		builder.add(knopf2, cc.xy(2,15));
+		builder.add(knopf1, cc.xy(4,15));
 		
 		return builder.getPanel();
 	}
