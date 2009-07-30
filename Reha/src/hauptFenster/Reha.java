@@ -308,6 +308,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}else if(osVersion.contains("OSX")){
 			
 		}
+		String javaPfad = java.lang.System.getProperty("java.home").replaceAll("\\\\","/");
+		System.out.println("Die JavaVersion = "+java.lang.System.getProperty("java.version"));
+		System.out.println("Der Pfad zu Java = "+javaPfad);
 		if(args.length > 0){
 			String[] split = args[0].split("@");
 			aktIK = new String(split[0]);
@@ -357,6 +360,34 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
+		new SocketClient().setzeInitStand("Überprüfe Dateisystem");
+		File f = new File(javaPfad+"/bin/win32com.dll");
+		if(! f.exists()){
+			new SocketClient().setzeInitStand("Kopiere win32com.dll");
+			try {
+				FileTools.copyFile(new File(proghome+"RTAJars/win32com.dll"),f, 4096, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				new SocketClient().setzeInitStand("Kopiere comm.jar");
+				FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),new File(javaPfad+"/lib/ext/comm.jar"), 4096, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
+				FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),new File(javaPfad+"/lib/javax.comm.properties"), 4096, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("Systemdateien existieren bereits, kopieren nicht erforderlich");
+		}
+		
 		new Thread(){
 			public void run(){
 				new SocketClient().setzeInitStand("System-Parameter laden");
