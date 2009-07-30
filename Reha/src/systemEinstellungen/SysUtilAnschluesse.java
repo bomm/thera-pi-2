@@ -66,7 +66,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		knopf2.addActionListener(this);
 		knopf2.setActionCommand("abbruch");
 		knopf2.addKeyListener(this);
-		knopf1 = new JButton("Übernahme");
+		knopf1 = new JButton("speichern");
 		knopf1.setPreferredSize(new Dimension(70, 20));
 		knopf1.addActionListener(this);
 		knopf1.setActionCommand("speichern");
@@ -80,7 +80,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		
 	
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("60dlu, right:max(90dlu;p), 10dlu, 60dlu",
+		FormLayout lay = new FormLayout("60dlu, right:max(90dlu;p), 10dlu, 50dlu",
 	   //1.    2.   3.   4.  5.   6. 7.  8.  9.   10.  11.  12.  13. 14.  15. 16.  17. 18.  19. 20. 21.  22.  23.  24.  25   26  27  28   29  30   31   32  33    34  35  36     37
 		"p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
 		
@@ -101,7 +101,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		builder.addLabel("Stopbits", cc.xy(2,11));
 		builder.add(stopbits, cc.xy(4,11));
 		
-		builder.addSeparator("Vorgenommene Änderungen übernehmen...", cc.xyw(1,13,4));
+		builder.addSeparator("Änderungen übernehmen", cc.xyw(1,13,4));
 		builder.add(knopf2, cc.xy(2,15));
 		builder.add(knopf1, cc.xy(4,15));
 		
