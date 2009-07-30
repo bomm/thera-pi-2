@@ -80,7 +80,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		
 	
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("60dlu, right:max(90dlu;p), 10dlu, 50dlu",
+		FormLayout lay = new FormLayout("100dlu, right:max(120dlu;p), 10dlu, 50dlu",
 	   //1.    2.   3.   4.  5.   6. 7.  8.  9.   10.  11.  12.  13. 14.  15. 16.  17. 18.  19. 20. 21.  22.  23.  24.  25   26  27  28   29  30   31   32  33    34  35  36     37
 		"p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
 		
