@@ -1,4 +1,6 @@
 package systemEinstellungen;
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,6 +14,7 @@ import java.awt.geom.Point2D;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXPanel;
@@ -54,6 +57,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
+	     setBackgroundPainter(new CompoundPainter(mp));
 	     add(getVorlagenSeite(),BorderLayout.CENTER);
 		/****/
 		return;
@@ -73,14 +77,23 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		knopf1.addKeyListener(this);
 		
 		anschluss = new JComboBox(new String[] {"COM 1", "COM 2", "COM 3", "COM 4", "COM 5", "COM 6", "COM 7", "COM 8", "COM 9", "COM 10"});
-		baud = new JComboBox(new String[] {"eins", "zwei", "drei", "vier", "fuenf", "sex", "sieben" });
-		datenbits = new JComboBox(new String[] {"eins", "zwei", "drei", "vier", "fuenf", "sex", "sieben" });
-		parity = new JComboBox(new String[] {"eins", "zwei", "drei", "vier", "fuenf", "sex", "sieben" });
-		stopbits = new JComboBox(new String[] {"eins", "zwei", "drei", "vier", "fuenf", "sex", "sieben" });
+		anschluss.setSelectedIndex(0);
+		anschluss.setActionCommand("anschluss");
+		anschluss.addActionListener(this);
+		baud = new JComboBox(new String[] {"2400", "4800", "9600", "14400","19200", "38400", "57600", "115200" });
+		baud.setSelectedItem(SystemConfig.hmGeraete.get("COM1")[0]);
+		datenbits = new JComboBox(new String[] {"4", "5", "6", "7", "8" });
+		datenbits.setSelectedItem(SystemConfig.hmGeraete.get("COM1")[1]);
+		parity = new JComboBox(new String[] {"EVEN", "ODD", "NONE"});
+		parity.setSelectedItem(SystemConfig.hmGeraete.get("COM1")[2]);
+		stopbits = new JComboBox(new String[] {"0", "1", "2" });
+		stopbits.setSelectedItem(SystemConfig.hmGeraete.get("COM1")[3]);
 		
 	
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
+
 		FormLayout lay = new FormLayout("100dlu, right:max(120dlu;p), 10dlu, 50dlu",
+
 	   //1.    2.   3.   4.  5.   6. 7.  8.  9.   10.  11.  12.  13. 14.  15. 16.  17. 18.  19. 20. 21.  22.  23.  24.  25   26  27  28   29  30   31   32  33    34  35  36     37
 		"p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
 		
@@ -129,7 +142,39 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		String cmd = e.getActionCommand();
+		if(cmd.equals("anschluss")){
+			doConfig("COM"+new Integer(anschluss.getSelectedIndex()+1).toString());
+		}
+		if(cmd.equals("speichern")){
+			doSpeichern("COM"+new Integer(anschluss.getSelectedIndex()+1).toString());
+		}
+		if(cmd.equals("abbruch")){
+			SystemUtil.abbrechen();
+			SystemUtil.thisClass.parameterScroll.requestFocus();			
+		}
+	}
+	private void doConfig(String com){
+		baud.setSelectedItem(SystemConfig.hmGeraete.get(com)[0]);
+		datenbits.setSelectedItem(SystemConfig.hmGeraete.get(com)[1]);
+		parity.setSelectedItem(SystemConfig.hmGeraete.get(com)[2]);
+		stopbits.setSelectedItem(SystemConfig.hmGeraete.get(com)[3]);
+	}
+	private void doSpeichern(String com){
+		String[] params = new String[4];
+		params[0] = (String) baud.getSelectedItem();
+		params[1] = (String) datenbits.getSelectedItem();
+		params[2] = (String) parity.getSelectedItem();
+		params[3] = (String) stopbits.getSelectedItem();
+
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+		inif.setStringProperty(com, "BaudRate",params[0] , null);
+		inif.setStringProperty(com, "Bits",params[1] , null);
+		inif.setStringProperty(com, "Parity",params[2] , null);		
+		inif.setStringProperty(com, "StopBit",params[3] , null);
+		inif.save();
+		SystemConfig.hmGeraete.put(com,params.clone());
+		JOptionPane.showMessageDialog(null, "Anschlußkonfiguration wurde gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
 	}
 
 }

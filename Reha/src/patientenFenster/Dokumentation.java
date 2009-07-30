@@ -405,7 +405,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dummypan.setBorder(null);
 		System.out.println("Image icon bei Tabellenerstellung = "+(SystemConfig.hmSysIcons.get("pdf")==null));
 		tabIcons[0]= SystemConfig.hmSysIcons.get("pdf");
-		tabIcons[1]= SystemConfig.hmSysIcons.get("pdf");
+		tabIcons[1]= SystemConfig.hmSysIcons.get("bild");
 		tabIcons[2]= SystemConfig.hmSysIcons.get("pdf");
 
 		dtblm = new MyDoku2TableModel();
@@ -1522,7 +1522,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					tabdokus.setRowSelectionInterval(0, 0);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();	
-					if(!dokubut[0].isEnabled()){
+					if((!dokubut[0].isEnabled()) && SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1")){
 						dokubut[0].setEnabled(true);						
 					}
 
@@ -1532,7 +1532,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
-					if(!dokubut[0].isEnabled()){
+					if((!dokubut[0].isEnabled()) && SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1")){
 						dokubut[0].setEnabled(true);						
 					}
 				}

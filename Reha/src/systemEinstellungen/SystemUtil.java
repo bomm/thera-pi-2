@@ -381,9 +381,9 @@ private JScrollPane getParameterListe(){
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Geräte/Anschlüsse"); 
-	treeitem = new DefaultMutableTreeNode("angeschlossene Geraete");
-	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Anschlüsse");
+	node.add(treeitem ); 
+	treeitem = new DefaultMutableTreeNode("angeschlossene Geraete");
 	node.add(treeitem ); 
 	root.add(node);
 	/***/

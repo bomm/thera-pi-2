@@ -370,22 +370,32 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else{
+			System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+		}	
+		f = new File(javaPfad+"/lib/ext/comm.jar");
+		if(! f.exists()){
 			try {
 				new SocketClient().setzeInitStand("Kopiere comm.jar");
-				FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),new File(javaPfad+"/lib/ext/comm.jar"), 4096, false);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
-				FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),new File(javaPfad+"/lib/javax.comm.properties"), 4096, false);
+				FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),f, 4096, false);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println("Systemdateien existieren bereits, kopieren nicht erforderlich");
+			System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
+		}
+		f = new File(javaPfad+"/lib/javax.comm.properties");
+		if(! f.exists()){
+			try {
+				new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
+				FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),f, 4096, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
 		
 		new Thread(){
@@ -2145,12 +2155,16 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.compTest();
 			new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
 			SystemConfig.FremdProgs();
+			new SocketClient().setzeInitStand("Geräteliste erstellen");
+			SystemConfig.GeraeteListe();
 			FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
-			try {
-				new BarCodeScanner("COM1");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println("Barcode-Scanner konnte nicht installiert werden");
+			if(SystemConfig.sBarcodeAktiv.equals("1")){
+				try {
+					new BarCodeScanner(SystemConfig.sBarcodeCom);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					System.out.println("Barcode-Scanner konnte nicht installiert werden");
+				}
 			}
 			new Thread(new PreisListenLaden()).start();
 		}else{
@@ -2227,17 +2241,14 @@ final class ErsterLogin implements Runnable{
 				Reha.thisFrame.setVisible(true);
 				// muß später noch korrigiert werden
 				new SwingWorker<Void,Void>(){
-
 					@Override
 					protected Void doInBackground() throws Exception {
-						if(SystemConfig.sReaderName != null){
+						if(SystemConfig.sReaderAktiv.equals("1")){
 							KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
 							int ret = kvw.KVK_Einlesen();
 						}
-						// TODO Auto-generated method stub
 						return null;
 					}
-					
 				}.execute();
 			}
 		});

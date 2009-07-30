@@ -216,7 +216,7 @@ boolean inNeu = false;
 		}
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 			if(SystemConfig.sReaderName!=null){
+		 			if(SystemConfig.sReaderAktiv.equals("1")){
 		 				KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
 		 				int ret = kvw.KVK_Einlesen();
 		 			}
@@ -439,7 +439,7 @@ boolean inNeu = false;
 		knopf3.setActionCommand("einlesen");
 		knopf3.addKeyListener(this);
 		knopf3.setMnemonic(KeyEvent.VK_C);
-		if(SystemConfig.sReaderName==null){
+		if(SystemConfig.sReaderAktiv.equals("0")){
 			knopf3.setEnabled(false);
 		}
 	
@@ -797,7 +797,7 @@ boolean inNeu = false;
 
 	private void einlesen(){
 
-		if(SystemConfig.sReaderName==null){
+		if(SystemConfig.sReaderAktiv.equals("0")){
 			return;
 		}
 		//System.out.println("Aufruf der KVK");
@@ -823,7 +823,7 @@ boolean inNeu = false;
 		// TODO Auto-generated method stub
 		String com = arg0.getActionCommand();
 		if(com.equals("einlesen")){
-			if(SystemConfig.sReaderName==null){
+			if(SystemConfig.sReaderAktiv.equals("0")){
 				return;
 			}
 			einlesen();

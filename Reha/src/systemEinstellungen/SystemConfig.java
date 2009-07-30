@@ -115,8 +115,12 @@ public class SystemConfig {
 	
 	public static HashMap<String,String> hmKVKDaten = null;
 	public static String sReaderName = null;
+	public static String sReaderAktiv = null;
+	public static String sReaderCom = null;
 	public static String sDokuScanner = null;
 	public static String sBarcodeScanner = null;
+	public static String sBarcodeAktiv = null;
+	public static String sBarcodeCom = null;
 	public static String[] arztGruppen = null;
 	public static String[] rezeptKlassen = null;
 	public static Vector<Vector<String>> rezeptKlassenAktiv = null;
@@ -127,6 +131,7 @@ public class SystemConfig {
 	public static String rezGebDrucker = null;
 	public static String rezBarcodeDrucker = null;
 	public static HashMap<String,String> hmDokuScanner = null;
+	public static HashMap<String,String[]> hmGeraete = null;
 	
 	public static HashMap<String,String> hmFremdProgs = null;
 	
@@ -664,6 +669,8 @@ public class SystemConfig {
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
 		if(inif.getIntegerProperty("KartenLeser", "KartenLeserAktivieren") > 0){
 			sReaderName = inif.getStringProperty("KartenLeser", "KartenLeserName");
+			sReaderAktiv = "1";
+			sReaderCom = inif.getStringProperty("KartenLeser", "KartenLeserAnschluss");			
 			hmKVKDaten = new HashMap<String,String>();
 			hmKVKDaten.put("Krankekasse", "");
 			hmKVKDaten.put("Kassennummer", "");
@@ -682,11 +689,19 @@ public class SystemConfig {
 			hmKVKDaten.put("Checksumme", "");	
 			hmKVKDaten.put("Fehlercode", "");
 			hmKVKDaten.put("Fehlertext", "");
+		}else{
+			sReaderName = "";
+			sReaderAktiv = "0";
+			sReaderCom = inif.getStringProperty("KartenLeser", "KartenLeserAnschluss");			
 		}
 		if(inif.getIntegerProperty("BarcodeScanner", "BarcodeScannerAktivieren") > 0){
 			sBarcodeScanner = inif.getStringProperty("BarcodeScanner", "BarcodeScannerName");
+			sBarcodeAktiv = inif.getStringProperty("BarcodeScanner", "BarcodeScannerAktivieren");
+			sBarcodeCom = inif.getStringProperty("BarcodeScanner", "BarcodeScannerAnschluss");
 		}else{
 			sBarcodeScanner = "";
+			sBarcodeAktiv = "0";
+			sBarcodeCom = inif.getStringProperty("BarcodeScanner", "BarcodeScannerAnschluss");
 		}
 		hmDokuScanner = new HashMap<String,String>();
 		if(inif.getIntegerProperty("DokumentenScanner", "DokumentenScannerAktivieren") > 0){
@@ -789,38 +804,42 @@ public class SystemConfig {
 			
 		}
 	}
+	public static void GeraeteListe(){
+		hmGeraete = new HashMap<String,String[]>();
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+
+		int anzahl =  inif.getIntegerProperty("KartenLeserListe", "LeserAnzahl");
+		String[] string = new String[anzahl]; 
+		for(int i = 0; i < anzahl; i++){
+			string[i] = inif.getStringProperty("KartenLeserListe", "Leser"+(i+1));
+		}
+		hmGeraete.put("Kartenleser", string.clone());
+
+		anzahl =  inif.getIntegerProperty("BarcodeScannerListe", "ScannerAnzahl");
+		string = new String[anzahl];
+		for(int i = 0; i < anzahl; i++){
+			string[i] = inif.getStringProperty("BarcodeScannerListe", "Scanner"+(i+1));
+		}		
+		hmGeraete.put("Barcode", string.clone());
+		
+		anzahl =  inif.getIntegerProperty("ECKartenLeserListe", "ECLeserAnzahl");
+		string = new String[anzahl];
+		for(int i = 0; i < anzahl; i++){
+			string[i] = inif.getStringProperty("ECKartenLeserListe", "ECLeser"+(i+1));
+		}		
+		hmGeraete.put("ECKarte", string.clone());
+		string = new String[4];
+		for(int i = 1; i < 11; i++){
+			string[0] = inif.getStringProperty("COM"+i, "BaudRate");
+			string[1] = inif.getStringProperty("COM"+i, "Bits");
+			string[2] = inif.getStringProperty("COM"+i, "Parity");			
+			string[3] = inif.getStringProperty("COM"+i, "StopBit");
+			hmGeraete.put("COM"+i, string.clone());			
+		}		
+	}
 	
 	public static void SystemIconsInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
-		/*
-		hmSysIcons = new HashMap<String,ImageIcon>();
-		hmSysIcons.put("neu", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "neu")));
-		hmSysIcons.put("edit", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "edit")));		
-		hmSysIcons.put("delete", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "delete")));
-		//hmSysIcons.put("print", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "print")));
-		Image ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "print")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
-		hmSysIcons.put("print", new ImageIcon(ico));		
-		hmSysIcons.put("save", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "save")));		
-		hmSysIcons.put("find", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "find")));		
-		hmSysIcons.put("stop", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "stop")));		
-		hmSysIcons.put("zuzahlfrei", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlfrei")));		
-		hmSysIcons.put("zuzahlok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")));		
-		hmSysIcons.put("zuzahlnichtok", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")));		
-		hmSysIcons.put("nichtgesperrt", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")));		
-		hmSysIcons.put("gesperrt", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "gesperrt")));		
-		hmSysIcons.put("rezeptgebuehr", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rezeptgebuehr")));		
-		hmSysIcons.put("ausfallrechnung", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ausfallrechnung")));		
-		hmSysIcons.put("arztbericht",  new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "arztbericht")));		
-		hmSysIcons.put("privatrechnung", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "privatrechnung")));		
-		hmSysIcons.put("sort", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sort")));		
-		hmSysIcons.put("historieumsatz", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieumsatz")));		
-		hmSysIcons.put("historietage", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historietage")));		
-		hmSysIcons.put("historieinfo", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieinfo")));
-		hmSysIcons.put("keinerezepte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "keinerezepte")));
-		hmSysIcons.put("hausbesuch", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "hausbesuch")));
-		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));
-		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));
-*/				
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		Image ico = null;
 
@@ -929,6 +948,9 @@ public class SystemConfig {
 
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info2")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		hmSysIcons.put("info2", new ImageIcon(ico));
+
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("bild", new ImageIcon(ico));
 
 		System.out.println("System-Icons wurden geladen");
 

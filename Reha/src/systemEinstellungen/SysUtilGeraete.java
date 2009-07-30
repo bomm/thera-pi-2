@@ -1,6 +1,8 @@
 
 package systemEinstellungen;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
@@ -236,8 +239,45 @@ private JPanel getKnopfPanel(){
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		String com = e.getActionCommand();
+		if(com.equals("speichern")){
+			doSpeichern();
+			return;
+		}
+		if(com.equals("abbruch")){
+			SystemUtil.abbrechen();
+			SystemUtil.thisClass.parameterScroll.requestFocus();			
+		}
 	}
 
+	private void doSpeichern(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+
+		SystemConfig.sReaderAktiv = (kvkakt.isSelected() ? "1" : "0");
+		inif.setStringProperty("KartenLeser", "KartenLeserAktivieren",SystemConfig.sReaderAktiv , null);
+		
+		SystemConfig.sReaderName = (kvkgeraet.getSelectedItem()==null ? "" : (String)kvkgeraet.getSelectedItem()); 
+		inif.setStringProperty("KartenLeser", "KartenLeserName",SystemConfig.sReaderName , null);
+
+		SystemConfig.sReaderCom = (kvkan.getSelectedItem()==null ? "" : (String)kvkan.getSelectedItem());
+		inif.setStringProperty("KartenLeser", "KartenLeserAnschluss",SystemConfig.sReaderCom , null);
+		/***************************/
+		SystemConfig.sBarcodeAktiv = (barcodeakt.isSelected() ? "1" : "0");
+		inif.setStringProperty("BarcodeScanner", "BarcodeScannerAktivieren",SystemConfig.sBarcodeAktiv , null);
+		
+		SystemConfig.sBarcodeScanner = (barcodegeraet.getSelectedItem()==null ? "" : (String)barcodegeraet.getSelectedItem());
+		inif.setStringProperty("BarcodeScanner", "BarcodeScannerName",SystemConfig.sBarcodeScanner , null);
+		
+		SystemConfig.sBarcodeCom = (barcodean.getSelectedItem()==null ? "" : (String)barcodean.getSelectedItem());
+		inif.setStringProperty("BarcodeScanner", "BarcodeScannerAnschluss",SystemConfig.sBarcodeCom , null);
+		/***************************/
+		SystemConfig.hmDokuScanner.put("aktivieren",(docscanakt.isSelected() ? "1" : "0"));
+		inif.setStringProperty("DokumentenScanner", "DokumentenScannerAktivieren",(docscanakt.isSelected() ? "1" : "0") , null);
+
+		SystemConfig.sDokuScanner = (docscangeraet.getSelectedItem()==null ? "" : (String)docscangeraet.getSelectedItem());
+		inif.setStringProperty("DokumentenScanner", "DokumentenScannerName",SystemConfig.sDokuScanner , null);		
+
+		inif.save();
+		JOptionPane.showMessageDialog(null, "Gerätekonfiguration wurde gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
+	}
 }

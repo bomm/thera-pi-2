@@ -20,6 +20,7 @@ import javax.comm.UnsupportedCommOperationException;
 import javax.swing.JOptionPane;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import terminKalender.TermineErfassen;
 
 
@@ -34,6 +35,8 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 	   Thread readThread = null;;
 	   boolean portFound = false; 
 	   //static String port;
+	   int baud,bits,stopbit,parity ;
+	   
 	public BarCodeScanner(String port) throws Exception{
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
@@ -51,13 +54,23 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		if(!portFound){
 			System.out.println("Port "+port+" wurde nicht gefunden");
 		}
-		
+		String[] params = SystemConfig.hmGeraete.get(port);
+		baud = new Integer(params[0]);
+		bits = new Integer(params[1]);
+		stopbit = new Integer(params[2]);
+		if(params[3].equals("EVEN")){
+			parity = SerialPort.PARITY_EVEN;
+		}else if(params[3].equals("ODD")){
+			parity = SerialPort.PARITY_ODD;
+		}else if(params[3].equals("NONE")){
+			parity = SerialPort.PARITY_NONE;
+		}
 		try {
 			
 		    serialPort = (SerialPort) portId.open("Thera-Pi", 2000);
-		    serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1, 
-                    SerialPort.PARITY_NONE); //     
+		    serialPort.setSerialPortParams(baud, bits,
+                    stopbit, 
+                    parity); //     
 		    serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE ); //     
 
 		} catch (PortInUseException e) {
@@ -82,9 +95,9 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		
 
 		try {
-		    serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, 
-						   SerialPort.STOPBITS_1, 
-						   SerialPort.PARITY_NONE);
+		    serialPort.setSerialPortParams(baud, bits,
+                    stopbit, 
+                    parity); //     
 		} catch (UnsupportedCommOperationException e) {}
 		if(portFound){
 			readThread = new Thread(this);
