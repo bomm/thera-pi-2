@@ -134,6 +134,7 @@ public class SystemConfig {
 	public static HashMap<String,String[]> hmGeraete = null;
 	
 	public static HashMap<String,String> hmFremdProgs = null;
+	public static HashMap<String,String> hmCompany = null;
 	
 	public static String[] rezBarCodName = null;
 	public static Vector<String>rezBarCodForm = null;
@@ -838,6 +839,18 @@ public class SystemConfig {
 		}		
 	}
 	
+	public static void CompanyInit(){
+		hmCompany = new HashMap<String,String>();
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/company.ini");
+		hmCompany.put("name", inif.getStringProperty("Company", "CompanyName"));
+		hmCompany.put("enable", inif.getStringProperty("Company", "DeliverEnable"));
+		hmCompany.put("event", inif.getStringProperty("Company", "DeliverEvent"));
+		hmCompany.put("ip", inif.getStringProperty("Company", "DeliverIP"));		
+		hmCompany.put("port", inif.getStringProperty("Company", "DeliverPort"));
+		hmCompany.put("mail", inif.getStringProperty("Company", "DeliverMail"));
+		hmCompany.put("adress", inif.getStringProperty("Company", "DeliverAdress"));		
+	}
+	
 	public static void SystemIconsInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
@@ -955,6 +968,10 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "patbild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		hmSysIcons.put("patbild", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bunker")).getImage().getScaledInstance(20,20, Image.SCALE_SMOOTH);
+		hmSysIcons.put("bunker", new ImageIcon(ico));
+
+		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");
 
 		

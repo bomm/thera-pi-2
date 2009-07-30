@@ -129,5 +129,26 @@ public class RezTools {
 		// Hier muß noch Hausbesuchshandling eingebaut werden
 		// Ebenso das Wegegeldhandling
 	}
+	
+	public static Vector<Vector<String>>splitteTermine(String terms){
+		Vector<Vector<String>> termine = new Vector<Vector<String>>();
+		String[] tlines = terms.split("\n");
+		int lines = tlines.length;
+		//System.out.println("Anzahl Termine = "+lines);
+		Vector<String> tvec = new Vector<String>();
+		String[] terdat = null;
+		for(int i = 0;i<lines;i++){
+			terdat = tlines[i].split("@");
+			int ieinzel = terdat.length;
+			//System.out.println("Anzahl Splits = "+ieinzel);
+			tvec.clear();
+			for(int y = 0; y < ieinzel;y++){
+					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+			}
+			//System.out.println("Termivector = "+tvec);
+			termine.add((Vector<String>)tvec.clone());
+		}
+		return (Vector<Vector<String>>) termine.clone();
+	}
 
 }

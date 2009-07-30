@@ -673,10 +673,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			//System.out.println("Sdat = "+sdat);
 			dtermm.setValueAt((sdat.equals(".  .") ? " " : datFunk.sDatInSQL(sdat)), i, 4);
 			sb.append((sdat.equals(".  .") ?  "  .  .    @" : sdat)+"@");
-			sb.append((dtermm.getValueAt(i,1)!= null ? dtermm.getValueAt(i,1) : "")+"@");
-			sb.append((dtermm.getValueAt(i,2)!= null ? dtermm.getValueAt(i,2) : "")+"@");
-			sb.append((dtermm.getValueAt(i,3)!= null ? dtermm.getValueAt(i,3) : "")+"@");			
-			sb.append((dtermm.getValueAt(i,4)!= null ? dtermm.getValueAt(i,4) : "")+"\n");
+			sb.append((dtermm.getValueAt(i,1)!= null ? ((String)dtermm.getValueAt(i,1)).trim() : "")+"@");
+			sb.append((dtermm.getValueAt(i,2)!= null ? ((String)dtermm.getValueAt(i,2)).trim() : "")+"@");
+			sb.append((dtermm.getValueAt(i,3)!= null ? ((String)dtermm.getValueAt(i,3)).trim() : "")+"@");			
+			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
 
 		String stmt = "update verordn set termine='"+sb.toString()+"' where id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6)+"'";

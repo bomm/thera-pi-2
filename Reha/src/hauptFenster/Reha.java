@@ -932,6 +932,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        jxCopyContainer.setOpaque(false);
 	        jxCopyContainer.setPreferredSize(new Dimension(250,20));
 	        copyLabel = new JLabel("");
+			//copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
+			//copyLabel.setDropTarget(dt);
 	        jxCopyContainer.add(copyLabel);
 	        bar.add(jxCopyContainer);
 	        //JProgressBar progress = new JProgressBar();
@@ -2157,6 +2159,7 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.FremdProgs();
 			new SocketClient().setzeInitStand("Geräteliste erstellen");
 			SystemConfig.GeraeteListe();
+			SystemConfig.CompanyInit();
 			FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
 			if(SystemConfig.sBarcodeAktiv.equals("1")){
 				try {
