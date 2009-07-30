@@ -19,6 +19,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -52,7 +53,7 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 		
 		
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilGeraete");
+		System.out.println("Aufruf SysUtilKasse");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 	     Point2D start = new Point2D.Float(0, 0);
@@ -63,23 +64,55 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
 	     setBackgroundPainter(new CompoundPainter(mp));
-		/****/
-	     add(getVorlagenSeite(),BorderLayout.CENTER);
+	     
+	     JScrollPane jscr = new JScrollPane();
+	     jscr.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+	     jscr.setOpaque(false);
+	     jscr.getViewport().setOpaque(false);
+	     jscr.setViewportView(getVorlagenSeite());
+	     jscr.getVerticalScrollBar().setUnitIncrement(15);
+	     jscr.validate();
+	     
+	     add(jscr,BorderLayout.CENTER);
+	     add(getKnopfPanel(),BorderLayout.SOUTH);
 		return;
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
-	private JPanel getVorlagenSeite(){
+	
+private JPanel getKnopfPanel(){
 		
-		knopf1 = new JButton("abbrechen");
-		knopf1.setPreferredSize(new Dimension(70, 20));
-		knopf1.addActionListener(this);
-		knopf1.setActionCommand("abbruch");
-		knopf1.addKeyListener(this);
-		knopf2 = new JButton("speichern");
-		knopf2.setPreferredSize(new Dimension(70, 20));
-		knopf2.addActionListener(this);
-		knopf2.setActionCommand("speichern");
-		knopf2.addKeyListener(this);
+	knopf1 = new JButton("abbrechen");
+	knopf1.setPreferredSize(new Dimension(70, 20));
+	knopf1.addActionListener(this);
+	knopf1.setActionCommand("abbruch");
+	knopf1.addKeyListener(this);
+	knopf2 = new JButton("speichern");
+	knopf2.setPreferredSize(new Dimension(70, 20));
+	knopf2.addActionListener(this);
+	knopf2.setActionCommand("speichern");
+	knopf2.addKeyListener(this);
+	
+									//      1.                      2.    3.    4.     5.     6.    7.      8.     9.
+		FormLayout jpanlay = new FormLayout("right:max(120dlu;p), 60dlu, 60dlu, 10dlu, 60dlu",
+       //1.    2. 3.   4.   5.   6.     7.    8. 9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
+		"p, 10dlu, p");
+		
+		PanelBuilder jpan = new PanelBuilder(jpanlay);
+		jpan.getPanel().setOpaque(false);		
+		CellConstraints jpancc = new CellConstraints();
+		
+		jpan.addSeparator("Änderungen übernehmen?", jpancc.xyw(1,1,5));
+		jpan.add(knopf1, jpancc.xy(3,3));
+		jpan.add(knopf2, jpancc.xy(5,3));
+		
+		
+		
+		return jpan.getPanel();
+	}
+	
+	
+	
+	private JPanel getVorlagenSeite(){
 		
 		kvkakt = new JCheckBox();
 		docscanakt = new JCheckBox();
@@ -94,13 +127,11 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 		ecgeraet = new JComboBox(new String[] {"eins","zwei","drei","vier","fuenf","sex","sieben","acht","neun"});
 		ecan = new JComboBox(new String[] {"USB", "COM 1", "COM 2", "COM 3", "COM 4", "COM 5", "COM 6", "COM 7", "COM 8", "COM 9", "COM 10"});
 		
-
-		
 		
         //                                      1.            2.    3.      4.    5.     6.                   7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(60dlu;p), 10dlu, 60dlu, 10dlu, right:max(60dlu;p)",
+		FormLayout lay = new FormLayout("right:max(100dlu;p), 10dlu, 80dlu, 10dlu, right:max(100dlu;p)",
 				   //1.    2. 3.   4.  5.   6.   7.  8.    9.   10. 11.  12. 13. 14.   15. 16.  17. 18.  19. 20.   21.  22.  23.  24.  25   26  27  28   29  30    31   32  33    34  35  36     37
-					"p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 10dlu, p ,10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p");
+					"p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p ,10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -110,33 +141,30 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 		builder.addSeparator("KV-Karten-Lesegerät", cc.xyw(1,1,5));
 		builder.addLabel("aktivieren", cc.xy(3,3));
 		builder.add(kvkakt, cc.xy(5,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		builder.addLabel("Gerät wählen", cc.xy(3,5));
-		builder.add(kvkgeraet, cc.xy(5,5));
-		builder.addLabel("Anschluss wählen", cc.xy(3,7));
-		builder.add(kvkan, cc.xy(5,7));
+		builder.addLabel("Gerät", cc.xy(3,5));
+		builder.add(kvkgeraet, cc.xyw(4,5,2));
+		builder.addLabel("Anschluss", cc.xy(3,7));
+		builder.add(kvkan, cc.xyw(4,7,2));
 		builder.addSeparator("Dokumentenscanner", cc.xyw(1,9,5));
 		builder.addLabel("aktivieren", cc.xy(3,11));
 		builder.add(docscanakt, cc.xy(5,11));
-		builder.addLabel("Gerät wählen", cc.xy(3,13));
-		builder.add(docscangeraet, cc.xy(5,13));
+		builder.addLabel("Gerät", cc.xy(3,13));
+		builder.add(docscangeraet, cc.xyw(4,13,2));
 		builder.addSeparator("Barcodescanner", cc.xyw(1,15,5));
 		builder.addLabel("aktivieren", cc.xy(3,17));
 		builder.add(barcodeakt, cc.xy(5,17));
-		builder.addLabel("Gerät wählen", cc.xy(3,19));
-		builder.add(barcodegeraet, cc.xy(5,19));
-		builder.addLabel("Anschluss wählen", cc.xy(3,21));
-		builder.add(barcodean, cc.xy(5,21));
+		builder.addLabel("Gerät", cc.xy(3,19));
+		builder.add(barcodegeraet, cc.xyw(4,19,2));
+		builder.addLabel("Anschluss", cc.xy(3,21));
+		builder.add(barcodean, cc.xyw(4,21,2));
 		builder.addSeparator("EC-Karte", cc.xyw(1,23,5));
 		builder.addLabel("aktivieren",cc.xy(3,25));
 		builder.add(ecakt, cc.xy(5,25));
-		builder.addLabel("Gerät wählen", cc.xy(3,27));
-		builder.add(ecgeraet, cc.xy(5,27));
-		builder.addLabel("Anschluss wählen", cc.xy(3,29));
-		builder.add(ecan, cc.xy(5,29));
-		builder.addSeparator("", cc.xyw(1,31,5));
-		builder.addLabel("Änderungen übernehmen?", cc.xy(1,33));
-		builder.add(knopf1, cc.xy(3,33));
-		builder.add(knopf2, cc.xy(5,33));
+		builder.addLabel("Gerät", cc.xy(3,27));
+		builder.add(ecgeraet, cc.xyw(4,27,2));
+		builder.addLabel("Anschluss", cc.xy(3,29));
+		builder.add(ecan, cc.xyw(4,29,2));
+		
 		
 		return builder.getPanel();
 	}
