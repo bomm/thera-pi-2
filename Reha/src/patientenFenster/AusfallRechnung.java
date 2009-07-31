@@ -355,6 +355,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			
 		}
 		SystemConfig.hmAdrAFRDaten.put("<AFRgesamt>",df.format( gesamt));
+		/// Hier muﬂ noch die Rechnungsnummer bezogen und eingetragen werden
 		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>","AF-010101");
 	}
 	public void keyPressed(KeyEvent event) {

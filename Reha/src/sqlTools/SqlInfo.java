@@ -13,6 +13,8 @@ import java.util.Vector;
 
 
 
+
+
 import systemEinstellungen.SystemConfig;
 
 public class SqlInfo {
@@ -162,6 +164,68 @@ public class SqlInfo {
 		return (Vector)retvec.clone();
 	}
 /*****************************************/
+	/*******************************/
+	public static Vector holeSatzLimit(String tabelle, String felder, String kriterium,int[] limit, List ausschliessen){
+		Statement stmt = null;
+		ResultSet rs = null;
+		Vector<String> retvec = new Vector<String>();
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+		            ResultSet.CONCUR_UPDATABLE );
+/*			
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+*/
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			//Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = "select "+felder+" from "+tabelle+" "+kriterium+" LIMIT "+new Integer(limit[0]).toString()+
+			","+new Integer(limit[1]).toString()+"";
+			rs = stmt.executeQuery(sstmt);
+			int nichtlesen = ausschliessen.size();
+			if(rs.next()){
+				 ResultSetMetaData rsMetaData = rs.getMetaData() ;
+				 int numberOfColumns = rsMetaData.getColumnCount()+1;
+				 for(int i = 1 ; i < numberOfColumns;i++){
+					 if(nichtlesen > 0){
+						 if(!ausschliessen.contains( rsMetaData.getColumnName(i)) ){
+							 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );						 
+						 }
+					 }else{
+						 retvec.add((rs.getString(i)==null  ? "" :  rs.getString(i)));
+					 }
+				 }
+			}
+			//Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return (Vector)retvec.clone();
+	}
+/*****************************************/
+
 	public static Vector holeFeldForUpdate(String tabelle, String feld, String kriterium){
 		Statement stmt = null;
 		ResultSet rs = null;
