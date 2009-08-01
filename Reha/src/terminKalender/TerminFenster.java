@@ -1184,7 +1184,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					//oSpalten[tspalte].requestFocus();
 				}				
 				public void mouseReleased(java.awt.event.MouseEvent e) {
-					System.out.println("Maus losgelassen");
+					//System.out.println("Maus losgelassen");
 					//dragLab[tspalte].setText("");
 					dragStart = false;
 					SwingUtilities.invokeLater(new Runnable(){

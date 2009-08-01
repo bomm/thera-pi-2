@@ -1,19 +1,29 @@
 package terminKalender;
 
+import hauptFenster.AktiveFenster;
+
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+
+import patientenFenster.PatGrundPanel;
+import RehaInternalFrame.JPatientInternal;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 
 public class TermineErfassen implements Runnable {
 	String scanrez = null;
 	Vector alleterm;
+	Vector vec = null;
+	Vector vec2 = null;
 	String copyright = null;
 	String heute = null;
 	int erstfund = -1;
+	String kollege = "";
 	boolean firstfound;
 	public TermineErfassen(String reznr){
 		scanrez = reznr;
@@ -25,38 +35,58 @@ public class TermineErfassen implements Runnable {
 		heute = datFunk.sHeute();
 		copyright = "© ";
 		int ret = -1;
-		if((ret = testeVerordnung())==0){
-			testeTermine();
-			
-			if(firstfound && scanrez.contains("RH")){
-				fahreFortMitTerminen();			
+		try {
+			if((ret = testeVerordnung())==0){
+				testeTermine();
+				if(erstfund >= 0){
+					scheibeTermin();
+					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					if(patient != null){
+						if(PatGrundPanel.thisClass.aktRezept.rezAngezeigt.equals(scanrez)){
+							PatGrundPanel.thisClass.aktRezept.holeRezepte(
+									PatGrundPanel.thisClass.aktPatID, scanrez);
+						}
+					}
+					
+				}else{
+					// Rezept steht an diesem Tag nicht im Kalender
+				}
+				
+				if(firstfound && scanrez.startsWith("RH")){
+					fahreFortMitTerminen();			
+				}
+			}else{
+				if(ret > 0){
+					System.out.println("hier die Fehlerbehandlung einbauen---->Fehler = "+ret);
+				}
 			}
-			
-		}else{
-			if(ret > 0){
-				System.out.println("hier die Fehlerbehandlung einbauen---->Das Rezept wurde nicht im Patstamm gefunden");
-			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		System.out.println("Komplett feddisch");
-		// TODO Auto-generated method stub
+		System.out.println("Terminerfassen beendet");
+		alleterm = null;
 		
 	}
-	public int testeVerordnung(){
-		Vector vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
+	public int testeVerordnung() throws Exception{
+		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza","termine"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 			if(vec.size()==0){
-				System.out.println("Rezept ist weder im aktuellen Rezeptstamm noch in der Historie");
+				//System.out.println("Rezept ist weder im aktuellen Rezeptstamm noch in der Historie");
 				return 1;
 			}else{
-				System.out.println("Das Rezept wurde bereits abgerechnet");
+				//System.out.println("Das Rezept wurde bereits abgerechnet");
 				return 2;
 			}
 						
 		}
-		if(((String)vec.get(0)).trim().equals("")){
-			
+		String termine = (String)vec.get(0);
+		if(termine.contains(datFunk.sHeute())){
+			//JOptionPane.showMessageDialog(null, "Dieser Termin wurde heute bereits erfaßt");
+			return 3;
 		}
+		
 		return 0;
 	}
 	public void erfasseTermin(){
@@ -66,7 +96,7 @@ public class TermineErfassen implements Runnable {
 			return;
 		}
 	}
-	private boolean testeTermine(){
+	private boolean testeTermine() throws Exception{
 		long zeit1 = System.currentTimeMillis();
 		boolean ret;
 		alleterm = new Vector();
@@ -77,32 +107,36 @@ public class TermineErfassen implements Runnable {
 		String string = null;
 		if(! (Boolean) obj[0]){
 			ret = false;
-			System.out.println("Rezeptnummer wurde nicht gefunden");
 		}else{
 			if( !((String)obj[4]).contains(copyright.trim())){
+				this.kollege = new String((String)obj[1]);
 				string = "Rezeptnummer wurde gefunden bei Kollege "+(String)obj[1]+" an Block "+(Integer)obj[2]+" Rezeptnummer:"+(String)obj[3];
 				String stmt = " sperre = '"+(String)obj[1]+heute+"'";
-				System.out.println(stmt);
+				//System.out.println(stmt);
 				int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
 				if( gesperrt == 0 ){
-					System.out.println("Datensatz ist nicht gesperrt");
+					//System.out.println("Datensatz ist nicht gesperrt");
 					String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
 					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 						"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 						"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
 					new ExUndHop().setzeStatement(new String(stmt));
-					System.out.println(stmt);	
+					//System.out.println(stmt);	
 				}else{
-					System.out.println("Achtung Datensatz ist gesperrt!!!!!!!!!!!!!!!!!!!!!!!!");
+					JOptionPane.showMessageDialog(null, "Die Spalte ist momentan gesperrt, der Termin kann zwar\n"+
+					"nicht markiert werden, wird aber im Rezeptstamm erfaßt");
 				}
+				ret = true;
+			}else{
+				this.kollege = new String((String)obj[1]);
+				ret = false;
 			}
-			ret = true;
 		}	
-		alleterm = null;
-		System.out.println("**********feddisch***********");
+		//alleterm = null;
+		//System.out.println("**********feddisch***********");
 		return ret;
 	}
-	private Object[] untersucheTermine(){
+	private Object[] untersucheTermine() throws Exception{
 		
 		int spalten = alleterm.size();
 		//System.out.println("eingelesene Spalten = "+spalten);
@@ -123,8 +157,9 @@ public class TermineErfassen implements Runnable {
 					obj[5] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5))+2 )); // Beginn
 					obj[6] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
 					obj[7] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-2) );//Datum
+					//((Vector)alleterm.get(i)).set((y*5), copyright+new String((String)obj[4]));
 					gefunden = true;
-					erstfund = y;
+					erstfund = i;
 					break;
 				}
 			}
@@ -133,12 +168,13 @@ public class TermineErfassen implements Runnable {
 				break;
 			}
 		}
-		alleterm = null;
+		//alleterm = null;
 		return obj;
 	}
 
-	private void fahreFortMitTerminen(){
+	private void fahreFortMitTerminen()throws Exception{
 		int spalten = alleterm.size();
+		int mehrstellen = 0;
 		//System.out.println("eingelesene Spalten = "+spalten);
 		int i,y;
 		Object[] obj = {new Boolean(false),null,null,null,null,null,null,null};
@@ -156,7 +192,9 @@ public class TermineErfassen implements Runnable {
 					obj[5] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5))+2 )); // Beginn
 					obj[6] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
 					obj[7] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-2) );//Datum
+					
 					if( !((String)obj[4]).contains(copyright.trim())){
+						mehrstellen++;
 						String stmt = " sperre = '"+(String)obj[1]+heute+"'";
 						int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
 						if( gesperrt == 0 ){
@@ -165,14 +203,85 @@ public class TermineErfassen implements Runnable {
 								"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 								"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
 							new ExUndHop().setzeStatement(new String(stmt));
-							System.out.println(stmt);	
+							//System.out.println(stmt);	
 						}else{
-							System.out.println("Achtung Datensatz ist gesperrt!!!!!!!!!!!!!!!!!!!!!!!!");
 						}
 					}
 				}
 			}
 		}
+		//System.out.println("Anzahl zusätzlicher Fundstellen = "+mehrstellen);
+	}
+	
+	private void scheibeTermin() throws Exception{
+		//System.out.println("Eintritt in schreibeTermin");
+		int ikoll = (kollege.substring(0,1).equals("0") ?
+					new Integer(kollege.substring(1,2)) :
+					new Integer(kollege.substring(0,2)) 	
+					);
+		//System.out.println("Kollegen-Nummer = "+ikoll);
+		this.kollege = ParameterLaden.getKollegenUeberDBZeile(ikoll);
+		//String termkollege = 
+		StringBuffer sbuftermine = new StringBuffer();
+		vec2 = null;
+		String terminneu = "";
+		if(! ((String)vec.get(0)).trim().equals("")){
+			
+			sbuftermine.append((String)vec.get(0));
+			//System.out.println("termine bisher = "+sbuftermine.toString());
+			//hier die Einzelnen Termin holen
+			vec2 = RezTools.splitteTermine(sbuftermine.toString());
+			int anzahl = vec2.size();
+			int lautrezept = new Integer((String)vec.get(1)); 
+			if(anzahl >= lautrezept){
+				String message = "";
+				if(anzahl == lautrezept){
+					message = "Auf dieses Rezept wurden bereits "+anzahl+" Behandlungen durchgeführt!"+
+					"\nVerordnete Menge ist "+lautrezept+
+					"\nDas Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr\n"+
+					"verwendet werden!!!!\n\n"+
+					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?";
+				}else{
+					message = "Auf dieses Rezept wurden bereits "+anzahl+" Behandlungen durchgeführt!"+
+					"\nVerordnete Menge ist "+lautrezept+
+					"\nDas Rezept ist somit bereits übervoll und darf für aktuelle Behandlung nicht mehr\n"+
+					"verwendet werden!!!!\n\n"+
+					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?";
+				}
+				int frage = JOptionPane.showConfirmDialog(null, message, "Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.NO_OPTION){
+				  return;
+				}
+				terminneu = macheNeuTermin("zu viele Behandlungen");
+			}else{
+				//System.out.println("Es sind noch Termine Frei");
+				terminneu = macheNeuTermin("");			}
+				
+		}else{
+			//System.out.println("der Termin ist der erste Termin.");
+			terminneu = macheNeuTermin("");			
+		}
+		sbuftermine.append(terminneu);
+		String cmd = "update verordn set termine='"+sbuftermine.toString()+"' where rez_nr='"+scanrez+"'";
+		//System.out.println("cmd = "+cmd);
+		new ExUndHop().setzeStatement(cmd);
+	}
+	private String macheNeuTermin(String text){
+		String ret =
+			datFunk.sHeute()+
+			"@"+
+			this.kollege+
+			"@"+
+			text+
+			"@"+
+			(String)vec.get(2)+
+			( ((String)vec.get(3)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
+			( ((String)vec.get(4)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
+			( ((String)vec.get(5)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
+			"@"+
+			datFunk.sDatInSQL(datFunk.sHeute())+"\n";
+		return ret;
+			
 	}
 	
 }

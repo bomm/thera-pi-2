@@ -183,7 +183,7 @@ public class RezeptDaten extends JXPanel{
 				}
 				
 				PatGrundPanel.thisClass.rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
-
+				AktuelleRezepte.aktRez.rezAngezeigt = reznum.getText();
 				RezeptDaten.feddisch = true;
 
 				new Thread(){

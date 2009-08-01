@@ -285,15 +285,15 @@ public void paintComponent( Graphics g ) {
 									
 									if((!sName.equals("") || TerminFenster.thisClass.ansicht==TerminFenster.thisClass.MASKEN_ANSICHT) ){
 										if(yDifferenz < 12){
-											System.out.println("Y-Differenz ist kleiner 12: "+yDifferenz);
+											//System.out.println("Y-Differenz ist kleiner 12: "+yDifferenz);
 											if(yDifferenz > 0){
-												System.out.println("Y-Differenz ist kleiner 12 und größer 0: "+yDifferenz);
+												//System.out.println("Y-Differenz ist kleiner 12 und größer 0: "+yDifferenz);
 												//g2d.drawImage(skaliereImage(yDifferenz-1),xStart+1,yStartMin+1,null);
 												TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
 												//TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin+1,xStart+yDifferenz-1, yDifferenz-2);
 												g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											}else{
-												System.out.println("Y-Differenz ist kleiner 12 und kleiner 0: "+yDifferenz);
+												//System.out.println("Y-Differenz ist kleiner 12 und kleiner 0: "+yDifferenz);
 												//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 												//TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 											}
@@ -306,7 +306,7 @@ public void paintComponent( Graphics g ) {
 													, xStart+(yDifferenz), (baseline)-2);
 											*/
 										}else{
-											System.out.println("Y-Differenz ist größer 12: "+yDifferenz);
+											//System.out.println("Y-Differenz ist größer 12: "+yDifferenz);
 											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
 											g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											g2d.drawString(sStart.substring(0,5)+"-"+

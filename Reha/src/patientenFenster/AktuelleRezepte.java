@@ -123,6 +123,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public RezeptDaten jpan1 = null;
 	public JButton[] aktrbut = {null,null,null,null,null,null,null,null};
 	public boolean suchePatUeberRez = false;
+	public String rezAngezeigt = "";
 	public static boolean inRezeptDaten = false;
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
@@ -570,13 +571,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 6));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
-					
+					rezAngezeigt = (String)tabaktrez.getValueAt(0, 0);
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
 
 				}else{
 					setzeRezeptPanelAufNull(true);
+					rezAngezeigt = "";
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
