@@ -2,14 +2,17 @@ package terminKalender;
 
 import hauptFenster.AktiveFenster;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
+import patientenFenster.AktuelleRezepte;
 import patientenFenster.PatGrundPanel;
 import RehaInternalFrame.JPatientInternal;
+import RehaInternalFrame.JTerminInternal;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -28,6 +31,7 @@ public class TermineErfassen implements Runnable {
 	boolean ergebnis = true;
 	public static boolean success = true;
 	public static int errorint = 0;
+	public StringBuffer sbuftermine;
 	public TermineErfassen(String reznr, Vector termvec){
 		scanrez = reznr;
 		firstfound = false;
@@ -49,8 +53,7 @@ public class TermineErfassen implements Runnable {
 					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					if(patient != null){
 						if(PatGrundPanel.thisClass.aktRezept.rezAngezeigt.equals(scanrez)){
-							PatGrundPanel.thisClass.aktRezept.holeRezepte(
-									PatGrundPanel.thisClass.aktPatID, scanrez);
+							AktuelleRezepte.aktRez.updateEinzelTermine(sbuftermine.toString());
 						}
 					}
 					
@@ -145,18 +148,55 @@ public class TermineErfassen implements Runnable {
 				String stmt = " sperre = '"+(String)obj[1]+heute+"'";
 				//System.out.println(stmt);
 				int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
-				if( gesperrt == 0 ){
-					//System.out.println("Datensatz ist nicht gesperrt");
+				//if( gesperrt == 0 ){
 					String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
+					/*
 					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 						"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 						"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
 					new ExUndHop().setzeStatement(new String(stmt));
-					//System.out.println(stmt);	
+					System.out.println("Ex und Hopp Statement =\n"+stmt+"\n************");
+					*/
+					SqlInfo.aktualisiereSatz("flexkc",
+							"T"+sblock+" = '"+copyright+(String)obj[4]+"'",
+							"datum='"+(String)obj[7]+"' AND "+
+							"behandler='"+(String)obj[1]+"' AND TS"+sblock+"='"+(String)obj[5]+"' AND T"+sblock+"='"+(String)obj[4]+
+							"' AND N"+sblock+" LIKE '%"+scanrez+"%'"); 
+
+					try{
+						String snum = ((String)obj[1]).substring(0, 2);
+						int inum;
+						if(snum.substring(0,1).equals("0)")){
+							inum = new Integer(snum.substring(1,2))-1;
+						}else{
+							inum = new Integer(snum.substring(0,2))-1;						
+						}
+
+						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
+						if(termin != null){
+							int ansicht;
+							if((ansicht = TerminFenster.thisClass.ansicht) == 0){
+								if(TerminFenster.thisClass.getAktuellerTag().equals(datFunk.sHeute())){
+									int iblock = new Integer(sblock)-1;
+									((ArrayList<Vector<String>>)((Vector)TerminFenster.thisClass.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
+									TerminFenster.thisClass.ViewPanel.repaint();
+								}else{
+									System.out.println("Aktueller Tag = "+TerminFenster.thisClass.getAktuellerTag());
+								}
+							}else{
+								System.out.println("Ansicht im TK = "+ansicht);
+							}
+						}
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+
+				/*
 				}else{
 					JOptionPane.showMessageDialog(null, "Die Spalte ist momentan gesperrt, der Termin kann zwar\n"+
 					"nicht markiert werden, wird aber im Rezeptstamm erfaﬂt");
 				}
+				*/
 				ret = true;
 			}else{
 				this.kollege = new String((String)obj[1]);
@@ -172,6 +212,7 @@ public class TermineErfassen implements Runnable {
 		//System.out.println("eingelesene Spalten = "+spalten);
 		int i,y;
 		boolean gefunden = false;
+		
 		Object[] obj = {new Boolean(false),null,null,null,null,null,null,null};
 		for(i=0;i<spalten;i++){
 			int bloecke = ((Vector)alleterm.get(0)).size();
@@ -205,6 +246,7 @@ public class TermineErfassen implements Runnable {
 	private void fahreFortMitTerminen()throws Exception{
 		int spalten = alleterm.size();
 		int mehrstellen = 0;
+		boolean termOk = false;
 		//System.out.println("eingelesene Spalten = "+spalten);
 		int i,y;
 		Object[] obj = {new Boolean(false),null,null,null,null,null,null,null};
@@ -227,18 +269,58 @@ public class TermineErfassen implements Runnable {
 						mehrstellen++;
 						String stmt = " sperre = '"+(String)obj[1]+heute+"'";
 						int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
-						if( gesperrt == 0 ){
-							String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
+						String sblock = "";
+						//if( gesperrt == 0 ){
+							sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
+							/*
 							stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 								"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 								"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
 							new ExUndHop().setzeStatement(new String(stmt));
-							//System.out.println(stmt);	
-						}else{
+							*/
+							SqlInfo.aktualisiereSatz("flexkc",
+							"T"+sblock+" = '"+copyright+(String)obj[4]+"'",
+							"datum='"+(String)obj[7]+"' AND "+
+							"behandler='"+(String)obj[1]+"' AND TS"+sblock+"='"+(String)obj[5]+"' AND T"+sblock+"='"+(String)obj[4]+
+							"' AND N"+sblock+" LIKE '%"+scanrez+"%'"); 
+
+						//}else{
+						//}
+						try{
+							String snum = ((String)obj[1]).substring(0, 2);
+							int inum;
+							if(snum.substring(0,1).equals("0)")){
+								inum = new Integer(snum.substring(1,2))-1;
+							}else{
+								inum = new Integer(snum.substring(0,2))-1;						
+							}
+
+							JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
+							if(termin != null){
+								int ansicht;
+								if((ansicht = TerminFenster.thisClass.ansicht) == 0){
+									if(TerminFenster.thisClass.getAktuellerTag().equals(datFunk.sHeute())){
+										if(!termOk){
+											termOk = true;
+										}
+										int iblock = new Integer(sblock)-1;
+										((ArrayList<Vector<String>>)((Vector)TerminFenster.thisClass.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
+									}else{
+										System.out.println("Aktueller Tag = "+TerminFenster.thisClass.getAktuellerTag());
+									}
+								}else{
+									System.out.println("Ansicht im TK = "+ansicht);
+								}
+							}
+						}catch(Exception ex){
+							ex.printStackTrace();
 						}
 					}
 				}
 			}
+		}
+		if(termOk){
+			TerminFenster.thisClass.ViewPanel.repaint();			
 		}
 		//System.out.println("Anzahl zus‰tzlicher Fundstellen = "+mehrstellen);
 	}
@@ -255,12 +337,13 @@ public class TermineErfassen implements Runnable {
 		//System.out.println("Kollegen-Nummer = "+ikoll);
 		this.kollege = ParameterLaden.getKollegenUeberDBZeile(ikoll);
 		//String termkollege = 
-		StringBuffer sbuftermine = new StringBuffer();
+		sbuftermine = new StringBuffer();
 		vec2 = null;
 		String terminneu = "";
 		if(! ((String)vec.get(0)).trim().equals("")){
 			
 			sbuftermine.append((String)vec.get(0));
+			System.out.println("****Beginn Termine bisher****\n"+sbuftermine.toString()+"****Ende Termine****");
 			//System.out.println("termine bisher = "+sbuftermine.toString());
 			//hier die Einzelnen Termin holen
 			vec2 = RezTools.splitteTermine(sbuftermine.toString());
@@ -295,9 +378,10 @@ public class TermineErfassen implements Runnable {
 			terminneu = macheNeuTermin("");			
 		}
 		sbuftermine.append(terminneu);
-		String cmd = "update verordn set termine='"+sbuftermine.toString()+"' where rez_nr='"+scanrez+"'";
-		//System.out.println("cmd = "+cmd);
-		new ExUndHop().setzeStatement(cmd);
+		SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");
+
+		//String cmd = "update verordn set termine='"+sbuftermine.toString()+"' where rez_nr='"+scanrez+"'";
+		//new ExUndHop().setzeStatement(cmd);
 	}
 
 	/********************/

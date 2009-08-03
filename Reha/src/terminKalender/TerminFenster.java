@@ -104,6 +104,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
+import patientenFenster.AktuelleRezepte;
 import patientenFenster.PatGrundPanel;
 import patientenFenster.PatNeuanlage;
 
@@ -122,7 +123,9 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 import rehaContainer.RehaTP;
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 //import systemTools.SystemTools;
 import systemTools.JRtaTextField;
@@ -936,6 +939,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							oSpalten[tspalte].requestFocus();
 							break;
 						}
+						//if ( ((ec==38) || (ec == 40))  && (e.isShiftDown()) ){
 						if (ec==16){
 							shiftGedrueckt = true;
 							if(!gruppierenAktiv){
@@ -1127,11 +1131,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						if (e.getKeyCode()==122 && e.isShiftDown()){
 							//F11 + Shift
+
 							terminBestaetigen(tspalte);
+							gruppeAusschalten();
+							oSpalten[tspalte].requestFocus();
 							break;
 						}
-						if (e.getKeyCode()==122 && (!e.isShiftDown()) ){
-							//F11 ohne Shift
+						if (e.getKeyCode()==122 && (!e.isShiftDown()) && (!e.isControlDown())
+								&& (!e.isAltDown())){
+							//nur F11 ohne Shift etc.
 							schnellSuche();
 							break;
 						}
@@ -3282,7 +3290,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		public void setUpdateVector(Vector vTerm){
 			oSpalten[aktiveSpalte[2]].datenZeichnen(vTerm,aktiveSpalte[2]);
 		}
-
+		public Vector getDatenVector(){
+			return vTerm;
+		}
 		public static void rechneMaske(){
 		String titel = "";
 		  Double stunden = 0.00;
@@ -4083,7 +4093,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							wartenAufReady = false;								
 						}					
 					}
-					if(spaltneu[2] != altaktiveSpalte[2]){
+					if((spaltneu[2] != altaktiveSpalte[2]) && (altaktiveSpalte[2]>=0)){
 						oSpalten[altaktiveSpalte[2]].spalteDeaktivieren();
 					}
 					
@@ -4109,12 +4119,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 
 				}catch(Exception ex){}
-				dragLab[aktiveSpalte[2]].setIcon(null);
-				dragLab[aktiveSpalte[2]].setText("");
-				dragLab[altaktiveSpalte[2]].setIcon(null);
-				dragLab[altaktiveSpalte[2]].setText("");
-
-				//System.out.println("Endwerte aktive Spalte = "+aktiveSpalte[0]+" / "+aktiveSpalte[1]+" / "+aktiveSpalte[2]+" / "+aktiveSpalte[3]);
+				if(altaktiveSpalte[2] >= 0){
+					dragLab[aktiveSpalte[2]].setIcon(null);
+					dragLab[aktiveSpalte[2]].setText("");
+					dragLab[altaktiveSpalte[2]].setIcon(null);
+					dragLab[altaktiveSpalte[2]].setText("");
+				}
 				oSpalten[i].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0] );
 			}else{
 				oSpalten[i].spalteDeaktivieren();
@@ -4164,11 +4174,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void terminBestaetigen(int spalte){
 		if( (!this.getAktuellerTag().equals(datFunk.sHeute())) || ansicht == WOCHEN_ANSICHT){
 			JOptionPane.showMessageDialog(null,"Behandlungsbestätigung ist nur für den aktuellen Tag in der -> Normalansicht <- möglich");
+			gruppeAusschalten();
 			return;
 		}
 		String pat_int;
 		int xaktBehandler= 0;
 		if(aktiveSpalte[0] < 0){
+			gruppeAusschalten();
 			return;
 		}
 		if(ansicht == NORMAL_ANSICHT){
@@ -4177,55 +4189,148 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			xaktBehandler = aktiveSpalte[2]; 
 		}else  if(ansicht == MASKEN_ANSICHT){
 			JOptionPane.showMessageDialog(null,"Terminaufnahme in Definition der Wochenarbeitszeit nicht möglich");
+			gruppeAusschalten();
 			return;
 		}
 		if(xaktBehandler < 0){
+			gruppeAusschalten();
 			return;
 		}
 		String sname = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(0).get(aktiveSpalte[0]));
 		String sreznum = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(1).get(aktiveSpalte[0]));
+		String sorigreznum = sreznum;
 		String sbeginn = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(2).get(aktiveSpalte[0]));
 		int occur = -1;
 		if( (occur = sreznum.indexOf("\\")) > -1){
+			sorigreznum = sreznum.replace("\\", "\\\\"); 
 			sreznum = sreznum.substring(0,occur);
 		}
-		System.out.println("Rezeptnummer = "+sreznum);
+		//System.out.println("Rezeptnummer = "+sreznum);
 		if(sreznum.length()<=2){
 			//// Meldung rezeptnummer ist falsch
 			JOptionPane.showMessageDialog(null, "Falsche oder nicht vorhandene Rezeptnummer");
+			gruppeAusschalten();
 			return;
 		}
 
 		final String swreznum = sreznum;
-		final String swname = sname;
+		final String sworigreznum = sorigreznum;		
+		final String swaltname = sname;
+		final String swname = sname.replaceAll("© ","");
+		final String swbeginn = sbeginn;
+
 		final int swbehandler = xaktBehandler; 
+		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				Vector vec = SqlInfo.holeSatz("verodn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes", "rez_num='"+swreznum+"'", Arrays.asList(new String[] {}));
+				Vector vec = null;
+				Vector tvec = null;
+				String copyright = "© ";
+				try{
+				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 				if (vec.size() > 0){
-					String termine = (String) vec.get(0);
-					if(termine.contains(datFunk.sHeute())){
+					//String termine = (String) vec.get(0);
+					StringBuffer termbuf = new StringBuffer();
+					termbuf.append((String) vec.get(0));
+					//System.out.println("****Beginn Termine bisher****\n"+termbuf.toString()+"****Ende Termine****");
+					if(termbuf.toString().contains(datFunk.sHeute())){
 						JOptionPane.showMessageDialog(null, "Dieser Termin ist am heutigen Tag bereits erfaßt");
+						gruppeAusschalten();
 						return null; 
-					}else{
-						// Hier prüfen ob Rezept voll
-						// Sofern ja  fragen ob trotzdem geschrieben werden soll
-						// entweder zurück oder den Termiblock generieren und in die Datenbank zurückschreiben
-						// Copyrightzeichen in Termindatenbank schreiben
-						// aktuelle Anzeige einstellen und feddisch;
 					}
+					tvec = RezTools.splitteTermine(termbuf.toString());
+					int anzahl = new Integer((String)vec.get(1));
+					if(tvec.size() >= anzahl){
+						if(tvec.size()==anzahl){
+							///rezept voll
+							// nachfragen ob wirklich schreiben
+						}else{
+							//rezept bereits übervoll
+							//nachfragen ob wirklich schreiben
+						}
+					}else{
+						termbuf.append(macheNeuTermin(ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),
+								"",(String) vec.get(2),(String) vec.get(3),(String) vec.get(4),(String) vec.get(5)));
+						SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
+
+						/**********Datenbank beschreiben*************/
+						String sblock = new Integer(aktiveSpalte[0]+1).toString();
+						/*
+						String stmt = "Update flexkc set T"+sblock+" = '"+copyright+swname+"' where datum = '"+
+						datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
+						"behandler = '"+(swbehandler < 10 ? "0"+new Integer(swbehandler+1).toString()+"BEHANDLER" : new Integer(swbehandler).toString()+"BEHANDLER"   )
+						+"' AND TS"+sblock+" = '"+swbeginn+"' AND T"+sblock+" = '"+swaltname+
+						"' AND N"+sblock+"='"+sworigreznum+"' LIMIT 1";
+						System.out.println(stmt);
+						new ExUndHop().setzeStatement(new String(stmt));
+						*/
+						SqlInfo.aktualisiereSatz("flexkc",
+								"T"+sblock+" = '"+copyright+swname+"'",
+								"datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
+								"behandler='"+(swbehandler < 10 ? "0"+new Integer(swbehandler+1).toString()+"BEHANDLER" : new Integer(swbehandler).toString()+"BEHANDLER"   )+"' "+
+								"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
+								"' AND N"+sblock+"='"+sworigreznum+"'"); 
+
+						/**********Ende Datenbank beschreiben*************/
+						((ArrayList<Vector<String>>) vTerm.get(swbehandler)).get(0).set(aktiveSpalte[0],copyright+swname);
+						oSpalten[aktiveSpalte[2]].repaint();
+						JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+						if(patient != null){
+							if(PatGrundPanel.thisClass.aktRezept.rezAngezeigt.equals(swreznum)){
+								AktuelleRezepte.aktRez.updateEinzelTermine(termbuf.toString());
+							}
+						}
+					}
+					
 				}else{
+					JOptionPane.showMessageDialog(null, "Dieses Rezept existiert nicht bzw. ist bereits abgerechnet!!");
 					// rezept existiert in der Rezeptdatenbank nicht.
 					// prüfen ob in der lza
 					// sofern ja melden daß Rezept bereits abgerechnet
 					// sofern nein melden daß die Rezeptnummer aber auch sowas von grottenfalsch ist.....
 				}
-				System.out.println("Bestätige Termin "+swname+" mit Rezeptnummer "+swreznum);
+				//System.out.println("Bestätige Termin "+swname+" mit Rezeptnummer "+swreznum);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				vec = null;
+				tvec = null;
 				return null;
 			}
 		}.execute();
 	}
+	public String macheNeuTermin(String kollege,String text,String pos1,String pos2,String pos3,String pos4){
+		String ret =
+			datFunk.sHeute()+
+			"@"+
+			kollege+
+			"@"+
+			text+
+			"@"+
+			pos1+
+			( pos2.trim().equals("") ? "" : ","+ pos2 )+
+			( pos3.trim().equals("") ? "" : ","+ pos3 )+
+			( pos4.trim().equals("") ? "" : ","+ pos4 )+
+			"@"+
+			datFunk.sDatInSQL(datFunk.sHeute())+"\n";
+		return ret;
+	}	
+	
+	public void gruppeAusschalten(){
+		shiftGedrueckt = false;
+		gruppierenAktiv = false;
+		gruppierenBloecke[0] = -1;
+		gruppierenBloecke[1] = -1;
+		try{
+			oSpalten[gruppierenSpalte].setInGruppierung(false);
+			oSpalten[gruppierenSpalte].shiftGedrueckt(false);
+		}catch(Exception ex){
+			
+		}
+	}
+	
+
 
 	/********************************************************************************************/
 }	// Ende Klasse

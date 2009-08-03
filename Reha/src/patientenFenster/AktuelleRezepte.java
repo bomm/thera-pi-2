@@ -571,7 +571,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 6));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
-					rezAngezeigt = (String)tabaktrez.getValueAt(0, 0);
+					
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
@@ -602,6 +602,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					String reznr = (String)tabaktrez.getValueAt(xrow,0);
+					rezAngezeigt = reznr;
 					String id = (String)tabaktrez.getValueAt(xrow,6);
 					jpan1.setRezeptDaten(reznr,id);
 					System.out.println("Aus Bericht....."+reznr+"....."+id);
@@ -609,6 +610,38 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			});	
 
 		}
+	}
+	public void updateEinzelTermine(String einzel){
+		String[] tlines = einzel.split("\n");
+		int lines = tlines.length;
+		//System.out.println("Anzahl Termine = "+lines);
+		Vector tvec = new Vector();
+		dtermm.setRowCount(0);
+		String[] terdat = null;
+		for(int i = 0;i<lines;i++){
+			terdat = tlines[i].split("@");
+			int ieinzel = terdat.length;
+			//System.out.println("Anzahl Splits = "+ieinzel);
+			tvec.clear();
+			for(int y = 0; y < ieinzel;y++){
+				if(y==0){
+					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+				}else{
+					tvec.add(new String(terdat[y]));					
+				}
+				//System.out.println("Feld "+y+" = "+terdat[y]);	
+			}
+			//System.out.println("Termivector = "+tvec);
+			dtermm.addRow((Vector)tvec.clone());
+		}
+		tabaktterm.validate();
+		tabaktterm.repaint();
+		anzahlTermine.setText("Anzahl Terimine: "+lines);
+		if(lines > 0){
+			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
+		}
+		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
 	}
 	private void holeEinzelTermine(int row,Vector vvec){
 		Vector xvec = null;
@@ -660,7 +693,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			//System.out.println("Termivector = "+tvec);
 			dtermm.addRow((Vector)tvec.clone());
 		}
+		tabaktterm.validate();
+		tabaktterm.repaint();
 		anzahlTermine.setText("Anzahl Terimine: "+lines);
+		if(lines > 0){
+			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
+		}
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
 
 	}
@@ -884,10 +922,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		for(int i = 0; i < 1; i++){
 			if(cmd.equals("terminplus")){
 				Vector<String> vec = new Vector<String>();
-				vec.add("  .  .    ");
+				vec.add(datFunk.sHeute());
 				vec.add("");
 				vec.add("");
-				vec.add(" ");
+				vec.add("");
+				vec.add(datFunk.sDatInSQL(datFunk.sHeute()));
 				dtermm.addRow((Vector<String>)vec.clone());
 				tabaktterm.validate();
 				anzahlTermine.setText("Anzahl Terimine: "+tabaktterm.getRowCount());

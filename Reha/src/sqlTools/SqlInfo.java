@@ -463,6 +463,48 @@ public class SqlInfo {
 		return retid;
 	}
 /*******************************/
+	public static void aktualisiereSatz(String tabelle, String sets, String kriterium){
+		Statement stmt = null;
+		ResultSet rs = null;
+	
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium+" LIMIT 1";
+			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
+			Object ret = stmt.execute(sstmt);
+			System.out.println(ret);
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return ;
+	}
+/*****************************************/
 
 
 }

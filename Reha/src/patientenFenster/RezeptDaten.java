@@ -63,6 +63,7 @@ public class RezeptDaten extends JXPanel{
 	public void setRezeptDaten(String reznummer,String sid){
 		//RezeptDaten.feddisch = false;		
 		reznum.setText(reznummer);
+		AktuelleRezepte.aktRez.rezAngezeigt = reznummer;
 		final String xreznummer = reznummer;
 		final String xsid = sid;
 		
@@ -71,7 +72,7 @@ public class RezeptDaten extends JXPanel{
 			protected Void doInBackground() throws Exception {
 				try{
 	
-
+ 
 				vecaktrez = SqlInfo.holeSatz("verordn", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				PatGrundPanel.thisClass.vecaktrez = vecaktrez;
 				String stest = StringTools.NullTest((String)vecaktrez.get(43));
