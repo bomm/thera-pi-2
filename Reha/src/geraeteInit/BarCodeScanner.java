@@ -1,5 +1,6 @@
 package geraeteInit;
 
+import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
 import java.io.ByteArrayOutputStream;
@@ -17,11 +18,14 @@ import javax.comm.SerialPort;
 import javax.comm.SerialPortEvent;
 import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import terminKalender.TerminFenster;
 import terminKalender.TermineErfassen;
+import terminKalender.datFunk;
 
 
 
@@ -185,9 +189,15 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    	byteArrayOutputStream.close();
 				if(outString.length()>= 2){
 					if("KGMALOERRH".contains(outString.substring(0,2))){
+						Vector tvec = null;
+						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
+						if(termin != null){
+							if(TerminFenster.thisClass.getAktuellerTag().equals(datFunk.sHeute())){
+								// Hier versuchen die Daten des Terminkalenders zu übernehmen
+							}
+						}
 						final String xoutString = outString.trim();
-							//JOptionPane.showMessageDialog(null,"Rezept-Scan angekommen\nScaninhalt = -> "+sb.toString());
-						Thread erfassen = new Thread(new TermineErfassen(xoutString));
+						Thread erfassen = new Thread(new TermineErfassen(xoutString,tvec));
 						erfassen.start();
 					}else{
 						JOptionPane.showMessageDialog(null,"Kein Rezeptscan\nScaninhalt = -> "+sb.toString());

@@ -25,7 +25,10 @@ public class TermineErfassen implements Runnable {
 	int erstfund = -1;
 	String kollege = "";
 	boolean firstfound;
-	public TermineErfassen(String reznr){
+	boolean ergebnis = true;
+	public static boolean success = true;
+	public static int errorint = 0;
+	public TermineErfassen(String reznr, Vector termvec){
 		scanrez = reznr;
 		firstfound = false;
 
@@ -37,7 +40,10 @@ public class TermineErfassen implements Runnable {
 		int ret = -1;
 		try {
 			if((ret = testeVerordnung())==0){
-				testeTermine();
+				boolean termok = testeTermine(); 
+				if(!termok){
+					//System.out.println("Rezept steht an diesem Tag nicht im Kalender");
+				}
 				if(erstfund >= 0){
 					scheibeTermin();
 					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
@@ -49,7 +55,9 @@ public class TermineErfassen implements Runnable {
 					}
 					
 				}else{
-					// Rezept steht an diesem Tag nicht im Kalender
+					System.out.println("Rezept steht an diesem Tag nicht im Kalender");
+					setTerminSuccess(false);
+					ergebnis = false;
 				}
 				
 				if(firstfound && scanrez.startsWith("RH")){
@@ -57,17 +65,38 @@ public class TermineErfassen implements Runnable {
 				}
 			}else{
 				if(ret > 0){
+					setTerminSuccess(false);
+					ergebnis = false;
 					System.out.println("hier die Fehlerbehandlung einbauen---->Fehler = "+ret);
+					switch (ret){
+					case 1:
+						System.out.println("Das Rezept nicht in Historie und nicht in Rez-Stamm");
+					case 2:
+						System.out.println("Das Rezept wurde bereits abgerechnet");
+					case 3:
+						System.out.println("Das Rezept wurde an diesen Tag bereits erfaﬂt");
+					}
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			setTerminSuccess(false);
+			ergebnis = false;
+
 		}
 		System.out.println("Terminerfassen beendet");
 		alleterm = null;
-		
+		return;
 	}
+	private void setTerminSuccess(boolean xsuccess){
+		this.success = xsuccess;
+	}
+	public static boolean getTerminSuccess(){
+		return success;
+	}
+	public static int getTerminError(){
+		return errorint;
+	}
+	/********************/
 	public int testeVerordnung() throws Exception{
 		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 		if(vec.size()==0){
@@ -89,6 +118,7 @@ public class TermineErfassen implements Runnable {
 		
 		return 0;
 	}
+	/********************/	
 	public void erfasseTermin(){
 		Vector<String> pat_int = SqlInfo.holeSatz("verordn", "pat_intern,anzahl1,termine", "rez_nr='"+scanrez+"'", Arrays.asList(new String[] {}));
 		if(pat_int.size()==0){
@@ -96,6 +126,7 @@ public class TermineErfassen implements Runnable {
 			return;
 		}
 	}
+	/********************/	
 	private boolean testeTermine() throws Exception{
 		long zeit1 = System.currentTimeMillis();
 		boolean ret;
@@ -132,10 +163,9 @@ public class TermineErfassen implements Runnable {
 				ret = false;
 			}
 		}	
-		//alleterm = null;
-		//System.out.println("**********feddisch***********");
 		return ret;
 	}
+	/********************/
 	private Object[] untersucheTermine() throws Exception{
 		
 		int spalten = alleterm.size();
@@ -168,10 +198,10 @@ public class TermineErfassen implements Runnable {
 				break;
 			}
 		}
-		//alleterm = null;
 		return obj;
 	}
 
+	/********************/
 	private void fahreFortMitTerminen()throws Exception{
 		int spalten = alleterm.size();
 		int mehrstellen = 0;
@@ -213,6 +243,9 @@ public class TermineErfassen implements Runnable {
 		//System.out.println("Anzahl zus‰tzlicher Fundstellen = "+mehrstellen);
 	}
 	
+	
+	
+	/********************/
 	private void scheibeTermin() throws Exception{
 		//System.out.println("Eintritt in schreibeTermin");
 		int ikoll = (kollege.substring(0,1).equals("0") ?
@@ -266,6 +299,8 @@ public class TermineErfassen implements Runnable {
 		//System.out.println("cmd = "+cmd);
 		new ExUndHop().setzeStatement(cmd);
 	}
+
+	/********************/
 	private String macheNeuTermin(String text){
 		String ret =
 			datFunk.sHeute()+

@@ -65,6 +65,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
@@ -1126,6 +1127,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						if (e.getKeyCode()==122 && e.isShiftDown()){
 							//F11 + Shift
+							terminBestaetigen(tspalte);
 							break;
 						}
 						if (e.getKeyCode()==122 && (!e.isShiftDown()) ){
@@ -4158,6 +4160,71 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		// TODO Auto-generated method stub
 		//System.out.println("gesture "+arg0);
 		
+	}
+	public void terminBestaetigen(int spalte){
+		if( (!this.getAktuellerTag().equals(datFunk.sHeute())) || ansicht == WOCHEN_ANSICHT){
+			JOptionPane.showMessageDialog(null,"Behandlungsbestätigung ist nur für den aktuellen Tag in der -> Normalansicht <- möglich");
+			return;
+		}
+		String pat_int;
+		int xaktBehandler= 0;
+		if(aktiveSpalte[0] < 0){
+			return;
+		}
+		if(ansicht == NORMAL_ANSICHT){
+			xaktBehandler = belegung[aktiveSpalte[2]];
+		}else  if(ansicht == WOCHEN_ANSICHT){
+			xaktBehandler = aktiveSpalte[2]; 
+		}else  if(ansicht == MASKEN_ANSICHT){
+			JOptionPane.showMessageDialog(null,"Terminaufnahme in Definition der Wochenarbeitszeit nicht möglich");
+			return;
+		}
+		if(xaktBehandler < 0){
+			return;
+		}
+		String sname = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(0).get(aktiveSpalte[0]));
+		String sreznum = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(1).get(aktiveSpalte[0]));
+		String sbeginn = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(2).get(aktiveSpalte[0]));
+		int occur = -1;
+		if( (occur = sreznum.indexOf("\\")) > -1){
+			sreznum = sreznum.substring(0,occur);
+		}
+		System.out.println("Rezeptnummer = "+sreznum);
+		if(sreznum.length()<=2){
+			//// Meldung rezeptnummer ist falsch
+			JOptionPane.showMessageDialog(null, "Falsche oder nicht vorhandene Rezeptnummer");
+			return;
+		}
+
+		final String swreznum = sreznum;
+		final String swname = sname;
+		final int swbehandler = xaktBehandler; 
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				Vector vec = SqlInfo.holeSatz("verodn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes", "rez_num='"+swreznum+"'", Arrays.asList(new String[] {}));
+				if (vec.size() > 0){
+					String termine = (String) vec.get(0);
+					if(termine.contains(datFunk.sHeute())){
+						JOptionPane.showMessageDialog(null, "Dieser Termin ist am heutigen Tag bereits erfaßt");
+						return null; 
+					}else{
+						// Hier prüfen ob Rezept voll
+						// Sofern ja  fragen ob trotzdem geschrieben werden soll
+						// entweder zurück oder den Termiblock generieren und in die Datenbank zurückschreiben
+						// Copyrightzeichen in Termindatenbank schreiben
+						// aktuelle Anzeige einstellen und feddisch;
+					}
+				}else{
+					// rezept existiert in der Rezeptdatenbank nicht.
+					// prüfen ob in der lza
+					// sofern ja melden daß Rezept bereits abgerechnet
+					// sofern nein melden daß die Rezeptnummer aber auch sowas von grottenfalsch ist.....
+				}
+				System.out.println("Bestätige Termin "+swname+" mit Rezeptnummer "+swreznum);
+				return null;
+			}
+		}.execute();
 	}
 
 	/********************************************************************************************/
