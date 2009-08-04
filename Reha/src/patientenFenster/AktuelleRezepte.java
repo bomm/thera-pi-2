@@ -125,6 +125,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public boolean suchePatUeberRez = false;
 	public String rezAngezeigt = "";
 	public static boolean inRezeptDaten = false;
+	public static boolean initOk = false;
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
 		super();
@@ -179,17 +180,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 				Font font = new Font("Tahome",Font.PLAIN,11);
 				anzahlRezepte = new JLabel("Anzahl Rezepte: 0");
-				//PatGrundPanel.thisClass.jtab.setTitleAt(0, PatGrundPanel.thisClass.tabTitel[0]+" - 0");
 				anzahlRezepte.setFont(font);
-				//anzahlRezepte.setForeground(Color.RED);
 				vollPanel.add(anzahlRezepte,vpcc.xy(1,1));
-				
 				vollPanel.add(getTabelle(),vpcc.xywh(1,2,1,1));
-				
-				//vollPanel.add(getTabelle(),vpcc.xywh(1,1,1,2));
 				anzahlTermine = new JLabel("Anzahl Termine: 0");
 				anzahlTermine.setFont(font);
-				//anzahlTermine.setForeground(Color.RED);
 				anzahlTermine.setOpaque(false);
 				vollPanel.add(anzahlTermine,vpcc.xywh(3,1,1,1));
 				
@@ -202,25 +197,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				dummy.setLayout(dumlay);
 				vollPanel.add(dummy,vpcc.xywh(3,2,1,3));
 				
-				/*
-				JXPanel jpan1 = new JXPanel();
-				//jpan1.setOpaque(false);
-				vollPanel.add(jpan1,vpcc.xyw(1,4,1));
-				*/
-				
+			
 				dummy.add(getTermine(),dumcc.xyw(1, 1, 7));
 				dummy.add(getTerminToolbar(),dumcc.xyw(1, 3, 7));
-				/*
-				dummy.add(new JButton("test"),dumcc.xy(2, 3));
-				dummy.add(new JButton("test"),dumcc.xy(4, 3));
-				dummy.add(new JButton("test"),dumcc.xy(6, 3));
-				*/
 
 				jpan1 = new RezeptDaten();
 				vollPanel.add(jpan1,vpcc.xyw(1,4,1));
 				indiSchluessel();
+				initOk = true;
 				}catch(Exception ex){
 					ex.printStackTrace();
+					initOk = true;
 				}
 				return null;
 			}

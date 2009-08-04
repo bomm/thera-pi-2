@@ -3549,21 +3549,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			final String xpat_int = pat_int;
 			new SwingWorker<Void,Void>(){
 				protected Void doInBackground() throws Exception {
-					//System.out.println("in der Funktion doPatSuchen  SwingWorker");
 					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					ProgLoader.ProgPatientenVerwaltung(1);
-					while( xpatient == null ){
+					while( (xpatient == null) ){
 						Thread.sleep(20);
 						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					}
+					while(  (!AktuelleRezepte.initOk) ){
+						Thread.sleep(20);
+					}
+					
 					String s1 = new String("#PATSUCHEN");
 					String s2 = new String((String) xpat_int);
 					PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
 					pEvt.setPatStammEvent("PatSuchen");
 					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
-					//pEvt.setDetails(s1,s2,xpatient.getName()) ;
 					PatStammEventClass.firePatStammEvent(pEvt);
-					//PatGrundPanel.thisClass.aktRezept.holeRezepte(xpat_int,xreznr);
 					return null;
 				}
 				
@@ -3575,9 +3576,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
 			pEvt.setPatStammEvent("PatSuchen");
 			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
-			//pEvt.setDetails(s1,s2,patient.getName()) ;
 			PatStammEventClass.firePatStammEvent(pEvt);
-			//PatGrundPanel.thisClass.aktRezept.holeRezepte(pat_int,reznr);
 		}
 	}
 	private void tauscheTermin(int richtung){
@@ -4265,12 +4264,17 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						System.out.println(stmt);
 						new ExUndHop().setzeStatement(new String(stmt));
 						*/
+						String toupdate = "T"+sblock+" = '"+copyright+swname+"'";
+						String towhere = "datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
+						"behandler='"+(swbehandler < 10 ? "0"+new Integer(swbehandler+1).toString()+"BEHANDLER" : new Integer(swbehandler+1).toString()+"BEHANDLER"   )+"' "+
+						"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
+						"' AND N"+sblock+"='"+sworigreznum+"'"; 
+ 
 						SqlInfo.aktualisiereSatz("flexkc",
-								"T"+sblock+" = '"+copyright+swname+"'",
-								"datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
-								"behandler='"+(swbehandler < 10 ? "0"+new Integer(swbehandler+1).toString()+"BEHANDLER" : new Integer(swbehandler).toString()+"BEHANDLER"   )+"' "+
-								"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
-								"' AND N"+sblock+"='"+sworigreznum+"'"); 
+								toupdate,
+								towhere);
+						//System.out.println("Update-Clause = "+toupdate);
+						//System.out.println("Where-Clause = "+towhere);
 
 						/**********Ende Datenbank beschreiben*************/
 						((ArrayList<Vector<String>>) vTerm.get(swbehandler)).get(0).set(aktiveSpalte[0],copyright+swname);
