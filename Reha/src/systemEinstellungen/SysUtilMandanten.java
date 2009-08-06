@@ -45,6 +45,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import sqlTools.ExUndHop;
 import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -534,6 +535,12 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		inif.setStringProperty("TheraPiMandanten", "AnzahlMandanten",new Integer(AnzahlMandanten).toString(),null);
 		inif.setStringProperty("TheraPiMandanten", "MAND-IK"+AnzahlMandanten,neuik,null);
 		inif.setStringProperty("TheraPiMandanten", "MAND-NAME"+AnzahlMandanten,neuname,null);
+		if(defman.isSelected()){
+			inif.setStringProperty("TheraPiMandanten", "AuswahlImmerZeigen","1",null);
+			inif.setStringProperty("TheraPiMandanten", "DefaultMandant",new Integer(AnzahlMandanten).toString(),null);
+		}else{
+			inif.setStringProperty("TheraPiMandanten", "AuswahlImmerZeigen","0",null);			
+		}
 		//JOptionPane.showMessageDialog(null,"Es sind nun ingsgesamt - " + AnzahlMandanten + " - gespeichert");
 		inif.save();
 		try {
@@ -566,6 +573,9 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		MandantEinlesen me = new MandantEinlesen();
 	    me.setzeMandant(mandant.getSelectedIndex());
 	    mandant.setEnabled(true);
+	    String cmd = "insert into nummern set mandant='"+neuik+"'";
+
+	    new ExUndHop().setzeStatement(cmd);
 	}
 	
 
@@ -766,7 +776,7 @@ class MandantSpeichern extends SwingWorker<Integer,Void>{
 		for(int i = 0; i < stitel.length;i++){
 			ifile.setStringProperty("Firma", stitel[i],SysUtilMandanten.thisClass.tfield[i].getText().trim() , null);
 		}
-		ifile.save();
+
 		//ifile = null;
 		
 		ifile = new INIFile(Reha.proghome+"ini/mandanten.ini");		
@@ -782,6 +792,7 @@ class MandantSpeichern extends SwingWorker<Integer,Void>{
 			ifile.setIntegerProperty("TheraPiMandanten", "DefaultMandant", this.mandant+1, null);
 			SystemConfig.DefaultMandant = this.mandant+1;
 		}
+		ifile.save();
 		/*
 		ifile.setIntegerProperty("TheraPiMandanten", "AnzahlMandanten", SysUtilMandanten.thisClass.mandant.getItemCount(), null);
 		ifile.save();

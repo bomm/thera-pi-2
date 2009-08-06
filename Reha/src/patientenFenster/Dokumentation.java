@@ -106,6 +106,7 @@ import systemTools.FileComparator;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.JCompTools;
+import systemTools.JRtaTextField;
 import terminKalender.datFunk;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerDevice;
@@ -177,6 +178,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public String commonName = "";
 	public RehaSplash rehaSplash =  null;
 	public ImageIcon[] tabIcons = {null,null,null,null};
+	//public JRtaTextField annika = null;
 	Scanner scanner;
 	public Dokumentation(){
 		super();
@@ -641,7 +643,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].setIcon(SystemConfig.hmSysIcons.get("scanner"));
 		dokubut[0].setToolTipText("Papierbericht einscannen");
 		dokubut[0].setActionCommand("scannen");
-		dokubut[0].setEnabled(false);
+		//wg. Annika
+		dokubut[0].setEnabled(true);
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
 	
@@ -661,12 +664,25 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[2].setEnabled(false);
 		jtb.add(dokubut[2]);
 		
+		/*
+		jtb.addSeparator();
+		JLabel jlab = new JLabel("Patienten-Nummer eingeben ");
+		jlab.setOpaque(false);
+		jtb.add(jlab);
+		JXPanel tfp = new JXPanel(new FlowLayout(FlowLayout.LEFT));
+		tfp.setOpaque(false);
+		annika = new JRtaTextField("ZAHLEN",true);
+		annika.setPreferredSize(new Dimension(100,25));
+		tfp.add(annika);
+		jtb.add(tfp);
+		*/
 		
 		if(!scanaktiv){
 			dokubut[0].setEnabled(false);
 			dokubut[1].setEnabled(false);
 			dokubut[2].setEnabled(false);
 		}
+		
 
 		for(int i = 0; i < 4;i++){
 			//dokubut[i].setEnabled(false);
@@ -706,6 +722,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			if(SystemConfig.sDokuScanner.equals("Scanner nicht aktiviert!")){
 				return;
 			}
+			/*
+			if(annika.getText().trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Bitte vor dem Scannen die Patientennummer eingeben");
+				return;
+			}
+			*/
 			if(aktPanel.equals("leerPanel")){
 				this.setzeRezeptPanelAufNull(false);
 			}
@@ -753,11 +775,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//rehaSplash.setVisible(true);
 			String value = (String)JOptionPane.showInputDialog(null,
 					"Bitte einen Titel für die Dokumentation eingeben\n\n", "Benutzereingabe erforderlich....", JOptionPane.PLAIN_MESSAGE, null,
-					null, "Eingescannte Papierdoku");
+					null, "Eingescannte Therapeuten-Doku");
 			if( (value == null) || (value.length()==0)){
 				JOptionPane.showMessageDialog(null, "Kein Titel - kein speichern. Ganz einfach!!");
 				return;
 			}
+			/*
+			if(annika.getText().trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Ohne Patientennummer kann nicht gespeichert werden");
+				return;
+			}
+			*/
 			doDokusave(value);
 			
 			//rehaSplash.dispose();
@@ -913,26 +941,38 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		   */
 		System.out.println("Beginne speichern");
 		//rehaSplash.setNewText("Dokumentation auf Server transferieren");
+		int pat_int = new Integer(PatGrundPanel.thisClass.aktPatID); //new Integer(annika.getText().trim());
 		try {
+			
 			doSpeichernDoku(
 					dokuid,
-					999999,
+					pat_int,
 					SystemConfig.hmVerzeichnisse.get("Temp")+"/FertigeDoku.pdf",
 					0,
 					new String[] {datFunk.sDatInSQL(datFunk.sHeute()),dokuTitel,Reha.aktUser,""},
 					true);
+
+			loescheBilderPan();
+			dokubut[0].setEnabled(true);
+			dokubut[1].setEnabled(true);
+			this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert für Patient-Nr.: "+pat_int);
+			//annika.setText("");
+			//annika.requestFocus();
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("Speichern hat nicht geklappt");
+			loescheBilderPan();
+			dokubut[0].setEnabled(true);
+			dokubut[1].setEnabled(true);
+			//this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			JOptionPane.showMessageDialog(null,"Fehler beim Speichern der Dokumentation \nDoku wurde nicht gespeichert");
+			//annika.setText("");
+			//annika.requestFocus();
 			e.printStackTrace();
 		}
-		System.out.println("Fertig mit speichern");
-		loescheBilderPan();
-		dokubut[0].setEnabled(true);
-		dokubut[1].setEnabled(true);
-		this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert");
+		//System.out.println("Fertig mit speichern");
 	}
 	private void loescheBilderPan(){
 		System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "scan",".jpg"));
