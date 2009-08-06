@@ -220,10 +220,19 @@ public class RezeptDaten extends JXPanel{
 		*/
 		int pos = 0;
 		for(int i = 0;i<preisevec.size();i++){
+			/*
 			if( new Integer( (String) ((Vector)preisevec.get(i)).get(35)) == veczahl ){
-				return StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
-				(String) ((Vector)preisevec.get(i)).get(1);
+				if(new Integer(StringTools.NullTest((String)vecaktrez.get(3+leistung)))>=10){
+					return StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
+					(String) ((Vector)preisevec.get(i)).get(1);
+				}else{
+					return "  "+StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
+					(String) ((Vector)preisevec.get(i)).get(1);
+				}
 			}
+			*/
+			return StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
+			(String) ((Vector)preisevec.get(i)).get(1);
 		}
 		
 		return retwert;
