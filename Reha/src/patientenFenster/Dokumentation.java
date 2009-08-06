@@ -1647,6 +1647,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public static void doSpeichernDoku(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
 		Statement stmt = null;;
 		ResultSet rs = null;
+		PreparedStatement ps = null;
 		boolean ret = false;
 		int bilder = 0;
 		FileInputStream fis = null;
@@ -1658,7 +1659,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			String select = "Insert into doku1 set dokuid = ? , datum = ?, dokutitel = ?,"+
 			"benutzer = ?, pat_intern = ?, format = ?,"+
 			"dokutext = ?, dokublob = ? , groesse = ? ";
-			  PreparedStatement ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+			  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 			  /*
 			   * 
 			    ps.setBytes(1,   //dokuid - integer
@@ -1703,13 +1704,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignore }
-						stmt = null;
-					}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
 				}
+			}
+			if(ps != null){
+				ps.close();
 			}
 		}
 		
