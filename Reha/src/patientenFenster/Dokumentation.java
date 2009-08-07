@@ -67,6 +67,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -153,7 +154,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	//public String[] indergo = null;
 	//public String[] indlogo = null;
 	public JXPanel jpan1 = null;
-	public JButton[] dokubut = {null,null,null,null,null};
+	public JButton[] dokubut = {null,null,null,null,null,null};
 	public JButton[] pmbut = {null,null,null,null,null};
 	public static boolean inDokuDaten = false;
 	public JComboBox seitengroesse = null;
@@ -164,6 +165,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public Vector<String>vecBilderPfad = new Vector<String>();
 	public Vector<String>vecBilderFormat = new Vector<String>();
 	public Vector<String>vecPdfPfad = new Vector<String>();
+	public Vector<String>vecBilderAktion = new Vector<String>();
 	public Vector<JLabel>Labels = new Vector<JLabel>();
 	public JXPanel bilderPan = null;
 	public JScrollPane bildscroll = null;
@@ -176,8 +178,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JXPanel plusminus;
 	public JPanel leerInfo = null;
 	public String commonName = "";
+	public String lastPath = null;
 	public RehaSplash rehaSplash =  null;
 	public ImageIcon[] tabIcons = {null,null,null,null};
+	public String aktion  = "";
 	//public JRtaTextField annika = null;
 	Scanner scanner;
 	public Dokumentation(){
@@ -639,12 +643,30 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		jtb.setBorder(null);
 		jtb.setOpaque(false);
 
+		dokubut[5] = new JButton();
+		dokubut[5].setIcon(SystemConfig.hmSysIcons.get("delete"));
+		dokubut[5].setToolTipText("Dokumentation löschen");
+		dokubut[5].setActionCommand("delete");
+		dokubut[5].setEnabled(false);
+		dokubut[5].addActionListener(this);
+		jtb.add(dokubut[5]);
+
+		jtb.addSeparator(new Dimension(10,0));
+		dokubut[2] = new JButton();
+		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("abbruch"));
+		dokubut[2].setToolTipText("Kompletten Vorgang abbrechen");
+		dokubut[2].setActionCommand("Dokuabbruch");
+		dokubut[2].addActionListener(this);
+		dokubut[2].setEnabled(false);
+		jtb.add(dokubut[2]);
+
+		jtb.addSeparator(new Dimension(40,0));
+		
 		dokubut[0] = new JButton();
 		dokubut[0].setIcon(SystemConfig.hmSysIcons.get("scanner"));
 		dokubut[0].setToolTipText("Papierbericht einscannen");
 		dokubut[0].setActionCommand("scannen");
-		//wg. Annika
-		dokubut[0].setEnabled(true);
+		dokubut[0].setEnabled(false);
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
 	
@@ -656,16 +678,31 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[1].addActionListener(this);		
 		jtb.add(dokubut[1]);
 
-		dokubut[2] = new JButton();
-		dokubut[2].setIcon(SystemConfig.hmSysIcons.get("abbruch"));
-		dokubut[2].setToolTipText("Kompletten Vorgang abbrechen");
-		dokubut[2].setActionCommand("Dokuabbruch");
-		dokubut[2].addActionListener(this);
-		dokubut[2].setEnabled(false);
-		jtb.add(dokubut[2]);
+		jtb.addSeparator(new Dimension(40,0));
+		dokubut[3] = new JButton();
+		dokubut[3].setIcon(SystemConfig.hmSysIcons.get("camera"));
+		dokubut[3].setToolTipText("Photo von DigiCam einlesen");
+		dokubut[3].setActionCommand("Digicam");
+		dokubut[3].addActionListener(this);
+		dokubut[3].setEnabled(false);
+		jtb.add(dokubut[3]);
+		
+
+		dokubut[4] = new JButton();
+		dokubut[4].setIcon(SystemConfig.hmSysIcons.get("oofiles"));
+		dokubut[4].setToolTipText("OpenOffice-Dokument zuordnen");
+		dokubut[4].setActionCommand("Oofiles");
+		dokubut[4].addActionListener(this);
+		dokubut[4].setEnabled(false);
+		jtb.add(dokubut[4]);
+		
+		
+
+		
+		
 		
 		/*
-		jtb.addSeparator();
+		
 		JLabel jlab = new JLabel("Patienten-Nummer eingeben ");
 		jlab.setOpaque(false);
 		jtb.add(jlab);
@@ -740,6 +777,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				scanner.acquire();
+        		aktion = "bildgescannt";
 			} catch (ScannerIOException e) {
 				// TODO Auto-generated catch block
 				System.out.println("***************Fehler beim scannen*******************");
@@ -797,8 +835,101 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}else if(cmd.equals("Dokuabbruch")){
 			loescheBilderPan();
 			return;
+		}else if(cmd.equals("Digicam")){
+			String[] bild = oeffneBild();
+			if(bild.length > 0){
+				System.out.println(bild[0]);
+				System.out.println(bild[1].replaceAll("\\\\", "/"));
+				String bildpfad = bild[1].replaceAll("\\\\", "/");
+				if(! bildpfad.toLowerCase().endsWith(".jpg")){
+					JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstützt");
+					return;
+				}
+				try {
+					Image img2 = null;
+					ImageIO.setCacheDirectory(new File(SystemConfig.hmVerzeichnisse.get("Temp")));					
+					img2 =  ImageIO.read(new File( bildpfad)).getScaledInstance(50, 65,Image.SCALE_FAST);
+
+					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]), 4096*4, false);
+					//final Image img2 = img.getScaledInstance(50, 65,Image.SCALE_SMOOTH);
+					//img = null;
+					
+	               
+
+			        final String pfad = bild[1];
+			        /*new Thread(){
+			        	public void run(){
+			        	*/
+			        		vecBilderAktion.add("jpggeladen");
+			        		aktion = "bildgeladen";
+			        		zeigeBilder(img2,pfad,commonName);
+			        	/*	
+				}
+			        }.start();
+			        */
+			       img2 = null; 		
+			       Runtime r = Runtime.getRuntime();
+	        	    r.gc();
+	        	    long freeMem = r.freeMemory();
+	        	    System.out.println("Freier Speicher "+freeMem);
+			        
+			        
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+			return;
 		}
 		
+		
+	}
+	private String[] oeffneBild(){
+		String[] sret = null;
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        File file = null;
+        if(lastPath==null){
+        	file = new File(Reha.proghome);	
+        }else{
+        	file = new File(lastPath);
+        }
+
+        chooser.setCurrentDirectory(file);
+
+        chooser.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
+                        || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
+                    final File f = (File) e.getNewValue();
+                }
+            }
+
+        });
+        chooser.setVisible(true);
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        final int result = chooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File inputVerzFile = chooser.getSelectedFile();
+            String inputVerzStr = inputVerzFile.getPath();
+            
+
+            if(inputVerzFile.getName().trim().equals("")){
+            	sret = new String[] {};
+            }else{
+            	sret = new String[] {inputVerzFile.getName().trim(),inputVerzStr};	
+            	lastPath = inputVerzFile.getAbsolutePath();
+            }
+        }else{
+        	sret = new String[] {}; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
+        }
+        chooser.setVisible(false); 
+
+        return sret;
 		
 	}
 	private void doDokudelete(){
@@ -815,8 +946,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		vecBilderPfad.trimToSize();
 		vecPdfPfad.removeElementAt(aktivesBild-1);
 		vecPdfPfad.trimToSize();
+
 		vecBilderFormat.removeElementAt(aktivesBild-1);
 		vecBilderFormat.trimToSize();
+		vecBilderAktion.removeElementAt(aktivesBild-1);
+		vecBilderAktion.trimToSize();
 		Labels.removeElementAt(aktivesBild-1);
 		Labels.trimToSize();
 		aktivesBild = 0;
@@ -988,6 +1122,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		vecBilderPfad.clear();
 		vecPdfPfad.clear();
 		vecBilderFormat.clear();
+		vecBilderAktion.clear();
 		bildnummer = 0;
 		if(scanner != null){
 			scanner.removeListener(this);
@@ -1259,6 +1394,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Labels.add(lab);
 		vecBilderPfad.add(datei);
 		vecBilderFormat.add(infolabLeer[3].getText());
+		vecBilderAktion.add("scanner");
 		String pdfPfad = "pdf"+commonname+".pdf";
 		vecPdfPfad.add(pdfPfad);
 		if(vecBilderPfad.size()==1){
@@ -1289,12 +1425,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				Document document = null;
 					String datname = "";
 					System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(seite));
-					Rectangle format = getLowagieForm(vecBilderFormat.get(seite));
+					//Rectangle format = PageSize.A4.rotate();
+					Rectangle format = null;
+					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
+						format = getLowagieForm(vecBilderFormat.get(seite));
+					}
+					
 					try {
 					com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(seite));
 					if(format==null){
 						format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight()); 
 					}
+					
+					
+					
+					
 					System.out.println("Das Format = "+format);
 					document = new Document();
 					document.setPageSize(format);	
@@ -1303,10 +1448,22 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					FileOutputStream fout = new FileOutputStream(datname);
 					PdfWriter writer = PdfWriter.getInstance(document, fout);  
 					document.open(); 
+					
+					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
+						jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+						jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
+						document.add(jpg2);
+					}else if(((String)vecBilderAktion.get(seite)).equals("jpggeladen")){
+						//document.setPageSize(new Rectangle(jpg2.getScaledWidth(),jpg2.getScaledHeight()));
+						Thread.sleep(20);
+						//writer.setPageSize(document.getPageSize());
 
-					jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
-					jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
-					document.add(jpg2);
+						//jpg2.scalePercent(0.25f);
+						//jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+						//jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());						
+						document.add(jpg2);
+					}
+					
 
 					document.close();
 					writer.close();
@@ -1565,6 +1722,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if((!dokubut[0].isEnabled()) && SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1")){
 						dokubut[0].setEnabled(true);						
 					}
+					dokubut[3].setEnabled(true);	
+					dokubut[4].setEnabled(true);
+					dokubut[5].setEnabled(true);
 
 				}else{
 					setzeRezeptPanelAufNull(true);
@@ -1575,6 +1735,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if((!dokubut[0].isEnabled()) && SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1")){
 						dokubut[0].setEnabled(true);						
 					}
+					dokubut[3].setEnabled(true);	
+					dokubut[4].setEnabled(true);
+					dokubut[5].setEnabled(false);
+
 				}
 				
 				}catch(Exception ex){

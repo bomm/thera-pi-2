@@ -971,6 +971,12 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bunker")).getImage().getScaledInstance(20,20, Image.SCALE_SMOOTH);
 		hmSysIcons.put("bunker", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "camera")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("camera", new ImageIcon(ico));
+
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		hmSysIcons.put("oofiles", new ImageIcon(ico));
+
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");
 
