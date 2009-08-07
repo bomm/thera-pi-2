@@ -5,6 +5,8 @@ package patientenFenster;
 
 import generalSplash.RehaSplash;
 import geraeteInit.ScannerUtil;
+
+import hauptFenster.LinkeTaskPane;
 import hauptFenster.Reha;
 
 
@@ -89,6 +91,8 @@ import jxTableTools.DateTableCellEditor;
 import jxTableTools.TableTool;
 import kurzAufrufe.KurzAufrufe;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -123,6 +127,14 @@ import uk.co.mmscomputing.device.twain.TwainIOMetadata;
 import uk.co.mmscomputing.device.twain.TwainImageInfo;
 import uk.co.mmscomputing.device.twain.TwainImageLayout;
 import uk.co.mmscomputing.device.twain.TwainSource;
+
+import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.event.IDocumentEvent;
+import ag.ion.bion.officelayer.event.IDocumentListener;
+import ag.ion.bion.officelayer.event.IEvent;
+import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
+import ag.ion.bion.officelayer.text.ITextDocument;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -415,8 +427,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dummypan.setBorder(null);
 		System.out.println("Image icon bei Tabellenerstellung = "+(SystemConfig.hmSysIcons.get("pdf")==null));
 		tabIcons[0]= SystemConfig.hmSysIcons.get("pdf");
-		tabIcons[1]= SystemConfig.hmSysIcons.get("bild");
-		tabIcons[2]= SystemConfig.hmSysIcons.get("pdf");
+		tabIcons[1]= new ImageIcon(SystemConfig.hmSysIcons.get("ooowriter").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH));
+		tabIcons[2]= new ImageIcon(SystemConfig.hmSysIcons.get("ooocalc").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH));
 
 		dtblm = new MyDoku2TableModel();
 		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaßt am","von","","",""};
@@ -461,6 +473,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					}
 					
 					int row = tabdokus.getSelectedRow();
+					/***********************/
+					if(! ((String)tabdokus.getValueAt(row, 7)).trim().equals("")){
+						String sid = (String)tabdokus.getValueAt(row, 6);
+						String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+(String)tabdokus.getValueAt(row, 7);
+						holeOorg(sdatei,sid);
+						return;
+					}
+					
+					/***********************/
 					String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/pdf"+tabdokus.getValueAt(row, 0)+".pdf";
 					System.out.println("Starte doku holen");
 					String sid = (String)tabdokus.getValueAt(row, 6);
@@ -499,7 +520,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							}
 							
 						}.execute();
-						
 						holeDoku(sdatei,sid);
 						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
@@ -563,6 +583,61 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 ////////////////////////////
 //////////////////////////// Holt Doku aus der Doku-Datenbank
 ////////////////////////////
+	public void holeOorg(String sdatei,String sid){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		int bilder = 0;
+
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE );
+				String test = "select dokublob from doku1 where id='"+sid+"'";
+				rs = (ResultSet) stmt.executeQuery(test);
+				if(rs.next()){
+					FileTools.ByteArray2File(rs.getBytes(1), sdatei);
+				}
+				final String xdatei = sdatei;
+				final String xid = sid;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						if(xdatei.toLowerCase().endsWith("odt")){
+							ITextDocument itext = new OOTools().starteWriterMitDatei(xdatei);
+							itext.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid));
+						}else if(xdatei.toLowerCase().endsWith("ods")){
+							ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(xdatei);
+							ispread.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid));
+						}
+						
+						return null;
+					}
+				}.execute();
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+			
+		}
+				
+		
+		
+	}
 	public void holeDoku(String datei,String id){
 		Statement stmt = null;;
 		ResultSet rs = null;
@@ -575,24 +650,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				rs = (ResultSet) stmt.executeQuery(test);
 				if(rs.next()){
 					FileTools.ByteArray2File(rs.getBytes(1), datei);
-					/*
-					InputStreamReader isr = new InputStreamReader( rs.getBinaryStream(1) ); 
-					
-				      FileOutputStream fos = new FileOutputStream( new File( datei ) );
-				      
-				      int ch;
-				      while( (ch = isr.read()) != -1){
-				    	  fos.write(ch);
-				      }
-				      fos.flush();
-				      isr.close();
-				      fos.close();
-				     */ 
 				}
 				
-				//FileComparator com = new FileComparator(1024);
-				//int ce = com.compareFiles(new File( datei ), new File("C:/RehaVerwaltung/temp/510841109/FertigeDoku.pdf.pdf"));
-				//System.out.println("Ergebnis von Compare = "+ce);
 				final String xdatei = datei;
 				new SwingWorker<Void,Void>(){
 					@Override
@@ -688,7 +747,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		jtb.addSeparator(new Dimension(40,0));
 		dokubut[3] = new JButton();
 		dokubut[3].setIcon(SystemConfig.hmSysIcons.get("camera"));
-		dokubut[3].setToolTipText("Photo von DigiCam einlesen");
+		dokubut[3].setToolTipText("Photo von DigiCam in Doku aufnehmen");
 		dokubut[3].setActionCommand("Digicam");
 		dokubut[3].addActionListener(this);
 		dokubut[3].setEnabled(false);
@@ -696,8 +755,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 
 		dokubut[4] = new JButton();
-		dokubut[4].setIcon(SystemConfig.hmSysIcons.get("oofiles"));
-		dokubut[4].setToolTipText("OpenOffice-Dokument zuordnen");
+		Image img = new ImageIcon(Reha.proghome+"icons/openoffice.png").getImage().getScaledInstance(26,26,Image.SCALE_SMOOTH);
+		dokubut[4].setIcon(new ImageIcon(img));
+		//dokubut[4].setIcon(SystemConfig.hmSysIcons.get("oofiles"));
+		dokubut[4].setToolTipText("OpenOffice-Dokument (Writer oder Calc) in Doku aufnehmen");
 		dokubut[4].setActionCommand("Oofiles");
 		dokubut[4].addActionListener(this);
 		dokubut[4].setEnabled(false);
@@ -843,10 +904,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			loescheBilderPan();
 			return;
 		}else if(cmd.equals("Digicam")){
+			ladeJpeg();
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					ladeJpeg();
+
 					return null;
 				}
 			}.execute();
@@ -875,11 +937,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}.execute();
 		}else if(cmd.equals("Oofiles")){
 			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			ladeOoDocs();
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					ladeOoDocs();
-					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					
+
 					return null;
 				}
 			}.execute();	
@@ -887,15 +951,36 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	
 	private void ladeOoDocs(){
-		String[] bild = oeffneBild(new String[] {"odt","ods","doc"});
+		String[] bild = oeffneBild(new String[] {"odt","ods","???"});
 		if(bild.length > 0){
 			String bildpfad = bild[1].replaceAll("\\\\", "/");
 			if( (bildpfad.toLowerCase().endsWith(".odt")) || 
-					(bildpfad.toLowerCase().endsWith(".ods")) ||
-					(bildpfad.toLowerCase().endsWith(".doc")) ){
+					(bildpfad.toLowerCase().endsWith(".ods")) ){
 				try {
+					Dokumentation.doku.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]), 4096*4, true);
+					File f = new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]);
+					if(f.exists()){
+						int dokuid = SqlInfo.erzeugeNummer("doku");
+						int pat_int = new Integer(PatGrundPanel.thisClass.aktPatID); //new Integer(annika.getText().trim());
+
+							
+							speichernOoDocs(
+									dokuid,
+									pat_int,
+									SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0],
+									(bildpfad.toLowerCase().endsWith(".odt") ? 1 : 2),
+									new String[] {datFunk.sDatInSQL(datFunk.sHeute()),bild[0],Reha.aktUser,""},
+									true);
+
+							this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
+							setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					}
+
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -1167,7 +1252,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		document.close();
 		copy.close();
 		document = null;
-		int dokuid = SqlInfo.erzeugeNummer("doku");
+
 		
 		
 		  /*
@@ -1190,6 +1275,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		   */
 		System.out.println("Beginne speichern");
 		//rehaSplash.setNewText("Dokumentation auf Server transferieren");
+		int dokuid = SqlInfo.erzeugeNummer("doku");
 		int pat_int = new Integer(PatGrundPanel.thisClass.aktPatID); //new Integer(annika.getText().trim());
 		try {
 			
@@ -2010,7 +2096,226 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 	}
 	
+/**************************************************/
+	public static void speichernOoDocs(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
+		Statement stmt = null;;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		boolean ret = false;
+		int bilder = 0;
+		FileInputStream fis = null;
+		//piTool.app.conn.setAutoCommit(true);
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE );
+			
+			String select = "Insert into doku1 set dokuid = ? , datum = ?, dokutitel = ?,"+
+			"benutzer = ?, pat_intern = ?, format = ?,"+
+			"dokutext = ?, dokublob = ? , groesse = ? , datei = ?";
+			  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+			  /*
+			   * 
+			    ps.setBytes(1,   //dokuid - integer
+			    ps.setBytes(2,   //datum - date
+			    ps.setBytes(3,   //dokutitel - longtext			    
+			    ps.setBytes(4,   //benutzer - zeichen
+				ps.setBytes(5,   //pat_intern - integer			    			    
+				ps.setBytes(6,   //format - integer
+				ps.setBytes(7,   //dokutext - longtext								
+				ps.setBytes(8,   //dokublob - longblog /binär
+				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
+			   */
+			  System.out.println("Setze InputStream "+dateiname);
+			  ps.setInt(1, dokuid);
+			  ps.setString(2, str[0]);			  
+			  ps.setString(3, str[1]);
+			  ps.setString(4, str[2]);			  
+			  ps.setInt(5, pat_intern);
+			  ps.setInt(6, format);			  
+			  ps.setString(7, str[3]);
+			  File f = new File(dateiname);
+			  byte[] b = FileTools.File2ByteArray(f);
+			  ps.setBytes(8,b);
+			  ps.setInt(9, (int)b.length);
+			  ps.setString(10, str[1]);
+			  ps.execute();
 
+			} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			  }	
+
+			   
+
+
+			  
+	  
+							  
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+			if(ps != null){
+				ps.close();
+			}
+		}
+		
+	}
+	
+	class OoListener implements IDocumentListener {
+
+		private IOfficeApplication officeAplication = null;
+		private String datei;
+		private String id;
+		private boolean geaendert = false;
+		public OoListener(IOfficeApplication officeAplication,String xdatei,String xid) {
+			this.officeAplication = officeAplication;
+			datei = xdatei;
+			id = xid;
+		}
+		@Override
+		public void onAlphaCharInput(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onFocus(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onInsertDone(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onInsertStart(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onLoad(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onLoadDone(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+		}
+		@Override
+		public void onLoadFinished(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+				
+		}
+		@Override
+		public void onModifyChanged(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onMouseOut(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onMouseOver(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onNew(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onNonAlphaCharInput(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onSave(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			System.out.println("onSave");
+			
+		}
+		@Override
+		public void onSaveAs(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onSaveAsDone(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void onSaveDone(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			System.out.println("Savedone");
+			try {
+				String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
+				if(datei.equals(file)){
+					geaendert = true;
+				}
+			} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		@Override
+		public void onSaveFinished(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			//System.out.println("SaveFinisched");
+			
+		}
+		@Override
+		public void onUnload(IDocumentEvent arg0) {
+			// TODO Auto-generated method stub
+			try {
+				
+				String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
+				if(geaendert && datei.equals(file)){
+					int frage = JOptionPane.showConfirmDialog(null, "Die Datei wurde geändert wollen Sie die geänderte Fassung in die Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						// hier die speichern routine
+					}
+					Reha.officeapplication.getDesktopService().removeDocumentListener(this);
+					System.out.println("Listener entfernt - Datei geändert "+file);
+				}else if(datei.equals(file) && !geaendert){
+					Reha.officeapplication.getDesktopService().removeDocumentListener(this);
+					System.out.println("Listener entfernt - Datei nicht geändert"+file);
+				}
+
+			} catch (OfficeApplicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		@Override
+		public void disposing(IEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		
+	}	
+
+	
 }
 /*************************************/
 /*************************************/
@@ -2077,4 +2382,6 @@ class MyDokuTermTableModel extends DefaultTableModel{
 	          return false;
 	        }
 	      }
+ 
 }
+

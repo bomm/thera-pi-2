@@ -41,6 +41,9 @@ import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
 
 public class OOTools {
+	public OOTools(){
+		
+	}
 
 	public static void loescheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
@@ -276,6 +279,36 @@ public class OOTools {
 		}
 	}
 		
+	public ITextDocument starteWriterMitDatei(String url){
+		try {
+			IDocumentService documentService = Reha.officeapplication.getDocumentService();
+			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
+			//IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
+			ITextDocument textDocument = (ITextDocument) document;
+			return (ITextDocument) textDocument;	
+			
+		}catch (OfficeApplicationException exception) {
+			exception.printStackTrace();
+		}catch (NOAException exception) {
+			exception.printStackTrace();
+		}
+		return null;
+		
+	}
+	public ISpreadsheetDocument starteCalcMitDatei(String url){
+		try {
+			IDocumentService documentService = Reha.officeapplication.getDocumentService();
+			//IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
+			IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
+			ISpreadsheetDocument spreadsheetDocument = (ISpreadsheetDocument) document;
+			return (ISpreadsheetDocument) spreadsheetDocument;
+			
+		} 
+		catch (Throwable exception) {
+			exception.printStackTrace();
+		} 
+		return null;
+	}
 
 	public static void starteLeerenCalc(){
 		try {
