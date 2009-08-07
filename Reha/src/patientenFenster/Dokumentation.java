@@ -476,6 +476,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					int row = tabdokus.getSelectedRow();
 					/***********************/
 					if(! ((String)tabdokus.getValueAt(row, 7)).trim().equals("")){
+						setCursor(new Cursor(Cursor.WAIT_CURSOR));
 						String sid = (String)tabdokus.getValueAt(row, 6);
 						String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+(String)tabdokus.getValueAt(row, 7);
 						holeOorg(sdatei,sid);
@@ -588,6 +589,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Statement stmt = null;;
 		ResultSet rs = null;
 		int bilder = 0;
+		System.out.println(sdatei);
 
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -609,7 +611,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(xdatei);
 							ispread.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid));
 						}
-						
+						Dokumentation.doku.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						return null;
 					}
 				}.execute();
@@ -920,7 +922,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				protected Void doInBackground() throws Exception {
 					int row = tabdokus.getSelectedRow();			
 					if(row >= 0){
+						
 						String sdokuid = (String)tabdokus.getValueAt(row, 0);
+						int frage = JOptionPane.showConfirmDialog(null, "Soll die Dokumentation mit der ID-"+sdokuid+" wirklich gelöscht werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+						if(frage == JOptionPane.NO_OPTION){
+							return null;
+						}
 						String scmd = "delete from doku1 where dokuid='"+sdokuid+"'";
 						new ExUndHop().setzeStatement(scmd);
 						TableTool.loescheRow(tabdokus, row);
@@ -2145,7 +2152,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				//int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu
 				//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);	
 				String select = "update doku1 set dokublob = ?, groesse = ?, datum = ? "+
-				" where dokuid = ? ";
+				" where id = ?";
 				System.out.println("Prepared statement: "+select);
 				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 				  File f = new File(dateiname);
@@ -2153,8 +2160,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  ps.setBytes(1,b);
 				  ps.setInt(2, (int)b.length);
 				  ps.setString(3, datFunk.sDatInSQL(datFunk.sHeute()));
-				  ps.setInt(4,dokuid);
+				  ps.setString(4,new Integer(dokuid).toString());
 				  ps.execute();
+				  System.out.println("Fertig mit execute");
+				  System.out.println("Größe des Datenstroms="+b.length+" Bytes");
+				  System.out.println("Datei = "+f.getAbsolutePath());
+				  System.out.println("dokuid = "+new Integer(dokuid).toString());
+				  System.out.println("Dateigröße = "+b.length+" Bytes");
+				  System.out.println("Datum = "+datFunk.sDatInSQL(datFunk.sHeute()));
+				  f.delete();
+				  Dokumentation.doku.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
 
 			} catch (SQLException e) {
@@ -2381,27 +2396,30 @@ class OoListener implements IDocumentListener {
 			}
 			String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
 			if(geaendert && datei.equals(file)){
+				final String xfile = file;
+				final int xid = new Integer(id);
+				final IDocumentEvent xarg0 = arg0;
 				Thread.sleep(50);
-				int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+file+" wurde geändert\n\nWollen Sie die geänderte Fassung in die Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				new Thread(){
+					public void run(){				
+				int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+xfile+" wurde geändert\n\nWollen Sie die geänderte Fassung in die Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.YES_OPTION){
 					geaendert = false;
-					final String xfile = file;
-					final int xid = new Integer(id);
-					new Thread(){
-						public void run(){
 							try {
+								Dokumentation.doku.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 								Dokumentation.speichernOoDocs(xid, -1, xfile, -1, null, false);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}							
-						}
-					}.start();
 
 				}
-				arg0.getDocument().removeDocumentListener(this);
+
 				//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-				System.out.println("Listener entfernt - Datei geändert "+file);
+				System.out.println("Listener entfernt - Datei geändert "+xfile);
+					}
+				}.start();
+				arg0.getDocument().removeDocumentListener(this);				
 			}else if(datei.equals(file) && !geaendert){
 				arg0.getDocument().removeDocumentListener(this);
 				System.out.println("Listener entfernt - Datei nicht geändert"+file);
