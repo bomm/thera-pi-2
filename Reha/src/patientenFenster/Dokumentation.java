@@ -80,6 +80,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -418,7 +419,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		tabIcons[2]= SystemConfig.hmSysIcons.get("pdf");
 
 		dtblm = new MyDoku2TableModel();
-		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaﬂt am","von","",""};
+		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaﬂt am","von","","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabdokus = new JXTable(dtblm);
 		tabdokus.setRowHeight(tabdokus.getRowHeight()+10);
@@ -438,8 +439,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		tabdokus.getColumn(5).setMaxWidth(0);		
 		tabdokus.getColumn(6).setMinWidth(0);
 		tabdokus.getColumn(6).setMaxWidth(0);		
+		tabdokus.getColumn(7).setMinWidth(0);
+		tabdokus.getColumn(7).setMaxWidth(0);		
+
 		tabdokus.validate();
-		tabdokus.setName("AktRez");
+		tabdokus.setName("AktDoku");
 		tabdokus.setSelectionMode(0);
 		//tabaktrez.addPropertyChangeListener(this);
 		tabdokus.getSelectionModel().addListSelectionListener( new DokuListSelectionHandler());
@@ -869,11 +873,42 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					return null;
 				}
 			}.execute();
+		}else if(cmd.equals("Oofiles")){
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					ladeOoDocs();
+					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					return null;
+				}
+			}.execute();	
+		}
+	}
+	
+	private void ladeOoDocs(){
+		String[] bild = oeffneBild(new String[] {"odt","ods","doc"});
+		if(bild.length > 0){
+			String bildpfad = bild[1].replaceAll("\\\\", "/");
+			if( (bildpfad.toLowerCase().endsWith(".odt")) || 
+					(bildpfad.toLowerCase().endsWith(".ods")) ||
+					(bildpfad.toLowerCase().endsWith(".doc")) ){
+				try {
+					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]), 4096*4, true);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}else{
+				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich OpenOffice Writer und Calc Dateien unterst¸tzt");
+				return;
+			}
 		}
 	}
 
 	private void ladeJpeg(){
-		String[] bild = oeffneBild();
+		String[] bild = oeffneBild(new String[] {"jpg","xxx","xxx"});
 		if(bild.length > 0){
 			System.out.println(bild[0]);
 			System.out.println(bild[1].replaceAll("\\\\", "/"));
@@ -931,11 +966,27 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 		}	
 	}
-	private String[] oeffneBild(){
-		String[] sret = null;
+	private String[] oeffneBild(String[] pattern){
+		String[] sret = {};
 		final JFileChooser chooser = new JFileChooser("Verzeichnis w√hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        final String[] xpattern = pattern;
+        chooser.addChoosableFileFilter(new FileFilter() {
+            public boolean accept(File f) {
+              if (f.isDirectory()) return true;
+              if(f.getName().toLowerCase().endsWith(xpattern[0]) || f.getName().toLowerCase().endsWith(xpattern[1])||
+            		  f.getName().toLowerCase().endsWith(xpattern[2]) ){
+            	  return true;
+              }else{
+            	  return false;
+              }
+              //return f.getName().toLowerCase().endsWith(xpattern);
+            }
+            public String getDescription () { return ""; }  
+          });
+
+
         File file = null;
         if(lastPath==null){
         	file = new File(Reha.proghome);	
@@ -1767,8 +1818,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 				Vector vec = SqlInfo.holeSaetze("doku1", 
 						"dokuid,format,dokutitel,DATE_FORMAT(datum,'%d.%m.%Y') AS dokudatum," +
-						"benutzer,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER BY dokuid", Arrays.asList(new String[]{}));
+						"benutzer,pat_intern,id,datei", 
+						"pat_intern='"+xpatint+"' ORDER BY dokuid DESC", Arrays.asList(new String[]{}));
 
 				int anz = vec.size();
 
