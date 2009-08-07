@@ -209,32 +209,14 @@ public class RezeptDaten extends JXPanel{
 		if(veczahl==-1 || veczahl==0){
 			return retwert;
 		}
-		/*
-		if(veczahl <= preisevec.size()){
-			int idtest =  new Integer( (String) ((Vector)preisevec.get(veczahl-1)).get(35) );
-			if(idtest == veczahl){
-				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
-				(String) ((Vector)preisevec.get(veczahl-1)).get(1);
-			}
-		}
-		*/
 		int pos = 0;
 		for(int i = 0;i<preisevec.size();i++){
-			/*
 			if( new Integer( (String) ((Vector)preisevec.get(i)).get(35)) == veczahl ){
-				if(new Integer(StringTools.NullTest((String)vecaktrez.get(3+leistung)))>=10){
-					return StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
-					(String) ((Vector)preisevec.get(i)).get(1);
-				}else{
-					return "  "+StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
-					(String) ((Vector)preisevec.get(i)).get(1);
-				}
+				return StringTools.NullTest((String)vecaktrez.get(leistung+3))+"  *  "+
+				(String) ((Vector)preisevec.get(i)).get(1);
 			}
-			*/
-			return StringTools.NullTest((String)vecaktrez.get(3+leistung))+"  *  "+
-			(String) ((Vector)preisevec.get(i)).get(1);
 		}
-		
+	
 		return retwert;
 	}
 	

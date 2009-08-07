@@ -85,6 +85,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import jxTableTools.DateTableCellEditor;
+import jxTableTools.TableTool;
 import kurzAufrufe.KurzAufrufe;
 
 import org.jdesktop.swingx.JXFrame;
@@ -99,6 +100,7 @@ import org.jdesktop.swingx.renderer.StringValues;
 
 import patientenFenster.Historie.HistorPanel;
 import patientenFenster.Historie.HistorRezepteListSelectionHandler;
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import sun.awt.image.ImageFormatException;
 import systemEinstellungen.SystemConfig;
@@ -837,68 +839,95 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			loescheBilderPan();
 			return;
 		}else if(cmd.equals("Digicam")){
-			String[] bild = oeffneBild();
-			if(bild.length > 0){
-				System.out.println(bild[0]);
-				System.out.println(bild[1].replaceAll("\\\\", "/"));
-				String bildpfad = bild[1].replaceAll("\\\\", "/");
-				if(! bildpfad.toLowerCase().endsWith(".jpg")){
-					JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstützt");
-					return;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					ladeJpeg();
+					return null;
 				}
-				BufferedImage img = null;
-				try {
-					
-					commonName = new Long(System.currentTimeMillis()).toString(); 
-					String fname = "scan"+commonName+".jpg";
-					img = ImageIO.read(new File( bildpfad));
-					img.flush();
-					Image img2 = null;
-					img2 = img.getScaledInstance(50, 65, Image.SCALE_FAST);
-					img.flush();
-					img = null;
-
-					//ImageIO.setCacheDirectory(new File(SystemConfig.hmVerzeichnisse.get("Temp")));					
-					//img2 =  ImageIO.read(new File( bildpfad)).getScaledInstance(50, 65,Image.SCALE_FAST);
-
-					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname), 4096*4, false);
-					//final Image img2 = img.getScaledInstance(50, 65,Image.SCALE_SMOOTH);
-					//img = null;
-					
-	               
-
-			        final String pfad = bild[1];
-			        /*new Thread(){
-			        	public void run(){
-			        	*/
-							quelle = "bildgeladen";
-			        		//vecBilderAktion.add("jpggeladen");
-			        		aktion = "bildgeladen";
-			        		zeigeBilder(img2,pfad,commonName);
-			        	/*	
-				}
-			        }.start();
-			        */
-			       img2 = null; 		
-			       Runtime r = Runtime.getRuntime();
-	        	    r.gc();
-	        	    long freeMem = r.freeMemory();
-	        	    System.out.println("Freier Speicher "+freeMem);
-			        
-			        
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (OutOfMemoryError ome) {
-					System.err.println("Bild zu groß für Arbeitsspeicher.");
-				}
-				
-			}
-			
+			}.execute();
 			return;
+		}else if(cmd.equals("delete")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					int row = tabdokus.getSelectedRow();			
+					if(row >= 0){
+						String sdokuid = (String)tabdokus.getValueAt(row, 0);
+						String scmd = "delete from doku1 where dokuid='"+sdokuid+"'";
+						new ExUndHop().setzeStatement(scmd);
+						TableTool.loescheRow(tabdokus, row);
+						if(tabdokus.getRowCount()==0){
+							if(plusminus != null){
+								loescheBilderPan();						
+							}
+							setzeRezeptPanelAufNull(true);
+							dokubut[5].setEnabled(false);
+						}
+						PatGrundPanel.thisClass.jtab.setTitleAt(3,macheHtmlTitel(tabdokus.getRowCount(),"Dokumentation"));
+					}
+					return null;
+				}
+			}.execute();
 		}
-		
-		
+	}
+
+	private void ladeJpeg(){
+		String[] bild = oeffneBild();
+		if(bild.length > 0){
+			System.out.println(bild[0]);
+			System.out.println(bild[1].replaceAll("\\\\", "/"));
+			String bildpfad = bild[1].replaceAll("\\\\", "/");
+			if(! bildpfad.toLowerCase().endsWith(".jpg")){
+				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstützt");
+				return;
+			}
+			if(aktPanel.equals("leerPanel")){
+				this.setzeRezeptPanelAufNull(false);
+			}
+
+			BufferedImage img = null;
+			try {
+				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				commonName = new Long(System.currentTimeMillis()).toString(); 
+				String fname = "scan"+commonName+".jpg";
+				img = ImageIO.read(new File( bildpfad));
+				img.flush();
+				Image img2 = null;
+				img2 = img.getScaledInstance(50, 65, Image.SCALE_FAST);
+				img.flush();
+				img = null;
+
+				FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname), 4096*4, false);
+
+		        final String pfad = bild[1];
+		        /*new Thread(){
+		        	public void run(){
+		        	*/
+						quelle = "bildgeladen";
+		        		//vecBilderAktion.add("jpggeladen");
+		        		aktion = "bildgeladen";
+		        		zeigeBilder(img2,pfad,commonName);
+		        	/*	
+			}
+		        }.start();
+		        */
+		       img2 = null; 		
+		       Runtime r = Runtime.getRuntime();
+        	    r.gc();
+        	    long freeMem = r.freeMemory();
+        	    System.out.println("Freier Speicher "+freeMem);
+        	    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		        
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				e.printStackTrace();
+			} catch (OutOfMemoryError ome) {
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				System.err.println("Bild zu groß für Arbeitsspeicher.\nSpeichern Sie nur dieses Bild in einer eigenen Dokumentation");
+			}
+		}	
 	}
 	private String[] oeffneBild(){
 		String[] sret = null;
