@@ -925,7 +925,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				e.printStackTrace();
 			} catch (OutOfMemoryError ome) {
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				System.err.println("Bild zu groß für Arbeitsspeicher.\nSpeichern Sie nur dieses Bild in einer eigenen Dokumentation");
+				String  cmd = "Die Bilder sind (zusammen) zu groß für Arbeitsspeicher.\nSpeichern Sie jedes Bild einzeln als Dokumentation";
+				JOptionPane.showMessageDialog(null, cmd);
+				//System.err.println("Bild zu groß für Arbeitsspeicher.\nSpeichern Sie nur dieses Bild in einer eigenen Dokumentation");
 			}
 		}	
 	}
