@@ -282,8 +282,11 @@ public class OOTools {
 	public ITextDocument starteWriterMitDatei(String url){
 		try {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
-			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
-			//IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
+			DocumentDescriptor docdescript = new DocumentDescriptor();
+			docdescript.setURL(url);
+			docdescript.setHidden(false);
+			//IDocument document = documentService.constructNewDocument(IDocument.WRITER,docdescript );
+			IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
 			ITextDocument textDocument = (ITextDocument) document;
 			return (ITextDocument) textDocument;	
 			
@@ -298,8 +301,11 @@ public class OOTools {
 	public ISpreadsheetDocument starteCalcMitDatei(String url){
 		try {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
-			//IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
-			IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
+			DocumentDescriptor docdescript = new DocumentDescriptor();
+			docdescript.setURL(url);
+			docdescript.setHidden(false);
+			IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
+			//IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
 			ISpreadsheetDocument spreadsheetDocument = (ISpreadsheetDocument) document;
 			return (ISpreadsheetDocument) spreadsheetDocument;
 			

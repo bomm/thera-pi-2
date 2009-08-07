@@ -130,6 +130,7 @@ import uk.co.mmscomputing.device.twain.TwainSource;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.IDocumentEvent;
 import ag.ion.bion.officelayer.event.IDocumentListener;
 import ag.ion.bion.officelayer.event.IEvent;
@@ -2108,7 +2109,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
-			
+			//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);
+			if(neu){
 			String select = "Insert into doku1 set dokuid = ? , datum = ?, dokutitel = ?,"+
 			"benutzer = ?, pat_intern = ?, format = ?,"+
 			"dokutext = ?, dokublob = ? , groesse = ? , datei = ?";
@@ -2139,6 +2141,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			  ps.setInt(9, (int)b.length);
 			  ps.setString(10, str[1]);
 			  ps.execute();
+			}else{
+				//int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu
+				//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);	
+				String select = "update doku1 set dokublob = ?, groesse = ?, datum = ? "+
+				" where dokuid = ? ";
+				System.out.println("Prepared statement: "+select);
+				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+				  File f = new File(dateiname);
+				  byte[] b = FileTools.File2ByteArray(f);
+				  ps.setBytes(1,b);
+				  ps.setInt(2, (int)b.length);
+				  ps.setString(3, datFunk.sDatInSQL(datFunk.sHeute()));
+				  ps.setInt(4,dokuid);
+				  ps.execute();
+			}
 
 			} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -2173,147 +2190,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 	}
 	
-	class OoListener implements IDocumentListener {
-
-		private IOfficeApplication officeAplication = null;
-		private String datei;
-		private String id;
-		private boolean geaendert = false;
-		public OoListener(IOfficeApplication officeAplication,String xdatei,String xid) {
-			this.officeAplication = officeAplication;
-			datei = xdatei;
-			id = xid;
-		}
-		@Override
-		public void onAlphaCharInput(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onFocus(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onInsertDone(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onInsertStart(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onLoad(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onLoadDone(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-		}
-		@Override
-		public void onLoadFinished(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-				
-		}
-		@Override
-		public void onModifyChanged(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onMouseOut(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onMouseOver(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onNew(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onNonAlphaCharInput(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onSave(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			System.out.println("onSave");
-			
-		}
-		@Override
-		public void onSaveAs(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onSaveAsDone(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void onSaveDone(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			System.out.println("Savedone");
-			try {
-				String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
-				if(datei.equals(file)){
-					geaendert = true;
-				}
-			} catch (ag.ion.bion.officelayer.document.DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		@Override
-		public void onSaveFinished(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			//System.out.println("SaveFinisched");
-			
-		}
-		@Override
-		public void onUnload(IDocumentEvent arg0) {
-			// TODO Auto-generated method stub
-			try {
-				
-				String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
-				if(geaendert && datei.equals(file)){
-					int frage = JOptionPane.showConfirmDialog(null, "Die Datei wurde geändert wollen Sie die geänderte Fassung in die Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-					if(frage == JOptionPane.YES_OPTION){
-						// hier die speichern routine
-					}
-					Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-					System.out.println("Listener entfernt - Datei geändert "+file);
-				}else if(datei.equals(file) && !geaendert){
-					Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-					System.out.println("Listener entfernt - Datei nicht geändert"+file);
-				}
-
-			} catch (OfficeApplicationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ag.ion.bion.officelayer.document.DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		@Override
-		public void disposing(IEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		
-	}	
 
 	
 }
@@ -2385,3 +2261,169 @@ class MyDokuTermTableModel extends DefaultTableModel{
  
 }
 
+class OoListener implements IDocumentListener {
+
+	private IOfficeApplication officeAplication = null;
+	private String datei;
+	private String id;
+	private boolean geaendert = false;
+	public OoListener(IOfficeApplication officeAplication,String xdatei,String xid) {
+		this.officeAplication = officeAplication;
+		datei = xdatei;
+		id = xid;
+	}
+	@Override
+	public void onAlphaCharInput(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onFocus(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onInsertDone(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onInsertStart(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onLoad(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onLoadDone(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public void onLoadFinished(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+			
+	}
+	@Override
+	public void onModifyChanged(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onMouseOut(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onMouseOver(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onNew(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onNonAlphaCharInput(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSave(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("onSave");
+		
+	}
+	@Override
+	public void onSaveAs(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSaveAsDone(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onSaveDone(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		//System.out.println("Savedone");
+		try {
+			IDocument doc = arg0.getDocument();
+			if(doc == null){
+				return;
+			}
+			String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
+			if(datei.equals(file)){
+				geaendert = true;
+			}
+		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void onSaveFinished(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		//System.out.println("SaveFinisched");
+		
+	}
+	@Override
+	public void onUnload(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		try {
+			IDocument doc = arg0.getDocument();
+			if(doc == null){
+				return;
+			}
+			String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
+			if(geaendert && datei.equals(file)){
+				Thread.sleep(50);
+				int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+file+" wurde geändert\n\nWollen Sie die geänderte Fassung in die Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.YES_OPTION){
+					geaendert = false;
+					final String xfile = file;
+					final int xid = new Integer(id);
+					new Thread(){
+						public void run(){
+							try {
+								Dokumentation.speichernOoDocs(xid, -1, xfile, -1, null, false);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}							
+						}
+					}.start();
+
+				}
+				arg0.getDocument().removeDocumentListener(this);
+				//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
+				System.out.println("Listener entfernt - Datei geändert "+file);
+			}else if(datei.equals(file) && !geaendert){
+				arg0.getDocument().removeDocumentListener(this);
+				System.out.println("Listener entfernt - Datei nicht geändert"+file);
+			}
+
+		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	@Override
+	public void disposing(IEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+}	
