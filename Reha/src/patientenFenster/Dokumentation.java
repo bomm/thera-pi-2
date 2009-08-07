@@ -182,6 +182,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public RehaSplash rehaSplash =  null;
 	public ImageIcon[] tabIcons = {null,null,null,null};
 	public String aktion  = "";
+	public String quelle = "";
 	//public JRtaTextField annika = null;
 	Scanner scanner;
 	public Dokumentation(){
@@ -554,7 +555,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 ////////////////////////////
 ////////////////////////////
-////////////////////////////
+//////////////////////////// Holt Doku aus der Doku-Datenbank
 ////////////////////////////
 	public void holeDoku(String datei,String id){
 		Statement stmt = null;;
@@ -845,12 +846,22 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstützt");
 					return;
 				}
+				BufferedImage img = null;
 				try {
+					
+					commonName = new Long(System.currentTimeMillis()).toString(); 
+					String fname = "scan"+commonName+".jpg";
+					img = ImageIO.read(new File( bildpfad));
+					img.flush();
 					Image img2 = null;
-					ImageIO.setCacheDirectory(new File(SystemConfig.hmVerzeichnisse.get("Temp")));					
-					img2 =  ImageIO.read(new File( bildpfad)).getScaledInstance(50, 65,Image.SCALE_FAST);
+					img2 = img.getScaledInstance(50, 65, Image.SCALE_FAST);
+					img.flush();
+					img = null;
 
-					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]), 4096*4, false);
+					//ImageIO.setCacheDirectory(new File(SystemConfig.hmVerzeichnisse.get("Temp")));					
+					//img2 =  ImageIO.read(new File( bildpfad)).getScaledInstance(50, 65,Image.SCALE_FAST);
+
+					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname), 4096*4, false);
 					//final Image img2 = img.getScaledInstance(50, 65,Image.SCALE_SMOOTH);
 					//img = null;
 					
@@ -860,7 +871,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			        /*new Thread(){
 			        	public void run(){
 			        	*/
-			        		vecBilderAktion.add("jpggeladen");
+							quelle = "bildgeladen";
+			        		//vecBilderAktion.add("jpggeladen");
 			        		aktion = "bildgeladen";
 			        		zeigeBilder(img2,pfad,commonName);
 			        	/*	
@@ -877,6 +889,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (OutOfMemoryError ome) {
+					System.err.println("Bild zu groß für Arbeitsspeicher.");
 				}
 				
 			}
@@ -973,6 +987,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		return rec[0];
 	}
+	
+	/******************************************/
 	private void doDokusave(String dokuTitel){
 		dokubut[0].setEnabled(false);
 		dokubut[1].setEnabled(false);
@@ -982,9 +998,19 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			//rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
 			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
-			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
+			Rectangle format = null;
 			try {
 			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
+			if(((String)vecBilderAktion.get(i)).equals("scanner")){
+				format = getLowagieForm(vecBilderFormat.get(i));				
+			}else if(((String)vecBilderAktion.get(i)).equals("bildgeladen")){
+				if(jpg2.getPlainWidth() > jpg2.getPlainHeight()){
+					format = new Rectangle(PageSize.A4.rotate());
+				}else{
+					format = new Rectangle(PageSize.A4);
+				}
+			}
+
 			if(format==null){
 				format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight()); 
 			}
@@ -996,9 +1022,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				PdfWriter writer = PdfWriter.getInstance(document, fout);
 			document.open(); 
 
-			jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
-			jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
-			document.add(jpg2);
+			if(((String)vecBilderAktion.get(i)).equals("scanner")){
+				jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+				jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
+				document.add(jpg2);
+			}else if(((String)vecBilderAktion.get(i)).equals("bildgeladen")){
+				jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+				jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());						
+				document.add(jpg2);
+			}
+			
 
 			document.close();
 			writer.close();
@@ -1337,6 +1370,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				if(metadata.getImage() != null){
 					commonName = new Long(System.currentTimeMillis()).toString(); 
 					String fname = "scan"+commonName+".jpg";
+					quelle = "scanner";
 			        File file = new File(SystemConfig.hmVerzeichnisse.get("Temp"),fname);
 			        try {
 						ImageIO.write( metadata.getImage(),
@@ -1381,6 +1415,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	        img = GrafikTools.rotate90DX(bimage).getScaledInstance(img.getWidth(null), img.getHeight(null), Image.SCALE_SMOOTH);
 		}
 		ImageIcon icon = new ImageIcon(img);
+		img = null;
 
 		JLabel lab = new JLabel("Seite-"+(vecBilderPfad.size()+1));
 		lab.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -1394,7 +1429,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Labels.add(lab);
 		vecBilderPfad.add(datei);
 		vecBilderFormat.add(infolabLeer[3].getText());
-		vecBilderAktion.add("scanner");
+		vecBilderAktion.add(quelle);
 		String pdfPfad = "pdf"+commonname+".pdf";
 		vecPdfPfad.add(pdfPfad);
 		if(vecBilderPfad.size()==1){
@@ -1429,12 +1464,21 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					Rectangle format = null;
 					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
 						format = getLowagieForm(vecBilderFormat.get(seite));
+					}else if(((String)vecBilderAktion.get(seite)).equals("bildgeladen")){
+						
 					}
 					
 					try {
 					com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(seite));
-					if(format==null){
-						format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight()); 
+					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
+						format = getLowagieForm(vecBilderFormat.get(seite));
+					}else if(((String)vecBilderAktion.get(seite)).equals("bildgeladen")){
+						if(jpg2.getPlainWidth() > jpg2.getPlainHeight()){
+							format = new Rectangle(PageSize.A4.rotate());
+						}else{
+							format = new Rectangle(PageSize.A4);
+						}
+						//format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight());						
 					}
 					
 					
@@ -1448,19 +1492,20 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					FileOutputStream fout = new FileOutputStream(datname);
 					PdfWriter writer = PdfWriter.getInstance(document, fout);  
 					document.open(); 
-					
+					System.out.println("Die aktion = "+((String)vecBilderAktion.get(seite)) );
 					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
 						jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
 						jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
 						document.add(jpg2);
-					}else if(((String)vecBilderAktion.get(seite)).equals("jpggeladen")){
+					}else if(((String)vecBilderAktion.get(seite)).equals("bildgeladen")){
+
 						//document.setPageSize(new Rectangle(jpg2.getScaledWidth(),jpg2.getScaledHeight()));
 						Thread.sleep(20);
 						//writer.setPageSize(document.getPageSize());
 
 						//jpg2.scalePercent(0.25f);
-						//jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
-						//jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());						
+						jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
+						jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());						
 						document.add(jpg2);
 					}
 					

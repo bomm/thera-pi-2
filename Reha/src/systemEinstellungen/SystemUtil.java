@@ -419,6 +419,11 @@ private JScrollPane getParameterListe(){
 	treeitem = new DefaultMutableTreeNode("Annahmekey abholen/einlesen");
 	node.add(treeitem ); 
 	root.add(node);
+	/***/
+	node = new DefaultMutableTreeNode( "Fremdprogramme");
+	root.add(node);
+	/***/
+
 
 	tree = new JTree( root );
 	tree.getSelectionModel().addTreeSelectionListener(this); 
@@ -723,6 +728,15 @@ private void auswertenSysUtil(String util){
 		}
 		if(util.equals("Anschlüsse")){
 			jxInhaltRechts = new SysUtilAnschluesse();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
+		if(util.equals("Fremdprogramme")){
+			jxInhaltRechts = new SysUtilFremdprogramme();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
 			jxRechts.revalidate();
