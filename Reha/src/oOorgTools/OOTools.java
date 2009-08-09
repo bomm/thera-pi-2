@@ -15,9 +15,11 @@ import com.sun.star.container.XNameContainer;
 import com.sun.star.frame.XController;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
+import com.sun.star.sheet.XSpreadsheetDocument;
 import com.sun.star.style.XStyle;
 import com.sun.star.style.XStyleFamiliesSupplier;
 import com.sun.star.text.XTextDocument;
+import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.view.XLineCursor;
@@ -36,6 +38,7 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.IViewCursor;
+import ag.ion.bion.officelayer.text.IViewCursorService;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
@@ -288,6 +291,12 @@ public class OOTools {
 			//IDocument document = documentService.constructNewDocument(IDocument.WRITER,docdescript );
 			IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
 			ITextDocument textDocument = (ITextDocument) document;
+			/*********************/
+			XController xController = textDocument.getXTextDocument().getCurrentController();
+			XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+			xController);
+			XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+			xtvc.gotoStart(false);
 			return (ITextDocument) textDocument;	
 			
 		}catch (OfficeApplicationException exception) {
@@ -307,6 +316,7 @@ public class OOTools {
 			IDocument document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
 			//IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
 			ISpreadsheetDocument spreadsheetDocument = (ISpreadsheetDocument) document;
+			/********************/
 			return (ISpreadsheetDocument) spreadsheetDocument;
 			
 		} 

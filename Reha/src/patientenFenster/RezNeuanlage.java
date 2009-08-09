@@ -1004,6 +1004,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		//System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
 		Integer izuzahl = new Integer(jtf[13].getText());
 		String szzstatus = "";
+		String unter18 = "F";
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
 				//System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
@@ -1024,7 +1025,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				szzstatus = "0";				
+				szzstatus = "0";
+				unter18 = "T";
 				break;
 			}
 			if(this.vec.get(14).equals("T")){
@@ -1059,8 +1061,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
-		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"' ");
+		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 		//sbuf.append("diagnose='"+jta.getText()+"' ");
+		sbuf.append("unter18='"+unter18+"', ");
+		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"'");
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
 		//System.out.println(sbuf.toString());	
 		
@@ -1204,6 +1208,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 /*******************************************/		
 		Integer izuzahl = new Integer(jtf[13].getText());
 		//System.out.println(izuzahl.toString());
+		String unter18 = "F";
 		String szzstatus = "";
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
@@ -1219,7 +1224,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				szzstatus = "0";				
+				szzstatus = "0";
+				unter18 = "T";
 				break;
 			}
 			szzstatus = "2";				
@@ -1249,7 +1255,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
-		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"' ");
+		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
+		sbuf.append("unter18='"+unter18+"', ");
+		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"'");
 		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
 		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());

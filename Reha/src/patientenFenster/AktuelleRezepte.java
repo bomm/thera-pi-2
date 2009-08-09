@@ -1313,6 +1313,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
 				jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));
+				if(((String)PatGrundPanel.thisClass.vecaktrez.get(39)).equals("")){
+					System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
+					PatGrundPanel.thisClass.vecaktrez.set(39,"0");
+				}
 				System.out.println("Bild Einstellen -> "+new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39)) );
 				dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39))], 
 									tabaktrez.getSelectedRow(),1);

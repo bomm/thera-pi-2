@@ -581,7 +581,6 @@ public class SystemConfig {
 			vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
 			vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}
-		
 	}
 	public static void HashMapsVorbereiten(){
 		hmAdrKDaten = new HashMap<String,String>();

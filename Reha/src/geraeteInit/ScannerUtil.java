@@ -184,7 +184,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		pb.add(jcmbscan[1],cc.xy(4, 4));
 
 		pb.addLabel("Auflösung",cc.xy(2, 6));
-		jcmbscan[2] = new JRtaComboBox(new String[]{"50","75dpi","100dpi","150dpi","200dpi","300dpi"});		
+		jcmbscan[2] = new JRtaComboBox(new String[]{"50dpi","75dpi","100dpi","150dpi","200dpi","300dpi"});		
 		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		pb.add(jcmbscan[2],cc.xy(4, 6));
 		

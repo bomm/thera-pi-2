@@ -21,6 +21,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -959,7 +961,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	
 	private void ladeOoDocs(){
-		String[] bild = oeffneBild(new String[] {"odt","ods","???"});
+		String[] bild = oeffneBild(new String[] {"odt","ods","???"},false);
 		if(bild.length > 0){
 			String bildpfad = bild[1].replaceAll("\\\\", "/");
 			if( (bildpfad.toLowerCase().endsWith(".odt")) || 
@@ -1001,7 +1003,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 
 	private void ladeJpeg(){
-		String[] bild = oeffneBild(new String[] {"jpg","xxx","xxx"});
+		String[] bild = oeffneBild(new String[] {"jpg","xxx","xxx"},true);
 		if(bild.length > 0){
 			System.out.println(bild[0]);
 			System.out.println(bild[1].replaceAll("\\\\", "/"));
@@ -1019,14 +1021,26 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				commonName = new Long(System.currentTimeMillis()).toString(); 
 				String fname = "scan"+commonName+".jpg";
+				Image img2 = null;
+				/*
 				img = ImageIO.read(new File( bildpfad));
 				img.flush();
 				Image img2 = null;
 				img2 = img.getScaledInstance(50, 65, Image.SCALE_FAST);
 				img.flush();
 				img = null;
+				*/
+				try {
+					img2 = Toolkit.getDefaultToolkit()
+							.getImage(bildpfad).getScaledInstance(50, 65, Image.SCALE_FAST);
+					MediaTracker mediaTracker = new MediaTracker(this);
+					mediaTracker.addImage(img2, 0);
+					mediaTracker.waitForID(0);
+				} catch (Exception ie) {
+				}
+				
 
-				FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname), 4096*4, false);
+				FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname), 4096*5, false);
 
 		        final String pfad = bild[1];
 		        /*new Thread(){
@@ -1035,7 +1049,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						quelle = "bildgeladen";
 		        		//vecBilderAktion.add("jpggeladen");
 		        		aktion = "bildgeladen";
-		        		zeigeBilder(img2,pfad,commonName);
+		        		zeigeBilder(img2,SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname,commonName);
 		        	/*	
 			}
 		        }.start();
@@ -1059,11 +1073,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 		}	
 	}
-	private String[] oeffneBild(String[] pattern){
+	private String[] oeffneBild(String[] pattern,boolean mitVorschau){
 		String[] sret = {};
-		final JFileChooser chooser = new JFileChooser("Verzeichnis w√hlen");
+		JFileChooser chooser = new JFileChooser("Verzeichnis w√hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        if(mitVorschau){
+        	chooser.setAccessory(new MyAccessory(chooser));
+        }
+        //
         final String[] xpattern = pattern;
         chooser.addChoosableFileFilter(new FileFilter() {
             public boolean accept(File f) {
@@ -1110,6 +1128,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
             if(inputVerzFile.getName().trim().equals("")){
             	sret = new String[] {};
             }else{
+            	Dokumentation.doku.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             	sret = new String[] {inputVerzFile.getName().trim(),inputVerzStr};	
             	lastPath = inputVerzFile.getAbsolutePath();
             }
@@ -1117,7 +1136,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
         	sret = new String[] {}; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
         }
         chooser.setVisible(false); 
-
+        chooser.removeAll();
+        chooser = null;
         return sret;
 		
 	}
@@ -2445,3 +2465,4 @@ class OoListener implements IDocumentListener {
 
 	
 }	
+

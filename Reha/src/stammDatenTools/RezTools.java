@@ -16,8 +16,8 @@ public class RezTools {
 	public static Vector<String> holeEinzelTermineAusRezept(String xreznr){
 		Vector<String> xvec = null;
 		Vector retvec = new Vector();
-		xvec = SqlInfo.holeSatz("verordn", "termine", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
-
+		xvec = SqlInfo.holeSatz("verordn", "termine,pat_int", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
+		
 		String terms = (String) xvec.get(0);
 		if(terms==null){
 			return (Vector)retvec.clone();
@@ -37,6 +37,57 @@ public class RezTools {
 	}
 	public static int testeRezGebArt(String srez){
 		int iret = 0;
+		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
+		//String patGeboren = datFunk.sDatInDeutsch(patvec.get(0));
+		//String patJahrfrei = datFunk.sDatInDeutsch(patvec.get(0));
+		String patGeboren = "";
+		String patJahrfrei = "";
+		String neuePreiseab = "";
+		String befreitVorjahr = "";
+		String kilometer = "";
+		String pauschale = "";
+		String nachherfrei = "";
+		String vorherfrei = "";
+		int[] gleicherTarif = {0,0,0}; // gesamt,ohne,mit;
+		//System.out.println("Funktionstest = "+SqlInfo.holePatFeld("n_name", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'"));
+		for(int i = 0;i < 1;i++){
+			if( (boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T") ){
+				//Zum Zeitpunkt der Rezeptanlage unter 18, Prüfen ob während Behandlung
+				//Volljährigkeit erreicht wurde
+				System.out.println("Unter Achtzehn zum Zeitpunkt der Rezeptanlage");
+				break;
+			}
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T")){
+				//Hausbesuch
+				System.out.println("Hausbesuch");
+				if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(24)).equals("T")){
+					//Hausbesuch bei Heimbewohner
+					System.out.println("Hausbesuch und Heimbewohner");
+				}else{
+					//Hausbesuch aber kein Heimbewohner
+					System.out.println("Hausbesuch aber kein Heimbewohner");					
+				}
+			}else{
+				System.out.println("kein Hausbesuch");
+			}
+			int pgtest = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(41))-1;
+			if(pgtest >= 0){
+				neuePreiseab = SystemConfig.vNeuePreiseAb.get(pgtest);
+				
+			}
+			System.out.println("Neue Preisliste ab "+neuePreiseab);
+			patJahrfrei = ((String)PatGrundPanel.thisClass.patDaten.get(69));
+			System.out.println("Befreiung im Jahr "+patJahrfrei);
+			if(!patJahrfrei.trim().equals("")){
+				//prüfen ob Behandlungstage noch in den Befeiungszeitraum fallen				
+			}
+			/* Grundsatzfragen
+			 * War der Patient zu beginn der Behandlung befreit? /Jahreswechsel/Volljährigkeit
+			 * Ist der Patient während der Behandlung befreit worden? /
+			 * Welche Preise sind anzuwenden
+			 */
+
+		}
 		// 0 = ganz normale Rezeptgebührenberechnung ohne HB
 		// 1 = normale Rezeptgebühren mit HB normal
 		// 2 = normale Rezeptgebühren mit HB aber in soz. Einrichtung

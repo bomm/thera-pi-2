@@ -505,6 +505,99 @@ public class SqlInfo {
 		return ;
 	}
 /*****************************************/
+	public static String holePatFeld(String feld, String kriterium){
+		Statement stmt = null;
+		ResultSet rs = null;
+		String ret = "";
+		Vector<String> retvec = new Vector<String>();
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = "select "+feld+" from pat5 where "+kriterium+" LIMIT 1";
+			rs = stmt.executeQuery(sstmt);
+
+			if(rs.next()){
+				ret = (rs.getString(feld)==null  ? "" :  rs.getString(feld));
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return ret;
+	}
+/*****************************************/
+	/*****************************************/
+	public static String holeRezFeld(String feld, String kriterium){
+		Statement stmt = null;
+		ResultSet rs = null;
+		String ret = "";
+		Vector<String> retvec = new Vector<String>();
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = "select "+feld+" from verordn where "+kriterium+" LIMIT 1";
+			rs = stmt.executeQuery(sstmt);
+
+			if(rs.next()){
+				ret = (rs.getString(feld)==null  ? "" :  rs.getString(feld));
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return ret;
+	}
+/*****************************************/
 
 
 }
