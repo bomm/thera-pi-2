@@ -552,6 +552,61 @@ public class SqlInfo {
 	}
 /*****************************************/
 	/*****************************************/
+	public static Vector<String> holeFelder(String xstmt){
+		Statement stmt = null;
+		ResultSet rs = null;
+		String ret = "";
+		Vector<String> retvec = new Vector<String>();
+		Vector<Vector> retkomplett = new Vector<Vector>();	
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = xstmt;
+			rs = stmt.executeQuery(sstmt);
+
+			while(rs.next()){
+				retvec.clear();
+				 ResultSetMetaData rsMetaData = rs.getMetaData() ;
+				 int numberOfColumns = rsMetaData.getColumnCount()+1;
+				 for(int i = 1 ; i < numberOfColumns;i++){
+						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
+
+				 }
+				 retkomplett.add((Vector)retvec.clone());
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return (Vector)retkomplett.clone();
+	}
+/*****************************************/
+
+	/*****************************************/
 	public static String holeRezFeld(String feld, String kriterium){
 		Statement stmt = null;
 		ResultSet rs = null;
