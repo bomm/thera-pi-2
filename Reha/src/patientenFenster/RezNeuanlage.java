@@ -272,8 +272,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 	private JScrollPane getDatenPanel(){  //1                  2      3    4          5              6      7        8       
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu, 5dlu, right:max(60dlu;p), 4dlu, 60dlu",
-			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16     17  18 19   20   21  22   23  24   25  
-					"p, 10dlu, p, 5dlu,  p, 5dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, 2dlu, p, p, 2dlu, p, 2dlu, p, 2dlu, p, " +
+			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16   17  18 19   20   21  22   23  24   25  
+					"p, 10dlu, p, 5dlu,  p, 5dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, " +
 		//26   27   28   29  30   31   32    33   34   35   36    37	 38	  39			
 		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p,  10dlu, p, 10dlu, 30dlu,2dlu,2dlu");
 					
@@ -408,15 +408,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("Hausbesuch",cc.xy(1, 13));
 		jpan.add(jcb[1],cc.xy(3, 13));
 		
-		jcb[6] = new JRtaCheckBox("abrechnen");
-		jcb[6].setOpaque(false);
+		jcb[5] = new JRtaCheckBox("abrechnen");
+		jcb[5].setOpaque(false);
 		jpan.addLabel("volle HB-Gebühr",cc.xy(5,13));
-		jpan.add(jcb[6],cc.xy(7,13));
+		jpan.add(jcb[5],cc.xy(7,13));
 
 		jcb[2] = new JRtaCheckBox("angefordert");
 		jcb[2].setOpaque(false);
 		jpan.addLabel("Therapiebericht",cc.xy(1, 15));
-		jpan.add(jcb[2],cc.xy(1, 15));
+		jpan.add(jcb[2],cc.xy(3, 15));
 		
 		jpan.addSeparator("Verordnete Heilmittel", cc.xyw(1,17,7));
 
@@ -507,7 +507,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jta.setForeground(Color.RED);
 		JScrollPane span = JCompTools.getTransparentScrollPane(jta);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
-		jpan.add(span,cc.xywh(1, 35,7,2));
+		jpan.add(span,cc.xywh(1, 37,7,2));
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(jpan.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		if(this.neu){
