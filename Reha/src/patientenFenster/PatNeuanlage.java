@@ -30,9 +30,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
+import javax.swing.plaf.TabbedPaneUI;
 
 import kvKarte.KVKWrapper;
 
@@ -45,6 +48,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
@@ -54,6 +58,7 @@ import terminKalender.datFunk;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
@@ -136,16 +141,43 @@ boolean inNeu = false;
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BorderLayout());
 		this.font = new Font("Tahome",Font.BOLD,11);
+		this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 		
 		add(getButtonPanel(),BorderLayout.SOUTH);
-		add(getDatenPanel(),BorderLayout.CENTER);
+		//add(getDatenPanel(),BorderLayout.CENTER);
 
+		UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
+		UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
+		
+		JTabbedPane patTab = new JTabbedPane();
+		patTab.setUI(new WindowsTabbedPaneUI());
+		TabbedPaneUI tpUi = patTab.getUI();
+
+		patTab.setOpaque(false);
+		
+		final JTabbedPane xpatTab = patTab;
+		/*
+		new SwingWorker<Void,Void>(){
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				xpatTab.addTab("Seite-1", getDatenPanel());
+				xpatTab.addTab("Seite-2", getZusatzPanel());
+				return null;
+			}
+		}.execute();
+		*/
+		patTab.addTab("Seite-1", getDatenPanel());
+		patTab.addTab("Seite-2", getZusatzPanel());
+
+		add(patTab,BorderLayout.CENTER);
 		
 		hgicon = Reha.rehaBackImg;//new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.07f); 
-		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
+		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);	
+		
 
 //****************Checken ob Preisgruppen bedient werden****************		
 		
@@ -222,7 +254,9 @@ boolean inNeu = false;
 		 			}
 		 	   }
 		});
- 	   		
+		UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
+		UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
+	
 		//validate();
 		
 	}
@@ -460,7 +494,7 @@ boolean inNeu = false;
 									//      1.                2.    3.     4.     5.    6.       7    
 		FormLayout lay = new FormLayout("fill:0:grow(0.50), 60dlu,15dlu, 60dlu, 15dlu,60dlu,fill:0:grow(0.50) ",
 			       //1.   2.  3.   4.   5.   
-					"7dlu, p, 7dlu");
+					"4dlu, p, 4dlu");
 					PanelBuilder builder = new PanelBuilder(lay);
 					builder.setDefaultDialogBorder();
 					builder.getPanel().setOpaque(false);
@@ -473,9 +507,42 @@ boolean inNeu = false;
 		but.add(builder.getPanel(),BorderLayout.CENTER);
 		return but;
 	}
+	private JXPanel getZusatzPanel(){
+		JXPanel but = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		but.setOpaque(false);
+		but.setDoubleBuffered(true);
+
+		FormLayout lay = new FormLayout("","");
+		PanelBuilder builder = new PanelBuilder(lay);
+		builder.setDefaultDialogBorder();
+		builder.getPanel().setOpaque(false);	
+		CellConstraints cc = new CellConstraints();
+		builder.getPanel().setDoubleBuffered(true);
+		/********
+		 * 
+		 */
+		 // Hier die neuen Felder aufnehmen
+		
+		/*******
+		 * 
+		 */
+		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder.getPanel());
+		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
+		jscrzusatz.getViewport().setOpaque(false);
+		jscrzusatz.setBorder(null);
+		jscrzusatz.setViewportBorder(null);
+		jscrzusatz.validate();
+		jscrzusatz.addKeyListener(this);
+		but.add(jscrzusatz,BorderLayout.CENTER);
+		but.validate();
+		return but;
+	}
 	private JXPanel getDatenPanel(){
 		JXPanel but = new JXPanel(new BorderLayout());
-		but.setBorder(null);
+		//but.setBorder(null);
+		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 		but.setOpaque(false);
 		but.setDoubleBuffered(true);
 	
