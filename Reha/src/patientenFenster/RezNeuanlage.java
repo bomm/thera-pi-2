@@ -63,7 +63,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 								  null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null};
-	public JRtaCheckBox[] jcb = {null,null,null,null,null};
+	public JRtaCheckBox[] jcb = {null,null,null,null,null,null};
 	
 	//public JRtaRadioButton[] jrb = {null,null,null,null,null}; 
 	public JRtaComboBox[] jcmb = {null,null,null,null,null,null,null,null,null};
@@ -272,10 +272,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 	private JScrollPane getDatenPanel(){  //1                  2      3    4          5              6      7        8       
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu, 5dlu, right:max(60dlu;p), 4dlu, 60dlu",
-			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16   17  18   19   20   21  22   23       
-					"p, 10dlu, p, 5dlu,  p, 5dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, " +
-		//24   25   26   27  28   29   30    31   32   33   34    35	 36	  37			
-		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p,  10dlu, p, 10dlu, 40dlu,2dlu,2dlu");
+			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16     17  18 19   20   21  22   23  24   25  
+					"p, 10dlu, p, 5dlu,  p, 5dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, 2dlu, p, p, 2dlu, p, 2dlu, p, 2dlu, p, " +
+		//26   27   28   29  30   31   32    33   34   35   36    37	 38	  39			
+		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p,  10dlu, p, 10dlu, 30dlu,2dlu,2dlu");
 					
 
 		CellConstraints cc = new CellConstraints();
@@ -407,56 +407,61 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcb[1].setOpaque(false);
 		jpan.addLabel("Hausbesuch",cc.xy(1, 13));
 		jpan.add(jcb[1],cc.xy(3, 13));
+		
+		jcb[6] = new JRtaCheckBox("abrechnen");
+		jcb[6].setOpaque(false);
+		jpan.addLabel("volle HB-Gebühr",cc.xy(5,13));
+		jpan.add(jcb[6],cc.xy(7,13));
 
 		jcb[2] = new JRtaCheckBox("angefordert");
 		jcb[2].setOpaque(false);
-		jpan.addLabel("Therapiebericht",cc.xy(5, 13));
-		jpan.add(jcb[2],cc.xy(7, 13));
+		jpan.addLabel("Therapiebericht",cc.xy(1, 15));
+		jpan.add(jcb[2],cc.xy(1, 15));
 		
-		jpan.addSeparator("Verordnete Heilmittel", cc.xyw(1,15,7));
+		jpan.addSeparator("Verordnete Heilmittel", cc.xyw(1,17,7));
 
 		jtf[4].setName("anzahl1");
 		jtf[4].addFocusListener(this);
-		jpan.addLabel("Anzahl / Heilmittel 1",cc.xy(1, 17));
-		jpan.add(jtf[4],cc.xy(3, 17));
+		jpan.addLabel("Anzahl / Heilmittel 1",cc.xy(1, 19));
+		jpan.add(jtf[4],cc.xy(3, 19));
 		jcmb[2] = new JRtaComboBox();
 		jcmb[2].setActionCommand("leistung1");
 		jcmb[2].addActionListener(this);
-		jpan.add(jcmb[2],cc.xyw(5, 17,3));
+		jpan.add(jcmb[2],cc.xyw(5, 19,3));
 		
-		jpan.addLabel("Anzahl / Heilmittel 2",cc.xy(1, 19));
-		jpan.add(jtf[5],cc.xy(3, 19));
+		jpan.addLabel("Anzahl / Heilmittel 2",cc.xy(1, 21));
+		jpan.add(jtf[5],cc.xy(3, 21));
 		jcmb[3] = new JRtaComboBox();
 		jcmb[3].setActionCommand("leistung2");
 		jcmb[3].addActionListener(this);
-		jpan.add(jcmb[3],cc.xyw(5, 19,3));
+		jpan.add(jcmb[3],cc.xyw(5, 21,3));
 		
-		jpan.addLabel("Anzahl / Heilmittel 3",cc.xy(1, 21));
-		jpan.add(jtf[6],cc.xy(3, 21));
+		jpan.addLabel("Anzahl / Heilmittel 3",cc.xy(1, 23));
+		jpan.add(jtf[6],cc.xy(3, 23));
 		jcmb[4] = new JRtaComboBox();
 		jcmb[4].setActionCommand("leistung3");
 		jcmb[4].addActionListener(this);
-		jpan.add(jcmb[4],cc.xyw(5, 21,3));
+		jpan.add(jcmb[4],cc.xyw(5, 23,3));
 
-		jpan.addLabel("Anzahl / Heilmittel 4",cc.xy(1, 23));
-		jpan.add(jtf[7],cc.xy(3, 23));
+		jpan.addLabel("Anzahl / Heilmittel 4",cc.xy(1, 25));
+		jpan.add(jtf[7],cc.xy(3, 25));
 		jcmb[5] = new JRtaComboBox();
 		jcmb[5].setActionCommand("leistung4");
 		jcmb[5].addActionListener(this);
-		jpan.add(jcmb[5],cc.xyw(5, 23,3));
+		jpan.add(jcmb[5],cc.xyw(5, 25,3));
 		
-		jpan.addSeparator("Durchführungsbestimmungen", cc.xyw(1,25,7));
+		jpan.addSeparator("Durchführungsbestimmungen", cc.xyw(1,27,7));
 		
-		jpan.addLabel("Behandlungsfrequenz",cc.xy(1, 27));		
-		jpan.add(jtf[8],cc.xy(3, 27));	
+		jpan.addLabel("Behandlungsfrequenz",cc.xy(1, 29));		
+		jpan.add(jtf[8],cc.xy(3, 29));	
 
-		jpan.addLabel("Dauer der Behandl. in Min.",cc.xy(5, 27));
-		jpan.add(jtf[9],cc.xy(7, 27));
+		jpan.addLabel("Dauer der Behandl. in Min.",cc.xy(5, 29));
+		jpan.add(jtf[9],cc.xy(7, 29));
 
 		
-		jpan.addLabel("Indikationsschlüssel",cc.xy(1, 29));		
+		jpan.addLabel("Indikationsschlüssel",cc.xy(1, 31));		
 		jcmb[6] = new JRtaComboBox();
-		jpan.add(jcmb[6],cc.xy(3, 29));
+		jpan.add(jcmb[6],cc.xy(3, 31));
 		
 		klassenReady = true;
 		fuelleIndis((String)jcmb[0].getSelectedItem());		
@@ -469,12 +474,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			fuelleIndis((String)jcmb[0].getSelectedItem());			
 		}
 		*/
-		jpan.addLabel("Barcode-Format",cc.xy(5, 29));
+		jpan.addLabel("Barcode-Format",cc.xy(5, 31));
 		//jcmb[7] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
 		jcmb[7] = new JRtaComboBox(SystemConfig.rezBarCodName);
-		jpan.add(jcmb[7],cc.xy(7, 29));
+		jpan.add(jcmb[7],cc.xy(7, 31));
 		
-		jpan.addLabel("FarbCode im TK",cc.xy(1, 31));
+		jpan.addLabel("FarbCode im TK",cc.xy(1, 33));
 		jcmb[8] = new JRtaComboBox();
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -484,12 +489,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}.execute();
 
-		jpan.add(jcmb[8],cc.xy(3, 31));
-		jpan.addLabel("Angelegt von",cc.xy(5, 31));
-		jpan.add(jtf[10],cc.xy(7, 31));
+		jpan.add(jcmb[8],cc.xy(3, 33));
+		jpan.addLabel("Angelegt von",cc.xy(5, 33));
+		jpan.add(jtf[10],cc.xy(7, 33));
 		
 		
-		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,33,7));
+		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,35,7));
 		
 		jta = new JTextArea();
 		jta.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.5f)));
