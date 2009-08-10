@@ -353,7 +353,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				if(arg0.getClickCount()==2){
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					//while(inRezeptDaten && !RezeptDaten.feddisch){					
 					while(!RezeptDaten.feddisch){
 						try {
@@ -365,6 +365,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 					}
 					neuanlageRezept(false,"");
+				}
+				if(arg0.getClickCount()==1 && arg0.getButton()==3){
+				   Point point = arg0.getPoint();
+				   int row = tabaktrez.rowAtPoint(point);
+				   int column = tabaktrez.columnAtPoint(point);
+				   tabaktrez.setRowSelectionInterval(row, row);
+					System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
+							"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
 				}
 			}
 		});

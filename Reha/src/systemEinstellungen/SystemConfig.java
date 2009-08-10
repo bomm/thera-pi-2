@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 
 import systemTools.Verschluesseln;
 import terminKalender.ParameterLaden;
+import terminKalender.datFunk;
 import terminKalender.zeitFunk;
 
 
@@ -33,6 +34,7 @@ public class SystemConfig {
 	public static Vector<ArrayList<String>> vDatenBank;
 	public static Vector<ArrayList<String>> vSystemKollegen;
 	public static Vector<String> vComboKollegen;
+	public static String  aktJahr = "";
 	
 	public static Vector<String> vKalenderSet;
 	public static Vector<Object> vKalenderFarben;
@@ -149,6 +151,19 @@ public class SystemConfig {
 	}
 	public void SystemStart(String homedir){
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
+		String jahrHeute = datFunk.sHeute().substring(6);
+		if(! aktJahr.equals(jahrHeute) ){
+			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nWir haben ein neues Kalenderjahr!\n"+
+					"wurden in der System-Init schon alle Befreiungen des Jahres "+aktJahr+" zurückgesetzt????");
+			System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
+			aktJahr = new String(jahrHeute);
+			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
+			ini.save();
+		}else{
+			System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
+		}
+			
 		try {
 			dieseMaschine = java.net.InetAddress.getLocalHost();
 		}
