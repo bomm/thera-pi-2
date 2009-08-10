@@ -32,7 +32,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	
 	
 	JXTable progtab = null;
-	JButton[] button = {null,null,null, null};
+	JButton[] button = {null,null,null, null,null,null,null, null,null,null,null, null};
 	JTextField oopfad = null;
 	JTextField adobepfad = null;
 	
@@ -53,7 +53,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	     setBackgroundPainter(new CompoundPainter(mp));
 		/****/
 	     add(getVorlagenSeite(),BorderLayout.CENTER);
-	     add(jpan(),BorderLayout.SOUTH);
+	     add(getKnopfPanel(),BorderLayout.SOUTH);
 		return;
 	}
 	
@@ -81,8 +81,8 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			CellConstraints jpancc = new CellConstraints();
 			
 			jpan.addSeparator("", jpancc.xyw(1,1,5));
-			jpan.add(button[9], jpancc.xy(3,3));
-			jpan.add(button[10], jpancc.xy(5,3));
+			jpan.add(abbruch, jpancc.xy(3,3));
+			jpan.add(speichern, jpancc.xy(5,3));
 			jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
 			
 			
@@ -124,8 +124,9 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		builder.addLabel("markiertes Programm aus Liste entfernen", cc.xyw(1,4,3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(button[0], cc.xy(5, 4));
 		builder.addLabel("Programm zu Liste hinzufügen", cc.xyw(1, 6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.addSeparator("systemrelevante Programme", cc.xyw(1, 8, 5));
-		builder.addLabel("OpenOffice", cc.xy(1, 10));
+		builder.add(button[1], cc.xy(5, 6));
+		builder.addSeparator("systemrelevante Programme / Pfade", cc.xyw(1, 8, 5));
+		builder.addLabel("Pfad zu OpenOffice", cc.xy(1, 10));
 		builder.add(oopfad, cc.xy(3, 10));
 		builder.add(button[2], cc.xy(5, 10));
 		builder.addLabel("AdobeReader", cc.xy(1,12));
