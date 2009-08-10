@@ -324,6 +324,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[26] = new JRtaTextField("",false); //id von Patient
 		jtf[27] = new JRtaTextField("",false); //pat_intern von Patient
 		jtf[28] = new JRtaTextField("",false); //zzstatus
+		jtf[29] = new JRtaTextField("",false); //Heimbewohner aus PatStamm
 		/*
 		if(this.neu){
 			ladeZusatzDaten();
@@ -405,13 +406,29 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		jcb[1] = new JRtaCheckBox("Ja / Nein");
 		jcb[1].setOpaque(false);
+		jcb[1].setActionCommand("Hausbesuche");
+		jcb[1].addActionListener(this);
 		jpan.addLabel("Hausbesuch",cc.xy(1, 13));
 		jpan.add(jcb[1],cc.xy(3, 13));
 		
 		jcb[5] = new JRtaCheckBox("abrechnen");
 		jcb[5].setOpaque(false);
+		jcb[5].setToolTipText("Nur aktiv wenn Patient Heimbewohner und Hausbesuch angekreuzt");
 		jpan.addLabel("volle HB-Gebühr",cc.xy(5,13));
+		if(PatGrundPanel.thisClass.patDaten.get(44).equals("T")){
+			//jcb[5].setSelected(false);
+			if(jcb[1].isSelected()){
+				jcb[5].setEnabled(true);
+				jcb[5].setSelected(false);
+			}else{
+				jcb[5].setEnabled(false);
+			}
+		}else{
+			jcb[5].setEnabled(false);
+			jcb[5].setSelected(false);
+		}
 		jpan.add(jcb[5],cc.xy(7,13));
+
 
 		jcb[2] = new JRtaCheckBox("angefordert");
 		jcb[2].setOpaque(false);
@@ -572,6 +589,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			doAbbrechen();
 			return;
 		}
+		if(e.getActionCommand().equals("Hausbesuche") ){
+			if(jcb[1].isSelected() && PatGrundPanel.thisClass.patDaten.get(44).equals("T")){
+				jcb[5].setEnabled(true);	
+				jcb[5].setSelected(true);
+				JOptionPane.showMessageDialog(null, "Patient ist Heimbewohner bitte wäheln Sie ob voll berechnen oder nicht.\nVoreinstellung ist voll berechnen.");
+			}else if(jcb[1].isSelected() && PatGrundPanel.thisClass.patDaten.get(44).equals("F")){
+				jcb[5].setEnabled(false);
+				jcb[5].setSelected(true);
+				JOptionPane.showMessageDialog(null, "Der Patient ist kein(!!) Heimbewohner setze Hausbesuch voll berechnen");
+			}else{
+				jcb[5].setEnabled(false);
+				jcb[5].setSelected(false);
+			}
+			return;
+		}
+
 		/*********************/		
 		if(e.getActionCommand().contains("leistung") && initReady){
 			int lang = e.getActionCommand().length();
@@ -911,7 +944,23 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
-
+		if(jtf[14].getText().equals("T") && this.vec.get(61).equals("T")){
+			System.out.println("1. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
+			jcb[5].setEnabled(true);
+			jcb[5].setSelected( true);			
+		}else if(jtf[14].getText().equals("T") && this.vec.get(61).equals("F") && jcb[1].isSelected()){
+			System.out.println("2. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
+			jcb[5].setEnabled(true);
+			jcb[5].setSelected( false);			
+		}else if(!jcb[1].isSelected()){
+			System.out.println("3. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));			
+			jcb[5].setEnabled(false);
+			jcb[5].setSelected( false);			
+		}else{
+			System.out.println("4. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));			
+			jcb[5].setEnabled(false);
+			jcb[5].setSelected( false);
+		}
 
 	}
 	private String[] holePreis(int ivec,int ipreisgruppe){
@@ -1069,7 +1118,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 		//sbuf.append("diagnose='"+jta.getText()+"' ");
 		sbuf.append("unter18='"+unter18+"', ");
-		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"'");
+		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
+		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
+		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"'");
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
 		//System.out.println(sbuf.toString());	
 		
@@ -1262,7 +1313,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 		sbuf.append("unter18='"+unter18+"', ");
-		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"'");
+		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
+		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
+		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"'");
 		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
 		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());
