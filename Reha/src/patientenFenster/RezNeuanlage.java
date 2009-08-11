@@ -594,13 +594,26 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				jcb[5].setEnabled(true);	
 				jcb[5].setSelected(true);
 				JOptionPane.showMessageDialog(null, "Patient ist Heimbewohner bitte wäheln Sie ob voll berechnen oder nicht.\nVoreinstellung ist voll berechnen.");
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run()
+				 	   {
+							jcb[5].requestFocus();		 		   
+				 	   }
+				});	
 			}else if(jcb[1].isSelected() && PatGrundPanel.thisClass.patDaten.get(44).equals("F")){
 				jcb[5].setEnabled(false);
 				jcb[5].setSelected(true);
 				JOptionPane.showMessageDialog(null, "Der Patient ist kein(!!) Heimbewohner setze Hausbesuch voll berechnen");
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run()
+				 	   {
+							jcb[2].requestFocus();		 		   
+				 	   }
+				});	
 			}else{
 				jcb[5].setEnabled(false);
 				jcb[5].setSelected(false);
+				jcb[2].requestFocus();
 			}
 			return;
 		}
@@ -944,11 +957,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[25].setText(PatGrundPanel.thisClass.patDaten.get(48)); //kilometer
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
+		// Völliger Murks muß dringend überarbeitet werden
 		if(jtf[14].getText().equals("T") && this.vec.get(61).equals("T")){
 			System.out.println("1. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
 			jcb[5].setEnabled(true);
 			jcb[5].setSelected( true);			
-		}else if(jtf[14].getText().equals("T") && this.vec.get(61).equals("F") && jcb[1].isSelected()){
+		}else if(this.vec.get(43).equals("F") && this.vec.get(61).equals("F") && jcb[1].isSelected()){
 			System.out.println("2. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
 			jcb[5].setEnabled(true);
 			jcb[5].setSelected( false);			
@@ -956,8 +970,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			System.out.println("3. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));			
 			jcb[5].setEnabled(false);
 			jcb[5].setSelected( false);			
-		}else{
+		}else if(jcb[1].isSelected() && this.vec.get(61).equals("T")){
 			System.out.println("4. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));			
+			jcb[5].setEnabled(true);
+			jcb[5].setSelected( true);			
+		}else{
+			System.out.println("5. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));			
 			jcb[5].setEnabled(false);
 			jcb[5].setSelected( false);
 		}
