@@ -40,9 +40,10 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	MyProgTableModel modprog = new MyProgTableModel();
 
 
-	JButton[] button = {null,null,null, null,null,null,null, null,null,null,null, null};
+	JButton[] button = {null,null,null, null,null,null,null, null,null,null,null, null, null};
 	JTextField oopfad = null;
 	JTextField adobepfad = null;
+	JTextField grafpfad = null;
 	
 	
 	public SysUtilFremdprogramme(){
@@ -113,15 +114,19 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		button[3] = new JButton("auswählen");
 		button[3].setActionCommand("adobepfad");
 		button[3].addActionListener(this);
+		button[4] = new JButton("auswählen");
+		button[4].setActionCommand("grafpfad");
+		button[4].addActionListener(this);
 		
 		progtab = new JXTable();
 		oopfad = new JTextField();
 		adobepfad = new JTextField();
+		grafpfad = new JTextField();
 		
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 180dlu, 4dlu, 60dlu",
        //1.    2.      3.   4.   5. 6.   7.   8. 9.    10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
-		"10dlu, 120dlu, 2dlu,p,2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 10dlu");
+		"120dlu, 2dlu,p,2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu,p, 10dlu");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -133,19 +138,22 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		//progtab.getColumn(0).setCellEditor(new TitelEditor());
 		progtab.setSortable(false);
 		JScrollPane jscrProg = JCompTools.getTransparentScrollPane(progtab);
-		builder.add(jscrProg, cc.xyw(1,2,5));
+		builder.add(jscrProg, cc.xyw(1,1,5));
 		
-		builder.addLabel("markiertes Programm aus Liste entfernen", cc.xyw(1,4,3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.add(button[0], cc.xy(5, 4));
-		builder.addLabel("Programm zu Liste hinzufügen", cc.xyw(1, 6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.add(button[1], cc.xy(5, 6));
-		builder.addSeparator("systemrelevante Programme / Pfade", cc.xyw(1, 8, 5));
-		builder.addLabel("Pfad zu OpenOffice", cc.xy(1, 10));
-		builder.add(oopfad, cc.xy(3, 10));
-		builder.add(button[2], cc.xy(5, 10));
-		builder.addLabel("Pfad zu AdobeReader", cc.xy(1,12));
-		builder.add(adobepfad, cc.xy(3, 12));
-		builder.add(button[3],cc.xy(5, 12));
+		builder.addLabel("markiertes Programm aus Liste entfernen", cc.xyw(1,3,3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.add(button[0], cc.xy(5, 3));
+		builder.addLabel("Programm zu Liste hinzufügen", cc.xyw(1, 5, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.add(button[1], cc.xy(5, 5));
+		builder.addSeparator("systemrelevante Programme / Pfade", cc.xyw(1, 7, 5));
+		builder.addLabel("Pfad zu OpenOffice", cc.xy(1, 9));
+		builder.add(oopfad, cc.xy(3, 9));
+		builder.add(button[2], cc.xy(5, 9));
+		builder.addLabel("Pfad zu AdobeReader", cc.xy(1,11));
+		builder.add(adobepfad, cc.xy(3, 11));
+		builder.add(button[3],cc.xy(5, 11));
+		builder.addLabel("Graphikbearbeitung", cc.xy(1,13));
+		builder.add(grafpfad, cc.xy(3, 13));
+		builder.add(button[4],cc.xy(5, 13));
 		
 		return builder.getPanel();
 	}
