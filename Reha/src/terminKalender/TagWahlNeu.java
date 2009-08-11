@@ -1,5 +1,7 @@
 package terminKalender;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,6 +32,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -375,8 +378,22 @@ private void zurueck(){
 		public  void run(){
 			setVisible(false);
 			akttag = datum.getText().trim();
-			TerminFenster.thisClass.datGewaehlt = new String(akttag);
-			TerminFenster.thisClass.suchSchonMal();
+			
+        	if(datFunk.DatumsWert(akttag) > datFunk.DatumsWert(Reha.kalMax)){
+        		JOptionPane.showMessageDialog(null,"Sie versuchen hinter das Ende des Kalenders zu springen ("+akttag+")"+
+        				"\nKalenderspanne aktuell = von "+Reha.kalMin+" bis "+Reha.kalMax);
+        		
+        	}else if(datFunk.DatumsWert(akttag) < datFunk.DatumsWert(Reha.kalMin)){
+        		JOptionPane.showMessageDialog(null,"Sie versuchen vor den Beginn des Kalenders zu springen ("+akttag+")"+
+        				"\nKalenderspanne aktuell = von "+Reha.kalMin+" bis "+Reha.kalMax);
+
+        		
+        	}else{
+    			TerminFenster.thisClass.datGewaehlt = new String(akttag);
+    			TerminFenster.thisClass.suchSchonMal();
+        	}
+
+			
 		}
 	});
 	this.dispose();	

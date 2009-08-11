@@ -3634,7 +3634,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        if(ansicht == NORMAL_ANSICHT){
 	        	intagWahl = true;
 	        	final String datwahl = (sprung != 0 ? datFunk.sDatPlusTage(this.aktuellerTag,sprung) : this.aktuellerTag);
+	        	/*
+	        	if(datFunk.DatumsWert(datwahl) > datFunk.DatumsWert(Reha.kalMax)){
+	        		JOptionPane.showMessageDialog(null,"Sie versuchen hinter das Ende des Kalenders zu springen "+datwahl+
+	        				"\nKalenderspanne aktuell = von "+Reha.kalMin+" bis "+Reha.kalMax);
+	        		return;
+	        	}
+	        	if(datFunk.DatumsWert(datwahl) < datFunk.DatumsWert(Reha.kalMin)){
+	        		JOptionPane.showMessageDialog(null,"Sie versuchen vor den Beginn des Kalenders zu springen "+datwahl+
+	        				"\nKalenderspanne aktuell = von "+Reha.kalMin+" bis "+Reha.kalMax);
 
+	        		return;
+	        	}
+	        	*/
 	        			
 				TagWahlNeu tagWahlNeu = new TagWahlNeu(Reha.thisFrame,null,datwahl);
 				//tagWahlNeu.setLocationRelativeTo(null);
