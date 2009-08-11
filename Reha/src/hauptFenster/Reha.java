@@ -128,6 +128,7 @@ import org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI;
 import rehaContainer.RehaTP;
 
 import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
@@ -138,6 +139,7 @@ import systemTools.SplashPanel;
 import systemTools.WinNum;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
+import terminKalender.datFunk;
 
 //import testPaket.Factory;
 
@@ -272,6 +274,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static String aktIK = "000000000";
 	public static String aktMandant = "Übungs-Mandant";
 	public static String aktUser = "";
+	public static String kalMin = "";
+	public static String kalMax = "";
 	public static String Titel2;
 	public static String osVersion = ""; 
 	public int vollsichtbar = 0; 
@@ -2169,6 +2173,10 @@ final class DatenbankStarten implements Runnable{
 					System.out.println("Barcode-Scanner konnte nicht installiert werden");
 				}
 			}
+			Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
+			Reha.kalMin = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
+			Reha.kalMax = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
+			System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");
