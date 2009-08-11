@@ -410,24 +410,37 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcb[1].addActionListener(this);
 		jpan.addLabel("Hausbesuch",cc.xy(1, 13));
 		jpan.add(jcb[1],cc.xy(3, 13));
-		
+
 		jcb[5] = new JRtaCheckBox("abrechnen");
 		jcb[5].setOpaque(false);
 		jcb[5].setToolTipText("Nur aktiv wenn Patient Heimbewohner und Hausbesuch angekreuzt");
 		jpan.addLabel("volle HB-Gebühr",cc.xy(5,13));
-		if(PatGrundPanel.thisClass.patDaten.get(44).equals("T")){
-			//jcb[5].setSelected(false);
-			if(jcb[1].isSelected()){
-				jcb[5].setEnabled(true);
-				jcb[5].setSelected(false);
-			}else{
-				jcb[5].setEnabled(false);
-			}
-		}else{
+		if(neu){
 			jcb[5].setEnabled(false);
 			jcb[5].setSelected(false);
+		}else{
+			if(PatGrundPanel.thisClass.patDaten.get(44).equals("T")){
+				// Wenn Heimbewohner
+				if(this.vec.get(43).equals("T")){
+					jcb[5].setEnabled(true);
+					jcb[5].setSelected( (this.vec.get(61).equals("T") ? true : false));
+				}else{
+					jcb[5].setEnabled(false);
+					jcb[5].setSelected(false);
+				}
+			}else{
+				// Wenn kein(!!) Heimbewohner
+				if(this.vec.get(43).equals("T")){
+					jcb[5].setEnabled(false);
+					jcb[5].setSelected(true);
+				}else{
+					jcb[5].setEnabled(false);
+					jcb[5].setSelected(false);
+				}
+			}
 		}
 		jpan.add(jcb[5],cc.xy(7,13));
+		
 
 
 		jcb[2] = new JRtaCheckBox("angefordert");
@@ -590,30 +603,37 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return;
 		}
 		if(e.getActionCommand().equals("Hausbesuche") ){
-			if(jcb[1].isSelected() && PatGrundPanel.thisClass.patDaten.get(44).equals("T")){
-				jcb[5].setEnabled(true);	
-				jcb[5].setSelected(true);
-				JOptionPane.showMessageDialog(null, "Patient ist Heimbewohner bitte wäheln Sie ob voll berechnen oder nicht.\nVoreinstellung ist voll berechnen.");
-				SwingUtilities.invokeLater(new Runnable(){
-				 	   public  void run()
-				 	   {
-							jcb[5].requestFocus();		 		   
-				 	   }
-				});	
-			}else if(jcb[1].isSelected() && PatGrundPanel.thisClass.patDaten.get(44).equals("F")){
-				jcb[5].setEnabled(false);
-				jcb[5].setSelected(true);
-				JOptionPane.showMessageDialog(null, "Der Patient ist kein(!!) Heimbewohner setze Hausbesuch voll berechnen");
-				SwingUtilities.invokeLater(new Runnable(){
-				 	   public  void run()
-				 	   {
-							jcb[2].requestFocus();		 		   
-				 	   }
-				});	
+			if(jcb[1].isSelected()){
+				// Hausbesuch gewählt
+				if(PatGrundPanel.thisClass.patDaten.get(44).equals("T")){
+					jcb[5].setEnabled(true);	
+					SwingUtilities.invokeLater(new Runnable(){
+					 	   public  void run()
+					 	   {
+								jcb[1].requestFocus();		 		   
+					 	   }
+					});	
+				}else{
+					jcb[5].setEnabled(false);
+					jcb[5].setSelected(true);
+					SwingUtilities.invokeLater(new Runnable(){
+					 	   public  void run()
+					 	   {
+								jcb[1].requestFocus();		 		   
+					 	   }
+					});	
+				}
+				
 			}else{
+				// Haubesuch abgewählt
 				jcb[5].setEnabled(false);
 				jcb[5].setSelected(false);
-				jcb[2].requestFocus();
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run()
+				 	   {
+							jcb[1].requestFocus();		 		   
+				 	   }
+				});	
 			}
 			return;
 		}
@@ -958,6 +978,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
 		// Völliger Murks muß dringend überarbeitet werden
+		/*
 		if(jtf[14].getText().equals("T") && this.vec.get(61).equals("T")){
 			System.out.println("1. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
 			jcb[5].setEnabled(true);
@@ -979,6 +1000,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			jcb[5].setEnabled(false);
 			jcb[5].setSelected( false);
 		}
+		*/
 
 	}
 	private String[] holePreis(int ivec,int ipreisgruppe){
