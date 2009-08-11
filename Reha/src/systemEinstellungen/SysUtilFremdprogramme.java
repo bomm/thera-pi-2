@@ -14,14 +14,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import systemEinstellungen.SysUtilKrankenkasse.MyVorlagenTableModel;
+import systemEinstellungen.SysUtilKrankenkasse.TitelEditor;
 import systemEinstellungen.SysUtilPatient.MyDefaultTableModel;
+import systemTools.JCompTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -32,6 +37,9 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	
 	
 	JXTable progtab = null;
+	MyProgTableModel modprog = new MyProgTableModel();
+
+
 	JButton[] button = {null,null,null, null,null,null,null, null,null,null,null, null};
 	JTextField oopfad = null;
 	JTextField adobepfad = null;
@@ -120,7 +128,13 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.add(progtab, cc.xy(1,2));
+		modprog.setColumnIdentifiers(new String[] {"Name d. Programmes","Kompletter Pfad"});
+		progtab = new JXTable(modprog);
+		//progtab.getColumn(0).setCellEditor(new TitelEditor());
+		progtab.setSortable(false);
+		JScrollPane jscrProg = JCompTools.getTransparentScrollPane(progtab);
+		builder.add(jscrProg, cc.xy(1,2));
+		
 		builder.addLabel("markiertes Programm aus Liste entfernen", cc.xyw(1,4,3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(button[0], cc.xy(5, 4));
 		builder.addLabel("Programm zu Liste hinzufügen", cc.xyw(1, 6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
@@ -160,4 +174,21 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		
 	}
 
+}
+class MyProgTableModel extends DefaultTableModel{
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Class getColumnClass(int columnIndex) {
+		 return String.class;
+    }
+	
+
+ public boolean isCellEditable(int row, int col) {
+ 	
+ 	return true;
+ }
+	   
 }
