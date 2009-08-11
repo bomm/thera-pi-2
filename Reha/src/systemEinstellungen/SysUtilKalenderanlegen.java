@@ -63,6 +63,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 //import roogle.SuchenSeite;
+import sqlTools.SqlInfo;
 import systemTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 //import terminKalender.TerminFenster;
@@ -466,7 +467,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			if(! fdatum.trim().equals("")){
 				sqldat = datFunk.sDatInSQL(fdatum);
 				sret = "Update flexkc set ";
-				sret = sret + "T1='"+ftext.trim()+"', N1='@FREI', TS1='"+tstart+"', TD1='"+tdauer+"', TE1='"+tend+"',";
+				sret = sret + "T1='"+ftext.trim().toUpperCase()+"', N1='@FREI', TS1='"+tstart+"', TD1='"+tdauer+"', TE1='"+tend+"',";
 				sret = sret + "BELEGT='1' Where DATUM='"+sqldat+"'";
 				//System.out.println(sret);
 				SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
@@ -590,6 +591,10 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		JOptionPane.showMessageDialog(null, "Kalenderanlegen beendet nach "+((System.currentTimeMillis()-zeit1)/1000)+" Sekunden\n\n"+"Kalender wird jetzt auf Integrität geprüft!");
 		
 		knopfGedoense(true);
+		Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
+		Reha.kalMin = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
+		Reha.kalMax = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
+		System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);		
 //			}
 //		}.start();
 
