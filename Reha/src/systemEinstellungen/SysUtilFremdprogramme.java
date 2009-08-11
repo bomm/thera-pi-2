@@ -119,7 +119,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		button[0].setActionCommand("entfernen");
 		button[0].addActionListener(this);
 		button[1] = new JButton("hinzufügen");
-		button[1].setActionCommand("hinzufügen");
+		button[1].setActionCommand("hinzufuegen");
 		button[1].addActionListener(this);
 		button[2] = new JButton("auswählen");
 		button[2].setActionCommand("oopfad");
@@ -133,8 +133,11 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		
 		progtab = new JXTable();
 		oopfad = new JTextField();
+		oopfad.setText(SystemConfig.OpenOfficePfad);
 		adobepfad = new JTextField();
+		adobepfad.setText(SystemConfig.hmFremdProgs.get("AcrobatReader"));
 		grafpfad = new JTextField();
+		grafpfad.setText(SystemConfig.hmFremdProgs.get("GrafikProg"));
 		
 		oopfad.setEditable(false);
 		adobepfad.setEditable(false);
@@ -202,21 +205,57 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
         	setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			String pfad = progWaehlen(0);
 			if(!pfad.equals("")){
-				oopfad.setText(pfad);
+				oopfad.setText(pfad.replaceAll("\\\\", "/"));
 			}
+			return;
 		}
 		if(cmd.equals("adobepfad")){
 			String pfad = progWaehlen(1);
 			if(!pfad.equals("")){
-				adobepfad.setText(pfad);
+				adobepfad.setText(pfad.replaceAll("\\\\", "/"));
 			}
+			return;
 		}
 		if(cmd.equals("grafpfad")){
 			String pfad = progWaehlen(1);
 			if(!pfad.equals("")){
-				grafpfad.setText(pfad);
+				grafpfad.setText(pfad.replaceAll("\\\\", "/"));
 			}
+			return;
 		}
+		if(cmd.equals("hinzufuegen")){
+			
+		}
+		if(cmd.equals("entfernen")){
+			
+		}
+		if(cmd.equals("abbrechen")){
+			SystemUtil.abbrechen();
+			SystemUtil.thisClass.parameterScroll.requestFocus();
+		}
+		if(cmd.equals("speichern")){
+			doSpeichern();
+		}
+	}
+	private void doSpeichern(){
+		String wert = "";
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
+		wert = adobepfad.getText().trim();
+		inif.setStringProperty("FestProg", "FestProgPfad1", wert, null);
+		SystemConfig.hmFremdProgs.put("AcrobatReader",wert);
+		wert = grafpfad.getText().trim();
+		inif.setStringProperty("FestProg", "FestProgPfad2", wert, null);
+		SystemConfig.hmFremdProgs.put("GrafikProg",wert);
+		inif.save();
+		/*****hier noch den Tabelleninhalt speichern****/ 
+		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		wert = oopfad.getText().trim();
+		inif.setStringProperty("OpenOffice.org", "OfficePfad", wert, null);
+		SystemConfig.OpenOfficePfad = wert;
+		wert = Reha.proghome+"RTAJars/openofficeorg";
+		inif.setStringProperty("OpenOffice.org", "OfficeNativePfad", wert, null);
+		SystemConfig.OpenOfficeNativePfad = wert;
+		inif.save();
 	}
 
 	public String progWaehlen(int welchesProg){

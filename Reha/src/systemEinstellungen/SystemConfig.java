@@ -818,6 +818,14 @@ public class SystemConfig {
 			);
 			
 		}
+		anzahl =  inif.getIntegerProperty("FestProg", "FestProgAnzahl");
+		for(int i = 0; i < anzahl; i++){		
+			hmFremdProgs.put(
+					inif.getStringProperty("FestProg", "FestProgName"+(i+1)),
+					inif.getStringProperty("FestProg", "FestProgPfad"+(i+1))
+			);
+		}
+
 	}
 	public static void GeraeteListe(){
 		hmGeraete = new HashMap<String,String[]>();

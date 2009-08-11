@@ -1827,14 +1827,29 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				if(arg0.getClickCount()==2){
 					System.out.println("LabeName = "+((JComponent)arg0.getSource()).getName());
 					int seite = new Integer( ((JComponent)arg0.getSource()).getName().split("-")[1] );
-					pdfZeigen(seite-1);
-					File file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
-					if(!file.exists()){
-						JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Adobe-Acrobatreader ist nicht korrekt konfiguriert");
-						return;
+					File file = null;
+					String datei = "";
+
+					if(((String)vecBilderAktion.get(seite-1)).equals("scanner")){
+						pdfZeigen(seite-1);
+						file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
+						if(!file.exists()){
+							JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Adobe-Acrobatreader ist nicht korrekt konfiguriert");
+							return;
+						}
+						datei = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+vecPdfPfad.get(aktivesBild-1);
+						
+					}else if(((String)vecBilderAktion.get(seite-1)).equals("bildgeladen")){
+						file = new File(SystemConfig.hmFremdProgs.get("GrafikProg"));
+						if(!file.exists()){
+							JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Bildbearbeitungsprogramm ist nicht korrekt konfiguriert");
+							return;
+						}
+						datei = ((String)vecBilderPfad.get(aktivesBild-1));
 					}
+
 					try {
-						String datei = SystemConfig.hmVerzeichnisse.get("Temp")+"/"+vecPdfPfad.get(aktivesBild-1);
+						
 						if(Reha.osVersion.contains("Windows")){
 							datei = datei.replaceAll("/", "\\\\");
 						}
