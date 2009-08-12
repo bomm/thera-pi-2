@@ -414,7 +414,9 @@ private JScrollPane getParameterListe(){
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Abrechnung §302");
-	treeitem = new DefaultMutableTreeNode("ITSG Zertifikat anfordern/einlesen");
+	treeitem = new DefaultMutableTreeNode("Zertifikat-Request produzieren");
+	node.add(treeitem ); 
+	treeitem = new DefaultMutableTreeNode("ITSG Zertifikat einlesen");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Annahmekey abholen/einlesen");
 	node.add(treeitem ); 

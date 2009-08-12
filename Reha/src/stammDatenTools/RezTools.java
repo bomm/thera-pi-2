@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Vector;
 
+import patientenFenster.AktuelleRezepte;
 import patientenFenster.PatGrundPanel;
 
 import sqlTools.SqlInfo;
@@ -40,6 +41,7 @@ public class RezTools {
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
 		//String patGeboren = datFunk.sDatInDeutsch(patvec.get(0));
 		//String patJahrfrei = datFunk.sDatInDeutsch(patvec.get(0));
+		//
 		String patGeboren = "";
 		String patJahrfrei = "";
 		String neuePreiseab = "";
@@ -48,6 +50,10 @@ public class RezTools {
 		String pauschale = "";
 		String nachherfrei = "";
 		String vorherfrei = "";
+		Vector vAktTermine = null;
+		vAktTermine = AktuelleRezepte.aktRez.getModelTermine();
+		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
+		//Prüfen ob Terminanzahl vollständig
 		int[] gleicherTarif = {0,0,0}; // gesamt,ohne,mit;
 		//System.out.println("Funktionstest = "+SqlInfo.holePatFeld("n_name", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'"));
 		for(int i = 0;i < 1;i++){

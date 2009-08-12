@@ -1352,7 +1352,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
-		sbuf.append("unter18='"+unter18+"', ");
+		//sbuf.append("unter18='"+unter18+"', ");
 		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"'");

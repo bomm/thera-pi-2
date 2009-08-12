@@ -1351,6 +1351,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuDlgOffen = false;
 
 	}
+	public Vector getModelTermine() {
+		return (Vector)dtermm.getDataVector().clone();
+	}
 	
 
 }
