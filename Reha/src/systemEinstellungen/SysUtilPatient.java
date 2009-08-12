@@ -344,6 +344,10 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		for(int i = 0;i < 1;i++){
 			if(cmd.equals("entfernen")){
 				int row = vorlagen.getSelectedRow();
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.NO_OPTION){
+					return;
+				}
 				if(row >=0){
 					TableTool.loescheRow(vorlagen, row);
 				}

@@ -1829,8 +1829,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					int seite = new Integer( ((JComponent)arg0.getSource()).getName().split("-")[1] );
 					File file = null;
 					String datei = "";
-
-					if(((String)vecBilderAktion.get(seite-1)).equals("scanner")){
+					String grafik = SystemConfig.hmFremdProgs.get("GrafikProg").trim();
+					if(((String)vecBilderAktion.get(seite-1)).equals("scanner") || grafik.equals("")){
 						pdfZeigen(seite-1);
 						file = new File(SystemConfig.hmFremdProgs.get("AcrobatReader"));
 						if(!file.exists()){

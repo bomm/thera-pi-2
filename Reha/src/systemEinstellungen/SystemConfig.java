@@ -136,6 +136,7 @@ public class SystemConfig {
 	public static HashMap<String,String[]> hmGeraete = null;
 	
 	public static HashMap<String,String> hmFremdProgs = null;
+	public static Vector<Vector<String>> vFremdProgs = null;
 	public static HashMap<String,String> hmCompany = null;
 	
 	public static String[] rezBarCodName = null;
@@ -809,15 +810,16 @@ public class SystemConfig {
 	}
 	public static void FremdProgs(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
-		hmFremdProgs = new HashMap<String,String>();
+		vFremdProgs = new Vector<Vector<String>>();
+		Vector<String> progs = new Vector<String>();
 		int anzahl =  inif.getIntegerProperty("FremdProgramme", "FremdProgrammeAnzahl");
 		for(int i = 0; i < anzahl; i++){
-			hmFremdProgs.put(
-					inif.getStringProperty("FremdProgramme", "FremdProgrammName"+(i+1)),
-					inif.getStringProperty("FremdProgramme", "FremdProgrammPfad"+(i+1))
-			);
-			
+			progs.clear();
+			progs.add(inif.getStringProperty("FremdProgramme", "FremdProgrammName"+(i+1)));
+			progs.add(inif.getStringProperty("FremdProgramme", "FremdProgrammPfad"+(i+1)));
+			vFremdProgs.add((Vector)progs.clone());
 		}
+		hmFremdProgs = new HashMap<String,String>();
 		anzahl =  inif.getIntegerProperty("FestProg", "FestProgAnzahl");
 		for(int i = 0; i < anzahl; i++){		
 			hmFremdProgs.put(

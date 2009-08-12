@@ -343,6 +343,10 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		for(int i = 0;i < 1;i++){
 			if(cmd.equals("entfernenvorlage")){
 				int row = vorlagen.getSelectedRow();
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.NO_OPTION){
+					return;
+				}
 				if(row >=0){
 					TableTool.loescheRow(vorlagen, row);
 				}

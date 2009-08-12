@@ -14,15 +14,19 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
@@ -131,7 +135,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		button[4].setActionCommand("grafpfad");
 		button[4].addActionListener(this);
 		
-		progtab = new JXTable();
+		//progtab = new JXTable();
 		oopfad = new JTextField();
 		oopfad.setText(SystemConfig.OpenOfficePfad);
 		adobepfad = new JTextField();
@@ -155,6 +159,22 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		
 		modprog.setColumnIdentifiers(new String[] {"Name d. Programmes","Kompletter Pfad"});
 		progtab = new JXTable(modprog);
+		progtab.getColumn(0).setMinWidth(175);
+		progtab.getColumn(0).setMaxWidth(250);
+
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					doTabelleFuellen();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+		}.execute();
 		//progtab.getColumn(0).setCellEditor(new TitelEditor());
 		progtab.setSortable(false);
 		JScrollPane jscrProg = JCompTools.getTransparentScrollPane(progtab);
@@ -177,6 +197,14 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		builder.add(button[4],cc.xy(5, 13));
 		builder.getPanel().validate();
 		return builder.getPanel();
+	}
+	public void doTabelleFuellen(){
+		for(int i = 0;i<SystemConfig.vFremdProgs.size();i++){
+			modprog.addRow(SystemConfig.vFremdProgs.get(i));
+		}
+		if(modprog.getRowCount()>0){
+			progtab.setRowSelectionInterval(0, 0);
+		}
 	}
 
 	@Override
@@ -202,11 +230,8 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
 		if(cmd.equals("oopfad")){
-        	setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			String pfad = progWaehlen(0);
-			if(!pfad.equals("")){
-				oopfad.setText(pfad.replaceAll("\\\\", "/"));
-			}
+			oopfad.setText(pfad.replaceAll("\\\\", "/"));
 			return;
 		}
 		if(cmd.equals("adobepfad")){
@@ -218,16 +243,42 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		}
 		if(cmd.equals("grafpfad")){
 			String pfad = progWaehlen(1);
-			if(!pfad.equals("")){
-				grafpfad.setText(pfad.replaceAll("\\\\", "/"));
-			}
+			grafpfad.setText(pfad.replaceAll("\\\\", "/"));
 			return;
 		}
 		if(cmd.equals("hinzufuegen")){
+			String svorlage = progWaehlen(1);
+			if(svorlage.equals("")){
+				return;
+			}
+			Vector vec = new Vector();
+			vec.add("");
+			vec.add(svorlage);
+			modprog.addRow((Vector)vec.clone());
+			progtab.validate();
+			int rows = modprog.getRowCount(); 
+			final int xrows = rows -1;
+			SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run(){
+			 		  progtab.requestFocus();
+			 		  progtab.setRowSelectionInterval(xrows, xrows);
+			 		  startCellEditing(progtab,xrows);
+			 	   }
+			});
+			
 			
 		}
 		if(cmd.equals("entfernen")){
-			
+			int row = progtab.getSelectedRow();
+			if(row < 0){
+				return;
+			}
+			int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(frage == JOptionPane.NO_OPTION){
+				return;
+			}
+			modprog.removeRow(row);
+			progtab.validate();
 		}
 		if(cmd.equals("abbrechen")){
 			SystemUtil.abbrechen();
@@ -237,17 +288,35 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			doSpeichern();
 		}
 	}
+	private void startCellEditing(JXTable table,int row){
+		final int xrows = row;
+		final JXTable xtable = table;
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+		 		  xtable.scrollRowToVisible(xrows);
+		 				xtable.editCellAt(xrows, 0);
+		 	   }
+		});
+	}
+	
 	private void doSpeichern(){
 		String wert = "";
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
 		wert = adobepfad.getText().trim();
 		inif.setStringProperty("FestProg", "FestProgPfad1", wert, null);
-		SystemConfig.hmFremdProgs.put("AcrobatReader",wert);
+		//SystemConfig.hmFremdProgs.put("AcrobatReader",wert);
 		wert = grafpfad.getText().trim();
 		inif.setStringProperty("FestProg", "FestProgPfad2", wert, null);
-		SystemConfig.hmFremdProgs.put("GrafikProg",wert);
-		inif.save();
-		/*****hier noch den Tabelleninhalt speichern****/ 
+		//SystemConfig.hmFremdProgs.put("GrafikProg",wert);
+		/*****hier noch den Tabelleninhalt speichern****/
+		int rows = progtab.getRowCount();
+		inif.setIntegerProperty("FremdProgramme", "FremdProgrammeAnzahl", rows, null);
+		for(int i = 0; i < rows; i++){
+			inif.setStringProperty("FremdProgramme", "FremdProgrammName"+(i+1), (String)modprog.getValueAt(i,0), null);
+			inif.setStringProperty("FremdProgramme", "FremdProgrammPfad"+(i+1), (String)modprog.getValueAt(i,1), null);
+		}
+		inif.save();		
+ 
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		wert = oopfad.getText().trim();
 		inif.setStringProperty("OpenOffice.org", "OfficePfad", wert, null);
@@ -256,6 +325,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		inif.setStringProperty("OpenOffice.org", "OfficeNativePfad", wert, null);
 		SystemConfig.OpenOfficeNativePfad = wert;
 		inif.save();
+		SystemConfig.FremdProgs();
 	}
 
 	public String progWaehlen(int welchesProg){

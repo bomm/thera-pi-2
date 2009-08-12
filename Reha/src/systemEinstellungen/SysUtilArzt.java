@@ -298,6 +298,10 @@ private JPanel getKnopfPanel(){
 			if(cmd.equals("entfernengruppe")){
 				//int row = gruppen.convertRowIndexToModel(gruppen.getSelectedRow());
 				int row = gruppen.getSelectedRow();
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.NO_OPTION){
+					return;
+				}
 				if(row >=0){
 					TableTool.loescheRowAusModel(gruppen, row);
 				}
@@ -305,6 +309,10 @@ private JPanel getKnopfPanel(){
 			}
 			if(cmd.equals("entfernenvorlage")){
 				int row = vorlagen.getSelectedRow();
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.NO_OPTION){
+					return;
+				}
 				if(row >=0){
 					TableTool.loescheRow(vorlagen, row);
 				}
