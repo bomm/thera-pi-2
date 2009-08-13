@@ -61,6 +61,7 @@ public class RezTools {
 		Vector vAktTermine = null;
 		vAktTermine = holeEinzelTermineAusRezept("",termine);
 		//vAktTermine = AktuelleRezepte.aktRez.getModelTermine();
+		/*
 		while(AktuelleRezepte.aktRez.inEinzelTermine){
 			try {
 				Thread.sleep(10);
@@ -69,6 +70,7 @@ public class RezTools {
 				e.printStackTrace();
 			}
 		}
+		*/
 		System.out.println(vAktTermine);
 		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
 		//Prüfen ob Terminanzahl vollständig
