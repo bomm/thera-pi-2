@@ -155,8 +155,9 @@ public class SystemConfig {
 		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
 		String jahrHeute = datFunk.sHeute().substring(6);
 		if(! aktJahr.equals(jahrHeute) ){
-			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nWir haben ein neues Kalenderjahr!\n"+
-					"wurden in der System-Init schon alle Befreiungen des Jahres "+aktJahr+" zurückgesetzt????");
+			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
+					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
+					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
 			System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
 			aktJahr = new String(jahrHeute);
 			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);

@@ -59,61 +59,75 @@ public class RezTools {
 		String nachherfrei = "";
 		String vorherfrei = "";
 		Vector vAktTermine = null;
-		vAktTermine = holeEinzelTermineAusRezept("",termine);
-		//vAktTermine = AktuelleRezepte.aktRez.getModelTermine();
-		/*
-		while(AktuelleRezepte.aktRez.inEinzelTermine){
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		*/
-		System.out.println(vAktTermine);
-		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
-		//Prüfen ob Terminanzahl vollständig
-		int[] gleicherTarif = {0,0,0}; // gesamt,ohne,mit;
-		//System.out.println("Funktionstest = "+SqlInfo.holePatFeld("n_name", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'"));
-		for(int i = 0;i < 1;i++){
-			if( (boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T") ){
-				//Zum Zeitpunkt der Rezeptanlage unter 18, Prüfen ob während Behandlung
-				//Volljährigkeit erreicht wurde
-				System.out.println("Unter Achtzehn zum Zeitpunkt der Rezeptanlage");
-				break;
-			}
-			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T")){
-				//Hausbesuch
-				System.out.println("Hausbesuch");
-				if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(24)).equals("T")){
-					//Hausbesuch bei Heimbewohner
-					System.out.println("Hausbesuch und Heimbewohner");
-				}else{
-					//Hausbesuch aber kein Heimbewohner
-					System.out.println("Hausbesuch aber kein Heimbewohner");					
-				}
-			}else{
-				System.out.println("kein Hausbesuch");
-			}
-			int pgtest = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(41))-1;
-			if(pgtest >= 0){
-				neuePreiseab = SystemConfig.vNeuePreiseAb.get(pgtest);
-				
-			}
-			System.out.println("Neue Preisliste ab "+neuePreiseab);
-			patJahrfrei = ((String)PatGrundPanel.thisClass.patDaten.get(69));
-			System.out.println("Befreiung im Jahr "+patJahrfrei);
-			if(!patJahrfrei.trim().equals("")){
-				//prüfen ob Behandlungstage noch in den Befeiungszeitraum fallen				
-			}
-			/* Grundsatzfragen
-			 * War der Patient zu beginn der Behandlung befreit? /Jahreswechsel/Volljährigkeit
-			 * Ist der Patient während der Behandlung befreit worden? /
-			 * Welche Preise sind anzuwenden
-			 */
+		boolean bNeuePreise = false;
+		long lNeuePreise = 0;
+		boolean bTermine = false;
+		boolean bUnter18 = false;
+		boolean bVorjahrFrei = false;
+		boolean bHausbesuch = false;
+		boolean bHeimbewohner = false;
+		boolean bHbVoll = false;
+		boolean bPauschal = false;
+		int iKilometer = 0;
+		int iTermine = -1;
+		int iVorjahr = -1;
+		
+		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
+			// Es gibt Termine in der Tabelle
+			bTermine = true;
+			iTermine = vAktTermine.size();
 
 		}
+		System.out.println(vAktTermine);
+		
+		if( (boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T") ){
+			// Zum Zeitpunkt der Rezeptanlage unter 18, Prüfen ob während Behandlung
+			bUnter18 = true;
+		}
+		if(! ((String)PatGrundPanel.thisClass.patDaten.get(69)).trim().equals("") ){
+			// War im Vorjahr Zuzahlungsbefreit
+			bVorjahrFrei = true;
+			iVorjahr = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(69)));
+		}
+		if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T")){
+			// Rezept ist Hausbesuchsrezept
+			bHausbesuch = true;
+			if((boolean) ((String)PatGrundPanel.thisClass.patDaten.get(44)).equals("T") ){
+				//Hausbesuch bei Heimbewohner
+				bHeimbewohner = true;
+			}
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(61)).equals("T")){
+				//Hausbesuch voll abrechnen
+				bHbVoll = true;
+			}
+			if(! ((String)PatGrundPanel.thisClass.patDaten.get(48)).trim().equals("") ){
+				// Pauschale für Weggebühr
+				
+				iKilometer = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(48)));
+				if(iKilometer <= 0){
+					bPauschal = true;
+				}
+			}else{
+				bPauschal = true;
+				iKilometer = 0;
+			}
+
+		}
+		if((!bUnter18) && (!bVorjahrFrei) &&  (!bHausbesuch)){
+			// ganz normale Rezeptgebühren
+			iret = 0;
+		}
+		System.out.println("Rezept angelegt bei unter 18: "+bUnter18);
+		System.out.println("Patient war im Vorjahr befreit: "+bVorjahrFrei);
+		System.out.println("Rezept ist Hausbesuchsrezept: "+bHausbesuch);
+		System.out.println("Im Fall von Hausbesuch - voll abrechnen: "+bHbVoll);
+		System.out.println("Weggebührpauschale verwenden: "+bPauschal);
+		System.out.println("Im Fall von km-Abrechnung km-Anzahl: "+iKilometer);
+		System.out.println("Patient ist Heimbewohner: "+bHeimbewohner);
+
+
+		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
+		//Prüfen ob Terminanzahl vollständig
 		// 0 = ganz normale Rezeptgebührenberechnung ohne HB
 		// 1 = normale Rezeptgebühren mit HB normal
 		// 2 = normale Rezeptgebühren mit HB aber in soz. Einrichtung

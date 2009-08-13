@@ -670,7 +670,7 @@ boolean inNeu = false;
 		jtf[30] = new JRtaTextField("GROSS", true);
 		jtf[30].setName("termine2");
 		
-		jtf[31] = new JRtaTextField("GROSS", true);
+		jtf[31] = new JRtaTextField("ZAHLEN", true);
 		jtf[31].setName("kilometer");
 		
 		jtf[32] = new JRtaTextField("DATUM", true);
