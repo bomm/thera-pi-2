@@ -189,7 +189,7 @@ public class RezeptDaten extends JXPanel{
 
 				new Thread(){
 					public void run(){
-						int i = RezTools.testeRezGebArt(reznum.getText().trim());
+						int i = RezTools.testeRezGebArt(reznum.getText().trim(),(String)vecaktrez.get(34));
 					}
 				}.start();
 				

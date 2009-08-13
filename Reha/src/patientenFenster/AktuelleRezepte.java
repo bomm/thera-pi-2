@@ -125,6 +125,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public boolean suchePatUeberRez = false;
 	public String rezAngezeigt = "";
 	public static boolean inRezeptDaten = false;
+	public static boolean inEinzelTermine = false;
 	public static boolean initOk = false;
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
@@ -639,6 +640,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
 	}
 	private void holeEinzelTermine(int row,Vector vvec){
+		inEinzelTermine = true;
 		Vector xvec = null;
 		if(vvec == null){
 			xvec = SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,6)+"'", Arrays.asList(new String[] {}));			
@@ -655,6 +657,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			anzahlTermine.setText("Anzahl Terimine: 0");
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
+			inEinzelTermine = false;
 			return;
 		}
 		if(terms.equals("")){
@@ -663,6 +666,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			anzahlTermine.setText("Anzahl Terimine: 0");
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
+			inEinzelTermine = false;
 			return;
 		}
 		String[] tlines = terms.split("\n");
@@ -695,7 +699,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
-
+		inEinzelTermine = false;
 	}
 
 	public void termineSpeichern(){
@@ -1243,11 +1247,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			bereitsbezahlt = true;
 		}
-		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1));
+		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
 		new RezeptGebuehren(bereitsbezahlt,false,pt);
 	}
 	private void doBarcode(){
-		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1));
+		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
 		String ik = "510884019";
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
 		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)PatGrundPanel.thisClass.vecaktrez.get(1)+"*");

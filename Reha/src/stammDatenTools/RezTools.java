@@ -14,12 +14,20 @@ import terminKalender.datFunk;
 
 public class RezTools {
 	
-	public static Vector<String> holeEinzelTermineAusRezept(String xreznr){
+	public static Vector<String> holeEinzelTermineAusRezept(String xreznr,String termine){
 		Vector<String> xvec = null;
 		Vector retvec = new Vector();
-		xvec = SqlInfo.holeSatz("verordn", "termine,pat_int", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
-		
-		String terms = (String) xvec.get(0);
+		String terms = null;
+		if(termine.equals("")){
+			xvec = SqlInfo.holeSatz("verordn", "termine,pat_intern", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
+			if(xvec.size()==0){
+				return (Vector)retvec.clone();
+			}else{
+				terms = (String) xvec.get(0);	
+			}
+		}else{
+			terms = termine;
+		}
 		if(terms==null){
 			return (Vector)retvec.clone();
 		}
@@ -36,7 +44,7 @@ public class RezTools {
 		}
 		return (Vector)retvec.clone();
 	}
-	public static int testeRezGebArt(String srez){
+	public static int testeRezGebArt(String srez,String termine){
 		int iret = 0;
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
 		//String patGeboren = datFunk.sDatInDeutsch(patvec.get(0));
@@ -51,7 +59,17 @@ public class RezTools {
 		String nachherfrei = "";
 		String vorherfrei = "";
 		Vector vAktTermine = null;
-		vAktTermine = AktuelleRezepte.aktRez.getModelTermine();
+		vAktTermine = holeEinzelTermineAusRezept("",termine);
+		//vAktTermine = AktuelleRezepte.aktRez.getModelTermine();
+		while(AktuelleRezepte.aktRez.inEinzelTermine){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println(vAktTermine);
 		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
 		//Prüfen ob Terminanzahl vollständig
 		int[] gleicherTarif = {0,0,0}; // gesamt,ohne,mit;
