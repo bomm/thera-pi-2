@@ -112,6 +112,7 @@ public class SystemConfig {
 	public static Vector<Integer> vZuzahlRegeln;
 	public static Vector<String> vNeuePreiseAb;
 	public static Vector<Integer> vNeuePreiseRegel;
+	public static Vector<Vector<String>> vHBRegeln;
 	public static Vector<String> vPatMerker = null;
 	public static Vector<ImageIcon> vPatMerkerIcon = null;
 	
@@ -591,7 +592,9 @@ public class SystemConfig {
 		vZuzahlRegeln = new Vector<Integer>();
 		vNeuePreiseAb = new Vector<String>();
 		vNeuePreiseRegel = new Vector<Integer>();
-
+		vHBRegeln = new Vector<Vector<String>>();
+		//xxx
+		Vector<String> vec = new Vector<String>();
 		for(int i = 1; i <= tarife; i++){
 			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));

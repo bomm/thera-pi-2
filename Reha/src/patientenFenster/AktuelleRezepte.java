@@ -39,7 +39,9 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -374,6 +376,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   tabaktrez.setRowSelectionInterval(row, row);
 					System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
 							"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
+					ZeigePopupMenu(arg0);
+					
 				}
 			}
 		});
@@ -397,6 +401,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		dummypan.add(aktrezscr,BorderLayout.CENTER);
 		dummypan.validate();
 		return dummypan;
+	}
+	private void ZeigePopupMenu(java.awt.event.MouseEvent me){
+		JPopupMenu jPop = getTerminPopupMenu();
+		
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	private JPopupMenu getTerminPopupMenu(){
+		JPopupMenu jPopupMenu = new JPopupMenu();
+		JMenuItem item = new JMenuItem("Sonderstatus für Zuzahlung setzen");
+		item.setActionCommand("status");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		return jPopupMenu;
 	}
 	public JToolBar getTerminToolbar(){
 		JToolBar jtb = new JToolBar();
