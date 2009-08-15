@@ -30,6 +30,8 @@ public class TermineErfassen implements Runnable {
 	boolean firstfound;
 	boolean ergebnis = true;
 	public static boolean success = true;
+	public boolean unter18 = false;
+	public boolean vorjahrfrei = false;
 	public static int errorint = 0;
 	public StringBuffer sbuftermine;
 	public TermineErfassen(String reznr, Vector termvec){
@@ -101,7 +103,7 @@ public class TermineErfassen implements Runnable {
 	}
 	/********************/
 	public int testeVerordnung() throws Exception{
-		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
+		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza","termine"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 			if(vec.size()==0){
@@ -114,11 +116,13 @@ public class TermineErfassen implements Runnable {
 						
 		}
 		String termine = (String)vec.get(0);
+		
 		if(termine.contains(datFunk.sHeute())){
 			//JOptionPane.showMessageDialog(null, "Dieser Termin wurde heute bereits erfaﬂt");
 			return 3;
 		}
-		
+		unter18 =  ( ((String)vec.get(7)).equals("T") ? true : false );
+		vorjahrfrei = ( ((String)vec.get(8)).equals("") ? false : true );
 		return 0;
 	}
 	/********************/	
@@ -378,7 +382,32 @@ public class TermineErfassen implements Runnable {
 			terminneu = macheNeuTermin("");			
 		}
 		sbuftermine.append(terminneu);
-		SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");
+/*******************************/
+		if(!unter18 && !vorjahrfrei){
+			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
+		}else if(unter18 && !vorjahrfrei){
+			/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ‰ndern;
+			String geboren = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
+			if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(geboren))){
+				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");				
+			}else{
+				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");				
+			}
+
+		}else if(!unter18 && vorjahrfrei){
+			String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
+			if(!bef_dat.equals("T")){
+				if(datFunk.DatumsWert("31.12."+vec.get(9)) < datFunk.DatumsWert(datFunk.sHeute()) ){
+					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");
+				}else{
+					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");					
+				}
+			}
+		}else{
+			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
+		}
+/*******************************/		
+
 
 		//String cmd = "update verordn set termine='"+sbuftermine.toString()+"' where rez_nr='"+scanrez+"'";
 		//new ExUndHop().setzeStatement(cmd);

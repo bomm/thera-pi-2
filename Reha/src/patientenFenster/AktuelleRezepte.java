@@ -793,6 +793,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				rezneugefunden = false;
 				return;
 			}
+			if(!RezeptDaten.feddisch){
+				return;
+			}
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	        
 	        int firstIndex = e.getFirstIndex();
@@ -1286,6 +1289,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
  
 	public void neuanlageRezept(boolean lneu,String feldname){
+		String zzstatus = "";
 		if(PatGrundPanel.thisClass.aid < 0 || PatGrundPanel.thisClass.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
@@ -1305,8 +1309,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		pinPanel.getGruen().setVisible(false);
 		//neuRez.setPinPanel(pinPanel);
 		if(lneu){
-			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");	
+			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
 		}else{
+			zzstatus = ((String)PatGrundPanel.thisClass.vecaktrez.get(39));
+			System.out.println("bisheriger Zuzahlungsstatus = "+zzstatus);
 //			neuRez.getSmartTitledPanel().setTitle("editieren ---> "+ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geboren am: "+ptfield[4].getText().trim());		
 		}
 		neuRez.setSize(480,768);
@@ -1341,10 +1347,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez = null;
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
+				
 				jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));
 				if(((String)PatGrundPanel.thisClass.vecaktrez.get(39)).equals("")){
 					System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
 					PatGrundPanel.thisClass.vecaktrez.set(39,"0");
+				}else{
+					System.out.println("Zuzahlungsstatus neu = "+PatGrundPanel.thisClass.vecaktrez.get(39));
 				}
 				System.out.println("Bild Einstellen -> "+new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39)) );
 				dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(39))], 

@@ -4239,7 +4239,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Vector tvec = null;
 				String copyright = "© ";
 				try{
-				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
+				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 				if (vec.size() > 0){
 					//String termine = (String) vec.get(0);
 					StringBuffer termbuf = new StringBuffer();
@@ -4263,7 +4263,36 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}else{
 						termbuf.append(macheNeuTermin(ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),
 								"",(String) vec.get(2),(String) vec.get(3),(String) vec.get(4),(String) vec.get(5)));
-						SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
+						/********************************/
+						boolean unter18 =  ( ((String)vec.get(7)).equals("T") ? true : false );
+						boolean vorjahrfrei = ( ((String)vec.get(8)).equals("") ? false : true );
+						if(!unter18 && !vorjahrfrei){
+							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
+						}else if(unter18 && !vorjahrfrei){
+							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ändern;
+							String geboren = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
+							if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(geboren))){
+								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
+							}else{
+								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");				
+							}
+
+						}else if(!unter18 && vorjahrfrei){
+							String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
+							if(!bef_dat.equals("T")){
+								if(datFunk.DatumsWert("31.12."+vec.get(9)) < datFunk.DatumsWert(datFunk.sHeute()) ){
+									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
+								}else{
+									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");					
+								}
+							}
+						}else{
+							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
+						}
+						/**************************************/
+						
+						// vorher nur dieses eine Update
+						//SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
 
 						/**********Datenbank beschreiben*************/
 						String sblock = new Integer(aktiveSpalte[0]+1).toString();

@@ -1006,8 +1006,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private String[] holePreis(int ivec,int ipreisgruppe){
 		if(ivec > 0){
 			int prid = new Integer((String) this.preisvec.get(ivec).get(35));
-			//System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
-			//System.out.println("ID der Position = "+prid);
+			System.out.println("Ivec = "+ivec+" /Preisgruppe ="+ipreisgruppe);
+			System.out.println("ID der Position = "+prid);
 			Vector xvec = ((Vector)this.preisvec.get(ivec));
 			int preispos = ((ipreisgruppe*4)-4)+3;
 			return new String[] {(String)xvec.get(preispos),(String)xvec.get(preispos-1)};
@@ -1160,7 +1160,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("unter18='"+unter18+"', ");
 		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
-		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"'");
+		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
+		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText()) )+"'");
+
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
 		//System.out.println(sbuf.toString());	
 		
@@ -1355,7 +1357,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		//sbuf.append("unter18='"+unter18+"', ");
 		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
-		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"'");
+		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
+		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText()) )+"'");		
 		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
 		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());

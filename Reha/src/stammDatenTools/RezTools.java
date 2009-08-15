@@ -64,19 +64,24 @@ public class RezTools {
 		boolean bTermine = false;
 		boolean bUnter18 = false;
 		boolean bVorjahrFrei = false;
+		String sVorjahrDatum = "";
 		boolean bHausbesuch = false;
 		boolean bHeimbewohner = false;
+		boolean bMitJahresWechsel = false;
 		boolean bHbVoll = false;
 		boolean bPauschal = false;
 		int iKilometer = 0;
 		int iTermine = -1;
 		int iVorjahr = -1;
+		int iFreie = 0;
 		
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
 			iTermine = vAktTermine.size();
-
+			if( ! ((String)vAktTermine.get(0)).substring(6).equals(SystemConfig.aktJahr)){
+				bMitJahresWechsel = true;
+			}
 		}
 		System.out.println(vAktTermine);
 		
@@ -88,6 +93,7 @@ public class RezTools {
 			// War im Vorjahr Zuzahlungsbefreit
 			bVorjahrFrei = true;
 			iVorjahr = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(69)));
+			sVorjahrDatum = "31.12."+iVorjahr;
 		}
 		if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T")){
 			// Rezept ist Hausbesuchsrezept
@@ -117,6 +123,8 @@ public class RezTools {
 			// ganz normale Rezeptgebühren
 			iret = 0;
 		}
+		
+		/*
 		System.out.println("Rezept angelegt bei unter 18: "+bUnter18);
 		System.out.println("Patient war im Vorjahr befreit: "+bVorjahrFrei);
 		System.out.println("Rezept ist Hausbesuchsrezept: "+bHausbesuch);
@@ -124,8 +132,21 @@ public class RezTools {
 		System.out.println("Weggebührpauschale verwenden: "+bPauschal);
 		System.out.println("Im Fall von km-Abrechnung km-Anzahl: "+iKilometer);
 		System.out.println("Patient ist Heimbewohner: "+bHeimbewohner);
-
-
+		*/
+		if(bTermine){
+			for(int i = 0;i < iTermine;i++){
+				if(bVorjahrFrei){
+					try{
+						if(datFunk.DatumsWert((String)vAktTermine.get(i)) <= datFunk.DatumsWert((String)"01.01."+SystemConfig.aktJahr) ){
+							iFreie++;
+						}
+					}catch(Exception ex){
+						
+					}
+				}
+			}
+		}
+		//System.out.println("Termine ohne Zuzahlung: "+iFreie);
 		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
 		//Prüfen ob Terminanzahl vollständig
 		// 0 = ganz normale Rezeptgebührenberechnung ohne HB

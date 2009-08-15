@@ -46,6 +46,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.ZuzahlTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
@@ -83,6 +84,11 @@ JButton knopf3 = null;
 JButton knopf4 = null;
 JButton knopf5 = null;
 JRtaComboBox cbanrede = null;
+
+String kassenid = ""; 
+String befreitdatum = "";
+boolean freizumstart = false;
+boolean freibeimspeichern = false;
 
 public boolean feldergefuellt = false;
 
@@ -359,7 +365,9 @@ boolean inNeu = false;
 				}*/
 				arztbisher = new String(jtf[17].getText());
 				kassebisher = new String(jtf[12].getText()); 
-
+				kassenid = PatGrundPanel.thisClass.patDaten.get(68);
+				befreitdatum = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(31));
+				freizumstart = (PatGrundPanel.thisClass.patDaten.get(30).equals("T") ? true : false);
 				System.out.println("Gehe auf Feld 1 -> "+xfeld);
 				if(! "".equals(xfeld)){
 					SwingUtilities.invokeLater(new Runnable(){
@@ -406,6 +414,7 @@ boolean inNeu = false;
 					buf.append(name+"=NULL, ");	
 					if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
 						buf.append("befreit ='F', ");
+						freibeimspeichern = false;
 						System.out.println("Patient ist -> nicht <- befreit!");
 					}
 				}else{
@@ -413,10 +422,12 @@ boolean inNeu = false;
 						buf.append(name+"='"+datFunk.sDatInSQL(jtf[fedits[i]].getText())+"', ");
 						if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
 							if( datFunk.DatumsWert(jtf[fedits[i]].getText()) >= datFunk.DatumsWert(datFunk.sHeute()) ){
-								buf.append("befreit ='T', ");	
+								buf.append("befreit ='T', ");
+								freibeimspeichern = true;
 								System.out.println("Patient ist befreit!");
 							}else{
 								buf.append("befreit ='F', ");
+								freibeimspeichern = false;								
 							}
 						}
 					}catch(java.lang.ArrayIndexOutOfBoundsException ex){
@@ -439,6 +450,47 @@ boolean inNeu = false;
 		if(!this.inNeu){
 			buf.append(" where pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'");
 			spatintern = PatGrundPanel.thisClass.aktPatID;
+			// Wenn Kasse veränder wurde....
+			if(!jtf[34].getText().trim().equals(kassenid)){
+				JOptionPane.showMessageDialog(null, "Achtung - Sie haben dem Patient eine neue Kasse zugewiesen.\n"+
+						"Eventuell ändert sich dadurch der Zuzahlungsstatus vorhandener Rezepte. Bitte prüfen!!!");
+			}
+
+			//if(!jtf[16].getText().trim().equals(befreitdatum) ){
+			System.out.println("Befreiung beim Start ="+freizumstart);
+			System.out.println("Befreiung beim Speichern ="+freibeimspeichern);
+			int zzregel = -1;
+			boolean doof = false;
+			if(! (freizumstart == freibeimspeichern)){
+				if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) ){
+				//if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) && freibeimspeichern){
+					JOptionPane.showMessageDialog(null,"Sie haben einen Kostenträger gwählt der keine Zuzahlung verlangt und\n"+
+							"jetzt wollen Sie im Feld Zuzahlungsbefreiung rummurksen???????\n\nNa ja.....");
+					doof = true;
+				}
+				if(!doof){
+					// hier wäre es optimal eine  ZuzahlToolsFunktion zu haben.....
+					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"' AND abschluss='F'");
+					if(anzahl > 0){
+						String meldung = "Dieser Patient hat -> "+anzahl+" laufende Rezepte <- ohne Abschluss\n"+
+						"Soll der veränderte Befreiungsstatus auf alle nicht(!) abgeschlossenen Rezepte übertragen werden?";
+						int frage = JOptionPane.showConfirmDialog(null,meldung,"Achtung wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
+						if(frage == JOptionPane.NO_OPTION){
+							JOptionPane.showMessageDialog(null,"Dann eben nicht!\nVergessen Sie aber nicht den Befreiungsstatus der Rezepte von Hand zu ändern");
+						}else if(frage == JOptionPane.YES_OPTION){
+							String pat_intern = PatGrundPanel.thisClass.aktPatID;
+							String geboren = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+							String befreit = (freibeimspeichern ? "T" : "F");
+							String datum = (freibeimspeichern ? "" : jtf[16].getText().trim());
+							ZuzahlTools.zzStatusEdit(pat_intern, geboren, "", befreit, jtf[34].getText().trim());
+							//SqlInfo.aktualisiereSaetze("verordn", "befr='"+befreit+"',"+, "pat_intern='"+pat_intern+"'");
+						}
+					}
+				}else{
+					System.out.println("Doof = true and zzregel = "+zzregel);					
+				}
+
+			}
 		}else{
 			// Angelegt von aufgenommen werden
 			int neuid = SqlInfo.holeId("pat5", "n_name");
@@ -448,6 +500,7 @@ boolean inNeu = false;
 			spatintern = new Integer(patintern).toString();
 		}
 		new ExUndHop().setzeStatement(buf.toString());
+
 		
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();

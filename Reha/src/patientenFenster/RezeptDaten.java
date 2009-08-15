@@ -61,7 +61,7 @@ public class RezeptDaten extends JXPanel{
 		hbimg = SystemConfig.hmSysIcons.get("hausbesuch");
 	}
 	public void setRezeptDaten(String reznummer,String sid){
-		//RezeptDaten.feddisch = false;		
+		RezeptDaten.feddisch = false;		
 		reznum.setText(reznummer);
 		AktuelleRezepte.aktRez.rezAngezeigt = reznummer;
 		final String xreznummer = reznummer;
@@ -185,6 +185,16 @@ public class RezeptDaten extends JXPanel{
 				
 				PatGrundPanel.thisClass.rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
 				AktuelleRezepte.aktRez.rezAngezeigt = reznum.getText();
+
+
+				int zzbild = new Integer ( (String)vecaktrez.get(39) );
+				int row = AktuelleRezepte.aktRez.tabaktrez.getSelectedRow();
+				if(AktuelleRezepte.aktRez.dtblm.getValueAt(row,1) != PatGrundPanel.thisClass.imgzuzahl[zzbild]){
+					System.out.println("Zuzahlungsstatus für Bilderstellung in Reihe "+row+" = "+zzbild);
+					AktuelleRezepte.aktRez.dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[zzbild],row,1);
+					AktuelleRezepte.aktRez.tabaktrez.validate();
+				}
+
 				RezeptDaten.feddisch = true;
 
 				new Thread(){
