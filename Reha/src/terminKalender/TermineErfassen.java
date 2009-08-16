@@ -103,7 +103,7 @@ public class TermineErfassen implements Runnable {
 	}
 	/********************/
 	public int testeVerordnung() throws Exception{
-		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
+		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza","termine"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 			if(vec.size()==0){
