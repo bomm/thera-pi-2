@@ -174,7 +174,7 @@ public JLabel[] rezlabs = {null,null,null,null,null,
 							null,null,null,null,null};
 public JTextArea rezdiag = null;
 
-public ImageIcon[] imgzuzahl = {null,null,null};
+public ImageIcon[] imgzuzahl = {null,null,null,null};
 
 public Vector vecaktrez = null;
 public Vector vecakthistor = null;
@@ -355,6 +355,7 @@ public PatGrundPanel(JPatientInternal jry){
 			imgzuzahl[0] = SystemConfig.hmSysIcons.get("zuzahlfrei");
 			imgzuzahl[1] = SystemConfig.hmSysIcons.get("zuzahlok");			
 			imgzuzahl[2] = SystemConfig.hmSysIcons.get("zuzahlnichtok");
+			imgzuzahl[3] = SystemConfig.hmSysIcons.get("kleinehilfe");
 			return null;
 		}
 		

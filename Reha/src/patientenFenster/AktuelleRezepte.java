@@ -94,6 +94,7 @@ import events.RehaTPEventListener;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
+import stammDatenTools.ZuzahlTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 
@@ -765,16 +766,35 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		
 		if( (col >=  0 && col < 4 && type == TableModelEvent.UPDATE) ){
-
+				final int xcol = col;
 				new Thread(){
 					public void run(){
 						termineSpeichern();
+						if(xcol==0){
+							starteTests();
+						}
+
 					}
 				}.start();
 
 
 		}
+
 	}
+	private void starteTests(){
+		new Thread(){
+			public void run(){
+				System.out.println("Hier den Termintest");
+				if(PatGrundPanel.thisClass.vecaktrez.get(60).equals("T")){
+					ZuzahlTools.unter18Test((String)PatGrundPanel.thisClass.vecaktrez.get(1),true,false);
+				}
+				if(!PatGrundPanel.thisClass.patDaten.get(69).equals("")){
+					ZuzahlTools.jahresWechselTest((String)PatGrundPanel.thisClass.vecaktrez.get(1),true,false);	
+				}
+			}
+		}.start();
+	}
+
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -954,6 +974,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				new Thread(){
 					public void run(){
 						termineSpeichern();
+						starteTests();						
 					}
 				}.start();
 				
@@ -973,6 +994,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					new Thread(){
 						public void run(){
 							termineSpeichern();
+							starteTests();
 						}
 					}.start();
 				
@@ -1012,6 +1034,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					new Thread(){
 						public void run(){
 							termineSpeichern();
+							starteTests();
 						}
 					}.start();
 				}
@@ -1259,7 +1282,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
 			return;
 		}
-		if( (boolean)PatGrundPanel.thisClass.vecaktrez.get(39).equals("1") ){
+		if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
+			JOptionPane.showMessageDialog(null,"Stand heute ist der Patient noch nicht Volljährig - Zuzahlung deshalb (bislang) noch nicht erforderlich");
+			return;
+		}
+
+		if( (boolean)PatGrundPanel.thisClass.vecaktrez.get(39).equals("1") || 
+				(new Double((String)PatGrundPanel.thisClass.vecaktrez.get(13)) > 0.00) ){
 			String reznr = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
 			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung für Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
@@ -1267,6 +1296,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			bereitsbezahlt = true;
 		}
+
 		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
 		new RezeptGebuehren(bereitsbezahlt,false,pt);
 	}

@@ -463,6 +463,7 @@ boolean inNeu = false;
 			boolean doof = false;
 			if(! (freizumstart == freibeimspeichern)){
 				if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) ){
+					System.out.println("Zuzahlregel = "+zzregel+" Kassen-ID = "+jtf[34].getText().trim());
 				//if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) && freibeimspeichern){
 					JOptionPane.showMessageDialog(null,"Sie haben einen Kostenträger gwählt der keine Zuzahlung verlangt und\n"+
 							"jetzt wollen Sie im Feld Zuzahlungsbefreiung rummurksen???????\n\nNa ja.....");
@@ -470,10 +471,10 @@ boolean inNeu = false;
 				}
 				if(!doof){
 					// hier wäre es optimal eine  ZuzahlToolsFunktion zu haben.....
-					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"' AND abschluss='F'");
+					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"' AND REZ_GEB='0.00'");
 					if(anzahl > 0){
 						String meldung = "Dieser Patient hat -> "+anzahl+" laufende Rezepte <- ohne Abschluss\n"+
-						"Soll der veränderte Befreiungsstatus auf alle nicht(!) abgeschlossenen Rezepte übertragen werden?";
+						"Soll der veränderte Befreiungsstatus auf alle noch nicht(!) bezahlten Rezepte übertragen werden?";
 						int frage = JOptionPane.showConfirmDialog(null,meldung,"Achtung wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
 						if(frage == JOptionPane.NO_OPTION){
 							JOptionPane.showMessageDialog(null,"Dann eben nicht!\nVergessen Sie aber nicht den Befreiungsstatus der Rezepte von Hand zu ändern");
@@ -483,7 +484,6 @@ boolean inNeu = false;
 							String befreit = (freibeimspeichern ? "T" : "F");
 							String datum = (freibeimspeichern ? "" : jtf[16].getText().trim());
 							ZuzahlTools.zzStatusEdit(pat_intern, geboren, "", befreit, jtf[34].getText().trim());
-							//SqlInfo.aktualisiereSaetze("verordn", "befr='"+befreit+"',"+, "pat_intern='"+pat_intern+"'");
 						}
 					}
 				}else{

@@ -1008,6 +1008,9 @@ public class SystemConfig {
 		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
 		hmSysIcons.put("ootabelle", new ImageIcon(ico));
 
+		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kleinehilfe")).getImage().getScaledInstance(14,14, Image.SCALE_SMOOTH);
+		hmSysIcons.put("kleinehilfe", new ImageIcon(ico));
+		
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");
 

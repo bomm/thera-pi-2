@@ -44,6 +44,7 @@ public class RezTools {
 		}
 		return (Vector)retvec.clone();
 	}
+	/************************************************************/
 	public static int testeRezGebArt(String srez,String termine){
 		int iret = 0;
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
@@ -70,11 +71,13 @@ public class RezTools {
 		boolean bMitJahresWechsel = false;
 		boolean bHbVoll = false;
 		boolean bPauschal = false;
+		boolean bDiesesRezFrei = false;
 		int iKilometer = 0;
 		int iTermine = -1;
 		int iVorjahr = -1;
 		int iFreie = 0;
 		
+		//1. Schritt haben wir bereits Termineinträge die man auswerten kann
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
@@ -84,17 +87,22 @@ public class RezTools {
 			}
 		}
 		System.out.println(vAktTermine);
-		
+
+		//2. Schritt war der Pat zum Zeitpunkt der Rezeptanlage unter 18, wenn nein umso besser;
 		if( (boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T") ){
 			// Zum Zeitpunkt der Rezeptanlage unter 18, Prüfen ob während Behandlung
 			bUnter18 = true;
 		}
-		if(! ((String)PatGrundPanel.thisClass.patDaten.get(69)).trim().equals("") ){
+		//3. Schritt war der Patient im Vorjahr befreit??? Wenn nein umso besser.
+		String vorjahr;
+		if( (! (vorjahr = ((String)PatGrundPanel.thisClass.patDaten.get(69)).trim()).equals("") ) && bMitJahresWechsel){
 			// War im Vorjahr Zuzahlungsbefreit
 			bVorjahrFrei = true;
-			iVorjahr = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(69)));
-			sVorjahrDatum = "31.12."+iVorjahr;
+			iVorjahr = new Integer(vorjahr);
+			//iVorjahr = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(69)));
+			sVorjahrDatum = "31.12."+vorjahr;
 		}
+		//4. Schritt ist der Patient aktuell befreit?? 
 		if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T")){
 			// Rezept ist Hausbesuchsrezept
 			bHausbesuch = true;
@@ -119,6 +127,7 @@ public class RezTools {
 			}
 
 		}
+		//5. Schritt ist der Patient zwar befreit aber noch nicht für dieses Rezept
 		if((!bUnter18) && (!bVorjahrFrei) &&  (!bHausbesuch)){
 			// ganz normale Rezeptgebühren
 			iret = 0;

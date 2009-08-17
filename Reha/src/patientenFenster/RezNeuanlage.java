@@ -1117,13 +1117,29 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				}
 				break;
 			}
-			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
+			
+			if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				szzstatus = "0";
+				String gebtag = datFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				long tage = datFunk.TageDifferenz(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
+
+				System.out.println("Differenz in Tagen = "+tage);
+				System.out.println("Geburtstag = "+gebtag);
+				
+				if(tage < 0 && tage >= -45){
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
+							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					szzstatus = "3";
+				}else{
+					szzstatus = "0";
+				}
+				//szzstatus = "0";
 				unter18 = "T";
 				break;
 			}
-			if(this.vec.get(14).equals("T")){
+			
+			if(this.vec.get(14).equals("T") || 
+					(new Double((String)this.vec.get(13)) > 0.00) ){
 				szzstatus = "1";
 			}else{
 				szzstatus = "2";				
@@ -1157,7 +1173,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 		//sbuf.append("diagnose='"+jta.getText()+"' ");
-		sbuf.append("unter18='"+unter18+"', ");
+		//sbuf.append("unter18='"+unter18+"', ");
 		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
@@ -1310,22 +1326,36 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		String szzstatus = "";
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
-				//System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				System.out.println("1. ZuzahlStatus = Zuzahlung nicht erforderlich");
 				szzstatus = "0";
 				break;
 			}
 			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
-				//System.out.println("ZuzahlStatus = Patient ist befreit");
+				System.out.println("2. ZuzahlStatus = Patient ist befreit");
 				szzstatus = "0";				
 				break;
 			}
-			if(datFunk.Unter18(datFunk.sHeute(), PatGrundPanel.thisClass.patDaten.get(4))){
+			if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				szzstatus = "0";
+				String gebtag = datFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				long tage = datFunk.TageDifferenz(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
+
+				System.out.println("Differenz in Tagen = "+tage);
+				System.out.println("Geburtstag = "+gebtag);
+				
+				if(tage < 0 && tage >= -45){
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
+							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					szzstatus = "3";
+				}else{
+					szzstatus = "0";
+				}
+				//szzstatus = "0";
 				unter18 = "T";
 				break;
 			}
+			//System.out.println("Normale Zuzahlung -> status noch nicht bezahlt");
 			szzstatus = "2";				
 		}
 		sbuf.append("zzstatus='"+szzstatus+"', ");
@@ -1354,10 +1384,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
-		//sbuf.append("unter18='"+unter18+"', ");
+		sbuf.append("unter18='"+unter18+"', ");
 		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
+		sbuf.append("befr='"+PatGrundPanel.thisClass.patDaten.get(30)+"', ");
 		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText()) )+"'");		
 		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
 		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
