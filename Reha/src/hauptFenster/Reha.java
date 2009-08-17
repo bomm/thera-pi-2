@@ -1369,8 +1369,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	    	  //SwingUtilities.updateComponentTreeUI(this.jSplitRechtsOU);
 	    	  SwingUtilities.updateComponentTreeUI(this.jxLinks);	    	  
 	    	  SwingUtilities.updateComponentTreeUI(this.jxRechts);
-
-	    	  
 	    	  
 	    	  LinkeTaskPane.UpdateUI();
 			}catch (ClassNotFoundException e1) {
