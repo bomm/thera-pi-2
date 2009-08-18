@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import patientenFenster.AktuelleRezepte;
 import patientenFenster.PatGrundPanel;
 
 import sqlTools.ExUndHop;
@@ -49,8 +50,100 @@ public class ZuzahlTools {
 		return false;
 	}
 	/**********************************************************/
-	
-	public static Object unter18Test(String rez_nr,boolean azTest,boolean jahrTest){
+	public static Object[] unter18TestDirekt(Vector<String> termine,boolean azTest,boolean jahrTest){
+						// Rez geb fällig   //Anzahl Term   //Anzahl frei  //Anzahl unfrei  //Zuzahlstatus
+		Object[] ret = {new Boolean(false),new Integer(-1),new Integer(-1),new Integer(-1),new Integer(-1)};
+		//Vector vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
+		Vector<String> tage  = (Vector<String>)termine.clone();
+		if(tage.size()==0){
+			return ret;
+		}
+		Comparator comparator = new Comparator<String>() {
+			public int compare(String s1, String s2) {
+		        String strings1 = datFunk.sDatInSQL(s1);
+		        String strings2 = datFunk.sDatInSQL(s2);
+		        return strings1.compareTo(strings2);
+		    }
+		};	
+		Collections.sort(tage,comparator);
+		String rez_nr = (String) PatGrundPanel.thisClass.vecaktrez.get(1);
+		String unter18 = (String) PatGrundPanel.thisClass.vecaktrez.get(60);
+		String pat_int = (String) PatGrundPanel.thisClass.vecaktrez.get(0);
+		String aktzzstatus = (String) PatGrundPanel.thisClass.vecaktrez.get(39);
+		String aktzzregel = (String) PatGrundPanel.thisClass.vecaktrez.get(63);
+		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
+			String stichtag = "";
+			String geburtstag = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+			String gebtag = (datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(22))).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+			
+			boolean einergroesser = false;
+			int erstergroesser = -1; 
+			for(int i = 0; i < tage.size();i++){
+				stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				if(datFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
+					einergroesser = true;
+					break;
+				}
+				System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
+						" und dem Geburtstag "+geburtstag+" = "+
+						datFunk.TageDifferenz(geburtstag ,stichtag));
+				
+				/*
+				if(tage < 0 && tage >= -45){
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
+							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					szzstatus = "3";
+				}else{
+					szzstatus = "0";
+				}
+				 * 
+				*/		
+			}
+			if( (aktzzstatus.equals("3") || aktzzstatus.equals("0"))&& einergroesser){
+				//String cmd = "update verordn set zzstatus='2' where rez_nr='"+rez_nr+" LIMIT 1";
+				//new ExUndHop().setzeStatement(cmd);
+				SqlInfo.aktualisiereSaetze("verordn", "zzstatus='2'", "rez_nr='"+rez_nr+"' LIMIT 1");
+				AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),2);				
+				ret[0] = new Boolean(true); 
+				ret[1] = tage.size();
+				ret[2] = new Integer(erstergroesser-1);
+				ret[3] = ((Integer)ret[1]) - erstergroesser;
+				ret[4] = new Integer(2);
+			}
+			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){
+				//String cmd = "update verordn set zzstatus='3' where rez_nr='"+rez_nr+" LIMIT 1";
+				//new ExUndHop().setzeStatement(cmd);
+				long tagex = datFunk.TageDifferenz(geburtstag ,gebtag);
+				System.out.println("Tagex = ---------------> "+tagex);
+				if(tagex <= 0 && tagex > -45){
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
+							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
+					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),3);
+					ret[4] = new Integer(3);					
+				}else{
+					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='0'", "rez_nr='"+rez_nr+"' LIMIT 1");
+					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),0);
+					ret[4] = new Integer(0);
+				}
+				ret[0] = new Boolean(false); 
+				ret[1] = tage.size();
+				
+			}
+		}else if(unter18.equals("T") && (aktzzregel.equals("0"))){
+			AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),0);			
+			ret[0] = new Boolean(false); 
+			ret[1] = tage.size();
+			ret[4] = new Integer(0);			
+			
+		}
+		//AktuelleRezepte.aktRez.tabaktrez.validate();
+		return ret;
+	}
+	/********************************************************/
+
+	/********************************************************/	
+	public static Object[] unter18TestAllesSuchen(String rez_nr,boolean azTest,boolean jahrTest){
 
 		Object[] ret = {new Boolean(false),new Integer(-1),new Integer(-1),new Integer(-1)};
 		Vector vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
@@ -107,6 +200,7 @@ public class ZuzahlTools {
 		}
 		return ret;
 	}
+	/********************************************************/
 	public static void jahresWechselTest(String rez_nr,boolean azTest,boolean jahrTest){
 		Vector vec = SqlInfo.holeFelder("select termine,id from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		vec = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector)vec.get(0)).get(0));

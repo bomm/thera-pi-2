@@ -657,6 +657,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
 	}
+	public void setzeBild(int satz,int icon){
+		dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[icon],satz,1);
+		tabaktrez.validate();
+		tabaktrez.repaint();
+	}
 	private void holeEinzelTermine(int row,Vector vvec){
 		inEinzelTermine = true;
 		Vector xvec = null;
@@ -736,9 +741,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
 
-		String stmt = "update verordn set termine='"+sb.toString()+"' where id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6)+"'";
+		//String stmt = "update verordn set termine='"+sb.toString()+"' where id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6)+"'";
 		//System.out.println(stmt);
-		new ExUndHop().setzeStatement(stmt);
+		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6)+"'");
+		//new ExUndHop().setzeStatement(stmt);
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
@@ -786,7 +792,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			public void run(){
 				System.out.println("Hier den Termintest");
 				if(PatGrundPanel.thisClass.vecaktrez.get(60).equals("T")){
-					ZuzahlTools.unter18Test((String)PatGrundPanel.thisClass.vecaktrez.get(1),true,false);
+					Vector<String>tage = new Vector<String>();
+					Vector v = dtermm.getDataVector();
+					for(int i = 0; i < v.size();i++){
+						tage.add((String) ((Vector)v.get(i)).get(0));
+					}
+					Object[] ret =  ZuzahlTools.unter18TestDirekt(tage,true,false);
+					String resultgleich = "";
+					
 				}
 				if(!PatGrundPanel.thisClass.patDaten.get(69).equals("")){
 					ZuzahlTools.jahresWechselTest((String)PatGrundPanel.thisClass.vecaktrez.get(1),true,false);	
