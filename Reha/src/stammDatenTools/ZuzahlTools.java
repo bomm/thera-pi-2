@@ -107,7 +107,7 @@ public class ZuzahlTools {
 				ret[0] = new Boolean(true); 
 				ret[1] = tage.size();
 				ret[2] = new Integer(erstergroesser-1);
-				ret[3] = ((Integer)ret[1]) - erstergroesser;
+				ret[3] = ((Integer)ret[1]) - (Integer)ret[2];
 				ret[4] = new Integer(2);
 			}
 			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){
@@ -118,12 +118,12 @@ public class ZuzahlTools {
 				if(tagex <= 0 && tagex > -45){
 					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
 							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
-					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),3);
+					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(3);					
 				}else{
-					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='0'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),0);
+					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='0'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(0);
 				}
 				ret[0] = new Boolean(false); 

@@ -1177,7 +1177,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("jahrfrei='"+PatGrundPanel.thisClass.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
-		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText()) )+"'");
+		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText())-1 )+"'");
 
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
 		//System.out.println(sbuf.toString());	
@@ -1389,7 +1389,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
 		sbuf.append("befr='"+PatGrundPanel.thisClass.patDaten.get(30)+"', ");
-		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText()) )+"'");		
+		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText())-1 )+"'");		
 		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
 		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());

@@ -455,7 +455,27 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		dtermm.addTableModelListener(this);
 		String[] column = 	{"Beh.Datum","Behandler","Text","Beh.Art",""};
 		dtermm.setColumnIdentifiers(column);
-		tabaktterm = new JXTable(dtermm);
+		tabaktterm = new JXTable(dtermm){
+			public boolean editCellAt(int row, int column, EventObject e) {
+				System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
+				System.out.println("Event = "+e);
+				if (e == null) {
+
+					System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
+				}
+				if (e instanceof MouseEvent) {
+					MouseEvent mouseEvent = (MouseEvent) e;
+					if (mouseEvent.getClickCount() > 1) {
+						System.out.println("edit!");
+					}
+				}
+
+				return super.editCellAt(row, column, e);
+			}
+		};
+		//abaktterm.setSurrendersFocusOnKeystroke(false);
+		//tabaktterm.setVerifyInputWhenFocusTarget(true);
+
 		tabaktterm.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
 		tabaktterm.setDoubleBuffered(true);
 		tabaktterm.addPropertyChangeListener(this);
@@ -471,7 +491,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//tabaktterm.getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
 		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
 		//tabaktterm.getColumn(0).setCellEditor(new MyDateEditor(new SimpleDateFormat("dd.mm.yyyyy")));
-
+		tabaktterm.setAutoStartEditOnKeyStroke(true);
 		tabaktterm.getColumn(0).setMinWidth(60);
 		tabaktterm.getColumn(1).setMinWidth(60);
 		tabaktterm.getColumn(2).setMinWidth(40);
@@ -479,6 +499,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.getColumn(4).setMinWidth(0);
 		tabaktterm.getColumn(4).setMaxWidth(0);
 		tabaktterm.setOpaque(true);
+
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
 				// TODO Auto-generated method stub
@@ -486,10 +507,24 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(arg0.getKeyCode()==10){
 					//arg0.consume();
 					//tbl.stopCellEditing();
-				}
-				if(arg0.getKeyCode()==27){
+				}else if(arg0.getKeyCode()==27){
+				
 					//System.out.println("cancel in tabelle");
 					tbl.cancelCellEditing();
+				}else{/*
+					   int row = tabaktterm.getSelectedRow();
+					   int col = tabaktterm.getSelectedColumn();
+					    boolean success = tabaktterm.editCellAt(row, col);
+					    if (success) {
+					        // Select cell
+					        boolean toggle = false;
+					        boolean extend = false;
+					        tabaktterm.changeSelection(row, col, toggle, extend);
+					    } else {
+					        // Cell could not be edited
+					    }
+					    */
+					
 				}
 			}
 			
@@ -1047,7 +1082,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					new Thread(){
 						public void run(){
 							termineSpeichern();
-							starteTests();
+							//starteTests();
 						}
 					}.start();
 				}

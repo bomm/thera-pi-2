@@ -35,7 +35,7 @@ public class SystemConfig {
 	public static Vector<ArrayList<String>> vSystemKollegen;
 	public static Vector<String> vComboKollegen;
 	public static String  aktJahr = "";
-	
+	public static String  vorJahr = "";
 	public static Vector<String> vKalenderSet;
 	public static Vector<Object> vKalenderFarben;
 	public static ArrayList<String> aHauptFenster;
@@ -173,6 +173,7 @@ public class SystemConfig {
 		catch (java.net.UnknownHostException uhe) {
 			System.out.println(uhe);
 		}
+		vorJahr = new Integer(new Integer(aktJahr)-1).toString();
 	}
 	public void SystemInit(int i){
 		switch(i){

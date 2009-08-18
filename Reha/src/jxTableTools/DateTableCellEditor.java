@@ -1,5 +1,6 @@
 package jxTableTools;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -188,10 +189,16 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         	insstr = (String)value;
             ftf.setText(insstr);
         }
+        ftf.requestDefaultFocus();
+        ftf.setCaretColor(Color.BLACK);
+		ftf.requestFocus();
         ftf.setSelectionStart(0);
-        ftf.setSelectionEnd(insstr.length()-1);
-        ftf.setCaretPosition(0);
-        ftf.requestFocus();
+		ftf.setSelectionEnd(0);
+		//ftf.setSelectionEnd(insstr.length()-1);
+		ftf.setCaretPosition(0);
+		System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
+		 		   
+        
         return ftf;
     }
 
@@ -303,6 +310,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 		if(arg0.getKeyCode()==10){
 			//fireEditingStopped();
 		}
+		System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {

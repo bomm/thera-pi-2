@@ -45,37 +45,33 @@ public class RezTools {
 		return (Vector)retvec.clone();
 	}
 	/************************************************************/
+/*	
+	class ZuzahlModell{
+		public int gesamtZahl;
+		public boolean allefrei;
+		public boolean allezuzahl;
+		public boolean anfangfrei;
+		public int teil1;
+		public int teil2;
+		public boolean hausbes;
+		public boolean mithausbes;
+		public ZuzahlModell(int gesamt,boolean allefrei){
+			
+		}
+	}
+*/
 	public static int testeRezGebArt(String srez,String termine){
 		int iret = 0;
+		Vector<String> vAktTermine = null;
+		boolean bTermine = false;
+		int iTermine = -1;
+		boolean bMitJahresWechsel;
+		ZuzahlModell zm = new ZuzahlModell();
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
 		//String patGeboren = datFunk.sDatInDeutsch(patvec.get(0));
 		//String patJahrfrei = datFunk.sDatInDeutsch(patvec.get(0));
 		//
-		String patGeboren = "";
-		String patJahrfrei = "";
-		String neuePreiseab = "";
-		String befreitVorjahr = "";
-		String kilometer = "";
-		String pauschale = "";
-		String nachherfrei = "";
-		String vorherfrei = "";
-		Vector vAktTermine = null;
-		boolean bNeuePreise = false;
-		long lNeuePreise = 0;
-		boolean bTermine = false;
-		boolean bUnter18 = false;
-		boolean bVorjahrFrei = false;
-		String sVorjahrDatum = "";
-		boolean bHausbesuch = false;
-		boolean bHeimbewohner = false;
-		boolean bMitJahresWechsel = false;
-		boolean bHbVoll = false;
-		boolean bPauschal = false;
-		boolean bDiesesRezFrei = false;
-		int iKilometer = 0;
-		int iTermine = -1;
-		int iVorjahr = -1;
-		int iFreie = 0;
+		
 		
 		//1. Schritt haben wir bereits Termineinträge die man auswerten kann
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
@@ -86,91 +82,63 @@ public class RezTools {
 				bMitJahresWechsel = true;
 			}
 		}
+
 		System.out.println(vAktTermine);
+		for(int i = 0;i < 1;i++){
 
-		//2. Schritt war der Pat zum Zeitpunkt der Rezeptanlage unter 18, wenn nein umso besser;
-		if( (boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T") ){
-			// Zum Zeitpunkt der Rezeptanlage unter 18, Prüfen ob während Behandlung
-			bUnter18 = true;
-		}
-		//3. Schritt war der Patient im Vorjahr befreit??? Wenn nein umso besser.
-		String vorjahr;
-		if( (! (vorjahr = ((String)PatGrundPanel.thisClass.patDaten.get(69)).trim()).equals("") ) && bMitJahresWechsel){
-			// War im Vorjahr Zuzahlungsbefreit
-			bVorjahrFrei = true;
-			iVorjahr = new Integer(vorjahr);
-			//iVorjahr = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(69)));
-			sVorjahrDatum = "31.12."+vorjahr;
-		}
-		//4. Schritt ist der Patient aktuell befreit?? 
-		if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T")){
-			// Rezept ist Hausbesuchsrezept
-			bHausbesuch = true;
-			if((boolean) ((String)PatGrundPanel.thisClass.patDaten.get(44)).equals("T") ){
-				//Hausbesuch bei Heimbewohner
-				bHeimbewohner = true;
+			if(new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(63))) <= 0){
+				// Kasse erfordert keine Zuzahlung
+				zm.allefrei = true;
+				iret = 0;
+				break;
 			}
-			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(61)).equals("T")){
-				//Hausbesuch voll abrechnen
-				bHbVoll = true;
-			}
-			if(! ((String)PatGrundPanel.thisClass.patDaten.get(48)).trim().equals("") ){
-				// Pauschale für Weggebühr
-				
-				iKilometer = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(48)));
-				if(iKilometer <= 0){
-					bPauschal = true;
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T")){
+				// Es ist ein unter 18 Jahre Test notwendig
+				if(bTermine){
+					Object[] obi = ZuzahlTools.unter18TestDirekt(vAktTermine,true,false );	
+					
+				}else{
+					
 				}
-			}else{
-				bPauschal = true;
-				iKilometer = 0;
+				iret = 1;
+				break;
 			}
-
-		}
-		//5. Schritt ist der Patient zwar befreit aber noch nicht für dieses Rezept
-		if((!bUnter18) && (!bVorjahrFrei) &&  (!bHausbesuch)){
-			// ganz normale Rezeptgebühren
-			iret = 0;
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(12)).equals("F") && 
+					(((String)PatGrundPanel.thisClass.vecaktrez.get(59)).trim().equals("")) ){
+				// Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.
+				// Standard
+				iret = 2;
+				break;
+			}
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(12)).equals("T") && 
+					(((String)PatGrundPanel.thisClass.vecaktrez.get(59)).equals(SystemConfig.vorJahr)) ){
+				// Es liegt eine Befreiung vor und im Vorjahr ebenfenfalls befreit
+				iret = 3;
+				break;
+			}
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(12)).equals("F") && 
+					(((String)PatGrundPanel.thisClass.vecaktrez.get(59)).trim().equals(SystemConfig.vorJahr)) ){
+				// Es liegt keine Befreiung vor - aber im Vorjahr war der Pat. befreit
+				iret = 4;
+				break;
+			}
+			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(12)).equals("T") && 
+					(((String)PatGrundPanel.thisClass.vecaktrez.get(59)).trim().equals("")) ){
+				// Es liegt eine Befreiung vor aber im Vorjahr war er nicht befreit
+				iret = 5;
+				break;
+			}
 		}
 		
-		/*
-		System.out.println("Rezept angelegt bei unter 18: "+bUnter18);
-		System.out.println("Patient war im Vorjahr befreit: "+bVorjahrFrei);
-		System.out.println("Rezept ist Hausbesuchsrezept: "+bHausbesuch);
-		System.out.println("Im Fall von Hausbesuch - voll abrechnen: "+bHbVoll);
-		System.out.println("Weggebührpauschale verwenden: "+bPauschal);
-		System.out.println("Im Fall von km-Abrechnung km-Anzahl: "+iKilometer);
-		System.out.println("Patient ist Heimbewohner: "+bHeimbewohner);
-		*/
-		if(bTermine){
-			for(int i = 0;i < iTermine;i++){
-				if(bVorjahrFrei){
-					try{
-						if(datFunk.DatumsWert((String)vAktTermine.get(i)) <= datFunk.DatumsWert((String)"01.01."+SystemConfig.aktJahr) ){
-							iFreie++;
-						}
-					}catch(Exception ex){
-						
-					}
-				}
-			}
-		}
-		//System.out.println("Termine ohne Zuzahlung: "+iFreie);
-		//Zunächst testen ob sich das Rezept über den Jahreswechsel zieht.
-		//Prüfen ob Terminanzahl vollständig
-		// 0 = ganz normale Rezeptgebührenberechnung ohne HB
-		// 1 = normale Rezeptgebühren mit HB normal
-		// 2 = normale Rezeptgebühren mit HB aber in soz. Einrichtung
-		// 3 = zu Beginn befreit und jetzt ZuZahl-pflichtig
-		// 4 = zu Beginn befreit und jetzt ZuZahl-pflichtig mitHB normal
-		// 5 = zu Beginn befreit und jetzt ZuZahl-pflichtig mitHB in soz. Einrichtung		
-		// 6 = Preisumstellung der Krankenkasse		
-		if(iret==0){
-			constructNormalRezHMap();
+		System.out.println("ZZ-Variante = "+iret);
+		if(iret==2){
+			boolean hausbesuch = ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T");
+			//Hausbesuch als logischen wert
+			constructNormalRezHMap(hausbesuch);
 		}
 		return iret;
 	}
-	public static void constructNormalRezHMap(){
+	public static void constructNormalRezHMap(boolean hausbesuch){
 		/************************************/
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
@@ -271,5 +239,42 @@ public class RezTools {
 		}
 		return (Vector<Vector<String>>) termine.clone();
 	}
+	
+	public static Object[] JahrEnthalten(Vector<String>vtage,String jahr){
+		Object[] ret = {new Boolean(false),new Integer(-1)};
+		for(int i = 0; i < vtage.size();i++){
+			if( ((String)vtage.get(i)).equals(jahr) ){
+				ret[0] = true;
+				ret[1] = i;
+				break;
+			}
+		}
+		return ret;
+	}
+	public static Object[] JahresWechsel(Vector<String>vtage,String jahr){
+		Object[] ret = {new Boolean(false),new Integer(-1)};
+		for(int i = 0; i < vtage.size();i++){
+			if(!((String)vtage.get(i)).equals(jahr) ){
+				ret[0] = true;
+				ret[1] = i-1;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 
+}
+class ZuzahlModell{
+	public int gesamtZahl;
+	public boolean allefrei;
+	public boolean allezuzahl;
+	public boolean anfangfrei;
+	public int teil1;
+	public int teil2;
+	public boolean hausbes;
+	public boolean mithausbes;
+	public ZuzahlModell(){
+		
+	}
 }
