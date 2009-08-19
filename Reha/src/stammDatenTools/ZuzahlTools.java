@@ -99,16 +99,17 @@ public class ZuzahlTools {
 				 * 
 				*/		
 			}
-			if( (aktzzstatus.equals("3") || aktzzstatus.equals("0"))&& einergroesser){
+			if( (aktzzstatus.equals("3") || aktzzstatus.equals("0") || aktzzstatus.equals("2"))&& einergroesser){
 				//String cmd = "update verordn set zzstatus='2' where rez_nr='"+rez_nr+" LIMIT 1";
 				//new ExUndHop().setzeStatement(cmd);
 				SqlInfo.aktualisiereSaetze("verordn", "zzstatus='2'", "rez_nr='"+rez_nr+"' LIMIT 1");
 				AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),2);				
 				ret[0] = new Boolean(true); 
-				ret[1] = tage.size();
+				ret[1] = new Integer(tage.size());
 				ret[2] = new Integer(erstergroesser-1);
 				ret[3] = ((Integer)ret[1]) - (Integer)ret[2];
 				ret[4] = new Integer(2);
+				return ret.clone();
 			}
 			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){
 				//String cmd = "update verordn set zzstatus='3' where rez_nr='"+rez_nr+" LIMIT 1";
@@ -128,6 +129,7 @@ public class ZuzahlTools {
 				}
 				ret[0] = new Boolean(false); 
 				ret[1] = tage.size();
+				return ret.clone();
 				
 			}
 		}else if(unter18.equals("T") && (aktzzregel.equals("0"))){
@@ -138,7 +140,7 @@ public class ZuzahlTools {
 			
 		}
 		//AktuelleRezepte.aktRez.tabaktrez.validate();
-		return ret;
+		return ret.clone();
 	}
 	/********************************************************/
 
@@ -221,4 +223,18 @@ public class ZuzahlTools {
 		zzregel = SystemConfig.vZuzahlRegeln.get(new Integer(preisgrp)-1);
 		return zzregel;
 	}
+	
+	public static int[] terminNachAchtzehn(Vector<String>tage,String geburtstag){
+		String stichtag = "";
+		int ret = -1;
+		for(int i = 0;i < tage.size();i++){
+			stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+			if(datFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
+				return new int[]{1,i};
+			}
+			
+		}
+		return new int[] {0,-1};
+	}
+
 }

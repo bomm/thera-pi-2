@@ -78,7 +78,7 @@ public class RezTools {
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
 			iTermine = vAktTermine.size();
-			if( ! ((String)vAktTermine.get(0)).substring(6).equals(SystemConfig.aktJahr)){
+			if( ((String)vAktTermine.get(0)).substring(6).equals(SystemConfig.vorJahr)){
 				bMitJahresWechsel = true;
 			}
 		}
@@ -92,17 +92,31 @@ public class RezTools {
 				iret = 0;
 				break;
 			}
+			// der Achtzehnjährige Scheißdreck!!!
 			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(60)).equals("T")){
 				// Es ist ein unter 18 Jahre Test notwendig
 				if(bTermine){
-					Object[] obi = ZuzahlTools.unter18TestDirekt(vAktTermine,true,false );	
 					
+					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.patDaten.get(4))); 
+					if( test[0] > 0 ){
+						//muß zuzahlen
+						zm.allefrei = false;
+						zm.allezuzahl = false;
+						zm.anfangfrei = true;
+						zm.teil1 = test[0];
+						System.out.println("Frei für "+test[1]+" Tage");
+					}else{
+						//Voll befreit
+						System.out.println("Frei für "+test[1]+" Tage");
+						zm.allefrei = true;
+					}
 				}else{
-					
+					//Es stehen keine Termine für Analyse zur Verfügung also muß das Fenster für manuelle Eingabe geöffnet werden!!
 				}
 				iret = 1;
 				break;
 			}
+			/****************************/
 			if((boolean) ((String)PatGrundPanel.thisClass.vecaktrez.get(12)).equals("F") && 
 					(((String)PatGrundPanel.thisClass.vecaktrez.get(59)).trim().equals("")) ){
 				// Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.
