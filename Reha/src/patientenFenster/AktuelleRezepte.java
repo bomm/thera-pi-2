@@ -1345,11 +1345,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			bereitsbezahlt = true;
 		}
 
-		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
+		int art = RezTools.testeRezGebArt(false,(String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
 		new RezeptGebuehren(bereitsbezahlt,false,pt);
 	}
 	private void doBarcode(){
-		int art = RezTools.testeRezGebArt((String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
+		int art = RezTools.testeRezGebArt(false,(String)PatGrundPanel.thisClass.vecaktrez.get(1),(String)PatGrundPanel.thisClass.vecaktrez.get(34));
 		String ik = "510884019";
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
 		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)PatGrundPanel.thisClass.vecaktrez.get(1)+"*");

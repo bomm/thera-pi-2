@@ -113,6 +113,7 @@ public class SystemConfig {
 	public static Vector<String> vNeuePreiseAb;
 	public static Vector<Integer> vNeuePreiseRegel;
 	public static Vector<Vector<String>> vHBRegeln;
+	public static Vector<String> vBerichtRegeln;
 	public static Vector<String> vPatMerker = null;
 	public static Vector<ImageIcon> vPatMerkerIcon = null;
 	
@@ -594,6 +595,7 @@ public class SystemConfig {
 		vNeuePreiseAb = new Vector<String>();
 		vNeuePreiseRegel = new Vector<Integer>();
 		vHBRegeln = new Vector<Vector<String>>();
+		vBerichtRegeln = new Vector<String>();
 		//xxx
 		Vector<String> vec = new Vector<String>();
 		for(int i = 1; i <= tarife; i++){
@@ -602,6 +604,21 @@ public class SystemConfig {
 			vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
 			vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}
+		tarife = inif.getIntegerProperty("HBRegeln", "AnzahlHBRegeln");
+		for(int i = 1; i <= tarife; i++){
+			vec.clear();
+			vec.add(inif.getStringProperty("HBRegeln","HBPosVoll"+i));
+			vec.add(inif.getStringProperty("HBRegeln","HBPosMit"+i));			
+			vec.add(inif.getStringProperty("HBRegeln","HBKilometer"+i));			
+			vec.add(inif.getStringProperty("HBRegeln","HBPauschal"+i));			
+			vec.add(inif.getStringProperty("HBRegeln","HBMitZuZahl"+i));
+			vHBRegeln.add((Vector<String>)vec.clone());
+		}
+		tarife = inif.getIntegerProperty("BerichtRegeln", "AnzahlBerichtRegeln");
+		for(int i = 1; i <= tarife; i++){
+			vBerichtRegeln.add( inif.getStringProperty("BerichtRegeln","Bericht1"+i) );
+		}
+
 	}
 	public static void HashMapsVorbereiten(){
 		hmAdrKDaten = new HashMap<String,String>();
@@ -626,13 +643,13 @@ public class SystemConfig {
 		for(int i = 0; i < lAdrPDaten.size(); i++){
 			hmAdrPDaten.put(lAdrPDaten.get(i),"");
 		}
-
 		hmAdrRDaten = new HashMap<String,String>();
 		List<String> lAdrRDaten = Arrays.asList(new String[]{"<Rpatid>","<Rnummer>","<Rdatum>","<Rposition1>","<Rposition2>","<Rposition3>"
 				,"<Rposition4>","<Rpreise1>","<Rpreise2>","<Rpreise3>","<Rpreise4>","<Rproz1>","<Rproz2>","<Rproz3>"
 				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag>","<Ranzahl1>"
 				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>","<Rerstdat>","<Rletztdat>","<Rid>","<Rtage>","<Rkurz1>","<Rkurz2"
-				,"<Rkurz3>","<Rkurz4>","<Rlang1>","<Rlang2>","<Rlang3>","<Rlang4>","<Rbarcode>","<Systemik>","<Rwert>","<Rhbpos>","<Rwegegeld>"});
+				,"<Rkurz3>","<Rkurz4>","<Rlang1>","<Rlang2>","<Rlang3>","<Rlang4>","<Rbarcode>","<Systemik>","<Rwert>"
+				,"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"});
 		for(int i = 0; i < lAdrRDaten.size(); i++){
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
 		}

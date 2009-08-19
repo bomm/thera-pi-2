@@ -16,6 +16,7 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -27,6 +28,7 @@ import org.jdesktop.swingx.JXPanel;
 
 import patientenFenster.ArztAuswahl.ArztWahlAction;
 
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
@@ -59,6 +61,21 @@ public class RezeptDaten extends JXPanel{
 		setLayout(new BorderLayout());
 		add(getDatenPanel(),BorderLayout.CENTER);
 		hbimg = SystemConfig.hmSysIcons.get("hausbesuch");
+		PatGrundPanel.thisClass.rezlabs[1].setHorizontalTextPosition(JLabel.LEFT);
+		PatGrundPanel.thisClass.rezlabs[1].addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				if( (arg0.getSource() instanceof JLabel) && (arg0.getClickCount()==2)){
+					String anzhb = StringTools.NullTest((String)vecaktrez.get(64)).trim();
+					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", new String(anzhb));
+					if( ! ((String)ret).trim().equals(anzhb) ){
+						PatGrundPanel.thisClass.rezlabs[1].setText(((String)ret).trim()+" *");
+						new ExUndHop().setzeStatement("update verordn set anzahlhb='"+((String)ret).trim()+"' "+
+								"where rez_nr='"+reznum.getText()+"' LIMIT 1");
+					}
+				}
+			}
+		});
 	}
 	public void setRezeptDaten(String reznummer,String sid){
 		RezeptDaten.feddisch = false;		
@@ -77,8 +94,10 @@ public class RezeptDaten extends JXPanel{
 				PatGrundPanel.thisClass.vecaktrez = vecaktrez;
 				String stest = StringTools.NullTest((String)vecaktrez.get(43));
 				if( stest.equals("T") ){
+					PatGrundPanel.thisClass.rezlabs[1].setText(StringTools.NullTest((String)vecaktrez.get(64))+" *");
 					PatGrundPanel.thisClass.rezlabs[1].setIcon(hbimg);
 				}else{
+					PatGrundPanel.thisClass.rezlabs[1].setText(null);
 					PatGrundPanel.thisClass.rezlabs[1].setIcon(null);
 				}
 				PatGrundPanel.thisClass.rezlabs[2].setText("angelegt von: "+StringTools.NullTest((String)vecaktrez.get(45)));
@@ -199,7 +218,7 @@ public class RezeptDaten extends JXPanel{
 
 				new Thread(){
 					public void run(){
-						int i = RezTools.testeRezGebArt(reznum.getText().trim(),(String)vecaktrez.get(34));
+						int i = RezTools.testeRezGebArt(true,reznum.getText().trim(),(String)vecaktrez.get(34));
 					}
 				}.start();
 				

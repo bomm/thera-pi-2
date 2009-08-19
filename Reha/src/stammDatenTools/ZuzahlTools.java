@@ -84,20 +84,10 @@ public class ZuzahlTools {
 					einergroesser = true;
 					break;
 				}
-				System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
-						" und dem Geburtstag "+geburtstag+" = "+
-						datFunk.TageDifferenz(geburtstag ,stichtag));
+				//System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
+						//" und dem Geburtstag "+geburtstag+" = "+
+						//datFunk.TageDifferenz(geburtstag ,stichtag));
 				
-				/*
-				if(tage < 0 && tage >= -45){
-					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
-							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
-					szzstatus = "3";
-				}else{
-					szzstatus = "0";
-				}
-				 * 
-				*/		
 			}
 			if( (aktzzstatus.equals("3") || aktzzstatus.equals("0") || aktzzstatus.equals("2"))&& einergroesser){
 				//String cmd = "update verordn set zzstatus='2' where rez_nr='"+rez_nr+" LIMIT 1";
@@ -115,10 +105,10 @@ public class ZuzahlTools {
 				//String cmd = "update verordn set zzstatus='3' where rez_nr='"+rez_nr+" LIMIT 1";
 				//new ExUndHop().setzeStatement(cmd);
 				long tagex = datFunk.TageDifferenz(geburtstag ,gebtag);
-				System.out.println("Tagex = ---------------> "+tagex);
+				//System.out.println("Tagex = ---------------> "+tagex);
 				if(tagex <= 0 && tagex > -45){
-					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
-							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					//JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
+							//"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
 					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),3);
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(3);					
@@ -206,7 +196,7 @@ public class ZuzahlTools {
 	public static void jahresWechselTest(String rez_nr,boolean azTest,boolean jahrTest){
 		Vector vec = SqlInfo.holeFelder("select termine,id from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		vec = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector)vec.get(0)).get(0));
-		System.out.println(vec);
+		//System.out.println(vec);
 	}
 
 	public static int getZuzahlRegel(String kassid){
