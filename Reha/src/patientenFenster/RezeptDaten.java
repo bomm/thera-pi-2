@@ -68,6 +68,9 @@ public class RezeptDaten extends JXPanel{
 				if( (arg0.getSource() instanceof JLabel) && (arg0.getClickCount()==2)){
 					String anzhb = StringTools.NullTest((String)vecaktrez.get(64)).trim();
 					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", new String(anzhb));
+					if(ret == null){
+						return;
+					}
 					if( ! ((String)ret).trim().equals(anzhb) ){
 						PatGrundPanel.thisClass.rezlabs[1].setText(((String)ret).trim()+" *");
 						new ExUndHop().setzeStatement("update verordn set anzahlhb='"+((String)ret).trim()+"' "+

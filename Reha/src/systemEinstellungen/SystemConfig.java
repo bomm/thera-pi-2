@@ -650,7 +650,7 @@ public class SystemConfig {
 				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>","<Rerstdat>","<Rletztdat>","<Rid>","<Rtage>","<Rkurz1>","<Rkurz2"
 				,"<Rkurz3>","<Rkurz4>","<Rlang1>","<Rlang2>","<Rlang3>","<Rlang4>","<Rbarcode>","<Systemik>","<Rwert>"
 				,"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"
-				,"<Rhbgesamt>","<Rweggesamt>"});
+				,"<Rhbgesamt>","<Rweggesamt>","<Rwegkm>"});
 		for(int i = 0; i < lAdrRDaten.size(); i++){
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
 		}

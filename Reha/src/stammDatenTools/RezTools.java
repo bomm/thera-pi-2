@@ -321,6 +321,7 @@ public class RezTools {
 			}
 		}
 		/*****************************************************/
+		hbNormal(zm);
 		//"<Rhbpos>","<Rwegegeld>"
 		/*
 		zm.hausbesuch = ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T");
@@ -332,26 +333,53 @@ public class RezTools {
 		//"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"});
 		
 		//PreisUeberPosition("29933",zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2) );
-		PreisUeberPosition("29933",2,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2) );
+		//PreisUeberPosition("29933",2,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true );
+		/*
 		if(zm.hausbesuch){ //Hausbesuch
+			System.out.println("Hausbesuch ist angesagt");
+			String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
+			String rezid = SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2);
 			String zz =  SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(4);
 			String kmgeld = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2);
-			String kmpausch = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3);
+			String kmpausch = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3);			
+			String hbpos = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0);
+			String hbmit = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1);
+			//für jede Disziplin eine anderes praefix
+			String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
+
+			kmgeld = kmgeld.replaceAll("x",ersatz); 
+			kmpausch = kmpausch.replaceAll("x",ersatz); 
+			hbpos = hbpos.replaceAll("x",ersatz); 
+			hbmit = hbmit.replaceAll("x",ersatz);
+
+			//System.out.println("kmgeld----------------> "+kmgeld);
+			//System.out.println("kmpausch----------------> "+kmpausch);
+
 			if(zm.hbheim){ // und zwar im Heim
+				System.out.println("Der HB ist im Heim");
 				if(zm.hbvoll){// Volle Ziffer abrechnen?
-					SystemConfig.hmAdrRDaten.put("<Rhbpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0));
+					System.out.println("Es kann der volle Hausbesuch abgerechnet werden");
+					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
 					SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2)) );
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
 
 					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
+						System.out.println("Es könnten Kilometer abgerechnet werden");
 						if(zm.km > 0 ){
-							SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
+							System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
+							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
+							//SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
+							SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
 							//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 						}else{// Keine Kilometer angegeben also pauschale verwenden
+							System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
 							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-								SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3));
+								System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+								SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
 								SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2)) );
+										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
 
 							}else{
 								JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
@@ -360,27 +388,45 @@ public class RezTools {
 							
 						}
 					}else{// es können keine Kilometer abgerechnet werden
+						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
 					}
 				}else{//nur Mit-Hausbesuch
-					SystemConfig.hmAdrRDaten.put("<Rhbpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1));
+					System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
+					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit);
 					SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2)) );
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
 					
 				}
 				if(zz.equals("1")){// Zuzahlungspflichtig
 					
 				}
 			}else{//nicht im Heim
-				
-				SystemConfig.hmAdrRDaten.put("<Rhbpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0));
+				System.out.println("Der Hausbesuch ist nicht in einem Heim");
+				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
+				SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
 				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
+					System.out.println("Es könnten Kilometer abgerechnet werden");
 					if(zm.km > 0 ){
-						SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
+						System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
 						//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 					}else{
+						System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
 						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-							SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3));								
+							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
+							SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+							
 						}else{
 							JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
@@ -388,11 +434,15 @@ public class RezTools {
 					}
 				}else{// es können keine Kilometer abgerechnet werden
 					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
+					SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
 				}
 			}
 		}else{
 			SystemConfig.hmAdrRDaten.put("<Rhbpos>","");
 		}
+		*/
 		/*****************************************************/		
 		Double drezwert = rezwert.doubleValue();
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
@@ -485,8 +535,8 @@ public class RezTools {
 		}
 		return ret;
 	}
-	public static String PreisUeberPosition(String position,int preisgruppe,String disziplin ){
-		String ret = "";
+	public static String PreisUeberPosition(String position,int preisgruppe,String disziplin,boolean neu ){
+		String ret = null;
 		Vector preisvec = null;
 		if(disziplin.equals("KG")){
 			preisvec = ParameterLaden.vKGPreise;			
@@ -500,10 +550,130 @@ public class RezTools {
 		if(disziplin.equals("LO")){
 			preisvec = ParameterLaden.vLOPreise;			
 		}
-		System.out.println(preisvec);
+		//System.out.println("Beginne Suche nach dem Preis von Position ---> "+position);
+		for(int i = 0; i < preisvec.size();i++){
+			//System.out.println(""+i+" - "+((String)((Vector)preisvec.get(i)).get( (1+(preisgruppe*4)-3))) );
+			if(  ((String)((Vector)preisvec.get(i)).get( (1+(preisgruppe*4)-3))).equals(position) ){
+				ret =  ((String)((Vector)preisvec.get(i)).get( ( 1+(preisgruppe*4)-(neu ? 2 : 1))));
+				System.out.println("Der Preis von "+position+" = "+ret);
+				return ret;
+			}
+		}
+		//System.out.println("Der Preis von "+position+" wurde nicht gefunden!!");
 		return ret;
 	}
 	
+
+public static void hbNormal(ZuzahlModell zm){
+	if(zm.hausbesuch){ //Hausbesuch
+		System.out.println("Hausbesuch ist angesagt");
+		String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
+		String rezid = SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2);
+		String zz =  SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(4);
+		String kmgeld = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2);
+		String kmpausch = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3);			
+		String hbpos = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0);
+		String hbmit = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1);
+		//für jede Disziplin eine anderes praefix
+		String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
+
+		kmgeld = kmgeld.replaceAll("x",ersatz); 
+		kmpausch = kmpausch.replaceAll("x",ersatz); 
+		hbpos = hbpos.replaceAll("x",ersatz); 
+		hbmit = hbmit.replaceAll("x",ersatz);
+		SystemConfig.hmAdrRDaten.put("<Rwegkm>",new Integer(zm.km).toString());
+		//System.out.println("kmgeld----------------> "+kmgeld);
+		//System.out.println("kmpausch----------------> "+kmpausch);
+		if(zm.hbheim){ // und zwar im Heim
+			System.out.println("Der HB ist im Heim");
+			if(zm.hbvoll){// Volle Ziffer abrechnen?
+				System.out.println("Es kann der volle Hausbesuch abgerechnet werden");
+				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
+				SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
+					System.out.println("Es könnten Kilometer abgerechnet werden");
+					if(zm.km > 0 ){
+						System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
+						//SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
+						SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+						//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
+					}else{// Keine Kilometer angegeben also pauschale verwenden
+						System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
+						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
+							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
+							SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+						}else{
+							JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+						}
+						
+					}
+				}else{// es können keine Kilometer abgerechnet werden
+					System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
+					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
+					SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+				}
+			}else{//nur Mit-Hausbesuch
+				System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
+				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit);
+				SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+				
+			}
+			if(zz.equals("1")){// Zuzahlungspflichtig
+				
+			}
+		}else{//nicht im Heim
+			System.out.println("Der Hausbesuch ist nicht in einem Heim");
+			SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
+			SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+					zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+			if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
+				System.out.println("Es könnten Kilometer abgerechnet werden");
+				if(zm.km > 0 ){
+					System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
+					SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
+					SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+					//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
+				}else{
+					System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
+					if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
+						System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+						
+					}else{
+						JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+					}
+				}
+			}else{// es können keine Kilometer abgerechnet werden
+				SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
+				SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+			}
+		}
+	}else{
+		SystemConfig.hmAdrRDaten.put("<Rhbpos>","");
+	}
+	/*****************************************************/		
+	
+}
 
 }
 class ZuzahlModell{

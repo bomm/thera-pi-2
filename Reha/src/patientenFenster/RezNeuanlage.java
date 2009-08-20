@@ -1278,6 +1278,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("anzahl2='"+jtf[5].getText()+"', ");
 		sbuf.append("anzahl3='"+jtf[6].getText()+"', ");
 		sbuf.append("anzahl4='"+jtf[7].getText()+"', ");
+		sbuf.append("hbanzahl='"+jtf[4].getText()+"', ");
 		itest = jcmb[2].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(35)+"', ");
