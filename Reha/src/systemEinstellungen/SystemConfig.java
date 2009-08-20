@@ -131,6 +131,7 @@ public class SystemConfig {
 	public static String initRezeptKlasse = null;
 	public static String rezGebVorlageNeu = null;
 	public static String rezGebVorlageAlt = null;
+	public static String rezGebVorlageHB = null;
 	public static boolean rezGebDirektDruck = false;
 	public static String rezGebDrucker = null;
 	public static String rezBarcodeDrucker = null;
@@ -649,7 +650,7 @@ public class SystemConfig {
 				,"<Rproz4>","<Rgesamt1>","<Rgesamt2>","<Rgesamt3>","<Rgesamt4>","<Rpauschale>","<Rendbetrag>","<Ranzahl1>"
 				,"<Ranzahl4>","<Ranzahl4>","<Ranzahl4>","<Rerstdat>","<Rletztdat>","<Rid>","<Rtage>","<Rkurz1>","<Rkurz2"
 				,"<Rkurz3>","<Rkurz4>","<Rlang1>","<Rlang2>","<Rlang3>","<Rlang4>","<Rbarcode>","<Systemik>","<Rwert>"
-				,"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"
+				,"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>","<Rweganzahl>"
 				,"<Rhbgesamt>","<Rweggesamt>","<Rwegkm>"});
 		for(int i = 0; i < lAdrRDaten.size(); i++){
 			hmAdrRDaten.put(lAdrRDaten.get(i),"");
@@ -793,6 +794,7 @@ public class SystemConfig {
 		rezGebDrucker = inif.getStringProperty("DruckOptionen", "RezGebDrucker");
 		rezGebVorlageNeu = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageNeu");
 		rezGebVorlageAlt = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageAlt");
+		rezGebVorlageHB = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Vorlagen", "RezGebVorlageHB");
 		rezGebDirektDruck = (inif.getIntegerProperty("DruckOptionen", "DirektDruck") <= 0 ? false : true);
 		rezBarcodeDrucker = inif.getStringProperty("DruckOptionen", "BarCodeDrucker");
 		args = inif.getIntegerProperty("BarcodeForm", "BarcodeFormAnzahl");

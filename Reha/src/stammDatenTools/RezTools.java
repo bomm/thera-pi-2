@@ -323,127 +323,9 @@ public class RezTools {
 		}
 		/*****************************************************/
 		Object[] obi = hbNormal(zm,rezwert,rezgeb);
-		//"<Rhbpos>","<Rwegegeld>"
-		/*
-		zm.hausbesuch = ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T");
-		zm.hbvoll = ((String)PatGrundPanel.thisClass.vecaktrez.get(61)).equals("T");
-		zm.hbheim = ((String)PatGrundPanel.thisClass.patDaten.get(44)).equals("T");
-		zm.km = new Integer(StringTools.ZahlTest(((String)PatGrundPanel.thisClass.patDaten.get(48))));
-		zm.preisgruppe = new Integer(((String)PatGrundPanel.thisClass.patDaten.get(41)));
-		*/
-		//"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"});
+		rezwert = (BigDecimal)obi[0];
+		rezgeb = (Double)obi[1];
 		
-		//PreisUeberPosition("29933",zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2) );
-		//PreisUeberPosition("29933",2,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true );
-		/*
-		if(zm.hausbesuch){ //Hausbesuch
-			System.out.println("Hausbesuch ist angesagt");
-			String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
-			String rezid = SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2);
-			String zz =  SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(4);
-			String kmgeld = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2);
-			String kmpausch = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3);			
-			String hbpos = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0);
-			String hbmit = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1);
-			//für jede Disziplin eine anderes praefix
-			String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
-
-			kmgeld = kmgeld.replaceAll("x",ersatz); 
-			kmpausch = kmpausch.replaceAll("x",ersatz); 
-			hbpos = hbpos.replaceAll("x",ersatz); 
-			hbmit = hbmit.replaceAll("x",ersatz);
-
-			//System.out.println("kmgeld----------------> "+kmgeld);
-			//System.out.println("kmpausch----------------> "+kmpausch);
-
-			if(zm.hbheim){ // und zwar im Heim
-				System.out.println("Der HB ist im Heim");
-				if(zm.hbvoll){// Volle Ziffer abrechnen?
-					System.out.println("Es kann der volle Hausbesuch abgerechnet werden");
-					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
-					SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
-						System.out.println("Es könnten Kilometer abgerechnet werden");
-						if(zm.km > 0 ){
-							System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
-							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
-							//SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
-							SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-							//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
-						}else{// Keine Kilometer angegeben also pauschale verwenden
-							System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
-							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-								System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
-								SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
-								SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-							}else{
-								JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
-								SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
-							}
-							
-						}
-					}else{// es können keine Kilometer abgerechnet werden
-						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
-						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
-						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-					}
-				}else{//nur Mit-Hausbesuch
-					System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
-					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit);
-					SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-					
-				}
-				if(zz.equals("1")){// Zuzahlungspflichtig
-					
-				}
-			}else{//nicht im Heim
-				System.out.println("Der Hausbesuch ist nicht in einem Heim");
-				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
-				SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
-					System.out.println("Es könnten Kilometer abgerechnet werden");
-					if(zm.km > 0 ){
-						System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
-						SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
-						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-						//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
-					}else{
-						System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
-						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
-							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
-							SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-							
-						}else{
-							JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
-							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
-						}
-					}
-				}else{// es können keine Kilometer abgerechnet werden
-					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
-					SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
-				}
-			}
-		}else{
-			SystemConfig.hmAdrRDaten.put("<Rhbpos>","");
-		}
-		*/
 		/*****************************************************/		
 		Double drezwert = rezwert.doubleValue();
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
@@ -472,6 +354,14 @@ public class RezTools {
 			SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", "0,00" );
 			SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", "----" );
 		}
+		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 	}
@@ -583,25 +473,88 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 		kmpausch = kmpausch.replaceAll("x",ersatz); 
 		hbpos = hbpos.replaceAll("x",ersatz); 
 		hbmit = hbmit.replaceAll("x",ersatz);
+		
+		String preis = "";
+		BigDecimal bdrezgeb;
+		BigDecimal bdposwert;
+		BigDecimal bdpreis;
+		BigDecimal bdendrezgeb;
+		BigDecimal testpr;
 		SystemConfig.hmAdrRDaten.put("<Rwegkm>",new Integer(zm.km).toString());
-		//System.out.println("kmgeld----------------> "+kmgeld);
-		//System.out.println("kmpausch----------------> "+kmpausch);
+		SystemConfig.hmAdrRDaten.put("<Rhbanzahl>",new Integer(zm.gesamtZahl).toString() );
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
+
 		if(zm.hbheim){ // und zwar im Heim
 			System.out.println("Der HB ist im Heim");
 			if(zm.hbvoll){// Volle Ziffer abrechnen?
 				System.out.println("Es kann der volle Hausbesuch abgerechnet werden");
 				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
-				SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-
+				preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+				//,"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"
+				//,"<Rhbgesamt>","<Rweggesamt>","<Rwegkm>"});
+				bdpreis = new BigDecimal(new Double(preis));
+				bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+				((BigDecimal)retobj[0]).add(bdposwert);
+		
+		
+				/*******************************/
+				if(zz.equals("1")){// Zuzahlungspflichtig
+					SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);			
+					bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+					testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+					bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+					SystemConfig.hmAdrRDaten.put("<Rhbproz>", dfx.format(testpr.doubleValue()));
+					SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", dfx.format(bdendrezgeb.doubleValue()));
+					retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+				}else{
+					SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+					SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+					SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+					SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+				}
+				/*******************************/
 				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
 					System.out.println("Es könnten Kilometer abgerechnet werden");
 					if(zm.km > 0 ){
 						System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
-						SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
-						//SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
-						SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+
+						preis = PreisUeberPosition(kmgeld,
+								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>",""+zm.km+"km*"+preis);
+						//SystemConfig.hmAdrRDaten.put("<Rwegreis>",preis );
+						/*******************************/
+						bdpreis = new BigDecimal(new Double(preis)).multiply(new BigDecimal(new Double(zm.km)));
+						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
+						if(zz.equals("1")){// Zuzahlungspflichtig
+							bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+							testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+							bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );
+							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+						}else{
+							SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+							SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+							SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+						}
+						/*******************************/
 
 						//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 					}else{// Keine Kilometer angegeben also pauschale verwenden
@@ -609,69 +562,241 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
 							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
-							SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+							preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+							//SystemConfig.hmAdrRDaten.put("<Rwegreis>", preis);
+							/*******************************/
+							bdpreis = new BigDecimal(new Double(preis));
+							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+							((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
+							if(zz.equals("1")){// Zuzahlungspflichtig
+								bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+								testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+								bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+								SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+								SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+								SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );								
+								retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+							}else{
+								SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+								SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+								SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+								SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+								SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+								SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+								SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+								SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+								SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+								SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+							}
+							/*******************************/
+							
 
 						}else{
 							JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 						}
 						
 					}
 				}else{// es können keine Kilometer abgerechnet werden
 					System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
-					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
-					SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
+					preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+					//SystemConfig.hmAdrRDaten.put("<Rwegpreis>", preis);
+					if(preis != null){
+						/*******************************/
+						bdpreis = new BigDecimal(new Double(preis));
+						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
+						if(zz.equals("1")){// Zuzahlungspflichtig
+							bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+							testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+							bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );							
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+						}else{
+							SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+							SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+							SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+						}
+						
+					}else{
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+					}
+					
 
 				}
 			}else{//nur Mit-Hausbesuch
 				System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
-				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit);
-				SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-				
-			}
-			if(zz.equals("1")){// Zuzahlungspflichtig
-				
+				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit); 
+				preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+				//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
+				/*******************************/
+				if(preis != null){
+					bdpreis = new BigDecimal(new Double(preis));
+					bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+					((BigDecimal)retobj[0]).add(bdposwert);
+					//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
+					if(zz.equals("1")){// Zuzahlungspflichtig
+						SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
+						bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+						testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+						bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						SystemConfig.hmAdrRDaten.put("<Rhbproz>", dfx.format(testpr.doubleValue()));
+						SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", dfx.format(bdendrezgeb.doubleValue()));
+						//SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );					
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----" );
+						SystemConfig.hmAdrRDaten.put("<Rwpreis>","0,00" );						
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----" );
+						retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+					}else{
+						SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+						SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+						SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+					}
+				}else{
+					SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+					SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+					SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+					SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+					SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+				}
+				/*******************************/
 			}
 		}else{//nicht im Heim
 			System.out.println("Der Hausbesuch ist nicht in einem Heim");
 			SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
-			SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
-					zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+			preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+					zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+			//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
+			/*******************************/
+			bdpreis = new BigDecimal(new Double(preis));
+			bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+			((BigDecimal)retobj[0]).add(bdposwert);
+			SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
+
+			bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+			testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+			bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+			SystemConfig.hmAdrRDaten.put("<Rhbproz>", dfx.format(testpr.doubleValue()));
+			SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", dfx.format(bdendrezgeb.doubleValue()));
+			retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+			/*******************************/
+			
 
 			if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
 				System.out.println("Es könnten Kilometer abgerechnet werden");
 				if(zm.km > 0 ){
 					System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
-					SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmgeld);
-					SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+					
+					preis = PreisUeberPosition(kmgeld,
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+					SystemConfig.hmAdrRDaten.put("<Rwegpos>",""+zm.km+"km*"+preis );
+					//SystemConfig.hmAdrRDaten.put("<Rwegpreis>", preis);
+					/*******************************/
+					
+					bdpreis = new BigDecimal(new Double(preis)).multiply(new BigDecimal(new Double(zm.km)));
+					bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+					((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+					SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 
-					//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
+					bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+					testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+					bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+					SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+					SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+					SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );
+					retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+					/*******************************/
+
+
+
 				}else{
 					System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
 					if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
 						System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
-						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
-						
+						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
+						//SystemConfig.hmAdrRDaten.put("<Rwegpreis>",preis );
+						/*******************************/
+						bdpreis = new BigDecimal(new Double(preis));
+						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
+
+						bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+						testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+						bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );
+						retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+						/*******************************/
 					}else{
 						JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");						
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+
 					}
 				}
 			}else{// es können keine Kilometer abgerechnet werden
-				SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
-				SystemConfig.hmAdrRDaten.put("<Rwegpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
-						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true) );
+				SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");		
+				SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");				
+				SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+				SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+				SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+				
 
 			}
 		}
 	}else{
-		SystemConfig.hmAdrRDaten.put("<Rhbpos>","");
+		SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
+		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
+		SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 	}
 	return retobj;
 	/*****************************************************/		
