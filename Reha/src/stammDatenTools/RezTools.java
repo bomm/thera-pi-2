@@ -226,6 +226,7 @@ public class RezTools {
 		zm.hbheim = ((String)PatGrundPanel.thisClass.patDaten.get(44)).equals("T");
 		zm.km = new Integer(StringTools.ZahlTest(((String)PatGrundPanel.thisClass.patDaten.get(48))));
 		zm.preisgruppe = new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(41)));
+		zm.gesamtZahl = new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64)));
 		//Hausbesuch als logischen wert
 
 		if(iret==0){
@@ -321,7 +322,7 @@ public class RezTools {
 			}
 		}
 		/*****************************************************/
-		hbNormal(zm);
+		Object[] obi = hbNormal(zm,rezwert,rezgeb);
 		//"<Rhbpos>","<Rwegegeld>"
 		/*
 		zm.hausbesuch = ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T");
@@ -564,7 +565,8 @@ public class RezTools {
 	}
 	
 
-public static void hbNormal(ZuzahlModell zm){
+public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb){
+	Object[] retobj = {(BigDecimal) rezwert,(Double)rezgeb};
 	if(zm.hausbesuch){ //Hausbesuch
 		System.out.println("Hausbesuch ist angesagt");
 		String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
@@ -671,6 +673,7 @@ public static void hbNormal(ZuzahlModell zm){
 	}else{
 		SystemConfig.hmAdrRDaten.put("<Rhbpos>","");
 	}
+	return retobj;
 	/*****************************************************/		
 	
 }
