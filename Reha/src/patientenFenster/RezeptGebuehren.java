@@ -231,6 +231,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 /****************************************************/	
 	public void rezGebDrucken(){
 		String url = SystemConfig.rezGebVorlageNeu;	
+		// Wenn Hausbesuch andere Vorlage.....
 		IDocumentService documentService = null;;
 		
 		try {

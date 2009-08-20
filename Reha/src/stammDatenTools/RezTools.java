@@ -340,12 +340,19 @@ public class RezTools {
 			if(zm.hbheim){ // und zwar im Heim
 				if(zm.hbvoll){// Volle Ziffer abrechnen?
 					SystemConfig.hmAdrRDaten.put("<Rhbpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0));
+					SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2)) );
+
 					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
 						if(zm.km > 0 ){
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
+							//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 						}else{// Keine Kilometer angegeben also pauschale verwenden
 							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-								SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3));								
+								SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3));
+								SystemConfig.hmAdrRDaten.put("<Rwegreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
+										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2)) );
+
 							}else{
 								JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 								SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
@@ -356,7 +363,10 @@ public class RezTools {
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
 					}
 				}else{//nur Mit-Hausbesuch
-					SystemConfig.hmAdrRDaten.put("<Rhbpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1));					
+					SystemConfig.hmAdrRDaten.put("<Rhbpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1));
+					SystemConfig.hmAdrRDaten.put("<Rhbpreis>",PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
+							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2)) );
+					
 				}
 				if(zz.equals("1")){// Zuzahlungspflichtig
 					
@@ -367,6 +377,7 @@ public class RezTools {
 				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
 					if(zm.km > 0 ){
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2));
+						//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 					}else{
 						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3));								
@@ -379,6 +390,8 @@ public class RezTools {
 					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");						
 				}
 			}
+		}else{
+			SystemConfig.hmAdrRDaten.put("<Rhbpos>","");
 		}
 		/*****************************************************/		
 		Double drezwert = rezwert.doubleValue();
