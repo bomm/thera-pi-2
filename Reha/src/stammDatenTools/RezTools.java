@@ -451,7 +451,9 @@ public class RezTools {
 			}
 		}
 		/*****************************************************/
-
+		if(zm.gesamtZahl > new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64)))){
+			zm.gesamtZahl = new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64))); 
+		}
 		Object[] obi = hbNormal(zm,rezwert,rezgeb);
 		rezwert = (BigDecimal)obi[0];
 		rezgeb = (Double)obi[1];

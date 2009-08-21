@@ -1261,7 +1261,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xreznr;
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
-					String xcmd = "update verordn set zzstatus='"+2+"', befr='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					String xcmd = "update verordn set zzstatus='"+2+"', befr='F', rez_geb='0.00' where rez_nr='"+xreznr+"' LIMIT 1"; 
 					new ExUndHop().setzeStatement(xcmd);
 					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[2],currow,1);
 					tabaktrez.validate();
