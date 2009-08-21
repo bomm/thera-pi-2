@@ -110,7 +110,7 @@ public class RezTools {
 				// Hat bereits bezahlt normal behandeln (zzstatus == 1)
 				zm.allezuzahl = true;
 				iret = 2;
-				break;
+				//break;
 			}
 
 			/************************ Jetzt der Ober-Scheißdreck für den Achtzehner-Test***********************/
@@ -233,13 +233,13 @@ public class RezTools {
 			constructGanzFreiRezHMap(zm);
 		}
 		if(iret==1){
-			constructAnfangFreiRezHMap(zm);
+			constructAnfangFreiRezHMap(zm,true);
 		}
 		if(iret==2){
-			constructNormalRezHMap(zm);
+			constructNormalRezHMap(zm,false);
 		}
 		if(iret==3){
-			constructEndeFreiRezHMap(zm);
+			constructEndeFreiRezHMap(zm,false);
 		}
 
 		System.out.println("ZZ-Variante = "+iret);
@@ -254,8 +254,9 @@ public class RezTools {
 	 * 
 	 * 
 	 */
-	public static void constructNormalRezHMap(ZuzahlModell zm){
+	public static void constructNormalRezHMap(ZuzahlModell zm,boolean unregelmaessig){
 		/************************************/
+		System.out.println("*****In Normal HMap*********");
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
 		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
@@ -365,11 +366,112 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 	}
-	public static void constructAnfangFreiRezHMap(ZuzahlModell zm){
+	public static void constructAnfangFreiRezHMap(ZuzahlModell zm,boolean anfang){
+		System.out.println("*****In Anfang-frei*********");
+		if(anfang){
+			zm.gesamtZahl = new Integer(zm.teil2);
+			System.out.println("Restliche Behandlungen berechnen = "+zm.gesamtZahl);
+		}else{
+			zm.gesamtZahl = new Integer(zm.teil1);
+			System.out.println("Beginn der Behandlung berechnen = "+zm.gesamtZahl);
+		}
+
+		Double rezgeb = new Double(0.000);
+		BigDecimal[] preise = {null,null,null,null};
+		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
 		
+		//System.out.println("nach nullzuweisung " +xrezgeb.toString());
+		int[] anzahl = {0,0,0,0};
+		int[] artdbeh = {0,0,0,0};
+		int i;
+		BigDecimal einzelpreis = null;
+		BigDecimal poswert = null;
+		BigDecimal rezwert = BigDecimal.valueOf(new Double(0.000));
+		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
+		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
+		for(i = 0;i < 4;i++){
+			anzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
+			if(! (anzahl[i] < zm.gesamtZahl)){
+				anzahl[i] = new Integer(zm.gesamtZahl);
+			}
+			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
+			preise[i] = BigDecimal.valueOf(new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18)));
+		}
+		xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
+		if(anfang){
+			rezgeb = 00.00;			
+		}else{
+			rezgeb = 10.00;
+		}
+		
+
+		//System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
+		String runden;
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		BigDecimal endpos;
+		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
+		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)PatGrundPanel.thisClass.vecaktrez.get(0) );
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2) )  );		
+		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
+		
+		for(i = 0; i < 4; i++){
+			/*
+			System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
+					new Integer(artdbeh[i]).toString()+" / "+
+					preise[i].toString() );
+			*/		
+			if(artdbeh[i] > 0){
+				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)PatGrundPanel.thisClass.vecaktrez.get(48+i) );
+				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
+				
+				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
+
+				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
+				rezwert = rezwert.add(poswert);
+				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
+				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
+				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
+
+				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
+				
+				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
+				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
+				rezgeb = rezgeb + endpos.doubleValue();
+				//System.out.println(rezgeb.toString());
+
+			}else{
+				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");
+				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", "0,00" );
+				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", "0,00");				
+				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", "0,00" );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", "----" );
+						
+			}
+		}
+		/*****************************************************/
+
+		Object[] obi = hbNormal(zm,rezwert,rezgeb);
+		rezwert = (BigDecimal)obi[0];
+		rezgeb = (Double)obi[1];
+		
+		/*****************************************************/		
+		Double drezwert = rezwert.doubleValue();
+		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
+		SystemConfig.hmAdrRDaten.put("<Rwert>", dfx.format(drezwert) );
+		DecimalFormat df = new DecimalFormat( "0.00" );
+		String s = df.format( rezgeb);
+		System.out.println("----------------------------------------------------");
+		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
+		//System.out.println(SystemConfig.hmAdrRDaten);
+		/***********************/
 	}
-	public static void constructEndeFreiRezHMap(ZuzahlModell zm){
 		
+
+	public static void constructEndeFreiRezHMap(ZuzahlModell zm,boolean anfang){
+		System.out.println("*****Über Ende Frei*********");
+		constructAnfangFreiRezHMap(zm,anfang);
 	}	
 	public static Vector<Vector<String>>splitteTermine(String terms){
 		Vector<Vector<String>> termine = new Vector<Vector<String>>();

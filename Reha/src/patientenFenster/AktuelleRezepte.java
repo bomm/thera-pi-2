@@ -290,18 +290,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[2].addActionListener(this);		
 		jtb.add(aktrbut[2]);
 		jtb.addSeparator(new Dimension(40,0));
-		aktrbut[3] = new JButton();
-		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("barcode"));
-		aktrbut[3].setToolTipText("Rezept mit Barcode bedrucken");
-		aktrbut[3].setActionCommand("barcode");
-		aktrbut[3].addActionListener(this);
-		jtb.add(aktrbut[3]);		
 		aktrbut[4] = new JButton();
 		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
 		aktrbut[4].setToolTipText("Rezeptgebühren kassieren");
 		aktrbut[4].setActionCommand("rezeptgebuehr");
 		aktrbut[4].addActionListener(this);		
 		jtb.add(aktrbut[4]);
+		aktrbut[3] = new JButton();
+		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("barcode"));
+		aktrbut[3].setToolTipText("Rezept mit Barcode bedrucken");
+		aktrbut[3].setActionCommand("barcode");
+		aktrbut[3].addActionListener(this);
+		jtb.add(aktrbut[3]);		
 		aktrbut[5] = new JButton();
 		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("ausfallrechnung"));
 		aktrbut[5].setToolTipText("Ausfallrechnung erstellen");
@@ -410,10 +410,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	}
 	private JPopupMenu getTerminPopupMenu(){
 		JPopupMenu jPopupMenu = new JPopupMenu();
-		JMenuItem item = new JMenuItem("Sonderstatus für Zuzahlung setzen");
-		item.setActionCommand("status");
+		JMenuItem item = new JMenuItem("Zuzahlungsstatus auf befreit setzen");
+		item.setActionCommand("statusfrei");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
+		item = new JMenuItem("auf bereits bezahlt setzen");
+		item.setActionCommand("statusbezahlt");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		item = new JMenuItem("auf nicht befreit und nicht bezahlt");
+		item.setActionCommand("statusnichtbezahlt");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+
 		return jPopupMenu;
 	}
 	public JToolBar getTerminToolbar(){
@@ -812,7 +821,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					public void run(){
 						termineSpeichern();
 						if(xcol==0){
-							starteTests();
+							//starteTests();
 						}
 
 					}
@@ -1224,7 +1233,40 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					
 				}.execute();
 			}
+			if(cmd.equals("statusfrei")){
+				int currow = tabaktrez.getSelectedRow();
+				String xreznr;
+				if(currow >=0){
+					xreznr = (String)tabaktrez.getValueAt(currow,0);
+					String xcmd = "update verordn set zzstatus='"+0+"', befr='T' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					new ExUndHop().setzeStatement(xcmd);
+					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[0],currow,1);
+					tabaktrez.validate();
+				}	
+			}
+			if(cmd.equals("statusbezahlt")){
+				int currow = tabaktrez.getSelectedRow();
+				String xreznr;
+				if(currow >=0){
+					xreznr = (String)tabaktrez.getValueAt(currow,0);
+					String xcmd = "update verordn set zzstatus='"+1+"', befr='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					new ExUndHop().setzeStatement(xcmd);
+					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[1],currow,1);
+					tabaktrez.validate();
+				}	
 			
+			}
+			if(cmd.equals("statusnichtbezahlt")){
+				int currow = tabaktrez.getSelectedRow();
+				String xreznr;
+				if(currow >=0){
+					xreznr = (String)tabaktrez.getValueAt(currow,0);
+					String xcmd = "update verordn set zzstatus='"+2+"', befr='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					new ExUndHop().setzeStatement(xcmd);
+					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[2],currow,1);
+					tabaktrez.validate();
+				}	
+			}
 		}
 	}
 	/*****************************************************/
@@ -1425,8 +1467,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez = null;
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
-				
+				RezeptDaten.feddisch = false;
 				jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6));
+				while(!RezeptDaten.feddisch){
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten.feddisch);
 				if(((String)PatGrundPanel.thisClass.vecaktrez.get(39)).equals("")){
 					System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
 					PatGrundPanel.thisClass.vecaktrez.set(39,"0");

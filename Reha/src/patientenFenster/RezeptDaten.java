@@ -75,6 +75,7 @@ public class RezeptDaten extends JXPanel{
 						PatGrundPanel.thisClass.rezlabs[1].setText(((String)ret).trim()+" *");
 						new ExUndHop().setzeStatement("update verordn set anzahlhb='"+((String)ret).trim()+"' "+
 								"where rez_nr='"+reznum.getText()+"' LIMIT 1");
+						vecaktrez.set(64, ((String)ret).trim());
 					}
 				}
 			}
@@ -221,7 +222,7 @@ public class RezeptDaten extends JXPanel{
 
 				new Thread(){
 					public void run(){
-						int i = RezTools.testeRezGebArt(true,reznum.getText().trim(),(String)vecaktrez.get(34));
+						//int i = RezTools.testeRezGebArt(true,reznum.getText().trim(),(String)vecaktrez.get(34));
 					}
 				}.start();
 				

@@ -1105,13 +1105,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";
 				break;
 			}
+			if(nummer.equals("rh")){
+				szzstatus = "0";
+				break;
+			}
 			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			if(PatGrundPanel.thisClass.patDaten.get(30).equals("T")){
 				//System.out.println("ZuzahlStatus = Patient ist befreit");
 				//laut Patientenstamm befreit aber evtl. noch nicht für dieses Rezept.
 				//deshalb prüfen ob bereits bezahlt;
 				if(this.vec.get(14).equals("T")){
-					szzstatus = "2";
+					szzstatus = "1";
 				}else{
 					szzstatus = "0";				
 				}
@@ -1278,7 +1282,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("anzahl2='"+jtf[5].getText()+"', ");
 		sbuf.append("anzahl3='"+jtf[6].getText()+"', ");
 		sbuf.append("anzahl4='"+jtf[7].getText()+"', ");
-		sbuf.append("hbanzahl='"+jtf[4].getText()+"', ");
+		sbuf.append("anzahlhb='"+jtf[4].getText()+"', ");
 		itest = jcmb[2].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(35)+"', ");
@@ -1328,6 +1332,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
 				System.out.println("1. ZuzahlStatus = Zuzahlung nicht erforderlich");
+				szzstatus = "0";
+				break;
+			}
+			if(nummer.equals("rh")){
 				szzstatus = "0";
 				break;
 			}
