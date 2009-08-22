@@ -323,9 +323,12 @@ public class RezTools {
 			}
 		}
 		/*****************************************************/
-		Object[] obi = hbNormal(zm,rezwert,rezgeb);
-		rezwert = (BigDecimal)obi[0];
-		rezgeb = (Double)obi[1];
+		if(zm.hausbesuch){ //Hausbesuch
+			Object[] obi = hbNormal(zm,rezwert,rezgeb,new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64))));
+			rezwert = ((BigDecimal)obi[0]);
+			rezgeb = (Double)obi[1];
+		}
+		
 		
 		/*****************************************************/		
 		Double drezwert = rezwert.doubleValue();
@@ -383,6 +386,8 @@ public class RezTools {
 		//System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
+		/***************/ //Einbauen für Barcode
+		int[] gesanzahl = {0,0,0,0};
 		int i;
 		BigDecimal einzelpreis = null;
 		BigDecimal poswert = null;
@@ -391,6 +396,7 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)PatGrundPanel.thisClass.vecaktrez.get(2) );		
 		for(i = 0;i < 4;i++){
+			gesanzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
 			anzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
 			if(! (anzahl[i] < zm.gesamtZahl)){
 				anzahl[i] = new Integer(zm.gesamtZahl);
@@ -426,8 +432,8 @@ public class RezTools {
 				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
 				
 				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
-
-				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
+				//***********vorher nur anzahl[]*****************/
+				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(gesanzahl[i]))); 
 				rezwert = rezwert.add(poswert);
 				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
 				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -451,13 +457,14 @@ public class RezTools {
 			}
 		}
 		/*****************************************************/
-		if(zm.gesamtZahl > new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64)))){
-			zm.gesamtZahl = new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64))); 
+		if(zm.hausbesuch){ //Hausbesuch
+			if(zm.gesamtZahl > new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64)))){
+				zm.gesamtZahl = new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64))); 
+			}
+			Object[] obi = hbNormal(zm,rezwert,rezgeb,new Integer(((String)PatGrundPanel.thisClass.vecaktrez.get(64))));
+			rezwert = ((BigDecimal)obi[0]);
+			rezgeb = (Double)obi[1];
 		}
-		Object[] obi = hbNormal(zm,rezwert,rezgeb);
-		rezwert = (BigDecimal)obi[0];
-		rezgeb = (Double)obi[1];
-		
 		/*****************************************************/		
 		Double drezwert = rezwert.doubleValue();
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
@@ -559,8 +566,14 @@ public class RezTools {
 	}
 	
 
-public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb){
+public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb,int realhbAnz){
+	
+	//Object[] retobj = {new BigDecimal(new Double(0.00)),(Double)rezgeb};
+	//((BigDecimal)retobj[0]).add(BigDecimal.valueOf(new Double(1.00)));
+	//((BigDecimal) retobj[0]).add(new BigDecimal(rezwert));
 	Object[] retobj = {(BigDecimal) rezwert,(Double)rezgeb};
+	System.out.println("Die tatsächlich HB-Anzahl = "+realhbAnz);
+	System.out.println("Der Rezeptwert zu Beginn = "+retobj[0]);
 	if(zm.hausbesuch){ //Hausbesuch
 		System.out.println("Hausbesuch ist angesagt");
 		String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
@@ -598,10 +611,11 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 				//,"<Rhbpos>","<Rwegpos>","<Rhbpreis>","<Rwegpreis>","<Rhbproz>","<Rwegproz>","<Rhbanzahl>"
 				//,"<Rhbgesamt>","<Rweggesamt>","<Rwegkm>"});
 				bdpreis = new BigDecimal(new Double(preis));
-				bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-				((BigDecimal)retobj[0]).add(bdposwert);
+				//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+				bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+				retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 		
-		
+				
 				/*******************************/
 				if(zz.equals("1")){// Zuzahlungspflichtig
 					SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);			
@@ -635,8 +649,9 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 						//SystemConfig.hmAdrRDaten.put("<Rwegreis>",preis );
 						/*******************************/
 						bdpreis = new BigDecimal(new Double(preis)).multiply(new BigDecimal(new Double(zm.km)));
-						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-						((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+						//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+						retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 						if(zz.equals("1")){// Zuzahlungspflichtig
 							bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -671,8 +686,9 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 							//SystemConfig.hmAdrRDaten.put("<Rwegreis>", preis);
 							/*******************************/
 							bdpreis = new BigDecimal(new Double(preis));
-							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-							((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+							//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+							retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 							if(zz.equals("1")){// Zuzahlungspflichtig
 								bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -716,8 +732,9 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 					if(preis != null){
 						/*******************************/
 						bdpreis = new BigDecimal(new Double(preis));
-						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-						((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+						//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 						if(zz.equals("1")){// Zuzahlungspflichtig
 							bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -759,8 +776,9 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 				/*******************************/
 				if(preis != null){
 					bdpreis = new BigDecimal(new Double(preis));
-					bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-					((BigDecimal)retobj[0]).add(bdposwert);
+					bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+					//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+					retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 					//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 					if(zz.equals("1")){// Zuzahlungspflichtig
 						SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
@@ -808,8 +826,11 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 			//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 			/*******************************/
 			bdpreis = new BigDecimal(new Double(preis));
-			bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-			((BigDecimal)retobj[0]).add(bdposwert);
+			bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+			//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+			//System.out.println("Der Positionswert-HB = "+bdposwert);
+			retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
+			//System.out.println("Der Rezeptwert nach Addition  = "+((BigDecimal)retobj[0]).doubleValue());
 			SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 
 			bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -833,8 +854,9 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 					/*******************************/
 					
 					bdpreis = new BigDecimal(new Double(preis)).multiply(new BigDecimal(new Double(zm.km)));
-					bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-					((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+					bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+					//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+					retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 					SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 
 					bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -858,8 +880,9 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 						//SystemConfig.hmAdrRDaten.put("<Rwegpreis>",preis );
 						/*******************************/
 						bdpreis = new BigDecimal(new Double(preis));
-						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-						((BigDecimal)retobj[0]).add(bdposwert); // Rezeptwert
+						//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
+						retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 
 						bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -902,6 +925,7 @@ public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezge
 		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
 		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 	}
+	System.out.println("Der Rezeptwert = "+retobj[0]);
 	return retobj;
 	/*****************************************************/		
 	

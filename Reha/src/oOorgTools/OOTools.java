@@ -180,8 +180,8 @@ public class OOTools {
 		    }
 		    /*****************/
 		}
-		
-		
+		//textDocument.getFrame().getXFrame().getContainerWindow().
+		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 	}
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
