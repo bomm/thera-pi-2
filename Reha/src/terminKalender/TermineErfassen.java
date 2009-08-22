@@ -395,7 +395,8 @@ public class TermineErfassen implements Runnable {
 			}
 
 		}else if(!unter18 && vorjahrfrei){
-			String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
+			String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
+			//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 			if(!bef_dat.equals("T")){
 				if(datFunk.DatumsWert("31.12."+vec.get(9)) < datFunk.DatumsWert(datFunk.sHeute()) ){
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");

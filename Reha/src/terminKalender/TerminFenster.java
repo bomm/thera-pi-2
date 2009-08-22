@@ -4278,7 +4278,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 
 						}else if(!unter18 && vorjahrfrei){
-							String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
+							String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
+							//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 							if(!bef_dat.equals("T")){
 								if(datFunk.DatumsWert("31.12."+vec.get(9)) < datFunk.DatumsWert(datFunk.sHeute()) ){
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
@@ -4345,7 +4346,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 		}.execute();
 	}
-	public String macheNeuTermin(String kollege,String text,String pos1,String pos2,String pos3,String pos4){
+	public static String macheNeuTermin(String kollege,String text,String pos1,String pos2,String pos3,String pos4){
 		String ret =
 			datFunk.sHeute()+
 			"@"+

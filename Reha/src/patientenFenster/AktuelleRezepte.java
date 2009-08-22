@@ -1021,7 +1021,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				vec.add(datFunk.sHeute());
 				vec.add("");
 				vec.add("");
-				vec.add("");
+				vec.add( (((String)PatGrundPanel.thisClass.vecaktrez.get(48)).trim().equals("") ? "" : (String)PatGrundPanel.thisClass.vecaktrez.get(48)) +
+						(((String)PatGrundPanel.thisClass.vecaktrez.get(49)).trim().equals("") ? "" : ","+(String)PatGrundPanel.thisClass.vecaktrez.get(49)) +
+						(((String)PatGrundPanel.thisClass.vecaktrez.get(50)).trim().equals("") ? "" : ","+(String)PatGrundPanel.thisClass.vecaktrez.get(50)) +
+						(((String)PatGrundPanel.thisClass.vecaktrez.get(51)).trim().equals("") ? "" : ","+(String)PatGrundPanel.thisClass.vecaktrez.get(51)) 
+						);
 				vec.add(datFunk.sDatInSQL(datFunk.sHeute()));
 				dtermm.addRow((Vector<String>)vec.clone());
 				tabaktterm.validate();
