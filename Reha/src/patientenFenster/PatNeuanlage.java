@@ -670,6 +670,9 @@ boolean inNeu = false;
 
 		jtf[16] = new JRtaTextField("DATUM", true);
 		jtf[16].setName("bef_dat"); //aus Kostenträgerdatei/Karte einlesen?
+		jtf[16].setFont(font);
+		jtf[16].setForeground(Color.RED);
+		
 		
 		jtf[17] = new JRtaTextField("GROSS", true);
 		jtf[17].setName("arzt");

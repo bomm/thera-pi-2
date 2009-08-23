@@ -461,7 +461,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("Arztstamm")){
-				JOptionPane.showMessageDialog(null, "Fenster für Arztstammdaten noch nicht implementiert");
+				ProgLoader.ArztFenster(0);
 				break;
 			}
 			if (cmd.equals("Wochenarbeitszeiten definieren")){

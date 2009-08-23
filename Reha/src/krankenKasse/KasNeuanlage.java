@@ -280,7 +280,6 @@ public class KasNeuanlage extends JXPanel implements ActionListener, KeyListener
 		System.out.println("In Preisgruppe abspeichern Preisgruppe = "+new Integer(this.tarifGruppe.getSelectedIndex()+1).toString());
 	}
 	public void tabelleAktualisieren(){
-		
 
 		List list = Arrays.asList(new String[] {jtf[0].getText(),jtf[2].getText(),
 				jtf[3].getText(),jtf[6].getText(),jtf[7].getText(),jtf[8].getText(),jtf[13].getText(),this.kassenId});

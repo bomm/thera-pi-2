@@ -31,6 +31,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import patientenFenster.PatGrundPanel;
 import patientenFenster.PatientenFenster;
 
+import RehaInternalFrame.JArztInternal;
 import RehaInternalFrame.JKasseInternal;
 import RehaInternalFrame.JPatientInternal;
 import RehaInternalFrame.JRehaInternal;
@@ -49,6 +50,7 @@ import ag.ion.noa.NOAException;
 import ag.ion.bion.officelayer.event.ICloseEvent;
 import ag.ion.bion.officelayer.event.ICloseListener;
 import ag.ion.bion.officelayer.event.IEvent;
+import arztFenster.ArztPanel;
 import benutzerVerwaltung.BenutzerVerwaltung;
 
 import com.sun.star.view.DocumentZoomType;
@@ -295,6 +297,40 @@ public static void KassenFenster(int setPos) {
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
 }	
+/**************Krankenkassenverwaltung Echtfunktion***********************/
+public static void ArztFenster(int setPos) {
+	if(! Reha.thisClass.DbOk){
+		return;
+	}
+	JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
+	if(arzt != null){
+		containerHandling(((JArztInternal)arzt).getDesktop());
+		((JArztInternal)arzt).aktiviereDiesenFrame( ((JArztInternal)arzt).getName());
+
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "ArztVerwaltung"+WinNum.NeueNummer();
+	int containerNr = SystemConfig.hmContainer.get("Arzt");
+	containerHandling(containerNr);
+	JArztInternal jry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",new ImageIcon(Reha.proghome+"icons/unten.gif"),containerNr) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
+	jry.setName(name);
+	jry.setSize(new Dimension(650,500));
+	ArztPanel arztpan = new ArztPanel(jry);
+	jry.setContent(arztpan);	
+	jry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	jry.setLocation(comps*10, comps*10);
+	jry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(jry);
+	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
+	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
+	((JArztInternal)jry).aktiviereDiesenFrame( ((JArztInternal)jry).getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	
+}	
+
 /**************Pateintenverwaltung Echtfunktion***********************/
 public static void ProgPatientenVerwaltung(int setPos) {
 	if(! Reha.thisClass.DbOk){

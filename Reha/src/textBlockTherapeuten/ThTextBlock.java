@@ -148,6 +148,7 @@ public class ThTextBlock extends RehaSmartDialog{
 							@Override
 							protected Void doInBackground() throws Exception {
 								String mwk = macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
+								//System.out.println(mwk);
 								fuelleSucheInTabelle(mwk);
 								return null;
 							}

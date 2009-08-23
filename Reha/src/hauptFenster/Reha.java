@@ -1553,6 +1553,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         					System.out.println("Krankenkassen einlesen");
        						ProgLoader.KassenFenster(0);
                     }
+                    if(keyEvent.isControlDown() &&
+                            keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
+        					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
+        					System.out.println("Arzt-Stamm einlesen");
+       						ProgLoader.ArztFenster(0);
+                    }
                     
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==37) {  // Ctrl-Pfeil nach links

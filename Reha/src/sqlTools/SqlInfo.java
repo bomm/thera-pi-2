@@ -341,6 +341,7 @@ public class SqlInfo {
 		cmd = new String(cmd.replaceAll("   ", " "));
 		cmd = new String(cmd.replaceAll("  ", " "));
 		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daﬂ er nix finder!!!
+		/*
 		String[] felder = suchein;
 		String[] split = cmd.split(" ");
 		if(split.length==1){
@@ -375,6 +376,42 @@ public class SqlInfo {
 		}
 		ret = ret +") ";
 		return ret;
+		*/
+		String[] felder = suchein;
+		String[] split = cmd.split(" ");
+		if(split.length==1){
+			ret = ret +" (";
+			for(int i = 0; i < felder.length;i++){
+				ret = ret+felder[i]+" like '%"+cmd+"%'";
+				if(i < felder.length-1){
+					ret = ret+ " OR ";
+				}
+			}
+			ret = ret +") ";
+			return ret;
+		}
+		
+		
+		ret = ret +"( ";
+		for(int i = 0; i < split.length;i++){
+			if(! split[i].equals("")){
+				ret = ret +" (";
+				for(int i2 = 0; i2 < felder.length;i2++){
+					ret = ret+felder[i2]+" like '%"+split[i]+"%'";
+					if(i2 < felder.length-1){
+						ret = ret+ " OR ";
+					}
+				}
+				ret = ret +") ";
+				if(i < split.length-1){
+					ret = ret+ " AND ";
+				}
+			}
+			
+		}
+		ret = ret +") ";
+		return ret;
+		
 	}
 	
 	public static int erzeugeNummer(String nummer){
