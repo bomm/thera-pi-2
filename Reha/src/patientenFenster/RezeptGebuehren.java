@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LinearGradientPaint;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -312,7 +313,13 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				e.printStackTrace();
 			}
 		}else{
-			textDocument.getFrame().setFocus();
+			final ITextDocument xtextDocument = textDocument;
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					//Reha.officeapplication.getDocumentService().
+					xtextDocument.getFrame().getXFrame().activate();
+				}
+			});
 		}
 
 		//document.getFrame().getXFrame().getContainerWindow().setVisible(true);

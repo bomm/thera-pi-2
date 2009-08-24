@@ -1398,7 +1398,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     	//final String OPEN_OFFICE_ORG_PATH = "C:\\Programme\\OpenOffice.org 2.3";
         try
         {
-            //String path = OfficeApplicationRuntime.getApplicationAssistant().getLocalApplications()[0].getHome();
             String path = OPEN_OFFICE_ORG_PATH;
             Map <String, String>config = new HashMap<String, String>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
@@ -1406,19 +1405,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             //System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,"C:\\RehaVerwaltung\\RTAJars\\openofficeorg");
             officeapplication = OfficeApplicationRuntime.getApplication(config);
-
             officeapplication.activate();
-            //IFrame frame = Reha.officeapplication.getDesktopService().constructNewOfficeFrame();
             System.out.println("Open-Office wurde gestartet");
             System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
-            /*out
-             * 
-            IDocumentService documentService = officeapplication.getDocumentService();
-            IDocumentDescriptor docdescript = new DocumentDescriptor();
-            docdescript.setHidden(true);
-            IDocument document = documentService.constructNewDocument(IDocument.WRITER, docdescript);
-    		ITextDocument textDocument = (ITextDocument)document;
-    		*/
             new SwingWorker<Void,Void>(){
 
 				@Override
@@ -1426,8 +1415,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					// TODO Auto-generated method stub
             		System.out.println("OpenOffice -> Aufruf");
             		//LinkeTaskPane.berichtTest(false);   
-            		LinkeTaskPane.terminTest(false);
-          		
+            		//LinkeTaskPane.terminTest(false);
             		try{
             			
             		if (Reha.officeapplication.getDocumentService().getCurrentDocuments()[0] != null){
