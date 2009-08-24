@@ -266,7 +266,7 @@ public class OOTools {
 		      }
 		    }
 		}
-		document.getFrame().setFocus();
+		textDocument.getFrame().setFocus();
 	}
 
 	public static void starteLeerenWriter(){
@@ -274,6 +274,7 @@ public class OOTools {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
 			ITextDocument textDocument = (ITextDocument)document;
+			textDocument.getFrame().setFocus();
 		} 
 		catch (OfficeApplicationException exception) {
 			exception.printStackTrace();
@@ -298,7 +299,7 @@ public class OOTools {
 			xController);
 			XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 			xtvc.gotoStart(false);
-			document.getFrame().setFocus();
+			textDocument.getFrame().setFocus();
 
 			return (ITextDocument) textDocument;	
 			

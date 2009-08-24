@@ -312,7 +312,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				e.printStackTrace();
 			}
 		}else{
-			document.getFrame().setFocus();
+			textDocument.getFrame().setFocus();
 		}
 
 		//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
