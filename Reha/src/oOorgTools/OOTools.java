@@ -266,6 +266,7 @@ public class OOTools {
 		      }
 		    }
 		}
+		document.getFrame().setFocus();
 	}
 
 	public static void starteLeerenWriter(){
@@ -297,6 +298,8 @@ public class OOTools {
 			xController);
 			XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 			xtvc.gotoStart(false);
+			document.getFrame().setFocus();
+
 			return (ITextDocument) textDocument;	
 			
 		}catch (OfficeApplicationException exception) {
