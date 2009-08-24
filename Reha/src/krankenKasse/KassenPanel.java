@@ -128,7 +128,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	Vector titel = new Vector<String>() ;
 	Vector formular = new Vector<String>();
 	int iformular = -1;
-	public KassenPanel(JKasseInternal jry){
+	public KassenPanel(JKasseInternal jry,String kid){
 		super();
 		setBorder(null);
 		this.jry = jry;
@@ -146,18 +146,19 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		
 		setLayout(new BorderLayout());
 		add(getContent(),BorderLayout.CENTER);
-		/*
-		new SwingWorker<Void,Void>(){
+		if(!kid.equals("")){
+			final String xkass = kid; 
+			new SwingWorker<Void,Void>(){
 
-			@Override
-			protected Void doInBackground() throws Exception {
-				new HoleKassen("","");
-				return null;
-			}
+				@Override
+				protected Void doInBackground() throws Exception {
+					holeAktKasse(xkass);
+					return null;
+				}
+				
+			}.execute();
 			
-		}.execute();
-		*/
-
+		}
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				KeyStroke stroke = KeyStroke.getKeyStroke(70, KeyEvent.ALT_MASK);
@@ -889,7 +890,29 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			*/
 
 		}
-	}	
+	}
+	public void holeAktKasse(String id){
+		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
+
+		Vector vec;
+		if(id.equals("")){
+			return;
+		}else{
+			vec = SqlInfo.holeSaetze("kass_adr", "kuerzel,kassen_nam1,kassen_nam2,ort,telefon,fax,ik_kasse,id",
+					"id='"+id+"' LIMIT 1", Arrays.asList(new String[]{}));
+		}
+		this.ktblm.setRowCount(0);
+		int anzahl = 0;
+		if( (anzahl = vec.size()) > 0){
+			for(int i = 0; i < anzahl;i++ ){
+				this.ktblm.addRow((Vector)vec.get(i));
+			}
+			this.kassentbl.setRowSelectionInterval(0, 0);
+			holeText();
+		}
+		suchen.requestFocus();
+	}
+
 	
 }
 /*********************************************************/

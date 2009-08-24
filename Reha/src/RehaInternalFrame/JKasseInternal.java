@@ -18,6 +18,10 @@ import javax.swing.JComponent.AccessibleJComponent;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
+import krankenKasse.KassenPanel;
+
+import arztFenster.ArztPanel;
+
 import events.PatStammEvent;
 import events.PatStammEventClass;
 
@@ -47,5 +51,10 @@ public class JKasseInternal extends JRehaInternal{
 		repaint();
 		
 	}
+	public void starteKasseID(String aID){
+		if(aID.equals("")){return;}
+		KassenPanel.thisClass.holeAktKasse(aID);
+	}
+	
 	
 }

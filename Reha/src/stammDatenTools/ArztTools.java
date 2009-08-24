@@ -12,9 +12,15 @@ import systemTools.StringTools;
 import terminKalender.datFunk;
 
 public class ArztTools {
-	public static void constructArztHMap(){
+	public static void constructArztHMap(String id){
 		boolean isherr = false;
-		int xid = StringTools.ZahlTest(PatGrundPanel.thisClass.patDaten.get(67));
+		int xid;
+		if(id.equals("")){
+			xid = StringTools.ZahlTest(PatGrundPanel.thisClass.patDaten.get(67));			
+		}else{
+			xid = new Integer(id);
+		}
+
 		if(xid <= 0){
 			return;
 		}
@@ -25,28 +31,30 @@ public class ArztTools {
 		 * 	List<String> lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
 		 *														"<Atel>","<Afax>","<Aemail>","<Aid>"});
 		 */
-		String anrede = StringTools.EGross((String)vec.get(0));
+		String anrede = (String)vec.get(0);
 		if(anrede.toUpperCase().equals("HERR")){
 			isherr = true;
 		}
-		String titel =  StringTools.EGross((String) vec.get(1));
-		String vorname =  StringTools.EGross((String) vec.get(3));
-		String nachname =  StringTools.EGross((String) vec.get(2));
-		String strasse = StringTools.EGross((String) vec.get(4));
-		String plzort = (String) vec.get(5)+" "+StringTools.EGross((String) vec.get(6));
+		String titel =  ((String) vec.get(1)).trim();
+		String vorname =  (String) vec.get(3);
+		String nachname =  (String) vec.get(2);
+		String strasse = (String) vec.get(4);
+		String plzort = (String) vec.get(5)+" "+(String) vec.get(6);
 		String zeile1 = "";
 		String zeile2 = "";
 		String zeile3 = "";
 		String branrede = "";
 		
+		SystemConfig.hmAdrADaten.put("<Aklinik>", ((String) vec.get(12)).trim() );
 		
 		SystemConfig.hmAdrADaten.put("<Aadr1>", anrede);
 
-		zeile1 = new String(vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname);
+		zeile1 = new String((titel.trim().length() > 0 ? titel+" " : "")+vorname+" "+nachname);
 		SystemConfig.hmAdrADaten.put("<Aadr2>", zeile1);
 		
 		SystemConfig.hmAdrADaten.put("<Aadr3>", strasse);
 		SystemConfig.hmAdrADaten.put("<Aadr4>", plzort);
+
 
 		if(titel.indexOf("med.") > 0){
 			titel = titel.replace("med.", "");				

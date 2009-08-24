@@ -265,7 +265,7 @@ public static void ProgRoogleFenster(int setPos,String droptext) {
 }
 
 /**************Krankenkassenverwaltung Echtfunktion***********************/
-public static void KassenFenster(int setPos) {
+public static void KassenFenster(int setPos,String kid) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -273,6 +273,7 @@ public static void KassenFenster(int setPos) {
 	if(kasse != null){
 		containerHandling(((JKasseInternal)kasse).getDesktop());
 		((JKasseInternal)kasse).aktiviereDiesenFrame( ((JKasseInternal)kasse).getName());
+		((JKasseInternal)kasse).starteKasseID(kid);
 
 		return;
 	}
@@ -284,7 +285,7 @@ public static void KassenFenster(int setPos) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(650,500));
-	KassenPanel kasspan = new KassenPanel(jry);
+	KassenPanel kasspan = new KassenPanel(jry,kid);
 	jry.setContent(kasspan);	
 	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
@@ -298,7 +299,7 @@ public static void KassenFenster(int setPos) {
 	
 }	
 /**************Krankenkassenverwaltung Echtfunktion***********************/
-public static void ArztFenster(int setPos) {
+public static void ArztFenster(int setPos,String aid) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -306,6 +307,7 @@ public static void ArztFenster(int setPos) {
 	if(arzt != null){
 		containerHandling(((JArztInternal)arzt).getDesktop());
 		((JArztInternal)arzt).aktiviereDiesenFrame( ((JArztInternal)arzt).getName());
+		((JArztInternal)arzt).starteArztID(aid);
 
 		return;
 	}
@@ -317,7 +319,7 @@ public static void ArztFenster(int setPos) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(650,500));
-	ArztPanel arztpan = new ArztPanel(jry);
+	ArztPanel arztpan = new ArztPanel(jry,aid);
 	jry.setContent(arztpan);	
 	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();

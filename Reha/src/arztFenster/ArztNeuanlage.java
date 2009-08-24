@@ -159,35 +159,35 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		CellConstraints cc = new CellConstraints();
 
 		jpan.add(new JLabel("Anrede"),cc.xy(1,2));
-		tfs[0] = new JRtaTextField("NORMAL",true);
+		tfs[0] = new JRtaTextField("NIX",true);
 		tfs[0].addKeyListener(this);
 		tfs[0].addFocusListener(this);
 		tfs[0].setName("anrede");
 		jpan.add(tfs[0],cc.xy(3, 2));
 
 		jpan.add(new JLabel("Titel"),cc.xy(4,2));
-		tfs[1] = new JRtaTextField("NORMAL",true);
+		tfs[1] = new JRtaTextField("NIX",true);
 		tfs[1].addKeyListener(this);
 		tfs[1].addFocusListener(this);
 		tfs[1].setName("titel");
 		jpan.add(tfs[1],cc.xy(6, 2));
 
 		jpan.add(new JLabel("Nachname"),cc.xy(1,4));
-		tfs[2] = new JRtaTextField("NORMAL",true);
+		tfs[2] = new JRtaTextField("NIX",true);
 		tfs[2].addKeyListener(this);
 		tfs[2].addFocusListener(this);
 		tfs[2].setName("nachname");
 		jpan.add(tfs[2],cc.xyw(3, 4, 4));
 
 		jpan.add(new JLabel("Vorname"),cc.xy(1,6));
-		tfs[3] = new JRtaTextField("NORMAL",true);
+		tfs[3] = new JRtaTextField("NIX",true);
 		tfs[3].addKeyListener(this);
 		tfs[3].addFocusListener(this);
 		tfs[3].setName("vorname");
 		jpan.add(tfs[3],cc.xyw(3, 6, 4));
 
 		jpan.add(new JLabel("Strasse"),cc.xy(1, 8));
-		tfs[4] = new JRtaTextField("NORMAL",true);
+		tfs[4] = new JRtaTextField("NIX",true);
 		tfs[4].addKeyListener(this);
 		tfs[4].addFocusListener(this);		
 		tfs[4].setName("strasse");
@@ -200,13 +200,13 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		tfs[5].setName("plz");
 		jpan.add(tfs[5],cc.xy(3, 10));
 
-		tfs[6] = new JRtaTextField("NORMAL",true);
+		tfs[6] = new JRtaTextField("NIX",true);
 		tfs[6].addKeyListener(this);
 		tfs[6].addFocusListener(this);
 		tfs[6].setName("ort");
 		jpan.add(tfs[6],cc.xyw(4, 10,3));
 
-		
+
 		jpan.addSeparator("Arztidetifikation",cc.xyw(1, 12, 6));
 
 		

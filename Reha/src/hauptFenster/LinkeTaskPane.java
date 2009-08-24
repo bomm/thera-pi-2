@@ -86,6 +86,7 @@ import sqlTools.ExUndHop;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemUtil;
+import systemTools.TestePatStamm;
 import terminKalender.ParameterLaden;
 import terminKalender.SchnellSuche;
 import terminKalender.TagWahlNeu;
@@ -452,7 +453,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			}
 			
 			if (cmd.equals("Krankenkassen")){
-				ProgLoader.KassenFenster(0);
+				ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
 				break;
 			}
 			
@@ -461,7 +462,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("Arztstamm")){
-				ProgLoader.ArztFenster(0);
+				ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 				break;
 			}
 			if (cmd.equals("Wochenarbeitszeiten definieren")){

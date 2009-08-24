@@ -125,6 +125,8 @@ import org.jdesktop.swingx.plaf.basic.BasicStatusBarUI;
 import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
 import org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI;
 
+import patientenFenster.PatGrundPanel;
+
 import rehaContainer.RehaTP;
 
 import sqlTools.ExUndHop;
@@ -136,6 +138,7 @@ import systemTools.FileTools;
 import systemTools.PassWort;
 import systemTools.RehaPainters;
 import systemTools.SplashPanel;
+import systemTools.TestePatStamm;
 import systemTools.WinNum;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
@@ -1551,13 +1554,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
         					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
         					System.out.println("Krankenkassen einlesen");
-       						ProgLoader.KassenFenster(0);
+       						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
         					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
         					System.out.println("Arzt-Stamm einlesen");
-       						ProgLoader.ArztFenster(0);
+       						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
                     }
                     
                     if(keyEvent.isControlDown() &&

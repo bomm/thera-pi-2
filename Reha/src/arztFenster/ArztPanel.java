@@ -73,6 +73,7 @@ import events.RehaTPEventListener;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.ArztTools;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
@@ -99,7 +100,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	Vector titel = new Vector<String>() ;
 	Vector formular = new Vector<String>();
 	int iformular = -1;
-	public ArztPanel(JArztInternal jry){
+	public ArztPanel(JArztInternal jry,String arztid){
 		super();
 		setBorder(null);
 		this.jry = jry;
@@ -118,17 +119,19 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		
 		setLayout(new BorderLayout());
 		add(getContent(),BorderLayout.CENTER);
-		/*
-		new SwingWorker<Void,Void>(){
+		if(!arztid.equals("")){
+			final String xarzt = arztid; 
+			new SwingWorker<Void,Void>(){
 
-			@Override
-			protected Void doInBackground() throws Exception {
-				new HoleKassen("","");
-				return null;
-			}
+				@Override
+				protected Void doInBackground() throws Exception {
+					holeAktArzt(xarzt);
+					return null;
+				}
+				
+			}.execute();
 			
-		}.execute();
-		*/
+		}
 
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
@@ -366,9 +369,33 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			}
 			this.arzttbl.setRowSelectionInterval(0, 0);
 			holeText();
+		}else{
+			ta.setText("");
 		}
 		suchen.requestFocus();
 	}
+	public void holeAktArzt(String id){
+		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
+
+		Vector vec;
+		if(id.equals("")){
+			return;
+		}else{
+			vec = SqlInfo.holeSaetze("arzt", "arztnum,nachname,vorname,strasse,ort,telefon,fax,klinik,facharzt,id",
+					"id='"+id+"' LIMIT 1", Arrays.asList(new String[]{}));
+		}
+		this.atblm.setRowCount(0);		
+		int anzahl = 0;
+		if( (anzahl = vec.size()) > 0){
+			for(int i = 0; i < anzahl;i++ ){
+				this.atblm.addRow((Vector)vec.get(i));
+			}
+			this.arzttbl.setRowSelectionInterval(0, 0);
+			holeText();
+		}
+		suchen.requestFocus();
+	}
+
 	private void holeText(){
 		int row = this.arzttbl.getSelectedRow();
 		if(row < 0){return;}
@@ -568,21 +595,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 
 					@Override
 					protected Void doInBackground() throws Exception {
-						List<String> nichtlesen = Arrays.asList(new String[] {""});
-						Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,kassen_nam2,strasse,plz,ort", "id='"+xid+"'", new ArrayList());
-						SystemConfig.hmAdrKDaten.put("<Kadr1>", ((String) vec.get(0)).trim());
-						SystemConfig.hmAdrKDaten.put("<Kadr2>", ((String)vec.get(1)).trim());
-						SystemConfig.hmAdrKDaten.put("<Kadr3>", ((String)vec.get(2)).trim());
-						SystemConfig.hmAdrKDaten.put("<Kadr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
-						/*
-						SystemConfig.hmAdrKDaten.put("<KAdr1>", StringTools.EGross(((String) vec.get(0)).trim()));
-						SystemConfig.hmAdrKDaten.put("<KAdr2>", StringTools.EGross(((String)vec.get(1)).trim()));
-						SystemConfig.hmAdrKDaten.put("<KAdr3>", StringTools.EGross(((String)vec.get(2)).trim()));
-						SystemConfig.hmAdrKDaten.put("<KAdr4>", StringTools.EGross(  ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim() ) );
-						*/
+						ArztTools.constructArztHMap(xid);
 						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
-						//ladeSchreiben(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
-						// TODO Auto-generated method stub
 						return null;
 					}
     			}.execute();

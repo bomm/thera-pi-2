@@ -124,7 +124,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public String[] indergo = null;
 	public String[] indlogo = null;
 	public RezeptDaten jpan1 = null;
-	public JButton[] aktrbut = {null,null,null,null,null,null,null,null};
+	public JButton[] aktrbut = {null,null,null,null,null,null,null,null,null};
 	public boolean suchePatUeberRez = false;
 	public String rezAngezeigt = "";
 	public static boolean inRezeptDaten = false;
@@ -230,7 +230,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
 				aktrbut[0].setEnabled(true);
-				for(int i = 1; i < 8;i++){
+				for(int i = 1; i < 9;i++){
 					aktrbut[i].setEnabled(false);	
 				}
 				//PatGrundPanel.thisClass.jtab.setIconAt(0, SystemConfig.hmSysIcons.get("zuzahlnichtok"));
@@ -245,7 +245,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				wechselPanel.remove(leerPanel);
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
-				for(int i = 0; i < 8;i++){
+				for(int i = 0; i < 9;i++){
 					aktrbut[i].setEnabled(true);	
 				}
 				//PatGrundPanel.thisClass.jtab.setIconAt(0, SystemConfig.hmSysIcons.get("zuzahlok"));
@@ -321,7 +321,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[7].setActionCommand("arztbericht");
 		aktrbut[7].addActionListener(this);		
 		jtb.add(aktrbut[7]);
-		for(int i = 0; i < 8;i++){
+		aktrbut[8] = new JButton();
+		aktrbut[8].setIcon(SystemConfig.hmSysIcons.get("print"));
+		aktrbut[8].setToolTipText("Rezeptbezogenen Brief/Formular erstellen");
+		aktrbut[8].setActionCommand("rezeptbrief");
+		aktrbut[8].addActionListener(this);		
+		jtb.add(aktrbut[8]);
+
+		for(int i = 0; i < 9;i++){
 			aktrbut[i].setEnabled(false);
 		}
 		return jtb;
@@ -391,6 +398,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(arg0.getKeyCode()==27){
 					arg0.consume();
 				}
+				if(arg0.getKeyCode()==65 && arg0.isControlDown()){
+					arg0.consume();
+				}
+
 			}
 
 		});

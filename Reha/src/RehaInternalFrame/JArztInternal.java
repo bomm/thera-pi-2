@@ -6,6 +6,8 @@ import hauptFenster.Reha;
 import javax.swing.ImageIcon;
 import javax.swing.event.InternalFrameEvent;
 
+import arztFenster.ArztPanel;
+
 public class JArztInternal extends JRehaInternal{
 
 	public JArztInternal(String titel, ImageIcon img, int desktop) {
@@ -29,6 +31,10 @@ public class JArztInternal extends JRehaInternal{
 		super.setzeTitel(stitel);
 		repaint();
 		
+	}
+	public void starteArztID(String aID){
+		if(aID.equals("")){return;}
+		ArztPanel.thisClass.holeAktArzt(aID);
 	}
 	
 }
