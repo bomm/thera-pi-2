@@ -174,7 +174,8 @@ boolean inNeu = false;
 		}.execute();
 		*/
 		patTab.addTab("Seite-1", getDatenPanel());
-		patTab.addTab("Seite-2", getZusatzPanel());
+		patTab.addTab("Seite-2", getZusatzPanel1());
+		patTab.addTab("Seite-3", getZusatzPanel2());
 
 		add(patTab,BorderLayout.CENTER);
 		
@@ -560,7 +561,7 @@ boolean inNeu = false;
 		but.add(builder.getPanel(),BorderLayout.CENTER);
 		return but;
 	}
-	private JXPanel getZusatzPanel(){
+	private JXPanel getZusatzPanel1(){
 		JXPanel but = new JXPanel(new BorderLayout());
 		//but.setBorder(null);
 		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
@@ -592,6 +593,39 @@ boolean inNeu = false;
 		but.validate();
 		return but;
 	}
+	private JXPanel getZusatzPanel2(){
+		JXPanel but = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		but.setOpaque(false);
+		but.setDoubleBuffered(true);
+
+		FormLayout lay = new FormLayout("","");
+		PanelBuilder builder = new PanelBuilder(lay);
+		builder.setDefaultDialogBorder();
+		builder.getPanel().setOpaque(false);	
+		CellConstraints cc = new CellConstraints();
+		builder.getPanel().setDoubleBuffered(true);
+		/********
+		 * 
+		 */
+		 // Hier die neuen Felder aufnehmen
+		
+		/*******
+		 * 
+		 */
+		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder.getPanel());
+		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
+		jscrzusatz.getViewport().setOpaque(false);
+		jscrzusatz.setBorder(null);
+		jscrzusatz.setViewportBorder(null);
+		jscrzusatz.validate();
+		jscrzusatz.addKeyListener(this);
+		but.add(jscrzusatz,BorderLayout.CENTER);
+		but.validate();
+		return but;
+	}
+	
 	private JXPanel getDatenPanel(){
 		JXPanel but = new JXPanel(new BorderLayout());
 		//but.setBorder(null);
