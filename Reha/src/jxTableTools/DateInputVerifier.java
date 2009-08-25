@@ -72,6 +72,14 @@ public class DateInputVerifier extends InputVerifier {
     		input.setText(jahrtausend);
     		//System.out.println("Datum = "+jahrtausend);
     	}
+    	if(teil.length() == 10){
+    		if(teil.substring(6,7).equals("0")){
+    			String korrekt = teil.substring(0,5);
+    			korrekt = korrekt+"20"+teil.substring(6,8);
+    			input.setText(korrekt);
+    			System.out.println("korrigiertes Datum = "+korrekt);
+    		}
+    	}
         final Date d = sdf.parse (input.getText());
         SwingUtilities.invokeLater(new Runnable () {
           public void run () {
@@ -101,6 +109,7 @@ public class DateInputVerifier extends InputVerifier {
           return true;
         }
         */
+    	  System.out.println("Unzulässige Datumseingabe");
         JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
         
         return false;

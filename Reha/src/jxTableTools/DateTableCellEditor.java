@@ -247,7 +247,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         	ftf.setCaretPosition(0);
         	return false;
         }
-        /*
+        
         if (ftf.isEditValid()) {
             try {
                 ftf.commitEdit();
@@ -257,10 +257,10 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         	System.out.println("Verify = "+ftf.getInputVerifier().verify(ftf));
         	System.out.println("Ungültige Eingabe ---------> "+ftf.getText());
             if (!userSaysRevert()) { //user wants to edit
-	        return false; //don't let the editor go away
-	    } 
+            	return false; //don't let the editor go away
+            } 
         }
-        */
+        
         fireEditingStopped();
         return super.stopCellEditing();
     }
