@@ -1061,7 +1061,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 										public void run(){
 											PatTools.constructPatHMap();		
 											ArztTools.constructArztHMap("");
-											KasseTools.constructKasseHMap();
+											KasseTools.constructKasseHMap("");
 										}
 									}.start();
 						return null;

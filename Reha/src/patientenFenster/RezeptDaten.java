@@ -223,6 +223,8 @@ public class RezeptDaten extends JXPanel{
 				new Thread(){
 					public void run(){
 						RezTools.constructVirginHMap();
+						ArztTools.constructArztHMap((String)vecaktrez.get(16));
+						KasseTools.constructKasseHMap((String)vecaktrez.get(37));
 						//int i = RezTools.testeRezGebArt(true,reznum.getText().trim(),(String)vecaktrez.get(34));
 					}
 				}.start();

@@ -12,8 +12,13 @@ import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 
 public class KasseTools {
-	public static void constructKasseHMap(){
-		int xid = StringTools.ZahlTest(PatGrundPanel.thisClass.patDaten.get(68));
+	public static void constructKasseHMap(String id){
+		int xid;
+		if(id.equals("")){
+			xid = StringTools.ZahlTest(PatGrundPanel.thisClass.patDaten.get(68));
+		}else{
+			xid = new Integer(id);
+		}
 		if(xid <= 0){
 			return;
 		}
