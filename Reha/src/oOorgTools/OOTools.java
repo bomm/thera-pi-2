@@ -33,10 +33,12 @@ import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.presentation.IPresentationDocument;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
+import ag.ion.bion.officelayer.text.IText;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.ITextService;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.IViewCursorService;
 import ag.ion.bion.officelayer.text.TextException;
@@ -57,11 +59,11 @@ public class OOTools {
 		XLineCursor xLineCursor = (XLineCursor) UnoRuntime.queryInterface(XLineCursor.class,
 		xTextViewCursorSupplier.getViewCursor());
 		xLineCursor.gotoStartOfLine(false);
+		xLineCursor.gotoEndOfLine(true); 
 		ITextCursor textCursor = viewCursor.getTextCursorFromStart();
-		textCursor.goLeft((short) 0, false);
-		//textCursor.getEnd();
+		textCursor.goLeft((short) 1, false);
 		textCursor.gotoRange(viewCursor.getTextCursorFromEnd().getEnd(), true);
-		textCursor.setString(""); 		
+		textCursor.setString("");
 	}
 	
 	public static void starteStandardFormular(String url,String drucker){
@@ -131,7 +133,12 @@ public class OOTools {
 		    while (it.hasNext()) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -142,7 +149,12 @@ public class OOTools {
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -153,7 +165,12 @@ public class OOTools {
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -165,7 +182,11 @@ public class OOTools {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  System.out.println("Gefunden ->"+((String)entry.getValue()));
-		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -175,8 +196,9 @@ public class OOTools {
 		    }
 		    /*****************/
 		}
+		textDocument.getFrame().setFocus();
 		//textDocument.getFrame().getXFrame().getContainerWindow().
-		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 	}
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
@@ -316,6 +338,7 @@ public class OOTools {
 			//IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
 			ISpreadsheetDocument spreadsheetDocument = (ISpreadsheetDocument) document;
 			/********************/
+			spreadsheetDocument.getFrame().setFocus();
 			return (ISpreadsheetDocument) spreadsheetDocument;
 			
 		} 
@@ -330,6 +353,7 @@ public class OOTools {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.CALC, DocumentDescriptor.DEFAULT);
 			ISpreadsheetDocument spreadsheetDocument = (ISpreadsheetDocument) document;
+			spreadsheetDocument.getFrame().setFocus();
 		} 
 		catch (Throwable exception) {
 			exception.printStackTrace();
@@ -343,6 +367,7 @@ public class OOTools {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.IMPRESS, DocumentDescriptor.DEFAULT);
 			IPresentationDocument presentationDocument = (IPresentationDocument) document;
+			presentationDocument.getFrame().setFocus();
 		}
 		catch(Throwable throwable) {
 			throwable.printStackTrace();
