@@ -51,20 +51,15 @@ public class OOTools {
 	public static void loescheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.goToRange(placeholders.getTextRange(), false);
-		/*
-		ILineCursor lineCursor = viewCursor.getLineCursor();
-		lineCursor.gotoStartOfLine(false);
-		lineCursor.gotoEndOfLine(true);
-		*/
 		XController xController = textDocument.getXTextDocument().getCurrentController();
 		XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
 		xController);
 		XLineCursor xLineCursor = (XLineCursor) UnoRuntime.queryInterface(XLineCursor.class,
 		xTextViewCursorSupplier.getViewCursor());
 		xLineCursor.gotoStartOfLine(false);
-		xLineCursor.gotoEndOfLine(true);
 		ITextCursor textCursor = viewCursor.getTextCursorFromStart();
-		textCursor.goLeft((short) 1, false);
+		textCursor.goLeft((short) 0, false);
+		//textCursor.getEnd();
 		textCursor.gotoRange(viewCursor.getTextCursorFromEnd().getEnd(), true);
 		textCursor.setString(""); 		
 	}

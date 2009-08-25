@@ -67,6 +67,7 @@ import jxTableTools.DateInputVerifier;
 import jxTableTools.DateTableCellEditor;
 import jxTableTools.DatumTableCellEditor;
 import jxTableTools.TableTool;
+import krankenKasse.KassenFormulare;
 
 import oOorgTools.OOTools;
 
@@ -93,8 +94,10 @@ import events.RehaTPEventListener;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.ArztTools;
 import stammDatenTools.RezTools;
 import stammDatenTools.ZuzahlTools;
+import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 
@@ -130,6 +133,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public static boolean inRezeptDaten = false;
 	public static boolean inEinzelTermine = false;
 	public static boolean initOk = false;
+	private JRtaTextField formularid = new JRtaTextField("NIX",false);	
+	Vector titel = new Vector<String>() ;
+	Vector formular = new Vector<String>();
+	int iformular = -1;
+	
 	//public boolean lneu = false;
 	public AktuelleRezepte(){
 		super();
@@ -217,11 +225,58 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			
 		}.execute();
+		new Thread(){
+			public void run(){
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run(){
+				 		   holeFormulare();
+				 		   return;
+				 	   }
+				}); 	  
+			}
+		}.start();
+		
 		
 	}
 	public void getAktDates(){
 		
 	}
+	public void formulareAuswerten(){
+		int row = tabaktrez.getSelectedRow(); 
+		if(row >= 0){
+    		iformular = -1;
+    		KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
+    		Point pt = aktrbut[8].getLocationOnScreen();
+    		kf.setLocation(pt.x-100,pt.y+32);
+    		kf.setModal(true);
+    		kf.setVisible(true);
+    		iformular = new Integer(formularid.getText());
+    		kf = null;
+    		if(iformular >= 0){
+    			new SwingWorker<Void,Void>(){
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
+						return null;
+					}
+    			}.execute();
+    			
+    		}
+ 
+    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+        	
+		}else{
+			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
+			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
+			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
+			"Sie dürfen also hoffen....\n\n";
+			JOptionPane.showMessageDialog(null, mes);
+			iformular = -1;
+		}
+		
+	}
+	
 
 	public void setzeRezeptPanelAufNull(boolean aufnull){
 		if(aufnull){
@@ -1020,7 +1075,25 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void columnSelectionChanged(ListSelectionEvent arg0) {
 		// TODO Auto-generated method stub
 		
-	} 
+	}
+	public void holeFormulare(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				// TODO Auto-generated method stub
+				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
+				int forms = inif.getIntegerProperty("Formulare", "RezeptFormulareAnzahl");
+				for(int i = 1; i <= forms; i++){
+					titel.add(inif.getStringProperty("Formulare","RFormularText"+i));			
+					formular.add(inif.getStringProperty("Formulare","RFormularName"+i));
+				}	
+				return null;
+			}
+			
+		}.execute();
+		
+	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -1282,7 +1355,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					tabaktrez.validate();
 				}	
 			}
+			if(cmd.equals("rezeptbrief")){
+				formulareAuswerten();				
+			}
 		}
+
 	}
 	/*****************************************************/
 	class MyTermClass{
