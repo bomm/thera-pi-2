@@ -247,7 +247,11 @@ public class datFunk {
 		}
 	}
 
-
+	public static int JahreDifferenz(String sAktuellesJahr,String sInputJahr) {
+		int aktuell = new Integer(sAktuellesJahr.substring(6));
+		int input = new Integer(sInputJahr.substring(6));
+		return (aktuell-input);
+	}
 
 	/********************Klassen-Klammer*************/
 }

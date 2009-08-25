@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
@@ -210,6 +211,26 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		optimize = new JCheckBox();
 		defvorlagen.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});
 		vorlagen = new JXTable(defvorlagen);
+		vorlagen.addMouseListener(new MouseAdapter(){		
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
+					int row = vorlagen.getSelectedRow();
+					row = vorlagen.convertRowIndexToModel(row);
+					int col = vorlagen.getSelectedColumn();	
+					if(col==1){
+						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
+						if(svorlage.equals("")){
+							return;
+						}
+						defvorlagen.setValueAt(svorlage, row, col);
+						vorlagen.validate();
+					}
+				}
+			}	
+		});
+		
 		//vorlagen.setDefaultEditor(new Object().getClass(), new MyEditor());
 		vorlagen.getColumn(0).setCellEditor((TableCellEditor) new TitelEditor());
 		vorlagen.getColumn(0).getCellEditor().addCellEditorListener(this);

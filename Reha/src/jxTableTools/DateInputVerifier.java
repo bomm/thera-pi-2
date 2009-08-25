@@ -54,10 +54,11 @@ public class DateInputVerifier extends InputVerifier {
      if(input.getText().equals("  .  .    ")){
     	 return true;
      }
+     String inhalt = input.getText();
     	//System.out.println("In verify / input = "+input.getText());
       final DateFormat sdf = this.getDateFormat ();
       try {
-    	String teil = input.getText().substring(6).trim();
+    	String teil = inhalt.substring(6).trim();
     	if(teil.length()==0){
     		input.setText("  .  .    ");
     		return true;
@@ -65,19 +66,20 @@ public class DateInputVerifier extends InputVerifier {
     	if(teil.length() == 2){
     		String jahrtausend = "";
     		if(IntegerTools.trailNullAndRetInt(teil) > 20){
-    			jahrtausend = input.getText().substring(0,6).trim()+"19"+teil;
+    			jahrtausend = inhalt.substring(0,6).trim()+"19"+teil;
     		}else{
-    			jahrtausend = input.getText().substring(0,6).trim()+"20"+teil;    			
+    			jahrtausend = inhalt.substring(0,6).trim()+"20"+teil;    			
     		}
     		input.setText(jahrtausend);
     		//System.out.println("Datum = "+jahrtausend);
     	}
-    	if(teil.length() == 10){
-    		if(teil.substring(6,7).equals("0")){
-    			String korrekt = teil.substring(0,5);
-    			korrekt = korrekt+"20"+teil.substring(6,8);
+    	if(inhalt.length() >= 8){
+    		//System.out.println("Länge des Strings = "+input.getText().length());
+    		if(inhalt.substring(6,7).equals("0")){
+    			String korrekt = inhalt.substring(0,6);
+    			korrekt = korrekt+"20"+inhalt.substring(6,8);
     			input.setText(korrekt);
-    			System.out.println("korrigiertes Datum = "+korrekt);
+    			//System.out.println("korrigiertes Datum = "+korrekt);
     		}
     	}
         final Date d = sdf.parse (input.getText());

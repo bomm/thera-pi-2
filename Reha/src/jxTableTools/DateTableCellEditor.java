@@ -23,6 +23,8 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
+import terminKalender.datFunk;
+
 
 
 
@@ -194,6 +196,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 		ftf.requestFocus();
         ftf.setSelectionStart(0);
 		ftf.setSelectionEnd(0);
+		ftf.selectAll();
 		//ftf.setSelectionEnd(insstr.length()-1);
 		ftf.setCaretPosition(0);
 		System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
@@ -247,7 +250,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         	ftf.setCaretPosition(0);
         	return false;
         }
-        
+        /*
         if (ftf.isEditValid()) {
             try {
                 ftf.commitEdit();
@@ -260,7 +263,12 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
             	return false; //don't let the editor go away
             } 
         }
-        
+        */
+        if(datFunk.JahreDifferenz(datFunk.sHeute(),ftf.getText()) >= 120 ||
+        		datFunk.JahreDifferenz(datFunk.sHeute(),ftf.getText()) <= -120){
+        	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
+        			"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
+        }
         fireEditingStopped();
         return super.stopCellEditing();
     }

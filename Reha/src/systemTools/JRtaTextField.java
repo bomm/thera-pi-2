@@ -301,13 +301,14 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
   
     protected boolean isAlowedDate (final JRtaTextField input) {
-     if(input.getText().equals("  .  .    ")){
+    	String inhalt = input.getText();
+     if(inhalt.equals("  .  .    ")){
     	 return true;
      }
     	//System.out.println("In verify / input = "+input.getText());
       final DateFormat sdf = this.getDateFormat ();
       try {
-    	String teil = input.getText().substring(6).trim();
+    	String teil = inhalt.substring(6).trim();
     	if(teil.length()==0){
     		input.setText("  .  .    ");
     		return true;
@@ -315,13 +316,23 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
     	if(teil.length() == 2){
     		String jahrtausend = "";
     		if(IntegerTools.trailNullAndRetInt(teil) > 20){
-    			jahrtausend = input.getText().substring(0,6).trim()+"19"+teil;
+    			jahrtausend = inhalt.substring(0,6).trim()+"19"+teil;
     		}else{
-    			jahrtausend = input.getText().substring(0,6).trim()+"20"+teil;    			
+    			jahrtausend = inhalt.substring(0,6).trim()+"20"+teil;    			
     		}
     		input.setText(jahrtausend);
     		//System.out.println("Datum = "+jahrtausend);
     	}
+    	if(inhalt.length() >= 8){
+    		//System.out.println("Länge des Strings = "+input.getText().length());
+    		if(inhalt.substring(6,7).equals("0")){
+    			String korrekt = inhalt.substring(0,6);
+    			korrekt = korrekt+"20"+inhalt.substring(6,8);
+    			input.setText(korrekt);
+    			//System.out.println("korrigiertes Datum = "+korrekt);
+    		}
+    	}
+    	
         final Date d = sdf.parse (input.getText());
         SwingUtilities.invokeLater(new Runnable () {
           public void run () {

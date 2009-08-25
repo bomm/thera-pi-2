@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
@@ -53,6 +54,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
+import patientenFenster.RezeptDaten;
 
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
@@ -246,6 +249,25 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		
 		modvorlagen.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});
 		vorlagen = new JXTable(modvorlagen);
+		vorlagen.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
+					int row = vorlagen.getSelectedRow();
+					row = vorlagen.convertRowIndexToModel(row);
+					int col = vorlagen.getSelectedColumn();	
+					if(col==1){
+						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
+						if(svorlage.equals("")){
+							return;
+						}
+						modvorlagen.setValueAt(svorlage, row, col);
+						vorlagen.validate();
+					}
+				}
+			}	
+		});
 		vorlagen.getColumn(0).setCellEditor(new TitelEditor());
 		vorlagen.setSortable(false);
 		
@@ -394,6 +416,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 
 		
 	}
+	
 	private void doSpeichern(){
 		String wert = "";
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
