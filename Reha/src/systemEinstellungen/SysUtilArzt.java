@@ -63,9 +63,11 @@ public class SysUtilArzt extends JXPanel implements KeyListener, ActionListener 
 	JRtaTextField newgroup = null;
 	JRtaTextField newdoc = null;
 	JXTable gruppen = null;
-	JXTable vorlagen = null;
 	MyVorlagenTableModel modarzt = null;
+	JXTable vorlagen = null;
 	MyVorlagenTableModel modvorl = null;	
+
+	
 	JRadioButton oben = null;
 	JRadioButton unten = null;
 	JCheckBox optimize = null;
