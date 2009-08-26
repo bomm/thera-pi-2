@@ -390,17 +390,7 @@ private JScrollPane getParameterListe(){
 	node = new DefaultMutableTreeNode( "Preislisten");
 	treeitem = new DefaultMutableTreeNode("Heilmittelkatalog einlesen");
 	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Tarifzuordnungen");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Preise-Physiopraxis");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Preise-Massagepraxis");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Preise-Ergopraxis");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Preise-Logopraxis");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Reha-Tagessätze");
+	treeitem = new DefaultMutableTreeNode("Preislisten bearbeiten");
 	node.add(treeitem ); 
 	root.add(node);
 	/***/
@@ -746,8 +736,17 @@ private void auswertenSysUtil(String util){
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
+		if(util.equals("Preislisten bearbeiten")){
+			jxInhaltRechts = new SysUtilPreislisten();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
 		
-
+		
 		jxInhaltRechts = new SysUtilVorlage();
 		jxInhaltRechts.setVisible(true);
 		jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);

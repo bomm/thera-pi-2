@@ -30,6 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -109,7 +110,8 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 		new JFormattedTextField(createFormatter("#########0.00"));
 		if(xalign.equals("RECHTS")){
-			setAlignmentX(JFormattedTextField.RIGHT_ALIGNMENT);
+			setHorizontalAlignment(SwingConstants.RIGHT);
+			//setAlignmentX(JFormattedTextField.RIGHT_ALIGNMENT);
 		}	
 		this.type = type;
 		this.selectWhenFocus = selectWhenFocus;
