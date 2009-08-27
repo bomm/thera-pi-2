@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -19,6 +20,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +31,9 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -36,18 +41,22 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.TabbedPaneUI;
+import javax.swing.table.TableModel;
 
 import kvKarte.KVKWrapper;
 
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.ZuzahlTools;
+
 import systemEinstellungen.SystemConfig;
+
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -70,6 +79,7 @@ public class PatNeuanlage extends JXPanel implements ActionListener, KeyListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+private static final JXPanel Tab1 = null;
 public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
@@ -77,16 +87,23 @@ public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
-		                      null,null,null,null};
-JRtaCheckBox[]jcheck  ={null,null,null,null,null,null,null,null,null};
+		                      null,null,null,null, null};
+JRtaCheckBox[]jcheck  ={null,null,null,null,null,null,null,null,null,null,null};
 
+JXTable doclist = null;
+JButton knopf0 = null;
+JButton knopf1 = null;
 JButton knopf3 = null;
 JButton knopf4 = null;
 JButton knopf5 = null;
+JButton pic0 = null;
+JButton pic1 = null;
+
 JRtaComboBox cbanrede = null;
 
 String kassenid = ""; 
 String befreitdatum = "";
+String befreitbeginn = "";
 boolean freizumstart = false;
 boolean freibeimspeichern = false;
 
@@ -100,7 +117,7 @@ List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_name","
 										"abwv_name","abwstrasse","abwort","akutdat","termine1","termine2","kilometer",
 										"heimbewohn"});
 List<String> checks = Arrays.asList( new String[] {"abwadress","akutpat" ,"merk1","merk2","merk3","merk4",
-										"merk5","merk6","heimbewohn"});
+										"merk5","merk6","heimbewohn","nobefr","u18no"});
                //0   1   2   3   4  5  6  7  8  9  10 1112 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
 int[] fedits =  {0 , 1 , 2 , 3 , 4, 5, 6,11, 7, 8, 9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34};
 int[] ffelder = {0 , 1 , 2 , 3 ,21,23,24, 4,18,19,20,50,13,14,16,15,31,25,26,56, 6, 7, 8, 9,10,11,12,46,34,36,37,48,40,65,66};
@@ -150,7 +167,7 @@ boolean inNeu = false;
 		this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 		
 		add(getButtonPanel(),BorderLayout.SOUTH);
-		//add(getDatenPanel(),BorderLayout.CENTER);
+		//add(getDatenPanel(),BorderLayout.WEST);
 
 		UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 		UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
@@ -173,10 +190,10 @@ boolean inNeu = false;
 			}
 		}.execute();
 		*/
-		patTab.addTab("Seite-1", getDatenPanel());
-		patTab.addTab("Seite-2", getZusatzPanel1());
-		patTab.addTab("Seite-3", getZusatzPanel2());
-
+		patTab.addTab("Stammdaten", Tab1());
+		patTab.addTab("Zusätze", Tab2());
+		patTab.addTab("Sonstiges", Tab3());
+		
 		add(patTab,BorderLayout.CENTER);
 		
 		hgicon = Reha.rehaBackImg;//new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
@@ -561,77 +578,449 @@ boolean inNeu = false;
 		but.add(builder.getPanel(),BorderLayout.CENTER);
 		return but;
 	}
-	private JXPanel getZusatzPanel1(){
-		JXPanel but = new JXPanel(new BorderLayout());
-		//but.setBorder(null);
-		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
-		but.setOpaque(false);
-		but.setDoubleBuffered(true);
 
-		FormLayout lay = new FormLayout("","");
-		PanelBuilder builder = new PanelBuilder(lay);
-		builder.setDefaultDialogBorder();
-		builder.getPanel().setOpaque(false);	
-		CellConstraints cc = new CellConstraints();
-		builder.getPanel().setDoubleBuffered(true);
-		/********
-		 * 
-		 */
-		 // Hier die neuen Felder aufnehmen
+		private JXPanel Tab1(){
+		JXPanel tab1 = new JXPanel(new BorderLayout());
+		tab1.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		tab1.setOpaque(false);
+		tab1.setDoubleBuffered(true);
+		tab1.add(getDatenPanel12(),BorderLayout.EAST);
+		tab1.add(getDatenPanel11(),BorderLayout.WEST);
+		tab1.validate();	
+		return tab1;	
+		}
+	
+		private JXPanel Tab2(){
+			JXPanel tab2 = new JXPanel(new BorderLayout());
+			tab2.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+			tab2.setOpaque(false);
+			tab2.setDoubleBuffered(true);
+			tab2.add(getDatenPanel22(),BorderLayout.EAST);
+			tab2.add(getDatenPanel21(),BorderLayout.WEST);
+			tab2.validate();	
+			return tab2;	
+			}
 		
-		/*******
-		 * 
-		 */
-		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder.getPanel());
+		private JXPanel Tab3(){
+			JXPanel tab3 = new JXPanel(new BorderLayout());
+			tab3.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+			tab3.setOpaque(false);
+			tab3.setDoubleBuffered(true);
+			tab3.add(getDatenPanel32(),BorderLayout.EAST);
+			tab3.add(getDatenPanel31(),BorderLayout.WEST);
+				
+			return tab3;	
+			}
+	
+		private JXPanel getDatenPanel12(){
+	
+		JXPanel pat12 = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		pat12.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		pat12.setOpaque(false);
+		pat12.setDoubleBuffered(true);
+		
+		 
+	
+		jtf[12] = new JRtaTextField("GROSS", true);
+		jtf[12].setName("kasse");
+		jtf[12].addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent arg0) {
+				//System.out.println("code = "+arg0.getKeyCode());
+				//System.out.println("char = "+arg0.getKeyChar());
+				if(arg0.getKeyChar()=='?'){
+					String suchkrit = jtf[12].getText().replaceAll("\\?", "");
+					kassenAuswahl(new String[] {suchkrit,jtf[34].getText().trim(),jtf[34].getText()});
+				}
+			}
+		});
+		
+		jtf[13] = new JRtaTextField("ZAHLEN", true);
+		jtf[13].setName("kv_nummer");
+
+		jtf[14] = new JRtaTextField("ZAHLEN", true);
+		jtf[14].setName("v_nummer");
+
+		jtf[15] = new JRtaTextField("ZAHLEN", true);
+		jtf[15].setName("kv_status");
+
+		jtf[16] = new JRtaTextField("DATUM", true);
+		jtf[16].setName("bef_dat"); //aus Kostenträgerdatei/Karte einlesen?
+		jtf[16].setFont(font);
+		jtf[16].setForeground(Color.RED);
+		
+		jtf[36] = new JRtaTextField("DATUM", true);
+		jtf[36].setName("bef_ab");
+		jtf[36].setFont(font);
+		jtf[36].setForeground(Color.RED);
+		
+		
+		jtf[17] = new JRtaTextField("GROSS", true);
+		jtf[17].setName("arzt");
+		jtf[17].addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent arg0) {
+				//System.out.println("code = "+arg0.getKeyCode());
+				//System.out.println("char = "+arg0.getKeyChar());
+				if(arg0.getKeyChar()=='?'){
+					String[] suchkrit = new String[] {jtf[17].getText().replaceAll("\\?", ""),jtf[33].getText()};
+					arztAuswahl(suchkrit);
+				}
+			}
+				
+		});
+		jtf[18] = new JRtaTextField("ZAHLEN", true);
+		jtf[18].setName("arzt_num");
+		
+		jtf[19] = new JRtaTextField("GROSS", true);
+		jtf[19].setName("therapeut");
+		
+		
+		
+	
+		
+		jtf[33] = new JRtaTextField("ZAHLEN", true);
+		jtf[33].setName("arztid");
+		
+		jtf[34] = new JRtaTextField("ZAHLEN", true);
+		jtf[34].setName("kassenid");
+		
+		
+											//      1.                2.    3.     4.                 5.    6.    
+				FormLayout lay12 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+					       //1.   2.   3.   4.  5.   6   7   8    9   10   11  12  13  14   15   16  17  18   19   20   21  22   23  24   25  26    27  28   29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
+							"p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p");
+							
+					PanelBuilder builder12 = new PanelBuilder(lay12);
+					builder12.setDefaultDialogBorder();
+					builder12.getPanel().setOpaque(false);	
+					CellConstraints cc12 = new CellConstraints();
+					builder12.getPanel().setDoubleBuffered(true);
+					
+					builder12.addSeparator("Krankenversicherung", cc12.xyw(1, 1, 6));
+					builder12.addLabel("Kasse (?)", cc12.xy(1, 3));
+					builder12.add(jtf[12], cc12.xyw(3, 3, 4));
+					builder12.addLabel("Kassen-IK", cc12.xy(1,5));
+					builder12.add(jtf[13], cc12.xyw(3, 5, 4));
+					builder12.addLabel("Vers-Nr.", cc12.xy(1,7));
+					builder12.add(jtf[14], cc12.xyw(3, 7, 4));
+					builder12.addLabel("Status", cc12.xy(1, 9));
+					builder12.add(jtf[15], cc12.xy(3,9));
+					builder12.addLabel("Befreit von", cc12.xy(1, 11));
+					builder12.add(jtf[36], cc12.xy(3, 11));
+					builder12.addLabel("bis ", cc12.xy(4,11));
+					builder12.add(jtf[16], cc12.xy(6, 11));
+					
+					builder12.addSeparator("Arzt / Therapeut", cc12.xyw(1, 23, 6));
+
+					builder12.addLabel("Hausarzt (?)", cc12.xy(1, 25));
+					builder12.add(jtf[17], cc12.xyw(3, 25, 4));
+					builder12.addLabel("ArztNummer (LANR)", cc12.xy(1, 27));
+					builder12.add(jtf[18], cc12.xyw(3,27,4));
+					builder12.addLabel("Betreuer/Therapeut", cc12.xy(1, 29));
+					builder12.add(jtf[19], cc12.xyw(3,29,4));
+		
+		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder12.getPanel());
 		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
 		jscrzusatz.getViewport().setOpaque(false);
 		jscrzusatz.setBorder(null);
 		jscrzusatz.setViewportBorder(null);
 		jscrzusatz.validate();
 		jscrzusatz.addKeyListener(this);
-		but.add(jscrzusatz,BorderLayout.CENTER);
-		but.validate();
-		return but;
-	}
-	private JXPanel getZusatzPanel2(){
-		JXPanel but = new JXPanel(new BorderLayout());
-		//but.setBorder(null);
-		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
-		but.setOpaque(false);
-		but.setDoubleBuffered(true);
-
-		FormLayout lay = new FormLayout("","");
-		PanelBuilder builder = new PanelBuilder(lay);
-		builder.setDefaultDialogBorder();
-		builder.getPanel().setOpaque(false);	
-		CellConstraints cc = new CellConstraints();
-		builder.getPanel().setDoubleBuffered(true);
-		/********
-		 * 
-		 */
-		 // Hier die neuen Felder aufnehmen
-		
-		/*******
-		 * 
-		 */
-		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder.getPanel());
-		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
-		jscrzusatz.getViewport().setOpaque(false);
-		jscrzusatz.setBorder(null);
-		jscrzusatz.setViewportBorder(null);
-		jscrzusatz.validate();
-		jscrzusatz.addKeyListener(this);
-		but.add(jscrzusatz,BorderLayout.CENTER);
-		but.validate();
-		return but;
+		pat12.add(jscrzusatz,BorderLayout.CENTER);
+		pat12.validate();
+		return pat12;
 	}
 	
-	private JXPanel getDatenPanel(){
-		JXPanel but = new JXPanel(new BorderLayout());
+	
+	private JXPanel getDatenPanel21(){
+		JXPanel pat21 = new JXPanel(new BorderLayout());
 		//but.setBorder(null);
-		but.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
-		but.setOpaque(false);
-		but.setDoubleBuffered(true);
+		pat21.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		pat21.setOpaque(false);
+		pat21.setDoubleBuffered(true);
+		
+		
+		jtf[20] = new JRtaTextField("GROSS", true);
+		jtf[20].setName("abwanrede");
+		
+		jtf[21] = new JRtaTextField("GROSS", true);
+		jtf[21].setName("abwtitel");
+		
+		jtf[22] = new JRtaTextField("GROSS", true);
+		jtf[22].setName("abwn_name");
+		
+		jtf[23] = new JRtaTextField("GROSS", true);
+		jtf[23].setName("abwv_name");
+		
+		jtf[24] = new JRtaTextField("GROSS", true);
+		jtf[24].setName("abwstrasse");
+		
+		jtf[25] = new JRtaTextField("GROSS", true);
+		jtf[25].setName("abwplz");
+		
+		jtf[26] = new JRtaTextField("GROSS", true);
+		jtf[26].setName("abwort");
+		
+		jtf[31] = new JRtaTextField("ZAHLEN", true);
+		jtf[31].setName("kilometer");
+		
+		jtf[32] = new JRtaTextField("DATUM", true);
+		jtf[32].setName("er_dat");
+		
+		jtf[35] = new JRtaTextField("ZAHLEN", true);
+		jtf[35].setName("BefJahr");
+		
+		jcheck[0] = new JRtaCheckBox();
+		jcheck[0].setOpaque(false);
+		jcheck[0].setName("abwadress");
+		
+		jcheck[8] = new JRtaCheckBox();
+		jcheck[8].setOpaque(false);
+		jcheck[8].setName("heimbewohn");	
+		
+		jcheck[9] = new JRtaCheckBox();
+		jcheck[9].setOpaque(false);
+		jcheck[9].setName("nobefr");
+		
+		jcheck[10] = new JRtaCheckBox();
+		jcheck[10].setOpaque(false);
+		jcheck[10].setName("u18no");
+		
+	
+		FormLayout lay21 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+			       //1.   2.   3.   4.  5.   6   7   8    9   10   11  12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
+					"p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p");
+		
+					PanelBuilder builder21 = new PanelBuilder(lay21);
+					builder21.setDefaultDialogBorder();
+					builder21.getPanel().setOpaque(false);	
+					CellConstraints cc21 = new CellConstraints();
+					builder21.getPanel().setDoubleBuffered(true);
+				
+					builder21.addSeparator("Zusätze", cc21.xyw(1, 1, 6));
+					builder21.addLabel("Kilometer bei HB", cc21.xy(1, 3));
+					builder21.add(jtf[31], cc21.xy(3, 3));
+					builder21.addLabel("Heimbewohner", cc21.xy(1,5));
+					builder21.add(jcheck[8], cc21.xy(3, 5));
+					builder21.addLabel("befreit im Jahr", cc21.xy(1,7));
+					builder21.add(jtf[35],cc21.xy(3,7));
+					builder21.addLabel("löschen?", cc21.xy(4,7));
+					builder21.add(jcheck[9],cc21.xy(6, 7));
+					builder21.addLabel("U18-Regel ignorieren?",cc21.xy(1,9));
+					builder21.add(jcheck[10],cc21.xy(3, 9));
+					builder21.addLabel("Vertrag unterz. am", cc21.xy(1, 11));
+					builder21.add(jtf[32], cc21.xy(3, 11));
+					
+					builder21.addSeparator("abweichender Rechnungsempfänger/Versicherter", cc21.xyw(1, 13, 6));
+					builder21.addLabel("verwenden", cc21.xy(1,15));
+					builder21.add(jcheck[0], cc21.xy(3,15));
+					builder21.addLabel("Anrede", cc21.xy(1, 17));
+					builder21.add(jtf[20], cc21.xy(3, 17));
+					builder21.addLabel("Titel", cc21.xy(4, 17));
+					builder21.add(jtf[21], cc21.xy(6, 17));
+					builder21.addLabel("Nachname", cc21.xy(1, 19));
+					builder21.add(jtf[22], cc21.xyw(3, 19, 4));
+					builder21.addLabel("Vorname", cc21.xy(1, 21));
+					builder21.add(jtf[23], cc21.xyw(3,21,4));
+					builder21.addLabel("Straße, Nr.", cc21.xy(1, 23));
+					builder21.add(jtf[24], cc21.xyw(3, 23, 4));
+					builder21.addLabel("PLZ, Ort", cc21.xy(1, 25));
+					builder21.add(jtf[25], cc21.xy(3, 25));
+					builder21.add(jtf[26], cc21.xyw(4, 25, 3));
+				
+					
+		
+					JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder21.getPanel());
+					jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
+					jscrzusatz.getViewport().setOpaque(false);
+					jscrzusatz.setBorder(null);
+					jscrzusatz.setViewportBorder(null);
+					jscrzusatz.validate();
+					jscrzusatz.addKeyListener(this);
+					pat21.add(jscrzusatz,BorderLayout.CENTER);
+					pat21.validate();
+					return pat21;
+	}
+	
+	private JXPanel getDatenPanel22(){
+		JXPanel pat22 = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		pat22.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		pat22.setOpaque(false);
+		pat22.setDoubleBuffered(true);
+		
+		jcheck[2] = new JRtaCheckBox(SystemConfig.vPatMerker.get(0));
+		jcheck[2].setOpaque(false);
+		jcheck[2].setName("merk1");
+		
+		jcheck[3] = new JRtaCheckBox(SystemConfig.vPatMerker.get(1));
+		jcheck[3].setOpaque(false);
+		jcheck[3].setName("merk2");
+		
+		jcheck[4] = new JRtaCheckBox(SystemConfig.vPatMerker.get(2));
+		jcheck[4].setOpaque(false);
+		jcheck[4].setName("merk3");
+
+		jcheck[5] = new JRtaCheckBox(SystemConfig.vPatMerker.get(3));
+		jcheck[5].setOpaque(false);
+		jcheck[5].setName("merk4");
+		
+		jcheck[6] = new JRtaCheckBox(SystemConfig.vPatMerker.get(4));
+		jcheck[6].setOpaque(false);
+		jcheck[6].setName("merk5");
+		
+		jcheck[7] = new JRtaCheckBox(SystemConfig.vPatMerker.get(5));
+		jcheck[7].setOpaque(false);
+		jcheck[7].setName("merk6");
+	
+		//die Labeltexte merk2 bis merk7 aus Datenbank/SysINI einlesen?
+		
+		doclist = new JXTable();
+		knopf0 = new JButton("entfernen");
+		knopf0.setPreferredSize(new Dimension(70, 20));
+		knopf0.addActionListener(this);		
+		knopf0.setActionCommand("deldoc");
+		knopf0.addKeyListener(this);
+		knopf1 = new JButton("hinzu");
+		knopf1.setPreferredSize(new Dimension(70, 20));
+		knopf1.addActionListener(this);		
+		knopf1.setActionCommand("adddoc");
+		knopf1.addKeyListener(this);
+		 
+		
+		FormLayout lay22 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+			       //1.   2.   3.   4.  5.   6   7   8     9   10   11      12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
+					"p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, 90dlu, 5dlu, p");
+		
+					PanelBuilder builder22 = new PanelBuilder(lay22);
+					builder22.setDefaultDialogBorder();
+					builder22.getPanel().setOpaque(false);	
+					CellConstraints cc22 = new CellConstraints();
+					builder22.getPanel().setDoubleBuffered(true);
+					 
+					builder22.addSeparator("individuelle Merkmale", cc22.xyw(1, 1, 6));
+
+					builder22.add(jcheck[2], cc22.xy(3, 3));
+					builder22.add(jcheck[3], cc22.xy(6, 3));
+					builder22.add(jcheck[4], cc22.xy(3, 5));
+					builder22.add(jcheck[5], cc22.xy(6, 5));
+					builder22.add(jcheck[6], cc22.xy(3, 7));
+					builder22.add(jcheck[7], cc22.xy(6,7));
+					
+					builder22.addSeparator("Ärzteliste des Patienten", cc22.xyw(1,9,6));
+					builder22.add(doclist, cc22.xyw(1, 11, 6));
+					builder22.addLabel("Arzt aufnehmen", cc22.xy(1,13));
+					builder22.add(knopf1, cc22.xy(3,13));
+					builder22.addLabel("Arzt entfernen", cc22.xy(4,13));
+					builder22.add(knopf0, cc22.xy(6,13));
+					
+					
+		
+		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder22.getPanel());
+		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
+		jscrzusatz.getViewport().setOpaque(false);
+		jscrzusatz.setBorder(null);
+		jscrzusatz.setViewportBorder(null);
+		jscrzusatz.validate();
+		jscrzusatz.addKeyListener(this);
+		pat22.add(jscrzusatz,BorderLayout.CENTER);
+		pat22.validate();
+		return pat22;
+	}	
+	
+	private JXPanel getDatenPanel31(){
+		JXPanel pat31 = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		pat31.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		pat31.setOpaque(false);
+		pat31.setDoubleBuffered(true);
+		
+		
+		pic0 = new JButton("verwerfen");
+		pic0.setPreferredSize(new Dimension(70, 20));
+		pic0.addActionListener(this);		
+		pic0.setActionCommand("delpic");
+		pic0.addKeyListener(this);
+		pic1 = new JButton("aufnahme");
+		pic1.setPreferredSize(new Dimension(70, 20));
+		pic1.addActionListener(this);		
+		pic1.setActionCommand("addpic");
+		pic1.addKeyListener(this);
+		 
+		
+		FormLayout lay31 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+			       //1.   2.   3.   4.  5.   6   7   8     9   10   11      12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
+					"p, 10dlu, 150dlu, 2dlu, p");
+		
+					PanelBuilder builder31 = new PanelBuilder(lay31);
+					builder31.setDefaultDialogBorder();
+					builder31.getPanel().setOpaque(false);	
+					CellConstraints cc31 = new CellConstraints();
+					builder31.getPanel().setDoubleBuffered(true);
+					 
+					builder31.addSeparator("Kundenfoto", cc31.xyw(1, 1, 6));
+
+					builder31.addLabel("Hier ist das Bild", cc31.xy(3, 3));
+					builder31.addLabel("Bild aufnehmen", cc31.xy(1,5));
+					builder31.add(pic1, cc31.xy(3,5));
+					builder31.addLabel("Bild verwerfen", cc31.xy(4,5));
+					builder31.add(pic0, cc31.xy(6,5));
+					
+					
+		
+		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder31.getPanel());
+		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
+		jscrzusatz.getViewport().setOpaque(false);
+		jscrzusatz.setBorder(null);
+		jscrzusatz.setViewportBorder(null);
+		jscrzusatz.validate();
+		jscrzusatz.addKeyListener(this);
+		pat31.add(jscrzusatz,BorderLayout.CENTER);
+		pat31.validate();
+		return pat31;
+	}	
+	
+	private JXPanel getDatenPanel32(){
+		JXPanel pat32 = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		pat32.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		pat32.setOpaque(false);
+		pat32.setDoubleBuffered(true);
+		
+		
+		
+		 
+		
+		FormLayout lay32 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+			       //1.   2.   3.   4.  5.   6   7   8     9   10   11      12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
+					"p, 10dlu, 160dlu, 2dlu, p");
+		
+					PanelBuilder builder32 = new PanelBuilder(lay32);
+					builder32.setDefaultDialogBorder();
+					builder32.getPanel().setOpaque(false);	
+					CellConstraints cc32 = new CellConstraints();
+					builder32.getPanel().setDoubleBuffered(true);
+					 
+					builder32.addLabel("Space for future Extensions", cc32.xyw(1,3, 6));
+					
+		JScrollPane jscrzusatz = JCompTools.getTransparentScrollPane(builder32.getPanel());
+		jscrzusatz.getVerticalScrollBar().setUnitIncrement(15);
+		jscrzusatz.getViewport().setOpaque(false);
+		jscrzusatz.setBorder(null);
+		jscrzusatz.setViewportBorder(null);
+		jscrzusatz.validate();
+		jscrzusatz.addKeyListener(this);
+		pat32.add(jscrzusatz,BorderLayout.CENTER);
+		pat32.validate();
+		return pat32;
+	}	
+	
+	private JXPanel getDatenPanel11(){
+		JXPanel pat11 = new JXPanel(new BorderLayout());
+		//but.setBorder(null);
+		pat11.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		pat11.setOpaque(false);
+		pat11.setDoubleBuffered(true);
 	
 		cbanrede = new JRtaComboBox(new String[] {"HERR","FRAU"});
 
@@ -676,77 +1065,6 @@ boolean inNeu = false;
 		jtf[11].setName("geboren");
 		jtf[11].setFont(font);
 		jtf[11].setForeground(Color.RED);
-
-		
-		jtf[12] = new JRtaTextField("GROSS", true);
-		jtf[12].setName("kasse");
-		jtf[12].addKeyListener(new KeyAdapter(){
-			public void keyPressed(KeyEvent arg0) {
-				//System.out.println("code = "+arg0.getKeyCode());
-				//System.out.println("char = "+arg0.getKeyChar());
-				if(arg0.getKeyChar()=='?'){
-					String suchkrit = jtf[12].getText().replaceAll("\\?", "");
-					kassenAuswahl(new String[] {suchkrit,jtf[34].getText().trim(),jtf[34].getText()});
-				}
-			}
-				
-		});
-		
-
-		jtf[13] = new JRtaTextField("ZAHLEN", true);
-		jtf[13].setName("kv_nummer");
-
-		jtf[14] = new JRtaTextField("ZAHLEN", true);
-		jtf[14].setName("v_nummer");
-
-		jtf[15] = new JRtaTextField("ZAHLEN", true);
-		jtf[15].setName("kv_status");
-
-		jtf[16] = new JRtaTextField("DATUM", true);
-		jtf[16].setName("bef_dat"); //aus Kostenträgerdatei/Karte einlesen?
-		jtf[16].setFont(font);
-		jtf[16].setForeground(Color.RED);
-		
-		
-		jtf[17] = new JRtaTextField("GROSS", true);
-		jtf[17].setName("arzt");
-		jtf[17].addKeyListener(new KeyAdapter(){
-			public void keyPressed(KeyEvent arg0) {
-				//System.out.println("code = "+arg0.getKeyCode());
-				//System.out.println("char = "+arg0.getKeyChar());
-				if(arg0.getKeyChar()=='?'){
-					String[] suchkrit = new String[] {jtf[17].getText().replaceAll("\\?", ""),jtf[33].getText()};
-					arztAuswahl(suchkrit);
-				}
-			}
-				
-		});
-		jtf[18] = new JRtaTextField("ZAHLEN", true);
-		jtf[18].setName("arzt_num");
-		
-		jtf[19] = new JRtaTextField("GROSS", true);
-		jtf[19].setName("therapeut");
-		
-		jtf[20] = new JRtaTextField("GROSS", true);
-		jtf[20].setName("abwanrede");
-		
-		jtf[21] = new JRtaTextField("GROSS", true);
-		jtf[21].setName("abwtitel");
-		
-		jtf[22] = new JRtaTextField("GROSS", true);
-		jtf[22].setName("abwn_name");
-		
-		jtf[23] = new JRtaTextField("GROSS", true);
-		jtf[23].setName("abwv_name");
-		
-		jtf[24] = new JRtaTextField("GROSS", true);
-		jtf[24].setName("abwstrasse");
-		
-		jtf[25] = new JRtaTextField("GROSS", true);
-		jtf[25].setName("abwplz");
-		
-		jtf[26] = new JRtaTextField("GROSS", true);
-		jtf[26].setName("abwort");
 		
 		jtf[27] = new JRtaTextField("DATUM", true);
 		jtf[27].setName("akutbis");
@@ -760,189 +1078,85 @@ boolean inNeu = false;
 		jtf[30] = new JRtaTextField("GROSS", true);
 		jtf[30].setName("termine2");
 		
-		jtf[31] = new JRtaTextField("ZAHLEN", true);
-		jtf[31].setName("kilometer");
-		
-		jtf[32] = new JRtaTextField("DATUM", true);
-		jtf[32].setName("er_dat");
-		
-		jtf[33] = new JRtaTextField("ZAHLEN", true);
-		jtf[33].setName("arztid");
-		
-		jtf[34] = new JRtaTextField("ZAHLEN", true);
-		jtf[34].setName("kassenid");
-		/*		
-		jtf[35] = new JRtaTextField("GROSS", true);
-		jtf[35].setName("arztid");
-
-		jtf[35] = new JRtaTextField("GROSS", true);
-		jtf[35].setName("arztid");
-
-		jtf[35] = new JRtaTextField("GROSS", true);
-		jtf[35].setName("kassenid");
-		*/
-
-		jcheck[0] = new JRtaCheckBox();
-		jcheck[0].setOpaque(false);
-		jcheck[0].setName("abwadress");
-		
 		jcheck[1] = new JRtaCheckBox();
 		jcheck[1].setOpaque(false);
 		jcheck[1].setName("akutpat");
 		
-		jcheck[2] = new JRtaCheckBox(SystemConfig.vPatMerker.get(0));
-		jcheck[2].setOpaque(false);
-		jcheck[2].setName("merk1");
 		
-		jcheck[3] = new JRtaCheckBox(SystemConfig.vPatMerker.get(1));
-		jcheck[3].setOpaque(false);
-		jcheck[3].setName("merk2");
-		
-		jcheck[4] = new JRtaCheckBox(SystemConfig.vPatMerker.get(2));
-		jcheck[4].setOpaque(false);
-		jcheck[4].setName("merk3");
-
-		jcheck[5] = new JRtaCheckBox(SystemConfig.vPatMerker.get(3));
-		jcheck[5].setOpaque(false);
-		jcheck[5].setName("merk4");
-		
-		jcheck[6] = new JRtaCheckBox(SystemConfig.vPatMerker.get(4));
-		jcheck[6].setOpaque(false);
-		jcheck[6].setName("merk5");
-		
-		jcheck[7] = new JRtaCheckBox(SystemConfig.vPatMerker.get(5));
-		jcheck[7].setOpaque(false);
-		jcheck[7].setName("merk6");
-		
-		jcheck[8] = new JRtaCheckBox();
-		jcheck[8].setOpaque(false);
-		jcheck[8].setName("heimbewohn");		
-		
-		//die Labeltexte merk2 bis merk7 aus Datenbank/SysINI einlesen?
 		
 									//      1.                2.    3.     4.                 5.    6.    
-		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
-			       //1.   2.  3.   4.   5.   6  7   8    9   10   11  12  13  14   15   16  17  18   19   20   21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
-					"p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 7dlu, p, 7dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 7dlu, p, 7dlu, p, 2dlu, p, 2dlu, p,  7dlu, p, 7dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 7dlu, p , 7dlu, p, 2dlu, p, 2dlu, p, 7dlu, p, 7dlu, p,"+
-				   //68   69  70   71   72  73   74   75   76  77  78  79 80 
-					"2dlu, p, 2dlu, p, 2dlu, p,  2dlu, p, 2dlu, p, 7dlu,p,7dlu");
-					PanelBuilder builder = new PanelBuilder(lay);
+		FormLayout lay11 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+			       //1.   2.   3.   4.  5.   6   7   8    9   10   11  12  13  14   15   16  17  18   19   20   21  22   23  24   25  26    27  28   29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
+					"p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p");
+					PanelBuilder builder = new PanelBuilder(lay11);
 					builder.setDefaultDialogBorder();
 					builder.getPanel().setOpaque(false);	
-					CellConstraints cc = new CellConstraints();
+					CellConstraints cc11 = new CellConstraints();
 					builder.getPanel().setDoubleBuffered(true);
 
-		builder.addLabel("Anrede", cc.xy(1,1));
-		builder.add(cbanrede, cc.xy(3,1));
-		//builder.add(jtf[0], cc.xy(3,1));
-		builder.addLabel("Titel", cc.xy(4,1));
-		builder.add(jtf[1], cc.xy(6, 1));
-		builder.addLabel("Nachname", cc.xy(1,3));
-		builder.add(jtf[2], cc.xyw(3, 3, 4));
-		builder.addLabel("Vorname", cc.xy(1,5));
-		builder.add(jtf[3], cc.xyw(3, 5, 4));
-		builder.addLabel("Straße, Nr.", cc.xy(1,7));
-		builder.add(jtf[4], cc.xyw(3, 7, 4));
-		builder.addLabel("PLZ, Ort", cc.xy(1,9));
-		builder.add(jtf[5], cc.xy(3, 9));
-		builder.add(jtf[6], cc.xyw(4, 9, 3));
-		builder.addLabel("Geburtstag", cc.xy(1,11));
-		builder.add(jtf[11], cc.xy(3, 11));
-		builder.addLabel("Telefon priv.", cc.xy(1, 13));
-		builder.add(jtf[7], cc.xyw(3, 13, 4));
-		builder.addLabel("Telefon gesch.", cc.xy(1, 15));
-		builder.add(jtf[8], cc.xyw(3, 15, 4));
-		builder.addLabel("Mobil", cc.xy(1, 17));
-		builder.add(jtf[9], cc.xyw(3, 17, 4));
-		builder.addLabel("Email", cc.xy(1, 19));
-		builder.add(jtf[10], cc.xyw(3, 19, 4));
+		builder.addSeparator("Personendaten",cc11.xyw(1,1,6));
+		builder.addLabel("Anrede", cc11.xy(1,3));
+		builder.add(cbanrede, cc11.xy(3,3));
+		//builder.add(jtf[0], cc11.xy(3,1));
+		builder.addLabel("Titel", cc11.xy(4,3));
+		builder.add(jtf[1], cc11.xy(6,3));
+		builder.addLabel("Nachname", cc11.xy(1,5));
+		builder.add(jtf[2], cc11.xyw(3, 5, 4));
+		builder.addLabel("Vorname", cc11.xy(1,7));
+		builder.add(jtf[3], cc11.xyw(3, 7, 4));
+		builder.addLabel("Straße, Nr.", cc11.xy(1,9));
+		builder.add(jtf[4], cc11.xyw(3, 9, 4));
+		builder.addLabel("PLZ, Ort", cc11.xy(1,11));
+		builder.add(jtf[5], cc11.xy(3, 11));
+		builder.add(jtf[6], cc11.xyw(4, 11, 3));
+		builder.addLabel("Geburtstag", cc11.xy(1,13));
+		builder.add(jtf[11], cc11.xy(3, 13));
+		builder.addLabel("Telefon priv.", cc11.xy(1, 15));
+		builder.add(jtf[7], cc11.xyw(3, 15, 4));
+		builder.addLabel("Telefon gesch.", cc11.xy(1, 17));
+		builder.add(jtf[8], cc11.xyw(3, 17, 4));
+		builder.addLabel("Mobil", cc11.xy(1, 19));
+		builder.add(jtf[9], cc11.xyw(3, 19, 4));
+		builder.addLabel("Email", cc11.xy(1, 21));
+		builder.add(jtf[10], cc11.xyw(3, 21, 4));
 		
-		builder.addSeparator("Krankenversicherung", cc.xyw(1, 21, 6));
-		builder.addLabel("Kasse (?)", cc.xy(1, 23));
-		builder.add(jtf[12], cc.xyw(3, 23, 4));
-		builder.addLabel("Kassen-IK", cc.xy(1,25));
-		builder.add(jtf[13], cc.xyw(3, 25, 4));
-		builder.addLabel("Vers-Nr.", cc.xy(1,27));
-		builder.add(jtf[14], cc.xyw(3, 27, 4));
-		builder.addLabel("Status", cc.xy(1, 29));
-		builder.add(jtf[15], cc.xy(3,29));
-		builder.addLabel("Befreit bis", cc.xy(1, 31));
-		builder.add(jtf[16], cc.xy(3, 31));
 		
-		builder.addSeparator("Arzt / Therapeut", cc.xyw(1, 33, 6));
 
-		builder.addLabel("Hausarzt (?)", cc.xy(1, 35));
-		builder.add(jtf[17], cc.xyw(3, 35, 4));
-		builder.addLabel("ArztNummer (LANR)", cc.xy(1, 37));
-		builder.add(jtf[18], cc.xyw(3,37,4));
-		builder.addLabel("Betreuer/Therapeut", cc.xy(1, 39));
-		builder.add(jtf[19], cc.xyw(3,39,4));
+		builder.addSeparator("Plandaten", cc11.xyw(1, 23, 6));
 
-		builder.addSeparator("Plandaten / sonstiges", cc.xyw(1, 41, 6));
-
-		builder.addLabel("Akutpatient", cc.xy(1,43));
-		builder.add(jcheck[1], cc.xy(3,43));
+		builder.addLabel("Akutpatient", cc11.xy(1,25));
+		builder.add(jcheck[1], cc11.xy(3,25));
 		
-		builder.addLabel("akut von", cc.xy(1,45));
-		builder.add(jtf[28], cc.xy(3, 45));
-		builder.addLabel("akut bis", cc.xy(4,45));
-		builder.add(jtf[27], cc.xy(6, 45));
+		builder.addLabel("akut von", cc11.xy(1,27));
+		builder.add(jtf[28], cc11.xy(3, 27));
+		builder.addLabel("akut bis", cc11.xy(4,27));
+		builder.add(jtf[27], cc11.xy(6, 27));
 		
-		builder.addLabel("mögliche Termine 1", cc.xy(1, 47));
-		builder.add(jtf[29], cc.xyw(3, 47, 4));
-		builder.addLabel("mögliche Termine 2", cc.xy(1, 49));
-		builder.add(jtf[30], cc.xyw(3, 49, 4));
-		builder.addLabel("Kilometer bei HB", cc.xy(1, 51));
-		builder.add(jtf[31], cc.xy(3, 51));
-		builder.addLabel("Heimbewohner", cc.xy(1,53));
-		builder.add(jcheck[8], cc.xy(3, 53));
-		builder.addLabel("Vertrag unterz. am", cc.xy(1, 55));
-		builder.add(jtf[32], cc.xy(3, 55));
+		builder.addLabel("mögliche Termine 1", cc11.xy(1, 29));
+		builder.add(jtf[29], cc11.xyw(3, 29, 4));
+		builder.addLabel("mögliche Termine 2", cc11.xy(1, 31));
+		builder.add(jtf[30], cc11.xyw(3, 31, 4));
+	
 
-		builder.addSeparator("individuelle Merkmale", cc.xyw(1, 57, 6));
-
-		builder.add(jcheck[2], cc.xy(3, 59));
-		builder.add(jcheck[3], cc.xy(6, 59));
-		builder.add(jcheck[4], cc.xy(3, 61));
-		builder.add(jcheck[5], cc.xy(6, 61));
-		builder.add(jcheck[6], cc.xy(3, 63));
-		builder.add(jcheck[7], cc.xy(6,63));
-		
-		builder.addSeparator("abweichender Rechnungsempfänger/Versicherter", cc.xyw(1, 65, 6));
-		builder.addLabel("verwenden", cc.xy(1,67));
-		builder.add(jcheck[0], cc.xy(3,67));
-		builder.addLabel("Anrede", cc.xy(1, 69));
-		builder.add(jtf[20], cc.xy(3, 69));
-		builder.addLabel("Titel", cc.xy(4, 69));
-		builder.add(jtf[21], cc.xy(6, 69));
-		builder.addLabel("Nachname", cc.xy(1, 71));
-		builder.add(jtf[22], cc.xyw(3, 71, 4));
-		builder.addLabel("Vorname", cc.xy(1, 73));
-		builder.add(jtf[23], cc.xyw(3,73,4));
-		builder.addLabel("Straße, Nr.", cc.xy(1, 75));
-		builder.add(jtf[24], cc.xyw(3, 75, 4));
-		builder.addLabel("PLZ, Ort", cc.xy(1, 77));
-		builder.add(jtf[25], cc.xy(3, 77));
-		builder.add(jtf[26], cc.xyw(4, 77, 3));
-		builder.addSeparator("Ende der Fahnenstange", cc.xyw(1, 79, 6));
 		
 		builder.getPanel().addKeyListener(this);
 		builder.getPanel().addFocusListener(this);
 		builder.getPanel().validate();
-		jscr = new JScrollPane();
-		jscr.setOpaque(false);
-		jscr.getViewport().setOpaque(false);
-		jscr.setBorder(null);
-		jscr.setViewportBorder(null);
-		jscr.getVerticalScrollBar().setUnitIncrement(15);
-		jscr.setViewportView(builder.getPanel());
+		JScrollPane xjscr = JCompTools.getTransparentScrollPane(builder.getPanel());
+		//jscr = new JScrollPane();
+		//jscr.setOpaque(false);
+		//jscr.getViewport().setOpaque(false);
+		//jscr.setBorder(null);
+		//jscr.setViewportBorder(null);
+		xjscr.getVerticalScrollBar().setUnitIncrement(15);
+		//jscr.setViewportView(builder.getPanel());
 
-		jscr.validate();
-		jscr.addKeyListener(this);
+		xjscr.validate();
+		xjscr.addKeyListener(this);
 
-		but.add(jscr,BorderLayout.CENTER);
-		but.validate();
-		return but;
+		pat11.add(xjscr,BorderLayout.CENTER);
+		pat11.validate();
+		return pat11;
 	}
 	
 	public static String getArztBisher(){

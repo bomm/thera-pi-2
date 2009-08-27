@@ -756,9 +756,9 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	}else{
 		neuPat.getSmartTitledPanel().setTitle("editieren ---> "+ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geboren am: "+ptfield[4].getText().trim());		
 	}
-	neuPat.setSize(480,768);
-	neuPat.setPreferredSize(new Dimension(480,768));
-	neuPat.getSmartTitledPanel().setPreferredSize(new Dimension (480,768));
+	neuPat.setSize(960,600);
+	neuPat.setPreferredSize(new Dimension(960,600));
+	neuPat.getSmartTitledPanel().setPreferredSize(new Dimension (960,600));
 	neuPat.setPinPanel(pinPanel);
 	neuPat.getSmartTitledPanel().setContentContainer(new PatNeuanlage(new Vector(),lneu,feldname));
 	neuPat.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
