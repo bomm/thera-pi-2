@@ -41,6 +41,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.TabbedPaneUI;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import kvKarte.KVKWrapper;
@@ -91,6 +92,7 @@ public JRtaTextField[] jtf = {null,null,null,null,null,
 JRtaCheckBox[]jcheck  ={null,null,null,null,null,null,null,null,null,null,null};
 
 JXTable doclist = null;
+MyDocTableModel docmod = null;
 JButton knopf0 = null;
 JButton knopf1 = null;
 JButton knopf3 = null;
@@ -190,9 +192,12 @@ boolean inNeu = false;
 			}
 		}.execute();
 		*/
-		patTab.addTab("Stammdaten", Tab1());
-		patTab.addTab("Zusätze", Tab2());
-		patTab.addTab("Sonstiges", Tab3());
+		patTab.addTab("1 - Stammdaten", Tab1());
+		patTab.addTab("2 - Zusätze", Tab2());
+		patTab.addTab("3 - Sonstiges", Tab3());
+		patTab.setMnemonicAt(0, (int) '1');
+		patTab.setMnemonicAt(1, (int) '2');		
+		patTab.setMnemonicAt(2, (int) '3');		
 		
 		add(patTab,BorderLayout.CENTER);
 		
@@ -634,6 +639,7 @@ boolean inNeu = false;
 				}
 			}
 		});
+		jtf[12].addFocusListener(this);
 		
 		jtf[13] = new JRtaTextField("ZAHLEN", true);
 		jtf[13].setName("kv_nummer");
@@ -668,6 +674,8 @@ boolean inNeu = false;
 			}
 				
 		});
+		jtf[17].addFocusListener(this);
+		
 		jtf[18] = new JRtaTextField("ZAHLEN", true);
 		jtf[18].setName("arzt_num");
 		
@@ -874,8 +882,12 @@ boolean inNeu = false;
 		jcheck[7].setName("merk6");
 	
 		//die Labeltexte merk2 bis merk7 aus Datenbank/SysINI einlesen?
+		docmod = new MyDocTableModel();
+		docmod.setColumnIdentifiers(new String[] {"LANR","Nachname","Strasse","Ort","BSNR",""});
+		doclist = new JXTable(docmod);
+		JScrollPane docscr = JCompTools.getTransparentScrollPane(doclist);
+		docscr.validate();
 		
-		doclist = new JXTable();
 		knopf0 = new JButton("entfernen");
 		knopf0.setPreferredSize(new Dimension(70, 20));
 		knopf0.addActionListener(this);		
@@ -908,7 +920,7 @@ boolean inNeu = false;
 					builder22.add(jcheck[7], cc22.xy(6,7));
 					
 					builder22.addSeparator("Ärzteliste des Patienten", cc22.xyw(1,9,6));
-					builder22.add(doclist, cc22.xyw(1, 11, 6));
+					builder22.add(docscr, cc22.xyw(1, 11, 6));
 					builder22.addLabel("Arzt aufnehmen", cc22.xy(1,13));
 					builder22.add(knopf1, cc22.xy(3,13));
 					builder22.addLabel("Arzt entfernen", cc22.xy(4,13));
@@ -1353,5 +1365,39 @@ boolean inNeu = false;
 		return false;
 	}
 
+
+	class MyDocTableModel extends DefaultTableModel{
+		   /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public Class getColumnClass(int columnIndex) {
+			   if(columnIndex==1){
+				   return String.class;}
+			   else{
+				   return String.class;
+			   }
+	           //return (columnIndex == 0) ? Boolean.class : String.class;
+	       }
+
+		    public boolean isCellEditable(int row, int col) {
+		        //Note that the data/cell address is constant,
+		        //no matter where the cell appears onscreen.
+
+		        if (col == 0){
+		        	return true;
+		        }else if(col == 3){
+		        	return true;
+		        }else if(col == 7){
+		        	return true;
+		        }else if(col == 11){
+		        	return true;
+		        } else{
+		          return false;
+		        }
+		      }
+		   
+	}
 
 }
