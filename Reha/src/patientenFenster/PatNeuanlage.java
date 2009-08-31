@@ -1250,6 +1250,7 @@ boolean inNeu = false;
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
+		/*
 		Rectangle rec1 =((JComponent)arg0.getSource()).getBounds();
 		Rectangle rec2 = jscr.getViewport().getViewRect();
 		JViewport vp = jscr.getViewport();
@@ -1262,6 +1263,8 @@ boolean inNeu = false;
 		}
 		jscr.validate();
 		jscr.repaint();
+
+		*/
 		if( ((JComponent)arg0.getSource()).getName() != null){
 			if(((JComponent)arg0.getSource()).getName().equals("arzt")){
 				if(testObDialog(jtf[17].getText())){
@@ -1276,7 +1279,7 @@ boolean inNeu = false;
 				}
 			}else if(((JComponent)arg0.getSource()).getName().equals("kasse")){
 				if(testObDialog(jtf[12].getText())){
-					System.out.println("Kasen-Dialog erforderlich");
+					System.out.println("Kassen-Dialog erforderlich");
 					String[] suchenach = null;
 					if(jtf[12].getText().trim().length() > 1){
 						suchenach = new String[] {jtf[12].getText().trim().substring(1),jtf[34].getText().trim()}; 
