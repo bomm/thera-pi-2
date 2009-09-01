@@ -885,6 +885,15 @@ boolean inNeu = false;
 		docmod = new MyDocTableModel();
 		docmod.setColumnIdentifiers(new String[] {"LANR","Nachname","Strasse","Ort","BSNR",""});
 		doclist = new JXTable(docmod);
+		doclist.getColumn(5).setMinWidth(0);
+		doclist.getColumn(5).setMaxWidth(0);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				doArztListe();
+				return null;
+			}
+		}.execute();
 		JScrollPane docscr = JCompTools.getTransparentScrollPane(doclist);
 		docscr.validate();
 		
@@ -1176,6 +1185,31 @@ boolean inNeu = false;
 	}
 	public static String getKasseBisher(){
 		return kassebisher;
+	}
+	private void doArztListe(){
+		if(this.inNeu){
+			return;
+		}
+		System.out.println("in doArztListe");
+		String aerzte = PatGrundPanel.thisClass.patDaten.get(63);
+		String[] einzelarzt = null;
+		String[] arztdaten = null;
+		Vector arztvec = null;
+		if(!aerzte.trim().equals("")){
+			einzelarzt = aerzte.split("\n");
+			System.out.println("Anzahl Ärzte = "+einzelarzt.length);
+			for(int i = 0; i < einzelarzt.length;i++){
+				arztdaten = einzelarzt[i].split("@");
+				//docmod.setColumnIdentifiers(new String[] {"LANR","Nachname","Strasse","Ort","BSNR",""});
+				arztvec = SqlInfo.holeFelder("select arztnum,nachname,strasse,ort,bsnr,id  from arzt where id='"+arztdaten[1]+"' LIMIT 1" );
+				if(arztvec.size() > 0){
+					docmod.addRow((Vector)arztvec.get(0));
+				}
+			}
+			if(docmod.getRowCount()>0){
+				doclist.setRowSelectionInterval(0, 0);
+			}
+		}
 	}
 
 	private void einlesen(){

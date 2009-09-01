@@ -516,7 +516,7 @@ public class SqlInfo {
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium+" LIMIT 1";
 			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
-			System.out.println(ret);
+			//System.out.println(ret);
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
@@ -558,7 +558,7 @@ public class SqlInfo {
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium;
 			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
-			System.out.println(ret);
+			//System.out.println(ret);
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());

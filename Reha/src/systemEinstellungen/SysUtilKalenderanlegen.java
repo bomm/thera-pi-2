@@ -638,6 +638,44 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		return sret;
 	}
 
+	private String macheStatement2(String sqldat,ArrayList list,String sBehandler,boolean mitmaske){
+		String sret = "";
+		int i,j;
+		int bloecke =new Integer( (String)  ((Vector) list.get(5)).get(0) );
+		String nummer;
+		if(mitmaske){
+			//sret = "Insert into flexkc set ";
+			for (i = 0; i<bloecke;i++){
+				  if(((String)((Vector) list.get(1)).get(i)).contains("\\")){
+					  String replace =  ((String)((Vector) list.get(1)).get(i));
+					  String [] split = {null,null};
+					  split = replace.split("\\\\");
+					  nummer =  split[0]+"\\\\"+split[1];
+					  //System.out.println("Backslashtermin = "+nummer);
+				  	
+				  }else{
+					  nummer = ((String)((Vector) list.get(1)).get(i));
+				  }
+
+				sret = sret + "T"+ (i+1) + "='" + ((Vector) list.get(0)).get(i) + "', " ;
+				sret = sret + "N"+ (i+1) + "='" + nummer + "', "; 
+				sret = sret + "TS"+ (i+1) + "='" + ((Vector) list.get(2)).get(i) + "', ";			
+				sret = sret + "TD"+ (i+1) + "='" + ((Vector) list.get(3)).get(i) + "', ";			
+				sret = sret + "TE"+ (i+1) + "='" + ((Vector) list.get(4)).get(i) + "', ";
+			}
+			sret = sret + "BELEGT='"+new Integer(bloecke).toString()+"', DATUM='"+sqldat+"' , BEHANDLER='"+sBehandler+"'";
+		}else{
+			//
+			String tstart = SystemConfig.KalenderUmfang[0];
+			String tend = SystemConfig.KalenderUmfang[1];
+			String tdauer = new Long(SystemConfig.KalenderMilli[1]-SystemConfig.KalenderMilli[0]).toString();
+			//sret = "Insert into flexkc set ";
+			sret = sret + "T1='', N1='@FREI', TS1='"+tstart+"', TD1='"+tdauer+"', TE1='"+tend+"',";
+			sret = sret + "BELEGT='1', DATUM='"+sqldat+"' , BEHANDLER='"+sBehandler+"'";
+		}
+		return sret;
+	}
+
 	private void starteSession(String land,String jahr) throws IOException{
 		String urltext = "http://www.feiertage.net/csvfile.php?state="+land+"&year="+jahr+"&type=csv";
 		String text = null;

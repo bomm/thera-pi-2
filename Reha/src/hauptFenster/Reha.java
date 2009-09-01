@@ -2045,6 +2045,35 @@ final class DatenbankStarten implements Runnable{
 	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
 	    			}	
 	        		Reha.DbOk = true;
+	        		/*
+	        		new Thread(){
+	        			public void run(){
+	    	        		long zeit = System.currentTimeMillis();
+	    	        		System.out.println("Update Starten");	        		
+	    	        		String cmd = "select arztid,id from pat5 ORDER BY id";
+	    	        		Vector vec = SqlInfo.holeFelder(cmd);
+	    	        		int anzahl = vec.size();
+	    	        		int anhalten = 0;
+	    	        		for(int i = 0; i < anzahl; i++){
+	    	        			String where = "id='"+((String)((Vector)vec.get(i)).get(1))+"' LIMIT 1";
+	    	        			SqlInfo.aktualisiereSaetze("pat5", "aerzte='@"+((String)((Vector)vec.get(i)).get(0))+"@\n'", where);
+	    	        			anhalten++;
+	    	        			System.out.println("Aktualisiere Satz "+i+" von "+anzahl);
+	    	        			if(anhalten==100){
+	    	        				try {
+	    	        					System.out.println("Pause des Updates");
+	    								Thread.sleep(100);
+	    								anhalten = 0;
+	    							} catch (InterruptedException e) {
+	    								e.printStackTrace();
+	    							}
+	    	        			}
+	    	        		}
+	    	        		System.out.println("feddisch ind "+((System.currentTimeMillis()-zeit)/1000)+" Sekunden");
+	        			}
+	        			
+	        		}.start();
+	        		*/
 	        	} 
 	        	catch (final SQLException ex) {
 	        		System.out.println("SQLException: " + ex.getMessage());
