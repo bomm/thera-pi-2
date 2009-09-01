@@ -696,7 +696,7 @@ boolean inNeu = false;
 											//      1.                2.    3.     4.                 5.    6.    
 				FormLayout lay12 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
 					       //1.   2.   3.   4.  5.   6   7   8    9   10   11  12  13  14   15   16  17  18   19   20   21  22   23  24   25  26    27  28   29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
-							"p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p");
+							"p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 82dlu, p, 20dlu, p, 2dlu, p, 2dlu, p, 2dlu, p");
 							
 					PanelBuilder builder12 = new PanelBuilder(lay12);
 					builder12.setDefaultDialogBorder();
@@ -911,7 +911,7 @@ boolean inNeu = false;
 		
 		FormLayout lay22 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
 			       //1.   2.   3.   4.  5.   6   7   8     9   10   11      12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
-					"p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, 90dlu, 5dlu, p");
+					"p, 10dlu, p, 2dlu, p, 2dlu, p, 42dlu, p, 11dlu, 90dlu, 5dlu, p");
 		
 					PanelBuilder builder22 = new PanelBuilder(lay22);
 					builder22.setDefaultDialogBorder();
