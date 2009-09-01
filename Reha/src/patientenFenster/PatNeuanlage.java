@@ -1414,24 +1414,11 @@ boolean inNeu = false;
 			   }
 	           //return (columnIndex == 0) ? Boolean.class : String.class;
 	       }
-
-		    public boolean isCellEditable(int row, int col) {
+		   public boolean isCellEditable(int row, int col) {
 		        //Note that the data/cell address is constant,
 		        //no matter where the cell appears onscreen.
-
-		        if (col == 0){
-		        	return true;
-		        }else if(col == 3){
-		        	return true;
-		        }else if(col == 7){
-		        	return true;
-		        }else if(col == 11){
-		        	return true;
-		        } else{
 		          return false;
-		        }
-		      }
-		   
+	      }
 	}
 
 }
