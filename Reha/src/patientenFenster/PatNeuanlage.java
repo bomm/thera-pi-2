@@ -1354,7 +1354,19 @@ boolean inNeu = false;
 		awahl.setVisible(true);
 		awahl.dispose();
 		awahl = null;
-
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+				System.out.println("Beginne ArztOrganisation mit Arzt ID ="+jtf[33].getText());
+				aerzteOrganisieren(jtf[33].getText(),inNeu,docmod,doclist);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+			
+		}.execute();
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
 		 			jtf[19].requestFocus();
@@ -1363,14 +1375,6 @@ boolean inNeu = false;
 		if(jtf[17].getText().indexOf("\\?") >= 0){
 			String text = jtf[17].getText().replaceAll("\\?","");
 			jtf[17].setText(text);
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					aerzteOrganisieren(jtf[33].getText(),inNeu);
-					return null;
-				}
-				
-			}.execute();
 		}
 
 
@@ -1393,7 +1397,7 @@ boolean inNeu = false;
 			jtf[12].setText(text);
 		}
 	}
-	private static void aerzteOrganisieren(String aid,boolean neu){
+	public static void aerzteOrganisieren(String aid,boolean neu,MyDocTableModel mod,JXTable tbl){
 		//hier weitermachen
 		// wenn neu dann Tabelle mit nur einem arzt
 		// *******************/
@@ -1401,6 +1405,52 @@ boolean inNeu = false;
 		// nachfragen ob neu aufgenommen werden soll
 		// wenn ja aufnehmen und in dbAbspeichern
 		// wenn nicht zurück
+		if(mod != null){
+			if(neu){
+				if(! inTableEnthalten(aid,mod)){
+					System.out.println("Neuanlage Pat. Arzt wird in Liste übernommen");
+					mod.setRowCount(0);
+					arztInTableAufnehmen(aid,mod);
+					tbl.validate();
+				}else{
+					System.out.println("Neuanlage Pat. Arzt bereits in der Liste enthalten");
+				}
+			}else{ // in Patient ändern
+				if(! inTableEnthalten(aid,mod)){
+					System.out.println("Ändern Pat. Arzt wird in Liste übernommen");
+					int frage = JOptionPane.showConfirmDialog(null,"Den gewählten Arzt in die Arztliste dieses Patienten aufnehmen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						arztInTableAufnehmen(aid,mod);
+						tbl.validate();
+					}
+				}else{
+					System.out.println("Ändern Pat. Arzt bereits in der Liste enthalten");
+				}
+			}
+		}else{ // funktion wurde über Rezept aufgerufen
+			
+		}
+	}
+	private static void arztInTableAufnehmen(String aid,MyDocTableModel mod ){
+		Vector vecx;
+		if(mod != null){
+			vecx = SqlInfo.holeFelder("select arztnum,nachname,strasse,ort,bsnr,id  from arzt where id='"+aid+"' LIMIT 1" );
+			if(vecx.size() > 0){
+				mod.addRow((Vector)vecx.get(0));
+			}
+		}else{
+			
+		}
+	}
+	private static boolean inTableEnthalten(String aid,MyDocTableModel mod){
+		boolean bret = false; 
+		for(int i = 0; i<mod.getRowCount();i++){
+			if( ((String)mod.getValueAt(i, 5)).equals(aid)){
+				bret = true;
+				return bret;
+			}
+		}
+		return bret;
 	}
 	
 	private boolean testObDialog(String string){
@@ -1410,7 +1460,8 @@ boolean inNeu = false;
 		if(string.trim().length() == 0){
 			return false;
 		}
-		if(string.substring(0,1).equals("?")){
+		if(string.substring(0,1).
+				equals("?")){
 			return true;
 		}
 		return false;
