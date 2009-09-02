@@ -487,20 +487,35 @@ public void holeFormulare(){
 	
 }
 private void starteFormulare(){
-	iformular = -1;
-	KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
-	Point pt = jbut[3].getLocationOnScreen();
-	kf.setLocation(pt.x-100,pt.y+25);
-	kf.setModal(true);
-	kf.setVisible(true);
-	if(! formularid.getText().equals("") ){
-		iformular = new Integer(formularid.getText());
-		kf = null;
-		if(iformular >=0){
-			String sdatei = formular.get(iformular);
-			OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei,null);
+	new SwingWorker<Void,Void>(){
+		@Override
+		protected Void doInBackground() throws Exception {
+			iformular = -1;
+			KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
+			Point pt = jbut[3].getLocationOnScreen();
+			kf.setLocation(pt.x-100,pt.y+25);
+			kf.setModal(true);
+			kf.setVisible(true);
+			final KassenFormulare xkf = kf;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					if(! formularid.getText().equals("") ){
+						iformular = new Integer(formularid.getText());
+						if(iformular >=0){
+							String sdatei = formular.get(iformular);
+							OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei,null);
+						}
+					}
+					return null;
+				}
+				
+			}.execute();
+			kf=null;
+			return null;
 		}
-	}
+		
+	}.execute();
 }
 
 public void delete(){

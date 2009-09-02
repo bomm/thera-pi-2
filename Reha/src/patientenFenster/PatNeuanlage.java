@@ -1363,6 +1363,14 @@ boolean inNeu = false;
 		if(jtf[17].getText().indexOf("\\?") >= 0){
 			String text = jtf[17].getText().replaceAll("\\?","");
 			jtf[17].setText(text);
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					aerzteOrganisieren(jtf[33].getText(),inNeu);
+					return null;
+				}
+				
+			}.execute();
 		}
 
 
@@ -1384,6 +1392,15 @@ boolean inNeu = false;
 			String text = jtf[12].getText().replaceAll("\\?","");
 			jtf[12].setText(text);
 		}
+	}
+	private static void aerzteOrganisieren(String aid,boolean neu){
+		//hier weitermachen
+		// wenn neu dann Tabelle mit nur einem arzt
+		// *******************/
+		// wenn nicht neu und nicht in bisherigem aerzt.feld
+		// nachfragen ob neu aufgenommen werden soll
+		// wenn ja aufnehmen und in dbAbspeichern
+		// wenn nicht zurück
 	}
 	
 	private boolean testObDialog(String string){
