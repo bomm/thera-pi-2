@@ -130,7 +130,8 @@ ImageIcon hgicon;
 int icx,icy;
 AlphaComposite xac1 = null;
 AlphaComposite xac2 = null;	
-String feldname = "";	
+String feldname = "";
+String globPat_intern = "";
 public static String arztbisher = "";
 public static String kassebisher = "";
 boolean inNeu = false;
@@ -471,7 +472,8 @@ boolean inNeu = false;
 		}
 		//System.out.println("Inhalt = "+buf.toString());
 		if(!this.inNeu){
-			buf.append(" where pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'");
+			globPat_intern = new String(PatGrundPanel.thisClass.aktPatID);
+			buf.append(" where pat_intern='"+globPat_intern+"'");
 			spatintern = PatGrundPanel.thisClass.aktPatID;
 			// Wenn Kasse veränder wurde....
 			if(!jtf[34].getText().trim().equals(kassenid)){
@@ -518,6 +520,7 @@ boolean inNeu = false;
 			// Angelegt von aufgenommen werden
 			int neuid = SqlInfo.holeId("pat5", "n_name");
 			patintern = neuid+Reha.thisClass.patiddiff;
+			globPat_intern = new Integer(patintern).toString();
 			buf.append(",anl_datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' ");
 			buf.append(",pat_intern='"+new Integer(patintern).toString() +"' where id='"+new Integer(neuid).toString()+"'");
 			spatintern = new Integer(patintern).toString();
@@ -526,6 +529,11 @@ boolean inNeu = false;
 
 		
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+		new Thread(){
+			public void run(){
+				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
+			}
+		}.start();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 
 		String s1 = new String("#PATSUCHEN");
@@ -1489,4 +1497,18 @@ boolean inNeu = false;
 	      }
 	}
 
+}
+class ArztListeSpeichern{
+	public ArztListeSpeichern(Vector vec,boolean neu,String xpatintern){
+		if(vec.size() <= 0){
+			return;
+		}
+		String cmd = "update pat5 set aerzte = '";
+		String aliste = "";
+		for(int i = 0;i < vec.size();i++){
+			aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
+		}
+		cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
+		new ExUndHop().setzeStatement(new String(cmd));
+	}
 }
