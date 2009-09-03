@@ -44,6 +44,8 @@ import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import jxTableTools.TableTool;
+
 import kvKarte.KVKWrapper;
 
 import org.jdesktop.swingx.JXDialog;
@@ -531,7 +533,9 @@ boolean inNeu = false;
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		new Thread(){
 			public void run(){
-				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
+				PatGrundPanel.thisClass.ArztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
+//				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
+				System.out.println("Es wirde die ArztListe gespeichert.....");
 			}
 		}.start();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -1256,6 +1260,16 @@ boolean inNeu = false;
 			schreibeInDb();
 		}else if(com.equals("abbrechen")){
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
+		}else if(com.equals("adddoc")){
+			arztInListeAuswahl();
+		}else if(com.equals("deldoc")){
+			int row = -1;
+			if( (row = doclist.getSelectedRow()) < 0){
+				return;
+			}else{
+				TableTool.loescheRow(doclist, row);
+			}
+			
 		}
 
 	}
@@ -1367,7 +1381,7 @@ boolean inNeu = false;
 			protected Void doInBackground() throws Exception {
 				try{
 				System.out.println("Beginne ArztOrganisation mit Arzt ID ="+jtf[33].getText());
-				aerzteOrganisieren(jtf[33].getText(),inNeu,docmod,doclist);
+				aerzteOrganisieren(jtf[33].getText(),inNeu,docmod,doclist,true);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -1387,6 +1401,7 @@ boolean inNeu = false;
 
 
 	}
+
 	private void kassenAuswahl(String[] suchenach){
 		jtf[14].requestFocus();
 		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[12],jtf[13],jtf[34]},new String(jtf[12].getText().trim()));
@@ -1405,7 +1420,34 @@ boolean inNeu = false;
 			jtf[12].setText(text);
 		}
 	}
-	public static void aerzteOrganisieren(String aid,boolean neu,MyDocTableModel mod,JXTable tbl){
+	
+	private void arztInListeAuswahl(){
+		JRtaTextField[] tfaliste = {new JRtaTextField("nix",false),new JRtaTextField("nix",false),new JRtaTextField("nix",false)};
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",new String[] {"",""} ,tfaliste,"");
+		awahl.setModal(true);
+		awahl.setLocationRelativeTo(this);
+		awahl.setVisible(true);
+		awahl.dispose();
+		awahl = null;
+		final JRtaTextField xtf = tfaliste[2];
+		if(!xtf.equals("")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+					System.out.println("Beginne ArztOrganisation mit Arzt ID ="+xtf.getText());
+					aerzteOrganisieren(xtf.getText(),inNeu,docmod,doclist,false);
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+				
+			}.execute();
+		}
+	}
+	
+	public void aerzteOrganisieren(String aid,boolean neu,MyDocTableModel mod,JXTable tbl,boolean bloednachfragen){
 		//hier weitermachen
 		// wenn neu dann Tabelle mit nur einem arzt
 		// *******************/
@@ -1426,8 +1468,13 @@ boolean inNeu = false;
 			}else{ // in Patient ändern
 				if(! inTableEnthalten(aid,mod)){
 					System.out.println("Ändern Pat. Arzt wird in Liste übernommen");
-					int frage = JOptionPane.showConfirmDialog(null,"Den gewählten Arzt in die Arztliste dieses Patienten aufnehmen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
-					if(frage == JOptionPane.YES_OPTION){
+					if(bloednachfragen){
+						int frage = JOptionPane.showConfirmDialog(null,"Den gewählten Arzt in die Arztliste dieses Patienten aufnehmen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+						if(frage == JOptionPane.YES_OPTION){
+							arztInTableAufnehmen(aid,mod);
+							tbl.validate();
+						}
+					}else{
 						arztInTableAufnehmen(aid,mod);
 						tbl.validate();
 					}
@@ -1439,7 +1486,7 @@ boolean inNeu = false;
 			
 		}
 	}
-	private static void arztInTableAufnehmen(String aid,MyDocTableModel mod ){
+	private void arztInTableAufnehmen(String aid,MyDocTableModel mod ){
 		Vector vecx;
 		if(mod != null){
 			vecx = SqlInfo.holeFelder("select arztnum,nachname,strasse,ort,bsnr,id  from arzt where id='"+aid+"' LIMIT 1" );
@@ -1450,7 +1497,7 @@ boolean inNeu = false;
 			
 		}
 	}
-	private static boolean inTableEnthalten(String aid,MyDocTableModel mod){
+	private boolean inTableEnthalten(String aid,MyDocTableModel mod){
 		boolean bret = false; 
 		for(int i = 0; i<mod.getRowCount();i++){
 			if( ((String)mod.getValueAt(i, 5)).equals(aid)){
@@ -1508,7 +1555,9 @@ class ArztListeSpeichern{
 		for(int i = 0;i < vec.size();i++){
 			aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
 		}
-		cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
+		//cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
+		SqlInfo.aktualisiereSaetze("pat5", "aerzte='"+aliste+"'", "pat_intern='"+xpatintern+"'");
 		new ExUndHop().setzeStatement(new String(cmd));
+		System.out.println(cmd);
 	}
 }

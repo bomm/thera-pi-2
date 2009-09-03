@@ -828,6 +828,30 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			jtf[2].requestFocus();
 		 	   }
 		});
+		String aneu = "";
+		if(! PatGrundPanel.thisClass.patDaten.get(63).contains( ("@"+(aneu = new String(jtf[12].getText().trim()))+"@\n")) ){
+			final String xaneu = aneu;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					String msg = "Dieser Arzt ist bislang nicht in der Arztliste dieses Patienten.\n"+
+					"Soll dieser Arzt der Ärzteliste des Patienten zugeordnet werden?";
+					int frage = JOptionPane.showConfirmDialog(null,msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						String aliste = PatGrundPanel.thisClass.patDaten.get(63)+ "@"+xaneu+"@\n";
+						System.out.println("Arztliste in Rezept Neu = "+aliste);
+						PatGrundPanel.thisClass.ArztListeSpeichernString(aliste,false,PatGrundPanel.thisClass.aktPatID);
+						SwingUtilities.invokeLater(new Runnable(){
+						 	   public  void run(){
+						 			jtf[2].requestFocus();
+						 	   }
+						});
+						
+					}
+					return null;
+				}
+			}.execute();
+		}
 		awahl.dispose();
 		awahl = null;
 

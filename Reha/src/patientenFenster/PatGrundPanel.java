@@ -548,6 +548,31 @@ public void neu(){
 	PatGrundPanel.thisClass.neuanlagePatient(true,"");		
 }
 
+public void ArztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
+	String aliste = "";
+	for(int i = 0;i < vec.size();i++){
+		aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
+	}
+	//cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
+	String sets = "aerzte='"+aliste+"'";
+	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
+	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
+	if(PatGrundPanel.thisClass.aktPatID.equals(xpatintern)){
+		PatGrundPanel.thisClass.patDaten.set(63,aliste);		
+	}
+
+}
+public void ArztListeSpeichernString(String aliste,boolean neu, String xpatintern){
+	String sets = "aerzte='"+aliste+"'";
+	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
+	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
+	if(PatGrundPanel.thisClass.aktPatID.equals(xpatintern)){
+		PatGrundPanel.thisClass.patDaten.set(63,aliste);		
+	}
+
+}
+
+
 private void allesAufNull(){
 	/******************************************************************************/
 	// erst die sichtbaren Edits löschen
@@ -571,6 +596,9 @@ private void allesAufNull(){
 
 	
 }
+	
+	
+
 
 class PatientAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
