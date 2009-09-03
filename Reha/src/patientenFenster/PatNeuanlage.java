@@ -119,14 +119,15 @@ List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_name","
 										"telefong","telefonm","emaila","kasse","kv_nummer","v_nummer","kv_status",
 										"bef_dat","artz","arzt_num","therapeut","abwanrede","abwtitel","abn_name",
 										"abwv_name","abwstrasse","abwort","akutdat","termine1","termine2","kilometer",
-										"heimbewohn"});
+										"heimbewohn","jahrfrei","bef_ab"});
 List<String> checks = Arrays.asList( new String[] {"abwadress","akutpat" ,"merk1","merk2","merk3","merk4",
 										"merk5","merk6","heimbewohn","nobefr","u18no"});
-               //0   1   2   3   4  5  6  7  8  9  10 1112 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
-int[] fedits =  {0 , 1 , 2 , 3 , 4, 5, 6,11, 7, 8, 9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34};
-int[] ffelder = {0 , 1 , 2 , 3 ,21,23,24, 4,18,19,20,50,13,14,16,15,31,25,26,56, 6, 7, 8, 9,10,11,12,46,34,36,37,48,40,65,66};
-int[] fchecks =  {0 , 1 , 2 , 3 , 4  , 5 ,6 , 7 , 8};
-int[] ffelder2 = {5 ,33 ,62 ,61 , 60 ,59 ,58, 57, 44};
+//Achtung bei Feldgrößen über > 65 immer 2 abziehen wg. memofelder die nicht eingelesen werden
+			   //0   1   2   3   4  5  6  7  8  9  10 1112 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
+int[] fedits =  {0 , 1 , 2 , 3 , 4, 5, 6,11, 7, 8, 9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36 };
+int[] ffelder = {0 , 1 , 2 , 3 ,21,23,24, 4,18,19,20,50,13,14,16,15,31,25,26,56, 6, 7, 8, 9,10,11,12,46,34,36,37,48,40,65,66,67,41};
+int[] fchecks =  {0 , 1 , 2 , 3 , 4  , 5 ,6 , 7 , 8, 9};
+int[] ffelder2 = {5 ,33 ,62 ,61 , 60 ,59 ,58, 57, 44,68};
 Vector<String> patDaten = null;
 ImageIcon hgicon;
 int icx,icy;
@@ -368,6 +369,7 @@ boolean inNeu = false;
 								name.contains("akutdat") || 
 								name.contains("akutbis") || 
 								name.contains("bef_dat") ||
+								name.contains("bef_ab") ||
 								name.contains("er_dat")){
 							String datum = new String((String)felder.get(ffelder[i]));
 							if(datum.trim().length() > 0){
@@ -435,6 +437,7 @@ boolean inNeu = false;
 					name.contains("akutdat") || 
 					name.contains("akutbis") || 
 					name.contains("bef_dat") ||
+					name.contains("bef_ab") ||
 					name.contains("er_dat")){
 				if(jtf[fedits[i]].getText().trim().equals(".  .")){
 					buf.append(name+"=NULL, ");	
@@ -788,7 +791,8 @@ boolean inNeu = false;
 		jtf[32].setName("er_dat");
 		
 		jtf[35] = new JRtaTextField("ZAHLEN", true);
-		jtf[35].setName("BefJahr");
+		jtf[35].setName("jahrfrei");
+		jtf[35].setEditable(false);
 		
 		jcheck[0] = new JRtaCheckBox();
 		jcheck[0].setOpaque(false);
@@ -798,13 +802,17 @@ boolean inNeu = false;
 		jcheck[8].setOpaque(false);
 		jcheck[8].setName("heimbewohn");	
 		
-		jcheck[9] = new JRtaCheckBox();
-		jcheck[9].setOpaque(false);
-		jcheck[9].setName("nobefr");
-		
 		jcheck[10] = new JRtaCheckBox();
 		jcheck[10].setOpaque(false);
-		jcheck[10].setName("u18no");
+		jcheck[10].setName("vorjahrfrei");
+		jcheck[10].setActionCommand("vorjahrfrei");
+		jcheck[10].addActionListener(this);
+		
+		jcheck[9] = new JRtaCheckBox();
+		jcheck[9].setOpaque(false);
+		jcheck[9].setName("u18ignore");
+		jcheck[9].setActionCommand("vorjahrfrei");
+		jcheck[9].addActionListener(this);
 		
 	
 		FormLayout lay21 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",

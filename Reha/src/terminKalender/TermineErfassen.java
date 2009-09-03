@@ -64,7 +64,6 @@ public class TermineErfassen implements Runnable {
 					setTerminSuccess(false);
 					ergebnis = false;
 				}
-				
 				if(firstfound && scanrez.startsWith("RH")){
 					fahreFortMitTerminen();			
 				}
