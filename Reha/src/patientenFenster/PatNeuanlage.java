@@ -108,6 +108,7 @@ JRtaComboBox cbanrede = null;
 String kassenid = ""; 
 String befreitdatum = "";
 String befreitbeginn = "";
+JLabel lblbild = null;
 boolean freizumstart = false;
 boolean freibeimspeichern = false;
 
@@ -396,6 +397,9 @@ boolean inNeu = false;
 				kassenid = PatGrundPanel.thisClass.patDaten.get(68);
 				befreitdatum = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(31));
 				freizumstart = (PatGrundPanel.thisClass.patDaten.get(30).equals("T") ? true : false);
+				if(!jtf[35].getText().trim().equals("")){
+					jcheck[10].setEnabled(true);
+				}
 				System.out.println("Gehe auf Feld 1 -> "+xfeld);
 				if(! "".equals(xfeld)){
 					SwingUtilities.invokeLater(new Runnable(){
@@ -792,7 +796,7 @@ boolean inNeu = false;
 		
 		jtf[35] = new JRtaTextField("ZAHLEN", true);
 		jtf[35].setName("jahrfrei");
-		jtf[35].setEditable(false);
+		jtf[35].setEnabled(false);
 		
 		jcheck[0] = new JRtaCheckBox();
 		jcheck[0].setOpaque(false);
@@ -806,12 +810,14 @@ boolean inNeu = false;
 		jcheck[10].setOpaque(false);
 		jcheck[10].setName("vorjahrfrei");
 		jcheck[10].setActionCommand("vorjahrfrei");
+		//jcheck[10].setEnabled(false);
 		jcheck[10].addActionListener(this);
 		
 		jcheck[9] = new JRtaCheckBox();
 		jcheck[9].setOpaque(false);
 		jcheck[9].setName("u18ignore");
-		jcheck[9].setActionCommand("vorjahrfrei");
+		jcheck[9].setActionCommand("u18ignore");
+		jcheck[9].setEnabled(false);
 		jcheck[9].addActionListener(this);
 		
 	
@@ -833,9 +839,9 @@ boolean inNeu = false;
 					builder21.addLabel("befreit im Jahr", cc21.xy(1,7));
 					builder21.add(jtf[35],cc21.xy(3,7));
 					builder21.addLabel("löschen?", cc21.xy(4,7));
-					builder21.add(jcheck[9],cc21.xy(6, 7));
+					builder21.add(jcheck[10],cc21.xy(6, 7));
 					builder21.addLabel("U18-Regel ignorieren?",cc21.xy(1,9));
-					builder21.add(jcheck[10],cc21.xy(3, 9));
+					builder21.add(jcheck[9],cc21.xy(3, 9));
 					builder21.addLabel("Vertrag unterz. am", cc21.xy(1, 11));
 					builder21.add(jtf[32], cc21.xy(3, 11));
 					
@@ -989,9 +995,9 @@ boolean inNeu = false;
 		pic1.addKeyListener(this);
 		 
 		
-		FormLayout lay31 = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
+		FormLayout lay31 = new FormLayout("right:max(80dlu;p), 4dlu, 150px,right:max(60dlu;p), 4dlu, 60dlu",
 			       //1.   2.   3.   4.  5.   6   7   8     9   10   11      12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
-					"p, 10dlu, 150dlu, 2dlu, p");
+					"p, 10dlu, 200px, 2dlu, p");
 		
 					PanelBuilder builder31 = new PanelBuilder(lay31);
 					builder31.setDefaultDialogBorder();
@@ -1000,12 +1006,26 @@ boolean inNeu = false;
 					builder31.getPanel().setDoubleBuffered(true);
 					 
 					builder31.addSeparator("Kundenfoto", cc31.xyw(1, 1, 6));
-
-					builder31.addLabel("Hier ist das Bild", cc31.xy(3, 3));
+					lblbild = new JLabel();
+					builder31.add(lblbild, cc31.xy(3, 3));
 					builder31.addLabel("Bild aufnehmen", cc31.xy(1,5));
 					builder31.add(pic1, cc31.xy(3,5));
 					builder31.addLabel("Bild verwerfen", cc31.xy(4,5));
 					builder31.add(pic0, cc31.xy(6,5));
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							ImageIcon patBild = getPatBild();
+							if(patBild==null){
+								lblbild.setText("Kein Bild des Patienten vorhanden");	
+							}else{
+								lblbild.setText("");
+								lblbild.setIcon(patBild);
+							}
+							return null;
+						}
+						
+					}.execute();
 					
 					
 		
@@ -1019,7 +1039,10 @@ boolean inNeu = false;
 		pat31.add(jscrzusatz,BorderLayout.CENTER);
 		pat31.validate();
 		return pat31;
-	}	
+	}
+	private ImageIcon getPatBild(){
+		return null;
+	}
 	
 	private JXPanel getDatenPanel32(){
 		JXPanel pat32 = new JXPanel(new BorderLayout());
@@ -1278,6 +1301,15 @@ boolean inNeu = false;
 				TableTool.loescheRow(doclist, row);
 			}
 			
+		}else if(com.equals("u18ignore")){
+			
+		}else if(com.equals("vorjahrfrei")){
+			System.out.println("in checkBox Vorjahrfrei");
+			if(jcheck[10].isSelected()){
+				jtf[35].setText("");
+		    }else{
+		    	jtf[35].setText(SystemConfig.vorJahr);
+		    }
 		}
 
 	}

@@ -367,42 +367,52 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
-		new SocketClient().setzeInitStand("Überprüfe Dateisystem");
-		File f = new File(javaPfad+"/bin/win32com.dll");
-		if(! f.exists()){
-			new SocketClient().setzeInitStand("Kopiere win32com.dll");
-			try {
-				FileTools.copyFile(new File(proghome+"RTAJars/win32com.dll"),f, 4096, false);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try{
+			new SocketClient().setzeInitStand("Überprüfe Dateisystem");
+			File f = new File(javaPfad+"/bin/win32com.dll");
+			if(! f.exists()){
+				new SocketClient().setzeInitStand("Kopiere win32com.dll");
+				try {
+					FileTools.copyFile(new File(proghome+"RTAJars/win32com.dll"),f, 4096, false);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+			}	
+			f = new File(javaPfad+"/lib/ext/comm.jar");
+			if(! f.exists()){
+				try {
+					new SocketClient().setzeInitStand("Kopiere comm.jar");
+					FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),f, 4096, false);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
 			}
-		}else{
-			System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
-		}	
-		f = new File(javaPfad+"/lib/ext/comm.jar");
-		if(! f.exists()){
-			try {
-				new SocketClient().setzeInitStand("Kopiere comm.jar");
-				FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),f, 4096, false);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			f = new File(javaPfad+"/lib/javax.comm.properties");
+			if(! f.exists()){
+				try {
+					new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
+					FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),f, 4096, false);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 			}
-		}else{
-			System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
-		}
-		f = new File(javaPfad+"/lib/javax.comm.properties");
-		if(! f.exists()){
-			try {
-				new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
-				FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),f, 4096, false);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else{
-			System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
+		}catch(Exception ex){
+			String msg = "<html>Es ist ein Fehler beim kopieren von systemrelevanten Dateien aufgetreten.\n\n"+
+			"Vermutlich arbeiten Sie mit <b>Windows-Vista</b> und sind deshalb in einer bedauernswerten\n"+
+			"wenngleich auch in einer <b>selbstverschuldet</b> bedauernswerten Lage!\n\n"+
+			"Der weitere Programmablauf sollte für Sie zwar problemlos möglich sein,\n"+
+			"absolut interessante Features wie etwa der Einsatz von Barcode-Scanner ist\n"+
+			"mit diesem <b>Murks von Betriebssystem</b> leider nicht möglich";
+			JOptionPane.showMessageDialog(null, msg);
 		}
 		
 		new Thread(){
