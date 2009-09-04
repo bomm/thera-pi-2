@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -23,10 +24,18 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -57,6 +66,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.ZuzahlTools;
+import sun.awt.image.ImageFormatException;
 
 import systemEinstellungen.SystemConfig;
 
@@ -72,6 +82,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
+import com.mysql.jdbc.PreparedStatement;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
@@ -81,7 +94,7 @@ public class PatNeuanlage extends JXPanel implements ActionListener, KeyListener
 /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+private static final long serialVersionUID = 1L;
 private static final JXPanel Tab1 = null;
 public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,
@@ -1015,16 +1028,21 @@ boolean inNeu = false;
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
-							ImageIcon patBild = getPatBild();
-							if(patBild==null){
-								lblbild.setText("Kein Bild des Patienten vorhanden");	
-							}else{
-								lblbild.setText("");
-								lblbild.setIcon(patBild);
+							try{
+							if(! inNeu){
+								BufferedImage img = holePatBild(PatGrundPanel.thisClass.aktPatID);
+								if(img==null){
+									lblbild.setText("Kein Bild des Patienten vorhanden");	
+								}else{
+									lblbild.setText("");
+									lblbild.setIcon(new ImageIcon(img));
+								}
+							}
+							}catch(Exception ex){
+								ex.printStackTrace();
 							}
 							return null;
 						}
-						
 					}.execute();
 					
 					
@@ -1561,6 +1579,110 @@ boolean inNeu = false;
 		}
 		return false;
 	}
+	private void speichernPatBild(boolean neu,ImageIcon ico,String pat_intern){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		boolean ret = false;
+		int bilder = 0;
+	
+		//piTool.app.conn.setAutoCommit(true);
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE );
+			if(neu){
+				String select = "Insert into patbild set bild = ? , pat_intern = ?";
+				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+				  ps.setBytes(1, bufferedImageToByteArray( (BufferedImage) ico.getImage()));
+				  ps.setString(2, pat_intern);
+				  ps.execute();
+			}else{
+				String select = "Update patbild set bild = ? where pat_intern = ?";
+				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+				  ps.setBytes(1, bufferedImageToByteArray( (BufferedImage) ico.getImage()));
+				  ps.setString(2, pat_intern);
+				  ps.execute();
+			}
+			  
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ImageFormatException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+						stmt = null;
+				}
+			}
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException sqlEx) { // ignore }
+					ps = null;
+				}
+			}
+		}
+	}
+	private static byte[] bufferedImageToByteArray(BufferedImage img) throws ImageFormatException, IOException{
+		if(img != null){
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
+		encoder.encode(img);
+		return os.toByteArray();
+		}else{
+			return null;
+		}
+	}
+	public static BufferedImage holePatBild(String pat_intern){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		int bilder = 0;
+		Image bild = null;
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE );
+				String test = "select bild from patbild where pat_intern ='"+pat_intern+"'";
+				rs = (ResultSet) stmt.executeQuery(test);
+				while(rs.next()){
+					bild = ImageIO.read( new ByteArrayInputStream(rs.getBytes("bild")) );
+				}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return (BufferedImage) bild;	
+	}
+
 
 
 	class MyDocTableModel extends DefaultTableModel{
