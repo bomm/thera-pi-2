@@ -151,7 +151,10 @@ public class FileTools {
 	            	out.flush();
 	                in.close();
 	                out.close();
+	            }catch(Exception ex){
+	            	
 	            }
+	            
 	            finally {
 	                if (out != null) {
 	                    out.close();

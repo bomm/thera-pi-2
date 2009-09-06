@@ -815,7 +815,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      //new J
 					      //draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
 					      //((JLabel)c).setText(draghandler.getText());
-					      JLabel lab = new JLabel(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
+					      JLabel lab = new JLabel("TERMDATINTERN"+"°"+sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
 					      lab.setTransferHandler(new TransferHandler("text"));
 					      TransferHandler th = lab.getTransferHandler();
 					      th.exportAsDrag(lab, e, TransferHandler.COPY);
@@ -4011,12 +4011,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				String[] teilen;
 				if(mitgebracht.indexOf("°") >= 0 ){
 					teilen = mitgebracht.split("°");
-					teilen[2] = teilen[2].toUpperCase();
-					teilen[2] = teilen[2].replaceAll(" MIN.", "");
+					if(! teilen[0].contains("TERMDAT")){
+						return;
+					}
+					teilen[3] = teilen[3].toUpperCase();
+					teilen[3] = teilen[3].replaceAll(" MIN.", "");
 					//System.out.println(teilen[0]+" - "+teilen[1]+" - "+teilen[2]);
-					datenSpeicher[0]= teilen[0];		
-					datenSpeicher[1]= teilen[1];		
-					datenSpeicher[3]= teilen[2];
+					datenSpeicher[0]= teilen[1];		
+					datenSpeicher[1]= teilen[2];		
+					datenSpeicher[3]= teilen[3];
 					
 					datenAusSpeicherHolen();
 

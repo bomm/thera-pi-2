@@ -4,18 +4,22 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
@@ -31,10 +35,12 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.AktuelleRezepte;
 
+import sqlTools.SqlInfo;
 import systemEinstellungen.SysUtilKrankenkasse.MyVorlagenTableModel;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.PreisUpdate;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -46,8 +52,14 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaComboBox[] jcmb = {null,null,null,null};
 	JRtaTextField gueltig = null;
 	JButton[] button = {null,null,null,null,null,null};
+	JButton plServer = null;
 	MyPreislistenTableModel modpreis = new MyPreislistenTableModel();
 	JXTable preislisten = null;
+	JXTable plserver = null;
+	MyServerTableModel modserver = new MyServerTableModel();	
+	JPanel pledit = null;
+	JPanel plupdate = null;
+	JButton plEinlesen = null;
 	
 	public SysUtilPreislisten(){
 		super(new BorderLayout());
@@ -63,8 +75,16 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	     MattePainter mp = new MattePainter(p);
 	     setBackgroundPainter(new CompoundPainter(mp));
 		/****/
-	     add(getVorlagenSeite(),BorderLayout.CENTER);
-
+	     pledit = getVorlagenSeite();
+	     add(pledit,BorderLayout.CENTER);
+	     new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				plupdate = getPlupdate();
+				return null;
+			}
+	    	 
+	     }.execute();
 		return;
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
@@ -97,10 +117,15 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()));
 		builder.add(gueltig, cc.xy(3,5));
 
-		//builder.addLabel("Anwendungsregel",cc.xy(7,5,CellConstraints.RIGHT,CellConstraints.BOTTOM));
+		builder.addLabel("Anwendungsregel",cc.xyw(4,5,4,CellConstraints.RIGHT,CellConstraints.CENTER));
 		String[] zzart = new String[] {"nicht relevant","erste Behandlung >=","Rezeptdatum >=","beliebige Behandlung >=","Rezept splitten"};
 		jcmb[2] = new JRtaComboBox(zzart);
 		builder.add(jcmb[2],cc.xy(9,5));
+		
+		plServer = new JButton("Update der Preise über Preislistenserver");
+		plServer.setActionCommand("plUpdate");
+		plServer.addActionListener(this);
+		builder.add(plServer,cc.xyw(3,7,7));
 		
 		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt"});
 		preislisten = new JXTable(modpreis);
@@ -166,6 +191,110 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(cmd.equals("tabelleRegeln")){
 			tabelleRegeln();
 		}
+		if(cmd.equals("plUpdate")){
+			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+			plEinlesen.setText("Verfügbare Preislisten für "+lists[jcmb[0].getSelectedIndex()]+" ermitteln");
+			jcmb[3].removeAllItems();
+			jcmb[3].addItem((String) jcmb[1].getSelectedItem());
+			jcmb[3].setEnabled(false);
+			remove(pledit);
+			add(plupdate,BorderLayout.CENTER);
+			validate();
+			/*
+			PreisUpdate pu = new PreisUpdate(SystemUtil.thisClass,
+					"preislistenupdate",
+					(String)jcmb[0].getSelectedItem(),
+					new Integer(jcmb[1].getSelectedIndex()).toString(),this);
+			pu.setSize(new Dimension(500,600));
+			pu.setVisible(true);
+			pu.toFront();
+			pu.setModal(true);
+			*/
+		}
+		if(cmd.equals("pleinlesen")){
+			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+			testeAllepreise(lists[jcmb[0].getSelectedIndex()]);
+		}
+		if(cmd.equals("plwahl")){
+			
+		}
+		
+		
+
+
+
+		
+	}
+	private void testeAllepreise(String disziplin){
+		List<String> pbundesweit =  Arrays.asList(new String[] {"VdEK","PBeaKK","BG","Beihilfe"});
+		Vector vec1 = null;
+		Vector vec2 = new Vector();
+		String testbuland = "";
+		String testpg = "";
+		String buland = "";
+		String preisgr = "";
+		modserver.setRowCount(0);
+		vec1 = SqlInfo.holeFelder("select buland,preisgruppe from allepreise where disziplin='"+disziplin+"' ORDER BY buland");
+		if(vec1.size()<= 0){
+				JOptionPane.showMessageDialog(null,"Bislang sind für -> "+disziplin+" <- keine Preislisten auf dem Server hinterlegt");
+		}else{
+				System.out.println("Größe des Vectors = "+vec1.size());
+				//buland = ((String)((Vector)vec1.get(0)).get(0)).trim();
+				//preisgr = ((String)((Vector)vec1.get(0)).get(1)).trim();
+				int anzahl = vec1.size();
+				for(int y = 0; y < anzahl;y++){
+					testbuland  = ((String)((Vector)vec1.get(y)).get(0)).trim();
+					testpg  = ((String)((Vector)vec1.get(y)).get(1)).trim();
+					if( (!testbuland.equals(buland)) || (!testpg.equals(preisgr))){
+						vec2.clear();
+						buland = ((String)((Vector)vec1.get(y)).get(0)).trim();
+						preisgr = ((String)((Vector)vec1.get(y)).get(1)).trim();
+						vec2.add(disziplin);
+						vec2.add(preisgr);
+						vec2.add( (pbundesweit.contains(preisgr) ? "bundesweit" : buland)  );
+						modserver.addRow((Vector)vec2.clone());
+					}
+				}
+			}
+		
+		
+		return;
+	}
+	
+	public JPanel getPlupdate(){
+		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 40dlu, 4dlu, 10dlu, 4dlu, 70dlu",
+			       //1.    2. 3.   4.   5.   6.  7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
+					"p, 2dlu, p, 2dlu, 160dlu");
+					
+		PanelBuilder builder = new PanelBuilder(lay);
+		builder.setDefaultDialogBorder();
+		builder.getPanel().setOpaque(false);
+		CellConstraints cc = new CellConstraints();
+		plEinlesen = new JButton("Verfügbare Preislisten einlesen");
+		plEinlesen.setActionCommand("pleinlesen");
+		plEinlesen.addActionListener(this);
+		builder.add(plEinlesen,cc.xyw(3,1,7));
+		builder.addLabel("Übernahme auf",cc.xy(1,3));
+		jcmb[3] = new JRtaComboBox();
+		jcmb[3].setActionCommand("plwahl");
+		jcmb[3].addActionListener(this);
+		builder.add(jcmb[3],cc.xyw(3,3,7));
+		modserver.setColumnIdentifiers(new String[] {"HM-Sparte","Preisgruppe","Bundesland"});
+		plserver = new JXTable(modserver);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(plserver);
+		jscr.validate();
+		new SwingWorker(){
+			@Override
+			protected Object doInBackground() throws Exception {
+				tabelleRegeln();
+				return null;
+			}
+		}.execute();
+		
+		builder.add(jscr,cc.xyw(1,5,9));
+		
+		return builder.getPanel();
+		
 		
 	}
 	
@@ -238,6 +367,27 @@ class MyPreislistenTableModel extends DefaultTableModel{
 
 	public boolean isCellEditable(int row, int col) {
 		return true;
+	}
+	   
+}
+class MyServerTableModel extends DefaultTableModel{
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Class getColumnClass(int columnIndex) {
+		return String.class;
+		/*
+		if(columnIndex==3 || columnIndex==4){
+			return Double.class;
+		}
+		   return String.class;
+		*/   
+ }
+
+	public boolean isCellEditable(int row, int col) {
+		return false;
 	}
 	   
 }

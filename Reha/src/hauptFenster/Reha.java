@@ -1,5 +1,12 @@
 package hauptFenster;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -12,6 +19,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -72,6 +80,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TooManyListenersException;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -95,6 +104,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingWorker;
+import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -293,7 +303,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean kassenFirstStart = true;	
 	public static boolean arztFirstStart = true;
 	public static boolean iconsOk = false;
-	public static ImageIcon rehaBackImg = null; 
+	public static ImageIcon rehaBackImg = null;
+	public JLabel bunker = null;
 	
 	
 	/**************************/
@@ -949,7 +960,82 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        jxCopyContainer.setOpaque(false);
 	        jxCopyContainer.setPreferredSize(new Dimension(250,20));
 	        copyLabel = new JLabel("");
-			//copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
+			copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
+			DropTarget dndt = new DropTarget();
+			DropTargetListener dropTargetListener =
+				 new DropTargetListener() {
+				  public void dragEnter(DropTargetDragEvent e) {}
+				  public void dragExit(DropTargetEvent e) {}
+				  public void dragOver(DropTargetDragEvent e) {}
+				  public void drop(DropTargetDropEvent e) {
+					  String mitgebracht = "";
+				    try {
+				      Transferable tr = e.getTransferable();
+				      DataFlavor[] flavors = tr.getTransferDataFlavors();
+				      for (int i = 0; i < flavors.length; i++){
+				        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+				      }
+				      if(mitgebracht.indexOf("°") >= 0){
+			    		  String[] labs = mitgebracht.split("°");
+				    	  if(labs[0].contains("TERMDAT")){
+				    		  copyLabel.setText(labs[1]+"°"+labs[2]+"°"+labs[3]);
+				    		  return;
+				    	  }
+				      }
+				      System.out.println(mitgebracht);
+				    } catch (Throwable t) { t.printStackTrace(); }
+				    // Ein Problem ist aufgetreten
+				    e.dropComplete(true);
+				  }
+				  public void dropActionChanged(
+				         DropTargetDragEvent e) {}
+			};
+			try {
+				dndt.addDropTargetListener(dropTargetListener);
+			} catch (TooManyListenersException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			copyLabel.setDropTarget(dndt);
+		    final String propertyName = "text";
+		    bunker = new JLabel();
+		    bunker.setTransferHandler(new TransferHandler(propertyName));
+		    //copyLabel.setTransferHandler(new TransferHandler(propertyName));
+		    copyLabel.addMouseListener(new MouseAdapter() {
+		        public void mousePressed(MouseEvent evt) {
+		            JComponent comp = (JComponent)evt.getSource();
+		            if( ((JLabel)comp).getText().equals("") ){
+		            	return;
+		            }
+		            /*
+		            JLabel comp2 = new JLabel();
+		            final String propertyName = "text";
+		            comp2.setTransferHandler(new TransferHandler(propertyName));
+		            if( ((JLabel)comp).getText().toUpperCase().endsWith("MIN.")){
+		            	((JLabel)comp2).setText("TERMDAT°"+((JLabel)comp).getText());
+		            }else{
+		            	comp2.setText("");
+		            }
+
+		            TransferHandler th = comp2.getTransferHandler();
+		            //TransferHandler th = comp.getTransferHandler();
+		            // Start the drag operation
+		            th.exportAsDrag(comp2, evt, TransferHandler.COPY);
+		            */
+		            if( ((JLabel)comp).getText().toUpperCase().endsWith("MIN.")){
+		            	((JLabel)bunker).setText("TERMDAT°"+((JLabel)comp).getText());
+		            }else{
+		            	bunker.setText("");
+		            }
+		            TransferHandler th = bunker.getTransferHandler();
+		            th.exportAsDrag((JComponent) bunker, evt, TransferHandler.COPY);
+
+		            
+		        }
+		    });
+
+			
+			
 			//copyLabel.setDropTarget(dt);
 	        jxCopyContainer.add(copyLabel);
 	        bar.add(jxCopyContainer);

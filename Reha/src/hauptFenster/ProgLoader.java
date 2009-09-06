@@ -466,7 +466,8 @@ public static void SystemInitialisierung(){
     SwingUtilities.invokeLater(new Runnable(){
   	   public  void run()
   	   {	
-  			SystemUtil sysUtil = new SystemUtil(Reha.thisFrame);
+  		 SystemUtil sysUtil = new SystemUtil(null);
+  		   //SystemUtil sysUtil = new SystemUtil(Reha.thisFrame);
   			sysUtil.setSize(850,620);
   			//roogle.setLocationRelativeTo(null);
   			sysUtil.setLocationRelativeTo(null);

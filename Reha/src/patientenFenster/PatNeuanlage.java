@@ -1,5 +1,6 @@
 package patientenFenster;
 
+import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
@@ -55,7 +56,10 @@ import javax.swing.table.TableModel;
 
 import jxTableTools.TableTool;
 
+import krankenKasse.KassenFormulare;
 import kvKarte.KVKWrapper;
+
+import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
@@ -65,9 +69,11 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.ArztTools;
 import stammDatenTools.ZuzahlTools;
 import sun.awt.image.ImageFormatException;
 
+import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 
 import systemTools.Colors;
@@ -152,6 +158,11 @@ String globPat_intern = "";
 public static String arztbisher = "";
 public static String kassebisher = "";
 boolean inNeu = false;
+Vector titel = new Vector<String>() ;
+Vector formular = new Vector<String>();
+int iformular = -1;
+private JRtaTextField formularid = new JRtaTextField("NIX",false);
+
 	public PatNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 		super();
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -635,6 +646,7 @@ boolean inNeu = false;
 			tab2.add(getDatenPanel22(),BorderLayout.EAST);
 			tab2.add(getDatenPanel21(),BorderLayout.WEST);
 			tab2.validate();	
+			holeFormulare();
 			return tab2;	
 			}
 		
@@ -849,7 +861,7 @@ boolean inNeu = false;
 					builder21.add(jtf[31], cc21.xy(3, 3));
 					builder21.addLabel("Heimbewohner", cc21.xy(1,5));
 					builder21.add(jcheck[8], cc21.xy(3, 5));
-					builder21.addLabel("befreit im Jahr", cc21.xy(1,7));
+					builder21.addLabel("befreit im Vorjahr", cc21.xy(1,7));
 					builder21.add(jtf[35],cc21.xy(3,7));
 					builder21.addLabel("löschen?", cc21.xy(4,7));
 					builder21.add(jcheck[10],cc21.xy(6, 7));
@@ -926,6 +938,27 @@ boolean inNeu = false;
 		doclist = new JXTable(docmod);
 		doclist.getColumn(5).setMinWidth(0);
 		doclist.getColumn(5).setMaxWidth(0);
+		doclist.addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent arg0) {
+				
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
+					final Point pt = arg0.getLocationOnScreen();
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							try{
+								arztInListeDoppelKlick(pt);								
+							}catch(Exception ex){
+								ex.printStackTrace();
+							}
+							return null;
+						}
+						
+					}.execute();
+				}
+			}	
+			
+		});
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -1037,6 +1070,9 @@ boolean inNeu = false;
 									lblbild.setText("");
 									lblbild.setIcon(new ImageIcon(img));
 								}
+							}else{
+								lblbild.setText("Kein Bild des Patienten vorhanden");
+								lblbild.setIcon(null);
 							}
 							}catch(Exception ex){
 								ex.printStackTrace();
@@ -1502,6 +1538,72 @@ boolean inNeu = false;
 				}
 				
 			}.execute();
+		}
+	}
+	private void arztInListeDoppelKlick(Point klick){
+		int row = doclist.getSelectedRow();
+		if(row >= 0){
+			formulareAuswerten(klick);
+			//ProgLoader.ArztFenster(0,(String)doclist.getValueAt(row,5) );			
+		}
+
+	}
+	public void holeFormulare(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
+					int forms = inif.getIntegerProperty("Formulare", "ArztFormulareAnzahl");
+					for(int i = 1; i <= forms; i++){
+						titel.add(inif.getStringProperty("Formulare","AFormularText"+i));			
+						formular.add(inif.getStringProperty("Formulare","AFormularName"+i));
+					}
+				}catch(Exception ex){
+						ex.printStackTrace();
+				}
+				return null;
+			}
+			
+		}.execute();
+		
+	}
+	
+	public void formulareAuswerten(Point klick){
+		int row = doclist.getSelectedRow();
+		if(row >= 0){
+			String sid = new Integer((String) doclist.getValueAt(row, 5)).toString();
+    		iformular = -1;
+    		KassenFormulare kf = new KassenFormulare(null,titel,formularid);
+    		Point pt = klick;
+    		kf.setLocation(pt.x-100,pt.y+25);
+    		kf.setModal(true);
+    		kf.setVisible(true);
+    		iformular = new Integer(formularid.getText());
+    		kf = null;
+    		final String xid = sid;
+    		if(iformular >= 0){
+    			new SwingWorker<Void,Void>(){
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						ArztTools.constructArztHMap(xid);
+						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
+						return null;
+					}
+    			}.execute();
+    			
+    		}
+ 
+    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+        	
+		}else{
+			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
+			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
+			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
+			"Sie dürfen also hoffen....\n\n";
+			JOptionPane.showMessageDialog(null, mes);
+			iformular = -1;
 		}
 	}
 	

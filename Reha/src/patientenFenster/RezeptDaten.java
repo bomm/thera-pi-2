@@ -281,6 +281,7 @@ public class RezeptDaten extends JXPanel{
 		    	int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
 		    	TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
 		    	draghandler.setText(
+		    			"TERMDATEXT"+"°"+
 		    			((String)PatGrundPanel.thisClass.patDaten.get(0)).substring(0,1)+
 		    			"-"+PatGrundPanel.thisClass.patDaten.get(2)+","+
 		    			PatGrundPanel.thisClass.patDaten.get(3)+"°"+

@@ -143,7 +143,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		thisClass = this;
 		if(! (drops==null)){
 			gedropt = true;
-			sldrops = drops.split("°");
+			//sldrops = drops.split("°");
+			String[] termdrops = drops.split("°");
+			sldrops = new String[] {termdrops[1],termdrops[2],termdrops[3]};
+			
 			sldrops[2] = sldrops[2].toUpperCase();
 			sldrops[2] = sldrops[2].replaceAll(" MIN.", "");
 		}else{
