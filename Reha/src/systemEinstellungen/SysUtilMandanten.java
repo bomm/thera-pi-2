@@ -55,6 +55,12 @@ import com.jgoodies.forms.layout.FormLayout;
 public class SysUtilMandanten extends JXPanel implements KeyListener, ActionListener, FocusListener {
 	
 		JComboBox mandant = null;
+		
+		JComboBox bula = null;
+		String[] laender = {"Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen",
+				"Hamburg","Hessen","Meckl.-Vorpommern","Niedersachsen","Rheinland-Pfalz",
+				"Saarlan","Sachsen","Sachs.-Anhalt","Schleswig-Holstein","Thüringen"};
+
 		JRtaTextField mandantIK = null;
 		JRtaTextField mandantname = null;
 		JRtaTextField mandantname1 = null;
@@ -302,12 +308,14 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		zusatz3 = new JRtaTextField("", true);
 		tfield[22] = zusatz3;		
 		zusatz4 = new JRtaTextField("", true);
-		tfield[23] = zusatz4;		
+		tfield[23] = zusatz4;	
+		
+		bula = new JComboBox(laender);
 		
 		//                                      1.            2.     3.      4.     5.                  6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu,  160dlu",
-       //1.  2.   3.  4.   5.  6.   7.  8.   9.  10. 11.  12.  13. 14.  15. 16.  17. 18.  19.   20. 21.  22.   23.  24  25   26  27   28  29  30    31   32   33   34   35   36  37  38   39   40   41  42    43   44    45  46   47   48   49   50    51  52   53   54
-		"p, 4dlu, p, 4dlu, p, 2dlu, p, 10dlu, p, 2dlu, p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu , p, 2dlu, p, 2dlu, p,  2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu,  p , 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p , 2dlu,  p,  2dlu, p,  2dlu, p, 10dlu");
+       //1.  2.   3.  4.   5.  6.   7.  8.   9.  10. 11.  12.  13. 14.  15. 16.  17. 18.  19.   20. 21.  22.   23.  24  25   26  27   28  29  30    31   32   33   34   35   36  37  38   39   40   41  42    43   44   45  46   47   48   49   50    51  52   53   54   55   56   57   58
+		"p, 4dlu, p, 4dlu, p, 2dlu, p, 10dlu, p, 2dlu, p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu , p, 2dlu, p, 2dlu, p,  2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu,  p , 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p , 2dlu,  p,  2dlu, p,  2dlu, p, 10dlu");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -367,22 +375,24 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		builder.add(steuernr,cc.xy(3, 41));
 		builder.addLabel("Handelsregistereintrag", cc.xy(1,43));
 		builder.add(handelsreg, cc.xy(3, 43));
+		builder.addLabel("Bundesland (Standort)", cc.xy(1,45));
+		builder.add(bula, cc.xy(3,45));
 		
-		builder.addSeparator("Sonstiges", cc.xyw(1,45,3));
+		builder.addSeparator("Sonstiges", cc.xyw(1,47,3));
 		
-		builder.addLabel("Firmenlogo", cc.xy(1,47));
-		builder.add(logo, cc.xy(3, 47));
+		builder.addLabel("Firmenlogo", cc.xy(1,49));
+		builder.add(logo, cc.xy(3, 49));
 		
 		//builder.add(knopf6, cc.xy(3,37));
 
-		builder.addLabel("Zusatz 1", cc.xy(1,49));
-		builder.add(zusatz1, cc.xy(3, 49));
-		builder.addLabel("Zusatz 2", cc.xy(1, 51));
-		builder.add(zusatz2, cc.xy(3, 51));
-		builder.addLabel("Zusatz 3", cc.xy(1,53));
-		builder.add(zusatz3, cc.xy(3, 53)); 
-		builder.addLabel("Zusatz 4", cc.xy(1, 55));
-		builder.add(zusatz4, cc.xy(3, 55));
+		builder.addLabel("Zusatz 1", cc.xy(1,51));
+		builder.add(zusatz1, cc.xy(3, 51));
+		builder.addLabel("Zusatz 2", cc.xy(1, 53));
+		builder.add(zusatz2, cc.xy(3, 53));
+		builder.addLabel("Zusatz 3", cc.xy(1,55));
+		builder.add(zusatz3, cc.xy(3, 55)); 
+		builder.addLabel("Zusatz 4", cc.xy(1, 57));
+		builder.add(zusatz4, cc.xy(3, 57));
 
 		
 		return builder.getPanel();
