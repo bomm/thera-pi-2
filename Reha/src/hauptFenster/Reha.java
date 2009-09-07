@@ -2293,10 +2293,12 @@ final class DatenbankStarten implements Runnable{
 					System.out.println("Barcode-Scanner konnte nicht installiert werden");
 				}
 			}
+			new SocketClient().setzeInitStand("Firmendaten einlesen");
 			Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
 			Reha.kalMin = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
 			Reha.kalMax = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
 			System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
+			SystemConfig.FirmenDaten();			
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");

@@ -46,6 +46,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
+import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -56,7 +57,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	
 		JComboBox mandant = null;
 		
-		JComboBox bula = null;
+		JRtaComboBox bula = null;
 		String[] laender = {"Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen",
 				"Hamburg","Hessen","Meckl.-Vorpommern","Niedersachsen","Rheinland-Pfalz",
 				"Saarlan","Sachsen","Sachs.-Anhalt","Schleswig-Holstein","Thüringen"};
@@ -163,6 +164,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	    	 tfield[i].setEnabled(ein);
 	    	 ((JComponent)tfield[i]).setAutoscrolls(true);
 	     }
+	     bula.setEnabled(ein);
 	     bootman.setEnabled(ein);
 	     defman.setEnabled(ein);
 	}
@@ -310,8 +312,8 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		zusatz4 = new JRtaTextField("", true);
 		tfield[23] = zusatz4;	
 		
-		bula = new JComboBox(laender);
-		
+		bula = new JRtaComboBox(laender);
+		bula.setEnabled(false);
 		//                                      1.            2.     3.      4.     5.                  6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu,  160dlu",
        //1.  2.   3.  4.   5.  6.   7.  8.   9.  10. 11.  12.  13. 14.  15. 16.  17. 18.  19.   20. 21.  22.   23.  24  25   26  27   28  29  30    31   32   33   34   35   36  37  38   39   40   41  42    43   44   45  46   47   48   49   50    51  52   53   54   55   56   57   58
@@ -620,6 +622,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		for(int i = 0; i < stitel.length;i++){
 			SysUtilMandanten.thisClass.tfield[i].setText("");
 		}
+		bula.setSelectedIndex(0);
 		//bootman.setSelected(false);
 		defman.setSelected(false);
 	}
@@ -674,9 +677,12 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	            //Exceptions werfen, die jenige von 'out' geworfen wird.
 	            try {
 	                in.close();
+	            }catch(Exception ex){
+	            	
 	            }
 	            finally {
 	                if (out != null) {
+	                	out.flush();
 	                    out.close();
 	                }
 	            }
@@ -756,6 +762,7 @@ class MandantEinlesen extends SwingWorker<Integer,Void>{
 			SysUtilMandanten.thisClass.jprog.setValue(i+1);
 			SysUtilMandanten.thisClass.tfield[i].setText(ifile.getStringProperty("Firma", stitel[i]));
 		}
+		SysUtilMandanten.thisClass.bula.setSelectedItem((String)ifile.getStringProperty("Firma", "Bundesland") );
 		if(SystemConfig.AuswahlImmerZeigen==1){
 			SysUtilMandanten.thisClass.bootman.setSelected(true);
 		}else if(SystemConfig.AuswahlImmerZeigen==0 && SystemConfig.DefaultMandant==(this.mandant+1)){
@@ -777,32 +784,36 @@ class MandantSpeichern extends SwingWorker<Integer,Void>{
 
 	@Override
 	protected Integer doInBackground() throws Exception {
-		// TODO Auto-generated method stub
-		INIFile ifile = new INIFile(Reha.proghome+"ini/"+SystemConfig.Mandanten.get(this.mandant)[0]+"/firmen.ini");
-		String[] stitel = {"Ik","Ikbezeichnung","Firma1","Firma2","Anrede","Nachname","Vorname",
-						"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
-						"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4"};
-		
-		for(int i = 0; i < stitel.length;i++){
-			ifile.setStringProperty("Firma", stitel[i],SysUtilMandanten.thisClass.tfield[i].getText().trim() , null);
+		try{
+			INIFile ifile = new INIFile(Reha.proghome+"ini/"+SystemConfig.Mandanten.get(this.mandant)[0]+"/firmen.ini");
+			String[] stitel = {"Ik","Ikbezeichnung","Firma1","Firma2","Anrede","Nachname","Vorname",
+							"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
+							"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4"};
+			
+			for(int i = 0; i < stitel.length;i++){
+				ifile.setStringProperty("Firma", stitel[i],SysUtilMandanten.thisClass.tfield[i].getText().trim() , null);
+			}
+			ifile.setStringProperty("Firma", "Bundesland",((String)SysUtilMandanten.thisClass.bula.getSelectedItem()).trim() , null);
+			//ifile = null;
+			ifile.save();
+			
+			ifile = new INIFile(Reha.proghome+"ini/mandanten.ini");		
+			if(SysUtilMandanten.thisClass.bootman.isSelected()){
+				ifile.setIntegerProperty("TheraPiMandanten", "AuswahlImmerZeigen", 1, null);
+				SystemConfig.AuswahlImmerZeigen = 1;
+				SystemConfig.DefaultMandant = 1;
+			}else{
+				ifile.setIntegerProperty("TheraPiMandanten", "AuswahlImmerZeigen", 0, null);
+				SystemConfig.AuswahlImmerZeigen = 0;
+			}
+			if(SysUtilMandanten.thisClass.defman.isSelected()){
+				ifile.setIntegerProperty("TheraPiMandanten", "DefaultMandant", this.mandant+1, null);
+				SystemConfig.DefaultMandant = this.mandant+1;
+			}
+			ifile.save();
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-
-		//ifile = null;
-		
-		ifile = new INIFile(Reha.proghome+"ini/mandanten.ini");		
-		if(SysUtilMandanten.thisClass.bootman.isSelected()){
-			ifile.setIntegerProperty("TheraPiMandanten", "AuswahlImmerZeigen", 1, null);
-			SystemConfig.AuswahlImmerZeigen = 1;
-			SystemConfig.DefaultMandant = 1;
-		}else{
-			ifile.setIntegerProperty("TheraPiMandanten", "AuswahlImmerZeigen", 0, null);
-			SystemConfig.AuswahlImmerZeigen = 0;
-		}
-		if(SysUtilMandanten.thisClass.defman.isSelected()){
-			ifile.setIntegerProperty("TheraPiMandanten", "DefaultMandant", this.mandant+1, null);
-			SystemConfig.DefaultMandant = this.mandant+1;
-		}
-		ifile.save();
 		/*
 		ifile.setIntegerProperty("TheraPiMandanten", "AnzahlMandanten", SysUtilMandanten.thisClass.mandant.getItemCount(), null);
 		ifile.save();

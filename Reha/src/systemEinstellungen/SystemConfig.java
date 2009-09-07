@@ -81,6 +81,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmEmailExtern;
 	public static HashMap<String,String> hmEmailIntern;	
 	public static HashMap<String,String> hmVerzeichnisse  = null;
+	public static HashMap<String,String> hmFirmenDaten  = null;
 
 	public static HashMap<String,Vector> hmDBMandant  = null;
 	public static Vector<String[]>Mandanten = null;
@@ -832,6 +833,16 @@ public class SystemConfig {
 		thberichtdatei = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+inif.getStringProperty("Datei", "BerichtsDatei");
 		
 
+	}
+	public static void FirmenDaten(){
+		String[] stitel = {"Ik","Ikbezeichnung","Firma1","Firma2","Anrede","Nachname","Vorname",
+				"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
+				"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4","Bundesland"};
+		hmFirmenDaten = new HashMap<String,String>();
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/firmen.ini");
+		for(int i = 0; i < stitel.length;i++){
+			hmFirmenDaten.put(stitel[i],inif.getStringProperty("Firma",stitel[i] ) );
+		}
 	}
 	public static void FremdProgs(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
