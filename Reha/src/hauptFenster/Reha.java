@@ -890,6 +890,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			*/
 	        //create the status bar
 			jXStatusBar = new JXStatusBar();
+
 			UIManager.put("Separator.foreground", new Color(231,120,23) /*Color.RED*/);
 			//UIManager.put("Separator.background", Color.BLACK);	
 			
@@ -980,6 +981,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				    	  if(labs[0].contains("TERMDAT")){
 				    		  copyLabel.setText(labs[1]+"°"+labs[2]+"°"+labs[3]);
 				    		  bunker.setText("TERMDATEXT°"+new String(copyLabel.getText()));
+				    		  e.dropComplete(true);
+				    		  return;
+				    	  }else{
+				    		  bunker.setText("");
+				    		  e.dropComplete(true);
 				    		  return;
 				    	  }
 				      }
