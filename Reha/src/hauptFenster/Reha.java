@@ -979,6 +979,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    		  String[] labs = mitgebracht.split("°");
 				    	  if(labs[0].contains("TERMDAT")){
 				    		  copyLabel.setText(labs[1]+"°"+labs[2]+"°"+labs[3]);
+				    		  bunker.setText("TERMDATEXT°"+new String(copyLabel.getText()));
 				    		  return;
 				    	  }
 				      }
@@ -997,10 +998,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e1.printStackTrace();
 			}
 			copyLabel.setDropTarget(dndt);
+			
 		    final String propertyName = "text";
 		    bunker = new JLabel();
+		    bunker.setName("bunker");
 		    bunker.setTransferHandler(new TransferHandler(propertyName));
-		    //copyLabel.setTransferHandler(new TransferHandler(propertyName));
+		    copyLabel.setTransferHandler(new TransferHandler(propertyName));
+		    copyLabel.setName("copyLabel");
 		    copyLabel.addMouseListener(new MouseAdapter() {
 		        public void mousePressed(MouseEvent evt) {
 		            JComponent comp = (JComponent)evt.getSource();
@@ -1016,21 +1020,22 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		            }else{
 		            	comp2.setText("");
 		            }
-
+	
 		            TransferHandler th = comp2.getTransferHandler();
 		            //TransferHandler th = comp.getTransferHandler();
 		            // Start the drag operation
 		            th.exportAsDrag(comp2, evt, TransferHandler.COPY);
 		            */
+		            /*
 		            if( ((JLabel)comp).getText().toUpperCase().endsWith("MIN.")){
-		            	((JLabel)bunker).setText("TERMDAT°"+((JLabel)comp).getText());
+		            	((JLabel)bunker).setText("TERMDATEXTERN°"+((JLabel)comp).getText().trim().toUpperCase());
 		            }else{
 		            	bunker.setText("");
 		            }
+		            */
 		            TransferHandler th = bunker.getTransferHandler();
 		            th.exportAsDrag((JComponent) bunker, evt, TransferHandler.COPY);
-
-		            
+		            System.out.println("Starte Drag mit "+bunker.getText());
 		        }
 		    });
 

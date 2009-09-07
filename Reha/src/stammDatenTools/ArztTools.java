@@ -31,6 +31,7 @@ public class ArztTools {
 		 * 	List<String> lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
 		 *														"<Atel>","<Afax>","<Aemail>","<Aid>"});
 		 */
+		if(vec.size()==0){return;}
 		String anrede = (String)vec.get(0);
 		if(anrede.toUpperCase().equals("HERR")){
 			isherr = true;

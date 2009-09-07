@@ -22,11 +22,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.DblCellEditor;
 import jxTableTools.DoubleTableCellRenderer;
+import kvKarte.KVKWrapper;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -54,12 +56,16 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaTextField gueltig = null;
 	JButton[] button = {null,null,null,null,null,null};
 	JButton plServer = null;
-	MyPreislistenTableModel modpreis = new MyPreislistenTableModel();
+
 	JXTable preislisten = null;
+	MyPreislistenTableModel modpreis = new MyPreislistenTableModel();
+	
 	JXTable plserver = null;
-	MyServerTableModel modserver = new MyServerTableModel();	
+	MyServerTableModel modserver = new MyServerTableModel();
+	
 	JPanel pledit = null;
 	JPanel plupdate = null;
+	
 	JButton plEinlesen = null;
 	
 	// neue Elemente:
@@ -97,12 +103,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
-				
 				return null;
 			}
 	    	 
 	     }.execute();
-		return;
+
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
@@ -140,6 +145,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jcmb[2],cc.xy(9,5));
 		
 		plServer = new JButton("Update der Preise über Preislistenserver");
+		plServer.setIcon(SystemConfig.hmSysIcons.get("achtung"));
 		plServer.setActionCommand("plUpdate");
 		plServer.addActionListener(this);
 		builder.add(plServer,cc.xyw(3,7,7));
@@ -229,34 +235,34 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			tabelleRegeln();
 		}
 		if(cmd.equals("plUpdate")){
-			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
-			plEinlesen.setText("Verfügbare Preislisten für "+lists[jcmb[0].getSelectedIndex()]+" ermitteln");
-			jcmb[3].removeAllItems();
-			jcmb[3].addItem((String) jcmb[1].getSelectedItem());
-			jcmb[3].setEnabled(false);
-			remove(pledit);
-			if(plupdate==null){
-				System.out.println("Die Sau ist null");
-			}else{
-				add(plupdate,BorderLayout.CENTER);				
-			}
-
-			validate();
-			/*
-			PreisUpdate pu = new PreisUpdate(SystemUtil.thisClass,
-					"preislistenupdate",
-					(String)jcmb[0].getSelectedItem(),
-					new Integer(jcmb[1].getSelectedIndex()).toString(),this);
-			pu.setSize(new Dimension(500,600));
-			pu.setVisible(true);
-			pu.toFront();
-			pu.setModal(true);
-			*/
+			SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run(){
+						String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+						plEinlesen.setText("Verfügbare Preislisten für "+lists[jcmb[0].getSelectedIndex()]+" ermitteln");
+						jcmb[3].removeAllItems();
+						jcmb[3].addItem((String) jcmb[1].getSelectedItem());
+						jcmb[3].setEnabled(false);
+						modserver.setRowCount(0);
+						plserver.validate();
+						remove(pledit);
+						plupdate.validate();
+						add(plupdate,BorderLayout.CENTER);
+						validate();
+						repaint();
+			 	   }
+			});
+			
 		}
 		if(cmd.equals("zurueck")){
-			remove(plupdate);
-			add(pledit,BorderLayout.CENTER);
-			validate();
+			SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run(){
+						remove(plupdate);
+						pledit.validate();
+						add(pledit,BorderLayout.CENTER);
+						validate();
+						repaint();						
+			 	   }
+			});
 		}
 		if(cmd.equals("pleinlesen")){
 			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
@@ -330,6 +336,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		plserver = new JXTable(modserver);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(plserver);
 		jscr.validate();
+		/*
 		new SwingWorker(){
 			@Override
 			protected Object doInBackground() throws Exception {
@@ -337,7 +344,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				return null;
 			}
 		}.execute();
-		
+		*/
 		builder.add(jscr,cc.xyw(1,5,9));
 		
 		bezeich = new JRtaCheckBox();

@@ -3929,13 +3929,17 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
-
+		System.out.println("Es wurde gedroppt");
+		/*
 		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
 			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 			dragLab[aktiveSpalte[2]].setIcon(null);
 			dragLab[aktiveSpalte[2]].setText("");
+			System.out.println("Drag_Mode == Drag_None");
 			return;
 		}
+		*/
+		System.out.println("Drag_Mode != Drag_None");
 
 		try {
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
@@ -3943,6 +3947,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        Transferable tr = dtde.getTransferable();
 	        //System.out.println("Transferable Name = "+tr);
 	        DataFlavor[] flavors = tr.getTransferDataFlavors();
+	        System.out.println("Länge des Flavors = "+flavors.length);
 	        for (int i = 0; i < flavors.length; i++){
 	        	//System.out.println(flavors[i]);
 	        	if(flavors[i].getRepresentationClass().toString().equals("java.lang.String")){
@@ -4009,6 +4014,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 				}
 				String[] teilen;
+				System.out.println("D&D Übergabe = "+mitgebracht);
 				if(mitgebracht.indexOf("°") >= 0 ){
 					teilen = mitgebracht.split("°");
 					if(! teilen[0].contains("TERMDAT")){

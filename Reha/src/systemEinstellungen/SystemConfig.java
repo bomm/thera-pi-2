@@ -912,137 +912,149 @@ public class SystemConfig {
 	}
 	
 	public static void SystemIconsInit(){
+		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",
+				"nichtgesperrt","rezeptgebuehr","ausfallrechnung","arztbericht","privatrechnung",
+				"sort","historieumsatz","historietage","historieinfo","keinerezepte","hausbesuch","historie","kvkarte",
+				"ooowriter","ooocalc","oooimpress","openoffice","barcode","info","scanner","email","sms","tools","links",
+				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
+				"kleinehilfe","achtung"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
-		hmSysIcons = new HashMap<String,ImageIcon>();
-		Image ico = null;
+		try{
+			hmSysIcons = new HashMap<String,ImageIcon>();
+			Image ico = null;
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "neu")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("neu", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "neu")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("neu", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "edit")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("edit", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "edit")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("edit", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "delete")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("delete", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "print")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("print", new ImageIcon(ico));		
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "delete")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("delete", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "print")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("print", new ImageIcon(ico));		
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "save")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("save", new ImageIcon(ico));				
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "save")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("save", new ImageIcon(ico));				
 
-		hmSysIcons.put("find", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "find")));		
-		hmSysIcons.put("stop", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "stop")));	
+			hmSysIcons.put("find", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "find")));		
+			hmSysIcons.put("stop", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "stop")));	
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlfrei")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
-		hmSysIcons.put("zuzahlfrei", new ImageIcon(ico));				
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
-		hmSysIcons.put("zuzahlok", new ImageIcon(ico));				
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlfrei")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
+			hmSysIcons.put("zuzahlfrei", new ImageIcon(ico));				
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
+			hmSysIcons.put("zuzahlok", new ImageIcon(ico));				
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
-		hmSysIcons.put("zuzahlnichtok", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
-		hmSysIcons.put("nichtgesperrt", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
-		hmSysIcons.put("nichtgesperrt", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
+			hmSysIcons.put("zuzahlnichtok", new ImageIcon(ico));
+			/*
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
+			hmSysIcons.put("nichtgesperrt", new ImageIcon(ico));
+			*/
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
+			hmSysIcons.put("nichtgesperrt", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rezeptgebuehr")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("rezeptgebuehr", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rezeptgebuehr")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("rezeptgebuehr", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ausfallrechnung")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("ausfallrechnung", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ausfallrechnung")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("ausfallrechnung", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "arztbericht")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("arztbericht", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "arztbericht")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("arztbericht", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "privatrechnung")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("privatrechnung", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "privatrechnung")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("privatrechnung", new ImageIcon(ico));
 
-		hmSysIcons.put("sort", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sort")));
-		
-		hmSysIcons.put("historieumsatz", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieumsatz")));		
-		hmSysIcons.put("historietage", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historietage")));		
-		hmSysIcons.put("historieinfo", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieinfo")));
-		hmSysIcons.put("keinerezepte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "keinerezepte")));
-		hmSysIcons.put("hausbesuch", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "hausbesuch")));
-		hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));
-		hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));
+			hmSysIcons.put("sort", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sort")));
+			
+			hmSysIcons.put("historieumsatz", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieumsatz")));		
+			hmSysIcons.put("historietage", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historietage")));		
+			hmSysIcons.put("historieinfo", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historieinfo")));
+			hmSysIcons.put("keinerezepte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "keinerezepte")));
+			hmSysIcons.put("hausbesuch", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "hausbesuch")));
+			hmSysIcons.put("historie", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "historie")));
+			hmSysIcons.put("kvkarte", new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kvkarte")));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooowriter")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
-		hmSysIcons.put("ooowriter", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooowriter")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
+			hmSysIcons.put("ooowriter", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooocalc")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
-		hmSysIcons.put("ooocalc", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oooimpress")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
-		hmSysIcons.put("oooimpress", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "openoffice")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
-		hmSysIcons.put("openoffice", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "barcode")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("barcode", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "ooocalc")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
+			hmSysIcons.put("ooocalc", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oooimpress")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
+			hmSysIcons.put("oooimpress", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "openoffice")).getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+			hmSysIcons.put("openoffice", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "barcode")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("barcode", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("info", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("info", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "scanner")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("scanner", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "email")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("email", new ImageIcon(ico));
-		
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sms")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("sms", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "scanner")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("scanner", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "email")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("email", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "sms")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("sms", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "tools")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
-		hmSysIcons.put("tools", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "tools")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
+			hmSysIcons.put("tools", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "links")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("links", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "links")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("links", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rechts")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("rechts", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "rechts")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("rechts", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "abbruch")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
-		hmSysIcons.put("abbruch", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "abbruch")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
+			hmSysIcons.put("abbruch", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "pdf")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
-		hmSysIcons.put("pdf", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "pdf")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
+			hmSysIcons.put("pdf", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "euro")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
-		hmSysIcons.put("euro", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "euro")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH);
+			hmSysIcons.put("euro", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "einzeltage")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("einzeltage", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "einzeltage")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("einzeltage", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info2")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("info2", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "info2")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("info2", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("bild", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("bild", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "patbild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("patbild", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "patbild")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("patbild", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bunker")).getImage().getScaledInstance(20,20, Image.SCALE_SMOOTH);
-		hmSysIcons.put("bunker", new ImageIcon(ico));
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "bunker")).getImage().getScaledInstance(20,20, Image.SCALE_SMOOTH);
+			hmSysIcons.put("bunker", new ImageIcon(ico));
 
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "camera")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("camera", new ImageIcon(ico));
-
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		hmSysIcons.put("oofiles", new ImageIcon(ico));
-
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
-		hmSysIcons.put("ootabelle", new ImageIcon(ico));
-
-		ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kleinehilfe")).getImage().getScaledInstance(14,14, Image.SCALE_SMOOTH);
-		hmSysIcons.put("kleinehilfe", new ImageIcon(ico));
-		
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "camera")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("camera", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+			hmSysIcons.put("oofiles", new ImageIcon(ico));
+			/*
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
+			hmSysIcons.put("ootabelle", new ImageIcon(ico));
+			*/
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kleinehilfe")).getImage().getScaledInstance(14,14, Image.SCALE_SMOOTH);
+			hmSysIcons.put("kleinehilfe", new ImageIcon(ico));
+			
+			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "achtung")).getImage().getScaledInstance(14,14, Image.SCALE_SMOOTH);
+			hmSysIcons.put("achtung", new ImageIcon(ico));
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");
 
