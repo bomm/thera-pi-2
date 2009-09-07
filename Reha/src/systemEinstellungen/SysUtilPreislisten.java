@@ -38,6 +38,7 @@ import patientenFenster.AktuelleRezepte;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SysUtilKrankenkasse.MyVorlagenTableModel;
 import systemTools.JCompTools;
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.PreisUpdate;
@@ -61,6 +62,16 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JPanel plupdate = null;
 	JButton plEinlesen = null;
 	
+	// neue Elemente:
+	JButton posneu = null;
+	JButton posdel = null;
+	JButton speichern = null;
+	JButton abbruch = null;
+	JButton zurueck = null;
+	JButton ueber = null;
+	JRtaCheckBox bezeich = null;
+	
+	
 	public SysUtilPreislisten(){
 		super(new BorderLayout());
 		System.out.println("Aufruf SysUtilPreislisten");
@@ -77,10 +88,16 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		/****/
 	     pledit = getVorlagenSeite();
 	     add(pledit,BorderLayout.CENTER);
+
 	     new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+				try{
 				plupdate = getPlupdate();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				
 				return null;
 			}
 	    	 
@@ -90,9 +107,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 40dlu, 4dlu, 10dlu, 4dlu, 70dlu",
+		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 70dlu, 4dlu, 10dlu, 4dlu, 70dlu",
        //1.    2. 3.   4.   5.   6.  7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
-		"p, 2dlu, p, 2dlu,  p,10dlu, p, 10dlu,160dlu");
+		"p, 2dlu, p, 2dlu,  p,10dlu, p, 10dlu,130dlu, 5dlu, p,5dlu,p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -149,6 +166,26 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		
 		builder.add(jscr,cc.xyw(1,9,9));
 		
+		posneu = new JButton("hinzufügen");
+		posneu.setActionCommand("hinzu");
+		posneu.addActionListener(this);
+		posdel = new JButton("entfernen");
+		posdel.setActionCommand("entfernen");
+		posdel.addActionListener(this);
+		speichern = new JButton("speichern");
+		speichern.setActionCommand("speichern");
+		speichern.addActionListener(this);
+		abbruch = new JButton("abbrechen");
+		abbruch.setActionCommand("abbruch");
+		abbruch.addActionListener(this);
+		
+		builder.addLabel("Position in Liste aufnehmen/entfernen",cc.xyw(1, 11,3));
+		builder.add(posneu, cc.xy(5, 11));
+		builder.add(posdel,cc.xy(9, 11));
+		builder.addLabel("Änderungen speichern?",cc.xyw(1,13,3));
+		builder.add(speichern, cc.xy(5, 13));
+		builder.add(abbruch, cc.xy(9, 13));
+		
 		return builder.getPanel();
 	}
 	private void fuelleMitWerten(){
@@ -198,7 +235,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			jcmb[3].addItem((String) jcmb[1].getSelectedItem());
 			jcmb[3].setEnabled(false);
 			remove(pledit);
-			add(plupdate,BorderLayout.CENTER);
+			if(plupdate==null){
+				System.out.println("Die Sau ist null");
+			}else{
+				add(plupdate,BorderLayout.CENTER);				
+			}
+
 			validate();
 			/*
 			PreisUpdate pu = new PreisUpdate(SystemUtil.thisClass,
@@ -210,6 +252,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			pu.toFront();
 			pu.setModal(true);
 			*/
+		}
+		if(cmd.equals("zurueck")){
+			remove(plupdate);
+			add(pledit,BorderLayout.CENTER);
+			validate();
 		}
 		if(cmd.equals("pleinlesen")){
 			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
@@ -262,9 +309,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
 	
 	public JPanel getPlupdate(){
-		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 40dlu, 4dlu, 10dlu, 4dlu, 70dlu",
+		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 70dlu, 4dlu, 10dlu, 4dlu, 70dlu",
 			       //1.    2. 3.   4.   5.   6.  7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
-					"p, 2dlu, p, 2dlu, 160dlu");
+					"p, 2dlu, p, 2dlu, 160dlu,10dlu,p,5dlu,p");
 					
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -292,6 +339,20 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}.execute();
 		
 		builder.add(jscr,cc.xyw(1,5,9));
+		
+		bezeich = new JRtaCheckBox();
+		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
+		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
+		ueber = new JButton("übernehmen");
+		ueber.setActionCommand("speichern");
+		ueber.addActionListener(this);
+		zurueck = new JButton("zurueck");
+		zurueck.setActionCommand("zurueck");
+		zurueck.addActionListener(this);
+		builder.addLabel("übernehmen?",cc.xy(1, 9));
+		builder.add(ueber,cc.xy(5,9));
+		builder.addLabel("Abbruch?", cc.xy(7, 9));
+		builder.add(zurueck,cc.xy(9,9));
 		
 		return builder.getPanel();
 		
