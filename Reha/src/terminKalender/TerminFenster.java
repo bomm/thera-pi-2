@@ -3931,15 +3931,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
 		System.out.println("Es wurde gedroppt");
-		/*
+		
 		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
 			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 			dragLab[aktiveSpalte[2]].setIcon(null);
 			dragLab[aktiveSpalte[2]].setText("");
 			System.out.println("Drag_Mode == Drag_None");
+			dtde.dropComplete(true);
 			return;
 		}
-		*/
+		
 		System.out.println("Drag_Mode != Drag_None");
 
 		try {
@@ -4154,6 +4155,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			
 		}
 		
+	}
+	public static void setDragMode(int mode){
+		TerminFenster.DRAG_MODE = mode;
 	}
 	@Override
 	public void dropActionChanged(DropTargetDragEvent dtde) {

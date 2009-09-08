@@ -274,7 +274,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static String aktLookAndFeel = "";
 	public static SystemConfig sysConf = null;
 	public static IOfficeApplication officeapplication;
-	public TerminFenster TerminFenster[]={null,null,null,null,null}; 
+	//public TerminFenster TerminFenster[]={null,null,null,null,null}; 
 	public OoStart OoStart[] = {null,null};	
 	public static RehaSockServer RehaSock = null;
 	@SuppressWarnings("unchecked")
@@ -961,7 +961,17 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        jxCopyContainer.setOpaque(false);
 	        jxCopyContainer.setPreferredSize(new Dimension(250,20));
 	        copyLabel = new JLabel("");
-			copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
+	        new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					while(! iconsOk){
+						Thread.sleep(20);
+					}
+					copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
+					return null;
+				}
+	        }.execute();
+	        //copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
 			DropTarget dndt = new DropTarget();
 			DropTargetListener dropTargetListener =
 				 new DropTargetListener() {
@@ -1016,6 +1026,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		            JComponent comp = (JComponent)evt.getSource();
 		            if( ((JLabel)comp).getText().equals("") ){
 		            	return;
+		            }
+		            if(bunker.getText().startsWith("TERMDAT")){
+		            	TerminFenster.setDragMode(0);
 		            }
 		            /*
 		            JLabel comp2 = new JLabel();

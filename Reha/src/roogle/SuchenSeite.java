@@ -879,6 +879,14 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		}
 	}
 	private void knopfGedoense(int[] knopf){
+		while(sucheStarten==null){
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		sucheStarten.setEnabled((knopf[0]==1 ? true : false));
 		sucheStoppen.setEnabled((knopf[1]==1 ? true : false));
 		sucheWeiter.setEnabled((knopf[2]==1 ? true : false));	
@@ -2324,7 +2332,8 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		//System.out.println("Insgesamt wurden Treffer gezählt -> "+treffer);
 		long dauer = (System.currentTimeMillis()-zeit1);
 		//System.out.println("Dauer des Suchlaufes = "+);
-		Reha.thisClass.copyLabel.setText("Suchlauf: "+dauer+"ms");
+
+		//Reha.thisClass.copyLabel.setText("Suchlauf: "+dauer+"ms");
 
 		//SuchenSeite.mussUnterbrechen = true;
 		//####
