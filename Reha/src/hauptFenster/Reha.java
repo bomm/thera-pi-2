@@ -861,11 +861,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	private JXStatusBar getJXStatusBar() {
 		if (jXStatusBar == null) {
-			
+			UIManager.put("Separator.foreground", new Color(231,120,23) );
 	        //create the status bar
 			jXStatusBar = new JXStatusBar();
-
-			UIManager.put("Separator.foreground", new Color(231,120,23) );
 	
 			
 			jXStatusBar.putClientProperty(Options.HEADER_STYLE_KEY, HeaderStyle.BOTH);
@@ -882,58 +880,116 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			
 			jXStatusBar.setPreferredSize(new Dimension(1280, 30));
 			jXStatusBar.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-			FormLayout sblay = new FormLayout("fill:0:grow(0.16),fill:0:grow(0.16),fill:0:grow(0.16),fill:0:grow(0.16),fill:0:grow(0.16),fill:0:grow(0.16),10dlu",
-												"fill:0:grow(0.5),p,fill:0:grow(0.5)");
-			CellConstraints sbcc = new CellConstraints();
-
 			jXStatusBar.setLayout(new BorderLayout());
 			
-			
-			JXPanel bar = new JXPanel(sblay);
-			bar.setOpaque(false);
-			bar.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+			FormLayout sblay = new FormLayout("10dlu,fill:0:grow(0.16),4dlu,fill:0:grow(0.16),4dlu,fill:0:grow(0.16),4dlu,fill:0:grow(0.16),4dlu,fill:0:grow(0.16),4dlu,fill:0:grow(0.16),10dlu",
+												"fill:0:grow(0.5),18px,fill:0:grow(0.5)");
+			CellConstraints sbcc = new CellConstraints();
+			JXPanel sbkomplett = new JXPanel();
+			sbkomplett.setBorder(BorderFactory.createEmptyBorder(1,0,1,0));
+			sbkomplett.setOpaque(false);
+			sbkomplett.setLayout(sblay);
 
-			jxPinContainer = new JXPanel(new FlowLayout());
+
+			//jXStatusBar.setLayout(sblay);
+			
+			
+			JXPanel bar = new JXPanel(new BorderLayout());
+			bar.setOpaque(false);
+			bar.setBorder(BorderFactory.createLoweredBevelBorder());
+			JXPanel bar2 = new JXPanel(new BorderLayout());
+			bar2.setOpaque(false);
+			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+			JLabel lab = new JLabel("Benutzer: Admin");
+			lab.setVerticalAlignment(JLabel.CENTER);
+			lab.setHorizontalAlignment(JLabel.LEFT);
+			bar2.add(lab);
+			bar.add(bar2);
+			sbkomplett.add(bar,sbcc.xy(2, 2));
+
+			FlowLayout flay = new FlowLayout(FlowLayout.LEFT);
+			flay.setVgap(1);
+			jxPinContainer = new JXPanel(flay);
 			jxPinContainer.setBorder(null);
 			jxPinContainer.setOpaque(false);
-			jxPinContainer.setPreferredSize(new Dimension(100,20));
-			//bar.add(jxPinContainer);
-			bar.add(jxPinContainer,sbcc.xy(1,2));
+			//jxPinContainer.setPreferredSize(new Dimension(300,18));
 			
-			messageLabel = new JLabel("Init abgeschlossen");
+			//jxPinContainer.setPreferredSize(new Dimension(100,20));
+			
+			bar = new JXPanel(new BorderLayout());
+			bar.setOpaque(false);
+			bar.setBorder(BorderFactory.createLoweredBevelBorder());
+			bar2 = new JXPanel(new BorderLayout());
+			bar2.setOpaque(false);
+			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+
+			
+			messageLabel = new JLabel("Init: o.k. ");
 			messageLabel.setVerticalAlignment(SwingConstants.CENTER);
-			//bar.add(messageLabel, JXStatusBar.Constraint.ResizeBehavior.FILL);
-			bar.add(messageLabel,sbcc.xy(2,2));
+			messageLabel.setHorizontalAlignment(SwingConstants.LEFT);
+			jxPinContainer.add(messageLabel);
+			bar2.add(jxPinContainer);
+			bar.add(bar2);
 			
+			sbkomplett.add(bar,sbcc.xy(4, 2));
+			
+			bar = new JXPanel(new BorderLayout());
+			bar.setOpaque(false);
+			bar.setBorder(BorderFactory.createLoweredBevelBorder());
+			bar2 = new JXPanel(new BorderLayout());
+			bar2.setOpaque(false);
+			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 			final javax.swing.JLabel mousePositionLabel = new javax.swing.JLabel("230, 320");
-	        //mousePositionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        mousePositionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 	        mousePositionLabel.setVerticalAlignment(SwingConstants.CENTER);
-	        mousePositionLabel.setPreferredSize(new Dimension(80, mousePositionLabel.getPreferredSize().height));
-	        //bar.add(mousePositionLabel);
-	        bar.add(mousePositionLabel,sbcc.xy(3,2));
+	        //bar.add(mousePositionLabel,sbcc.xy(3,2));
+	        bar2.add(mousePositionLabel);
+	        bar.add(bar2);
+	        sbkomplett.add(bar,sbcc.xy(6, 2));
 	        
+			bar = new JXPanel(new BorderLayout());
+			bar.setOpaque(false);
+			bar.setBorder(BorderFactory.createLoweredBevelBorder());
+			bar2 = new JXPanel(new BorderLayout());
+			bar2.setOpaque(false);
+			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 	        //create and add the caps lock indicator
-	        final JLabel capslockLabel = new JLabel("Benutzer: Admin");
+	        final JLabel capslockLabel = new JLabel(" ");
 	        capslockLabel.setVerticalAlignment(SwingConstants.CENTER);
-	        //capslockLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        //bar.add(capslockLabel);
-	        bar.add(capslockLabel,sbcc.xy(4,2));
+	        capslockLabel.setHorizontalAlignment(SwingConstants.LEFT);
+	        //bar.add(capslockLabel,sbcc.xy(4,2));
+	        bar2.add(capslockLabel);
+	        bar.add(bar2);
+	        sbkomplett.add(bar,sbcc.xy(8, 2));
 	        
-	        //create and add the shift indicator
+
+			bar = new JXPanel(new BorderLayout());
+			bar.setOpaque(false);
+			bar.setBorder(BorderFactory.createLoweredBevelBorder());
+			bar2 = new JXPanel(new BorderLayout());
+			bar2.setOpaque(false);
+			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+
 	        shiftLabel = new JLabel("Standard User");
 	        shiftLabel.setForeground(Color.RED);
-	        shiftLabel.setPreferredSize(new Dimension(200,shiftLabel.getPreferredSize().height));
 	        shiftLabel.setVerticalAlignment(SwingConstants.CENTER);
-	        //shiftLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	        //bar.add(shiftLabel);
-	        bar.add(shiftLabel,sbcc.xy(5,2));	        
+	        shiftLabel.setHorizontalAlignment(SwingConstants.LEFT);
+	        //bar.add(shiftLabel,sbcc.xy(6,2));	 
+	        bar2.add(shiftLabel,BorderLayout.WEST);
+	        bar.add(bar2);
+	        sbkomplett.add(bar,sbcc.xy(10,2));
 	        
 	        //create and add the progress bar
-	        jxCopyContainer = new JXPanel(new FlowLayout(FlowLayout.CENTER));
-	        jxCopyContainer.setOpaque(false);
+			bar = new JXPanel(new BorderLayout());
+			bar.setOpaque(false);
+			bar.setBorder(BorderFactory.createLoweredBevelBorder());
+			bar2 = new JXPanel(new BorderLayout());
+			bar2.setOpaque(false);
+			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+
 	        //jxCopyContainer.setPreferredSize(new Dimension(250,20));
 	        copyLabel = new JLabel("");
-	        //copyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	        copyLabel.setHorizontalAlignment(SwingConstants.LEFT);
 	        copyLabel.setVerticalAlignment(SwingConstants.CENTER);
 	        new SwingWorker<Void,Void>(){
 				@Override
@@ -942,7 +998,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						Thread.sleep(20);
 					}
 					copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
-					copyLabel.setHorizontalTextPosition(JLabel.LEFT);
+					//copyLabel.setHorizontalTextPosition(JLabel.LEFT);
 					return null;
 				}
 	        }.execute();
@@ -1035,15 +1091,18 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 			
 			
-			//copyLabel.setDropTarget(dt);
-	        jxCopyContainer.add(copyLabel);
-	        //bar.add(jxCopyContainer);
-	        bar.add(jxCopyContainer,sbcc.xy(6,2));
+			
+	        //bar.add(jxCopyContainer,sbcc.xy(6,2));
+		    
 	        //JProgressBar progress = new JProgressBar();
 	        //bar.add(progress);
 	        //progress.setIndeterminate(true);
 	        //jXStatusBar.getLayout().addLayoutComponent("bar", bar);
-	        jXStatusBar.add(bar,BorderLayout.CENTER);
+		    bar2.add(copyLabel);
+		    bar.add(bar2);
+		    sbkomplett.add(bar,sbcc.xy(12,2));
+		    sbkomplett.validate();
+		    jXStatusBar.add(sbkomplett,BorderLayout.CENTER);
 	        jXStatusBar.validate();
 	        jXStatusBar.setVisible(true);
 	        
