@@ -862,7 +862,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	private JXStatusBar getJXStatusBar() {
 		if (jXStatusBar == null) {
 			UIManager.put("Separator.foreground", new Color(231,120,23) );
-	        //create the status bar
+
 			jXStatusBar = new JXStatusBar();
 	
 			
@@ -890,10 +890,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			sbkomplett.setOpaque(false);
 			sbkomplett.setLayout(sblay);
 
+			// Eventuell später irgendwo unterbringen, als busy-indikator!!
+	        //JProgressBar progress = new JProgressBar();
+	        //bar.add(progress);
+	        //progress.setIndeterminate(true);
+	        //jXStatusBar.getLayout().addLayoutComponent("bar", bar);
 
-			//jXStatusBar.setLayout(sblay);
 			
-			
+			/******************************************/
 			JXPanel bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -907,31 +911,28 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar.add(bar2);
 			sbkomplett.add(bar,sbcc.xy(2, 2));
 
+			/******************************************/
+
 			FlowLayout flay = new FlowLayout(FlowLayout.LEFT);
 			flay.setVgap(1);
 			jxPinContainer = new JXPanel(flay);
 			jxPinContainer.setBorder(null);
 			jxPinContainer.setOpaque(false);
-			//jxPinContainer.setPreferredSize(new Dimension(300,18));
-			
-			//jxPinContainer.setPreferredSize(new Dimension(100,20));
-			
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-
-			
 			messageLabel = new JLabel("Init: o.k. ");
 			messageLabel.setVerticalAlignment(SwingConstants.CENTER);
 			messageLabel.setHorizontalAlignment(SwingConstants.LEFT);
 			jxPinContainer.add(messageLabel);
 			bar2.add(jxPinContainer);
 			bar.add(bar2);
-			
 			sbkomplett.add(bar,sbcc.xy(4, 2));
+			
+			/******************************************/
 			
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
@@ -942,10 +943,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			final javax.swing.JLabel mousePositionLabel = new javax.swing.JLabel("230, 320");
 	        mousePositionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 	        mousePositionLabel.setVerticalAlignment(SwingConstants.CENTER);
-	        //bar.add(mousePositionLabel,sbcc.xy(3,2));
 	        bar2.add(mousePositionLabel);
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(6, 2));
+
+			/******************************************/
 	        
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
@@ -953,16 +955,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-	        //create and add the caps lock indicator
 	        final JLabel capslockLabel = new JLabel(" ");
 	        capslockLabel.setVerticalAlignment(SwingConstants.CENTER);
 	        capslockLabel.setHorizontalAlignment(SwingConstants.LEFT);
-	        //bar.add(capslockLabel,sbcc.xy(4,2));
 	        bar2.add(capslockLabel);
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(8, 2));
 	        
-
+			/******************************************/
+	        
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -974,20 +975,19 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        shiftLabel.setForeground(Color.RED);
 	        shiftLabel.setVerticalAlignment(SwingConstants.CENTER);
 	        shiftLabel.setHorizontalAlignment(SwingConstants.LEFT);
-	        //bar.add(shiftLabel,sbcc.xy(6,2));	 
 	        bar2.add(shiftLabel,BorderLayout.WEST);
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(10,2));
+
+			/******************************************/
 	        
-	        //create and add the progress bar
+
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-
-	        //jxCopyContainer.setPreferredSize(new Dimension(250,20));
 	        copyLabel = new JLabel("");
 	        copyLabel.setHorizontalAlignment(SwingConstants.LEFT);
 	        copyLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -998,11 +998,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						Thread.sleep(20);
 					}
 					copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
-					//copyLabel.setHorizontalTextPosition(JLabel.LEFT);
 					return null;
 				}
 	        }.execute();
-	        //copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
 			DropTarget dndt = new DropTarget();
 			DropTargetListener dropTargetListener =
 				 new DropTargetListener() {
@@ -1061,43 +1059,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		            if(bunker.getText().startsWith("TERMDAT")){
 		            	TerminFenster.setDragMode(0);
 		            }
-		            /*
-		            JLabel comp2 = new JLabel();
-		            final String propertyName = "text";
-		            comp2.setTransferHandler(new TransferHandler(propertyName));
-		            if( ((JLabel)comp).getText().toUpperCase().endsWith("MIN.")){
-		            	((JLabel)comp2).setText("TERMDAT°"+((JLabel)comp).getText());
-		            }else{
-		            	comp2.setText("");
-		            }
-	
-		            TransferHandler th = comp2.getTransferHandler();
-		            //TransferHandler th = comp.getTransferHandler();
-		            // Start the drag operation
-		            th.exportAsDrag(comp2, evt, TransferHandler.COPY);
-		            */
-		            /*
-		            if( ((JLabel)comp).getText().toUpperCase().endsWith("MIN.")){
-		            	((JLabel)bunker).setText("TERMDATEXTERN°"+((JLabel)comp).getText().trim().toUpperCase());
-		            }else{
-		            	bunker.setText("");
-		            }
-		            */
 		            TransferHandler th = bunker.getTransferHandler();
 		            th.exportAsDrag((JComponent) bunker, evt, TransferHandler.COPY);
 		            System.out.println("Starte Drag mit "+bunker.getText());
 		        }
 		    });
-
-			
-			
-			
-	        //bar.add(jxCopyContainer,sbcc.xy(6,2));
-		    
-	        //JProgressBar progress = new JProgressBar();
-	        //bar.add(progress);
-	        //progress.setIndeterminate(true);
-	        //jXStatusBar.getLayout().addLayoutComponent("bar", bar);
 		    bar2.add(copyLabel);
 		    bar.add(bar2);
 		    sbkomplett.add(bar,sbcc.xy(12,2));
