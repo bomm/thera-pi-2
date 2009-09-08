@@ -919,9 +919,29 @@ public class SystemConfig {
 				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
 				"kleinehilfe","achtung"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
+		hmSysIcons = new HashMap<String,ImageIcon>();
+		Image ico = null;
+		
+		int xscale = 0;
+		int yscale = 0;
+		int lang = bilder.length;
+		int i;
+		for(i = 0; i < lang; i++){
+			xscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleX");
+			yscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleY");
+			try{
+				if((xscale >0) && (yscale > 0)){
+					ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])).getImage().getScaledInstance(xscale,yscale, Image.SCALE_SMOOTH);
+					hmSysIcons.put(bilder[i], new ImageIcon(ico));				
+				}else{
+					hmSysIcons.put(bilder[i], new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])));
+				}
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+		}
+		/*
 		try{
-			hmSysIcons = new HashMap<String,ImageIcon>();
-			Image ico = null;
 
 			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "neu")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 			hmSysIcons.put("neu", new ImageIcon(ico));
@@ -949,10 +969,7 @@ public class SystemConfig {
 
 			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "zuzahlnichtok")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
 			hmSysIcons.put("zuzahlnichtok", new ImageIcon(ico));
-			/*
-			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
-			hmSysIcons.put("nichtgesperrt", new ImageIcon(ico));
-			*/
+
 			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "nichtgesperrt")).getImage().getScaledInstance(12,12, Image.SCALE_SMOOTH);
 			hmSysIcons.put("nichtgesperrt", new ImageIcon(ico));
 
@@ -1043,10 +1060,7 @@ public class SystemConfig {
 			
 			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 			hmSysIcons.put("oofiles", new ImageIcon(ico));
-			/*
-			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "oofiles")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH);
-			hmSysIcons.put("ootabelle", new ImageIcon(ico));
-			*/
+
 			ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", "kleinehilfe")).getImage().getScaledInstance(14,14, Image.SCALE_SMOOTH);
 			hmSysIcons.put("kleinehilfe", new ImageIcon(ico));
 			
@@ -1055,6 +1069,7 @@ public class SystemConfig {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+		*/
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");
 
