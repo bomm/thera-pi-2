@@ -138,7 +138,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 
 		builder.addLabel("gültig ab",cc.xy(1,5));
 		gueltig = new JRtaTextField("DATUM",true);
-		gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()));
+		gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[1].getSelectedIndex()));
 		builder.add(gueltig, cc.xy(3,5));
 
 		builder.addLabel("Anwendungsregel",cc.xyw(4,5,4,CellConstraints.RIGHT,CellConstraints.CENTER));
@@ -454,6 +454,13 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			}
 			modpreis.addRow((Vector)vec.clone());
 		}
+		if(SystemConfig.vNeuePreiseAb.get(jcmb[1].getSelectedIndex()).equals("")){
+			gueltig.setText("  .  .    ");
+			System.out.println("Gültigkeitsdatum nicht angegeben");
+		}else{
+			gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[1].getSelectedIndex()));			
+		}
+
 		preislisten.validate();
 		
 		

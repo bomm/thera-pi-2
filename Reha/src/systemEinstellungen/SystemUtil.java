@@ -390,8 +390,12 @@ private JScrollPane getParameterListe(){
 	node = new DefaultMutableTreeNode( "Preislisten");
 	treeitem = new DefaultMutableTreeNode("Heilmittelkatalog einlesen");
 	node.add(treeitem ); 
+	treeitem = new DefaultMutableTreeNode("Tarifgruppen bearbeiten");
+	node.add(treeitem );
 	treeitem = new DefaultMutableTreeNode("Preislisten bearbeiten");
-	node.add(treeitem ); 
+	node.add(treeitem );
+	treeitem = new DefaultMutableTreeNode("Anwendungsregeln bearbeiten");
+	node.add(treeitem );
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Fortlaufender Nummernkreis");
@@ -745,7 +749,26 @@ private void auswertenSysUtil(String util){
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
-		
+		if(util.equals("Anwendungsregeln bearbeiten")){
+			jxInhaltRechts = new SysUtilPreisregeln();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
+		if(util.equals("Tarifgruppen bearbeiten")){
+			jxInhaltRechts = new SysUtilTarifgruppen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
+
+				
 		
 		jxInhaltRechts = new SysUtilVorlage();
 		jxInhaltRechts.setVisible(true);
