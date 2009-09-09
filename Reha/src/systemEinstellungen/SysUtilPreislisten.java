@@ -18,6 +18,7 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -241,7 +242,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run(){
 						String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
-						plEinlesen.setText("Verfügbare Preislisten für "+lists[jcmb[0].getSelectedIndex()]+" ermitteln");
+						plEinlesen.setText("<html>Verfügbare Preislisten für <b><font color='#ff0000'>"+lists[jcmb[0].getSelectedIndex()]+"</font></b> ermitteln");
 						jcmb[3].removeAllItems();
 						jcmb[3].addItem((String) jcmb[1].getSelectedItem());
 						jcmb[3].setEnabled(false);
@@ -303,6 +304,41 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 		if(cmd.equals("abbruch")){
 			//Position in lokaler Liste löschen
+		}
+		if(cmd.equals("uebernehmen")){
+			//Positionen der Tabelle übernehmen
+			doUebernahme();
+		}
+
+
+	}
+	private void doUebernahme(){
+		if(modserver.getRowCount()<=0){
+			JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
+					"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
+					"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
+			// dummer Spruch
+			return;
+		}
+		int row = plserver.getSelectedRow();
+		if(row < 0){
+			JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
+					"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
+					"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
+			// dummer Spruch			
+			return;
+		}
+		String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+		String msg = "<html><b><font color='#ff0000' size=+2>Bitte sorgfältig lesen!!!!</font></b><br><br><br>"+
+		"Die von Ihnen ausgewählte Disziplin ist: <b><font color='#ff0000'> "+lists[jcmb[0].getSelectedIndex()]+"</font></b><br><br>"+
+		"Die von Ihnen ausgewählte Tarifgruppe ist: <b><font color='#ff0000'> "+(String)jcmb[1].getSelectedItem()+"</font></b><br><br>"+
+		"In die o.g. Tarifgruppe werden die Preise übernommen von:<br>"+
+		"Preisliste: <b><font color='#ff0000'>"+plserver.getValueAt(row, 1)+"</font></b><br>"+
+		"Gültigkeitsbereich: <b><font color='#ff0000'>"+plserver.getValueAt(row, 2)+"</font></b><br><br><br>"+
+		"Wollen Sie den Preislisten-Import mit diesen Einstellungen durchführen<br><br></html>";
+		int frage = JOptionPane.showConfirmDialog(null,msg,"Achtung absolut wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+		if(frage != JOptionPane.YES_OPTION){
+			return;
 		}
 	}
 	private void testeAllepreise(String disziplin){
@@ -379,7 +415,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
 		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
 		ueber = new JButton("übernehmen");
-		ueber.setActionCommand("speichern");
+		ueber.setActionCommand("uebernehmen");
 		ueber.addActionListener(this);
 		zurueck = new JButton("zurueck");
 		zurueck.setActionCommand("zurueck");
