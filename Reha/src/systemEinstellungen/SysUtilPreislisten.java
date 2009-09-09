@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.DblCellEditor;
 import jxTableTools.DoubleTableCellRenderer;
+import jxTableTools.TableTool;
 import kvKarte.KVKWrapper;
 
 import org.jdesktop.swingx.JXPanel;
@@ -160,7 +161,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		preislisten.getColumn(4).setCellRenderer(new DoubleTableCellRenderer());
 		preislisten.getColumn(4).setCellEditor(new DblCellEditor());
 		preislisten.getColumn(4).setMaxWidth(50);
+		preislisten.setSortable(false);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(preislisten);
+		
 		jscr.validate();
 		new SwingWorker(){
 			@Override
@@ -269,14 +272,38 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			testeAllepreise(lists[jcmb[0].getSelectedIndex()]);
 		}
 		if(cmd.equals("plwahl")){
-			
 		}
-		
-		
-
-
-
-		
+		if(cmd.equals("hinzu")){
+			//neue Position in lokaler Liste
+			int row = preislisten.getRowCount();
+			Vector nvec = new Vector();
+			nvec.add("");
+			nvec.add("");
+			nvec.add("");
+			nvec.add(new Double("0.00"));
+			nvec.add(new Double("0.00"));
+			modpreis.addRow((Vector) nvec.clone());
+			preislisten.scrollRowToVisible(row);
+			preislisten.setRowSelectionInterval(row, row);
+		}
+		if(cmd.equals("entfernen")){
+			//Position in lokaler Liste löschen
+			String msg = "Wenn Sie eine bestehende Position aus der Preisliste löschen werden evtl.\n"+
+			"Rezepte in der Historie nicht mehr korrekt dargestellt!\n\n"+
+			"Wollen Sie das ausgewählte Heilmittel wirklich aus der Preisliste löschen?\n";
+			int frage = JOptionPane.showConfirmDialog(null,msg, "Achtung - wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(frage != JOptionPane.YES_OPTION){
+				return;
+			}
+			int row = preislisten.getRowCount();
+			TableTool.loescheRow(preislisten, row);
+		}
+		if(cmd.equals("speichern")){
+			//Position in lokaler Liste löschen
+		}
+		if(cmd.equals("abbruch")){
+			//Position in lokaler Liste löschen
+		}
 	}
 	private void testeAllepreise(String disziplin){
 		List<String> pbundesweit =  Arrays.asList(new String[] {"VdEK","PBeaKK","BG","Beihilfe"});
@@ -308,6 +335,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 						modserver.addRow((Vector)vec2.clone());
 					}
 				}
+				plserver.setRowSelectionInterval(0,0);
 			}
 		
 		

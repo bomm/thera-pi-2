@@ -6,6 +6,7 @@ import generalSplash.RehaSplash;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -447,7 +448,17 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			} 
 			
 			if (cmd.equals("System Initialisierung")){
-				ProgLoader.SystemInitialisierung();
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						ProgLoader.SystemInitialisierung();
+						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						return null;
+					}
+					
+				}.execute();
+
 				/*SystemUtil sysUtil = new SystemUtil(Reha.thisFrame);
 				sysUtil.setSize(800,600);
 				sysUtil.setLocation(100,75);
@@ -457,16 +468,40 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			}
 			
 			if (cmd.equals("Krankenkassen")){
-				ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						return null;
+					}
+				}.execute();
 				break;
 			}
 			
 			if (cmd.equals("Terminkalender starten")){
-				ProgLoader.ProgTerminFenster(1,0);
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						ProgLoader.ProgTerminFenster(1,0);
+						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						return null;
+					}
+				}.execute();
 				break;
 			}
 			if (cmd.equals("Arztstamm")){
-				ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						return null;
+					}
+				}.execute();
 				break;
 			}
 			if (cmd.equals("Wochenarbeitszeiten definieren")){
@@ -543,7 +578,15 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("Patienten und Rezepte")){
-				ProgLoader.ProgPatientenVerwaltung(1);
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						ProgLoader.ProgPatientenVerwaltung(1);
+						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						return null;
+					}
+				}.execute();
 				break;
 			}
 			if (cmd.equals("piHelp")){

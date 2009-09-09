@@ -34,6 +34,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.BorderLayout;
@@ -1022,7 +1023,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				    		  bunker.setText("TERMDATEXT°"+new String(copyLabel.getText()));
 				    		  e.dropComplete(true);
 				    		  return;
+				    	  }else if(labs[0].contains("PATDAT")){
+				    		  copyLabel.setText("");
+				    		  bunker.setText("");
+				    		  e.dropComplete(true);
 				    	  }else{
+				    		  copyLabel.setText("");
 				    		  bunker.setText("");
 				    		  e.dropComplete(true);
 				    		  return;
@@ -1613,14 +1619,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                          }
                     if(keyEvent.isControlDown() &&
                        keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==80) {  // Ctrl-P
-                       	JComponent patfenster = AktiveFenster.getFensterAlle("Patientenverwaltung");
-						ProgLoader.ProgPatientenVerwaltung(1);
-    					if(patfenster == null){
-
-    						//patfenster.requestFocus();
-    					}else{
-    						//patfenster.requestFocus();
-  						}
+        				new SwingWorker<Void,Void>(){
+        					@Override
+        					protected Void doInBackground() throws Exception {
+        						JComponent patfenster = AktiveFenster.getFensterAlle("Patientenverwaltung");
+        						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        						ProgLoader.ProgPatientenVerwaltung(1);
+        						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        						return null;
+        					}
+        				}.execute();
                         System.out.println("Strg+P gedrückt: "+event);
                     }
                     if(keyEvent.isAltDown() &&
@@ -1661,15 +1669,23 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
-        					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
-        					System.out.println("Krankenkassen einlesen");
-       						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+    					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
+    					System.out.println("Krankenkassen einlesen");
+   						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
-        					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
-        					System.out.println("Arzt-Stamm einlesen");
-       						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+            				new SwingWorker<Void,Void>(){
+            					@Override
+            					protected Void doInBackground() throws Exception {
+                					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
+                					System.out.println("Arzt-Stamm einlesen");
+            						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+               						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+            						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            						return null;
+            					}
+            				}.execute();
                     }
                     
                     if(keyEvent.isControlDown() &&

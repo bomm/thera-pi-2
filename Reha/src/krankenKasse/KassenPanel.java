@@ -98,6 +98,7 @@ import events.RehaTPEventListener;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.KasseTools;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SysUtilDruckvorlage;
 import systemEinstellungen.SystemConfig;
@@ -675,6 +676,15 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			String sid = new Integer((String) kassentbl.getValueAt(row, 7)).toString();
 			new HoleText(this,sid);
 			ta.setCaretPosition(0);
+			final String xsid = sid;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					KasseTools.constructKasseHMap(xsid);
+					return null;
+				}
+				
+			}.execute();
 		}
 	}
 	public void setMemo(String text){
@@ -714,24 +724,23 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
     		final String xid = sid;
     		if(iformular >= 0){
     			new SwingWorker<Void,Void>(){
-
 					@Override
 					protected Void doInBackground() throws Exception {
+						try{
+						/*
 						List<String> nichtlesen = Arrays.asList(new String[] {""});
 						Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,kassen_nam2,strasse,plz,ort", "id='"+xid+"'", new ArrayList());
 						SystemConfig.hmAdrKDaten.put("<Kadr1>", ((String) vec.get(0)).trim());
 						SystemConfig.hmAdrKDaten.put("<Kadr2>", ((String)vec.get(1)).trim());
 						SystemConfig.hmAdrKDaten.put("<Kadr3>", ((String)vec.get(2)).trim());
 						SystemConfig.hmAdrKDaten.put("<Kadr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
-						/*
-						SystemConfig.hmAdrKDaten.put("<KAdr1>", StringTools.EGross(((String) vec.get(0)).trim()));
-						SystemConfig.hmAdrKDaten.put("<KAdr2>", StringTools.EGross(((String)vec.get(1)).trim()));
-						SystemConfig.hmAdrKDaten.put("<KAdr3>", StringTools.EGross(((String)vec.get(2)).trim()));
-						SystemConfig.hmAdrKDaten.put("<KAdr4>", StringTools.EGross(  ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim() ) );
 						*/
 						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 						//ladeSchreiben(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
 						// TODO Auto-generated method stub
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
 						return null;
 					}
     			}.execute();

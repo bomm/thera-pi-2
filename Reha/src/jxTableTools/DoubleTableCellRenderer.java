@@ -15,9 +15,9 @@ public class DoubleTableCellRenderer extends DefaultTableCellRenderer
 			if(value instanceof Double){
 				Double d = (Double) value;
 				setText(String.format("%.2f", d));
-				}else{
+			}else{
 				setText(value.toString());
-				}
+			}
 			return this;
 	}
 }

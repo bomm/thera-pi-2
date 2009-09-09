@@ -118,15 +118,25 @@ public class OOTools {
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
+			for(int y = 0 ; y < placeholders.length;y++){
+				System.out.println(placeholders[y].getDisplayText());
+			}
+			System.out.println("************feddisch mit den Placeholders********************");
 		} catch (TextException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String placeholderDisplayText = "";
 		for (int i = 0; i < placeholders.length; i++) {
 			boolean loeschen = false;
 			boolean schonersetzt = false;
-			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			System.out.println(placeholderDisplayText);	
+			try{
+				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+				System.out.println(placeholderDisplayText);
+			}catch(com.sun.star.uno.RuntimeException ex){
+				ex.printStackTrace();
+			}
+	
 		    /*****************/			
 			Set entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator it = entries.iterator();
@@ -182,6 +192,11 @@ public class OOTools {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  System.out.println("Gefunden ->"+((String)entry.getValue()));
+		    	  try{
+		    		  
+		    	  }catch(com.sun.star.uno.RuntimeException ex){
+		    		  System.out.println("Fehler bei AdrRDaten");
+		    	  }
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
