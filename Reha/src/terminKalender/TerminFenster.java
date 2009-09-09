@@ -1058,10 +1058,52 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						if (e.getKeyCode()==113){
 							//F2
+							long zeit = System.currentTimeMillis();
+							boolean grobRaus = false;
+							while(wartenAufReady){
+								try {
+									Thread.sleep(20);
+									if( (System.currentTimeMillis()-zeit) > 1500){
+										grobRaus = true;
+										break;
+									}
+								} catch (InterruptedException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+							}
+							if(!grobRaus){
+								//System.out.println("grobRaus = "+grobRaus);
+								wartenAufReady = true;
+								datenAusSpeicherHolen();								
+							}else{
+								wartenAufReady = false;						
+								//System.out.println("grobRaus = "+grobRaus);
+							}
+							shiftGedrueckt = false;
+							gruppierenAktiv = false;
+							gruppierenBloecke[0] = -1;
+							gruppierenBloecke[1] = -1;	
+							oSpalten[gruppierenSpalte].setInGruppierung(false);
+							oSpalten[tspalte].requestFocus();							
 							break;
 						}
 						if (e.getKeyCode()==114){
 							//F3 = Daten in Speicher nehmen
+							int xaktBehandler  = -1;
+							datenInSpeicherNehmen();
+							if(terminVergabe.size() > 0){
+								terminVergabe.clear();
+							}
+							if(ansicht == NORMAL_ANSICHT){
+								xaktBehandler = belegung[aktiveSpalte[2]];
+							}else  if(ansicht == WOCHEN_ANSICHT){
+								xaktBehandler = aktiveSpalte[2]; 
+							}else  if(ansicht == MASKEN_ANSICHT){
+								xaktBehandler = aktiveSpalte[2];
+							}
+							terminAufnehmen(xaktBehandler,aktiveSpalte[0]);
+
 							break;
 						}
 						if ((e.getKeyCode()==118) && (e.isAltDown()) && (e.isShiftDown())){
