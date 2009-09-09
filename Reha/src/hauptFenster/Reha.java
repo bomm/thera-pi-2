@@ -898,7 +898,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        //jXStatusBar.getLayout().addLayoutComponent("bar", bar);
 
 			
-			/******************************************/
+			/*************1 Container*****************************/
 			JXPanel bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -912,7 +912,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar.add(bar2);
 			sbkomplett.add(bar,sbcc.xy(2, 2));
 
-			/******************************************/
+			/*************2 Container*****************************/
 
 			FlowLayout flay = new FlowLayout(FlowLayout.LEFT);
 			flay.setVgap(1);
@@ -933,7 +933,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar.add(bar2);
 			sbkomplett.add(bar,sbcc.xy(4, 2));
 			
-			/******************************************/
+			/**************3 Container****************************/
 			
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
@@ -948,7 +948,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(6, 2));
 
-			/******************************************/
+			/**************4 Container****************************/
 	        
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
@@ -963,7 +963,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(8, 2));
 	        
-			/******************************************/
+			/***************5 Container***************************/
 	        
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
