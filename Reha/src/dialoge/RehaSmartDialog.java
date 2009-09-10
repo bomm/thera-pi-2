@@ -87,7 +87,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 		
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
-		//super(owner);
+		//super(owner,null);
 		this.name = name;
 		this.setName(name);
 		setName(name);

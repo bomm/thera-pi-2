@@ -171,9 +171,11 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 				wert = SystemConfig.vPreisGruppen.get(i);
 				vec.add(wert);
 				vec.add(zzregel[SystemConfig.vZuzahlRegeln.get(i)]);
-				wert = SystemConfig.vNeuePreiseAb.get(i);
+				//abprüfen welche Disziplin!!!!
+				wert = SystemConfig.vNeuePreiseAb.get(0).get(i);
 				vec.add(wert);
-				vec.add(zzart[SystemConfig.vNeuePreiseRegel.get(i)]);
+				//abprüfen welche Disziplin!!!!
+				vec.add(zzart[SystemConfig.vNeuePreiseRegel.get(0).get(i)]);
 				modtarife.addRow((Vector)vec.clone());
 			}
 			tarife.validate();
@@ -477,17 +479,20 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 			inif.setIntegerProperty("ZuzahlRegeln", "ZuzahlRegel"+(i+1),zzreg , null);
 			
 			//Preisveränderung-einstellen
+			/**********
+			 * Abprüfen welche Disziplin
+			 */
 			swert = new String((String) tarife.getValueAt(i, 2));
 			if(swert.equals(".  .")){
 				swert="";
 			}
-			SystemConfig.vNeuePreiseAb.set(i, swert);
+			((Vector)SystemConfig.vNeuePreiseAb.get(0)).set(i, swert);
 			inif.setStringProperty("PreisGruppen", "NeuePreiseAb"+(i+1),swert , null);
 			
 			//Splittingregel-einstellen
 			swert = new String((String) tarife.getValueAt(i, 3));
 			zzreg = stringPosErmitteln(zzart,swert);
-			SystemConfig.vNeuePreiseRegel.set(i, zzreg);
+			((Vector)SystemConfig.vNeuePreiseRegel.get(0)).set(i, zzreg);
 			inif.setIntegerProperty("PreisGruppen", "NeuePreiseRegel"+(i+1),zzreg , null);
 			
 		}

@@ -111,8 +111,8 @@ public class SystemConfig {
 	
 	public static Vector<String> vPreisGruppen;
 	public static Vector<Integer> vZuzahlRegeln;
-	public static Vector<String> vNeuePreiseAb;
-	public static Vector<Integer> vNeuePreiseRegel;
+	public static Vector <Vector<String>> vNeuePreiseAb;
+	public static Vector<Vector<Integer>> vNeuePreiseRegel;
 	public static Vector<Vector<String>> vHBRegeln;
 	public static Vector<String> vBerichtRegeln;
 	public static Vector<String> vPatMerker = null;
@@ -594,17 +594,19 @@ public class SystemConfig {
 		int tarife = inif.getIntegerProperty("PreisGruppen", "AnzahlPreisGruppen");
 		vPreisGruppen = new Vector<String>() ;
 		vZuzahlRegeln = new Vector<Integer>();
-		vNeuePreiseAb = new Vector<String>();
-		vNeuePreiseRegel = new Vector<Integer>();
+		vNeuePreiseAb = new Vector<Vector<String>>();
+		vNeuePreiseRegel = new Vector<Vector<Integer>>();
 		vHBRegeln = new Vector<Vector<String>>();
 		vBerichtRegeln = new Vector<String>();
 		//xxx
+
 		Vector<String> vec = new Vector<String>();
+
 		for(int i = 1; i <= tarife; i++){
 			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
-			vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
-			vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
+			//vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
+			//vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}
 		tarife = inif.getIntegerProperty("HBRegeln", "AnzahlHBRegeln");
 		for(int i = 1; i <= tarife; i++){
@@ -620,6 +622,24 @@ public class SystemConfig {
 		for(int i = 1; i <= tarife; i++){
 			vBerichtRegeln.add( inif.getStringProperty("BerichtRegeln","Bericht1"+i) );
 		}
+		String[] diszis = {"Physio","Massage","Ergo","Logo","REHA"};
+		tarife = inif.getIntegerProperty("PreisRegeln", "PreisRegelAnzahl");
+		Integer iregel;
+		Vector<String> vpreisab = new Vector<String>();
+		Vector<Integer> vpreisreg = new Vector<Integer>();		
+		for(int d = 0 ; d < diszis.length; d++){
+			vpreisab.clear();
+			vpreisreg.clear();
+			for(int i = 1; i <= tarife; i++){
+				vpreisab.add(inif.getStringProperty("PreisRegeln","Preis"+diszis[d]+"Ab"+i));
+				iregel = inif.getIntegerProperty("PreisRegeln","Preis"+diszis[d]+"Regel"+i);
+				vpreisreg.add( ( (iregel != null) ? iregel : 0) );				
+			}
+			vNeuePreiseAb.add((Vector<String>)vpreisab.clone());
+			vNeuePreiseRegel.add((Vector<Integer>)vpreisreg.clone());
+		}
+		System.out.println(vNeuePreiseAb);
+		System.out.println(vNeuePreiseRegel);
 
 	}
 	public static void HashMapsVorbereiten(){
