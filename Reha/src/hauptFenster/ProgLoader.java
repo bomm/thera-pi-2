@@ -345,7 +345,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 		PatGrundPanel.thisClass.setzeFocus();
 		return;
 	}
-	
+	Reha.thisClass.Rehaprogress.setIndeterminate(true);
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	String name = "PatientenVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Patient");
@@ -371,6 +371,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 
 		public  void run(){
 			jrx.setzeSuche();
+			Reha.thisClass.Rehaprogress.setIndeterminate(false);
 /*
 			long zeit = System.currentTimeMillis();
 	 		   while(!PatGrundPanel.thisClass.sucheHatFocus()){
@@ -389,7 +390,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	*/ 		   
 	 	   }
 	}); 	   
-	
+
 
 	return; 
 

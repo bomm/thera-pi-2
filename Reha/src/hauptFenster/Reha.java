@@ -308,6 +308,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean iconsOk = false;
 	public static ImageIcon rehaBackImg = null;
 	public JLabel bunker = null;
+	public JProgressBar Rehaprogress = null;
 	
 	
 	/**************************/
@@ -956,10 +957,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-	        final JLabel capslockLabel = new JLabel(" ");
-	        capslockLabel.setVerticalAlignment(SwingConstants.CENTER);
-	        capslockLabel.setHorizontalAlignment(SwingConstants.LEFT);
-	        bar2.add(capslockLabel);
+	        Rehaprogress = new JProgressBar();
+	        Rehaprogress.setIndeterminate(true);
+	        Rehaprogress.setBorder(null);
+	        Rehaprogress.setBorderPainted(false);
+	        //final JLabel capslockLabel = new JLabel(" ");
+	        //capslockLabel.setVerticalAlignment(SwingConstants.CENTER);
+	        //capslockLabel.setHorizontalAlignment(SwingConstants.LEFT);
+	        //bar2.add(capslockLabel);
+	        bar2.add(Rehaprogress);
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(8, 2));
 	        
@@ -1543,6 +1549,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             		System.out.println("OpenOffice -> Aufruf");
             		//LinkeTaskPane.berichtTest(false);   
             		//LinkeTaskPane.terminTest(false);
+            		Reha.thisClass.Rehaprogress.setIndeterminate(false);
             		try{
             			
             		if (Reha.officeapplication.getDocumentService().getCurrentDocuments()[0] != null){

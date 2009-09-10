@@ -4,6 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
@@ -50,6 +51,7 @@ import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.PreisUpdate;
 import terminKalender.ParameterLaden;
+import terminKalender.datFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -158,7 +160,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		plServer.addActionListener(this);
 		builder.add(plServer,cc.xyw(3,7,7));
 		
-		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt"});
+		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
 		preislisten = new JXTable(modpreis);
 		preislisten.getColumn(0).setMaxWidth(65);
 		preislisten.getColumn(1).setMaxWidth(65);
@@ -168,6 +170,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		preislisten.getColumn(4).setCellRenderer(new DoubleTableCellRenderer());
 		preislisten.getColumn(4).setCellEditor(new DblCellEditor());
 		preislisten.getColumn(4).setMaxWidth(50);
+		preislisten.getColumn(5).setMinWidth(0);
+		preislisten.getColumn(5).setMaxWidth(0);
 		preislisten.setSortable(false);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(preislisten);
 		
@@ -264,15 +268,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			
 		}
 		if(cmd.equals("zurueck")){
-			SwingUtilities.invokeLater(new Runnable(){
-			 	   public  void run(){
-						remove(plupdate);
-						pledit.validate();
-						add(pledit,BorderLayout.CENTER);
-						validate();
-						repaint();						
-			 	   }
-			});
+			doZurueck();
 		}
 		if(cmd.equals("pleinlesen")){
 			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
@@ -313,10 +309,33 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 		if(cmd.equals("uebernehmen")){
 			//Positionen der Tabelle übernehmen
-			doUebernahme();
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						doUebernahme();	
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+				
+			}.execute();
+
 		}
 
 
+	}
+	private void doZurueck(){
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+					remove(plupdate);
+					pledit.validate();
+					add(pledit,BorderLayout.CENTER);
+					validate();
+					repaint();						
+		 	   }
+		});
 	}
 	private void doUebernahme(){
 		if(modserver.getRowCount()<=0){
@@ -346,7 +365,109 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(frage != JOptionPane.YES_OPTION){
 			return;
 		}
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisClass.Rehaprogress.setIndeterminate(true);
+		doSetzeNeuAufAlt();
+		Vector preis = doHolePreiseNeu();
+		setzePreise(preis);
+		doZurueck();
+		Reha.thisClass.Rehaprogress.setIndeterminate(false);
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
+	private void setzePreise(Vector preis){
+		Vector tab = modpreis.getDataVector();
+		System.out.println(preis);
+		boolean mitbezeich = bezeich.isSelected();
+		String posnr;
+		int bisheranzahl;
+		boolean getroffen = false;
+		for(int i = 0; i < preis.size();i++){
+			bisheranzahl = this.modpreis.getRowCount();
+			posnr = ((String)((Vector)preis.get(i)).get(0)).trim();
+			getroffen = false;
+			for(int b = 0; b < bisheranzahl; b++){
+				if( ((String)((Vector)tab.get(b)).get(0)).trim().equals(posnr.trim())){
+					getroffen = true;
+					modpreis.setValueAt(new Double(((String)((Vector)preis.get(i)).get(1))), b, 3);
+					if(mitbezeich){
+						modpreis.setValueAt(((String)((Vector)preis.get(i)).get(3)), b, 2);						
+					}
+				}
+			}
+			if(!getroffen){
+				preisAufnahme(getroffen,preis,i);
+				getroffen = true;;
+			}
+
+		}
+		if(preis.size()> 0){
+			int aktrow = plserver.getSelectedRow(); 
+			String datum = (String)plserver.getValueAt(aktrow,3);
+			gueltig.setText(datum);			
+		}
+ 
+		
+	}
+	private void preisAufnahme(boolean getroffen,Vector preis,int i){
+		if(!getroffen && (jradio[1].isSelected() || jradio[2].isSelected())){
+			if(jradio[1].isSelected()){
+				String msg = "<html>Die Position <b><font color='#ff0000'>"+((String)((Vector)preis.get(i)).get(0))+"</font></b> mit dem Langtext<br>"+"<b><font color='#ff0000'>"+
+				((String)((Vector)preis.get(i)).get(3))+"<br></font></b>ist in Ihrer Preisliste nicht vorhanden."+
+				"<br><br>Soll die Position in Ihre Preisliste aufgenommen werden?<br><br></html>";
+				int frage = JOptionPane.showConfirmDialog(null,msg,"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION );
+				if(frage == JOptionPane.YES_OPTION){
+					Vector xvec = new Vector();
+					xvec.add( ((String)((Vector)preis.get(i)).get(0)) );
+					xvec.add( "" );
+					xvec.add( ((String)((Vector)preis.get(i)).get(3)) );
+					xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
+					xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
+					xvec.add("-1" );						
+					modpreis.addRow(xvec);
+					return;
+				}else{
+					return;
+				}
+			}else{
+				Vector xvec = new Vector();
+				xvec.add( ((String)((Vector)preis.get(i)).get(0)) );
+				xvec.add( "" );
+				xvec.add( ((String)((Vector)preis.get(i)).get(3)) );
+				xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
+				xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
+				xvec.add("-1" );						
+				modpreis.addRow(xvec);
+			}
+		}
+		
+	}
+	
+	private Vector doHolePreiseNeu(){
+		int row = plserver.getSelectedRow();
+		String hmsparte = (String) plserver.getValueAt(row, 0);
+		String preisgruppe = (String) plserver.getValueAt(row, 1);
+		String bundesland = (String) plserver.getValueAt(row, 2);
+		if(bundesland.equals("bundesweit")){
+			bundesland = "./.";
+		}
+		String cmd = null;
+
+		cmd = "select posnr,preis,gueltigab,langtext from allepreise where disziplin='"+
+		hmsparte+"' AND buland='"+bundesland+"' AND preisgruppe='"+preisgruppe+"'"; 
+		
+		Vector vec =  SqlInfo.holeFelder(cmd);
+		return (Vector) vec.clone();
+		
+	}
+	private void doSetzeNeuAufAlt(){
+		int anzahl = modpreis.getRowCount();
+		double wert;
+		for(int i = 0; i < anzahl;i++){
+			wert = (Double)modpreis.getValueAt(i, 3);
+			modpreis.setValueAt(wert, i, 4);
+		}
+	}
+	
 	private void testeAllepreise(String disziplin){
 		List<String> pbundesweit =  Arrays.asList(new String[] {"VdEK","PBeaKK","BG","Beihilfe"});
 		Vector vec1 = null;
@@ -355,26 +476,41 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		String testpg = "";
 		String buland = "";
 		String preisgr = "";
+		String gueltig = "";
+		Vector vbuland = new Vector();
+		Vector vpreisgruppe = new Vector();
 		modserver.setRowCount(0);
-		vec1 = SqlInfo.holeFelder("select buland,preisgruppe from allepreise where disziplin='"+disziplin+"' ORDER BY buland");
+		vec1 = SqlInfo.holeFelder("select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe");
 		if(vec1.size()<= 0){
 				JOptionPane.showMessageDialog(null,"Bislang sind für -> "+disziplin+" <- keine Preislisten auf dem Server hinterlegt");
 		}else{
-				System.out.println("Größe des Vectors = "+vec1.size());
+				//System.out.println("Größe des Vectors = "+vec1.size());
 				//buland = ((String)((Vector)vec1.get(0)).get(0)).trim();
 				//preisgr = ((String)((Vector)vec1.get(0)).get(1)).trim();
+				//vbuland.add(buland);
+				//vpreisgruppe.add(preisgr);
 				int anzahl = vec1.size();
 				for(int y = 0; y < anzahl;y++){
 					testbuland  = ((String)((Vector)vec1.get(y)).get(0)).trim();
 					testpg  = ((String)((Vector)vec1.get(y)).get(1)).trim();
-					if( (!testbuland.equals(buland)) || (!testpg.equals(preisgr))){
-						vec2.clear();
+					vec2.clear();
+					if( (!vbuland.contains(testbuland)) || (!vpreisgruppe.contains(testpg))){
 						buland = ((String)((Vector)vec1.get(y)).get(0)).trim();
 						preisgr = ((String)((Vector)vec1.get(y)).get(1)).trim();
+						
 						vec2.add(disziplin);
 						vec2.add(preisgr);
 						vec2.add( (pbundesweit.contains(preisgr) ? "bundesweit" : buland)  );
+						try{
+							gueltig = datFunk.sDatInDeutsch( ((String)((Vector)vec1.get(y)).get(2)).trim() );
+							vec2.add( gueltig );
+						}catch(Exception ex){
+							vec2.add(datFunk.sHeute());
+						}
 						modserver.addRow((Vector)vec2.clone());
+						vbuland.add(buland);
+						vpreisgruppe.add(preisgr);
+						
 					}
 				}
 				plserver.setRowSelectionInterval(0,0);
@@ -402,7 +538,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jcmb[3].setActionCommand("plwahl");
 		jcmb[3].addActionListener(this);
 		builder.add(jcmb[3],cc.xyw(3,3,7));
-		modserver.setColumnIdentifiers(new String[] {"HM-Sparte","Preisgruppe","Bundesland"});
+		modserver.setColumnIdentifiers(new String[] {"HM-Sparte","Preisgruppe","Bundesland","gueltig ab"});
 		plserver = new JXTable(modserver);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(plserver);
 		jscr.validate();
@@ -460,7 +596,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		int ipreis = jcmb[1].getSelectedIndex()+1;
 		int anzahl = preisvec.size();
 		modpreis.setRowCount(0);
+		//System.out.println("Preisvec = "+preisvec);
 		Vector vec = new Vector();
+		int idpos = 0;
+		if(anzahl > 0){
+			idpos = ((Vector)preisvec.get(0)).size()-1;
+		}
 		for(int i = 0;i < anzahl ; i++){
 			vec.clear();
 			vec.add( (String) ((Vector)preisvec.get(i)).get( 2+(ipreis*4)-4) );
@@ -476,6 +617,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			}catch(Exception ex){
 				vec.add(new Double(0.00));
 			}
+			vec.add( (String) ((Vector)preisvec.get(i)).get(idpos) );
 			modpreis.addRow((Vector)vec.clone());
 		}
 		if(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()).equals("")){
