@@ -388,13 +388,13 @@ private JScrollPane getParameterListe(){
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Preislisten");
+	/*
 	treeitem = new DefaultMutableTreeNode("Heilmittelkatalog einlesen");
-	node.add(treeitem ); 
+	node.add(treeitem );
+	*/ 
 	treeitem = new DefaultMutableTreeNode("Tarifgruppen bearbeiten");
 	node.add(treeitem );
-	treeitem = new DefaultMutableTreeNode("Preislisten bearbeiten");
-	node.add(treeitem );
-	treeitem = new DefaultMutableTreeNode("Anwendungsregeln bearbeiten");
+	treeitem = new DefaultMutableTreeNode("Preise bearbeiten/importieren");
 	node.add(treeitem );
 	root.add(node);
 	/***/
@@ -740,7 +740,7 @@ private void auswertenSysUtil(String util){
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
-		if(util.equals("Preislisten bearbeiten")){
+		if(util.equals("Preise bearbeiten/importieren")){
 			jxInhaltRechts = new SysUtilPreislisten();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);

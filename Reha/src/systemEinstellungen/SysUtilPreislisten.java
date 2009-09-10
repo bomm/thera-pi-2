@@ -478,7 +478,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			}
 			modpreis.addRow((Vector)vec.clone());
 		}
-		if(SystemConfig.vNeuePreiseAb.get(jcmb[1].getSelectedIndex()).equals("")){
+		if(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()).equals("")){
 			gueltig.setText("  .  .    ");
 			System.out.println("Gültigkeitsdatum nicht angegeben");
 		}else{
