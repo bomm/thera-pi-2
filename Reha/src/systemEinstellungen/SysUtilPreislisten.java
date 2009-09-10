@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -23,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
@@ -44,6 +46,7 @@ import systemEinstellungen.SysUtilKrankenkasse.MyVorlagenTableModel;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
+import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.PreisUpdate;
 import terminKalender.ParameterLaden;
@@ -61,6 +64,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 
 	JXTable preislisten = null;
 	MyPreislistenTableModel modpreis = new MyPreislistenTableModel();
+	JRtaRadioButton[] jradio = {null,null,null};
+	ButtonGroup jradiogroup = new ButtonGroup();
+
 	
 	JXTable plserver = null;
 	MyServerTableModel modserver = new MyServerTableModel();
@@ -378,10 +384,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		return;
 	}
 	
-	public JPanel getPlupdate(){
-		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 70dlu, 4dlu, 10dlu, 4dlu, 70dlu",
-			       //1.    2. 3.   4.   5.   6.  7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
-					"p, 2dlu, p, 2dlu, 160dlu,10dlu,p,5dlu,p");
+	public JPanel getPlupdate(){        //    1              2      3      4     5     6      7     8      9
+		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 7dlu, 4dlu, 70dlu, 4dlu,  0dlu, 4dlu, 70dlu",
+			       //1.    2. 3.   4.   5.     6.   7.  8. 9.10. 11.12. 13. 14.15. 16.17. 18.  19.   20.    21.   22.   23.
+					"p, 2dlu, p, 2dlu, 100dlu,10dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p");
 					
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -414,16 +420,34 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		bezeich = new JRtaCheckBox();
 		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
 		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
+		
+		//jradiogroup
+		jradio[0] = new JRtaRadioButton("nicht hinzufügen");
+		jradio[0].setHorizontalTextPosition(SwingConstants.LEFT);
+		jradiogroup.add(jradio[0]);
+		jradio[1] = new JRtaRadioButton("vorher nachfragen");
+		jradio[1].setHorizontalTextPosition(SwingConstants.LEFT);		
+		jradiogroup.add(jradio[1]);
+		jradio[2] = new JRtaRadioButton("automat. hinzufügen");
+		jradio[2].setHorizontalTextPosition(SwingConstants.LEFT);
+		jradiogroup.add(jradio[2]);
+		jradio[0].setSelected(true);
+		
+		builder.addLabel("Wenn sich in der Datenbank neue Positionen befinden",cc.xy(1, 9));
+		builder.add(jradio[0],cc.xyw(5,  9, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
+		builder.add(jradio[1],cc.xyw(5, 11, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
+		builder.add(jradio[2],cc.xyw(5, 13, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
+		
 		ueber = new JButton("übernehmen");
 		ueber.setActionCommand("uebernehmen");
 		ueber.addActionListener(this);
 		zurueck = new JButton("zurueck");
 		zurueck.setActionCommand("zurueck");
 		zurueck.addActionListener(this);
-		builder.addLabel("übernehmen?",cc.xy(1, 9));
-		builder.add(ueber,cc.xy(5,9));
-		builder.addLabel("Abbruch?", cc.xy(7, 9));
-		builder.add(zurueck,cc.xy(9,9));
+		builder.addLabel("übernehmen?",cc.xy(1, 17));
+		builder.add(ueber,cc.xy(5,17));
+		builder.addLabel("Abbruch?", cc.xy(7, 17));
+		builder.add(zurueck,cc.xy(9,17));
 		
 		return builder.getPanel();
 		
