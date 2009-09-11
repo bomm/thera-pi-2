@@ -63,7 +63,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaTextField gueltig = null;
 	JButton[] button = {null,null,null,null,null,null};
 	JButton plServer = null;
-
+	
 	JXTable preislisten = null;
 	MyPreislistenTableModel modpreis = new MyPreislistenTableModel();
 	JRtaRadioButton[] jradio = {null,null,null};
@@ -318,7 +318,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				@Override
 				protected Void doInBackground() throws Exception {
 					try{
-						doSpeichern();	
+						if(Reha.demoversion){
+							JOptionPane.showMessageDialog(null, "Die Funktion -> Preisliste speichern <- ist in der Entwicklungsversion von Thera-Pi deaktiviert!");
+							return null;
+						}else{
+							doSpeichern();							
+						}
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
