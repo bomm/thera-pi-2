@@ -734,6 +734,37 @@ public class SqlInfo {
 		return ret;
 	}
 /*****************************************/
+	public static void sqlAusfuehren(String sstmt){
+		boolean geklappt = false;
+		Statement stmt = null;
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			geklappt =  stmt.execute(sstmt);
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return;
+	}
+
 
 
 }

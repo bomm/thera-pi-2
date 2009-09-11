@@ -86,7 +86,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JButton zurueck = null;
 	JButton ueber = null;
 	JRtaCheckBox bezeich = null;
-	
+	JRtaCheckBox neuaufalt = null;
+	Vector<String> delvec = new Vector<String>();
+	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};	
 	
 	public SysUtilPreislisten(){
 		super(new BorderLayout());
@@ -246,6 +248,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
 		if(cmd.equals("tabelleRegeln")){
+			delvec.clear();
 			tabelleRegeln();
 		}
 		if(cmd.equals("plUpdate")){
@@ -285,6 +288,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			nvec.add("");
 			nvec.add(new Double("0.00"));
 			nvec.add(new Double("0.00"));
+			nvec.add("-1");
 			modpreis.addRow((Vector) nvec.clone());
 			preislisten.scrollRowToVisible(row);
 			preislisten.setRowSelectionInterval(row, row);
@@ -298,14 +302,35 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			if(frage != JOptionPane.YES_OPTION){
 				return;
 			}
-			int row = preislisten.getRowCount();
+			int row = preislisten.getSelectedRow();
+			if(row < 0){
+				return;
+			}
+			String sid = (String) preislisten.getValueAt(row,5);
+			if(!sid.equals("-1")){
+				delvec.add(sid);
+			}
 			TableTool.loescheRow(preislisten, row);
 		}
 		if(cmd.equals("speichern")){
 			//Position in lokaler Liste löschen
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						doSpeichern();	
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+			}.execute();
+
 		}
 		if(cmd.equals("abbruch")){
 			//Position in lokaler Liste löschen
+			SystemUtil.abbrechen();
+			SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(cmd.equals("uebernehmen")){
 			//Positionen der Tabelle übernehmen
@@ -325,6 +350,54 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 
 
+	}
+	private void doSpeichern(){
+		// in die Datenbank schreiben
+		// in den Vector schreiben
+		// Gültig ab erneuern
+		// Anwendungsregel erneuern
+		//{"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
+		Reha.thisClass.Rehaprogress.setIndeterminate(true);
+		int anzahl = modpreis.getRowCount();
+		String hmpos,kurz,lang,akt,alt,sid;
+		String sdb = dbtarife[jcmb[0].getSelectedIndex()];
+		String gruppe = new Integer(jcmb[1].getSelectedIndex()+1).toString();
+		String cmd;
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		for(int i = 0; i < anzahl; i++){
+			hmpos = (String)modpreis.getValueAt(i,0);
+			kurz = (String)modpreis.getValueAt(i,1);
+			lang = (String)modpreis.getValueAt(i,2);
+			akt = new Double((Double)modpreis.getValueAt(i,3)).toString().replaceAll(",", ".");
+			alt = new Double((Double)modpreis.getValueAt(i,4)).toString().replaceAll(",", ".");
+			sid = (String)modpreis.getValueAt(i,5);
+			if(sid.equals("-1")){
+				// neu
+				cmd = "insert into "+sdb+" set leistung='"+lang+"', kuerzel='"+kurz+"', T"+gruppe+"_POS='"+
+				hmpos+"', T"+gruppe+"_AKT='"+akt+"', T"+gruppe+"_ALT='"+alt+"', T"+gruppe+"_PROZ='0.00'";
+				System.out.println(cmd);
+				//SqlInfo.sqlAusfuehren(cmd);
+				
+			}else{
+				// bestehend
+				cmd = "update "+sdb+" set leistung='"+lang+"', kuerzel='"+kurz+"', T"+gruppe+"_POS='"+
+				hmpos+"', T"+gruppe+"_AKT='"+akt+"', T"+gruppe+"_ALT='"+alt+"', T"+gruppe+"_PROZ='0.00' where id='"+
+				sid+"'";
+				//System.out.println(cmd);
+				SqlInfo.sqlAusfuehren(cmd);
+			}
+
+		}
+		if(delvec.size()>0){
+			for(int i = 0;i < delvec.size();i++){
+				cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+			}
+		}
+		String[] diszi = {"KG","MA","ER","LO","RH"};
+		ParameterLaden.PreiseEinlesen(diszi[jcmb[0].getSelectedIndex()]);
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		Reha.thisClass.Rehaprogress.setIndeterminate(false);
 	}
 	private void doZurueck(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -367,7 +440,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		Reha.thisClass.Rehaprogress.setIndeterminate(true);
-		doSetzeNeuAufAlt();
+		if(neuaufalt.isSelected()){
+			doSetzeNeuAufAlt();			
+		}
 		Vector preis = doHolePreiseNeu();
 		setzePreise(preis);
 		doZurueck();
@@ -522,8 +597,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	
 	public JPanel getPlupdate(){        //    1              2      3      4     5     6      7     8      9
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 7dlu, 4dlu, 70dlu, 4dlu,  0dlu, 4dlu, 70dlu",
-			       //1.    2. 3.   4.   5.     6.   7.  8. 9.10. 11.12. 13. 14.15. 16.17. 18.  19.   20.    21.   22.   23.
-					"p, 2dlu, p, 2dlu, 100dlu,10dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p");
+			       //1.    2. 3.   4.   5.     6.   7.  8. 9.10. 11.12. 13. 14.15. 16.17. 18. 19.   20.    21.   22.   23.
+					"p, 2dlu, p, 2dlu, 100dlu,10dlu,p,2dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p");
 					
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -556,7 +631,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		bezeich = new JRtaCheckBox();
 		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
 		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
-		
+		builder.addLabel("Bisher aktuelle Preise auf 'Alte-Preise' üßbertragen?",cc.xyw(1, 9, 8));
+		neuaufalt = new JRtaCheckBox();
+		neuaufalt.setSelected(true);
+		builder.add(neuaufalt,cc.xy(9, 9,CellConstraints.RIGHT,CellConstraints.BOTTOM));
 		//jradiogroup
 		jradio[0] = new JRtaRadioButton("nicht hinzufügen");
 		jradio[0].setHorizontalTextPosition(SwingConstants.LEFT);
@@ -569,10 +647,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jradiogroup.add(jradio[2]);
 		jradio[0].setSelected(true);
 		
-		builder.addLabel("Wenn sich in der Datenbank neue Positionen befinden",cc.xy(1, 9));
-		builder.add(jradio[0],cc.xyw(5,  9, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
-		builder.add(jradio[1],cc.xyw(5, 11, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
-		builder.add(jradio[2],cc.xyw(5, 13, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
+		builder.addLabel("Wenn sich in der Datenbank neue Positionen befinden",cc.xy(1, 11));
+		builder.add(jradio[0],cc.xyw(5, 11, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
+		builder.add(jradio[1],cc.xyw(5, 13, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
+		builder.add(jradio[2],cc.xyw(5, 15, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
 		
 		ueber = new JButton("übernehmen");
 		ueber.setActionCommand("uebernehmen");
@@ -580,10 +658,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		zurueck = new JButton("zurueck");
 		zurueck.setActionCommand("zurueck");
 		zurueck.addActionListener(this);
-		builder.addLabel("übernehmen?",cc.xy(1, 17));
-		builder.add(ueber,cc.xy(5,17));
-		builder.addLabel("Abbruch?", cc.xy(7, 17));
-		builder.add(zurueck,cc.xy(9,17));
+		builder.addLabel("übernehmen?",cc.xy(1, 19));
+		builder.add(ueber,cc.xy(5,19));
+		builder.addLabel("Abbruch?", cc.xy(7, 19));
+		builder.add(zurueck,cc.xy(9,19));
 		
 		return builder.getPanel();
 		
