@@ -262,7 +262,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public boolean initok = false;
 	public boolean splashok = false;
 	
-	public static boolean demoversion = true;
+
 
 	public RehaSmartDialog splash = null;
 	
@@ -312,7 +312,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public JLabel bunker = null;
 	public JProgressBar Rehaprogress = null;
 	
-	
+	public static boolean demoversion = true;
 	/**************************/
 	public JXPanel desktop = null;
 	//  
@@ -1677,24 +1677,18 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                      	*/
                     }
                     if(keyEvent.isControlDown() &&
-                            keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
+                    		keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
     					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
     					System.out.println("Krankenkassen einlesen");
    						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
-            				new SwingWorker<Void,Void>(){
-            					@Override
-            					protected Void doInBackground() throws Exception {
-                					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
-                					System.out.println("Arzt-Stamm einlesen");
-            						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-               						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
-            						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            						return null;
-            					}
-            				}.execute();
+    					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
+    					System.out.println("Arzt-Stamm einlesen");
+						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+   						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }
                     
                     if(keyEvent.isControlDown() &&

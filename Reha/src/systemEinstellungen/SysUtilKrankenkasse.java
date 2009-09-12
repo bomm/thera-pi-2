@@ -163,6 +163,8 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 			*/
 			//vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 			//vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
+
+			/*
 			int lang = SystemConfig.vPreisGruppen.size();
 			vec = new Vector<String>();
 			String wert = "";
@@ -179,14 +181,13 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 				modtarife.addRow((Vector)vec.clone());
 			}
 			tarife.validate();
+			*/
 			
 
 	}
 		
 
 	private JPanel getKnopfPanel(){
-		
-		
 		button[5] = new JButton("abbrechen");
 		button[5].setActionCommand("abbrechen");
 		button[5].addActionListener(this);
@@ -232,7 +233,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		button[4] = new JButton("hinzufügen");
 		button[4].setActionCommand("neuvorlage");
 		button[4].addActionListener(this);
-		
+		/*
 		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","Neue Preise ab","Anwendungsregel"});
 		tarife = new JXTable(modtarife);
 		TableColumn zuzahlColumn = tarife.getColumnModel().getColumn(1);
@@ -248,7 +249,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		neuPreisDat.setCellEditor(new DateTableCellEditor());
 		//neuPreisDat.setCellEditor(new DatumTableCellEditor());
 		tarife.setSortable(false);
-		
+		*/
 		modvorlagen.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});
 		vorlagen = new JXTable(modvorlagen);
 		vorlagen.addMouseListener(new MouseAdapter(){
@@ -282,7 +283,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
         //                                      1.            2.     3.     4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 40dlu",
        //1.    2. 3.   4.  5.   6.   7.   8.     9.    10.  11.    12.   13.  14.   15.   16.    17.   18.  19.  20.    21.    22.   23.   24     25    26    27  28   29
-		"p, 2dlu, p, 10dlu,p, 10dlu, p, 10dlu, 80dlu, 0dlu, 0dlu,  0dlu, 0dlu, 0dlu, 0dlu, 0dlu, 0dlu, 10dlu, p, 10dlu, 80dlu, 2dlu, p , 2dlu , 0dlu, 0dlu, p, 0dlu, p");
+		"p, 2dlu, p, 10dlu,p, 10dlu, p, 10dlu, 0dlu, 0dlu, 0dlu,  0dlu, 0dlu, 0dlu, 0dlu, 0dlu, 0dlu, 10dlu, p, 10dlu, 80dlu, 2dlu, p , 2dlu , 0dlu, 0dlu, p, 0dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -296,12 +297,15 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		builder.add(unten, cc.xy(6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addLabel("Fenstergröße automatisch optimieren", cc.xy(1, 5));
 		builder.add(optimize, cc.xy(6,5, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+
+		/*
 		builder.addSeparator("Tarifgruppen-Verwaltung", cc.xyw(1, 7, 6));
 
 		JScrollPane jscrPane = JCompTools.getTransparentScrollPane(tarife);
 		jscrPane.getVerticalScrollBar().setUnitIncrement(15);
 		jscrPane.validate();
 		builder.add(jscrPane, cc.xyw(1,9, 6));
+		*/
 
 		//// bis hierher abschalten
 		/*
@@ -319,7 +323,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 
 		builder.addSeparator("Vorlagen-Verwaltung", cc.xyw(1, 19, 6));
 
-		jscrPane = JCompTools.getTransparentScrollPane(vorlagen);
+		JScrollPane jscrPane = JCompTools.getTransparentScrollPane(vorlagen);
 		jscrPane.getVerticalScrollBar().setUnitIncrement(15);
 		jscrPane.validate();
 		builder.add(jscrPane, cc.xyw(1,21, 6));
@@ -464,39 +468,6 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		*/
 		//vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 		//vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
-		int lang = SystemConfig.vPreisGruppen.size();
-		String swert = "";
-		for(int i = 0;i<lang;i++){
-			//Preisgruppen-Name
-			swert = new String((String) tarife.getValueAt(i, 0));
-			SystemConfig.vPreisGruppen.set(i, swert);
-			inif.setStringProperty("PreisGruppen", "PGName"+(i+1),swert , null);
-			
-			//Zuzahlregel-einstellen
-			swert = new String((String) tarife.getValueAt(i, 1));
-			int zzreg = stringPosErmitteln(zzregel,swert);
-			SystemConfig.vZuzahlRegeln.set(i, zzreg);
-			inif.setIntegerProperty("ZuzahlRegeln", "ZuzahlRegel"+(i+1),zzreg , null);
-			
-			//Preisveränderung-einstellen
-			/**********
-			 * Abprüfen welche Disziplin
-			 */
-			swert = new String((String) tarife.getValueAt(i, 2));
-			if(swert.equals(".  .")){
-				swert="";
-			}
-			((Vector)SystemConfig.vNeuePreiseAb.get(0)).set(i, swert);
-			inif.setStringProperty("PreisGruppen", "NeuePreiseAb"+(i+1),swert , null);
-			
-			//Splittingregel-einstellen
-			swert = new String((String) tarife.getValueAt(i, 3));
-			zzreg = stringPosErmitteln(zzart,swert);
-			((Vector)SystemConfig.vNeuePreiseRegel.get(0)).set(i, zzreg);
-			inif.setIntegerProperty("PreisGruppen", "NeuePreiseRegel"+(i+1),zzreg , null);
-			
-		}
-		
 		inif.save();
 	}	
 	

@@ -154,6 +154,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.addLabel("Anwendungsregel",cc.xyw(4,5,4,CellConstraints.RIGHT,CellConstraints.CENTER));
 		String[] zzart = new String[] {"nicht relevant","erste Behandlung >=","Rezeptdatum >=","beliebige Behandlung >=","Rezept splitten"};
 		jcmb[2] = new JRtaComboBox(zzart);
+		
+		int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
+		jcmb[2].setSelectedIndex(einstellung);
+		
 		builder.add(jcmb[2],cc.xy(9,5));
 		
 		plServer = new JButton("Update der Preise über Preislistenserver");
@@ -250,6 +254,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(cmd.equals("tabelleRegeln")){
 			delvec.clear();
 			tabelleRegeln();
+			int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
+			jcmb[2].setSelectedIndex(einstellung);
+
 		}
 		if(cmd.equals("plUpdate")){
 			SwingUtilities.invokeLater(new Runnable(){
@@ -393,6 +400,22 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			}
 
 		}
+		String xgueltig = gueltig.getText();
+		int regel = jcmb[2].getSelectedIndex();
+		if(xgueltig.trim().equals(".  .") || xgueltig.trim().equals("") ){
+			xgueltig = "";
+		}
+		
+		((Vector)SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), xgueltig);
+		((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), jcmb[2].getSelectedIndex());
+		String[] diszis = {"Physio","Massage","Ergo","Logo","REHA"};
+		String dis = diszis[jcmb[0].getSelectedIndex()]; 
+		int diswelche = jcmb[1].getSelectedIndex()+1;
+
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
+		inif.setStringProperty("PreisRegeln", "Preis"+dis+"Ab"+(diswelche),xgueltig , null);
+		inif.setIntegerProperty("PreisRegeln", "Preis"+dis+"Regel"+(diswelche),regel , null);
+		inif.save();
 		if(delvec.size()>0){
 			for(int i = 0;i < delvec.size();i++){
 				cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
@@ -636,7 +659,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		bezeich = new JRtaCheckBox();
 		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
 		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
-		builder.addLabel("Bisher aktuelle Preise auf 'Alte-Preise' üßbertragen?",cc.xyw(1, 9, 8));
+		builder.addLabel("Bisher aktuelle Preise auf 'Alte-Preise' übertragen?",cc.xyw(1, 9, 8));
 		neuaufalt = new JRtaCheckBox();
 		neuaufalt.setSelected(true);
 		builder.add(neuaufalt,cc.xy(9, 9,CellConstraints.RIGHT,CellConstraints.BOTTOM));
