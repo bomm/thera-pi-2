@@ -55,6 +55,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	JXPanel vollPanel = null;
 	JXPanel wechselPanel = null;
 	JButton[] tberbut = {null,null,null};
+	JLabel anzahlBerichte = null;
 	public JXTable tabbericht = null;
 	public MyBerichtTableModel dtblm;
 
@@ -107,11 +108,14 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				
 						// TODO Auto-generated method stub
 						vollPanel = new JXPanel();
-						FormLayout vplay = new FormLayout("5dlu,fill:0:grow(1.00),5dlu","5dlu,fill:0:grow(1.00),5dlu");
+						FormLayout vplay = new FormLayout("5dlu,fill:0:grow(1.00),5dlu","13dlu,fill:0:grow(1.00),5dlu");
+						//FormLayout vplay = new FormLayout("5dlu,fill:0:grow(1.00),5dlu","5dlu,fill:0:grow(1.00),5dlu");
 						CellConstraints vpcc = new CellConstraints();
 						vollPanel.setLayout(vplay);
 						vollPanel.setOpaque(false);
 						vollPanel.setBorder(null);
+						anzahlBerichte = new JLabel("Anzahl Therapieberichte: 0");
+						vollPanel.add(anzahlBerichte,vpcc.xy(2,1));
 						vollPanel.add(getBerichteTbl(),vpcc.xy(2,2));
 			
 						return null;
@@ -178,14 +182,18 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 							"empfid",
 							"pat_intern='"+xpatint+"' ORDER BY erstelldat", Arrays.asList(new String[]{}));
 					int anz = vec.size();
+					dtblm.setRowCount(0);
 					for(int i = 0; i < anz;i++){
 						if(i==0){
-							dtblm.setRowCount(0);						
+							//dtblm.setRowCount(0);						
 						}
 
 						//int zzbild = 0;
-						dtblm.addRow((Vector)vec.get(i));
+						if(! ((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHAARZT")){
+							dtblm.addRow((Vector)vec.get(i));							
+						}
 					}
+					anz = dtblm.getRowCount();
 					PatGrundPanel.thisClass.jtab.setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
 					if(anz > 0){
 						setzeRezeptPanelAufNull(false);
@@ -201,10 +209,12 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 
 						int anzeigen = -1;
+						anzahlBerichte.setText("Anzahl Therapieberichte: "+anz);
 						wechselPanel.revalidate();
 						wechselPanel.repaint();					
 					}else{
 						setzeRezeptPanelAufNull(true);
+						anzahlBerichte.setText("Anzahl Therapieberichte: "+anz);
 						wechselPanel.revalidate();
 						wechselPanel.repaint();
 						dtblm.setRowCount(0);
@@ -254,9 +264,9 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		String xcmd = "delete from berhist where berichtid='"+berid+"'";
 		new ExUndHop().setzeStatement(xcmd);
 		// jetzt ermitteln ob tabelle bericht1 (Therapeuten) oder bericht2 (Arzt) betroffen ist. 
-		String verfas = (String)dtblm.getValueAt(wahl, 3); 
+		String verfas = (String)dtblm.getValueAt(wahl, 2); 
 		Vector vec = null;
-		if(! verfas.toUpperCase().contains("REHA-ARZT")){
+		if(! verfas.toUpperCase().contains("REHAARZT")){
 			// rez_nr ermitteln
 			vec = SqlInfo.holeSatz("bericht1", "bertyp", " berichtid='"+berid+"'", Arrays.asList(new String[] {}));
 			xcmd = "delete from bericht1 where berichtid='"+berid+"'";
@@ -339,8 +349,8 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 					if(wahl < 0){
 						return;
 					}
-					String verfas = (String)dtblm.getValueAt(wahl, 3); 
-					if(! verfas.toUpperCase().contains("REHA-ARZT")){
+					String verfas = (String)dtblm.getValueAt(wahl, 2); 
+					if(! verfas.toUpperCase().contains("REHAARZT")){
 						doThBerichtEdit(wahl);						
 					}
 				}
@@ -470,8 +480,8 @@ public void actionPerformed(ActionEvent arg0) {
 		if(wahl < 0){
 			return;
 		}
-		String verfas = (String)dtblm.getValueAt(wahl, 3); 
-		if(! verfas.toUpperCase().contains("REHA-ARZT")){
+		String verfas = (String)dtblm.getValueAt(wahl, 2); 
+		if(! verfas.toUpperCase().contains("REHAARZT")){
 			doThBerichtEdit(wahl);						
 		}
 	}

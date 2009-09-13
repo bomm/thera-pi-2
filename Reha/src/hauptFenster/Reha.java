@@ -961,6 +961,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 	        Rehaprogress = new JProgressBar();
 	        Rehaprogress.setIndeterminate(true);
+	        Rehaprogress.setForeground(Color.RED);
 	        Rehaprogress.setBorder(null);
 	        Rehaprogress.setBorderPainted(false);
 	        //final JLabel capslockLabel = new JLabel(" ");
@@ -1541,6 +1542,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             //System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,"C:\\RehaVerwaltung\\RTAJars\\openofficeorg");
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
+            //officeapplication.getDesktopService().activateTerminationPrevention(); 
             System.out.println("Open-Office wurde gestartet");
             System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
             new SwingWorker<Void,Void>(){
@@ -2019,6 +2021,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					new ExUndHop().setzeStatement(stx);
 				}
 			}
+			/*
+			try {
+				Reha.officeapplication.getDesktopService().deactivateTerminationPrevention();
+			} catch (OfficeApplicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
 			System.exit(0);
 		}else{
 			return;

@@ -3,6 +3,7 @@ package sqlTools;
 import hauptFenster.Reha;
 
 import java.awt.Cursor;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -765,6 +766,49 @@ public class SqlInfo {
 		return;
 	}
 
+	public static InputStream holeStream(String tabelle, String feld, String kriterium){
+		Statement stmt = null;
+		ResultSet rs = null;
+		InputStream is = null;
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium;
+			rs = stmt.executeQuery(sstmt);
+			if(rs.next()){
+				is = rs.getBinaryStream(1); 
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return is;
+	}
 
 
 }

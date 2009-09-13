@@ -272,7 +272,22 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 						}
 						((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).repaint();
 					}else{
-						iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
+						try{
+							iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
+						}catch(Exception ex){
+							// Hier muﬂ der Kram mit iconified
+							if(Reha.thisClass.desktops[idesk].getComponent(layers) instanceof JDesktopIcon){
+								try {
+									setIcon(true);
+									//((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).setIcon(true);
+								} catch (PropertyVetoException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}else{
+								iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
+							}
+						}
 					}
 
 				}catch(java.lang.ArrayIndexOutOfBoundsException ex){

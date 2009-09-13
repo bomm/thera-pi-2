@@ -1364,6 +1364,16 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		    }else{
 		    	jtf[35].setText(SystemConfig.vorJahr);
 		    }
+		}else if(com.equals("delpic")){
+			JOptionPane.showMessageDialog(null, "Wo nichts ist kann auch nichts gelöscht werden");
+			return;
+		}else if(com.equals("addpic")){
+			String cmd ="Tja, wenn wir uns im Forum endlich im Klaren darüber wären, welches Aufnahmegerät\n"+
+			"wir einsetzen wollen, dann könnten wir auch diese Funktion programmieren.\n\n"+
+			"Vorher wird's etwas schwierig!\nMan kann ja schließlich nichts porgrammieren von dem man nicht weiß was es ist....\n";
+			JOptionPane.showMessageDialog(null, cmd);
+			return;
+			
 		}
 
 	}

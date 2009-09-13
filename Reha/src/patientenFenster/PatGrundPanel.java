@@ -155,6 +155,7 @@ public AktuelleRezepte aktRezept = null;
 Historie historie = null;
 TherapieBerichte berichte = null;
 Dokumentation dokumentation = null;
+Gutachten gutachten = null;
 /********************/
 public JButton[] memobut = {null,null,null,null,null,null};
 
@@ -1168,15 +1169,26 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						
 						//dokumentation.holeDokus(xpatint);
 						dokumentation.holeDokus(xpatint,"");
-						
 						return null;
 					}
 				}.execute();
 			}
 		}.start();
+		// Dokumentation holen
+		new Thread(){
+			public void run(){		
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						gutachten.holeGutachten(xpatint,"");
+						return null;
+					}
+				}.execute();
+			}
+		}.start();
+		
 		//PatGrundPanel.thisClass.jtab.validate();
 		int i = jtab.getTabCount();
 		for(int y = 0;y < i;y++){

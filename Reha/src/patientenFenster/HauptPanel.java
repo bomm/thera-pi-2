@@ -407,7 +407,8 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		PatGrundPanel.thisClass.dokumentation = new Dokumentation();
 		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", PatGrundPanel.thisClass.dokumentation);
 	
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", new JXPanel());
+		PatGrundPanel.thisClass.gutachten = new Gutachten();
+		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", PatGrundPanel.thisClass.gutachten);
 		/*
 	     }catch(Exception ex){
 	    	 ex.printStackTrace();

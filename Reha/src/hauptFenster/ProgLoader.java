@@ -32,6 +32,7 @@ import patientenFenster.PatGrundPanel;
 import patientenFenster.PatientenFenster;
 
 import RehaInternalFrame.JArztInternal;
+import RehaInternalFrame.JGutachtenInternal;
 import RehaInternalFrame.JKasseInternal;
 import RehaInternalFrame.JPatientInternal;
 import RehaInternalFrame.JRehaInternal;
@@ -57,6 +58,7 @@ import com.sun.star.view.DocumentZoomType;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import entlassBerichte.EBerichtPanel;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;
@@ -298,7 +300,7 @@ public static void KassenFenster(int setPos,String kid) {
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
 }	
-/**************Krankenkassenverwaltung Echtfunktion***********************/
+/**************^Ärzteverwaltung Echtfunktion***********************/
 public static void ArztFenster(int setPos,String aid) {
 	if(! Reha.thisClass.DbOk){
 		return;
@@ -329,6 +331,40 @@ public static void ArztFenster(int setPos,String aid) {
 	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JArztInternal)jry).aktiviereDiesenFrame( ((JArztInternal)jry).getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	
+}	
+
+/**************Gutachten Echtfunktion***********************/
+public static void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu ) {
+	if(! Reha.thisClass.DbOk){
+		return;
+	}
+	JComponent gutachten = AktiveFenster.getFensterAlle("GutachtenFenster");
+	if(gutachten != null){
+		containerHandling(((JGutachtenInternal)gutachten).getDesktop());
+		((JGutachtenInternal)gutachten).aktiviereDiesenFrame( ((JGutachtenInternal)gutachten).getName());
+		//((JGutachtenInternal)gutachten).starteArztID(pat_intern);
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "GutachtenFenster"+WinNum.NeueNummer();
+	int containerNr = SystemConfig.hmContainer.get("Arzt");
+	containerHandling(containerNr);
+	JGutachtenInternal jry = new JGutachtenInternal("thera-\u03C0 Gutachten ",new ImageIcon(Reha.proghome+"icons/unten.gif"),containerNr) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
+	jry.setName(name);
+	jry.setSize(new Dimension(900,650));
+	EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu );
+	jry.setContent((EBerichtPanel)ebericht);	
+	jry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	jry.setLocation(comps*10, comps*10);
+	jry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(jry);
+	//((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
+	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
+	((JGutachtenInternal)jry).aktiviereDiesenFrame( ((JGutachtenInternal)jry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
 }	
