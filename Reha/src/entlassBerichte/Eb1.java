@@ -64,6 +64,12 @@ public class Eb1 {
 	public JXPanel getSeite(){
 		return pan;
 	}
+	/****************************
+	 * 
+	 * 
+	 * 
+	 * @return
+	 */
 	public JScrollPane constructSeite(){
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.25),p,fill:0:grow(0.25),10dlu",
 				
@@ -91,6 +97,13 @@ public class Eb1 {
 		return jscr;
 		
 	}
+	/******************
+	 * 
+	 * 
+	 * 
+	 * 
+	 * @return
+	 */
 	private JPanel getBlock1(){
 		//280 330
 		FormLayout laytit = new FormLayout("250dlu,0dlu,300dlu","2dlu,p:g");
@@ -143,11 +156,21 @@ public class Eb1 {
 		JLabel lab = getLabel("DIAGNOSEN");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,2));
-		tit.add(getLabel("1."),cctit.xy(2,3));
-		tit.add(getLabel("Diagnoseschlüssel"),cctit.xy(4,3));
-		tit.add(getLabel("Seiten-"),cctit.xy(6,3));
-		tit.add(getLabel("Diagn."),cctit.xy(8,3));
-		tit.add(getLabel("Beh."),cctit.xy(10,3));
+		lab = getLabel("1.");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,3));
+		lab  = getLabel("Diagnoseschlüssel");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(4,3));
+		lab  = getLabel("Seiten-");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(6,3));
+		lab  = getLabel("Diagn.");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(8,3));
+		lab  = getLabel("Beh.");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(10,3));
 		lab = getLabel("SEITENLOKALISATION");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(12,3));
@@ -161,7 +184,9 @@ public class Eb1 {
 		PanelBuilder ent = new PanelBuilder(entlay);
 		ent.getPanel().setOpaque(false);
 		CellConstraints ccent = new CellConstraints();
-		ent.add(getLabel("ICD 10 - GM"),ccent.xy(1, 1));
+		lab = getLabel ("ICD10 - GM");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
 		lab = getLabel("74");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
@@ -174,7 +199,9 @@ public class Eb1 {
 		ent = new PanelBuilder(entlay);
 		ent.getPanel().setOpaque(false);
 		ccent = new CellConstraints();
-		ent.add(getLabel("lokalis."),ccent.xy(1, 1));
+		lab = getLabel("lokalis.");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
 		lab = getLabel("79");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
@@ -187,7 +214,9 @@ public class Eb1 {
 		ent = new PanelBuilder(entlay);
 		ent.getPanel().setOpaque(false);
 		ccent = new CellConstraints();
-		ent.add(getLabel("sicherh."),ccent.xy(1, 1));
+		lab = getLabel("sicherh.");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
 		lab = getLabel("80");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
@@ -200,7 +229,9 @@ public class Eb1 {
 		ent = new PanelBuilder(entlay);
 		ent.getPanel().setOpaque(false);
 		ccent = new CellConstraints();
-		ent.add(getLabel("Ergebn."),ccent.xy(1, 1));
+		lab = getLabel("Ergebn.");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
 		lab = getLabel("81");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
@@ -211,7 +242,9 @@ public class Eb1 {
 		
 		/**********Diagnose 2**********************/
 		
-		tit.add(getLabel("2."),cctit.xy(2,6));
+		lab = getLabel("2.");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,6));
 		eltern.bta[1] = new JTextArea();
 		eltern.bta[1].setName("DIAG2");
 		tit.add(eltern.bta[1],cctit.xy(2, 7,CellConstraints.FILL,CellConstraints.FILL));
@@ -266,7 +299,9 @@ public class Eb1 {
 		
 		/**********Diagnose 3**********************/
 		
-		tit.add(getLabel("3."),cctit.xy(2,9));
+		lab = getLabel("3.");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,9));
 		eltern.bta[2] = new JTextArea();
 		eltern.bta[2].setName("DIAG3");
 		tit.add(eltern.bta[2],cctit.xy(2, 10,CellConstraints.FILL,CellConstraints.FILL));
@@ -321,7 +356,9 @@ public class Eb1 {
 
 		/**********Diagnose 4**********************/
 		
-		tit.add(getLabel("4."),cctit.xy(2,12));
+		lab = getLabel("4.");
+		lab.setForeground(Color.RED);		
+		tit.add(lab,cctit.xy(2,12));
 		eltern.bta[3] = new JTextArea();
 		eltern.bta[3].setName("DIAG4");
 		tit.add(eltern.bta[3],cctit.xy(2, 13,CellConstraints.FILL,CellConstraints.FILL));
@@ -376,7 +413,9 @@ public class Eb1 {
 		
 		/**********Diagnose 5**********************/
 		
-		tit.add(getLabel("5."),cctit.xy(2,15));
+		lab = getLabel("5.");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,15));
 		eltern.bta[4] = new JTextArea();
 		eltern.bta[4].setName("DIAG4");
 		tit.add(eltern.bta[4],cctit.xy(2, 16,CellConstraints.FILL,CellConstraints.FILL));
@@ -471,8 +510,12 @@ public class Eb1 {
 		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints(); 
-		tit.add(getLabel("Aufnahmedatum:"),cctit.xy(2,2));
-		tit.add(getLabel("Entlassdatum:"),cctit.xy(4,2));
+		JLabel lab = getLabel("Aufnahmedatum");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,2));
+		lab = getLabel("Entlassdatum");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(4,2));
 		eltern.btf[11] = new JRtaTextField("DATUM",false);
 		eltern.btf[11].setName("AUFDAT1");
 		eltern.btf[11].setEnabled(false);
@@ -497,9 +540,15 @@ public class Eb1 {
 		tit.add(eltern.btf[14],cctit.xy(4,5));
 		tit.add(eltern.btf[15],cctit.xy(2,7));
 		tit.add(eltern.btf[16],cctit.xy(4,7));
-		tit.add(getLabel("stationär"),cctit.xy(6,3));
-		tit.add(getLabel("teilstationär"),cctit.xy(6,5));
-		tit.add(getLabel("ambulant"),cctit.xy(6,7));		
+		lab = getLabel("stationäir");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(6,3));
+		lab = getLabel("teilstationär");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(6,5));
+		lab =  getLabel("ambulant");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(6,7));		
 		return tit.getPanel();
 	}
 	/***************************************************/	
@@ -593,9 +642,13 @@ public class Eb1 {
 		PanelBuilder tit = new PanelBuilder(laytit);
 		tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		tit.setOpaque(false);               
-		CellConstraints cctit = new CellConstraints(); 
-		tit.add(getLabel("Versicherungsnummer:"),cctit.xyw(2,2,3));
-		tit.add(getLabel("AIGR/BKZ"),cctit.xy(6,2));
+		CellConstraints cctit = new CellConstraints();
+		JLabel lab = getLabel("Versicherungsnummer:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xyw(2,2,3));
+		lab = getLabel("AIGR/BKZ");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(6,2));
 
 		eltern.btf[0] = new JRtaTextField("GROSS",true);
 		eltern.btf[0].setName("VNUMMER");
@@ -604,24 +657,34 @@ public class Eb1 {
 		eltern.btf[1].setName("AIGR");
 		tit.add(eltern.btf[1],cctit.xy(6,3));
 		
-		tit.add(getLabel("Name, Vorname:"),cctit.xyw(2,4,3));
+		lab = getLabel ("Name, Vorname:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xyw(2,4,3));
 		eltern.btf[2] = new JRtaTextField("nix",true);
 		eltern.btf[2].setName("NAMEVOR");
 		tit.add(eltern.btf[2],cctit.xyw(2,5,5));
-
-		tit.add(getLabel("Geburtsdatum:"),cctit.xyw(2,6,3));
+		
+		lab = getLabel ("Geburtsdatum:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xyw(2,6,3));
 		eltern.btf[3] = new JRtaTextField("DATUM",true);
 		eltern.btf[3].setName("GEBOREN");
 		tit.add(eltern.btf[3],cctit.xy(2,7));
 		tit.add(getLabel("(Sofern nicht in Vers. Nr. enthalten)"),cctit.xyw(4,7,3));
 		
-		tit.add(getLabel("Straße, Hausnummer:"),cctit.xyw(2,8,3));
+		lab = getLabel ("Straße,Hausnummer:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xyw(2,8,3));
 		eltern.btf[4] = new JRtaTextField("nix",true);
 		eltern.btf[4].setName("STRASSE");
 		tit.add(eltern.btf[4],cctit.xyw(2,9,5));
 		
-		tit.add(getLabel("Postleitzahl:"),cctit.xy(2,10));
-		tit.add(getLabel("Wohnort:"),cctit.xy(4,10));
+		lab = getLabel ("Postleitzahl:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,10));
+		lab = getLabel ("Wohnort");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(4,10));
 		eltern.btf[5] = new JRtaTextField("ZAHLEN",true);
 		eltern.btf[5].setName("PLZ");
 		tit.add(eltern.btf[5],cctit.xy(2,11));
@@ -629,7 +692,9 @@ public class Eb1 {
 		eltern.btf[6].setName("ORT");
 		tit.add(eltern.btf[6],cctit.xyw(4,11,3));
 
-		tit.add(getLabel("Versicherter (Name, Vorname) falls nicht mit Patient identisch"),cctit.xyw(2,12,5));
+		lab = getLabel("Versicherter (Name, Vorname) falls nicht mit Patient indentisch");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xyw(2,12,5));
 		eltern.btf[7] = new JRtaTextField("nix",true);
 		eltern.btf[7].setName("VNAMEVO");
 		tit.add(eltern.btf[7],cctit.xyw(2,13,5));
@@ -651,8 +716,12 @@ public class Eb1 {
 		tit.setOpaque(false);
 		//tit.setBackground(Color.BLUE);
 		CellConstraints cctit = new CellConstraints();		
-		tit.add(getLabel("MSNR:"),cctit.xy(2,2));
-		tit.add(getLabel("BNR:"),cctit.xy(4,2));
+		JLabel lab = getLabel("MSNR:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,2));
+		lab = getLabel("BNR:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(4,2));
 		eltern.btf[8] = new JRtaTextField("nix",true);
 		eltern.btf[8].setName("MSNR");
 		tit.add(eltern.btf[8],cctit.xy(2,4));
@@ -660,8 +729,10 @@ public class Eb1 {
 		eltern.btf[9].setName("BNR");
 		tit.add(eltern.btf[9],cctit.xy(4,4));
 		
-		tit.add(getLabel("Behandlungsstätte:"),cctit.xyw(2,6,6));
-		JLabel lab = new JLabel("Reutlinger Therapie- und Analysezentrum GmbH");
+		lab = getLabel("Behandlungsstätte:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xyw(2,6,6));
+		lab = getLabel("Reutlinger Therapie- und Analysezentrum GmbH");
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,8,6));
 		lab = new JLabel("Marie-Curie-Str. 1");
@@ -671,15 +742,21 @@ public class Eb1 {
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,12,6));		
 		
-		tit.add(getLabel("Abteilung:"),cctit.xy(2,14));
+		lab = getLabel("Abteilung:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,14));
 		
 		lab = new JLabel("ambulante Rehabilitation");
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,16,6));
 
-		tit.add(getLabel("IK-NR:"),cctit.xy(2,18));
+		lab = getLabel ("IK-NR:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(2,18));
 		
-		tit.add(getLabel("Abt.NR:"),cctit.xy(6,18));
+		lab = getLabel("Abt.NR:");
+		lab.setForeground(Color.RED);
+		tit.add(lab,cctit.xy(6,18));
 
 		lab = new JLabel("510841109");
 		lab.setFont(fontcourier);
