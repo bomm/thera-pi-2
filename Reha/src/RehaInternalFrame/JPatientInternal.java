@@ -7,6 +7,7 @@ import hauptFenster.SuchenDialog;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyVetoException;
 
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleRole;
@@ -21,13 +22,19 @@ import patientenFenster.PatGrundPanel;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
+import events.RehaEvent;
+import events.RehaEventClass;
+import events.RehaEventListener;
 
 import terminKalender.TerminFenster;
 
-public class JPatientInternal extends JRehaInternal implements FocusListener{
-
+public class JPatientInternal extends JRehaInternal implements FocusListener, RehaEventListener{
+	RehaEventClass rEvent = null;
 	public JPatientInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
+		rEvent = new RehaEventClass();
+		rEvent.addRehaEventListener((RehaEventListener) this);
+
 		//addInternalFrameListener(this);
 		// TODO Auto-generated constructor stub
 	}
@@ -61,6 +68,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener{
 		PatStammEventClass.firePatStammEvent(pEvt);	
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
+		rEvent.removeRehaEventListener((RehaEventListener) this);		
 		
 	}
 	public void setzeSuche(){
@@ -82,6 +90,23 @@ public class JPatientInternal extends JRehaInternal implements FocusListener{
 		this.isActive = true;
 		this.aktiviereDiesenFrame(this.getName());
 		repaint();
+	}
+	@Override
+	public void RehaEventOccurred(RehaEvent evt) {
+		if(evt.getRehaEvent().equals("REHAINTERNAL")){
+			System.out.println("es ist ein Reha-Internal-Event");
+		}
+		if(evt.getDetails()[0].equals(this.getName())){
+			if(evt.getDetails()[1].equals("#ICONIFIED")){
+				try {
+					this.setIcon(true);
+				} catch (PropertyVetoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				this.setActive(false);
+			}
+		}
 	}
 	
 }

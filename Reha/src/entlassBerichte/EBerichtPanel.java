@@ -220,7 +220,12 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		
 	}
 	public void dokumentSchliessen(){
-		//document.close();
+		try{
+			document.close();			
+		}catch(Exception ex){
+			
+		}
+
 	}
 	
 	public JToolBar getToolbar(){

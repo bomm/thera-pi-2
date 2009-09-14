@@ -62,6 +62,9 @@ import systemTools.Colors;
 
 import com.jgoodies.looks.plastic.PlasticInternalFrameUI;
 
+import events.RehaEvent;
+import events.RehaEventClass;
+
 public class JRehaInternal extends JInternalFrame implements ActionListener,ComponentListener,KeyListener,MouseListener,MouseMotionListener,InternalFrameListener,AncestorListener{
 	/**
 	 * 
@@ -160,15 +163,23 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	
 	}
 	public void gruenGedrueckt(){
-		try {
+		//try {
+			RehaEvent evt = new RehaEvent(this);
+			evt.setDetails(this.getName(), "#ICONIFIED");
+			evt.setRehaEvent("REHAINTERNAL");
+			RehaEventClass.fireRehaEvent(evt);
+			/*
 			this.setTitle(this.titel);
 			this.setIcon(true);
 			this.toFront();
 			this.isActive = true;
+			*/
+			/*
 		} catch (PropertyVetoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 
 	}
 	
@@ -277,6 +288,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 						}catch(Exception ex){
 							// Hier muﬂ der Kram mit iconified
 							if(Reha.thisClass.desktops[idesk].getComponent(layers) instanceof JDesktopIcon){
+								/*
 								try {
 									setIcon(true);
 									//((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).setIcon(true);
@@ -284,6 +296,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								*/
 							}else{
 								iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
 							}
@@ -375,6 +388,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void internalFrameDeiconified(InternalFrameEvent arg0) {
 		// TODO Auto-generated method stub
+		isActive = true;
+		this.repaint();
 		
 	}
 	@Override
@@ -819,8 +834,6 @@ class CustomPinPanel extends JButton{
 
 			}
 		});
-		
-		
 	}
 	public void paintComponent(Graphics g)
 	{

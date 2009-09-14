@@ -1,8 +1,10 @@
 package RehaInternalFrame;
 
+import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
 import java.awt.event.ComponentListener;
+import java.beans.PropertyVetoException;
 
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleRole;
@@ -12,12 +14,20 @@ import javax.swing.JComponent;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
+import events.PatStammEvent;
+import events.PatStammEventClass;
+import events.RehaEvent;
+import events.RehaEventClass;
+import events.RehaEventListener;
+
 import terminKalender.TerminFenster;
 
-public class JTerminInternal extends JRehaInternal {
-
+public class JTerminInternal extends JRehaInternal implements RehaEventListener{
+	RehaEventClass rEvent = null;
 	public JTerminInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
+		rEvent = new RehaEventClass();
+		rEvent.addRehaEventListener((RehaEventListener) this);
 		addInternalFrameListener(this);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,6 +40,36 @@ public class JTerminInternal extends JRehaInternal {
 		frameAktivieren(super.getName());
 	}
 	*/
+	@Override
+	public void internalFrameClosed(InternalFrameEvent arg0) {
+		Reha.thisClass.desktops[this.desktop].remove(this);
+		AktiveFenster.loescheFenster(this.getName());
+		this.removeInternalFrameListener(this);
+		Reha.thisFrame.requestFocus();
+		System.out.println("Lösche Termin Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		System.out.println("Termin-Internal geschlossen***************");
+		Reha.thisClass.aktiviereNaechsten(this.desktop);
+		rEvent.removeRehaEventListener((RehaEventListener) this);		
+		
+	}	
+
+	@Override
+	public void RehaEventOccurred(RehaEvent evt) {
+		if(evt.getRehaEvent().equals("REHAINTERNAL")){
+			System.out.println("es ist ein Reha-Internal-Event");
+		}
+		if(evt.getDetails()[0].equals(this.getName())){
+			if(evt.getDetails()[1].equals("#ICONIFIED")){
+				try {
+					this.setIcon(true);
+				} catch (PropertyVetoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				this.setActive(false);
+			}
+		}
+	}
 }
 final class JDesktopIcon extends JComponent implements Accessible
 {

@@ -90,16 +90,16 @@ public class Eb3 {
 	    	System.out.println("nativeView == null");
 	    }
 	    if(parent == null){
-	    	System.out.println("nativeView == null");
+	    	System.out.println("parent == null");
 	    }
 	    parent.add(nativeView);
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
-	          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()));
+	          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 	          parent.getLayout().layoutContainer(parent);
 	        }      
 	      });
-	    nativeView.setPreferredSize(new Dimension(parent.getWidth(), parent.getHeight()));
+	    nativeView.setPreferredSize(new Dimension(parent.getWidth(), parent.getHeight()-5));
 	    parent.getLayout().layoutContainer(parent);
 	    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();

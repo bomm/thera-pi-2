@@ -1090,6 +1090,21 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}
 		return jXStatusBar;
 	}
+	public void progressStarten(boolean starten){
+		final boolean xstarten = starten;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				new Thread(){
+					public void run(){
+						Rehaprogress.setIndeterminate(xstarten);						
+					}
+				}.start();
+				return null;
+			}
+			
+		}.execute();
+	}
 	/**
 	 * This method initializes jJMenuBar	
 	 * 	
@@ -1972,12 +1987,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 
 	public void RehaEventOccurred(RehaEvent evt) {
-		System.out.println("Reha thisClass Event getSource: = "+evt.getSource());
-		System.out.println("Reha thisClass Event Nachricht: = "+ evt.getRehaEvent());	
+		//System.out.println("Reha thisClass Event getSource: = "+evt.getSource());
+		//System.out.println("Reha thisClass Event Nachricht: = "+ evt.getRehaEvent());	
 		if(evt.getRehaEvent().equals("PatSuchen")){
 //			System.out.println("Event getSource.getDetails: = "+((RehaEvent) evt.getSource()).getDetails());
-			System.out.println("Reha thisClass Event getDetails[0]: = "+evt.getDetails()[0]);
-			System.out.println("Reha thisClass Event getDetails[1]: = "+evt.getDetails()[1]);			
+			//System.out.println("Reha thisClass Event getDetails[0]: = "+evt.getDetails()[0]);
+			//System.out.println("Reha thisClass Event getDetails[1]: = "+evt.getDetails()[1]);			
 		}
 	}
 	static Component WerHatFocus(){

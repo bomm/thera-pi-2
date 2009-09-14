@@ -127,7 +127,14 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 		//((JTerminInternal)termin).toFront();
 		containerHandling(((JTerminInternal)termin).getDesktop());
 		((JTerminInternal)termin).aktiviereDiesenFrame(((JTerminInternal)termin).getName());
-		
+		if( ((JTerminInternal)termin).isIcon() ){
+			try {
+				((JTerminInternal)termin).setIcon(false);
+			} catch (PropertyVetoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return;
 	}
 	final int xsetPos=setPos,xansicht=ansicht;
@@ -276,7 +283,13 @@ public static void KassenFenster(int setPos,String kid) {
 		containerHandling(((JKasseInternal)kasse).getDesktop());
 		((JKasseInternal)kasse).aktiviereDiesenFrame( ((JKasseInternal)kasse).getName());
 		((JKasseInternal)kasse).starteKasseID(kid);
-
+		if( ((JKasseInternal)kasse).isIcon() ){
+			try {
+				((JKasseInternal)kasse).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
 		return;
 	}
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -310,7 +323,13 @@ public static void ArztFenster(int setPos,String aid) {
 		containerHandling(((JArztInternal)arzt).getDesktop());
 		((JArztInternal)arzt).aktiviereDiesenFrame( ((JArztInternal)arzt).getName());
 		((JArztInternal)arzt).starteArztID(aid);
-
+		if( ((JArztInternal)arzt).isIcon() ){
+			try {
+				((JArztInternal)arzt).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
 		return;
 	}
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -344,6 +363,13 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	if(gutachten != null){
 		containerHandling(((JGutachtenInternal)gutachten).getDesktop());
 		((JGutachtenInternal)gutachten).aktiviereDiesenFrame( ((JGutachtenInternal)gutachten).getName());
+		if( ((JGutachtenInternal)gutachten).isIcon() ){
+			try {
+				((JGutachtenInternal)gutachten).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
 		//((JGutachtenInternal)gutachten).starteArztID(pat_intern);
 		return;
 	}
@@ -378,10 +404,18 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	if(patient != null){
 		containerHandling(((JPatientInternal)patient).getDesktop());
 		((JPatientInternal)patient).aktiviereDiesenFrame(((JPatientInternal)patient).getName());
+		if( ((JPatientInternal)patient).isIcon() ){
+			try {
+				((JPatientInternal)patient).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
 		PatGrundPanel.thisClass.setzeFocus();
 		return;
 	}
-	Reha.thisClass.Rehaprogress.setIndeterminate(true);
+	
+	Reha.thisClass.progressStarten(true);
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	String name = "PatientenVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Patient");
@@ -407,7 +441,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 
 		public  void run(){
 			jrx.setzeSuche();
-			Reha.thisClass.Rehaprogress.setIndeterminate(false);
+			Reha.thisClass.progressStarten(false);
 /*
 			long zeit = System.currentTimeMillis();
 	 		   while(!PatGrundPanel.thisClass.sucheHatFocus()){
