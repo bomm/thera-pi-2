@@ -32,6 +32,9 @@ public class Eb1 {
 	String[] seite = {"","R","L","B"};
 	String[] sicher = {"","A","V","Z","G"};
 	String[] erfolg = {"","0","1","2","3"};
+	String[] ursache = {"","0","1","2","3","4","5"};
+	String[] vorherau = {"","0","1","2","3","9"};
+	String[] dmp = {"","0","1","2","3","4","5","6","7"};
 	JLabel titel = null;
 	
 	public Eb1(EBerichtPanel xeltern){
@@ -88,7 +91,7 @@ public class Eb1 {
 		//Block 3 ist der Diagnosen-Block
 		pb.add(getBlock3(),cc.xy(3, 8));
 		//Block 4 ist Gewicht, Arbeitsunfähigkeitszeiten
-		pb.add(getBlock4(),cc.xy(3, 8));
+		pb.add(getBlock4(),cc.xy(3, 10));
 		pb.getPanel().validate();
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
@@ -139,10 +142,162 @@ public class Eb1 {
 		FormLayout laytit = new FormLayout("550dlu","2dlu,p:g");
 		PanelBuilder tit = new PanelBuilder(laytit);
 		tit.setOpaque(false);
-		CellConstraints cctit = new CellConstraints(); 
+		CellConstraints cctit = new CellConstraints();
+		tit.add(getBlock4Komplett(),cctit.xy(1,2,CellConstraints.FILL,CellConstraints.TOP));
 		tit.getPanel().validate();
 		return tit.getPanel();
 	}
+	private JPanel getBlock4Komplett(){
+		//insgesamt 610                      1    2     3   4     5      6    7   8   9     10   11  12  13    14   15   16  17
+		FormLayout laytit = new FormLayout("4dlu,25dlu,2dlu,p,  35dlu, 25dlu,2dlu,p, 20dlu,25dlu,2dlu,p,20dlu,25dlu,2dlu,p:g,20dlu",
+				//           dia1            dia2            dia3             dia4            dia5
+				// 1  2   3      4     5    6     7    8  
+				"4dlu,p, 5dlu,   p,  5dlu,  p, 0dlu:g,4dlu");
+				//"4dlu,p, 5dlu,   p,  5dlu,  p, 0dlu:g, 2dlu, p, 30dlu, 2dlu, p,  30dlu, 2dlu, p ,30dlu,4dlu");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		tit.setOpaque(false);               
+		CellConstraints cctit = new CellConstraints();
+		tit.getPanel().validate();
+		eltern.btf[22] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[22].setName("F_114");
+		tit.add(eltern.btf[22],cctit.xy(2,2));
+		FormLayout entlay = new FormLayout("55dlu","p,p");
+		PanelBuilder ent = new PanelBuilder(entlay);
+		ent.getPanel().setOpaque(false);
+		CellConstraints ccent = new CellConstraints();
+		JLabel lab = getLabel ("Aufnahmegewicht");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
+		lab = getLabel("(ganze kg)");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 2));
+		tit.add(ent.getPanel(),cctit.xy(4,2,CellConstraints.FILL,CellConstraints.TOP));		
+		
+		
+		eltern.btf[23] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[23].setName("F_117");		
+		tit.add(eltern.btf[23],cctit.xy(2,4));
+		entlay = new FormLayout("55dlu","p,p");
+		ent = new PanelBuilder(entlay);
+		ent.getPanel().setOpaque(false);
+		ccent = new CellConstraints();
+		lab = getLabel ("Entlassungsgewicht");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
+		lab = getLabel("(ganze kg)");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 2));
+		tit.add(ent.getPanel(),cctit.xy(4,4,CellConstraints.FILL,CellConstraints.TOP));
+		
+		
+		eltern.btf[24] = new JRtaTextField("ZAHLEN",true);
+		tit.add(eltern.btf[24],cctit.xy(2,6));
+		eltern.btf[24].setName("F_120");
+		entlay = new FormLayout("55dlu","p,p");
+		ent = new PanelBuilder(entlay);
+		ent.getPanel().setOpaque(false);
+		ccent = new CellConstraints();
+		lab = getLabel ("Körpergröße");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 1));
+		lab = getLabel("(ganze cm)");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xy(1, 2));
+		tit.add(ent.getPanel(),cctit.xy(4,6,CellConstraints.FILL,CellConstraints.TOP));
+		
+		eltern.bcmb[17] = new JRtaComboBox(ursache);
+		eltern.bcmb[17].setName("F_123");
+		tit.add(eltern.bcmb[17],cctit.xy(6,2));
+		//                                  1 2 3 4 5 6 7 8 9 10 11 12 
+		entlay = new FormLayout("p,2dlu,p","p,p,p,p,p,p,p,p,p,p, p, p");
+		ent = new PanelBuilder(entlay);
+		ent.getPanel().setOpaque(false);
+		ccent = new CellConstraints();
+		lab = getLabel ("URSACHE DER");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xyw(1, 1,3));
+		lab = getLabel("ERKRANKUNG");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xyw(1, 2,3));
+		ent.add(getLabel("(1.Diagnose)"),ccent.xyw(1,3,3 ));
+		ent.add(getLabel("0 = "),ccent.xy(1,4 ));
+		ent.add(getLabel("1 - 4 trifft nicht zu"),ccent.xy(3,4,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("1 = "),ccent.xy(1,5 ));
+		ent.add(getLabel("Arbeitsunfall einschl."),ccent.xy(3,5,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("Wegeunfall"),ccent.xy(3,6,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("2 = "),ccent.xy(1,7 ));
+		ent.add(getLabel("Berufserkrankung"),ccent.xy(3,7,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("3 = "),ccent.xy(1,8 ));
+		ent.add(getLabel("Schädigung durch"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("Einwirkung Dritter"),ccent.xy(3,9,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("4 = "),ccent.xy(1,10 ));
+		ent.add(getLabel("Folge von Kriegs-, Zivil-"),ccent.xy(3,10,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("oder Whrdienst"),ccent.xy(3,11,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("5 = "),ccent.xy(1,12 ));
+		ent.add(getLabel("Meldepflichtige Erkrankung"),ccent.xy(3,12,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.getPanel().validate();
+		tit.add(ent.getPanel(),cctit.xywh(8,2,1,6,CellConstraints.LEFT,CellConstraints.TOP));
+		
+		eltern.bcmb[18] = new JRtaComboBox(vorherau);
+		eltern.bcmb[18].setName("F_124");
+		tit.add(eltern.bcmb[18],cctit.xy(10,2));
+		//                                                 1 2 3 4 5 6 7 8  
+		entlay = new FormLayout("p,2dlu,fill:0:grow(1.0)","p,p,p,p,p,p,p,p");
+		ent = new PanelBuilder(entlay);
+		ent.getPanel().setOpaque(false);
+		ccent = new CellConstraints();
+		lab = getLabel ("ARBEITSUNFÄHIGKEITSZEITEN");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xyw(1, 1,3));
+		ent.add(getLabel("innerhalb der letzten"),ccent.xyw(1,2,3 ));
+		ent.add(getLabel("12 Monate vor Aufnahme"),ccent.xyw(1,3,3 ));
+		ent.add(getLabel("0 = "),ccent.xy(1,4 ));
+		ent.add(getLabel("keine"),ccent.xy(3,4,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("1 = "),ccent.xy(1,5 ));
+		ent.add(getLabel("bis unter 3 Monate"),ccent.xy(3,5,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("2 = "),ccent.xy(1,6 ));
+		ent.add(getLabel("3 bis unter 6 Monate"),ccent.xy(3,6,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("3 = "),ccent.xy(1,7 ));
+		ent.add(getLabel("6 und mehr Monate"),ccent.xy(3,7,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("9 = "),ccent.xy(1,8 ));
+		ent.add(getLabel("nicht erwerbstätig"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.getPanel().validate();
+		tit.add(ent.getPanel(),cctit.xywh(12,2,1,6,CellConstraints.LEFT,CellConstraints.TOP));		
+		
+		eltern.bcmb[19] = new JRtaComboBox(dmp);
+		eltern.bcmb[19].setName("DMP");
+		tit.add(eltern.bcmb[19],cctit.xy(14,2));
+		//                                                 1 2 3 4 5 6 7 8 9 
+		entlay = new FormLayout("p,2dlu,fill:0:grow(1.0)","p,p,p,p,p,p,p,p,p");
+		ent = new PanelBuilder(entlay);
+		ent.getPanel().setOpaque(false);
+		ccent = new CellConstraints();
+		lab = getLabel ("DMP-Patient");
+		lab.setForeground(Color.RED);
+		ent.add(lab,ccent.xyw(1, 1,3));
+		ent.add(getLabel("0 = "),ccent.xy(1,2 ));
+		ent.add(getLabel("kein DMP-Patient"),ccent.xy(3,2,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("1 = "),ccent.xy(1,3 ));
+		ent.add(getLabel("Diabetes mellitus Typ 1"),ccent.xy(3,3,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("2 = "),ccent.xy(1,4 ));
+		ent.add(getLabel("Diabetes mellitus Typ 2"),ccent.xy(3,4,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("3 = "),ccent.xy(1,5 ));
+		ent.add(getLabel("Brustkrebs"),ccent.xy(3,5,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("4 = "),ccent.xy(1,6 ));
+		ent.add(getLabel("KHK"),ccent.xy(3,6,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("5 = "),ccent.xy(1,7 ));
+		ent.add(getLabel("Asthma bronchiale / COPD"),ccent.xy(3,7,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("6 = "),ccent.xy(1,8 ));
+		ent.add(getLabel("mehrere DMP"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("7 = "),ccent.xy(1,9 ));
+		ent.add(getLabel("andere DMP"),ccent.xy(3,9,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.getPanel().validate();
+		tit.add(ent.getPanel(),cctit.xywh(16,2,1,6,CellConstraints.FILL,CellConstraints.TOP));
+		return tit.getPanel();
+	}
+	
+	
 	private JPanel getBlock3Komplett(){  
 		//insgesamt 610                      1   diag    3   icd-10  5     Seite    7    Sicher  9    Ergeb. 11   Y-Label
 		FormLayout laytit = new FormLayout("4dlu,230dlu,5dlu,55dlu, 10dlu, 40dlu, 5dlu, 40dlu, 5dlu,40dlu,10dlu,140dlu,4dlu",
@@ -706,11 +861,11 @@ public class Eb1 {
 	private JPanel getBlock1Rechts(){       // 1   2    3   4    5     6     7   
 		FormLayout laytit = new FormLayout("4dlu,40dlu,10dlu,40,100dlu,40dlu,50dlu,4dlu",
 				//     3=Vnr.  5=Name 7=geb 9=stras
-				// 1  2  3   4  5   6   7      8   9   
-				"4dlu,p, p,  p, p,  p,  3dlu,  p, 1dlu,"+
+				// 1  2  3   4  5   6    7      8   9  10 
+				"4dlu,p, p,  p, p,  5dlu,p,     p,  p, 1dlu,"+
 				//
-				//10  11    12 13   14  15   16  17 18  19  20  21   22
-				 "p,  5dlu, p, 15dlu,p, 1dlu,p, 7dlu,p, 1dlu,p, 0dlu,4dlu");
+				//11  12    13 14   15  16   17  18 19  20  21  22   23
+				 "p,  5dlu, p, 13dlu,p, 1dlu,p, 7dlu,p, 1dlu,p, 0dlu,4dlu");
 		PanelBuilder tit = new PanelBuilder(laytit);
 		tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		tit.setOpaque(false);
@@ -731,40 +886,40 @@ public class Eb1 {
 		
 		lab = getLabel("Behandlungsstätte:");
 		lab.setForeground(Color.RED);
-		tit.add(lab,cctit.xyw(2,6,6));
+		tit.add(lab,cctit.xyw(2,7,6));
 		lab = getLabel("Reutlinger Therapie- und Analysezentrum GmbH");
 		lab.setFont(fontcourier);
-		tit.add(lab,cctit.xyw(2,8,6));
+		tit.add(lab,cctit.xyw(2,9,6));
 		lab = new JLabel("Marie-Curie-Str. 1");
 		lab.setFont(fontcourier);
-		tit.add(lab,cctit.xyw(2,10,6));
+		tit.add(lab,cctit.xyw(2,11,6));
 		lab = new JLabel("72760 Reutlingen");
 		lab.setFont(fontcourier);
-		tit.add(lab,cctit.xyw(2,12,6));		
+		tit.add(lab,cctit.xyw(2,13,6));		
 		
 		lab = getLabel("Abteilung:");
 		lab.setForeground(Color.RED);
-		tit.add(lab,cctit.xy(2,14));
+		tit.add(lab,cctit.xy(2,15));
 		
 		lab = new JLabel("ambulante Rehabilitation");
 		lab.setFont(fontcourier);
-		tit.add(lab,cctit.xyw(2,16,6));
+		tit.add(lab,cctit.xyw(2,17,6));
 
 		lab = getLabel ("IK-NR:");
 		lab.setForeground(Color.RED);
-		tit.add(lab,cctit.xy(2,18));
+		tit.add(lab,cctit.xy(2,19));
 		
 		lab = getLabel("Abt.NR:");
 		lab.setForeground(Color.RED);
-		tit.add(lab,cctit.xy(6,18));
+		tit.add(lab,cctit.xy(6,19));
 
 		lab = new JLabel("510841109");
 		lab.setFont(fontcourier);
-		tit.add(lab,cctit.xyw(2,20,3));
+		tit.add(lab,cctit.xyw(2,21,3));
 		
 		eltern.btf[10] = new JRtaTextField("ZAHLEN",true);
 		eltern.btf[10].setName("ABTEILUNG");
-		tit.add(eltern.btf[10],cctit.xy(6,20));
+		tit.add(eltern.btf[10],cctit.xy(6,21));
 		
 		return tit.getPanel();
 	}
@@ -778,12 +933,12 @@ public class Eb1 {
 
 		titel = new JLabel("DRV Baden-Württemberg");
 		titel.setFont(fontgross);
-		titel.setForeground(Color.RED);
+		titel.setForeground(Color.BLUE);
 		tit.add(titel,cctit.xy(1, 2));
 		
 		titel = new JLabel("Reha-Entlassbericht");
 		titel.setFont(fontgross);
-		titel.setForeground(Color.RED);
+		titel.setForeground(Color.BLUE);
 		tit.add(titel,cctit.xy(3, 2));
 		tit.validate();
 		return tit;

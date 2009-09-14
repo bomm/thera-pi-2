@@ -939,7 +939,7 @@ public class SystemConfig {
 				"sort","historieumsatz","historietage","historieinfo","keinerezepte","hausbesuch","historie","kvkarte",
 				"ooowriter","ooocalc","oooimpress","openoffice","barcode","info","scanner","email","sms","tools","links",
 				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
-				"kleinehilfe","achtung"};
+				"kleinehilfe","achtung","vorschau","patstamm","arztstamm","kassenstamm"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		Image ico = null;
@@ -959,6 +959,7 @@ public class SystemConfig {
 					hmSysIcons.put(bilder[i], new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])));
 				}
 			}catch(Exception ex){
+				System.out.println("Fehler bei Bild "+bilder[i]);
 				ex.printStackTrace();
 			}
 		}

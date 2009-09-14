@@ -296,7 +296,7 @@ public static void KassenFenster(int setPos,String kid) {
 	String name = "KrankenKasse"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Kasse");
 	containerHandling(containerNr);
-	JKasseInternal jry = new JKasseInternal("thera-\u03C0 Krankenkassen-Verwaltung ",new ImageIcon(Reha.proghome+"icons/unten.gif"),containerNr) ;
+	JKasseInternal jry = new JKasseInternal("thera-\u03C0 Krankenkassen-Verwaltung ",SystemConfig.hmSysIcons.get("kassenstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(650,500));
@@ -336,7 +336,7 @@ public static void ArztFenster(int setPos,String aid) {
 	String name = "ArztVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	JArztInternal jry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",new ImageIcon(Reha.proghome+"icons/unten.gif"),containerNr) ;
+	JArztInternal jry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(650,500));
@@ -421,7 +421,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	int containerNr = SystemConfig.hmContainer.get("Patient");
 	containerHandling(containerNr);
 	JPatientInternal jry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
-			Reha.thisClass.desktops[1].getComponentCount()+1 ,new ImageIcon(Reha.proghome+"icons/personen16.gif"),containerNr) ;
+			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,0,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(900,650));

@@ -186,7 +186,19 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		String cmd = arg0.getActionCommand();
+		if(cmd.equals("gutsave")){
+			
+		}
+		if(cmd.equals("gutvorschau")){
+			
+		}
+		if(cmd.equals("gutprint")){
+			
+		}
+		if(cmd.equals("guttools")){
+			
+		}
 		
 	}
 
@@ -243,16 +255,16 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		jtb.add(gutbut[0]);
 
 		gutbut[1] = new JButton();
-		gutbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		gutbut[1].setToolTipText("Bestehendes Gutachten ändern/editieren");
-		gutbut[1].setActionCommand("gutedit");
+		gutbut[1].setIcon(SystemConfig.hmSysIcons.get("vorschau"));
+		gutbut[1].setToolTipText("Druckvorschau");
+		gutbut[1].setActionCommand("gutvorschau");
 		gutbut[1].addActionListener(this);		
 		jtb.add(gutbut[1]);
 
 		gutbut[2] = new JButton();
-		gutbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		gutbut[2].setToolTipText("Gutachten löschen");
-		gutbut[2].setActionCommand("gutdelete");
+		gutbut[2].setIcon(SystemConfig.hmSysIcons.get("print"));
+		gutbut[2].setToolTipText("Alle Ausfertigungen des Gutachten drucken");
+		gutbut[2].setActionCommand("gutprint");
 		gutbut[2].addActionListener(this);		
 		jtb.add(gutbut[2]);
 		
@@ -260,7 +272,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		
 		gutbut[3] = new JButton();
 		gutbut[3].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		gutbut[3].setToolTipText("Werkzeuge für Gutachten");
+		gutbut[3].setToolTipText("Werkzeugksten für Gutachten");
 		gutbut[3].setActionCommand("guttools");
 		gutbut[3].addActionListener(this);		
 		jtb.add(gutbut[3]);

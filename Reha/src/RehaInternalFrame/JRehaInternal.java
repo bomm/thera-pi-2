@@ -387,7 +387,10 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	@Override
 	public void internalFrameDeiconified(InternalFrameEvent arg0) {
-		// TODO Auto-generated method stub
+		RehaEvent evt = new RehaEvent(this);
+		evt.setDetails(this.getName(), "#DEICONIFIED");
+		evt.setRehaEvent("REHAINTERNAL");
+		RehaEventClass.fireRehaEvent(evt);
 		isActive = true;
 		this.repaint();
 		

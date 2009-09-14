@@ -6,6 +6,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
+import java.beans.PropertyVetoException;
 import java.io.InputStream;
 
 import javax.swing.BorderFactory;
@@ -17,6 +20,10 @@ import com.sun.star.frame.XController;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.UnoRuntime;
+
+import events.RehaEvent;
+import events.RehaEventClass;
+import events.RehaEventListener;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -34,17 +41,24 @@ import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.frame.ILayoutManager;
 
-public class Eb3 {
+public class Eb3 implements RehaEventListener  {
+	RehaEventClass rEvent = null;
 	JXPanel pan = null;
+	JXPanel parken = null;
 	//IFrame officeFrame = null;
 	//static ITextDocument document = null;
 	EBerichtPanel eltern = null;
+	Container xparent = null;
+	NativeView nativeView = null; 
 	
 	public Eb3(EBerichtPanel xeltern){
 		eltern = xeltern; 
+		rEvent = new RehaEventClass();
+		rEvent.addRehaEventListener((RehaEventListener) this);
 		pan = new JXPanel();
 		pan.setBorder(BorderFactory.createEmptyBorder(0, 0, 3, 0));
 		pan.setVisible(true);
+		parken = new JXPanel();
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -85,7 +99,8 @@ public class Eb3 {
 	private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent)
       throws Throwable {
 		
-	    final NativeView nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
+		//final NativeView nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
+	    nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
 	    if(nativeView == null){
 	    	System.out.println("nativeView == null");
 	    }
@@ -93,18 +108,53 @@ public class Eb3 {
 	    	System.out.println("parent == null");
 	    }
 	    parent.add(nativeView);
+	    
+	    parent.addContainerListener(new ContainerAdapter(){
+	    	public void componentAdded(ContainerEvent e) {
+	    		System.out.println(" added to "+e);
+	    	    }
+	    	    public void componentRemoved(ContainerEvent e) {
+	    		System.out.println(" removed from "+e);
+	    	    }
+	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
 	          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 	          parent.getLayout().layoutContainer(parent);
-	        }      
+	        }  
+	        public void componentHidden(ComponentEvent e) {
+	            System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
+	        }
+
+	        public void componentMoved(ComponentEvent e) {
+	        	System.out.println(e.getComponent().getClass().getName() + " --- Moved");
+	        }
+	        public void componentShown(ComponentEvent e) {
+	        	System.out.println(e.getComponent().getClass().getName() + " --- Shown");
+	            nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
+		        parent.getLayout().layoutContainer(parent);
+		        parent.setVisible(true);
+
+	        }
+	        
 	      });
 	    nativeView.setPreferredSize(new Dimension(parent.getWidth(), parent.getHeight()-5));
+	    xparent = parent;
 	    parent.getLayout().layoutContainer(parent);
 	    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();
     return officeFrame;
   }
+	public void neuAnhaengen(){
+		System.out.println("Neu eingehängt----->");
+		pan.add(nativeView);
+		pan.getLayout().layoutContainer(pan);
+		pan.setVisible(true);
+	}
+	public void trenneFrame(){
+		System.out.println("ntiveView getrennt----->");
+		pan.remove(nativeView);
+	}
 	
 	  public static void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
 		    ILayoutManager layoutManager = officeFrame.getLayoutManager();
@@ -137,7 +187,28 @@ public class Eb3 {
 		    
 		    //officeFrame.getDispatch(".uno:PrintLayout").dispatch();
 		  }
-	
+	  
+		@Override
+		public void RehaEventOccurred(RehaEvent evt) {
+			if(evt.getRehaEvent().equals("REHAINTERNAL")){
+				if(evt.getDetails()[1].equals("#DEICONIFIED") && evt.getDetails()[0].contains("Gutachten")){
+					this.neuAnhaengen();
+				}
+			}
+			if(evt.getDetails()[0].contains("GutachtenFenster")){
+				if(evt.getDetails()[1].equals("#SCHLIESSEN")){
+					System.out.println("Lösche Listener von Eb3-------------->");
+					this.rEvent.removeRehaEventListener((RehaEventListener)this);
+				}
+			}
+			if(evt.getRehaEvent().equals("OOFrame")){
+				if(evt.getDetails()[1].equals("#TRENNEN") ){
+					this.trenneFrame();
+				}
+			}			
+			
+
+		}		
 	
 
 }

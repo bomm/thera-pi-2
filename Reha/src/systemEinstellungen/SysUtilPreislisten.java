@@ -4,11 +4,13 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
@@ -20,11 +22,14 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -89,6 +94,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaCheckBox neuaufalt = null;
 	Vector<String> delvec = new Vector<String>();
 	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};	
+	
+	KeyListener kl = null;
 	
 	public SysUtilPreislisten(){
 		super(new BorderLayout());
@@ -210,6 +217,29 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(posdel,cc.xy(9, 11));
 		builder.addLabel("Änderungen speichern?",cc.xyw(1,13,3));
 		builder.add(speichern, cc.xy(5, 13));
+		/*
+		kl = new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent e) {
+				String name = ((JComponent)e.getSource()).getName();
+				if(name != null){
+					System.out.println("In KL ------>TastaturEvent von "+name+" ausgelöst. Gedrückte Taste = "+e.getKeyCode());
+				}
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			
+		};
+		JSpinner jspin = new JSpinner(new SpinnerNumberModel(10, 0, 100, 1));
+		jspin.setName("JSPIN");
+		myEditor myEdit = new myEditor(jspin,kl);
+		jspin.setEditor(myEdit);
+		builder.add(jspin, cc.xy(9, 13));
+		*/
 		builder.add(abbruch, cc.xy(9, 13));
 		
 		return builder.getPanel();
@@ -231,7 +261,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		String name = ((JComponent)e.getSource()).getName();
+		if(name != null){
+			System.out.println("Listener des Panels ----> TastaturEvent von "+name+" ausgelöst. Gedrückte Taste = "+e.getKeyChar());
+		}
 		
 	}
 
@@ -802,3 +835,11 @@ class MyServerTableModel extends DefaultTableModel{
 	}
 	   
 }
+/*
+class myEditor extends  javax.swing.JSpinner.NumberEditor{
+	public myEditor(JSpinner arg0,KeyListener kl) {
+		super(arg0);
+		this.getTextField().addKeyListener(kl);
+	}
+}
+*/

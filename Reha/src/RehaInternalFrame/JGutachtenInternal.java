@@ -61,6 +61,11 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){
 				try {
+					RehaEvent xevt = new RehaEvent(this);
+					xevt.setDetails(this.getName(), "#TRENNEN");
+					xevt.setRehaEvent("OOFrame");
+					RehaEventClass.fireRehaEvent(xevt);
+					
 					this.setIcon(true);
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block
