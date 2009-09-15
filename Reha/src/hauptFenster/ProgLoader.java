@@ -399,7 +399,8 @@ public static void InternalGut2(){
 	iframe.setIconifiable(true);
 	iframe.setClosable(true);
 	Reha.thisClass.desktops[1].add(iframe);
-	iframe.setContentPane(new OOIFTest());
+	OOIFTest oif = new OOIFTest();
+	iframe.getContentPane().add(oif);
 	iframe.setVisible(true);
 	iframe.toFront();
 	try {

@@ -5,12 +5,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
 
@@ -29,6 +31,8 @@ public class Eb1 {
 	Font fontklein = null;
 	Font fontnormal = null;
 	Font fontcourier = null;
+	Font fontarialfett = null;
+	Font fontarialnormal = null;
 	String[] seite = {"","R","L","B"};
 	String[] sicher = {"","A","V","Z","G"};
 	String[] erfolg = {"","0","1","2","3"};
@@ -45,6 +49,8 @@ public class Eb1 {
 		fontgross =new Font("Arial",Font.BOLD,14);
 		fontklein =new Font("Arial",Font.PLAIN,9);
 		fontnormal =new Font("Arial",Font.PLAIN,10);
+		fontarialfett =new Font("Arial",Font.BOLD,12);
+		fontarialnormal =new Font("Arial",Font.PLAIN,12);		
 		fontcourier =new Font("Courier New",Font.PLAIN,12);
 		//pan.add(getTitel());
 		//JPanel cs = constructSeite();
@@ -77,8 +83,8 @@ public class Eb1 {
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.25),p,fill:0:grow(0.25),10dlu",
 				
 				//   2=titel   4=block1 6=block2 8=block3
-				// 1   2   3    4   5    6   7   8  9   10
-				"20dlu, p ,2dlu, p, 10dlu,p,5dlu,p ,5dlu,p");
+				// 1    2   3    4   5    6      8   9   10  11   12  13 14
+				"20dlu, p ,2dlu, p, 10dlu,p,5dlu,p ,5dlu,p,  5dlu,p, 0dlu,p, 4dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
@@ -92,6 +98,10 @@ public class Eb1 {
 		pb.add(getBlock3(),cc.xy(3, 8));
 		//Block 4 ist Gewicht, Arbeitsunfähigkeitszeiten
 		pb.add(getBlock4(),cc.xy(3, 10));
+		//Block 5 Überschrift für Vorschläge für nachfolgende Maßnahmen
+		pb.add(getBlock5(),cc.xy(3, 12));
+		//Block 5 Riesenscheißblock mit den nachfolgenden Maßnahmen
+		pb.add(getBlock6(),cc.xy(3, 14));		
 		pb.getPanel().validate();
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
@@ -144,6 +154,90 @@ public class Eb1 {
 		tit.setOpaque(false);
 		CellConstraints cctit = new CellConstraints();
 		tit.add(getBlock4Komplett(),cctit.xy(1,2,CellConstraints.FILL,CellConstraints.TOP));
+		tit.getPanel().validate();
+		return tit.getPanel();
+	}
+	private JPanel getBlock5(){
+		FormLayout laytit = new FormLayout("550dlu","2dlu,p:g");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		tit.setOpaque(false);
+		CellConstraints cctit = new CellConstraints();
+		tit.add(getBlock5Komplett(),cctit.xy(1,2));
+		tit.getPanel().validate();
+		return tit.getPanel();
+	}
+	private JPanel getBlock6(){
+		FormLayout laytit = new FormLayout("550dlu","2dlu,p:g");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		tit.setOpaque(false);
+		CellConstraints cctit = new CellConstraints();
+		tit.add(getBlock6Komplett(),cctit.xy(1,2,CellConstraints.FILL,CellConstraints.FILL));
+		tit.getPanel().validate();
+		return tit.getPanel();
+	}
+	private JPanel getBlock6Komplett(){   //1                      2      3                  4            5
+		FormLayout laytit = new FormLayout("fill:0:grow(0.33),     3px,  fill:0:grow(0.33) ,3px      ,fill:0:grow(0.33)",
+				"4dlu,40dlu,4dlu");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		tit.setOpaque(false);               
+		CellConstraints cctit = new CellConstraints();
+
+		FormLayout links = new FormLayout("p","20dlu");
+		PanelBuilder titl = new PanelBuilder(links);
+		titl.getPanel().setOpaque(false);
+		CellConstraints cctitl = new CellConstraints();
+		// hier dazwischen den ganzen linken Scheiß
+		titl.addLabel("test",cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.FILL));
+		titl.getPanel().validate();
+		tit.add(titl.getPanel(),cctit.xy(1,2,CellConstraints.FILL,CellConstraints.FILL));
+		
+		JXPanel rand = new JXPanel();
+		rand.setOpaque(false);
+		rand.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		tit.add(rand,cctit.xy(2,2,CellConstraints.FILL,CellConstraints.FILL));
+		
+		FormLayout mitte = new FormLayout("p","20dlu");
+		PanelBuilder titm = new PanelBuilder(mitte);
+		titm.getPanel().setOpaque(false);
+		CellConstraints cctitm = new CellConstraints();
+		// hier dazwischen den ganzen mittleren Scheiß
+		titm.addLabel("test",cctitm.xy(1,1));
+		titm.getPanel().validate();
+		tit.add(titm.getPanel(),cctit.xy(3,2,CellConstraints.FILL,CellConstraints.FILL));
+
+		rand = new JXPanel();
+		rand.setOpaque(false);
+		rand.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		tit.add(rand,cctit.xy(4,2,CellConstraints.FILL,CellConstraints.FILL));
+
+		
+		FormLayout rechts = new FormLayout("p","20dlu");
+		PanelBuilder titr = new PanelBuilder(rechts);
+		titr.getPanel().setOpaque(false);
+		CellConstraints cctitr = new CellConstraints();
+		// hier dazwischen den ganzen rechten Scheiß
+		titr.addLabel("test",cctitr.xy(1,1));
+		titr.getPanel().validate();
+		tit.add(titr.getPanel(),cctit.xy(5,2,CellConstraints.FILL,CellConstraints.FILL));
+		
+		tit.getPanel().validate();
+		return tit.getPanel();
+	}	
+	
+	private JPanel getBlock5Komplett(){
+		FormLayout laytit = new FormLayout("0dlu,p,4dlu,p",
+				"4dlu,p,0dlu");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		tit.setOpaque(false);               
+		CellConstraints cctit = new CellConstraints();
+		JLabel lab = new JLabel("Vorschläge für nachfolgende Maßnahmen");
+		lab.setFont(fontarialfett);
+		tit.add(lab,cctit.xy(2,2));
+		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind möglich");
+		lab.setFont(fontarialnormal);
+		tit.add(lab,cctit.xy(4,2));
 		tit.getPanel().validate();
 		return tit.getPanel();
 	}

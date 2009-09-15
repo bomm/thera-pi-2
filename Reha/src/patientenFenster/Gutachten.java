@@ -306,8 +306,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("gutneu")){
-			ProgLoader.InternalGut2();
-			//ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"LVA-Arztbericht",true );
+			//ProgLoader.InternalGut2();
+			ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"LVA-Arztbericht",true );
 			return;
 		}
 		if(cmd.equals("gutedit")){
@@ -330,8 +330,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		}
 		String bertyp = (String) tabbericht.getValueAt(row,1);
 		int berid = new Integer( (String) tabbericht.getValueAt(row,0) );
-		//ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false );
-		ProgLoader.InternalGut2();
+		ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false );
+		//ProgLoader.InternalGut2();
 	}
 
 	@Override

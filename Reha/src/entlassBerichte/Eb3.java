@@ -87,6 +87,7 @@ public class Eb3 implements RehaEventListener  {
 						xController);
 						XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 						xtvc.gotoStart(false);
+						is.close();
 		        	}
 		        	
 				} catch (Throwable e) {

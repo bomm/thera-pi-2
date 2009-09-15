@@ -7,6 +7,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,11 +34,12 @@ public class OOIFTest extends JXPanel{
 		super();
 		setLayout(new BorderLayout());
 		noaPanel = new JPanel();
+		fillNOAPanel();
 		add(noaPanel,BorderLayout.CENTER);
 		
 		validate();
 		
-		fillNOAPanel();
+		
 	}
 	  private void fillNOAPanel() {
 		    if (noaPanel != null) {
@@ -53,24 +56,57 @@ public class OOIFTest extends JXPanel{
 		      }
 		    }
 	}
-  private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent)
-      throws Throwable {
-    final NativeView nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
-    parent.add(nativeView);
-    parent.addComponentListener(new ComponentAdapter() {
-      public void componentResized(ComponentEvent e) {
-        nativeView.setPreferredSize(new Dimension(parent.getWidth() - 5, parent.getHeight() - 5));
-        parent.getLayout().layoutContainer(parent);
-      }
-    });
-    nativeView.setPreferredSize(new Dimension(parent.getWidth() - 5, parent.getHeight() - 5));
-    parent.getLayout().layoutContainer(parent);
-    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
-    parent.validate();
-    return officeFrame;
-  }
-		  
+		private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent)
+	      throws Throwable {
+			
+			final NativeView nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
+		    
+		    if(nativeView == null){
+		    	System.out.println("nativeView == null");
+		    }
+		    if(parent == null){
+		    	System.out.println("parent == null");
+		    }
+		    parent.add(nativeView);
+		    
+		    parent.addContainerListener(new ContainerAdapter(){
+		    	public void componentAdded(ContainerEvent e) {
+		    		System.out.println(" added to "+e);
+		    	    }
+		    	    public void componentRemoved(ContainerEvent e) {
+		    		System.out.println(" removed from "+e);
+		    	    }
+		    });
+		    parent.addComponentListener(new ComponentAdapter(){
+		        public void componentResized(ComponentEvent e) {
+		        System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent");
+		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
+		          parent.getLayout().layoutContainer(parent);
+		          parent.repaint();
+		        }  
+		        public void componentHidden(ComponentEvent e) {
+		            System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
+		        }
 
+		        public void componentMoved(ComponentEvent e) {
+		        	System.out.println(e.getComponent().getClass().getName() + " --- Moved");
+		        }
+		        public void componentShown(ComponentEvent e) {
+		        	System.out.println(e.getComponent().getClass().getName() + " --- Shown");
+		            nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
+			        parent.getLayout().layoutContainer(parent);
+			        parent.setVisible(true);
+
+		        }
+		        
+		      });
+		    nativeView.setPreferredSize(new Dimension(parent.getWidth(), parent.getHeight()-5));
+		    parent.getLayout().layoutContainer(parent);
+		    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
+		    parent.validate();
+		    System.out.println("natveView eingehängt in Panel "+parent.getName());
+	    return officeFrame;		  
+		}
 		  
 
 
