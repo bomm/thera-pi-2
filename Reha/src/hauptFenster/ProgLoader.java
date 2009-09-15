@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import krankenKasse.KassenPanel;
+import menus.OOIFTest;
 
 import openOfficeorg.OoStart;
 import openOfficeorg.RehaDocumentCloseListener;
@@ -171,13 +172,10 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 			 		  TerminFenster.thisClass.getViewPanel().requestFocus();
 			 	   }
 			}); 	   			
-			
-			
 		}
 	});
 
 }
-
 /**************OpenOffice Echtfunktion*******************************/
 public static void ProgOOWriterFenster(int setPos) {
 	final int xsetPos = setPos;
@@ -394,6 +392,25 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
 }	
+public static void InternalGut2(){
+	JInternalFrame iframe = new JInternalFrame();
+	iframe.setSize(900,650);
+	iframe.setResizable(true);
+	iframe.setIconifiable(true);
+	iframe.setClosable(true);
+	Reha.thisClass.desktops[1].add(iframe);
+	iframe.setContentPane(new OOIFTest());
+	iframe.setVisible(true);
+	iframe.toFront();
+	try {
+		iframe.setSelected(true);
+	} catch (PropertyVetoException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+	
+}
 
 /**************Pateintenverwaltung Echtfunktion***********************/
 public static void ProgPatientenVerwaltung(int setPos) {

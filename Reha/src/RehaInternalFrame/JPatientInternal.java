@@ -7,6 +7,8 @@ import hauptFenster.SuchenDialog;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
 import javax.accessibility.Accessible;
@@ -14,6 +16,7 @@ import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleValue;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
 import javax.swing.JComponent.AccessibleJComponent;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -34,6 +37,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		super(titel, img, desktop);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
+
 
 		//addInternalFrameListener(this);
 		// TODO Auto-generated constructor stub

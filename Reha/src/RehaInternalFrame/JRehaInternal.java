@@ -30,6 +30,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
 import javax.swing.ButtonGroup;
@@ -47,6 +49,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.JInternalFrame.JDesktopIcon;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -82,6 +85,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	private boolean stetsgross;
 	public JComponent inhalt;
 	public FocusListener fl = null;
+	public int xWeit = -1;
+	public int yHoch = -1;
 	//private static final long serialVersionUID = 1L;
 
 	public JRehaInternal(String titel,ImageIcon img,int desktop){
@@ -164,6 +169,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	public void gruenGedrueckt(){
 		//try {
+			xWeit = this.getSize().width;
+			yHoch = this.getSize().height;
 			RehaEvent evt = new RehaEvent(this);
 			evt.setDetails(this.getName(), "#ICONIFIED");
 			evt.setRehaEvent("REHAINTERNAL");
@@ -387,12 +394,19 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	@Override
 	public void internalFrameDeiconified(InternalFrameEvent arg0) {
-		RehaEvent evt = new RehaEvent(this);
-		evt.setDetails(this.getName(), "#DEICONIFIED");
-		evt.setRehaEvent("REHAINTERNAL");
-		RehaEventClass.fireRehaEvent(evt);
-		isActive = true;
-		this.repaint();
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				RehaEvent evt = new RehaEvent(this);
+				evt.setDetails(getName(), "#DEICONIFIED");
+				evt.setRehaEvent("REHAINTERNAL");
+				RehaEventClass.fireRehaEvent(evt);
+				isActive = true;
+				repaint();
+				return null;
+			}
+			
+		}.execute();
 		
 	}
 	@Override

@@ -1,5 +1,8 @@
 package RehaInternalFrame;
 
+import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
 import hauptFenster.AktiveFenster;
@@ -7,6 +10,7 @@ import hauptFenster.Reha;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 
 import entlassBerichte.EBerichtPanel;
@@ -22,6 +26,24 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		super(titel, img, desktop);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
+		this.addPropertyChangeListener(new PropertyChangeListener() {
+	          public void propertyChange(PropertyChangeEvent evt) {
+	        	System.out.println(evt);
+	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
+	            		  && evt.getNewValue().equals(Boolean.TRUE)){
+	            	  
+	              			System.out.println("Jetzt icon...........");
+	          }
+	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
+	            		  && evt.getNewValue().equals(Boolean.FALSE)){
+	            	  System.out.println("Jetzt icon...........");
+	            	  setSize(new Dimension(xWeit-1,yHoch-1));
+	            	  revalidate();
+	            	  pack();
+	              }
+	              		
+	          }
+	      });
 	}
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {

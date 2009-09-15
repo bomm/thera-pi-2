@@ -291,7 +291,6 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				this.evt.removeRehaEventListener((RehaEventListener)this);
 			}
 		}
-		
 	}
 
 

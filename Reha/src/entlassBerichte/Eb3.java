@@ -2,6 +2,7 @@ package entlassBerichte;
 
 import hauptFenster.Reha;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
@@ -12,6 +13,7 @@ import java.beans.PropertyVetoException;
 import java.io.InputStream;
 
 import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
@@ -45,6 +47,7 @@ public class Eb3 implements RehaEventListener  {
 	RehaEventClass rEvent = null;
 	JXPanel pan = null;
 	JXPanel parken = null;
+	JPanel oopan = null;
 	//IFrame officeFrame = null;
 	//static ITextDocument document = null;
 	EBerichtPanel eltern = null;
@@ -55,10 +58,14 @@ public class Eb3 implements RehaEventListener  {
 		eltern = xeltern; 
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
-		pan = new JXPanel();
+		pan = new JXPanel(new BorderLayout());
+		pan.setDoubleBuffered(true);
 		pan.setBorder(BorderFactory.createEmptyBorder(0, 0, 3, 0));
 		pan.setVisible(true);
-		parken = new JXPanel();
+		pan.setName("ooNativePanel");
+		//parken = new JXPanel();
+		//oopan = new JPanel(new BorderLayout());
+		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -81,7 +88,7 @@ public class Eb3 implements RehaEventListener  {
 						XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 						xtvc.gotoStart(false);
 		        	}
-
+		        	
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -119,8 +126,10 @@ public class Eb3 implements RehaEventListener  {
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
+	        System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent");
 	          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 	          parent.getLayout().layoutContainer(parent);
+	          parent.repaint();
 	        }  
 	        public void componentHidden(ComponentEvent e) {
 	            System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
@@ -139,21 +148,23 @@ public class Eb3 implements RehaEventListener  {
 	        
 	      });
 	    nativeView.setPreferredSize(new Dimension(parent.getWidth(), parent.getHeight()-5));
-	    xparent = parent;
 	    parent.getLayout().layoutContainer(parent);
 	    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();
+	    System.out.println("natveView eingehängt in Panel "+parent.getName());
     return officeFrame;
   }
 	public void neuAnhaengen(){
 		System.out.println("Neu eingehängt----->");
-		pan.add(nativeView);
-		pan.getLayout().layoutContainer(pan);
+		//pan.add(nativeView);
+		//pan.getLayout().layoutContainer(pan);
+		pan.setSize(new Dimension(pan.getSize().width,pan.getSize().height));
+		pan.revalidate();
 		pan.setVisible(true);
 	}
 	public void trenneFrame(){
 		System.out.println("ntiveView getrennt----->");
-		pan.remove(nativeView);
+		//pan.remove(nativeView);
 	}
 	
 	  public static void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
