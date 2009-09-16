@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
@@ -56,20 +58,34 @@ public class Eb1 {
 		//pan.add(getTitel());
 		//JPanel cs = constructSeite();
 		//cs.validate();
-		pan.add(constructSeite(),BorderLayout.CENTER);
-		for(int i = 0; i < 22;i++){
-			eltern.btf[i].setFont(fontcourier);
-			eltern.btf[i].setForeground(Color.BLUE);
-		}
-		for(int i = 0; i < 7;i++){
-			eltern.bta[i].setFont(fontcourier);
-			eltern.bta[i].setWrapStyleWord(true);
-			eltern.bta[i].setLineWrap(true);
-			eltern.bta[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		}
-		pan.validate();
-		pan.setVisible(true);
+		new SwingWorker<Void,Void>(){
+			
+			@Override
+			protected Void doInBackground() throws Exception {
+				pan.add(constructSeite(),BorderLayout.CENTER);
+				for(int i = 0; i < 22;i++){
+					eltern.btf[i].setFont(fontcourier);
+					eltern.btf[i].setForeground(Color.BLUE);
+				}
+				for(int i = 0; i < 7;i++){
+					eltern.bta[i].setFont(fontcourier);
+					eltern.bta[i].setForeground(Color.BLUE);
+					eltern.bta[i].setWrapStyleWord(true);
+					eltern.bta[i].setLineWrap(true);
+					eltern.bta[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				}
+				pan.validate();
+				pan.setVisible(true);
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run(){
+				 		  eltern.btf[0].requestFocusInWindow();
+				 	   }
+				}); 	 
 
+				return null;
+			}
+			
+		}.execute();
 	}
 	public JXPanel getSeite(){
 		return pan;
@@ -484,15 +500,16 @@ public class Eb1 {
 		tit.add(lab,cctit.xyw(2,5,3));
 		eltern.bta[5] = new JTextArea();
 		eltern.bta[5].setName("ERLAEUT");
-		tit.add(eltern.bta[5],cctit.xyw(2,6,7));
+		tit.add(eltern.bta[5],cctit.xyw(2,6,7,CellConstraints.FILL,CellConstraints.FILL));
 
 		lab = getLabel("LETZTE MEDIKATION");
 		lab.setForeground(Color.RED);
-		tit.add(lab,cctit.xyw(1,8,3));
+		tit.add(lab,cctit.xyw(2,8,3));
 		eltern.bta[6] = new JTextArea();
 		eltern.bta[6].setName("LMEDIKAT");
 		eltern.bta[6].setEnabled(false);
-		tit.add(eltern.bta[6],cctit.xyw(2,9,7));
+		eltern.bta[6].setText("Bei Entlassdatum > 31.12.2007 ungültig");
+		tit.add(eltern.bta[6],cctit.xyw(2,9,7,CellConstraints.FILL,CellConstraints.FILL));
 
 		tit.getPanel().validate();
 		return tit.getPanel();

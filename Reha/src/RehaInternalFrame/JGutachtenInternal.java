@@ -37,9 +37,9 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
 	            		  && evt.getNewValue().equals(Boolean.FALSE)){
 	            	  System.out.println("Jetzt icon...........");
-	            	  setSize(new Dimension(xWeit-1,yHoch-1));
+	            	  //setSize(new Dimension(xWeit-1,yHoch-1));
 	            	  revalidate();
-	            	  pack();
+	            	  //pack();
 	              }
 	              		
 	          }
