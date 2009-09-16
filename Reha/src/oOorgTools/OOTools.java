@@ -1,5 +1,7 @@
 package oOorgTools;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +33,7 @@ import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.presentation.IPresentationDocument;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 import ag.ion.bion.officelayer.text.IText;
@@ -309,11 +312,12 @@ public class OOTools {
 		textDocument.getFrame().setFocus();
 	}
 
-	public static void starteLeerenWriter(){
+	public static ITextDocument starteLeerenWriter(){
+		ITextDocument textDocument = null;
 		try {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
-			ITextDocument textDocument = (ITextDocument)document;
+			textDocument = (ITextDocument)document;
 			textDocument.getFrame().setFocus();
 		} 
 		catch (OfficeApplicationException exception) {
@@ -322,6 +326,7 @@ public class OOTools {
 		catch (NOAException exception) {
 			exception.printStackTrace();
 		}
+		return textDocument;
 	}
 		
 	public ITextDocument starteWriterMitDatei(String url){
@@ -351,6 +356,36 @@ public class OOTools {
 		return null;
 		
 	}
+	public static ITextDocument starteWriterMitStream(InputStream is, String titel){
+		try {
+			DocumentDescriptor d = new DocumentDescriptor();
+        	d.setTitle(titel);
+        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+			IDocumentService documentService = Reha.officeapplication.getDocumentService();
+			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
+			ITextDocument textDocument = (ITextDocument)document;
+			textDocument.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
+			XController xController = textDocument.getXTextDocument().getCurrentController();
+			XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+			xController);
+			XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+			xtvc.gotoStart(false);
+			textDocument.getFrame().setFocus();
+			is.close();
+			return (ITextDocument) textDocument;	
+			
+		}catch (OfficeApplicationException exception) {
+			exception.printStackTrace();
+		}catch (NOAException exception) {
+			exception.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+
 	public ISpreadsheetDocument starteCalcMitDatei(String url){
 		try {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();

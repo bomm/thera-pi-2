@@ -3,6 +3,7 @@ package entlassBerichte;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +18,9 @@ import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -25,6 +28,8 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+
+import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -39,6 +44,7 @@ import events.RehaEventListener;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.text.ITextDocument;
 
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaCheckBox;
@@ -206,6 +212,14 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		if(cmd.equals("guttools")){
 			
 		}
+		if(cmd.equals("guttext")){
+			if(!neu){
+        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
+        		document = OOTools.starteWriterMitStream(is, "Vorhandener Bericht");
+			}else{
+				document = OOTools.starteLeerenWriter();
+			}
+		}
 		
 	}
 
@@ -262,14 +276,16 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		jtb.add(gutbut[0]);
 
 		gutbut[4] = new JButton();
-		gutbut[4].setIcon(SystemConfig.hmSysIcons.get("drvlogo"));
+		gutbut[4].setIcon(new ImageIcon(SystemConfig.hmSysIcons.get("ooowriter").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
 		gutbut[4].setToolTipText("Freitext starten");
 		gutbut[4].setActionCommand("guttext");
 		gutbut[4].addActionListener(this);		
 		jtb.add(gutbut[4]);
-
+		
+		jtb.addSeparator(new Dimension(30,0));
+		
 		gutbut[1] = new JButton();
-		gutbut[1].setIcon(SystemConfig.hmSysIcons.get("vorschau"));
+		gutbut[1].setIcon( SystemConfig.hmSysIcons.get("vorschau") );
 		gutbut[1].setToolTipText("Druckvorschau");
 		gutbut[1].setActionCommand("gutvorschau");
 		gutbut[1].addActionListener(this);		

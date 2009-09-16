@@ -25,10 +25,10 @@ public class EBerichtTab {
 		seite2 = new Eb2(eltern);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(seite2.getSeite());		
 		tab.addTab("E-Bericht Seite-2", jscr);
-		/*
+		
 		seite3 = new Eb3(eltern);
 		tab.addTab("E-Bericht Freitext", seite3.getSeite());
-		*/
+		
 		seite4 = new Eb4(eltern);
 		jscr = JCompTools.getTransparentScrollPane(seite4.getSeite());		
 		tab.addTab("E-Bericht KTL", jscr);
