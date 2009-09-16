@@ -87,7 +87,6 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 					xevt.setDetails(this.getName(), "#TRENNEN");
 					xevt.setRehaEvent("OOFrame");
 					RehaEventClass.fireRehaEvent(xevt);
-					
 					this.setIcon(true);
 				} catch (PropertyVetoException e) {
 					// TODO Auto-generated catch block

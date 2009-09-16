@@ -57,6 +57,11 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 	public JXPanel seite4;
 	public JTabbedPane ebtab = null;
 	JButton[] gutbut = {null,null,null,null,null};
+	String[] ktraeger = {"DRV Bund","DRV Baden-Württemberg","DRV Bayern","DRV Berlin","DRV Brandenburg","DRV Bremen",
+			"DRV Hamburg","DRV Hessen","DRV Mecklenburg-Vorpommern","DRV Niedersachsen","DRV Rheinland-Pfalz",
+			"DRV Saarland","DRV Sachsen","DRV Sachsensen-Anhalt","DRV Schleswig-Holstein","DRV Thüringen","DRV Knappschaft Bahn/See","GKV"};
+//	String[] ktraeger = {"DRV Bund","DRV Baden-Württemberg","DRV Knappschaft Bahn/See","DRV Bayer","GKV"};
+	public JRtaComboBox cbktraeger = null;
 	/**********************/
 	public String pat_intern = null;
 	public int berichtid = -1;
@@ -110,7 +115,9 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		setLayout(new BorderLayout());
 		
 		add(this.getToolbar(),BorderLayout.NORTH);
+
 		if(berichttyp.contains("-Arztbericht")){
+			cbktraeger = new JRtaComboBox(ktraeger);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
 			ebtab = getEBerichtTab(); 
@@ -254,6 +261,13 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		gutbut[0].addActionListener(this);		
 		jtb.add(gutbut[0]);
 
+		gutbut[4] = new JButton();
+		gutbut[4].setIcon(SystemConfig.hmSysIcons.get("drvlogo"));
+		gutbut[4].setToolTipText("Freitext starten");
+		gutbut[4].setActionCommand("guttext");
+		gutbut[4].addActionListener(this);		
+		jtb.add(gutbut[4]);
+
 		gutbut[1] = new JButton();
 		gutbut[1].setIcon(SystemConfig.hmSysIcons.get("vorschau"));
 		gutbut[1].setToolTipText("Druckvorschau");
@@ -276,7 +290,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		gutbut[3].setActionCommand("guttools");
 		gutbut[3].addActionListener(this);		
 		jtb.add(gutbut[3]);
-		for(int i = 0; i < 4;i++){
+		for(int i = 0; i < 5;i++){
 			//gutbut[i].setEnabled(false);
 		}
 		return jtb;

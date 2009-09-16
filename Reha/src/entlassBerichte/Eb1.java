@@ -1311,19 +1311,20 @@ public class Eb1 {
 	private JXPanel getTitel(){
 		JXPanel tit = new JXPanel();
 		tit.setOpaque(false);
-		FormLayout laytit = new FormLayout("p,30dlu,p","2dlu,p");
+		FormLayout laytit = new FormLayout("p,33dlu,p","2dlu,p");
 		CellConstraints cctit = new CellConstraints(); 
 		tit.setLayout(laytit);
 
-		titel = new JLabel("DRV Baden-Württemberg");
-		titel.setFont(fontgross);
-		titel.setForeground(Color.BLUE);
-		tit.add(titel,cctit.xy(1, 2));
-		
 		titel = new JLabel("Reha-Entlassbericht");
 		titel.setFont(fontgross);
 		titel.setForeground(Color.BLUE);
-		tit.add(titel,cctit.xy(3, 2));
+		tit.add(titel,cctit.xy(1, 2));
+		/*
+		titel = new JLabel("Reha-Entlassbericht");
+		titel.setFont(fontgross);
+		titel.setForeground(Color.BLUE);
+		*/
+		tit.add(eltern.cbktraeger,cctit.xy(3, 2));
 		tit.validate();
 		return tit;
 	}

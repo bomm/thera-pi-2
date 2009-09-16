@@ -375,7 +375,7 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	String name = "GutachtenFenster"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	JGutachtenInternal jry = new JGutachtenInternal("thera-\u03C0 Gutachten ",new ImageIcon(Reha.proghome+"icons/unten.gif"),containerNr) ;
+	JGutachtenInternal jry = new JGutachtenInternal("thera-\u03C0 Gutachten ",SystemConfig.hmSysIcons.get("drvlogo"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(900,650));

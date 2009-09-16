@@ -59,8 +59,8 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		
 		JRtaComboBox bula = null;
 		String[] laender = {"Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen",
-				"Hamburg","Hessen","Meckl.-Vorpommern","Niedersachsen","Rheinland-Pfalz",
-				"Saarlan","Sachsen","Sachs.-Anhalt","Schleswig-Holstein","Thüringen"};
+				"Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Rheinland-Pfalz",
+				"Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"};
 
 		JRtaTextField mandantIK = null;
 		JRtaTextField mandantname = null;
