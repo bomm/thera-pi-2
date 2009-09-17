@@ -261,8 +261,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 	public boolean initok = false;
 	public boolean splashok = false;
-	
-
 
 	public RehaSmartDialog splash = null;
 	

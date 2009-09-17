@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
@@ -109,6 +110,7 @@ public class Eb3 implements RehaEventListener  {
 		
 		//final NativeView nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
 	    nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
+	    
 	    if(nativeView == null){
 	    	System.out.println("nativeView == null");
 	    }
@@ -127,7 +129,7 @@ public class Eb3 implements RehaEventListener  {
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
-	        System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent");
+	        System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
 	          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 	          parent.getLayout().layoutContainer(parent);
 	          parent.repaint();
@@ -150,22 +152,59 @@ public class Eb3 implements RehaEventListener  {
 	      });
 	    nativeView.setPreferredSize(new Dimension(parent.getWidth(), parent.getHeight()-5));
 	    parent.getLayout().layoutContainer(parent);
-	    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
+	    eltern.officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();
 	    System.out.println("natveView eingehängt in Panel "+parent.getName());
-    return officeFrame;
+    return eltern.officeFrame;
   }
 	public void neuAnhaengen(){
-		System.out.println("Neu eingehängt----->");
-		//pan.add(nativeView);
-		//pan.getLayout().layoutContainer(pan);
-		pan.setSize(new Dimension(pan.getSize().width,pan.getSize().height));
+		try{
+			SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run()
+			 	   {
+			 		   try {
+			 			pan.add(nativeView);
+			 			EBerichtPanel.document.getFrame().setFocus();
+			 			EBerichtPanel.document.getFrame().updateDispatches();
+						Thread.sleep(100);
+						pan.setVisible(false);
+						System.out.println("Neu eingehängt----->");
+						
+						nativeView.setVisible(true);
+						pan.getLayout().layoutContainer(pan);
+						pan.setVisible(true);
+						pan.validate();
+
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+								 		   
+			 	   }
+			});	
+	
+		/*
+		System.out.println("Aktuelle Größe von pan in X-Richtung:"+ pan.getSize().width+" / Y-Richtung:"+pan.getSize().height);
+		pan.setSize(new Dimension(pan.getSize().width-1,pan.getSize().height));
+		nativeView.setVisible(true);
+		
+		System.out.println("Aktuelle Größe von nativeView in X-Richtung:"+ nativeView.getSize().width+" / Y-Richtung:"+nativeView.getSize().height);
+		System.out.println("Aktuelle Position von nativeView  = "+nativeView.getLocation());
+		System.out.println("Aktuelle Position von nativeView auf dem Bildschirm = "+nativeView.getLocationOnScreen());
+		
+		
 		pan.revalidate();
 		pan.setVisible(true);
+		*/
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+
 	}
 	public void trenneFrame(){
 		System.out.println("ntiveView getrennt----->");
-		//pan.remove(nativeView);
+		//nativeView.setVisible(false);
+		pan.remove(nativeView);
 	}
 	
 	  public static void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
@@ -204,7 +243,15 @@ public class Eb3 implements RehaEventListener  {
 		public void RehaEventOccurred(RehaEvent evt) {
 			if(evt.getRehaEvent().equals("REHAINTERNAL")){
 				if(evt.getDetails()[1].equals("#DEICONIFIED") && evt.getDetails()[0].contains("Gutachten")){
-					this.neuAnhaengen();
+					SwingUtilities.invokeLater(new Runnable(){
+					 	   public  void run()
+					 	   {
+								neuAnhaengen();
+										 		   
+					 	   }
+					});	
+
+
 				}
 			}
 			if(evt.getDetails()[0].contains("GutachtenFenster")){

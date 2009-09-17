@@ -24,6 +24,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	RehaEventClass rEvent = null;
 	public JGutachtenInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
+		this.setIconifiable(false);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
 		this.addPropertyChangeListener(new PropertyChangeListener() {
