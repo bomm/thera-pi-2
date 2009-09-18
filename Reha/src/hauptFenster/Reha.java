@@ -2042,6 +2042,22 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 			*/
+
+			JInternalFrame[] frame = desktops[0].getAllFrames();
+			System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+			for(int i = 0; i < frame.length;i++){
+				System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
+				((JRehaInternal)frame[i]).dispose();
+				frame[i] = null;
+			}
+			frame = desktops[1].getAllFrames();
+			System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+			for(int i = 0; i < frame.length;i++){
+				System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
+				((JRehaInternal)frame[i]).dispose();
+				frame[i] = null;
+			}
+			
 			System.exit(0);
 		}else{
 			return;
