@@ -63,7 +63,7 @@ public class Eb1 {
 			@Override
 			protected Void doInBackground() throws Exception {
 				pan.add(constructSeite(),BorderLayout.CENTER);
-				for(int i = 0; i < 22;i++){
+				for(int i = 0; i < 25;i++){
 					eltern.btf[i].setFont(fontcourier);
 					eltern.btf[i].setForeground(Color.BLUE);
 				}
