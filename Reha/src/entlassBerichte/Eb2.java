@@ -29,7 +29,7 @@ public class Eb2 {
 	Font fontcourier = null;
 	Font fontarialfett = null;
 	Font fontarialnormal = null;
-	
+	Font fontarialfettgross = null;
 	public Eb2(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);
@@ -37,10 +37,11 @@ public class Eb2 {
 		eltern = xeltern;
 		fontgross =new Font("Arial",Font.BOLD,14);
 		fontklein =new Font("Arial",Font.PLAIN,9);
-		fontnormal =new Font("Arial",Font.PLAIN,10);
-		fontarialfett =new Font("Arial",Font.BOLD,12);
-		fontarialnormal =new Font("Arial",Font.PLAIN,12);		
+		fontnormal =new Font("Arial",Font.PLAIN,11);
+		fontarialfett =new Font("Arial",Font.BOLD,11);
+		fontarialnormal =new Font("Arial",Font.PLAIN,11);		
 		fontcourier =new Font("Courier New",Font.PLAIN,12);
+		fontarialfettgross = new Font("Arial",Font.BOLD,12);
 		pan.add(constructSeite(),BorderLayout.CENTER);
 		pan.validate();
 		pan.setVisible(true);
@@ -75,7 +76,7 @@ public class Eb2 {
 		return jscr;
 	}
 	private JPanel getGesamtLeistBild(){
-		FormLayout layleibild = new FormLayout("20dlu,p",
+		FormLayout layleibild = new FormLayout("20dlu,p:g",
 //		 1 2  3   4  5				
 		"p,p,0dlu,p,2dlu");
 		PanelBuilder leibild = new PanelBuilder(layleibild);
@@ -85,24 +86,85 @@ public class Eb2 {
 		JLabel lab = new JLabel("1.");
 		lab.setFont(fontarialnormal);
 		leibild.add(lab,cclei.xy(1, 1,CellConstraints.DEFAULT,CellConstraints.TOP));
-		leibild.add(leiBild1(),cclei.xy(2, 1,CellConstraints.LEFT,CellConstraints.TOP));
+		leibild.add(leiBild1(),cclei.xy(2, 1,CellConstraints.FILL,CellConstraints.TOP));
+		leibild.add(leiBild2(),cclei.xy(2, 2,CellConstraints.FILL,CellConstraints.TOP));
 		
 		leibild.getPanel().validate();
 		return leibild.getPanel();
 	}
-	private JPanel leiBild1(){
-		FormLayout lay1 = new FormLayout("1px,2dlu,p,90dlu,1px",
-//				 1 2  3   4  5				
-				"1px,p,0dlu,p,2dlu,1px");
+	private JPanel leiBild2(){
+		FormLayout lay1 = new FormLayout("1px,fill:0:grow(0.33),1px,fill:0:grow(0.33),1px,fill:0:grow(0.33),1px","p");		
+		PanelBuilder lei1 = new PanelBuilder(lay1);
+		lei1.setOpaque(false);               
+		CellConstraints ccl1 = new CellConstraints();
+		lei1.getPanel().validate();
+		return lei1.getPanel();
+		
+	}
+	                                    //               5=cb1           9=cb2        13=cb3         17=cb4
+	private JPanel leiBild1(){          // 1   2   3   4   5  6   7  8    9  10  11 12  13  14  15 16  17  18 19      20        21
+		FormLayout lay1 = new FormLayout("1px,2dlu,p,20dlu,p,2dlu,p,20dlu,p,2dlu,p,20dlu,p,2dlu,p,30dlu,p,2dlu,p,fill:0:g(1.0),1px",
+//				 1   2  3   4  5   6  7	 8			
+				"1px,p,3dlu,p,0dlu,p,0px,1px");
 				PanelBuilder lei1 = new PanelBuilder(lay1);
 				//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				lei1.setOpaque(false);               
 				CellConstraints ccl1 = new CellConstraints();
-				lei1.add(getRand(Color.BLACK),ccl1.xyw(1,1,5,CellConstraints.FILL,CellConstraints.TOP));
-				lei1.add(getRand(Color.GRAY),ccl1.xyw(1,6,5,CellConstraints.FILL,CellConstraints.TOP));
-				lei1.add(getRand(Color.BLACK),ccl1.xywh(1,1,1,6,CellConstraints.LEFT,CellConstraints.FILL));
-				lei1.add(getRand(Color.BLACK),ccl1.xywh(5,1,1,6,CellConstraints.RIGHT,CellConstraints.FILL));
-				lei1.getPanel().validate();
+				
+				lei1.add(getRand(Color.BLACK),ccl1.xyw(1,1,21,CellConstraints.FILL,CellConstraints.TOP));
+				lei1.add(getRand(Color.GRAY),ccl1.xyw(1,8,21,CellConstraints.FILL,CellConstraints.TOP));
+				lei1.add(getRand(Color.BLACK),ccl1.xywh(1,1,1,8,CellConstraints.LEFT,CellConstraints.FILL));
+				lei1.add(getRand(Color.BLACK),ccl1.xywh(21,1,1,8,CellConstraints.RIGHT,CellConstraints.FILL));
+
+				/*************************/
+				FormLayout dummy = new FormLayout("p,2dlu,p","p");
+				PanelBuilder dum = new PanelBuilder(dummy);
+				dum.getPanel().setOpaque(false);
+				CellConstraints ccdum = new CellConstraints();
+				JLabel lab = new JLabel("Positives");
+				lab.setFont(fontarialfett);
+				dum.add(lab,ccdum.xy(1, 1));
+				lab = new JLabel("Leistungsvermögen: Folgende Arbeiten können verrichtet werden");
+				lab.setFont(fontarialnormal);
+				dum.add(lab,ccdum.xy(3, 1));
+				dum.getPanel().validate();
+				lei1.add(dum.getPanel(),ccl1.xyw(3, 2,11));
+				/****************/
+				lab = new JLabel("Körperliche Arbeitsschwere");
+				lab.setFont(fontarialnormal);
+				lei1.add(lab,ccl1.xy(3, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				lei1.add(getLabelKleinRot("157"),ccl1.xy(5, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
+				eltern.bchb[20] = new JRtaCheckBox("");
+				eltern.bchb[20].setName("F_157");
+				lei1.add(eltern.bchb[20],ccl1.xy(5, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				lei1.add(getLabel("schwere Arbeiten"),ccl1.xy(7, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				lei1.add(getLabelKleinRot("158"),ccl1.xy(9, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
+				eltern.bchb[21] = new JRtaCheckBox("");
+				eltern.bchb[21].setName("F_158");
+				lei1.add(eltern.bchb[21],ccl1.xy(9, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				lei1.add(getLabel("mittelschwere Arbeiten"),ccl1.xy(11, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				/*************************/
+				lei1.add(getLabelKleinRot("159"),ccl1.xy(13, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
+				eltern.bchb[22] = new JRtaCheckBox("");
+				eltern.bchb[22].setName("F_159");
+				lei1.add(eltern.bchb[22],ccl1.xy(13, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				dummy = new FormLayout("p","p,p");
+				dum = new PanelBuilder(dummy);
+				dum.getPanel().setOpaque(false);
+				ccdum = new CellConstraints();
+				dum.add(getLabel("leichte bis mittel-"),ccdum.xy(1,1));
+				dum.add(getLabel("schwere Arbeiten"),ccdum.xy(1,2));
+				dum.getPanel().validate();
+				lei1.add(dum.getPanel(),ccl1.xy(15, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
+				/*******************/
+				lei1.add(getLabelKleinRot("160"),ccl1.xy(17, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
+				eltern.bchb[23] = new JRtaCheckBox("");
+				eltern.bchb[23].setName("F_158");
+				lei1.add(eltern.bchb[23],ccl1.xy(17, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				lei1.add(getLabel("leichte Arbeiten"),ccl1.xy(19, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+				/*******************/
+				
+				lei1.getPanel().validate();				
 				return lei1.getPanel();
 	}
 	private JPanel getTitel3(){
@@ -241,7 +303,7 @@ public class Eb2 {
 		CellConstraints cctit = new CellConstraints();
 		tit.setLayout(laytit);
 		JLabel lab = new JLabel("Sozialmedizinische Leistungsbeurteilung");
-		lab.setFont(fontarialfett);
+		lab.setFont(fontarialfettgross);
 		tit.add(lab,cctit.xy(2, 2));
 		return tit;
 	}	
