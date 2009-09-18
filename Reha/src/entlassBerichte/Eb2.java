@@ -55,8 +55,8 @@ public class Eb2 {
 		FormLayout lay = new FormLayout("5dlu,fill:0:grow(0.25),20dlu,p,fill:0:grow(0.25),5dlu",
 				
 				//   2=titel   4=block1 6=block2 8=block3
-				// 1    2   3    4  5    6      7   9   10  11   12  13 14
-				"20dlu, p ,2dlu, p, p , 20dlu,  p,5dlu,p ,5dlu,p,  5dlu,p, 0dlu,p, 4dlu");
+				// 1    2   3    4  5    6      7  8   9  11   12  13 14
+				"20dlu, p ,2dlu, p, p , 20dlu,  p,0dlu,p ");
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
@@ -65,6 +65,7 @@ public class Eb2 {
 		pb.add(getTitel2(),cc.xyw(3,4,2,CellConstraints.LEFT,CellConstraints.CENTER));
 		pb.add(getKasten1(),cc.xy(4,5,CellConstraints.RIGHT,CellConstraints.FILL));
 		pb.add(getTitel3(),cc.xyw(3,7,2,CellConstraints.LEFT,CellConstraints.BOTTOM));
+		pb.add(getGesamtLeistBild(),cc.xyw(3,9,2,CellConstraints.FILL,CellConstraints.TOP));
 		//pb.add(getBezeichnung(),cc.xy(4,5,CellConstraints.RIGHT,CellConstraints.FILL));
 		//pb.add(getBeurteilung1(),cc.xy(4,6,CellConstraints.RIGHT,CellConstraints.FILL));
 		
@@ -73,21 +74,51 @@ public class Eb2 {
 		jscr.validate();
 		return jscr;
 	}
+	private JPanel getGesamtLeistBild(){
+		FormLayout layleibild = new FormLayout("20dlu,p",
+//		 1 2  3   4  5				
+		"p,p,0dlu,p,2dlu");
+		PanelBuilder leibild = new PanelBuilder(layleibild);
+		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		leibild.setOpaque(false);               
+		CellConstraints cclei = new CellConstraints();
+		JLabel lab = new JLabel("1.");
+		lab.setFont(fontarialnormal);
+		leibild.add(lab,cclei.xy(1, 1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		leibild.add(leiBild1(),cclei.xy(2, 1,CellConstraints.LEFT,CellConstraints.TOP));
+		
+		leibild.getPanel().validate();
+		return leibild.getPanel();
+	}
+	private JPanel leiBild1(){
+		FormLayout lay1 = new FormLayout("1px,2dlu,p,90dlu,1px",
+//				 1 2  3   4  5				
+				"1px,p,0dlu,p,2dlu,1px");
+				PanelBuilder lei1 = new PanelBuilder(lay1);
+				//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				lei1.setOpaque(false);               
+				CellConstraints ccl1 = new CellConstraints();
+				lei1.add(getRand(Color.BLACK),ccl1.xyw(1,1,5,CellConstraints.FILL,CellConstraints.TOP));
+				lei1.add(getRand(Color.GRAY),ccl1.xyw(1,6,5,CellConstraints.FILL,CellConstraints.TOP));
+				lei1.add(getRand(Color.BLACK),ccl1.xywh(1,1,1,6,CellConstraints.LEFT,CellConstraints.FILL));
+				lei1.add(getRand(Color.BLACK),ccl1.xywh(5,1,1,6,CellConstraints.RIGHT,CellConstraints.FILL));
+				lei1.getPanel().validate();
+				return lei1.getPanel();
+	}
 	private JPanel getTitel3(){
 		FormLayout laytit = new FormLayout("20dlu,p,2dlu,p",
-		"4dlu,p,2dlu,p,4dlu");
+		"4dlu,p,0dlu,p,2dlu");
 		PanelBuilder tit = new PanelBuilder(laytit);
 		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints();
-		
 		JLabel lab = new JLabel("B.");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(1, 2));
 		lab = new JLabel("Positives und negatives Leistungsvermögen");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(2, 2));
-		lab = new JLabel("(allgemeinser Arbeitsmarkt)");
+		lab = new JLabel("(allgemeiner Arbeitsmarkt)");
 		lab.setFont(fontarialnormal);
 		tit.add(lab,cctit.xy(4, 2));
 		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind möglich");
