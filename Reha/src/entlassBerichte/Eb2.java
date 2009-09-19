@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
@@ -48,25 +49,29 @@ public class Eb2 {
 			
 			@Override
 			protected Void doInBackground() throws Exception {
+				try{
 				pan.add(constructSeite(),BorderLayout.CENTER);
-				for(int i = 0; i < 25;i++){
+				for(int i = 25; i < 27;i++){
 					eltern.btf[i].setFont(fontcourier);
 					eltern.btf[i].setForeground(Color.BLUE);
 				}
-				for(int i = 0; i < 7;i++){
-					eltern.bta[i].setFont(fontcourier);
-					eltern.bta[i].setForeground(Color.BLUE);
-					eltern.bta[i].setWrapStyleWord(true);
-					eltern.bta[i].setLineWrap(true);
-					eltern.bta[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-				}
+
+				eltern.bta[7].setFont(fontcourier);
+				eltern.bta[7].setForeground(Color.BLUE);
+				eltern.bta[7].setWrapStyleWord(true);
+				eltern.bta[7].setLineWrap(true);
+				eltern.bta[7].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				
 				pan.validate();
 				pan.setVisible(true);
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run(){
-				 		  eltern.btf[0].requestFocusInWindow();
+				 		  //eltern.btf[0].requestFocusInWindow();
 				 	   }
-				}); 	 
+				}); 
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 
 				return null;
 			}
@@ -83,8 +88,8 @@ public class Eb2 {
 		FormLayout lay = new FormLayout("5dlu,fill:0:grow(0.25),20dlu,p,fill:0:grow(0.25),5dlu",
 				
 				//   2=titel   4=block1 6=block2 8=block3
-				// 1    2   3    4  5    6      7  8   9  11   12  13 14
-				"20dlu, p ,2dlu, p, p , 20dlu,  p,0dlu,p ");
+				// 1    2   3    4   5    6    7  8   9  11   12  13 14
+				"20dlu, p ,2dlu, p,  p , 20dlu,  p,0dlu,p ");
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
@@ -104,8 +109,8 @@ public class Eb2 {
 	}
 	private JPanel getGesamtLeistBild(){
 		FormLayout layleibild = new FormLayout("20dlu,p:g",
-//		 1 2 3 4  4  5				
-		"p,p,p,p,0dlu,p,2dlu");
+//		 1 2 3 4 5	  6   7  8	9  10  11	12	13
+		"p,p,p,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,20dlu");
 		PanelBuilder leibild = new PanelBuilder(layleibild);
 		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		leibild.setOpaque(false);               
@@ -117,9 +122,321 @@ public class Eb2 {
 		leibild.add(leiBild2(),cclei.xy(2, 2,CellConstraints.FILL,CellConstraints.TOP));
 		leibild.add(leiBild3(),cclei.xy(2, 3,CellConstraints.FILL,CellConstraints.TOP));
 		leibild.add(leiBild4(),cclei.xy(2, 4,CellConstraints.FILL,CellConstraints.TOP));
+		leibild.add(getLRStriche(),cclei.xy(2,5,CellConstraints.FILL,CellConstraints.TOP));
+		lab = new JLabel("2.");
+		lab.setFont(fontarialnormal);
+		leibild.add(lab,cclei.xy(1, 6,CellConstraints.DEFAULT,CellConstraints.TOP));
+		leibild.add(leiBild5(),cclei.xy(2, 6,CellConstraints.FILL,CellConstraints.TOP));
+		leibild.add(getLRStriche(),cclei.xy(2,7,CellConstraints.FILL,CellConstraints.TOP));
+		lab = new JLabel("3.");
+		lab.setFont(fontarialnormal);
+		leibild.add(lab,cclei.xy(1, 8,CellConstraints.DEFAULT,CellConstraints.TOP));
+		leibild.add(leiBild6(),cclei.xy(2, 8,CellConstraints.FILL,CellConstraints.TOP));
+		leibild.add(getLRStriche(),cclei.xy(2,9,CellConstraints.FILL,CellConstraints.TOP));
+		lab = new JLabel("4.");
+		lab.setFont(fontarialnormal);
+		leibild.add(lab,cclei.xy(1, 10,CellConstraints.DEFAULT,CellConstraints.TOP));
+		leibild.add(leiBild7(),cclei.xy(2, 10,CellConstraints.FILL,CellConstraints.TOP));
+		//leibild.add(leiBild8(),cclei.xy(2, 12,CellConstraints.FILL,CellConstraints.TOP));
 		leibild.getPanel().validate();
 		return leibild.getPanel();
 	}
+	private JPanel leiBild8(){
+		FormLayout lay1 = new FormLayout("p,fill:0:grow(1.0)",
+			    //           5=F174  7=F175  9=F176   11=F177
+				//  1   2   3  4    5     6     7 
+				  "p,15dlu,p");		
+		PanelBuilder lei1 = new PanelBuilder(lay1);
+		lei1.setOpaque(false); 
+		CellConstraints ccl1 = new CellConstraints();
+		
+		FormLayout dummy = new FormLayout("p,2dlu,60dlu","p");
+		PanelBuilder dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		CellConstraints ccdum = new CellConstraints();
+		JLabel lab = new JLabel("Datum der Unterschrift:");
+		lab.setFont(this.fontarialnormal);
+		dum.add(lab,ccdum.xy(1,1));
+		eltern.btf[27] = new JRtaTextField("DATUM",true);
+		eltern.btf[27].setName("UNTDAT");
+		dum.add(eltern.btf[27],ccdum.xy(3,1));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(1,1));
+//                                   1             2         3             4          5
+		dummy = new FormLayout("fill:0:grow(0.33),20dlu,fill:0:grow(0.33),20dlu,fill:0:grow(0.33)",
+//  		 1  2   3    4   5
+			"p,2dlu,1px,2dlu,p");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		eltern.barzttf[0] = new JRtaTextField("nix",true);
+		eltern.barzttf[0].setName("ARZT1");
+		dum.add(eltern.barzttf[0],ccdum.xy(1, 1));
+		eltern.barzttf[1] = new JRtaTextField("nix",true);
+		eltern.barzttf[1].setName("ARZT2");
+		dum.add(eltern.barzttf[1],ccdum.xy(3, 1));
+		eltern.barzttf[2] = new JRtaTextField("nix",true);
+		eltern.barzttf[2].setName("ARZT3");
+		dum.add(eltern.barzttf[2],ccdum.xy(5, 1));
+		dum.add(getRand(Color.BLACK),ccdum.xy(1,3));
+		dum.add(getRand(Color.BLACK),ccdum.xy(3,3));
+		dum.add(getRand(Color.BLACK),ccdum.xy(5,3));
+		dum.add(getLabel("Ltd. Ärztin / ltd. Arzt"),ccdum.xy(1,5));
+		dum.add(getLabel("Oberärztin / Oberarzt"),ccdum.xy(3,5));
+		dum.add(getLabel("Stat.-Ärztin / Stat.-Arzt"),ccdum.xy(5,5));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xyw(1, 3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
+		
+		lei1.getPanel().validate();
+		return lei1.getPanel();
+		
+	}
+	private JPanel leiBild7(){			//	1      2              3
+		FormLayout laytit = new FormLayout("1px,fill:0:grow(1.0),1px",
+	//    1  1  2    4			
+		"1px,p,2dlu,1px");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		//Border bd = BorderFactory.createLineBorder(Color.BLACK);
+		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		tit.setOpaque(false);
+		CellConstraints cctit = new CellConstraints();
+
+		tit.add(getRand(Color.BLACK),cctit.xywh(1, 1, 1, 4));
+		tit.add(getRand(Color.BLACK),cctit.xywh(3, 1, 1, 4));
+		tit.add(getRand(Color.BLACK),cctit.xywh(1, 4,3,1));		
+
+		//                                                         6=1.Cmb     8=1.Lab 
+		//                                  1    2      3   4   5     6   7      8
+		FormLayout links = new FormLayout("2dlu,150dlu,2dlu,1px,30dlu,p,2dlu,fill:0:grow(0.33),"+
+			//   9   10   11             12  13      14     
+				"p,2dlu,fill:0:grow(0.33),p,2dlu,fill:0:grow(0.33)",
+				
+			//   1    2 3 4  5   6
+				"0dlu,p,p,p,1px,0dlu");
+		PanelBuilder plinks = new PanelBuilder(links);
+		plinks.getPanel().setOpaque(false);
+		CellConstraints ccli = new CellConstraints();
+		plinks.add(getLabelKleinRot("Beurteilung des zeitlichen Umfangs, in dem"),ccli.xy(2,2));
+		plinks.add(getLabelKleinRot("eine Tätigkeit entsprechend dem positiven"),ccli.xy(2,3));
+		plinks.add(getLabelKleinRot("negativen Leitungsb. ausgeübt werden kann"),ccli.xy(2,4));
+		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 1, 1, 5));
+		plinks.add(getLabelKleinRot("178"),ccli.xywh(6,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		eltern.bchb[39] = new JRtaCheckBox("");
+		eltern.bchb[39].setName("F_178");
+		plinks.add(eltern.bchb[39],ccli.xywh(6, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		plinks.add(getLabel("6 Stunden und mehr"),ccli.xywh(8, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		plinks.add(getLabelKleinRot("179"),ccli.xywh(9,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		eltern.bchb[40] = new JRtaCheckBox("");
+		eltern.bchb[40].setName("F_179");
+		plinks.add(eltern.bchb[40],ccli.xywh(9, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		plinks.add(getLabel("3 bis unter 6 Stunden"),ccli.xywh(11, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		plinks.add(getLabelKleinRot("181"),ccli.xywh(12,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		eltern.bchb[41] = new JRtaCheckBox("");
+		eltern.bchb[41].setName("F_181");
+		plinks.add(eltern.bchb[41],ccli.xywh(12, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		plinks.add(getLabel("unter 3 Stunden"),ccli.xywh(14, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+
+		
+		tit.add(plinks.getPanel(),cctit.xy(2,2));		
+
+		return tit.getPanel();
+		
+		
+	}
+	private JPanel leiBild6(){        //   1   2     3              4     5
+		FormLayout lay1 = new FormLayout("1px,2dlu,fill:0:grow(1.0),2dlu,1px",
+			    //           5=F174  7=F175  9=F176   11=F177
+				//  1   2   3  4    5     6     7 
+				  "1px,0dlu,p,2dlu,150dlu,4dlu,1px");		
+		PanelBuilder lei1 = new PanelBuilder(lay1);
+		lei1.setOpaque(false); 
+		CellConstraints ccl1 = new CellConstraints();
+
+		lei1.add(getRand(Color.BLACK),ccl1.xywh(1, 1, 1, 7));
+		lei1.add(getRand(Color.BLACK),ccl1.xywh(5, 1, 1, 7));
+		lei1.add(getRand(Color.GRAY),ccl1.xywh(1, 7, 5, 1));
+
+		
+		FormLayout dummy = new FormLayout("p,2dlu,p","p");
+		PanelBuilder dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		CellConstraints ccdum = new CellConstraints();
+		
+		JLabel lab = new JLabel("Beschreibung des Leistungsbildes");
+		lab.setFont(fontarialfett);
+		dum.add(lab,ccdum.xy(1,1));
+		dum.add(getLabel("(insbesondere der unter Ziff. 2 genannten Einschränkungen)"),ccdum.xy(3,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(3,3));
+		/***********************/
+		eltern.bta[7] = new JTextArea();
+		eltern.bta[7].setName("LEISTBI");
+		lei1.add(eltern.bta[7],ccl1.xy(3,5,CellConstraints.FILL,CellConstraints.FILL));
+		lei1.getPanel().validate();
+		return lei1.getPanel();
+	}
+
+	private JPanel leiBild5(){         //  1   2         3          4      
+		FormLayout lay1 = new FormLayout("1px,2dlu,fill:0:grow(1.0),1px",
+	    //           5=F174  7=F175  9=F176   11=F177
+		//  1   2   3  4   5  6   7  8   9 10  11  12  13
+		  "1px,0dlu,p,5dlu,p,5dlu,p,7dlu,p,5dlu,p,4dlu,1px");		
+		PanelBuilder lei1 = new PanelBuilder(lay1);
+		lei1.setOpaque(false);               
+		CellConstraints ccl1 = new CellConstraints();
+		lei1.add(getRand(Color.BLACK),ccl1.xywh(1, 1, 1, 13));
+		lei1.add(getRand(Color.BLACK),ccl1.xywh(4, 1, 1, 13));
+		lei1.add(getRand(Color.GRAY),ccl1.xywh(1, 13, 4, 1));
+
+		/******/
+		FormLayout dummy = new FormLayout("p,2dlu,p","p,p");
+		PanelBuilder dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		CellConstraints ccdum = new CellConstraints();
+		JLabel lab = new JLabel("Negatives Leistungsbild:");
+		lab.setFont(fontarialfett);
+		dum.add(lab,ccdum.xyw(1, 1,3,CellConstraints.FILL,CellConstraints.DEFAULT));
+		lab = new JLabel("Einschränkungen beziehen sich auf:");
+		lab.setFont(fontarialnormal);
+		dum.add(lab,ccdum.xy(1, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		dum.add(getLabel("(Art und Ausmaß müssen differenzeirt unter Ziff. 3 beschrieben werden)"),
+				ccdum.xy(3, 2,CellConstraints.LEFT,CellConstraints.BOTTOM));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(3,3,CellConstraints.FILL,CellConstraints.TOP));
+		/*******/
+		dummy = new FormLayout("p,5dlu,p","p");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		FormLayout dummy2 = new FormLayout("p","p,p");
+		PanelBuilder dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		CellConstraints ccdum2 = new CellConstraints();
+		dum2.add(getLabelKleinRot("174"),ccdum2.xy(1,1));
+		eltern.bchb[35] = new JRtaCheckBox("");
+		eltern.bchb[35].setName("F_174");
+		dum2.add(eltern.bchb[35],ccdum2.xy(1,2));
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		/**/
+		dummy2 = new FormLayout("p","p,p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		lab = new JLabel("geistig/psychische Belastbarkeit");
+		lab.setFont(fontarialfett);
+		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("(Zu beachten sind insbesondere Konzentrations-/Reaktionsvermögen, Umstellungs-,"+
+				"Anpassungsvermögen, Verantwortungfür Personen"),ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("und Maschinen, Publikumsverkehr, Überwachung, Steuerung komplexer Arbeitsvorgänge)."),
+				ccdum2.xy(1,3,CellConstraints.LEFT,CellConstraints.TOP));
+		dum.add(dum2.getPanel(),ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(3, 5,CellConstraints.FILL,CellConstraints.TOP));
+		/********Ende F174*******************/
+		dummy = new FormLayout("p,5dlu,p","p");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		/**/
+		dummy2 = new FormLayout("p","p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		dum2.add(getLabelKleinRot("175"),ccdum2.xy(1,1));
+		eltern.bchb[36] = new JRtaCheckBox("");
+		eltern.bchb[36].setName("F_175");
+		dum2.add(eltern.bchb[36],ccdum2.xy(1,2));
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		/**/
+		dummy2 = new FormLayout("p","p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		lab = new JLabel("Sinnesorgane");
+		lab.setFont(fontarialfett);
+		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("(Zu beachten sind insbesondere Seh-, Hör-, Sprach-, Tast- und Riechvermögen)"),
+				ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(3, 7,CellConstraints.FILL,CellConstraints.TOP));
+		/********Ende F175*******************/
+		dummy = new FormLayout("p,5dlu,p","p");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		/**/
+		dummy2 = new FormLayout("p","p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		dum2.add(getLabelKleinRot("176"),ccdum2.xy(1,1));
+		eltern.bchb[37] = new JRtaCheckBox("");
+		eltern.bchb[37].setName("F_176");
+		dum2.add(eltern.bchb[37],ccdum2.xy(1,2));
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		/**/
+		dummy2 = new FormLayout("p","p,p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		lab = new JLabel("Bewegungs-/Haltungsapparat");
+		lab.setFont(fontarialfett);
+		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("(Zu beachten sind insbesondere Gebrauchsfähigkeit der Hände, häufiges Bücken, "+
+				"Ersteigen von Treppen, Leitern und Gerüsten, Heben, Tragen"),
+				ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("und Bewegen von Lasten, Gang- und Standsicherheit, Zwangshaltungen)"),
+				ccdum2.xy(1,3,CellConstraints.LEFT,CellConstraints.TOP));
+		
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(3, 9,CellConstraints.FILL,CellConstraints.TOP));
+		/********Ende F176*******************/
+		dummy = new FormLayout("p,5dlu,p","p");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		/**/
+		dummy2 = new FormLayout("p","p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		dum2.add(getLabelKleinRot("177"),ccdum2.xy(1,1));
+		eltern.bchb[38] = new JRtaCheckBox("");
+		eltern.bchb[38].setName("F_177");
+		dum2.add(eltern.bchb[38],ccdum2.xy(1,2));
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		/**/
+		dummy2 = new FormLayout("p","p,p,p");
+		dum2 = new PanelBuilder(dummy2);
+		dum2.getPanel().setOpaque(false);
+		ccdum2 = new CellConstraints();
+		lab = new JLabel("Gefährdungs- und Belastungsfaktoren");
+		lab.setFont(fontarialfett);
+		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("(Zu beachten sind insbesondere Nässe, Zugluft, extrem schwankende Termperaturen, inhaltive "+
+				"Belastungen und Allergene, Erschütterungen,"),
+				ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("Vibrationen, Tätigkeiten mit erhöhter Unfallgefahr, häufig wechselnde Arbeitszeiten)"),
+				ccdum2.xy(1,3,CellConstraints.LEFT,CellConstraints.TOP));
+		
+		dum2.getPanel().validate();
+		dum.add(dum2.getPanel(),ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(3, 11,CellConstraints.FILL,CellConstraints.TOP));
+		/********Ende F177*******************/
+		
+		/***************************/
+		lei1.getPanel().validate();
+		return lei1.getPanel();
+	}	
 	private JPanel leiBild4(){
 		FormLayout lay1 = new FormLayout("1px,fill:0:grow(1.0),1px","1px,p,1px");		
 		PanelBuilder lei1 = new PanelBuilder(lay1);
@@ -391,10 +708,10 @@ public class Eb2 {
 				PanelBuilder dum = new PanelBuilder(dummy);
 				dum.getPanel().setOpaque(false);
 				CellConstraints ccdum = new CellConstraints();
-				JLabel lab = new JLabel("Positives");
+				JLabel lab = new JLabel("Positives Leistungsbild: ");
 				lab.setFont(fontarialfett);
 				dum.add(lab,ccdum.xy(1, 1));
-				lab = new JLabel("Leistungsvermögen: Folgende Arbeiten können verrichtet werden");
+				lab = new JLabel("Folgende Arbeiten können verrichtet werden");
 				lab.setFont(fontarialnormal);
 				dum.add(lab,ccdum.xy(3, 1));
 				dum.getPanel().validate();
@@ -447,7 +764,7 @@ public class Eb2 {
 		JLabel lab = new JLabel("B.");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(1, 2));
-		lab = new JLabel("Positives und negatives Leistungsvermögen");
+		lab = new JLabel("Positives und negatives Leistungsbild");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(2, 2));
 		lab = new JLabel("(allgemeiner Arbeitsmarkt)");
@@ -540,6 +857,7 @@ public class Eb2 {
 		plinks.add(getLabelKleinRot("Berufsklassenschlüssel"),ccli.xy(10,2));
 		eltern.btf[26] = new JRtaTextField("ZAHLEN",true);
 		eltern.btf[26].setName("BKS");
+		eltern.btf[26].setEnabled(false);
 		plinks.add(eltern.btf[26],ccli.xy(10, 3,CellConstraints.FILL,CellConstraints.BOTTOM));
 		plinks.getPanel().validate();
 		tit.add(plinks.getPanel(),cctit.xy(1,2));
@@ -576,7 +894,18 @@ public class Eb2 {
 		lab.setFont(fontarialfettgross);
 		tit.add(lab,cctit.xy(2, 2));
 		return tit;
-	}	
+	}
+	private JPanel getLRStriche(){
+		FormLayout laytit = new FormLayout("1px,fill:0:grow(1.0),1px",
+		"2dlu");
+		PanelBuilder tit = new PanelBuilder(laytit);
+		tit.setOpaque(false);               
+		CellConstraints cctit = new CellConstraints();
+		tit.add(getRand(Color.BLACK),cctit.xy(1, 1,CellConstraints.LEFT,CellConstraints.FILL));
+		tit.add(getRand(Color.BLACK),cctit.xy(3, 1,CellConstraints.RIGHT,CellConstraints.FILL));
+		tit.getPanel().validate();
+		return tit.getPanel();
+	}
 	
 	private JLabel getLabel(String text){
 		JLabel lab = new JLabel(text);

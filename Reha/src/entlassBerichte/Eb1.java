@@ -96,12 +96,12 @@ public class Eb1 {
 	 * 
 	 * @return
 	 */
-	public JScrollPane constructSeite(){
+	public JScrollPane constructSeite(){// 1          2          3         4           5
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.25),p,fill:0:grow(0.25),10dlu",
 				
 				//   2=titel   4=block1 6=block2 8=block3
-				// 1    2   3    4   5    6      8   9   10  11   12  13 14
-				"20dlu, p ,2dlu, p, 10dlu,p,5dlu,p ,5dlu,p,  5dlu,p, 0dlu,p, 4dlu");
+				// 1    2   3    4   5    6      8   9   10  11   12  13 14   15  16  17
+				"20dlu, p ,2dlu, p, 10dlu,p,5dlu,p ,5dlu,p,  5dlu,p, 0dlu,p, 15dlu,p,20dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
@@ -118,7 +118,9 @@ public class Eb1 {
 		//Block 5 Überschrift für Vorschläge für nachfolgende Maßnahmen
 		pb.add(getBlock5(),cc.xy(3, 12));
 		//Block 5 Riesenscheißblock mit den nachfolgenden Maßnahmen
-		pb.add(getBlock6(),cc.xy(3, 14));		
+		pb.add(getBlock6(),cc.xy(3, 14));
+		// Unterschriften gedönse
+		pb.add(getBlock7(),cc.xy(3, 16));
 		pb.getPanel().validate();
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
@@ -134,6 +136,69 @@ public class Eb1 {
 	 * 
 	 * @return
 	 */
+	private JPanel getBlock7(){
+		FormLayout lay1 = new FormLayout("p,fill:0:grow(1.0)",
+			    //           5=F174  7=F175  9=F176   11=F177
+				//  1   2   3  4    5     6     7 
+				  "p,15dlu,p");		
+		PanelBuilder lei1 = new PanelBuilder(lay1);
+		lei1.setOpaque(false); 
+		CellConstraints ccl1 = new CellConstraints();
+		
+		FormLayout dummy = new FormLayout("p,2dlu,60dlu","p");
+		PanelBuilder dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		CellConstraints ccdum = new CellConstraints();
+		JLabel lab = new JLabel("Datum der Unterschrift:");
+		lab.setFont(this.fontarialnormal);
+		dum.add(lab,ccdum.xy(1,1));
+		eltern.btf[27] = new JRtaTextField("DATUM",true);
+		eltern.btf[27].setName("UNTDAT");
+		eltern.btf[27].setFont(fontcourier);
+		eltern.btf[27].setForeground(Color.BLUE);
+
+		dum.add(eltern.btf[27],ccdum.xy(3,1));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xy(1,1));
+//                                   1             2         3             4          5
+		dummy = new FormLayout("fill:0:grow(0.33),20dlu,fill:0:grow(0.33),20dlu,fill:0:grow(0.33)",
+//  		 1  2   3    4   5
+			"p,2dlu,1px,2dlu,p");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		eltern.barzttf[0] = new JRtaTextField("nix",true);
+		eltern.barzttf[0].setName("ARZT1");
+		eltern.barzttf[0].setFont(fontcourier);
+		eltern.barzttf[0].setForeground(Color.BLUE);
+		dum.add(eltern.barzttf[0],ccdum.xy(1, 1));
+
+		eltern.barzttf[1] = new JRtaTextField("nix",true);
+		eltern.barzttf[1].setName("ARZT2");
+		eltern.barzttf[1].setFont(fontcourier);
+		eltern.barzttf[1].setForeground(Color.BLUE);
+		dum.add(eltern.barzttf[1],ccdum.xy(3, 1));
+
+		eltern.barzttf[2] = new JRtaTextField("nix",true);
+		eltern.barzttf[2].setName("ARZT3");
+		eltern.barzttf[2].setFont(fontcourier);
+		eltern.barzttf[2].setForeground(Color.BLUE);
+		dum.add(eltern.barzttf[2],ccdum.xy(5, 1));
+		dum.add(getRand(Color.BLACK),ccdum.xy(1,3));
+		dum.add(getRand(Color.BLACK),ccdum.xy(3,3));
+		dum.add(getRand(Color.BLACK),ccdum.xy(5,3));
+		dum.add(getLabel("Ltd. Ärztin / ltd. Arzt"),ccdum.xy(1,5));
+		dum.add(getLabel("Oberärztin / Oberarzt"),ccdum.xy(3,5));
+		dum.add(getLabel("Stat.-Ärztin / Stat.-Arzt"),ccdum.xy(5,5));
+		dum.getPanel().validate();
+		lei1.add(dum.getPanel(),ccl1.xyw(1, 3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
+		
+		lei1.getPanel().validate();
+		return lei1.getPanel();
+		
+	}
+
+	
 	private JPanel getBlock1(){
 		//280 330
 		FormLayout laytit = new FormLayout("250dlu,0dlu,300dlu","2dlu,p:g");
@@ -1332,6 +1397,12 @@ public class Eb1 {
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontklein);
 		return lab;
+	}
+	private JPanel getRand(Color col){
+		JPanel pan = new JPanel();
+		pan.setOpaque(false);
+		pan.setBorder(BorderFactory.createLineBorder(col));
+		return pan;
 	}
 	class JLabelX extends JLabel{
 		public JLabelX(String text){

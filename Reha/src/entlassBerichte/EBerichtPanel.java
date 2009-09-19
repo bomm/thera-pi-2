@@ -35,6 +35,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import com.jgoodies.forms.layout.CellConstraints;
+
 import events.PatStammEventClass;
 import events.PatStammEventListener;
 import events.RehaEvent;
@@ -77,6 +79,8 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 	IFrame officeFrame = null;
 	RehaEventClass evt = null;
 	static ITextDocument document = null;
+	
+	public JRtaTextField[] barzttf = {null,null,null}; 
 
 	public JRtaTextField[] btf = {  null,null,null,null,null,null,null,null,null,null,
 									null,null,null,null,null,null,null,null,null,null,
@@ -90,6 +94,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 	};
 	
 	public JRtaCheckBox[] bchb = {  null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
 									null,null,null,null,null,null,null,null,null,null,
 									null,null,null,null,null,null,null,null,null,null,
 									null,null,null,null,null,null,null,null,null,null
@@ -274,14 +279,14 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		gutbut[0].setActionCommand("gutsave");
 		gutbut[0].addActionListener(this);		
 		jtb.add(gutbut[0]);
-
+/*
 		gutbut[4] = new JButton();
 		gutbut[4].setIcon(new ImageIcon(SystemConfig.hmSysIcons.get("ooowriter").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
 		gutbut[4].setToolTipText("Freitext starten");
 		gutbut[4].setActionCommand("guttext");
 		gutbut[4].addActionListener(this);		
 		jtb.add(gutbut[4]);
-		
+*/		
 		jtb.addSeparator(new Dimension(30,0));
 		
 		gutbut[1] = new JButton();
