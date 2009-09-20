@@ -307,7 +307,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		
 		gutbut[3] = new JButton();
 		gutbut[3].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		gutbut[3].setToolTipText("Werkzeugksten für Gutachten");
+		gutbut[3].setToolTipText("Werkzeugkasten für Gutachten");
 		gutbut[3].setActionCommand("guttools");
 		gutbut[3].addActionListener(this);		
 		jtb.add(gutbut[3]);

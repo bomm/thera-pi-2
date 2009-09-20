@@ -1,8 +1,16 @@
 package entlassBerichte;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Rectangle;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -18,6 +26,7 @@ import org.jdesktop.swingx.JXPanel;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
+import terminKalender.datFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -33,6 +42,7 @@ public class Eb2 {
 	Font fontarialfett = null;
 	Font fontarialnormal = null;
 	Font fontarialfettgross = null;
+	JScrollPane jscr = null;
 	public Eb2(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);
@@ -66,7 +76,23 @@ public class Eb2 {
 				pan.setVisible(true);
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run(){
-				 		  //eltern.btf[0].requestFocusInWindow();
+					 		if(!eltern.neu){
+					 			new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										try{
+							 			laden();
+							 			eltern.btf[0].requestFocusInWindow();
+							 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));
+										}catch(Exception ex){
+											ex.printStackTrace();
+										}
+										return null;
+									}
+					 				
+					 			}.execute();
+					 		}	
 				 	   }
 				}); 
 				}catch(Exception ex){
@@ -78,8 +104,67 @@ public class Eb2 {
 			
 		}.execute();
 	}
-	
+	private void laden(){
+		String berichtid = new Integer(eltern.berichtid).toString();
+		StringBuffer buf = new StringBuffer();
+		buf.append("select ");
+		for(int i = 25; i < 27;i++){
+			buf.append(eltern.btf[i].getName()+",");
+		}
+		for(int i = 17; i < 42;i++){
+			buf.append(eltern.bchb[i].getName()+",");
+		}
+		buf.append(eltern.bta[7].getName()+",");
+		buf.append("UNTDAT from bericht2 where berichtid='"+berichtid+"'");
+		holeSatz(buf);
+	}
+	private void holeSatz(StringBuffer buf){
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			rs = stmt.executeQuery(buf.toString());
+			if(rs.next()){
+				eltern.bta[7].setText( (rs.getString(eltern.bta[7].getName())==null  ? "" :  rs.getString(eltern.bta[7].getName())) ) ;
+				for(int i = 25; i < 27;i++){
+						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
+				}
+				for(int i = 17; i < 42;i++){
+					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+				}
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
 		
+	}
+	
 		
 	public JXPanel getSeite(){
 		return pan;
@@ -102,7 +187,7 @@ public class Eb2 {
 		//pb.add(getBezeichnung(),cc.xy(4,5,CellConstraints.RIGHT,CellConstraints.FILL));
 		//pb.add(getBeurteilung1(),cc.xy(4,6,CellConstraints.RIGHT,CellConstraints.FILL));
 		
-		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
+		jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		jscr.validate();
 		return jscr;
@@ -157,7 +242,7 @@ public class Eb2 {
 		JLabel lab = new JLabel("Datum der Unterschrift:");
 		lab.setFont(this.fontarialnormal);
 		dum.add(lab,ccdum.xy(1,1));
-		eltern.btf[27] = new JRtaTextField("DATUM",true);
+		eltern.btf[27] = new JRtaTextField("DATUM",false);
 		eltern.btf[27].setName("UNTDAT");
 		dum.add(eltern.btf[27],ccdum.xy(3,1));
 		dum.getPanel().validate();
@@ -169,13 +254,13 @@ public class Eb2 {
 		dum = new PanelBuilder(dummy);
 		dum.getPanel().setOpaque(false);
 		ccdum = new CellConstraints();
-		eltern.barzttf[0] = new JRtaTextField("nix",true);
+		eltern.barzttf[0] = new JRtaTextField("nix",false);
 		eltern.barzttf[0].setName("ARZT1");
 		dum.add(eltern.barzttf[0],ccdum.xy(1, 1));
-		eltern.barzttf[1] = new JRtaTextField("nix",true);
+		eltern.barzttf[1] = new JRtaTextField("nix",false);
 		eltern.barzttf[1].setName("ARZT2");
 		dum.add(eltern.barzttf[1],ccdum.xy(3, 1));
-		eltern.barzttf[2] = new JRtaTextField("nix",true);
+		eltern.barzttf[2] = new JRtaTextField("nix",false);
 		eltern.barzttf[2].setName("ARZT3");
 		dum.add(eltern.barzttf[2],ccdum.xy(5, 1));
 		dum.add(getRand(Color.BLACK),ccdum.xy(1,3));
@@ -850,12 +935,12 @@ public class Eb2 {
 		CellConstraints ccli = new CellConstraints();
 		plinks.add(getLabelKleinRot("Bezeichnung der Tätigkeit:"),ccli.xywh(2, 2, 2,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 2, 1, 2));
-		eltern.btf[25] = new JRtaTextField("nix",true);
+		eltern.btf[25] = new JRtaTextField("nix",false);
 		eltern.btf[25].setName("TAET");
 		plinks.add(eltern.btf[25],ccli.xy(6, 3,CellConstraints.FILL,CellConstraints.BOTTOM));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(8, 2, 1, 2));
 		plinks.add(getLabelKleinRot("Berufsklassenschlüssel"),ccli.xy(10,2));
-		eltern.btf[26] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[26] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[26].setName("BKS");
 		eltern.btf[26].setEnabled(false);
 		plinks.add(eltern.btf[26],ccli.xy(10, 3,CellConstraints.FILL,CellConstraints.BOTTOM));

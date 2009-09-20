@@ -1,11 +1,18 @@
 package entlassBerichte;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -22,6 +29,10 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import terminKalender.datFunk;
+
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.text.ITextDocument;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -43,6 +54,7 @@ public class Eb1 {
 	String[] vorherau = {"","0","1","2","3","9"};
 	String[] dmp = {"","0","1","2","3","4","5","6","7"};
 	JLabel titel = null;
+	JScrollPane jscr = null;
 	
 	public Eb1(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
@@ -78,10 +90,30 @@ public class Eb1 {
 				pan.setVisible(true);
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run(){
-				 		  eltern.btf[0].requestFocusInWindow();
+				 		if(!eltern.neu){
+				 			new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+									try{
+									eltern.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+									Reha.thisClass.progressStarten(true);	
+						 			laden();
+						 			eltern.btf[0].requestFocusInWindow();
+						 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));
+						 			Reha.thisClass.progressStarten(false);
+						 			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+									}catch(Exception ex){
+										ex.printStackTrace();
+									}
+									return null;
+								}
+				 				
+				 			}.execute();
+				 		}	
+				 		  
 				 	   }
-				}); 	 
-
+				});
 				return null;
 			}
 			
@@ -90,6 +122,89 @@ public class Eb1 {
 	public JXPanel getSeite(){
 		return pan;
 	}
+	private void laden(){
+		//"bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+		String berichtid = new Integer(eltern.berichtid).toString();
+		StringBuffer buf = new StringBuffer();
+		buf.append("select ");
+		for(int i = 0; i < 25;i++){
+			buf.append(eltern.btf[i].getName()+",");
+		}
+		for(int i = 0; i < 20;i++){
+			buf.append(eltern.bcmb[i].getName()+",");
+		}
+		for(int i = 0; i < 17;i++){
+			buf.append(eltern.bchb[i].getName()+",");
+		}
+		for(int i = 0; i < 7;i++){
+			buf.append(eltern.bta[i].getName()+",");
+		}
+		
+		buf.append("UNTDAT from bericht2 where berichtid='"+berichtid+"'");
+		//System.out.println(buf.toString());
+		holeSatz(buf);
+	}
+	private void holeSatz(StringBuffer buf){
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			
+			rs = stmt.executeQuery(buf.toString());
+
+			if(rs.next()){
+				for(int i = 0; i < 7;i++){
+					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
+				}
+				for(int i = 0; i < 25;i++){
+					if("AUFDAT3ENTDAT3UNTDATGEBOREN".contains(eltern.btf[i].getName())){
+						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  datFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
+					}else{
+						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
+					}
+				}
+				for(int i = 0; i < 17;i++){
+					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+				}
+				for(int i = 0; i < 20;i++){
+					eltern.bcmb[i].setSelectedItem( (rs.getString(eltern.bcmb[i].getName())==null  ? "" :  rs.getString(eltern.bcmb[i].getName())) );
+				}
+
+
+
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		
+	}
+
 	/****************************
 	 * 
 	 * 
@@ -123,7 +238,7 @@ public class Eb1 {
 		pb.add(getBlock7(),cc.xy(3, 16));
 		pb.getPanel().validate();
 		
-		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
+		jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		jscr.validate();
 		return jscr;
@@ -152,7 +267,7 @@ public class Eb1 {
 		JLabel lab = new JLabel("Datum der Unterschrift:");
 		lab.setFont(this.fontarialnormal);
 		dum.add(lab,ccdum.xy(1,1));
-		eltern.btf[27] = new JRtaTextField("DATUM",true);
+		eltern.btf[27] = new JRtaTextField("DATUM",false);
 		eltern.btf[27].setName("UNTDAT");
 		eltern.btf[27].setFont(fontcourier);
 		eltern.btf[27].setForeground(Color.BLUE);
@@ -167,19 +282,19 @@ public class Eb1 {
 		dum = new PanelBuilder(dummy);
 		dum.getPanel().setOpaque(false);
 		ccdum = new CellConstraints();
-		eltern.barzttf[0] = new JRtaTextField("nix",true);
+		eltern.barzttf[0] = new JRtaTextField("nix",false);
 		eltern.barzttf[0].setName("ARZT1");
 		eltern.barzttf[0].setFont(fontcourier);
 		eltern.barzttf[0].setForeground(Color.BLUE);
 		dum.add(eltern.barzttf[0],ccdum.xy(1, 1));
 
-		eltern.barzttf[1] = new JRtaTextField("nix",true);
+		eltern.barzttf[1] = new JRtaTextField("nix",false);
 		eltern.barzttf[1].setName("ARZT2");
 		eltern.barzttf[1].setFont(fontcourier);
 		eltern.barzttf[1].setForeground(Color.BLUE);
 		dum.add(eltern.barzttf[1],ccdum.xy(3, 1));
 
-		eltern.barzttf[2] = new JRtaTextField("nix",true);
+		eltern.barzttf[2] = new JRtaTextField("nix",false);
 		eltern.barzttf[2].setName("ARZT3");
 		eltern.barzttf[2].setFont(fontcourier);
 		eltern.barzttf[2].setForeground(Color.BLUE);
@@ -608,7 +723,7 @@ public class Eb1 {
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints();
 		tit.getPanel().validate();
-		eltern.btf[22] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[22] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[22].setName("F_114");
 		tit.add(eltern.btf[22],cctit.xy(2,2));
 		FormLayout entlay = new FormLayout("55dlu","p,p");
@@ -624,7 +739,7 @@ public class Eb1 {
 		tit.add(ent.getPanel(),cctit.xy(4,2,CellConstraints.FILL,CellConstraints.TOP));		
 		
 		
-		eltern.btf[23] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[23] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[23].setName("F_117");		
 		tit.add(eltern.btf[23],cctit.xy(2,4));
 		entlay = new FormLayout("55dlu","p,p");
@@ -640,7 +755,7 @@ public class Eb1 {
 		tit.add(ent.getPanel(),cctit.xy(4,4,CellConstraints.FILL,CellConstraints.TOP));
 		
 		
-		eltern.btf[24] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[24] = new JRtaTextField("ZAHLEN",false);
 		tit.add(eltern.btf[24],cctit.xy(2,6));
 		eltern.btf[24].setName("F_120");
 		entlay = new FormLayout("55dlu","p,p");
@@ -794,7 +909,7 @@ public class Eb1 {
 		lab = getLabel("74");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.btf[17] = new JRtaTextField("GROSS",true);
+		eltern.btf[17] = new JRtaTextField("GROSS",false);
 		eltern.btf[17].setName("F_74");
 		ent.add(eltern.btf[17],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(4, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
@@ -860,7 +975,7 @@ public class Eb1 {
 		lab = getLabel("82");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.btf[18] = new JRtaTextField("GROSS",true);
+		eltern.btf[18] = new JRtaTextField("GROSS",false);
 		eltern.btf[18].setName("F_82");
 		ent.add(eltern.btf[18],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(4, 7,CellConstraints.LEFT,CellConstraints.BOTTOM));
@@ -917,7 +1032,7 @@ public class Eb1 {
 		lab = getLabel("90");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.btf[19] = new JRtaTextField("GROSS",true);
+		eltern.btf[19] = new JRtaTextField("GROSS",false);
 		eltern.btf[19].setName("F_90");
 		ent.add(eltern.btf[19],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(4, 10,CellConstraints.LEFT,CellConstraints.BOTTOM));
@@ -974,7 +1089,7 @@ public class Eb1 {
 		lab = getLabel("98");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.btf[20] = new JRtaTextField("GROSS",true);
+		eltern.btf[20] = new JRtaTextField("GROSS",false);
 		eltern.btf[20].setName("F_98");
 		ent.add(eltern.btf[20],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(4, 13,CellConstraints.LEFT,CellConstraints.BOTTOM));
@@ -1031,7 +1146,7 @@ public class Eb1 {
 		lab = getLabel("106");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.btf[21] = new JRtaTextField("GROSS",true);
+		eltern.btf[21] = new JRtaTextField("GROSS",false);
 		eltern.btf[21].setName("F_106");
 		ent.add(eltern.btf[21],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(4, 16,CellConstraints.LEFT,CellConstraints.BOTTOM));
@@ -1254,24 +1369,24 @@ public class Eb1 {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(6,2));
 
-		eltern.btf[0] = new JRtaTextField("GROSS",true);
+		eltern.btf[0] = new JRtaTextField("GROSS",false);
 		eltern.btf[0].setName("VNUMMER");
 		tit.add(eltern.btf[0],cctit.xyw(2,3,3));
-		eltern.btf[1] = new JRtaTextField("GROSS",true);
+		eltern.btf[1] = new JRtaTextField("GROSS",false);
 		eltern.btf[1].setName("AIGR");
 		tit.add(eltern.btf[1],cctit.xy(6,3));
 		
 		lab = getLabel ("Name, Vorname:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,4,3));
-		eltern.btf[2] = new JRtaTextField("nix",true);
+		eltern.btf[2] = new JRtaTextField("nix",false);
 		eltern.btf[2].setName("NAMEVOR");
 		tit.add(eltern.btf[2],cctit.xyw(2,5,5));
 		
 		lab = getLabel ("Geburtsdatum:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,6,3));
-		eltern.btf[3] = new JRtaTextField("DATUM",true);
+		eltern.btf[3] = new JRtaTextField("DATUM",false);
 		eltern.btf[3].setName("GEBOREN");
 		tit.add(eltern.btf[3],cctit.xy(2,7));
 		tit.add(getLabel("(Sofern nicht in Vers. Nr. enthalten)"),cctit.xyw(4,7,3));
@@ -1279,7 +1394,7 @@ public class Eb1 {
 		lab = getLabel ("Straße,Hausnummer:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,8,3));
-		eltern.btf[4] = new JRtaTextField("nix",true);
+		eltern.btf[4] = new JRtaTextField("nix",false);
 		eltern.btf[4].setName("STRASSE");
 		tit.add(eltern.btf[4],cctit.xyw(2,9,5));
 		
@@ -1289,17 +1404,17 @@ public class Eb1 {
 		lab = getLabel ("Wohnort");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(4,10));
-		eltern.btf[5] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[5] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[5].setName("PLZ");
 		tit.add(eltern.btf[5],cctit.xy(2,11));
-		eltern.btf[6] = new JRtaTextField("nix",true);
+		eltern.btf[6] = new JRtaTextField("nix",false);
 		eltern.btf[6].setName("ORT");
 		tit.add(eltern.btf[6],cctit.xyw(4,11,3));
 
 		lab = getLabel("Versicherter (Name, Vorname) falls nicht mit Patient indentisch");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,12,5));
-		eltern.btf[7] = new JRtaTextField("nix",true);
+		eltern.btf[7] = new JRtaTextField("nix",false);
 		eltern.btf[7].setName("VNAMEVO");
 		tit.add(eltern.btf[7],cctit.xyw(2,13,5));
 		tit.getPanel().validate();
@@ -1326,10 +1441,10 @@ public class Eb1 {
 		lab = getLabel("BNR:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(4,2));
-		eltern.btf[8] = new JRtaTextField("nix",true);
+		eltern.btf[8] = new JRtaTextField("nix",false);
 		eltern.btf[8].setName("MSNR");
 		tit.add(eltern.btf[8],cctit.xy(2,4));
-		eltern.btf[9] = new JRtaTextField("nix",true);
+		eltern.btf[9] = new JRtaTextField("nix",false);
 		eltern.btf[9].setName("BNR");
 		tit.add(eltern.btf[9],cctit.xy(4,4));
 		
@@ -1366,8 +1481,9 @@ public class Eb1 {
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,21,3));
 		
-		eltern.btf[10] = new JRtaTextField("ZAHLEN",true);
+		eltern.btf[10] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[10].setName("ABTEILUNG");
+		eltern.btf[10].setText("2300");
 		tit.add(eltern.btf[10],cctit.xy(6,21));
 		
 		return tit.getPanel();
