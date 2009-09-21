@@ -112,37 +112,37 @@ public class Eb3 implements RehaEventListener  {
 	    nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
 	    
 	    if(nativeView == null){
-	    	System.out.println("nativeView == null");
+	    	//System.out.println("nativeView == null");
 	    }
 	    if(parent == null){
-	    	System.out.println("parent == null");
+	    	//System.out.println("parent == null");
 	    }
 	    parent.add(nativeView);
 	    
 	    parent.addContainerListener(new ContainerAdapter(){
 	    	public void componentAdded(ContainerEvent e) {
-	    		System.out.println(" added to "+e);
+	    		//System.out.println(" added to "+e);
 	    	    }
 	    	    public void componentRemoved(ContainerEvent e) {
-	    		System.out.println(" removed from "+e);
+	    		//System.out.println(" removed from "+e);
 	    	    }
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
-	        System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
-	          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
-	          parent.getLayout().layoutContainer(parent);
-	          parent.repaint();
+	        	//System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
+		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
+		          parent.getLayout().layoutContainer(parent);
+		          parent.repaint();
 	        }  
 	        public void componentHidden(ComponentEvent e) {
-	            System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
+	            //System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
 	        }
 
 	        public void componentMoved(ComponentEvent e) {
-	        	System.out.println(e.getComponent().getClass().getName() + " --- Moved");
+	        	//System.out.println(e.getComponent().getClass().getName() + " --- Moved");
 	        }
 	        public void componentShown(ComponentEvent e) {
-	        	System.out.println(e.getComponent().getClass().getName() + " --- Shown");
+	        	//System.out.println(e.getComponent().getClass().getName() + " --- Shown");
 	            nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 		        parent.getLayout().layoutContainer(parent);
 		        parent.setVisible(true);
@@ -154,7 +154,7 @@ public class Eb3 implements RehaEventListener  {
 	    parent.getLayout().layoutContainer(parent);
 	    eltern.officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();
-	    System.out.println("natveView eingehängt in Panel "+parent.getName());
+	    //System.out.println("natveView eingehängt in Panel "+parent.getName());
     return eltern.officeFrame;
   }
 	public void neuAnhaengen(){
@@ -168,7 +168,7 @@ public class Eb3 implements RehaEventListener  {
 			 			EBerichtPanel.document.getFrame().updateDispatches();
 						Thread.sleep(100);
 						pan.setVisible(false);
-						System.out.println("Neu eingehängt----->");
+						//System.out.println("Neu eingehängt----->");
 						
 						nativeView.setVisible(true);
 						pan.getLayout().layoutContainer(pan);

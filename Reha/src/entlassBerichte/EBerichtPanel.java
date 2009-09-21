@@ -101,6 +101,32 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 	};
 	public JTextArea[] 	  bta = {  null,null,null,null,null,null,null,null,null,null};
 
+	public JRtaComboBox[] ktlcmb={  null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null
+	};
+	public JRtaTextField[] ktltfc={ null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null
+	};
+
+	public JRtaTextField[] ktltfd={ null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null
+	};
+	public JRtaTextField[] ktltfa={ null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null,
+									null,null,null,null,null,null,null,null,null,null
+	};
+	
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu ){
 		setBorder(null);
 		

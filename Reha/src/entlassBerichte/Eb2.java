@@ -43,6 +43,8 @@ public class Eb2 {
 	Font fontarialnormal = null;
 	Font fontarialfettgross = null;
 	JScrollPane jscr = null;
+	Vector ktl = new Vector();
+	String[] sktl = null;
 	public Eb2(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);

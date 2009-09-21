@@ -18,6 +18,8 @@ import javax.swing.JComboBox;
 
 public class JRtaComboBox extends JComboBox implements ActionListener,PropertyChangeListener,FocusListener,KeyListener{
 public Vector vec  = null;
+public int cmbdisplay;
+public int cmbretvalue;
 public JRtaComboBox(){
 	super();
 	addKeyListener(this);
@@ -28,9 +30,24 @@ public JRtaComboBox(String[] ss){
 	addKeyListener(this);
 	addActionListener(this);
 }
-public JRtaComboBox(Vector ve){
+public JRtaComboBox(Vector<String> ve){
 	super();
 	this.vec = ve;
+	if(this.vec.get(0) instanceof Vector){
+		fillCombo(this.vec);		
+	}else{
+		fillOneDimension(this.vec);
+	}
+
+	addKeyListener(this);
+	addActionListener(this);
+}
+
+public JRtaComboBox(Vector<Vector<String>> ve,int item,int ret){
+	super();
+	this.vec = ve;
+	this.cmbdisplay = item;
+	this.cmbretvalue = ret;
 	if(this.vec.get(0) instanceof Vector){
 		fillCombo(this.vec);		
 	}else{
@@ -50,12 +67,18 @@ private void fillOneDimension(Vector ve){
 private void fillCombo(Vector ve){
 	int lang = ve.size()-1;
 	for(int i = 0;i < lang;i++){
-		addItem( (String) ((Vector)ve.get(i)).get(0));
+		addItem( (String) ((Vector)ve.get(i)).get(this.cmbdisplay));
 	}
 	
 }
 public Object getSecValue(){
-	return ((Object)((Vector)vec.get(this.getSelectedIndex())).get(1) );
+	return ((Object)((Vector)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
+}
+public Object getValue(){
+	return ((String)((Vector)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
+}
+public Object getValueAt(int pos){
+	return ((String)((Vector)vec.get(this.getSelectedIndex())).get(pos) );
 }
 
 @Override

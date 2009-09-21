@@ -634,12 +634,12 @@ public class SqlInfo {
 	}
 /*****************************************/
 	/*****************************************/
-	public static Vector<String> holeFelder(String xstmt){
+	public static Vector<Vector<String>> holeFelder(String xstmt){
 		Statement stmt = null;
 		ResultSet rs = null;
 		String ret = "";
 		Vector<String> retvec = new Vector<String>();
-		Vector<Vector> retkomplett = new Vector<Vector>();	
+		Vector<Vector<String>> retkomplett = new Vector<Vector<String>>();	
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
@@ -660,7 +660,7 @@ public class SqlInfo {
 						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 
 				 }
-				 retkomplett.add((Vector)retvec.clone());
+				 retkomplett.add((Vector<String>)retvec.clone());
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
@@ -684,7 +684,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retkomplett.clone();
+		return (Vector<Vector<String>>) retkomplett.clone();
 	}
 /*****************************************/
 
