@@ -3,6 +3,8 @@ package entlassBerichte;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -114,7 +116,7 @@ public class Eb4 {
 		PanelBuilder erleut = new PanelBuilder(layErlaeut);
 		erleut.setOpaque(false); 
 		CellConstraints ccerlaeut = new CellConstraints();
-									//      1    2     3   4    5        6            7     8      9    10    1     12
+									//      1    2     3   4    5        6            7     8      9    10    1     12          13
 		FormLayout dummy = new FormLayout("2dlu,15dlu,2dlu,1px,10dlu,fill:0:grow(1.0),10dlu,50dlu,10dlu,30dlu,10dlu,right:40dlu,10dlu",
 	//    1   2  3    4     5   6
 		"2dlu,p,5dlu,30dlu,5dlu,p");
@@ -163,7 +165,7 @@ public class Eb4 {
 			item += 2;
 		}
 		kodierung.getPanel().validate();
-		dum.add(kodierung.getPanel(),ccdum.xywh(3,6,10,1,CellConstraints.FILL,CellConstraints.FILL));
+		dum.add(kodierung.getPanel(),ccdum.xywh(3,6,11,1,CellConstraints.FILL,CellConstraints.FILL));
 		dum.getPanel().validate();
 		erleut.add(dum.getPanel(),ccerlaeut.xy(1, 1));
 
@@ -218,12 +220,16 @@ public class Eb4 {
 			dum.add(getRand(Color.GRAY),cckopf.xywh(4, 1, 1, 2,CellConstraints.DEFAULT,CellConstraints.FILL));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
 			eltern.ktlcmb[i+((seite-1)*25)] = new JRtaComboBox();
+			// set Name nacholen
 			dum.add(eltern.ktlcmb[i+((seite-1)*25)],ccdum.xy(6, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfc[i+((seite-1)*25)] = new JRtaTextField("nix",false);
+			// set Name nacholen
 			dum.add(eltern.ktltfc[i+((seite-1)*25)],ccdum.xy(8, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfd[i+((seite-1)*25)] = new JRtaTextField("nix",false);
+			// set Name nacholen
 			dum.add(eltern.ktltfd[i+((seite-1)*25)],ccdum.xy(10, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfa[i+((seite-1)*25)] = new JRtaTextField("ZAHLEN",false);
+			// set Name nacholen
 			dum.add(eltern.ktltfa[i+((seite-1)*25)],ccdum.xy(12, 2,CellConstraints.FILL,CellConstraints.CENTER));			
 			dum.getPanel().validate();
 			kopf.add(dum.getPanel(),cckopf.xy(1,(i+1)) );
@@ -300,6 +306,24 @@ public class Eb4 {
 			ktltabelle = "masntext";
 		}
 		vec = SqlInfo.holeFelder("select * from "+ktltabelle);
+		Comparator<Vector> comparator = new Comparator<Vector>() {
+		    public int compare(String s1, String s2) {
+		        String[] strings1 = s1.split("\\s");
+		        String[] strings2 = s2.split("\\s");
+		        return strings1[strings1.length - 1]
+		            .compareTo(strings2[strings2.length - 1]);
+		    }
+
+			@Override
+			public int compare(Vector o1, Vector o2) {
+				// TODO Auto-generated method stub
+				String s1 = (String)o1.get(0);
+				String s2 = (String)o2.get(0);
+				return s1.compareTo(s2);
+			}
+		};
+		Collections.sort(vec,comparator);		
+		
 		System.out.println("Dit ktltabelle = "+ktltabelle);
 		Vector<String> vec2 = new Vector<String>();
 		vec2.add("./.");
