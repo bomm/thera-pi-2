@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
@@ -49,13 +50,22 @@ public class Eb4 {
 		fontcourier =new Font("Courier New",Font.PLAIN,12);
 		fontarialfettgross = new Font("Arial",Font.BOLD,12);
 
-		pan.add(constructSeite());
+
 
 		new SwingWorker<Void,Void>(){
 			
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
+					pan.add(constructSeite());
+					for(int i = 8; i < 10;i++){
+						eltern.bta[i].setFont(fontcourier);
+						eltern.bta[i].setForeground(Color.BLUE);
+						eltern.bta[i].setWrapStyleWord(true);
+						eltern.bta[i].setLineWrap(true);
+						eltern.bta[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+					}
+
 					laden(eltern.neu);
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -69,43 +79,133 @@ public class Eb4 {
 	}
 	public JScrollPane constructSeite(){
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.25),p,fill:0:grow(0.25),10dlu",
-				// 1    2   3     4   5    
-				"20dlu, p ,10dlu, p,20dlu");
+				// 1    2   3    4   5   6  7     
+				"20dlu, p ,20dlu,p,20dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
-		pb.add(getSeite1(1),cc.xy(3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
+		pb.add(getSeiten(1),cc.xy(3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
+		pb.add(getSeiten(2),cc.xy(3,4,CellConstraints.FILL,CellConstraints.DEFAULT));
+
 		jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		jscr.validate();
 		return jscr;
 	}
 	
-	private JPanel getSeite1(int iseite){
+	private JPanel getSeiten(int iseite){
 		FormLayout laySeite = new FormLayout("fill:0:grow(0.5),550dlu,fill:0:grow(0.5)",
-				//  1    2   3  4    5     6     7 
-				  " 0dlu,p, 5dlu,p");		
+				//  1    2   3   4   5   6  7    8  9   10  11
+				  " 0dlu,p, 5dlu,p, 5dlu,p, 0dlu,p,10dlu");		
 		PanelBuilder seite = new PanelBuilder(laySeite);
 		seite.setOpaque(false); 
 		CellConstraints ccseite = new CellConstraints();
 		seite.getPanel().setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		seite.add(getKopf(iseite),ccseite.xy(2,2));		
-		seite.add(getLeistung(iseite),ccseite.xy(2,4));
+		seite.add(getKopf(iseite),ccseite.xy(2,2));	
+		seite.add(getLegende(),ccseite.xy(2,4));
+		seite.add(getLeistung(iseite),ccseite.xy(2,6));
+		seite.add(getErlaeuterung(iseite),ccseite.xy(2,8,CellConstraints.FILL,CellConstraints.DEFAULT));
 		seite.getPanel().validate();
 		return seite.getPanel();
 		
 	}
+	private JPanel getErlaeuterung(int seite){
+		FormLayout layErlaeut = new FormLayout("fill:0:grow(1.0)","p");
+		PanelBuilder erleut = new PanelBuilder(layErlaeut);
+		erleut.setOpaque(false); 
+		CellConstraints ccerlaeut = new CellConstraints();
+									//      1    2     3   4    5        6            7     8      9    10    1     12
+		FormLayout dummy = new FormLayout("2dlu,15dlu,2dlu,1px,10dlu,fill:0:grow(1.0),10dlu,50dlu,10dlu,30dlu,10dlu,right:40dlu,10dlu",
+	//    1   2  3    4     5   6
+		"2dlu,p,5dlu,30dlu,5dlu,p");
+		PanelBuilder dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		CellConstraints ccdum = new CellConstraints();
+		JLabel jlab = new JLabel("Erläuterungen:");
+		jlab.setFont(fontarialfett);
+		dum.add(jlab,ccdum.xywh(3,2,6,1));
+		int area = (seite == 1 ? 8 : 9);
+		String name = (seite == 1 ? "TERLEUT1" : "TERLEUT2");
+		eltern.bta[area] = new JTextArea();
+		eltern.bta[area].setName(name);
+		dum.add(eltern.bta[area],ccdum.xywh(3,4,10,1,CellConstraints.DEFAULT,CellConstraints.FILL));
+		FormLayout layKodierung = new FormLayout(
+				"fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,"+
+				"fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,fill:0:grow(0.10),2dlu,fill:0:grow(0.10)"
+				,"p");
+		PanelBuilder kodierung = new PanelBuilder(layKodierung); 
+		kodierung.setOpaque(false);
+		CellConstraints cckodierung = new CellConstraints();
+		String [] code = {"A = ","B = ","C = ","D = ","E = ","F = ","G = ","H = ","I = ",
+				"K = ","L = ","M = ","N = ","P = ","Q = ","R = ","S = ","T = ","U = ","Z = "};
+		String [] zeit = {"5 Min.","10 Min.","15 Min.","20 Min.","25 Min.","30 Min.","35 Min.","40 Min.","45 Min.",
+				"50 Min.","60 Min.","75 Min.","90 Min.","100 Min.","120 Min.","150 Min.","180 Min.","240 Min.","300 Min.","individuell"};
+		int durchlauf = 1;
+		int codes = 1;
+		int xpos = 1;
+		int item = 0;
+		FormLayout layCelle = new FormLayout("p,p","p,p");
+		PanelBuilder celle;
+		CellConstraints cccelle;
+		for(int i = 0; i < code.length;i+=2){
+			celle = new PanelBuilder(layCelle);
+			celle.getPanel().setOpaque(false);
+			cccelle = new CellConstraints();
+			celle.add(getLabel(code[item]),cckodierung.xy(1,1,CellConstraints.LEFT,CellConstraints.DEFAULT));
+			celle.add(getLabelKleinRot(zeit[item]),cckodierung.xy(2,1,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+			celle.add(getLabel(code[item+1]),cckodierung.xy(1,2,CellConstraints.LEFT,CellConstraints.DEFAULT));
+			celle.add(getLabelKleinRot(zeit[item+1]),cckodierung.xy(2,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+			celle.getPanel().validate();
+			kodierung.add(celle.getPanel(),cckodierung.xy(xpos, 1));
+			durchlauf ++;
+			codes +=2;
+			xpos += 2;
+			item += 2;
+		}
+		kodierung.getPanel().validate();
+		dum.add(kodierung.getPanel(),ccdum.xywh(3,6,10,1,CellConstraints.FILL,CellConstraints.FILL));
+		dum.getPanel().validate();
+		erleut.add(dum.getPanel(),ccerlaeut.xy(1, 1));
+
+		
+
+		erleut.getPanel().validate();
+		return erleut.getPanel(); 
+	}
+	private JPanel getLegende(){
+		FormLayout layLegende = new FormLayout("fill:0:grow(1.0)","p");
+		PanelBuilder legende = new PanelBuilder(layLegende);
+		legende.setOpaque(false); 
+		CellConstraints cclegende = new CellConstraints();
+								//           1    2    3   4     5          6          7    8      9    10     11        12          13
+		FormLayout dummy = new FormLayout("2dlu,15dlu,2dlu,1px,10dlu,fill:0:grow(1.0),10dlu,50dlu,10dlu,30dlu,10dlu,right:40dlu,10dlu",
+		"15dlu,0dlu");
+		PanelBuilder dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		CellConstraints ccdum = new CellConstraints();
+		dum.add(getLabelKleinRot("Leistung im Klartext"),ccdum.xy(6,1,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		dum.add(getLabelKleinRot("KTL - Code"),ccdum.xy(8,1,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		dum.add(getLabelKleinRot("Dauer"),ccdum.xy(10,1,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		dum.add(getLabelKleinRot("Anzahl"),ccdum.xy(12,1,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		dum.getPanel().validate();
+		legende.add(dum.getPanel(),cclegende.xy(1, 1));
+		legende.getPanel().validate();
+		return legende.getPanel();
+		
+	}	
+
+
 	private JPanel getLeistung(int seite){
 		FormLayout layKopf = new FormLayout("fill:0:grow(1.0)",
 			    //           5=F174  7=F175  9=F176   11=F177
-				// 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5  
-				  "p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p");		
+				// 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6  
+				  "p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p,p");		
 		PanelBuilder kopf = new PanelBuilder(layKopf);
 		kopf.setOpaque(false); 
 		CellConstraints cckopf = new CellConstraints();
-								//           1    2    3   4     5          6         7    8     9    10             11        12
-		FormLayout dummy = new FormLayout("2dlu,15dlu,2dlu,1px,2dlu,fill:0:grow(1.0),2dlu,30dlu,2dlu,15dlu,right:max(30dlu;p),2dlu",
-		"1px,15dlu");
+								//           1    2    3   4     5          6         7    8      9    10     11        12       13
+		FormLayout dummy = new FormLayout("2dlu,15dlu,2dlu,1px,10dlu,fill:0:grow(1.0),10dlu,50dlu,10dlu,30dlu,10dlu,right:40dlu,10dlu",
+		"1px,20dlu");
 		PanelBuilder dum;
 		CellConstraints ccdum;
 		JLabel lab;
@@ -116,12 +216,25 @@ public class Eb4 {
 			lab = new JLabel(new Integer(i+1+((seite-1)*25)).toString()+".");
 			dum.add(lab,ccdum.xy(2,2,CellConstraints.RIGHT,CellConstraints.CENTER));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(4, 1, 1, 2,CellConstraints.DEFAULT,CellConstraints.FILL));
-			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 12, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
+			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
 			eltern.ktlcmb[i+((seite-1)*25)] = new JRtaComboBox();
-			dum.add(eltern.ktlcmb[i],ccdum.xy(6, 2,CellConstraints.FILL,CellConstraints.CENTER));
+			dum.add(eltern.ktlcmb[i+((seite-1)*25)],ccdum.xy(6, 2,CellConstraints.FILL,CellConstraints.CENTER));
+			eltern.ktltfc[i+((seite-1)*25)] = new JRtaTextField("nix",false);
+			dum.add(eltern.ktltfc[i+((seite-1)*25)],ccdum.xy(8, 2,CellConstraints.FILL,CellConstraints.CENTER));
+			eltern.ktltfd[i+((seite-1)*25)] = new JRtaTextField("nix",false);
+			dum.add(eltern.ktltfd[i+((seite-1)*25)],ccdum.xy(10, 2,CellConstraints.FILL,CellConstraints.CENTER));
+			eltern.ktltfa[i+((seite-1)*25)] = new JRtaTextField("ZAHLEN",false);
+			dum.add(eltern.ktltfa[i+((seite-1)*25)],ccdum.xy(12, 2,CellConstraints.FILL,CellConstraints.CENTER));			
+			dum.getPanel().validate();
 			kopf.add(dum.getPanel(),cckopf.xy(1,(i+1)) );
 		}
-
+		dummy = new FormLayout("2dlu,15dlu,2dlu,1px,10dlu,fill:0:grow(1.0),10dlu,50dlu,10dlu,30dlu,10dlu,right:40dlu,10dlu",
+		"1px,0dlu");
+		dum = new PanelBuilder(dummy);
+		dum.getPanel().setOpaque(false);
+		ccdum = new CellConstraints();
+		dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));
+		kopf.add(dum.getPanel(),cckopf.xy(1,26) );
 		kopf.getPanel().validate();
 		return kopf.getPanel();
 	}
@@ -129,7 +242,7 @@ public class Eb4 {
 		FormLayout layKopf = new FormLayout("fill:0:grow(1.0)",
 			    //           5=F174  7=F175  9=F176   11=F177
 				//  1   2   3  4    5     6     7 
-				  "p,15dlu,p");		
+				  "p,p,p");		
 		PanelBuilder kopf = new PanelBuilder(layKopf);
 		kopf.setOpaque(false); 
 		CellConstraints cckopf = new CellConstraints();
@@ -197,12 +310,10 @@ public class Eb4 {
 		for(int i = 0;i < 50;i++){
 			eltern.ktlcmb[i].setDataVectorVector((Vector<Vector<String>>)vec, 0, 3);
 			//eltern.ktlcmb[i] = new JRtaComboBox((Vector<Vector<String>>)vec,0,3);
-			eltern.ktltfc[i] = new JRtaTextField("GROSS",false);
-			eltern.ktltfd[i] = new JRtaTextField("GROSS",false);
-			eltern.ktltfa[i] = new JRtaTextField("ZAHLEN",false);
+			//eltern.ktltfc[i] = new JRtaTextField("GROSS",false);
+			//eltern.ktltfd[i] = new JRtaTextField("GROSS",false);
+			//eltern.ktltfa[i] = new JRtaTextField("ZAHLEN",false);
 		}
-		eltern.ktlcmb[3].setSelectedIndex(5);
-		System.out.println(" Der Rückgabewert der Combobox = "+eltern.ktlcmb[3].getValue());
 	}
 	private JPanel getRand(Color col){
 		JPanel pan = new JPanel();
@@ -210,5 +321,17 @@ public class Eb4 {
 		pan.setBorder(BorderFactory.createLineBorder(col));
 		return pan;
 	}
+	private JLabel getLabel(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontklein);
+		return lab;
+	}	
+	private JLabel getLabelKleinRot(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontklein);
+		lab.setForeground(Color.RED);
+		return lab;
+	}
+	
 	
 }
