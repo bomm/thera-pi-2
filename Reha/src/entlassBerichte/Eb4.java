@@ -1,6 +1,7 @@
 package entlassBerichte;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.util.Vector;
 
@@ -60,7 +61,6 @@ public class Eb4 {
 			return null;
 			}
 		}.execute();	
-
 	}
 	public JXPanel getSeite(){
 		return pan;
@@ -72,8 +72,36 @@ public class Eb4 {
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
+		pb.add(getSeite1(1),cc.xy(3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
 		return pb.getPanel();
 	}
+	
+	private JPanel getSeite1(int iseite){
+		FormLayout laySeite = new FormLayout("fill:0:grow(0.5),550dlu,fill:0:grow(0.5)",
+				//  1   2   3  4    5     6     7 
+				  "15dlu,p,15dlu,p");		
+		PanelBuilder seite = new PanelBuilder(laySeite);
+		seite.setOpaque(false); 
+		CellConstraints ccseite = new CellConstraints();
+		seite.getPanel().setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		seite.add(getKopf(iseite),ccseite.xy(2,2));		
+		
+		seite.getPanel().validate();
+		return seite.getPanel();
+		
+	}
+	private JPanel getKopf(int seite){
+		FormLayout layKopf = new FormLayout("p,fill:0:grow(1.0)",
+			    //           5=F174  7=F175  9=F176   11=F177
+				//  1   2   3  4    5     6     7 
+				  "p,15dlu,p");		
+		PanelBuilder kopf = new PanelBuilder(layKopf);
+		kopf.setOpaque(false); 
+		CellConstraints cckopf = new CellConstraints();
+		kopf.getPanel().validate();
+		return kopf.getPanel();
+	}
+	
 	
 	
 	private void laden(boolean lneu){

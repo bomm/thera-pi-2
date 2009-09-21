@@ -66,7 +66,8 @@ public class Eb3 implements RehaEventListener  {
 		pan.setName("ooNativePanel");
 		//parken = new JXPanel();
 		//oopan = new JPanel(new BorderLayout());
-		
+		new Thread(){
+		public void run(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -98,6 +99,8 @@ public class Eb3 implements RehaEventListener  {
 				return null;
 			}
 		}.execute();
+		}
+		}.start();
 
 		//pan = new JXPanel();
 	}
