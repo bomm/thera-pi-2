@@ -57,6 +57,20 @@ public JRtaComboBox(Vector<Vector<String>> ve,int item,int ret){
 	addKeyListener(this);
 	addActionListener(this);
 }
+public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
+	this.removeAllItems();
+	this.vec = ve;
+	this.cmbdisplay = item;
+	this.cmbretvalue = ret;
+	if(this.vec.get(0) instanceof Vector){
+		fillCombo(this.vec);		
+	}else{
+		fillOneDimension(this.vec);
+	}
+}
+public void setDataVector(Vector <String> ve,int item,int ret){
+	
+}
 private void fillOneDimension(Vector ve){
 	int lang = ve.size();
 	for(int i = 0;i < lang;i++){
@@ -71,6 +85,7 @@ private void fillCombo(Vector ve){
 	}
 	
 }
+
 public Object getSecValue(){
 	return ((Object)((Vector)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
 }
