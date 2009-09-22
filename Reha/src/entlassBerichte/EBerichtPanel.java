@@ -20,14 +20,19 @@ import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -39,7 +44,16 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import com.jgoodies.forms.layout.CellConstraints;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfWriter;
 
 import events.PatStammEventClass;
 import events.PatStammEventListener;
@@ -264,10 +278,51 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 	private void doPrint(){
 		//name und Pfad der PDF
 		String pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite1-Variante2.pdf";
-		String test = "02020562S512";
+		PdfWriter writer2 = null;
+		PdfCopy writer = null;
+		PdfStamper stamper = null;
+		
+		String test = "23020562S512";
 			try {
+				String sdatei = "C:/ebericht1.pdf"; 
+				BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 				PdfReader reader = new PdfReader (pdfPfad);
+				//ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				//stamper = new PdfStamper(reader,baos);
+				stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
+				PdfContentByte cb = stamper.getOverContent(1);
+				cb.beginText();
+				cb.moveText(83.f, 760.f);
+				cb.setFontAndSize(bf,14);
+				cb.setCharacterSpacing(5.7f);
+				cb.showText(test);
+				cb.endText();
+				stamper.setFormFlattening(true);
+				stamper.close();
+				final String xdatei = sdatei;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+					       InputStream is = process.getInputStream();
+					       InputStreamReader isr = new InputStreamReader(is);
+					       BufferedReader br = new BufferedReader(isr);
+					       String line;
+					       while ((line = br.readLine()) != null) {
+					         System.out.println(line);
+					       }
+					       is.close();
+					       isr.close();
+					       br.close();
+						return null;
+					}
+				}.execute();
+				
+				
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
