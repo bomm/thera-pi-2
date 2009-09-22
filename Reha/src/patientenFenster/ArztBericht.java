@@ -811,8 +811,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", "");	
 				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", "");
 			}else{
-				String sblock = icfblock[i].getText().replaceAll("\\n", "")+"\r";
-				//String sblock = icfblock[i].getText();
+				//String sblock = icfblock[i].getText().replaceAll("\\n", "")+"\r";
+				String sblock = icfblock[i].getText()+"\n";
 				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">",sblock);
 				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
 			}

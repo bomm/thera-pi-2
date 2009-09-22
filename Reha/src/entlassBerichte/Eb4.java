@@ -229,15 +229,24 @@ public class Eb4 implements ActionListener {
 			eltern.ktlcmb[i+((seite-1)*25)] = new JRtaComboBox();
 			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(new Integer(i).toString());
 			eltern.ktlcmb[i+((seite-1)*25)].addActionListener(this);
+			eltern.ktlcmb[i+((seite-1)*25)].setMaximumRowCount( 35 );
 			// set Name nacholen
 			dum.add(eltern.ktlcmb[i+((seite-1)*25)],ccdum.xy(6, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfc[i+((seite-1)*25)] = new JRtaTextField("nix",false);
+			eltern.ktltfc[i+((seite-1)*25)].setFont(fontcourier);
+			eltern.ktltfc[i+((seite-1)*25)].setForeground(Color.BLUE);
+
 			// set Name nacholen
 			dum.add(eltern.ktltfc[i+((seite-1)*25)],ccdum.xy(8, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfd[i+((seite-1)*25)] = new JRtaTextField("nix",false);
+			eltern.ktltfd[i+((seite-1)*25)].setFont(fontcourier);
+			eltern.ktltfd[i+((seite-1)*25)].setForeground(Color.BLUE);
+
 			// set Name nacholen
 			dum.add(eltern.ktltfd[i+((seite-1)*25)],ccdum.xy(10, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfa[i+((seite-1)*25)] = new JRtaTextField("ZAHLEN",false);
+			eltern.ktltfa[i+((seite-1)*25)].setFont(fontcourier);
+			eltern.ktltfa[i+((seite-1)*25)].setForeground(Color.BLUE);
 			// set Name nacholen
 			dum.add(eltern.ktltfa[i+((seite-1)*25)],ccdum.xy(12, 2,CellConstraints.FILL,CellConstraints.CENTER));			
 			dum.getPanel().validate();
