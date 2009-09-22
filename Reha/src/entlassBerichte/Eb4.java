@@ -70,9 +70,12 @@ public class Eb4 implements ActionListener {
 						eltern.bta[i].setLineWrap(true);
 						eltern.bta[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					}
-
-					laden(eltern.neu);
-					inGuiInit = false;
+					new Thread(){
+						public void run(){
+							laden(eltern.neu);
+							inGuiInit = false;
+						}
+					}.start();
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -239,6 +242,13 @@ public class Eb4 implements ActionListener {
 			dum.add(eltern.ktltfa[i+((seite-1)*25)],ccdum.xy(12, 2,CellConstraints.FILL,CellConstraints.CENTER));			
 			dum.getPanel().validate();
 			kopf.add(dum.getPanel(),cckopf.xy(1,(i+1)) );
+			/*
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			*/
 		}
 		dummy = new FormLayout("2dlu,15dlu,2dlu,1px,10dlu,fill:0:grow(1.0),10dlu,50dlu,10dlu,30dlu,10dlu,right:40dlu,10dlu",
 		"1px,0dlu");
@@ -307,7 +317,7 @@ public class Eb4 implements ActionListener {
 		Vector<Vector<String>> vec = null;
 		String ktltabelle = "";
 		if(ktlneu){
-			ktltabelle = "masntext2";
+			ktltabelle = "masntex2";
 		}else{
 			ktltabelle = "masntext";
 		}

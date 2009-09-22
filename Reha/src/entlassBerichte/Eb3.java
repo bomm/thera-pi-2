@@ -72,6 +72,7 @@ public class Eb3 implements RehaEventListener  {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try {
+					Thread.sleep(30);
 					eltern.officeFrame = constructOOOFrame(Reha.officeapplication,pan);
 					configureOOOFrame(Reha.officeapplication,eltern.officeFrame);
 		        	DocumentDescriptor d = new DocumentDescriptor();
