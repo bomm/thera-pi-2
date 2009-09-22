@@ -1,5 +1,7 @@
 package entlassBerichte;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +20,7 @@ import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.ImageIcon;
@@ -36,6 +39,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import com.jgoodies.forms.layout.CellConstraints;
+import com.lowagie.text.pdf.PdfReader;
 
 import events.PatStammEventClass;
 import events.PatStammEventListener;
@@ -238,6 +242,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 			
 		}
 		if(cmd.equals("gutprint")){
+			doPrint();
 			
 		}
 		if(cmd.equals("guttools")){
@@ -253,7 +258,28 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		}
 		
 	}
-
+	/***********ab hier Christian's Funktion
+	 * 
+	 */
+	private void doPrint(){
+		//name und Pfad der PDF
+		String pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite1-Variante2.pdf";
+		String test = "02020562S512";
+			try {
+				PdfReader reader = new PdfReader (pdfPfad);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		 {
+			
+		}
+	}
+	/***********Ende Christian's Funktion
+	 * 
+	 */
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
