@@ -3,11 +3,14 @@ package entlassBerichte;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,7 +30,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class Eb4 {
+public class Eb4 implements ActionListener {
 	EBerichtPanel eltern = null;
 	JXPanel pan = null;
 	Font fontgross = null;
@@ -38,7 +41,7 @@ public class Eb4 {
 	Font fontarialnormal = null;
 	Font fontarialfettgross = null;
 	JScrollPane jscr = null;
-
+	boolean inGuiInit = true;
 	public Eb4(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);
@@ -69,6 +72,7 @@ public class Eb4 {
 					}
 
 					laden(eltern.neu);
+					inGuiInit = false;
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -220,6 +224,8 @@ public class Eb4 {
 			dum.add(getRand(Color.GRAY),cckopf.xywh(4, 1, 1, 2,CellConstraints.DEFAULT,CellConstraints.FILL));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
 			eltern.ktlcmb[i+((seite-1)*25)] = new JRtaComboBox();
+			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(new Integer(i).toString());
+			eltern.ktlcmb[i+((seite-1)*25)].addActionListener(this);
 			// set Name nacholen
 			dum.add(eltern.ktlcmb[i+((seite-1)*25)],ccdum.xy(6, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfc[i+((seite-1)*25)] = new JRtaTextField("nix",false);
@@ -329,7 +335,7 @@ public class Eb4 {
 		vec2.add("./.");
 		vec2.add("");
 		vec2.add("");
-		vec2.add("0");
+		vec2.add("");
 		vec.insertElementAt((Vector)((Vector<String>)vec2).clone(), 0);
 		for(int i = 0;i < 50;i++){
 			eltern.ktlcmb[i].setDataVectorVector((Vector<Vector<String>>)vec, 0, 3);
@@ -355,6 +361,20 @@ public class Eb4 {
 		lab.setFont(fontklein);
 		lab.setForeground(Color.RED);
 		return lab;
+	}
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(inGuiInit){
+			return;
+		}
+		String cmd = arg0.getActionCommand();
+		int combo = new Integer(cmd);
+
+		eltern.ktltfc[combo].setText((String)eltern.ktlcmb[combo].getValueAt(1));
+		eltern.ktltfd[combo].setText((String)eltern.ktlcmb[combo].getValueAt(2));
+		if(eltern.ktlcmb[combo].getSelectedIndex()==0){
+			eltern.ktltfa[combo].setText("");
+		}
 	}
 	
 	
