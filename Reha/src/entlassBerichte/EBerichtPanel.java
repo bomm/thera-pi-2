@@ -302,14 +302,30 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				//stamper = new PdfStamper(reader,baos);
 				stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
 				PdfContentByte cb = stamper.getOverContent(1);
+
 				cb.beginText();
 				//Einfacher Text
 				cb.moveText(83.f, 760.f);
-				cb.setFontAndSize(bf,14);
-				cb.setCharacterSpacing(5.7f);
+				cb.setFontAndSize(bf,12);
+				cb.setCharacterSpacing(6.9f);
 				cb.showText(test);
-				cb.setCharacterSpacing(1.0f);
+				Float[][] poswert = {{0.0f,0.0f},
+						{291.83f,759.80f},
+						{62.33f,745.17f},
+						
+				};
+				
 				cb.endText();
+				for(int i = 1; i < 2;i++){
+					cb.beginText();
+					cb.setFontAndSize(bf,12);
+					cb.moveText(poswert[i][0], poswert[i][1]);
+					
+					//cb.setCharacterSpacing(5.7f);
+					cb.showText(btf[i].getText());
+					cb.endText();
+				}
+				cb.setCharacterSpacing(1.0f);
 
 				// nur zur Überprüfung der Positionen
 				/*
