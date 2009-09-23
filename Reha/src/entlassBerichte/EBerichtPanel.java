@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
@@ -46,8 +47,13 @@ import org.jdesktop.swingx.painter.MattePainter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.GrayColor;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -256,7 +262,12 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 			
 		}
 		if(cmd.equals("gutprint")){
-			doPrint();
+			new Thread(){
+				public void run(){
+					doPrint();					
+				}
+			}.start();
+
 			
 		}
 		if(cmd.equals("guttools")){
@@ -287,18 +298,105 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				String sdatei = "C:/ebericht1.pdf"; 
 				BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 				PdfReader reader = new PdfReader (pdfPfad);
-				//ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				//stamper = new PdfStamper(reader,baos);
 				stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
 				PdfContentByte cb = stamper.getOverContent(1);
 				cb.beginText();
+				//Einfacher Text
 				cb.moveText(83.f, 760.f);
 				cb.setFontAndSize(bf,14);
 				cb.setCharacterSpacing(5.7f);
 				cb.showText(test);
+				cb.setCharacterSpacing(1.0f);
 				cb.endText();
+
+				// nur zur Überprüfung der Positionen
+				/*
+				cb.setColorStroke(new GrayColor(0.2f)) ;
+				cb.moveTo(80, 494);
+				cb.lineTo(80, 530);
+				cb.lineTo(318, 530);
+				cb.lineTo(318, 494);	
+				cb.lineTo(80, 494);
+				cb.stroke();
+				*/
+				//cb.closePathFillStroke();
+				// Ende PosPrüfung
+
+				float xstart = 82.f;
+				float xend = 282.f;
+				float ystartunten = 495.f;
+				float ystartoben = 530.f;
+				float yschritt = 35.f;
+				ColumnText ct = null;
+				Phrase ph = null;
+				float zaehler = 1.f;
+				for(int i = 0;i < 5; i++){
+					ct = new ColumnText(cb);
+					ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ALIGN_TOP);
+					ph = new Phrase();
+					ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+					ph.add(bta[i].getText().trim());
+					ct.addText(ph);
+					ct.go();
+					
+					ystartunten -= (yschritt+zaehler);
+					ystartoben = (ystartunten+yschritt);
+					//zaehler++;
+				}
+				/*
+				ColumnText ct = new ColumnText(cb);
+				ct.setSimpleColumn(82, 495, 282, 530,8,Element.ALIGN_LEFT);
+
+				Phrase ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.add(bta[0].getText().trim());
+				ct.addText(ph);
+				ct.go();
+				
+				ct = new ColumnText(cb);
+				ct.setSimpleColumn(82, 460, 282, 495,8,Element.ALIGN_LEFT);
+				ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.add(bta[1].getText().trim());
+				ct.addText(ph);
+				ct.go();
+				*/
+				
+
+
+				//cb.add(cb2);
+				
 				stamper.setFormFlattening(true);
 				stamper.close();
+				/*
+				//Mehrzeiliger Text z.B. Diagnose
+				PdfReader reader2 = new PdfReader(baos.toByteArray());
+				stamper = new PdfStamper(reader2,new FileOutputStream(sdatei));
+				cb = stamper.getOverContent(1);
+				ColumnText ct = new ColumnText(cb);
+				ct.setSimpleColumn(36, 700, 150, 800,18,Element.ALIGN_LEFT);
+				ct.addText(new Phrase(bta[0].getText()));
+				stamper.close();
+				*/
+				/*
+				reader = new PdfReader(baos.toByteArray());
+				Document doc = new Document(reader.getPageSizeWithRotation(1));
+				PdfWriter writ = PdfWriter.getInstance(doc,new FileOutputStream(sdatei) );
+				doc.open();
+				PdfContentByte cb2 = writ.getDirectContent();
+				
+				ColumnText ct = new ColumnText(cb2);
+				ct.setSimpleColumn(36, 700, 150, 800,18,Element.ALIGN_LEFT);
+				ct.addText(new Phrase(bta[0].getText()));
+				ct.go();
+				*/
+
+				//doc.close();
+				
+				
+				// AdobeReader starten
 				final String xdatei = sdatei;
 				new SwingWorker<Void,Void>(){
 					@Override
