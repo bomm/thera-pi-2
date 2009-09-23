@@ -343,57 +343,9 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 					
 					ystartunten -= (yschritt+zaehler);
 					ystartoben = (ystartunten+yschritt);
-					//zaehler++;
 				}
-				/*
-				ColumnText ct = new ColumnText(cb);
-				ct.setSimpleColumn(82, 495, 282, 530,8,Element.ALIGN_LEFT);
-
-				Phrase ph = new Phrase();
-				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
-				ph.add(bta[0].getText().trim());
-				ct.addText(ph);
-				ct.go();
-				
-				ct = new ColumnText(cb);
-				ct.setSimpleColumn(82, 460, 282, 495,8,Element.ALIGN_LEFT);
-				ph = new Phrase();
-				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
-				ph.add(bta[1].getText().trim());
-				ct.addText(ph);
-				ct.go();
-				*/
-				
-
-
-				//cb.add(cb2);
-				
 				stamper.setFormFlattening(true);
 				stamper.close();
-				/*
-				//Mehrzeiliger Text z.B. Diagnose
-				PdfReader reader2 = new PdfReader(baos.toByteArray());
-				stamper = new PdfStamper(reader2,new FileOutputStream(sdatei));
-				cb = stamper.getOverContent(1);
-				ColumnText ct = new ColumnText(cb);
-				ct.setSimpleColumn(36, 700, 150, 800,18,Element.ALIGN_LEFT);
-				ct.addText(new Phrase(bta[0].getText()));
-				stamper.close();
-				*/
-				/*
-				reader = new PdfReader(baos.toByteArray());
-				Document doc = new Document(reader.getPageSizeWithRotation(1));
-				PdfWriter writ = PdfWriter.getInstance(doc,new FileOutputStream(sdatei) );
-				doc.open();
-				PdfContentByte cb2 = writ.getDirectContent();
-				
-				ColumnText ct = new ColumnText(cb2);
-				ct.setSimpleColumn(36, 700, 150, 800,18,Element.ALIGN_LEFT);
-				ct.addText(new Phrase(bta[0].getText()));
-				ct.go();
-				*/
-
-				//doc.close();
 				
 				
 				// AdobeReader starten
@@ -407,7 +359,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 					       BufferedReader br = new BufferedReader(isr);
 					       String line;
 					       while ((line = br.readLine()) != null) {
-					         System.out.println(line);
+					         //System.out.println(line);
 					       }
 					       is.close();
 					       isr.close();
