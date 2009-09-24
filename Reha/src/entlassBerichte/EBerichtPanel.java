@@ -359,17 +359,27 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				 * Ab hier für Christian am Donnerstag
 				 */
 				// Jetzt kommen die Felder ab stationär, ganztägig ambulant etc. bis letztes Feld = Körpergröße
-				Float[][] poswert2 = {getFloats(0.0f,0.0f,0.0f),getFloats(0.0f,0.0f,0.0f/* etc, etc*/)};
-				for(int i = 11; i < 25;i++){
+				Float[][] poswert2 = {getFloats(28.0f,218.0f,fy1),getFloats(66.0f,218.0f,fy1),getFloats(28.0f,209.0f,fy1),getFloats(66.0f,209.0f,fy1),getFloats(28.0f,196.5f,fy1),getFloats(66.0f,196.5f,fy1)};
+				for(int i = 11; i < 17;i++){
 					text = btf[i].getText();	
-					//setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);
+					setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);
 				}	
 				// Anschließend die ComboBoxen auswerten
 				// Dann die CheckBoxen auswerten
+				bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				//	 				  				0                          1                   2                              3                            4                           5                       6                          7                           8                       9                            10                        11                          12                      13                                14                      15                        16                               
+				Float[][] poswert3 = {getFloats(27.0f,78.0f,fy0),getFloats(55.0f,78.0f,fy0),getFloats(27.0f,70.0f,fy0),getFloats(55.0f,70.0f,fy0),getFloats(27.0f,61.0f,fy0),getFloats(55.0f,61.0f,fy0),getFloats(90.5f,78.0f,fy0),getFloats(121.0f,78.0f,fy0),getFloats(90.5f,70,fy0),getFloats(121.0f,70.0f,fy0),getFloats(90.5f,61.0f,fy0),getFloats(121.0f,61.0f,fy0),getFloats(146.0f,78.0f,fy0),getFloats(176.5f,78.0f,fy0),getFloats(146.0f,70.0f,fy0),getFloats(176.5f,70.0f,fy0),getFloats(146.0f,61.0f,fy0)};
+				for(int i = 0; i <17; i++){
+					if(bchb[i].isSelected()){
+						text = "X";
+						setzeText(cb,poswert3[i][0], poswert3[i][1],poswert3[i][2],bf,12,text);
+					}
+				}
 				// Zuletzt das Unterschriftsdatum = btf[27].getText() 
 				/*************************************************************************/
 				
 				/***********Jetzt der Mehrzeilige Text der Diagnosen 1-5******************/
+				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 				cb.setCharacterSpacing(0.5f);
 				float xstart = 82.f;
 				float xend = 282.f;
