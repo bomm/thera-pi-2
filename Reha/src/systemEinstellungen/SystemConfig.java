@@ -150,6 +150,11 @@ public class SystemConfig {
 	public static String[] berichttitel = {null,null,null,null};
 	public static String  thberichtdatei = "";
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
+	
+	public static Vector<String> vGutachtenEmpfaenger;
+	public static Vector<String> vGutachtenIK;
+	public static Vector<String> vGutachtenAbsAdresse;
+ 
 	                     
 	public SystemConfig(){
 	
@@ -931,6 +936,22 @@ public class SystemConfig {
 		hmCompany.put("port", inif.getStringProperty("Company", "DeliverPort"));
 		hmCompany.put("mail", inif.getStringProperty("Company", "DeliverMail"));
 		hmCompany.put("adress", inif.getStringProperty("Company", "DeliverAdress"));		
+	}
+	public static void GutachtenInit(){
+		//public static Vector<String> vGutachtenEmpfaenger;
+		//public static Vector<String> vGutachtenIK;
+		vGutachtenEmpfaenger = new Vector<String>();
+		vGutachtenIK = new Vector<String>();
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/gutachten.ini");
+		int anzahl =  inif.getIntegerProperty("GutachtenEmpfaenger", "AnzahlEmpfaenger");
+		for(int i = 0; i < anzahl;i++){
+			vGutachtenEmpfaenger.add( inif.getStringProperty("GutachtenEmpfaenger", "Empfaenger"+(i+1)) );
+			vGutachtenIK.add( inif.getStringProperty("IKAbsender", "AnsenderIK"+(i+1)) );
+		}
+		vGutachtenAbsAdresse = new Vector<String>();
+		for(int i = 0; i < 5;i++){
+			vGutachtenAbsAdresse.add(inif.getStringProperty("AbsenderAdresse", "AbsenderZeile"+(i+1)));
+		}
 	}
 	
 	public static void SystemIconsInit(){

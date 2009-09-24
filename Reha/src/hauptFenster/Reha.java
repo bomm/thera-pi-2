@@ -2381,6 +2381,8 @@ final class DatenbankStarten implements Runnable{
 			Reha.kalMax = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
 			System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
 			SystemConfig.FirmenDaten();			
+			new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
+			SystemConfig.GutachtenInit();
 			new Thread(new PreisListenLaden()).start();
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");

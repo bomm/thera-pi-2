@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,6 +27,7 @@ import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
 
+import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
@@ -38,7 +41,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class Eb1 {
+public class Eb1 implements ActionListener {
 	JXPanel pan = null;
 	EBerichtPanel eltern = null;
 	Font fontgross = null;
@@ -55,7 +58,7 @@ public class Eb1 {
 	String[] dmp = {"","0","1","2","3","4","5","6","7"};
 	JLabel titel = null;
 	JScrollPane jscr = null;
-	
+	boolean inGuiInit = true;
 	public Eb1(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);
@@ -103,6 +106,8 @@ public class Eb1 {
 						 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));
 						 			Reha.thisClass.progressStarten(false);
 						 			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						 			inGuiInit = false;
+									testeIK();
 									}catch(Exception ex){
 										ex.printStackTrace();
 									}
@@ -1477,9 +1482,13 @@ public class Eb1 {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(6,19));
 
-		lab = new JLabel("510841109");
-		lab.setFont(fontcourier);
-		tit.add(lab,cctit.xyw(2,21,3));
+		eltern.btf[28] = new JRtaTextField("ZAHLEN",false);
+		eltern.btf[28].setName("IK");
+		eltern.btf[28].setText(SystemConfig.vGutachtenIK.get(eltern.cbktraeger.getSelectedIndex()));
+		eltern.btf[28].setFont(fontcourier);
+		eltern.btf[28].setForeground(Color.BLUE);
+
+		tit.add(eltern.btf[28],cctit.xyw(2,21,3));
 		
 		eltern.btf[10] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[10].setName("ABTEILUNG");
@@ -1506,6 +1515,8 @@ public class Eb1 {
 		titel.setForeground(Color.BLUE);
 		*/
 		tit.add(eltern.cbktraeger,cctit.xy(3, 2));
+		eltern.cbktraeger.setActionCommand("empfaenger");
+		eltern.cbktraeger.addActionListener(this);
 		tit.validate();
 		return tit;
 	}
@@ -1527,6 +1538,21 @@ public class Eb1 {
 			setVisible(true);
 		}
 	}
-	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(inGuiInit){
+			return;
+		}
+		String cmd = arg0.getActionCommand();
+		if(cmd.equals("empfaenger")){
+			testeIK();
+		}
+	}
+	public void testeIK(){
+		System.out.println(SystemConfig.vGutachtenAbsAdresse);
+		eltern.btf[28].setText(SystemConfig.vGutachtenIK.get(eltern.cbktraeger.getSelectedIndex()));		
+		eltern.btf[28].validate();
+		eltern.btf[28].repaint();
+	}
 }
 
