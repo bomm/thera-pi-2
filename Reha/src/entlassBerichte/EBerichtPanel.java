@@ -364,9 +364,9 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				 * Ab hier für Christian am Donnerstag
 				 */
 				// Jetzt kommen die Felder ab stationär, ganztägig ambulant etc. bis letztes Feld = Körpergröße
-				Float[][] poswert2 = {	getFloats(28.0f,218.0f,fy1),getFloats(66.0f,218.0f,fy1),
-										getFloats(28.0f,196.5f,fy1),getFloats(66.0f,196.5f,fy1),
-										getFloats(28.0f,209.0f,fy1),getFloats(66.0f,209.0f,fy1)	};
+				Float[][] poswert2 = {	getFloats(29.25f,218.0f,fy1),getFloats(67.10f,218.0f,fy1),
+										getFloats(29.25f,196.5f,fy1),getFloats(67.10f,196.5f,fy1),
+										getFloats(29.25f,205.30f,fy1),getFloats(67.10f,205.30f,fy1)	};
 				for(int i = 11; i < 17;i++){
 					text = btf[i].getText().trim();
 					if(! text.equals(".  .")){
@@ -374,34 +374,69 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 						setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);						
 					}
 				}	
-				// Anschließend die ComboBoxen auswerten
+				/*******************************************************************/
+				// Jetzt die Diagnoseschlüssel
+				//                             Diag1                            Diag2
+				Float[][] poswert3 = {	getFloats(113.10f,176.0f,fy1),getFloats(113.10f,162.95f,fy1),
+				//                             Diag3                            Diag4
+										getFloats(113.10f,150.00f,fy1),getFloats(113.10f,137.50f,fy1),
+				//                             Diag5						
+										getFloats(113.10f,124.40f,fy1)};
+				for(int i = 17; i < 22;i++){
+					text = btf[i].getText().trim();
+					setzeText(cb,poswert3[i-17][0], poswert3[i-17][1],poswert3[i-17][2],bf,12,text);						
+
+				}	
+				
+
+				/*******************************************************************/
 				// Dann die CheckBoxen auswerten
+				float xfs = 0.0f;
+				float yfs = 0.0f;
 				bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-                               
-				Float[][] poswert3 =
-					//	 		  0                          1                            2                  					
-						{getFloats(27.0f,78.0f,fy0),getFloats(55.0f,78.0f,fy0),getFloats(27.0f,70.0f,fy0),
-					//            3                          4                            5                       
-						getFloats(55.0f,70.0f,fy0),getFloats(27.0f,61.0f,fy0),getFloats(55.0f,61.0f,fy0),
-					//			  6                          7                            8             
-						getFloats(90.5f,78.0f,fy0),getFloats(121.0f,78.0f,fy0),getFloats(90.5f,70,fy0),
-					//	          9                         10                            11               
-						getFloats(121.0f,70.0f,fy0),getFloats(90.5f,61.0f,fy0),getFloats(121.0f,61.0f,fy0),
-					//	          12                        13                            14                    
-						getFloats(146.0f,78.0f,fy0),getFloats(176.5f,78.0f,fy0),getFloats(146.0f,70.0f,fy0),
-					//   		  15                        16
-						getFloats(176.5f,70.0f,fy0),getFloats(146.0f,61.0f,fy0)};
+				Float[][] poswert4 =
+					//	 		  0                          1                                             					
+						{getFloats(26.60f+xfs,77.75f+yfs,fy0),getFloats(54.60f+xfs,77.75f+yfs,fy0),
+					//	          2                          3
+						 getFloats(26.60f+xfs,69.25f+yfs,fy0),getFloats(54.60f+xfs,69.25f+yfs,fy0),
+					//            4                          5                       
+						 getFloats(26.60f+xfs,60.85f+yfs,fy0),getFloats(54.60f+xfs,60.85f+yfs,fy0),
+					//			  6                          7                                         
+						 getFloats(90.15f+xfs,77.75f+yfs,fy0),getFloats(120.50f+xfs,77.75f+yfs,fy0),
+					//	          8							 9  
+						 getFloats(90.15f+xfs,69.25f+yfs,fy0),getFloats(120.50f+xfs,69.25f+yfs,fy0),
+					//	         10                         11               
+						 getFloats(90.15f+xfs,60.85f+yfs,fy0),getFloats(120.50f+xfs,60.85f+yfs,fy0),
+					//	         12                         13                                                
+						getFloats(145.75f+xfs,77.75f+yfs,fy0),getFloats(176.20f+xfs,77.75f+yfs,fy0),
+					//	         14                         15
+						getFloats(145.75f+xfs,69.25f+yfs,fy0),getFloats(176.20f+xfs,69.25f+yfs,fy0),
+					//           16
+						getFloats(145.75f+xfs,60.85f+yfs,fy0)};
 				for(int i = 0; i <17; i++){
 					if(bchb[i].isSelected()){
 						text = "X";
-						setzeText(cb,poswert3[i][0], poswert3[i][1],poswert3[i][2],bf,12,text);
+						setzeText(cb,poswert4[i][0], poswert4[i][1],poswert4[i][2],bf,14,text);
 					}
 				}
-				// Zuletzt das Unterschriftsdatum = btf[27].getText() 
-				/*************************************************************************/
-				
-				/***********Jetzt der Mehrzeilige Text der Diagnosen 1-5******************/
 				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				/*************************************************************************/
+				// Gewichte und Körpergröße             1                              2                            3
+				Float[][] poswert5 = {getFloats(29.25f,116.50f,fy1),getFloats(29.25f,108.25f,fy1),getFloats(29.25f,99.80f,fy1) }; 
+				for(int i = 22; i < 25;i++){
+					text = btf[i].getText().trim();
+					setzeText(cb,poswert5[i-22][0], poswert5[i-22][1],poswert5[i-22][2],bf,12,text);						
+				}
+				/*************************************************************************/
+				// Zuletzt das Unterschriftsdatum = btf[27].getText()
+				text = btf[27].getText().trim();
+				Float [] fsign = getFloats(24.25f,27.60f,fy1);
+				if(! text.equals(".  .")){
+					text = macheDatum2Acht(text);
+					setzeText(cb,fsign[0], fsign[1],fsign[2],bf,12,text);						
+				}
+				/*************************************************************************/				
+				/***********Jetzt der Mehrzeilige Text der Diagnosen 1-5******************/
 				cb.setCharacterSpacing(0.5f);
 				float xstart = 82.f;
 				float xend = 282.f;
