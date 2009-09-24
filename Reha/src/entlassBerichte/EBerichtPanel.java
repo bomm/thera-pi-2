@@ -428,13 +428,15 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 					setzeText(cb,poswert5[i-22][0], poswert5[i-22][1],poswert5[i-22][2],bf,12,text);						
 				}
 				/*************************************************************************/
-				// Zuletzt das Unterschriftsdatum = btf[27].getText()
+				// Zuletzt das Unterschriftsdatum = btf[27].getText() + den Ort
 				text = btf[27].getText().trim();
 				Float [] fsign = getFloats(24.25f,27.60f,fy1);
 				if(! text.equals(".  .")){
 					text = macheDatum2Acht(text);
 					setzeText(cb,fsign[0], fsign[1],fsign[2],bf,12,text);						
 				}
+				Float [] fort = getFloats(61.25f,27.60f,fy0);
+				setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt);
 				/*************************************************************************/				
 				/***********Jetzt der Mehrzeilige Text der Diagnosen 1-5******************/
 				cb.setCharacterSpacing(0.5f);
@@ -468,7 +470,24 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				ph.add(bta[5].getText().trim());
 				ct.addText(ph);
 				ct.go();
-				
+				/*****************************************************************/
+				StringBuffer reha = new StringBuffer();
+				int lang = SystemConfig.vGutachtenAbsAdresse.size();
+				for(int i = 0; i < lang;i++){
+					reha.append(SystemConfig.vGutachtenAbsAdresse.get(i)+(i < (lang-1) ? "\n" : ""));
+				}
+				// Reha-Einrichtung
+				Float[] rehaunten =  getFloats(127.00f,242.0f,0.5f);
+				Float[] rehaoben =  getFloats(199.00f,264.0f,0.5f);
+				//bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				ct = new ColumnText(cb);
+				ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],11,Element.ALIGN_BASELINE);
+				ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Helvectica",10,Font.PLAIN));
+				ph.add(reha.toString());
+				ct.addText(ph);
+				ct.go();
+				/*****************************************************************/
 				stamper.setFormFlattening(true);
 				stamper.close();
 				

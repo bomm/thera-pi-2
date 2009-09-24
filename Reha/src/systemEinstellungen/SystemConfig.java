@@ -154,7 +154,7 @@ public class SystemConfig {
 	public static Vector<String> vGutachtenEmpfaenger;
 	public static Vector<String> vGutachtenIK;
 	public static Vector<String> vGutachtenAbsAdresse;
- 
+	public static String sGutachtenOrt;
 	                     
 	public SystemConfig(){
 	
@@ -952,6 +952,7 @@ public class SystemConfig {
 		for(int i = 0; i < 5;i++){
 			vGutachtenAbsAdresse.add(inif.getStringProperty("AbsenderAdresse", "AbsenderZeile"+(i+1)));
 		}
+		sGutachtenOrt = inif.getStringProperty("AbsenderDaten", "Ort");
 	}
 	
 	public static void SystemIconsInit(){
