@@ -302,7 +302,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		fret[2] = fcSpace;
 		return fret;
 	}
-	private String macheDatum2Acht(String datum){
+	private String macheDatum2Sechs(String datum){
 		String sret = "";
 		try{
 			String[] split = datum.split("\\.");
@@ -348,7 +348,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				String text = "";
 				for(int i = 0; i < 10;i++){
 					if(i==3){
-						text = macheDatum2Acht(btf[i].getText().trim());
+						text = macheDatum2Sechs(btf[i].getText().trim());
 					}else{
 						text = btf[i].getText();	
 					}
@@ -361,7 +361,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				pos = getFloats(181.50f,225.75f,fy1);
 				setzeText(cb,pos[0], pos[1],pos[2],bf,12,(btf[10].getText().trim().equals("") ? "2300" : btf[10].getText().trim() ) );
 				/* 
-				 * Ab hier für Christian am Donnerstag
+				 * 
 				 */
 				// Jetzt kommen die Felder ab stationär, ganztägig ambulant etc. bis letztes Feld = Körpergröße
 				Float[][] poswert2 = {	getFloats(29.25f,218.0f,fy1),getFloats(67.10f,218.0f,fy1),
@@ -370,7 +370,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				for(int i = 11; i < 17;i++){
 					text = btf[i].getText().trim();
 					if(! text.equals(".  .")){
-						text = macheDatum2Acht(text);
+						text = macheDatum2Sechs(text);
 						setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);						
 					}
 				}	
@@ -432,14 +432,16 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				text = btf[27].getText().trim();
 				Float [] fsign = getFloats(24.25f,27.60f,fy1);
 				if(! text.equals(".  .")){
-					text = macheDatum2Acht(text);
+					text = macheDatum2Sechs(text);
 					setzeText(cb,fsign[0], fsign[1],fsign[2],bf,12,text);						
 				}
 				Float [] fort = getFloats(61.25f,27.60f,fy0);
 				setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt);
 				/*************************************************************************/
 				// Jetzt die ComboBoxen abarbeiten
-				Float[][] poswert6 = {};
+				Float[][] poswert6 = {
+						
+				};
 				for(int i = 0; i < 20;i++){
 					text = ((String)bcmb[i].getSelectedItem()).trim();
 					setzeText(cb,poswert6[i][0], poswert6[i][1],poswert5[i][2],bf,12,text);						
