@@ -262,7 +262,10 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 			new Thread(){
 				public void run(){
 					Reha.thisClass.progressStarten(true);
-					doVorschau();					
+					if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
+						doRVVorschau();						
+					}
+					
 				}
 			}.start();
 			
@@ -312,7 +315,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		}
 		return sret;
 	}
-	private void doVorschau(){
+	private void doRVVorschau(){
 		//name und Pfad der PDF
 		String pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite1-Variante2.pdf";
 		PdfWriter writer2 = null;
