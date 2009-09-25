@@ -4,13 +4,22 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Panel;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
 import java.beans.PropertyVetoException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -19,6 +28,7 @@ import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
 
+import com.mysql.jdbc.PreparedStatement;
 import com.sun.star.frame.XController;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
@@ -47,6 +57,7 @@ import ag.ion.noa.frame.ILayoutManager;
 public class Eb3 implements RehaEventListener  {
 	RehaEventClass rEvent = null;
 	JXPanel pan = null;
+	//Panel pan = null;
 	JXPanel parken = null;
 	JPanel oopan = null;
 	//IFrame officeFrame = null;
@@ -60,12 +71,15 @@ public class Eb3 implements RehaEventListener  {
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
 		pan = new JXPanel(new BorderLayout());
+		//pan = new Panel(new BorderLayout());
 		pan.setDoubleBuffered(true);
 		pan.setBorder(BorderFactory.createEmptyBorder(0, 0, 3, 0));
 		pan.setVisible(true);
 		pan.setName("ooNativePanel");
 		//parken = new JXPanel();
 		//oopan = new JPanel(new BorderLayout());
+		//baueSeite();
+		/*
 		new Thread(){
 		public void run(){
 		new SwingWorker<Void,Void>(){
@@ -102,12 +116,76 @@ public class Eb3 implements RehaEventListener  {
 		}.execute();
 		}
 		}.start();
-
+		*/
 		//pan = new JXPanel();
 	}
+	public void beendeSeite(){
+		eltern.document.close();
+	}
+	public void baueSeite(){
+		new Thread(){
+			public void run(){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try {
+						eltern.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						eltern.officeFrame = constructOOOFrame(Reha.officeapplication,pan);
+						configureOOOFrame(Reha.officeapplication,eltern.officeFrame);
+			        	DocumentDescriptor d = new DocumentDescriptor();
+			        	//d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+			        	d.setTitle("Entlassbericht");
+			        	if(eltern.neu){
+				        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);		        		
+			        	}else{
+			        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+				        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+				        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+				        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
+							XController xController = eltern.document.getXTextDocument().getCurrentController();
+							XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+							xController);
+							XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+							xtvc.gotoStart(false);
+							is.close();
+							eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+							Reha.thisClass.progressStarten(false);
+			        	}
+			        	
+					} catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return null;
+				}
+			}.execute();
+			}
+			}.start();
+		
+	}
+	public void speichernSeite(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+					trenneFrame();
+					eltern.document.close();
+					Reha.thisClass.progressStarten(false);
+				return null;
+			}
+			
+		}.execute();
+		
+		
+	}
+	/*
+	public Panel getSeite(){
+		return pan;
+	}
+	*/
 	public JXPanel getSeite(){
 		return pan;
 	}
+
 
 	private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent)
       throws Throwable {
@@ -167,6 +245,7 @@ public class Eb3 implements RehaEventListener  {
 			 	   public  void run()
 			 	   {
 			 		   try {
+			 			Reha.thisClass.progressStarten(true); 
 			 			pan.add(nativeView);
 			 			EBerichtPanel.document.getFrame().setFocus();
 			 			EBerichtPanel.document.getFrame().updateDispatches();
@@ -178,7 +257,7 @@ public class Eb3 implements RehaEventListener  {
 						pan.getLayout().layoutContainer(pan);
 						pan.setVisible(true);
 						pan.validate();
-
+						Reha.thisClass.progressStarten(false);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -207,8 +286,69 @@ public class Eb3 implements RehaEventListener  {
 	}
 	public void trenneFrame(){
 		System.out.println("ntiveView getrennt----->");
-		//nativeView.setVisible(false);
-		pan.remove(nativeView);
+		if(eltern.neu){
+			EBerichtPanel.document.close();
+			pan.remove(nativeView);
+			Reha.thisClass.progressStarten(false);
+			return;
+		}
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				textSpeichern();
+				EBerichtPanel.document.close();
+				pan.remove(nativeView);
+				return null;
+			}
+			
+		}.execute();
+	}
+	public void textSpeichern(){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		boolean ret = false;
+		int bilder = 0;
+		FileInputStream fis = null;
+		try {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+			EBerichtPanel.document.getPersistenceService().store(out);
+			
+			InputStream ins = new ByteArrayInputStream(out.toByteArray());
+			String select = "Update bericht2 set freitext = ? where berichtid = ?";
+			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+			ps.setBinaryStream(1,ins );
+			ps.setInt(2, eltern.berichtid);
+			ps.execute();
+			Reha.thisClass.progressStarten(false);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+			if(ps != null){
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 	
 	  public static void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
@@ -241,7 +381,7 @@ public class Eb3 implements RehaEventListener  {
 		    officeFrame.updateDispatches();
 		    
 		    //officeFrame.getDispatch(".uno:PrintLayout").dispatch();
-		  }
+	  }
 	  
 		@Override
 		public void RehaEventOccurred(RehaEvent evt) {
@@ -250,13 +390,26 @@ public class Eb3 implements RehaEventListener  {
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-								neuAnhaengen();
+								baueSeite();
 										 		   
 					 	   }
 					});	
 
 
 				}
+				if(evt.getDetails()[1].equals("#SPEICHERNUNDENDE") && evt.getDetails()[0].contains("Gutachten")){
+					SwingUtilities.invokeLater(new Runnable(){
+					 	   public  void run()
+					 	   {
+								speichernSeite();
+										 		   
+					 	   }
+					});	
+
+
+				}
+
+				
 			}
 			if(evt.getDetails()[0].contains("GutachtenFenster")){
 				if(evt.getDetails()[1].equals("#SCHLIESSEN")){

@@ -35,6 +35,8 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -80,7 +82,7 @@ import systemTools.JRtaTextField;
 import RehaInternalFrame.JArztInternal;
 import RehaInternalFrame.JGutachtenInternal;
 
-public class EBerichtPanel extends JXPanel implements RehaEventListener,PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
+public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventListener,PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
 	JGutachtenInternal jry = null;
 	public EBerichtPanel thisClass = null;
 	public JXPanel seite1;
@@ -166,6 +168,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		evt.addRehaEventListener((RehaEventListener) this);
 
 		addFocusListener(this);
+				
 		Point2D start = new Point2D.Float(0, 0);
 	    Point2D end = new Point2D.Float(400,550);
 	    float[] dist = {0.0f, 0.75f};
@@ -181,8 +184,10 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 			cbktraeger = new JRtaComboBox(SystemConfig.vGutachtenEmpfaenger);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
-			ebtab = getEBerichtTab(); 
+			ebtab = getEBerichtTab();
+			ebtab.setSelectedIndex(0);
 			add(ebtab,BorderLayout.CENTER);
+			ebtab.addChangeListener(this);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
 			
@@ -209,6 +214,42 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 		NachsorgeTab nat = new NachsorgeTab(this);
 		return nat.getTab();
 	}
+
+	@Override
+	public void stateChanged(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+            // Get current tab
+		//System.out.println(arg0);
+		JTabbedPane pane = (JTabbedPane)arg0.getSource();
+        int sel = pane.getSelectedIndex();
+        System.out.println("Tab mit Index "+sel+" wurde selektiert");
+        if(sel==2){
+        	new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+		        	Reha.thisClass.progressStarten(true);
+		        	RehaEvent xevt = new RehaEvent(this);
+					xevt.setDetails("Gutachten", "#DEICONIFIED");
+					xevt.setRehaEvent("REHAINTERNAL");
+					RehaEventClass.fireRehaEvent(xevt);
+					return null;
+				}
+        	}.execute();
+        }else{
+        	new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+		        	Reha.thisClass.progressStarten(true);
+		        	RehaEvent xevt = new RehaEvent(this);
+					xevt.setDetails("Gutachten", "#SPEICHERNUNDENDE");
+					xevt.setRehaEvent("REHAINTERNAL");
+					RehaEventClass.fireRehaEvent(xevt);
+					return null;
+				}
+        	}.execute();
+        }
+
+	}    
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
@@ -263,6 +304,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				public void run(){
 					Reha.thisClass.progressStarten(true);
 					if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
+						ebtab.setSelectedIndex(0);
 						doRVVorschau();						
 					}
 					
@@ -538,29 +580,32 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				
 				// AdobeReader starten
 				final String xdatei =  "C:/ebericht2.pdf";//sdatei;
-				new SwingWorker<Void,Void>(){
-					@Override
-					protected Void doInBackground() throws Exception {
-						try{
-						Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
-					       InputStream is = process.getInputStream();
-					       InputStreamReader isr = new InputStreamReader(is);
-					       BufferedReader br = new BufferedReader(isr);
-					       String line;
-							Reha.thisClass.progressStarten(false);
-					       while ((line = br.readLine()) != null) {
-					         //System.out.println(line);
-					       }
-					       is.close();
-					       isr.close();
-					       br.close();
-						}catch(Exception ex){
-							Reha.thisClass.progressStarten(false);
-						}
-						return null;
+				new Thread(){
+					public void run(){
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								try{
+								Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+							       InputStream is = process.getInputStream();
+							       InputStreamReader isr = new InputStreamReader(is);
+							       BufferedReader br = new BufferedReader(isr);
+							       String line;
+									Reha.thisClass.progressStarten(false);
+							       while ((line = br.readLine()) != null) {
+							         //System.out.println(line);
+							       }
+							       is.close();
+							       isr.close();
+							       br.close();
+								}catch(Exception ex){
+									Reha.thisClass.progressStarten(false);
+								}
+								return null;
+							}
+						}.execute();
 					}
-				}.execute();
-				
+				}.start();
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
