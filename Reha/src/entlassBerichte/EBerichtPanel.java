@@ -443,9 +443,10 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				/*************************************************************************/
 				// Jetzt die ComboBoxen abarbeiten
 				Float[][] poswert6 = {
-						
+					//   0                                 1	
+					getFloats(115.65f,213.65f,fy0),getFloats(163.45f,213.65f,fy0)	
 				};
-				for(int i = 0; i < 20;i++){
+				for(int i = 0; i < 2;i++){
 					text = ((String)bcmb[i].getSelectedItem()).trim();
 					setzeText(cb,poswert6[i][0], poswert6[i][1],poswert5[i][2],bf,12,text);						
 				}
