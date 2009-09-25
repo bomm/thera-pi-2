@@ -318,8 +318,8 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 	private void doRVVorschau(){
 		//name und Pfad der PDF
 		String pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite1-Variante2.pdf";
-		PdfWriter writer2 = null;
-		PdfCopy writer = null;
+		//PdfWriter writer2 = null;
+		//PdfCopy writer = null;
 		PdfStamper stamper = null;
 		
 		String test = "23020562S512";
@@ -380,7 +380,7 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				/*******************************************************************/
 				// Jetzt die Diagnoseschlüssel
 				//                             Diag1                            Diag2
-				Float[][] poswert3 = {	getFloats(113.10f,176.0f,fy1),getFloats(113.10f,162.95f,fy1),
+				Float[][] poswert3 = {	getFloats(113.10f,175.70f,fy1),getFloats(113.10f,162.95f,fy1),
 				//                             Diag3                            Diag4
 										getFloats(113.10f,150.00f,fy1),getFloats(113.10f,137.50f,fy1),
 				//                             Diag5						
@@ -443,12 +443,25 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				/*************************************************************************/
 				// Jetzt die ComboBoxen abarbeiten
 				Float[][] poswert6 = {
-					//   0                                 1	
-					getFloats(115.65f,213.65f,fy0),getFloats(163.45f,213.65f,fy0)	
+					//   0=Enlassform                      1	
+					getFloats(115.65f,213.65f,fy1),getFloats(163.45f,213.65f,fy1),
+					//   2=Diag1Teil                       3                                  4
+					getFloats(143.35f,175.70f,fy1),getFloats(155.75f,175.70f,fy1),getFloats(168.25f,175.70f,fy1),
+					//   5=Diag2Teil				       6                                  7
+					getFloats(143.35f,162.95f,fy1),getFloats(155.75f,162.95f,fy1),getFloats(168.25f,162.95f,fy1),
+					//   8=Diag3Teil 					   9								 10
+					getFloats(143.35f,150.00f,fy1),getFloats(155.75f,150.00f,fy1),getFloats(168.25f,150.00f,fy1),
+					//  11=Diag4Teil					  12								 13 
+					getFloats(143.35f,137.50f,fy1),getFloats(155.75f,137.50f,fy1),getFloats(168.25f,137.50f,fy1),
+					//  14=Diag5Teil					  15								 16
+					getFloats(143.35f,124.40f,fy1),getFloats(155.75f,124.40f,fy1),getFloats(168.25f,124.40f,fy1),
+					//  17=Ursache der..				  18								 19
+					getFloats(77.15f,116.50f,fy1),getFloats(128.35f,116.50f,fy1),getFloats(166.35f,116.50f,fy1)
+					
 				};
-				for(int i = 0; i < 2;i++){
+				for(int i = 0; i < poswert6.length;i++){
 					text = ((String)bcmb[i].getSelectedItem()).trim();
-					setzeText(cb,poswert6[i][0], poswert6[i][1],poswert5[i][2],bf,12,text);						
+					setzeText(cb,poswert6[i][0], poswert6[i][1],poswert6[i][2],bf,12,text);						
 				}
 				/***********Jetzt der mehrzeilige Text der Diagnosen 1-5******************/
 				cb.setCharacterSpacing(0.5f);
@@ -499,13 +512,32 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 				ph.add(reha.toString());
 				ct.addText(ph);
 				ct.go();
+				
 				/*****************************************************************/
 				stamper.setFormFlattening(true);
 				stamper.close();
+				reader.close();
+				/*****************************************************************/
+				//Seite 2 öffnen
+				
+				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite2-Variante2.pdf";
+				reader = new PdfReader (sdatei);
+				Document doc = new Document(reader.getPageSizeWithRotation(1));
+				PdfCopy writer = new PdfCopy(doc,new FileOutputStream("C:/ebericht2.pdf"));
+				doc.open();
+				writer.addPage(writer.getImportedPage(reader,1));
+				PdfReader reader2 = new PdfReader (pdfPfad);
+				writer.addPage(writer.getImportedPage(reader2,1));
+				document.close();
+				writer.close();
+				reader.close();
+				reader2.close();
+				//stamper = new PdfStamper(reader,baos);
+				//stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
 				
 				
 				// AdobeReader starten
-				final String xdatei = sdatei;
+				final String xdatei =  "C:/ebericht2.pdf";//sdatei;
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -550,6 +582,9 @@ public class EBerichtPanel extends JXPanel implements RehaEventListener,Property
 			//cb.closePathFillStroke();
 			// Ende PosPrüfung
 			
+	}
+	private void doSeite2(){
+		
 	}
 	/***********Ende Christian's Funktion
 	 * 
