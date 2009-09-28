@@ -312,15 +312,15 @@ public class Eb3 implements RehaEventListener  {
 		FileInputStream fis = null;
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-
+			/*
 			EBerichtPanel.document.getPersistenceService().store(out);
-			
 			InputStream ins = new ByteArrayInputStream(out.toByteArray());
 			String select = "Update bericht2 set freitext = ? where berichtid = ?";
 			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 			ps.setBinaryStream(1,ins );
 			ps.setInt(2, eltern.berichtid);
 			ps.execute();
+			*/
 			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){
 			ex.printStackTrace();

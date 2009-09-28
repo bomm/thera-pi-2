@@ -362,17 +362,19 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		String pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite1-Variante2.pdf";
 		//PdfWriter writer2 = null;
 		//PdfCopy writer = null;
+		String[][] tempDateien = {null,null,null,null};
 		PdfStamper stamper = null;
-		
+		PdfStamper stamper2 = null;
 		String test = "23020562S512";
 			try {
 				// Geschiss bis die bestehende PDF eingelesen und gestampt ist
-				String sdatei = "C:/ebericht1.pdf"; 
+				tempDateien[0] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB1"+System.currentTimeMillis()+".pdf"};
+				//String sdatei = "C:/ebericht1.pdf"; 
 				BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 				PdfReader reader = new PdfReader (pdfPfad);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				//stamper = new PdfStamper(reader,baos);
-				stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
+				stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 				// Ende des Geschiss
 				
 				PdfContentByte cb = stamper.getOverContent(1);
@@ -561,25 +563,34 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				reader.close();
 				/*****************************************************************/
 				//Seite 2 öffnen
-				
 				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite2-Variante2.pdf";
-				reader = new PdfReader (sdatei);
+				tempDateien[1] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB2"+System.currentTimeMillis()+".pdf"};
+				reader = new PdfReader (pdfPfad);
+				stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
+				boolean geklappt = doSeite2(stamper2);
+				if(geklappt){
+					
+					/*
+				reader = new PdfReader (tempDateien[0][0]);
 				Document doc = new Document(reader.getPageSizeWithRotation(1));
-				PdfCopy writer = new PdfCopy(doc,new FileOutputStream("C:/ebericht2.pdf"));
+				
+				PdfCopy writer = new PdfCopy(doc,new FileOutputStream(tempDateien[1][0]));
 				doc.open();
 				writer.addPage(writer.getImportedPage(reader,1));
 				PdfReader reader2 = new PdfReader (pdfPfad);
 				writer.addPage(writer.getImportedPage(reader2,1));
-				document.close();
+				doc.close();
 				writer.close();
 				reader.close();
 				reader2.close();
 				//stamper = new PdfStamper(reader,baos);
 				//stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
+				 */
 				
+				}
 				
 				// AdobeReader starten
-				final String xdatei =  "C:/ebericht2.pdf";//sdatei;
+				final String xdatei =  tempDateien[1][0];//sdatei;
 				new Thread(){
 					public void run(){
 						new SwingWorker<Void,Void>(){
@@ -628,7 +639,64 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			// Ende PosPrüfung
 			
 	}
-	private void doSeite2(){
+	private boolean doSeite2(PdfStamper stamper2){
+		
+		try {
+			PdfContentByte cb = stamper2.getOverContent(1);
+			BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			String text = "";
+			Float [] pos = {null,null,null};
+			float fy0 =  0.25f;
+			float fy1 =  6.9f;
+			pos = getFloats(24.50f,268.00f,fy0);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[2].getText());
+			pos = getFloats(171.50f,268.00f,fy1);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[3].getText()));
+			pos = getFloats(78.00f,248.00f,fy0);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[25].getText());
+			/* Für ältere Berichte < 01.01.2008 noch den Berufsklassenschlüssel einbauen
+			pos = getFloats(78.00f,247.00f,fy0);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[26].getText()));
+			*/
+			
+			/************
+			 * FloatWerte von Christian
+			 * 
+			 */
+			Float[][] poswert1 = {
+					
+			};
+			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			text = "X";    // < 44
+			for(int i = 17; i < 17;i++){
+				if(bchb[i].isSelected()){
+					setzeText(cb,poswert1[i-17][0], poswert1[i-17][1],poswert1[i-17][2],bf,14,text);
+				}
+			}
+			ColumnText ct = null;
+			Phrase ph = null;
+			//bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			Float[] rehaunten =  getFloats(31.00f,34.0f,0.5f);
+			Float[] rehaoben =  getFloats(195.00f,104.0f,0.5f);
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],9,Element.ANCHOR);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+			ph.add(bta[7].getText());
+			ct.addText(ph);
+			ct.go();
+
+			stamper2.close();
+			
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
 		
 	}
 	/***********Ende Christian's Funktion

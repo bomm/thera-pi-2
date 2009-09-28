@@ -113,7 +113,7 @@ public class Eb2 {
 		for(int i = 25; i < 27;i++){
 			buf.append(eltern.btf[i].getName()+",");
 		}
-		for(int i = 17; i < 42;i++){
+		for(int i = 17; i < 44;i++){
 			buf.append(eltern.bchb[i].getName()+",");
 		}
 		buf.append(eltern.bta[7].getName()+",");
@@ -308,19 +308,19 @@ public class Eb2 {
 		plinks.add(getLabelKleinRot("negativen Leitungsb. ausgeübt werden kann"),ccli.xy(2,4));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 1, 1, 5));
 		plinks.add(getLabelKleinRot("178"),ccli.xywh(6,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		eltern.bchb[39] = new JRtaCheckBox("");
-		eltern.bchb[39].setName("F_178");
-		plinks.add(eltern.bchb[39],ccli.xywh(6, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		eltern.bchb[41] = new JRtaCheckBox("");
+		eltern.bchb[41].setName("F_178");
+		plinks.add(eltern.bchb[41],ccli.xywh(6, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		plinks.add(getLabel("6 Stunden und mehr"),ccli.xywh(8, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		plinks.add(getLabelKleinRot("179"),ccli.xywh(9,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		eltern.bchb[40] = new JRtaCheckBox("");
-		eltern.bchb[40].setName("F_179");
-		plinks.add(eltern.bchb[40],ccli.xywh(9, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		eltern.bchb[42] = new JRtaCheckBox("");
+		eltern.bchb[42].setName("F_179");
+		plinks.add(eltern.bchb[42],ccli.xywh(9, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		plinks.add(getLabel("3 bis unter 6 Stunden"),ccli.xywh(11, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		plinks.add(getLabelKleinRot("181"),ccli.xywh(12,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		eltern.bchb[41] = new JRtaCheckBox("");
-		eltern.bchb[41].setName("F_181");
-		plinks.add(eltern.bchb[41],ccli.xywh(12, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		eltern.bchb[43] = new JRtaCheckBox("");
+		eltern.bchb[43].setName("F_181");
+		plinks.add(eltern.bchb[43],ccli.xywh(12, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		plinks.add(getLabel("unter 3 Stunden"),ccli.xywh(14, 3,1, 2,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 
 		
@@ -400,9 +400,9 @@ public class Eb2 {
 		dum2.getPanel().setOpaque(false);
 		CellConstraints ccdum2 = new CellConstraints();
 		dum2.add(getLabelKleinRot("174"),ccdum2.xy(1,1));
-		eltern.bchb[35] = new JRtaCheckBox("");
-		eltern.bchb[35].setName("F_174");
-		dum2.add(eltern.bchb[35],ccdum2.xy(1,2));
+		eltern.bchb[37] = new JRtaCheckBox("");
+		eltern.bchb[37].setName("F_174");
+		dum2.add(eltern.bchb[37],ccdum2.xy(1,2));
 		dum2.getPanel().validate();
 		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
 		/**/
@@ -431,9 +431,9 @@ public class Eb2 {
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
 		dum2.add(getLabelKleinRot("175"),ccdum2.xy(1,1));
-		eltern.bchb[36] = new JRtaCheckBox("");
-		eltern.bchb[36].setName("F_175");
-		dum2.add(eltern.bchb[36],ccdum2.xy(1,2));
+		eltern.bchb[38] = new JRtaCheckBox("");
+		eltern.bchb[38].setName("F_175");
+		dum2.add(eltern.bchb[38],ccdum2.xy(1,2));
 		dum2.getPanel().validate();
 		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
 		/**/
@@ -461,9 +461,9 @@ public class Eb2 {
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
 		dum2.add(getLabelKleinRot("176"),ccdum2.xy(1,1));
-		eltern.bchb[37] = new JRtaCheckBox("");
-		eltern.bchb[37].setName("F_176");
-		dum2.add(eltern.bchb[37],ccdum2.xy(1,2));
+		eltern.bchb[39] = new JRtaCheckBox("");
+		eltern.bchb[39].setName("F_176");
+		dum2.add(eltern.bchb[39],ccdum2.xy(1,2));
 		dum2.getPanel().validate();
 		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
 		/**/
@@ -495,9 +495,9 @@ public class Eb2 {
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
 		dum2.add(getLabelKleinRot("177"),ccdum2.xy(1,1));
-		eltern.bchb[38] = new JRtaCheckBox("");
-		eltern.bchb[38].setName("F_177");
-		dum2.add(eltern.bchb[38],ccdum2.xy(1,2));
+		eltern.bchb[40] = new JRtaCheckBox("");
+		eltern.bchb[40].setName("F_177");
+		dum2.add(eltern.bchb[40],ccdum2.xy(1,2));
 		dum2.getPanel().validate();
 		dum.add(dum2.getPanel(),ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
 		/**/
@@ -539,9 +539,9 @@ public class Eb2 {
 		CellConstraints ccdum = new CellConstraints();
 		
 		dum.add(getLabelKleinRot("173"),ccdum.xy(2,2));
-		eltern.bchb[34] = new JRtaCheckBox("");
-		eltern.bchb[34].setName("F_173");
-		dum.add(eltern.bchb[34],ccdum.xy(2,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		eltern.bchb[36] = new JRtaCheckBox("");
+		eltern.bchb[36].setName("F_173");
+		dum.add(eltern.bchb[36],ccdum.xy(2,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		JLabel lab = new JLabel("keine wesentlichen Einschränkungen");
 		lab.setFont(fontarialfett);
 		dum.add(lab,ccdum.xy(4,3));
@@ -572,21 +572,21 @@ public class Eb2 {
 		lab.setFont(this.fontarialnormal);
 		dum.add(lab,ccdum.xyw(2, 4, 8));
 		dum.add(getLabelKleinRot("170"),ccdum.xy(6,3));
-		eltern.bchb[31] = new JRtaCheckBox("");
-		eltern.bchb[31].setName("F_170");
-		dum.add(eltern.bchb[31],ccdum.xy(6,4));
+		eltern.bchb[33] = new JRtaCheckBox("");
+		eltern.bchb[33].setName("F_170");
+		dum.add(eltern.bchb[33],ccdum.xy(6,4));
 		dum.add(getLabel("Tagesschicht"),ccdum.xy(8, 4));
 
 		dum.add(getLabelKleinRot("171"),ccdum.xy(10,3));
-		eltern.bchb[32] = new JRtaCheckBox("");
-		eltern.bchb[32].setName("F_171");
-		dum.add(eltern.bchb[32],ccdum.xy(10,4));
+		eltern.bchb[34] = new JRtaCheckBox("");
+		eltern.bchb[34].setName("F_171");
+		dum.add(eltern.bchb[34],ccdum.xy(10,4));
 		dum.add(getLabel("Früh-/Spätschicht"),ccdum.xy(12, 4));
 		
 		dum.add(getLabelKleinRot("172"),ccdum.xy(14,3));
-		eltern.bchb[33] = new JRtaCheckBox("");
-		eltern.bchb[33].setName("F_172");
-		dum.add(eltern.bchb[33],ccdum.xy(14,4));
+		eltern.bchb[35] = new JRtaCheckBox("");
+		eltern.bchb[35].setName("F_172");
+		dum.add(eltern.bchb[35],ccdum.xy(14,4));
 		dum.add(getLabel("Nachtschicht"),ccdum.xy(16, 4));
 
 		dum.getPanel().validate();
@@ -631,14 +631,14 @@ public class Eb2 {
 		dum.add(dum2.getPanel(),ccdum.xyw(2, 2,11));
 		/*******************/
 		dum.add(getLabelKleinRot("161"),ccdum.xy(2, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[23] = new JRtaCheckBox("");
-		eltern.bchb[23].setName("F_161");
-		dum.add(eltern.bchb[23],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[24] = new JRtaCheckBox("");
+		eltern.bchb[24].setName("F_161");
+		dum.add(eltern.bchb[24],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabel("ständig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabelKleinRot("162"),ccdum.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[24] = new JRtaCheckBox("");
-		eltern.bchb[24].setName("F_162");
-		dum.add(eltern.bchb[24],ccdum.xy(6, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[25] = new JRtaCheckBox("");
+		eltern.bchb[25].setName("F_162");
+		dum.add(eltern.bchb[25],ccdum.xy(6, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		/***/
 		dummy2 = new FormLayout("p,","p,p");
 		dum2 = new PanelBuilder(dummy2);
@@ -649,9 +649,9 @@ public class Eb2 {
 		dum.add(dum2.getPanel(),ccdum.xy(8, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		/***/
 		dum.add(getLabelKleinRot("163"),ccdum.xy(10, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[25] = new JRtaCheckBox("");
-		eltern.bchb[25].setName("F_163");
-		dum.add(eltern.bchb[25],ccdum.xy(10, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[26] = new JRtaCheckBox("");
+		eltern.bchb[26].setName("F_163");
+		dum.add(eltern.bchb[26],ccdum.xy(10, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		/***/
 		dummy2 = new FormLayout("p,","p,p");
 		dum2 = new PanelBuilder(dummy2);
@@ -681,14 +681,14 @@ public class Eb2 {
 		dum.add(lab,ccdum.xyw(2, 2,11));
 		/*******************/
 		dum.add(getLabelKleinRot("164"),ccdum.xy(2, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[26] = new JRtaCheckBox("");
-		eltern.bchb[26].setName("F_164");
-		dum.add(eltern.bchb[26],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[27] = new JRtaCheckBox("");
+		eltern.bchb[27].setName("F_164");
+		dum.add(eltern.bchb[27],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabel("ständig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabelKleinRot("165"),ccdum.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[26] = new JRtaCheckBox("");
-		eltern.bchb[26].setName("F_165");
-		dum.add(eltern.bchb[26],ccdum.xy(6, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[28] = new JRtaCheckBox("");
+		eltern.bchb[28].setName("F_165");
+		dum.add(eltern.bchb[28],ccdum.xy(6, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		/***/
 		dummy2 = new FormLayout("p,","p,p");
 		dum2 = new PanelBuilder(dummy2);
@@ -699,9 +699,9 @@ public class Eb2 {
 		dum.add(dum2.getPanel(),ccdum.xy(8, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		/***/
 		dum.add(getLabelKleinRot("166"),ccdum.xy(10, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[27] = new JRtaCheckBox("");
-		eltern.bchb[27].setName("F_166");
-		dum.add(eltern.bchb[27],ccdum.xy(10, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[29] = new JRtaCheckBox("");
+		eltern.bchb[29].setName("F_166");
+		dum.add(eltern.bchb[29],ccdum.xy(10, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		/***/
 		dummy2 = new FormLayout("p,","p,p");
 		dum2 = new PanelBuilder(dummy2);
@@ -732,14 +732,14 @@ public class Eb2 {
 		dum.add(lab,ccdum.xyw(2, 2,11));
 		/*******************/
 		dum.add(getLabelKleinRot("167"),ccdum.xy(2, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[28] = new JRtaCheckBox("");
-		eltern.bchb[28].setName("F_167");
-		dum.add(eltern.bchb[28],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[30] = new JRtaCheckBox("");
+		eltern.bchb[30].setName("F_167");
+		dum.add(eltern.bchb[30],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabel("ständig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabelKleinRot("168"),ccdum.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[29] = new JRtaCheckBox("");
-		eltern.bchb[29].setName("F_168");
-		dum.add(eltern.bchb[29],ccdum.xy(6, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[31] = new JRtaCheckBox("");
+		eltern.bchb[31].setName("F_168");
+		dum.add(eltern.bchb[31],ccdum.xy(6, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		/***/
 		dummy2 = new FormLayout("p,","p,p");
 		dum2 = new PanelBuilder(dummy2);
@@ -750,9 +750,9 @@ public class Eb2 {
 		dum.add(dum2.getPanel(),ccdum.xy(8, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		/***/
 		dum.add(getLabelKleinRot("169"),ccdum.xy(10, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
-		eltern.bchb[30] = new JRtaCheckBox("");
-		eltern.bchb[30].setName("F_169");
-		dum.add(eltern.bchb[30],ccdum.xy(10, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		eltern.bchb[32] = new JRtaCheckBox("");
+		eltern.bchb[32].setName("F_169");
+		dum.add(eltern.bchb[32],ccdum.xy(10, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		/***/
 		dummy2 = new FormLayout("p,","p,p");
 		dum2 = new PanelBuilder(dummy2);
