@@ -663,12 +663,29 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			 * FloatWerte von Christian
 			 * 
 			 */
-			Float[][] poswert1 = {
-					
+			Float[][] poswert1 = 
+			//	  17                                  18                          19
+			{getFloats(90.1f,238.0f,fy0),getFloats(128.25f,238.0f,fy0),getFloats(171.1f,238.0f,fy0),
+					//   20                                 21                               22                           23
+					getFloats(77.4f,204.75f,fy0),getFloats(112.8f,204.75f,fy0),getFloats(156.0f,204.75f,fy0),getFloats(186.4f,204.75f,fy0),	
+					//       24                            25                          26                       27        
+					getFloats(28.75f,192.0f,fy0),getFloats(46.7f,192.0f,fy0),getFloats(64.7f,192.0f,fy0),getFloats(87.7f,192.0f,fy0),
+					//         28                          29                              30                       31         
+					getFloats(105.3f,192.0f,fy0),getFloats(123.2f,192.0f,fy0),getFloats(146.0f,192.0f,fy0),getFloats(163.6f,192.0f,fy0),
+					//         32
+					getFloats(181.4f,192.0f,fy0),
+					//          33                      34                               35
+					getFloats(77.3f,183.55f,fy0),getFloats(112.8f,183.55f,fy0),getFloats(155.9f,183.55f,fy0),
+					//          36                        37                         38
+					getFloats(36.4f,175.0f,fy0),getFloats(36.4f,153.9f,fy0),getFloats(36.4f,141.3f,fy0),
+					//          39                        40
+					getFloats(36.4f,128.85f,fy0),getFloats(36.40f,116.15f,fy0),
+					//           41                        42                       43
+					getFloats(90.23f,22.8f,fy0),getFloats(128.23f,22.8f,fy0),getFloats(171.13f,22.8f,fy0),
 			};
 			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 			text = "X";    // < 44
-			for(int i = 17; i < 17;i++){
+			for(int i = 17; i < 44;i++){
 				if(bchb[i].isSelected()){
 					setzeText(cb,poswert1[i-17][0], poswert1[i-17][1],poswert1[i-17][2],bf,14,text);
 				}
