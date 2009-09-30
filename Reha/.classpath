@@ -38,5 +38,10 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/uk.co.mmscomputing.device.twain.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/iText-2.1.6.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/comm.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/jasperreports-3.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

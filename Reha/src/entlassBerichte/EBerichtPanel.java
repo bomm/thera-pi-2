@@ -27,6 +27,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,6 +43,12 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXPanel;
@@ -297,6 +306,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("gutsave")){
+			if(this.neu){
+				doSpeichernNeu();	
+			}else{
+				doSpeichernAlt();
+			}
 			
 		}
 		if(cmd.equals("gutvorschau")){
@@ -329,6 +343,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		
 	}
+	private void doSpeichernAlt(){
+		
+	}
+	private void doSpeichernNeu(){
+		
+	}
+
 	/***********ab hier Christian's Funktionen
 	 * 
 	 */
@@ -562,12 +583,17 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				stamper.close();
 				reader.close();
 				/*****************************************************************/
+				boolean geklappt = false;
+				try{
 				//Seite 2 öffnen
 				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite2-Variante2.pdf";
 				tempDateien[1] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB2"+System.currentTimeMillis()+".pdf"};
 				reader = new PdfReader (pdfPfad);
 				stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
-				boolean geklappt = doSeite2(stamper2);
+				geklappt = doSeite2(stamper2);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				if(geklappt){
 					
 					/*
@@ -588,9 +614,23 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				 */
 				
 				}
+				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite4-Variante2.pdf";
+				reader = new PdfReader (pdfPfad);
+				tempDateien[3] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB4"+System.currentTimeMillis()+".pdf"};
+				PdfStamper stamper4 = new PdfStamper(reader,new  FileOutputStream(tempDateien[3][0]));
+				geklappt = doSeiteTest(stamper4);
 				
+				try {
+					geklappt = doSeite4(stamper4);
+				} catch (JRException e) {
+					e.printStackTrace();
+				}
+				
+				if(!geklappt){
+				}
 				// AdobeReader starten
-				final String xdatei =  tempDateien[1][0];//sdatei;
+				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
+				final String xdatei =  tempDateien[3][0];//sdatei;
 				new Thread(){
 					public void run(){
 						new SwingWorker<Void,Void>(){
@@ -663,6 +703,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			 * FloatWerte von Christian
 			 * 
 			 */
+
+
 			Float[][] poswert1 = 
 			//	  17                                  18                          19
 			{getFloats(90.1f,238.0f,fy0),getFloats(128.25f,238.0f,fy0),getFloats(171.1f,238.0f,fy0),
@@ -682,6 +724,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					getFloats(36.4f,128.85f,fy0),getFloats(36.40f,116.15f,fy0),
 					//           41                        42                       43
 					getFloats(90.23f,22.8f,fy0),getFloats(128.23f,22.8f,fy0),getFloats(171.13f,22.8f,fy0),
+
 			};
 			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 			text = "X";    // < 44
@@ -716,9 +759,85 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return false;
 		
 	}
-	/***********Ende Christian's Funktion
-	 * 
-	 */
+	
+	public boolean doSeite4(PdfStamper stamper4) throws IOException, JRException{
+		System.out.println("Starte JasperSoft");
+		Map params = new HashMap<String,String>();
+		params.put("patient","Steinhilber, Jürgen");
+		params.put("geboren","020562");
+		params.put("berichtid","'"+this.berichtid+"'");
+		JasperReport jasperReport;
+
+	
+		JasperPrint jasperPrint 
+        = JasperFillManager.fillReport("C:/RehaVerwaltung/reports/510841109/report3.jasper",  
+                                       params, 
+                                       Reha.thisClass.conn);
+		JasperExportManager.exportReportToPdfFile(jasperPrint,
+        "C:/RehaVerwaltung/temp/510841109/freitext.pdf");
+		System.out.println("Fertig mit JasperSoft");
+			return false;
+	}
+	public boolean doSeiteTest(PdfStamper stamper4) throws IOException{
+		InputStream isb = null;
+		//isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
+		isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+"1039"+"'");
+		System.out.println("Nachfolgend der isb-Output");
+		System.out.println("Länge des Inputstreams "+isb.available());
+		
+		int read = isb.available();
+
+		ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+
+
+	    byte[] buffer = new byte[read];
+	    read = isb.read(buffer);
+	    baos2.write(buffer, 0, read);	    
+	    baos2.flush();
+	    String gelesen = new String (baos2.toByteArray(),"UTF8");	    
+	    baos2.close();
+	    isb.close();
+	    System.out.println("Länge des Byte Arrays = "+gelesen.length());
+		PdfContentByte cb = stamper4.getOverContent(1);
+
+		
+		ColumnText ct = null;
+		Phrase ph = null;
+		//bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		Float[] rehaunten =  getFloats(31.00f,34.0f,0.5f);
+		Float[] rehaoben =  getFloats(195.00f,250.0f,0.5f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],9,Element.ANCHOR);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+		//ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+		ph.add(gelesen);
+		
+		
+		ct.addText(ph);
+
+		try {
+			ct.go();
+			//isb.close();
+			stamper4.close();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        try {
+			baos2.close();
+			//is.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return false;
+	}
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
