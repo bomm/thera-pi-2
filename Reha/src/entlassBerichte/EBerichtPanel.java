@@ -781,7 +781,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public boolean doSeiteTest(PdfStamper stamper4) throws IOException{
 		InputStream isb = null;
 		//isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
-		isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+"1039"+"'");
+		isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
 		System.out.println("Nachfolgend der isb-Output");
 		System.out.println("Länge des Inputstreams "+isb.available());
 		

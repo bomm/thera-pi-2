@@ -296,7 +296,7 @@ public class Eb3 implements RehaEventListener  {
 			@Override
 			protected Void doInBackground() throws Exception {
 				textSpeichern();
-				EBerichtPanel.document.close();
+				//EBerichtPanel.document.close();
 				pan.remove(nativeView);
 				return null;
 			}
@@ -311,17 +311,21 @@ public class Eb3 implements RehaEventListener  {
 		int bilder = 0;
 		FileInputStream fis = null;
 		try {
+			if(EBerichtPanel.document==null){
+				Reha.thisClass.progressStarten(false);
+				return;
+			}
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			/*
 			EBerichtPanel.document.getPersistenceService().store(out);
 			InputStream ins = new ByteArrayInputStream(out.toByteArray());
 			String select = "Update bericht2 set freitext = ? where berichtid = ?";
 			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
-			ps.setBinaryStream(1,ins );
+			ps.setAsciiStream(1,ins);
 			ps.setInt(2, eltern.berichtid);
 			ps.execute();
-			*/
 			Reha.thisClass.progressStarten(false);
+			ins.close();
+			out.close();
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
