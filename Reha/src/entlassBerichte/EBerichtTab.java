@@ -38,5 +38,17 @@ public class EBerichtTab {
 		return tab;
 		
 	}
+	public Eb1 getTab1(){
+		return seite1;
+	}
+	public Eb2 getTab2(){
+		return seite2;
+	}
+	public Eb3 getTab3(){
+		return seite3;
+	}
+	public Eb4 getTab4(){
+		return seite4;
+	}
 
 }

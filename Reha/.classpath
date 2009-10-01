@@ -43,5 +43,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-digester-1.7.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/jasperreports-3.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-javaflow-20060411.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

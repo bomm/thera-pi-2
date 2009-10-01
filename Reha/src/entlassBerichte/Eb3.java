@@ -26,13 +26,23 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingx.JXPanel;
 
 import com.mysql.jdbc.PreparedStatement;
+
+import com.sun.star.beans.Property;
+import com.sun.star.beans.XPropertySet;
+import com.sun.star.container.XNameContainer;
 import com.sun.star.frame.XController;
+import com.sun.star.style.XStyle;
+import com.sun.star.style.XStyleFamiliesSupplier;
+import com.sun.star.text.XTextDocument;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.UnoRuntime;
+import com.sun.star.view.XLineCursor;
 
 import events.RehaEvent;
 import events.RehaEventClass;
@@ -40,18 +50,23 @@ import events.RehaEventListener;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.FileTools;
 
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.internal.text.TextRange;
+import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
+import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
 
 public class Eb3 implements RehaEventListener  {
@@ -65,7 +80,9 @@ public class Eb3 implements RehaEventListener  {
 	EBerichtPanel eltern = null;
 	Container xparent = null;
 	NativeView nativeView = null; 
-	
+	ByteArrayOutputStream outtemp = null;	
+	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
+	boolean gestartet = false;
 	public Eb3(EBerichtPanel xeltern){
 		eltern = xeltern; 
 		rEvent = new RehaEventClass();
@@ -136,21 +153,57 @@ public class Eb3 implements RehaEventListener  {
 			        	//d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 			        	d.setTitle("Entlassbericht");
 			        	if(eltern.neu){
-				        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);		        		
-			        	}else{
-			        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 				        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-				        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-				        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
-							XController xController = eltern.document.getXTextDocument().getCurrentController();
-							XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-							xController);
-							XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-							xtvc.gotoStart(false);
-							is.close();
 							eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 							Reha.thisClass.progressStarten(false);
+			        	}else{
+			        		if(!gestartet){
+				        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+			        			DocumentDescriptor descript = new DocumentDescriptor();
+			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+			        			descript.setHidden(true);
+			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
+			        			/*
+					        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
+					        	*/
+								XController xController = eltern.document.getXTextDocument().getCurrentController();
+								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+								xController);
+								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+								xtvc.gotoStart(false);
+								is.close();
+								eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+
+								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								Reha.thisClass.progressStarten(false);
+			        			
+			        		}else{
+			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
+			        			DocumentDescriptor descript = new DocumentDescriptor();
+			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+			        			descript.setHidden(true);
+			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+			        			/*
+			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(ins, new RTFFilter());
+					        	*/
+								XController xController = eltern.document.getXTextDocument().getCurrentController();
+								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+								xController);
+								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+								xtvc.gotoStart(false);
+								ins.close();
+								eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								Reha.thisClass.progressStarten(false);
+			        		}
 			        	}
+			        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
+			        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+
 			        	
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
@@ -295,15 +348,36 @@ public class Eb3 implements RehaEventListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				textSpeichern();
-				//EBerichtPanel.document.close();
+				outtemp = new ByteArrayOutputStream();
+				tempTextSpeichern();
+				EBerichtPanel.document.close();
 				pan.remove(nativeView);
 				return null;
 			}
 			
 		}.execute();
 	}
-	public void textSpeichern(){
+	public void tempTextSpeichern(){
+		String url = tempPfad+"EBfliesstext.pdf";
+		System.out.println("speichere temporär in: "+url);
+		try {
+			if(EBerichtPanel.document == null){return;}
+			if(EBerichtPanel.document.isOpen()){
+				outtemp = new ByteArrayOutputStream();
+				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+			}			
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("**********DokumentException************");
+		} catch (NOAException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("**********NoeException************");
+		}
+	}
+	public void textSpeichernInDB(boolean mittemp){
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
@@ -315,17 +389,33 @@ public class Eb3 implements RehaEventListener  {
 				Reha.thisClass.progressStarten(false);
 				return;
 			}
+			if(!EBerichtPanel.document.isOpen()){
+				Reha.thisClass.progressStarten(false);
+				return;
+			}
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			EBerichtPanel.document.getPersistenceService().store(out);
+			EBerichtPanel.document.getPersistenceService().export(out, new RTFFilter());
+			//EBerichtPanel.document.getPersistenceService().store(out);
 			InputStream ins = new ByteArrayInputStream(out.toByteArray());
 			String select = "Update bericht2 set freitext = ? where berichtid = ?";
 			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 			ps.setAsciiStream(1,ins);
 			ps.setInt(2, eltern.berichtid);
 			ps.execute();
-			Reha.thisClass.progressStarten(false);
+			if(mittemp){
+				if(EBerichtPanel.document == null){return;}
+				if(EBerichtPanel.document.isOpen()){
+					String url = tempPfad+"EBfliesstext.pdf";
+					System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
+					outtemp = new ByteArrayOutputStream();
+					EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+					EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+				}			
+			}
 			ins.close();
 			out.close();
+			//EBerichtPanel.document.close();
+			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -369,7 +459,7 @@ public class Eb3 implements RehaEventListener  {
 		    officeFrame.disableDispatch(GlobalCommands.NEW_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.OPEN_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.EDIT_DOCUMENT);
-		    officeFrame.disableDispatch(GlobalCommands.DIREKT_EXPORT_DOCUMENT);
+		   // officeFrame.disableDispatch(GlobalCommands.DIREKT_EXPORT_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.MAIL_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.OPEN_HYPERLINK_DIALOG);
 		    officeFrame.disableDispatch(GlobalCommands.EDIT_HYPERLINK);
@@ -405,15 +495,23 @@ public class Eb3 implements RehaEventListener  {
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-								speichernSeite();
+					 		   textSpeichernInDB(false);
+					 		   speichernSeite();
+										 		   
+					 	   }
+					});	
+				}
+				if(evt.getDetails()[1].equals("#SPEICHERNTEMP") && evt.getDetails()[0].contains("Gutachten")){
+					SwingUtilities.invokeLater(new Runnable(){
+					 	   public  void run()
+					 	   {
+					 		   textSpeichernInDB(true);
+					 		   //tempTextSpeichern();
 										 		   
 					 	   }
 					});	
 
-
 				}
-
-				
 			}
 			if(evt.getDetails()[0].contains("GutachtenFenster")){
 				if(evt.getDetails()[1].equals("#SCHLIESSEN")){

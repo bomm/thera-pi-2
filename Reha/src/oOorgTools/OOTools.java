@@ -454,6 +454,32 @@ public class OOTools {
 		xStyleProps.setPropertyValue("Height", new Integer(hoch));
 		xStyleProps.setPropertyValue("Width", new Integer(breit));
 	}
-	
+	public static void setzeRaender(ITextDocument textDocument,int oben,int unten,int links,int rechts) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
+    	XTextDocument xTextDocument = textDocument.getXTextDocument();
+    	XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
+    	xTextDocument);
+    	XNameContainer family = (XNameContainer) UnoRuntime.queryInterface(XNameContainer.class,
+    	xSupplier.getStyleFamilies().getByName("PageStyles"));
+    	XStyle xStyle = (XStyle) UnoRuntime.queryInterface(XStyle.class, family.getByName("Standard") );
+    	XPropertySet xStyleProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+    	xStyle);
+    	xStyleProps.setPropertyValue("TopMargin",oben);
+    	xStyleProps.setPropertyValue("BottomMargin",unten);
+    	xStyleProps.setPropertyValue("LeftMargin",links);
+    	xStyleProps.setPropertyValue("RightMargin",rechts);
+
+
+    	//Property[] props = xStyleProps.getPropertySetInfo().getProperties();
+    	/*
+    	for (int i = 0; i < props.length; i++) {
+    	System.out.println(props[i].Name + " = "
+    	+ xStyleProps.getPropertyValue(props[i].Name));
+    	//z.B. für A5
+    	//xStyleProps.setPropertyValue("Height", new Integer(21000));
+    	//xStyleProps.setPropertyValue("Width", new Integer(14800));
+    	}
+    	*/
+		
+	}
 	
 }

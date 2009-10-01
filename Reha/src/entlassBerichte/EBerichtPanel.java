@@ -4,6 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -70,6 +71,7 @@ import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
 import events.PatStammEventClass;
@@ -79,6 +81,8 @@ import events.RehaEventClass;
 import events.RehaEventListener;
 
 import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.filter.PDFFilter;
+import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextDocument;
 
 import sqlTools.SqlInfo;
@@ -110,9 +114,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public int berichtid = -1;
 	public String berichttyp = null;
 	public boolean neu = false;
-	
+	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
+	public String vorlagenPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/";
+	public String[] rvVorlagen = {null,null,null,null};
+	EBerichtTab ebt;	
 	IFrame officeFrame = null;
 	RehaEventClass evt = null;
+	
+	String[][] tempDateien = {null,null,null,null};
+	
 	static ITextDocument document = null;
 	
 	public JRtaTextField[] barzttf = {null,null,null}; 
@@ -213,10 +223,14 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("             Bericht ID ="+ this.berichtid);
 		System.out.println("             Berichttyp ="+ this.berichttyp);
 		System.out.println("          Neuer Bericht ="+ this.neu);
+		rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
+		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
+		rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
+		rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
 	}
 	/******************************************************************/
 	private JTabbedPane getEBerichtTab(){
-		EBerichtTab ebt = new EBerichtTab(this);
+		ebt = new EBerichtTab(this);
 		return ebt.getTab();
 	}
 	private JTabbedPane getNachsorgeTab(){
@@ -318,8 +332,25 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				public void run(){
 					Reha.thisClass.progressStarten(true);
 					if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
+						if(ebt.getTab3()==null){
+							System.out.println("Der Fliesstexttab = null!!!!!!");
+							return;
+						}
+						ebt.getTab3().tempTextSpeichern();
+						/*
+						if(document == null){return;}
+						if(EBerichtPanel.document.isOpen()){
+							String url = tempPfad+"EBfliesstext.pdf";
+							try {
+								document.getPersistenceService().export(url, new PDFFilter());
+							} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+								e.printStackTrace();
+							}
+						}			
+						*/
+						
+						doRVVorschau();
 						ebtab.setSelectedIndex(0);
-						doRVVorschau();						
 					}
 					
 				}
@@ -344,7 +375,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 	}
 	private void doSpeichernAlt(){
-		
+		RehaEvent xevt = new RehaEvent(this);
+		xevt.setDetails("Gutachten", "#SPEICHERNTEMP");
+		xevt.setRehaEvent("REHAINTERNAL");
+		RehaEventClass.fireRehaEvent(xevt);
+
 	}
 	private void doSpeichernNeu(){
 		
@@ -380,10 +415,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	private void doRVVorschau(){
 		//name und Pfad der PDF
-		String pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite1-Variante2.pdf";
+		String pdfPfad = rvVorlagen[0];
 		//PdfWriter writer2 = null;
 		//PdfCopy writer = null;
-		String[][] tempDateien = {null,null,null,null};
+		
 		PdfStamper stamper = null;
 		PdfStamper stamper2 = null;
 		String test = "23020562S512";
@@ -586,7 +621,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				boolean geklappt = false;
 				try{
 				//Seite 2 öffnen
-				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite2-Variante2.pdf";
+				pdfPfad = rvVorlagen[1];
 				tempDateien[1] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB2"+System.currentTimeMillis()+".pdf"};
 				reader = new PdfReader (pdfPfad);
 				stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
@@ -614,23 +649,27 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				 */
 				
 				}
+				/*
 				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite4-Variante2.pdf";
 				reader = new PdfReader (pdfPfad);
 				tempDateien[3] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB4"+System.currentTimeMillis()+".pdf"};
 				PdfStamper stamper4 = new PdfStamper(reader,new  FileOutputStream(tempDateien[3][0]));
-				geklappt = doSeiteTest(stamper4);
-				
+				geklappt = doSeiteTest(stamper4,tempDateien[3][0]);
+				*/
+				/*
 				try {
 					geklappt = doSeite4(stamper4);
 				} catch (JRException e) {
 					e.printStackTrace();
 				}
-				
+				*/
+				geklappt = doSeiteTest();
 				if(!geklappt){
 				}
 				// AdobeReader starten
 				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
-				final String xdatei =  tempDateien[3][0];//sdatei;
+				//final String xdatei =  tempDateien[3][0];//sdatei;
+				final String xdatei =  tempPfad+"EBgesamt.pdf";
 				new Thread(){
 					public void run(){
 						new SwingWorker<Void,Void>(){
@@ -778,64 +817,132 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("Fertig mit JasperSoft");
 			return false;
 	}
-	public boolean doSeiteTest(PdfStamper stamper4) throws IOException{
+	public boolean doSeiteTest() throws IOException, DocumentException{
 		InputStream isb = null;
 		//isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
 		isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
 		System.out.println("Nachfolgend der isb-Output");
 		System.out.println("Länge des Inputstreams "+isb.available());
+
+		//stamper4.close();
+		/*
+		String pdfPfad = rvVorlagen[3];
+		PdfReader reader = new PdfReader (pdfPfad);
+
+		PdfStamper stamper4 = new PdfStamper(reader,new  FileOutputStream(tempDateien[3][0]));
+		geklappt = doSeiteTest(stamper4,tempDateien[3][0]);
+		*/
+		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};
+		String pdfPfad = rvVorlagen[3];
+		System.out.println("Pfad zu der Vorlage = "+pdfPfad);
+		//Document doc = new Document(PageSize.A4);	
+		Document docgesamt = new Document(PageSize.A4);
+		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
+
+		int seiten = reader.getNumberOfPages();
+		System.out.println("Insgasamt Seiten Fließtext = "+seiten);
+		/*
+		PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("C:/RehaVerwaltung/temp/510841109/itext2.pdf"));
+		doc.open();
+
+		PdfContentByte cb = writer.getDirectContent();
+		PdfImportedPage page;
+
+
+		page = writer.getImportedPage(reader,1);
 		
-		int read = isb.available();
-
-		ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-
-
-	    byte[] buffer = new byte[read];
-	    read = isb.read(buffer);
-	    baos2.write(buffer, 0, read);	    
-	    baos2.flush();
-	    String gelesen = new String (baos2.toByteArray(),"UTF8");	    
-	    baos2.close();
-	    isb.close();
-	    System.out.println("Länge des Byte Arrays = "+gelesen.length());
-		PdfContentByte cb = stamper4.getOverContent(1);
-
+		cb.addTemplate(page, 0, 0);
+		*/
+		PdfImportedPage page2;		
+		//PdfReader rvorlage = new PdfReader(vorlage);
+		PdfCopy cop = new PdfCopy(docgesamt,new FileOutputStream(tempPfad+"EBgesamt.pdf"));
+		docgesamt.open();
 		
-		ColumnText ct = null;
-		Phrase ph = null;
-		//bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-		Float[] rehaunten =  getFloats(31.00f,34.0f,0.5f);
-		Float[] rehaoben =  getFloats(195.00f,250.0f,0.5f);
-		ct = new ColumnText(cb);
-		ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],9,Element.ANCHOR);
-		ph = new Phrase();
-		ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
-		//ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-		ph.add(gelesen);
+		ByteArrayOutputStream bpage1 = new ByteArrayOutputStream();
+		PdfReader readerPage1 = new PdfReader (tempDateien[0][0]);
+		PdfStamper stampPage1 = new PdfStamper(readerPage1,bpage1);
+		PdfContentByte cbPage1 = stampPage1.getOverContent(1);
+		schreibeVonBis(cbPage1,seiten);
+		stampPage1.close();
 		
+		cop.addPage(cop.getImportedPage(new PdfReader(bpage1.toByteArray()),1));
+		cop.addPage(cop.getImportedPage(new PdfReader(tempDateien[1][0]),1));
 		
-		ct.addText(ph);
-
-		try {
-			ct.go();
-			//isb.close();
-			stamper4.close();
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		ByteArrayOutputStream bvorlage;
+		Float[] xy = getFloats(17.f,13.f,0.f);
+		for(int i = 1; i <= seiten; i++){
+			//PdfReader rvorlage = new PdfReader(vorlage);
+			PdfReader rvorlage = new PdfReader(pdfPfad);
+			bvorlage = new ByteArrayOutputStream();
+			PdfStamper stamper = new PdfStamper(rvorlage,bvorlage);
+			PdfContentByte cb2 = stamper.getOverContent(1);
+			page2 = cb2.getPdfWriter().getImportedPage(reader, i);
+			cb2.addTemplate(page2,xy[0],xy[1]);
+			try{
+				schreibeKopf(cb2,i);				
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			stamper.setFormFlattening(true);
+			stamper.close();
+			PdfReader komplett = new PdfReader(bvorlage.toByteArray());
+			cop.addPage(cop.getImportedPage(komplett,1));
+			bvorlage.close();
 		}
 		
-        try {
-			baos2.close();
-			//is.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+
+		
+		//cb.addTemplate(page, 0, 0);
+		
+
+
+		
+		//doc.close();
+		docgesamt.close();
+		reader.close();
+	
+		
+		
+		
 		return false;
+	}
+	private void schreibeKopf(PdfContentByte cb,int seite) throws DocumentException, IOException{
+		float fy0 =  0.25f;
+		float fy1 =  7.1f;
+
+		Float[] xname = getFloats(24.f,268.f,fy0);
+		Float[] xgeboren = getFloats(171.5f,268.f,fy1);
+		Float[] xseite = getFloats(188.25f,278.5f,fy0);
+		BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
+		cb.beginText();
+		cb.moveText(xname[0], xname[1]);
+		cb.setFontAndSize(bf,12);
+		cb.setCharacterSpacing(xname[2]);
+		cb.showText(btf[2].getText());
+		cb.endText();
+		cb.beginText();
+		cb.moveText(xgeboren[0], xgeboren[1]);
+		cb.setFontAndSize(bf,12);
+		cb.setCharacterSpacing(xgeboren[2]);
+		cb.showText(this.macheDatum2Sechs(btf[3].getText()));
+		cb.endText();
+		cb.beginText();
+		cb.moveText(xseite[0], xseite[1]);
+		cb.setFontAndSize(bf,11);
+		cb.setCharacterSpacing(xseite[2]);
+		cb.showText(new Integer(seite).toString());
+		cb.endText();
+
+	}
+	private void schreibeVonBis(PdfContentByte cb,int seiten) throws DocumentException, IOException{
+		Float[] xseite = getFloats(174.0f,27.0f,0.f);
+		BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
+		cb.beginText();
+		cb.moveText(xseite[0], xseite[1]);
+		cb.setFontAndSize(bf,11);
+		cb.setCharacterSpacing(xseite[2]);
+		cb.showText(new Integer(seiten).toString());
+		cb.endText();
 	}
 	
 	
