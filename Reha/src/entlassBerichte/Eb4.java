@@ -333,7 +333,7 @@ public class Eb4 implements ActionListener {
 								new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
 						for(int i = 1;i<50;i++){
 							pos = (i*4);
-							System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
+							//System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
 							if(vec.get(0).get(pos).equals("0")){
 								istnull++;
 								if(istnull > 3){
@@ -389,7 +389,7 @@ public class Eb4 implements ActionListener {
 		};
 		Collections.sort(vec,comparator);		
 		
-		System.out.println("Dit ktltabelle = "+ktltabelle);
+		//System.out.println("Dit ktltabelle = "+ktltabelle);
 		Vector<String> vec2 = new Vector<String>();
 		vec2.add("./.");
 		vec2.add("");
@@ -402,10 +402,6 @@ public class Eb4 implements ActionListener {
 			eltern.ktltfc[i].setName("TKT"+(i+1));
 			eltern.ktltfd[i].setName("TZT"+(i+1));			
 			eltern.ktltfa[i].setName("TAZ"+(i+1));			
-			//eltern.ktlcmb[i] = new JRtaComboBox((Vector<Vector<String>>)vec,0,3);
-			//eltern.ktltfc[i] = new JRtaTextField("GROSS",false);
-			//eltern.ktltfd[i] = new JRtaTextField("GROSS",false);
-			//eltern.ktltfa[i] = new JRtaTextField("ZAHLEN",false);
 		}
 	}
 	private JPanel getRand(Color col){

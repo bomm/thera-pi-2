@@ -248,7 +248,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		//System.out.println(arg0);
 		JTabbedPane pane = (JTabbedPane)arg0.getSource();
         int sel = pane.getSelectedIndex();
-        System.out.println("Tab mit Index "+sel+" wurde selektiert");
+        //System.out.println("Tab mit Index "+sel+" wurde selektiert");
         if(sel==2){
         	new SwingWorker<Void,Void>(){
 				@Override
@@ -348,7 +348,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					Reha.thisClass.progressStarten(true);
 					if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
 						if(ebt.getTab3()==null){
-							System.out.println("Der Fliesstexttab = null!!!!!!");
+							//System.out.println("Der Fliesstexttab = null!!!!!!");
 							return;
 						}
 						try {
@@ -427,7 +427,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		buf.append( " where berichtid = '"+berichtid+"'");
 		SqlInfo.sqlAusfuehren(buf.toString());
-		
+		/******************************************************************************************/
 		buf = new StringBuffer();
 		buf.append("Update bericht2ktl set " ); 
 		for(int i = 0;i < 50;i++){
@@ -733,13 +733,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							       InputStreamReader isr = new InputStreamReader(is);
 							       BufferedReader br = new BufferedReader(isr);
 							       String line;
-									Reha.thisClass.progressStarten(false);
 							       while ((line = br.readLine()) != null) {
-							         //System.out.println(line);
+							         System.out.println("Lade Adobe "+line);
 							       }
 							       is.close();
 							       isr.close();
 							       br.close();
+									Reha.thisClass.progressStarten(false);
 								}catch(Exception ex){
 									Reha.thisClass.progressStarten(false);
 								}
@@ -776,7 +776,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		String pdfPfad = rvVorlagen[2];
 		PdfReader reader;
 		try {
-			System.out.println("Generiere die KTL-Seiten.....");
+			//System.out.println("Generiere die KTL-Seiten.....");
 			//reader = new PdfReader (pdfPfad);
 			//ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 			//PdfStamper stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[2][0]));
