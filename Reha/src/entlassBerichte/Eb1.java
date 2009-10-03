@@ -127,6 +127,7 @@ public class Eb1 implements ActionListener {
 	public JXPanel getSeite(){
 		return pan;
 	}
+
 	private void laden(){
 		//"bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 		String berichtid = new Integer(eltern.berichtid).toString();
@@ -135,6 +136,8 @@ public class Eb1 implements ActionListener {
 		for(int i = 0; i < 25;i++){
 			buf.append(eltern.btf[i].getName()+",");
 		}
+		buf.append(eltern.btf[27].getName()+",");
+
 		for(int i = 0; i < 20;i++){
 			buf.append(eltern.bcmb[i].getName()+",");
 		}
@@ -144,7 +147,7 @@ public class Eb1 implements ActionListener {
 		for(int i = 0; i < 7;i++){
 			buf.append(eltern.bta[i].getName()+",");
 		}
-		
+		buf.append("ARZT1,ARZT2,ARZT3,");
 		buf.append("UNTDAT from bericht2 where berichtid='"+berichtid+"'");
 		//System.out.println(buf.toString());
 		holeSatz(buf);
@@ -181,7 +184,21 @@ public class Eb1 implements ActionListener {
 				for(int i = 0; i < 20;i++){
 					eltern.bcmb[i].setSelectedItem( (rs.getString(eltern.bcmb[i].getName())==null  ? "" :  rs.getString(eltern.bcmb[i].getName())) );
 				}
-
+				String name = "UNTDAT";
+				String inhalt = rs.getString(name);
+				if(!inhalt.trim().equals("")){
+					eltern.btf[27].setText(datFunk.sDatInDeutsch(inhalt));
+				}
+				name = "ARZT1";
+				inhalt = rs.getString(name);
+				eltern.barzttf[0].setText(inhalt);
+				name = "ARZT2";
+				inhalt = rs.getString(name);
+				eltern.barzttf[1].setText(inhalt);
+				name = "ARZT3";
+				inhalt = rs.getString(name);
+				eltern.barzttf[2].setText(inhalt);
+				
 
 
 			}

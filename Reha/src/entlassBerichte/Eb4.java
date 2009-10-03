@@ -227,7 +227,7 @@ public class Eb4 implements ActionListener {
 			dum.add(getRand(Color.GRAY),cckopf.xywh(4, 1, 1, 2,CellConstraints.DEFAULT,CellConstraints.FILL));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
 			eltern.ktlcmb[i+((seite-1)*25)] = new JRtaComboBox();
-			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(new Integer(i).toString());
+			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(new Integer(i+((seite-1)*25)).toString());
 			eltern.ktlcmb[i+((seite-1)*25)].addActionListener(this);
 			eltern.ktlcmb[i+((seite-1)*25)].setMaximumRowCount( 35 );
 			// set Name nacholen
@@ -321,6 +321,46 @@ public class Eb4 implements ActionListener {
 				holeKTL(true);
 			}
 		}
+		if(!eltern.neu){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						Vector<Vector<String>> vec = null;
+						int istnull = 0;
+						int pos = 0;
+						vec = SqlInfo.holeFelder("select * from bericht2ktl where berichtid='"+
+								new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
+						for(int i = 1;i<50;i++){
+							pos = (i*4);
+							System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
+							if(vec.get(0).get(pos).equals("0")){
+								istnull++;
+								if(istnull > 3){
+									break;
+								}
+							}else{
+								eltern.ktlcmb[i-1].setSelectedVecIndex(3,
+										(vec.get(0).get(pos).trim().equals("") ? "0" : vec.get(0).get(pos) ));
+								//eltern.ktlcmb[i-1].setSelectedIndex(massnahme);
+								eltern.ktltfc[i-1].setText(vec.get(0).get(pos+1));
+								eltern.ktltfd[i-1].setText(vec.get(0).get(pos+2));
+								eltern.ktltfa[i-1].setText(vec.get(0).get(pos+3));
+							}
+							
+
+						}
+						eltern.bta[8].setText(vec.get(0).get(2));
+						eltern.bta[9].setText(vec.get(0).get(3));
+						
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+				
+			}.execute();
+		}
 	}
 	private void holeKTL(boolean ktlneu){
 		Vector<Vector<String>> vec = null;
@@ -354,10 +394,14 @@ public class Eb4 implements ActionListener {
 		vec2.add("./.");
 		vec2.add("");
 		vec2.add("");
-		vec2.add("");
+		vec2.add("0");
 		vec.insertElementAt((Vector)((Vector<String>)vec2).clone(), 0);
 		for(int i = 0;i < 50;i++){
 			eltern.ktlcmb[i].setDataVectorVector((Vector<Vector<String>>)vec, 0, 3);
+			eltern.ktlcmb[i].setName("TMA"+(i+1));
+			eltern.ktltfc[i].setName("TKT"+(i+1));
+			eltern.ktltfd[i].setName("TZT"+(i+1));			
+			eltern.ktltfa[i].setName("TAZ"+(i+1));			
 			//eltern.ktlcmb[i] = new JRtaComboBox((Vector<Vector<String>>)vec,0,3);
 			//eltern.ktltfc[i] = new JRtaTextField("GROSS",false);
 			//eltern.ktltfd[i] = new JRtaTextField("GROSS",false);
@@ -393,6 +437,7 @@ public class Eb4 implements ActionListener {
 		eltern.ktltfd[combo].setText((String)eltern.ktlcmb[combo].getValueAt(2));
 		if(eltern.ktlcmb[combo].getSelectedIndex()==0){
 			eltern.ktltfa[combo].setText("");
+			
 		}
 	}
 	

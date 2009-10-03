@@ -68,6 +68,15 @@ public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
 		fillOneDimension(this.vec);
 	}
 }
+public void setSelectedVecIndex(int index, String vergleich){
+	int lang = getItemCount();
+	for(int i = 0;i < lang;i++){
+		if(((String)((Vector)this.vec.get(i)).get(index)).equals(vergleich)){
+			setSelectedIndex(i);
+			break;
+		}
+	}
+}
 public void setDataVector(Vector <String> ve,int item,int ret){
 	
 }

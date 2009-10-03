@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -24,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +93,7 @@ import systemTools.Colors;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import terminKalender.datFunk;
 
 import RehaInternalFrame.JArztInternal;
 import RehaInternalFrame.JGutachtenInternal;
@@ -121,7 +124,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	IFrame officeFrame = null;
 	RehaEventClass evt = null;
 	
-	String[][] tempDateien = {null,null,null,null};
+	String[][] tempDateien = {null,null,null,null,null};
 	
 	static ITextDocument document = null;
 	
@@ -250,11 +253,16 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
         	new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
+					if(ebt.getTab3().getrennt){
+						ebt.getTab3().baueSeite();
+					}
+					/*
 		        	Reha.thisClass.progressStarten(true);
 		        	RehaEvent xevt = new RehaEvent(this);
 					xevt.setDetails("Gutachten", "#DEICONIFIED");
 					xevt.setRehaEvent("REHAINTERNAL");
 					RehaEventClass.fireRehaEvent(xevt);
+					*/
 					return null;
 				}
         	}.execute();
@@ -262,12 +270,19 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
         	new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
+					if(!ebt.getTab3().getrennt){
+						ebt.getTab3().tempTextSpeichern();
+						//ebt.getTab3().trenneFrame();
+					}
+					/*
 		        	Reha.thisClass.progressStarten(true);
 		        	RehaEvent xevt = new RehaEvent(this);
 					xevt.setDetails("Gutachten", "#SPEICHERNUNDENDE");
 					xevt.setRehaEvent("REHAINTERNAL");
 					RehaEventClass.fireRehaEvent(xevt);
+					*/
 					return null;
+					
 				}
         	}.execute();
         }
@@ -336,7 +351,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							System.out.println("Der Fliesstexttab = null!!!!!!");
 							return;
 						}
-						ebt.getTab3().tempTextSpeichern();
+						try {
+							ebt.getTab3().tempTextSpeichern();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						/*
 						if(document == null){return;}
 						if(EBerichtPanel.document.isOpen()){
@@ -349,7 +369,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 						}			
 						*/
 						
-						doRVVorschau();
+						doRVVorschau("DRV Bund","EDV");
 						ebtab.setSelectedIndex(0);
 					}
 					
@@ -375,10 +395,62 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 	}
 	private void doSpeichernAlt(){
-		RehaEvent xevt = new RehaEvent(this);
-		xevt.setDetails("Gutachten", "#SPEICHERNTEMP");
-		xevt.setRehaEvent("REHAINTERNAL");
-		RehaEventClass.fireRehaEvent(xevt);
+		Reha.thisClass.progressStarten(true);
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		StringBuffer buf = new StringBuffer();
+		buf.append("update bericht2 set ");
+		for(int i = 0; i < 28;i++){
+			if(!btf[i].getRtaType().equals("DATUM")){
+				buf.append(btf[i].getName()+"='"+btf[i].getText()+"', ");				
+			}else{
+				if(!btf[i].getText().trim().equals(".  .")){
+					buf.append(btf[i].getName()+"='"+datFunk.sDatInSQL(btf[i].getText())+"', ");
+				}
+			}
+
+		}
+		for(int i = 0; i < 3;i++){
+			buf.append(barzttf[i].getName()+"='"+barzttf[i].getText()+"', ");
+		}
+		for(int i = 0; i < 44;i++){
+			buf.append(bchb[i].getName()+"='"+(bchb[i].isSelected() ? "1" : "0")+"', ");
+		}
+		for(int i = 0; i < 8;i++){
+			buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");
+		}
+		for(int i = 0; i < 20;i++){
+			if(i < 19){
+				buf.append(bcmb[i].getName()+"='"+bcmb[i].getSelectedItem()+"', ");				
+			}else{
+				buf.append(bcmb[i].getName()+"='"+bcmb[i].getSelectedItem()+"' ");
+			}
+		}
+		buf.append( " where berichtid = '"+berichtid+"'");
+		SqlInfo.sqlAusfuehren(buf.toString());
+		
+		buf = new StringBuffer();
+		buf.append("Update bericht2ktl set " ); 
+		for(int i = 0;i < 50;i++){
+			buf.append(ktlcmb[i].getName()+"='"+ktlcmb[i].getValue()+"', ");
+			buf.append(ktltfc[i].getName()+"='"+ktltfc[i].getText()+"', ");
+			buf.append(ktltfd[i].getName()+"='"+ktltfd[i].getText()+"', ");
+			buf.append(ktltfa[i].getName()+"='"+ktltfa[i].getText()+"', ");			
+		}
+		for(int i = 8; i < 10;i++){
+			if(i == 8){
+				buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");				
+			}else{
+				buf.append(bta[i].getName()+"='"+bta[i].getText()+"'");				
+			}
+		}
+		buf.append( " where berichtid = '"+berichtid+"'");
+		//System.out.println(buf.toString());
+		SqlInfo.sqlAusfuehren(buf.toString());
+		
+		ebt.getTab3().textSpeichernInDB(true);
+		//Reha.thisClass.progressStarten(false);
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
 
 	}
 	private void doSpeichernNeu(){
@@ -396,6 +468,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		cb.showText(text);
 		cb.endText();
 	}
+	private float rechneX(float fx){
+		return (595.0f/210.0f)*fx;
+	}
+	private float rechneY(float fy){
+		return (842.0f/297.0f)*fy;
+	}
+
 	private Float[] getFloats(float fx, float fy, float fcSpace){
 		Float [] fret = {0.f,0.f,0.f};
 		fret[0] = (595.0f/210.0f)*fx;
@@ -413,7 +492,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		return sret;
 	}
-	private void doRVVorschau(){
+	private void doRVVorschau(String ausfertigung,String bereich){
 		//name und Pfad der PDF
 		String pdfPfad = rvVorlagen[0];
 		//PdfWriter writer2 = null;
@@ -629,47 +708,20 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
+
+				geklappt = doSeite3();
+				
 				if(geklappt){
-					
-					/*
-				reader = new PdfReader (tempDateien[0][0]);
-				Document doc = new Document(reader.getPageSizeWithRotation(1));
-				
-				PdfCopy writer = new PdfCopy(doc,new FileOutputStream(tempDateien[1][0]));
-				doc.open();
-				writer.addPage(writer.getImportedPage(reader,1));
-				PdfReader reader2 = new PdfReader (pdfPfad);
-				writer.addPage(writer.getImportedPage(reader2,1));
-				doc.close();
-				writer.close();
-				reader.close();
-				reader2.close();
-				//stamper = new PdfStamper(reader,baos);
-				//stamper = new PdfStamper(reader,new  FileOutputStream(sdatei));
-				 */
+		
 				
 				}
-				/*
-				pdfPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EBericht-Seite4-Variante2.pdf";
-				reader = new PdfReader (pdfPfad);
-				tempDateien[3] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB4"+System.currentTimeMillis()+".pdf"};
-				PdfStamper stamper4 = new PdfStamper(reader,new  FileOutputStream(tempDateien[3][0]));
-				geklappt = doSeiteTest(stamper4,tempDateien[3][0]);
-				*/
-				/*
-				try {
-					geklappt = doSeite4(stamper4);
-				} catch (JRException e) {
-					e.printStackTrace();
-				}
-				*/
 				geklappt = doSeiteTest();
 				if(!geklappt){
 				}
 				// AdobeReader starten
 				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
 				//final String xdatei =  tempDateien[3][0];//sdatei;
-				final String xdatei =  tempPfad+"EBgesamt.pdf";
+				final String xdatei =  tempDateien[4][0];
 				new Thread(){
 					public void run(){
 						new SwingWorker<Void,Void>(){
@@ -718,6 +770,174 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			// Ende PosPrüfung
 			
 	}
+	/*************************************/	
+	private boolean doSeite3(){
+		tempDateien[2] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB3"+System.currentTimeMillis()+".pdf"};
+		String pdfPfad = rvVorlagen[2];
+		PdfReader reader;
+		try {
+			System.out.println("Generiere die KTL-Seiten.....");
+			//reader = new PdfReader (pdfPfad);
+			//ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+			//PdfStamper stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[2][0]));
+			// PdfContentByte cb = stamper2.getOverContent(1);
+			// Der Kopf mit Patientennamen etc.
+			BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			String text = "";
+			Float [] pos = {null,null,null};
+			float fy0 =  0.25f;
+			float fy1 =  6.9f;
+			Float[] xseite = getFloats(188.25f,278.5f,fy0);
+			
+			Document docktl = new Document(PageSize.A4);
+			PdfCopy cop = new PdfCopy(docktl,new FileOutputStream(tempDateien[2][0]));
+			docktl.open();
+			
+			//PdfStamper stamper2 = new PdfStamper(reader,baos);
+			int zugabe = 0;
+			for(int i = 0;i < 2;i++){
+				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+				PdfReader readeroriginal = new PdfReader(rvVorlagen[2]);
+				PdfStamper stamper2 = new PdfStamper(readeroriginal,baos);
+				PdfContentByte cb = stamper2.getOverContent(1);
+
+
+				
+				
+				pos = getFloats(24.50f,268.00f,fy0);
+				setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[2].getText());
+				pos = getFloats(171.50f,268.00f,fy1);
+				setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[3].getText()));
+				int seite = i+1;
+
+				cb.beginText();
+				cb.moveText(xseite[0], xseite[1]);
+				cb.setFontAndSize(bf,11);
+				cb.setCharacterSpacing(xseite[2]);
+				cb.showText(new Integer(seite).toString());
+				cb.endText();
+				
+				//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer  6xAnzahl
+				Float[] startwerte = {30.0f ,    251.f      ,8.5f, 149.f,  153.75f,   178.5f  ,191.75f};
+				for(int y=0;y < 25;y++){
+					if(ktlcmb[y+zugabe].getSelectedIndex() > 0){
+						cb.setCharacterSpacing(0.25f);
+						schreibeKTLText(y,y+zugabe,startwerte,cb);
+						schreibeKTLCode(y,y+zugabe,startwerte,cb);
+					}else{
+						break;
+					}
+				}
+
+				cb.setCharacterSpacing(0.25f);
+				schreibeKTLErlaeut(zugabe,cb);
+				// ab hier das Stamper und Copy Gedönse....				
+				stamper2.close();
+				cop.addPage(cop.getImportedPage(new PdfReader(baos.toByteArray()),1));
+				baos.close();
+				readeroriginal.close();
+				zugabe = 25;
+				if(ktlcmb[25].getSelectedIndex()<=0){
+					break;
+				}
+				
+
+			}
+			docktl.close();	
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	private void schreibeKTLErlaeut(int ierlaeut,PdfContentByte cb){
+		ColumnText ct = null;
+		Phrase ph = null;
+		float xstart = rechneX(25.f);
+		float ystartunten = rechneY(27.0f);
+		float xende = rechneX(195.0f);
+		float ystartoben = rechneY(42.f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(xstart, ystartunten,xende,ystartoben,8,Element.ANCHOR);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+		if(ierlaeut > 0){
+			ph.add((String)this.bta[9].getText());			
+		}else{
+			ph.add((String)this.bta[8].getText());
+		}
+		ct.addText(ph);
+		try {
+			ct.go();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	private void schreibeKTLCode(int position,int ktlpos,Float[] startwerte,PdfContentByte cb){
+		//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer  6xAnzahl
+		//Float[] startwerte = {30.0f ,    251.f      ,8.5f, 149.f,  154.75f,   181.f  ,191.f};
+		float stretch = 6.9f;
+		float ystartunten = rechneY(startwerte[1]-(new Float(position) * startwerte[2])+0.5f);
+		float xcode = rechneX(startwerte[4]);
+		float xdauer = rechneX(startwerte[5]);
+		float xanzahl = rechneX(startwerte[6]);	
+		BaseFont bf;
+		try {
+			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			setzeText(cb,xcode, ystartunten,stretch,bf,12,ktltfc[ktlpos].getText());
+			setzeText(cb,xdauer, ystartunten,stretch,bf,12,ktltfd[ktlpos].getText());
+			if(ktltfa[ktlpos].getText().trim().length()==1 ){
+				setzeText(cb,xanzahl, ystartunten,stretch,bf,12,"0"+ktltfa[ktlpos].getText());
+			}else{
+				setzeText(cb,xanzahl, ystartunten,stretch,bf,12,ktltfa[ktlpos].getText());				
+			}
+
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	private void schreibeKTLText(int position,int ktlpos,Float[] startwerte,PdfContentByte cb){
+		ColumnText ct = null;
+		Phrase ph = null;
+		float zaehler = 1.f;
+ 
+		//                     x-start,  y-start,  höhe   x-ende
+		//Float[] startwerte = {28.0f ,  251.f      ,8.5f, 152.f};
+
+		float xstart = rechneX(startwerte[0]+1.5f);
+		float ystartunten = startwerte[1]-(new Float(position) * startwerte[2])-2.f;
+		float xende = rechneX(startwerte[3]);
+		float ystartoben = rechneY(ystartunten+ startwerte[2]);
+		ystartunten = rechneY(ystartunten);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(xstart, ystartunten,xende,ystartoben,8,Element.ALIGN_BOTTOM);
+		
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+		ph.add((String)ktlcmb[ktlpos].getSelectedItem());
+		ct.addText(ph);
+		try {
+			ct.go();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/*************************************/
 	private boolean doSeite2(PdfStamper stamper2){
 		
 		try {
@@ -732,7 +952,17 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			pos = getFloats(171.50f,268.00f,fy1);
 			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[3].getText()));
 			pos = getFloats(78.00f,248.00f,fy0);
-			setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[25].getText());
+			setzeText(cb,pos[0], pos[1],pos[2],bf,9,btf[25].getText());
+			Float[] xseite = getFloats(188.25f,278.5f,fy0);
+			int seite = 1;
+			cb.beginText();
+			cb.moveText(xseite[0], xseite[1]);
+			cb.setFontAndSize(bf,11);
+			cb.setCharacterSpacing(xseite[2]);
+			cb.showText(new Integer(seite).toString());
+			cb.endText();
+
+
 			/* Für ältere Berichte < 01.01.2008 noch den Berufsklassenschlüssel einbauen
 			pos = getFloats(78.00f,247.00f,fy0);
 			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[26].getText()));
@@ -784,7 +1014,16 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			ph.add(bta[7].getText());
 			ct.addText(ph);
 			ct.go();
-
+			/*
+			int seite = 1;
+			Float[] xseite = getFloats(188.25f,278.5f,fy0);
+			cb.beginText();
+			cb.moveText(xseite[0], xseite[1]);
+			cb.setFontAndSize(bf,11);
+			cb.setCharacterSpacing(xseite[2]);
+			cb.showText(new Integer(seite).toString());
+			cb.endText();
+			*/
 			stamper2.close();
 			
 		} catch (DocumentException e) {
@@ -817,6 +1056,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("Fertig mit JasperSoft");
 			return false;
 	}
+	
+	/**************
+	 * 
+	 * 
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws DocumentException
+	 */
 	public boolean doSeiteTest() throws IOException, DocumentException{
 		InputStream isb = null;
 		//isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
@@ -837,25 +1085,28 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("Pfad zu der Vorlage = "+pdfPfad);
 		//Document doc = new Document(PageSize.A4);	
 		Document docgesamt = new Document(PageSize.A4);
+		File ft = new File(tempPfad+"EBfliesstext.pdf");
+		if(! ft.exists()){
+			System.out.println("In tempTextSpeichern!********************");
+			try {
+				ebt.getTab3().tempTextSpeichern();
+				while(!ebt.getTab3().tempgespeichert){
+					Thread.sleep(50);
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
 
 		int seiten = reader.getNumberOfPages();
 		System.out.println("Insgasamt Seiten Fließtext = "+seiten);
-		/*
-		PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("C:/RehaVerwaltung/temp/510841109/itext2.pdf"));
-		doc.open();
-
-		PdfContentByte cb = writer.getDirectContent();
-		PdfImportedPage page;
-
-
-		page = writer.getImportedPage(reader,1);
-		
-		cb.addTemplate(page, 0, 0);
-		*/
+	
 		PdfImportedPage page2;		
 		//PdfReader rvorlage = new PdfReader(vorlage);
-		PdfCopy cop = new PdfCopy(docgesamt,new FileOutputStream(tempPfad+"EBgesamt.pdf"));
+		tempDateien[4] = new String[]{tempPfad+"EBGesamt"+System.currentTimeMillis()+".pdf"};
+		PdfCopy cop = new PdfCopy(docgesamt,new FileOutputStream(tempDateien[4][0]));
 		docgesamt.open();
 		
 		ByteArrayOutputStream bpage1 = new ByteArrayOutputStream();
@@ -867,6 +1118,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		cop.addPage(cop.getImportedPage(new PdfReader(bpage1.toByteArray()),1));
 		cop.addPage(cop.getImportedPage(new PdfReader(tempDateien[1][0]),1));
+		
+		PdfReader ktlreader = new PdfReader(tempDateien[2][0]);
+		int ktlseiten = ktlreader.getNumberOfPages();
+		for(int i = 1; i <= ktlseiten;i++){
+			cop.addPage(cop.getImportedPage(ktlreader,i));
+		}
 		
 		ByteArrayOutputStream bvorlage;
 		Float[] xy = getFloats(17.f,13.f,0.f);
@@ -900,6 +1157,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		//doc.close();
 		docgesamt.close();
 		reader.close();
+		ktlreader.close();
+		ft = new File(tempPfad+"EBfliesstext.pdf");
+		if(ft.exists()){
+			ft.delete();
+		}
 	
 		
 		

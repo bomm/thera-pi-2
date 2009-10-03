@@ -83,6 +83,9 @@ public class Eb3 implements RehaEventListener  {
 	ByteArrayOutputStream outtemp = null;	
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 	boolean gestartet = false;
+	boolean inseitenaufbau = false;
+	boolean getrennt = true;
+	boolean tempgespeichert = false;
 	public Eb3(EBerichtPanel xeltern){
 		eltern = xeltern; 
 		rEvent = new RehaEventClass();
@@ -93,53 +96,22 @@ public class Eb3 implements RehaEventListener  {
 		pan.setBorder(BorderFactory.createEmptyBorder(0, 0, 3, 0));
 		pan.setVisible(true);
 		pan.setName("ooNativePanel");
-		//parken = new JXPanel();
-		//oopan = new JPanel(new BorderLayout());
-		//baueSeite();
-		/*
-		new Thread(){
-		public void run(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				try {
-					Thread.sleep(30);
-					eltern.officeFrame = constructOOOFrame(Reha.officeapplication,pan);
-					configureOOOFrame(Reha.officeapplication,eltern.officeFrame);
-		        	DocumentDescriptor d = new DocumentDescriptor();
-		        	//d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
-		        	d.setTitle("Entlassbericht");
-		        	if(eltern.neu){
-			        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);		        		
-		        	}else{
-		        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-			        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-			        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-			        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
-						XController xController = eltern.document.getXTextDocument().getCurrentController();
-						XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-						xController);
-						XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-						xtvc.gotoStart(false);
-						is.close();
-		        	}
-		        	
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					//baueSeite();
 				return null;
 			}
 		}.execute();
-		}
-		}.start();
-		*/
-		//pan = new JXPanel();
 	}
 	public void beendeSeite(){
 		eltern.document.close();
 	}
 	public void baueSeite(){
+		if(!getrennt){
+			return;
+		}
+			
 		new Thread(){
 			public void run(){
 			new SwingWorker<Void,Void>(){
@@ -178,8 +150,10 @@ public class Eb3 implements RehaEventListener  {
 
 								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								Reha.thisClass.progressStarten(false);
+								gestartet = true;
 			        			
 			        		}else{
+			        			System.out.println("starte Dokument mit temp. Stream-Daten");
 			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
 			        			DocumentDescriptor descript = new DocumentDescriptor();
 			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
@@ -203,12 +177,13 @@ public class Eb3 implements RehaEventListener  {
 			        	}
 			        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
 			        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
-
+			        	getrennt = false;
 			        	
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					inseitenaufbau = false;
 					return null;
 				}
 			}.execute();
@@ -220,8 +195,9 @@ public class Eb3 implements RehaEventListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-					trenneFrame();
-					eltern.document.close();
+					getrennt = true;
+					trenneFrame(true);
+					//eltern.document.close();
 					Reha.thisClass.progressStarten(false);
 				return null;
 			}
@@ -311,6 +287,7 @@ public class Eb3 implements RehaEventListener  {
 						pan.setVisible(true);
 						pan.validate();
 						Reha.thisClass.progressStarten(false);
+						getrennt = false;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -337,43 +314,68 @@ public class Eb3 implements RehaEventListener  {
 		}
 
 	}
-	public void trenneFrame(){
+	public void trenneFrame(boolean mitspeichern){
 		System.out.println("ntiveView getrennt----->");
 		if(eltern.neu){
+			getrennt = true;
 			EBerichtPanel.document.close();
 			pan.remove(nativeView);
 			Reha.thisClass.progressStarten(false);
+			
 			return;
 		}
+		final boolean xmitspeichern = mitspeichern;
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				outtemp = new ByteArrayOutputStream();
-				tempTextSpeichern();
+				getrennt = true;
+				if(xmitspeichern){
+					tempTextSpeichern();					
+				}
 				EBerichtPanel.document.close();
 				pan.remove(nativeView);
+
+
 				return null;
 			}
 			
 		}.execute();
 	}
-	public void tempTextSpeichern(){
+	public void tempTextSpeichern() throws InterruptedException{
 		String url = tempPfad+"EBfliesstext.pdf";
 		System.out.println("speichere temporär in: "+url);
+		tempgespeichert = false;
 		try {
-			if(EBerichtPanel.document == null){return;}
+			if(EBerichtPanel.document == null){
+				System.out.println("Das Dokument ist momentan null");
+				inseitenaufbau = true;
+				baueSeite();
+				while(inseitenaufbau){
+					Thread.sleep(50);
+				}
+				System.out.println("Die Seite wurde neu afugebaut");
+				//return;
+			}
 			if(EBerichtPanel.document.isOpen()){
 				outtemp = new ByteArrayOutputStream();
 				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-			}			
+				tempgespeichert = true;
+			}	
+			if(eltern.ebtab.getSelectedIndex() != 2){
+				getrennt = true;
+				trenneFrame(false);
+				System.out.println("Trenne Frame Selected Tab ist nicht der OO-Tab");
+			}else{
+				getrennt = false;
+			}
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 			System.out.println("**********DokumentException************");
 		} catch (NOAException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			e.printStackTrace();
 			System.out.println("**********NoeException************");
 		}
 	}
@@ -521,7 +523,7 @@ public class Eb3 implements RehaEventListener  {
 			}
 			if(evt.getRehaEvent().equals("OOFrame")){
 				if(evt.getDetails()[1].equals("#TRENNEN") ){
-					this.trenneFrame();
+					this.trenneFrame(true);
 				}
 			}			
 			
