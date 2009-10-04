@@ -539,9 +539,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					try {
 						ebt.getTab3().tempTextSpeichern();
 						long zeit = System.currentTimeMillis();
+						Reha.thisClass.progressStarten(true);
 						while(!ebt.getTab3().pdfok){
 							Thread.sleep(50);
-							if(( System.currentTimeMillis() - zeit) > 3000){
+							if(( System.currentTimeMillis() - zeit) > 15000){
 								break;
 							}
 						}
@@ -775,8 +776,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
 				//final String xdatei =  tempDateien[3][0];//sdatei;
 				final String xdatei =  tempDateien[4][0];
-				new Thread(){
-					public void run(){
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
@@ -801,8 +800,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 								return null;
 							}
 						}.execute();
-					}
-				}.start();
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
