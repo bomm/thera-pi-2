@@ -19,12 +19,15 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
+import jxTableTools.TableTool;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -34,9 +37,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import patientenFenster.Historie.HistorPanel;
 import patientenFenster.TherapieBerichte.MyBerichtTableModel;
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
+import terminKalender.datFunk;
 
 public class Gutachten extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
 
@@ -135,7 +140,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 						return;
 					}
 					String verfas = (String)dtblm.getValueAt(wahl, 2); 
-					if( verfas.toUpperCase().contains("REHAARZT")){
+					if( verfas.toUpperCase().contains("REHAARZT") ||
+							verfas.toUpperCase().contains("REHA-ARZT")	){
 						doBerichtEdit();						
 					}
 				}
@@ -165,7 +171,47 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		dummypan.add(jscr,BorderLayout.CENTER);
 		return dummypan;
 	}
+//	Gutachten.gutachten.aktualisiereGutachten(datFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Rehaarzt",berichtid);
 	
+	public void aktualisiereGutachten(String editdat,String bertype,String empf,String verfasser,int berid,String patintern){
+		String cmd = "update berhist set berichttyp='"+bertype+"', empfaenger='"+empf+"', editdat='"+
+		datFunk.sDatInSQL(editdat)+"', verfasser='"+verfasser+"' where berichtid='"+berid+"'";
+		SqlInfo.sqlAusfuehren(cmd);
+		int row = tabbericht.getSelectedRow();
+		if(! PatGrundPanel.thisClass.aktPatID.equals(patintern)){
+			JOptionPane.showMessageDialog(null, "Der aktuelle Patient und das zu speichernde Gutachten passen nicht zusammen...");
+			return;
+		}
+		if( dtblm.getValueAt(row,0).equals(new Integer(berid).toString()) ){
+			dtblm.setValueAt(bertype, row, 1);
+			dtblm.setValueAt(verfasser, row, 2);
+			dtblm.setValueAt(empf, row, 4);	
+			dtblm.setValueAt(editdat, row, 5);
+		}
+		
+	}
+	public void neuesGutachten(String berid,
+			String bertype,
+			String verfasser,
+			String erstellt,
+			String empfang,
+			String patintern){
+		Vector<String> xvec = new Vector<String>();
+		xvec.add(berid);
+		xvec.add(bertype);
+		xvec.add(verfasser);
+		xvec.add(erstellt);
+		xvec.add(empfang);
+		xvec.add("");
+		xvec.add("0");
+		xvec.add(patintern);
+		if(PatGrundPanel.thisClass.aktPatID.equals(patintern)){
+			dtblm.addRow((Vector) xvec.clone());
+			tabbericht.setRowSelectionInterval(tabbericht.getRowCount()-1, tabbericht.getRowCount()-1);
+		}
+		PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"aktuelle Rezepte"));
+		anzahlGutachten.setText("Anzahl Gutachten: "+new Integer(tabbericht.getRowCount()).toString());
+	}
 	public void holeGutachten(String patint,String rez){
 		/**********/
 					final String xpatint = patint;
@@ -191,7 +237,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 								if(i==0){
 									//dtblm.setRowCount(0);						
 								}
-								if(((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHAARZT")){
+								if(((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHAARZT") ||
+										((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHA-ARZT")	){
 									dtblm.addRow((Vector)vec.get(i));							
 								}
 							}
@@ -307,7 +354,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("gutneu")){
 			//ProgLoader.InternalGut2();
-			ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"LVA-Arztbericht",true );
+			ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"E-Bericht",true,"" );
 			return;
 		}
 		if(cmd.equals("gutedit")){
@@ -315,6 +362,39 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			return;
 		}
 		if(cmd.equals("gutdelete")){
+			if(aktPanel.equals("leerPanel")){
+				JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
+						"....und welches der nicht vorhandenen Gutachten möchten Sie bitteschön löschen....");
+				return;
+			}
+			int currow = tabbericht.getSelectedRow();
+			int anzrow = tabbericht.getRowCount();
+			if(currow == -1){
+				JOptionPane.showMessageDialog(null,"Kein Gutachten zum -> löschen <- ausgewählt");
+				return;
+			}
+			String berichtid = (String)tabbericht.getValueAt(currow, 0);
+			int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Gutachten mit der ID:"+berichtid+" wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			if(frage == JOptionPane.NO_OPTION){
+				return;
+			}
+			String sqlcmd = "delete from berhist where berichtid='"+berichtid+"'";
+			new ExUndHop().setzeStatement(sqlcmd);
+			sqlcmd = "delete from bericht2 where berichtid='"+berichtid+"'";
+			new ExUndHop().setzeStatement(sqlcmd);
+			sqlcmd = "delete from bericht2ktl where berichtid='"+berichtid+"'";
+			new ExUndHop().setzeStatement(sqlcmd);
+			
+			currow = TableTool.loescheRow(tabbericht, new Integer(currow));
+			int uebrig = tabbericht.getRowCount();
+			
+			anzahlGutachten.setText("Anzahl Gutachten: "+new Integer(uebrig).toString());
+			PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(uebrig,"aktuelle Rezepte"));
+			if(uebrig <= 0){
+				holeGutachten(PatGrundPanel.thisClass.patDaten.get(29),"");
+			}else{
+			}
+			
 			return;
 		}
 		if(cmd.equals("guttools")){
@@ -330,7 +410,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		}
 		String bertyp = (String) tabbericht.getValueAt(row,1);
 		int berid = new Integer( (String) tabbericht.getValueAt(row,0) );
-		ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false );
+		String berempfaenger = (String) tabbericht.getValueAt(row,4);
+		ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false,berempfaenger );
 		//ProgLoader.InternalGut2();
 	}
 

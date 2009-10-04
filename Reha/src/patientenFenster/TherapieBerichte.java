@@ -189,7 +189,8 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 
 						//int zzbild = 0;
-						if(! ((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHAARZT")){
+						if( (! ((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHA")) &&
+								(! ((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("ARZT"))	){
 							dtblm.addRow((Vector)vec.get(i));							
 						}
 					}
@@ -266,7 +267,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		// jetzt ermitteln ob tabelle bericht1 (Therapeuten) oder bericht2 (Arzt) betroffen ist. 
 		String verfas = (String)dtblm.getValueAt(wahl, 2); 
 		Vector vec = null;
-		if(! verfas.toUpperCase().contains("REHAARZT")){
+		if(! verfas.toUpperCase().contains("REHA")){
 			// rez_nr ermitteln
 			vec = SqlInfo.holeSatz("bericht1", "bertyp", " berichtid='"+berid+"'", Arrays.asList(new String[] {}));
 			xcmd = "delete from bericht1 where berichtid='"+berid+"'";
@@ -350,7 +351,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						return;
 					}
 					String verfas = (String)dtblm.getValueAt(wahl, 2); 
-					if(! verfas.toUpperCase().contains("REHAARZT")){
+					if(! verfas.toUpperCase().contains("REHAARZT") ){
 						doThBerichtEdit(wahl);						
 					}
 				}

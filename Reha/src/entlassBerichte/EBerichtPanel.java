@@ -36,6 +36,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
@@ -57,6 +58,9 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
+import patientenFenster.Gutachten;
+import patientenFenster.PatGrundPanel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.lowagie.text.Document;
@@ -116,7 +120,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public String pat_intern = null;
 	public int berichtid = -1;
 	public String berichttyp = null;
+	public String empfaenger = null;
 	public boolean neu = false;
+	public boolean jetztneu = false;
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 	public String vorlagenPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/";
 	public String[] rvVorlagen = {null,null,null,null};
@@ -174,14 +180,17 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 									null,null,null,null,null,null,null,null,null,null,
 									null,null,null,null,null,null,null,null,null,null
 	};
+	public JRtaComboBox[] acmb = {  null,null,null};
+			
 	
-	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu ){
+	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
 		setBorder(null);
 		
 		this.jry = xjry;
 		this.pat_intern = xpat_intern;
 		this.berichtid = xberichtid;
 		this.berichttyp = xberichttyp;
+		this.empfaenger = xempfaenger;
 		this.neu = xneu;
 		
 		thisClass = this;
@@ -202,7 +211,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		add(this.getToolbar(),BorderLayout.NORTH);
 
-		if(berichttyp.contains("-Arztbericht")){
+		if(berichttyp.contains("E-Bericht") || berichttyp.contains("LVA-A") || berichttyp.contains("BfA-A") 
+				|| berichttyp.contains("GKV-A")){
 			cbktraeger = new JRtaComboBox(SystemConfig.vGutachtenEmpfaenger);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
@@ -225,6 +235,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("Bericht von Patient Nr. ="+ this.pat_intern);
 		System.out.println("             Bericht ID ="+ this.berichtid);
 		System.out.println("             Berichttyp ="+ this.berichttyp);
+		System.out.println("             Empfaenger ="+ this.empfaenger);
 		System.out.println("          Neuer Bericht ="+ this.neu);
 		rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
 		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
@@ -337,8 +348,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(cmd.equals("gutsave")){
 			if(this.neu){
 				doSpeichernNeu();	
+				JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
 			}else{
 				doSpeichernAlt();
+				JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
 			}
 			
 		}
@@ -357,22 +370,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						/*
-						if(document == null){return;}
-						if(EBerichtPanel.document.isOpen()){
-							String url = tempPfad+"EBfliesstext.pdf";
-							try {
-								document.getPersistenceService().export(url, new PDFFilter());
-							} catch (ag.ion.bion.officelayer.document.DocumentException e) {
-								e.printStackTrace();
-							}
-						}			
-						*/
-						
 						doRVVorschau("DRV Bund","EDV");
 						ebtab.setSelectedIndex(0);
 					}
-					
 				}
 			}.start();
 			
@@ -448,13 +448,42 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		SqlInfo.sqlAusfuehren(buf.toString());
 		
 		ebt.getTab3().textSpeichernInDB(true);
-		//Reha.thisClass.progressStarten(false);
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
-
+		if(!jetztneu){
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			String empf = (String) cbktraeger.getSelectedItem();
+			Gutachten.gutachten.aktualisiereGutachten(datFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Reha-Arzt",berichtid,pat_intern);
+			Reha.thisClass.progressStarten(false);
+		}else{
+			jetztneu = false;
+		}
 	}
 	private void doSpeichernNeu(){
-		
+		try{
+			Reha.thisClass.progressStarten(true);
+			int nummer = SqlInfo.erzeugeNummer("bericht");
+			berichtid = nummer;
+			String empf = (String) cbktraeger.getSelectedItem();
+			String btype = (empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht");
+			String cmd = "insert into berhist set berichtid='"+berichtid+"', erstelldat='"
+			+datFunk.sDatInSQL(datFunk.sHeute())+"', berichttyp='"+btype+"', "+
+			"verfasser='Reha-Arzt', empfaenger='"+empf+"', pat_intern='"+pat_intern+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			cmd = "insert into bericht2 set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			cmd = "insert into bericht2ktl set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			jetztneu = true; // ganz wichtig
+			neu = false;
+			System.out.println("Historie- und Bericht wurden angelegt");
+			doSpeichernAlt();
+			System.out.println("Nach Speichern alt");
+			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
+					btype,"Reha-Arzt",datFunk.sHeute() ,empf, pat_intern);
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisClass.progressStarten(false);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	/***********ab hier Christian's Funktionen
@@ -501,7 +530,31 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		PdfStamper stamper = null;
 		PdfStamper stamper2 = null;
 		String test = "23020562S512";
+		// Zu Beginn sicherstellen daß die OO.org PDF produziert wird.
 			try {
+				
+				File ft = new File(tempPfad+"EBfliesstext.pdf");
+				if(! ft.exists()){
+					System.out.println("In tempTextSpeichern!********************");
+					try {
+						ebt.getTab3().tempTextSpeichern();
+						long zeit = System.currentTimeMillis();
+						while(!ebt.getTab3().pdfok){
+							Thread.sleep(50);
+							if(( System.currentTimeMillis() - zeit) > 3000){
+								break;
+							}
+						}
+						if(!ebt.getTab3().pdfok){
+							JOptionPane.showMessageDialog(null,"Der Fliesstext des Gutachten konnte nicht erstellt werden");							
+						}
+
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
 				// Geschiss bis die bestehende PDF eingelesen und gestampt ist
 				tempDateien[0] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB1"+System.currentTimeMillis()+".pdf"};
 				//String sdatei = "C:/ebericht1.pdf"; 
@@ -728,18 +781,20 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							@Override
 							protected Void doInBackground() throws Exception {
 								try{
+									Reha.thisClass.progressStarten(false);	
 								Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
 							       InputStream is = process.getInputStream();
 							       InputStreamReader isr = new InputStreamReader(is);
 							       BufferedReader br = new BufferedReader(isr);
 							       String line;
+							       
 							       while ((line = br.readLine()) != null) {
 							         System.out.println("Lade Adobe "+line);
 							       }
 							       is.close();
 							       isr.close();
 							       br.close();
-									Reha.thisClass.progressStarten(false);
+									
 								}catch(Exception ex){
 									Reha.thisClass.progressStarten(false);
 								}
@@ -1067,31 +1122,25 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	 */
 	public boolean doSeiteTest() throws IOException, DocumentException{
 		InputStream isb = null;
-		//isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
-		isb = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
-		System.out.println("Nachfolgend der isb-Output");
-		System.out.println("Länge des Inputstreams "+isb.available());
-
-		//stamper4.close();
-		/*
-		String pdfPfad = rvVorlagen[3];
-		PdfReader reader = new PdfReader (pdfPfad);
-
-		PdfStamper stamper4 = new PdfStamper(reader,new  FileOutputStream(tempDateien[3][0]));
-		geklappt = doSeiteTest(stamper4,tempDateien[3][0]);
-		*/
 		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};
 		String pdfPfad = rvVorlagen[3];
-		System.out.println("Pfad zu der Vorlage = "+pdfPfad);
-		//Document doc = new Document(PageSize.A4);	
 		Document docgesamt = new Document(PageSize.A4);
 		File ft = new File(tempPfad+"EBfliesstext.pdf");
 		if(! ft.exists()){
-			System.out.println("In tempTextSpeichern!********************");
 			try {
-				ebt.getTab3().tempTextSpeichern();
+				long zeit = System.currentTimeMillis();
+				boolean freitextok = true;
 				while(!ebt.getTab3().tempgespeichert){
 					Thread.sleep(50);
+					if(System.currentTimeMillis() - zeit > 3000){
+						JOptionPane.showMessageDialog(null,"Fehler in der Zusammenstellung des Freitextes");
+						freitextok = false;
+						break;
+					}
+				}
+				if(!freitextok){
+					JOptionPane.showMessageDialog(null,"Fehler in der Zusammenstellung des Freitextes");
+					return false;
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

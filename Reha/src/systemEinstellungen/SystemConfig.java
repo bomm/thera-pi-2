@@ -154,6 +154,8 @@ public class SystemConfig {
 	public static Vector<String> vGutachtenEmpfaenger;
 	public static Vector<String> vGutachtenIK;
 	public static Vector<String> vGutachtenAbsAdresse;
+	public static Vector<String> vGutachtenArzt;
+	public static Vector<String> vGutachtenDisplay;
 	public static String sGutachtenOrt;
 	                     
 	public SystemConfig(){
@@ -938,10 +940,10 @@ public class SystemConfig {
 		hmCompany.put("adress", inif.getStringProperty("Company", "DeliverAdress"));		
 	}
 	public static void GutachtenInit(){
-		//public static Vector<String> vGutachtenEmpfaenger;
-		//public static Vector<String> vGutachtenIK;
 		vGutachtenEmpfaenger = new Vector<String>();
 		vGutachtenIK = new Vector<String>();
+		vGutachtenArzt = new Vector<String>();
+		vGutachtenDisplay = new Vector<String>();
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/gutachten.ini");
 		int anzahl =  inif.getIntegerProperty("GutachtenEmpfaenger", "AnzahlEmpfaenger");
 		for(int i = 0; i < anzahl;i++){
@@ -953,6 +955,13 @@ public class SystemConfig {
 			vGutachtenAbsAdresse.add(inif.getStringProperty("AbsenderAdresse", "AbsenderZeile"+(i+1)));
 		}
 		sGutachtenOrt = inif.getStringProperty("AbsenderDaten", "Ort");
+		anzahl =  inif.getIntegerProperty("Arzt", "ArztAnzahl");
+		for(int i = 0; i < anzahl;i++){
+			vGutachtenArzt.add(inif.getStringProperty("Arzt", "Arzt"+(i+1)));
+		}
+		vGutachtenDisplay.add(inif.getStringProperty("AbsenderDisplayAdresse", "Display1"));
+		vGutachtenDisplay.add(inif.getStringProperty("AbsenderDisplayAdresse", "Display2"));
+		vGutachtenDisplay.add(inif.getStringProperty("AbsenderDisplayAdresse", "Display3"));
 	}
 	
 	public static void SystemIconsInit(){

@@ -353,7 +353,7 @@ public static void ArztFenster(int setPos,String aid) {
 }	
 
 /**************Gutachten Echtfunktion***********************/
-public static void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu ) {
+public static void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu,String empfaenger ) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -379,7 +379,7 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(900,650));
-	EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu );
+	EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger );
 	jry.setContent((EBerichtPanel)ebericht);	
 	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();

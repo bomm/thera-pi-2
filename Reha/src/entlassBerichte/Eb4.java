@@ -314,9 +314,18 @@ public class Eb4 implements ActionListener {
 				JOptionPane.showMessageDialog(null,"Achtung - kann KTL-Leistungen nicht laden");
 				return;
 			}
-			String entdat = datFunk.sDatInDeutsch(vec.get(0).get(0));
-			if(datFunk.DatumsWert(entdat) < datFunk.DatumsWert("01.01.2008")){
-				holeKTL(false);
+			if(vec.size() > 0){
+				System.out.println("Das Datum = ***************"+vec.get(0).get(0));
+				if(! vec.get(0).get(0).trim().equals("")){
+					String entdat = datFunk.sDatInDeutsch(vec.get(0).get(0));
+					if(datFunk.DatumsWert(entdat) < datFunk.DatumsWert("01.01.2008")){
+						holeKTL(false);
+					}else{
+						holeKTL(true);
+					}
+				}else{
+					holeKTL(true);
+				}
 			}else{
 				holeKTL(true);
 			}

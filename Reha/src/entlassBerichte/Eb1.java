@@ -18,6 +18,7 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -27,11 +28,14 @@ import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
 
+import patientenFenster.PatGrundPanel;
+
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import terminKalender.datFunk;
 
 import ag.ion.bion.officelayer.document.IDocument;
@@ -115,7 +119,10 @@ public class Eb1 implements ActionListener {
 								}
 				 				
 				 			}.execute();
-				 		}	
+				 		}else{
+				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empfäger des Gutachtens ein (Berichttyp).");
+				 			doKopfNeu();
+				 		}
 				 		  
 				 	   }
 				});
@@ -126,6 +133,14 @@ public class Eb1 implements ActionListener {
 	}
 	public JXPanel getSeite(){
 		return pan;
+	}
+	private void doKopfNeu(){
+		eltern.btf[2].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2))+
+				", "+StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3)));
+		eltern.btf[3].setText(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
+		eltern.btf[4].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(21)));
+		eltern.btf[5].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(23)));
+		eltern.btf[6].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(24)));		
 	}
 
 	private void laden(){
@@ -184,23 +199,28 @@ public class Eb1 implements ActionListener {
 				for(int i = 0; i < 20;i++){
 					eltern.bcmb[i].setSelectedItem( (rs.getString(eltern.bcmb[i].getName())==null  ? "" :  rs.getString(eltern.bcmb[i].getName())) );
 				}
-				String name = "UNTDAT";
-				String inhalt = rs.getString(name);
+
+				String xname = "UNTDAT";
+				String inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
 				if(!inhalt.trim().equals("")){
 					eltern.btf[27].setText(datFunk.sDatInDeutsch(inhalt));
 				}
-				name = "ARZT1";
-				inhalt = rs.getString(name);
+				xname = "ARZT1";
+				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
 				eltern.barzttf[0].setText(inhalt);
-				name = "ARZT2";
-				inhalt = rs.getString(name);
+				xname = "ARZT2";
+				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
 				eltern.barzttf[1].setText(inhalt);
-				name = "ARZT3";
-				inhalt = rs.getString(name);
+				xname = "ARZT3";
+				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
 				eltern.barzttf[2].setText(inhalt);
-				
-
-
+				if(eltern.berichttyp.equals("LVA-Arztbericht")){
+					eltern.cbktraeger.setSelectedIndex(1);
+				}else if(eltern.berichttyp.equals("BfA-Arztbericht")){
+					eltern.cbktraeger.setSelectedIndex(0);
+				}else{
+					eltern.cbktraeger.setSelectedItem(eltern.empfaenger);
+				}
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
@@ -1473,13 +1493,14 @@ public class Eb1 implements ActionListener {
 		lab = getLabel("Behandlungsstätte:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,7,6));
-		lab = getLabel("Reutlinger Therapie- und Analysezentrum GmbH");
+		//SystemConfig.vGutachtenDisplay.get(0);
+		lab = getLabel(SystemConfig.vGutachtenDisplay.get(0));
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,9,6));
-		lab = new JLabel("Marie-Curie-Str. 1");
+		lab = new JLabel(SystemConfig.vGutachtenDisplay.get(1));
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,11,6));
-		lab = new JLabel("72760 Reutlingen");
+		lab = new JLabel(SystemConfig.vGutachtenDisplay.get(2));
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,13,6));		
 		
@@ -1487,7 +1508,7 @@ public class Eb1 implements ActionListener {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,15));
 		
-		lab = new JLabel("ambulante Rehabilitation");
+		lab = new JLabel("ganztägig ambulante Rehabilitation");
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,17,6));
 
@@ -1534,6 +1555,7 @@ public class Eb1 implements ActionListener {
 		tit.add(eltern.cbktraeger,cctit.xy(3, 2));
 		eltern.cbktraeger.setActionCommand("empfaenger");
 		eltern.cbktraeger.addActionListener(this);
+		
 		tit.validate();
 		return tit;
 	}

@@ -15,6 +15,7 @@ import java.beans.PropertyVetoException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.ResultSet;
@@ -86,6 +87,7 @@ public class Eb3 implements RehaEventListener  {
 	boolean inseitenaufbau = false;
 	boolean getrennt = true;
 	boolean tempgespeichert = false;
+	boolean pdfok = false;
 	public Eb3(EBerichtPanel xeltern){
 		eltern = xeltern; 
 		rEvent = new RehaEventClass();
@@ -106,6 +108,15 @@ public class Eb3 implements RehaEventListener  {
 	}
 	public void beendeSeite(){
 		eltern.document.close();
+		if(outtemp != null){
+			try {
+				outtemp.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	public void baueSeite(){
 		if(!getrennt){
@@ -118,6 +129,7 @@ public class Eb3 implements RehaEventListener  {
 				@Override
 				protected Void doInBackground() throws Exception {
 					try {
+						pdfok = false;
 						eltern.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 						eltern.officeFrame = constructOOOFrame(Reha.officeapplication,pan);
 						configureOOOFrame(Reha.officeapplication,eltern.officeFrame);
@@ -125,39 +137,19 @@ public class Eb3 implements RehaEventListener  {
 			        	//d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 			        	d.setTitle("Entlassbericht");
 			        	if(eltern.neu){
-				        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-							eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-							Reha.thisClass.progressStarten(false);
-			        	}else{
 			        		if(!gestartet){
-				        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-			        			DocumentDescriptor descript = new DocumentDescriptor();
-			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-			        			descript.setHidden(true);
-			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
-			        			/*
-					        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
-					        	*/
-								XController xController = eltern.document.getXTextDocument().getCurrentController();
-								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-								xController);
-								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-								xtvc.gotoStart(false);
-								is.close();
-								eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-
-								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-								Reha.thisClass.progressStarten(false);
+			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+			        			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			        			Reha.thisClass.progressStarten(false);
 								gestartet = true;
-			        			
 			        		}else{
-			        			System.out.println("starte Dokument mit temp. Stream-Daten");
 			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
 			        			DocumentDescriptor descript = new DocumentDescriptor();
 			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
-			        			descript.setHidden(true);
+			        			//descript.setHidden(true);
+			        			if(ins==null){
+				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
+			        			}
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
 			        			/*
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
@@ -170,7 +162,63 @@ public class Eb3 implements RehaEventListener  {
 								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 								xtvc.gotoStart(false);
 								ins.close();
-								eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								Reha.thisClass.progressStarten(false);
+			        			
+			        			
+			        		}
+			        	}else{
+			        		if(!gestartet){
+				        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+			        			DocumentDescriptor descript = new DocumentDescriptor();
+			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+			        			//descript.setHidden(true);
+			        			if(is == null){
+				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
+			        			}else{
+			        				eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
+			        			}
+
+			        			//eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
+			        			/*
+					        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
+					        	*/
+								XController xController = eltern.document.getXTextDocument().getCurrentController();
+								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+								xController);
+								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+								xtvc.gotoStart(false);
+								if(is != null){
+									is.close();
+								}	
+								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+
+								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								Reha.thisClass.progressStarten(false);
+								gestartet = true;
+			        			
+			        		}else{
+			        			System.out.println("starte Dokument mit temp. Stream-Daten");
+			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
+			        			DocumentDescriptor descript = new DocumentDescriptor();
+			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+			        			//descript.setHidden(true);
+			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+			        			/*
+			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
+					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(ins, new RTFFilter());
+					        	*/
+								XController xController = eltern.document.getXTextDocument().getCurrentController();
+								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+								xController);
+								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+								xtvc.gotoStart(false);
+								ins.close();
+								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
 								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								Reha.thisClass.progressStarten(false);
 			        		}
@@ -198,6 +246,14 @@ public class Eb3 implements RehaEventListener  {
 					getrennt = true;
 					trenneFrame(true);
 					//eltern.document.close();
+					if(outtemp != null){
+						try {
+							outtemp.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 					Reha.thisClass.progressStarten(false);
 				return null;
 			}
@@ -274,6 +330,7 @@ public class Eb3 implements RehaEventListener  {
 			 	   public  void run()
 			 	   {
 			 		   try {
+			 			pdfok = false;
 			 			Reha.thisClass.progressStarten(true); 
 			 			pan.add(nativeView);
 			 			EBerichtPanel.document.getFrame().setFocus();
@@ -318,6 +375,14 @@ public class Eb3 implements RehaEventListener  {
 		System.out.println("ntiveView getrennt----->");
 		if(eltern.neu){
 			getrennt = true;
+			if(mitspeichern){
+				try {
+					tempTextSpeichern();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			EBerichtPanel.document.close();
 			pan.remove(nativeView);
 			Reha.thisClass.progressStarten(false);
@@ -361,6 +426,7 @@ public class Eb3 implements RehaEventListener  {
 				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
 				tempgespeichert = true;
+				pdfok = true;
 			}	
 			if(eltern.ebtab.getSelectedIndex() != 2){
 				getrennt = true;
@@ -412,6 +478,7 @@ public class Eb3 implements RehaEventListener  {
 					outtemp = new ByteArrayOutputStream();
 					EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 					EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					pdfok = true;
 				}			
 			}
 			ins.close();
@@ -519,6 +586,14 @@ public class Eb3 implements RehaEventListener  {
 				if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 					System.out.println("Lösche Listener von Eb3-------------->");
 					this.rEvent.removeRehaEventListener((RehaEventListener)this);
+					if(outtemp != null){
+						try {
+							outtemp.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 			if(evt.getRehaEvent().equals("OOFrame")){
