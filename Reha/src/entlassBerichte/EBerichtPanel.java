@@ -55,6 +55,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import oOorgTools.OOTools;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -345,10 +346,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							Reha.thisClass.progressStarten(true);
 							ebtab.setSelectedIndex(0);
 							if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
-								//if(ebt.getTab3()==null){
-									//System.out.println("Der Fliesstexttab = null!!!!!!");
-									//return null;
-								//}
 								try {
 									 
 							        int sel = ebtab.getSelectedIndex();
@@ -790,7 +787,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							@Override
 							protected Void doInBackground() throws Exception {
 								try{
-									Reha.thisClass.progressStarten(false);	
+
+									Reha.thisClass.progressStarten(true);
+									/*
 								Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
 							       InputStream is = process.getInputStream();
 							       InputStreamReader isr = new InputStreamReader(is);
@@ -803,6 +802,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							       is.close();
 							       isr.close();
 							       br.close();
+							       */
+									pdfBoxTest(tempPfad+"EBfliesstext.pdf");
+									//pdfBoxTest(xdatei);
+									Reha.thisClass.progressStarten(false);
 									
 								}catch(Exception ex){
 									Reha.thisClass.progressStarten(false);
@@ -820,7 +823,24 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 			
 	}
-	/*************************************/	
+	/*************************************/
+	public void pdfBoxTest(String file) {
+	    PDDocument doc=null;
+	    try {
+	        doc = PDDocument.load(file);
+	        doc.print();
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    } finally {
+	        if (doc != null) {
+	            try {
+	                doc.close();
+	            } catch (IOException ex1) {
+	                ex1.printStackTrace();
+	            }
+	        }
+	    }
+	}
 	private boolean doSeite3(){
 		tempDateien[2] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB3"+System.currentTimeMillis()+".pdf"};
 		String pdfPfad = rvVorlagen[2];
@@ -1131,7 +1151,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
 
 		int seiten = reader.getNumberOfPages();
-		System.out.println("Insgasamt Seiten Flieﬂtext = "+seiten);
+		System.out.println("Insgesamt Seiten Flieﬂtext = "+seiten);
 	
 		PdfImportedPage page2;		
 		

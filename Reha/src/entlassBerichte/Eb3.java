@@ -111,6 +111,7 @@ public class Eb3 implements RehaEventListener  {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
+					Reha.thisClass.progressStarten(true);
 					if(eltern.neu){
 						baueSeite();
 						inseitenaufbau = true;
@@ -129,7 +130,9 @@ public class Eb3 implements RehaEventListener  {
 						System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
 						trenneFrame(false);
 					}
+					Reha.thisClass.progressStarten(false);
 				}catch(Exception ex){
+					Reha.thisClass.progressStarten(false);
 					ex.printStackTrace();
 				}
 				//baueSeite();
