@@ -265,15 +265,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				@Override
 				protected Void doInBackground() throws Exception {
 					if(ebt.getTab3().getrennt){
+						System.out.println("OOTab ist!!!! selektiert und getrennt deshalb BaueSeite");
 						ebt.getTab3().baueSeite();
+					}else{
+						System.out.println("OOTab ist!!!! selektiert und nicht!!!!getrennt deshalb nur tempTextSpeichern");
+						ebt.getTab3().tempTextSpeichern();
 					}
-					/*
-		        	Reha.thisClass.progressStarten(true);
-		        	RehaEvent xevt = new RehaEvent(this);
-					xevt.setDetails("Gutachten", "#DEICONIFIED");
-					xevt.setRehaEvent("REHAINTERNAL");
-					RehaEventClass.fireRehaEvent(xevt);
-					*/
+			
 					return null;
 				}
         	}.execute();
@@ -282,16 +280,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				@Override
 				protected Void doInBackground() throws Exception {
 					if(!ebt.getTab3().getrennt){
+						System.out.println("OOTab nicht selektiert und nicht getrennt also nur tempTextSpeichern");
+						//ebt.getTab3().baueSeite();
 						ebt.getTab3().tempTextSpeichern();
 						//ebt.getTab3().trenneFrame();
+					}else{
+						System.out.println("OOTab nicht selektiert und getrennt deshalb baueSeite()");
+						ebt.getTab3().baueSeite();
+			
 					}
-					/*
-		        	Reha.thisClass.progressStarten(true);
-		        	RehaEvent xevt = new RehaEvent(this);
-					xevt.setDetails("Gutachten", "#SPEICHERNUNDENDE");
-					xevt.setRehaEvent("REHAINTERNAL");
-					RehaEventClass.fireRehaEvent(xevt);
-					*/
 					return null;
 					
 				}
@@ -358,21 +355,48 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(cmd.equals("gutvorschau")){
 			new Thread(){
 				public void run(){
-					Reha.thisClass.progressStarten(true);
-					if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
-						if(ebt.getTab3()==null){
-							//System.out.println("Der Fliesstexttab = null!!!!!!");
-							return;
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							Reha.thisClass.progressStarten(true);
+							ebtab.setSelectedIndex(0);
+							if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
+								//if(ebt.getTab3()==null){
+									//System.out.println("Der Fliesstexttab = null!!!!!!");
+									//return null;
+								//}
+								try {
+									 
+							        int sel = ebtab.getSelectedIndex();
+									if(ebt.getTab3().getrennt && !ebt.getTab3().pdfok){
+										System.out.println("in getrennt.....");
+										if(sel != 2){
+											ebt.getTab3().tempTextSpeichern();
+											document.close();
+										}else{
+											ebt.getTab3().tempTextSpeichern();											
+										}
+
+									}else{
+										System.out.println("in nicht!!!!!getrennt.....");
+										if(sel != 2){
+											ebt.getTab3().tempTextSpeichern();
+											document.close();
+										}else{
+											ebt.getTab3().tempTextSpeichern();
+										}
+									}
+									
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								doRVVorschau("DRV Bund","EDV");
+
+							}
+							return null;
 						}
-						try {
-							ebt.getTab3().tempTextSpeichern();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						doRVVorschau("DRV Bund","EDV");
-						ebtab.setSelectedIndex(0);
-					}
+					}.execute();
 				}
 			}.start();
 			
@@ -1127,7 +1151,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			try {
 				long zeit = System.currentTimeMillis();
 				boolean freitextok = true;
-				while(!ebt.getTab3().tempgespeichert){
+				while(!ebt.getTab3().pdfok){
 					Thread.sleep(50);
 					if(System.currentTimeMillis() - zeit > 3000){
 						JOptionPane.showMessageDialog(null,"Fehler in der Zusammenstellung des Freitextes");
@@ -1207,6 +1231,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		ft = new File(tempPfad+"EBfliesstext.pdf");
 		if(ft.exists()){
 			ft.delete();
+			ebt.getTab3().pdfok = false;
 		}
 	
 		
@@ -1346,9 +1371,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public void RehaEventOccurred(RehaEvent evt) {
 		// TODO Auto-generated method stub
 		System.out.println(evt);
+		System.out.println("GutachtenFenster wird geschlossen.......");
 		if(evt.getDetails()[0].contains("GutachtenFenster")){
 			if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 				dokumentSchliessen();
+				if(document.isOpen()){
+					document.close();
+				}
 				this.evt.removeRehaEventListener((RehaEventListener)this);
 			}
 		}

@@ -101,6 +101,10 @@ public class Eb3 implements RehaEventListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+				if(eltern.neu){
+					tempTextSpeichern();					
+				}
+
 					//baueSeite();
 				return null;
 			}
@@ -137,11 +141,23 @@ public class Eb3 implements RehaEventListener  {
 			        	//d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 			        	d.setTitle("Entlassbericht");
 			        	if(eltern.neu){
-			        		if(!gestartet){
+			        		if(!gestartet && (outtemp == null)){
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
 			        			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			        			Reha.thisClass.progressStarten(false);
-								gestartet = true;
+			        			new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										String url = tempPfad+"EBfliesstext.pdf";
+					        			outtemp = new ByteArrayOutputStream();
+					        			eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
+					        			eltern.document.getPersistenceService().export(url, new PDFFilter());
+					        			Reha.thisClass.progressStarten(false);
+										gestartet = true;
+										pdfok = true;
+										return null;
+									}
+			        			}.execute();
 			        		}else{
 			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
 			        			DocumentDescriptor descript = new DocumentDescriptor();
@@ -149,8 +165,23 @@ public class Eb3 implements RehaEventListener  {
 			        			//descript.setHidden(true);
 			        			if(ins==null){
 				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
+			        			}else{
+				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);			        				
 			        			}
-			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+			        			new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										String url = tempPfad+"EBfliesstext.pdf";
+					        			outtemp = new ByteArrayOutputStream();
+					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					    				pdfok = true;
+					    				return null;
+									}
+			        			}.execute();
+			        			
+
 			        			/*
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
 					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
@@ -170,7 +201,12 @@ public class Eb3 implements RehaEventListener  {
 			        		}
 			        	}else{
 			        		if(!gestartet){
-				        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+			        			InputStream is = null;
+			        			if(outtemp == null){
+			        				is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");	
+			        			}else{
+			        				is = new ByteArrayInputStream(outtemp.toByteArray());	
+			        			}
 			        			DocumentDescriptor descript = new DocumentDescriptor();
 			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
 			        			//descript.setHidden(true);
@@ -179,6 +215,19 @@ public class Eb3 implements RehaEventListener  {
 			        			}else{
 			        				eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
 			        			}
+			        			new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										String url = tempPfad+"EBfliesstext.pdf";
+					        			outtemp = new ByteArrayOutputStream();
+					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					    				pdfok = true;
+					    				return null;
+									}
+			        			}.execute();
+
 
 			        			//eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
 			        			/*
@@ -207,6 +256,18 @@ public class Eb3 implements RehaEventListener  {
 			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 			        			//descript.setHidden(true);
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+			        			new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										String url = tempPfad+"EBfliesstext.pdf";
+					        			outtemp = new ByteArrayOutputStream();
+					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					    				pdfok = true;
+					    				return null;
+									}
+			        			}.execute();
 			        			/*
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
 					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
@@ -445,6 +506,9 @@ public class Eb3 implements RehaEventListener  {
 			System.out.println("**********NoeException************");
 		}
 	}
+	public void tempStartSpeichern() throws InterruptedException{
+		
+	}
 	public void textSpeichernInDB(boolean mittemp){
 		Statement stmt = null;;
 		ResultSet rs = null;
@@ -585,15 +649,22 @@ public class Eb3 implements RehaEventListener  {
 			if(evt.getDetails()[0].contains("GutachtenFenster")){
 				if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 					System.out.println("Lösche Listener von Eb3-------------->");
-					this.rEvent.removeRehaEventListener((RehaEventListener)this);
-					if(outtemp != null){
-						try {
+					try {
+						if(outtemp != null){
 							outtemp.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
+						trenneFrame(false);
+						outtemp = null;
+						pdfok = false;
+						gestartet = false;
+						tempgespeichert = false;
+
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					
+					this.rEvent.removeRehaEventListener((RehaEventListener)this);
 				}
 			}
 			if(evt.getRehaEvent().equals("OOFrame")){
