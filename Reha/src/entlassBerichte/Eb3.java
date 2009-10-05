@@ -83,11 +83,20 @@ public class Eb3 implements RehaEventListener  {
 	NativeView nativeView = null; 
 	ByteArrayOutputStream outtemp = null;	
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
-	boolean gestartet = false;
-	boolean inseitenaufbau = false;
-	boolean getrennt = true;
-	boolean tempgespeichert = false;
+
+	//boolean gestartet = false;
+	//boolean inseitenaufbau = false;
+	//boolean getrennt = true;
+	//boolean tempgespeichert = false;
+	//boolean pdfok = false;
+	/***********neue logische Variable***************/
+	boolean newframeok = false;
+	boolean bytebufferok = false;
 	boolean pdfok = false;
+	boolean inseitenaufbau = false;
+	boolean framegetrennt = true;
+	InputStream startStream = null;
+	
 	public Eb3(EBerichtPanel xeltern){
 		eltern = xeltern; 
 		rEvent = new RehaEventClass();
@@ -101,11 +110,29 @@ public class Eb3 implements RehaEventListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				if(eltern.neu){
-					tempTextSpeichern();					
+				try{
+					if(eltern.neu){
+						baueSeite();
+						inseitenaufbau = true;
+						while(inseitenaufbau){
+							Thread.sleep(20);
+						}
+						System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
+						trenneFrame(false);
+					}else{
+						macheByteBuffer();
+						baueSeite();
+						inseitenaufbau = true;
+						while(inseitenaufbau){
+							Thread.sleep(20);
+						}
+						System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
+						trenneFrame(false);
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
-
-					//baueSeite();
+				//baueSeite();
 				return null;
 			}
 		}.execute();
@@ -123,7 +150,9 @@ public class Eb3 implements RehaEventListener  {
 		
 	}
 	public void baueSeite(){
-		if(!getrennt){
+		if(!framegetrennt){
+			System.out.println("Frame is nicht getrennt - > baueSeite() wird nicht durchlaufen");
+			inseitenaufbau = false;
 			return;
 		}
 			
@@ -138,10 +167,12 @@ public class Eb3 implements RehaEventListener  {
 						eltern.officeFrame = constructOOOFrame(Reha.officeapplication,pan);
 						configureOOOFrame(Reha.officeapplication,eltern.officeFrame);
 			        	DocumentDescriptor d = new DocumentDescriptor();
-			        	//d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 			        	d.setTitle("Entlassbericht");
+			        	//Sofern es sich um eine Berichtsneuanlage handelt
 			        	if(eltern.neu){
-			        		if(!gestartet && (outtemp == null)){
+			        		// wenn noch kein frame erstellt wurde und der outbuffe leer ist;
+			        		if(!newframeok && (outtemp == null)){
+			        			System.out.println("Neuanlage Bericht -> constructNewDocument");
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
 			        			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			        			new SwingWorker<Void,Void>(){
@@ -152,20 +183,28 @@ public class Eb3 implements RehaEventListener  {
 					        			outtemp = new ByteArrayOutputStream();
 					        			eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
 					        			eltern.document.getPersistenceService().export(url, new PDFFilter());
+					    				EBerichtPanel.document.setModified(false);
 					        			Reha.thisClass.progressStarten(false);
-										gestartet = true;
+					        			newframeok = true;
+					        			bytebufferok = true;
 										pdfok = true;
+										System.out.println("ByteBuffer für Bericht Neuanlage wurde erstellt\n"+getStatus());
 										return null;
 									}
 			        			}.execute();
+			        			framegetrennt = false;
 			        		}else{
+			        			System.out.println("Neuanlage Bericht -> newFrame bereits erzeugt, verwende Inputstream");
 			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
 			        			DocumentDescriptor descript = new DocumentDescriptor();
 			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 			        			//descript.setHidden(true);
 			        			if(ins==null){
+			        				System.out.println("Neuanlage Bericht -> ByteArray = null, constructNewDocument");
 				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
+				        			bytebufferok = false;
 			        			}else{
+			        				System.out.println("Neuanlage Bericht -> ByteArray o.k, lade Dokument aus InputStream");
 				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);			        				
 			        			}
 			        			new SwingWorker<Void,Void>(){
@@ -176,44 +215,46 @@ public class Eb3 implements RehaEventListener  {
 					        			outtemp = new ByteArrayOutputStream();
 					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					    				EBerichtPanel.document.setModified(false);
+					    				bytebufferok = true;
 					    				pdfok = true;
 					    				return null;
 									}
 			        			}.execute();
-			        			
-
-			        			/*
-			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(ins, new RTFFilter());
-					        	*/
+			        			System.out.println("Status Neuanlage Durchlauf >= 2:"+getStatus());
 								XController xController = eltern.document.getXTextDocument().getCurrentController();
 								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
 								xController);
 								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 								xtvc.gotoStart(false);
-								ins.close();
-								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+								if(ins != null){
+									ins.close();									
+								}
 								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								Reha.thisClass.progressStarten(false);
+			        			framegetrennt = false;
 			        			
-			        			
+			        			System.out.println("Status Neuanlage Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
 			        		}
 			        	}else{
-			        		if(!gestartet){
+			        		//Es handelt sich um einen vorhandenen Bericht
+			        		if(!newframeok){
+			        			/*
 			        			InputStream is = null;
 			        			if(outtemp == null){
-			        				is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");	
+			        				is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+			        				System.out.println("Vorhandener Bericht 1.Durchlauf, Status = "+getStatus());
 			        			}else{
 			        				is = new ByteArrayInputStream(outtemp.toByteArray());	
 			        			}
+			        			*/
 			        			DocumentDescriptor descript = new DocumentDescriptor();
 			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
 			        			//descript.setHidden(true);
-			        			if(is == null){
+			        			if(startStream == null){
 				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
 			        			}else{
-			        				eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
+			        				eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,startStream, descript);
 			        			}
 			        			new SwingWorker<Void,Void>(){
 									@Override
@@ -223,31 +264,25 @@ public class Eb3 implements RehaEventListener  {
 					        			outtemp = new ByteArrayOutputStream();
 					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					    				EBerichtPanel.document.setModified(false);
+					    				bytebufferok = true;
 					    				pdfok = true;
 					    				return null;
 									}
 			        			}.execute();
 
-
-			        			//eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,is, descript);
-			        			/*
-					        	eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, new RTFFilter());
-					        	*/
 								XController xController = eltern.document.getXTextDocument().getCurrentController();
 								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
 								xController);
 								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 								xtvc.gotoStart(false);
-								if(is != null){
-									is.close();
+								if(startStream != null){
+									startStream.close();
 								}	
-								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-
 								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								Reha.thisClass.progressStarten(false);
-								gestartet = true;
+								newframeok = true;
+								System.out.println("Status vorhandener Bericht -> am Ende des 1. Durchlaufes = "+getStatus());
 			        			
 			        		}else{
 			        			System.out.println("starte Dokument mit temp. Stream-Daten");
@@ -264,15 +299,13 @@ public class Eb3 implements RehaEventListener  {
 					        			outtemp = new ByteArrayOutputStream();
 					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					    				EBerichtPanel.document.setModified(false);
+					    				bytebufferok = true;
 					    				pdfok = true;
 					    				return null;
 									}
 			        			}.execute();
-			        			/*
-			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-					        	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-					        	eltern.document.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(ins, new RTFFilter());
-					        	*/
+			        			
 								XController xController = eltern.document.getXTextDocument().getCurrentController();
 								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
 								xController);
@@ -282,11 +315,12 @@ public class Eb3 implements RehaEventListener  {
 								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
 								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								Reha.thisClass.progressStarten(false);
+								System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
 			        		}
 			        	}
 			        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
 			        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
-			        	getrennt = false;
+			        	framegetrennt = false;
 			        	
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
@@ -304,8 +338,9 @@ public class Eb3 implements RehaEventListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-					getrennt = true;
+					
 					trenneFrame(true);
+					framegetrennt = true;
 					//eltern.document.close();
 					if(outtemp != null){
 						try {
@@ -391,6 +426,7 @@ public class Eb3 implements RehaEventListener  {
 			 	   public  void run()
 			 	   {
 			 		   try {
+		 			   System.out.println("Aufruf der Funktion -> neuAnhaengen, Status = :"+getStatus());
 			 			pdfok = false;
 			 			Reha.thisClass.progressStarten(true); 
 			 			pan.add(nativeView);
@@ -405,7 +441,7 @@ public class Eb3 implements RehaEventListener  {
 						pan.setVisible(true);
 						pan.validate();
 						Reha.thisClass.progressStarten(false);
-						getrennt = false;
+						framegetrennt = false;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -435,28 +471,35 @@ public class Eb3 implements RehaEventListener  {
 	public void trenneFrame(boolean mitspeichern){
 		System.out.println("ntiveView getrennt----->");
 		if(eltern.neu){
-			getrennt = true;
 			if(mitspeichern){
+				System.out.println("Aufruf trenneFrame bei Neuanlage mit Speichern, Status:"+getStatus());
 				try {
 					tempTextSpeichern();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}else{
+				System.out.println("Aufruf trenneFrame bei Neuanlage ohne Speichern, Status:"+getStatus());				
 			}
 			EBerichtPanel.document.close();
 			pan.remove(nativeView);
+			framegetrennt = true;
 			Reha.thisClass.progressStarten(false);
-			
 			return;
+		}else{
+			
 		}
 		final boolean xmitspeichern = mitspeichern;
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				getrennt = true;
+				framegetrennt = true;
 				if(xmitspeichern){
-					tempTextSpeichern();					
+					tempTextSpeichern();	
+					System.out.println("Aufruf trenneFrame bei vorhanden. Bericht mit Speichern, Status:"+getStatus());
+				}else{
+					System.out.println("Aufruf trenneFrame bei vorhanden. Bericht ohne Speichern, Status:"+getStatus());
 				}
 				EBerichtPanel.document.close();
 				pan.remove(nativeView);
@@ -470,14 +513,15 @@ public class Eb3 implements RehaEventListener  {
 	public void tempTextSpeichern() throws InterruptedException{
 		String url = tempPfad+"EBfliesstext.pdf";
 		System.out.println("speichere temporär in: "+url);
-		tempgespeichert = false;
+		//pdfok = false;
+		
 		try {
 			if(EBerichtPanel.document == null){
 				System.out.println("Das Dokument ist momentan null");
 				inseitenaufbau = true;
 				baueSeite();
 				while(inseitenaufbau){
-					Thread.sleep(50);
+					Thread.sleep(10);
 				}
 				System.out.println("Die Seite wurde neu afugebaut");
 				//return;
@@ -486,15 +530,16 @@ public class Eb3 implements RehaEventListener  {
 				outtemp = new ByteArrayOutputStream();
 				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-				tempgespeichert = true;
+				EBerichtPanel.document.setModified(false);
 				pdfok = true;
+				bytebufferok = false;
 			}	
 			if(eltern.ebtab.getSelectedIndex() != 2){
-				getrennt = true;
 				trenneFrame(false);
+				framegetrennt = true;
 				System.out.println("Trenne Frame Selected Tab ist nicht der OO-Tab");
 			}else{
-				getrennt = false;
+				framegetrennt = false;
 			}
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
@@ -656,8 +701,8 @@ public class Eb3 implements RehaEventListener  {
 						trenneFrame(false);
 						outtemp = null;
 						pdfok = false;
-						gestartet = false;
-						tempgespeichert = false;
+						//gestartet = false;
+						//tempgespeichert = false;
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -674,7 +719,39 @@ public class Eb3 implements RehaEventListener  {
 			}			
 			
 
-		}		
-	
+		}
+		private void macheByteBuffer(){
+			InputStream is = null;
+			outtemp = new ByteArrayOutputStream();
+			startStream = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+			/*
+			byte[] buff;
+			try {
+				buff = new byte[is.available()];
+				outtemp.write(is.read(buff, 0, buff.length));
+				outtemp.flush();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
+
+			
+		}
+		private String getStatus(){
+			boolean newframeok = false;
+			boolean bytebufferok = false;
+			boolean pdfok = false;
+			boolean inseitenaufbau = false;
+			boolean framegetrennt = true;
+			String ret      = "Statusanzeige:\n"+
+			"newframeok     = "+newframeok+"\n"+
+			"bytebufferok   = "+bytebufferok+"\n"+
+			"pdfok          = "+pdfok+"\n"+
+			"inseitenaufbau = "+inseitenaufbau+"\n"+
+			"framegetrennt  = "+framegetrennt+"\n";
+			return ret;
+		}
 
 }

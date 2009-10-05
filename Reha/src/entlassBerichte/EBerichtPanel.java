@@ -94,6 +94,7 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.FileTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
@@ -264,7 +265,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
         	new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					if(ebt.getTab3().getrennt){
+					if(ebt.getTab3().framegetrennt){
 						System.out.println("OOTab ist!!!! selektiert und getrennt deshalb BaueSeite");
 						ebt.getTab3().baueSeite();
 					}else{
@@ -276,23 +277,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				}
         	}.execute();
         }else{
-        	new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					if(!ebt.getTab3().getrennt){
-						System.out.println("OOTab nicht selektiert und nicht getrennt also nur tempTextSpeichern");
-						//ebt.getTab3().baueSeite();
-						ebt.getTab3().tempTextSpeichern();
-						//ebt.getTab3().trenneFrame();
-					}else{
-						System.out.println("OOTab nicht selektiert und getrennt deshalb baueSeite()");
-						ebt.getTab3().baueSeite();
-			
-					}
-					return null;
-					
-				}
-        	}.execute();
         }
 
 	}    
@@ -368,13 +352,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 								try {
 									 
 							        int sel = ebtab.getSelectedIndex();
-									if(ebt.getTab3().getrennt && !ebt.getTab3().pdfok){
+									if(document.isModified()){
 										System.out.println("in getrennt.....");
 										if(sel != 2){
-											ebt.getTab3().tempTextSpeichern();
-											document.close();
+												ebt.getTab3().tempTextSpeichern();
+												document.close();
 										}else{
-											ebt.getTab3().tempTextSpeichern();											
+											if(document.isModified()){											
+												ebt.getTab3().tempTextSpeichern();
+											}
 										}
 
 									}else{
@@ -832,18 +818,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// nur zur Überprüfung der Positionen
-			/*
-			cb.setColorStroke(new GrayColor(0.2f)) ;
-			cb.moveTo(80, 494);
-			cb.lineTo(80, 530);
-			cb.lineTo(318, 530);
-			cb.lineTo(318, 494);	
-			cb.lineTo(80, 494);
-			cb.stroke();
-			*/
-			//cb.closePathFillStroke();
-			// Ende PosPrüfung
 			
 	}
 	/*************************************/	
@@ -852,12 +826,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		String pdfPfad = rvVorlagen[2];
 		PdfReader reader;
 		try {
-			//System.out.println("Generiere die KTL-Seiten.....");
-			//reader = new PdfReader (pdfPfad);
-			//ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-			//PdfStamper stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[2][0]));
-			// PdfContentByte cb = stamper2.getOverContent(1);
-			// Der Kopf mit Patientennamen etc.
 			BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 			String text = "";
 			Float [] pos = {null,null,null};
@@ -868,8 +836,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			Document docktl = new Document(PageSize.A4);
 			PdfCopy cop = new PdfCopy(docktl,new FileOutputStream(tempDateien[2][0]));
 			docktl.open();
-			
-			//PdfStamper stamper2 = new PdfStamper(reader,baos);
 			int zugabe = 0;
 			for(int i = 0;i < 2;i++){
 				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
@@ -1090,16 +1056,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			ph.add(bta[7].getText());
 			ct.addText(ph);
 			ct.go();
-			/*
-			int seite = 1;
-			Float[] xseite = getFloats(188.25f,278.5f,fy0);
-			cb.beginText();
-			cb.moveText(xseite[0], xseite[1]);
-			cb.setFontAndSize(bf,11);
-			cb.setCharacterSpacing(xseite[2]);
-			cb.showText(new Integer(seite).toString());
-			cb.endText();
-			*/
+
 			stamper2.close();
 			
 		} catch (DocumentException e) {
@@ -1113,8 +1070,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return false;
 		
 	}
-	
-	public boolean doSeite4(PdfStamper stamper4) throws IOException, JRException{
+	/*
+	public boolean doSeite5(PdfStamper stamper4) throws IOException, JRException{
 		System.out.println("Starte JasperSoft");
 		Map params = new HashMap<String,String>();
 		params.put("patient","Steinhilber, Jürgen");
@@ -1132,6 +1089,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("Fertig mit JasperSoft");
 			return false;
 	}
+	*/
 	
 	/**************
 	 * 
@@ -1148,6 +1106,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		Document docgesamt = new Document(PageSize.A4);
 		File ft = new File(tempPfad+"EBfliesstext.pdf");
 		if(! ft.exists()){
+			/*
 			try {
 				long zeit = System.currentTimeMillis();
 				boolean freitextok = true;
@@ -1167,6 +1126,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 		}
 		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
 
@@ -1174,7 +1134,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("Insgasamt Seiten Fließtext = "+seiten);
 	
 		PdfImportedPage page2;		
-		//PdfReader rvorlage = new PdfReader(vorlage);
+		
 		tempDateien[4] = new String[]{tempPfad+"EBGesamt"+System.currentTimeMillis()+".pdf"};
 		PdfCopy cop = new PdfCopy(docgesamt,new FileOutputStream(tempDateien[4][0]));
 		docgesamt.open();
@@ -1218,24 +1178,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		
 
-		
-		//cb.addTemplate(page, 0, 0);
-		
-
-
-		
-		//doc.close();
 		docgesamt.close();
 		reader.close();
 		ktlreader.close();
-		ft = new File(tempPfad+"EBfliesstext.pdf");
-		if(ft.exists()){
-			ft.delete();
-			ebt.getTab3().pdfok = false;
-		}
-	
-		
-		
 		
 		return false;
 	}
@@ -1379,6 +1324,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					document.close();
 				}
 				this.evt.removeRehaEventListener((RehaEventListener)this);
+				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "EB", ".pdf");
 			}
 		}
 	}
