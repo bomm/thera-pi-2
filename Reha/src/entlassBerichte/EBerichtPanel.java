@@ -55,7 +55,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import oOorgTools.OOTools;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
+
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -533,10 +533,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		String pdfPfad = rvVorlagen[0];
 		//PdfWriter writer2 = null;
 		//PdfCopy writer = null;
-		
+		boolean geklappt;
 		PdfStamper stamper = null;
 		PdfStamper stamper2 = null;
 		String test = "23020562S512";
+		
 		// Zu Beginn sicherstellen daß die OO.org PDF produziert wird.
 			try {
 				
@@ -562,223 +563,23 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 						e.printStackTrace();
 					}
 				}
-				
-				// Geschiss bis die bestehende PDF eingelesen und gestampt ist
-				tempDateien[0] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB1"+System.currentTimeMillis()+".pdf"};
-				//String sdatei = "C:/ebericht1.pdf"; 
-				BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-				PdfReader reader = new PdfReader (pdfPfad);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				//stamper = new PdfStamper(reader,baos);
-				stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
-				// Ende des Geschiss
-				
-				PdfContentByte cb = stamper.getOverContent(1);
-				Float [] pos = {null,null,null};
-				float fy0 =  0.25f;
-				float fy1 =  6.9f;
-				// Hier die Positionierung für das obere Gedönse
-								//        0RV-Nr.
-				Float[][] poswert1 = {getFloats(29.30f,268.25f,fy1),
-						//      1Kennzeich                2Name                           3Geburtst
-							getFloats(103.30f,268.25f,fy1),getFloats(24.5f,260.0f,fy0),getFloats(24.5f,251.5f,fy1),
-							//   4Strasse                             5PLZ                               6Ort
-							getFloats(24.5f,243.0f,fy0),getFloats(24.5f,234.5f,fy1), getFloats(51.5f,234.5f,fy0),
-							//  7VersichertenName              8MSNR                     9BNR
-							getFloats(24.5f,226.0f,fy0),getFloats(131.25f,268.25f,fy1),getFloats(156.25f,268.25f,fy1)
-				};
-				// Jetzt die Positionen abarbeiten
-				String text = "";
-				for(int i = 0; i < 10;i++){
-					if(i==3){
-						text = macheDatum2Sechs(btf[i].getText().trim());
-					}else{
-						text = btf[i].getText();	
-					}
-					setzeText(cb,poswert1[i][0], poswert1[i][1],poswert1[i][2],bf,12,text);
-				}
-				//IK des Berichterstellers
-				pos = getFloats(131.25f,225.75f,fy1);
-				setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[28].getText());
-				//Abteilung-Nr.
-				pos = getFloats(181.50f,225.75f,fy1);
-				setzeText(cb,pos[0], pos[1],pos[2],bf,12,(btf[10].getText().trim().equals("") ? "2300" : btf[10].getText().trim() ) );
-				/* 
-				 * 
-				 */
-				// Jetzt kommen die Felder ab stationär, ganztägig ambulant etc. bis letztes Feld = Körpergröße
-				Float[][] poswert2 = {	getFloats(29.25f,218.0f,fy1),getFloats(67.10f,218.0f,fy1),
-										getFloats(29.25f,196.5f,fy1),getFloats(67.10f,196.5f,fy1),
-										getFloats(29.25f,205.30f,fy1),getFloats(67.10f,205.30f,fy1)	};
-				for(int i = 11; i < 17;i++){
-					text = btf[i].getText().trim();
-					if(! text.equals(".  .")){
-						text = macheDatum2Sechs(text);
-						setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);						
-					}
-				}	
-				/*******************************************************************/
-				// Jetzt die Diagnoseschlüssel
-				//                             Diag1                            Diag2
-				Float[][] poswert3 = {	getFloats(113.10f,175.70f,fy1),getFloats(113.10f,162.95f,fy1),
-				//                             Diag3                            Diag4
-										getFloats(113.10f,150.00f,fy1),getFloats(113.10f,137.50f,fy1),
-				//                             Diag5						
-										getFloats(113.10f,124.40f,fy1)};
-				for(int i = 17; i < 22;i++){
-					text = btf[i].getText().trim();
-					setzeText(cb,poswert3[i-17][0], poswert3[i-17][1],poswert3[i-17][2],bf,12,text);						
-
-				}	
-				
-
-				/*******************************************************************/
-				// Dann die CheckBoxen auswerten
-				float xfs = 0.0f;
-				float yfs = 0.0f;
-				bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-				Float[][] poswert4 =
-					//	 		  0                          1                                             					
-						{getFloats(26.60f+xfs,77.75f+yfs,fy0),getFloats(54.60f+xfs,77.75f+yfs,fy0),
-					//	          2                          3
-						 getFloats(26.60f+xfs,69.25f+yfs,fy0),getFloats(54.60f+xfs,69.25f+yfs,fy0),
-					//            4                          5                       
-						 getFloats(26.60f+xfs,60.85f+yfs,fy0),getFloats(54.60f+xfs,60.85f+yfs,fy0),
-					//			  6                          7                                         
-						 getFloats(90.15f+xfs,77.75f+yfs,fy0),getFloats(120.50f+xfs,77.75f+yfs,fy0),
-					//	          8							 9  
-						 getFloats(90.15f+xfs,69.25f+yfs,fy0),getFloats(120.50f+xfs,69.25f+yfs,fy0),
-					//	         10                         11               
-						 getFloats(90.15f+xfs,60.85f+yfs,fy0),getFloats(120.50f+xfs,60.85f+yfs,fy0),
-					//	         12                         13                                                
-						getFloats(145.75f+xfs,77.75f+yfs,fy0),getFloats(176.20f+xfs,77.75f+yfs,fy0),
-					//	         14                         15
-						getFloats(145.75f+xfs,69.25f+yfs,fy0),getFloats(176.20f+xfs,69.25f+yfs,fy0),
-					//           16
-						getFloats(145.75f+xfs,60.85f+yfs,fy0)};
-				for(int i = 0; i <17; i++){
-					if(bchb[i].isSelected()){
-						text = "X";
-						setzeText(cb,poswert4[i][0], poswert4[i][1],poswert4[i][2],bf,14,text);
-					}
-				}
-				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-				/*************************************************************************/
-				// Gewichte und Körpergröße             1                              2                            3
-				Float[][] poswert5 = {getFloats(29.25f,116.50f,fy1),getFloats(29.25f,108.25f,fy1),getFloats(29.25f,99.80f,fy1) }; 
-				for(int i = 22; i < 25;i++){
-					text = btf[i].getText().trim();
-					setzeText(cb,poswert5[i-22][0], poswert5[i-22][1],poswert5[i-22][2],bf,12,text);						
-				}
-				/*************************************************************************/
-				// Das Unterschriftsdatum = btf[27].getText() + den Ort
-				text = btf[27].getText().trim();
-				Float [] fsign = getFloats(24.25f,27.60f,fy1);
-				if(! text.equals(".  .")){
-					text = macheDatum2Sechs(text);
-					setzeText(cb,fsign[0], fsign[1],fsign[2],bf,12,text);						
-				}
-				Float [] fort = getFloats(61.25f,27.60f,fy0);
-				setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt);
-				/*************************************************************************/
-				// Jetzt die ComboBoxen abarbeiten
-				Float[][] poswert6 = {
-					//   0=Enlassform                      1	
-					getFloats(115.65f,213.65f,fy1),getFloats(163.45f,213.65f,fy1),
-					//   2=Diag1Teil                       3                                  4
-					getFloats(143.35f,175.70f,fy1),getFloats(155.75f,175.70f,fy1),getFloats(168.25f,175.70f,fy1),
-					//   5=Diag2Teil				       6                                  7
-					getFloats(143.35f,162.95f,fy1),getFloats(155.75f,162.95f,fy1),getFloats(168.25f,162.95f,fy1),
-					//   8=Diag3Teil 					   9								 10
-					getFloats(143.35f,150.00f,fy1),getFloats(155.75f,150.00f,fy1),getFloats(168.25f,150.00f,fy1),
-					//  11=Diag4Teil					  12								 13 
-					getFloats(143.35f,137.50f,fy1),getFloats(155.75f,137.50f,fy1),getFloats(168.25f,137.50f,fy1),
-					//  14=Diag5Teil					  15								 16
-					getFloats(143.35f,124.40f,fy1),getFloats(155.75f,124.40f,fy1),getFloats(168.25f,124.40f,fy1),
-					//  17=Ursache der..				  18								 19
-					getFloats(77.15f,116.50f,fy1),getFloats(128.35f,116.50f,fy1),getFloats(166.35f,116.50f,fy1)
-					
-				};
-				for(int i = 0; i < poswert6.length;i++){
-					text = ((String)bcmb[i].getSelectedItem()).trim();
-					setzeText(cb,poswert6[i][0], poswert6[i][1],poswert6[i][2],bf,12,text);						
-				}
-				/***********Jetzt der mehrzeilige Text der Diagnosen 1-5******************/
-				cb.setCharacterSpacing(0.5f);
-				float xstart = 82.f;
-				float xend = 282.f;
-				float ystartunten = 495.f;
-				float ystartoben = 530.f;
-				float yschritt = 35.f;
-				ColumnText ct = null;
-				Phrase ph = null;
-				float zaehler = 1.f;
-				for(int i = 0;i < 5; i++){
-					ct = new ColumnText(cb);
-					ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ANCHOR);
-					ph = new Phrase();
-					ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
-					ph.add(bta[i].getText().trim());
-					ct.addText(ph);
-					ct.go();
-					
-					ystartunten -= (yschritt+zaehler);
-					ystartoben = (ystartunten+yschritt);
-				}
-				// Erläuternungen Box
-				Float[] empfunten =  getFloats(24.50f,40.0f,0.5f);
-				Float[] empfoben =  getFloats(201.00f,51.25f,0.5f);
-				ct = new ColumnText(cb);
-				ct.setSimpleColumn(empfunten[0], empfunten[1],empfoben[0],empfoben[1],9,Element.ALIGN_BASELINE);
-				ph = new Phrase();
-				ph.setFont(FontFactory.getFont("Courier",10,Font.PLAIN));
-				ph.add(bta[5].getText().trim());
-				ct.addText(ph);
-				ct.go();
-				/*****************************************************************/
-				// Der Block rechts oben mit der Einrichtungsadresse
-				StringBuffer reha = new StringBuffer();
-				int lang = SystemConfig.vGutachtenAbsAdresse.size();
-				for(int i = 0; i < lang;i++){
-					reha.append(SystemConfig.vGutachtenAbsAdresse.get(i)+(i < (lang-1) ? "\n" : ""));
-				}
-				// Reha-Einrichtung
-				Float[] rehaunten =  getFloats(131.25f,242.0f,0.5f);
-				Float[] rehaoben =  getFloats(199.00f,264.0f,0.5f);
-				ct = new ColumnText(cb);
-				ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],11,Element.ALIGN_BASELINE);
-				ph = new Phrase();
-				ph.setFont(FontFactory.getFont("Helvectica",10,Font.PLAIN));
-				ph.add(reha.toString());
-				ct.addText(ph);
-				ct.go();
-				
-				/*****************************************************************/
-				stamper.setFormFlattening(true);
-				stamper.close();
-				reader.close();
-				/*****************************************************************/
-				boolean geklappt = false;
-				try{
-				//Seite 2 öffnen
-				pdfPfad = rvVorlagen[1];
-				tempDateien[1] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB2"+System.currentTimeMillis()+".pdf"};
-				reader = new PdfReader (pdfPfad);
-				stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
-				geklappt = doSeite2(stamper2);
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-
-				geklappt = doSeite3();
-				
-				if(geklappt){
-		
-				
-				}
-				geklappt = doSeiteTest();
+				geklappt = doSeite1();
 				if(!geklappt){
+					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
+					return;
 				}
+				geklappt = doSeite2();
+				if(!geklappt){
+					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 2 ");
+					return;
+				}
+				geklappt = doSeite3();
+				if(!geklappt){
+					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - KTL 1-2 ");
+					return;
+				}
+				geklappt = doSeitenZusammenstellen();
+
 				// AdobeReader starten
 				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
 				//final String xdatei =  tempDateien[3][0];//sdatei;
@@ -824,24 +625,340 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 			
 	}
-	/*************************************/
-	public void pdfBoxTest(String file) {
-	    PDDocument doc=null;
-	    try {
-	        doc = PDDocument.load(file);
-	        doc.print();
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	    } finally {
-	        if (doc != null) {
-	            try {
-	                doc.close();
-	            } catch (IOException ex1) {
-	                ex1.printStackTrace();
-	            }
-	        }
-	    }
+	/***********
+	 * 
+	 * E-Bericht Seite 1 
+	 * 
+	 * 
+	 * 
+	 * 
+	 **********/
+	private boolean doSeite1(){
+		String pdfPfad = rvVorlagen[0];
+		//PdfWriter writer2 = null;
+		//PdfCopy writer = null;
+		
+		PdfStamper stamper = null;
+		PdfStamper stamper2 = null;
+		String test = "23020562S512";
+				
+				// Geschiss bis die bestehende PDF eingelesen und gestampt ist
+		tempDateien[0] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB1"+System.currentTimeMillis()+".pdf"};
+		 
+		BaseFont bf;
+		try {
+			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		PdfReader reader = new PdfReader (pdfPfad);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
+				// Ende des Geschiss
+				
+		PdfContentByte cb = stamper.getOverContent(1);
+		Float [] pos = {null,null,null};
+		float fy0 =  0.25f;
+		float fy1 =  6.9f;
+		// Hier die Positionierung für das obere Gedönse
+								//        0RV-Nr.
+		Float[][] poswert1 = {getFloats(29.30f,268.25f,fy1),
+						//      1Kennzeich                2Name                           3Geburtst
+							getFloats(103.30f,268.25f,fy1),getFloats(24.5f,260.0f,fy0),getFloats(24.5f,251.5f,fy1),
+							//   4Strasse                             5PLZ                               6Ort
+							getFloats(24.5f,243.0f,fy0),getFloats(24.5f,234.5f,fy1), getFloats(51.5f,234.5f,fy0),
+							//  7VersichertenName              8MSNR                     9BNR
+							getFloats(24.5f,226.0f,fy0),getFloats(131.25f,268.25f,fy1),getFloats(156.25f,268.25f,fy1)
+				};
+				// Jetzt die Positionen abarbeiten
+		String text = "";
+		for(int i = 0; i < 10;i++){
+			if(i==3){
+				text = macheDatum2Sechs(btf[i].getText().trim());
+			}else{
+				text = btf[i].getText();	
+			}
+			setzeText(cb,poswert1[i][0], poswert1[i][1],poswert1[i][2],bf,12,text);
+		}
+		//IK des Berichterstellers
+		pos = getFloats(131.25f,225.75f,fy1);
+		setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[28].getText());
+		//Abteilung-Nr.
+		pos = getFloats(181.50f,225.75f,fy1);
+		setzeText(cb,pos[0], pos[1],pos[2],bf,12,(btf[10].getText().trim().equals("") ? "2300" : btf[10].getText().trim() ) );
+		/* 
+		 * 
+		 */
+		// Jetzt kommen die Felder ab stationär, ganztägig ambulant etc. bis letztes Feld = Körpergröße
+		Float[][] poswert2 = {	getFloats(29.25f,218.0f,fy1),getFloats(67.10f,218.0f,fy1),
+								getFloats(29.25f,196.5f,fy1),getFloats(67.10f,196.5f,fy1),
+								getFloats(29.25f,205.30f,fy1),getFloats(67.10f,205.30f,fy1)	};
+		for(int i = 11; i < 17;i++){
+			text = btf[i].getText().trim();
+			if(! text.equals(".  .")){
+				text = macheDatum2Sechs(text);
+				setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);						
+			}
+		}	
+		/*******************************************************************/
+		// Jetzt die Diagnoseschlüssel
+		//                             Diag1                            Diag2
+		Float[][] poswert3 = {	getFloats(113.10f,175.70f,fy1),getFloats(113.10f,162.95f,fy1),
+		//                             Diag3                            Diag4
+								getFloats(113.10f,150.00f,fy1),getFloats(113.10f,137.50f,fy1),
+		//                             Diag5						
+								getFloats(113.10f,124.40f,fy1)};
+		for(int i = 17; i < 22;i++){
+			text = btf[i].getText().trim();
+			setzeText(cb,poswert3[i-17][0], poswert3[i-17][1],poswert3[i-17][2],bf,12,text);						
+
+		}	
+		/*******************************************************************/
+		// Dann die CheckBoxen auswerten
+		float xfs = 0.0f;
+		float yfs = 0.0f;
+		bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		Float[][] poswert4 =
+			//	 		  0                          1                                             					
+				{getFloats(26.60f+xfs,77.75f+yfs,fy0),getFloats(54.60f+xfs,77.75f+yfs,fy0),
+			//	          2                          3
+				 getFloats(26.60f+xfs,69.25f+yfs,fy0),getFloats(54.60f+xfs,69.25f+yfs,fy0),
+			//            4                          5                       
+				 getFloats(26.60f+xfs,60.85f+yfs,fy0),getFloats(54.60f+xfs,60.85f+yfs,fy0),
+			//			  6                          7                                         
+				 getFloats(90.15f+xfs,77.75f+yfs,fy0),getFloats(120.50f+xfs,77.75f+yfs,fy0),
+			//	          8							 9  
+				 getFloats(90.15f+xfs,69.25f+yfs,fy0),getFloats(120.50f+xfs,69.25f+yfs,fy0),
+			//	         10                         11               
+				 getFloats(90.15f+xfs,60.85f+yfs,fy0),getFloats(120.50f+xfs,60.85f+yfs,fy0),
+			//	         12                         13                                                
+				getFloats(145.75f+xfs,77.75f+yfs,fy0),getFloats(176.20f+xfs,77.75f+yfs,fy0),
+			//	         14                         15
+				getFloats(145.75f+xfs,69.25f+yfs,fy0),getFloats(176.20f+xfs,69.25f+yfs,fy0),
+			//           16
+				getFloats(145.75f+xfs,60.85f+yfs,fy0)};
+		for(int i = 0; i <17; i++){
+			if(bchb[i].isSelected()){
+				text = "X";
+				setzeText(cb,poswert4[i][0], poswert4[i][1],poswert4[i][2],bf,14,text);
+			}
+		}
+		bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		/*************************************************************************/
+		// Gewichte und Körpergröße             1                              2                            3
+		Float[][] poswert5 = {getFloats(29.25f,116.50f,fy1),getFloats(29.25f,108.25f,fy1),getFloats(29.25f,99.80f,fy1) }; 
+		for(int i = 22; i < 25;i++){
+			text = btf[i].getText().trim();
+			setzeText(cb,poswert5[i-22][0], poswert5[i-22][1],poswert5[i-22][2],bf,12,text);						
+		}
+		/*************************************************************************/
+		// Das Unterschriftsdatum = btf[27].getText() + den Ort
+		text = btf[27].getText().trim();
+		Float [] fsign = getFloats(24.25f,27.60f,fy1);
+		if(! text.equals(".  .")){
+			text = macheDatum2Sechs(text);
+			setzeText(cb,fsign[0], fsign[1],fsign[2],bf,12,text);						
+		}
+		Float [] fort = getFloats(61.25f,27.60f,fy0);
+		setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt);
+		/*************************************************************************/
+		// Jetzt die ComboBoxen abarbeiten
+		Float[][] poswert6 = {
+			//   0=Enlassform                      1	
+			getFloats(115.65f,213.65f,fy1),getFloats(163.45f,213.65f,fy1),
+			//   2=Diag1Teil                       3                                  4
+			getFloats(143.35f,175.70f,fy1),getFloats(155.75f,175.70f,fy1),getFloats(168.25f,175.70f,fy1),
+			//   5=Diag2Teil				       6                                  7
+			getFloats(143.35f,162.95f,fy1),getFloats(155.75f,162.95f,fy1),getFloats(168.25f,162.95f,fy1),
+			//   8=Diag3Teil 					   9								 10
+			getFloats(143.35f,150.00f,fy1),getFloats(155.75f,150.00f,fy1),getFloats(168.25f,150.00f,fy1),
+			//  11=Diag4Teil					  12								 13 
+			getFloats(143.35f,137.50f,fy1),getFloats(155.75f,137.50f,fy1),getFloats(168.25f,137.50f,fy1),
+			//  14=Diag5Teil					  15								 16
+			getFloats(143.35f,124.40f,fy1),getFloats(155.75f,124.40f,fy1),getFloats(168.25f,124.40f,fy1),
+			//  17=Ursache der..				  18								 19
+			getFloats(77.15f,116.50f,fy1),getFloats(128.35f,116.50f,fy1),getFloats(166.35f,116.50f,fy1)
+			
+		};
+		for(int i = 0; i < poswert6.length;i++){
+			text = ((String)bcmb[i].getSelectedItem()).trim();
+			setzeText(cb,poswert6[i][0], poswert6[i][1],poswert6[i][2],bf,12,text);						
+		}
+		/***********Jetzt der mehrzeilige Text der Diagnosen 1-5******************/
+		cb.setCharacterSpacing(0.5f);
+		float xstart = 82.f;
+		float xend = 282.f;
+		float ystartunten = 495.f;
+		float ystartoben = 530.f;
+		float yschritt = 35.f;
+		ColumnText ct = null;
+		Phrase ph = null;
+		float zaehler = 1.f;
+		for(int i = 0;i < 5; i++){
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ANCHOR);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+			ph.add(bta[i].getText().trim());
+			ct.addText(ph);
+			ct.go();
+			
+			ystartunten -= (yschritt+zaehler);
+			ystartoben = (ystartunten+yschritt);
+		}
+		// Erläuternungen Box
+		Float[] empfunten =  getFloats(24.50f,40.0f,0.5f);
+		Float[] empfoben =  getFloats(201.00f,51.25f,0.5f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(empfunten[0], empfunten[1],empfoben[0],empfoben[1],9,Element.ALIGN_BASELINE);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",10,Font.PLAIN));
+		ph.add(bta[5].getText().trim());
+		ct.addText(ph);
+		ct.go();
+		/*****************************************************************/
+		// Der Block rechts oben mit der Einrichtungsadresse
+		StringBuffer reha = new StringBuffer();
+		int lang = SystemConfig.vGutachtenAbsAdresse.size();
+		for(int i = 0; i < lang;i++){
+			reha.append(SystemConfig.vGutachtenAbsAdresse.get(i)+(i < (lang-1) ? "\n" : ""));
+		}
+		// Reha-Einrichtung
+		Float[] rehaunten =  getFloats(131.25f,242.0f,0.5f);
+		Float[] rehaoben =  getFloats(199.00f,264.0f,0.5f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],11,Element.ALIGN_BASELINE);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Helvectica",10,Font.PLAIN));
+		ph.add(reha.toString());
+		ct.addText(ph);
+		ct.go();
+		
+		/*****************************************************************/
+		stamper.setFormFlattening(true);
+		stamper.close();
+		reader.close();
+		/*****************************************************************/		
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;			
+		}
+		return true;
 	}
+	/***********
+	 * 
+	 * E-Bericht Seite 2 
+	 * 
+	 * 
+	 * 
+	 * 
+	 **********/
+	private boolean doSeite2(){
+		
+		try {
+			String pdfPfad = rvVorlagen[1];
+			tempDateien[1] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB2"+System.currentTimeMillis()+".pdf"};
+			PdfReader reader = new PdfReader (pdfPfad);
+			PdfStamper stamper2 = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
+
+			PdfContentByte cb = stamper2.getOverContent(1);
+			BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			String text = "";
+			Float [] pos = {null,null,null};
+			float fy0 =  0.25f;
+			float fy1 =  6.9f;
+			pos = getFloats(24.50f,268.00f,fy0);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[2].getText());
+			pos = getFloats(171.50f,268.00f,fy1);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[3].getText()));
+			pos = getFloats(78.00f,248.00f,fy0);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,9,btf[25].getText());
+			Float[] xseite = getFloats(188.25f,278.5f,fy0);
+			int seite = 1;
+			cb.beginText();
+			cb.moveText(xseite[0], xseite[1]);
+			cb.setFontAndSize(bf,11);
+			cb.setCharacterSpacing(xseite[2]);
+			cb.showText(new Integer(seite).toString());
+			cb.endText();
+
+
+			/* Für ältere Berichte < 01.01.2008 noch den Berufsklassenschlüssel einbauen
+			pos = getFloats(78.00f,247.00f,fy0);
+			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[26].getText()));
+			*/
+			
+			/************
+			 * FloatWerte von Christian
+			 * 
+			 */
+
+
+			Float[][] poswert1 = 
+			//	  17                                  18                          19
+			{getFloats(90.1f,238.0f,fy0),getFloats(128.25f,238.0f,fy0),getFloats(171.1f,238.0f,fy0),
+					//   20                                 21                               22                           23
+					getFloats(77.4f,204.75f,fy0),getFloats(112.8f,204.75f,fy0),getFloats(156.0f,204.75f,fy0),getFloats(186.4f,204.75f,fy0),	
+					//       24                            25                          26                       27        
+					getFloats(28.75f,192.0f,fy0),getFloats(46.7f,192.0f,fy0),getFloats(64.7f,192.0f,fy0),getFloats(87.7f,192.0f,fy0),
+					//         28                          29                              30                       31         
+					getFloats(105.3f,192.0f,fy0),getFloats(123.2f,192.0f,fy0),getFloats(146.0f,192.0f,fy0),getFloats(163.6f,192.0f,fy0),
+					//         32
+					getFloats(181.4f,192.0f,fy0),
+					//          33                      34                               35
+					getFloats(77.3f,183.55f,fy0),getFloats(112.8f,183.55f,fy0),getFloats(155.9f,183.55f,fy0),
+					//          36                        37                         38
+					getFloats(36.4f,175.0f,fy0),getFloats(36.4f,153.9f,fy0),getFloats(36.4f,141.3f,fy0),
+					//          39                        40
+					getFloats(36.4f,128.85f,fy0),getFloats(36.40f,116.15f,fy0),
+					//           41                        42                       43
+					getFloats(90.23f,22.8f,fy0),getFloats(128.23f,22.8f,fy0),getFloats(171.13f,22.8f,fy0),
+
+			};
+			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			text = "X";    // < 44
+			for(int i = 17; i < 44;i++){
+				if(bchb[i].isSelected()){
+					setzeText(cb,poswert1[i-17][0], poswert1[i-17][1],poswert1[i-17][2],bf,14,text);
+				}
+			}
+			ColumnText ct = null;
+			Phrase ph = null;
+			//bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			Float[] rehaunten =  getFloats(31.00f,34.0f,0.5f);
+			Float[] rehaoben =  getFloats(195.00f,104.0f,0.5f);
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],9,Element.ANCHOR);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+			ph.add(bta[7].getText());
+			ct.addText(ph);
+			ct.go();
+
+			stamper2.close();
+			
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+		
+	}
+
+	/***********
+	 * 
+	 * E-Bericht Seite 3 = KTL 1 - 2 
+	 * 
+	 * 
+	 * 
+	 * 
+	 **********/
+
 	private boolean doSeite3(){
 		tempDateien[2] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB3"+System.currentTimeMillis()+".pdf"};
 		String pdfPfad = rvVorlagen[2];
@@ -920,6 +1037,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		return true;
 	}
+	
 	private void schreibeKTLErlaeut(int ierlaeut,PdfContentByte cb){
 		ColumnText ct = null;
 		Phrase ph = null;
@@ -1000,118 +1118,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			e.printStackTrace();
 		}
 	}
-	/*************************************/
-	private boolean doSeite2(PdfStamper stamper2){
-		
-		try {
-			PdfContentByte cb = stamper2.getOverContent(1);
-			BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-			String text = "";
-			Float [] pos = {null,null,null};
-			float fy0 =  0.25f;
-			float fy1 =  6.9f;
-			pos = getFloats(24.50f,268.00f,fy0);
-			setzeText(cb,pos[0], pos[1],pos[2],bf,12,btf[2].getText());
-			pos = getFloats(171.50f,268.00f,fy1);
-			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[3].getText()));
-			pos = getFloats(78.00f,248.00f,fy0);
-			setzeText(cb,pos[0], pos[1],pos[2],bf,9,btf[25].getText());
-			Float[] xseite = getFloats(188.25f,278.5f,fy0);
-			int seite = 1;
-			cb.beginText();
-			cb.moveText(xseite[0], xseite[1]);
-			cb.setFontAndSize(bf,11);
-			cb.setCharacterSpacing(xseite[2]);
-			cb.showText(new Integer(seite).toString());
-			cb.endText();
-
-
-			/* Für ältere Berichte < 01.01.2008 noch den Berufsklassenschlüssel einbauen
-			pos = getFloats(78.00f,247.00f,fy0);
-			setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(btf[26].getText()));
-			*/
-			
-			/************
-			 * FloatWerte von Christian
-			 * 
-			 */
-
-
-			Float[][] poswert1 = 
-			//	  17                                  18                          19
-			{getFloats(90.1f,238.0f,fy0),getFloats(128.25f,238.0f,fy0),getFloats(171.1f,238.0f,fy0),
-					//   20                                 21                               22                           23
-					getFloats(77.4f,204.75f,fy0),getFloats(112.8f,204.75f,fy0),getFloats(156.0f,204.75f,fy0),getFloats(186.4f,204.75f,fy0),	
-					//       24                            25                          26                       27        
-					getFloats(28.75f,192.0f,fy0),getFloats(46.7f,192.0f,fy0),getFloats(64.7f,192.0f,fy0),getFloats(87.7f,192.0f,fy0),
-					//         28                          29                              30                       31         
-					getFloats(105.3f,192.0f,fy0),getFloats(123.2f,192.0f,fy0),getFloats(146.0f,192.0f,fy0),getFloats(163.6f,192.0f,fy0),
-					//         32
-					getFloats(181.4f,192.0f,fy0),
-					//          33                      34                               35
-					getFloats(77.3f,183.55f,fy0),getFloats(112.8f,183.55f,fy0),getFloats(155.9f,183.55f,fy0),
-					//          36                        37                         38
-					getFloats(36.4f,175.0f,fy0),getFloats(36.4f,153.9f,fy0),getFloats(36.4f,141.3f,fy0),
-					//          39                        40
-					getFloats(36.4f,128.85f,fy0),getFloats(36.40f,116.15f,fy0),
-					//           41                        42                       43
-					getFloats(90.23f,22.8f,fy0),getFloats(128.23f,22.8f,fy0),getFloats(171.13f,22.8f,fy0),
-
-			};
-			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-			text = "X";    // < 44
-			for(int i = 17; i < 44;i++){
-				if(bchb[i].isSelected()){
-					setzeText(cb,poswert1[i-17][0], poswert1[i-17][1],poswert1[i-17][2],bf,14,text);
-				}
-			}
-			ColumnText ct = null;
-			Phrase ph = null;
-			//bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-			Float[] rehaunten =  getFloats(31.00f,34.0f,0.5f);
-			Float[] rehaoben =  getFloats(195.00f,104.0f,0.5f);
-			ct = new ColumnText(cb);
-			ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],9,Element.ANCHOR);
-			ph = new Phrase();
-			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
-			ph.add(bta[7].getText());
-			ct.addText(ph);
-			ct.go();
-
-			stamper2.close();
-			
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return false;
-		
-	}
-	/*
-	public boolean doSeite5(PdfStamper stamper4) throws IOException, JRException{
-		System.out.println("Starte JasperSoft");
-		Map params = new HashMap<String,String>();
-		params.put("patient","Steinhilber, Jürgen");
-		params.put("geboren","020562");
-		params.put("berichtid","'"+this.berichtid+"'");
-		JasperReport jasperReport;
-
-	
-		JasperPrint jasperPrint 
-        = JasperFillManager.fillReport("C:/RehaVerwaltung/reports/510841109/report3.jasper",  
-                                       params, 
-                                       Reha.thisClass.conn);
-		JasperExportManager.exportReportToPdfFile(jasperPrint,
-        "C:/RehaVerwaltung/temp/510841109/freitext.pdf");
-		System.out.println("Fertig mit JasperSoft");
-			return false;
-	}
-	*/
-	
 	/**************
 	 * 
 	 * 
@@ -1120,35 +1126,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public boolean doSeiteTest() throws IOException, DocumentException{
+	public boolean doSeitenZusammenstellen() throws IOException, DocumentException{
 		InputStream isb = null;
 		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};
 		String pdfPfad = rvVorlagen[3];
 		Document docgesamt = new Document(PageSize.A4);
 		File ft = new File(tempPfad+"EBfliesstext.pdf");
-		if(! ft.exists()){
-			/*
-			try {
-				long zeit = System.currentTimeMillis();
-				boolean freitextok = true;
-				while(!ebt.getTab3().pdfok){
-					Thread.sleep(50);
-					if(System.currentTimeMillis() - zeit > 3000){
-						JOptionPane.showMessageDialog(null,"Fehler in der Zusammenstellung des Freitextes");
-						freitextok = false;
-						break;
-					}
-				}
-				if(!freitextok){
-					JOptionPane.showMessageDialog(null,"Fehler in der Zusammenstellung des Freitextes");
-					return false;
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
-		}
 		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
 
 		int seiten = reader.getNumberOfPages();
@@ -1205,6 +1188,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		return false;
 	}
+	
+	
 	private void schreibeKopf(PdfContentByte cb,int seite) throws DocumentException, IOException{
 		float fy0 =  0.25f;
 		float fy1 =  7.1f;
