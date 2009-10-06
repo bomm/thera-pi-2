@@ -539,11 +539,16 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		String test = "23020562S512";
 		
 		// Zu Beginn sicherstellen daﬂ die OO.org PDF produziert wird.
+		
 			try {
 				
 				File ft = new File(tempPfad+"EBfliesstext.pdf");
 				if(! ft.exists()){
-					System.out.println("In tempTextSpeichern!********************");
+					JOptionPane.showMessageDialog(null, "Flieﬂtext noch nicht aufbereitet!\n"+
+							"Wechseln sie auf den Karteireiter 'Fliesstext' und starten Sie\n"+
+							"die Druckvorschau erneut.");
+					
+					/*
 					try {
 						ebt.getTab3().tempTextSpeichern();
 						long zeit = System.currentTimeMillis();
@@ -562,22 +567,27 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 				}
+				System.out.println("Konfiguriere Seite 1");
 				geklappt = doSeite1();
 				if(!geklappt){
 					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
 					return;
 				}
+				System.out.println("Konfiguriere Seite 2");				
 				geklappt = doSeite2();
 				if(!geklappt){
 					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 2 ");
 					return;
 				}
+				System.out.println("Konfiguriere Seite 3");				
 				geklappt = doSeite3();
 				if(!geklappt){
 					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - KTL 1-2 ");
 					return;
 				}
+				System.out.println("Stelle Kapitel zusammen");
 				geklappt = doSeitenZusammenstellen();
 
 				// AdobeReader starten
@@ -1030,7 +1040,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			e.printStackTrace();
 			return false;
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
