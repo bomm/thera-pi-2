@@ -787,26 +787,27 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							@Override
 							protected Void doInBackground() throws Exception {
 								try{
-
 									Reha.thisClass.progressStarten(true);
 									/*
-								Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
-							       InputStream is = process.getInputStream();
-							       InputStreamReader isr = new InputStreamReader(is);
-							       BufferedReader br = new BufferedReader(isr);
-							       String line;
-							       
+									try{
+							       			//pdfBoxTest(xdatei);
+									       pdfBoxTest(tempPfad+"EBfliesstext.pdf");
+									}catch(Exception ex){
+										ex.printStackTrace();
+									}
+									*/
+									Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+									InputStream is = process.getInputStream();
+									InputStreamReader isr = new InputStreamReader(is);
+									BufferedReader br = new BufferedReader(isr);
+									String line;
+									 Reha.thisClass.progressStarten(false);							       
 							       while ((line = br.readLine()) != null) {
 							         System.out.println("Lade Adobe "+line);
 							       }
 							       is.close();
 							       isr.close();
 							       br.close();
-							       */
-									pdfBoxTest(tempPfad+"EBfliesstext.pdf");
-									//pdfBoxTest(xdatei);
-									Reha.thisClass.progressStarten(false);
-									
 								}catch(Exception ex){
 									Reha.thisClass.progressStarten(false);
 								}

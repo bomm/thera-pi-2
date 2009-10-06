@@ -209,7 +209,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			dtblm.addRow((Vector) xvec.clone());
 			tabbericht.setRowSelectionInterval(tabbericht.getRowCount()-1, tabbericht.getRowCount()-1);
 		}
-		PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"aktuelle Rezepte"));
+		PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"Gutachten"));
 		anzahlGutachten.setText("Anzahl Gutachten: "+new Integer(tabbericht.getRowCount()).toString());
 	}
 	public void holeGutachten(String patint,String rez){
@@ -389,7 +389,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			int uebrig = tabbericht.getRowCount();
 			
 			anzahlGutachten.setText("Anzahl Gutachten: "+new Integer(uebrig).toString());
-			PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(uebrig,"aktuelle Rezepte"));
+			PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(uebrig,"Gutachten"));
 			if(uebrig <= 0){
 				holeGutachten(PatGrundPanel.thisClass.patDaten.get(29),"");
 			}else{
