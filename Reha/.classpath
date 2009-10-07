@@ -44,6 +44,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/jasperreports-3.6.0.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/commons-javaflow-20060411.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/pdfbox-0.8.0-incubating.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/PDFRenderer-2009_09_20.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

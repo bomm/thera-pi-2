@@ -62,6 +62,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.Gutachten;
 import patientenFenster.PatGrundPanel;
+import pdfDrucker.PdfDrucker;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.lowagie.text.Document;
@@ -70,6 +71,7 @@ import com.lowagie.text.Element;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.GrayColor;
@@ -117,6 +119,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			"DRV Hamburg","DRV Hessen","DRV Mecklenburg-Vorpommern","DRV Niedersachsen","DRV Rheinland-Pfalz",
 			"DRV Saarland","DRV Sachsen","DRV Sachsensen-Anhalt","DRV Schleswig-Holstein","DRV Thüringen","DRV Knappschaft Bahn/See","GKV"};
 //	String[] ktraeger = {"DRV Bund","DRV Baden-Württemberg","DRV Knappschaft Bahn/See","DRV Bayer","GKV"};
+
+	/**********************/
 	public JRtaComboBox cbktraeger = null;
 	/**********************/
 	public String pat_intern = null;
@@ -239,7 +243,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("             Berichttyp ="+ this.berichttyp);
 		System.out.println("             Empfaenger ="+ this.empfaenger);
 		System.out.println("          Neuer Bericht ="+ this.neu);
-		rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
+		rvVorlagen[0]  = vorlagenPfad+"RV-EBericht-Seite1-Variante2.pdf";
+		//rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
 		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
 		rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
 		rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
@@ -374,7 +379,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								doRVVorschau("DRV Bund","EDV");
+								doRVVorschau(true,"Ausfertigung für den RV-Träger  "+(String)cbktraeger.getSelectedItem(),"Bereich Reha");
 
 							}
 							return null;
@@ -528,7 +533,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		return sret;
 	}
-	private void doRVVorschau(String ausfertigung,String bereich){
+	private void doRVVorschau(boolean vorschau,String ausfertigung,String bereich){
 		//name und Pfad der PDF
 		String pdfPfad = rvVorlagen[0];
 		//PdfWriter writer2 = null;
@@ -570,7 +575,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					*/
 				}
 				System.out.println("Konfiguriere Seite 1");
-				geklappt = doSeite1();
+				geklappt = doSeite1(vorschau,ausfertigung,bereich);
 				if(!geklappt){
 					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
 					return;
@@ -593,20 +598,19 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				// AdobeReader starten
 				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
 				//final String xdatei =  tempDateien[3][0];//sdatei;
+				Reha.thisClass.progressStarten(true);
+				//System.out.println("Es wird die PDF-Datei "+tempDateien[4][0]+" gedruckt");
+				//PdfDrucker.setup(tempDateien[4][0]);
+
+
+
+				
 				final String xdatei =  tempDateien[4][0];
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
 								try{
 									Reha.thisClass.progressStarten(true);
-									/*
-									try{
-							       			//pdfBoxTest(xdatei);
-									       pdfBoxTest(tempPfad+"EBfliesstext.pdf");
-									}catch(Exception ex){
-										ex.printStackTrace();
-									}
-									*/
 									Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
 									InputStream is = process.getInputStream();
 									InputStreamReader isr = new InputStreamReader(is);
@@ -625,6 +629,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 								return null;
 							}
 						}.execute();
+						
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -643,7 +648,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	 * 
 	 * 
 	 **********/
-	private boolean doSeite1(){
+	private boolean doSeite1(boolean vorschau,String ausfertigung,String bereich){
 		String pdfPfad = rvVorlagen[0];
 		//PdfWriter writer2 = null;
 		//PdfCopy writer = null;
@@ -662,8 +667,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
-				// Ende des Geschiss
-				
+		// Die Ausfertigung händeln...		
+		AcroFields form = stamper.getAcroFields();
+		form.setField("Ausfertigung", ausfertigung);
+		form.setField("Bereich", bereich);
+		// Die Ausfertigung händeln...---				
 		PdfContentByte cb = stamper.getOverContent(1);
 		Float [] pos = {null,null,null};
 		float fy0 =  0.25f;
