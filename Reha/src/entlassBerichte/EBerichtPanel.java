@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -243,8 +244,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("             Berichttyp ="+ this.berichttyp);
 		System.out.println("             Empfaenger ="+ this.empfaenger);
 		System.out.println("          Neuer Bericht ="+ this.neu);
-		rvVorlagen[0]  = vorlagenPfad+"RV-EBericht-Seite1-Variante2.pdf";
-		//rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
+		//rvVorlagen[0]  = vorlagenPfad+"RV-EBericht-Seite1-Variante2.pdf";
+		rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
 		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
 		rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
 		rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
@@ -534,14 +535,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return sret;
 	}
 	private void doRVVorschau(boolean vorschau,String ausfertigung,String bereich){
-		//name und Pfad der PDF
-		String pdfPfad = rvVorlagen[0];
-		//PdfWriter writer2 = null;
-		//PdfCopy writer = null;
 		boolean geklappt;
-		PdfStamper stamper = null;
-		PdfStamper stamper2 = null;
-		String test = "23020562S512";
 		
 		// Zu Beginn sicherstellen daﬂ die OO.org PDF produziert wird.
 		
@@ -611,8 +605,26 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							protected Void doInBackground() throws Exception {
 								try{
 									Reha.thisClass.progressStarten(true);
-									Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+									String cmd = "java -jar ";
+									System.out.println("Starte "+cmd+" "+Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei);
+									final String xcmd = cmd;
+									SwingUtilities.invokeLater(new Runnable(){
+										public  void run(){
+											try {
+												Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFViewerDrucker.jar "+xdatei);
+												Reha.thisClass.progressStarten(false);
+											} catch (IOException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+										}
+									});
+
+									//Process process = new ProcessBuilder(cmd,"",Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei).start();
+									/*
+									//Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
 									InputStream is = process.getInputStream();
+									
 									InputStreamReader isr = new InputStreamReader(is);
 									BufferedReader br = new BufferedReader(isr);
 									String line;
@@ -623,6 +635,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							       is.close();
 							       isr.close();
 							       br.close();
+							       */
+									
 								}catch(Exception ex){
 									Reha.thisClass.progressStarten(false);
 								}
@@ -650,27 +664,24 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	 **********/
 	private boolean doSeite1(boolean vorschau,String ausfertigung,String bereich){
 		String pdfPfad = rvVorlagen[0];
-		//PdfWriter writer2 = null;
-		//PdfCopy writer = null;
-		
 		PdfStamper stamper = null;
-		PdfStamper stamper2 = null;
-		String test = "23020562S512";
-				
-				// Geschiss bis die bestehende PDF eingelesen und gestampt ist
+			
+		// Geschiss bis die bestehende PDF eingelesen und gestampt ist
 		tempDateien[0] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB1"+System.currentTimeMillis()+".pdf"};
 		 
 		BaseFont bf;
 		try {
 			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 		PdfReader reader = new PdfReader (pdfPfad);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		//ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 		// Die Ausfertigung h‰ndeln...		
+		/*
 		AcroFields form = stamper.getAcroFields();
 		form.setField("Ausfertigung", ausfertigung);
 		form.setField("Bereich", bereich);
+		*/
 		// Die Ausfertigung h‰ndeln...---				
 		PdfContentByte cb = stamper.getOverContent(1);
 		Float [] pos = {null,null,null};
@@ -979,11 +990,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 	private boolean doSeite3(){
 		tempDateien[2] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB3"+System.currentTimeMillis()+".pdf"};
-		String pdfPfad = rvVorlagen[2];
-		PdfReader reader;
+		//String pdfPfad = rvVorlagen[2];
+		//PdfReader reader;
 		try {
 			BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-			String text = "";
+			//String text = "";
 			Float [] pos = {null,null,null};
 			float fy0 =  0.25f;
 			float fy1 =  6.9f;
@@ -1042,7 +1053,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 			}
 			docktl.close();	
-			
+			cop.close();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1202,6 +1213,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		docgesamt.close();
 		reader.close();
 		ktlreader.close();
+		readerPage1.close();
+		cop.close();
 		
 		return false;
 	}
