@@ -174,12 +174,10 @@ public class Eb1 implements ActionListener {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try{
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			
 			rs = stmt.executeQuery(buf.toString());
 
 			if(rs.next()){

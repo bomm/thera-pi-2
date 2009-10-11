@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,6 +19,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -41,6 +43,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
+import systemTools.JRtaTextField;
 import terminKalender.datFunk;
 
 public class Gutachten extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
@@ -353,8 +356,36 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("gutneu")){
-			//ProgLoader.InternalGut2();
-			ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"E-Bericht",true,"" );
+			final JComponent comp = ((JComponent)arg0.getSource());
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						JRtaTextField tf = new JRtaTextField("nix",false);
+						System.out.println("in GutachtenWahl");
+						GutachtenWahl gwahl = new GutachtenWahl( (Point)comp.getLocationOnScreen(),tf );
+						System.out.println("Aufruf des Focus***********");
+						gwahl.setzeFocus();
+						gwahl.setVisible(true);
+						//gwahl.setModal(true);
+						
+						System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
+						if(tf.getText().equalsIgnoreCase("ebericht")){
+							ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"E-Bericht",true,"" );			
+							return null;
+						}
+						if(tf.getText().equalsIgnoreCase("nachsorge")){
+							ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"Nachsorge",true,"" );			
+							return null;
+						}
+						gwahl = null;
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						
+					return null;
+				}
+			}.execute();
 			return;
 		}
 		if(cmd.equals("gutedit")){

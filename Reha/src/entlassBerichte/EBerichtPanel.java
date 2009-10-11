@@ -130,10 +130,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public String empfaenger = null;
 	public boolean neu = false;
 	public boolean jetztneu = false;
+	public boolean inebericht = false;
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 	public String vorlagenPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/";
 	public String[] rvVorlagen = {null,null,null,null};
-	EBerichtTab ebt;	
+	EBerichtTab ebt;
+	NachsorgeTab nat;
 	IFrame officeFrame = null;
 	RehaEventClass evt = null;
 	
@@ -229,14 +231,21 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			ebtab.addChangeListener(this);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
-			
+			//rvVorlagen[0]  = vorlagenPfad+"RV-EBericht-Seite1-Variante2.pdf";
+			rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
+			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
+			rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
+			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
+			inebericht = true;
 		}else{
+			cbktraeger = new JRtaComboBox(SystemConfig.vGutachtenEmpfaenger);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
 			ebtab = getNachsorgeTab();
 			add(ebtab,BorderLayout.CENTER);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
+			inebericht = false;
 		}
 		
 		System.out.println("Bericht von Patient Nr. ="+ this.pat_intern);
@@ -244,11 +253,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("             Berichttyp ="+ this.berichttyp);
 		System.out.println("             Empfaenger ="+ this.empfaenger);
 		System.out.println("          Neuer Bericht ="+ this.neu);
-		//rvVorlagen[0]  = vorlagenPfad+"RV-EBericht-Seite1-Variante2.pdf";
-		rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
-		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
-		rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
-		rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
 	}
 	/******************************************************************/
 	private JTabbedPane getEBerichtTab(){
@@ -256,7 +260,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return ebt.getTab();
 	}
 	private JTabbedPane getNachsorgeTab(){
-		NachsorgeTab nat = new NachsorgeTab(this);
+		nat = new NachsorgeTab(this);
 		return nat.getTab();
 	}
 
@@ -604,6 +608,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							@Override
 							protected Void doInBackground() throws Exception {
 								try{
+									/*
 									Reha.thisClass.progressStarten(true);
 									String cmd = "java -jar ";
 									System.out.println("Starte "+cmd+" "+Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei);
@@ -611,7 +616,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 									SwingUtilities.invokeLater(new Runnable(){
 										public  void run(){
 											try {
-												Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFViewerDrucker.jar "+xdatei);
+												Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFDrucker.jar "+xdatei);
 												Reha.thisClass.progressStarten(false);
 											} catch (IOException e) {
 												// TODO Auto-generated catch block
@@ -619,10 +624,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 											}
 										}
 									});
-
+									*/
 									//Process process = new ProcessBuilder(cmd,"",Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei).start();
-									/*
-									//Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+									
+									Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
 									InputStream is = process.getInputStream();
 									
 									InputStreamReader isr = new InputStreamReader(is);
@@ -635,7 +640,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							       is.close();
 							       isr.close();
 							       br.close();
-							       */
+							      
 									
 								}catch(Exception ex){
 									Reha.thisClass.progressStarten(false);
@@ -1355,11 +1360,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("GutachtenFenster wird geschlossen.......");
 		if(evt.getDetails()[0].contains("GutachtenFenster")){
 			if(evt.getDetails()[1].equals("#SCHLIESSEN")){
-				dokumentSchliessen();
-				if(document.isOpen()){
-					document.close();
+				if(inebericht){
+					dokumentSchliessen();
+					if(document.isOpen()){
+						document.close();
+					}
+					this.evt.removeRehaEventListener((RehaEventListener)this);
+				}else{
+					
 				}
-				this.evt.removeRehaEventListener((RehaEventListener)this);
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "EB", ".pdf");
 			}
 		}
