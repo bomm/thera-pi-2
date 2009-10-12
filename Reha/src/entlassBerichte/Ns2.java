@@ -17,6 +17,7 @@ import javax.swing.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import systemTools.JCompTools;
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 
@@ -105,11 +106,6 @@ public class Ns2 implements ActionListener {
 		jscr.validate();
 		return jscr;		
 	}	
-	/************************
-	 * 
-	 * Die Therapeutischen Leistungen, KTL-Legende und Besonderheiten im Verlauf
-	 * 
-	 */
 	private JPanel getBlock2(){
 		FormLayout laytherap = new FormLayout("1px,p:g,1px",
 //				 1   2  3  4   5  6   7  8	 9  10  11	12	13 14
@@ -123,29 +119,171 @@ public class Ns2 implements ActionListener {
 				therap.getPanel().validate();
 				return therap.getPanel();
 	}
-	private JPanel getBlock6Komplett(){   //1         2               3       4               5  
-		FormLayout laytit = new FormLayout("2dlu,fill:0:grow(0.66),  1px, fill:0:grow(0.33) ,2px",
-			// 1   2   3    4   5  6     7   8  9     10 //xyw(2,y,7);
-			"2dlu,p,4dlu,4dlu,p,30dlu,4dlu,p,30dlu,2dlu");
-		PanelBuilder tit = new PanelBuilder(laytit);
+	private JPanel getBlock6Komplett(){   //        1         2           3    4    5           6             7  
+		FormLayout layvorschlag = new FormLayout("2dlu,fill:0:grow(0.55),10dlu,1px,10dlu, fill:0:grow(0.45) ,2dlu",
+			// 1  2   3   4   5    6   7   8     9   10   11 12 13   14    15
+			"2dlu,p,4dlu, p, 5dlu, p,2dlu,30dlu,5dlu,1px,5dlu,p,2dlu,30dlu,4dlu");
+		PanelBuilder vorschlag = new PanelBuilder(layvorschlag);
 		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		tit.setOpaque(false);               
-		CellConstraints cctit = new CellConstraints();
-		
-		FormLayout links = new FormLayout(  "p","p");
-			PanelBuilder titl = new PanelBuilder(links);
-			titl.getPanel().setOpaque(false);
-			CellConstraints cctitl = new CellConstraints();
-			// hier dazwischen den ganzen linken Scheiß
-			JLabel lab = new JLabel("Weiterbehandelnde Ärzte / Psychologen");
-			lab.setFont(fontarialfett);
-			titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
-			titl.getPanel().validate();
-			tit.add(titl.getPanel(),cctit.xy(2,2));
+		vorschlag.setOpaque(false);               
+		CellConstraints ccvorschlag = new CellConstraints();
 
-		tit.getPanel().validate();
-		return tit.getPanel();
+		// linker Block Überschrift		
+		FormLayout links = new FormLayout(  "p","p");
+		PanelBuilder titl = new PanelBuilder(links);
+		titl.getPanel().setOpaque(false);
+		CellConstraints cctitl = new CellConstraints();
+		// hier dazwischen den ganzen linken Scheiß
+		JLabel lab = new JLabel("Weiterbehandelnde Ärzte / Psychologen");
+		lab.setFont(fontarialfett);
+		titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
+		titl.getPanel().validate();
+		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,2));
+		// linker Block mit Kästchen
+							//    1   2  3     4            5  6   7   1 2  3   4 5  6     7 8
+		links = new FormLayout(  "p,2dlu,p,fill:0:grow(1.0),p,2dlu,p","p,p,10dlu,p,p,10dlu,p,p,10dlu");
+		titl = new PanelBuilder(links);
+		titl.getPanel().setOpaque(false);
+		cctitl = new CellConstraints();
+		eltern.bchb[7] = new JRtaCheckBox("");
+		eltern.bchb[7].setName("F_125");
+		titl.add(eltern.bchb[7],cctitl.xywh(1,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titl.add(this.getLabelArialFettRot("Diagnostische"),cctitl.xywh(3,1,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titl.add(this.getLabelArialFettRot("Klärung"),cctitl.xywh(3,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		
+		eltern.bchb[8] = new JRtaCheckBox("");
+		eltern.bchb[8].setName("F_127");
+		titl.add(eltern.bchb[8],cctitl.xywh(1,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titl.add(this.getLabelArialFettRot("Stationäre Behandlung"),cctitl.xywh(3,4,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titl.add(this.getLabelArialFettRot("OP"),cctitl.xywh(3,5,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		eltern.bchb[9] = new JRtaCheckBox("");
+		eltern.bchb[9].setName("F_128");
+		titl.add(eltern.bchb[9],cctitl.xywh(1,7,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titl.add(this.getLabelArialFettRot("Psych. Beratung /"),cctitl.xywh(3,7,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titl.add(this.getLabelArialFettRot("Psychotherapie"),cctitl.xywh(3,8,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		eltern.bchb[10] = new JRtaCheckBox("");
+		eltern.bchb[10].setName("F_126");
+		titl.add(eltern.bchb[10],cctitl.xywh(5,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titl.add(this.getLabelArialFettRot("Kontrolle Labor /"),cctitl.xywh(7,1,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titl.add(this.getLabelArialFettRot("Medikamente"),cctitl.xywh(7,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		
+		eltern.bchb[11] = new JRtaCheckBox("");
+		eltern.bchb[11].setName("F_141");
+		titl.add(eltern.bchb[11],cctitl.xywh(5,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titl.add(this.getLabelArialFettRot("Suchberatung"),cctitl.xywh(7,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));	
+
+		eltern.bchb[12] = new JRtaCheckBox("");
+		eltern.bchb[12].setName("F_140");
+		titl.add(eltern.bchb[12],cctitl.xywh(5,7,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titl.add(this.getLabelArialFettRot("Heil- und Hilfsmittel inclusive"),cctitl.xywh(7,7,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titl.add(this.getLabelArialFettRot("Physiotherapie und Ergotherapie"),cctitl.xywh(7,8,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		
+		titl.getPanel().validate();
+		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,4));
+
+
+		// rechter Block Überschrift		
+		FormLayout rechts = new FormLayout(  "p","p");
+		PanelBuilder titr = new PanelBuilder(rechts);
+		titr.getPanel().setOpaque(false);
+		CellConstraints cctitr = new CellConstraints();
+		lab = new JLabel("Patienten");
+		lab.setFont(fontarialfett);
+		titr.add(lab,cctitr.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
+		titr.getPanel().validate();
+		vorschlag.add(titr.getPanel(),ccvorschlag.xy(6,2));
+
+		// rechter Block mit Kästchen
+		//                         1   2  3     4            5  6   7   1 2  3    4 5  6    7 8
+		rechts = new FormLayout(  "p,2dlu,p,fill:0:grow(1.0),p,2dlu,p","p,p,10dlu,p,p,10dlu,p,p,10dlu");		
+		titr = new PanelBuilder(rechts);
+		titr.getPanel().setOpaque(false);
+		cctitr = new CellConstraints();
+		eltern.bchb[13] = new JRtaCheckBox("");
+		eltern.bchb[13].setName("F_156");
+		titr.add(eltern.bchb[13],cctitr.xywh(1,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titr.add(this.getLabelArialFettRot("Übungen selbständ."),cctitr.xywh(3,1,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titr.add(this.getLabelArialFettRot("fortsetzen"),cctitr.xywh(3,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		eltern.bchb[14] = new JRtaCheckBox("");
+		eltern.bchb[14].setName("F_137");
+		titr.add(eltern.bchb[14],cctitr.xywh(1,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titr.add(this.getLabelArialFettRot(" "),cctitr.xywh(3,4,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titr.add(this.getLabelArialFettRot(" "),cctitr.xywh(3,5,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		titr.add(this.getLabelArialFettRot("Gewichtsreduktion"),cctitr.xywh(3,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+
+		eltern.bchb[15] = new JRtaCheckBox("");
+		eltern.bchb[15].setName("F_138");
+		titr.add(eltern.bchb[15],cctitr.xywh(1,7,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titr.add(this.getLabelArialFettRot(" "),cctitr.xywh(3,7,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titr.add(this.getLabelArialFettRot(" "),cctitr.xywh(3,8,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		titr.add(this.getLabelArialFettRot("Alkoholkarenz"),cctitr.xywh(3,7,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+	/********/	
+		eltern.bchb[16] = new JRtaCheckBox("");
+		eltern.bchb[16].setName("F_157");
+		titr.add(eltern.bchb[16],cctitr.xywh(5,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titr.add(this.getLabelArialFettRot("Sport und Bewegung"),cctitr.xywh(7,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));	
+		//titr.add(this.getLabelArialFettRot("Sport und Bewegung"),cctitr.xywh(7,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		eltern.bchb[17] = new JRtaCheckBox("");
+		eltern.bchb[17].setName("F_139");
+		titr.add(eltern.bchb[17],cctitr.xywh(5,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titr.add(this.getLabelArialFettRot("Nikotinkarenz"),cctitr.xywh(7,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));	
+		//titr.add(this.getLabelArialFettRot("Nikotinkarenz"),cctitr.xywh(7,5,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		eltern.bchb[18] = new JRtaCheckBox("");
+		eltern.bchb[18].setName("F_131");
+		titr.add(eltern.bchb[18],cctitr.xywh(5,7,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		titr.add(this.getLabelArialFettRot("Selbsthilfegruppe"),cctitr.xywh(7,7,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));	
+		//titr.add(this.getLabelArialFettRot("Selbsthilfegruppe "),cctitr.xywh(7,8,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		titr.getPanel().validate();
+		vorschlag.add(titr.getPanel(),ccvorschlag.xy(6,4,CellConstraints.DEFAULT,CellConstraints.TOP));
+
+		vorschlag.add(getRand(Color.GRAY),ccvorschlag.xywh(4,1,1,4,CellConstraints.DEFAULT,CellConstraints.FILL));
+		
+		// Jetzt die Erläuterungen
+		// linker Block Überschrift		
+		links = new FormLayout(  "p","p");
+		titl = new PanelBuilder(links);
+		titl.getPanel().setOpaque(false);
+		cctitl = new CellConstraints();
+		lab = new JLabel("Erläuterungen");
+		lab.setFont(fontarialfett);
+		titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
+		titl.getPanel().validate();
+		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,6));	
+		eltern.bta[7] = new JTextArea();
+		eltern.bta[7].setName("UNBEKANNT3");
+		vorschlag.add(eltern.bta[7],ccvorschlag.xyw(2,8,5,CellConstraints.FILL,CellConstraints.FILL));
+
+		vorschlag.add(getRand(Color.GRAY),ccvorschlag.xyw(1,10,7));
+
+		links = new FormLayout(  "p","p");
+		titl = new PanelBuilder(links);
+		titl.getPanel().setOpaque(false);
+		cctitl = new CellConstraints();
+		lab = new JLabel("Letzte Medikation:");
+		lab.setFont(fontarialfett);
+		titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
+		titl.getPanel().validate();
+		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,12));
+
+		eltern.bta[8] = new JTextArea();
+		eltern.bta[8].setName("UNBEKANNT3");
+		vorschlag.add(eltern.bta[8],ccvorschlag.xyw(2,14,5,CellConstraints.FILL,CellConstraints.FILL));
+		
+		vorschlag.getPanel().validate();
+		return vorschlag.getPanel();
 	}	
+	/************************
+	 * 
+	 * Die Therapeutischen Leistungen, KTL-Legende und Besonderheiten im Verlauf
+	 * 
+	 */
+	
 	
 	private JPanel getBlock1(){
 		FormLayout laytherap = new FormLayout("1px,p:g,1px",
@@ -276,24 +414,24 @@ public class Ns2 implements ActionListener {
 			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(new Integer(i+((seite-1)*25)).toString());
 			eltern.ktlcmb[i+((seite-1)*25)].addActionListener(this);
 			eltern.ktlcmb[i+((seite-1)*25)].setMaximumRowCount( 35 );
-			// set Name nacholen
+			// 
 			dum.add(eltern.ktlcmb[i+((seite-1)*25)],ccdum.xy(6, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfc[i+((seite-1)*25)] = new JRtaTextField("nix",false);
 			eltern.ktltfc[i+((seite-1)*25)].setFont(fontcourier);
 			eltern.ktltfc[i+((seite-1)*25)].setForeground(Color.BLUE);
 
-			// set Name nacholen
+			// 
 			dum.add(eltern.ktltfc[i+((seite-1)*25)],ccdum.xy(8, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfd[i+((seite-1)*25)] = new JRtaTextField("nix",false);
 			eltern.ktltfd[i+((seite-1)*25)].setFont(fontcourier);
 			eltern.ktltfd[i+((seite-1)*25)].setForeground(Color.BLUE);
 
-			// set Name nacholen
+			// 
 			dum.add(eltern.ktltfd[i+((seite-1)*25)],ccdum.xy(10, 2,CellConstraints.FILL,CellConstraints.CENTER));
 			eltern.ktltfa[i+((seite-1)*25)] = new JRtaTextField("ZAHLEN",false);
 			eltern.ktltfa[i+((seite-1)*25)].setFont(fontcourier);
 			eltern.ktltfa[i+((seite-1)*25)].setForeground(Color.BLUE);
-			// set Name nacholen
+			// 
 			dum.add(eltern.ktltfa[i+((seite-1)*25)],ccdum.xy(12, 2,CellConstraints.FILL,CellConstraints.CENTER));			
 			dum.getPanel().validate();
 			kopf.add(dum.getPanel(),cckopf.xy(1,(i+1)) );
@@ -362,6 +500,23 @@ public class Ns2 implements ActionListener {
 	private JLabel getLabelArialNormal(String text){
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontarialnormal);
+		return lab;
+	}
+	private JLabel getLabelArialNormalRot(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontarialnormal);
+		lab.setForeground(Color.RED);
+		return lab;
+	}
+	private JLabel getLabelArialFettRot(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontarialfett);
+		lab.setForeground(Color.RED);
+		return lab;
+	}
+	private JLabel getLabelArialFettNormal(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontarialfett);
 		return lab;
 	}
 	private JLabel getLabelKleinRot(String text){

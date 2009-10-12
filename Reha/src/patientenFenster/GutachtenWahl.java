@@ -138,7 +138,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		 		   }  
 			   }
 		}); 	   		
-		
+		pack();
 		setModal(true);
 
 	}
