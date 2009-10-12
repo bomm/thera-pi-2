@@ -211,12 +211,12 @@ public class Ns1 implements ActionListener {
 				PanelBuilder dummy = new PanelBuilder(laydummy);
 				dummy.getPanel().setOpaque(false);
 				CellConstraints ccdum = new CellConstraints();
-				JLabel lab = getLabelArialNormal("arbeitsfähig");
-				lab.setForeground(Color.RED);
+				JLabel lab = getLabelArialNormalRot("arbeitsfähig");
+				//lab.setForeground(Color.RED);
 				dummy.add(lab,ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
-				lab = getLabelArialNormal("arbeitsunfähig");
-				lab.setForeground(Color.RED);
+				lab = getLabelArialNormalRot("arbeitsunfähig");
+				//lab.setForeground(Color.RED);
 				dummy.add(lab,ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.BOTTOM));
 				dummy.add(getLabelKleinRot("Seit wann?"),ccdum.xy(3,3,CellConstraints.LEFT,CellConstraints.TOP));
 
@@ -237,14 +237,12 @@ public class Ns1 implements ActionListener {
 				eltern.bchb[5] = new JRtaCheckBox("");
 				eltern.bchb[5].setName("F_153");
 				dummy2.add(eltern.bchb[5],ccdum2.xy(1, 1));
-				lab = getLabelArialNormal("ja");
-				lab.setForeground(Color.RED);
+				lab = getLabelArialFettRot("ja");
 				dummy2.add(lab,ccdum2.xy(3, 1));
 				eltern.bchb[6] = new JRtaCheckBox("");
 				eltern.bchb[6].setName("F_154");
 				dummy2.add(eltern.bchb[6],ccdum2.xy(5, 1));
-				lab = getLabelArialNormal("nein");
-				lab.setForeground(Color.RED);
+				lab = getLabelArialFettRot("nein");
 				dummy2.add(lab,ccdum2.xy(7, 1));
 				dummy2.getPanel().validate();
 				dummy.add(dummy2.getPanel(),ccdum.xy(1,1));
@@ -394,7 +392,7 @@ public class Ns1 implements ActionListener {
 			eltern.bchb[objstart].setOpaque(false);
 			dummy.add(eltern.bchb[objstart],ccdum.xy(1, 1));
 			//dummy.add(getLabelKleinRot(titel[i]),ccdum.xy(3, 1));
-			dummy.add(getLabelArialNormalRot(titel[i]),ccdum.xy(3, 1));
+			dummy.add(getLabelArialFettRot(titel[i]),ccdum.xy(3, 1));
 			dummy.getPanel().validate();
 			checks.add(dummy.getPanel(),ccchecks.xy(ystart,2));
 			ystart += 2;
@@ -1178,6 +1176,17 @@ public class Ns1 implements ActionListener {
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontarialnormal);
 		lab.setForeground(Color.RED);
+		return lab;
+	}
+	private JLabel getLabelArialFettRot(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontarialfett);
+		lab.setForeground(Color.RED);
+		return lab;
+	}
+	private JLabel getLabelArialFettNormal(String text){
+		JLabel lab = new JLabel(text);
+		lab.setFont(fontarialfett);
 		return lab;
 	}
 	private JLabel getLabelKleinRot(String text){

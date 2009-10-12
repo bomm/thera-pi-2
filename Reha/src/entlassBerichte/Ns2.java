@@ -256,7 +256,7 @@ public class Ns2 implements ActionListener {
 		titl.getPanel().validate();
 		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,6));	
 		eltern.bta[7] = new JTextArea();
-		eltern.bta[7].setName("UNBEKANNT3");
+		eltern.bta[7].setName("ERLAEUT");
 		vorschlag.add(eltern.bta[7],ccvorschlag.xyw(2,8,5,CellConstraints.FILL,CellConstraints.FILL));
 
 		vorschlag.add(getRand(Color.GRAY),ccvorschlag.xyw(1,10,7));
@@ -272,7 +272,7 @@ public class Ns2 implements ActionListener {
 		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,12));
 
 		eltern.bta[8] = new JTextArea();
-		eltern.bta[8].setName("UNBEKANNT3");
+		eltern.bta[8].setName("LMEDIKAT");
 		vorschlag.add(eltern.bta[8],ccvorschlag.xyw(2,14,5,CellConstraints.FILL,CellConstraints.FILL));
 		
 		vorschlag.getPanel().validate();
@@ -326,7 +326,7 @@ public class Ns2 implements ActionListener {
 				besonder.add(lab,ccbesonder.xy(2,2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 				
 				eltern.bta[7] = new JTextArea();
-				eltern.bta[7].setName("UNBEKANNT2");
+				eltern.bta[7].setName("LEISTBI");
 				besonder.add(eltern.bta[7],ccbesonder.xy(2, 4,CellConstraints.FILL,CellConstraints.FILL));
 				
 				besonder.getPanel().validate();
