@@ -314,7 +314,7 @@ public class Ns1 implements ActionListener {
 		CellConstraints ccerlaeut = new CellConstraints();
 
 		eltern.bta[6] = new JTextArea();
-		eltern.bta[6].setName("UNBEKANNT2");
+		eltern.bta[6].setName("TERLEUT");
 		praepost.add(eltern.bta[6],ccerlaeut.xy(1, 2,CellConstraints.FILL,CellConstraints.FILL));
 		
 		FormLayout laydummy = new FormLayout("fill:0:grow(1.0),p","p,1dlu,p");
@@ -342,7 +342,7 @@ public class Ns1 implements ActionListener {
 			CellConstraints ccerlaeut = new CellConstraints();
 
 			eltern.bta[5] = new JTextArea();
-			eltern.bta[5].setName("UNBEKANNT1");
+			eltern.bta[5].setName("FREITEXT");
 			erlaeut.add(eltern.bta[5],ccerlaeut.xy(1, 2,CellConstraints.FILL,CellConstraints.FILL));
 //                                                1  2    3   4    5
 			FormLayout laydummy = new FormLayout("p,2dlu,p:g, 7dlu,p:g,1px","p,1dlu,p,p");
@@ -380,7 +380,7 @@ public class Ns1 implements ActionListener {
 		PanelBuilder checks = new PanelBuilder(laychecks);
 		checks.getPanel().setOpaque(false);
 		CellConstraints ccchecks = new CellConstraints();
-		String[] namen = new String[] {"F_173","F_174","F_175","F_111","F_113"};
+		String[] namen = new String[] {"F_173","F_174","F_175","F_176","F_177"};
 		String[] titel = new String[] {"Herz / Kreislauf","Bewegungsapparat","Nervensystem","Psyche","sonstige"};
 		int objstart = 0;
 		int ystart = 1;
@@ -1022,7 +1022,7 @@ public class Ns1 implements ActionListener {
 					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
 				}
 				for(int i = 0; i < 25;i++){
-					if("AUFDAT3ENTDAT3UNTDATGEBOREN".contains(eltern.btf[i].getName())){
+					if("AUFDAT3ENTDAT3UNTDATGEBORENENTDAT2ENTDAT1AUFDAT1".contains(eltern.btf[i].getName())){
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  datFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
 					}else{
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
