@@ -483,7 +483,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			String btype = (empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht");
 			String cmd = "insert into berhist set berichtid='"+berichtid+"', erstelldat='"
 			+datFunk.sDatInSQL(datFunk.sHeute())+"', berichttyp='"+btype+"', "+
-			"verfasser='Reha-Arzt', empfaenger='"+empf+"', pat_intern='"+pat_intern+"'";
+			"verfasser='Reha-Arzt', empfaenger='"+empf+"', pat_intern='"+pat_intern+"', bertitel='Reha-Entlassbericht'";
 			SqlInfo.sqlAusfuehren(cmd);
 			cmd = "insert into bericht2 set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
 			SqlInfo.sqlAusfuehren(cmd);
@@ -495,7 +495,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			doSpeichernAlt();
 			System.out.println("Nach Speichern alt");
 			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
-					btype,"Reha-Arzt",datFunk.sHeute() ,empf, pat_intern);
+					btype,"Reha-Arzt",datFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){

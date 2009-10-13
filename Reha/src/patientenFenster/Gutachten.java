@@ -128,7 +128,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyGutachtenTableModel();
-		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung",""};
+		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabbericht = new JXTable(dtblm);
 		tabbericht.setEditable(true);
@@ -166,7 +166,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		tabbericht.getColumn(5).setMaxWidth(80);
 		tabbericht.getColumn(6).setMinWidth(0);
 		tabbericht.getColumn(6).setMaxWidth(0);
-
+		tabbericht.getColumn(7).setMinWidth(0);
+		tabbericht.getColumn(7).setMaxWidth(0);
 		tabbericht.validate();
 
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabbericht);
@@ -198,7 +199,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			String verfasser,
 			String erstellt,
 			String empfang,
-			String patintern){
+			String patintern,
+			String bertitel){
 		Vector<String> xvec = new Vector<String>();
 		xvec.add(berid);
 		xvec.add(bertype);
@@ -232,7 +234,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 									"DATE_FORMAT(erstelldat,'%d.%m.%Y') AS derstelldat," +
 									"empfaenger," +
 									"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat," +
-									"empfid",
+									"empfid,"+
+									"bertitel",
 									"pat_intern='"+xpatint+"' ORDER BY erstelldat", Arrays.asList(new String[]{}));
 							int anz = vec.size();
 							dtblm.setRowCount(0);

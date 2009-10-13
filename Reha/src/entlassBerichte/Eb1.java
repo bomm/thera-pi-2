@@ -1176,7 +1176,7 @@ public class Eb1 implements ActionListener {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,15));
 		eltern.bta[4] = new JTextArea();
-		eltern.bta[4].setName("DIAG4");
+		eltern.bta[4].setName("DIAG5");
 		tit.add(eltern.bta[4],cctit.xy(2, 16,CellConstraints.FILL,CellConstraints.FILL));
 
 		entlay = new FormLayout("55dlu","p,p,p");

@@ -318,7 +318,7 @@ public class Eb4 implements ActionListener {
 				System.out.println("Das Datum = ***************"+vec.get(0).get(0));
 				if(! vec.get(0).get(0).trim().equals("")){
 					String entdat = datFunk.sDatInDeutsch(vec.get(0).get(0));
-					if(datFunk.DatumsWert(entdat) < datFunk.DatumsWert("01.01.2008")){
+					if(datFunk.DatumsWert(entdat) < datFunk.DatumsWert("01.01.2007")){
 						holeKTL(false);
 					}else{
 						holeKTL(true);

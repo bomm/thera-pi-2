@@ -1,14 +1,23 @@
 package entlassBerichte;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -16,10 +25,12 @@ import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
 
+import sqlTools.SqlInfo;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import terminKalender.datFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -38,6 +49,7 @@ public class Ns2 implements ActionListener {
 	JScrollPane jscr = null;
 	Vector ktl = new Vector();
 	String[] sktl = null;
+	boolean inGuiInit = true;
 	
 
 	public Ns2(EBerichtPanel xeltern){
@@ -58,7 +70,7 @@ public class Ns2 implements ActionListener {
 			protected Void doInBackground() throws Exception {
 				try{
 					pan.add(constructSeite());
-					for(int i = 7; i < 8;i++){
+					for(int i = 7; i < 10;i++){
 						eltern.bta[i].setFont(fontcourier);
 						eltern.bta[i].setForeground(Color.BLUE);
 						eltern.bta[i].setWrapStyleWord(true);
@@ -67,8 +79,8 @@ public class Ns2 implements ActionListener {
 					}
 					new Thread(){
 						public void run(){
-							//laden(eltern.neu);
-							//inGuiInit = false;
+							laden(eltern.neu);
+							inGuiInit = false;
 						}
 					}.start();
 				}catch(Exception ex){
@@ -255,9 +267,9 @@ public class Ns2 implements ActionListener {
 		titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
 		titl.getPanel().validate();
 		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,6));	
-		eltern.bta[7] = new JTextArea();
-		eltern.bta[7].setName("ERLAEUT");
-		vorschlag.add(eltern.bta[7],ccvorschlag.xyw(2,8,5,CellConstraints.FILL,CellConstraints.FILL));
+		eltern.bta[8] = new JTextArea();
+		eltern.bta[8].setName("ERLAEUT");
+		vorschlag.add(eltern.bta[8],ccvorschlag.xyw(2,8,5,CellConstraints.FILL,CellConstraints.FILL));
 
 		vorschlag.add(getRand(Color.GRAY),ccvorschlag.xyw(1,10,7));
 
@@ -271,9 +283,9 @@ public class Ns2 implements ActionListener {
 		titl.getPanel().validate();
 		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,12));
 
-		eltern.bta[8] = new JTextArea();
-		eltern.bta[8].setName("LMEDIKAT");
-		vorschlag.add(eltern.bta[8],ccvorschlag.xyw(2,14,5,CellConstraints.FILL,CellConstraints.FILL));
+		eltern.bta[9] = new JTextArea();
+		eltern.bta[9].setName("LMEDIKAT");
+		vorschlag.add(eltern.bta[9],ccvorschlag.xyw(2,14,5,CellConstraints.FILL,CellConstraints.FILL));
 		
 		vorschlag.getPanel().validate();
 		return vorschlag.getPanel();
@@ -533,8 +545,192 @@ public class Ns2 implements ActionListener {
 	}	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		if(inGuiInit){
+			return;
+		}
+		String cmd = arg0.getActionCommand();
+		int combo = new Integer(cmd);
+
+		eltern.ktltfc[combo].setText((String)eltern.ktlcmb[combo].getValueAt(1));
+		eltern.ktltfd[combo].setText((String)eltern.ktlcmb[combo].getValueAt(2));
+		if(eltern.ktlcmb[combo].getSelectedIndex()==0){
+			eltern.ktltfa[combo].setText("");
+			
+		}
+	}
+	private void laden(boolean lneu){
+		Vector<Vector<String>> vec = null;
+		if(lneu){
+			holeKTL(true);
+		}else{
+			vec = SqlInfo.holeFelder("select entdat3 from bericht2 where berichtid='"+
+					new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
+			if(vec.size() <= 0){
+				JOptionPane.showMessageDialog(null,"Achtung - kann KTL-Leistungen nicht laden");
+				return;
+			}
+			if(vec.size() > 0){
+				System.out.println("Das Datum = ***************"+vec.get(0).get(0));
+				if(! vec.get(0).get(0).trim().equals("")){
+					String entdat = datFunk.sDatInDeutsch(vec.get(0).get(0));
+					if(datFunk.DatumsWert(entdat) < datFunk.DatumsWert("01.01.2007")){
+						holeKTL(false);
+					}else{
+						holeKTL(true);
+					}
+				}else{
+					holeKTL(true);
+				}
+			}else{
+				holeKTL(true);
+			}
+		}
+		if(!eltern.neu){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						Vector<Vector<String>> vec = null;
+						int istnull = 0;
+						int pos = 0;
+						vec = SqlInfo.holeFelder("select * from bericht2ktl where berichtid='"+
+								new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
+						for(int i = 1;i<10;i++){
+							pos = (i*4);
+							//System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
+							if(vec.get(0).get(pos).equals("0")){
+								istnull++;
+								if(istnull > 3){
+									break;
+								}
+							}else{
+								eltern.ktlcmb[i-1].setSelectedVecIndex(3,
+										(vec.get(0).get(pos).trim().equals("") ? "0" : vec.get(0).get(pos) ));
+								//eltern.ktlcmb[i-1].setSelectedIndex(massnahme);
+								eltern.ktltfc[i-1].setText(vec.get(0).get(pos+1));
+								eltern.ktltfd[i-1].setText(vec.get(0).get(pos+2));
+								eltern.ktltfa[i-1].setText(vec.get(0).get(pos+3));
+							}
+							
+
+						}
+						StringBuffer buf = new StringBuffer();
+						buf.append("select ");
+						for(int i = 7;i < 10;i++){
+							buf.append(eltern.bta[i].getName()+", ");
+						}
+						for(int i = 7;i < 19;i++){
+							if(i < 18){
+								buf.append(eltern.bchb[i].getName()+", ");
+							}else{
+								buf.append(eltern.bchb[i].getName());
+							}
+						}
+						buf.append(" from bericht2 where berichtid='"+eltern.berichtid+"'");
+						holeRest(buf);
+						
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+				
+			}.execute();
+		}
+	}
+	private void holeRest(StringBuffer buf){
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			rs = stmt.executeQuery(buf.toString());
+
+			if(rs.next()){
+				for(int i = 7; i < 10;i++){
+					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
+				}
+				for(int i = 7; i < 19;i++){
+					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+				}
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
 		
 	}
+	
+	private void holeKTL(boolean ktlneu){
+		Vector<Vector<String>> vec = null;
+		String ktltabelle = "";
+		if(ktlneu){
+			ktltabelle = "masntex2";
+		}else{
+			ktltabelle = "masntext";
+		}
+		StringBuffer buf = new StringBuffer();
+		buf.append("select ");
+		for(int i = 0; i < 10;i++){
+			
+		}
+		vec = SqlInfo.holeFelder("select * from "+ktltabelle);
+		Comparator<Vector> comparator = new Comparator<Vector>() {
+		    public int compare(String s1, String s2) {
+		        String[] strings1 = s1.split("\\s");
+		        String[] strings2 = s2.split("\\s");
+		        return strings1[strings1.length - 1]
+		            .compareTo(strings2[strings2.length - 1]);
+		    }
+
+			@Override
+			public int compare(Vector o1, Vector o2) {
+				// TODO Auto-generated method stub
+				String s1 = (String)o1.get(0);
+				String s2 = (String)o2.get(0);
+				return s1.compareTo(s2);
+			}
+		};
+		Collections.sort(vec,comparator);		
+		
+		//System.out.println("Dit ktltabelle = "+ktltabelle);
+		Vector<String> vec2 = new Vector<String>();
+		vec2.add("./.");
+		vec2.add("");
+		vec2.add("");
+		vec2.add("0");
+		vec.insertElementAt((Vector)((Vector<String>)vec2).clone(), 0);
+		for(int i = 0;i < 10;i++){
+			eltern.ktlcmb[i].setDataVectorVector((Vector<Vector<String>>)vec, 0, 3);
+			eltern.ktlcmb[i].setName("TMA"+(i+1));
+			eltern.ktltfc[i].setName("TKT"+(i+1));
+			eltern.ktltfd[i].setName("TZT"+(i+1));			
+			eltern.ktltfa[i].setName("TAZ"+(i+1));			
+		}
+	}
+
 }
 

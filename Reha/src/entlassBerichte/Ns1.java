@@ -480,9 +480,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("79");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[2] = new JRtaComboBox(seite);
-		eltern.bcmb[2].setName("F_79");
-		ent.add(eltern.bcmb[2],ccent.xy(1, 3));
+		eltern.bcmb[0] = new JRtaComboBox(seite);
+		eltern.bcmb[0].setName("F_79");
+		ent.add(eltern.bcmb[0],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		entlay = new FormLayout("40dlu:g","p,p,p");
@@ -495,9 +495,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("80");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[3] = new JRtaComboBox(sicher);
-		eltern.bcmb[3].setName("F_80");
-		ent.add(eltern.bcmb[3],ccent.xy(1, 3));
+		eltern.bcmb[1] = new JRtaComboBox(sicher);
+		eltern.bcmb[1].setName("F_80");
+		ent.add(eltern.bcmb[1],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(8, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
 		entlay = new FormLayout("40dlu:g","p,p,p");
@@ -510,9 +510,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("81");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[4] = new JRtaComboBox(erfolg);
-		eltern.bcmb[4].setName("F_81");
-		ent.add(eltern.bcmb[4],ccent.xy(1, 3));
+		eltern.bcmb[2] = new JRtaComboBox(erfolg);
+		eltern.bcmb[2].setName("F_81");
+		ent.add(eltern.bcmb[2],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(10, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		/**********Diagnose 2**********************/
@@ -543,9 +543,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("87");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[5] = new JRtaComboBox(seite);
-		eltern.bcmb[5].setName("F_87");
-		ent.add(eltern.bcmb[5],ccent.xy(1, 3));
+		eltern.bcmb[3] = new JRtaComboBox(seite);
+		eltern.bcmb[3].setName("F_87");
+		ent.add(eltern.bcmb[3],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(6, 7,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -555,9 +555,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("88");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[6] = new JRtaComboBox(sicher);
-		eltern.bcmb[6].setName("F_88");
-		ent.add(eltern.bcmb[6],ccent.xy(1, 3));
+		eltern.bcmb[4] = new JRtaComboBox(sicher);
+		eltern.bcmb[4].setName("F_88");
+		ent.add(eltern.bcmb[4],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(8, 7,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -567,9 +567,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("89");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[7] = new JRtaComboBox(erfolg);
-		eltern.bcmb[7].setName("F_81");
-		ent.add(eltern.bcmb[7],ccent.xy(1, 3));
+		eltern.bcmb[5] = new JRtaComboBox(erfolg);
+		eltern.bcmb[5].setName("F_81");
+		ent.add(eltern.bcmb[5],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(10, 7,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		/**********Diagnose 3**********************/
@@ -600,9 +600,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("95");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[8] = new JRtaComboBox(seite);
-		eltern.bcmb[8].setName("F_95");
-		ent.add(eltern.bcmb[8],ccent.xy(1, 3));
+		eltern.bcmb[6] = new JRtaComboBox(seite);
+		eltern.bcmb[6].setName("F_95");
+		ent.add(eltern.bcmb[6],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(6, 10,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -612,9 +612,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("96");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[9] = new JRtaComboBox(sicher);
-		eltern.bcmb[9].setName("F_96");
-		ent.add(eltern.bcmb[9],ccent.xy(1, 3));
+		eltern.bcmb[7] = new JRtaComboBox(sicher);
+		eltern.bcmb[7].setName("F_96");
+		ent.add(eltern.bcmb[7],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(8, 10,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -624,9 +624,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("97");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[10] = new JRtaComboBox(erfolg);
-		eltern.bcmb[10].setName("F_97");
-		ent.add(eltern.bcmb[10],ccent.xy(1, 3));
+		eltern.bcmb[8] = new JRtaComboBox(erfolg);
+		eltern.bcmb[8].setName("F_97");
+		ent.add(eltern.bcmb[8],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(10, 10,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
 		/**********Diagnose 4**********************/
@@ -657,9 +657,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("103");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[11] = new JRtaComboBox(seite);
-		eltern.bcmb[11].setName("F_103");
-		ent.add(eltern.bcmb[11],ccent.xy(1, 3));
+		eltern.bcmb[9] = new JRtaComboBox(seite);
+		eltern.bcmb[9].setName("F_103");
+		ent.add(eltern.bcmb[9],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(6, 13,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -669,9 +669,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("104");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[12] = new JRtaComboBox(sicher);
-		eltern.bcmb[12].setName("F_104");
-		ent.add(eltern.bcmb[12],ccent.xy(1, 3));
+		eltern.bcmb[10] = new JRtaComboBox(sicher);
+		eltern.bcmb[10].setName("F_104");
+		ent.add(eltern.bcmb[10],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(8, 13,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -681,9 +681,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("105");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[13] = new JRtaComboBox(erfolg);
-		eltern.bcmb[13].setName("F_105");
-		ent.add(eltern.bcmb[13],ccent.xy(1, 3));
+		eltern.bcmb[11] = new JRtaComboBox(erfolg);
+		eltern.bcmb[11].setName("F_105");
+		ent.add(eltern.bcmb[11],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(10, 13,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		/**********Diagnose 5**********************/
@@ -692,7 +692,7 @@ public class Ns1 implements ActionListener {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,15));
 		eltern.bta[4] = new JTextArea();
-		eltern.bta[4].setName("DIAG4");
+		eltern.bta[4].setName("DIAG5");
 		tit.add(eltern.bta[4],cctit.xy(2, 16,CellConstraints.FILL,CellConstraints.FILL));
 
 		entlay = new FormLayout("55dlu","p,p,p");
@@ -714,9 +714,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("111");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[14] = new JRtaComboBox(seite);
-		eltern.bcmb[14].setName("F_111");
-		ent.add(eltern.bcmb[14],ccent.xy(1, 3));
+		eltern.bcmb[12] = new JRtaComboBox(seite);
+		eltern.bcmb[12].setName("F_111");
+		ent.add(eltern.bcmb[12],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(6, 16,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -726,9 +726,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("112");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[15] = new JRtaComboBox(sicher);
-		eltern.bcmb[15].setName("F_112");
-		ent.add(eltern.bcmb[15],ccent.xy(1, 3));
+		eltern.bcmb[13] = new JRtaComboBox(sicher);
+		eltern.bcmb[13].setName("F_112");
+		ent.add(eltern.bcmb[13],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(8, 16,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
 		entlay = new FormLayout("40dlu","p,p,p");
@@ -738,9 +738,9 @@ public class Ns1 implements ActionListener {
 		lab = getLabel("113");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
-		eltern.bcmb[16] = new JRtaComboBox(erfolg);
-		eltern.bcmb[16].setName("F_113");
-		ent.add(eltern.bcmb[16],ccent.xy(1, 3));
+		eltern.bcmb[14] = new JRtaComboBox(erfolg);
+		eltern.bcmb[14].setName("F_113");
+		ent.add(eltern.bcmb[14],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(10, 16,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		//                                       4    5 6 7 8 9  10   11
 		entlay = new FormLayout("140dlu","p,p,p,40dlu,p,p,p,p,p,40dlu,p,p,p,p,p,p");
@@ -978,22 +978,24 @@ public class Ns1 implements ActionListener {
 		String berichtid = new Integer(eltern.berichtid).toString();
 		StringBuffer buf = new StringBuffer();
 		buf.append("select ");
-		for(int i = 0; i < 25;i++){
+		for(int i = 0; i < 23;i++){
 			buf.append(eltern.btf[i].getName()+",");
 		}
-		buf.append(eltern.btf[27].getName()+",");
-
-		for(int i = 0; i < 20;i++){
+		for(int i = 0; i < 15;i++){
 			buf.append(eltern.bcmb[i].getName()+",");
 		}
-		for(int i = 0; i < 17;i++){
+		for(int i = 0; i < 7;i++){
 			buf.append(eltern.bchb[i].getName()+",");
 		}
 		for(int i = 0; i < 7;i++){
-			buf.append(eltern.bta[i].getName()+",");
+			if(i < 6){
+				buf.append(eltern.bta[i].getName()+",");	
+			}else{
+				buf.append(eltern.bta[i].getName());				
+			}
+			
 		}
-		buf.append("ARZT1,ARZT2,ARZT3,");
-		buf.append("UNTDAT from bericht2 where berichtid='"+berichtid+"'");
+		buf.append(" from bericht2 where berichtid='"+berichtid+"'");
 		//System.out.println(buf.toString());
 		holeSatz(buf);
 	}
@@ -1019,34 +1021,20 @@ public class Ns1 implements ActionListener {
 				for(int i = 0; i < 7;i++){
 					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
 				}
-				for(int i = 0; i < 25;i++){
+				for(int i = 0; i < 23;i++){
 					if("AUFDAT3ENTDAT3UNTDATGEBORENENTDAT2ENTDAT1AUFDAT1".contains(eltern.btf[i].getName())){
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  datFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
 					}else{
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
 					}
 				}
-				for(int i = 0; i < 17;i++){
+				for(int i = 0; i < 7;i++){
 					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
 				}
-				for(int i = 0; i < 20;i++){
+				for(int i = 0; i < 15;i++){
 					eltern.bcmb[i].setSelectedItem( (rs.getString(eltern.bcmb[i].getName())==null  ? "" :  rs.getString(eltern.bcmb[i].getName())) );
 				}
-
-				String xname = "UNTDAT";
-				String inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
-				if(!inhalt.trim().equals("")){
-					eltern.btf[27].setText(datFunk.sDatInDeutsch(inhalt));
-				}
-				xname = "ARZT1";
-				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
-				eltern.barzttf[0].setText(inhalt);
-				xname = "ARZT2";
-				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
-				eltern.barzttf[1].setText(inhalt);
-				xname = "ARZT3";
-				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
-				eltern.barzttf[2].setText(inhalt);
+				/*
 				if(eltern.berichttyp.equals("LVA-Arztbericht")){
 					eltern.cbktraeger.setSelectedIndex(1);
 				}else if(eltern.berichttyp.equals("BfA-Arztbericht")){
@@ -1054,6 +1042,7 @@ public class Ns1 implements ActionListener {
 				}else{
 					eltern.cbktraeger.setSelectedItem(eltern.empfaenger);
 				}
+				*/
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
