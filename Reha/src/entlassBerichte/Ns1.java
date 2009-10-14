@@ -187,7 +187,7 @@ public class Ns1 implements ActionListener {
 		JLabel lab = new JLabel("Datum der Unterschrift:");
 		lab.setFont(this.fontarialnormal);
 		dum.add(lab,ccdum.xy(1,2));
-		eltern.btf[23] = new JRtaTextField("DATUM",false);
+		eltern.btf[23] = new JRtaTextField("DATUM",true);
 		eltern.btf[23].setName("UNTDAT");
 		eltern.btf[23].setFont(fontcourier);
 		eltern.btf[23].setForeground(Color.BLUE);
@@ -978,7 +978,7 @@ public class Ns1 implements ActionListener {
 		String berichtid = new Integer(eltern.berichtid).toString();
 		StringBuffer buf = new StringBuffer();
 		buf.append("select ");
-		for(int i = 0; i < 23;i++){
+		for(int i = 0; i < 24;i++){
 			buf.append(eltern.btf[i].getName()+",");
 		}
 		for(int i = 0; i < 15;i++){
@@ -1021,8 +1021,8 @@ public class Ns1 implements ActionListener {
 				for(int i = 0; i < 7;i++){
 					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
 				}
-				for(int i = 0; i < 23;i++){
-					if("AUFDAT3ENTDAT3UNTDATGEBORENENTDAT2ENTDAT1AUFDAT1".contains(eltern.btf[i].getName())){
+				for(int i = 0; i < 24;i++){
+					if("AUFDAT2AUFDAT3ENTDAT3UNTDATGEBORENENTDAT2ENTDAT1AUFDAT1".contains(eltern.btf[i].getName())){
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  datFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
 					}else{
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
@@ -1034,15 +1034,15 @@ public class Ns1 implements ActionListener {
 				for(int i = 0; i < 15;i++){
 					eltern.bcmb[i].setSelectedItem( (rs.getString(eltern.bcmb[i].getName())==null  ? "" :  rs.getString(eltern.bcmb[i].getName())) );
 				}
-				/*
-				if(eltern.berichttyp.equals("LVA-Arztbericht")){
+				
+				if(eltern.berichttyp.equals("LVA-ASP-Arztber")){
 					eltern.cbktraeger.setSelectedIndex(1);
-				}else if(eltern.berichttyp.equals("BfA-Arztbericht")){
+				}else if(eltern.berichttyp.equals("BfA-IRENA-Arztb")){
 					eltern.cbktraeger.setSelectedIndex(0);
 				}else{
 					eltern.cbktraeger.setSelectedItem(eltern.empfaenger);
 				}
-				*/
+			
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){

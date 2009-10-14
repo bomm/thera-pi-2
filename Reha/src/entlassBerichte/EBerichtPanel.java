@@ -366,15 +366,17 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		/**************************************************/			
 		if(cmd.equals("gutvorschau")){
 			if(berichtart.equals("entlassbericht")){
-				doVorschauEntlassBericht(true);
+				doVorschauEntlassBericht(true,new int[] {});
+			}else if(berichtart.equals("nachsorgedokumentation")){
+				doVorschauNachsorge(true,0);
+			}
+		}
+		if(cmd.equals("gutprint")){
+			if(berichtart.equals("entlassbericht")){
+				doVorschauEntlassBericht(false,new int[] {});
 			}else if(berichtart.equals("nachsorgedokumentation")){
 				
 			}
-			
-		}
-		if(cmd.equals("gutprint")){
-
-			
 		}
 		if(cmd.equals("guttools")){
 			
@@ -390,23 +392,113 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 	}
 	private void doSpeichernNachsorgeAlt(){
-		
-	}
-
-	private void doSpeichernNachsorgeNeu(){
-		Reha.thisClass.progressStarten(true);
-		int nummer = SqlInfo.erzeugeNummer("bericht");
-		berichtid = nummer;
-		String empf = (String) cbktraeger.getSelectedItem();
-		if(! empf.contains("DRV")){
+		try{
+			Reha.thisClass.progressStarten(true);
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			StringBuffer buf = new StringBuffer();
+			buf.append("update bericht2 set ");
+			// erst die Textfelder auswerten
+			for(int i = 0; i < 24;i++){
+				if(!btf[i].getRtaType().equals("DATUM")){
+					buf.append(btf[i].getName()+"='"+btf[i].getText()+"', ");				
+				}else{
+					if(!btf[i].getText().trim().equals(".  .")){
+						buf.append(btf[i].getName()+"='"+datFunk.sDatInSQL(btf[i].getText())+"', ");
+					}else{
+						buf.append(btf[i].getName()+"=null, ");
+					}
+				}
+			}
+			// dann die Checkboxen
+			for(int i = 0; i < 19;i++){
+				buf.append(bchb[i].getName()+"='"+(bchb[i].isSelected() ? "1" : "0")+"', ");
+			}
+			// die TextAreas
+			for(int i = 0; i < 10;i++){
+				buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");
+			}
+			for(int i = 0; i < 15;i++){
+				if(i < 14){
+					buf.append(bcmb[i].getName()+"='"+bcmb[i].getSelectedItem()+"', ");				
+				}else{
+					buf.append(bcmb[i].getName()+"='"+bcmb[i].getSelectedItem()+"' ");
+				}
+			}	
+			buf.append( " where berichtid = '"+berichtid+"'");
+			SqlInfo.sqlAusfuehren(buf.toString());
+			
+			buf = new StringBuffer();
+			buf.append("Update bericht2ktl set " ); 
+			for(int i = 0;i < 10;i++){
+				buf.append(ktlcmb[i].getName()+"='"+ktlcmb[i].getValue()+"', ");
+				buf.append(ktltfc[i].getName()+"='"+ktltfc[i].getText()+"', ");
+				buf.append(ktltfd[i].getName()+"='"+ktltfd[i].getText()+"', ");
+				if(i < 9){
+					buf.append(ktltfa[i].getName()+"='"+ktltfa[i].getText()+"', ");				
+				}else{
+					buf.append(ktltfa[i].getName()+"='"+ktltfa[i].getText()+"'");
+				}
+				
+			}
+			buf.append( " where berichtid = '"+berichtid+"'");
+			SqlInfo.sqlAusfuehren(buf.toString());
 			Reha.thisClass.progressStarten(false);
-			return;
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			if(!jetztneu){
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				String empf = (String) cbktraeger.getSelectedItem();
+				String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
+				Gutachten.gutachten.aktualisiereGutachten(datFunk.sHeute(),btype,empf,"Reha-Arzt",berichtid,pat_intern);
+				Reha.thisClass.progressStarten(false);
+			}else{
+				jetztneu = false;
+				Reha.thisClass.progressStarten(false);
+			}			
+		}catch(Exception ex){
+			ex.printStackTrace();
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisClass.progressStarten(false);
 		}
-		String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
-		Reha.thisClass.progressStarten(false);
-
-		
 	}
+	/*************************************************************************/
+	private void doSpeichernNachsorgeNeu(){
+		try{
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisClass.progressStarten(true);
+			int nummer = SqlInfo.erzeugeNummer("bericht");
+			berichtid = nummer;
+			String empf = (String) cbktraeger.getSelectedItem();
+			if(! empf.contains("DRV")){
+				Reha.thisClass.progressStarten(false);
+				return;
+			}
+			String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
+	/////
+			String cmd = "insert into berhist set berichtid='"+berichtid+"', erstelldat='"
+			+datFunk.sDatInSQL(datFunk.sHeute())+"', berichttyp='"+btype+"', "+
+			"verfasser='Reha-Arzt', empfaenger='"+empf+"', pat_intern='"+pat_intern+"', bertitel='Reha-Entlassbericht'";
+			SqlInfo.sqlAusfuehren(cmd);
+			cmd = "insert into bericht2 set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			cmd = "insert into bericht2ktl set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			jetztneu = true; // ganz wichtig
+			neu = false;
+	/////		
+			doSpeichernNachsorgeAlt();
+			System.out.println("Nach Speichern alt");
+			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
+					btype,"Reha-Arzt",datFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
+			
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(Exception ex){
+			Reha.thisClass.progressStarten(true);
+			ex.printStackTrace();
+		}
+		Reha.thisClass.progressStarten(false);
+	}
+/*************************************************************************/		
+
 	private void doSpeichernAlt(){
 		Reha.thisClass.progressStarten(true);
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -418,6 +510,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}else{
 				if(!btf[i].getText().trim().equals(".  .")){
 					buf.append(btf[i].getName()+"='"+datFunk.sDatInSQL(btf[i].getText())+"', ");
+				}else{
+					buf.append(btf[i].getName()+"=null, ");
 				}
 			}
 
@@ -471,6 +565,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			Reha.thisClass.progressStarten(false);
 		}
 	}
+	/*************************************************************************/	
 	private void doSpeichernNeu(){
 		try{
 			Reha.thisClass.progressStarten(true);
@@ -496,10 +591,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){
+			Reha.thisClass.progressStarten(true);
 			ex.printStackTrace();
 		}
 	}
-	private void doVorschauEntlassBericht(boolean nurVorschau){
+	
+	private void doVorschauEntlassBericht(boolean nurVorschau,int[] versionen){
 		new Thread(){
 			public void run(){
 				new SwingWorker<Void,Void>(){
@@ -536,6 +633,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							// Hier abprüfen ob gedruckt werden soll
 							doRVVorschau(true,"Ausfertigung für den RV-Träger  "+(String)cbktraeger.getSelectedItem(),"Bereich Reha");
 
 						}
@@ -581,6 +679,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		return sret;
 	}
+	private void doVorschauNachsorge(boolean nurVorschau,int version){
+		new NachsorgePDF(this,nurVorschau,version);
+	}
 	private void doRVVorschau(boolean vorschau,String ausfertigung,String bereich){
 		boolean geklappt;
 		
@@ -593,27 +694,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					JOptionPane.showMessageDialog(null, "Fließtext noch nicht aufbereitet!\n"+
 							"Wechseln sie auf den Karteireiter 'Fliesstext' und starten Sie\n"+
 							"die Druckvorschau erneut.");
-					
-					/*
-					try {
-						ebt.getTab3().tempTextSpeichern();
-						long zeit = System.currentTimeMillis();
-						Reha.thisClass.progressStarten(true);
-						while(!ebt.getTab3().pdfok){
-							Thread.sleep(50);
-							if(( System.currentTimeMillis() - zeit) > 15000){
-								break;
-							}
-						}
-						if(!ebt.getTab3().pdfok){
-							JOptionPane.showMessageDialog(null,"Der Fliesstext des Gutachten konnte nicht erstellt werden");							
-						}
-
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					*/
+					return;
 				}
 				System.out.println("Konfiguriere Seite 1");
 				geklappt = doSeite1(vorschau,ausfertigung,bereich);

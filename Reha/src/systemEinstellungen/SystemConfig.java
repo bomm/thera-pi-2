@@ -964,6 +964,7 @@ public class SystemConfig {
 		vGutachtenDisplay.add(inif.getStringProperty("AbsenderDisplayAdresse", "Display3"));
 	}
 	
+
 	public static void SystemIconsInit(){
 		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",
 				"nichtgesperrt","rezeptgebuehr","ausfallrechnung","arztbericht","privatrechnung",
