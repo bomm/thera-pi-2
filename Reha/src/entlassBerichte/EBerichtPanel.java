@@ -128,6 +128,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public int berichtid = -1;
 	public String berichttyp = null;
 	public String empfaenger = null;
+	public String berichtart = null;
 	public boolean neu = false;
 	public boolean jetztneu = false;
 	public boolean inebericht = false;
@@ -142,6 +143,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	String[][] tempDateien = {null,null,null,null,null};
 	
 	static ITextDocument document = null;
+	
+ 
 	
 	public JRtaTextField[] barzttf = {null,null,null}; 
 
@@ -236,6 +239,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
 			rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
 			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
+			berichtart = "entlassbericht";
 			inebericht = true;
 		}else{
 			cbktraeger = new JRtaComboBox(SystemConfig.vGutachtenEmpfaenger);
@@ -245,6 +249,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			add(ebtab,BorderLayout.CENTER);
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
+			berichtart = "nachsorgedokumentation";
 			inebericht = false;
 		}
 		
@@ -337,61 +342,34 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
+		
+		/**************************************************/
 		if(cmd.equals("gutsave")){
-			if(this.neu){
-				doSpeichernNeu();	
-				JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
-			}else{
-				doSpeichernAlt();
-				JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
-			}
-			
-		}
-		if(cmd.equals("gutvorschau")){
-			new Thread(){
-				public void run(){
-					new SwingWorker<Void,Void>(){
-						@Override
-						protected Void doInBackground() throws Exception {
-							Reha.thisClass.progressStarten(true);
-							ebtab.setSelectedIndex(0);
-							if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
-								try {
-									 
-							        int sel = ebtab.getSelectedIndex();
-									if(document.isModified()){
-										System.out.println("in getrennt.....");
-										if(sel != 2){
-												ebt.getTab3().tempTextSpeichern();
-												document.close();
-										}else{
-											if(document.isModified()){											
-												ebt.getTab3().tempTextSpeichern();
-											}
-										}
-
-									}else{
-										System.out.println("in nicht!!!!!getrennt.....");
-										if(sel != 2){
-											ebt.getTab3().tempTextSpeichern();
-											document.close();
-										}else{
-											ebt.getTab3().tempTextSpeichern();
-										}
-									}
-									
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								doRVVorschau(true,"Ausfertigung für den RV-Träger  "+(String)cbktraeger.getSelectedItem(),"Bereich Reha");
-
-							}
-							return null;
-						}
-					}.execute();
+			if(berichtart.equals("entlassbericht")){
+				if(this.neu){
+					doSpeichernNeu();	
+					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
+				}else{
+					doSpeichernAlt();
+					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
 				}
-			}.start();
+			}else if(berichtart.equals("nachsorgedokumentation")){
+				if(this.neu){
+					doSpeichernNachsorgeNeu();
+					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
+				}else{
+					doSpeichernNachsorgeAlt();
+					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
+				}
+			}
+		}
+		/**************************************************/			
+		if(cmd.equals("gutvorschau")){
+			if(berichtart.equals("entlassbericht")){
+				doVorschauEntlassBericht(true);
+			}else if(berichtart.equals("nachsorgedokumentation")){
+				
+			}
 			
 		}
 		if(cmd.equals("gutprint")){
@@ -409,6 +387,24 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				document = OOTools.starteLeerenWriter();
 			}
 		}
+		
+	}
+	private void doSpeichernNachsorgeAlt(){
+		
+	}
+
+	private void doSpeichernNachsorgeNeu(){
+		Reha.thisClass.progressStarten(true);
+		int nummer = SqlInfo.erzeugeNummer("bericht");
+		berichtid = nummer;
+		String empf = (String) cbktraeger.getSelectedItem();
+		if(! empf.contains("DRV")){
+			Reha.thisClass.progressStarten(false);
+			return;
+		}
+		String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
+		Reha.thisClass.progressStarten(false);
+
 		
 	}
 	private void doSpeichernAlt(){
@@ -472,6 +468,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			Reha.thisClass.progressStarten(false);
 		}else{
 			jetztneu = false;
+			Reha.thisClass.progressStarten(false);
 		}
 	}
 	private void doSpeichernNeu(){
@@ -501,6 +498,52 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+	}
+	private void doVorschauEntlassBericht(boolean nurVorschau){
+		new Thread(){
+			public void run(){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Reha.thisClass.progressStarten(true);
+						ebtab.setSelectedIndex(0);
+						if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
+							try {
+								 
+						        int sel = ebtab.getSelectedIndex();
+								if(document.isModified()){
+									System.out.println("in getrennt.....");
+									if(sel != 2){
+											ebt.getTab3().tempTextSpeichern();
+											document.close();
+									}else{
+										if(document.isModified()){											
+											ebt.getTab3().tempTextSpeichern();
+										}
+									}
+
+								}else{
+									System.out.println("in nicht!!!!!getrennt.....");
+									if(sel != 2){
+										ebt.getTab3().tempTextSpeichern();
+										document.close();
+									}else{
+										ebt.getTab3().tempTextSpeichern();
+									}
+								}
+								
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							doRVVorschau(true,"Ausfertigung für den RV-Träger  "+(String)cbktraeger.getSelectedItem(),"Bereich Reha");
+
+						}
+						return null;
+					}
+				}.execute();
+			}
+		}.start();
 	}
 
 	/***********ab hier Christian's Funktionen
