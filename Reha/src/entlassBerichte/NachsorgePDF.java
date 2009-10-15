@@ -1,5 +1,6 @@
 package entlassBerichte;
 
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -9,7 +10,12 @@ import javax.swing.SwingWorker;
 
 import systemEinstellungen.SystemConfig;
 
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Element;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
@@ -92,7 +98,8 @@ public class NachsorgePDF {
 		BaseFont bf = null;
 		PdfReader reader = null;
 		try {
-			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			
 			reader = new PdfReader (pdfPfad);
 			stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 			PdfContentByte cb = stamper.getOverContent(1);
@@ -175,12 +182,73 @@ public class NachsorgePDF {
 			//                         abreitsfähig nein!				  								
 								getFloats(48.25f,22.5f,fy0)
 			};
-			
-
 			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 			for(int i = 0; i < 7; i++){
 				setzeText(cb,poswert1[i][0], poswert1[i][1],poswert1[i][2],bf,12,( eltern.bchb[i].isSelected() ? "X" : "") );
 			}
+			/***********Jetzt der mehrzeilige Text der Diagnosen 1-5******************/
+			cb.setCharacterSpacing(0.5f);
+			/*
+			float xstart = 82.f;
+			float xend = 282.f;
+			float ystartunten = 495.f;
+			float ystartoben = 530.f;
+			float yschritt = 35.f;
+			*/
+			float xstart = rechneX(33.f);
+			float xend = rechneX(105.f);
+			float ystartunten = rechneY(177.f);
+			float ystartoben = rechneY(189.f);
+			float yschritt = rechneY(12.0f);
+
+			ColumnText ct = null;
+			Chunk chunk;
+			Phrase ph = null;
+			float zaehler = 1.f;
+			for(int i = 0;i < 5; i++){
+				/*
+		        chunk = new Chunk(eltern.bta[i].getText().trim());
+		         chunk.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+		         ct = new ColumnText(cb);
+		         ct.addText(chunk);
+		         ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ALIGN_BOTTOM);
+		         ct.go();
+				float yAbsolutePosition = iTextDoc.bottomMargin() + iTextPdfPTable.getTotalHeight(); 
+				iTextPdfPTable.writeSelectedRows(0, -1, iTextDoc.leftMargin(), yAbsolutePosition, pdfWriter.getDirectContent());
+		         
+		         */
+
+				ct = new ColumnText(cb);
+				ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ALIGN_BOTTOM);
+				ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.add(eltern.bta[i].getText().trim());
+				ct.addText(ph);
+				ct.go();
+
+				ystartunten -= (yschritt);
+				//ystartunten -= (yschritt+zaehler);
+				ystartoben = (ystartunten+yschritt);
+			}
+			//Erläuterungen
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(rechneX(29.f), rechneY(81.f),rechneX(139.0f),rechneY(101.f),8,Element.ALIGN_BOTTOM);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+			ph.add(eltern.bta[5].getText().trim());
+			ct.addText(ph);
+			ct.go();
+			//Beschreibung prä/post
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(rechneX(29.f), rechneY(48.f),rechneX(182.0f),rechneY(76.f),8,Element.ALIGN_BOTTOM);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+			ph.add(eltern.bta[6].getText().trim());
+			ct.addText(ph);
+			ct.go();
+
+			
+			
 			/*********************************/
 			stamper.setFormFlattening(true);
 			stamper.close();
