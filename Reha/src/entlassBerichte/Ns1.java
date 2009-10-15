@@ -211,7 +211,7 @@ public class Ns1 implements ActionListener {
 				PanelBuilder dummy = new PanelBuilder(laydummy);
 				dummy.getPanel().setOpaque(false);
 				CellConstraints ccdum = new CellConstraints();
-				JLabel lab = getLabelArialNormalRot("arbeitsfähig");
+				JLabel lab = getLabelArialFettRot("arbeitsfähig");
 				//lab.setForeground(Color.RED);
 				dummy.add(lab,ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
