@@ -19,13 +19,15 @@ public JRtaCheckBox(){
 	super();
 	addKeyListener(this);
 	addFocusListener(this);
-	addActionListener(this);	
+	addActionListener(this);
+	setOpaque(false);
 }
 public JRtaCheckBox(String ss){
 	super(ss);
 	addKeyListener(this);
 	addFocusListener(this);	
 	addActionListener(this);
+	setOpaque(false);
 }
 
 

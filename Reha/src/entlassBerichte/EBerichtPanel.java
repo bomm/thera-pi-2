@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.LinearGradientPaint;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -33,6 +34,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -62,7 +64,6 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.Gutachten;
-import patientenFenster.PatGrundPanel;
 import pdfDrucker.PdfDrucker;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -84,11 +85,17 @@ import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+
 import events.PatStammEventClass;
 import events.PatStammEventListener;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.filter.PDFFilter;
@@ -194,7 +201,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	};
 	public JRtaComboBox[] acmb = {  null,null,null};
 			
-	
+	public int[] druckversion = {0,0,0,0}; 
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
 		setBorder(null);
 		
@@ -372,8 +379,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		if(cmd.equals("gutprint")){
+			EBDrucken(gutbut[2].getLocationOnScreen());
 			if(berichtart.equals("entlassbericht")){
-				doVorschauEntlassBericht(false,new int[] {});
+				//doVorschauEntlassBericht(false,new int[] {});
 			}else if(berichtart.equals("nachsorgedokumentation")){
 				
 			}
@@ -763,4 +771,103 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 
 
+	public void EBDrucken(Point p){
+		EBPrintDlg printDlg = new EBPrintDlg();
+		//JDialog neuPat = new JDialog();
+		PinPanel pinPanel = new PinPanel();
+		pinPanel.setName("EBPrint");
+		pinPanel.getGruen().setVisible(false);
+		printDlg.setPinPanel(pinPanel);
+		printDlg.getSmartTitledPanel().setTitle("Entlass-Bericht drucken");	
+		printDlg.setSize(190,200);
+		printDlg.setPreferredSize(new Dimension(190,200));
+		printDlg.getSmartTitledPanel().setPreferredSize(new Dimension (190,200));
+		printDlg.setPinPanel(pinPanel);
+		//Hier das Versionsgedönse
+		boolean[] drucken = null;
+		if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
+			druckversion = new int[] {1,1,1,1};
+			drucken = new boolean[] {true,true,true,true};
+		}else{
+			druckversion = new int[] {1,0,1,1};
+			drucken = new boolean[] {true,false,true,true};
+		}
+
+		printDlg.getSmartTitledPanel().setContentContainer(new BerichtDrucken(this,druckversion,drucken));
+		printDlg.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
+		printDlg.setName("EBPrint");
+		
+		printDlg.setLocation(p.x-100,p.y+35);
+		//printDlg.setLocationRelativeTo(null);
+		printDlg.setTitle("Entlass-Bericht drucken");
+
+		printDlg.setModal(true);
+		printDlg.pack();	
+		printDlg.setVisible(true);
+
+		
+		//neuPat.setVisible(false);
+
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+		 		  // setzeFocus();
+		 	   }
+		}); 	   	
+		//neuPat = null;
+		printDlg.dispose();
+		printDlg = null;
+
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+					Runtime r = Runtime.getRuntime();
+				    r.gc();
+				    long freeMem = r.freeMemory();
+				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		 	   }
+		});
+		System.out.println("BerichtDrucken ist disposed()");
+	}
+
+
+}
+
+class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	private RehaTPEventClass rtp = null;
+	public EBPrintDlg(){
+		super(null,"EBPrint");
+		this.setName("EBPrint");
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+
+	}
+	public void RehaTPEventOccurred(RehaTPEvent evt) {
+		// TODO Auto-generated method stub
+		try{
+			if(evt.getDetails()[0] != null){
+				if(evt.getDetails()[0].equals(this.getName())){
+					this.setVisible(false);
+					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+					rtp = null;
+					this.dispose();
+					System.out.println("****************EGPrint -> Listener entfernt**************");				
+				}
+			}
+		}catch(NullPointerException ne){
+			System.out.println("In PatNeuanlage" +evt);
+		}
+	}
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		if(rtp != null){
+			this.setVisible(false);			
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
+			rtp = null;
+			dispose();
+			System.out.println("****************EGPrint -> Listener entfernt (Closed)**********");
+		}
+		
+		
+	}
+	
+	
 }
