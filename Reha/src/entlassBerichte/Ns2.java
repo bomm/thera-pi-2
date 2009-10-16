@@ -595,7 +595,7 @@ public class Ns2 implements ActionListener {
 						int pos = 0;
 						vec = SqlInfo.holeFelder("select * from bericht2ktl where berichtid='"+
 								new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
-						for(int i = 1;i<10;i++){
+						for(int i = 1;i<=10;i++){
 							pos = (i*4);
 							//System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
 							if(vec.get(0).get(pos).equals("0")){

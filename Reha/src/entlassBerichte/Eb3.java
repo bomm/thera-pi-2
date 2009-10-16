@@ -397,9 +397,9 @@ public class Eb3 implements RehaEventListener  {
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
-	        	if(! inseitenaufbau){
-	        		//refreshSize();
-	        	}
+	        	
+	        		refreshSize();
+	        	
 	        		
 	        	//System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
 		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
@@ -731,11 +731,11 @@ public class Eb3 implements RehaEventListener  {
 		}
 		
 		public final void refreshSize() {
-		if (pan == null) {
+		if (pan == null || framegetrennt) {
 		return;
 		}
-		pan.setPreferredSize(new Dimension(pan.getWidth() - 10, pan.getHeight()
-		- 10));
+		pan.setPreferredSize(new Dimension(pan.getWidth() , pan.getHeight()
+		- 5));
 
 		final Container parent = pan.getParent();
 		if (parent instanceof JComponent) {
@@ -743,7 +743,7 @@ public class Eb3 implements RehaEventListener  {
 		}
 
 		// ... and just in case, call validate() on the top-level window as well
-		final Window window = SwingUtilities.getWindowAncestor(pan);
+		final Window window = SwingUtilities.getWindowAncestor(nativeView);
 		if (window != null) {
 		window.validate();
 		}

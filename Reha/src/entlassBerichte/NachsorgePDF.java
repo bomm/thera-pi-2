@@ -2,6 +2,8 @@ package entlassBerichte;
 
 import java.awt.Font;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +25,8 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
@@ -56,7 +60,7 @@ public class NachsorgePDF {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		final String xdatei =  tempDateien[0][0];
+		final String xdatei =  tempDateien[2][0];
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -113,20 +117,112 @@ public class NachsorgePDF {
 		PdfReader reader = null;
 		try {
 			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-			reader = new PdfReader (pdfPfad);
-			stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
-			PdfContentByte cb = stamper.getOverContent(1);
+			//String text = "";
 			Float [] pos = {null,null,null};
 			float fy0 =  0.25f;
-			float fy1 =  6.20f;
-
+			float fy1 =  6.2f;
+			//Float[] xseite = getFloats(188.25f,278.5f,fy0);
 			
-			stamper.setFormFlattening(true);
-			stamper.close();
-			reader.close();
+			Document docktl = new Document(PageSize.A4);
+			PdfCopy cop = new PdfCopy(docktl,new FileOutputStream(tempDateien[1][0]));
+			docktl.open();
+			int zugabe = 0;
+			for(int i = 0;i < 1;i++){
+				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+				PdfReader readeroriginal = new PdfReader(rvVorlagen[1]);
+				PdfStamper stamper2 = new PdfStamper(readeroriginal,baos);
+				PdfContentByte cb = stamper2.getOverContent(1);
 
-		}catch(Exception ex){
-			ex.printStackTrace();
+
+				
+				
+				pos = getFloats(28.50f,265.75f,fy0);
+				setzeText(cb,pos[0], pos[1],pos[2],bf,12,eltern.btf[2].getText());
+				pos = getFloats(166.75f,265.75f,fy1);
+				setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(eltern.btf[3].getText()));
+				
+				//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer   6xAnzahl
+				Float[] startwerte = {33.0f ,    249.5f     ,8.00f, 149.f,  153.25f,  177.00f  ,186.75f};
+				for(int y=0;y < 10;y++){
+					if(eltern.ktlcmb[y+zugabe].getSelectedIndex() > 0){
+						cb.setCharacterSpacing(0.25f);
+						schreibeKTLText(y,y+zugabe,startwerte,cb);
+						schreibeKTLCode(y,y+zugabe,startwerte,cb);
+					}else{
+						break;
+					}
+				}
+				cb.setCharacterSpacing(0.25f);				
+				ColumnText ct = new ColumnText(cb);
+				ct.setSimpleColumn(rechneX(28.5f), rechneY(112.f),rechneX(190.0f),rechneY(162.f),8.25f,Element.ALIGN_BOTTOM);
+				Phrase ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.add(eltern.bta[7].getText().trim());
+				ct.addText(ph);
+				ct.go();
+				//Die CheckBoxen
+				/*
+				Float[][] poswert1 = {getFloats(28.45f,90.35f,fy1),getFloats(69.25f,90.35f,fy1),getFloats(124.05f,90.35f,fy1),getFloats(159.8f,90.35f,fy1),
+									getFloats(28.45f,82.25f,fy1),getFloats(28.45f,74.25f,fy1)
+				};
+				*/
+				Float[][] poswert1 = {getFloats(28.45f,90.35f,fy1),getFloats(28.45f,82.25f,fy1),getFloats(28.45f,74.25f,fy1),
+									getFloats(69.25f,90.35f,fy1),getFloats(69.25f,82.25f,fy1),getFloats(69.25f,74.25f,fy1),
+									getFloats(124.05f,90.35f,fy1),getFloats(124.05f,82.25f,fy1),getFloats(124.05f,74.25f,fy1),
+									getFloats(159.8f,90.35f,fy1),getFloats(159.8f,82.25f,fy1),getFloats(159.8f,74.25f,fy1)
+				};
+				bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				for(i = 7; i < 19; i++){
+					setzeText(cb,poswert1[i-7][0], poswert1[i-7][1],poswert1[i-7][2],bf,12,( eltern.bchb[i].isSelected() ? "X" : "") );
+				}
+				//Erläuterungen der CheckBox-Auswahl
+				cb.setCharacterSpacing(0.25f);				
+				ct = new ColumnText(cb);
+				ct.setSimpleColumn(rechneX(28.5f), rechneY(60.f),rechneX(190.0f),rechneY(69.f),8.25f,Element.ALIGN_BOTTOM);
+				ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.add(eltern.bta[8].getText().trim());
+				ct.addText(ph);
+				ct.go();
+				//Letzte Medikation
+				cb.setCharacterSpacing(0.25f);				
+				ct = new ColumnText(cb);
+				ct.setSimpleColumn(rechneX(28.5f), rechneY(44.f),rechneX(190.0f),rechneY(54.0f),8.25f,Element.ALIGN_BOTTOM);
+				ph = new Phrase();
+				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.add(eltern.bta[9].getText().trim());
+				ct.addText(ph);
+				ct.go();
+				//Ort und Datum
+				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				String text = eltern.btf[23].getText().trim();
+				Float [] fsign = getFloats(24.25f,27.60f,fy1);
+				Float [] fort = getFloats(28.f,28.0f,fy0);
+				if(! text.equals(".  .")){
+					setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt+", "+text);
+				}else{
+					setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt+", ");
+				}
+				
+
+
+				// ab hier das Stamper und Copy Gedönse....				
+				stamper2.close();
+				cop.addPage(cop.getImportedPage(new PdfReader(baos.toByteArray()),1));
+				baos.close();
+				readeroriginal.close();
+				
+				
+			}
+			docktl.close();	
+			cop.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return false;
 		}
 		
 		return true;
@@ -262,7 +358,7 @@ public class NachsorgePDF {
 				ct = new ColumnText(cb);
 				ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ALIGN_BOTTOM);
 				ph = new Phrase();
-				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+				ph.setFont(FontFactory.getFont("Courier",8,Font.PLAIN));
 				ph.add(eltern.bta[i].getText().trim());
 				ct.addText(ph);
 				ct.go();
@@ -291,6 +387,27 @@ public class NachsorgePDF {
 			 
 			//PDFTools.FliessText(rechneX(29.f), rechneY(48.f), rechneX(160.0f),rechneY(76.f), cb, eltern.bta[6].getText().trim(),stamper);
 			
+			/*****************************************************************/
+			// Der Block rechts oben mit der Einrichtungsadresse
+			StringBuffer reha = new StringBuffer();
+			int lang = SystemConfig.vGutachtenAbsAdresse.size();
+			for(int i = 0; i < lang;i++){
+				reha.append(SystemConfig.vGutachtenAbsAdresse.get(i)+(i < (lang-1) ? "\n" : ""));
+			}
+			// Reha-Einrichtung
+			Float[] rehaunten =  getFloats(125.0f,220.0f,0.5f);
+			Float[] rehaoben =  getFloats(195.0f,249.0f,0.5f);
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],11,Element.ALIGN_BASELINE);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Helvectica",10,Font.PLAIN));
+			ph.add(reha.toString());
+			ct.addText(ph);
+			ct.go();
+			
+			/*****************************************************************/
+
+			
 			/*********************************/
 			stamper.setFormFlattening(true);
 			stamper.close();
@@ -303,6 +420,21 @@ public class NachsorgePDF {
 	}	
 	public boolean doSeitenZusammenstellen() throws IOException, DocumentException{
 		Document docgesamt = new Document(PageSize.A4);
+		InputStream isb = null;
+		PdfImportedPage page2;		
+		
+		tempDateien[2] = new String[]{tempPfad+"NSGesamt"+System.currentTimeMillis()+".pdf"};
+		
+		PdfCopy cop = new PdfCopy(docgesamt,new FileOutputStream(tempDateien[2][0]));
+		docgesamt.open();
+
+		cop.addPage(cop.getImportedPage(new PdfReader(tempDateien[0][0]),1));
+		cop.addPage(cop.getImportedPage(new PdfReader(tempDateien[1][0]),1));
+
+		docgesamt.close();
+		cop.close();
+
+		
 
 		return false;
 	}
@@ -342,5 +474,86 @@ public class NachsorgePDF {
 		}
 		return sret;
 	}
-	
+
+	private void schreibeKTLErlaeut(int ierlaeut,PdfContentByte cb){
+		ColumnText ct = null;
+		Phrase ph = null;
+		float xstart = rechneX(25.f);
+		float ystartunten = rechneY(27.0f);
+		float xende = rechneX(195.0f);
+		float ystartoben = rechneY(42.f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(xstart, ystartunten,xende,ystartoben,8,Element.ANCHOR);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+		if(ierlaeut > 0){
+			ph.add((String)this.eltern.bta[9].getText());			
+		}else{
+			ph.add((String)this.eltern.bta[8].getText());
+		}
+		ct.addText(ph);
+		try {
+			ct.go();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	private void schreibeKTLCode(int position,int ktlpos,Float[] startwerte,PdfContentByte cb){
+		//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer  6xAnzahl
+		//Float[] startwerte = {30.0f ,    251.f      ,8.5f, 149.f,  154.75f,   181.f  ,191.f};
+		float stretch = 6.2f;
+		float ystartunten = rechneY(startwerte[1]-(new Float(position) * startwerte[2])+0.5f);
+		float xcode = rechneX(startwerte[4]);
+		float xdauer = rechneX(startwerte[5]);
+		float xanzahl = rechneX(startwerte[6]);	
+		BaseFont bf;
+		try {
+			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			setzeText(cb,xcode, ystartunten,stretch,bf,12,eltern.ktltfc[ktlpos].getText());
+			setzeText(cb,xdauer, ystartunten,stretch,bf,12,eltern.ktltfd[ktlpos].getText());
+			if(eltern.ktltfa[ktlpos].getText().trim().length()==1 ){
+				setzeText(cb,xanzahl, ystartunten,stretch,bf,12,"0"+eltern.ktltfa[ktlpos].getText());
+			}else{
+				setzeText(cb,xanzahl, ystartunten,stretch,bf,12,eltern.ktltfa[ktlpos].getText());				
+			}
+
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	private void schreibeKTLText(int position,int ktlpos,Float[] startwerte,PdfContentByte cb){
+		ColumnText ct = null;
+		Phrase ph = null;
+		float zaehler = 1.f;
+ 
+		//                     x-start,  y-start,  höhe   x-ende
+		//Float[] startwerte = {28.0f ,  251.f      ,8.5f, 152.f};
+
+		float xstart = rechneX(startwerte[0]+1.5f);
+		float ystartunten = startwerte[1]-(new Float(position) * startwerte[2])-2.f;
+		float xende = rechneX(startwerte[3]);
+		float ystartoben = rechneY(ystartunten+ startwerte[2]+(0.1f*(position-1)) );
+		ystartunten = rechneY(ystartunten);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(xstart, ystartunten,xende,ystartoben,8,Element.ALIGN_TOP);
+		
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+		ph.add((String)eltern.ktlcmb[ktlpos].getSelectedItem());
+		ct.addText(ph);
+		try {
+			ct.go();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
