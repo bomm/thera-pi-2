@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Panel;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ContainerAdapter;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -395,6 +397,7 @@ public class Eb3 implements RehaEventListener  {
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
+	        		refreshSize();
 	        	//System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
 		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 		          parent.getLayout().layoutContainer(parent);
@@ -723,6 +726,29 @@ public class Eb3 implements RehaEventListener  {
 			
 
 		}
+		
+		public final void refreshSize() {
+		if (pan == null) {
+		return;
+		}
+		pan.setPreferredSize(new Dimension(pan.getWidth() - 10, pan.getHeight()
+		- 10));
+
+		final Container parent = pan.getParent();
+		if (parent instanceof JComponent) {
+		((JComponent) parent).revalidate();
+		}
+
+		// ... and just in case, call validate() on the top-level window as well
+		final Window window = SwingUtilities.getWindowAncestor(pan);
+		if (window != null) {
+		window.validate();
+		}
+
+		pan.getLayout().layoutContainer(getSeite());
+		pan.setVisible(true);
+		}
+
 		private void macheByteBuffer(){
 			InputStream is = null;
 			outtemp = new ByteArrayOutputStream();
@@ -756,5 +782,6 @@ public class Eb3 implements RehaEventListener  {
 			"framegetrennt  = "+framegetrennt+"\n";
 			return ret;
 		}
+		
 
 }

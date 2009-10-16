@@ -3,16 +3,22 @@ package entlassBerichte;
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.SwingWorker;
 
+import pdfTools.PDFTools;
+
 import systemEinstellungen.SystemConfig;
 
 import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.ColumnText;
@@ -36,10 +42,20 @@ public class NachsorgePDF {
 	public NachsorgePDF(EBerichtPanel xeltern,boolean nurVorschau,int version){
 		eltern = xeltern;
 		rvVorlagen[0]  = vorlagenPfad+"Nachsorge1-Variante2.pdf";
-		rvVorlagen[1]  = vorlagenPfad+"Nachsorge1-Variante2.pdf";
+		rvVorlagen[1]  = vorlagenPfad+"Nachsorge2-Variante2.pdf";
 		rvVorlagen[2]  = vorlagenPfad+"";
 		rvVorlagen[3]  = vorlagenPfad+"";
 		boolean geklappt = doSeite1(true,"","");
+		geklappt = doSeite2(true,"","");
+		try {
+			geklappt = doSeitenZusammenstellen();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		final String xdatei =  tempDateien[0][0];
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -89,6 +105,32 @@ public class NachsorgePDF {
 		
 		
 	}
+	private boolean doSeite2(boolean vorschau,String ausfertigung,String bereich){
+		String pdfPfad = rvVorlagen[1];
+		PdfStamper stamper = null;
+		tempDateien[1] = new String[]{tempPfad+"NS2"+System.currentTimeMillis()+".pdf"};
+		BaseFont bf = null;
+		PdfReader reader = null;
+		try {
+			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			reader = new PdfReader (pdfPfad);
+			stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[1][0]));
+			PdfContentByte cb = stamper.getOverContent(1);
+			Float [] pos = {null,null,null};
+			float fy0 =  0.25f;
+			float fy1 =  6.20f;
+
+			
+			stamper.setFormFlattening(true);
+			stamper.close();
+			reader.close();
+
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return true;
+	}
 	
 	private boolean doSeite1(boolean vorschau,String ausfertigung,String bereich){
 
@@ -99,7 +141,6 @@ public class NachsorgePDF {
 		PdfReader reader = null;
 		try {
 			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
-			
 			reader = new PdfReader (pdfPfad);
 			stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 			PdfContentByte cb = stamper.getOverContent(1);
@@ -213,10 +254,10 @@ public class NachsorgePDF {
 		         ct.addText(chunk);
 		         ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ALIGN_BOTTOM);
 		         ct.go();
-				float yAbsolutePosition = iTextDoc.bottomMargin() + iTextPdfPTable.getTotalHeight(); 
-				iTextPdfPTable.writeSelectedRows(0, -1, iTextDoc.leftMargin(), yAbsolutePosition, pdfWriter.getDirectContent());
-		         
+				//float yAbsolutePosition = iTextDoc.bottomMargin() + iTextPdfPTable.getTotalHeight(); 
+				//iTextPdfPTable.writeSelectedRows(0, -1, iTextDoc.leftMargin(), yAbsolutePosition, pdfWriter.getDirectContent());
 		         */
+		        
 
 				ct = new ColumnText(cb);
 				ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ALIGN_BOTTOM);
@@ -239,6 +280,7 @@ public class NachsorgePDF {
 			ct.addText(ph);
 			ct.go();
 			//Beschreibung prä/post
+			
 			ct = new ColumnText(cb);
 			ct.setSimpleColumn(rechneX(29.f), rechneY(48.f),rechneX(182.0f),rechneY(76.f),8,Element.ALIGN_BOTTOM);
 			ph = new Phrase();
@@ -246,8 +288,8 @@ public class NachsorgePDF {
 			ph.add(eltern.bta[6].getText().trim());
 			ct.addText(ph);
 			ct.go();
-
-			
+			 
+			//PDFTools.FliessText(rechneX(29.f), rechneY(48.f), rechneX(160.0f),rechneY(76.f), cb, eltern.bta[6].getText().trim(),stamper);
 			
 			/*********************************/
 			stamper.setFormFlattening(true);
@@ -259,7 +301,11 @@ public class NachsorgePDF {
 
 		return true;
 	}	
-	
+	public boolean doSeitenZusammenstellen() throws IOException, DocumentException{
+		Document docgesamt = new Document(PageSize.A4);
+
+		return false;
+	}
 	
 	/***********ab hier Christian's Funktionen
 	 * 

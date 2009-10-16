@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
@@ -279,7 +280,10 @@ public class Eb1 implements ActionListener {
 		pb.getPanel().validate();
 		
 		jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
+		jscr.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
+
 		jscr.validate();
 		return jscr;
 		
