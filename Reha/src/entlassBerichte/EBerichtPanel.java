@@ -748,8 +748,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 				if(inebericht){
 					dokumentSchliessen();
-					if(document.isOpen()){
-						document.close();
+					if(document != null){
+						if(document.isOpen()){
+							document.close();
+						}
 					}
 					this.evt.removeRehaEventListener((RehaEventListener)this);
 				}else{

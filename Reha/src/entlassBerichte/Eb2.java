@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
@@ -190,6 +191,7 @@ public class Eb2 {
 		//pb.add(getBeurteilung1(),cc.xy(4,6,CellConstraints.RIGHT,CellConstraints.FILL));
 		
 		jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
+		jscr.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		jscr.validate();
 		return jscr;

@@ -397,7 +397,10 @@ public class Eb3 implements RehaEventListener  {
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
-	        		refreshSize();
+	        	if(! inseitenaufbau){
+	        		//refreshSize();
+	        	}
+	        		
 	        	//System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
 		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 		          parent.getLayout().layoutContainer(parent);

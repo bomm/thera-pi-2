@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
 import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
@@ -97,6 +98,7 @@ public class Eb4 implements ActionListener {
 		pb.add(getSeiten(2),cc.xy(3,4,CellConstraints.FILL,CellConstraints.DEFAULT));
 
 		jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
+		jscr.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		jscr.validate();
 		return jscr;
