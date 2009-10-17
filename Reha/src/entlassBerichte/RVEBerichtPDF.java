@@ -1,5 +1,4 @@
 package entlassBerichte;
-
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -40,12 +39,19 @@ public class RVEBerichtPDF {
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 
 	
-	public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen){
+	public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen,boolean RV){
 		eltern = xeltern;
-		rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
-		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
-		rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
-		rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
+		if(RV){
+			rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
+			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
+			rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
+			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
+		}else{
+			rvVorlagen[0]  = vorlagenPfad+"GKVBericht-Seite1-Variante2.pdf";
+			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
+			rvVorlagen[2]  = vorlagenPfad+"GKVBericht-Seite2-Variante2.pdf";
+			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
+		}
 		System.out.println("Nur Vorschau = "+nurVorschau);
 		if(!nurVorschau){
 			System.out.println("Drucken Kapitel 1 = "+versionen[0]);
@@ -53,9 +59,9 @@ public class RVEBerichtPDF {
 			System.out.println("Drucken Kapitel 3 = "+versionen[2]);
 			System.out.println("Drucken Kapitel 4 = "+versionen[3]);
 		}
-		doRVVorschau(nurVorschau,versionen);
+		doRVVorschau(nurVorschau,versionen,RV);
 	}
-	private void doRVVorschau(boolean vorschau,int[] versionen){
+	private void doRVVorschau(boolean vorschau,int[] versionen,boolean RV){
 		boolean geklappt;
 		Reha.thisClass.progressStarten(true);
 		File ft = new File(tempPfad+"EBfliesstext.pdf");
@@ -88,7 +94,7 @@ public class RVEBerichtPDF {
 		final int[] exemplare = versionen;
 		if(vorschau){
 			System.out.println("InDo Seitenzusammenstellen");
-			geklappt = doSeitenZusammenstellen();	
+			geklappt = doSeitenZusammenstellen(RV);	
 			if(!geklappt){
 				JOptionPane.showMessageDialog(null,"Fehler beim Zusammenstellen der Berichtseiten");
 				return;
@@ -122,6 +128,8 @@ public class RVEBerichtPDF {
 						return null;
 					}
 				}.execute();
+			}else{
+				
 			}
 		}
 		
@@ -903,7 +911,7 @@ public class RVEBerichtPDF {
 		System.out.println(new Integer(seiten).toString()+" Seiten Flieﬂtext wurden zusammengestellt");	
 		return seiten;
 	}
-	public boolean doSeitenZusammenstellen(){
+	public boolean doSeitenZusammenstellen(boolean RV){
 		try{
 		InputStream isb = null;
 		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};

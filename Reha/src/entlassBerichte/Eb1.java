@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -62,9 +63,16 @@ public class Eb1 implements ActionListener {
 	String[] vorherau = {"","0","1","2","3","9"};
 	String[] dmp = {"","0","1","2","3","4","5","6","7"};
 	JLabel titel = null;
-	JLabel[] labstitel = {null,null,null,null,null,
-							null,null,null,null,null,
-							null,null,null,null,null,null,null};
+	JLabel[][] labstitel = { {null,null},{null,null},
+			{null},{null},
+			{null,null},{null,null,null},
+			{null,null},{null},
+			{null},{null},
+			{null},{null},
+			{null},{null},
+			{null,null},{null,null,null},
+			{null,null}
+	};
 	JLabel[] labsheadline = {null,null,null};
 	String[] headlineneu = {"Weiterbehandelnde Ärzte / Psychologen",
 			"Patienten","Rentenversicherung"};
@@ -73,24 +81,24 @@ public class Eb1 implements ActionListener {
 			"",""};
 
 	String[][] stitelalt = {{"Diagn.","Klärung"},{"Stat.","Behandl."},
-			{"Selbsthilfe-","gruppe"},{"Amb. reha", "Sucht"},
+			{"Selbsthilfegruppe"},{"Amb.Reha Sucht"},
 			{"Gewichts-","reduktion"},{"Alkohol-", "karenz",""},
-			{"Operation",""},{"Psycho-", "therapie"},
-			{"Vorstellung","Suchtberatung"},{"spezielle", "Nachsorge"},
-			{"Nikotin","-karenz"},{"Heil- und", "Hilfsmittel"},
-			{"Rehabilitations-","sport"},{"Funktions-","training"},
+			{"Operation",""},{"Psychotherapie"},
+			{"Vorstell. Suchtberatung"},{"spezielle Nachsorge"},
+			{"Nikotinkarenz"},{"Heil- und Hilfsmittel"},
+			{"Rehabilitationssport"},{"Funktionstraining"},
 			{"stufenweise","Wiedereingliederung"},{"Bf. Leistung","prüfen",""},
-			{"sonstige","Anregung",""}
+			{"sonstige","Anregung"}
 	};
 	String[][] stitelneu = {{"Diagnostische","Klärung"},{"Kontrolle Laborwerte/","Medikamente"},
-			{"Stationäre Be-","handlung / OP"},{"Suchtberatung",""},
+			{"Stat.Behandlung / OP"},{"Suchtberatung"},
 			{"Psychol. Beratung /","Psychotherapie"},{"Heil- und Hilfsmittel","inkl. Physiotherapie","und Ergotherapie"},
-			{"Übungen selb-","ständig fortsetzen"},{"Sport und","Bewegung"},
-			{"Gewichtsreduktion",""},{"Nikotin-","karenz"},
-			{"Alkoholkarenz",""},{"Selbsthilfe-","gruppe"},
-			{"Rehabilitations-","sport"},{"Funktions-","training"},
+			{"Übungen selbständig","fortführen"},{"Sport und Bewegung"},
+			{"Gewichtsreduktion",""},{"Nikotinkarenz"},
+			{"Alkoholkarenz",""},{"Selbsthilfegruppe"},
+			{"Rehabilitationssport"},{"Funktionstraining"},
 			{"stufenweise","Wiedereingliederung"},{"Leistungen zur","Teilhabe am","Arbeitsleben prüfen"},
-			{"Reha-Nachsorge (z.B.","IRENA, Curriculum Han-","nover, Suchtnachsorge"}
+			{"Reha-Nachsorge (z.B.","IRENA oder ASP"}
 	};
 
 	JScrollPane jscr = null;
@@ -463,11 +471,11 @@ public class Eb1 implements ActionListener {
 		titl.getPanel().setOpaque(false);
 		CellConstraints cctitl = new CellConstraints();
 		// hier dazwischen den ganzen linken Scheiß
-		JLabel lab = new JLabel("Weiterbeh. Ärzte / Psychologen");
-		lab.setFont(fontarialfett);
-		titl.add(lab,cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
+		labsheadline[0] = new JLabel(headlineneu[0]);
+		labsheadline[0].setFont(fontarialfett);
+		titl.add(labsheadline[0],cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
 		/****/
-		lab = getLabel("125");
+		JLabel lab = getLabel("125");
 		lab.setForeground(Color.RED);
 		titl.add(lab,cctitl.xy(1,2));
 		eltern.bchb[0] = new JRtaCheckBox("");
@@ -477,8 +485,9 @@ public class Eb1 implements ActionListener {
 		PanelBuilder ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		CellConstraints cclabs = new CellConstraints();
-		ltitl.add(getLabel("Diagnostische"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("Klärung"),cclabs.xy(1, 2));
+
+		ltitl.add( (labstitel[0][0] = getLabel(stitelneu[0][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[0][1] = getLabel(stitelneu[0][1])),cclabs.xy(1, 2));
 		titl.add(ltitl.getPanel(),cctitl.xy(3,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("126");
@@ -491,8 +500,8 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Kontrolle Labor-"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("werte / Medikamente"),cclabs.xy(1, 2));
+		ltitl.add( (labstitel[1][0] = getLabel(stitelneu[1][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[1][1] = getLabel(stitelneu[1][1])),cclabs.xy(1, 2));
 		//ltitl.add(getLabel("Neue Zeile"),cclabs.xy(1, 3));
 		//titl.add(ltitl.getPanel(),cctitl.xywh(7,1,1,3,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		titl.add(ltitl.getPanel(),cctitl.xy(7,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
@@ -507,7 +516,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Stat.Behandlung / OP"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[2][0] = getLabel(stitelneu[2][0])),cclabs.xy(1, 1));
 		titl.add(ltitl.getPanel(),cctitl.xy(3,6,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("132");
@@ -520,7 +529,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Suchtberatung"),cclabs.xy(1, 1));
+		ltitl.add( (labstitel[3][0] = getLabel(stitelneu[3][0])),cclabs.xy(1, 1));
 		titl.add(ltitl.getPanel(),cctitl.xy(7,6,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("137");
@@ -533,8 +542,8 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Psychol Beratung /"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("Psychotherapie"),cclabs.xy(1, 2));
+		ltitl.add((labstitel[4][0] = getLabel(stitelneu[4][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[4][1] = getLabel(stitelneu[4][1])),cclabs.xy(1, 2));
 		titl.add(ltitl.getPanel(),cctitl.xy(3,10,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("138");
@@ -547,9 +556,9 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Heil- u. Hilfsmittel"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("inkl. Physiotherapie u."),cclabs.xy(1, 2));
-		ltitl.add(getLabel("Ergotherapie"),cclabs.xy(1, 3));
+		ltitl.add((labstitel[5][0] = getLabel(stitelneu[5][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[5][1] = getLabel(stitelneu[5][1])),cclabs.xy(1, 2));
+		ltitl.add((labstitel[5][2] = getLabel(stitelneu[5][2])),cclabs.xy(1, 3));
 		//titl.add(ltitl.getPanel(),cctitl.xy(3,10,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		titl.add(ltitl.getPanel(),cctitl.xywh(7,9,1,3,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
 		/***************/
@@ -572,9 +581,9 @@ public class Eb1 implements ActionListener {
 		titm.getPanel().setOpaque(false);
 		CellConstraints cctitm = new CellConstraints();
 		// hier dazwischen den ganzen mittleren Scheiß
-		lab = new JLabel("Patienten");
-		lab.setFont(fontarialfett);
-		titm.add(lab,cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
+		labsheadline[1] = new JLabel(headlineneu[1]);
+		labsheadline[1].setFont(fontarialfett);
+		titm.add(labsheadline[1],cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
 		/****/
 		lab = getLabel("127");
 		lab.setForeground(Color.RED);
@@ -586,8 +595,8 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Übungen selbständig"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("fortführen"),cclabs.xy(1, 2));
+		ltitl.add((labstitel[6][0] = getLabel(stitelneu[6][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[6][1] = getLabel(stitelneu[6][1])),cclabs.xy(1, 2));
 		titm.add(ltitl.getPanel(),cctitl.xy(3,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("128");
@@ -600,7 +609,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Sport und Bewegung"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[7][0] = getLabel(stitelneu[7][0])),cclabs.xy(1, 1));
 		titm.add(ltitl.getPanel(),cctitl.xy(7,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("133");
@@ -613,7 +622,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Gewichtsreduktion"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[8][0] = getLabel(stitelneu[8][0])),cclabs.xy(1, 1));
 		titm.add(ltitl.getPanel(),cctitl.xy(3,6,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("134");
@@ -626,7 +635,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Nikotinkarenz"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[9][0] = getLabel(stitelneu[9][0])),cclabs.xy(1, 1));
 		titm.add(ltitl.getPanel(),cctitl.xy(7,6,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("139");
@@ -639,7 +648,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Alkoholkarenz"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[10][0] = getLabel(stitelneu[10][0])),cclabs.xy(1, 1));
 		titm.add(ltitl.getPanel(),cctitl.xy(3,10,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("140");
@@ -652,7 +661,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Selbsthilfegruppe"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[11][0] = getLabel(stitelneu[11][0])),cclabs.xy(1, 1));
 		titm.add(ltitl.getPanel(),cctitl.xy(7,10,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		
 		tit.add(titm.getPanel(),cctit.xy(5,2,CellConstraints.FILL,CellConstraints.FILL));
@@ -672,9 +681,9 @@ public class Eb1 implements ActionListener {
 		PanelBuilder titr = new PanelBuilder(rechts);
 		titr.getPanel().setOpaque(false);
 		CellConstraints cctitr = new CellConstraints();
-		lab = new JLabel("Rentenversicherung");
-		lab.setFont(fontarialfett);
-		titr.add(lab,cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
+		labsheadline[2] = new JLabel(headlineneu[2]);
+		labsheadline[2].setFont(fontarialfett);
+		titr.add(labsheadline[2],cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
 		/****/
 		lab = getLabel("129");
 		lab.setForeground(Color.RED);
@@ -686,7 +695,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Rehabilitationssport"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[12][0] = getLabel(stitelneu[12][0])),cclabs.xy(1, 1));
 		titr.add(ltitl.getPanel(),cctitl.xy(3,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("130");
@@ -699,7 +708,7 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Funktionstraining"),cclabs.xy(1, 1));
+		ltitl.add((labstitel[13][0] = getLabel(stitelneu[13][0])),cclabs.xy(1, 1));
 		titr.add(ltitl.getPanel(),cctitl.xy(7,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("135");
@@ -712,8 +721,8 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("stufenweise"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("Wiedereingliederung"),cclabs.xy(1, 2));		
+		ltitl.add((labstitel[14][0] = getLabel(stitelneu[14][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[14][1] = getLabel(stitelneu[14][1])),cclabs.xy(1, 2));		
 		titr.add(ltitl.getPanel(),cctitl.xy(3,6,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		lab = getLabel("136");
@@ -726,9 +735,9 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Leistungen zur Teil-"),cclabs.xy(1, 1));
-		ltitl.add(getLabel("habe am Arbeitsleben"),cclabs.xy(1, 2));
-		ltitl.add(getLabel("prüfen"),cclabs.xy(1, 3));	
+		ltitl.add((labstitel[15][0] = getLabel(stitelneu[15][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[15][1] = getLabel(stitelneu[15][1])),cclabs.xy(1, 2));
+		ltitl.add((labstitel[15][2] = getLabel(stitelneu[15][2])),cclabs.xy(1, 3));	
 		//titr.add(ltitl.getPanel(),cctitl.xy(7,6,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		titr.add(ltitl.getPanel(),cctitl.xywh(7,5,1,3,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		/***/
@@ -742,8 +751,8 @@ public class Eb1 implements ActionListener {
 		ltitl = new PanelBuilder(labs);
 		ltitl.getPanel().setOpaque(false);
 		cclabs = new CellConstraints();
-		ltitl.add(getLabel("Reha-Nachsorge, z.B."),cclabs.xy(1, 1));
-		ltitl.add(getLabel("IRENA oder ASP"),cclabs.xy(1, 2));
+		ltitl.add((labstitel[16][0] = getLabel(stitelneu[16][0])),cclabs.xy(1, 1));
+		ltitl.add((labstitel[16][1] = getLabel(stitelneu[16][1])),cclabs.xy(1, 2));
 		titr.add(ltitl.getPanel(),cctitl.xy(3,10,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		/***/
 		titr.getPanel().validate();
@@ -1618,6 +1627,18 @@ public class Eb1 implements ActionListener {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("empfaenger")){
 			testeIK();
+			if( ((String)eltern.cbktraeger.getSelectedItem()).contains("GKV")){
+				setzeNeueLabels(false);
+				eltern.ebt.getTab1().pan.revalidate();
+				eltern.bcmb[19].setEnabled(false);
+				eltern.bta[6].setEnabled(true);
+			}else{
+				// Hier noch das RV - Entlassdatum einbauen ggfls. ebenfalls alte labels zeigen
+				setzeNeueLabels(true);
+				eltern.ebt.getTab1().pan.revalidate();
+				eltern.bcmb[19].setEnabled(true);
+				eltern.bta[6].setEnabled(false);				
+			}
 		}
 	}
 	public void testeIK(){
@@ -1625,6 +1646,22 @@ public class Eb1 implements ActionListener {
 		eltern.btf[28].setText(SystemConfig.vGutachtenIK.get(eltern.cbktraeger.getSelectedIndex()));		
 		eltern.btf[28].validate();
 		eltern.btf[28].repaint();
+	}
+	public void setzeNeueLabels(boolean neu){
+		System.out.println("Setze neue Labels");
+		for(int i = 0; i < 17; i++){
+			for(int t = 0; t < labstitel[i].length; t++){
+				if(neu){
+					if(t < 3){labsheadline[t].setText(headlineneu[t]);}
+					labstitel[i][t].setText(stitelneu[i][t]);
+					if(t == 16){  ((JComponent)labstitel[i][t].getParent()).revalidate() ; }
+				}else{
+					if(t < 3){labsheadline[t].setText(headlinealt[t]);}
+					labstitel[i][t].setText(stitelalt[i][t]);
+					if(t == 16){  ((JComponent)labstitel[i][t].getParent()).revalidate() ; }					
+				}
+			}
+		}
 	}
 }
 

@@ -636,45 +636,30 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					protected Void doInBackground() throws Exception {
 						Reha.thisClass.progressStarten(true);
 						ebtab.setSelectedIndex(0);
-						if(((String)cbktraeger.getSelectedItem()).contains("DRV ")){
-							try {
-								 
-						        int sel = ebtab.getSelectedIndex();
-								if(document.isModified()){
-									System.out.println("in getrennt.....");
-									if(sel != 2){
-											ebt.getTab3().tempTextSpeichern();
-											document.close();
-									}else{
-										if(document.isModified()){											
-											ebt.getTab3().tempTextSpeichern();
-										}
-									}
 
-								}else{
-									System.out.println("in nicht!!!!!getrennt.....");
-									if(sel != 2){
-										ebt.getTab3().tempTextSpeichern();
-										document.close();
-									}else{
-										ebt.getTab3().tempTextSpeichern();
-									}
-								}
-								
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+				        int sel = ebtab.getSelectedIndex();
+						if(document.isModified()){
+							System.out.println("in getrennt.....");
+							if(sel != 2){
+								ebt.getTab3().tempTextSpeichern();
+								document.close();
+							}	
+						}else{
+							if(document.isModified()){											
+								ebt.getTab3().tempTextSpeichern();
 							}
-							// Hier abprüfen ob gedruckt werden soll
-							//public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen)
-							try{
-								new RVEBerichtPDF(xthis,xnurVorschau, xversionen);
-							}catch(Exception ex){
-								ex.printStackTrace();
-							}
-							//doRVVorschau(true,"Ausfertigung für den RV-Träger  "+(String)cbktraeger.getSelectedItem(),"Bereich Reha");
-
 						}
+						// Hier abprüfen ob gedruckt werden soll
+						//public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen)
+						try{
+							if(((String)cbktraeger.getSelectedItem()).contains("DRV")){
+								new RVEBerichtPDF(xthis,xnurVorschau, xversionen,true);
+							}else{
+								new RVEBerichtPDF(xthis,xnurVorschau, xversionen,false);								
+							}
+						}catch(Exception ex){
+								ex.printStackTrace();
+						}	
 						return null;
 					}
 				}.execute();
