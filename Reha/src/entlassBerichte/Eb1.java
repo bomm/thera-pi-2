@@ -62,6 +62,37 @@ public class Eb1 implements ActionListener {
 	String[] vorherau = {"","0","1","2","3","9"};
 	String[] dmp = {"","0","1","2","3","4","5","6","7"};
 	JLabel titel = null;
+	JLabel[] labstitel = {null,null,null,null,null,
+							null,null,null,null,null,
+							null,null,null,null,null,null,null};
+	JLabel[] labsheadline = {null,null,null};
+	String[] headlineneu = {"Weiterbehandelnde Ärzte / Psychologen",
+			"Patienten","Rentenversicherung"};
+
+	String[] headlinealt = {"",
+			"",""};
+
+	String[][] stitelalt = {{"Diagn.","Klärung"},{"Stat.","Behandl."},
+			{"Selbsthilfe-","gruppe"},{"Amb. reha", "Sucht"},
+			{"Gewichts-","reduktion"},{"Alkohol-", "karenz",""},
+			{"Operation",""},{"Psycho-", "therapie"},
+			{"Vorstellung","Suchtberatung"},{"spezielle", "Nachsorge"},
+			{"Nikotin","-karenz"},{"Heil- und", "Hilfsmittel"},
+			{"Rehabilitations-","sport"},{"Funktions-","training"},
+			{"stufenweise","Wiedereingliederung"},{"Bf. Leistung","prüfen",""},
+			{"sonstige","Anregung",""}
+	};
+	String[][] stitelneu = {{"Diagnostische","Klärung"},{"Kontrolle Laborwerte/","Medikamente"},
+			{"Stationäre Be-","handlung / OP"},{"Suchtberatung",""},
+			{"Psychol. Beratung /","Psychotherapie"},{"Heil- und Hilfsmittel","inkl. Physiotherapie","und Ergotherapie"},
+			{"Übungen selb-","ständig fortsetzen"},{"Sport und","Bewegung"},
+			{"Gewichtsreduktion",""},{"Nikotin-","karenz"},
+			{"Alkoholkarenz",""},{"Selbsthilfe-","gruppe"},
+			{"Rehabilitations-","sport"},{"Funktions-","training"},
+			{"stufenweise","Wiedereingliederung"},{"Leistungen zur","Teilhabe am","Arbeitsleben prüfen"},
+			{"Reha-Nachsorge (z.B.","IRENA, Curriculum Han-","nover, Suchtnachsorge"}
+	};
+
 	JScrollPane jscr = null;
 	boolean inGuiInit = true;
 	public Eb1(EBerichtPanel xeltern){

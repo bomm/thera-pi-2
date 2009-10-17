@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import javax.swing.SwingWorker;
 import pdfTools.PDFTools;
 
 import systemEinstellungen.SystemConfig;
+import systemTools.ReaderStart;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -43,7 +45,7 @@ public class NachsorgePDF {
 
 	
 	
-	public NachsorgePDF(EBerichtPanel xeltern,boolean nurVorschau,int version){
+	public NachsorgePDF(EBerichtPanel xeltern,boolean nurVorschau,int[] version){
 		eltern = xeltern;
 		rvVorlagen[0]  = vorlagenPfad+"Nachsorge1-Variante2.pdf";
 		rvVorlagen[1]  = vorlagenPfad+"Nachsorge2-Variante2.pdf";
@@ -61,52 +63,17 @@ public class NachsorgePDF {
 			e.printStackTrace();
 		}
 		final String xdatei =  tempDateien[2][0];
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				try{
-					/*
-					Reha.thisClass.progressStarten(true);
-					String cmd = "java -jar ";
-					System.out.println("Starte "+cmd+" "+Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei);
-					final String xcmd = cmd;
-					SwingUtilities.invokeLater(new Runnable(){
-						public  void run(){
-							try {
-								Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFDrucker.jar "+xdatei);
-								Reha.thisClass.progressStarten(false);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					});
-					*/
-					//Process process = new ProcessBuilder(cmd,"",Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei).start();
-					
-					Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
-					InputStream is = process.getInputStream();
-					
-					InputStreamReader isr = new InputStreamReader(is);
-					BufferedReader br = new BufferedReader(isr);
-					String line;
-					 Reha.thisClass.progressStarten(false);							       
-			       while ((line = br.readLine()) != null) {
-			         System.out.println("Lade Adobe "+line);
-			       }
-			       is.close();
-			       isr.close();
-			       br.close();
-			      
-					
-				}catch(Exception ex){
-					Reha.thisClass.progressStarten(false);
-				}
-				return null;
-			}
-		}.execute();
-		
-		
+		if(nurVorschau){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					new ReaderStart(xdatei);
+					return null;
+				}	
+			}.execute();
+		}else{
+			doNachsorgeDrucken(version);
+		}
 		
 	}
 	private boolean doSeite2(boolean vorschau,String ausfertigung,String bereich){
@@ -555,5 +522,88 @@ public class NachsorgePDF {
 			e.printStackTrace();
 		}
 	}
+	private void schreibeEmpfaenger(PdfContentByte cb,String empfaenger) throws DocumentException, IOException{
+		float fy0 =  0.25f;
+		float fy1 =  7.1f;
+		//xx
+		Float[] xempfaenger = getFloats(27.5f,281.60f,fy0);
+		Float[] xbereich = getFloats(155.5f,277.60f,fy0);
 
-}
+		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
+		cb.beginText();
+		cb.moveText(xempfaenger[0], xempfaenger[1]);
+		cb.setFontAndSize(bf,10.5f);
+		//cb.setCharacterSpacing(xempfaenger[2]);
+		cb.showText("Ausfertigung für "+empfaenger);
+		cb.endText();
+	}
+	
+	private void doNachsorgeDrucken(int[] exemplare){
+		String[] empfs = {"die Deutsche Rentenversicherung - "+(String) eltern.cbktraeger.getSelectedItem(),
+				"die Deutsche Rentenversicherung - "+(String) eltern.cbktraeger.getSelectedItem(),
+				"den behandelnden Arzt","die Nachsorgeeinrichtung"};
+
+		try {
+
+			for(int i = 0; i < 4; i++){
+				String tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
+				Document docversion = new Document(PageSize.A4);
+				ByteArrayOutputStream baout = null;
+				PdfImportedPage pageImport;
+				PdfCopy cop;
+
+				cop = new PdfCopy(docversion,new FileOutputStream(tempversion));
+				docversion.open();
+
+				PdfReader rvorlage = new PdfReader(tempDateien[2][0]);
+				baout = new ByteArrayOutputStream();
+				PdfStamper stamper = new PdfStamper(rvorlage,baout);
+				PdfContentByte cb1 = stamper.getOverContent(1);
+				schreibeEmpfaenger(cb1,empfs[i]);
+				stamper.setFormFlattening(true);
+				stamper.close();
+				PdfReader seitefertig = new PdfReader(baout.toByteArray());
+				cop.addPage(cop.getImportedPage(seitefertig,1));
+				seitefertig.close();
+				rvorlage.close();
+				baout.close();
+				PdfReader readseite2 = new PdfReader(tempDateien[2][0]);
+				cop.addPage(cop.getImportedPage(readseite2,2));
+				readseite2.close();
+				cop.close();
+				docversion.close();
+				if(exemplare[5]> 0){
+					new ReaderStart(new String(tempversion));
+				}else{
+					druckeVersion(new String(tempversion));
+				}
+				if(exemplare[4]<= 0){
+					return;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void druckeVersion(String datei){
+		final String xcmd = "java -jar "+Reha.proghome+"PDFDrucker.jar "+datei;
+		
+		try {
+			Runtime.getRuntime().exec(xcmd);
+			System.out.println(xcmd);
+			Reha.thisClass.progressStarten(false);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+}	

@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import systemEinstellungen.SystemConfig;
+import systemTools.ReaderStart;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -35,7 +36,7 @@ public class RVEBerichtPDF {
 
 	public String vorlagenPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/";
 	public String[] rvVorlagen = {null,null,null,null};
-	String[][] tempDateien = {null,null,null,null,null};
+	String[][] tempDateien = {null,null,null,null,null,null};
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 
 	
@@ -45,108 +46,139 @@ public class RVEBerichtPDF {
 		rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
 		rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
 		rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
-		doRVVorschau(nurVorschau,"","");
+		System.out.println("Nur Vorschau = "+nurVorschau);
+		if(!nurVorschau){
+			System.out.println("Drucken Kapitel 1 = "+versionen[0]);
+			System.out.println("Drucken Kapitel 2 = "+versionen[1]);
+			System.out.println("Drucken Kapitel 3 = "+versionen[2]);
+			System.out.println("Drucken Kapitel 4 = "+versionen[3]);
+		}
+		doRVVorschau(nurVorschau,versionen);
 	}
-	private void doRVVorschau(boolean vorschau,String ausfertigung,String bereich){
+	private void doRVVorschau(boolean vorschau,int[] versionen){
 		boolean geklappt;
-		
-		// Zu Beginn sicherstellen daß die OO.org PDF produziert wird.
-		
-			try {
-				
-				File ft = new File(tempPfad+"EBfliesstext.pdf");
-				if(! ft.exists()){
-					JOptionPane.showMessageDialog(null, "Fließtext noch nicht aufbereitet!\n"+
-							"Wechseln sie auf den Karteireiter 'Fliesstext' und starten Sie\n"+
-							"die Druckvorschau erneut.");
-					return;
-				}
-				System.out.println("Konfiguriere Seite 1");
-				geklappt = doSeite1(vorschau,ausfertigung,bereich);
-				if(!geklappt){
-					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
-					return;
-				}
-				System.out.println("Konfiguriere Seite 2");				
-				geklappt = doSeite2();
-				if(!geklappt){
-					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 2 ");
-					return;
-				}
-				System.out.println("Konfiguriere Seite 3");				
-				geklappt = doSeite3();
-				if(!geklappt){
-					JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - KTL 1-2 ");
-					return;
-				}
-				System.out.println("Stelle Kapitel zusammen");
-				geklappt = doSeitenZusammenstellen();
-
-				// AdobeReader starten
-				//final String xdatei =  "C:/RehaVerwaltung/temp/510841109/freitext.pdf";
-				//final String xdatei =  tempDateien[3][0];//sdatei;
-				Reha.thisClass.progressStarten(true);
-				//System.out.println("Es wird die PDF-Datei "+tempDateien[4][0]+" gedruckt");
-				//PdfDrucker.setup(tempDateien[4][0]);
-
-
-
-				
+		Reha.thisClass.progressStarten(true);
+		File ft = new File(tempPfad+"EBfliesstext.pdf");
+		if(! ft.exists()){
+			JOptionPane.showMessageDialog(null, "<html>Fließtext noch nicht aufbereitet!<br>"+
+					"Wechseln sie auf den Karteireiter <b>'Fliesstext'</b> und starten Sie<br>"+
+					"die Druckvorschau erneut.");
+			return;
+		}
+		System.out.println("Konfiguriere Seite 1");
+		geklappt = doSeite1();
+		if(!geklappt){
+			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
+			return;
+		}
+		System.out.println("Konfiguriere Seite 2");				
+		geklappt = doSeite2();
+		if(!geklappt){
+			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 2 ");
+			return;
+		}
+		System.out.println("Konfiguriere Seite 3");				
+		geklappt = doSeite3();
+		if(!geklappt){
+			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - KTL 1-2 ");
+			return;
+		}
+		System.out.println("Stelle Kapitel zusammen");
+		final boolean xvorschau = vorschau;
+		final int[] exemplare = versionen;
+		if(vorschau){
+			System.out.println("InDo Seitenzusammenstellen");
+			geklappt = doSeitenZusammenstellen();	
+			if(!geklappt){
+				JOptionPane.showMessageDialog(null,"Fehler beim Zusammenstellen der Berichtseiten");
+				return;
+			}else{
 				final String xdatei =  tempDateien[4][0];
-						new SwingWorker<Void,Void>(){
-							@Override
-							protected Void doInBackground() throws Exception {
-								try{
-									/*
-									Reha.thisClass.progressStarten(true);
-									String cmd = "java -jar ";
-									System.out.println("Starte "+cmd+" "+Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei);
-									final String xcmd = cmd;
-									SwingUtilities.invokeLater(new Runnable(){
-										public  void run(){
-											try {
-												Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFDrucker.jar "+xdatei);
-												Reha.thisClass.progressStarten(false);
-											} catch (IOException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-										}
-									});
-									*/
-									//Process process = new ProcessBuilder(cmd,"",Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei).start();
-									
-									Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
-									InputStream is = process.getInputStream();
-									
-									InputStreamReader isr = new InputStreamReader(is);
-									BufferedReader br = new BufferedReader(isr);
-									String line;
-									 Reha.thisClass.progressStarten(false);							       
-							       while ((line = br.readLine()) != null) {
-							         System.out.println("Lade Adobe "+line);
-							       }
-							       is.close();
-							       isr.close();
-							       br.close();
-							      
-									
-								}catch(Exception ex){
-									Reha.thisClass.progressStarten(false);
-								}
-								return null;
-							}
-						}.execute();
-						
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						new ReaderStart(new String(xdatei));
+						//starteReader(xdatei);
+						return null;
+					}
+				}.execute();
 			}
+			Reha.thisClass.progressStarten(false);
+			return;
+		//Keine Vorschau direkt drucken	
+		}else{
+			if(((String)eltern.cbktraeger.getSelectedItem()).contains("DRV")){
+				System.out.println("Starte die Funktion starteRVDruck()");
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						try{
+							boolean xgeklappt = starteRVDruck(exemplare);
+							Reha.thisClass.progressStarten(false);
+						}catch(Exception ex){
+							ex.printStackTrace();
+							Reha.thisClass.progressStarten(false);
+						}
+						return null;
+					}
+				}.execute();
+			}
+		}
+		
+		
+		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					/*
+					Reha.thisClass.progressStarten(true);
+					String cmd = "java -jar ";
+					System.out.println("Starte "+cmd+" "+Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei);
+					final String xcmd = cmd;
+					SwingUtilities.invokeLater(new Runnable(){
+						public  void run(){
+							try {
+								Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFDrucker.jar "+xdatei);
+								Reha.thisClass.progressStarten(false);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					});
+					*/
+					//Process process = new ProcessBuilder(cmd,"",Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei).start();
+					System.out.println("Wert von xVorschau = "+xvorschau);
+					if(xvorschau){
+						
+					}else{
+						
+					}
+						
+					
+				}catch(Exception ex){
+					
+				}
+				return null;
+			}
+		}.execute();
 			
+	}
+	private void starteReader(String datei) throws IOException{
+		Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",datei).start();
+		InputStream is = process.getInputStream();
+		
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+		String line;
+		 Reha.thisClass.progressStarten(false);							       
+       while ((line = br.readLine()) != null) {
+         System.out.println("Lade Adobe "+line);
+       }
+       is.close();
+       isr.close();
+       br.close();
 	}
 	/***********
 	 * 
@@ -156,7 +188,7 @@ public class RVEBerichtPDF {
 	 * 
 	 * 
 	 **********/
-	private boolean doSeite1(boolean vorschau,String ausfertigung,String bereich){
+	private boolean doSeite1(){
 		String pdfPfad = rvVorlagen[0];
 		PdfStamper stamper = null;
 			
@@ -648,7 +680,231 @@ public class RVEBerichtPDF {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public boolean doSeitenZusammenstellen() throws IOException, DocumentException{
+	public boolean	starteRVDruck(int[] exemplare){
+		try{
+			int seiten = 0;
+			
+			String[] empfs = {"den RV-Träger - "+(String) eltern.cbktraeger.getSelectedItem(),
+					"den RV-Träger - "+(String) eltern.cbktraeger.getSelectedItem(),
+					"den behandelnden Arzt","die Rehabilitationseinrichtung","die Krakenkasse"};
+			String[] bereich = {"Bereich Reha","Bereich EDV","","",""};
+			// ZU diesem Zeitpunkt sind Bereits alle Seiten aufbereitet.
+			//Falls der Fliestext ebenfalls gedruck werden soll;
+			System.out.println("Kapitel Fliesstext erforderlich");
+			if(exemplare[3] >= 0){
+				System.out.println("starte Kapitel Fliesstext");
+				seiten = doKapitelFiesstext();
+				System.out.println("Es wurden "+seiten+" Fliesstext zusammengestellt");
+			}
+			for(int empfaenger = 0; empfaenger < 5; empfaenger++){
+				druckeEmpfaengerVersion(empfaenger,empfs[empfaenger],bereich[empfaenger],(seiten > 0 ? true : false),seiten,exemplare);
+				if(exemplare[4] <= 0){
+					return true;
+				}
+			}
+		}catch(IOException ex1){
+			ex1.printStackTrace();
+			return false;
+		}catch(DocumentException ex2){
+			ex2.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	/**************************************
+	 * 
+	 * 
+	 * 
+	 * @param empfaenger
+	 * @param empftext
+	 * @param empfbereich
+	 * @param mitfliesstext
+	 * @param seitenfliesstext
+	 * @param blatt
+	 */
+	private void druckeEmpfaengerVersion(int empfaenger,String empftext,String empfbereich,boolean mitfliesstext,int seitenfliesstext,int[] blatt){
+		String tempversion = "";
+		try {
+			tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
+			Document docversion = new Document(PageSize.A4);
+			ByteArrayOutputStream baout = null;
+			PdfImportedPage pageImport;
+			PdfCopy cop = new PdfCopy(docversion,new FileOutputStream(tempversion));
+			docversion.open();
+			
+				if(blatt[0]> 0 ){
+					PdfReader rvorlage = new PdfReader(tempDateien[0][0]);
+					baout = new ByteArrayOutputStream();
+					PdfStamper stamper = new PdfStamper(rvorlage,baout);
+					PdfContentByte cb1 = stamper.getOverContent(1);
+					if(mitfliesstext){
+						schreibeVonBis(cb1,new Integer(seitenfliesstext).toString());
+					}else{
+						schreibeVonBis(cb1,"-");						
+					}
+					schreibeEmpfaenger(cb1,empftext,empfbereich);
+					stamper.setFormFlattening(true);
+					stamper.close();
+					PdfReader seitefertig = new PdfReader(baout.toByteArray());
+					cop.addPage(cop.getImportedPage(seitefertig,1));
+					seitefertig.close();
+					rvorlage.close();
+					baout.close();
+					if(empfaenger==4){
+						docversion.close();
+						cop.close();
+						if(blatt[5] > 0){
+							new ReaderStart(new String(tempversion));
+							//starteReader(new String(tempversion));
+						}else{
+							druckeVersion(new String(tempversion));							
+						}
+						return;
+					}
+				}
+				if(blatt[1]> 0 ){
+					macheGedoense(cop,1,empftext,empfbereich);
+				}
+				if(blatt[2]> 0){
+					PdfReader rvorlage = new PdfReader(tempDateien[2][0]);
+					int ktls = rvorlage.getNumberOfPages();
+					for(int k = 1; k <= ktls;k++){
+						cop.addPage(cop.getImportedPage(rvorlage, k));
+					}
+					rvorlage.close();
+				}
+				if(blatt[3]> 0 && empfaenger != 1){
+					PdfReader rvorlage = new PdfReader(tempDateien[5][0]);
+					int ktls = rvorlage.getNumberOfPages();
+					for(int k = 1; k <= ktls;k++){
+						cop.addPage(cop.getImportedPage(rvorlage, k));
+					}
+					rvorlage.close();
+				}
+				docversion.close();
+				cop.close();
+				Thread.sleep(50);
+				if(blatt[5] > 0){
+					new ReaderStart(new String(tempversion));
+					//starteReader(new String(tempversion));
+				}else{
+					druckeVersion(new String(tempversion));							
+				}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
+
+	}
+	private void druckeVersion(String datei){
+		final String xcmd = "java -jar "+Reha.proghome+"PDFDrucker.jar "+datei;
+		
+		try {
+			Runtime.getRuntime().exec(xcmd);
+			System.out.println(xcmd);
+			Reha.thisClass.progressStarten(false);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		/*
+		new Thread(){
+			public void run(){
+				try {
+					Runtime.getRuntime().exec(xcmd);
+					System.out.println(xcmd);
+					Reha.thisClass.progressStarten(false);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		*/
+		
+
+	}
+	private void macheGedoense(PdfCopy cop,int kapitel,String empftext,String empfbereich){
+		ByteArrayOutputStream baout = null;
+		PdfImportedPage pageImport;
+		PdfReader rvorlage;
+		try {
+			rvorlage = new PdfReader(tempDateien[kapitel][0]);
+			baout = new ByteArrayOutputStream();
+			PdfStamper stamper = new PdfStamper(rvorlage,baout);
+			PdfContentByte cb1 = stamper.getOverContent(1);
+			schreibeEmpfaenger(cb1,empftext,empfbereich);
+			stamper.setFormFlattening(true);
+			stamper.close();
+			PdfReader seitefertig = new PdfReader(baout.toByteArray());
+			cop.addPage(cop.getImportedPage(seitefertig,1));
+			seitefertig.close();
+			rvorlage.close();
+			baout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	private int doKapitelFiesstext() throws IOException, DocumentException{
+		int seiten;
+		//Dokument für nur Fliestext erstellen
+		Document docnurfliesstext = new Document(PageSize.A4);
+		//Reader für Fliesstext erstellen
+		PdfReader readerflt = new PdfReader(tempPfad+"EBfliesstext.pdf");
+		seiten = readerflt.getNumberOfPages();
+		PdfImportedPage pageImport;
+		//Reader für Zusammengeführten Fliesstext erstellen
+		tempDateien[5] = new String[]{tempPfad+"EBGesFlies"+System.currentTimeMillis()+".pdf"};
+		PdfCopy cop = new PdfCopy(docnurfliesstext,new FileOutputStream(tempDateien[5][0]));
+		docnurfliesstext.open();
+
+		ByteArrayOutputStream bvorlage;
+		Float[] xy = getFloats(17.f,13.f,0.f);
+		for(int i = 1; i <= seiten; i++){
+			//PdfReader rvorlage = new PdfReader(vorlage);
+			PdfReader rvorlage = new PdfReader(rvVorlagen[3]);
+			bvorlage = new ByteArrayOutputStream();
+			PdfStamper stamper = new PdfStamper(rvorlage,bvorlage);
+			PdfContentByte cb2 = stamper.getOverContent(1);
+			pageImport = cb2.getPdfWriter().getImportedPage(readerflt, i);
+			cb2.addTemplate(pageImport,xy[0],xy[1]);
+			try{
+				schreibeKopf(cb2,i);				
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			stamper.setFormFlattening(true);
+			stamper.close();
+			PdfReader komplett = new PdfReader(bvorlage.toByteArray());
+			cop.addPage(cop.getImportedPage(komplett,1));
+			bvorlage.close();
+			rvorlage.close();
+			komplett.close();
+			bvorlage.close();
+		}
+		docnurfliesstext.close();
+		readerflt.close();
+		cop.close();
+		
+		System.out.println(new Integer(seiten).toString()+" Seiten Fließtext wurden zusammengestellt");	
+		return seiten;
+	}
+	public boolean doSeitenZusammenstellen(){
+		try{
 		InputStream isb = null;
 		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};
 		String pdfPfad = rvVorlagen[3];
@@ -669,7 +925,7 @@ public class RVEBerichtPDF {
 		PdfReader readerPage1 = new PdfReader (tempDateien[0][0]);
 		PdfStamper stampPage1 = new PdfStamper(readerPage1,bpage1);
 		PdfContentByte cbPage1 = stampPage1.getOverContent(1);
-		schreibeVonBis(cbPage1,seiten);
+		schreibeVonBis(cbPage1,new Integer(seiten).toString());
 		stampPage1.close();
 		
 		cop.addPage(cop.getImportedPage(new PdfReader(bpage1.toByteArray()),1));
@@ -709,8 +965,12 @@ public class RVEBerichtPDF {
 		ktlreader.close();
 		readerPage1.close();
 		cop.close();
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
 		
-		return false;
+		return true;
 	}
 	
 	
@@ -742,14 +1002,35 @@ public class RVEBerichtPDF {
 		cb.endText();
 
 	}
-	private void schreibeVonBis(PdfContentByte cb,int seiten) throws DocumentException, IOException{
+	private void schreibeEmpfaenger(PdfContentByte cb,String empfaenger,String bereich) throws DocumentException, IOException{
+		float fy0 =  0.25f;
+		float fy1 =  7.1f;
+		//xx
+		Float[] xempfaenger = getFloats(56.5f,277.60f,fy0);
+		Float[] xbereich = getFloats(155.5f,277.60f,fy0);
+
+		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
+		cb.beginText();
+		cb.moveText(xempfaenger[0], xempfaenger[1]);
+		cb.setFontAndSize(bf,9.5f);
+		//cb.setCharacterSpacing(xempfaenger[2]);
+		cb.showText("Ausfertigung für "+empfaenger);
+		cb.endText();
+		cb.beginText();
+		cb.moveText(xbereich[0], xbereich[1]);
+		cb.setFontAndSize(bf,9.5f);
+		//cb.setCharacterSpacing(xbereich[2]);
+		cb.showText(bereich);
+		cb.endText();
+	}
+	private void schreibeVonBis(PdfContentByte cb,String seiten) throws DocumentException, IOException{
 		Float[] xseite = getFloats(174.0f,27.0f,0.f);
 		BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
 		cb.beginText();
 		cb.moveText(xseite[0], xseite[1]);
 		cb.setFontAndSize(bf,11);
 		cb.setCharacterSpacing(xseite[2]);
-		cb.showText(new Integer(seiten).toString());
+		cb.showText(seiten);
 		cb.endText();
 	}
 		

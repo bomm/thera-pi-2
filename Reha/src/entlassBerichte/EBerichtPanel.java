@@ -201,7 +201,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	};
 	public JRtaComboBox[] acmb = {  null,null,null};
 			
-	public int[] druckversion = {0,0,0,0}; 
+	public int[] druckversion = {0,0,0,0,0,0}; 
+	
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
 		setBorder(null);
 		
@@ -375,15 +376,34 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			if(berichtart.equals("entlassbericht")){
 				doVorschauEntlassBericht(true,new int[] {});
 			}else if(berichtart.equals("nachsorgedokumentation")){
-				doVorschauNachsorge(true,0);
+				doVorschauNachsorge(true,new int[] {});
 			}
 		}
 		if(cmd.equals("gutprint")){
-			EBDrucken(gutbut[2].getLocationOnScreen());
+			boolean[] drucken = null;
+			String titel;
 			if(berichtart.equals("entlassbericht")){
-				//doVorschauEntlassBericht(false,new int[] {});
+				if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
+					titel = "RV E-Bericht drucken"; 
+					druckversion = new int[] {1,1,1,1,1,0,0};
+					drucken = new boolean[] {true,true,true,true,true};
+				}else{
+					titel = "GKV E-Bericht drucken";
+					druckversion = new int[] {1,0,1,0,1,0,0};
+					drucken = new boolean[] {true,false,true,true,true};
+				}
+				EBDrucken(gutbut[2].getLocationOnScreen(),drucken,titel);
+				if(druckversion[0] >= 0){
+					doVorschauEntlassBericht(false,druckversion);
+				}
 			}else if(berichtart.equals("nachsorgedokumentation")){
-				
+				if(druckversion[0] >= 0){
+					titel = "RV Nachsorgedoku ";
+					druckversion = new int[] {1,1,0,0,1,0,0};
+					drucken = new boolean[] {true,true,false,false,true};
+					EBDrucken(gutbut[2].getLocationOnScreen(),drucken,titel);
+					doVorschauNachsorge(false,druckversion);
+				}				
 			}
 		}
 		if(cmd.equals("guttools")){
@@ -603,8 +623,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			ex.printStackTrace();
 		}
 	}
-	final EBerichtPanel xthis = this;
+	
+	
 	private void doVorschauEntlassBericht(boolean nurVorschau,int[] versionen){
+		final EBerichtPanel xthis = this;
+		final boolean xnurVorschau = nurVorschau;
+		final int[] xversionen = versionen;
 		new Thread(){
 			public void run(){
 				new SwingWorker<Void,Void>(){
@@ -643,7 +667,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							}
 							// Hier abprüfen ob gedruckt werden soll
 							//public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen)
-							new RVEBerichtPDF(xthis,true,new int[] {});
+							try{
+								new RVEBerichtPDF(xthis,xnurVorschau, xversionen);
+							}catch(Exception ex){
+								ex.printStackTrace();
+							}
 							//doRVVorschau(true,"Ausfertigung für den RV-Träger  "+(String)cbktraeger.getSelectedItem(),"Bereich Reha");
 
 						}
@@ -653,7 +681,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}.start();
 	}
-	private void doVorschauNachsorge(boolean nurVorschau,int version){
+	private void doVorschauNachsorge(boolean nurVorschau,int[] version){
 		new NachsorgePDF(this,nurVorschau,version);
 	}
 
@@ -766,40 +794,33 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					
 				}
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "EB", ".pdf");
+				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "NS", ".pdf");
+				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "Print", ".pdf");
 			}
 		}
 	}
 
 
-	public void EBDrucken(Point p){
+	public void EBDrucken(Point p,boolean[] drucken,String titel){
 		EBPrintDlg printDlg = new EBPrintDlg();
 		//JDialog neuPat = new JDialog();
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.setName("EBPrint");
 		pinPanel.getGruen().setVisible(false);
 		printDlg.setPinPanel(pinPanel);
-		printDlg.getSmartTitledPanel().setTitle("Entlass-Bericht drucken");	
-		printDlg.setSize(190,200);
-		printDlg.setPreferredSize(new Dimension(190,200));
-		printDlg.getSmartTitledPanel().setPreferredSize(new Dimension (190,200));
+		printDlg.getSmartTitledPanel().setTitle(titel);	
+		printDlg.setSize(240,240);
+		printDlg.setPreferredSize(new Dimension(240,240));
+		printDlg.getSmartTitledPanel().setPreferredSize(new Dimension (240,240));
 		printDlg.setPinPanel(pinPanel);
 		//Hier das Versionsgedönse
-		boolean[] drucken = null;
-		if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
-			druckversion = new int[] {1,1,1,1};
-			drucken = new boolean[] {true,true,true,true};
-		}else{
-			druckversion = new int[] {1,0,1,1};
-			drucken = new boolean[] {true,false,true,true};
-		}
-
 		printDlg.getSmartTitledPanel().setContentContainer(new BerichtDrucken(this,druckversion,drucken));
 		printDlg.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
 		printDlg.setName("EBPrint");
 		
 		printDlg.setLocation(p.x-100,p.y+35);
 		//printDlg.setLocationRelativeTo(null);
-		printDlg.setTitle("Entlass-Bericht drucken");
+		printDlg.setTitle(titel);
 
 		printDlg.setModal(true);
 		printDlg.pack();	
