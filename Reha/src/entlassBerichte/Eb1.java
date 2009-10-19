@@ -1684,6 +1684,9 @@ public class Eb1 implements ActionListener,ComponentListener {
 		
 	}
 	public final void refreshSize() {
+		if(jscr==null){
+			return;
+		}
 		eltern.ebtab.revalidate();
 		System.out.println("Aufruf refreshSize in EB1");
 		jscr.validate();

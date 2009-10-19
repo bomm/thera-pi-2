@@ -429,10 +429,13 @@ public class Eb3 implements RehaEventListener  {
 		public void RehaEventOccurred(RehaEvent evt) {
 			if(evt.getRehaEvent().equals("REHAINTERNAL")){
 				if(evt.getDetails()[1].equals("#DEICONIFIED") && evt.getDetails()[0].contains("Gutachten")){
+					
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-								baueSeite();
+					 		   System.out.println("Meldung Deiconified");
+								//refreshSize();
+								//pan.setVisible(true);
 										 		   
 					 	   }
 					});	
@@ -494,7 +497,7 @@ public class Eb3 implements RehaEventListener  {
 			}
 			if(evt.getRehaEvent().equals("OOFrame")){
 				if(evt.getDetails()[1].equals("#TRENNEN") ){
-					//this.trenneFrame(true);
+					//refreshSize(); 
 				}
 			}			
 			

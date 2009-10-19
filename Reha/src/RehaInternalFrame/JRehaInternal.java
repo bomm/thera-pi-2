@@ -160,6 +160,9 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public  JComponent getComponent(){
 		return (JComponent)this.thisContent;
 	}
+	public  JComponent getInhalt(){
+		return (JComponent)this.inhalt;
+	}
 
 	public void setzeTitel(String titel){
 		this.titel = new String(titel);

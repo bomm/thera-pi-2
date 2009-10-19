@@ -268,6 +268,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("          Neuer Bericht ="+ this.neu);
 	}
 	/******************************************************************/
+	public void setOOPanel(){
+		if(ebt != null){
+			System.out.println("Vesuche OONative wiederherzustellen");
+			ebt.seite3.refreshSize();
+		}
+
+	}
 	private JTabbedPane getEBerichtTab(){
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		Reha.thisClass.progressStarten(true);
