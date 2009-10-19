@@ -288,8 +288,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public void meldeInitOk(int seite){
 		initOk[seite] = true;
 		if(initOk[0] && initOk[1] && initOk[2] && initOk[3]){
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			Reha.thisClass.progressStarten(false);
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
 
