@@ -53,6 +53,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class Eb1 implements ActionListener,ComponentListener {
 	JXPanel pan = null;
+
 	EBerichtPanel eltern = null;
 	Font fontgross = null;
 	Font fontklein = null;
@@ -148,15 +149,12 @@ public class Eb1 implements ActionListener,ComponentListener {
 								protected Void doInBackground()
 										throws Exception {
 									try{
-									eltern.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-									Reha.thisClass.progressStarten(true);	
 						 			laden();
 						 			eltern.btf[0].requestFocusInWindow();
 						 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));
-						 			Reha.thisClass.progressStarten(false);
-						 			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						 			inGuiInit = false;
 									testeIK();
+									eltern.meldeInitOk(0);
 									}catch(Exception ex){
 										ex.printStackTrace();
 									}
@@ -222,7 +220,6 @@ public class Eb1 implements ActionListener,ComponentListener {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			rs = stmt.executeQuery(buf.toString());
 
 			if(rs.next()){
@@ -265,7 +262,6 @@ public class Eb1 implements ActionListener,ComponentListener {
 					eltern.cbktraeger.setSelectedItem(eltern.empfaenger);
 				}
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
 			System.out.println("SQLState: " + ev.getSQLState());
@@ -1680,24 +1676,24 @@ public class Eb1 implements ActionListener,ComponentListener {
 	}
 	@Override
 	public void componentResized(ComponentEvent e) {
-		final Container parent = pan.getParent();
-		if (parent instanceof JComponent) {
-		((JComponent) parent).revalidate();
-		}
-		final Container self = pan;
-		if (self instanceof JComponent) {
-		((JComponent) self).revalidate();
-		}
-		// ... and just in case, call validate() on the top-level window as well
-		final Window window1 = SwingUtilities.getWindowAncestor(pan);
-		if (window1 != null) {
-		window1.validate();
-		}		
+		refreshSize();
 	}
 	@Override
 	public void componentShown(ComponentEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
+	public final void refreshSize() {
+		eltern.ebtab.revalidate();
+		System.out.println("Aufruf refreshSize in EB1");
+		jscr.validate();
+		pan.revalidate();
+		//pan.setVisible(true);
+		// ... and just in case, call validate() on the top-level window as well
+		final Window window1 = SwingUtilities.getWindowAncestor(jscr);
+		if (window1 != null) {
+		window1.validate();
+		}
+	}	
 }
 

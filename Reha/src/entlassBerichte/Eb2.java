@@ -88,6 +88,7 @@ public class Eb2 {
 							 			laden();
 							 			eltern.btf[0].requestFocusInWindow();
 							 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));
+										eltern.meldeInitOk(1);
 										}catch(Exception ex){
 											ex.printStackTrace();
 										}
@@ -132,7 +133,7 @@ public class Eb2 {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			
 			rs = stmt.executeQuery(buf.toString());
 			if(rs.next()){
 				eltern.bta[7].setText( (rs.getString(eltern.bta[7].getName())==null  ? "" :  rs.getString(eltern.bta[7].getName())) ) ;
@@ -143,7 +144,7 @@ public class Eb2 {
 					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
 				}
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
 			System.out.println("SQLState: " + ev.getSQLState());

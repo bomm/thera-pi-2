@@ -113,19 +113,16 @@ public class Eb3 implements RehaEventListener  {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-					Reha.thisClass.progressStarten(true);
 					inseitenaufbau = true;
 					baueSeite();
 					while(inseitenaufbau){
 						Thread.sleep(20);
 					}
 					System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
-					Reha.thisClass.progressStarten(false);
 				}catch(Exception ex){
 					Reha.thisClass.progressStarten(false);
 					ex.printStackTrace();
 				}
-				//baueSeite();
 				return null;
 			}
 		}.execute();
@@ -150,7 +147,7 @@ public class Eb3 implements RehaEventListener  {
 				protected Void doInBackground() throws Exception {
 					try {
 						pdfok = false;
-						eltern.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						
 						eltern.officeFrame = constructOOOFrame(Reha.officeapplication,pan);
 						configureOOOFrame(Reha.officeapplication,eltern.officeFrame);
 			        	DocumentDescriptor d = new DocumentDescriptor();
@@ -161,10 +158,10 @@ public class Eb3 implements RehaEventListener  {
 			        	
 			        			System.out.println("Neuanlage Bericht -> constructNewDocument");
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-			        			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
 					        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 					        	framegetrennt = false;
+								eltern.meldeInitOk(2);
 
 			        	}else{
 			        		new SwingWorker<Void,Void>(){
@@ -198,14 +195,12 @@ public class Eb3 implements RehaEventListener  {
 									xtvc.gotoStart(false);
 									ins.close();
 									//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-									eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-									Reha.thisClass.progressStarten(false);
 									System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
 									// TODO Auto-generated method stub
 						        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
 						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 						        	framegetrennt = false;
-
+									eltern.meldeInitOk(2);
 									return null;
 								}
 			        		}.execute();
@@ -224,27 +219,7 @@ public class Eb3 implements RehaEventListener  {
 		
 	}
 	
-	/*
-	public void speichernSeite(){
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-					
-					trenneFrame(true);
-					framegetrennt = true;
-						if(outtemp != null){
-						try {
-							outtemp.close();
-						} catch (IOException e) {
-								e.printStackTrace();
-						}
-					}
-					Reha.thisClass.progressStarten(false);
-				return null;
-			}
-		}.execute();
-	}
-	*/
+
 	public JXPanel getSeite(){
 		return pan;
 	}
@@ -288,6 +263,7 @@ public class Eb3 implements RehaEventListener  {
 		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 		          parent.getLayout().layoutContainer(parent);
 		          parent.repaint();
+		          eltern.ebt.getTab1().refreshSize();
 	        }  
 	        public void componentHidden(ComponentEvent e) {
 	            //System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
@@ -312,87 +288,9 @@ public class Eb3 implements RehaEventListener  {
 	    //System.out.println("natveView eingehängt in Panel "+parent.getName());
     return eltern.officeFrame;
   }
-	/*
-	public void neuAnhaengen(){
-		try{
-			SwingUtilities.invokeLater(new Runnable(){
-			 	   public  void run()
-			 	   {
-			 		   try {
-		 			   System.out.println("Aufruf der Funktion -> neuAnhaengen, Status = :"+getStatus());
-			 			pdfok = false;
-			 			Reha.thisClass.progressStarten(true); 
-			 			pan.add(nativeView);
-			 			EBerichtPanel.document.getFrame().setFocus();
-			 			EBerichtPanel.document.getFrame().updateDispatches();
-						Thread.sleep(100);
-						pan.setVisible(false);
-						//System.out.println("Neu eingehängt----->");
-						
-						nativeView.setVisible(true);
-						pan.getLayout().layoutContainer(pan);
-						pan.setVisible(true);
-						pan.validate();
-						Reha.thisClass.progressStarten(false);
-						framegetrennt = false;
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-								 		   
-			 	   }
-			});	
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
 
-	}
-	*/
 	
-	/*
-	public void trenneFrame(boolean mitspeichern){
-		System.out.println("ntiveView getrennt----->");
-		if(eltern.neu){
-			if(mitspeichern){
-				System.out.println("Aufruf trenneFrame bei Neuanlage mit Speichern, Status:"+getStatus());
-				try {
-					tempTextSpeichern();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}else{
-				System.out.println("Aufruf trenneFrame bei Neuanlage ohne Speichern, Status:"+getStatus());				
-			}
-			EBerichtPanel.document.close();
-			pan.remove(nativeView);
-			framegetrennt = true;
-			Reha.thisClass.progressStarten(false);
-			return;
-		}else{
-			
-		}
-		final boolean xmitspeichern = mitspeichern;
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				framegetrennt = true;
-				if(xmitspeichern){
-					tempTextSpeichern();	
-					System.out.println("Aufruf trenneFrame bei vorhanden. Bericht mit Speichern, Status:"+getStatus());
-				}else{
-					System.out.println("Aufruf trenneFrame bei vorhanden. Bericht ohne Speichern, Status:"+getStatus());
-				}
-				EBerichtPanel.document.close();
-				pan.remove(nativeView);
-
-
-				return null;
-			}
-			
-		}.execute();
-	}
-	*/
+	
 
 	public void tempTextSpeichern() throws InterruptedException{
 		String url = tempPfad+"EBfliesstext.pdf";
@@ -419,45 +317,7 @@ public class Eb3 implements RehaEventListener  {
 
 		}	
 	}	
-		//pdfok = false;
-		/*
-		try {
-			if(EBerichtPanel.document == null){
-				System.out.println("Das Dokument ist momentan null");
-				inseitenaufbau = true;
-				baueSeite();
-				while(inseitenaufbau){
-					Thread.sleep(10);
-				}
-				System.out.println("Die Seite wurde neu afugebaut");
-				//return;
-			}
-			if(EBerichtPanel.document.isOpen()){
-				outtemp = new ByteArrayOutputStream();
-				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-				EBerichtPanel.document.setModified(false);
-				pdfok = true;
-				bytebufferok = false;
-			}	
-			if(eltern.ebtab.getSelectedIndex() != 2){
-				trenneFrame(false);
-				framegetrennt = true;
-				System.out.println("Trenne Frame Selected Tab ist nicht der OO-Tab");
-			}else{
-				framegetrennt = false;
-			}
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			System.out.println("**********DokumentException************");
-		} catch (NOAException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("**********NoeException************");
-		}
-	}
-	*/
+
 	public void tempStartSpeichern() throws InterruptedException{
 		
 	}
@@ -469,6 +329,7 @@ public class Eb3 implements RehaEventListener  {
 		boolean ret = false;
 		int bilder = 0;
 		FileInputStream fis = null;
+
 		try {
 			if(EBerichtPanel.document==null){
 				Reha.thisClass.progressStarten(false);
@@ -478,6 +339,7 @@ public class Eb3 implements RehaEventListener  {
 				Reha.thisClass.progressStarten(false);
 				return;
 			}
+			Reha.thisClass.progressStarten(true);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			EBerichtPanel.document.getPersistenceService().export(out, new RTFFilter());
 			//EBerichtPanel.document.getPersistenceService().store(out);
@@ -640,9 +502,9 @@ public class Eb3 implements RehaEventListener  {
 		}
 		
 		public final void refreshSize() {
-		if (pan == null || framegetrennt) {
+		/*if (pan == null || framegetrennt) {
 		return;
-		}
+		}*/
 		pan.setPreferredSize(new Dimension(pan.getWidth() , pan.getHeight()
 		- 5));
 
@@ -652,17 +514,18 @@ public class Eb3 implements RehaEventListener  {
 		}
 
 		// ... and just in case, call validate() on the top-level window as well
-		final Window window1 = SwingUtilities.getWindowAncestor(nativeView);
+		final Window window1 = SwingUtilities.getWindowAncestor(nativeView.getParent().getParent());
 		if (window1 != null) {
 		window1.validate();
 		}
+		/*
 		final Window window2 = SwingUtilities.getWindowAncestor(pan);
 		if (window2 != null) {
 		window2.validate();
 		}
-
-		pan.getLayout().layoutContainer(getSeite());
-		pan.setVisible(true);
+		*/
+		pan.getLayout().layoutContainer(pan);
+		//pan.setVisible(true);
 		}
 
 		private void macheByteBuffer(){

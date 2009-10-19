@@ -117,10 +117,10 @@ import RehaInternalFrame.JGutachtenInternal;
 public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventListener,PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
 	JGutachtenInternal jry = null;
 	public EBerichtPanel thisClass = null;
-	public JXPanel seite1;
-	public JXPanel seite2;
-	public JXPanel seite3;
-	public JXPanel seite4;
+	//public JXPanel seite1;
+	//public JXPanel seite2;
+	//public JXPanel seite3;
+	//public JXPanel seite4;
 	public JTabbedPane ebtab = null;
 	JButton[] gutbut = {null,null,null,null,null};
 	String[] ktraeger = {"DRV Bund","DRV Baden-Württemberg","DRV Bayern","DRV Berlin","DRV Brandenburg","DRV Bremen",
@@ -148,7 +148,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	RehaEventClass evt = null;
 	
 	String[][] tempDateien = {null,null,null,null,null};
-	
+	boolean[] initOk = {false,false,false,false};
 	static ITextDocument document = null;
 	
  
@@ -269,6 +269,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	/******************************************************************/
 	private JTabbedPane getEBerichtTab(){
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisClass.progressStarten(true);
 		ebt = new EBerichtTab(this);
 		return ebt.getTab();
 	}
@@ -276,32 +278,18 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		nat = new NachsorgeTab(this);
 		return nat.getTab();
 	}
+	public void meldeInitOk(int seite){
+		initOk[seite] = true;
+		if(initOk[0] && initOk[1] && initOk[2] && initOk[3]){
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisClass.progressStarten(false);
+		}
+	}
 
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
-            // Get current tab
-		//System.out.println(arg0);
 		JTabbedPane pane = (JTabbedPane)arg0.getSource();
         int sel = pane.getSelectedIndex();
-        //System.out.println("Tab mit Index "+sel+" wurde selektiert");
-        if(sel==2){
-        	new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					if(ebt.getTab3().framegetrennt){
-						System.out.println("OOTab ist!!!! selektiert und getrennt deshalb BaueSeite");
-						//ebt.getTab3().baueSeite();
-					}else{
-						System.out.println("OOTab ist!!!! selektiert und nicht!!!!getrennt deshalb nur tempTextSpeichern");
-						ebt.getTab3().tempTextSpeichern();
-					}
-			
-					return null;
-				}
-        	}.execute();
-        }else{
-        }
 
 	}    
 
@@ -669,19 +657,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					@Override
 					protected Void doInBackground() throws Exception {
 						Reha.thisClass.progressStarten(true);
-						ebtab.setSelectedIndex(0);
+						//ebtab.setSelectedIndex(0);
 
 				        int sel = ebtab.getSelectedIndex();
 						if(document.isModified()){
 							System.out.println("in getrennt.....");
-							if(sel != 2){
+							//if(sel != 2){
 								ebt.getTab3().tempTextSpeichern();
 								//document.close();
-							}	
-						}else{
-							if(document.isModified()){											
-								ebt.getTab3().tempTextSpeichern();
-							}
+							//}	
 						}
 						new RVEBerichtPDF(xthis,xnurVorschau, xversionen,xaltesFormular,xRV);
 						return null;

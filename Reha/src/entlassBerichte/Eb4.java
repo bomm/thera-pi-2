@@ -75,6 +75,7 @@ public class Eb4 implements ActionListener {
 						public void run(){
 							laden(eltern.neu);
 							inGuiInit = false;
+							eltern.meldeInitOk(3);
 						}
 					}.start();
 				}catch(Exception ex){

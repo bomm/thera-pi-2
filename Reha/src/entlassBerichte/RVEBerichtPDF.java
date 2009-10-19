@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,6 +23,8 @@ import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
 
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.noa.NOAException;
+import ag.ion.noa.filter.OpenOfficeFilter;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -193,12 +196,27 @@ public class RVEBerichtPDF {
 			if(exemplare[3] > 0){
 				doArztAuswaehlen(eltern);
 				if(eltern.aerzte.length > 0){
+					
 					String id = SystemConfig.hmAdrADaten.get("<Aid>");
 					for(int i = 0; i < eltern.aerzte.length;i++){
- 						ArztTools.constructArztHMap(eltern.aerzte[i]);
+						ArztTools.constructArztHMap(eltern.aerzte[i]);
+						ByteArrayOutputStream baout = new ByteArrayOutputStream();
+						eltern.document.getPersistenceService().store(baout);
+						//eltern.document.getPersistenceService().export(baout, new RTFFilter());
+						InputStream is = new ByteArrayInputStream(baout.toByteArray());
+						baout.flush();
+						baout.close();
+						System.out.println("Bytes available = "+is.available());
  						ITextDocument doc = OOTools.starteGKVBericht(Reha.proghome+"vorlagen/"+Reha.aktIK+"/GKVArztbericht2.ott", "");
+ 						Thread.sleep(100);
+ 						//doc.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument( is, RTFFilter.FILTER );
+ 						
+ 						doc.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, OpenOfficeFilter.FILTER);
+ 						is.close();
 					}
 					ArztTools.constructArztHMap(id);
+					//baout.close();
+					//is.close();
 				}
 			}
 			String tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
@@ -237,6 +255,15 @@ public class RVEBerichtPDF {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NOAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
