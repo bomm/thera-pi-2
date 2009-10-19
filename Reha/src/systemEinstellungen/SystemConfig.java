@@ -101,6 +101,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmAdrBDaten = null;
 	public static HashMap<String,String> hmAdrAFRDaten = null;
 	public static HashMap<String,String> hmAdrHMRDaten = null;
+	public static HashMap<String,String> hmEBerichtDaten = new HashMap<String,String>();
 	/*
 	public static List<String> lAdrKDaten = null;
 	public static List<String> lAdrADaten = null;

@@ -15,8 +15,13 @@ import java.io.InputStreamReader;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+import oOorgTools.OOTools;
+
+import stammDatenTools.ArztTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
+
+import ag.ion.bion.officelayer.text.ITextDocument;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -49,6 +54,7 @@ public class RVEBerichtPDF {
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 	public boolean RV;
 	public boolean altesFormular;
+	
 	
 	public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen,boolean xaltesFormular,boolean xRV){
 		eltern = xeltern;
@@ -184,8 +190,16 @@ public class RVEBerichtPDF {
 
 			boolean geklappt = doSeitenZusammenstellen();
 			
-			if(exemplare[4] > 0){
+			if(exemplare[3] > 0){
 				doArztAuswaehlen(eltern);
+				if(eltern.aerzte.length > 0){
+					String id = SystemConfig.hmAdrADaten.get("<Aid>");
+					for(int i = 0; i < eltern.aerzte.length;i++){
+ 						ArztTools.constructArztHMap(eltern.aerzte[i]);
+ 						ITextDocument doc = OOTools.starteGKVBericht(Reha.proghome+"vorlagen/"+Reha.aktIK+"/GKVArztbericht2.ott", "");
+					}
+					ArztTools.constructArztHMap(id);
+				}
 			}
 			String tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
 

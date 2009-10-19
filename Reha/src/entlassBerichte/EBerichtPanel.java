@@ -202,7 +202,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public JRtaComboBox[] acmb = {  null,null,null};
 			
 	public int[] druckversion = {0,0,0,0,0,0}; 
-	
+	public String[] aerzte; 
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
 		setBorder(null);
 		

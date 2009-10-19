@@ -90,6 +90,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 	addKeyListener(this);
 
 	eltern = xeltern;
+	eltern.aerzte = new String[] {};
 	}
 	
 	private JPanel getForm(){
@@ -167,12 +168,33 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 			arzttbl.revalidate();
 		}
 	}
+	private void doUebernahme(){
+		Vector<String> vec = new Vector<String>();
+		String[] aerzte;
+		int rows = atblm.getRowCount();
+		for(int i = 0; i < rows;i++){
+			if(atblm.getValueAt(i, 0) == Boolean.TRUE){
+				vec.add((String)atblm.getValueAt(i, 7));
+			}
+		}
+		if(vec.size() > 0){
+			aerzte = new String[vec.size()];
+			for(int i = 0; i < vec.size();i++){
+				aerzte[i] = vec.get(i);
+			}
+			eltern.aerzte = aerzte.clone();
+		}else{
+			JOptionPane.showMessageDialog(null,"Na ja, keine Auswahl ist ja auch eine Auswahl....");
+			eltern.aerzte = new String[] {};
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("uebernehmen")){
-			
+			doUebernahme();
+
 		}
 		if(cmd.equals("zusatz")){
 			JRtaTextField[] tf = {null,null};

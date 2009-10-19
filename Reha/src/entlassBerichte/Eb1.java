@@ -1684,6 +1684,10 @@ public class Eb1 implements ActionListener,ComponentListener {
 		if (parent instanceof JComponent) {
 		((JComponent) parent).revalidate();
 		}
+		final Container self = pan;
+		if (self instanceof JComponent) {
+		((JComponent) self).revalidate();
+		}
 		// ... and just in case, call validate() on the top-level window as well
 		final Window window1 = SwingUtilities.getWindowAncestor(pan);
 		if (window1 != null) {
