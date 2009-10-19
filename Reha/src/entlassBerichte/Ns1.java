@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,7 +41,7 @@ import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.datFunk;
 
-public class Ns1 implements ActionListener {
+public class Ns1 implements ActionListener,ComponentListener {
 	
 	JXPanel pan = null;
 	EBerichtPanel eltern = null;
@@ -62,6 +64,7 @@ public class Ns1 implements ActionListener {
 
 	public Ns1(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
+		pan.addComponentListener(this);
 		pan.setOpaque(false);
 		pan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		eltern = xeltern;
@@ -1192,6 +1195,26 @@ public class Ns1 implements ActionListener {
 	}	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentHidden(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentMoved(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentResized(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}

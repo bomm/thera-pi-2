@@ -114,24 +114,12 @@ public class Eb3 implements RehaEventListener  {
 			protected Void doInBackground() throws Exception {
 				try{
 					Reha.thisClass.progressStarten(true);
-					if(eltern.neu){
-						baueSeite();
-						inseitenaufbau = true;
-						while(inseitenaufbau){
-							Thread.sleep(20);
-						}
-						System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
-						trenneFrame(false);
-					}else{
-						macheByteBuffer();
-						baueSeite();
-						inseitenaufbau = true;
-						while(inseitenaufbau){
-							Thread.sleep(20);
-						}
-						System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
-						trenneFrame(false);
+					inseitenaufbau = true;
+					baueSeite();
+					while(inseitenaufbau){
+						Thread.sleep(20);
 					}
+					System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
 					Reha.thisClass.progressStarten(false);
 				}catch(Exception ex){
 					Reha.thisClass.progressStarten(false);
@@ -155,12 +143,6 @@ public class Eb3 implements RehaEventListener  {
 		
 	}
 	public void baueSeite(){
-		if(!framegetrennt){
-			System.out.println("Frame is nicht getrennt - > baueSeite() wird nicht durchlaufen");
-			inseitenaufbau = false;
-			return;
-		}
-			
 		new Thread(){
 			public void run(){
 			new SwingWorker<Void,Void>(){
@@ -176,156 +158,58 @@ public class Eb3 implements RehaEventListener  {
 			        	//Sofern es sich um eine Berichtsneuanlage handelt
 			        	if(eltern.neu){
 			        		// wenn noch kein frame erstellt wurde und der outbuffe leer ist;
-			        		if(!newframeok && (outtemp == null)){
+			        	
 			        			System.out.println("Neuanlage Bericht -> constructNewDocument");
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
 			        			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			        			new SwingWorker<Void,Void>(){
-									@Override
-									protected Void doInBackground()
-											throws Exception {
-										String url = tempPfad+"EBfliesstext.pdf";
-					        			outtemp = new ByteArrayOutputStream();
-					        			eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
-					        			eltern.document.getPersistenceService().export(url, new PDFFilter());
-					    				EBerichtPanel.document.setModified(false);
-					        			Reha.thisClass.progressStarten(false);
-					        			newframeok = true;
-					        			bytebufferok = true;
-										pdfok = true;
-										System.out.println("ByteBuffer für Bericht Neuanlage wurde erstellt\n"+getStatus());
-										return null;
-									}
-			        			}.execute();
-			        			framegetrennt = false;
-			        		}else{
-			        			System.out.println("Neuanlage Bericht -> newFrame bereits erzeugt, verwende Inputstream");
-			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
-			        			DocumentDescriptor descript = new DocumentDescriptor();
-			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
-			        			//descript.setHidden(true);
-			        			if(ins==null){
-			        				System.out.println("Neuanlage Bericht -> ByteArray = null, constructNewDocument");
-				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
-				        			bytebufferok = false;
-			        			}else{
-			        				System.out.println("Neuanlage Bericht -> ByteArray o.k, lade Dokument aus InputStream");
-				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);			        				
-			        			}
-			        			new SwingWorker<Void,Void>(){
-									@Override
-									protected Void doInBackground()
-											throws Exception {
-										String url = tempPfad+"EBfliesstext.pdf";
-					        			outtemp = new ByteArrayOutputStream();
-					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-					    				EBerichtPanel.document.setModified(false);
-					    				bytebufferok = true;
-					    				pdfok = true;
-					    				return null;
-									}
-			        			}.execute();
-			        			System.out.println("Status Neuanlage Durchlauf >= 2:"+getStatus());
-								XController xController = eltern.document.getXTextDocument().getCurrentController();
-								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-								xController);
-								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-								xtvc.gotoStart(false);
-								if(ins != null){
-									ins.close();									
-								}
-								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-								Reha.thisClass.progressStarten(false);
-			        			framegetrennt = false;
-			        			
-			        			System.out.println("Status Neuanlage Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
-			        		}
-			        	}else{
-			        		//Es handelt sich um einen vorhandenen Bericht
-			        		if(!newframeok){
-			        			/*
-			        			InputStream is = null;
-			        			if(outtemp == null){
-			        				is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-			        				System.out.println("Vorhandener Bericht 1.Durchlauf, Status = "+getStatus());
-			        			}else{
-			        				is = new ByteArrayInputStream(outtemp.toByteArray());	
-			        			}
-			        			*/
-			        			DocumentDescriptor descript = new DocumentDescriptor();
-			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
-			        			//descript.setHidden(true);
-			        			if(startStream == null){
-				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);			        				
-			        			}else{
-			        				eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,startStream, descript);
-			        			}
-			        			new SwingWorker<Void,Void>(){
-									@Override
-									protected Void doInBackground()
-											throws Exception {
-										String url = tempPfad+"EBfliesstext.pdf";
-					        			outtemp = new ByteArrayOutputStream();
-					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-					    				EBerichtPanel.document.setModified(false);
-					    				bytebufferok = true;
-					    				pdfok = true;
-					    				return null;
-									}
-			        			}.execute();
+					        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
+					        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+					        	framegetrennt = false;
 
-								XController xController = eltern.document.getXTextDocument().getCurrentController();
-								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-								xController);
-								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-								xtvc.gotoStart(false);
-								if(startStream != null){
-									startStream.close();
-								}	
-								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-								Reha.thisClass.progressStarten(false);
-								newframeok = true;
-								System.out.println("Status vorhandener Bericht -> am Ende des 1. Durchlaufes = "+getStatus());
-			        			
-			        		}else{
-			        			System.out.println("starte Dokument mit temp. Stream-Daten");
-			        			InputStream ins = new ByteArrayInputStream(outtemp.toByteArray());
-			        			DocumentDescriptor descript = new DocumentDescriptor();
-			        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
-			        			//descript.setHidden(true);
-			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
-			        			new SwingWorker<Void,Void>(){
-									@Override
-									protected Void doInBackground()
-											throws Exception {
-										String url = tempPfad+"EBfliesstext.pdf";
-					        			outtemp = new ByteArrayOutputStream();
-					    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-					    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-					    				EBerichtPanel.document.setModified(false);
-					    				bytebufferok = true;
-					    				pdfok = true;
-					    				return null;
-									}
-			        			}.execute();
-			        			
-								XController xController = eltern.document.getXTextDocument().getCurrentController();
-								XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-								xController);
-								XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-								xtvc.gotoStart(false);
-								ins.close();
-								//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-								eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-								Reha.thisClass.progressStarten(false);
-								System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
-			        		}
+			        	}else{
+			        		new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+				        			System.out.println("starte Dokument mit temp. Stream-Daten");
+				        			InputStream ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+				        			DocumentDescriptor descript = new DocumentDescriptor();
+				        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+				        			//descript.setHidden(true);
+				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+				        			new SwingWorker<Void,Void>(){
+										@Override
+										protected Void doInBackground()
+												throws Exception {
+											String url = tempPfad+"EBfliesstext.pdf";
+						        			outtemp = new ByteArrayOutputStream();
+						    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+						    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+						    				EBerichtPanel.document.setModified(false);
+						    				bytebufferok = true;
+						    				pdfok = true;
+						    				return null;
+										}
+				        			}.execute();
+									XController xController = eltern.document.getXTextDocument().getCurrentController();
+									XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+									xController);
+									XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
+									xtvc.gotoStart(false);
+									ins.close();
+									//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+									eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+									Reha.thisClass.progressStarten(false);
+									System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
+									// TODO Auto-generated method stub
+						        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
+						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+						        	framegetrennt = false;
+
+									return null;
+								}
+			        		}.execute();
 			        	}
-			        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
-			        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
-			        	framegetrennt = false;
 			        	
 					} catch (Throwable e) {
 						// TODO Auto-generated catch block
@@ -339,6 +223,8 @@ public class Eb3 implements RehaEventListener  {
 			}.start();
 		
 	}
+	
+	/*
 	public void speichernSeite(){
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -346,32 +232,29 @@ public class Eb3 implements RehaEventListener  {
 					
 					trenneFrame(true);
 					framegetrennt = true;
-					//eltern.document.close();
-					if(outtemp != null){
+						if(outtemp != null){
 						try {
 							outtemp.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+								e.printStackTrace();
 						}
 					}
 					Reha.thisClass.progressStarten(false);
 				return null;
 			}
-			
 		}.execute();
-		
-		
-	}
-	/*
-	public Panel getSeite(){
-		return pan;
 	}
 	*/
 	public JXPanel getSeite(){
 		return pan;
 	}
-
+/**********************
+ * 
+ * @param officeApplication
+ * @param parent
+ * @return
+ * @throws Throwable
+ */
 
 	private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent)
       throws Throwable {
@@ -429,6 +312,7 @@ public class Eb3 implements RehaEventListener  {
 	    //System.out.println("natveView eingehängt in Panel "+parent.getName());
     return eltern.officeFrame;
   }
+	/*
 	public void neuAnhaengen(){
 		try{
 			SwingUtilities.invokeLater(new Runnable(){
@@ -458,25 +342,14 @@ public class Eb3 implements RehaEventListener  {
 								 		   
 			 	   }
 			});	
-	
-		/*
-		System.out.println("Aktuelle Größe von pan in X-Richtung:"+ pan.getSize().width+" / Y-Richtung:"+pan.getSize().height);
-		pan.setSize(new Dimension(pan.getSize().width-1,pan.getSize().height));
-		nativeView.setVisible(true);
-		
-		System.out.println("Aktuelle Größe von nativeView in X-Richtung:"+ nativeView.getSize().width+" / Y-Richtung:"+nativeView.getSize().height);
-		System.out.println("Aktuelle Position von nativeView  = "+nativeView.getLocation());
-		System.out.println("Aktuelle Position von nativeView auf dem Bildschirm = "+nativeView.getLocationOnScreen());
-		
-		
-		pan.revalidate();
-		pan.setVisible(true);
-		*/
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 
 	}
+	*/
+	
+	/*
 	public void trenneFrame(boolean mitspeichern){
 		System.out.println("ntiveView getrennt----->");
 		if(eltern.neu){
@@ -519,11 +392,35 @@ public class Eb3 implements RehaEventListener  {
 			
 		}.execute();
 	}
+	*/
+
 	public void tempTextSpeichern() throws InterruptedException{
 		String url = tempPfad+"EBfliesstext.pdf";
-		System.out.println("speichere temporär in: "+url);
+		if(EBerichtPanel.document.isOpen()){
+			if(EBerichtPanel.document.isModified()){
+				System.out.println("speichere temporär in: "+url);
+				outtemp = new ByteArrayOutputStream();
+				try {
+					EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
+				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+				EBerichtPanel.document.setModified(false);
+				pdfok = true;
+				bytebufferok = false;
+				} catch (NOAException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DocumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
+				System.out.println("Dokukment wurde nicht verändert, temporäres speichern daher nicht erforderlich" );
+			}
+
+		}	
+	}	
 		//pdfok = false;
-		
+		/*
 		try {
 			if(EBerichtPanel.document == null){
 				System.out.println("Das Dokument ist momentan null");
@@ -560,9 +457,11 @@ public class Eb3 implements RehaEventListener  {
 			System.out.println("**********NoeException************");
 		}
 	}
+	*/
 	public void tempStartSpeichern() throws InterruptedException{
 		
 	}
+	
 	public void textSpeichernInDB(boolean mittemp){
 		Statement stmt = null;;
 		ResultSet rs = null;
@@ -682,9 +581,13 @@ public class Eb3 implements RehaEventListener  {
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-					 		   textSpeichernInDB(false);
-					 		   speichernSeite();
-										 		   
+					 		   textSpeichernInDB(true);
+					 		   //speichernSeite();
+					 		   if(eltern.document != null){
+					 			   if(eltern.document.isOpen()){
+					 				  eltern.document.close();
+					 			   }
+					 		   }
 					 	   }
 					});	
 				}
@@ -707,7 +610,13 @@ public class Eb3 implements RehaEventListener  {
 						if(outtemp != null){
 							outtemp.close();
 						}
-						trenneFrame(false);
+			 		   if(eltern.document != null){
+			 			   if(eltern.document.isOpen()){
+			 				  eltern.document.close();
+			 			   }
+			 		   }
+
+						//trenneFrame(false);
 						outtemp = null;
 						pdfok = false;
 						//gestartet = false;
@@ -723,7 +632,7 @@ public class Eb3 implements RehaEventListener  {
 			}
 			if(evt.getRehaEvent().equals("OOFrame")){
 				if(evt.getDetails()[1].equals("#TRENNEN") ){
-					this.trenneFrame(true);
+					//this.trenneFrame(true);
 				}
 			}			
 			
@@ -743,9 +652,13 @@ public class Eb3 implements RehaEventListener  {
 		}
 
 		// ... and just in case, call validate() on the top-level window as well
-		final Window window = SwingUtilities.getWindowAncestor(nativeView);
-		if (window != null) {
-		window.validate();
+		final Window window1 = SwingUtilities.getWindowAncestor(nativeView);
+		if (window1 != null) {
+		window1.validate();
+		}
+		final Window window2 = SwingUtilities.getWindowAncestor(pan);
+		if (window2 != null) {
+		window2.validate();
 		}
 
 		pan.getLayout().layoutContainer(getSeite());
@@ -756,19 +669,6 @@ public class Eb3 implements RehaEventListener  {
 			InputStream is = null;
 			outtemp = new ByteArrayOutputStream();
 			startStream = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-			/*
-			byte[] buff;
-			try {
-				buff = new byte[is.available()];
-				outtemp.write(is.read(buff, 0, buff.length));
-				outtemp.flush();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
-
 			
 		}
 		private String getStatus(){

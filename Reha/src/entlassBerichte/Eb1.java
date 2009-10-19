@@ -4,13 +4,17 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,7 +51,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class Eb1 implements ActionListener {
+public class Eb1 implements ActionListener,ComponentListener {
 	JXPanel pan = null;
 	EBerichtPanel eltern = null;
 	Font fontgross = null;
@@ -106,6 +110,7 @@ public class Eb1 implements ActionListener {
 	public Eb1(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);
+		pan.addComponentListener(this);
 		pan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		eltern = xeltern;
 		fontgross =new Font("Arial",Font.BOLD,14);
@@ -1662,6 +1667,33 @@ public class Eb1 implements ActionListener {
 				}
 			}
 		}
+	}
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void componentResized(ComponentEvent e) {
+		final Container parent = pan.getParent();
+		if (parent instanceof JComponent) {
+		((JComponent) parent).revalidate();
+		}
+		// ... and just in case, call validate() on the top-level window as well
+		final Window window1 = SwingUtilities.getWindowAncestor(pan);
+		if (window1 != null) {
+		window1.validate();
+		}		
+	}
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

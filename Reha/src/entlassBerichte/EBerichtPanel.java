@@ -291,7 +291,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				protected Void doInBackground() throws Exception {
 					if(ebt.getTab3().framegetrennt){
 						System.out.println("OOTab ist!!!! selektiert und getrennt deshalb BaueSeite");
-						ebt.getTab3().baueSeite();
+						//ebt.getTab3().baueSeite();
 					}else{
 						System.out.println("OOTab ist!!!! selektiert und nicht!!!!getrennt deshalb nur tempTextSpeichern");
 						ebt.getTab3().tempTextSpeichern();
@@ -676,7 +676,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							System.out.println("in getrennt.....");
 							if(sel != 2){
 								ebt.getTab3().tempTextSpeichern();
-								document.close();
+								//document.close();
 							}	
 						}else{
 							if(document.isModified()){											
