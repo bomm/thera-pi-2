@@ -1,8 +1,12 @@
 package entlassBerichte;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +32,12 @@ import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
+
 import hauptFenster.Reha;
 
 public class RVEBerichtPDF {
@@ -37,16 +47,25 @@ public class RVEBerichtPDF {
 	public String[] rvVorlagen = {null,null,null,null};
 	String[][] tempDateien = {null,null,null,null,null,null};
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
-
+	public boolean RV;
+	public boolean altesFormular;
 	
-	public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen,boolean RV){
+	public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen,boolean xaltesFormular,boolean xRV){
 		eltern = xeltern;
-		if(RV){
+		RV = xRV;
+		altesFormular = xaltesFormular;
+		if(RV && altesFormular){
+			// die alten Formulare müssen noch aufbereitet werden....
 			rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
 			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
 			rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
 			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
-		}else{
+		}else if(RV && !altesFormular){
+			rvVorlagen[0]  = vorlagenPfad+"EBericht-Seite1-Variante2.pdf";
+			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
+			rvVorlagen[2]  = vorlagenPfad+"EBericht-Seite3-Variante2.pdf";
+			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
+		}else{ // GKV
 			rvVorlagen[0]  = vorlagenPfad+"GKVBericht-Seite1-Variante2.pdf";
 			rvVorlagen[1]  = vorlagenPfad+"EBericht-Seite2-Variante2.pdf";
 			rvVorlagen[2]  = vorlagenPfad+"GKVBericht-Seite2-Variante2.pdf";
@@ -59,10 +78,18 @@ public class RVEBerichtPDF {
 			System.out.println("Drucken Kapitel 3 = "+versionen[2]);
 			System.out.println("Drucken Kapitel 4 = "+versionen[3]);
 		}
-		doRVVorschau(nurVorschau,versionen,RV);
+		doRVVorschau(nurVorschau,versionen);
 	}
-	private void doRVVorschau(boolean vorschau,int[] versionen,boolean RV){
-		boolean geklappt;
+	
+	/************************
+	 * 
+	 * @param vorschau
+	 * @param versionen
+	 * @param RV
+	 * 
+	 */
+	private void doRVVorschau(boolean vorschau,int[] versionen){
+		boolean geklappt = false;
 		Reha.thisClass.progressStarten(true);
 		File ft = new File(tempPfad+"EBfliesstext.pdf");
 		if(! ft.exists()){
@@ -72,16 +99,22 @@ public class RVEBerichtPDF {
 			return;
 		}
 		System.out.println("Konfiguriere Seite 1");
-		geklappt = doSeite1();
+		if(RV && !altesFormular ){
+			geklappt = doSeite1Neu();			
+		}else{
+			geklappt = doSeite1Alt();
+		}
 		if(!geklappt){
 			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
 			return;
 		}
-		System.out.println("Konfiguriere Seite 2");				
-		geklappt = doSeite2();
-		if(!geklappt){
-			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 2 ");
-			return;
+		System.out.println("Konfiguriere Seite 2"); // Nur wenn RV-Träger	
+		if(RV){
+			geklappt = doSeite2();
+			if(!geklappt){
+				JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 2 ");
+				return;
+			}
 		}
 		System.out.println("Konfiguriere Seite 3");				
 		geklappt = doSeite3();
@@ -92,9 +125,10 @@ public class RVEBerichtPDF {
 		System.out.println("Stelle Kapitel zusammen");
 		final boolean xvorschau = vorschau;
 		final int[] exemplare = versionen;
+		//Falls nur Vorschau**************************************/
 		if(vorschau){
 			System.out.println("InDo Seitenzusammenstellen");
-			geklappt = doSeitenZusammenstellen(RV);	
+			geklappt = doSeitenZusammenstellen();	
 			if(!geklappt){
 				JOptionPane.showMessageDialog(null,"Fehler beim Zusammenstellen der Berichtseiten");
 				return;
@@ -111,9 +145,9 @@ public class RVEBerichtPDF {
 			}
 			Reha.thisClass.progressStarten(false);
 			return;
-		//Keine Vorschau direkt drucken	
+		//Keine Vorschau direkt drucken***************************/	
 		}else{
-			if(((String)eltern.cbktraeger.getSelectedItem()).contains("DRV")){
+			if(RV){
 				System.out.println("Starte die Funktion starteRVDruck()");
 				new SwingWorker<Void,Void>(){
 					@Override
@@ -129,50 +163,74 @@ public class RVEBerichtPDF {
 					}
 				}.execute();
 			}else{
-				
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						try{
+							boolean xgeklappt = starteGKVDruck(exemplare);
+							Reha.thisClass.progressStarten(false);
+						}catch(Exception ex){
+							ex.printStackTrace();
+							Reha.thisClass.progressStarten(false);
+						}
+						return null;
+					}
+				}.execute();				
 			}
 		}
-		
-		
-		
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				try{
-					/*
-					Reha.thisClass.progressStarten(true);
-					String cmd = "java -jar ";
-					System.out.println("Starte "+cmd+" "+Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei);
-					final String xcmd = cmd;
-					SwingUtilities.invokeLater(new Runnable(){
-						public  void run(){
-							try {
-								Runtime.getRuntime().exec(xcmd+" "+Reha.proghome+"PDFDrucker.jar "+xdatei);
-								Reha.thisClass.progressStarten(false);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					});
-					*/
-					//Process process = new ProcessBuilder(cmd,"",Reha.proghome+"PDFViewerDrucker.jar"+" "+xdatei).start();
-					System.out.println("Wert von xVorschau = "+xvorschau);
-					if(xvorschau){
-						
-					}else{
-						
-					}
-						
-					
-				}catch(Exception ex){
-					
-				}
-				return null;
-			}
-		}.execute();
-			
 	}
+	private boolean starteGKVDruck(int[] exemplare){
+		try {
+
+			boolean geklappt = doSeitenZusammenstellen();
+			
+			if(exemplare[4] > 0){
+				doArztAuswaehlen(eltern);
+			}
+			String tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
+
+			Document docversion = new Document(PageSize.A4);
+			PdfCopy cop = new PdfCopy(docversion,new FileOutputStream(tempversion));
+			
+			docversion.open();
+			System.out.println(tempDateien[0][0] );
+			File f = new File(tempDateien[0][0]);
+			System.out.println("Die Datei = "+tempDateien[0][0]+" existiert = "+f.exists() );
+			PdfReader reader = new PdfReader(tempDateien[0][0]);
+			cop.addPage(cop.getImportedPage(reader,1 ));
+			reader.close();
+			f = new File(tempDateien[2][0]);
+			System.out.println("Die Datei = "+tempDateien[2][0]+" existiert = "+f.exists() );
+			reader = new PdfReader(tempDateien[2][0]);
+			int seiten = reader.getNumberOfPages();
+			for(int i = 1 ; i <= seiten;i++){
+				cop.addPage(cop.getImportedPage(reader,i ));
+			}
+			docversion.close();
+			cop.close();
+			reader.close();
+		
+			if(exemplare[5] > 0){
+				//new ReaderStart(new String(tempversion ));
+			}else{
+				//druckeVersion(new String(tempversion ));							
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		return true;
+	}
+	/******************************************/
 	private void starteReader(String datei) throws IOException{
 		Process process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",datei).start();
 		InputStream is = process.getInputStream();
@@ -190,13 +248,13 @@ public class RVEBerichtPDF {
 	}
 	/***********
 	 * 
-	 * E-Bericht Seite 1 
+	 * E-Bericht Seite 1 - Neues Formular
 	 * 
 	 * 
 	 * 
 	 * 
 	 **********/
-	private boolean doSeite1(){
+	private boolean doSeite1Neu(){
 		String pdfPfad = rvVorlagen[0];
 		PdfStamper stamper = null;
 			
@@ -207,15 +265,9 @@ public class RVEBerichtPDF {
 		try {
 			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 		PdfReader reader = new PdfReader (pdfPfad);
-		//ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
-		// Die Ausfertigung händeln...		
-		/*
-		AcroFields form = stamper.getAcroFields();
-		form.setField("Ausfertigung", ausfertigung);
-		form.setField("Bereich", bereich);
-		*/
+
 		// Die Ausfertigung händeln...---				
 		PdfContentByte cb = stamper.getOverContent(1);
 		Float [] pos = {null,null,null};
@@ -409,6 +461,233 @@ public class RVEBerichtPDF {
 		}
 		return true;
 	}
+
+	/***********
+	 * 
+	 * E-Bericht Seite 1 - Neues Formular
+	 * 
+	 * 
+	 * 
+	 * 
+	 **********/
+	private boolean doSeite1Alt(){
+		String pdfPfad = rvVorlagen[0];
+		PdfStamper stamper = null;
+			
+		// Geschiss bis die bestehende PDF eingelesen und gestampt ist
+		tempDateien[0] = new String[]{Reha.proghome+"temp/"+Reha.aktIK+"/EB1"+System.currentTimeMillis()+".pdf"};
+		 
+		BaseFont bf;
+		try {
+			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		PdfReader reader = new PdfReader (pdfPfad);
+		
+		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
+
+		// Die Ausfertigung händeln...---				
+		PdfContentByte cb = stamper.getOverContent(1);
+		Float [] pos = {null,null,null};
+		float fy0 =  0.25f;
+		float fy1 =  6.9f;
+		// Hier die Positionierung für das obere Gedönse
+								//        0RV-Nr.
+		Float[][] poswert1 = {getFloats(29.30f,268.25f,fy1),
+						//      1Kennzeich                2Name                           3Geburtst
+							getFloats(103.30f,268.25f,fy1),getFloats(24.5f,260.0f,fy0),getFloats(24.5f,251.5f,fy1),
+							//   4Strasse                             5PLZ                               6Ort
+							getFloats(24.5f,243.0f,fy0),getFloats(24.5f,234.5f,fy1), getFloats(51.5f,234.5f,fy0),
+							//  7VersichertenName              8MSNR                     9BNR
+							getFloats(24.5f,226.0f,fy0),getFloats(131.25f,268.25f,fy1),getFloats(156.25f,268.25f,fy1)
+				};
+				// Jetzt die Positionen abarbeiten
+		String text = "";
+		for(int i = 0; i < 10;i++){
+			if(i==3){
+				text = macheDatum2Sechs(eltern.btf[i].getText().trim());
+			}else{
+				text = eltern.btf[i].getText();	
+			}
+			setzeText(cb,poswert1[i][0], poswert1[i][1],poswert1[i][2],bf,12,text);
+		}
+		//IK des Berichterstellers
+		pos = getFloats(131.25f,225.75f,fy1);
+		setzeText(cb,pos[0], pos[1],pos[2],bf,12,eltern.btf[28].getText());
+		//Abteilung-Nr.
+		pos = getFloats(181.50f,225.75f,fy1);
+		setzeText(cb,pos[0], pos[1],pos[2],bf,12,(eltern.btf[10].getText().trim().equals("") ? "2300" : eltern.btf[10].getText().trim() ) );
+		/* 
+		 * 
+		 */
+		// Jetzt kommen die Felder ab stationär, ganztägig ambulant etc. bis letztes Feld = Körpergröße
+		Float[][] poswert2 = {	getFloats(29.25f,218.0f,fy1),getFloats(67.10f,218.0f,fy1),
+								getFloats(29.25f,196.5f,fy1),getFloats(67.10f,196.5f,fy1),
+								getFloats(29.25f,205.30f,fy1),getFloats(67.10f,205.30f,fy1)	};
+		for(int i = 11; i < 17;i++){
+			text = eltern.btf[i].getText().trim();
+			if(! text.equals(".  .")){
+				text = macheDatum2Sechs(text);
+				setzeText(cb,poswert2[i-11][0], poswert2[i-11][1],poswert2[i-11][2],bf,12,text);						
+			}
+		}	
+		/*******************************************************************/
+		// Jetzt die Diagnoseschlüssel
+		//                             Diag1                            Diag2
+		Float[][] poswert3 = {	getFloats(113.10f,175.70f,fy1),getFloats(113.10f,162.95f,fy1),
+		//                             Diag3                            Diag4
+								getFloats(113.10f,150.00f,fy1),getFloats(113.10f,137.50f,fy1),
+		//                             Diag5						
+								getFloats(113.10f,124.40f,fy1)};
+		for(int i = 17; i < 22;i++){
+			text = eltern.btf[i].getText().trim();
+			setzeText(cb,poswert3[i-17][0], poswert3[i-17][1],poswert3[i-17][2],bf,12,text);						
+
+		}	
+		/*******************************************************************/
+		// Dann die CheckBoxen auswerten
+		float xfs = 0.0f;
+		float yfs = 0.0f;
+		bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		Float[][] poswert4 =
+			//	 		  0                          1                                             					
+				{getFloats(33.9f+xfs,81.75f+yfs,fy0),getFloats(61.8f+xfs,81.75f+yfs,fy0),
+			//	          2                          3
+				 getFloats(33.9f+xfs,73.7f+yfs,fy0),getFloats(61.8f+xfs,73.7f+yfs,fy0),
+			//            4                          5                       
+				 getFloats(33.9f+xfs,65.4f+yfs,fy0),getFloats(61.8f+xfs,65.4f+yfs,fy0),
+			//			  6                          7                                         
+				 getFloats(89.85f+xfs,81.75f+yfs,fy0),getFloats(120.35f+xfs,81.75f+yfs,fy0),
+			//	          8							 9  
+				 getFloats(89.85f+xfs,73.7f+yfs,fy0),getFloats(120.35f+xfs,73.7f+yfs,fy0),
+			//	         10                         11               
+				 getFloats(89.85f+xfs,65.4f+yfs,fy0),getFloats(120.35f+xfs,65.4f+yfs,fy0),
+			//	         12                         13                                                
+				getFloats(148.25f+xfs,81.75f+yfs,fy0),getFloats(178.45f+xfs,81.75f+yfs,fy0),
+			//	         14                         15
+				getFloats(148.25f+xfs,73.7f+yfs,fy0),getFloats(178.45f+xfs,73.7f+yfs,fy0),
+			//           16
+				getFloats(148.25f+xfs,65.4f+yfs,fy0)};
+		for(int i = 0; i <17; i++){
+			if(eltern.bchb[i].isSelected()){
+				text = "X";
+				setzeText(cb,poswert4[i][0], poswert4[i][1],poswert4[i][2],bf,14,text);
+			}
+		}
+		bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+		/*************************************************************************/
+		// Gewichte und Körpergröße             1                              2                            3
+		Float[][] poswert5 = {getFloats(29.25f,116.50f,fy1),getFloats(29.25f,108.25f,fy1),getFloats(29.25f,99.80f,fy1) }; 
+		for(int i = 22; i < 25;i++){
+			text = eltern.btf[i].getText().trim();
+			setzeText(cb,poswert5[i-22][0], poswert5[i-22][1],poswert5[i-22][2],bf,12,text);						
+		}
+		/*************************************************************************/
+		// Das Unterschriftsdatum = eltern.btf[27].getText() + den Ort
+		text = eltern.btf[27].getText().trim();
+		Float [] fsign = getFloats(24.25f,16.25f,fy0);
+		if(! text.equals(".  .")){
+			setzeText(cb,fsign[0], fsign[1],fsign[2],bf,10,SystemConfig.sGutachtenOrt+", "+text);						
+		}
+		//Float [] fort = getFloats(61.25f,27.60f,fy0);
+		//setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt);
+		/*************************************************************************/
+		// Jetzt die ComboBoxen abarbeiten
+		Float[][] poswert6 = {
+			//   0=Enlassform                      1	
+			getFloats(118.15f,213.65f,fy1),getFloats(166.40f,213.65f,fy1),
+			//   2=Diag1Teil                       3                                  4
+			getFloats(143.35f,175.70f,fy1),getFloats(155.75f,175.70f,fy1),getFloats(168.25f,175.70f,fy1),
+			//   5=Diag2Teil				       6                                  7
+			getFloats(143.35f,162.95f,fy1),getFloats(155.75f,162.95f,fy1),getFloats(168.25f,162.95f,fy1),
+			//   8=Diag3Teil 					   9								 10
+			getFloats(143.35f,150.00f,fy1),getFloats(155.75f,150.00f,fy1),getFloats(168.25f,150.00f,fy1),
+			//  11=Diag4Teil					  12								 13 
+			getFloats(143.35f,137.50f,fy1),getFloats(155.75f,137.50f,fy1),getFloats(168.25f,137.50f,fy1),
+			//  14=Diag5Teil					  15								 16
+			getFloats(143.35f,124.40f,fy1),getFloats(155.75f,124.40f,fy1),getFloats(168.25f,124.40f,fy1),
+			//  17=Ursache der..				  18								 19
+			getFloats(77.65f,116.50f,fy1),getFloats(120.70f,116.50f,fy1)
+			
+		};
+		for(int i = 0; i < poswert6.length;i++){
+			text = ((String)eltern.bcmb[i].getSelectedItem()).trim();
+			setzeText(cb,poswert6[i][0], poswert6[i][1],poswert6[i][2],bf,12,text);						
+		}
+		/***********Jetzt der mehrzeilige Text der Diagnosen 1-5******************/
+		cb.setCharacterSpacing(0.5f);
+		float xstart = 82.f;
+		float xend = 282.f;
+		float ystartunten = 495.f;
+		float ystartoben = 530.f;
+		float yschritt = 35.f;
+		ColumnText ct = null;
+		Phrase ph = null;
+		float zaehler = 1.f;
+		for(int i = 0;i < 5; i++){
+			ct = new ColumnText(cb);
+			ct.setSimpleColumn(xstart, ystartunten,xend,ystartoben,8,Element.ANCHOR);
+			ph = new Phrase();
+			ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+			ph.add(eltern.bta[i].getText().trim());
+			ct.addText(ph);
+			ct.go();
+			
+			ystartunten -= (yschritt+zaehler);
+			ystartoben = (ystartunten+yschritt);
+		}
+		// Erläuternungen Box
+		Float[] empfunten =  getFloats(24.50f,51.25f,0.5f);
+		Float[] empfoben =  getFloats(201.00f,58.f,0.5f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(empfunten[0], empfunten[1],empfoben[0],empfoben[1],9,Element.ALIGN_BASELINE);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",10,Font.PLAIN));
+		ph.add(eltern.bta[5].getText().trim());
+		ct.addText(ph);
+		ct.go();
+		// Letzte Medikation
+		empfunten =  getFloats(24.50f,26.5f,0.5f);
+		empfoben =  getFloats(201.00f,39.f,0.5f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(empfunten[0], empfunten[1],empfoben[0],empfoben[1],9,Element.ALIGN_BASELINE);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Courier",10,Font.PLAIN));
+		ph.add(eltern.bta[6].getText().trim());
+		ct.addText(ph);
+		ct.go();
+
+		/*****************************************************************/
+		// Der Block rechts oben mit der Einrichtungsadresse
+		StringBuffer reha = new StringBuffer();
+		int lang = SystemConfig.vGutachtenAbsAdresse.size();
+		for(int i = 0; i < lang;i++){
+			reha.append(SystemConfig.vGutachtenAbsAdresse.get(i)+(i < (lang-1) ? "\n" : ""));
+		}
+		// Reha-Einrichtung
+		Float[] rehaunten =  getFloats(131.25f,242.0f,0.5f);
+		Float[] rehaoben =  getFloats(199.00f,264.0f,0.5f);
+		ct = new ColumnText(cb);
+		ct.setSimpleColumn(rehaunten[0], rehaunten[1],rehaoben[0],rehaoben[1],11,Element.ALIGN_BASELINE);
+		ph = new Phrase();
+		ph.setFont(FontFactory.getFont("Helvectica",10,Font.PLAIN));
+		ph.add(reha.toString());
+		ct.addText(ph);
+		ct.go();
+		
+		/*****************************************************************/
+		stamper.setFormFlattening(true);
+		stamper.close();
+		reader.close();
+		/*****************************************************************/		
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;			
+		}
+		return true;
+	}
+	
 	/***********
 	 * 
 	 * E-Bericht Seite 2 
@@ -552,13 +831,14 @@ public class RVEBerichtPDF {
 				pos = getFloats(171.50f,268.00f,fy1);
 				setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(eltern.btf[3].getText()));
 				int seite = i+1;
-
-				cb.beginText();
-				cb.moveText(xseite[0], xseite[1]);
-				cb.setFontAndSize(bf,11);
-				cb.setCharacterSpacing(xseite[2]);
-				cb.showText(new Integer(seite).toString());
-				cb.endText();
+				if(RV){
+					cb.beginText();
+					cb.moveText(xseite[0], xseite[1]);
+					cb.setFontAndSize(bf,11);
+					cb.setCharacterSpacing(xseite[2]);
+					cb.showText(new Integer(seite).toString());
+					cb.endText();
+				}
 				
 				//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer  6xAnzahl
 				Float[] startwerte = {30.0f ,    251.f      ,8.5f, 149.f,  153.75f,   178.5f  ,191.75f};
@@ -690,6 +970,7 @@ public class RVEBerichtPDF {
 	 */
 	public boolean	starteRVDruck(int[] exemplare){
 		try{
+			
 			int seiten = 0;
 			
 			String[] empfs = {"den RV-Träger - "+(String) eltern.cbktraeger.getSelectedItem(),
@@ -705,6 +986,7 @@ public class RVEBerichtPDF {
 				System.out.println("Es wurden "+seiten+" Fliesstext zusammengestellt");
 			}
 			for(int empfaenger = 0; empfaenger < 5; empfaenger++){
+				System.out.println("in der Empfängerroutine");
 				druckeEmpfaengerVersion(empfaenger,empfs[empfaenger],bereich[empfaenger],(seiten > 0 ? true : false),seiten,exemplare);
 				if(exemplare[4] <= 0){
 					return true;
@@ -911,7 +1193,7 @@ public class RVEBerichtPDF {
 		System.out.println(new Integer(seiten).toString()+" Seiten Fließtext wurden zusammengestellt");	
 		return seiten;
 	}
-	public boolean doSeitenZusammenstellen(boolean RV){
+	public boolean doSeitenZusammenstellen(){
 		try{
 		InputStream isb = null;
 		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};
@@ -930,19 +1212,32 @@ public class RVEBerichtPDF {
 		docgesamt.open();
 		
 		ByteArrayOutputStream bpage1 = new ByteArrayOutputStream();
-		PdfReader readerPage1 = new PdfReader (tempDateien[0][0]);
-		PdfStamper stampPage1 = new PdfStamper(readerPage1,bpage1);
-		PdfContentByte cbPage1 = stampPage1.getOverContent(1);
-		schreibeVonBis(cbPage1,new Integer(seiten).toString());
-		stampPage1.close();
-		
-		cop.addPage(cop.getImportedPage(new PdfReader(bpage1.toByteArray()),1));
-		cop.addPage(cop.getImportedPage(new PdfReader(tempDateien[1][0]),1));
-		
+		if(RV){ // Seitenzahl recht unten nur im Falle der RV
+			PdfReader readerPage1 = new PdfReader (tempDateien[0][0]);
+			PdfStamper stampPage1 = new PdfStamper(readerPage1,bpage1);
+			PdfContentByte cbPage1 = stampPage1.getOverContent(1);
+			schreibeVonBis(cbPage1,new Integer(seiten).toString());
+			stampPage1.close();
+			cop.addPage(cop.getImportedPage(new PdfReader(bpage1.toByteArray()),1));
+			readerPage1.close();
+			//Nur Bei RV die Seite Sozialmedizin
+			cop.addPage(cop.getImportedPage(new PdfReader(tempDateien[1][0]),1));
+		}else{
+			PdfReader readerPage1 = new PdfReader (tempDateien[0][0]);
+			cop.addPage(cop.getImportedPage(readerPage1,1));
+			readerPage1.close();
+		}
 		PdfReader ktlreader = new PdfReader(tempDateien[2][0]);
 		int ktlseiten = ktlreader.getNumberOfPages();
 		for(int i = 1; i <= ktlseiten;i++){
 			cop.addPage(cop.getImportedPage(ktlreader,i));
+		}
+		if(!RV){
+			docgesamt.close();
+			reader.close();
+			ktlreader.close();
+			cop.close();
+			return true;
 		}
 		
 		ByteArrayOutputStream bvorlage;
@@ -966,12 +1261,10 @@ public class RVEBerichtPDF {
 			cop.addPage(cop.getImportedPage(komplett,1));
 			bvorlage.close();
 		}
-		
 
 		docgesamt.close();
 		reader.close();
 		ktlreader.close();
-		readerPage1.close();
 		cop.close();
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -980,8 +1273,6 @@ public class RVEBerichtPDF {
 		
 		return true;
 	}
-	
-	
 	private void schreibeKopf(PdfContentByte cb,int seite) throws DocumentException, IOException{
 		float fy0 =  0.25f;
 		float fy1 =  7.1f;
@@ -1032,7 +1323,12 @@ public class RVEBerichtPDF {
 		cb.endText();
 	}
 	private void schreibeVonBis(PdfContentByte cb,String seiten) throws DocumentException, IOException{
-		Float[] xseite = getFloats(174.0f,27.0f,0.f);
+		Float[] xseite;
+		if(!altesFormular){
+			xseite = getFloats(174.0f,27.0f,0.f);			
+		}else{
+			xseite = getFloats(196.0f,22.0f,0.f);
+		}
 		BaseFont bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
 		cb.beginText();
 		cb.moveText(xseite[0], xseite[1]);
@@ -1075,5 +1371,78 @@ public class RVEBerichtPDF {
 			sret = "";
 		}
 		return sret;
-	}	
+	}
+	private void doArztAuswaehlen(EBerichtPanel eltern){
+		try{
+			System.out.println("Starte Arztauswahl");
+			String titel = "Aerzte für GKV-Bericht auswählen";
+			EBPrintDlg printDlg = new EBPrintDlg();
+			//JDialog neuPat = new JDialog();
+			PinPanel pinPanel = new PinPanel();
+			pinPanel.setName("EBPrint");
+			pinPanel.getGruen().setVisible(false);
+			printDlg.setPinPanel(pinPanel);
+			printDlg.getSmartTitledPanel().setTitle(titel);	
+			printDlg.setSize(650,250);
+			printDlg.setPreferredSize(new Dimension(650,250));
+			printDlg.getSmartTitledPanel().setPreferredSize(new Dimension (650,250));
+			printDlg.setPinPanel(pinPanel);
+			//Hier das Versionsgedönse
+			printDlg.getSmartTitledPanel().setContentContainer(new BerichtArztAuswahl(eltern));
+			printDlg.getSmartTitledPanel().getContentContainer().setName("EBPrint");
+			printDlg.setName("EBPrint");
+			
+			//printDlg.setLocation(p.x-100,p.y+35);
+			printDlg.setLocationRelativeTo(null);
+			printDlg.setTitle(titel);
+
+			printDlg.setModal(true);
+			printDlg.pack();	
+			printDlg.setVisible(true);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		
+	}
+	
 }
+
+class EBAerzteDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	private RehaTPEventClass rtp = null;
+	public EBAerzteDlg(){
+		super(null,"EBPrint");
+		this.setName("EBPrint");
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+
+	}
+	public void RehaTPEventOccurred(RehaTPEvent evt) {
+		// TODO Auto-generated method stub
+		try{
+			if(evt.getDetails()[0] != null){
+				if(evt.getDetails()[0].equals(this.getName())){
+					this.setVisible(false);
+					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+					rtp = null;
+					this.dispose();
+					System.out.println("****************EGPrint -> Listener entfernt**************");				
+				}
+			}
+		}catch(NullPointerException ne){
+			System.out.println("In PatNeuanlage" +evt);
+		}
+	}
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		if(rtp != null){
+			this.setVisible(false);			
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
+			rtp = null;
+			dispose();
+			System.out.println("****************EGPrint -> Listener entfernt (Closed)**********");
+		}
+		
+		
+	}
+}	

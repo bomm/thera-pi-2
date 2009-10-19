@@ -373,8 +373,22 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		/**************************************************/			
 		if(cmd.equals("gutvorschau")){
+			boolean altesFormular = false;
+			boolean rvTraeger = true;
+			if(btf[16].getText().trim().equals(".  .")){
+				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig für die Bestimmung des Formulares");
+				return;
+			}
+			if(datFunk.DatumsWert(btf[16].getText().trim()) < datFunk.DatumsWert("01.01.2008")){
+				altesFormular = true;
+			}
+			if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
+				rvTraeger = true;
+			}else{
+				rvTraeger = false;
+			}
 			if(berichtart.equals("entlassbericht")){
-				doVorschauEntlassBericht(true,new int[] {});
+				doVorschauEntlassBericht(true,new int[] {},altesFormular,rvTraeger);
 			}else if(berichtart.equals("nachsorgedokumentation")){
 				doVorschauNachsorge(true,new int[] {});
 			}
@@ -382,20 +396,38 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(cmd.equals("gutprint")){
 			boolean[] drucken = null;
 			String titel;
+			boolean altesFormular = false;
+			boolean rvTraeger = true;
+			if(btf[16].getText().trim().equals(".  .")){
+				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig für die Bestimmung des Formulares");
+				return;
+			}
+			if(datFunk.DatumsWert(btf[16].getText().trim()) < datFunk.DatumsWert("01.01.2008")){
+				altesFormular = true;
+			}
+			if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
+				rvTraeger = true;
+			}else{
+				rvTraeger = false;
+			}
 			if(berichtart.equals("entlassbericht")){
-				if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
+				if( rvTraeger){
 					titel = "RV E-Bericht drucken"; 
 					druckversion = new int[] {1,1,1,1,1,0,0};
 					drucken = new boolean[] {true,true,true,true,true};
+					rvTraeger = true;
 				}else{
 					titel = "GKV E-Bericht drucken";
-					druckversion = new int[] {1,0,1,0,1,0,0};
+					druckversion = new int[] {1,0,1,1,1,0,0};
 					drucken = new boolean[] {true,false,true,true,true};
+					rvTraeger = false;
 				}
 				EBDrucken(gutbut[2].getLocationOnScreen(),drucken,titel);
+				System.out.println("druckversion[0] hat den Wert "+druckversion[0]);
 				if(druckversion[0] >= 0){
-					doVorschauEntlassBericht(false,druckversion);
+					doVorschauEntlassBericht(false,druckversion,altesFormular,rvTraeger);
 				}
+			//Nur Nachsorgedolimentation******************************	
 			}else if(berichtart.equals("nachsorgedokumentation")){
 				if(druckversion[0] >= 0){
 					titel = "RV Nachsorgedoku ";
@@ -625,10 +657,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	
 	
-	private void doVorschauEntlassBericht(boolean nurVorschau,int[] versionen){
+	private void doVorschauEntlassBericht(boolean nurVorschau,int[] versionen,boolean altesFormular,boolean RV){
 		final EBerichtPanel xthis = this;
 		final boolean xnurVorschau = nurVorschau;
 		final int[] xversionen = versionen;
+		final boolean xaltesFormular = altesFormular;
+		final boolean xRV = RV;
 		new Thread(){
 			public void run(){
 				new SwingWorker<Void,Void>(){
@@ -649,17 +683,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 								ebt.getTab3().tempTextSpeichern();
 							}
 						}
-						// Hier abprüfen ob gedruckt werden soll
-						//public RVEBerichtPDF(EBerichtPanel xeltern, boolean nurVorschau,int[] versionen)
-						try{
-							if(((String)cbktraeger.getSelectedItem()).contains("DRV")){
-								new RVEBerichtPDF(xthis,xnurVorschau, xversionen,true);
-							}else{
-								new RVEBerichtPDF(xthis,xnurVorschau, xversionen,false);								
-							}
-						}catch(Exception ex){
-								ex.printStackTrace();
-						}	
+						new RVEBerichtPDF(xthis,xnurVorschau, xversionen,xaltesFormular,xRV);
 						return null;
 					}
 				}.execute();
@@ -800,7 +824,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		printDlg.setPinPanel(pinPanel);
 		//Hier das Versionsgedönse
 		printDlg.getSmartTitledPanel().setContentContainer(new BerichtDrucken(this,druckversion,drucken));
-		printDlg.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
+		printDlg.getSmartTitledPanel().getContentContainer().setName("EBPrint");
 		printDlg.setName("EBPrint");
 		
 		printDlg.setLocation(p.x-100,p.y+35);
