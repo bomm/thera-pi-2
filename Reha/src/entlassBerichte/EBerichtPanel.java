@@ -454,7 +454,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		if(cmd.equals("guttools")){
-			
+			String xcmd = "<html>Tools für das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
+			JOptionPane.showMessageDialog(null,xcmd);
 		}
 		if(cmd.equals("guttext")){
 			if(!neu){

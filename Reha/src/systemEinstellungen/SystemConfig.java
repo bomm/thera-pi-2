@@ -661,7 +661,7 @@ public class SystemConfig {
 		/********************/
 		hmAdrADaten = new HashMap<String,String>();
 		List<String> lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
-												"<Atel>","<Afax>","<Aemail>","<Aid>"});
+												"<Atel>","<Afax>","<Aemail>","<Aid>","<Aihrer>","<Apatientin>","<Adie>"});
 		for(int i = 0; i < lAdrADaten.size(); i++){
 			hmAdrADaten.put(lAdrADaten.get(i),"");
 		}

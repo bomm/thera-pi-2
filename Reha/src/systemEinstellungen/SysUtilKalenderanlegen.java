@@ -437,6 +437,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		int i;
 		long zeit1 = System.currentTimeMillis();
 		String fdatum=null, ftext=null,sret =null,sqldat=null ;
+		StringBuffer sbuf = new StringBuffer();
 		if(max==0){
 			knopfGedoense(true);
 			return;

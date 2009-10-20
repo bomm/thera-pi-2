@@ -71,5 +71,14 @@ public class ArztTools {
 		SystemConfig.hmAdrADaten.put("<Afax>", (String) vec.get(9));		
 		SystemConfig.hmAdrADaten.put("<Aemail>", (String) vec.get(14));		
 		SystemConfig.hmAdrADaten.put("<Aid>", (String) vec.get(16));
+		
+		//"<Aihrer>","<Apatientin>","<Adie>"
+		if(! PatGrundPanel.thisClass.aktPatID.equals("")){
+			boolean bfrau = ( ((String)vec.get(0)).equalsIgnoreCase("FRAU") ? true : false );
+			SystemConfig.hmAdrADaten.put("<Aihrer>", (bfrau ? "Ihrer" : "Ihres"));
+			SystemConfig.hmAdrADaten.put("<Apatientin>", (bfrau ? "Patientin" : "Patienten"));
+			SystemConfig.hmAdrADaten.put("<Adie>", (bfrau ? "die" : "den"));
+			
+		}
 	}
 }

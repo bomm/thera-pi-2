@@ -23,6 +23,8 @@ import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
 
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextTable;
+import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenOfficeFilter;
 
@@ -201,6 +203,8 @@ public class RVEBerichtPDF {
 					for(int i = 0; i < eltern.aerzte.length;i++){
 						ArztTools.constructArztHMap(eltern.aerzte[i]);
 						ByteArrayOutputStream baout = new ByteArrayOutputStream();
+						SystemConfig.hmEBerichtDaten.put("<Ebbeginn>",eltern.btf[15].getText() );
+						SystemConfig.hmEBerichtDaten.put("<Ebende>",eltern.btf[16].getText() );
 						eltern.document.getPersistenceService().store(baout);
 						//eltern.document.getPersistenceService().export(baout, new RTFFilter());
 						InputStream is = new ByteArrayInputStream(baout.toByteArray());
@@ -213,6 +217,31 @@ public class RVEBerichtPDF {
  						
  						doc.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, OpenOfficeFilter.FILTER);
  						is.close();
+ 						ITextTable[] tbl = doc.getTextTableService().getTextTables();
+ 						int itbl = -1;
+ 						boolean btblok = false;
+ 						for(int y = 0; y < tbl.length;y++){
+ 							System.out.println("Tabellenname = "+tbl[y].getName());
+ 							if(tbl[y].getName().equals("Diagnosen")){
+ 								itbl = y;
+ 								btblok = true;
+ 								break;
+ 							}
+ 						}
+ 						if(!btblok){
+ 							JOptionPane.showMessageDialog(null,"Keine Tabelle mit dem Namen 'Diagnosen' gefunden.\n"+
+ 									"Setzen Sie die Diagnosen deshalb per copy&paste ein.");
+ 						}
+ 						for(int d = 0; d < 5; d++){
+ 							if(! eltern.bta[d].getText().trim().equals("")){
+ 	 							if(d > 0){
+ 	 								System.out.println("Hänge neue Zeilen an Tabelle: "+tbl[itbl].getName());
+ 	 								tbl[itbl].addRow(d);
+ 	 							}
+ 								tbl[itbl].getCell(0,d).getTextService().getText().setText(new Integer(d+1).toString()+".");
+ 								tbl[itbl].getCell(1,d).getTextService().getText().setText(eltern.bta[d].getText().trim());
+ 							}
+ 						}
 					}
 					ArztTools.constructArztHMap(id);
 					//baout.close();
@@ -264,6 +293,9 @@ public class RVEBerichtPDF {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TextException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

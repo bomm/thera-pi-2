@@ -57,7 +57,7 @@ public class KurzAufrufe {
 /*******************************************************************************************************/
 class AkutListe{
 	Vector vec = null;
-	String felder = "akutbeh,n_name,v_name,telefonp,telefong,telefonm,emaila,termine1,termine2,akutdat,akutbis";
+	String felder = "therapeut,n_name,v_name,telefonp,telefong,telefonm,emaila,termine1,termine2,akutdat,akutbis";
 	public AkutListe() throws TextException{
 		vec = SqlInfo.holeSaetze("pat5", felder, "akutpat='T' order by akutbeh", Arrays.asList(new String[] {}));
 		int lang;
