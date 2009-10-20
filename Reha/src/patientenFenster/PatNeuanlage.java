@@ -1829,9 +1829,11 @@ class ArztListeSpeichern{
 		for(int i = 0;i < vec.size();i++){
 			aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
 		}
+		
 		//cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
 		SqlInfo.aktualisiereSaetze("pat5", "aerzte='"+aliste+"'", "pat_intern='"+xpatintern+"'");
 		new ExUndHop().setzeStatement(new String(cmd));
+		PatGrundPanel.thisClass.patDaten.set(63,aliste);
 		System.out.println(cmd);
 	}
 }

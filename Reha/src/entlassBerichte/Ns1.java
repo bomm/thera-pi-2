@@ -86,6 +86,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 					
 					eltern.btf[i].setFont(fontcourier);
 					eltern.btf[i].setForeground(Color.BLUE);
+					//System.out.println("Name von btf["+i+"] = "+eltern.btf[i].getName());
 					
 				}
 				for(int i = 0; i < 7;i++){

@@ -38,6 +38,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemTools.Colors;
 import systemTools.JCompTools;
@@ -137,6 +138,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 			@Override
 			protected Void doInBackground() throws Exception {
 				ladeTabelle();
+				Reha.thisClass.progressStarten(false);
 				return null;
 			}
 			
@@ -194,25 +196,64 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("uebernehmen")){
-			doUebernahme();
-			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
-			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-
+			final BerichtArztAuswahl xthis = this;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					doUebernahme();
+					((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+					((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).dispose();
+					return null;
+				}
+			}.execute();
 		}
 		if(cmd.equals("zusatz")){
-			JRtaTextField[] tf = {null,null};
-			tf[0] = new JRtaTextField("nix",false);
-			tf[1] = new JRtaTextField("nix",false);
-			//ArztAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String arzt) {
-			ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",new String[] {"",""},new JRtaTextField[] {tf[0],tf[1]},new String(""));
-			awahl.setModal(true);
-			awahl.setLocationRelativeTo(this);
-			awahl.setVisible(true);			
-			
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					doArztAufnehmen();
+					return null;
+				}
+			}.execute();
 		}
 		
 	}
 
+	private void doArztAufnehmen(){
+		JRtaTextField[] tf = {null,null,null};
+		tf[0] = new JRtaTextField("nix",false);
+		tf[1] = new JRtaTextField("nix",false);
+		tf[2] = new JRtaTextField("nix",false);
+		//ArztAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String arzt) {
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",new String[] {"",""},new JRtaTextField[] {tf[0],tf[1],tf[2]},new String(""));
+		awahl.setModal(true);
+		awahl.setLocationRelativeTo(this);
+		awahl.setVisible(true);
+		System.out.println(tf[0].getText()+" - "+tf[1].getText()+" - "+tf[2].getText());
+		if(!tf[2].getText().trim().equals("")){
+			Vector vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+tf[2].getText()+"'");
+			if(vec.size() > 0){
+				String test = PatGrundPanel.thisClass.patDaten.get(63);
+				if(! test.contains("@"+tf[2].getText().trim()+"@")){
+					Vector vec2 = (Vector) ((Vector)vec.get(0)).clone();
+					vec2.insertElementAt(true, 0);
+					atblm.addRow( (Vector)vec2.clone());
+					arzttbl.validate();
+					String msg = "Dieser Arzt ist bislang nicht in der Arztliste dieses Patienten.\n"+
+					"Soll dieser Arzt der Ärzteliste des Patienten zugeordnet werden?";
+					int frage = JOptionPane.showConfirmDialog(null,msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						test = test + "@"+tf[2].getText().trim()+"@\n";
+						PatGrundPanel.thisClass.patDaten.set(63,test);
+						String cmd = "update pat5 set aerzte='"+test+"' where pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'";
+						new ExUndHop().setzeStatement(cmd);
+					}
+				}else{
+					JOptionPane.showMessageDialog(null,"Dieser Arzt ist bereits in der Ärzteliste enthalten...");
+				}
+			}
+		}
+	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub

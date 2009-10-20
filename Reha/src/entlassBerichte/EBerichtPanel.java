@@ -409,8 +409,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig für die Bestimmung des Formulares");
 				return;
 			}
-			if(datFunk.DatumsWert(btf[16].getText().trim()) < datFunk.DatumsWert("01.01.2008")){
-				altesFormular = true;
+			try{
+				if(datFunk.DatumsWert(btf[16].getText().trim()) < datFunk.DatumsWert("01.01.2008")){
+					altesFormular = true;
+				}
+			}catch(Exception ex){
+				
 			}
 			if( ((String)cbktraeger.getSelectedItem()).contains("DRV")){
 				rvTraeger = true;

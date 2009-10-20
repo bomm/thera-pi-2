@@ -839,6 +839,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					int frage = JOptionPane.showConfirmDialog(null,msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 					if(frage == JOptionPane.YES_OPTION){
 						String aliste = PatGrundPanel.thisClass.patDaten.get(63)+ "@"+xaneu+"@\n";
+						PatGrundPanel.thisClass.patDaten.set(63,aliste+ "@"+xaneu+"@\n");
 						System.out.println("Arztliste in Rezept Neu = "+aliste);
 						PatGrundPanel.thisClass.ArztListeSpeichernString(aliste,false,PatGrundPanel.thisClass.aktPatID);
 						SwingUtilities.invokeLater(new Runnable(){
