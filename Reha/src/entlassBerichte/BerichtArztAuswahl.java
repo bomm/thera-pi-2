@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -194,6 +195,8 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("uebernehmen")){
 			doUebernahme();
+			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 
 		}
 		if(cmd.equals("zusatz")){

@@ -256,14 +256,12 @@ public class Eb3 implements RehaEventListener  {
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
 	        	
-	        		refreshSize();
-	        	
-	        		
-	        	//System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent im ComponentListener");
-		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
-		          parent.getLayout().layoutContainer(parent);
-		          parent.repaint();
-		          eltern.ebt.getTab1().refreshSize();
+        		System.out.println("In  NativeView Resize");
+        		refreshSize();
+        		nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
+        		parent.getLayout().layoutContainer(parent);
+        		//parent.repaint();
+        		eltern.ebt.getTab1().refreshSize();
 	        }  
 	        public void componentHidden(ComponentEvent e) {
 	            //System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
