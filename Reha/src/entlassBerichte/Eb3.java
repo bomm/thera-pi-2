@@ -174,6 +174,7 @@ public class Eb3 implements RehaEventListener  {
 				        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 				        			//descript.setHidden(true);
 				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+				        			ins.close();
 				        			new SwingWorker<Void,Void>(){
 										@Override
 										protected Void doInBackground()
@@ -183,6 +184,7 @@ public class Eb3 implements RehaEventListener  {
 						    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 						    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
 						    				EBerichtPanel.document.setModified(false);
+						    				outtemp.close();
 						    				bytebufferok = true;
 						    				pdfok = true;
 						    				return null;
@@ -302,10 +304,14 @@ public class Eb3 implements RehaEventListener  {
 				EBerichtPanel.document.setModified(false);
 				pdfok = true;
 				bytebufferok = false;
+				outtemp.close();
 				} catch (NOAException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (DocumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -347,6 +353,7 @@ public class Eb3 implements RehaEventListener  {
 			ps.setAsciiStream(1,ins);
 			ps.setInt(2, eltern.berichtid);
 			ps.execute();
+			ins.close();
 			if(mittemp){
 				if(EBerichtPanel.document == null){return;}
 				if(EBerichtPanel.document.isOpen()){
@@ -356,6 +363,7 @@ public class Eb3 implements RehaEventListener  {
 					EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
 					EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
 					pdfok = true;
+					outtemp.close();
 				}			
 			}
 			ins.close();
@@ -528,13 +536,14 @@ public class Eb3 implements RehaEventListener  {
 		pan.getLayout().layoutContainer(pan);
 		//pan.setVisible(true);
 		}
-
+		/*
 		private void macheByteBuffer(){
 			InputStream is = null;
 			outtemp = new ByteArrayOutputStream();
 			startStream = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 			
 		}
+		*/
 		private String getStatus(){
 			boolean newframeok = false;
 			boolean bytebufferok = false;
