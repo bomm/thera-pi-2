@@ -1,4 +1,5 @@
 package entlassBerichte;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.WindowEvent;
@@ -265,6 +266,7 @@ public class RVEBerichtPDF {
  						}
 
 					}
+					Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					Reha.thisClass.progressStarten(false);
 					ArztTools.constructArztHMap(id);
 					//baout.close();

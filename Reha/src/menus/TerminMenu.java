@@ -39,7 +39,9 @@ public class TerminMenu {
 			jMenu.setFont(new Font("Dialog", Font.PLAIN, 12));
 			jMenu.setText("Terminkalender");
 			jMenu.add(getTermStart());
-			jMenu.add(getRoogleStart());			
+			jMenu.add(getRoogleStart());
+			jMenu.addSeparator();
+			jMenu.add(getWochenArbeitszeit());
 		}
 		return jMenu;
 	}
@@ -69,6 +71,7 @@ public class TerminMenu {
 					}
 				}
 			});
+			
 		}
 		return TermStart;
 	}
@@ -82,17 +85,23 @@ public class TerminMenu {
 				System.out.println("Roogle"); // TODO Auto-generated Event stub actionPerformed()
 				Reha.thisClass.messageLabel.setText("Roogle");
 				ProgLoader.ProgRoogleFenster(0,null);
-				/*
-				JComponent termin = AktiveFenster.getFenster("TerminFenster");
-				if(termin == null){
-					ProgLoader.ProgTerminFenster(2);
-				}else{
-					((JXTitledPanel) termin).getContentContainer().requestFocus();
-				}
-				*/
 			}
 		});
 
 		return RoogleStart;
 	}
+	private JMenuItem getWochenArbeitszeit() {
+		JMenuItem waz = new JMenuItem();
+		waz.setText("Wochenarbeitszeit definieren");
+		waz.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				System.out.println("Roogle"); // TODO Auto-generated Event stub actionPerformed()
+				Reha.thisClass.messageLabel.setText("Wochenarbeitszeit definieren");
+				ProgLoader.ProgTerminFenster(0,2);
+			}
+		});
+
+		return waz;
+	}
+
 }

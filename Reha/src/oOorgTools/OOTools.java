@@ -1,5 +1,6 @@
 package oOorgTools;
 
+import java.awt.Cursor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -73,6 +74,7 @@ public class OOTools {
 	
 	public static void starteStandardFormular(String url,String drucker){
 		IDocumentService documentService = null;;
+		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		System.out.println("Starte Datei -> "+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
@@ -81,7 +83,7 @@ public class OOTools {
 			e.printStackTrace();
 		}
         IDocumentDescriptor docdescript = new DocumentDescriptor();
-       	docdescript.setHidden(false);
+       	docdescript.setHidden(true);
         docdescript.setAsTemplate(true);
 		IDocument document = null;
 		//ITextTable[] tbl = null;
@@ -222,9 +224,11 @@ public class OOTools {
 		    }
 		    /*****************/
 		}
+		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
+		viewCursor.getPageCursor().jumpToFirstPage();
+		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		textDocument.getFrame().setFocus();
-		//textDocument.getFrame().getXFrame().getContainerWindow().
-		//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 	}
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
@@ -483,6 +487,7 @@ public class OOTools {
 	}
 	
 	public static ITextDocument  starteGKVBericht(String url,String drucker){
+		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		IDocumentService documentService = null;;
 		System.out.println("Starte Datei -> "+url);
 		try {
@@ -628,9 +633,7 @@ public class OOTools {
 		    }
 		    /*****************/
 		}
-
-		//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-		//textDocument.getFrame().setFocus();
+		
 		return textDocument;
 	}
 	

@@ -1142,7 +1142,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			fileMenu = new JMenu();
 			fileMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			fileMenu.setText("Datei");
-			fileMenu.add(getSaveMenuItem());
+			//fileMenu.add(getSaveMenuItem());
 			fileMenu.add(getExitMenuItem());
 		}
 		return fileMenu;
@@ -1162,16 +1162,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			stammMenu.addSeparator();
 			men = new JMenuItem("Krankenkassen");
 			men.setActionCommand("kasse");
-			men.addActionListener(this);
 			men.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, Event.CTRL_MASK, false));
 			men.setMnemonic(KeyEvent.VK_K);
+			men.addActionListener(this);
 			stammMenu.add(men);
 			stammMenu.addSeparator();
 			men = new JMenuItem("Aerzte");
 			men.setActionCommand("arzt");
-			men.addActionListener(this);
 			men.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Event.CTRL_MASK, false));
 			men.setMnemonic(KeyEvent.VK_A);
+			men.addActionListener(this);
 			stammMenu.add(men);
 			
 		}
@@ -1315,7 +1315,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	private JMenuItem getExitMenuItem() {
 		if (exitMenuItem == null) {
 			exitMenuItem = new JMenuItem();
-			exitMenuItem.setText("Exit");
+			exitMenuItem.setText("Thera-Pi beenden");
 			exitMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Runtime r = Runtime.getRuntime();
@@ -1689,7 +1689,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         					protected Void doInBackground() throws Exception {
         						JComponent patfenster = AktiveFenster.getFensterAlle("Patientenverwaltung");
         						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        						ProgLoader.ProgPatientenVerwaltung(1);
+        						//ProgLoader.ProgPatientenVerwaltung(1);
         						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         						return null;
         					}
@@ -1736,12 +1736,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     		keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
     					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
     					System.out.println("Krankenkassen einlesen");
-   						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+   						//ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
     					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
-    					System.out.println("Arzt-Stamm einlesen");
+    					
 						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
    						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -2222,7 +2222,22 @@ class Hintergrund extends JDesktopPane implements ComponentListener{
 /*******************/
 @Override
 public void actionPerformed(ActionEvent arg0) {
-	// TODO Auto-generated method stub
+	String cmd = arg0.getActionCommand();
+	if(cmd.equals("patient")){
+		System.out.println("ActionListener patient");
+		ProgLoader.ProgPatientenVerwaltung(1);
+		return;
+	}
+	if(cmd.equals("kasse")){
+		System.out.println("ActionListener kasse");		
+		ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+		return;
+	}
+	if(cmd.equals("arzt")){
+		System.out.println("ActionListener arzt");		
+		ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+		return;
+	}
 	
 }	
 }
