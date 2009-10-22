@@ -22,8 +22,10 @@ import stammDatenTools.ArztTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
 
+import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextTable;
+import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenOfficeFilter;
@@ -148,13 +150,21 @@ public class RVEBerichtPDF {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						new ReaderStart(new String(xdatei));
-						//starteReader(xdatei);
+						try{
+							if(!RV){
+								boolean xgeklappt = starteGKVDruck(new int[] {1,1,1,1,1,1},true);
+							}
+							new ReaderStart(new String(xdatei));
+							//starteReader(xdatei);
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
 						return null;
 					}
 				}.execute();
 			}
 			Reha.thisClass.progressStarten(false);
+			
 			return;
 		//Keine Vorschau direkt drucken***************************/	
 		}else{
@@ -178,7 +188,7 @@ public class RVEBerichtPDF {
 					@Override
 					protected Void doInBackground() throws Exception {
 						try{
-							boolean xgeklappt = starteGKVDruck(exemplare);
+							boolean xgeklappt = starteGKVDruck(exemplare,false);
 							Reha.thisClass.progressStarten(false);
 						}catch(Exception ex){
 							ex.printStackTrace();
@@ -190,7 +200,7 @@ public class RVEBerichtPDF {
 			}
 		}
 	}
-	private boolean starteGKVDruck(int[] exemplare){
+	private boolean starteGKVDruck(int[] exemplare,boolean vorschau){
 		try {
 
 			boolean geklappt = doSeitenZusammenstellen();
@@ -198,7 +208,7 @@ public class RVEBerichtPDF {
 			if(exemplare[3] > 0){
 				doArztAuswaehlen(eltern);
 				if(eltern.aerzte.length > 0){
-					
+					Reha.thisClass.progressStarten(true);
 					String id = SystemConfig.hmAdrADaten.get("<Aid>");
 					for(int i = 0; i < eltern.aerzte.length;i++){
 						ArztTools.constructArztHMap(eltern.aerzte[i]);
@@ -242,11 +252,28 @@ public class RVEBerichtPDF {
  								tbl[itbl].getCell(1,d).getTextService().getText().setText(eltern.bta[d].getText().trim());
  							}
  						}
+ 						if(exemplare[5] > 0 || vorschau){
+ 							String tp = tempPfad+"PrintArzt"+new Integer(i).toString()+System.currentTimeMillis()+".pdf";
+ 							doc.getPersistenceService().export(tp, new PDFFilter());
+ 							doc.close();
+ 							new ReaderStart(new String(tp));
+ 						}else{
+ 	 						IViewCursor viewCursor = doc.getViewCursorService().getViewCursor();
+ 	 						viewCursor.getPageCursor().jumpToFirstPage();
+ 	 						doc.getFrame().getXFrame().getContainerWindow().setVisible(true);
+ 	 						doc.getFrame().setFocus();
+ 						}
+
 					}
+					Reha.thisClass.progressStarten(false);
 					ArztTools.constructArztHMap(id);
 					//baout.close();
 					//is.close();
+					
 				}
+			}
+			if(vorschau){
+				return true;
 			}
 			String tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
 
@@ -272,9 +299,9 @@ public class RVEBerichtPDF {
 			reader.close();
 		
 			if(exemplare[5] > 0){
-				//new ReaderStart(new String(tempversion ));
+				new ReaderStart(new String(tempversion ));
 			}else{
-				//druckeVersion(new String(tempversion ));							
+				druckeVersion(new String(tempversion ));							
 			}
 			
 		} catch (FileNotFoundException e) {

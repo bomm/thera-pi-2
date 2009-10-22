@@ -492,7 +492,7 @@ public class OOTools {
 			e.printStackTrace();
 		}
         IDocumentDescriptor docdescript = new DocumentDescriptor();
-       	docdescript.setHidden(false);
+       	docdescript.setHidden(true);
         docdescript.setAsTemplate(true);
 		IDocument document = null;
 		//ITextTable[] tbl = null;
@@ -629,8 +629,8 @@ public class OOTools {
 		    /*****************/
 		}
 
-		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-		textDocument.getFrame().setFocus();
+		//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		//textDocument.getFrame().setFocus();
 		return textDocument;
 	}
 	

@@ -59,7 +59,7 @@ class AkutListe{
 	Vector vec = null;
 	String felder = "therapeut,n_name,v_name,telefonp,telefong,telefonm,emaila,termine1,termine2,akutdat,akutbis";
 	public AkutListe() throws TextException{
-		vec = SqlInfo.holeSaetze("pat5", felder, "akutpat='T' order by akutbeh", Arrays.asList(new String[] {}));
+		vec = SqlInfo.holeSaetze("pat5", felder, "akutpat='T' order by therapeut", Arrays.asList(new String[] {}));
 		int lang;
 		if( (lang = vec.size()) > 0){
 			IDocumentService documentService = null;
