@@ -202,7 +202,7 @@ import grad.GradientSegment;
 
 @SuppressWarnings("unused")
 
-public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener  {
+public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
 
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
@@ -1153,8 +1153,25 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			stammMenu = new JMenu();
 			stammMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			stammMenu.setText("Stammdaten");
-			//fileMenu.add(getSaveMenuItem());
-			//fileMenu.add(getExitMenuItem());
+			JMenuItem men = new JMenuItem("Patienten Rezepte etc. Strg+P");
+			men.setActionCommand("patienten");
+			men.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK, false));
+			men.setMnemonic(KeyEvent.VK_P);
+			men.addActionListener(this);
+			stammMenu.add(men);
+			men = new JMenuItem("Krankenkassen Strg+K");
+			men.setActionCommand("kassen");
+			men.addActionListener(this);
+			men.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, Event.CTRL_MASK, false));
+			men.setMnemonic(KeyEvent.VK_K);
+			stammMenu.add(men);
+			men = new JMenuItem("Aerzte Strg+A");
+			men.setActionCommand("arzt");
+			men.addActionListener(this);
+			men.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Event.CTRL_MASK, false));
+			men.setMnemonic(KeyEvent.VK_A);
+			stammMenu.add(men);
+			
 		}
 		return stammMenu;
 	}
@@ -1663,7 +1680,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==84) {  // Ctrl-P
         					JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
-        						ProgLoader.ProgTerminFenster(0,0);
+        						//ProgLoader.ProgTerminFenster(0,0);
         					if(termin == null){
         						//
         					}else{
@@ -2177,7 +2194,12 @@ class Hintergrund extends JDesktopPane implements ComponentListener{
 	
 	
 }
-/*******************/	
+/*******************/
+@Override
+public void actionPerformed(ActionEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}	
 }
 
 

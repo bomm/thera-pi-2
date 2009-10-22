@@ -59,7 +59,9 @@ public class TerminMenu {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Terminkalenderaufruf-Menü"); // TODO Auto-generated Event stub actionPerformed()
 					JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
+					ProgLoader.ProgTerminFenster(0,0);
 					if(termin == null){
+
 						//ProgLoader.ProgTerminFenster(0,0);
 					}else{
 						//((JRehaInternal)termin).feuereEvent(25554);
