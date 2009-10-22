@@ -386,6 +386,8 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	jry.setLocation(comps*10, comps*10);
 	jry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(jry);
+	jry.setImmerGross(true); 
+	((JRehaInternal)jry).setImmerGross(true); 
 	//((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JGutachtenInternal)jry).aktiviereDiesenFrame( ((JGutachtenInternal)jry).getName());

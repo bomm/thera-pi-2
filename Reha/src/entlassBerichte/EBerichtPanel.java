@@ -298,6 +298,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return nat.getTab();
 	}
 	public void meldeInitOk(int seite){
+		System.out.println("Meldung von Seite "+seite);
 		initOk[seite] = true;
 		if(initOk[0] && initOk[1] && initOk[2] && initOk[3]){
 			Reha.thisClass.progressStarten(false);

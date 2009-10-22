@@ -96,7 +96,9 @@ public class Eb2 {
 									}
 					 				
 					 			}.execute();
-					 		}	
+					 		}else{
+					 			eltern.meldeInitOk(1);
+					 		}
 				 	   }
 				}); 
 				}catch(Exception ex){

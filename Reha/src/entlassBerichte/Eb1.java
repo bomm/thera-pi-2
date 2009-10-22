@@ -164,6 +164,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 				 			}.execute();
 				 		}else{
 				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empfäger des Gutachtens ein (Berichttyp).");
+				 			eltern.meldeInitOk(0);
 				 			doKopfNeu();
 				 		}
 				 		  
