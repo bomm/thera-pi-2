@@ -84,7 +84,6 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		Dokumentation.doku = null;
 		AktuelleRezepte.aktRez = null;
 		TherapieBerichte.aktBericht = null;
-		
 		this.dispose();
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
