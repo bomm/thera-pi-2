@@ -72,7 +72,13 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		PatStammEventClass.firePatStammEvent(pEvt);	
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);		
+		rEvent.removeRehaEventListener((RehaEventListener) this);	
+		this.dispose();
+		Runtime r = Runtime.getRuntime();
+	    r.gc();
+	    long freeMem = r.freeMemory();
+	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+
 		
 	}
 	public void setzeSuche(){

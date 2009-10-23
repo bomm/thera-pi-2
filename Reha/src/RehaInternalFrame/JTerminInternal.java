@@ -50,7 +50,11 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		System.out.println("Termin-Internal geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		rEvent.removeRehaEventListener((RehaEventListener) this);		
-		
+		this.dispose();
+		Runtime r = Runtime.getRuntime();
+	    r.gc();
+	    long freeMem = r.freeMemory();
+	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
 	}	
 
 	@Override

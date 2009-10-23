@@ -67,7 +67,13 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		Reha.thisFrame.requestFocus();
 		System.out.println("Lösche GutachtenInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);		
+		rEvent.removeRehaEventListener((RehaEventListener) this);	
+		this.dispose();
+		Runtime r = Runtime.getRuntime();
+	    r.gc();
+	    long freeMem = r.freeMemory();
+	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+
 	}
 	public void setzeTitel(String stitel){
 		super.setzeTitel(stitel);

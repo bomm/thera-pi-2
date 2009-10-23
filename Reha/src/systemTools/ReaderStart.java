@@ -29,6 +29,8 @@ public class ReaderStart{
 					is.close();
 					isr.close();
 					br.close();
+					is = null;
+					br = null;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
