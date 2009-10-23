@@ -562,21 +562,23 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 		
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+		final PatNeuanlage xthis = this;
+		final String xpatintern = spatintern;
 		new Thread(){
 			public void run(){
 				PatGrundPanel.thisClass.ArztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
+				((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).dispose();
+				String s1 = new String("#PATSUCHEN");
+				String s2 = new String(xpatintern);
+				PatStammEvent pEvt = new PatStammEvent(PatNeuanlage.this);
+				pEvt.setPatStammEvent("PatSuchen");
+				pEvt.setDetails(s1,s2,"") ;
+				PatStammEventClass.firePatStammEvent(pEvt);
+				
 			}
 		}.start();
-		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-
-		String s1 = new String("#PATSUCHEN");
-		String s2 = new String(spatintern);
-		PatStammEvent pEvt = new PatStammEvent(PatNeuanlage.this);
-		pEvt.setPatStammEvent("PatSuchen");
-		pEvt.setDetails(s1,s2,"") ;
-		PatStammEventClass.firePatStammEvent(pEvt);
 
 
 	}

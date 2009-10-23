@@ -370,7 +370,6 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		this.dispose();
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();

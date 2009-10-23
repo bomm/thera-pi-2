@@ -559,6 +559,7 @@ public void ArztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
 	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
 	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
 	if(PatGrundPanel.thisClass.aktPatID.equals(xpatintern)){
+		System.out.println("Länge des patDaten.Arrays = "+PatGrundPanel.thisClass.patDaten.size());
 		PatGrundPanel.thisClass.patDaten.set(63,aliste);		
 	}
 

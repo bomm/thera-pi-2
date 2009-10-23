@@ -68,7 +68,6 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		System.out.println("Lösche GutachtenInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		rEvent.removeRehaEventListener((RehaEventListener) this);	
-		this.dispose();
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();
