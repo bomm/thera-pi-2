@@ -291,6 +291,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		Reha.thisClass.progressStarten(true);
 		ebt = new EBerichtTab(this);
+		for(int i = 0; i < 4; i++){
+			gutbut[i].setEnabled(false);
+		}
+
 		return ebt.getTab();
 	}
 	private JTabbedPane getNachsorgeTab(){
@@ -303,6 +307,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(initOk[0] && initOk[1] && initOk[2] && initOk[3]){
 			Reha.thisClass.progressStarten(false);
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			for(int i = 0; i < 4; i++){
+				gutbut[i].setEnabled(true);
+			}
+
 		}
 	}
 

@@ -146,6 +146,7 @@ import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.FileTools;
+import systemTools.Meldungen;
 import systemTools.PassWort;
 import systemTools.RehaPainters;
 import systemTools.SplashPanel;
@@ -2238,8 +2239,28 @@ public void actionPerformed(ActionEvent arg0) {
 		ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 		return;
 	}
-	
-}	
+	if(cmd.equals("hmabrechnung")){
+		Meldungen.NichtFertig("Heilmittel-Abrechnung");
+		return;
+	}
+	if(cmd.equals("rehaabrechnung")){
+		Meldungen.NichtFertig("Reha-Abrechnung");
+		return;
+	}
+	if(cmd.equals("barkasse")){
+		Meldungen.NichtFertig("Barkasse abrechnen");
+		return;
+	}
+	if(cmd.equals("anmeldezahlen")){
+		Meldungen.NichtFertig("Anmeldezahlen ermitteln");
+		return;
+	}
+	if(cmd.equals("tagesumsatz")){
+		Meldungen.NichtFertig("Tagesumsätze ermitteln");
+		return;
+	}
+}
+/*********************************************/
 }
 
 
