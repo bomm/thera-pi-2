@@ -241,6 +241,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		
 		if(arg0.getActionCommand().equals("uebernahme")){
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -250,10 +251,11 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 					}else{
 						gutachtenArt.setText("nachsorge");
 					}
+					dispose();
 					return null;
 				}
 			}.execute();
-			this.dispose();
+			
 			/********
 			 * 
 			 * Hier noch schnell buchen entwickeln und feddisch...

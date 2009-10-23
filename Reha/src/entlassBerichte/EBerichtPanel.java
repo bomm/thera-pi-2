@@ -64,6 +64,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.Gutachten;
+import patientenFenster.PatGrundPanel;
 import pdfDrucker.PdfDrucker;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -373,6 +374,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				if(this.neu){
 					doSpeichernNeu();	
 					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
+					Gutachten.gutachten.holeGutachten(PatGrundPanel.thisClass.aktPatID, "");
 				}else{
 					doSpeichernAlt();
 					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
@@ -381,6 +383,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				if(this.neu){
 					doSpeichernNachsorgeNeu();
 					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
+					Gutachten.gutachten.holeGutachten(PatGrundPanel.thisClass.aktPatID, "");
 				}else{
 					doSpeichernNachsorgeAlt();
 					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
