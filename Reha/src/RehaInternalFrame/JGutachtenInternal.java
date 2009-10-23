@@ -11,6 +11,7 @@ import hauptFenster.Reha;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
 import entlassBerichte.EBerichtPanel;
@@ -67,11 +68,17 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		Reha.thisFrame.requestFocus();
 		System.out.println("Lösche GutachtenInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);	
-		Runtime r = Runtime.getRuntime();
-	    r.gc();
-	    long freeMem = r.freeMemory();
-	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		rEvent.removeRehaEventListener((RehaEventListener) this);
+		this.dispose();
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run()
+		 	   {
+		 			Runtime r = Runtime.getRuntime();
+		 		    r.gc();
+		 		    long freeMem = r.freeMemory();
+		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		 	   }
+		});
 
 	}
 	public void setzeTitel(String stitel){

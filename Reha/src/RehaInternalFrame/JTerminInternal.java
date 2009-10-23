@@ -11,6 +11,7 @@ import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleValue;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -56,10 +57,15 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		}
 		TerminFenster.thisClass = null;
 		this.dispose();
-		Runtime r = Runtime.getRuntime();
-	    r.gc();
-	    long freeMem = r.freeMemory();
-	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run()
+		 	   {
+		 			Runtime r = Runtime.getRuntime();
+		 		    r.gc();
+		 		    long freeMem = r.freeMemory();
+		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		 	   }
+		});
 	}	
 
 	@Override
