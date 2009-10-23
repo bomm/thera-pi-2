@@ -1,7 +1,7 @@
 package dialoge;
 
 import hauptFenster.Reha;
-import hauptFenster.SystemLookAndFeel;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;

@@ -22,7 +22,7 @@ import javax.swing.SwingWorker;
 import krankenKasse.KassenPanel;
 import menus.OOIFTest;
 
-import openOfficeorg.OoStart;
+
 import openOfficeorg.RehaDocumentCloseListener;
 
 import org.jdesktop.swingx.JXFrame;
@@ -85,21 +85,6 @@ public class ProgLoader {
 
 protected static RehaSmartDialog xsmart;
 
-/**************Look & Feel*******************************************/	
-public static void ProgLookAndFeel(int setPos){
-	RehaTP jtp = new RehaTP(setPos);
-	jtp.setTitle("Look & Feel");
-	jtp.setBorder(null);
-	PinPanel pinPanel = new PinPanel();
-	jtp.setPinPanel(pinPanel);
-	jtp.setRightDecoration((JComponent) pinPanel );	
-	jtp.setContentContainer(new SystemLookAndFeel(setPos));
-	String name = "LookAndFeelTP"+WinNum.NeueNummer();
-	jtp.getContentContainer().setName(name);
-	//jtp.setzeName(name);
-	AktiveFenster.setNeuesFenster(name, jtp,setPos,jtp.getParent());
-	containerBelegen(setPos,jtp);
-}
 /**************Test Panel (Test für BackGroundPainter****************/	
 public static void ProgTestPanel(int setPos){
 	RehaTP jtp = new RehaTP(setPos); 
@@ -177,39 +162,7 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 
 }
 /**************OpenOffice Echtfunktion*******************************/
-public static void ProgOOWriterFenster(int setPos) {
-	final int xsetPos = setPos;
-	SwingUtilities.invokeLater(new Runnable(){
-		public  void run(){
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-	 		   String name = "OpenOffice"+WinNum.NeueNummer();
-	 		   RehaTP jtp = new RehaTP(PosTest(xsetPos)); 
-	 		   jtp.setBorder(null);
-	 		   PinPanel pinPanel = new PinPanel();
-	 		   jtp.setPinPanel(pinPanel);
-	 		   jtp.setRightDecoration((JComponent) pinPanel );
-	 		   jtp.setTitle("OpenOffice.org");
-	 		   jtp.setzeName(name);
-	 		   //String name = "OpenOffice"+WinNum.NeueNummer();
-	 		   AktiveFenster.setNeuesFenster(name, jtp,PosTest(xsetPos),jtp.getParent());
-	 		   OoStart oostart = new OoStart(PosTest(xsetPos));
-	 		   //oostart.setVisible(true);
-	 		   if(Reha.officeapplication==null){
-	 			   System.out.println("OpenOffice.org nicht initialisiert");
-	 			   return;
-	 		   }
-	 		   jtp.setContentContainer((Container) oostart);
-	 		   jtp.getContentContainer().setName(name);
-	 		   //jtp.setVisible(true);
-	 		   containerBelegen(PosTest(xsetPos),jtp);
-	 		   oostart.setzeOO();
-	 		   jtp.validate();
-	 		   //Reha.jContainerOben.validate();
-	 		   Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		}
-	});
 
-}
 
 /**************Benutzerverwaltung Echtfunktion***********************/
 public static void ProgBenutzerVerwaltung(int setPos) {

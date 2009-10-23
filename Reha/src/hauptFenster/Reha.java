@@ -116,7 +116,7 @@ import krankenKasse.KasseEinlesen;
 import kvKarte.KVKWrapper;
 
 import menus.TerminMenu;
-import openOfficeorg.OoStart;
+
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDialog;
@@ -279,7 +279,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static SystemConfig sysConf = null;
 	public static IOfficeApplication officeapplication;
 	//public TerminFenster TerminFenster[]={null,null,null,null,null}; 
-	public OoStart OoStart[] = {null,null};	
+		
 	public static RehaSockServer RehaSock = null;
 	@SuppressWarnings("unchecked")
 	public static CompoundPainter[] RehaPainter = {null,null,null,null,null};
@@ -2226,7 +2226,14 @@ public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
 	if(cmd.equals("patient")){
 		System.out.println("ActionListener patient");
-		ProgLoader.ProgPatientenVerwaltung(1);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				Reha.thisClass.progressStarten(true);
+				ProgLoader.ProgPatientenVerwaltung(1);
+				return null;
+			}
+		}.execute();
 		return;
 	}
 	if(cmd.equals("kasse")){

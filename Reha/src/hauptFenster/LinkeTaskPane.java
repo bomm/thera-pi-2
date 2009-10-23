@@ -79,7 +79,7 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 
-import dialoge.SimpleInternal;
+
 
 import patientenFenster.PatFenster;
 import roogle.RoogleFenster;

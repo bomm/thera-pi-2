@@ -1,7 +1,6 @@
 package rehaContainer;
 
 import hauptFenster.Reha;
-import hauptFenster.SystemLookAndFeel;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
