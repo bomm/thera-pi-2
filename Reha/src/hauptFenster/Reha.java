@@ -2231,6 +2231,7 @@ public void actionPerformed(ActionEvent arg0) {
 			protected Void doInBackground() throws Exception {
 				Reha.thisClass.progressStarten(true);
 				ProgLoader.ProgPatientenVerwaltung(1);
+				Reha.thisClass.progressStarten(false);
 				return null;
 			}
 		}.execute();

@@ -383,6 +383,7 @@ public static void ProgPatientenVerwaltung(int setPos) {
 				e.printStackTrace();
 			}
 		}
+		Reha.thisClass.progressStarten(false);
 		PatGrundPanel.thisClass.setzeFocus();
 		return;
 	}
