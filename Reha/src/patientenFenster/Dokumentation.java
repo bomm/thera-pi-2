@@ -1451,7 +1451,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			return;
 		}
 		if(scanner == null){
-			scanner = Scanner.getDevice();	
+			scanner = Scanner.getDevice();
 		}
 	    
 	    try {

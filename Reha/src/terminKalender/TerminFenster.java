@@ -244,7 +244,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	//private Object[][] sTerminVergabe = {{null,null,null,null,null,null,null,null,null,null}};
 	private ArrayList<String[]> terminVergabe = new ArrayList<String[]>();
 	
-	private Thread db_Aktualisieren;
+	public Thread db_Aktualisieren;
 	public boolean indrag = false;
 	public static boolean inTerminDrag = false;
 	public String datGewaehlt = null;
@@ -4644,6 +4644,9 @@ private int gelesen;
 	    		//Toolkit.getDefaultToolkit().beep();
 	    		// 	Neues Element in der Queue eintragen...
 	    		// 	...und warten
+	    		if(TerminFenster.getThisClass()==null){
+	    			break;
+	    		}
 	    		if (!TerminFenster.getThisClass().getUpdateVerbot()){
 	    			Reha.thisClass.shiftLabel.setText("in Update...");
 	    			TerminFenster.getThisClass().setUpdateVerbot(true);

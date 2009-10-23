@@ -49,7 +49,12 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		System.out.println("Lösche Termin Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		System.out.println("Termin-Internal geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);		
+		
+		rEvent.removeRehaEventListener((RehaEventListener) this);
+		if(TerminFenster.thisClass != null){
+			TerminFenster.thisClass.db_Aktualisieren.interrupt();		
+		}
+		TerminFenster.thisClass = null;
 		this.dispose();
 		Runtime r = Runtime.getRuntime();
 	    r.gc();

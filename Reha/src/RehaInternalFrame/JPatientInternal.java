@@ -21,7 +21,12 @@ import javax.swing.JComponent.AccessibleJComponent;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
+import patientenFenster.AktuelleRezepte;
+import patientenFenster.Dokumentation;
+import patientenFenster.Gutachten;
+import patientenFenster.Historie;
 import patientenFenster.PatGrundPanel;
+import patientenFenster.TherapieBerichte;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
@@ -72,7 +77,14 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		PatStammEventClass.firePatStammEvent(pEvt);	
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);	
+		rEvent.removeRehaEventListener((RehaEventListener) this);
+		PatGrundPanel.thisClass = null;
+		Gutachten.gutachten = null;
+		Historie.historie = null;
+		Dokumentation.doku = null;
+		AktuelleRezepte.aktRez = null;
+		TherapieBerichte.aktBericht = null;
+		
 		this.dispose();
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
