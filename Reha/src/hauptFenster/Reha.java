@@ -2722,6 +2722,7 @@ class RehaSockServer{
 						output.close();
 						input.close();
 						serv.close();
+						serv = null;
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {

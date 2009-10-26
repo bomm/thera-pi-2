@@ -9,6 +9,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GradientPaint;
@@ -62,6 +63,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.ListenerTools;
 
 import com.jgoodies.looks.plastic.PlasticInternalFrameUI;
 
@@ -88,7 +90,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public int xWeit = -1;
 	public int yHoch = -1;
 	//private static final long serialVersionUID = 1L;
-
+	public JComponent nord = null;
 	public JRehaInternal(String titel,ImageIcon img,int desktop){
 		super();
 		this.setBackground(Color.WHITE);
@@ -123,9 +125,15 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.setUI(new PlasticInternalFrameUI(this){
 			@Override
 			protected JComponent createNorthPane(JInternalFrame w) {
+				nord = new RehaInternal(w,xtitel,getToolkit().getImage(Reha.proghome+"icons/red.png"),
+						getToolkit().getImage(Reha.proghome+"icons/green.png"),getToolkit().getImage(Reha.proghome+"icons/inaktiv.png"),0);
+				return nord;
+				/*
 					return new RehaInternal(w,xtitel,getToolkit().getImage(Reha.proghome+"icons/red.png"),
 							getToolkit().getImage(Reha.proghome+"icons/green.png"),getToolkit().getImage(Reha.proghome+"icons/inaktiv.png"),0);
+				*/			
 			}
+
 
 		});
 		
@@ -134,6 +142,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.getContentPane().add(thisContent);
 		thisClass = this;
 		this.setBorder(dropShadow);
+
 	}
 	public void setDesktop(int desktop){
 		this.desktop = desktop;
@@ -170,6 +179,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		repaint();
 	
 	}
+
 	public void gruenGedrueckt(){
 		//try {
 			xWeit = this.getSize().width;
@@ -226,6 +236,40 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.repaint();
 	}
 
+	public void destroyTitleBar(){
+		int comp = nord.getComponentCount();
+		Component icomp;
+		for(int i = 0 ; i < comp ; i ++){
+			//System.out.println(nord.getComponent(i));
+			icomp = nord.getComponent(i);
+			if(icomp != null){
+				ListenerTools.removeListeners(icomp);
+				icomp = null;	
+			}
+			
+		}
+		ListenerTools.removeListeners(thisContent);
+		comp = thisContent.getComponentCount();
+		for(int i = 0 ; i < comp ; i ++){
+			//System.out.println(thisContent.getComponent(i));
+			icomp = thisContent.getComponent(i);
+			if(icomp != null){
+				ListenerTools.removeListeners(icomp);
+				icomp = null;	
+			}
+		}
+		ListenerTools.removeListeners(inhalt);
+		comp = inhalt.getComponentCount();
+		for(int i = 0 ; i < comp ; i ++){
+			//System.out.println(inhalt.getComponent(i));
+			icomp = inhalt.getComponent(i);
+			if(icomp != null){
+				ListenerTools.removeListeners(icomp);
+				icomp = null;	
+			}
+		}
+		thisClass = null;
+	}
 
 	public void setTitel(String titel){
 		this.titel = titel;
@@ -366,14 +410,16 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		AktiveFenster.loescheFenster(this.getName());
 		this.removeInternalFrameListener(this);
+	    thisContent = null;
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
+		AktiveFenster.loescheFenster(this.getName());
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();
-	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+
+	    System.out.println("Superklasse------->Freier Speicher nach  gc():    " + freeMem);
 		//this.getParent().getParent().requestFocus();
 		//System.out.println("Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		// TODO Auto-generated method stub

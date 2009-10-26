@@ -328,6 +328,7 @@ public class OOTools {
 			exception.printStackTrace();
 		} 
 		catch (NOAException exception) {
+			Reha.starteOfficeApplication();
 			exception.printStackTrace();
 		}
 		return textDocument;

@@ -8,6 +8,10 @@ import java.awt.Font;
 import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -39,6 +43,10 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
+
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -52,7 +60,7 @@ import systemTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.datFunk;
 
-public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener{
+public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener,RehaTPEventListener{
 
 	/**
 	 * 
@@ -85,7 +93,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private String nummer = null;
 	private String[] farbcodes = {null,null,null,null,null,null,null,null,null,null};
 	private String[] heilmittel = {"KG","MA","ER","LO","RH"};
-	int[] comboid = {-1,-1,-1,-1}; 
+	int[] comboid = {-1,-1,-1,-1};
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+	private RehaTPEventClass rtp = null;
 	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 	
 		
@@ -93,6 +105,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		this.neu = neu;
 		this.feldname = sfeldname;
 		this.vec = vec;
+		
+		setName("RezeptNeuanlage");
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+
+
 		/*
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -120,10 +138,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     LinearGradientPaint p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			     MattePainter mp = new MattePainter(p);
-			     setBackgroundPainter(new CompoundPainter(mp));		
+			     p =  new LinearGradientPaint(start, end, dist, colors);
+			     mp = new MattePainter(p);
+			     cp = new CompoundPainter(mp);
+			     setBackgroundPainter(cp);		
 				return null;
 			}
 			
@@ -1457,5 +1475,51 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private void doAbbrechen(){
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
 	}
+	/*
+	@Override
+	public void componentRemoved(ContainerEvent e) {
+		System.out.println("In Component removed**************************");
+		removeContainerListener(this);
+		jtf = null;
+		jcb = null;
+		jcmb = null;
+		jta = null;
+		cp = null;
+		
+	}
+	*/
+	@Override
+	public void RehaTPEventOccurred(RehaTPEvent evt) {
+		System.out.println("****************Setze alles auf null in RezNeuanlage**************");				
+
+			try{
+				if(evt.getDetails()[0] != null){
+					if(evt.getDetails()[0].equals(this.getName())){
+						System.out.println("Event=****************"+evt);
+						this.setVisible(false);
+						rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+						rtp = null;
+						for(int i = 0; i < jtf.length;i++){
+							jtf[i].removeKeyListener(this);
+							jtf[i].removeFocusListener(this);
+						}
+						jtf = null;
+						jcb = null;
+						for(int i = 0; i < jcmb.length;i++){
+							jtf[i].removeActionListener(this);
+						}
+						speichern.removeActionListener(this);
+						abbrechen.removeActionListener(this);
+						jcmb = null;
+						jta = null;
+						cp = null;
+						mp = null;
+						p = null;
+					}
+				}
+			}catch(NullPointerException ne){
+				System.out.println("In RezeptNeuanlage" +evt);
+			}
+	}	
 
 }

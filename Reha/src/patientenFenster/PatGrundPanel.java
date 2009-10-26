@@ -124,7 +124,7 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 
-public class PatGrundPanel extends JXPanel implements KeyListener, PatStammEventListener{
+public class PatGrundPanel extends JXPanel implements KeyListener, PatStammEventListener,ContainerListener{
 	
 public JXPanel patGrund = null;
 public static PatGrundPanel thisClass = null;
@@ -215,8 +215,10 @@ public PatGrundPanel(JPatientInternal jry){
 	super();
 	
 	thisClass = this;
+	this.addContainerListener(this);
 	ptp = new PatStammEventClass();
 	ptp.addPatStammEventListener((PatStammEventListener)this);
+
 	this.addFocusListener(new FocusListener(){
 		@Override
 		public void focusGained(FocusEvent e) {
@@ -817,7 +819,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	}
 	*/
     
-	
+
 	neuPat.setLocationRelativeTo(null);
 	neuPat.setTitle("Patienten Neuanlage");
 
@@ -836,7 +838,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	//neuPat = null;
 	neuPat.dispose();
 	neuPat = null;
-
+    pinPanel = null;
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run(){
 				Runtime r = Runtime.getRuntime();
@@ -1207,7 +1209,7 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 		tfsuchen.requestFocus();
 	}
 	if(evt.getDetails()[0].equals("#KORRIGIEREN")){
-		final PatStammEvent evx = evt;
+		if(this.neuDlgOffen){return;}
 		final String feld = (String)evt.getDetails()[1];
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -1227,6 +1229,17 @@ public void editFeld(String feldname) {
 	if(! thisClass.aktPatID.equals("")){
 		neuanlagePatient(false, feldname);		
 	}
+}
+@Override
+public void componentAdded(ContainerEvent arg0) {
+	// TODO Auto-generated method stub
+	//System.out.println("Container added "+arg0.getChild());
+}
+@Override
+public void componentRemoved(ContainerEvent arg0) {
+	ptfield = null;
+	//System.out.println("Container removed "+arg0.getChild());
+	
 }
 
 

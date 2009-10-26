@@ -70,6 +70,10 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	public JCheckBox direktdruck;
 	private RehaTPEventClass rtp = null;
 	private RgebHintergrund rgb;	
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+
 	public RezeptGebuehren(boolean kopie,boolean historie,Point pt){
 		super(null,"RezeptGebuehr");		
 
@@ -96,10 +100,11 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     LinearGradientPaint p =
+			     p =
 			         new LinearGradientPaint(start, end, dist, colors);
-			     MattePainter mp = new MattePainter(p);
-			     rgb.setBackgroundPainter(new CompoundPainter(mp));		
+			     mp = new MattePainter(p);
+			     cp = new CompoundPainter(mp);
+			     rgb.setBackgroundPainter(cp);		
 				return null;
 			}
 			
@@ -419,11 +424,13 @@ class RgebHintergrund extends JXPanel{
 	AlphaComposite xac2 = null;		
 	public RgebHintergrund(){
 		super();
+		/*
 		hgicon = new ImageIcon(Reha.proghome+"icons/geld.png");
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.15f); 
-		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
+		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);
+		*/			
 		
 	}
 	@Override

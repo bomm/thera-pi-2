@@ -103,7 +103,10 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	public int m_xStart = -1;
 	public int m_xFinish = -1;
  
- 
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+	
 	public static HauptPanel getInstance(){
 		return thisClass;
 	}
@@ -116,10 +119,11 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
-	     LinearGradientPaint p =
+	     p =
 	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));
+	     mp = new MattePainter(p);
+	     cp = new CompoundPainter(mp);
+	     setBackgroundPainter(cp);
 		setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		
 		ml = new MouseListener(){

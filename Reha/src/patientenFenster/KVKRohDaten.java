@@ -48,6 +48,10 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 	RohKeyListener kl = null;
 	PatNeuanlage thisPat = null;
 	String gerGeboren = "";
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+
 	public KVKRohDaten(PatNeuanlage pat){
 		super(null, "KVKDaten");
 		thisPat = pat;
@@ -72,10 +76,11 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
 	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
 	     //Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
+	     p =
 	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     jroot.setBackgroundPainter(new CompoundPainter(mp));
+	     mp = new MattePainter(p);
+	     cp = new CompoundPainter(mp);
+	     jroot.setBackgroundPainter(cp);
 	     //DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 10, 1, 5, true, true, true, true);
 	     jroot.setBorder(null);
 		//jroot.setBorder(BorderFactory.createRaisedBevelBorder());

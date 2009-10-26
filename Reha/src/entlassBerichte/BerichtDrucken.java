@@ -47,6 +47,10 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 	EBerichtPanel eltern = null;
 	Font fon = new Font("Tahoma",Font.BOLD,11);
 	int[] exemplare = {-1,-1,-1,-1,-1,0};
+   LinearGradientPaint p = null;
+    MattePainter mp = null;
+    CompoundPainter cp = null;
+
 	public BerichtDrucken(EBerichtPanel xeltern, int[] check, boolean[] enable){
 		super();
 		setLayout(new BorderLayout());
@@ -60,9 +64,10 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 			    Point2D end = new Point2D.Float(300,270);
 			    float[] dist = {0.0f, 0.75f};
 			    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-			    LinearGradientPaint p =  new LinearGradientPaint(start, end, dist, colors);
-			    MattePainter mp = new MattePainter(p);
-			    setBackgroundPainter(new CompoundPainter(mp));
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    setBackgroundPainter(cp);			    
 				return null;
 			}
 			

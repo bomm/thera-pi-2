@@ -188,13 +188,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		HistorPanel(){
 			super();
 			setOpaque(false);
+			/*
 			hgicon = SystemConfig.hmSysIcons.get("historie"); 
-			//hgicon = new ImageIcon(Reha.proghome+"icons/ChipKarte.png");
-			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;
 			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.075f); 
-			xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
+			xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);
+			*/			
 			
 		}
 
@@ -204,10 +204,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			Graphics2D g2d = (Graphics2D)g;
 			
 			if(hgicon != null){
-				g2d.setComposite(this.xac1);
-				//g2d.drawImage(hgicon.getImage(), 0 , 0,null);
-				g2d.drawImage(hgicon.getImage(), (getWidth()/3)-(icx+20) , (getHeight()/2)-(icy-40),null);
-				g2d.setComposite(this.xac2);
+				//g2d.setComposite(this.xac1);
+				//g2d.drawImage(hgicon.getImage(), (getWidth()/3)-(icx+20) , (getHeight()/2)-(icy-40),null);
+				//g2d.setComposite(this.xac2);
 			}
 		}
 	}	

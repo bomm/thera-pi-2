@@ -24,4 +24,11 @@ public class NachsorgeTab {
 	public JTabbedPane getTab(){
 		return tab;
 	}
+	public Ns1 getTab1(){
+		return seite1;
+	}
+	public Ns2 getTab2(){
+		return seite2;
+	}
+	
 }

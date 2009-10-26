@@ -82,7 +82,7 @@ import terminKalender.TerminFenster;
 import terminKalender.datFunk;
 
 public class ProgLoader {
-
+public static JPatientInternal pjry = null; 
 protected static RehaSmartDialog xsmart;
 
 /**************Test Panel (Test für BackGroundPainter****************/	
@@ -143,7 +143,7 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 			jry.setName(name);
 			((JRehaInternal)jry).setImmerGross(true);
 			TerminFenster termWin = new TerminFenster();
-			jry.setContent(termWin.Init(containerNr, xansicht,jry));
+			jry.setContent( termWin.Init(containerNr, xansicht,jry));
 			jry.setLocation(new Point(5,5));
 			jry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
 			jry.setVisible(true);
@@ -251,8 +251,8 @@ public static void KassenFenster(int setPos,String kid) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(650,500));
-	KassenPanel kasspan = new KassenPanel(jry,kid);
-	jry.setContent(kasspan);	
+	//KassenPanel kasspan = new KassenPanel(jry,kid);
+	jry.setContent(new KassenPanel(jry,kid));	
 	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	jry.setLocation(comps*10, comps*10);
@@ -291,8 +291,8 @@ public static void ArztFenster(int setPos,String aid) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(650,500));
-	ArztPanel arztpan = new ArztPanel(jry,aid);
-	jry.setContent(arztpan);	
+	//ArztPanel arztpan = new ArztPanel(jry,aid);
+	jry.setContent(new ArztPanel(jry,aid));	
 	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	jry.setLocation(comps*10, comps*10);
@@ -332,8 +332,9 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
 	jry.setName(name);
 	jry.setSize(new Dimension(900,650));
-	EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger );
-	jry.setContent((EBerichtPanel)ebericht);	
+	//EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger );
+	jry.setContent(new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger ));
+	//jry.setContent((EBerichtPanel)ebericht);	
 	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	jry.setLocation(comps*10, comps*10);
@@ -393,23 +394,23 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	String name = "PatientenVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Patient");
 	containerHandling(containerNr);
-	JPatientInternal jry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
+	 pjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)jry,0,(Container)jry.getContentPane());
-	jry.setName(name);
-	jry.setSize(new Dimension(900,650));
-	PatGrundPanel patpan = new PatGrundPanel(jry);
-	jry.setContent(patpan);
-	jry.addComponentListener(Reha.thisClass);
+	AktiveFenster.setNeuesFenster(name,(JComponent)pjry,0,(Container)pjry.getContentPane());
+	pjry.setName(name);
+	pjry.setSize(new Dimension(900,650));
+	//PatGrundPanel patpan = new PatGrundPanel(jry);
+	pjry.setContent(new PatGrundPanel(pjry));
+	pjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	jry.setLocation(comps*10, comps*10);
-	jry.setVisible(true);
-	Reha.thisClass.desktops[containerNr].add(jry);
-	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
+	pjry.setLocation(comps*10, comps*10);
+	pjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(pjry);
+	((JRehaInternal)pjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	((JPatientInternal)jry).aktiviereDiesenFrame(((JPatientInternal)jry).getName());
-	final JPatientInternal jrx = jry;
+	((JPatientInternal)pjry).aktiviereDiesenFrame(((JPatientInternal)pjry).getName());
+	final JPatientInternal jrx = pjry;
 	SwingUtilities.invokeLater(new Runnable(){
 
 		public  void run(){
@@ -438,7 +439,11 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	return; 
 
 }
-
+public static void loeschePatient(){
+	pjry.removeComponentListener(Reha.thisClass);
+	pjry = null;
+	System.gc();
+}
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {
  

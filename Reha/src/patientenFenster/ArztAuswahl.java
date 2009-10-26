@@ -60,6 +60,10 @@ JXPanel content = null;
 ArztNeuKurz ank = null;
 public JXPanel grundPanel = null;
 public String arztbisher;
+CompoundPainter cp = null;
+MattePainter mp = null;
+LinearGradientPaint p = null;
+
 
 	public ArztAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String arzt) {
 		super(owner, name);
@@ -75,15 +79,16 @@ public String arztbisher;
 	     // Color[] colors = {Color.WHITE,new Color(231,120,23)};
 	     Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
 	     //Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
+	     p =
 	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
+	     mp = new MattePainter(p);
 	     super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
 	     super.getSmartTitledPanel().setTitle("Arzt auswählen");
 	     
 		//((JXPanel)super.getSmartTitledPanel().getContentContainer()).setBackgroundPainter(new CompoundPainter(mp));;;
 		grundPanel = new JXPanel(new BorderLayout());
-		grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+		cp = new CompoundPainter(mp);
+		grundPanel.setBackgroundPainter(cp);
 		content = getAuswahl();
 		grundPanel.add(content,BorderLayout.CENTER);
 		getSmartTitledPanel().setContentContainer(grundPanel);

@@ -104,6 +104,7 @@ import systemTools.FileTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import terminKalender.datFunk;
 
 import RehaInternalFrame.JArztInternal;
@@ -137,8 +138,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public String tempPfad = Reha.proghome+"temp/"+Reha.aktIK+"/";
 	public String vorlagenPfad = Reha.proghome+"vorlagen/"+Reha.aktIK+"/";
 	public String[] rvVorlagen = {null,null,null,null};
-	EBerichtTab ebt;
-	NachsorgeTab nat;
+	EBerichtTab ebt = null;;
+	NachsorgeTab nat = null;
 	IFrame officeFrame = null;
 	RehaEventClass evt = null;
 	
@@ -198,6 +199,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			
 	public int[] druckversion = {0,0,0,0,0,0}; 
 	public String[] aerzte; 
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
 		setBorder(null);
 		
@@ -219,9 +224,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	    Point2D end = new Point2D.Float(400,550);
 	    float[] dist = {0.0f, 0.75f};
 	    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-	    LinearGradientPaint p =  new LinearGradientPaint(start, end, dist, colors);
-	    MattePainter mp = new MattePainter(p);
-	    setBackgroundPainter(new CompoundPainter(mp));
+	    p =  new LinearGradientPaint(start, end, dist, colors);
+	    mp = new MattePainter(p);
+	    cp = new CompoundPainter(mp);
+	    setBackgroundPainter(cp);
 		setLayout(new BorderLayout());
 		
 		add(this.getToolbar(),BorderLayout.NORTH);
@@ -745,7 +751,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	public void dokumentSchliessen(){
 		try{
-			document.close();			
+			if(document != null){
+				if(document.isOpen()){
+					System.out.println("dokument wird geschlossen");
+					document.close();					
+				}
+			}else{
+				System.out.println("dokument ist bereits null");
+			}
+			
 		}catch(Exception ex){
 			
 		}
@@ -805,8 +819,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	@Override
 	public void RehaEventOccurred(RehaEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println(evt);
-		System.out.println("GutachtenFenster wird geschlossen.......");
+		//System.out.println(evt);
+		System.out.println("In RehaEvent Occured: EbereichtPanel -> Schlieﬂenanforderung von InternalFrame");
 		if(evt.getDetails()[0].contains("GutachtenFenster")){
 			if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 				if(inebericht){
@@ -823,10 +837,93 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "EB", ".pdf");
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "NS", ".pdf");
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "Print", ".pdf");
+				document = null;
 			}
 		}
 	}
+	/*****************************************/
+	public void finalize(){
+		for(int i = 0; i < btf.length;i++){
+			if(btf[i] != null){
+				ListenerTools.removeListeners((Component)btf[i]);
+				btf[i] = null;
+			}
+		}
+		btf = null;
+		for(int i = 0; i < bcmb.length;i++){
+			if(bcmb[i] != null){
+				ListenerTools.removeListeners((Component)bcmb[i]);
+				bcmb[i] = null;
+			}
+		}
+		for(int i = 0; i < bchb.length;i++){
+			if(bchb[i] != null){
+				ListenerTools.removeListeners((Component)bchb[i]);
+				bchb[i] = null;
+			}
+		}
+		for(int i = 0; i < ktlcmb.length;i++){
+			if(ktlcmb[i] != null){
+			ListenerTools.removeListeners((Component)ktlcmb[i]);
+			ktlcmb[i] = null;
+			ListenerTools.removeListeners((Component)ktltfc[i]);
+			ktltfc[i] = null;
+			ListenerTools.removeListeners((Component)ktltfd[i]);
+			ktltfd[i] = null;
+			ListenerTools.removeListeners((Component)ktltfa[i]);
+			ktltfa[i] = null;
+			}
+		}
+		for(int i = 0; i < bta.length;i++){
+			if(bta[i] != null){
+				ListenerTools.removeListeners((Component)bta[i]);
+				bta[i] = null;
+			}
+		}
+		if(this.berichtart.equals("entlassbericht")){
+			Component com;
+			com = ebt.getTab1().getSeite();
+			ListenerTools.removeListeners(com);
+			com = null;
+			com = ebt.getTab2().getSeite();
+			ListenerTools.removeListeners(com);
+			com = null;
+			com = ebt.getTab3().getSeite();
+			ListenerTools.removeListeners(com);
+			com = null;
+			com = ebt.getTab4().getSeite();
+			ListenerTools.removeListeners(com);
+			com = null;
+			ebt.seite1.eltern = null;
+			ebt.seite2.eltern = null;
+			ebt.seite3.eltern = null;
+			ebt.seite4.eltern = null;
+			ebt.eltern = null;
+		}else{
+			Component com;
+			com = nat.getTab1().getSeite();
+			ListenerTools.removeListeners(com);
+			com = null;
+			com = nat.getTab2().getSeite();
+			ListenerTools.removeListeners(com);
+			com = null;
+			nat.seite1.eltern = null;
+			nat.seite2.eltern = null;
+			nat.eltern = null;
+		}
+		btf = null;
+		bchb = null;
+		ktlcmb = null;
+		ktltfc = null;
+		ktltfd = null;
+		ktltfa = null;
+		bta = null;
 
+		ebt = null;;
+		nat = null;
+		officeFrame = null;
+		thisClass = null;
+	}
 
 	public void EBDrucken(Point p,boolean[] drucken,String titel){
 		EBPrintDlg printDlg = new EBPrintDlg();
@@ -911,7 +1008,7 @@ class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			dispose();
-			System.out.println("****************EGPrint -> Listener entfernt (Closed)**********");
+			System.out.println("**************** In Panel EGPrint -> Listener entfernt (Closed)**********");
 		}
 		
 		

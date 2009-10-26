@@ -57,7 +57,10 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 	public JXTable arzttbl = null;
 	public MyArztTableModel atblm;
 	JButton[] buts = {null,null};
-	
+    LinearGradientPaint p = null;
+    MattePainter mp = null;
+    CompoundPainter cp = null;
+
 	public BerichtArztAuswahl(EBerichtPanel xeltern){
 	super();
 
@@ -72,9 +75,10 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		    Point2D end = new Point2D.Float(300,270);
 		    float[] dist = {0.0f, 0.75f};
 		    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-		    LinearGradientPaint p =  new LinearGradientPaint(start, end, dist, colors);
-		    MattePainter mp = new MattePainter(p);
-		    setBackgroundPainter(new CompoundPainter(mp));
+		    p =  new LinearGradientPaint(start, end, dist, colors);
+		    mp = new MattePainter(p);
+		    cp = new CompoundPainter(mp);
+		    setBackgroundPainter(cp);
 			return null;
 		}
 		

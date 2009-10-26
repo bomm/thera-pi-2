@@ -30,23 +30,32 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
+		System.out.println("Lösche ArztInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		AktiveFenster.loescheFenster(this.getName());
-		this.removeInternalFrameListener(this);
-		Reha.thisFrame.requestFocus();
-		System.out.println("Lösche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		Reha.thisClass.aktiviereNaechsten(this.desktop);
+		//Nächsten JInternalFrame aktivieren
+		Reha.thisClass.aktiviereNaechsten(this.desktop);		
+		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
+		this.removeInternalFrameListener(this);
+		//
+		Reha.thisFrame.requestFocus();
+		//Componenten des InternalFrameTitelbar auf null setzen
+		this.destroyTitleBar();
+		this.nord = null;
+		this.inhalt = null;
+		this.thisContent = null;
 		this.dispose();
+		final String name = new String(this.getName());
+
+
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
-		 			Runtime r = Runtime.getRuntime();
-		 		    r.gc();
-		 		    long freeMem = r.freeMemory();
-		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				AktiveFenster.loescheFenster(name);
 		 	   }
 		});
+
 
 	}
 	public void setzeTitel(String stitel){

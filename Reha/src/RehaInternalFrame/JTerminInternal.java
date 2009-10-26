@@ -44,19 +44,30 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		AktiveFenster.loescheFenster(this.getName());
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
+		Reha.thisClass.desktops[this.desktop].remove(this);
+		this.removeAll();
 		System.out.println("Lösche Termin Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		System.out.println("Termin-Internal geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		
 		rEvent.removeRehaEventListener((RehaEventListener) this);
 		if(TerminFenster.thisClass != null){
-			TerminFenster.thisClass.db_Aktualisieren.interrupt();		
+			try{
+			TerminFenster.thisClass.db_Aktualisieren.interrupt();
+			}catch(Exception ex){
+				
+			}
 		}
 		TerminFenster.thisClass = null;
+		this.nord = null;
+		this.inhalt = null;
+		this.thisContent = null;
 		this.dispose();
+		super.dispose();
+		AktiveFenster.loescheFenster(this.getName());
+		/*
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
@@ -66,6 +77,7 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
 		 	   }
 		});
+		*/
 	}	
 
 	@Override

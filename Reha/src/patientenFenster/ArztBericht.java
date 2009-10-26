@@ -108,6 +108,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	String diag = "";
 	int tblreihe;
 	String rezdatum = "";
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
@@ -160,11 +164,12 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			    // Color[] colors = {Color.WHITE,new Color(231,120,23)};
 			    Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.25f)};
 			    //Color[] colors = {Color.WHITE,getBackground()};
-			    LinearGradientPaint p =
+			    p =
 			         new LinearGradientPaint(start, end, dist, colors);
-			    MattePainter mp = new MattePainter(p);
+			    mp = new MattePainter(p);
 			    /************Ende BackgroundPainter basteln************/
-				grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+			    cp = new CompoundPainter(mp);
+				grundPanel.setBackgroundPainter(cp);
 			    return null;
 			}
 	    }.execute();

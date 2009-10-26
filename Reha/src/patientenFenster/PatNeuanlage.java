@@ -161,6 +161,11 @@ boolean inNeu = false;
 Vector titel = new Vector<String>() ;
 Vector formular = new Vector<String>();
 int iformular = -1;
+
+CompoundPainter cp = null;
+MattePainter mp = null;
+LinearGradientPaint p = null;
+
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 	public PatNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
@@ -177,10 +182,11 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
 			     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
 			     //Color[] colors = {Color.WHITE,getBackground()};
-			     LinearGradientPaint p =
+			     p =
 			         new LinearGradientPaint(start, end, dist, colors);
-			     MattePainter mp = new MattePainter(p);
-			     setBackgroundPainter(new CompoundPainter(mp));		
+			     mp = new MattePainter(p);
+			     cp = new CompoundPainter(mp);
+			     setBackgroundPainter(cp);		
 				return null;
 			}
 			

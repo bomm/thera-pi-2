@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -18,13 +20,15 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.VerticalLayout;
 
+import systemTools.ListenerTools;
+
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
-public class PinPanel extends JXPanel{
+public class PinPanel extends JXPanel implements ActionListener{
 	private PinPanel thisClass = null;
 	private JXButton jb1,jb2 = null;
 	private ImageIcon img1,img2,img3 = null;
@@ -71,7 +75,9 @@ public class PinPanel extends JXPanel{
 		jb1.setPreferredSize(new Dimension(16,16));
 		img1 = new ImageIcon(Reha.proghome+"icons/green.png");
 		jb1.setIcon(img1);
-		
+		jb1.setActionCommand("gruen");
+		jb1.addActionListener(this);
+		/*
 		jb1.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			String sEvent = getName();
@@ -84,6 +90,7 @@ public class PinPanel extends JXPanel{
 			RehaTPEventClass.fireRehaTPEvent(rEvt);
 		}
 		});
+		*/
 		jb1.disable();
 		this.add(jb1);
 		
@@ -93,7 +100,10 @@ public class PinPanel extends JXPanel{
 		jb2.setPreferredSize(new Dimension(16,16));
 		img2 = new ImageIcon(Reha.proghome+"icons/red.png");
 		jb2.setIcon(img2);
-		
+		jb2.setActionCommand("rot");
+		jb2.addActionListener(this);
+
+		/*
 		jb2.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			//System.out.println("Von PinPanel Fenstername = "+fenstername);
@@ -104,6 +114,7 @@ public class PinPanel extends JXPanel{
 			RehaTPEventClass.fireRehaTPEvent(rEvt);
 		}
 		});
+		*/
 		jb2.disable();
 		this.add(jb2);
 	}
@@ -122,6 +133,39 @@ public class PinPanel extends JXPanel{
 	}
 	public JXButton getRot(){
 		return jb2;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		String cmd = e.getActionCommand();
+		if(cmd.equals("gruen")){
+			String sEvent = getName();
+			RehaTPEvent rEvt = new RehaTPEvent(thisClass.getParent().getParent());
+			rEvt.setRehaEvent("PinPanelEvent");
+			rEvt.setDetails(sEvent,"GRUEN") ;
+			//System.outprintln("*****************************************");
+			//System.outprintln("*****abgefeuert von GRÜN****"+sEvent);
+			//System.outprintln("*****************************************");
+			RehaTPEventClass.fireRehaTPEvent(rEvt);
+			return;
+		}
+		if(cmd.equals("rot")){
+			String sEvent = getName();
+			RehaTPEvent rEvt = new RehaTPEvent(thisClass.getParent().getParent());
+			rEvt.setRehaEvent("PinPanelEvent");
+			rEvt.setDetails(sEvent,"ROT") ;
+			RehaTPEventClass.fireRehaTPEvent(rEvt);
+			int comps = this.getComponentCount();
+			Component comp = null;
+			for(int i = 0; i < comps;i++){
+				comp = this.getComponent(i);
+				ListenerTools.removeListeners(comp);
+			}
+			img1 = null;
+			img2 = null;
+			img3 = null;
+		}
 	}
 
 }

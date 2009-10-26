@@ -84,6 +84,9 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	public JButton uebernahme;
 	public JButton abbrechen;
 	
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
 
 	public AusfallRechnung(Point pt){
 		super(null,"AusfallRechnung");		
@@ -112,10 +115,11 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     LinearGradientPaint p =
+			     p =
 			         new LinearGradientPaint(start, end, dist, colors);
-			     MattePainter mp = new MattePainter(p);
-			     rgb.setBackgroundPainter(new CompoundPainter(mp));		
+			     mp = new MattePainter(p);
+			     cp = new CompoundPainter(mp);
+			     rgb.setBackgroundPainter(cp);		
 				return null;
 			}
 			
@@ -445,11 +449,13 @@ class AusfallRechnungHintergrund extends JXPanel{
 	AlphaComposite xac2 = null;		
 	public AusfallRechnungHintergrund(){
 		super();
+		/*
 		hgicon = new ImageIcon(Reha.proghome+"icons/geld.png");
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.15f); 
-		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
+		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);
+		*/			
 		
 	}
 	@Override
@@ -458,9 +464,9 @@ class AusfallRechnungHintergrund extends JXPanel{
 		Graphics2D g2d = (Graphics2D)g;
 		
 		if(hgicon != null){
-			g2d.setComposite(this.xac1);
-			g2d.drawImage(hgicon.getImage(), (getWidth()/2)-icx , (getHeight()/2)-icy,null);
-			g2d.setComposite(this.xac2);
+			//g2d.setComposite(this.xac1);
+			//g2d.drawImage(hgicon.getImage(), (getWidth()/2)-icx , (getHeight()/2)-icy,null);
+			//g2d.setComposite(this.xac2);
 		}
 	}
 }

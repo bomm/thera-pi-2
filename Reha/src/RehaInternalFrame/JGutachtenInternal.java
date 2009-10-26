@@ -14,6 +14,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
+import systemTools.ListenerTools;
+
 import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
 import events.RehaEventClass;
@@ -56,29 +58,53 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
+		System.out.println("Lösche ArztInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		AktiveFenster.loescheFenster(this.getName());
+		//Nächsten JInternalFrame aktivieren
+		Reha.thisClass.aktiviereNaechsten(this.desktop);		
+		//Listener deaktivieren
+		rEvent.removeRehaEventListener((RehaEventListener) this);
+		this.removeInternalFrameListener(this);
+		((EBerichtPanel)this.inhalt).dokumentSchliessen();
+
 		RehaEvent evt = new RehaEvent(this);
 		evt.setDetails(this.getName(), "#SCHLIESSEN");
 		evt.setRehaEvent("Gutachten");
 		RehaEventClass.fireRehaEvent(evt);
-		
+
+		((EBerichtPanel)this.inhalt).finalize();
+		//
+		Reha.thisFrame.requestFocus();
+		//Componenten des InternalFrameTitelbar auf null setzen
+		this.destroyTitleBar();
+		this.nord = null;
+
 		//((EBerichtPanel)((JComponent)getComponent())).dokumentSchliessen();
-		this.removeInternalFrameListener(this);
+
 		Reha.thisFrame.requestFocus();
 		System.out.println("Lösche GutachtenInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);
+
+
+		this.nord = null;
+		ListenerTools.removeListeners(thisContent);
+		this.thisContent = null;
+		ListenerTools.removeListeners(inhalt);
+		this.inhalt = null;
+
+		this.removeAll();
+		
 		this.dispose();
+		
+		final String name = this.getName();
+
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
-		 			Runtime r = Runtime.getRuntime();
-		 		    r.gc();
-		 		    long freeMem = r.freeMemory();
-		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				AktiveFenster.loescheFenster(name);
 		 	   }
 		});
+
 
 	}
 	public void setzeTitel(String stitel){

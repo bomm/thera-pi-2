@@ -1,6 +1,7 @@
 package RehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
+import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
 import hauptFenster.SuchenDialog;
 
@@ -65,36 +66,52 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
+		System.out.println("Lösche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		AktiveFenster.loescheFenster(this.getName());
+		//Nächsten JInternalFrame aktivieren
+		Reha.thisClass.aktiviereNaechsten(this.desktop);		
+		//Listener deaktivieren
+		rEvent.removeRehaEventListener((RehaEventListener) this);
 		this.removeInternalFrameListener(this);
+		
 		Reha.thisFrame.requestFocus();
-		System.out.println("Lösche PatientInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+
 		String s1 = new String("#CLOSING");
 		String s2 = "";
 		PatStammEvent pEvt = new PatStammEvent(this);
 		pEvt.setPatStammEvent("PatSuchen");
 		pEvt.setDetails(s1,s2,"") ;
-		PatStammEventClass.firePatStammEvent(pEvt);	
+		PatStammEventClass.firePatStammEvent(pEvt);
+		
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		rEvent.removeRehaEventListener((RehaEventListener) this);
+		
 		PatGrundPanel.thisClass = null;
 		Gutachten.gutachten = null;
 		Historie.historie = null;
 		Dokumentation.doku = null;
 		AktuelleRezepte.aktRez = null;
 		TherapieBerichte.aktBericht = null;
+		this.destroyTitleBar();
+		this.nord = null;
+		this.inhalt = null;
+		this.thisContent = null;
+		this.removeAll();
 		this.dispose();
+		super.dispose();
+
+		final String name = new String(this.getName());
+
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
-		 			Runtime r = Runtime.getRuntime();
-		 		    r.gc();
-		 		    long freeMem = r.freeMemory();
-		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		 		   AktiveFenster.loescheFenster(name);
+		 		   System.out.println("Setzte staticVariable des JInternalPatFrames auf null");
+		 		   ProgLoader.loeschePatient();
 		 	   }
 		});
+
 
 		
 	}

@@ -80,7 +80,10 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 	JRadioButton[] rbut = {null,null};
 	JButton[] but = {null,null};
 	
-	
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+
 	public GutachtenWahl(Point pt, JRtaTextField xtf){
 		super(null,"GutachtenWahl");		
 
@@ -109,9 +112,10 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 			    Point2D end = new Point2D.Float(300,270);
 			    float[] dist = {0.0f, 0.75f};
 			    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-			    LinearGradientPaint p =  new LinearGradientPaint(start, end, dist, colors);
-			    MattePainter mp = new MattePainter(p);
-			    rgb.setBackgroundPainter(new CompoundPainter(mp));
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    rgb.setBackgroundPainter(cp);
 				return null;
 			}
 			

@@ -82,6 +82,10 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 	
 	public JXTable tabbericht = null;
 	public MyBerichtTableModel dtblm;
+	CompoundPainter cp = null;
+	MattePainter mp = null;
+	LinearGradientPaint p = null;
+
 
 	public VorBerichte(boolean kopie,boolean historie,Point pt,ArztBericht xclazz){
 		super(null,"VorberichtLaden");		
@@ -112,10 +116,11 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     LinearGradientPaint p =
+			     p =
 			         new LinearGradientPaint(start, end, dist, colors);
-			     MattePainter mp = new MattePainter(p);
-			     rgb.setBackgroundPainter(new CompoundPainter(mp));		
+			     mp = new MattePainter(p);
+			     cp = new CompoundPainter(mp);
+			     rgb.setBackgroundPainter(cp);		
 				return null;
 			}
 			

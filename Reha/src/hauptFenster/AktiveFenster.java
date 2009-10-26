@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.Vector;
 
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 
 
@@ -29,11 +30,26 @@ public class AktiveFenster {
 	
 	public static void loescheFenster(String name){
 		int i;
-		System.out.println("Fenster "+name+" wird gelöscht");
+		System.out.println("Aktive-Fenster: "+name+" wird gelöscht");
 		System.out.println("FensterElemente vor löschen "+Fenster.size());		
 		for(i=0;i<Fenster.size();i++){
 			if((boolean)((AlleFenster)Fenster.get(i)).fname.equals(name)){
+				System.out.println("Setze freferenz auf null!");
+				((AlleFenster)Fenster.get(i)).freferenz = null;
 				Fenster.removeElementAt(i);
+				Fenster.trimToSize();
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run()
+				 	   {	/*
+				 			Runtime r = Runtime.getRuntime();
+				 		    r.gc();
+				 		    long freeMem = r.freeMemory();
+				 		    */
+				 		    System.gc();
+				 		    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				 		    
+				 	   }
+				});				
 				break;
 			}
 		}

@@ -39,6 +39,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 
 
 import systemEinstellungen.SystemConfig;
+import systemTools.ListenerTools;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
@@ -250,12 +251,17 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		if(xEvent != null){
 			xEvent.removeRehaTPEventListener(this);
 			xEvent = null;
-		}	
-
+			ListenerTools.removeListeners(this);
+			this.removeWindowListener(this);
+			getRootPane().removeKeyListener(this);
+		}
 	}
 	public void Schliessen(){
 		//System.out.println("In Schliessen-Funktion der basisklasse");
 		try{
+			ListenerTools.removeListeners(this);
+			this.removeWindowListener(this);
+			getRootPane().removeKeyListener(this);
 			xEvent.removeRehaTPEventListener(this);
 		}catch(java.lang.NullPointerException ex){
 			
@@ -271,7 +277,8 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 				if(evt.getDetails()[1].equals("ROT")){ 
 					//System.out.println("RehaSmartDialog hat EventListener gel�scht");
 					xEvent.removeRehaTPEventListener((RehaTPEventListener)this);
-					//this.dispose();
+					super.dispose();
+					this.dispose();
 				}
 
 		}catch(java.lang.NullPointerException e){

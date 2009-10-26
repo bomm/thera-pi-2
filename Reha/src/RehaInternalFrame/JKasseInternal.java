@@ -47,13 +47,19 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		AktiveFenster.loescheFenster(this.getName());
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
 		System.out.println("Lösche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		Reha.thisClass.desktops[this.desktop].remove(this);
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		rEvent.removeRehaEventListener((RehaEventListener) this);
+		this.nord = null;
+		this.inhalt = null;
+		this.thisContent = null;
 		this.dispose();
+		super.dispose();
+		AktiveFenster.loescheFenster(this.getName());
+		/*
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
@@ -63,6 +69,7 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
 		 	   }
 		});
+		*/
 
 	}
 	public void setzeTitel(String stitel){

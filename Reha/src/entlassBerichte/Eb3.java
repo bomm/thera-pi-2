@@ -25,6 +25,7 @@ import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -170,11 +171,19 @@ public class Eb3 implements RehaEventListener  {
 										throws Exception {
 				        			System.out.println("starte Dokument mit temp. Stream-Daten");
 				        			InputStream ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-				        			DocumentDescriptor descript = new DocumentDescriptor();
-				        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
-				        			//descript.setHidden(true);
-				        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
-				        			ins.close();
+				        			if(ins.available() > 0){
+					        			DocumentDescriptor descript = new DocumentDescriptor();
+					        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+					        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+				        			}else{
+				        				DocumentDescriptor descript = new DocumentDescriptor();
+					        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,descript);
+							        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
+							        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+							        	framegetrennt = false;
+										eltern.meldeInitOk(2);
+										JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
+				        			}
 				        			new SwingWorker<Void,Void>(){
 										@Override
 										protected Void doInBackground()
@@ -203,6 +212,7 @@ public class Eb3 implements RehaEventListener  {
 						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 						        	framegetrennt = false;
 									eltern.meldeInitOk(2);
+				        			ins.close();
 									return null;
 								}
 			        		}.execute();

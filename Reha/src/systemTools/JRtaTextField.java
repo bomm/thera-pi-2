@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -69,9 +73,10 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		
 		new JFormattedTextField();
 		setRtaType(type,this,selectWhenFocus);
-		//this.addFocusListener(this);
+		
 		this.addFocusListener(this);
 		this.addKeyListener(this);
+		
 		setDisabledTextColor(Color.RED);
 	}
 
@@ -84,6 +89,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		setText(text);
 		this.addFocusListener(this);
 		this.addKeyListener(this);
+		
 		setDisabledTextColor(Color.RED);
 	}
 	/*****************/
@@ -512,6 +518,7 @@ public void focusGained(FocusEvent e) {
 		
 	}
 
+	
 /******************Klassen-Ende********************/	
 }
   
