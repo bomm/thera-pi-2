@@ -2,6 +2,7 @@ package terminKalender;
 
 
 
+
 import generalSplash.RehaSplash;
 import hauptFenster.AktiveFenster;
 
@@ -129,11 +130,12 @@ import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 //import systemTools.SystemTools;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 
 
 public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener,DragSourceListener,DragGestureListener{
 
-	private JRehaInternal eltern;
+	public JRehaInternal eltern;
 	private int setOben; //Position im Grundfenster 0=Flying Window,1=rechts oben,2=rechts unten
 
 	private String FensterName = ""; 
@@ -389,6 +391,32 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	    //System.out.println("In Terminfenster Freier Speicher nach  gc():    " + freeMem); 
 
 		return ViewPanel;
+	}
+	public void finalize(){
+		vTerm.clear();
+		vTerm = null;
+		for(int i = 0; i < 7;i++){
+			ListenerTools.removeListeners(oSpalten[i]);
+			oSpalten[i] = null;
+			ListenerTools.removeListeners(oCombo[i]);
+			oCombo[i] = null;
+			if(ViewPanel != null){
+				ListenerTools.removeListeners(ViewPanel);
+				ViewPanel = null;
+			}
+			if(ComboFlaeche != null){
+				ListenerTools.removeListeners(ComboFlaeche);
+				ComboFlaeche = null;
+			}
+			if(TerminFlaeche != null){
+				ListenerTools.removeListeners(TerminFlaeche);
+				TerminFlaeche = null;
+			}
+			if(GrundFlaeche != null){
+				ListenerTools.removeListeners(GrundFlaeche);
+				GrundFlaeche = null;
+			}
+		}
 	}
 	private void setzeStatement(){
 		try {
@@ -2726,12 +2754,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (rs != null) {
 			try {
 				rs.close();
+				rs = null;
 			} catch (SQLException sqlEx) { // ignore }
 				rs = null;
 			}
 			if (stmt != null) {
 			try {
 				stmt.close();
+				stmt = null;
 			} catch (SQLException sqlEx) { // ignore }
 				stmt = null;
 			}
@@ -2843,12 +2873,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (rs != null) {
 			try {
 				rs.close();
+				rs = null;
 			} catch (SQLException sqlEx) { // ignore }
 				rs = null;
 			}
 			if (stmt != null) {
 			try {
 				stmt.close();
+				stmt = null;
 			} catch (SQLException sqlEx) { // ignore }
 				stmt = null;
 			}
@@ -2929,7 +2961,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					if(SystemConfig.UpdateIntervall > 0 || db_Aktualisieren!= null){
 						db_Aktualisieren.stop();
 					}
-					TerminFenster.thisClass = null;
+					finalize();
+					//TerminFenster.thisClass = null;
 				}else if(evt.getDetails()[2].equals("RequestFocus")){
 					oSpalten[aktiveSpalte[2]].requestFocus();
 				}else if(evt.getDetails()[1]=="GRUEN"){	
@@ -4504,7 +4537,28 @@ class LockRecord implements Runnable{
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
 				
+		}
+		/*
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (sState != null) {
+				try {
+					sState.close();
+					sState = null;
+				} catch (SQLException sqlEx) { // ignore }
+					sState = null;
+				}
 			}
+		}
+		*/				
+
 			
 
 	  }
@@ -4540,8 +4594,20 @@ boolean success = false;
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 
 			}
-		  
+			/*
+			finally {
+				if (sState != null) {
+					try {
+						sState.close();
+						sState = null;
+					} catch (SQLException sqlEx) { // ignore }
+						sState = null;
+					}
+				}
+			}
+			*/		  
 	  }
+	  
 	  
 	  public void run(){
 	    SatzEntsperren();
@@ -4573,6 +4639,18 @@ class SetLock implements Runnable{
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());				
 			}
+			/*
+			finally {
+				if (sState != null) {
+					try {
+						sState.close();
+						sState = null;
+					} catch (SQLException sqlEx) { // ignore }
+						sState = null;
+					}
+				}
+			}
+			*/				
 	
 
 	  }
@@ -4624,6 +4702,19 @@ class DirectLockRecord implements Runnable{
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
 				
 			}
+			/*
+			finally {
+				if (sState != null) {
+					try {
+						sState.close();
+						sState = null;
+					} catch (SQLException sqlEx) { // ignore }
+						sState = null;
+					}
+				}
+			}
+			*/				
+
 			
 
 	  }
@@ -4648,6 +4739,7 @@ private int gelesen;
 	    			break;
 	    		}
 	    		if (!TerminFenster.getThisClass().getUpdateVerbot()){
+	    			try{
 	    			Reha.thisClass.shiftLabel.setText("in Update...");
 	    			TerminFenster.getThisClass().setUpdateVerbot(true);
 	    			TerminFenster.getThisClass().aktualisieren();
@@ -4655,6 +4747,9 @@ private int gelesen;
 	    			Reha.thisClass.shiftLabel.setText("Update ok.");	    			
 	    			//TestFenster.LabelSetzen(2,"DB-aktualisiert: "+new Integer(gelesen).toString());
 	    			gelesen++;
+	    			}catch(Exception ex){
+	    				break;
+	    			}
 	    			//********>Toolkit.getDefaultToolkit().beep();
 	    		}else{
 	    			//TestFenster.LabelSetzen(2,"DB-Aktualisierungsverbot");

@@ -95,6 +95,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -102,6 +103,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -150,6 +152,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -157,6 +160,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -211,6 +215,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -218,6 +223,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -257,6 +263,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -264,6 +271,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -277,7 +285,8 @@ public class SqlInfo {
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
-		Vector<Vector> retkomplett = new Vector<Vector>();	
+		Vector<Vector> retkomplett = new Vector<Vector>();
+		ResultSetMetaData rsMetaData = null;
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
@@ -289,10 +298,11 @@ public class SqlInfo {
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			String sstmt = "select "+felder+" from "+tabelle+" where "+kriterium;
 			rs = stmt.executeQuery(sstmt);
+			
 			int nichtlesen = ausschliessen.size();
 			while(rs.next()){
 				retvec.clear();
-				 ResultSetMetaData rsMetaData = rs.getMetaData() ;
+				 rsMetaData = rs.getMetaData() ;
 				 int numberOfColumns = rsMetaData.getColumnCount()+1;
 				 for(int i = 1 ; i < numberOfColumns;i++){
 					 if(nichtlesen > 0){
@@ -305,6 +315,8 @@ public class SqlInfo {
 				 }
 				 retkomplett.add((Vector)retvec.clone());
 			}
+			retvec.clear();
+			retvec = null;
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
@@ -312,9 +324,13 @@ public class SqlInfo {
 			System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
+			if (rsMetaData != null){
+				rsMetaData = null;
+			}
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -322,6 +338,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -452,6 +469,7 @@ public class SqlInfo {
 			}
 			
 		}
+		numvec = null;
 		return reznr;
 
 	}
@@ -486,6 +504,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -493,6 +512,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -528,6 +548,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -535,6 +556,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -570,6 +592,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -577,6 +600,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -618,6 +642,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -625,6 +650,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -640,6 +666,8 @@ public class SqlInfo {
 		String ret = "";
 		Vector<String> retvec = new Vector<String>();
 		Vector<Vector<String>> retkomplett = new Vector<Vector<String>>();	
+		ResultSetMetaData rsMetaData = null;
+		int numberOfColumns = 0;
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
@@ -651,11 +679,10 @@ public class SqlInfo {
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			String sstmt = xstmt;
 			rs = stmt.executeQuery(sstmt);
-
 			while(rs.next()){
 				retvec.clear();
-				 ResultSetMetaData rsMetaData = rs.getMetaData() ;
-				 int numberOfColumns = rsMetaData.getColumnCount()+1;
+				 rsMetaData = rs.getMetaData() ;
+				 numberOfColumns = rsMetaData.getColumnCount()+1;
 				 for(int i = 1 ; i < numberOfColumns;i++){
 						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 
@@ -663,15 +690,22 @@ public class SqlInfo {
 				 retkomplett.add((Vector<String>)retvec.clone());
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			retvec.clear();
+			retvec = null;
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
 			System.out.println("SQLState: " + ev.getSQLState());
 			System.out.println("VendorError: " + ev.getErrorCode());
-		}	
+		}
+
 		finally {
+			if(rsMetaData != null){
+				rsMetaData = null;
+			}
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -679,6 +713,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -693,7 +728,6 @@ public class SqlInfo {
 		Statement stmt = null;
 		ResultSet rs = null;
 		String ret = "";
-		Vector<String> retvec = new Vector<String>();
 			
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -720,6 +754,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -727,6 +762,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -758,6 +794,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -795,6 +832,7 @@ public class SqlInfo {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -802,6 +840,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}

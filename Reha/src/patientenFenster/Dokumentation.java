@@ -404,7 +404,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		DokuPanel(){
 			super();
 			setOpaque(false);
-			hgicon = new ImageIcon(Reha.proghome+"icons/xsane.png"); 
+			hgicon = SystemConfig.hmSysIcons.get("scannergross"); 
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;
 			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.25f); 
@@ -2222,6 +2222,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -2229,12 +2230,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
 			}
 			if(ps != null){
 				ps.close();
+				ps = null;
 			}
 		}
 		

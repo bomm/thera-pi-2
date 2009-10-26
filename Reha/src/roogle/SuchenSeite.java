@@ -113,7 +113,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static SuchenSeite thisClass = null; 
+	public static SuchenSeite thisClass = null; 
 	private JXPanel panLinks = null;
 	private JXPanel panRechts =  null;
 	private JRtaTextField sucheName = null;
@@ -152,8 +152,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	public static Rdaten rooDaten = new Rdaten();
 	public Vector vecWahl = new Vector();
 	private boolean suchelaeuft = false;
-	private Object[][] sucheKollegen = null;
-	private HashMap<String,Integer> hZeiten = null;
+	public Object[][] sucheKollegen = null;
+	public HashMap<String,Integer> hZeiten = null;
 	private int gewaehlt = 0;
 	public ArrayList<Boolean> selbstGesperrt;
 	public static boolean verarbeitenBeendet = false;
@@ -3102,6 +3102,7 @@ class EntsperreSatz extends Thread implements Runnable{
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -3121,8 +3122,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 	private int merken = -1;
 
 	public void init(){
-		img = new ImageIcon(Reha.proghome+"icons/Kreuz_klein.gif");
-		img2 = new ImageIcon(Reha.proghome+"icons/frei.png");		
+		img = SystemConfig.hmSysIcons.get("zuzahlnichtok");
+		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
 		img.setDescription("gesperrt");
 		img2.setDescription("offen");
 		SuchenSeite.setZeit();
@@ -3137,6 +3138,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 		int anzahl;
 		int verarbeitet;
 		sperrDatum.clear();
+		Vector nvec;
+		String sperre;
 		while(true){
 			anzahl = SuchenSeite.sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) && (SuchenSeite.getTreffer()==anzahl) ){
@@ -3155,9 +3158,9 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 						aktuell++;
 						SuchenSeite.verarbeitetLbl.setText(new Integer(aktuell+1).toString());
 						//xxxx
-						Vector nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
+						nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
 						
-						String sperre;
+						//String sperre;
 						
 						sperre = new String((String)((Vector)nvec).get(13)+
 											(String)((Vector)nvec).get(14) ); 
@@ -3216,6 +3219,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 			
 		}
 		SuchenSeite.setWorkerFertig(true);
+		nvec = null;
+		sperre = null;
 		//SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
 		//JOptionPane.showMessageDialog(null,"Anzahl Tabellenzeilen: "+SuchenSeite.getInstance().jxSucheTable.getRowCount());
 		//Reha.thisClass.conn.setAutoCommit(false);

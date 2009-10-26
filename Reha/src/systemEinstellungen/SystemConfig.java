@@ -972,7 +972,8 @@ public class SystemConfig {
 				"sort","historieumsatz","historietage","historieinfo","keinerezepte","hausbesuch","historie","kvkarte",
 				"ooowriter","ooocalc","oooimpress","openoffice","barcode","info","scanner","email","sms","tools","links",
 				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
-				"kleinehilfe","achtung","vorschau","patstamm","arztstamm","kassenstamm","drvlogo"};
+				"kleinehilfe","achtung","vorschau","patstamm","arztstamm","kassenstamm","drvlogo","personen16",
+				"forward","wecker16","mond","roogle","scannergross"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		Image ico = null;

@@ -26,6 +26,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
@@ -93,7 +94,6 @@ import events.RehaTPEventListener;
 
 public class RoogleFenster extends RehaSmartDialog implements TableModelListener, FocusListener, ActionListener, ComponentListener, WindowListener, ChangeListener, KeyListener, MouseListener, RehaTPEventListener{
 	/**
-	 * 
 	 */
 	
 	private static final long serialVersionUID = 1L;
@@ -302,7 +302,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		jpRechts.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		jpRechts.setBackground(Color.WHITE);
 		JXLabel imglab = new JXLabel();
-		imglab.setIcon(new ImageIcon(Reha.proghome+"icons/roogle3.gif") );
+		imglab.setIcon(SystemConfig.hmSysIcons.get("roogle"));
 		//imglab.setIcon(new ImageIcon(SystemConfig.homeDir+"icons/roogle.gif") );
 		JXPanel dummy = new JXPanel();
 		dummy.setBackground(Color.WHITE);
@@ -333,7 +333,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			}	
 		}.start();
 */		
-		wahltabbedPane.addTab("Gruppenwahl",new ImageIcon( Reha.proghome+"icons/personen16.gif"),wahl1,"");
+		wahltabbedPane.addTab("Gruppenwahl",SystemConfig.hmSysIcons.get("personen16"),wahl1,"");
 		/****************/
 		wahl2 = new JXPanel(new BorderLayout());
 		final JScrollPane js2 = new JScrollPane();
@@ -346,7 +346,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				wahl2.add(js2,BorderLayout.CENTER);				
        	  	}
 		});
-		wahltabbedPane.addTab("individueller Zeitraum",new ImageIcon(Reha.proghome+"icons/forward.gif"),wahl2,"");
+		wahltabbedPane.addTab("individueller Zeitraum",SystemConfig.hmSysIcons.get("forward"),wahl2,"");
 
 		wahl3 = new JXPanel(new BorderLayout());
 		final JScrollPane js3 = new JScrollPane();
@@ -360,7 +360,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				wahl3.add(js3,BorderLayout.CENTER);				
        	  	}
 		});
-		wahltabbedPane.addTab("selektive Uhrzeiten",new ImageIcon(Reha.proghome+"icons/wecker16.gif"),wahl3,"");		
+		wahltabbedPane.addTab("selektive Uhrzeiten",SystemConfig.hmSysIcons.get("wecker16"),wahl3,"");		
 
 		wahl4 = new JXPanel();
 		final JScrollPane js4 = new JScrollPane();
@@ -373,12 +373,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				wahl4.add(js4,BorderLayout.CENTER);		
      	  	}
 		});
-		wahltabbedPane.addTab("Schichtarbeiter planen",new ImageIcon(Reha.proghome+"icons/mond.gif"),wahl4,"");		
+		wahltabbedPane.addTab("Schichtarbeiter planen",SystemConfig.hmSysIcons.get("mond"),wahl4,"");		
 		
 		jpRechts.add(wahltabbedPane,BorderLayout.CENTER);
 		tp1.add(jpRechts);
 		
-		tabbedPane.addTab("Einstellungen für die Suche", new ImageIcon(Reha.proghome+"icons/tools.gif"), tp1,"Einstellungen für den Suchlauf");
+		tabbedPane.addTab("Einstellungen für die Suche", SystemConfig.hmSysIcons.get("tools"), tp1,"Einstellungen für den Suchlauf");
 		//tabbedPane.addTab("Einstellungen für die Suche", new ImageIcon( getClass().getResource("icons/tools.gif")), tp1,"Einstellungen für den Suchlauf");
 		/*
 		//dummySuchen = new JXPanel(new BorderLayout());
@@ -399,7 +399,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		tp2.addKeyListener(this);
 		tp2.addFocusListener(this);		
         
-        tabbedPane.addTab("Termine suchen und überschreiben", new ImageIcon( Reha.proghome+"icons/mag.png"), tp2,
+        tabbedPane.addTab("Termine suchen und überschreiben", SystemConfig.hmSysIcons.get("find"), tp2,
         "Termine suchen und überschreiben");
         
         tabbedPane.setMnemonicAt(0, (int) 'i');
@@ -1314,7 +1314,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		// TODO Auto-generated method stub
 		EntsperreSatz es = new EntsperreSatz();
 		es.start();
-		SuchenSeite.sucheDaten.clear();
+
 		getSmartTitledPanel().removeMouseListener(mymouse);
 		getSmartTitledPanel().removeMouseMotionListener(mymouse);
 		mymouse = null;
@@ -1330,6 +1330,17 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    	    	TerminFenster.thisClass.setUpdateVerbot(false);
 	    	    	//TerminFenster.thisClass.getViewPanel().requestFocus();
 	    	    	TerminFenster.thisClass.altCtrlAus();
+	    			SuchenSeite.sucheDaten.clear();
+	    			SuchenSeite.sucheDaten.toString();
+	    			if(SuchenSeite.thisClass != null){
+		    			SuchenSeite.thisClass.vecWahl = null;
+		    			SuchenSeite.thisClass.sucheKollegen = null;
+		    			SuchenSeite.thisClass.hZeiten = null;
+		    			SuchenSeite.thisClass.selbstGesperrt = null;
+		    			SuchenSeite.thisClass = null;
+	    			}
+	    			RoogleFenster.thisClass = null;
+
 	    		}
 	    	}.start();
 	    }	

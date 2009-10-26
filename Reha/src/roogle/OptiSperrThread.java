@@ -21,8 +21,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 	private int merken = -1;
 	
 	public void init(){
-		img = new ImageIcon(SystemConfig.homeDir+"icons/Kreuz_klein.gif");
-		img2 = new ImageIcon(SystemConfig.homeDir+"icons/frei.png");		
+		img = SystemConfig.hmSysIcons.get("zuzahlnichtok");
+		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
 		img.setDescription("gesperrt");
 		img2.setDescription("offen");
 		SuchenSeite.setZeit();
@@ -33,6 +33,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 	public void run(){
 		int anzahl;
 		sperrDatum.clear();
+		Vector nvec;
+		String sperre;
 		while(true){
 			anzahl = SuchenSeite.sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) ){
@@ -49,9 +51,9 @@ public class OptiSperrThread extends Thread implements Runnable {
 					 	
 						aktuell++;
 						
-						Vector nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
+						nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
 						
-						String sperre;
+						
 						
 						sperre = new String((String)((Vector)nvec).get(13)+
 											(String)((Vector)nvec).get(14) ); 
@@ -96,6 +98,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 				}
 			}
 		}
+		nvec = null;
+		sperre = null;
 		System.out.println("Thread beendet");
 		System.out.println("Variable aktuelle zum Zeitpunkt des ThreadEnde = "+this.aktuell);
 		

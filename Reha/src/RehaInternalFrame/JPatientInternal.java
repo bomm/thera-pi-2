@@ -76,7 +76,10 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		this.removeInternalFrameListener(this);
 		
 		Reha.thisFrame.requestFocus();
-
+		PatGrundPanel.thisClass.fl = null;
+		PatGrundPanel.thisClass.kli = null;
+		PatGrundPanel.thisClass.gplst = null;
+		
 		String s1 = new String("#CLOSING");
 		String s2 = "";
 		PatStammEvent pEvt = new PatStammEvent(this);
@@ -86,7 +89,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		
+		PatGrundPanel.thisClass.jry = null;
 		PatGrundPanel.thisClass = null;
 		Gutachten.gutachten = null;
 		Historie.historie = null;
@@ -97,6 +100,8 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		this.nord = null;
 		this.inhalt = null;
 		this.thisContent = null;
+
+		
 		this.removeAll();
 		this.dispose();
 		super.dispose();

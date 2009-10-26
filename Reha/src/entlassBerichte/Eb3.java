@@ -146,6 +146,7 @@ public class Eb3 implements RehaEventListener  {
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
+					
 					try {
 						pdfok = false;
 						
@@ -169,21 +170,31 @@ public class Eb3 implements RehaEventListener  {
 								@Override
 								protected Void doInBackground()
 										throws Exception {
-				        			System.out.println("starte Dokument mit temp. Stream-Daten");
-				        			InputStream ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-				        			if(ins.available() > 0){
-					        			DocumentDescriptor descript = new DocumentDescriptor();
-					        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
-					        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
-				        			}else{
-				        				DocumentDescriptor descript = new DocumentDescriptor();
-					        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,descript);
-							        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
-							        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
-							        	framegetrennt = false;
-										eltern.meldeInitOk(2);
-										JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
-				        			}
+									InputStream ins = null;
+									try{
+					        			System.out.println("starte Dokument mit temp. Stream-Daten");
+					        			ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
+					        			if(ins.available() > 0){
+						        			DocumentDescriptor descript = new DocumentDescriptor();
+						        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+						        			eltern.meldeInitOk(2);
+					        			}else{
+					        				DocumentDescriptor descript = new DocumentDescriptor();
+						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,descript);
+								        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
+								        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+								        	framegetrennt = false;
+											eltern.meldeInitOk(2);
+											JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
+					        			}
+					        			if(ins != null){
+					        				ins.close();
+					        			}
+									}catch(Exception ex2){
+										ex2.printStackTrace();
+									}
+									
 				        			new SwingWorker<Void,Void>(){
 										@Override
 										protected Void doInBackground()
@@ -204,7 +215,7 @@ public class Eb3 implements RehaEventListener  {
 									xController);
 									XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
 									xtvc.gotoStart(false);
-									ins.close();
+
 									//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
 									System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
 									// TODO Auto-generated method stub
@@ -212,7 +223,7 @@ public class Eb3 implements RehaEventListener  {
 						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 						        	framegetrennt = false;
 									eltern.meldeInitOk(2);
-				        			ins.close();
+				        			
 									return null;
 								}
 			        		}.execute();

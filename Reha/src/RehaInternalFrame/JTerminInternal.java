@@ -46,20 +46,23 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
-		Reha.thisClass.desktops[this.desktop].remove(this);
+		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		this.removeAll();
 		System.out.println("Lösche Termin Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		System.out.println("Termin-Internal geschlossen***************");
-		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		
+
 		rEvent.removeRehaEventListener((RehaEventListener) this);
 		if(TerminFenster.thisClass != null){
 			try{
-			TerminFenster.thisClass.db_Aktualisieren.interrupt();
+				TerminFenster.thisClass.db_Aktualisieren.interrupt();
 			}catch(Exception ex){
 				
 			}
 		}
+		if(TerminFenster.thisClass != null){
+			TerminFenster.thisClass.eltern = null;			
+		}
+		
 		TerminFenster.thisClass = null;
 		this.nord = null;
 		this.inhalt = null;

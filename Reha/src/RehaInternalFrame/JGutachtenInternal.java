@@ -32,7 +32,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		rEvent.addRehaEventListener((RehaEventListener) this);
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 	          public void propertyChange(PropertyChangeEvent evt) {
-	        	System.out.println(evt);
+	        	//System.out.println(evt);
 	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
 	            		  && evt.getNewValue().equals(Boolean.TRUE)){
 	            	  ((EBerichtPanel)getInhalt()).setOOPanelIcon();
@@ -41,7 +41,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	          }
 	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
 	            		  && evt.getNewValue().equals(Boolean.FALSE)){
-	            	  System.out.println("Jetzt icon...........");
+	            	  System.out.println("Jetzt normal...........");
 	            	  ((EBerichtPanel)getInhalt()).setOOPanelDeIcon();
 	            	  //setSize(new Dimension(xWeit-1,yHoch-1));
 	            	  revalidate();
@@ -54,18 +54,20 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("Internal-GutachtenFrame in schliessen***************");
+		//System.out.println("Internal-GutachtenFrame in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("Lösche ArztInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
+		((EBerichtPanel)this.inhalt).finalize();
 		//Nächsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
 		this.removeInternalFrameListener(this);
+		this.removeAncestorListener(this);
 		((EBerichtPanel)this.inhalt).dokumentSchliessen();
 
 		RehaEvent evt = new RehaEvent(this);
@@ -73,7 +75,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		evt.setRehaEvent("Gutachten");
 		RehaEventClass.fireRehaEvent(evt);
 
-		((EBerichtPanel)this.inhalt).finalize();
+
 		//
 		Reha.thisFrame.requestFocus();
 		//Componenten des InternalFrameTitelbar auf null setzen
@@ -83,8 +85,6 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		//((EBerichtPanel)((JComponent)getComponent())).dokumentSchliessen();
 
 		Reha.thisFrame.requestFocus();
-		System.out.println("Lösche GutachtenInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-
 
 		this.nord = null;
 		ListenerTools.removeListeners(thisContent);

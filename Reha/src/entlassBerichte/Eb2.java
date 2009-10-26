@@ -156,6 +156,7 @@ public class Eb2 {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -163,6 +164,7 @@ public class Eb2 {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}

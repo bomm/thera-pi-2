@@ -310,7 +310,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static ImageIcon rehaBackImg = null;
 	public JLabel bunker = null;
 	public JProgressBar Rehaprogress = null;
-	
+	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
+	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+	public final Cursor kreuzCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	public static boolean demoversion = true;
 	/**************************/
 	public JXPanel desktop = null;
@@ -1563,6 +1565,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	    	  //SwingUtilities.updateComponentTreeUI(this.jSplitRechtsOU);
 	    	  SwingUtilities.updateComponentTreeUI(this.jxLinks);	    	  
 	    	  SwingUtilities.updateComponentTreeUI(this.jxRechts);
+
 	    	  
 	    	  LinkeTaskPane.UpdateUI();
 			}catch (ClassNotFoundException e1) {

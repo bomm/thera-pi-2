@@ -2,6 +2,7 @@ package hauptFenster;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -83,6 +84,10 @@ import terminKalender.datFunk;
 
 public class ProgLoader {
 public static JPatientInternal pjry = null; 
+//public static JTerminInternal tjry = null;
+//public static JGutachtenInternal gjry = null;
+
+
 protected static RehaSmartDialog xsmart;
 
 /**************Test Panel (Test für BackGroundPainter****************/	
@@ -127,7 +132,7 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 	SwingUtilities.invokeLater(new Runnable(){
 		public  void run(){
 			String name = "TerminFenster"+WinNum.NeueNummer();
-
+ 
 			int containerNr = SystemConfig.hmContainer.get("Kalender");
 			System.out.println("Terminkalender starten in Container "+containerNr);
 			containerHandling(containerNr);
@@ -345,6 +350,9 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JGutachtenInternal)jry).aktiviereDiesenFrame( ((JGutachtenInternal)jry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  	int icomp = SwingUtilities.getAccessibleChildrenCount(jry.thisContent);
+  	System.out.println("Es gibt AccessibleChldren : "+icomp);
+
 	
 }	
 public static void InternalGut2(){
