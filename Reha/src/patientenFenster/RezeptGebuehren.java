@@ -96,6 +96,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
@@ -104,7 +105,9 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			         new LinearGradientPaint(start, end, dist, colors);
 			     mp = new MattePainter(p);
 			     cp = new CompoundPainter(mp);
-			     rgb.setBackgroundPainter(cp);		
+			     rgb.setBackgroundPainter(cp);
+			     */
+			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezeptGebuehren"));		
 				return null;
 			}
 			

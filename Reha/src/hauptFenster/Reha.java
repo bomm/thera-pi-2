@@ -575,6 +575,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 			@Override
 			protected Void doInBackground() throws Exception {
+				try{
 				CompoundPainter cp = null;
 				MattePainter mp = null;
 				LinearGradientPaint p = null;
@@ -624,7 +625,81 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    cp = new CompoundPainter(mp);
 			    Reha.thisClass.compoundPainter.put("AnredePanel",cp);
 			    /*****************/
-
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,150);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new  Color[] {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("HauptPanel",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,150);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("FliessText",cp);
+			    /*****************/
+			    start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,150);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("getTabs",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,450);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new  Color[] {Colors.PiOrange.alpha(0.25f),Color.WHITE};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("getTabs2",cp);
+				/*****************/
+			    start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(250,100);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("RezeptGebuehren",cp);
+			    /*****************/
+			    start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(400,550);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Gray.alpha(0.15f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("EBerichtPanel",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+				end = new Point2D.Float(0,350);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Yellow.alpha(0.25f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("ArztBericht",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,100);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("RezNeuanlage",cp);
+			    
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 			

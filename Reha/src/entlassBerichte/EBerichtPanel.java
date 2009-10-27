@@ -219,7 +219,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		evt.addRehaEventListener((RehaEventListener) this);
 
 		addFocusListener(this);
-				
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	    Point2D end = new Point2D.Float(400,550);
 	    float[] dist = {0.0f, 0.75f};
@@ -228,6 +228,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	    mp = new MattePainter(p);
 	    cp = new CompoundPainter(mp);
 	    setBackgroundPainter(cp);
+	    */
+	    setBackgroundPainter(Reha.thisClass.compoundPainter.get("EBerichtPanel"));
 		setLayout(new BorderLayout());
 		
 		add(this.getToolbar(),BorderLayout.NORTH);

@@ -111,7 +111,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	CompoundPainter cp = null;
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
-
+	PinPanel pinPanel = null;
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
@@ -120,7 +120,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	    super.getSmartTitledPanel().setTitle(xtitel);
 		this.setName(name);
 		
-		PinPanel pinPanel = new PinPanel();
+		pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName(name);
 		setPinPanel(pinPanel);
@@ -158,18 +158,19 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			@Override
 			protected Void doInBackground() throws Exception {
 				/************BackgroundPainter basteln************/
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 				Point2D end = new Point2D.Float(0,getHeight());
 			    float[] dist = {0.0f, 0.75f};
-			    // Color[] colors = {Color.WHITE,new Color(231,120,23)};
 			    Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.25f)};
-			    //Color[] colors = {Color.WHITE,getBackground()};
 			    p =
 			         new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    /************Ende BackgroundPainter basteln************/
+			
 			    cp = new CompoundPainter(mp);
 				grundPanel.setBackgroundPainter(cp);
+				*/
+				grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztBericht"));
 			    return null;
 			}
 	    }.execute();
@@ -952,6 +953,7 @@ class TextBausteine extends AbstractAction {
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
+			pinPanel = null;
 			new Thread(){
 				public void run(){
 					if(! ishmnull){

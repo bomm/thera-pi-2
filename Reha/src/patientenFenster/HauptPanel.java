@@ -114,16 +114,19 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		super();
 		thisClass = this;
 		setOpaque(true);
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
-	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
+
 	     p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     mp = new MattePainter(p);
 	     cp = new CompoundPainter(mp);
 	     setBackgroundPainter(cp);
+	     */
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("HauptPanel"));
 		setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		
 		ml = new MouseListener(){
@@ -215,16 +218,15 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	    
 		//mittelinksunten.setBorder(BorderFactory.createEmptyBorder());
 		mittelinksunten.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-		
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
-	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
-
+		*/
 		
 		JToolBar jtoolb = new JToolBar();
 		jtoolb.setOpaque(false);
@@ -278,7 +280,9 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		JXPanel jpan = JCompTools.getEmptyJXPanel(new BorderLayout());
 		jpan.setOpaque(true);
 		JXPanel jpan2 = JCompTools.getEmptyJXPanel(new BorderLayout());
-	     jpan2.setBackgroundPainter(new CompoundPainter(mp));
+		/*****************/
+			//jpan2.setBackgroundPainter(new CompoundPainter(mp));
+		jpan2.setBackgroundPainter(Reha.thisClass.compoundPainter.get("FliessText"));
 	     jpan2.add(jtoolb);
 		jpan.add(jpan2,BorderLayout.NORTH);
 		jpan.add(span,BorderLayout.CENTER);
@@ -329,7 +333,8 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		jpan = JCompTools.getEmptyJXPanel(new BorderLayout());
 		jpan.setOpaque(true);
 		jpan2 = JCompTools.getEmptyJXPanel(new BorderLayout());
-	    jpan2.setBackgroundPainter(new CompoundPainter(mp));
+		jpan2.setBackgroundPainter(Reha.thisClass.compoundPainter.get("FliessText"));
+	    //jpan2.setBackgroundPainter(new CompoundPainter(mp));
 	    jpan2.add(jtoolb2);
 		jpan.add(jpan2,BorderLayout.NORTH);
 		jpan.add(span,BorderLayout.CENTER);
@@ -344,6 +349,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	}
 	private JXPanel getTabs(){
 		rechts = new JXPanel(new BorderLayout());
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
 	     float[] dist = {0.0f, 0.75f};
@@ -354,7 +360,8 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
 	     rechts.setBackgroundPainter(new CompoundPainter(mp));
-
+	     */
+		rechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs"));
 		rechts.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
 		PatGrundPanel.thisClass.jtab = new JTabbedPane();
@@ -364,15 +371,17 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		JXPanel tabpan = new JXPanel(new BorderLayout());
 		tabpan.setBorder(BorderFactory.createEmptyBorder(0,0, 0, 0));
 		tabpan.setOpaque(true);
+		/*
 		Point2D xstart = new Point2D.Float(0, 0);
 	     Point2D xend = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),450);
 	     float[] xdist = {0.0f, 0.75f};
 	     Color[] xcolors = {Colors.PiOrange.alpha(0.25f),Color.WHITE};
-	     //Color[] colors = {Color.WHITE,getBackground()};
 	     LinearGradientPaint xp =
 	         new LinearGradientPaint(xstart, xend, xdist, xcolors);
 	     MattePainter xmp = new MattePainter(xp);
 	     tabpan.setBackgroundPainter(new CompoundPainter(xmp));
+	    */ 
+	     tabpan.setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs2"));
 	     //JLabel lbl = new JLabel("Hier stehen Tabellen, Tabellen, und noch mal Tabellen....");
 	     //lbl.setForeground(Color.WHITE);
 	     //tabpan.add(lbl,JLabel.CENTER);

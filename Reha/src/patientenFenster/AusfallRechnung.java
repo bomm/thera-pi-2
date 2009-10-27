@@ -83,6 +83,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	
 	public JButton uebernahme;
 	public JButton abbrechen;
+	PinPanel pinPanel;
 	
 	CompoundPainter cp = null;
 	MattePainter mp = null;
@@ -92,7 +93,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		super(null,"AusfallRechnung");		
 
 		
-		PinPanel pinPanel = new PinPanel();
+		pinPanel = new PinPanel();
 		pinPanel.setName("AusfallRechnung");
 		pinPanel.getGruen().setVisible(false);
 		setPinPanel(pinPanel);
@@ -111,6 +112,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
@@ -119,7 +121,9 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			         new LinearGradientPaint(start, end, dist, colors);
 			     mp = new MattePainter(p);
 			     cp = new CompoundPainter(mp);
-			     rgb.setBackgroundPainter(cp);		
+			     rgb.setBackgroundPainter(cp);
+			     */		
+			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezeptGebuehren"));
 				return null;
 			}
 			
@@ -258,6 +262,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
+			pinPanel = null;
 			super.dispose();
 			dispose();
 			System.out.println("****************Ausfallrechnung -> Listener entfernt (Closed)**********");
