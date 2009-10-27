@@ -89,8 +89,8 @@ public  kalenderPanel KalenderPanel() {
 	}
 public void  ListenerSetzen(int aktPanel){
 	this.panelNummer = aktPanel;
-	this.dragImage = new ImageIcon(Reha.proghome+"icons/buttongreen.png");
-	this.dragImage2 = new ImageIcon(Reha.proghome+"icons/buttongreen.png").getImage().getScaledInstance(8,8,Image.SCALE_SMOOTH);
+	this.dragImage = SystemConfig.hmSysIcons.get("buttongruen");
+	this.dragImage2 = SystemConfig.hmSysIcons.get("buttongruen").getImage().getScaledInstance(8,8,Image.SCALE_SMOOTH);
 	//this.
 	return;
 }

@@ -72,10 +72,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
-
-
-
-
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
@@ -1318,11 +1314,14 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		getSmartTitledPanel().removeMouseListener(mymouse);
 		getSmartTitledPanel().removeMouseMotionListener(mymouse);
 		mymouse = null;
+		/*
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
+	    
 	    long freeMem = r.freeMemory();
 	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+	    */
 	    if(TerminFenster.thisClass != null){
 	    	new Thread(){
 	    		public void run(){
@@ -1330,10 +1329,11 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    	    	TerminFenster.thisClass.setUpdateVerbot(false);
 	    	    	//TerminFenster.thisClass.getViewPanel().requestFocus();
 	    	    	TerminFenster.thisClass.altCtrlAus();
-	    			SuchenSeite.sucheDaten.clear();
-	    			SuchenSeite.sucheDaten.toString();
+
+
 	    			if(SuchenSeite.thisClass != null){
-		    			SuchenSeite.thisClass.vecWahl = null;
+		    			SuchenSeite.thisClass.sucheDaten = null;
+	    				SuchenSeite.thisClass.vecWahl = null;
 		    			SuchenSeite.thisClass.sucheKollegen = null;
 		    			SuchenSeite.thisClass.hZeiten = null;
 		    			SuchenSeite.thisClass.selbstGesperrt = null;

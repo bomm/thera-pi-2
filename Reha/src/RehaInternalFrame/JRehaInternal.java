@@ -98,7 +98,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.titel = titel;
 		this.desktop = desktop;
 		//this.setName("RehaInternal-X");
-		this.setDefaultCloseOperation(JInternalFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setSize(new Dimension(this.getContentPane().getWidth(),this.getContentPane().getHeight()-20));
 		this.getContentPane().addMouseListener(this);
 		this.getContentPane().addFocusListener(getFocusListener());
@@ -125,8 +125,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.setUI(new PlasticInternalFrameUI(this){
 			@Override
 			protected JComponent createNorthPane(JInternalFrame w) {
-				nord = new RehaInternal(w,xtitel,getToolkit().getImage(Reha.proghome+"icons/red.png"),
-						getToolkit().getImage(Reha.proghome+"icons/green.png"),getToolkit().getImage(Reha.proghome+"icons/inaktiv.png"),0);
+				nord = new RehaInternal(w,xtitel,SystemConfig.hmSysIcons.get("rot"),
+						SystemConfig.hmSysIcons.get("gruen"),SystemConfig.hmSysIcons.get("inaktiv"),0);
 				return nord;
 				/*
 					return new RehaInternal(w,xtitel,getToolkit().getImage(Reha.proghome+"icons/red.png"),
@@ -802,15 +802,15 @@ class RehaInternal extends BasicInternalFrameTitlePane{
 	CustomPinPanel jb2 = null;
 	Paint gp1 = null;
 	Paint gp2 = null;	
-	public RehaInternal(JInternalFrame f,String titel,Image img1,Image img2,Image img3,int pp) {
+	public RehaInternal(JInternalFrame f,String titel,ImageIcon img1,ImageIcon img2,ImageIcon img3,int pp) {
 	
 		super(f);
-		gp1 = new GradientPaint(0,0,new Color(112,141,255),0,25,Color.WHITE,true);	
-		gp2 = new GradientPaint(0,0,new Color(112,141,120),0,25,Color.WHITE,true);
+		gp1 = Reha.thisClass.gp1;//new GradientPaint(0,0,new Color(112,141,255),0,25,Color.WHITE,true);	
+		gp2 = Reha.thisClass.gp1;//new GradientPaint(0,0,new Color(112,141,120),0,25,Color.WHITE,true);
 		this.titel = titel;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
+		this.img1 = img1.getImage();
+		this.img2 = img2.getImage();
+		this.img3 = img3.getImage();
 		this.pp = pp;
 		addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

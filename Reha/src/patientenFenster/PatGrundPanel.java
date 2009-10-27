@@ -874,21 +874,16 @@ class SuchePanel extends JXPanel implements ActionListener{
 	public SuchePanel(){
 		super();
 		/*
-		R 231
-		G 120
-		B 23
-		*/
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,new Color(231,120,23)};
-	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
-	     //Color[] colors = {Color.WHITE,getBackground()};
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
 	     setBackgroundPainter(new CompoundPainter(mp));		
-		
+	     */
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SuchePanel"));
 		setBorder(BorderFactory.createEmptyBorder());
 		setPreferredSize(new Dimension(0,35));
 		//                                 1        2              3  4  5       6              7         8              9    10  11   12          
@@ -1028,6 +1023,8 @@ class SuchePanel extends JXPanel implements ActionListener{
 class ButtonPanel extends JXPanel{
 	public ButtonPanel(){
 		super();
+		System.out.println("PatGrundPanel.thisClass.getWidth() = " +PatGrundPanel.thisClass.getWidth());
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),15);//vorher 45
 	     float[] dist = {0.0f, 0.75f};
@@ -1037,7 +1034,9 @@ class ButtonPanel extends JXPanel{
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));		
+	     setBackgroundPainter(new CompoundPainter(mp));	
+	     */
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("ButtonPanel"));
 
 		setBorder(BorderFactory.createEmptyBorder());
 		setPreferredSize(new Dimension(0,10)); //vorher 35
@@ -1399,6 +1398,7 @@ class StammDatenPanel extends JXPanel{
 	public StammDatenPanel(){
 		super();
 		setPreferredSize(new Dimension(0,100));
+		/*
 		setOpaque(true);
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),40);
@@ -1411,7 +1411,8 @@ class StammDatenPanel extends JXPanel{
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
 	     setBackgroundPainter(new CompoundPainter(mp));
-		
+	     */
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("StammDatenPanel"));
 		getStammDaten();
 	}
 	public void getStammDaten(){
@@ -1449,21 +1450,18 @@ class StammDatenPanel extends JXPanel{
 	public JScrollPane getAnrede(){
 		JXPanel anredepan = new JXPanel(new BorderLayout());
 		anredepan.setBorder(null);
-		//anredepan.setOpaque(false);
-		//Reha.RehaPainter[0]
 		setOpaque(true);
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
-	     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Colors.PiOrange.alpha(0.70f),Color.WHITE};
-	     //Color[] colors = {Colors.TaskPaneBlau.alpha(0.70f), Color.WHITE};
-	     //Color[] colors = {Color.WHITE,getBackground()};
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
 	     anredepan.setBackgroundPainter(new CompoundPainter(mp));
-		
+	     */
+	     anredepan.setBackgroundPainter(Reha.thisClass.compoundPainter.get("AnredePanel"));
 		
 	
 /*

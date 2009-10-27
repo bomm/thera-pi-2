@@ -45,7 +45,7 @@ public class AktiveFenster {
 				 		    r.gc();
 				 		    long freeMem = r.freeMemory();
 				 		    */
-				 		    System.gc();
+				 		    //System.gc();
 				 		    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 				 		    
 				 	   }

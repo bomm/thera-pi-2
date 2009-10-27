@@ -175,18 +175,18 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
-			     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
-			     //Color[] colors = {Color.WHITE,getBackground()};
 			     p =
 			         new LinearGradientPaint(start, end, dist, colors);
 			     mp = new MattePainter(p);
 			     cp = new CompoundPainter(mp);
-			     setBackgroundPainter(cp);		
+			     setBackgroundPainter(cp);
+			     */
+				setBackgroundPainter(Reha.thisClass.compoundPainter.get("PatNeuanlage"));		
 				return null;
 			}
 			

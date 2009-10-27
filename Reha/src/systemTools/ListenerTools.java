@@ -31,6 +31,7 @@ public class ListenerTools {
                     {
                         try {
                             method.invoke(comp, new Object[]{listeners[j]});
+                            listeners[j] = null;
                             //System.out.println("removed Listener " + name + "+ for comp " + comp );
                         }catch(Exception e){
                            // System.out.println("Cannot invoke removeListener method " + e);

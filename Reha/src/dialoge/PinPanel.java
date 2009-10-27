@@ -20,6 +20,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.VerticalLayout;
 
+import systemEinstellungen.SystemConfig;
 import systemTools.ListenerTools;
 
 import events.RehaEvent;
@@ -50,7 +51,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 	
 	
 	ZweiButtons();
-	img3 = new ImageIcon(Reha.proghome+"icons/inaktiv.png");
+	img3 = SystemConfig.hmSysIcons.get("inaktiv");
 	thisClass = this;
 	this.setPreferredSize(new Dimension(50,20));
 	this.revalidate();
@@ -73,7 +74,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 		jb1.setBorder(null);
 		jb1.setOpaque(false);
 		jb1.setPreferredSize(new Dimension(16,16));
-		img1 = new ImageIcon(Reha.proghome+"icons/green.png");
+		img1 = SystemConfig.hmSysIcons.get("green"); 
 		jb1.setIcon(img1);
 		jb1.setActionCommand("gruen");
 		jb1.addActionListener(this);
@@ -98,7 +99,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 		jb2.setBorder(null);
 		jb2.setOpaque(false);
 		jb2.setPreferredSize(new Dimension(16,16));
-		img2 = new ImageIcon(Reha.proghome+"icons/red.png");
+		img2 = SystemConfig.hmSysIcons.get("rot"); //new ImageIcon(Reha.proghome+"icons/red.png");
 		jb2.setIcon(img2);
 		jb2.setActionCommand("rot");
 		jb2.addActionListener(this);

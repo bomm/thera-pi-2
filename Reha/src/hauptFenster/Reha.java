@@ -313,7 +313,22 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
 	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 	public final Cursor kreuzCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+	public final Cursor cmove = new Cursor(Cursor.MOVE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnsize = new Cursor(Cursor.N_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnwsize = new Cursor(Cursor.NW_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnesize = new Cursor(Cursor.NE_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cswsize = new Cursor(Cursor.SW_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cwsize = new Cursor(Cursor.W_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor csesize = new Cursor(Cursor.SE_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cssize = new Cursor(Cursor.S_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
+	public final Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:
+	
 	public static boolean demoversion = true;
+	
+	public GradientPaint gp1 = new GradientPaint(0,0,new Color(112,141,255),0,25,Color.WHITE,true);	
+	public GradientPaint gp2 = new GradientPaint(0,0,new Color(112,141,120),0,25,Color.WHITE,true);
+	public HashMap<String,CompoundPainter> compoundPainter = new HashMap<String,CompoundPainter>();
 	/**************************/
 	public JXPanel desktop = null;
 	//  
@@ -542,8 +557,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( SystemConfig.homeDir+"icons/pi.png" ) );
 				System.out.println("ProgHome = "+Reha.proghome);
 				Reha.thisClass.setDivider(5);
+				Reha.thisClass.doCompoundPainter();
 			}
 		});
+		
 	    /**
 		 * zweiter Teil des Systems initialisieren
 		 * 3 = Parameter für den Terminkalender
@@ -551,6 +568,69 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		 * falls nicht kann dieser Teil der Systeminitialierung nicht durchgeführt werden
 		 * und der Terminkalender nicht betrieben werden!!!!!
 		 */
+
+	}
+	private void doCompoundPainter(){
+		new SwingWorker<Void,Void>(){
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				CompoundPainter cp = null;
+				MattePainter mp = null;
+				LinearGradientPaint p = null;
+				/*****************/
+				Point2D start = new Point2D.Float(0, 0);
+				Point2D end = new Point2D.Float(960,100);
+			    float[] dist = {0.0f, 0.75f};
+			    Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("PatNeuanlage",cp);
+				/*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,100);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,new Color(231,120,23)};
+			    p =       new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("SuchePanel",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,15);//vorher 45
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Colors.PiOrange.alpha(0.5f),Color.WHITE};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("ButtonPanel",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,40);
+			    dist = new float[] {0.0f, 1.00f};
+			    colors = new Color[] {Colors.PiOrange.alpha(0.5f),Color.WHITE};	     
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("StammDatenPanel",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,100);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new  Color[] {Colors.PiOrange.alpha(0.70f),Color.WHITE};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("AnredePanel",cp);
+			    /*****************/
+
+				return null;
+			}
+			
+		}.execute();
+
+		
 	}
 	public void aktiviereNaechsten(int welchen){
 		JInternalFrame[] frame = desktops[welchen].getAllFrames();

@@ -36,7 +36,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 		Vector nvec;
 		String sperre;
 		while(true){
-			anzahl = SuchenSeite.sucheDaten.size();
+			anzahl = SuchenSeite.thisClass.sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) ){
 				System.out.println("Unterbrechen und anzahl = 0");
 				break;
@@ -51,7 +51,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 					 	
 						aktuell++;
 						
-						nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
+						nvec = (Vector) ((Vector)SuchenSeite.thisClass.sucheDaten.get(aktuell)).clone();
 						
 						
 						

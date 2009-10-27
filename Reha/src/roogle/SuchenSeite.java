@@ -148,7 +148,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	public String aktuellesDatum = null;
 	public static boolean mussUnterbrechen = false;
 	private int[] suchenTage = {0,0,0,0,0,0,0};
-	public static Vector sucheDaten = new Vector();
+	public Vector sucheDaten = new Vector();
 	public static Rdaten rooDaten = new Rdaten();
 	public Vector vecWahl = new Vector();
 	private boolean suchelaeuft = false;
@@ -504,7 +504,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		/*********************************************/
 		/*********************************************/
 		sucheStarten = new JButton("Suchlauf starten");
-		sucheStarten.setIcon(new ImageIcon( Reha.proghome+"icons/buttongreen.png") );
+		sucheStarten.setIcon(SystemConfig.hmSysIcons.get("buttongruen") );
 		sucheStarten.setMnemonic(KeyEvent.VK_S);
 		sucheStarten.setName("start");
 		sucheStarten.addKeyListener(this);
@@ -519,7 +519,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		sucheWeiter.addActionListener(this);
 		
 		sucheStoppen = new JButton("Suche unterbrechen");
-		sucheStoppen.setIcon(new ImageIcon(Reha.proghome+"icons/buttonred.png") );
+		sucheStoppen.setIcon(SystemConfig.hmSysIcons.get("buttonrot"));
 		sucheStoppen.setName("stop");
 		sucheStoppen.addKeyListener(this);
 		sucheStoppen.setEnabled(false);
@@ -1900,13 +1900,13 @@ public void keyTyped(KeyEvent arg0) {
 
 	//arg0.consume();
 }	
+//Bislang hier Ende der Klasse
 
-}
 /***********************Bereits jetzt für*************************/
 /***********************ein Update vorgesehen*********************/
 /*****************************************************************/
 @SuppressWarnings("unchecked")
-final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
+class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	Statement stmt = null;
 	ResultSet rs = null;
 	String sergebnis = "";
@@ -1925,7 +1925,7 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	int ftage = 0;
 	String aktDatum = null;
 	ArrayList<String> atermine = new ArrayList<String>();
-	public static ArrayList<String> sperrDatum = new ArrayList<String>();
+	public ArrayList<String> sperrDatum = new ArrayList<String>();
 	//private ArrayList<String> sperrDatum = new ArrayList<String>();
 	ImageIcon img,img2;
 	int schichtArt = -1;
@@ -1933,8 +1933,10 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	
 
 	public void setzeStatement(){
-		img = new ImageIcon(Reha.proghome+"icons/Kreuz_klein.gif");
-		img2 = new ImageIcon(Reha.proghome+"icons/frei.png");		
+		img = SystemConfig.hmSysIcons.get("zuzahlnichtok");
+		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
+		//img = new ImageIcon(Reha.proghome+"icons/Kreuz_klein.gif");
+		//img2 = new ImageIcon(Reha.proghome+"icons/frei.png");		
 		img.setDescription("gesperrt");
 		img2.setDescription("offen");
 		SuchenSeite.setZeit();
@@ -2256,7 +2258,7 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 								*/
 								
 								//SuchenSeite.rooDaten.rvec.add((Vector)yvec.clone());
-								SuchenSeite.sucheDaten.add((Vector)yvec.clone());
+								sucheDaten.add((Vector)yvec.clone());
 								//SuchenSeite.setDatenVector((Vector)yvec.clone());
 								trefferSetzen();
 								
@@ -2354,7 +2356,7 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				}
 				*/
 				//SuchenSeite.getInstance().dtblm.setDataVector(SuchenSeite.sucheDaten,getColVec());
-				System.out.println("Vectorgröße = "+SuchenSeite.sucheDaten.size());
+				System.out.println("Vectorgröße = "+sucheDaten.size());
 				SuchenSeite.mussUnterbrechen = true;
 				SuchenSeite.getInstance().jxSucheTable.revalidate();
 			}
@@ -2377,7 +2379,7 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	
 /********************************************/
 	private void schreibeDaten(){
-		int anzahl = SuchenSeite.sucheDaten.size();
+		int anzahl = sucheDaten.size();
 		int i;
 		String datum, beginn,einde,behandler;
 		String str;
@@ -2388,7 +2390,7 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
         try {
 			FileWriter fw = new FileWriter(file);
 			for(i = 0; i < anzahl; i++){
-				vec = (Vector) SuchenSeite.sucheDaten.get(i);
+				vec = (Vector) sucheDaten.get(i);
 				str = (String)vec.get(2);
 				str = str+" - "+(String)vec.get(3);
 				str = str+" - "+(String)vec.get(4);
@@ -2631,39 +2633,39 @@ final class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 
 		return false;
 	}
-	static boolean passtZwischen(String sgrenzeklein,String sgrenzegross,String szeit,int dauer){
+	boolean passtZwischen(String sgrenzeklein,String sgrenzegross,String szeit,int dauer){
 		long z1 = zeitFunk.MinutenSeitMitternacht(sgrenzeklein);
 		long z2 = zeitFunk.MinutenSeitMitternacht(sgrenzegross);
 		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+new Long(dauer);
 		return( ((z3 >= z1) &&  (z3<=z2)) ? true : false);
 	}
-	static boolean longPasstZwischen(long lgrenzeklein,long lgrenzegross,String szeit,int dauer){
+	boolean longPasstZwischen(long lgrenzeklein,long lgrenzegross,String szeit,int dauer){
 		long z1 = lgrenzeklein;
 		long z2 = lgrenzegross;
 		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+new Long(dauer);
 		return( ((z3 >= z1) &&  (z3<=z2)) ? true : false);
 	}
-	static boolean ZeitGroesserGleich(String szeit1,String szeit2){
+	boolean ZeitGroesserGleich(String szeit1,String szeit2){
 		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
 		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 >= z1 ? true : false);
 	}
-	static boolean ZeitGroesser(String szeit1,String szeit2){
+	boolean ZeitGroesser(String szeit1,String szeit2){
 		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
 		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 > z1 ? true : false);
 	}
-	static boolean ZeitKleinerGleich(String szeit1,String szeit2){
+	boolean ZeitKleinerGleich(String szeit1,String szeit2){
 		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
 		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 <= z1 ? true : false);
 	}
-	static boolean ZeitKleiner(String szeit1,String szeit2){
+	boolean ZeitKleiner(String szeit1,String szeit2){
 		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
 		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 < z1 ? true : false);
 	}
-	static int[] Schnittmenge(String sklein1,String sgross1,String sklein2,String sgross2 ){
+	int[] Schnittmenge(String sklein1,String sgross1,String sklein2,String sgross2 ){
 		long z1 = zeitFunk.MinutenSeitMitternacht(sklein1);
 		long z2 = zeitFunk.MinutenSeitMitternacht(sgross1);
 		long z3 = zeitFunk.MinutenSeitMitternacht(sklein2);
@@ -3081,42 +3083,13 @@ class MyDefaultTableModel extends DefaultTableModel{
 /*******************************************************************/
 /*******************************************************************/
 /**************************************************/
-class EntsperreSatz extends Thread implements Runnable{
-	public void run(){
-		Statement stmt = null;
-
-		try {
-			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-			        ResultSet.CONCUR_UPDATABLE );
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			boolean rs = stmt.execute("delete from flexlock where maschine='"+SystemConfig.dieseMaschine+"' AND zeit='"+SuchenSeite.getZeit()+"'");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-					stmt = null;
-				} catch (SQLException sqlEx) { // ignore }
-					stmt = null;
-				}
-			}
-		}
-	}
-}
 
 /**************************************************/
 /**************************************************/
 final class WorkerTabelle extends SwingWorker<Void,Void>{
 	boolean fertig = false;
 	int aktuell = -1;
-	public static ArrayList<String> sperrDatum = new ArrayList<String>();
+	public ArrayList<String> sperrDatum = new ArrayList<String>();
 	private ImageIcon img,img2;
 	private String zeit;
 	private int merken = -1;
@@ -3141,7 +3114,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 		Vector nvec;
 		String sperre;
 		while(true){
-			anzahl = SuchenSeite.sucheDaten.size();
+			anzahl = sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) && (SuchenSeite.getTreffer()==anzahl) ){
 				//System.out.println("Ausbruch bei 1");
 				break;
@@ -3158,7 +3131,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 						aktuell++;
 						SuchenSeite.verarbeitetLbl.setText(new Integer(aktuell+1).toString());
 						//xxxx
-						nvec = (Vector) ((Vector)SuchenSeite.sucheDaten.get(aktuell)).clone();
+						nvec = (Vector) ((Vector)sucheDaten.get(aktuell)).clone();
 						
 						//String sperre;
 						
@@ -3324,6 +3297,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 
 
 	
+
+}
 class TermObjekt implements Comparable<TermObjekt>{
 	public String tag;
 	public String beginn;
@@ -3351,6 +3326,7 @@ class TermObjekt implements Comparable<TermObjekt>{
 
 	
 }
+
 class Rdaten extends Observable{
 	public Vector rvec; 
 	public Rdaten(){
@@ -3358,4 +3334,33 @@ class Rdaten extends Observable{
 		rvec = new Vector();
 	}
 	
+}
+class EntsperreSatz extends Thread implements Runnable{
+	public void run(){
+		Statement stmt = null;
+
+		try {
+			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			        ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			boolean rs = stmt.execute("delete from flexlock where maschine='"+SystemConfig.dieseMaschine+"' AND zeit='"+SuchenSeite.getZeit()+"'");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+	}
 }

@@ -42,6 +42,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 	RehaEventClass rEvent = null;
 	public JPatientInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
+		this.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
 
