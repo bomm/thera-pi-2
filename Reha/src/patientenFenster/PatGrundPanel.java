@@ -1104,11 +1104,12 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 									PatGrundPanel.thisClass.patDaten.clear();
 									PatGrundPanel.thisClass.patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+xpatint+"'", Arrays.asList(new String[] {}));
 									//System.out.println("Fertig mit einlesen der kompletten Pat-Daten");
+									PatTools.constructPatHMap();		
+									ArztTools.constructArztHMap("");
+									KasseTools.constructKasseHMap("");
+
 									new Thread(){
 										public void run(){
-											PatTools.constructPatHMap();		
-											ArztTools.constructArztHMap("");
-											KasseTools.constructKasseHMap("");
 										}
 									}.start();
 						return null;

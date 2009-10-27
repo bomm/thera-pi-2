@@ -714,6 +714,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			desktops[0].addMouseListener(this);
 			desktops[0].addMouseMotionListener(this);
 			desktops[0].addComponentListener(this);
+			desktops[0].addContainerListener(this);			
 			jpOben.add(desktops[0]);		
 
 		    jp2.add(jpOben,BorderLayout.CENTER);
@@ -748,7 +749,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			desktops[1].addFocusListener(this);
 			desktops[1].addMouseListener(this);
 			desktops[1].addMouseMotionListener(this);
-			desktops[1].addComponentListener(this);			
+			desktops[1].addComponentListener(this);
+			desktops[1].addContainerListener(this);
 		    jpUnten.add(desktops[1]);
 		    jp2.add(jpUnten,BorderLayout.CENTER);
 		    jxRechtsUnten.add(jp2,BorderLayout.CENTER);
@@ -2154,13 +2156,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	@Override
 	public void componentAdded(ContainerEvent arg0) {
-		// TODO Auto-generated method stub
+		System.out.println("****************In Reha-Hauptprogramm - Component Added*******************\n"+arg0.getSource());
 		
 	}
 	@Override
 	public void componentRemoved(ContainerEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("****************In Reha-Hauptprogramm - Component Removed*******************\n"+arg0.getSource());
 	}	
 /*******************/
 class Hintergrund extends JDesktopPane implements ComponentListener{

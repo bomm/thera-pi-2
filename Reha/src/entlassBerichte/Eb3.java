@@ -223,7 +223,7 @@ public class Eb3 implements RehaEventListener  {
 						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 						        	framegetrennt = false;
 									eltern.meldeInitOk(2);
-				        			
+				        			pan.setSize(pan.getWidth()+1, pan.getHeight());
 									return null;
 								}
 			        		}.execute();

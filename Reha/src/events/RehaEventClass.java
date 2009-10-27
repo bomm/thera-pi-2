@@ -24,6 +24,7 @@ public class RehaEventClass {
     // This methods allows classes to unregister for RehaEvents
     public void removeRehaEventListener(RehaEventListener listener) {
         listenerList.remove(RehaEventListener.class, listener);
+        listener = null;
     }
     
     // This methods allows classes to unregister for RehaEvents
