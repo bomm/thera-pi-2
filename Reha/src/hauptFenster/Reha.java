@@ -662,7 +662,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    Reha.thisClass.compoundPainter.put("getTabs2",cp);
 				/*****************/
 			    start = new Point2D.Float(0, 0);
-			    end = new Point2D.Float(250,100);
+			    end = new Point2D.Float(350,290);
 			    dist = new  float[] {0.0f, 0.75f};
 			    colors = new Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
@@ -680,7 +680,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    Reha.thisClass.compoundPainter.put("EBerichtPanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
-				end = new Point2D.Float(0,350);
+				end = new Point2D.Float(600,350);
 			    dist = new float[] {0.0f, 0.75f};
 			    colors = new Color[] {Color.WHITE,Colors.Yellow.alpha(0.25f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
@@ -689,7 +689,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    Reha.thisClass.compoundPainter.put("ArztBericht",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
-			    end = new Point2D.Float(0,100);
+			    end = new Point2D.Float(400,350);
 			    dist = new  float[] {0.0f, 0.75f};
 			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
