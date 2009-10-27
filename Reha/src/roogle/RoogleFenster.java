@@ -133,6 +133,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public String[] kollegenAbteilung = null;
 	public boolean[] kollegenSuchen = new boolean[ParameterLaden.maxKalZeile+1];
 	private MouseAdapter mymouse = null;
+	PinPanel pinPanel;
 	public RoogleFenster(JXFrame owner,String drops) {
 		super(owner,"Roogle");
 		setPreferredSize(new Dimension(300,300));
@@ -190,7 +191,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		mymouse = new DragWin(this);
 		getSmartTitledPanel().addMouseListener(mymouse );
 		getSmartTitledPanel().addMouseMotionListener(mymouse );
-		PinPanel pinPanel = new PinPanel();
+		pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName(eigenName);
 		pinPanel.setzeName(eigenName);
@@ -1339,6 +1340,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		    			SuchenSeite.thisClass.selbstGesperrt = null;
 		    			SuchenSeite.thisClass = null;
 	    			}
+	    			pinPanel = null;
 	    			RoogleFenster.thisClass = null;
 
 	    		}
