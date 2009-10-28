@@ -339,7 +339,7 @@ public class BlockHandling {
 		}
 
 		anzahlGesamt = Integer.parseInt(datenfeld.getFeld(grundDaten[3],5,0));
-		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(grundDaten[3],5,4));
+		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(grundDaten[3],5,4));
 		String db_behandler = datenfeld.getFeld(grundDaten[3],5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 						Integer.parseInt(db_behandler.substring(1,1)) :
@@ -372,7 +372,7 @@ public class BlockHandling {
 	private int blockFreiTermin(){
 		String [] alteDaten = {null,null,null,null,null};
 		
-		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
+		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 				Integer.parseInt(db_behandler.substring(1,1)) :
@@ -397,7 +397,7 @@ public class BlockHandling {
 		String [] alteDaten = {null,null,null,null,null};
 		String test1="";
 		String test2="";
-		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
+		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
 		int ibehandler = (db_behandler.substring(0,1)=="0" ?
 				Integer.parseInt(db_behandler.substring(1,1)) :
@@ -458,7 +458,7 @@ public class BlockHandling {
 		// +1 = mit Nachfolger
 		String[][] tauschTermine = {{null,null,null,null,null},{null,null,null,null,null}};
 		int [] bloecke = {block,block+richtung}; 
-		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
+		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 				Integer.parseInt(db_behandler.substring(1,1)) :

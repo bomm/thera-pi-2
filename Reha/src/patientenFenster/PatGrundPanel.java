@@ -102,7 +102,7 @@ import systemTools.Colors;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import RehaInternalFrame.JPatientInternal;
 
@@ -1281,7 +1281,7 @@ class DatenHolen{
 			for(int i = 0; i < 15; i++){
 				colname = PatGrundPanel.thisClass.ptfield[i].getName();
 				if(colname.equals("GEBOREN")){
-					colvalue = datFunk.sDatInDeutsch(rs.getString("GEBOREN"))+" "; 	
+					colvalue = DatFunk.sDatInDeutsch(rs.getString("GEBOREN"))+" "; 	
 				}else{
 					colvalue = rs.getString(colname);
 				}

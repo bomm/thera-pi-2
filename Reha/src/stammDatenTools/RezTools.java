@@ -16,7 +16,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class RezTools {
 	
@@ -50,8 +50,8 @@ public class RezTools {
 		}
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
-		        String strings1 = datFunk.sDatInSQL(s1);
-		        String strings2 = datFunk.sDatInSQL(s2);
+		        String strings1 = DatFunk.sDatInSQL(s1);
+		        String strings2 = DatFunk.sDatInSQL(s2);
 		        return strings1.compareTo(strings2);
 		    }
 		};	
@@ -118,7 +118,7 @@ public class RezTools {
 				// Es ist ein unter 18 Jahre Test notwendig
 				if(bTermine){
 					
-					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.patDaten.get(4))); 
+					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.patDaten.get(4))); 
 					if( test[0] > 0 ){
 						//muß zuzahlen
 						zm.allefrei = false;
@@ -143,9 +143,9 @@ public class RezTools {
 					}
 				}else{
 					//Es stehen keine Termine für Analyse zur Verfügung also muß das Fenster für manuelle Eingabe geöffnet werden!!
-					String geburtstag = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
-					String stichtag = datFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
-					if(datFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
+					String geburtstag = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+					String stichtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+					if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 						System.out.println("Normale Zuzahlung....");
 						zm.allefrei = false;
 						zm.allezuzahl = true;
@@ -270,7 +270,7 @@ public class RezTools {
 		BigDecimal rezwert = BigDecimal.valueOf(new Double(0.000));
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(2)) );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(2)) );		
 		for(i = 0;i < 4;i++){
 			anzahl[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+3));
 			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
@@ -284,7 +284,7 @@ public class RezTools {
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)PatGrundPanel.thisClass.vecaktrez.get(0) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2))  );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2))  );		
 		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
 		
 		for(i = 0; i < 4; i++){
@@ -348,7 +348,7 @@ public class RezTools {
 	public static void constructGanzFreiRezHMap(ZuzahlModell zm){
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(2)) );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(2)) );		
 		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)PatGrundPanel.thisClass.vecaktrez.get(0) );
 		SystemConfig.hmAdrRDaten.put("<Rpauschale>","0,00");
 		for(int i = 0;i<5;i++){
@@ -418,7 +418,7 @@ public class RezTools {
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)PatGrundPanel.thisClass.vecaktrez.get(0) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2) )  );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch( (String)PatGrundPanel.thisClass.vecaktrez.get(2) )  );		
 		SystemConfig.hmAdrRDaten.put("<Rpauschale>",dfx.format(rezgeb) );
 		
 		for(i = 0; i < 4; i++){
@@ -933,7 +933,7 @@ public class RezTools {
 	public static void constructVirginHMap(){
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)PatGrundPanel.thisClass.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)PatGrundPanel.thisClass.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(2)) );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(2)) );		
 	}
 
 }

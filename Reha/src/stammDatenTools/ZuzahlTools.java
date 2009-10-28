@@ -12,7 +12,7 @@ import patientenFenster.PatGrundPanel;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class ZuzahlTools {
 	public static boolean zzStatusEdit(String pat_int,String geboren, String rez_nr,String frei, String kassid){
@@ -60,8 +60,8 @@ public class ZuzahlTools {
 		}
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
-		        String strings1 = datFunk.sDatInSQL(s1);
-		        String strings2 = datFunk.sDatInSQL(s2);
+		        String strings1 = DatFunk.sDatInSQL(s1);
+		        String strings2 = DatFunk.sDatInSQL(s2);
 		        return strings1.compareTo(strings2);
 		    }
 		};	
@@ -73,14 +73,14 @@ public class ZuzahlTools {
 		String aktzzregel = (String) PatGrundPanel.thisClass.vecaktrez.get(63);
 		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
 			String stichtag = "";
-			String geburtstag = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
-			String gebtag = (datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(22))).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+			String geburtstag = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+			String gebtag = (DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(22))).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
 			
 			boolean einergroesser = false;
 			int erstergroesser = -1; 
 			for(int i = 0; i < tage.size();i++){
 				stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
-				if(datFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
+				if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 					einergroesser = true;
 					break;
 				}
@@ -104,7 +104,7 @@ public class ZuzahlTools {
 			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){
 				//String cmd = "update verordn set zzstatus='3' where rez_nr='"+rez_nr+" LIMIT 1";
 				//new ExUndHop().setzeStatement(cmd);
-				long tagex = datFunk.TageDifferenz(geburtstag ,gebtag);
+				long tagex = DatFunk.TageDifferenz(geburtstag ,gebtag);
 				//System.out.println("Tagex = ---------------> "+tagex);
 				if(tagex <= 0 && tagex > -45){
 					//JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
@@ -145,8 +145,8 @@ public class ZuzahlTools {
 		}
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
-		        String strings1 = datFunk.sDatInSQL(s1);
-		        String strings2 = datFunk.sDatInSQL(s2);
+		        String strings1 = DatFunk.sDatInSQL(s1);
+		        String strings2 = DatFunk.sDatInSQL(s2);
 		        return strings1.compareTo(strings2);
 		    }
 		};	
@@ -157,12 +157,12 @@ public class ZuzahlTools {
 		String aktzzregel = (String)((Vector)vec.get(0)).get(5);
 		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
 			String stichtag = "";
-			String geburtstag = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren", "pat_intern='"+pat_int+"'"));
+			String geburtstag = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren", "pat_intern='"+pat_int+"'"));
 			boolean einergroesser = false;
 			int erstergroesser = -1; 
 			for(int i = 0; i < tage.size();i++){
 				stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
-				if(datFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
+				if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 					einergroesser = true;
 					break;
 				}
@@ -219,7 +219,7 @@ public class ZuzahlTools {
 		int ret = -1;
 		for(int i = 0;i < tage.size();i++){
 			stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
-			if(datFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
+			if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 				return new int[]{1,i};
 			}
 			

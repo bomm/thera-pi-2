@@ -32,7 +32,7 @@ import ag.ion.noa.NOAException;
 
 import sqlTools.SqlInfo;
 import terminKalender.ParameterLaden;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class KurzAufrufe {
 	public static void starteFunktion(String funktion, Object obj1,Object obj2){
@@ -159,10 +159,10 @@ class AkutListe{
 					  
 					  text = "";
 					  test = (String) ((Vector)vec.get(i)).get(9);
-					  test = (test.trim().equals("") ? "ab: " : "ab:  "+datFunk.sDatInDeutsch(test));
+					  test = (test.trim().equals("") ? "ab: " : "ab:  "+DatFunk.sDatInDeutsch(test));
 					  text = text + test;
 					  test = (String) ((Vector)vec.get(i)).get(10);
-					  test = (test.trim().equals("") ? "\rbis: " : "\rbis: "+datFunk.sDatInDeutsch(test));
+					  test = (test.trim().equals("") ? "\rbis: " : "\rbis: "+DatFunk.sDatInDeutsch(test));
 					  text = text + test;
 					  textTable.getCell(3,i+1).getTextService().getText().setText(text);
 					  

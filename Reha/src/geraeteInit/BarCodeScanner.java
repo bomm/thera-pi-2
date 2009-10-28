@@ -25,7 +25,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import terminKalender.TerminFenster;
 import terminKalender.TermineErfassen;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 
 
@@ -192,7 +192,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						Vector tvec = null;
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 						if(termin != null){
-							if(TerminFenster.thisClass.getAktuellerTag().equals(datFunk.sHeute())){
+							if(TerminFenster.thisClass.getAktuellerTag().equals(DatFunk.sHeute())){
 								// Hier versuchen die Daten des Terminkalenders zu übernehmen
 							}
 						}

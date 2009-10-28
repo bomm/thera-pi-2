@@ -67,7 +67,7 @@ import sqlTools.SqlInfo;
 import systemTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 //import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -466,7 +466,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			ftext = (String) FreiTage.getValueAt(i,1);
 
 			if(! fdatum.trim().equals("")){
-				sqldat = datFunk.sDatInSQL(fdatum);
+				sqldat = DatFunk.sDatInSQL(fdatum);
 				sret = "Update flexkc set ";
 				sret = sret + "T1='"+ftext.trim().toUpperCase()+"', N1='@FREI', TS1='"+tstart+"', TD1='"+tdauer+"', TE1='"+tend+"',";
 				sret = sret + "BELEGT='1' Where DATUM='"+sqldat+"'";
@@ -547,7 +547,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			dblaeuft = false;
 			return;
 		}
-		kalTage = (datFunk.Schaltjahr( new Integer(KalMake.getText())) ? (366) : (365));
+		kalTage = (DatFunk.Schaltjahr( new Integer(KalMake.getText())) ? (366) : (365));
 		Fortschritt.setMinimum(1);
 		Fortschritt.setMaximum(kalTage*60  );
 		Fortschritt.setStringPainted(true);
@@ -561,7 +561,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		ProgressVerarbeiten pv = new ProgressVerarbeiten(Fortschritt);
 		pv.execute();
 		String stmt = null;
-		while(datFunk.DatumsWert(akttag) <= datFunk.DatumsWert(stoptag)){
+		while(DatFunk.DatumsWert(akttag) <= DatFunk.DatumsWert(stoptag)){
 			for(i=1;i<61;i++){
 				durchgang ++;
 				if(durchgang > 200){
@@ -570,8 +570,8 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				    r.gc();
 				}
 
-				stmt = macheStatement(datFunk.sDatInSQL(akttag),
-								(ArrayList)((Vector)vecMasken.get(i-1)).get(datFunk.TagDerWoche(akttag)-1),
+				stmt = macheStatement(DatFunk.sDatInSQL(akttag),
+								(ArrayList)((Vector)vecMasken.get(i-1)).get(DatFunk.TagDerWoche(akttag)-1),
 								(i<10 ? "0"+new Integer(i).toString()+"BEHANDLER" :new Integer(i).toString()+"BEHANDLER"),
 								AZPlan.isSelected());
 				//System.out.println(stmt);
@@ -586,15 +586,15 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					e.printStackTrace();
 				}
 			}
-			akttag = datFunk.sDatPlusTage(akttag,1);
+			akttag = DatFunk.sDatPlusTage(akttag,1);
 		}
 		dblaeuft = false;
 		JOptionPane.showMessageDialog(null, "Kalenderanlegen beendet nach "+((System.currentTimeMillis()-zeit1)/1000)+" Sekunden\n\n"+"Kalender wird jetzt auf Integrität geprüft!");
 		
 		knopfGedoense(true);
 		Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
-		Reha.kalMin = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
-		Reha.kalMax = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
+		Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
+		Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
 		System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);		
 //			}
 //		}.start();
@@ -763,7 +763,7 @@ class HoleMaxDatum extends Thread implements Runnable{
 						SysUtilKalenderanlegen.setJahr(new Integer(altjahr+1).toString());
 
 						}else{
-							String datum = datFunk.sHeute().substring(6);
+							String datum = DatFunk.sHeute().substring(6);
 							SysUtilKalenderanlegen.KalBis.setText("leer");
 							SysUtilKalenderanlegen.KalMake.setText(datum);
 							SysUtilKalenderanlegen.setJahr(datum);							

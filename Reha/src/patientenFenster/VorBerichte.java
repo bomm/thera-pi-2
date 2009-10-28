@@ -44,7 +44,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;

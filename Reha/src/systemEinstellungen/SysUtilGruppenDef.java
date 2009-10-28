@@ -42,7 +42,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 
 
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import terminKalender.zeitFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -431,7 +431,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				neuGruppenGueltigAb = "";
 				neuGruppenDauer = "";
 				lgruppeneu = true;
-				NeueGruppe ng = new NeueGruppe("Neue Gruppe anlegen","",datFunk.sHeute(),"0",true,true);
+				NeueGruppe ng = new NeueGruppe("Neue Gruppe anlegen","",DatFunk.sHeute(),"0",true,true);
 				if(neuGruppenName.trim().equals("")){
 					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});	
 				}
@@ -445,7 +445,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				
 				String sgruppe = (String) cmbGrName.getSelectedItem();
 				int igruppe = cmbGrName.getSelectedIndex();
-				String sgueltig = datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[0]);
+				String sgueltig = DatFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[0]);
 				String sdauer = new Long(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[2]).toString();
 				//NeueGruppe ng = new NeueGruppe("Gruppe ändern",sgruppe,sgueltig,sdauer,true,false);
 				if(neuGruppenName.trim().equals("")){
@@ -615,7 +615,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		ini.setStringProperty("Gruppen", "GruppenAnzahl", new Integer(anzahl).toString(), null);
 		ini.setStringProperty("Gruppen", "GruppenName"+anzahl,neuGruppenName , null);
 		ini.setStringProperty("Gruppen", "Gruppe"+anzahl+"NeuAb",neuGruppenGueltigAb , null);
-		ini.setStringProperty("Gruppen", "Gruppe"+anzahl+"AltBis",datFunk.sDatPlusTage(neuGruppenGueltigAb, -1) , null);
+		ini.setStringProperty("Gruppen", "Gruppe"+anzahl+"AltBis",DatFunk.sDatPlusTage(neuGruppenGueltigAb, -1) , null);
 		ini.setStringProperty("Gruppen", "Gruppe"+anzahl+"Dauer",(neuGruppenDauer.trim().equals("") ? "0" : neuGruppenDauer.trim() ) , null);
 		for(int i = 1; i <= 2;i++){
 			String sektion  = neuGruppenName+"_"+i; 
@@ -706,7 +706,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		int anzahl = cmbGrName.getSelectedIndex();
 		ini.setStringProperty("Gruppen", "GruppenName"+(anzahl+1),neuGruppenName , null);
 		ini.setStringProperty("Gruppen", "Gruppe"+(anzahl+1)+"NeuAb",neuGruppenGueltigAb , null);
-		ini.setStringProperty("Gruppen", "Gruppe"+(anzahl+1)+"AltBis",datFunk.sDatPlusTage(neuGruppenGueltigAb, -1) , null);		
+		ini.setStringProperty("Gruppen", "Gruppe"+(anzahl+1)+"AltBis",DatFunk.sDatPlusTage(neuGruppenGueltigAb, -1) , null);		
 		ini.setStringProperty("Gruppen", "Gruppe"+(anzahl+1)+"Dauer",(neuGruppenDauer.trim().equals("") ? "0" : neuGruppenDauer.trim() ) , null);
 		ini.renameSection(((String)cmbGrName.getSelectedItem()).trim()+"_1",neuGruppenName+"_1",null);
 		ini.renameSection(((String)cmbGrName.getSelectedItem()).trim()+"_2",neuGruppenName+"_2",null);
@@ -715,8 +715,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		cmbGrName.removeItemAt(anzahl+1);
 		cmbGrName.setSelectedIndex(anzahl);
 		Long [] neuwert = SystemConfig.oGruppen.gruppenGueltig.get(anzahl);
-		neuwert[0] = datFunk.DatumsWert(neuGruppenGueltigAb);
-		neuwert[1] = datFunk.DatumsWert(datFunk.sDatPlusTage(neuGruppenGueltigAb, -1));
+		neuwert[0] = DatFunk.DatumsWert(neuGruppenGueltigAb);
+		neuwert[1] = DatFunk.DatumsWert(DatFunk.sDatPlusTage(neuGruppenGueltigAb, -1));
 		neuwert[2] = new Long(neuGruppenDauer);
 		SystemConfig.oGruppen.gruppenGueltig.set(anzahl, neuwert);
 		SystemConfig.oGruppen.gruppenNamen.set(anzahl,neuGruppenName);
@@ -759,10 +759,10 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			String gname = (String) ((Vector)SystemConfig.oGruppen.gruppenNamen).get(i); 
 			ini.setStringProperty("Gruppen", "GruppenName"+(i+1),gname.trim() , null);
 			
-			String sdat1 = datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(i)[0]);
+			String sdat1 = DatFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(i)[0]);
 			ini.setStringProperty("Gruppen", "Gruppe"+(i+1)+"NeuAb",sdat1 , null);
 			
-			ini.setStringProperty("Gruppen", "Gruppe"+(i+1)+"AltBis",datFunk.sDatPlusTage(sdat1, -1), null);		
+			ini.setStringProperty("Gruppen", "Gruppe"+(i+1)+"AltBis",DatFunk.sDatPlusTage(sdat1, -1), null);		
 
 			ini.setStringProperty("Gruppen", "Gruppe"+(i+1)+"Dauer", new Long(SystemConfig.oGruppen.gruppenGueltig.get(i)[2]).toString()  , null);
 			

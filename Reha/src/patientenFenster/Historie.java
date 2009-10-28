@@ -67,7 +67,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class Historie extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
 	public static Historie historie = null;

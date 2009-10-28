@@ -30,7 +30,7 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import org.jdesktop.swingx.JXFrame;
 
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class PatFenster extends JInternalFrame {
 
@@ -185,7 +185,7 @@ public class PatFenster extends JInternalFrame {
 					Vector rowVector = new Vector();
 					for(int i = 1; i <= 4; i++){
 						//System.out.println(rs.getString(i));
-					rowVector.addElement((i==3 ? (rs.getString(i) != null ? datFunk.sDatInDeutsch((String) rs.getString(i)) : "  .  .  ") : rs.getString(i)) );
+					rowVector.addElement((i==3 ? (rs.getString(i) != null ? DatFunk.sDatInDeutsch((String) rs.getString(i)) : "  .  .  ") : rs.getString(i)) );
 					//rowVector.addElement(rs.getString(i) );
 					}
 					dataVector.addElement(rowVector);

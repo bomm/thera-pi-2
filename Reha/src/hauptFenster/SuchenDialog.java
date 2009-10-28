@@ -35,7 +35,7 @@ import com.mysql.jdbc.ResultSetMetaData;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 //import com.mysql.jdbc.Statement;
 

@@ -59,7 +59,7 @@ import sqlTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
 	boolean nurkopie;
@@ -399,7 +399,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	public void doBuchen(){
 		String cmd = "insert into kasse set einnahme='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
-		datFunk.sDatInSQL(datFunk.sHeute())+"', ktext='"+
+		DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
 		PatGrundPanel.thisClass.patDaten.get(2)+","+
 		SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
 		"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+

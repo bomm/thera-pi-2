@@ -42,7 +42,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
@@ -181,7 +181,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 	private void doKopfNeu(){
 		eltern.btf[2].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2))+
 				", "+StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3)));
-		eltern.btf[3].setText(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
+		eltern.btf[3].setText(DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
 		eltern.btf[4].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(21)));
 		eltern.btf[5].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(23)));
 		eltern.btf[6].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(24)));		
@@ -229,7 +229,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 				}
 				for(int i = 0; i < 25;i++){
 					if("AUFDAT3ENTDAT3UNTDATGEBOREN".contains(eltern.btf[i].getName())){
-						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  datFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
+						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  DatFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
 					}else{
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
 					}
@@ -244,7 +244,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 				String xname = "UNTDAT";
 				String inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));
 				if(!inhalt.trim().equals("")){
-					eltern.btf[27].setText(datFunk.sDatInDeutsch(inhalt));
+					eltern.btf[27].setText(DatFunk.sDatInDeutsch(inhalt));
 				}
 				xname = "ARZT1";
 				inhalt = (rs.getString(xname)==null ? ""  : rs.getString((xname)));

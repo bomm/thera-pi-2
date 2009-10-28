@@ -9,7 +9,7 @@ import patientenFenster.PatGrundPanel;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class ArztTools {
 	public static void constructArztHMap(String id){

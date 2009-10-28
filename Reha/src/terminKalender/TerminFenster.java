@@ -326,7 +326,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		setCombos();
 
 		
-		this.aktuellerTag = datFunk.sHeute();
+		this.aktuellerTag = DatFunk.sHeute();
 		if(this.ansicht < MASKEN_ANSICHT){
 			String sstmt = ansichtStatement(this.ansicht,this.aktuellerTag);
 			macheStatement(sstmt,this.ansicht);
@@ -1338,7 +1338,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
 									}else{
-										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),DatFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 									}
 									new Thread(new LockRecord()).start();
 									while(lockok == 0){
@@ -2055,7 +2055,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				if(aktiveSpalte[2] == 0){
 					setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
 				}else{
-					setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+					setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),DatFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 				}
 				new Thread(new LockRecord()).start();
 				while(lockok == 0){
@@ -2221,12 +2221,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			spaltenDatum[6]=this.aktuellerTag;
 		}else{
 			spaltenDatum[0]=this.wocheErster;
-			spaltenDatum[1]=datFunk.sDatPlusTage(this.wocheErster,1);
-			spaltenDatum[2]=datFunk.sDatPlusTage(this.wocheErster,2);
-			spaltenDatum[3]=datFunk.sDatPlusTage(this.wocheErster,3);
-			spaltenDatum[4]=datFunk.sDatPlusTage(this.wocheErster,4);
-			spaltenDatum[5]=datFunk.sDatPlusTage(this.wocheErster,5);
-			spaltenDatum[6]=datFunk.sDatPlusTage(this.wocheErster,6);
+			spaltenDatum[1]=DatFunk.sDatPlusTage(this.wocheErster,1);
+			spaltenDatum[2]=DatFunk.sDatPlusTage(this.wocheErster,2);
+			spaltenDatum[3]=DatFunk.sDatPlusTage(this.wocheErster,3);
+			spaltenDatum[4]=DatFunk.sDatPlusTage(this.wocheErster,4);
+			spaltenDatum[5]=DatFunk.sDatPlusTage(this.wocheErster,5);
+			spaltenDatum[6]=DatFunk.sDatPlusTage(this.wocheErster,6);
 		}
 	}
 	public void setWerte(String[] srueck){
@@ -2382,8 +2382,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 	}
 	public void startTitel(){
-		String stag = datFunk.sHeute();
-		thisClass.eltern.setTitle(datFunk.WochenTag(stag)+" "+stag+" -- KW: "+datFunk.KalenderWoche(stag)+" -- [Normalansicht]");
+		String stag = DatFunk.sHeute();
+		thisClass.eltern.setTitle(DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]");
 
 	}
 	public void setzeFocus(){
@@ -2429,9 +2429,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			String sletzter,serster, sbehandler;
 			if (this.ansicht == NORMAL_ANSICHT){
 				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
-					sstate = "SELECT * FROM flexkc WHERE datum = '"+datFunk.sDatInSQL(stag)+"' LIMIT "+ParameterLaden.maxKalZeile;
+					sstate = "SELECT * FROM flexkc WHERE datum = '"+DatFunk.sDatInSQL(stag)+"' LIMIT "+ParameterLaden.maxKalZeile;
 				}else{ //ADS
-					sstate = "SELECT * FROM flexkc WHERE datum = '"+datFunk.sDatInSQL(stag)+"'";
+					sstate = "SELECT * FROM flexkc WHERE datum = '"+DatFunk.sDatInSQL(stag)+"'";
 				}
 				macheStatement(sstate,iansicht);
 				/*******bislang aktiv*********/
@@ -2448,7 +2448,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				*/
 				
 				if (! (ViewPanel.getParent()==null) ){
-					thisClass.eltern.setTitle(datFunk.WochenTag(stag)+" "+stag+" -- KW: "+datFunk.KalenderWoche(stag)+" -- [Normalansicht]");
+					thisClass.eltern.setTitle(DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]");
 					//thisClass.eltern.setTitle(datFunk.WochenTag(stag)+" "+stag+" ---- [Normalansicht]");
 					//JRehaInternal.thisClass.setzeTitel(datFunk.WochenTag(stag)+" "+stag+" ---- [Normalansicht]");
 					//((JRehaInternal)ViewPanel.getParent().getParent().getParent()).setTitle(datFunk.WochenTag(stag)+" "+stag+" ---- [Normalansicht]");
@@ -2462,22 +2462,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					behandler = ParameterLaden.vKKollegen.get(ParameterLaden.suchen((String)oCombo[0].getSelectedItem())).Reihe ;
 				}
 				sbehandler = (behandler < 10 ? "0"+behandler : ""+new Integer(behandler).toString()); 
-				serster   = datFunk.WocheErster(stag);
+				serster   = DatFunk.WocheErster(stag);
 				this.wocheErster = serster;
 				/***********Nur zum Test*************/
 				//this.aktuellerTag = serster; // 14.05.2008
 				//System.out.println("In Wochenansicht aktueller Tag = "+this.aktuellerTag);
 				this.wocheBehandler = behandler;
-				sletzter  = datFunk.WocheLetzter(stag);
+				sletzter  = DatFunk.WocheLetzter(stag);
 				
 				sstate = "SELECT * FROM flexkc WHERE datum >= '"+
-				datFunk.sDatInSQL(serster)+"'"+ 
+				DatFunk.sDatInSQL(serster)+"'"+ 
 				" AND datum <= '"+
-				datFunk.sDatInSQL(sletzter)+"'"+
+				DatFunk.sDatInSQL(sletzter)+"'"+
 				" AND behandler = '"+sbehandler+
 				"BEHANDLER'";
 				macheStatement(sstate,iansicht);
-				thisClass.eltern.setTitle(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
+				thisClass.eltern.setTitle(DatFunk.WochenTag(serster)+" "+serster+"  bis  "+DatFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 				//((JXTitledPanel) ViewPanel.getParent()).setTitle(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 				//JRehaInternal.thisClass.setzeTitel(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 	        	//this.setTitle();			
@@ -3221,7 +3221,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if(aktiveSpalte[2] == 0){
 				setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
 			}else{
-				setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+				setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),DatFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 			}
 		}
 		
@@ -3504,7 +3504,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 	        if(ansicht == NORMAL_ANSICHT){
 	        	intagWahl = true;
-	        	final String datwahl = (sprung != 0 ? datFunk.sDatPlusTage(this.aktuellerTag,sprung) : this.aktuellerTag);
+	        	final String datwahl = (sprung != 0 ? DatFunk.sDatPlusTage(this.aktuellerTag,sprung) : this.aktuellerTag);
 	        	/*
 	        	if(datFunk.DatumsWert(datwahl) > datFunk.DatumsWert(Reha.kalMax)){
 	        		JOptionPane.showMessageDialog(null,"Sie versuchen hinter das Ende des Kalenders zu springen "+datwahl+
@@ -3549,7 +3549,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        	if(this.wocheAktuellerTag.isEmpty()){
 	        		this.wocheAktuellerTag = this.aktuellerTag;
 	        	}
-	        	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
+	        	this.wocheAktuellerTag = DatFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
 				dragLab[aktiveSpalte[2]].setIcon(null);
 				dragLab[aktiveSpalte[2]].setText("");
 	        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
@@ -3569,7 +3569,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		datGewaehlt = null;
 
 	        if(ansicht == NORMAL_ANSICHT){
-	        	final String datwahl = (sprung != 0 ? datFunk.sDatPlusTage(this.aktuellerTag,sprung) : this.aktuellerTag);
+	        	final String datwahl = (sprung != 0 ? DatFunk.sDatPlusTage(this.aktuellerTag,sprung) : this.aktuellerTag);
 	    		final int xsprung=sprung,xansicht=this.ansicht;
 	    		final String xaktuellerTag = this.aktuellerTag , xwocheAktuellerTag=this.wocheAktuellerTag;
 	    		new Thread(){
@@ -3606,7 +3606,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        	if(this.wocheAktuellerTag.isEmpty()){
 	        		this.wocheAktuellerTag = this.aktuellerTag;
 	        	}
-	        	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
+	        	this.wocheAktuellerTag = DatFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
 	        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
 	        }
 
@@ -3618,16 +3618,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		xpoint.x = xpoint.x +(this.ViewPanel.getWidth()/2);
 		xpoint.y = xpoint.y +(this.ViewPanel.getHeight()/2);*/
         if (ansicht == NORMAL_ANSICHT)/*Normalansicht*/{
-        	this.aktuellerTag = datFunk.sDatPlusTage(this.aktuellerTag,+richtung);
+        	this.aktuellerTag = DatFunk.sDatPlusTage(this.aktuellerTag,+richtung);
         	String sstmt = 	ansichtStatement(this.ansicht,this.aktuellerTag);		        	
         	this.oSpalten[0].requestFocus();
         	
         }else if(ansicht == WOCHEN_ANSICHT){
         	if(this.wocheAktuellerTag.isEmpty()){
-        		this.aktuellerTag = datFunk.sDatPlusTage(this.aktuellerTag,+richtung);
+        		this.aktuellerTag = DatFunk.sDatPlusTage(this.aktuellerTag,+richtung);
         		this.wocheAktuellerTag = this.aktuellerTag;
         	}
-        	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,+(richtung*7));
+        	this.wocheAktuellerTag = DatFunk.sDatPlusTage(this.wocheAktuellerTag,+(richtung*7));
         	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
         }
 	}
@@ -3680,8 +3680,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		sTerminVergabe[10] = Integer.toString(behandler);
 		sTerminVergabe[7] = Integer.toString(block);
 		//System.out.println(sTerminVergabe[3]);
-		sTerminVergabe[1] = datFunk.sDatInDeutsch(sTerminVergabe[3]);
-		sTerminVergabe[0] = datFunk.WochenTag(sTerminVergabe[1]);	
+		sTerminVergabe[1] = DatFunk.sDatInDeutsch(sTerminVergabe[3]);
+		sTerminVergabe[0] = DatFunk.WochenTag(sTerminVergabe[1]);	
 		sTerminVergabe[3] = sTerminVergabe[3]+sTerminVergabe[2];
 		terminVergabe.add(sTerminVergabe.clone());
 		/*
@@ -4014,7 +4014,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		
 	}
 	public void terminBestaetigen(int spalte){
-		if( (!this.getAktuellerTag().equals(datFunk.sHeute())) || ansicht == WOCHEN_ANSICHT){
+		if( (!this.getAktuellerTag().equals(DatFunk.sHeute())) || ansicht == WOCHEN_ANSICHT){
 			JOptionPane.showMessageDialog(null,"Behandlungsbestätigung ist nur für den aktuellen Tag in der -> Normalansicht <- möglich");
 			gruppeAusschalten();
 			return;
@@ -4076,7 +4076,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					StringBuffer termbuf = new StringBuffer();
 					termbuf.append((String) vec.get(0));
 					//System.out.println("****Beginn Termine bisher****\n"+termbuf.toString()+"****Ende Termine****");
-					if(termbuf.toString().contains(datFunk.sHeute())){
+					if(termbuf.toString().contains(DatFunk.sHeute())){
 						JOptionPane.showMessageDialog(null, "Dieser Termin ist am heutigen Tag bereits erfaßt");
 						gruppeAusschalten();
 						return null; 
@@ -4101,8 +4101,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
 						}else if(unter18 && !vorjahrfrei){
 							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ändern;
-							String geboren = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
-							if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(geboren))){
+							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
+							if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(geboren))){
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
 							}else{
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");				
@@ -4112,7 +4112,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
 							//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 							if(!bef_dat.equals("T")){
-								if(datFunk.DatumsWert("31.12."+vec.get(9)) < datFunk.DatumsWert(datFunk.sHeute()) ){
+								if(DatFunk.DatumsWert("31.12."+vec.get(9)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
 								}else{
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");					
@@ -4131,7 +4131,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						/**********Datenbank beschreiben*************/
 						String sblock = new Integer(aktiveSpalte[0]+1).toString();
 						String toupdate = "T"+sblock+" = '"+copyright+swname+"'";
-						String towhere = "datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
+						String towhere = "datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' AND "+
 						"behandler='"+(swbehandler < 10 ? "0"+Integer.toString(swbehandler+1)+"BEHANDLER" : Integer.toString(swbehandler+1)+"BEHANDLER"   )+"' "+
 						"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
 						"' AND N"+sblock+"='"+sworigreznum+"'"; 
@@ -4168,7 +4168,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	public static String macheNeuTermin(String kollege,String text,String pos1,String pos2,String pos3,String pos4){
 		String ret =
-			datFunk.sHeute()+
+			DatFunk.sHeute()+
 			"@"+
 			kollege+
 			"@"+
@@ -4179,7 +4179,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			( pos3.trim().equals("") ? "" : ","+ pos3 )+
 			( pos4.trim().equals("") ? "" : ","+ pos4 )+
 			"@"+
-			datFunk.sDatInSQL(datFunk.sHeute())+"\n";
+			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
 		return ret;
 	}	
 	

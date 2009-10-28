@@ -71,7 +71,7 @@ import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import textBlockTherapeuten.ThTextBlock;
 
 import dialoge.PinPanel;
@@ -296,7 +296,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		rlab[0] = new JLabel(name);
 		rlab[0].setForeground(Color.BLUE);
 		pb.add(rlab[0],cc.xy(2, 4));
-		rlab[1] = new JLabel(datFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.patDaten.get(4)));
+		rlab[1] = new JLabel(DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.patDaten.get(4)));
 		rlab[1].setForeground(Color.BLUE);
 		pb.add(rlab[1],cc.xy(2,6));
 
@@ -629,7 +629,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		
 		//System.out.println("************************************************************************************");
 		String tbs = (String) tbwahl.getSelectedItem(); 
-		String cmd = "insert into berhist set erstelldat='"+datFunk.sDatInSQL(datFunk.sHeute())+"', verfasser='"+xverfasser+"', "+
+		String cmd = "insert into berhist set erstelldat='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', verfasser='"+xverfasser+"', "+
 		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
 		"empfaenger='"+rlab[2].getText()+"', empfid='"+arztid+"', berichtid='"+berichtnr+"', "+
 		"pat_intern='"+this.pat_intern+"'";
@@ -740,7 +740,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 		//System.out.println("************************************************************************************");
 		String tbs = (String) tbwahl.getSelectedItem(); 
-		String cmd = "update berhist set editdat='"+datFunk.sDatInSQL(datFunk.sHeute())+"', verfasser='"+xverf+"', "+
+		String cmd = "update berhist set editdat='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', verfasser='"+xverf+"', "+
 		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
 		"empfaenger='"+empfaenger+"', empfid='"+arztid+"' where berichtid='"+this.berichtid+"'";
 		new ExUndHop().setzeStatement(new String(cmd));
@@ -769,7 +769,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					TherapieBerichte.aktBericht.dtblm.setValueAt("Bericht zu "+reznr+" ("+xtbs+")", tblreihe, 1);
 					TherapieBerichte.aktBericht.dtblm.setValueAt(xxverf, tblreihe, 2);
 					TherapieBerichte.aktBericht.dtblm.setValueAt(xempfaenger, tblreihe,4);
-					TherapieBerichte.aktBericht.dtblm.setValueAt(datFunk.sHeute(), tblreihe,5);
+					TherapieBerichte.aktBericht.dtblm.setValueAt(DatFunk.sHeute(), tblreihe,5);
 					TherapieBerichte.aktBericht.tabbericht.revalidate();
 				}else if(aufrufvon==0){
 					
@@ -826,8 +826,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 		SystemConfig.hmAdrBDaten.put("<Bnname>", StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2)));
 		SystemConfig.hmAdrBDaten.put("<Bvname>", StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3)));
-		SystemConfig.hmAdrBDaten.put("<Bgeboren>", datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
-		SystemConfig.hmAdrBDaten.put("<Brezdatum>", datFunk.sDatInDeutsch(rezdatum));
+		SystemConfig.hmAdrBDaten.put("<Bgeboren>", DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
+		SystemConfig.hmAdrBDaten.put("<Brezdatum>", DatFunk.sDatInDeutsch(rezdatum));
 		SystemConfig.hmAdrBDaten.put("<Breznr>",reznr);
 		String sblock = diagnose.getText().replaceAll("\\n", "");
 		SystemConfig.hmAdrBDaten.put("<Bdiagnose>",sblock);

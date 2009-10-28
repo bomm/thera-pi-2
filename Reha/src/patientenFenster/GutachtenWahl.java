@@ -44,7 +44,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.LeistungTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;

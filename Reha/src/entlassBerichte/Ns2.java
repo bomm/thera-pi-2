@@ -30,7 +30,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -572,8 +572,8 @@ public class Ns2 implements ActionListener {
 			if(vec.size() > 0){
 				System.out.println("Das Datum = ***************"+vec.get(0).get(0));
 				if(! vec.get(0).get(0).trim().equals("")){
-					String entdat = datFunk.sDatInDeutsch(vec.get(0).get(0));
-					if(datFunk.DatumsWert(entdat) < datFunk.DatumsWert("01.01.2007")){
+					String entdat = DatFunk.sDatInDeutsch(vec.get(0).get(0));
+					if(DatFunk.DatumsWert(entdat) < DatFunk.DatumsWert("01.01.2007")){
 						holeKTL(false);
 					}else{
 						holeKTL(true);

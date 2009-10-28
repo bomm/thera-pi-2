@@ -105,7 +105,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import RehaInternalFrame.JArztInternal;
 import RehaInternalFrame.JGutachtenInternal;
@@ -401,7 +401,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				return;
 			}
 			try{
-				if(datFunk.DatumsWert(btf[16].getText().trim()) < datFunk.DatumsWert("01.01.2008")){
+				if(DatFunk.DatumsWert(btf[16].getText().trim()) < DatFunk.DatumsWert("01.01.2008")){
 					altesFormular = true;
 				}
 			}catch(Exception ex){
@@ -428,7 +428,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				return;
 			}
 			try{
-				if(datFunk.DatumsWert(btf[16].getText().trim()) < datFunk.DatumsWert("01.01.2008")){
+				if(DatFunk.DatumsWert(btf[16].getText().trim()) < DatFunk.DatumsWert("01.01.2008")){
 					altesFormular = true;
 				}
 			}catch(Exception ex){
@@ -493,7 +493,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					buf.append(btf[i].getName()+"='"+btf[i].getText()+"', ");				
 				}else{
 					if(!btf[i].getText().trim().equals(".  .")){
-						buf.append(btf[i].getName()+"='"+datFunk.sDatInSQL(btf[i].getText())+"', ");
+						buf.append(btf[i].getName()+"='"+DatFunk.sDatInSQL(btf[i].getText())+"', ");
 					}else{
 						buf.append(btf[i].getName()+"=null, ");
 					}
@@ -538,7 +538,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				String empf = (String) cbktraeger.getSelectedItem();
 				String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
-				Gutachten.gutachten.aktualisiereGutachten(datFunk.sHeute(),btype,empf,"Reha-Arzt",berichtid,pat_intern);
+				Gutachten.gutachten.aktualisiereGutachten(DatFunk.sHeute(),btype,empf,"Reha-Arzt",berichtid,pat_intern);
 				Reha.thisClass.progressStarten(false);
 			}else{
 				jetztneu = false;
@@ -565,7 +565,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
 	/////
 			String cmd = "insert into berhist set berichtid='"+berichtid+"', erstelldat='"
-			+datFunk.sDatInSQL(datFunk.sHeute())+"', berichttyp='"+btype+"', "+
+			+DatFunk.sDatInSQL(DatFunk.sHeute())+"', berichttyp='"+btype+"', "+
 			"verfasser='Reha-Arzt', empfaenger='"+empf+"', pat_intern='"+pat_intern+"', bertitel='Reha-Entlassbericht'";
 			SqlInfo.sqlAusfuehren(cmd);
 			cmd = "insert into bericht2 set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
@@ -578,7 +578,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			doSpeichernNachsorgeAlt();
 			System.out.println("Nach Speichern alt");
 			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
-					btype,"Reha-Arzt",datFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
+					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
 			
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(Exception ex){
@@ -599,7 +599,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				buf.append(btf[i].getName()+"='"+btf[i].getText()+"', ");				
 			}else{
 				if(!btf[i].getText().trim().equals(".  .")){
-					buf.append(btf[i].getName()+"='"+datFunk.sDatInSQL(btf[i].getText())+"', ");
+					buf.append(btf[i].getName()+"='"+DatFunk.sDatInSQL(btf[i].getText())+"', ");
 				}else{
 					buf.append(btf[i].getName()+"=null, ");
 				}
@@ -648,7 +648,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(!jetztneu){
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			String empf = (String) cbktraeger.getSelectedItem();
-			Gutachten.gutachten.aktualisiereGutachten(datFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Reha-Arzt",berichtid,pat_intern);
+			Gutachten.gutachten.aktualisiereGutachten(DatFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Reha-Arzt",berichtid,pat_intern);
 			Reha.thisClass.progressStarten(false);
 		}else{
 			jetztneu = false;
@@ -664,7 +664,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			String empf = (String) cbktraeger.getSelectedItem();
 			String btype = (empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht");
 			String cmd = "insert into berhist set berichtid='"+berichtid+"', erstelldat='"
-			+datFunk.sDatInSQL(datFunk.sHeute())+"', berichttyp='"+btype+"', "+
+			+DatFunk.sDatInSQL(DatFunk.sHeute())+"', berichttyp='"+btype+"', "+
 			"verfasser='Reha-Arzt', empfaenger='"+empf+"', pat_intern='"+pat_intern+"', bertitel='Reha-Entlassbericht'";
 			SqlInfo.sqlAusfuehren(cmd);
 			cmd = "insert into bericht2 set berichtid='"+berichtid+"', pat_intern='"+pat_intern+"'";
@@ -677,7 +677,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			doSpeichernAlt();
 			System.out.println("Nach Speichern alt");
 			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
-					btype,"Reha-Arzt",datFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
+					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){

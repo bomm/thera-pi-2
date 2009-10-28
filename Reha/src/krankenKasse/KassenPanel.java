@@ -107,7 +107,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import RehaInternalFrame.JKasseInternal;
 

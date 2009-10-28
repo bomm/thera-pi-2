@@ -920,9 +920,9 @@ class KalenderBeschreiben extends Thread implements Runnable{
 			  
 
 		  buff.append("BEHANDLER" + "='" +sKoll.trim()+"', "  );
-		  buff.append("DATUM" + "='" +datFunk.sDatInSQL(this.datum)+"' "  );			  
+		  buff.append("DATUM" + "='" +DatFunk.sDatInSQL(this.datum)+"' "  );			  
 
-		  buff.append("where datum = '"+datFunk.sDatInSQL(this.datum)+"' ");
+		  buff.append("where datum = '"+DatFunk.sDatInSQL(this.datum)+"' ");
 		  buff.append("and behandler = '"+sKoll+"'");
 		  //System.out.println(buff.toString());
 		  threadStmt = buff.toString();

@@ -44,7 +44,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class Gutachten extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
 
@@ -179,7 +179,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 	
 	public void aktualisiereGutachten(String editdat,String bertype,String empf,String verfasser,int berid,String patintern){
 		String cmd = "update berhist set berichttyp='"+bertype+"', empfaenger='"+empf+"', editdat='"+
-		datFunk.sDatInSQL(editdat)+"', verfasser='"+verfasser+"' where berichtid='"+berid+"'";
+		DatFunk.sDatInSQL(editdat)+"', verfasser='"+verfasser+"' where berichtid='"+berid+"'";
 		SqlInfo.sqlAusfuehren(cmd);
 		int row = tabbericht.getSelectedRow();
 		if(! PatGrundPanel.thisClass.aktPatID.equals(patintern)){

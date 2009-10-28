@@ -289,8 +289,8 @@ private void tageSuchen(int abheute){
 
 		String[] stmts = {null};
 		String sdatum = "";
-		aktDatum = datFunk.sDatPlusTage(datFunk.sHeute(), abheute);
-		sdatum = datFunk.sDatInSQL(aktDatum);
+		aktDatum = DatFunk.sDatPlusTage(DatFunk.sHeute(), abheute);
+		sdatum = DatFunk.sDatInSQL(aktDatum);
 		String stmt = "select * from flexkc where datum = '"+sdatum+"'";
 		stmts[0] = stmt;
 		setLabelDatum(aktDatum);
@@ -315,22 +315,22 @@ private void tageSuchen(int abheute){
 		ttbl.setSelectionMode(0);	
 		String[] stmts = {null,null,null,null,null};
 		String sdatum = "";
-		aktDatum = datFunk.sDatPlusTage(datFunk.sHeute(), 0);
-		sdatum = datFunk.sDatInSQL(aktDatum);
+		aktDatum = DatFunk.sDatPlusTage(DatFunk.sHeute(), 0);
+		sdatum = DatFunk.sDatInSQL(aktDatum);
 		String stmt = "select * from flexkc where datum = '"+sdatum+"'";
 		setLabelDatum(aktDatum);
 		stmts[0] = stmt;
-		aktDatum = datFunk.sDatPlusTage(aktDatum, 1);
-		stmt = "select * from flexkc where datum = '"+datFunk.sDatInSQL(aktDatum)+"'";
+		aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
+		stmt = "select * from flexkc where datum = '"+DatFunk.sDatInSQL(aktDatum)+"'";
 		stmts[1] = stmt;
-		aktDatum = datFunk.sDatPlusTage(aktDatum, 1);
-		stmt = "select * from flexkc where datum = '"+datFunk.sDatInSQL(aktDatum)+"'";
+		aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
+		stmt = "select * from flexkc where datum = '"+DatFunk.sDatInSQL(aktDatum)+"'";
 		stmts[2] = stmt;
-		aktDatum = datFunk.sDatPlusTage(aktDatum, 1);
-		stmt = "select * from flexkc where datum = '"+datFunk.sDatInSQL(aktDatum)+"'";
+		aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
+		stmt = "select * from flexkc where datum = '"+DatFunk.sDatInSQL(aktDatum)+"'";
 		stmts[3] = stmt;
-		aktDatum = datFunk.sDatPlusTage(aktDatum, 1);
-		stmt = "select * from flexkc where datum = '"+datFunk.sDatInSQL(aktDatum)+"'";
+		aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
+		stmt = "select * from flexkc where datum = '"+DatFunk.sDatInSQL(aktDatum)+"'";
 		stmts[4] = stmt;
 		/*
 		for(int i=0;i<5;i++){
@@ -431,7 +431,7 @@ final class SuchenInTagen extends Thread implements Runnable{
 					while(rs.next()){
 						/*in Spalte 301 steht die Anzahl der belegten Blöcke*/ 
 						int belegt = rs.getInt(301);
-						SchnellSuche.thisClass.setLabelDatum(datFunk.sDatInDeutsch(rs.getString(305)));
+						SchnellSuche.thisClass.setLabelDatum(DatFunk.sDatInDeutsch(rs.getString(305)));
 						String name = "";
 						String nummer = "";
 						String termin = "";
@@ -452,14 +452,14 @@ final class SuchenInTagen extends Thread implements Runnable{
 							if(name.contains(suchkrit) || nummer.contains(suchkrit) ){
 								uhrzeit = rs.getString("TS"+(ii+1));
 								sorigdatum = rs.getString(305); 
-								sdatum = datFunk.sDatInDeutsch(sorigdatum);
+								sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 								skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 								//skollege = (String) ParameterLaden.vKollegen.get(ikollege).get(0);
 								
-								termin = datFunk.WochenTag(sdatum)+" - "+sdatum+" - "+uhrzeit+
+								termin = DatFunk.WochenTag(sdatum)+" - "+sdatum+" - "+uhrzeit+
 								"  -  "+name +" - "+nummer+" - "+skollege;
 								//SchnellSuche.thisClass.setTextAreaText(termin);
-								atermine.add(datFunk.WochenTag(sdatum));
+								atermine.add(DatFunk.WochenTag(sdatum));
 								atermine.add(sdatum);
 								atermine.add(uhrzeit.substring(0,5));
 								atermine.add(name);

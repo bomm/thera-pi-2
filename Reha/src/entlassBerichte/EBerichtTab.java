@@ -8,7 +8,7 @@ import org.jdesktop.swingx.JXPanel;
 import patientenFenster.PatGrundPanel;
 
 import systemTools.JCompTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
@@ -56,7 +56,7 @@ public class EBerichtTab {
 		titel = titel+ bisher;
 		titel = titel+"  [Patient: "+PatGrundPanel.thisClass.patDaten.get(2)+", "+
 		PatGrundPanel.thisClass.patDaten.get(3)+" geb. am:"+
-		datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4))+ 
+		DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4))+ 
 		(eltern.neu ? "   (Neuanlage)]" : "   (Bericht-ID:"+eltern.berichtid+")]");
 		eltern.jry.setTitle(titel);
 

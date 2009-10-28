@@ -187,7 +187,7 @@ public JScrollPane eingabePanel(){
 	eingabep.add(startLabel,cc.xy(2,3));
 
 	startDatum = new JRtaTextField("DATUM",false);
-	startDatum.setText(datFunk.sHeute());
+	startDatum.setText(DatFunk.sHeute());
 	startDatum.addKeyListener(this);
 	startDatum.setName("StartDatum");
 	eingabep.add(startDatum,cc.xy(4,3));
@@ -196,7 +196,7 @@ public JScrollPane eingabePanel(){
 	eingabep.add(endLabel,cc.xy(2,5));
 
 	endDatum = new JRtaTextField("DATUM",false);
-	endDatum.setText(datFunk.sHeute());
+	endDatum.setText(DatFunk.sHeute());
 	endDatum.addKeyListener(this);
 	endDatum.setName("EndDatum");
 	eingabep.add(endDatum,cc.xy(4,5));
@@ -351,7 +351,7 @@ public void maskenEintragen(){
 	aktTag = new String(startTag);
 	int wochenTag = 0;
 	int i = 0;
-	if(datFunk.DatumsWert(startTag) > datFunk.DatumsWert(stopTag)){
+	if(DatFunk.DatumsWert(startTag) > DatFunk.DatumsWert(stopTag)){
 		stopUebertrag = true;
 		JOptionPane.showMessageDialog(null,"Ihr angegebenes Startdatum ist größer als das Stopdatum -> Depp!");
 		return;
@@ -371,12 +371,12 @@ public void maskenEintragen(){
 	while(!stopUebertrag){
 		//System.out.println("Bearbeite Tag "+aktTag);
 		aktDatum.setText(aktTag);
-		wochenTag = datFunk.TagDerWoche(aktTag);
-		String statement = macheStatement(datFunk.sDatInSQL(aktTag),(ArrayList) this.vTerm.get(wochenTag-1));
+		wochenTag = DatFunk.TagDerWoche(aktTag);
+		String statement = macheStatement(DatFunk.sDatInSQL(aktTag),(ArrayList) this.vTerm.get(wochenTag-1));
 		SchreibeMaskeInKalender smk = new SchreibeMaskeInKalender();
 		smk.setzeStatement(new String(statement));
-		aktTag = datFunk.sDatPlusTage(aktTag, 1);
-		if(datFunk.DatumsWert(aktTag) > datFunk.DatumsWert(stopTag)){
+		aktTag = DatFunk.sDatPlusTage(aktTag, 1);
+		if(DatFunk.DatumsWert(aktTag) > DatFunk.DatumsWert(stopTag)){
 			stopUebertrag = true;
 		}
 		try {

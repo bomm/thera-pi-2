@@ -27,7 +27,7 @@ import org.jdesktop.swingx.JXPanel;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

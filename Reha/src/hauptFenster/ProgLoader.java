@@ -80,7 +80,7 @@ import systemTools.SplashPanel;
 import systemTools.WinNum;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class ProgLoader {
 //public static JPatientInternal pjry = null; 
@@ -139,11 +139,11 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 			LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			JTerminInternal jry = null;
 			if(xansicht != 2){
-				String stag = datFunk.sHeute();
-				String titel = datFunk.WochenTag(stag)+" "+stag+" -- KW: "+datFunk.KalenderWoche(stag)+" -- [Normalansicht]";
+				String stag = DatFunk.sHeute();
+				String titel = DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]";
 				jry = new JTerminInternal(titel,new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);				
 			}else{
-				jry = new JTerminInternal("Terminkalender - "+datFunk.sHeute(),new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);
+				jry = new JTerminInternal("Terminkalender - "+DatFunk.sHeute(),new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);
 			}
 			jry.setName(name);
 			((JRehaInternal)jry).setImmerGross(true);

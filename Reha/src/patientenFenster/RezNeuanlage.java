@@ -58,7 +58,7 @@ import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener,RehaTPEventListener{
 
@@ -962,11 +962,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[12].setText(test); //arztid
 		test = StringTools.NullTest(this.vec.get(2));
 		if(!test.equals("")){
-			jtf[2].setText(datFunk.sDatInDeutsch(test));
+			jtf[2].setText(DatFunk.sDatInDeutsch(test));
 		}
 		test = StringTools.NullTest(this.vec.get(40));
 		if(!test.equals("")){
-			jtf[3].setText(datFunk.sDatInDeutsch(test));
+			jtf[3].setText(DatFunk.sDatInDeutsch(test));
 		}
 		int itest = StringTools.ZahlTest(this.vec.get(27));
 		if(itest >=0){
@@ -1080,15 +1080,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("arztid='"+jtf[12].getText()+"', ");
 		stest = jtf[2].getText().trim();
 		if(stest.equals(".  .")){
-			stest = datFunk.sHeute();
+			stest = DatFunk.sHeute();
 		}
-		sbuf.append("rez_datum='"+datFunk.sDatInSQL(stest)+"', ");
+		sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
 		stest = jtf[3].getText().trim();
 		if(stest.equals(".  .")){
-			stest = datFunk.sHeute();
+			stest = DatFunk.sHeute();
 		}
-		sbuf.append("lastdate='"+datFunk.sDatInSQL(stest)+"', ");
-		sbuf.append("lasteddate='"+datFunk.sDatInSQL(datFunk.sHeute())+"', ");
+		sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest)+"', ");
+		sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 		sbuf.append("lastedit='"+Reha.aktUser+"', ");
 		sbuf.append("rezeptart='"+new Integer(jcmb[1].getSelectedIndex()).toString()+"', ");
 		sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
@@ -1168,10 +1168,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				break;
 			}
 			
-			if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
+			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				String gebtag = datFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
-				long tage = datFunk.TageDifferenz(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
+				String gebtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				long tage = DatFunk.TageDifferenz(DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
 
 				System.out.println("Differenz in Tagen = "+tage);
 				System.out.println("Geburtstag = "+gebtag);
@@ -1306,19 +1306,19 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("kid='"+jtf[11].getText()+"', ");
 		sbuf.append("arzt='"+jtf[1].getText()+"', ");
 		sbuf.append("arztid='"+jtf[12].getText()+"', ");
-		stest = datFunk.sHeute();
-		sbuf.append("datum='"+datFunk.sDatInSQL(stest)+"', ");
+		stest = DatFunk.sHeute();
+		sbuf.append("datum='"+DatFunk.sDatInSQL(stest)+"', ");
 		stest = jtf[2].getText().trim();
 		if(stest.equals(".  .")){
-			stest = datFunk.sHeute();
+			stest = DatFunk.sHeute();
 		}
-		sbuf.append("rez_datum='"+datFunk.sDatInSQL(stest)+"', ");
+		sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
 		stest = jtf[3].getText().trim();
 		if(stest.equals(".  .")){
-			stest = datFunk.sHeute();
+			stest = DatFunk.sHeute();
 		}
-		sbuf.append("lastdate='"+datFunk.sDatInSQL(stest)+"', ");
-		sbuf.append("lasteddate='"+datFunk.sDatInSQL(datFunk.sHeute())+"', ");
+		sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest)+"', ");
+		sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 		sbuf.append("lastedit='"+Reha.aktUser+"', ");
 		sbuf.append("rezeptart='"+new Integer(jcmb[1].getSelectedIndex()).toString()+"', ");
 		sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
@@ -1391,10 +1391,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";				
 				break;
 			}
-			if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
+			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				String gebtag = datFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
-				long tage = datFunk.TageDifferenz(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
+				String gebtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				long tage = DatFunk.TageDifferenz(DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
 
 				System.out.println("Differenz in Tagen = "+tage);
 				System.out.println("Geburtstag = "+gebtag);

@@ -83,7 +83,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -403,7 +403,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 							String datum = new String((String)felder.get(ffelder[i]));
 							if(datum.trim().length() > 0){
 								//System.out.println("Datum wäre gewesen->"+datum+" Länge->"+datum.trim().length());
-								jtf[fedits[i]].setText(datFunk.sDatInDeutsch(datum) );								
+								jtf[fedits[i]].setText(DatFunk.sDatInDeutsch(datum) );								
 							}
 						}else{
 							jtf[fedits[i]].setText((String) felder.get(ffelder[i]) );
@@ -423,7 +423,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				arztbisher = new String(jtf[17].getText());
 				kassebisher = new String(jtf[12].getText()); 
 				kassenid = PatGrundPanel.thisClass.patDaten.get(68);
-				befreitdatum = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(31));
+				befreitdatum = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(31));
 				freizumstart = (PatGrundPanel.thisClass.patDaten.get(30).equals("T") ? true : false);
 				if(!jtf[35].getText().trim().equals("")){
 					jcheck[10].setEnabled(true);
@@ -480,9 +480,9 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 					}
 				}else{
 					try{
-						buf.append(name+"='"+datFunk.sDatInSQL(jtf[fedits[i]].getText())+"', ");
+						buf.append(name+"='"+DatFunk.sDatInSQL(jtf[fedits[i]].getText())+"', ");
 						if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
-							if( datFunk.DatumsWert(jtf[fedits[i]].getText()) >= datFunk.DatumsWert(datFunk.sHeute()) ){
+							if( DatFunk.DatumsWert(jtf[fedits[i]].getText()) >= DatFunk.DatumsWert(DatFunk.sHeute()) ){
 								buf.append("befreit ='T', ");
 								freibeimspeichern = true;
 								System.out.println("Patient ist befreit!");
@@ -542,7 +542,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 							JOptionPane.showMessageDialog(null,"Dann eben nicht!\nVergessen Sie aber nicht den Befreiungsstatus der Rezepte von Hand zu ändern");
 						}else if(frage == JOptionPane.YES_OPTION){
 							String pat_intern = PatGrundPanel.thisClass.aktPatID;
-							String geboren = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+							String geboren = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
 							String befreit = (freibeimspeichern ? "T" : "F");
 							String datum = (freibeimspeichern ? "" : jtf[16].getText().trim());
 							ZuzahlTools.zzStatusEdit(pat_intern, geboren, "", befreit, jtf[34].getText().trim());
@@ -558,7 +558,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			int neuid = SqlInfo.holeId("pat5", "n_name");
 			patintern = neuid+Reha.thisClass.patiddiff;
 			globPat_intern = new Integer(patintern).toString();
-			buf.append(",anl_datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' ");
+			buf.append(",anl_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
 			buf.append(",pat_intern='"+new Integer(patintern).toString() +"' where id='"+new Integer(neuid).toString()+"'");
 			spatintern = new Integer(patintern).toString();
 		}

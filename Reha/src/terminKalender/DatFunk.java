@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 //import java.text.ParseException;
 //import javax.swing.JFormattedTextField;
 
-public class datFunk {
+public class DatFunk {
 
 
 //private String sDatumJava = "";

@@ -41,7 +41,7 @@ public class TermineErfassen implements Runnable {
 	}
 	@Override
 	public void run() {
-		heute = datFunk.sHeute();
+		heute = DatFunk.sHeute();
 		copyright = "© ";
 		int ret = -1;
 		try {
@@ -116,7 +116,7 @@ public class TermineErfassen implements Runnable {
 		}
 		String termine = (String)vec.get(0);
 		
-		if(termine.contains(datFunk.sHeute())){
+		if(termine.contains(DatFunk.sHeute())){
 			//JOptionPane.showMessageDialog(null, "Dieser Termin wurde heute bereits erfaﬂt");
 			return 3;
 		}
@@ -138,7 +138,7 @@ public class TermineErfassen implements Runnable {
 		boolean ret;
 		alleterm = new Vector();
 		alleterm = SqlInfo.holeSaetze("flexkc", " * ", 
-				"datum='"+datFunk.sDatInSQL(heute)+"'", 
+				"datum='"+DatFunk.sDatInSQL(heute)+"'", 
 				Arrays.asList(new String[] {}));
 		Object[] obj = untersucheTermine();
 		String string = null;
@@ -179,7 +179,7 @@ public class TermineErfassen implements Runnable {
 						if(termin != null){
 							int ansicht;
 							if((ansicht = TerminFenster.thisClass.ansicht) == 0){
-								if(TerminFenster.thisClass.getAktuellerTag().equals(datFunk.sHeute())){
+								if(TerminFenster.thisClass.getAktuellerTag().equals(DatFunk.sHeute())){
 									int iblock = new Integer(sblock)-1;
 									((ArrayList<Vector<String>>)((Vector)TerminFenster.thisClass.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
 									TerminFenster.thisClass.ViewPanel.repaint();
@@ -302,7 +302,7 @@ public class TermineErfassen implements Runnable {
 							if(termin != null){
 								int ansicht;
 								if((ansicht = TerminFenster.thisClass.ansicht) == 0){
-									if(TerminFenster.thisClass.getAktuellerTag().equals(datFunk.sHeute())){
+									if(TerminFenster.thisClass.getAktuellerTag().equals(DatFunk.sHeute())){
 										if(!termOk){
 											termOk = true;
 										}
@@ -386,8 +386,8 @@ public class TermineErfassen implements Runnable {
 			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
 		}else if(unter18 && !vorjahrfrei){
 			/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ‰ndern;
-			String geboren = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
-			if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(geboren))){
+			String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
+			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(geboren))){
 				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");				
 			}else{
 				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");				
@@ -397,7 +397,7 @@ public class TermineErfassen implements Runnable {
 			String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
 			//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 			if(!bef_dat.equals("T")){
-				if(datFunk.DatumsWert("31.12."+vec.get(9)) < datFunk.DatumsWert(datFunk.sHeute()) ){
+				if(DatFunk.DatumsWert("31.12."+vec.get(9)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");
 				}else{
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");					
@@ -416,7 +416,7 @@ public class TermineErfassen implements Runnable {
 	/********************/
 	private String macheNeuTermin(String text){
 		String ret =
-			datFunk.sHeute()+
+			DatFunk.sHeute()+
 			"@"+
 			this.kollege+
 			"@"+
@@ -427,7 +427,7 @@ public class TermineErfassen implements Runnable {
 			( ((String)vec.get(4)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
 			( ((String)vec.get(5)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
 			"@"+
-			datFunk.sDatInSQL(datFunk.sHeute())+"\n";
+			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
 		return ret;
 			
 	}

@@ -23,7 +23,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 
 
@@ -264,8 +264,8 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
             } 
         }
         */
-        if(datFunk.JahreDifferenz(datFunk.sHeute(),ftf.getText()) >= 120 ||
-        		datFunk.JahreDifferenz(datFunk.sHeute(),ftf.getText()) <= -120){
+        if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
+        		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
         	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
         			"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
         }

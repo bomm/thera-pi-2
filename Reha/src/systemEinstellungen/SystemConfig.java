@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
 
 import systemTools.Verschluesseln;
 import terminKalender.ParameterLaden;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import terminKalender.zeitFunk;
 
 
@@ -165,7 +165,7 @@ public class SystemConfig {
 	public void SystemStart(String homedir){
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
-		String jahrHeute = datFunk.sHeute().substring(6);
+		String jahrHeute = DatFunk.sHeute().substring(6);
 		if(! aktJahr.equals(jahrHeute) ){
 			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
 					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+

@@ -91,7 +91,7 @@ import systemTools.TestePatStamm;
 import terminKalender.ParameterLaden;
 import terminKalender.SchnellSuche;
 import terminKalender.TagWahlNeu;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener, DropTargetListener {
 	/**

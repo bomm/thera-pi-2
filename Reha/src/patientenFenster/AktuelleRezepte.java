@@ -105,7 +105,7 @@ import systemTools.DoubleTools;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 
 public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,TableModelListener,TableColumnModelExtListener,PropertyChangeListener, ActionListener{
@@ -843,7 +843,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		for(int i = 0;i<reihen;i++){
 			sdat = (dtermm.getValueAt(i,0)!= null ? ((String)dtermm.getValueAt(i,0)).trim() : ".  .");
 			//System.out.println("Sdat = "+sdat);
-			dtermm.setValueAt((sdat.equals(".  .") ? " " : datFunk.sDatInSQL(sdat)), i, 4);
+			dtermm.setValueAt((sdat.equals(".  .") ? " " : DatFunk.sDatInSQL(sdat)), i, 4);
 			sb.append((sdat.equals(".  .") ?  "  .  .    @" : sdat)+"@");
 			sb.append((dtermm.getValueAt(i,1)!= null ? ((String)dtermm.getValueAt(i,1)).trim() : "")+"@");
 			sb.append((dtermm.getValueAt(i,2)!= null ? ((String)dtermm.getValueAt(i,2)).trim() : "")+"@");
@@ -1102,7 +1102,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		for(int i = 0; i < 1; i++){
 			if(cmd.equals("terminplus")){
 				Vector<String> vec = new Vector<String>();
-				vec.add(datFunk.sHeute());
+				vec.add(DatFunk.sHeute());
 				vec.add("");
 				vec.add("");
 				vec.add( (((String)PatGrundPanel.thisClass.vecaktrez.get(48)).trim().equals("") ? "" : (String)PatGrundPanel.thisClass.vecaktrez.get(48)) +
@@ -1110,7 +1110,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						(((String)PatGrundPanel.thisClass.vecaktrez.get(50)).trim().equals("") ? "" : ","+(String)PatGrundPanel.thisClass.vecaktrez.get(50)) +
 						(((String)PatGrundPanel.thisClass.vecaktrez.get(51)).trim().equals("") ? "" : ","+(String)PatGrundPanel.thisClass.vecaktrez.get(51)) 
 						);
-				vec.add(datFunk.sDatInSQL(datFunk.sHeute()));
+				vec.add(DatFunk.sDatInSQL(DatFunk.sHeute()));
 				dtermm.addRow((Vector<String>)vec.clone());
 				tabaktterm.validate();
 				anzahlTermine.setText("Anzahl Terimine: "+tabaktterm.getRowCount());
@@ -1464,7 +1464,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
 			return;
 		}
-		if(datFunk.Unter18(datFunk.sHeute(), datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
+		if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
 			JOptionPane.showMessageDialog(null,"Stand heute ist der Patient noch nicht Volljährig - Zuzahlung deshalb (bislang) noch nicht erforderlich");
 			return;
 		}

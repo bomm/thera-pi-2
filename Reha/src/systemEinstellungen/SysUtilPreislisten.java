@@ -56,7 +56,7 @@ import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.PreisUpdate;
 import terminKalender.ParameterLaden;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -638,10 +638,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 						vec2.add(preisgr);
 						vec2.add( (pbundesweit.contains(preisgr) ? "bundesweit" : buland)  );
 						try{
-							gueltig = datFunk.sDatInDeutsch( ((String)((Vector)vec1.get(y)).get(2)).trim() );
+							gueltig = DatFunk.sDatInDeutsch( ((String)((Vector)vec1.get(y)).get(2)).trim() );
 							vec2.add( gueltig );
 						}catch(Exception ex){
-							vec2.add(datFunk.sHeute());
+							vec2.add(DatFunk.sHeute());
 						}
 						modserver.addRow((Vector)vec2.clone());
 						vbuland.add(buland);

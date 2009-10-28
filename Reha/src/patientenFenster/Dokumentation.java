@@ -117,7 +117,7 @@ import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
@@ -980,7 +980,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 									pat_int,
 									SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0],
 									(bildpfad.toLowerCase().endsWith(".odt") ? 1 : 2),
-									new String[] {datFunk.sDatInSQL(datFunk.sHeute()),bild[0],Reha.aktUser,""},
+									new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),bild[0],Reha.aktUser,""},
 									true);
 
 							this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
@@ -1312,7 +1312,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					pat_int,
 					SystemConfig.hmVerzeichnisse.get("Temp")+"/FertigeDoku.pdf",
 					0,
-					new String[] {datFunk.sDatInSQL(datFunk.sHeute()),dokuTitel,Reha.aktUser,""},
+					new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),dokuTitel,Reha.aktUser,""},
 					true);
 
 			loescheBilderPan();
@@ -2194,7 +2194,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  byte[] b = FileTools.File2ByteArray(f);
 				  ps.setBytes(1,b);
 				  ps.setInt(2, (int)b.length);
-				  ps.setString(3, datFunk.sDatInSQL(datFunk.sHeute()));
+				  ps.setString(3, DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  ps.setString(4,new Integer(dokuid).toString());
 				  ps.execute();
 				  System.out.println("Fertig mit execute");
@@ -2202,7 +2202,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  System.out.println("Datei = "+f.getAbsolutePath());
 				  System.out.println("dokuid = "+new Integer(dokuid).toString());
 				  System.out.println("Dateigröße = "+b.length+" Bytes");
-				  System.out.println("Datum = "+datFunk.sDatInSQL(datFunk.sHeute()));
+				  System.out.println("Datum = "+DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  f.delete();
 				  Dokumentation.doku.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}

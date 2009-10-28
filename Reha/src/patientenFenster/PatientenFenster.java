@@ -39,7 +39,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import rehaContainer.RehaTP;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -438,7 +438,7 @@ final class PatientSuchen implements Runnable{
 				patClass.eingaben[4].setText(rs.getString("STRASSE"));				
 				patClass.eingaben[5].setText(rs.getString("PLZ"));				
 				patClass.eingaben[6].setText(rs.getString("ORT"));		
-				patClass.eingaben[7].setText( datFunk.sDatInDeutsch(rs.getString("GEBOREN")) );				
+				patClass.eingaben[7].setText( DatFunk.sDatInDeutsch(rs.getString("GEBOREN")) );				
 				
 				
 				//this.jtable.setModel(tblDataModel);

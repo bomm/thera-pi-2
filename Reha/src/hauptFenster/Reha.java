@@ -154,7 +154,7 @@ import systemTools.TestePatStamm;
 import systemTools.WinNum;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 //import testPaket.Factory;
 
@@ -2638,8 +2638,8 @@ final class DatenbankStarten implements Runnable{
 			}
 			new SocketClient().setzeInitStand("Firmendaten einlesen");
 			Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
-			Reha.kalMin = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
-			Reha.kalMax = datFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
+			Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
+			Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
 			System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
 			SystemConfig.FirmenDaten();			
 			new SocketClient().setzeInitStand("Gutachten Parameter einlesen");

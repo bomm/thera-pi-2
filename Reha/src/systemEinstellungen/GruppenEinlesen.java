@@ -4,7 +4,7 @@ import hauptFenster.Reha;
 
 import java.util.Vector;
 
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import terminKalender.zeitFunk;
 
 public class GruppenEinlesen{
@@ -26,8 +26,8 @@ public class GruppenEinlesen{
 		for(int i = 1; i<= anzahl;i++){
 			gruppenNamen.add(ini.getStringProperty("Gruppen", "GruppenName"+i));
 			Long[] datwert = new Long[3];
-			datwert[0] = datFunk.DatumsWert(ini.getStringProperty("Gruppen", "Gruppe"+i+"NeuAb"));
-			datwert[1] = datFunk.DatumsWert(ini.getStringProperty("Gruppen", "Gruppe"+i+"AltBis"));
+			datwert[0] = DatFunk.DatumsWert(ini.getStringProperty("Gruppen", "Gruppe"+i+"NeuAb"));
+			datwert[1] = DatFunk.DatumsWert(ini.getStringProperty("Gruppen", "Gruppe"+i+"AltBis"));
 			datwert[2] = new Long(ini.getStringProperty("Gruppen", "Gruppe"+i+"Dauer"));
 			gruppenGueltig.add(datwert.clone());
 		}

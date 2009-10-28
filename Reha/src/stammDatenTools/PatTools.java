@@ -7,7 +7,7 @@ import patientenFenster.PatGrundPanel;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class PatTools {
 	
@@ -50,12 +50,12 @@ public class PatTools {
 		String nachname =  StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2));
 		String strasse = StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(21));
 		String plzort = PatGrundPanel.thisClass.patDaten.get(23)+" "+StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(24));
-		String geboren = datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+		String geboren = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
 		String zeile1 = "";
 		String zeile2 = "";
 		String zeile3 = "";
 		String branrede = "";
-		int jahrheute = new Integer(datFunk.sHeute().substring(6));
+		int jahrheute = new Integer(DatFunk.sHeute().substring(6));
 		int jahrgeboren = new Integer(geboren.substring(6));
 		int ialter = jahrheute - jahrgeboren;
 		

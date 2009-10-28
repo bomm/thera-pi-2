@@ -261,10 +261,10 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 					jp.add(datum,cc.xy(4,4));
 					
 					
-					kalwoche = new JXLabel("KW-"+datFunk.KalenderWoche(starttag) );
+					kalwoche = new JXLabel("KW-"+DatFunk.KalenderWoche(starttag) );
 					kalwoche.setForeground(Color.RED);
 					jp.add(kalwoche,cc.xy(2,6));					
-					wochentag = new JXLabel(datFunk.WochenTag(starttag));
+					wochentag = new JXLabel(DatFunk.WochenTag(starttag));
 					wochentag.setForeground(Color.RED);
 					jp.add(wochentag,cc.xy(4,6));
 					
@@ -347,8 +347,8 @@ public void actionPerformed(ActionEvent arg0) {
 		//System.out.println("Gewählt wurde das Datum: "+datePick.getEditor().getText().trim());
 		akttag = datePick.getEditor().getText().trim();
 		datum.setText(akttag );
-		wochentag.setText(datFunk.WochenTag(akttag) );
-		kalwoche.setText("KW-"+datFunk.KalenderWoche(akttag) );
+		wochentag.setText(DatFunk.WochenTag(akttag) );
+		kalwoche.setText("KW-"+DatFunk.KalenderWoche(akttag) );
 		setzeFocus();
 		//datum.setCaretPosition(0);
 		//datum.requestFocus();
@@ -379,11 +379,11 @@ private void zurueck(){
 			setVisible(false);
 			akttag = datum.getText().trim();
 			
-        	if(datFunk.DatumsWert(akttag) > datFunk.DatumsWert(Reha.kalMax)){
+        	if(DatFunk.DatumsWert(akttag) > DatFunk.DatumsWert(Reha.kalMax)){
         		JOptionPane.showMessageDialog(null,"Sie versuchen hinter das Ende des Kalenders zu springen ("+akttag+")"+
         				"\nKalenderspanne aktuell = von "+Reha.kalMin+" bis "+Reha.kalMax);
         		
-        	}else if(datFunk.DatumsWert(akttag) < datFunk.DatumsWert(Reha.kalMin)){
+        	}else if(DatFunk.DatumsWert(akttag) < DatFunk.DatumsWert(Reha.kalMin)){
         		JOptionPane.showMessageDialog(null,"Sie versuchen vor den Beginn des Kalenders zu springen ("+akttag+")"+
         				"\nKalenderspanne aktuell = von "+Reha.kalMin+" bis "+Reha.kalMax);
 
@@ -444,12 +444,12 @@ public void keyPressed(KeyEvent arg0) {
 		}
 		if(arg0.getKeyCode() == 33){
 			//System.out.println("tag + tag");
-			akttag = datFunk.sDatPlusTage(akttag,1);
+			akttag = DatFunk.sDatPlusTage(akttag,1);
 			datePick.setDate(machePickerDatum(akttag));
 			datum.setText(akttag);
 			//wochentag.setText(datFunk.WochenTag(akttag));
-			wochentag.setText(datFunk.WochenTag(akttag) );
-			kalwoche.setText("KW-"+datFunk.KalenderWoche(akttag) );
+			wochentag.setText(DatFunk.WochenTag(akttag) );
+			kalwoche.setText("KW-"+DatFunk.KalenderWoche(akttag) );
 			datum.setCaretPosition(0);
 			datum.requestFocus();
 			//arg0.consume();
@@ -457,12 +457,12 @@ public void keyPressed(KeyEvent arg0) {
 		}
 		if(arg0.getKeyCode() == 34){
 			//System.out.println("tag - tag");
-			akttag = datFunk.sDatPlusTage(akttag,-1);
+			akttag = DatFunk.sDatPlusTage(akttag,-1);
 			datePick.setDate(machePickerDatum(akttag));
 			datum.setText(akttag);
 			//wochentag.setText(datFunk.WochenTag(akttag));
-			wochentag.setText(datFunk.WochenTag(akttag) );
-			kalwoche.setText("KW-"+datFunk.KalenderWoche(akttag) );
+			wochentag.setText(DatFunk.WochenTag(akttag) );
+			kalwoche.setText("KW-"+DatFunk.KalenderWoche(akttag) );
 			datum.setCaretPosition(0);
 			datum.requestFocus();
 			//arg0.consume();

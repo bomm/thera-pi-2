@@ -67,7 +67,7 @@ public class tagWahl {
 			jLabel3.setBounds(new Rectangle(160, 54, 86, 16));
 			jLabel3.setDisplayedMnemonic(KeyEvent.VK_UNDEFINED);
 			jLabel3.setFont(new Font("Dialog", Font.ITALIC, 12));
-			jLabel3.setText(datFunk.WochenTag(tag));
+			jLabel3.setText(DatFunk.WochenTag(tag));
 			jLabel2 = new JLabel();
 			jLabel2.setBounds(new Rectangle(160, 5, 101, 16));
 			jLabel2.setForeground(Color.red);
@@ -132,14 +132,14 @@ public class tagWahl {
 		switch(e.getKeyCode()){
 			case 33: //Bild auf
 				//System.out.println("Bild auf");
-				jTextField.setText(datFunk.sDatPlusTage(sTag, +1));
-				jLabel3.setText(datFunk.WochenTag(jTextField.getText()));				
+				jTextField.setText(DatFunk.sDatPlusTage(sTag, +1));
+				jLabel3.setText(DatFunk.WochenTag(jTextField.getText()));				
 				jTextField.setCaretPosition(0);
 				break;
 			case 34: //Bild ab
 				//System.out.println("Bild auf");
-				jTextField.setText(datFunk.sDatPlusTage(sTag, -1));
-				jLabel3.setText(datFunk.WochenTag(jTextField.getText()));
+				jTextField.setText(DatFunk.sDatPlusTage(sTag, -1));
+				jLabel3.setText(DatFunk.WochenTag(jTextField.getText()));
 				jTextField.setCaretPosition(0);
 				break;
 			case 10: //Bild auf	

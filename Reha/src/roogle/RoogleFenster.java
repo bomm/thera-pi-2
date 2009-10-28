@@ -79,7 +79,7 @@ import systemTools.JRtaTextField;
 import systemTools.WinNum;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 import dialoge.DragWin;
 import dialoge.PinPanel;
@@ -725,13 +725,13 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		JRtaTextField tf = new JRtaTextField("DATUM",false);		
 		zeitraumEdit[0] = tf;
 		zeitraumEdit[0].setName("sucheabdatum");
-		zeitraumEdit[0].setText(datFunk.sHeute());
+		zeitraumEdit[0].setText(DatFunk.sHeute());
 		zeitraumEdit[0].setEnabled(false);
 		builder.add(zeitraumEdit[0],cc.xy(4,3));
 		tf = new JRtaTextField("DATUM",false);		
 		zeitraumEdit[1] = tf;
 		zeitraumEdit[1].setName("suchebisdatum");
-		zeitraumEdit[1].setText(datFunk.sDatPlusTage(datFunk.sHeute(),SystemConfig.RoogleZeitraum));
+		zeitraumEdit[1].setText(DatFunk.sDatPlusTage(DatFunk.sHeute(),SystemConfig.RoogleZeitraum));
 		zeitraumEdit[1].setEnabled(false);		
 		builder.add(zeitraumEdit[1],cc.xy(4,5));
 		builder.addSeparator("Wochentage ein- / ausschlieﬂen (Geschwindigkeit)", cc.xyw(1, 9,4));		

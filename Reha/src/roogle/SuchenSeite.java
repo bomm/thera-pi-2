@@ -98,7 +98,7 @@ import systemTools.Colors;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 import terminKalender.zeitFunk;
 
 import sqlTools.ExUndHop;
@@ -301,7 +301,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	public static boolean tagDurchsuchen(String sdatum){
 		boolean ret = false;
-		if(thisClass.suchenTage[datFunk.TagDerWoche(sdatum)-1]==0){
+		if(thisClass.suchenTage[DatFunk.TagDerWoche(sdatum)-1]==0){
 			ret = false;
 		}else{
 			ret = true;
@@ -1960,9 +1960,9 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
-			sqlEnde = datFunk.sDatInSQL(SuchenSeite.getStopDatum());
+			sqlEnde = DatFunk.sDatInSQL(SuchenSeite.getStopDatum());
 
-			sqlAkt = datFunk.sDatInSQL(aktDatum);
+			sqlAkt = DatFunk.sDatInSQL(aktDatum);
 			sqlAlt = sqlAkt;
 
 			suchkrit1 = SuchenSeite.getSuchName().trim();
@@ -1997,11 +1997,11 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			
 			zeit1 = System.currentTimeMillis();
 			SuchenSeite.getInstance().tabelleAusschalten();
-			SuchenSeite.setFortschrittRang(0,datFunk.TageDifferenz( SuchenSeite.getStartDatum(), SuchenSeite.getStopDatum() ) );
+			SuchenSeite.setFortschrittRang(0,DatFunk.TageDifferenz( SuchenSeite.getStartDatum(), SuchenSeite.getStopDatum() ) );
 			SuchenSeite.setFortschrittSetzen(0);
 			SuchenSeite.setFortschrittZeigen(true);
 			Vector abtlg = new Vector(Arrays.asList(abtei));
-			while( (datFunk.DatumsWert(sqlAkt) <= datFunk.DatumsWert(sqlEnde)) && (!SuchenSeite.mussUnterbrechen)){
+			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!SuchenSeite.mussUnterbrechen)){
 				SuchenSeite.setzeDatum(aktDatum );
 				if( SuchenSeite.tagDurchsuchen(aktDatum) ){
 
@@ -2277,7 +2277,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 						} //neu endif von: keine Zeile im Kalender
 					} // Klammer der While 
 					
-				aktDatum = datFunk.sDatPlusTage(aktDatum, 1);
+				aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
 				SuchenSeite.setFortschrittSetzen(++ftage);
 				/*
 				SwingUtilities.invokeLater(new Runnable(){
@@ -2288,13 +2288,13 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				*/
 				//Thread.sleep(30);
 				sqlAlt = new String(sqlAkt);
-				sqlAkt = datFunk.sDatInSQL(aktDatum );
+				sqlAkt = DatFunk.sDatInSQL(aktDatum );
 				//System.out.println(SuchenSeite.getAktDatum()+"-"+SuchenSeite.tagDurchsuchen(SuchenSeite.getAktDatum()) );
 				}else{
-					aktDatum = datFunk.sDatPlusTage(aktDatum, 1);
+					aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
 					//SuchenSeite.setzeDatum(aktDatum );						       	  	
 					sqlAlt = new String(sqlAkt);					
-					sqlAkt = datFunk.sDatInSQL(aktDatum );					//System.out.println(SuchenSeite.getAktDatum()+"-"+SuchenSeite.tagDurchsuchen(SuchenSeite.getAktDatum()) );
+					sqlAkt = DatFunk.sDatInSQL(aktDatum );					//System.out.println(SuchenSeite.getAktDatum()+"-"+SuchenSeite.tagDurchsuchen(SuchenSeite.getAktDatum()) );
 					SuchenSeite.setFortschrittSetzen(++ftage);
 				}
 				
@@ -2326,7 +2326,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				}
 			}
 		}
-		if (datFunk.DatumsWert(sqlAkt) > datFunk.DatumsWert(sqlEnde)){
+		if (DatFunk.DatumsWert(sqlAkt) > DatFunk.DatumsWert(sqlEnde)){
 			SuchenSeite.setSucheBeendet();
 			SuchenSeite.setFortschrittZeigen(false);
 		}
@@ -2409,14 +2409,14 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	}
 	private Vector gruppenTest(ResultSet rs, int gruppe,int feld,int defdauer,boolean suchleer) throws SQLException{
 		Vector vecret = null;
-		String sDatum = datFunk.sDatInDeutsch(rs.getString("DATUM"));
+		String sDatum = DatFunk.sDatInDeutsch(rs.getString("DATUM"));
 
-		int taginwoche = datFunk.TagDerWoche(sDatum);
+		int taginwoche = DatFunk.TagDerWoche(sDatum);
 		int altneu = 1;
 		
 		//System.out.println(((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(taginwoche-1)));
 		
-		if( datFunk.DatumsWert(sDatum) >=
+		if( DatFunk.DatumsWert(sDatum) >=
 			SystemConfig.oGruppen.gruppenGueltig.get(gruppe)[0] ){
 			altneu = 0;
 		}
@@ -2450,7 +2450,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		int[] selektparm2=null;
 		pbeginn = rs.getString("TS"+ii);
 		pende = rs.getString("TE"+ii);
-		wogerade = datFunk.GeradeWoche(datFunk.sDatInDeutsch(rs.getString("DATUM")));
+		wogerade = DatFunk.GeradeWoche(DatFunk.sDatInDeutsch(rs.getString("DATUM")));
 		kalanfang = SystemConfig.KalenderUmfang[0];
 		kalende = SystemConfig.KalenderUmfang[1];
 		
@@ -2828,12 +2828,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		uhrzeit = rs.getString("TS"+(ii));
 		
 		sorigdatum = rs.getString(305); 
-		sdatum = datFunk.sDatInDeutsch(sorigdatum);
+		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
 		vec.add(new Boolean(false));
 		vec.add(null);
-		vec.add(datFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
+		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
 		vec.add(uhrzeit.substring(0,5));
 		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
 		vec.add(rs.getString("TD"+(ii)).trim());		
@@ -2864,12 +2864,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		uhrzeit = rs.getString("TS"+(ii));
 		
 		sorigdatum = rs.getString(305); 
-		sdatum = datFunk.sDatInDeutsch(sorigdatum);
+		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
 		vec.add(new Boolean(false));
 		vec.add(null);
-		vec.add(datFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
+		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
 		vec.add(uhrzeit.substring(0,5));
 		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
 		vec.add(rs.getString("TD"+(ii)).trim());		
@@ -2900,12 +2900,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		uhrzeit = rs.getString("TS"+(ii));
 		
 		sorigdatum = rs.getString(305); 
-		sdatum = datFunk.sDatInDeutsch(sorigdatum);
+		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
 		vec.add(new Boolean(false));
 		vec.add(null);
-		vec.add(datFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
+		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
 		vec.add(uhrzeit.substring(0,5));
 		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
 		vec.add(rs.getString("TD"+(ii)).trim());		

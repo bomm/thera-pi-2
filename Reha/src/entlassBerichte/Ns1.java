@@ -39,7 +39,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.datFunk;
+import terminKalender.DatFunk;
 
 public class Ns1 implements ActionListener,ComponentListener {
 	
@@ -1027,7 +1027,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 				}
 				for(int i = 0; i < 24;i++){
 					if("AUFDAT2AUFDAT3ENTDAT3UNTDATGEBORENENTDAT2ENTDAT1AUFDAT1".contains(eltern.btf[i].getName())){
-						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  datFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
+						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "  .  .    " :  DatFunk.sDatInDeutsch(rs.getString(eltern.btf[i].getName())) ) );	
 					}else{
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
 					}
@@ -1091,7 +1091,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 	private void doKopfNeu(){
 		eltern.btf[2].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2))+
 				", "+StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3)));
-		eltern.btf[3].setText(datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
+		eltern.btf[3].setText(DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
 		eltern.btf[4].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(21)));
 		eltern.btf[5].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(23)));
 		eltern.btf[6].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(24)));		
