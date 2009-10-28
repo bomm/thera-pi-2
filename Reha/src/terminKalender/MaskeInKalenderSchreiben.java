@@ -240,7 +240,7 @@ public String dieserName(){
 	return this.getName();
 }
 
-public void RehaTPEventOccurred(RehaTPEvent evt) {
+public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
 	System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
 	String ss =  this.getName();

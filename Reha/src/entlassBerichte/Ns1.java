@@ -264,7 +264,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 				laydummy2 = new FormLayout("55dlu","p");
 				dummy2 = new PanelBuilder(laydummy2);
 				dummy2.getPanel().setOpaque(false);
-				ccdum2 = new CellConstraints();
+				//ccdum2 = new CellConstraints();
 				eltern.btf[22] = new JRtaTextField("DATUM",true);
 				eltern.btf[22].setName("AUFDAT2");
 				dummy2.add(eltern.btf[22],ccdum.xy(1, 1,CellConstraints.FILL,CellConstraints.DEFAULT));

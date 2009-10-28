@@ -37,7 +37,7 @@ public class datFunk {
 		DateFormat df = DateFormat.getDateTimeInstance( DateFormat.MEDIUM,
 				DateFormat.MEDIUM,  
                 Locale.GERMANY );
-		String s = new String(df.format(new java.util.Date()));
+		String s = df.format(new java.util.Date());
 		s = s.substring(0,s.indexOf( ' ' )); 
 	    return s;
 
@@ -68,7 +68,7 @@ public class datFunk {
 		}else{
 			dDatum = new Date(anz_milli_3);
 		}
-		s = new String(df.format(dDatum));
+		s = df.format(dDatum);
 		s = s.substring(0,s.indexOf( ' ' )); 
 		return s;
 	}
@@ -203,7 +203,7 @@ public class datFunk {
 		}else{
 			dDatum = new Date(ldatum);
 		}
-		s = new String(df.format(dDatum));
+		s =df.format(dDatum);
 		s = s.substring(0,s.indexOf( ' ' )); 
 	    return s;
 	}

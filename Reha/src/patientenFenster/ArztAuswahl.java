@@ -244,12 +244,12 @@ LinearGradientPaint p = null;
 		super.getSmartTitledPanel().setTitle("Arzt auswählen");
 		if(jtfs != null){
 			Vector<String> vec = new Vector<String>();
-			vec.add(new String(jtfs[2].getText()));
-			vec.add(new String(jtfs[3].getText()));
-			vec.add(new String(jtfs[4].getText()));
-			vec.add(new String(jtfs[6].getText()));
-			vec.add(new String(jtfs[7].getText()));			
-			vec.add(new String(jtfs[14].getText()));	
+			vec.add(jtfs[2].getText());
+			vec.add(jtfs[3].getText());
+			vec.add(jtfs[4].getText());
+			vec.add(jtfs[6].getText());
+			vec.add(jtfs[7].getText());			
+			vec.add(jtfs[14].getText());	
 			arztwahlmod.addRow(vec);
 			arztwahltbl.validate();
 		}

@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -95,7 +96,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 
-public class PatNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener {
+public class PatNeuanlage extends JXPanel implements Serializable,ActionListener, KeyListener,FocusListener {
 	
 /**
 	 * 
@@ -162,9 +163,6 @@ Vector titel = new Vector<String>() ;
 Vector formular = new Vector<String>();
 int iformular = -1;
 
-CompoundPainter cp = null;
-MattePainter mp = null;
-LinearGradientPaint p = null;
 
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
@@ -572,7 +570,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		final String xpatintern = spatintern;
 		new Thread(){
 			public void run(){
-				PatGrundPanel.thisClass.ArztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
+				PatGrundPanel.thisClass.arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
 				((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -1542,7 +1540,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		awahl.dispose();
 		awahl = null;
 		final JRtaTextField xtf = tfaliste[2];
-		if(!xtf.equals("")){
+		if(!xtf.getText().equals("")){
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {

@@ -862,7 +862,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 						String aliste = PatGrundPanel.thisClass.patDaten.get(63)+ "@"+xaneu+"@\n";
 						PatGrundPanel.thisClass.patDaten.set(63,aliste+ "@"+xaneu+"@\n");
 						System.out.println("Arztliste in Rezept Neu = "+aliste);
-						PatGrundPanel.thisClass.ArztListeSpeichernString(aliste,false,PatGrundPanel.thisClass.aktPatID);
+						PatGrundPanel.thisClass.arztListeSpeichernString(aliste,false,PatGrundPanel.thisClass.aktPatID);
 						SwingUtilities.invokeLater(new Runnable(){
 						 	   public  void run(){
 						 			jtf[2].requestFocus();
@@ -1492,7 +1492,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	*/
 	@Override
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		System.out.println("****************Setze alles auf null in RezNeuanlage**************");				
 
 			try{

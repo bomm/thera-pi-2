@@ -2026,7 +2026,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	        if(isAdjusting){
 	        	return;
 	        }
-			StringBuffer output = new StringBuffer();
+			//StringBuffer output = new StringBuffer();
 	        if (lsm.isSelectionEmpty()) {
 
 	        } else {

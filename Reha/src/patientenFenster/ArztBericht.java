@@ -111,7 +111,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	CompoundPainter cp = null;
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
-	PinPanel pinPanel = null;
+	//PinPanel pinPanel = null;
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
@@ -587,7 +587,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);
-		if(!jtf[2].equals("")){
+		if(!jtf[2].getText().equals("")){
 			rlab[2].setText(jtf[0].getText());
 			if(!jtf[2].getText().equals("")){
 				arztid = new Integer(jtf[2].getText());					
@@ -709,7 +709,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 						}
 					}
 					cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
-					new ExUndHop().setzeStatement(new String(cmd));
+					new ExUndHop().setzeStatement(cmd);
 					System.out.println("BerichtNr - "+xberichtnr+" - wurde nur in lza gespeichert");
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
 					//return null;
@@ -751,7 +751,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		"berstand='"+StringTools.Escaped(icfblock[0].getText())+"' , berbeso='"+StringTools.Escaped(icfblock[1].getText())+"', "+
 		"berprog='"+StringTools.Escaped(icfblock[2].getText())+"', "+
 		"bervors='"+StringTools.Escaped(icfblock[3].getText())+"', bertyp='"+reznr+"' where berichtid='"+this.berichtid+"'";
-		new ExUndHop().setzeStatement(new String(cmd));
+		new ExUndHop().setzeStatement(cmd);
 		//System.out.println(cmd);		
 		//System.out.println("************************************************************************************");
 		JOptionPane.showMessageDialog(null,"Der Bericht wurde erfolgreich gespeichert");
@@ -917,7 +917,7 @@ class TextBausteine extends AbstractAction {
  * Nachfolgend die Standards für RehaSmartDialog
  * 
  */
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

@@ -397,7 +397,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File inputVerzFile = chooser.getSelectedFile();
-            String inputVerzStr = inputVerzFile.getPath();
+            //String inputVerzStr = inputVerzFile.getPath();
             
 
             if(inputVerzFile.getName().trim().equals("")){

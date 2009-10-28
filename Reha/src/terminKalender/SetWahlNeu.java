@@ -128,7 +128,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 		((JXTitledPanel)this.getContentPane()).getContentContainer().add(jcc,BorderLayout.CENTER);
 		
 		
-		this.wahl = ((TerminFenster) TerminFenster.thisClass).AktuellesSet();
+		this.wahl = ((TerminFenster) TerminFenster.thisClass).aktuellesSet();
 		this.jList1.setSelectedIndex(this.wahl);
 		this.validate();
 		
@@ -199,7 +199,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 	private void ListeFuellen(DefaultListModel model){
 		int i,max = 0;
 		max = SystemConfig.aTerminKalender.size();
-		String[] fach = new String[max];
+		//String[] fach = new String[max];
 		for(i=0;i<max;i++){
 			model.add(i,(String)((ArrayList)SystemConfig.aTerminKalender.get(i).get(0)).get(0));
 			//fach[i] = (String)((ArrayList)SystemConfig.aTerminKalender.get(i).get(0)).get(0);
@@ -281,7 +281,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 
 	}
 	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		System.out.println("****************Schließen des Roogle-Fensters**************");
 		String ss =  this.getName();

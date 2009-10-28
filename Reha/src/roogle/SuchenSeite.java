@@ -268,13 +268,13 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	
 	public static void setKollegenEinstellen(Object[][] obj){
-		thisClass.sucheKollegen = obj.clone();
+		thisClass.sucheKollegen = obj; //obj.clone();
 	}
 	public static Object[][] getKollegenEinstellen(){
 		return thisClass.sucheKollegen;
 	}
 	public static void setKollegenZeiten(HashMap<String,Integer> hZeiten){
-		thisClass.hZeiten = ((HashMap<String,Integer>)hZeiten.clone()); 
+		thisClass.hZeiten =  ((HashMap<String,Integer>)hZeiten);//((HashMap<String,Integer>)hZeiten.clone()); 
 		
 	}
 	public static HashMap<String,Integer> getKollegenZeiten(){
@@ -464,12 +464,12 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 
 		if(RoogleFenster.gedropt){
 			if(RoogleFenster.sldrops[0].length() > 10){
-				sucheName.setText(new String(RoogleFenster.sldrops[0].substring(0,10)));			
+				sucheName.setText(RoogleFenster.sldrops[0].substring(0,10));			
 			}else{
-				sucheName.setText(new String(RoogleFenster.sldrops[0]));
+				sucheName.setText(RoogleFenster.sldrops[0]);
 			}
-			schreibeName.setText(new String(RoogleFenster.sldrops[0]));
-			schreibeNummer.setText(new String(RoogleFenster.sldrops[1]));
+			schreibeName.setText(RoogleFenster.sldrops[0]);
+			schreibeNummer.setText(RoogleFenster.sldrops[1]);
 		}
 		builder.addSeparator("suche von / bis...", cc.xyw(1, 13,5));
 		
@@ -634,7 +634,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		//jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping(new Color(204,255,255)));
 		//jxSucheTable.addHighlighter(new ColorHighlighter(Color.LIGHT_GRAY, Color.WHITE,HighlightPredicate.EVEN));
-		JCheckBox check = new JCheckBox();
+		//JCheckBox check = new JCheckBox();
 		//DefaultCellEditor edi = new DefaultCellEditor(check);
 		//jxSucheTable.getColumnModel().getColumn(0).setCellEditor(edi);
 		((TableColumnExt)jxSucheTable.getColumn(0)).setCellEditor(new JXTable.BooleanEditor());
@@ -1065,7 +1065,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				
 			}
 			Collections.sort(vec);
-			new TerminplanDrucken().init((Vector<TermObjekt>)vec.clone(), drucken,schreibeName.getText().trim(),schreibeNummer.getText().trim());
+			new TerminplanDrucken().init((Vector<TermObjekt>)vec, drucken,schreibeName.getText().trim(),schreibeNummer.getText().trim());
 		}
 		
 	}
@@ -1224,8 +1224,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		String name,nummer;
 		vecWahl.clear();
 
-		name = new String(schreibeName.getText().trim());
-		nummer = new String(schreibeNummer.getText().trim().replace("\\", "\\\\") );
+		//name = new String(schreibeName.getText().trim());
+		//nummer = new String(schreibeNummer.getText().trim().replace("\\", "\\\\") );
 		//System.out.println("Rezeptnummer = "+nummer);
 
 		for(i=0;i<lang;i++){
@@ -1276,8 +1276,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 
 		vecWahl.clear();
 		
-		name = new String(schreibeName.getText().trim());
-		nummer = new String(schreibeNummer.getText().trim().replace("\\", "\\\\") );
+		name = schreibeName.getText().trim();
+		nummer =schreibeNummer.getText().trim().replace("\\", "\\\\") ;
 		//System.out.println("Rezeptnummer = "+nummer);
 
 		for(i=0;i<lang;i++){
@@ -1454,7 +1454,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				String stmt = macheStat(newvec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 				//System.out.println("Nur mit Nachblock "+stmt);
 				try {
-					System.out.println("EscapedDouble String = "+stmt);
+					//System.out.println("EscapedDouble String = "+stmt);
 					schreibeZeile(stmt);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -1678,12 +1678,12 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	/*****************************************/	
 	private String macheStat(Vector vec,int id,String name,String nummer){
-		String stmt = new String();
+		String stmt = "";//new String();
 		int gross = vec.size(),i;
 		String rnummer = null;
 		String snummer = null;
 		stmt = "Update flexkc set ";
-		System.out.println(name+"  -  "+nummer);
+		//System.out.println(name+"  -  "+nummer);
 		for(i=0;i<gross;i++){
 			System.out.println(vec.get(i));
 			stmt = stmt +"T"+(i+1)+" = '"+StringTools.Escaped(((String)((Vector)vec.get(i)).get(0)))+"'"+", ";
@@ -1697,7 +1697,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			stmt = stmt +"TE"+(i+1)+" = '"+((String)((Vector)vec.get(i)).get(4))+"'"+", ";			
 		}
 		stmt = stmt+ "BELEGT ='"+new Integer(vec.size()).toString()+"' where id='"+new Integer(id).toString()+"'";
-		System.out.println(stmt);
+		//System.out.println(stmt);
 		
 		return stmt;
 	}
@@ -1786,7 +1786,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				}
 			}
 		}
-		return (Vector)vec.clone();
+		return (Vector)vec;//.clone();
 	}
 	/********Ende SwingWorker*/
 	
@@ -1801,8 +1801,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 
 @Override
 public void keyPressed(KeyEvent arg0) {
-	System.out.println("********Button in KeyPressed*********");	
-	System.out.println(((JComponent)arg0.getSource()).getName());	
+	//System.out.println("********Button in KeyPressed*********");	
+	//System.out.println(((JComponent)arg0.getSource()).getName());	
 	if(arg0.getKeyCode()== 10 || arg0.getKeyCode()==0)
 		arg0.consume();
 
@@ -1847,8 +1847,8 @@ public void keyPressed(KeyEvent arg0) {
 public void keyReleased(KeyEvent arg0) {
 	
 	// TODO Auto-generated method stub
-	System.out.println("********Button in KeyReleased*********"+arg0.getKeyCode());
-	System.out.println(((JComponent)arg0.getSource()).getName());
+	//System.out.println("********Button in KeyReleased*********"+arg0.getKeyCode());
+	//System.out.println(((JComponent)arg0.getSource()).getName());
 	String csource = "";
 	if(arg0.getKeyCode() == 10 || arg0.getKeyCode() == 0){
 		csource = ((JComponent)arg0.getSource()).getName();
@@ -1890,8 +1890,8 @@ public void keyReleased(KeyEvent arg0) {
 @Override
 public void keyTyped(KeyEvent arg0) {
 	// TODO Auto-generated method stub
-	System.out.println("********Button in KeyTyped*********"+arg0.getKeyCode());
-	System.out.println(((JComponent)arg0.getSource()).getName());	
+	//System.out.println("********Button in KeyTyped*********"+arg0.getKeyCode());
+	//System.out.println(((JComponent)arg0.getSource()).getName());	
 	if(arg0.getKeyCode() == 10 || arg0.getKeyCode() == 0){
 		arg0.consume();
 	}else{
@@ -2258,7 +2258,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 								*/
 								
 								//SuchenSeite.rooDaten.rvec.add((Vector)yvec.clone());
-								sucheDaten.add((Vector)yvec.clone());
+								//sucheDaten.add((Vector)yvec.clone());
+								sucheDaten.add((Vector)yvec);
 								//SuchenSeite.setDatenVector((Vector)yvec.clone());
 								trefferSetzen();
 								
@@ -2374,7 +2375,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	for(int i = 0; i < column.length;i++){
 		cols.add(column[i]);
 	}
-		return (Vector)cols.clone();
+		return (Vector)cols;//(Vector)cols.clone();
 	}
 	
 /********************************************/
@@ -2432,7 +2433,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				//System.out.println("Zeitcheck = "+xzeit+" und Dauer "+defdauer+" paﬂt zwischen "+zeitFunk.MinutenZuZeit(new Long(lgrenzeklein).intValue())+
 						//" und "+zeitFunk.MinutenZuZeit(new Long(lgrenzegross).intValue()));
 				vecret = (Vector) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).clone();
-				return (Vector)vecret.clone();
+				return (Vector)vecret;//(Vector)vecret.clone();
 			}
 			
 			
@@ -2989,12 +2990,14 @@ private synchronized int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 					"zeit='"+zeit+"'";
 					stmtx.execute(st);
 					//new ExUndHop().setzeStatement(new String(st));
+					/*
 					try {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 					return(0);
 				}else{
 					return(1);
@@ -3129,14 +3132,14 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 				if(aktuell != (anzahl-1)){
 					 	
 						aktuell++;
-						SuchenSeite.verarbeitetLbl.setText(new Integer(aktuell+1).toString());
+						SuchenSeite.verarbeitetLbl.setText(Integer.toString(aktuell+1));
 						//xxxx
-						nvec = (Vector) ((Vector)sucheDaten.get(aktuell)).clone();
+						nvec = (Vector) ((Vector)sucheDaten.get(aktuell));//.clone();
 						
 						//String sperre;
 						
-						sperre = new String((String)((Vector)nvec).get(13)+
-											(String)((Vector)nvec).get(14) ); 
+						sperre = (String)((Vector)nvec).get(13)+
+											(String)((Vector)nvec).get(14) ; 
 
 						if(sperrDatum.contains(sperre+SystemConfig.dieseMaschine+zeit)){
 							nvec.set(1, img2);
@@ -3306,10 +3309,10 @@ class TermObjekt implements Comparable<TermObjekt>{
 	public String sorter;
 	
 	public TermObjekt(String xtag,String xbeginn,String xtermtext,String xsorter){
-		this.tag = new String(xtag);
-		this.beginn = new String(xbeginn);
-		this.termtext = new String(xtermtext);
-		this.sorter =  new String(xsorter);
+		this.tag = xtag;
+		this.beginn = xbeginn;
+		this.termtext =xtermtext;
+		this.sorter =  xsorter;
 		
 	}
 

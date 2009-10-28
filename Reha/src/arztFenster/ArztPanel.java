@@ -653,10 +653,12 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 
 			@Override
 			protected Void doInBackground() throws Exception {
+				/*
 				Runtime r = Runtime.getRuntime();
 			    r.gc();
 			    long freeMem = r.freeMemory();
 			    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+			    */
 				return null;
 			}
 			
@@ -801,7 +803,7 @@ class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 	}
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			this.setVisible(false);

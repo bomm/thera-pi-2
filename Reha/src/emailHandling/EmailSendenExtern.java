@@ -140,10 +140,11 @@ public class EmailSendenExtern {
         	if(tran != null){
         		tran = null;
         	}
-
+        	/*
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();
+	    */
 
 
     }

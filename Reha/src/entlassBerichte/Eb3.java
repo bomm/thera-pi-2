@@ -453,7 +453,7 @@ public class Eb3 implements RehaEventListener  {
 	  }
 	  
 		@Override
-		public void RehaEventOccurred(RehaEvent evt) {
+		public void rehaEventOccurred(RehaEvent evt) {
 			if(evt.getRehaEvent().equals("REHAINTERNAL")){
 				if(evt.getDetails()[1].equals("#DEICONIFIED") && evt.getDetails()[0].contains("Gutachten")){
 					

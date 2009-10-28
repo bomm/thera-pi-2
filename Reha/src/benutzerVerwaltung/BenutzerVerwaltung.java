@@ -202,7 +202,7 @@ public void FensterSchliessen(String welches){
 
 
 @Override
-public void RehaTPEventOccurred(RehaTPEvent evt) {
+public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
 //	System.out.println("****************das darf doch nicht wahr sein**************");
 	String ss = ((JXTitledPanel) this.getParent()).getContentContainer().getName();	

@@ -2196,7 +2196,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	
 
 
-	public void RehaEventOccurred(RehaEvent evt) {
+	public void rehaEventOccurred(RehaEvent evt) {
 		//System.out.println("Reha thisClass Event getSource: = "+evt.getSource());
 		//System.out.println("Reha thisClass Event Nachricht: = "+ evt.getRehaEvent());	
 		if(evt.getRehaEvent().equals("PatSuchen")){

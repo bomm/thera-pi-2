@@ -122,7 +122,7 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 	}
 
 	@Override
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		
 	}

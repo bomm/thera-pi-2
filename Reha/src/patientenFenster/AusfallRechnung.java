@@ -83,7 +83,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	
 	public JButton uebernahme;
 	public JButton abbrechen;
-	PinPanel pinPanel;
+	//PinPanel pinPanel;
 	
 	CompoundPainter cp = null;
 	MattePainter mp = null;
@@ -239,7 +239,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	}
 /****************************************************/	
 	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

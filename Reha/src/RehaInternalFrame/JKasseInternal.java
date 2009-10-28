@@ -82,7 +82,7 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 		KassenPanel.thisClass.holeAktKasse(aID);
 	}
 	@Override
-	public void RehaEventOccurred(RehaEvent evt) {
+	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
 			System.out.println("es ist ein Reha-Internal-Event");
 		}

@@ -133,7 +133,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public String[] kollegenAbteilung = null;
 	public boolean[] kollegenSuchen = new boolean[ParameterLaden.maxKalZeile+1];
 	private MouseAdapter mymouse = null;
-	PinPanel pinPanel;
+	//PinPanel pinPanel;
 	public RoogleFenster(JXFrame owner,String drops) {
 		super(owner,"Roogle");
 		setPreferredSize(new Dimension(300,300));
@@ -1336,10 +1336,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    			}
 	    			pinPanel = null;
 	    			RoogleFenster.thisClass = null;
+	    			/*
 	    			Runtime r = Runtime.getRuntime();
 	    		    r.gc();
 	    		    long freeMem = r.freeMemory();
 	    		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+	    		    */
 	    		}
 	    	}.start();
 	    }else{
@@ -1397,7 +1399,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 					arg0.consume();
 		}
 	}	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		System.out.println("****************Schlieﬂen des Roogle-Fensters**************");
 		String ss =  this.getName();

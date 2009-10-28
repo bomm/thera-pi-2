@@ -225,7 +225,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		    this.suchkrit = diag;
 			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
 			int anz = vec.size();
-			Vector<String> vec2 = new Vector<String>();
+			//Vector<String> vec2 = new Vector<String>();
 			modtextblock.setRowCount(0);
 			if(anz>0){
 				for(int i = 0;i<anz;i++){
@@ -242,7 +242,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			modtextblock.setRowCount(0);
-			Vector<String> vec2 = new Vector<String>();
+			//Vector<String> vec2 = new Vector<String>();
 			if(anz>0){
 				for(int i = 0;i<anz;i++){
 					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
@@ -490,7 +490,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		        if(isAdjusting){
 		        	return;
 		        }
-				StringBuffer output = new StringBuffer();
+				//StringBuffer output = new StringBuffer();
 		        if (lsm.isSelectionEmpty()) {
 
 		        } else {

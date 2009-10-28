@@ -262,7 +262,7 @@ public class TerminLayout extends JScrollPane{
 			BoxLayout boxlay = new BoxLayout(TerminFlaeche,BoxLayout.X_AXIS);
 			TerminFlaeche.setLayout(boxlay);
 			TerminFlaeche.setBorder(null);
-			DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 5, 1, 3, true, true, true, true);
+			//DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 5, 1, 3, true, true, true, true);
 			JXPanel cb = null;
 			for(int i = 0;i<7;i++){
 				cb = new JXPanel(new BorderLayout());

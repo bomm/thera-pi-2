@@ -54,7 +54,7 @@ public class SetWahl extends JDialog {
 	 */
 	public SetWahl(TerminFenster Eltern) {
 		super();
-		wahl = ((TerminFenster) Eltern).AktuellesSet();
+		wahl = ((TerminFenster) Eltern).aktuellesSet();
 		initialize();
 	}
 
@@ -146,7 +146,7 @@ public class SetWahl extends JDialog {
 	private void ListeFuellen(DefaultListModel model){
 		int i,max = 0;
 		max = SystemConfig.aTerminKalender.size();
-		String[] fach = new String[max];
+		//String[] fach = new String[max];
 		for(i=0;i<max;i++){
 			model.add(i,(String)((ArrayList)SystemConfig.aTerminKalender.get(i).get(0)).get(0));
 			//fach[i] = (String)((ArrayList)SystemConfig.aTerminKalender.get(i).get(0)).get(0);

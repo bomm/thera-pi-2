@@ -168,7 +168,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		int i,max = 0;
 		//max = KassenPanel.thisClass.titel.size();
 		max = titel.size();
-		String[] fach = new String[max];
+		//String[] fach = new String[max];
 		for(i=0;i<max;i++){
 			//model.add(i,(String)KassenPanel.thisClass.titel.get(i));
 			model.add(i,(String)titel.get(i));
@@ -252,7 +252,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		}
 	}
 	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		System.out.println("****************Schließen des KassenFormular **************");
 		String ss =  getName();

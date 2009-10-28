@@ -79,7 +79,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	public JRtaComboBox[] jcmbscan = {null,null,null,null,null};
 	public JRtaCheckBox[] jcbscan = {null,null,null,null,null};
 	Scanner scanner;	
-	PinPanel pinPanel;
+	//PinPanel pinPanel;
 	public ScannerUtil(Point pt){
 		super(null,"ScannerUtil");		
 
@@ -238,7 +238,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	}
 /****************************************************/	
 	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

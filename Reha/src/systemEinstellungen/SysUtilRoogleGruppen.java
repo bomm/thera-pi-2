@@ -405,7 +405,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 		private void comboFuellen(int akt){
 			int i,j,lang;
 			lang = SystemConfig.aRoogleGruppen.size();
-			String[] test = new String[lang];
+			//String[] test = new String[lang];
 			gruppenname = new  String[lang];
 			mitglieder = new String[lang][];
 			for(i=0;i<lang;i++){
@@ -506,7 +506,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				return;
 			}else{
 				lang = select.length;
-				Vector vect = new Vector(glm.getDataVector());
+				//Vector vect = new Vector(glm.getDataVector());
 				for(i=0;i<lang;i++){
 					String st = (String)RGmembers.getValueAt(select[i],0);
 					klm.addRow(macheVektor(st));
@@ -587,7 +587,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				return;
 			}else{
 				lang = select.length;
-				Vector vect = new Vector(klm.getDataVector());
+				//Vector vect = new Vector(klm.getDataVector());
 				for(i=0;i<lang;i++){
 					String st = (String)Source.getValueAt(select[i],0);
 					glm.addRow(macheVektor(st));

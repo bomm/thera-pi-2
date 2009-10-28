@@ -226,7 +226,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 	}
 /****************************************************/	
 	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

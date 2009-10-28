@@ -747,7 +747,7 @@ public class SuchenDialog extends JXDialog {
 		ResultSet rs = null;
 		String sstmt = new String();
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
-		DefaultTableModel tblDataModel = new DefaultTableModel();
+		//DefaultTableModel tblDataModel = new DefaultTableModel();
 		Vector reiheVector = new Vector();
 		reiheVector.addElement("RezeptNr");
 		reiheVector.addElement("Datum");

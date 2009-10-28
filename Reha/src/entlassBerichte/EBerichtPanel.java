@@ -819,7 +819,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return jtb;
 	}
 	@Override
-	public void RehaEventOccurred(RehaEvent evt) {
+	public void rehaEventOccurred(RehaEvent evt) {
 		// TODO Auto-generated method stub
 		//System.out.println(evt);
 		System.out.println("In RehaEvent Occured: EbereichtPanel -> Schlieﬂenanforderung von InternalFrame");
@@ -844,7 +844,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 	}
 	/*****************************************/
-	public void finalize(){
+	public void finalise(){
 		for(int i = 0; i < btf.length;i++){
 			if(btf[i] != null){
 				ListenerTools.removeListeners((Component)btf[i]);
@@ -966,10 +966,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
+		 		   /*
 					Runtime r = Runtime.getRuntime();
 				    r.gc();
 				    long freeMem = r.freeMemory();
 				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				    */
 		 	   }
 		});
 		System.out.println("BerichtDrucken ist disposed()");
@@ -987,7 +989,7 @@ class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 	}
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

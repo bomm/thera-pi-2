@@ -76,10 +76,10 @@ public final class RehaPainters {
 		 //MattePainter mp = new MattePainter(Colors.TaskPaneBlau.alpha(1.0f));
 		 
 		 MattePainter mp = new MattePainter(lgp);
-		 GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
+		 //GlossPainter gp = new GlossPainter(Colors.White.alpha(0.3f),
 				 
 
-		 GlossPainter.GlossPosition.TOP);
+		 //GlossPainter.GlossPosition.TOP);
 
 		 //PinstripePainter pp = new PinstripePainter(Colors.White.alpha(0.2f),45d);
 		 //PinstripePainter pp = new PinstripePainter(Colors.Blue.alpha(0.2f),45d);

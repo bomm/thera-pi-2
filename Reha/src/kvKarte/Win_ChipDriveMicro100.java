@@ -121,12 +121,12 @@ public class Win_ChipDriveMicro100 {
 			Pointer inLen = new IntByReference(0).getPointer();
 			byte[] output = new byte[560];
 			Pointer outLen = new IntByReference(560).getPointer();		
-			
-			ibr = lib.SCardComand(
+			String str = null;
+			int ibrx = lib.SCardComand(
 					hwnd,
 					sCommand,
 					cmdLen,
-					new String(),
+					"",
 					inLen,
 					output,
 					outLen

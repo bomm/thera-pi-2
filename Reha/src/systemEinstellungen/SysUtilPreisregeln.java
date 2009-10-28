@@ -51,7 +51,7 @@ public class SysUtilPreisregeln extends JXPanel implements KeyListener, ActionLi
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
-		CellConstraints cc = new CellConstraints();
+		//CellConstraints cc = new CellConstraints();
 		
 		return builder.getPanel();
 	}

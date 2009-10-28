@@ -1301,7 +1301,7 @@ public class RVEBerichtPDF {
 		tempDateien[3] = new String[]{tempPfad+"EB4"+System.currentTimeMillis()+".pdf"};
 		String pdfPfad = rvVorlagen[3];
 		Document docgesamt = new Document(PageSize.A4);
-		File ft = new File(tempPfad+"EBfliesstext.pdf");
+		//File ft = new File(tempPfad+"EBfliesstext.pdf");
 		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
 
 		int seiten = reader.getNumberOfPages();
@@ -1519,7 +1519,7 @@ class EBAerzteDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 	}
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

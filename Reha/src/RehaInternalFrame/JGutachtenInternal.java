@@ -61,7 +61,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		((EBerichtPanel)this.inhalt).finalize();
+		((EBerichtPanel)this.inhalt).finalise();
 		//Nächsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//Listener deaktivieren
@@ -117,7 +117,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		//ArztPanel.thisClass.holeAktArzt(aID);
 	}
 	@Override
-	public void RehaEventOccurred(RehaEvent evt) {
+	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
 			System.out.println("es ist ein Reha-Internal-Event");
 		}

@@ -85,8 +85,8 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 	public TagWahlNeu(JXFrame owner, String name,String aktday){
 		super(owner, "Eltern-TagWahl"+WinNum.NeueNummer());
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		akttag = new String(aktday);
-		starttag = new String(aktday);
+		akttag = aktday;
+		starttag = aktday;
 		//setSize(new Dimension(200,120));
 		setPreferredSize(new Dimension(240,170));
 		//setSize(240,170);
@@ -498,7 +498,7 @@ public void keyTyped(KeyEvent e) {
 	}	
 }
 
-public void RehaTPEventOccurred(RehaTPEvent evt) {
+public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
 	//System.out.println("****************Schlieﬂen des Roogle-Fensters**************");
 	String ss =  this.getName();

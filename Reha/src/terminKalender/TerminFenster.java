@@ -267,7 +267,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public String DRAG_UHR;
 	public String DRAG_PAT;	
 	public String DRAG_NUMMER;	
-	public JXPanel Init(int setOben,int ansicht,JRehaInternal eltern) {
+	public JXPanel init(int setOben,int ansicht,JRehaInternal eltern) {
 
 		this.eltern = eltern;
 		this.setOben = setOben;
@@ -296,7 +296,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			public void focusGained(java.awt.event.FocusEvent e) {
 				Reha.thisClass.shiftLabel.setText("GF Focus da");
 				//aktiveSpalte[2] = 0;
-				HoleFocus();
+				holeFocus();
 			}
 		});
 
@@ -328,11 +328,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		
 		this.aktuellerTag = datFunk.sHeute();
 		if(this.ansicht < MASKEN_ANSICHT){
-			String sstmt = AnsichtStatement(this.ansicht,this.aktuellerTag);
-			MacheStatement(sstmt,this.ansicht);
+			String sstmt = ansichtStatement(this.ansicht,this.aktuellerTag);
+			macheStatement(sstmt,this.ansicht);
 		}else{
 			String stmtmaske = "select from masken where behandler = '00BEHANDLER' ORDER BY art";
-			MaskenStatement(stmtmaske);
+			maskenStatement(stmtmaske);
 		}
     	//System.out.println("Größe von aSpaltenDaten = "+aSpaltenDaten.size());
 
@@ -352,7 +352,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						e1.printStackTrace();
 					}
 				}
-				HoleFocus();
+				holeFocus();
 				//Toolkit.getDefaultToolkit().beep();
 			}
 		});
@@ -385,14 +385,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		*/
 		//System.out.println("Ansicht = "+this.ansicht);
+		/*
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();
+	    */
 	    //System.out.println("In Terminfenster Freier Speicher nach  gc():    " + freeMem); 
 
 		return ViewPanel;
 	}
-	public void finalize(){
+	public void finalise(){
 		vTerm.clear();
 		vTerm = null;
 		for(int i = 0; i < 7;i++){
@@ -513,7 +515,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * Jetzt die Listener für die Combos installieren
  * 
  */
-	private void ComboListenerInit(final int welche){
+	private void comboListenerInit(final int welche){
 		oCombo[welche].setPopupVisible(false);	
 		oCombo[welche].addKeyListener(new java.awt.event.KeyAdapter() {
 			public void keyPressed(java.awt.event.KeyEvent e) {
@@ -530,7 +532,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					if ( (e.getKeyCode()==33 || e.getKeyCode()==34) && (ansicht < MASKEN_ANSICHT) ){
 						e.consume();
 						//Neuer Tag soll gewählt werden
-						PanelTastenAuswerten(e);
+						panelTastenAuswerten(e);
 						break;
 					}
 					if (e.getKeyCode()==38 || e.getKeyCode()==40){
@@ -540,7 +542,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						break;
 					}
 					if ((e.getKeyCode()==123) && (ansicht < MASKEN_ANSICHT) ){
-						SetAufruf();
+						setAufruf();
 						aktiveSpalte[2] = welche;
 						oSpalten[welche].requestFocus();
 						break;
@@ -622,9 +624,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							wochenbelegung = ParameterLaden.vKKollegen.get(wahl).Reihe ;
 							//System.out.println("Reine Wochenbelegung - Belegung der Spalte "+welche+" ist Behandler - " +belegung[welche]);
 							if(wocheErster.equals("")){
-								AnsichtStatement(ansicht,aktuellerTag);
+								ansichtStatement(ansicht,aktuellerTag);
 							}else{
-								AnsichtStatement(ansicht,wocheErster);							
+								ansichtStatement(ansicht,wocheErster);							
 							}						
 						}
 					}catch(java.lang.ArrayIndexOutOfBoundsException ex){
@@ -634,20 +636,20 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}else if(ansicht == MASKEN_ANSICHT){
 					maskenbelegung = ParameterLaden.vKKollegen.get(wahl).Reihe ;
 					maskenwahl = wahl;
-					String maskenbehandler = (maskenbelegung < 10 ? "0"+maskenbelegung+"BEHANDLER" : new Integer(maskenbelegung).toString()+"BEHANDLER");
+					String maskenbehandler = (maskenbelegung < 10 ? "0"+maskenbelegung+"BEHANDLER" : Integer.toString(maskenbelegung)+"BEHANDLER");
 					String stmtmaske = "select * from masken where behandler = '"+maskenbehandler+"' ORDER BY art";
-					MaskenStatement(stmtmaske);
+					maskenStatement(stmtmaske);
 					
 				}
 			}
 		});
 		oCombo[welche].addFocusListener(new java.awt.event.FocusAdapter() {   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				FocusHandling(0,-1);
+				focusHandling(0,-1);
 				//new Thread(new FocusSetzen()).start();				
 			}
 			public void focusGained(java.awt.event.FocusEvent e) {
-				FocusHandling(0,1);
+				focusHandling(0,1);
 						if(!TerminFenster.thisClass.eltern.isActive){
 							thisClass.eltern.feuereEvent(25554);
 						}
@@ -771,7 +773,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		/**jetzt noch die Listener initialisieren**/
 		for(int i = 0; i < 7; i++){
-			ComboListenerInit(i);
+			comboListenerInit(i);
 		}
 	}
 	
@@ -788,7 +790,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			//BoxLayout boxlay = new BoxLayout(TerminFlaeche,BoxLayout.X_AXIS);
 			TerminFlaeche.setLayout(gridLayout);
 			TerminFlaeche.setBorder(null);
-			DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 5, 1, 3, false, true, true, true);
+			//DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 5, 1, 3, false, true, true, true);
 			JXPanel cb = null;
 
 			for(int i = 0;i<7;i++){
@@ -809,7 +811,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[i].addMouseListener(new MouseAdapter() {
 					
 					public void mousePressed(MouseEvent e) {
-					      JComponent c = (JComponent)e.getSource();
+					      //JComponent c = (JComponent)e.getSource();
 					      String[] sdaten = datenInDragSpeicherNehmen();
 					      if(sdaten[0]==null){
 					    	  return;
@@ -836,9 +838,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      if(behandler <= -1){
 					    	  return;
 					      }
-					      DRAG_PAT = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("© ", "");
-					      DRAG_NUMMER = 	new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) );
-					      DRAG_UHR =  new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) );
+					      DRAG_PAT = 	 ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("© ", "");
+					      DRAG_NUMMER = 	 (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) ;
+					      DRAG_UHR =   (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) ;
 					      altaktiveSpalte = aktiveSpalte.clone();
 					      //new J
 					      //draghandler.setText(sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
@@ -963,7 +965,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							break;	
 						}
 						if ( (ec==123) && (ansicht != MASKEN_ANSICHT) ){
-							SetAufruf();
+							setAufruf();
 							oSpalten[tspalte].requestFocus();
 							break;
 						}
@@ -991,7 +993,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								&& (!e.isControlDown() && (!e.isAltDown())) && (!e.isShiftDown()) ){
 						//HauptAufgabe ist Weitergabe an Tastenauswerten
 							e.consume();
-							PanelTastenAuswerten(e);
+							panelTastenAuswerten(e);
 							//if(! (ec==33 || ec==34))
 							oSpalten[tspalte].requestFocus();
 							break;
@@ -1001,7 +1003,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						//HauptAufgabe ist Weitergabe und Tastenauswerten
 							//gruppierungMalen();
 							
-							PanelTastenAuswerten(e);
+							panelTastenAuswerten(e);
 							
 							oSpalten[tspalte].requestFocus();
 							break;
@@ -1267,11 +1269,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					//System.out.println("Maus losgelassen");
 					//dragLab[tspalte].setText("");
 					dragStart = false;
-					SwingUtilities.invokeLater(new Runnable(){
-						public  void run(){
-							//oSpalten[tspalte].setSpalteaktiv(false);
-						}
-					});
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
@@ -1339,9 +1336,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								}else if(ansicht==WOCHEN_ANSICHT){	//WOCHEN_ANSICHT muß noch entwickelt werden!
 									if(aktiveSpalte[2] == 0){
 
-										setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
+										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
 									}else{
-										setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 									}
 									new Thread(new LockRecord()).start();
 									while(lockok == 0){
@@ -1389,11 +1386,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			});
 			oSpalten[tspalte].addFocusListener(new java.awt.event.FocusAdapter() {   
 				public void focusLost(java.awt.event.FocusEvent e) {    
-					FocusHandling(1,-1);
+					focusHandling(1,-1);
 
 				}
 				public void focusGained(java.awt.event.FocusEvent e) {
-					FocusHandling(1,1);
+					focusHandling(1,1);
 							if(!TerminFenster.thisClass.eltern.isActive){
 								thisClass.eltern.feuereEvent(25554);
 							}
@@ -1722,33 +1719,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Normalanzeige.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						setNormalanzeige();
-						/*
-						if(ansicht == NORMAL_ANSICHT){
-							JOptionPane.showMessageDialog (null, "Depp! Sie sind bereits in der Normalanzeige....");
-							return;
-						}
-						
-						oCombo[0].setSelectedItem(sbelegung[0]);oCombo[0].setEnabled(true);
-						oCombo[1].setSelectedItem(sbelegung[1]);oCombo[1].setEnabled(true);
-						oCombo[2].setSelectedItem(sbelegung[2]);oCombo[2].setEnabled(true);
-						oCombo[3].setSelectedItem(sbelegung[3]);oCombo[3].setEnabled(true);
-						oCombo[4].setSelectedItem(sbelegung[4]);oCombo[4].setEnabled(true);
-						oCombo[5].setSelectedItem(sbelegung[5]);oCombo[5].setEnabled(true);
-						oCombo[6].setSelectedItem(sbelegung[6]);oCombo[6].setEnabled(true);
-						
-						ansicht = NORMAL_ANSICHT;
-						aktiveSpalte[0]=0;
-						aktiveSpalte[1]=0;						
-						aktiveSpalte[2]=0;						
-						aktiveSpalte[3]=0;
-						for(int i=0;i<7;i++){
-							oSpalten[i].spalteDeaktivieren();
-						}
-						AnsichtStatement(ansicht,aktuellerTag);
-						Normalanzeige.setEnabled(false);
-						Wochenanzeige.setEnabled(true);
-						*/
-						
 					}
 				});
 			}
@@ -1777,7 +1747,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			for(int i=0;i<7;i++){
 				oSpalten[i].spalteDeaktivieren();
 			}
-			AnsichtStatement(ansicht,aktuellerTag);
+			ansichtStatement(ansicht,aktuellerTag);
 			Normalanzeige.setEnabled(false);
 			Wochenanzeige.setEnabled(true);
 		}
@@ -1791,48 +1761,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Wochenanzeige.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						setWochenanzeige();
-						/*
-						if(ansicht == WOCHEN_ANSICHT){
-							JOptionPane.showMessageDialog (null, "Depp! Sie sind bereits in der Wochenanzeige....");
-							return;
-						}
-						
-						sbelegung[0]= (String)oCombo[0].getSelectedItem();
-						sbelegung[1]= (String)oCombo[1].getSelectedItem();
-						sbelegung[2]= (String)oCombo[2].getSelectedItem();
-						sbelegung[3]= (String)oCombo[3].getSelectedItem();
-						sbelegung[4]= (String)oCombo[4].getSelectedItem();
-						sbelegung[5]= (String)oCombo[5].getSelectedItem();
-						sbelegung[6]= (String)oCombo[6].getSelectedItem();		
-
-						ansicht = WOCHEN_ANSICHT;
-
-						oCombo[0].setSelectedItem(oCombo[aktiveSpalte[2]].getSelectedItem());
-						oCombo[1].setSelectedIndex(0);
-						oCombo[2].setSelectedIndex(0);
-						oCombo[3].setSelectedIndex(0);
-						oCombo[4].setSelectedIndex(0);
-						oCombo[5].setSelectedIndex(0);
-						oCombo[6].setSelectedIndex(0);
-
-						oCombo[1].setEnabled(false);
-						oCombo[2].setEnabled(false);
-						oCombo[3].setEnabled(false);
-						oCombo[4].setEnabled(false);
-						oCombo[5].setEnabled(false);
-						oCombo[6].setEnabled(false);
-						
-						aktiveSpalte[0]=0;
-						aktiveSpalte[1]=0;						
-						aktiveSpalte[2]=0;						
-						aktiveSpalte[3]=0;
-						for(int i=0;i<7;i++){
-							oSpalten[i].spalteDeaktivieren();
-						}
-						AnsichtStatement(ansicht,aktuellerTag);
-						Normalanzeige.setEnabled(true);
-						Wochenanzeige.setEnabled(false);					
-					*/
 					}
 
 				});
@@ -1878,7 +1806,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			for(int i=0;i<7;i++){
 				oSpalten[i].spalteDeaktivieren();
 			}
-			AnsichtStatement(ansicht,aktuellerTag);
+			ansichtStatement(ansicht,aktuellerTag);
 			try{
 				Normalanzeige.setEnabled(true);
 				Wochenanzeige.setEnabled(false);
@@ -1908,7 +1836,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * 
  * 	
  */
-	public void PanelTastenAuswerten(java.awt.event.KeyEvent e){
+	public void panelTastenAuswerten(java.awt.event.KeyEvent e){
 		e.consume();
 		
 		//TagWahlNeu tagWahlNeu = null;
@@ -1942,26 +1870,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			break;
 
 		case 38: //Pfeil auf
-			//System.out.println("Schift gedrückt "+this.shiftGedrueckt);
-			//gibt ersten Termineintrag zurück ok.
-			//System.out.println("einzeln"+((ArrayList<Vector<String>>) vTerm.get(belegung[aktiveSpalte[3]])).get(0).get(1));
-			//gibt komplette Liste zurück z.B. zum clonen ok.
-			//Hier muß die Gruppierungroutine rein.
-			//System.out.println("Gruppierung aktiv: "+gruppierenAktiv);
 			
 			if(!gruppierenAktiv){
 				if( ((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)) ||
 						((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (maskenbelegung >= 0))){
 					if(ansicht==NORMAL_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
-						//	anz = (((ArrayList<Vector<String[]>>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
 					}else if(ansicht==WOCHEN_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
-						//anz = (((ArrayList<Vector<String[]>>) vTerm.get(aktiveSpalte[2])).get(0)).size();		
-						//System.out.println("Wert von Anz = "+anz);
 					}else if(ansicht==MASKEN_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();						
-						//System.out.println("In Maskenansicht Pfeil auf - Größe des Vectors = "+anz);
 					}
 					if(anz > 1){
 						if(aktiveSpalte[0] == 0){
@@ -1980,7 +1898,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 
 					}	
-					//TestFenster.LabelSetzen(1, new Integer(aktiveSpalte[0]).toString());
 				}
 			}else{
 				if(ansicht==NORMAL_ANSICHT){
@@ -2002,10 +1919,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			break;
 		case 40: //Pfeil ab
-			//System.out.println("Schift gedrückt "+this.shiftGedrueckt);			
-			//System.out.println("Gruppierung aktiv: "+gruppierenAktiv);
 			if(!gruppierenAktiv){
-				// Original = if((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)){
 				if( ((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)) ||
 						((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (maskenbelegung >= 0))){
 					if(ansicht==NORMAL_ANSICHT){
@@ -2037,7 +1951,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
 						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
 					}
-					//TestFenster.LabelSetzen(1, new Integer(aktiveSpalte[0]).toString());
 				}
 			}else{
 				if(ansicht==NORMAL_ANSICHT){
@@ -2047,7 +1960,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}else if(ansicht==MASKEN_ANSICHT){
 					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
 				}
-				//System.out.println("Gruppierung abwärts");
 				if( (gruppierenBloecke[1]< anz-1) && anz > 0){
 					gruppierenBloecke[1]=gruppierenBloecke[1]+1;
 					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
@@ -2103,12 +2015,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			interminEdit = true;
 			int[] position;
-			Point pEltern = Reha.thisFrame.getLocation();
-			Point pDieses = this.ViewPanel.getLocation();
-			int aktive = aktiveSpalte[2];
+			//Point pEltern = Reha.thisFrame.getLocation();
+			//Point pDieses = this.ViewPanel.getLocation();
+			//int aktive = aktiveSpalte[2];
 			int x,y;
 			Point pPosition = new Point();
-			
 			position = oSpalten[aktiveSpalte[2]].getPosition();
 			pPosition = oSpalten[aktiveSpalte[2]].getLocationOnScreen();
 			x= pPosition.x+position[0]+(oSpalten[aktiveSpalte[2]].getWidth()/2);
@@ -2142,9 +2053,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}else if(ansicht==WOCHEN_ANSICHT){
 				if(aktiveSpalte[2] == 0){
-					setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
+					setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
 				}else{
-					setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+					setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 				}
 				new Thread(new LockRecord()).start();
 				while(lockok == 0){
@@ -2190,7 +2101,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		return;
 	}
 	private Point positionErmitteln(){
-		Point pPosition = new Point();
+		Point pPosition = null;
 		int [] position = null;
 		int x,y;
 		position = oSpalten[aktiveSpalte[2]].getPosition();
@@ -2224,7 +2135,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		terminangaben[2] = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(2).get(block));
 		terminangaben[3] = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(3).get(block));
 		terminangaben[4] = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(4).get(block));
-		terminangaben[5] = new Integer(block).toString();
+		terminangaben[5] = Integer.toString(block);
 		/*
 		for(int i = 0;i<6;i++){
 			System.out.println("terminangaben["+i+"] = "+terminangaben[i]);
@@ -2263,12 +2174,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				// muß korrigiert werden TestFenster.LabelSetzen(1,"Db-Update erforderlich");
 				Tblock tbl = new Tblock();
 				spaltenDatumSetzen(true);
-				/*
-				spaltenDatum[0]=this.aktuellerTag;spaltenDatum[1]=this.aktuellerTag;spaltenDatum[2]=this.aktuellerTag;
-				spaltenDatum[3]=this.aktuellerTag;spaltenDatum[4]=this.aktuellerTag;spaltenDatum[5]=this.aktuellerTag;
-				spaltenDatum[6]=this.aktuellerTag;
-				*/
-
 				if((tbl.TblockInit(this,this.terminrueckgabe,aktiveSpalte[2],aktiveSpalte[0],belegung[aktiveSpalte[2]],vTerm,spaltenDatum,0))>=0){
 					setUpdateVerbot(true);
 					oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
@@ -2277,17 +2182,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}else if(lockok > 0 && ansicht==WOCHEN_ANSICHT){
 				Tblock tbl = new Tblock();
-				//System.out.println("Angeklickt in Wochenansicht = Tag "+this.wocheErster);
 				spaltenDatumSetzen(false);
-				/*
-				spaltenDatum[0]=this.wocheErster;
-				spaltenDatum[1]=datFunk.sDatPlusTage(this.wocheErster,1);
-				spaltenDatum[2]=datFunk.sDatPlusTage(this.wocheErster,2);
-				spaltenDatum[3]=datFunk.sDatPlusTage(this.wocheErster,3);
-				spaltenDatum[4]=datFunk.sDatPlusTage(this.wocheErster,4);
-				spaltenDatum[5]=datFunk.sDatPlusTage(this.wocheErster,5);
-				spaltenDatum[6]=datFunk.sDatPlusTage(this.wocheErster,6);
-				*/
 				if((tbl.TblockInit(this,this.terminrueckgabe,aktiveSpalte[2],aktiveSpalte[0],aktiveSpalte[2],vTerm,spaltenDatum,this.wocheBehandler))>=0){
 					setUpdateVerbot(true);
 					oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
@@ -2356,25 +2251,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			behandler = aktiveSpalte[2];
 			block = aktiveSpalte[0];
 		}
-		//System.out.println("Behandler = "+behandler+" / Block = "+block);
-		//ArrayList<Vector<String>> arraylist = (ArrayList<Vector<String>>) vTerm.get(behandler);
 		try{
-		//System.out.println("Block = "+block);	
-		terminrueckgabe[0] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(block);
-		terminrueckgabe[1] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(block);
-		terminrueckgabe[2] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(block);
-		terminrueckgabe[3] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(3)).get(block);
-		terminrueckgabe[4] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(4)).get(block);
-		terminrueckgabe[5] = new Integer(block).toString();
+			terminrueckgabe[0] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(block);
+			terminrueckgabe[1] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(block);
+			terminrueckgabe[2] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(block);
+			terminrueckgabe[3] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(3)).get(block);
+			terminrueckgabe[4] = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(4)).get(block);
+			terminrueckgabe[5] = Integer.toString(block);
 		}catch(java.lang.ArrayIndexOutOfBoundsException ex){
 			terminrueckgabe[0] = "";
 			terminrueckgabe[1] = "";
 			terminrueckgabe[2] = "";
 			terminrueckgabe[3] = "";
 			terminrueckgabe[4] = "";
-			terminrueckgabe[5] = new Integer(-1).toString();
+			terminrueckgabe[5] = Integer.toString(-1);
 			neuerBlockAktiv(  ((ArrayList)vTerm.get(behandler)).size());
-			//System.out.println("Aktiver Block = ");			
 		}
 	}
 	
@@ -2390,10 +2281,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * 
  * 	
  */
-	public int AktuelleAnsicht(){
+	public int aktuelleAnsicht(){
 		return this.ansicht;
 	}	
-	public void Start(){
+	public void start(){
 		oSpalten[0].requestFocus();
 		return;
 	}	
@@ -2410,7 +2301,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		return this.updateverbot;
 	}
 
-	public int AktuellesSet(){
+	public int aktuellesSet(){
 		return this.aktSet;
 	}
 /*
@@ -2431,16 +2322,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private void KlickSetzen(kalenderPanel oPanel,java.awt.event.MouseEvent e){
 		int spalte = 0;
 		aktiveSpalte = oPanel.BlockTest(e.getX(),e.getY(),aktiveSpalte);
-		/*
-		System.out.println("Ansicht = "+ansicht);
-		System.out.println("AktiveSpalte[0] ="+aktiveSpalte[0]);		
-		System.out.println("AktiveSpalte[1] ="+aktiveSpalte[1]);
-		System.out.println("AktiveSpalte[2] ="+aktiveSpalte[2]);
-		System.out.println("AktiveSpalte[3] ="+aktiveSpalte[3]);
-		*/		
 		if (aktiveSpalte[2] != aktiveSpalte[3]){
 			if(gruppierenAktiv){
-				//System.out.println("Spaltenwechsel");
 				gruppierenAktiv = false;
 				oSpalten[gruppierenSpalte].setInGruppierung(false);
 				oSpalten[gruppierenSpalte].repaint();
@@ -2468,40 +2351,24 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * 
  * 
  */
-	public void SetAufruf(){
+	public void setAufruf(){
 		if (this.ansicht == 1){
 			JOptionPane.showMessageDialog (null, "Aufruf Terminset ist nur in der Normalansicht möglich (und sinnvoll...)");
 			return;			
 		}
-		//satzSperren("22BEHANDLER","06.02.2008");
 		Point xpoint = this.ViewPanel.getLocationOnScreen();
 		setUpdateVerbot(true);
 		swSetWahl = -1;
-		//SetWahlNeu sw = new SetWahlNeu();
 		SetWahl sw = new SetWahl(this);
 		xpoint.x = xpoint.x +(this.ViewPanel.getWidth()/2) - (sw.getWidth()/2);
 		xpoint.y = xpoint.y +(this.ViewPanel.getHeight()/2) - (sw.getHeight()/2);
 		sw.setLocation(xpoint);
 		sw.setVisible(true);
-		//sw = null;
 		setUpdateVerbot(false);
-		//if (swSetWahl >= 0){
 		if (sw.ret >= 0){
-			//System.out.println("Rückgabewert = "+sw.ret);
-			//this.aktSet = sw.ret;
-			this.aktSet = new Integer(swSetWahl);
-			String[] sSet = new String[7];
+			this.aktSet = swSetWahl;
+			String[] sSet;// = new String[7];
 			sSet = ((ArrayList<String[]>)SystemConfig.aTerminKalender.get(this.aktSet).get(1)).get(0);
-			//sSet = ((ArrayList<String[]>)SystemConfig.aTerminKalender.get(swSetWahl).get(1)).get(0);
-			/*
-			System.out.println(sSet[0]);
-			System.out.println(sSet[1]);
-			System.out.println(sSet[2]);
-			System.out.println(sSet[3]);
-			System.out.println(sSet[4]);
-			System.out.println(sSet[5]);
-			System.out.println(sSet[6]);
-			*/
 			oCombo[0].setSelectedItem(sSet[0]);
 			oCombo[1].setSelectedItem(sSet[1]);
 			oCombo[2].setSelectedItem(sSet[2]);			
@@ -2514,12 +2381,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			//satzEntsperren();
 		}
 	}
-	public void StartTitel(){
+	public void startTitel(){
 		String stag = datFunk.sHeute();
 		thisClass.eltern.setTitle(datFunk.WochenTag(stag)+" "+stag+" -- KW: "+datFunk.KalenderWoche(stag)+" -- [Normalansicht]");
-	//((JXTitledPanel) ViewPanel.getParent()).setTitle(datFunk.WochenTag(datFunk.sHeute())+" "+datFunk.sHeute()+" KW:"+datFunk.KalenderWoche(datFunk.sHeute())+" ---- [Normalansicht]");
+
 	}
-	public void SetzeFocus(){
+	public void setzeFocus(){
 		oSpalten[0].requestFocus();
 	}
 	private void SetzeLabel(){
@@ -2529,38 +2396,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		Integer.toString(aktiveSpalte[3]);		
 		Reha.thisClass.messageLabel.setText(ss);
 	}	
-	private void HoleFocus(){
+	private void holeFocus(){
 		oSpalten[aktiveSpalte[2]].requestFocus();
 		Reha.thisClass.messageLabel.setText("in hole");
 	}
-	private void FocusHandling(int panel,int plusminus){
+	private void focusHandling(int panel,int plusminus){
 		focus[panel] = focus[panel]+plusminus;
 		if (focus[0]== 0 && focus[1]== 0){
 			if (this.hasFocus){
 			}
-			/*
-			try {
-				eltern.setSelected(false);
-			} catch (PropertyVetoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
 			this.hasFocus = false;
-			//Reha.thisClass.shiftLabel.setText("Focus weg");
 		}else{
 			if(!this.hasFocus){
 				this.hasFocus = true;
-				/*
-				try {
-					eltern.setSelected(true);
-				} catch (PropertyVetoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				*/
-
-				//Reha.thisClass.shiftLabel.setText("Focus erhalten");
 				if (this.setOben !=0){
 					//((JXPanel)this.GrundFlaeche.getParent().getParent()).aktiviereIcon();
 				}
@@ -2575,20 +2423,17 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * 	
  */
 /******************Bastelt das SQL-Statement****************/
-		public String AnsichtStatement(int iansicht,String stag){
+		public String ansichtStatement(int iansicht,String stag){
 			String sstate = "";
 			int behandler;
 			String sletzter,serster, sbehandler;
 			if (this.ansicht == NORMAL_ANSICHT){
-				//System.out.println("DBType = "+SystemConfig.vDatenBank.get(0).get(2));
 				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
-					//sstate = "SELECT * FROM flexkc WHERE datum = '"+datFunk.sDatInSQL(stag)+"' LIMIT "+ParameterLaden.vKKollegen.size();
 					sstate = "SELECT * FROM flexkc WHERE datum = '"+datFunk.sDatInSQL(stag)+"' LIMIT "+ParameterLaden.maxKalZeile;
 				}else{ //ADS
 					sstate = "SELECT * FROM flexkc WHERE datum = '"+datFunk.sDatInSQL(stag)+"'";
 				}
-				//System.out.println("Verwendetes Statement=" +sstate);
-				MacheStatement(sstate,iansicht);
+				macheStatement(sstate,iansicht);
 				/*******bislang aktiv*********/
 				/*
 				if (! ((JXTitledPanel)ViewPanel.getParent()==null) ){
@@ -2631,7 +2476,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				datFunk.sDatInSQL(sletzter)+"'"+
 				" AND behandler = '"+sbehandler+
 				"BEHANDLER'";
-				MacheStatement(sstate,iansicht);
+				macheStatement(sstate,iansicht);
 				thisClass.eltern.setTitle(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 				//((JXTitledPanel) ViewPanel.getParent()).setTitle(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 				//JRehaInternal.thisClass.setzeTitel(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
@@ -2642,7 +2487,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 
 /******************Mache Statement****************/
-	protected void MacheStatement(String sstmt,int ansicht) {
+	protected void macheStatement(String sstmt,int ansicht) {
 
 		// TODO Auto-generated method stub
 		Statement stmt = null;
@@ -2680,11 +2525,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				int ende = (5*belegt);
 				maxblock = maxblock + (ende+5);
 				durchlauf = 1;
-				/* abgeschaltet für Performance-Check
-				if (aktbehandler == 1){
-					Titel.setText(rs.getString(305));	
-				}
-				*/
 
 				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 					for(i=1;i<ende;i=i+5){
@@ -2770,7 +2610,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 	}
 /******************************/
-	private void MaskenStatement(String sstmt){
+	private void maskenStatement(String sstmt){
 
 		// TODO Auto-generated method stub
 		Statement stmt = null;
@@ -2849,16 +2689,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				aKalList.clear();
 				aktbehandler++;
 			}
-			//aSpaltenDaten.add(aKalList.clone());
-		
+	
 			if(maxblock > 0){
-			datenZeichnen(aSpaltenDaten);
-			TerminFenster.rechneMaske();
-			if(ansicht==MASKEN_ANSICHT){
-				oSpalten[aktiveSpalte[2]].requestFocus(true);
-				oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
-			}
-			//System.out.println("Anzahl Tage = "+aSpaltenDaten.size());
+				datenZeichnen(aSpaltenDaten);
+				TerminFenster.rechneMaske();
+				if(ansicht==MASKEN_ANSICHT){
+					oSpalten[aktiveSpalte[2]].requestFocus(true);
+					oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
+				}
 			}
 			} catch(SQLException ex){
 				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
@@ -2897,15 +2735,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		vect = null;
 		if (vTerm.size() > 0){
 			if (this.ansicht == NORMAL_ANSICHT){
-				/*
-				new Thread(new KalZeichnen(oSpalten[0],vTerm,belegung[0])).start();
-				new Thread(new KalZeichnen(oSpalten[1],vTerm,belegung[1])).start();
-				new Thread(new KalZeichnen(oSpalten[2],vTerm,belegung[2])).start();
-				new Thread(new KalZeichnen(oSpalten[3],vTerm,belegung[3])).start();
-				new Thread(new KalZeichnen(oSpalten[4],vTerm,belegung[4])).start();
-				new Thread(new KalZeichnen(oSpalten[5],vTerm,belegung[5])).start();				
-				new Thread(new KalZeichnen(oSpalten[6],vTerm,belegung[6])).start();
-				*/	
 				SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					oSpalten[0].datenZeichnen(vTerm,belegung[0]);
@@ -2926,17 +2755,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				new Thread(new KalZeichnen(oSpalten[4],vTerm,4)).start();
 				new Thread(new KalZeichnen(oSpalten[5],vTerm,5)).start();				
 				new Thread(new KalZeichnen(oSpalten[6],vTerm,6)).start();				
-				/*
-				oSpalten[0].datenZeichnen(vTerm,0);
-				oSpalten[1].datenZeichnen(vTerm,1);
-				oSpalten[2].datenZeichnen(vTerm,2);
-				oSpalten[3].datenZeichnen(vTerm,3);
-				oSpalten[4].datenZeichnen(vTerm,4);
-				oSpalten[5].datenZeichnen(vTerm,5);		
-				oSpalten[6].datenZeichnen(vTerm,6);
-				//System.out.println("in Datenzeichnen - Ansicht:1");
-				 * 
-				 */
 			}
 		}	
 	}	
@@ -2949,7 +2767,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  */
 
 	
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 			try{
 			if (evt.getDetails()[0].equals(this.GrundFlaeche.getParent().getName()) ){
 				//System.out.println("Für "+this.getName()+" ist ein Event eingetroffen");
@@ -2961,7 +2779,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					if(SystemConfig.UpdateIntervall > 0 || db_Aktualisieren!= null){
 						db_Aktualisieren.stop();
 					}
-					finalize();
+					finalise();
 					//TerminFenster.thisClass = null;
 				}else if(evt.getDetails()[2].equals("RequestFocus")){
 					oSpalten[aktiveSpalte[2]].requestFocus();
@@ -2991,8 +2809,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void setLockStatement(String sBehandler,String sDatum){
 		lockStatement = sBehandler+sDatum;
 		lockedRecord = lockStatement;
-		//System.out.println(lockStatement);
-		//lockStatement = "select behandler from flexkc where datum='"+datFunk.sDatInSQL(sDatum)+"'"+" AND behandler='"+sBehandler+"'"+" for update"; 
 	}
 
 	public static String getLockStatement(){
@@ -3017,8 +2833,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public static synchronized void setLockOk(int lock,String message){
 		TerminFenster.thisClass.lockok = lock;
 		TerminFenster.thisClass.lockmessage = message;
-		//lockowner = maschine;
-		//lockspalte = spalte;
 		if (TerminFenster.thisClass.lockok < 0 && TerminFenster.thisClass.zf != null){
 			
 		}
@@ -3138,17 +2952,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if(aktdauer == Integer.parseInt(datenSpeicher[3])){
 				datenSpeicher[2] = aktstart;
 				datenSpeicher[4] = aktend;
-				//System.out.println("datenAusSpeicherHolen vor Blocksetzen(1)");
 				blockSetzen(1);
-				//System.out.println("datenAusSpeicherHolen nach Blocksetzen(1)");
-				// o.k. blockPasstGenau();
 				break;
 			}
 			if(aktdauer < Integer.parseInt(datenSpeicher[3])){
 				dialogRetInt = 0;
 	 		   Point p = positionErmitteln();
 	 		   new TerminEinpassen(p.x,p.y);
-	 		    //System.out.println("Rückgabewert von TerminEinpassen = "+dialogRetInt);
 				switch(dialogRetInt){
 					case 0:
 						wartenAufReady = false;
@@ -3289,13 +3099,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			int gesperrt=0;
 			gesperrt = lockVorbereiten();
 			setzeRueckgabe();
-			/*
-			if(terminrueckgabe[5].equals("-1")){
-				starteUnlock();
-				setUpdateVerbot(false);
-				return;
-			}
-			*/
+
 			if(gesperrt < 0){
 				sperreAnzeigen();
 				return;
@@ -3412,12 +3216,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private int lockVorbereiten(){
 		lockok = 0;
 		if(ansicht==NORMAL_ANSICHT){
-			setLockStatement((belegung[aktiveSpalte[2]]+1 >=10 ? new Integer(belegung[aktiveSpalte[2]]+1).toString()+"BEHANDLER" : "0"+(belegung[aktiveSpalte[2]]+1)+"BEHANDLER"),aktuellerTag);
+			setLockStatement((belegung[aktiveSpalte[2]]+1 >=10 ? Integer.toString(belegung[aktiveSpalte[2]]+1)+"BEHANDLER" : "0"+(belegung[aktiveSpalte[2]]+1)+"BEHANDLER"),aktuellerTag);
 		}else if(ansicht==WOCHEN_ANSICHT){
 			if(aktiveSpalte[2] == 0){
-				setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
+				setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
 			}else{
-				setLockStatement((wochenbelegung >=10 ? new Integer(wochenbelegung).toString()+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
+				setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),datFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 			}
 		}
 		
@@ -3475,22 +3279,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			if(((AbstractButton) arg0.getSource()).getText() == "Behandler-Set aufrufen"){
 				setUpdateVerbot(true);
-				SetAufruf();
+				setAufruf();
 				setUpdateVerbot(false);				
 				oSpalten[aktiveSpalte[2]].requestFocus();
 				break;
 			}
 			if(((AbstractButton) arg0.getSource()).getText() == "Datums-Dialog aufrufen"){
 				setUpdateVerbot(true);
-/*
-				final String xaktueller = new String(this.aktuellerTag);
-				SwingUtilities.invokeLater(new Runnable(){
-	    			public  void run(){
-	    				tagSprung(xaktueller,0);	    				
-	    			}
-	    		});
-	    		
-*/	    			
 				tagSprung(this.aktuellerTag,0);	
 				setUpdateVerbot(false);
 				oSpalten[aktiveSpalte[2]].requestFocus();
@@ -3533,7 +3328,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			if(((AbstractButton) arg0.getSource()).getText() == "Telefonliste aller Patienten (über Rezept-Nummer)"){
 				//if(arg0.getActionCommand().equals("PatRezSuchen")){
-					doTelefonListe();
+				doTelefonListe();
 			}
 
 		}
@@ -3635,8 +3430,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						Thread.sleep(20);
 					}
 					
-					String s1 = new String("#PATSUCHEN");
-					String s2 = new String((String) xpat_int);
+					String s1 = "#PATSUCHEN";
+					String s2 = (String) xpat_int;
 					PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
 					pEvt.setPatStammEvent("PatSuchen");
 					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
@@ -3647,8 +3442,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}.execute();
 		}else{
 			ProgLoader.ProgPatientenVerwaltung(1);
-			String s1 = new String("#PATSUCHEN");
-			String s2 = new String((String) pat_int);
+			String s1 = "#PATSUCHEN";
+			String s2 = (String) pat_int;
 			PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
 			pEvt.setPatStammEvent("PatSuchen");
 			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
@@ -3735,25 +3530,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				intagWahl = false;
 				dragLab[aktiveSpalte[2]].setIcon(null);
 				dragLab[aktiveSpalte[2]].setText("");
-				//tagWahlNeu = null;
-				//System.out.println("intagWahl ="+intagWahl);
-				/*
-	        	new Thread(){
-	        		public void run(){
-	    	        	new SwingWorker<Void,Void>(){
-	    					@Override
-	    					protected Void doInBackground() throws Exception {
-	    	    				return null;
-	    					}
-	    	    		}.execute();	
-	        		}
-	        	}.start();
-	        	*/
+				tagWahlNeu = null;
+				
 	        	new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
+						/*
 						Runtime r = Runtime.getRuntime();
 						r.gc();
+						*/
 						return null;
 					}
 	    		}.execute();
@@ -3767,7 +3552,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
 				dragLab[aktiveSpalte[2]].setIcon(null);
 				dragLab[aktiveSpalte[2]].setText("");
-	        	String sstmt = 	AnsichtStatement(this.ansicht,this.wocheAktuellerTag);
+	        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
 	        }
 
 		
@@ -3776,7 +3561,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void suchSchonMal(){
 		if( datGewaehlt != null && (!datGewaehlt.equals(this.aktuellerTag)) ){	        	
 			this.aktuellerTag = datGewaehlt;
-			String sstmt = 	AnsichtStatement(this.ansicht,this.aktuellerTag);
+			String sstmt = 	ansichtStatement(this.ansicht,this.aktuellerTag);
 		}
 	}
 
@@ -3822,52 +3607,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        		this.wocheAktuellerTag = this.aktuellerTag;
 	        	}
 	        	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,(7*sprung));
-	        	String sstmt = 	AnsichtStatement(this.ansicht,this.wocheAktuellerTag);
+	        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
 	        }
 
 		
     	SetzeLabel();
-		
-    	
-		/*
-		final int xsprung=sprung,xansicht=this.ansicht;
-		final String xaktuellerTag = this.aktuellerTag , xwocheAktuellerTag=this.wocheAktuellerTag;
-		new Thread(){
-			public void run(){
-		//System.out.println("Sprungdatum = "+sprungdatum+" / Sprung ="+sprung);
-		datGewaehlt = null;
-
-	        if(ansicht == NORMAL_ANSICHT){
-	        	String datwahl = (xsprung != 0 ? datFunk.sDatPlusTage(xaktuellerTag,xsprung) : xaktuellerTag);
-	    		TagWahlNeu tagWahlNeu = new TagWahlNeu(Reha.thisFrame,null,datwahl);
-	    		final TagWahlNeu xTagWahlNeu = tagWahlNeu;
-	    		SwingUtilities.invokeLater(new Runnable(){
-	    			public  void run(){
-	    	    		xTagWahlNeu.setzeFocus();	    				
-	    			}
-	    		});	
-	    		tagWahlNeu.setLocationRelativeTo(ViewPanel);
-	    		tagWahlNeu.setVisible(true);
-
-	    		if( datGewaehlt != null && (!datGewaehlt.equals(xaktuellerTag)) ){	        	
-	    			//xaktuellerTag = datGewaehlt;
-	    			String sstmt = 	AnsichtStatement(xansicht,datGewaehlt);
-	    		}
-	    		tagWahlNeu = null;
-	        }else if(ansicht == WOCHEN_ANSICHT){
-	        	if(xwocheAktuellerTag.isEmpty()){
-	        		//notwendig->xwocheAktuellerTag = xaktuellerTag;
-	        	}
-	        	//notwendig->xwocheAktuellerTag = datFunk.sDatPlusTage(xwocheAktuellerTag,(7*xsprung));
-	        	String sstmt = 	AnsichtStatement(xansicht,xwocheAktuellerTag);
-	        }
-
-		
-    	SetzeLabel();
-		
-			}
-		}.start();
-		*/
 	}
 	private void tagBlaettern(int richtung){
 		/*Point xpoint = this.ViewPanel.getLocationOnScreen();
@@ -3875,7 +3619,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		xpoint.y = xpoint.y +(this.ViewPanel.getHeight()/2);*/
         if (ansicht == NORMAL_ANSICHT)/*Normalansicht*/{
         	this.aktuellerTag = datFunk.sDatPlusTage(this.aktuellerTag,+richtung);
-        	String sstmt = 	AnsichtStatement(this.ansicht,this.aktuellerTag);		        	
+        	String sstmt = 	ansichtStatement(this.ansicht,this.aktuellerTag);		        	
         	this.oSpalten[0].requestFocus();
         	
         }else if(ansicht == WOCHEN_ANSICHT){
@@ -3884,7 +3628,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
         		this.wocheAktuellerTag = this.aktuellerTag;
         	}
         	this.wocheAktuellerTag = datFunk.sDatPlusTage(this.wocheAktuellerTag,+(richtung*7));
-        	String sstmt = 	AnsichtStatement(this.ansicht,this.wocheAktuellerTag);
+        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
         }
 	}
 	public void terminAufnehmen(int behandler,int block){
@@ -3927,14 +3671,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if(ansicht == NORMAL_ANSICHT){
 			sTerminVergabe[5] = (String) ParameterLaden.getKollegenUeberReihe(xaktBehandler+1);
 			//sTerminVergabe[5] = (String) ParameterLaden.vKollegen.get(xaktBehandler+1).get(0);
-			sTerminVergabe[6] = new Integer(behandler+1).toString();
+			sTerminVergabe[6] = Integer.toString(behandler+1);
 		}else if(ansicht==WOCHEN_ANSICHT){
 			sTerminVergabe[5] = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
 			//sTerminVergabe[5] = (String) ParameterLaden.vKollegen.get(wocheBehandler).get(0);
-			sTerminVergabe[6] = new Integer(wocheBehandler).toString();
+			sTerminVergabe[6] = Integer.toString(wocheBehandler);
 		}
-		sTerminVergabe[10] = new Integer(behandler).toString();
-		sTerminVergabe[7] = new Integer(block).toString();
+		sTerminVergabe[10] = Integer.toString(behandler);
+		sTerminVergabe[7] = Integer.toString(block);
 		//System.out.println(sTerminVergabe[3]);
 		sTerminVergabe[1] = datFunk.sDatInDeutsch(sTerminVergabe[3]);
 		sTerminVergabe[0] = datFunk.WochenTag(sTerminVergabe[1]);	
@@ -3948,12 +3692,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	public void aktualisieren(){
         if(ansicht == NORMAL_ANSICHT){
-        	String sstmt = 	AnsichtStatement(this.ansicht,this.aktuellerTag);
+        	String sstmt = 	ansichtStatement(this.ansicht,this.aktuellerTag);
         }else if(ansicht == WOCHEN_ANSICHT){
         	if(this.wocheAktuellerTag.isEmpty()){
         		this.wocheAktuellerTag = this.aktuellerTag;
         	}
-        	String sstmt = 	AnsichtStatement(this.ansicht,this.wocheAktuellerTag);
+        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
         }
 	}
 
@@ -4127,7 +3871,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(!grobRaus){
 							//System.out.println("Stufe 1 - o.k.");
 							String sbeginnneu = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(spaltneu[0]); 
-							int spAktiv = new Integer(aktiveSpalte[2]);
+							int spAktiv = aktiveSpalte[2];
 							aktiveSpalte = altaktiveSpalte.clone();
 							wartenAufReady = true;
 							grobRaus = false;
@@ -4147,7 +3891,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							if(!grobRaus){
 								//System.out.println("Stufe 2 - o.k.");
 								if(altaktiveSpalte[2]==spAktiv){
-									String sbeginn = new String( (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(altaktiveSpalte[0]) );
+									String sbeginn = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(altaktiveSpalte[0]) ;
 									int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
 									//System.out.println("Suche nach Uhrzeit -> "+sbeginn);
 									for(int i2 = 0 ; i2 < lang; i2++){
@@ -4195,8 +3939,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 					
 				}
-				//datenAusSpeicherHolen();
-				//System.out.println("Belegt mit -> "+sname+" - "+sreznum);
 				try{
 					for(int x2 = 0; x2 < 1; x2++){
 						String name = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]+1);
@@ -4388,18 +4130,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 						/**********Datenbank beschreiben*************/
 						String sblock = new Integer(aktiveSpalte[0]+1).toString();
-						/*
-						String stmt = "Update flexkc set T"+sblock+" = '"+copyright+swname+"' where datum = '"+
-						datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
-						"behandler = '"+(swbehandler < 10 ? "0"+new Integer(swbehandler+1).toString()+"BEHANDLER" : new Integer(swbehandler).toString()+"BEHANDLER"   )
-						+"' AND TS"+sblock+" = '"+swbeginn+"' AND T"+sblock+" = '"+swaltname+
-						"' AND N"+sblock+"='"+sworigreznum+"' LIMIT 1";
-						System.out.println(stmt);
-						new ExUndHop().setzeStatement(new String(stmt));
-						*/
 						String toupdate = "T"+sblock+" = '"+copyright+swname+"'";
 						String towhere = "datum='"+datFunk.sDatInSQL(datFunk.sHeute())+"' AND "+
-						"behandler='"+(swbehandler < 10 ? "0"+new Integer(swbehandler+1).toString()+"BEHANDLER" : new Integer(swbehandler+1).toString()+"BEHANDLER"   )+"' "+
+						"behandler='"+(swbehandler < 10 ? "0"+Integer.toString(swbehandler+1)+"BEHANDLER" : Integer.toString(swbehandler+1)+"BEHANDLER"   )+"' "+
 						"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
 						"' AND N"+sblock+"='"+sworigreznum+"'"; 
  
@@ -4422,10 +4155,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					
 				}else{
 					JOptionPane.showMessageDialog(null, "Dieses Rezept existiert nicht bzw. ist bereits abgerechnet!!");
-					// rezept existiert in der Rezeptdatenbank nicht.
-					// prüfen ob in der lza
-					// sofern ja melden daß Rezept bereits abgerechnet
-					// sofern nein melden daß die Rezeptnummer aber auch sowas von grottenfalsch ist.....
 				}
 				//System.out.println("Bestätige Termin "+swname+" mit Rezeptnummer "+swreznum);
 				}catch(Exception ex){
@@ -4498,7 +4227,6 @@ class LockRecord implements Runnable{
 	boolean gesperrt = false;
 	String sstmt = "";
 	Statement sState = null;
-	PreparedStatement pstmt=null;
 	ResultSet rs = null;
 	String threadStmt = "";
 	  public void SatzSperren(){
@@ -4510,23 +4238,15 @@ class LockRecord implements Runnable{
 				//System.out.println(threadStmt);
 				rs = this.sState.executeQuery(threadStmt);
 				if(!rs.next()){
-
-					//threadStmt = "insert into flexlock set sperre = '"+TerminFenster.getLockStatement()+
-					//"' , maschine = '"+SystemConfig.dieseMaschine+"'";
 					new Thread(new SetLock()).start();
-					//this.gesperrt = this.sState.execute(threadStmt);
-					//this.gesperrt = this.sState.execute("COMMIT");
 					TerminFenster.setLockOk(1,"");
 					TerminFenster.setLockSpalte(TerminFenster.getLockStatement());
-					
-
 					Reha.thisClass.messageLabel.setText("Lock erfolgreich == 1");
 				}else{
 					TerminFenster.setLockOk(-1,rs.getString("maschine"));
 					Reha.thisClass.messageLabel.setText("Lock misslungen");
 					Reha.thisClass.messageLabel.setText("Lock misslungen == -1");					
 				}
-				//System.out.println();
 				
 		}catch(SQLException ex) {
 				this.gesperrt = false;
@@ -4538,34 +4258,10 @@ class LockRecord implements Runnable{
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
 				
 		}
-		/*
-		finally {
-			if (rs != null) {
-				try {
-					rs.close();
-					rs = null;
-				} catch (SQLException sqlEx) { // ignore }
-					rs = null;
-				}
-			}	
-			if (sState != null) {
-				try {
-					sState.close();
-					sState = null;
-				} catch (SQLException sqlEx) { // ignore }
-					sState = null;
-				}
-			}
-		}
-		*/				
-
-			
 
 	  }
 	  public void run(){
-		  //System.out.println("Vor SatzSperren"); 
 	    SatzSperren();
-	    //System.out.println("Nach SatzSperren");
 	  }
 }
 
@@ -4578,8 +4274,6 @@ boolean success = false;
 				success = this.sState.execute("Delete from flexlock where sperre = '"+TerminFenster.getLockSpalte()+"' AND maschine = '"+SystemConfig.dieseMaschine+"'");
 				success = this.sState.execute("COMMIT");
 				Reha.thisClass.messageLabel.setText("Entserrung efolgreich");
-				//System.out.println("Delete from flexlock where sperre = '"+TerminFenster.getLockSpalte()+"' AND maschine = '"+SystemConfig.dieseMaschine+"'");
-				//System.out.println("Lockspalte = '"+TerminFenster.getLockSpalte()+"'!!!!!!!!!!!!!!!!");
 				TerminFenster.setLockOk(0,"");
 				TerminFenster.getThisClass().wartenAufReady = false;
 			}catch(SQLException ex) {
@@ -4594,24 +4288,12 @@ boolean success = false;
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 
 			}
-			/*
-			finally {
-				if (sState != null) {
-					try {
-						sState.close();
-						sState = null;
-					} catch (SQLException sqlEx) { // ignore }
-						sState = null;
-					}
-				}
-			}
-			*/		  
+
 	  }
 	  
 	  
 	  public void run(){
 	    SatzEntsperren();
-	    //System.out.println("Entsperrt setLockOk = 0");
 	  }
 
 }
@@ -4639,20 +4321,6 @@ class SetLock implements Runnable{
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());				
 			}
-			/*
-			finally {
-				if (sState != null) {
-					try {
-						sState.close();
-						sState = null;
-					} catch (SQLException sqlEx) { // ignore }
-						sState = null;
-					}
-				}
-			}
-			*/				
-	
-
 	  }
 
 	  public void run(){
@@ -4662,11 +4330,10 @@ class SetLock implements Runnable{
 }
 
 class DirectLockRecord implements Runnable{
-	boolean gesperrt = false;
+	boolean gesperrt; 
 	String sstmt = "";
-	Statement sState = null;
-	PreparedStatement pstmt=null;
-	ResultSet rs = null;
+	Statement sState;
+	ResultSet rs;
 	String threadStmt = "";
 	  public void SatzSperren(){
 		  TerminFenster.setLockOk(0,"");
@@ -4702,21 +4369,6 @@ class DirectLockRecord implements Runnable{
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
 				
 			}
-			/*
-			finally {
-				if (sState != null) {
-					try {
-						sState.close();
-						sState = null;
-					} catch (SQLException sqlEx) { // ignore }
-						sState = null;
-					}
-				}
-			}
-			*/				
-
-			
-
 	  }
 	  public void run(){
 	    SatzSperren();

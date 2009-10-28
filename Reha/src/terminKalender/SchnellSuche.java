@@ -232,7 +232,7 @@ public String dieserName(){
 	return this.getName();
 }
 
-public void RehaTPEventOccurred(RehaTPEvent evt) {
+public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
 	System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
 	String ss =  this.getName();
@@ -444,7 +444,7 @@ final class SuchenInTagen extends Thread implements Runnable{
 							name = rs.getString("T"+(ii+1)); 
 							nummer = rs.getString("N"+(ii+1));
 							skollege = rs.getString(303).substring(0,2);
-							if( skollege.substring(0,1) == "0" ){
+							if( skollege.substring(0,1).equals("0") ){
 								ikollege = new Integer(skollege.substring(1,1));
 							}else{
 								ikollege = new Integer(skollege);								

@@ -157,11 +157,11 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 			System.out.println("Event Type "+event.getEventType());
 		case SerialPortEvent.DATA_AVAILABLE:
 			//System.out.println("Data available");
-		    byte[] readBuffer = new byte[30];
+		    //byte[] readBuffer = new byte[30];
 		    byte[] outBuffer = null;
 		    String sout = null;
 		    StringBuffer sb = new StringBuffer();
-		    char[] zeichen = new char[1];  
+		    //char[] zeichen = new char[1];  
 		    byte[] buffer = new byte[1024];
 		    String outString = "";
 		    try {

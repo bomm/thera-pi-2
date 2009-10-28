@@ -180,36 +180,36 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		this.selectWhenFocus = selectWhenFocus;
 		
 		for (int i = 0;i<1;i++){
-			if(type=="GROSS"){
+			if(type.equals("GROSS")){
 				this.setDocument(new NurGrossDocument(this));
 				break;
 			}
-			if(type=="KLEIN"){
+			if(type.equals("KLEIN")){
 				this.setDocument(new NurKleinDocument(this));
 				break;
 			}
-			if(type=="NORMAL"){
+			if(type.equals("NORMAL")){
 				//this.setDocument(new NurNormalDocument(this));
 				break;
 			}
-			if(type=="ZAHLEN"){
+			if(type.equals("ZAHLEN")){
 				this.setDocument(new NurZahlenDocument(this));
 				break;
 			}
-			if(type=="STUNDEN"){
+			if(type.equals("STUNDEN")){
 				this.setDocument(new NurStundenDocument(this));
 				break;
 			}
-			if(type=="MINUTEN"){
+			if(type.equals("MINUTEN")){
 				this.setDocument(new NurMinutenDocument(this));
 				break;
 			}
-			if(type=="DATUM"){
+			if(type.equals("DATUM")){
 				this.setDocument(new DateFieldDocument(this,false));
 				this.setInputVerifier(new DateInputVerifier());
 				break;
 			}
-			if(type=="D"){
+			if(type.equals("D")){
 				this.setDocument(new NurZahlenDocument(this));
 				break;
 			}

@@ -459,7 +459,7 @@ public class Ns2 implements ActionListener {
 		"1px,0dlu");
 		dum = new PanelBuilder(dummy);
 		dum.getPanel().setOpaque(false);
-		ccdum = new CellConstraints();
+		//ccdum = new CellConstraints();
 		dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));
 		kopf.add(dum.getPanel(),cckopf.xy(1,26) );
 		kopf.getPanel().validate();

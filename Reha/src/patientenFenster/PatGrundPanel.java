@@ -208,12 +208,14 @@ public int aid = -1;
 public int kid = -1;
 public int autoPatid = -1;
 
+public PatGrundPanel instTest = null;
+
 
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 private int iformular;
 public PatGrundPanel(JPatientInternal jry){
 	super();
-	
+
 	thisClass = this;
 	this.addContainerListener(this);
 	ptp = new PatStammEventClass();
@@ -499,7 +501,7 @@ private void starteFormulare(){
 			kf.setLocation(pt.x-100,pt.y+25);
 			kf.setModal(true);
 			kf.setVisible(true);
-			final KassenFormulare xkf = kf;
+			//final KassenFormulare xkf = kf;
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -551,7 +553,7 @@ public void neu(){
 	PatGrundPanel.thisClass.neuanlagePatient(true,"");		
 }
 
-public void ArztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
+public void arztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
 	String aliste = "";
 	for(int i = 0;i < vec.size();i++){
 		aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
@@ -566,7 +568,7 @@ public void ArztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
 	}
 
 }
-public void ArztListeSpeichernString(String aliste,boolean neu, String xpatintern){
+public void arztListeSpeichernString(String aliste,boolean neu, String xpatintern){
 	String sets = "aerzte='"+aliste+"'";
 	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
 	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
@@ -841,10 +843,12 @@ public void neuanlagePatient(boolean lneu,String feldname){
     pinPanel = null;
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run(){
+	 		   /*
 				Runtime r = Runtime.getRuntime();
 			    r.gc();
 			    long freeMem = r.freeMemory();
 			    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+			    */
 	 	   }
 	});
 
@@ -1062,14 +1066,14 @@ public void keyTyped(KeyEvent arg0) {
 }
 
 @Override
-public void PatStammEventOccurred(PatStammEvent evt) {
+public void patStammEventOccurred(PatStammEvent evt) {
 	// TODO Auto-generated method stub
 	//System.out.println("Event im Neuen PatStamm = "+evt);
 	//System.out.println("Detail 0 = "+evt.getDetails()[0]);
 	//System.out.println("Detail 1 = "+evt.getDetails()[1]);	
 	if(evt.getDetails()[0].equals("#PATSUCHEN")){
 		final String xpatint = evt.getDetails()[1].trim();
-		aktPatID = new String(xpatint);
+		aktPatID = xpatint;
 		final String xrez = evt.getDetails()[2].trim();
 		// Anzeigedaten holen
 
@@ -1082,9 +1086,9 @@ public void PatStammEventOccurred(PatStammEvent evt) {
 						SwingUtilities.invokeLater(new Runnable(){
 						 	   public  void run()
 						 	   {
-						 		   String titel = new String("Patient: "+PatGrundPanel.thisClass.ptfield[2].getText()+", "+
+						 		   String titel = "Patient: "+PatGrundPanel.thisClass.ptfield[2].getText()+", "+
 						 					PatGrundPanel.thisClass.ptfield[3].getText()+" geboren am: "+
-						 					PatGrundPanel.thisClass.ptfield[4].getText());
+						 					PatGrundPanel.thisClass.ptfield[4].getText();
 						 			PatGrundPanel.thisClass.jry.setzeTitel(titel);
 						 			//System.out.println("neuer Titel = "+titel);
 						 	   }
@@ -1253,7 +1257,7 @@ class DatenHolen{
 	DatenHolen(String patint){
 	Statement stmt = null;
 	ResultSet rs = null;
-	String sstmt = new String();
+	String sstmt = "";
 
 	sstmt = "select * from pat5 where PAT_INTERN ='"+patint+"'";
 		
@@ -1352,7 +1356,7 @@ class XRezepteHolen{
 	XRezepteHolen(String patint){
 	Statement stmt = null;
 	ResultSet rs = null;
-	String sstmt = new String();
+	String sstmt = "";
 
 	sstmt = "select * from verordn where PAT_INTERN ='"+patint+"' ORDER BY REZ_DATUM";
 		
@@ -1626,7 +1630,7 @@ class PatNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 	}
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){
@@ -1674,7 +1678,7 @@ class JPatTextField extends JRtaTextField{
 						protected Void doInBackground() throws Exception {
 							// TODO Auto-generated method stub
 							//System.out.println("In Mousedoppelklick "+xname);
-							String s1 = new String("#KORRIGIEREN");
+							String s1 = "#KORRIGIEREN";
 							String s2 = xname;
 							PatStammEvent pEvt = new PatStammEvent(this);
 							pEvt.setPatStammEvent("PatSuchen");

@@ -324,7 +324,7 @@ public class BlockHandling {
 	}
 	/*****************************************/	
 	private int blockZusammenFassen(){
-		String [] alteDaten = {null,null,null,null,null};
+		//String [] alteDaten = {null,null,null,null,null};
 		int aktBlockzahl;
 		int [] grundDaten = TerminFenster.getThisClass().getGruppierenClipBoard();
 		int startBlock,endBlock,anzahlBloecke,anzahlGesamt;
@@ -341,7 +341,7 @@ public class BlockHandling {
 		anzahlGesamt = Integer.parseInt(datenfeld.getFeld(grundDaten[3],5,0));
 		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(grundDaten[3],5,4));
 		String db_behandler = datenfeld.getFeld(grundDaten[3],5,2);
-		int ibehandler = (db_behandler.substring(0,1)=="0" ?
+		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 						Integer.parseInt(db_behandler.substring(1,1)) :
 							Integer.parseInt(db_behandler.substring(0,2))	);
 		anzahlBloecke = (endBlock - startBlock) +1;
@@ -351,61 +351,8 @@ public class BlockHandling {
 		String endeuhr = datenfeld.getFeld(grundDaten[3],4,endBlock);
 		int startMinuten = (int) zeitFunk.ZeitDifferenzInMinuten(startuhr,
 				endeuhr) ;
-		String minuten = new Integer(startMinuten).toString();
-		
-		/*
-		for (int i = 0; i < 1; i++){
-			if( (startBlock==0) && (endBlock==anzahlGesamt-1) && (anzahlGesamt > 0) ){
-				// die Gesamte Spalte
-				datenfeld.setFeld(grundDaten[3],0,0,termin);
-				datenfeld.setFeld(grundDaten[3],1,0,reznummer);
-				datenfeld.setFeld(grundDaten[3],2,0,startuhr );
-				datenfeld.setFeld(grundDaten[3],3,0,minuten);
-				datenfeld.setFeld(grundDaten[3],4,0,endeuhr);	
-				//datenfeld.setFeld(grundDaten[3],5,0,"1");
-				//datenfeld.setAnzahlBloecke(grundDaten[3],1);
-				for (int ii = endBlock; ii > startBlock; ii--){
-					datenfeld.loeschenBlock(grundDaten[3],ii);
-				}
-				break;
-			}
-			if( (startBlock==0) && (endBlock<anzahlGesamt-1) && (anzahlGesamt > 0) ){
-				// von Beginn an aber nicht die komplette Spalte
-				datenfeld.setFeld(grundDaten[3],1,0,reznummer);
-				datenfeld.setFeld(grundDaten[3],2,0,startuhr );
-				datenfeld.setFeld(grundDaten[3],3,0,minuten);
-				datenfeld.setFeld(grundDaten[3],4,0,endeuhr);	
-				for (int ii = endBlock; ii > startBlock; ii--){
-					datenfeld.loeschenBlock(grundDaten[3],ii);
-				}
-				break;
-			}
-			if( (startBlock>0) && (endBlock==anzahlGesamt-1) && (anzahlGesamt > 0) ){
-				// ab irgendwo > 0 bis zum Spaltenende
-				datenfeld.setFeld(grundDaten[3],0,startBlock,termin);
-				datenfeld.setFeld(grundDaten[3],1,startBlock,reznummer);
-				datenfeld.setFeld(grundDaten[3],2,startBlock,startuhr );
-				datenfeld.setFeld(grundDaten[3],3,startBlock,minuten);
-				datenfeld.setFeld(grundDaten[3],4,startBlock,endeuhr);	
-				for (int ii = endBlock; ii > startBlock; ii--){
-					datenfeld.loeschenBlock(grundDaten[3],ii);
-				}
-				break;
-			}
-			if( (startBlock>0) && (endBlock<anzahlGesamt-1) && (anzahlGesamt > 0) ){
-				// ab irgendwo > 0 bis irgendwo < Spaltenende also zwischendrin
-				datenfeld.setFeld(grundDaten[3],0,startBlock,termin);
-				datenfeld.setFeld(grundDaten[3],1,startBlock,reznummer);
-				datenfeld.setFeld(grundDaten[3],2,startBlock,startuhr );
-				datenfeld.setFeld(grundDaten[3],3,startBlock,minuten);
-				datenfeld.setFeld(grundDaten[3],4,startBlock,endeuhr);	
-				for (int ii = endBlock; ii > startBlock; ii--){
-					datenfeld.loeschenBlock(grundDaten[3],ii);
-				}
-				break;
-			}
-		}
-		*/	
+		String minuten = Integer.toString(startMinuten);
+	
 		datenfeld.setFeld(grundDaten[3],0,startBlock,termin);
 		datenfeld.setFeld(grundDaten[3],1,startBlock,reznummer);
 		datenfeld.setFeld(grundDaten[3],2,startBlock,startuhr );
@@ -427,7 +374,7 @@ public class BlockHandling {
 		
 		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
-		int ibehandler = (db_behandler.substring(0,1)=="0" ?
+		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 				Integer.parseInt(db_behandler.substring(1,1)) :
 					Integer.parseInt(db_behandler.substring(0,2))	);		
 		
@@ -489,7 +436,7 @@ public class BlockHandling {
 		datenfeld.setFeld(kollege,1,startBlock,"");
 		datenfeld.setFeld(kollege,2,startBlock,alteDaten[2]);		
 		int dauer = (int) zeitFunk.ZeitDifferenzInMinuten(alteDaten[2], alteDaten[4]);
-		String sdauer = new Integer(dauer).toString();
+		String sdauer = Integer.toString(dauer);
 		datenfeld.setFeld(kollege,3,startBlock,sdauer);		
 		datenfeld.setFeld(kollege,4,startBlock,alteDaten[4]);		
 		
@@ -513,7 +460,7 @@ public class BlockHandling {
 		int [] bloecke = {block,block+richtung}; 
 		String db_datum = datFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
-		int ibehandler = (db_behandler.substring(0,1)=="0" ?
+		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 				Integer.parseInt(db_behandler.substring(1,1)) :
 					Integer.parseInt(db_behandler.substring(0,2))	);		
 
@@ -531,7 +478,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,3,bloecke[1],tauschTermine[0][3]);
 			/// rechnen aus startzeit und dauer 
 			int StartAktuell = (int) zeitFunk.MinutenSeitMitternacht(tauschTermine[1][2]);
-			StartAktuell = StartAktuell + new Integer(tauschTermine[0][3]);
+			StartAktuell = StartAktuell + Integer.parseInt(tauschTermine[0][3]);
 			String EndeUhr = zeitFunk.MinutenZuZeit(StartAktuell);		
 			datenfeld.setFeld(kollege,4,bloecke[1],EndeUhr);
 			/********/
@@ -552,7 +499,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,3,bloecke[0],tauschTermine[1][3]);
 			/// rechnen aus startzeit und dauer 
 			int StartAktuell = (int) zeitFunk.MinutenSeitMitternacht(tauschTermine[0][2]);
-			StartAktuell = StartAktuell + new Integer(tauschTermine[1][3]);
+			StartAktuell = StartAktuell + Integer.parseInt(tauschTermine[1][3]);
 			String EndeUhr = zeitFunk.MinutenZuZeit(StartAktuell);		
 			datenfeld.setFeld(kollege,4,bloecke[0],EndeUhr);
 			/********/
@@ -575,7 +522,7 @@ public class BlockHandling {
 		datenfeld.setFeld(kollege,1,0,"@FREI");
 		datenfeld.setFeld(kollege,2,0,SystemConfig.KalenderUmfang[0]);
 		long dauer = SystemConfig.KalenderMilli[1] - SystemConfig.KalenderMilli[0]; 
-		datenfeld.setFeld(kollege,3,0,new Long(dauer).toString());
+		datenfeld.setFeld(kollege,3,0,Long.toString(dauer));
 		datenfeld.setFeld(kollege,4,0,SystemConfig.KalenderUmfang[1]);
 		while(datenfeld.getAnzahlBloecke(kollege)> 1){
 			datenfeld.loeschenBlock(kollege, 1);

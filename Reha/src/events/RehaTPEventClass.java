@@ -38,7 +38,7 @@ public class RehaTPEventClass{
         // and the second is the listener instance
         Iterator listeners = _listeners.iterator();
         while( listeners.hasNext() ) {
-            ( (RehaTPEventListener) listeners.next() ).RehaTPEventOccurred(evt);
+            ( (RehaTPEventListener) listeners.next() ).rehaTPEventOccurred(evt);
         }    }
 
 
@@ -54,7 +54,7 @@ public class RehaTPEventClass{
         Object[] listeners = listenerList.getListenerList();
         for (int i=0; i<listeners.length; i+=2) {
             if (listeners[i]==RehaTPEventListener.class) {
-                 ((RehaTPEventListener)listeners[i+1]).RehaTPEventOccurred(evt);
+                 ((RehaTPEventListener)listeners[i+1]).rehaTPEventOccurred(evt);
             }
         }
     }

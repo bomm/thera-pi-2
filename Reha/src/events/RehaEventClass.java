@@ -42,7 +42,7 @@ public class RehaEventClass {
             if (listeners[i]==RehaEventListener.class) {
                 System.out.println("Listeners= "+listeners[i]);
             	//evt.add("DummDödel");
-                ((RehaEventListener)listeners[i+1]).RehaEventOccurred(evt);
+                ((RehaEventListener)listeners[i+1]).rehaEventOccurred(evt);
             }
         }
     }

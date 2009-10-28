@@ -46,7 +46,7 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 		this.inhalt = null;
 		this.thisContent = null;
 		this.dispose();
-		final String name = new String(this.getName());
+		final String name = this.getName();
 
 
 		SwingUtilities.invokeLater(new Runnable(){
@@ -68,7 +68,7 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 		ArztPanel.thisClass.holeAktArzt(aID);
 	}
 	@Override
-	public void RehaEventOccurred(RehaEvent evt) {
+	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
 			System.out.println("es ist ein Reha-Internal-Event");
 		}

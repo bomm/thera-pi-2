@@ -356,8 +356,8 @@ public class SqlInfo {
 		String ret = praefix;
 		String cmd = test;
 		//zun‰chst versuchen daﬂ immer nur ein Leerzeichen zwischen den Begriffen existiert 
-		cmd = new String(cmd.replaceAll("   ", " "));
-		cmd = new String(cmd.replaceAll("  ", " "));
+		cmd = cmd.replaceAll("   ", " ");
+		cmd = cmd.replaceAll("  ", " ");
 		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daﬂ er nix finder!!!
 		/*
 		String[] felder = suchein;

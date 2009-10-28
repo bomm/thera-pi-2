@@ -312,7 +312,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		FormLayout datenlay = new FormLayout("","");
 		PanelBuilder builder = new PanelBuilder(datenlay);
 		builder.getPanel().setOpaque(false);
-		CellConstraints cc = new CellConstraints();
+		//CellConstraints cc = new CellConstraints();
 		JXPanel dumm = new JXPanel(new BorderLayout());
 		dumm.setOpaque(false);
 		dumm.setBorder(null);
@@ -765,7 +765,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(lines > 0){
 			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
-		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
+		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
 	}
 	public void setzeBild(int satz,int icon){
 		dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[icon],satz,1);
@@ -947,7 +947,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	        if(isAdjusting){
 	        	return;
 	        }
-			StringBuffer output = new StringBuffer();
+			//StringBuffer output = new StringBuffer();
 	        if (lsm.isSelectionEmpty()) {
 
 	        } else {
@@ -1590,10 +1590,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
+		 		   /*
 					Runtime r = Runtime.getRuntime();
 				    r.gc();
 				    long freeMem = r.freeMemory();
 				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				    */
 		 	   }
 		});
 
@@ -1617,7 +1619,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 	}
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){

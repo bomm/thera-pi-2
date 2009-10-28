@@ -415,11 +415,12 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		AktiveFenster.loescheFenster(this.getName());
+		/*
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();
-
-	    System.out.println("Superklasse------->Freier Speicher nach  gc():    " + freeMem);
+		*/
+	    //System.out.println("Superklasse------->Freier Speicher nach  gc():    " + freeMem);
 		//this.getParent().getParent().requestFocus();
 		//System.out.println("Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		// TODO Auto-generated method stub

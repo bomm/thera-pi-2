@@ -213,7 +213,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 	}
 	/*******************************************************/
 	@Override
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		try{
 		String ss = ((JXTitledPanel) this.getParent()).getContentContainer().getName();
 		if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
@@ -315,7 +315,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 				       + "<-- Ende"); 
 		    }
 			@Override
-			public void PatStammEventOccurred(PatStammEvent evt) {
+			public void patStammEventOccurred(PatStammEvent evt) {
 				//System.out.println("Event-Empfangen für :"+((Component) evt.getSource()).getName());
 				// TODO Auto-generated method stub
 				if(evt.getDetails()[2].contains(this.getName())){
@@ -417,7 +417,7 @@ final class PatientSuchen implements Runnable{
 	private void SucheStarten(){
 		Statement stmt = null;
 		ResultSet rs = null;
-		String sstmt = new String();
+		String sstmt = "";
 		if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 				sstmt = "Select *  from pat5 where PAT_INTERN = "+this.patIntern;
 		}else{ //ADS

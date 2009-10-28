@@ -58,7 +58,7 @@ public static int getDBZeile(int kollege){
 return vKKollegen.get(kollege).Reihe;
 }
 public static String getKollegenUeberReihe(int reihe){
-	String ret = new String();
+	String ret ="";
 	int lang = vKKollegen.size();
 	int i;
 	for (i=0;i<lang;i++){

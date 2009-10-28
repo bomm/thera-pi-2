@@ -447,7 +447,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				int igruppe = cmbGrName.getSelectedIndex();
 				String sgueltig = datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[0]);
 				String sdauer = new Long(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[2]).toString();
-				NeueGruppe ng = new NeueGruppe("Gruppe ändern",sgruppe,sgueltig,sdauer,true,false);
+				//NeueGruppe ng = new NeueGruppe("Gruppe ändern",sgruppe,sgueltig,sdauer,true,false);
 				if(neuGruppenName.trim().equals("")){
 					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});	
 				}

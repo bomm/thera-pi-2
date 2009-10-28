@@ -72,7 +72,7 @@ public interface ISmartDialog extends RehaTPEventListener{
 	public void setIgnoreReturn(boolean ignore);
 	
 	public void ListenerSchliessen();
-	public void RehaTPEventOccurred(RehaTPEvent evt);
+	public void rehaTPEventOccurred(RehaTPEvent evt);
 
 
 }  //  @jve:decl-index=0:visual-constraint="387,36"

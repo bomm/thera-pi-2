@@ -815,10 +815,12 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 
 			@Override
 			protected Void doInBackground() throws Exception {
+				/*
 				Runtime r = Runtime.getRuntime();
 			    r.gc();
 			    long freeMem = r.freeMemory();
 			    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+			    */
 				return null;
 			}
 			
@@ -1138,7 +1140,7 @@ class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 	}
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
 			this.setVisible(false);

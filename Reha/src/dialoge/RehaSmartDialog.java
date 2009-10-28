@@ -263,7 +263,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 	}
 	
 	@Override
-	public void RehaTPEventOccurred(RehaTPEvent evt) {
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		//System.out.println("In SmartDialog evt = "+evt);
 		try{
 				if(evt.getDetails()[1].equals("ROT")){ 

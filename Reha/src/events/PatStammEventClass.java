@@ -32,7 +32,7 @@ public class PatStammEventClass {
 	        // and the second is the listener instance
 	        for (int i=0; i<listeners.length; i+=2) {
 	            if (listeners[i]==PatStammEventListener.class) {
-	                 ((PatStammEventListener)listeners[i+1]).PatStammEventOccurred(evt);
+	                 ((PatStammEventListener)listeners[i+1]).patStammEventOccurred(evt);
 	            }
 	        }
 	    }

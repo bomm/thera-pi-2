@@ -805,7 +805,7 @@ public final class INIFile
                     while (objBRdr.ready())
                     {
                         iPos = -1;
-                        strLine  = null;
+                        //strLine  = null;
                         strLine = objBRdr.readLine().trim();
                         if (strLine == null)
                         {

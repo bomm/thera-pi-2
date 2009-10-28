@@ -54,7 +54,7 @@ public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListen
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
-		CellConstraints cc = new CellConstraints();
+		//CellConstraints cc = new CellConstraints();
 		
 		return builder.getPanel();
 	}

@@ -61,7 +61,7 @@ public class tagWahl {
 	 * @return javax.swing.JPanel	
 	 */
 	private JPanel getJContentPane(String sDatText,String tag) {
-		datFunk df = new datFunk();
+		//datFunk df = new datFunk();
 		if (jContentPane == null) {
 			jLabel3 = new JLabel();
 			jLabel3.setBounds(new Rectangle(160, 54, 86, 16));
@@ -127,18 +127,18 @@ public class tagWahl {
 		return jTextField;
 	}
 	public void TagEinstellen(java.awt.event.KeyEvent e,String sTag){
-		datFunk dat = new datFunk();
+		//datFunk dat = new datFunk();
 		//System.out.println(e);		
 		switch(e.getKeyCode()){
 			case 33: //Bild auf
 				//System.out.println("Bild auf");
-				jTextField.setText(dat.sDatPlusTage(sTag, +1));
+				jTextField.setText(datFunk.sDatPlusTage(sTag, +1));
 				jLabel3.setText(datFunk.WochenTag(jTextField.getText()));				
 				jTextField.setCaretPosition(0);
 				break;
 			case 34: //Bild ab
 				//System.out.println("Bild auf");
-				jTextField.setText(dat.sDatPlusTage(sTag, -1));
+				jTextField.setText(datFunk.sDatPlusTage(sTag, -1));
 				jLabel3.setText(datFunk.WochenTag(jTextField.getText()));
 				jTextField.setCaretPosition(0);
 				break;

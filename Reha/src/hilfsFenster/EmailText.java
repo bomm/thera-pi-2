@@ -182,11 +182,11 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode()==10){
-			String [] sret = {null,null};
+			//String [] sret = {null,null};
 			rSmart.dispose();
 		}
 		if(e.getKeyCode()==27){
-			String [] sret = {null,null};
+			//String [] sret = {null,null};
 			rSmart.dispose();
 		}
 

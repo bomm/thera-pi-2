@@ -67,7 +67,7 @@ public class ZeitCancelCellEditor extends AbstractCellEditor implements TableCel
             return false;
         }
         */
-        return startCellEditing();
+        return true; //startCellEditing();
     }
 /*********************************/	
 	

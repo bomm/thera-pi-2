@@ -67,12 +67,7 @@ private int dbBehandler;
 		this.vect = vterm;
 		this.feld = new Felder();
 		this.feld.Init(this.vect);
-		/*
-		System.out.println("Termindaten:"+tDaten.toString());
-		System.out.println("Spalte:"+iSpalte);
-		System.out.println("Block:"+iBlock);
-		System.out.println("Kollege"+iKollege);
-		*/
+
 		AnzahlOrigBloecke = this.feld.getAnzahlBloecke(this.Kollege);
 		for(i=0;i<1;i++){
 
@@ -388,7 +383,7 @@ private int dbBehandler;
 		//}
 		/**** neue Endezeit ist bisherige Endezeit **/
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,endeBisher);
-		this.feld.setFeld(this.Kollege,iDauer,neublocknum,(String) new Integer(differenz).toString());
+		this.feld.setFeld(this.Kollege,iDauer,neublocknum,(String) Integer.toString(differenz));
 		minuten = (int) zeitFunk.MinutenSeitMitternacht( endeBisher)-differenz;
 		beginnZweitBlock = zeitFunk.MinutenZuZeit(minuten);
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum,beginnZweitBlock);		
@@ -400,7 +395,7 @@ private int dbBehandler;
 		//Beginn eintragen 
 		this.feld.setFeld(this.Kollege,iBeginn, this.Block,this.Beginn);
 		//Eingabe Dauer eintragen
-		this.feld.setFeld(this.Kollege,iDauer, this.Block, new Integer(this.Dauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer, this.Block, Integer.toString(this.Dauer));
 		//Endzeit eintragen		
 		this.feld.setFeld(this.Kollege,iEnde, this.Block, this.Ende);
 
@@ -427,7 +422,7 @@ private int dbBehandler;
 
 		beginnBisher = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		endeBisher = this.feld.getFeld(this.Kollege,iEnde,this.Block);
-		dauerBisher = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block));
+		dauerBisher = Integer.parseInt(this.feld.getFeld(this.Kollege,iDauer,this.Block));
 		
 		aktName = this.feld.getFeld(this.Kollege,iName,this.Block);
 		aktNummer = this.feld.getFeld(this.Kollege,iNummer,this.Block);	
@@ -460,7 +455,7 @@ private int dbBehandler;
 		}
 		/**** neue Beginnzeit ist bisherige Beginnzeit**/
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum,beginnBisher);
-		this.feld.setFeld(this.Kollege,iDauer,neublocknum,(String) new Integer(differenz).toString());
+		this.feld.setFeld(this.Kollege,iDauer,neublocknum,(String) Integer.toString(differenz));
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,this.Beginn);		
 
 		//Blockzahl erhöhen und eintragen
@@ -486,7 +481,7 @@ private int dbBehandler;
 		aktNummer = this.feld.getFeld(this.Kollege,iNummer,this.Block);		
 		beginnBisher = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		endeBisher = this.feld.getFeld(this.Kollege,iEnde,this.Block);
-		dauerBisher = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block));
+		dauerBisher = Integer.parseInt(this.feld.getFeld(this.Kollege,iDauer,this.Block));
 		
 		beginnNeu = this.Beginn;
 		endeNeu = this.Ende;
@@ -499,7 +494,7 @@ private int dbBehandler;
 		/****im bisherigen Block lediglich die Zeitdaten verändern***/
 		this.feld.setFeld(this.Kollege,iBeginn, this.Block,beginnBisher);
 		//Eingabe Dauer eintragen
-		this.feld.setFeld(this.Kollege,iDauer, this.Block, new Integer(dauer_vorBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer, this.Block, Integer.toString(dauer_vorBlock));
 		//Endzeit eintragen	diese entspricht der Beginnzeit des neuen Blocks
 		this.feld.setFeld(this.Kollege,iEnde, this.Block, this.Beginn);
 		
@@ -514,7 +509,7 @@ private int dbBehandler;
 
 		this.feld.setFeld(this.Kollege,iBeginn, neublocknum,this.Beginn);
 		//Eingabe Dauer eintragen
-		this.feld.setFeld(this.Kollege,iDauer, neublocknum, new Integer(dauer_aktBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer, neublocknum, Integer.toString(dauer_aktBlock));
 		//Endzeit eintragen	diese entspricht der Beginnzeit des neuen Blocks
 		this.feld.setFeld(this.Kollege,iEnde, neublocknum, this.Ende);
 		
@@ -533,7 +528,7 @@ private int dbBehandler;
 		
 		this.feld.setFeld(this.Kollege,iBeginn, neublocknum,this.Ende);
 		//Eingabe Dauer eintragen
-		this.feld.setFeld(this.Kollege,iDauer, neublocknum, new Integer(dauer_nachBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer, neublocknum, Integer.toString(dauer_nachBlock));
 		//Endzeit eintragen	diese entspricht der Beginnzeit des neuen Blocks
 		String sEndeNeu = zeitFunk.MinutenZuZeit( (int)
 							zeitFunk.MinutenSeitMitternacht(this.Ende)+
@@ -618,12 +613,12 @@ private int dbBehandler;
 		}
 		this.feld.setFeld(this.Kollege,iEnde,this.Block-1,this.Beginn);
 
-		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,new Integer(dauerVorBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,Integer.toString(dauerVorBlock));
 		//int dauerVorblock = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block-1));
 		this.feld.setFeld(this.Kollege,iName,this.Block,this.Name);
 		this.feld.setFeld(this.Kollege,iNummer,this.Block,this.Nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block,this.Beginn);		
-		this.feld.setFeld(this.Kollege,iDauer,this.Block,new Integer(this.Dauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block,Integer.toString(this.Dauer));
 		KalenderBeschreiben th = new KalenderBeschreiben();
 		th.KalenderDaten(this.feld,this.Kollege,aktDatum[this.Spalte],this.dbBehandler);
 	}	
@@ -646,12 +641,12 @@ private int dbBehandler;
 		}
 		this.feld.setFeld(this.Kollege,iEnde,this.Block-1,this.Beginn);
 		//int dauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
-		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,new Integer(dauerVorBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,Integer.toString(dauerVorBlock));
 
 		this.feld.setFeld(this.Kollege,iName,this.Block,this.Name);
 		this.feld.setFeld(this.Kollege,iNummer,this.Block,this.Nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block,this.Beginn);		
-		this.feld.setFeld(this.Kollege,iDauer,this.Block,new Integer(this.Dauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block,Integer.toString(this.Dauer));
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Ende);
 
 		int neublocknum = this.Block+1;
@@ -661,7 +656,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iNummer,neublocknum,nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum,this.Ende);
 		int neudauer = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,ende);
-		this.feld.setFeld(this.Kollege,iDauer,neublocknum,new Integer(neudauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer,neublocknum,Integer.toString(neudauer));
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,ende);
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke+1);
 		//System.out.println("Zeitdifferenz "+neudauer);
@@ -684,7 +679,7 @@ private int dbBehandler;
 		}
 		this.feld.setFeld(this.Kollege,iEnde,this.Block-1,this.Beginn);
 		//int dauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
-		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,new Integer(dauerVorBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,Integer.toString(dauerVorBlock));
 		//int dauerVorblock = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block-1));
 
 		String endeNachBlock = this.feld.getFeld(this.Kollege,iEnde,this.Block+1);
@@ -692,12 +687,12 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iName,this.Block,this.Name);
 		this.feld.setFeld(this.Kollege,iNummer,this.Block,this.Nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block,this.Beginn);		
-		this.feld.setFeld(this.Kollege,iDauer,this.Block,new Integer(this.Dauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block,Integer.toString(this.Dauer));
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Ende);
 		
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block+1,this.Ende);		
 		int dauerNachBlock = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
-		this.feld.setFeld(this.Kollege,iDauer,this.Block+1,new Integer(dauerNachBlock).toString());		
+		this.feld.setFeld(this.Kollege,iDauer,this.Block+1,Integer.toString(dauerNachBlock));		
 		
 		KalenderBeschreiben th = new KalenderBeschreiben();
 		th.KalenderDaten(this.feld,this.Kollege,aktDatum[this.Spalte],this.dbBehandler);
@@ -747,14 +742,14 @@ private int dbBehandler;
 
 		this.feld.setFeld(this.Kollege,iName,this.Block,this.Name);
 		this.feld.setFeld(this.Kollege,iNummer,this.Block,this.Nummer);		
-		this.feld.setFeld(this.Kollege,iDauer,this.Block,new Integer(this.Dauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block,Integer.toString(this.Dauer));
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Ende);
 		
 
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block+1,this.Ende);
 		
 		int iDauerNachBlock = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
-		this.feld.setFeld(this.Kollege,iDauer,this.Block+1,new Integer(iDauerNachBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block+1,Integer.toString(iDauerNachBlock));
 
 		KalenderBeschreiben th = new KalenderBeschreiben();
 		th.KalenderDaten(this.feld,this.Kollege,aktDatum[this.Spalte],this.dbBehandler);
@@ -767,7 +762,7 @@ private int dbBehandler;
 		String aktNummer = this.feld.getFeld(this.Kollege,iNummer,this.Block);		
 		String beginnBisher = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		String endeBisher = this.feld.getFeld(this.Kollege,iEnde,this.Block);
-		int dauerBisher = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block));
+		int dauerBisher = Integer.parseInt(this.feld.getFeld(this.Kollege,iDauer,this.Block));
 		int iDauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(beginnBisher,this.Beginn);		
 
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Beginn);
@@ -780,7 +775,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iName,neublocknum,this.Name);
 		this.feld.setFeld(this.Kollege,iNummer,neublocknum,this.Nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum,this.Beginn);
-		this.feld.setFeld(this.Kollege,iDauer,neublocknum,new Integer(this.Dauer).toString());		
+		this.feld.setFeld(this.Kollege,iDauer,neublocknum,Integer.toString(this.Dauer));		
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,this.Ende);
 
 		//System.out.println(this.Name+"/"+this.Nummer+"/"+this.Beginn+"/"+new Integer(this.Dauer).toString()+"/"+this.Ende);
@@ -788,7 +783,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum+1,this.Ende);
 		String endeNachBlock = this.feld.getFeld(this.Kollege,iEnde,neublocknum+1);
 		int iDauerNachBlock = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
-		this.feld.setFeld(this.Kollege,iDauer,neublocknum+1,new Integer(iDauerNachBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer,neublocknum+1,Integer.toString(iDauerNachBlock));
 		
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke+1);
 
@@ -832,18 +827,18 @@ class Felder{
 		return new Integer( ((String) ((ArrayList<Vector<String>>) tvect.get(iKoll)).get(5).get(0)));
 	}
 	public int setAnzahlBloecke(int iKoll,int bloecke){
-		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(5).set(0,new Integer(bloecke).toString());
+		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(5).set(0,Integer.toString(bloecke));
 		return bloecke;
 	}
 	public int getSize(int iKoll){
 		return ((int) ((ArrayList<Vector<String>>) tvect.get(iKoll)).get(0).size());
 	}
 	public boolean einfuegenBlock(int iKoll,int iFeld){
-		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(0).insertElementAt(new String(""), iFeld);
-		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(1).insertElementAt(new String(""), iFeld);
-		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(2).insertElementAt(new String(""), iFeld);
-		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(3).insertElementAt(new String(""), iFeld);
-		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(4).insertElementAt(new String(""), iFeld);		
+		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(0).insertElementAt("", iFeld);
+		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(1).insertElementAt("", iFeld);
+		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(2).insertElementAt("", iFeld);
+		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(3).insertElementAt("", iFeld);
+		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(4).insertElementAt("", iFeld);		
 		//System.out.println("Vor der Erhöhung"+getAnzahlBloecke(iKoll));
 		setAnzahlBloecke(iKoll,getSize(iKoll));
 		//if (setAnzahlBloecke(iKoll,getAnzahlBloecke(iKoll)+1) >= 0){
@@ -968,7 +963,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 			  buff.append("TE" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,4,i).trim()+"', "  );
 		  }
 		  buff.append("BELEGT" + "='"+Integer.toString(anzahl).trim()+"', "  );
-	  		sKoll = ((dbKollege) >=10 ? new Integer(dbKollege).toString()+"BEHANDLER" : "0"+new Integer(dbKollege).toString()+"BEHANDLER");			  
+	  		sKoll = ((dbKollege) >=10 ? Integer.toString(dbKollege)+"BEHANDLER" : "0"+Integer.toString(dbKollege)+"BEHANDLER");			  
 		  
 			  
 

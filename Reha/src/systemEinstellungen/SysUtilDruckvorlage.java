@@ -525,7 +525,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File inputVerzFile = chooser.getSelectedFile();
-            String inputVerzStr = inputVerzFile.getPath();
+            //String inputVerzStr = inputVerzFile.getPath();
             
             //System.out.println("Eingabepfad:" + inputVerzStr);
             if(inputVerzFile.getName().trim().equals("")){

@@ -533,7 +533,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		int rows = tabhistorie.getRowCount();
 		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
 		Double gesamtumsatz = new Double(0.00); 
-		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		//DecimalFormat dfx = new DecimalFormat( "0.00" );
 		if(db.equals("lza")){
 			if(rows <= 0){
 				//JOptionPane.showMessageDialog(null, "Für diesen Patient wurde noch keine Verordnung abgerechnet!");
@@ -805,7 +805,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	        if(isAdjusting){
 	        	return;
 	        }
-			StringBuffer output = new StringBuffer();
+			//StringBuffer output = new StringBuffer();
 	        if (lsm.isSelectionEmpty()) {
 
 	        } else {

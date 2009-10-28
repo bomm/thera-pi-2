@@ -140,7 +140,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		repaint();
 	}
 	@Override
-	public void RehaEventOccurred(RehaEvent evt) {
+	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
 			System.out.println("es ist ein Reha-Internal-Event");
 		}

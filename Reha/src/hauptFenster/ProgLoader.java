@@ -148,7 +148,7 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 			jry.setName(name);
 			((JRehaInternal)jry).setImmerGross(true);
 			TerminFenster termWin = new TerminFenster();
-			jry.setContent( termWin.Init(containerNr, xansicht,jry));
+			jry.setContent( termWin.init(containerNr, xansicht,jry));
 			jry.setLocation(new Point(5,5));
 			jry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
 			jry.setVisible(true);

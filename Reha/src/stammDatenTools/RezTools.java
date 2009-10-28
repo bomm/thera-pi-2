@@ -276,7 +276,7 @@ public class RezTools {
 			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
 			preise[i] = BigDecimal.valueOf(new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18)));
 		}
-		xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
+		xrezgeb = xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
 		rezgeb = 10.00;
 		//System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
 		String runden;
@@ -404,7 +404,7 @@ public class RezTools {
 			artdbeh[i] = new Integer((String)PatGrundPanel.thisClass.vecaktrez.get(i+8));
 			preise[i] = BigDecimal.valueOf(new Double((String)PatGrundPanel.thisClass.vecaktrez.get(i+18)));
 		}
-		xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
+		xrezgeb = xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
 		if(anfang){
 			rezgeb = 00.00;			
 		}else{

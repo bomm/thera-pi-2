@@ -248,7 +248,7 @@ public String dieserName(){
 	return this.getName();
 }
 
-public void RehaTPEventOccurred(RehaTPEvent evt) {
+public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
 	System.out.println("****************Schlieﬂen des SystemUtil-Fensters**************");
 	String ss =  this.getName();
