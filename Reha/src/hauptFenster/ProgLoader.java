@@ -83,7 +83,7 @@ import terminKalender.TerminFenster;
 import terminKalender.datFunk;
 
 public class ProgLoader {
-public static JPatientInternal pjry = null; 
+//public static JPatientInternal pjry = null; 
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
 
@@ -402,23 +402,23 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	String name = "PatientenVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Patient");
 	containerHandling(containerNr);
-	 pjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
+	JPatientInternal jry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)pjry,0,(Container)pjry.getContentPane());
-	pjry.setName(name);
-	pjry.setSize(new Dimension(900,650));
+	AktiveFenster.setNeuesFenster(name,(JComponent)jry,0,(Container)jry.getContentPane());
+	jry.setName(name);
+	jry.setSize(new Dimension(900,650));
 	//PatGrundPanel patpan = new PatGrundPanel(jry);
-	pjry.setContent(new PatGrundPanel(pjry));
-	pjry.addComponentListener(Reha.thisClass);
+	jry.setContent(new PatGrundPanel(jry));
+	jry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	pjry.setLocation(comps*10, comps*10);
-	pjry.setVisible(true);
-	Reha.thisClass.desktops[containerNr].add(pjry);
-	((JRehaInternal)pjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
+	jry.setLocation(comps*10, comps*10);
+	jry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(jry);
+	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	((JPatientInternal)pjry).aktiviereDiesenFrame(((JPatientInternal)pjry).getName());
-	final JPatientInternal jrx = pjry;
+	((JPatientInternal)jry).aktiviereDiesenFrame(((JPatientInternal)jry).getName());
+	final JPatientInternal jrx = jry;
 	SwingUtilities.invokeLater(new Runnable(){
 
 		public  void run(){
@@ -448,9 +448,9 @@ public static void ProgPatientenVerwaltung(int setPos) {
 
 }
 public static void loeschePatient(){
-	pjry.removeComponentListener(Reha.thisClass);
-	pjry = null;
-	System.gc();
+	//jry.removeComponentListener(Reha.thisClass);
+	//jry = null;
+
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {

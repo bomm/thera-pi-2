@@ -40,14 +40,13 @@ public class AktiveFenster {
 				Fenster.trimToSize();
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run()
-				 	   {	/*
-				 			Runtime r = Runtime.getRuntime();
+				 	   {
+				 			System.out.println("Total Memory  = "+Runtime.getRuntime().totalMemory());    
+				 		    System.out.println("Free Memory   = "+Runtime.getRuntime().freeMemory());
+				 		    Runtime r = Runtime.getRuntime();
 				 		    r.gc();
 				 		    long freeMem = r.freeMemory();
-				 		    */
-				 		    //System.gc();
-				 		    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
-				 		    
+				 		    System.out.println("Freed Memory  = "+freeMem);
 				 	   }
 				});				
 				break;

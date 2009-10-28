@@ -113,8 +113,6 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		 	   public  void run()
 		 	   {
 		 		   AktiveFenster.loescheFenster(name);
-		 		   System.out.println("Setzte staticVariable des JInternalPatFrames auf null");
-		 		   ProgLoader.loeschePatient();
 		 	   }
 		});
 

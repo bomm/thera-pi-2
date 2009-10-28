@@ -79,11 +79,12 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	public JRtaComboBox[] jcmbscan = {null,null,null,null,null};
 	public JRtaCheckBox[] jcbscan = {null,null,null,null,null};
 	Scanner scanner;	
+	PinPanel pinPanel;
 	public ScannerUtil(Point pt){
 		super(null,"ScannerUtil");		
 
 		
-		PinPanel pinPanel = new PinPanel();
+		pinPanel = new PinPanel();
 		pinPanel.setName("ScannerUtil");
 		pinPanel.getGruen().setVisible(false);
 		setPinPanel(pinPanel);
@@ -102,6 +103,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
@@ -109,7 +111,9 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			     LinearGradientPaint p =
 			         new LinearGradientPaint(start, end, dist, colors);
 			     MattePainter mp = new MattePainter(p);
-			     rgb.setBackgroundPainter(new CompoundPainter(mp));		
+			     rgb.setBackgroundPainter(new CompoundPainter(mp));
+			     */		
+			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("ScannerUtil"));
 				return null;
 			}
 			
@@ -260,6 +264,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
+			pinPanel = null;
 			super.dispose();
 			dispose();
 			System.out.println("****************Scanner-Util -> Listener entfernt (Closed)**********");

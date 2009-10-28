@@ -1315,14 +1315,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		getSmartTitledPanel().removeMouseListener(mymouse);
 		getSmartTitledPanel().removeMouseMotionListener(mymouse);
 		mymouse = null;
-		/*
-		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-		Runtime r = Runtime.getRuntime();
-	    r.gc();
-	    
-	    long freeMem = r.freeMemory();
-	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
-	    */
+		rtp = null;
+
 	    if(TerminFenster.thisClass != null){
 	    	new Thread(){
 	    		public void run(){
@@ -1342,10 +1336,19 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    			}
 	    			pinPanel = null;
 	    			RoogleFenster.thisClass = null;
-
+	    			Runtime r = Runtime.getRuntime();
+	    		    r.gc();
+	    		    long freeMem = r.freeMemory();
+	    		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
 	    		}
 	    	}.start();
-	    }	
+	    }else{
+	    	System.out.println("TerminFenster.thisClass = null ");
+			Runtime r = Runtime.getRuntime();
+		    r.gc();
+		    long freeMem = r.freeMemory();
+		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+	    }
 
 	}
 
@@ -1401,8 +1404,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		System.out.println("Roogle - "+this.getName()+" Eltern "+ss);
 		try{
 			if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
-				FensterSchliessen(evt.getDetails()[0]);
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+				FensterSchliessen(evt.getDetails()[0]);
+
 			}	
 		}catch(NullPointerException ne){
 			System.out.println("In RoogleFenster" +evt);
