@@ -331,6 +331,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public HashMap<String,CompoundPainter> compoundPainter = new HashMap<String,CompoundPainter>();
 	/**************************/
 	public JXPanel desktop = null;
+	public ProgLoader progLoader =null;
 	//  
 	//@jve:decl-index=0:
 	/**
@@ -689,7 +690,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    Reha.thisClass.compoundPainter.put("ArztBericht",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
-			    end = new Point2D.Float(400,350);
+			    end = new Point2D.Float(400,650);
 			    dist = new  float[] {0.0f, 0.75f};
 			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
@@ -705,7 +706,71 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    mp = new MattePainter(p);
 			    cp = new CompoundPainter(mp);
 			    Reha.thisClass.compoundPainter.put("ScannerUtil",cp);
-
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(0,400);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("ArztAuswahl",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+				end = new Point2D.Float(0,400);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Green.alpha(0.45f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("KassenAuswahl",cp);
+			    /*****************/
+			    start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(900,100);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("KVKRohDaten",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(600,550);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("ArztPanel",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(400,100);
+			    dist = new  float[]{0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Blue.alpha(0.15f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("ArztNeuanlage",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(400,100);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Green.alpha(0.25f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("KasseNeuanlage",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(600,550);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Green.alpha(0.5f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("KassenPanel",cp);
+			    
+			    progLoader = new ProgLoader();
 			    
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -1914,7 +1979,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     					JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
     					
 						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-   						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+						Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+   						//ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }
                     
@@ -2400,7 +2466,8 @@ public void actionPerformed(ActionEvent arg0) {
 			@Override
 			protected Void doInBackground() throws Exception {
 				Reha.thisClass.progressStarten(true);
-				ProgLoader.ProgPatientenVerwaltung(1);
+				progLoader.ProgPatientenVerwaltung(1);
+				//ProgLoader.ProgPatientenVerwaltung(1);
 				Reha.thisClass.progressStarten(false);
 				return null;
 			}
@@ -2409,12 +2476,14 @@ public void actionPerformed(ActionEvent arg0) {
 	}
 	if(cmd.equals("kasse")){
 		System.out.println("ActionListener kasse");		
-		ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+		Reha.thisClass.progLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+		//ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
 		return;
 	}
 	if(cmd.equals("arzt")){
-		System.out.println("ActionListener arzt");		
-		ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+		System.out.println("ActionListener arzt");	
+		Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+		//ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 		return;
 	}
 	if(cmd.equals("hmabrechnung")){

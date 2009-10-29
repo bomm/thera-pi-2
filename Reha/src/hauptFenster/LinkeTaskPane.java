@@ -256,7 +256,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
 			    		  return;
 			    	  }
-			    	  ProgLoader.ProgRoogleFenster(0, mitgebracht);
+			    	  //ProgLoader.ProgRoogleFenster(0, mitgebracht);
+			    	  Reha.thisClass.progLoader.ProgRoogleFenster(0, mitgebracht);
 			      }
 			      System.out.println(mitgebracht);
 			    } catch (Throwable t) { t.printStackTrace(); }
@@ -472,7 +473,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					@Override
 					protected Void doInBackground() throws Exception {
 						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-						ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+						Reha.thisClass.progLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
+						//ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
 						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						return null;
 					}
@@ -485,7 +487,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					@Override
 					protected Void doInBackground() throws Exception {
 						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-						ProgLoader.ProgTerminFenster(1,0);
+						Reha.thisClass.progLoader.ProgTerminFenster(1, 0);
+						//ProgLoader.ProgTerminFenster(1,0);
 						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						return null;
 					}
@@ -497,7 +500,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					@Override
 					protected Void doInBackground() throws Exception {
 						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-						ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+						Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
+						//ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						return null;
 					}
@@ -512,7 +516,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					"Beenden Sie den Terminkalender und rufen Sie diese Funktion erneut auf.\n\n");
 					return;
 				}
-				ProgLoader.ProgTerminFenster(0,2);
+				Reha.thisClass.progLoader.ProgTerminFenster(0, 2);
+				//ProgLoader.ProgTerminFenster(0,2);
 				//MaskenErstellen();
 				break;
 			}
@@ -538,7 +543,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("[Ru:gl] - Die Terminsuchmaschine")){
-				ProgLoader.ProgRoogleFenster(0,null);
+				Reha.thisClass.progLoader.ProgRoogleFenster(0,null);
+				//ProgLoader.ProgRoogleFenster(0,null);
 				break;
 			}
 			if (cmd.equals("RTA-Wisssen das Universalwissen")){
@@ -582,7 +588,9 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					@Override
 					protected Void doInBackground() throws Exception {
 						setCursor(new Cursor(Cursor.WAIT_CURSOR));
-						ProgLoader.ProgPatientenVerwaltung(1);
+						Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+						//Reha.thisClass.progLoader.ProgTerminFenster(0, 1);
+						//ProgLoader.ProgPatientenVerwaltung(1);
 						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						return null;
 					}

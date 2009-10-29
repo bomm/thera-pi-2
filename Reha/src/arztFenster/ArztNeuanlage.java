@@ -76,17 +76,8 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	boolean neuAnlage;
 	
 	public ArztNeuanlage(ArztNeuDlg eltern,Vector vec,String id){
+		super();
 		/*
-		super();
-		this.eltern = eltern;
-		setOpaque(false);
-		setLayout(new BorderLayout());
-		
-		add(getFelderPanel(),BorderLayout.CENTER);
-		add(getButtonPanel(),BorderLayout.SOUTH);		
-		validate();
-		*/
-		super();
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(ArztPanel.thisClass.getWidth(),100);
 	     float[] dist = {0.0f, 0.75f};
@@ -94,7 +85,8 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));		
+	     */
+	     setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztNeuanlage"));		
 		this.arztDaten = vec;
 		this.arztId = id;
 		this.eltern = eltern;

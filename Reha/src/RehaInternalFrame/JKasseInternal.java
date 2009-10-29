@@ -59,17 +59,7 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 		this.dispose();
 		super.dispose();
 		AktiveFenster.loescheFenster(this.getName());
-		/*
-		SwingUtilities.invokeLater(new Runnable(){
-		 	   public  void run()
-		 	   {
-		 			Runtime r = Runtime.getRuntime();
-		 		    r.gc();
-		 		    long freeMem = r.freeMemory();
-		 		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
-		 	   }
-		});
-		*/
+		Reha.thisClass.progLoader.loescheKasse();
 
 	}
 	public void setzeTitel(String stitel){

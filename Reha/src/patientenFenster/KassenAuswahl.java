@@ -1,5 +1,7 @@
 package patientenFenster;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -58,9 +60,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 	KassenNeuKurz knk = null;
 	public JXPanel grundPanel = null;
 	public String kassenbisher;
-	CompoundPainter cp = null;
-	MattePainter mp = null;
-	LinearGradientPaint p = null;
+
 
 
 	public KassenAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String kassennum){
@@ -78,6 +78,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 
 		grundPanel = new JXPanel(new BorderLayout());
 		/************BackgroundPainter basteln************/
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 		Point2D end = new Point2D.Float(0,getHeight());
 	    float[] dist = {0.0f, 0.75f};
@@ -87,9 +88,10 @@ public class KassenAuswahl extends RehaSmartDialog{
 	    p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	    mp = new MattePainter(p);
+	    */
 	    /************Ende BackgroundPainter basteln************/
-	    cp = new CompoundPainter(mp);
-		grundPanel.setBackgroundPainter(cp);
+	    //cp = new CompoundPainter(mp);
+		grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("KassenAuswahl"));
 		content = getAuswahl();
 		grundPanel.add(content,BorderLayout.CENTER);
 		getSmartTitledPanel().setContentContainer(grundPanel);

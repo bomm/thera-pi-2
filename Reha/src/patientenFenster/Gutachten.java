@@ -1,6 +1,7 @@
 package patientenFenster;
 
 import hauptFenster.ProgLoader;
+import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -374,11 +375,13 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 						
 						System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
 						if(tf.getText().equalsIgnoreCase("ebericht")){
-							ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"E-Bericht",true,"" );			
+							Reha.thisClass.progLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"E-Bericht",true,""); 
+							//ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"E-Bericht",true,"" );			
 							return null;
 						}
 						if(tf.getText().equalsIgnoreCase("nachsorge")){
-							ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"Nachsorge",true,"" );			
+							Reha.thisClass.progLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"Nachsorge",true,"" );
+							//ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,-1,"Nachsorge",true,"" );			
 							return null;
 						}
 						gwahl = null;
@@ -445,7 +448,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		String bertyp = (String) tabbericht.getValueAt(row,1);
 		int berid = new Integer( (String) tabbericht.getValueAt(row,0) );
 		String berempfaenger = (String) tabbericht.getValueAt(row,4);
-		ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false,berempfaenger );
+		Reha.thisClass.progLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false,berempfaenger );
+		//ProgLoader.GutachenFenster(1,PatGrundPanel.thisClass.aktPatID ,berid,bertyp,false,berempfaenger );
 		//ProgLoader.InternalGut2();
 	}
 

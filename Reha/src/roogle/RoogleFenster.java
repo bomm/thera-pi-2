@@ -1336,6 +1336,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    			}
 	    			pinPanel = null;
 	    			RoogleFenster.thisClass = null;
+	    			Reha.thisClass.progLoader.loescheRoogle();
 	    			/*
 	    			Runtime r = Runtime.getRuntime();
 	    		    r.gc();
@@ -1587,36 +1588,6 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 
     				SuchenSeite.schicht = schicht;
     	        	SuchenSeite.selektiv = select;
-    	        	/*
-    	        	System.out.println("Schichtarbeiter planen: "+(schicht ? "JA" : "NEIN"));
-    	        	System.out.println("Selektive Uhrzeiten berücksichtigen: "+(select ? "JA" : "NEIN"));
-    	        	System.out.println("Gerade Kalenderwoche: "+(SuchenSeite.schichtWal[0] ? "JA" : "NEIN"));
-    	        	System.out.println("Ungerade Kalenderwoche: "+(SuchenSeite.schichtWal[1] ? "JA" : "NEIN"));
-    	        	System.out.println("Uhrzeit Gerade Kalenderwoche: "+(SuchenSeite.schichtVor[0] ? "Vor Uhrzeit" : "Nach Uhrzeit"));
-    	        	System.out.println("Uhrzeit = "+SuchenSeite.schichtUhr[0]);
-    	        	System.out.println("Uhrzeit Ungerade Kalenderwoche: "+(SuchenSeite.schichtVor[1] ? "Vor Uhrzeit" : "Nach Uhrzeit"));
-    	        	System.out.println("Uhrzeit = "+SuchenSeite.schichtUhr[1]);
-    	        	*/
-    	        	/*
-    	        	kollegenWahl[ i-1][0] = new Integer((String)dataVector[i-1][3]); //dbzeile
-    				kollegenWahl[ i-1][1] = new Boolean(false);//gewählt
-    				kollegenWahl[ i-1][2] = dataVector[i-1][2];//Abreilung
-    				kollegenWahl[ i-1][3] = dataVector[i-1][1];//Matchcode
-					*/
-    	        	/*
-        			System.out.println("Ausgewählt wurden:");
-    	        	for(i = 0 ; i < kollegenWahl.length;i++){
-    	        		if((Boolean)kollegenWahl[i][1]){
-    	        			System.out.println("Matchcode: "+kollegenWahl[ i][3]);
-    	        			System.out.println("Abteilung: "+kollegenWahl[ i][2]);
-    	        			System.out.println("DbZeile: "+kollegenWahl[ i][0]);
-    	        			System.out.println("Gewählt: "+kollegenWahl[ i][1]);    	        			
-    	        			System.out.println("vKKollegen: "+kollegenWahl[ i][4]);
-    	        			System.out.println("******************************************");
-    	        		}
-    	        	}
-    	        	*/
-    	        	//System.out.println("*****Ende Auswahl******");
     				for(i = 0;i<lang;i++){
     		        	if( ((Boolean)jxTable.getValueAt(i,0)) ){
     		        		gewaehlt = gewaehlt+1;

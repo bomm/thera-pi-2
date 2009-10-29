@@ -55,7 +55,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 
-public class KasNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener {
+public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener {
 	Vector kasDaten = null;
 	String kassenId = "";
 	JRtaComboBox tarifGruppe = null;
@@ -75,8 +75,9 @@ public class KasNeuanlage extends JXPanel implements ActionListener, KeyListener
 	int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17};
 	int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19};
 
-	public KasNeuanlage(Object eltern,Vector vec,String id){
+	public KasseNeuanlage(Object eltern,Vector vec,String id){
 		super();
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(KassenPanel.thisClass.getWidth(),100);
 	     float[] dist = {0.0f, 0.75f};
@@ -84,7 +85,8 @@ public class KasNeuanlage extends JXPanel implements ActionListener, KeyListener
 	     LinearGradientPaint p =
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));		
+	     */
+	     setBackgroundPainter(Reha.thisClass.compoundPainter.get("KasseNeuanlage"));		
 		this.kasDaten = vec;
 		this.kassenId = id;
 		this.eltern = eltern;

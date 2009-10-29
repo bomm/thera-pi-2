@@ -113,6 +113,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		 	   public  void run()
 		 	   {
 		 		   AktiveFenster.loescheFenster(name);
+		 		   Reha.thisClass.progLoader.loeschePatient();
 		 	   }
 		});
 

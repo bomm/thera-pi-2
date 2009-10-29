@@ -83,10 +83,19 @@ import terminKalender.TerminFenster;
 import terminKalender.DatFunk;
 
 public class ProgLoader {
-//public static JPatientInternal pjry = null; 
+public JPatientInternal patjry = null; 
+public JGutachtenInternal gutjry = null;
+public RoogleFenster roogleDlg = null;
+public JArztInternal arztjry = null;
+public JKasseInternal kassejry = null;
+public JTerminInternal terminjry = null;
+
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
 
+	public ProgLoader(){
+		
+	}
 
 protected static RehaSmartDialog xsmart;
 
@@ -105,7 +114,7 @@ public static void ProgPatSuche(boolean setPos){
 	
 }
 /**************Terminkalender Echtfunktion****************************/
-public static void ProgTerminFenster(int setPos,int ansicht) {
+public void ProgTerminFenster(int setPos,int ansicht) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -137,25 +146,25 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 			System.out.println("Terminkalender starten in Container "+containerNr);
 			containerHandling(containerNr);
 			LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			JTerminInternal jry = null;
+			terminjry = null;
 			if(xansicht != 2){
 				String stag = DatFunk.sHeute();
 				String titel = DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]";
-				jry = new JTerminInternal(titel,new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);				
+				terminjry = new JTerminInternal(titel,new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);				
 			}else{
-				jry = new JTerminInternal("Terminkalender - "+DatFunk.sHeute(),new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);
+				terminjry = new JTerminInternal("Terminkalender - "+DatFunk.sHeute(),new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);
 			}
-			jry.setName(name);
-			((JRehaInternal)jry).setImmerGross(true);
+			terminjry.setName(name);
+			((JRehaInternal)terminjry).setImmerGross(true);
 			TerminFenster termWin = new TerminFenster();
-			jry.setContent( termWin.init(containerNr, xansicht,jry));
-			jry.setLocation(new Point(5,5));
-			jry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
-			jry.setVisible(true);
-			Reha.thisClass.desktops[containerNr].add(jry);
+			terminjry.setContent( termWin.init(containerNr, xansicht,terminjry));
+			terminjry.setLocation(new Point(5,5));
+			terminjry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+			terminjry.setVisible(true);
+			Reha.thisClass.desktops[containerNr].add(terminjry);
 			LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)termWin.getViewPanel());			
-			((JTerminInternal)jry).aktiviereDiesenFrame(((JTerminInternal)jry).getName());
+			AktiveFenster.setNeuesFenster(name,(JComponent)terminjry,containerNr,(Container)termWin.getViewPanel());			
+			((JTerminInternal)terminjry).aktiviereDiesenFrame(((JTerminInternal)terminjry).getName());
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
@@ -166,6 +175,10 @@ public static void ProgTerminFenster(int setPos,int ansicht) {
 	});
 
 }
+public void loescheTermine(){
+	terminjry = null;
+}
+
 /**************OpenOffice Echtfunktion*******************************/
 
 
@@ -199,38 +212,28 @@ public static void ProgBenutzerVerwaltung(int setPos) {
 
 }
 /**************Roogle Echtfunktion***********************/
-public static void ProgRoogleFenster(int setPos,String droptext) {
+public void ProgRoogleFenster(int setPos,String droptext) {
 	final String xdroptext = droptext;
 	
 	new Thread(){
 		public void run(){
 			
-	//SwingUtilities.invokeLater(new Runnable(){
- 	  // public  void run()
- 	   //{	
  		   	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
- 			RoogleFenster roogle = new RoogleFenster(Reha.thisFrame,xdroptext);
- 			roogle.setSize(940,680);
- 			roogle.setLocationRelativeTo(null);
- 			roogle.setVisible(true);
+ 			roogleDlg = new RoogleFenster(Reha.thisFrame,xdroptext);
+ 			roogleDlg.setSize(940,680);
+ 			roogleDlg.setLocationRelativeTo(null);
+ 			roogleDlg.setVisible(true);
  			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
- 			/*
- 			final RoogleFenster rog = roogle;
- 		    SwingUtilities.invokeLater(new Runnable(){
- 		 	   public  void run()
- 		 	   {	
- 		 			//rog.setStartFocus();
- 		 	   }
- 			});
- 			*/
- 	   //}
-	//});
 		}
 	}.start();
 }
+public void loescheRoogle(){
+	roogleDlg = null;
+}
+
 
 /**************Krankenkassenverwaltung Echtfunktion***********************/
-public static void KassenFenster(int setPos,String kid) {
+public void KassenFenster(int setPos,String kid) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -252,25 +255,29 @@ public static void KassenFenster(int setPos,String kid) {
 	String name = "KrankenKasse"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Kasse");
 	containerHandling(containerNr);
-	JKasseInternal jry = new JKasseInternal("thera-\u03C0 Krankenkassen-Verwaltung ",SystemConfig.hmSysIcons.get("kassenstamm"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
-	jry.setName(name);
-	jry.setSize(new Dimension(650,500));
+	kassejry = new JKasseInternal("thera-\u03C0 Krankenkassen-Verwaltung ",SystemConfig.hmSysIcons.get("kassenstamm"),containerNr) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)kassejry,containerNr,(Container)kassejry.getContentPane());
+	kassejry.setName(name);
+	kassejry.setSize(new Dimension(650,500));
 	//KassenPanel kasspan = new KassenPanel(jry,kid);
-	jry.setContent(new KassenPanel(jry,kid));	
-	jry.addComponentListener(Reha.thisClass);
+	kassejry.setContent(new KassenPanel(kassejry,kid));	
+	kassejry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	jry.setLocation(comps*10, comps*10);
-	jry.setVisible(true);
-	Reha.thisClass.desktops[containerNr].add(jry);
-	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("KasseOpti") > 0 ? true : false));
+	kassejry.setLocation(comps*10, comps*10);
+	kassejry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(kassejry);
+	((JRehaInternal)kassejry).setImmerGross( (SystemConfig.hmContainer.get("KasseOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
-	((JKasseInternal)jry).aktiviereDiesenFrame( ((JKasseInternal)jry).getName());
+	((JKasseInternal)kassejry).aktiviereDiesenFrame( ((JKasseInternal)kassejry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
-}	
+}
+public void loescheKasse(){
+	kassejry = null;
+}
+
 /**************^Ärzteverwaltung Echtfunktion***********************/
-public static void ArztFenster(int setPos,String aid) {
+public void ArztFenster(int setPos,String aid) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -292,26 +299,30 @@ public static void ArztFenster(int setPos,String aid) {
 	String name = "ArztVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	JArztInternal jry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
-	jry.setName(name);
-	jry.setSize(new Dimension(650,500));
+	arztjry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)arztjry,containerNr,(Container)arztjry.getContentPane());
+	arztjry.setName(name);
+	arztjry.setSize(new Dimension(650,500));
 	//ArztPanel arztpan = new ArztPanel(jry,aid);
-	jry.setContent(new ArztPanel(jry,aid));	
-	jry.addComponentListener(Reha.thisClass);
+	arztjry.setContent(new ArztPanel(arztjry,aid));	
+	arztjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	jry.setLocation(comps*10, comps*10);
-	jry.setVisible(true);
-	Reha.thisClass.desktops[containerNr].add(jry);
-	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
+	arztjry.setLocation(comps*10, comps*10);
+	arztjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(arztjry);
+	((JRehaInternal)arztjry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
-	((JArztInternal)jry).aktiviereDiesenFrame( ((JArztInternal)jry).getName());
+	((JArztInternal)arztjry).aktiviereDiesenFrame( ((JArztInternal)arztjry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
-}	
+}
+public void loescheArzt(){
+	arztjry = null;
+}
+
 
 /**************Gutachten Echtfunktion***********************/
-public static void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu,String empfaenger ) {
+public void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu,String empfaenger ) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -333,28 +344,31 @@ public static void GutachenFenster(int setPos,String pat_intern,int berichtid,St
 	String name = "GutachtenFenster"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	JGutachtenInternal jry = new JGutachtenInternal("thera-\u03C0 Gutachten ",SystemConfig.hmSysIcons.get("drvlogo"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)jry,containerNr,(Container)jry.getContentPane());
-	jry.setName(name);
-	jry.setSize(new Dimension(900,650));
+	gutjry = new JGutachtenInternal("thera-\u03C0 Gutachten ",SystemConfig.hmSysIcons.get("drvlogo"),containerNr) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)gutjry,containerNr,(Container)gutjry.getContentPane());
+	gutjry.setName(name);
+	gutjry.setSize(new Dimension(900,650));
 	//EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger );
-	jry.setContent(new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger ));
+	gutjry.setContent(new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger ));
 	//jry.setContent((EBerichtPanel)ebericht);	
-	jry.addComponentListener(Reha.thisClass);
+	gutjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	jry.setLocation(comps*10, comps*10);
-	jry.setVisible(true);
-	Reha.thisClass.desktops[containerNr].add(jry);
+	gutjry.setLocation(comps*10, comps*10);
+	gutjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(gutjry);
 	//jry.setImmerGross(true); 
 	//((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
-	((JGutachtenInternal)jry).aktiviereDiesenFrame( ((JGutachtenInternal)jry).getName());
+	((JGutachtenInternal)gutjry).aktiviereDiesenFrame( ((JGutachtenInternal)gutjry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-  	int icomp = SwingUtilities.getAccessibleChildrenCount(jry.thisContent);
+  	int icomp = SwingUtilities.getAccessibleChildrenCount(gutjry.thisContent);
   	System.out.println("Es gibt AccessibleChldren : "+icomp);
+}
+public void loescheGutachten(){
+	gutjry = null;
+}
 
-	
-}	
+
 public static void InternalGut2(){
 	JInternalFrame iframe = new JInternalFrame();
 	iframe.setSize(900,650);
@@ -377,7 +391,7 @@ public static void InternalGut2(){
 }
 
 /**************Pateintenverwaltung Echtfunktion***********************/
-public static void ProgPatientenVerwaltung(int setPos) {
+public void ProgPatientenVerwaltung(int setPos) {
 	if(! Reha.thisClass.DbOk){
 		return;
 	}
@@ -402,55 +416,34 @@ public static void ProgPatientenVerwaltung(int setPos) {
 	String name = "PatientenVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Patient");
 	containerHandling(containerNr);
-	JPatientInternal jry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
+	patjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)jry,0,(Container)jry.getContentPane());
-	jry.setName(name);
-	jry.setSize(new Dimension(900,650));
+	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,0,(Container)patjry.getContentPane());
+	patjry.setName(name);
+	patjry.setSize(new Dimension(900,650));
 	//PatGrundPanel patpan = new PatGrundPanel(jry);
-	jry.setContent(new PatGrundPanel(jry));
-	jry.addComponentListener(Reha.thisClass);
+	patjry.setContent(new PatGrundPanel(patjry));
+	patjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	jry.setLocation(comps*10, comps*10);
-	jry.setVisible(true);
-	Reha.thisClass.desktops[containerNr].add(jry);
-	((JRehaInternal)jry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
+	patjry.setLocation(comps*10, comps*10);
+	patjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(patjry);
+	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	((JPatientInternal)jry).aktiviereDiesenFrame(((JPatientInternal)jry).getName());
-	final JPatientInternal jrx = jry;
+	((JPatientInternal)patjry).aktiviereDiesenFrame(((JPatientInternal)patjry).getName());
 	SwingUtilities.invokeLater(new Runnable(){
-
-		public  void run(){
-			jrx.setzeSuche();
-			Reha.thisClass.progressStarten(false);
-/*
-			long zeit = System.currentTimeMillis();
-	 		   while(!PatGrundPanel.thisClass.sucheHatFocus()){
-	 			   try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	 			PatGrundPanel.thisClass.setzeFocus();
-	 			if(System.currentTimeMillis()-zeit > 1000){
-	 				System.out.println("Abbruch ohne Fokus------------->");
-	 				break;
-	 			}
-	 		   }
-	*/ 		   
+	 	   public  void run()
+	 	   {
+	 			patjry.setzeSuche();
+	 			Reha.thisClass.progressStarten(false);
 	 	   }
-	}); 	   
-
-
+	});
 	return; 
 
 }
-public static void loeschePatient(){
-	//jry.removeComponentListener(Reha.thisClass);
-	//jry = null;
-
+public void loeschePatient(){
+	patjry = null;
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {

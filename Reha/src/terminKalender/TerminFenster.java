@@ -3421,7 +3421,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			new SwingWorker<Void,Void>(){
 				protected Void doInBackground() throws Exception {
 					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
-					ProgLoader.ProgPatientenVerwaltung(1);
+					Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+					//ProgLoader.ProgPatientenVerwaltung(1);
 					while( (xpatient == null) ){
 						Thread.sleep(20);
 						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
@@ -3441,7 +3442,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				
 			}.execute();
 		}else{
-			ProgLoader.ProgPatientenVerwaltung(1);
+			Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+			//ProgLoader.ProgPatientenVerwaltung(1);
 			String s1 = "#PATSUCHEN";
 			String s2 = (String) pat_int;
 			PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);

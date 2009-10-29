@@ -70,6 +70,7 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		this.dispose();
 		super.dispose();
 		AktiveFenster.loescheFenster(this.getName());
+		Reha.thisClass.progLoader.loescheTermine();
 		/*
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()

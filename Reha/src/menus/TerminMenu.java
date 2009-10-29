@@ -61,7 +61,8 @@ public class TerminMenu {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Terminkalenderaufruf-Menü"); // TODO Auto-generated Event stub actionPerformed()
 					JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
-					ProgLoader.ProgTerminFenster(0,0);
+					Reha.thisClass.progLoader.ProgTerminFenster(0, 0);
+					//ProgLoader.ProgTerminFenster(0,0);
 					if(termin == null){
 
 						//ProgLoader.ProgTerminFenster(0,0);
@@ -84,7 +85,8 @@ public class TerminMenu {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				System.out.println("Roogle"); // TODO Auto-generated Event stub actionPerformed()
 				Reha.thisClass.messageLabel.setText("Roogle");
-				ProgLoader.ProgRoogleFenster(0,null);
+				Reha.thisClass.progLoader.ProgRoogleFenster(0,null);
+				//ProgLoader.ProgRoogleFenster(0,null);
 			}
 		});
 
@@ -97,7 +99,8 @@ public class TerminMenu {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				System.out.println("Roogle"); // TODO Auto-generated Event stub actionPerformed()
 				Reha.thisClass.messageLabel.setText("Wochenarbeitszeit definieren");
-				ProgLoader.ProgTerminFenster(0,2);
+				//ProgLoader.ProgTerminFenster(0,2);
+				Reha.thisClass.progLoader.ProgTerminFenster(0, 2);
 			}
 		});
 

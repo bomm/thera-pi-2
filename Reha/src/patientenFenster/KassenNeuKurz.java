@@ -88,7 +88,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 						stmt = stmt+ (i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";
 					}
  
-					stmt = stmt + " where id ='"+new Integer(iid).toString()+"'";
+					stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
 					System.out.println(stmt);
 					new ExUndHop().setzeStatement(stmt);
 					eltern.zurueckZurTabelle(tfs);

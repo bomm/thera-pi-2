@@ -53,6 +53,7 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 		 	   public  void run()
 		 	   {
 				AktiveFenster.loescheFenster(name);
+				Reha.thisClass.progLoader.loescheArzt();
 		 	   }
 		});
 

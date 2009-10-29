@@ -135,6 +135,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		this.jry = jry;
 		this.thisClass = this;
 		addFocusListener(this);
+		/*
 		Point2D start = new Point2D.Float(0, 0);
 	     Point2D end = new Point2D.Float(600,550);
 	     float[] dist = {0.0f, 0.75f};
@@ -144,7 +145,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	         new LinearGradientPaint(start, end, dist, colors);
 	     MattePainter mp = new MattePainter(p);
 	     setBackgroundPainter(new CompoundPainter(mp));
-		
+		*/
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("KassenPanel"));
 		setLayout(new BorderLayout());
 		add(getContent(),BorderLayout.CENTER);
 		if(!kid.equals("")){
@@ -793,7 +795,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		}
 
 		neuKas.setPinPanel(pinPanel);
-		neuKas.getSmartTitledPanel().setContentContainer(new KasNeuanlage(neuKas,new Vector(),id));
+		neuKas.getSmartTitledPanel().setContentContainer(new KasseNeuanlage(neuKas,new Vector(),id));
 		neuKas.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
 		neuKas.setName("PatientenNeuanlage");
 		//neuPat.setContentPane(new PatNeuanlage(new Vector()));
@@ -805,7 +807,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		final KasseNeuDlg xneuKas = neuKas; 
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 			((KasNeuanlage)xneuKas.getSmartTitledPanel().getContentContainer()).setzeFocus();
+		 			((KasseNeuanlage)xneuKas.getSmartTitledPanel().getContentContainer()).setzeFocus();
 		 	   }
 		}); 	   	
 		neuKas.setVisible(true);

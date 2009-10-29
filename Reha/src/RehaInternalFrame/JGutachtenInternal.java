@@ -102,6 +102,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		 	   public  void run()
 		 	   {
 				AktiveFenster.loescheFenster(name);
+				Reha.thisClass.progLoader.loescheGutachten();
 		 	   }
 		});
 
