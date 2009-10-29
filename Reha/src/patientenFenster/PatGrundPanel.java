@@ -603,7 +603,9 @@ private void allesAufNull(){
 	
 }
 	
-	
+public static PatGrundPanel getInstance(JPatientInternal jry){
+	return new PatGrundPanel(null);
+}
 
 
 class PatientAction extends AbstractAction {

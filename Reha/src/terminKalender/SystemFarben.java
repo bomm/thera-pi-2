@@ -5,7 +5,7 @@ import java.awt.Font;
 
 import systemEinstellungen.SystemConfig;
 
-public class systemFarben {
+public class SystemFarben {
 	static Color colKeinDienst = SystemConfig.KalenderHintergrund; //new Color(0x80,0x9f,0xff); //Color.BLUE;
 	static Color colRehaTermin = Color.YELLOW;
 	static Color colNormalTermin = new Color(238,238,238);

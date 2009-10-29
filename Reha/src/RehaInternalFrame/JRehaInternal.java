@@ -94,7 +94,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public JRehaInternal(String titel,ImageIcon img,int desktop){
 		super();
 		this.setBackground(Color.WHITE);
-		this.setTitle(new String(titel));
+		this.setTitle(titel);
 		this.titel = titel;
 		this.desktop = desktop;
 		//this.setName("RehaInternal-X");

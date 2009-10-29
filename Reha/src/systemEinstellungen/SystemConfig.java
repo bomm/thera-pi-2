@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 import systemTools.Verschluesseln;
 import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
-import terminKalender.zeitFunk;
+import terminKalender.ZeitFunk;
 
 
 public class SystemConfig {
@@ -306,8 +306,8 @@ public class SystemConfig {
 		}	
 		KalenderUmfang[0] = new String(ini.getStringProperty("Kalender","KalenderStart"));
 		KalenderUmfang[1] = new String(ini.getStringProperty("Kalender","KalenderEnde"));	
-		KalenderMilli[0] = zeitFunk.MinutenSeitMitternacht(KalenderUmfang[0]);
-		KalenderMilli[1] = zeitFunk.MinutenSeitMitternacht(KalenderUmfang[1]);		
+		KalenderMilli[0] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[0]);
+		KalenderMilli[1] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[1]);		
 		KalenderBarcode =  (ini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
 		UpdateIntervall = new Integer(new String(ini.getStringProperty("Kalender","KalenderTimer")));
 		ParameterLaden kolLad = new ParameterLaden();

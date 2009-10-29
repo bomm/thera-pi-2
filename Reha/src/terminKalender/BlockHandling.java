@@ -130,7 +130,7 @@ public class BlockHandling {
 			alteDaten[2] = datenfeld.getFeld(kollege,2,block);
 			alteDaten[3] = datenfeld.getFeld(kollege,3,block);
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block);
-			String neueEndzeit = zeitFunk.MinutenZuZeit((int) (zeitFunk.MinutenSeitMitternacht(alteDaten[2])+Integer.parseInt(daten[3])) );
+			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[2])+Integer.parseInt(daten[3])) );
 			int differenz = Integer.parseInt(alteDaten[3])-Integer.parseInt(daten[3]); 
 			// jetzt bisherige daten mit neuen Daten überschreiben
 			datenfeld.setFeld(kollege,0,block,daten[0]);
@@ -171,7 +171,7 @@ public class BlockHandling {
 			alteDaten[3] = datenfeld.getFeld(kollege,3,block);
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block);
 			
-			String neueEndzeit = zeitFunk.MinutenZuZeit((int) (zeitFunk.MinutenSeitMitternacht(alteDaten[4])-Integer.parseInt(daten[3])) );
+			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[4])-Integer.parseInt(daten[3])) );
 			//System.out.println("neue Endzeit "+neueEndzeit );
 			int differenz = Integer.parseInt(alteDaten[3])-Integer.parseInt(daten[3]); 
 			//System.out.println("Zeitdifferenz "+differenz );
@@ -228,13 +228,13 @@ public class BlockHandling {
 			alteDaten[2] = datenfeld.getFeld(kollege,2,block);//Start
 			alteDaten[3] = datenfeld.getFeld(kollege,3,block);//Dauer
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block);//Ende
-			int dummy = (int) (zeitFunk.MinutenSeitMitternacht(daten[2])-zeitFunk.MinutenSeitMitternacht(alteDaten[2]));
+			int dummy = (int) (ZeitFunk.MinutenSeitMitternacht(daten[2])-ZeitFunk.MinutenSeitMitternacht(alteDaten[2]));
 			// jetzt bisherige daten mit alten (korrigierten) Daten überschreiben
 			datenfeld.setFeld(kollege,0,block,alteDaten[0]);
 			datenfeld.setFeld(kollege,1,block,alteDaten[1]);
 			datenfeld.setFeld(kollege,2,block,alteDaten[2]);
 			datenfeld.setFeld(kollege,3,block,new Integer(dummy).toString());
-			String neueEndzeit = zeitFunk.MinutenZuZeit((int) (zeitFunk.MinutenSeitMitternacht(alteDaten[2])+dummy) );
+			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[2])+dummy) );
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
 			/*
 			for(int i = 0;i<5;i++){
@@ -251,7 +251,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,1,bloecke,daten[1]);
 			datenfeld.setFeld(kollege,2,bloecke,neueEndzeit);
 			datenfeld.setFeld(kollege,3,bloecke,daten[3]);
-			neueEndzeit = zeitFunk.MinutenZuZeit((int) (zeitFunk.MinutenSeitMitternacht(daten[2])+Integer.parseInt(daten[3])) );			
+			neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(daten[2])+Integer.parseInt(daten[3])) );			
 			datenfeld.setFeld(kollege,4,bloecke,neueEndzeit);
 			/*
 			for(int i = 0;i<5;i++){
@@ -268,7 +268,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,0,bloecke,alteDaten[0]);
 			datenfeld.setFeld(kollege,1,bloecke,alteDaten[1]);
 			datenfeld.setFeld(kollege,2,bloecke,neueEndzeit);
-			int differenz = (int) (zeitFunk.MinutenSeitMitternacht(alteDaten[4])-zeitFunk.MinutenSeitMitternacht(neueEndzeit));
+			int differenz = (int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[4])-ZeitFunk.MinutenSeitMitternacht(neueEndzeit));
 			datenfeld.setFeld(kollege,3,bloecke,Integer.toString(differenz));
 			datenfeld.setFeld(kollege,4,bloecke,alteDaten[4]);
 			/*
@@ -298,20 +298,20 @@ public class BlockHandling {
 			alteDaten[2] = datenfeld.getFeld(kollege,2,block+1);//Start
 			alteDaten[3] = datenfeld.getFeld(kollege,3,block+1);//Dauer
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block+1);//Ende
-			int dummy = (int) (zeitFunk.MinutenSeitMitternacht(daten[2])-zeitFunk.MinutenSeitMitternacht(alteDaten[2]));
+			int dummy = (int) (ZeitFunk.MinutenSeitMitternacht(daten[2])-ZeitFunk.MinutenSeitMitternacht(alteDaten[2]));
 			// jetzt bisherige daten mit alten (korrigierten) Daten überschreiben
 			datenfeld.setFeld(kollege,0,block,daten[0]);
 			datenfeld.setFeld(kollege,1,block,daten[1]);
 			datenfeld.setFeld(kollege,2,block,daten[2]);
 			datenfeld.setFeld(kollege,3,block,daten[3]);
-			String neueEndzeit = zeitFunk.MinutenZuZeit((int) (zeitFunk.MinutenSeitMitternacht(daten[2]) +Integer.parseInt(daten[3])) );
+			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(daten[2]) +Integer.parseInt(daten[3])) );
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
 
 			datenfeld.setFeld(kollege,0,block+1,alteDaten[0]);
 			datenfeld.setFeld(kollege,1,block+1,alteDaten[1]);
 			datenfeld.setFeld(kollege,2,block+1,datenfeld.getFeld(kollege,4,block));
-			dummy = (int) zeitFunk.MinutenSeitMitternacht(datenfeld.getFeld(kollege,4,block+1)) -
-				(int) zeitFunk.MinutenSeitMitternacht(datenfeld.getFeld(kollege,2,block+1));
+			dummy = (int) ZeitFunk.MinutenSeitMitternacht(datenfeld.getFeld(kollege,4,block+1)) -
+				(int) ZeitFunk.MinutenSeitMitternacht(datenfeld.getFeld(kollege,2,block+1));
 			datenfeld.setFeld(kollege,3,block+1,Integer.toString(dummy));
 						
 			
@@ -349,7 +349,7 @@ public class BlockHandling {
 		String reznummer = datenfeld.getFeld(grundDaten[3],1, grundDaten[0]);
 		String startuhr =  datenfeld.getFeld(grundDaten[3],2, startBlock);
 		String endeuhr = datenfeld.getFeld(grundDaten[3],4,endBlock);
-		int startMinuten = (int) zeitFunk.ZeitDifferenzInMinuten(startuhr,
+		int startMinuten = (int) ZeitFunk.ZeitDifferenzInMinuten(startuhr,
 				endeuhr) ;
 		String minuten = Integer.toString(startMinuten);
 	
@@ -435,7 +435,7 @@ public class BlockHandling {
 		datenfeld.setFeld(kollege,0,startBlock,"");
 		datenfeld.setFeld(kollege,1,startBlock,"");
 		datenfeld.setFeld(kollege,2,startBlock,alteDaten[2]);		
-		int dauer = (int) zeitFunk.ZeitDifferenzInMinuten(alteDaten[2], alteDaten[4]);
+		int dauer = (int) ZeitFunk.ZeitDifferenzInMinuten(alteDaten[2], alteDaten[4]);
 		String sdauer = Integer.toString(dauer);
 		datenfeld.setFeld(kollege,3,startBlock,sdauer);		
 		datenfeld.setFeld(kollege,4,startBlock,alteDaten[4]);		
@@ -477,9 +477,9 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,2,bloecke[1],tauschTermine[1][2]);
 			datenfeld.setFeld(kollege,3,bloecke[1],tauschTermine[0][3]);
 			/// rechnen aus startzeit und dauer 
-			int StartAktuell = (int) zeitFunk.MinutenSeitMitternacht(tauschTermine[1][2]);
+			int StartAktuell = (int) ZeitFunk.MinutenSeitMitternacht(tauschTermine[1][2]);
 			StartAktuell = StartAktuell + Integer.parseInt(tauschTermine[0][3]);
-			String EndeUhr = zeitFunk.MinutenZuZeit(StartAktuell);		
+			String EndeUhr = ZeitFunk.MinutenZuZeit(StartAktuell);		
 			datenfeld.setFeld(kollege,4,bloecke[1],EndeUhr);
 			/********/
 			//derzeit aktueller
@@ -498,9 +498,9 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,2,bloecke[0],tauschTermine[0][2]);
 			datenfeld.setFeld(kollege,3,bloecke[0],tauschTermine[1][3]);
 			/// rechnen aus startzeit und dauer 
-			int StartAktuell = (int) zeitFunk.MinutenSeitMitternacht(tauschTermine[0][2]);
+			int StartAktuell = (int) ZeitFunk.MinutenSeitMitternacht(tauschTermine[0][2]);
 			StartAktuell = StartAktuell + Integer.parseInt(tauschTermine[1][3]);
-			String EndeUhr = zeitFunk.MinutenZuZeit(StartAktuell);		
+			String EndeUhr = ZeitFunk.MinutenZuZeit(StartAktuell);		
 			datenfeld.setFeld(kollege,4,bloecke[0],EndeUhr);
 			/********/
 			//derzeit aktueller

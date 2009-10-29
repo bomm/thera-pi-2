@@ -273,16 +273,16 @@ private int dbBehandler;
 		if( this.Beginn.equals(sBeginn) && (!this.Ende.equals(sEnde))){
 			//System.out.println("Ende Ungleich");
 			/**Wenn das angegebene Ende größer ist als das ende des Datenbankblocks**/
-			if(zeitFunk.MinutenSeitMitternacht(this.Ende) > zeitFunk.MinutenSeitMitternacht(sEnde)){
+			if(ZeitFunk.MinutenSeitMitternacht(this.Ende) > ZeitFunk.MinutenSeitMitternacht(sEnde)){
 				//System.out.println("Ende größer als Block");
 				//****ist der - aktuelle Block - kleiner als die Gesamtzahl**//
 				if((this.Block+1) < AnzahlOrigBloecke){
 					/***Wenn ja prüfen ob wenigstens das Ende des Folgeblockes kleiner ist**/
 					//System.out.println("Dies ist nicht der letzte Block");
-					if(zeitFunk.MinutenSeitMitternacht(this.Ende) < zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){		
+					if(ZeitFunk.MinutenSeitMitternacht(this.Ende) < ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){		
 						System.out.println("Dies ist nicht der letzte Block und das Ende ist kleiner oder gleich dem Ende des Folgeblockes - Rückgabewert 1");						
 						return 1;
-					}else if(zeitFunk.MinutenSeitMitternacht(this.Ende) == zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){
+					}else if(ZeitFunk.MinutenSeitMitternacht(this.Ende) == ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){
 						return -1;
 					}else{
 						//System.out.println("Dies ist nicht der letzte Block und das Ende ist größer als das Ende des Folgeblockes - Rückgabewert 2");
@@ -295,7 +295,7 @@ private int dbBehandler;
 					//**das angegebene Ende ist vor dem Ende des letzten Blockes
 					//System.out.println("Zeit1:"+zeitFunk.MinutenSeitMitternacht(this.Ende)+
 					//		" Zeit2:"+zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block)));
-					if(zeitFunk.MinutenSeitMitternacht(this.Ende) <= zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block))){		
+					if(ZeitFunk.MinutenSeitMitternacht(this.Ende) <= ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block))){		
 						//System.out.println("Das Ende ist kleiner oder gleich des aktuellen (letzten) Blockes - Rückgabewert 3");
 						return 3;
 					//**das angegebene Ende würden das Ende des letzten Blockes übersteigen**/
@@ -325,14 +325,14 @@ private int dbBehandler;
 		String sDauer = this.feld.getFeld(this.Kollege,iDauer,this.Block);
 		//System.out.println("++++Beginn PasstUntenObenNicht++++++");
 		if( this.Ende.equals(sEnde) && (!this.Beginn.equals(sBeginn))){ /****Das Ende gleich aber der Anfang nicht)***/
-			if (zeitFunk.MinutenSeitMitternacht(sBeginn) < zeitFunk.MinutenSeitMitternacht(this.Beginn) ){ /*** Die neue Beginnzeit später ist**/
+			if (ZeitFunk.MinutenSeitMitternacht(sBeginn) < ZeitFunk.MinutenSeitMitternacht(this.Beginn) ){ /*** Die neue Beginnzeit später ist**/
 				//System.out.println("Endzeit gleich aber Beginnzeit später als bislang");
 				return 1;
 			}
 			
 		}else{
-			if( (zeitFunk.MinutenSeitMitternacht(sBeginn) < zeitFunk.MinutenSeitMitternacht(this.Beginn)) &&
-					(zeitFunk.MinutenSeitMitternacht(sEnde) > zeitFunk.MinutenSeitMitternacht(this.Ende)) ){
+			if( (ZeitFunk.MinutenSeitMitternacht(sBeginn) < ZeitFunk.MinutenSeitMitternacht(this.Beginn)) &&
+					(ZeitFunk.MinutenSeitMitternacht(sEnde) > ZeitFunk.MinutenSeitMitternacht(this.Ende)) ){
 				//System.out.println("Der Block liegt zwischen dem bisherigen Block");
 				return 2;
 			}
@@ -384,8 +384,8 @@ private int dbBehandler;
 		/**** neue Endezeit ist bisherige Endezeit **/
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,endeBisher);
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum,(String) Integer.toString(differenz));
-		minuten = (int) zeitFunk.MinutenSeitMitternacht( endeBisher)-differenz;
-		beginnZweitBlock = zeitFunk.MinutenZuZeit(minuten);
+		minuten = (int) ZeitFunk.MinutenSeitMitternacht( endeBisher)-differenz;
+		beginnZweitBlock = ZeitFunk.MinutenZuZeit(minuten);
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum,beginnZweitBlock);		
 
 		/****Dann den bisherigen block mit den neu eingegebenen Daten beschreiben*****/
@@ -486,10 +486,10 @@ private int dbBehandler;
 		beginnNeu = this.Beginn;
 		endeNeu = this.Ende;
 		dauerNeu = this.Dauer;
-		dauer_vorBlock = (int) (zeitFunk.MinutenSeitMitternacht(beginnNeu) -
-								zeitFunk.MinutenSeitMitternacht( beginnBisher));
-		dauer_nachBlock = (int) (zeitFunk.MinutenSeitMitternacht(endeBisher) -
-				zeitFunk.MinutenSeitMitternacht( endeNeu));
+		dauer_vorBlock = (int) (ZeitFunk.MinutenSeitMitternacht(beginnNeu) -
+								ZeitFunk.MinutenSeitMitternacht( beginnBisher));
+		dauer_nachBlock = (int) (ZeitFunk.MinutenSeitMitternacht(endeBisher) -
+				ZeitFunk.MinutenSeitMitternacht( endeNeu));
 		dauer_aktBlock = dauerNeu;
 		/****im bisherigen Block lediglich die Zeitdaten verändern***/
 		this.feld.setFeld(this.Kollege,iBeginn, this.Block,beginnBisher);
@@ -530,8 +530,8 @@ private int dbBehandler;
 		//Eingabe Dauer eintragen
 		this.feld.setFeld(this.Kollege,iDauer, neublocknum, Integer.toString(dauer_nachBlock));
 		//Endzeit eintragen	diese entspricht der Beginnzeit des neuen Blocks
-		String sEndeNeu = zeitFunk.MinutenZuZeit( (int)
-							zeitFunk.MinutenSeitMitternacht(this.Ende)+
+		String sEndeNeu = ZeitFunk.MinutenZuZeit( (int)
+							ZeitFunk.MinutenSeitMitternacht(this.Ende)+
 							dauer_nachBlock	);
 		this.feld.setFeld(this.Kollege,iEnde, neublocknum, sEndeNeu);
 	
@@ -560,10 +560,10 @@ private int dbBehandler;
 											"Termin kann nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 			return -1;
 		}
-		endeVorBlock = (int) zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block-1));
-		startAktuell =  (int) zeitFunk.MinutenSeitMitternacht(this.Beginn);
+		endeVorBlock = (int) ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block-1));
+		startAktuell =  (int) ZeitFunk.MinutenSeitMitternacht(this.Beginn);
 
-		if((int) zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block-1)) >
+		if((int) ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block-1)) >
 				startAktuell){
 			JOptionPane.showMessageDialog(null,"Der gewünschte Starttermin würde sich mit dem voangegangenen\n"+
 					"Termin überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
@@ -578,19 +578,19 @@ private int dbBehandler;
 				return -1;
 			}
 			int endeAktuell,endeFolgeBlock,startFolgeBlock;
-			endeAktuell = (int) zeitFunk.MinutenSeitMitternacht(sEnde);
-			endeFolgeBlock = (int)zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1));
-			startFolgeBlock = (int)zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block+1));
-			if((int) zeitFunk.MinutenSeitMitternacht(this.Ende) == startFolgeBlock){
+			endeAktuell = (int) ZeitFunk.MinutenSeitMitternacht(sEnde);
+			endeFolgeBlock = (int)ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1));
+			startFolgeBlock = (int)ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block+1));
+			if((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) == startFolgeBlock){
 				//System.out.println("Ende aktuell == Start Folgeblock");				
 				return 1;
 			}
-			if((int) zeitFunk.MinutenSeitMitternacht(this.Ende) < startFolgeBlock){
+			if((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) < startFolgeBlock){
 				//System.out.println("Ende aktuell < Start Folgeblock");				
 				return 2;
 			}
-			if( ((int) zeitFunk.MinutenSeitMitternacht(this.Ende) > startFolgeBlock) && 
-					((int) zeitFunk.MinutenSeitMitternacht(this.Ende) < endeFolgeBlock) ){
+			if( ((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) > startFolgeBlock) && 
+					((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) < endeFolgeBlock) ){
 				//System.out.println("Ende aktuell > startFolgeblock und < ende Folgeblock");
 				return 3;
 			}
@@ -601,7 +601,7 @@ private int dbBehandler;
 	private void KuerzeVorBlock(){
 		
 		String startVorblock = this.feld.getFeld(this.Kollege,iBeginn,this.Block-1);
-		int dauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
+		int dauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		if(dauerVorBlock==0){
 			//System.out.println("KuerzeVorBlock: Die Dauer wäre 0 Minuten****************->");
 			TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -629,7 +629,7 @@ private int dbBehandler;
 		String ende = this.feld.getFeld(this.Kollege,iEnde,this.Block);
 		
 		String startVorblock = this.feld.getFeld(this.Kollege,iBeginn,this.Block-1);
-		int dauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
+		int dauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		if(dauerVorBlock==0){
 			//System.out.println("KuerzeVorBlockUndNeuBlock: Die Dauer wäre 0 Minuten****************->");
 			TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -655,7 +655,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iName,neublocknum,name);
 		this.feld.setFeld(this.Kollege,iNummer,neublocknum,nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum,this.Ende);
-		int neudauer = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,ende);
+		int neudauer = (int)ZeitFunk.ZeitDifferenzInMinuten(this.Ende,ende);
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum,Integer.toString(neudauer));
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,ende);
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke+1);
@@ -667,7 +667,7 @@ private int dbBehandler;
 /******************************/
 	private void KuerzeVorUndNachBlock(){
 		String startVorblock = this.feld.getFeld(this.Kollege,iBeginn,this.Block-1);
-		int dauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
+		int dauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		if(dauerVorBlock==0){
 			//System.out.println("KuerzeVorUndNachBlock: Die Dauer wäre 0 Minuten****************->");
 			TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -691,7 +691,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Ende);
 		
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block+1,this.Ende);		
-		int dauerNachBlock = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
+		int dauerNachBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
 		this.feld.setFeld(this.Kollege,iDauer,this.Block+1,Integer.toString(dauerNachBlock));		
 		
 		KalenderBeschreiben th = new KalenderBeschreiben();
@@ -703,9 +703,9 @@ private int dbBehandler;
 		// Testen ob versucht wurde nach dem Kalender-Maximum zu enden = 22:00:00;
 		// Testen ob es sich um den letzten Block handelt;
 		// Testen ob Ende und Dauer des Nachblocks eine Reduzierung zuläßt;
-		int ende = (int) zeitFunk.MinutenSeitMitternacht(this.Ende);
+		int ende = (int) ZeitFunk.MinutenSeitMitternacht(this.Ende);
 		String sende = this.feld.getFeld(this.Kollege,iEnde,this.Block);
-		int aktende = (int) zeitFunk.MinutenSeitMitternacht(sende);
+		int aktende = (int) ZeitFunk.MinutenSeitMitternacht(sende);
 		String sbeginn = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		if(ende >= SystemConfig.KalenderMilli[1]){
 			JOptionPane.showMessageDialog(null,"Die gewünschte Endzeit des Termines liegt nach der absoluten Endzeit\n"+
@@ -721,13 +721,13 @@ private int dbBehandler;
 				return -1;
 			}
 			String sendefolge = this.feld.getFeld(this.Kollege,iEnde,this.Block+1);
-			int endefolge = (int) zeitFunk.MinutenSeitMitternacht(sendefolge);
+			int endefolge = (int) ZeitFunk.MinutenSeitMitternacht(sendefolge);
 			//anfang gleich aber ende nach hinten verschoben = folgeblock kürzen
 			if( (this.Beginn.equals(sbeginn)) && (ende < endefolge)){
 				return 1;
 			}
-			int zbeginn = (int) zeitFunk.MinutenSeitMitternacht(this.Beginn);
-			int aktbeginn = (int) zeitFunk.MinutenSeitMitternacht(sbeginn);
+			int zbeginn = (int) ZeitFunk.MinutenSeitMitternacht(this.Beginn);
+			int aktbeginn = (int) ZeitFunk.MinutenSeitMitternacht(sbeginn);
 			//anfang nach hinten verschoben und ende nach hinten verschoben = neuen vorblock setzen und folgeblock kürzen
 			if( (zbeginn > aktbeginn) && (ende < endefolge)){
 				//System.out.println("In NachBlock-Prüfung mit Vorblock");
@@ -748,7 +748,7 @@ private int dbBehandler;
 
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block+1,this.Ende);
 		
-		int iDauerNachBlock = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
+		int iDauerNachBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
 		this.feld.setFeld(this.Kollege,iDauer,this.Block+1,Integer.toString(iDauerNachBlock));
 
 		KalenderBeschreiben th = new KalenderBeschreiben();
@@ -763,7 +763,7 @@ private int dbBehandler;
 		String beginnBisher = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		String endeBisher = this.feld.getFeld(this.Kollege,iEnde,this.Block);
 		int dauerBisher = Integer.parseInt(this.feld.getFeld(this.Kollege,iDauer,this.Block));
-		int iDauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(beginnBisher,this.Beginn);		
+		int iDauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(beginnBisher,this.Beginn);		
 
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Beginn);
 		this.feld.setFeld(this.Kollege,iDauer,this.Block,Integer.toString(iDauerVorBlock));
@@ -782,7 +782,7 @@ private int dbBehandler;
 		
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum+1,this.Ende);
 		String endeNachBlock = this.feld.getFeld(this.Kollege,iEnde,neublocknum+1);
-		int iDauerNachBlock = (int)zeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
+		int iDauerNachBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(this.Ende,endeNachBlock);
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum+1,Integer.toString(iDauerNachBlock));
 		
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke+1);

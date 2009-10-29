@@ -379,10 +379,13 @@ static String exporturl = "";
 						if(SystemConfig.oTerminListe.DirektDruck){
 							textDocument.print();
 							textDocument.close();
+							this.termindat = null;
+							
 							SuchenSeite.getInstance().cursorWait(false);
 						}else{
 							SuchenSeite.getInstance().cursorWait(false);
-							document.getFrame().getXFrame().getContainerWindow().setVisible(true);	
+							document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+							this.termindat = null;
 						}
 						
 				} catch (DocumentException e) {
@@ -409,6 +412,7 @@ static String exporturl = "";
 				if(!ldrucken){
 					textDocument.close();
 					sendeEmail();
+					this.termindat = null;
 				}
 		
 				SuchenSeite.getInstance().cursorWait(false);

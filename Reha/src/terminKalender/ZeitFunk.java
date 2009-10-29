@@ -2,7 +2,7 @@ package terminKalender;
 import java.util.*;
 
 
-public final class zeitFunk {
+public final class ZeitFunk {
 	static Date zeit1=null;
 	static Date zeit2=null;
 	static Date datum1;

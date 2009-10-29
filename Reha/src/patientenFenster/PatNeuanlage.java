@@ -82,6 +82,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 
@@ -573,6 +574,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				PatGrundPanel.thisClass.arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
+				finalise();
 				((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).dispose();
 				String s1 = "#PATSUCHEN";
 				String s2 = xpatintern;
@@ -787,6 +789,27 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		pat12.add(jscrzusatz,BorderLayout.CENTER);
 		pat12.validate();
 		return pat12;
+	}
+		
+	private void finalise(){
+		for(int i = 0; i < jtf.length; i++){
+			if(jtf[i]!= null){
+				ListenerTools.removeListeners(jtf[i]);
+				jtf[i] = null;
+			}
+
+		}
+		for(int i = 0; i < jcheck.length; i++){
+			if(jcheck[i]!= null){
+				ListenerTools.removeListeners(jcheck[i]);
+				jcheck[i] = null;
+			}	
+		}
+		ListenerTools.removeListeners(knopf0);
+		ListenerTools.removeListeners(knopf1);
+		ListenerTools.removeListeners(knopf3);
+		ListenerTools.removeListeners(knopf4);
+		ListenerTools.removeListeners(knopf5);
 	}
 	
 	
@@ -1351,6 +1374,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			schreibeInDb();
 		}else if(com.equals("abbrechen")){
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
+			finalise();
 		}else if(com.equals("adddoc")){
 			arztInListeAuswahl();
 		}else if(com.equals("deldoc")){
@@ -1398,6 +1422,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				return;
 			}
 			if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
+				finalise();
 				((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 				((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 				return;
@@ -1405,6 +1430,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			
 		}
 		if(arg0.getKeyCode()==27){
+			finalise();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 		}

@@ -43,7 +43,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
-import terminKalender.zeitFunk;
+import terminKalender.ZeitFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -321,11 +321,11 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				dummy.add(ttext);
 				//Beginn im Kalender
 				int val = new Long(  (Long)((Vector) vec3.get(i)).get(0)).intValue();
-				String start = (String) zeitFunk.MinutenZuZeit(val); 
+				String start = (String) ZeitFunk.MinutenZuZeit(val); 
 				dummy.add(start.substring(0,5) );
 				//Ende im Kalender
 				int val2 = new Long(  (Long)((Vector) vec3.get(i)).get(1)).intValue();
-				String end = (String) zeitFunk.MinutenZuZeit(val2); 
+				String end = (String) ZeitFunk.MinutenZuZeit(val2); 
 				dummy.add(end.substring(0,5) );
 				//Dauer
 				long val3 = new Long(  (String)((Vector) vec3.get(i)).get(4) );
@@ -647,8 +647,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		String druck = (String)jTblGruppen.getValueAt(row,1);
 		String text = (String)jTblGruppen.getValueAt(row,0);
 		String dauer = new Long((Long)jTblGruppen.getValueAt(row,4)).toString();		
-		vec.add(zeitFunk.MinutenSeitMitternacht(plan1));
-		vec.add(zeitFunk.MinutenSeitMitternacht(plan2));
+		vec.add(ZeitFunk.MinutenSeitMitternacht(plan1));
+		vec.add(ZeitFunk.MinutenSeitMitternacht(plan2));
 		vec.add(druck);
 		vec.add(text);
 		vec.add(dauer);
@@ -789,8 +789,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			ini.setStringProperty(sektion, "WOTA"+(i+1), new Integer(anzahl).toString(),null);
 			for(int v = 0;v<anzahl;v++){
 				int anzahl2 = ((Vector)((Vector)vec.get(i)).get(v)).size();
-				String szeit1 = zeitFunk.MinutenZuZeit( new Long((Long) ((Vector)((Vector)vec.get(i)).get(v)).get(0) ).intValue() );
-				String szeit2 = zeitFunk.MinutenZuZeit( new Long((Long) ((Vector)((Vector)vec.get(i)).get(v)).get(1) ).intValue() );				
+				String szeit1 = ZeitFunk.MinutenZuZeit( new Long((Long) ((Vector)((Vector)vec.get(i)).get(v)).get(0) ).intValue() );
+				String szeit2 = ZeitFunk.MinutenZuZeit( new Long((Long) ((Vector)((Vector)vec.get(i)).get(v)).get(1) ).intValue() );				
 				String szeit3 = (String) ((Vector)((Vector)vec.get(i)).get(v)).get(2) ;
 				String stext  = (String) ((Vector)((Vector)vec.get(i)).get(v)).get(3) ;
 				String sdauer  = (String) ((Vector)((Vector)vec.get(i)).get(v)).get(4) ;

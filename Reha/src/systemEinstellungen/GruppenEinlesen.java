@@ -5,7 +5,7 @@ import hauptFenster.Reha;
 import java.util.Vector;
 
 import terminKalender.DatFunk;
-import terminKalender.zeitFunk;
+import terminKalender.ZeitFunk;
 
 public class GruppenEinlesen{
 	public Vector gruppenParam = null;
@@ -45,8 +45,8 @@ public class GruppenEinlesen{
 					for(int l = 1;l<= gruppenAmTag;l++){//einzelne Tage einlesen
 						Vector gruppenParam = new Vector();
 						String vonbis = ini.getStringProperty(rubrik,"TA"+k+"GR"+l);
-						gruppenParam.add(zeitFunk.MinutenSeitMitternacht(vonbis.split("-")[0]));
-						gruppenParam.add(zeitFunk.MinutenSeitMitternacht(vonbis.split("-")[1]));
+						gruppenParam.add(ZeitFunk.MinutenSeitMitternacht(vonbis.split("-")[0]));
+						gruppenParam.add(ZeitFunk.MinutenSeitMitternacht(vonbis.split("-")[1]));
 						gruppenParam.add(ini.getStringProperty(rubrik,"TA"+k+"ZE"+l));
 						gruppenParam.add(ini.getStringProperty(rubrik,"TA"+k+"TX"+l));						
 						gruppenParam.add(ini.getStringProperty(rubrik,"TA"+k+"DA"+l));

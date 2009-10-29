@@ -408,6 +408,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 		}
 		Reha.thisClass.progressStarten(false);
 		PatGrundPanel.thisClass.setzeFocus();
+		((JPatientInternal)patient).setzeSuche();
 		return;
 	}
 	
@@ -423,6 +424,10 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.setSize(new Dimension(900,650));
 	//PatGrundPanel patpan = new PatGrundPanel(jry);
 	patjry.setContent(new PatGrundPanel(patjry));
+
+	//Reha.thisClass.PATINSTANCE = PatGrundPanel.getInstance(patjry);
+	//patjry.setContent(Reha.thisClass.PATINSTANCE);
+
 	patjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	patjry.setLocation(comps*10, comps*10);
@@ -444,6 +449,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 }
 public void loeschePatient(){
 	patjry = null;
+	//Reha.thisClass.PATINSTANCE = null;
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {

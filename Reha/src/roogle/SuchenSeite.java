@@ -99,7 +99,7 @@ import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
-import terminKalender.zeitFunk;
+import terminKalender.ZeitFunk;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -1156,9 +1156,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	private int testeZeiten(int reihe, int zeile){
 		int ret = 0;
 		int tkstart,tkende,plstart,pldauer;
-		  tkstart = (int) zeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 3)).trim()+":00");
-		  tkende = (int) zeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 4)).trim()+":00");
-		  plstart = (int) zeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 6)).trim()+":00");
+		  tkstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 3)).trim()+":00");
+		  tkende = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 4)).trim()+":00");
+		  plstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 6)).trim()+":00");
 		  pldauer = new Integer((String)jxSucheTable.getValueAt(reihe, 7));
 		  if(plstart < tkstart){
 			  return 1;
@@ -1291,9 +1291,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				//fortschritt.setValue(durchlauf++);
 				//System.out.println(vecWahl);
 
-				tkstart = (int) zeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 3)).trim()+":00");
+				tkstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 3)).trim()+":00");
 				tkdauer = new Integer((String)jxSucheTable.getValueAt(i, 5));
-				plstart = (int) zeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 6)).trim()+":00");
+				plstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 6)).trim()+":00");
 				pldauer = new Integer((String)jxSucheTable.getValueAt(i, 7));
 					for(int j = 0;j<1;j++){
 						if((tkstart==plstart) && (tkdauer==pldauer)){
@@ -1340,8 +1340,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 							}else{
 								// Vector ebenfalls untersuchen;
 								//1. bisheriger Beginn/Dauer/Ende ermitteln
-								int tkende = (int) zeitFunk.MinutenSeitMitternacht( zeitFunk.MinutenZuZeit(tkstart+tkdauer) );
-								int plende = (int) zeitFunk.MinutenSeitMitternacht( zeitFunk.MinutenZuZeit(plstart+pldauer) );
+								int tkende = (int) ZeitFunk.MinutenSeitMitternacht( ZeitFunk.MinutenZuZeit(tkstart+tkdauer) );
+								int plende = (int) ZeitFunk.MinutenSeitMitternacht( ZeitFunk.MinutenZuZeit(plstart+pldauer) );
 
 								//2. Abfrage ob Beginn später und Ende früher - Mittelblock erforderlich - 2 neue Blöcke!
 								if((tkstart != plstart) && (tkdauer != pldauer) && (tkende != plende)){
@@ -1394,13 +1394,13 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					}else if(i==(block-1)){
 						newvec.add(vec.get(i));
 						((Vector)newvec.get(i)).set(3,new Integer(plstart-tkstart).toString());
-						((Vector)newvec.get(i)).set(4,zeitFunk.MinutenZuZeit(tkstart+(plstart-tkstart)));
+						((Vector)newvec.get(i)).set(4,ZeitFunk.MinutenZuZeit(tkstart+(plstart-tkstart)));
 						Vector aktvec = new Vector();
 						aktvec.add(name);
 						aktvec.add(nummer);
-						aktvec.add(zeitFunk.MinutenZuZeit(plstart));
+						aktvec.add(ZeitFunk.MinutenZuZeit(plstart));
 						aktvec.add(new Integer(pldauer).toString());
-						aktvec.add(zeitFunk.MinutenZuZeit(plstart+pldauer));
+						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
 						Vector nachvec = new Vector();
 						nachvec.add( ((Vector)vec.get(i)).get(0));
@@ -1408,8 +1408,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						nachvec.add( aktvec.get(4));
 						String planende = (String)jxSucheTable.getValueAt(zeile,4)+":00";
 						
-						nachvec.add( new Integer((int) zeitFunk.MinutenSeitMitternacht(planende) - 
-								(int)zeitFunk.MinutenSeitMitternacht((String)nachvec.get(2)) ).toString() ) ;					
+						nachvec.add( new Integer((int) ZeitFunk.MinutenSeitMitternacht(planende) - 
+								(int)ZeitFunk.MinutenSeitMitternacht((String)nachvec.get(2)) ).toString() ) ;					
 						nachvec.add(planende );
 						
 						newvec.add(nachvec);
@@ -1433,9 +1433,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						Vector aktvec = new Vector();
 						aktvec.add(name);
 						aktvec.add(nummer);
-						aktvec.add(zeitFunk.MinutenZuZeit(plstart));
+						aktvec.add(ZeitFunk.MinutenZuZeit(plstart));
 						aktvec.add(new Integer(pldauer).toString());
-						aktvec.add(zeitFunk.MinutenZuZeit(plstart+pldauer));
+						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
 						
 						Vector nachvec = new Vector();
@@ -1443,7 +1443,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						nachvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
 						nachvec.add( (String)aktvec.get(4) ) ;						
 						nachvec.add( new Integer(tkdauer-pldauer).toString() ) ;
-						nachvec.add( zeitFunk.MinutenZuZeit(tkende) ) ;
+						nachvec.add( ZeitFunk.MinutenZuZeit(tkende) ) ;
 						newvec.add(nachvec);
 
 					}else{
@@ -1468,17 +1468,17 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						Vector vorvec = new Vector();
 						vorvec.add( ((String)((Vector)vec.get(i)).get(0)) ) ;
 						vorvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
-						vorvec.add( zeitFunk.MinutenZuZeit(tkstart)) ;
+						vorvec.add( ZeitFunk.MinutenZuZeit(tkstart)) ;
 						vorvec.add( new Integer(tkdauer-pldauer).toString() ) ;
-						vorvec.add( zeitFunk.MinutenZuZeit(plstart)) ;
+						vorvec.add( ZeitFunk.MinutenZuZeit(plstart)) ;
 						newvec.add(vorvec);
 						
 						Vector aktvec = new Vector();
 						aktvec.add(name);
 						aktvec.add(nummer);
-						aktvec.add(zeitFunk.MinutenZuZeit(plstart));
+						aktvec.add(ZeitFunk.MinutenZuZeit(plstart));
 						aktvec.add(new Integer(pldauer).toString());
-						aktvec.add(zeitFunk.MinutenZuZeit(plstart+pldauer));
+						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
 
 					}else{
@@ -2382,34 +2382,6 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	}
 	
 /********************************************/
-	private void schreibeDaten(){
-		int anzahl = sucheDaten.size();
-		int i;
-		String datum, beginn,einde,behandler;
-		String str;
-		Vector vec = null;
-		File file = new File("C:\\SucheDaten\\SucheDaten.txt");
- 
-		 
-        try {
-			FileWriter fw = new FileWriter(file);
-			for(i = 0; i < anzahl; i++){
-				vec = (Vector) sucheDaten.get(i);
-				str = (String)vec.get(2);
-				str = str+" - "+(String)vec.get(3);
-				str = str+" - "+(String)vec.get(4);
-				str = str+" - "+(String)vec.get(10);				
-				fw.write(str+"\n");
-			}
-			str = "Insgesamt gefunden = "+i+" Sätze\n";
-			fw.write(str);
-			fw.close();
-
-        } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	private Vector gruppenTest(ResultSet rs, int gruppe,int feld,int defdauer,boolean suchleer) throws SQLException{
 		Vector vecret = null;
 		String sDatum = DatFunk.sDatInDeutsch(rs.getString("DATUM"));
@@ -2465,8 +2437,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = (Schnittmenge(kalanfang,uhr1,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2476,8 +2448,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = (Schnittmenge(uhr1,kalende,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2490,8 +2462,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = (Schnittmenge(kalanfang,uhr2,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2501,8 +2473,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = (Schnittmenge(uhr2,kalende,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2535,8 +2507,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = (Schnittmenge(wbeginn1,kalende,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2548,8 +2520,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = Schnittmenge(kalanfang,wende1,pbeginn,pende); 
 				if(selektparm1[0 ]>=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2561,8 +2533,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				selektparm1 = Schnittmenge(wbeginn1,wende1,pbeginn,pende); 
 				if(( selektparm1[0] >=defdauer)){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					return true;
 				}else{
@@ -2577,13 +2549,13 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					if(selektparm1[0] >= defdauer){
 					//if(selektparm1[3] == -1){System.out.println("Anfang = -1 - "+pbeginn);}
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					}else{
 					String drzeit = (selektparm2[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					}	
 					return true;
@@ -2598,13 +2570,13 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				if( (selektparm1[0]>=defdauer) || (selektparm2[0]>=defdauer)	){
 					if(selektparm1[0] >= defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					}else{
 					String drzeit = (selektparm2[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					}	
 					return true;
@@ -2619,13 +2591,13 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				if( (selektparm1[0]>=defdauer) || (selektparm2[0]>=defdauer)	){
 					if(selektparm1[0] >= defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					}else{
 					String drzeit = (selektparm2[3] > 0 ? 
-					 zeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
-					 zeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
+					 ZeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
+					 ZeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
 					SuchenSeite.selektbeginn = drzeit;
 					}	
 					return true;
@@ -2638,43 +2610,43 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		return false;
 	}
 	boolean passtZwischen(String sgrenzeklein,String sgrenzegross,String szeit,int dauer){
-		long z1 = zeitFunk.MinutenSeitMitternacht(sgrenzeklein);
-		long z2 = zeitFunk.MinutenSeitMitternacht(sgrenzegross);
-		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
+		long z1 = ZeitFunk.MinutenSeitMitternacht(sgrenzeklein);
+		long z2 = ZeitFunk.MinutenSeitMitternacht(sgrenzegross);
+		long z3 = ZeitFunk.MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
 		return( ((z3 >= z1) &&  (z3<=z2)) ? true : false);
 	}
 	boolean longPasstZwischen(long lgrenzeklein,long lgrenzegross,String szeit,int dauer){
 		long z1 = lgrenzeklein;
 		long z2 = lgrenzegross;
 		
-		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
+		long z3 = ZeitFunk.MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
 		return( ((z3 >= z1) &&  (z3<=z2)) ? true : false);
 	}
 	boolean ZeitGroesserGleich(String szeit1,String szeit2){
-		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
-		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
+		long z1 = ZeitFunk.MinutenSeitMitternacht(szeit1);
+		long z2 = ZeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 >= z1 ? true : false);
 	}
 	boolean ZeitGroesser(String szeit1,String szeit2){
-		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
-		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
+		long z1 = ZeitFunk.MinutenSeitMitternacht(szeit1);
+		long z2 = ZeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 > z1 ? true : false);
 	}
 	boolean ZeitKleinerGleich(String szeit1,String szeit2){
-		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
-		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
+		long z1 = ZeitFunk.MinutenSeitMitternacht(szeit1);
+		long z2 = ZeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 <= z1 ? true : false);
 	}
 	boolean ZeitKleiner(String szeit1,String szeit2){
-		long z1 = zeitFunk.MinutenSeitMitternacht(szeit1);
-		long z2 = zeitFunk.MinutenSeitMitternacht(szeit2);
+		long z1 = ZeitFunk.MinutenSeitMitternacht(szeit1);
+		long z2 = ZeitFunk.MinutenSeitMitternacht(szeit2);
 		return( z2 < z1 ? true : false);
 	}
 	int[] Schnittmenge(String sklein1,String sgross1,String sklein2,String sgross2 ){
-		long z1 = zeitFunk.MinutenSeitMitternacht(sklein1);
-		long z2 = zeitFunk.MinutenSeitMitternacht(sgross1);
-		long z3 = zeitFunk.MinutenSeitMitternacht(sklein2);
-		long z4 = zeitFunk.MinutenSeitMitternacht(sgross2);
+		long z1 = ZeitFunk.MinutenSeitMitternacht(sklein1);
+		long z2 = ZeitFunk.MinutenSeitMitternacht(sgross1);
+		long z3 = ZeitFunk.MinutenSeitMitternacht(sklein2);
+		long z4 = ZeitFunk.MinutenSeitMitternacht(sgross2);
 		long schnittbeginn, schnittende;
 		int ananfang = 1;
 		// Wenn Wunschbeginn früher oder gleich als gefundener Termin-Beginn  

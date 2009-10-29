@@ -1397,8 +1397,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			});
 			
-			oSpalten[tspalte].zeitInit((int)zeitFunk.MinutenSeitMitternacht(SystemConfig.KalenderUmfang[0]),
-					   (int)zeitFunk.MinutenSeitMitternacht(SystemConfig.KalenderUmfang[1]));
+			oSpalten[tspalte].zeitInit((int)ZeitFunk.MinutenSeitMitternacht(SystemConfig.KalenderUmfang[0]),
+					   (int)ZeitFunk.MinutenSeitMitternacht(SystemConfig.KalenderUmfang[1]));
 			
 			return;
 		}
@@ -2980,8 +2980,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(aktanzahl==aktblock){
 							//ende1 = 
 						}else{ //prüfen ob nachfolgender Block gekürzt werden kann oder ob zu klein
-							ende1 = (int) zeitFunk.MinutenSeitMitternacht((String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(4)).get(aktblock+1));
-							ende2 = (int) zeitFunk.MinutenSeitMitternacht(aktstart)+Integer.parseInt(datenSpeicher[3]);
+							ende1 = (int) ZeitFunk.MinutenSeitMitternacht((String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(4)).get(aktblock+1));
+							ende2 = (int) ZeitFunk.MinutenSeitMitternacht(aktstart)+Integer.parseInt(datenSpeicher[3]);
 							
 							if (ende2 >= ende1){
 								JOptionPane.showMessageDialog (null, "Der nachfolgende Block ist von kürzerer Dauer\n"+
@@ -3036,10 +3036,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					case 4: 
 						int zeit1,zeit2,zeit3,zeit4;
 						datenSpeicher[2] = dialogRetData[0]+":"+dialogRetData[1]+":00";
-						zeit1 = (int) zeitFunk.MinutenSeitMitternacht(datenSpeicher[2])+Integer.parseInt(datenSpeicher[3]);
-						zeit2 = (int) zeitFunk.MinutenSeitMitternacht(aktend);
-						zeit3 = (int) zeitFunk.MinutenSeitMitternacht(datenSpeicher[2]);
-						zeit4 = (int) zeitFunk.MinutenSeitMitternacht(aktstart);
+						zeit1 = (int) ZeitFunk.MinutenSeitMitternacht(datenSpeicher[2])+Integer.parseInt(datenSpeicher[3]);
+						zeit2 = (int) ZeitFunk.MinutenSeitMitternacht(aktend);
+						zeit3 = (int) ZeitFunk.MinutenSeitMitternacht(datenSpeicher[2]);
+						zeit4 = (int) ZeitFunk.MinutenSeitMitternacht(aktstart);
 						if ((zeit1 < zeit2) && (zeit3 > zeit4) ){
 							//System.out.println("case 4: blockSetzen(5)  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							blockSetzen(5);

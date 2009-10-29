@@ -18,7 +18,7 @@ import javax.swing.ImageIcon;
 
 import systemTools.JRtaTextField;
 
-public class tagWahl {
+public class TagWahl {
 
 	private JDialog jDialog = null;  //  @jve:decl-index=0:visual-constraint="184,28"
 	private JPanel jContentPane = null;
