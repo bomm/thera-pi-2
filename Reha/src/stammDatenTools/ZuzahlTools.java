@@ -117,7 +117,7 @@ public class ZuzahlTools {
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='0'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(0);
 				}
-				ret[0] = new Boolean(false); 
+				ret[0] = Boolean.valueOf(false); 
 				ret[1] = tage.size();
 				return ret.clone();
 				
@@ -175,9 +175,9 @@ public class ZuzahlTools {
 			if(aktzzstatus.equals("3") && einergroesser){
 				String cmd = "update verordn set zzstatus='2' where rez_nr='"+rez_nr+" LIMIT 1";
 				new ExUndHop().setzeStatement(cmd);
-				ret[0] = new Boolean(true); 
+				ret[0] = Boolean.valueOf(true); 
 				ret[1] = tage.size();
-				ret[2] = new Integer(erstergroesser-1);
+				ret[2] = Integer.toString(erstergroesser-1);
 				ret[3] = ((Integer)ret[1]) - erstergroesser;
 			}
 			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){

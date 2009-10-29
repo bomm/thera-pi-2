@@ -216,10 +216,10 @@ public class TermineErfassen implements Runnable {
 		int i,y;
 		boolean gefunden = false;
 		
-		Object[] obj = {new Boolean(false),null,null,null,null,null,null,null};
+		Object[] obj = {Boolean.valueOf(false),null,null,null,null,null,null,null};
 		for(i=0;i<spalten;i++){
 			int bloecke = ((Vector)alleterm.get(0)).size();
-			int belegt = new Integer( (String) ((Vector)alleterm.get(i)).get(bloecke-6) );
+			int belegt = Integer.parseInt( (String) ((Vector)alleterm.get(i)).get(bloecke-6) );
 			for(y=0;y<belegt;y++){
 				//int block = ((y*5)+1);
 				if( ((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )).contains(scanrez) ){
@@ -252,10 +252,10 @@ public class TermineErfassen implements Runnable {
 		boolean termOk = false;
 		//System.out.println("eingelesene Spalten = "+spalten);
 		int i,y;
-		Object[] obj = {new Boolean(false),null,null,null,null,null,null,null};
+		Object[] obj = {Boolean.valueOf(false),null,null,null,null,null,null,null};
 		for(i=(erstfund+1);i<spalten;i++){
 			int bloecke = ((Vector)alleterm.get(0)).size();
-			int belegt = new Integer( (String) ((Vector)alleterm.get(i)).get(bloecke-6) );
+			int belegt = Integer.parseInt( (String) ((Vector)alleterm.get(i)).get(bloecke-6) );
 			for(y=0;y<belegt;y++){
 				//int block = ((y*5)+1);
 				if( ((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )).contains(scanrez) ){

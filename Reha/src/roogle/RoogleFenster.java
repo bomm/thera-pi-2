@@ -517,7 +517,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		int bis = jxGruppen.getRowCount();
 		int i = 0;
 		for(i = 0;i<bis;i++){
-			jxGruppen.setValueAt(new Boolean(mark),i, 0);
+			jxGruppen.setValueAt(Boolean.valueOf(mark),i, 0);
 		}
 		for(i = 0;i<5;i++){
 			gruppenCheck[i].setSelected(mark);

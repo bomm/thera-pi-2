@@ -1181,7 +1181,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			for(i=0;i<bis;i++){
 				if(dtblm.getValueAt(i, 1) != null){
 					if(((ImageIcon)dtblm.getValueAt(i, 1)).getDescription().equals("offen")){
-						dtblm.setValueAt(new Boolean(true),i, 0);
+						dtblm.setValueAt(Boolean.valueOf(true),i, 0);
 						this.zeilengewaehlt++;
 						
 					}
@@ -2872,7 +2872,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
-		vec.add(new Boolean(false));
+		vec.add(Boolean.valueOf(false));
 		vec.add(null);
 		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
 		vec.add(uhrzeit.substring(0,5));
@@ -2950,7 +2950,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		vec.add(ii);
 		vec.add(rs.getString("id"));
 		vec.add(rs.getString("BELEGT"));
-		vec.add(new Boolean(true));
+		vec.add(Boolean.valueOf(true));
 
 		return vec;
 	}

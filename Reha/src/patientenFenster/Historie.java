@@ -499,8 +499,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	 * 
 	 */
 	public void doRechneAlles(){
-		double gesamtHistor = new Double(0.00);
-		double gesamtAkt = new Double(0.00);
+		double gesamtHistor = 0.00; //new Double(0.00);
+		double gesamtAkt = 0.00; //new Double(0.00);
 		gesamtHistor = doRechneHistorie("lza");
 		gesamtAkt = doRechneHistorie("verordn");
 		double gesamtumsatz = gesamtHistor+gesamtAkt;
