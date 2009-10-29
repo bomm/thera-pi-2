@@ -1314,7 +1314,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							dragDaten.x = e.getX();
 							if(aktiveSpalte[0]>=0){
 								if(ansicht==NORMAL_ANSICHT){
-									setLockStatement((belegung[tspalte]+1 >=10 ? new Integer(belegung[tspalte]+1).toString()+"BEHANDLER" : "0"+(belegung[tspalte]+1)+"BEHANDLER"),aktuellerTag);
+									setLockStatement((belegung[tspalte]+1 >=10 ? Integer.toString(belegung[tspalte]+1)+"BEHANDLER" : "0"+(belegung[tspalte]+1)+"BEHANDLER"),aktuellerTag);
 									new Thread(new LockRecord()).start();
 									while(lockok == 0){
 										try {
@@ -2025,7 +2025,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			x= pPosition.x+position[0]+(oSpalten[aktiveSpalte[2]].getWidth()/2);
 			y= pPosition.y+position[1];
 			if(ansicht==NORMAL_ANSICHT){
-				setLockStatement((belegung[aktiveSpalte[2]]+1 >=10 ? new Integer(belegung[aktiveSpalte[2]]+1).toString()+"BEHANDLER" : "0"+(belegung[aktiveSpalte[2]]+1)+"BEHANDLER"),aktuellerTag);
+				setLockStatement((belegung[aktiveSpalte[2]]+1 >=10 ? Integer.toString(belegung[aktiveSpalte[2]]+1)+"BEHANDLER" : "0"+(belegung[aktiveSpalte[2]]+1)+"BEHANDLER"),aktuellerTag);
 				new Thread (new LockRecord()).start();
 				while(lockok == 0){
 					try {
@@ -2461,7 +2461,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				if (behandler==0){
 					behandler = ParameterLaden.vKKollegen.get(ParameterLaden.suchen((String)oCombo[0].getSelectedItem())).Reihe ;
 				}
-				sbehandler = (behandler < 10 ? "0"+behandler : ""+new Integer(behandler).toString()); 
+				sbehandler = (behandler < 10 ? "0"+behandler : ""+Integer.toString(behandler)); 
 				serster   = DatFunk.WocheErster(stag);
 				this.wocheErster = serster;
 				/***********Nur zum Test*************/
@@ -2592,21 +2592,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-				rs = null;
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-				stmt = null;
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+
 		}
 	}
 /******************************/
@@ -2709,21 +2710,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-				rs = null;
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-				stmt = null;
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+
 		}
 	}
 		
@@ -3776,7 +3778,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	        	if(flavors[i].getRepresentationClass().toString().equals("java.lang.String")){
 	        		mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
 	        	}
-	        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+	        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
 	        	//System.out.println("Mitgebracht = "+mitgebracht);
 	        }
 	      } catch (Throwable t) { t.printStackTrace(); }
@@ -4131,7 +4133,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						//SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
 
 						/**********Datenbank beschreiben*************/
-						String sblock = new Integer(aktiveSpalte[0]+1).toString();
+						String sblock = Integer.toString(aktiveSpalte[0]+1);
 						String toupdate = "T"+sblock+" = '"+copyright+swname+"'";
 						String towhere = "datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' AND "+
 						"behandler='"+(swbehandler < 10 ? "0"+Integer.toString(swbehandler+1)+"BEHANDLER" : Integer.toString(swbehandler+1)+"BEHANDLER"   )+"' "+

@@ -354,14 +354,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		System.out.println("Der Pfad zu Java = "+javaPfad);
 		if(args.length > 0){
 			String[] split = args[0].split("@");
-			aktIK = new String(split[0]);
-			aktMandant = new String(split[1]);
+			aktIK = split[0];
+			aktMandant = split[1];
 
 		}else{
 			INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
 			int DefaultMandant = inif.getIntegerProperty("TheraPiMandanten", "DefaultMandant");
-			aktIK = new String(inif.getStringProperty("TheraPiMandanten", "MAND-IK"+DefaultMandant));
-			aktMandant = new String(inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+DefaultMandant));			
+			aktIK = inif.getStringProperty("TheraPiMandanten", "MAND-IK"+DefaultMandant);
+			aktMandant = inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+DefaultMandant);			
 			//aktIK = "000000000";
 			//aktMandant = "Software-Training";
 		}
@@ -1262,7 +1262,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    		  String[] labs = mitgebracht.split("°");
 				    	  if(labs[0].contains("TERMDAT")){
 				    		  copyLabel.setText(labs[1]+"°"+labs[2]+"°"+labs[3]);
-				    		  bunker.setText("TERMDATEXT°"+new String(copyLabel.getText()));
+				    		  bunker.setText("TERMDATEXT°"+copyLabel.getText());
 				    		  e.dropComplete(true);
 				    		  return;
 				    	  }else if(labs[0].contains("PATDAT")){
@@ -2865,7 +2865,7 @@ class SocketClient {
 	String stand = "";
 	Socket server = null;
 	public void setzeInitStand(String stand){
-		this.stand = new String(stand);
+		this.stand = stand;
 		run();
 	}
 	public void run() {
@@ -2873,7 +2873,7 @@ class SocketClient {
 			serverStarten();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			String mes = new String(  e.toString());
+			String mes =   e.toString();
 			//JOptionPane.showMessageDialog(null,  mes);
 		}
 	}
@@ -2952,7 +2952,7 @@ class RehaSockServer{
 
 			test = new String(sb);
 			System.out.println("Socket= "+test);			
-			final String xtest = new String(test);
+			final String xtest = test;
 
 			if(xtest.equals("INITENDE")){
 						byte[] schreib = "ok".getBytes();

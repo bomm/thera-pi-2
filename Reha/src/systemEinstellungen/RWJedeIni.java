@@ -11,7 +11,7 @@ private static INIFile ini = null;
 	}
 	public static String leseIniDatei(String iniDatei, String gruppe,String element){
 		ini = new INIFile(iniDatei);
-		String sret = new String(ini.getStringProperty(gruppe,element));
+		String sret = ini.getStringProperty(gruppe,element);
 		ini = null;
 		return sret;
 	}

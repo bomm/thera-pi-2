@@ -459,13 +459,14 @@ final class PatientSuchen implements Runnable{
 					rs.close();
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignore }
-						stmt = null;}
-				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;}
 			}
+			
 		}
 	}	
 

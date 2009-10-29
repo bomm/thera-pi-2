@@ -46,7 +46,7 @@ public class RezTools {
 		for(int i = 0;i<lines;i++){
 			String[] terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			retvec.add(new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
+			retvec.add((terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
 		}
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
@@ -440,7 +440,7 @@ public class RezTools {
 				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
 
 				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
-				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", Integer.toString(anzahl[i]) );
 				
 				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
 				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
@@ -495,7 +495,7 @@ public class RezTools {
 			//System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					tvec.add((terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
 			}
 			//System.out.println("Termivector = "+tvec);
 			termine.add((Vector<String>)tvec.clone());
@@ -504,7 +504,7 @@ public class RezTools {
 	}
 	
 	public static Object[] JahrEnthalten(Vector<String>vtage,String jahr){
-		Object[] ret = {new Boolean(false),new Integer(-1)};
+		Object[] ret = {Boolean.valueOf(false),-1};
 		for(int i = 0; i < vtage.size();i++){
 			if( ((String)vtage.get(i)).equals(jahr) ){
 				ret[0] = true;
@@ -515,7 +515,7 @@ public class RezTools {
 		return ret;
 	}
 	public static Object[] JahresWechsel(Vector<String>vtage,String jahr){
-		Object[] ret = {new Boolean(false),new Integer(-1),new Integer(-1)};
+		Object[] ret = {Boolean.valueOf(false),-1,-1};
 		for(int i = 0; i < vtage.size();i++){
 			if(!((String)vtage.get(i)).substring(6).equals(jahr) ){
 				ret[0] = true;

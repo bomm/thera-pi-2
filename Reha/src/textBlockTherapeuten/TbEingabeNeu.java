@@ -63,7 +63,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		String x = new String(dtext);
 		x = x.replaceAll("\\^Tab\\^","&nbsp;");
 		x = x.replaceAll("CRLF","<br>");
-		this.savetext = new String("<html>"+x+"</html>");
+		this.savetext = "<html>"+x+"</html>";
 		System.out.println("Savetext nach dem Replace " +this.savetext);
 		this.varvec = vec;
 		this.thbl = thb;

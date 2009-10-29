@@ -74,14 +74,14 @@ public static String MinutenZuZeit(int minuten){
 	//System.out.println("Stunden= "+stunden);
 	//System.out.println("Minuten= "+dummyminuten);
 	if ((new Integer(stunden)).toString().length() == 1)
-		sret = "0"+ (new Integer(stunden)).toString();
+		sret = "0"+ (Integer.toString(stunden));
 	else
-		sret = (new Integer(stunden)).toString();
+		sret = (Integer.toString(stunden));
 	
 	if ((new Integer(dummyminuten)).toString().length() == 1)
-		sret = sret+":0"+(new Integer(dummyminuten)).toString();
+		sret = sret+":0"+(Integer.toString(dummyminuten));
 	else
-		sret = sret+":"+(new Integer(dummyminuten)).toString();		
+		sret = sret+":"+(Integer.toString(dummyminuten));		
 	sret = sret+":00";
 	//System.out.println("errechnete Zeit = "+sret);
 return sret;	

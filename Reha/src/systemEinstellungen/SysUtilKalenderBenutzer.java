@@ -78,7 +78,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 	String ListLabel = null;{
 	Abt = new String("        Abteilung");
 	//Abt.setHorizontalAlignment(JTextField.RIGHT);
-	ListLabel = new String("         MA-Liste");
+	ListLabel = "         MA-Liste";
 	//ListLabel.setHorizontalAlignment(JTextField.RIGHT);
 	}
 	
@@ -627,14 +627,15 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				}catch (SQLException sqlEx) { // ignorieren }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignorieren }
-						stmt = null;
-					}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignorieren }
+					stmt = null;
 				}
 			}
+			
 		}
 	}
 /***********************************************************/
@@ -677,14 +678,15 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				}catch (SQLException sqlEx) { // ignorieren }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignorieren }
-						stmt = null;
-					}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignorieren }
+					stmt = null;
 				}
 			}
+			
 		}
 		return itest;
 	}
@@ -740,14 +742,15 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 			} catch (SQLException sqlEx) { // ignore }
 				rs = null;
 			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) { // ignore }
-					stmt = null;
-				}
+		}	
+		if (stmt != null) {
+			try {
+				stmt.close();
+			} catch (SQLException sqlEx) { // ignore }
+				stmt = null;
 			}
 		}
+	
 	}
 		return ret;
 	}	

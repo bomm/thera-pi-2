@@ -152,7 +152,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	}
 	private String macheHtmlTitel(int anz,String titel){
 		
-		String ret = titel+" - "+new Integer(anz).toString();
+		String ret = titel+" - "+Integer.toString(anz);
 		
 		/*
 		String ret = "<html>"+titel+

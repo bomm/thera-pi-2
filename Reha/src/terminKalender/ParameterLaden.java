@@ -72,7 +72,7 @@ public static String getKollegenUeberReihe(int reihe){
 }
 
 public static String getKollegenUeberDBZeile(int reihe){
-	String ret = new String("");
+	String ret = "";
 	int lang = vKKollegen.size();
 	int i;
 	for (i=0;i<lang;i++){
@@ -172,22 +172,22 @@ public static void Init(){
 	 	col[0][0] = (String) aKollegen.get(0);
 	 	aKollegen.clear();
 	 	durchlauf++;
-	 	String test = new String();
+	 	String test = "";
 	 	int itest = 0;
 	 	while( rs.next()){
-		 	aKollegen.add(new String(rs.getString("Matchcode")));
+		 	aKollegen.add(rs.getString("Matchcode"));
 		 	test = rs.getString("Nachname");
 		 	aKollegen.add((test != null ?  test : "" ));
 		 	test = rs.getString("Nicht_Zeig");
 		 	aKollegen.add((test != null ?  test : "F" ));
-		 	itest = new Integer(rs.getString("Kalzeile"));
+		 	itest = Integer.parseInt(rs.getString("Kalzeile"));
 		 	if (itest > maxKalZeile){
 		 		maxKalZeile = itest;
 		 	}
 		 	if(itest < 10){
-		 		aKollegen.add("0"+ new Integer(itest).toString());
+		 		aKollegen.add("0"+ Integer.toString(itest));
 		 	}else{
-		 		aKollegen.add(new Integer(itest).toString());
+		 		aKollegen.add(Integer.toString(itest));
 		 	}
 		 	//aKollegen.add(itest);		 	
 		 	vKollegen.add((ArrayList)aKollegen.clone());
@@ -219,19 +219,20 @@ public static void Init(){
 	}
 	finally {
 		if (rs != null) {
-		try {
-			rs.close();
-		} catch (SQLException sqlEx) { // ignorieren }
-			rs = null;
+			try {
+				rs.close();
+			} catch (SQLException sqlEx) { // ignorieren }
+				rs = null;
+			}
 		}
 		if (stmt != null) {
-		try {
-			stmt.close();
-		} catch (SQLException sqlEx) { // ignorieren }
-			stmt = null;
+			try {
+				stmt.close();
+			} catch (SQLException sqlEx) { // ignorieren }
+				stmt = null;
+			}
 		}
-		}
-		}
+
 	}
 	
 	
@@ -261,7 +262,7 @@ public static void Passwort() {
 
 		rs = stmt.executeQuery("SELECT * from rehalogin");
 		ArrayList aKollegen = new ArrayList();
-	 	String test = new String();
+	 	String test = "";
 	 	while( rs.next()){
 	 		test = rs.getString("user");
 		 	aKollegen.add((test != null ?  test : "" ));
@@ -287,19 +288,20 @@ public static void Passwort() {
 	}
 	finally {
 		if (rs != null) {
-		try {
-			rs.close();
-		} catch (SQLException sqlEx) { // ignore }
-			rs = null;
+			try {
+				rs.close();
+			} catch (SQLException sqlEx) { // ignore }
+				rs = null;
+			}
 		}
 		if (stmt != null) {
-		try {
-			stmt.close();
-		} catch (SQLException sqlEx) { // ignore }
-			stmt = null;
+			try {
+				stmt.close();
+			} catch (SQLException sqlEx) { // ignore }
+				stmt = null;
+			}
 		}
-		}
-		}
+
 	}
 	
 }
@@ -352,7 +354,7 @@ public static void PreiseEinlesen(String preisklasse) {
 		
 		//ArrayList<String> aPreise = new ArrayList<String>();
 		Vector<String> vPreise = new Vector<String>();
-	 	String test = new String();
+	 	String test = "";
 	 	while( rs.next()){
 	 		//System.out.println("Anzahl Spalten "+rs.getMetaData().getColumnCount());
 	 		int i = rs.getMetaData().getColumnCount();
@@ -447,19 +449,20 @@ public static void PreiseEinlesen(String preisklasse) {
 	}
 	finally {
 		if (rs != null) {
-		try {
-			rs.close();
-		} catch (SQLException sqlEx) { // ignore }
-			rs = null;
+			try {
+				rs.close();
+			} catch (SQLException sqlEx) { // ignore }
+				rs = null;
+			}
 		}
 		if (stmt != null) {
-		try {
-			stmt.close();
-		} catch (SQLException sqlEx) { // ignore }
-			stmt = null;
+			try {
+				stmt.close();
+			} catch (SQLException sqlEx) { // ignore }
+				stmt = null;
+			}
 		}
-		}
-		}
+
 	}
 	
 }

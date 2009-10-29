@@ -139,8 +139,8 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 		// TODO Auto-generated method stub
 		if(e.getKeyCode()==10){
 			if(!endeRegeln()){e.consume();return;}
-			SysUtilMandanten.thisClass.neuik = new String(jrtaf[1].getText().trim());
-			SysUtilMandanten.thisClass.neuname = new String(jrtaf[0].getText().trim());
+			SysUtilMandanten.thisClass.neuik = jrtaf[1].getText().trim();
+			SysUtilMandanten.thisClass.neuname = jrtaf[0].getText().trim();
 			rSmart.dispose();
 		}
 		if(e.getKeyCode()==27){
@@ -197,8 +197,8 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 		for (int i = 0 ; i < 1 ; i++){
 			if(sAktion=="Ok"){
 				if(!endeRegeln()){return;}
-				SysUtilMandanten.thisClass.neuik = new String(jrtaf[1].getText().trim());
-				SysUtilMandanten.thisClass.neuname = new String(jrtaf[0].getText().trim());
+				SysUtilMandanten.thisClass.neuik = jrtaf[1].getText().trim();
+				SysUtilMandanten.thisClass.neuname = jrtaf[0].getText().trim();
 				rSmart.dispose();
 				break;
 			}

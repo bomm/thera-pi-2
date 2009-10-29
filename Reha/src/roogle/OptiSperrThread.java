@@ -55,8 +55,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 						
 						
 						
-						sperre = new String((String)((Vector)nvec).get(13)+
-											(String)((Vector)nvec).get(14) ); 
+						sperre = (String)((Vector)nvec).get(13)+
+											(String)((Vector)nvec).get(14) ; 
 
 						if(sperrDatum.contains(sperre+SystemConfig.dieseMaschine+zeit)){
 							nvec.set(1, img2);
@@ -124,8 +124,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 		}
 		*/
 		String sperre;
-		sperre = new String((String)((Vector)vecx).get(13)+
-							(String)((Vector)vecx).get(14) ); 
+		sperre = (String)((Vector)vecx).get(13)+
+							(String)((Vector)vecx).get(14) ; 
 
 			//if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine)){
 				stmtx = null;

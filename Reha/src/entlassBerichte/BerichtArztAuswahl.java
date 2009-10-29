@@ -166,7 +166,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 				String[] arzt = arztid[i].split("@");
 				Vector vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+arzt[1]+"'");
 				Vector vec2 = (Vector) ((Vector)vec.get(0)).clone();
-				vec2.insertElementAt(new Boolean(false), 0);
+				vec2.insertElementAt(Boolean.valueOf(false), 0);
 				atblm.addRow( (Vector)vec2.clone());
 			}
 			if(atblm.getRowCount()> 0){
@@ -229,7 +229,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		tf[1] = new JRtaTextField("nix",false);
 		tf[2] = new JRtaTextField("nix",false);
 		//ArztAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String arzt) {
-		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",new String[] {"",""},new JRtaTextField[] {tf[0],tf[1],tf[2]},new String(""));
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",new String[] {"",""},new JRtaTextField[] {tf[0],tf[1],tf[2]},"");
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);

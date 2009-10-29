@@ -107,7 +107,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		this.dispose();
 		super.dispose();
 
-		final String name = new String(this.getName());
+		final String name = this.getName();
 
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()

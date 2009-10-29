@@ -81,8 +81,8 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 						return null;
 					}
 					int iid;
-					tfs[14].setText(new Integer(tarifGruppe.getSelectedIndex()+1).toString());
-					tfs[15].setText(new Integer( iid = SqlInfo.holeId("kass_adr", "kassen_nam1")).toString());
+					tfs[14].setText(Integer.toString(tarifGruppe.getSelectedIndex()+1));
+					tfs[15].setText(Integer.toString( iid = SqlInfo.holeId("kass_adr", "kassen_nam1")));
 					String stmt = "update kass_adr set ";
 					for(int i = 0; i < 15; i++){
 						stmt = stmt+ (i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";

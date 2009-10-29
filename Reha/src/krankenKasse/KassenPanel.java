@@ -933,7 +933,7 @@ class HoleKassen{
 	HoleKassen(String suche){
 	Statement stmt = null;
 	ResultSet rs = null;
-	String sstmt = new String();
+	String sstmt = "";
 	String[] zweisuche = null;
 	String krit = "";
 	sstmt = "select kuerzel,kassen_nam1,kassen_nam2,ort,telefon,fax,ik_kasse,id from kass_adr ORDER BY kuerzel";
@@ -1019,7 +1019,7 @@ class HoleText{
 	HoleText(KassenPanel pan, String id){
 	Statement stmt = null;
 	ResultSet rs = null;
-	String sstmt = new String();
+	String sstmt = "";
 	
 	sstmt = "select kmemo from kass_adr where id = '"+id+"'";
 		

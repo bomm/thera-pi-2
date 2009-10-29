@@ -420,8 +420,8 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				if(!feldname.equals("")){
 					geheAufFeld(feldname);
 				}*/
-				arztbisher = new String(jtf[17].getText());
-				kassebisher = new String(jtf[12].getText()); 
+				arztbisher = jtf[17].getText();
+				kassebisher = jtf[12].getText(); 
 				kassenid = PatGrundPanel.thisClass.patDaten.get(68);
 				befreitdatum = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(31));
 				freizumstart = (PatGrundPanel.thisClass.patDaten.get(30).equals("T") ? true : false);
@@ -509,7 +509,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		}
 		//System.out.println("Inhalt = "+buf.toString());
 		if(!this.inNeu){
-			globPat_intern = new String(PatGrundPanel.thisClass.aktPatID);
+			globPat_intern = PatGrundPanel.thisClass.aktPatID;
 			buf.append(" where pat_intern='"+globPat_intern+"'");
 			spatintern = PatGrundPanel.thisClass.aktPatID;
 			// Wenn Kasse veränder wurde....
@@ -560,7 +560,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			globPat_intern = new Integer(patintern).toString();
 			buf.append(",anl_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
 			buf.append(",pat_intern='"+new Integer(patintern).toString() +"' where id='"+new Integer(neuid).toString()+"'");
-			spatintern = new Integer(patintern).toString();
+			spatintern = Integer.toString(patintern);
 		}
 		new ExUndHop().setzeStatement(buf.toString());
 
@@ -574,8 +574,8 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
 				((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).dispose();
-				String s1 = new String("#PATSUCHEN");
-				String s2 = new String(xpatintern);
+				String s1 = "#PATSUCHEN";
+				String s2 = xpatintern;
 				PatStammEvent pEvt = new PatStammEvent(PatNeuanlage.this);
 				pEvt.setPatStammEvent("PatSuchen");
 				pEvt.setDetails(s1,s2,"") ;
@@ -1480,7 +1480,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 	}
 	private void arztAuswahl(String[] suchenach){
 		jtf[19].requestFocus();
-		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {jtf[17],jtf[18],jtf[33]},new String(jtf[17].getText().trim()));
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {jtf[17],jtf[18],jtf[33]},jtf[17].getText().trim());
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);
@@ -1514,7 +1514,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 	private void kassenAuswahl(String[] suchenach){
 		jtf[14].requestFocus();
-		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[12],jtf[13],jtf[34]},new String(jtf[12].getText().trim()));
+		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[12],jtf[13],jtf[34]},jtf[12].getText().trim());
 		kwahl.setModal(true);
 		kwahl.setLocationRelativeTo(this);
 		kwahl.setVisible(true);
@@ -1838,7 +1838,7 @@ class ArztListeSpeichern{
 		
 		//cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
 		SqlInfo.aktualisiereSaetze("pat5", "aerzte='"+aliste+"'", "pat_intern='"+xpatintern+"'");
-		new ExUndHop().setzeStatement(new String(cmd));
+		new ExUndHop().setzeStatement(cmd);
 		PatGrundPanel.thisClass.patDaten.set(63,aliste);
 		System.out.println(cmd);
 	}

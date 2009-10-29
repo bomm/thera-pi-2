@@ -212,10 +212,10 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		return thisClass.kollegenAbteilung[koll];
 	}
 	public static void setzeTreffer(int treffer){
-		thisClass.trefferLbl.setText(new Integer(treffer).toString());
+		thisClass.trefferLbl.setText(Integer.toString(treffer));
 	}
 	public void setzeZeilenAusgewaehlt(int gewaehlt){
-		thisClass.ausgewaehltLbl.setText(new Integer(gewaehlt).toString());
+		thisClass.ausgewaehltLbl.setText(Integer.toString(gewaehlt));
 	}
 	public static String getStartDatum(){
 		return thisClass.startLbl.getText();
@@ -289,7 +289,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		return thisClass.gewaehlt;
 	}
 	public static void setZeit(){
-		thisClass.zeit = new Long(System.currentTimeMillis()).toString();	
+		thisClass.zeit = Long.valueOf(System.currentTimeMillis()).toString();	
 	}
 	public static String getZeit(){
 		return thisClass.zeit;	
@@ -1086,7 +1086,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				if(arg0.getColumn() == 0){
 					String sym = ((ImageIcon)jxSucheTable.getValueAt(arg0.getFirstRow(),1)).getDescription();
 					if(sym.equals("gesperrt") && ((Boolean)jxSucheTable.getValueAt(arg0.getFirstRow(),0)) ){
-						jxSucheTable.setValueAt(new Boolean(false),arg0.getFirstRow(),0);
+						jxSucheTable.setValueAt(Boolean.valueOf(false),arg0.getFirstRow(),0);
 					}else if(!sym.equals("gesperrt")){
 						if( ((Boolean)jxSucheTable.getValueAt(arg0.getFirstRow(),0)) ){
 							this.zeilengewaehlt++;
@@ -1204,7 +1204,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		}else{
 			listenerAusschalten();			
 			for(i=0;i<bis;i++){
-				dtblm.setValueAt(new Boolean(false),i, 0);
+				dtblm.setValueAt(Boolean.valueOf(false),i, 0);
 			}
 			this.zeilengewaehlt = 0;
 			setzeZeilenAusgewaehlt(this.zeilengewaehlt);
@@ -1310,7 +1310,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								break;
 							}else{
 								// nur Statement bilden und weg damit... kein Vector gedönse
-								String snum = new Integer(((Integer) jxSucheTable.getValueAt(i, 16))).toString();
+								String snum = Integer.toString(((Integer) jxSucheTable.getValueAt(i, 16)));
 								String stmt = "Update flexkc set T"+snum+"='"+StringTools.EscapedDouble(name)+"', N"+snum+"='"+nummer+"' where id='"+
 								((String)jxSucheTable.getValueAt(i, 17)).trim()+"'";
 								//System.out.println(stmt);
@@ -1637,24 +1637,24 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				if(( yname.trim().equals("")) && (ynummer.trim().equals("")) ){
 					//der Vorblock ist nicht leer aber der Nachblock!!
 					String startzeit = new String((String) ((Vector)vec.get(block-1)).get(2));
-					String endzeit = new String((String) ((Vector)vec.get(block)).get(4));
-					int dauer1 = new Integer((String) ((Vector)vec.get(block-1)).get(3));
-					int dauer2 = new Integer((String) ((Vector)vec.get(block)).get(3));
+					String endzeit = (String) ((Vector)vec.get(block)).get(4);
+					int dauer1 = Integer.parseInt((String) ((Vector)vec.get(block-1)).get(3));
+					int dauer2 = Integer.parseInt((String) ((Vector)vec.get(block)).get(3));
 					int dauerNeu = dauer1+dauer2;
 					((Vector)vec.get(block-1)).set(0, "");
 					((Vector)vec.get(block-1)).set(1, "");					
 					((Vector)vec.get(block-1)).set(2, startzeit);
-					((Vector)vec.get(block-1)).set(3, new Integer(dauerNeu).toString());
+					((Vector)vec.get(block-1)).set(3, Integer.toString(dauerNeu));
 					((Vector)vec.get(block-1)).set(4,endzeit);
 					vec.remove(block);
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Der betroffene Block zwischendrinn und der nachfolgende ist ebenfalls leer");
 					//System.out.println(stmt);
 					break;				
 				}else{
 					((Vector)vec.get(block-1)).set(0, "");
 					((Vector)vec.get(block-1)).set(1, "");					
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Der betroffene Block zwischendrinn und weder der vorherige noch der nachfolgende sind leer");
 					//System.out.println(stmt);
 					break;
@@ -1688,7 +1688,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			System.out.println(vec.get(i));
 			stmt = stmt +"T"+(i+1)+" = '"+StringTools.Escaped(((String)((Vector)vec.get(i)).get(0)))+"'"+", ";
 			rnummer = ((String)((Vector)vec.get(i)).get(1));
-			snummer = new String(rnummer.trim().replace("\\", "\\\\") );
+			snummer = rnummer.trim().replace("\\", "\\\\") ;
 			rnummer = snummer.replace("\\\\\\\\", "\\\\");
 			stmt = stmt +"N"+(i+1)+" = '"+rnummer+"'"+", ";
 			//stmt = stmt +"N"+(i+1)+" = '"+((String)((Vector)vec.get(i)).get(1))+"'"+", ";
@@ -1696,7 +1696,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			stmt = stmt +"TD"+(i+1)+" = '"+((String)((Vector)vec.get(i)).get(3))+"'"+", ";
 			stmt = stmt +"TE"+(i+1)+" = '"+((String)((Vector)vec.get(i)).get(4))+"'"+", ";			
 		}
-		stmt = stmt+ "BELEGT ='"+new Integer(vec.size()).toString()+"' where id='"+new Integer(id).toString()+"'";
+		stmt = stmt+ "BELEGT ='"+Integer.toString(vec.size())+"' where id='"+Integer.toString(id)+"'";
 		//System.out.println(stmt);
 		
 		return stmt;
@@ -1726,14 +1726,15 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignore }
-						stmt = null;
-					}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
 				}
 			}
+
 		}
 	}	
 	/*****************************************/	
@@ -1777,14 +1778,15 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignore }
-						stmt = null;
-					}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
 				}
 			}
+
 		}
 		return (Vector)vec;//.clone();
 	}
@@ -2054,7 +2056,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 								
 								
 								if( (abteilnr = SystemConfig.oGruppen.gruppenNamen.indexOf(sabteilung)) >= 0){
-									defdauer = (int) new Long(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[2]).intValue();
+									defdauer = Long.valueOf(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[2]).intValue();
+									//defdauer = (int) new Long(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[2]).intValue();
 									//System.out.println("Gültig ab:"+ datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[0]));
 									//ermitteln ob alte oder neue Definition verwendet werden soll // in Variable ablegen
 									//dann Sprung in die Tests
@@ -2293,7 +2296,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				}else{
 					aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
 					//SuchenSeite.setzeDatum(aktDatum );						       	  	
-					sqlAlt = new String(sqlAkt);					
+					sqlAlt = sqlAkt;					
 					sqlAkt = DatFunk.sDatInSQL(aktDatum );					//System.out.println(SuchenSeite.getAktDatum()+"-"+SuchenSeite.tagDurchsuchen(SuchenSeite.getAktDatum()) );
 					SuchenSeite.setFortschrittSetzen(++ftage);
 				}
@@ -2637,13 +2640,14 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	boolean passtZwischen(String sgrenzeklein,String sgrenzegross,String szeit,int dauer){
 		long z1 = zeitFunk.MinutenSeitMitternacht(sgrenzeklein);
 		long z2 = zeitFunk.MinutenSeitMitternacht(sgrenzegross);
-		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+new Long(dauer);
+		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
 		return( ((z3 >= z1) &&  (z3<=z2)) ? true : false);
 	}
 	boolean longPasstZwischen(long lgrenzeklein,long lgrenzegross,String szeit,int dauer){
 		long z1 = lgrenzeklein;
 		long z2 = lgrenzegross;
-		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+new Long(dauer);
+		
+		long z3 = zeitFunk.MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
 		return( ((z3 >= z1) &&  (z3<=z2)) ? true : false);
 	}
 	boolean ZeitGroesserGleich(String szeit1,String szeit2){
@@ -2702,7 +2706,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			ananfang = -1;
 			schnittende = -1;
 		}
-		return new int[] {new Long(schnittende-schnittbeginn).intValue(),new Long(schnittbeginn).intValue(),new Long(schnittende).intValue(),new Integer(ananfang)};
+		
+		return new int[] {Long.valueOf(schnittende-schnittbeginn).intValue(),Long.valueOf(schnittbeginn).intValue(),Long.valueOf(schnittende).intValue(),ananfang};
 	}
 	
 	
@@ -2838,7 +2843,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
 		vec.add(rs.getString("TD"+(ii)).trim());		
 		vec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
-		vec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : new Integer(defdauer).toString() ) );
+		vec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : Integer.toString(defdauer) ) );
 		vec.add(name);
 		vec.add(nummer);								
 		vec.add(skollege);								
@@ -2850,7 +2855,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		vec.add(ii);
 		vec.add(rs.getString("id"));
 		vec.add(rs.getString("BELEGT"));
-		vec.add(new Boolean(false));
+		vec.add(Boolean.valueOf(false));
 
 		return vec;
 	}
@@ -2874,7 +2879,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
 		vec.add(rs.getString("TD"+(ii)).trim());		
 		vec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
-		vec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : new Integer(defdauer).toString() ) );
+		vec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : Integer.toString(defdauer) ) );
 		vec.add(name);
 		vec.add(nummer);								
 		vec.add(skollege);								
@@ -2886,7 +2891,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		vec.add(ii);
 		vec.add(rs.getString("id"));
 		vec.add(rs.getString("BELEGT"));
-		vec.add(new Boolean(false));
+		vec.add(Boolean.valueOf(false));
 
 		return vec;
 	}
@@ -2910,7 +2915,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
 		vec.add(rs.getString("TD"+(ii)).trim());		
 		vec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
-		vec.add( new Integer(defdauer).toString() );
+		vec.add(Integer.toString(defdauer));
 		boolean xgruppe = false;
 		//if(name.trim().equals("")){
 			String snam = null;
@@ -2968,8 +2973,8 @@ private synchronized int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 	}
 	*/
 	String sperre;
-	sperre = new String((String)((Vector)vecx).get(13)+
-						(String)((Vector)vecx).get(14) ); 
+	sperre = (String)((Vector)vecx).get(13)+
+						(String)((Vector)vecx).get(14) ; 
 
 		//if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine)){
 			stmtx = null;
@@ -3214,8 +3219,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 		boolean neu = true;
 		
 		String sperre;
-		sperre = new String((String)((Vector)vecx).get(13)+
-							(String)((Vector)vecx).get(14) );
+		sperre = (String)((Vector)vecx).get(13)+
+							(String)((Vector)vecx).get(14) ;
 		
 		if(neu){
 			String cmd = "sperre='"+sperre+"'";

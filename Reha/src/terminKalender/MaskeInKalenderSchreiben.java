@@ -90,7 +90,7 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
 		getSmartTitledPanel().setName(dieserName);
 		this.vTerm = (Vector) vTerm.clone();
 		this.maskenBehandler = maskenBehandler;
-		this.sBehandler = (maskenBehandler < 10 ? "0"+maskenBehandler+"BEHANDLER" : new Integer(maskenBehandler).toString()+"BEHANDLER");
+		this.sBehandler = (maskenBehandler < 10 ? "0"+maskenBehandler+"BEHANDLER" : Integer.toString(maskenBehandler)+"BEHANDLER");
 		//System.out.println("Maskenbehandler = "+this.maskenBehandler);
 		//System.out.println("Maske von Behandler "+this.sBehandler);
 		this.setModal(true);
@@ -374,7 +374,7 @@ public void maskenEintragen(){
 		wochenTag = DatFunk.TagDerWoche(aktTag);
 		String statement = macheStatement(DatFunk.sDatInSQL(aktTag),(ArrayList) this.vTerm.get(wochenTag-1));
 		SchreibeMaskeInKalender smk = new SchreibeMaskeInKalender();
-		smk.setzeStatement(new String(statement));
+		smk.setzeStatement(statement);
 		aktTag = DatFunk.sDatPlusTage(aktTag, 1);
 		if(DatFunk.DatumsWert(aktTag) > DatFunk.DatumsWert(stopTag)){
 			stopUebertrag = true;
@@ -424,7 +424,7 @@ public void maskenEintragen(){
 			sret = sret + "TD"+ (i+1) + "='" + ((Vector) list.get(3)).get(i) + "', ";			
 			sret = sret + "TE"+ (i+1) + "='" + ((Vector) list.get(4)).get(i) + "', ";
 		}
-		sret = sret + "BELEGT='"+new Integer(bloecke).toString()+"' WHERE DATUM='"+sqldat+"' AND BEHANDLER='"+this.sBehandler+"'";
+		sret = sret + "BELEGT='"+Integer.toString(bloecke)+"' WHERE DATUM='"+sqldat+"' AND BEHANDLER='"+this.sBehandler+"'";
 		return sret;
 	}
 

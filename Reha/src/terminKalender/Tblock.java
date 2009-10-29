@@ -440,7 +440,7 @@ private int dbBehandler;
 		//Beginn eintragen 
 		this.feld.setFeld(this.Kollege,iBeginn, this.Block,this.Beginn);
 		//Eingabe Dauer eintragen
-		this.feld.setFeld(this.Kollege,iDauer, this.Block, new Integer(this.Dauer).toString());
+		this.feld.setFeld(this.Kollege,iDauer, this.Block, Integer.toString(this.Dauer));
 		//Endzeit eintragen		
 		this.feld.setFeld(this.Kollege,iEnde, this.Block, this.Ende);
 
@@ -766,7 +766,7 @@ private int dbBehandler;
 		int iDauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(beginnBisher,this.Beginn);		
 
 		this.feld.setFeld(this.Kollege,iEnde,this.Block,this.Beginn);
-		this.feld.setFeld(this.Kollege,iDauer,this.Block,new Integer(iDauerVorBlock).toString());
+		this.feld.setFeld(this.Kollege,iDauer,this.Block,Integer.toString(iDauerVorBlock));
 		
 		
 		int neublocknum = this.Block+1;
@@ -913,9 +913,9 @@ class KalenderBeschreiben extends Thread implements Runnable{
 		  buff.append("BELEGT" + "='"+Integer.toString(anzahl).trim()+"', "  );
 		  //System.out.println("Kollege = "+iKoll);
 		  if(dbKollege == 0){
-			  	sKoll = ((iKoll)+1 >=10 ? new Integer(iKoll+1).toString()+"BEHANDLER" : "0"+new Integer(iKoll+1).toString()+"BEHANDLER");			  
+			  	sKoll = ((iKoll)+1 >=10 ? Integer.toString(iKoll+1)+"BEHANDLER" : "0"+Integer.toString(iKoll+1)+"BEHANDLER");			  
 		  }else{
-			  	sKoll = ((dbKollege) >=10 ? new Integer(dbKollege).toString()+"BEHANDLER" : "0"+new Integer(dbKollege).toString()+"BEHANDLER");			  
+			  	sKoll = ((dbKollege) >=10 ? Integer.toString(dbKollege)+"BEHANDLER" : "0"+Integer.toString(dbKollege)+"BEHANDLER");			  
 		  }
 			  
 

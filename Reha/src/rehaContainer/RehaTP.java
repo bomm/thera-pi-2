@@ -129,7 +129,7 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 	public void setStandort(String fenster,int setOben){
 		RehaTPEvent rEvt = new RehaTPEvent(this);
 		rEvt.setRehaEvent("ChangeLocation");
-		rEvt.setDetails(fenster,new Integer(setOben).toString()) ;
+		rEvt.setDetails(fenster,Integer.toString(setOben)) ;
 	}
 	@Override
 	public void focusGained(FocusEvent arg0) {

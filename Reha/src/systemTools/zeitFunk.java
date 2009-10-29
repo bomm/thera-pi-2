@@ -35,7 +35,7 @@ final class zeitFunk {
 	static boolean PasstZwischen(String sgrenzeklein,String sgrenzegross,String szeit,int dauer){
 		long z1 = MinutenSeitMitternacht(sgrenzeklein);
 		long z2 = MinutenSeitMitternacht(sgrenzegross);
-		long z3 = MinutenSeitMitternacht(szeit)+new Long(dauer);
+		long z3 = MinutenSeitMitternacht(szeit)+Long.parseLong(Integer.toString(dauer));
 		if(((z3 >= z1) &&  (z3<=z2))){
 			return true;
 		}else{
@@ -85,14 +85,14 @@ final class zeitFunk {
 		//System.out.println("Stunden= "+stunden);
 		//System.out.println("Minuten= "+dummyminuten);
 		if ((new Integer(stunden)).toString().length() == 1)
-			sret = "0"+ (new Integer(stunden)).toString();
+			sret = "0"+ (Integer.toString(stunden));
 		else
-			sret = (new Integer(stunden)).toString();
+			sret = (Integer.toString(stunden));
 		
 		if ((new Integer(dummyminuten)).toString().length() == 1)
-			sret = sret+":0"+(new Integer(dummyminuten)).toString();
+			sret = sret+":0"+(Integer.toString(dummyminuten));
 		else
-			sret = sret+":"+(new Integer(dummyminuten)).toString();		
+			sret = sret+":"+(Integer.toString(dummyminuten));		
 		sret = sret+":00";
 		
 	return sret;	

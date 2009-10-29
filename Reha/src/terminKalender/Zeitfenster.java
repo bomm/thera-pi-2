@@ -941,13 +941,13 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 											":"+BeginnMinute.getText()+":00");
 				int dauer3 = Integer.parseInt(Dauer.getText().trim());
 				if(rechenart==1){
-					String sBeginn = new String();
+					String sBeginn;
 					sBeginn = zeitFunk.MinutenZuZeit(dauer1-dauer3);
 					BeginnStunde.setText(sBeginn.split(":")[0]);
 					BeginnMinute.setText(sBeginn.split(":")[1]);
 				}
 				if(rechenart==2){
-					Dauer.setText(new Integer(dauer1-dauer2).toString());
+					Dauer.setText(Integer.toString(dauer1-dauer2));
 				}
 				dauer3 = Integer.parseInt(Dauer.getText().trim());
 				if((dauer1-dauer2) != dauer3){
@@ -980,7 +980,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 				return;
 			}
 			if( (dauer3-dauer2) != dauer1){
-				String sEnde = new String();
+				String sEnde;
 				sEnde = zeitFunk.MinutenZuZeit(dauer2+dauer1);
 				EndeStunde.setText(sEnde.split(":")[0]);
 				EndeMinute.setText(sEnde.split(":")[1]);

@@ -690,14 +690,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignore }
-						stmt = null;
-					}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
 				}
 			}
+			
 		}
 	}
 	/*****************************
@@ -983,7 +984,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 									new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),bild[0],Reha.aktUser,""},
 									true);
 
-							this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
+							this.holeDokus(PatGrundPanel.thisClass.aktPatID,Integer.toString(dokuid));
 							setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					}
 
@@ -1019,7 +1020,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			BufferedImage img = null;
 			try {
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
-				commonName = new Long(System.currentTimeMillis()).toString(); 
+				commonName = Long.toString(System.currentTimeMillis()); 
 				String fname = "scan"+commonName+".jpg";
 				Image img2 = null;
 				/*
@@ -1318,7 +1319,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			loescheBilderPan();
 			dokubut[0].setEnabled(true);
 			dokubut[1].setEnabled(true);
-			this.holeDokus(PatGrundPanel.thisClass.aktPatID,new Integer(dokuid).toString());
+			this.holeDokus(PatGrundPanel.thisClass.aktPatID,Integer.toString(dokuid));
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert für Patient-Nr.: "+pat_int);
 			//annika.setText("");
@@ -1564,7 +1565,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			if(metadata.getStateStr().contains("Transferring Data")){
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				if(metadata.getImage() != null){
-					commonName = new Long(System.currentTimeMillis()).toString(); 
+					commonName = Long.toString(System.currentTimeMillis()); 
 					String fname = "scan"+commonName+".jpg";
 					quelle = "scanner";
 			        File file = new File(SystemConfig.hmVerzeichnisse.get("Temp"),fname);
@@ -1927,7 +1928,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	private String macheHtmlTitel(int anz,String titel){
 		
-		String ret = titel+" - "+new Integer(anz).toString();
+		String ret = titel+" - "+Integer.toString(anz);
 		
 		/*
 		String ret = "<html>"+titel+
@@ -2200,7 +2201,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  System.out.println("Fertig mit execute");
 				  System.out.println("Größe des Datenstroms="+b.length+" Bytes");
 				  System.out.println("Datei = "+f.getAbsolutePath());
-				  System.out.println("dokuid = "+new Integer(dokuid).toString());
+				  System.out.println("dokuid = "+Integer.toString(dokuid));
 				  System.out.println("Dateigröße = "+b.length+" Bytes");
 				  System.out.println("Datum = "+DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  f.delete();

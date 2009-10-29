@@ -234,7 +234,7 @@ private JXPanel terminInfo(){
 	jtinfo.setBorder(null);
 	if(this.termine.size() > 0){
 		jtinfo.setPreferredSize(new Dimension(600,40));
-		String anzahlTermine = new Integer(this.termine.size()).toString();
+		String anzahlTermine = Integer.toString(this.termine.size());
 		String nameTermine = this.termine.get(0)[8];		
 		String nummerTermine = this.termine.get(0)[9];
 		getSmartTitledPanel().setTitle(anzahlTermine+ "  Termin(e) in der Druckerliste");
@@ -430,7 +430,7 @@ public void actionPerformed(ActionEvent arg0) {
 			}
 			
 			if(reihen > 0){
-				getSmartTitledPanel().setTitle(new Integer(reihen-1).toString()+ "  Termin(e) in der Druckerliste");
+				getSmartTitledPanel().setTitle(Integer.toString(reihen-1)+ "  Termin(e) in der Druckerliste");
 				//xxx
 				pliste.setEditable(true);
 				((TerminTableModel) pliste.getModel()).deleteRow(pliste.convertRowIndexToModel(reihenselekt));
@@ -1046,19 +1046,20 @@ final class sendeTermine extends Thread implements Runnable{
 
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+			
 		}
 		return sergebnis;
 	}
@@ -1190,20 +1191,21 @@ final class druckListeSperren{
 
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
-			}
-			}
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
 		}
+		
 		System.out.println("Ergebnis = "+sergebnis);
 		if(sergebnis.trim().equals("")){
 			System.out.println("Befehl ausgeführt");
@@ -1241,19 +1243,20 @@ final class druckListeSperren{
 
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+
 		}
 		return boolergebnis;
 	}

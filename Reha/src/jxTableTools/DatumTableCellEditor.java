@@ -41,8 +41,8 @@ public class DatumTableCellEditor extends DefaultCellEditor{
 	    public DatumTableCellEditor(int min,int max) {
 	        super(new JFormattedTextField());
 	        ftf = (JFormattedTextField)getComponent();
-	        minimum = new Integer(min);
-	        maximum = new Integer(max);
+	        minimum = min;
+	        maximum = max;
 
 	        //Set up the editor for the integer cells.
 	        integerFormat = NumberFormat.getIntegerInstance();

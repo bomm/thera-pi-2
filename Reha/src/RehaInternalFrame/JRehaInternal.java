@@ -121,7 +121,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		thisContent.addFocusListener(getFocusListener());
 		//this.addAncestorListener(this);
 
-		final String xtitel = new String(titel);
+		final String xtitel = titel;
 		this.setUI(new PlasticInternalFrameUI(this){
 			@Override
 			protected JComponent createNorthPane(JInternalFrame w) {
@@ -174,7 +174,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 
 	public void setzeTitel(String titel){
-		this.titel = new String(titel);
+		this.titel = titel;
 		this.setTitle(this.titel);
 		repaint();
 	

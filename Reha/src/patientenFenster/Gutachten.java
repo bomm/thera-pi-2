@@ -187,7 +187,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			JOptionPane.showMessageDialog(null, "Der aktuelle Patient und das zu speichernde Gutachten passen nicht zusammen...");
 			return;
 		}
-		if( dtblm.getValueAt(row,0).equals(new Integer(berid).toString()) ){
+		if( dtblm.getValueAt(row,0).equals(Integer.toString(berid)) ){
 			dtblm.setValueAt(bertype, row, 1);
 			dtblm.setValueAt(verfasser, row, 2);
 			dtblm.setValueAt(empf, row, 4);	
@@ -216,7 +216,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			tabbericht.setRowSelectionInterval(tabbericht.getRowCount()-1, tabbericht.getRowCount()-1);
 		}
 		PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"Gutachten"));
-		anzahlGutachten.setText("Anzahl Gutachten: "+new Integer(tabbericht.getRowCount()).toString());
+		anzahlGutachten.setText("Anzahl Gutachten: "+Integer.toString(tabbericht.getRowCount()));
 	}
 	public void holeGutachten(String patint,String rez){
 		/**********/
@@ -287,7 +287,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					
 			}
 	private String macheHtmlTitel(int anz,String titel){
-		String ret = titel+" - "+new Integer(anz).toString();
+		String ret = titel+" - "+Integer.toString(anz);
 		return ret;
 	}
 	
@@ -425,7 +425,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			currow = TableTool.loescheRow(tabbericht, new Integer(currow));
 			int uebrig = tabbericht.getRowCount();
 			
-			anzahlGutachten.setText("Anzahl Gutachten: "+new Integer(uebrig).toString());
+			anzahlGutachten.setText("Anzahl Gutachten: "+Integer.toString(uebrig));
 			PatGrundPanel.thisClass.jtab.setTitleAt(4,macheHtmlTitel(uebrig,"Gutachten"));
 			if(uebrig <= 0){
 				holeGutachten(PatGrundPanel.thisClass.patDaten.get(29),"");

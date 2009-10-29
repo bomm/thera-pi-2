@@ -577,7 +577,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	/////		
 			doSpeichernNachsorgeAlt();
 			System.out.println("Nach Speichern alt");
-			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
+			Gutachten.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
 			
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -676,7 +676,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			System.out.println("Historie- und Bericht wurden angelegt");
 			doSpeichernAlt();
 			System.out.println("Nach Speichern alt");
-			Gutachten.gutachten.neuesGutachten(new Integer(berichtid).toString(),
+			Gutachten.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			Reha.thisClass.progressStarten(false);

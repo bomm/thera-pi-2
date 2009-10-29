@@ -573,9 +573,9 @@ public class NachsorgePDF {
 				cop.close();
 				docversion.close();
 				if(exemplare[5]> 0){
-					new ReaderStart(new String(tempversion));
+					new ReaderStart(tempversion);
 				}else{
-					druckeVersion(new String(tempversion));
+					druckeVersion(tempversion);
 				}
 				if(exemplare[4]<= 0){
 					return;

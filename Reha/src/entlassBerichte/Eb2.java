@@ -111,7 +111,7 @@ public class Eb2 {
 		}.execute();
 	}
 	private void laden(){
-		String berichtid = new Integer(eltern.berichtid).toString();
+		String berichtid = Integer.toString(eltern.berichtid);
 		StringBuffer buf = new StringBuffer();
 		buf.append("select ");
 		for(int i = 25; i < 27;i++){

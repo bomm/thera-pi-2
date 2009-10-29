@@ -237,12 +237,12 @@ public class KassenAuswahl extends RehaSmartDialog{
 		if(jtfs != null){
 			//{"Kürzel","Name1","Name2","Ort", "IK",""};
 			Vector<String> vec = new Vector<String>();
-			vec.add(new String(jtfs[0].getText()));
-			vec.add(new String(jtfs[1].getText()));
-			vec.add(new String(jtfs[2].getText()));
-			vec.add(new String(jtfs[5].getText()));
-			vec.add(new String(jtfs[9].getText()));			
-			vec.add(new String(jtfs[15].getText()));	
+			vec.add(jtfs[0].getText());
+			vec.add(jtfs[1].getText());
+			vec.add(jtfs[2].getText());
+			vec.add(jtfs[5].getText());
+			vec.add(jtfs[9].getText());			
+			vec.add(jtfs[15].getText());	
 			kassenwahlmod.addRow(vec);
 			kassenwahltbl.validate();
 			int anzahl = kassenwahltbl.getRowCount()-1;

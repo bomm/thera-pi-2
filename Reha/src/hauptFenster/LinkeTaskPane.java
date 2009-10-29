@@ -249,7 +249,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			      Transferable tr = e.getTransferable();
 			      DataFlavor[] flavors = tr.getTransferDataFlavors();
 			      for (int i = 0; i < flavors.length; i++){
-			        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
 			      }
 			      System.out.println(mitgebracht);
 			      if(mitgebracht.indexOf("°") >= 0){
@@ -675,7 +675,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
                     ResultSet.CONCUR_UPDATABLE );
 			for(int i=1;i<61;i++){
 				for(int t=1;t<8;t++){
-					behandler  = (i<10 ? "0"+i+"BEHANDLER" : new Integer(i).toString()+"BEHANDLER");
+					behandler  = (i<10 ? "0"+i+"BEHANDLER" : Integer.toString(i)+"BEHANDLER");
 					sstmt = "insert into masken set behandler='"+behandler+"' , art = '"+t+"' ,belegt='1', N1='@FREI', TS1='07:00:00', TD1='900', TE1='22:00:00'";
 					System.out.println(sstmt);
 					try {
@@ -752,7 +752,7 @@ class ladeProg{
 		return;
 	}
 	String vmload = "java -jar ";
-	String commandx = new String(vmload + prog); 
+	String commandx = vmload + prog; 
 
     File ausgabedatei = new File(Reha.proghome+"laden.bat"); 
     FileWriter fw;

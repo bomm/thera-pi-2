@@ -423,7 +423,7 @@ public class Ns2 implements ActionListener {
 			dum.add(getRand(Color.GRAY),cckopf.xywh(4, 1, 1, 2,CellConstraints.DEFAULT,CellConstraints.FILL));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
 			eltern.ktlcmb[i+((seite-1)*25)] = new JRtaComboBox();
-			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(new Integer(i+((seite-1)*25)).toString());
+			eltern.ktlcmb[i+((seite-1)*25)].setActionCommand(Integer.toString(i+((seite-1)*25)));
 			eltern.ktlcmb[i+((seite-1)*25)].addActionListener(this);
 			eltern.ktlcmb[i+((seite-1)*25)].setMaximumRowCount( 35 );
 			// 
@@ -564,7 +564,7 @@ public class Ns2 implements ActionListener {
 			holeKTL(true);
 		}else{
 			vec = SqlInfo.holeFelder("select entdat3 from bericht2 where berichtid='"+
-					new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
+					Integer.toString(eltern.berichtid)+"' LIMIT 1" );
 			if(vec.size() <= 0){
 				JOptionPane.showMessageDialog(null,"Achtung - kann KTL-Leistungen nicht laden");
 				return;
@@ -594,7 +594,7 @@ public class Ns2 implements ActionListener {
 						int istnull = 0;
 						int pos = 0;
 						vec = SqlInfo.holeFelder("select * from bericht2ktl where berichtid='"+
-								new Integer(eltern.berichtid).toString()+"' LIMIT 1" );
+								Integer.toString(eltern.berichtid)+"' LIMIT 1" );
 						for(int i = 1;i<=10;i++){
 							pos = (i*4);
 							//System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));

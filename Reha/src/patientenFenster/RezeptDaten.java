@@ -67,7 +67,7 @@ public class RezeptDaten extends JXPanel{
 				// TODO Auto-generated method stub
 				if( (arg0.getSource() instanceof JLabel) && (arg0.getClickCount()==2)){
 					String anzhb = StringTools.NullTest((String)vecaktrez.get(64)).trim();
-					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", new String(anzhb));
+					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", anzhb);
 					if(ret == null){
 						return;
 					}

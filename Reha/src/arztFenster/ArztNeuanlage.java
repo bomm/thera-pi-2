@@ -382,7 +382,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 				JOptionPane.showMessageDialog(null, "Fehler beim Anlegen einer neuen Arzt-ID, bitte erneut versuchen -> speichern");
 				return;
 			}
-			dbid = new Integer(iid).toString();
+			dbid = Integer.toString(iid);
 			this.arztId = dbid;
 		}
 		for(int i = 0; i < anzahlf; i++){
@@ -428,7 +428,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 					}
 					int iid;
 					tfs[13].setText((String)arztgruppe.getSelectedItem());
-					tfs[14].setText(new Integer( iid = SqlInfo.holeId("arzt", "nachname")).toString());
+					tfs[14].setText(Integer.toString( iid = SqlInfo.holeId("arzt", "nachname")));
 					String stmt = "update arzt set ";
 					for(int i = 0; i < 14; i++){
 						stmt = stmt+ (i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";

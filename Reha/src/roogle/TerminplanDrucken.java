@@ -558,19 +558,20 @@ static String exporturl = "";
 
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+
 		}
 		return sergebnis;
 	}

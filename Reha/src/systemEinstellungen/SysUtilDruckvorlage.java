@@ -977,10 +977,10 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		public String sorter;
 		
 		public TermObjekt(String xtag,String xbeginn,String xtermtext,String xsorter){
-			this.tag = new String(xtag);
-			this.beginn = new String(xbeginn);
-			this.termtext = new String(xtermtext);
-			this.sorter =  new String(xsorter);
+			this.tag = xtag;
+			this.beginn = xbeginn;
+			this.termtext = xtermtext;
+			this.sorter =  xsorter;
 			
 		}
 

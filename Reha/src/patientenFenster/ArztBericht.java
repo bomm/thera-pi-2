@@ -220,7 +220,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			return;
 		}
 		String felder = "BERSTAND,BERBESO,BERPROG,BERVORS";
-		Vector vec = SqlInfo.holeSatz("bericht1",felder , "berichtid='"+new Integer(this.berichtid).toString()+"'", Arrays.asList(new String[]{}));
+		Vector vec = SqlInfo.holeSatz("bericht1",felder , "berichtid='"+Integer.toString(this.berichtid)+"'", Arrays.asList(new String[]{}));
 		for(int i = 0;i < 4;i++){
 			icfblock[i].setText((String)vec.get(i));
 		}
@@ -324,7 +324,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			}
 		}else{
 			Vector vec;
-			name =  (String)(vec = SqlInfo.holeSatz("berhist", "empfaenger,empfid", "berichtid='"+new Integer(this.berichtid).toString()+"'", Arrays.asList(new String[] {}))).get(0) ;
+			name =  (String)(vec = SqlInfo.holeSatz("berhist", "empfaenger,empfid", "berichtid='"+Integer.toString(this.berichtid)+"'", Arrays.asList(new String[] {}))).get(0) ;
 			arztid =StringTools.ZahlTest((String) vec.get(1));						
 		}
 		rlab[2] = new JLabel(name);
@@ -530,7 +530,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					JOptionPane.showMessageDialog(null,"Sie können nicht den akutellen Bericht auf sich selbst kopieren....\n"+
 							"(das wäre ganz nebenbei bemerkt auch reichlich idiotisch)");
 				}else{
-					final String xvorberichtid = new Integer(vorberichtid).toString();
+					final String xvorberichtid = Integer.toString(vorberichtid);
 					final boolean xvorberichtdiagnose = vorberichtdiagnose;
 					new SwingWorker<Void,Void>(){
 						@Override
@@ -582,7 +582,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		jtf[1] = new JRtaTextField("NORMAL",false);
 		jtf[2] = new JRtaTextField("NORMAL",false);
 		ArztAuswahl awahl = new ArztAuswahl(null,"arztwahlfuerbericht",
-				new String[] {rlab[2].getText(),new Integer(arztid).toString()},
+				new String[] {rlab[2].getText(),Integer.toString(arztid)},
 				jtf,rlab[2].getText());
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
@@ -686,10 +686,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 							return false;
 						}
 					}
-					cmd = "update verordn set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
-					new ExUndHop().setzeStatement(new String(cmd));
-					cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
-					new ExUndHop().setzeStatement(new String(cmd));
+					cmd = "update verordn set berid='"+Integer.toString(xberichtnr)+"' where rez_nr='"+reznr+"'";
+					new ExUndHop().setzeStatement(cmd);
+					cmd = "update lza set berid='"+Integer.toString(xberichtnr)+"' where rez_nr='"+reznr+"'";
+					new ExUndHop().setzeStatement(cmd);
 
 					System.out.println("BerichtNr - "+xberichtnr+" - wurde in verordn und lza gespeichert");
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
@@ -708,7 +708,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 							return false;
 						}
 					}
-					cmd = "update lza set berid='"+new Integer(xberichtnr).toString()+"' where rez_nr='"+reznr+"'";
+					cmd = "update lza set berid='"+Integer.toString(xberichtnr)+"' where rez_nr='"+reznr+"'";
 					new ExUndHop().setzeStatement(cmd);
 					System.out.println("BerichtNr - "+xberichtnr+" - wurde nur in lza gespeichert");
 					TherapieBerichte.aktBericht.holeBerichte(PatGrundPanel.thisClass.patDaten.get(29), "");
@@ -743,7 +743,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		String cmd = "update berhist set editdat='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', verfasser='"+xverf+"', "+
 		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
 		"empfaenger='"+empfaenger+"', empfid='"+arztid+"' where berichtid='"+this.berichtid+"'";
-		new ExUndHop().setzeStatement(new String(cmd));
+		new ExUndHop().setzeStatement(cmd);
 		//System.out.println(cmd);
 		//System.out.println("************************************************************************************");
 		///*****************hier noch die Tabelle aktualisieren*******************/

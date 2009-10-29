@@ -616,7 +616,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	
 	private String macheHtmlTitel(int anz,String titel){
 		
-		String ret = titel+" - "+new Integer(anz).toString();
+		String ret = titel+" - "+Integer.toString(anz);
 		
 		/*
 		String ret = "<html>"+titel+
@@ -750,9 +750,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
 					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
-					SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
 				}else{
-					tvec.add(new String(terdat[y]));					
+					tvec.add(terdat[y]);					
 				}
 				//System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
@@ -831,7 +831,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(lines > 0){
 			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
-		SystemConfig.hmAdrRDaten.put("<Rletztdat>",new String((terdat[0].trim().equals("") ? "  .  .    " : terdat[0])));
+		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
 		inEinzelTermine = false;
 	}
 
@@ -1227,7 +1227,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
 				int uebrig = tabaktrez.getRowCount();
 				
-				anzahlRezepte.setText("Anzahl Rezepte: "+new Integer(uebrig).toString());
+				anzahlRezepte.setText("Anzahl Rezepte: "+Integer.toString(uebrig));
 				PatGrundPanel.thisClass.jtab.setTitleAt(0,macheHtmlTitel(uebrig,"aktuelle Rezepte"));
 				if(uebrig <= 0){
 					holeRezepte(PatGrundPanel.thisClass.patDaten.get(29),"");

@@ -124,7 +124,7 @@ public class ZuzahlTools {
 			}
 		}else if(unter18.equals("T") && (aktzzregel.equals("0"))){
 			AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),0);			
-			ret[0] = new Boolean(false); 
+			ret[0] = Boolean.valueOf(false); 
 			ret[1] = tage.size();
 			ret[4] = new Integer(0);			
 			
@@ -183,11 +183,11 @@ public class ZuzahlTools {
 			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){
 				String cmd = "update verordn set zzstatus='3' where rez_nr='"+rez_nr+" LIMIT 1";
 				new ExUndHop().setzeStatement(cmd);				
-				ret[0] = new Boolean(false); 
+				ret[0] = Boolean.valueOf(false); 
 				ret[1] = tage.size();
 			}
 		}else if(unter18.equals("T") && (aktzzregel.equals("0"))){
-			ret[0] = new Boolean(false); 
+			ret[0] = Boolean.valueOf(false); 
 			ret[1] = tage.size();
 		}
 		return ret;

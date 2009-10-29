@@ -155,7 +155,7 @@ public class RVEBerichtPDF {
 							if(!RV){
 								boolean xgeklappt = starteGKVDruck(new int[] {1,1,1,1,1,1},true);
 							}
-							new ReaderStart(new String(xdatei));
+							new ReaderStart(xdatei);
 							//starteReader(xdatei);
 						}catch(Exception ex){
 							ex.printStackTrace();
@@ -254,7 +254,7 @@ public class RVEBerichtPDF {
  							}
  						}
  						if(exemplare[5] > 0 || vorschau){
- 							String tp = tempPfad+"PrintArzt"+new Integer(i).toString()+System.currentTimeMillis()+".pdf";
+ 							String tp = tempPfad+"PrintArzt"+Integer.toString(i)+System.currentTimeMillis()+".pdf";
  							doc.getPersistenceService().export(tp, new PDFFilter());
  							doc.close();
  							new ReaderStart(new String(tp));
@@ -301,9 +301,9 @@ public class RVEBerichtPDF {
 			reader.close();
 		
 			if(exemplare[5] > 0){
-				new ReaderStart(new String(tempversion ));
+				new ReaderStart(tempversion );
 			}else{
-				druckeVersion(new String(tempversion ));							
+				druckeVersion(tempversion );							
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -824,7 +824,7 @@ public class RVEBerichtPDF {
 			cb.moveText(xseite[0], xseite[1]);
 			cb.setFontAndSize(bf,11);
 			cb.setCharacterSpacing(xseite[2]);
-			cb.showText(new Integer(seite).toString());
+			cb.showText(Integer.toString(seite));
 			cb.endText();
 
 
@@ -938,7 +938,7 @@ public class RVEBerichtPDF {
 					cb.moveText(xseite[0], xseite[1]);
 					cb.setFontAndSize(bf,11);
 					cb.setCharacterSpacing(xseite[2]);
-					cb.showText(new Integer(seite).toString());
+					cb.showText(Integer.toString(seite));
 					cb.endText();
 				}
 				
@@ -1131,7 +1131,7 @@ public class RVEBerichtPDF {
 					PdfStamper stamper = new PdfStamper(rvorlage,baout);
 					PdfContentByte cb1 = stamper.getOverContent(1);
 					if(mitfliesstext){
-						schreibeVonBis(cb1,new Integer(seitenfliesstext).toString());
+						schreibeVonBis(cb1,Integer.toString(seitenfliesstext));
 					}else{
 						schreibeVonBis(cb1,"-");						
 					}
@@ -1178,10 +1178,10 @@ public class RVEBerichtPDF {
 				cop.close();
 				Thread.sleep(50);
 				if(blatt[5] > 0){
-					new ReaderStart(new String(tempversion));
+					new ReaderStart(tempversion);
 					//starteReader(new String(tempversion));
 				}else{
-					druckeVersion(new String(tempversion));							
+					druckeVersion(tempversion);							
 				}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -1292,7 +1292,7 @@ public class RVEBerichtPDF {
 		readerflt.close();
 		cop.close();
 		
-		System.out.println(new Integer(seiten).toString()+" Seiten Flieﬂtext wurden zusammengestellt");	
+		System.out.println(Integer.toString(seiten)+" Seiten Flieﬂtext wurden zusammengestellt");	
 		return seiten;
 	}
 	public boolean doSeitenZusammenstellen(){
@@ -1318,7 +1318,7 @@ public class RVEBerichtPDF {
 			PdfReader readerPage1 = new PdfReader (tempDateien[0][0]);
 			PdfStamper stampPage1 = new PdfStamper(readerPage1,bpage1);
 			PdfContentByte cbPage1 = stampPage1.getOverContent(1);
-			schreibeVonBis(cbPage1,new Integer(seiten).toString());
+			schreibeVonBis(cbPage1,Integer.toString(seiten));
 			stampPage1.close();
 			cop.addPage(cop.getImportedPage(new PdfReader(bpage1.toByteArray()),1));
 			readerPage1.close();
@@ -1399,7 +1399,7 @@ public class RVEBerichtPDF {
 		cb.moveText(xseite[0], xseite[1]);
 		cb.setFontAndSize(bf,11);
 		cb.setCharacterSpacing(xseite[2]);
-		cb.showText(new Integer(seite).toString());
+		cb.showText(Integer.toString(seite));
 		cb.endText();
 
 	}

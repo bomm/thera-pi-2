@@ -341,7 +341,7 @@ public class SuchenDialog extends JXDialog {
 	}
 	public void sucheAbfeuern(){
 		String s1 = new String("#PATSUCHEN");
-		String s2 = new String((String) jtable.getValueAt(jtable.getSelectedRow(), 3));
+		String s2 = (String) jtable.getValueAt(jtable.getSelectedRow(), 3);
 		setDetails(s1,s2) ;
 		PatStammEvent pEvt = new PatStammEvent(SuchenDialog.this);
 		pEvt.setPatStammEvent("PatSuchen");
@@ -638,7 +638,7 @@ public class SuchenDialog extends JXDialog {
 	private void suchePatient(){
 		Statement stmt = null;
 		ResultSet rs = null;
-		String sstmt = new String();
+		String sstmt = "";
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
 		//DefaultTableModel tblDataModel = new DefaultTableModel();
 		Vector reiheVector = new Vector();
@@ -714,19 +714,20 @@ public class SuchenDialog extends JXDialog {
 
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+
 		}
 	}
 	public void init(DefaultTableModel tblDataModel){
@@ -745,7 +746,7 @@ public class SuchenDialog extends JXDialog {
 	private void sucheHistorie(String patnr){
 		Statement stmt = null;
 		ResultSet rs = null;
-		String sstmt = new String();
+		String sstmt = "";
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
 		//DefaultTableModel tblDataModel = new DefaultTableModel();
 		Vector reiheVector = new Vector();
@@ -811,19 +812,20 @@ public class SuchenDialog extends JXDialog {
 
 		finally {
 			if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException sqlEx) { // ignore }
-				rs = null;
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
 			}
 			if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException sqlEx) { // ignore }
-				stmt = null;
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
 			}
-			}
-			}
+
 		}
 	}
 

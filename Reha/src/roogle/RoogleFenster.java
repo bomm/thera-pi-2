@@ -447,11 +447,11 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		kollegenAbteilung = new String[ParameterLaden.maxKalZeile+1];
 		System.out.println("Derzeit maximale Kalenderzeitle = "+ParameterLaden.maxKalZeile);
 		for(i=1;i<=size;i++){
-			dataVector[i-1][0] = new Boolean(false);
-			dataVector[i-1][1] = new String(ParameterLaden.getMatchcode(i));
-			dataVector[i-1][2] = new String(ParameterLaden.getAbteilung(i));
-			dataVector[i-1][3] = new String(new Integer(ParameterLaden.getDBZeile(i)).toString());
-			dataVector[i-1][4] = new String(ParameterLaden.getZeigen(i) );
+			dataVector[i-1][0] = Boolean.valueOf(false);
+			dataVector[i-1][1] = ParameterLaden.getMatchcode(i);
+			dataVector[i-1][2] = ParameterLaden.getAbteilung(i);
+			dataVector[i-1][3] = Integer.toString(ParameterLaden.getDBZeile(i));
+			dataVector[i-1][4] = ParameterLaden.getZeigen(i) ;
 			kollegenAbteilung[Integer.parseInt((String)dataVector[i-1][3])] = (String) dataVector[i-1][2]; 
 			/*
 			//System.out.println(""+i+dataVector[i-1][4]);
@@ -470,12 +470,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			kollegenWahl[ new Integer((String)dataVector[i-1][3]) -1][3] = dataVector[i-1][1];
 			*/
 			
-			kollegenWahl[ i-1][0] = new Integer((String)dataVector[i-1][3]); //dbzeile
-			kollegenWahl[ i-1][1] = new Boolean(false);//gewählt
+			kollegenWahl[ i-1][0] = Integer.parseInt((String)dataVector[i-1][3]); //dbzeile
+			kollegenWahl[ i-1][1] = Boolean.valueOf(false);//gewählt
 			kollegenWahl[ i-1][2] = dataVector[i-1][2];//Abreilung
 			kollegenWahl[ i-1][3] = dataVector[i-1][1];//Matchcode
 			kollegenWahl[ i-1][4] = i; //Bezug zu vKKollegen
-			kollegenWahl[ i-1][5] = new Integer((String)dataVector[i-1][3]); //getDBZeile
+			kollegenWahl[ i-1][5] = Integer.parseInt((String)dataVector[i-1][3]); //getDBZeile
 			//System.out.println("Matchcode ="+kollegenWahl[ i-1][3]+" / DBZeile = "+kollegenWahl[ i-1][5]);
 
 		}
@@ -524,7 +524,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		}
 		bis = jxTable.getRowCount();
 		for(i = 0;i<bis;i++){
-			jxTable.setValueAt(new Boolean(mark),i, 0);
+			jxTable.setValueAt(Boolean.valueOf(mark),i, 0);
 		}
 	}
 	private void gruppenHandeln(ArrayList arr,boolean ein){
@@ -532,7 +532,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		int i = 0;
 		for(i=0;i<lang;i++){
 			if(arr.contains(jxTable.getValueAt(i,1))){
-				jxTable.setValueAt(new Boolean(ein),i, 0);				
+				jxTable.setValueAt(Boolean.valueOf(ein),i, 0);				
 			}
 		}
 	}
@@ -543,9 +543,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		c = 0;
 		//System.out.println(jxTable.getValueAt(r,3));
 		if( jxTable.getValueAt(r,c).toString().equals("true")){
-			jxTable.setValueAt(new Boolean(false),r, c);
+			jxTable.setValueAt(Boolean.valueOf(false),r, c);
 		}else{
-			jxTable.setValueAt(new Boolean(true),r, c);			
+			jxTable.setValueAt(Boolean.valueOf(true),r, c);			
 		}
 	}
 	private void testeGruppenMarker(){
@@ -554,9 +554,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		r = jxGruppen.getSelectedRow();
 		c = 0;
 		if( jxGruppen.getValueAt(r,c).toString().equals("true")){
-			jxGruppen.setValueAt(new Boolean(false),r, c);
+			jxGruppen.setValueAt(Boolean.valueOf(false),r, c);
 		}else{
-			jxGruppen.setValueAt(new Boolean(true),r, c);			
+			jxGruppen.setValueAt(Boolean.valueOf(true),r, c);			
 		}
 	}
 	private void setzeActionListener(AbstractButton abut){
@@ -1002,7 +1002,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		if(lang > 0){
 			dataVector = new Object[lang][2];
 			for(i=0;i<lang;i++){
-				dataVector[i][0]= new Boolean(false);
+				dataVector[i][0]= Boolean.valueOf(false);
 				dataVector[i][1]= SystemConfig.aRoogleGruppen.get(i).get(0).get(0);
 				//String[] sSet = ((ArrayList<String[]>)SystemConfig.aRoogleGruppen.get(0).get(1)).get(0);
 			}
@@ -1031,9 +1031,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		for(i=0;i<anzahl;i++){
 			if(jxTable.getValueAt(i,2).equals(name)){
 				if(selected && jxTable.getValueAt(i,4).toString().equals("F")){
-					jxTable.setValueAt(new Boolean(true),i,0);
+					jxTable.setValueAt(Boolean.valueOf(true),i,0);
 				}else{
-					jxTable.setValueAt(new Boolean(false),i,0);					
+					jxTable.setValueAt(Boolean.valueOf(false),i,0);					
 				}
 			}
 		}
@@ -1635,11 +1635,11 @@ class MyRoogleTable1 extends AbstractTableModel {
     //public String[] columnNames = null;
     //public Object[][] data = null;    
     
-    public Object[] values = {new Boolean(false),new String(),new String()};
+    public Object[] values = {Boolean.valueOf(false),"",""};
     public String[] columnNames = { "", "","","",""};
 
     
-    public Object[][] data = {{(boolean) new Boolean(false),(String) new String(),(String)new String(),(String)new String(),(String)new String()}};
+    public Object[][] data = {{(boolean) Boolean.valueOf(false),(String) "","","",""}};
     
     
 
@@ -1722,11 +1722,11 @@ class MyRoogleGruppe extends AbstractTableModel {
     //public String[] columnNames = null;
     //public Object[][] data = null;    
     
-    public Object[] values = {new Boolean(false),new String(),new String()};
+    public Object[] values = {Boolean.valueOf(false),"",""};
     public String[] columnNames = { "", "",""};
 
     
-    public Object[][] data = {{(boolean) new Boolean(false),(String) new String(),(String)new String()}};
+    public Object[][] data = {{(boolean) Boolean.valueOf(false),"",""}};
     
     
 

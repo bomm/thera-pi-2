@@ -159,7 +159,7 @@ public class PatFenster extends JInternalFrame {
 	private void SuchePatient(){
 		Statement stmt = null;
 		ResultSet rs = null;
-		String sstmt = new String();
+		String sstmt = "";
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
 		DefaultTableModel tblDataModel = new DefaultTableModel();
 		Vector reiheVector = new Vector();
@@ -226,7 +226,7 @@ public class PatFenster extends JInternalFrame {
 		ResultSet rs = null;
 		String sstmt = new String();
 ;
-		String stext = new String();
+		String stext = "";
 		sstmt = "Select * from pat5 where pat_intern = '"+patnummer+"'";
 		try {
 			stmt = (Statement) this.Eltern.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,

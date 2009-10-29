@@ -159,7 +159,7 @@ public final class INIFile
             }
             objSec = null;
         }
-        return new Boolean(blnRet);
+        return Boolean.valueOf(blnRet);
     }
 
     /**
@@ -1428,7 +1428,7 @@ public final class INIFile
         objSec = (INISection) this.mhmapSections.get(pstrSection);
         if (objSec != null)
         {
-            objSec.mstrName = new String(newpstrSection);
+            objSec.mstrName = newpstrSection;
         }
         objSec.setSecComments(delRemChars(pstrComments));
         objSec = null;

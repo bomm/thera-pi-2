@@ -63,14 +63,14 @@ public class PatTools {
 		if( ialter <= 13){
 			iskind = true;
 		}
-		SystemConfig.hmAdrPDaten.put("<Palter>", new Integer(ialter).toString());
+		SystemConfig.hmAdrPDaten.put("<Palter>", Integer.toString(ialter));
 		if(ialter >= 20){
-			SystemConfig.hmAdrPDaten.put("<Pzigsten>", new Integer(ialter).toString()+"-sten");	
+			SystemConfig.hmAdrPDaten.put("<Pzigsten>", Integer.toString(ialter)+"-sten");	
 		}else{
-			SystemConfig.hmAdrPDaten.put("<Pzigsten>", new Integer(ialter).toString()+"-ten");
+			SystemConfig.hmAdrPDaten.put("<Pzigsten>", Integer.toString(ialter)+"-ten");
 		}
 
-		zeile1 = new String(vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname);
+		zeile1 = vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
 		zeile2 = strasse;
 		zeile3 = plzort;
 		if(titel.indexOf("med.") > 0){

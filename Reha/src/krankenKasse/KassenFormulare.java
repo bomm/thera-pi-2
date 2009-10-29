@@ -154,7 +154,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 				public void mouseClicked(MouseEvent arg0) {
 					// TODO Auto-generated method stub
 					if (arg0.getClickCount() == 2){
-						tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+						tfrueck.setText(Integer.toString(jList1.getSelectedIndex()));
 						//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 						KassenFormulare.thisClass.FensterSchliessen("dieses");
 					}
@@ -209,13 +209,13 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 			//arg0.consume();
 			if(ret != -1){
 				System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
-				tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+				tfrueck.setText(Integer.toString(jList1.getSelectedIndex()));
 				//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}else{
 				System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
-				tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+				tfrueck.setText(Integer.toString(jList1.getSelectedIndex()));
 				//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
@@ -223,7 +223,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		}
 		if (arg0.getKeyCode()==27){
 			System.out.println("ESC gedrückt");	
-			tfrueck.setText(new Integer(-1).toString());
+			tfrueck.setText(Integer.toString(-1));
 			//KassenPanel.thisClass.iformular = -1;
 			DialogBeenden(-1);
 			return;
@@ -307,7 +307,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 			FensterSchliessen("Dieses");
 		}
 		if(cmd.equals("abbrechen")){
-			tfrueck.setText(new Integer(-1).toString());
+			tfrueck.setText(Integer.toString(-1));
 			//KassenPanel.thisClass.iformular = -1;
 			FensterSchliessen("Dieses");
 		}

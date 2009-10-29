@@ -481,9 +481,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
 					
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					tvec.add((terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
 				}else{
-					tvec.add(new String(terdat[y]));					
+					tvec.add(terdat[y]);					
 				}
 				//System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
@@ -694,7 +694,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	}	
 	private String macheHtmlTitel(int anz,String titel){
 		
-		String ret = titel+" - "+new Integer(anz).toString();
+		String ret = titel+" - "+Integer.toString(anz);
 		
 		/*
 		String ret = "<html>"+titel+

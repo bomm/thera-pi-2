@@ -364,7 +364,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 		pf[1].setText("");
 		int i;
 		for(i=0;i<40;i++){
-			jxTable.setValueAt(new Boolean(false),i,1);
+			jxTable.setValueAt(Boolean.valueOf(false),i,1);
 		}
 		tf.requestFocus();
 	}
@@ -508,9 +508,9 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			Vector rowVector = new Vector();
 			rowVector.add("Art der Berechtigung "+i);
 			//rowVector.add(rechte[i]);
-			rowVector.add(sRechte.substring(i,i).equals("1") ? new Boolean(true) : new Boolean(false));
+			rowVector.add(sRechte.substring(i,i).equals("1") ? Boolean.valueOf(true) : Boolean.valueOf(false));
 			dataVector[i][0] = rehaRechte[i]; // rechte[i];
-			dataVector[i][1] = sRechte.substring(i,i+1).equals("1") ? new Boolean(true) : new Boolean(false);			
+			dataVector[i][1] = sRechte.substring(i,i+1).equals("1") ? Boolean.valueOf(true) : Boolean.valueOf(false);			
 		}
 
 		//((DefaultTableModel) jxTable.getModel()).setDataVector(dataVector,column);
@@ -576,7 +576,7 @@ class MyTableModel extends AbstractTableModel {
     
     public String[] columnNames = { "", "",};
 
-    public Object[][] data = {{"",new Boolean(false)}};
+    public Object[][] data = {{"",Boolean.valueOf(false)}};
 
     public int getColumnCount() {
       return columnNames.length;

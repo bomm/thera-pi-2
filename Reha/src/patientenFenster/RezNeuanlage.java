@@ -56,6 +56,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
@@ -232,16 +233,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			   kid = StringTools.ZahlTest(jtf[11].getText());
 		 			   aid = StringTools.ZahlTest(jtf[12].getText());
 		 			   if(kid < 0 && aid < 0){
-		 				   jtf[11].setText(new Integer(PatGrundPanel.thisClass.kid).toString());
-		 				   jtf[12].setText(new Integer(PatGrundPanel.thisClass.aid).toString());
+		 				   jtf[11].setText(Integer.toString(PatGrundPanel.thisClass.kid));
+		 				   jtf[12].setText(Integer.toString(PatGrundPanel.thisClass.aid));
 		 				   jtf[0].setText(PatGrundPanel.thisClass.patDaten.get(13));
-		 				   holePreisGruppe(new Integer(PatGrundPanel.thisClass.kid));
+		 				   holePreisGruppe(PatGrundPanel.thisClass.kid);
 		 			   }else if(kid >= 0 && aid < 0){
-		 				   jtf[12].setText(new Integer(PatGrundPanel.thisClass.aid).toString());
+		 				   jtf[12].setText(Integer.toString(PatGrundPanel.thisClass.aid));
 		 			   }else if(kid < 0 && aid >= 0){
-		 				   jtf[11].setText(new Integer(PatGrundPanel.thisClass.kid).toString());
+		 				   jtf[11].setText(Integer.toString(PatGrundPanel.thisClass.kid));
 		 				   jtf[0].setText(PatGrundPanel.thisClass.patDaten.get(13));
-		 				   holePreisGruppe(new Integer(PatGrundPanel.thisClass.kid));		 				   
+		 				   holePreisGruppe(PatGrundPanel.thisClass.kid);		 				   
 		 			   }
 		 			   
 
@@ -797,7 +798,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("ktraeger")){
 			String[] suchkrit = new String[] {jtf[0].getText().replaceAll("\\?", ""),jtf[11].getText()};
-			jtf[0].setText(new String(suchkrit[0]));
+			jtf[0].setText(suchkrit[0]);
 			kassenAuswahl(suchkrit);
 		}
 	}
@@ -850,7 +851,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 	   }
 		});
 		String aneu = "";
-		if(! PatGrundPanel.thisClass.patDaten.get(63).contains( ("@"+(aneu = new String(jtf[12].getText().trim()))+"@\n")) ){
+		if(! PatGrundPanel.thisClass.patDaten.get(63).contains( ("@"+(aneu = jtf[12].getText().trim())+"@\n")) ){
 			final String xaneu = aneu;
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -880,7 +881,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	private void kassenAuswahl(String[] suchenach){
 		jtf[1].requestFocus();
-		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[0],jtf[26],jtf[11]},new String(jtf[0].getText().trim()));
+		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[0],jtf[26],jtf[11]},jtf[0].getText().trim());
 		kwahl.setModal(true);
 		kwahl.setLocationRelativeTo(this);
 		kwahl.setVisible(true);
@@ -906,7 +907,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+new Integer(xid).toString()+"'", Arrays.asList(new String[] {}));
+				Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+Integer.toString(xid)+"'", Arrays.asList(new String[] {}));
 				if(vec.size()>0){
 					jtf[13].setText((String)vec.get(0));
 				}else{
@@ -1170,7 +1171,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			
 			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)))){
 				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-				String gebtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				int aj = Integer.parseInt(SystemConfig.aktJahr)-18;
+				String gebtag = DatFunk.sHeute().substring(0,6)+Integer.toString(aj);
 				long tage = DatFunk.TageDifferenz(DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)) ,gebtag);
 
 				System.out.println("Differenz in Tagen = "+tage);
@@ -1445,7 +1447,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
 		sbuf.append("befr='"+PatGrundPanel.thisClass.patDaten.get(30)+"', ");
 		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText())-1 )+"'");		
-		sbuf.append("where id='"+new Integer(rezidneu).toString()+"' ");
+		sbuf.append("where id='"+Integer.toString(rezidneu)+"' ");
 		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());
 		
@@ -1465,7 +1467,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
-				AktuelleRezepte.aktRez.holeRezepte(jtf[27].getText(),nummer.toUpperCase()+new Integer(xreznr).toString());
+				AktuelleRezepte.aktRez.holeRezepte(jtf[27].getText(),nummer.toUpperCase()+Integer.toString(xreznr));
 				return null;
 			}
 		}.execute();
@@ -1503,13 +1505,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 						rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 						rtp = null;
 						for(int i = 0; i < jtf.length;i++){
-							jtf[i].removeKeyListener(this);
-							jtf[i].removeFocusListener(this);
+							ListenerTools.removeListeners(jtf[i]);
+							//jtf[i].removeKeyListener(this);
+							//jtf[i].removeFocusListener(this);
 						}
 						jtf = null;
 						jcb = null;
 						for(int i = 0; i < jcmb.length;i++){
-							jtf[i].removeActionListener(this);
+							ListenerTools.removeListeners(jcmb[i]);
 						}
 						speichern.removeActionListener(this);
 						abbrechen.removeActionListener(this);

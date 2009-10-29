@@ -279,7 +279,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		stmt = stmt + "preisgruppe ='"+ new Integer(this.tarifGruppe.getSelectedIndex()+1).toString()+"'"+
 				"where id='"+dbid+"'";
 		new ExUndHop().setzeStatement(stmt);
-		System.out.println("In Preisgruppe abspeichern Preisgruppe = "+new Integer(this.tarifGruppe.getSelectedIndex()+1).toString());
+		System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
 	}
 	public void tabelleAktualisieren(){
 

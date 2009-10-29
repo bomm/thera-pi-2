@@ -50,7 +50,7 @@ public class ArztTools {
 		
 		SystemConfig.hmAdrADaten.put("<Aadr1>", anrede);
 
-		zeile1 = new String((titel.trim().length() > 0 ? titel+" " : "")+vorname+" "+nachname);
+		zeile1 = (titel.trim().length() > 0 ? titel+" " : "")+vorname+" "+nachname;
 		SystemConfig.hmAdrADaten.put("<Aadr2>", zeile1);
 		
 		SystemConfig.hmAdrADaten.put("<Aadr3>", strasse);

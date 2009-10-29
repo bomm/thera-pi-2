@@ -148,7 +148,7 @@ public class DatFunk {
 		a= (a.length()<2 ? "0"+a : a);
 		String b = (new Integer(monat)).toString();
 		b= (b.length()<2 ? "0"+b : b);
-		return a+"."+b+"."+new Integer(jahr).toString();
+		return a+"."+b+"."+Integer.toString(jahr);
 	}
 	public static String WocheLetzter(String sdatum){
 		long mul = 0;
@@ -165,9 +165,9 @@ public class DatFunk {
 		tag   = cal1.get(Calendar.DATE);
 		monat = cal1.get(Calendar.MONTH)+1;
 		jahr  = cal1.get(Calendar.YEAR);
-		String a = (new Integer(tag)).toString();
+		String a = Integer.toString(tag);
 		a= (a.length()<2 ? "0"+a : a);
-		String b = (new Integer(monat)).toString();
+		String b = Integer.toString(monat);
 		b= (b.length()<2 ? "0"+b : b);
 		return a+"."+b+"."+jahr;
 	}
@@ -214,7 +214,7 @@ public class DatFunk {
 	public static boolean Unter18(String bezugdat,String geburtstag){
 		String[] datsplit = bezugdat.split("\\.");
 		int jahr = new Integer(datsplit[2]) - 18;
-		String testdatum = datsplit[0]+"."+datsplit[1]+"."+new Integer(jahr).toString();
+		String testdatum = datsplit[0]+"."+datsplit[1]+"."+Integer.toString(jahr);
 		if(DatumsWert(testdatum) < DatumsWert(geburtstag)){
 			return true;
 		}else{

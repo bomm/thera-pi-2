@@ -389,7 +389,7 @@ private void zurueck(){
 
         		
         	}else{
-    			TerminFenster.thisClass.datGewaehlt = new String(akttag);
+    			TerminFenster.thisClass.datGewaehlt = akttag;
     			TerminFenster.thisClass.suchSchonMal();
         	}
 

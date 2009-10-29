@@ -152,7 +152,7 @@ public class TermineErfassen implements Runnable {
 				//System.out.println(stmt);
 				int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
 				//if( gesperrt == 0 ){
-					String sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
+					String sblock  = Integer.toString(  (((Integer)obj[2]/5)+1)  );
 					/*
 					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 						"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
@@ -202,7 +202,7 @@ public class TermineErfassen implements Runnable {
 				*/
 				ret = true;
 			}else{
-				this.kollege = new String((String)obj[1]);
+				this.kollege = (String)obj[1];
 				ret = false;
 			}
 		}	
@@ -223,14 +223,14 @@ public class TermineErfassen implements Runnable {
 			for(y=0;y<belegt;y++){
 				//int block = ((y*5)+1);
 				if( ((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )).contains(scanrez) ){
-					obj[0] = new Boolean(true); //gefunden
-					obj[1] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-4) );//Kollege
-					obj[2] = new Integer(((y*5)+1));//Blocknummer
-					obj[3] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )); // Rezeptnummer
-					obj[4] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
-					obj[5] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5))+2 )); // Beginn
-					obj[6] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
-					obj[7] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-2) );//Datum
+					obj[0] = Boolean.valueOf(true); //gefunden
+					obj[1] = (String) ((Vector)alleterm.get(i)).get(bloecke-4) ;//Kollege
+					obj[2] = ((y*5)+1);//Blocknummer
+					obj[3] = (String) ((Vector)alleterm.get(i)).get( ((y*5)+1) ); // Rezeptnummer
+					obj[4] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
+					obj[5] = (String) ((Vector)alleterm.get(i)).get( ((y*5))+2 ); // Beginn
+					obj[6] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
+					obj[7] = (String) ((Vector)alleterm.get(i)).get(bloecke-2) ;//Datum
 					//((Vector)alleterm.get(i)).set((y*5), copyright+new String((String)obj[4]));
 					gefunden = true;
 					erstfund = i;
@@ -259,14 +259,14 @@ public class TermineErfassen implements Runnable {
 			for(y=0;y<belegt;y++){
 				//int block = ((y*5)+1);
 				if( ((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )).contains(scanrez) ){
-					obj[0] = new Boolean(true); //gefunden
-					obj[1] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-4) );//Kollege
-					obj[2] = new Integer(((y*5)+1));//Blocknummer
-					obj[3] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )); // Rezeptnummer
-					obj[4] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
-					obj[5] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5))+2 )); // Beginn
-					obj[6] = new String((String) ((Vector)alleterm.get(i)).get( ((y*5)) )); // Name
-					obj[7] = new String((String) ((Vector)alleterm.get(i)).get(bloecke-2) );//Datum
+					obj[0] = Boolean.valueOf(true); //gefunden
+					obj[1] = (String) ((Vector)alleterm.get(i)).get(bloecke-4) ;//Kollege
+					obj[2] = ((y*5)+1);//Blocknummer
+					obj[3] = (String) ((Vector)alleterm.get(i)).get( ((y*5)+1) ); // Rezeptnummer
+					obj[4] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
+					obj[5] = (String) ((Vector)alleterm.get(i)).get( ((y*5))+2 ); // Beginn
+					obj[6] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
+					obj[7] = (String) ((Vector)alleterm.get(i)).get(bloecke-2) ;//Datum
 					
 					if( !((String)obj[4]).contains(copyright.trim())){
 						mehrstellen++;
@@ -274,7 +274,7 @@ public class TermineErfassen implements Runnable {
 						int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
 						String sblock = "";
 						//if( gesperrt == 0 ){
-							sblock  = new Integer(  (((Integer)obj[2]/5)+1)  ).toString();
+							sblock  = Integer.toString((((Integer)obj[2]/5)+1));
 							/*
 							stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 								"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
@@ -293,9 +293,9 @@ public class TermineErfassen implements Runnable {
 							String snum = ((String)obj[1]).substring(0, 2);
 							int inum;
 							if(snum.substring(0,1).equals("0)")){
-								inum = new Integer(snum.substring(1,2))-1;
+								inum = Integer.parseInt(snum.substring(1,2))-1;
 							}else{
-								inum = new Integer(snum.substring(0,2))-1;						
+								inum = Integer.parseInt(snum.substring(0,2))-1;						
 							}
 
 							JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");

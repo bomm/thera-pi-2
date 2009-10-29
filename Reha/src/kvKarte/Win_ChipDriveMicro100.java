@@ -57,7 +57,7 @@ public class Win_ChipDriveMicro100 {
 			//String sCommand = new String("Device,Info");
 			Pointer cmdLen = new IntByReference(sCommand.length()).getPointer();
 
-			byte []sIn = new String("").getBytes();
+			byte []sIn = "".getBytes();
 			Pointer inLen = new IntByReference(0).getPointer();
 			byte[] output = new byte[this.bufLen];
 			Pointer outLen = new IntByReference(this.bufLen).getPointer();		
@@ -66,7 +66,7 @@ public class Win_ChipDriveMicro100 {
 									hwnd,
 									sCommand,
 									cmdLen,
-									new String(),
+									"",
 									inLen,
 									output,
 									outLen
@@ -79,13 +79,13 @@ public class Win_ChipDriveMicro100 {
 			}
 			if(ret != 0){
 				String fehler = fehlerDeuten(ret,lib);	
-				return new String[] {new Integer(-1).toString(),fehler};
+				return new String[] {Integer.toString(-1),fehler};
 			}
 			System.out.println(Native.toString(output));
 			if(fuelleHashMap(Native.toString(output))){
-				return new String[] {new Integer(ret).toString(),Native.toString(output)};
+				return new String[] {Integer.toString(ret),Native.toString(output)};
 			}else{
-				return new String[] {new Integer(-1).toString(),Native.toString(output)};
+				return new String[] {Integer.toString(-1),Native.toString(output)};
 			}
 			
 		
@@ -117,7 +117,7 @@ public class Win_ChipDriveMicro100 {
 			Pointer hwnd = new IntByReference(0).getPointer();
 			String sCommand = new String("System,Info");
 			Pointer cmdLen = new IntByReference(sCommand.length()).getPointer();
-			byte []sIn = new String("").getBytes();
+			byte []sIn = "".getBytes();
 			Pointer inLen = new IntByReference(0).getPointer();
 			byte[] output = new byte[560];
 			Pointer outLen = new IntByReference(560).getPointer();		

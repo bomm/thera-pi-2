@@ -456,8 +456,8 @@ public class OOTools {
 		//z.B. für A5
 		 * 
 		 */
-		xStyleProps.setPropertyValue("Height", new Integer(hoch));
-		xStyleProps.setPropertyValue("Width", new Integer(breit));
+		xStyleProps.setPropertyValue("Height", hoch);
+		xStyleProps.setPropertyValue("Width", breit);
 	}
 	public static void setzeRaender(ITextDocument textDocument,int oben,int unten,int links,int rechts) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
     	XTextDocument xTextDocument = textDocument.getXTextDocument();

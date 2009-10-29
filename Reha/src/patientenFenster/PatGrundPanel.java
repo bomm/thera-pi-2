@@ -695,7 +695,7 @@ public void starteSuche(){
 		Point thispoint = PatGrundPanel.thisClass.getLocationOnScreen();
 		((SuchenDialog) sucheComponent).setLocation(thispoint.x+30, thispoint.y+80);
 		if(! tfsuchen.getText().trim().equals(lastseek)){
-			((SuchenDialog) sucheComponent).suchDasDing(new String(tfsuchen.getText()));
+			((SuchenDialog) sucheComponent).suchDasDing(tfsuchen.getText());
 			lastseek = tfsuchen.getText().trim();
 		}
 		((SuchenDialog) sucheComponent).setVisible(true);

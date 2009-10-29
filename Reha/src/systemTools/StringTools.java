@@ -116,35 +116,35 @@ public class StringTools {
 		}
 		if(test.indexOf(" Die ") > -1){
 			neuString = test.replaceAll(" Die ", " die ");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("-Die") > -1){
 			neuString = test.replaceAll("-Die", "-die");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("Aok") > -1){
 			neuString = test.replaceAll("Aok", "AOK");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("Bkk") > -1){
 			neuString = test.replaceAll("Bkk", "BKK");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("Ikk") > -1){
 			neuString = test.replaceAll("ikk", "IKK");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("Tkk") > -1){
 			neuString = test.replaceAll("Tkk", "TKK");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("Dak") > -1){
 			neuString = test.replaceAll("Dak", "DAK");
-			test = new String(neuString);
+			test = neuString;
 		}
 		if(test.indexOf("str.") > -1){
 			neuString = test.replaceAll(" str.", " Str.");
-			test = new String(neuString);
+			test = neuString;
 		}
 
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
@@ -178,11 +178,11 @@ public class StringTools {
 	public static String Escaped(String string){
 		String escaped = string.replaceAll("\'", "\\\\'");
 		escaped = escaped.replaceAll("\"", "\\\\\"");
-		return new String(escaped);
+		return escaped;
 	}
 	public static String EscapedDouble(String string){
 		String escaped = string.replaceAll("\'", "\\\\\\'");
-		return new String(escaped);
+		return escaped;
 	}
 	public static String fuelleMitZeichen(String string,String zeichen,boolean vorne,int endlang){
 		String orig = string;
@@ -202,7 +202,7 @@ public class StringTools {
 				sret = orig+dummy;
 			}
 		}else{
-			sret = new String(orig);
+			sret = orig;
 		}
 		return sret;
 	}

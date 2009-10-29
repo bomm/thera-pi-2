@@ -188,8 +188,8 @@ public class SqlInfo {
 		}
 		try{
 			//Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			String sstmt = "select "+felder+" from "+tabelle+" "+kriterium+" LIMIT "+new Integer(limit[0]).toString()+
-			","+new Integer(limit[1]).toString()+"";
+			String sstmt = "select "+felder+" from "+tabelle+" "+kriterium+" LIMIT "+Integer.toString(limit[0])+
+			","+Integer.toString(limit[1])+"";
 			rs = stmt.executeQuery(sstmt);
 			int nichtlesen = ausschliessen.size();
 			if(rs.next()){

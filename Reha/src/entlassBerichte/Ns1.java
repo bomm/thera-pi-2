@@ -979,7 +979,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 	 */	
 	private void laden(){
 		//"bericht2","freitext","berichtid='"+eltern.berichtid+"'");
-		String berichtid = new Integer(eltern.berichtid).toString();
+		String berichtid = Integer.toString(eltern.berichtid);
 		StringBuffer buf = new StringBuffer();
 		buf.append("select ");
 		for(int i = 0; i < 24;i++){

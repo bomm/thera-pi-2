@@ -253,7 +253,7 @@ public class SystemConfig {
 			}else{
 				decrypted = new String("");
 			}
-			aKontakt.add(new String(decrypted));
+			aKontakt.add(decrypted);
 			vDatenBank.add((ArrayList<String>) aKontakt.clone());
 			aKontakt.clear();
 		}
@@ -266,17 +266,17 @@ public class SystemConfig {
 				//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
 			}	
 			aHauptFenster = new ArrayList<String>();
-			aHauptFenster.add(new String(ini.getStringProperty("HauptFenster","Hintergrundbild")));
-			aHauptFenster.add(new String(ini.getStringProperty("HauptFenster","Bildgroesse")));			
-			aHauptFenster.add(new String(ini.getStringProperty("HauptFenster","FensterFarbeRGB")));
-			aHauptFenster.add(new String(ini.getStringProperty("HauptFenster","FensterTitel")));
-			aHauptFenster.add(new String(ini.getStringProperty("HauptFenster","LookAndFeel")));
+			aHauptFenster.add(ini.getStringProperty("HauptFenster","Hintergrundbild"));
+			aHauptFenster.add(ini.getStringProperty("HauptFenster","Bildgroesse"));			
+			aHauptFenster.add(ini.getStringProperty("HauptFenster","FensterFarbeRGB"));
+			aHauptFenster.add(ini.getStringProperty("HauptFenster","FensterTitel"));
+			aHauptFenster.add(ini.getStringProperty("HauptFenster","LookAndFeel"));
 
-			OpenOfficePfad = new String(ini.getStringProperty("OpenOffice.org","OfficePfad"));
-			OpenOfficeNativePfad = new String(ini.getStringProperty("OpenOffice.org","OfficeNativePfad"));
-			wissenURL = new String(ini.getStringProperty("WWW-Services","RTA-Wissen"));
-			homePageURL = new String(ini.getStringProperty("WWW-Services","HomePage"));		
-			homeDir = new String(ini.getStringProperty("Application","HeimatVerzeichnis"));
+			OpenOfficePfad = ini.getStringProperty("OpenOffice.org","OfficePfad");
+			OpenOfficeNativePfad = ini.getStringProperty("OpenOffice.org","OfficeNativePfad");
+			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
+			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
+			homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
 			System.out.println(homeDir);
 			return;
 	}
@@ -389,30 +389,30 @@ public class SystemConfig {
 		}
 			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
 			hmEmailExtern = new HashMap<String,String>();
-			hmEmailExtern.put("SmtpHost",new String(ini.getStringProperty("EmailExtern","SmtpHost")));
-			hmEmailExtern.put("SmtpAuth",new String(ini.getStringProperty("EmailExtern","SmtpAuth")));			
-			hmEmailExtern.put("Pop3Host",new String(ini.getStringProperty("EmailExtern","Pop3Host")));
-			hmEmailExtern.put("Username",new String(ini.getStringProperty("EmailExtern","Username")));
-			String pw = new String(ini.getStringProperty("EmailExtern","Password"));
+			hmEmailExtern.put("SmtpHost",ini.getStringProperty("EmailExtern","SmtpHost"));
+			hmEmailExtern.put("SmtpAuth",ini.getStringProperty("EmailExtern","SmtpAuth"));			
+			hmEmailExtern.put("Pop3Host",ini.getStringProperty("EmailExtern","Pop3Host"));
+			hmEmailExtern.put("Username",ini.getStringProperty("EmailExtern","Username"));
+			String pw = ini.getStringProperty("EmailExtern","Password");
 			Verschluesseln man = Verschluesseln.getInstance();
 		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 			String decrypted = man.decrypt (pw);
-			hmEmailExtern.put("Password",new String(decrypted));
-			hmEmailExtern.put("SenderAdresse",new String(ini.getStringProperty("EmailExtern","SenderAdresse")));			
-			hmEmailExtern.put("Bestaetigen",new String(ini.getStringProperty("EmailExtern","EmpfangBestaetigen")));			
+			hmEmailExtern.put("Password",decrypted);
+			hmEmailExtern.put("SenderAdresse",ini.getStringProperty("EmailExtern","SenderAdresse"));			
+			hmEmailExtern.put("Bestaetigen",ini.getStringProperty("EmailExtern","EmpfangBestaetigen"));			
 			/********************/
 			hmEmailIntern = new HashMap<String,String>();
-			hmEmailIntern.put("SmtpHost",new String(ini.getStringProperty("EmailIntern","SmtpHost")));
-			hmEmailIntern.put("SmtpAuth",new String(ini.getStringProperty("EmailIntern","SmtpAuth")));			
-			hmEmailIntern.put("Pop3Host",new String(ini.getStringProperty("EmailIntern","Pop3Host")));
-			hmEmailIntern.put("Username",new String(ini.getStringProperty("EmailIntern","Username")));
-			pw = new String(ini.getStringProperty("EmailIntern","Password"));
+			hmEmailIntern.put("SmtpHost",ini.getStringProperty("EmailIntern","SmtpHost"));
+			hmEmailIntern.put("SmtpAuth",ini.getStringProperty("EmailIntern","SmtpAuth"));			
+			hmEmailIntern.put("Pop3Host",ini.getStringProperty("EmailIntern","Pop3Host"));
+			hmEmailIntern.put("Username",ini.getStringProperty("EmailIntern","Username"));
+			pw = ini.getStringProperty("EmailIntern","Password");
 			man = Verschluesseln.getInstance();
 		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 			decrypted = man.decrypt (pw);
-			hmEmailIntern.put("Password",new String(decrypted));
-			hmEmailIntern.put("SenderAdresse",new String(ini.getStringProperty("EmailIntern","SenderAdresse")));			
-			hmEmailIntern.put("Bestaetigen",new String(ini.getStringProperty("EmailIntern","EmpfangBestaetigen")));			
+			hmEmailIntern.put("Password",decrypted);
+			hmEmailIntern.put("SenderAdresse",ini.getStringProperty("EmailIntern","SenderAdresse"));			
+			hmEmailIntern.put("Bestaetigen",ini.getStringProperty("EmailIntern","EmpfangBestaetigen"));			
 
 	}	
 	
@@ -552,9 +552,9 @@ public class SystemConfig {
 		DBTypen = new Vector<String[]>();
 		String[] typen = new String[] {null,null,null};
 		for(int i = 0; i < itypen;i++){
-			typen[0] = new String(dbtini.getStringProperty("Datenbanktypen", "Typ"+(i+1)+"Typ"));
-			typen[1] = new String(dbtini.getStringProperty("Datenbanktypen", "Typ"+(i+1)+"Treiber"));			
-			typen[2] = new String(dbtini.getStringProperty("Datenbanktypen", "Typ"+(i+1)+"Port"));
+			typen[0] = dbtini.getStringProperty("Datenbanktypen", "Typ"+(i+1)+"Typ");
+			typen[1] = dbtini.getStringProperty("Datenbanktypen", "Typ"+(i+1)+"Treiber");			
+			typen[2] = dbtini.getStringProperty("Datenbanktypen", "Typ"+(i+1)+"Port");
 			DBTypen.add(typen.clone());
 		}
 	}
@@ -582,7 +582,7 @@ public class SystemConfig {
 			Verschluesseln man = Verschluesseln.getInstance();
 		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 			String decrypted = man.decrypt (pw);
-			hmHilfeServer.put("HilfeDBPassword", new String(decrypted));			
+			hmHilfeServer.put("HilfeDBPassword", decrypted);			
 		}
 	}	
  
