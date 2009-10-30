@@ -190,6 +190,7 @@ import com.jgoodies.looks.windows.WindowsSplitPaneUI;
 
 import dialoge.RehaSmartDialog;
 
+import entlassBerichte.EBerichtPanel;
 import events.OOEvent;
 import events.OOEventClass;
 import events.RehaEvent;
@@ -204,7 +205,8 @@ import grad.GradientSegment;
 @SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
-	//public PatGrundPanel PATINSTANCE = null;
+	public PatGrundPanel patpanel = null;
+	public EBerichtPanel eberichtpanel = null;
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
 	//private JDesktopPane jDesktopPane = null;

@@ -51,8 +51,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 					 	
 						aktuell++;
 						
-						nvec = (Vector) ((Vector)SuchenSeite.thisClass.sucheDaten.get(aktuell)).clone();
-						
+						//nvec = (Vector) ((Vector)SuchenSeite.thisClass.sucheDaten.get(aktuell)).clone();
+						nvec = (Vector) ((Vector)SuchenSeite.thisClass.sucheDaten.get(aktuell));
 						
 						
 						sperre = (String)((Vector)nvec).get(13)+

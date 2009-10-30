@@ -349,7 +349,8 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 	gutjry.setName(name);
 	gutjry.setSize(new Dimension(900,650));
 	//EBerichtPanel ebericht = new EBerichtPanel(jry,pat_intern,berichtid,berichttyp,neu,empfaenger );
-	gutjry.setContent(new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger ));
+	Reha.thisClass.eberichtpanel = new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger ); 
+	gutjry.setContent(Reha.thisClass.eberichtpanel);
 	//jry.setContent((EBerichtPanel)ebericht);	
 	gutjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
@@ -366,6 +367,7 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 }
 public void loescheGutachten(){
 	gutjry = null;
+	Reha.thisClass.eberichtpanel = null;
 }
 
 
@@ -423,10 +425,10 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.setName(name);
 	patjry.setSize(new Dimension(900,650));
 	//PatGrundPanel patpan = new PatGrundPanel(jry);
-	patjry.setContent(new PatGrundPanel(patjry));
+	//patjry.setContent(new PatGrundPanel(patjry));
 
-	//Reha.thisClass.PATINSTANCE = PatGrundPanel.getInstance(patjry);
-	//patjry.setContent(Reha.thisClass.PATINSTANCE);
+	Reha.thisClass.patpanel = new PatGrundPanel(patjry);
+	patjry.setContent(Reha.thisClass.patpanel);
 
 	patjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
@@ -449,6 +451,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 }
 public void loeschePatient(){
 	patjry = null;
+	Reha.thisClass.patpanel = null;
 	//Reha.thisClass.PATINSTANCE = null;
 }
 /**************Passwortverwaltung Echtfunktion*************************/

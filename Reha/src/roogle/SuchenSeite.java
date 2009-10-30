@@ -1750,11 +1750,12 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		
 
 			rs = (ResultSet) stmt.executeQuery(suchstmt);
+			Vector vx = new Vector();
 			while(rs.next()){
 				int bloecke = new Integer(rs.getString(301));
 				//System.out.println("Blöcke = "+bloecke);
 				int ii;
-				Vector vx = new Vector();
+				
 				for(ii=0;ii<bloecke;ii++){
 					vx.add(rs.getString("T"+(ii+1)));
 					vx.add(rs.getString("N"+(ii+1)));					
@@ -1770,7 +1771,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				vec.add(vx.clone());
 				*/
 			}
-
+			vx = null;
+		}catch(Exception ex){
+			
 		}finally {
 			if (rs != null) {
 				try {
@@ -1788,6 +1791,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			}
 
 		}
+		
 		return (Vector)vec;//.clone();
 	}
 	/********Ende SwingWorker*/
@@ -2405,9 +2409,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			long lgrenzegross =(Long) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).get(1); 	
 
 			if(longPasstZwischen(lgrenzeklein,lgrenzegross,xzeit,(suchleer ? defdauer : xdauer))){
-				//System.out.println("Zeitcheck = "+xzeit+" und Dauer "+defdauer+" paßt zwischen "+zeitFunk.MinutenZuZeit(new Long(lgrenzeklein).intValue())+
-						//" und "+zeitFunk.MinutenZuZeit(new Long(lgrenzegross).intValue()));
-				vecret = (Vector) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).clone();
+				//vecret = (Vector) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).clone();
+				vecret = (Vector) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i));
 				return (Vector)vecret;//(Vector)vecret.clone();
 			}
 			
