@@ -342,7 +342,7 @@ public class BlockHandling {
 		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(grundDaten[3],5,4));
 		String db_behandler = datenfeld.getFeld(grundDaten[3],5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
-						Integer.parseInt(db_behandler.substring(1,1)) :
+						Integer.parseInt(db_behandler.substring(1,2)) :
 							Integer.parseInt(db_behandler.substring(0,2))	);
 		anzahlBloecke = (endBlock - startBlock) +1;
 		String termin = datenfeld.getFeld(grundDaten[3],0, grundDaten[0]);
@@ -375,7 +375,7 @@ public class BlockHandling {
 		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
-				Integer.parseInt(db_behandler.substring(1,1)) :
+				Integer.parseInt(db_behandler.substring(1,2)) :
 					Integer.parseInt(db_behandler.substring(0,2))	);		
 		
 		alteDaten[0] = datenfeld.getFeld(kollege,0,block);//Text
@@ -400,7 +400,7 @@ public class BlockHandling {
 		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
 		int ibehandler = (db_behandler.substring(0,1)=="0" ?
-				Integer.parseInt(db_behandler.substring(1,1)) :
+				Integer.parseInt(db_behandler.substring(1,2)) :
 					Integer.parseInt(db_behandler.substring(0,2))	);		
 		
 		int maxblock = Integer.parseInt(datenfeld.getFeld(kollege,5,0))-1;
@@ -461,7 +461,7 @@ public class BlockHandling {
 		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(kollege,5,4));
 		String db_behandler = datenfeld.getFeld(kollege,5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
-				Integer.parseInt(db_behandler.substring(1,1)) :
+				Integer.parseInt(db_behandler.substring(1,2)) :
 					Integer.parseInt(db_behandler.substring(0,2))	);		
 
 		for(int x = 0;x<2;x++){
