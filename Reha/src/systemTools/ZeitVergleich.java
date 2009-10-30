@@ -2,7 +2,7 @@ package systemTools;
 import java.util.*;
 
 
-final class zeitFunk {
+final class ZeitVergleich {
 	static Date zeit1=null;
 	static Date zeit2=null;
 	static Date datum1;
