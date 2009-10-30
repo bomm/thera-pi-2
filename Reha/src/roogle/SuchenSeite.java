@@ -775,10 +775,18 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				break;
 			}
 			if(name.equals("zuruecksetzen")){
-				knopfGedoense(new int[]  {1,0,0,0,0,0,0,0,0,0});
-				roogleZuruecksetzen();
-				Runtime r = Runtime.getRuntime();
-			    r.gc();
+				new SwingWorker<Void,Void>(){
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						knopfGedoense(new int[]  {1,0,0,0,0,0,0,0,0,0});
+						roogleZuruecksetzen();
+						return null;
+					}
+					
+				}.execute();
+				//Runtime r = Runtime.getRuntime();
+			    //r.gc();
 				break;
 			}
 			if(name.equals("alles markieren")){
@@ -990,9 +998,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		}
 		*/
 		dtblm.getDataVector().clear();
+		dtblm.getDataVector().trimToSize();
 		dtblm.setRowCount(0);
 		jxSucheTable.removeAll();
 		sucheDaten.clear();
+		sucheDaten.trimToSize();
 		jxSucheTable.clearSelection();
 		jxSucheTable.validate();
 		jxSucheTable.repaint();
@@ -1001,6 +1011,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		trefferLbl.setText("0");
 		ausgewaehltLbl.setText("0");
 		vecWahl.clear();
+		vecWahl.trimToSize();
 		this.zeilengewaehlt = 0;
 		//wt.setEnde();		
 		sucheName.requestFocus();
