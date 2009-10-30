@@ -296,7 +296,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	
 	public static int getTreffer(){
-		return new Integer(thisClass.trefferLbl.getText());
+		return Integer.parseInt(thisClass.trefferLbl.getText());
 	
 	}
 	public static boolean tagDurchsuchen(String sdatum){
@@ -1159,7 +1159,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		  tkstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 3)).trim()+":00");
 		  tkende = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 4)).trim()+":00");
 		  plstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(reihe, 6)).trim()+":00");
-		  pldauer = new Integer((String)jxSucheTable.getValueAt(reihe, 7));
+		  pldauer = Integer.parseInt((String)jxSucheTable.getValueAt(reihe, 7));
 		  if(plstart < tkstart){
 			  return 1;
 		  }
@@ -1292,9 +1292,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				//System.out.println(vecWahl);
 
 				tkstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 3)).trim()+":00");
-				tkdauer = new Integer((String)jxSucheTable.getValueAt(i, 5));
+				tkdauer = Integer.parseInt((String)jxSucheTable.getValueAt(i, 5));
 				plstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 6)).trim()+":00");
-				pldauer = new Integer((String)jxSucheTable.getValueAt(i, 7));
+				pldauer = Integer.parseInt((String)jxSucheTable.getValueAt(i, 7));
 					for(int j = 0;j<1;j++){
 						if((tkstart==plstart) && (tkdauer==pldauer)){
 							// Beginn und Dauer sind gleich geblieben
@@ -1378,7 +1378,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		int vecgross = vec.size();
 		Vector newvec = new Vector();
 		int block = (Integer) jxSucheTable.getValueAt(zeile,16);
-		int geaendert = new Integer( (String) jxSucheTable.getValueAt(zeile,18) );
+		int geaendert = Integer.parseInt( (String) jxSucheTable.getValueAt(zeile,18) );
 		if(vecgross != geaendert ){
 			//System.out.println("vermerkt sind "+vecgross+" Blöcke / tatsächlich in der Datenbank sind "+geaendert+" Blöcke");
 			block += (vecgross-geaendert);
@@ -1393,13 +1393,13 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						newvec.add(vec.get(i));
 					}else if(i==(block-1)){
 						newvec.add(vec.get(i));
-						((Vector)newvec.get(i)).set(3,new Integer(plstart-tkstart).toString());
+						((Vector)newvec.get(i)).set(3,Integer.toString(plstart-tkstart));
 						((Vector)newvec.get(i)).set(4,ZeitFunk.MinutenZuZeit(tkstart+(plstart-tkstart)));
 						Vector aktvec = new Vector();
 						aktvec.add(name);
 						aktvec.add(nummer);
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart));
-						aktvec.add(new Integer(pldauer).toString());
+						aktvec.add(Integer.toString(pldauer));
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
 						Vector nachvec = new Vector();
@@ -1408,8 +1408,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						nachvec.add( aktvec.get(4));
 						String planende = (String)jxSucheTable.getValueAt(zeile,4)+":00";
 						
-						nachvec.add( new Integer((int) ZeitFunk.MinutenSeitMitternacht(planende) - 
-								(int)ZeitFunk.MinutenSeitMitternacht((String)nachvec.get(2)) ).toString() ) ;					
+						nachvec.add( Integer.toString((int) ZeitFunk.MinutenSeitMitternacht(planende) - 
+								(int)ZeitFunk.MinutenSeitMitternacht((String)nachvec.get(2)) ) ) ;					
 						nachvec.add(planende );
 						
 						newvec.add(nachvec);
@@ -1417,7 +1417,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						newvec.add(vec.get(i));
 					}
 				}
-				String stmt = macheStat(newvec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+				String stmt = macheStat(newvec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 				//System.out.println("Mit vor und nachblock "+stmt);
 				try {
 					schreibeZeile(stmt);
@@ -1434,7 +1434,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						aktvec.add(name);
 						aktvec.add(nummer);
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart));
-						aktvec.add(new Integer(pldauer).toString());
+						aktvec.add(Integer.toString(pldauer));
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
 						
@@ -1442,7 +1442,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						nachvec.add( ((String)((Vector)vec.get(i)).get(0)) ) ;
 						nachvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
 						nachvec.add( (String)aktvec.get(4) ) ;						
-						nachvec.add( new Integer(tkdauer-pldauer).toString() ) ;
+						nachvec.add( Integer.toString(tkdauer-pldauer)) ;
 						nachvec.add( ZeitFunk.MinutenZuZeit(tkende) ) ;
 						newvec.add(nachvec);
 
@@ -1451,7 +1451,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					}
 					
 				}
-				String stmt = macheStat(newvec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+				String stmt = macheStat(newvec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 				//System.out.println("Nur mit Nachblock "+stmt);
 				try {
 					//System.out.println("EscapedDouble String = "+stmt);
@@ -1469,7 +1469,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						vorvec.add( ((String)((Vector)vec.get(i)).get(0)) ) ;
 						vorvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
 						vorvec.add( ZeitFunk.MinutenZuZeit(tkstart)) ;
-						vorvec.add( new Integer(tkdauer-pldauer).toString() ) ;
+						vorvec.add( Integer.toString(tkdauer-pldauer) ) ;
 						vorvec.add( ZeitFunk.MinutenZuZeit(plstart)) ;
 						newvec.add(vorvec);
 						
@@ -1477,7 +1477,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						aktvec.add(name);
 						aktvec.add(nummer);
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart));
-						aktvec.add(new Integer(pldauer).toString());
+						aktvec.add(Integer.toString(pldauer));
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
 
@@ -1486,7 +1486,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					}
 					
 				}
-				String stmt = macheStat(newvec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+				String stmt = macheStat(newvec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 				//System.out.println("Nur mit Vorblock "+stmt);
 				try {
 					schreibeZeile(stmt);
@@ -1503,8 +1503,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	/*****************************************/	
 	private void schreibeLoeschen(Vector vec,int zeile,String name,String nummer){
 		int block = (Integer) jxSucheTable.getValueAt(zeile,16);
-		int bloecke = new Integer(vec.size()); 
-		int geaendert = new Integer( (String) jxSucheTable.getValueAt(zeile,18) );
+		int bloecke = vec.size(); 
+		int geaendert = Integer.parseInt( (String) jxSucheTable.getValueAt(zeile,18) );
 		if(bloecke != geaendert ){
 			//System.out.println("vermerkt sind "+bloecke+" Blöcke / tatsächlich in der Datenbank sind "+geaendert+" Blöcke");
 			block += (bloecke-geaendert);
@@ -1521,7 +1521,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					// es gibt mehrere blöcke
 					((Vector)vec.get(block-1)).set(0, "");
 					((Vector)vec.get(block-1)).set(1, "");					
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Es gibt nur einen Block, deshalb kann man dirket das statement basteln");
 					//System.out.println(stmt);
 					break;
@@ -1532,18 +1532,18 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					xname = (String) ((Vector)vec.get(1)).get(0);
 					xnummer = (String) ((Vector)vec.get(1)).get(1);
 					if(xname.trim().equals("") && xnummer.trim().equals("")){
-						String startzeit = new String((String) ((Vector)vec.get(0)).get(2));
-						String endzeit = new String((String) ((Vector)vec.get(1)).get(4));
-						int dauer1 = new Integer((String) ((Vector)vec.get(1)).get(3));
-						int dauer2 = new Integer((String) ((Vector)vec.get(0)).get(3));
+						String startzeit = (String) ((Vector)vec.get(0)).get(2);
+						String endzeit = (String) ((Vector)vec.get(1)).get(4);
+						int dauer1 = Integer.parseInt((String) ((Vector)vec.get(1)).get(3));
+						int dauer2 = Integer.parseInt((String) ((Vector)vec.get(0)).get(3));
 						int dauerNeu = dauer1+dauer2;
 						((Vector)vec.get(1)).set(0, "");
 						((Vector)vec.get(1)).set(1, "");					
 						((Vector)vec.get(1)).set(2, startzeit);
-						((Vector)vec.get(1)).set(3, new Integer(dauerNeu).toString());
+						((Vector)vec.get(1)).set(3, Integer.toString(dauerNeu));
 						((Vector)vec.get(1)).set(4,endzeit);
 						vec.remove(0);
-						stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+						stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 						//System.out.println("Der betroffene Block ist der erste und der nachfolgende Block = ebenfalls leer");
 						//System.out.println(stmt);						
 						break;
@@ -1551,7 +1551,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					}else{
 						((Vector)vec.get(block-1)).set(0, "");
 						((Vector)vec.get(block-1)).set(1, "");					
-						stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+						stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 						//System.out.println("Der betroffene Block ist der erste und der nachfolgende Block = nicht(!!) leer");
 						//System.out.println(stmt);
 						break;
@@ -1565,25 +1565,25 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				xname = (String) ((Vector)vec.get(block-2)).get(0);
 				xnummer = (String) ((Vector)vec.get(block-2)).get(1);
 				if(xname.trim().equals("") && xnummer.trim().equals("")){
-					String startzeit = new String((String) ((Vector)vec.get(block-2)).get(2));
-					String endzeit = new String((String) ((Vector)vec.get(block-1)).get(4));
-					int dauer1 = new Integer((String) ((Vector)vec.get(block-2)).get(3));
-					int dauer2 = new Integer((String) ((Vector)vec.get(block-1)).get(3));
+					String startzeit = (String) ((Vector)vec.get(block-2)).get(2);
+					String endzeit = (String) ((Vector)vec.get(block-1)).get(4);
+					int dauer1 = Integer.parseInt((String) ((Vector)vec.get(block-2)).get(3));
+					int dauer2 = Integer.parseInt((String) ((Vector)vec.get(block-1)).get(3));
 					int dauerNeu = dauer1+dauer2;
 					((Vector)vec.get(block-2)).set(0, "");
 					((Vector)vec.get(block-2)).set(1, "");					
 					((Vector)vec.get(block-2)).set(2, startzeit);
-					((Vector)vec.get(block-2)).set(3, new Integer(dauerNeu).toString());
+					((Vector)vec.get(block-2)).set(3, Integer.toString(dauerNeu));
 					((Vector)vec.get(block-2)).set(4,endzeit);
 					vec.remove(block-1);
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Der betroffene Block ist der letzte und der vorhergehende ist ebenfalls leer");
 					//System.out.println(stmt);
 					break;				
 				}else{
 					((Vector)vec.get(block-1)).set(0, "");
 					((Vector)vec.get(block-1)).set(1, "");					
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Der betroffene Block ist der letzte und der nachfolgende Block = nicht(!!) leer");
 					//System.out.println(stmt);
 					break;
@@ -1598,45 +1598,45 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				if(( xname.trim().equals("")) && (xnummer.trim().equals("")) &&
 						( yname.trim().equals("")) && (ynummer.trim().equals("")) ){
 					//der Vorbock ist leer und der Nachblock ist auch leef
-					String startzeitvb = new String((String) ((Vector)vec.get(block-2)).get(2));
-					String endzeitnb = new String((String) ((Vector)vec.get(block)).get(4));
-					int dauervb = new Integer((String) ((Vector)vec.get(block-2)).get(3));
-					int dauerakt = new Integer((String) ((Vector)vec.get(block-1)).get(3));
-					int dauernb = new Integer((String) ((Vector)vec.get(block)).get(3));
+					String startzeitvb = (String) ((Vector)vec.get(block-2)).get(2);
+					String endzeitnb = (String) ((Vector)vec.get(block)).get(4);
+					int dauervb = Integer.parseInt((String) ((Vector)vec.get(block-2)).get(3));
+					int dauerakt = Integer.parseInt((String) ((Vector)vec.get(block-1)).get(3));
+					int dauernb = Integer.parseInt((String) ((Vector)vec.get(block)).get(3));
 					int dauerNeu = dauervb+dauerakt+dauernb;
 					((Vector)vec.get(block-2)).set(0, "");
 					((Vector)vec.get(block-2)).set(1, "");					
 					((Vector)vec.get(block-2)).set(2, startzeitvb);
-					((Vector)vec.get(block-2)).set(3, new Integer(dauerNeu).toString());
+					((Vector)vec.get(block-2)).set(3, Integer.toString(dauerNeu));
 					((Vector)vec.get(block-2)).set(4,endzeitnb);
 					vec.remove(block);
 					vec.remove(block-1);					
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Der betroffene Block ist zwischendrinn der vorhergehende und der nachfolgende sind ebenfalls leer");
 					//System.out.println(stmt);
 					break;
 				}
 				if(( xname.trim().equals("")) && (xnummer.trim().equals("")) ){
 					//der Vorblock ist leer der Nachblock nicht !!
-					String startzeit = new String((String) ((Vector)vec.get(block-2)).get(2));
-					String endzeit = new String((String) ((Vector)vec.get(block-1)).get(4));
-					int dauer1 = new Integer((String) ((Vector)vec.get(block-2)).get(3));
-					int dauer2 = new Integer((String) ((Vector)vec.get(block-1)).get(3));
+					String startzeit = (String) ((Vector)vec.get(block-2)).get(2);
+					String endzeit = (String) ((Vector)vec.get(block-1)).get(4);
+					int dauer1 = Integer.parseInt((String) ((Vector)vec.get(block-2)).get(3));
+					int dauer2 = Integer.parseInt((String) ((Vector)vec.get(block-1)).get(3));
 					int dauerNeu = dauer1+dauer2;
 					((Vector)vec.get(block-2)).set(0, "");
 					((Vector)vec.get(block-2)).set(1, "");					
 					((Vector)vec.get(block-2)).set(2, startzeit);
-					((Vector)vec.get(block-2)).set(3, new Integer(dauerNeu).toString());
+					((Vector)vec.get(block-2)).set(3, Integer.toString(dauerNeu));
 					((Vector)vec.get(block-2)).set(4,endzeit);
 					vec.remove(block-1);
-					stmt = macheStat(vec,new Integer((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
+					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 					//System.out.println("Der betroffene Block zwischendrinn und der vorhergende ist ebenfalls leer");
 					//System.out.println(stmt);
 					break;				
 				}
 				if(( yname.trim().equals("")) && (ynummer.trim().equals("")) ){
 					//der Vorblock ist nicht leer aber der Nachblock!!
-					String startzeit = new String((String) ((Vector)vec.get(block-1)).get(2));
+					String startzeit = (String) ((Vector)vec.get(block-1)).get(2);
 					String endzeit = (String) ((Vector)vec.get(block)).get(4);
 					int dauer1 = Integer.parseInt((String) ((Vector)vec.get(block-1)).get(3));
 					int dauer2 = Integer.parseInt((String) ((Vector)vec.get(block)).get(3));
@@ -1752,7 +1752,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			rs = (ResultSet) stmt.executeQuery(suchstmt);
 			Vector vx = new Vector();
 			while(rs.next()){
-				int bloecke = new Integer(rs.getString(301));
+				int bloecke = Integer.parseInt(rs.getString(301));
 				//System.out.println("Blöcke = "+bloecke);
 				int ii;
 				
@@ -2038,9 +2038,9 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 
 						skollege = rs.getString(303).substring(0,2);
 						if( skollege.substring(0,1) == "0" ){
-							ikollege = new Integer(skollege.substring(1,1));
+							ikollege = Integer.parseInt(skollege.substring(1,2));
 						}else{
-							ikollege = new Integer(skollege);								
+							ikollege = Integer.parseInt(skollege);								
 						}
 
 						/***************Hier wird getestet ob die Kalender zeile belegt ist*****/
@@ -2097,7 +2097,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 							
 							int j;
 							Vector yvec = null;
-							int kaldauer = new Integer(rs.getString("TD"+(ii)));
+							int kaldauer = Integer.parseInt(rs.getString("TD"+(ii)));
 
 							for(j=0;j<1;j++){
 								boolean keintest = keinTest();
@@ -2399,7 +2399,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			SystemConfig.oGruppen.gruppenGueltig.get(gruppe)[0] ){
 			altneu = 0;
 		}
-		int xdauer = new Integer(rs.getString("TD"+(feld)).trim());		
+		int xdauer = Integer.parseInt(rs.getString("TD"+(feld)).trim());		
 		String xzeit = rs.getString("TS"+(feld)).trim().substring(0,5);
 		
 		int gross = (int)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).size();
@@ -2657,7 +2657,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			schnittbeginn = z3;
 			schnittende = z4;
 			ananfang = 1;
-			return new int[] {new Long(schnittende-schnittbeginn).intValue(),new Long(schnittbeginn).intValue(),new Long(schnittende).intValue(),new Integer(ananfang)};
+			return new int[] {Long.valueOf(schnittende-schnittbeginn).intValue(),Long.valueOf(schnittbeginn).intValue(),Long.valueOf(schnittende).intValue(),ananfang};
 		}
 
 		if(z1 <= z3){
