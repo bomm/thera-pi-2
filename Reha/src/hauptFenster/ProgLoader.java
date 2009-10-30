@@ -156,14 +156,15 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 			}
 			terminjry.setName(name);
 			((JRehaInternal)terminjry).setImmerGross(true);
-			TerminFenster termWin = new TerminFenster();
-			terminjry.setContent( termWin.init(containerNr, xansicht,terminjry));
+			Reha.thisClass.terminpanel = new TerminFenster();
+			//TerminFenster termWin = new TerminFenster();
+			terminjry.setContent(Reha.thisClass.terminpanel.init(containerNr, xansicht,terminjry));
 			terminjry.setLocation(new Point(5,5));
 			terminjry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
 			terminjry.setVisible(true);
 			Reha.thisClass.desktops[containerNr].add(terminjry);
 			LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			AktiveFenster.setNeuesFenster(name,(JComponent)terminjry,containerNr,(Container)termWin.getViewPanel());			
+			AktiveFenster.setNeuesFenster(name,(JComponent)terminjry,containerNr,(Container)Reha.thisClass.terminpanel.getViewPanel());			
 			((JTerminInternal)terminjry).aktiviereDiesenFrame(((JTerminInternal)terminjry).getName());
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
@@ -177,6 +178,7 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 }
 public void loescheTermine(){
 	terminjry = null;
+	Reha.thisClass.terminpanel = null;
 }
 
 /**************OpenOffice Echtfunktion*******************************/
@@ -260,7 +262,8 @@ public void KassenFenster(int setPos,String kid) {
 	kassejry.setName(name);
 	kassejry.setSize(new Dimension(650,500));
 	//KassenPanel kasspan = new KassenPanel(jry,kid);
-	kassejry.setContent(new KassenPanel(kassejry,kid));	
+	Reha.thisClass.kassenpanel = new KassenPanel(kassejry,kid); 
+	kassejry.setContent(Reha.thisClass.kassenpanel);	
 	kassejry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	kassejry.setLocation(comps*10, comps*10);
@@ -274,6 +277,7 @@ public void KassenFenster(int setPos,String kid) {
 }
 public void loescheKasse(){
 	kassejry = null;
+	Reha.thisClass.kassenpanel = null;
 }
 
 /**************^Ärzteverwaltung Echtfunktion***********************/
@@ -304,7 +308,8 @@ public void ArztFenster(int setPos,String aid) {
 	arztjry.setName(name);
 	arztjry.setSize(new Dimension(650,500));
 	//ArztPanel arztpan = new ArztPanel(jry,aid);
-	arztjry.setContent(new ArztPanel(arztjry,aid));	
+	Reha.thisClass.arztpanel = new ArztPanel(arztjry,aid); 
+	arztjry.setContent(Reha.thisClass.arztpanel);	
 	arztjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	arztjry.setLocation(comps*10, comps*10);
@@ -318,6 +323,7 @@ public void ArztFenster(int setPos,String aid) {
 }
 public void loescheArzt(){
 	arztjry = null;
+	Reha.thisClass.arztpanel = null;
 }
 
 

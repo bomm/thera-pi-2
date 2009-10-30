@@ -1346,6 +1346,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    		}
 	    	}.start();
 	    }else{
+			Reha.thisClass.progLoader.loescheRoogle();
 	    	System.out.println("TerminFenster.thisClass = null ");
 			Runtime r = Runtime.getRuntime();
 		    r.gc();

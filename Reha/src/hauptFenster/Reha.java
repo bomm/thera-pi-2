@@ -113,6 +113,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import krankenKasse.KasseEinlesen;
+import krankenKasse.KassenPanel;
 import kvKarte.KVKWrapper;
 
 import menus.TerminMenu;
@@ -139,6 +140,7 @@ import org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI;
 import patientenFenster.PatGrundPanel;
 
 import rehaContainer.RehaTP;
+import roogle.RoogleFenster;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -173,6 +175,7 @@ import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.noa.NOAException;
+import arztFenster.ArztPanel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -207,6 +210,10 @@ import grad.GradientSegment;
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
 	public PatGrundPanel patpanel = null;
 	public EBerichtPanel eberichtpanel = null;
+	public KassenPanel kassenpanel = null;
+	public ArztPanel arztpanel = null;
+	public TerminFenster terminpanel = null;
+	public RoogleFenster rooglepanel = null;
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
 	//private JDesktopPane jDesktopPane = null;
