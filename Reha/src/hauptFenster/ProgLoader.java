@@ -113,6 +113,20 @@ public static void ProgTestPanel(int setPos){
 public static void ProgPatSuche(boolean setPos){
 	
 }
+public void XProgTerminFenster(int setPos,int ansicht) {
+	/*
+	String name = "TerminFenster"+WinNum.NeueNummer();
+	JInternalFrame iframe = new JInternalFrame("",true,true,true,true);
+	iframe.setName(name);
+	Reha.thisClass.terminpanel = new TerminFenster();
+	int containerNr = SystemConfig.hmContainer.get("Kalender");
+	iframe.setContentPane(Reha.thisClass.terminpanel.init(containerNr, ansicht,iframe));
+	Reha.thisClass.desktops[containerNr].add(iframe);
+	iframe.setLocation(new Point(5,5));
+	iframe.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+	iframe.setVisible(true);
+*/
+}
 /**************Terminkalender Echtfunktion****************************/
 public void ProgTerminFenster(int setPos,int ansicht) {
 	if(! Reha.thisClass.DbOk){

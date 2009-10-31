@@ -1043,6 +1043,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 		//webBrowser.dispose();
 		this.dispose();
+		super.dispose();
 	}	
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
@@ -1360,6 +1361,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		System.out.println("In Closing***********************>");
 
 
 		

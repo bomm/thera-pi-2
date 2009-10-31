@@ -376,6 +376,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				}
 			}.start();
 			this.dispose();
+			super.dispose();
 		}
 	}
 	
@@ -392,6 +393,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 					}
 				}.start();
 				this.dispose();
+				super.dispose();
 			}
 			System.out.println("Return Gedrückt");
 		}

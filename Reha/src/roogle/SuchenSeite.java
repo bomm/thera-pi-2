@@ -1947,6 +1947,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	ImageIcon img,img2;
 	int schichtArt = -1;
 	int selektivArt = -1;
+	Vector machevec = new Vector();
 	
 
 	public void setzeStatement(){
@@ -2018,6 +2019,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			SuchenSeite.setFortschrittSetzen(0);
 			SuchenSeite.setFortschrittZeigen(true);
 			Vector abtlg = new Vector(Arrays.asList(abtei));
+			Vector yvec = null;
 			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!SuchenSeite.mussUnterbrechen)){
 				SuchenSeite.setzeDatum(aktDatum );
 				if( SuchenSeite.tagDurchsuchen(aktDatum) ){
@@ -2107,7 +2109,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 							
 							
 							int j;
-							Vector yvec = null;
+							yvec = null;
 							int kaldauer = Integer.parseInt(rs.getString("TD"+(ii)));
 
 							for(j=0;j<1;j++){
@@ -2277,7 +2279,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 								
 								//SuchenSeite.rooDaten.rvec.add((Vector)yvec.clone());
 								//sucheDaten.add((Vector)yvec.clone());
-								sucheDaten.add((Vector)yvec);
+								sucheDaten.add(yvec);
 								//SuchenSeite.setDatenVector((Vector)yvec.clone());
 								trefferSetzen();
 								
@@ -2332,17 +2334,20 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
-				if (stmt != null) {
-					try {
-						stmt.close();
-					} catch (SQLException sqlEx) { // ignore }
-						stmt = null;
-					}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
 				}
 			}
+
 		}
 		if (DatFunk.DatumsWert(sqlAkt) > DatFunk.DatumsWert(sqlEnde)){
 			SuchenSeite.setSucheBeendet();
@@ -2811,7 +2816,9 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	}
 	
 	private Vector macheVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
-		Vector vec = new Vector();
+		//Vector vec = new Vector();
+		machevec.clear();
+		machevec.trimToSize();
 		String uhrzeit;
 		String sorigdatum;
 		String sdatum;
@@ -2822,32 +2829,34 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
-		vec.add(new Boolean(false));
-		vec.add(null);
-		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
-		vec.add(uhrzeit.substring(0,5));
-		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
-		vec.add(rs.getString("TD"+(ii)).trim());		
-		vec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
-		vec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : Integer.toString(defdauer) ) );
-		vec.add(name);
-		vec.add(nummer);								
-		vec.add(skollege);								
-		vec.add("");								
-		vec.add(""); //früher sorter
-		vec.add(rs.getString("BEHANDLER"));		
-		vec.add(sdatum);
-		vec.add(sorigdatum);
-		vec.add(ii);
-		vec.add(rs.getString("id"));
-		vec.add(rs.getString("BELEGT"));
-		vec.add(Boolean.valueOf(false));
+		machevec.add(Boolean.valueOf(false));
+		machevec.add(null);
+		machevec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
+		machevec.add(uhrzeit.substring(0,5));
+		machevec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
+		machevec.add(rs.getString("TD"+(ii)).trim());		
+		machevec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
+		machevec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : Integer.toString(defdauer) ) );
+		machevec.add(name);
+		machevec.add(nummer);								
+		machevec.add(skollege);								
+		machevec.add("");								
+		machevec.add(""); //früher sorter
+		machevec.add(rs.getString("BEHANDLER"));		
+		machevec.add(sdatum);
+		machevec.add(sorigdatum);
+		machevec.add(ii);
+		machevec.add(rs.getString("id"));
+		machevec.add(rs.getString("BELEGT"));
+		machevec.add(Boolean.valueOf(false));
 
-		return vec;
+		return (Vector)machevec.clone();
 	}
 
 	private Vector macheKGGVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
-		Vector vec = new Vector();
+		machevec.clear();
+		machevec.trimToSize();
+		//Vector vec = new Vector();
 		String uhrzeit;
 		String sorigdatum;
 		String sdatum;
@@ -2858,32 +2867,34 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
-		vec.add(Boolean.valueOf(false));
-		vec.add(null);
-		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
-		vec.add(uhrzeit.substring(0,5));
-		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
-		vec.add(rs.getString("TD"+(ii)).trim());		
-		vec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
-		vec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : Integer.toString(defdauer) ) );
-		vec.add(name);
-		vec.add(nummer);								
-		vec.add(skollege);								
-		vec.add(rs.getString("TS"+(ii)).trim().substring(0,2)+":00");								
-		vec.add(skollege); //früher sorter
-		vec.add(rs.getString("BEHANDLER"));		
-		vec.add(sdatum);
-		vec.add(sorigdatum);
-		vec.add(ii);
-		vec.add(rs.getString("id"));
-		vec.add(rs.getString("BELEGT"));
-		vec.add(Boolean.valueOf(false));
+		machevec.add(Boolean.valueOf(false));
+		machevec.add(null);
+		machevec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
+		machevec.add(uhrzeit.substring(0,5));
+		machevec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
+		machevec.add(rs.getString("TD"+(ii)).trim());		
+		machevec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
+		machevec.add((defdauer == -1 ? rs.getString("TD"+(ii)).trim() : Integer.toString(defdauer) ) );
+		machevec.add(name);
+		machevec.add(nummer);								
+		machevec.add(skollege);								
+		machevec.add(rs.getString("TS"+(ii)).trim().substring(0,2)+":00");								
+		machevec.add(skollege); //früher sorter
+		machevec.add(rs.getString("BEHANDLER"));		
+		machevec.add(sdatum);
+		machevec.add(sorigdatum);
+		machevec.add(ii);
+		machevec.add(rs.getString("id"));
+		machevec.add(rs.getString("BELEGT"));
+		machevec.add(Boolean.valueOf(false));
 
-		return vec;
+		return (Vector)machevec.clone();
 	}
 
 	private Vector macheGruppenVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,Vector vecgruppe,boolean suchleer) throws SQLException{
-		Vector vec = new Vector();
+		machevec.clear();
+		machevec.trimToSize();
+		//Vector vec = new Vector();
 		String uhrzeit;
 		String sorigdatum;
 		String sdatum;
@@ -2894,14 +2905,14 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		sdatum = DatFunk.sDatInDeutsch(sorigdatum);
 		skollege = (String) ParameterLaden.getKollegenUeberReihe(ikollege);
 		//{"x?","G!","Datum","Beginn","Ende","Min.","Namen","Rez.Nr.","Behandler","Druckzeit","Sort","Spalte","richtigesDatum","block","id-db"};
-		vec.add(new Boolean(false));
-		vec.add(null);
-		vec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
-		vec.add(uhrzeit.substring(0,5));
-		vec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
-		vec.add(rs.getString("TD"+(ii)).trim());		
-		vec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
-		vec.add(Integer.toString(defdauer));
+		machevec.add(Boolean.valueOf(false));
+		machevec.add(null);
+		machevec.add(DatFunk.WochenTag(sdatum).substring(0,2)+"-"+sdatum);
+		machevec.add(uhrzeit.substring(0,5));
+		machevec.add(rs.getString("TE"+(ii)).trim().substring(0,5));
+		machevec.add(rs.getString("TD"+(ii)).trim());		
+		machevec.add(rs.getString("TS"+(ii)).trim().substring(0,5));
+		machevec.add(Integer.toString(defdauer));
 		boolean xgruppe = false;
 		//if(name.trim().equals("")){
 			String snam = null;
@@ -2921,24 +2932,24 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				}
 				
 			}
-			vec.add(snam);
+			machevec.add(snam);
 		//}else{
 			//vec.add(name);			
 		//}
-		vec.add(nummer);								
-		vec.add(skollege);
+		machevec.add(nummer);								
+		machevec.add(skollege);
 		String drzeit = (String)vecgruppe.get(2);
-		vec.add((drzeit.trim().equals("00:00") ? "--:--" : vecgruppe.get(2)));								
-		vec.add((xgruppe ? skollege : ""));  //früher sorter
-		vec.add(rs.getString("BEHANDLER"));		
-		vec.add(sdatum);
-		vec.add(sorigdatum);
-		vec.add(ii);
-		vec.add(rs.getString("id"));
-		vec.add(rs.getString("BELEGT"));
-		vec.add(Boolean.valueOf(true));
+		machevec.add((drzeit.trim().equals("00:00") ? "--:--" : vecgruppe.get(2)));								
+		machevec.add((xgruppe ? skollege : ""));  //früher sorter
+		machevec.add(rs.getString("BEHANDLER"));		
+		machevec.add(sdatum);
+		machevec.add(sorigdatum);
+		machevec.add(ii);
+		machevec.add(rs.getString("id"));
+		machevec.add(rs.getString("BELEGT"));
+		machevec.add(Boolean.valueOf(true));
 
-		return vec;
+		return (Vector)machevec.clone();
 	}
 
 	
@@ -3233,7 +3244,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 					e.printStackTrace();
 				}
 				try {
-					rsx = stmtx.executeQuery("select sperre,maschine from flexlock where sperre='"+sperre+"'");
+					rsx = stmtx.executeQuery("select sperre,maschine from flexlock where sperre='"+sperre+"' LIMIT 1");
 					if(!rsx.next() ){
 						//this.sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
 						String st = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
@@ -3270,6 +3281,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 			if (rsx != null) {
 				try {
 					rsx.close();
+					rsx = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rsx = null;
 				}
@@ -3277,6 +3289,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 			if (stmtx != null) {
 				try {
 					stmtx.close();
+					stmtx = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmtx = null;
 				}

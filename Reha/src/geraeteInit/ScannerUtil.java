@@ -249,8 +249,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 					uebernahme.removeActionListener(this);
 					abbrechen.removeActionListener(this);
 					rgb = null;
-					super.dispose();
 					this.dispose();
+					super.dispose();
 					System.out.println("****************Scanner-Util -> Listener entfernt**************");				
 				}
 			}
@@ -265,8 +265,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			pinPanel = null;
-			super.dispose();
 			dispose();
+			super.dispose();
 			System.out.println("****************Scanner-Util -> Listener entfernt (Closed)**********");
 		}
 		scanner = null;

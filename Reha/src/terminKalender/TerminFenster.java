@@ -135,7 +135,7 @@ import systemTools.ListenerTools;
 
 public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener,DragSourceListener,DragGestureListener{
 
-	public JRehaInternal eltern;
+	
 	private int setOben; //Position im Grundfenster 0=Flying Window,1=rechts oben,2=rechts unten
 
 	private String FensterName = ""; 
@@ -267,6 +267,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public String DRAG_UHR;
 	public String DRAG_PAT;	
 	public String DRAG_NUMMER;	
+	public JRehaInternal eltern;
+	//public JInternalFrame eltern;
 	public JXPanel init(int setOben,int ansicht,JRehaInternal eltern) {
 
 		this.eltern = eltern;
@@ -650,10 +652,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			public void focusGained(java.awt.event.FocusEvent e) {
 				focusHandling(0,1);
-						if(!TerminFenster.thisClass.eltern.isActive){
-							thisClass.eltern.feuereEvent(25554);
-						}
-				//new Thread(new FocusSetzen()).start();				
+				try{
+					if(!TerminFenster.thisClass.eltern.isActive){
+						thisClass.eltern.feuereEvent(25554);
+					}
+				}catch(Exception ex){
+					
+				}
 			}
 		});
 		oCombo[welche].addItemListener(new ItemListener(){
@@ -1391,9 +1396,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 				public void focusGained(java.awt.event.FocusEvent e) {
 					focusHandling(1,1);
-							if(!TerminFenster.thisClass.eltern.isActive){
-								thisClass.eltern.feuereEvent(25554);
-							}
+					try{
+						if(!TerminFenster.thisClass.eltern.isActive){
+							thisClass.eltern.feuereEvent(25554);
+						}
+					}catch(Exception ex){
+						
+					}
 				}
 			});
 			

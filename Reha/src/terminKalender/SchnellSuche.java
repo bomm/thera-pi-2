@@ -445,9 +445,9 @@ final class SuchenInTagen extends Thread implements Runnable{
 							nummer = rs.getString("N"+(ii+1));
 							skollege = rs.getString(303).substring(0,2);
 							if( skollege.substring(0,1).equals("0") ){
-								ikollege = new Integer(skollege.substring(1,1));
+								ikollege = Integer.parseInt(skollege.substring(1,2));
 							}else{
-								ikollege = new Integer(skollege);								
+								ikollege = Integer.parseInt(skollege);								
 							}
 							if(name.contains(suchkrit) || nummer.contains(suchkrit) ){
 								uhrzeit = rs.getString("TS"+(ii+1));

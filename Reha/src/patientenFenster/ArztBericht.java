@@ -938,8 +938,8 @@ class TextBausteine extends AbstractAction {
 							}
 						}
 					}.start();
-					super.dispose();
 					this.dispose();
+					super.dispose();
 					System.out.println("****************Arztbericht -> Listener entfernt**************"+this.getName());				
 				}
 			}
@@ -967,8 +967,8 @@ class TextBausteine extends AbstractAction {
 					}
 				}
 			}.start();
-			super.dispose();
 			this.dispose();
+			super.dispose();
 			System.out.println("****************Arztbericht -> Listener entfernt (Closed)**********"+this.getName());
 		}
 		

@@ -247,8 +247,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 					this.setVisible(false);
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
-					super.dispose();
 					this.dispose();
+					super.dispose();
 					System.out.println("****************Ausfallrechnung -> Listener entfernt**************");				
 				}
 			}
@@ -263,8 +263,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			pinPanel = null;
-			super.dispose();
 			dispose();
+			super.dispose();
 			System.out.println("****************Ausfallrechnung -> Listener entfernt (Closed)**********");
 		}
 		

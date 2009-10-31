@@ -1628,6 +1628,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					this.dispose();
+					super.dispose();
 					System.out.println("****************Rezept Neu/Ändern -> Listener entfernt**************");				
 				}
 			}
@@ -1642,6 +1643,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			dispose();
+			super.dispose();
 			System.out.println("****************Rezept Neu/Ändern -> Listener entfernt (Closed)**********");
 		}
 		
