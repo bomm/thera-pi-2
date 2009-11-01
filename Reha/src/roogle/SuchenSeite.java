@@ -113,7 +113,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static SuchenSeite thisClass = null; 
+	public SuchenSeite thisClass = null; 
 	private JXPanel panLinks = null;
 	private JXPanel panRechts =  null;
 	private JRtaTextField sucheName = null;
@@ -149,7 +149,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	public static boolean mussUnterbrechen = false;
 	private int[] suchenTage = {0,0,0,0,0,0,0};
 	public Vector sucheDaten = new Vector();
-	public static Rdaten rooDaten = new Rdaten();
+	//public static Rdaten rooDaten = new Rdaten();
 	public Vector vecWahl = new Vector();
 	private boolean suchelaeuft = false;
 	public Object[][] sucheKollegen = null;
@@ -161,167 +161,164 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	private int zeilengewaehlt = 0;
 	public static boolean schicht;
 	public static boolean selektiv;
-	public static String[] selectUhr = {null,null,null,null}; 
-	public static boolean[] selectWal = {false,false,false,false};
-	public static String[] schichtUhr = {null,null}; 
-	public static boolean[] schichtWal = {false,false};	
-	public static boolean[] schichtVor = {false,false};
+	public String[] selectUhr = {null,null,null,null}; 
+	public boolean[] selectWal = {false,false,false,false};
+	public String[] schichtUhr = {null,null}; 
+	public boolean[] schichtWal = {false,false};	
+	public boolean[] schichtVor = {false,false};
 	public String[] kollegenAbteilung = null;
 	public boolean[] kollegenSuchen = null;
-	public WorkerTabelle wt = null;
 	public JScrollPane ptc = null;
 	public boolean workerfertig = true;
-	public static String selektbeginn;
-	public static String schichtbeginn;
-	SuchenSeite(){
+	public String selektbeginn;
+	public String schichtbeginn;
+	public RoogleFenster eltern;
+	SuchenSeite(RoogleFenster xeltern){
 		super();
 		setBorder(null);
 		setLayout(new GridBagLayout());
-		thisClass = this;
-		new Thread(){
-			public void run(){
-				erstelleGridBag();
-				validate();
-				addFocusListener(thisClass);
-				addPropertyChangeListener(thisClass);
-			}
-		}.start();
-		
-		
+		erstelleGridBag();
+		validate();
+		addFocusListener(this);
+		addPropertyChangeListener(this);
+		this.eltern = xeltern;
 	}
 
-	public static void setWorkerFertig(boolean wert){
-		thisClass.workerfertig = wert;
+	public void setWorkerFertig(boolean wert){
+		workerfertig = wert;
 	}
-	public static SuchenSeite getInstance(){
-		return thisClass;
+	public SuchenSeite getInstance(){
+		return this;
 	}
-	public static void setzeDatum(String sdat){
-		thisClass.aktLbl.setText(sdat);
+	public void setzeDatum(String sdat){
+		aktLbl.setText(sdat);
 	}
-	public static void setKollegenSuchen(boolean[] kollSuchen){
-		thisClass.kollegenSuchen = kollSuchen; 
+	public void setKollegenSuchen(boolean[] kollSuchen){
+		kollegenSuchen = kollSuchen; 
 	}
-	public static boolean getKollegenSuchen(int koll){
-		return thisClass.kollegenSuchen[koll]; 
+	public boolean getKollegenSuchen(int koll){
+		return kollegenSuchen[koll]; 
 	}
-	public static void setKollegenAbteilung(String[] kolls){
-		thisClass.kollegenAbteilung = kolls;
+	public void setKollegenAbteilung(String[] kolls){
+		kollegenAbteilung = kolls;
 	}
-	public static String getKollegenAbteilung(int koll){
-		return thisClass.kollegenAbteilung[koll];
+	public String getKollegenAbteilung(int koll){
+		return kollegenAbteilung[koll];
 	}
-	public static void setzeTreffer(int treffer){
-		thisClass.trefferLbl.setText(Integer.toString(treffer));
+	public void setzeTreffer(int treffer){
+		trefferLbl.setText(Integer.toString(treffer));
 	}
-	public void setzeZeilenAusgewaehlt(int gewaehlt){
-		thisClass.ausgewaehltLbl.setText(Integer.toString(gewaehlt));
+	public void setzeZeilenAusgewaehlt(int xgewaehlt){
+		ausgewaehltLbl.setText(Integer.toString(xgewaehlt));
 	}
-	public static String getStartDatum(){
-		return thisClass.startLbl.getText();
+	public String getStartDatum(){
+		return startLbl.getText();
 	}
-	public static String getStopDatum(){
-		return thisClass.stopLbl.getText();
+	public String getStopDatum(){
+		return stopLbl.getText();
 	}
-	public static String getAktDatum(){
-		return thisClass.aktLbl.getText();
+	public String getAktDatum(){
+		return aktLbl.getText();
 	}
-	public static String getSuchName(){
-		return thisClass.sucheName.getText();
+	public String getSuchName(){
+		return sucheName.getText();
 	}
-	public static String getSuchNummer(){
-		return thisClass.sucheNummer.getText();
+	public String getSuchNummer(){
+		return sucheNummer.getText();
 	}
-	public static void setSucheBeendet(){
+	public void setSucheBeendet(){
 		mussUnterbrechen = true;
-		thisClass.sucheStoppen.setEnabled(false);
-		thisClass.sucheStarten.setEnabled(true);				
+		sucheStoppen.setEnabled(false);
+		sucheStarten.setEnabled(true);				
 	}
-	public static boolean getSucheBeendet(){
+	public boolean getSucheBeendet(){
 		return mussUnterbrechen;
 	}
-	public static void setFortschrittRang(int von, long bis){
-		thisClass.fortschritt.setForeground(Color.RED);
-		thisClass.fortschritt.setMinimum(von);
-		thisClass.fortschritt.setMaximum((int) bis);
+	public void setFortschrittRang(int von, long bis){
+		fortschritt.setForeground(Color.RED);
+		fortschritt.setMinimum(von);
+		fortschritt.setMaximum((int) bis);
 	}
-	public static void setFortschrittSetzen(int wert){
-		thisClass.fortschritt.setValue(wert);
+	public void setFortschrittSetzen(int wert){
+		fortschritt.setValue(wert);
 	}
-	public static void setFortschrittZeigen(boolean zeigen){
-		thisClass.fortschritt.setVisible(zeigen);		
+	public void setFortschrittZeigen(boolean zeigen){
+		fortschritt.setVisible(zeigen);		
 	}
 
 
-	synchronized public static void setDatenVector(Vector vec){
-		thisClass.sucheDaten.add(vec);
+	synchronized public void setDatenVector(Vector vec){
+		sucheDaten.add(vec);
 	}
-	synchronized public static Vector getDatenVector(){
-		return (Vector)thisClass.sucheDaten;
+	synchronized public Vector getDatenVector(){
+		return (Vector)sucheDaten;
 	}
 	public static void verarbeitungEinschalten(){
-		/*
-			SperrenVerarbeiten svr = new SperrenVerarbeiten();
-			svr.initValue(0);
-			svr.execute();
-		*/	
 	}
 	
-	public static void setKollegenEinstellen(Object[][] obj){
-		thisClass.sucheKollegen = obj; //obj.clone();
+	public void setKollegenEinstellen(Object[][] obj){
+		sucheKollegen = obj; //obj.clone();
 	}
-	public static Object[][] getKollegenEinstellen(){
-		return thisClass.sucheKollegen;
+	public Object[][] getKollegenEinstellen(){
+		return sucheKollegen;
 	}
-	public static void setKollegenZeiten(HashMap<String,Integer> hZeiten){
-		thisClass.hZeiten =  ((HashMap<String,Integer>)hZeiten);//((HashMap<String,Integer>)hZeiten.clone()); 
+	public void setKollegenZeiten(HashMap<String,Integer> xhZeiten){
+		hZeiten =  ((HashMap<String,Integer>)xhZeiten);//((HashMap<String,Integer>)hZeiten.clone());
+		System.out.println("Die HashMap hat den Inhalt "+hZeiten);
 		
 	}
-	public static HashMap<String,Integer> getKollegenZeiten(){
-		return thisClass.hZeiten; 
+	public HashMap<String,Integer> getKollegenZeiten(){
+		System.out.println("Die HashMap hat den Inhalt "+hZeiten);
+		return hZeiten; 
 		
 	}
-	public static void setGewaehlt(int gewaehlt){
-		thisClass.gewaehlt = gewaehlt;
+	public void setGewaehlt(int gewaehlt){
+		this.gewaehlt = gewaehlt;
 		//System.out.println(gewaehlt);
 	}
-	public static int getGewaehlt(){
-		return thisClass.gewaehlt;
+	public int getGewaehlt(){
+		return this.gewaehlt;
 	}
-	public static void setZeit(){
-		thisClass.zeit = Long.valueOf(System.currentTimeMillis()).toString();	
+	public void setZeit(){
+		this.zeit = Long.valueOf(System.currentTimeMillis()).toString();	
 	}
-	public static String getZeit(){
-		return thisClass.zeit;	
+	public String getZeit(){
+		return this.zeit;	
 	}
 	
-	public static int getTreffer(){
-		return Integer.parseInt(thisClass.trefferLbl.getText());
+	public int getTreffer(){
+		return Integer.parseInt(trefferLbl.getText());
 	
 	}
-	public static boolean tagDurchsuchen(String sdatum){
+	public boolean tagDurchsuchen(String sdatum){
 		boolean ret = false;
-		if(thisClass.suchenTage[DatFunk.TagDerWoche(sdatum)-1]==0){
+		if(suchenTage[DatFunk.TagDerWoche(sdatum)-1]==0){
 			ret = false;
 		}else{
 			ret = true;
 		}
 		return ret;
 	}
-	public static void datumEinstellen(){
-		thisClass.startLbl.setText(RoogleFenster.thisClass.zeitraumEdit[0].getText());
-		thisClass.stopLbl.setText(RoogleFenster.thisClass.zeitraumEdit[1].getText());		
-	}
-	public static void tageEinstellen(){
-		for(int i = 0;i<7;i++){
-			thisClass.suchenTage[i] = (RoogleFenster.thisClass.tageCheck[i].isSelected() ? 1 : 0);
+	public void datumEinstellen(){
+		if(eltern==null){
+			System.out.println("Eltern == null");
 		}
-		thisClass.sucheName.requestFocus();
+		startLbl.setText(eltern.zeitraumEdit[0].getText());
+		stopLbl.setText(eltern.zeitraumEdit[1].getText());		
 	}
-	public static void behandlerEinstellen(){
+	public void tageEinstellen(){
+		if(eltern==null){
+			System.out.println("Eltern == null");
+		}
+		for(int i = 0;i<7;i++){
+			suchenTage[i] = (eltern.tageCheck[i].isSelected() ? 1 : 0);
+		}
+		sucheName.requestFocus();
+	}
+	public void behandlerEinstellen(){
 	}
 
-	public static void zeileTesten(Vector vtest){
+	public void zeileTesten(Vector vtest){
 		//((MyRoogleSuche) thisClass.jxSucheTable.getModel()).addDaten(vtest);
 	}
 	public void tabelleAusschalten(){
@@ -379,17 +376,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	private JXPanel machePaneLinks(){
 		panLinks = new JXPanel(new BorderLayout());
 		panLinks.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
-		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(200,120);
-	     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
-	     float[] dist = {0.0f, 0.5f};
-	     Color[] colors = {Colors.TaskPaneBlau.alpha(1.0f), Color.WHITE};
-	     //Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     panLinks.setBackgroundPainter(new CompoundPainter(mp));
-
+	     panLinks.setBackgroundPainter(Reha.thisClass.compoundPainter.get("SuchenSeite"));
 		//panLinks.setBackground(Color.WHITE);
 		JScrollPane jscr = new JScrollPane();
 		jscr.setOpaque(false);
@@ -577,7 +564,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		builder.add(allesZuruecksetzen,cc.xyw(2,39, 4));	
 		
 		
-		SuchenSeite.setKnopfGedoense(new int[]  {1,0,0,0,0,0,0,0,0,0});
+		setKnopfGedoense(new int[]  {1,0,0,0,0,0,0,0,0,0});
 		//builder.getPanel().addKeyListener(this);
 		return builder.getPanel();
 	}
@@ -609,18 +596,6 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		verarbeitetLbl.setForeground(Color.RED);
 		fpan.add(verarbeitetLbl);
 		builder.add(fpan,cc.xy(2,1));
-		
-/*
-		jxSucheTable = new JXTable();
-		jxSucheTable.setDoubleBuffered(true);
-		new Thread(){
-			public void run(){
-				TabelleSetzen(0);
-				jxSucheTable.validate();
-			}	
-		}.start();
-		
-*/        
 		dtblm = new MyDefaultTableModel();
 		//dtblm.addTableModelListener(this);
 		//					 1     2     3       4     5     6       7       8          9	    10        11 
@@ -633,19 +608,12 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		/***************************/		
 		//jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping(new Color(204,255,255)));
-		//jxSucheTable.addHighlighter(new ColorHighlighter(Color.LIGHT_GRAY, Color.WHITE,HighlightPredicate.EVEN));
-		//JCheckBox check = new JCheckBox();
-		//DefaultCellEditor edi = new DefaultCellEditor(check);
-		//jxSucheTable.getColumnModel().getColumn(0).setCellEditor(edi);
+
 		((TableColumnExt)jxSucheTable.getColumn(0)).setCellEditor(new JXTable.BooleanEditor());
-//		((TableColumnExt)jxSucheTable.getColumn(0)).setCellRenderer(new TableCellRenderer()); //.setCellRenderer(new JXTable.BooleanEditor());		
-		//jxSucheTable.getColumnModel().getColumn(0).setCellRenderer( (TableCellRenderer) new JXTable.BooleanEditor());		
-		//x = Gewählt in ComboBox
+
 		jxSucheTable.getColumn(0).setMinWidth(25);	
 		jxSucheTable.getColumn(0).setMaxWidth(25);
-		//StringValue.EMPTY, IconValue.ICON
-		//TableCellRenderer renderer = new DefaultTableRenderer();
-		//TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValue.EMPTY, IconValue.NULL_ICON), JLabel.CENTER);
+
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 		// original   TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValue.EMPTY, IconValue.ICON), JLabel.CENTER);
 
@@ -653,7 +621,6 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		jxSucheTable.getColumn(1).setCellRenderer(renderer);		
 		jxSucheTable.getColumn(1).setMinWidth(20);	
 		jxSucheTable.getColumn(1).setMaxWidth(20);
-		//jxSucheTable.getColumn(1).putPorperty(CELL_RENDERER_PROPERTY);
 		//Datum
 		jxSucheTable.getColumn(2).setMinWidth(80);
 		jxSucheTable.getColumn(2).setMaxWidth(80);
@@ -745,8 +712,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-		startLbl.setText(RoogleFenster.thisClass.zeitraumEdit[0].getText());
-		stopLbl.setText(RoogleFenster.thisClass.zeitraumEdit[1].getText());		
+		startLbl.setText(eltern.zeitraumEdit[0].getText());
+		stopLbl.setText(eltern.zeitraumEdit[1].getText());		
 	}
 
 	@Override
@@ -906,14 +873,15 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		allesEntmarkieren.setEnabled((knopf[8]==1 ? true : false));		
 		allesZuruecksetzen.setEnabled((knopf[9]==1 ? true : false));		
 	}
-	public static void setKnopfGedoense(int[] knopf){
-		thisClass.knopfGedoense(knopf);
+	public void setKnopfGedoense(int[] knopf){
+		knopfGedoense(knopf);
 	}
 	private void roogleStarten(){
 		listenerAusschalten();
 		this.zeilengewaehlt = 0;
 		setzeZeilenAusgewaehlt(this.zeilengewaehlt);
 		EntsperreSatz es = new EntsperreSatz();
+		es.setzeEltern(getInstance());
 		es.start();
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
@@ -941,16 +909,17 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				}
 				*/
 				WorkerSuchenInKalenderTagen WsIT = new WorkerSuchenInKalenderTagen();
-				WsIT.setzeStatement();
+				WsIT.setzeStatement(getInstance());
 				WsIT.execute();
 				
 				
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
-						SuchenSeite.getInstance().workerfertig = false;
-						SuchenSeite.getInstance().wt = new WorkerTabelle();
-						SuchenSeite.getInstance().wt.init();
-						SuchenSeite.getInstance().wt.execute();
+						getInstance().workerfertig = false;
+						
+						WorkerTabelle wt = new WorkerTabelle();
+						wt.init();
+						wt.execute();
 					}
 				});
 					
@@ -1007,13 +976,13 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		jxSucheTable.validate();
 		jxSucheTable.repaint();
 		EntsperreSatz es = new EntsperreSatz();
+		es.setzeEltern(getInstance());
 		es.start();
 		trefferLbl.setText("0");
 		ausgewaehltLbl.setText("0");
 		vecWahl.clear();
 		vecWahl.trimToSize();
 		this.zeilengewaehlt = 0;
-		//wt.setEnde();		
 		sucheName.requestFocus();
 	}
 
@@ -1076,7 +1045,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				
 			}
 			Collections.sort(vec);
-			new TerminplanDrucken().init((Vector<TermObjekt>)vec, drucken,schreibeName.getText().trim(),schreibeNummer.getText().trim());
+			new TerminplanDrucken().init((Vector<TermObjekt>)vec, drucken,schreibeName.getText().trim(),schreibeNummer.getText().trim(),getInstance());
 		}
 		
 	}
@@ -1243,7 +1212,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			
 			if((Boolean)dtblm.getValueAt(i,0)){
 
-				SuchenSeite.setFortschrittSetzen(durchlauf++);
+				setFortschrittSetzen(durchlauf++);
 				vecWahl.add(sucheDaten.get(i));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(6, (String) dtblm.getValueAt(i,6));		
@@ -1259,7 +1228,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			if(  (schreibeName.getText().trim().equals("")) && (schreibeNummer.getText().trim().equals(""))){
 				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie wirklich die ausgewählten Termine löschen (=freigeben) ?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.NO_OPTION){
-					SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,1,1,1,1,1,1,1});
+					setKnopfGedoense(new int[]  {0,0,0,1,1,1,1,1,1,1});
 					return null;
 				}
 			}
@@ -1281,9 +1250,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		boolean leer = false;
 
 		// this.zeilengewaehlt;
-		SuchenSeite.setFortschrittRang(0,this.zeilengewaehlt );
-		SuchenSeite.setFortschrittSetzen(0);
-		SuchenSeite.setFortschrittZeigen(true);
+		setFortschrittRang(0,this.zeilengewaehlt );
+		setFortschrittSetzen(0);
+		setFortschrittZeigen(true);
 
 		vecWahl.clear();
 		
@@ -1295,7 +1264,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			
 			if((Boolean)dtblm.getValueAt(i,0)){
 
-				SuchenSeite.setFortschrittSetzen(durchlauf++);
+				setFortschrittSetzen(durchlauf++);
 				vecWahl.add(sucheDaten.get(i));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(6, (String) dtblm.getValueAt(i,6));
@@ -1381,7 +1350,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					}
 			}
 		}
-		SuchenSeite.setFortschrittZeigen(false);
+		setFortschrittZeigen(false);
 		
 	}
 	/*****************************************/
@@ -1947,18 +1916,21 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	ImageIcon img,img2;
 	int schichtArt = -1;
 	int selektivArt = -1;
+	SuchenSeite eltern;
 	Vector machevec = new Vector();
 	
 
-	public void setzeStatement(){
+	public void setzeStatement(SuchenSeite xeltern){
+		eltern = xeltern;
+		
 		img = SystemConfig.hmSysIcons.get("zuzahlnichtok");
 		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
 		//img = new ImageIcon(Reha.proghome+"icons/Kreuz_klein.gif");
 		//img2 = new ImageIcon(Reha.proghome+"icons/frei.png");		
 		img.setDescription("gesperrt");
 		img2.setDescription("offen");
-		SuchenSeite.setZeit();
-		zeit = SuchenSeite.getZeit();
+		setZeit();
+		zeit = getZeit();
 		this.sperrDatum.clear();
 		if(SuchenSeite.selektiv){
 			selektivArt = macheSelektiv();
@@ -1973,18 +1945,18 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 
 	
 		//Vector treadVect = new Vector();
-		aktDatum = SuchenSeite.getAktDatum();
+		aktDatum = getAktDatum();
 		
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
-			sqlEnde = DatFunk.sDatInSQL(SuchenSeite.getStopDatum());
+			sqlEnde = DatFunk.sDatInSQL(getStopDatum());
 
 			sqlAkt = DatFunk.sDatInSQL(aktDatum);
 			sqlAlt = sqlAkt;
 
-			suchkrit1 = SuchenSeite.getSuchName().trim();
-			suchkrit2 = SuchenSeite.getSuchNummer().trim();
+			suchkrit1 = getSuchName().trim();
+			suchkrit2 = getSuchNummer().trim();
 			int suchArt = 0;
 			int dbzeil = -1;
 			String szeil = "";
@@ -2014,19 +1986,21 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			String[] abtei = {"KG","MA","ER","LO","SP"};
 			
 			zeit1 = System.currentTimeMillis();
-			SuchenSeite.getInstance().tabelleAusschalten();
-			SuchenSeite.setFortschrittRang(0,DatFunk.TageDifferenz( SuchenSeite.getStartDatum(), SuchenSeite.getStopDatum() ) );
-			SuchenSeite.setFortschrittSetzen(0);
-			SuchenSeite.setFortschrittZeigen(true);
+			tabelleAusschalten();
+			setFortschrittRang(0,DatFunk.TageDifferenz( eltern.getStartDatum(), eltern.getStopDatum() ) );
+			setFortschrittSetzen(0);
+			setFortschrittZeigen(true);
 			Vector abtlg = new Vector(Arrays.asList(abtei));
 			Vector yvec = null;
-			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!SuchenSeite.mussUnterbrechen)){
-				SuchenSeite.setzeDatum(aktDatum );
-				if( SuchenSeite.tagDurchsuchen(aktDatum) ){
+			System.out.println("***************Bei Datum "+sqlAkt);
+			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!eltern.mussUnterbrechen)){
+				System.out.println("Bei Datum "+sqlAkt);
+				setzeDatum(aktDatum );
+				if( tagDurchsuchen(aktDatum) ){
 
 					
 					String test = "";
-					if(SuchenSeite.getGewaehlt() <= 20){
+					if(getGewaehlt() <= 20){
 						test = macheStatement(sqlAkt);	
 						//System.out.println(test);
 					}else{
@@ -2062,11 +2036,11 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 						//System.out.println("Kollege über DBZeile = "+szeil);
 						if(!szeil.equals("")){
 						
-						String sabteilung = SuchenSeite.getKollegenAbteilung(ikollege).trim();
+						String sabteilung = getKollegenAbteilung(ikollege).trim();
 						if(! sabteilung.equals("") ){
 							if( (abtlg.contains(sabteilung)) ){
-								defdauer = (int) SuchenSeite.getKollegenZeiten().get(
-										SuchenSeite.getKollegenAbteilung(ikollege));
+								defdauer = (int) getKollegenZeiten().get(
+										getKollegenAbteilung(ikollege));
 								gruppe = false;
 							}else{
 								//System.out.println("Kollege "+szeil+" hat keine Zeitzuordnung, nehme Gruppendefiniton");
@@ -2101,7 +2075,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 							nummer =  ( rs.getString("N"+(ii))== null ? "" : rs.getString("N"+(ii)).trim() );							
 
 							
-							if(! (SuchenSeite.getKollegenSuchen(ikollege)) ){
+							if(! (eltern.getKollegenSuchen(ikollege)) ){
 								//System.out.println("Keine Suche erforderlich für Kollege "+ikollege);
 								// falls hier nicht gesucht werden soll = anzahl > 20
 								break;
@@ -2135,7 +2109,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 										}
 										break;
 									}									
-									if(SuchenSeite.schicht){
+									if(schicht){
 										if(freiTermin(name,nummer)){
 											if(schichtTest(rs,ii,defdauer)){
 												yvec = sucheNachSelect(rs,name,nummer,skollege,ikollege,ii,defdauer);
@@ -2144,7 +2118,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 										}
 										break;
 									}
-									if(SuchenSeite.selektiv){
+									if(selektiv){
 										if(freiTermin(name,nummer)){										
 											if(selektivTest(rs,ii,defdauer)){
 												yvec = sucheNachSelect(rs,name,nummer,skollege,ikollege,ii,defdauer);
@@ -2228,68 +2202,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 							if(yvec != null){
 								++treffer;
 								
-								/*********************************************/
-
-								
-/********************************************************************************************************/
-/*										 
-							String sperre;
-								
-								sperre = new String((String)((Vector)yvec).get(13)+
-													(String)((Vector)yvec).get(14) ); 
-
-								if(sperrDatum.contains(sperre+SystemConfig.dieseMaschine+zeit)){
-									yvec.set(1, img2);
-								}else{
-									//int ret = 0;
-									int ret = XSperrenVerarbeiten(treffer-1,(Vector)yvec.clone(),zeit);
-									if(ret==0){
-										sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
-									}
-									yvec.set(1, (ret==0 ? img2 : img));
-								}
-								final Vector xvec = new Vector((Vector)yvec.clone()); 
-								new Thread(){
-									public void run(){
-										//xx
-										//SuchenSeite.getInstance().dtblm.getDataVector().add((Vector) xvec.clone());
-										SuchenSeite.getInstance().dtblm.addRow((Vector) xvec.clone());
-										SuchenSeite.setDatenVector((Vector)xvec);
-										
-									}
-								}.start();
-								trefferSetzen();
-*/								
-								
-/********************************************************************************************************/								
-								/************************/
-								/*
-								final Vector xvec = new Vector((Vector)yvec.clone()); 
-								SwingWorker worker = new SwingWorker<Void, Void>(){
-									 protected Void doInBackground(){
-										 SuchenSeite.sucheDaten.add((Vector)xvec.clone());
-										//SuchenSeite.setDatenVector((Vector)xvec.clone());
-										SuchenSeite.setzeDatum(aktDatum );
-										trefferSetzen();
-										return null;
-									 }	
-								};
-								worker.execute();
-								*/
-								
-								//SuchenSeite.rooDaten.rvec.add((Vector)yvec.clone());
-								//sucheDaten.add((Vector)yvec.clone());
 								sucheDaten.add(yvec);
-								//SuchenSeite.setDatenVector((Vector)yvec.clone());
 								trefferSetzen();
-								
-//								firePropertyChange("TrefferGesetzt", treffer-1, treffer);
-								
-
-								
-
-								/***********************************************/
-//								
 							}
 							
 						} // ende der for für die einzelnen Felder
@@ -2298,7 +2212,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					} // Klammer der While 
 					
 				aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
-				SuchenSeite.setFortschrittSetzen(++ftage);
+				setFortschrittSetzen(++ftage);
 				/*
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
@@ -2315,7 +2229,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					//SuchenSeite.setzeDatum(aktDatum );						       	  	
 					sqlAlt = sqlAkt;					
 					sqlAkt = DatFunk.sDatInSQL(aktDatum );					//System.out.println(SuchenSeite.getAktDatum()+"-"+SuchenSeite.tagDurchsuchen(SuchenSeite.getAktDatum()) );
-					SuchenSeite.setFortschrittSetzen(++ftage);
+					setFortschrittSetzen(++ftage);
 				}
 				
 								
@@ -2325,6 +2239,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			}		
 		}catch(SQLException ex) {
 			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+		}catch(Exception ex2){
+			ex2.printStackTrace();
 		}
 
 
@@ -2350,8 +2266,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 
 		}
 		if (DatFunk.DatumsWert(sqlAkt) > DatFunk.DatumsWert(sqlEnde)){
-			SuchenSeite.setSucheBeendet();
-			SuchenSeite.setFortschrittZeigen(false);
+			setSucheBeendet();
+			setFortschrittZeigen(false);
 		}
 
 		//Reha.thisClass.conn.setAutoCommit(false);
@@ -2368,12 +2284,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				
 				//JOptionPane.showMessageDialog(null, "Suchlauf beendet nach "+((System.currentTimeMillis()-zeit1))+" Millisekunden\n\n");//+
 				//"Treffer insgesamt: "+SuchenSeite.getInstance().jxSucheTable.getRowCount());
-				SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
-				SuchenSeite.getInstance().tabelleEinschalten();
-				SuchenSeite.getInstance().listenerEinschalten();
+				setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
+				tabelleEinschalten();
+				listenerEinschalten();
 				/*
 				long zeit = System.currentTimeMillis();
-				while(SuchenSeite.getInstance().jxSucheTable.getRowCount() < treffer){
+				while(eltern.getInstance().jxSucheTable.getRowCount() < treffer){
 					if( (System.currentTimeMillis() - zeit) > 1500){
 						break;
 					}
@@ -2381,8 +2297,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				*/
 				//SuchenSeite.getInstance().dtblm.setDataVector(SuchenSeite.sucheDaten,getColVec());
 				System.out.println("Vectorgröße = "+sucheDaten.size());
-				SuchenSeite.mussUnterbrechen = true;
-				SuchenSeite.getInstance().jxSucheTable.revalidate();
+				mussUnterbrechen = true;
+				jxSucheTable.revalidate();
 			}
 		});
 		
@@ -2449,16 +2365,16 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		kalende = SystemConfig.KalenderUmfang[1];
 		
 		// Bearbeitet nur gerade Kalenderwochen
-		uhr1 = SuchenSeite.schichtUhr[0];
-		uhr2 = SuchenSeite.schichtUhr[1];
-		if((wogerade) && (SuchenSeite.schichtWal[0])){
-			if(SuchenSeite.schichtVor[0]){
+		uhr1 = schichtUhr[0];
+		uhr2 = schichtUhr[1];
+		if((wogerade) && (schichtWal[0])){
+			if(schichtVor[0]){
 				selektparm1 = (Schnittmenge(kalanfang,uhr1,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
@@ -2469,21 +2385,21 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
 				}
 			}		
 		}
-		if((!wogerade) && (SuchenSeite.schichtWal[1])){
-			if(SuchenSeite.schichtVor[1]){
+		if((!wogerade) && (schichtWal[1])){
+			if(schichtVor[1]){
 				selektparm1 = (Schnittmenge(kalanfang,uhr2,pbeginn,pende));
 				if(selektparm1[0] >=defdauer){
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
@@ -2494,7 +2410,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
@@ -2509,10 +2425,10 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		String pbeginn,pende,wbeginn1,wende1,wbeginn2,wende2;
 		pbeginn = rs.getString("TS"+ii);
 		pende = rs.getString("TE"+ii);
-		wbeginn1 = SuchenSeite.selectUhr[0];
-		wende1 = SuchenSeite.selectUhr[1];
-		wbeginn2 = SuchenSeite.selectUhr[2];
-		wende2 = SuchenSeite.selectUhr[3];
+		wbeginn1 = selectUhr[0];
+		wende1 = selectUhr[1];
+		wbeginn2 = selectUhr[2];
+		wende2 = selectUhr[3];
  		
 		kalanfang = SystemConfig.KalenderUmfang[0];
 		kalende = SystemConfig.KalenderUmfang[1];
@@ -2528,7 +2444,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5)); 
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
@@ -2541,7 +2457,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
@@ -2554,7 +2470,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					return true;
 				}else{
 					return false;
@@ -2570,12 +2486,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					}else{
 					String drzeit = (selektparm2[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					}	
 					return true;
 				}else{
@@ -2591,12 +2507,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					}else{
 					String drzeit = (selektparm2[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					}	
 					return true;
 				}else{
@@ -2612,12 +2528,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					String drzeit = (selektparm1[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm1[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm1[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					}else{
 					String drzeit = (selektparm2[3] > 0 ? 
 					 ZeitFunk.MinutenZuZeit(selektparm2[1]).substring(0,5) :
 					 ZeitFunk.MinutenZuZeit(selektparm2[2]-defdauer).substring(0,5));
-					SuchenSeite.selektbeginn = drzeit;
+					selektbeginn = drzeit;
 					}	
 					return true;
 				}else{
@@ -2703,10 +2619,10 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	
 	
 	private int macheSelektiv(){
-		boolean c0 = SuchenSeite.selectWal[0];
-		boolean c1 = SuchenSeite.selectWal[1];
-		boolean c2 = SuchenSeite.selectWal[2];
-		boolean c3 = SuchenSeite.selectWal[3];
+		boolean c0 = selectWal[0];
+		boolean c1 = selectWal[1];
+		boolean c2 = selectWal[2];
+		boolean c3 = selectWal[3];
 		if((c0) && (!c1) && (!c2) && (!c3)){
 			return 0;
 		}
@@ -2729,12 +2645,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		return -1;
 	}
 	private boolean keinTest(){
-		return ((!SuchenSeite.schicht) &&(!SuchenSeite.selektiv) ? true : false);
+		return ((!schicht) &&(!selektiv) ? true : false);
 	}	
 	public void trefferSetzen(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
-				SuchenSeite.setzeTreffer(treffer);						       	  	
+				setzeTreffer(treffer);						       	  	
 			}
 		});
 	}
@@ -2744,14 +2660,14 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		int isuchen = 0;
 		String ssuchen = "";
 		String stmt = "";
-		lang = SuchenSeite.getKollegenEinstellen().length;
+		lang = getKollegenEinstellen().length;
 	
 			for (i=0;i<lang;i++){
 				
-				if(((Boolean)SuchenSeite.getKollegenEinstellen()[i][1]) ){
+				if(((Boolean)getKollegenEinstellen()[i][1]) ){
 					//Verändert*****************
 					//System.out.println("Inhalt von [i]="+i+" / Inhalt von [5=]"+SuchenSeite.getKollegenEinstellen()[i][5] );
-					int dbZeile = (Integer) SuchenSeite.getKollegenEinstellen()[i][0];
+					int dbZeile = (Integer) getKollegenEinstellen()[i][0];
 					//int dbZeile = (Integer) SuchenSeite.getKollegenEinstellen()[i][5];
 					ssuchen = (dbZeile<=9 ? "0"+(dbZeile)+"BEHANDLER" : (dbZeile)+"BEHANDLER");
 					if(isuchen==0){
@@ -2806,7 +2722,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	private Vector sucheNachSelect(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
 		Vector vec = null;
 		vec = macheVector(rs,name,nummer,skollege,ikollege,ii,defdauer);
-		vec.set(6, SuchenSeite.selektbeginn);
+		vec.set(6, selektbeginn);
 		return vec;
 	}
 	private Vector sucheNachKGG(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
@@ -3040,7 +2956,7 @@ private synchronized int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 	}
 
 private synchronized void malen(ImageIcon bild,int wo){
-		SuchenSeite.getInstance().dtblm.setValueAt(bild, wo, 1);
+		dtblm.setValueAt(bild, wo, 1);
 	}
 
 
@@ -3104,8 +3020,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
 		img.setDescription("gesperrt");
 		img2.setDescription("offen");
-		SuchenSeite.setZeit();
-		zeit = SuchenSeite.getZeit();
+		setZeit();
+		zeit = getZeit();
 		sperrDatum.clear();		
 	}
 	public void setEnde(){
@@ -3120,11 +3036,11 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 		String sperre;
 		while(true){
 			anzahl = sucheDaten.size();
-			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) && (SuchenSeite.getTreffer()==anzahl) ){
+			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) && (getTreffer()==anzahl) ){
 				//System.out.println("Ausbruch bei 1");
 				break;
 			}
-			if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(SuchenSeite.getTreffer()-1)) ){
+			if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(getTreffer()-1)) ){
 				//System.out.println("Ausbruch bei 2");
 				break;
 
@@ -3153,10 +3069,10 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 							}
 							nvec.set(1, (ret==0 ? img2 : img));
 						}
-						SuchenSeite.getInstance().dtblm.addRow(nvec);
+						dtblm.addRow(nvec);
 						new Thread(){
 							public void run(){
-								SuchenSeite.getInstance().jxSucheTable.validate();
+								jxSucheTable.validate();
 							}
 						}.start();
 						
@@ -3177,7 +3093,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 						//SuchenSeite.getInstance().jxSucheTable.repaint();
 
 
-						if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(SuchenSeite.getTreffer()-1)) ){
+						if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(getTreffer()-1)) ){
 							//System.out.println("WorkerThread - Unterbrechen bei anzahl = "+anzahl+" und aktuell == "+aktuell);
 							//System.out.println("Ausbruch bei 3");
 							break;
@@ -3187,8 +3103,8 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 			}
 			if( (SuchenSeite.mussUnterbrechen) 
 					&& (anzahl==(aktuell+1)) 
-					&& (aktuell==(SuchenSeite.getTreffer()-1)) 
-					&& (SuchenSeite.getTreffer()==anzahl) ){
+					&& (aktuell==(getTreffer()-1)) 
+					&& (getTreffer()==anzahl) ){
 				//System.out.println("WorkerThread - Unterbrechen bei anzahl = "+anzahl+" und aktuell == "+aktuell);
 				//System.out.println("Ausbruch bei 4");
 				break;
@@ -3196,7 +3112,7 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 			}
 			
 		}
-		SuchenSeite.setWorkerFertig(true);
+		setWorkerFertig(true);
 		nvec = null;
 		sperre = null;
 		//SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
@@ -3343,6 +3259,15 @@ class Rdaten extends Observable{
 	
 }
 class EntsperreSatz extends Thread implements Runnable{
+	private SuchenSeite eltern;
+	public void setzeEltern(SuchenSeite xeltern){
+		this.eltern = xeltern;
+		if(eltern == null ){
+			System.out.println("ElternObject = null");
+		}else{
+			System.out.println("ElternObject = NICHT null");
+		}
+	}
 	public void run(){
 		Statement stmt = null;
 
@@ -3354,7 +3279,10 @@ class EntsperreSatz extends Thread implements Runnable{
 			e.printStackTrace();
 		}
 		try {
-			boolean rs = stmt.execute("delete from flexlock where maschine='"+SystemConfig.dieseMaschine+"' AND zeit='"+SuchenSeite.getZeit()+"'");
+			if(this.eltern == null){
+				System.out.println("this.eltern.getZeit() == NULL");
+			}
+			boolean rs = stmt.execute("delete from flexlock where maschine='"+SystemConfig.dieseMaschine+"' AND zeit='"+this.eltern.getZeit()+"'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

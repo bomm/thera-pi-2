@@ -53,11 +53,13 @@ public int  seiten = 1;
 TerminplanDrucken thisDruck = null;
 String[] tabName; 
 static String exporturl = "";
-	public void init(Vector<TermObjekt> termdat,boolean drucken,String patName,String rezNr){
+SuchenSeite eltern;
+	public void init(Vector<TermObjekt> termdat,boolean drucken,String patName,String rezNr,SuchenSeite xeltern){
 		this.termindat = termdat;
 		this.ldrucken = drucken;
 		this.patient = patName;
 		this.rezept = rezNr;
+		eltern = xeltern;
 		thisDruck = this;
 		start();
 	}
@@ -109,7 +111,7 @@ static String exporturl = "";
 			if(tbl.length != AnzahlTabellen){
 				JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini überein.\nDruck nicht möglich");
 				textDocument.close();
-				SuchenSeite.getInstance().cursorWait(false);
+				eltern.cursorWait(false);
 				return;
 			}
 			tabName = new String[AnzahlTabellen];
@@ -381,9 +383,9 @@ static String exporturl = "";
 							textDocument.close();
 							this.termindat = null;
 							
-							SuchenSeite.getInstance().cursorWait(false);
+							eltern.cursorWait(false);
 						}else{
-							SuchenSeite.getInstance().cursorWait(false);
+							eltern.cursorWait(false);
 							document.getFrame().getXFrame().getContainerWindow().setVisible(true);
 							this.termindat = null;
 						}
@@ -415,7 +417,7 @@ static String exporturl = "";
 					this.termindat = null;
 				}
 		
-				SuchenSeite.getInstance().cursorWait(false);
+				eltern.cursorWait(false);
 		}
 	
 	private void sendeEmail(){
@@ -526,10 +528,10 @@ static String exporturl = "";
 		try{
 		oMail.sendMail(smtpHost, username, password, senderAddress, recipientsAddress, subject, text,attachments,authx,bestaetigen);
 		oMail = null;
-		SuchenSeite.getInstance().cursorWait(false);
+		eltern.cursorWait(false);
 		JOptionPane.showMessageDialog (null, "Die Terminliste wurde aufbereitet und per Email versandt\n");
 		}catch(Exception e){
-			SuchenSeite.getInstance().cursorWait(false);
+			eltern.cursorWait(false);
 			JOptionPane.showMessageDialog (null, "Der Emailversand der Terminliste ist fehlgeschlagen!!!!!\n");
 			e.printStackTrace( );
 		}

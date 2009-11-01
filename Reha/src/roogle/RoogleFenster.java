@@ -76,6 +76,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import systemTools.WinNum;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
@@ -93,7 +94,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	 */
 	
 	private static final long serialVersionUID = 1L;
-	public static RoogleFenster thisClass;
+	//public static RoogleFenster thisClass;
 	private String eigenName = null;
 	private RehaTPEventClass rtp = null;
 	private JXPanel jcc = null;
@@ -105,7 +106,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	private JXPanel wahl4 = null;	
 	private JXPanel dummySuchen = null;
 	private JXPanel tp1 = null;
-	private JXPanel tp2 = null;	
+	private SuchenSeite tp2 = null;	
 	private JXPanel jpLinks = null;
 	private JXPanel jpRechts = null;
 	private JScrollPane ptc = null;
@@ -137,7 +138,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public RoogleFenster(JXFrame owner,String drops) {
 		super(owner,"Roogle");
 		setPreferredSize(new Dimension(300,300));
-		thisClass = this;
+		//thisClass = this;
 		if(! (drops==null)){
 			gedropt = true;
 			//sldrops = drops.split("°");
@@ -388,13 +389,15 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		});
 		tp2 = dummySuchen;
 		*/
-		tp2 = new SuchenSeite();
+		tp2 = new SuchenSeite(this);
 		tp2.setName("RoogleSeite2");
 		tp2.setDoubleBuffered(true);
 		tp2.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		tp2.setBackground(Color.WHITE);
 		tp2.addKeyListener(this);
-		tp2.addFocusListener(this);		
+		tp2.addFocusListener(this);
+
+
         
         tabbedPane.addTab("Termine suchen und überschreiben", SystemConfig.hmSysIcons.get("find"), tp2,
         "Termine suchen und überschreiben");
@@ -1043,7 +1046,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 		//webBrowser.dispose();
 		this.dispose();
-		super.dispose();
+		//super.dispose();
 	}	
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
@@ -1310,13 +1313,46 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		EntsperreSatz es = new EntsperreSatz();
-		es.start();
-
+		if(tp2 != null ){
+			if(!tp2.getZeit().equals("")){
+				EntsperreSatz es = new EntsperreSatz();
+				es.setzeEltern(tp2);
+				es.start();
+			}
+		}else{
+			return;
+		}
 		getSmartTitledPanel().removeMouseListener(mymouse);
 		getSmartTitledPanel().removeMouseMotionListener(mymouse);
 		mymouse = null;
 		rtp = null;
+		if(tp2 != null){
+			System.out.println("Setze SuchenSeite auf null");
+			ListenerTools.removeListeners(tp2);
+			tp2.sucheDaten = null;
+			tp2.vecWahl = null;
+			tp2.sucheKollegen = null;
+			tp2.hZeiten = null;
+			tp2.selbstGesperrt = null;
+			ListenerTools.removeListeners(tp2.jxSucheTable);
+			tp2.dtblm.getDataVector().clear();
+			tp2.dtblm = null;
+			tp2.jxSucheTable = null;
+			tp2 = null;
+		}
+		if(tp1 != null){
+			System.out.println("Setze RoogleFenster auf null");
+			ListenerTools.removeListeners(tp1);
+			ListenerTools.removeListeners(this);
+			jxTable = null;
+			jxGruppen = null;
+			tblDataModel = null;
+			myTable = null;
+			tp1 = null;
+		}
+		pinPanel = null;
+		RoogleFenster.thisClass = null;
+		Reha.thisClass.progLoader.loescheRoogle();
 
 	    if(TerminFenster.thisClass != null){
 	    	new Thread(){
@@ -1327,17 +1363,6 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    	    	TerminFenster.thisClass.altCtrlAus();
 
 
-	    			if(SuchenSeite.thisClass != null){
-		    			SuchenSeite.thisClass.sucheDaten = null;
-	    				SuchenSeite.thisClass.vecWahl = null;
-		    			SuchenSeite.thisClass.sucheKollegen = null;
-		    			SuchenSeite.thisClass.hZeiten = null;
-		    			SuchenSeite.thisClass.selbstGesperrt = null;
-		    			SuchenSeite.thisClass = null;
-	    			}
-	    			pinPanel = null;
-	    			RoogleFenster.thisClass = null;
-	    			Reha.thisClass.progLoader.loescheRoogle();
 	    			/*
 	    			Runtime r = Runtime.getRuntime();
 	    		    r.gc();
@@ -1525,27 +1550,29 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
         
         if(sel==1){
         	gewaehlt = 0;
-        	SuchenSeite.datumEinstellen();
-        	SuchenSeite.tageEinstellen();
+        	System.out.println("Zeitraum von = "+zeitraumEdit[0].getText());
+        	System.out.println("Zeitraum bis = "+zeitraumEdit[1].getText());
+        	tp2.datumEinstellen();
+        	tp2.tageEinstellen();
         	final JTabbedPane xpane = pane;
     		SwingUtilities.invokeLater(new Runnable(){
     			public  void run(){
     				int i;
     				int lang = jxTable.getRowCount();
 
-    				SuchenSeite.setKollegenEinstellen(kollegenWahl);
+    				tp2.setKollegenEinstellen(kollegenWahl);
 
     	        	HashMap<String,Integer> hm = new HashMap<String,Integer>();
-    	        	hm.put("KG", new Integer((String)gruppenCombo[0].getSelectedItem()) );
-    	        	hm.put("MA", new Integer((String)gruppenCombo[1].getSelectedItem()) );
-    	        	hm.put("ER", new Integer((String)gruppenCombo[2].getSelectedItem()) );
-    	        	hm.put("LO", new Integer((String)gruppenCombo[3].getSelectedItem()) );
-    	        	hm.put("SP", new Integer((String)gruppenCombo[4].getSelectedItem()) );
+    	        	hm.put("KG", Integer.parseInt((String)gruppenCombo[0].getSelectedItem()) );
+    	        	hm.put("MA", Integer.parseInt((String)gruppenCombo[1].getSelectedItem()) );
+    	        	hm.put("ER", Integer.parseInt((String)gruppenCombo[2].getSelectedItem()) );
+    	        	hm.put("LO", Integer.parseInt((String)gruppenCombo[3].getSelectedItem()) );
+    	        	hm.put("SP", Integer.parseInt((String)gruppenCombo[4].getSelectedItem()) );
     	        	hm.put("GR", 15);
     	        	
-    	        	SuchenSeite.setKollegenZeiten(((HashMap<String,Integer>)hm.clone()) );
+    	        	tp2.setKollegenZeiten(((HashMap<String,Integer>)hm.clone()) );
 
-    	        	SuchenSeite.setKollegenAbteilung(kollegenAbteilung);    	        	
+    	        	tp2.setKollegenAbteilung(kollegenAbteilung);    	        	
 
     	        	if ( (!schichtCheck[0].isSelected()) && (!schichtCheck[1].isSelected()) ){
     					schicht = false;	
@@ -1554,12 +1581,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     					//public static String[] schichtUhr = {null,null}; 
     					//public static boolean[] schichtWal = {false,false};
     					//public static boolean[] schichtVor = {false,false};
-    					SuchenSeite.schichtWal[0] = schichtCheck[0].isSelected();
-    					SuchenSeite.schichtWal[1] = schichtCheck[1].isSelected();
-    					SuchenSeite.schichtVor[0] = (schichtRadio[0].isSelected() ? true : false);
-    					SuchenSeite.schichtVor[1] = (schichtRadio[2].isSelected() ? true : false);
-    					SuchenSeite.schichtUhr[0] = schichtEdit[0].getText().trim()+":"+schichtEdit[1].getText().trim()+":00";
-    					SuchenSeite.schichtUhr[1] = schichtEdit[2].getText().trim()+":"+schichtEdit[3].getText().trim()+":00";    					
+    					tp2.schichtWal[0] = schichtCheck[0].isSelected();
+    					tp2.schichtWal[1] = schichtCheck[1].isSelected();
+    					tp2.schichtVor[0] = (schichtRadio[0].isSelected() ? true : false);
+    					tp2.schichtVor[1] = (schichtRadio[2].isSelected() ? true : false);
+    					tp2.schichtUhr[0] = schichtEdit[0].getText().trim()+":"+schichtEdit[1].getText().trim()+":00";
+    					tp2.schichtUhr[1] = schichtEdit[2].getText().trim()+":"+schichtEdit[3].getText().trim()+":00";    					
     				}
 
     				if( (!uhrselectCheck[0].isSelected()) && (!uhrselectCheck[1].isSelected()) &&
@@ -1567,19 +1594,19 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     					select = false;
     				}
     				if(select){
-    					SuchenSeite.selectUhr[0] = uhrselectEdit[0].getText()+":"+uhrselectEdit[1].getText()+":00";
-    					SuchenSeite.selectUhr[1] = uhrselectEdit[2].getText()+":"+uhrselectEdit[3].getText()+":00";
-    					SuchenSeite.selectUhr[2] = uhrselectEdit[4].getText()+":"+uhrselectEdit[5].getText()+":00";    					
-    					SuchenSeite.selectUhr[3] = uhrselectEdit[6].getText()+":"+uhrselectEdit[7].getText()+":00";
-    					SuchenSeite.selectWal[0] = uhrselectCheck[0].isSelected();
-    					SuchenSeite.selectWal[1] = uhrselectCheck[1].isSelected();
-    					SuchenSeite.selectWal[2] = uhrselectCheck[2].isSelected();
-    					SuchenSeite.selectWal[3] = uhrselectCheck[3].isSelected();
+    					tp2.selectUhr[0] = uhrselectEdit[0].getText()+":"+uhrselectEdit[1].getText()+":00";
+    					tp2.selectUhr[1] = uhrselectEdit[2].getText()+":"+uhrselectEdit[3].getText()+":00";
+    					tp2.selectUhr[2] = uhrselectEdit[4].getText()+":"+uhrselectEdit[5].getText()+":00";    					
+    					tp2.selectUhr[3] = uhrselectEdit[6].getText()+":"+uhrselectEdit[7].getText()+":00";
+    					tp2.selectWal[0] = uhrselectCheck[0].isSelected();
+    					tp2.selectWal[1] = uhrselectCheck[1].isSelected();
+    					tp2.selectWal[2] = uhrselectCheck[2].isSelected();
+    					tp2.selectWal[3] = uhrselectCheck[3].isSelected();
     					int fehler = 0;
-    					if(SuchenSeite.selectWal[0] && SuchenSeite.selectUhr[0].equals("00:00:00")){fehler++;}
-    					if(SuchenSeite.selectWal[1] && SuchenSeite.selectUhr[1].equals("00:00:00")){fehler++;}
-    					if(SuchenSeite.selectWal[2] && SuchenSeite.selectUhr[2].equals("00:00:00")){fehler++;}
-    					if(SuchenSeite.selectWal[3] && SuchenSeite.selectUhr[3].equals("00:00:00")){fehler++;}
+    					if(tp2.selectWal[0] && tp2.selectUhr[0].equals("00:00:00")){fehler++;}
+    					if(tp2.selectWal[1] && tp2.selectUhr[1].equals("00:00:00")){fehler++;}
+    					if(tp2.selectWal[2] && tp2.selectUhr[2].equals("00:00:00")){fehler++;}
+    					if(tp2.selectWal[3] && tp2.selectUhr[3].equals("00:00:00")){fehler++;}
     					if(fehler != 0){
         					JOptionPane.showMessageDialog(tp1,"Sie haben fehlerhafte Zeitangaben gemacht!\n"+
         							"Registerseite 'selektive Uhrzeiten'");
@@ -1589,8 +1616,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     						
     				}
 
-    				SuchenSeite.schicht = schicht;
-    	        	SuchenSeite.selektiv = select;
+    				tp2.schicht = schicht;
+    	        	tp2.selektiv = select;
     				for(i = 0;i<lang;i++){
     		        	if( ((Boolean)jxTable.getValueAt(i,0)) ){
     		        		gewaehlt = gewaehlt+1;
@@ -1607,9 +1634,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     							"Am besten suchen - 'diese Spezialisten' - dann unter einer Lampe - dann ist's wenigstens recht hell bei der Suche....");
     					xpane.setSelectedIndex(0);
     				}else{
-    					SuchenSeite.setGewaehlt(gewaehlt);
+    					tp2.setGewaehlt(gewaehlt);
     				}
-    				SuchenSeite.setKollegenSuchen(kollegenSuchen);
+    				tp2.setKollegenSuchen(kollegenSuchen);
 	            	//System.out.println("Beim Umschalten sind gewählt "+gewaehlt+" Spalten");
     			}
     		});

@@ -19,14 +19,15 @@ public class OptiSperrThread extends Thread implements Runnable {
 	private ImageIcon img,img2;
 	private String zeit;
 	private int merken = -1;
-	
-	public void init(){
+	SuchenSeite eltern;
+	public void init(SuchenSeite xeltern){
 		img = SystemConfig.hmSysIcons.get("zuzahlnichtok");
 		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
 		img.setDescription("gesperrt");
 		img2.setDescription("offen");
-		SuchenSeite.setZeit();
-		zeit = SuchenSeite.getZeit();
+		eltern = xeltern;
+		eltern.setZeit();
+		zeit = eltern.getZeit();
 		sperrDatum.clear();
 		start();
 	}
@@ -36,7 +37,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 		Vector nvec;
 		String sperre;
 		while(true){
-			anzahl = SuchenSeite.thisClass.sucheDaten.size();
+			anzahl = eltern.sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) ){
 				System.out.println("Unterbrechen und anzahl = 0");
 				break;
@@ -52,7 +53,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 						aktuell++;
 						
 						//nvec = (Vector) ((Vector)SuchenSeite.thisClass.sucheDaten.get(aktuell)).clone();
-						nvec = (Vector) ((Vector)SuchenSeite.thisClass.sucheDaten.get(aktuell));
+						nvec = (Vector) ((Vector)eltern.sucheDaten.get(aktuell));
 						
 						
 						sperre = (String)((Vector)nvec).get(13)+
@@ -69,8 +70,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 							nvec.set(1, (ret==0 ? img2 : img));
 						}
 
-						SuchenSeite.getInstance().dtblm.addRow(nvec);
-						SuchenSeite.getInstance().jxSucheTable.repaint();
+						eltern.dtblm.addRow(nvec);
+						eltern.jxSucheTable.repaint();
 						System.out.println("Aktuell = "+aktuell+" / Merken = "+merken+"/ Anzahl = "+anzahl);
 
 						merken = anzahl;
