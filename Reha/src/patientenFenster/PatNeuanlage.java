@@ -106,7 +106,7 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,Seriali
 	 * 
 	 */
 private static final long serialVersionUID = 1L;
-private JXPanel Tab1 = null;
+//private JXPanel Tab1 = null;
 public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
@@ -163,8 +163,8 @@ String globPat_intern = "";
 public static String arztbisher = "";
 public static String kassebisher = "";
 boolean inNeu = false;
-Vector titel = new Vector<String>() ;
-Vector formular = new Vector<String>();
+Vector<String> titel = new Vector<String>() ;
+Vector<String> formular = new Vector<String>();
 int iformular = -1;
 
 private RehaTPEventClass rtp = null;
@@ -172,28 +172,17 @@ private RehaTPEventClass rtp = null;
 
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
+private KVKWrapper kvw;
+
 	public PatNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		new SwingWorker<Void,Void>(){
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
-			     float[] dist = {0.0f, 0.75f};
-			     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
-			     p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			     mp = new MattePainter(p);
-			     cp = new CompoundPainter(mp);
-			     setBackgroundPainter(cp);
-			     */
 				setBackgroundPainter(Reha.thisClass.compoundPainter.get("PatNeuanlage"));
-
 				return null;
 			}
-			
 		}.execute();
 		this.setDoubleBuffered(true);
 		this.patDaten = vec;
@@ -208,7 +197,6 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 		
 		add(getButtonPanel(),BorderLayout.SOUTH);
-		//add(getDatenPanel(),BorderLayout.WEST);
 
 		UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 		UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
@@ -219,18 +207,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 		patTab.setOpaque(false);
 		
-		//final JTabbedPane xpatTab = patTab;
-		/*
-		new SwingWorker<Void,Void>(){
-
-			@Override
-			protected Void doInBackground() throws Exception {
-				xpatTab.addTab("Seite-1", getDatenPanel());
-				xpatTab.addTab("Seite-2", getZusatzPanel());
-				return null;
-			}
-		}.execute();
-		*/
+	
 		patTab.addTab("1 - Stammdaten", Tab1());
 		patTab.addTab("2 - Zusätze", Tab2());
 		patTab.addTab("3 - Sonstiges", Tab3());
@@ -240,7 +217,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		
 		add(patTab,BorderLayout.CENTER);
 		
-		hgicon = Reha.rehaBackImg;//new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
+		hgicon = Reha.rehaBackImg;
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.07f); 
@@ -319,7 +296,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
 		 			if(SystemConfig.sReaderAktiv.equals("1")){
-		 				KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
+		 				kvw = new KVKWrapper(SystemConfig.sReaderName);
 		 				int ret = kvw.KVK_Einlesen();
 		 			}
 		 	   }

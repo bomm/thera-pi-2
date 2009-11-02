@@ -52,6 +52,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 	public KVKRohDaten(PatNeuanlage pat){
 		super(null, "KVKDaten");
 		thisPat = pat;
+
 		/*
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
@@ -67,22 +68,9 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		JXRohDaten jroot = new JXRohDaten();
 		jroot.setLayout(new BorderLayout());
 		jroot.setBackground(Color.WHITE);
-		/*
-		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
-	     float[] dist = {0.0f, 0.75f};
-	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
-	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
-	     //Color[] colors = {Color.WHITE,getBackground()};
-	     p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     mp = new MattePainter(p);
-	     cp = new CompoundPainter(mp);
-	     */
-	     jroot.setBackgroundPainter(Reha.thisClass.compoundPainter.get("KVKRohDaten"));
-	     //DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 10, 1, 5, true, true, true, true);
-	     jroot.setBorder(null);
-		//jroot.setBorder(BorderFactory.createRaisedBevelBorder());
+
+		jroot.setBackgroundPainter(Reha.thisClass.compoundPainter.get("KVKRohDaten"));
+		jroot.setBorder(null);
 		jroot.add(getTextPanel(),BorderLayout.CENTER);
 		jroot.add(getButtonPanel(),BorderLayout.SOUTH);
 
@@ -100,8 +88,6 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		public JXRohDaten(){
 			super();
 			hgicon = SystemConfig.hmSysIcons.get("kvkarte"); 
-			//hgicon = new ImageIcon(Reha.proghome+"icons/ChipKarte.png");
-			//hgicon = new ImageIcon(Reha.proghome+"icons/Chip.png");
 			icx = hgicon.getIconWidth()/2;
 			icy = hgicon.getIconHeight()/2;
 			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.25f); 
@@ -117,7 +103,6 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 			if(hgicon != null){
 				g2d.setComposite(this.xac1);
 				g2d.drawImage(hgicon.getImage(), 0 , 0,null);
-				//g2d.drawImage(hgicon.getImage(), (getWidth()/2)-icx , (getHeight()/2)-icy,null);
 				g2d.setComposite(this.xac2);
 			}
 		}
@@ -311,16 +296,6 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
          "</font>"+         
          "</td></tr>\n" +
 
-         /*
-         "<li><font color=red>red</font>\n" +
-         "<li><font color=blue>blue</font>\n" +
-         "<li><font color=green>green</font>\n" +
-         "<li><font size=-2>small</font>\n" +
-         "<li><font size=+2>large</font>\n" +
-         "<li><i>italic</i>\n" +
-         "<li><b>bold</b>\n" +
-         "</ul>\n"+
-         */
          "</table>\n"+
 		 "</html>";
 		JLabel jlbl = new JLabel(initialText);
@@ -334,12 +309,22 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		String comm = arg0.getActionCommand();
 		if(comm.equals("uebernehmen")){
 			werteUebernehmen();
+			aufraeumen();
 			this.dispose();
 		}
 		if(comm.equals("abbrechen")){
+			aufraeumen();
 			this.dispose();
 		}
 		
+	}
+	public void aufraeumen(){
+		knopf1.removeActionListener(getInstance());
+		knopf1.removeKeyListener(this);
+		knopf2.removeActionListener(getInstance());
+		knopf2.removeKeyListener(this);
+		knopf1 = null;
+		knopf2 = null;
 	}
 	/*
 	SystemConfig.hmKVKDaten.put("Krankekasse", hmdaten[0].split("=")[1]);
@@ -398,6 +383,9 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 			
 		}.execute();
 	}
+	public KVKRohDaten getInstance(){
+		return this;
+	}
 	class RohKeyListener implements KeyListener{
 
 		@Override
@@ -407,15 +395,33 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 				e.consume();
 				if(((JComponent)e.getSource()).getName().equals("uebernehmen")){
 					werteUebernehmen();
+					knopf1.removeActionListener(getInstance());
+					knopf1.removeKeyListener(this);
+					knopf2.removeActionListener(getInstance());
+					knopf2.removeKeyListener(this);
+					knopf1 = null;
+					knopf2 = null;
 					dispose();
 					return;
 				}
 				if(((JComponent)e.getSource()).getName().equals("abbrechen")){
+					knopf1.removeActionListener(getInstance());
+					knopf1.removeKeyListener(this);
+					knopf2.removeActionListener(getInstance());
+					knopf2.removeKeyListener(this);
+					knopf1 = null;
+					knopf2 = null;
 					dispose();
 					return;
 				}
 			}
 			if(e.getKeyCode() == 27){
+				knopf1.removeActionListener(getInstance());
+				knopf1.removeKeyListener(this);
+				knopf2.removeActionListener(getInstance());
+				knopf2.removeKeyListener(this);
+				knopf1 = null;
+				knopf2 = null;
 				dispose();
 			}
 		}
