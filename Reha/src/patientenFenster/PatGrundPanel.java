@@ -1630,6 +1630,7 @@ class PatNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 	public PatNeuDlg(){
 		super(null,"PatientenNeuanlage");
 		this.setName("PatientenNeuanlage");
+		//super.getPinPanel().setName("PatientenNeuanlage");
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 

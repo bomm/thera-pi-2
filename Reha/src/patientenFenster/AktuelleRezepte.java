@@ -1176,7 +1176,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						sortvec.add(vterm.get(y).getStext());						
 						sortvec.add(vterm.get(y).getSArt());						
 						sortvec.add(vterm.get(y).getQDatum());
-						dtermm.addRow((Vector<String>)sortvec.clone());
+						dtermm.addRow((Vector<String>)sortvec);
 					}
 					new Thread(){
 						public void run(){
@@ -1617,6 +1617,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 	public RezNeuDlg(){
 		super(null,"RezeptNeuanlage");
 		this.setName("RezeptNeuanlage");
+		//super.getPinPanel().setName("RezeptNeuanlage");
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 

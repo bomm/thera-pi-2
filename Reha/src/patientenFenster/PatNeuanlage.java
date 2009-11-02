@@ -825,8 +825,10 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		checks = null;
 		doclist = null;
 		docmod = null;
-		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-		rtp = null;
+		if(rtp != null){
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
+		}
 	}
 	
 	

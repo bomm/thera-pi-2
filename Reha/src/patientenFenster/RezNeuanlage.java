@@ -130,27 +130,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		add(getDatenPanel(),BorderLayout.CENTER);
 		add(getButtonPanel(),BorderLayout.SOUTH);
-		new SwingWorker<Void,Void>(){
-
-			@Override
-			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
-			     float[] dist = {0.0f, 0.75f};
-			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     p =  new LinearGradientPaint(start, end, dist, colors);
-			     mp = new MattePainter(p);
-			     cp = new CompoundPainter(mp);
-			     setBackgroundPainter(cp);
-			     */
-			     setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezNeuanlage"));
-				return null;
-			}
-			
-		}.execute();		
-
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezNeuanlage"));
 		validate();
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
@@ -215,6 +195,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			   }
 		 			   if(beenden){
 		 				  JOptionPane.showMessageDialog(null,meldung); 
+		 				  aufraeumen();
 		 				  ((JXDialog)getParent().getParent().getParent().getParent().getParent()).dispose();
 		 			   }else{
 			 			   holePreisGruppe(new Integer(jtf[11].getText()));
@@ -594,6 +575,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		return retwert;
 	}
+	public RezNeuanlage getInstance(){
+		return this;
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("rezeptklasse") && klassenReady){
@@ -612,16 +596,29 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		/*********************/		
 		if(e.getActionCommand().equals("speichern") ){
-			if(this.neu){
-				doSpeichernNeu();
-			}else{
-				doSpeichernAlt();
-			}
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					if(getInstance().neu){
+						doSpeichernNeu();
+					}else{
+						doSpeichernAlt();
+					}
+					return null;
+				}
+				
+			}.execute();
 			return;
 		}
 		/*********************/
 		if(e.getActionCommand().equals("abbrechen") ){
-			doAbbrechen();
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					doAbbrechen();
+					return null;
+				}
+			}.execute();
 			return;
 		}
 		if(e.getActionCommand().equals("Hausbesuche") ){
@@ -1236,6 +1233,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		new ExUndHop().setzeStatement(sbuf.toString());
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 	}
 	/**************************************/
@@ -1474,10 +1472,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 		//AktuelleRezepte.aktRez.dtblm.addRow((Vector)tabvec.clone());
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 		
 	}
 	private void doAbbrechen(){
+		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
 	}
 	/*
@@ -1504,23 +1504,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 						this.setVisible(false);
 						rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 						rtp = null;
-						for(int i = 0; i < jtf.length;i++){
-							ListenerTools.removeListeners(jtf[i]);
-							//jtf[i].removeKeyListener(this);
-							//jtf[i].removeFocusListener(this);
-						}
-						jtf = null;
-						jcb = null;
-						for(int i = 0; i < jcmb.length;i++){
-							ListenerTools.removeListeners(jcmb[i]);
-						}
-						speichern.removeActionListener(this);
-						abbrechen.removeActionListener(this);
-						jcmb = null;
-						jta = null;
-						cp = null;
-						mp = null;
-						p = null;
+						aufraeumen();
 					}
 				}
 			}catch(NullPointerException ne){
@@ -1528,4 +1512,23 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 	}	
 
+	public void aufraeumen(){
+		for(int i = 0; i < jtf.length;i++){
+			ListenerTools.removeListeners(jtf[0]);
+		}
+		for(int i = 0; i < jcb.length;i++){
+			ListenerTools.removeListeners(jcb[0]);
+		}
+		for(int i = 0; i < jcmb.length;i++){
+			ListenerTools.removeListeners(jcmb[0]);
+		}
+		ListenerTools.removeListeners(jta);
+		ListenerTools.removeListeners(this);
+		if(rtp != null){
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
+		}
+
+		
+	}
 }

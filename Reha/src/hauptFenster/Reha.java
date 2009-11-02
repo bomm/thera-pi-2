@@ -788,6 +788,25 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    cp = new CompoundPainter(mp);
 			    Reha.thisClass.compoundPainter.put("SuchenSeite",cp);
 			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(300,270);
+			    dist = new float[] {0.0f, 0.75f};
+			    colors = new Color[] {Color.WHITE,Colors.Gray.alpha(0.15f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("GutachtenWahl",cp);
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(900,100);
+			    dist = new  float[] {0.0f, 0.75f};
+			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
+			    p = new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter(mp);
+			    Reha.thisClass.compoundPainter.put("VorBerichte",cp);			    		
+			    /*****************/			    
+			    
 			    
 			    progLoader = new ProgLoader();
 			    

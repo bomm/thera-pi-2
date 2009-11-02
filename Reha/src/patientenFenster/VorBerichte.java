@@ -44,6 +44,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -112,6 +113,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 			     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
@@ -120,7 +122,8 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			         new LinearGradientPaint(start, end, dist, colors);
 			     mp = new MattePainter(p);
 			     cp = new CompoundPainter(mp);
-			     rgb.setBackgroundPainter(cp);		
+			     */
+			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("VorBerichte"));		
 				return null;
 			}
 			
@@ -232,6 +235,9 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
 					this.setVisible(false);
+					ListenerTools.removeListeners(tabbericht);
+					ListenerTools.removeListeners(uebernahme);
+					ListenerTools.removeListeners(abbrechen);
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					super.dispose();
@@ -249,6 +255,9 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
+			ListenerTools.removeListeners(tabbericht);
+			ListenerTools.removeListeners(uebernahme);
+			ListenerTools.removeListeners(abbrechen);
 			super.dispose();
 			dispose();
 			System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
@@ -300,9 +309,9 @@ class VorBerichtHintergrund extends JXPanel{
 	AlphaComposite xac2 = null;		
 	public VorBerichtHintergrund(){
 		super();
-		hgicon = new ImageIcon(Reha.proghome+"icons/geld.png");
-		icx = hgicon.getIconWidth()/2;
-		icy = hgicon.getIconHeight()/2;
+		hgicon = null; //new ImageIcon(Reha.proghome+"icons/geld.png");
+		//icx = hgicon.getIconWidth()/2;
+		//icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.15f); 
 		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
 		

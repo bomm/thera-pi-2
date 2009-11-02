@@ -1109,16 +1109,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
         }
 
         chooser.setCurrentDirectory(file);
-
-        chooser.addPropertyChangeListener(new PropertyChangeListener() {
+        PropertyChangeListener pl = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
                     final File f = (File) e.getNewValue();
                 }
             }
-
-        });
+        }; 
+        chooser.addPropertyChangeListener(pl);
         chooser.setVisible(true);
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         final int result = chooser.showOpenDialog(null);
@@ -1139,8 +1138,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
         	sret = new String[] {}; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
         }
         chooser.setVisible(false); 
+        chooser.removePropertyChangeListener(pl);
         chooser.removeAll();
         chooser = null;
+        pl = null;
         return sret;
 		
 	}
@@ -2438,7 +2439,7 @@ class OoListener implements IDocumentListener {
 			String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
 			if(geaendert && datei.equals(file)){
 				final String xfile = file;
-				final int xid = new Integer(id);
+				final int xid = Integer.parseInt(id);
 				final IDocumentEvent xarg0 = arg0;
 				Thread.sleep(50);
 				new Thread(){

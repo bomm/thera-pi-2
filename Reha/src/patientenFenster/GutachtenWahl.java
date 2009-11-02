@@ -44,6 +44,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.LeistungTools;
+import systemTools.ListenerTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -92,6 +93,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		pinPanel = new PinPanel();
 		pinPanel.setName("GutachtenWahl");
 		pinPanel.getGruen().setVisible(false);
+		super.getPinPanel().setName("GutachtenWahl");
 		//setPinPanel(pinPanel);
 		getSmartTitledPanel().setTitle("Neues Gutachten erstellen");
 
@@ -108,6 +110,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
+				/*
 				Point2D start = new Point2D.Float(0, 0);
 			    Point2D end = new Point2D.Float(300,270);
 			    float[] dist = {0.0f, 0.75f};
@@ -116,6 +119,8 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 			    mp = new MattePainter(p);
 			    cp = new CompoundPainter(mp);
 			    rgb.setBackgroundPainter(cp);
+			    */
+			    rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("GutachtenWahl"));
 				return null;
 			}
 			
@@ -220,6 +225,10 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 					this.setVisible(false);
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
+					ListenerTools.removeListeners(rbut[0]);
+					ListenerTools.removeListeners(rbut[1]);
+					ListenerTools.removeListeners(but[0]);
+					ListenerTools.removeListeners(but[1]);
 					super.dispose();
 					this.dispose();
 					System.out.println("****************GutachtenWahl -> Listener entfernt**************");				
@@ -235,6 +244,10 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
+			ListenerTools.removeListeners(rbut[0]);
+			ListenerTools.removeListeners(rbut[1]);
+			ListenerTools.removeListeners(but[0]);
+			ListenerTools.removeListeners(but[1]);
 			super.dispose();
 			dispose();
 			System.out.println("****************GutachtenWahl -> Listener entfernt (Closed)**********");
@@ -331,15 +344,19 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 	
 }
 class GutachtenWahlHintergrund extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	ImageIcon hgicon;
 	int icx,icy;
 	AlphaComposite xac1 = null;
 	AlphaComposite xac2 = null;		
 	public GutachtenWahlHintergrund(){
 		super();
-		hgicon = new ImageIcon(Reha.proghome+"icons/geld.png");
-		icx = hgicon.getIconWidth()/2;
-		icy = hgicon.getIconHeight()/2;
+		hgicon = null; //new ImageIcon(Reha.proghome+"icons/geld.png");
+		//icx = hgicon.getIconWidth()/2;
+		//icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.15f); 
 		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);			
 		
