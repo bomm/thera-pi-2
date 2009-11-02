@@ -211,7 +211,7 @@ public int autoPatid = -1;
 
 public ObenPanel op;
 public PatGrundPanel instTest = null;
-
+public HauptPanel hp;
 
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 private int iformular;
@@ -347,8 +347,7 @@ public PatGrundPanel(JPatientInternal jry){
 
 	JXPanel gridp = new JXPanel(new GridLayout(1,1));
 	gridp.setOpaque(false);
-
-	HauptPanel hp = new HauptPanel(this);
+	hp = new HauptPanel(this);
 	hp.addFocusListener(getFocusListener());
 
 	gridp.add(hp);
