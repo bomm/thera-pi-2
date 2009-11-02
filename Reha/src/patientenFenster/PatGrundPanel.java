@@ -398,7 +398,8 @@ public PatGrundPanel(JPatientInternal jry){
 	 		   ptfield[5].setEditable(false);
 	 		   ptfield[5].setBackground(Color.WHITE);
 	 		   tfsuchen.requestFocus();
-	 		   Reha.thisClass.patpanel.jry.setSpecialActive(true);
+	 		   getInstance().jry.setSpecialActive(true);
+	 		   //Reha.thisClass.patpanel.jry.setSpecialActive(true);
 	 		   	//tf[0].requestFocusInWindow();
 	 	   }
 	});
@@ -603,8 +604,8 @@ private void allesAufNull(){
 	
 }
 	
-public static PatGrundPanel getInstance(JPatientInternal jry){
-	return new PatGrundPanel(null);
+public PatGrundPanel getInstance(){
+	return this;
 }
 
 

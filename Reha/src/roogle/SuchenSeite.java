@@ -2199,7 +2199,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 						
 							if(yvec != null){
 								++treffer;
-								
+								yvec.set(1,img2);
 								getInstance().dtblm.addRow(yvec);
 								//sucheDaten.add(yvec);
 								trefferSetzen();
@@ -2295,7 +2295,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				}
 				*/
 				//SuchenSeite.getInstance().dtblm.setDataVector(SuchenSeite.sucheDaten,getColVec());
-				System.out.println("Vectorgröße = "+sucheDaten.size());
+				System.out.println("Vectorgröße = "+getInstance().dtblm.getRowCount());
 				mussUnterbrechen = true;
 				jxSucheTable.revalidate();
 			}
@@ -3270,14 +3270,16 @@ class WorkerTabelle2 extends SwingWorker<Void,Void>{
 						dtblm.getValueAt(aktuell,14) ; 
 
 						if(sperrDatum.contains(sperre+SystemConfig.dieseMaschine+zeit)){
-							dtblm.setValueAt(img2,aktuell,1) ;
+							//dtblm.setValueAt(img2,aktuell,1) ;
 						}else{
 							//int ret = 0;
 							int ret = XSperrenVerarbeiten(aktuell,sperre,zeit);
 							if(ret==0){
 								sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
+							}else{
+								dtblm.setValueAt(img,aktuell,1);	
 							}
-							dtblm.setValueAt((ret==0 ? img2 : img),aktuell,1);
+							
 
 						}
 						if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(getTreffer()-1)) ){
