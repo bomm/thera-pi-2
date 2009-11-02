@@ -912,17 +912,17 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				WsIT.setzeStatement(getInstance());
 				WsIT.execute();
 				
-				/*
+				
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						getInstance().workerfertig = false;
 						
-						WorkerTabelle wt = new WorkerTabelle();
+						WorkerTabelle2 wt = new WorkerTabelle2();
 						wt.init();
 						wt.execute();
 					}
 				});
-				*/	
+					
 				
 				/* bislang o.k.
 				new Thread(){
@@ -1213,7 +1213,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			if((Boolean)dtblm.getValueAt(i,0)){
 
 				setFortschrittSetzen(durchlauf++);
-				vecWahl.add(sucheDaten.get(i));
+				vecWahl.add(dtblm.getDataVector().get(i));
+				//vecWahl.add(sucheDaten.get(i));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(6, (String) dtblm.getValueAt(i,6));		
 			}
@@ -2004,7 +2005,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 						test = macheStatement(sqlAkt);	
 						//System.out.println(test);
 					}else{
-						test = "select * from flexkc where datum = '"+sqlAkt+"' LIMIT "+ParameterLaden.maxKalZeile+" FOR UPDATE";						
+						test = "select * from flexkc where datum = '"+sqlAkt+"' LIMIT "+ParameterLaden.maxKalZeile;						
 					}
 					rs = (ResultSet) stmt.executeQuery(test);
 					
@@ -3004,7 +3005,7 @@ class MyDefaultTableModel extends DefaultTableModel{
 
 /**************************************************/
 /**************************************************/
-final class WorkerTabelle extends SwingWorker<Void,Void>{
+class WorkerTabelle extends SwingWorker<Void,Void>{
 	boolean fertig = false;
 	int aktuell = -1;
 	public ArrayList<String> sperrDatum = new ArrayList<String>();
@@ -3132,6 +3133,190 @@ final class WorkerTabelle extends SwingWorker<Void,Void>{
 		sperre = (String)((Vector)vecx).get(13)+
 							(String)((Vector)vecx).get(14) ;
 		
+		if(neu){
+			String cmd = "sperre='"+sperre+"'";
+			if(SqlInfo.zaehleSaetze("flexlock", cmd)==0){
+				cmd = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
+				"zeit='"+zeit+"'";
+				new ExUndHop().setzeStatement(cmd);
+				return(0); 
+			}else{
+				return(1);				
+			}
+		}
+
+
+			//if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine)){
+				stmtx = null;
+				rsx = null;
+				try {
+					stmtx = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+					        ResultSet.CONCUR_UPDATABLE );
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					rsx = stmtx.executeQuery("select sperre,maschine from flexlock where sperre='"+sperre+"' LIMIT 1");
+					if(!rsx.next() ){
+						//this.sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
+						String st = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
+						"zeit='"+zeit+"'";
+						stmtx.execute(st);
+						//new ExUndHop().setzeStatement(new String(st));
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return(0);
+					}else{
+						return(1);
+						/*
+						if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine+SuchenSeite.getZeit())){
+							return(1);
+						}else{
+							return(0);
+						}
+						*/
+
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+						
+			//}
+			
+
+			
+			if (rsx != null) {
+				try {
+					rsx.close();
+					rsx = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rsx = null;
+				}
+			}	
+			if (stmtx != null) {
+				try {
+					stmtx.close();
+					stmtx = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmtx = null;
+				}
+			}
+					
+			return 0;
+		}
+	
+	
+}
+/**************************************************/
+class WorkerTabelle2 extends SwingWorker<Void,Void>{
+	boolean fertig = false;
+	int aktuell = -1;
+	public ArrayList<String> sperrDatum = new ArrayList<String>();
+	private ImageIcon img,img2;
+	private String zeit;
+	private int merken = -1;
+
+	public void init(){
+		img = SystemConfig.hmSysIcons.get("zuzahlnichtok");
+		img2 = SystemConfig.hmSysIcons.get("zuzahlfrei");		
+		img.setDescription("gesperrt");
+		img2.setDescription("offen");
+		setZeit();
+		zeit = getZeit();
+		sperrDatum.clear();		
+	}
+	public void setEnde(){
+		fertig = true;
+	}
+	
+	protected Void doInBackground() throws Exception {
+		int anzahl;
+		int verarbeitet;
+		sperrDatum.clear();
+		Vector nvec;
+		String sperre;
+		while(true){
+			anzahl = dtblm.getRowCount();
+			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) && (getTreffer()==anzahl) ){
+				//System.out.println("Ausbruch bei 1");
+				break;
+			}
+			if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(getTreffer()-1)) ){
+				//System.out.println("Ausbruch bei 2");
+				break;
+
+			}
+
+			if(anzahl > 0){
+				if(aktuell != (anzahl-1)){
+					 	
+						aktuell++;
+						SuchenSeite.verarbeitetLbl.setText(Integer.toString(aktuell+1));
+						//xxxx
+						//nvec = (Vector) ((Vector)sucheDaten.get(aktuell));//.clone();
+						
+						//String sperre;
+						
+						sperre = (String)dtblm.getValueAt(aktuell,13)+
+						dtblm.getValueAt(aktuell,14) ; 
+
+						if(sperrDatum.contains(sperre+SystemConfig.dieseMaschine+zeit)){
+							dtblm.setValueAt(img2,aktuell,1) ;
+						}else{
+							//int ret = 0;
+							int ret = XSperrenVerarbeiten(aktuell,sperre,zeit);
+							if(ret==0){
+								sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
+							}
+							dtblm.setValueAt((ret==0 ? img2 : img),aktuell,1);
+
+						}
+						if( (SuchenSeite.mussUnterbrechen) && (anzahl==(aktuell+1)) && (aktuell==(getTreffer()-1)) ){
+							//System.out.println("WorkerThread - Unterbrechen bei anzahl = "+anzahl+" und aktuell == "+aktuell);
+							//System.out.println("Ausbruch bei 3");
+							break;
+
+						}
+				}
+			}
+			if( (SuchenSeite.mussUnterbrechen) 
+					&& (anzahl==(aktuell+1)) 
+					&& (aktuell==(getTreffer()-1)) 
+					&& (getTreffer()==anzahl) ){
+				//System.out.println("WorkerThread - Unterbrechen bei anzahl = "+anzahl+" und aktuell == "+aktuell);
+				//System.out.println("Ausbruch bei 4");
+				break;
+
+			}
+			
+		}
+		setWorkerFertig(true);
+		nvec = null;
+		sperre = null;
+		//SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
+		//JOptionPane.showMessageDialog(null,"Anzahl Tabellenzeilen: "+SuchenSeite.getInstance().jxSucheTable.getRowCount());
+		//Reha.thisClass.conn.setAutoCommit(false);
+		//SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
+		//SuchenSeite.getInstance().tabelleEinschalten();
+		//SuchenSeite.getInstance().listenerEinschalten();
+
+		//JOptionPane.showMessageDialog(null,"Anzahl Tabellenzeilen: "+SuchenSeite.getInstance().jxSucheTable.getRowCount());
+		return null;
+	}
+	/************************/
+	private int XSperrenVerarbeiten(int akt,String xsperre,String zeit){
+		Statement stmtx = null;
+		ResultSet rsx = null;
+		boolean neu = true;
+		
+		String sperre = xsperre;
 		if(neu){
 			String cmd = "sperre='"+sperre+"'";
 			if(SqlInfo.zaehleSaetze("flexlock", cmd)==0){

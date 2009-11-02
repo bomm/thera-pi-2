@@ -104,6 +104,7 @@ import systemTools.Colors;
 import systemTools.DoubleTools;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 
@@ -1588,18 +1589,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
 			}
 		}
-
+		   /*
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 		   /*
+
 					Runtime r = Runtime.getRuntime();
 				    r.gc();
 				    long freeMem = r.freeMemory();
 				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
-				    */
+			
 		 	   }
 		});
-
+	    */
 
 		//System.out.println("Pat Neu/Ändern ist disposed");
 		neuDlgOffen = false;
@@ -1629,7 +1630,9 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					this.dispose();
+					ListenerTools.removeListeners(this);					
 					super.dispose();
+
 					System.out.println("****************Rezept Neu/Ändern -> Listener entfernt**************");				
 				}
 			}
@@ -1644,6 +1647,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			dispose();
+			ListenerTools.removeListeners(this);
 			super.dispose();
 			System.out.println("****************Rezept Neu/Ändern -> Listener entfernt (Closed)**********");
 		}

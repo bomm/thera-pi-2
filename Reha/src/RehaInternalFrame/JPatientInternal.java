@@ -80,6 +80,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		Reha.thisClass.patpanel.fl = null;
 		Reha.thisClass.patpanel.kli = null;
 		Reha.thisClass.patpanel.gplst = null;
+		Reha.thisClass.patpanel.newPolicy = null;
 		
 		String s1 = new String("#CLOSING");
 		String s2 = "";

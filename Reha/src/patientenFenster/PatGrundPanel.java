@@ -182,6 +182,7 @@ public Vector vecakthistor = null;
 
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
+public Vector<Component> newPolicy;
 /*
 final public String[] tabTitel = {"<html>aktuelle Rezepte",
 		"<html>Rezept-Historie",
@@ -208,6 +209,7 @@ public int aid = -1;
 public int kid = -1;
 public int autoPatid = -1;
 
+public ObenPanel op;
 public PatGrundPanel instTest = null;
 
 
@@ -339,7 +341,7 @@ public PatGrundPanel(JPatientInternal jry){
 	setBorder(BorderFactory.createEmptyBorder());
 	setLayout(new BorderLayout());
 	
-	ObenPanel op = new ObenPanel(this);
+	op = new ObenPanel(this);
 	op.addFocusListener(getFocusListener());
 	add(op,BorderLayout.NORTH);
 
@@ -372,11 +374,12 @@ public PatGrundPanel(JPatientInternal jry){
 	add(new ButtonPanel(this),BorderLayout.SOUTH);
 
 
-	final ObenPanel xop = op;
+	
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run()
 	 	   {
-	 		    Vector<Component> newPolicy = new Vector<Component>();
+	 		   
+	 		   newPolicy = new Vector<Component>();
 	 		   font = new Font("Courier",Font.BOLD,13);
 	 		   
 	 		    //Font font = new Font("Tahoma",Font.BOLD,11);
@@ -387,8 +390,8 @@ public PatGrundPanel(JPatientInternal jry){
 	 		    	ptfield[i].addFocusListener(getTextFieldFocusListener());
 	 		    }
 	 		    myPolicy = new MyStammFocusTraversalPolicy(newPolicy);
-	 		   xop.setFocusCycleRoot(true);
-	 		    xop.setFocusTraversalPolicy(myPolicy);
+	 		   op.setFocusCycleRoot(true);
+	 		   op.setFocusTraversalPolicy(myPolicy);
 	 		    //JPatientInternal.thisClass.setFocusTraversalPolicy(myPolicy);
 	 		   ptfield[2].setForeground(Color.RED);
 	 		   ptfield[3].setForeground(Color.RED);
