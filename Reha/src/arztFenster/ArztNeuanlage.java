@@ -66,7 +66,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	public JScrollPane jscr;  
 	public JRtaComboBox arztgruppe;
 	public JTextArea jta;
-	
+	private ArztPanel apan;
 	Vector arztDaten = null;
 	String arztId = "";
 	ImageIcon hgicon;
@@ -75,21 +75,13 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	AlphaComposite xac2 = null;	
 	boolean neuAnlage;
 	
-	public ArztNeuanlage(ArztNeuDlg eltern,Vector vec,String id){
+	public ArztNeuanlage(ArztNeuDlg eltern,ArztPanel apanel,Vector vec,String id){
 		super();
-		/*
-		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(ArztPanel.thisClass.getWidth(),100);
-	     float[] dist = {0.0f, 0.75f};
-	     Color[] colors = {Color.WHITE,Colors.Blue.alpha(0.15f)};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     */
 	     setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztNeuanlage"));		
 		this.arztDaten = vec;
 		this.arztId = id;
 		this.eltern = eltern;
+		this.apan = apanel;
 		if(id.equals("")){
 			this.neuAnlage = true;
 		}else{
@@ -346,20 +338,20 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 			for(int i = 0; i < list.size();i++){
 				vec.add(list.get(i));
 			}
-			ArztPanel.thisClass.atblm.addRow((Vector)vec);
+			apan.atblm.addRow((Vector)vec);
 			System.out.println("Tabellenzeile eingefügt");
 		}else{
-			int row = ArztPanel.thisClass.arzttbl.getSelectedRow();
-			int model = ArztPanel.thisClass.arzttbl.convertRowIndexToModel(row);
+			int row = apan.arzttbl.getSelectedRow();
+			int model = apan.arzttbl.convertRowIndexToModel(row);
 			
 			for(int i = 0; i < 8;i++){
-				ArztPanel.thisClass.atblm.setValueAt(list.get(i), model, i);
+				apan.atblm.setValueAt(list.get(i), model, i);
 				//KassenPanel.thisClass.kassentbl.setValueAt(list.get(i), row, i);
 			}
 			System.out.println("Tabellenzeile aktualisiert");
 		}
-		ArztPanel.thisClass.arzttbl.revalidate();
-		ArztPanel.thisClass.arzttbl.repaint();
+		apan.arzttbl.revalidate();
+		apan.arzttbl.repaint();
 	}
 	
 

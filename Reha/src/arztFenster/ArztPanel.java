@@ -88,7 +88,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	public JXTable arzttbl = null;
 	public MyArztTableModel atblm;
 	JRtaTextField suchen = null;
-	public static ArztPanel thisClass = null;
+	//public static ArztPanel thisClass = null;
 	public int suchestarten = -1;
 	public JArztInternal jry = null;
 	public JButton[] memobut = {null,null,null};
@@ -104,7 +104,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		super();
 		setBorder(null);
 		this.jry = jry;
-		this.thisClass = this;
+		//this.thisClass = this;
 		addFocusListener(this);
 		/*
 		Point2D start = new Point2D.Float(0, 0);
@@ -135,23 +135,24 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			
 		}
 
+
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				KeyStroke stroke = KeyStroke.getKeyStroke(70, KeyEvent.ALT_MASK);
-				ArztPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
-				ArztPanel.thisClass.getActionMap().put("doSuchen", new ArztAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
+				getInstance().getActionMap().put("doSuchen", new ArztAction());
 				stroke = KeyStroke.getKeyStroke(78, KeyEvent.ALT_MASK);
-				ArztPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
-				ArztPanel.thisClass.getActionMap().put("doNeu", new ArztAction());	
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
+				getInstance().getActionMap().put("doNeu", new ArztAction());	
 				stroke = KeyStroke.getKeyStroke(69, KeyEvent.ALT_MASK);
-				ArztPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
-				ArztPanel.thisClass.getActionMap().put("doEdit", new ArztAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
+				getInstance().getActionMap().put("doEdit", new ArztAction());
 				stroke = KeyStroke.getKeyStroke(76, KeyEvent.ALT_MASK);
-				ArztPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
-				ArztPanel.thisClass.getActionMap().put("doDelete", new ArztAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
+				getInstance().getActionMap().put("doDelete", new ArztAction());
 				stroke = KeyStroke.getKeyStroke(66, KeyEvent.ALT_MASK);
-				ArztPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doBrief");
-				ArztPanel.thisClass.getActionMap().put("doBrief", new ArztAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doBrief");
+				getInstance().getActionMap().put("doBrief", new ArztAction());
 
 				/*
 				if(TerminFenster.thisClass != null){
@@ -165,6 +166,9 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				});
 			}
 		});
+	}
+	private ArztPanel getInstance(){
+		return this;
 	}
 	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -633,7 +637,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		}
 
 		neuArzt.setPinPanel(pinPanel);
-		neuArzt.getSmartTitledPanel().setContentContainer(new ArztNeuanlage(neuArzt,new Vector(),id));
+		neuArzt.getSmartTitledPanel().setContentContainer(new ArztNeuanlage(neuArzt,getInstance(),new Vector(),id));
 		neuArzt.getSmartTitledPanel().getContentContainer().setName("ArztNeuanlage");
 		neuArzt.setName("ArztNeuanlage");
 		//neuPat.setContentPane(new PatNeuanlage(new Vector()));
@@ -681,7 +685,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			int model = arzttbl.convertRowIndexToModel(row);
 			atblm.removeRow(model);
 			arzttbl.revalidate();
-			thisClass.arzttbl.repaint();
+			getInstance().arzttbl.repaint();
         	
 		}else{
 			String mes = "Oh Sie Dummerle.....\n\nWenn man schon einen Arzt löschen will, empfiehlt es sich\n"+ 
@@ -732,6 +736,42 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		// TODO Auto-generated method stub
 		
 	}
+	
+	class ArztAction extends AbstractAction {
+	    public void actionPerformed(ActionEvent e) {
+	    	if( inMemoEdit){
+	    		return;
+	    	}
+
+	        if(e.getActionCommand().equals("f")){
+	        	suchen.requestFocusInWindow();
+	        }
+	        if(e.getActionCommand().equals("n")){
+	        	neuanlageArzt("");
+	        }
+	        if(e.getActionCommand().equals("e")){
+				int row = arzttbl.getSelectedRow(); 
+				if(row >= 0){
+					String sid =  (String) arzttbl.getValueAt(row,9);
+					neuanlageArzt(sid);
+				}else{
+					String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
+					"vorher die Kasse auszuwählen die man ändern will!!!";
+					JOptionPane.showMessageDialog(null, mes);
+					suchen.requestFocus();
+				}
+
+	        }	            
+	        if(e.getActionCommand().equals("l")){
+	        	arztLoeschen();
+	        }
+	        if(e.getActionCommand().equals("b")){
+	        	formulareAuswerten();
+	        }
+	        
+	    }
+	}
+	
 }
 class MyArztTableModel extends DefaultTableModel{
 	   /**
@@ -762,40 +802,6 @@ class MyArztTableModel extends DefaultTableModel{
 	   
 }
 
-class ArztAction extends AbstractAction {
-    public void actionPerformed(ActionEvent e) {
-    	if( ArztPanel.thisClass.inMemoEdit){
-    		return;
-    	}
-
-        if(e.getActionCommand().equals("f")){
-        	ArztPanel.thisClass.suchen.requestFocusInWindow();
-        }
-        if(e.getActionCommand().equals("n")){
-        	ArztPanel.thisClass.neuanlageArzt("");
-        }
-        if(e.getActionCommand().equals("e")){
-			int row = ArztPanel.thisClass.arzttbl.getSelectedRow(); 
-			if(row >= 0){
-				String sid =  (String) ArztPanel.thisClass.arzttbl.getValueAt(row,9);
-				ArztPanel.thisClass.neuanlageArzt(sid);
-			}else{
-				String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuwählen die man ändern will!!!";
-				JOptionPane.showMessageDialog(null, mes);
-				ArztPanel.thisClass.suchen.requestFocus();
-			}
-
-        }	            
-        if(e.getActionCommand().equals("l")){
-        	ArztPanel.thisClass.arztLoeschen();
-        }
-        if(e.getActionCommand().equals("b")){
-        	ArztPanel.thisClass.formulareAuswerten();
-        }
-        
-    }
-}
 
 class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
 	private RehaTPEventClass rtp = null;

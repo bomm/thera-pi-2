@@ -1367,7 +1367,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			tp1 = null;
 		}
 		pinPanel = null;
-		RoogleFenster.thisClass = null;
+		//RoogleFenster.thisClass = null;
 		Reha.thisClass.progLoader.loescheRoogle();
 
 	    if(Reha.thisClass.terminpanel != null){

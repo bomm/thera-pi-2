@@ -77,7 +77,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public String titel;
 	public JTextField tf = null;
 	public boolean isActive;
-	public static JRehaInternal thisClass;
+	//public static JRehaInternal thisClass;
 	public JXPanel thisContent;
 	public int desktop;
 	public int compOrder;
@@ -140,7 +140,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 3, 0.7f, 7, false, true, true, true);
 
 		this.getContentPane().add(thisContent);
-		thisClass = this;
+		//thisClass = this;
 		this.setBorder(dropShadow);
 
 	}
@@ -268,7 +268,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 				icomp = null;	
 			}
 		}
-		thisClass = null;
+		//thisClass = null;
 	}
 
 	public void setTitel(String titel){

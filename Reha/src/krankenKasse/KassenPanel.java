@@ -117,7 +117,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	public JXTable kassentbl = null;
 	public MyKassenTableModel ktblm;
 	JRtaTextField suchen = null;
-	public static KassenPanel thisClass = null;
+	//public static KassenPanel thisClass = null;
 	public int suchestarten = -1;
 	public JKasseInternal jry = null;
 	public JButton[] memobut = {null,null,null};
@@ -133,7 +133,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		super();
 		setBorder(null);
 		this.jry = jry;
-		this.thisClass = this;
+		//this.thisClass = this;
 		addFocusListener(this);
 		/*
 		Point2D start = new Point2D.Float(0, 0);
@@ -165,20 +165,20 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				KeyStroke stroke = KeyStroke.getKeyStroke(70, KeyEvent.ALT_MASK);
-				KassenPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
-				KassenPanel.thisClass.getActionMap().put("doSuchen", new KasseAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
+				getInstance().getActionMap().put("doSuchen", new KasseAction());
 				stroke = KeyStroke.getKeyStroke(78, KeyEvent.ALT_MASK);
-				KassenPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
-				KassenPanel.thisClass.getActionMap().put("doNeu", new KasseAction());	
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
+				getInstance().getActionMap().put("doNeu", new KasseAction());	
 				stroke = KeyStroke.getKeyStroke(69, KeyEvent.ALT_MASK);
-				KassenPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
-				KassenPanel.thisClass.getActionMap().put("doEdit", new KasseAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
+				getInstance().getActionMap().put("doEdit", new KasseAction());
 				stroke = KeyStroke.getKeyStroke(76, KeyEvent.ALT_MASK);
-				KassenPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
-				KassenPanel.thisClass.getActionMap().put("doDelete", new KasseAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
+				getInstance().getActionMap().put("doDelete", new KasseAction());
 				stroke = KeyStroke.getKeyStroke(66, KeyEvent.ALT_MASK);
-				KassenPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doBrief");
-				KassenPanel.thisClass.getActionMap().put("doBrief", new KasseAction());
+				getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doBrief");
+				getInstance().getActionMap().put("doBrief", new KasseAction());
 
 				/*
 				if(TerminFenster.thisClass != null){
@@ -195,6 +195,9 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		
 
 		
+	}
+	public KassenPanel getInstance(){
+		return this;
 	}
 	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -480,7 +483,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			if(arg0.getKeyCode() == 10 && ((JComponent)arg0.getSource()).getName().equals("suchen")){
 				ktblm.setRowCount(0);
 				kassentbl.validate();
-				new HoleKassen(suchen.getText().trim());
+				new HoleKassen(suchen.getText().trim(),getInstance());
 				//testeTabelle();
 			}
 			if(arg0.getKeyCode() == 40 && ((JComponent)arg0.getSource()).getName().equals("suchen")){
@@ -661,7 +664,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			int model = kassentbl.convertRowIndexToModel(row);
 			ktblm.removeRow(model);
 			kassentbl.revalidate();
-			thisClass.kassentbl.repaint();
+			kassentbl.repaint();
         	
 		}else{
 			String mes = "Oh Sie Dummerle.....\n\nWenn man schon eine Kasse löschen will, empfiehlt es sich\n"+ 
@@ -795,7 +798,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		}
 
 		neuKas.setPinPanel(pinPanel);
-		neuKas.getSmartTitledPanel().setContentContainer(new KasseNeuanlage(neuKas,new Vector(),id));
+		neuKas.getSmartTitledPanel().setContentContainer(new KasseNeuanlage(neuKas,getInstance(),new Vector(),id));
 		neuKas.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
 		neuKas.setName("PatientenNeuanlage");
 		//neuPat.setContentPane(new PatNeuanlage(new Vector()));
@@ -926,11 +929,48 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		suchen.requestFocus();
 	}
 
+	class KasseAction extends AbstractAction {
+	    public void actionPerformed(ActionEvent e) {
+	    	if( inMemoEdit){
+	    		return;
+	    	}
+	        //System.out.println("Roogle Action test");
+	        //System.out.println(e);
+	        if(e.getActionCommand().equals("f")){
+	        	suchen.requestFocusInWindow();
+	        }
+	        if(e.getActionCommand().equals("n")){
+	        	neuanlageKasse("");
+	        }
+	        if(e.getActionCommand().equals("e")){
+				int row = kassentbl.getSelectedRow(); 
+				if(row >= 0){
+					String sid =  (String) kassentbl.getValueAt(row,7);
+					neuanlageKasse(sid);
+				}else{
+					String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
+					"vorher die Kasse auszuwählen die man ändern will!!!";
+					JOptionPane.showMessageDialog(null, mes);
+					suchen.requestFocus();
+				}
+
+	        }	            
+	        if(e.getActionCommand().equals("l")){
+	        	kasseLoeschen();
+	        }
+	        if(e.getActionCommand().equals("b")){
+	        	formulareAuswerten();
+	        }
+
+
+	    }
+	}
 	
+
 }
 /*********************************************************/
 class HoleKassen{
-	HoleKassen(String suche){
+	HoleKassen(String suche,KassenPanel kpan){
 	Statement stmt = null;
 	ResultSet rs = null;
 	String sstmt = "";
@@ -978,16 +1018,16 @@ class HoleKassen{
 			xvec.add(rs.getString("FAX"));			
 			xvec.add(rs.getString("IK_KASSE"));
 			xvec.add(rs.getString("id"));
-			KassenPanel.thisClass.macheTabelle((Vector)xvec.clone());
+			kpan.macheTabelle((Vector)xvec.clone());
 			xvec.clear();
 		}
-		if(KassenPanel.thisClass.ktblm.getRowCount() > 0){
-			KassenPanel.thisClass.kassentbl.setRowSelectionInterval(0, 0);
-			KassenPanel.thisClass.holeText();
+		if(kpan.ktblm.getRowCount() > 0){
+			kpan.kassentbl.setRowSelectionInterval(0, 0);
+			kpan.holeText();
 		}
 		
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		KassenPanel.thisClass.setzeFocus();
+		kpan.setzeFocus();
 	}catch(SQLException ev){
 		System.out.println("SQLException: " + ev.getMessage());
 		System.out.println("SQLState: " + ev.getSQLState());
@@ -1097,42 +1137,6 @@ class MyKassenTableModel extends DefaultTableModel{
 	   
 }
 
-class KasseAction extends AbstractAction {
-    public void actionPerformed(ActionEvent e) {
-    	if( KassenPanel.thisClass.inMemoEdit){
-    		return;
-    	}
-        //System.out.println("Roogle Action test");
-        //System.out.println(e);
-        if(e.getActionCommand().equals("f")){
-        	KassenPanel.thisClass.suchen.requestFocusInWindow();
-        }
-        if(e.getActionCommand().equals("n")){
-        	KassenPanel.thisClass.neuanlageKasse("");
-        }
-        if(e.getActionCommand().equals("e")){
-			int row = KassenPanel.thisClass.kassentbl.getSelectedRow(); 
-			if(row >= 0){
-				String sid =  (String) KassenPanel.thisClass.kassentbl.getValueAt(row,7);
-				KassenPanel.thisClass.neuanlageKasse(sid);
-			}else{
-				String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuwählen die man ändern will!!!";
-				JOptionPane.showMessageDialog(null, mes);
-				KassenPanel.thisClass.suchen.requestFocus();
-			}
-
-        }	            
-        if(e.getActionCommand().equals("l")){
-        	KassenPanel.thisClass.kasseLoeschen();
-        }
-        if(e.getActionCommand().equals("b")){
-        	KassenPanel.thisClass.formulareAuswerten();
-        }
-
-
-    }
-}
 
 class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
 	private RehaTPEventClass rtp = null;

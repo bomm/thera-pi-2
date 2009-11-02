@@ -201,9 +201,9 @@ public class Eb3 implements RehaEventListener  {
 												throws Exception {
 											String url = tempPfad+"EBfliesstext.pdf";
 						        			outtemp = new ByteArrayOutputStream();
-						    				EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-						    				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-						    				EBerichtPanel.document.setModified(false);
+						    				eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
+						    				eltern.document.getPersistenceService().export(url, new PDFFilter());
+						    				eltern.document.setModified(false);
 						    				outtemp.close();
 						    				bytebufferok = true;
 						    				pdfok = true;
@@ -315,14 +315,14 @@ public class Eb3 implements RehaEventListener  {
 
 	public void tempTextSpeichern() throws InterruptedException{
 		String url = tempPfad+"EBfliesstext.pdf";
-		if(EBerichtPanel.document.isOpen()){
-			if(EBerichtPanel.document.isModified()){
+		if(eltern.document.isOpen()){
+			if(eltern.document.isModified()){
 				System.out.println("speichere temporär in: "+url);
 				outtemp = new ByteArrayOutputStream();
 				try {
-					EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-				EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
-				EBerichtPanel.document.setModified(false);
+					eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
+					eltern.document.getPersistenceService().export(url, new PDFFilter());
+					eltern.document.setModified(false);
 				pdfok = true;
 				bytebufferok = false;
 				outtemp.close();
@@ -356,17 +356,17 @@ public class Eb3 implements RehaEventListener  {
 		FileInputStream fis = null;
 
 		try {
-			if(EBerichtPanel.document==null){
+			if(eltern.document==null){
 				Reha.thisClass.progressStarten(false);
 				return;
 			}
-			if(!EBerichtPanel.document.isOpen()){
+			if(!eltern.document.isOpen()){
 				Reha.thisClass.progressStarten(false);
 				return;
 			}
 			Reha.thisClass.progressStarten(true);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			EBerichtPanel.document.getPersistenceService().export(out, new RTFFilter());
+			eltern.document.getPersistenceService().export(out, new RTFFilter());
 			//EBerichtPanel.document.getPersistenceService().store(out);
 			InputStream ins = new ByteArrayInputStream(out.toByteArray());
 			String select = "Update bericht2 set freitext = ? where berichtid = ?";
@@ -376,13 +376,13 @@ public class Eb3 implements RehaEventListener  {
 			ps.execute();
 			ins.close();
 			if(mittemp){
-				if(EBerichtPanel.document == null){return;}
-				if(EBerichtPanel.document.isOpen()){
+				if(eltern.document == null){return;}
+				if(eltern.document.isOpen()){
 					String url = tempPfad+"EBfliesstext.pdf";
 					System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
 					outtemp = new ByteArrayOutputStream();
-					EBerichtPanel.document.getPersistenceService().export(outtemp, new RTFFilter());
-					EBerichtPanel.document.getPersistenceService().export(url, new PDFFilter());
+					eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
+					eltern.document.getPersistenceService().export(url, new PDFFilter());
 					pdfok = true;
 					outtemp.close();
 				}			
@@ -420,7 +420,7 @@ public class Eb3 implements RehaEventListener  {
 		
 	}
 	
-	  public static void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
+	  public void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
 		    ILayoutManager layoutManager = officeFrame.getLayoutManager();
 		    layoutManager.hideAll();
 		    layoutManager.showElement(ILayoutManager.URL_TOOLBAR_STANDARDBAR);

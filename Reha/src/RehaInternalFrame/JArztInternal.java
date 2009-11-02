@@ -66,7 +66,8 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 	}
 	public void starteArztID(String aID){
 		if(aID.equals("")){return;}
-		ArztPanel.thisClass.holeAktArzt(aID);
+		((ArztPanel)inhalt).holeAktArzt(aID);
+		//ArztPanel.thisClass.holeAktArzt(aID);
 	}
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {

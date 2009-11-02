@@ -145,7 +145,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	
 	String[][] tempDateien = {null,null,null,null,null};
 	boolean[] initOk = {false,false,false,false};
-	static ITextDocument document = null;
+	public ITextDocument document = null;
 	
  
 	

@@ -69,7 +69,8 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 	}
 	public void starteKasseID(String aID){
 		if(aID.equals("")){return;}
-		KassenPanel.thisClass.holeAktKasse(aID);
+		((KassenPanel)inhalt).holeAktKasse(aID);
+		//KassenPanel.thisClass.holeAktKasse(aID);
 	}
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {

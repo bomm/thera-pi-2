@@ -97,7 +97,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 		getSmartTitledPanel().setPreferredSize(new Dimension(240,170));
 		getSmartTitledPanel().setName("Eltern-"+eigenName);
 		this.getParent().setName("Eltern-"+eigenName);
-		RehaSmartDialog.thisClass.setIgnoreReturn(true);	
+		//RehaSmartDialog.thisClass.setIgnoreReturn(true);	
 		this.setUndecorated(true);
 
 		this.addFocusListener(this);

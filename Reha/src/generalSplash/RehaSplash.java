@@ -18,7 +18,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class RehaSplash extends JXDialog{
 	public JLabel lbl = null;
-	public static RehaSplash thisClass;
+	public RehaSplash thisClass;
 	public RehaSplash(Image img,String string){
 		super((JComponent)Reha.thisFrame.getGlassPane());
 		thisClass = this;
@@ -58,10 +58,10 @@ public class RehaSplash extends JXDialog{
 
 	}
 	
-	public static void splashBeenden(boolean beenden){
+	public void splashBeenden(boolean beenden){
 		if(beenden){
-			RehaSplash.thisClass.setVisible(false);
-			RehaSplash.thisClass.dispose();
+			setVisible(false);
+			dispose();
 		}
 	}
 

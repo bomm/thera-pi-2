@@ -74,22 +74,15 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	JButton knopf5 = null;
 	int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17};
 	int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19};
+	KassenPanel kpan;
 
-	public KasseNeuanlage(Object eltern,Vector vec,String id){
+	public KasseNeuanlage(Object eltern,KassenPanel xkpan,Vector vec,String id){
 		super();
-		/*
-		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(KassenPanel.thisClass.getWidth(),100);
-	     float[] dist = {0.0f, 0.75f};
-	     Color[] colors = {Color.WHITE,Colors.Green.alpha(0.25f)};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     */
-	     setBackgroundPainter(Reha.thisClass.compoundPainter.get("KasseNeuanlage"));		
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("KasseNeuanlage"));		
 		this.kasDaten = vec;
 		this.kassenId = id;
 		this.eltern = eltern;
+		kpan = xkpan;
 		if(id.equals("")){
 			this.neuAnlage = true;
 		}else{
@@ -290,20 +283,20 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			for(int i = 0; i < list.size();i++){
 				vec.add(list.get(i));
 			}
-			KassenPanel.thisClass.ktblm.addRow((Vector)vec);
+			kpan.ktblm.addRow((Vector)vec);
 			System.out.println("Tabellenzeile eingefügt");
 		}else{
-			int row = KassenPanel.thisClass.kassentbl.getSelectedRow();
-			int model = KassenPanel.thisClass.kassentbl.convertRowIndexToModel(row);
+			int row = kpan.kassentbl.getSelectedRow();
+			int model = kpan.kassentbl.convertRowIndexToModel(row);
 			
 			for(int i = 0; i < 8;i++){
-				KassenPanel.thisClass.ktblm.setValueAt(list.get(i), model, i);
+				kpan.ktblm.setValueAt(list.get(i), model, i);
 				//KassenPanel.thisClass.kassentbl.setValueAt(list.get(i), row, i);
 			}
 			System.out.println("Tabellenzeile aktualisiert");
 		}
-		KassenPanel.thisClass.kassentbl.revalidate();
-		KassenPanel.thisClass.kassentbl.repaint();
+		kpan.kassentbl.revalidate();
+		kpan.kassentbl.repaint();
 	}
 	
 	private JXPanel getDatenPanel(){

@@ -53,7 +53,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 
 
-	public static RehaSmartDialog thisClass = null;
+	//public static RehaSmartDialog thisClass = null;
 	public int clickX;
 	public int clickY;
 
@@ -121,7 +121,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		this.setUndecorated(true);
 		this.setSize(700, 500);
 		this.setContentPane(getJContentPane());
-		thisClass = this;
+		//thisClass = this;
 		this.setModal(false);
 		this.setResizable(true);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
