@@ -515,7 +515,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
  * @author admin
  *
  */
-final class AnamneseSpeichern extends SwingWorker<Void,Void>{
+class AnamneseSpeichern extends SwingWorker<Void,Void>{
 
 	public void init(){
 		execute();

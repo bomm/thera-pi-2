@@ -100,6 +100,7 @@ import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.TerminFenster;
 import terminKalender.DatFunk;
@@ -193,7 +194,7 @@ final public String[] tabTitel = {"<html>aktuelle Rezepte",
 		"<html>Plandaten"};
 */		
 
-final public String[] tabTitel = {"aktuelle Rezepte",
+public String[] tabTitel = {"aktuelle Rezepte",
 									"Rezept-Historie",
 									"Therapieberichte",
 									"Dokumentation",
@@ -410,20 +411,20 @@ public PatGrundPanel(JPatientInternal jry){
 	SwingUtilities.invokeLater(new Runnable(){
 		public  void run(){
 			KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);
-			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
-			Reha.thisClass.patpanel.getActionMap().put("doSuchen", new PatientAction());
+			getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
+			getInstance().getActionMap().put("doSuchen", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_MASK);
-			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
-			Reha.thisClass.patpanel.getActionMap().put("doNeu", new PatientAction());	
+			getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
+			getInstance().getActionMap().put("doNeu", new PatientAction());	
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_MASK);
-			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
-			Reha.thisClass.patpanel.getActionMap().put("doEdit", new PatientAction());
+			getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
+			getInstance().getActionMap().put("doEdit", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK);
-			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
-			Reha.thisClass.patpanel.getActionMap().put("doDelete", new PatientAction());
+			getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
+			getInstance().getActionMap().put("doDelete", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_MASK);
-			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFormulare");
-			Reha.thisClass.patpanel.getActionMap().put("doFormulare", new PatientAction());
+			getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFormulare");
+			getInstance().getActionMap().put("doFormulare", new PatientAction());
 			holeFormulare();
 			if(Reha.thisClass.terminpanel != null){
 		    	//TerminFenster.thisClass.setUpdateVerbot(true);
@@ -812,7 +813,8 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	neuPat.setPreferredSize(new Dimension(960,600));
 	neuPat.getSmartTitledPanel().setPreferredSize(new Dimension (960,600));
 	neuPat.setPinPanel(pinPanel);
-	neuPat.getSmartTitledPanel().setContentContainer(new PatNeuanlage(new Vector(),lneu,feldname));
+	PatNeuanlage pneu = new PatNeuanlage(new Vector(),lneu,feldname);
+	neuPat.getSmartTitledPanel().setContentContainer(pneu);
 	neuPat.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
     neuPat.setName("PatientenNeuanlage");
 	/*
@@ -835,23 +837,18 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	
 	//neuPat.setVisible(false);
 
-	SwingUtilities.invokeLater(new Runnable(){
-	 	   public  void run(){
-	 		   setzeFocus();
-	 	   }
-	}); 	   	
 	//neuPat = null;
 	neuPat.dispose();
 	neuPat = null;
     pinPanel = null;
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run(){
-	 		   /*
+	 		   
 				Runtime r = Runtime.getRuntime();
 			    r.gc();
 			    long freeMem = r.freeMemory();
 			    System.out.println("Freier Speicher nach  gc():    " + freeMem);
-			    */
+			   
 	 	   }
 	});
 
@@ -1681,14 +1678,14 @@ class JPatTextField extends JRtaTextField{
 		addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
-					final String xname = getName();
+					//final String xname = getName();
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
 							// TODO Auto-generated method stub
 							//System.out.println("In Mousedoppelklick "+xname);
 							String s1 = "#KORRIGIEREN";
-							String s2 = xname;
+							String s2 = getName();
 							PatStammEvent pEvt = new PatStammEvent(this);
 							pEvt.setPatStammEvent("PatSuchen");
 							pEvt.setDetails(s1,s2,"") ;

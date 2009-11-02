@@ -96,14 +96,17 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
-public class PatNeuanlage extends JXPanel implements Serializable,ActionListener, KeyListener,FocusListener {
+public class PatNeuanlage extends JXPanel implements RehaTPEventListener,Serializable,ActionListener, KeyListener,FocusListener {
 	
 /**
 	 * 
 	 */
 private static final long serialVersionUID = 1L;
-private static final JXPanel Tab1 = null;
+private JXPanel Tab1 = null;
 public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
@@ -132,17 +135,17 @@ String befreitbeginn = "";
 JLabel lblbild = null;
 boolean freizumstart = false;
 boolean freibeimspeichern = false;
-
+public FocusListener flis;
 public boolean feldergefuellt = false;
 
 Font font = null;
 JScrollPane jscr = null;
-List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_name","strasse","plz","ort","geboren","telefonp",
+public List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_name","strasse","plz","ort","geboren","telefonp",
 										"telefong","telefonm","emaila","kasse","kv_nummer","v_nummer","kv_status",
 										"bef_dat","artz","arzt_num","therapeut","abwanrede","abwtitel","abn_name",
 										"abwv_name","abwstrasse","abwort","akutdat","termine1","termine2","kilometer",
 										"heimbewohn","jahrfrei","bef_ab"});
-List<String> checks = Arrays.asList( new String[] {"abwadress","akutpat" ,"merk1","merk2","merk3","merk4",
+public List<String> checks = Arrays.asList( new String[] {"abwadress","akutpat" ,"merk1","merk2","merk3","merk4",
 										"merk5","merk6","heimbewohn","nobefr","u18no"});
 //Achtung bei Feldgrößen über > 65 immer 2 abziehen wg. memofelder die nicht eingelesen werden
 			   //0   1   2   3   4  5  6  7  8  9  10 1112 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
@@ -164,11 +167,12 @@ Vector titel = new Vector<String>() ;
 Vector formular = new Vector<String>();
 int iformular = -1;
 
+private RehaTPEventClass rtp = null;
+
 
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 	public PatNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
-		super();
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		new SwingWorker<Void,Void>(){
 
@@ -185,7 +189,8 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			     cp = new CompoundPainter(mp);
 			     setBackgroundPainter(cp);
 			     */
-				setBackgroundPainter(Reha.thisClass.compoundPainter.get("PatNeuanlage"));		
+				setBackgroundPainter(Reha.thisClass.compoundPainter.get("PatNeuanlage"));
+
 				return null;
 			}
 			
@@ -214,7 +219,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 		patTab.setOpaque(false);
 		
-		final JTabbedPane xpatTab = patTab;
+		//final JTabbedPane xpatTab = patTab;
 		/*
 		new SwingWorker<Void,Void>(){
 
@@ -241,11 +246,13 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.07f); 
 		xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);	
 		
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 //****************Checken ob Preisgruppen bedient werden****************		
 		
 		// nur für den ersten Focus setzen
-		final FocusListener flis = new FocusListener(){
+		flis = new FocusListener(){
 
 			@Override
 			public void focusGained(FocusEvent arg0) {
@@ -377,9 +384,12 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		 	   }
 		}); 	   		
 	}
+	public PatNeuanlage getInstance(){
+		return this;
+	}
 	
 	private void fuelleFelder(){
-		final String xfeld = this.feldname;
+		//final String xfeld = this.feldname;
 
 		new SwingWorker<Void,Void>(){
 
@@ -429,13 +439,13 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				if(!jtf[35].getText().trim().equals("")){
 					jcheck[10].setEnabled(true);
 				}
-				System.out.println("Gehe auf Feld 1 -> "+xfeld);
-				if(! "".equals(xfeld)){
+				System.out.println("Gehe auf Feld 1 -> "+getInstance().feldname);
+				if(! "".equals(getInstance().feldname)){
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run(){
-								System.out.println("Gehe auf Feld 2 -> "+xfeld);
+								System.out.println("Gehe auf Feld 2 -> "+getInstance().feldname);
 								feldergefuellt = true;
-								geheAufFeld(xfeld);
+								geheAufFeld(getInstance().feldname);
 					 	   }
 					}); 	   
 				}
@@ -567,7 +577,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 		
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
-		final PatNeuanlage xthis = this;
+		//final PatNeuanlage xthis = this;
 		final String xpatintern = spatintern;
 		new Thread(){
 			public void run(){
@@ -575,13 +585,14 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
 				finalise();
-				((JXDialog)xthis.getParent().getParent().getParent().getParent().getParent()).dispose();
+				((JXDialog)getInstance().getParent().getParent().getParent().getParent().getParent()).dispose();
 				String s1 = "#PATSUCHEN";
 				String s2 = xpatintern;
-				PatStammEvent pEvt = new PatStammEvent(PatNeuanlage.this);
+				PatStammEvent pEvt = new PatStammEvent(getInstance());
 				pEvt.setPatStammEvent("PatSuchen");
 				pEvt.setDetails(s1,s2,"") ;
 				PatStammEventClass.firePatStammEvent(pEvt);
+				pEvt = null;
 				
 			}
 		}.start();
@@ -810,6 +821,12 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		ListenerTools.removeListeners(knopf3);
 		ListenerTools.removeListeners(knopf4);
 		ListenerTools.removeListeners(knopf5);
+		xfelder = null;
+		checks = null;
+		doclist = null;
+		docmod = null;
+		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		rtp = null;
 	}
 	
 	
@@ -1373,8 +1390,8 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		}else if(com.equals("speichern")){
 			schreibeInDb();
 		}else if(com.equals("abbrechen")){
-			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 			finalise();
+			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 		}else if(com.equals("adddoc")){
 			arztInListeAuswahl();
 		}else if(com.equals("deldoc")){
@@ -1614,7 +1631,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 	public void formulareAuswerten(Point klick){
 		int row = doclist.getSelectedRow();
 		if(row >= 0){
-			String sid = new Integer((String) doclist.getValueAt(row, 5)).toString();
+			String sid = Integer.toString(Integer.parseInt((String) doclist.getValueAt(row, 5)));
     		iformular = -1;
     		KassenFormulare kf = new KassenFormulare(null,titel,formularid);
     		Point pt = klick;
@@ -1848,6 +1865,37 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		        //no matter where the cell appears onscreen.
 		          return false;
 	      }
+	}
+
+
+	public void aufraeumen(){
+		for(int i = 0; i < jtf.length;i++ ){
+			ListenerTools.removeListeners(jtf[i]);	
+		}
+		for(int i = 0; i < jcheck.length;i++ ){
+			ListenerTools.removeListeners(jcheck[i]);
+		}
+		xfelder.clear();
+		checks.clear();
+		xfelder = null;
+		checks = null;
+		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		rtp = null;
+	}
+	@Override
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+		try{
+			if(evt.getDetails()[0] != null){
+				if(evt.getDetails()[0].equals(this.getName())){
+					this.setVisible(false);
+					finalise();
+					//System.out.println("****************Patient Neu/Ändern -> Listener entfernt**************");				
+				}
+			}
+		}catch(NullPointerException ne){
+			System.out.println("In PatNeuanlage" +evt);
+		}
+		
 	}
 
 }

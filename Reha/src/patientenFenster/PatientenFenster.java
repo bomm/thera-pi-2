@@ -405,7 +405,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 
 }
 
-final class PatientSuchen implements Runnable{
+class PatientSuchen implements Runnable{
 	private String patIntern;
 	private PatientenFenster patClass;
 

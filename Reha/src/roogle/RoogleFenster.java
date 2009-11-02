@@ -119,7 +119,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	private JRtaCheckBox[] zeitraumCheck = {null,null};
 	public  JRtaTextField[] zeitraumEdit = {null,null};	
 	public JRtaCheckBox[] tageCheck = {null,null,null,null,null,null,null};	
-	public static JRtaCheckBox[] uhrselectCheck = {null,null,null,null,null};
+	public JRtaCheckBox[] uhrselectCheck = {null,null,null,null,null};
 	private JRtaTextField[] uhrselectEdit = {null,null,null,null,null,null,null,null};
 	private JRtaCheckBox[] schichtCheck = {null,null};
 	private JRtaRadioButton[] schichtRadio = {null,null,null,null};
@@ -134,6 +134,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public String[] kollegenAbteilung = null;
 	public boolean[] kollegenSuchen = new boolean[ParameterLaden.maxKalZeile+1];
 	private MouseAdapter mymouse = null;
+	private JScrollPane js;
+	private JScrollPane js2;
+	private JScrollPane js3;
+	private JScrollPane js4;
 	//PinPanel pinPanel;
 	public RoogleFenster(JXFrame owner,String drops) {
 		super(owner,"Roogle");
@@ -235,9 +239,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		});
 		this.validate();
 		setTableSelection(jxTable,0,0);
-		thisClass = this;
+		//thisClass = this;
 	}
 	/******************************************/
+	public RoogleFenster getInstance(){
+		return this;
+	}
 	/******************************************/
 	private void macheDrop(){
 		if(sldrops[1].indexOf("KG") >= 0){
@@ -312,7 +319,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		//wahltabbedPane.setTabPlacement(SwingConstants.BOTTOM);
 		/****************/
 		wahl1 = new JXPanel(new BorderLayout());
-		final JScrollPane js = new JScrollPane();
+		js = new JScrollPane();
 		js.setBorder(null);
 		js.setDoubleBuffered(true);
 		js.setViewportView(wahl1());
@@ -334,7 +341,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		wahltabbedPane.addTab("Gruppenwahl",SystemConfig.hmSysIcons.get("personen16"),wahl1,"");
 		/****************/
 		wahl2 = new JXPanel(new BorderLayout());
-		final JScrollPane js2 = new JScrollPane();
+		js2 = new JScrollPane();
 		js2.setBorder(null);
 		js2.setDoubleBuffered(true);
 		SwingUtilities.invokeLater(new Runnable(){
@@ -347,7 +354,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		wahltabbedPane.addTab("individueller Zeitraum",SystemConfig.hmSysIcons.get("forward"),wahl2,"");
 
 		wahl3 = new JXPanel(new BorderLayout());
-		final JScrollPane js3 = new JScrollPane();
+		js3 = new JScrollPane();
 		js3.setBorder(null);
 		js3.setDoubleBuffered(true);
 
@@ -361,9 +368,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		wahltabbedPane.addTab("selektive Uhrzeiten",SystemConfig.hmSysIcons.get("wecker16"),wahl3,"");		
 
 		wahl4 = new JXPanel();
-		final JScrollPane js4 = new JScrollPane();
+		js4 = new JScrollPane();
 		js4.setBorder(null);
 		js4.setDoubleBuffered(true);
+
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				js4.setViewportView(wahl4());
@@ -1313,6 +1321,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
+		if(rtp != null){
+			System.out.println("Entferne Listener in windowClosed");
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
+			ListenerTools.removeListeners(this);
+		}
 		if(tp2 != null ){
 			if(!tp2.getZeit().equals("")){
 				EntsperreSatz es = new EntsperreSatz();
@@ -1325,7 +1339,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		getSmartTitledPanel().removeMouseListener(mymouse);
 		getSmartTitledPanel().removeMouseMotionListener(mymouse);
 		mymouse = null;
-		rtp = null;
+		
 		if(tp2 != null){
 			System.out.println("Setze SuchenSeite auf null");
 			ListenerTools.removeListeners(tp2);
@@ -1556,7 +1570,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
         	System.out.println("Zeitraum bis = "+zeitraumEdit[1].getText());
         	tp2.datumEinstellen();
         	tp2.tageEinstellen();
-        	final JTabbedPane xpane = pane;
+        	//final JTabbedPane xpane = pane;
     		SwingUtilities.invokeLater(new Runnable(){
     			public  void run(){
     				int i;
@@ -1612,7 +1626,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     					if(fehler != 0){
         					JOptionPane.showMessageDialog(tp1,"Sie haben fehlerhafte Zeitangaben gemacht!\n"+
         							"Registerseite 'selektive Uhrzeiten'");
-        					xpane.setSelectedIndex(0);
+        					tabbedPane.setSelectedIndex(0);
         					return;
     					}
     						
@@ -1634,7 +1648,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     				if(gewaehlt==0){
     					JOptionPane.showMessageDialog(tp1,"Nur völlige Spezialisten wollen zwar suchen - sagen aber nicht wo(!) sie suchen wollen.\n"+
     							"Am besten suchen - 'diese Spezialisten' - dann unter einer Lampe - dann ist's wenigstens recht hell bei der Suche....");
-    					xpane.setSelectedIndex(0);
+    					tabbedPane.setSelectedIndex(0);
     				}else{
     					tp2.setGewaehlt(gewaehlt);
     				}

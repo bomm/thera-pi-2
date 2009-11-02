@@ -3304,6 +3304,8 @@ class WorkerTabelle2 extends SwingWorker<Void,Void>{
 		setWorkerFertig(true);
 		nvec = null;
 		sperre = null;
+		img = null;
+		img2 = null;
 		//SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
 		//JOptionPane.showMessageDialog(null,"Anzahl Tabellenzeilen: "+SuchenSeite.getInstance().jxSucheTable.getRowCount());
 		//Reha.thisClass.conn.setAutoCommit(false);
