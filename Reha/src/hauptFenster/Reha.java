@@ -586,7 +586,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-				CompoundPainter cp = null;
+				CompoundPainter<Object> cp = null;
 				MattePainter mp = null;
 				LinearGradientPaint p = null;
 				/*****************/
@@ -596,7 +596,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("PatNeuanlage",cp);
 				/*****************/
 				start = new Point2D.Float(0, 0);
@@ -605,7 +605,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,new Color(231,120,23)};
 			    p =       new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("SuchePanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -614,7 +614,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Colors.PiOrange.alpha(0.5f),Color.WHITE};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("ButtonPanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -623,7 +623,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Colors.PiOrange.alpha(0.5f),Color.WHITE};	     
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("StammDatenPanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -632,7 +632,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Colors.PiOrange.alpha(0.70f),Color.WHITE};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("AnredePanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -641,7 +641,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("HauptPanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -650,7 +650,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("FliessText",cp);
 			    /*****************/
 			    start = new Point2D.Float(0, 0);
@@ -659,7 +659,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("getTabs",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -668,7 +668,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Colors.PiOrange.alpha(0.25f),Color.WHITE};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("getTabs2",cp);
 				/*****************/
 			    start = new Point2D.Float(0, 0);
@@ -677,7 +677,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("RezeptGebuehren",cp);
 			    /*****************/
 			    start = new Point2D.Float(0, 0);
@@ -686,7 +686,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Gray.alpha(0.15f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("EBerichtPanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -695,7 +695,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Yellow.alpha(0.25f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("ArztBericht",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -704,7 +704,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("RezNeuanlage",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -713,7 +713,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Color.WHITE,Colors.Gray.alpha(0.05f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("ScannerUtil",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -722,7 +722,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("ArztAuswahl",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -731,7 +731,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Green.alpha(0.45f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("KassenAuswahl",cp);
 			    /*****************/
 			    start = new Point2D.Float(0, 0);
@@ -740,7 +740,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("KVKRohDaten",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -749,7 +749,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("ArztPanel",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -758,7 +758,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Blue.alpha(0.15f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("ArztNeuanlage",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -767,7 +767,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Green.alpha(0.25f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("KasseNeuanlage",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -776,7 +776,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Green.alpha(0.5f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("KassenPanel",cp);
 			    /*****************/			    
 				start = new Point2D.Float(0, 0);
@@ -785,7 +785,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Colors.TaskPaneBlau.alpha(1.0f), Color.WHITE};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("SuchenSeite",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -794,7 +794,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new Color[] {Color.WHITE,Colors.Gray.alpha(0.15f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("GutachtenWahl",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
@@ -803,7 +803,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p = new LinearGradientPaint(start, end, dist, colors);
 			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
+			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("VorBerichte",cp);			    		
 			    /*****************/			    
 			    
