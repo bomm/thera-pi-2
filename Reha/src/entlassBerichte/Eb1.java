@@ -85,7 +85,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 	String[] headlinealt = {"",
 			"",""};
 
-	String[][] stitelalt = {{"Diagn.","Klärung"},{"Stat.","Behandl."},
+	public String[][] stitelalt = {{"Diagn.","Klärung"},{"Stat.","Behandl."},
 			{"Selbsthilfegruppe"},{"Amb.Reha Sucht"},
 			{"Gewichts-","reduktion"},{"Alkohol-", "karenz",""},
 			{"Operation",""},{"Psychotherapie"},
@@ -95,7 +95,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 			{"stufenweise","Wiedereingliederung"},{"Bf. Leistung","prüfen",""},
 			{"sonstige","Anregung"}
 	};
-	String[][] stitelneu = {{"Diagnostische","Klärung"},{"Kontrolle Laborwerte/","Medikamente"},
+	public String[][] stitelneu = {{"Diagnostische","Klärung"},{"Kontrolle Laborwerte/","Medikamente"},
 			{"Stat.Behandlung / OP"},{"Suchtberatung"},
 			{"Psychol. Beratung /","Psychotherapie"},{"Heil- und Hilfsmittel","inkl. Physiotherapie","und Ergotherapie"},
 			{"Übungen selbständig","fortführen"},{"Sport und Bewegung"},

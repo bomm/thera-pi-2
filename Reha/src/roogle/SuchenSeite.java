@@ -984,6 +984,19 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		vecWahl.trimToSize();
 		this.zeilengewaehlt = 0;
 		sucheName.requestFocus();
+		try {
+			Thread.sleep(30);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Total Memory  = "+Runtime.getRuntime().totalMemory());    
+	    System.out.println("Free Memory   = "+Runtime.getRuntime().freeMemory());
+	    Runtime r = Runtime.getRuntime();
+	    r.gc();
+	    long freeMem = r.freeMemory();
+	    System.out.println("Freed Memory  = "+freeMem);
+
 	}
 
 	private void auswahlDrucken(boolean drucken){

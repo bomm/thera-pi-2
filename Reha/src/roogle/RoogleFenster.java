@@ -1387,15 +1387,13 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	    		    */
 	    		}
 	    	}.start();
-	    }else{
-			Reha.thisClass.progLoader.loescheRoogle();
-	    	System.out.println("TerminFenster.thisClass = null ");
-			Runtime r = Runtime.getRuntime();
-		    r.gc();
-		    long freeMem = r.freeMemory();
-		    System.out.println("Freier Speicher nach  gc():    " + freeMem);
 	    }
-
+		Reha.thisClass.progLoader.loescheRoogle();
+    	System.out.println("TerminFenster.thisClass = null ");
+		Runtime r = Runtime.getRuntime();
+	    r.gc();
+	    long freeMem = r.freeMemory();
+	    System.out.println("Freier Speicher nach  gc():    " + freeMem);
 	}
 
 	@Override

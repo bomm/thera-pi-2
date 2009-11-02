@@ -112,7 +112,7 @@ import RehaInternalFrame.JGutachtenInternal;
 
 public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventListener,PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
 	JGutachtenInternal jry = null;
-	public EBerichtPanel thisClass = null;
+	
 	//public JXPanel seite1;
 	//public JXPanel seite2;
 	//public JXPanel seite3;
@@ -199,9 +199,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			
 	public int[] druckversion = {0,0,0,0,0,0}; 
 	public String[] aerzte; 
-	CompoundPainter cp = null;
-	MattePainter mp = null;
-	LinearGradientPaint p = null;
+	
+	
+	
 
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
 		setBorder(null);
@@ -213,22 +213,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		this.empfaenger = xempfaenger;
 		this.neu = xneu;
 		
-		thisClass = this;
+
 		
 		evt = new RehaEventClass();
 		evt.addRehaEventListener((RehaEventListener) this);
 
 		addFocusListener(this);
-		/*
-		Point2D start = new Point2D.Float(0, 0);
-	    Point2D end = new Point2D.Float(400,550);
-	    float[] dist = {0.0f, 0.75f};
-	    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-	    p =  new LinearGradientPaint(start, end, dist, colors);
-	    mp = new MattePainter(p);
-	    cp = new CompoundPainter(mp);
-	    setBackgroundPainter(cp);
-	    */
 	    setBackgroundPainter(Reha.thisClass.compoundPainter.get("EBerichtPanel"));
 		setLayout(new BorderLayout());
 		
@@ -686,9 +676,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 	}
 	
-	
+	public EBerichtPanel getInstance(){
+		return this;
+	}
 	private void doVorschauEntlassBericht(boolean nurVorschau,int[] versionen,boolean altesFormular,boolean RV){
-		final EBerichtPanel xthis = this;
+		//final EBerichtPanel xthis = this;
 		final boolean xnurVorschau = nurVorschau;
 		final int[] xversionen = versionen;
 		final boolean xaltesFormular = altesFormular;
@@ -709,7 +701,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 								//document.close();
 							//}	
 						}
-						new RVEBerichtPDF(xthis,xnurVorschau, xversionen,xaltesFormular,xRV);
+						new RVEBerichtPDF(getInstance(),xnurVorschau, xversionen,xaltesFormular,xRV);
 						return null;
 					}
 				}.execute();
@@ -882,6 +874,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				bta[i] = null;
 			}
 		}
+		
 		if(this.berichtart.equals("entlassbericht")){
 			Component com;
 			com = ebt.getTab1().getSeite();
@@ -896,6 +889,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			com = ebt.getTab4().getSeite();
 			ListenerTools.removeListeners(com);
 			com = null;
+			ebt.seite1.stitelalt = null;
+			ebt.seite1.stitelneu = null;
 			ebt.seite1.eltern = null;
 			ebt.seite2.eltern = null;
 			ebt.seite3.eltern = null;
@@ -924,7 +919,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		ebt = null;;
 		nat = null;
 		officeFrame = null;
-		thisClass = null;
+		
 	}
 
 	public void EBDrucken(Point p,boolean[] drucken,String titel){
