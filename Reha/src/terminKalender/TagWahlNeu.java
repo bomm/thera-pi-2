@@ -68,13 +68,13 @@ import events.RehaTPEventListener;
 
 
 public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, ActionListener, ComponentListener, WindowListener, KeyListener,RehaTPEventListener{
-	private static TagWahlNeu thisClass = null;
+	//private static TagWahlNeu thisClass = null;
 	private String eigenName = null;
 	private JXPanel jcc = null;
 	private JXPanel jpan  = null;
 	private RehaTPEventClass rtp = null;
 	private MeinPicker datePick = null;
-	public static JRtaTextField datum;
+	public  JRtaTextField datum;
 	private String akttag; 
 	private String starttag;
 	private JXLabel wochentag;
@@ -90,7 +90,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 		//setSize(new Dimension(200,120));
 		setPreferredSize(new Dimension(240,170));
 		//setSize(240,170);
-		thisClass = this;
+		//thisClass = this;
 
 		eigenName = "TagWahl"+WinNum.NeueNummer(); 
 		this.setName(eigenName);
@@ -507,6 +507,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 		if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 			FensterSchliessen(evt.getDetails()[0]);
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
 		}	
 	}catch(NullPointerException ne){
 		//System.out.println("In RoogleFenster" +evt);
@@ -519,6 +520,7 @@ public void windowClosed(WindowEvent arg0) {
 	//System.out.println("Datum = "+datePick.setActionMap(am));
 	if(rtp != null){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		rtp = null;
 	}
 	/*
 	SwingUtilities.invokeLater(new Runnable(){

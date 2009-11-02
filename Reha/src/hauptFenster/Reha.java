@@ -2345,7 +2345,6 @@ public void actionPerformed(ActionEvent arg0) {
 				Reha.thisClass.progressStarten(true);
 				progLoader.ProgPatientenVerwaltung(1);
 				//ProgLoader.ProgPatientenVerwaltung(1);
-				Reha.thisClass.progressStarten(false);
 				return null;
 			}
 		}.execute();

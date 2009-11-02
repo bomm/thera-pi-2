@@ -53,17 +53,18 @@ import events.RehaTPEventListener;
 
 public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener, ActionListener, WindowListener, KeyListener,RehaTPEventListener{
 	String eigenName = null;
-	SetWahlNeu thisClass;
+	//SetWahlNeu thisClass;
 	JXPanel jcc;
 	JXPanel jpan;
-	static JList jList1;
+	JList jList1;
 	int ret = -1;
 	private JButton okButton = null;
 	private JButton abbruchButton = null;
 	
 	private RehaTPEventClass rtp = null;
+	private TerminFenster eltern;
 	int wahl;
-	public SetWahlNeu(){
+	public SetWahlNeu(TerminFenster xeltern){
 		//super(owner, "Eltern-SetWahl"+WinNum.NeueNummer());
 		
 		//setSize(new Dimension(200,120));
@@ -71,9 +72,10 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 		//setSize(293, 247);
 		
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		thisClass = this;
+		//thisClass = this;
 		this.setSize(293,247);
 		this.setContentPane(new JXTitledPanel());
+		eltern = xeltern;
 
 		eigenName = "TagWahl"+WinNum.NeueNummer(); 
 		//this.setName(eigenName);
@@ -235,19 +237,19 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 			//arg0.consume();
 			if(ret != -1){
 				System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
-				TerminFenster.swSetWahl = jList1.getSelectedIndex();
+				eltern.swSetWahl = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}else{
 				System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
-				TerminFenster.swSetWahl = jList1.getSelectedIndex();
+				eltern.swSetWahl = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}	
 		}
 		if (arg0.getKeyCode()==27){
 			System.out.println("ESC gedrückt");			
-			TerminFenster.swSetWahl = -1;
+			eltern.swSetWahl = -1;
 			DialogBeenden(-1);
 			return;
 		}
@@ -310,9 +312,9 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 	{
 	    public void run()  
 	  {
-	    	while(!SetWahlNeu.jList1.hasFocus()){
-	    		SetWahlNeu.jList1.grabFocus();
-	    		SetWahlNeu.jList1.requestFocus();
+	    	while(!jList1.hasFocus()){
+	    		jList1.grabFocus();
+	    		jList1.requestFocus();
 			}	
 	  }
 	}
@@ -321,7 +323,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		if (arg0.getClickCount() == 2){
-			TerminFenster.swSetWahl = jList1.getSelectedIndex();
+			eltern.swSetWahl = jList1.getSelectedIndex();
 			FensterSchliessen("Dieses");
 			System.out.println("In Mausdoppelklick");
 			System.out.println(arg0.getSource());

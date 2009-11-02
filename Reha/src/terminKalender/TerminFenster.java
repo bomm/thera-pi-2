@@ -209,7 +209,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private String wocheErster = "";
 	private int wocheBehandler;
 	private int maskenBehandler;
-	public static int swSetWahl = -1;
+	public int swSetWahl = -1;
 	final int NORMAL_ANSICHT = 0;
 	final int WOCHEN_ANSICHT = 1;
 	final int MASKEN_ANSICHT = 2;
@@ -3596,14 +3596,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	    	        	final TagWahlNeu xTagWahlNeu = tagWahlNeu;
 	    	    		SwingUtilities.invokeLater(new Runnable(){
 	    	    			public  void run(){
-	    	    				while(! TagWahlNeu.datum.hasFocus()){
+	    	    				while(! xTagWahlNeu.datum.hasFocus()){
 		    	    				try {
 										Thread.sleep(20);
 									} catch (InterruptedException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-		    	    				TagWahlNeu.datum.requestFocusInWindow();
+									xTagWahlNeu.datum.requestFocusInWindow();
 		    	    	    		//xTagWahlNeu.setzeFocus();
 	    	    				}
 	    	    			}

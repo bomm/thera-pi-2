@@ -442,7 +442,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 	}
 	private void doBerichtEdit(){
 		int row = tabbericht.getSelectedRow();
+		System.out.println("in doBerichtEdit");
 		if(row < 0){
+			System.out.println("keine Zeile vorhanden also return");
 			return;
 		}
 		String bertyp = (String) tabbericht.getValueAt(row,1);

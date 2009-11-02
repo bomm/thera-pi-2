@@ -352,8 +352,10 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 	}
 	JComponent gutachten = AktiveFenster.getFensterAlle("GutachtenFenster");
 	if(gutachten != null){
+		System.out.println("Gutachten ist nicht null");
 		containerHandling(((JGutachtenInternal)gutachten).getDesktop());
 		((JGutachtenInternal)gutachten).aktiviereDiesenFrame( ((JGutachtenInternal)gutachten).getName());
+
 		if( ((JGutachtenInternal)gutachten).isIcon() ){
 			try {
 				((JGutachtenInternal)gutachten).setIcon(false);
@@ -419,6 +421,7 @@ public static void InternalGut2(){
 /**************Pateintenverwaltung Echtfunktion***********************/
 public void ProgPatientenVerwaltung(int setPos) {
 	if(! Reha.thisClass.DbOk){
+		Reha.thisClass.progressStarten(false);
 		return;
 	}
 	JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");

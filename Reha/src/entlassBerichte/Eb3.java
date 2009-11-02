@@ -502,11 +502,13 @@ public class Eb3 implements RehaEventListener  {
 						if(outtemp != null){
 							outtemp.close();
 						}
-			 		   if(eltern.document != null){
-			 			   if(eltern.document.isOpen()){
-			 				  eltern.document.close();
-			 			   }
-			 		   }
+						if(eltern != null){
+					 		   if(eltern.document != null){
+					 			   if(eltern.document.isOpen()){
+					 				  eltern.document.close();
+					 			   }
+					 		   }
+						}
 
 						//trenneFrame(false);
 						outtemp = null;

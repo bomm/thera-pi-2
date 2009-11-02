@@ -1618,10 +1618,11 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
+					System.out.println("In rezNeuDlg set Visible false***************");
 					this.setVisible(false);
+					this.dispose();
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
-					this.dispose();
 					ListenerTools.removeListeners(this);					
 					super.dispose();
 

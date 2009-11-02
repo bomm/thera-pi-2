@@ -1418,16 +1418,16 @@ private KVKWrapper kvw;
 				return;
 			}
 			if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
-				finalise();
 				((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+				finalise();
 				((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 				return;
 			}
 			
 		}
 		if(arg0.getKeyCode()==27){
-			finalise();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+			finalise();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 		}
 		
@@ -1866,8 +1866,9 @@ private KVKWrapper kvw;
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
-					this.setVisible(false);
+					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 					finalise();
+					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 					//System.out.println("****************Patient Neu/Ändern -> Listener entfernt**************");				
 				}
 			}

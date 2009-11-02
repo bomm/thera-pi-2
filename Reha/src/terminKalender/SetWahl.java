@@ -48,13 +48,14 @@ public class SetWahl extends JDialog {
 	public int ret = 0;
 	private JList jList1 = null;
 	private int wahl;
-	private TerminFenster Eltern; 
+	private TerminFenster eltern; 
 	/**
 	 * @param owner
 	 */
-	public SetWahl(TerminFenster Eltern) {
+	public SetWahl(TerminFenster xeltern) {
 		super();
-		wahl = ((TerminFenster) Eltern).aktuellesSet();
+		eltern = xeltern; 
+		wahl = ((TerminFenster) eltern).aktuellesSet();
 		initialize();
 	}
 
@@ -198,7 +199,7 @@ public class SetWahl extends JDialog {
 		return jButton1;
 	}
 	private void DialogBeenden(int wie){
-		TerminFenster.swSetWahl = wie;
+		eltern.swSetWahl = wie;
 		this.ret = wie;
 		this.dispose();
 	}

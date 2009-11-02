@@ -112,18 +112,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 
-		/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-			*/
-				//macheFarbcodes();
-			/*	
-				return null;
-			}
-		}.execute();
-		*/
-
+		
 		
 		setLayout(new BorderLayout());
 		setOpaque(true);
@@ -1513,22 +1502,27 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}	
 
 	public void aufraeumen(){
-		for(int i = 0; i < jtf.length;i++){
-			ListenerTools.removeListeners(jtf[0]);
-		}
-		for(int i = 0; i < jcb.length;i++){
-			ListenerTools.removeListeners(jcb[0]);
-		}
-		for(int i = 0; i < jcmb.length;i++){
-			ListenerTools.removeListeners(jcmb[0]);
-		}
-		ListenerTools.removeListeners(jta);
-		ListenerTools.removeListeners(this);
-		if(rtp != null){
-			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-			rtp = null;
-		}
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				for(int i = 0; i < jtf.length;i++){
+					ListenerTools.removeListeners(jtf[0]);
+				}
+				for(int i = 0; i < jcb.length;i++){
+					ListenerTools.removeListeners(jcb[0]);
+				}
+				for(int i = 0; i < jcmb.length;i++){
+					ListenerTools.removeListeners(jcmb[0]);
+				}
+				ListenerTools.removeListeners(jta);
+				ListenerTools.removeListeners(getInstance());
+				if(rtp != null){
+					rtp.removeRehaTPEventListener((RehaTPEventListener) getInstance());
+					rtp = null;
+				}
 
-		
-	}
+				return null;
+		}
+		}.execute();
+	}	
 }
