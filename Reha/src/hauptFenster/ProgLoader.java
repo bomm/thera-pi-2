@@ -237,7 +237,9 @@ public void ProgRoogleFenster(int setPos,String droptext) {
  		   	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
  			roogleDlg = new RoogleFenster(Reha.thisFrame,xdroptext);
  			roogleDlg.setSize(940,680);
+ 			roogleDlg.setPreferredSize(new Dimension(940,680));
  			roogleDlg.setLocationRelativeTo(null);
+ 			roogleDlg.pack();
  			roogleDlg.setVisible(true);
  			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
@@ -275,12 +277,14 @@ public void KassenFenster(int setPos,String kid) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)kassejry,containerNr,(Container)kassejry.getContentPane());
 	kassejry.setName(name);
 	kassejry.setSize(new Dimension(650,500));
+	kassejry.setPreferredSize(new Dimension(650,500));
 	//KassenPanel kasspan = new KassenPanel(jry,kid);
 	Reha.thisClass.kassenpanel = new KassenPanel(kassejry,kid); 
 	kassejry.setContent(Reha.thisClass.kassenpanel);	
 	kassejry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	kassejry.setLocation(comps*10, comps*10);
+	kassejry.pack();
 	kassejry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(kassejry);
 	((JRehaInternal)kassejry).setImmerGross( (SystemConfig.hmContainer.get("KasseOpti") > 0 ? true : false));

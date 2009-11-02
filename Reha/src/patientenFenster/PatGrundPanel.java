@@ -817,30 +817,16 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	neuPat.getSmartTitledPanel().setContentContainer(pneu);
 	neuPat.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
     neuPat.setName("PatientenNeuanlage");
-	/*
-	try {
-		Thread.sleep(100);
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	*/
-    
-
 	neuPat.setLocationRelativeTo(null);
 	neuPat.setTitle("Patienten Neuanlage");
-
+	neuPat.pack();
 	neuPat.setModal(true);
-	neuPat.pack();	
 	neuPat.setVisible(true);
 
-	
-	//neuPat.setVisible(false);
-
-	//neuPat = null;
-	neuPat.dispose();
+	//neuPat.dispose();
 	neuPat = null;
     pinPanel = null;
+    /*
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run(){
 	 		   
@@ -851,7 +837,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 			   
 	 	   }
 	});
-
+	*/
 
 	System.out.println("Pat Neu/Ändern ist disposed");
 	neuDlgOffen = false;

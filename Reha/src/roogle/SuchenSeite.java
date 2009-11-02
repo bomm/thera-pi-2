@@ -984,6 +984,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		vecWahl.trimToSize();
 		this.zeilengewaehlt = 0;
 		sucheName.requestFocus();
+		/*
 		try {
 			Thread.sleep(30);
 		} catch (InterruptedException e) {
@@ -996,6 +997,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	    r.gc();
 	    long freeMem = r.freeMemory();
 	    System.out.println("Freed Memory  = "+freeMem);
+	    */
 
 	}
 
