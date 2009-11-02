@@ -1548,15 +1548,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.pack();
 		neuRez.setVisible(true);
 
-		repaint();
-		//neuPat.setVisible(false);
-
-		SwingUtilities.invokeLater(new Runnable(){
-		 	   public  void run(){
-//		 		   setzeFocus();
-		 	   }
-		}); 	   	
-		//neuPat = null;
 		neuRez.dispose();
 		neuRez = null;
 		if(!lneu){

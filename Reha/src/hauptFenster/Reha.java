@@ -699,7 +699,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    Reha.thisClass.compoundPainter.put("ArztBericht",cp);
 			    /*****************/
 				start = new Point2D.Float(0, 0);
-			    end = new Point2D.Float(400,650);
+			    end = new Point2D.Float(600,750);
 			    dist = new  float[] {0.0f, 0.75f};
 			    colors = new  Color[] {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			    p =  new LinearGradientPaint(start, end, dist, colors);
