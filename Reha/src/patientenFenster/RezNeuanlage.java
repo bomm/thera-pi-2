@@ -787,6 +787,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			jtf[0].setText(suchkrit[0]);
 			kassenAuswahl(suchkrit);
 		}
+		if(arg0.getKeyCode()==27){
+			arg0.consume();
+			aufraeumen();
+		}
+		
 	}
 
 	@Override
@@ -1484,11 +1489,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	*/
 	@Override
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
-		System.out.println("****************Setze alles auf null in RezNeuanlage**************");				
+		//System.out.println("****************Setze alles auf null in RezNeuanlage**************");				
 
 			try{
 				if(evt.getDetails()[0] != null){
 					if(evt.getDetails()[0].equals(this.getName())){
+						System.out.println("****************Setze alles auf null in RezNeuanlage**************");
 						System.out.println("Event=****************"+evt);
 						this.setVisible(false);
 						rtp.removeRehaTPEventListener((RehaTPEventListener) this);

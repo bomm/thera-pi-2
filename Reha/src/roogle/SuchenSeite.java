@@ -902,7 +902,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				WsIT.setzeStatement(getInstance());
 				WsIT.execute();
 				
-				
+				/*
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						getInstance().workerfertig = false;
@@ -912,6 +912,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						wt.execute();
 					}
 				});
+				*/
 					
 				
 				/* bislang o.k.
@@ -1905,6 +1906,11 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			setFortschrittZeigen(true);
 			Vector abtlg = new Vector(Arrays.asList(abtei));
 			Vector yvec = null;
+			sperrDatum.clear();
+			int aktuell;
+			String sperre;
+			String cmd;
+			int ret;
 			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!eltern.mussUnterbrechen)){
 				setzeDatum(aktDatum );
 				if( tagDurchsuchen(aktDatum) ){
@@ -2110,6 +2116,23 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 								++treffer;
 								yvec.set(1,img2);
 								getInstance().dtblm.addRow(yvec);
+								/**************************/
+								aktuell = dtblm.getRowCount();
+								SuchenSeite.verarbeitetLbl.setText(Integer.toString(aktuell));
+								sperre = (String)dtblm.getValueAt(aktuell-1,13)+
+								dtblm.getValueAt(aktuell-1,14) ;  
+								if(!sperrDatum.contains(sperre+SystemConfig.dieseMaschine+zeit)){
+									cmd = "sperre='"+sperre+"'";
+									ret = SqlInfo.zaehleSaetze("flexlock", cmd);
+									if(ret==0){
+										cmd = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
+										"zeit='"+zeit+"'";
+										SqlInfo.sqlAusfuehren(cmd);
+										sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
+									}else{
+										dtblm.setValueAt(img,aktuell-1,1);
+									}
+								}
 								//sucheDaten.add(yvec);
 								trefferSetzen();
 							}
