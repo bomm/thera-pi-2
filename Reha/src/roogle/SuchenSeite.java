@@ -1266,7 +1266,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			if((Boolean)dtblm.getValueAt(i,0)){
 
 				setFortschrittSetzen(durchlauf++);
-				vecWahl.add(sucheDaten.get(i));
+				//vecWahl.add(sucheDaten.get(i));
+				vecWahl.add(dtblm.getDataVector().get(i));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(6, (String) dtblm.getValueAt(i,6));
 				//fortschritt.setValue(durchlauf++);
@@ -3138,6 +3139,7 @@ class WorkerTabelle extends SwingWorker<Void,Void>{
 			if(SqlInfo.zaehleSaetze("flexlock", cmd)==0){
 				cmd = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
 				"zeit='"+zeit+"'";
+				//SqlInfo.sqlAusfuehren(cmd);
 				new ExUndHop().setzeStatement(cmd);
 				return(0); 
 			}else{
@@ -3322,79 +3324,17 @@ class WorkerTabelle2 extends SwingWorker<Void,Void>{
 			if(SqlInfo.zaehleSaetze("flexlock", cmd)==0){
 				cmd = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
 				"zeit='"+zeit+"'";
-				new ExUndHop().setzeStatement(cmd);
+				SqlInfo.sqlAusfuehren(cmd);
+				//new ExUndHop().setzeStatement(cmd);
 				return(0); 
 			}else{
 				return(1);				
 			}
 		}
-
-
-			//if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine)){
-				stmtx = null;
-				rsx = null;
-				try {
-					stmtx = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-					        ResultSet.CONCUR_UPDATABLE );
 					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					rsx = stmtx.executeQuery("select sperre,maschine from flexlock where sperre='"+sperre+"' LIMIT 1");
-					if(!rsx.next() ){
-						//this.sperrDatum.add(sperre+SystemConfig.dieseMaschine+zeit);
-						String st = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
-						"zeit='"+zeit+"'";
-						stmtx.execute(st);
-						//new ExUndHop().setzeStatement(new String(st));
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						return(0);
-					}else{
-						return(1);
-						/*
-						if(! sperrDatum.contains(sperre+SystemConfig.dieseMaschine+SuchenSeite.getZeit())){
-							return(1);
-						}else{
-							return(0);
-						}
-						*/
+		return 0;
+	}
 
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-						
-			//}
-			
-
-			
-			if (rsx != null) {
-				try {
-					rsx.close();
-					rsx = null;
-				} catch (SQLException sqlEx) { // ignore }
-					rsx = null;
-				}
-			}	
-			if (stmtx != null) {
-				try {
-					stmtx.close();
-					stmtx = null;
-				} catch (SQLException sqlEx) { // ignore }
-					stmtx = null;
-				}
-			}
-					
-			return 0;
-		}
 	
 	
 }
