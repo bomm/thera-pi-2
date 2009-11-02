@@ -92,20 +92,6 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		
 
 		try {
-		
-
-			//UIManager.setLookAndFeel(
-	          //        "com.oyoaha.swing.plaf.oyoaha.OyoahaLookAndFeel");
-
-			//UIManager.setLookAndFeel(
-	        //          "ch.randelshofer.quaqua.QuaquaLookAndFeel");
-			
-			//UIManager.setLookAndFeel(laf);
-			//LiquidLookAndFeel laf = new LiquidLookAndFeel();
-			//UIManager.setLookAndFeel(laf);
-		         //UIManager.setLookAndFeel("org.fife.plaf.Office2003.Office2003LookAndFeel");
-		         //UIManager.setLookAndFeel("org.fife.plaf.OfficeXP.OfficeXPLookAndFeel");
-		         //UIManager.setLookAndFeel("org.fife.plaf.VisualStudio2005.VisualStudio2005LookAndFeel");
 
 			UIManager.setLookAndFeel(SystemConfig.aHauptFenster.get(4));
 			
@@ -145,17 +131,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		addKeyListener(this);
 	    xEvent = new RehaTPEventClass();
 	    
-	    /*
-		AbstractAction act = new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
 
-			}
-			};
-
-	    getRootPane().getActionMap().put("nameThatYouWant", act);
-	    InputMap im = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-	    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "nameThatYouWant");
-	    */ 
 	}
 	
 	/**
