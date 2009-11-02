@@ -77,9 +77,9 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		this.removeInternalFrameListener(this);
 		
 		Reha.thisFrame.requestFocus();
-		PatGrundPanel.thisClass.fl = null;
-		PatGrundPanel.thisClass.kli = null;
-		PatGrundPanel.thisClass.gplst = null;
+		Reha.thisClass.patpanel.fl = null;
+		Reha.thisClass.patpanel.kli = null;
+		Reha.thisClass.patpanel.gplst = null;
 		
 		String s1 = new String("#CLOSING");
 		String s2 = "";
@@ -90,13 +90,13 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		PatGrundPanel.thisClass.jry = null;
-		PatGrundPanel.thisClass = null;
-		Gutachten.gutachten = null;
-		Historie.historie = null;
-		Dokumentation.doku = null;
-		AktuelleRezepte.aktRez = null;
-		TherapieBerichte.aktBericht = null;
+		Reha.thisClass.patpanel.jry = null;
+		Reha.thisClass.patpanel = null;
+		//Gutachten.gutachten = null;
+		//Historie.historie = null;
+		//Dokumentation.doku = null;
+		//AktuelleRezepte.aktRez = null;
+		//TherapieBerichte.aktBericht = null;
 		this.destroyTitleBar();
 		this.nord = null;
 		this.inhalt = null;
@@ -121,7 +121,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		
 	}
 	public void setzeSuche(){
-		PatGrundPanel.thisClass.setzeFocus();
+		Reha.thisClass.patpanel.setzeFocus();
 	}
 	public void setzeTitel(String stitel){
 		super.setzeTitel(stitel);

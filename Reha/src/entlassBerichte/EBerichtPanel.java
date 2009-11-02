@@ -376,7 +376,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				if(this.neu){
 					doSpeichernNeu();	
 					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
-					Gutachten.gutachten.holeGutachten(PatGrundPanel.thisClass.aktPatID, "");
+					Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
 				}else{
 					doSpeichernAlt();
 					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
@@ -385,7 +385,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				if(this.neu){
 					doSpeichernNachsorgeNeu();
 					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
-					Gutachten.gutachten.holeGutachten(PatGrundPanel.thisClass.aktPatID, "");
+					Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
 				}else{
 					doSpeichernNachsorgeAlt();
 					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
@@ -538,7 +538,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				String empf = (String) cbktraeger.getSelectedItem();
 				String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
-				Gutachten.gutachten.aktualisiereGutachten(DatFunk.sHeute(),btype,empf,"Reha-Arzt",berichtid,pat_intern);
+				Reha.thisClass.patpanel.gutachten.aktualisiereGutachten(DatFunk.sHeute(),btype,empf,"Reha-Arzt",berichtid,pat_intern);
 				Reha.thisClass.progressStarten(false);
 			}else{
 				jetztneu = false;
@@ -577,7 +577,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	/////		
 			doSpeichernNachsorgeAlt();
 			System.out.println("Nach Speichern alt");
-			Gutachten.gutachten.neuesGutachten(Integer.toString(berichtid),
+			Reha.thisClass.patpanel.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
 			
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -648,7 +648,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(!jetztneu){
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			String empf = (String) cbktraeger.getSelectedItem();
-			Gutachten.gutachten.aktualisiereGutachten(DatFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Reha-Arzt",berichtid,pat_intern);
+			Reha.thisClass.patpanel.gutachten.aktualisiereGutachten(DatFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Reha-Arzt",berichtid,pat_intern);
 			Reha.thisClass.progressStarten(false);
 		}else{
 			jetztneu = false;
@@ -676,7 +676,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			System.out.println("Historie- und Bericht wurden angelegt");
 			doSpeichernAlt();
 			System.out.println("Nach Speichern alt");
-			Gutachten.gutachten.neuesGutachten(Integer.toString(berichtid),
+			Reha.thisClass.patpanel.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			Reha.thisClass.progressStarten(false);

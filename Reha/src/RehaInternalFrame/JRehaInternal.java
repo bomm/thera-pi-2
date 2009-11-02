@@ -358,7 +358,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 					}
 
 				}catch(java.lang.ArrayIndexOutOfBoundsException ex){
-					//System.out.println("****************Fehler**************");
+					System.out.println("****************Fehler**************");
+					ex.printStackTrace();
 				}
 			}
 			

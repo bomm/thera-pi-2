@@ -161,7 +161,7 @@ public void paintComponent( Graphics g ) {
 			 */
 			/**********************************************/
 			
-			if((!this.spalteAktiv) || (!TerminFenster.thisClass.dragStart)){
+			if((!this.spalteAktiv) || (!Reha.thisClass.terminpanel.dragStart)){
 				//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 				//TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 			}
@@ -275,7 +275,7 @@ public void paintComponent( Graphics g ) {
 							if (sReznr.contains("@FREI")){
 								//TerminFenster.thisClass.dragLab[this.panelNummer].setVisible(false);
 								//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
-								TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+								Reha.thisClass.terminpanel.dragLab[this.panelNummer].setText("");
 
 								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sName, 5, (baseline));
 						
@@ -283,14 +283,11 @@ public void paintComponent( Graphics g ) {
 							}else{
 								if(this.spalteAktiv){
 									
-									if((!sName.equals("") || TerminFenster.thisClass.ansicht==TerminFenster.thisClass.MASKEN_ANSICHT) ){
+									if((!sName.equals("") || Reha.thisClass.terminpanel.ansicht==Reha.thisClass.terminpanel.MASKEN_ANSICHT) ){
 										if(yDifferenz < 12){
 											//System.out.println("Y-Differenz ist kleiner 12: "+yDifferenz);
 											if(yDifferenz > 0){
-												//System.out.println("Y-Differenz ist kleiner 12 und größer 0: "+yDifferenz);
-												//g2d.drawImage(skaliereImage(yDifferenz-1),xStart+1,yStartMin+1,null);
-												TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
-												//TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin+1,xStart+yDifferenz-1, yDifferenz-2);
+												Reha.thisClass.terminpanel.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
 												g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											}else{
 												//System.out.println("Y-Differenz ist kleiner 12 und kleiner 0: "+yDifferenz);
@@ -307,7 +304,7 @@ public void paintComponent( Graphics g ) {
 											*/
 										}else{
 											//System.out.println("Y-Differenz ist größer 12: "+yDifferenz);
-											TerminFenster.thisClass.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
+											Reha.thisClass.terminpanel.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
 											g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											g2d.drawString(sStart.substring(0,5)+"-"+
 													sName
@@ -323,8 +320,8 @@ public void paintComponent( Graphics g ) {
 												, 5, (baseline));
 									
 										g2d.draw3DRect(xStart, yStartMin, xEnde-3, yDifferenz-1, true);
-										TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
-										TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
+										Reha.thisClass.terminpanel.dragLab[this.panelNummer].setIcon(null);
+										Reha.thisClass.terminpanel.dragLab[this.panelNummer].setText("");
 									}
 									
 								}else{
@@ -885,8 +882,8 @@ public void paintComponent( Graphics g ) {
 			aktivPunkt[1] = -1;
 			aktivPunkt[2] = -1;
 			aktivPunkt[3] = -1;
-			TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
-			TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
+			Reha.thisClass.terminpanel.dragLab[this.panelNummer].setText("");
+			Reha.thisClass.terminpanel.dragLab[this.panelNummer].setIcon(null);
 	}
 	public void  setSpalteaktiv(boolean aktiv){
 		

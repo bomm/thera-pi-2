@@ -89,10 +89,10 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 
 		gutachtenArt = xtf;
 		gutachtenArt.setText("");
-		PinPanel pinPanel = new PinPanel();
+		pinPanel = new PinPanel();
 		pinPanel.setName("GutachtenWahl");
 		pinPanel.getGruen().setVisible(false);
-		setPinPanel(pinPanel);
+		//setPinPanel(pinPanel);
 		getSmartTitledPanel().setTitle("Neues Gutachten erstellen");
 
 		setSize(300,180);

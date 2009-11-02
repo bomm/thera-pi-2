@@ -52,18 +52,18 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		System.out.println("Termin-Internal geschlossen***************");
 
 		rEvent.removeRehaEventListener((RehaEventListener) this);
-		if(TerminFenster.thisClass != null){
+		if(Reha.thisClass.terminpanel != null){
 			try{
-				TerminFenster.thisClass.db_Aktualisieren.interrupt();
+				Reha.thisClass.terminpanel.db_Aktualisieren.interrupt();
 			}catch(Exception ex){
 				
 			}
 		}
-		if(TerminFenster.thisClass != null){
-			TerminFenster.thisClass.eltern = null;			
+		if(Reha.thisClass.terminpanel != null){
+			Reha.thisClass.terminpanel = null;			
 		}
 		
-		TerminFenster.thisClass = null;
+		Reha.thisClass.terminpanel = null;
 		this.nord = null;
 		this.inhalt = null;
 		this.thisContent = null;

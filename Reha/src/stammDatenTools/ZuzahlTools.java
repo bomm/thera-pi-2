@@ -1,5 +1,7 @@
 package stammDatenTools;
 
+import hauptFenster.Reha;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
@@ -66,15 +68,15 @@ public class ZuzahlTools {
 		    }
 		};	
 		Collections.sort(tage,comparator);
-		String rez_nr = (String) PatGrundPanel.thisClass.vecaktrez.get(1);
-		String unter18 = (String) PatGrundPanel.thisClass.vecaktrez.get(60);
-		String pat_int = (String) PatGrundPanel.thisClass.vecaktrez.get(0);
-		String aktzzstatus = (String) PatGrundPanel.thisClass.vecaktrez.get(39);
-		String aktzzregel = (String) PatGrundPanel.thisClass.vecaktrez.get(63);
+		String rez_nr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
+		String unter18 = (String) Reha.thisClass.patpanel.vecaktrez.get(60);
+		String pat_int = (String) Reha.thisClass.patpanel.vecaktrez.get(0);
+		String aktzzstatus = (String) Reha.thisClass.patpanel.vecaktrez.get(39);
+		String aktzzregel = (String) Reha.thisClass.patpanel.vecaktrez.get(63);
 		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
 			String stichtag = "";
-			String geburtstag = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
-			String gebtag = (DatFunk.sDatInDeutsch((String)PatGrundPanel.thisClass.vecaktrez.get(22))).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+			String geburtstag = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
+			String gebtag = (DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(22))).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
 			
 			boolean einergroesser = false;
 			int erstergroesser = -1; 
@@ -93,7 +95,7 @@ public class ZuzahlTools {
 				//String cmd = "update verordn set zzstatus='2' where rez_nr='"+rez_nr+" LIMIT 1";
 				//new ExUndHop().setzeStatement(cmd);
 				SqlInfo.aktualisiereSaetze("verordn", "zzstatus='2'", "rez_nr='"+rez_nr+"' LIMIT 1");
-				AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),2);				
+				Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),2);				
 				ret[0] = new Boolean(true); 
 				ret[1] = new Integer(tage.size());
 				ret[2] = new Integer(erstergroesser-1);
@@ -109,11 +111,11 @@ public class ZuzahlTools {
 				if(tagex <= 0 && tagex > -45){
 					//JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
 							//"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
-					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),3);
+					Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),3);
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(3);					
 				}else{
-					AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),0);
+					Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),0);
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='0'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(0);
 				}
@@ -123,7 +125,7 @@ public class ZuzahlTools {
 				
 			}
 		}else if(unter18.equals("T") && (aktzzregel.equals("0"))){
-			AktuelleRezepte.aktRez.setzeBild(AktuelleRezepte.aktRez.tabaktrez.getSelectedRow(),0);			
+			Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),0);			
 			ret[0] = Boolean.valueOf(false); 
 			ret[1] = tage.size();
 			ret[4] = new Integer(0);			

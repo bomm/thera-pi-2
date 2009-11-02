@@ -1,5 +1,7 @@
 package terminKalender;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -128,7 +130,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 		((JXTitledPanel)this.getContentPane()).getContentContainer().add(jcc,BorderLayout.CENTER);
 		
 		
-		this.wahl = ((TerminFenster) TerminFenster.thisClass).aktuellesSet();
+		this.wahl = ((TerminFenster) Reha.thisClass.terminpanel).aktuellesSet();
 		this.jList1.setSelectedIndex(this.wahl);
 		this.validate();
 		

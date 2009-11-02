@@ -1,5 +1,7 @@
 package entlassBerichte;
 
+import hauptFenster.Reha;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -54,9 +56,9 @@ public class EBerichtTab {
 		bisher = bisher.replaceAll("<html>", "");
 		String titel = "";
 		titel = titel+ bisher;
-		titel = titel+"  [Patient: "+PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		PatGrundPanel.thisClass.patDaten.get(3)+" geb. am:"+
-		DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4))+ 
+		titel = titel+"  [Patient: "+Reha.thisClass.patpanel.patDaten.get(2)+", "+
+		Reha.thisClass.patpanel.patDaten.get(3)+" geb. am:"+
+		DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4))+ 
 		(eltern.neu ? "   (Neuanlage)]" : "   (Bericht-ID:"+eltern.berichtid+")]");
 		eltern.jry.setTitle(titel);
 

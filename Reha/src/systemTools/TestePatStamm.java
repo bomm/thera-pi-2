@@ -1,6 +1,7 @@
 package systemTools;
 
 import hauptFenster.AktiveFenster;
+import hauptFenster.Reha;
 
 import javax.swing.JComponent;
 
@@ -14,16 +15,16 @@ public class TestePatStamm {
 		if(patient == null){
 			return "";
 		}
-		if(! (PatGrundPanel.thisClass.vecaktrez == null)){
-			if(PatGrundPanel.thisClass.vecaktrez.size() > 0){
-				return (String)PatGrundPanel.thisClass.vecaktrez.get(16);
+		if(! (Reha.thisClass.patpanel.vecaktrez == null)){
+			if(Reha.thisClass.patpanel.vecaktrez.size() > 0){
+				return (String)Reha.thisClass.patpanel.vecaktrez.get(16);
 			}
 		}
-		if(! (PatGrundPanel.thisClass.patDaten == null)){	
-			if(PatGrundPanel.thisClass.patDaten.size() > 0){
+		if(! (Reha.thisClass.patpanel.patDaten == null)){	
+			if(Reha.thisClass.patpanel.patDaten.size() > 0){
 				//System.out.println("größe der PatDaten = "+PatGrundPanel.thisClass.patDaten.size());
 				//System.out.println("größe der PatDaten = "+PatGrundPanel.thisClass.patDaten);
-				return (String) PatGrundPanel.thisClass.patDaten.get(67);
+				return (String) Reha.thisClass.patpanel.patDaten.get(67);
 			}	
 		}else{
 			return "";
@@ -36,14 +37,14 @@ public class TestePatStamm {
 		if(patient == null){
 			return "";
 		}
-		if(! (PatGrundPanel.thisClass.vecaktrez == null)){
-			if(PatGrundPanel.thisClass.vecaktrez.size() > 0){
-				return (String)PatGrundPanel.thisClass.vecaktrez.get(37);
+		if(! (Reha.thisClass.patpanel.vecaktrez == null)){
+			if(Reha.thisClass.patpanel.vecaktrez.size() > 0){
+				return (String)Reha.thisClass.patpanel.vecaktrez.get(37);
 			}
 		}
-		if(! (PatGrundPanel.thisClass.patDaten == null)){	
-			if(PatGrundPanel.thisClass.patDaten.size() > 0){			
-				return (String) PatGrundPanel.thisClass.patDaten.get(68);
+		if(! (Reha.thisClass.patpanel.patDaten == null)){	
+			if(Reha.thisClass.patpanel.patDaten.size() > 0){			
+				return (String) Reha.thisClass.patpanel.patDaten.get(68);
 			}
 		}else{
 			return "";

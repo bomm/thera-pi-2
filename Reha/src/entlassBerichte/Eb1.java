@@ -179,12 +179,12 @@ public class Eb1 implements ActionListener,ComponentListener {
 		return pan;
 	}
 	private void doKopfNeu(){
-		eltern.btf[2].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2))+
-				", "+StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3)));
-		eltern.btf[3].setText(DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4)));
-		eltern.btf[4].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(21)));
-		eltern.btf[5].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(23)));
-		eltern.btf[6].setText(StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(24)));		
+		eltern.btf[2].setText(StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2))+
+				", "+StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3)));
+		eltern.btf[3].setText(DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)));
+		eltern.btf[4].setText(StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(21)));
+		eltern.btf[5].setText(StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(23)));
+		eltern.btf[6].setText(StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(24)));		
 	}
 
 	private void laden(){

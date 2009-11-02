@@ -127,7 +127,7 @@ import events.RehaTPEventListener;
 public class PatGrundPanel extends JXPanel implements KeyListener, PatStammEventListener,ContainerListener{
 	
 public JXPanel patGrund = null;
-public static PatGrundPanel thisClass = null;
+public PatGrundPanel thisClass = null;
 public JFormattedTextField tfsuchen;
 public JPatTextField[] ptfield = {null,null,null,null,null,null,
 		null,null,null,null,null,null,null,null,null};
@@ -155,7 +155,7 @@ public AktuelleRezepte aktRezept = null;
 Historie historie = null;
 TherapieBerichte berichte = null;
 Dokumentation dokumentation = null;
-Gutachten gutachten = null;
+public Gutachten gutachten = null;
 /********************/
 public JButton[] memobut = {null,null,null,null,null,null};
 
@@ -286,7 +286,7 @@ public PatGrundPanel(JPatientInternal jry){
 			// TODO Auto-generated method stub
 			if(arg0.getSource() instanceof JLabel){
 				if(((JComponent)arg0.getSource()).getName().equals("Suchen")){
-					PatGrundPanel.thisClass.starteSuche();
+					Reha.thisClass.patpanel.starteSuche();
 					return;
 				}
 			}
@@ -333,20 +333,20 @@ public PatGrundPanel(JPatientInternal jry){
 		}
 		
 	};
-	
+	try{
 	setOpaque(false);
 	setBackground(Color.WHITE);
 	setBorder(BorderFactory.createEmptyBorder());
 	setLayout(new BorderLayout());
 	
-	ObenPanel op = new ObenPanel();
+	ObenPanel op = new ObenPanel(this);
 	op.addFocusListener(getFocusListener());
 	add(op,BorderLayout.NORTH);
 
 	JXPanel gridp = new JXPanel(new GridLayout(1,1));
 	gridp.setOpaque(false);
 
-	HauptPanel hp = new HauptPanel();
+	HauptPanel hp = new HauptPanel(this);
 	hp.addFocusListener(getFocusListener());
 
 	gridp.add(hp);
@@ -357,24 +357,19 @@ public PatGrundPanel(JPatientInternal jry){
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
+			try{
 			imgzuzahl[0] = SystemConfig.hmSysIcons.get("zuzahlfrei");
 			imgzuzahl[1] = SystemConfig.hmSysIcons.get("zuzahlok");			
 			imgzuzahl[2] = SystemConfig.hmSysIcons.get("zuzahlnichtok");
 			imgzuzahl[3] = SystemConfig.hmSysIcons.get("kleinehilfe");
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			return null;
 		}
 		
 	}.execute();
-	add(new ButtonPanel(),BorderLayout.SOUTH);
-	new SwingWorker<Void,Void>(){
-
-		@Override
-		protected Void doInBackground() throws Exception {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-	}.execute();
+	add(new ButtonPanel(this),BorderLayout.SOUTH);
 
 
 	final ObenPanel xop = op;
@@ -401,37 +396,40 @@ public PatGrundPanel(JPatientInternal jry){
 	 		   ptfield[5].setEditable(false);
 	 		   ptfield[5].setBackground(Color.WHITE);
 	 		   tfsuchen.requestFocus();
-	 		   PatGrundPanel.thisClass.jry.setSpecialActive(true);
+	 		   Reha.thisClass.patpanel.jry.setSpecialActive(true);
 	 		   	//tf[0].requestFocusInWindow();
 	 	   }
 	});
+	}catch(Exception ex){
+		ex.printStackTrace();
+	}
 	
 	SwingUtilities.invokeLater(new Runnable(){
 		public  void run(){
 			KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);
-			PatGrundPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
-			PatGrundPanel.thisClass.getActionMap().put("doSuchen", new PatientAction());
+			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
+			Reha.thisClass.patpanel.getActionMap().put("doSuchen", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_MASK);
-			PatGrundPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
-			PatGrundPanel.thisClass.getActionMap().put("doNeu", new PatientAction());	
+			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
+			Reha.thisClass.patpanel.getActionMap().put("doNeu", new PatientAction());	
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_MASK);
-			PatGrundPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
-			PatGrundPanel.thisClass.getActionMap().put("doEdit", new PatientAction());
+			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doEdit");
+			Reha.thisClass.patpanel.getActionMap().put("doEdit", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.ALT_MASK);
-			PatGrundPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
-			PatGrundPanel.thisClass.getActionMap().put("doDelete", new PatientAction());
+			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doDelete");
+			Reha.thisClass.patpanel.getActionMap().put("doDelete", new PatientAction());
 			stroke = KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_MASK);
-			PatGrundPanel.thisClass.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFormulare");
-			PatGrundPanel.thisClass.getActionMap().put("doFormulare", new PatientAction());
+			Reha.thisClass.patpanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFormulare");
+			Reha.thisClass.patpanel.getActionMap().put("doFormulare", new PatientAction());
 			holeFormulare();
-			if(TerminFenster.thisClass != null){
+			if(Reha.thisClass.terminpanel != null){
 		    	//TerminFenster.thisClass.setUpdateVerbot(true);
 		    }
 
    	  	}
 	});
 	
-
+	System.out.println("**************PatPanel wurde konstruiert*******************");
 	validate();
 }
 public void setzeFocus(){
@@ -542,7 +540,7 @@ public void delete(){
 }
 public void edit(){
 	if(!aktPatID.equals("")){
-		PatGrundPanel.thisClass.neuanlagePatient(false,"");	
+		Reha.thisClass.patpanel.neuanlagePatient(false,"");	
 	}else{
 		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bitteschön wollen Sie editieren?");
 		setzeFocus();
@@ -550,7 +548,7 @@ public void edit(){
 	}
 }
 public void neu(){
-	PatGrundPanel.thisClass.neuanlagePatient(true,"");		
+	Reha.thisClass.patpanel.neuanlagePatient(true,"");		
 }
 
 public void arztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
@@ -562,9 +560,9 @@ public void arztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
 	String sets = "aerzte='"+aliste+"'";
 	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
 	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
-	if(PatGrundPanel.thisClass.aktPatID.equals(xpatintern)){
-		System.out.println("Länge des patDaten.Arrays = "+PatGrundPanel.thisClass.patDaten.size());
-		PatGrundPanel.thisClass.patDaten.set(63,aliste);		
+	if(Reha.thisClass.patpanel.aktPatID.equals(xpatintern)){
+		System.out.println("Länge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
+		Reha.thisClass.patpanel.patDaten.set(63,aliste);		
 	}
 
 }
@@ -572,8 +570,8 @@ public void arztListeSpeichernString(String aliste,boolean neu, String xpatinter
 	String sets = "aerzte='"+aliste+"'";
 	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
 	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
-	if(PatGrundPanel.thisClass.aktPatID.equals(xpatintern)){
-		PatGrundPanel.thisClass.patDaten.set(63,aliste);		
+	if(Reha.thisClass.patpanel.aktPatID.equals(xpatintern)){
+		Reha.thisClass.patpanel.patDaten.set(63,aliste);		
 	}
 
 }
@@ -597,8 +595,8 @@ private void allesAufNull(){
 		}
 	}
 	// Text der Memofelder löschen
-	PatGrundPanel.thisClass.pmemo[0].setText("");
-	PatGrundPanel.thisClass.pmemo[1].setText("");
+	Reha.thisClass.patpanel.pmemo[0].setText("");
+	Reha.thisClass.patpanel.pmemo[1].setText("");
 
 	
 }
@@ -613,7 +611,7 @@ class PatientAction extends AbstractAction {
         //System.out.println("Patient Action = "+e.getActionCommand());
         //System.out.println(e);
         if(e.getActionCommand().equals("f")){
-        	 PatGrundPanel.thisClass.tfsuchen.requestFocus();
+        	 Reha.thisClass.patpanel.tfsuchen.requestFocus();
         }
         if(e.getActionCommand().equals("n")){
         	neu();
@@ -626,7 +624,7 @@ class PatientAction extends AbstractAction {
        		delete();
         }	            
         if(e.getActionCommand().equals("b")){
-        	PatGrundPanel.thisClass.starteFormulare();
+        	Reha.thisClass.patpanel.starteFormulare();
         }	            
     }
 }
@@ -640,7 +638,7 @@ public FocusListener getTextFieldFocusListener(){
 			//System.out.println(((JComponent)e.getSource()).getParent().getParent());
 			if(((JComponent)e.getSource()).getName().equals("suchenach") && inMemo > -1 ){
 				//JOptionPane.showMessageDialog(null,"Bitte zuerst das Memofeld abspeichern");
-				PatGrundPanel.thisClass.pmemo[inMemo].requestFocus();
+				Reha.thisClass.patpanel.pmemo[inMemo].requestFocus();
 				//return;
 			}
 			if(!jry.getActive()){
@@ -694,7 +692,7 @@ public void starteSuche(){
 		}
 	}
 	if (sucheComponent != null){
-		Point thispoint = PatGrundPanel.thisClass.getLocationOnScreen();
+		Point thispoint = Reha.thisClass.patpanel.getLocationOnScreen();
 		((SuchenDialog) sucheComponent).setLocation(thispoint.x+30, thispoint.y+80);
 		if(! tfsuchen.getText().trim().equals(lastseek)){
 			((SuchenDialog) sucheComponent).suchDasDing(tfsuchen.getText());
@@ -703,8 +701,8 @@ public void starteSuche(){
 		((SuchenDialog) sucheComponent).setVisible(true);
 		//((SuchenDialog) sucheComponent).setzeFocusAufSucheFeld();
 	}else{
-		sucheComponent = new SuchenDialog(null,PatGrundPanel.thisClass,tfsuchen.getText());
-		Point thispoint = PatGrundPanel.thisClass.getLocationOnScreen();
+		sucheComponent = new SuchenDialog(null,Reha.thisClass.patpanel,tfsuchen.getText());
+		Point thispoint = Reha.thisClass.patpanel.getLocationOnScreen();
 		((SuchenDialog) sucheComponent).setLocation(thispoint.x+30, thispoint.y+80);
 		((SuchenDialog) sucheComponent).setVisible(true);
 		lastseek = tfsuchen.getText().trim();
@@ -719,71 +717,71 @@ public void doMemoAction(ActionEvent arg0){
 	String sc = arg0.getActionCommand();
 	if(sc.equals("kedit")){
 		inMemo = 0;
-		PatGrundPanel.thisClass.memobut[0].setEnabled(false);
-		PatGrundPanel.thisClass.memobut[1].setEnabled(true);
-		PatGrundPanel.thisClass.memobut[2].setEnabled(true);
-		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.RED);
-		PatGrundPanel.thisClass.pmemo[0].setEditable(true);
-		PatGrundPanel.thisClass.pmemo[0].setCaretPosition(0);
-		PatGrundPanel.thisClass.memobut[3].setEnabled(false);
+		memobut[0].setEnabled(false);
+		memobut[1].setEnabled(true);
+		memobut[2].setEnabled(true);
+		pmemo[0].setForeground(Color.RED);
+		pmemo[0].setEditable(true);
+		pmemo[0].setCaretPosition(0);
+		memobut[3].setEnabled(false);
 		return;
 	}
 	if(sc.equals("kedit2")){
 		inMemo = 1;
-		PatGrundPanel.thisClass.memobut[3].setEnabled(false);
-		PatGrundPanel.thisClass.memobut[4].setEnabled(true);
-		PatGrundPanel.thisClass.memobut[5].setEnabled(true);
-		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.RED);
-		PatGrundPanel.thisClass.pmemo[1].setEditable(true);
-		PatGrundPanel.thisClass.pmemo[1].setCaretPosition(0);
-		PatGrundPanel.thisClass.memobut[0].setEnabled(false);
+		memobut[3].setEnabled(false);
+		memobut[4].setEnabled(true);
+		memobut[5].setEnabled(true);
+		pmemo[1].setForeground(Color.RED);
+		pmemo[1].setEditable(true);
+		pmemo[1].setCaretPosition(0);
+		memobut[0].setEnabled(false);
 		return;
 	}
 	if(sc.equals("ksave")){
-		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
-		PatGrundPanel.thisClass.memobut[1].setEnabled(false);
-		PatGrundPanel.thisClass.memobut[2].setEnabled(false);
-		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
-		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
-		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
-		String cmd = "update pat5 set anamnese='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[0].getText())+"' where id='"+
-		PatGrundPanel.thisClass.autoPatid+"'";
+		memobut[0].setEnabled(true);
+		memobut[1].setEnabled(false);
+		memobut[2].setEnabled(false);
+		pmemo[0].setForeground(Color.BLUE);
+		pmemo[0].setEditable(false);
+		memobut[3].setEnabled(true);
+		String cmd = "update pat5 set anamnese='"+StringTools.Escaped(Reha.thisClass.patpanel.pmemo[0].getText())+"' where id='"+
+		Reha.thisClass.patpanel.autoPatid+"'";
 		new ExUndHop().setzeStatement(cmd);
 		inMemo = -1;
 		return;
 	}
 	if(sc.equals("ksave2")){
-		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
-		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
-		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
-		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
-		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
-		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
-		String cmd = "update pat5 set pat_text='"+StringTools.Escaped(PatGrundPanel.thisClass.pmemo[1].getText())+"' where id='"+
-		PatGrundPanel.thisClass.autoPatid+"'";
+		memobut[3].setEnabled(true);
+		memobut[4].setEnabled(false);
+		memobut[5].setEnabled(false);
+		pmemo[1].setForeground(Color.BLUE);
+		pmemo[1].setEditable(false);
+		memobut[0].setEnabled(true);
+		String cmd = "update pat5 set pat_text='"+StringTools.Escaped(Reha.thisClass.patpanel.pmemo[1].getText())+"' where id='"+
+		Reha.thisClass.patpanel.autoPatid+"'";
 		new ExUndHop().setzeStatement(cmd);
 		inMemo = -1;
 		return;
 	}
 	if(sc.equals("kbreak")){
-		PatGrundPanel.thisClass.memobut[0].setEnabled(true);
-		PatGrundPanel.thisClass.memobut[1].setEnabled(false);
-		PatGrundPanel.thisClass.memobut[2].setEnabled(false);
-		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
-		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
-		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
-		PatGrundPanel.thisClass.pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
+		memobut[0].setEnabled(true);
+		memobut[1].setEnabled(false);
+		memobut[2].setEnabled(false);
+		pmemo[0].setForeground(Color.BLUE);
+		pmemo[0].setEditable(false);
+		memobut[3].setEnabled(true);
+		pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
 		inMemo = -1;
 		return;
 	}
 	if(sc.equals("kbreak2")){
-		PatGrundPanel.thisClass.memobut[3].setEnabled(true);
-		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
-		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
-		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
-		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
-		PatGrundPanel.thisClass.memobut[0].setEnabled(true);		
-		PatGrundPanel.thisClass.pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
+		memobut[3].setEnabled(true);
+		memobut[4].setEnabled(false);
+		memobut[5].setEnabled(false);
+		pmemo[1].setForeground(Color.BLUE);
+		pmemo[1].setEditable(false);
+		memobut[0].setEnabled(true);		
+		pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
 		inMemo = -1;
 		return;
 	}
@@ -866,13 +864,13 @@ public void neuanlagePatient(boolean lneu,String feldname){
  * Suche Panel
  *********************************/
 class ObenPanel extends JXPanel{
-	public ObenPanel(){
+	public ObenPanel(PatGrundPanel eltern){
 		super();
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder());
 		add(new SuchePanel(),BorderLayout.NORTH);
-		add(new StammDatenPanel(),BorderLayout.SOUTH);
+		add(new StammDatenPanel(eltern),BorderLayout.SOUTH);
 		validate();
 	}
 }
@@ -881,7 +879,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		super();
 		/*
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,new Color(231,120,23)};
 	     LinearGradientPaint p =
@@ -933,7 +931,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		      public void actionPerformed(ActionEvent e) {
 		    	  String comm = e.getActionCommand();
 		    	  if(comm.equals("patneuanlage")){
-		    		  PatGrundPanel.thisClass.neuanlagePatient(true,"");
+		    		  Reha.thisClass.patpanel.neuanlagePatient(true,"");
 		    	  }
 		      }
 		};
@@ -1027,12 +1025,14 @@ class SuchePanel extends JXPanel implements ActionListener{
  * Suche Panel
  *********************************/
 class ButtonPanel extends JXPanel{
-	public ButtonPanel(){
+
+	public ButtonPanel(PatGrundPanel eltern){
 		super();
-		System.out.println("PatGrundPanel.thisClass.getWidth() = " +PatGrundPanel.thisClass.getWidth());
+
+		//System.out.println("Reha.thisClass.patpanel.getWidth() = " +Reha.thisClass.patpanel.getWidth());
 		/*
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),15);//vorher 45
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),15);//vorher 45
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Colors.PiOrange.alpha(0.5f),Color.WHITE};
 	     //Color[] colors = {Colors.TaskPaneBlau.alpha(0.5f),Color.WHITE};
@@ -1088,10 +1088,10 @@ public void patStammEventOccurred(PatStammEvent evt) {
 						SwingUtilities.invokeLater(new Runnable(){
 						 	   public  void run()
 						 	   {
-						 		   String titel = "Patient: "+PatGrundPanel.thisClass.ptfield[2].getText()+", "+
-						 					PatGrundPanel.thisClass.ptfield[3].getText()+" geboren am: "+
-						 					PatGrundPanel.thisClass.ptfield[4].getText();
-						 			PatGrundPanel.thisClass.jry.setzeTitel(titel);
+						 		   String titel = "Patient: "+Reha.thisClass.patpanel.ptfield[2].getText()+", "+
+						 					Reha.thisClass.patpanel.ptfield[3].getText()+" geboren am: "+
+						 					Reha.thisClass.patpanel.ptfield[4].getText();
+						 			Reha.thisClass.patpanel.jry.setzeTitel(titel);
 						 			//System.out.println("neuer Titel = "+titel);
 						 	   }
 						});
@@ -1106,8 +1106,8 @@ public void patStammEventOccurred(PatStammEvent evt) {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-									PatGrundPanel.thisClass.patDaten.clear();
-									PatGrundPanel.thisClass.patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+xpatint+"'", Arrays.asList(new String[] {}));
+									Reha.thisClass.patpanel.patDaten.clear();
+									Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+xpatint+"'", Arrays.asList(new String[] {}));
 									//System.out.println("Fertig mit einlesen der kompletten Pat-Daten");
 									PatTools.constructPatHMap();		
 									ArztTools.constructArztHMap("");
@@ -1198,7 +1198,7 @@ public void patStammEventOccurred(PatStammEvent evt) {
 			}
 		}.start();
 		
-		//PatGrundPanel.thisClass.jtab.validate();
+		//Reha.thisClass.patpanel.jtab.validate();
 		int i = jtab.getTabCount();
 		for(int y = 0;y < i;y++){
 			//System.out.println("Tabtitel von "+y+" = "+jtab.getTitleAt(y));
@@ -1281,45 +1281,45 @@ class DatenHolen{
 			String colname = "";
 			String colvalue = "";
 			for(int i = 0; i < 15; i++){
-				colname = PatGrundPanel.thisClass.ptfield[i].getName();
+				colname = Reha.thisClass.patpanel.ptfield[i].getName();
 				if(colname.equals("GEBOREN")){
 					colvalue = DatFunk.sDatInDeutsch(rs.getString("GEBOREN"))+" "; 	
 				}else{
 					colvalue = rs.getString(colname);
 				}
-				PatGrundPanel.thisClass.ptfield[i].setText(StringTools.EGross(colvalue));
+				Reha.thisClass.patpanel.ptfield[i].setText(StringTools.EGross(colvalue));
 			}
 			//InputStream ins = null;
 			String instring = (rs.getString("ANAMNESE")==null ? "" : rs.getString("ANAMNESE"));
 			//System.out.println("Anamnese inhalt = "+instring);
 			if(instring.equals("")){
-				PatGrundPanel.thisClass.pmemo[0].setText("");
+				Reha.thisClass.patpanel.pmemo[0].setText("");
 			}else{
-				PatGrundPanel.thisClass.pmemo[0].setText(instring);				
+				Reha.thisClass.patpanel.pmemo[0].setText(instring);				
 			}
 			instring = (rs.getString("PAT_TEXT")==null ? "" : rs.getString("PAT_TEXT"));
 			//System.out.println("Pat_text inhalt = "+instring);			
 			if(instring.equals("")){
-				PatGrundPanel.thisClass.pmemo[1].setText("");
+				Reha.thisClass.patpanel.pmemo[1].setText("");
 			}else{
-				PatGrundPanel.thisClass.pmemo[1].setText(instring);				
+				Reha.thisClass.patpanel.pmemo[1].setText(instring);				
 			}
-			PatGrundPanel.thisClass.autoPatid = rs.getInt("id");
-			PatGrundPanel.thisClass.aid = StringTools.ZahlTest(rs.getString("arztid"));
-			PatGrundPanel.thisClass.kid = StringTools.ZahlTest(rs.getString("kassenid"));
-			if(PatGrundPanel.thisClass.aid < 0){
-				PatGrundPanel.thisClass.ptfield[13].setForeground(Color.RED);
-				PatGrundPanel.thisClass.ptfield[13].setFont(PatGrundPanel.thisClass.fehler);
+			Reha.thisClass.patpanel.autoPatid = rs.getInt("id");
+			Reha.thisClass.patpanel.aid = StringTools.ZahlTest(rs.getString("arztid"));
+			Reha.thisClass.patpanel.kid = StringTools.ZahlTest(rs.getString("kassenid"));
+			if(Reha.thisClass.patpanel.aid < 0){
+				Reha.thisClass.patpanel.ptfield[13].setForeground(Color.RED);
+				Reha.thisClass.patpanel.ptfield[13].setFont(Reha.thisClass.patpanel.fehler);
 			}else{
-				PatGrundPanel.thisClass.ptfield[13].setForeground(Color.BLUE);
-				PatGrundPanel.thisClass.ptfield[13].setFont(PatGrundPanel.thisClass.font);
+				Reha.thisClass.patpanel.ptfield[13].setForeground(Color.BLUE);
+				Reha.thisClass.patpanel.ptfield[13].setFont(Reha.thisClass.patpanel.font);
 			}
-			if(PatGrundPanel.thisClass.kid < 0){
-				PatGrundPanel.thisClass.ptfield[14].setForeground(Color.RED);				
-				PatGrundPanel.thisClass.ptfield[14].setFont(PatGrundPanel.thisClass.fehler);
+			if(Reha.thisClass.patpanel.kid < 0){
+				Reha.thisClass.patpanel.ptfield[14].setForeground(Color.RED);				
+				Reha.thisClass.patpanel.ptfield[14].setFont(Reha.thisClass.patpanel.fehler);
 			}else{
-				PatGrundPanel.thisClass.ptfield[14].setForeground(Color.BLUE);				
-				PatGrundPanel.thisClass.ptfield[14].setFont(PatGrundPanel.thisClass.font);
+				Reha.thisClass.patpanel.ptfield[14].setForeground(Color.BLUE);				
+				Reha.thisClass.patpanel.ptfield[14].setFont(Reha.thisClass.patpanel.font);
 			}
 
 		}
@@ -1373,7 +1373,7 @@ class XRezepteHolen{
 		rs = stmt.executeQuery(sstmt);
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		while( rs.next()){
-			//PatGrundPanel.thisClass.tabaktrez.get
+			//Reha.thisClass.patpanel.tabaktrez.get
 			//System.out.println("Aktuelles Rezept gefunden -> "+rs.getString("REZ_NR"));			
 		}
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1401,13 +1401,15 @@ class XRezepteHolen{
   }
 }
 class StammDatenPanel extends JXPanel{
-	public StammDatenPanel(){
+
+	public StammDatenPanel(PatGrundPanel eltern){
 		super();
 		setPreferredSize(new Dimension(0,100));
+
 		/*
 		setOpaque(true);
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),40);
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),40);
 	     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
 	     float[] dist = {0.0f, 1.00f};
 	     Color[] colors = {Colors.PiOrange.alpha(0.5f),Color.WHITE};	     
@@ -1419,9 +1421,9 @@ class StammDatenPanel extends JXPanel{
 	     setBackgroundPainter(new CompoundPainter(mp));
 	     */
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("StammDatenPanel"));
-		getStammDaten();
+		getStammDaten(eltern);
 	}
-	public void getStammDaten(){
+	public void getStammDaten(PatGrundPanel eltern){
 /*
 		FormLayout lay = new FormLayout(
 	               "0:grow(0.33), 2px, 0:grow(0.33),2px,0:grow(0.33)",
@@ -1432,7 +1434,7 @@ class StammDatenPanel extends JXPanel{
 	               "fill:0:grow(1.00)");
 			CellConstraints cc = new CellConstraints();
 			setLayout(lay);
-	    JScrollPane span = getAnrede();
+	    JScrollPane span = getAnrede(eltern);
 	    //span.setPreferredSize(new Dimension(270,100));
 	    JScrollPane jscr = new JScrollPane();
 	    jscr.setOpaque(false);
@@ -1453,13 +1455,13 @@ class StammDatenPanel extends JXPanel{
 */	    
 		validate();
 	}
-	public JScrollPane getAnrede(){
+	public JScrollPane getAnrede(PatGrundPanel eltern){
 		JXPanel anredepan = new JXPanel(new BorderLayout());
 		anredepan.setBorder(null);
 		setOpaque(true);
 		/*
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Colors.PiOrange.alpha(0.70f),Color.WHITE};
 	     LinearGradientPaint p =
@@ -1488,83 +1490,83 @@ class StammDatenPanel extends JXPanel{
 		pbui.setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		//pbui.setLayout(lay);
-		pbui.getPanel().addFocusListener(PatGrundPanel.thisClass.getFocusListener());
+		//pbui.getPanel().addFocusListener(Reha.thisClass.patpanel.getFocusListener());
 		pbui.add(new JLabel("Anrede"),cc.xy(2,3));
-		PatGrundPanel.thisClass.ptfield[0] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[0].setName("ANREDE");
-		pbui.add(PatGrundPanel.thisClass.ptfield[0],cc.xyw(4,3,2));
+		eltern.ptfield[0] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[0].setName("ANREDE");
+		pbui.add(eltern.ptfield[0],cc.xyw(4,3,2));
 		
 		pbui.add(new JLabel("Titel"),cc.xy(8,3));
-		PatGrundPanel.thisClass.ptfield[1] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[1].setName("TITEL");
-		pbui.add(PatGrundPanel.thisClass.ptfield[1],cc.xyw(10,3,2));		
+		eltern.ptfield[1] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[1].setName("TITEL");
+		pbui.add(eltern.ptfield[1],cc.xyw(10,3,2));		
 		/***************/
 		pbui.add(new JLabel("Name"),cc.xy(2,5));
-		PatGrundPanel.thisClass.ptfield[2] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[2].setName("N_NAME");		
-		pbui.add(PatGrundPanel.thisClass.ptfield[2],cc.xyw(4,5,8));		
+		eltern.ptfield[2] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[2].setName("N_NAME");		
+		pbui.add(eltern.ptfield[2],cc.xyw(4,5,8));		
 
 		pbui.add(new JLabel("Vorname"),cc.xy(2,7));
-		PatGrundPanel.thisClass.ptfield[3] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[3].setName("V_NAME");		
-		pbui.add(PatGrundPanel.thisClass.ptfield[3],cc.xyw(4,7,8));		
+		eltern.ptfield[3] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[3].setName("V_NAME");		
+		pbui.add(eltern.ptfield[3],cc.xyw(4,7,8));		
 
 		pbui.add(new JLabel("Geboren"),cc.xy(2,9));
-		PatGrundPanel.thisClass.ptfield[4] = new JPatTextField("XGROSS",false); //new JPatTextField("DATUM",true);
-		PatGrundPanel.thisClass.ptfield[4].setName("GEBOREN");		
-		pbui.add(PatGrundPanel.thisClass.ptfield[4],cc.xyw(4,9,2));
+		eltern.ptfield[4] = new JPatTextField("XGROSS",false); //new JPatTextField("DATUM",true);
+		eltern.ptfield[4].setName("GEBOREN");		
+		pbui.add(eltern.ptfield[4],cc.xyw(4,9,2));
 		
 		pbui.add(new JLabel("Kunden-Nr."),cc.xy(8,9));
-		PatGrundPanel.thisClass.ptfield[5] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[5].setName("PAT_INTERN");
-		pbui.add(PatGrundPanel.thisClass.ptfield[5],cc.xyw(10,9,2));		
+		eltern.ptfield[5] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[5].setName("PAT_INTERN");
+		pbui.add(eltern.ptfield[5],cc.xyw(10,9,2));		
 /**********2-te Spalte**************/
 		pbui.add(new JLabel("Telefon(p)"),cc.xy(13,3));
-		PatGrundPanel.thisClass.ptfield[6] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[6].setName("TELEFONP");
-		pbui.add(PatGrundPanel.thisClass.ptfield[6],cc.xyw(15,3,3));		
+		eltern.ptfield[6] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[6].setName("TELEFONP");
+		pbui.add(eltern.ptfield[6],cc.xyw(15,3,3));		
 
 		pbui.add(new JLabel("Telefon(g)"),cc.xy(13,5));
-		PatGrundPanel.thisClass.ptfield[7] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[7].setName("TELEFONG");		
-		pbui.add(PatGrundPanel.thisClass.ptfield[7],cc.xyw(15,5,3));		
+		eltern.ptfield[7] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[7].setName("TELEFONG");		
+		pbui.add(eltern.ptfield[7],cc.xyw(15,5,3));		
 
 		pbui.add(new JLabel("Mobil"),cc.xy(13,7));
-		PatGrundPanel.thisClass.ptfield[8] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[8].setName("TELEFONM");
-		PatGrundPanel.thisClass.ptfield[8].addMouseListener(PatGrundPanel.thisClass.ml);		
-		pbui.add(PatGrundPanel.thisClass.ptfield[8],cc.xyw(15,7,3));		
+		eltern.ptfield[8] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[8].setName("TELEFONM");
+		eltern.ptfield[8].addMouseListener(eltern.ml);		
+		pbui.add(eltern.ptfield[8],cc.xyw(15,7,3));		
 
 		pbui.add(new JLabel("Email"),cc.xy(13,9));
-		PatGrundPanel.thisClass.ptfield[9] = new JPatTextField("KLEIN",false);
-		PatGrundPanel.thisClass.ptfield[9].setName("EMAILA");
-		PatGrundPanel.thisClass.ptfield[9].addMouseListener(PatGrundPanel.thisClass.ml);
-		pbui.add(PatGrundPanel.thisClass.ptfield[9],cc.xyw(15,9,3));		
+		eltern.ptfield[9] = new JPatTextField("KLEIN",false);
+		eltern.ptfield[9].setName("EMAILA");
+		eltern.ptfield[9].addMouseListener(eltern.ml);
+		pbui.add(eltern.ptfield[9],cc.xyw(15,9,3));		
 
 /**********3-te Spalte**************/
 		pbui.add(new JLabel("Strasse"),cc.xy(20,3));
-		PatGrundPanel.thisClass.ptfield[10] = new JPatTextField("XROSS",false);
-		PatGrundPanel.thisClass.ptfield[10].setName("STRASSE");
-		pbui.add(PatGrundPanel.thisClass.ptfield[10],cc.xyw(22,3,6));		
+		eltern.ptfield[10] = new JPatTextField("XROSS",false);
+		eltern.ptfield[10].setName("STRASSE");
+		pbui.add(eltern.ptfield[10],cc.xyw(22,3,6));		
 
 		pbui.add(new JLabel("PLZ, Ort"),cc.xy(20,5));
-		PatGrundPanel.thisClass.ptfield[11] = new JPatTextField("ZAHLEN",false);
-		PatGrundPanel.thisClass.ptfield[11].setName("PLZ");		
-		pbui.add(PatGrundPanel.thisClass.ptfield[11],cc.xyw(22,5,2));		
+		eltern.ptfield[11] = new JPatTextField("ZAHLEN",false);
+		eltern.ptfield[11].setName("PLZ");		
+		pbui.add(eltern.ptfield[11],cc.xyw(22,5,2));		
 
-		PatGrundPanel.thisClass.ptfield[12] = new JPatTextField("XGROSS",false);
-		PatGrundPanel.thisClass.ptfield[12].setName("ORT");		
-		pbui.add(PatGrundPanel.thisClass.ptfield[12],cc.xyw(25,5,4));		
+		eltern.ptfield[12] = new JPatTextField("XGROSS",false);
+		eltern.ptfield[12].setName("ORT");		
+		pbui.add(eltern.ptfield[12],cc.xyw(25,5,4));		
 		
 		pbui.add(new JLabel("Krankenkasse"),cc.xy(20,7));
-		PatGrundPanel.thisClass.ptfield[14] = new JPatTextField("XROSS",false);
-		PatGrundPanel.thisClass.ptfield[14].setName("KASSE");
-		pbui.add(PatGrundPanel.thisClass.ptfield[14],cc.xyw(22,7,6));		
+		eltern.ptfield[14] = new JPatTextField("XROSS",false);
+		eltern.ptfield[14].setName("KASSE");
+		pbui.add(eltern.ptfield[14],cc.xyw(22,7,6));		
 		
 		pbui.add(new JLabel("Hausarzt"),cc.xy(20,9));
-		PatGrundPanel.thisClass.ptfield[13] = new JPatTextField("XROSS",false);
-		PatGrundPanel.thisClass.ptfield[13].setName("ARZT");
-		pbui.add(PatGrundPanel.thisClass.ptfield[13],cc.xyw(22,9,6));		
+		eltern.ptfield[13] = new JPatTextField("XROSS",false);
+		eltern.ptfield[13].setName("ARZT");
+		pbui.add(eltern.ptfield[13],cc.xyw(22,9,6));		
 
 		/*
 		JLabel patlab = new JLabel("");

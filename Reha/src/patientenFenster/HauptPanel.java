@@ -93,7 +93,7 @@ import systemTools.JRtaTextField;
 
 
 public class HauptPanel extends JXPanel implements ComponentListener{
-	public static HauptPanel thisClass;
+
 	public JXPanel oben;
 	public JXPanel mittelinksoben;
 	public JXPanel mittelinksunten;
@@ -107,16 +107,16 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
 	
-	public static HauptPanel getInstance(){
-		return thisClass;
+	public HauptPanel getInstance(){
+		return this;
 	}
-	public HauptPanel(){
+	public HauptPanel(PatGrundPanel eltern){
 		super();
-		thisClass = this;
+		//thisClass = this;
 		setOpaque(true);
 		/*
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),150);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 
@@ -173,34 +173,34 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 				"40dlu,fill:0:grow(1.00)");
 		CellConstraints cc = new CellConstraints();
 		setLayout(lay);
-		add(getSymbole(),cc.xy(1,1));
-		add(getFliessText(),cc.xy(1,2));
-		add(getTabs(),cc.xywh(2, 1, 1,2));		
+		add(getSymbole(eltern),cc.xy(1,1));
+		add(getFliessText(eltern),cc.xy(1,2));
+		add(getTabs(eltern),cc.xywh(2, 1, 1,2));		
 			revalidate();
 	}
 	
-	private JXPanel getSymbole(){
+	private JXPanel getSymbole(PatGrundPanel eltern){
 		mittelinksoben = new JXPanel(new BorderLayout());
 		mittelinksoben.setOpaque(false);
-		mittelinksoben.addFocusListener(PatGrundPanel.thisClass.getFocusListener());
+		mittelinksoben.addFocusListener(eltern.getFocusListener());
 		 JXPanel dummy = new JXPanel(new FlowLayout());
 		 dummy.setOpaque(false);
 		 dummy.setBorder(BorderFactory.createEmptyBorder(5, 10, 0, 5));
-		 PatGrundPanel.thisClass.imglabs[0] = new JLabel("");
-		 //PatGrundPanel.thisClass.imglabs[0].setIcon(new ImageIcon(Reha.proghome+"icons/achtung.gif"));
-		 dummy.add(PatGrundPanel.thisClass.imglabs[0]);
-		 PatGrundPanel.thisClass.imglabs[1] = new JLabel("");
+		 eltern.imglabs[0] = new JLabel("");
+		 //Reha.thisClass.patpanel.imglabs[0].setIcon(new ImageIcon(Reha.proghome+"icons/achtung.gif"));
+		 dummy.add(eltern.imglabs[0]);
+		 eltern.imglabs[1] = new JLabel("");
 		 //jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/nogo.gif"));
-		 dummy.add(PatGrundPanel.thisClass.imglabs[1]);
-		 PatGrundPanel.thisClass.imglabs[2] = new JLabel("");
+		 dummy.add(eltern.imglabs[1]);
+		 eltern.imglabs[2] = new JLabel("");
 		 //jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/sackgasse.gif"));
-		 PatGrundPanel.thisClass.imglabs[2].setName("sackgasse");
-		 PatGrundPanel.thisClass.imglabs[2].addMouseListener(ml);
-		 dummy.add(PatGrundPanel.thisClass.imglabs[2]);
-		 PatGrundPanel.thisClass.imglabs[3] = new JLabel("");		 
-		 dummy.add(PatGrundPanel.thisClass.imglabs[3]);
-		 PatGrundPanel.thisClass.imglabs[4] = new JLabel("");
-		 dummy.add(PatGrundPanel.thisClass.imglabs[4]);		 
+		 eltern.imglabs[2].setName("sackgasse");
+		 eltern.imglabs[2].addMouseListener(ml);
+		 dummy.add(eltern.imglabs[2]);
+		 eltern.imglabs[3] = new JLabel("");		 
+		 dummy.add(eltern.imglabs[3]);
+		 eltern.imglabs[4] = new JLabel("");
+		 dummy.add(eltern.imglabs[4]);		 
 		 JScrollPane jscr = new JScrollPane();
 		 jscr.setBorder(null);
 		 jscr.setViewportBorder(null);
@@ -210,17 +210,17 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		 mittelinksoben.add(jscr,BorderLayout.CENTER);
 		return mittelinksoben;
 	}
-	private JXPanel getFliessText(){
+	private JXPanel getFliessText(PatGrundPanel eltern){
 		mittelinksunten = new JXPanel(new BorderLayout());
 		mittelinksunten.setOpaque(false);
 		
-		mittelinksunten.addFocusListener(PatGrundPanel.thisClass.getFocusListener());
+		mittelinksunten.addFocusListener(eltern.getFocusListener());
 	    
 		//mittelinksunten.setBorder(BorderFactory.createEmptyBorder());
 		mittelinksunten.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		/*
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),150);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 	     LinearGradientPaint p =
@@ -233,48 +233,48 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		jtoolb.setBorder(null);
 		jtoolb.setBorderPainted(false);
 		jtoolb.setRollover(true);
-		PatGrundPanel.thisClass.memobut[0] = new JButton();
-		PatGrundPanel.thisClass.memobut[0].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		//PatGrundPanel.thisClass.memobut[0].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
-		PatGrundPanel.thisClass.memobut[0].setToolTipText("Langtext editieren");		
-		PatGrundPanel.thisClass.memobut[0].setActionCommand("kedit");
-		PatGrundPanel.thisClass.memobut[0].addActionListener(PatGrundPanel.thisClass.gplst);
-		jtoolb.add(PatGrundPanel.thisClass.memobut[0]);
-		PatGrundPanel.thisClass.memobut[1] = new JButton();
-		PatGrundPanel.thisClass.memobut[1].setIcon(SystemConfig.hmSysIcons.get("save"));		
-		//PatGrundPanel.thisClass.memobut[1].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
-		PatGrundPanel.thisClass.memobut[1].setToolTipText("Langtext speichern");		
-		PatGrundPanel.thisClass.memobut[1].setActionCommand("ksave");
-		PatGrundPanel.thisClass.memobut[1].addActionListener(PatGrundPanel.thisClass.gplst);			
-		//PatGrundPanel.thisClass.memobut[1].addActionListener(this);
-		PatGrundPanel.thisClass.memobut[1].setEnabled(false);
-		jtoolb.add(PatGrundPanel.thisClass.memobut[1]);
+		eltern.memobut[0] = new JButton();
+		eltern.memobut[0].setIcon(SystemConfig.hmSysIcons.get("edit"));
+		//eltern.memobut[0].setIcon(new ImageIcon(Reha.proghome+"icons/edit.png"));
+		eltern.memobut[0].setToolTipText("Langtext editieren");		
+		eltern.memobut[0].setActionCommand("kedit");
+		eltern.memobut[0].addActionListener(eltern.gplst);
+		jtoolb.add(eltern.memobut[0]);
+		eltern.memobut[1] = new JButton();
+		eltern.memobut[1].setIcon(SystemConfig.hmSysIcons.get("save"));		
+		//eltern.memobut[1].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
+		eltern.memobut[1].setToolTipText("Langtext speichern");		
+		eltern.memobut[1].setActionCommand("ksave");
+		eltern.memobut[1].addActionListener(eltern.gplst);			
+		//eltern.memobut[1].addActionListener(this);
+		eltern.memobut[1].setEnabled(false);
+		jtoolb.add(eltern.memobut[1]);
 		jtoolb.addSeparator(new Dimension(40,0));
-		PatGrundPanel.thisClass.memobut[2] = new JButton();
-		PatGrundPanel.thisClass.memobut[2].setIcon(SystemConfig.hmSysIcons.get("stop"));
-		//PatGrundPanel.thisClass.memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
+		eltern.memobut[2] = new JButton();
+		eltern.memobut[2].setIcon(SystemConfig.hmSysIcons.get("stop"));
+		//Reha.thisClass.patpanel.memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
 		//memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/cancel.png"));
-		PatGrundPanel.thisClass.memobut[2].setToolTipText("Langtext bearbeiten abbrechen");		
-		PatGrundPanel.thisClass.memobut[2].setActionCommand("kbreak");
-		PatGrundPanel.thisClass.memobut[2].addActionListener(PatGrundPanel.thisClass.gplst);
-		PatGrundPanel.thisClass.memobut[2].setEnabled(false);
-		jtoolb.add(PatGrundPanel.thisClass.memobut[2]);
+		eltern.memobut[2].setToolTipText("Langtext bearbeiten abbrechen");		
+		eltern.memobut[2].setActionCommand("kbreak");
+		eltern.memobut[2].addActionListener(eltern.gplst);
+		eltern.memobut[2].setEnabled(false);
+		jtoolb.add(eltern.memobut[2]);
 		
-		PatGrundPanel.thisClass.memotab = new JTabbedPane();
-		PatGrundPanel.thisClass.memotab.setUI(new WindowsTabbedPaneUI());
-		PatGrundPanel.thisClass.memotab.setOpaque(false);
-		PatGrundPanel.thisClass.memotab.setBorder(null);
+		eltern.memotab = new JTabbedPane();
+		eltern.memotab.setUI(new WindowsTabbedPaneUI());
+		eltern.memotab.setOpaque(false);
+		eltern.memotab.setBorder(null);
 		
 
-		PatGrundPanel.thisClass.pmemo[0] = new JTextArea();
-		PatGrundPanel.thisClass.pmemo[0].setFont(new Font("Courier",Font.PLAIN,11));
-		PatGrundPanel.thisClass.pmemo[0].setLineWrap(true);
-		PatGrundPanel.thisClass.pmemo[0].setName("notitzen");
-		PatGrundPanel.thisClass.pmemo[0].setWrapStyleWord(true);
-		PatGrundPanel.thisClass.pmemo[0].setEditable(false);
-		PatGrundPanel.thisClass.pmemo[0].setBackground(Color.WHITE);
-		PatGrundPanel.thisClass.pmemo[0].setForeground(Color.BLUE);
-		JScrollPane span = JCompTools.getTransparentScrollPane(PatGrundPanel.thisClass.pmemo[0]);
+		eltern.pmemo[0] = new JTextArea();
+		eltern.pmemo[0].setFont(new Font("Courier",Font.PLAIN,11));
+		eltern.pmemo[0].setLineWrap(true);
+		eltern.pmemo[0].setName("notitzen");
+		eltern.pmemo[0].setWrapStyleWord(true);
+		eltern.pmemo[0].setEditable(false);
+		eltern.pmemo[0].setBackground(Color.WHITE);
+		eltern.pmemo[0].setForeground(Color.BLUE);
+		JScrollPane span = JCompTools.getTransparentScrollPane(eltern.pmemo[0]);
 		//span.setBackground(Color.WHITE);
 		span.validate();
 		JXPanel jpan = JCompTools.getEmptyJXPanel(new BorderLayout());
@@ -286,48 +286,48 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	     jpan2.add(jtoolb);
 		jpan.add(jpan2,BorderLayout.NORTH);
 		jpan.add(span,BorderLayout.CENTER);
-		PatGrundPanel.thisClass.memotab.addTab("Notitzen", jpan);
+		eltern.memotab.addTab("Notitzen", jpan);
 		/******************************************/
 		JToolBar jtoolb2 = new JToolBar();
 		jtoolb2.setOpaque(false);
 		jtoolb2.setBorder(null);
 		jtoolb2.setBorderPainted(false);
 		jtoolb2.setRollover(true);
-		PatGrundPanel.thisClass.memobut[3] = new JButton();
-		PatGrundPanel.thisClass.memobut[3].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		PatGrundPanel.thisClass.memobut[3].setToolTipText("Langtext editieren");		
-		PatGrundPanel.thisClass.memobut[3].setActionCommand("kedit2");
-		PatGrundPanel.thisClass.memobut[3].addActionListener(PatGrundPanel.thisClass.gplst);
-		jtoolb2.add(PatGrundPanel.thisClass.memobut[3]);
-		PatGrundPanel.thisClass.memobut[4] = new JButton();
-		PatGrundPanel.thisClass.memobut[4].setIcon(SystemConfig.hmSysIcons.get("save"));
-		//PatGrundPanel.thisClass.memobut[4].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
-		PatGrundPanel.thisClass.memobut[4].setToolTipText("Langtext speichern");		
-		PatGrundPanel.thisClass.memobut[4].setActionCommand("ksave2");
-		PatGrundPanel.thisClass.memobut[4].addActionListener(PatGrundPanel.thisClass.gplst);
-		PatGrundPanel.thisClass.memobut[4].setEnabled(false);
-		jtoolb2.add(PatGrundPanel.thisClass.memobut[4]);
+		eltern.memobut[3] = new JButton();
+		eltern.memobut[3].setIcon(SystemConfig.hmSysIcons.get("edit"));
+		eltern.memobut[3].setToolTipText("Langtext editieren");		
+		eltern.memobut[3].setActionCommand("kedit2");
+		eltern.memobut[3].addActionListener(eltern.gplst);
+		jtoolb2.add(eltern.memobut[3]);
+		eltern.memobut[4] = new JButton();
+		eltern.memobut[4].setIcon(SystemConfig.hmSysIcons.get("save"));
+		//eltern.memobut[4].setIcon(new ImageIcon(Reha.proghome+"icons/Save_22x22.png"));
+		eltern.memobut[4].setToolTipText("Langtext speichern");		
+		eltern.memobut[4].setActionCommand("ksave2");
+		eltern.memobut[4].addActionListener(eltern.gplst);
+		eltern.memobut[4].setEnabled(false);
+		jtoolb2.add(eltern.memobut[4]);
 		jtoolb2.addSeparator(new Dimension(40,0));
-		PatGrundPanel.thisClass.memobut[5] = new JButton();
-		PatGrundPanel.thisClass.memobut[5].setIcon(SystemConfig.hmSysIcons.get("stop"));
-		//PatGrundPanel.thisClass.memobut[5].setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
+		eltern.memobut[5] = new JButton();
+		eltern.memobut[5].setIcon(SystemConfig.hmSysIcons.get("stop"));
+		//eltern.memobut[5].setIcon(new ImageIcon(Reha.proghome+"icons/process-stop.png"));
 		//memobut[2].setIcon(new ImageIcon(Reha.proghome+"icons/cancel.png"));
-		PatGrundPanel.thisClass.memobut[5].setToolTipText("Langtext bearbeiten abbrechen");		
-		PatGrundPanel.thisClass.memobut[5].setActionCommand("kbreak2");
-		PatGrundPanel.thisClass.memobut[5].addActionListener(PatGrundPanel.thisClass.gplst);
-		PatGrundPanel.thisClass.memobut[5].setEnabled(false);
-		jtoolb2.add(PatGrundPanel.thisClass.memobut[5]);
+		eltern.memobut[5].setToolTipText("Langtext bearbeiten abbrechen");		
+		eltern.memobut[5].setActionCommand("kbreak2");
+		eltern.memobut[5].addActionListener(eltern.gplst);
+		eltern.memobut[5].setEnabled(false);
+		jtoolb2.add(eltern.memobut[5]);
 		
 		
-		PatGrundPanel.thisClass.pmemo[1] = new JTextArea();
-		PatGrundPanel.thisClass.pmemo[1].setFont(new Font("Courier",Font.PLAIN,11));
-		PatGrundPanel.thisClass.pmemo[1].setLineWrap(true);
-		PatGrundPanel.thisClass.pmemo[1].setName("notitzen");
-		PatGrundPanel.thisClass.pmemo[1].setWrapStyleWord(true);
-		PatGrundPanel.thisClass.pmemo[1].setEditable(false);
-		PatGrundPanel.thisClass.pmemo[1].setBackground(Color.WHITE);
-		PatGrundPanel.thisClass.pmemo[1].setForeground(Color.BLUE);
-		span = JCompTools.getTransparentScrollPane(PatGrundPanel.thisClass.pmemo[1]);
+		eltern.pmemo[1] = new JTextArea();
+		eltern.pmemo[1].setFont(new Font("Courier",Font.PLAIN,11));
+		eltern.pmemo[1].setLineWrap(true);
+		eltern.pmemo[1].setName("notitzen");
+		eltern.pmemo[1].setWrapStyleWord(true);
+		eltern.pmemo[1].setEditable(false);
+		eltern.pmemo[1].setBackground(Color.WHITE);
+		eltern.pmemo[1].setForeground(Color.BLUE);
+		span = JCompTools.getTransparentScrollPane(eltern.pmemo[1]);
 		span.setBackground(Color.WHITE);
 		span.validate();
 		jpan = JCompTools.getEmptyJXPanel(new BorderLayout());
@@ -338,20 +338,20 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	    jpan2.add(jtoolb2);
 		jpan.add(jpan2,BorderLayout.NORTH);
 		jpan.add(span,BorderLayout.CENTER);
-		PatGrundPanel.thisClass.memotab.addTab("Fehldaten", jpan);
+		eltern.memotab.addTab("Fehldaten", jpan);
 		
 
 		
-		mittelinksunten.add(PatGrundPanel.thisClass.memotab,BorderLayout.CENTER);
+		mittelinksunten.add(eltern.memotab,BorderLayout.CENTER);
 		mittelinksunten.revalidate();
 
 		return mittelinksunten;
 	}
-	private JXPanel getTabs(){
+	private JXPanel getTabs(PatGrundPanel eltern){
 		rechts = new JXPanel(new BorderLayout());
 		/*
 		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
+	     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),150);
 	     float[] dist = {0.0f, 0.75f};
 	     Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.5f)};
 	     //Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
@@ -364,16 +364,16 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		rechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs"));
 		rechts.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
-		PatGrundPanel.thisClass.jtab = new JTabbedPane();
-		//PatGrundPanel.thisClass.jtab.setBorder(null);
-		PatGrundPanel.thisClass.jtab.addFocusListener(PatGrundPanel.thisClass.getFocusListener());
-		PatGrundPanel.thisClass.jtab.setUI(new WindowsTabbedPaneUI());
+		eltern.jtab = new JTabbedPane();
+		//Reha.thisClass.patpanel.jtab.setBorder(null);
+		eltern.jtab.addFocusListener(eltern.getFocusListener());
+		eltern.jtab.setUI(new WindowsTabbedPaneUI());
 		JXPanel tabpan = new JXPanel(new BorderLayout());
 		tabpan.setBorder(BorderFactory.createEmptyBorder(0,0, 0, 0));
 		tabpan.setOpaque(true);
 		/*
 		Point2D xstart = new Point2D.Float(0, 0);
-	     Point2D xend = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),450);
+	     Point2D xend = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),450);
 	     float[] xdist = {0.0f, 0.75f};
 	     Color[] xcolors = {Colors.PiOrange.alpha(0.25f),Color.WHITE};
 	     LinearGradientPaint xp =
@@ -390,8 +390,8 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
-			    PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
-			    PatGrundPanel.thisClass.aktRezept.validate();
+			    Reha.thisClass.patpanel.aktRezept = new AktuelleRezepte();
+			    Reha.thisClass.patpanel.aktRezept.validate();
 				return null;
 			}
 	    	 
@@ -405,23 +405,23 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	    
 	     try{
 	     */
-	     PatGrundPanel.thisClass.aktRezept = new AktuelleRezepte();
-	    tabpan.add(PatGrundPanel.thisClass.aktRezept);
-	    PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[0]+" - 0", tabpan);
+	    eltern.aktRezept = new AktuelleRezepte(eltern);
+	    tabpan.add(eltern.aktRezept);
+	    eltern.jtab.addTab(eltern.tabTitel[0]+" - 0", tabpan);
 	     
-	     PatGrundPanel.thisClass.historie = new Historie();
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[1]+" - 0", PatGrundPanel.thisClass.historie);
+	    eltern.historie = new Historie();
+		eltern.jtab.addTab(eltern.tabTitel[1]+" - 0", eltern.historie);
 	
 
-		PatGrundPanel.thisClass.berichte = new TherapieBerichte();
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[2]+" - 0", PatGrundPanel.thisClass.berichte);
+		eltern.berichte = new TherapieBerichte();
+		eltern.jtab.addTab(eltern.tabTitel[2]+" - 0", eltern.berichte);
 
 
-		PatGrundPanel.thisClass.dokumentation = new Dokumentation();
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[3]+" - 0", PatGrundPanel.thisClass.dokumentation);
+		eltern.dokumentation = new Dokumentation();
+		eltern.jtab.addTab(eltern.tabTitel[3]+" - 0", eltern.dokumentation);
 	
-		PatGrundPanel.thisClass.gutachten = new Gutachten();
-		PatGrundPanel.thisClass.jtab.addTab(PatGrundPanel.thisClass.tabTitel[4]+" - 0", PatGrundPanel.thisClass.gutachten);
+		eltern.gutachten = new Gutachten();
+		eltern.jtab.addTab(eltern.tabTitel[4]+" - 0", eltern.gutachten);
 		/*
 	     }catch(Exception ex){
 	    	 ex.printStackTrace();
@@ -431,7 +431,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		    	 
      }.execute();
 	*/
-		rechts.add(PatGrundPanel.thisClass.jtab,BorderLayout.CENTER);
+		rechts.add(eltern.jtab,BorderLayout.CENTER);
 		rechts.revalidate();
 		return rechts;
 	}
@@ -450,9 +450,9 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 	public void componentResized(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 		this.revalidate();
-		if(PatGrundPanel.thisClass.ptfield[2] != null){
-			int x = HauptPanel.thisClass.getWidth();
-			int y = HauptPanel.thisClass.getHeight();			
+		if(Reha.thisClass.patpanel.ptfield[2] != null){
+			int x = getInstance().getWidth();
+			int y = getInstance().getHeight();			
 			//HauptPanel.thisClass.tf[2].setText("X="+x+"/Y="+y);
 		}
 	}
@@ -509,30 +509,6 @@ public class HauptPanel extends JXPanel implements ComponentListener{
  * Zum Testen
  * 
  */
-
-class ProbePanel extends JXPanel{
-	public ProbePanel(Color oColor,String text){
-		super();
-		setBorder(BorderFactory.createEmptyBorder());
-		if(oColor == null){
-			Point2D start = new Point2D.Float(0, 0);
-		     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),150);
-		     float[] dist = {0.0f, 0.75f};
-		     Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.5f)};
-		     //Color[] colors = {Color.WHITE,getBackground()};
-		     LinearGradientPaint p =
-		         new LinearGradientPaint(start, end, dist, colors);
-		     MattePainter mp = new MattePainter(p);
-		     setBackgroundPainter(new CompoundPainter(mp));
-			
-		}else{
-			setBackground(oColor);	
-		}
-
-		add(new JLabel(text));
-	}
-}
-
 /************
  * 
  * 
@@ -555,22 +531,22 @@ final class AnamneseSpeichern extends SwingWorker<Void,Void>{
 		     		OutputStream baos = new ByteArrayOutputStream();
 
 		     		//InputStream in = new ByteArrayInputStream(null);
-					PatGrundPanel.thisClass.jtp.getEditorKit().write(baos, PatGrundPanel.thisClass.m_doc, 0, PatGrundPanel.thisClass.m_doc.getLength());
+					Reha.thisClass.patpanel.jtp.getEditorKit().write(baos, Reha.thisClass.patpanel.m_doc, 0, Reha.thisClass.patpanel.m_doc.getLength());
 					InputStream in = new ByteArrayInputStream( ((ByteArrayOutputStream) baos).toByteArray() );					
 					  StringBuffer out = new StringBuffer();
-					    byte[] b = new byte[PatGrundPanel.thisClass.m_doc.getLength()];
+					    byte[] b = new byte[Reha.thisClass.patpanel.m_doc.getLength()];
 					    for (int n; (n = in.read(b)) != -1;) {
 					        out.append(new String(b, 0, n));
 					    }
 						  //System.out.println("InputStream = "+out.toString());
-					PatGrundPanel.thisClass.jtp.getEditorKit().read(in, PatGrundPanel.thisClass.m_doc, 0);
+					Reha.thisClass.patpanel.jtp.getEditorKit().read(in, Reha.thisClass.patpanel.m_doc, 0);
 
 						String select = "Update pat5 set anamnese = ? where pat_intern= ?";
 						  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 						  ps.setBytes(1, out.toString().getBytes());
 						  //ps.setBytes(1,((byte[]) baos));
 
-						  ps.setString(2,  PatGrundPanel.thisClass.aktPatID);
+						  ps.setString(2,  Reha.thisClass.patpanel.aktPatID);
 						  ps.execute();
 
 						  

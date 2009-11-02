@@ -113,7 +113,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
 				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
+			     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			     p =
@@ -183,7 +183,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 
 		pb.add(diagnoseuebernahme,cc.xyw(2,2,3));
 
-		dtblm = TherapieBerichte.aktBericht.dtblm;
+		dtblm = Reha.thisClass.patpanel.berichte.dtblm;
 		tabbericht = new JXTable(dtblm);
 		tabbericht.getColumn(1).setMinWidth(200);
 		tabbericht.getColumn(6).setMinWidth(0);

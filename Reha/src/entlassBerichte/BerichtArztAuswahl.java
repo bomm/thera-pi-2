@@ -156,7 +156,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		
 	}
 	private void ladeTabelle(){
-		String test = PatGrundPanel.thisClass.patDaten.get(63);
+		String test = Reha.thisClass.patpanel.patDaten.get(63);
 		if(test.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Mit der Arztliste dieses Patienten läuft etwas schief....");
 		}else{
@@ -237,7 +237,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		if(!tf[2].getText().trim().equals("")){
 			Vector vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+tf[2].getText()+"'");
 			if(vec.size() > 0){
-				String test = PatGrundPanel.thisClass.patDaten.get(63);
+				String test = Reha.thisClass.patpanel.patDaten.get(63);
 				if(! test.contains("@"+tf[2].getText().trim()+"@")){
 					Vector vec2 = (Vector) ((Vector)vec.get(0)).clone();
 					vec2.insertElementAt(true, 0);
@@ -248,8 +248,8 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 					int frage = JOptionPane.showConfirmDialog(null,msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 					if(frage == JOptionPane.YES_OPTION){
 						test = test + "@"+tf[2].getText().trim()+"@\n";
-						PatGrundPanel.thisClass.patDaten.set(63,test);
-						String cmd = "update pat5 set aerzte='"+test+"' where pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'";
+						Reha.thisClass.patpanel.patDaten.set(63,test);
+						String cmd = "update pat5 set aerzte='"+test+"' where pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'";
 						new ExUndHop().setzeStatement(cmd);
 					}
 				}else{

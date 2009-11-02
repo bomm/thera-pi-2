@@ -197,13 +197,13 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		kollegenSuchen = kollSuchen; 
 	}
 	public boolean getKollegenSuchen(int koll){
-		return kollegenSuchen[koll]; 
+		return this.kollegenSuchen[koll]; 
 	}
 	public void setKollegenAbteilung(String[] kolls){
 		kollegenAbteilung = kolls;
 	}
 	public String getKollegenAbteilung(int koll){
-		return kollegenAbteilung[koll];
+		return this.kollegenAbteilung[koll];
 	}
 	public void setzeTreffer(int treffer){
 		trefferLbl.setText(Integer.toString(treffer));
@@ -268,8 +268,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		
 	}
 	public HashMap<String,Integer> getKollegenZeiten(){
-		System.out.println("Die HashMap hat den Inhalt "+hZeiten);
-		return hZeiten; 
+		//System.out.println("Die HashMap hat den Inhalt "+hZeiten);
+		return this.hZeiten; 
 		
 	}
 	public void setGewaehlt(int gewaehlt){
@@ -912,7 +912,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				WsIT.setzeStatement(getInstance());
 				WsIT.execute();
 				
-				
+				/*
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						getInstance().workerfertig = false;
@@ -922,7 +922,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						wt.execute();
 					}
 				});
-					
+				*/	
 				
 				/* bislang o.k.
 				new Thread(){
@@ -1994,7 +1994,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			Vector yvec = null;
 			System.out.println("***************Bei Datum "+sqlAkt);
 			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!eltern.mussUnterbrechen)){
-				System.out.println("Bei Datum "+sqlAkt);
+				//System.out.println("Bei Datum "+sqlAkt);
 				setzeDatum(aktDatum );
 				if( tagDurchsuchen(aktDatum) ){
 
@@ -2004,7 +2004,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 						test = macheStatement(sqlAkt);	
 						//System.out.println(test);
 					}else{
-						test = "select * from flexkc where datum = '"+sqlAkt+"' LIMIT "+ParameterLaden.maxKalZeile;						
+						test = "select * from flexkc where datum = '"+sqlAkt+"' LIMIT "+ParameterLaden.maxKalZeile+" FOR UPDATE";						
 					}
 					rs = (ResultSet) stmt.executeQuery(test);
 					
@@ -2036,11 +2036,11 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 						//System.out.println("Kollege über DBZeile = "+szeil);
 						if(!szeil.equals("")){
 						
-						String sabteilung = getKollegenAbteilung(ikollege).trim();
+						String sabteilung = eltern.kollegenAbteilung[ikollege].trim();//getKollegenAbteilung(ikollege).trim();
 						if(! sabteilung.equals("") ){
 							if( (abtlg.contains(sabteilung)) ){
-								defdauer = (int) getKollegenZeiten().get(
-										getKollegenAbteilung(ikollege));
+								defdauer = (int) eltern.hZeiten.get(eltern.kollegenAbteilung[ikollege]);
+										//getKollegenAbteilung(ikollege));
 								gruppe = false;
 							}else{
 								//System.out.println("Kollege "+szeil+" hat keine Zeitzuordnung, nehme Gruppendefiniton");
@@ -2057,11 +2057,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 									defdauer = 15;
 								}
 								gruppe = true;
-								/*
-								System.out.println("sabteilung = "+sabteilung);
-								System.out.println("abteilnr = "+abteilnr);
-								System.out.println("gruppe = "+gruppe);
-								*/
+							
 							}					
 						}else{
 							defdauer = 15;
@@ -2202,7 +2198,8 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 							if(yvec != null){
 								++treffer;
 								
-								sucheDaten.add(yvec);
+								getInstance().dtblm.addRow(yvec);
+								//sucheDaten.add(yvec);
 								trefferSetzen();
 							}
 							

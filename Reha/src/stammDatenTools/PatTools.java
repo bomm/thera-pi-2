@@ -1,5 +1,7 @@
 package stammDatenTools;
 
+import hauptFenster.Reha;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -40,17 +42,17 @@ public class PatTools {
 		boolean iskind = false;
 		//int lang = SystemConfig.hmAdrPDaten.hashCode();
 		//System.out.println(lang);
-		//SystemConfig.hmAdrPDaten.put("<Padr1>", PatGrundPanel.thisClass.patDaten.get(0));
-		String anrede = StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(0));
+		//SystemConfig.hmAdrPDaten.put("<Padr1>", Reha.thisClass.patpanel.patDaten.get(0));
+		String anrede = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(0));
 		if(anrede.toUpperCase().equals("HERR")){
 			isherr = true;
 		}
-		String titel =  StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(1));
-		String vorname =  StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(3));
-		String nachname =  StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(2));
-		String strasse = StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(21));
-		String plzort = PatGrundPanel.thisClass.patDaten.get(23)+" "+StringTools.EGross(PatGrundPanel.thisClass.patDaten.get(24));
-		String geboren = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+		String titel =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(1));
+		String vorname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3));
+		String nachname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2));
+		String strasse = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(21));
+		String plzort = Reha.thisClass.patpanel.patDaten.get(23)+" "+StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(24));
+		String geboren = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
 		String zeile1 = "";
 		String zeile2 = "";
 		String zeile3 = "";
@@ -111,13 +113,13 @@ public class PatTools {
 		SystemConfig.hmAdrPDaten.put("<Pnname>", nachname);
 		SystemConfig.hmAdrPDaten.put("<Pvname>", vorname);		
 				
-		SystemConfig.hmAdrPDaten.put("<Ptelp>", PatGrundPanel.thisClass.patDaten.get(18));
-		SystemConfig.hmAdrPDaten.put("<Ptelg>", PatGrundPanel.thisClass.patDaten.get(19));
-		SystemConfig.hmAdrPDaten.put("<Ptelmob>", PatGrundPanel.thisClass.patDaten.get(20));
-		//SystemConfig.hmAdrPDaten.put("<Pfax>", PatGrundPanel.thisClass.patDaten.get(21));
-		SystemConfig.hmAdrPDaten.put("<Pemail>", PatGrundPanel.thisClass.patDaten.get(50));
+		SystemConfig.hmAdrPDaten.put("<Ptelp>", Reha.thisClass.patpanel.patDaten.get(18));
+		SystemConfig.hmAdrPDaten.put("<Ptelg>", Reha.thisClass.patpanel.patDaten.get(19));
+		SystemConfig.hmAdrPDaten.put("<Ptelmob>", Reha.thisClass.patpanel.patDaten.get(20));
+		//SystemConfig.hmAdrPDaten.put("<Pfax>", Reha.thisClass.patpanel.patDaten.get(21));
+		SystemConfig.hmAdrPDaten.put("<Pemail>", Reha.thisClass.patpanel.patDaten.get(50));
 		SystemConfig.hmAdrPDaten.put("<Ptitel>", titel);
-		SystemConfig.hmAdrPDaten.put("<Pid>", PatGrundPanel.thisClass.patDaten.get(66));
+		SystemConfig.hmAdrPDaten.put("<Pid>", Reha.thisClass.patpanel.patDaten.get(66));
 	}
 	
 }

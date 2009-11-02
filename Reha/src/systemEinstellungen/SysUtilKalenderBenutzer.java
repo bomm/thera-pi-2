@@ -430,7 +430,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		System.out.println(statement);
 		JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 		if(termin != null){
-			TerminFenster.thisClass.setCombosOutside();
+			Reha.thisClass.terminpanel.setCombosOutside();
 			JOptionPane.showMessageDialog(null,"Die Kalenderbenutzer wurden geändert!\n"+
 					"Die Behandlersets des aktiven Terminkalender wurden zurückgesetzt.");
 		}
@@ -453,7 +453,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				comboAuswerten();
 				JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 				if(termin != null){
-					TerminFenster.thisClass.setCombosOutside();
+					Reha.thisClass.terminpanel.setCombosOutside();
 					JOptionPane.showMessageDialog(null,"Die Kalenderbenutzer wurden geändert!\n"+
 							"Die Behandlersets des aktiven Terminkalender wurden zurückgesetzt.");
 				}

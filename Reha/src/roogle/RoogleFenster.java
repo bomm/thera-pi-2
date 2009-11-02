@@ -222,8 +222,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				stroke = KeyStroke.getKeyStroke(70, KeyEvent.ALT_MASK);
 				jcc.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFocusTable");
 				jcc.getActionMap().put("doFocusTable", new RoogleAction());
-			    if(TerminFenster.thisClass != null){
-			    	TerminFenster.thisClass.setUpdateVerbot(true);
+			    if(Reha.thisClass.terminpanel != null){
+			    	Reha.thisClass.terminpanel.setUpdateVerbot(true);
 			    }
 			    /*
 			    for(int i = 0;i < kollegenSuchen.length;i++){
@@ -1329,7 +1329,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		if(tp2 != null){
 			System.out.println("Setze SuchenSeite auf null");
 			ListenerTools.removeListeners(tp2);
+			tp2.sucheDaten.clear();
 			tp2.sucheDaten = null;
+			tp2.vecWahl.clear();
 			tp2.vecWahl = null;
 			tp2.sucheKollegen = null;
 			tp2.hZeiten = null;
@@ -1354,13 +1356,13 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		RoogleFenster.thisClass = null;
 		Reha.thisClass.progLoader.loescheRoogle();
 
-	    if(TerminFenster.thisClass != null){
+	    if(Reha.thisClass.terminpanel != null){
 	    	new Thread(){
 	    		public void run(){
-	    	    	TerminFenster.thisClass.aktualisieren();
-	    	    	TerminFenster.thisClass.setUpdateVerbot(false);
+	    			Reha.thisClass.terminpanel.aktualisieren();
+	    			Reha.thisClass.terminpanel.setUpdateVerbot(false);
 	    	    	//TerminFenster.thisClass.getViewPanel().requestFocus();
-	    	    	TerminFenster.thisClass.altCtrlAus();
+	    			Reha.thisClass.terminpanel.altCtrlAus();
 
 
 	    			/*

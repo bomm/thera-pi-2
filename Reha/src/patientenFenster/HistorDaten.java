@@ -104,7 +104,7 @@ public class HistorDaten extends JXPanel{
 
 				vecaktrez = SqlInfo.holeSatz("lza", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
 				String stest = StringTools.NullTest((String)vecaktrez.get(43));
-				PatGrundPanel.thisClass.vecakthistor = vecaktrez;
+				Reha.thisClass.patpanel.vecakthistor = vecaktrez;
 				if( stest.equals("T") ){
 					rezlabs[1].setIcon(hbimg);
 				}else{
@@ -260,8 +260,8 @@ public class HistorDaten extends JXPanel{
 		reznum.setDragEnabled(true);
 		reznum.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent e) {
-		    	draghandler.setText(((String)PatGrundPanel.thisClass.patDaten.get(0)).substring(0,1)+
-		    			"-"+PatGrundPanel.thisClass.patDaten.get(2)+","+PatGrundPanel.thisClass.patDaten.get(3)+"°"+
+		    	draghandler.setText(((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
+		    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+Reha.thisClass.patpanel.patDaten.get(3)+"°"+
 		    			reznum.getText()+"°"+rezlabs[14].getText()
 		    			);
 		      JComponent c = (JComponent)draghandler;

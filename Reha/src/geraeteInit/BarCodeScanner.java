@@ -192,7 +192,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						Vector tvec = null;
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 						if(termin != null){
-							if(TerminFenster.thisClass.getAktuellerTag().equals(DatFunk.sHeute())){
+							if(Reha.thisClass.terminpanel.getAktuellerTag().equals(DatFunk.sHeute())){
 								// Hier versuchen die Daten des Terminkalenders zu übernehmen
 							}
 						}

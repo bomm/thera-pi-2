@@ -70,7 +70,7 @@ import systemTools.JCompTools;
 import terminKalender.DatFunk;
 
 public class Historie extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
-	public static Historie historie = null;
+	//public static Historie historie = null;
 	JXPanel leerPanel = null;
 	//JXPanel vollPanel = null;
 	HistorPanel vollPanel = null;
@@ -94,7 +94,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 	public Historie(){
 		super();
-		historie = this;
+		//historie = this;
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
@@ -505,8 +505,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		gesamtAkt = doRechneHistorie("verordn");
 		double gesamtumsatz = gesamtHistor+gesamtAkt;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
-		String msg = "<html><font font-family='Courier New'>Gesamtumsatz von Patient --> "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+"&nbsp;&nbsp;&nbsp;&nbsp;"+   
+		String msg = "<html><font font-family='Courier New'>Gesamtumsatz von Patient --> "+(String) Reha.thisClass.patpanel.patDaten.get(2)+", "+
+		(String) Reha.thisClass.patpanel.patDaten.get(3)+"&nbsp;&nbsp;&nbsp;&nbsp;"+   
 		"<br><br>Historie&nbsp;=&nbsp;"+dfx.format(gesamtHistor)+" EUR"+
 		"<br>Aktuell&nbsp;&nbsp;=&nbsp;"+dfx.format(gesamtAkt)+" EUR"+
 		"<br><br><p><b>Gesamt = <font align='center' color='#FF0000'>"+dfx.format(gesamtumsatz)+" EUR </font></b></p><br><br></font>";
@@ -553,7 +553,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}
 			}
 		}else{
-			String cmd = "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'";
+			String cmd = "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'";
 			System.out.println(cmd);
 			Vector vec = SqlInfo.holeSaetze(db, "id,rez_nr",cmd , Arrays.asList(new String[] {}));
 			rows = vec.size();
@@ -576,8 +576,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}
 		return gesamtumsatz;
 		/*
-		String ums = "Gesamtumsatz von Patient "+(String) PatGrundPanel.thisClass.patDaten.get(2)+", "+
-		(String) PatGrundPanel.thisClass.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
+		String ums = "Gesamtumsatz von Patient "+(String) Reha.thisClass.patpanel.patDaten.get(2)+", "+
+		(String) Reha.thisClass.patpanel.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
 		JOptionPane.showMessageDialog(null,ums);
 		*/
 	}
@@ -606,9 +606,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				xreznr = ""; 
 			}
 			
-			int  iexistiert = TherapieBerichte.aktBericht.berichtExistiert(xreznr);
+			int  iexistiert = Reha.thisClass.patpanel.berichte.berichtExistiert(xreznr);
 			if(iexistiert > 0){
-				xverfasser = TherapieBerichte.aktBericht.holeVerfasser();
+				xverfasser = Reha.thisClass.patpanel.berichte.holeVerfasser();
 				neuber = false;
 				berid = iexistiert;
 				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
@@ -729,12 +729,12 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					}else if(!((Vector)vec.get(i)).get(1).equals("")){
 						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
 					}
-					//((Vector)vec.get(i)).set(3, PatGrundPanel.thisClass.imgzuzahl[zzbild]);
+					//((Vector)vec.get(i)).set(3, Reha.thisClass.patpanel.imgzuzahl[zzbild]);
 					
 					//System.out.println("Inhalt von zzstatus ="+zzbild);
 					dtblm.addRow((Vector)vec.get(i));
 					
-					dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[zzbild], i, 1);
+					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
 					if(i==0){
 						final int ix = i;
 	                    new Thread(){
@@ -744,7 +744,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	                    }.start();
 					}
 				}
-				PatGrundPanel.thisClass.jtab.setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
+				Reha.thisClass.patpanel.jtab.setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;

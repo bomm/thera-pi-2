@@ -240,7 +240,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 /****************************************************/	
 	public void rezGebDrucken(){
 		String url = "";
-		if( ((String)PatGrundPanel.thisClass.vecaktrez.get(43)).equals("T") ){
+		if( ((String)Reha.thisClass.patpanel.vecaktrez.get(43)).equals("T") ){
 			url = SystemConfig.rezGebVorlageHB;
 		}else{
 			url = SystemConfig.rezGebVorlageNeu;			
@@ -402,7 +402,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		String cmd = "insert into kasse set einnahme='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
-		PatGrundPanel.thisClass.patDaten.get(2)+","+
+		Reha.thisClass.patpanel.patDaten.get(2)+","+
 		SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
 		"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
 		"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
@@ -414,10 +414,10 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		"rez_bez='T', zzstatus='1' where id='"+SystemConfig.hmAdrRDaten.get("<Rid>")+"'";
 		new ExUndHop().setzeStatement(cmd);
 		//System.out.println("Rezeptstamm -> "+cmd);
-		int row = AktuelleRezepte.aktRez.tabaktrez.getSelectedRow();
+		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 		if(row >= 0){
-			AktuelleRezepte.aktRez.dtblm.setValueAt(PatGrundPanel.thisClass.imgzuzahl[1],row,1);
-			AktuelleRezepte.aktRez.tabaktrez.repaint();
+			Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],row,1);
+			Reha.thisClass.patpanel.aktRezept.tabaktrez.repaint();
 		}
 	}
 	

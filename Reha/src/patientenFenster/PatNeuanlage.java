@@ -255,12 +255,12 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 						if(inNeu || feldname.equals("")){
 							setzeFocus();
 						}else{
-							if(PatGrundPanel.thisClass.kid < 0 && feldname.equals("KASSE")){
+							if(Reha.thisClass.patpanel.kid < 0 && feldname.equals("KASSE")){
 								if(feldergefuellt){
 									//jtf[12].setText("?"+jtf[12].getText());
 								}
 							}
-							if(PatGrundPanel.thisClass.aid < 0 && feldname.equals("ARZT")){
+							if(Reha.thisClass.patpanel.aid < 0 && feldname.equals("ARZT")){
 								if(feldergefuellt){
 									//jtf[17].setText("?"+jtf[17].getText());
 								}
@@ -387,7 +387,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			protected Void doInBackground() throws Exception {
 
 		 		List<String> nichtlesen = Arrays.asList(new String[] {"anamnese","pat_text"});
-				Vector felder = SqlInfo.holeSatz("pat5", "*", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"'",nichtlesen);
+				Vector felder = SqlInfo.holeSatz("pat5", "*", "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'",nichtlesen);
 				int gros = felder.size();
 				int anzahlf = fedits.length;
 				int anzahlc = fchecks.length;
@@ -423,9 +423,9 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				}*/
 				arztbisher = jtf[17].getText();
 				kassebisher = jtf[12].getText(); 
-				kassenid = PatGrundPanel.thisClass.patDaten.get(68);
-				befreitdatum = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(31));
-				freizumstart = (PatGrundPanel.thisClass.patDaten.get(30).equals("T") ? true : false);
+				kassenid = Reha.thisClass.patpanel.patDaten.get(68);
+				befreitdatum = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(31));
+				freizumstart = (Reha.thisClass.patpanel.patDaten.get(30).equals("T") ? true : false);
 				if(!jtf[35].getText().trim().equals("")){
 					jcheck[10].setEnabled(true);
 				}
@@ -510,9 +510,9 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		}
 		//System.out.println("Inhalt = "+buf.toString());
 		if(!this.inNeu){
-			globPat_intern = PatGrundPanel.thisClass.aktPatID;
+			globPat_intern = Reha.thisClass.patpanel.aktPatID;
 			buf.append(" where pat_intern='"+globPat_intern+"'");
-			spatintern = PatGrundPanel.thisClass.aktPatID;
+			spatintern = Reha.thisClass.patpanel.aktPatID;
 			// Wenn Kasse veränder wurde....
 			if(!jtf[34].getText().trim().equals(kassenid)){
 				JOptionPane.showMessageDialog(null, "Achtung - Sie haben dem Patient eine neue Kasse zugewiesen.\n"+
@@ -534,7 +534,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 				}
 				if(!doof){
 					// hier wäre es optimal eine  ZuzahlToolsFunktion zu haben.....
-					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+PatGrundPanel.thisClass.aktPatID+"' AND REZ_GEB='0.00'");
+					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"' AND REZ_GEB='0.00'");
 					if(anzahl > 0){
 						String meldung = "Dieser Patient hat -> "+anzahl+" laufende Rezepte <- ohne Abschluss\n"+
 						"Soll der veränderte Befreiungsstatus auf alle noch nicht(!) bezahlten Rezepte übertragen werden?";
@@ -542,8 +542,8 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 						if(frage == JOptionPane.NO_OPTION){
 							JOptionPane.showMessageDialog(null,"Dann eben nicht!\nVergessen Sie aber nicht den Befreiungsstatus der Rezepte von Hand zu ändern");
 						}else if(frage == JOptionPane.YES_OPTION){
-							String pat_intern = PatGrundPanel.thisClass.aktPatID;
-							String geboren = DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4));
+							String pat_intern = Reha.thisClass.patpanel.aktPatID;
+							String geboren = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
 							String befreit = (freibeimspeichern ? "T" : "F");
 							String datum = (freibeimspeichern ? "" : jtf[16].getText().trim());
 							ZuzahlTools.zzStatusEdit(pat_intern, geboren, "", befreit, jtf[34].getText().trim());
@@ -571,7 +571,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 		final String xpatintern = spatintern;
 		new Thread(){
 			public void run(){
-				PatGrundPanel.thisClass.arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
+				Reha.thisClass.patpanel.arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
 				finalise();
@@ -1092,7 +1092,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 						protected Void doInBackground() throws Exception {
 							try{
 							if(! inNeu){
-								BufferedImage img = holePatBild(PatGrundPanel.thisClass.aktPatID);
+								BufferedImage img = holePatBild(Reha.thisClass.patpanel.aktPatID);
 								if(img==null){
 									lblbild.setText("Kein Bild des Patienten vorhanden");	
 								}else{
@@ -1317,7 +1317,7 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 			return;
 		}
 		System.out.println("in doArztListe");
-		String aerzte = PatGrundPanel.thisClass.patDaten.get(63);
+		String aerzte = Reha.thisClass.patpanel.patDaten.get(63);
 		String[] einzelarzt = null;
 		String[] arztdaten = null;
 		Vector arztvec = null;
@@ -1865,7 +1865,7 @@ class ArztListeSpeichern{
 		//cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
 		SqlInfo.aktualisiereSaetze("pat5", "aerzte='"+aliste+"'", "pat_intern='"+xpatintern+"'");
 		new ExUndHop().setzeStatement(cmd);
-		PatGrundPanel.thisClass.patDaten.set(63,aliste);
+		Reha.thisClass.patpanel.patDaten.set(63,aliste);
 		System.out.println(cmd);
 	}
 }

@@ -884,7 +884,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 		  start();
 	  }
 	  public void run(){
-		  if(TerminFenster.thisClass.getAnsicht()==2){
+		  if(Reha.thisClass.terminpanel.getAnsicht()==2){
 			  //System.out.println("vKalDaten="+this.vKalDaten);
 			  //System.out.println("iKoll = "+this.iKoll);
 			  //System.out.println("datum = "+this.datum);

@@ -521,7 +521,7 @@ public static void buttonsEinschalten(){
 
 private boolean satzSperrenUndLoeschen(int realindex){
 	boolean ret=false;
-	TerminFenster.thisClass.setUpdateVerbot(true);
+	Reha.thisClass.terminpanel.setUpdateVerbot(true);
 	String behandlernum = (termine.get(realindex)[6].length()==1 ? "0"+termine.get(realindex)[6]+"BEHANDLER" : termine.get(realindex)[6]+"BEHANDLER");
 	String sdatum = termine.get(realindex)[1];
 	String sstmt = "select * from flexlock where sperre = '"+behandlernum+sdatum+"'";
@@ -546,12 +546,12 @@ private boolean satzSperrenUndLoeschen(int realindex){
 		SwingUtilities.invokeLater(new Runnable(){
 	        public  void run()
            	   {
-	        	TerminFenster.thisClass.aktualisieren();
+	        	Reha.thisClass.terminpanel.aktualisieren();
            	   }
 		}); 
 	}
 	//mm
-	TerminFenster.thisClass.setUpdateVerbot(false);
+	Reha.thisClass.terminpanel.setUpdateVerbot(false);
 	return ret;
 }
 

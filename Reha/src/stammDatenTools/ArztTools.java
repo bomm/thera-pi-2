@@ -1,5 +1,7 @@
 package stammDatenTools;
 
+import hauptFenster.Reha;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +18,7 @@ public class ArztTools {
 		boolean isherr = false;
 		int xid;
 		if(id.equals("")){
-			xid = StringTools.ZahlTest(PatGrundPanel.thisClass.patDaten.get(67));			
+			xid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(67));			
 		}else{
 			xid = new Integer(id);
 		}
@@ -73,7 +75,7 @@ public class ArztTools {
 		SystemConfig.hmAdrADaten.put("<Aid>", (String) vec.get(16));
 		
 		//"<Aihrer>","<Apatientin>","<Adie>"
-		if(! PatGrundPanel.thisClass.aktPatID.equals("")){
+		if(! Reha.thisClass.patpanel.aktPatID.equals("")){
 			boolean bfrau = ( ((String)vec.get(0)).equalsIgnoreCase("FRAU") ? true : false );
 			SystemConfig.hmAdrADaten.put("<Aihrer>", (bfrau ? "Ihrer" : "Ihres"));
 			SystemConfig.hmAdrADaten.put("<Apatientin>", (bfrau ? "Patientin" : "Patienten"));

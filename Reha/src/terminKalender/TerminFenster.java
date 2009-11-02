@@ -170,7 +170,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private JMenuItem Tauschemitnachfolger = null;	
 	private JMenuItem Telefonliste = null;	
 	
-	public static TerminFenster thisClass = null;
+	//public static TerminFenster thisClass = null;
+	
 	private Zeitfenster zf;
 	private DruckFenster df;
 	private SchnellSuche sf;
@@ -345,10 +346,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			public void focusGained(java.awt.event.FocusEvent e) {
 				Reha.thisClass.shiftLabel.setText("VP Focus da");
-				((JRehaInternal)thisClass.eltern).feuereEvent(25554);
-				if(! thisClass.eltern.isSelected()){
+				((JRehaInternal)Reha.thisClass.terminpanel.eltern).feuereEvent(25554);
+				((JRehaInternal)Reha.thisClass.terminpanel.eltern).feuereEvent(25554);
+				if(! Reha.thisClass.terminpanel.eltern.isSelected()){
 					try {
-						thisClass.eltern.setSelected(true);
+						Reha.thisClass.terminpanel.eltern.setSelected(true);
 					} catch (PropertyVetoException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -362,7 +364,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		GrundFlaeche.revalidate();
 		ViewPanel.revalidate();
-		thisClass = this;
+
+		//thisClass = this;
+
 		//TitledPanelUI con = ((TitledPanelUI)((TitledPanelUI) this.GrundFlaeche.getParent()).getTitleBar());
 		setzeStatement();
 		/*
@@ -567,7 +571,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					if(e.getKeyCode()==68 && e.isControlDown()){
 						//System.out.println("in Terminplan drucken");
 						DruckeViewPanel dvp = new DruckeViewPanel();
-						dvp.setPrintPanel((JXPanel) thisClass.ViewPanel);
+						dvp.setPrintPanel((JXPanel) Reha.thisClass.terminpanel.ViewPanel);
 						break;	
 					}
 					if ( (e.getKeyCode()==87) && (e.isControlDown()) ){
@@ -653,8 +657,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			public void focusGained(java.awt.event.FocusEvent e) {
 				focusHandling(0,1);
 				try{
-					if(!TerminFenster.thisClass.eltern.isActive){
-						thisClass.eltern.feuereEvent(25554);
+					if(!Reha.thisClass.terminpanel.eltern.isActive){
+						Reha.thisClass.terminpanel.eltern.feuereEvent(25554);
 					}
 				}catch(Exception ex){
 					
@@ -910,21 +914,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		//KalenderAlpha = new Float(new String(ini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
 		try{
-			if(! (thisClass.oSpalten == null)){
+			if(! (Reha.thisClass.terminpanel.oSpalten == null)){
 				for(int i = 0; i < 7;i++){
-					thisClass.oSpalten[i].setAlpha(alf);
-					thisClass.oSpalten[i].setBackground(SystemConfig.KalenderHintergrund);	
-					thisClass.oSpalten[i].repaint();
-					thisClass.oCombo[i].getParent().setBackground(SystemConfig.KalenderHintergrund);
+					Reha.thisClass.terminpanel.oSpalten[i].setAlpha(alf);
+					Reha.thisClass.terminpanel.oSpalten[i].setBackground(SystemConfig.KalenderHintergrund);	
+					Reha.thisClass.terminpanel.oSpalten[i].repaint();
+					Reha.thisClass.terminpanel.oCombo[i].getParent().setBackground(SystemConfig.KalenderHintergrund);
 					//((JXPanel) thisClass.oCombo[i].getParent()).setAlpha(alf);
 					
 				}
-				thisClass.ViewPanel.setBackground(SystemConfig.KalenderHintergrund);
-				thisClass.GrundFlaeche.setBackground(SystemConfig.KalenderHintergrund);
-				thisClass.ComboFlaeche.setBackground(SystemConfig.KalenderHintergrund);
-				thisClass.TerminFlaeche.setBackground(SystemConfig.KalenderHintergrund);
-				thisClass.ViewPanel.validate();
-				thisClass.ViewPanel.repaint();
+				Reha.thisClass.terminpanel.ViewPanel.setBackground(SystemConfig.KalenderHintergrund);
+				Reha.thisClass.terminpanel.GrundFlaeche.setBackground(SystemConfig.KalenderHintergrund);
+				Reha.thisClass.terminpanel.ComboFlaeche.setBackground(SystemConfig.KalenderHintergrund);
+				Reha.thisClass.terminpanel.TerminFlaeche.setBackground(SystemConfig.KalenderHintergrund);
+				Reha.thisClass.terminpanel.ViewPanel.validate();
+				Reha.thisClass.terminpanel.ViewPanel.repaint();
 				//((Component) thisClass.getParent()).setBackground(SystemConfig.KalenderHintergrund);
 				
 			}
@@ -966,7 +970,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(ec==68 && e.isControlDown()){
 							//System.out.println("in Terminplan drucken");
 							DruckeViewPanel dvp = new DruckeViewPanel();
-							dvp.setPrintPanel((JXPanel) thisClass.ViewPanel);
+							dvp.setPrintPanel((JXPanel) Reha.thisClass.terminpanel.ViewPanel);
 							break;	
 						}
 						if ( (ec==123) && (ansicht != MASKEN_ANSICHT) ){
@@ -1397,8 +1401,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				public void focusGained(java.awt.event.FocusEvent e) {
 					focusHandling(1,1);
 					try{
-						if(!TerminFenster.thisClass.eltern.isActive){
-							thisClass.eltern.feuereEvent(25554);
+						if(!Reha.thisClass.terminpanel.eltern.isActive){
+							Reha.thisClass.terminpanel.eltern.feuereEvent(25554);
 						}
 					}catch(Exception ex){
 						
@@ -2392,7 +2396,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	public void startTitel(){
 		String stag = DatFunk.sHeute();
-		thisClass.eltern.setTitle(DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]");
+		Reha.thisClass.terminpanel.eltern.setTitle(DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]");
 
 	}
 	public void setzeFocus(){
@@ -2457,7 +2461,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				*/
 				
 				if (! (ViewPanel.getParent()==null) ){
-					thisClass.eltern.setTitle(DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]");
+					Reha.thisClass.terminpanel.eltern.setTitle(DatFunk.WochenTag(stag)+" "+stag+" -- KW: "+DatFunk.KalenderWoche(stag)+" -- [Normalansicht]");
 					//thisClass.eltern.setTitle(datFunk.WochenTag(stag)+" "+stag+" ---- [Normalansicht]");
 					//JRehaInternal.thisClass.setzeTitel(datFunk.WochenTag(stag)+" "+stag+" ---- [Normalansicht]");
 					//((JRehaInternal)ViewPanel.getParent().getParent().getParent()).setTitle(datFunk.WochenTag(stag)+" "+stag+" ---- [Normalansicht]");
@@ -2486,7 +2490,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				" AND behandler = '"+sbehandler+
 				"BEHANDLER'";
 				macheStatement(sstate,iansicht);
-				thisClass.eltern.setTitle(DatFunk.WochenTag(serster)+" "+serster+"  bis  "+DatFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
+				Reha.thisClass.terminpanel.eltern.setTitle(DatFunk.WochenTag(serster)+" "+serster+"  bis  "+DatFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 				//((JXTitledPanel) ViewPanel.getParent()).setTitle(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 				//JRehaInternal.thisClass.setzeTitel(datFunk.WochenTag(serster)+" "+serster+"  bis  "+datFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
 	        	//this.setTitle();			
@@ -2826,32 +2830,32 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		return lockStatement;
 	}
 	public static String getLockMaschine(){
-		return TerminFenster.thisClass.lockowner;
+		return Reha.thisClass.terminpanel.lockowner;
 	}
 
 	public static String getLockSpalte(){
-		return TerminFenster.thisClass.lockspalte;
+		return Reha.thisClass.terminpanel.lockspalte;
 	}
 
 	public static void setLockMaschine(String maschine){
-		TerminFenster.thisClass.lockowner = maschine;
+		Reha.thisClass.terminpanel.lockowner = maschine;
 	}
 
 	public static void setLockSpalte(String spalte){
-		TerminFenster.thisClass.lockspalte = spalte;
+		Reha.thisClass.terminpanel.lockspalte = spalte;
 	}
 
 	public static synchronized void setLockOk(int lock,String message){
-		TerminFenster.thisClass.lockok = lock;
-		TerminFenster.thisClass.lockmessage = message;
-		if (TerminFenster.thisClass.lockok < 0 && TerminFenster.thisClass.zf != null){
+		Reha.thisClass.terminpanel.lockok = lock;
+		Reha.thisClass.terminpanel.lockmessage = message;
+		if (Reha.thisClass.terminpanel.lockok < 0 && Reha.thisClass.terminpanel.zf != null){
 			
 		}
 	}
 	
 
 	public static TerminFenster getThisClass(){
-		return thisClass;
+		return Reha.thisClass.terminpanel;
 	}
 	
 	private void sperreAnzeigen(){
@@ -3084,9 +3088,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	public static void setDialogRet(int iret, String[] sret){
 
-		TerminFenster.thisClass.dialogRetInt = iret;
-		TerminFenster.thisClass.dialogRetData[0] = sret[0];
-		TerminFenster.thisClass.dialogRetData[1] = sret[1];	
+		Reha.thisClass.terminpanel.dialogRetInt = iret;
+		Reha.thisClass.terminpanel.dialogRetData[0] = sret[0];
+		Reha.thisClass.terminpanel.dialogRetData[1] = sret[1];	
 		//System.out.println("Rückgabewert des Hilfsdialoges = "+dialogRetInt+"-"+dialogRetData[0]+
 		//		"-"+dialogRetData[1]);
 	}
@@ -3195,12 +3199,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		  df.setMaximumFractionDigits(2);
 		  df.setMinimumFractionDigits(2);
 		  for(int tage=0;tage<7;tage++){
-			  anzahl = ((Vector<?>)((ArrayList<?>) thisClass.vTerm.get(tage)).get(0)).size(); 
+			  anzahl = ((Vector<?>)((ArrayList<?>) Reha.thisClass.terminpanel.vTerm.get(tage)).get(0)).size(); 
 			  minuten_tag = 0;
 			  for(int i=0;i<anzahl;i++){
 				  ;
-				  if(! ((String) ((Vector<?>)((ArrayList<?>) thisClass.vTerm.get(tage)).get(1)).get(i)).trim().contains("@FREI")){
-					  minuten_tag = minuten_tag + new Integer( ((String) ((Vector<?>)((ArrayList<?>)thisClass.vTerm.get(tage)).get(3)).get(i)).trim());
+				  if(! ((String) ((Vector<?>)((ArrayList<?>) Reha.thisClass.terminpanel.vTerm.get(tage)).get(1)).get(i)).trim().contains("@FREI")){
+					  minuten_tag = minuten_tag + new Integer( ((String) ((Vector<?>)((ArrayList<?>)Reha.thisClass.terminpanel.vTerm.get(tage)).get(3)).get(i)).trim());
 				  }
 			  }
 			   
@@ -3214,7 +3218,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		  //System.out.println("Wochenarbeitszeit = "+df.format(stunden_woche/60));
 		  titel = titel + "Wochenstunden: "+df.format(stunden_woche/60);
 		  //String stitel = "Arbeitszeit von: "+ParameterLaden.vKKollegen.get(thisClass.maskenwahl).Matchcode;
-		  thisClass.eltern.setTitle(titel);
+		  Reha.thisClass.terminpanel.eltern.setTitle(titel);
 		  //((JXTitledPanel) thisClass.ViewPanel.getParent()).setTitle(titel);
 
 		}
@@ -3444,7 +3448,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					
 					String s1 = "#PATSUCHEN";
 					String s2 = (String) xpat_int;
-					PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
+					PatStammEvent pEvt = new PatStammEvent(Reha.thisClass.terminpanel);
 					pEvt.setPatStammEvent("PatSuchen");
 					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
 					PatStammEventClass.firePatStammEvent(pEvt);
@@ -3457,7 +3461,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			//ProgLoader.ProgPatientenVerwaltung(1);
 			String s1 = "#PATSUCHEN";
 			String s2 = (String) pat_int;
-			PatStammEvent pEvt = new PatStammEvent(TerminFenster.thisClass);
+			PatStammEvent pEvt = new PatStammEvent(Reha.thisClass.terminpanel);
 			pEvt.setPatStammEvent("PatSuchen");
 			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
 			PatStammEventClass.firePatStammEvent(pEvt);
@@ -4160,8 +4164,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						oSpalten[aktiveSpalte[2]].repaint();
 						JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 						if(patient != null){
-							if(PatGrundPanel.thisClass.aktRezept.rezAngezeigt.equals(swreznum)){
-								AktuelleRezepte.aktRez.updateEinzelTermine(termbuf.toString());
+							if(Reha.thisClass.patpanel.aktRezept.rezAngezeigt.equals(swreznum)){
+								Reha.thisClass.patpanel.aktRezept.updateEinzelTermine(termbuf.toString());
 							}
 						}
 					}
@@ -4455,10 +4459,10 @@ class TerminDrag extends SwingWorker{
 	@Override
 	protected Object doInBackground() throws Exception {
 		// TODO Auto-generated method stub
-		while(TerminFenster.thisClass.indrag){
-			if(TerminFenster.thisClass.dragPanel != null){
+		while(Reha.thisClass.terminpanel.indrag){
+			if(Reha.thisClass.terminpanel.dragPanel != null){
 				PointerInfo info = MouseInfo.getPointerInfo(); 
-				TerminFenster.thisClass.dragPanel.setPoint(new Point(info.getLocation().x ,info.getLocation().y ));
+				Reha.thisClass.terminpanel.dragPanel.setPoint(new Point(info.getLocation().x ,info.getLocation().y ));
 				//Thread.sleep(25);
 			}
 		}

@@ -1,5 +1,7 @@
 package stammDatenTools;
 
+import hauptFenster.Reha;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +17,7 @@ public class KasseTools {
 	public static void constructKasseHMap(String id){
 		int xid;
 		if(id.equals("")){
-			xid = StringTools.ZahlTest(PatGrundPanel.thisClass.patDaten.get(68));
+			xid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(68));
 		}else{
 			xid = new Integer(id);
 		}

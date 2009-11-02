@@ -114,7 +114,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				// TODO Auto-generated method stub
 				/*
 				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
+			     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
 			     float[] dist = {0.0f, 0.75f};
 			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
 			     p =
@@ -169,7 +169,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		pb.addLabel("Bitte die Positionen auswählen die Sie berechnen wollen",cc.xyw(2, 2, 4));
 
 		pb.addLabel("Heilmittel 1",cc.xy(3, 4));
-		String lab = (String)PatGrundPanel.thisClass.vecaktrez.get(48);
+		String lab = (String)Reha.thisClass.patpanel.vecaktrez.get(48);
 		leistung[0] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
 		leistung[0].setOpaque(false);
 		if(!lab.equals("")){
@@ -181,7 +181,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		pb.add(leistung[0],cc.xyw(5, 4, 2));
 		
 		pb.addLabel("Heilmittel 2",cc.xy(3, 6));
-		lab = (String)PatGrundPanel.thisClass.vecaktrez.get(49);
+		lab = (String)Reha.thisClass.patpanel.vecaktrez.get(49);
 		leistung[1] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
 		leistung[1].setOpaque(false);
 		if(!lab.equals("")){
@@ -193,7 +193,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		pb.add(leistung[1],cc.xyw(5, 6, 2));
 
 		pb.addLabel("Heilmittel 3",cc.xy(3, 8));
-		lab = (String)PatGrundPanel.thisClass.vecaktrez.get(50);
+		lab = (String)Reha.thisClass.patpanel.vecaktrez.get(50);
 		leistung[2] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
 		leistung[2].setOpaque(false);
 		if(!lab.equals("")){
@@ -205,7 +205,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		pb.add(leistung[2],cc.xyw(5, 8, 2));
 
 		pb.addLabel("Heilmittel 4",cc.xy(3, 10));
-		lab = (String)PatGrundPanel.thisClass.vecaktrez.get(51);
+		lab = (String)Reha.thisClass.patpanel.vecaktrez.get(51);
 		leistung[3] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
 		leistung[3].setOpaque(false);
 		if(!lab.equals("")){
@@ -308,9 +308,9 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
 		sb.append(DatFunk.sHeute()+" - unentschuldigt oder zu spät abgesagt - Rechnung!!\n");
-		sb.append(PatGrundPanel.thisClass.pmemo[1].getText());
-		PatGrundPanel.thisClass.pmemo[1].setText(sb.toString());
-		String cmd = "update pat5 set pat_text='"+sb.toString()+"' where pat_intern = '"+PatGrundPanel.thisClass.aktPatID+"'";
+		sb.append(Reha.thisClass.patpanel.pmemo[1].getText());
+		Reha.thisClass.patpanel.pmemo[1].setText(sb.toString());
+		String cmd = "update pat5 set pat_text='"+sb.toString()+"' where pat_intern = '"+Reha.thisClass.patpanel.aktPatID+"'";
 		new ExUndHop().setzeStatement(cmd);
 	}
 	private void macheAFRHmap(){
@@ -334,14 +334,14 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			mapkurz = "<AFRkurz"+(i+1)+">";
 			maplang = "<AFRlang"+(i+1)+">";
 			if(leistung[i].isSelected()){
-				Double preis = new Double( (String)PatGrundPanel.thisClass.vecaktrez.get(18+i));
+				Double preis = new Double( (String)Reha.thisClass.patpanel.vecaktrez.get(18+i));
 				String s = df.format( preis);
 				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,s);
 				gesamt = gesamt+preis;
 				
-				spos = (String)PatGrundPanel.thisClass.vecaktrez.get(8+i);
-				sart = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
+				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
 				inpos = LeistungTools.getLeistung(sart, spos);	
 				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
@@ -350,8 +350,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				//System.out.println(inpos[1]);
 				
 			}else{
-				spos = (String)PatGrundPanel.thisClass.vecaktrez.get(8+i);
-				sart = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
+				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
 				inpos = LeistungTools.getLeistung(sart, spos);	
 

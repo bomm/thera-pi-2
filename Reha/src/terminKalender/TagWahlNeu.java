@@ -389,8 +389,8 @@ private void zurueck(){
 
         		
         	}else{
-    			TerminFenster.thisClass.datGewaehlt = akttag;
-    			TerminFenster.thisClass.suchSchonMal();
+    			Reha.thisClass.terminpanel.datGewaehlt = akttag;
+    			Reha.thisClass.terminpanel.suchSchonMal();
         	}
 
 			

@@ -364,14 +364,14 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			mapkurz = "<AFRkurz"+(i+1)+">";
 			maplang = "<AFRlang"+(i+1)+">";
 			if(leistung[i].isSelected()){
-				Double preis = new Double( (String)PatGrundPanel.thisClass.vecaktrez.get(18+i));
+				Double preis = new Double( (String)Reha.thisClass.patpanel.vecaktrez.get(18+i));
 				String s = df.format( preis);
 				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,s);
 				gesamt = gesamt+preis;
 				
-				spos = (String)PatGrundPanel.thisClass.vecaktrez.get(8+i);
-				sart = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
+				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
 				inpos = LeistungTools.getLeistung(sart, spos);	
 				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
@@ -380,8 +380,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				//System.out.println(inpos[1]);
 				
 			}else{
-				spos = (String)PatGrundPanel.thisClass.vecaktrez.get(8+i);
-				sart = (String)PatGrundPanel.thisClass.vecaktrez.get(1);
+				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
+				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
 				inpos = LeistungTools.getLeistung(sart, spos);	
 

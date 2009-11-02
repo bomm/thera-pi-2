@@ -1,6 +1,7 @@
 package terminKalender;
 
 import hauptFenster.AktiveFenster;
+import hauptFenster.Reha;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,8 +55,8 @@ public class TermineErfassen implements Runnable {
 					scheibeTermin();
 					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					if(patient != null){
-						if(PatGrundPanel.thisClass.aktRezept.rezAngezeigt.equals(scanrez)){
-							AktuelleRezepte.aktRez.updateEinzelTermine(sbuftermine.toString());
+						if(Reha.thisClass.patpanel.aktRezept.rezAngezeigt.equals(scanrez)){
+							Reha.thisClass.patpanel.aktRezept.updateEinzelTermine(sbuftermine.toString());
 						}
 					}
 					
@@ -178,13 +179,13 @@ public class TermineErfassen implements Runnable {
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 						if(termin != null){
 							int ansicht;
-							if((ansicht = TerminFenster.thisClass.ansicht) == 0){
-								if(TerminFenster.thisClass.getAktuellerTag().equals(DatFunk.sHeute())){
+							if((ansicht = Reha.thisClass.terminpanel.ansicht) == 0){
+								if(Reha.thisClass.terminpanel.getAktuellerTag().equals(DatFunk.sHeute())){
 									int iblock = new Integer(sblock)-1;
-									((ArrayList<Vector<String>>)((Vector)TerminFenster.thisClass.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
-									TerminFenster.thisClass.ViewPanel.repaint();
+									((ArrayList<Vector<String>>)((Vector)Reha.thisClass.terminpanel.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
+									Reha.thisClass.terminpanel.ViewPanel.repaint();
 								}else{
-									System.out.println("Aktueller Tag = "+TerminFenster.thisClass.getAktuellerTag());
+									System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
 								}
 							}else{
 								System.out.println("Ansicht im TK = "+ansicht);
@@ -301,15 +302,15 @@ public class TermineErfassen implements Runnable {
 							JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 							if(termin != null){
 								int ansicht;
-								if((ansicht = TerminFenster.thisClass.ansicht) == 0){
-									if(TerminFenster.thisClass.getAktuellerTag().equals(DatFunk.sHeute())){
+								if((ansicht = Reha.thisClass.terminpanel.ansicht) == 0){
+									if(Reha.thisClass.terminpanel.getAktuellerTag().equals(DatFunk.sHeute())){
 										if(!termOk){
 											termOk = true;
 										}
 										int iblock = new Integer(sblock)-1;
-										((ArrayList<Vector<String>>)((Vector)TerminFenster.thisClass.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
+										((ArrayList<Vector<String>>)((Vector)Reha.thisClass.terminpanel.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
 									}else{
-										System.out.println("Aktueller Tag = "+TerminFenster.thisClass.getAktuellerTag());
+										System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
 									}
 								}else{
 									System.out.println("Ansicht im TK = "+ansicht);
@@ -323,7 +324,7 @@ public class TermineErfassen implements Runnable {
 			}
 		}
 		if(termOk){
-			TerminFenster.thisClass.ViewPanel.repaint();			
+			Reha.thisClass.terminpanel.ViewPanel.repaint();			
 		}
 		//System.out.println("Anzahl zusätzlicher Fundstellen = "+mehrstellen);
 	}

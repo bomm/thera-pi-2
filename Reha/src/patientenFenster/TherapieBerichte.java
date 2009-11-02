@@ -1,5 +1,7 @@
 package patientenFenster;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -49,7 +51,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	 * 
 	 */
 	//private static final long serialVersionUID = 1L;
-	public static TherapieBerichte aktBericht;
+	//public static TherapieBerichte aktBericht;
 	public String aktPanel = "";
 	JXPanel leerPanel = null;
 	JXPanel vollPanel = null;
@@ -63,7 +65,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	
 	public TherapieBerichte() {
 		super();
-		aktBericht = this;
+		//aktBericht = this;
 
 		setOpaque(false);
 		setBorder(null);
@@ -195,7 +197,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 					}
 					anz = dtblm.getRowCount();
-					PatGrundPanel.thisClass.jtab.setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
+					Reha.thisClass.patpanel.jtab.setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
 					if(anz > 0){
 						setzeRezeptPanelAufNull(false);
 						if(xrez_nr.equals("")){
@@ -259,7 +261,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		if(anfrage == JOptionPane.NO_OPTION){
 			return;
 		}
-		String xpat_int = PatGrundPanel.thisClass.patDaten.get(29);
+		String xpat_int = Reha.thisClass.patpanel.patDaten.get(29);
 		String berid = (String)tabbericht.getValueAt(wahl,0);
 		// zunächst aus der berhist löschen
 		String xcmd = "delete from berhist where berichtid='"+berid+"'";
@@ -290,7 +292,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		//tabbericht
 		TableTool.loescheRow(tabbericht, wahl);
 		int anzber = tabbericht.getRowCount();
-		PatGrundPanel.thisClass.jtab.setTitleAt(2,macheHtmlTitel(anzber,"Therapieberichte"));
+		Reha.thisClass.patpanel.jtab.setTitleAt(2,macheHtmlTitel(anzber,"Therapieberichte"));
 		if(anzber > 0){
 		}else{
 		}

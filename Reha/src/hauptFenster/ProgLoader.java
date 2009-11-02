@@ -183,7 +183,7 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
-			 		  TerminFenster.thisClass.getViewPanel().requestFocus();
+			 		  Reha.thisClass.terminpanel.getViewPanel().requestFocus();
 			 	   }
 			}); 	   			
 		}
@@ -429,7 +429,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 			}
 		}
 		Reha.thisClass.progressStarten(false);
-		PatGrundPanel.thisClass.setzeFocus();
+		Reha.thisClass.patpanel.setzeFocus();
 		((JPatientInternal)patient).setzeSuche();
 		return;
 	}
@@ -464,6 +464,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 	 	   {
 	 			patjry.setzeSuche();
 	 			Reha.thisClass.progressStarten(false);
+	 			System.out.println("Focus auf PatPanel gesetzt");
 	 	   }
 	});
 	return; 
