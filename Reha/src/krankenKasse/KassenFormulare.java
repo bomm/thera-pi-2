@@ -65,7 +65,7 @@ import events.RehaTPEventListener;
 
 public class KassenFormulare extends JXDialog implements FocusListener, ActionListener, WindowListener, KeyListener,RehaTPEventListener{
 	String eigenName = null;
-	static KassenFormulare thisClass;
+	KassenFormulare thisClass;
 	JXPanel jcc;
 	JXPanel jpan;
 	JList jList1;
@@ -118,6 +118,9 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		validate();
 		
 	}
+	public KassenFormulare getInstance(){
+		return this;
+	}
 	private JXPanel getSetWahl(){
 		JXPanel jpan = new JXPanel(new BorderLayout());
 		jpan.add(new JScrollPane(getJList1()), BorderLayout.CENTER);
@@ -156,7 +159,8 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 					if (arg0.getClickCount() == 2){
 						tfrueck.setText(Integer.toString(jList1.getSelectedIndex()));
 						//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
-						KassenFormulare.thisClass.FensterSchliessen("dieses");
+						getInstance().FensterSchliessen("dieses");
+						//KassenFormulare.thisClass.FensterSchliessen("dieses");
 					}
 				}
 			});

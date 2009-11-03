@@ -566,13 +566,13 @@ public static void SystemInitialisierung(){
 
 public static void containerBelegen(int setPos,RehaTP jtp){
 	if (setPos==1){
-		if(Reha.jLeerOben != null){
-			Reha.jLeerOben.setVisible(false);
-			Reha.jInhaltOben = jtp;
-			Reha.jContainerOben.add(Reha.jInhaltOben,BorderLayout.CENTER);
-			Reha.jContainerOben.validate();
-			Reha.jContainerOben.remove(Reha.jLeerOben);
-			Reha.jLeerOben = null;
+		if(Reha.thisClass.jLeerOben != null){
+			Reha.thisClass.jLeerOben.setVisible(false);
+			Reha.thisClass.jInhaltOben = jtp;
+			Reha.thisClass.jContainerOben.add(Reha.thisClass.jInhaltOben,BorderLayout.CENTER);
+			Reha.thisClass.jContainerOben.validate();
+			Reha.thisClass.jContainerOben.remove(Reha.thisClass.jLeerOben);
+			Reha.thisClass.jLeerOben = null;
 		}else{
 			RehaSmartDialog rsm = new RehaSmartDialog(Reha.thisFrame,jtp.getContentContainer().getName());
 			PinPanel pinPanel = new PinPanel();
@@ -585,13 +585,13 @@ public static void containerBelegen(int setPos,RehaTP jtp){
 		}
 		
 	}else if(setPos==2){
-		if(Reha.jLeerUnten != null){
-			Reha.jLeerUnten.setVisible(false);
-			Reha.jInhaltUnten = jtp;
-			Reha.jContainerUnten.add(Reha.jInhaltUnten,BorderLayout.CENTER);
-			Reha.jContainerUnten.validate();
-			Reha.jContainerUnten.remove(Reha.jLeerUnten);
-			Reha.jLeerUnten = null;
+		if(Reha.thisClass.jLeerUnten != null){
+			Reha.thisClass.jLeerUnten.setVisible(false);
+			Reha.thisClass.jInhaltUnten = jtp;
+			Reha.thisClass.jContainerUnten.add(Reha.thisClass.jInhaltUnten,BorderLayout.CENTER);
+			Reha.thisClass.jContainerUnten.validate();
+			Reha.thisClass.jContainerUnten.remove(Reha.thisClass.jLeerUnten);
+			Reha.thisClass.jLeerUnten = null;
 		}else{
 			RehaSmartDialog rsm = new RehaSmartDialog(Reha.thisFrame,jtp.getContentContainer().getName());
 			PinPanel pinPanel = new PinPanel();
@@ -627,10 +627,10 @@ public void RehaTPEventOccurred(RehaTPEvent evt) {
 }
 
 public static int PosTest(int pos){
-	if((pos==1) && (Reha.jLeerOben == null) ){
+	if((pos==1) && (Reha.thisClass.jLeerOben == null) ){
 		return 0;
 	}
-	if((pos==2) && (Reha.jLeerUnten == null) ){
+	if((pos==2) && (Reha.thisClass.jLeerUnten == null) ){
 		System.out.println("pos = "+pos);
 		return 0;
 	}

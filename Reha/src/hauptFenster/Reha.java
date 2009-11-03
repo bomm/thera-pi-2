@@ -256,14 +256,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static Reha thisClass;  //  @jve:decl-index=0:
 	public static JXFrame thisFrame;
 	
-	public static JXPanel jInhaltOben = null;
-	public static JXPanel jInhaltUnten = null;	
-	public static JXPanel jEventTargetOben = null;
-	public static JXPanel jEventTargetUnten = null;	
-	public static JXPanel jContainerOben = null;
-	public static JXPanel jContainerUnten = null;	
-	public static JXPanel jLeerOben = null;
-	public static JXPanel jLeerUnten = null;	
+	public JXPanel jInhaltOben = null;
+	public JXPanel jInhaltUnten = null;	
+	public JXPanel jEventTargetOben = null;
+	public JXPanel jEventTargetUnten = null;	
+	public JXPanel jContainerOben = null;
+	public JXPanel jContainerUnten = null;	
+	public JXPanel jLeerOben = null;
+	public JXPanel jLeerUnten = null;	
 
 	public boolean initok = false;
 	public boolean splashok = false;
