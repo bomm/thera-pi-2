@@ -2342,9 +2342,12 @@ public void actionPerformed(ActionEvent arg0) {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				Reha.thisClass.progressStarten(true);
-				progLoader.ProgPatientenVerwaltung(1);
-				//ProgLoader.ProgPatientenVerwaltung(1);
+				try{
+					Reha.thisClass.progressStarten(true);
+					progLoader.ProgPatientenVerwaltung(1);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 		}.execute();
