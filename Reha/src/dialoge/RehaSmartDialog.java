@@ -245,6 +245,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 				if(evt.getDetails()[1].equals("ROT")){ 
 					//System.out.println("RehaSmartDialog hat EventListener gel�scht");
 					xEvent.removeRehaTPEventListener((RehaTPEventListener)this);
+					xEvent = null;
 					super.dispose();
 					this.dispose();
 				}

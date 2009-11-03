@@ -3,6 +3,7 @@ package geraeteInit;
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
+import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,9 @@ import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+
+import dialoge.SchluesselDialog;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -40,7 +44,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 	   boolean portFound = false; 
 	   //static String port;
 	   int baud,bits,stopbit,parity ;
-	   
+	   final byte[] fbuffer = new byte[50];
 	public BarCodeScanner(String port) throws Exception{
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
@@ -162,7 +166,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    String sout = null;
 		    StringBuffer sb = new StringBuffer();
 		    //char[] zeichen = new char[1];  
-		    byte[] buffer = new byte[1024];
+		    byte[] buffer = fbuffer; //new byte[1024];
 		    String outString = "";
 		    try {
 		    	int numBytes = 0;
@@ -199,11 +203,32 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						final String xoutString = outString.trim();
 						Thread erfassen = new Thread(new TermineErfassen(xoutString,tvec));
 						erfassen.start();
+					}else if(outString.substring(0,1).equals("S")){
+						//System.out.println("Schlüssel Nr. "+outString.replaceAll("\\n", ""));
+						outString = outString.substring(2).replaceAll("\\r","");
+						outString = outString.replaceAll("\\n","");
+						final String schluessel = outString;
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								try{
+									doAusleihe(schluessel);	
+								}catch(Exception ex){
+									ex.printStackTrace();
+								}
+								
+								return null;
+							}
+							
+						}.execute();
 					}else{
 						JOptionPane.showMessageDialog(null,"Kein Rezeptscan\nScaninhalt = -> "+sb.toString());
 					}
 				}
-
+				sb = null;
+				outString = null;
+				byteArrayOutputStream = null;
+				
 		    } catch (IOException e){
 				System.out.println("****in Catch-Clause - Fehler in IO-System****");
 				e.printStackTrace();
@@ -212,5 +237,15 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 			}
 		    break;
 	    }
+	}
+	private void doAusleihe(String ausleihe){
+		SchluesselDialog sdiag = new SchluesselDialog(null, "Schluessel Ein- / Ausgabe",ausleihe);
+		sdiag.setSize(300,200);
+		sdiag.setPreferredSize(new Dimension(300,200));
+		sdiag.setLocationRelativeTo(null);
+		sdiag.pack();
+		sdiag.setModal(true);
+		sdiag.setVisible(true);
+		sdiag = null;
 	}
 }

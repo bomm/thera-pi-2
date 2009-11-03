@@ -575,8 +575,9 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 								(i<10 ? "0"+new Integer(i).toString()+"BEHANDLER" :new Integer(i).toString()+"BEHANDLER"),
 								AZPlan.isSelected());
 				//System.out.println(stmt);
-				SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
-				snk.setzeStatement(new String(stmt));
+				SqlInfo.sqlAusfuehren(stmt);
+				//SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
+				//snk.setzeStatement(new String(stmt));
 				try {
 					Thread.sleep(speed);
 					//Thread.sleep(15);
