@@ -210,9 +210,13 @@ public class RezeptDaten extends JXPanel{
 				Reha.thisClass.patpanel.rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
 				Reha.thisClass.patpanel.aktRezept.rezAngezeigt = reznum.getText();
 				//AktuelleRezepte.aktRez.rezAngezeigt = reznum.getText();
-
-
-				int zzbild = new Integer ( (String)vecaktrez.get(39) );
+				int zzbild = 0;
+				try{
+					zzbild = Integer.parseInt((String)vecaktrez.get(39) );
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				
 				int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 				if(row >= 0){
 					if(Reha.thisClass.patpanel.aktRezept.dtblm.getValueAt(row,1) != Reha.thisClass.patpanel.imgzuzahl[zzbild]){

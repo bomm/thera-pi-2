@@ -50,6 +50,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 	private boolean ausgabe;
 	private ActionListener acli;
 	private KeyListener kli;
+	JPanel jpan = null;
 	public SchluesselDialog(JXFrame owner, String name,String xschluessel) {
 		//super(owner, name);
 		//this.setName(name);
@@ -57,6 +58,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		
 		schluessel = xschluessel;
 		addWindowListener(this);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		kli = new KeyListener(){
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -98,8 +100,8 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 					}
 				}
 		};
-		
-		this.setContentPane(getSchluessel());
+		jpan = getSchluessel();
+		this.setContentPane(jpan);
 		testeSchluessel();
 
 	}
@@ -121,7 +123,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		buts[1].addActionListener(acli);
 
 		
-		FormLayout lay = new FormLayout("0dlu,right:max(40dlu;p),10dlu,120dlu,50dlu","10dlu,p,10dlu,p,10dlu,p,20dlu,p");
+		FormLayout lay = new FormLayout("0dlu,right:max(40dlu;p),10dlu,120dlu,50dlu","10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 		pb.addLabel("Schlüssel",cc.xy(2, 2));
@@ -193,13 +195,14 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		this.dispose();
 	}
 	public void windowClosed(WindowEvent arg0) {
-		removeWindowListener(this);
 		System.out.println("In windowClosed von RehaSmartDialog");
 		ListenerTools.removeListeners(tfs[0]);
 		ListenerTools.removeListeners(tfs[1]);
 		ListenerTools.removeListeners(buts[0]);
 		ListenerTools.removeListeners(buts[1]);
+		jpan = null;
 		ListenerTools.removeListeners(this);
+		removeWindowListener(this);
 		acli = null;
 		kli = null;
 		fon = null;
