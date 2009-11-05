@@ -15,7 +15,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener{
 	private static final long serialVersionUID = -3580427603080353812L;
 	private JAbrechnungInternal jry;
 	public Abrechnung1(JAbrechnungInternal xjry){
-		this.jry = xjry;
+		super();
+		this.setJry(xjry);
 		
 	}
 
@@ -23,6 +24,14 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener{
 	public void patStammEventOccurred(PatStammEvent evt) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void setJry(JAbrechnungInternal jry) {
+		this.jry = jry;
+	}
+
+	public JAbrechnungInternal getJry() {
+		return jry;
 	}
 
 }

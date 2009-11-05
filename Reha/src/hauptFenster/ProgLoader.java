@@ -1,39 +1,34 @@
 package hauptFenster;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.beans.PropertyVetoException;
-import java.lang.ref.WeakReference;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 import krankenKasse.KassenPanel;
 import menus.OOIFTest;
 
-
-import openOfficeorg.RehaDocumentCloseListener;
-
-import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
 import patientenFenster.PatGrundPanel;
-import patientenFenster.PatientenFenster;
-
+import rehaContainer.RehaTP;
+import roogle.RoogleFenster;
+import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemUtil;
+import systemTools.PassWort;
+import systemTools.SplashPanel;
+import systemTools.WinNum;
+import terminKalender.DatFunk;
+import terminKalender.TerminFenster;
 import RehaInternalFrame.JAbrechnungInternal;
 import RehaInternalFrame.JArztInternal;
 import RehaInternalFrame.JGutachtenInternal;
@@ -42,48 +37,12 @@ import RehaInternalFrame.JPatientInternal;
 import RehaInternalFrame.JRehaInternal;
 import RehaInternalFrame.JTerminInternal;
 import abrechnung.Abrechnung1;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.text.IParagraph;
-import ag.ion.bion.officelayer.text.ITextCursor;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-
-import ag.ion.bion.officelayer.event.ICloseEvent;
-import ag.ion.bion.officelayer.event.ICloseListener;
-import ag.ion.bion.officelayer.event.IEvent;
 import arztFenster.ArztPanel;
 import benutzerVerwaltung.BenutzerVerwaltung;
-
-import com.sun.star.view.DocumentZoomType;
-
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import entlassBerichte.EBerichtPanel;
-import events.PatStammEvent;
-import events.PatStammEventClass;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
 import events.RehaTPEvent;
-import events.RehaTPEventClass;
-import events.RehaTPEventListener;
-import generalSplash.RehaSplash;
-
-import rehaContainer.RehaTP;
-import roogle.RoogleFenster;
-import systemEinstellungen.SystemConfig;
-import systemEinstellungen.SystemUtil;
-import systemTools.PassWort;
-import systemTools.SplashPanel;
-import systemTools.WinNum;
-import terminKalender.ParameterLaden;
-import terminKalender.TerminFenster;
-import terminKalender.DatFunk;
 
 public class ProgLoader {
 public JPatientInternal patjry = null; 
@@ -102,23 +61,13 @@ public JAbrechnungInternal abrechjry = null;
 
 protected static RehaSmartDialog xsmart;
 
-/**************Test Panel (Test für BackGroundPainter****************/	
-public static void ProgTestPanel(int setPos){
-	RehaTP jtp = new RehaTP(setPos); 
-	jtp.setTitle("Test-Inhalt");
-	jtp.setBorder(null);
-	jtp.setName("TestInhaltTP");	
-	jtp.setRightDecoration((JComponent) new PinPanel());
-	jtp.setContentContainer(new TestPanel(setPos));
-	containerBelegen(setPos,jtp);
-}
 /**************Patient suchen (Test)**********************************/
 public static void ProgPatSuche(boolean setPos){
 	
 }
 /**************Terminkalender Echtfunktion****************************/
 public void ProgTerminFenster(int setPos,int ansicht) {
-	if(! Reha.thisClass.DbOk){
+	if(! Reha.DbOk){
 		return;
 	}
 	JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
@@ -127,20 +76,18 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 			JOptionPane.showMessageDialog(null,"Um die Wochenarbeitszeit zu starten,\nschließen Sie bitte zunächst den Terminkalender");
 		}
 		System.out.println("Der Terminkalender befindet sich in Container "+((JTerminInternal)termin).getDesktop());
-		//((JTerminInternal)termin).toFront();
 		containerHandling(((JTerminInternal)termin).getDesktop());
 		((JTerminInternal)termin).aktiviereDiesenFrame(((JTerminInternal)termin).getName());
 		if( ((JTerminInternal)termin).isIcon() ){
 			try {
 				((JTerminInternal)termin).setIcon(false);
 			} catch (PropertyVetoException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return;
 	}
-	final int xsetPos=setPos,xansicht=ansicht;
+	final int xansicht=ansicht;
 	SwingUtilities.invokeLater(new Runnable(){
 		public  void run(){
 			String name = "TerminFenster"+WinNum.NeueNummer();
@@ -189,7 +136,6 @@ public void loescheTermine(){
 public static void ProgBenutzerVerwaltung(int setPos) {
 	final int xsetPos = setPos;
     SwingUtilities.invokeLater(new Runnable(){
- 	   @SuppressWarnings("deprecation")
 	public  void run()
  	   {	
  		   Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -200,11 +146,9 @@ public static void ProgBenutzerVerwaltung(int setPos) {
  		   jtp.setPinPanel(pinPanel);
  		   jtp.setRightDecoration((JComponent) pinPanel );
  		   jtp.setTitle("Benutzer-Verwaltung");
- 		   //String name = "Benutzerverwaltung"+WinNum.NeueNummer();
  		   jtp.setContentContainer(new BenutzerVerwaltung(xsetPos));
  		   jtp.getContentContainer().setName(name);
  		   jtp.setzeName(name);
- 		   //	pinPanel.setName(name);
  		   jtp.setVisible(true);
  		   AktiveFenster.setNeuesFenster(name, jtp,PosTest(xsetPos),jtp.getParent());
  		   containerBelegen(xsetPos,jtp);
@@ -239,7 +183,7 @@ public void loescheRoogle(){
 
 /**************Krankenkassenverwaltung Echtfunktion***********************/
 public void KassenFenster(int setPos,String kid) {
-	if(! Reha.thisClass.DbOk){
+	if(! Reha.DbOk){
 		return;
 	}
 	JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
@@ -286,7 +230,7 @@ public void loescheKasse(){
 
 /**************^Ärzteverwaltung Echtfunktion***********************/
 public void ArztFenster(int setPos,String aid) {
-	if(! Reha.thisClass.DbOk){
+	if(! Reha.DbOk){
 		return;
 	}
 	JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
@@ -332,7 +276,7 @@ public void loescheArzt(){
 
 /**************Gutachten Echtfunktion***********************/
 public void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu,String empfaenger ) {
-	if(! Reha.thisClass.DbOk){
+	if(! Reha.DbOk){
 		return;
 	}
 	JComponent gutachten = AktiveFenster.getFensterAlle("GutachtenFenster");
@@ -374,7 +318,7 @@ public void loescheGutachten(){
 
 /******************************************/
 public void Abrechnung1Fenster(int setPos) {
-	if(! Reha.thisClass.DbOk){
+	if(! Reha.DbOk){
 		return;
 	}
 	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
@@ -443,7 +387,7 @@ public static void InternalGut2(){
 
 /**************Pateintenverwaltung Echtfunktion***********************/
 public void ProgPatientenVerwaltung(int setPos) {
-	if(! Reha.thisClass.DbOk){
+	if(! Reha.DbOk){
 		Reha.thisClass.progressStarten(false);
 		return;
 	}

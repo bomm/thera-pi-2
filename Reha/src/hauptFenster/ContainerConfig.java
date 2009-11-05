@@ -6,13 +6,9 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 
 import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXTitledPanel;
-
-//import rtaWissen.BrowserFenster;
 
 import dialoge.RehaSmartDialog;
 

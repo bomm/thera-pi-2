@@ -2,27 +2,31 @@ package hauptFenster;
 
 
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
+
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.JDialog;
+import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDialog;
@@ -31,31 +35,12 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import com.mysql.jdbc.ResultSetMetaData;
-
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.DatFunk;
-
-//import com.mysql.jdbc.Statement;
-
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;
 import events.RehaEventClass;
-
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Vector;
-
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
 public class SuchenDialog extends JXDialog {
 
@@ -69,13 +54,13 @@ public class SuchenDialog extends JXDialog {
 	
 	private JTextField jtext = null;
 	
-	private SuchenDialog thisClass = null;
+	//private SuchenDialog thisClass = null;
 	private int clickX;
 	private int clickY;
 	private int weiteX;
 	private int hoeheY;
-	private int locationX;
-	private int locationY;
+	//private int locationX;
+	//private int locationY;
 	private Cursor cmove = new Cursor(Cursor.MOVE_CURSOR);  //  @jve:decl-index=0:
 	private Cursor cnsize = new Cursor(Cursor.N_RESIZE_CURSOR);  //  @jve:decl-index=0:
 	private Cursor cnwsize = new Cursor(Cursor.NW_RESIZE_CURSOR);  //  @jve:decl-index=0:
@@ -641,7 +626,7 @@ public class SuchenDialog extends JXDialog {
 		String sstmt = "";
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
 		//DefaultTableModel tblDataModel = new DefaultTableModel();
-		Vector reiheVector = new Vector();
+		Vector<String> reiheVector = new Vector<String>();
 		reiheVector.addElement("Nachname");
 		reiheVector.addElement("Nachname");
 		reiheVector.addElement("Geboren");

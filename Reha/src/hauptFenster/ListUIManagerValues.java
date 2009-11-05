@@ -7,7 +7,6 @@ package hauptFenster;
 	import javax.swing.UIDefaults;
 	import javax.swing.UIManager;
 	import javax.swing.UIManager.LookAndFeelInfo;
-	import org.jdesktop.swingx.plaf.windows.*;
 	 
 	/**
 	 * @author Tom

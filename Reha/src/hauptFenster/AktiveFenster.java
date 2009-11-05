@@ -1,8 +1,6 @@
 package hauptFenster;
 
 import java.awt.Container;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -13,7 +11,7 @@ import javax.swing.SwingUtilities;
 public class AktiveFenster {
 	
 	public AlleFenster[] aktiveFenster[] = null;
-	public static Vector Fenster = new Vector();
+	public static Vector<Object> Fenster = new Vector<Object>();
 
 	public static void Init(){
 		
