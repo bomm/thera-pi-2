@@ -39,6 +39,10 @@ import events.RehaEventListener;
 import terminKalender.TerminFenster;
 
 public class JPatientInternal extends JRehaInternal implements FocusListener, RehaEventListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8069000862982060024L;
 	RehaEventClass rEvent = null;
 	public JPatientInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);

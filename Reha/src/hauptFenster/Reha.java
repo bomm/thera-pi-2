@@ -121,6 +121,7 @@ import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import RehaInternalFrame.JRehaInternal;
+import abrechnung.Abrechnung1;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -149,6 +150,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public ArztPanel arztpanel = null;
 	public TerminFenster terminpanel = null;
 	public RoogleFenster rooglepanel = null;
+	public Abrechnung1 abrechnung1panel = null;
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
 	//private JDesktopPane jDesktopPane = null;
@@ -1352,6 +1354,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("hmabrechnung");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
+			men = new JMenuItem("Heilmittel-Privatliquidation");
+			men.setActionCommand("hmprivatabrechnung");
+			men.addActionListener(this);
+			abrechnungMenu.add(men);
+			abrechnungMenu.addSeparator();
 			men = new JMenuItem("Reha-Abrechnung");
 			men.setActionCommand("rehaabrechnung");
 			men.addActionListener(this);
@@ -2306,7 +2313,7 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("hmabrechnung")){
-		Meldungen.NichtFertig("Heilmittel-Abrechnung");
+		Reha.thisClass.progLoader.Abrechnung1Fenster(1);
 		return;
 	}
 	if(cmd.equals("rehaabrechnung")){
