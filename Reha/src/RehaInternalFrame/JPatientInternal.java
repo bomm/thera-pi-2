@@ -68,12 +68,13 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		System.out.println("Lösche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//Nächsten JInternalFrame aktivieren
+		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		//Nächsten JInternalFrame aktivieren
-		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
+		rEvent = null;
 		this.removeInternalFrameListener(this);
 		
 		Reha.thisFrame.requestFocus();

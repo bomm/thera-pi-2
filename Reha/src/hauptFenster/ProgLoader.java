@@ -470,10 +470,10 @@ public void ProgPatientenVerwaltung(int setPos) {
 	 	   public  void run()
 	 	   {
 	 			patjry.setzeSuche();
-	 			Reha.thisClass.progressStarten(false);
 	 			System.out.println("Focus auf PatPanel gesetzt");
 	 	   }
 	});
+	Reha.thisClass.progressStarten(false);
 	return; 
 
 }

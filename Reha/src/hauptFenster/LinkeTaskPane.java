@@ -4,7 +4,6 @@ package hauptFenster;
 
 import generalSplash.RehaSplash;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -25,73 +24,37 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.TooManyListenersException;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
 import kurzAufrufe.KurzAufrufe;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
-import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI;
 
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.event.IDocumentEvent;
-import ag.ion.bion.officelayer.event.IDocumentListener;
-import ag.ion.bion.officelayer.event.IEvent;
-import ag.ion.bion.officelayer.filter.RTFFilter;
-import ag.ion.bion.officelayer.text.IPageCursor;
-import ag.ion.bion.officelayer.text.ITextCursor;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-
-
-
-import patientenFenster.PatFenster;
-import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
-import systemEinstellungen.SystemUtil;
 import systemTools.TestePatStamm;
-import terminKalender.ParameterLaden;
-import terminKalender.SchnellSuche;
-import terminKalender.TagWahlNeu;
-import terminKalender.DatFunk;
+import ag.ion.bion.officelayer.text.ITextDocument;
 
 public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener, DropTargetListener {
 	/**
@@ -667,9 +630,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	public void MaskenErstellen(){
 		String sstmt = "";
 		String behandler = "";
-		ResultSet rs = null;
 		Statement stmt = null;
-		boolean ok = false;
 		try{
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
@@ -679,7 +640,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					sstmt = "insert into masken set behandler='"+behandler+"' , art = '"+t+"' ,belegt='1', N1='@FREI', TS1='07:00:00', TD1='900', TE1='22:00:00'";
 					System.out.println(sstmt);
 					try {
-						ok = stmt.execute(sstmt);
+						stmt.execute(sstmt);
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -785,29 +746,7 @@ class ladeProg{
 			       isr.close();
 			       br.close();
 
-			       /*
-			       Runtime runtime = Runtime.getRuntime();
-			       Process process = runtime.exec("java -jar "+xprog);
-			       InputStream is = process.getInputStream();
-			       InputStreamReader isr = new InputStreamReader(is);
-			       BufferedReader br = new BufferedReader(isr);
-			       String line;
-			      // System.out.printf("Output of running %s is:", 
-			      //     Arrays.toString(args));
-			       while ((line = br.readLine()) != null) {
-			         //System.out.println(line);
-			       }
-			       is.close();
-			       isr.close();
-			       */
 
-				//Runtime r = Runtime.getRuntime();
-				//Process p = r.exec("cmd.exe /c start C:\\RehaVerwaltung\\laden.bat " + new File(new Long(System.currentTimeMillis()).toString()+".pid"));
-				//startet den AcrobatReader (muss im Pfad erreichbar sein!) und öffnet die Datei outputFile. Sollte IrfanView eigentlich auch irgendwie können.
-
-				//Process prc = Runtime.getRuntime().exec(Reha.proghome+"laden.bat");
-				//System.out.println(prc.getErrorStream());
-				//prc.waitFor();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -816,16 +755,5 @@ class ladeProg{
 		}
 		
 	}.execute();
-	
-	/*
-	ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar",prog);
-    try {
-		processBuilder.start();
-	} catch (IOException e2) {
-		// TODO Auto-generated catch block
-		e2.printStackTrace();
-	}
-	System.out.println("Programm gestartet -> "+prog);
-	*/
 }
 }

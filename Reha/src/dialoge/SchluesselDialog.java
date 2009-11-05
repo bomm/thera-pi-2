@@ -169,7 +169,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 				@Override
 				protected Void doInBackground() throws Exception {
 					DateFormat clockFormat = new SimpleDateFormat("HH:mm:ss");
-					String cmd = "insert into anwesend set nname='"+tfs[0].getText()+"', datum='"+DatFunk.sHeute()+"', "+
+					String cmd = "insert into anwesend set nname='"+tfs[0].getText()+"', datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', "+
 					"kommen='"+(String)clockFormat.format(new Date())+"', schrank='"+schluessel+"', pfand='"+tfs[1].getText()+"'";
 					//System.out.println(cmd);
 					clockFormat = null;

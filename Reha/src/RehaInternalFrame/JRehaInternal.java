@@ -118,7 +118,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		thisContent.addAncestorListener(this);
 		thisContent.addMouseMotionListener(this);
 		thisContent.addComponentListener(this);
-		thisContent.addFocusListener(getFocusListener());
+		thisContent.addFocusListener(fl);
 		//this.addAncestorListener(this);
 
 		final String xtitel = titel;
@@ -277,7 +277,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 
 	public FocusListener getFocusListener(){
-		FocusListener fl = new FocusListener(){
+		fl = new FocusListener(){
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
@@ -412,10 +412,18 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		this.removeInternalFrameListener(this);
+		thisContent.removeKeyListener(this);
+		thisContent.removeMouseListener(this);
+		thisContent.removeAncestorListener(this);
+		thisContent.removeMouseMotionListener(this);
+		thisContent.removeComponentListener(this);
+		thisContent.removeFocusListener(fl);
+		fl = null;
 	    thisContent = null;
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		AktiveFenster.loescheFenster(this.getName());
+		System.out.println("In JRehaInternal alles gelöscht");
 		/*
 		Runtime r = Runtime.getRuntime();
 	    r.gc();

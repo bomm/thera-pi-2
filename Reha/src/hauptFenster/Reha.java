@@ -1,5 +1,24 @@
 package hauptFenster;
 
+import geraeteInit.BarCodeScanner;
+
+import java.awt.AWTEvent;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.LinearGradientPaint;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
@@ -8,16 +27,15 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.AWTEventListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -27,36 +45,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
 import java.awt.geom.Point2D;
-import java.awt.AWTEvent;
-import java.awt.AlphaComposite;
-
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-
-import java.awt.Image;
-
-
-import java.awt.LinearGradientPaint;
-
-import java.awt.Toolkit;
-
-
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.KeyStroke;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
@@ -66,13 +54,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,26 +65,25 @@ import java.util.Map;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
-
-
 import javax.swing.BorderFactory;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JMenuItem;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JFrame;
-import javax.swing.JDialog;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
@@ -108,36 +92,21 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-
 import krankenKasse.KassenPanel;
 import kvKarte.KVKWrapper;
-
 import menus.TerminMenu;
 
-
-
-
 import org.jdesktop.swingx.JXFrame;
-
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXRootPane;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.plaf.StatusBarUI;
-import org.jdesktop.swingx.plaf.basic.BasicLookAndFeelAddons;
-import org.jdesktop.swingx.plaf.basic.BasicStatusBarUI;
-import org.jdesktop.swingx.plaf.windows.WindowsLookAndFeelAddons;
-import org.jdesktop.swingx.plaf.windows.WindowsStatusBarUI;
 
 import patientenFenster.PatGrundPanel;
-
-import rehaContainer.RehaTP;
 import roogle.RoogleFenster;
-
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.INIFile;
@@ -145,59 +114,29 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.Meldungen;
-import systemTools.PassWort;
 import systemTools.RehaPainters;
-import systemTools.SplashPanel;
 import systemTools.TestePatStamm;
 import systemTools.WinNum;
+import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-import terminKalender.DatFunk;
-
-//import testPaket.Factory;
-
-import RehaInternalFrame.JKasseInternal;
 import RehaInternalFrame.JRehaInternal;
-import ag.ion.bion.officelayer.IDisposeable;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.desktop.DesktopException;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.noa.NOAException;
 import arztFenster.ArztPanel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-import com.jgoodies.looks.plastic.PlasticMenuBarUI;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
-import com.jgoodies.looks.plastic.theme.DesertBlue;
-import com.jgoodies.looks.plastic.theme.ExperienceBlue;
-import com.jgoodies.looks.plastic.theme.LightGray;
-import com.jgoodies.looks.plastic.theme.Silver;
-import com.jgoodies.looks.windows.WindowsSplitPaneUI;
 
 import dialoge.RehaSmartDialog;
-
 import entlassBerichte.EBerichtPanel;
-
-
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
-
-
-import geraeteInit.BarCodeScanner;
 
 
 
@@ -344,7 +283,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	 */
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
-		Process pro = null;
+		//Process pro = null;
 		String prog = java.lang.System.getProperty("user.dir");
 		osVersion = System.getProperty("os.name");
 		if(osVersion.contains("Linux")){
@@ -1832,7 +1771,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         				new SwingWorker<Void,Void>(){
         					@Override
         					protected Void doInBackground() throws Exception {
-        						JComponent patfenster = AktiveFenster.getFensterAlle("Patientenverwaltung");
+        						//JComponent patfenster = AktiveFenster.getFensterAlle("Patientenverwaltung");
         						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         						//ProgLoader.ProgPatientenVerwaltung(1);
         						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -2343,7 +2282,7 @@ public void actionPerformed(ActionEvent arg0) {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-					Reha.thisClass.progressStarten(true);
+					//Reha.thisClass.progressStarten(true);
 					progLoader.ProgPatientenVerwaltung(1);
 					Reha.thisClass.progressStarten(false);
 				}catch(Exception ex){
@@ -2644,7 +2583,7 @@ final class ErsterLogin implements Runnable{
 					protected Void doInBackground() throws Exception {
 						if(SystemConfig.sReaderAktiv.equals("1")){
 							KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
-							int ret = kvw.KVK_Einlesen();
+							kvw.KVK_Einlesen();
 						}
 						return null;
 					}
@@ -2725,8 +2664,6 @@ class SocketClient {
 			serverStarten();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			String mes =   e.toString();
-			//JOptionPane.showMessageDialog(null,  mes);
 		}
 	}
 	private void serverStarten() throws IOException{
@@ -2886,7 +2823,7 @@ final class HilfeDatenbankStarten implements Runnable{
 	        return;
 	}
 	public void run() {
-		int i=0;
+		//int i=0;
 		StarteDB();
 	}
 }
