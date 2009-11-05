@@ -166,7 +166,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec.clone();
+		return (Vector)retvec;
 	}
 /*****************************************/
 	/*******************************/
@@ -229,7 +229,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec.clone();
+		return (Vector)retvec;
 	}
 /*****************************************/
 
@@ -277,7 +277,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec.clone();
+		return (Vector)retvec;
 	}
 
 	/*******************************/
@@ -344,7 +344,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retkomplett.clone();
+		return (Vector)retkomplett;
 	}
 /*****************************************/
 	public static String macheWhereKlausel(String praefix,String test,String[] suchein){
@@ -719,7 +719,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector<Vector<String>>) retkomplett.clone();
+		return (Vector<Vector<String>>) retkomplett;
 	}
 /*****************************************/
 

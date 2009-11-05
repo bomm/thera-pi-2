@@ -2345,6 +2345,7 @@ public void actionPerformed(ActionEvent arg0) {
 				try{
 					Reha.thisClass.progressStarten(true);
 					progLoader.ProgPatientenVerwaltung(1);
+					Reha.thisClass.progressStarten(false);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
