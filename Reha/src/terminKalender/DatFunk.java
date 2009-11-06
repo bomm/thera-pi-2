@@ -47,7 +47,7 @@ public class DatFunk {
 		long anz_milli_1 = 0;
 		long anz_milli_2 = 0;
 		long anz_milli_3 = 0;
-		boolean deutsch = false;
+		//boolean deutsch = false;
 		String[] datsplit = datum.split("\\."); 
 		Date dDatum;
 		String s;
@@ -87,7 +87,7 @@ public class DatFunk {
 	return asErgebnis[0];
 	}
 	
-	@SuppressWarnings("deprecation")
+	
 	public static int TagDerWoche(String sdatum) {
 		int tag=0;
 		String[] datsplit = sdatum.split("\\.");

@@ -2,7 +2,6 @@ package terminKalender;
 
 import hauptFenster.Reha;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 import systemEinstellungen.SystemConfig;
@@ -10,7 +9,7 @@ import systemEinstellungen.SystemConfig;
 public class BlockHandling {
 	int ret = -1;
 	int wasTun = -1;
-	Vector vterm = null;
+	Vector<String> vterm = null;
 	int kollege;
 	int spalte;
 	int block;
@@ -18,7 +17,7 @@ public class BlockHandling {
 	int dbBehandler;
 	String[] daten = null;
 	Felder datenfeld = new Felder();
-	BlockHandling(int wasTun ,Vector vterm ,int kollege ,int spalte, int block,
+	BlockHandling(int wasTun ,Vector<String> vterm ,int kollege ,int spalte, int block,
 			String[] datum,int dbBehandler,String[] daten){
 		this.wasTun = wasTun;
 		this.vterm = vterm;
@@ -125,7 +124,7 @@ public class BlockHandling {
 /*****************************************/	
 	private int blockObenAnschliessen(){
 		String [] alteDaten = {null,null,null,null,null};
-		int aktBlockzahl;
+		//int aktBlockzahl;
 			//Zuerste bisherige Blockdaten sichern
 			alteDaten[0] = datenfeld.getFeld(kollege,0,block);
 			alteDaten[1] = datenfeld.getFeld(kollege,1,block);
@@ -165,7 +164,7 @@ public class BlockHandling {
 	/*****************************************/	
 	private int blockUntenAnschliessen(){
 		String [] alteDaten = {null,null,null,null,null};
-		int aktBlockzahl;
+		//int aktBlockzahl;
 			//Zuerste bisherige Blockdaten sichern
 			alteDaten[0] = datenfeld.getFeld(kollege,0,block);
 			alteDaten[1] = datenfeld.getFeld(kollege,1,block);
@@ -222,7 +221,7 @@ public class BlockHandling {
 /*****************************************/	
 	private int blockManuellStarten(){
 		String [] alteDaten = {null,null,null,null,null};
-		int aktBlockzahl;
+		//int aktBlockzahl;
 			//System.out.println("Blockanzahl zu Beginn: "+datenfeld.getAnzahlBloecke(kollege));
 			//Zuerste bisherige Blockdaten sichern
 			alteDaten[0] = datenfeld.getFeld(kollege,0,block);//Text
@@ -292,7 +291,7 @@ public class BlockHandling {
 /*****************************************/	
 	private int blockNachfolgeKuerzen(){
 		String [] alteDaten = {null,null,null,null,null};
-		int aktBlockzahl;
+		//int aktBlockzahl;
 			//System.out.println("Blockanzahl zu Beginn: "+datenfeld.getAnzahlBloecke(kollege));
 			//Zuerste bisherige Blockdaten sichern
 			alteDaten[0] = datenfeld.getFeld(kollege,0,block+1);//Text
@@ -327,9 +326,9 @@ public class BlockHandling {
 	/*****************************************/	
 	private int blockZusammenFassen(){
 		//String [] alteDaten = {null,null,null,null,null};
-		int aktBlockzahl;
+		//int aktBlockzahl;
 		int [] grundDaten = TerminFenster.getThisClass().getGruppierenClipBoard();
-		int startBlock,endBlock,anzahlBloecke,anzahlGesamt;
+		int startBlock,endBlock;//,anzahlBloecke,anzahlGesamt;
 		//System.out.println("in Block-Handling"+grundDaten[0]+"/"+grundDaten[1]+"/"+grundDaten[2]+"/"+grundDaten[3]);
 
 		if(grundDaten[0] > grundDaten[1]){
@@ -340,13 +339,13 @@ public class BlockHandling {
 			endBlock = grundDaten[1];
 		}
 
-		anzahlGesamt = Integer.parseInt(datenfeld.getFeld(grundDaten[3],5,0));
+		//anzahlGesamt = Integer.parseInt(datenfeld.getFeld(grundDaten[3],5,0));
 		String db_datum = DatFunk.sDatInDeutsch(datenfeld.getFeld(grundDaten[3],5,4));
 		String db_behandler = datenfeld.getFeld(grundDaten[3],5,2);
 		int ibehandler = (db_behandler.substring(0,1).equals("0") ?
 						Integer.parseInt(db_behandler.substring(1,2)) :
 							Integer.parseInt(db_behandler.substring(0,2))	);
-		anzahlBloecke = (endBlock - startBlock) +1;
+		//anzahlBloecke = (endBlock - startBlock) +1;
 		String termin = datenfeld.getFeld(grundDaten[3],0, grundDaten[0]);
 		String reznummer = datenfeld.getFeld(grundDaten[3],1, grundDaten[0]);
 		String startuhr =  datenfeld.getFeld(grundDaten[3],2, startBlock);
@@ -413,8 +412,8 @@ public class BlockHandling {
 		alteDaten[3] = datenfeld.getFeld(kollege,3,block);//Dauer
 		alteDaten[4] = datenfeld.getFeld(kollege,4,block);//Ende
 		TerminFenster.getThisClass().setDatenSpeicher(alteDaten);
-		String termin = "";
-		String reznummer = "";
+		//String termin = "";
+		//String reznummer = "";
 		int startBlock = block;
 		int endBlock = block;
 		

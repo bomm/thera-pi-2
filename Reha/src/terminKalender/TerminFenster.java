@@ -5,43 +5,23 @@ package terminKalender;
 
 import generalSplash.RehaSplash;
 import hauptFenster.AktiveFenster;
-
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
-import hauptFenster.SuchenDialog;
-//import hauptFenster.SystemLookAndFeel;
-
 import hilfsFenster.TerminEinpassen;
 import hilfsFenster.TerminObenUntenAnschliessen;
 
-
-
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-//import java.awt.Component;
-//import java.awt.Container;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
-import java.awt.Toolkit;
-//import java.awt.Toolkit;
-//import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
-import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
@@ -57,10 +37,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
-import java.lang.reflect.Array;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -70,67 +47,41 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
 import javax.swing.AbstractButton;
-//import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-//import javax.swing.JComponent;
-//import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
-//import javax.swing.JScrollPane;
-//import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.text.JTextComponent;
 
 import kurzAufrufe.KurzAufrufe;
-//import javax.swing.plaf.PanelUI;
 
-//import org.jdesktop.swingx.JXDialog;
-import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import patientenFenster.AktuelleRezepte;
-import patientenFenster.PatGrundPanel;
-import patientenFenster.PatNeuanlage;
-
-import com.sun.star.awt.Key;
-
-import dialoge.AaarghHinweis;
-
-import DragAndDropTools.DnDTermine;
+import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
+import systemEinstellungen.SystemConfig;
+import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
 import RehaInternalFrame.JRehaInternal;
-//import org.jdesktop.swingx.plaf.TitledPanelUI;
-
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
-
-import rehaContainer.RehaTP;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import stammDatenTools.RezTools;
-import systemEinstellungen.SystemConfig;
-//import systemTools.SystemTools;
-import systemTools.JRtaTextField;
-import systemTools.ListenerTools;
 
 
 public class TerminFenster extends Observable implements RehaTPEventListener, ActionListener,DropTargetListener,DragSourceListener,DragGestureListener{
@@ -197,7 +148,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private String[] dragInhalt = {null,null,null,null,null};
 	public boolean dragStart = false;
 	private boolean dragAllowed = true;
-	public DragPanel dragPanel = null;
+	//public DragPanel dragPanel = null;
 	private Point dragPosition = new Point(0,0);
 	private int[] dragStartObject = {-1,-1};
 	private TDragObjekt tdragObjekt = new TDragObjekt();
@@ -1086,14 +1037,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						if (e.getKeyCode()==112){
 							//F1
-							final String url = "file:///C:/RehaVerwaltung/docs/TerminKalenderHilfe.html";
-							SwingUtilities.invokeLater(new Runnable(){
-						 	   public  void run()
-						 	   {
-						 		   //ProgLoader.RTAWissenDialog(0,url,"Hilfe zum Reha-Labs Terminkalender");
-						 	   }
-							});   
-							break;
 						}
 						if (e.getKeyCode()==113){
 							//F2
@@ -4452,24 +4395,6 @@ class TDragObjekt{
 		dragPosInColumn = dpic;
 		column = col;
 	}
-	
-}
-class TerminDrag extends SwingWorker{
-
-	@Override
-	protected Object doInBackground() throws Exception {
-		// TODO Auto-generated method stub
-		while(Reha.thisClass.terminpanel.indrag){
-			if(Reha.thisClass.terminpanel.dragPanel != null){
-				PointerInfo info = MouseInfo.getPointerInfo(); 
-				Reha.thisClass.terminpanel.dragPanel.setPoint(new Point(info.getLocation().x ,info.getLocation().y ));
-				//Thread.sleep(25);
-			}
-		}
-		//System.out.println("DragPannel zerstört - Worker wurde beendet");
-		return null;
-	}
-
 	
 }
 
