@@ -195,6 +195,11 @@ public class SuchenDialog extends JXDialog {
 						}.execute();
 						
 					}
+					if (e.getKeyCode() == 27){
+						e.consume();
+						setVisible(false);
+					}
+
 					if (e.getKeyCode() == 40){
 						e.consume();
 						if (jtable.getRowCount() > 0){
@@ -253,7 +258,7 @@ public class SuchenDialog extends JXDialog {
 			//jtable.setModel(tblDataModel);
 			jtable.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyPressed(java.awt.event.KeyEvent e) {
-					System.out.println("keyPressed() in JXTable"); // TODO Auto-generated Event stub keyPressed()
+					//System.out.println("keyPressed() in JXTable"); // TODO Auto-generated Event stub keyPressed()
 					if (e.getKeyCode() == 10){
 						/*
 						String s1 = new String("#PATSUCHEN");
@@ -281,6 +286,9 @@ public class SuchenDialog extends JXDialog {
 					}
 					if (e.getKeyCode() == 83 && e.isShiftDown()){
 						jTextField.requestFocus();
+					}
+					if (e.getKeyCode() == 27){
+						setVisible(false);
 					}
 
 				}
@@ -821,7 +829,7 @@ public class SuchenDialog extends JXDialog {
 	public String[] getDetails(String Event,String PatNummer){
 			return this.sEventDetails;
 	}
-	public void fensteSchliessen(){
+	public void fensterSchliessen(){
 		this.setVisible(false);
 		this.dispose();
 	}
