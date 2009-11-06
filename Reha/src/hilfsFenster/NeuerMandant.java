@@ -4,9 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -18,18 +16,15 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 import rehaContainer.RehaTP;
-import systemEinstellungen.SysUtilGruppenDef;
 import systemEinstellungen.SysUtilMandanten;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
-import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -60,7 +55,7 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 		rSmart.setSize(new Dimension(300,175));
 		rSmart.getTitledPanel().setTitle("Neuer Mandant");
 		rSmart.setContentPanel(jtp.getContentContainer());
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		//Toolkit toolkit = Toolkit.getDefaultToolkit();
 		//Dimension screenSize = toolkit.getScreenSize();
 		//int x = (screenSize.width - rSmart.getWidth()) / 2;
 		//int y = (screenSize.height - rSmart.getHeight()) / 2;

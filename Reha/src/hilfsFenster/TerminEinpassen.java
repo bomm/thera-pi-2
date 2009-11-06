@@ -1,13 +1,9 @@
 package hilfsFenster;
 
-import hauptFenster.Reha;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -17,23 +13,19 @@ import java.awt.event.KeyListener;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
+import rehaContainer.RehaTP;
+import terminKalender.TerminFenster;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import rehaContainer.RehaTP;
-import systemTools.JRtaTextField;
-import systemTools.PassWort;
-import systemTools.WinNum;
-import terminKalender.TerminFenster;
-import terminKalender.Zeitfenster;
 import dialoge.RehaSmartDialog;
 
 public class TerminEinpassen implements KeyListener, ActionListener, FocusListener{
@@ -58,8 +50,8 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		rSmart.setSize(new Dimension(225,145));
 		rSmart.getTitledPanel().setTitle("Wie soll der Termin behandelt werden???");
 		rSmart.setContentPanel(jtp.getContentContainer());
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Dimension screenSize = toolkit.getScreenSize();
+		//Toolkit toolkit = Toolkit.getDefaultToolkit();
+		//Dimension screenSize = toolkit.getScreenSize();
 		//int x = (screenSize.width - rSmart.getWidth()) / 2;
 		//int y = (screenSize.height - rSmart.getHeight()) / 2;
 		/****************************************************************/

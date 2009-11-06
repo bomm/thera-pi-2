@@ -42,20 +42,6 @@ public class DruckFensterDialog implements KeyListener, ActionListener, FocusLis
 		rSmart.setSize(new Dimension(225,200));
 		rSmart.getTitledPanel().setTitle("DruckFenster");
 		rSmart.setContentPanel(jtp.getContentContainer());
-		/****************************************************************/
-		//JXPanel tv = TerminFenster.getThisClass().getViewPanel();
-/*
-		int xvp = tv.getLocationOnScreen().x+tv.getWidth();
-		if((x+225+10) > xvp){
-			x=x-225;
-		}
-		int yvp = tv.getLocationOnScreen().y+tv.getHeight();
-		if(y+145 > yvp){
-			y=y-145;
-			
-		}
-*/		
-		/****************************************************************/
 
 		rSmart.setLocation(x, y); 
 		rSmart.setVisible(true);

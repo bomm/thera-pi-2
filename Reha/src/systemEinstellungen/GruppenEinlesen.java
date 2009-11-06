@@ -8,7 +8,7 @@ import terminKalender.DatFunk;
 import terminKalender.ZeitFunk;
 
 public class GruppenEinlesen{
-	public Vector gruppenParam = null;
+	//public Vector gruppenParam = null;
 	public Vector<String> gruppenNamen;
 	public Vector<Integer> gruppenDauer;
 	public Vector<Long[]> gruppenGueltig;
@@ -31,7 +31,7 @@ public class GruppenEinlesen{
 			datwert[2] = new Long(ini.getStringProperty("Gruppen", "Gruppe"+i+"Dauer"));
 			gruppenGueltig.add(datwert.clone());
 		}
-		gruppeAlle = new Vector();
+		gruppeAlle = new Vector<Vector<Object>>();
 		for(int i = 1; i<= anzahl;i++){ // Alle Gruppen
 			String rubrikName = gruppenNamen.get(i-1);
 			Vector gruppeWoche = new Vector();
@@ -43,7 +43,7 @@ public class GruppenEinlesen{
 					int gruppenAmTag = new Integer(ini.getStringProperty(rubrik, "WOTA"+k));
 					Vector gruppeAmTag = new Vector();
 					for(int l = 1;l<= gruppenAmTag;l++){//einzelne Tage einlesen
-						Vector gruppenParam = new Vector();
+						Vector<Object> gruppenParam = new Vector<Object>();
 						String vonbis = ini.getStringProperty(rubrik,"TA"+k+"GR"+l);
 						gruppenParam.add(ZeitFunk.MinutenSeitMitternacht(vonbis.split("-")[0]));
 						gruppenParam.add(ZeitFunk.MinutenSeitMitternacht(vonbis.split("-")[1]));

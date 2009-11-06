@@ -4,9 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -28,7 +26,6 @@ import rehaContainer.RehaTP;
 import systemEinstellungen.SysUtilGruppenDef;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
-import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -64,7 +61,7 @@ public class NeueGruppe implements KeyListener, ActionListener, FocusListener{
 		rSmart.setSize(new Dimension(225,200));
 		rSmart.getTitledPanel().setTitle(titel);
 		rSmart.setContentPanel(jtp.getContentContainer());
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		//Toolkit toolkit = Toolkit.getDefaultToolkit();
 		//Dimension screenSize = toolkit.getScreenSize();
 		//int x = (screenSize.width - rSmart.getWidth()) / 2;
 		//int y = (screenSize.height - rSmart.getHeight()) / 2;
@@ -170,7 +167,7 @@ public class NeueGruppe implements KeyListener, ActionListener, FocusListener{
 	}
 
 	private boolean endeRegeln(){
-		String [] sret = {jrtaf[0].getText(),jrtaf[1].getText()};
+		//String [] sret = {jrtaf[0].getText(),jrtaf[1].getText()};
 		if(this.neu){
 			if(SystemConfig.oGruppen.gruppenNamen.contains(jrtaf[0].getText().trim())){
 				JOptionPane.showMessageDialog(null,"Dieser Gruppenname ist bereits vorhanden!");
@@ -227,7 +224,7 @@ public class NeueGruppe implements KeyListener, ActionListener, FocusListener{
 		//System.out.println(arg0);
 		if(arg0.getSource() instanceof JRadioButton){
 			((AbstractButton) arg0.getSource()).setSelected(true);
-			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
+			//String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 			for (int i = 0 ; i < 1 ; i++){
 			}
 		}

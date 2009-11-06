@@ -1,13 +1,12 @@
 package hauptFenster;
 
 
-	import java.util.Map;
-	 
-	import javax.swing.LookAndFeel;
-	import javax.swing.UIDefaults;
-	import javax.swing.UIManager;
-	import javax.swing.UIManager.LookAndFeelInfo;
-	 
+import java.util.Map;
+
+import javax.swing.LookAndFeel;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 	/**
 	 * @author Tom
 	 *

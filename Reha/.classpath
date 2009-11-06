@@ -6,8 +6,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/adsjdbc.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/Filters.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/jmock-1.1.0RC1.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/junit-4.0.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/junit-4.0-src.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/JXLayer-2008_03_02.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/MultipleGradientPaint.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/mysql-connector-java-5.1.5-bin.jar"/>
@@ -32,12 +30,13 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/ag.ion.noa_2.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/javaxpcom.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/jna-3.0.7.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-0.9.7.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/looks-2.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/forms-1.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/uk.co.mmscomputing.device.twain.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/iText-2.1.6.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/comm.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/PDFRenderer-2009_09_20.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/junit-4.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

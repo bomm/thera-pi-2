@@ -4,11 +4,9 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -24,7 +22,6 @@ import java.io.IOException;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -34,18 +31,13 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
+import rehaContainer.RehaTP;
+import systemEinstellungen.SysUtilDruckvorlage;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import rehaContainer.RehaTP;
-import systemEinstellungen.SysUtilDruckvorlage;
-import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
-import systemTools.PassWort;
-import systemTools.WinNum;
-import terminKalender.TerminFenster;
-import terminKalender.Zeitfenster;
 import dialoge.RehaSmartDialog;
 
 public class EmailText implements KeyListener, ActionListener, FocusListener{
@@ -208,7 +200,7 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		//System.out.println(arg0.getSource());
-		String sAktion = ((AbstractButton) arg0.getSource()).getText();
+		//String sAktion = ((AbstractButton) arg0.getSource()).getText();
 		//System.out.println("In Text abspeichern");
 		//System.out.println("ActionCommand = "+arg0.getActionCommand());
 		for (int i = 0 ; i < 1 ; i++){
