@@ -59,11 +59,11 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//Nächsten JInternalFrame aktivieren
+		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		((EBerichtPanel)this.inhalt).finalise();
-		//Nächsten JInternalFrame aktivieren
-		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
 		this.removeInternalFrameListener(this);

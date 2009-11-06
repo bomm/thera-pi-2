@@ -4,11 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -18,7 +14,6 @@ import java.awt.event.ComponentListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -30,11 +25,8 @@ import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
-
-import patientenFenster.PatGrundPanel;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
@@ -43,9 +35,6 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.text.ITextDocument;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -581,7 +570,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 					"p,p,p,10dlu,p,p,p,10dlu,p, p,p");
 		PanelBuilder titm = new PanelBuilder(mitte);
 		titm.getPanel().setOpaque(false);
-		CellConstraints cctitm = new CellConstraints();
+		//CellConstraints cctitm = new CellConstraints();
 		// hier dazwischen den ganzen mittleren Scheiﬂ
 		labsheadline[1] = new JLabel(headlineneu[1]);
 		labsheadline[1].setFont(fontarialfett);
@@ -682,7 +671,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 					"p,p,p,10dlu,p,p,p,10dlu,p, p,p");
 		PanelBuilder titr = new PanelBuilder(rechts);
 		titr.getPanel().setOpaque(false);
-		CellConstraints cctitr = new CellConstraints();
+		//CellConstraints cctitr = new CellConstraints();
 		labsheadline[2] = new JLabel(headlineneu[2]);
 		labsheadline[2].setFont(fontarialfett);
 		titr.add(labsheadline[2],cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
@@ -1615,6 +1604,11 @@ public class Eb1 implements ActionListener,ComponentListener {
 		return pan;
 	}
 	class JLabelX extends JLabel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public JLabelX(String text){
 			super();
 			setFont(fontklein);

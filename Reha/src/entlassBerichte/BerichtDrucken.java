@@ -8,14 +8,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,19 +23,19 @@ import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
+
+import systemEinstellungen.SystemConfig;
+import systemTools.JRtaCheckBox;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.JRtaCheckBox;
-
 public class BerichtDrucken extends JXPanel implements ActionListener, KeyListener,FocusListener  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4994634363081762371L;
 	ImageIcon hgicon;	
 	int icx,icy;
 	AlphaComposite xac1 = null;
@@ -47,9 +45,6 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 	EBerichtPanel eltern = null;
 	Font fon = new Font("Tahoma",Font.BOLD,11);
 	int[] exemplare = {-1,-1,-1,-1,-1,0};
-   LinearGradientPaint p = null;
-    MattePainter mp = null;
-    CompoundPainter cp = null;
 
 	public BerichtDrucken(EBerichtPanel xeltern, int[] check, boolean[] enable){
 		super();
@@ -59,21 +54,13 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				Point2D start = new Point2D.Float(0, 0);
-			    Point2D end = new Point2D.Float(300,270);
-			    float[] dist = {0.0f, 0.75f};
-			    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-			    p =  new LinearGradientPaint(start, end, dist, colors);
-			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
-			    setBackgroundPainter(cp);			    
+			    setBackgroundPainter(Reha.thisClass.compoundPainter.get("GutachtenWahl"));
 				return null;
 			}
 			
 		}.execute();
 
-		hgicon = new ImageIcon(Reha.proghome+"icons/document-print.png"); //SystemConfig.hmSysIcons.get("print");
+		hgicon = SystemConfig.hmSysIcons.get("print"); //
 		icx = hgicon.getIconWidth()/2;
 		icy = hgicon.getIconHeight()/2;
 		xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.17f); 

@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.sql.ResultSet;
@@ -20,14 +19,12 @@ import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.Border;
 
 import org.jdesktop.swingx.JXPanel;
 
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -44,7 +41,7 @@ public class Eb2 {
 	Font fontarialnormal = null;
 	Font fontarialfettgross = null;
 	JScrollPane jscr = null;
-	Vector ktl = new Vector();
+	Vector<String> ktl = new Vector<String>();
 	String[] sktl = null;
 	public Eb2(EBerichtPanel xeltern){
 		pan = new JXPanel(new BorderLayout());
@@ -235,6 +232,7 @@ public class Eb2 {
 		leibild.getPanel().validate();
 		return leibild.getPanel();
 	}
+	/*
 	private JPanel leiBild8(){
 		FormLayout lay1 = new FormLayout("p,fill:0:grow(1.0)",
 			    //           5=F174  7=F175  9=F176   11=F177
@@ -285,6 +283,7 @@ public class Eb2 {
 		return lei1.getPanel();
 		
 	}
+	*/
 	private JPanel leiBild7(){			//	1      2              3
 		FormLayout laytit = new FormLayout("1px,fill:0:grow(1.0),1px",
 	//    1  1  2    4			
