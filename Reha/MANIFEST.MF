@@ -5,15 +5,14 @@ Class-Path: RTAJars/adsjdbc.jar
  RTAJars/Filters.jar 
  RTAJars/forms-1.2.1.jar 
  RTAJars/jmock-1.1.0RC1.jar 
- RTAJars/junit-4.0.jar 
- RTAJars/junit-4.0-src.jar 
+ RTAJars/junit-4.5.jar 
  RTAJars/JXLayer-2008_03_02.jar 
  RTAJars/looks-2.2.1.jar 
  RTAJars/MultipleGradientPaint.jar 
  RTAJars/mysql-connector-java-5.1.5-bin.jar 
  RTAJars/swing-layout.jar 
  RTAJars/swing-worker.jar 
- RTAJars/swingx-0.9.7.jar 
+ RTAJars/swingx-1.6.jar 
  RTAJars/openofficeorg/unoloader.jar 
  RTAJars/openofficeorg/ag.ion.noa_2.2.1.jar 
  RTAJars/openofficeorg/bootstrapconnector.jar 

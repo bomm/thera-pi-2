@@ -50,7 +50,7 @@ import jxTableTools.DateTableCellEditor;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.SortOrder;
+
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
@@ -260,8 +260,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabaktterm.addPropertyChangeListener(this);
 		tabaktterm.setEditable(false);
 		tabaktterm.setSortable(false);
-		SortOrder setSort = SortOrder.ASCENDING;
-		tabaktterm.setSortOrder(4,(SortOrder) setSort);
+		//SortOrder setSort = SortOrder.ASCENDING;
+		//tabaktterm.setSortOrder(4,(SortOrder) setSort);
 		tabaktterm.setSelectionMode(0);
 		tabaktterm.setHorizontalScrollEnabled(true);
 		tbl = new DateTableCellEditor();

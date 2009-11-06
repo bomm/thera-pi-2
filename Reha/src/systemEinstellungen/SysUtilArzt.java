@@ -47,7 +47,7 @@ import jxTableTools.TableTool;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.SortOrder;
+//import org.jdesktop.swingx.decorator.SortOrder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
@@ -215,7 +215,7 @@ private JPanel getKnopfPanel(){
 		gruppen = new JXTable(modarzt);
 		gruppen.getColumn(0).setCellEditor(new TitelEditor());
 		gruppen.setSortable(true);
-		gruppen.setSortOrder(0, SortOrder.ASCENDING);
+		//gruppen.setSortOrder(0, SortOrder.ASCENDING);
 
 		modvorl = new MyVorlagenTableModel();
 		modvorl.setColumnIdentifiers(new String[] {"Titel der Vorlage","Vorlagendatei"});

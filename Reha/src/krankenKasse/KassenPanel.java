@@ -50,18 +50,18 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import jxTableTools.PatternFilterAcrossAllColumns;
-import jxTableTools.PatternAndOrFilterAcrossAllColumns;
+
+
 
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.Filter;
-import org.jdesktop.swingx.decorator.FilterPipeline;
+//import org.jdesktop.swingx.decorator.Filter;
+//import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.PatternFilter;
+//import org.jdesktop.swingx.decorator.PatternFilter;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.search.Searchable;
@@ -356,19 +356,19 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 
 		if(match.length > 1){
 			if(!match[1].trim().equals("")){
-				Filter[] filterArray = { new PatternAndOrFilterAcrossAllColumns(vgl, 0, 7,match)  };
-				FilterPipeline filters = new FilterPipeline(filterArray);
-				kassentbl.setFilters(filters);				
+				//Filter[] filterArray = { new PatternAndOrFilterAcrossAllColumns(vgl, 0, 7,match)  };
+				//FilterPipeline filters = new FilterPipeline(filterArray);
+				//kassentbl.setFilters(filters);				
 				System.out.println("In mehrfachsuche");
 			}else{
-				Filter[] filterArray = { new PatternFilterAcrossAllColumns(vgl, 0, 7)  };
-				FilterPipeline filters = new FilterPipeline(filterArray);
-				kassentbl.setFilters(filters);
+				//Filter[] filterArray = { new PatternFilterAcrossAllColumns(vgl, 0, 7)  };
+				//FilterPipeline filters = new FilterPipeline(filterArray);
+				//kassentbl.setFilters(filters);
 			}
 		}else{
-			Filter[] filterArray = { new PatternFilterAcrossAllColumns(vgl, 0, 7)  };
-			FilterPipeline filters = new FilterPipeline(filterArray);
-			kassentbl.setFilters(filters);
+			//Filter[] filterArray = { new PatternFilterAcrossAllColumns(vgl, 0, 7)  };
+			//FilterPipeline filters = new FilterPipeline(filterArray);
+			//kassentbl.setFilters(filters);
 		}
 		suchen.requestFocus();
 

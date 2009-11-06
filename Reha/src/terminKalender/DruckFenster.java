@@ -70,7 +70,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.jdesktop.swingx.decorator.SortOrder;
+//import org.jdesktop.swingx.decorator.SortOrder;
 
 import rehaContainer.RehaTP;
 import roogle.SuchenSeite;
@@ -330,8 +330,8 @@ private JXPanel terminListe(){
 	pliste.getColumn(10).setMaxWidth(0); //Datenvector				
 	pliste.setEditable(false);
 	pliste.setSortable(true);
-	SortOrder setSort = SortOrder.ASCENDING;
-	pliste.setSortOrder(3,(SortOrder) setSort);
+	//SortOrder setSort = SortOrder.ASCENDING;
+	//pliste.setSortOrder(3,(SortOrder) setSort);
 	pliste.setSelectionMode(0);	
 	
 	pliste.validate();
@@ -454,8 +454,8 @@ public void actionPerformed(ActionEvent arg0) {
 				pliste.getColumn(10).setMaxWidth(0); //Datenvector				
 				pliste.setEditable(false);
 				pliste.setSortable(true);
-				SortOrder setSort = SortOrder.ASCENDING;
-				pliste.setSortOrder(3,(SortOrder) setSort);
+				//SortOrder setSort = SortOrder.ASCENDING;
+				//pliste.setSortOrder(3,(SortOrder) setSort);
 				int reihenjetzt = pliste.getRowCount();
 				if (reihen > reihenselekt-1 && reihenjetzt > 0){
 					if(reihenselekt > 0){

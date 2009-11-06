@@ -31,7 +31,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.jdesktop.swingx.decorator.SortOrder;
+//import org.jdesktop.swingx.decorator.SortOrder;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -212,8 +212,8 @@ public void setTerminTable(Vector threadVect){
 	ttbl.getColumn(6).setMaxWidth(0); //Datenvector				
 	ttbl.setEditable(false);
 	ttbl.setSortable(true);
-	SortOrder setSort = SortOrder.ASCENDING;
-	ttbl.setSortOrder(6,(SortOrder) setSort);
+	//SortOrder setSort = SortOrder.ASCENDING;
+	//ttbl.setSortOrder(6,(SortOrder) setSort);
 	ttbl.setSelectionMode(0);	
 
 	
@@ -283,8 +283,8 @@ private void tageSuchen(int abheute){
 		ttbl.getColumn(6).setMaxWidth(0); //Datenvector				
 		ttbl.setEditable(false);
 		ttbl.setSortable(true);
-		SortOrder setSort = SortOrder.ASCENDING;
-		ttbl.setSortOrder(6,(SortOrder) setSort);
+		//SortOrder setSort = SortOrder.ASCENDING;
+		//ttbl.setSortOrder(6,(SortOrder) setSort);
 		ttbl.setSelectionMode(0);	
 
 		String[] stmts = {null};
@@ -310,8 +310,8 @@ private void tageSuchen(int abheute){
 		ttbl.getColumn(6).setMaxWidth(0); //Datenvector				
 		ttbl.setEditable(false);
 		ttbl.setSortable(true);
-		SortOrder setSort = SortOrder.ASCENDING;
-		ttbl.setSortOrder(6,(SortOrder) setSort);
+		//SortOrder setSort = SortOrder.ASCENDING;
+		//ttbl.setSortOrder(6,(SortOrder) setSort);
 		ttbl.setSelectionMode(0);	
 		String[] stmts = {null,null,null,null,null};
 		String sdatum = "";

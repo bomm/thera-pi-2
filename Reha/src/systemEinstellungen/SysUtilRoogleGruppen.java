@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.SortOrder;
+//import org.jdesktop.swingx.decorator.SortOrder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.table.TableColumnExt;
@@ -209,7 +209,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			klm.setDataVector((Vector) vkollegen.clone(), getColVector(kcolumn));			
 			//Source = new JXTable(klm);
 			Source.setModel(klm);
-			Source.setSortOrder(0,SortOrder.ASCENDING);
+			//Source.setSortOrder(0,SortOrder.ASCENDING);
 			Source.validate();
 			Source.setEnabled(false);			
 			/*******************************/
@@ -219,7 +219,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			glm.setDataVector((Vector)vmitglieder.clone(), getColVector(column));
 			RGmembers.setModel(glm);
 			//RGmembers =	new JXTable(glm);
-			RGmembers.setSortOrder(0,SortOrder.ASCENDING);
+			//RGmembers.setSortOrder(0,SortOrder.ASCENDING);
 			RGmembers.validate();
 			RGmembers.setEnabled(false);
 			//kollegenEntfernen();
@@ -271,7 +271,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			String[] column = {"Mitglied"};
 			glm.setDataVector(vmitglieder, getColVector(column));
 			RGname.setText((String)jcomboWahl.getSelectedItem());
-			RGmembers.setSortOrder(0,SortOrder.ASCENDING);
+			//RGmembers.setSortOrder(0,SortOrder.ASCENDING);
 			RGmembers.validate();
 			kollegenEntfernen();
 		}
@@ -293,7 +293,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			String[] kcolumn = {"Mitarbeiter"};
 			vkollegen.trimToSize();
 			klm.setDataVector((Vector) vkollegen.clone(), getColVector(kcolumn));
-			Source.setSortOrder(0,SortOrder.ASCENDING);
+			//Source.setSortOrder(0,SortOrder.ASCENDING);
 			Source.validate();
 			//System.out.println("nach entfernen"+klm.getDataVector().size());
 			
@@ -470,7 +470,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			RGmembers.setEnabled(true);
 			String[] column = {"Mitglied"};			
 			glm.setDataVector(new Vector(), getColVector(column));
-			RGmembers.setSortOrder(0,SortOrder.ASCENDING);
+			//RGmembers.setSortOrder(0,SortOrder.ASCENDING);
 			RGmembers.validate();
 			Source.setEnabled(true);
 			macheKollegen();
