@@ -83,11 +83,6 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	
 	public JButton uebernahme;
 	public JButton abbrechen;
-	//PinPanel pinPanel;
-	
-	CompoundPainter cp = null;
-	MattePainter mp = null;
-	LinearGradientPaint p = null;
 
 	public AusfallRechnung(Point pt){
 		super(null,"AusfallRechnung");		
@@ -111,18 +106,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
-			     float[] dist = {0.0f, 0.75f};
-			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			     mp = new MattePainter(p);
-			     cp = new CompoundPainter(mp);
-			     rgb.setBackgroundPainter(cp);
-			     */		
+	
 			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezeptGebuehren"));
 				return null;
 			}
@@ -150,12 +134,6 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	}
 	
 /****************************************************/	
-	/*
-	public JButton okknopf;
-	public JRtaTextField gegeben;
-	public JLabel rueckgeld;
-	public JCheckBox direktdruck;
-	*/
 
 	private JPanel getGebuehren(){     // 1     2                   3         4     5        6              7
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.50),right:80dlu,10dlu,80dlu,fill:0:grow(0.50),10dlu",
@@ -378,6 +356,9 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			}
 
 			System.out.println("Return Gedrückt");
+		}
+		if(event.getKeyCode()==27){
+			this.dispose();
 		}
 	}
 	public static void starteAusfallRechnung(String url){

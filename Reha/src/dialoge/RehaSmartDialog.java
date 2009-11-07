@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -17,6 +19,7 @@ import java.awt.event.WindowListener;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -86,9 +89,9 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 		initialize();
 
-
+		//KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		
-
+		
 		try {
 
 			UIManager.setLookAndFeel(SystemConfig.aHauptFenster.get(4));
@@ -107,6 +110,17 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		final ActionListener listener = new ActionListener() {
+		    public final void actionPerformed(final ActionEvent e) {
+		        setVisible(false);
+		        dispose();
+		    }
+
+		};
+		final KeyStroke keyStroke =
+		    KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, true);
+		getRootPane().registerKeyboardAction(listener, keyStroke,
+		        JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 	}
 
@@ -244,7 +258,6 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 					//System.out.println("RehaSmartDialog hat EventListener gel�scht");
 					xEvent.removeRehaTPEventListener((RehaTPEventListener)this);
 					xEvent = null;
-					super.dispose();
 					this.dispose();
 				}
 
@@ -590,7 +603,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("SmartDialog Pressed "+arg0);
+		//System.out.println("SmartDialog Pressed "+arg0.getKeyCode());
 	}
 
 

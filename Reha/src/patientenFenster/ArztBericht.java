@@ -13,10 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -43,23 +41,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import patientenFenster.PatGrundPanel.PatientAction;
-
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -69,10 +50,13 @@ import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.ParameterLaden;
-import terminKalender.TerminFenster;
 import terminKalender.DatFunk;
+import terminKalender.ParameterLaden;
 import textBlockTherapeuten.ThTextBlock;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -81,6 +65,10 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private RehaTPEventClass rtp = null;
 	private boolean neu;
 	private String reznr;
@@ -108,9 +96,6 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	String diag = "";
 	int tblreihe;
 	String rezdatum = "";
-	CompoundPainter cp = null;
-	MattePainter mp = null;
-	LinearGradientPaint p = null;
 	//PinPanel pinPanel = null;
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
@@ -158,18 +143,6 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			@Override
 			protected Void doInBackground() throws Exception {
 				/************BackgroundPainter basteln************/
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-				Point2D end = new Point2D.Float(0,getHeight());
-			    float[] dist = {0.0f, 0.75f};
-			    Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.25f)};
-			    p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			    mp = new MattePainter(p);
-			
-			    cp = new CompoundPainter(mp);
-				grundPanel.setBackgroundPainter(cp);
-				*/
 				grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztBericht"));
 			    return null;
 			}

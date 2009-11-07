@@ -84,7 +84,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		pinPanel.setName("RezeptGebuehr");
 		pinPanel.getGruen().setVisible(false);
 		setPinPanel(pinPanel);
-		getSmartTitledPanel().setTitle("Rezept-Gebühr");	
+		getSmartTitledPanel().setTitle("Rezept-Gebühr");
+		getSmartTitledPanel().setName("RezeptGebuehr");
 		setSize(175,250);
 		setPreferredSize(new Dimension(175,250));
 		getSmartTitledPanel().setPreferredSize(new Dimension (175,250));
@@ -95,18 +96,6 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(PatGrundPanel.thisClass.getWidth(),100);
-			     float[] dist = {0.0f, 0.75f};
-			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			     mp = new MattePainter(p);
-			     cp = new CompoundPainter(mp);
-			     rgb.setBackgroundPainter(cp);
-			     */
 			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezeptGebuehren"));		
 				return null;
 			}
@@ -153,12 +142,6 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		});
 	}
 /****************************************************/	
-	/*
-	public JButton okknopf;
-	public JRtaTextField gegeben;
-	public JLabel rueckgeld;
-	public JCheckBox direktdruck;
-	*/
 
 	private JPanel getGebuehren(){
 		FormLayout lay = new FormLayout("10dlu,fill:0:grow(0.50),right:max(40dlu;p),5dlu,40dlu,fill:0:grow(0.50),10dlu",
@@ -195,6 +178,9 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			public void keyPressed(KeyEvent event) {
 				if(event.getKeyCode()==10){
 					event.consume();					
+				}
+				if(event.getKeyCode()==27){
+					dispose();
 				}
 			}
 		    public void keyReleased(KeyEvent event) {
