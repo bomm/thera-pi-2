@@ -1,33 +1,20 @@
 package dialoge;
 
-import hauptFenster.Reha;
-
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTitledPanel;
-import org.jdesktop.swingx.VerticalLayout;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.ListenerTools;
-
-import events.RehaEvent;
-import events.RehaEventClass;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
-import events.RehaTPEventListener;
 
 public class PinPanel extends JXPanel implements ActionListener{
 	private PinPanel thisClass = null;
@@ -78,20 +65,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 		jb1.setIcon(img1);
 		jb1.setActionCommand("gruen");
 		jb1.addActionListener(this);
-		/*
-		jb1.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent e) {
-			String sEvent = getName();
-			RehaTPEvent rEvt = new RehaTPEvent(thisClass.getParent().getParent());
-			rEvt.setRehaEvent("PinPanelEvent");
-			rEvt.setDetails(sEvent,"GRUEN") ;
-			//System.outprintln("*****************************************");
-			//System.outprintln("*****abgefeuert von GRÜN****"+sEvent);
-			//System.outprintln("*****************************************");
-			RehaTPEventClass.fireRehaTPEvent(rEvt);
-		}
-		});
-		*/
+	
 		jb1.disable();
 		this.add(jb1);
 		
@@ -104,18 +78,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 		jb2.setActionCommand("rot");
 		jb2.addActionListener(this);
 
-		/*
-		jb2.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent e) {
-			//System.out.println("Von PinPanel Fenstername = "+fenstername);
-			String sEvent = getName();
-			RehaTPEvent rEvt = new RehaTPEvent(thisClass.getParent().getParent());
-			rEvt.setRehaEvent("PinPanelEvent");
-			rEvt.setDetails(sEvent,"ROT") ;
-			RehaTPEventClass.fireRehaTPEvent(rEvt);
-		}
-		});
-		*/
+	
 		jb2.disable();
 		this.add(jb2);
 	}

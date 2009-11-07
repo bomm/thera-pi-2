@@ -1,9 +1,7 @@
 package terminKalender;
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
@@ -11,28 +9,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
-import javax.swing.*;
-//import javax.swing.border.BevelBorder;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
-//import org.eclipse.swt.internal.win32.POINT;
 import org.jdesktop.swingx.JXPanel;
 
-import DragAndDropTools.DnDTermine;
-
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
 
 public class kalenderPanel extends JXPanel{
 /**
@@ -98,24 +83,9 @@ public void  ListenerSetzen(int aktPanel){
 public void paintComponent( Graphics g ) { 
 		//super.paintComponent( g );
 		Graphics2D g2d = (Graphics2D)g;
-		//String sname = "";
+
 		vectorzahl = ((Vector)dat).size();
-		/*
-		if(this.xoriginal == null){
-			this.xoriginal = g2d.getComposite();
-			System.out.println("Panel "+this.panelNummer+" Origianl Alpha speichern");
-		}
-		if(this.xac1 == null){
-			this.xac1
-	          = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-	                                       0.5f);
-			System.out.println("Panel "+this.panelNummer+" Neuen Alpha setzen");
-			g2d.setComposite(this.xac1);
-		}else{
-			System.out.println("Panel "+this.panelNummer+" bestehenden Alpha setzen");				
-			//g2d.setComposite(this.xac1);				
-		}
-		*/
+
 		if (vectorzahl > 0){
 			String sName=""; //Namenseintrag
 			String sReznr=""; //Rezeptnummer
@@ -146,25 +116,12 @@ public void paintComponent( Graphics g ) {
 
 
 			/**********************************************/
-			/*
-			if(this.xac1 == null){
-				this.xac1
-		          = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-		                                       0.5f);
-				System.out.println("Neuen Alpha setzen");
-				g2d.setComposite(this.xac1);
-			}else{
-				System.out.println("bestehenden Alpha setzen");				
-				g2d.setComposite(this.xac1);				
-			}
-			//g2d.setComposite(original);
-			 */
+		
 			/**********************************************/
-			
+			/*
 			if((!this.spalteAktiv) || (!Reha.thisClass.terminpanel.dragStart)){
-				//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
-				//TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 			}
+			*/
 			g2d.setColor( SystemConfig.KalenderHintergrund);
 			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
 
@@ -187,7 +144,7 @@ public void paintComponent( Graphics g ) {
 				}catch(java.lang.ArrayIndexOutOfBoundsException bounds){
 					g2d.setColor( SystemConfig.KalenderHintergrund);
 					g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
-					System.out.println("ArrayIndexOutOfBoundsException");
+					//System.out.println("ArrayIndexOutOfBoundsException");
 					break;
 				}
 				//if ( test != null){ 
@@ -250,24 +207,14 @@ public void paintComponent( Graphics g ) {
 					//baseline = (int) (fEndePix - (((fDifferenz -8.5)/2)+1.0) );				
 					}	
 
-					//System.out.println("Start1="+yStartMin);
-					//System.out.println("fStartPix="+fStartPix);
-					//System.out.println("fPixelProMinute="+fPixelProMinute);
-					//System.out.println("Ende="+yEnde);	
 					for(i1=0;i1<1;i1++){
 
 						if((this.maleSchwarz >= 0) && (this.maleSchwarz == i) ){
-							
-							//System.out.println("in male Schwarz zeichnen");
 							Font altfont = g2d.getFont();
-							
-							//g2d.setFont(new Font("Verdana", Font.BOLD, 11));
 							g2d.setFont(fon);
 							g2d.setColor( SystemConfig.aktTkCol.get("aktBlock")[0]);
-							//g2d.setColor( oCol.colAktiv);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 							g2d.setColor( SystemConfig.aktTkCol.get("aktBlock")[1]);
-							//g2d.setColor( oCol.colWeiss);
 							aktivPunkt[0] = xStart;
 							aktivPunkt[1] = yStartMin;
 							aktivPunkt[2] = xEnde;
@@ -674,12 +621,6 @@ public void paintComponent( Graphics g ) {
 				g2d.setColor( SystemConfig.KalenderHintergrund);
 				g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
 			}
-			/*
-			if(this.xoriginal != null){
-				System.out.println("Origianl Alpha wiederherstellen");
-				g2d.setComposite(this.xoriginal);
-			}	
-			*/
 			if(this.inGruppierung){
 				/*
 				g2d.setColor( Color.BLACK);
@@ -697,10 +638,7 @@ public void paintComponent( Graphics g ) {
 							
 			}
 
-/*		}else{
-			g2d.setColor( SystemConfig.KalenderHintergrund);
-			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
-		}*/
+
 		//System.out.println("Anzahl = "+anzahl);
 	} 	
 	/*******Klammer der paint-Methode**********/

@@ -4,11 +4,8 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -17,14 +14,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -36,8 +28,6 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-
-
 import systemEinstellungen.SystemConfig;
 import systemTools.ListenerTools;
 import events.RehaTPEvent;
@@ -46,6 +36,14 @@ import events.RehaTPEventListener;
 
 public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowListener,MouseMotionListener,MouseListener,KeyListener{
 //public class RehaSmartDialog extends JXDialog implements RehaTPEventListener{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8192593796486061674L;
+
+
+
 
 	//private static final long serialVersionUID = 1L;
 	private JXPanel jContentPane = null;
