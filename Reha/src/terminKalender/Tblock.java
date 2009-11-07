@@ -280,7 +280,7 @@ private int dbBehandler;
 					/***Wenn ja prüfen ob wenigstens das Ende des Folgeblockes kleiner ist**/
 					//System.out.println("Dies ist nicht der letzte Block");
 					if(ZeitFunk.MinutenSeitMitternacht(this.Ende) < ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){		
-						System.out.println("Dies ist nicht der letzte Block und das Ende ist kleiner oder gleich dem Ende des Folgeblockes - Rückgabewert 1");						
+						//System.out.println("Dies ist nicht der letzte Block und das Ende ist kleiner oder gleich dem Ende des Folgeblockes - Rückgabewert 1");						
 						return 1;
 					}else if(ZeitFunk.MinutenSeitMitternacht(this.Ende) == ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){
 						return -1;
@@ -545,7 +545,7 @@ private int dbBehandler;
 	}
 /******************************/	
 	private int BeginnRagtInVorBlock(){
-		System.out.println("Die eingestellte Startzeit kollidiert mit den VorBlock");
+		//System.out.println("Die eingestellte Startzeit kollidiert mit den VorBlock");
 		// Testen ob versucht wurde vor dem Kalender-Nullpunkt zu starten = 07:00:00;
 		// Testen ob es sich um den ersten Block handelt;
 		// Testen ob Start und Dauer des Vorblocks eine Reduzierung zuläßt; 
@@ -841,9 +841,6 @@ class Felder{
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(4).insertElementAt("", iFeld);		
 		//System.out.println("Vor der Erhöhung"+getAnzahlBloecke(iKoll));
 		setAnzahlBloecke(iKoll,getSize(iKoll));
-		//if (setAnzahlBloecke(iKoll,getAnzahlBloecke(iKoll)+1) >= 0){
-			//System.out.println("Nach der Erhöhung:"+getAnzahlBloecke(iKoll));
-		//}
 		return true;
 	}
 	public boolean loeschenBlock(int iKoll,int iFeld){
@@ -854,8 +851,6 @@ class Felder{
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(4).removeElementAt(iFeld);		
 		//System.out.println("Vor der Erhöhung"+getAnzahlBloecke(iKoll));
 		setAnzahlBloecke(iKoll,getSize(iKoll));
-		//System.out.println("Nach der Löschung:"+getAnzahlBloecke(iKoll));
-		
 		return true;
 	}
 

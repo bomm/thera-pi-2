@@ -37,6 +37,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 	ButtonGroup jrbg = new ButtonGroup();
 	RehaSmartDialog rSmart = null;
 	int iAktion = 1;
+	JXPanel tv;
 	public TerminObenUntenAnschliessen(int x, int y){
 		RehaTP jtp = new RehaTP(0); 
 		jtp.setBorder(null);
@@ -56,7 +57,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		//int x = (screenSize.width - rSmart.getWidth()) / 2;
 		//int y = (screenSize.height - rSmart.getHeight()) / 2;
 		/****************************************************************/
-		JXPanel tv = TerminFenster.getThisClass().getViewPanel();
+		tv = TerminFenster.getThisClass().getViewPanel();
 		int xvp = tv.getLocationOnScreen().x+tv.getWidth();
 		if((x+225+10) > xvp){
 			x=x-225;
@@ -230,12 +231,14 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 				String [] sret = {jrtaf[0].getText(),jrtaf[1].getText()};
 				TerminFenster.setDialogRet(iAktion,sret);
 				rSmart.dispose();
+				tv = null;
 				break;
 			}
 			if(sAktion=="Abbruch"){
 				String [] sret = {null,null};
 				TerminFenster.setDialogRet(0,sret);
 				rSmart.dispose();
+				tv = null;
 				break;
 			}
 		}
@@ -247,14 +250,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		jrtaf[0].setEnabled(false);
 		jrtaf[1].setEnabled(false);
 	}
-	/*
-	private void nullRet(){
-		jrtaf[0].setText("");
-		jrtaf[1].setText("");
-		jrtaf[0].setEnabled(false);
-		jrtaf[1].setEnabled(false);
-	}
-	*/
+	
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		//System.out.println(arg0);

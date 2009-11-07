@@ -36,6 +36,7 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 	ButtonGroup jrbg = new ButtonGroup();
 	RehaSmartDialog rSmart = null;
 	int iAktion = 1;
+	JXPanel tv;
 	public TerminEinpassen(int x,int y){
 		RehaTP jtp = new RehaTP(0); 
 		jtp.setBorder(null);
@@ -50,12 +51,8 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		rSmart.setSize(new Dimension(225,145));
 		rSmart.getTitledPanel().setTitle("Wie soll der Termin behandelt werden???");
 		rSmart.setContentPanel(jtp.getContentContainer());
-		//Toolkit toolkit = Toolkit.getDefaultToolkit();
-		//Dimension screenSize = toolkit.getScreenSize();
-		//int x = (screenSize.width - rSmart.getWidth()) / 2;
-		//int y = (screenSize.height - rSmart.getHeight()) / 2;
 		/****************************************************************/
-		JXPanel tv = TerminFenster.getThisClass().getViewPanel();
+		tv = TerminFenster.getThisClass().getViewPanel();
 		int xvp = tv.getLocationOnScreen().x+tv.getWidth();
 		if((x+225+10) > xvp){
 			x=x-225;
@@ -105,37 +102,6 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		jrb[1].addFocusListener(this);		
 		jrbg.add(jrb[1]);
 		builder.add(jrb[1],cc.xyw(2,4,6));
-		/*
-		jrb[2] = new JRadioButton("Nachfolgenden Termin kürzen");
-		jrb[2].setBackground(Color.WHITE);
-		jrb[2].addKeyListener(this);		
-		jrb[2].addActionListener(this);
-		jrb[2].addFocusListener(this);		
-		jrbg.add(jrb[2]);
-		builder.add(jrb[2],cc.xyw(2,6,6));
-		jrb[3] = new JRadioButton("Startzeit manuell festlegen");
-		jrb[3].setBackground(Color.WHITE);
-		jrb[3].addKeyListener(this);		
-		jrb[3].addActionListener(this);
-		jrb[3].addFocusListener(this);		
-		jrbg.add(jrb[3]);
-		builder.add(jrb[3],cc.xyw(2,8,6));
-
-		jrtaf[0] = new JRtaTextField("STUNDEN",true);
-		jrtaf[0].setPreferredSize(new Dimension(25,20));
-		jrtaf[0].setEnabled(false);
-		builder.add(jrtaf[0],cc.xy(4,10));
-		
-		builder.add(new JXLabel(":"),cc.xy(5,10));
-		
-		jrtaf[1] = new JRtaTextField("MINUTEN",true);
-		jrtaf[1].setPreferredSize(new Dimension(25,20));
-		jrtaf[1].setEnabled(false);
-		builder.add(jrtaf[1],cc.xy(6,10));
-
-		builder.add(new JXLabel(""),cc.xy(2,11));
-		jrb[0].setSelected(true);
-		*/
 		xbuilder.add(builder.getPanel(),BorderLayout.NORTH);
 		
 		layout = 
@@ -176,11 +142,13 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 			String [] sret = {null,null};
 			TerminFenster.setDialogRet(iAktion,sret);
 			rSmart.dispose();
+			tv = null; 
 		}
 		if(e.getKeyCode()==27){
 			String [] sret = {null,null};
 			TerminFenster.setDialogRet(0,sret);
 			rSmart.dispose();
+			tv = null;
 		}
 
 	}

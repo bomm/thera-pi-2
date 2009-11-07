@@ -2,12 +2,9 @@ package terminKalender;
 
 import hauptFenster.Reha;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -17,48 +14,33 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TableModelListener;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
-import com.jgoodies.forms.builder.PanelBuilder;
+import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
+import systemTools.WinNum;
+
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-
-
-import systemTools.Colors;
-import systemTools.JRtaTextField;
-import systemTools.WinNum;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -68,6 +50,10 @@ import events.RehaTPEventListener;
 
 
 public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, ActionListener, ComponentListener, WindowListener, KeyListener,RehaTPEventListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6708633280442828667L;
 	//private static TagWahlNeu thisClass = null;
 	private String eigenName = null;
 	private JXPanel jcc = null;
@@ -81,23 +67,21 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 	private JXLabel kalwoche;	
 	private JXButton okbut;
 	private JXButton abbruchbut;
-	private String aktfocus = "";
+	//private String aktfocus = "";
 	public TagWahlNeu(JXFrame owner, String name,String aktday){
 		super(owner, "Eltern-TagWahl"+WinNum.NeueNummer());
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		akttag = aktday;
 		starttag = aktday;
-		//setSize(new Dimension(200,120));
+		
 		setPreferredSize(new Dimension(240,170));
-		//setSize(240,170);
-		//thisClass = this;
-
+		
 		eigenName = "TagWahl"+WinNum.NeueNummer(); 
 		this.setName(eigenName);
 		getSmartTitledPanel().setPreferredSize(new Dimension(240,170));
 		getSmartTitledPanel().setName("Eltern-"+eigenName);
 		this.getParent().setName("Eltern-"+eigenName);
-		//RehaSmartDialog.thisClass.setIgnoreReturn(true);	
+			
 		this.setUndecorated(true);
 
 		this.addFocusListener(this);
@@ -114,16 +98,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(200,120);
-			     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
-			     float[] dist = {0.0f, 0.5f};
-			     Color[] colors = {Colors.TaskPaneBlau.alpha(1.0f), Color.WHITE};
-			     LinearGradientPaint p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			     MattePainter mp = new MattePainter(p);
-			     jcc.setBackgroundPainter(new CompoundPainter(mp));
+			     jcc.setBackgroundPainter(Reha.thisClass.compoundPainter.get("TagWahlNeu"));
 				return null;
 			}
 			
@@ -499,10 +474,7 @@ public void keyTyped(KeyEvent e) {
 }
 
 public void rehaTPEventOccurred(RehaTPEvent evt) {
-	// TODO Auto-generated method stub
-	//System.out.println("****************Schlieﬂen des Roogle-Fensters**************");
 	String ss =  this.getName();
-	//System.out.println(this.getName()+" Eltern "+ss);
 	try{
 		if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 			FensterSchliessen(evt.getDetails()[0]);
@@ -510,40 +482,40 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			rtp = null;
 		}	
 	}catch(NullPointerException ne){
-		//System.out.println("In RoogleFenster" +evt);
+
 	}
 }
 @Override
 public void windowClosed(WindowEvent arg0) {
-	// TODO Auto-generated method stub
-	//System.out.println("Schlieﬂen befehl 1");
-	//System.out.println("Datum = "+datePick.setActionMap(am));
 	if(rtp != null){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		rtp = null;
 	}
-	/*
-	SwingUtilities.invokeLater(new Runnable(){
-		public  void run(){
-			Runtime r = Runtime.getRuntime();
-			r.gc();
-		}
-	});
-	*/	
+	if(datum != null){
+		//System.out.println("Listeners von Tagwahl entfernen");
+		ListenerTools.removeListeners(datum);
+		datum = null;
+		ListenerTools.removeListeners(okbut);
+		okbut = null;
+		ListenerTools.removeListeners(abbruchbut);
+		abbruchbut = null;
+		ListenerTools.removeListeners(this);
+	}
+	if(jcc != null){
+		ListenerTools.removeListeners(jcc);
+		jcc = null;
+	}
 }
 
 @Override
 public void windowClosing(WindowEvent arg0) {
-	// TODO Auto-generated method stub
-	//System.out.println("Schlieﬂen befehl 2");	
 	if(rtp != null){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		rtp = null;
 	}	
 }
 
 public void FensterSchliessen(String welches){
-	//System.out.println("Schlieﬂen befehl von Fenster Schliessen -"+welches);
-	//webBrowser.dispose();
 	this.dispose();		
 }	
 
@@ -555,6 +527,11 @@ class kalenderAction extends AbstractAction {
 	
 
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
@@ -563,6 +540,11 @@ public void actionPerformed(ActionEvent arg0) {
 }
 
 class MeinPicker extends JXDatePicker implements KeyListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	MeinPicker(){
 		super();
 		this.addKeyListener(this);

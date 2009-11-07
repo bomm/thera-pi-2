@@ -27,9 +27,9 @@ public class BlockHandling {
 		this.datum = datum;
 		this.dbBehandler = dbBehandler;
 		this.daten = daten;
-		//System.out.println("In BlockhHandling Übergabewert = "+wasTun);
+
 		datenfeld.Init(vterm);
-		//System.out.println("Nach Init-BlockhHandling Übergabewert = "+wasTun);
+
 	}
 	
 	public int init(){
@@ -237,11 +237,6 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,3,block,new Integer(dummy).toString());
 			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[2])+dummy) );
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
-			/*
-			for(int i = 0;i<5;i++){
-				System.out.println("Datensatz oben = "+datenfeld.getFeld(kollege,i,block));
-			}
-			*/
 			//Blockzahl ermitteln und dann neuen Block einfügen
 			int bloecke = block+1;
 			int maxblock = datenfeld.getAnzahlBloecke(kollege);
@@ -254,12 +249,6 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,3,bloecke,daten[3]);
 			neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(daten[2])+Integer.parseInt(daten[3])) );			
 			datenfeld.setFeld(kollege,4,bloecke,neueEndzeit);
-			/*
-			for(int i = 0;i<5;i++){
-				System.out.println("Block mitte = "+datenfeld.getFeld(kollege,i,bloecke));
-			}
-			System.out.println("Blockanzahl nach erster Einfügung: "+datenfeld.getAnzahlBloecke(kollege));
-			*/
 			//Blockzahl ermitteln und dann neuen Block einfügen
 			bloecke = bloecke+1;
 			maxblock++;
@@ -272,13 +261,6 @@ public class BlockHandling {
 			int differenz = (int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[4])-ZeitFunk.MinutenSeitMitternacht(neueEndzeit));
 			datenfeld.setFeld(kollege,3,bloecke,Integer.toString(differenz));
 			datenfeld.setFeld(kollege,4,bloecke,alteDaten[4]);
-			/*
-			for(int i = 0;i<5;i++){
-				System.out.println("Block unten = "+datenfeld.getFeld(kollege,i,bloecke));
-			}
-			*/
-			//System.out.println("Blockanzahl nach zweiter Einfügung: "+datenfeld.getAnzahlBloecke(kollege));
-			//System.out.println((ArrayList) vterm.get(0)).get(kollege));
 			
 		
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
@@ -291,8 +273,7 @@ public class BlockHandling {
 /*****************************************/	
 	private int blockNachfolgeKuerzen(){
 		String [] alteDaten = {null,null,null,null,null};
-		//int aktBlockzahl;
-			//System.out.println("Blockanzahl zu Beginn: "+datenfeld.getAnzahlBloecke(kollege));
+
 			//Zuerste bisherige Blockdaten sichern
 			alteDaten[0] = datenfeld.getFeld(kollege,0,block+1);//Text
 			alteDaten[1] = datenfeld.getFeld(kollege,1,block+1);//RezNr.

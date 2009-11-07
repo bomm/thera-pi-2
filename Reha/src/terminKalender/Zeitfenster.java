@@ -1,68 +1,48 @@
 package terminKalender;
 
 
+import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
-import java.awt.Frame;
 import java.awt.BorderLayout;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JSplitPane;
-import javax.swing.JWindow;
-import javax.swing.JTextField;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
-
-import javax.swing.border.SoftBevelBorder;
 import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.border.BevelBorder;
-
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
-import java.awt.SystemColor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.border.EtchedBorder;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JSplitPane;
+import javax.swing.border.SoftBevelBorder;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
+
+import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import systemTools.Colors;
-import systemTools.JRtaTextField;
 
 public class Zeitfenster extends JDialog implements KeyListener,FocusListener,ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JXPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="37,10"
-	private JXPanel jPanel = null;
+	//private JXPanel jPanel = null;
 	private JRtaTextField NamePatient = null;
 	private JRtaTextField Rezeptnummer = null;
-	private JXPanel Zeitvorgaben = null;
+	//private JXPanel Zeitvorgaben = null;
 	private JRtaTextField Dauer = null;
 	private JRtaTextField BeginnStunde = null;
 	private JRtaTextField BeginnMinute = null;
@@ -70,10 +50,10 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	private JRtaTextField EndeMinute = null;
 	private JButton Ok = null;
 	private JButton Abbruch = null;
-	private JXPanel jPanel1 = null;
-	private JLabel SchriftDauer = null;
-	private JLabel SchriftStartzeit = null;
-	private JLabel SchriftEndzeit = null;
+	//private JXPanel jPanel1 = null;
+	//private JLabel SchriftDauer = null;
+	//private JLabel SchriftStartzeit = null;
+	//private JLabel SchriftEndzeit = null;
 	private TerminFenster Eltern = null;
 	private JXPanel neuPanel = null;
 	private JRadioButton[] rb = {null,null,null};
@@ -117,20 +97,11 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	 */
 	private JXPanel getJContentPane() {
 		if (jContentPane == null) {
-			Point2D start = new Point2D.Float(0, 0);
-		     Point2D end = new Point2D.Float(390,180);
-		     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
-		     float[] dist = {0.0f, 0.5f};
-		     Color[] colors = {Colors.TaskPaneBlau.alpha(1.0f), Color.WHITE};
-		     //Color[] colors = {Color.WHITE,getBackground()};
-		     LinearGradientPaint p =
-		         new LinearGradientPaint(start, end, dist, colors);
-		     MattePainter mp = new MattePainter(p);
 		     
 			
 			jContentPane = new JXPanel();
 			jContentPane.setBackground(Color.WHITE);
-			jContentPane.setBackgroundPainter(new CompoundPainter(mp));
+			jContentPane.setBackgroundPainter(Reha.thisClass.compoundPainter.get("Zeitfenster"));
 			jContentPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 			jContentPane.setOpaque(true);
 			jContentPane.setLayout(new BorderLayout());
@@ -144,7 +115,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 			
 			panelRadio = new JXPanel(new BorderLayout());
 			panelRadio.setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
-			panelRadio.setBackgroundPainter(new CompoundPainter(mp));
+			panelRadio.setBackgroundPainter(Reha.thisClass.compoundPainter.get("Zeitfenster"));
 			panelRadio.setPreferredSize(new Dimension(480,80));
 			panelRadio.add(radioPan(),BorderLayout.CENTER);
 			
@@ -188,67 +159,18 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 		rb[0].setSelected(true);
 		return radio;
 	}
-	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	/*
-	private JXPanel getJPanel() {
-		if (jPanel == null) {
-			FlowLayout flowLayout = new FlowLayout();
-			flowLayout.setAlignment(FlowLayout.LEFT);
-			flowLayout.setVgap(5);
-			flowLayout.setHgap(8);
-			jPanel = new JXPanel();
-			jPanel.setOpaque(false);
-			jPanel.addKeyListener(this);
-			jPanel.setLayout(flowLayout);
-			jPanel.setPreferredSize(new Dimension(0, 30));
-			jPanel.add(getNamePatient(), null);
-			jPanel.add(getRezeptnummer(), null);
-		}
-		return jPanel;
-	}
-	*/
-	/**
-	 * This method initializes NamePatient	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-	/*
-	private JRtaTextField getNamePatient() {
-		if (NamePatient == null) {
-			NamePatient = new JRtaTextField("GROSS",false);
-			//NamePatient.setRtaType("GROSS",NamePatient,false);
-			NamePatient.setText("");
-			NamePatient.setHorizontalAlignment(JTextField.LEADING);
-			NamePatient.setPreferredSize(new Dimension(200, 20));
-			//NamePatient.setBackground(Color.orange);
-			NamePatient.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
-		}
-		return NamePatient;
-	}
-	*/
+
 	private UIFSplitPane grundSplit(){
 		jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
         		neuLayout(),
         		panelRadio); 
 			jSplitLR.setOpaque(false);
-			//jSplitLR.setSize(new Dimension(480,80));
 			jSplitLR.setBackground(Color.WHITE);
 			jSplitLR.setDividerSize(7);
 			jSplitLR.addPropertyChangeListener(new PropertyChangeListener(){
 				
 				public void propertyChange(PropertyChangeEvent arg0) {
 					dividerLocLR = jSplitLR.getDividerLocation();
-					/*
-					if(dividerLocLR == 290){
-						jSplitLR.setDividerLocation(0);
-					}else{
-						jSplitLR.setDividerLocation(291);
-					}
-					*/
 					int letzte = ((UIFSplitPane)arg0.getSource()).getLastDividerLocation(); 
 					for(int i = 0; i < 1; i++){
 						if( (letzte==290) && (dividerLocLR==279)){
@@ -270,8 +192,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 
 					}
 					
-					int pos = ((UIFSplitPane)arg0.getSource()).getLastDividerLocation();
-					//System.out.println( "Letzte Position = " +pos +" Jetzige Position = "+dividerLocLR);
+					//int pos = ((UIFSplitPane)arg0.getSource()).getLastDividerLocation();
 				}
 			});
 			
@@ -286,7 +207,6 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 		neuPanel = new JXPanel();  //     1.  2.Min. 3.  4.SS   5.  6.SM   7.     8.ES   9.  10.EM  11.  12. 13.OK  14. 15.Abb 
 		FormLayout lay = new FormLayout("5dlu,25dlu,10dlu,15dlu,2dlu,15dlu,10dlu,15dlu,2dlu,15dlu,2dlu,6dlu,30dlu,2dlu,30dlu,p:g",
 									"2dlu,p,5dlu,p,2dlu,p");
-		//neuPanel.setPreferredSize(new Dimension(480,80));
 		CellConstraints cc = new CellConstraints();
 		neuPanel.setLayout(lay);
 		neuPanel.setBackground(Color.WHITE);
@@ -371,350 +291,6 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 		return neuPanel;
 	}
 
-	/**
-	 * This method initializes Rezeptnummer	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-/*
-	private JRtaTextField getRezeptnummer() {
-		if (Rezeptnummer == null) {
-			Rezeptnummer = new JRtaTextField("GROSS",false);
-			//Rezeptnummer.setRtaType("GROSS",Rezeptnummer,false);			
-			Rezeptnummer.setPreferredSize(new Dimension(100, 20));
-			Rezeptnummer.setText("");
-			Rezeptnummer.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
-		}
-		return Rezeptnummer;
-	}
-*/	
-
-	/**
-	 * This method initializes Zeitvorgaben	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-/*	
-	private JXPanel getZeitvorgaben() {
-		if (Zeitvorgaben == null) {
-			FlowLayout flowLayout1 = new FlowLayout();
-			flowLayout1.setAlignment(java.awt.FlowLayout.CENTER);
-			Zeitvorgaben = new JXPanel();
-			Zeitvorgaben.addKeyListener(this);
-			Zeitvorgaben.setLayout(flowLayout1);
-			Zeitvorgaben.setPreferredSize(new Dimension(0, 30));
-			Zeitvorgaben.add(getDauer(), null);
-			Zeitvorgaben.add(getBeginnStunde(), null);
-			Zeitvorgaben.add(getBeginnMinute(), null);
-			Zeitvorgaben.add(getEndeStunde(), null);
-			Zeitvorgaben.add(getEndeMinute(), null);
-			Zeitvorgaben.add(getOk(), null);
-			Zeitvorgaben.add(getAbbruch(), null);
-		}
-		return Zeitvorgaben;
-	}
-*/
-	/**
-	 * This method initializes Dauer	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-/*
-	private JRtaTextField getDauer() {
-		if (Dauer == null) {
-			Dauer = new JRtaTextField("ZAHLEN",true);
-			//Dauer.setRtaType("ZAHLEN",Dauer,true);			
-			Dauer.setPreferredSize(new Dimension(38, 20));
-			Dauer.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			Dauer.setFont(new Font("Dialog", Font.PLAIN, 12));
-						Dauer.addFocusListener(new java.awt.event.FocusAdapter() { 
-							public void focusLost(java.awt.event.FocusEvent e) {
-								int dauer1 = new Integer((String) ((JRtaTextField) e.getSource()).getText() );
-								
-								int dauer2 = (int) zeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
-															":"+BeginnMinute.getText()+":00");
-								String sEnde = new String();
-								sEnde = zeitFunk.MinutenZuZeit(dauer1+dauer2);
-								EndeStunde.setText(sEnde.split(":")[0]);
-								EndeMinute.setText(sEnde.split(":")[1]);
-								//System.out.println("focusLost()"); // TODO Auto-generated Event stub focusLost()
-							}
-						});
-		}
-		return Dauer;
-	}
-*/
-	/**
-	 * This method initializes BeginnStunde	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-/*
-	private JRtaTextField getBeginnStunde() {
-		if (BeginnStunde == null) {
-			BeginnStunde = new JRtaTextField("STUNDEN",true);
-			//BeginnStunde.setRtaType("STUNDEN",BeginnStunde,true);			
-			BeginnStunde.setPreferredSize(new Dimension(38, 20));
-			BeginnStunde.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			BeginnStunde.addFocusListener(new java.awt.event.FocusAdapter() { 
-				public void focusLost(java.awt.event.FocusEvent e) {
-					String sb = new String();
-					sb = ((JRtaTextField) e.getSource()).getText(); 
-					if(sb.isEmpty()){
-						((JRtaTextField) e.getSource()).requestFocus();
-						return;
-					}
-					if(sb.length()==1){
-						((JRtaTextField) e.getSource()).setText("0"+sb);
-					}
-					int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
-					int dauer2 = (int) zeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
-												":"+BeginnMinute.getText()+":00");
-					String sEnde = new String();
-					sEnde = zeitFunk.MinutenZuZeit(dauer1+dauer2);
-					EndeStunde.setText(sEnde.split(":")[0]);
-					EndeMinute.setText(sEnde.split(":")[1]);
-				}
-			});
-
-		}
-		return BeginnStunde;
-	}
-*/
-	/**
-	 * This method initializes BeginnMinute	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-/*	
-	private JRtaTextField getBeginnMinute() {
-		if (BeginnMinute == null) {
-			BeginnMinute = new JRtaTextField("MINUTEN",true);
-			//BeginnMinute.setRtaType("MINUTEN",BeginnMinute,true);			
-			BeginnMinute.setPreferredSize(new Dimension(38, 20));
-			BeginnMinute.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			BeginnMinute.addFocusListener(new java.awt.event.FocusAdapter() {
-			public void focusLost(java.awt.event.FocusEvent e) {
-				String sb = new String();
-				sb = ((JRtaTextField) e.getSource()).getText();
-				if(sb.isEmpty()){
-					((JRtaTextField) e.getSource()).requestFocus();
-					return;
-				}
-				if(sb.length()==1){
-					((JRtaTextField) e.getSource()).setText("0"+sb);
-				}
-				int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
-				int dauer2 = (int) zeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
-											":"+BeginnMinute.getText()+":00");
-				String sEnde = new String();
-				sEnde = zeitFunk.MinutenZuZeit(dauer1+dauer2);
-				EndeStunde.setText(sEnde.split(":")[0]);
-				EndeMinute.setText(sEnde.split(":")[1]);
-				//System.out.println("focusLost()"); // TODO Auto-generated Event stub focusLost()
-				
-			}
-		});
-
-		}
-		return BeginnMinute;
-	}
-*/
-	/**
-	 * This method initializes EndeStunde	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-/*
-	private JRtaTextField getEndeStunde() {
-		if (EndeStunde == null) {
-			EndeStunde = new JRtaTextField("STUNDEN",true);
-			//EndeStunde.setRtaType("STUNDEN",EndeStunde,true);			
-			EndeStunde.setPreferredSize(new Dimension(38, 20));
-			EndeStunde.setAlignmentX(0.5F);
-			EndeStunde.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			EndeStunde.addFocusListener(new java.awt.event.FocusAdapter() { 
-				public void focusLost(java.awt.event.FocusEvent e) {
-					String sb = new String();
-					sb = ((JRtaTextField) e.getSource()).getText(); 
-					if(sb.isEmpty()){
-						((JRtaTextField) e.getSource()).requestFocus();
-						return;
-					}
-					if(sb.length()==1){
-						((JRtaTextField) e.getSource()).setText("0"+sb);
-					}
-					//int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
-					int dauer1 = (int) zeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
-							":"+EndeMinute.getText()+":00");
-					int dauer2 = (int) zeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
-												":"+BeginnMinute.getText()+":00");
-					if (dauer1 <= dauer2){
-						//WerteSetzen();
-						//EndeStunde.setText(BeginnStunde.getText());
-						//EndeMinute.setText(BeginnMinute.getText());
-						//EndeStunde.requestFocus();
-						//return;
-					}
-					//String sEnde = new String();
-					//sEnde = zeitFunk.MinutenZuZeit(dauer1-dauer2);
-					System.out.println("nach Ende Stunde");
-					//Dauer.setText((String) new Integer(dauer1-dauer2).toString());
-				}
-			});
-			
-		}
-		return EndeStunde;
-	}
-*/
-	/**
-	 * This method initializes EndeMinute	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-/*
-	private JRtaTextField getEndeMinute() {
-		if (EndeMinute == null) {
-			EndeMinute = new JRtaTextField("MINUTEN",true);
-			//EndeMinute.setRtaType("MINUTEN",EndeMinute,true);			
-
-			EndeMinute.setPreferredSize(new Dimension(38, 20));
-			EndeMinute.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			EndeMinute.addFocusListener(new java.awt.event.FocusAdapter() { 
-				public void focusLost(java.awt.event.FocusEvent e) {
-					String sb = new String();
-					sb = ((JRtaTextField) e.getSource()).getText(); 
-					if(sb.isEmpty()){
-						((JRtaTextField) e.getSource()).requestFocus();
-						return;
-					}
-					if(sb.length()==1){
-						((JRtaTextField) e.getSource()).setText("0"+sb);
-					}
-					//int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
-					int dauer1 = (int) zeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
-							":"+EndeMinute.getText()+":00");
-					int dauer2 = (int) zeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
-												":"+BeginnMinute.getText()+":00");
-					if (dauer1 <= dauer2){
-						WerteSetzen();
-						//EndeStunde.setText(BeginnStunde.getText());
-						//EndeMinute.setText(BeginnMinute.getText());
-						//EndeStunde.requestFocus();
-						return;
-					}else{
-					//String sEnde = new String();
-					//sEnde = zeitFunk.MinutenZuZeit(dauer1-dauer2);
-					sb = zeitFunk.MinutenZuZeit(dauer1 - new Integer(Dauer.getText()));
-					BeginnStunde.setText(sb.split(":")[0]);
-					BeginnMinute.setText(sb.split(":")[1]);
-					//Dauer.setText((String) new Integer(dauer1-dauer2).toString());
-					}
-				}
-			});
-
-		}
-		return EndeMinute;
-	}
-*/
-	/**
-	 * This method initializes Ok	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-/*
-	private JButton getOk() {
-		if (Ok == null) {
-			Ok = new JButton();
-			Ok.setPreferredSize(new Dimension(40, 20));
-			Ok.setText("OK");
-			Ok.setFont(new Font("Arial", Font.PLAIN, 10));
-			Ok.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-			Ok.setMnemonic(KeyEvent.VK_O);
-			Ok.setName("");
-			Ok.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					Beenden(1);
-				}
-			});
-			Ok.addKeyListener(new KeyAdapter() {
-	            public void keyPressed(KeyEvent event) {
-	            	if (event.getKeyCode()==10){
-	            		Beenden(1);
-	            	}
-	            	if (event.getKeyCode()==20){
-	            		Beenden(0);
-	            	}
-	            }
-	        });
-			
-		}
-		return Ok;
-	}
-*/
-	/**
-	 * This method initializes Abbruch	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-/*
-	private JButton getAbbruch() {
-		if (Abbruch == null) {
-			Abbruch = new JButton();
-			Abbruch.setPreferredSize(new Dimension(50, 20));
-			Abbruch.setFont(new Font("Arial", Font.BOLD, 10));
-			Abbruch.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-			Abbruch.setMnemonic(KeyEvent.VK_A);
-			Abbruch.setText("Abbruch");
-			Abbruch.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					Beenden(0);
-				}
-			});
-		}
-		return Abbruch;
-	}
-*/
-	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-/*	
-	private JXPanel getJPanel1() {
-		if (jPanel1 == null) {
-			SchriftEndzeit = new JLabel();
-			SchriftEndzeit.setText("Endzeit");
-			SchriftEndzeit.setFont(new Font("Tahoma", Font.PLAIN, 11));
-			SchriftEndzeit.setForeground(Color.red);
-			SchriftEndzeit.setPreferredSize(new Dimension(80, 15));
-			SchriftStartzeit = new JLabel();
-			SchriftStartzeit.setText("Startzeit");
-			SchriftStartzeit.setPreferredSize(new Dimension(85, 15));
-			SchriftStartzeit.setDisplayedMnemonic(KeyEvent.VK_UNDEFINED);
-			SchriftStartzeit.setForeground(SystemColor.desktop);
-			SchriftStartzeit.setFont(new Font("Tahoma", Font.PLAIN, 11));
-			FlowLayout flowLayout2 = new FlowLayout();
-			flowLayout2.setAlignment(java.awt.FlowLayout.LEFT);
-			flowLayout2.setHgap(5);
-			SchriftDauer = new JLabel();
-			SchriftDauer.setText("Dauer");
-			SchriftDauer.setPreferredSize(new Dimension(40, 15));
-			SchriftDauer.setForeground(SystemColor.desktop);
-			SchriftDauer.setBackground(new Color(238, 238, 238));
-			SchriftDauer.setFont(new Font("Tahoma", Font.PLAIN, 11));
-			jPanel1 = new JXPanel();
-			jPanel1.setMinimumSize(new Dimension(40, 20));
-			jPanel1.setLayout(flowLayout2);
-			jPanel1.setName("Überschriften");
-			jPanel1.setPreferredSize(new Dimension(40, 15));
-			jPanel1.add(SchriftDauer, null);
-			jPanel1.add(SchriftStartzeit, null);
-			jPanel1.add(SchriftEndzeit, null);
-		}
-		return jPanel1;
-	}
-*/
 	private void Beenden(int endewert){
 		if (endewert==1){
 			String[] srueck = {NamePatient.getText(),
@@ -754,7 +330,6 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 
 	
 	public void keyPressed(KeyEvent arg0) {
-		//System.out.println("KeyCode = "+arg0.getKeyCode());
 		if (arg0.getKeyCode() == 27){
 			Beenden(0);
 			return;

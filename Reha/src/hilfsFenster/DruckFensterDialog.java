@@ -92,14 +92,7 @@ public class DruckFensterDialog implements KeyListener, ActionListener, FocusLis
 		jrtaf[0].setEnabled(false);
 		jrtaf[1].setEnabled(false);
 	}
-	/*
-	private void nullRet(){
-		jrtaf[0].setText("");
-		jrtaf[1].setText("");
-		jrtaf[0].setEnabled(false);
-		jrtaf[1].setEnabled(false);
-	}
-	*/
+	
 
 	@Override
 	public void focusGained(FocusEvent arg0) {

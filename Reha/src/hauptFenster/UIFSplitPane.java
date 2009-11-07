@@ -47,7 +47,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
  * and conversely, others will never show a divider border.
  * 
  * @author Karsten Lentzsch
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @see javax.swing.plaf.basic.BasicSplitPaneUI
  */
@@ -55,6 +55,11 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 public final class UIFSplitPane extends JSplitPane {
     
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8466601873192308046L;
+
+	/**
      * Holds the name of the bound property that tries to show or hide
      * the split pane's divider border.
      * 
