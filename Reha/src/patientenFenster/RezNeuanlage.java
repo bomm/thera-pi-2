@@ -112,7 +112,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
 
-		
+		addKeyListener(this);
 		
 		setLayout(new BorderLayout());
 		setOpaque(true);
@@ -788,8 +788,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			kassenAuswahl(suchkrit);
 		}
 		if(arg0.getKeyCode()==27){
-			arg0.consume();
-			aufraeumen();
+			//System.out.println("Escape-Gedrückt");
+			//arg0.consume();
+			//aufraeumen();
+			doAbbrechen();
 		}
 		
 	}

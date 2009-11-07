@@ -119,7 +119,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		String xtitel = "<html>Arztbericht erstellen / ändern   -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>Tip:&nbsp;&nbsp;&nbsp;&nbsp;entscheiden Sie sich für das ICF-Schema</font></b>&nbsp;&nbsp;<img src='file:///C:/RehaVerwaltung/icons/Haken_klein.gif'>";
 	    super.getSmartTitledPanel().setTitle(xtitel);
 		this.setName(name);
-		
+		addKeyListener(this);
 		pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName(name);

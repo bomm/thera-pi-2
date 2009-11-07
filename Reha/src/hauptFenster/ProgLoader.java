@@ -300,7 +300,7 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 	gutjry = new JGutachtenInternal("thera-\u03C0 Gutachten ",SystemConfig.hmSysIcons.get("drvlogo"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)gutjry,containerNr,(Container)gutjry.getContentPane());
 	gutjry.setName(name);
-	gutjry.setSize(new Dimension(900,650));
+	gutjry.setSize(new Dimension(900,Reha.thisClass.desktops[containerNr].getHeight()-20));
 	Reha.thisClass.eberichtpanel = new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger ); 
 	gutjry.setContent(Reha.thisClass.eberichtpanel);
 	gutjry.addComponentListener(Reha.thisClass);

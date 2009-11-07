@@ -225,6 +225,7 @@ private KVKWrapper kvw;
 		
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+		this.addKeyListener(this);
 
 //****************Checken ob Preisgruppen bedient werden****************		
 		
@@ -1166,7 +1167,7 @@ private KVKWrapper kvw;
 		pat11.setDoubleBuffered(true);
 	
 		cbanrede = new JRtaComboBox(new String[] {"HERR","FRAU"});
-
+		cbanrede.addKeyListener(this);
 		jtf[0] = new JRtaTextField("GROSS", true);
 		jtf[0].setName("anrede");
 
