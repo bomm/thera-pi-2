@@ -39,10 +39,9 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 
 	private static final long serialVersionUID = 1L;
 	private JXPanel jContentPane = null;  //  @jve:decl-index=0:visual-constraint="37,10"
-	//private JXPanel jPanel = null;
 	private JRtaTextField NamePatient = null;
 	private JRtaTextField Rezeptnummer = null;
-	//private JXPanel Zeitvorgaben = null;
+
 	private JRtaTextField Dauer = null;
 	private JRtaTextField BeginnStunde = null;
 	private JRtaTextField BeginnMinute = null;
@@ -50,10 +49,6 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	private JRtaTextField EndeMinute = null;
 	private JButton Ok = null;
 	private JButton Abbruch = null;
-	//private JXPanel jPanel1 = null;
-	//private JLabel SchriftDauer = null;
-	//private JLabel SchriftStartzeit = null;
-	//private JLabel SchriftEndzeit = null;
 	private TerminFenster Eltern = null;
 	private JXPanel neuPanel = null;
 	private JRadioButton[] rb = {null,null,null};
@@ -68,7 +63,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	 */
 	public Zeitfenster(TerminFenster owner) {
 		Eltern = owner;
-		//super(owner);
+
 		initialize();
 	}
 
@@ -79,9 +74,8 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	 * @return void
 	 */
 	private void initialize() {
-		//System.out.println("ZeitFenster wird initialisiert");
 		this.setSize(299, 77);
-		//this.setSize(288, 77);		
+		
 		this.setContentPane(getJContentPane());
 		this.setUndecorated(true);
 		this.WerteSetzen(true);
@@ -105,13 +99,8 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 			jContentPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 			jContentPane.setOpaque(true);
 			jContentPane.setLayout(new BorderLayout());
-			//jContentPane.setSize(new Dimension(319, 75));
+
 			jContentPane.setPreferredSize(new Dimension(480,80));
-			/*
-			jContentPane.add(getJPanel(), BorderLayout.NORTH);
-			jContentPane.add(getZeitvorgaben(), BorderLayout.SOUTH);
-			jContentPane.add(getJPanel1(), BorderLayout.CENTER);
-			*/
 			
 			panelRadio = new JXPanel(new BorderLayout());
 			panelRadio.setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
@@ -191,8 +180,6 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 						}
 
 					}
-					
-					//int pos = ((UIFSplitPane)arg0.getSource()).getLastDividerLocation();
 				}
 			});
 			
@@ -394,22 +381,22 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 		for(int i = 0; i< 1;i++){
 			if(((JComponent)arg0.getSource()).getName().equals("Dauer")){
 				if(rechenart ==0){
-					int dauer1 = new Integer((String) ((JRtaTextField) arg0.getSource()).getText() );
+					int dauer1 = Integer.parseInt((String) ((JRtaTextField) arg0.getSource()).getText() );
 					
 					int dauer2 = (int) ZeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
 												":"+BeginnMinute.getText()+":00");
-					String sEnde = new String();
-					sEnde = ZeitFunk.MinutenZuZeit(dauer1+dauer2);
+					//String sEnde = new String();
+					String sEnde = ZeitFunk.MinutenZuZeit(dauer1+dauer2);
 					EndeStunde.setText(sEnde.split(":")[0]);
 					EndeMinute.setText(sEnde.split(":")[1]);
 				}
 				if(rechenart ==1){
-					int dauer1 = new Integer((String) ((JRtaTextField) arg0.getSource()).getText() );
+					int dauer1 = Integer.parseInt((String) ((JRtaTextField) arg0.getSource()).getText() );
 					
 					int dauer2 = (int) ZeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
 												":"+EndeMinute.getText()+":00");
-					String sEnde = new String();
-					sEnde = ZeitFunk.MinutenZuZeit(dauer2-dauer1);
+					//String sEnde = new String();
+					String sEnde = ZeitFunk.MinutenZuZeit(dauer2-dauer1);
 					BeginnStunde.setText(sEnde.split(":")[0]);
 					BeginnMinute.setText(sEnde.split(":")[1]);
 				}
@@ -417,8 +404,8 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 				break;
 			}
 			if(((JComponent)arg0.getSource()).getName().equals("BeginnStunde")){
-				String sb = new String();
-				sb = ((JRtaTextField) arg0.getSource()).getText(); 
+				//String sb = new String();
+				String sb = ((JRtaTextField) arg0.getSource()).getText(); 
 				if(sb.isEmpty()){
 					((JRtaTextField) arg0.getSource()).requestFocus();
 					return;
@@ -426,26 +413,26 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 				if(sb.length()==1){
 					((JRtaTextField) arg0.getSource()).setText("0"+sb);
 				}
-				int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
+				int dauer1 = Integer.parseInt( (String) ((JRtaTextField)Dauer).getText() );
 				int dauer2 = (int) ZeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
 											":"+BeginnMinute.getText()+":00");
 				int dauer3 = (int) ZeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
 						":"+EndeMinute.getText()+":00");
 				/*************************/
 				if(rechenart==0){
-					String sEnde = new String();
-					sEnde = ZeitFunk.MinutenZuZeit(dauer1+dauer2);
+					//String sEnde = new String();
+					String sEnde = ZeitFunk.MinutenZuZeit(dauer1+dauer2);
 					EndeStunde.setText(sEnde.split(":")[0]);
 					EndeMinute.setText(sEnde.split(":")[1]);
 				}
 				if(rechenart==2){
-					Dauer.setText(new Integer(dauer3-dauer2).toString());
+					Dauer.setText(Integer.toString(dauer3-dauer2));
 				}
 				break;				
 			}
 			if(((JComponent)arg0.getSource()).getName().equals("BeginnMinute")){
-				String sb = new String();
-				sb = ((JRtaTextField) arg0.getSource()).getText();
+				//String sb = new String();
+				String sb = ((JRtaTextField) arg0.getSource()).getText();
 				if(sb.isEmpty()){
 					((JRtaTextField) arg0.getSource()).requestFocus();
 					return;
@@ -453,27 +440,27 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 				if(sb.length()==1){
 					((JRtaTextField) arg0.getSource()).setText("0"+sb);
 				}
-				int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
+				int dauer1 = Integer.parseInt( (String) ((JRtaTextField)Dauer).getText() );
 				int dauer2 = (int) ZeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
 					":"+BeginnMinute.getText()+":00");
 				int dauer3 = (int) ZeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
 						":"+EndeMinute.getText()+":00");
 				/*************************/
 				if(rechenart==0){
-					String sEnde = new String();
-					sEnde = ZeitFunk.MinutenZuZeit(dauer1+dauer2);
+					//String sEnde = new String();
+					String sEnde = ZeitFunk.MinutenZuZeit(dauer1+dauer2);
 					EndeStunde.setText(sEnde.split(":")[0]);
 					EndeMinute.setText(sEnde.split(":")[1]);
 				}
 				if(rechenart==2){
-					Dauer.setText(new Integer(dauer3-dauer2).toString());
+					Dauer.setText(Integer.toString(dauer3-dauer2));
 				}
 
 				break;				
 			}
 			if(((JComponent)arg0.getSource()).getName().equals("EndeStunde")){
-				String sb = new String();
-				sb = ((JRtaTextField) arg0.getSource()).getText(); 
+				//String sb = new String();
+				String sb = ((JRtaTextField) arg0.getSource()).getText(); 
 				if(sb.isEmpty()){
 					((JRtaTextField) arg0.getSource()).requestFocus();
 					return;
@@ -488,11 +475,11 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 											":"+BeginnMinute.getText()+":00");
 				int dauer3 = Integer.parseInt(Dauer.getText().trim());
 				if(rechenart==2){
-						Dauer.setText(new Integer(dauer1-dauer2).toString());
+						Dauer.setText(Integer.toString(dauer1-dauer2));
 				}
 				if(rechenart==1){
-					String sBeginn = new String();
-					sBeginn = ZeitFunk.MinutenZuZeit(dauer1-dauer3);
+					//String sBeginn = new String();
+					String sBeginn = ZeitFunk.MinutenZuZeit(dauer1-dauer3);
 					BeginnStunde.setText(sBeginn.split(":")[0]);
 					BeginnMinute.setText(sBeginn.split(":")[1]);
 				}
@@ -500,8 +487,8 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 				break;				
 			}
 			if(((JComponent)arg0.getSource()).getName().equals("EndeMinute")){
-				String sb = new String();
-				sb = ((JRtaTextField) arg0.getSource()).getText(); 
+				//String sb = new String();
+				String sb = ((JRtaTextField) arg0.getSource()).getText(); 
 				if(sb.isEmpty()){
 					((JRtaTextField) arg0.getSource()).requestFocus();
 					return;
@@ -543,7 +530,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		if(((JComponent)arg0.getSource()).getName().equals("Ok")){
-			int dauer1 = new Integer( (String) ((JRtaTextField)Dauer).getText() );
+			int dauer1 = Integer.parseInt( (String) ((JRtaTextField)Dauer).getText() );
 			int dauer2 = (int) ZeitFunk.MinutenSeitMitternacht(BeginnStunde.getText()+
 										":"+BeginnMinute.getText()+":00");
 			int dauer3 = (int) ZeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
@@ -566,7 +553,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 			dauer3 = (int) ZeitFunk.MinutenSeitMitternacht(EndeStunde.getText()+
 					":"+EndeMinute.getText()+":00");
 			dauer1 = dauer3-dauer2;
-			if (dauer1 != new Integer(Dauer.getText().trim()) ){
+			if (dauer1 != Integer.parseInt(Dauer.getText().trim()) ){
 				WerteSetzen(false);
 				Dauer.requestFocus();
 				return;

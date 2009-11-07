@@ -1232,7 +1232,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				    		  return;
 				    	  }
 				      }
-				      System.out.println(mitgebracht);
+				      //System.out.println(mitgebracht);
 				    } catch (Throwable t) { t.printStackTrace(); }
 				    // Ein Problem ist aufgetreten
 				    e.dropComplete(true);
@@ -1265,7 +1265,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		            }
 		            TransferHandler th = bunker.getTransferHandler();
 		            th.exportAsDrag((JComponent) bunker, evt, TransferHandler.COPY);
-		            System.out.println("Starte Drag mit "+bunker.getText());
+		            //System.out.println("Starte Drag mit "+bunker.getText());
 		        }
 		    });
 		    bar2.add(copyLabel);
@@ -1803,7 +1803,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         						return null;
         					}
         				}.execute();
-                        System.out.println("Strg+P gedrückt: "+event);
+                        //System.out.println("Strg+P gedrückt: "+event);
                     }
                     if(keyEvent.isAltDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==88) {  // Ctrl-P
@@ -1918,7 +1918,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
       			   }
       			   if(xvariante==3){
       				   // nach oben
-      				   System.out.println("Variante: "+xvariante);
+      				   //System.out.println("Variante: "+xvariante);
       				   if(jSplitRechtsOU.getDividerLocation() > (thisFrame.getRootPane().getHeight()/2)-3){
       					   jSplitRechtsOU.setDividerLocation((jxLinks.getHeight()/2)-3);
           				   vollsichtbar = -1;
@@ -1928,7 +1928,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
       				   }
       			   }
       			   if(xvariante==4){
-      				   System.out.println("Variante: "+xvariante);
+      				   //System.out.println("Variante: "+xvariante);
       				   // nach unten
       				   if(jSplitRechtsOU.getDividerLocation() < (jxLinks.getHeight()/2)-3 ){
       					   jSplitRechtsOU.setDividerLocation((jxLinks.getHeight()/2)-3);
@@ -1940,21 +1940,21 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
       				   break;
       			   }
       			   if(xvariante==5){
-      				   System.out.println("Variante: "+xvariante);
+      				   //System.out.println("Variante: "+xvariante);
       				   // oben Vollbild
       				   vollsichtbar = 0;
       				   jSplitRechtsOU.setDividerLocation(thisFrame.getRootPane().getHeight()-7);                			
       				   break;
       			   }
       			   if(xvariante==6){
-      				   System.out.println("Variante: "+xvariante);
+      				   //System.out.println("Variante: "+xvariante);
       				   // unten Vollbild
       				   vollsichtbar = 1;
   					   jSplitRechtsOU.setDividerLocation(0);                			
       				   break;
       			   }
       			   if(xvariante==7){
-      				   System.out.println("Variante: "+xvariante);
+      				   //System.out.println("Variante: "+xvariante);
       				   vollsichtbar = 1;
   					   jSplitRechtsOU.setDividerLocation(0);
       				   break;
@@ -2844,7 +2844,7 @@ final class HilfeDatenbankStarten implements Runnable{
 	        		Reha.HilfeDbOk = false;
 	        		return;
 	        	}
-	        System.out.println("HilfeServer wurde - gestartet");	
+	        //System.out.println("HilfeServer wurde - gestartet");	
 	        return;
 	}
 	public void run() {
