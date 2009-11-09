@@ -201,7 +201,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		tfs[7].setName("arztnum");
 		jpan.add(tfs[7],cc.xyw(3, 14,4));
 
-		jpan.add(new JLabel("Betriebsst‰tte"),cc.xy(1, 16));
+		jpan.add(new JLabel("Betriebsst√§tte"),cc.xy(1, 16));
 		tfs[8] = new JRtaTextField("ZAHLEN",true);
 		tfs[8].addKeyListener(this);
 		tfs[8].addFocusListener(this);		
@@ -231,7 +231,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		tfs[11].setName("email1");
 		jpan.add(tfs[11],cc.xyw(3, 24,4));
 		
-		jpan.addSeparator("Zus‰tze",cc.xyw(1, 26, 6));		
+		jpan.addSeparator("Zus√§tze",cc.xyw(1, 26, 6));		
 
 		jpan.add(new JLabel("Facharzt"),cc.xy(1, 28));
 		arztgruppe = new JRtaComboBox(SystemConfig.arztGruppen);
@@ -339,7 +339,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 				vec.add(list.get(i));
 			}
 			apan.atblm.addRow((Vector)vec);
-			System.out.println("Tabellenzeile eingef¸gt");
+			System.out.println("Tabellenzeile eingef√ºgt");
 		}else{
 			int row = apan.arzttbl.getSelectedRow();
 			int model = apan.arzttbl.convertRowIndexToModel(row);

@@ -384,7 +384,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		jpRechts.add(wahltabbedPane,BorderLayout.CENTER);
 		tp1.add(jpRechts);
 		
-		tabbedPane.addTab("Einstellungen f�r die Suche", SystemConfig.hmSysIcons.get("tools"), tp1,"Einstellungen f�r den Suchlauf");
+		tabbedPane.addTab("Einstellungen für die Suche", SystemConfig.hmSysIcons.get("tools"), tp1,"Einstellungen für den Suchlauf");
 		//tabbedPane.addTab("Einstellungen f�r die Suche", new ImageIcon( getClass().getResource("icons/tools.gif")), tp1,"Einstellungen f�r den Suchlauf");
 		/*
 		//dummySuchen = new JXPanel(new BorderLayout());
@@ -407,8 +407,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 
 
         
-        tabbedPane.addTab("Termine suchen und �berschreiben", SystemConfig.hmSysIcons.get("find"), tp2,
-        "Termine suchen und �berschreiben");
+        tabbedPane.addTab("Termine suchen und Überschreiben", SystemConfig.hmSysIcons.get("find"), tp2,
+        "Termine suchen und Überschreiben");
         
         tabbedPane.setMnemonicAt(0, (int) 'i');
         tabbedPane.setMnemonicAt(1, (int) 'u');   
@@ -589,35 +589,35 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 		builder.addSeparator("Mehrere Mitarbeiter in Suchlauf einbeziehen", cc.xyw(1, 1,4));
-		JRtaCheckBox jb = new JRtaCheckBox("Alle Krankengymnasten w�hlen");
+		JRtaCheckBox jb = new JRtaCheckBox("Alle Krankengymnasten wählen");
 		jb.setName("KG");
 		jb.setMnemonic(KeyEvent.VK_K);
 		setzeActionListener(jb);
 		//jb.addActionListener(this);
 		gruppenCheck[0] = jb;
 		builder.add(jb,cc.xy(2,3));
-		jb = new JRtaCheckBox("Alle Masseure w�hlen");
+		jb = new JRtaCheckBox("Alle Masseure wählen");
 		jb.setName("MA");
 		jb.setMnemonic(KeyEvent.VK_M);		
 		setzeActionListener(jb);
 		//jb.addActionListener(this);
 		gruppenCheck[1] = jb;
 		builder.add(jb,cc.xy(2,5));
-		jb = new JRtaCheckBox("Alle Ergotherapeuten w�hlen");
+		jb = new JRtaCheckBox("Alle Ergotherapeuten wählen");
 		jb.setName("ER");
 		jb.setMnemonic(KeyEvent.VK_E);		
 		setzeActionListener(jb);
 		//jb.addActionListener(this);
 		gruppenCheck[2] = jb;		
 		builder.add(jb,cc.xy(2,7));
-		jb = new JRtaCheckBox("Alle Logop�den w�hlen");
+		jb = new JRtaCheckBox("Alle Logopäden wählen");
 		jb.setName("LO");
 		jb.setMnemonic(KeyEvent.VK_L);
 		setzeActionListener(jb);
 		//jb.addActionListener(this);
 		gruppenCheck[3] = jb;		
 		builder.add(jb,cc.xy(2,9));
-		jb = new JRtaCheckBox("Alle Sporttherapeuten w�hlen");
+		jb = new JRtaCheckBox("Alle Sporttherapeuten wählen");
 		jb.setName("SP");
 		jb.setMnemonic(KeyEvent.VK_O);		
 		setzeActionListener(jb);		
@@ -695,7 +695,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		dummy.add(jbut,BorderLayout.WEST);
 		
 		
-		jbut = new JXButton("Markierungen l�schen");
+		jbut = new JXButton("Markierungen löschen");
 		jbut.setName("allesentmark");
 		setzeActionListener(jbut);
 		//jbut.addActionListener(this);
@@ -745,7 +745,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		zeitraumEdit[1].setText(DatFunk.sDatPlusTage(DatFunk.sHeute(),SystemConfig.RoogleZeitraum));
 		zeitraumEdit[1].setEnabled(false);		
 		builder.add(zeitraumEdit[1],cc.xy(4,5));
-		builder.addSeparator("Wochentage ein- / ausschlie�en (Geschwindigkeit)", cc.xyw(1, 9,4));		
+		builder.addSeparator("Wochentage ein- / ausschließen (Geschwindigkeit)", cc.xyw(1, 9,4));		
 
 		jb = new JRtaCheckBox("Montag");
 		tageCheck[0] = jb;
@@ -829,7 +829,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		builder.add(uhrselectEdit[1],cc.xy(6,3));
 		builder.addLabel("Uhr",cc.xy(8,3));
 		
-		jb = new JRtaCheckBox("Freie Termine suchen bis sp�testens");
+		jb = new JRtaCheckBox("Freie Termine suchen bis spätestens");
 		uhrselectCheck[1] = jb;
 		uhrselectCheck[1].setName("uhr2");
 		setzeActionListener(uhrselectCheck[1]);
@@ -863,7 +863,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		builder.add(uhrselectEdit[5],cc.xy(6,9));
 		builder.addLabel("Uhr",cc.xy(8,9));
 
-		jb = new JRtaCheckBox("Freie Termine suchen bis sp�testens");
+		jb = new JRtaCheckBox("Freie Termine suchen bis spätestens");
 		uhrselectCheck[3] = jb;
 		uhrselectCheck[3].setName("uhr4");
 		setzeActionListener(uhrselectCheck[3]);
@@ -1005,7 +1005,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	/****************************************/	
 	private void TabelleGruppenSetzen(){
 
-		String[] column = {"Gr.w�hlen","Gruppenname"};
+		String[] column = {"Gr.wählen","Gruppenname"};
 		Object[][] dataVector;
 		int i,size;
 		size = ParameterLaden.vKKollegen.size()-1;
@@ -1144,7 +1144,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				if(schichtCheck[0].isSelected() || schichtCheck[1].isSelected()){
 					JOptionPane.showMessageDialog(null,"Was wollen Sie eigentlich?\n\n"+
 							"Wollen Sie jetzt selektive Uhrzeiten angeben oder Schichtarbeiter? \n\n"+
-							"Die Software nimmt Ihnen an dieser Stelle die Entscheidung ab:\nDie Einstellungen f�r Schichtarbeiter planen werden zur�ckgesetzt!!!\n\n");
+							"Die Software nimmt Ihnen an dieser Stelle die Entscheidung ab:\nDie Einstellungen für Schichtarbeiter planen werden zurückgesetzt!!!\n\n");
 					for(int j = 0;j<4;j++){
 						if(j<2){
 							schichtCheck[j].setSelected(false);
@@ -1165,7 +1165,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				if((cname.equals("uhr1")) &&  (!uhrselectCheck[0].isSelected()) ){
 					if( (uhrselectCheck[2].isSelected() || uhrselectCheck[3].isSelected()) ){
 						JOptionPane.showMessageDialog(null, "Diese Auswahl macht nur dann Sinn, wenn Sie im unteren Bereich\n"+
-								"beide H�kchen entfernt haben!");
+								"beide Häkchen entfernt haben!");
 						uhrselectCheck[2].setSelected(false);
 						uhrselectCheck[3].setSelected(false);
 						uhrselectEdit[4].setText("00");
@@ -1191,7 +1191,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				if((cname.equals("uhr2")) &&  (!uhrselectCheck[1].isSelected()) ){
 					if( (uhrselectCheck[2].isSelected() || uhrselectCheck[3].isSelected()) ){
 						JOptionPane.showMessageDialog(null, "Diese Auswahl macht nur dann Sinn, wenn Sie im unteren Bereich\n"+
-								"beide H�kchen entfernt haben!");
+								"beide Häkchen entfernt haben!");
 						uhrselectCheck[2].setSelected(false);
 						uhrselectCheck[3].setSelected(false);
 						uhrselectEdit[4].setText("00");
@@ -1211,7 +1211,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				if(cname.equals("uhr3") &&  uhrselectCheck[2].isSelected()){
 					if(! (uhrselectCheck[0].isSelected() && uhrselectCheck[1].isSelected()) ){
 						JOptionPane.showMessageDialog(null, "Diese Auswahl macht nur dann Sinn, wenn Sie im oberen Bereich\n"+
-								"beide H�kchen gesetzt haben!");
+								"beide Häkchen gesetzt haben!");
 						uhrselectCheck[2].setSelected(false);
 						uhrselectCheck[1].requestFocus();
 						return;
@@ -1229,7 +1229,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				if(cname.equals("uhr4") &&  uhrselectCheck[3].isSelected()){
 					if(! (uhrselectCheck[0].isSelected() && uhrselectCheck[1].isSelected()) ){
 						JOptionPane.showMessageDialog(null, "Diese Auswahl macht nur dann Sinn, wenn Sie im oberen Bereich\n"+
-								"beide H�kchen gesetzt haben!");
+								"beide Häkchen gesetzt haben!");
 						uhrselectCheck[3].setSelected(false);
 						uhrselectCheck[1].requestFocus();
 						return;
@@ -1257,7 +1257,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 					JOptionPane.showMessageDialog(null,"Was wollen Sie eigentlich?\n\n"+
 							"Wollen Sie jetzt Schichtarbeiter planen, oder wollen Sie selektiv nach bestimmten\n"+
 							"Uhrzeiten suchen??\n\n"+
-							"Die Software nimmt Ihnen an dieser Stelle die Entscheidung ab:\nDie Einstellungen f�r selektive Uhrzeiten werden ausgeschaltet!!!\n\n");
+							"Die Software nimmt Ihnen an dieser Stelle die Entscheidung ab:\nDie Einstellungen für selektive Uhrzeiten werden ausgeschaltet!!!\n\n");
 					for(int j = 0; j<8;j++){
 						if(j<4){
 							uhrselectCheck[j].setSelected(false);
@@ -1646,7 +1646,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     		        	
     				}
     				if(gewaehlt==0){
-    					JOptionPane.showMessageDialog(tp1,"Nur v�llige Spezialisten wollen zwar suchen - sagen aber nicht wo(!) sie suchen wollen.\n"+
+    					JOptionPane.showMessageDialog(tp1,"Nur völlige Spezialisten wollen zwar suchen - sagen aber nicht wo(!) sie suchen wollen.\n"+
     							"Am besten suchen - 'diese Spezialisten' - dann unter einer Lampe - dann ist's wenigstens recht hell bei der Suche....");
     					tabbedPane.setSelectedIndex(0);
     				}else{

@@ -385,7 +385,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(jtf[3],cc.xy(7,9));
 
 		jcmb[1] = new JRtaComboBox(new String[] {"Erstverodnung","Folgeverordnung",
-				"au�erhalb des Regelfalles"});
+				"außerhalb des Regelfalles"});
 		jcmb[1].setActionCommand("verordnungsart");
 		jcmb[1].addActionListener(this);
 		jpan.addLabel("Art d. Verordn.",cc.xy(1, 11));
@@ -393,7 +393,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcb[0] = new JRtaCheckBox("vorhanden");
 		jcb[0].setOpaque(false);
 		jcb[0].setEnabled(false);
-		jpan.addLabel("Begr�nd. für adR",cc.xy(5, 11));
+		jpan.addLabel("Begründ. für adR",cc.xy(5, 11));
 		jpan.add(jcb[0],cc.xy(7, 11));
 		
 		jcb[1] = new JRtaCheckBox("Ja / Nein");

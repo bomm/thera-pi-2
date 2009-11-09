@@ -73,7 +73,7 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 	JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 	if(termin != null){
 		if(ansicht==2){
-			JOptionPane.showMessageDialog(null,"Um die Wochenarbeitszeit zu starten,\nschließen Sie bitte zunächst den Terminkalender");
+			JOptionPane.showMessageDialog(null,"Um die Wochenarbeitszeit zu starten,\nschlieï¿½en Sie bitte zunï¿½chst den Terminkalender");
 		}
 		System.out.println("Der Terminkalender befindet sich in Container "+((JTerminInternal)termin).getDesktop());
 		containerHandling(((JTerminInternal)termin).getDesktop());
@@ -109,6 +109,8 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 			terminjry.setContent(Reha.thisClass.terminpanel.init(containerNr, xansicht,terminjry));
 			terminjry.setLocation(new Point(5,5));
 			terminjry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+			terminjry.setPreferredSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+			terminjry.pack();
 			terminjry.setVisible(true);
 			Reha.thisClass.desktops[containerNr].add(terminjry);
 			LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -228,7 +230,7 @@ public void loescheKasse(){
 	Reha.thisClass.kassenpanel = null;
 }
 
-/**************^Ärzteverwaltung Echtfunktion***********************/
+/**************^ï¿½rzteverwaltung Echtfunktion***********************/
 public void ArztFenster(int setPos,String aid) {
 	if(! Reha.DbOk){
 		return;
@@ -251,7 +253,7 @@ public void ArztFenster(int setPos,String aid) {
 	String name = "ArztVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	arztjry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
+	arztjry = new JArztInternal("thera-\u03C0 ï¿½rzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)arztjry,containerNr,(Container)arztjry.getContentPane());
 	arztjry.setName(name);
 	arztjry.setSize(new Dimension(650,500));
@@ -301,11 +303,13 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 	AktiveFenster.setNeuesFenster(name,(JComponent)gutjry,containerNr,(Container)gutjry.getContentPane());
 	gutjry.setName(name);
 	gutjry.setSize(new Dimension(900,Reha.thisClass.desktops[containerNr].getHeight()-20));
+	gutjry.setPreferredSize(new Dimension(900,Reha.thisClass.desktops[containerNr].getHeight()-20));
 	Reha.thisClass.eberichtpanel = new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger ); 
 	gutjry.setContent(Reha.thisClass.eberichtpanel);
 	gutjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	gutjry.setLocation(comps*10, comps*10);
+	gutjry.pack();
 	gutjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(gutjry);
 	((JGutachtenInternal)gutjry).aktiviereDiesenFrame( ((JGutachtenInternal)gutjry).getName());
@@ -323,7 +327,7 @@ public void Abrechnung1Fenster(int setPos) {
 	}
 	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
 	if(abrech1 != null){
-		System.out.println("InternalFrame Kassenabrechnung bereits geöffnet");
+		System.out.println("InternalFrame Kassenabrechnung bereits geï¿½ffnet");
 		containerHandling(((JAbrechnungInternal)abrech1).getDesktop());
 		((JAbrechnungInternal)abrech1).aktiviereDiesenFrame( ((JAbrechnungInternal)abrech1).getName());
 		if( ((JAbrechnungInternal)abrech1).isIcon() ){
@@ -339,7 +343,7 @@ public void Abrechnung1Fenster(int setPos) {
 	String name = "Abrechnung-1"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	abrechjry = new JAbrechnungInternal("thera-\u03C0  - Kassen-Abrechnung nach §302 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	abrechjry = new JAbrechnungInternal("thera-\u03C0  - Kassen-Abrechnung nach ï¿½302 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster("Abrechnung-1",(JComponent)abrechjry,1,(Container)abrechjry.getContentPane());
 	abrechjry.setName(name);
 	abrechjry.setSize(new Dimension(650,500));
@@ -587,7 +591,7 @@ public static void containerBelegen(int setPos,RehaTP jtp){
 
 public void RehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	System.out.println("ProgLoader Systemauslöser"+evt.getSource());
+	System.out.println("ProgLoader Systemauslï¿½ser"+evt.getSource());
 	System.out.println("ProgLoader Event getDetails[0]: = "+evt.getDetails()[0]);
 	System.out.println("ProgLoader Event getDetails[1]: = "+evt.getDetails()[1]);
 	System.out.println(((JXTitledPanel) evt.getSource()).getContentContainer().getName());

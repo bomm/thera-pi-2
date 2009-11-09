@@ -98,7 +98,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
-		leerPanel = new KeinRezept("noch keine Rezepte in der Historie für diesen Patient");
+		leerPanel = new KeinRezept("noch keine Rezepte in der Historie fï¿½r diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 		
@@ -230,7 +230,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
-		jbut.setToolTipText("Termin löschen");
+		jbut.setToolTipText("Termin lï¿½schen");
 		jbut.setActionCommand("terminminus");
 		jbut.addActionListener(this);
 		jbut.setEnabled(false);		
@@ -307,7 +307,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyHistorieTableModel();
-		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spÃ¤t.Beginn","Pat-Nr.",""};
 		dtblm.setColumnIdentifiers(column);
 		tabhistorie = new JXTable(dtblm);
 		tabhistorie.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
@@ -400,7 +400,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 		histbut[0] = new JButton();
 		histbut[0].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		histbut[0].setToolTipText("Nachträglich Arztbericht Rezept erstellen");
+		histbut[0].setToolTipText("NachtrÃ¤glich Arztbericht Rezept erstellen");
 		histbut[0].setActionCommand("arztbericht");
 		histbut[0].addActionListener(this);		
 		jtb.add(histbut[0]);
@@ -516,7 +516,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	    optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
 	    String xtitel = "";
 	    if(gesamtumsatz < 1000.00){
-	    	xtitel ="könnte besser sein...";
+	    	xtitel ="kÃ¶nnte besser sein...";
 	    }else if(gesamtumsatz > 1000.00 && gesamtumsatz < 2000.00){
 	    	xtitel ="geht doch...";
 	    }else if(gesamtumsatz > 2000.00){
@@ -529,14 +529,14 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		
 	}
 	public double doRechneHistorie(String db){
-		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spï¿½t.Beginn","Pat-Nr.",""};
 		int rows = tabhistorie.getRowCount();
 		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
 		Double gesamtumsatz = new Double(0.00); 
 		//DecimalFormat dfx = new DecimalFormat( "0.00" );
 		if(db.equals("lza")){
 			if(rows <= 0){
-				//JOptionPane.showMessageDialog(null, "Für diesen Patient wurde noch keine Verordnung abgerechnet!");
+				//JOptionPane.showMessageDialog(null, "Fï¿½r diesen Patient wurde noch keine Verordnung abgerechnet!");
 				return new Double(0.00);
 			}
 			for(int i = 0; i < rows;i++){
@@ -591,8 +591,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("arztbericht")){
 			if(aktPanel.equals("leerPanel")){
-				JOptionPane.showMessageDialog(null,"D E P P \n\n"+
-						"....und für welches der nicht vorhandenen Rezepte in der Historie wollen Sie einen Therapiebericht erstellen....");
+				JOptionPane.showMessageDialog(null,"Ich sag jetzt nix....\n\n"+
+						"....auÃŸer - und fÃ¼r welches der nicht vorhandenen Rezepte in der Historie wollen Sie einen Therapiebericht erstellen....");
 				return;
 			}
 			boolean neuber = true;
@@ -611,7 +611,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				xverfasser = Reha.thisClass.patpanel.berichte.holeVerfasser();
 				neuber = false;
 				berid = iexistiert;
-				String meldung = "<html>Für das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
+				String meldung = "<html>FÃ¼r das Historienrezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geÃ¶ffnet";
 				JOptionPane.showMessageDialog(null, meldung);
 			}
 

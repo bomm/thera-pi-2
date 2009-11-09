@@ -148,7 +148,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		setBorder(null);
 		setLayout(new BorderLayout());
 		
-		leerPanel = new KeinRezept("Keine Rezepte angelegt für diesen Patient");
+		leerPanel = new KeinRezept("Keine Rezepte angelegt fï¿½r diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 		
@@ -266,13 +266,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+    		System.out.println("Es wurde Formular "+iformular+" gewï¿½hlt");
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
-			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
-			"Sie dürfen also hoffen....\n\n";
+			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben mÃ¶chte, empfiehlt es sich\n"+ 
+			"vorher die Kasse auszuwÃ¤hlen die man anschreiben mÃ¶chte!!!\n\n"+
+			"Aber trï¿½sten Sie sich, unser Herrgott hat ein Herz fÃ¼r eine ganz spezielle Randgruppe.\n"+
+			"Sie dÃ¼rfen also hoffen....\n\n";
 			JOptionPane.showMessageDialog(null, mes);
 			iformular = -1;
 		}
@@ -336,20 +336,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jtb.add(aktrbut[0]);
 		aktrbut[1] = new JButton();
 		aktrbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		aktrbut[1].setToolTipText("aktuelles Rezept ändern/editieren");
+		aktrbut[1].setToolTipText("aktuelles Rezept Ã¤ndern/editieren");
 		aktrbut[1].setActionCommand("rezedit");
 		aktrbut[1].addActionListener(this);		
 		jtb.add(aktrbut[1]);
 		aktrbut[2] = new JButton();
 		aktrbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		aktrbut[2].setToolTipText("aktuelles Rezept löschen");
+		aktrbut[2].setToolTipText("aktuelles Rezept lÃ¶schen");
 		aktrbut[2].setActionCommand("rezdelete");
 		aktrbut[2].addActionListener(this);		
 		jtb.add(aktrbut[2]);
 		jtb.addSeparator(new Dimension(40,0));
 		aktrbut[4] = new JButton();
 		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
-		aktrbut[4].setToolTipText("Rezeptgebühren kassieren");
+		aktrbut[4].setToolTipText("RezeptgebÃ¼hren kassieren");
 		aktrbut[4].setActionCommand("rezeptgebuehr");
 		aktrbut[4].addActionListener(this);		
 		jtb.add(aktrbut[4]);
@@ -374,7 +374,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jtb.add(aktrbut[6]);
 		aktrbut[7] = new JButton();
 		aktrbut[7].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		aktrbut[7].setToolTipText("Arztbericht erstellen/ändern");
+		aktrbut[7].setToolTipText("Arztbericht erstellen/Ã¤ndern");
 		aktrbut[7].setActionCommand("arztbericht");
 		aktrbut[7].addActionListener(this);		
 		jtb.add(aktrbut[7]);
@@ -395,7 +395,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyAktRezeptTableModel();
-		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spÃ¤t.Beginn","Pat-Nr.",""};
 		dtblm.setColumnIdentifiers(column);
 		tabaktrez = new JXTable(dtblm);
 		tabaktrez.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
@@ -439,7 +439,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   int row = tabaktrez.rowAtPoint(point);
 				   int column = tabaktrez.columnAtPoint(point);
 				   tabaktrez.setRowSelectionInterval(row, row);
-					System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
+					System.out.println("Rechte Maustaste gedrÃ¼ckt auf Tabelle\n"+
 							"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
 					ZeigePopupMenu(arg0);
 					
@@ -510,7 +510,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
-		jbut.setToolTipText("Termin löschen");
+		jbut.setToolTipText("Termin lÃ¶schen");
 		jbut.setActionCommand("terminminus");
 		jbut.addActionListener(this);		
 		jtb.add(jbut);
@@ -841,7 +841,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		int reihen = dtermm.getRowCount();
 		StringBuffer sb = new StringBuffer();
 		String sdat = "";
-		//System.out.println("Speichern Einzeltermine für rezept"+tabaktrez.getValueAt(tabaktrez.getSelectedRow(),0) ); 
+		//System.out.println("Speichern Einzeltermine fï¿½r rezept"+tabaktrez.getValueAt(tabaktrez.getSelectedRow(),0) ); 
 		for(int i = 0;i<reihen;i++){
 			sdat = (dtermm.getValueAt(i,0)!= null ? ((String)dtermm.getValueAt(i,0)).trim() : ".  .");
 			//System.out.println("Sdat = "+sdat);
@@ -1153,7 +1153,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(row > 1){
 
 					Vector vec = dtermm.getDataVector();
-					//System.out.println("Größe des Vectors = "+vec.size()+"  / "+vec);
+					//System.out.println("Grï¿½ï¿½e des Vectors = "+vec.size()+"  / "+vec);
 					
 					Vector<MyTermClass> vterm = new Vector<MyTermClass>();
 					int lang = vec.size();
@@ -1190,8 +1190,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(cmd.equals("rezneu")){
 				
 				if(Reha.thisClass.patpanel.autoPatid <= 0){
-					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
-							"....und für welchen Patient wollen Sie ein neues Rezept anlegen....");
+					JOptionPane.showMessageDialog(null,"Oh Herr laÃŸ halten...\n\n"+
+							"....und fÃ¼r welchen Patient wollen Sie ein neues Rezept anlegen....");
 					return;
 				}
 				neuanlageRezept(true,"");
@@ -1199,8 +1199,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			if(cmd.equals("rezedit")){
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
-							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön ändern....");
+					JOptionPane.showMessageDialog(null,"Oh Herr laÃŸ halten...\n\n"+
+							"....und welches der nicht vorhandenen Rezepte mÃ¶chten Sie bitteschÃ¶n Ã¤ndern....");
 					return;
 				}
 				neuanlageRezept(false,"");
@@ -1208,19 +1208,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			if(cmd.equals("rezdelete")){
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
-							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön löschen....");
+					JOptionPane.showMessageDialog(null,"Oh Herr laÃŸ halten...\n\n"+
+							"....und welches der nicht vorhandenen Rezepte mÃ¶chten Sie bitteschÃ¶n lÃ¶schen....");
 					return;
 				}
 				int currow = tabaktrez.getSelectedRow();
 				int anzrow = tabaktrez.getRowCount();
 				if(currow == -1){
-					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> löschen <- ausgewählt");
+					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> lÃ¶schen <- ausgewÃ¤hlt");
 					return;
 				}
 				String reznr = (String)tabaktrez.getValueAt(currow, 0);
 				String rezid = (String)tabaktrez.getValueAt(currow, 6);
-				int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Rezept "+reznr+" wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+				int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Rezept "+reznr+" wirklich lÃ¶schen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.NO_OPTION){
 					return;
 				}
@@ -1239,14 +1239,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			if(cmd.equals("rezeptgebuehr")){
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
-							"....und von welchem der nicht vorhandenen Rezepte wollen Sie Rezeptgebühren kassieren....");
+					JOptionPane.showMessageDialog(null,"Ich sag jetz nix....\n\n"+
+							"....auÃŸer - und von welchem der nicht vorhandenen Rezepte wollen Sie RezeptgebÃ¼hren kassieren....");
 					return;
 				}
 				int currow = tabaktrez.getSelectedRow();
 				int anzrow = tabaktrez.getRowCount();
 				if(currow == -1){
-					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewählt");
+					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewÃ¤hlt");
 					return;
 				}				
 				doRezeptGebuehr( ((JComponent)arg0.getSource()).getLocationOnScreen() );
@@ -1257,13 +1257,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			
 			if(cmd.equals("arztbericht")){
-				// hier  muß noch getestet werden:
+				// hier  muï¿½ noch getestet werden:
 				// 1 ist es eine Neuanlage oder soll ein bestehender Ber. editiert werden
-				// 2 ist ein Ber. überhaupt angefordert
+				// 2 ist ein Ber. ï¿½berhaupt angefordert
 				// 3 gibt es einen Rezeptbezug oder nicht
 				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"D E P P \n\n"+
-							"....und für welches der nicht vorhandenen Rezepte wollen Sie einen Therapiebericht erstellen....");
+					JOptionPane.showMessageDialog(null,"Ich sag jetz nix....\n\n"+
+							"....auÃŸer - und fÃ¼r welches der nicht vorhandenen Rezepte wollen Sie einen Therapiebericht erstellen....");
 					return;
 				}
 
@@ -1283,7 +1283,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					xverfasser = Reha.thisClass.patpanel.berichte.holeVerfasser();
 					neuber = false;
 					berid = iexistiert;
-					String meldung = "<html>Für das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
+					String meldung = "<html>FÃ¼r das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geÃ¶ffnet";
 					JOptionPane.showMessageDialog(null, meldung);
 				}
 				//System.out.println("ArztberichtFenster erzeugen!");
@@ -1460,21 +1460,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void doRezeptGebuehr(Point pt){
 		boolean bereitsbezahlt = false;
 		// noch zu erledigen
-		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
-		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
+		// erst prï¿½fen ob Zuzahlstatus = 0, wenn ja zurï¿½ck;
+		// dann prï¿½fen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("0") ){
 			JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
 			return;
 		}
 		if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))){
-			JOptionPane.showMessageDialog(null,"Stand heute ist der Patient noch nicht Volljährig - Zuzahlung deshalb (bislang) noch nicht erforderlich");
+			JOptionPane.showMessageDialog(null,"Stand heute ist der Patient noch nicht VolljÃ¤hrig - Zuzahlung deshalb (bislang) noch nicht erforderlich");
 			return;
 		}
 
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
 				(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
 			String reznr = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
-			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung für Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung fÃ¼r Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
 			}
@@ -1506,7 +1506,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String zzstatus = "";
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
-			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
+			"Die jeweils ungÃ¼ltigen Angaben sind -> kursiv <- dargestellt.\n\n"+
 			"Bitte korrigieren Sie die entsprechenden Angaben";
 			JOptionPane.showMessageDialog(null, meldung);
 			return;	
@@ -1593,7 +1593,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		});
 	    */
 
-		//System.out.println("Pat Neu/Ändern ist disposed");
+		//System.out.println("Pat Neu/ï¿½ndern ist disposed");
 		neuDlgOffen = false;
 
 	}
@@ -1626,7 +1626,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 					ListenerTools.removeListeners(this);					
 					super.dispose();
 
-					System.out.println("****************Rezept Neu/Ändern -> Listener entfernt**************");				
+					System.out.println("****************Rezept Neu/Ã¤ndern -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -1642,7 +1642,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			dispose();
 			ListenerTools.removeListeners(this);
 			super.dispose();
-			System.out.println("****************Rezept Neu/Ändern -> Listener entfernt (Closed)**********");
+			System.out.println("****************Rezept Neu/Ã¤ndern -> Listener entfernt (Closed)**********");
 		}
 		
 		

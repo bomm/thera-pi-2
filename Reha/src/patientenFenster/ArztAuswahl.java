@@ -84,7 +84,7 @@ public String arztbisher;
 	     cp = new CompoundPainter(mp);
 	     */
 	     super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-	     super.getSmartTitledPanel().setTitle("Arzt auswählen");
+	     super.getSmartTitledPanel().setTitle("Arzt auswÃ¤hlen");
 	     
 		//((JXPanel)super.getSmartTitledPanel().getContentContainer()).setBackgroundPainter(new CompoundPainter(mp));;;
 		grundPanel = new JXPanel(new BorderLayout());
@@ -242,7 +242,7 @@ public String arztbisher;
 		repaint();
 	}
 	public void zurueckZurTabelle(JRtaTextField[] jtfs){
-		super.getSmartTitledPanel().setTitle("Arzt auswählen");
+		super.getSmartTitledPanel().setTitle("Arzt auswï¿½hlen");
 		if(jtfs != null){
 			Vector<String> vec = new Vector<String>();
 			vec.add(jtfs[2].getText());

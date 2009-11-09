@@ -53,7 +53,7 @@ public class RezeptDaten extends JXPanel{
 	public Vector vecaktrez = null;
 	public static boolean feddisch = false;
 
-	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. au�erhalb d.R."};
+	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. außerhalb d.R."};
 	public RezeptDaten(PatGrundPanel eltern){
 		super();
 		this.setOpaque(false);
@@ -126,11 +126,12 @@ public class RezeptDaten extends JXPanel{
 					if(test==2){
 						stest = StringTools.NullTest((String)vecaktrez.get(42));
 						if(stest.equals("T")){
-							Reha.thisClass.patpanel.rezlabs[6].setForeground(Color.BLACK);		
+							Reha.thisClass.patpanel.rezlabs[6].setForeground(Color.BLACK);
+							Reha.thisClass.patpanel.rezlabs[6].setText("Begründung o.k.");
 						}else{
-							Reha.thisClass.patpanel.rezlabs[6].setForeground(Color.RED);							
+							Reha.thisClass.patpanel.rezlabs[6].setForeground(Color.RED);	
+							Reha.thisClass.patpanel.rezlabs[6].setText("Begründung fehlt");
 						}
-						Reha.thisClass.patpanel.rezlabs[6].setText("Begr�ndung");
 					}else{
 						Reha.thisClass.patpanel.rezlabs[6].setText(" ");
 					}
@@ -143,10 +144,12 @@ public class RezeptDaten extends JXPanel{
 					test = StringTools.ZahlTest((String)vecaktrez.get(54));
 					if(test >= 0){
 						Reha.thisClass.patpanel.rezlabs[7].setForeground(Color.BLACK);
+						Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht");
 					}else{
 						Reha.thisClass.patpanel.rezlabs[7].setForeground(Color.RED);
+						Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht fehlt");
 					}
-					Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht");
+					
 				}else{
 					Reha.thisClass.patpanel.rezlabs[7].setText(" ");
 				}
@@ -221,7 +224,7 @@ public class RezeptDaten extends JXPanel{
 				if(row >= 0){
 					if(Reha.thisClass.patpanel.aktRezept.dtblm.getValueAt(row,1) != Reha.thisClass.patpanel.imgzuzahl[zzbild]){
 
-						System.out.println("Zuzahlungsstatus f�r Bilderstellung in Reihe "+row+" = "+zzbild);
+						System.out.println("Zuzahlungsstatus für Bilderstellung in Reihe "+row+" = "+zzbild);
 						Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild],row,1);
 						Reha.thisClass.patpanel.aktRezept.tabaktrez.validate();
 					}

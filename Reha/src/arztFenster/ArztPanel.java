@@ -209,19 +209,19 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		
 		jbut[0] = new JButton();
 		jbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
-		jbut[0].setToolTipText("neue Kasse anlegen (Alt+N)");
+		jbut[0].setToolTipText("neuen Arzt anlegen (Alt+N)");
 		jbut[0].setActionCommand("neu");
 		jbut[0].addActionListener(this);
 		jtb.add(jbut[0]);
 		jbut[1] = new JButton();
 		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		jbut[1].setToolTipText("aktuelle Kasse ändern/editieren (Alt+E)");		
+		jbut[1].setToolTipText("aktuellen Arzt Ã¤ndern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
 		jbut[2] = new JButton();
 		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		jbut[2].setToolTipText("Kasse löschen (Alt+L)");
+		jbut[2].setToolTipText("Arzt lÃ¶schen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
 		jtb.add(jbut[2]);
@@ -229,7 +229,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		jbut[3] = new JButton();
 		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/mail_write_22.png"));
 		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
-		jbut[3].setToolTipText("Brief/Formular für Kasse erstellen (Alt+B)");
+		jbut[3].setToolTipText("Brief/Formular fÃ¼r Arzt erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);
 		jtb.add(jbut[3]);
@@ -487,8 +487,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			String sid = "";
 			int row = arzttbl.getSelectedRow();
 			if(row < 0){
-				String mes = "Oh Sie Dummerle.....\n\nWenn man den Langtext einer Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuwählen deren Langtext man ändern will!!!\nHerr schmeiß Hirn ra....\n";
+				String mes = "Oh Sie Dummerle.....\n\nWenn man den Langtext eines Arztes Ã¤ndern will, empfiehlt es sich\n"+ 
+				"vorher den Arzt auszuwÃ¤hlen dessen Langtext man Ã¤ndern will!!!\nHerr schmeiÃŸ Hirn ra....\n";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
 				return;
@@ -537,8 +537,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				String sid =  (String) arzttbl.getValueAt(row,9);
 				neuanlageArzt(sid);
 			}else{
-				String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuwählen die man ändern will!!!";
+				String mes = "Oh Sie Dummerle.....\n\nWenn man einen Arzt Ã¤ndern will, empfiehlt es sich\n"+ 
+				"vorher den Arzt auszuwÃ¤hlen den man Ã¤ndern will!!!";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
 				return;
@@ -609,13 +609,13 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+    		System.out.println("Es wurde Formular "+iformular+" gewï¿½hlt");
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
-			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
-			"Sie dürfen also hoffen....\n\n";
+			String mes = "Oh Sie Dummerle.....\n\nWenn man einen Arzt anschreiben mÃ¶chte, empfiehlt es sich\n"+ 
+			"vorher den Arzt auszuwÃ¤hlen den man anschreiben mÃ¶chte!!!\n\n"+
+			"Aber trÃ¶sten Sie sich, unser Herrgott hat ein Herz fÃ¼r eine ganz spezielle Randgruppe.\n"+
+			"Sie dÃ¼rfen also hoffen....\n\n";
 			JOptionPane.showMessageDialog(null, mes);
 			iformular = -1;
 			suchen.requestFocus();
@@ -633,7 +633,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		if(id.equals("")){
 			neuArzt.getSmartTitledPanel().setTitle("Arzt neu anlegen");			
 		}else{
-			neuArzt.getSmartTitledPanel().setTitle("Daten eines Arztes ändern");
+			neuArzt.getSmartTitledPanel().setTitle("Daten eines Arztes Ã¤ndern");
 		}
 
 		neuArzt.setPinPanel(pinPanel);
@@ -676,7 +676,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	public void arztLoeschen(){
 		int row = arzttbl.getSelectedRow(); 
 		if(row >= 0){
-        	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie diesen Arzt wirklich löschen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+        	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie diesen Arzt wirklich lÃ¶schen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
         	if(frage== JOptionPane.NO_OPTION){
         		return;
         	}
@@ -688,8 +688,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			getInstance().arzttbl.repaint();
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man schon einen Arzt löschen will, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man löschen will!!!";
+			String mes = "Oh Sie Dummerle.....\n\nWenn man schon einen Arzt lÃ¶schen will, empfiehlt es sich\n"+ 
+			"vorher den Arzt auszuwÃ¤hlen den man lÃ¶schen will!!!";
 			JOptionPane.showMessageDialog(null, mes);
 			suchen.requestFocus();
 		}
@@ -755,8 +755,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 					String sid =  (String) arzttbl.getValueAt(row,9);
 					neuanlageArzt(sid);
 				}else{
-					String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
-					"vorher die Kasse auszuwählen die man ändern will!!!";
+					String mes = "Oh Sie Dummerle.....\n\nWenn man einen Arzt Ã¤ndern will, empfiehlt es sich\n"+ 
+					"vorher den Arzt auszuwÃ¤hlen den man Ã¤ndern will!!!";
 					JOptionPane.showMessageDialog(null, mes);
 					suchen.requestFocus();
 				}
@@ -818,7 +818,7 @@ class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			this.dispose();
-			System.out.println("****************Arzt Neu/Ändern -> Listener entfernt**************");				
+			System.out.println("****************Arzt Neu/Ã¤ndern -> Listener entfernt**************");				
 	
 		}catch(NullPointerException ne){
 			System.out.println("In PatNeuanlage" +evt);
@@ -830,7 +830,7 @@ class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
-			System.out.println("****************Arzt Neu/Ändern -> Listener entfernt (Closed)**********");
+			System.out.println("****************Arzt Neu/Ã¤ndern -> Listener entfernt (Closed)**********");
 		}
 		
 		

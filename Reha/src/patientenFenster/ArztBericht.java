@@ -101,7 +101,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		super(owner, name);
 		super.getSmartTitledPanel().setName(name);
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-		String xtitel = "<html>Arztbericht erstellen / ändern   -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>Tip:&nbsp;&nbsp;&nbsp;&nbsp;entscheiden Sie sich für das ICF-Schema</font></b>&nbsp;&nbsp;<img src='file:///C:/RehaVerwaltung/icons/Haken_klein.gif'>";
+		String xtitel = "<html>Arztbericht erstellen / Ã¤ndern   -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>Tip:&nbsp;&nbsp;&nbsp;&nbsp;entscheiden Sie sich fÃ¼r das ICF-Schema</font></b>&nbsp;&nbsp;<img src='file:///"+Reha.proghome+"icons/Haken_klein.gif'>";
 	    super.getSmartTitledPanel().setTitle(xtitel);
 		this.setName(name);
 		addKeyListener(this);
@@ -125,10 +125,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		/**
 		 * 
 		 * this.disziplin = this.reznr.substring(0,2);		
-		 * hier den Fall für ohne Rezeptbezug einbauen!!!!!
+		 * hier den Fall fï¿½r ohne Rezeptbezug einbauen!!!!!
 		 * JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		 */
-		System.out.println("In Arztbericht erstellen - ändern -> "+berichtid+" - "+neu+" - "+reznr);
+		System.out.println("In Arztbericht erstellen - Ã¤ndern -> "+berichtid+" - "+neu+" - "+reznr);
 		System.out.println("Die BerichtsID = ----------------->"+iberichtid);
 		System.out.println("Die Rezeptnummer = --------------->"+reznr);
 		System.out.println("Neuer Bericht = ------------------>"+bneu);
@@ -207,10 +207,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
 		pb.getPanel().setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-		String lbltext = "<html>1.Block: akuteller Funktionsstatus&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Körperfunktionen und -strukturen)</font></b>";
+		String lbltext = "<html>1.Block: akuteller Funktionsstatus&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - KÃ¶rperfunktionen und -strukturen)</font></b>";
 		JLabel lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,2));
-		lab = new JLabel("F2 für Textblock-Aufruf");
+		lab = new JLabel("F2 fÃ¼r Textblock-Aufruf");
 		pb.add(lab,cc.xy(6,2));
 		icfblock[0] = new JTextPane();
 		icfblock[0].setFont(fon);
@@ -218,7 +218,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		JScrollPane span = JCompTools.getTransparentScrollPane(icfblock[0]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
 		pb.add(span,cc.xyw(2,4,5));
-		lbltext ="<html>2.Block: weitere therapierelevante Aspekte&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Aktivitäten / Teilhabe)</font></b>";
+		lbltext ="<html>2.Block: weitere therapierelevante Aspekte&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - AktivitÃ¤ten / Teilhabe)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,6));		
 		icfblock[1] = new JTextPane();
@@ -227,7 +227,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		span = JCompTools.getTransparentScrollPane(icfblock[1]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));		
 		pb.add(span,cc.xyw(2,8,5));
-		lbltext = "<html>3.Block: prognostische Einschätzung&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
+		lbltext = "<html>3.Block: prognostische EinschÃ¤tzung&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,10));		
 		icfblock[2] = new JTextPane();
@@ -245,7 +245,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		span = JCompTools.getTransparentScrollPane(icfblock[3]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
 		pb.add(span,cc.xyw(2,16,5));
-		System.out.println("Rückgabe des JPanels");
+		System.out.println("RÃ¼ckgabe des JPanels");
 		return pb.getPanel();
 	}
 	private JScrollPane getFunktionsPanel(){
@@ -262,7 +262,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
 		pb.getPanel().setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 0));
-		JLabel lab = new JLabel("Arzbericht für Patient:");
+		JLabel lab = new JLabel("Arzbericht fÃ¼r Patient:");
 		pb.add(lab,cc.xy(2,2));
 
 		String name = (String)Reha.thisClass.patpanel.patDaten.get(2)+", "+(String)Reha.thisClass.patpanel.patDaten.get(3); 
@@ -275,7 +275,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 
 		pb.addSeparator("",cc.xyw(2,8,3));
 		
-		lab = new JLabel("Berichtsempfänger");
+		lab = new JLabel("BerichtsempfÃ¤nger");
 		pb.add(lab,cc.xy(2,10));
 		// hier testen ob ohne Rezeptbezug, wenn ja kann der Vector nicht verwendet werden
 		if((! this.reznr.equals("")) && (this.aufrufvon < 1)){
@@ -304,7 +304,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		rlab[2].setForeground(Color.BLUE);
 		pb.add(rlab[2],cc.xy(2,12));
 		
-		JButton jbut = new JButton("Empfänger ändern");
+		JButton jbut = new JButton("EmpfÃ¤nger Ã¤ndern");
 		jbut.setActionCommand("neuerempfaenger");
 		jbut.addActionListener(this);
 		pb.add(jbut,cc.xy(2, 14));
@@ -346,7 +346,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				if(vec.size()>0){
 					diagnose.setText((String)vec.get(0));	
 				}else{
-					diagnose.setText("Diagnose kann nicht ermittelt werden bitte von Originalrezept übernehmen!!!!!!!!!");
+					diagnose.setText("Diagnose kann nicht ermittelt werden bitte von Originalrezept Ã¼bernehmen!!!!!!!!!");
 				}
 					
 			}
@@ -356,7 +356,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		
 		pb.addSeparator("",cc.xyw(2,26,3));
 		
-		pb.addLabel("Textbausteine für",cc.xy(2,28));
+		pb.addLabel("Textbausteine fÃ¼r",cc.xy(2,28));
 		try{
 			tbwahl = new JRtaComboBox(SystemConfig.hmTherapBausteine.get(this.disziplin));
 		}catch(java.lang.ArrayIndexOutOfBoundsException ex){
@@ -412,7 +412,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		jbut.addActionListener(this);
 		pb.add(jbut,cc.xy(2, 44));
 		
-		jbut = new JButton("abbrechen / zurück");
+		jbut = new JButton("abbrechen / zurÃ¼ck");
 		jbut.setActionCommand("berichtabbrechen");
 		jbut.addActionListener(this);
 		pb.add(jbut,cc.xy(2, 46));
@@ -497,11 +497,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			VorBerichte vbe = new VorBerichte(false, false, pos,this);
 			vbe.setModal(true);
 			vbe.setVisible(true);
-			System.out.println("rückgabewerte = "+vorberichtid+"  auch diagnose = "+vorberichtdiagnose);
+			System.out.println("rï¿½ckgabewerte = "+vorberichtid+"  auch diagnose = "+vorberichtdiagnose);
 			if(vorberichtid > 0){
 				if(vorberichtid == this.berichtid){
-					JOptionPane.showMessageDialog(null,"Sie können nicht den akutellen Bericht auf sich selbst kopieren....\n"+
-							"(das wäre ganz nebenbei bemerkt auch reichlich idiotisch)");
+					JOptionPane.showMessageDialog(null,"Sie kÃ¶nnen nicht den akutellen Bericht auf sich selbst kopieren....\n"+
+							"(das wÃ¤re ganz nebenbei bemerkt auch reichlich idiotisch)");
 				}else{
 					final String xvorberichtid = Integer.toString(vorberichtid);
 					final boolean xvorberichtdiagnose = vorberichtdiagnose;
@@ -517,18 +517,18 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 							for(int i = 0; i < 4; i++){
 								if(! ((String)vec.get(i)).trim().equals("") ){
 									StringBuffer stbuf = new StringBuffer();
-									stbuf.append("**********Anfang übernommener Text**************\n");
+									stbuf.append("**********Anfang Ã¼bernommener Text**************\n");
 									stbuf.append(((String)vec.get(i)).trim()+"\n");
-									stbuf.append("**********Ende übernommener Text**************\n\n");
+									stbuf.append("**********Ende Ã¼bernommener Text**************\n\n");
 									stbuf.append(icfblock[i].getText().trim());
 									icfblock[i].setText(stbuf.toString());
 								}
 							}
 							if(xvorberichtdiagnose){
 								StringBuffer stbuf = new StringBuffer();
-								stbuf.append("**********Anfang übernommene Diagnose**************\n");
+								stbuf.append("**********Anfang Ã¼bernommene Diagnose**************\n");
 								stbuf.append(((String)vec.get(4)).trim()+"\n");
-								stbuf.append("**********Ende übernommene Diagnose**************\n\n");
+								stbuf.append("**********Ende Ã¼bernommene Diagnose**************\n\n");
 								stbuf.append(diagnose.getText());
 								diagnose.setText(stbuf.toString());
 							}
@@ -542,7 +542,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			}
 
 		}else{
-			JOptionPane.showMessageDialog(null,"Für diesen Patient wurden noch keine Berichte angelegt!");
+			JOptionPane.showMessageDialog(null,"FÃ¼r diesen Patient wurden noch keine Berichte angelegt!");
 			return;
 		}
 		/*
@@ -572,13 +572,13 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private boolean doSpeichernNeu(){
 		boolean saveok = true;
 		if(arztid <= 0){
-			JOptionPane.showMessageDialog(null,"Fehler - Angabe des Empfängers ist ungültig!\nBitte neuen Arzt auswählen");
+			JOptionPane.showMessageDialog(null,"Fehler - Angabe des EmpfÃ¤ngers ist ungÃ¼ltig!\nBitte neuen Arzt auswÃ¤hlen");
 			return false;
 		}
 		//verfasser testen
 		String xverfasser = (String)verfasser.getSelectedItem();
 		if(xverfasser.equals("./.")){
-			JOptionPane.showMessageDialog(null,"Fehler - Angabe des Verfassers ist ungültig!");
+			JOptionPane.showMessageDialog(null,"Fehler - Angabe des Verfassers ist ungÃ¼ltig!");
 			return false;
 		}
 		//testen ob alles leer
@@ -590,7 +590,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			}
 		}
 		if(!gefuellt){
-			JOptionPane.showMessageDialog(null,"Ein bisschen Text zum Speichern wäre nicht schlecht....");
+			JOptionPane.showMessageDialog(null,"Ein bisschen Text zum Speichern wÃ¤re nicht schlecht....");
 			return false;
 		}
 		//id holen
@@ -694,8 +694,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private boolean doSpeichernAlt(){
 		String empfaenger = "";
 		if(arztid <= 0){
-			String cmd = "Der angegebene Arzt kann als Berichtsempfänger nicht verwendet werden.\n\n"+
-			"Bitte wählen Sie den korrekten Arzt aus.";
+			String cmd = "Der angegebene Arzt kann als BerichtsempfÃ¤nger nicht verwendet werden.\n\n"+
+			"Bitte wÃ¤hlen Sie den korrekten Arzt aus.";
 			JOptionPane.showMessageDialog(null,cmd);
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
@@ -738,7 +738,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 
 				if(aufrufvon==3){
 					//tabbericht
-					//{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung",""};
+					//{"ID","Titel","Verfasser","erstellt","Empfï¿½nger","letzte ï¿½nderung",""};
 					Reha.thisClass.patpanel.berichte.dtblm.setValueAt("Bericht zu "+reznr+" ("+xtbs+")", tblreihe, 1);
 					Reha.thisClass.patpanel.berichte.dtblm.setValueAt(xxverf, tblreihe, 2);
 					Reha.thisClass.patpanel.berichte.dtblm.setValueAt(xempfaenger, tblreihe,4);
@@ -767,7 +767,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				" id='"+arztid+"'", 
 				Arrays.asList(new String[] {}));
 		if(vec.size()<=0){
-			JOptionPane.showMessageDialog(null,"Der zugeordnete Arzt ist nicht gültig bitte wählen Sie einen neuen Arzt!");
+			JOptionPane.showMessageDialog(null,"Der zugeordnete Arzt ist nicht gÃ¼ltig bitte wÃ¤hlen Sie einen neuen Arzt!");
 			return;
 		}
 		String[] str = AdressTools.machePrivatAdresse(vec.toArray());
@@ -887,7 +887,7 @@ class TextBausteine extends AbstractAction {
 /*********************************
  * 
  * 
- * Nachfolgend die Standards für RehaSmartDialog
+ * Nachfolgend die Standards fï¿½r RehaSmartDialog
  * 
  */
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
@@ -962,7 +962,7 @@ class TextBausteine extends AbstractAction {
 	/*********************************
 	 * 
 	 * 
-	 * Ende der Standards für RehaSmartDialog
+	 * Ende der Standards fï¿½r RehaSmartDialog
 	 * 
 	 */
 
