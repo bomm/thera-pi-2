@@ -59,7 +59,7 @@ public class TerminMenu {
 			TermStart.setMnemonic(KeyEvent.VK_T);
 			TermStart.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("Terminkalenderaufruf-Menü"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("Terminkalenderaufruf-MenÃ¼"); // TODO Auto-generated Event stub actionPerformed()
 					JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 					Reha.thisClass.progLoader.ProgTerminFenster(0, 0);
 					//ProgLoader.ProgTerminFenster(0,0);
@@ -80,7 +80,7 @@ public class TerminMenu {
 	private JMenuItem getRoogleStart() {
 		RoogleStart = new JMenuItem();
 		RoogleStart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Event.CTRL_MASK, false));
-		RoogleStart.setText("Roogle - die Suchmaschine für Termine");
+		RoogleStart.setText("Roogle - die Suchmaschine fÃ¼r Termine");
 		RoogleStart.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				System.out.println("Roogle"); // TODO Auto-generated Event stub actionPerformed()

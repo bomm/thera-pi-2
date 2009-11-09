@@ -53,7 +53,7 @@ public class RezeptDaten extends JXPanel{
 	public Vector vecaktrez = null;
 	public static boolean feddisch = false;
 
-	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. außerhalb d.R."};
+	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. auï¿½erhalb d.R."};
 	public RezeptDaten(PatGrundPanel eltern){
 		super();
 		this.setOpaque(false);
@@ -67,7 +67,7 @@ public class RezeptDaten extends JXPanel{
 				// TODO Auto-generated method stub
 				if( (arg0.getSource() instanceof JLabel) && (arg0.getClickCount()==2)){
 					String anzhb = StringTools.NullTest((String)vecaktrez.get(64)).trim();
-					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", anzhb);
+					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl fï¿½r Hausbesuch ein", anzhb);
 					if(ret == null){
 						return;
 					}
@@ -130,7 +130,7 @@ public class RezeptDaten extends JXPanel{
 						}else{
 							Reha.thisClass.patpanel.rezlabs[6].setForeground(Color.RED);							
 						}
-						Reha.thisClass.patpanel.rezlabs[6].setText("Begründung");
+						Reha.thisClass.patpanel.rezlabs[6].setText("Begrï¿½ndung");
 					}else{
 						Reha.thisClass.patpanel.rezlabs[6].setText(" ");
 					}
@@ -221,7 +221,7 @@ public class RezeptDaten extends JXPanel{
 				if(row >= 0){
 					if(Reha.thisClass.patpanel.aktRezept.dtblm.getValueAt(row,1) != Reha.thisClass.patpanel.imgzuzahl[zzbild]){
 
-						System.out.println("Zuzahlungsstatus für Bilderstellung in Reihe "+row+" = "+zzbild);
+						System.out.println("Zuzahlungsstatus fï¿½r Bilderstellung in Reihe "+row+" = "+zzbild);
 						Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild],row,1);
 						Reha.thisClass.patpanel.aktRezept.tabaktrez.validate();
 					}
@@ -291,13 +291,13 @@ public class RezeptDaten extends JXPanel{
 		    	int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
 		    	TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
 		    	draghandler.setText(
-		    			"TERMDATEXT"+"°"+
+		    			"TERMDATEXT"+"Â°"+
 		    			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
 		    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+
-		    			Reha.thisClass.patpanel.patDaten.get(3)+"°"+
+		    			Reha.thisClass.patpanel.patDaten.get(3)+"Â°"+
 		    			reznum.getText()+
 		    			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
-		    			"°"+Reha.thisClass.patpanel.rezlabs[14].getText()
+		    			"Â°"+Reha.thisClass.patpanel.rezlabs[14].getText()
 		    			);
 		      JComponent c = (JComponent)draghandler;
 		      TransferHandler th = c.getTransferHandler();

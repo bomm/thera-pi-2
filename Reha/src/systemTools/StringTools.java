@@ -147,6 +147,16 @@ public class StringTools {
 			test = neuString;
 		}
 
+		if(test.indexOf(" U. ") > -1){
+			neuString = test.replaceAll(" U. ", " u. ");
+			test = neuString;
+		}
+
+		if(test.indexOf("gesundheitskasse") > -1){
+			neuString = test.replaceAll("gesundheitskasse", "Gesundheitskasse");
+			test = neuString;
+		}
+
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
 			//System.out.println(ex);
 			return ""+test;

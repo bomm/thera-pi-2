@@ -235,7 +235,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public final String NULL_DATE = "  .  .    ";
 	public static boolean warten=true;
 	public static String aktIK = "000000000";
-	public static String aktMandant = "Übungs-Mandant";
+	public static String aktMandant = "ï¿½bungs-Mandant";
 	public static String aktUser = "";
 	public static String kalMin = "";
 	public static String kalMax = "";
@@ -343,7 +343,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 		}
 		try{
-			new SocketClient().setzeInitStand("Überprüfe Dateisystem");
+			new SocketClient().setzeInitStand("ÃœberprÃ¼fe Dateisystem");
 			File f = new File(javaPfad+"/bin/win32com.dll");
 			if(! f.exists()){
 				new SocketClient().setzeInitStand("Kopiere win32com.dll");
@@ -381,9 +381,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			String msg = "<html>Es ist ein Fehler beim kopieren von systemrelevanten Dateien aufgetreten.\n\n"+
 			"Vermutlich arbeiten Sie mit <b>Windows-Vista</b> und sind deshalb in einer bedauernswerten\n"+
 			"wenngleich auch in einer <b>selbstverschuldet</b> bedauernswerten Lage!\n\n"+
-			"Der weitere Programmablauf sollte für Sie zwar problemlos möglich sein,\n"+
+			"Der weitere Programmablauf sollte fÃ¼r Sie zwar problemlos mÃ¼glich sein,\n"+
 			"absolut interessante Features wie etwa der Einsatz von Barcode-Scanner ist\n"+
-			"mit diesem <b>Murks von Betriebssystem</b> leider nicht möglich";
+			"mit diesem <b>Murks von Betriebssystem</b> leider nicht mÃ¶glich";
 			JOptionPane.showMessageDialog(null, msg);
 		}
 		
@@ -402,16 +402,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			
 			/**
 			 * erster Teil des Systems initialisieren
-			 * 1 = Parameter für Datenbank-Connection
-			 * 2 = Parameter für das HauptFenster
+			 * 1 = Parameter fï¿½r Datenbank-Connection
+			 * 2 = Parameter fï¿½r das HauptFenster
 			 */
 			
 			
 			sysConf.SystemStart(Reha.proghome);
-			//Parameter für Hauptfenster
+			//Parameter fï¿½r Hauptfenster
 			sysConf.SystemInit(1);
 			
-			//Parameter für Datenbank
+			//Parameter fï¿½r Datenbank
 			sysConf.SystemInit(2);
 
 		
@@ -470,9 +470,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
               if(key.equals("Button.font")){
             	  UIManager.put(key, fontUIDresource);
               }
+              if(key.equals("Table.font")){
+            	  UIManager.put(key, fontUIDresource);
+              }
+              if(key.equals("ComboBox.font")){
+            	  UIManager.put(key, fontUIDresource);
+              }
            }
         
-
+           //new ListUIManagerValues();
+           
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Reha application = new Reha();
@@ -487,12 +494,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		
 	    /**
 		 * zweiter Teil des Systems initialisieren
-		 * 3 = Parameter für den Terminkalender
-		 * hier muß noch die Prüfung eingebaut werden ob ein Datenbankkontakt besteht
-		 * falls nicht kann dieser Teil der Systeminitialierung nicht durchgeführt werden
+		 * 3 = Parameter fï¿½r den Terminkalender
+		 * hier muï¿½ noch die Prï¿½fung eingebaut werden ob ein Datenbankkontakt besteht
+		 * falls nicht kann dieser Teil der Systeminitialierung nicht durchgefï¿½hrt werden
 		 * und der Terminkalender nicht betrieben werden!!!!!
 		 */
 
+		
 	}
 	private void doCompoundPainter(){
 		new SwingWorker<Void,Void>(){
@@ -757,7 +765,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 		if(frame.length > 0){
 			for(int i = 0; i < frame.length;i++){
-				System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+				System.out.println("InternalFrames Ã¼brig = "+frame[i].getTitle());
 				((JRehaInternal)frame[0]).toFront();
 				((JRehaInternal)frame[0]).setActive(true);
 				((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -767,7 +775,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			if(welchen==0){
 				frame = desktops[1].getAllFrames();
 				for(int i = 0; i < frame.length;i++){
-					System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					System.out.println("InternalFrames Ã¼brig = "+frame[i].getTitle());
 					((JRehaInternal)frame[0]).toFront();
 					((JRehaInternal)frame[0]).setActive(true);
 					((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -777,7 +785,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}else{
 				frame = desktops[0].getAllFrames();
 				for(int i = 0; i < frame.length;i++){
-					System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					System.out.println("InternalFrames Ã¼brig = "+frame[i].getTitle());
 					((JRehaInternal)frame[0]).toFront();
 					((JRehaInternal)frame[0]).setActive(true);
 					((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -829,8 +837,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			Reha.RehaPainter[2] = RehaPainters.getBlauGradientPainter() ;
 
 			/**
-			 * Zuerste die Panels für die linke und rechte Seite erstellen,
-			 * dann die Splitpane generieren und die Panels L+R übergeben
+			 * Zuerste die Panels fï¿½r die linke und rechte Seite erstellen,
+			 * dann die Splitpane generieren und die Panels L+R ï¿½bergeben
 			 * 
 			 */
 			jxLinks = new JXPanel(new BorderLayout());
@@ -882,8 +890,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		     DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 10, 1, 5, false, true, true, true);
 
 			/**
-			 * Jetzt die Panels für die rechte Seite oben und unten erstellen,
-			 * dann die Splitpane generieren und die Panels O+U übergeben.
+			 * Jetzt die Panels fï¿½r die rechte Seite oben und unten erstellen,
+			 * dann die Splitpane generieren und die Panels O+U ï¿½bergeben.
 			 */
 			jxRechtsOben = new JXPanel(new BorderLayout());
 			jxRechtsOben.setDoubleBuffered(true);
@@ -999,7 +1007,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}.start();
 		}
 		/**
-		 *  Referenzen für spätere Parameterübergaben schaffen 
+		 *  Referenzen fï¿½r spï¿½tere Parameterï¿½bergaben schaffen 
 		 */
 
 		thisFrame = jFrame;
@@ -1083,7 +1091,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			sbkomplett.setOpaque(false);
 			sbkomplett.setLayout(sblay);
 
-			// Eventuell später irgendwo unterbringen, als busy-indikator!!
+			// Eventuell spï¿½ter irgendwo unterbringen, als busy-indikator!!
 	        //JProgressBar progress = new JProgressBar();
 	        //bar.add(progress);
 	        //progress.setIndeterminate(true);
@@ -1212,13 +1220,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				      Transferable tr = e.getTransferable();
 				      DataFlavor[] flavors = tr.getTransferDataFlavors();
 				      for (int i = 0; i < flavors.length; i++){
-				        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]));
+				        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]).toString());
 				      }
-				      if(mitgebracht.indexOf("°") >= 0){
-			    		  String[] labs = mitgebracht.split("°");
+				      System.out.println("Es wurde mitgebracht -> "+mitgebracht);
+				      if(mitgebracht.indexOf("Â°") >= 0){
+			    		  String[] labs = mitgebracht.split("Â°");
 				    	  if(labs[0].contains("TERMDAT")){
-				    		  copyLabel.setText(labs[1]+"°"+labs[2]+"°"+labs[3]);
-				    		  bunker.setText("TERMDATEXT°"+copyLabel.getText());
+				    		  copyLabel.setText(labs[1]+"Â°"+labs[2]+"Â°"+labs[3]);
+				    		  bunker.setText("TERMDATEXTÂ°"+copyLabel.getText());
 				    		  e.dropComplete(true);
 				    		  return;
 				    	  }else if(labs[0].contains("PATDAT")){
@@ -1368,7 +1377,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			abrechnungMenu = new JMenu();
 			abrechnungMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			abrechnungMenu.setText("Abrechnung");
-			JMenuItem men = new JMenuItem("Heilmittel-Abrechnung nach §302 SGB V");
+			JMenuItem men = new JMenuItem("Heilmittel-Abrechnung nach ï¿½302 SGB V");
 			men.setActionCommand("hmabrechnung");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
@@ -1391,7 +1400,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("anmeldezahlen");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
-			men = new JMenuItem("Tagesumsätze ermitteln");
+			men = new JMenuItem("TagesumsÃ¤tze ermitteln");
 			men.setActionCommand("tagesumsatz");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
@@ -1411,7 +1420,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		if (bueroMenu == null) {
 			bueroMenu = new JMenu();
 			bueroMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
-			bueroMenu.setText("Büroprogramme");
+			bueroMenu.setText("BÃ¼roprogramme");
 		}
 		return bueroMenu;
 	}
@@ -1436,7 +1445,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		if (urlaubMenu == null) {
 			urlaubMenu = new JMenu();
 			urlaubMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
-			urlaubMenu.setText("Urlaub/Überstunden");
+			urlaubMenu.setText("Urlaub/Ãœberstunden");
 		}
 		return urlaubMenu;
 	}
@@ -1492,7 +1501,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				    r.gc();
 				    long freeMem = r.freeMemory();
 				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
-					if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
+					if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schlieÃŸen?", "Bitte bestÃ¤tigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
 						if(Reha.DbOk){
 							if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
 									(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
@@ -1789,7 +1798,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     //System.out.println("KeyCode = : "+keyEvent.getKeyCode());
                     if(keyEvent.isAltDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==88) {  // Ctrl-P
-                            // System.out.println("AWTEvent Alt gedrückt: "+event);
+                            // System.out.println("AWTEvent Alt gedrï¿½ckt: "+event);
                          }
                     if(keyEvent.isControlDown() &&
                        keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==80) {  // Ctrl-P
@@ -1803,7 +1812,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         						return null;
         					}
         				}.execute();
-                        //System.out.println("Strg+P gedrückt: "+event);
+                        //System.out.println("Strg+P gedrï¿½ckt: "+event);
                     }
                     if(keyEvent.isAltDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==88) {  // Ctrl-P
@@ -2005,7 +2014,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 
 	public void componentResized(ComponentEvent arg0) {
-		//Größe einstellen
+		//Grï¿½ï¿½e einstellen
 		try{
 			if(((JComponent)arg0.getSource()).getName() != null){
 				if( ((String)((JComponent)arg0.getSource()).getName()).equals("PanelOben")){
@@ -2070,7 +2079,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Reha->Maus Taste gedrückt->"+arg0.getSource());
+		//System.out.println("Reha->Maus Taste gedrï¿½ckt->"+arg0.getSource());
 	}
 
 
@@ -2078,7 +2087,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		// TODO Auto-generated method stub
 		//System.out.println("Reha->Maus Taste losgelassen->"+arg0.getSource());		
 	}
-/************Motion für DragEvent******************/
+/************Motion fï¿½r DragEvent******************/
 
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
@@ -2151,7 +2160,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
+		if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schlieÃŸen?", "Bitte bestÃ¤tigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
 			if(Reha.DbOk){
 				if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
 						(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
@@ -2228,13 +2237,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	@Override
 	public void componentAdded(ContainerEvent arg0) {
-		System.out.println("****************In Reha-Hauptprogramm - Component Added*******************\n"+arg0.getSource());
+		//System.out.println("****************In Reha-Hauptprogramm - Component Added*******************\n"+arg0.getSource());
 		
 	}
 	@Override
 	public void componentRemoved(ContainerEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("****************In Reha-Hauptprogramm - Component Removed*******************\n"+arg0.getSource());
+		//System.out.println("****************In Reha-Hauptprogramm - Component Removed*******************\n"+arg0.getSource());
 	}	
 /*******************/
 class Hintergrund extends JDesktopPane implements ComponentListener{
@@ -2347,7 +2356,7 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("tagesumsatz")){
-		Meldungen.NichtFertig("Tagesumsätze ermitteln");
+		Meldungen.NichtFertig("TagesumsÃ¤tze ermitteln");
 		return;
 	}
 }
@@ -2389,8 +2398,8 @@ final class DatenbankStarten implements Runnable{
 	        	try {
 	    			if (sDB=="SQL"){
 	    				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
-	    				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
-	    				//SplashPanel.labelSetzen("Datenbank initialisieren und öffnen");
+	    				new SocketClient().setzeInitStand("Datenbank initialisieren und ï¿½ffnen");
+	    				//SplashPanel.labelSetzen("Datenbank initialisieren und ï¿½ffnen");
 	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false",
 	    						SystemConfig.vDatenBank.get(0).get(3),SystemConfig.vDatenBank.get(0).get(4));
 	    			}else{	
@@ -2497,19 +2506,19 @@ final class DatenbankStarten implements Runnable{
 			SystemConfig.DesktopLesen();
 			new SocketClient().setzeInitStand("Patientenstamm init");
 			SystemConfig.PatientLesen();
-			new SocketClient().setzeInitStand("Gerätetreiber initialiseieren");
+			new SocketClient().setzeInitStand("GerÃ¤tetreiber initialiseieren");
 			SystemConfig.GeraeteInit();
 			new SocketClient().setzeInitStand("Arztgruppen einlesen");
 			SystemConfig.ArztGruppenInit();
 			new SocketClient().setzeInitStand("Rezeptparameter einlesen");
 			SystemConfig.RezeptInit();
 			//SystemConfig.SystemIconsInit();
-			new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
+			new SocketClient().setzeInitStand("Bausteine fÃ¼r Therapie-Berichte laden");
 			SystemConfig.TherapBausteinInit();
 			SystemConfig.compTest();
-			new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
+			new SocketClient().setzeInitStand("Fremdprogramme Ã¼berprÃ¼fen");
 			SystemConfig.FremdProgs();
-			new SocketClient().setzeInitStand("Geräteliste erstellen");
+			new SocketClient().setzeInitStand("GerÃ¤teliste erstellen");
 			SystemConfig.GeraeteListe();
 			SystemConfig.CompanyInit();
 			FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
@@ -2602,7 +2611,7 @@ final class ErsterLogin implements Runnable{
 				Reha.thisClass.setDivider(5);
 				Reha.thisFrame.getRootPane().validate();
 				Reha.thisFrame.setVisible(true);
-				// muß später noch korrigiert werden
+				// muï¿½ spï¿½ter noch korrigiert werden
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {

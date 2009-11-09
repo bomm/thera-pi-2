@@ -299,11 +299,11 @@ public PatGrundPanel(JPatientInternal jry){
 						return;
 					}
 					if( ((JComponent)arg0.getSource()).getName().equals("EMAILA") ){
-						System.out.println("hier folgt das PopUpMenu für email");
+						System.out.println("hier folgt das PopUpMenu fï¿½r email");
 						return;
 					}
 					if( ((JComponent)arg0.getSource()).getName().equals("TELEFONM") ){
-						System.out.println("hier folgt das PopUpMenu für sms");
+						System.out.println("hier folgt das PopUpMenu fï¿½r sms");
 						return;
 					}
 
@@ -380,7 +380,7 @@ public PatGrundPanel(JPatientInternal jry){
 	 	   {
 	 		   
 	 		   newPolicy = new Vector<Component>();
-	 		   font = new Font("Courier",Font.BOLD,13);
+	 		   font = new Font("Courier New",Font.BOLD,13);
 	 		   
 	 		    //Font font = new Font("Tahoma",Font.BOLD,11);
 	 		    for(int i = 0;i < ptfield.length;i++){
@@ -400,6 +400,7 @@ public PatGrundPanel(JPatientInternal jry){
 	 		   ptfield[5].setBackground(Color.WHITE);
 	 		   tfsuchen.requestFocus();
 	 		   getInstance().jry.setSpecialActive(true);
+	 		   System.out.println("Font auf Courier gesetzt");
 	 		   //Reha.thisClass.patpanel.jry.setSpecialActive(true);
 	 		   	//tf[0].requestFocusInWindow();
 	 	   }
@@ -528,7 +529,7 @@ private void starteFormulare(){
 public void delete(){
 	if(!aktPatID.equals("")){
 		String spat = ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geb.am "+ptfield[4].getText().trim();
-    	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie Patient -> "+spat+" <- wirklich löschen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+    	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie Patient -> "+spat+" <- wirklich lï¿½schen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
     	if(frage != JOptionPane.YES_OPTION){
     		return;
     	}
@@ -537,7 +538,7 @@ public void delete(){
 		allesAufNull();
 		setzeFocus();
 	}else{
-		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bitteschön wollen Sie löschen?");
+		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bitteschï¿½n wollen Sie lï¿½schen?");
 		setzeFocus();
 		return;
 	}
@@ -546,7 +547,7 @@ public void edit(){
 	if(!aktPatID.equals("")){
 		Reha.thisClass.patpanel.neuanlagePatient(false,"");	
 	}else{
-		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bitteschön wollen Sie editieren?");
+		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bitteschï¿½n wollen Sie editieren?");
 		setzeFocus();
 		return;
 	}
@@ -565,7 +566,7 @@ public void arztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
 	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
 	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
 	if(Reha.thisClass.patpanel.aktPatID.equals(xpatintern)){
-		System.out.println("Länge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
+		System.out.println("Lï¿½nge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
 		Reha.thisClass.patpanel.patDaten.set(63,aliste);		
 	}
 
@@ -583,22 +584,22 @@ public void arztListeSpeichernString(String aliste,boolean neu, String xpatinter
 
 private void allesAufNull(){
 	/******************************************************************************/
-	// erst die sichtbaren Edits löschen
+	// erst die sichtbaren Edits lï¿½schen
 	for(int i = 0; i <15;i++){
 		ptfield[i].setText("");
 	}
-	// aktPatID zurücksetzten dann ist in weiteres löschen nicht mehr möglich
+	// aktPatID zurï¿½cksetzten dann ist in weiteres lï¿½schen nicht mehr mï¿½glich
 	aktPatID = "";
 	autoPatid = -1;
-	// jetzt das RezeptPanel KeinRezept anhängen
+	// jetzt das RezeptPanel KeinRezept anhï¿½ngen
 	aktRezept.setzeRezeptPanelAufNull(true);
-	// dann die Icons löschen
+	// dann die Icons lï¿½schen
 	for(int i = 0; i <imglabs.length;i++){
 		if(imglabs[i].getIcon() != null){
 			imglabs[i].setIcon(null);			
 		}
 	}
-	// Text der Memofelder löschen
+	// Text der Memofelder lï¿½schen
 	Reha.thisClass.patpanel.pmemo[0].setText("");
 	Reha.thisClass.patpanel.pmemo[1].setText("");
 
@@ -839,7 +840,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	});
 	*/
 
-	System.out.println("Pat Neu/Ändern ist disposed");
+	System.out.println("Pat Neu/ï¿½ndern ist disposed");
 	neuDlgOffen = false;
 	
 
@@ -887,7 +888,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		setLayout(lay);
 		JLabel lbl = new JLabel("Kriterium:");
 		add(lbl,cc.xy(2,2));
-		jcom = new JComboBox(new String[] {"Name Vorname","Telefonnummer","Notizen","Versäumte Termine"});
+		jcom = new JComboBox(new String[] {"Name Vorname","Telefonnummer","Notizen","Versï¿½umte Termine"});
 		jcom.setBackground(new Color(247,209,176));
 		add(jcom,cc.xyw(15, 2, 3));
 		add(jcom,cc.xyw(4,2,8));
@@ -931,14 +932,14 @@ class SuchePanel extends JXPanel implements ActionListener{
 
 		jbut[1] = new JButton();
 		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		jbut[1].setToolTipText("aktuellen Patient ändern/editieren (Alt+E)");		
+		jbut[1].setToolTipText("aktuellen Patient ï¿½ndern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
 
 		jbut[2] = new JButton();
 		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		jbut[2].setToolTipText("Patient löschen (Alt+L)");
+		jbut[2].setToolTipText("Patient lï¿½schen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
 		jtb.add(jbut[2]);
@@ -947,21 +948,21 @@ class SuchePanel extends JXPanel implements ActionListener{
 
 		jbut[3] = new JButton();
 		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
-		jbut[3].setToolTipText("Brief/Formular für Patient erstellen (Alt+B)");
+		jbut[3].setToolTipText("Brief/Formular fï¿½r Patient erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);
 		jtb.add(jbut[3]);
 
 		jbut[4] = new JButton();
 		jbut[4].setIcon(SystemConfig.hmSysIcons.get("email"));
-		jbut[4].setToolTipText("(e)Mail für Patient erstellen (Alt+M)");
+		jbut[4].setToolTipText("(e)Mail fï¿½r Patient erstellen (Alt+M)");
 		jbut[4].setActionCommand("email");
 		jbut[4].addActionListener(this);
 		jtb.add(jbut[4]);
 
 		jbut[5] = new JButton();
 		jbut[5].setIcon(SystemConfig.hmSysIcons.get("sms"));
-		jbut[5].setToolTipText("SMS für Patient erstellen (Alt+S)");
+		jbut[5].setToolTipText("SMS fï¿½r Patient erstellen (Alt+S)");
 		jbut[5].setActionCommand("sms");
 		jbut[5].addActionListener(this);
 		jtb.add(jbut[5]);
@@ -1032,7 +1033,7 @@ class ButtonPanel extends JXPanel{
 
 		setBorder(BorderFactory.createEmptyBorder());
 		setPreferredSize(new Dimension(0,10)); //vorher 35
-		//JLabel lbl = new JLabel("Hie werden die Knöpfe für - neu, ändern, löschen, etc. - platziert");
+		//JLabel lbl = new JLabel("Hie werden die Knï¿½pfe fï¿½r - neu, ï¿½ndern, lï¿½schen, etc. - platziert");
 		//lbl.setForeground(Color.RED);
 		//add(lbl);		
 	}
@@ -1125,7 +1126,7 @@ public void patStammEventOccurred(PatStammEvent evt) {
 						}else{
 							aktRezept.suchePatUeberRez = true;
 							aktRezept.holeRezepte(xpatint,xrez.split("#REZHOLEN-")[1].trim());
-							System.out.println("Suche Patient über Rezeptnummer "+xrez.split("#REZHOLEN-")[1].trim());
+							System.out.println("Suche Patient ï¿½ber Rezeptnummer "+xrez.split("#REZHOLEN-")[1].trim());
 						}
 						return null;
 					}
@@ -1194,7 +1195,7 @@ public void patStammEventOccurred(PatStammEvent evt) {
 		if(sucheComponent != null){
 			this.ptp.removePatStammEventListener((PatStammEventListener) this);
 			((SuchenDialog) sucheComponent).dispose();	
-			//System.out.println("******Suchendialog wird gelöscht, Eventlistener removed*********");
+			//System.out.println("******Suchendialog wird gelï¿½scht, Eventlistener removed*********");
 		}
 	}
 	if(evt.getDetails()[0].equals("#FOCUSIEREN")){
@@ -1631,7 +1632,7 @@ class PatNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 					rtp = null;
 					this.dispose();
 					super.dispose();
-					System.out.println("****************Patient Neu/Ändern -> Listener entfernt**************");				
+					System.out.println("****************Patient Neu/ï¿½ndern -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -1646,7 +1647,7 @@ class PatNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			rtp = null;
 			dispose();
 			super.dispose();
-			System.out.println("****************Patient Neu/Ändern -> Listener entfernt (Closed)**********");
+			System.out.println("****************Patient Neu/ï¿½ndern -> Listener entfernt (Closed)**********");
 		}
 		
 		

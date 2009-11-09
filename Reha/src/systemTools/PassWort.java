@@ -50,11 +50,11 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 		setLayout(new BorderLayout());
         String ss = Reha.proghome+"icons/schluessel3.gif";
         JXHeader header = new JXHeader("Benutzer Authentifizierung",
-                "In diesem Fenster geben Sie Ihr persönliches Paßwort ein.\n" +
-                "Abhängig vom Ihrem Paßwort, haben Sie Zugang zu allen Programmteilen "+
-                "die für Sie persönlich freigeschaltet wurden.\n"+
-                "Noch kein Passwort? Dann geben Sie bitte das Universalpaßwort 'rta' ein. \n\n" +
-                "Hinweis--> Nach 3-maliger Falscheingabe wird der Administrator per Email über den fehlgeschlagenen Login-Versuch informiert.",
+                "In diesem Fenster geben Sie Ihr persÃ¶nliches Passwort ein.\n" +
+                "AbhÃ¤ngig vom Ihrem Passwort, haben Sie Zugang zu allen Programmteilen "+
+                "die fÃ¼r Sie persÃ¶nlich freigeschaltet wurden.\n"+
+                "Noch kein Passwort? Dann geben Sie bitte das Universalpasswort 'rta' ein. \n\n" +
+                "Hinweis--> Nach 3-maliger Falscheingabe wird der Administrator per Email Ã¼ber den fehlgeschlagenen Login-Versuch informiert.",
                 new ImageIcon(ss));
         this.add(header,BorderLayout.NORTH);
 		

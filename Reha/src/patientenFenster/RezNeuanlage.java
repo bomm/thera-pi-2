@@ -172,15 +172,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 				   beenden = true;
 		 				   meldung = "Achtung - dem Patientenstamm ist keine verwertbare Krankenkasse\n"+
 		 				    "sowie kein verwertbarer Arzt zugeordnet\n\n"+
-		 				    "Gehen Sie im Patientenstamm auf ->Ändern/Editieren<- und ordnen Sie verwertaber Daten zu!";
+		 				    "Gehen Sie im Patientenstamm auf ->Ã„ndern/Editieren<- und ordnen Sie verwertaber Daten zu!";
 		 			   }else if(kid >= 0 && aid < 0){
 		 				   beenden = true;
 		 				   meldung = "Achtung - dem Patientenstamm ist kein verwertbarer Arzt zugeordnet\n\n"+
-		 				    "Gehen Sie im Patientenstamm auf ->Ändern/Editieren<- und ordnen Sie verwertaber Daten zu!";
+		 				    "Gehen Sie im Patientenstamm auf ->Ã„ndern/Editieren<- und ordnen Sie verwertaber Daten zu!";
 		 			   }else if(kid < 0 && aid >= 0){
 		 				   beenden = true;
 		 				   meldung = "Achtung - dem Patientenstamm ist keine verwertbare Krankenkasse zugeordnet\n\n"+
-		 				    "Gehen Sie im Patientenstamm auf ->Ändern/Editieren<- und ordnen Sie verwertaber Daten zu!";
+		 				    "Gehen Sie im Patientenstamm auf ->Ã„ndern/Editieren<- und ordnen Sie verwertaber Daten zu!";
 		 			   }
 		 			   if(beenden){
 		 				  JOptionPane.showMessageDialog(null,meldung); 
@@ -195,7 +195,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				 				  }
 				 			  });	   		
 		 			   }
-	 			   // else bedeutet nicht neu - sondern ändern
+	 			   // else bedeutet nicht neu - sondern ï¿½ndern
 		 		   }else{
 		 			   int aid,kid;
 		 			   boolean beenden = false;
@@ -278,7 +278,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		/*
 		jcmb[0] = new JRtaComboBox(new String[] {"Physio-Rezept","Massage/Lymphdrainage-Rezept",
-				"Ergotherapie-Rezept","Logopädie-Rezept","REHA-Verordnung"});
+				"Ergotherapie-Rezept","Logopï¿½die-Rezept","REHA-Verordnung"});
 		 */
 		/*
 		JLabel rezlbl = new JLabel("KG60123");
@@ -286,10 +286,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		rezlbl.setFont(fontreznr);
 		jpan.add(rezlbl,cc.xyw(3, 1,3));
 		*/
-		jtf[0] = new JRtaTextField("NIX",false); // kasse/kostenträger
+		jtf[0] = new JRtaTextField("NIX",false); // kasse/kostentrï¿½ger
 		jtf[1] = new JRtaTextField("NIX",false); // arzt
 		jtf[2] = new JRtaTextField("DATUM",true); // rezeptdatum
-		jtf[3] = new JRtaTextField("DATUM",true); // spätester beginn
+		jtf[3] = new JRtaTextField("DATUM",true); // spï¿½tester beginn
 		jtf[4] = new JRtaTextField("ZAHLEN",true); // Anzahl 1
 		jtf[5] = new JRtaTextField("ZAHLEN",true); // Anzahl 2
 		jtf[6] = new JRtaTextField("ZAHLEN",true); // Anzahl 3
@@ -299,7 +299,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[10] = new JRtaTextField("GROSS",true); // angelegt von
 		jtf[11] = new JRtaTextField("GROSS",false); //kassenid
 		jtf[12] = new JRtaTextField("GROSS",false); //arztid
-		// ************alles nachfolgende muß noch eingebaut werden.....
+		// ************alles nachfolgende muï¿½ noch eingebaut werden.....
 		jtf[13] = new JRtaTextField("GROSS",false); //preisgruppe
 		jtf[14] = new JRtaTextField("GROSS",false); //heimbewohner
 		jtf[15] = new JRtaTextField("GROSS",false); //befreit
@@ -322,14 +322,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			ladeZusatzDaten();
 		}
 		*/
-		//*** vorher gültig ginge immer noch jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
+		//*** vorher gï¿½ltig ginge immer noch jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
 		jcmb[0] = new JRtaComboBox();
 		int lang = SystemConfig.rezeptKlassenAktiv.size();
 		for(int i = 0;i < lang;i++){
 			jcmb[0].addItem(SystemConfig.rezeptKlassenAktiv.get(i).get(0));	
 		}
 		
-		jpan.addLabel("Rezeptklasse auswählen",cc.xy(1, 3));
+		jpan.addLabel("Rezeptklasse auswÃ¤hlen",cc.xy(1, 3));
 		jpan.add(jcmb[0],cc.xyw(3, 3,5));
 		jcmb[0].setActionCommand("rezeptklasse");
 		jcmb[0].addActionListener(this);
@@ -364,7 +364,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		jtf[0].setName("ktraeger");
 		jtf[0].addKeyListener(this);
-		jpan.addLabel("Kostenträger (?)",cc.xy(1,7));
+		jpan.addLabel("KostentrÃ¤ger (?)",cc.xy(1,7));
 		jpan.add(jtf[0],cc.xy(3,7));
 		
 
@@ -381,11 +381,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 
 		jtf[3].setName("lastdate");
-		jpan.addLabel("spätester Beh.Beginn",cc.xy(5,9));
+		jpan.addLabel("spÃ¤tester Beh.Beginn",cc.xy(5,9));
 		jpan.add(jtf[3],cc.xy(7,9));
 
 		jcmb[1] = new JRtaComboBox(new String[] {"Erstverodnung","Folgeverordnung",
-				"außerhalb des Regelfalles"});
+				"auï¿½erhalb des Regelfalles"});
 		jcmb[1].setActionCommand("verordnungsart");
 		jcmb[1].addActionListener(this);
 		jpan.addLabel("Art d. Verordn.",cc.xy(1, 11));
@@ -393,7 +393,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcb[0] = new JRtaCheckBox("vorhanden");
 		jcb[0].setOpaque(false);
 		jcb[0].setEnabled(false);
-		jpan.addLabel("Begründ. für adR",cc.xy(5, 11));
+		jpan.addLabel("Begrï¿½nd. fÃ¼r adR",cc.xy(5, 11));
 		jpan.add(jcb[0],cc.xy(7, 11));
 		
 		jcb[1] = new JRtaCheckBox("Ja / Nein");
@@ -406,7 +406,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcb[5] = new JRtaCheckBox("abrechnen");
 		jcb[5].setOpaque(false);
 		jcb[5].setToolTipText("Nur aktiv wenn Patient Heimbewohner und Hausbesuch angekreuzt");
-		jpan.addLabel("volle HB-Gebühr",cc.xy(5,13));
+		jpan.addLabel("volle HB-GebÃ¼hr",cc.xy(5,13));
 		if(neu){
 			jcb[5].setEnabled(false);
 			jcb[5].setSelected(false);
@@ -472,7 +472,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcmb[5].addActionListener(this);
 		jpan.add(jcmb[5],cc.xyw(5, 25,3));
 		
-		jpan.addSeparator("Durchführungsbestimmungen", cc.xyw(1,27,7));
+		jpan.addSeparator("DurchfÃ¼hrungsbestimmungen", cc.xyw(1,27,7));
 		
 		jpan.addLabel("Behandlungsfrequenz",cc.xy(1, 29));		
 		jpan.add(jtf[8],cc.xy(3, 29));	
@@ -481,7 +481,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(jtf[9],cc.xy(7, 29));
 
 		
-		jpan.addLabel("Indikationsschlüssel",cc.xy(1, 31));		
+		jpan.addLabel("IndikationsschlÃ¼ssel",cc.xy(1, 31));		
 		jcmb[6] = new JRtaComboBox();
 		jpan.add(jcmb[6],cc.xy(3, 31));
 		
@@ -516,7 +516,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(jtf[10],cc.xy(7, 33));
 		
 		
-		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,35,7));
+		jpan.addSeparator("Ã„rztliche Diagnose laut Verordnung", cc.xyw(1,35,7));
 		
 		jta = new JTextArea();
 		jta.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.5f)));
@@ -612,7 +612,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		if(e.getActionCommand().equals("Hausbesuche") ){
 			if(jcb[1].isSelected()){
-				// Hausbesuch gewählt
+				// Hausbesuch gewï¿½hlt
 				if(Reha.thisClass.patpanel.patDaten.get(44).equals("T")){
 					jcb[5].setEnabled(true);	
 					SwingUtilities.invokeLater(new Runnable(){
@@ -633,7 +633,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				}
 				
 			}else{
-				// Haubesuch abgewählt
+				// Haubesuch abgewï¿½hlt
 				jcb[5].setEnabled(false);
 				jcb[5].setSelected(false);
 				SwingUtilities.invokeLater(new Runnable(){
@@ -661,7 +661,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	private boolean komplettTest(){
 		if(jtf[0].getText().trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Kostenträger' kann ein Rezept nicht abgespeichert werden.");
+			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'KostentrÃ¤ger' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
@@ -788,7 +788,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			kassenAuswahl(suchkrit);
 		}
 		if(arg0.getKeyCode()==27){
-			//System.out.println("Escape-Gedrückt");
+			//System.out.println("Escape-Gedrï¿½ckt");
 			//arg0.consume();
 			//aufraeumen();
 			doAbbrechen();
@@ -850,7 +850,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				@Override
 				protected Void doInBackground() throws Exception {
 					String msg = "Dieser Arzt ist bislang nicht in der Arztliste dieses Patienten.\n"+
-					"Soll dieser Arzt der Ärzteliste des Patienten zugeordnet werden?";
+					"Soll dieser Arzt der Ã„rzteliste des Patienten zugeordnet werden?";
 					int frage = JOptionPane.showConfirmDialog(null,msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 					if(frage == JOptionPane.YES_OPTION){
 						String aliste = Reha.thisClass.patpanel.patDaten.get(63)+ "@"+xaneu+"@\n";
@@ -882,8 +882,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 	   public  void run(){
 		 		   if(jtf[11].getText().equals("")){
 		 			   String meldung = "Achtung - kann Preisgruppe nicht ermitteln!\n"+
-		 			   "Das bedeutet diese Rezept kann später nicht abgerechnet werden!\n\n"+
-		 			   "Und bedenken Sie bitte Ihr Kürzel wird dauerhaft diesem Rezept zugeordnet....";
+		 			   "Das bedeutet diese Rezept kann spÃ¤ter nicht abgerechnet werden!\n\n"+
+		 			   "Und bedenken Sie bitte Ihr KÃ¼rzel wird dauerhaft diesem Rezept zugeordnet....";
 			 			  JOptionPane.showMessageDialog(null,meldung);		 			   
 		 		   }else{
 			 		   	holePreisGruppe(new Integer(jtf[11].getText()));
@@ -904,7 +904,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				if(vec.size()>0){
 					jtf[13].setText((String)vec.get(0));
 				}else{
-					JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
+					JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann spÃ¤ter nicht abgerechnet werden!");
 				}
 				return null;
 			}
@@ -920,14 +920,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[0].setText(Reha.thisClass.patpanel.patDaten.get(13));
 		jtf[11].setText(Reha.thisClass.patpanel.patDaten.get(68)); //kassenid
 		if(jtf[11].getText().trim().equals("")){
-			//JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
+			//JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann spï¿½ter nicht abgerechnet werden!");
 		}else{
 			Vector vec = SqlInfo.holeSatz("kass_adr", "preisgruppe", " id='"+jtf[11].getText()+"'", Arrays.asList(new String[] {}));
 			if(vec.size()>0){
 				jtf[13].setText((String)vec.get(0));
 			}else{
 				JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln!\nFunktion -> ladeZusatzDaten()\n\n"+
-						"Bitte informieren Sie sofort den Administrator über diese Fehler-Meldung");
+						"Bitte informieren Sie sofort den Administrator Ã¼ber diese Fehler-Meldung");
 			}
 		}
 		jtf[1].setText(Reha.thisClass.patpanel.patDaten.get(25));
@@ -1017,7 +1017,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[25].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
-		// Völliger Murks muß dringend überarbeitet werden
+		// Vï¿½lliger Murks muï¿½ dringend ï¿½berarbeitet werden
 		/*
 		if(jtf[14].getText().equals("T") && this.vec.get(61).equals("T")){
 			System.out.println("1. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
@@ -1149,11 +1149,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";
 				break;
 			}
-			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
+			//System.out.println("ZuzahlStatus = Zuzahlung (zunï¿½chst) erforderlich, prï¿½fe ob befreit oder unter 18");
 			if(Reha.thisClass.patpanel.patDaten.get(30).equals("T")){
 				//System.out.println("ZuzahlStatus = Patient ist befreit");
-				//laut Patientenstamm befreit aber evtl. noch nicht für dieses Rezept.
-				//deshalb prüfen ob bereits bezahlt;
+				//laut Patientenstamm befreit aber evtl. noch nicht fï¿½r dieses Rezept.
+				//deshalb prï¿½fen ob bereits bezahlt;
 				if(this.vec.get(14).equals("T")){
 					szzstatus = "1";
 				}else{
@@ -1172,8 +1172,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				System.out.println("Geburtstag = "+gebtag);
 				
 				if(tage < 0 && tage >= -45){
-					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
-							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljï¿½hrigkeit\n"+
+							"Unter Umstï¿½nden wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
 					szzstatus = "3";
 				}else{
 					szzstatus = "0";
@@ -1209,8 +1209,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				//str = holePreis(leistung,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
-				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
-				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
+				//System.out.println("Preis"+ (i+1)+" fï¿½r Leistung "+leistung + " = " +  str[0]);				
+				//System.out.println("Position"+ (i+1)+" fï¿½r Leistung "+leistung + " = " +  str[1]);
 			}else{
 				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
@@ -1249,7 +1249,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 /*******************************************/
 		
-		/****** Zunächst eine neue Rezeptnummer holen ******/
+		/****** Zunï¿½chst eine neue Rezeptnummer holen ******/
 		/*
 		Vector numvec = null;
 		try {
@@ -1293,7 +1293,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 /*******************************************/
 		int rezidneu = SqlInfo.holeId("verordn", "diagnose");
-		//System.out.println("Neu ID für verordn = "+rezidneu);
+		//System.out.println("Neu ID fï¿½r verordn = "+rezidneu);
 		sbuf.append("update verordn set rez_nr='"+nummer.toUpperCase()+
 				new Integer(reznr).toString()+"', ");
 		sbuf.append("pat_intern='"+jtf[27].getText()+"', ");
@@ -1381,7 +1381,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";
 				break;
 			}
-			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
+			//System.out.println("ZuzahlStatus = Zuzahlung (zunï¿½chst) erforderlich, prï¿½fe ob befreit oder unter 18");
 			if(Reha.thisClass.patpanel.patDaten.get(30).equals("T")){
 				System.out.println("2. ZuzahlStatus = Patient ist befreit");
 				szzstatus = "0";				
@@ -1396,8 +1396,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				System.out.println("Geburtstag = "+gebtag);
 				
 				if(tage < 0 && tage >= -45){
-					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
-							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur VolljÃ¤hrigkeit\n"+
+							"Unter UmstÃ¤nden wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
 					szzstatus = "3";
 				}else{
 					szzstatus = "0";
@@ -1427,8 +1427,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				//str = holePreis(leistung,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
-				//System.out.println("Preis"+ (i+1)+" für Leistung "+leistung + " = " +  str[0]);				
-				//System.out.println("Position"+ (i+1)+" für Leistung "+leistung + " = " +  str[1]);
+				//System.out.println("Preis"+ (i+1)+" fï¿½r Leistung "+leistung + " = " +  str[0]);				
+				//System.out.println("Position"+ (i+1)+" fï¿½r Leistung "+leistung + " = " +  str[1]);
 			}else{
 				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
@@ -1442,7 +1442,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("befr='"+Reha.thisClass.patpanel.patDaten.get(30)+"', ");
 		sbuf.append("zzregel='"+SystemConfig.vZuzahlRegeln.get(new Integer(jtf[13].getText())-1 )+"'");		
 		sbuf.append("where id='"+Integer.toString(rezidneu)+"' ");
-		//System.out.println("Nachfolgend er UpdateString für Rezeptneuanlage--------------------");
+		//System.out.println("Nachfolgend er UpdateString fï¿½r Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());
 		
 		new ExUndHop().setzeStatement(sbuf.toString());

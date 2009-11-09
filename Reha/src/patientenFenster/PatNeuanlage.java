@@ -147,7 +147,7 @@ public List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_
 										"heimbewohn","jahrfrei","bef_ab"});
 public List<String> checks = Arrays.asList( new String[] {"abwadress","akutpat" ,"merk1","merk2","merk3","merk4",
 										"merk5","merk6","heimbewohn","nobefr","u18no"});
-//Achtung bei Feldgrößen über > 65 immer 2 abziehen wg. memofelder die nicht eingelesen werden
+//Achtung bei Feldgrï¿½ï¿½en ï¿½ber > 65 immer 2 abziehen wg. memofelder die nicht eingelesen werden
 			   //0   1   2   3   4  5  6  7  8  9  10 1112 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36
 int[] fedits =  {0 , 1 , 2 , 3 , 4, 5, 6,11, 7, 8, 9,10,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36 };
 int[] ffelder = {0 , 1 , 2 , 3 ,21,23,24, 4,18,19,20,50,13,14,16,15,31,25,26,56, 6, 7, 8, 9,10,11,12,46,34,36,37,48,40,65,66,67,41};
@@ -177,7 +177,6 @@ private KVKWrapper kvw;
 	public PatNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		new SwingWorker<Void,Void>(){
-
 			@Override
 			protected Void doInBackground() throws Exception {
 				setBackgroundPainter(Reha.thisClass.compoundPainter.get("PatNeuanlage"));
@@ -209,7 +208,7 @@ private KVKWrapper kvw;
 		
 	
 		patTab.addTab("1 - Stammdaten", Tab1());
-		patTab.addTab("2 - Zusätze", Tab2());
+		patTab.addTab("2 - ZusÃ¤tze", Tab2());
 		patTab.addTab("3 - Sonstiges", Tab3());
 		patTab.setMnemonicAt(0, (int) '1');
 		patTab.setMnemonicAt(1, (int) '2');		
@@ -229,7 +228,7 @@ private KVKWrapper kvw;
 
 //****************Checken ob Preisgruppen bedient werden****************		
 		
-		// nur für den ersten Focus setzen
+		// nur fï¿½r den ersten Focus setzen
 		flis = new FocusListener(){
 
 			@Override
@@ -391,7 +390,7 @@ private KVKWrapper kvw;
 								name.contains("er_dat")){
 							String datum = new String((String)felder.get(ffelder[i]));
 							if(datum.trim().length() > 0){
-								//System.out.println("Datum wäre gewesen->"+datum+" Länge->"+datum.trim().length());
+								//System.out.println("Datum wï¿½re gewesen->"+datum+" Lï¿½nge->"+datum.trim().length());
 								jtf[fedits[i]].setText(DatFunk.sDatInDeutsch(datum) );								
 							}
 						}else{
@@ -439,7 +438,7 @@ private KVKWrapper kvw;
 				|| jtf[4].getText().trim().equals("") || jtf[5].getText().trim().equals("")
 				|| jtf[6].getText().trim().equals("") || jtf[12].getText().trim().equals("")
 				|| jtf[11].getText().trim().equals(".  .") || jtf[17].getText().trim().equals("") ){
-			JOptionPane.showMessageDialog(null, "Die Daten des Patienten wurden unvollständig eingegeben!\n\nSpeichern ist nicht möglich.\n");
+			JOptionPane.showMessageDialog(null, "Die Daten des Patienten wurden unvollstï¿½ndig eingegeben!\n\nSpeichern ist nicht mï¿½glich.\n");
 			cbanrede.requestFocus();
 			return;
 		}
@@ -462,7 +461,7 @@ private KVKWrapper kvw;
 					name.contains("er_dat")){
 				if(jtf[fedits[i]].getText().trim().equals(".  .")){
 					buf.append(name+"=NULL, ");	
-					if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
+					if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert grï¿½ï¿½er als heute
 						buf.append("befreit ='F', ");
 						freibeimspeichern = false;
 						System.out.println("Patient ist -> nicht <- befreit!");
@@ -470,7 +469,7 @@ private KVKWrapper kvw;
 				}else{
 					try{
 						buf.append(name+"='"+DatFunk.sDatInSQL(jtf[fedits[i]].getText())+"', ");
-						if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert größer als heute
+						if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert grï¿½ï¿½er als heute
 							if( DatFunk.DatumsWert(jtf[fedits[i]].getText()) >= DatFunk.DatumsWert(DatFunk.sHeute()) ){
 								buf.append("befreit ='T', ");
 								freibeimspeichern = true;
@@ -501,10 +500,10 @@ private KVKWrapper kvw;
 			globPat_intern = Reha.thisClass.patpanel.aktPatID;
 			buf.append(" where pat_intern='"+globPat_intern+"'");
 			spatintern = Reha.thisClass.patpanel.aktPatID;
-			// Wenn Kasse veränder wurde....
+			// Wenn Kasse verï¿½nder wurde....
 			if(!jtf[34].getText().trim().equals(kassenid)){
 				JOptionPane.showMessageDialog(null, "Achtung - Sie haben dem Patient eine neue Kasse zugewiesen.\n"+
-						"Eventuell ändert sich dadurch der Zuzahlungsstatus vorhandener Rezepte. Bitte prüfen!!!");
+						"Eventuell Ã¤ndert sich dadurch der Zuzahlungsstatus vorhandener Rezepte. Bitte prÃ¼fen!!!");
 			}
 
 			//if(!jtf[16].getText().trim().equals(befreitdatum) ){
@@ -516,19 +515,19 @@ private KVKWrapper kvw;
 				if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) ){
 					System.out.println("Zuzahlregel = "+zzregel+" Kassen-ID = "+jtf[34].getText().trim());
 				//if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) && freibeimspeichern){
-					JOptionPane.showMessageDialog(null,"Sie haben einen Kostenträger gwählt der keine Zuzahlung verlangt und\n"+
+					JOptionPane.showMessageDialog(null,"Sie haben einen KostentrÃ¤ger gwÃ¤hlt der keine Zuzahlung verlangt und\n"+
 							"jetzt wollen Sie im Feld Zuzahlungsbefreiung rummurksen???????\n\nNa ja.....");
 					doof = true;
 				}
 				if(!doof){
-					// hier wäre es optimal eine  ZuzahlToolsFunktion zu haben.....
+					// hier wï¿½re es optimal eine  ZuzahlToolsFunktion zu haben.....
 					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"' AND REZ_GEB='0.00'");
 					if(anzahl > 0){
 						String meldung = "Dieser Patient hat -> "+anzahl+" laufende Rezepte <- ohne Abschluss\n"+
-						"Soll der veränderte Befreiungsstatus auf alle noch nicht(!) bezahlten Rezepte übertragen werden?";
+						"Soll der verÃ¤nderte Befreiungsstatus auf alle noch nicht(!) bezahlten Rezepte Ã¼bertragen werden?";
 						int frage = JOptionPane.showConfirmDialog(null,meldung,"Achtung wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
 						if(frage == JOptionPane.NO_OPTION){
-							JOptionPane.showMessageDialog(null,"Dann eben nicht!\nVergessen Sie aber nicht den Befreiungsstatus der Rezepte von Hand zu ändern");
+							JOptionPane.showMessageDialog(null,"Dann eben nicht!\nVergessen Sie aber nicht den Befreiungsstatus der Rezepte von Hand zu Ã¤ndern");
 						}else if(frage == JOptionPane.YES_OPTION){
 							String pat_intern = Reha.thisClass.patpanel.aktPatID;
 							String geboren = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
@@ -579,7 +578,7 @@ private KVKWrapper kvw;
 	}
 	private JXPanel getButtonPanel(){
 		JXPanel but = new JXPanel(new BorderLayout());
-		//but.add(new JLabel("Hier ist Raum für Buttons"));
+		//but.add(new JLabel("Hier ist Raum fï¿½r Buttons"));
 		but.setOpaque(false);
 		but.setDoubleBuffered(true);
 		
@@ -692,7 +691,7 @@ private KVKWrapper kvw;
 		jtf[15].setName("kv_status");
 
 		jtf[16] = new JRtaTextField("DATUM", true);
-		jtf[16].setName("bef_dat"); //aus Kostenträgerdatei/Karte einlesen?
+		jtf[16].setName("bef_dat"); //aus Kostentrï¿½gerdatei/Karte einlesen?
 		jtf[16].setFont(font);
 		jtf[16].setForeground(Color.RED);
 		
@@ -882,21 +881,21 @@ private KVKWrapper kvw;
 					CellConstraints cc21 = new CellConstraints();
 					builder21.getPanel().setDoubleBuffered(true);
 				
-					builder21.addSeparator("Zusätze", cc21.xyw(1, 1, 6));
+					builder21.addSeparator("ZusÃ¤tze", cc21.xyw(1, 1, 6));
 					builder21.addLabel("Kilometer bei HB", cc21.xy(1, 3));
 					builder21.add(jtf[31], cc21.xy(3, 3));
 					builder21.addLabel("Heimbewohner", cc21.xy(1,5));
 					builder21.add(jcheck[8], cc21.xy(3, 5));
 					builder21.addLabel("befreit im Vorjahr", cc21.xy(1,7));
 					builder21.add(jtf[35],cc21.xy(3,7));
-					builder21.addLabel("löschen?", cc21.xy(4,7));
+					builder21.addLabel("lÃ¶schen?", cc21.xy(4,7));
 					builder21.add(jcheck[10],cc21.xy(6, 7));
 					builder21.addLabel("U18-Regel ignorieren?",cc21.xy(1,9));
 					builder21.add(jcheck[9],cc21.xy(3, 9));
 					builder21.addLabel("Vertrag unterz. am", cc21.xy(1, 11));
 					builder21.add(jtf[32], cc21.xy(3, 11));
 					
-					builder21.addSeparator("abweichender Rechnungsempfänger/Versicherter", cc21.xyw(1, 13, 6));
+					builder21.addSeparator("abweichender RechnungsempfÃ¤nger/Versicherter", cc21.xyw(1, 13, 6));
 					builder21.addLabel("verwenden", cc21.xy(1,15));
 					builder21.add(jcheck[0], cc21.xy(3,15));
 					builder21.addLabel("Anrede", cc21.xy(1, 17));
@@ -907,7 +906,7 @@ private KVKWrapper kvw;
 					builder21.add(jtf[22], cc21.xyw(3, 19, 4));
 					builder21.addLabel("Vorname", cc21.xy(1, 21));
 					builder21.add(jtf[23], cc21.xyw(3,21,4));
-					builder21.addLabel("Straße, Nr.", cc21.xy(1, 23));
+					builder21.addLabel("Strasse, Nr.", cc21.xy(1, 23));
 					builder21.add(jtf[24], cc21.xyw(3, 23, 4));
 					builder21.addLabel("PLZ, Ort", cc21.xy(1, 25));
 					builder21.add(jtf[25], cc21.xy(3, 25));
@@ -1026,7 +1025,7 @@ private KVKWrapper kvw;
 					builder22.add(jcheck[6], cc22.xy(3, 7));
 					builder22.add(jcheck[7], cc22.xy(6,7));
 					
-					builder22.addSeparator("Ärzteliste des Patienten", cc22.xyw(1,9,6));
+					builder22.addSeparator("Ã„rzteliste des Patienten", cc22.xyw(1,9,6));
 					builder22.add(docscr, cc22.xyw(1, 11, 6));
 					builder22.addLabel("Arzt aufnehmen", cc22.xy(1,13));
 					builder22.add(knopf1, cc22.xy(3,13));
@@ -1248,7 +1247,7 @@ private KVKWrapper kvw;
 		builder.add(jtf[2], cc11.xyw(3, 5, 4));
 		builder.addLabel("Vorname", cc11.xy(1,7));
 		builder.add(jtf[3], cc11.xyw(3, 7, 4));
-		builder.addLabel("Straße, Nr.", cc11.xy(1,9));
+		builder.addLabel("Strasse, Nr.", cc11.xy(1,9));
 		builder.add(jtf[4], cc11.xyw(3, 9, 4));
 		builder.addLabel("PLZ, Ort", cc11.xy(1,11));
 		builder.add(jtf[5], cc11.xy(3, 11));
@@ -1276,9 +1275,9 @@ private KVKWrapper kvw;
 		builder.addLabel("akut bis", cc11.xy(4,27));
 		builder.add(jtf[27], cc11.xy(6, 27));
 		
-		builder.addLabel("mögliche Termine 1", cc11.xy(1, 29));
+		builder.addLabel("mÃ¶gliche Termine 1", cc11.xy(1, 29));
 		builder.add(jtf[29], cc11.xyw(3, 29, 4));
-		builder.addLabel("mögliche Termine 2", cc11.xy(1, 31));
+		builder.addLabel("mÃ¶gliche Termine 2", cc11.xy(1, 31));
 		builder.add(jtf[30], cc11.xyw(3, 31, 4));
 	
 
@@ -1320,7 +1319,7 @@ private KVKWrapper kvw;
 		Vector arztvec = null;
 		if(!aerzte.trim().equals("")){
 			einzelarzt = aerzte.split("\n");
-			System.out.println("Anzahl Ärzte = "+einzelarzt.length);
+			System.out.println("Anzahl Ã„rzte = "+einzelarzt.length);
 			for(int i = 0; i < einzelarzt.length;i++){
 				arztdaten = einzelarzt[i].split("@");
 				//docmod.setColumnIdentifiers(new String[] {"LANR","Nachname","Strasse","Ort","BSNR",""});
@@ -1392,12 +1391,12 @@ private KVKWrapper kvw;
 		    	jtf[35].setText(SystemConfig.vorJahr);
 		    }
 		}else if(com.equals("delpic")){
-			JOptionPane.showMessageDialog(null, "Wo nichts ist kann auch nichts gelöscht werden");
+			JOptionPane.showMessageDialog(null, "Wo nichts ist kann auch nichts gelÃ¶scht werden");
 			return;
 		}else if(com.equals("addpic")){
-			String cmd ="Tja, wenn wir uns im Forum endlich im Klaren darüber wären, welches Aufnahmegerät\n"+
-			"wir einsetzen wollen, dann könnten wir auch diese Funktion programmieren.\n\n"+
-			"Vorher wird's etwas schwierig!\nMan kann ja schließlich nichts porgrammieren von dem man nicht weiß was es ist....\n";
+			String cmd ="Tja, wenn wir uns im Forum endlich im Klaren darÃ¼ber wÃ¤ren, welches AufnahmegerÃ¤t\n"+
+			"wir einsetzen wollen, dann kÃ¶nnten wir auch diese Funktion programmieren.\n\n"+
+			"Vorher wird's etwas schwierig!\nMan kann ja schlieÃŸlich nichts porgrammieren von dem man nicht weiÃŸ was es ist....\n";
 			JOptionPane.showMessageDialog(null, cmd);
 			return;
 			
@@ -1634,13 +1633,13 @@ private KVKWrapper kvw;
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+    		System.out.println("Es wurde Formular "+iformular+" gewï¿½hlt");
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
-			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
-			"Sie dürfen also hoffen....\n\n";
+			String mes = "Wenn man eine Kasse anschreiben mÃ¶chte, empfiehlt es sich\n"+ 
+			"vorher die Kasse auszuwÃ¤hlen die man anschreiben mÃ¶chte!!!\n\n"+
+			"Aber trÃ¶sten Sie sich, unser Herrgott hat ein Herz fÃ¼r eine ganz spezielle Randgruppe.\n"+
+			"Sie dÃ¼rfen also hoffen....\n\n";
 			JOptionPane.showMessageDialog(null, mes);
 			iformular = -1;
 		}
@@ -1653,22 +1652,22 @@ private KVKWrapper kvw;
 		// wenn nicht neu und nicht in bisherigem aerzt.feld
 		// nachfragen ob neu aufgenommen werden soll
 		// wenn ja aufnehmen und in dbAbspeichern
-		// wenn nicht zurück
+		// wenn nicht zurï¿½ck
 		if(mod != null){
 			if(neu){
 				if(! inTableEnthalten(aid,mod)){
-					System.out.println("Neuanlage Pat. Arzt wird in Liste übernommen");
+					System.out.println("Neuanlage Pat. Arzt wird in Liste Ã¼bernommen");
 					mod.setRowCount(0);
 					arztInTableAufnehmen(aid,mod);
 					tbl.validate();
 				}else{
 					System.out.println("Neuanlage Pat. Arzt bereits in der Liste enthalten");
 				}
-			}else{ // in Patient ändern
+			}else{ // in Patient ï¿½ndern
 				if(! inTableEnthalten(aid,mod)){
-					System.out.println("Ändern Pat. Arzt wird in Liste übernommen");
+					System.out.println("Ã„ndern Pat. Arzt wird in Liste Ã¼bernommen");
 					if(bloednachfragen){
-						int frage = JOptionPane.showConfirmDialog(null,"Den gewählten Arzt in die Arztliste dieses Patienten aufnehmen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+						int frage = JOptionPane.showConfirmDialog(null,"Den gewÃ¤hlten Arzt in die Arztliste dieses Patienten aufnehmen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 						if(frage == JOptionPane.YES_OPTION){
 							arztInTableAufnehmen(aid,mod);
 							tbl.validate();
@@ -1678,10 +1677,10 @@ private KVKWrapper kvw;
 						tbl.validate();
 					}
 				}else{
-					System.out.println("Ändern Pat. Arzt bereits in der Liste enthalten");
+					System.out.println("Ã„ndern Pat. Arzt bereits in der Liste enthalten");
 				}
 			}
-		}else{ // funktion wurde über Rezept aufgerufen
+		}else{ // funktion wurde ï¿½ber Rezept aufgerufen
 			
 		}
 	}
@@ -1870,7 +1869,7 @@ private KVKWrapper kvw;
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 					finalise();
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-					//System.out.println("****************Patient Neu/Ändern -> Listener entfernt**************");				
+					//System.out.println("****************Patient Neu/ï¿½ndern -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){

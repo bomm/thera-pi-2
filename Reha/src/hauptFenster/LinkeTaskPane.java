@@ -96,7 +96,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		
 		/**
 		 * Zuerst die Scrollpane generieren falls der
-		 * spätere TaskPane-Container die y-Dimension des Fensters übersteigt.
+		 * spï¿½tere TaskPane-Container die y-Dimension des Fensters ï¿½bersteigt.
 		 */
 		JScrollPane jScrp = new JScrollPane();
 		jScrp.setBorder(null);
@@ -106,7 +106,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 10, 1, 5, false, true, true, true);
 		jScrp.setBorder(dropShadow);
 		/**
-		 * Jetz generieren wir den Taskpane-Container anschließend die TaskPanes
+		 * Jetz generieren wir den Taskpane-Container anschlieï¿½end die TaskPanes
 		 */
 		jxTPcontainer =	new JXTaskPaneContainer();
 		jxTPcontainer.setBackground(new Color(106,130,218));
@@ -123,7 +123,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxTPcontainer.add(getSystemEinstellungen());
 		
 		/**
-		 * dann fügen wir den TaskpaneContainer der ScrollPane hinzu
+		 * dann fï¿½gen wir den TaskpaneContainer der ScrollPane hinzu
 		 */
 		jScrp.setViewportView(jxTPcontainer);
 		jScrp.setVisible(true);
@@ -133,7 +133,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		thisClass = this;
 	}
 	/**
-	 * Task-Pane für den Patientenstamm erstellen
+	 * Task-Pane fï¿½r den Patientenstamm erstellen
 	 * @return
 	 */
 	
@@ -159,7 +159,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setEnabled(true);
 		tp1.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Ärzte");
+		jxLink.setText("Arzte");
 		jxLink.setActionCommand("Arztstamm");
 		jxLink.setToolTipText("Strg+A = Arztstamm starten");
 		img = new ImageIcon(Reha.proghome+"icons/system-users.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
@@ -215,8 +215,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
 			      }
 			      System.out.println(mitgebracht);
-			      if(mitgebracht.indexOf("°") >= 0){
-			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
+			      if(mitgebracht.indexOf("Â°") >= 0){
+			    	  if( ! mitgebracht.split("Â°")[0].contains("TERMDAT")){
 			    		  return;
 			    	  }
 			    	  //ProgLoader.ProgRoogleFenster(0, mitgebracht);
@@ -313,7 +313,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
 		tp5.setUI(wui);
 		
-		tp5.setTitle("Nützliches...");
+		tp5.setTitle("NÃ¼tzliches...");
 		//tp3.setIcon(new ImageIcon("icons/pdf.gif"));				
 		JXHyperlink jxLink = new JXHyperlink();
 		jxLink.setText("Thera-PI - Browser");
@@ -397,7 +397,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		//System.out.println("TaskPane-Container L&F");
 	}
 	/**
-	 * Eigener Event-Handler man wird sehen ob das vernüftig ist.
+	 * Eigener Event-Handler man wird sehen ob das vernï¿½ftig ist.
 	 * 	@Override
 	 */
 	public void actionPerformed(ActionEvent e) {
@@ -474,8 +474,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			if (cmd.equals("Wochenarbeitszeiten definieren")){
 				JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 				if(termin != null){
-					JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nWährend der Arbeitszeit-Definition\n" +
-					"darf der Terminkalender aus Sicherheitsgründen nicht geöffnet sein.\n"+
+					JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nWÃ¤hrend der Arbeitszeit-Definition\n" +
+					"darf der Terminkalender aus SicherheitsgrÃ¼nden nicht geÃ¶ffnet sein.\n"+
 					"Beenden Sie den Terminkalender und rufen Sie diese Funktion erneut auf.\n\n");
 					return;
 				}
