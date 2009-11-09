@@ -149,10 +149,10 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
         //jp1.setLayout(new VerticalLayout(1));
         String ss = Reha.proghome+"icons/header-image.png"; //"icons/header-image.png";
         header = new JXHeader("Mit der Systeminitialisierung....",
-                "....erstellen bzw. ändern Sie die Systemeinstellungen auf Ihre inividuelle Bedürfnisse hin.\n" +
+                "....erstellen bzw. Ã¤ndern Sie die Systemeinstellungen auf Ihre inividuelle BedÃ¼rfnisse hin.\n" +
                 "Von den Behandlersets des Terminkalender, Aktualisierungszyklen bis hin zu Pfadangaben und Emailparameter.\n" +
-                "Systemparameter die ein gewisses Maß an Computer-Kenntnisse voraussetzen haben wir mit einem roten Ausrufezeichen versehen.\n\n"+
-                "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
+                "Systemparameter die ein gewisses MaÃŸ an Computer-Kenntnisse voraussetzen haben wir mit einem roten Ausrufezeichen versehen.\n\n"+
+                "Sie schlieÃŸen dieses Fenster Ã¼ber den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         header.setPreferredSize(new Dimension(0,150));
         	jp1.add(header,BorderLayout.NORTH);
@@ -180,7 +180,7 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
         	jxLinks.add(dummy,BorderLayout.EAST);
 
         	jxLinks.add(getParameterListe(),BorderLayout.CENTER);
-        	// hier muß das add für die weitern Panels rein
+        	// hier muï¿½ das add fï¿½r die weitern Panels rein
         	jxRechts = new JXPanel(new BorderLayout());
     		/****/
    	     	Point2D start = new Point2D.Float(0, 0);
@@ -192,7 +192,7 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
    	     	MattePainter mp = new MattePainter(p);
    	     	jxRechts.setBackgroundPainter(new CompoundPainter(mp));
    	     	/****/
-        	// hier muß das add für die weitern Panels rein
+        	// hier muï¿½ das add fï¿½r die weitern Panels rein
         	jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
         		jxLinks,
         		jxRechts);        
@@ -250,7 +250,7 @@ public String dieserName(){
 
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	System.out.println("****************Schließen des SystemUtil-Fensters**************");
+	System.out.println("****************Schlieï¿½en des SystemUtil-Fensters**************");
 	String ss =  this.getName();
 	System.out.println("SystemUtil "+this.getName()+" Eltern "+ss);
 	try{
@@ -380,8 +380,8 @@ private JScrollPane getParameterListe(){
 	node = new DefaultMutableTreeNode( "Emailparameter");
 	root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Geräte/Anschlüsse"); 
-	treeitem = new DefaultMutableTreeNode("Anschlüsse");
+	node = new DefaultMutableTreeNode( "GerÃ¤te/AnschlÃ¼sse"); 
+	treeitem = new DefaultMutableTreeNode("AnschlÃ¼sse");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("angeschlossene Geraete");
 	node.add(treeitem ); 
@@ -407,7 +407,7 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 	root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Abrechnung §302");
+	node = new DefaultMutableTreeNode( "Abrechnung Â§302");
 	treeitem = new DefaultMutableTreeNode("Zertifikat-Request produzieren");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("ITSG Zertifikat einlesen");
@@ -722,7 +722,7 @@ private void auswertenSysUtil(String util){
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
-		if(util.equals("Anschlüsse")){
+		if(util.equals("AnschlÃ¼sse")){
 			jxInhaltRechts = new SysUtilAnschluesse();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -817,11 +817,11 @@ private void headerInfos(){
 	/***********Numero uno***********/
 	sdummy = "Terminkalender-Grundeinstellungen";
 	htitel.put("TKGrundeinstellungen", sdummy);
-	sdummy = "Die Grundeinstellungen beeinflussen die Struktur und die Funktionen der Kalenderdatenbank. Änderungen von Tagesbeginn \n"+
-	"oder -ende führen zur Neudefinition ALLER bestehenden Datenbanken. Dieser Vorgang benötigt viel Rechenkapazität und dauert daher\n"+
+	sdummy = "Die Grundeinstellungen beeinflussen die Struktur und die Funktionen der Kalenderdatenbank. Ã„nderungen von Tagesbeginn \n"+
+	"oder -ende fï¿½hren zur Neudefinition ALLER bestehenden Datenbanken. Dieser Vorgang benï¿½tigt viel Rechenkapazitï¿½t und dauert daher\n"+
 	"entsprechend lange.\n"+
 	"Der Refreshtakt definiert, in welchem Zyklus die Bildschirmanzeige mit der Datenbank abgeglichen wird. Einzelplatzinstallationen\n "+
-	"arbeiten dabei ohne zeitliche Verzögerung.";
+	"arbeiten dabei ohne zeitliche VerzÃ¶gerung.";
 	hdescription.put("TKGrundeinstellungen", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("TKGrundeinstellungen", icodummy);
@@ -829,9 +829,9 @@ private void headerInfos(){
 	/***********Numero due***********/
 	sdummy = "Kalenderbenutzer verwalten";
 	htitel.put("Kalenderbenutzer", sdummy);
-	sdummy = "´Kalenderbenutzer´ kann ein Behandler, sonstige Mitarbeiter oder auch eine besondere Ressource sein.\n\n"+
-	"Der Matchcode ist die dargestellte Überschrift bzw. der in der Terminsuche verwendete Begriff. Er kann frei vergeben werden\n"+
-	"und ist der Form nicht festgelegt. ´Peter´, ´Müller Martina´ oder ´Gewürzgurke007´ - Alles erlaubt!";
+	sdummy = "ï¿½Kalenderbenutzerï¿½ kann ein Behandler, sonstige Mitarbeiter oder auch eine besondere Ressource sein.\n\n"+
+	"Der Matchcode ist die dargestellte Ãœberschrift bzw. der in der Terminsuche verwendete Begriff. Er kann frei vergeben werden\n"+
+	"und ist der Form nicht festgelegt. ï¿½Peterï¿½, ï¿½Mï¿½ller Martinaï¿½ oder ï¿½Gewï¿½rzgurke007ï¿½ - Alles erlaubt!";
 	hdescription.put("Kalenderbenutzer", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderbenutzer", icodummy);
@@ -840,7 +840,7 @@ private void headerInfos(){
 	sdummy = "Behandlersets definieren";
 	htitel.put("Behandlersets", sdummy);
 	sdummy = "In Behandlersets werden bis zu 7 Kalenderbenutzer gruppiert, die im Terminkalender gleichzeitig\n"+
-	"nebeneinander dargestellt werden sollen. Im Terminkalender kann über F12 schnell zwischen den verschiedenen Sets\n"+
+	"nebeneinander dargestellt werden sollen. Im Terminkalender kann ï¿½ber F12 schnell zwischen den verschiedenen Sets\n"+
 	"umgeschaltet werden.";
 	hdescription.put("Behandlersets", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
@@ -849,24 +849,24 @@ private void headerInfos(){
 	/***********Numero vier***********/
 	sdummy = "Druckvorlage";
 	htitel.put("DruckvorlageTerminliste", sdummy);
-	sdummy = "In diesem Fenster können für jeden angeschlossenen Rechner Vorgaben zum Druck der Terminliste\n"+
+	sdummy = "In diesem Fenster kï¿½nnen fï¿½r jeden angeschlossenen Rechner Vorgaben zum Druck der Terminliste\n"+
 	"gemacht werden. \n"+
-	"Wenn Sie die Druckvorlagendatei hinsichtlich der Tabellen-, Zeilen- oder Spaltenzahl verändern, müssen diese\n"+
-	"Strukturparameter unbedingt hier ebenfalls angepasst werden, da die Daten sonst nicht korrekt übergeben werden können."+
+	"Wenn Sie die Druckvorlagendatei hinsichtlich der Tabellen-, Zeilen- oder Spaltenzahl verï¿½ndern, mï¿½ssen diese\n"+
+	"Strukturparameter unbedingt hier ebenfalls angepasst werden, da die Daten sonst nicht korrekt ï¿½bergeben werden kï¿½nnen."+
 	"Angaben zu Papierformat und verwendetem Druckereinzug werden in der Vorlagendatei mit OpenOffice eingestellt.";
 	hdescription.put("DruckvorlageTerminliste", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("DruckvorlageTerminliste", icodummy);
 
-	/***********Numero fünef***********/
+	/***********Numero fï¿½nef***********/
 	sdummy = "Kalenderfarben definieren";
 	htitel.put("Kalenderfarben", sdummy);
 	sdummy = "Die farbliche Darstellung der Termine im Kalender ist eine sehr effiziente Signalsprache. \n"+
-	"Sie können zwischen 4 vordefinierten Farbkombinationen wählen oder für die jeweilige Bedeutung eine eigene\n"+
+	"Sie kï¿½nnen zwischen 4 vordefinierten Farbkombinationen wï¿½hlen oder fï¿½r die jeweilige Bedeutung eine eigene\n"+
 	"Kombination vergeben.\n"+
-	"Besondere Bedeutung haben die Codes ´A bis ´H´, die mit einer Bedeutung frei verknüpft werden können.\n"+
-	"Diese Codes können dann wie in der Tabelle angegeben in den Terminen hinter der Rezeptnummer eingetragen werden\n"+
-	"und bestimmen die Farbgebung (der Code für die Behandlungszeit wird dann nachrangig).";
+	"Besondere Bedeutung haben die Codes ï¿½A bis ï¿½Hï¿½, die mit einer Bedeutung frei verknï¿½pft werden kï¿½nnen.\n"+
+	"Diese Codes kï¿½nnen dann wie in der Tabelle angegeben in den Terminen hinter der Rezeptnummer eingetragen werden\n"+
+	"und bestimmen die Farbgebung (der Code fï¿½r die Behandlungszeit wird dann nachrangig).";
 	hdescription.put("Kalenderfarben", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderfarben", icodummy);
@@ -874,7 +874,7 @@ private void headerInfos(){
 	/***********Numero sex***********/
 	sdummy = "Gruppentermine definieren";
 	htitel.put("Gruppentermine", sdummy);
-	sdummy = "Gruppentermine ist was für den Spezialisten\n"+
+	sdummy = "Gruppentermine ist was fï¿½r den Spezialisten\n"+
 	"Der wird dann auch den Text schreiben....\n"+
 	"...und beim Hilfetext richtig ins Zeugs legen!";
 	hdescription.put("Gruppentermine", sdummy);
@@ -884,9 +884,9 @@ private void headerInfos(){
 	/***********Numero siebene***********/
 	sdummy = "Kalenderjahr anlegen";
 	htitel.put("Kalenderjahranlegen", sdummy);
-	sdummy = "Hier wird die Kalenderdatenbank um ein weiteres Jahr verlängert. Sinnvoll ist dies, wenn zuvor\n"+
-	"die Arbeitszeitpläne inklusive der Dauertermine auf den aktuellen Stand gebracht wurden (sofern gewünscht). \n"+
-	"Die Feiertagsliste kann importiert werden und durch eigene Daten (z.B. Betriebsausflug, -ferien) ergänzt werden.";
+	sdummy = "Hier wird die Kalenderdatenbank um ein weiteres Jahr verlï¿½ngert. Sinnvoll ist dies, wenn zuvor\n"+
+	"die Arbeitszeitplï¿½ne inklusive der Dauertermine auf den aktuellen Stand gebracht wurden (sofern gewï¿½nscht). \n"+
+	"Die Feiertagsliste kann importiert werden und durch eigene Daten (z.B. Betriebsausflug, -ferien) ergï¿½nzt werden.";
 	hdescription.put("Kalenderjahranlegen", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderjahranlegen", icodummy);
@@ -894,8 +894,8 @@ private void headerInfos(){
 	/***********Numero achte***********/
 	sdummy = "Ru:gl - Grundeinstellungen";
 	htitel.put("RoogleGrundeinstellungen", sdummy);
-	sdummy = "Die Grundeinstellungen für die Terminsuchmaschine [Ru:gl] legen die Vorgaben fest, mit denen\n"+
-	"Ru:gl startet. Sie können natürlich für jeden Suchvorgang im Ru:gl-Fenster ´individueller Zeitraum´ angepasst werden.\n";
+	sdummy = "Die Grundeinstellungen fï¿½r die Terminsuchmaschine [Ru:gl] legen die Vorgaben fest, mit denen\n"+
+	"Ru:gl startet. Sie kï¿½nnen natï¿½rlich fï¿½r jeden Suchvorgang im Ru:gl-Fenster ï¿½individueller Zeitraumï¿½ angepasst werden.\n";
 	hdescription.put("RoogleGrundeinstellungen", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("RoogleGrundeinstellungen", icodummy);
@@ -904,7 +904,7 @@ private void headerInfos(){
 	sdummy = "Stammdaten - Patienten";
 	htitel.put("PatientStammdaten", sdummy);
 	sdummy = "Hier legen Sie fest in welchem Container das Patientenfenster erscheinen soll.\n"+
-	"Sie können Textvorlagen definieren, und individuelle Merkmale aufnehmen, die Sie späger dem Patienten zuordnen.\n";
+	"Sie kï¿½nnen Textvorlagen definieren, und individuelle Merkmale aufnehmen, die Sie spï¿½ger dem Patienten zuordnen.\n";
 	hdescription.put("PatientStammdaten", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("PatientStammdaten", icodummy);	
