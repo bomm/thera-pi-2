@@ -57,7 +57,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 	//public static RehaSmartDialog thisClass = null;
 	public int clickX;
 	public int clickY;
-
+	public boolean hilfsDlgOffen;
 	
 
 	public boolean insize;
@@ -112,11 +112,19 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		}
 		final ActionListener listener = new ActionListener() {
 		    public final void actionPerformed(final ActionEvent e) {
-		        setVisible(false);
-		        dispose();
+		    	if(hasFocus()){
+			        setVisible(false);
+			        dispose();
+		    	}
 		    }
 
 		};
+		/*
+		final KeyStroke keyStroke =
+		    KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, true);
+		getRootPane().registerKeyboardAction(listener, keyStroke,
+		        JComponent.WHEN_IN_FOCUSED_WINDOW);
+	*/
 		final KeyStroke keyStroke =
 		    KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, true);
 		getRootPane().registerKeyboardAction(listener, keyStroke,
@@ -289,6 +297,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
+		System.out.println("In Closing der Elternklasse "+arg0);
 		// TODO Auto-generated method stub
 			
 	}

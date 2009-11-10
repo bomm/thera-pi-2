@@ -226,6 +226,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 				stroke = KeyStroke.getKeyStroke(70, KeyEvent.ALT_MASK);
 				jcc.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doFocusTable");
 				jcc.getActionMap().put("doFocusTable", new RoogleAction());
+				stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+				jcc.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(stroke, "doSchliessen");
+				jcc.getActionMap().put("doSchliessen", new RoogleAction());
 			    if(Reha.thisClass.terminpanel != null){
 			    	Reha.thisClass.terminpanel.setUpdateVerbot(true);
 			    }
@@ -246,6 +249,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		return this;
 	}
 	/******************************************/
+	public void doSchliessen(){
+		this.setVisible(false);
+		this.dispose();
+	}
 	private void macheDrop(){
 		if(sldrops[1].indexOf("KG") >= 0){
 			gruppenCombo[0].setSelectedItem(sldrops[2]);
@@ -424,16 +431,26 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	class RoogleAction extends AbstractAction {
 	        public void actionPerformed(ActionEvent e) {
 	            //System.out.println("Roogle Action test");
-	            //System.out.println(e);
+	        	//System.out.println(e.paramString());
+	        	//System.out.println((int) e.getActionCommand().toCharArray()[0]);
+	        	//System.out.println(e.getActionCommand());
+	        	//System.out.println(e.getID());
 	            if(e.getActionCommand().equals("i")){
 	            	tabbedPane.setSelectedIndex(0);
+	            	return;
 	            }
 	            if(e.getActionCommand().equals("u")){
 	            	tabbedPane.setSelectedIndex(1);
+	            	return;
 	            }
 	            if(e.getActionCommand().equals("f")){
 	            	setTableSelection(jxTable,0,0);
-	            }	            
+	            	return;
+	            }
+	            if(((int) e.getActionCommand().toCharArray()[0])==27){
+	            	setVisible(false);
+	            	dispose();
+	            }
 	        }
 	    }
 	private void setTableSelection(JXTable table,int row, int col){

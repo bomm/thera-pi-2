@@ -67,7 +67,8 @@ public class SetWahl extends JDialog {
 	 */
 	private void initialize() {
 		this.setSize(293, 247);
-		this.setTitle("Terminset ausw‰hlen");
+		this.setPreferredSize(new Dimension(293, 247));
+		this.setTitle("Terminset ausw√§hlen");
 		this.setBackground(Color.WHITE);
 		this.setContentPane(getJContentPane());
 		this.setModal(true);
@@ -86,7 +87,7 @@ public class SetWahl extends JDialog {
 		if (jContentPane == null) {
 			jContentPane = new JXTitledPanel();
 			JXPanel jcon = (JXPanel)((JXTitledPanel) jContentPane).getContentContainer();
-			((JXTitledPanel) jContentPane).setTitle("Behandler - Set ausw‰hlen....");
+			((JXTitledPanel) jContentPane).setTitle("Behandler - Set ausw√§hlen....");
 			((JXTitledPanel) jContentPane).setTitleForeground(Color.WHITE);
 //			((JXTitledPanel) jContentPane).getContentContainer().setLayout(new BorderLayout());
 //			((JXTitledPanel) jContentPane).getContentContainer().add(getJPanelTasten(), BorderLayout.SOUTH);

@@ -49,6 +49,7 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		rSmart.setModal(true);
 		rSmart.setResizable(false);
 		rSmart.setSize(new Dimension(225,145));
+		rSmart.setPreferredSize(new Dimension(225,145));
 		rSmart.getTitledPanel().setTitle("Wie soll der Termin behandelt werden???");
 		rSmart.setContentPanel(jtp.getContentContainer());
 		/****************************************************************/
@@ -63,6 +64,7 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		}
 		/****************************************************************/
 		rSmart.setLocation(x, y); 
+		rSmart.pack();
 		rSmart.setVisible(true);
 
 		jrb[0].requestFocus();		
@@ -88,14 +90,14 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		//builder.getPanel().setPreferredSize(new Dimension(400,150));
 		builder.getPanel().setOpaque(true);
 		CellConstraints cc = new CellConstraints();
-		jrb[0] = new JRadioButton("Termin auf verfügbare Dauer kürzen");
+		jrb[0] = new JRadioButton("Termin auf verfÃ¼gbare Dauer kÃ¼rzen");
 		jrb[0].setBackground(Color.WHITE);
 		jrb[0].addKeyListener(this);
 		jrb[0].addActionListener(this);
 		jrb[0].addFocusListener(this);
 		jrbg.add(jrb[0]);
 		builder.add(jrb[0],cc.xyw(2,2,7));
-		jrb[1] = new JRadioButton("Nachfolgenden Termin kürzen");
+		jrb[1] = new JRadioButton("Nachfolgenden Termin kÃ¼rzen");
 		jrb[1].setBackground(Color.WHITE);
 		jrb[1].addKeyListener(this);	
 		jrb[1].addActionListener(this);
@@ -171,11 +173,11 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		//System.out.println(arg0.getSource());
 		String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 		for (int i = 0 ; i < 1 ; i++){
-			if( (sAktion =="Termin auf verfügbare Dauer kürzen")){
+			if( (sAktion =="Termin auf verfï¿½gbare Dauer kï¿½rzen")){
 				iAktion = 1;
 				break;
 			}
-			if( (sAktion== "Nachfolgenden Termin kürzen")){
+			if( (sAktion== "Nachfolgenden Termin kï¿½rzen")){
 				iAktion = 2;
 				break;
 			}
@@ -203,11 +205,11 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 			for (int i = 0 ; i < 1 ; i++){
-				if( (sAktion =="Termin auf verfügbare Dauer kürzen")){
+				if( (sAktion =="Termin auf verfï¿½gbare Dauer kï¿½rzen")){
 					iAktion = 1;
 					break;
 				}
-				if( (sAktion== "Nachfolgenden Termin kürzen")){
+				if( (sAktion== "Nachfolgenden Termin kï¿½rzen")){
 					iAktion = 2;
 					break;
 				}

@@ -181,6 +181,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		validate();
 		addFocusListener(this);
 		addPropertyChangeListener(this);
+		addKeyListener(this);
 		this.eltern = xeltern;
 	}
 
@@ -575,7 +576,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		trefferLbl.setForeground(Color.BLUE);
 		fpan.add(trefferLbl);
 		fpan.add(new JLabel("           "));
-		fpan.add(new JLabel("Ausgew�hlt: "));
+		fpan.add(new JLabel("Ausgewählt: "));
 		ausgewaehltLbl = new JLabel("0");
 		fpan.add(ausgewaehltLbl);
 		fpan.add(new JLabel("           "));
@@ -971,6 +972,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		es.start();
 		trefferLbl.setText("0");
 		ausgewaehltLbl.setText("0");
+		verarbeitetLbl.setText("0");
 		vecWahl.clear();
 		vecWahl.trimToSize();
 		this.zeilengewaehlt = 0;

@@ -185,7 +185,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		if(((JComponent)arg0.getSource()).getName().equals("TARIFGRUPPE") ){
 			
 			if(this.neuAnlage && (!jtf[0].getText().trim().equals("-")) ){
-				System.out.println("Kürzel = "+jtf[0].getText());
+				System.out.println("Kï¿½rzel = "+jtf[0].getText());
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -193,7 +193,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 						String stmt = "select id from kass_adr where kuerzel='"+kurz+"'";
 						if(SqlInfo.gibtsSchon(stmt)){
 							jtf[0].requestFocus();
-							JOptionPane.showMessageDialog(null, "Krankenkasse mit dem Kürzel --> "+kurz+" <-- bereits vorhanden");
+							JOptionPane.showMessageDialog(null, "Krankenkasse mit dem KÃ¼rzel --> "+kurz+" <-- bereits vorhanden");
 							jtf[0].setText("XXX-YY");
 							SwingUtilities.invokeLater(new Runnable(){
 								public  void run(){
@@ -215,8 +215,8 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		/*
 		if(((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
 			if(jtf[0].getText().trim().equals("-") && (!ohneKuerzel) && (this.neuAnlage)){
-				String message = "Tip:\nDie Vergabe von Kürzeln ist für die schnelle Bearbeitung einer Kasse (später) ideal\n\n"+
-				"Z.B.: 'AOK-RT' für die 'AOK Reutlingen'";
+				String message = "Tip:\nDie Vergabe von Kï¿½rzeln ist fï¿½r die schnelle Bearbeitung einer Kasse (spï¿½ter) ideal\n\n"+
+				"Z.B.: 'AOK-RT' fï¿½r die 'AOK Reutlingen'";
 				ohneKuerzel = true;
 				JOptionPane.showMessageDialog(null,message);
 				SwingUtilities.invokeLater(new Runnable(){
@@ -284,7 +284,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				vec.add(list.get(i));
 			}
 			kpan.ktblm.addRow((Vector)vec);
-			System.out.println("Tabellenzeile eingefügt");
+			System.out.println("Tabellenzeile eingefï¿½gt");
 		}else{
 			int row = kpan.kassentbl.getSelectedRow();
 			int model = kpan.kassentbl.convertRowIndexToModel(row);
@@ -339,7 +339,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		jtf[12] = new JRtaTextField("ZAHLEN", true);
 		jtf[12].setName("KV_NUMMER");
 		jtf[13] = new JRtaTextField("ZAHLEN", true);
-		jtf[13].setName("IK_KASSE"); //aus Kostenträgerdatei/Karte einlesen?
+		jtf[13].setName("IK_KASSE"); //aus Kostentrï¿½gerdatei/Karte einlesen?
 		jtf[14] = new JRtaTextField("ZAHLEN", true);
 		jtf[14].setName("IK_KOSTENT");
 		jtf[15] = new JRtaTextField("ZAHLEN", true);
@@ -363,7 +363,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		builder.getPanel().setOpaque(false);	
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addLabel("Kürzel", cc.xy(1,1));
+		builder.addLabel("KÃ¼rzel", cc.xy(1,1));
 		builder.add(jtf[0], cc.xy(3,1));
 		builder.addLabel("Tarifgruppe", cc.xy(1,3));
 		tarifGruppe = new JRtaComboBox();
@@ -402,18 +402,18 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		builder.addLabel("E-Mail", cc.xy(1, 17));
 		builder.add(jtf[9], cc.xyw(3, 17, 4));
 		
-		builder.addSeparator("IK-Daten für maschinenlesbare Abrechnung", cc.xyw(1, 21, 6));		
+		builder.addSeparator("IK-Daten fÃ¼r maschinenlesbare Abrechnung", cc.xyw(1, 21, 6));		
 		
 		builder.addLabel("IK der Krankenkasse", cc.xy(1, 25));
 		builder.add(jtf[13], cc.xyw(3, 25, 4));
 		
-		builder.addLabel("IK des Kostenträgers", cc.xy(1, 27));
+		builder.addLabel("IK des Kostentrï¿½gers", cc.xy(1, 27));
 		builder.add(jtf[14], cc.xyw(3, 27, 4));
 
 		builder.addLabel("IK der Datenannahmestelle", cc.xy(1, 29));
 		builder.add(jtf[15], cc.xyw(3, 29, 4));
 
-		builder.addLabel("IK Nutzer/Entschlüssellung", cc.xy(1, 31));
+		builder.addLabel("IK Nutzer/Entschlï¿½ssellung", cc.xy(1, 31));
 		builder.add(jtf[16], cc.xyw(3, 31, 4));
 
 		builder.addLabel("IK Papierannahmestelle", cc.xy(1, 33));

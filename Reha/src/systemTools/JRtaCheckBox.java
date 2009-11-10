@@ -60,19 +60,21 @@ public void keyPressed(KeyEvent arg0) {
 		arg0.consume();
 		this.transferFocus();
 		this.getParent().dispatchEvent(arg0);
-		/*
-		if(this.isSelected()){
-			this.setSelected(false);
-		}else{
-			this.setSelected(true);
-		}
-		System.out.println(arg0);
-		*/
+		return;
+	}
+	if(code == KeyEvent.VK_ESCAPE){
+		arg0.consume();
+		this.getParent().dispatchEvent(arg0);
+		this.getParent().getParent().dispatchEvent(arg0);
+		this.getParent().getParent().getParent().dispatchEvent(arg0);
+		this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		return;
 	}
 	if(code == 38){
 		arg0.consume();
 		this.transferFocusBackward();
 		this.getParent().dispatchEvent(arg0);
+		return;
 	}	
 }
 

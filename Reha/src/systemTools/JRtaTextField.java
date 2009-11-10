@@ -249,11 +249,10 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	private void veroeffentlicheEvent(KeyEvent event){
 		try{
 		this.getParent().dispatchEvent(event);
-		/*
 		this.getParent().getParent().dispatchEvent(event);
 		this.getParent().getParent().getParent().dispatchEvent(event);
 		this.getParent().getParent().getParent().getParent().dispatchEvent(event);
-		*/
+		
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

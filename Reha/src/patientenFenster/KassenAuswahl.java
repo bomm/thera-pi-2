@@ -73,7 +73,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		this.kassenbisher = kassennum;
 
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-	    super.getSmartTitledPanel().setTitle("Krankenkasse auswählen");
+	    super.getSmartTitledPanel().setTitle("Krankenkasse auswÃ¤hlen");
 	     
 
 		grundPanel = new JXPanel(new BorderLayout());
@@ -131,7 +131,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		jpan.add(neukasse,cc.xyw(6,2,2));
 		
 		kassenwahlmod = new MyKassenWahlModel();
-		String[] column = 	{"Kürzel","Name1","Name2","Ort", "IK",""};
+		String[] column = 	{"Kï¿½rzel","Name1","Name2","Ort", "IK",""};
 		kassenwahlmod.setColumnIdentifiers(column);
 		kassenwahltbl = new JXTable(kassenwahlmod);
 		kassenwahltbl.addKeyListener(akl);
@@ -233,9 +233,9 @@ public class KassenAuswahl extends RehaSmartDialog{
 		
 	}
 	public void zurueckZurTabelle(JRtaTextField[] jtfs){
-		super.getSmartTitledPanel().setTitle("Kasse auswählen");
+		super.getSmartTitledPanel().setTitle("Kasse auswÃ¤hlen");
 		if(jtfs != null){
-			//{"Kürzel","Name1","Name2","Ort", "IK",""};
+			//{"Kï¿½rzel","Name1","Name2","Ort", "IK",""};
 			Vector<String> vec = new Vector<String>();
 			vec.add(jtfs[0].getText());
 			vec.add(jtfs[1].getText());

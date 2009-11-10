@@ -116,7 +116,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 		this.setContentPanel(jcc );
 
 		
-		getSmartTitledPanel().setTitle("Anzeigetag auswählen");
+		getSmartTitledPanel().setTitle("Anzeigetag auswÃ¤hlen");
 		getSmartTitledPanel().getContentContainer().setName(eigenName);
 		getSmartTitledPanel().addKeyListener(this);
 		getSmartTitledPanel().validate();
@@ -226,7 +226,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 					//datePick.addNotify();
 					jp.add(datePick,cc.xy(4, 2));
 
-					jp.add(new JXLabel("gewähltes Datum"),cc.xy(2,4));
+					jp.add(new JXLabel("gewÃ¤hltes Datum"),cc.xy(2,4));
 					datum = new  JRtaTextField("DATUM",false);
 					datum.setText(starttag);
 					datum.setCaretPosition(0);
@@ -319,7 +319,7 @@ public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
 	System.out.println(arg0);
 	if(arg0.getActionCommand().equals("datePickerCommit")){
-		//System.out.println("Gewählt wurde das Datum: "+datePick.getEditor().getText().trim());
+		//System.out.println("Gewï¿½hlt wurde das Datum: "+datePick.getEditor().getText().trim());
 		akttag = datePick.getEditor().getText().trim();
 		datum.setText(akttag );
 		wochentag.setText(DatFunk.WochenTag(akttag) );

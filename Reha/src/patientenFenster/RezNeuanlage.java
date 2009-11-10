@@ -843,6 +843,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			jtf[2].requestFocus();
 		 	   }
 		});
+
 		String aneu = "";
 		if(! Reha.thisClass.patpanel.patDaten.get(63).contains( ("@"+(aneu = jtf[12].getText().trim())+"@\n")) ){
 			final String xaneu = aneu;

@@ -50,6 +50,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		rSmart.setModal(true);
 		rSmart.setResizable(false);
 		rSmart.setSize(new Dimension(225,200));
+		rSmart.setPreferredSize(new Dimension(225,200));
 		rSmart.getTitledPanel().setTitle("Wohin mit dem Termin???");
 		rSmart.setContentPanel(jtp.getContentContainer());
 		//Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -68,7 +69,8 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		}
 		/****************************************************************/
 
-		rSmart.setLocation(x, y); 
+		rSmart.setLocation(x, y);
+		rSmart.pack();
 		rSmart.setVisible(true);
 
 		jrb[0].requestFocus();		
@@ -94,14 +96,14 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		//builder.getPanel().setPreferredSize(new Dimension(400,150));
 		builder.getPanel().setOpaque(true);
 		CellConstraints cc = new CellConstraints();
-		jrb[0] = new JRadioButton("Termin oben anschlieﬂen");
+		jrb[0] = new JRadioButton("Termin oben anschlie√üen");
 		jrb[0].setBackground(Color.WHITE);
 		jrb[0].addKeyListener(this);
 		jrb[0].addActionListener(this);
 		jrb[0].addFocusListener(this);
 		jrbg.add(jrb[0]);
 		builder.add(jrb[0],cc.xyw(2,2,6));
-		jrb[1] = new JRadioButton("Termin unten anschlieﬂen");
+		jrb[1] = new JRadioButton("Termin unten anschlie√üen");
 		jrb[1].setBackground(Color.WHITE);
 		jrb[1].addKeyListener(this);	
 		jrb[1].addActionListener(this);
@@ -204,12 +206,12 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		//System.out.println(arg0.getSource());
 		String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 		for (int i = 0 ; i < 1 ; i++){
-			if( (sAktion =="Termin oben anschlieﬂen")){
+			if( (sAktion =="Termin oben anschlie√üen")){
 				iAktion = 1;
 				zeitLoeschen();
 				break;
 			}
-			if( (sAktion== "Termin unten anschlieﬂen")){
+			if( (sAktion== "Termin unten anschlie√üen")){
 				iAktion = 2;
 				zeitLoeschen();
 				break;
@@ -258,12 +260,12 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 			for (int i = 0 ; i < 1 ; i++){
-				if( (sAktion =="Termin oben anschlieﬂen")){
+				if( (sAktion =="Termin oben anschlieÔøΩen")){
 					iAktion = 1;
 					zeitLoeschen();
 					break;
 				}
-				if( (sAktion== "Termin unten anschlieﬂen")){
+				if( (sAktion== "Termin unten anschlieÔøΩen")){
 					iAktion = 2;
 					zeitLoeschen();
 					break;

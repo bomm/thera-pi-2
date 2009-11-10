@@ -93,7 +93,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		jtp.addMouseMotionListener(mymouse);
 		jtp.setContentContainer(getSetWahl());
 		jtp.setTitleForeground(Color.WHITE);
-		jtp.setTitle("Brief / Formular auswählen");
+		jtp.setTitle("Brief / Formular auswÃ¤hlen");
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName("KFormularWahl");
@@ -226,7 +226,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 			}	
 		}
 		if (arg0.getKeyCode()==27){
-			System.out.println("ESC gedrückt");	
+			System.out.println("ESC gedrï¿½ckt");	
 			tfrueck.setText(Integer.toString(-1));
 			//KassenPanel.thisClass.iformular = -1;
 			DialogBeenden(-1);
@@ -258,7 +258,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println("****************Schließen des KassenFormular **************");
+		System.out.println("****************Schlieï¿½en des KassenFormular **************");
 		String ss =  getName();
 		System.out.println(getName()+" Eltern "+ss);
 		try{
@@ -267,7 +267,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			}	
 		}catch(NullPointerException ne){
-			System.out.println("Schließen des KassenFormular" +evt);
+			System.out.println("Schlieï¿½en des KassenFormular" +evt);
 		}
 	}
 

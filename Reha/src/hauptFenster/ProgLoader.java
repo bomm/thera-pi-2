@@ -257,11 +257,13 @@ public void ArztFenster(int setPos,String aid) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)arztjry,containerNr,(Container)arztjry.getContentPane());
 	arztjry.setName(name);
 	arztjry.setSize(new Dimension(650,500));
+	arztjry.setPreferredSize(new Dimension(650,500));
 	Reha.thisClass.arztpanel = new ArztPanel(arztjry,aid); 
 	arztjry.setContent(Reha.thisClass.arztpanel);	
 	arztjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	arztjry.setLocation(comps*10, comps*10);
+	arztjry.pack();
 	arztjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(arztjry);
 	((JRehaInternal)arztjry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
@@ -347,11 +349,13 @@ public void Abrechnung1Fenster(int setPos) {
 	AktiveFenster.setNeuesFenster("Abrechnung-1",(JComponent)abrechjry,1,(Container)abrechjry.getContentPane());
 	abrechjry.setName(name);
 	abrechjry.setSize(new Dimension(650,500));
+	abrechjry.setPreferredSize(new Dimension(650,500));
 	Reha.thisClass.abrechnung1panel = new Abrechnung1(abrechjry); 
 	abrechjry.setContent(Reha.thisClass.abrechnung1panel);	
 	abrechjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	abrechjry.setLocation(comps*10, comps*10);
+	abrechjry.pack();
 	abrechjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(abrechjry);
 	//((JRehaInternal)abrechjry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
@@ -422,6 +426,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,0,(Container)patjry.getContentPane());
 	patjry.setName(name);
 	patjry.setSize(new Dimension(900,650));
+	patjry.setPreferredSize(new Dimension(900,650));
 	//PatGrundPanel patpan = new PatGrundPanel(jry);
 	//patjry.setContent(new PatGrundPanel(patjry));
 
@@ -431,6 +436,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	patjry.setLocation(comps*10, comps*10);
+	patjry.pack();
 	patjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(patjry);
 	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
