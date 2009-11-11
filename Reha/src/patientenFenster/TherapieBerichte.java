@@ -71,7 +71,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		setBorder(null);
 		setLayout(new BorderLayout());
 		
-		leerPanel = new KeinRezept("Keine Berichte angelegt für diesen Patient");
+		leerPanel = new KeinRezept("Keine Berichte angelegt fÃ¼r diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 
@@ -257,13 +257,13 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		if(wahl < 0){
 			return;
 		}
-		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den ausgewählten Bericht wirklich löschen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den ausgewÃ¤hlten Bericht wirklich lÃ¶schen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.NO_OPTION){
 			return;
 		}
 		String xpat_int = Reha.thisClass.patpanel.patDaten.get(29);
 		String berid = (String)tabbericht.getValueAt(wahl,0);
-		// zunächst aus der berhist löschen
+		// zunï¿½chst aus der berhist lï¿½schen
 		String xcmd = "delete from berhist where berichtid='"+berid+"'";
 		new ExUndHop().setzeStatement(xcmd);
 		// jetzt ermitteln ob tabelle bericht1 (Therapeuten) oder bericht2 (Arzt) betroffen ist. 
@@ -279,7 +279,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			new ExUndHop().setzeStatement(xcmd);
 		}
 		if(vec.size()>0){
-			// in verordn und in lza löschversuch
+			// in verordn und in lza lï¿½schversuch
 			xcmd = "update verordn set berid='-1' where rez_nr='"+vec.get(0)+"'";
 			System.out.println(xcmd);
 			new ExUndHop().setzeStatement(xcmd);
@@ -338,7 +338,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyBerichtTableModel();
-		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung",""};
+		String[] column = 	{"ID","Titel","Verfasser","erstellt","EmpfÃ¤nger","letzte Ã„nderung",""};
 		dtblm.setColumnIdentifiers(column);
 		tabbericht = new JXTable(dtblm);
 		tabbericht.setEditable(true);
@@ -346,7 +346,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2){
-					// hier prüfen welcher Berichtstyp und dementsprechend das Berichtsfenster öffnen
+					// hier prï¿½fen welcher Berichtstyp und dementsprechend das Berichtsfenster ï¿½ffnen
 					///neuanlageRezept(false,"");
 					int wahl = tabbericht.getSelectedRow();
 					if(wahl < 0){
@@ -399,13 +399,13 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		jtb.add(tberbut[0]);
 		tberbut[1] = new JButton();
 		tberbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		tberbut[1].setToolTipText("ausgewählten Bericht ändern//editieren");
+		tberbut[1].setToolTipText("ausgewÃ¤hlten Bericht Ã¤ndern//editieren");
 		tberbut[1].setActionCommand("beredit");
 		tberbut[1].addActionListener(this);		
 		jtb.add(tberbut[1]);
 		tberbut[2] = new JButton();
 		tberbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		tberbut[2].setToolTipText("ausgewählten Bericht löschen");
+		tberbut[2].setToolTipText("ausgewÃ¤hlten Bericht lÃ¶schen");
 		tberbut[2].setActionCommand("berdelete");
 		tberbut[2].addActionListener(this);		
 		jtb.add(tberbut[2]);

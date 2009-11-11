@@ -148,7 +148,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		setBorder(null);
 		setLayout(new BorderLayout());
 		
-		leerPanel = new KeinRezept("Keine Rezepte angelegt f�r diesen Patient");
+		leerPanel = new KeinRezept("Keine Rezepte angelegt für diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 		
@@ -269,9 +269,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
     		System.out.println("Es wurde Formular "+iformular+" gew�hlt");
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
+			String mes = "Wenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
 			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
-			"Aber tr�sten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
+			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
 			"Sie dürfen also hoffen....\n\n";
 			JOptionPane.showMessageDialog(null, mes);
 			iformular = -1;
@@ -763,7 +763,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		tabaktterm.validate();
 		tabaktterm.repaint();
-		anzahlTermine.setText("Anzahl Terimine: "+lines);
+		anzahlTermine.setText("Anzahl Termine: "+lines);
 		if(lines > 0){
 			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
@@ -789,7 +789,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(terms==null){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");
+			anzahlTermine.setText("Anzahl Termine: 0");
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
 			inEinzelTermine = false;
@@ -798,7 +798,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(terms.equals("")){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");
+			anzahlTermine.setText("Anzahl Termine: 0");
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
 			inEinzelTermine = false;

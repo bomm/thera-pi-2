@@ -43,7 +43,7 @@ public class TermineErfassen implements Runnable {
 	@Override
 	public void run() {
 		heute = DatFunk.sHeute();
-		copyright = "© ";
+		copyright = "\u00A9 ";
 		int ret = -1;
 		try {
 			if((ret = testeVerordnung())==0){
@@ -79,7 +79,7 @@ public class TermineErfassen implements Runnable {
 					case 2:
 						System.out.println("Das Rezept wurde bereits abgerechnet");
 					case 3:
-						System.out.println("Das Rezept wurde an diesen Tag bereits erfaßt");
+						System.out.println("Das Rezept wurde an diesen Tag bereits erfaï¿½t");
 					}
 				}
 			}
@@ -118,7 +118,7 @@ public class TermineErfassen implements Runnable {
 		String termine = (String)vec.get(0);
 		
 		if(termine.contains(DatFunk.sHeute())){
-			//JOptionPane.showMessageDialog(null, "Dieser Termin wurde heute bereits erfaßt");
+			//JOptionPane.showMessageDialog(null, "Dieser Termin wurde heute bereits erfaï¿½t");
 			return 3;
 		}
 		unter18 =  ( ((String)vec.get(7)).equals("T") ? true : false );
@@ -198,7 +198,7 @@ public class TermineErfassen implements Runnable {
 				/*
 				}else{
 					JOptionPane.showMessageDialog(null, "Die Spalte ist momentan gesperrt, der Termin kann zwar\n"+
-					"nicht markiert werden, wird aber im Rezeptstamm erfaßt");
+					"nicht markiert werden, wird aber im Rezeptstamm erfaï¿½t");
 				}
 				*/
 				ret = true;
@@ -326,7 +326,7 @@ public class TermineErfassen implements Runnable {
 		if(termOk){
 			Reha.thisClass.terminpanel.ViewPanel.repaint();			
 		}
-		//System.out.println("Anzahl zusätzlicher Fundstellen = "+mehrstellen);
+		//System.out.println("Anzahl zusï¿½tzlicher Fundstellen = "+mehrstellen);
 	}
 	
 	
@@ -356,15 +356,15 @@ public class TermineErfassen implements Runnable {
 			if(anzahl >= lautrezept){
 				String message = "";
 				if(anzahl == lautrezept){
-					message = "Auf dieses Rezept wurden bereits "+anzahl+" Behandlungen durchgeführt!"+
+					message = "Auf dieses Rezept wurden bereits "+anzahl+" Behandlungen durchgefÃ¼hrt!"+
 					"\nVerordnete Menge ist "+lautrezept+
-					"\nDas Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr\n"+
+					"\nDas Rezept ist somit bereits voll und darf fÃ¼r aktuelle Behandlung nicht mehr\n"+
 					"verwendet werden!!!!\n\n"+
 					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?";
 				}else{
-					message = "Auf dieses Rezept wurden bereits "+anzahl+" Behandlungen durchgeführt!"+
+					message = "Auf dieses Rezept wurden bereits "+anzahl+" Behandlungen durchgefÃ¼hrt!"+
 					"\nVerordnete Menge ist "+lautrezept+
-					"\nDas Rezept ist somit bereits übervoll und darf für aktuelle Behandlung nicht mehr\n"+
+					"\nDas Rezept ist somit bereits Ã¼bervoll und darf fÃ¼r aktuelle Behandlung nicht mehr\n"+
 					"verwendet werden!!!!\n\n"+
 					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?";
 				}
@@ -386,7 +386,7 @@ public class TermineErfassen implements Runnable {
 		if(!unter18 && !vorjahrfrei){
 			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
 		}else if(unter18 && !vorjahrfrei){
-			/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ändern;
+			/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ï¿½ndern;
 			String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
 			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(geboren))){
 				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");				

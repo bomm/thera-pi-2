@@ -68,7 +68,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
-		leerPanel = new KeinRezept("noch keine Gutachten angelegt für diesen Patient");
+		leerPanel = new KeinRezept("noch keine Gutachten angelegt fÃ¼r diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 		
@@ -129,7 +129,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyGutachtenTableModel();
-		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung","",""};
+		String[] column = 	{"ID","Titel","Verfasser","erstellt","EmpfÃ¤nger","letzte Ã„nderung","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabbericht = new JXTable(dtblm);
 		tabbericht.setEditable(true);
@@ -137,7 +137,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2){
-					// hier prüfen welcher Berichtstyp und dementsprechend das Berichtsfenster öffnen
+					// hier prï¿½fen welcher Berichtstyp und dementsprechend das Berichtsfenster ï¿½ffnen
 					///neuanlageRezept(false,"");
 					int wahl = tabbericht.getSelectedRow();
 					if(wahl < 0){
@@ -308,14 +308,14 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 
 		gutbut[1] = new JButton();
 		gutbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		gutbut[1].setToolTipText("Bestehendes Gutachten ändern/editieren");
+		gutbut[1].setToolTipText("Bestehendes Gutachten Ã¤ndern/editieren");
 		gutbut[1].setActionCommand("gutedit");
 		gutbut[1].addActionListener(this);		
 		jtb.add(gutbut[1]);
 
 		gutbut[2] = new JButton();
 		gutbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		gutbut[2].setToolTipText("Gutachten löschen");
+		gutbut[2].setToolTipText("Gutachten lÃ¶schen");
 		gutbut[2].setActionCommand("gutdelete");
 		gutbut[2].addActionListener(this);		
 		jtb.add(gutbut[2]);
@@ -324,7 +324,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		
 		gutbut[3] = new JButton();
 		gutbut[3].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		gutbut[3].setToolTipText("Werkzeuge für Gutachte");
+		gutbut[3].setToolTipText("Werkzeuge fÃ¼r Gutachte");
 		gutbut[3].setActionCommand("guttools");
 		gutbut[3].addActionListener(this);		
 		jtb.add(gutbut[3]);
@@ -373,7 +373,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 						gwahl.setVisible(true);
 						//gwahl.setModal(true);
 						
-						System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
+						System.out.println("Der RÃ¼ckgabewert der Auswahl = "+tf.getText() );
 						if(tf.getText().equalsIgnoreCase("ebericht")){
 							Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,""); 
 							//ProgLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,"" );			
@@ -400,18 +400,18 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		}
 		if(cmd.equals("gutdelete")){
 			if(aktPanel.equals("leerPanel")){
-				JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
-						"....und welches der nicht vorhandenen Gutachten möchten Sie bitteschön löschen....");
+				JOptionPane.showMessageDialog(null,"Oh Herr laÃŸ halten...\n\n"+
+						"....und welches der nicht vorhandenen Gutachten mÃ¶chten Sie bitteschÃ¶n lÃ¶schen....");
 				return;
 			}
 			int currow = tabbericht.getSelectedRow();
 			int anzrow = tabbericht.getRowCount();
 			if(currow == -1){
-				JOptionPane.showMessageDialog(null,"Kein Gutachten zum -> löschen <- ausgewählt");
+				JOptionPane.showMessageDialog(null,"Kein Gutachten zum -> lÃ¶schen <- ausgewÃ¤hlt");
 				return;
 			}
 			String berichtid = (String)tabbericht.getValueAt(currow, 0);
-			int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Gutachten mit der ID:"+berichtid+" wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Gutachten mit der ID:"+berichtid+" wirklich lÃ¶schen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
 			}

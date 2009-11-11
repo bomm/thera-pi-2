@@ -29,6 +29,11 @@ public JRtaCheckBox(String ss){
 	addActionListener(this);
 	setOpaque(false);
 }
+public void listenerLoeschen(){
+	this.removeFocusListener(this);
+	this.removeKeyListener(this);
+	this.removeActionListener(this);
+}
 
 
 @Override

@@ -27,6 +27,13 @@ public JRtaRadioButton(String ss){
 	addActionListener(this);
 }
 
+public void listenerLoeschen(){
+	this.removeFocusListener(this);
+	this.removeKeyListener(this);
+	this.removeActionListener(this);
+}
+
+
 
 @Override
 public void propertyChange(PropertyChangeEvent arg0) {

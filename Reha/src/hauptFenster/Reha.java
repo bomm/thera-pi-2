@@ -416,9 +416,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 		
 			try {
+				//UIManager.setLookAndFeel((aktLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"));
+				
 				UIManager.setLookAndFeel((aktLookAndFeel = SystemConfig.aHauptFenster.get(4)));
 
-	} catch (ClassNotFoundException e1) {
+			} catch (ClassNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (InstantiationException e1) {
@@ -431,6 +433,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			
 			
 			/***********************/
 			Color c = UIManager.getColor("Button.disabledForeground");
@@ -477,7 +480,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             	  UIManager.put(key, fontUIDresource);
               }
            }
-        
+          
            //new ListUIManagerValues();
            
 		SwingUtilities.invokeLater(new Runnable() {

@@ -212,7 +212,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
-		leerPanel = new KeinRezept("noch keine Dokumentation angelegt für diesen Patient");
+		leerPanel = new KeinRezept("noch keine Dokumentation angelegt fÃ¼r diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 		leerInfo = getInfoPanelLeer();
@@ -254,7 +254,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				vollPanel.setOpaque(false);
 				vollPanel.setBorder(null);
 				
-				Font font = new Font("Tahome",Font.PLAIN,11);
+				Font font = new Font("Tahoma",Font.PLAIN,11);
 				anzahlDokus = new JLabel("Anzahl gespeicherter Dokumentationen: 0");
 				anzahlDokus.setFont(font);
 				vollPanel.add(anzahlDokus,vpcc.xy(1,1));
@@ -322,11 +322,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		//JPanel dummy2 = new JXPanel();
 		//dummy2.setBackground(Color.RED);
 		Font fon = new Font("Tahoma",Font.BOLD,10);
-		JLabel jlab = new JLabel("Geräte-Info");
+		JLabel jlab = new JLabel("GerÃ¤te-Info");
 		jlab.setFont(new Font("Tahoma",Font.BOLD,14));
 		jlab.setForeground(Color.BLUE);
 		pb.add(jlab,cc.xy(2,2));
-		pb.addLabel("aktives Gerät:",cc.xy(4, 4));
+		pb.addLabel("aktives GerÃ¤t:",cc.xy(4, 4));
 		if(! scanaktiv){
 			infolab[0] = new JLabel("Scanner nicht aktiviert");
 			infolab[0].setFont(fon);
@@ -340,7 +340,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		infolab[1] = new JLabel(SystemConfig.hmDokuScanner.get("farben"));
 		infolab[1].setFont(fon);		
 		pb.add(infolab[1],cc.xy(6,6));
-		pb.addLabel("Auflösung:",cc.xy(8, 4));
+		pb.addLabel("AuflÃ¶sung:",cc.xy(8, 4));
 		infolab[2] = new JLabel(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		infolab[2].setFont(fon);		
 		pb.add(infolab[2],cc.xy(10,4));
@@ -363,11 +363,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		Font fon = new Font("Tahoma",Font.BOLD,10);
-		JLabel jlab = new JLabel("Geräte-Info");
+		JLabel jlab = new JLabel("Gerï¿½te-Info");
 		jlab.setFont(new Font("Tahoma",Font.BOLD,14));
 		jlab.setForeground(Color.BLUE);
 		pb.add(jlab,cc.xy(2,2));
-		pb.addLabel("aktives Gerät:",cc.xy(4, 4));
+		pb.addLabel("aktives GerÃ¤t:",cc.xy(4, 4));
 		if(! scanaktiv){
 			infolabLeer[0] = new JLabel("Scanner nicht aktiviert");
 			infolabLeer[0].setFont(fon);
@@ -381,7 +381,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		infolabLeer[1] = new JLabel(SystemConfig.hmDokuScanner.get("farben"));
 		infolabLeer[1].setFont(fon);		
 		pb.add(infolabLeer[1],cc.xy(6,6));
-		pb.addLabel("Auflösung:",cc.xy(8, 4));
+		pb.addLabel("AuflÃ¶sung:",cc.xy(8, 4));
 		infolabLeer[2] = new JLabel(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		infolabLeer[2].setFont(fon);		
 		pb.add(infolabLeer[2],cc.xy(10,4));
@@ -436,7 +436,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		tabIcons[2]= new ImageIcon(SystemConfig.hmSysIcons.get("ooocalc").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH));
 
 		dtblm = new MyDoku2TableModel();
-		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaßt am","von","","",""};
+		String[] column = 	{"Doku-Id","Doku-Art","Titel","erfaÃŸt am","von","","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabdokus = new JXTable(dtblm);
 		tabdokus.setRowHeight(tabdokus.getRowHeight()+10);
@@ -719,7 +719,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		dokubut[5] = new JButton();
 		dokubut[5].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		dokubut[5].setToolTipText("Dokumentation löschen");
+		dokubut[5].setToolTipText("Dokumentation lÃ¶schen");
 		dokubut[5].setActionCommand("delete");
 		dokubut[5].setEnabled(false);
 		dokubut[5].addActionListener(this);
@@ -747,7 +747,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 		dokubut[1] = new JButton();
 		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		dokubut[1].setToolTipText("Scannereinstellungen ändern");
+		dokubut[1].setToolTipText("Scannereinstellungen Ã¤ndern");
 		dokubut[1].setActionCommand("scanedit");
 		dokubut[1].addActionListener(this);		
 		jtb.add(dokubut[1]);
@@ -888,7 +888,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//rehaSplash = new RehaSplash(null,"Erstelle Dokumentation");
 			//rehaSplash.setVisible(true);
 			String value = (String)JOptionPane.showInputDialog(null,
-					"Bitte einen Titel für die Dokumentation eingeben\n\n", "Benutzereingabe erforderlich....", JOptionPane.PLAIN_MESSAGE, null,
+					"Bitte einen Titel fÃ¼r die Dokumentation eingeben\n\n", "Benutzereingabe erforderlich....", JOptionPane.PLAIN_MESSAGE, null,
 					null, "Eingescannte Therapeuten-Doku");
 			if( (value == null) || (value.length()==0)){
 				JOptionPane.showMessageDialog(null, "Kein Titel - kein speichern. Ganz einfach!!");
@@ -929,7 +929,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if(row >= 0){
 						
 						String sdokuid = (String)tabdokus.getValueAt(row, 0);
-						int frage = JOptionPane.showConfirmDialog(null, "Soll die Dokumentation mit der ID-"+sdokuid+" wirklich gelöscht werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+						int frage = JOptionPane.showConfirmDialog(null, "Soll die Dokumentation mit der ID-"+sdokuid+" wirklich gelï¿½scht werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 						if(frage == JOptionPane.NO_OPTION){
 							return null;
 						}
@@ -999,7 +999,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				
 			}else{
-				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich OpenOffice Writer und Calc Dateien unterstützt");
+				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich OpenOffice Writer und Calc Dateien unterstÃ¼tzt");
 				return;
 			}
 		}
@@ -1012,7 +1012,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			System.out.println(bild[1].replaceAll("\\\\", "/"));
 			String bildpfad = bild[1].replaceAll("\\\\", "/");
 			if(! bildpfad.toLowerCase().endsWith(".jpg")){
-				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstützt");
+				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstÃ¼tzt");
 				return;
 			}
 			if(aktPanel.equals("leerPanel")){
@@ -1070,15 +1070,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				e.printStackTrace();
 			} catch (OutOfMemoryError ome) {
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				String  cmd = "Die Bilder sind (zusammen) zu groß für Arbeitsspeicher.\nSpeichern Sie jedes Bild einzeln als Dokumentation";
+				String  cmd = "Die Bilder sind (zusammen) zu groÃŸ fÃ¼r Arbeitsspeicher.\nSpeichern Sie jedes Bild einzeln als Dokumentation";
 				JOptionPane.showMessageDialog(null, cmd);
-				//System.err.println("Bild zu groß für Arbeitsspeicher.\nSpeichern Sie nur dieses Bild in einer eigenen Dokumentation");
+				//System.err.println("Bild zu groï¿½ fï¿½r Arbeitsspeicher.\nSpeichern Sie nur dieses Bild in einer eigenen Dokumentation");
 			}
 		}	
 	}
 	private String[] oeffneBild(String[] pattern,boolean mitVorschau){
 		String[] sret = {};
-		JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+		JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if(mitVorschau){
@@ -1147,7 +1147,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 	private void doDokudelete(){
 		if(this.aktivesBild <= 0){
-			JOptionPane.showMessageDialog(null, "Es wurde keine Seite zum Löschen ausgewählt");	
+			JOptionPane.showMessageDialog(null, "Es wurde keine Seite zum LÃ¶schen ausgewÃ¤hlt");	
 			return;
 		}
 		if(vecBilderPfad.size()==1){
@@ -1196,7 +1196,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		FileOutputStream fout = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			//rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
-			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
+			System.out.println("Sende Seitengrï¿½ï¿½e an Funktion "+vecBilderFormat.get(i));
 			Rectangle format = null;
 			try {
 			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
@@ -1258,7 +1258,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		PdfReader reader = null;
 		PdfCopy copy = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
-			//rehaSplash.setNewText("Seiten zusammenführen - Seite"+(i+1)+" von "+vecBilderPfad.size());
+			//rehaSplash.setNewText("Seiten zusammenfï¿½hren - Seite"+(i+1)+" von "+vecBilderPfad.size());
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
 			System.out.println("Das Format = "+format);
 			
@@ -1296,7 +1296,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			ps.setBytes(5,   //pat_intern - integer			    			    
 			ps.setBytes(6,   //format - integer
 			ps.setBytes(7,   //dokutext - longtext								
-			ps.setBytes(8,   //dokublob - longblog /binär	
+			ps.setBytes(8,   //dokublob - longblog /binï¿½r	
 			public static void doSpeichernDoku(
 			int dokuid,
 			int pat_intern, 
@@ -1324,7 +1324,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			dokubut[1].setEnabled(true);
 			this.holeDokus(Reha.thisClass.patpanel.aktPatID,Integer.toString(dokuid));
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert für Patient-Nr.: "+pat_int);
+			JOptionPane.showMessageDialog(null,"Dokumentation wurde gespeichert fÃ¼r Patient-Nr.: "+pat_int);
 			//annika.setText("");
 			//annika.requestFocus();
 
@@ -1502,7 +1502,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
     				source.getCapability(TwainConstants.ICAP_XRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi);
     				source.getCapability(TwainConstants.ICAP_YRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi); 
 
-    				if(SystemConfig.hmDokuScanner.get("farben").equals("Schwarz/Weiß")){
+    				if(SystemConfig.hmDokuScanner.get("farben").equals("Schwarz/Weiï¿½")){
     					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_BW); 
     				}else if(SystemConfig.hmDokuScanner.get("farben").equals("Graustufen")){
     					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_GRAY); 
@@ -1552,8 +1552,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
 			System.out.println("Exception in EXEPTION");
     	    if(!metadata.getException().getMessage().contains("Failed during call to twain source")){
-        	    JOptionPane.showMessageDialog(null,"Bezug des Scans fehlgeschlagen.\nVersuchen Sie es mit einer niedrigeren Auflösung\n\n"+
-	    		"Ideale Auflösung für Dokumentation: 150dpi");
+        	    JOptionPane.showMessageDialog(null,"Bezug des Scans fehlgeschlagen.\nVersuchen Sie es mit einer niedrigeren AuflÃ¶sung\n\n"+
+	    		"Ideale AuflÃ¶sung fÃ¼r Dokumentation: 150dpi");
     	    }
 			
     	    scanner.removeListener(this);
@@ -1622,7 +1622,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		lab.addMouseListener(mlist);
 		lab.setName(name);
-		lab.setToolTipText("Doppelklick um "+lab.getText()+" zu öffnen");
+		lab.setToolTipText("Doppelklick um "+lab.getText()+" zu ï¿½ffnen");
 		lab.setHorizontalTextPosition(JLabel.CENTER);
 		lab.setVerticalTextPosition(JLabel.BOTTOM);
 		lab.setIcon(icon);
@@ -1659,7 +1659,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 /*****************/
 				Document document = null;
 					String datname = "";
-					System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(seite));
+					System.out.println("Sende SeitengrÃ¶ÃŸe an Funktion "+vecBilderFormat.get(seite));
 					//Rectangle format = PageSize.A4.rotate();
 					Rectangle format = null;
 					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
@@ -1783,14 +1783,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 		pmbut[0] = new JButton();
 		pmbut[0].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		pmbut[0].setToolTipText("Aktive Dokuseite löschen");
+		pmbut[0].setToolTipText("Aktive Dokuseite lÃ¶schen");
 		pmbut[0].setActionCommand("Dokudelete");
 		pmbut[0].addActionListener(this);
 		jtbpm.add(pmbut[0]);
 
 		pmbut[1] = new JButton();
 		pmbut[1].setIcon(SystemConfig.hmSysIcons.get("save"));
-		pmbut[1].setToolTipText("Seiten zusammenführen und Dokumentation erstellen");
+		pmbut[1].setToolTipText("Seiten zusammenfÃ¼hren und Dokumentation erstellen");
 		pmbut[1].setActionCommand("Dokusave");
 		pmbut[1].addActionListener(this);
 		jtbpm.add(pmbut[1]);
@@ -1947,7 +1947,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-		//{"Doku-Id","Doku-Art","Titel","erfaßt am","von","",""};
+		//{"Doku-Id","Doku-Art","Titel","erfaï¿½t am","von","",""};
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 				Vector vec = SqlInfo.holeSaetze("doku1", 
 						"dokuid,format,dokutitel,DATE_FORMAT(datum,'%d.%m.%Y') AS dokudatum," +
@@ -2093,7 +2093,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(5,   //pat_intern - integer			    			    
 				ps.setBytes(6,   //format - integer
 				ps.setBytes(7,   //dokutext - longtext								
-				ps.setBytes(8,   //dokublob - longblog /binär
+				ps.setBytes(8,   //dokublob - longblog /binï¿½r
 				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
 			  System.out.println("Setze InputStream "+dateiname);
@@ -2170,7 +2170,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(5,   //pat_intern - integer			    			    
 				ps.setBytes(6,   //format - integer
 				ps.setBytes(7,   //dokutext - longtext								
-				ps.setBytes(8,   //dokublob - longblog /binär
+				ps.setBytes(8,   //dokublob - longblog /binï¿½r
 				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
 			  System.out.println("Setze InputStream "+dateiname);
@@ -2202,10 +2202,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  ps.setString(4,new Integer(dokuid).toString());
 				  ps.execute();
 				  System.out.println("Fertig mit execute");
-				  System.out.println("Größe des Datenstroms="+b.length+" Bytes");
+				  System.out.println("Grï¿½ï¿½e des Datenstroms="+b.length+" Bytes");
 				  System.out.println("Datei = "+f.getAbsolutePath());
 				  System.out.println("dokuid = "+Integer.toString(dokuid));
-				  System.out.println("Dateigröße = "+b.length+" Bytes");
+				  System.out.println("Dateigrï¿½ï¿½e = "+b.length+" Bytes");
 				  System.out.println("Datum = "+DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  f.delete();
 				  Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -2444,7 +2444,7 @@ class OoListener implements IDocumentListener {
 				Thread.sleep(50);
 				new Thread(){
 					public void run(){				
-				int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+xfile+" wurde geändert\n\nWollen Sie die geänderte Fassung in die Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+xfile+" wurde geÃ¤ndert\n\nWollen Sie die geÃ¤nderte Fassung in die Patienten-Dokumentation Ã¼bernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.YES_OPTION){
 					geaendert = false;
 							try {
@@ -2458,13 +2458,13 @@ class OoListener implements IDocumentListener {
 				}
 
 				//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-				System.out.println("Listener entfernt - Datei geändert "+xfile);
+				System.out.println("Listener entfernt - Datei geÃ¤ndert "+xfile);
 					}
 				}.start();
 				arg0.getDocument().removeDocumentListener(this);				
 			}else if(datei.equals(file) && !geaendert){
 				arg0.getDocument().removeDocumentListener(this);
-				System.out.println("Listener entfernt - Datei nicht geändert"+file);
+				System.out.println("Listener entfernt - Datei nicht geÃ¤ndert"+file);
 			}
 
 		} catch (ag.ion.bion.officelayer.document.DocumentException e) {

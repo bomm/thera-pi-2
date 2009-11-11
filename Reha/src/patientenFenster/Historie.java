@@ -98,7 +98,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
-		leerPanel = new KeinRezept("noch keine Rezepte in der Historie f�r diesen Patient");
+		leerPanel = new KeinRezept("noch keine Rezepte in der Historie für diesen Patient");
 		leerPanel.setName("leerpanel");
 		leerPanel.setOpaque(false);
 		
@@ -230,7 +230,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
 		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
-		jbut.setToolTipText("Termin l�schen");
+		jbut.setToolTipText("Termin löschen");
 		jbut.setActionCommand("terminminus");
 		jbut.addActionListener(this);
 		jbut.setEnabled(false);		
@@ -459,13 +459,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		if(terms==null){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");			
+			anzahlTermine.setText("Anzahl Termine: 0");			
 			return;
 		}
 		if(terms.equals("")){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
-			anzahlTermine.setText("Anzahl Terimine: 0");
+			anzahlTermine.setText("Anzahl Termine: 0");
 			return;
 		}
 		String[] tlines = terms.split("\n");
@@ -490,7 +490,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			//System.out.println("Termivector = "+tvec);
 			dtermm.addRow((Vector)tvec.clone());
 		}
-		anzahlTermine.setText("Anzahl Terimine: "+lines);
+		anzahlTermine.setText("Anzahl Termine: "+lines);
 		
 		
 	}

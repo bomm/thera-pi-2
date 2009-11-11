@@ -529,7 +529,7 @@ private void starteFormulare(){
 public void delete(){
 	if(!aktPatID.equals("")){
 		String spat = ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geb.am "+ptfield[4].getText().trim();
-    	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie Patient -> "+spat+" <- wirklich l�schen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+    	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie Patient -> "+spat+" <- wirklich löschen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
     	if(frage != JOptionPane.YES_OPTION){
     		return;
     	}
@@ -538,7 +538,7 @@ public void delete(){
 		allesAufNull();
 		setzeFocus();
 	}else{
-		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bittesch�n wollen Sie l�schen?");
+		JOptionPane.showMessageDialog(null, "Welchen Patient bitteschön wollen Sie löschen?");
 		setzeFocus();
 		return;
 	}
@@ -547,7 +547,7 @@ public void edit(){
 	if(!aktPatID.equals("")){
 		Reha.thisClass.patpanel.neuanlagePatient(false,"");	
 	}else{
-		JOptionPane.showMessageDialog(null, "Depp - welchen Patient bittesch�n wollen Sie editieren?");
+		JOptionPane.showMessageDialog(null, "Welchen Patient bitteschön wollen Sie editieren?");
 		setzeFocus();
 		return;
 	}
@@ -932,14 +932,14 @@ class SuchePanel extends JXPanel implements ActionListener{
 
 		jbut[1] = new JButton();
 		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		jbut[1].setToolTipText("aktuellen Patient �ndern/editieren (Alt+E)");		
+		jbut[1].setToolTipText("aktuellen Patient ändern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
 
 		jbut[2] = new JButton();
 		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		jbut[2].setToolTipText("Patient l�schen (Alt+L)");
+		jbut[2].setToolTipText("Patient löschen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
 		jtb.add(jbut[2]);
@@ -948,21 +948,21 @@ class SuchePanel extends JXPanel implements ActionListener{
 
 		jbut[3] = new JButton();
 		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
-		jbut[3].setToolTipText("Brief/Formular f�r Patient erstellen (Alt+B)");
+		jbut[3].setToolTipText("Brief/Formular für Patient erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);
 		jtb.add(jbut[3]);
 
 		jbut[4] = new JButton();
 		jbut[4].setIcon(SystemConfig.hmSysIcons.get("email"));
-		jbut[4].setToolTipText("(e)Mail f�r Patient erstellen (Alt+M)");
+		jbut[4].setToolTipText("(e)Mail für Patient erstellen (Alt+M)");
 		jbut[4].setActionCommand("email");
 		jbut[4].addActionListener(this);
 		jtb.add(jbut[4]);
 
 		jbut[5] = new JButton();
 		jbut[5].setIcon(SystemConfig.hmSysIcons.get("sms"));
-		jbut[5].setToolTipText("SMS f�r Patient erstellen (Alt+S)");
+		jbut[5].setToolTipText("SMS für Patient erstellen (Alt+S)");
 		jbut[5].setActionCommand("sms");
 		jbut[5].addActionListener(this);
 		jtb.add(jbut[5]);

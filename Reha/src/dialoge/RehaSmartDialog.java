@@ -94,7 +94,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		
 		try {
 
-			UIManager.setLookAndFeel(SystemConfig.aHauptFenster.get(4));
+			UIManager.setLookAndFeel(Reha.aktLookAndFeel);
 			
 		} catch (ClassNotFoundException e1) {
 			// TODO Auto-generated catch block

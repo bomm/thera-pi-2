@@ -57,6 +57,13 @@ public JRtaComboBox(Vector<Vector<String>> ve,int item,int ret){
 	addKeyListener(this);
 	addActionListener(this);
 }
+
+public void listenerLoeschen(){
+	this.removeFocusListener(this);
+	this.removeKeyListener(this);
+	this.removeActionListener(this);
+}
+
 public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
 	this.removeAllItems();
 	this.vec = ve;

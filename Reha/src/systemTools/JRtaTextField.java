@@ -152,6 +152,11 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		jcomp.setDisabledTextColor(c);
 	}
 	
+	public void listenerLoeschen(){
+		this.removeFocusListener(this);
+		this.removeKeyListener(this);
+	}
+	
 	
     protected MaskFormatter createFormatter(String s) {
         MaskFormatter formatter = null;

@@ -710,7 +710,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      if(behandler <= -1){
 					    	  return;
 					      }
-					      DRAG_PAT = 	 ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("� ", "");
+					      DRAG_PAT = 	 ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("\u00A9 ", "");
 					      DRAG_NUMMER = 	 (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) ;
 					      DRAG_UHR =   (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) ;
 					      altaktiveSpalte = aktiveSpalte.clone();
@@ -2596,7 +2596,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if (aktbehandler == -1){
 			return;
 		}
-		datenSpeicher[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("� ", "");		
+		datenSpeicher[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("\u00A9 ", "");		
 		datenSpeicher[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		datenSpeicher[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);		
 
@@ -2618,7 +2618,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			return srueck;
 		}
 		try{
-		srueck[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("� ", "");		
+		srueck[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("\u00A9 ", "");		
 		srueck[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		srueck[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);
 		return srueck;
@@ -2654,7 +2654,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					"Der Patient --> "+datenSpeicher[0]+" <--ist jetzt NEU im internen Speicher.\n\n"+
 					"BISLANG war der Patient --> "+terminVergabe.get(anzahl-1)[8]+" <-- im Speicher und damit in der Druckliste.\n"+
 					"Soll die bisherige Druckliste gel�scht werden und der Patient "+datenSpeicher[0]+
-					" �bernommen werden?\n\n";
+					" übernommen werden?\n\n";
 					String meldungText = "Achtung!!! - wichtige Benutzeranfrage";
 					int abfrage = JOptionPane.showConfirmDialog(null,confText,meldungText,JOptionPane.YES_NO_OPTION);
 					if (abfrage == JOptionPane.YES_OPTION) {
@@ -3602,7 +3602,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		final String swreznum = sreznum;
 		final String sworigreznum = sorigreznum;		
 		final String swaltname = sname;
-		final String swname = sname.replaceAll("� ","");
+		final String swname = sname.replaceAll("\u00A9 ","");
 		final String swbeginn = sbeginn;
 
 		final int swbehandler = xaktBehandler; 
@@ -3612,14 +3612,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			protected Void doInBackground() throws Exception {
 				Vector vec = null;
 				Vector tvec = null;
-				String copyright = "� ";
+				String copyright = "\u00A9 ";
 				try{
 				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 				if (vec.size() > 0){
 					StringBuffer termbuf = new StringBuffer();
 					termbuf.append((String) vec.get(0));
 					if(termbuf.toString().contains(DatFunk.sHeute())){
-						JOptionPane.showMessageDialog(null, "Dieser Termin ist am heutigen Tag bereits erfa�t");
+						JOptionPane.showMessageDialog(null, "Dieser Termin ist am heutigen Tag bereits erfaßt");
 						gruppeAusschalten();
 						return null; 
 					}
@@ -3644,7 +3644,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}else if(unter18 && !vorjahrfrei){
 							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus �ndern;
 							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
-							if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(geboren))){
+							System.out.println("Geboren = "+geboren);
+							if(DatFunk.Unter18(DatFunk.sHeute(), geboren)){
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
 							}else{
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");				
