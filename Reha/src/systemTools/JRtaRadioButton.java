@@ -59,16 +59,16 @@ public void keyPressed(KeyEvent arg0) {
 	int code = arg0.getKeyCode();
 	if(code == KeyEvent.VK_ENTER){
 		arg0.consume();
-		this.getParent().dispatchEvent(arg0);	
-		/*
-		if(this.isSelected()){
-			this.setSelected(false);
-		}else{
-			this.setSelected(true);
-		}
-		System.out.println(arg0);
-		*/
+		this.getParent().dispatchEvent(arg0);
+		return;
 	}
+	if(code == KeyEvent.VK_ESCAPE){
+		this.getParent().dispatchEvent(arg0);
+		this.getParent().getParent().dispatchEvent(arg0);
+		this.getParent().getParent().getParent().dispatchEvent(arg0);
+		this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		return;
+	}	
 }
 
 @Override

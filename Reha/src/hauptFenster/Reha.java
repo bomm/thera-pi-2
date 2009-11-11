@@ -235,7 +235,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public final String NULL_DATE = "  .  .    ";
 	public static boolean warten=true;
 	public static String aktIK = "000000000";
-	public static String aktMandant = "�bungs-Mandant";
+	public static String aktMandant = "Übungs-Mandant";
 	public static String aktUser = "";
 	public static String kalMin = "";
 	public static String kalMax = "";

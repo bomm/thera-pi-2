@@ -68,7 +68,6 @@ public void keyPressed(KeyEvent arg0) {
 		return;
 	}
 	if(code == KeyEvent.VK_ESCAPE){
-		arg0.consume();
 		this.getParent().dispatchEvent(arg0);
 		this.getParent().getParent().dispatchEvent(arg0);
 		this.getParent().getParent().getParent().dispatchEvent(arg0);
