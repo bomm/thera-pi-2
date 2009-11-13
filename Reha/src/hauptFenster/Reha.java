@@ -1380,7 +1380,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			abrechnungMenu = new JMenu();
 			abrechnungMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			abrechnungMenu.setText("Abrechnung");
-			JMenuItem men = new JMenuItem("Heilmittel-Abrechnung nach �302 SGB V");
+			JMenuItem men = new JMenuItem("Heilmittel-Abrechnung nach §302 SGB V");
 			men.setActionCommand("hmabrechnung");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);

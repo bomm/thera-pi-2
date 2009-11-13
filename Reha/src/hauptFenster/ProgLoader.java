@@ -253,7 +253,7 @@ public void ArztFenster(int setPos,String aid) {
 	String name = "ArztVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	arztjry = new JArztInternal("thera-\u03C0 �rzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
+	arztjry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)arztjry,containerNr,(Container)arztjry.getContentPane());
 	arztjry.setName(name);
 	arztjry.setSize(new Dimension(650,500));
@@ -345,7 +345,7 @@ public void Abrechnung1Fenster(int setPos) {
 	String name = "Abrechnung-1"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	abrechjry = new JAbrechnungInternal("thera-\u03C0  - Kassen-Abrechnung nach �302 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	abrechjry = new JAbrechnungInternal("thera-\u03C0  - Kassen-Abrechnung nach §302 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster("Abrechnung-1",(JComponent)abrechjry,1,(Container)abrechjry.getContentPane());
 	abrechjry.setName(name);
 	abrechjry.setSize(new Dimension(650,500));

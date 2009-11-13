@@ -10,12 +10,14 @@ import java.util.Set;
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
 
+import com.sun.star.awt.XTopWindow;
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.container.NoSuchElementException;
 import com.sun.star.container.XNameContainer;
 import com.sun.star.frame.XController;
+import com.sun.star.frame.XFrame;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.sheet.XSpreadsheetDocument;
@@ -30,11 +32,13 @@ import com.sun.xml.internal.bind.v2.runtime.property.Property;
 
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.filter.RTFFilter;
+import ag.ion.bion.officelayer.internal.text.TextDocument;
 import ag.ion.bion.officelayer.presentation.IPresentationDocument;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 import ag.ion.bion.officelayer.text.IText;
@@ -274,10 +278,10 @@ public class OOTools {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      String key = entry.getKey().toString().toLowerCase();
 		      if( (key.contains("<bblock") || key.contains("<btitel")) && key.equals(placeholderDisplayText) ){
-		    	  //System.out.println("enthält block oder titel");
+		    	  //System.out.println("enthï¿½lt block oder titel");
 		    	  int bblock;
 		    	  if(key.contains("<bblock")){
-			    	  //System.out.println("enthält block");
+			    	  //System.out.println("enthï¿½lt block");
 		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
@@ -290,7 +294,7 @@ public class OOTools {
 		    		  }
 		    	  }
 		    	  if(key.contains("<btitel")){
-			    	  //System.out.println("enthält titel");
+			    	  //System.out.println("enthï¿½lt titel");
 		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
@@ -322,6 +326,8 @@ public class OOTools {
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
 			textDocument = (ITextDocument)document;
+			OOTools.inDenVordergrund(textDocument);
+			//System.out.println("In den Vordergrund");
 			textDocument.getFrame().setFocus();
 		} 
 		catch (OfficeApplicationException exception) {
@@ -453,7 +459,7 @@ public class OOTools {
 		System.out.println(props[i] .Name + " = "
 		+ xStyleProps.getPropertyValue(props[i].Name));
 		}
-		//z.B. für A5
+		//z.B. fï¿½r A5
 		 * 
 		 */
 		xStyleProps.setPropertyValue("Height", hoch);
@@ -479,7 +485,7 @@ public class OOTools {
     	for (int i = 0; i < props.length; i++) {
     	System.out.println(props[i].Name + " = "
     	+ xStyleProps.getPropertyValue(props[i].Name));
-    	//z.B. für A5
+    	//z.B. fï¿½r A5
     	//xStyleProps.setPropertyValue("Height", new Integer(21000));
     	//xStyleProps.setPropertyValue("Width", new Integer(14800));
     	}
@@ -636,6 +642,19 @@ public class OOTools {
 		}
 		
 		return textDocument;
+	}
+	public static void inDenVordergrund(ITextDocument textDocumentx){
+		ITextDocument textDocument = (ITextDocument) textDocumentx; 
+		IFrame officeFrame = textDocument.getFrame();
+		XFrame xFrame = officeFrame.getXFrame();
+		XTopWindow topWindow = (XTopWindow)
+		UnoRuntime.queryInterface(XTopWindow.class,
+		xFrame. getContainerWindow());
+		//hier beide methoden, beide sind nÃ¶tig
+		xFrame.activate();
+		topWindow.toFront();
+
+		
 	}
 	
 	
