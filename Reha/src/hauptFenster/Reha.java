@@ -95,6 +95,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import krankenKasse.KassenPanel;
 import kvKarte.KVKWrapper;
 import menus.TerminMenu;
+import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
@@ -132,6 +133,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
+import com.sun.star.uno.Exception;
 
 import dialoge.RehaSmartDialog;
 import entlassBerichte.EBerichtPanel;
@@ -342,49 +344,39 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
-		try{
-			new SocketClient().setzeInitStand("Überprüfe Dateisystem");
-			File f = new File(javaPfad+"/bin/win32com.dll");
-			if(! f.exists()){
-				new SocketClient().setzeInitStand("Kopiere win32com.dll");
-				try {
-					FileTools.copyFile(new File(proghome+"RTAJars/win32com.dll"),f, 4096, false);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}else{
-				System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
-			}	
-			f = new File(javaPfad+"/lib/ext/comm.jar");
-			if(! f.exists()){
-				try {
-					new SocketClient().setzeInitStand("Kopiere comm.jar");
-					FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),f, 4096, false);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}else{
-				System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
+		new SocketClient().setzeInitStand("Überprüfe Dateisystem");
+		File f = new File(javaPfad+"/bin/win32com.dll");
+		if(! f.exists()){
+			new SocketClient().setzeInitStand("Kopiere win32com.dll");
+			try {
+				FileTools.copyFile(new File(proghome+"RTAJars/win32com.dll"),f, 4096, false);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			f = new File(javaPfad+"/lib/javax.comm.properties");
-			if(! f.exists()){
-				try {
-					new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
-					FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),f, 4096, false);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}else{
-				System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
+		}else{
+			System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+		}	
+		f = new File(javaPfad+"/lib/ext/comm.jar");
+		if(! f.exists()){
+			try {
+				new SocketClient().setzeInitStand("Kopiere comm.jar");
+				FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),f, 4096, false);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		}catch(Exception ex){
-			String msg = "<html>Es ist ein Fehler beim kopieren von systemrelevanten Dateien aufgetreten.\n\n"+
-			"Vermutlich arbeiten Sie mit <b>Windows-Vista</b> und sind deshalb in einer bedauernswerten\n"+
-			"wenngleich auch in einer <b>selbstverschuldet</b> bedauernswerten Lage!\n\n"+
-			"Der weitere Programmablauf sollte für Sie zwar problemlos müglich sein,\n"+
-			"absolut interessante Features wie etwa der Einsatz von Barcode-Scanner ist\n"+
-			"mit diesem <b>Murks von Betriebssystem</b> leider nicht möglich";
-			JOptionPane.showMessageDialog(null, msg);
+		}else{
+			System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
+		}
+		f = new File(javaPfad+"/lib/javax.comm.properties");
+		if(! f.exists()){
+			try {
+				new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
+				FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),f, 4096, false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
 		
 		new Thread(){
@@ -510,7 +502,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				try{
 				CompoundPainter<Object> cp = null;
 				MattePainter mp = null;
 				LinearGradientPaint p = null;
@@ -752,10 +743,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    
 			    
 			    progLoader = new ProgLoader();
-			    
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
 				return null;
 			}
 			
@@ -1205,7 +1192,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				@Override
 				protected Void doInBackground() throws Exception {
 					while(! iconsOk){
-						Thread.sleep(20);
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					copyLabel.setIcon(SystemConfig.hmSysIcons.get("bunker"));
 					return null;
@@ -1753,6 +1745,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             //officeapplication.getDesktopService().activateTerminationPrevention(); 
             System.out.println("Open-Office wurde gestartet");
             System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
+			//OOTools.holeClipBoard();
             new SwingWorker<Void,Void>(){
 
 				@Override
@@ -1782,8 +1775,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
     		
         }
-        catch (OfficeApplicationException e)
-        {
+        catch (OfficeApplicationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -2318,13 +2310,9 @@ public void actionPerformed(ActionEvent arg0) {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				try{
-					//Reha.thisClass.progressStarten(true);
-					progLoader.ProgPatientenVerwaltung(1);
-					Reha.thisClass.progressStarten(false);
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
+				//Reha.thisClass.progressStarten(true);
+				progLoader.ProgPatientenVerwaltung(1);
+				Reha.thisClass.progressStarten(false);
 				return null;
 			}
 		}.execute();
@@ -2393,11 +2381,16 @@ final class DatenbankStarten implements Runnable{
 			}	
 
     	}
-    	catch ( final Exception e ){
-        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
-        		Reha.DbOk = false;
-	    		return ;
-        }	
+    	catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	        	try {
 	    			if (sDB=="SQL"){
 	    				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
@@ -2531,6 +2524,9 @@ final class DatenbankStarten implements Runnable{
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					System.out.println("Barcode-Scanner konnte nicht installiert werden");
+				} catch (java.lang.Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			new SocketClient().setzeInitStand("Firmendaten einlesen");
@@ -2838,24 +2834,27 @@ final class HilfeDatenbankStarten implements Runnable{
 		try{
 				Class.forName(SystemConfig.hmHilfeServer.get("HilfeDBTreiber")).newInstance();
 				Reha.HilfeDbOk = true; 
-    	}
-	    	catch ( final Exception e ){
-        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
-        		Reha.HilfeDbOk = false;
-	    		return ;
-	        }	
-	        	try {
+    	}catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}	
+	    try {
 	        		Reha.thisClass.hilfeConn = 
 	        			(Connection) DriverManager.getConnection(SystemConfig.hmHilfeServer.get("HilfeDBLogin"),
 	        					SystemConfig.hmHilfeServer.get("HilfeDBUser"),SystemConfig.hmHilfeServer.get("HilfeDBPassword"));
-	        	} 
-	        	catch (final SQLException ex) {
+	    }catch (final SQLException ex) {
 	        		System.out.println("SQLException: " + ex.getMessage());
 	        		System.out.println("SQLState: " + ex.getSQLState());
 	        		System.out.println("VendorError: " + ex.getErrorCode());
 	        		Reha.HilfeDbOk = false;
 	        		return;
-	        	}
+	    }
 	        //System.out.println("HilfeServer wurde - gestartet");	
 	        return;
 	}

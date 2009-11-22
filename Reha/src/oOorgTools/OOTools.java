@@ -14,19 +14,28 @@ import com.sun.star.awt.XTopWindow;
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
+import com.sun.star.comp.helper.BootstrapException;
 import com.sun.star.container.NoSuchElementException;
 import com.sun.star.container.XNameContainer;
+import com.sun.star.datatransfer.DataFlavor;
+import com.sun.star.datatransfer.UnsupportedFlavorException;
+import com.sun.star.datatransfer.XTransferable;
+import com.sun.star.datatransfer.clipboard.*;
 import com.sun.star.frame.XController;
 import com.sun.star.frame.XFrame;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
+import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.sheet.XSpreadsheetDocument;
 import com.sun.star.style.XStyle;
 import com.sun.star.style.XStyleFamiliesSupplier;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
+import com.sun.star.uno.AnyConverter;
+import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
+import com.sun.star.uno.XComponentContext;
 import com.sun.star.view.XLineCursor;
 import com.sun.xml.internal.bind.v2.runtime.property.Property;
 
@@ -53,7 +62,7 @@ import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
 
-public class OOTools {
+public class OOTools{
 	public OOTools(){
 		
 	}
@@ -656,6 +665,78 @@ public class OOTools {
 
 		
 	}
-	
+	public static void holeClipBoard() {
+
+		System.out.println("Connected to a running office ...");
+        
+
+		try {
+			XComponentContext xComponentContext;
+
+			xComponentContext = (XComponentContext) com.sun.star.comp.helper.Bootstrap.bootstrap();
+			XMultiComponentFactory xMultiComponentFactory;
+			xMultiComponentFactory = (XMultiComponentFactory) Reha.officeapplication.getDocumentService();
+		
+		Object oClipboard =
+	          xMultiComponentFactory.createInstanceWithContext(
+	          "com.sun.star.datatransfer.clipboard.SystemClipboard", 
+	          xComponentContext);
+		XClipboard xClipboard = (XClipboard)
+        UnoRuntime.queryInterface(XClipboard.class, oClipboard);
+
+		//---------------------------------------------------
+		// 	get a list of formats currently on the clipboard
+		//---------------------------------------------------
+
+		XTransferable xTransferable = xClipboard.getContents();
+
+		DataFlavor[] aDflvArr = xTransferable.getTransferDataFlavors();
+
+		// print all available formats
+
+		System.out.println("Reading the clipboard...");
+		System.out.println("Available clipboard formats:");
+
+		DataFlavor aUniFlv = null;
+
+		for (int i=0;i<aDflvArr.length;i++)	{
+			System.out.println( "MimeType: " + 
+                aDflvArr[i].MimeType + 
+                " HumanPresentableName: " + 
+                aDflvArr[i].HumanPresentableName );    
+
+			// if there is the format unicode text on the clipboard save the
+			// corresponding DataFlavor so that we can later output the string
+
+			if (aDflvArr[i].MimeType.equals("text/plain;charset=utf-16"))
+			{     
+                aUniFlv = aDflvArr[i];
+			}
+		}
+
+		System.out.println("");
+		try{
+			if (aUniFlv != null){
+                System.out.println("Unicode text on the clipboard...");
+                Object aData = xTransferable.getTransferData(aUniFlv);      
+
+                System.out.println(AnyConverter.toString(aData));
+			}
+		}catch(UnsupportedFlavorException ex){
+			System.err.println( "Requested format is not available" );
+		}
+		
+		} catch (OfficeApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BootstrapException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	
 }
