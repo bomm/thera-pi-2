@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -50,9 +51,11 @@ import patientenFenster.ArztNeuKurz;
 import patientenFenster.PatGrundPanel;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import terminKalender.DatFunk;
 import dialoge.RehaSmartDialog;
 
 public class ThTextBlock extends RehaSmartDialog{
@@ -83,7 +86,13 @@ public class ThTextBlock extends RehaSmartDialog{
 	public JXPanel grundPanel = null;
 	public String arztbisher;
 	ArztBericht abr = null;
+	
+	List<String> sysVars1;
+	List<String> sysVars2;
+	String[][] sysInhalt1;
+	String[] sysInhalt2;
 
+	
 		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr) {
 			super(owner, name);
 			//setSize(430,300);
@@ -95,6 +104,8 @@ public class ThTextBlock extends RehaSmartDialog{
 				@Override
 				protected Void doInBackground() throws Exception {
 					grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("TextBlock"));
+					macheSysVars1();
+					macheSysVars2();
 					return null;
 				}
 				
@@ -261,6 +272,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			boolean stop = false;
 			String var = "";
 			String test = "";
+			int sys1,sys2;
 			for(i = 0;i < lang;i++){
 				for(int i2 = 0; i2 < 1;i2++){
 					test = text.substring(i,i+1);
@@ -272,8 +284,14 @@ public class ThTextBlock extends RehaSmartDialog{
 					if(start){
 						var = var+test;
 						if(test.equals("^")){
+							System.out.println("Variable gefunden -> "+var);
+							if( (sys1 = sysVars1.indexOf(var)) >=0){
+								System.out.println("Variable1 gefunden = "+var+" an Position "+i);
+							}
+							if( (sys2 = sysVars2.indexOf(var))>=0){
+								System.out.println("Variable2 gefunden = "+var+" an Position "+i);								
+							}
 							tbvars.add(new String(var));
-							//System.out.println("Variable gefunden -> "+var);
 							start = false;
 							var = "";
 						}
@@ -426,27 +444,6 @@ public class ThTextBlock extends RehaSmartDialog{
 			ret = ret +") ";
 			return ret;
 		}
-		
-		private void macheSysVars1(){
-			String[] sysVars1 = {"^DerPat/DiePat^","^derPat/diePat^",
-					"^DemPat/DerPat^","^demPat/derPat^","^DenPat/DiePat^","^denPat/diePat^",
-					"^desPat/derPat^","^ihm/ihr^","^Sein/Ihr^","^sein/ihr^","^Seine/Ihre^","^seine/ihre^",
-					"^Er/Sie^","^er/sie^"
-		
-			};
-			String[][] sysInhalt1 = {{"Der Patient","Die Patientin"},{"der Patient","die Patientin"},
-					{"Dem Patient","Der Patientin"},{"dem Patient","der Patientin"},{"Den Patient","Die Patientin"},
-					{"den Patient","die Patientin"},{"des Patient","der Patientin"},{"ihm","ihr"},
-					{"Sein","Ihr"},{"sein","ihr"},{"Seine","Ihre"},{"seine","ihre"},
-					{"Er","Sie"},{"er","sie"}};
-		}
-		private void macheSysVars2(){
-			String[] sysVars2 = {
-					"^ErstDatum^","^LetztDatum^","^RezDatum^","^Anrede^","^PatName^","^Heute^"	
-			};
-		}
-		
-
 		class MyTextBlockModel extends DefaultTableModel{
 			   /**
 			 * 
@@ -519,6 +516,31 @@ public class ThTextBlock extends RehaSmartDialog{
 			}
 			 
 		}
+		private void macheSysVars1(){
+			sysVars1 = Arrays.asList(new String[] {"^DerPat/DiePat^","^derPat/diePat^",
+					"^DemPat/DerPat^","^demPat/derPat^","^DenPat/DiePat^","^denPat/diePat^",
+					"^desPat/derPat^","^ihm/ihr^","^Sein/Ihr^","^sein/ihr^","^Seine/Ihre^","^seine/ihre^",
+					"^Er/Sie^","^er/sie^"
+		
+			});
+			sysInhalt1 = new String[][] {{"Der Patient","Die Patientin"},{"der Patient","die Patientin"},
+					{"Dem Patient","Der Patientin"},{"dem Patient","der Patientin"},{"Den Patient","Die Patientin"},
+					{"den Patient","die Patientin"},{"des Patient","der Patientin"},{"ihm","ihr"},
+					{"Sein","Ihr"},{"sein","ihr"},{"Seine","Ihre"},{"seine","ihre"},
+					{"Er","Sie"},{"er","sie"}};
+		}
+		private void macheSysVars2(){
+			sysVars2 = Arrays.asList(new String[] {
+					"^ErstDatum^","^LetztDatum^","^RezDatum^","^Anrede^","^PatName^","^Heute^"	
+			});
+			sysInhalt2 = new String[] {SystemConfig.hmAdrRDaten.get("<Rerstdat>"),
+					SystemConfig.hmAdrRDaten.get("<Rletztdat>"),
+					SystemConfig.hmAdrRDaten.get("<Rdatum>"),
+					SystemConfig.hmAdrPDaten.get("<Panrede>"),
+					SystemConfig.hmAdrPDaten.get("<Pnname>"),
+					DatFunk.sHeute()};
+		}
+
 		
 /*************************************************/		
 }		

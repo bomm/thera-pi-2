@@ -28,8 +28,10 @@ import javax.swing.text.StyleConstants;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
+import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -54,6 +56,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	int aktvector = 0;
 	int maxvector = 0;
 	String aktreplace = "";
+	
 	
 	public TbEingabeNeu(String dtext,Vector vec,ThTextBlock thb,JRtaTextField jtf){
 		super();
@@ -169,6 +172,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			JOptionPane.showMessageDialog(null,"In diesem Textbaustein sind keine weiteren Variablen vorhanden");
 			return;
 		}
+		//System.out.println(varvec.get(aktvector));
 		
 		if(varvec.get(aktvector).contains("^Tab^")){
 			int i = aktvector;
@@ -334,4 +338,5 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		}.execute();
 		
 	}
+		
 }
