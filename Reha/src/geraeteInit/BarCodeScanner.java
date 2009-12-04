@@ -82,9 +82,10 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE ); //     
 
 		} catch (PortInUseException e) {
-			System.out.println("Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits belegt?");
+			System.out.println("Port fÃ¼r Barcode-Scanner "+port+" konnte nicht geÃ¶ffnet werden.\n\nBereits belegt?");
 			System.out.println("Derzeitiger Besitzer = "+e.currentOwner);
-			//JOptionPane.showMessageDialog(null, "Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits bele?");
+			return;
+			//JOptionPane.showMessageDialog(null, "Port fï¿½r Barcode-Scanner "+port+" konnte nicht geï¿½ffnet werden.\n\nBereits bele?");
 		}
 		
 
@@ -197,14 +198,14 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 						if(termin != null){
 							if(Reha.thisClass.terminpanel.getAktuellerTag().equals(DatFunk.sHeute())){
-								// Hier versuchen die Daten des Terminkalenders zu übernehmen
+								// Hier versuchen die Daten des Terminkalenders zu ï¿½bernehmen
 							}
 						}
 						final String xoutString = outString.trim();
 						Thread erfassen = new Thread(new TermineErfassen(xoutString,tvec));
 						erfassen.start();
 					}else if(outString.substring(0,1).equals("S")){
-						//System.out.println("Schlüssel Nr. "+outString.replaceAll("\\n", ""));
+						//System.out.println("Schlï¿½ssel Nr. "+outString.replaceAll("\\n", ""));
 						outString = outString.substring(2).replaceAll("\\r","");
 						outString = outString.replaceAll("\\n","");
 						final String schluessel = outString;

@@ -26,7 +26,7 @@ public class KasseEinlesen {
 
 	}
 	private void oeffneKostentraeger(){
-		final JFileChooser chooser = new JFileChooser("Kostentr√ger-Datei w√hlen");
+		final JFileChooser chooser = new JFileChooser("Kostentr√§ger-Datei w√§hlen");
 	    chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 	    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 	    final File file = new File(Reha.proghome+"KostenTraeger/");
@@ -50,7 +50,7 @@ public class KasseEinlesen {
 	        String inputVerzStr = inputVerzFile.getPath();
 	        System.out.println("Eingabepfad:" + inputVerzStr);
 	        if(inputVerzStr.trim().toUpperCase().indexOf(".KE") < 0){
-	        	JOptionPane.showMessageDialog(null,"Keine g¸ltige Kostentr‰gerdatei!");
+	        	JOptionPane.showMessageDialog(null,"Keine g√ºltige Kostentr√§gerdatei!");
 	        }else{
 	        	/*
 	        	try {

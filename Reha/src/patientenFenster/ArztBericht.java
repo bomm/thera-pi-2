@@ -202,7 +202,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		FormLayout lay = new FormLayout("0dlu,p,fill:0:grow(1.00),right:max(40dlu;p),30dlu,right:max(50dlu;p),0dlu",
 		//1   2   3       4            5    6   7        8             9  10 11         12          13   14 15       16
 		"0dlu,p,2dlu,fill:0:grow(0.27),4dlu,p ,2dlu,fill:0:grow(0.27),4dlu,p,2dlu,fill:0:grow(0.27),4dlu,p,2dlu,fill:0:grow(0.15)");
-		Font fon = new Font("Courier", Font.PLAIN,12);
+		Font fon = new Font("Courier New", Font.PLAIN,12);
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
@@ -357,6 +357,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pb.addSeparator("",cc.xyw(2,26,3));
 		
 		pb.addLabel("Textbausteine für",cc.xy(2,28));
+		
 		try{
 			tbwahl = new JRtaComboBox(SystemConfig.hmTherapBausteine.get(this.disziplin));
 		}catch(java.lang.ArrayIndexOutOfBoundsException ex){
@@ -497,7 +498,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			VorBerichte vbe = new VorBerichte(false, false, pos,this);
 			vbe.setModal(true);
 			vbe.setVisible(true);
-			System.out.println("r�ckgabewerte = "+vorberichtid+"  auch diagnose = "+vorberichtdiagnose);
+			System.out.println("Rückgabewerte = "+vorberichtid+"  auch diagnose = "+vorberichtdiagnose);
 			if(vorberichtid > 0){
 				if(vorberichtid == this.berichtid){
 					JOptionPane.showMessageDialog(null,"Sie können nicht den akutellen Bericht auf sich selbst kopieren....\n"+

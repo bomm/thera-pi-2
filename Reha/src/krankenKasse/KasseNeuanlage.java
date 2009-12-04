@@ -284,7 +284,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				vec.add(list.get(i));
 			}
 			kpan.ktblm.addRow((Vector)vec);
-			System.out.println("Tabellenzeile eingef�gt");
+			System.out.println("Tabellenzeile eingefügt");
 		}else{
 			int row = kpan.kassentbl.getSelectedRow();
 			int model = kpan.kassentbl.convertRowIndexToModel(row);
@@ -407,13 +407,13 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		builder.addLabel("IK der Krankenkasse", cc.xy(1, 25));
 		builder.add(jtf[13], cc.xyw(3, 25, 4));
 		
-		builder.addLabel("IK des Kostentr�gers", cc.xy(1, 27));
+		builder.addLabel("IK des Kostenträgers", cc.xy(1, 27));
 		builder.add(jtf[14], cc.xyw(3, 27, 4));
 
 		builder.addLabel("IK der Datenannahmestelle", cc.xy(1, 29));
 		builder.add(jtf[15], cc.xyw(3, 29, 4));
 
-		builder.addLabel("IK Nutzer/Entschl�ssellung", cc.xy(1, 31));
+		builder.addLabel("IK Nutzer/Entschlüssellung", cc.xy(1, 31));
 		builder.add(jtf[16], cc.xyw(3, 31, 4));
 
 		builder.addLabel("IK Papierannahmestelle", cc.xy(1, 33));

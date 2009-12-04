@@ -10,6 +10,7 @@ import hauptFenster.Reha;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Image;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,7 +54,7 @@ public class SystemConfig {
 	public static int RoogleZeitraum;
 	public static HashMap<String,String> RoogleZeiten = null;
 	/**
-	 * nachfolgende static's sind notwendig für den Einsatz des Terminkalenders
+	 * nachfolgende static's sind notwendig fï¿½r den Einsatz des Terminkalenders
 	 */
 	public static ArrayList<ArrayList<ArrayList<String[]>>> aTerminKalender;
 	public static int AnzahlKollegen;
@@ -168,9 +169,9 @@ public class SystemConfig {
 		String jahrHeute = DatFunk.sHeute().substring(6);
 		if(! aktJahr.equals(jahrHeute) ){
 			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
-					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
-					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
-			System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
+					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurï¿½ckgesetzt wurden\n"+
+					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daï¿½ alle Jahresabschluï¿½arbeiten erledigt worden sind!!!!");
+			System.out.println("Aktuelles Jahr wurde verï¿½nder auf "+jahrHeute);
 			aktJahr = new String(jahrHeute);
 			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
 			ini.save();
@@ -842,7 +843,7 @@ public class SystemConfig {
 		}
 
 	}
-	public static void TherapBausteinInit(){
+	public static void TherapBausteinInit() {
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");
 		hmTherapBausteine = new HashMap<String,Vector>();
 		int lang = rezeptKlassenAktiv.size();
@@ -852,9 +853,25 @@ public class SystemConfig {
 			String prop = "Anzahl"+rezeptKlassenAktiv.get(i).get(1);
 			int lang2 = inif.getIntegerProperty("Textbausteine", prop);
 			String prop2 = rezeptKlassenAktiv.get(i).get(1);
+			String gelenk;
 			for(int i2 = 0; i2 < lang2;i2++ ){
-				vec.add(inif.getStringProperty("Textbausteine", prop2+(i2+1)));
+				gelenk = inif.getStringProperty("Textbausteine", prop2+(i2+1));
+				try {
+					System.out.println(new String(gelenk.getBytes("UTF-8")));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				byte[] b = null;
+
+					b = gelenk.getBytes();
+				for(int y = 0; y < b.length;y++){
+					System.out.println(b[y]);
+				}
+				
+				vec.add( new String( gelenk.getBytes()  )  );
 			}
+			System.out.println(vec);
 			hmTherapBausteine.put(prop2, (Vector) vec.clone());
 		}
 		for(int i = 0; i<4;i++){
@@ -996,6 +1013,7 @@ public class SystemConfig {
 				System.out.println("Fehler bei Bild "+bilder[i]);
 				ex.printStackTrace();
 			}
+			ico = null;
 		}
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");

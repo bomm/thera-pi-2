@@ -94,14 +94,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					Point2D start = new Point2D.Float(0, 0);
-				    Point2D end = new Point2D.Float(0,getHeight());
-				    float[] dist = {0.0f, 0.75f};
-				    Color[] colors = {Colors.Yellow.alpha(0.15f),Color.WHITE};
-				    LinearGradientPaint p =
-				         new LinearGradientPaint(start, end, dist, colors);
-				    MattePainter mp = new MattePainter(p);
-					grundPanel.setBackgroundPainter(new CompoundPainter(mp));
+					grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("TextBlock"));
 					return null;
 				}
 				
@@ -154,15 +147,16 @@ public class ThTextBlock extends RehaSmartDialog{
 							}
 						}.execute();
 					}
-					/*
+					
 					if(arg0.getKeyCode()==27){
 						arg0.consume();
+						dispose();
 					}
-					*/
+					
 				}
 			});
 			tbtext = new JTextArea();
-			tbtext.setFont(new Font("Courier",Font.PLAIN,11));
+			tbtext.setFont(new Font("Courier New",Font.PLAIN,11));
 			tbtext.setForeground(Color.BLUE);
 			tbtext.setLineWrap(true);
 			tbtext.setName("tbtext");
@@ -194,6 +188,10 @@ public class ThTextBlock extends RehaSmartDialog{
 						arg0.consume();
 						tbCheckundStart();
 					}
+					if(arg0.getKeyCode()==27){
+						dispose();
+					}
+
 				}	
 			});
 
@@ -316,7 +314,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			incheckundstart = true;
 			int row = textblock.getSelectedRow();
 			if(row < 0){
-				System.out.println("Keine Tabellenzeile ausgewählt");
+				System.out.println("Keine Tabellenzeile ausgewÃ¤hlt");
 				incheckundstart = false;
 				return;
 			}
@@ -392,7 +390,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			String cmd = test;
 			cmd = new String(cmd.replaceAll("   ", " "));
 			cmd = new String(cmd.replaceAll("  ", " "));
-			// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daß er nix finder!!!
+			// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daï¿½ er nix finder!!!
 			String[] felder = suchein;
 			String[] split = cmd.split(" ");
 			if(split.length==1){

@@ -38,7 +38,7 @@ public class TbEingabe extends RehaSmartDialog implements RehaTPEventListener,Wi
 		
 		super.getSmartTitledPanel().setName(name);
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
-		String xtitel = "<html>Text für Platzhalter eingeben";
+		String xtitel = "<html>Text fÃ¼r Platzhalter eingeben";
 	    super.getSmartTitledPanel().setTitle(xtitel);
 		setName(name);
 		super.getSmartTitledPanel().setContentContainer(getEingabe());

@@ -244,13 +244,13 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		jtb.add(jbut[0]);
 		jbut[1] = new JButton();
 		jbut[1].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		jbut[1].setToolTipText("aktuelle Kasse ändern/editieren (Alt+E)");		
+		jbut[1].setToolTipText("aktuelle Kasse Ã¤ndern/editieren (Alt+E)");		
 		jbut[1].setActionCommand("edit");
 		jbut[1].addActionListener(this);
 		jtb.add(jbut[1]);
 		jbut[2] = new JButton();
 		jbut[2].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		jbut[2].setToolTipText("Kasse löschen (Alt+L)");
+		jbut[2].setToolTipText("Kasse lÃ¶schen (Alt+L)");
 		jbut[2].setActionCommand("delete");
 		jbut[2].addActionListener(this);
 		jtb.add(jbut[2]);
@@ -258,7 +258,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		jbut[3] = new JButton();
 		//jbut[3].setIcon(new ImageIcon(Reha.proghome+"icons/mail_write_22.png"));
 		jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
-		jbut[3].setToolTipText("Brief/Formular für Kasse erstellen (Alt+B)");
+		jbut[3].setToolTipText("Brief/Formular fÃ¼r Kasse erstellen (Alt+B)");
 		jbut[3].setActionCommand("formulare");
 		jbut[3].addActionListener(this);
 		jtb.add(jbut[3]);
@@ -291,7 +291,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	}
 	public JScrollPane getTabelle(){
 		ktblm = new MyKassenTableModel();
-		String[] column = 	{"Kürzel","Name1","Name2","Ort","Telefon","Telefax","IK-Kasse",""};
+		String[] column = 	{"Kï¿½rzel","Name1","Name2","Ort","Telefon","Telefax","IK-Kasse",""};
 		ktblm.setColumnIdentifiers(column);
 		kassentbl = new JXTable(ktblm);
 		kassentbl.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.Green.alpha(0.2f)));
@@ -404,15 +404,15 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		if(treffer){
 			kassentbl.scrollCellToVisible(itreffer, 0);
 			kassentbl.setRowSelectionInterval(itreffer, itreffer);
-			System.out.println("nächster gefunden bei "+itreffer+" // suchestarten = "+suchestarten);
+			System.out.println("nÃ¤chster gefunden bei "+itreffer+" // suchestarten = "+suchestarten);
 			suchestarten = itreffer+1;
 			//JOptionPane.showMessageDialog(null,"Treffer bei "+itreffer);
 		
 		}else{
 			if(suchestarten > 0){
-				JOptionPane.showMessageDialog(null,"Keine weitere Übereinstimmung mit Suchkriterium");				
+				JOptionPane.showMessageDialog(null,"Keine weitere Ãœbereinstimmung mit Suchkriterium");				
 			}else{
-				JOptionPane.showMessageDialog(null,"Keine Übereinstimmung mit Suchkriterium");				
+				JOptionPane.showMessageDialog(null,"Keine Ãœbereinstimmung mit Suchkriterium");				
 			}
 			
 		}
@@ -542,8 +542,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			String sid = "";
 			int row = kassentbl.getSelectedRow();
 			if(row < 0){
-				String mes = "Oh Sie Dummerle.....\n\nWenn man den Langtext einer Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuwählen deren Langtext man ändern will!!!\nHerr schmeiß Hirn ra....\n";
+				String mes = "nWenn man den Langtext einer Kasse Ã¤ndern will, empfiehlt es sich\n"+ 
+				"vorher die Kasse auszuwï¿½hlen deren Langtext man Ã¤ndern will!!!\nHerr schmeiÃŸ Hirn ra....\n";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
 				return;
@@ -592,8 +592,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 				String sid =  (String) kassentbl.getValueAt(row,7);
 				neuanlageKasse(sid);
 			}else{
-				String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuwählen die man ändern will!!!";
+				String mes = "\nWenn man eine Kasse Ã¤ndern will, empfiehlt es sich\n"+ 
+				"vorher die Kasse auszuwÃ¤hlen die man Ã¤ndern will!!!";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
 				return;
@@ -655,7 +655,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	public void kasseLoeschen(){
 		int row = kassentbl.getSelectedRow(); 
 		if(row >= 0){
-        	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie diese Krankenkasse wirklich löschen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+        	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie diese Krankenkasse wirklich lÃ¶schen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
         	if(frage== JOptionPane.NO_OPTION){
         		return;
         	}
@@ -667,8 +667,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			kassentbl.repaint();
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man schon eine Kasse löschen will, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man löschen will!!!";
+			String mes = "\nWenn man schon eine Kasse lÃ¶schen will, empfiehlt es sich\n"+ 
+			"vorher die Kasse auszuwÃ¤hlen die man lÃ¶schen will!!!";
 			JOptionPane.showMessageDialog(null, mes);
 			suchen.requestFocus();
 		}
@@ -752,13 +752,13 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+    		System.out.println("Es wurde Formular "+iformular+" gewï¿½hlt");
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
-			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
-			"Sie dürfen also hoffen....\n\n";
+			String mes = "\nWenn man eine Kasse anschreiben mÃ¶chte, empfiehlt es sich\n"+ 
+			"vorher die Kasse auszuwÃ¤hlen die man anschreiben mÃ¶chte!!!\n\n"+
+			"Aber trÃ¶sten Sie sich, unser Herrgott hat ein Herz fÃ¼r eine ganz spezielle Randgruppe.\n"+
+			"Sie dÃ¼rfen also hoffen....\n\n";
 			JOptionPane.showMessageDialog(null, mes);
 			iformular = -1;
 			suchen.requestFocus();
@@ -792,9 +792,9 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		pinPanel.getGruen().setVisible(false);
 		neuKas.setPinPanel(pinPanel);
 		if(id.equals("")){
-			neuKas.getSmartTitledPanel().setTitle("Kranke-Kasse anlegen - nur der Herrgott weiß ob es sich lohnt diesen Lotterladen anzulegen");			
+			neuKas.getSmartTitledPanel().setTitle("Kranke-Kasse anlegen - nur der Herrgott weiÃŸ ob es sich lohnt diesen Lotterladen anzulegen");			
 		}else{
-			neuKas.getSmartTitledPanel().setTitle("Daten einer kranken-Kasse ändern");
+			neuKas.getSmartTitledPanel().setTitle("Daten einer kranken-Kasse Ã¤ndern");
 		}
 
 		neuKas.setPinPanel(pinPanel);
@@ -948,8 +948,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 					String sid =  (String) kassentbl.getValueAt(row,7);
 					neuanlageKasse(sid);
 				}else{
-					String mes = "Oh Sie Dummerle.....\n\nWenn man eine Kasse ändern will, empfiehlt es sich\n"+ 
-					"vorher die Kasse auszuwählen die man ändern will!!!";
+					String mes = "\nWenn man eine Kasse Ã¤ndern will, empfiehlt es sich\n"+ 
+					"vorher die Kasse auszuwÃ¤hlen die man Ã¤ndern will!!!";
 					JOptionPane.showMessageDialog(null, mes);
 					suchen.requestFocus();
 				}
@@ -1153,7 +1153,7 @@ class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			this.dispose();
-			System.out.println("****************Kasse Neu/Ändern -> Listener entfernt**************");				
+			System.out.println("****************Kasse Neu/Ã¤ndern -> Listener entfernt**************");				
 	
 		}catch(NullPointerException ne){
 			System.out.println("In PatNeuanlage" +evt);
@@ -1165,7 +1165,7 @@ class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
-			System.out.println("****************Kasse Neu/Ändern -> Listener entfernt (Closed)**********");
+			System.out.println("****************Kasse Neu/Ã¤ndern -> Listener entfernt (Closed)**********");
 		}
 		
 		

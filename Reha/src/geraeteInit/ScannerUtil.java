@@ -178,16 +178,16 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
 		
-		pb.addLabel("installierte Geräte",cc.xy(2, 2));
+		pb.addLabel("installierte GerÃ¤te",cc.xy(2, 2));
 		jcmbscan[0] = new JRtaComboBox();
 		pb.add(jcmbscan[0],cc.xy(4, 2));
 		
 		pb.addLabel("Scanmodus",cc.xy(2, 4));
-		jcmbscan[1] = new JRtaComboBox(new String[] {"Schwarz/Weiß","Graustufen","Farbe"} );
+		jcmbscan[1] = new JRtaComboBox(new String[] {"Schwarz/WeiÃŸ","Graustufen","Farbe"} );
 		jcmbscan[1].setSelectedItem(SystemConfig.hmDokuScanner.get("farben"));
 		pb.add(jcmbscan[1],cc.xy(4, 4));
 
-		pb.addLabel("Auflösung",cc.xy(2, 6));
+		pb.addLabel("Auflï¿½sung",cc.xy(2, 6));
 		jcmbscan[2] = new JRtaComboBox(new String[]{"50dpi","75dpi","100dpi","150dpi","200dpi","300dpi"});		
 		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		pb.add(jcmbscan[2],cc.xy(4, 6));
@@ -219,7 +219,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		CellConstraints cc2 = new CellConstraints();
 		PanelBuilder pb2 = new PanelBuilder(lay2);
 		pb2.getPanel().setOpaque(false);
-		uebernahme = new JButton("übernehmen");
+		uebernahme = new JButton("Ã¼bernehmen");
 		uebernahme.setActionCommand("uebernahme");
 		uebernahme.addActionListener(this);
 		uebernahme.addKeyListener(this);
@@ -406,7 +406,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				this.dispose();
 			}
 
-			System.out.println("Return Gedrückt");
+			System.out.println("Return Gedrï¿½ckt");
 		}
 	}
 	public static void starteAusfallRechnung(String url){

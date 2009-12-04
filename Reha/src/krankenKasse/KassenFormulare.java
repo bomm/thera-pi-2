@@ -258,7 +258,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println("****************Schlie�en des KassenFormular **************");
+		System.out.println("****************Schließen des KassenFormular **************");
 		String ss =  getName();
 		System.out.println(getName()+" Eltern "+ss);
 		try{
@@ -267,7 +267,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			}	
 		}catch(NullPointerException ne){
-			System.out.println("Schlie�en des KassenFormular" +evt);
+			System.out.println("Schließen des KassenFormular" +evt);
 		}
 	}
 

@@ -487,7 +487,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			String sid = "";
 			int row = arzttbl.getSelectedRow();
 			if(row < 0){
-				String mes = "Oh Sie Dummerle.....\n\nWenn man den Langtext eines Arztes ändern will, empfiehlt es sich\n"+ 
+				String mes = "\nWenn man den Langtext eines Arztes ändern will, empfiehlt es sich\n"+ 
 				"vorher den Arzt auszuwählen dessen Langtext man ändern will!!!\nHerr schmeiß Hirn ra....\n";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
@@ -537,7 +537,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				String sid =  (String) arzttbl.getValueAt(row,9);
 				neuanlageArzt(sid);
 			}else{
-				String mes = "Oh Sie Dummerle.....\n\nWenn man einen Arzt ändern will, empfiehlt es sich\n"+ 
+				String mes = "\nWenn man einen Arzt ändern will, empfiehlt es sich\n"+ 
 				"vorher den Arzt auszuwählen den man ändern will!!!";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
@@ -612,7 +612,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
     		System.out.println("Es wurde Formular "+iformular+" gew�hlt");
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man einen Arzt anschreiben möchte, empfiehlt es sich\n"+ 
+			String mes = "\nWenn man einen Arzt anschreiben möchte, empfiehlt es sich\n"+ 
 			"vorher den Arzt auszuwählen den man anschreiben möchte!!!\n\n"+
 			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
 			"Sie dürfen also hoffen....\n\n";
@@ -688,7 +688,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			getInstance().arzttbl.repaint();
         	
 		}else{
-			String mes = "Oh Sie Dummerle.....\n\nWenn man schon einen Arzt löschen will, empfiehlt es sich\n"+ 
+			String mes = "\nWenn man schon einen Arzt löschen will, empfiehlt es sich\n"+ 
 			"vorher den Arzt auszuwählen den man löschen will!!!";
 			JOptionPane.showMessageDialog(null, mes);
 			suchen.requestFocus();
@@ -755,7 +755,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 					String sid =  (String) arzttbl.getValueAt(row,9);
 					neuanlageArzt(sid);
 				}else{
-					String mes = "Oh Sie Dummerle.....\n\nWenn man einen Arzt ändern will, empfiehlt es sich\n"+ 
+					String mes = "\nWenn man einen Arzt ändern will, empfiehlt es sich\n"+ 
 					"vorher den Arzt auszuwählen den man ändern will!!!";
 					JOptionPane.showMessageDialog(null, mes);
 					suchen.requestFocus();

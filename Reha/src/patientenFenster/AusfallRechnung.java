@@ -144,7 +144,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 
 		pb.getPanel().setOpaque(false);
 		
-		pb.addLabel("Bitte die Positionen auswählen die Sie berechnen wollen",cc.xyw(2, 2, 4));
+		pb.addLabel("Bitte die Positionen auswï¿½hlen die Sie berechnen wollen",cc.xyw(2, 2, 4));
 
 		pb.addLabel("Heilmittel 1",cc.xy(3, 4));
 		String lab = (String)Reha.thisClass.patpanel.vecaktrez.get(48);
@@ -285,7 +285,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
-		sb.append(DatFunk.sHeute()+" - unentschuldigt oder zu spät abgesagt - Rechnung!!\n");
+		sb.append(DatFunk.sHeute()+" - unentschuldigt oder zu spÃ¤t abgesagt - Rechnung!!\n");
 		sb.append(Reha.thisClass.patpanel.pmemo[1].getText());
 		Reha.thisClass.patpanel.pmemo[1].setText(sb.toString());
 		String cmd = "update pat5 set pat_text='"+sb.toString()+"' where pat_intern = '"+Reha.thisClass.patpanel.aktPatID+"'";
@@ -342,7 +342,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			
 		}
 		SystemConfig.hmAdrAFRDaten.put("<AFRgesamt>",df.format( gesamt));
-		/// Hier muß noch die Rechnungsnummer bezogen und eingetragen werden
+		/// Hier muï¿½ noch die Rechnungsnummer bezogen und eingetragen werden
 		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>","AF-010101");
 	}
 	public void keyPressed(KeyEvent event) {
@@ -355,7 +355,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				this.dispose();
 			}
 
-			System.out.println("Return Gedrückt");
+			System.out.println("Return Gedrï¿½ckt");
 		}
 		if(event.getKeyCode()==27){
 			this.dispose();

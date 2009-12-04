@@ -109,7 +109,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		darstellung.setVerticalAlignment(JLabel.TOP);
 		darstellung.setLineWrap(true);
 		
-		darstellung.setFont(new Font("Courier",Font.PLAIN,12));
+		darstellung.setFont(new Font("Courier New",Font.PLAIN,12));
 		darstellung.setForeground(Color.BLUE);
 		testeAufRot();
 
@@ -145,7 +145,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.getPanel().setOpaque(false);
-		uebernahme = new JButton("übernehmen");
+		uebernahme = new JButton("Ã¼bernehmen");
 		uebernahme.setActionCommand("uebernahme");
 		uebernahme.setName("uebernahme");
 		uebernahme.addActionListener(this);
@@ -325,7 +325,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				String titel = "<html>Bitte Wert eingeben für -->&nbsp;&nbsp;<b>"+varvec.get(xtitel)+"</b>";
+				String titel = "<html>Bitte Wert eingeben fÃ¼r -->&nbsp;&nbsp;<b>"+varvec.get(xtitel)+"</b>";
 				thbl.setzeEingabeTitel(titel);
 				tbeingabe.requestFocus();
 				return null;
