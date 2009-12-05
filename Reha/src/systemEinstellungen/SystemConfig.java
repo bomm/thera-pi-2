@@ -855,7 +855,9 @@ public class SystemConfig {
 			String prop2 = rezeptKlassenAktiv.get(i).get(1);
 			String gelenk;
 			for(int i2 = 0; i2 < lang2;i2++ ){
-				gelenk = inif.getStringProperty("Textbausteine", prop2+(i2+1));
+				//gelenk = inif.getStringProperty("Textbausteine", prop2+(i2+1));
+				vec.add( inif.getStringProperty("Textbausteine", prop2+(i2+1)) );
+				/*
 				try {
 					System.out.println(new String(gelenk.getBytes("UTF-8")));
 				} catch (UnsupportedEncodingException e) {
@@ -869,7 +871,9 @@ public class SystemConfig {
 					System.out.println(b[y]);
 				}
 				
+				
 				vec.add( new String( gelenk.getBytes()  )  );
+				*/
 			}
 			System.out.println(vec);
 			hmTherapBausteine.put(prop2, (Vector) vec.clone());

@@ -17,6 +17,7 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -272,7 +273,6 @@ public class ThTextBlock extends RehaSmartDialog{
 			boolean stop = false;
 			String var = "";
 			String test = "";
-			int sys1,sys2;
 			for(i = 0;i < lang;i++){
 				for(int i2 = 0; i2 < 1;i2++){
 					test = text.substring(i,i+1);
@@ -284,16 +284,10 @@ public class ThTextBlock extends RehaSmartDialog{
 					if(start){
 						var = var+test;
 						if(test.equals("^")){
-							System.out.println("Variable gefunden -> "+var);
-							if( (sys1 = sysVars1.indexOf(var)) >=0){
-								System.out.println("Variable1 gefunden = "+var+" an Position "+i);
-							}
-							if( (sys2 = sysVars2.indexOf(var))>=0){
-								System.out.println("Variable2 gefunden = "+var+" an Position "+i);								
-							}
 							tbvars.add(new String(var));
 							start = false;
 							var = "";
+
 						}
 						break;
 					}
@@ -302,8 +296,12 @@ public class ThTextBlock extends RehaSmartDialog{
 			vectb = (Vector)tbvars.clone();
 			//System.out.println("Variablen Vector = "+tbvars);
 		}
+		private void infoPosition(int diff,int i,int lang){
+			//System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
+		}
 		private void holeTbText(int tbid){
 			String text = (String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
+			text = testeAufSysVars(text);
 			tbtext.setText(text );
 			final int xtbid = tbid;
 			new SwingWorker<Void,Void>(){
@@ -332,7 +330,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			incheckundstart = true;
 			int row = textblock.getSelectedRow();
 			if(row < 0){
-				System.out.println("Keine Tabellenzeile ausgewählt");
+				//System.out.println("Keine Tabellenzeile ausgewählt");
 				incheckundstart = false;
 				return;
 			}
@@ -349,6 +347,7 @@ public class ThTextBlock extends RehaSmartDialog{
 					}
 					if((System.currentTimeMillis()-zeit) > 2000){
 						System.out.println("Zwangsabbruch akttbid immer noch nicht identisch");
+						inholetext = false;
 						break;
 					}
 				}
@@ -474,7 +473,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		    public void valueChanged(ListSelectionEvent e) {
 				if(blockneugefunden || inholetext){
 					blockneugefunden = false;
-					System.out.println("Wert von inholetext = "+inholetext);
+					//System.out.println("Wert von inholetext = "+inholetext);
 					return;
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
@@ -539,6 +538,31 @@ public class ThTextBlock extends RehaSmartDialog{
 					SystemConfig.hmAdrPDaten.get("<Panrede>"),
 					SystemConfig.hmAdrPDaten.get("<Pnname>"),
 					DatFunk.sHeute()};
+		}
+		private String testeAufSysVars(String text){
+			String replacement ="";
+			String origtext= "";
+			boolean frau = (Reha.thisClass.patpanel.patDaten.get(0).equalsIgnoreCase("FRAU") ? true : false);
+			origtext = text;
+			try{
+				for(int i = 0; i < sysVars1.size();i++){
+					if(origtext.contains(sysVars1.get(i))){
+						replacement =  sysInhalt1[i][(frau ? 1 : 0)];
+						origtext = origtext.replaceAll(Pattern.quote(sysVars1.get(i)),replacement);
+						//origtext = origtext.replace(sysVars1.get(i),replacement);
+					}
+				}
+				for(int i = 0; i < sysVars2.size();i++){
+					if(origtext.contains(sysVars2.get(i))){
+						replacement =  sysInhalt2[i];
+						origtext = origtext.replaceAll(Pattern.quote(sysVars2.get(i)),replacement);
+						//origtext = origtext.replace(sysVars2.get(i),replacement);
+					}
+				}
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			return origtext;
 		}
 
 		

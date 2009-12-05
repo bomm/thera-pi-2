@@ -67,7 +67,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		x = x.replaceAll("\\^Tab\\^","&nbsp;");
 		x = x.replaceAll("CRLF","<br>");
 		this.savetext = "<html>"+x+"</html>";
-		System.out.println("Savetext nach dem Replace " +this.savetext);
+		//System.out.println("Savetext nach dem Replace " +this.savetext);
 		this.varvec = vec;
 		this.thbl = thb;
 		this.rueck = jtf;
@@ -133,7 +133,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		this.maxvector = vec.size()-1;
 		testeAufRot();
 		tbeingabe.setText("");
-		System.out.println("Neudaten = "+this.savetext);
+		//System.out.println("Neudaten = "+this.savetext);
 		macheTitel(0);
 	}
 	
@@ -184,7 +184,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			}
 			if(i > maxvector){
 				werteUebergeben();
-				System.out.println("nach der while schleife");
+				//System.out.println("nach der while schleife");
 				this.thbl.wechsleRueckwaerts();
 				return;
 			}
@@ -197,7 +197,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			
 			// 1.
 			if(aktvector > maxvector){
-				System.out.println("nach 1.");
+				//System.out.println("nach 1.");
 				aktvector--;
 				testeAufRot();
 				this.savetext = this.savetext.replace(aktreplace, "<b><font color='#000000'>"+tbeingabe.getText().trim()+"</font></b>");
@@ -215,7 +215,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			}
 			//2,
 			if(i > maxvector){
-				System.out.println("nach 2.");
+				//System.out.println("nach 2.");
 				werteUebergeben();
 				this.thbl.wechsleRueckwaerts();
 				return;
@@ -228,7 +228,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 				tbeingabe.setText("");
 			//3,
 			}else{
-				System.out.println("nach 3.");
+				//System.out.println("nach 3.");
 				werteUebergeben();
 				this.thbl.wechsleRueckwaerts();
 				return;
@@ -258,7 +258,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			this.thbl.wechsleRueckwaerts();
 		}
 		if(varvec.get(aktvector).contains("^Tab^")){
-			System.out.println("Tab gefunden "+this.savetext);
+			//System.out.println("Tab gefunden "+this.savetext);
 			return;
 		}
 		aktreplace = "<b><font color='#ff0000'>"+varvec.get(aktvector)+"</font></b>";
