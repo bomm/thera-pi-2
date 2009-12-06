@@ -28,8 +28,8 @@ public class AktiveFenster {
 	
 	public static void loescheFenster(String name){
 		int i;
-		System.out.println("Aktive-Fenster: "+name+" wird gelöscht");
-		System.out.println("FensterElemente vor löschen "+Fenster.size());		
+		System.out.println("Aktive-Fenster: "+name+" wird gelÃ¶scht");
+		System.out.println("FensterElemente vor lÃ¶schen "+Fenster.size());		
 		for(i=0;i<Fenster.size();i++){
 			if((boolean)((AlleFenster)Fenster.get(i)).fname.equals(name)){
 				System.out.println("Setze freferenz auf null!");
@@ -50,7 +50,7 @@ public class AktiveFenster {
 				break;
 			}
 		}
-		System.out.println("FensterElemente nach löschen "+Fenster.size());
+		System.out.println("FensterElemente nach lÃ¶schen "+Fenster.size());
 	}
 	public static JComponent getFenster(String name){
 		int i;

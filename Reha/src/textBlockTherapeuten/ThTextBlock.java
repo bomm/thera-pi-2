@@ -530,13 +530,14 @@ public class ThTextBlock extends RehaSmartDialog{
 		}
 		private void macheSysVars2(){
 			sysVars2 = Arrays.asList(new String[] {
-					"^ErstDatum^","^LetztDatum^","^RezDatum^","^Anrede^","^PatName^","^Heute^"	
+					"^ErstDatum^","^LetztDatum^","^RezDatum^","^Anrede^","^PatName^","^PatVName^","^Heute^"	
 			});
 			sysInhalt2 = new String[] {SystemConfig.hmAdrRDaten.get("<Rerstdat>"),
 					SystemConfig.hmAdrRDaten.get("<Rletztdat>"),
 					SystemConfig.hmAdrRDaten.get("<Rdatum>"),
 					SystemConfig.hmAdrPDaten.get("<Panrede>"),
 					SystemConfig.hmAdrPDaten.get("<Pnname>"),
+					SystemConfig.hmAdrPDaten.get("<Pvname>"),
 					DatFunk.sHeute()};
 		}
 		private String testeAufSysVars(String text){
