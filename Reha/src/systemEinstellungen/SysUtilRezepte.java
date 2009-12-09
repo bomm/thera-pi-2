@@ -145,7 +145,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		}
 		vorlagen.validate();
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 
 		for(int i = 0; i<5;i++){
@@ -181,9 +181,9 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		builder.addLabel("Rezeptklasse", cc.xy(1, 15));
 		builder.add(voreinstellung,cc.xyw(3,15,4));
 		
-		builder.addSeparator("Quittungsdrucker f. Rezeptgebühren", cc.xyw(1, 17, 6));
+		builder.addSeparator("Quittungsdrucker f. RezeptgebÃ¼hren", cc.xyw(1, 17, 6));
 		
-		builder.addLabel("Drucker auswählen", cc.xy(1, 19));
+		builder.addLabel("Drucker auswÃ¤hlen", cc.xy(1, 19));
 		druckername = new JComboBox(drucker);
 		if(SystemConfig.rezGebDrucker.trim().equals("")){
 			druckername.setSelectedIndex(0);
@@ -193,7 +193,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		builder.add(druckername,cc.xyw(3, 19,4));
 		
 		builder.addSeparator("Barcodedrucker (nur sofern Sie Barcode verwenden)", cc.xyw(1, 21, 6));
-		builder.addLabel("Drucker auswählen", cc.xy(1, 23));
+		builder.addLabel("Drucker auswÃ¤hlen", cc.xy(1, 23));
 		barcodedrucker = new JComboBox(drucker);
 		if(SystemConfig.rezBarcodeDrucker.trim().equals("")){
 			barcodedrucker.setSelectedIndex(0);
@@ -240,12 +240,12 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		button[1] = new JButton("entfernen");
 		button[1].setActionCommand("entfernen");
 		button[1].addActionListener(this);
-		button[2] = new JButton("hinzufügen");
+		button[2] = new JButton("hinzufÃ¼gen");
 		button[2].setActionCommand("vorlagenneu");
 		button[2].addActionListener(this);		
 		butPan.add(new JLabel("aus Liste entfernen"), cc2.xy(2, 1));
 		butPan.add(button[1], cc2.xy(4, 1));
-		butPan.add(new JLabel("neue Vorlagendatei hinzufügen"), cc2.xy(2, 3));
+		butPan.add(new JLabel("neue Vorlagendatei hinzufÃ¼gen"), cc2.xy(2, 3));
 		butPan.add(button[2], cc2.xy(4, 3));
 		butPan.validate();
 		builder.add(butPan, cc.xyw(1,31,6));
@@ -278,7 +278,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		jpan.addSeparator("", jpancc.xyw(1,1,5));
 		jpan.add(button[5], jpancc.xy(3,3));
 		jpan.add(button[6], jpancc.xy(5,3));
-		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+		jpan.addLabel("Ã„nderungen Ã¼bernehmen?", jpancc.xy(1,3));
 		
 		
 		return jpan.getPanel();
@@ -327,7 +327,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			}
 
 			if(vorlage.getText().equals("") || datLabel.getText().equals("")){
-				JOptionPane.showMessageDialog(null,"Geben Sie jetzt einen Titel für die neue Text-Vorlage ein");
+				JOptionPane.showMessageDialog(null,"Geben Sie jetzt einen Titel fÃ¼r die neue Text-Vorlage ein");
 				//return;
 			}
 			Vector vec = new Vector();
@@ -353,7 +353,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		}
 		if(cmd.equals("entfernen")){
 			int row = vorlagen.getSelectedRow();
-			int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewÃ¤hlte Tabellenzeile wirklich lÃ¶schen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
 			}
@@ -376,7 +376,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	}	
 	private String dateiDialog(String pfad){
 		String sret = "";
-		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);
@@ -433,7 +433,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			String test = (String)vorlagen.getValueAt(i, 0);
 			if(test.equals("")){
 				String datei = (String)vorlagen.getValueAt(i, 1);
-				String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
+				String msg = "FÃ¼r Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
 				JOptionPane.showMessageDialog(null,msg);
 				formok = false;
 				break;

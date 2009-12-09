@@ -62,7 +62,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		/****/
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 	
 		knopf2 = new JButton("abbrechen");
@@ -103,7 +103,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator("Anschlussdaten", cc.xyw(1, 1, 4));
-		builder.addLabel("Anschluss auswählen", cc.xy(2,3));
+		builder.addLabel("Anschluss auswÃ¤hlen", cc.xy(2,3));
 		builder.add(anschluss, cc.xy(4,3));
 		builder.addLabel("Baudrate", cc.xy(2,5));
 		builder.add(baud, cc.xy(4,5));
@@ -114,7 +114,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		builder.addLabel("Stopbits", cc.xy(2,11));
 		builder.add(stopbits, cc.xy(4,11));
 		
-		builder.addSeparator("Änderungen übernehmen", cc.xyw(1,13,4));
+		builder.addSeparator("Ã„nderungen Ã¼bernehmen", cc.xyw(1,13,4));
 		builder.add(knopf2, cc.xy(2,15));
 		builder.add(knopf1, cc.xy(4,15));
 		
@@ -174,7 +174,7 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		inif.setStringProperty(com, "StopBit",params[3] , null);
 		inif.save();
 		SystemConfig.hmGeraete.put(com,params.clone());
-		JOptionPane.showMessageDialog(null, "Anschlußkonfiguration wurde gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
+		JOptionPane.showMessageDialog(null, "AnschluÃŸkonfiguration wurde gespeichert und steht nach dem nÃ¤chsten\nStart der Software zur VerfÃ¼gung");
 	}
 
 }

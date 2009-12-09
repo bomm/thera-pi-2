@@ -86,7 +86,7 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	     add(getKnopfPanel(),BorderLayout.SOUTH);
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	
 private JPanel getKnopfPanel(){
 		
@@ -110,7 +110,7 @@ private JPanel getKnopfPanel(){
 		jpan.getPanel().setOpaque(false);		
 		CellConstraints jpancc = new CellConstraints();
 		
-		jpan.addSeparator("Änderungen übernehmen?", jpancc.xyw(1,1,5));
+		jpan.addSeparator("Ã„nderungen Ã¼bernehmen?", jpancc.xyw(1,1,5));
 		jpan.add(knopf1, jpancc.xy(3,3));
 		jpan.add(knopf2, jpancc.xy(5,3));
 		
@@ -188,29 +188,29 @@ private JPanel getKnopfPanel(){
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("KV-Karten-Lesegerät", cc.xyw(1,1,5));
+		builder.addSeparator("KV-Karten-LesegerÃ¤t", cc.xyw(1,1,5));
 		builder.addLabel("aktivieren", cc.xy(3,3));
 		builder.add(kvkakt, cc.xy(5,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		builder.addLabel("Gerät", cc.xy(3,5));
+		builder.addLabel("GerÃ¤t", cc.xy(3,5));
 		builder.add(kvkgeraet, cc.xyw(4,5,2));
 		builder.addLabel("Anschluss", cc.xy(3,7));
 		builder.add(kvkan, cc.xyw(4,7,2));
 		builder.addSeparator("Dokumentenscanner", cc.xyw(1,9,5));
 		builder.addLabel("aktivieren", cc.xy(3,11));
 		builder.add(docscanakt, cc.xy(5,11));
-		builder.addLabel("Gerät", cc.xy(3,13));
+		builder.addLabel("GerÃ¤t", cc.xy(3,13));
 		builder.add(docscangeraet, cc.xyw(4,13,2));
 		builder.addSeparator("Barcodescanner", cc.xyw(1,15,5));
 		builder.addLabel("aktivieren", cc.xy(3,17));
 		builder.add(barcodeakt, cc.xy(5,17));
-		builder.addLabel("Gerät", cc.xy(3,19));
+		builder.addLabel("GerÃ¤t", cc.xy(3,19));
 		builder.add(barcodegeraet, cc.xyw(4,19,2));
 		builder.addLabel("Anschluss", cc.xy(3,21));
 		builder.add(barcodean, cc.xyw(4,21,2));
 		builder.addSeparator("EC-Karte", cc.xyw(1,23,5));
 		builder.addLabel("aktivieren",cc.xy(3,25));
 		builder.add(ecakt, cc.xy(5,25));
-		builder.addLabel("Gerät", cc.xy(3,27));
+		builder.addLabel("GerÃ¤t", cc.xy(3,27));
 		builder.add(ecgeraet, cc.xyw(4,27,2));
 		builder.addLabel("Anschluss", cc.xy(3,29));
 		builder.add(ecan, cc.xyw(4,29,2));
@@ -278,6 +278,6 @@ private JPanel getKnopfPanel(){
 		inif.setStringProperty("DokumentenScanner", "DokumentenScannerName",SystemConfig.sDokuScanner , null);		
 
 		inif.save();
-		JOptionPane.showMessageDialog(null, "Gerätekonfiguration wurde gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
+		JOptionPane.showMessageDialog(null, "GerÃ¤tekonfiguration wurde gespeichert und steht nach dem nÃ¤chsten\nStart der Software zur VerfÃ¼gung");
 	}
 }

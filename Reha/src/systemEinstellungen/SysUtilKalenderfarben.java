@@ -85,7 +85,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 	     //setVisible(true);
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		knopf1 = new JButton("anwenden"); 
 		knopf1.setPreferredSize(new Dimension(70, 20));
@@ -154,7 +154,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 		//builder.getPanel().setVisible(true);
 		//builder.getPanel().validate();
 		
-		builder.addLabel("Farbset zur Bearbeitung auswählen", cc.xy(1, 2));
+		builder.addLabel("Farbset zur Bearbeitung auswÃ¤hlen", cc.xy(1, 2));
 		builder.add(standard, cc.xy(3, 2));
 		
 		builder.add(listscr, cc.xyw(1, 4, 3));
@@ -167,7 +167,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 		
 		builder.addSeparator("Optional: Transparenz einstellen", cc.xyw(1, 10, 3));
 		
-		builder.addLabel("Transparenz wählen", cc.xy(1,12));
+		builder.addLabel("Transparenz wÃ¤hlen", cc.xy(1,12));
 		builder.add(alphawahl, cc.xy(3, 12));
 		builder.addLabel("Der eingestellte Wert ist sofort im Kalender sichtbar.", cc.xy(1, 14));
 		/*****************************/
@@ -326,27 +326,27 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 		JLabel BeispielDummi = new JLabel("so sieht's aus");
 		Vector vec = new Vector();
 		Object[][]mydata = {
-            {"außer AZ", "Pause/Freizeit", new Color(111,141,223),
+            {"auï¿½er AZ", "Pause/Freizeit", new Color(111,141,223),
             new Color(111,141,223), BeispielDummi},
-            {"Terminlücke", "verfügbar", new Color(190, 0, 4),
+            {"Terminlï¿½cke", "verfï¿½gbar", new Color(190, 0, 4),
 	        new Color(190, 0, 4), BeispielDummi},
-	        {"unvollständig", "ohne Rezept-Nr.", new Color(	190, 190, 0),
+	        {"unvollstï¿½ndig", "ohne Rezept-Nr.", new Color(	190, 190, 0),
 		    new Color(0, 0, 0), BeispielDummi},
-            {"15´", "Termin 15 min", new Color(204, 204, 204),
+            {"15ï¿½", "Termin 15 min", new Color(204, 204, 204),
 		    new Color(25,25,25), BeispielDummi},
-            {"20´", "Termin 20 min", new Color(153,153,153),
+            {"20ï¿½", "Termin 20 min", new Color(153,153,153),
 			new Color(25,25,25), BeispielDummi},
-            {"25´", "Termin 25 min", new Color(102, 102, 102),
+            {"25ï¿½", "Termin 25 min", new Color(102, 102, 102),
 			new Color(255,255,255), BeispielDummi},
-			{"30´", "Termin 30 min", new Color(0, 102, 102),
+			{"30ï¿½", "Termin 30 min", new Color(0, 102, 102),
 			new Color(255,255,255), BeispielDummi},
-			{"45´", "Termin 45 min", new Color(102, 102, 0),
+			{"45ï¿½", "Termin 45 min", new Color(102, 102, 0),
 			new Color(255,255,51), BeispielDummi},
-			{"50´", "Termin 50 min", new Color(255,153,255),
+			{"50ï¿½", "Termin 50 min", new Color(255,153,255),
 			new Color(0,0,0), BeispielDummi},
-			{"60´", "Termin 60 min", new Color(102, 0, 102),
+			{"60ï¿½", "Termin 60 min", new Color(102, 0, 102),
 			new Color(255,255,51), BeispielDummi},
-			{"90´", "Termin 90 min", new Color(0,0,255),
+			{"90ï¿½", "Termin 90 min", new Color(0,0,255),
 			new Color(255,255,51), BeispielDummi},
 			{"Reha-Termin", "Reha-Patient", new Color(0,255,255),
 			new Color(255,255,51), BeispielDummi},

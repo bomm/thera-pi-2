@@ -82,7 +82,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 	     add(jscr);
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
 		knopf1 = new JButton("abbrechen");
@@ -150,19 +150,19 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		//für das Panel oben im Fenster:
-		//Hier können Sie bis zu zwei E-Mail-Postfächer für programminterne Funktionen einrichten (z.B. Terminlisten mailen).
-		//Die Zugangsdaten für Ihre E-Mailpostfächer erhalten Sie von Ihrem Internetprovider. 
-		//Näheres dazu auch im FAQ-Bereich auf thera-pi.org
+		//fï¿½r das Panel oben im Fenster:
+		//Hier kï¿½nnen Sie bis zu zwei E-Mail-Postfï¿½cher fï¿½r programminterne Funktionen einrichten (z.B. Terminlisten mailen).
+		//Die Zugangsdaten fï¿½r Ihre E-Mailpostfï¿½cher erhalten Sie von Ihrem Internetprovider. 
+		//Nï¿½heres dazu auch im FAQ-Bereich auf thera-pi.org
 		
-		//builder.addLabel("Postfach wählen", cc.xy(3, 2));
+		//builder.addLabel("Postfach wï¿½hlen", cc.xy(3, 2));
 		builder.add(Postfach, cc.xy(4, 1));
 		
 		builder.addSeparator("optionale Angaben", cc.xyw(1,3,4));
 		
 		builder.addLabel("Absender-Mailadresse", cc.xy(1, 5));
 		builder.add(Mailadresse, cc.xyw(3,5,2));
-		builder.addLabel("Empfangsbestätigung anfordern", cc.xy(1,7));
+		builder.addLabel("EmpfangsbestÃ¤tigung anfordern", cc.xy(1,7));
 		builder.add(EmpfBest, cc.xy(4, 7));
 		
 		builder.addSeparator("Zugangsdaten", cc.xyw(1, 9, 4));
@@ -243,7 +243,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		String pass1 = Pass1.getText().trim();
 		String pass2 = Pass2.getText().trim();
 		if(!pass1.equals(pass2)){
-			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht überein");
+			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht Ã¼berein");
 			return;
 		}
 		Verschluesseln man = Verschluesseln.getInstance();
@@ -294,14 +294,14 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		String pass1 = Pass1.getText().trim();
 		String pass2 = Pass2.getText().trim();
 		if(!pass1.equals(pass2)){
-			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht überein");
+			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht Ã¼berein");
 			return;
 		}
 		String smtphost = SMTPhost.getText().trim();
 		String pophost = POPhost.getText().trim();
 		String authent = ( Authent.isSelected() ? "1" : "0");
-		String text = "Herzlichen Glückwunsch Ihr Postfach ist perferkt konfiguriert\n\n"+
-				"Sie können diese Konfiguration nun abspeichern";
+		String text = "Herzlichen GlÃ¼ckwunsch Ihr Postfach ist perferkt konfiguriert\n\n"+
+				"Sie kÃ¶nnen diese Konfiguration nun abspeichern";
 		boolean authx = (authent.equals("0") ? false : true);
 		boolean bestaetigen = (bestaetigung.equals("0") ? false : true);
 
@@ -311,10 +311,10 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		oMail.sendMail(smtphost, benutzer, pass1, sender, sender, "Test der Emailkonfiguration", text,attachments,authx,bestaetigen);
 		oMail = null;
         JOptionPane.showMessageDialog(null,"Der Email-Account wurde korrekt konfiguriert!\n\n"+
-		"Sie erhalten in Kürze eine Erfolgsmeldung per Email");
+		"Sie erhalten in KÃ¼rze eine Erfolgsmeldung per Email");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
-        			"Mögliche Ursachen:\n"+
+        			"MÃ¶gliche Ursachen:\n"+
         			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
         			"- Sie haben kein Kontakt zum Internet");
 			e.printStackTrace( );

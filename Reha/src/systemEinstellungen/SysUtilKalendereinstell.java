@@ -73,7 +73,7 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
 		knopf2 = new JButton("abbrechen");
@@ -137,14 +137,14 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 		builder.add(MIN2, cc.xy(7, 3));
 		builder.addLabel("Refresh-Takt", cc.xy(1,5));
 		builder.add(refresh, cc.xyw(3,5,5));
-		builder.addLabel("Barcodescanner für Behandlungsbestätigungen", cc.xy(1,7));
+		builder.addLabel("Barcodescanner fÃ¼r BehandlungsbestÃ¤tigungen", cc.xy(1,7));
 		builder.add(scan, cc.xy(7,7, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addSeparator("", cc.xyw(1, 9, 7));
-		builder.addLabel("Abbruch ohne Übernahme", cc.xy(1, 11));
+		builder.addLabel("Abbruch ohne Ãœbernahme", cc.xy(1, 11));
 		builder.add(knopf2, cc.xyw(3, 11, 5));
-		builder.addLabel("Parameter übernehmen", cc.xy(1, 13));
+		builder.addLabel("Parameter Ã¼bernehmen", cc.xy(1, 13));
 		builder.add(knopf1, cc.xyw(3, 13, 5));
-		builder.addLabel("Fortschritt beim Verändern der Datenbank", cc.xy(1, 15, CellConstraints.LEFT, CellConstraints.BOTTOM));
+		builder.addLabel("Fortschritt beim VerÃ¤ndern der Datenbank", cc.xy(1, 15, CellConstraints.LEFT, CellConstraints.BOTTOM));
 		builder.add(Fortschritt, cc.xyw(1, 17, 7));
 		builder.addSeparator("", cc.xyw(1,19,7));
 		builder.addLabel("gesperrte Spalten freigeben", cc.xy(1,21));
@@ -182,7 +182,7 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("speichern")){
 			if(kalNeuAnfang || kalNeuEnde){
-				JOptionPane.showMessageDialog(null, "Die Funktion Kalenderzeiten verändern, wird während der Softwarentwicklung nicht aufgerufen!");
+				JOptionPane.showMessageDialog(null, "Die Funktion Kalenderzeiten verÃ¤ndern, wird wÃ¤hrend der Softwarentwicklung nicht aufgerufen!");
 			}
 			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			ini.setStringProperty("Kalender", "KalenderBarcode",(scan.isSelected() ? "1" : "0"),null);
@@ -196,7 +196,7 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 		if(e.getActionCommand().equals("unlock")){
 			String cmd = "delete from flexlock";
 			new ExUndHop().setzeStatement(cmd);
-			JOptionPane.showMessageDialog(null,"Sämtliche Sperren der Terminspalten wurden aufgehoben");
+			JOptionPane.showMessageDialog(null,"SÃ¤mtliche Sperren der Terminspalten wurden aufgehoben");
 		}
 		
 	}
@@ -210,8 +210,8 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 				s2 = MIN1.getText().trim();
 				s3 = s1+":"+s2+":00";
 				if(!s3.equals(SystemConfig.KalenderUmfang[0])){
-					JOptionPane.showMessageDialog(null, "Sie haben die Kalenderanfangszeit verändert.\n\n"+
-							"Für die Neuorganisation des Terminkalenders können Sie schon mal einige Kannen Kaffee kochen!");
+					JOptionPane.showMessageDialog(null, "Sie haben die Kalenderanfangszeit verÃ¤ndert.\n\n"+
+							"FÃ¼r die Neuorganisation des Terminkalenders kÃ¶nnen Sie schon mal einige Kannen Kaffee kochen!");
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
 							STD2.requestFocus();
@@ -228,8 +228,8 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 				s2 = MIN2.getText().trim();
 				s3 = s1+":"+s2+":00";
 				if(!s3.equals(SystemConfig.KalenderUmfang[1])){
-					JOptionPane.showMessageDialog(null, "Sie haben die Kalenderendzeit verändert.\n\n"+
-							"Für die Neuorganisation des Terminkalenders können Sie schon mal einige Kannen Kaffee kochen!");
+					JOptionPane.showMessageDialog(null, "Sie haben die Kalenderendzeit verÃ¤ndert.\n\n"+
+							"FÃ¼r die Neuorganisation des Terminkalenders kÃ¶nnen Sie schon mal einige Kannen Kaffee kochen!");
 					kalNeuEnde = true;
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){

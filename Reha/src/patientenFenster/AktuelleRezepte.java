@@ -752,7 +752,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
 					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
-					SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
+					if(i==0){
+						SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));						
+					}
 				}else{
 					tvec.add(terdat[y]);					
 				}
@@ -818,7 +820,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
 					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
-					SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					if(i==0){
+						SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
+					}
 				}else{
 					tvec.add(new String(terdat[y]));					
 				}

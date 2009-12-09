@@ -60,7 +60,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 	     add(getVorlagenSeite());
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		String[] string = {"10","15","20","25","30","35","40","45","50","55","60","90","120"};
 		montag = new JCheckBox();
@@ -105,7 +105,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addLabel("voreingestellte Wochentage für Terminsuche", cc.xy(1, 1));
+		builder.addLabel("voreingestellte Wochentage fÃ¼r Terminsuche", cc.xy(1, 1));
 		builder.add(montag, cc.xy(3, 1));
 		builder.addLabel("Montag", cc.xy(5, 1));
 		builder.add(dienstag, cc.xy(3, 3));
@@ -121,11 +121,11 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 		builder.add(sonntag, cc.xy(3, 13));
 		builder.addLabel("Sonntag", cc.xy(5,13));
 		
-		builder.addLabel("voreingestellter Zeitraum für Terminsuche", cc.xy(1,15));
+		builder.addLabel("voreingestellter Zeitraum fÃ¼r Terminsuche", cc.xy(1,15));
 		builder.add(range, cc.xy(3,15));
 		builder.addLabel("Tage", cc.xy(5,15));
 		//***********************************//
-		builder.addLabel("voreingestellte Behandlungszeiten für", cc.xy(1, 17));
+		builder.addLabel("voreingestellte Behandlungszeiten fÃ¼r", cc.xy(1, 17));
 		builder.addLabel("Physio", cc.xy(3, 17));
 		zeiten[0] = new JComboBox(string);
 		zeiten[0].setSelectedItem(SystemConfig.RoogleZeiten.get("KG"));
@@ -138,7 +138,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 		zeiten[2] = new JComboBox(string);
 		zeiten[2].setSelectedItem(SystemConfig.RoogleZeiten.get("ER"));
 		builder.add(zeiten[2], cc.xy(5, 21));
-		builder.addLabel("Logopädie", cc.xy(3, 23));
+		builder.addLabel("LogopÃ¤die", cc.xy(3, 23));
 		zeiten[3] = new JComboBox(string);
 		zeiten[3].setSelectedItem(SystemConfig.RoogleZeiten.get("LO"));
 		builder.add(zeiten[3], cc.xy(5, 23));

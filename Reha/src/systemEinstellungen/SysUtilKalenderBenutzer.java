@@ -146,7 +146,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		/*
 		panel1 = getForm2();
         tabbedPane.addTab("Seite 2", null, panel1,
-        "Zusatzfelder für die Personalabteilung");
+        "Zusatzfelder fï¿½r die Personalabteilung");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
         this.add(tabbedPane);
@@ -183,13 +183,13 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		knopf1.setActionCommand("neu");
 		knopf1.addKeyListener(this);
 
-		knopf2 = new JButton("löschen");
+		knopf2 = new JButton("lÃ¶schen");
 		knopf2.setPreferredSize(new Dimension(70, 20));
 		knopf2.addActionListener(this);
 		knopf2.setActionCommand("loeschen");
 		knopf2.addKeyListener(this);
 		
-		knopf3 = new JButton("ändern");
+		knopf3 = new JButton("Ã¤ndern");
 		knopf3.setPreferredSize(new Dimension(70, 20));
 		knopf3.addActionListener(this);
 		knopf3.setActionCommand("aendern");
@@ -216,7 +216,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		// checkbox "nicht anzeigen"
 		naz = new JCheckBox("");
 		
-		builder.addLabel("Benutzer auswählen", cc.xy(1,1));
+		builder.addLabel("Benutzer auswÃ¤hlen", cc.xy(1,1));
 		jcomboWahl = new JComboBox();
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
@@ -254,7 +254,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		builder.add(abteilung, cc.xy(9, 11));
 		builder.addLabel("Default-Takt", cc.xy(1,15));
 		deftakt = new JRtaTextField("ZAHLEN",true);
-		deftakt.setToolTipText("Dieses Feld ist für eine spätere Erweiterung gedacht und hat derzeit noch keinen Einfluß auf den Programmablauf!");
+		deftakt.setToolTipText("Dieses Feld ist fÃ¼r eine spÃ¤tere Erweiterung gedacht und hat derzeit noch keinen EinfluÃŸ auf den Programmablauf!");
 		builder.add(deftakt, cc.xyw(3, 15, 1));
 		
 		// builder.addLabel("Kal.-Zeile", cc.xy(7, 15));
@@ -431,8 +431,8 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 		if(termin != null){
 			Reha.thisClass.terminpanel.setCombosOutside();
-			JOptionPane.showMessageDialog(null,"Die Kalenderbenutzer wurden geändert!\n"+
-					"Die Behandlersets des aktiven Terminkalender wurden zurückgesetzt.");
+			JOptionPane.showMessageDialog(null,"Die Kalenderbenutzer wurden geÃ¤ndert!\n"+
+					"Die Behandlersets des aktiven Terminkalender wurden zurÃ¼ckgesetzt.");
 		}
 
 	}
@@ -441,7 +441,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		knopfGedoense(new int[] {1,1,1,0,0});
 		lneu = false;
 		String statement = null;
-		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie diesen Kalenderbenutzer wirklich löschen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie diesen Kalenderbenutzer wirklich lÃ¶schen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.YES_OPTION){
 			int aktwahl = jcomboWahl.getSelectedIndex();
 			if(aktwahl> 0){
@@ -454,8 +454,8 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 				if(termin != null){
 					Reha.thisClass.terminpanel.setCombosOutside();
-					JOptionPane.showMessageDialog(null,"Die Kalenderbenutzer wurden geändert!\n"+
-							"Die Behandlersets des aktiven Terminkalender wurden zurückgesetzt.");
+					JOptionPane.showMessageDialog(null,"Die Kalenderbenutzer wurden geÃ¤ndert!\n"+
+							"Die Behandlersets des aktiven Terminkalender wurden zurÃ¼ckgesetzt.");
 				}
 
 			}
@@ -569,13 +569,13 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 	private boolean testObNeueKalZeile(){
 		boolean ret = false;
 		if( (ParameterLaden.vKKollegen.size() >= (ParameterLaden.maxKalZeile+1)) ){
-			//Es muß eine neue Kalenderzeile belegt werden.
+			//Es muï¿½ eine neue Kalenderzeile belegt werden.
 			speichernKalZeile = ParameterLaden.maxKalZeile+1;
 			ret = true;
 			return ret;
 			
 		}else{
-			//Es muß nach einer freien also unbelegten Kalenderzeile gesucht werden.
+			//Es muï¿½ nach einer freien also unbelegten Kalenderzeile gesucht werden.
 			testeKollegen();
 			ret = false;
 		}

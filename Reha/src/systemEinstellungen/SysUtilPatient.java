@@ -148,7 +148,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		jpan.addSeparator("", jpancc.xyw(1,1,5));
 		jpan.add(button[9], jpancc.xy(3,3));
 		jpan.add(button[10], jpancc.xy(5,3));
-		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+		jpan.addLabel("Ã„nderungen Ã¼bernehmen?", jpancc.xy(1,3));
 		
 		
 		return jpan.getPanel();
@@ -201,7 +201,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		
 
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
 		oben = new JRadioButton();
@@ -237,9 +237,9 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		vorlage = new JRtaTextField("NIX", true);
 		button[6] = new JButton("entfernen");
 		button[6].setActionCommand("entfernen");
-		button[7] = new JButton("auswählen");
+		button[7] = new JButton("auswÃ¤hlen");
 		button[7].setActionCommand("vorlagenwahl");
-		button[8] = new JButton("hinzufügen");
+		button[8] = new JButton("hinzufÃ¼gen");
 		button[8].setActionCommand("vorlagenneu");
 		
 		krit[0] = new JRtaTextField("", true);
@@ -248,17 +248,17 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		krit[3] = new JRtaTextField("", true);
 		krit[4] = new JRtaTextField("", true);
 		krit[5] = new JRtaTextField("", true);
-		button[0] = new JButton("auswählen");
+		button[0] = new JButton("auswÃ¤hlen");
 		button[0].setActionCommand("iwahl0");
-		button[1] = new JButton("auswählen");
+		button[1] = new JButton("auswÃ¤hlen");
 		button[1].setActionCommand("iwahl1");
-		button[2] = new JButton("auswählen");
+		button[2] = new JButton("auswÃ¤hlen");
 		button[2].setActionCommand("iwahl2");		
-		button[3] = new JButton("auswählen");
+		button[3] = new JButton("auswÃ¤hlen");
 		button[3].setActionCommand("iwahl3");		
-		button[4] = new JButton("auswählen");
+		button[4] = new JButton("auswÃ¤hlen");
 		button[4].setActionCommand("iwahl4");		
-		button[5] = new JButton("auswählen");
+		button[5] = new JButton("auswÃ¤hlen");
 		button[5].setActionCommand("iwahl5");		
 		icon[0] = new JRtaTextField("", true);
 		icon[1] = new JRtaTextField("", true);
@@ -287,7 +287,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		builder.add(oben, cc.xy(6, 1, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addLabel("unteren Container", cc.xyw(4, 3, 2, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(unten, cc.xy(6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.addLabel("Fenstergröße automatisch optimieren", cc.xy(1, 5));
+		builder.addLabel("FenstergrÃ¶ÃŸe automatisch optimieren", cc.xy(1, 5));
 		builder.add(optimize, cc.xy(6,5, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addSeparator("Vorlagen-Verwaltung", cc.xyw(1,7,6));
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(vorlagen);
@@ -297,12 +297,12 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		builder.add(button[6], cc.xy(6, 11));
 		//builder.addLabel("Titel der neuen Vorlagen", cc.xy(1, 13));
 		//builder.add(vorlage, cc.xyw(3,13,4));
-		//builder.addLabel("Datei auswählen", cc.xy(1, 15));
+		//builder.addLabel("Datei auswï¿½hlen", cc.xy(1, 15));
 		datLabel = new JLabel();
 		//datLabel.setForeground(Color.BLUE);
 		//builder.add(datLabel, cc.xyw(3, 15, 2));
 		//builder.add(button[7], cc.xy(6, 15));
-		builder.addLabel("neue Vorlagendatei hinzufügen", cc.xy(1, 17));
+		builder.addLabel("neue Vorlagendatei hinzufÃ¼gen", cc.xy(1, 17));
 		builder.add(button[8], cc.xy(6, 17));
 		builder.addSeparator("Kriteriendefinitionen / Icons", cc.xyw(1, 19, 6));
 		builder.addLabel("1. Kriterium", cc.xy(1, 21));
@@ -365,7 +365,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		for(int i = 0;i < 1;i++){
 			if(cmd.equals("entfernen")){
 				int row = vorlagen.getSelectedRow();
-				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewÃ¤hlte Tabellenzeile wirklich lÃ¶schen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.NO_OPTION){
 					return;
 				}
@@ -397,7 +397,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 
 
 				if(vorlage.getText().equals("") || datLabel.getText().equals("")){
-					JOptionPane.showMessageDialog(null,"Geben Sie jetzt einen Titel für die neue Text-Vorlage ein");
+					JOptionPane.showMessageDialog(null,"Geben Sie jetzt einen Titel fÃ¼r die neue Text-Vorlage ein");
 					//return;
 				}
 				Vector vec = new Vector();
@@ -478,7 +478,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 			String test = (String)vorlagen.getValueAt(i, 0);
 			if(test.equals("")){
 				String datei = (String)vorlagen.getValueAt(i, 1);
-				String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
+				String msg = "FÃ¼r Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
 				JOptionPane.showMessageDialog(null,msg);
 				formok = false;
 				break;
@@ -508,7 +508,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	
 	private String dateiDialog(String pfad){
 		String sret = "";
-		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);

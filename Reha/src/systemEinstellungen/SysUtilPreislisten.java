@@ -128,7 +128,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	     }.execute();
 
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 70dlu, 4dlu, 10dlu, 4dlu, 70dlu",
@@ -139,7 +139,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
-		builder.addLabel("Heilmittelart auswählen",cc.xy(1, 1));
+		builder.addLabel("Heilmittelart auswÃ¤hlen",cc.xy(1, 1));
 
 		jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
 		jcmb[0].setSelectedItem(SystemConfig.initRezeptKlasse);
@@ -147,13 +147,13 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jcmb[0].addActionListener(this);
 		builder.add(jcmb[0],cc.xyw(3,1,7));
 		
-		builder.addLabel("Tarifgruppe auswählen",cc.xy(1, 3));
+		builder.addLabel("Tarifgruppe auswÃ¤hlen",cc.xy(1, 3));
 		jcmb[1] = new JRtaComboBox(SystemConfig.vPreisGruppen);
 		jcmb[1].setActionCommand("tabelleRegeln");
 		jcmb[1].addActionListener(this);
 		builder.add(jcmb[1],cc.xyw(3,3,7));
 
-		builder.addLabel("gültig ab",cc.xy(1,5));
+		builder.addLabel("gÃ¼ltig ab",cc.xy(1,5));
 		gueltig = new JRtaTextField("DATUM",true);
 		gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));
 		builder.add(gueltig, cc.xy(3,5));
@@ -167,7 +167,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		
 		builder.add(jcmb[2],cc.xy(9,5));
 		
-		plServer = new JButton("Update der Preise über Preislistenserver");
+		plServer = new JButton("Update der Preise Ã¼ber Preislistenserver");
 		plServer.setIcon(SystemConfig.hmSysIcons.get("achtung"));
 		plServer.setActionCommand("plUpdate");
 		plServer.addActionListener(this);
@@ -199,7 +199,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		
 		builder.add(jscr,cc.xyw(1,9,9));
 		
-		posneu = new JButton("hinzufügen");
+		posneu = new JButton("hinzufÃ¼gen");
 		posneu.setActionCommand("hinzu");
 		posneu.addActionListener(this);
 		posdel = new JButton("entfernen");
@@ -215,7 +215,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.addLabel("Position in Liste aufnehmen/entfernen",cc.xyw(1, 11,3));
 		builder.add(posneu, cc.xy(5, 11));
 		builder.add(posdel,cc.xy(9, 11));
-		builder.addLabel("Änderungen speichern?",cc.xyw(1,13,3));
+		builder.addLabel("Anderungen speichern?",cc.xyw(1,13,3));
 		builder.add(speichern, cc.xy(5, 13));
 		/*
 		kl = new KeyListener(){
@@ -223,7 +223,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			public void keyPressed(KeyEvent e) {
 				String name = ((JComponent)e.getSource()).getName();
 				if(name != null){
-					System.out.println("In KL ------>TastaturEvent von "+name+" ausgelöst. Gedrückte Taste = "+e.getKeyCode());
+					System.out.println("In KL ------>TastaturEvent von "+name+" ausgelï¿½st. Gedrï¿½ckte Taste = "+e.getKeyCode());
 				}
 			}
 			@Override
@@ -263,7 +263,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	public void keyPressed(KeyEvent e) {
 		String name = ((JComponent)e.getSource()).getName();
 		if(name != null){
-			System.out.println("Listener des Panels ----> TastaturEvent von "+name+" ausgelöst. Gedrückte Taste = "+e.getKeyChar());
+			System.out.println("Listener des Panels ----> TastaturEvent von "+name+" ausgelÃ¶st. GedrÃ¼ckte Taste = "+e.getKeyChar());
 		}
 		
 	}
@@ -295,7 +295,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run(){
 						String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
-						plEinlesen.setText("<html>Verfügbare Preislisten für <b><font color='#ff0000'>"+lists[jcmb[0].getSelectedIndex()]+"</font></b> ermitteln");
+						plEinlesen.setText("<html>VerfÃ¼gbare Preislisten fÃ¼r <b><font color='#ff0000'>"+lists[jcmb[0].getSelectedIndex()]+"</font></b> ermitteln");
 						jcmb[3].removeAllItems();
 						jcmb[3].addItem((String) jcmb[1].getSelectedItem());
 						jcmb[3].setEnabled(false);
@@ -334,10 +334,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			preislisten.setRowSelectionInterval(row, row);
 		}
 		if(cmd.equals("entfernen")){
-			//Position in lokaler Liste löschen
-			String msg = "Wenn Sie eine bestehende Position aus der Preisliste löschen werden evtl.\n"+
+			//Position in lokaler Liste lï¿½schen
+			String msg = "Wenn Sie eine bestehende Position aus der Preisliste lÃ¶schen werden evtl.\n"+
 			"Rezepte in der Historie nicht mehr korrekt dargestellt!\n\n"+
-			"Wollen Sie das ausgewählte Heilmittel wirklich aus der Preisliste löschen?\n";
+			"Wollen Sie das ausgewÃ¤hlte Heilmittel wirklich aus der Preisliste lÃ¶schen?\n";
 			int frage = JOptionPane.showConfirmDialog(null,msg, "Achtung - wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(frage != JOptionPane.YES_OPTION){
 				return;
@@ -353,7 +353,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			TableTool.loescheRow(preislisten, row);
 		}
 		if(cmd.equals("speichern")){
-			//Position in lokaler Liste löschen
+			//Position in lokaler Liste lï¿½schen
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -373,12 +373,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 
 		}
 		if(cmd.equals("abbruch")){
-			//Position in lokaler Liste löschen
+			//Position in lokaler Liste lï¿½schen
 			SystemUtil.abbrechen();
 			SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(cmd.equals("uebernehmen")){
-			//Positionen der Tabelle übernehmen
+			//Positionen der Tabelle ï¿½bernehmen
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -399,7 +399,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	private void doSpeichern(){
 		// in die Datenbank schreiben
 		// in den Vector schreiben
-		// Gültig ab erneuern
+		// Gï¿½ltig ab erneuern
 		// Anwendungsregel erneuern
 		//{"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
 		Reha.thisClass.Rehaprogress.setIndeterminate(true);
@@ -473,28 +473,28 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
 	private void doUebernahme(){
 		if(modserver.getRowCount()<=0){
-			JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
-					"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
-					"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
+			JOptionPane.showMessageDialog(null, "1. Schritt: VerfÃ¼gbare Preislisten ermitteln\n"+
+					"2. Schritt: GewÃ¼nschte Preisliste in der Tabelle auswÃ¤hlen\n"+
+					"3. Schritt: Die ausgewÃ¤hlte Preisliste Ã¼bernehmen - aber eben erst im 3. Schritt!");
 			// dummer Spruch
 			return;
 		}
 		int row = plserver.getSelectedRow();
 		if(row < 0){
-			JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
-					"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
-					"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
+			JOptionPane.showMessageDialog(null, "1. Schritt: VerfÃ¼gbare Preislisten ermitteln\n"+
+					"2. Schritt: GewÃ¼nschte Preisliste in der Tabelle auswÃ¤hlen\n"+
+					"3. Schritt: Die ausgewÃ¤hlte Preisliste Ã¼bernehmen - aber eben erst im 3. Schritt!");
 			// dummer Spruch			
 			return;
 		}
 		String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
-		String msg = "<html><b><font color='#ff0000' size=+2>Bitte sorgfältig lesen!!!!</font></b><br><br><br>"+
-		"Die von Ihnen ausgewählte Disziplin ist: <b><font color='#ff0000'> "+lists[jcmb[0].getSelectedIndex()]+"</font></b><br><br>"+
-		"Die von Ihnen ausgewählte Tarifgruppe ist: <b><font color='#ff0000'> "+(String)jcmb[1].getSelectedItem()+"</font></b><br><br>"+
-		"In die o.g. Tarifgruppe werden die Preise übernommen von:<br>"+
+		String msg = "<html><b><font color='#ff0000' size=+2>Bitte sorgfÃ¤ltig lesen!!!!</font></b><br><br><br>"+
+		"Die von Ihnen ausgewÃ¤hlte Disziplin ist: <b><font color='#ff0000'> "+lists[jcmb[0].getSelectedIndex()]+"</font></b><br><br>"+
+		"Die von Ihnen ausgewÃ¤hlte Tarifgruppe ist: <b><font color='#ff0000'> "+(String)jcmb[1].getSelectedItem()+"</font></b><br><br>"+
+		"In die o.g. Tarifgruppe werden die Preise Ã¼bernommen von:<br>"+
 		"Preisliste: <b><font color='#ff0000'>"+plserver.getValueAt(row, 1)+"</font></b><br>"+
-		"Gültigkeitsbereich: <b><font color='#ff0000'>"+plserver.getValueAt(row, 2)+"</font></b><br><br><br>"+
-		"Wollen Sie den Preislisten-Import mit diesen Einstellungen durchführen<br><br></html>";
+		"GÃ¼ltigkeitsbereich: <b><font color='#ff0000'>"+plserver.getValueAt(row, 2)+"</font></b><br><br><br>"+
+		"Wollen Sie den Preislisten-Import mit diesen Einstellungen durchfÃ¼hren<br><br></html>";
 		int frage = JOptionPane.showConfirmDialog(null,msg,"Achtung absolut wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 		if(frage != JOptionPane.YES_OPTION){
 			return;
@@ -618,9 +618,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		modserver.setRowCount(0);
 		vec1 = SqlInfo.holeFelder("select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe");
 		if(vec1.size()<= 0){
-				JOptionPane.showMessageDialog(null,"Bislang sind für -> "+disziplin+" <- keine Preislisten auf dem Server hinterlegt");
+				JOptionPane.showMessageDialog(null,"Bislang sind fÃ¼r -> "+disziplin+" <- keine Preislisten auf dem Server hinterlegt");
 		}else{
-				//System.out.println("Größe des Vectors = "+vec1.size());
+				//System.out.println("Grï¿½ï¿½e des Vectors = "+vec1.size());
 				//buland = ((String)((Vector)vec1.get(0)).get(0)).trim();
 				//preisgr = ((String)((Vector)vec1.get(0)).get(1)).trim();
 				//vbuland.add(buland);
@@ -665,11 +665,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
-		plEinlesen = new JButton("Verfügbare Preislisten einlesen");
+		plEinlesen = new JButton("VerfÃ¼gbare Preislisten einlesen");
 		plEinlesen.setActionCommand("pleinlesen");
 		plEinlesen.addActionListener(this);
 		builder.add(plEinlesen,cc.xyw(3,1,7));
-		builder.addLabel("Übernahme auf",cc.xy(1,3));
+		builder.addLabel("Ãœbernahme auf",cc.xy(1,3));
 		jcmb[3] = new JRtaComboBox();
 		jcmb[3].setActionCommand("plwahl");
 		jcmb[3].addActionListener(this);
@@ -690,20 +690,20 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jscr,cc.xyw(1,5,9));
 		
 		bezeich = new JRtaCheckBox();
-		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
+		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver Ã¼bernehmen?",cc.xyw(1, 7, 8));
 		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
-		builder.addLabel("Bisher aktuelle Preise auf 'Alte-Preise' übertragen?",cc.xyw(1, 9, 8));
+		builder.addLabel("Bisher aktuelle Preise auf 'Alte-Preise' Ã¼bertragen?",cc.xyw(1, 9, 8));
 		neuaufalt = new JRtaCheckBox();
 		neuaufalt.setSelected(true);
 		builder.add(neuaufalt,cc.xy(9, 9,CellConstraints.RIGHT,CellConstraints.BOTTOM));
 		//jradiogroup
-		jradio[0] = new JRtaRadioButton("nicht hinzufügen");
+		jradio[0] = new JRtaRadioButton("nicht hinzufÃ¼gen");
 		jradio[0].setHorizontalTextPosition(SwingConstants.LEFT);
 		jradiogroup.add(jradio[0]);
 		jradio[1] = new JRtaRadioButton("vorher nachfragen");
 		jradio[1].setHorizontalTextPosition(SwingConstants.LEFT);		
 		jradiogroup.add(jradio[1]);
-		jradio[2] = new JRtaRadioButton("automat. hinzufügen");
+		jradio[2] = new JRtaRadioButton("automat. hinzufÃ¼gen");
 		jradio[2].setHorizontalTextPosition(SwingConstants.LEFT);
 		jradiogroup.add(jradio[2]);
 		jradio[0].setSelected(true);
@@ -713,13 +713,13 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jradio[1],cc.xyw(5, 13, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
 		builder.add(jradio[2],cc.xyw(5, 15, 5,CellConstraints.RIGHT,CellConstraints.CENTER));
 		
-		ueber = new JButton("übernehmen");
+		ueber = new JButton("Ã¼bernehmen");
 		ueber.setActionCommand("uebernehmen");
 		ueber.addActionListener(this);
 		zurueck = new JButton("zurueck");
 		zurueck.setActionCommand("zurueck");
 		zurueck.addActionListener(this);
-		builder.addLabel("übernehmen?",cc.xy(1, 19));
+		builder.addLabel("Ã¼bernehmen?",cc.xy(1, 19));
 		builder.add(ueber,cc.xy(5,19));
 		builder.addLabel("Abbruch?", cc.xy(7, 19));
 		builder.add(zurueck,cc.xy(9,19));
@@ -761,7 +761,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 		if(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()).equals("")){
 			gueltig.setText("  .  .    ");
-			System.out.println("Gültigkeitsdatum nicht angegeben");
+			System.out.println("GÃ¼ltigkeitsdatum nicht angegeben");
 		}else{
 			gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));			
 		}

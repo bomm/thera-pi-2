@@ -177,13 +177,13 @@ private JPanel getKnopfPanel(){
 		jpan.addSeparator("", jpancc.xyw(1,1,5));
 		jpan.add(button[5], jpancc.xy(3,3));
 		jpan.add(button[6], jpancc.xy(5,3));
-		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+		jpan.addLabel("Ã„nderungen Ã¼bernehmen?", jpancc.xy(1,3));
 		
 		
 		return jpan.getPanel();
 	}
 	
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		oben = new JRadioButton();
 		bgroup.add(oben);
@@ -192,18 +192,18 @@ private JPanel getKnopfPanel(){
 		
 		optimize = new JCheckBox();
 		
-		button[0] = new JButton("entfernen"); //buttons 1+2 für Gruppenverwaltung
+		button[0] = new JButton("entfernen"); //buttons 1+2 fï¿½r Gruppenverwaltung
 		button[0].setActionCommand("entfernengruppe");
 		button[0].addActionListener(this);
-		button[1] = new JButton("hinzufügen");
+		button[1] = new JButton("hinzufÃ¼gen");
 		button[1].setActionCommand("neugruppen");
 		button[1].addActionListener(this);
 
-		button[2] = new JButton("entfernen"); //buttons 3-5 für Vorlagenverwaltung
+		button[2] = new JButton("entfernen"); //buttons 3-5 fï¿½r Vorlagenverwaltung
 		button[2].setActionCommand("entfernenvorlage");
 		button[2].addActionListener(this);
-		//button[3] = new JButton("auswählen");
-		button[4] = new JButton("hinzufügen");
+		//button[3] = new JButton("auswï¿½hlen");
+		button[4] = new JButton("hinzufÃ¼gen");
 		button[4].setActionCommand("neuvorlagen");
 		button[4].addActionListener(this);
 
@@ -259,7 +259,7 @@ private JPanel getKnopfPanel(){
 		builder.add(oben, cc.xy(6, 1, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addLabel("unteren Container", cc.xyw(4, 3, 2, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(unten, cc.xy(6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.addLabel("Fenstergröße automatisch optimieren", cc.xy(1, 5));
+		builder.addLabel("FenstergrÃ¶ÃŸe automatisch optimieren", cc.xy(1, 5));
 		builder.add(optimize, cc.xy(6,5, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 
 		builder.addSeparator("Arztgruppen-Verwaltung", cc.xyw(1, 7, 6));
@@ -272,7 +272,7 @@ private JPanel getKnopfPanel(){
 		builder.add(button[0], cc.xy(6, 11));
 		//builder.addLabel("neuer Gruppenname", cc.xy(1, 13));
 		//builder.add(newgroup, cc.xyw(3, 13, 4));
-		builder.addLabel("zu Liste hinzufügen", cc.xy(1, 15));
+		builder.addLabel("zu Liste hinzufÃ¼gen", cc.xy(1, 15));
 		builder.add(button[1], cc.xy(6, 15));
 
 		builder.addSeparator("Vorlagen-Verwaltung", cc.xyw(1, 17, 6));
@@ -285,10 +285,10 @@ private JPanel getKnopfPanel(){
 		builder.add(button[2], cc.xy(6, 21));
 		//builder.addLabel("Vorlagenbezeichnung", cc.xy(1, 23));
 		//builder.add(newdoc, cc.xyw(3, 23, 4));
-		//builder.addLabel("Vorlage auswählen", cc.xy(1,25));
+		//builder.addLabel("Vorlage auswï¿½hlen", cc.xy(1,25));
 		//builder.addLabel("Dateiname", cc.xy(3,25,CellConstraints.RIGHT, CellConstraints.BOTTOM)); 
 		//builder.add(button[3], cc.xy(6,25));
-		builder.addLabel("zu Liste hinzufügen", cc.xy(1, 27));
+		builder.addLabel("zu Liste hinzufÃ¼gen", cc.xy(1, 27));
 		builder.add(button[4], cc.xy(6,27));
 		
 		return builder.getPanel();
@@ -319,7 +319,7 @@ private JPanel getKnopfPanel(){
 			if(cmd.equals("entfernengruppe")){
 				//int row = gruppen.convertRowIndexToModel(gruppen.getSelectedRow());
 				int row = gruppen.getSelectedRow();
-				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewÃ¤hlte Tabellenzeile wirklich lÃ¶schen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.NO_OPTION){
 					return;
 				}
@@ -330,7 +330,7 @@ private JPanel getKnopfPanel(){
 			}
 			if(cmd.equals("entfernenvorlage")){
 				int row = vorlagen.getSelectedRow();
-				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewÃ¤hlte Tabellenzeile wirklich lÃ¶schen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.NO_OPTION){
 					return;
 				}
@@ -422,7 +422,7 @@ private JPanel getKnopfPanel(){
 			String test = (String)vorlagen.getValueAt(i, 0);
 			if(test.equals("")){
 				String datei = (String)vorlagen.getValueAt(i, 1);
-				String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
+				String msg = "FÃ¼r Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
 				JOptionPane.showMessageDialog(null,msg);
 				formok = false;
 				break;
@@ -458,7 +458,7 @@ private JPanel getKnopfPanel(){
 
 	private String dateiDialog(String pfad){
 		String sret = "";
-		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);

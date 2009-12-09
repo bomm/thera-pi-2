@@ -68,7 +68,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 	     add(getVorlagenSeite());
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	
 	private JPanel getVorlagenSeite(){
 		
@@ -145,7 +145,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addLabel("Mandant auswählen", cc.xy(1,1));
+		builder.addLabel("Mandant auswÃ¤hlen", cc.xy(1,1));
 		builder.add(mandant, cc.xyw(3, 1, 2));
 		builder.addLabel("Datenbanktyp", cc.xy(1, 3));
 		builder.add(dbtyp, cc.xyw(3,3,2));
@@ -203,7 +203,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 			testenDBMandant();
 		}		
 		if(e.getActionCommand().equals("neutyp")){
-			JOptionPane.showMessageDialog(null,"Die Aufnahme einer 'Nicht-MySQL-Datenbank' wird erst später verfügbar sein");
+			JOptionPane.showMessageDialog(null,"Die Aufnahme einer 'Nicht-MySQL-Datenbank' wird erst spÃ¤ter verfÃ¼gbar sein");
 		}
 		if(e.getActionCommand().equals("abbruch")){
 			SystemUtil.abbrechen();
@@ -232,13 +232,13 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		ss7 = (dbpasswort.getText().trim().equals("") ? "" : dbpasswort.getText().trim());
 		if(ss2.equals("keineAngaben") || ss3.equals("keineAngaben") ||
 				ss4.equals("keineAngaben") || ss5.equals("keineAngaben") ){
-			JOptionPane.showMessageDialog(null,"Die Datenbank-Parameter sind unvollständig!\nZurück mit o.k.");
+			JOptionPane.showMessageDialog(null,"Die Datenbank-Parameter sind unvollstÃ¤ndig!\nZurÃ¼ck mit o.k.");
 				treiber.requestFocus();
 				return;
 		}
 		if(ss7.trim().equals("")){
-			String stext = "Sie haben offensichtlich für den Zugang zur Datenbank kein Passwort eingerichtet\n"+
-			"Sie müssen sich im klaren darüber sein, daß dies ein -> absolut hohes Sicherheitsrisiko <- bedeutet!";
+			String stext = "Sie haben offensichtlich fÃ¼r den Zugang zur Datenbank kein Passwort eingerichtet\n"+
+			"Sie mÃ¼ssen sich im klaren darÃ¼ber sein, daÃŸ dies ein -> absolut hohes Sicherheitsrisiko <- bedeutet!";
 			JOptionPane.showMessageDialog(null,stext);
 		}
 
@@ -261,7 +261,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		SystemConfig.MandantenEinlesen();
 		String saktmandant = ((String)mandant.getSelectedItem()).trim(); 
 		if(saktmandant.equals(Reha.aktMandant)){
-			JOptionPane.showMessageDialog(null, "Die Datenbankeinstellungen für den aktuellen Mandant,\n"+
+			JOptionPane.showMessageDialog(null, "Die Datenbankeinstellungen fÃ¼r den aktuellen Mandant,\n"+
 					"werden erst nach dem Neustart der ->Software<- wirksam\n\n"+
 					"Ein Neustart des Computers ist nicht notwendig.");
 		}
@@ -296,11 +296,11 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		ss6 = (dbuser.getText().trim().equals("") ? "" : dbuser.getText().trim());
 		ss7 = (dbpasswort.getText().trim().equals("") ? "" : dbpasswort.getText().trim());
 		String skontakt = "jdbc:"+ss1+"://"+ss3+ss4+"/"+ss5;
-		String messtext = "Im Anschluß wird getestet ob Sie mit den angegebenen Parametern auch tatsächlich\n"+
-						"einen Aufbau zur Datenbank durchführen können.\n\n"+
+		String messtext = "Im AnschluÃŸ wird getestet ob Sie mit den angegebenen Parametern auch tatsÃ¤chlich\n"+
+						"einen Aufbau zur Datenbank durchfÃ¼hren kÃ¶nnen.\n\n"+
 						"Der Test kann einige Sekunden in Anspruch nehmen.\n\n"+
 						"Bitte brechen Sie den Test keinesfalls ab - solange bis Sie einen\n"+
-						"entsprechen Hinweis über Erfolg oder Mißerfolg erhalten";
+						"entsprechen Hinweis Ã¼ber Erfolg oder MiÃŸerfolg erhalten";
 		System.out.println(skontakt);
 		JOptionPane.showMessageDialog(null,messtext);
 		try {
@@ -311,7 +311,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 			return;
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null,"Sie haben keine Berechtigung für diese Treiberklasse");
+			JOptionPane.showMessageDialog(null,"Sie haben keine Berechtigung fÃ¼r diese Treiberklasse");
 			return;
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -320,12 +320,12 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		}
 		try {
 			Connection conn = (Connection) DriverManager.getConnection(skontakt,ss6,ss7);
-			JOptionPane.showMessageDialog(null,"Glückwunsch - die Datenbankparameter sind in Ordnung.\n"+
+			JOptionPane.showMessageDialog(null,"GlÃ¼ckwunsch - die Datenbankparameter sind in Ordnung.\n"+
 					"Kontakt zur Datenbank konnte hergestellt werden!");
 			conn.close();
 			conn = null;
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,"Datenbankparameter sind falsch oder unvollständig.\n"+
+			JOptionPane.showMessageDialog(null,"Datenbankparameter sind falsch oder unvollstÃ¤ndig.\n"+
 			"Es konnte kein Kontakt zur Datenbank aufgebaut werden!");
 			return;
 		}

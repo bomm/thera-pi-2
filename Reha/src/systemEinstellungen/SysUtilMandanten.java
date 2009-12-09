@@ -58,9 +58,9 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		JComboBox mandant = null;
 		
 		JRtaComboBox bula = null;
-		String[] laender = {"Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen",
+		String[] laender = {"Baden-WÃ¼rttemberg","Bayern","Berlin","Brandenburg","Bremen",
 				"Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Rheinland-Pfalz",
-				"Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"};
+				"Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","ThÃ¼ringen"};
 
 		JRtaTextField mandantIK = null;
 		JRtaTextField mandantname = null;
@@ -168,7 +168,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	     bootman.setEnabled(ein);
 	     defman.setEnabled(ein);
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel knopfpanel(){
 	       
 		knopf1 = new JButton("neu"); 
@@ -178,14 +178,14 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		knopf1.addKeyListener(this);
 		but[0] = knopf1;
 
-		knopf2 = new JButton("löschen");
+		knopf2 = new JButton("lÃ¶schen");
 		knopf2.setPreferredSize(new Dimension(70, 20));
 		knopf2.addActionListener(this);
 		knopf2.setActionCommand("loeschen");
 		knopf2.addKeyListener(this);
 		but[1] = knopf2;		
 		
-		knopf3 = new JButton("ändern");
+		knopf3 = new JButton("Ã¤ndern");
 		knopf3.setPreferredSize(new Dimension(70, 20));
 		knopf3.addActionListener(this);
 		knopf3.setActionCommand("aendern");
@@ -208,7 +208,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		
 		bootman = new JRadioButton("Mandantenauswahl bei Programmstart zeigen");
 		bgroup.add(bootman);
-		defman = new JRadioButton("Dieser Mandant soll automatisch gewählt werden");
+		defman = new JRadioButton("Dieser Mandant soll automatisch gewÃ¤hlt werden");
 		bgroup.add(defman);
 		//defman.setEnabled(false);
 		
@@ -226,7 +226,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 			builder.addSeparator("", cc.xyw(1, 1, 9));
 			//builder.addLabel("Mandantenauswahl bei Programmstart zeigen", cc.xyw(1, 3, 9));
 			builder.add(bootman, cc.xyw(1, 3,9));
-			//builder.addLabel("Mandant ist beim Programmstart vorausgewählt", cc.xyw(1, 5, 9));
+			//builder.addLabel("Mandant ist beim Programmstart vorausgewï¿½hlt", cc.xyw(1, 5, 9));
 			builder.add(defman, cc.xyw(1,5,9));
 			
 			builder.add(knopf1,cc.xy(1,7));
@@ -325,7 +325,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addLabel("Mandant wählen", cc.xy(1,1));
+		builder.addLabel("Mandant wÃ¤hlen", cc.xy(1,1));
 		builder.add(mandant, cc.xy(3,1));
 		builder.addLabel("Daten eingelesen", cc.xy(1,3));
 		builder.add(jprog,cc.xy(3,3));
@@ -347,7 +347,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		builder.addLabel("Vorname", cc.xy(1, 17));
 		builder.add(vorname, cc.xy(3,17));
 		
-		builder.addLabel("Straße und Haus-Nr.", cc.xy(1,19));
+		builder.addLabel("StraÃŸe und Haus-Nr.", cc.xy(1,19));
 		builder.add(strasse, cc.xy(3, 19));
 		builder.addLabel("PLZ", cc.xy(1,21));
 		builder.add(plz, cc.xy(3,21));
@@ -365,7 +365,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		builder.addLabel("Internetseite", cc.xy(1,31));
 		builder.add(website, cc.xy(3,31));
 		
-		builder.addSeparator("Finanzen und §", cc.xyw(1,33,3));
+		builder.addSeparator("Finanzen und Â§", cc.xyw(1,33,3));
 		
 		builder.addLabel("Bank", cc.xy(1,35));
 		builder.add(bank, cc.xy(3, 35));
@@ -481,16 +481,16 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		}
 		if(e.getActionCommand().equals("loeschen")){
 			if(mandant.getItemCount()==1){
-				JOptionPane.showMessageDialog(null,"Dies ist der einzige Mandant!\nDer letzte, bzw. einzige Mandant darf nicht gelöscht werden!!");
+				JOptionPane.showMessageDialog(null,"Dies ist der einzige Mandant!\nDer letzte, bzw. einzige Mandant darf nicht gelÃ¶scht werden!!");
 				return;
 			}
 			int imandant = mandant.getSelectedIndex();
 			if(SystemConfig.Mandanten.get(imandant)[0].equals(Reha.aktIK)){
-				JOptionPane.showMessageDialog(null,"Der aktuelle (aktive) darf nicht gelöscht werden");
+				JOptionPane.showMessageDialog(null,"Der aktuelle (aktive) darf nicht gelÃ¶scht werden");
 				return;
 			}
 			
-			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den eingestellten Mandanten wirklich löschen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den eingestellten Mandanten wirklich lÃ¶schen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(anfrage == JOptionPane.YES_OPTION){
 				loeschenRegeln();
 			}
@@ -650,7 +650,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	            dest.delete();
 	        } else {
 	            throw new IOException(
-	                    "Kann existierende Datei nicht überschreiben: " + dest.getName());
+	                    "Kann existierende Datei nicht Ã¼berschreiben: " + dest.getName());
 	        }
 	    }
 	    byte[] buffer = new byte[bufSize];
@@ -673,7 +673,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	        // bei einem throw geschlossen werden.
 	        // Falls in null ist, ist out auch null!
 	        if (in != null) {
-	            //Falls tatsächlich in.close() und out.close()
+	            //Falls tatsï¿½chlich in.close() und out.close()
 	            //Exceptions werfen, die jenige von 'out' geworfen wird.
 	            try {
 	                in.close();

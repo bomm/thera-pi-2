@@ -144,10 +144,10 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 	     thisClass = this;
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         
-		//knopf1 = new JButton("wählen");
+		//knopf1 = new JButton("wï¿½hlen");
 		//knopf1.setPreferredSize(new Dimension(70, 20));
 		//knopf1.addActionListener(this);
 		//knopf1.setActionCommand("printer");
@@ -164,7 +164,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		knopf1.addKeyListener(this);
 		
 		
-		knopf2 = new JButton("wählen");
+		knopf2 = new JButton("wÃ¤hlen");
 		knopf2.setPreferredSize(new Dimension(70, 20));
 		knopf2.addActionListener(this);
 		knopf2.setActionCommand("file");
@@ -231,7 +231,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addLabel("Drucker auswählen", cc.xy(1,1));
+		builder.addLabel("Drucker auswÃ¤hlen", cc.xy(1,1));
 		builder.add(druckername, cc.xy(3,1));
 		builder.add(druckername, cc.xyw(3,1,3));
 		
@@ -239,12 +239,12 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		
 		builder.addLabel("Terminliste direkt drucken", cc.xy(1, 5));
 		builder.add(ddruck, cc.xy(5, 5, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.addLabel("Terminliste in OpenOffice öffnen", cc.xy(1, 7));
+		builder.addLabel("Terminliste in OpenOffice Ã¶ffnen", cc.xy(1, 7));
 		builder.add(odruck, cc.xy(5, 7, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		
 		builder.addSeparator("", cc.xyw(1, 9, 5));
 		
-		builder.addLabel("Vorlage wählen", cc.xy(1,11));
+		builder.addLabel("Vorlage wÃ¤hlen", cc.xy(1,11));
 		builder.add(vorlagenname, cc.xy(3,11));
 		builder.add(knopf2, cc.xy(5, 11));
 		builder.addLabel("Vorlage bearbeiten", cc.xy(1, 13));
@@ -256,7 +256,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		
 		builder.addSeparator("", cc.xyw(1, 19, 5));
 		
-		builder.addLabel("Die Angaben müssen mit der Struktur der Vorlage übereinstimmen!", cc.xyw(1, 21, 5));
+		builder.addLabel("Die Angaben mÃ¼ssen mit der Struktur der Vorlage Ã¼bereinstimmen!", cc.xyw(1, 21, 5));
 		builder.addLabel("", cc.xy(1,23));
 		builder.addLabel("Tabellen je Seite", cc.xy(1,25));
 		builder.add(tabanz, cc.xyw(5, 25, 1));
@@ -295,16 +295,16 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				spa[i].setEnabled(false);
 			}
 		}
-		builder.addLabel("Die Vorlage enthält Spaltenüberschriften", cc.xyw(1, 39, 3));
+		builder.addLabel("Die Vorlage enthÃ¤lt SpaltenÃ¼berschriften", cc.xyw(1, 39, 3));
 		builder.add(spaltenkopf, cc.xy(5, 39, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		
 		builder.addSeparator("", cc.xyw(1, 41, 5));
 		builder.addLabel("Termindruck testen", cc.xy(1,43));
 		builder.add(knopf5, cc.xy(5, 43));
 		
-		builder.addLabel("Änderungen verwerfen", cc.xyw(1, 45, 3));
+		builder.addLabel("Ã„nderungen verwerfen", cc.xyw(1, 45, 3));
 		builder.add(knopf0, cc.xy(5, 45));
-		builder.addLabel("Änderungen übernehmen", cc.xyw(1, 47, 3));
+		builder.addLabel("Ã„nderungen Ã¼bernehmen", cc.xyw(1, 47, 3));
 		builder.add(knopf1, cc.xy(5,47));
 		
 		
@@ -348,7 +348,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			}); 
 		}
 		if(e.getActionCommand().equals("filetext")){
-			//Mit OpenOffice Vorlage öffnen
+			//Mit OpenOffice Vorlage ï¿½ffnen
 			thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	        //Reha.thisFrame.getGlassPane().setCursor(Cursor.WAIT_CURSOR);
 			SwingUtilities.invokeLater(new Runnable(){
@@ -363,7 +363,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			}); 
 		}
 		if(e.getActionCommand().equals("mailtext")){
-			//Eingabefenster für Emailtext
+			//Eingabefenster fï¿½r Emailtext
 			thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	        //Reha.thisFrame.getGlassPane().setCursor(Cursor.WAIT_CURSOR);
 			SwingUtilities.invokeLater(new Runnable(){
@@ -423,21 +423,21 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		int test1 = new Integer(tabanz.getText().trim());
 		if(test1==0){
 			JOptionPane.showMessageDialog(null,"Sie wollen eine Definition abspeichern mit Anzahl Tabelle = 0,\n\n"+
-					"Mit diesem IQ sind Sie ein Fall für THEORG! Diese Definition wird jedenfalls\n"+
+					"Mit diesem IQ sind Sie ein Fall fÃ¼r THEORG! Diese Definition wird jedenfalls\n"+
 					"nicht abgespeichert!");
 			return;
 		}
 		int test2 = new Integer(spaltanz.getText().trim());		
 		if(test2==0){
 			JOptionPane.showMessageDialog(null,"Sie wollen eine Definition abspeichern mit Anzahl Spalten = 0,\n\n"+
-					"Mit diesem IQ sind Sie ein Fall für THEORG! Diese Definition wird jedenfalls\n"+
+					"Mit diesem IQ sind Sie ein Fall fÃ¼r THEORG! Diese Definition wird jedenfalls\n"+
 					"nicht abgespeichert!");
 			return;
 		}
 		int test3 = new Integer(zeilanz.getText().trim());
 		if(test3==0){
 			JOptionPane.showMessageDialog(null,"Sie wollen eine Definition abspeichern mit Terminzeile pro Tabelle  = 0,\n\n"+
-					"Mit diesem IQ sind Sie ein Fall für THEORG! Diese Definition wird jedenfalls\n"+
+					"Mit diesem IQ sind Sie ein Fall fÃ¼r THEORG! Diese Definition wird jedenfalls\n"+
 					"nicht abgespeichert!");
 			return;
 		}
@@ -504,7 +504,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 	}
 	private void dateiDialog(){
 
-		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(Reha.proghome+"/vorlagen/"+Reha.aktIK);
@@ -582,7 +582,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				if(anzahl == 0){
 					String text = "Also das ist ja zwar alles Ihre Sache...\n\n"+
 					"ein Geburtstagsbrief ohne eine Spalte mag ja gerade noch so durchgehen,\n"+
-					"aber eine Terminliste....also ich weiß nicht so recht";
+					"aber eine Terminliste....also ich weiÃŸ nicht so recht";
 					JOptionPane.showMessageDialog(null, text);
 				}
 				if(anzahl > 4){
@@ -606,9 +606,9 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		//System.out.println("***************URL = "+url+"****************");
 		String terminDrucker = (String) druckername.getSelectedItem();
 		Vector<TermObjekt> termindat = new Vector<TermObjekt>();
-		termindat.add(new TermObjekt("Mo-01.12.2008","14:25","Fräulein Smilla...","2008-12-0114:00"));
+		termindat.add(new TermObjekt("Mo-01.12.2008","14:25","FrÃ¤ulein Smilla...","2008-12-0114:00"));
 		termindat.add(new TermObjekt("Mi-03.12.2008","09.30","Herrlein Hugole...","2008-12-0314:00"));
-		termindat.add(new TermObjekt("Fr-05.12.2008","17.07","Fräulein Smilla...","2008-12-05117:07"));		
+		termindat.add(new TermObjekt("Fr-05.12.2008","17.07","FrÃ¤ulein Smilla...","2008-12-05117:07"));		
 		int anzahl = termindat.size();
 /*
 		JRtaTextField tabanz = null;
@@ -678,7 +678,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		tbl = textDocument.getTextTableService().getTextTables();
 
 		if(tbl.length != AnzahlTabellen){
-			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit Ihren Angaben überein.\nDer Test wird abgebrochen!");
+			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit Ihren Angaben Ã¼berein.\nDer Test wird abgebrochen!");
 			textDocument.close();
 			thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			return;
@@ -729,7 +729,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			searchDescriptor = new SearchDescriptor(patplatzhalter);
 			//SearchDescriptor searchDescriptor = new SearchDescriptor("^Name^");
 			searchDescriptor.setIsCaseSensitive(true);
-			//Suche durchführen
+			//Suche durchfï¿½hren
 
 
 			searchResult = textDocument.getSearchService().findFirst(searchDescriptor);
@@ -862,7 +862,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				        textRanges[0].setText(patname);
 					}
 					*/
-					//System.out.println("Suche ersetze durchgeführt*************");
+					//System.out.println("Suche ersetze durchgefï¿½hrt*************");
 				      ITextFieldService textFieldService = textDocument.getTextFieldService();
 				      ITextField[] placeholders = null;
 						try {

@@ -115,7 +115,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	    //add(getVorlagenSeite());
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.   7.    8.   9.    10.  11.  12.     13.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu,40dlu, 4dlu, 4dlu, 4dlu,40dlu,4dlu,40dlu" /*,80dlu, 40dlu:g"*/,
@@ -127,14 +127,14 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 
-		builder.add(new JLabel("Gruppe auswählen"),cc.xy(1, 1));
+		builder.add(new JLabel("Gruppe auswÃ¤hlen"),cc.xy(1, 1));
 		cmbGrName = new JComboBox(agruppen);
 		cmbGrName.setActionCommand("GruppenName");
 		cmbGrName.addActionListener(this);
 		if(agruppen.length > 0){cmbGrName.setSelectedIndex(0);}
 		builder.add(cmbGrName,cc.xyw(3, 1,3));
 
-		builder.addSeparator("Gruppe neu /speichern / ändern / löschen",cc.xyw(1,3,11));
+		builder.addSeparator("Gruppe neu /speichern / Ã¤ndern / lÃ¶schen",cc.xyw(1,3,11));
 
 		jbGrNeu = new JButton("neue Gruppe");
 		jbGrNeu.setActionCommand("GruppeNeu");
@@ -148,18 +148,18 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		jbGrSave.setEnabled(false);
 		builder.add(jbGrSave,cc.xyw(9, 5, 3));
 
-		jbGrEdit = new JButton("Gruppe ändern");
+		jbGrEdit = new JButton("Gruppe Ã¤ndern");
 		jbGrEdit.setActionCommand("GruppeAendern");
 		jbGrEdit.addActionListener(this);
 		builder.add(jbGrEdit,cc.xyw(3, 7, 3));
 		
-		jbGrDel = new JButton("Gruppe löschen");
+		jbGrDel = new JButton("Gruppe lÃ¶schen");
 		jbGrDel.setActionCommand("GruppeLoeschen");
 		jbGrDel.addActionListener(this);
 		builder.add(jbGrDel,cc.xyw(9, 7, 3));
 		
 		
-		builder.addSeparator("Aktuelle oder alte Einstellung wählen",cc.xyw(1,9,11));
+		builder.addSeparator("Aktuelle oder alte Einstellung wÃ¤hlen",cc.xyw(1,9,11));
 
 		gueltig =new JLabel("");
 		gueltig.setForeground(Color.RED);
@@ -173,11 +173,11 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		cmbAktuell.setSelectedIndex(0);
 		builder.add(cmbAktuell,cc.xyw(3, 11, 3));
 		
-		jbuebertragen = new JButton("auf alte Def. übertragen");
+		jbuebertragen = new JButton("auf alte Def. Ã¼bertragen");
 		jbuebertragen.setActionCommand("Uebertragen");
 		jbuebertragen.addActionListener(this);
-		tooltip = "<html>Drücken Sie diesen Knopf nur dann<br>"+
-				"wenn Sie für die Zukunft eine neue<br>"+
+		tooltip = "<html>DrÃ¼cken Sie diesen Knopf nur dann<br>"+
+				"wenn Sie fÃ¼r die Zukunft eine neue<br>"+
 				"Gruppendefinition planen.<br><br>"+
 				"Sie werden dann gefragt ab wann<br>" +
 				"die neue Gruppendefiniton angewendet<br>werden soll.</html>";
@@ -185,7 +185,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		builder.add(jbuebertragen,cc.xyw(9, 11,3));
 
 		
-		builder.addSeparator("Wochentag dieser Gruppe wählen",cc.xyw(1,13,11));
+		builder.addSeparator("Wochentag dieser Gruppe wÃ¤hlen",cc.xyw(1,13,11));
 		
 		cmbWochenTag = new JComboBox(wotags);
 		cmbWochenTag.setActionCommand("Wochentag");
@@ -216,25 +216,25 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		jbsave.setEnabled(false);
 		editPan.add(jbsave,cc2.xy(3,1));
 		
-		jbedit = new JButton("Termin ändern");
+		jbedit = new JButton("Termin Ã¤ndern");
 		jbedit.setActionCommand("aenderntermin");
 		jbedit.addActionListener(this);		
 		editPan.add(jbedit,cc2.xy(5,1));
 		
-		jbdel = new JButton("Termin löschen");
+		jbdel = new JButton("Termin lÃ¶schen");
 		jbdel.setActionCommand("loeschentermin");
 		jbdel.addActionListener(this);		
 		editPan.add(jbdel,cc2.xy(7,1));
 		
 		builder.add(editPan,cc.xyw(1, 19,11));
 		/*
-		builder.add(new JLabel("Wochentag auswählen"),cc.xy(1, 3));
+		builder.add(new JLabel("Wochentag auswï¿½hlen"),cc.xy(1, 3));
 		cmbWochenTag = new JComboBox(wotags);
 		cmbWochenTag.setActionCommand("Wochentag");
 		cmbWochenTag.addActionListener(this);
 		cmbWochenTag.setSelectedIndex(0);
 		builder.add(cmbWochenTag,cc.xyw(3, 3, 3));
-		builder.add(new JLabel("Definition auswählen"),cc.xy(1, 5));
+		builder.add(new JLabel("Definition auswï¿½hlen"),cc.xy(1, 5));
 		String[] akt = {"aktuelle Definition","alte Definition."};
 		cmbAktuell = new JComboBox(akt);
 		cmbAktuell.setActionCommand("Aktuell");
@@ -242,7 +242,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		cmbAktuell.setSelectedIndex(0);
 		builder.add(cmbAktuell,cc.xyw(3, 5, 3));
 		builder.add(new JLabel("Aktuelle Definition..."),cc.xy(1, 7));		
-		jbuebertragen = new JButton("..auf alte Def. übertragen");
+		jbuebertragen = new JButton("..auf alte Def. ï¿½bertragen");
 		jbuebertragen.setActionCommand("Uebertragen");
 		jbuebertragen.addActionListener(this);
 		builder.add(jbuebertragen,cc.xyw(3, 7,3));
@@ -447,7 +447,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				int igruppe = cmbGrName.getSelectedIndex();
 				String sgueltig = DatFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[0]);
 				String sdauer = new Long(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[2]).toString();
-				//NeueGruppe ng = new NeueGruppe("Gruppe ändern",sgruppe,sgueltig,sdauer,true,false);
+				//NeueGruppe ng = new NeueGruppe("Gruppe ï¿½ndern",sgruppe,sgueltig,sdauer,true,false);
 				if(neuGruppenName.trim().equals("")){
 					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});	
 				}
@@ -467,7 +467,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				break;
 			}
 			if(e.getActionCommand().equals("Uebertragen")){
-				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie wirklich die aktuelle Gruppendefinition auf die - alte Definition - übertragen?", "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
+				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie wirklich die aktuelle Gruppendefinition auf die - alte Definition - Ã¼bertragen?", "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.YES_OPTION){
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
@@ -479,7 +479,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			}
 
 			if(e.getActionCommand().equals("GruppeLoeschen")){
-				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie dies komplette Gruppe tatsächlich löschen?", "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
+				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie dies komplette Gruppe tatsÃ¤chlich lÃ¶schen?", "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.YES_OPTION){
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
@@ -517,7 +517,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			if(e.getActionCommand().equals("aenderntermin")){
 				if(jTblGruppen.getRowCount()==0){
 					JOptionPane.showMessageDialog(null,"Aha, Sie haben zwar keinen Termin definiert,\n"+
-					"wollen aber schon mal einen Termin ändern....");
+					"wollen aber schon mal einen Termin Ã¤ndern....");
 					return;
 				}
 				ltermedit = true;
@@ -532,8 +532,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 							jTblGruppen.setRowSelectionInterval(wahl[0],wahl[0]);
 							jTblGruppen.editCellAt(wahl[0], 0);
 						}else{
-							JOptionPane.showMessageDialog(null,"Sie haben keinen Termin zum - Ändern - ausgewählt\n"+
-									"Die Software wählt für Sie den ersten Termin");
+							JOptionPane.showMessageDialog(null,"Sie haben keinen Termin zum - Ã¤ndern - ausgewÃ¤hlt\n"+
+									"Die Software wÃ¤hlt fÃ¼r Sie den ersten Termin");
 							jTblGruppen.editCellAt(0, 0);
 						}
 					}
@@ -543,15 +543,15 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			if(e.getActionCommand().equals("loeschentermin")){
 				if(jTblGruppen.getRowCount()==0){
 					JOptionPane.showMessageDialog(null,"Aha, Sie haben zwar keinen Termin definiert,\n"+
-					"wollen aber schon mal einen Termin löschen....");
+					"wollen aber schon mal einen Termin lÃ¶schen....");
 					return;
 				}
 				int[] wahl = jTblGruppen.getSelectedRows();
 				if(wahl.length == 0){
-					JOptionPane.showMessageDialog(null,"Um einen Termin löschen zu können muß dieser zuerst markiert werden");
+					JOptionPane.showMessageDialog(null,"Um einen Termin lÃ¶schen zu kÃ¶nnen muÃŸ dieser zuerst markiert werden");
 					return;
 				}
-				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie diesen Gruppentermin wirklich löschen?", "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
+				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie diesen Gruppentermin wirklich lÃ¶schen?", "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.YES_OPTION){
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
@@ -599,9 +599,9 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		s = new String(df.format(dDatum));
 		s = s.substring(0,s.indexOf( ' ' )); 
 		if(iAktuell == 0){
-			gueltig.setText("gültig ab: "+s);
+			gueltig.setText("gÃ¼ltig ab: "+s);
 		}else{
-			gueltig.setText("gültig bis: "+s);			
+			gueltig.setText("gÃ¼ltig bis: "+s);			
 		}
 		
 		
@@ -682,7 +682,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 
 		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
 		System.out.println("Sektion = "+sektion);
-		System.out.println("Zum löschen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
+		System.out.println("Zum lÃ¶schen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
 		((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).remove(row);
 		itag = itag+1;
 		INIFile ini = new INIFile(gruppeninidat);
@@ -730,7 +730,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		int neupos = akt;
 		if(ges==1){
 			JOptionPane.showMessageDialog(null,"Dies ist die letzte Gruppe!\n\n"+
-						"Die letzte Gruppe kann nicht gelöscht werden. Wenn Sie keine Gruppendefinition benötigen,\n"+
+						"Die letzte Gruppe kann nicht gelÃ¶scht werden. Wenn Sie keine Gruppendefinition benÃ¶tigen,\n"+
 						"Dann weisen Sie in den Kalenderbenutzern einfach keine Gruppe zu.");
 						return;
 		}

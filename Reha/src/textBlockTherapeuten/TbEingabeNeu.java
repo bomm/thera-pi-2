@@ -64,8 +64,10 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		setLayout(new BorderLayout());
 		this.tbltext = new String(dtext);
 		String x = new String(dtext);
-		x = x.replaceAll("\\^Tab\\^","&nbsp;");
-		x = x.replaceAll("CRLF","<br>");
+		x = x.replace("\r","");
+		x = x.replace("\n","<br>");
+		x = x.replace("^Tab^","&nbsp;");
+		x = x.replace("^CRLF^","<br>");
 		this.savetext = "<html>"+x+"</html>";
 		//System.out.println("Savetext nach dem Replace " +this.savetext);
 		this.varvec = vec;
@@ -125,8 +127,10 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	public void neueDaten(String dtext,Vector vec){
 		this.tbltext = new String(dtext);
 		String x = new String(dtext);
-		x = x.replaceAll("\\^Tab\\^","&nbsp;");
-		x = x.replaceAll("CRLF","<br>");
+		x = x.replace("\r","");
+		x = x.replace("\n","<br>");
+		x = x.replace("^Tab^","&nbsp;");
+		x = x.replace("^CRLF^","<br>");
 		this.savetext = new String("<html>"+x+"</html>");
 		this.varvec = vec;
 		this.aktvector = 0;
@@ -135,6 +139,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		tbeingabe.setText("");
 		//System.out.println("Neudaten = "+this.savetext);
 		macheTitel(0);
+		tbeingabe.requestFocus();
 	}
 	
 	/****************************************/
@@ -174,10 +179,10 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		}
 		//System.out.println(varvec.get(aktvector));
 		
-		if(varvec.get(aktvector).contains("^Tab^")){
+		if(varvec.get(aktvector).contains("^Tab^") ){
 			int i = aktvector;
 			while(i <= maxvector){
-				if(! varvec.get(i).contains("^Tab^")){
+				if( (!varvec.get(i).contains("^Tab^"))  ){
 					break;
 				}
 				i++;
@@ -190,7 +195,26 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			}
 			aktvector = i;
 		}
-
+		/****************************/
+		/*
+		if(varvec.get(aktvector).contains("^CRLF^") ){
+			int i = aktvector;
+			while(i <= maxvector){
+				if( (!varvec.get(i).contains("^CRLF^"))  ){
+					break;
+				}
+				i++;
+			}
+			if(i > maxvector){
+				werteUebergeben();
+				//System.out.println("nach der while schleife");
+				this.thbl.wechsleRueckwaerts();
+				return;
+			}
+			aktvector = i;
+		}
+		*/
+		/*****************************/
 		this.savetext = this.savetext.replace(aktreplace, "<b><font color='#000000'>"+tbeingabe.getText().trim()+"</font></b>");
 
 			aktvector++;
@@ -208,11 +232,21 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			/****** testen ob tag****/
 			int i = aktvector;
 			while(i <= maxvector){
-				if(! varvec.get(i).contains("^Tab^")){
+				if( (!varvec.get(i).contains("^Tab^")) ){
 					break;
 				}
 				i++;
 			}
+			/**********************/
+			/*
+			while(i <= maxvector){
+				if( (!varvec.get(i).contains("^CRLF^")) ){
+					break;
+				}
+				i++;
+			}
+			*/
+			/**********************/
 			//2,
 			if(i > maxvector){
 				//System.out.println("nach 2.");
@@ -237,16 +271,17 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	}
 	private void werteUebergeben(){
 		String x = darstellung.getText();
-		x = x.replaceAll("&nbsp;", "\\\t");
-		x = x.replaceAll("<br>","\\\n");
-		x = x.replaceAll("</b>","");
-		x = x.replaceAll("<b>","");
-		x = x.replaceAll("</font>","");		
-		x = x.replaceAll("<font color='#ff0000'>","");		
-		x = x.replaceAll("<font color='#000000'>","");
-		x = x.replaceAll("<font color='#ffffff'>","");
-		x = x.replaceAll("</html>","");		
-		x = x.replaceAll("<html>","");
+		x = x.replaceAll("&nbsp;", "\t");
+		x = x.replaceAll("<br>","\r\n");
+		x = x.replaceAll("\n","");
+		x = x.replace("</b>","");
+		x = x.replace("<b>","");
+		x = x.replace("</font>","");		
+		x = x.replace("<font color='#ff0000'>","");		
+		x = x.replace("<font color='#000000'>","");
+		x = x.replace("<font color='#ffffff'>","");
+		x = x.replace("</html>","");		
+		x = x.replace("<html>","");
 		//JOptionPane.showMessageDialog(null,x);
 		this.rueck.setText(new String(x));
 	
@@ -257,7 +292,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			thbl.setzeEingabeTitel(titel);
 			this.thbl.wechsleRueckwaerts();
 		}
-		if(varvec.get(aktvector).contains("^Tab^")){
+		if(varvec.get(aktvector).contains("^Tab^") || varvec.get(aktvector).contains("^CRLF^") ){
 			//System.out.println("Tab gefunden "+this.savetext);
 			return;
 		}

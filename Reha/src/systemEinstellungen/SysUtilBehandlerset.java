@@ -120,7 +120,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		}	
 	}
 	
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getSetSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
@@ -134,7 +134,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		
 		
 		
-		builder.addLabel("bestehendes Set auswählen", cc.xy(1,1));
+		builder.addLabel("bestehendes Set auswÃ¤hlen", cc.xy(1,1));
 		SetName = new JComboBox();
 		SetName.addActionListener(this);
 		SetName.setActionCommand("comboaktion");
@@ -190,13 +190,13 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		knopf1.setActionCommand("neu");
 		knopf1.addKeyListener(this);
 
-		knopf2 = new JButton("löschen");
+		knopf2 = new JButton("lÃ¶schen");
 		knopf2.setPreferredSize(new Dimension(70, 20));
 		knopf2.addActionListener(this);
 		knopf2.setActionCommand("loeschen");
 		knopf2.addKeyListener(this);
 		
-		knopf3 = new JButton("ändern");
+		knopf3 = new JButton("Ã¤ndern");
 		knopf3.setPreferredSize(new Dimension(70, 20));
 		knopf3.addActionListener(this);
 		knopf3.setActionCommand("aendern");
@@ -224,7 +224,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		
 		return builder.getPanel();
 	}
-	/************** Ende Methode für die Objekterstellung und -platzierung *********/	
+	/************** Ende Methode fï¿½r die Objekterstellung und -platzierung *********/	
 	private void knopfGedoense(int[] knopfstatus){
 		knopf1.setEnabled((knopfstatus[0]== 0 ? false : true));
 		knopf2.setEnabled((knopfstatus[1]== 0 ? false : true));
@@ -467,11 +467,11 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		int anzahlSets = SetName.getItemCount();
 		if(anzahlSets==1){
 			JOptionPane.showMessageDialog(null, "Dieses Set ist as einzige Set!\n"+
-			"Das letzte Set darf nicht gelöscht werden!");
+			"Das letzte Set darf nicht gelÃ¶scht werden!");
 			return;
 		}	
 
-		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie dieses Set wirklich löschen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie dieses Set wirklich lÃ¶schen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.YES_OPTION){
 			int aktSet = SetName.getSelectedIndex();
 			int i,j;

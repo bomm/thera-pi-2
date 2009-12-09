@@ -94,13 +94,13 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			}.execute();	     
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
 		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","REHA"});
 		disziplin.setActionCommand("disziplin");
 		disziplin.addActionListener(this);
-		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel"});
+		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gÃ¼ltig ab","Anwendungsregel"});
 		tarife = new JXTable(modtarife);
 		tarife.getColumn(0).setMinWidth(120);
 		tarife.getColumn(2).setMaxWidth(80);
@@ -131,7 +131,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
-		builder.addSeparator("Disziplin auswählen", cc.xyw(1, 3, 6));
+		builder.addSeparator("Disziplin auswÃ¤hlen", cc.xyw(1, 3, 6));
 		builder.add(disziplin, cc.xy(6,5));
 		
 		
@@ -164,7 +164,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		jpan.addSeparator("", jpancc.xyw(1,1,5));
 		jpan.add(button[5], jpancc.xy(3,3));
 		jpan.add(button[6], jpancc.xy(5,3));
-		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+		jpan.addLabel("Ã„nderungen Ã¼bernehmen?", jpancc.xy(1,3));
 		
 		
 		return jpan.getPanel();
@@ -179,10 +179,10 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			wert = SystemConfig.vPreisGruppen.get(i);
 			vec.add(wert);
 			vec.add(zzregel[SystemConfig.vZuzahlRegeln.get(i)]);
-			//abprüfen welche Disziplin!!!!
+			//abprï¿½fen welche Disziplin!!!!
 			wert = SystemConfig.vNeuePreiseAb.get(cmbwert).get(i);
 			vec.add(wert);
-			//abprüfen welche Disziplin!!!!
+			//abprï¿½fen welche Disziplin!!!!
 			vec.add(zzart[SystemConfig.vNeuePreiseRegel.get(cmbwert).get(i)]);
 			modtarife.addRow((Vector)vec.clone());
 		}
@@ -208,9 +208,9 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			SystemConfig.vZuzahlRegeln.set(i, zzreg);
 			inif.setIntegerProperty("ZuzahlRegeln", "ZuzahlRegel"+(i+1),zzreg , null);
 			
-			//Preisveränderung-einstellen
+			//Preisverï¿½nderung-einstellen
 			/**********
-			 * Abprüfen welche Disziplin
+			 * Abprï¿½fen welche Disziplin
 			 */
 			swert = new String((String) tarife.getValueAt(i, 2));
 			if(swert.equals(".  .")){

@@ -109,29 +109,29 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			jpan.addSeparator("", jpancc.xyw(1,1,5));
 			jpan.add(abbruch, jpancc.xy(3,3));
 			jpan.add(speichern, jpancc.xy(5,3));
-			jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+			jpan.addLabel("Ã„nderungen Ã¼bernehmen?", jpancc.xy(1,3));
 			
 			jpan.getPanel().validate();
 			return jpan.getPanel();
 		}
 	
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
 		
 		button[0] = new JButton("entfernen");
 		button[0].setActionCommand("entfernen");
 		button[0].addActionListener(this);
-		button[1] = new JButton("hinzufügen");
+		button[1] = new JButton("hinzufÃ¼gen");
 		button[1].setActionCommand("hinzufuegen");
 		button[1].addActionListener(this);
-		button[2] = new JButton("auswählen");
+		button[2] = new JButton("auswÃ¤hlen");
 		button[2].setActionCommand("oopfad");
 		button[2].addActionListener(this);
-		button[3] = new JButton("auswählen");
+		button[3] = new JButton("auswÃ¤hlen");
 		button[3].setActionCommand("adobepfad");
 		button[3].addActionListener(this);
-		button[4] = new JButton("auswählen");
+		button[4] = new JButton("auswÃ¤hlen");
 		button[4].setActionCommand("grafpfad");
 		button[4].addActionListener(this);
 		
@@ -183,16 +183,16 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		
 		builder.addLabel("markiertes Programm aus Liste entfernen", cc.xyw(1,3,3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(button[0], cc.xy(5, 3));
-		builder.addLabel("Programm zu Liste hinzufügen", cc.xyw(1, 5, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.addLabel("Programm zu Liste hinzufÃ¼gen", cc.xyw(1, 5, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(button[1], cc.xy(5, 5));
 		builder.addSeparator("systemrelevante Programme / Pfade", cc.xyw(1, 7, 5));
 		builder.addLabel("Pfad zu OpenOffice", cc.xy(1, 9));
 		builder.add(oopfad, cc.xy(3, 9));
 		builder.add(button[2], cc.xy(5, 9));
-		builder.addLabel("AdobeReader auswählen", cc.xy(1,11));
+		builder.addLabel("AdobeReader auswÃ¤hlen", cc.xy(1,11));
 		builder.add(adobepfad, cc.xy(3, 11));
 		builder.add(button[3],cc.xy(5, 11));
-		builder.addLabel("Graphikbearbeitung auswählen", cc.xy(1,13));
+		builder.addLabel("Graphikbearbeitung auswÃ¤hlen", cc.xy(1,13));
 		builder.add(grafpfad, cc.xy(3, 13));
 		builder.add(button[4],cc.xy(5, 13));
 		builder.getPanel().validate();
@@ -273,7 +273,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			if(row < 0){
 				return;
 			}
-			int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewählte Tabellenzeile wirklich löschen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie die ausgewÃ¤hlte Tabellenzeile wirklich lÃ¶schen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
 			}
@@ -330,7 +330,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 
 	public String progWaehlen(int welchesProg){
 	String sret = "";	
-	JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+	JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
     chooser.setDialogType(JFileChooser.OPEN_DIALOG);
     chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     //

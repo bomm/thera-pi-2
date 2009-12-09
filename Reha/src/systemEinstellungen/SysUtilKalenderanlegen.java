@@ -143,7 +143,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		return;
 	}
 	
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getAnlegenSeite(){
        
 		knopf1 = new JButton("los"); // neues Jahr in Datenbank anlegen
@@ -158,7 +158,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		knopf2.setActionCommand("FTimport");
 		knopf2.addKeyListener(this);
 		
-		knopf3 = new JButton("hinzufügen"); // Feiertage oder Betr.-Ferien in Tabelle zufügen
+		knopf3 = new JButton("hinzufÃ¼gen"); // Feiertage oder Betr.-Ferien in Tabelle zufï¿½gen
 		knopf3.setPreferredSize(new Dimension(70, 20));
 		knopf3.addActionListener(this);
 		knopf3.setActionCommand("add");
@@ -200,8 +200,8 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		builder.addLabel("Art der Netzwerkverbindung", cc.xyw(2, 3,2));
 		builder.add(Netz, cc.xy(4, 3));
 		builder.addLabel("Sollte Ihr Rechner mit der Datenbank in einem lokalen", cc.xyw(2, 5, 2));
-		builder.addLabel("Netzwerk verbunden sein, können Sie die Einstellung LAN", cc.xyw(2, 7, 2));
-		builder.addLabel("wählen.", cc.xy(2,9));
+		builder.addLabel("Netzwerk verbunden sein, kÃ¶nnen Sie die Einstellung LAN", cc.xyw(2, 7, 2));
+		builder.addLabel("wÃ¤hlen.", cc.xy(2,9));
 		builder.addLabel("Bei jeder anderen Art der Verbindung sind Sie mit DSL", cc.xyw(2,11,2));
 		builder.addLabel("auf der SICHEREN Seite!", cc.xyw(2,13,2));
 		
@@ -212,11 +212,11 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		KalBis.setText("");
 		builder.add(KalBis, cc.xy(4,17));
 		
-		builder.addLabel("Arbeitszeitpläne berücksichtigen? (empfohlen)", cc.xyw(2,19,2));
+		builder.addLabel("ArbeitszeitplÃ¤ne berÃ¼cksichtigen? (empfohlen)", cc.xyw(2,19,2));
 		AZPlan.setSelected(true);
 		builder.add(AZPlan, cc.xy(4,19));
 		
-		builder.addLabel("Datenbank wird angelegt für das Jahr ", cc.xyw(2, 21,2));
+		builder.addLabel("Datenbank wird angelegt fÃ¼r das Jahr ", cc.xyw(2, 21,2));
 		KalMake.setText("");
 		KalMake.setFont(new Font("Arial",Font.BOLD,11));
 		KalMake.setForeground(Color.RED);		
@@ -233,16 +233,16 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		
 		builder.addSeparator("2. Feiertage importieren", cc.xyw(1, 29, 4));
 		
-		builder.addLabel("Bundesland auswählen", cc.xyw(2,31,2));
-		String[] bula = {"Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen",
+		builder.addLabel("Bundesland auswÃ¤hlen", cc.xyw(2,31,2));
+		String[] bula = {"Baden-WÃ¼rttemberg","Bayern","Berlin","Brandenburg","Bremen",
 						"Hamburg","Hessen","Meckl.-Vorpommern","Niedersachsen","Rheinland-Pfalz",
-						"Saarlan","Sachsen","Sachs.-Anhalt","Schleswig-Holstein","Thüringen"};
+						"Saarlan","Sachsen","Sachs.-Anhalt","Schleswig-Holstein","ThÃ¼ringen"};
 		//BuLand = new JComboBox(bula);
 		BuLand = new JComboBox(laender);
 		BuLand.setSelectedIndex(0);
 		builder.add(BuLand, cc.xy(4,31));
 		
-		builder.addLabel("Kalenderjahr auswählen", cc.xyw(2, 33,2));
+		builder.addLabel("Kalenderjahr auswÃ¤hlen", cc.xyw(2, 33,2));
 		String[] jahr = {"2008","2009","2010","2011"};
 		FJahr = new JComboBox(jahr);
 		FJahr.setSelectedIndex(0);
@@ -271,16 +271,16 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		builder.add(knopf4, cc.xy(4,41));
 		
 		
-		builder.addSeparator("4. Daten in Kalender übernehmen", cc.xyw(1, 43, 4));
+		builder.addSeparator("4. Daten in Kalender Ã¼bernehmen", cc.xyw(1, 43, 4));
 		
 		builder.addLabel("Die Daten aus der Liste werden in den Kalender eingetragen.", cc.xyw(2, 45, 2));
 		//builder.addLabel("", cc.xyw(2, 47, 2));
-		builder.addLabel("Änderungen können danach nur noch manuell im Terminplan ", cc.xyw(2, 51, 2));
-		builder.addLabel("oder über den Arbeitszeitplan vorgenommen werden.", cc.xyw(2, 53, 2));
+		builder.addLabel("Ã„nderungen kÃ¶nnen danach nur noch manuell im Terminplan ", cc.xyw(2, 51, 2));
+		builder.addLabel("oder Ã¼ber den Arbeitszeitplan vorgenommen werden.", cc.xyw(2, 53, 2));
 		//builder.addLabel("", cc.xyw(2, 55, 2));
 		
 		
-		FeierTag = new JXLabel("Feiertagsliste für das Jahr 9999 eintragen.");
+		FeierTag = new JXLabel("Feiertagsliste fÃ¼r das Jahr 9999 eintragen.");
 		builder.add(FeierTag, cc.xyw(2,57,2));
 		builder.add(knopf5, cc.xy(4, 57));
 		
@@ -328,7 +328,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				 	   public  void run(){
 				 		   try {
 								starteSession((String)BuLand.getSelectedItem(),(String)FJahr.getSelectedItem());
-								FeierTag.setText("Feiertagsliste für das Jahr -> "+FJahr.getSelectedItem()+" <- eintragen.");
+								FeierTag.setText("Feiertagsliste fÃ¼r das Jahr -> "+FJahr.getSelectedItem()+" <- eintragen.");
 				 		   } catch (IOException e) {
 								// TODO Auto-generated catch block
 				 			   ftm.getDataVector().clear();
@@ -346,18 +346,18 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			if(arg0.getActionCommand().equals("NeuJahr")){
 				JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 				if(termin != null){
-					JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nWährend der Anlage eines Kalenderjahres\n" +
-					"darf der Terminkalender aus Sicherheitsgründen nicht geöffnet sein.\n"+
+					JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nWÃ¤hrend der Anlage eines Kalenderjahres\n" +
+					"darf der Terminkalender aus SicherheitsgrÃ¼nden nicht geÃ¶ffnet sein.\n"+
 					"Beenden Sie den Terminkalender und rufen Sie diese Funktion erneut auf.\n\n");
 					break;
 				}
 				String frage = "Bitte beachten Sie!\n\n"+
-								"1. Stellen Sie sicher, daß Sie zum Zeitpunkt der Kalenderanlage möglichst er einzige Benutzer im Netzwerk sind\n"+
+								"1. Stellen Sie sicher, daÃŸ Sie zum Zeitpunkt der Kalenderanlage mÃ¶glichst er einzige Benutzer im Netzwerk sind\n"+
 								"2. Wurde die Kalenderanlage gestartet, brechen Sie den Vorgang bitte keinesfalls ab\n"+
 								"3. Die Kalenderanlage kann einige Zeit in Anspruch nehmen. Sie sehen den Fortschritt anhand des 'Laufbalkens'\n\n"+
 								"Wollen Sie jetzt das Kalenderjahr wie folgt anlegen:\n"+
 								"angelegt wird das Jahr -> "+KalMake.getText()+" <- \n"+
-								"automatische Übernahme der Wochenarbeitszeit -> "+(AZPlan.isSelected() ? "JA" : "NEIN")+" <-" ;
+								"automatische Ãœbernahme der Wochenarbeitszeit -> "+(AZPlan.isSelected() ? "JA" : "NEIN")+" <-" ;
 				int anfrage = JOptionPane.showConfirmDialog(null, frage, "Achtung wichtige Benutzeranfrage!!!!", JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.YES_OPTION){
 					SwingUtilities.invokeLater(new Runnable(){
@@ -413,7 +413,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						if(FJahr != null){
-							FeierTag.setText("Feiertagsliste für das Jahr -> "+FJahr.getSelectedItem()+" <- eintragen.");
+							FeierTag.setText("Feiertagsliste fÃ¼r das Jahr -> "+FJahr.getSelectedItem()+" <- eintragen.");
 						}	
 					}
 				});
@@ -445,7 +445,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 
 		ftext = (String) FreiTage.getValueAt(0,1);
 		if(ftext.trim().equals("")){
-			JOptionPane.showMessageDialog(null,"Bitte geben Sie eine Bezeichnung für den Feiertag/Betriebsurlaub an");
+			JOptionPane.showMessageDialog(null,"Bitte geben Sie eine Bezeichnung fÃ¼r den Feiertag/Betriebsurlaub an");
 			return;
 		}
 
@@ -481,7 +481,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				}
 			}
 		}
-		JOptionPane.showMessageDialog(null, "Feiertagübernahme beendet nach "+((System.currentTimeMillis()-zeit1))+" Millisekunden");
+		JOptionPane.showMessageDialog(null, "FeiertagÃ¼bernahme beendet nach "+((System.currentTimeMillis()-zeit1))+" Millisekunden");
 		dblaeuft = false;
 		knopfGedoense(true);
 	}
@@ -590,7 +590,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			akttag = DatFunk.sDatPlusTage(akttag,1);
 		}
 		dblaeuft = false;
-		JOptionPane.showMessageDialog(null, "Kalenderanlegen beendet nach "+((System.currentTimeMillis()-zeit1)/1000)+" Sekunden\n\n"+"Kalender wird jetzt auf Integrität geprüft!");
+		JOptionPane.showMessageDialog(null, "Kalenderanlegen beendet nach "+((System.currentTimeMillis()-zeit1)/1000)+" Sekunden\n\n"+"Kalender wird jetzt auf IntegritÃ¤t geprÃ¼ft!");
 		
 		knopfGedoense(true);
 		Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
@@ -717,7 +717,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 
 	public static void setJahr(String item){
 		FJahr.setSelectedItem(item);
-		String ftext = "Feiertagsliste für das Jahr "+item+" eintragen";
+		String ftext = "Feiertagsliste fÃ¼r das Jahr "+item+" eintragen";
 		FeierTag.setText(ftext);
 	}
 
@@ -832,13 +832,13 @@ class HoleMasken{
 			Vector<String> v5 = new Vector<String>();	
 			Vector<String> v6 = new Vector<String>();				
 			
-			/*in Spalte 301 steht die Anzahl der belegten Blöcke*/ 
+			/*in Spalte 301 steht die Anzahl der belegten Blï¿½cke*/ 
 			int belegt = rs.getInt(226);
 			/*letzte zu durchsuchende Spalte festlegen*/
 			int ende = (5*belegt);
 			maxblock = maxblock + (ende+5);
 			durchlauf = 1;
-			/* abgeschaltet für Performance-Check
+			/* abgeschaltet fï¿½r Performance-Check
 			if (aktbehandler == 1){
 				Titel.setText(rs.getString(305));	
 			}
@@ -936,8 +936,8 @@ class TesteKalender{
 			if(rs.next()){
 				tage = rs.getInt(1);
 				if( tage != (SysUtilKalenderanlegen.kalTage*60) ){
-					JOptionPane.showMessageDialog(null,"Fehler!!!!! ---- Der Kalender wurde unvollständig angelegt!\n\n"+
-										"Zur Sicherheit wird der fehlerhafte Kalender wieder gelöscht\n\n"+
+					JOptionPane.showMessageDialog(null,"Fehler!!!!! ---- Der Kalender wurde unvollstÃ¤ndig angelegt!\n\n"+
+										"Zur Sicherheit wird der fehlerhafte Kalender wieder gelÃ¶scht\n\n"+
 										"Stellen Sie bei einem neuen Versuch die Einstellung\n"+
 										"'Art der Netzwerkverbindung' auf -> DSL");
 				}else{

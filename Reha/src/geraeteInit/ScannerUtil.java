@@ -187,7 +187,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		jcmbscan[1].setSelectedItem(SystemConfig.hmDokuScanner.get("farben"));
 		pb.add(jcmbscan[1],cc.xy(4, 4));
 
-		pb.addLabel("Aufl�sung",cc.xy(2, 6));
+		pb.addLabel("Auflösung",cc.xy(2, 6));
 		jcmbscan[2] = new JRtaComboBox(new String[]{"50dpi","75dpi","100dpi","150dpi","200dpi","300dpi"});		
 		jcmbscan[2].setSelectedItem(SystemConfig.hmDokuScanner.get("aufloesung")+"dpi");
 		pb.add(jcmbscan[2],cc.xy(4, 6));
@@ -406,7 +406,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				this.dispose();
 			}
 
-			System.out.println("Return Gedr�ckt");
+			System.out.println("Return Gedrückt");
 		}
 	}
 	public static void starteAusfallRechnung(String url){

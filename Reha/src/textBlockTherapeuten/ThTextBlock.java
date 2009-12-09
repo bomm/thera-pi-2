@@ -284,7 +284,9 @@ public class ThTextBlock extends RehaSmartDialog{
 					if(start){
 						var = var+test;
 						if(test.equals("^")){
-							tbvars.add(new String(var));
+							if(!var.equals("^CRLF^")){
+								tbvars.add(new String(var));								
+							}
 							start = false;
 							var = "";
 

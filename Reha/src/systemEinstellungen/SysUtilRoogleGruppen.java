@@ -121,13 +121,13 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			knopf1.setActionCommand("neu");
 			knopf1.addKeyListener(this);
 
-			knopf2 = new JButton("löschen");
+			knopf2 = new JButton("lÃ¶schen");
 			knopf2.setPreferredSize(new Dimension(70, 20));
 			knopf2.addActionListener(this);
 			knopf2.setActionCommand("loeschen");
 			knopf2.addKeyListener(this);
 			
-			knopf3 = new JButton("ändern");
+			knopf3 = new JButton("Ã¤ndern");
 			knopf3.setPreferredSize(new Dimension(70, 20));
 			knopf3.addActionListener(this);
 			knopf3.setActionCommand("aendern");
@@ -173,7 +173,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 
 			CellConstraints cc = new CellConstraints();
 			
-			builder.addLabel("bestehende Gruppe wählen", cc.xyw(1,1,3));
+			builder.addLabel("bestehende Gruppe wÃ¤hlen", cc.xyw(1,1,3));
 
 
 			comboFuellen(-1);
@@ -192,7 +192,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			
 			builder.addSeparator("RoogleGruppe bearbeiten", cc.xyw(1, 5, 9));
 		
-			builder.addLabel("Mitarbeiter auswählen", cc.xyw(1, 7,3));
+			builder.addLabel("Mitarbeiter auswÃ¤hlen", cc.xyw(1, 7,3));
 			builder.addLabel("Gruppenmitglieder", cc.xyw(7, 7,3));
 
 			RGmembers =	new JXTable();
@@ -244,7 +244,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			builder.add(knopf5,cc.xy(9,17));
 			
 			
-		//und abschließend anstatt return new JPanel(); -> return builder.getPanel();
+		//und abschlieï¿½end anstatt return new JPanel(); -> return builder.getPanel();
 			return builder.getPanel();
 		}
 		private Vector getColVector(String[] cols){
@@ -446,7 +446,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				vec.add(new String(ParameterLaden.getMatchcode(von)));				
  				vkollegen.add(vec.clone());
  			}
-			//System.out.println("Anzahl Kollegen nach füllen = "+vkollegen.size());
+			//System.out.println("Anzahl Kollegen nach fï¿½llen = "+vkollegen.size());
 		}
 		private void aendernHandeln(){
 			if(RGmembers.getRowCount()>0){
@@ -534,11 +534,11 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			int anzahlSets = jcomboWahl.getItemCount();
 			if(anzahlSets==1){
 				JOptionPane.showMessageDialog(null, "Diese Roogle-Gruppe ist die einzige Gruppe!\n"+
-				"Die letzte Gruppe darf nicht gelöscht werden!");
+				"Die letzte Gruppe darf nicht gelÃ¶scht werden!");
 				return;
 			}	
 
-			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie dieses Gruppe wirlich löschen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie dieses Gruppe wirlich lÃ¶schen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(anfrage == JOptionPane.YES_OPTION){
 				aktSet = jcomboWahl.getSelectedIndex();
 				int i,j;
