@@ -155,7 +155,7 @@ public class ArztNeuKurz extends JXPanel implements ActionListener,KeyListener,F
 		tfs[11].setName("email1");
 		jpan.add(tfs[11],cc.xyw(3, 24,4));
 		
-		jpan.addSeparator("Zus�tze",cc.xyw(1, 26, 6));		
+		jpan.addSeparator("Zusätze",cc.xyw(1, 26, 6));		
 
 		jpan.add(new JLabel("Facharzt"),cc.xy(1, 28));
 		arztgruppe = new JRtaComboBox(SystemConfig.arztGruppen);

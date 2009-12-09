@@ -363,7 +363,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		Font fon = new Font("Tahoma",Font.BOLD,10);
-		JLabel jlab = new JLabel("Ger�te-Info");
+		JLabel jlab = new JLabel("Geräte-Info");
 		jlab.setFont(new Font("Tahoma",Font.BOLD,14));
 		jlab.setForeground(Color.BLUE);
 		pb.add(jlab,cc.xy(2,2));
@@ -929,7 +929,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if(row >= 0){
 						
 						String sdokuid = (String)tabdokus.getValueAt(row, 0);
-						int frage = JOptionPane.showConfirmDialog(null, "Soll die Dokumentation mit der ID-"+sdokuid+" wirklich gel�scht werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+						int frage = JOptionPane.showConfirmDialog(null, "Soll die Dokumentation mit der ID-"+sdokuid+" wirklich gelöscht werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 						if(frage == JOptionPane.NO_OPTION){
 							return null;
 						}
@@ -1196,7 +1196,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		FileOutputStream fout = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			//rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
-			System.out.println("Sende Seitengr��e an Funktion "+vecBilderFormat.get(i));
+			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
 			Rectangle format = null;
 			try {
 			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
@@ -1502,7 +1502,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
     				source.getCapability(TwainConstants.ICAP_XRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi);
     				source.getCapability(TwainConstants.ICAP_YRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi); 
 
-    				if(SystemConfig.hmDokuScanner.get("farben").equals("Schwarz/Wei�")){
+    				if(SystemConfig.hmDokuScanner.get("farben").equals("Schwarz/Weiß")){
     					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_BW); 
     				}else if(SystemConfig.hmDokuScanner.get("farben").equals("Graustufen")){
     					source.getCapability(TwainConstants.ICAP_PIXELTYPE).setCurrentValue(TwainConstants.TWPT_GRAY); 
@@ -1622,7 +1622,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 		lab.addMouseListener(mlist);
 		lab.setName(name);
-		lab.setToolTipText("Doppelklick um "+lab.getText()+" zu �ffnen");
+		lab.setToolTipText("Doppelklick um "+lab.getText()+" zu öffnen");
 		lab.setHorizontalTextPosition(JLabel.CENTER);
 		lab.setVerticalTextPosition(JLabel.BOTTOM);
 		lab.setIcon(icon);
@@ -2202,10 +2202,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  ps.setString(4,new Integer(dokuid).toString());
 				  ps.execute();
 				  System.out.println("Fertig mit execute");
-				  System.out.println("Gr��e des Datenstroms="+b.length+" Bytes");
+				  System.out.println("Größe des Datenstroms="+b.length+" Bytes");
 				  System.out.println("Datei = "+f.getAbsolutePath());
 				  System.out.println("dokuid = "+Integer.toString(dokuid));
-				  System.out.println("Dateigr��e = "+b.length+" Bytes");
+				  System.out.println("Dateigröße = "+b.length+" Bytes");
 				  System.out.println("Datum = "+DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  f.delete();
 				  Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

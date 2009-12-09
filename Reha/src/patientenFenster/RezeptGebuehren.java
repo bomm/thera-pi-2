@@ -84,7 +84,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		pinPanel.setName("RezeptGebuehr");
 		pinPanel.getGruen().setVisible(false);
 		setPinPanel(pinPanel);
-		getSmartTitledPanel().setTitle("Rezept-Geb�hr");
+		getSmartTitledPanel().setTitle("Rezept-Gebühr");
 		getSmartTitledPanel().setName("RezeptGebuehr");
 		setSize(175,250);
 		setPreferredSize(new Dimension(175,250));
@@ -160,7 +160,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 
 		pb.addSeparator("Für Rechenkünstler",cc.xyw(2,4,5));
 
-		pb.addLabel("Rezeptgeb�hren",cc.xy(3,6));
+		pb.addLabel("Rezeptgebühren",cc.xy(3,6));
 		JLabel lab = new JLabel(SystemConfig.hmAdrRDaten.get("<Rendbetrag>"));
 		lab.setFont(new Font("Tahoma",Font.BOLD,14));
 		lab.setForeground(Color.BLUE);
@@ -204,7 +204,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 
 		pb.add(gegeben,cc.xy(5,8));
 		
-		pb.addLabel("zur�ck",cc.xy(3,10));
+		pb.addLabel("zurück",cc.xy(3,10));
 		rueckgeld = new JLabel("0,00");
 		rueckgeld.setFont(new Font("Tahoma",Font.BOLD,14));
 		rueckgeld.setForeground(Color.BLUE);
@@ -329,7 +329,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 					rtp = null;
 					super.dispose();
 					this.dispose();
-					System.out.println("****************Rezeptgeb�hren -> Listener entfernt**************");				
+					System.out.println("****************Rezeptgebühren -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -344,7 +344,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			rtp = null;
 			super.dispose();
 			dispose();
-			System.out.println("****************Rezeptgeb�hren -> Listener entfernt (Closed)**********");
+			System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -381,7 +381,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				this.dispose();
 				super.dispose();
 			}
-			System.out.println("Return Gedr�ckt");
+			System.out.println("Return Gedrückt");
 		}
 	}
 	public void doBuchen(){

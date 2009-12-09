@@ -60,7 +60,7 @@ public class FormTest extends JInternalFrame {
 			jLabel1.setText("Nur Zahlen");
 			jLabel = new JLabel();
 			jLabel.setBounds(new Rectangle(24, 35, 140, 16));
-			jLabel.setText("Nur GroßBuchstaben");
+			jLabel.setText("Nur GroÃŸbuchstaben");
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);
 			jContentPane.add(jLabel, null);
@@ -129,14 +129,14 @@ class PassVerifier extends InputVerifier {
 
 	public boolean shouldYieldFocus(javax.swing.JComponent input) {
         if (!verify(input)) {
-            //Textfeld Vordergrund rot färben
+            //Textfeld Vordergrund rot fï¿½rben
             input.setForeground(java.awt.Color.RED);
         	System.out.println("test-rot");
             return false;
         }
         else {
             input.setForeground(java.awt.Color.GREEN);
-        	System.out.println("test-grün");
+        	System.out.println("test-grï¿½n");
             return true;
         }
     }

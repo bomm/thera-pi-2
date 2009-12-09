@@ -242,7 +242,7 @@ public String arztbisher;
 		repaint();
 	}
 	public void zurueckZurTabelle(JRtaTextField[] jtfs){
-		super.getSmartTitledPanel().setTitle("Arzt ausw�hlen");
+		super.getSmartTitledPanel().setTitle("Arzt auswählen");
 		if(jtfs != null){
 			Vector<String> vec = new Vector<String>();
 			vec.add(jtfs[2].getText());

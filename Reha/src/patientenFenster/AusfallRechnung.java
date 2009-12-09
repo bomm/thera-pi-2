@@ -144,7 +144,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 
 		pb.getPanel().setOpaque(false);
 		
-		pb.addLabel("Bitte die Positionen ausw�hlen die Sie berechnen wollen",cc.xyw(2, 2, 4));
+		pb.addLabel("Bitte die Positionen auswählen die Sie berechnen wollen",cc.xyw(2, 2, 4));
 
 		pb.addLabel("Heilmittel 1",cc.xy(3, 4));
 		String lab = (String)Reha.thisClass.patpanel.vecaktrez.get(48);
@@ -355,7 +355,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				this.dispose();
 			}
 
-			System.out.println("Return Gedr�ckt");
+			System.out.println("Return Gedrückt");
 		}
 		if(event.getKeyCode()==27){
 			this.dispose();

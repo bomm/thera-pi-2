@@ -177,6 +177,7 @@ public JLabel[] rezlabs = {null,null,null,null,null,
 public JTextArea rezdiag = null;
 
 public ImageIcon[] imgzuzahl = {null,null,null,null};
+public ImageIcon[] imgrezstatus = {null,null};
 
 public Vector vecaktrez = null;
 public Vector vecakthistor = null;
@@ -364,6 +365,10 @@ public PatGrundPanel(JPatientInternal jry){
 			imgzuzahl[1] = SystemConfig.hmSysIcons.get("zuzahlok");			
 			imgzuzahl[2] = SystemConfig.hmSysIcons.get("zuzahlnichtok");
 			imgzuzahl[3] = SystemConfig.hmSysIcons.get("kleinehilfe");
+			
+			imgrezstatus[0] = SystemConfig.hmSysIcons.get("statusoffen");
+			imgrezstatus[1] = SystemConfig.hmSysIcons.get("statuszu");
+			
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
