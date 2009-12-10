@@ -452,6 +452,9 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 				fensterSchliessen();
 			}
 		}
+		if(arg0.getKeyCode() == 27){
+			fensterSchliessen();
+		}
 	}	
 	@Override
 	public void keyReleased(KeyEvent arg0) {

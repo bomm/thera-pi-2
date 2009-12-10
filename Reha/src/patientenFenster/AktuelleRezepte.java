@@ -397,7 +397,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyAktRezeptTableModel();
-		String[] column = 	{"Rezept-Nr.","bezahlt","Status","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Status","Pat-Nr.",""};
 		dtblm.setColumnIdentifiers(column);
 		tabaktrez = new JXTable(dtblm);
 		tabaktrez.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
@@ -408,9 +408,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 		tabaktrez.getColumn(1).setCellRenderer(renderer);
 		tabaktrez.getColumn(1).setMaxWidth(45);
-		tabaktrez.getColumn(2).setMaxWidth(45);
-		tabaktrez.getColumn(2).setCellRenderer(renderer);
 		tabaktrez.getColumn(3).setMaxWidth(75);
+		tabaktrez.getColumn(5).setMaxWidth(45);
+		tabaktrez.getColumn(5).setCellRenderer(renderer);
+
 		//tabaktrez.getColumn(4).setMaxWidth(70);
 		tabaktrez.getColumn(6).setMinWidth(0);
 		tabaktrez.getColumn(6).setMaxWidth(0);		
@@ -639,8 +640,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			protected Void doInBackground() throws Exception {
 		
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,abschluss,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
-						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
+				Vector vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
+						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,abschluss,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
 				int anz = vec.size();
 				
@@ -656,7 +657,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					}else if(!((Vector)vec.get(i)).get(1).equals("")){
 						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
 					}
-					if(((Vector)vec.get(i)).get(2).equals("T")){
+					if(((Vector)vec.get(i)).get(5).equals("T")){
 						rezstatus = 1;
 					}
 					//((Vector)vec.get(i)).set(3, PatGrundPanel.thisClass.imgzuzahl[zzbild]);
@@ -665,7 +666,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.addRow((Vector)vec.get(i));
 					
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
-					dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[rezstatus],i,2);
+					dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[rezstatus],i,5);
 					if(i==0){
 						final int ix = i;
 	                    new Thread(){
@@ -1443,7 +1444,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		private static final long serialVersionUID = 1L;
 
 		public Class getColumnClass(int columnIndex) {
-			   if(columnIndex==1 || columnIndex==2 ){
+			   if(columnIndex==1 || columnIndex==5 ){
 				   return JLabel.class;}
 			   else{
 				   return String.class;

@@ -166,6 +166,9 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				fensterSchliessen();
 			}
 		}
+		if(arg0.getKeyCode() == 27){
+			fensterSchliessen();
+		}
 	}
 
 	@Override
