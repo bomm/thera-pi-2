@@ -107,13 +107,13 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
         //jp1.setLayout(new VerticalLayout(1));
         String ss = SystemConfig.homeDir+"icons/header-image.png";
         JXHeader header = new JXHeader("Hier schreiben Sie die Maskendefinition (=Wochenarbeitszeit) in den Terminkalender!\n\n",
-        		"ƒuﬂerste Vorsicht im Umgang mit dieser Funktion ist sicherlich 'nicht ganz unangebracht'.....\n\n"+
-                "Stellen Sie vor allen Dingen sicher, daﬂ wirklich nur Sie als Super-User Zugang zu dieser Funktion haben!\n" +
-                "In der Benutzerverwaltung kˆnnen Sie die entsprechende Rechte erteilen bzw. wieder entziehen.\n\n" +
-                "Wenn Sie jetzt die (leere) Maskendefinition in Ihren Terminkalender ¸bertragen, werden alle\n"+
-                "bereits existierenden Termine dieses Benutzers mit dessen leeren Maske ¸berschrieben!!!!!\n\n"+
-                "Wenn Sie diesen Vorgang starten, sollten Sie diesen wirklich nur im ‰uﬂersten Notfall(!!!) unterbrechen!\n\n"+
-                "Sie schlieﬂen dieses Fenster ¸ber den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
+        		"√Ñu√üerste Vorsicht im Umgang mit dieser Funktion ist sicherlich 'nicht ganz unangebracht'.....\n\n"+
+                "Stellen Sie vor allen Dingen sicher, da√ü wirklich nur Sie als Super-User Zugang zu dieser Funktion haben!\n" +
+                "In der Benutzerverwaltung k√∂nnen Sie die entsprechende Rechte erteilen bzw. wieder entziehen.\n\n" +
+                "Wenn Sie jetzt die (leere) Maskendefinition in Ihren Terminkalender √ºbertragen, werden alle\n"+
+                "bereits existierenden Termine dieses Benutzers mit dessen leeren Maske √ºberschrieben!!!!!\n\n"+
+                "Wenn Sie diesen Vorgang starten, sollten Sie diesen wirklich nur im √§u√üersten Notfall(!!!) unterbrechen!\n\n"+
+                "Sie schlie√üen dieses Fenster √ºber den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         jp1.add(header,BorderLayout.CENTER);
         //jp1.add(eingabePanel(),BorderLayout.SOUTH);
@@ -178,12 +178,12 @@ public JScrollPane eingabePanel(){
 	//eingabep.setLayout(flay);
 	CellConstraints cc = new CellConstraints();
 
-	behandlerLabel = new JXLabel("Wochenarbeitszeit ¸bertragen von  -->  "+ParameterLaden.getKollegenUeberDBZeile(maskenBehandler));
+	behandlerLabel = new JXLabel("Wochenarbeitszeit √ºbertragen von  -->  "+ParameterLaden.getKollegenUeberDBZeile(maskenBehandler));
 	
 	behandlerLabel.setForeground(Color.RED);
 	eingabep.add(behandlerLabel,cc.xyw(2,2,3));
 
-	startLabel = new JXLabel("Starte Masken¸bertrag am:");
+	startLabel = new JXLabel("Starte Masken√ºbertrag am:");
 	eingabep.add(startLabel,cc.xy(2,3));
 
 	startDatum = new JRtaTextField("DATUM",false);
@@ -192,7 +192,7 @@ public JScrollPane eingabePanel(){
 	startDatum.setName("StartDatum");
 	eingabep.add(startDatum,cc.xy(4,3));
 	
-	endLabel = new JXLabel("‹bertrage Maske bis (einschlieﬂlich):");
+	endLabel = new JXLabel("√úbertrage Maske bis (einschlie√ülich):");
 	eingabep.add(endLabel,cc.xy(2,5));
 
 	endDatum = new JRtaTextField("DATUM",false);
@@ -201,13 +201,13 @@ public JScrollPane eingabePanel(){
 	endDatum.setName("EndDatum");
 	eingabep.add(endDatum,cc.xy(4,5));
 
-	starten = new JXButton("‹bertrag starten");
+	starten = new JXButton("√úbertrag starten");
 	//starten.setPreferredSize(new Dimension(80,15));
 	starten.addActionListener(this);
 	starten.addKeyListener(this);	
 	eingabep.add(starten,cc.xy(2,7));
 
-	anhalten = new JXButton("‹bertrag anhalten");
+	anhalten = new JXButton("√úbertrag anhalten");
 	//anhalten.setPreferredSize(new Dimension(80,15));	
 	anhalten.setEnabled(false);
 	anhalten.addActionListener(this);
@@ -260,15 +260,15 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
 	for(int i = 0; i< 1;i++){
-		if(cmd.equals("‹bertrag starten")){
+		if(cmd.equals("√úbertrag starten")){
 			stopUebertrag = false;
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {	
 			 		   new Thread(){
 			 			   public void run(){
-			 				   String hinweis = "Sie schreiben im Anschluﬂ eine neue Wochenarbeitszeit in den Terminkalender!\n"+
-			 				   					"Dabei werden evtl. bestehende Feiertage oder Betriebsferien ¸berschrieben.\n"+
+			 				   String hinweis = "Sie schreiben im Anschlu√ü eine neue Wochenarbeitszeit in den Terminkalender!\n"+
+			 				   					"Dabei werden evtl. bestehende Feiertage oder Betriebsferien √ºberschrieben.\n"+
 			 				   					"Die Feiertage lassen sich bequem in der System-Initialisierung organisieren, oder\n"+
 			 				   					"Sie schreiben die Feiertage von Hand in den Kalender";
 			 				   JOptionPane.showMessageDialog(null,hinweis);
@@ -282,7 +282,7 @@ public void actionPerformed(ActionEvent arg0) {
 			});
 			break;
 		}
-		if(cmd.equals("‹bertrag anhalten")){
+		if(cmd.equals("√úbertrag anhalten")){
 			SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
@@ -305,7 +305,7 @@ public String getEndDatum(){
 	return endDatum.getText().trim();
 }
 public void setAktuellesDatum(String aktDat){
-	aktDatum.setText("‹bertrage "+aktDat);
+	aktDatum.setText("√ºbertrage "+aktDat);
 }
 
 @Override
@@ -317,7 +317,7 @@ public void keyPressed(KeyEvent arg0) {
 	}
 	if(arg0.getKeyCode() == 10){
 		if(arg0.getComponent().getName() != null){
-			if(arg0.getComponent().getName().equals("‹bertrag starten")){
+			if(arg0.getComponent().getName().equals("√úbertrag starten")){
 				maskenEintragen();
 				arg0.consume();
 			}
@@ -353,7 +353,7 @@ public void maskenEintragen(){
 	int i = 0;
 	if(DatFunk.DatumsWert(startTag) > DatFunk.DatumsWert(stopTag)){
 		stopUebertrag = true;
-		JOptionPane.showMessageDialog(null,"Ihr angegebenes Startdatum ist grˆﬂer als das Stopdatum -> Depp!");
+		JOptionPane.showMessageDialog(null,"Ihr angegebenes Startdatum ist gr√∂√üer als das Stopdatum -> Depp!");
 		return;
 	}
 	//System.out.println("Anzahl Vector-Elemente = "+this.vTerm.size());
@@ -397,7 +397,7 @@ public void maskenEintragen(){
 	//5. den Vector auslesen
 	//6. statement zurechtbasteln
 	//7. statement abschicken
-	//8. pr¸fen ob tag +1 > bis zu welchem Tag wenn ja exit;
+	//8. prÔøΩfen ob tag +1 > bis zu welchem Tag wenn ja exit;
 }
 
 	private String macheStatement(String sqldat,ArrayList list){

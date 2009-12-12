@@ -577,9 +577,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
 				dokubut[1].setEnabled(true);
+				/*
 				for(int i = 0; i < 4;i++){
 					//dokubut[i].setEnabled(true);
 				}
+				*/
 				wechselPanel.validate();
 				wechselPanel.repaint();
 			}
