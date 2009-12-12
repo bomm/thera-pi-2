@@ -128,7 +128,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 				 				
 				 			}.execute();
 				 		}else{
-				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empfäger des Gutachtens ein (Berichttyp).");
+				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den EmpfÃ¤ger des Gutachtens ein (Berichttyp).");
 				 			doKopfNeu();
 				 		}
 				 		  
@@ -164,13 +164,13 @@ public class Ns1 implements ActionListener,ComponentListener {
 		pb.add(getVonBis(),cc.xy(3,6));
 		//Block 3 ist der Diagnosen-Block
 		pb.add(getBlock3(),cc.xy(3, 8));
-		//Titel für die Rubrik Untersuchung
+		//Titel fï¿½r die Rubrik Untersuchung
 		pb.add(getTitelUntersuchung(),cc.xy(3, 10));
 		//Dann die Rubrik Untersuchung komplett
 		pb.add(getUntersuchung(),cc.xy(3, 12));
-		//Titel für die Rubrik Arbeitsfähigkeit
+		//Titel fï¿½r die Rubrik Arbeitsfï¿½higkeit
 		pb.add(getTitelArbeitsfaehigkeit(),cc.xy(3, 14));
-		//Dann die Rubrik Arbeitsfähigkeit
+		//Dann die Rubrik Arbeitsfï¿½higkeit
 		pb.add(getArbeitsfaehigkeit(),cc.xy(3, 16));
 		//Unterschriftsdatum
 		pb.add(getDatumUnterschrift(),cc.xy(3, 18));
@@ -215,11 +215,11 @@ public class Ns1 implements ActionListener,ComponentListener {
 				PanelBuilder dummy = new PanelBuilder(laydummy);
 				dummy.getPanel().setOpaque(false);
 				CellConstraints ccdum = new CellConstraints();
-				JLabel lab = getLabelArialFettRot("arbeitsfähig");
+				JLabel lab = getLabelArialFettRot("arbeitsfÃ¤hig");
 				//lab.setForeground(Color.RED);
 				dummy.add(lab,ccdum.xy(1,1,CellConstraints.LEFT,CellConstraints.BOTTOM));
 
-				lab = getLabelArialNormalRot("arbeitsunfähig");
+				lab = getLabelArialNormalRot("arbeitsunfÃ¤hig");
 				//lab.setForeground(Color.RED);
 				dummy.add(lab,ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.BOTTOM));
 				dummy.add(getLabelKleinRot("Seit wann?"),ccdum.xy(3,3,CellConstraints.LEFT,CellConstraints.TOP));
@@ -286,20 +286,20 @@ public class Ns1 implements ActionListener,ComponentListener {
 				befund.getPanel().setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				befund.getPanel().setOpaque(false);               
 				CellConstraints ccbef = new CellConstraints();
-				JLabel lab = new JLabel("Bestehende Funktionseinschrängkung(en) "+
+				JLabel lab = new JLabel("Bestehende FunktionseinschrÃ¤ngkung(en) "+
 						"und von der Norm abweichende Befunde an folgenden Organsystemen:");
 				lab.setFont(fontarialnormal);
 				befund.add(lab,ccbef.xy(3, 3));
 
 				befund.add(getChecks1(),ccbef.xy(3,5));
 				
-				lab = new JLabel("Erläuterungen");
+				lab = new JLabel("ErlÃ¤uterungen");
 				lab.setFont(fontarialnormal);
 				befund.add(lab,ccbef.xy(3, 7));
 
 				befund.add(getErlaeut1(),ccbef.xy(3, 9));
 				
-				lab = new JLabel("Beschreibung der erreichten Funktionsveränderung(en) im prä / post Vergleich:");
+				lab = new JLabel("Beschreibung der erreichten FunktionsverÃ¤nderung(en) im prÃ¤ / post Vergleich:");
 				lab.setFont(fontarialnormal);
 				befund.add(lab,ccbef.xy(3, 11));
 
@@ -438,7 +438,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		lab = getLabel("1.");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,3));
-		lab  = getLabel("Diagnoseschlüssel");
+		lab  = getLabel("DiagnoseschlÃ¼ssel");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(4,3));
 		lab  = getLabel("Seiten-");
@@ -769,7 +769,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		ent.add(lab,ccent.xy(1,12));
 		ent.add(getLabel("0 = 1-3 triff nicht zu"),ccent.xy(1,13));
 		ent.add(getLabel("1 = gebessert"),ccent.xy(1,14));		
-		ent.add(getLabel("2 = unverändert"),ccent.xy(1,15));
+		ent.add(getLabel("2 = unverÃ¤ndert"),ccent.xy(1,15));
 		ent.add(getLabel("3 = verschlechtert"),ccent.xy(1,16));
 		tit.add(ent.getPanel(),cctit.xywh(12, 4,1,14,CellConstraints.LEFT,CellConstraints.TOP));
 		
@@ -870,7 +870,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		tit.add(eltern.btf[3],cctit.xy(2,7));
 		tit.add(getLabel("(Sofern nicht in Vers. Nr. enthalten)"),cctit.xyw(4,7,3));
 		
-		lab = getLabel ("Straße,Hausnummer:");
+		lab = getLabel ("StraÃŸe,Hausnummer:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,8,3));
 		eltern.btf[4] = new JRtaTextField("nix",false);
@@ -927,7 +927,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		eltern.btf[9].setName("BNR");
 		tit.add(eltern.btf[9],cctit.xy(4,4));
 		
-		lab = getLabel("Behandlungsstätte:");
+		lab = getLabel("BehandlungsstÃ¤tte:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,7,6));
 		//SystemConfig.vGutachtenDisplay.get(0);
@@ -945,7 +945,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,15));
 		
-		lab = new JLabel("ganztägig ambulante Rehabilitation");
+		lab = new JLabel("ganztÃ¤gig ambulante Rehabilitation");
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,17,6));
 
@@ -1131,7 +1131,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		PanelBuilder tit = new PanelBuilder(laytit);
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints();
-		JLabel lab = new JLabel("Untersuchungsbefund und Funktionsveränderungen");
+		JLabel lab = new JLabel("Untersuchungsbefund und FunktionsverÃ¤nderungen");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(2, 2));
 		tit.getPanel().validate();
@@ -1139,7 +1139,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 	}
 	/************************
 	 * 
-	 * Der Titel für die Rubrik Arbeitsfähigekeit
+	 * Der Titel fï¿½r die Rubrik Arbeitsfï¿½higekeit
 	 * 
 	 */
 	private JPanel getTitelArbeitsfaehigkeit(){
@@ -1148,7 +1148,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		PanelBuilder tit = new PanelBuilder(laytit);
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints();
-		JLabel lab = new JLabel("Arbeitsfähigkeit");
+		JLabel lab = new JLabel("ArbeitsfÃ¤higkeit");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(2, 2));
 		tit.getPanel().validate();

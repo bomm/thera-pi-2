@@ -140,18 +140,18 @@ public class Ns2 implements ActionListener {
 		vorschlag.setOpaque(false);               
 		CellConstraints ccvorschlag = new CellConstraints();
 
-		// linker Block Überschrift		
+		// linker Block ï¿½berschrift		
 		FormLayout links = new FormLayout(  "p","p");
 		PanelBuilder titl = new PanelBuilder(links);
 		titl.getPanel().setOpaque(false);
 		CellConstraints cctitl = new CellConstraints();
-		// hier dazwischen den ganzen linken Scheiß
-		JLabel lab = new JLabel("Weiterbehandelnde Ärzte / Psychologen");
+		// hier dazwischen den ganzen linken Scheiï¿½
+		JLabel lab = new JLabel("Weiterbehandelnde Ã„rzte / Psychologen");
 		lab.setFont(fontarialfett);
 		titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
 		titl.getPanel().validate();
 		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,2));
-		// linker Block mit Kästchen
+		// linker Block mit Kï¿½stchen
 							//    1   2  3     4            5  6   7   1 2  3   4 5  6     7 8
 		links = new FormLayout(  "p,2dlu,p,fill:0:grow(1.0),p,2dlu,p","p,p,10dlu,p,p,10dlu,p,p,10dlu");
 		titl = new PanelBuilder(links);
@@ -161,12 +161,12 @@ public class Ns2 implements ActionListener {
 		eltern.bchb[7].setName("F_125");
 		titl.add(eltern.bchb[7],cctitl.xywh(1,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		titl.add(this.getLabelArialFettRot("Diagnostische"),cctitl.xywh(3,1,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
-		titl.add(this.getLabelArialFettRot("Klärung"),cctitl.xywh(3,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
+		titl.add(this.getLabelArialFettRot("KlÃ¤rung"),cctitl.xywh(3,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
 		
 		eltern.bchb[8] = new JRtaCheckBox("");
 		eltern.bchb[8].setName("F_127");
 		titl.add(eltern.bchb[8],cctitl.xywh(1,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		titl.add(this.getLabelArialFettRot("Stationäre Behandlung"),cctitl.xywh(3,4,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titl.add(this.getLabelArialFettRot("StationÃ¤re Behandlung"),cctitl.xywh(3,4,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
 		titl.add(this.getLabelArialFettRot("OP"),cctitl.xywh(3,5,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
 
 		eltern.bchb[9] = new JRtaCheckBox("");
@@ -196,7 +196,7 @@ public class Ns2 implements ActionListener {
 		vorschlag.add(titl.getPanel(),ccvorschlag.xy(2,4));
 
 
-		// rechter Block Überschrift		
+		// rechter Block ï¿½berschrift		
 		FormLayout rechts = new FormLayout(  "p","p");
 		PanelBuilder titr = new PanelBuilder(rechts);
 		titr.getPanel().setOpaque(false);
@@ -207,7 +207,7 @@ public class Ns2 implements ActionListener {
 		titr.getPanel().validate();
 		vorschlag.add(titr.getPanel(),ccvorschlag.xy(6,2));
 
-		// rechter Block mit Kästchen
+		// rechter Block mit Kï¿½stchen
 		//                         1   2  3     4            5  6   7   1 2  3    4 5  6    7 8
 		rechts = new FormLayout(  "p,2dlu,p,fill:0:grow(1.0),p,2dlu,p","p,p,10dlu,p,p,10dlu,p,p,10dlu");		
 		titr = new PanelBuilder(rechts);
@@ -216,7 +216,7 @@ public class Ns2 implements ActionListener {
 		eltern.bchb[13] = new JRtaCheckBox("");
 		eltern.bchb[13].setName("F_156");
 		titr.add(eltern.bchb[13],cctitr.xywh(1,1,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		titr.add(this.getLabelArialFettRot("Übungen selbständ."),cctitr.xywh(3,1,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
+		titr.add(this.getLabelArialFettRot("Ãœbungen selbstÃ¤nd."),cctitr.xywh(3,1,1,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));	
 		titr.add(this.getLabelArialFettRot("fortsetzen"),cctitr.xywh(3,2,1,1,CellConstraints.DEFAULT,CellConstraints.TOP));
 
 		eltern.bchb[14] = new JRtaCheckBox("");
@@ -256,13 +256,13 @@ public class Ns2 implements ActionListener {
 
 		vorschlag.add(getRand(Color.GRAY),ccvorschlag.xywh(4,1,1,4,CellConstraints.DEFAULT,CellConstraints.FILL));
 		
-		// Jetzt die Erläuterungen
-		// linker Block Überschrift		
+		// Jetzt die Erlï¿½uterungen
+		// linker Block ï¿½berschrift		
 		links = new FormLayout(  "p","p");
 		titl = new PanelBuilder(links);
 		titl.getPanel().setOpaque(false);
 		cctitl = new CellConstraints();
-		lab = new JLabel("Erläuterungen");
+		lab = new JLabel("ErlÃ¤uterungen");
 		lab.setFont(fontarialfett);
 		titl.add(lab,cctitl.xy(1,1,CellConstraints.FILL,CellConstraints.TOP));
 		titl.getPanel().validate();
@@ -484,7 +484,7 @@ public class Ns2 implements ActionListener {
 	}	
 	/************************
 	 * 
-	 * Der Titel Vorschläge...
+	 * Der Titel Vorschlï¿½ge...
 	 * 
 	 */
 	private JPanel getTitelVorschlaege(){
@@ -494,10 +494,10 @@ public class Ns2 implements ActionListener {
 		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints();
-		JLabel lab = new JLabel("Vorschläge für nachfolgende Maßnahmen");
+		JLabel lab = new JLabel("VorschlÃ¤ge fÃ¼r nachfolgende MaÃŸnahmen");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(2,2));
-		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind möglich");
+		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind mÃ¶glich");
 		lab.setFont(fontarialnormal);
 		tit.add(lab,cctit.xy(4,2));
 		tit.getPanel().validate();

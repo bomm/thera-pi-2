@@ -133,7 +133,7 @@ public class Eb4 implements ActionListener {
 		PanelBuilder dum = new PanelBuilder(dummy);
 		dum.getPanel().setOpaque(false);
 		CellConstraints ccdum = new CellConstraints();
-		JLabel jlab = new JLabel("Erläuterungen:");
+		JLabel jlab = new JLabel("ErlÃ¤uterungen:");
 		jlab.setFont(fontarialfett);
 		dum.add(jlab,ccdum.xywh(3,2,6,1));
 		int area = (seite == 1 ? 8 : 9);
@@ -290,7 +290,7 @@ public class Eb4 implements ActionListener {
 		JLabel lab = new JLabel("Leistungsdaten:");
 		lab.setFont(fontarialfett);
 		dum.add(lab,ccdum.xy(2,2));
-		lab = new JLabel("durchgeführte therapeutische Leistungen");
+		lab = new JLabel("durchgefÃ¼hrte therapeutische Leistungen");
 		lab.setFont(fontarialnormal);
 		dum.add(lab,ccdum.xy(4,2));
 

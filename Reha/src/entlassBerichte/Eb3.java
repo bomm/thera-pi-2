@@ -186,7 +186,7 @@ public class Eb3 implements RehaEventListener  {
 								        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 								        	framegetrennt = false;
 											eltern.meldeInitOk(2);
-											JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
+											JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht Ã¶ffnen");
 					        			}
 					        			if(ins != null){
 					        				ins.close();
@@ -306,7 +306,7 @@ public class Eb3 implements RehaEventListener  {
 	    parent.getLayout().layoutContainer(parent);
 	    eltern.officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();
-	    //System.out.println("natveView eingehängt in Panel "+parent.getName());
+	    //System.out.println("natveView eingehï¿½ngt in Panel "+parent.getName());
     return eltern.officeFrame;
   }
 
@@ -317,7 +317,7 @@ public class Eb3 implements RehaEventListener  {
 		String url = tempPfad+"EBfliesstext.pdf";
 		if(eltern.document.isOpen()){
 			if(eltern.document.isModified()){
-				System.out.println("speichere temporär in: "+url);
+				System.out.println("speichere temporÃ¤r in: "+url);
 				outtemp = new ByteArrayOutputStream();
 				try {
 					eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
@@ -337,7 +337,7 @@ public class Eb3 implements RehaEventListener  {
 					e.printStackTrace();
 				}
 			}else{
-				System.out.println("Dokukment wurde nicht verändert, temporäres speichern daher nicht erforderlich" );
+				System.out.println("Dokukment wurde nicht verÃ¤ndert, temporÃ¤res speichern daher nicht erforderlich" );
 			}
 
 		}	
@@ -379,7 +379,7 @@ public class Eb3 implements RehaEventListener  {
 				if(eltern.document == null){return;}
 				if(eltern.document.isOpen()){
 					String url = tempPfad+"EBfliesstext.pdf";
-					System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
+					System.out.println("Speichere in Datenbank und zusÃ¤tzlich temporÃ¤r in: "+url);
 					outtemp = new ByteArrayOutputStream();
 					eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
 					eltern.document.getPersistenceService().export(url, new PDFFilter());
@@ -497,7 +497,7 @@ public class Eb3 implements RehaEventListener  {
 			}
 			if(evt.getDetails()[0].contains("GutachtenFenster")){
 				if(evt.getDetails()[1].equals("#SCHLIESSEN")){
-					System.out.println("Lösche Listener von Eb3-------------->");
+					System.out.println("LÃ¶sche Listener von Eb3-------------->");
 					try {
 						if(outtemp != null){
 							outtemp.close();

@@ -68,30 +68,30 @@ public class Eb1 implements ActionListener,ComponentListener {
 			{null,null}
 	};
 	JLabel[] labsheadline = {null,null,null};
-	String[] headlineneu = {"Weiterbehandelnde ƒrzte / Psychologen",
+	String[] headlineneu = {"Weiterbehandelnde √Ñrzte / Psychologen",
 			"Patienten","Rentenversicherung"};
 
 	String[] headlinealt = {"",
 			"",""};
 
-	public String[][] stitelalt = {{"Diagn.","Kl‰rung"},{"Stat.","Behandl."},
+	public String[][] stitelalt = {{"Diagn.","Kl√§rung"},{"Stat.","Behandl."},
 			{"Selbsthilfegruppe"},{"Amb.Reha Sucht"},
 			{"Gewichts-","reduktion"},{"Alkohol-", "karenz",""},
 			{"Operation",""},{"Psychotherapie"},
 			{"Vorstell. Suchtberatung"},{"spezielle Nachsorge"},
 			{"Nikotinkarenz"},{"Heil- und Hilfsmittel"},
 			{"Rehabilitationssport"},{"Funktionstraining"},
-			{"stufenweise","Wiedereingliederung"},{"Bf. Leistung","pr¸fen",""},
+			{"stufenweise","Wiedereingliederung"},{"Bf. Leistung","pr√ºfen",""},
 			{"sonstige","Anregung"}
 	};
-	public String[][] stitelneu = {{"Diagnostische","Kl‰rung"},{"Kontrolle Laborwerte/","Medikamente"},
+	public String[][] stitelneu = {{"Diagnostische","Kl√§rung"},{"Kontrolle Laborwerte/","Medikamente"},
 			{"Stat.Behandlung / OP"},{"Suchtberatung"},
 			{"Psychol. Beratung /","Psychotherapie"},{"Heil- und Hilfsmittel","inkl. Physiotherapie","und Ergotherapie"},
-			{"‹bungen selbst‰ndig","fortf¸hren"},{"Sport und Bewegung"},
+			{"√úbungen selbst√§ndig","fortf√ºhren"},{"Sport und Bewegung"},
 			{"Gewichtsreduktion",""},{"Nikotinkarenz"},
 			{"Alkoholkarenz",""},{"Selbsthilfegruppe"},
 			{"Rehabilitationssport"},{"Funktionstraining"},
-			{"stufenweise","Wiedereingliederung"},{"Leistungen zur","Teilhabe am","Arbeitsleben pr¸fen"},
+			{"stufenweise","Wiedereingliederung"},{"Leistungen zur","Teilhabe am","Arbeitsleben pr√ºfen"},
 			{"Reha-Nachsorge (z.B.","IRENA oder ASP"}
 	};
 
@@ -152,7 +152,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 				 				
 				 			}.execute();
 				 		}else{
-				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empf‰ger des Gutachtens ein (Berichttyp).");
+				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empf√§ger des Gutachtens ein (Berichttyp).");
 				 			eltern.meldeInitOk(0);
 				 			doKopfNeu();
 				 		}
@@ -299,13 +299,13 @@ public class Eb1 implements ActionListener,ComponentListener {
 		pb.add(getBlock2(),cc.xy(3, 6));
 		//Block 3 ist der Diagnosen-Block
 		pb.add(getBlock3(),cc.xy(3, 8));
-		//Block 4 ist Gewicht, Arbeitsunf‰higkeitszeiten
+		//Block 4 ist Gewicht, ArbeitsunfÔøΩhigkeitszeiten
 		pb.add(getBlock4(),cc.xy(3, 10));
-		//Block 5 ‹berschrift f¸r Vorschl‰ge f¸r nachfolgende Maﬂnahmen
+		//Block 5 ÔøΩberschrift fÔøΩr VorschlÔøΩge fÔøΩr nachfolgende MaÔøΩnahmen
 		pb.add(getBlock5(),cc.xy(3, 12));
-		//Block 5 Riesenscheiﬂblock mit den nachfolgenden Maﬂnahmen
+		//Block 5 RiesenscheiÔøΩblock mit den nachfolgenden MaÔøΩnahmen
 		pb.add(getBlock6(),cc.xy(3, 14));
-		// Unterschriften gedˆnse
+		// Unterschriften gedÔøΩnse
 		pb.add(getBlock7(),cc.xy(3, 16));
 		pb.getPanel().validate();
 		
@@ -376,9 +376,9 @@ public class Eb1 implements ActionListener,ComponentListener {
 		dum.add(getRand(Color.BLACK),ccdum.xy(1,3));
 		dum.add(getRand(Color.BLACK),ccdum.xy(3,3));
 		dum.add(getRand(Color.BLACK),ccdum.xy(5,3));
-		dum.add(getLabel("Ltd. ƒrztin / ltd. Arzt"),ccdum.xy(1,5));
-		dum.add(getLabel("Ober‰rztin / Oberarzt"),ccdum.xy(3,5));
-		dum.add(getLabel("Stat.-ƒrztin / Stat.-Arzt"),ccdum.xy(5,5));
+		dum.add(getLabel("Ltd. √Ñrztin / ltd. Arzt"),ccdum.xy(1,5));
+		dum.add(getLabel("Ober√§rztin / Oberarzt"),ccdum.xy(3,5));
+		dum.add(getLabel("Stat.-√Ñrztin / Stat.-Arzt"),ccdum.xy(5,5));
 		dum.getPanel().validate();
 		lei1.add(dum.getPanel(),ccl1.xyw(1, 3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
@@ -461,7 +461,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		PanelBuilder titl = new PanelBuilder(links);
 		titl.getPanel().setOpaque(false);
 		CellConstraints cctitl = new CellConstraints();
-		// hier dazwischen den ganzen linken Scheiﬂ
+		// hier dazwischen den ganzen linken ScheiÔøΩ
 		labsheadline[0] = new JLabel(headlineneu[0]);
 		labsheadline[0].setFont(fontarialfett);
 		titl.add(labsheadline[0],cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
@@ -571,7 +571,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		PanelBuilder titm = new PanelBuilder(mitte);
 		titm.getPanel().setOpaque(false);
 		//CellConstraints cctitm = new CellConstraints();
-		// hier dazwischen den ganzen mittleren Scheiﬂ
+		// hier dazwischen den ganzen mittleren ScheiÔøΩ
 		labsheadline[1] = new JLabel(headlineneu[1]);
 		labsheadline[1].setFont(fontarialfett);
 		titm.add(labsheadline[1],cctitl.xyw(1,1,7,CellConstraints.FILL,CellConstraints.TOP));
@@ -750,7 +750,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		tit.add(titr.getPanel(),cctit.xy(8,2,CellConstraints.FILL,CellConstraints.FILL));
 		// 1  2   3    4   5  6     7   8  9     10 //xyw(2,y,7);	
 	// "4dlu,p:g,4dlu,4dlu,p,30dlu,4dlu,p,30dlu,4dlu");
-		lab = getLabel("ERƒUTERUNGEN");
+		lab = getLabel("ERL√ÑUTERUNGEN");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,5,3));
 		eltern.bta[5] = new JTextArea();
@@ -763,7 +763,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		eltern.bta[6] = new JTextArea();
 		eltern.bta[6].setName("LMEDIKAT");
 		eltern.bta[6].setEnabled(false);
-		eltern.bta[6].setText("Bei Entlassdatum > 31.12.2007 ung¸ltig");
+		eltern.bta[6].setText("Bei Entlassdatum > 31.12.2007 ung√ºltig");
 		tit.add(eltern.bta[6],cctit.xyw(2,9,7,CellConstraints.FILL,CellConstraints.FILL));
 
 		tit.getPanel().validate();
@@ -777,10 +777,10 @@ public class Eb1 implements ActionListener,ComponentListener {
 		//tit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		tit.setOpaque(false);               
 		CellConstraints cctit = new CellConstraints();
-		JLabel lab = new JLabel("Vorschl‰ge f¸r nachfolgende Maﬂnahmen");
+		JLabel lab = new JLabel("Vorschl√§ge f√ºr nachfolgende Ma√ünahmen");
 		lab.setFont(fontarialfett);
 		tit.add(lab,cctit.xy(2,2));
-		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind mˆglich");
+		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind m√∂glich");
 		lab.setFont(fontarialnormal);
 		tit.add(lab,cctit.xy(4,2));
 		tit.getPanel().validate();
@@ -837,7 +837,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent = new PanelBuilder(entlay);
 		ent.getPanel().setOpaque(false);
 		ccent = new CellConstraints();
-		lab = getLabel ("Kˆrpergrˆﬂe");
+		lab = getLabel ("K√∂rpergr√∂√üe");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 1));
 		lab = getLabel("(ganze cm)");
@@ -868,7 +868,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent.add(getLabel("2 = "),ccent.xy(1,7 ));
 		ent.add(getLabel("Berufserkrankung"),ccent.xy(3,7,CellConstraints.LEFT,CellConstraints.DEFAULT ));
 		ent.add(getLabel("3 = "),ccent.xy(1,8 ));
-		ent.add(getLabel("Sch‰digung durch"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("Sch√§digung durch"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
 		ent.add(getLabel("Einwirkung Dritter"),ccent.xy(3,9,CellConstraints.LEFT,CellConstraints.DEFAULT ));
 		ent.add(getLabel("4 = "),ccent.xy(1,10 ));
 		ent.add(getLabel("Folge von Kriegs-, Zivil-"),ccent.xy(3,10,CellConstraints.LEFT,CellConstraints.DEFAULT ));
@@ -886,7 +886,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent = new PanelBuilder(entlay);
 		ent.getPanel().setOpaque(false);
 		ccent = new CellConstraints();
-		lab = getLabel ("ARBEITSUNFƒHIGKEITSZEITEN");
+		lab = getLabel ("ARBEITSUNF√ÑHIGKEITSZEITEN");
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xyw(1, 1,3));
 		ent.add(getLabel("innerhalb der letzten"),ccent.xyw(1,2,3 ));
@@ -900,7 +900,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent.add(getLabel("3 = "),ccent.xy(1,7 ));
 		ent.add(getLabel("6 und mehr Monate"),ccent.xy(3,7,CellConstraints.LEFT,CellConstraints.DEFAULT ));
 		ent.add(getLabel("9 = "),ccent.xy(1,8 ));
-		ent.add(getLabel("nicht erwerbst‰tig"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
+		ent.add(getLabel("nicht erwerbst√§tig"),ccent.xy(3,8,CellConstraints.LEFT,CellConstraints.DEFAULT ));
 		ent.getPanel().validate();
 		tit.add(ent.getPanel(),cctit.xywh(12,2,1,6,CellConstraints.LEFT,CellConstraints.TOP));		
 		
@@ -953,7 +953,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		lab = getLabel("1.");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,3));
-		lab  = getLabel("Diagnoseschl¸ssel");
+		lab  = getLabel("Diagnoseschl√ºssel");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(4,3));
 		lab  = getLabel("Seiten-");
@@ -1284,7 +1284,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent.add(lab,ccent.xy(1,12));
 		ent.add(getLabel("0 = 1-3 triff nicht zu"),ccent.xy(1,13));
 		ent.add(getLabel("1 = gebessert"),ccent.xy(1,14));		
-		ent.add(getLabel("2 = unver‰ndert"),ccent.xy(1,15));
+		ent.add(getLabel("2 = unver√§ndert"),ccent.xy(1,15));
 		ent.add(getLabel("3 = verschlechtert"),ccent.xy(1,16));
 		tit.add(ent.getPanel(),cctit.xywh(12, 4,1,14,CellConstraints.LEFT,CellConstraints.TOP));
 		
@@ -1334,10 +1334,10 @@ public class Eb1 implements ActionListener,ComponentListener {
 		tit.add(eltern.btf[14],cctit.xy(4,7));
 		tit.add(eltern.btf[15],cctit.xy(2,5));
 		tit.add(eltern.btf[16],cctit.xy(4,5));
-		lab = getLabel("station‰ir");
+		lab = getLabel("station√§r");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(6,3));
-		lab = getLabel("ganzt‰gig ambulant");
+		lab = getLabel("ganzt√§gig ambulant");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(6,5));
 		lab =  getLabel("ambulant");
@@ -1364,7 +1364,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(4, 2));
 		
-		lab = getLabel("ARBEITSFƒHIGKEIT");
+		lab = getLabel("ARBEITSF√ÑHIGKEIT");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(8, 2));
 
@@ -1377,20 +1377,20 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent.getPanel().setOpaque(false);
 		CellConstraints ccent = new CellConstraints();
 		ent.add(getLabel("1 = "),ccent.xy(1,1));
-		ent.add(getLabel("regul‰r"),ccent.xy(3,1));
+		ent.add(getLabel("regul√§r"),ccent.xy(3,1));
 		ent.add(getLabel("2 = "),ccent.xy(1,2));
-		ent.add(getLabel("vorzeitig auf ‰rztl. Veranlassung"),ccent.xy(3,2));
+		ent.add(getLabel("vorzeitig auf √§rztl. Veranlassung"),ccent.xy(3,2));
 		ent.add(getLabel("3 = "),ccent.xy(1,3));
-		ent.add(getLabel("vorzeitig mit ‰rztl. Einverst‰ndnis"),ccent.xy(3,3));
+		ent.add(getLabel("vorzeitig mit √§rztl. Einverst√§ndnis"),ccent.xy(3,3));
 		ent.add(getLabel("4 = "),ccent.xy(1,4));
-		ent.add(getLabel("vorzeitig ohne ‰rztl. Einverst‰ndnis"),ccent.xy(3,4));
+		ent.add(getLabel("vorzeitig ohne √§rztl. Einverst√§ndnis"),ccent.xy(3,4));
 		ent.add(getLabel("5 = "),ccent.xy(1,5));
 		ent.add(getLabel("disziplinarisch"),ccent.xy(3,5));
 		ent.add(getLabel("6 = "),ccent.xy(1,6));
 		ent.add(getLabel("verlegt"),ccent.xy(3,6));
 		ent.add(getLabel("7 = "),ccent.xy(1,7));
 		ent.add(getLabel("Wechsel zu ambulanter"),ccent.xy(3,7));
-		ent.add(getLabel("teilstation‰rer, station‰rer Reha"),ccent.xy(3,8));
+		ent.add(getLabel("teilstation√§rer, station√§rer Reha"),ccent.xy(3,8));
 		ent.add(getLabel("9 = "),ccent.xy(1,9));
 		ent.add(getLabel("gestorben"),ccent.xy(3,9));
 		
@@ -1405,19 +1405,19 @@ public class Eb1 implements ActionListener,ComponentListener {
 		ent.getPanel().setOpaque(false);
 		ccent = new CellConstraints();
 		ent.add(getLabel("0 = "),ccent.xy(1,1));
-		ent.add(getLabel("Maﬂnahme nicht ordnungsgem‰ﬂ"),ccent.xy(3,1));
+		ent.add(getLabel("Ma√ünahme nicht ordnungsgem√§√ü"),ccent.xy(3,1));
 		ent.add(getLabel("abgeschlosse, gestorben"),ccent.xy(3,2));
 		ent.add(getLabel("1 = "),ccent.xy(1,3));
-		ent.add(getLabel("arbeitsf‰hig"),ccent.xy(3,3));
+		ent.add(getLabel("arbeitsf√§hig"),ccent.xy(3,3));
 		ent.add(getLabel("3 = "),ccent.xy(1,4));
-		ent.add(getLabel("arbeitsunf‰hig"),ccent.xy(3,4));
+		ent.add(getLabel("arbeitsunf√§hig"),ccent.xy(3,4));
 		ent.add(getLabel("4 = "),ccent.xy(1,5));
 		ent.add(getLabel("Kinder-HB"),ccent.xy(3,5));
 		ent.add(getLabel("5 = "),ccent.xy(1,6));
 		ent.add(getLabel("Hausfrau/Hausmann"),ccent.xy(3,6));
 		ent.add(getLabel("9 = "),ccent.xy(1,7));
 		ent.add(getLabel("Beurteilung nicht erforderlich"),ccent.xy(3,7));
-		ent.add(getLabel("(Altersrente, Angehˆrige)"),ccent.xy(3,8));
+		ent.add(getLabel("(Altersrente, Angeh√∂rige)"),ccent.xy(3,8));
 		tit.add(ent.getPanel(),cctit.xywh(8,4,1,2));
 		
 		return tit.getPanel();
@@ -1466,7 +1466,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		tit.add(eltern.btf[3],cctit.xy(2,7));
 		tit.add(getLabel("(Sofern nicht in Vers. Nr. enthalten)"),cctit.xyw(4,7,3));
 		
-		lab = getLabel ("Straﬂe,Hausnummer:");
+		lab = getLabel ("Stra√üe,Hausnummer:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,8,3));
 		eltern.btf[4] = new JRtaTextField("nix",false);
@@ -1523,7 +1523,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		eltern.btf[9].setName("BNR");
 		tit.add(eltern.btf[9],cctit.xy(4,4));
 		
-		lab = getLabel("Behandlungsst‰tte:");
+		lab = getLabel("Behandlungsst√§tte:");
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xyw(2,7,6));
 		//SystemConfig.vGutachtenDisplay.get(0);
@@ -1541,7 +1541,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);
 		tit.add(lab,cctit.xy(2,15));
 		
-		lab = new JLabel("ganzt‰gig ambulante Rehabilitation");
+		lab = new JLabel("ganzt√§gig ambulante Rehabilitation");
 		lab.setFont(fontcourier);
 		tit.add(lab,cctit.xyw(2,17,6));
 

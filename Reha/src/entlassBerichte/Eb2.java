@@ -273,9 +273,9 @@ public class Eb2 {
 		dum.add(getRand(Color.BLACK),ccdum.xy(1,3));
 		dum.add(getRand(Color.BLACK),ccdum.xy(3,3));
 		dum.add(getRand(Color.BLACK),ccdum.xy(5,3));
-		dum.add(getLabel("Ltd. Ärztin / ltd. Arzt"),ccdum.xy(1,5));
-		dum.add(getLabel("Oberärztin / Oberarzt"),ccdum.xy(3,5));
-		dum.add(getLabel("Stat.-Ärztin / Stat.-Arzt"),ccdum.xy(5,5));
+		dum.add(getLabel("Ltd. ï¿½rztin / ltd. Arzt"),ccdum.xy(1,5));
+		dum.add(getLabel("Oberï¿½rztin / Oberarzt"),ccdum.xy(3,5));
+		dum.add(getLabel("Stat.-ï¿½rztin / Stat.-Arzt"),ccdum.xy(5,5));
 		dum.getPanel().validate();
 		lei1.add(dum.getPanel(),ccl1.xyw(1, 3,2,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
@@ -310,8 +310,8 @@ public class Eb2 {
 		plinks.getPanel().setOpaque(false);
 		CellConstraints ccli = new CellConstraints();
 		plinks.add(getLabelKleinRot("Beurteilung des zeitlichen Umfangs, in dem"),ccli.xy(2,2));
-		plinks.add(getLabelKleinRot("eine Tätigkeit entsprechend dem positiven"),ccli.xy(2,3));
-		plinks.add(getLabelKleinRot("negativen Leitungsb. ausgeübt werden kann"),ccli.xy(2,4));
+		plinks.add(getLabelKleinRot("eine TÃ¤tigkeit entsprechend dem positiven"),ccli.xy(2,3));
+		plinks.add(getLabelKleinRot("negativen Leitungsb. ausgeÃ¼bt werden kann"),ccli.xy(2,4));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 1, 1, 5));
 		plinks.add(getLabelKleinRot("178"),ccli.xywh(6,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		eltern.bchb[41] = new JRtaCheckBox("");
@@ -358,7 +358,7 @@ public class Eb2 {
 		JLabel lab = new JLabel("Beschreibung des Leistungsbildes");
 		lab.setFont(fontarialfett);
 		dum.add(lab,ccdum.xy(1,1));
-		dum.add(getLabel("(insbesondere der unter Ziff. 2 genannten Einschränkungen)"),ccdum.xy(3,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
+		dum.add(getLabel("(insbesondere der unter Ziff. 2 genannten EinschrÃ¤nkungen)"),ccdum.xy(3,1,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		dum.getPanel().validate();
 		lei1.add(dum.getPanel(),ccl1.xy(3,3));
 		/***********************/
@@ -389,10 +389,10 @@ public class Eb2 {
 		JLabel lab = new JLabel("Negatives Leistungsbild:");
 		lab.setFont(fontarialfett);
 		dum.add(lab,ccdum.xyw(1, 1,3,CellConstraints.FILL,CellConstraints.DEFAULT));
-		lab = new JLabel("Einschränkungen beziehen sich auf:");
+		lab = new JLabel("EinschrÃ¤nkungen beziehen sich auf:");
 		lab.setFont(fontarialnormal);
 		dum.add(lab,ccdum.xy(1, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
-		dum.add(getLabel("(Art und Ausmaß müssen differenzeirt unter Ziff. 3 beschrieben werden)"),
+		dum.add(getLabel("(Art und AusmaÃŸ mÃ¼ssen differenzeirt unter Ziff. 3 beschrieben werden)"),
 				ccdum.xy(3, 2,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		dum.getPanel().validate();
 		lei1.add(dum.getPanel(),ccl1.xy(3,3,CellConstraints.FILL,CellConstraints.TOP));
@@ -419,9 +419,9 @@ public class Eb2 {
 		lab = new JLabel("geistig/psychische Belastbarkeit");
 		lab.setFont(fontarialfett);
 		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
-		dum2.add(getLabel("(Zu beachten sind insbesondere Konzentrations-/Reaktionsvermögen, Umstellungs-,"+
-				"Anpassungsvermögen, Verantwortungfür Personen"),ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
-		dum2.add(getLabel("und Maschinen, Publikumsverkehr, Überwachung, Steuerung komplexer Arbeitsvorgänge)."),
+		dum2.add(getLabel("(Zu beachten sind insbesondere Konzentrations-/ReaktionsvermÃ¶gen, Umstellungs-,"+
+				"AnpassungsvermÃ¶gen, Verantwortung fÃ¼r Personen"),ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
+		dum2.add(getLabel("und Maschinen, Publikumsverkehr, Ãœberwachung, Steuerung komplexer ArbeitsvorgÃ¤nge)."),
 				ccdum2.xy(1,3,CellConstraints.LEFT,CellConstraints.TOP));
 		dum.add(dum2.getPanel(),ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.getPanel().validate();
@@ -450,7 +450,7 @@ public class Eb2 {
 		lab = new JLabel("Sinnesorgane");
 		lab.setFont(fontarialfett);
 		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
-		dum2.add(getLabel("(Zu beachten sind insbesondere Seh-, Hör-, Sprach-, Tast- und Riechvermögen)"),
+		dum2.add(getLabel("(Zu beachten sind insbesondere Seh-, HÃ¶r-, Sprach-, Tast- und RiechvermÃ¶gen)"),
 				ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
 		dum2.getPanel().validate();
 		dum.add(dum2.getPanel(),ccdum.xy(3,1,CellConstraints.LEFT,CellConstraints.CENTER));
@@ -480,8 +480,8 @@ public class Eb2 {
 		lab = new JLabel("Bewegungs-/Haltungsapparat");
 		lab.setFont(fontarialfett);
 		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
-		dum2.add(getLabel("(Zu beachten sind insbesondere Gebrauchsfähigkeit der Hände, häufiges Bücken, "+
-				"Ersteigen von Treppen, Leitern und Gerüsten, Heben, Tragen"),
+		dum2.add(getLabel("(Zu beachten sind insbesondere GebrauchsfÃ¤higkeit der HÃ¤nde, hÃ¤ufiges BÃ¼cken, "+
+				"Ersteigen von Treppen, Leitern und GerÃ¼sten, Heben, Tragen"),
 				ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
 		dum2.add(getLabel("und Bewegen von Lasten, Gang- und Standsicherheit, Zwangshaltungen)"),
 				ccdum2.xy(1,3,CellConstraints.LEFT,CellConstraints.TOP));
@@ -511,13 +511,13 @@ public class Eb2 {
 		dum2 = new PanelBuilder(dummy2);
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
-		lab = new JLabel("Gefährdungs- und Belastungsfaktoren");
+		lab = new JLabel("GefÃ¤hrdungs- und Belastungsfaktoren");
 		lab.setFont(fontarialfett);
 		dum2.add(lab,ccdum2.xy(1,1,CellConstraints.LEFT,CellConstraints.TOP));
-		dum2.add(getLabel("(Zu beachten sind insbesondere Nässe, Zugluft, extrem schwankende Termperaturen, inhaltive "+
-				"Belastungen und Allergene, Erschütterungen,"),
+		dum2.add(getLabel("(Zu beachten sind insbesondere NÃ¤sse, Zugluft, extrem schwankende Termperaturen, inhaltive "+
+				"Belastungen und Allergene, ErschÃ¼tterungen,"),
 				ccdum2.xy(1,2,CellConstraints.LEFT,CellConstraints.TOP));
-		dum2.add(getLabel("Vibrationen, Tätigkeiten mit erhöhter Unfallgefahr, häufig wechselnde Arbeitszeiten)"),
+		dum2.add(getLabel("Vibrationen, TÃ¤tigkeiten mit erhÃ¶hter Unfallgefahr, hÃ¤ufig wechselnde Arbeitszeiten)"),
 				ccdum2.xy(1,3,CellConstraints.LEFT,CellConstraints.TOP));
 		
 		dum2.getPanel().validate();
@@ -548,7 +548,7 @@ public class Eb2 {
 		eltern.bchb[36] = new JRtaCheckBox("");
 		eltern.bchb[36].setName("F_173");
 		dum.add(eltern.bchb[36],ccdum.xy(2,3,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		JLabel lab = new JLabel("keine wesentlichen Einschränkungen");
+		JLabel lab = new JLabel("keine wesentlichen EinschrÃ¤nkungen");
 		lab.setFont(fontarialfett);
 		dum.add(lab,ccdum.xy(4,3));
 		dum.getPanel().validate();
@@ -587,7 +587,7 @@ public class Eb2 {
 		eltern.bchb[34] = new JRtaCheckBox("");
 		eltern.bchb[34].setName("F_171");
 		dum.add(eltern.bchb[34],ccdum.xy(10,4));
-		dum.add(getLabel("Früh-/Spätschicht"),ccdum.xy(12, 4));
+		dum.add(getLabel("FrÃ¼h-/SpÃ¤tschicht"),ccdum.xy(12, 4));
 		
 		dum.add(getLabelKleinRot("172"),ccdum.xy(14,3));
 		eltern.bchb[35] = new JRtaCheckBox("");
@@ -640,7 +640,7 @@ public class Eb2 {
 		eltern.bchb[24] = new JRtaCheckBox("");
 		eltern.bchb[24].setName("F_161");
 		dum.add(eltern.bchb[24],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
-		dum.add(getLabel("ständig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.add(getLabel("stÃ¤ndig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabelKleinRot("162"),ccdum.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		eltern.bchb[25] = new JRtaCheckBox("");
 		eltern.bchb[25].setName("F_162");
@@ -650,7 +650,7 @@ public class Eb2 {
 		dum2 = new PanelBuilder(dummy2);
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
-		dum2.add(getLabel("Über-"),ccdum2.xy(1, 1));
+		dum2.add(getLabel("Ã¼ber-"),ccdum2.xy(1, 1));
 		dum2.add(getLabel("wiegend"),ccdum2.xy(1, 2));
 		dum.add(dum2.getPanel(),ccdum.xy(8, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		/***/
@@ -690,7 +690,7 @@ public class Eb2 {
 		eltern.bchb[27] = new JRtaCheckBox("");
 		eltern.bchb[27].setName("F_164");
 		dum.add(eltern.bchb[27],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
-		dum.add(getLabel("ständig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.add(getLabel("stÃ¤ndig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabelKleinRot("165"),ccdum.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		eltern.bchb[28] = new JRtaCheckBox("");
 		eltern.bchb[28].setName("F_165");
@@ -700,7 +700,7 @@ public class Eb2 {
 		dum2 = new PanelBuilder(dummy2);
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
-		dum2.add(getLabel("Über-"),ccdum2.xy(1, 1));
+		dum2.add(getLabel("Ã¼ber-"),ccdum2.xy(1, 1));
 		dum2.add(getLabel("wiegend"),ccdum2.xy(1, 2));
 		dum.add(dum2.getPanel(),ccdum.xy(8, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		/***/
@@ -741,7 +741,7 @@ public class Eb2 {
 		eltern.bchb[30] = new JRtaCheckBox("");
 		eltern.bchb[30].setName("F_167");
 		dum.add(eltern.bchb[30],ccdum.xy(2, 6,CellConstraints.LEFT,CellConstraints.CENTER));
-		dum.add(getLabel("ständig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
+		dum.add(getLabel("stÃ¤ndig"),ccdum.xy(4, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 		dum.add(getLabelKleinRot("168"),ccdum.xy(6, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		eltern.bchb[31] = new JRtaCheckBox("");
 		eltern.bchb[31].setName("F_168");
@@ -751,7 +751,7 @@ public class Eb2 {
 		dum2 = new PanelBuilder(dummy2);
 		dum2.getPanel().setOpaque(false);
 		ccdum2 = new CellConstraints();
-		dum2.add(getLabel("Über-"),ccdum2.xy(1, 1));
+		dum2.add(getLabel("Ã¼ber-"),ccdum2.xy(1, 1));
 		dum2.add(getLabel("wiegend"),ccdum2.xy(1, 2));
 		dum.add(dum2.getPanel(),ccdum.xy(8, 6,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		/***/
@@ -804,13 +804,13 @@ public class Eb2 {
 				JLabel lab = new JLabel("Positives Leistungsbild: ");
 				lab.setFont(fontarialfett);
 				dum.add(lab,ccdum.xy(1, 1));
-				lab = new JLabel("Folgende Arbeiten können verrichtet werden");
+				lab = new JLabel("Folgende Arbeiten kÃ¶nnen verrichtet werden");
 				lab.setFont(fontarialnormal);
 				dum.add(lab,ccdum.xy(3, 1));
 				dum.getPanel().validate();
 				lei1.add(dum.getPanel(),ccl1.xyw(3, 2,11));
 				/****************/
-				lab = new JLabel("Körperliche Arbeitsschwere");
+				lab = new JLabel("KÃ¶rperliche Arbeitsschwere");
 				lab.setFont(fontarialnormal);
 				lei1.add(lab,ccl1.xy(3, 6,CellConstraints.LEFT,CellConstraints.CENTER));
 				lei1.add(getLabelKleinRot("157"),ccl1.xy(5, 4,CellConstraints.LEFT,CellConstraints.BOTTOM));
@@ -863,7 +863,7 @@ public class Eb2 {
 		lab = new JLabel("(allgemeiner Arbeitsmarkt)");
 		lab.setFont(fontarialnormal);
 		tit.add(lab,cctit.xy(4, 2));
-		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind möglich");
+		lab = new JLabel("Zutreffendes bitte ankreuzen (X), Mehrfachnennungen sind mÃ¶glich");
 		lab.setFont(fontarialnormal);
 		tit.add(lab,cctit.xyw(2, 4,3,CellConstraints.FILL,CellConstraints.DEFAULT));
 		tit.getPanel().validate();
@@ -903,7 +903,7 @@ public class Eb2 {
 		plinks.getPanel().setOpaque(false);
 		CellConstraints ccli = new CellConstraints();
 		plinks.add(getLabelKleinRot("Beurteilung des zeitlichen Umfangs. in dem"),ccli.xy(2,2));
-		plinks.add(getLabelKleinRot("die letzte berufliche Tätigkeit ausgeübt"),ccli.xy(2,3));
+		plinks.add(getLabelKleinRot("die letzte berufliche TÃ¤tigkeit ausgeÃ¼bt"),ccli.xy(2,3));
 		plinks.add(getLabelKleinRot("werden kann"),ccli.xy(2,4));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 1, 1, 5));
 		plinks.add(getLabelKleinRot("153"),ccli.xywh(6,2,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
@@ -941,13 +941,13 @@ public class Eb2 {
 		PanelBuilder plinks = new PanelBuilder(links);
 		plinks.getPanel().setOpaque(false);
 		CellConstraints ccli = new CellConstraints();
-		plinks.add(getLabelKleinRot("Bezeichnung der Tätigkeit:"),ccli.xywh(2, 2, 2,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		plinks.add(getLabelKleinRot("Bezeichnung der TÃ¤tigkeit:"),ccli.xywh(2, 2, 2,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 2, 1, 2));
 		eltern.btf[25] = new JRtaTextField("nix",false);
 		eltern.btf[25].setName("TAET");
 		plinks.add(eltern.btf[25],ccli.xy(6, 3,CellConstraints.FILL,CellConstraints.BOTTOM));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(8, 2, 1, 2));
-		plinks.add(getLabelKleinRot("Berufsklassenschlüssel"),ccli.xy(10,2));
+		plinks.add(getLabelKleinRot("BerufsklassenschlÃ¼ssel"),ccli.xy(10,2));
 		eltern.btf[26] = new JRtaTextField("ZAHLEN",false);
 		eltern.btf[26].setName("BKS");
 		eltern.btf[26].setEnabled(false);
@@ -970,7 +970,7 @@ public class Eb2 {
 			JLabel lab = new JLabel("A.");
 			lab.setFont(fontarialfett);
 			tit.add(lab,cctit.xy(1, 2));
-			lab = new JLabel("Letzte berufliche Tätigkeit");
+			lab = new JLabel("Letzte berufliche TÃ¤tigkeit");
 			lab.setFont(fontarialfett);
 			tit.add(lab,cctit.xy(2, 2));
 			tit.getPanel().validate();
