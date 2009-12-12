@@ -144,7 +144,7 @@ public class RezeptDaten extends JXPanel{
 					test = StringTools.ZahlTest((String)vecaktrez.get(54));
 					if(test >= 0){
 						Reha.thisClass.patpanel.rezlabs[7].setForeground(Color.BLACK);
-						Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht");
+						Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht o.k.");
 					}else{
 						Reha.thisClass.patpanel.rezlabs[7].setForeground(Color.RED);
 						Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht fehlt");

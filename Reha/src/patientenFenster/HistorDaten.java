@@ -48,7 +48,7 @@ public class HistorDaten extends JXPanel{
 	public JTextArea rezdiag = null;
 	
 
-	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. außerhalb d.R."};
+	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. auï¿½erhalb d.R."};
 	/*
 	ImageIcon hgicon;
 	int icx,icy;
@@ -134,11 +134,13 @@ public class HistorDaten extends JXPanel{
 					if(test==2){
 						stest = StringTools.NullTest((String)vecaktrez.get(42));
 						if(stest.equals("T")){
-							rezlabs[6].setForeground(Color.BLACK);		
+							rezlabs[6].setForeground(Color.BLACK);
+							rezlabs[6].setText("BegrÃ¼ndung o.k.");
 						}else{
-							rezlabs[6].setForeground(Color.RED);							
+							rezlabs[6].setForeground(Color.RED);
+							rezlabs[6].setText("BegrÃ¼ndung fehlt");
 						}
-						rezlabs[6].setText("Begründung");
+						
 					}else{
 						rezlabs[6].setText(" ");
 					}
@@ -151,10 +153,11 @@ public class HistorDaten extends JXPanel{
 					test = StringTools.ZahlTest((String)vecaktrez.get(54));
 					if(test >= 0){
 						rezlabs[7].setForeground(Color.BLACK);
+						rezlabs[7].setText("Therapiebericht o.k.");
 					}else{
 						rezlabs[7].setForeground(Color.RED);
+						rezlabs[7].setText("Therapiebericht fehlt");
 					}
-					rezlabs[7].setText("Arztbericht");
 				}else{
 					rezlabs[7].setText(" ");
 				}
@@ -261,8 +264,8 @@ public class HistorDaten extends JXPanel{
 		reznum.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent e) {
 		    	draghandler.setText(((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
-		    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+Reha.thisClass.patpanel.patDaten.get(3)+"°"+
-		    			reznum.getText()+"°"+rezlabs[14].getText()
+		    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+Reha.thisClass.patpanel.patDaten.get(3)+"Â°"+
+		    			reznum.getText()+"Â°"+rezlabs[14].getText()
 		    			);
 		      JComponent c = (JComponent)draghandler;
 		      TransferHandler th = c.getTransferHandler();

@@ -179,7 +179,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 
 		pb.getPanel().setOpaque(false);
 		
-		diagnoseuebernahme = new JCheckBox("Diagnose ebenfalls übernehmen");
+		diagnoseuebernahme = new JCheckBox("Diagnose ebenfalls ï¿½bernehmen");
 		diagnoseuebernahme.setOpaque(false);
 		diagnoseuebernahme.setSelected(false);	
 		
@@ -212,7 +212,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 		jscr.validate();
 		pb.add(jscr,cc.xyw(2,4,4));
 		
-		uebernahme = new JButton("Text übernehmen");
+		uebernahme = new JButton("Text Ã¼bernehmen");
 		uebernahme.setActionCommand("uebernahme");
 		uebernahme.addActionListener(this);
 		uebernahme.addKeyListener(this);
@@ -242,7 +242,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 					rtp = null;
 					super.dispose();
 					this.dispose();
-					System.out.println("****************Rezeptgebühren -> Listener entfernt**************");				
+					System.out.println("****************RezeptgebÃ¼hren -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -260,7 +260,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			ListenerTools.removeListeners(abbrechen);
 			super.dispose();
 			dispose();
-			System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
+			System.out.println("****************RezeptgebÃ¼hren -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -287,7 +287,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 				this.dispose();
 			}
 
-			System.out.println("Return Gedrückt");
+			System.out.println("Return Gedrï¿½ckt");
 		}
 	}
 	public void doUebernahme(){
