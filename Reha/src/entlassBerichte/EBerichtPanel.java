@@ -119,10 +119,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	//public JXPanel seite4;
 	public JTabbedPane ebtab = null;
 	JButton[] gutbut = {null,null,null,null,null};
-	String[] ktraeger = {"DRV Bund","DRV Baden-Württemberg","DRV Bayern","DRV Berlin","DRV Brandenburg","DRV Bremen",
+	String[] ktraeger = {"DRV Bund","DRV Baden-WÃ¼rttemberg","DRV Bayern","DRV Berlin","DRV Brandenburg","DRV Bremen",
 			"DRV Hamburg","DRV Hessen","DRV Mecklenburg-Vorpommern","DRV Niedersachsen","DRV Rheinland-Pfalz",
-			"DRV Saarland","DRV Sachsen","DRV Sachsensen-Anhalt","DRV Schleswig-Holstein","DRV Thüringen","DRV Knappschaft Bahn/See","GKV"};
-//	String[] ktraeger = {"DRV Bund","DRV Baden-Württemberg","DRV Knappschaft Bahn/See","DRV Bayer","GKV"};
+			"DRV Saarland","DRV Sachsen","DRV Sachsensen-Anhalt","DRV Schleswig-Holstein","DRV ThÃ¼ringen","DRV Knappschaft Bahn/See","GKV"};
+//	String[] ktraeger = {"DRV Bund","DRV Baden-Wï¿½rttemberg","DRV Knappschaft Bahn/See","DRV Bayer","GKV"};
 
 	/**********************/
 	public JRtaComboBox cbktraeger = null;
@@ -387,7 +387,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			boolean altesFormular = false;
 			boolean rvTraeger = true;
 			if(btf[16].getText().trim().equals(".  .")){
-				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig für die Bestimmung des Formulares");
+				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig fÃ¼r die Bestimmung des Formulares");
 				return;
 			}
 			try{
@@ -414,7 +414,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			boolean altesFormular = false;
 			boolean rvTraeger = true;
 			if(btf[16].getText().trim().equals(".  .")){
-				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig für die Bestimmung des Formulares");
+				JOptionPane.showMessageDialog(null, "Bitte geben Sie zuerst das Entlassdatum ein!\n(Wichtig fÃ¼r die Bestimmung des Formulares");
 				return;
 			}
 			try{
@@ -458,7 +458,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		if(cmd.equals("guttools")){
-			String xcmd = "<html>Tools für das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
+			String xcmd = "<html>Tools fÃ¼r das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
 			JOptionPane.showMessageDialog(null,xcmd);
 		}
 		if(cmd.equals("guttext")){
@@ -801,7 +801,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		gutbut[3] = new JButton();
 		gutbut[3].setIcon(SystemConfig.hmSysIcons.get("tools"));
-		gutbut[3].setToolTipText("Werkzeugkasten für Gutachten");
+		gutbut[3].setToolTipText("Werkzeugkasten fÃ¼r Gutachten");
 		gutbut[3].setActionCommand("guttools");
 		gutbut[3].addActionListener(this);		
 		jtb.add(gutbut[3]);
@@ -814,7 +814,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public void rehaEventOccurred(RehaEvent evt) {
 		// TODO Auto-generated method stub
 		//System.out.println(evt);
-		System.out.println("In RehaEvent Occured: EbereichtPanel -> Schließenanforderung von InternalFrame");
+		System.out.println("In RehaEvent Occured: EbereichtPanel -> SchlieÃŸenanforderung von InternalFrame");
 		if(evt.getDetails()[0].contains("GutachtenFenster")){
 			if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 				if(inebericht){
@@ -934,7 +934,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		printDlg.setPreferredSize(new Dimension(240,240));
 		printDlg.getSmartTitledPanel().setPreferredSize(new Dimension (240,240));
 		printDlg.setPinPanel(pinPanel);
-		//Hier das Versionsgedönse
+		//Hier das Versionsgedï¿½nse
 		printDlg.getSmartTitledPanel().setContentContainer(new BerichtDrucken(this,druckversion,drucken));
 		printDlg.getSmartTitledPanel().getContentContainer().setName("EBPrint");
 		printDlg.setName("EBPrint");
