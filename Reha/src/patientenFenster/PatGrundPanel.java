@@ -366,7 +366,8 @@ public PatGrundPanel(JPatientInternal jry){
 			imgzuzahl[2] = SystemConfig.hmSysIcons.get("zuzahlnichtok");
 			imgzuzahl[3] = SystemConfig.hmSysIcons.get("kleinehilfe");
 			
-			imgrezstatus[0] = SystemConfig.hmSysIcons.get("statusoffen");
+			//imgrezstatus[0] = SystemConfig.hmSysIcons.get("statusoffen");
+			imgrezstatus[0] = null;
 			imgrezstatus[1] = SystemConfig.hmSysIcons.get("statuszu");
 			
 			}catch(Exception ex){

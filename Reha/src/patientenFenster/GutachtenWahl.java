@@ -189,7 +189,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		bg.add(rbut[0]);
 		bg.add(rbut[1]);
 		rbut[0].setSelected(true);
-		but[0] = new JButton("übernehmen");
+		but[0] = new JButton("Ã¼bernehmen");
 		but[0].setName("uebernahme");
 		but[0].addKeyListener(this);
 		but[0].setActionCommand("uebernahme");
@@ -336,7 +336,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 				}
 			}
 
-			System.out.println("Return Gedrückt");
+			System.out.println("Return GedrÃ¼ckt");
 		}
 	}
 

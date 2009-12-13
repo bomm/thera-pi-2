@@ -1173,8 +1173,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				System.out.println("Geburtstag = "+gebtag);
 				
 				if(tage < 0 && tage >= -45){
-					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Vollj�hrigkeit\n"+
-							"Unter Umst�nden wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tage*-1)+" Tage bis zur Volljährigkeit\n"+
+							"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
 					szzstatus = "3";
 				}else{
 					szzstatus = "0";

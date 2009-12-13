@@ -110,7 +110,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 	private JXPanel getButtonPanel(){
 		JXPanel but = new JXPanel(new BorderLayout());
 		but.setOpaque(false);
-		knopf1 = new JButton("übernehmen");
+		knopf1 = new JButton("Ã¼bernehmen");
 		knopf1.setActionCommand("uebernehmen");
 		knopf1.setName("uebernehmen");
 		knopf1.addActionListener(this);
@@ -141,7 +141,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		String geboren = SystemConfig.hmKVKDaten.get("Geboren");
 		gerGeboren = geboren.substring(0, 2)+"."+geboren.substring(2, 4)+"."+geboren.substring(4); 
 		String gueltig = SystemConfig.hmKVKDaten.get("Gueltigkeit");
-		String[] monate = {"Januar","Februar","März","April","Mai","Juni","Juli",
+		String[] monate = {"Januar","Februar","MÃ¤rz","April","Mai","Juni","Juli",
 				"August","September","Oktober","November","Dezember"}; 
 		 String initialText = "<html>\n" +
 		 /*
@@ -285,7 +285,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
          "<tr>\n" +
          "<td align=right>\n" +
 		 "<font size=+1>"+
-         "Karte gültig bis:"+
+         "Karte gÃ¼ltig bis:"+
 		 "</font>"+
          "</td>\n" +
          "<td>\n" +
@@ -353,8 +353,8 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 					String test2 = gerGeboren.trim();
 //					System.out.println("test1 = "+test1+" test2="+test2 );
 					if(!test1.equals(test2)){
-						String dlg = "Das Geburtsdatum des aktuellen Patienten und das Geburtsdatum der KV-Karte stimmen nicht überein!\n"+
-						"Übertragen wird daher (sicherheitshalber) --> nix!";
+						String dlg = "Das Geburtsdatum des aktuellen Patienten und das Geburtsdatum der KV-Karte stimmen nicht Ã¼berein!\n"+
+						"Ã¼bertragen wird daher (sicherheitshalber) --> nix!";
 			        	JOptionPane.showMessageDialog(null, dlg);
 			        		return null;
 					}
