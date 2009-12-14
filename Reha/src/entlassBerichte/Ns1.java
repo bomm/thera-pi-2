@@ -27,12 +27,6 @@ import javax.swing.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
 
-import patientenFenster.PatGrundPanel;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -40,6 +34,11 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 
 public class Ns1 implements ActionListener,ComponentListener {
 	
@@ -1177,6 +1176,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);
 		return lab;
 	}
+	@SuppressWarnings("unused")
 	private JLabel getLabelArialFettNormal(String text){
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontarialfett);
@@ -1188,6 +1188,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);
 		return lab;
 	}
+	@SuppressWarnings("unused")
 	private JPanel getRand(Color col){
 		JPanel pan = new JPanel();
 		pan.setOpaque(false);

@@ -5,10 +5,6 @@ import hauptFenster.Reha;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.jdesktop.swingx.JXPanel;
-
-import patientenFenster.PatGrundPanel;
-
 import systemTools.JCompTools;
 import terminKalender.DatFunk;
 

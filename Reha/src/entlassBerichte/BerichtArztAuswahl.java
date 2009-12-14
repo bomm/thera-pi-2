@@ -99,7 +99,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		PanelBuilder pb2 = new PanelBuilder(lay2);
 		pb2.getPanel().setOpaque(false);
 		CellConstraints cc2 = new CellConstraints();
-		buts[0] = new JButton("Auswahl übernehmen");
+		buts[0] = new JButton("Auswahl ï¿½bernehmen");
 		buts[0].setActionCommand("uebernehmen");
 		buts[0].addActionListener(this);
 		pb2.add(buts[0],cc2.xy(2,2));
@@ -132,16 +132,17 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		return null;
 		
 	}
+	@SuppressWarnings("unchecked")
 	private void ladeTabelle(){
 		String test = Reha.thisClass.patpanel.patDaten.get(63);
 		if(test.trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Mit der Arztliste dieses Patienten läuft etwas schief....");
+			JOptionPane.showMessageDialog(null, "Mit der Arztliste dieses Patienten lï¿½uft etwas schief....");
 		}else{
 			String[] arztid = test.split("\n");
 
 			for(int i = 0; i < arztid.length;i++){
 				String[] arzt = arztid[i].split("@");
-				Vector vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+arzt[1]+"'");
+				Vector<Vector<String>> vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+arzt[1]+"'");
 				Vector vec2 = (Vector) ((Vector)vec.get(0)).clone();
 				vec2.insertElementAt(Boolean.valueOf(false), 0);
 				atblm.addRow( (Vector)vec2.clone());
@@ -200,6 +201,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	private void doArztAufnehmen(){
 		JRtaTextField[] tf = {null,null,null};
 		tf[0] = new JRtaTextField("nix",false);
@@ -212,7 +214,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		awahl.setVisible(true);
 		System.out.println(tf[0].getText()+" - "+tf[1].getText()+" - "+tf[2].getText());
 		if(!tf[2].getText().trim().equals("")){
-			Vector vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+tf[2].getText()+"'");
+			Vector<Vector<String>> vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+tf[2].getText()+"'");
 			if(vec.size() > 0){
 				String test = Reha.thisClass.patpanel.patDaten.get(63);
 				if(! test.contains("@"+tf[2].getText().trim()+"@")){
@@ -221,7 +223,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 					atblm.addRow( (Vector)vec2.clone());
 					arzttbl.validate();
 					String msg = "Dieser Arzt ist bislang nicht in der Arztliste dieses Patienten.\n"+
-					"Soll dieser Arzt der Ärzteliste des Patienten zugeordnet werden?";
+					"Soll dieser Arzt der ï¿½rzteliste des Patienten zugeordnet werden?";
 					int frage = JOptionPane.showConfirmDialog(null,msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 					if(frage == JOptionPane.YES_OPTION){
 						test = test + "@"+tf[2].getText().trim()+"@\n";
@@ -230,7 +232,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 						new ExUndHop().setzeStatement(cmd);
 					}
 				}else{
-					JOptionPane.showMessageDialog(null,"Dieser Arzt ist bereits in der Ärzteliste enthalten...");
+					JOptionPane.showMessageDialog(null,"Dieser Arzt ist bereits in der ï¿½rzteliste enthalten...");
 				}
 			}
 		}
@@ -273,6 +275,7 @@ class MyArztTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unchecked")
 	public Class getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return Boolean.class;}
 		  /* if(columnIndex==1){return JLabel.class;}*/
@@ -286,6 +289,7 @@ class MyArztTableModel extends DefaultTableModel{
 	    	return true;
 	      }
 	    
+		@SuppressWarnings("unchecked")
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			Object theData = null;
 			if(columnIndex > 0){

@@ -1373,8 +1373,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(cmd.equals("rezeptbrief")){
 				formulareAuswerten();				
 			}
+			if(cmd.equals("rezeptabschliessen")){
+				doAbschliessen();
+			}
+			
 		}
 
+	}
+	private void doAbschliessen(){
+		int currow = tabaktrez.getSelectedRow();
+		if(currow < 0){return;}
+			if(dtblm.getValueAt(currow,5)==null){
+				
+			}else{
+				
+			}
 	}
 	/*****************************************************/
 	class MyTermClass{

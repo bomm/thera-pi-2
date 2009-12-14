@@ -11,8 +11,6 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Part;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -21,9 +19,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.swing.JOptionPane;
-
-import systemEinstellungen.SystemConfig;
 
 
 public class EmailSendenExtern {
@@ -32,7 +27,7 @@ public class EmailSendenExtern {
         MailAuthenticator auth = new MailAuthenticator(username, password);
         
         Properties properties = new Properties();
-        // Den Properties wird die ServerAdresse hinzugefügt
+        // Den Properties wird die ServerAdresse hinzugefï¿½gt
         if(properties.get("mail.smtp.host") != null){
           System.out.println("Bereits belegt mit "+properties.get("mail.smtp.host"));	
         }
@@ -65,7 +60,7 @@ public class EmailSendenExtern {
         System.out.println("Auth = "+auth);
             // Eine neue Message erzeugen
             Message msg = new MimeMessage(session);
-            // Hier werden die Absender- und Empfängeradressen gesetzt
+            // Hier werden die Absender- und Empfï¿½ngeradressen gesetzt
             msg.setFrom(new InternetAddress(senderAddress));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
                     recipientsAddress, false));
@@ -92,14 +87,14 @@ public class EmailSendenExtern {
             }
             msg.setContent(multipart);
 /*********************/            
-            // Hier lassen sich HEADER-Informationen hinzufügen
+            // Hier lassen sich HEADER-Informationen hinzufï¿½gen
             msg.setHeader("Test", "Test");
             if(bestaetigen){
             	msg.addHeader("Return-Receipt-To", senderAddress);	
             }
             
             msg.setSentDate(new Date( ));
-            // Zum Schluss wird die Mail natürlich noch verschickt
+            // Zum Schluss wird die Mail natï¿½rlich noch verschickt
             Transport tran = null;
    			tran = session.getTransport("smtp");
    			/*
@@ -112,17 +107,17 @@ public class EmailSendenExtern {
    			
             
 
-            tran.send(msg);
+            Transport.send(msg);
             /*
             JOptionPane.showMessageDialog(null,"Der Email-Account wurde korrekt konfiguriert!\n\n"+
-            		"Sie erhalten in Kürze eine Erfolgsmeldung per Email");
+            		"Sie erhalten in Kï¿½rze eine Erfolgsmeldung per Email");
             */		
             //Transport.send(msg);
           
         
             /*
         	javax.swing.JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
-        			"Mögliche Ursachen:\n"+
+        			"Mï¿½gliche Ursachen:\n"+
         			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
         			"- Sie haben kein Kontakt zum Internet");
             //e.printStackTrace( );

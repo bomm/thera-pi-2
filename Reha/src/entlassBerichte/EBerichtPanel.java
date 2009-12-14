@@ -3,13 +3,9 @@ package entlassBerichte;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,22 +17,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -52,39 +37,21 @@ import javax.swing.event.TableModelListener;
 
 import oOorgTools.OOTools;
 
-
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
-import patientenFenster.Gutachten;
-import patientenFenster.PatGrundPanel;
-import pdfDrucker.PdfDrucker;
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.AcroFields;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.GrayColor;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
-
+import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
+import systemTools.FileTools;
+import systemTools.JRtaCheckBox;
+import systemTools.JRtaComboBox;
+import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
+import terminKalender.DatFunk;
+import RehaInternalFrame.JGutachtenInternal;
+import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.text.ITextDocument;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
-
-import events.PatStammEventClass;
-import events.PatStammEventListener;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
@@ -92,25 +59,12 @@ import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.filter.PDFFilter;
-import ag.ion.bion.officelayer.filter.RTFFilter;
-import ag.ion.bion.officelayer.text.ITextDocument;
-
-import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.FileTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
-import systemTools.ListenerTools;
-import terminKalender.DatFunk;
-
-import RehaInternalFrame.JArztInternal;
-import RehaInternalFrame.JGutachtenInternal;
-
 public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventListener,PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6839267903333893097L;
+
 	JGutachtenInternal jry = null;
 	
 	//public JXPanel seite1;
@@ -310,7 +264,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		JTabbedPane pane = (JTabbedPane)arg0.getSource();
-        int sel = pane.getSelectedIndex();
+        pane.getSelectedIndex();
 
 	}    
 
@@ -693,7 +647,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 						Reha.thisClass.progressStarten(true);
 						//ebtab.setSelectedIndex(0);
 
-				        int sel = ebtab.getSelectedIndex();
+				        ebtab.getSelectedIndex();
 						if(document.isModified()){
 							System.out.println("in getrennt.....");
 							//if(sel != 2){
@@ -976,6 +930,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 }
 
 class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 66184039799823481L;
 	private RehaTPEventClass rtp = null;
 	public EBPrintDlg(){
 		super(null,"EBPrint");

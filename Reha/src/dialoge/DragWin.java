@@ -85,7 +85,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 
 	@Override
 	public void mouseReleased(java.awt.event.MouseEvent e) {    
-		final java.awt.event.MouseEvent ex = e;
+		//final java.awt.event.MouseEvent ex = e;
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				owner.setCursor(cdefault);
@@ -109,7 +109,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 
 	@Override
 	public void mouseDragged(java.awt.event.MouseEvent e) {
-		int center = (int) owner.getSize().getHeight();
+		//int center = (int) owner.getSize().getHeight();
 		//System.out.println("in Mousedragged");
 		//System.out.println("Insize = "+insize+" clickY="+clickY);
 		//System.out.println("Klick Y bei "+e.getY());

@@ -31,7 +31,6 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import systemEinstellungen.SystemConfig;
 import systemTools.ListenerTools;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
@@ -375,7 +374,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void mouseReleased(java.awt.event.MouseEvent e) {    
-		final java.awt.event.MouseEvent ex = e;
+		//final java.awt.event.MouseEvent ex = e;
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				setCursor(Reha.thisClass.cdefault);
@@ -399,7 +398,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void mouseDragged(java.awt.event.MouseEvent e) {
-		int center = (int) getSize().getHeight();
+		//int center = (int) getSize().getHeight();
 		//System.out.println("in Mousedragged");
 		//System.out.println("Insize = "+insize+" clickY="+clickY);
 		//System.out.println("Klick Y bei "+e.getY());

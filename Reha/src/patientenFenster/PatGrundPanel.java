@@ -300,11 +300,11 @@ public PatGrundPanel(JPatientInternal jry){
 						return;
 					}
 					if( ((JComponent)arg0.getSource()).getName().equals("EMAILA") ){
-						System.out.println("hier folgt das PopUpMenu f�r email");
+						System.out.println("hier folgt das PopUpMenu für email");
 						return;
 					}
 					if( ((JComponent)arg0.getSource()).getName().equals("TELEFONM") ){
-						System.out.println("hier folgt das PopUpMenu f�r sms");
+						System.out.println("hier folgt das PopUpMenu für sms");
 						return;
 					}
 
@@ -572,7 +572,7 @@ public void arztListeSpeichernVector(Vector vec,boolean neu, String xpatintern){
 	SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
 	System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
 	if(Reha.thisClass.patpanel.aktPatID.equals(xpatintern)){
-		System.out.println("L�nge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
+		System.out.println("Länge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
 		Reha.thisClass.patpanel.patDaten.set(63,aliste);		
 	}
 
@@ -590,22 +590,22 @@ public void arztListeSpeichernString(String aliste,boolean neu, String xpatinter
 
 private void allesAufNull(){
 	/******************************************************************************/
-	// erst die sichtbaren Edits l�schen
+	// erst die sichtbaren Edits löschen
 	for(int i = 0; i <15;i++){
 		ptfield[i].setText("");
 	}
-	// aktPatID zur�cksetzten dann ist in weiteres l�schen nicht mehr m�glich
+	// aktPatID zurücksetzten dann ist in weiteres löschen nicht mehr möglich
 	aktPatID = "";
 	autoPatid = -1;
-	// jetzt das RezeptPanel KeinRezept anh�ngen
+	// jetzt das RezeptPanel KeinRezept anhängen
 	aktRezept.setzeRezeptPanelAufNull(true);
-	// dann die Icons l�schen
+	// dann die Icons löschen
 	for(int i = 0; i <imglabs.length;i++){
 		if(imglabs[i].getIcon() != null){
 			imglabs[i].setIcon(null);			
 		}
 	}
-	// Text der Memofelder l�schen
+	// Text der Memofelder löschen
 	Reha.thisClass.patpanel.pmemo[0].setText("");
 	Reha.thisClass.patpanel.pmemo[1].setText("");
 
@@ -846,7 +846,7 @@ public void neuanlagePatient(boolean lneu,String feldname){
 	});
 	*/
 
-	System.out.println("Pat Neu/�ndern ist disposed");
+	System.out.println("Pat Neu/ändern ist disposed");
 	neuDlgOffen = false;
 	
 
@@ -894,7 +894,7 @@ class SuchePanel extends JXPanel implements ActionListener{
 		setLayout(lay);
 		JLabel lbl = new JLabel("Kriterium:");
 		add(lbl,cc.xy(2,2));
-		jcom = new JComboBox(new String[] {"Name Vorname","Telefonnummer","Notizen","Vers�umte Termine"});
+		jcom = new JComboBox(new String[] {"Name Vorname","Patienten Nummer","Telefonnummer","Notizen","Versäumte Termine","Arzt","PLZ"});
 		jcom.setBackground(new Color(247,209,176));
 		add(jcom,cc.xyw(15, 2, 3));
 		add(jcom,cc.xyw(4,2,8));

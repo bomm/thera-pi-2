@@ -1,23 +1,18 @@
 package entlassBerichte;
 
+import hauptFenster.Reha;
+
 import java.awt.Font;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.swing.SwingWorker;
-
-import pdfTools.PDFTools;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
 
-import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -28,13 +23,8 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
-
-import hauptFenster.Reha;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import events.RehaEventClass;
 
 public class NachsorgePDF {
 	public EBerichtPanel eltern = null;
@@ -51,6 +41,7 @@ public class NachsorgePDF {
 		rvVorlagen[1]  = vorlagenPfad+"Nachsorge2-Variante2.pdf";
 		rvVorlagen[2]  = vorlagenPfad+"";
 		rvVorlagen[3]  = vorlagenPfad+"";
+		@SuppressWarnings("unused")
 		boolean geklappt = doSeite1(true,"","");
 		geklappt = doSeite2(true,"","");
 		try {
@@ -77,11 +68,12 @@ public class NachsorgePDF {
 		
 	}
 	private boolean doSeite2(boolean vorschau,String ausfertigung,String bereich){
+		@SuppressWarnings("unused")
 		String pdfPfad = rvVorlagen[1];
-		PdfStamper stamper = null;
+		//PdfStamper stamper = null;
 		tempDateien[1] = new String[]{tempPfad+"NS2"+System.currentTimeMillis()+".pdf"};
 		BaseFont bf = null;
-		PdfReader reader = null;
+		//PdfReader reader = null;
 		try {
 			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 			//String text = "";
@@ -108,7 +100,7 @@ public class NachsorgePDF {
 				pos = getFloats(166.75f,265.75f,fy1);
 				setzeText(cb,pos[0], pos[1],pos[2],bf,12,macheDatum2Sechs(eltern.btf[3].getText()));
 				
-				//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer   6xAnzahl
+				//                    0x-start,  1y-start,  2hï¿½he  3y-ende  4xCode   5xDauer   6xAnzahl
 				Float[] startwerte = {33.0f ,    249.5f     ,8.00f, 149.f,  153.25f,  177.00f  ,186.75f};
 				for(int y=0;y < 10;y++){
 					if(eltern.ktlcmb[y+zugabe].getSelectedIndex() > 0){
@@ -142,7 +134,7 @@ public class NachsorgePDF {
 				for(i = 7; i < 19; i++){
 					setzeText(cb,poswert1[i-7][0], poswert1[i-7][1],poswert1[i-7][2],bf,12,( eltern.bchb[i].isSelected() ? "X" : "") );
 				}
-				//Erläuterungen der CheckBox-Auswahl
+				//Erlï¿½uterungen der CheckBox-Auswahl
 				cb.setCharacterSpacing(0.25f);				
 				ct = new ColumnText(cb);
 				ct.setSimpleColumn(rechneX(28.5f), rechneY(60.f),rechneX(190.0f),rechneY(69.f),8.25f,Element.ALIGN_BOTTOM);
@@ -163,7 +155,7 @@ public class NachsorgePDF {
 				//Ort und Datum
 				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 				String text = eltern.btf[23].getText().trim();
-				Float [] fsign = getFloats(24.25f,27.60f,fy1);
+				//Float [] fsign = getFloats(24.25f,27.60f,fy1);
 				Float [] fort = getFloats(28.f,28.0f,fy0);
 				if(! text.equals(".  .")){
 					setzeText(cb,fort[0], fort[1],fort[2],bf,12,SystemConfig.sGutachtenOrt+", "+text);
@@ -173,7 +165,7 @@ public class NachsorgePDF {
 				
 
 
-				// ab hier das Stamper und Copy Gedönse....				
+				// ab hier das Stamper und Copy Gedï¿½nse....				
 				stamper2.close();
 				cop.addPage(cop.getImportedPage(new PdfReader(baos.toByteArray()),1));
 				baos.close();
@@ -210,7 +202,7 @@ public class NachsorgePDF {
 			Float [] pos = {null,null,null};
 			float fy0 =  0.25f;
 			float fy1 =  6.20f;
-			// Hier die Positionierung für das obere Gedönse
+			// Hier die Positionierung fï¿½r das obere Gedï¿½nse
 									//        0RV-Nr.
 			Float[][] poswert1 = {getFloats(29.f,268.25f-15.0f,fy1),
 							//      1Kennzeich                              2Name                           3Geburtst
@@ -244,9 +236,9 @@ public class NachsorgePDF {
 									getFloats(112.25f,154.80f-0.75f,fy1),getFloats(112.25f,142.75f-0.75f,fy1),
 			//							   ICD-10 5                             Gewicht Beginn
 									getFloats(112.25f,131.0f-0.75f,fy1),getFloats(162.25f,82.75f,fy1),
-			//                             Gewicht Abschluß               Untersuchungsdatum
+			//                             Gewicht Abschluï¿½               Untersuchungsdatum
 									getFloats(181.70f,82.75f,fy1),getFloats(168.25f,46.0f,fy1),
-			//						       arbeitsunfähig seit			arbeitsunfähig bis
+			//						       arbeitsunfï¿½hig seit			arbeitsunfï¿½hig bis
 									getFloats(85.f,23.0f,fy0),getFloats(139.5f,23.0f,fy0)									
 			};
 			for(int i = 11; i < 23; i++){
@@ -281,9 +273,9 @@ public class NachsorgePDF {
 			poswert1 = new Float [][]{getFloats(28.6f,109.30f,fy0),getFloats(64.35f,109.30f,fy0),
 			//                                 Nevensysten            Psyche										
 								getFloats(105.1f,109.30f,fy0),getFloats(138.50f,109.30f,fy0),
-			//                                 sonstige				  abreitsfähig ja!				
+			//                                 sonstige				  abreitsfï¿½hig ja!				
 								getFloats(162.35f,109.30f,fy0),getFloats(28.6f,22.5f,fy0),
-			//                         abreitsfähig nein!				  								
+			//                         abreitsfï¿½hig nein!				  								
 								getFloats(48.25f,22.5f,fy0)
 			};
 			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
@@ -306,9 +298,9 @@ public class NachsorgePDF {
 			float yschritt = rechneY(12.0f);
 
 			ColumnText ct = null;
-			Chunk chunk;
+			//Chunk chunk;
 			Phrase ph = null;
-			float zaehler = 1.f;
+			//float zaehler = 1.f;
 			for(int i = 0;i < 5; i++){
 				/*
 		        chunk = new Chunk(eltern.bta[i].getText().trim());
@@ -334,7 +326,7 @@ public class NachsorgePDF {
 				//ystartunten -= (yschritt+zaehler);
 				ystartoben = (ystartunten+yschritt);
 			}
-			//Erläuterungen
+			//Erlï¿½uterungen
 			ct = new ColumnText(cb);
 			ct.setSimpleColumn(rechneX(29.f), rechneY(81.f),rechneX(139.0f),rechneY(101.f),8,Element.ALIGN_BOTTOM);
 			ph = new Phrase();
@@ -342,7 +334,7 @@ public class NachsorgePDF {
 			ph.add(eltern.bta[5].getText().trim());
 			ct.addText(ph);
 			ct.go();
-			//Beschreibung prä/post
+			//Beschreibung prï¿½/post
 			
 			ct = new ColumnText(cb);
 			ct.setSimpleColumn(rechneX(29.f), rechneY(48.f),rechneX(182.0f),rechneY(76.f),8,Element.ALIGN_BOTTOM);
@@ -387,8 +379,8 @@ public class NachsorgePDF {
 	}	
 	public boolean doSeitenZusammenstellen() throws IOException, DocumentException{
 		Document docgesamt = new Document(PageSize.A4);
-		InputStream isb = null;
-		PdfImportedPage page2;		
+		//InputStream isb = null;
+		//PdfImportedPage page2;		
 		
 		tempDateien[2] = new String[]{tempPfad+"NSGesamt"+System.currentTimeMillis()+".pdf"};
 		
@@ -442,6 +434,7 @@ public class NachsorgePDF {
 		return sret;
 	}
 
+	@SuppressWarnings("unused")
 	private void schreibeKTLErlaeut(int ierlaeut,PdfContentByte cb){
 		ColumnText ct = null;
 		Phrase ph = null;
@@ -468,7 +461,7 @@ public class NachsorgePDF {
 
 	}
 	private void schreibeKTLCode(int position,int ktlpos,Float[] startwerte,PdfContentByte cb){
-		//                    0x-start,  1y-start,  2höhe  3y-ende  4xCode   5xDauer  6xAnzahl
+		//                    0x-start,  1y-start,  2hï¿½he  3y-ende  4xCode   5xDauer  6xAnzahl
 		//Float[] startwerte = {30.0f ,    251.f      ,8.5f, 149.f,  154.75f,   181.f  ,191.f};
 		float stretch = 6.2f;
 		float ystartunten = rechneY(startwerte[1]-(new Float(position) * startwerte[2])+0.5f);
@@ -498,9 +491,9 @@ public class NachsorgePDF {
 	private void schreibeKTLText(int position,int ktlpos,Float[] startwerte,PdfContentByte cb){
 		ColumnText ct = null;
 		Phrase ph = null;
-		float zaehler = 1.f;
+		//float zaehler = 1.f;
  
-		//                     x-start,  y-start,  höhe   x-ende
+		//                     x-start,  y-start,  hï¿½he   x-ende
 		//Float[] startwerte = {28.0f ,  251.f      ,8.5f, 152.f};
 
 		float xstart = rechneX(startwerte[0]+1.5f);
@@ -524,17 +517,17 @@ public class NachsorgePDF {
 	}
 	private void schreibeEmpfaenger(PdfContentByte cb,String empfaenger) throws DocumentException, IOException{
 		float fy0 =  0.25f;
-		float fy1 =  7.1f;
+		//float fy1 =  7.1f;
 		//xx
 		Float[] xempfaenger = getFloats(27.5f,281.60f,fy0);
-		Float[] xbereich = getFloats(155.5f,277.60f,fy0);
+		//Float[] xbereich = getFloats(155.5f,277.60f,fy0);
 
 		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
 		cb.beginText();
 		cb.moveText(xempfaenger[0], xempfaenger[1]);
 		cb.setFontAndSize(bf,10.5f);
 		//cb.setCharacterSpacing(xempfaenger[2]);
-		cb.showText("Ausfertigung für "+empfaenger);
+		cb.showText("Ausfertigung fï¿½r "+empfaenger);
 		cb.endText();
 	}
 	
@@ -549,7 +542,7 @@ public class NachsorgePDF {
 				String tempversion = tempPfad+"Print"+System.currentTimeMillis()+".pdf";
 				Document docversion = new Document(PageSize.A4);
 				ByteArrayOutputStream baout = null;
-				PdfImportedPage pageImport;
+				//PdfImportedPage pageImport;
 				PdfCopy cop;
 
 				cop = new PdfCopy(docversion,new FileOutputStream(tempversion));

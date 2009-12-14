@@ -2,8 +2,6 @@ package entlassBerichte;
 
 import javax.swing.JTabbedPane;
 
-import org.jdesktop.swingx.JXPanel;
-
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
 public class NachsorgeTab {

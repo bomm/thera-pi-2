@@ -4,11 +4,8 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -17,7 +14,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -34,18 +30,11 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
-import krankenKasse.KassenPanel;
-
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
-import patientenFenster.ArztAuswahl;
-import patientenFenster.PatGrundPanel;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
@@ -55,6 +44,11 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener,FocusListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2705163104113657236L;
+
 	public JRtaTextField tfs[] = {null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null};
@@ -67,7 +61,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	public JRtaComboBox arztgruppe;
 	public JTextArea jta;
 	private ArztPanel apan;
-	Vector arztDaten = null;
+	Vector<String> arztDaten = null;
 	String arztId = "";
 	ImageIcon hgicon;
 	int icx,icy;
@@ -75,7 +69,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	AlphaComposite xac2 = null;	
 	boolean neuAnlage;
 	
-	public ArztNeuanlage(ArztNeuDlg eltern,ArztPanel apanel,Vector vec,String id){
+	public ArztNeuanlage(ArztNeuDlg eltern,ArztPanel apanel,Vector<String> vec,String id){
 		super();
 	     setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztNeuanlage"));		
 		this.arztDaten = vec;
@@ -329,16 +323,16 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	}
 	public void tabelleAktualisieren(){
 
-		List list = Arrays.asList(new String[] {tfs[7].getText(),tfs[2].getText(),
+		List<String> list = Arrays.asList(new String[] {tfs[7].getText(),tfs[2].getText(),
 				tfs[3].getText(),tfs[4].getText(),tfs[6].getText(),tfs[9].getText(),tfs[10].getText(),
 				tfs[12].getText(),
 				(arztgruppe.getSelectedItem()==null ? "" : (String)arztgruppe.getSelectedItem() ),this.arztId});
 		if(this.neuAnlage){
-			Vector vec = new Vector();
+			Vector<String> vec = new Vector<String>();
 			for(int i = 0; i < list.size();i++){
 				vec.add(list.get(i));
 			}
-			apan.atblm.addRow((Vector)vec);
+			apan.atblm.addRow((Vector<String>)vec);
 			System.out.println("Tabellenzeile eingefügt");
 		}else{
 			int row = apan.arzttbl.getSelectedRow();
@@ -392,9 +386,10 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	private void fuelleFelder(){
  		List<String> nichtlesen = Arrays.asList(new String[] {});
-		Vector felder = SqlInfo.holeSatz("arzt", "*", "id='"+this.arztId+"'",nichtlesen);
+		Vector<String> felder = SqlInfo.holeSatz("arzt", "*", "id='"+this.arztId+"'",nichtlesen);
 		int gros = felder.size();
 		System.out.println("Arztdaten von id"+this.arztId+" = "+felder);
 		int anzahlf = felderpos.length;
@@ -470,7 +465,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		Rectangle rec1 =((JComponent)arg0.getSource()).getBounds();
 		Rectangle rec2 = jscr.getViewport().getViewRect();
 		JViewport vp = jscr.getViewport();
-		Rectangle rec3 = vp.getVisibleRect();
+		vp.getVisibleRect();
 		if((rec1.y+((JComponent)arg0.getSource()).getHeight()) > (rec2.y+rec2.height)){
 			vp.setViewPosition(new Point(0,(rec2.y+rec2.height)-rec1.height));
 		}

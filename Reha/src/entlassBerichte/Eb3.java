@@ -4,21 +4,16 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Panel;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
-import java.beans.PropertyVetoException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -34,28 +29,8 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXPanel;
 
-import com.mysql.jdbc.PreparedStatement;
-
-import com.sun.star.beans.Property;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.container.XNameContainer;
-import com.sun.star.frame.XController;
-import com.sun.star.style.XStyle;
-import com.sun.star.style.XStyleFamiliesSupplier;
-import com.sun.star.text.XTextDocument;
-import com.sun.star.text.XTextViewCursor;
-import com.sun.star.text.XTextViewCursorSupplier;
-import com.sun.star.uno.UnoRuntime;
-import com.sun.star.view.XLineCursor;
-
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
-
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.FileTools;
-
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
@@ -65,13 +40,19 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.filter.RTFFilter;
-import ag.ion.bion.officelayer.internal.text.TextRange;
-import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextRange;
-import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
+
+import com.mysql.jdbc.PreparedStatement;
+import com.sun.star.frame.XController;
+import com.sun.star.text.XTextViewCursor;
+import com.sun.star.text.XTextViewCursorSupplier;
+import com.sun.star.uno.UnoRuntime;
+
+import events.RehaEvent;
+import events.RehaEventClass;
+import events.RehaEventListener;
 
 public class Eb3 implements RehaEventListener  {
 	RehaEventClass rEvent = null;
@@ -351,9 +332,9 @@ public class Eb3 implements RehaEventListener  {
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		boolean ret = false;
-		int bilder = 0;
-		FileInputStream fis = null;
+		//boolean ret = false;
+		//int bilder = 0;
+		//FileInputStream fis = null;
 
 		try {
 			if(eltern.document==null){

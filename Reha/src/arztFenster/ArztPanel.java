@@ -6,7 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -43,33 +41,12 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import krankenKasse.KassenFormulare;
-import krankenKasse.KassenPanel;
-
-
-
-
-
-
-
-
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
-import dialoge.PinPanel;
-import dialoge.RehaSmartDialog;
-import events.RehaTPEvent;
-import events.RehaTPEventClass;
-import events.RehaTPEventListener;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -80,9 +57,21 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import RehaInternalFrame.JArztInternal;
-import RehaInternalFrame.JKasseInternal;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
 public class ArztPanel extends JXPanel implements PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3764586594168846949L;
 	JButton einlesen = null;
 	JXPanel contPan = null;
 	public JXTable arzttbl = null;
@@ -97,8 +86,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	public JTextArea ta;
 	public boolean inMemoEdit = false; 
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);
-	Vector titel = new Vector<String>() ;
-	Vector formular = new Vector<String>();
+	Vector<String> titel = new Vector<String>() ;
+	Vector<String> formular = new Vector<String>();
 	int iformular = -1;
 	public ArztPanel(JArztInternal jry,String arztid){
 		super();
@@ -358,9 +347,10 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		jpan.validate();
 		return jpan;
 	}
+	@SuppressWarnings("unchecked")
 	private void fuelleTabelle(String where){
 		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
-		Vector vec;
+		Vector<Vector<String>> vec;
 		if(where.equals("")){
 			vec = SqlInfo.holeSaetze("arzt", "arztnum,nachname,vorname,strasse,ort,telefon,fax,klinik,facharzt,id",
 					"id >='0'", Arrays.asList(new String[]{}));
@@ -371,7 +361,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		int anzahl = 0;
 		if( (anzahl = vec.size()) > 0){
 			for(int i = 0; i < anzahl;i++ ){
-				this.atblm.addRow((Vector)vec.get(i));
+				this.atblm.addRow((Vector<String>)vec.get(i));
 			}
 			this.arzttbl.setRowSelectionInterval(0, 0);
 			holeText();
@@ -380,10 +370,11 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		}
 		suchen.requestFocus();
 	}
+	@SuppressWarnings("unchecked")
 	public void holeAktArzt(String id){
 		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
 
-		Vector vec;
+		Vector<Vector<String>> vec;
 		if(id.equals("")){
 			return;
 		}else{
@@ -394,7 +385,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		int anzahl = 0;
 		if( (anzahl = vec.size()) > 0){
 			for(int i = 0; i < anzahl;i++ ){
-				this.atblm.addRow((Vector)vec.get(i));
+				this.atblm.addRow((Vector<String>)vec.get(i));
 			}
 			this.arzttbl.setRowSelectionInterval(0, 0);
 			holeText();
@@ -402,6 +393,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		suchen.requestFocus();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void holeText(){
 		int row = this.arzttbl.getSelectedRow();
 		if(row < 0){return;}
@@ -480,11 +472,12 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		// TODO Auto-generated method stub
 		
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String sc = arg0.getActionCommand();
 		if(sc.equals("kedit")){
-			String sid = "";
+			//String sid = "";
 			int row = arzttbl.getSelectedRow();
 			if(row < 0){
 				String mes = "\nWenn man den Langtext eines Arztes ändern will, empfiehlt es sich\n"+ 
@@ -520,7 +513,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			ta.setForeground(Color.BLUE);
 			int row = arzttbl.getSelectedRow();
 			String sid =  (String) arzttbl.getValueAt(row,9);
-			Vector vec = SqlInfo.holeSatz("arzt", "MTEXT", "id='"+sid+"'", (List)new ArrayList());
+			Vector<String> vec = SqlInfo.holeSatz("arzt", "MTEXT", "id='"+sid+"'", (List)new ArrayList());
 			ta.setText((String) vec.get(0));
 			return;
 		}
@@ -623,6 +616,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void neuanlageArzt(String id){
 		ArztNeuDlg neuArzt = new ArztNeuDlg();
 		//JDialog neuPat = new JDialog();
@@ -738,7 +732,12 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	}
 	
 	class ArztAction extends AbstractAction {
-	    public void actionPerformed(ActionEvent e) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent e) {
 	    	if( inMemoEdit){
 	    		return;
 	    	}
@@ -779,6 +778,7 @@ class MyArztTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unchecked")
 	public Class getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return String.class;}
 		  /* if(columnIndex==1){return JLabel.class;}*/
@@ -791,6 +791,7 @@ class MyArztTableModel extends DefaultTableModel{
 	        //no matter where the cell appears onscreen.
 	    	return true;
 	      }
+		@SuppressWarnings("unchecked")
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
 			Object result = null;
@@ -804,6 +805,10 @@ class MyArztTableModel extends DefaultTableModel{
 
 
 class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private RehaTPEventClass rtp = null;
 	public ArztNeuDlg(){
 		super(null,"ArztNeuanlage");

@@ -8,7 +8,7 @@ import hauptFenster.Reha;
 public class AaarghHinweis {
 	public AaarghHinweis(String hinweis,String title){
 		Object[] options = {"Ja - jetzt Benutzer-Gehirn auf Normalbetrieb umschalten"};
-		int n = JOptionPane.showOptionDialog(null,
+		JOptionPane.showOptionDialog(null,
 				hinweis,
 				title,
 				JOptionPane.YES_OPTION,

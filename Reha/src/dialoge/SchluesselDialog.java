@@ -1,7 +1,5 @@
 package dialoge;
 
-import hauptFenster.Reha;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +31,6 @@ import terminKalender.DatFunk;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import events.RehaTPEventListener;
 
 public class SchluesselDialog extends JDialog implements WindowListener{
 
@@ -126,7 +122,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		FormLayout lay = new FormLayout("0dlu,right:max(40dlu;p),10dlu,120dlu,50dlu","10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
-		pb.addLabel("Schlüssel",cc.xy(2, 2));
+		pb.addLabel("Schlï¿½ssel",cc.xy(2, 2));
 		schluessellab = new JLabel(schluessel) ;
 		schluessellab.setFont(fon);
 		pb.add(schluessellab,cc.xy(4, 2));
@@ -144,6 +140,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		pb.getPanel().validate();
 		return pb.getPanel();
 	}
+	@SuppressWarnings("unchecked")
 	private void testeSchluessel(){
 		Vector<String> vec = SqlInfo.holeSatz("anwesend", " * " ,"schrank ='"+schluessel+"'" , Arrays.asList(new String[] {}));
 		if(vec.size()<=0){

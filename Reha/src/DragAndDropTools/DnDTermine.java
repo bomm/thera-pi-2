@@ -10,6 +10,7 @@ import java.awt.dnd.DropTargetListener;
 public class DnDTermine {
 	DropTargetListener dropTargetListener = null;
 	public DnDTermine(){
+		@SuppressWarnings("unused")
 		DropTargetListener dropTargetListener =
 			 new DropTargetListener() {
 
@@ -24,7 +25,7 @@ public class DnDTermine {
 				  System.out.println("Es wurde gedroppt an Position -> ");
 			  }
 
-			  // Die Maus bewegt sich über die Komponente
+			  // Die Maus bewegt sich ï¿½ber die Komponente
 			  public void dragOver(DropTargetDragEvent e) {
 				  System.out.println("Over Es wurde gedroppt an Position -> "+e.getLocation());				  
 			  }
@@ -35,7 +36,7 @@ public class DnDTermine {
 			      DataFlavor[] flavors = tr.getTransferDataFlavors();
 			      for (int i = 0; i < flavors.length; i++)
 			       if (flavors[i].isFlavorJavaFileListType()) {
-			        // Zunächst annehmen
+			        // Zunï¿½chst annehmen
 			        e.acceptDrop (e.getDropAction());
 			       //List files = (List) tr.getTransferData(flavors[i]);
 			        // Wir setzen in das Label den Namen der ersten 
@@ -51,7 +52,7 @@ public class DnDTermine {
 			  }
 			   
 			  // Jemand hat die Art des Drops (Move, Copy, Link)
-			  // geändert
+			  // geï¿½ndert
 			  public void dropActionChanged(
 			         DropTargetDragEvent e) {}
 			};

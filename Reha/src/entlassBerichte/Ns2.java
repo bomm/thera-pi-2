@@ -47,7 +47,7 @@ public class Ns2 implements ActionListener {
 	Font fontarialnormal = null;
 	Font fontarialfettgross = null;
 	JScrollPane jscr = null;
-	Vector ktl = new Vector();
+	Vector<String> ktl = new Vector<String>();
 	String[] sktl = null;
 	boolean inGuiInit = true;
 	
@@ -362,11 +362,11 @@ public class Ns2 implements ActionListener {
 		int item = 0;
 		FormLayout layCelle = new FormLayout("p,p","p,p");
 		PanelBuilder celle;
-		CellConstraints cccelle;
+		//CellConstraints cccelle;
 		for(int i = 0; i < code.length;i+=2){
 			celle = new PanelBuilder(layCelle);
 			celle.getPanel().setOpaque(false);
-			cccelle = new CellConstraints();
+			//cccelle = new CellConstraints();
 			celle.add(getLabel(code[item]),cckodierung.xy(1,1,CellConstraints.LEFT,CellConstraints.DEFAULT));
 			celle.add(getLabelKleinRot(zeit[item]),cckodierung.xy(2,1,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 			celle.add(getLabel(code[item+1]),cckodierung.xy(1,2,CellConstraints.LEFT,CellConstraints.DEFAULT));
@@ -509,11 +509,13 @@ public class Ns2 implements ActionListener {
 		lab.setFont(fontklein);
 		return lab;
 	}
+	@SuppressWarnings("unused")
 	private JLabel getLabelArialNormal(String text){
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontarialnormal);
 		return lab;
 	}
+	@SuppressWarnings("unused")
 	private JLabel getLabelArialNormalRot(String text){
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontarialnormal);
@@ -526,6 +528,7 @@ public class Ns2 implements ActionListener {
 		lab.setForeground(Color.RED);
 		return lab;
 	}
+	@SuppressWarnings("unused")
 	private JLabel getLabelArialFettNormal(String text){
 		JLabel lab = new JLabel(text);
 		lab.setFont(fontarialfett);
@@ -684,6 +687,7 @@ public class Ns2 implements ActionListener {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void holeKTL(boolean ktlneu){
 		Vector<Vector<String>> vec = null;
 		String ktltabelle = "";
@@ -699,7 +703,8 @@ public class Ns2 implements ActionListener {
 		}
 		vec = SqlInfo.holeFelder("select * from "+ktltabelle);
 		Comparator<Vector> comparator = new Comparator<Vector>() {
-		    public int compare(String s1, String s2) {
+		    @SuppressWarnings("unused")
+			public int compare(String s1, String s2) {
 		        String[] strings1 = s1.split("\\s");
 		        String[] strings2 = s2.split("\\s");
 		        return strings1[strings1.length - 1]
