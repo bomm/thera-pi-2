@@ -3,7 +3,6 @@ package patientenFenster;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -13,44 +12,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.EventObject;
 import java.util.Vector;
 
-import javax.mail.internet.ParseException;
-import javax.swing.AbstractCellEditor;
-import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.border.LineBorder;
-import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -61,25 +45,32 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-
-import jxTableTools.DateFieldDocument;
-import jxTableTools.DateInputVerifier;
 import jxTableTools.DateTableCellEditor;
-import jxTableTools.DatumTableCellEditor;
 import jxTableTools.TableTool;
 import krankenKasse.KassenFormulare;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-//import org.jdesktop.swingx.decorator.SortOrder;
 import org.jdesktop.swingx.event.TableColumnModelExtListener;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
+
+import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
+import stammDatenTools.ZuzahlTools;
+import systemEinstellungen.INIFile;
+import systemEinstellungen.SystemConfig;
+import systemTools.Colors;
+import systemTools.JCompTools;
+import systemTools.JRtaTextField;
+import systemTools.ListenerTools;
+import systemTools.StringTools;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -92,24 +83,11 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import stammDatenTools.ArztTools;
-import stammDatenTools.RezTools;
-import stammDatenTools.ZuzahlTools;
-import systemEinstellungen.INIFile;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-
-import systemTools.DoubleTools;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
-import systemTools.ListenerTools;
-import systemTools.StringTools;
-import terminKalender.DatFunk;
-
-
 public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,TableModelListener,TableColumnModelExtListener,PropertyChangeListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5440388431022834348L;
 	//public AktuelleRezepte aktRez = null;
 	JXPanel leerPanel = null;
 	JXPanel vollPanel = null;
@@ -135,8 +113,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public static boolean inEinzelTermine = false;
 	public static boolean initOk = false;
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);	
-	Vector titel = new Vector<String>() ;
-	Vector formular = new Vector<String>();
+	Vector<String> titel = new Vector<String>() ;
+	Vector<String> formular = new Vector<String>();
 	int iformular = -1;
 
 	//public boolean lneu = false;
@@ -441,7 +419,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
 				   Point point = arg0.getPoint();
 				   int row = tabaktrez.rowAtPoint(point);
-				   int column = tabaktrez.columnAtPoint(point);
+				   tabaktrez.columnAtPoint(point);
 				   tabaktrez.setRowSelectionInterval(row, row);
 					System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
 							"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
@@ -537,6 +515,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String[] column = 	{"Beh.Datum","Behandler","Text","Beh.Art",""};
 		dtermm.setColumnIdentifiers(column);
 		tabaktterm = new JXTable(dtermm){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public boolean editCellAt(int row, int column, EventObject e) {
 				System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
 				System.out.println("Event = "+e);
@@ -636,11 +619,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		final String xrez_nr = rez_nr;
 
 		new SwingWorker<Void,Void>(){
+			@SuppressWarnings("unchecked")
 			@Override
 			protected Void doInBackground() throws Exception {
 		
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
+				Vector<Vector<String>> vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,abschluss,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
 				int anz = vec.size();
@@ -1384,9 +1368,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		int currow = tabaktrez.getSelectedRow();
 		if(currow < 0){return;}
 			if(dtblm.getValueAt(currow,5)==null){
-				
+				// derzeit offen also abschliessen
+				int anzterm = dtermm.getRowCount();
+				if(anzterm <= 0){return;}
+				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
+				String vgldat2 = (String) dtermm.getValueAt(0,0);
+				System.out.println("Tage differenz = "+DatFunk.TageDifferenz(vgldat1, vgldat2));
+				if(DatFunk.TageDifferenz(vgldat1, vgldat2) > 10){
+					JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
+				}
+				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[1],currow,5);
 			}else{
-				
+				// bereits abgeschlossen muß geöffnet werden
+				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
 			}
 	}
 	/*****************************************************/

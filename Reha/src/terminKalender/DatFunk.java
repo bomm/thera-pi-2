@@ -102,13 +102,13 @@ public class DatFunk {
 		return tag;
 	}
 
-	public static long TageDifferenz(String sdatum1,String sdatum2){
+	public static long TageDifferenz(String saltdatum,String sneudatum){
 		long mul1 = 0;
 		long mul2 = 0;
 		long mul3 = 0;
 
-		String[] datsplit1 = sdatum1.split("\\.");
-		String[] datsplit2 = sdatum2.split("\\.");
+		String[] datsplit1 = saltdatum.split("\\.");
+		String[] datsplit2 = sneudatum.split("\\.");
 		Calendar cal1 = new GregorianCalendar();
 		Calendar cal2 = new GregorianCalendar();
 		cal1.set( Integer.parseInt(datsplit1[2]), Integer.parseInt(datsplit1[1])-1, Integer.parseInt(datsplit1[0]) ); 
