@@ -1358,13 +1358,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				formulareAuswerten();				
 			}
 			if(cmd.equals("rezeptabschliessen")){
-				doAbschliessen();
+				doAbschlussTest();
 			}
 			
 		}
 
 	}
-	private void doAbschliessen(){
+	private void doAbschlussTest(){
 		int currow = tabaktrez.getSelectedRow();
 		if(currow < 0){return;}
 			if(dtblm.getValueAt(currow,5)==null){
@@ -1374,14 +1374,23 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
 				String vgldat2 = (String) dtermm.getValueAt(0,0);
 				System.out.println("Tage differenz = "+DatFunk.TageDifferenz(vgldat1, vgldat2));
+				//ist Rezeptdatum und Erstdatum > 10 Tage ?
 				if(DatFunk.TageDifferenz(vgldat1, vgldat2) > 10){
 					JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
 				}
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[1],currow,5);
+				doAbschliessen();
 			}else{
 				// bereits abgeschlossen muß geöffnet werden
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
+				doAufschliessen();
 			}
+	}
+	private void doAbschliessen(){
+		
+	}
+	private void doAufschliessen(){
+		
 	}
 	/*****************************************************/
 	class MyTermClass{
