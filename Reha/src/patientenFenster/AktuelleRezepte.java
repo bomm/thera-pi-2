@@ -668,7 +668,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				Reha.thisClass.patpanel.jtab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
-					int anzeigen = -1;
+					//int anzeigen = -1;
 					if(xrez_nr.length() > 0){
 						int row = 0;
 						rezneugefunden = true;
@@ -734,7 +734,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String[] tlines = einzel.split("\n");
 		int lines = tlines.length;
 		//System.out.println("Anzahl Termine = "+lines);
-		Vector tvec = new Vector();
+		Vector<String> tvec = new Vector<String>();
 		dtermm.setRowCount(0);
 		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
@@ -769,9 +769,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.validate();
 		tabaktrez.repaint();
 	}
-	private void holeEinzelTermine(int row,Vector vvec){
+	private void holeEinzelTermine(int row,Vector<String> vvec){
 		inEinzelTermine = true;
-		Vector xvec = null;
+		Vector<String> xvec = null;
 		if(vvec == null){
 			xvec = SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,7)+"'", Arrays.asList(new String[] {}));			
 		}else{
