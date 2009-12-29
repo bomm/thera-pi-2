@@ -219,11 +219,11 @@ private JXPanel terminInfo(){
 	jpganz.setBackground(Color.WHITE);
     String ss = "icons/header-image.png";
     JXHeader header = new JXHeader("Die Druckerliste....",
-            "....kann zwar 'Roogle' nicht ersetzen, für die schnelle Vergabe von Terminen und die Erstellung eines Terminplanes\n" +
-            "für den Patienten ist diese Funktion jedoch bestens geeignet. Sie starten die Terminliste indem Sie auf dem gewünschten\n" +
-            "Termin die Tastenkombination >>Strg+Einfg<< durchführen. Wenn Sie nun weitere Termine mit der Kombination >>Shift+Einfg<<\n"+
-            "im Termikalender eintragen, wird jeder (so eingetragene) Termin der Liste hinzugefügt.\n\n" +
-            "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
+            "....kann zwar 'Roogle' nicht ersetzen, fÃ¼r die schnelle Vergabe von Terminen und die Erstellung eines Terminplanes\n" +
+            "fÃ¼r den Patienten ist diese Funktion jedoch bestens geeignet. Sie starten die Terminliste indem Sie auf dem gewÃ¼nschten\n" +
+            "Termin die Tastenkombination >>Strg+Einfg<< durchfÃ¼hren. Wenn Sie nun weitere Termine mit der Kombination >>Shift+Einfg<<\n"+
+            "im Termikalender eintragen, wird jeder (so eingetragene) Termin der Liste hinzugefÃ¼gt.\n\n" +
+            "Sie schlieÃŸen dieses Fenster Ã¼ber den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
             new ImageIcon(ss));
     jpganz.add(header,BorderLayout.NORTH);
 
@@ -274,7 +274,7 @@ private JXPanel buttonPanel(){
 	jb2.addActionListener(this);
 	jb2.addKeyListener(this);	
 	bpanel.add(jb2);
-	jb3 = new JButton("Termin löschen");
+	jb3 = new JButton("Termin lï¿½schen");
 	jb3.setPreferredSize(new Dimension(30,15));
 	jb3.addActionListener(this);
 	jb3.addKeyListener(this);	
@@ -287,12 +287,16 @@ private JXPanel buttonPanel(){
 
 	return bpanel;
 }
-private static JXPanel titlePanel(){
+private DruckFenster getInstance(){
+	return this;
+}
+private JXPanel titlePanel(){
 	jp = new RehaTP(0);
 	jp.setName(dieserName);
 	jtp = (JXPanel) jp.getContentContainer();
 	jtp.setSize(new Dimension(200,200));
 	jtp.setVisible(true);
+	jtp.addKeyListener(getInstance());
 	return jtp;
 }
 
@@ -396,17 +400,17 @@ public void actionPerformed(ActionEvent arg0) {
 			new Thread(new sendeTermine()).start();
 			break;
 		}
-		if(cmd.equals("Termin löschen")){
+		if(cmd.equals("Termin lï¿½schen")){
 			int mc = JOptionPane.QUESTION_MESSAGE;
 			int bc = JOptionPane.YES_NO_CANCEL_OPTION;
 			if(pliste.getRowCount()<=0){
 				return;
 			}
-			String anfrage = "Wollen Sie den Termin nur in dieser Druckerliste löschen?\n\n"+
-				"Ja  =   nur in der Druckerliste löschen\n\n"+
+			String anfrage = "Wollen Sie den Termin nur in dieser Druckerliste lï¿½schen?\n\n"+
+				"Ja  =   nur in der Druckerliste lï¿½schen\n\n"+
 				"Nein  =   in Druckerliste und(!) im Terminkalender\n\n"+
-				"Abbrechen  =   weder noch und Tschüß...\n\n\n";
-			int ch = JOptionPane.showConfirmDialog (null,anfrage , "Termin löschen aber wie?", bc, mc);
+				"Abbrechen  =   weder noch und Tschï¿½ï¿½...\n\n\n";
+			int ch = JOptionPane.showConfirmDialog (null,anfrage , "Termin lï¿½schen aber wie?", bc, mc);
 			if(ch == JOptionPane.CANCEL_OPTION){
 				return;
 			}
@@ -416,7 +420,7 @@ public void actionPerformed(ActionEvent arg0) {
 
 			int reihenselekt = pliste.getSelectedRow();
 			int realindex = pliste.convertRowIndexToModel(reihenselekt);
-			//System.out.println("******Tatsächlicher Index = "+realindex);
+			//System.out.println("******Tatsï¿½chlicher Index = "+realindex);
 
 			if(ch == JOptionPane.NO_OPTION){
 				boolean geklappt;
@@ -424,7 +428,7 @@ public void actionPerformed(ActionEvent arg0) {
 				if(geklappt){
 					termine.remove(realindex);
 				}else{
-					JOptionPane.showMessageDialog(null,"Die Kalenderspalte ist momentan gesperrt und kann deshalb nicht gelöscht werden!");
+					JOptionPane.showMessageDialog(null,"Die Kalenderspalte ist momentan gesperrt und kann deshalb nicht gelï¿½scht werden!");
 					return;
 				}
 			}
@@ -570,8 +574,8 @@ public void run(){
 	oOTermine = DruckFenster.getTermine();
 	if(oOTermine.size()==0){
 		JOptionPane.showMessageDialog (null, "In der Terminliste sind keine Termine vorhanden.\n"+
-				"Nicht vorhandene Termine könne nur sehr schwer (in diesem Fall gar nicht) ausgedrucket werden...\n\n"+
-				"Oh Herr schmeiß Hirn ra.....");
+				"Nicht vorhandene Termine kï¿½nne nur sehr schwer (in diesem Fall gar nicht) ausgedrucket werden...\n\n"+
+				"Oh Herr schmeiï¿½ Hirn ra.....");
 				DruckFenster.OOoFertig = 0;
 				DruckFenster.buttonsEinschalten();
 				DruckFenster.thisClass.cursorWait(false);
@@ -615,7 +619,7 @@ public void run(){
 		tbl = textDocument.getTextTableService().getTextTables();
 
 		if(tbl.length != AnzahlTabellen){
-			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini überein.\nDruck nicht möglich");
+			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini ï¿½berein.\nDruck nicht mï¿½glich");
 			textDocument.close();
 			DruckFenster.thisClass.cursorWait(false);
 			return;
@@ -645,7 +649,7 @@ public void run(){
 			searchDescriptor = new SearchDescriptor(patplatzhalter);
 			//searchDescriptor = new SearchDescriptor("Name");
 			searchDescriptor.setIsCaseSensitive(false);
-			//Suche durchführen
+			//Suche durchfï¿½hren
 			searchResult = textDocument.getSearchService().findFirst(searchDescriptor);
 			if(!searchResult.isEmpty()) {
 				//Ergebnis seletieren
@@ -690,7 +694,7 @@ public void run(){
 				}
 		      
 		}
-		// Ab hier die Tabelle bestücken
+		// Ab hier die Tabelle bestï¿½cken
 		//..........
 
 
@@ -752,7 +756,7 @@ public void run(){
 						}
 				        textRanges[0].setText(patname);
 					}
-					System.out.println("Suche ersetze durchgeführt*************");
+					System.out.println("Suche ersetze durchgefï¿½hrt*************");
 					*/
 					/*
 					ITextService textService = textDocument.getTextService();
@@ -844,7 +848,7 @@ public void run(){
 			textDocument.getPersistenceService().export(exporturl, new PDFFilter());
 			textDocument.close();
 		}		
-		// Anschließend die Vorlagendatei schließen
+		// Anschlieï¿½end die Vorlagendatei schlieï¿½en
 
 		/*
 		try{
@@ -898,13 +902,13 @@ final class sendeTermine extends Thread implements Runnable{
 		oOTermine = DruckFenster.getTermine();
 		if(oOTermine.size()==0){
 			JOptionPane.showMessageDialog (null, "In der Terminliste sind keine Termine vorhanden.\n"+
-					"Nicht vorhandene Termine könne nur sehr schwer (in diesem Fall gar nicht) per Email versandt werden...\n\n"+
-					"Oh Herr schmeiß Hirn ra.....");
+					"Nicht vorhandene Termine kï¿½nne nur sehr schwer (in diesem Fall gar nicht) per Email versandt werden...\n\n"+
+					"Oh Herr schmeiï¿½ Hirn ra.....");
 			DruckFenster.buttonsEinschalten();
 			return;
 		}
 		if(oOTermine.get(0)[9].equals("")){
-			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
+			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gï¿½ltige Email-Adresse ein");
 			try{
 				if(emailaddy.equals("")){
 					DruckFenster.buttonsEinschalten();
@@ -917,7 +921,7 @@ final class sendeTermine extends Thread implements Runnable{
 		}else{
 			pat_intern = holeAusDB("select PAT_INTERN from verordn where REZ_NR ='"+oOTermine.get(0)[9]+"'");
 			if(pat_intern.equals("")){
-				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
+				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gï¿½ltige Email-Adresse ein");
 				try{
 					if(emailaddy.equals("")){
 						DruckFenster.buttonsEinschalten();
@@ -930,7 +934,7 @@ final class sendeTermine extends Thread implements Runnable{
 			}else{
 				emailaddy = holeAusDB("select EMAILA from pat5 where PAT_INTERN ='"+pat_intern+"'");
 				if(emailaddy.equals("")){
-					emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
+					emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gï¿½ltige Email-Adresse ein");
 					try{
 						if(emailaddy.equals("")){
 						DruckFenster.buttonsEinschalten();
@@ -967,7 +971,7 @@ final class sendeTermine extends Thread implements Runnable{
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
-		//System.out.println("Empfängeradresse = "+emailaddy);
+		//System.out.println("Empfï¿½ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		boolean authx = (SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true);
@@ -1003,8 +1007,8 @@ final class sendeTermine extends Thread implements Runnable{
 		/*********/
 	      if (text.equals("")){
 	    	  text = "Sehr geehrte Damen und Herren,\n"+
-					"im Dateianhang finden Sie die von Ihnen gewünschten Behandlungstermine.\n\n"+
-					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müßen 24 Stunden vorher\n"+
+					"im Dateianhang finden Sie die von Ihnen gewï¿½nschten Behandlungstermine.\n\n"+
+					"Termine die Sie nicht einhalten bzw. wahrnehmen kï¿½nnen, mï¿½ï¿½en 24 Stunden vorher\n"+
 					"abgesagt werden.\n\nIhr Planungs-Team vom RTA";
 	      }
 		String smtpHost = SystemConfig.hmEmailExtern.get("SmtpHost");
@@ -1111,7 +1115,8 @@ class TerminTableModel extends AbstractTableModel {
      * would contain text ("true"/"false"), rather than a check box.
      */
     public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
+    	return String.class;
+      //return getValueAt(0, c).getClass();
     }
 
     /*
@@ -1178,7 +1183,7 @@ final class druckListeSperren{
 					sergebnis = (rs.getString(1) == null ? "" : rs.getString(1));
 				}
 				
-				System.out.println("Befehl ausgeführt"+exStatement[0]);
+				System.out.println("Befehl ausgefï¿½hrt"+exStatement[0]);
 			}catch(SQLException ev){
         		System.out.println("SQLException: " + ev.getMessage());
         		System.out.println("SQLState: " + ev.getSQLState());
@@ -1208,13 +1213,13 @@ final class druckListeSperren{
 		
 		System.out.println("Ergebnis = "+sergebnis);
 		if(sergebnis.trim().equals("")){
-			System.out.println("Befehl ausgeführt");
+			System.out.println("Befehl ausgefï¿½hrt");
 			boolean sper = sperren(exStatement[1]);
-			System.out.println("Befehl ausgeführt"+exStatement[1]);
+			System.out.println("Befehl ausgefï¿½hrt"+exStatement[1]);
 			sper = sperren(exStatement[2]);			
-			System.out.println("Befehl ausgeführt"+exStatement[2]);
+			System.out.println("Befehl ausgefï¿½hrt"+exStatement[2]);
 			sper = sperren(exStatement[3]);
-			System.out.println("Befehl ausgeführt"+exStatement[3]);			
+			System.out.println("Befehl ausgefï¿½hrt"+exStatement[3]);			
 			return true;
 		}else{
 			return false;

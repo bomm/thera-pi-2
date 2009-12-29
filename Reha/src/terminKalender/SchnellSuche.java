@@ -91,10 +91,10 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
         //jp1.setLayout(new VerticalLayout(1));
         String ss = "icons/header-image.png";
         JXHeader header = new JXHeader("Mit dieser Schnellsuche....",
-                "....können Sie auf einfache Weise einen Namen oder eine Rezeptnummer suchen ('Roogle' ist zwar besser, aber diese Funktion ist schneller).\n" +
+                "....kÃ¶nnen Sie auf einfache Weise einen Namen oder eine Rezeptnummer suchen ('Roogle' ist zwar besser, aber diese Funktion ist schneller).\n" +
                 "Mit dem Button >>Heute<< durchsuchen sie lediglich den heutigen Tag (schneller).\n" +
-                "Mit dem Button >>Heute + 4 Tage<< dursuchen Sie den Kalender über einen Zeitraum von insgesamt 5 Tagen\n\n"+
-                "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
+                "Mit dem Button >>Heute + 4 Tage<< dursuchen Sie den Kalender Ã¼ber einen Zeitraum von insgesamt 5 Tagen\n\n"+
+                "Sie schlieÃŸen dieses Fenster Ã¼ber den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         jp1.add(header,BorderLayout.NORTH);
         jp1.add(eingabePanel(),BorderLayout.SOUTH);
@@ -360,14 +360,14 @@ public void suchenFocus(){
     Verschluesseln man = Verschluesseln.getInstance();
     man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
     final String encrypted = man.encrypt("s1b2rta");
-    System.out.println ("Verschlüsselt :"+encrypted);
+    System.out.println ("Verschlï¿½sselt :"+encrypted);
     final String decrypted = man.decrypt (encrypted);
-    System.out.println("Entschlüsselt :"+decrypted);
+    System.out.println("Entschlï¿½sselt :"+decrypted);
     */
   }
 @Override
 public void keyPressed(KeyEvent arg0) {
-	System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
+	//System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
 	if(arg0.getKeyCode() == 27){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		FensterSchliessen(null);
@@ -429,7 +429,7 @@ final class SuchenInTagen extends Thread implements Runnable{
 					//System.out.println("Nach for..."+exStatement[i]);
 					//SchnellSuche.thisClass.setLabelDatum("nach ExecuteQuery");
 					while(rs.next()){
-						/*in Spalte 301 steht die Anzahl der belegten Blöcke*/ 
+						/*in Spalte 301 steht die Anzahl der belegten Blï¿½cke*/ 
 						int belegt = rs.getInt(301);
 						SchnellSuche.thisClass.setLabelDatum(DatFunk.sDatInDeutsch(rs.getString(305)));
 						String name = "";
@@ -526,7 +526,7 @@ class SchnellSucheTableModel extends AbstractTableModel {
     }
     
     public void deleteRow(int row){
-    	System.out.println("Wert = "+getValueAt(row,3)); 
+    	//System.out.println("Wert = "+getValueAt(row,3)); 
     	printDebugData();
     	data.remove(row);
     	fireTableDataChanged();
@@ -548,7 +548,8 @@ class SchnellSucheTableModel extends AbstractTableModel {
      * would contain text ("true"/"false"), rather than a check box.
      */
     public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
+		   return String.class;
+      //return getValueAt(0, c).getClass();
     }
 
     /*

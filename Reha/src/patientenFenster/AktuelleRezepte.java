@@ -1376,7 +1376,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				System.out.println("Tage differenz = "+DatFunk.TageDifferenz(vgldat1, vgldat2));
 				//ist Rezeptdatum und Erstdatum > 10 Tage ?
 				if(DatFunk.TageDifferenz(vgldat1, vgldat2) > 10){
-					JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
+					int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+					//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
+					if(anfrage != JOptionPane.YES_OPTION){
+						return;
+					}
 				}
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[1],currow,5);
 				doAbschliessen();
