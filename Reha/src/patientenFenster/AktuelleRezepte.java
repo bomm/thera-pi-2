@@ -4,6 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -1382,6 +1383,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						return;
 					}
 				}
+				if(! doTageTest(vgldat2,anzterm)){return;}
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[1],currow,5);
 				doAbschliessen();
 			}else{
@@ -1389,6 +1391,30 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
 				doAufschliessen();
 			}
+	}
+	private boolean doTageTest(String starttag,int tage){
+		String vglalt;
+		String vglneu;
+		String kommentar;
+		for(int i = 0; i < tage;i++){
+			if(i > 0){
+				vglalt = (String) dtermm.getValueAt(i-1,0);
+				vglneu = (String) dtermm.getValueAt(i,0);
+				if(vglalt.equals(vglneu)){
+					JOptionPane.showMessageDialog(null,"Zwei identische Behandlungstage sind nicht zulässig - Abschluß des Rezeptes fehlgeschlagen");
+					return false; 
+				}
+				if(DatFunk.TageDifferenz(vglalt, vglneu) < 0 ){
+					JOptionPane.showMessageDialog(null,"Bitte sortieren Sie zuerst die Behandlungstage - Abschluß des Rezeptes fehlgeschlagen");
+					return false;
+				}
+				kommentar = (String) dtermm.getValueAt(i,2);
+				if(DatFunk.TageDifferenz(vglalt, vglneu) > 10 && kommentar.trim().equals("")){
+					rezUnterbrechung(true,"");// Unterbrechungsgrund
+				}
+			}
+		}
+		return true;
 	}
 	private void doAbschliessen(){
 		
@@ -1533,7 +1559,28 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		
 	}
-
+	public void rezUnterbrechung(boolean lneu,String feldname){
+		RezTest rezTest = new RezTest();
+		PinPanel pinPanel = new PinPanel();
+		pinPanel.setName("RezeptTest");
+		pinPanel.getGruen().setVisible(false);
+		rezTest.setSize(200,200);
+		rezTest.setPreferredSize(new Dimension(200,200));
+		rezTest.getSmartTitledPanel().setPreferredSize(new Dimension (200,200));
+		rezTest.setPinPanel(pinPanel);
+		rezTest.getSmartTitledPanel().setContentContainer( (Container) new JXPanel());
+		rezTest.getSmartTitledPanel().setTitle("Rezept-Test");
+		rezTest.setName("RezeptTest");
+		rezTest.setModal(true);
+		Point pt = tabaktterm.getLocationOnScreen();
+		pt.x= pt.x-200;
+		rezTest.setLocation(pt);
+		//neuRez.setTitle("Patienten Neuanlage");
+		rezTest.pack();
+		rezTest.setVisible(true);
+		rezTest.dispose();
+		System.out.println("Rez unterbrechung geschlossen");
+	}
  
 	public void neuanlageRezept(boolean lneu,String feldname){
 		String zzstatus = "";
@@ -1583,6 +1630,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 		neuRez.dispose();
 		neuRez = null;
+		pinPanel = null;
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
 				RezeptDaten.feddisch = false;
@@ -1637,6 +1685,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 }
 class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7104716962577408414L;
 	private RehaTPEventClass rtp = null;
 	public RezNeuDlg(){
 		super(null,"RezeptNeuanlage");
@@ -1677,9 +1729,54 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			super.dispose();
 			System.out.println("****************Rezept Neu/ändern -> Listener entfernt (Closed)**********");
 		}
-		
-		
 	}
 	
 	
+	
+}
+/************************************/
+class RezTest extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5410743025474817628L;
+	private RehaTPEventClass rtp = null;
+	public RezTest(){
+		super(null,"RezeptTest");
+		this.setName("RezeptTest");
+		//super.getPinPanel().setName("RezeptNeuanlage");
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
+
+	}
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+		try{
+			if(evt.getDetails()[0] != null){
+				if(evt.getDetails()[0].equals(this.getName())){
+					System.out.println("In rezNeuDlg set Visible false***************");
+					this.setVisible(false);
+					this.dispose();
+					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+					rtp = null;
+					ListenerTools.removeListeners(this);					
+					super.dispose();
+					System.out.println("****************RezeptTest -> Listener entfernt**************");				
+				}
+			}
+		}catch(NullPointerException ne){
+			System.out.println("In RezeptNeuanlage" +evt);
+		}
+	}
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		if(rtp != null){
+			this.setVisible(false);			
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
+			rtp = null;
+			dispose();
+			ListenerTools.removeListeners(this);
+			super.dispose();
+			System.out.println("****************RezeptTest -> Listener entfernt (Closed)**********");
+		}
+	}
 }

@@ -1,20 +1,16 @@
 package patientenFenster;
 
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -24,7 +20,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,40 +39,30 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import jxTableTools.TableTool;
-
 import krankenKasse.KassenFormulare;
 import kvKarte.KVKWrapper;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.ZuzahlTools;
 import sun.awt.image.ImageFormatException;
-
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
-
-import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
@@ -105,7 +90,11 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,Seriali
 /**
 	 * 
 	 */
-private static final long serialVersionUID = 1L;
+private static final long serialVersionUID = -5089258058628709139L;
+/**
+	 * 
+	 */
+
 //private JXPanel Tab1 = null;
 public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,

@@ -209,7 +209,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		tfs[8].setName("email1");
 		jpan.add(tfs[8],cc.xyw(3, 20,4));
 
-		jpan.addSeparator("IK-Daten für maschinenlesbare Abrechnung",cc.xyw(1, 22, 6));
+		jpan.addSeparator("IK-Daten fÃ¼r maschinenlesbare Abrechnung",cc.xyw(1, 22, 6));
 
 		jpan.add(new JLabel("IK der Krankenkasse"),cc.xy(1, 24));
 		tfs[9] = new JRtaTextField("ZAHLEN",true);
@@ -218,7 +218,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		tfs[9].setName("ik_kasse");
 		jpan.add(tfs[9],cc.xyw(3, 24,4));
 		
-		jpan.add(new JLabel("IK des Kostenträgers"),cc.xy(1, 26));
+		jpan.add(new JLabel("IK des KostentrÃ¤gers"),cc.xy(1, 26));
 		tfs[10] = new JRtaTextField("ZAHLEN",true);
 		tfs[10].addKeyListener(this);
 		tfs[10].addFocusListener(this);
@@ -252,7 +252,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		tfs[15].setName("id");
 		/*
 		jtf[13] = new JRtaTextField("ZAHLEN", true);
-		jtf[13].setName("IK_KASSE"); //aus Kostenträgerdatei/Karte einlesen?
+		jtf[13].setName("IK_KASSE"); //aus Kostentrï¿½gerdatei/Karte einlesen?
 		jtf[14] = new JRtaTextField("ZAHLEN", true);
 		jtf[14].setName("IK_KOSTENT");
 		jtf[15] = new JRtaTextField("ZAHLEN", true);
@@ -374,8 +374,8 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		if(((JComponent)arg0.getSource()).getName().equals("kuerzel")){
 			if( (tfs[0].getText().trim().equals("-")) && (!ohneKuerzel) ){
 				ohneKuerzel = true;
-				String message = "Tip:\n\nDie Vergabe von Kürzeln ist für die schnelle Bearbeitung einer Kasse (später) ideal\n"+
-				"Z.B.: 'AOK-RT' für die 'AOK Reutlingen'";
+				String message = "Tip:\n\nDie Vergabe von Kï¿½rzeln ist fï¿½r die schnelle Bearbeitung einer Kasse (spï¿½ter) ideal\n"+
+				"Z.B.: 'AOK-RT' fï¿½r die 'AOK Reutlingen'";
 				JOptionPane.showMessageDialog(null,message);
 				tarifGruppe.requestFocus();
 			}

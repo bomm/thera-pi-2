@@ -131,7 +131,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		jpan.add(neukasse,cc.xyw(6,2,2));
 		
 		kassenwahlmod = new MyKassenWahlModel();
-		String[] column = 	{"K�rzel","Name1","Name2","Ort", "IK",""};
+		String[] column = 	{"Kürzel","Name1","Name2","Ort", "IK",""};
 		kassenwahlmod.setColumnIdentifiers(column);
 		kassenwahltbl = new JXTable(kassenwahlmod);
 		kassenwahltbl.addKeyListener(akl);
