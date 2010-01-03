@@ -416,6 +416,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							e.printStackTrace();
 						}
 					}
+					if(rezGeschlossen()){return;}
 					neuanlageRezept(false,"");
 				}
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
@@ -434,6 +435,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode()==10){
 					arg0.consume();
+					if(rezGeschlossen()){return;}
 					neuanlageRezept(false,"");
 				}
 				if(arg0.getKeyCode()==27){
@@ -1099,6 +1101,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		if(rezGeschlossen()){return;}
 		String cmd = arg0.getActionCommand();
 		for(int i = 0; i < 1; i++){
 			if(cmd.equals("terminplus")){
@@ -1128,6 +1131,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 			}
 			if(cmd.equals("terminminus")){
+				if(rezGeschlossen()){return;}
 				int row = tabaktterm.getSelectedRow();
 				if(row>=0){
 					dtermm.removeRow(row);
@@ -1148,6 +1152,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			}
 			if(cmd.equals("terminsortieren")){
+				if(rezGeschlossen()){return;}
 				int row = tabaktterm.getRowCount();
 				if(row > 1){
 
@@ -1202,6 +1207,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön ändern....");
 					return;
 				}
+				if(rezGeschlossen()){return;}
 				neuanlageRezept(false,"");
 				break;
 			}
@@ -1211,6 +1217,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön löschen....");
 					return;
 				}
+				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				int anzrow = tabaktrez.getRowCount();
 				if(currow == -1){
@@ -1323,6 +1330,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}.execute();
 			}
 			if(cmd.equals("statusfrei")){
+				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				String xreznr;
 				if(currow >=0){
@@ -1334,6 +1342,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}	
 			}
 			if(cmd.equals("statusbezahlt")){
+				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				String xreznr;
 				if(currow >=0){
@@ -1346,6 +1355,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			
 			}
 			if(cmd.equals("statusnichtbezahlt")){
+				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				String xreznr;
 				if(currow >=0){
@@ -1395,10 +1405,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(! doTageTest(vgldat2,anzterm)){return;}
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[1],currow,5);
 				doAbschliessen();
+				String xcmd = "update verordn set abschluss='T' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(xcmd);
+				System.out.println(xcmd);
 			}else{
 				// bereits abgeschlossen muß geöffnet werden
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
 				doAufschliessen();
+				String xcmd = "update verordn set abschluss='F' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(xcmd);
+				System.out.println(xcmd);
 			}
 	}
 	private boolean doTageTest(String starttag,int tage){
@@ -1430,6 +1446,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 		}
 		return true;
+	}
+	private boolean rezGeschlossen(){
+		if(Reha.thisClass.patpanel.vecaktrez.get(62).equals("T")){
+			JOptionPane.showMessageDialog(null,"Das Rezept ist bereits abgeschlossen\nÄnderungen sind nur noch durch berechtigte Personen möglich");
+			return true;
+		}else{
+			return false;
+		}
 	}
 	private void doAbschliessen(){
 		

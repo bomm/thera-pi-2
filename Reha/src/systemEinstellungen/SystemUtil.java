@@ -414,6 +414,8 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Annahmekey abholen/einlesen");
 	node.add(treeitem ); 
+	treeitem = new DefaultMutableTreeNode("Kostenträgerdatei einlesen");
+	node.add(treeitem ); 
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Fremdprogramme");
@@ -765,6 +767,9 @@ private void auswertenSysUtil(String util){
 			jxRechts.revalidate();
 			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
+			break;
+		}
+		if(util.equals("Kostenträgerdatei einlesen")){
 			break;
 		}
 
