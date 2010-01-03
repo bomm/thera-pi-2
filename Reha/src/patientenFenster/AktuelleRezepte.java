@@ -113,6 +113,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public static boolean inRezeptDaten = false;
 	public static boolean inEinzelTermine = false;
 	public static boolean initOk = false;
+	public JLabel dummyLabel = null;
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);	
 	Vector<String> titel = new Vector<String>() ;
 	Vector<String> formular = new Vector<String>();
@@ -1359,7 +1360,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				formulareAuswerten();				
 			}
 			if(cmd.equals("rezeptabschliessen")){
-				doAbschlussTest();
+				try{
+					if(this.neuDlgOffen){return;}
+					doAbschlussTest();	
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				
 			}
 			
 		}
@@ -1381,6 +1388,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
 					if(anfrage != JOptionPane.YES_OPTION){
 						return;
+					}else{
+						//Abgeschlossen trotz verspäteter Behandlungsbeginn;
 					}
 				}
 				if(! doTageTest(vgldat2,anzterm)){return;}
@@ -1396,6 +1405,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String vglalt;
 		String vglneu;
 		String kommentar;
+		String ret;
 		for(int i = 0; i < tage;i++){
 			if(i > 0){
 				vglalt = (String) dtermm.getValueAt(i-1,0);
@@ -1410,7 +1420,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				kommentar = (String) dtermm.getValueAt(i,2);
 				if(DatFunk.TageDifferenz(vglalt, vglneu) > 10 && kommentar.trim().equals("")){
-					rezUnterbrechung(true,"");// Unterbrechungsgrund
+					ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
+					if(ret.equals("")){
+						return false;
+					}else{
+						dtermm.setValueAt(ret,i,2);
+					}
 				}
 			}
 		}
@@ -1559,27 +1574,42 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		
 	}
-	public void rezUnterbrechung(boolean lneu,String feldname){
-		RezTest rezTest = new RezTest();
-		PinPanel pinPanel = new PinPanel();
-		pinPanel.setName("RezeptTest");
-		pinPanel.getGruen().setVisible(false);
-		rezTest.setSize(200,200);
-		rezTest.setPreferredSize(new Dimension(200,200));
-		rezTest.getSmartTitledPanel().setPreferredSize(new Dimension (200,200));
-		rezTest.setPinPanel(pinPanel);
-		rezTest.getSmartTitledPanel().setContentContainer( (Container) new JXPanel());
-		rezTest.getSmartTitledPanel().setTitle("Rezept-Test");
-		rezTest.setName("RezeptTest");
-		rezTest.setModal(true);
-		Point pt = tabaktterm.getLocationOnScreen();
-		pt.x= pt.x-200;
-		rezTest.setLocation(pt);
-		//neuRez.setTitle("Patienten Neuanlage");
-		rezTest.pack();
-		rezTest.setVisible(true);
-		rezTest.dispose();
-		System.out.println("Rez unterbrechung geschlossen");
+	public String rezUnterbrechung(boolean lneu,String feldname,int behandlung){
+		if(neuDlgOffen){return "";}
+		try{
+			neuDlgOffen = true;
+			String ret;
+			RezTest rezTest = new RezTest();
+			PinPanel pinPanel = new PinPanel();
+			pinPanel.setName("RezeptTest");
+			pinPanel.getGruen().setVisible(false);
+			rezTest.setSize(200,200);
+			rezTest.setPreferredSize(new Dimension(250,200));
+			rezTest.getSmartTitledPanel().setPreferredSize(new Dimension (250,200));
+			rezTest.setPinPanel(pinPanel);
+			RezTestPanel testPan =  new RezTestPanel((dummyLabel = new JLabel()));
+			rezTest.getSmartTitledPanel().setContentContainer(testPan );
+			rezTest.getSmartTitledPanel().setTitle("Unterbrechung bei der "+behandlung+". Behandlung");
+			rezTest.setName("RezeptTest");
+			rezTest.setModal(true);
+			Point pt = tabaktterm.getLocationOnScreen();
+			pt.x= pt.x-250;
+			pt.y= pt.y-15;
+			rezTest.setLocation(pt);
+			rezTest.pack();
+			rezTest.setVisible(true);
+			rezTest.dispose();
+			System.out.println("Rez unterbrechung geschlossen - Ergebnis = "+dummyLabel.getText());
+			ret = new String(dummyLabel.getText());
+			testPan.dummylab = null;
+			testPan = null;
+			rezTest = null;
+			neuDlgOffen = false;
+			return ret;
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return "";
 	}
  
 	public void neuanlageRezept(boolean lneu,String feldname){
