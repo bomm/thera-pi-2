@@ -1101,10 +1101,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		if(rezGeschlossen()){return;}
+		
 		String cmd = arg0.getActionCommand();
 		for(int i = 0; i < 1; i++){
 			if(cmd.equals("terminplus")){
+				if(rezGeschlossen()){return;}
 				Vector<String> vec = new Vector<String>();
 				vec.add(DatFunk.sHeute());
 				vec.add("");
@@ -1407,12 +1408,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				doAbschliessen();
 				String xcmd = "update verordn set abschluss='T' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
 				SqlInfo.sqlAusfuehren(xcmd);
-				System.out.println(xcmd);
+				Reha.thisClass.patpanel.vecaktrez.set(62,(String)"T");
 			}else{
 				// bereits abgeschlossen muß geöffnet werden
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
 				doAufschliessen();
 				String xcmd = "update verordn set abschluss='F' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
+				Reha.thisClass.patpanel.vecaktrez.set(62,(String)"F");
 				SqlInfo.sqlAusfuehren(xcmd);
 				System.out.println(xcmd);
 			}
