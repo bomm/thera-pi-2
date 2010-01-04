@@ -770,6 +770,11 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Kostenträgerdatei einlesen")){
+			jxInhaltRechts = new SysUtilKostentraeger();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			break;
 		}
 
