@@ -12,8 +12,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.SwingWorker;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import hauptFenster.UIFSplitPane;
 
@@ -35,7 +38,7 @@ import RehaInternalFrame.JAbrechnungInternal;
 import events.PatStammEvent;
 import events.PatStammEventListener;
 
-public class Abrechnung1 extends JXPanel implements PatStammEventListener,ActionListener{
+public class Abrechnung1 extends JXPanel implements PatStammEventListener,ActionListener,TreeSelectionListener{
 
 	/**
 	 * 
@@ -103,6 +106,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
 		treeModelKasse = new DefaultTreeModel(rootKasse);
 		treeKasse = new JXTree( rootKasse );
+		treeKasse.getSelectionModel().addTreeSelectionListener(this);
 		JScrollPane jscrk = JCompTools.getTransparentScrollPane(treeKasse);
 		pb.add(jscrk,cc.xy(2, 10));
 		
@@ -194,6 +198,15 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private void doAufraeumen(){
 		butLinks[0].removeActionListener(this);
 		cmbDiszi.removeActionListener(this);
+	}
+	@Override
+	public void valueChanged(TreeSelectionEvent arg0) {
+		TreePath path = arg0.getNewLeadSelectionPath();
+	    String[] split = path.toString().split(",");
+	    for(int i = 0;i<split.length;i++){
+	    	System.out.println("****"+split[i]);
+	    }
+		
 	}
 
 }
