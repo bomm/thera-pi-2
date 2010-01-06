@@ -246,7 +246,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gewählt");
+    		//System.out.println("Es wurde Formular "+iformular+" gewählt");
         	
 		}else{
 			String mes = "Wenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
@@ -424,8 +424,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   int row = tabaktrez.rowAtPoint(point);
 				   tabaktrez.columnAtPoint(point);
 				   tabaktrez.setRowSelectionInterval(row, row);
-					System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
-							"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
+					//System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
+						//	"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
 					ZeigePopupMenu(arg0);
 					
 				}
@@ -525,16 +525,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			private static final long serialVersionUID = 1L;
 
 			public boolean editCellAt(int row, int column, EventObject e) {
-				System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
-				System.out.println("Event = "+e);
+				//System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
+				//System.out.println("Event = "+e);
 				if (e == null) {
 
-					System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
+					//System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
 				}
 				if (e instanceof MouseEvent) {
 					MouseEvent mouseEvent = (MouseEvent) e;
 					if (mouseEvent.getClickCount() > 1) {
-						System.out.println("edit!");
+						//System.out.println("edit!");
 					}
 				}
 
@@ -855,7 +855,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 
 		//String stmt = "update verordn set termine='"+sb.toString()+"' where id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6)+"'";
-		//System.out.println(stmt);
+		//System.out.println(sb.toString());
 		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
 		//new ExUndHop().setzeStatement(stmt);
 	}
@@ -1156,33 +1156,26 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(rezGeschlossen()){return;}
 				int row = tabaktterm.getRowCount();
 				if(row > 1){
-
-					Vector vec = dtermm.getDataVector();
-					//System.out.println("Gr��e des Vectors = "+vec.size()+"  / "+vec);
 					
-					Vector<MyTermClass> vterm = new Vector<MyTermClass>();
-					int lang = vec.size();
-					for(int y = 0;y < lang;y++){
-						vterm.add(new MyTermClass((String) ((Vector)vec.get(y)).get(0),
-								(String)((Vector)vec.get(y)).get(1),(String)((Vector)vec.get(y)).get(2),
-								(String)((Vector)vec.get(y)).get(3),(String)((Vector)vec.get(y)).get(4)) );
-					}
-					Collections.sort(vterm, new Comparator<MyTermClass>() {
-						   public int compare(MyTermClass o1, MyTermClass o2){
-						      return o1.getQDatum().compareTo(o2.getQDatum());
-						   }
-						});
+					Vector<Vector<String>> vec = (Vector<Vector<String>>)dtermm.getDataVector().clone();
+
+					//System.out.println("Unsortiert = "+vec);
+					
+					Comparator<Vector<String>> comparator = new Comparator<Vector<String>>() {
+						@Override
+						public int compare(Vector<String> o1, Vector<String> o2) {
+							String s1 = (String)o1.get(4);
+							String s2 = (String)o2.get(4);
+							return s1.compareTo(s2);
+						}
+					};
+					Collections.sort(vec,comparator);
 					dtermm.setRowCount(0);
-					Vector<String> sortvec = new Vector<String>();
-					for(int y = 0;y < lang;y++){
-						sortvec.clear();
-						sortvec.add(vterm.get(y).getDDatum());
-						sortvec.add(vterm.get(y).getBehandler());
-						sortvec.add(vterm.get(y).getStext());						
-						sortvec.add(vterm.get(y).getSArt());						
-						sortvec.add(vterm.get(y).getQDatum());
-						dtermm.addRow((Vector<String>)sortvec);
+					//System.out.println("Sortiert = "+vec);
+					for(int y = 0;y < vec.size();y++){
+						dtermm.addRow(vec.get(y));
 					}
+					tabaktterm.validate();
 					new Thread(){
 						public void run(){
 							termineSpeichern();
@@ -1433,7 +1426,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xcmd = "update verordn set abschluss='F' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
 				Reha.thisClass.patpanel.vecaktrez.set(62,(String)"F");
 				SqlInfo.sqlAusfuehren(xcmd);
-				System.out.println(xcmd);
+				//System.out.println(xcmd);
 				String rnr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
 				String cmd = "delete from fertige where rez_nr='"+rnr+"' LIMIT 1";
 				SqlInfo.sqlAusfuehren(cmd);
@@ -1531,6 +1524,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		    public boolean isCellEditable(int row, int col) {
 		        //Note that the data/cell address is constant,
 		        //no matter where the cell appears onscreen.
+		    	if(Reha.thisClass.patpanel.vecaktrez.get(62).equals("T")){
+		    		return false;
+		    	}
 		        if (col == 0){
 		        	return true;
 		        }else if(col == 1){
