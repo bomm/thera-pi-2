@@ -329,7 +329,7 @@ public void Abrechnung1Fenster(int setPos) {
 	}
 	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
 	if(abrech1 != null){
-		System.out.println("InternalFrame Kassenabrechnung bereits ge�ffnet");
+		System.out.println("InternalFrame Kassenabrechnung bereits geöffnet");
 		containerHandling(((JAbrechnungInternal)abrech1).getDesktop());
 		((JAbrechnungInternal)abrech1).aktiviereDiesenFrame( ((JAbrechnungInternal)abrech1).getName());
 		if( ((JAbrechnungInternal)abrech1).isIcon() ){
@@ -348,8 +348,8 @@ public void Abrechnung1Fenster(int setPos) {
 	abrechjry = new JAbrechnungInternal("thera-\u03C0  - Kassen-Abrechnung nach §302 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster("Abrechnung-1",(JComponent)abrechjry,1,(Container)abrechjry.getContentPane());
 	abrechjry.setName(name);
-	abrechjry.setSize(new Dimension(650,500));
-	abrechjry.setPreferredSize(new Dimension(650,500));
+	abrechjry.setSize(new Dimension(850,700));
+	abrechjry.setPreferredSize(new Dimension(850,700));
 	Reha.thisClass.abrechnung1panel = new Abrechnung1(abrechjry); 
 	abrechjry.setContent(Reha.thisClass.abrechnung1panel);	
 	abrechjry.addComponentListener(Reha.thisClass);
