@@ -291,7 +291,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	}
 	public JScrollPane getTabelle(){
 		ktblm = new MyKassenTableModel();
-		String[] column = 	{"K�rzel","Name1","Name2","Ort","Telefon","Telefax","IK-Kasse",""};
+		String[] column = 	{"Kürzel","Name1","Name2","Ort","Telefon","Telefax","IK-Kasse",""};
 		ktblm.setColumnIdentifiers(column);
 		kassentbl = new JXTable(ktblm);
 		kassentbl.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.Green.alpha(0.2f)));
@@ -542,8 +542,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			String sid = "";
 			int row = kassentbl.getSelectedRow();
 			if(row < 0){
-				String mes = "nWenn man den Langtext einer Kasse ändern will, empfiehlt es sich\n"+ 
-				"vorher die Kasse auszuw�hlen deren Langtext man ändern will!!!\nHerr schmeiß Hirn ra....\n";
+				String mes = "\nWenn man den Langtext einer Kasse ändern will, empfiehlt es sich\n"+ 
+				"vorher die Kasse auszuwählen deren Langtext man ändern will!!!\nHerr schmeiß Hirn ra....\n";
 				JOptionPane.showMessageDialog(null, mes);
 				suchen.requestFocus();
 				return;

@@ -1409,6 +1409,23 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xcmd = "update verordn set abschluss='T' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
 				SqlInfo.sqlAusfuehren(xcmd);
 				Reha.thisClass.patpanel.vecaktrez.set(62,(String)"T");
+				Vector<Vector<String>> kdat = SqlInfo.holeFelder("select ik_kasse,ik_kostent from kass_adr where id='"+
+						Reha.thisClass.patpanel.vecaktrez.get(37)+"' LIMIT 1");
+				String ikkass="",ikkost="",kname="",rnr="",patint="";
+				if(kdat.size()>0){
+					ikkass = kdat.get(0).get(0);
+					ikkost = kdat.get(0).get(1);
+				}else{
+					ikkass = "";
+					ikkost = "";
+				}
+				kname = (String) Reha.thisClass.patpanel.vecaktrez.get(36);
+				patint=(String) Reha.thisClass.patpanel.vecaktrez.get(0);
+				rnr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
+				String cmd = "insert into fertige set ikktraeger='"+ikkost+"', ikkasse='"+ikkass+"', "+
+				"name1='"+kname+"', rez_nr='"+rnr+"', pat_intern='"+patint+"', rezklasse='"+rnr.substring(0,2)+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+				
 			}else{
 				// bereits abgeschlossen muß geöffnet werden
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
@@ -1417,6 +1434,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				Reha.thisClass.patpanel.vecaktrez.set(62,(String)"F");
 				SqlInfo.sqlAusfuehren(xcmd);
 				System.out.println(xcmd);
+				String rnr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
+				String cmd = "delete from fertige where rez_nr='"+rnr+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(cmd);
 			}
 	}
 	private boolean doTageTest(String starttag,int tage){
