@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -16,6 +17,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import hauptFenster.UIFSplitPane;
@@ -106,6 +108,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
 		treeModelKasse = new DefaultTreeModel(rootKasse);
 		treeKasse = new JXTree( rootKasse );
+		treeKasse.setName("kassentree");
 		treeKasse.getSelectionModel().addTreeSelectionListener(this);
 		JScrollPane jscrk = JCompTools.getTransparentScrollPane(treeKasse);
 		pb.add(jscrk,cc.xy(2, 10));
@@ -161,10 +164,12 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 					treeKasse.setEnabled(true);
 					String kas = vecKassen.get(0).get(0);
 					astAnhaengen(kas);
+					rezepteAnhaengen(0);
 					for(int i = 0; i < vecKassen.size();i++){
 						if(! vecKassen.get(i).get(0).equals(kas)){
 							kas = vecKassen.get(i).get(0);
 							astAnhaengen(kas);
+							rezepteAnhaengen(i);
 						}
 					}
 					treeKasse.expandRow(0);
@@ -175,6 +180,23 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			}
 		}.execute();
 	}
+	private void rezepteAnhaengen(int knoten){
+		System.out.println(rootKasse.getChildAt(knoten));
+		String kasse = rootKasse.getChildAt(knoten).toString();
+		String dsz = diszis[cmbDiszi.getSelectedIndex()];
+		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select rez_nr,pat_intern from fertige where rezklasse='"+dsz+"' AND name1='"+
+				kasse+"' ORDER BY pat_intern");
+		
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) rootKasse.getChildAt(knoten);
+		DefaultMutableTreeNode treeitem = null;
+		for(int i = 0;i<vecKassen.size();i++){
+			String name = SqlInfo.holeFelder("select n_name from pat5 where pat_intern='"+
+					vecKassen.get(i).get(1)+"' LIMIT 1").get(0).get(0);
+			treeitem = new DefaultMutableTreeNode(vecKassen.get(i).get(0)+"-"+name);
+			node.add(treeitem);
+		}
+
+	}
 	private void astAnhaengen(String ast){
 		System.out.println("HauptAst wird angehängt");
 		DefaultMutableTreeNode node = new DefaultMutableTreeNode(ast);
@@ -184,29 +206,56 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	private void kassenBaumLoeschen(){
 		System.out.println("Kassenbaum wird gelöscht");
-		rootKasse.removeAllChildren();
 		treeKasse.collapseAll();
+		rootKasse.removeAllChildren();
 		treeKasse.validate();
-		/*
-		int anzahl = treeModelKasse.getChildCount(rootKasse);
-		for(int i = 0; i < anzahl; i++){
-			treeModelKasse.removeNodeFromParent(rootKasse);	
+	}
+	private void doKassenTreeAuswerten(TreeSelectionEvent arg0){
+		if(arg0.getPath().getPathCount()==2){
+			//Kasse ausgewählt
+			return;
 		}
-		*/
-				
+		if(arg0.getPath().getPathCount()==3){
+			//Rezept ausgewählt
+			return;
+		}
 	}
 	private void doAufraeumen(){
 		butLinks[0].removeActionListener(this);
 		cmbDiszi.removeActionListener(this);
+		treeKasse.getSelectionModel().removeTreeSelectionListener(this);
 	}
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
 		TreePath path = arg0.getNewLeadSelectionPath();
-	    String[] split = path.toString().split(",");
+		/*
+		String[] split = path.toString().split(",");
+	    System.out.println("Pfad als ganzes = "+path.toString());
+	    System.out.println("Pfad-Count = "+path.getPathCount());
 	    for(int i = 0;i<split.length;i++){
 	    	System.out.println("****"+split[i]);
 	    }
-		
+	    */
+	    if(arg0.getSource().equals(treeModelKasse)){
+	    	doKassenTreeAuswerten(arg0);
+	    }
+	}
+	public void analysiereRezept(String rez,String pat){
+		//rezeptdaten holen
+		//testen ob 18 oder im Behandlungsverlauf 18 geworden
+		//testen ob befreit
+		//testen ob wechsel zwischen befreit und nicht befreit
+		//testen ob Tarifwechsel während der Behandlung
+		/**
+		 * 
+		 */
+		// erforderliche Variablen
+		//boolean vollfrei
+		//boolean teilfrei
+		//boolean frei anfang
+		//boolean tarifwechsel
+		//String stichtag_jahreswechsel = 31.12.Vorjahr
+		//String stichtag_tarifwechsel = xx.xx.xxxx
 	}
 
 }
