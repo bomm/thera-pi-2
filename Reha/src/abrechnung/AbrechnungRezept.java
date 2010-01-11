@@ -1,12 +1,14 @@
 package abrechnung;
 
 import hauptFenster.Reha;
+import hauptFenster.UIFSplitPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -17,13 +19,17 @@ import java.util.Vector;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -43,9 +49,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
+import systemTools.StringTools;
 import terminKalender.DatFunk;
 
-public class AbrechnungRezept extends JXPanel{
+public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 	/**
 	 * 
 	 */
@@ -74,10 +81,42 @@ public class AbrechnungRezept extends JXPanel{
 	public JXTable tageTbl = null;
 	public MyTageTableModel tageMod = new MyTageTableModel();
 	
+	private UIFSplitPane jSplitOU = null;
+	private String[] voArt = {"Erstverordnung","Folgeverordnung","Folgeverordn. außerhalb d. Regelf."};
+	
+	JEditorPane htmlPane = null;
+	
 	public AbrechnungRezept(Abrechnung1 xeltern){
 		eltern = xeltern;
 		setLayout(new BorderLayout());
-		add(getEinzelRezPanel(),BorderLayout.CENTER);
+		//add(getEinzelRezPanel(),BorderLayout.CENTER);
+		add(getSplitPane(),BorderLayout.CENTER);
+	}
+	private JXPanel getSplitPane(){
+		JXPanel jpan = new JXPanel();
+		jpan.setLayout(new BorderLayout());
+		jSplitOU =  UIFSplitPane.createStrippedSplitPane(JSplitPane.VERTICAL_SPLIT,
+				getHTMLPanel(),
+				getEinzelRezPanel()); 
+		jSplitOU.setDividerSize(7);
+		jSplitOU.setDividerBorderVisible(true);
+		jSplitOU.setName("BrowserSplitObenUnten");
+		jSplitOU.setOneTouchExpandable(true);
+		jSplitOU.setDividerLocation(350);
+		jpan.add(jSplitOU,BorderLayout.CENTER);
+
+		return jpan;
+	}
+	private JScrollPane getHTMLPanel(){
+		htmlPane = new JEditorPane(/*initialURL*/);
+        htmlPane.setContentType("text/html");
+        htmlPane.setEditable(false);
+        htmlPane.setOpaque(false);
+        htmlPane.addHyperlinkListener(this);
+        parseHTML(null);
+        JScrollPane jscr = JCompTools.getTransparentScrollPane(htmlPane);
+        jscr.validate();
+		return jscr;
 	}
 	public boolean setNewRez(String rez){
 		try{
@@ -193,11 +232,12 @@ public class AbrechnungRezept extends JXPanel{
 		//treeKasse.getSelectionModel().addTreeSelectionListener(this);
 		JScrollPane jscrr = JCompTools.getTransparentScrollPane(treeRezept);
 		jscrr.validate();
+		/*
 		jpan.add(jscrr,cc.xy(3,4));
 		treeRezept.expandRow(0);
 		treeRezept.expandRow(1);
 		treeRezept.repaint();
-
+		*/
 		/****/
 		tageMod.setColumnIdentifiers(new String[] {"Beh.Tag","Behandlung","Anzahl","Einzelpreis","Zuzahlung","Zuz.Betrag",""});
 		tageTbl = new JXTable(tageMod);
@@ -229,8 +269,8 @@ public class AbrechnungRezept extends JXPanel{
 		tageTbl.validate();
 
 		/****/
-
-		jpan.add(jscrt,cc.xy(3,6));
+		//jpan.add(jscrt,cc.xy(3,6));
+		jpan.add(jscrt,cc.xywh(3,4,1,3));
 		return jpan;
 	}
 	private JToolBar getToolbar(){
@@ -266,7 +306,7 @@ public class AbrechnungRezept extends JXPanel{
 		((DefaultMutableTreeNode)rootNode).setUserObject(rez_nr.trim());
 		
 		treeRezept.repaint();
-		
+		parseHTML(rez_nr.trim());
 
 		/*
 		labs[0].setText(rez_nr.trim()); //Rezeptnummer		
@@ -325,6 +365,158 @@ public class AbrechnungRezept extends JXPanel{
 		jscr.validate();
 		return jscr;
 		
+	}
+	
+	private void parseHTML(String rez_nr){
+		if(rez_nr==null){
+			return;
+		}
+		/*
+		labs[0].setText(rez_nr.trim()); //Rezeptnummer		
+		labs[1].setText(DatFunk.sDatInDeutsch(vec_rez.get(0).get(2))); //Rezeptdatum
+		labs[2].setText(vec_pat.get(0).get(7)); //Status
+		labs[3].setText(vec_pat.get(0).get(6)); //Versichertennummer
+		labs[4].setText(vec_pat.get(0).get(0)); //Nachname
+		labs[5].setText(vec_pat.get(0).get(1)); //Vorname
+		labs[6].setText(DatFunk.sDatInDeutsch(vec_pat.get(0).get(2))); //Geboren
+		*/
+
+		String text = 
+		"<html><head>"+
+		"<STYLE TYPE=\"text/css\">"+
+		"<!--"+
+		"A{text-decoration:none;background-color:transparent;border:none}"+
+		"TD{font-family: Arial; font-size: 12pt; padding-left:5px;padding-right:30px}"+
+		".spalte1{color:#0000FF;}"+
+		".spalte2{color:#FF0000;}"+
+		".spalte2{color:#FF0000;}"+
+		"--->"+
+		"</STYLE>"+
+		"</head>"+
+		"<div style=margin-left:30px;>"+
+		"<font face=\"Tahoma\"><style=margin-left=30px;>"+
+		"<b>"+rez_nr+"<b><br><br>"+
+		"<table>"+
+		/*****Rezept****/
+		/*******/
+		"<tr>"+
+		"<th rowspan=\"3\"><a href=\"http://rezedit.de\"><img src='file:///"+Reha.proghome+"icons/Rezept.png' border=0></a></th>" +
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Ausstellungsdatum"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		DatFunk.sDatInDeutsch(vec_rez.get(0).get(2))+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Verordnungsart"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(7)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Indikationsschlüssel"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(7)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td>&nbsp;"+
+		"</td>"+
+		"</tr>"+
+		/********Patient********/
+		"<tr>"+
+		"<th rowspan=\"5\" valign=\"top\"><img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=52 height=52></th>" +
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Patient"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		StringTools.EGross(vec_pat.get(0).get(0))+", "+
+		StringTools.EGross(vec_pat.get(0).get(1))+", geb.am "+DatFunk.sDatInDeutsch(vec_pat.get(0).get(2))+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Adresse"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		StringTools.EGross(vec_pat.get(0).get(3))+", "+
+		vec_pat.get(0).get(4)+" "+
+		StringTools.EGross(vec_pat.get(0).get(5))+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Versicherten-Status"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(7)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Mitgliedsnummer"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(6)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Zuzahlungs-Status"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(6)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td>&nbsp;"+
+		"</td>"+
+		"</tr>"+
+		/********Arzt********/
+		"<tr>"+
+		"<th rowspan=\"3\" valign=\"top\"><img src='file:///"+Reha.proghome+"icons/system-users.png' width=52 height=52></th>" +
+		"<td class=\"spalte1\" align=\"right\">"+
+		"verordnender Arzt"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(0)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"Betriebsstätte"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(6)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+		"<tr>"+
+		"<td class=\"spalte1\" align=\"right\">"+
+		"LANR"+
+		"</td><td class=\"spalte2\" align=\"left\">"+
+		vec_pat.get(0).get(6)+
+		"</td>"+
+		"</tr>"+
+		/*******/
+
+
+
+		"</table>"+
+		"</font>"+
+		"</div>"+
+		"</html>";
+		this.htmlPane.setText(text);
+	}
+	@Override
+	public void hyperlinkUpdate(HyperlinkEvent event) {
+	    if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+	        	System.out.println(event.getURL());
+	      }
 	}
 
 }

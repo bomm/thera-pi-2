@@ -49,7 +49,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private static final long serialVersionUID = -3580427603080353812L;
 	private JAbrechnungInternal jry;
 	private UIFSplitPane jSplitLR = null;
-	private UIFSplitPane jSplitLinksOU = null;
+	
 	String[] diszis = {"KG","MA","ER","LO"};
 
 	/*******Controls für die linke Seite*********/
