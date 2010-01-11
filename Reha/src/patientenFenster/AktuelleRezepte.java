@@ -70,6 +70,7 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
+import systemTools.MyTableStringDatePicker;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 
@@ -553,9 +554,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//tabaktterm.setSortOrder(4,(SortOrder) setSort);
 		tabaktterm.setSelectionMode(0);
 		tabaktterm.setHorizontalScrollEnabled(true);
-		tbl = new DateTableCellEditor();
-		//tbl = new MyEditor(new JTextField());
-		tabaktterm.getColumnModel().getColumn(0).setCellEditor(tbl);
+
+		//tbl = new DateTableCellEditor();
+		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(tbl);
+		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(tbl);
+
+		MyTableStringDatePicker pic = new MyTableStringDatePicker();
+		tabaktterm.getColumnModel().getColumn(0).setCellEditor(pic);
+		
 		//tabaktterm.getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
 		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
 		//tabaktterm.getColumn(0).setCellEditor(new MyDateEditor(new SimpleDateFormat("dd.mm.yyyyy")));

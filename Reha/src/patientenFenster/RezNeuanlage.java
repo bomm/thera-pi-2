@@ -1018,7 +1018,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[25].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
 		jtf[26].setText(this.vec.get(38)); //id von Patient
 		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
-		// V�lliger Murks mu� dringend �berarbeitet werden
+		// Völliger Murks muß dringend überarbeitet werden
 		/*
 		if(jtf[14].getText().equals("T") && this.vec.get(61).equals("T")){
 			System.out.println("1. Daten = "+jtf[14].getText()+" / "+this.vec.get(61));
@@ -1142,7 +1142,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		String unter18 = "F";
 		for(int i = 0; i < 1;i++){
 			if(SystemConfig.vZuzahlRegeln.get(izuzahl-1) <= 0){
-				//System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
+				System.out.println("ZuzahlStatus = Zuzahlung nicht erforderlich");
 				szzstatus = "0";
 				break;
 			}
@@ -1152,7 +1152,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			//System.out.println("ZuzahlStatus = Zuzahlung (zun�chst) erforderlich, pr�fe ob befreit oder unter 18");
 			if(Reha.thisClass.patpanel.patDaten.get(30).equals("T")){
-				//System.out.println("ZuzahlStatus = Patient ist befreit");
+				System.out.println("ZuzahlStatus = Patient ist befreit");
 				//laut Patientenstamm befreit aber evtl. noch nicht f�r dieses Rezept.
 				//deshalb pr�fen ob bereits bezahlt;
 				if(this.vec.get(14).equals("T")){
@@ -1164,7 +1164,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			
 			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))){
-				//System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
+				System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
 				int aj = Integer.parseInt(SystemConfig.aktJahr)-18;
 				String gebtag = DatFunk.sHeute().substring(0,6)+Integer.toString(aj);
 				long tage = DatFunk.TageDifferenz(DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)) ,gebtag);
@@ -1227,8 +1227,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 		sbuf.append(" where id='"+this.vec.get(35)+"'");
 		//System.out.println(sbuf.toString());	
-		
-		new ExUndHop().setzeStatement(sbuf.toString());
+		SqlInfo.sqlAusfuehren(sbuf.toString());
+		//new ExUndHop().setzeStatement(sbuf.toString());
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -1378,7 +1378,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";
 				break;
 			}
-			if(nummer.equals("rh")){
+			if(nummer.equalsIgnoreCase("rh")){
 				szzstatus = "0";
 				break;
 			}
@@ -1445,8 +1445,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("where id='"+Integer.toString(rezidneu)+"' ");
 		//System.out.println("Nachfolgend er UpdateString f�r Rezeptneuanlage--------------------");
 		//System.out.println(sbuf.toString());
-		
-		new ExUndHop().setzeStatement(sbuf.toString());
+		SqlInfo.sqlAusfuehren(sbuf.toString());
+		//new ExUndHop().setzeStatement(sbuf.toString());
 		/*
 		Vector tabvec = new Vector();
 		tabvec.add(nummer.toUpperCase()+new Integer(reznr).toString());

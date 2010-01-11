@@ -647,8 +647,8 @@ public class SystemConfig {
 			vNeuePreiseAb.add((Vector<String>)vpreisab.clone());
 			vNeuePreiseRegel.add((Vector<Integer>)vpreisreg.clone());
 		}
-		System.out.println(vNeuePreiseAb);
-		System.out.println(vNeuePreiseRegel);
+		System.out.println("Neue Preise ab="+vNeuePreiseAb);
+		System.out.println("Neue Preise Regeln = "+vNeuePreiseRegel);
 
 	}
 	public static void HashMapsVorbereiten(){

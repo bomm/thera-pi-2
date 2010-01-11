@@ -2,6 +2,7 @@ package abrechnung;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -62,7 +63,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 
 	
 	/*******Controls für die rechte Seite*********/
-	
+	AbrechnungRezept abrRez = null;
 	public Abrechnung1(JAbrechnungInternal xjry){
 		super();
 		this.setJry(xjry);
@@ -120,9 +121,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		return jscr;
 	}
 	private JXPanel getRight(){
-		JXPanel pan = new JXPanel();
-		//pan.setBackground(Color.GRAY);
-		return pan;
+		this.abrRez = new AbrechnungRezept(this);
+		return abrRez;
 	}
 
 	@Override
@@ -154,25 +154,36 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			protected Void doInBackground() throws Exception {
 				try{
 					String dsz = diszis[cmbDiszi.getSelectedIndex()];
-					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select name1 from fertige where rezklasse='"+dsz+"' ORDER BY name1");
+					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select name1,ikktraeger from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger");
 					if(vecKassen.size() <= 0){
 						kassenBaumLoeschen();
 						treeKasse.setEnabled(false);
 						return null;
 					}
+					int aeste = 0;
 					kassenBaumLoeschen();
 					treeKasse.setEnabled(true);
-					String kas = vecKassen.get(0).get(0);
+					String kas = vecKassen.get(0).get(0).trim();
+					String ktraeger = vecKassen.get(0).get(1).trim();
 					astAnhaengen(kas);
-					rezepteAnhaengen(0);
+					rezepteAnhaengen(aeste);
+					aeste++;
 					for(int i = 0; i < vecKassen.size();i++){
-						if(! vecKassen.get(i).get(0).equals(kas)){
+						System.out.println(ktraeger);
+						System.out.println(vecKassen.get(i).get(1));
+						if(! vecKassen.get(i).get(1).equals(ktraeger)){
 							kas = vecKassen.get(i).get(0);
+							ktraeger = vecKassen.get(i).get(1);
 							astAnhaengen(kas);
-							rezepteAnhaengen(i);
+							rezepteAnhaengen(aeste);
+							aeste++;
+							treeKasse.repaint();
 						}
 					}
+					
+					treeKasse.setRootVisible(true);
 					treeKasse.expandRow(0);
+					treeKasse.repaint();
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -181,7 +192,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		}.execute();
 	}
 	private void rezepteAnhaengen(int knoten){
-		System.out.println(rootKasse.getChildAt(knoten));
+		System.out.println("Knoten von root "+rootKasse.getChildCount());
+		//System.out.println(rootKasse.getChildAt(knoten));
 		String kasse = rootKasse.getChildAt(knoten).toString();
 		String dsz = diszis[cmbDiszi.getSelectedIndex()];
 		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select rez_nr,pat_intern from fertige where rezklasse='"+dsz+"' AND name1='"+
@@ -210,16 +222,25 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		rootKasse.removeAllChildren();
 		treeKasse.validate();
 	}
-	private void doKassenTreeAuswerten(TreeSelectionEvent arg0){
-		if(arg0.getPath().getPathCount()==2){
+	/*******************************************/
+	private void doKassenTreeAuswerten(int pathCount,String path){
+		//System.out.println("PathCount = "+arg0.getPath().getPathCount());
+		if(pathCount==2){
 			//Kasse ausgewählt
 			return;
 		}
-		if(arg0.getPath().getPathCount()==3){
+		if(pathCount==3){
 			//Rezept ausgewählt
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			if(! this.abrRez.setNewRez(path)){
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				return;
+			}
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			return;
 		}
 	}
+	/*******************************************/	
 	private void doAufraeumen(){
 		butLinks[0].removeActionListener(this);
 		cmbDiszi.removeActionListener(this);
@@ -236,8 +257,10 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	    	System.out.println("****"+split[i]);
 	    }
 	    */
+		System.out.println("arg0 = "+arg0.getPath().getPathCount());
+		doKassenTreeAuswerten(arg0.getPath().getPathCount(),arg0.getPath().toString());
 	    if(arg0.getSource().equals(treeModelKasse)){
-	    	doKassenTreeAuswerten(arg0);
+	    	doKassenTreeAuswerten(arg0.getPath().getPathCount(),arg0.getPath().toString());
 	    }
 	}
 	public void analysiereRezept(String rez,String pat){

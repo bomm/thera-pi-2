@@ -89,7 +89,7 @@ public class RezTools {
 		//
 		
 		
-		//1. Schritt haben wir bereits Termineinträge die man auswerten kann
+		//1. Schritt haben wir bereits Termineintrï¿½ge die man auswerten kann
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
@@ -115,36 +115,36 @@ public class RezTools {
 				//break;
 			}
 
-			/************************ Jetzt der Ober-Scheißdreck für den Achtzehner-Test***********************/
+			/************************ Jetzt der Ober-ScheiÃŸdreck fÃ¼r den Achtzehner-Test***********************/
 			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(60)).equals("T")){
 				// Es ist ein unter 18 Jahre Test notwendig
 				if(bTermine){
 					
 					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.patDaten.get(4))); 
 					if( test[0] > 0 ){
-						//muß zuzahlen
+						//muï¿½ zuzahlen
 						zm.allefrei = false;
 						if(test[1] > 0){
 							zm.allefrei = false;
 							zm.allezuzahl = false;
 							zm.anfangfrei = true;
 							zm.teil1 = test[1];
-							System.out.println("Splitten frei für "+test[1]+" Tage, bezahlen für "+(maxAnzahl()-test[1]));
+							System.out.println("Splitten frei fï¿½r "+test[1]+" Tage, bezahlen fï¿½r "+(maxAnzahl()-test[1]));
 							iret = 1;
 						}else{
 							zm.allezuzahl = true;
 							zm.teil1 = test[1];
-							System.out.println("Jeden Termin bezahlen insgesamt bezahlen für "+(maxAnzahl()-test[1]));
+							System.out.println("Jeden Termin bezahlen insgesamt bezahlen fï¿½r "+(maxAnzahl()-test[1]));
 							iret = 2;
 						}
 					}else{
 						//Voll befreit
-						System.out.println("Frei für "+test[1]+" Tage - also alle");
+						System.out.println("Frei fï¿½r "+test[1]+" Tage - also alle");
 						zm.allefrei = true;
 						iret = 0;
 					}
 				}else{
-					//Es stehen keine Termine für Analyse zur Verfügung also muß das Fenster für manuelle Eingabe geöffnet werden!!
+					//Es stehen keine Termine fï¿½r Analyse zur Verfï¿½gung also muï¿½ das Fenster fï¿½r manuelle Eingabe geï¿½ffnet werden!!
 					String geburtstag = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
 					String stichtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
 					if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
@@ -166,7 +166,7 @@ public class RezTools {
 			/************************ Keine Befreiung Aktuell und keine Vorjahr (Normalfall************************/
 			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(12)).equals("F") && 
 					(((String)Reha.thisClass.patpanel.vecaktrez.get(59)).trim().equals("")) ){
-				// Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.
+				// Es liegt weder eine Befreiung fï¿½r dieses noch fï¿½r letztes Jahr vor.
 				// Standard
 				iret = 2;
 				break;
@@ -339,11 +339,11 @@ public class RezTools {
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
 		//System.out.println("----------------------------------------------------");
-		//System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
+		//System.out.println("Endgï¿½ltige und geparste Rezeptgebï¿½hr = "+s+" EUR");
 		//System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 		
-		// Hier muß noch Hausbesuchshandling eingebaut werden
+		// Hier muï¿½ noch Hausbesuchshandling eingebaut werden
 		// Ebenso das Wegegeldhandling
 	}
 	
@@ -388,7 +388,7 @@ public class RezTools {
 		//System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
-		/***************/ //Einbauen für Barcode
+		/***************/ //Einbauen fï¿½r Barcode
 		int[] gesanzahl = {0,0,0,0};
 		int i;
 		BigDecimal einzelpreis = null;
@@ -474,14 +474,14 @@ public class RezTools {
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
 		System.out.println("----------------------------------------------------");
-		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
+		System.out.println("Endgï¿½ltige und geparste Rezeptgebï¿½hr = "+s+" EUR");
 		//System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 	}
 		
 
 	public static void constructEndeFreiRezHMap(ZuzahlModell zm,boolean anfang){
-		System.out.println("*****Über Ende Frei*********");
+		System.out.println("*****ï¿½ber Ende Frei*********");
 		constructAnfangFreiRezHMap(zm,anfang);
 	}	
 	public static Vector<Vector<String>>splitteTermine(String terms){
@@ -574,7 +574,7 @@ public class RezTools {
 		//((BigDecimal)retobj[0]).add(BigDecimal.valueOf(new Double(1.00)));
 		//((BigDecimal) retobj[0]).add(new BigDecimal(rezwert));
 		Object[] retobj = {(BigDecimal) rezwert,(Double)rezgeb};
-		System.out.println("Die tatsächlich HB-Anzahl = "+realhbAnz);
+		System.out.println("Die tatsï¿½chlich HB-Anzahl = "+realhbAnz);
 		System.out.println("Der Rezeptwert zu Beginn = "+retobj[0]);
 		if(zm.hausbesuch){ //Hausbesuch
 			System.out.println("Hausbesuch ist angesagt");
@@ -585,7 +585,7 @@ public class RezTools {
 			String kmpausch = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3);			
 			String hbpos = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0);
 			String hbmit = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1);
-			//für jede Disziplin eine anderes praefix
+			//fï¿½r jede Disziplin eine anderes praefix
 			String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
 
 			kmgeld = kmgeld.replaceAll("x",ersatz); 
@@ -640,8 +640,8 @@ public class RezTools {
 						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 					}
 					/*******************************/
-					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
-						System.out.println("Es könnten Kilometer abgerechnet werden");
+					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden kï¿½nnen
+						System.out.println("Es kï¿½nnten Kilometer abgerechnet werden");
 						if(zm.km > 0 ){
 							System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 
@@ -680,8 +680,8 @@ public class RezTools {
 							//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 						}else{// Keine Kilometer angegeben also pauschale verwenden
 							System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
-							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-								System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfï¿½gung stellt
+								System.out.println("Die Kasse stellt eine Wegpauschale zur Verfï¿½gung");
 								SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
 								preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -716,7 +716,7 @@ public class RezTools {
 								
 
 							}else{
-								JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+								JOptionPane.showMessageDialog(null, "Dieser Kostentrï¿½ger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 								SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
 								SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
 								SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
@@ -725,8 +725,8 @@ public class RezTools {
 							}
 							
 						}
-					}else{// es können keine Kilometer abgerechnet werden
-						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
+					}else{// es kï¿½nnen keine Kilometer abgerechnet werden
+						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfï¿½gung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
 						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -844,8 +844,8 @@ public class RezTools {
 				/*******************************/
 				
 
-				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
-					System.out.println("Es könnten Kilometer abgerechnet werden");
+				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden kï¿½nnen
+					System.out.println("Es kï¿½nnten Kilometer abgerechnet werden");
 					if(zm.km > 0 ){
 						System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 						
@@ -874,8 +874,8 @@ public class RezTools {
 
 					}else{
 						System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
-						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
-							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfï¿½gung stellt
+							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfï¿½gung");
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
 							preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -896,7 +896,7 @@ public class RezTools {
 							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 							/*******************************/
 						}else{
-							JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+							JOptionPane.showMessageDialog(null, "Dieser Kostentrï¿½ger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
 							SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");						
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
@@ -905,7 +905,7 @@ public class RezTools {
 
 						}
 					}
-				}else{// es können keine Kilometer abgerechnet werden
+				}else{// es kï¿½nnen keine Kilometer abgerechnet werden
 					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");		
 					SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");				
 					SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
