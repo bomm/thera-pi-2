@@ -60,8 +60,168 @@ public class RezTools {
 		Collections.sort(retvec,comparator);
 		return (Vector)retvec.clone();
 	}
-	/************************************************************/
-/*	
+	
+/********************************************************************************/
+	public static Vector<Vector<String>> macheTerminVector(String termine){
+		String[] tlines = termine.split("\n");
+		int lines = tlines.length;
+		//System.out.println("Anzahl Termine = "+lines);
+		Vector<Vector<String>> tagevec = new Vector<Vector<String>>();
+		Vector<String> tvec = new Vector<String>();
+		String[] terdat = null;
+		for(int i = 0;i<lines;i++){
+			terdat = tlines[i].split("@");
+			int ieinzel = terdat.length;
+			//System.out.println("Anzahl Splits = "+ieinzel);
+			tvec.clear();
+			for(int y = 0; y < ieinzel;y++){
+				if(y==0){
+					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					if(i==0){
+						SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
+					}
+				}else{
+					tvec.add(new String(terdat[y]));					
+				}
+				//System.out.println("Feld "+y+" = "+terdat[y]);	
+			}
+			//System.out.println("Termivector = "+tvec);
+			tagevec.add((Vector)tvec.clone());
+		}
+		if(tagevec.size() > 0 ){
+			Comparator<Vector<String>> comparator = new Comparator<Vector<String>>() {
+				@Override
+				public int compare(Vector<String> o1, Vector<String> o2) {
+					String s1 = (String)o1.get(4);
+					String s2 = (String)o2.get(4);
+					return s1.compareTo(s2);
+				}
+			};
+			Collections.sort(tagevec,comparator);
+
+		}
+		return (Vector<Vector<String>>)tagevec.clone();
+		
+	}
+/********************************************************************************/
+	public static String getPreisAktFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-1;
+		String ret = "0.00";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(idpos).equals(id)){
+				ret = vec.get(i).get(suchenin);
+				break;
+			}
+		}
+		return ret;
+	}
+	public static String getPreisAltFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		int suchenin = (Integer.parseInt(preisgruppe)*4);
+		String ret = "0.00";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(idpos).equals(id)){
+				ret = vec.get(i).get(suchenin);
+				break;
+			}
+		}
+		return ret;
+	}
+/***************************************/
+	public static String getPreisAktFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-1;
+		String ret = "0.00";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(1).equals(pos)){
+				ret = vec.get(i).get(suchenin);
+				break;
+			}
+		}
+		return ret;
+	}
+	public static String getPreisAltFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int suchenin = (Integer.parseInt(preisgruppe)*4);
+		String ret = "0.00";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(1).equals(pos)){
+				ret = vec.get(i).get(suchenin);
+				break;
+			}
+		}
+		return ret;
+	}
+	
+/***************************************/	
+	public static String getIDFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		String ret = "-1";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(suchenin).equals(pos)){
+				ret = vec.get(i).get(idpos);
+				break;
+			}
+		}
+		return ret;
+	}
+	public static String getPosFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		String ret = "";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(idpos).equals(id)){
+				ret = vec.get(i).get(suchenin);
+				break;
+			}
+		}
+		return ret;
+	}
+
+	public static String getKurzformFromID(String id,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		String ret = "";
+		for(i = 0; i < lang;i++){
+			if(vec.get(i).get(idpos).equals(id)){
+				ret = vec.get(i).get(1);
+				break;
+			}
+		}
+		return ret;
+	}
+	public static String getKurzformFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		String ret = "";
+		for(i = 0; i < lang;i++){
+			if(vec.get(i).get(suchenin).equals(pos)){
+				ret = vec.get(i).get(1);
+				break;
+			}
+		}
+		return ret;
+	}
+
+	public static String getIDFromKurzform(String kurzform,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		String ret = "";
+		for(i = 0; i < lang;i++){
+			if(vec.get(i).get(1).equals(kurzform)){
+				ret = vec.get(i).get(idpos); 
+				break;
+			}
+		}
+		return ret;
+	}
+	/*	
 	class ZuzahlModell{
 		public int gesamtZahl;
 		public boolean allefrei;
@@ -129,17 +289,17 @@ public class RezTools {
 							zm.allezuzahl = false;
 							zm.anfangfrei = true;
 							zm.teil1 = test[1];
-							System.out.println("Splitten frei f�r "+test[1]+" Tage, bezahlen f�r "+(maxAnzahl()-test[1]));
+							System.out.println("Splitten frei für "+test[1]+" Tage, bezahlen für "+(maxAnzahl()-test[1]));
 							iret = 1;
 						}else{
 							zm.allezuzahl = true;
 							zm.teil1 = test[1];
-							System.out.println("Jeden Termin bezahlen insgesamt bezahlen f�r "+(maxAnzahl()-test[1]));
+							System.out.println("Jeden Termin bezahlen insgesamt bezahlen für "+(maxAnzahl()-test[1]));
 							iret = 2;
 						}
 					}else{
 						//Voll befreit
-						System.out.println("Frei f�r "+test[1]+" Tage - also alle");
+						System.out.println("Frei für "+test[1]+" Tage - also alle");
 						zm.allefrei = true;
 						iret = 0;
 					}

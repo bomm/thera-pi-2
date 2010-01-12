@@ -153,7 +153,7 @@ public class RezeptDaten extends JXPanel{
 				}else{
 					Reha.thisClass.patpanel.rezlabs[7].setText(" ");
 				}
-				Vector<Vector> preisvec = null;
+				Vector<Vector<String>> preisvec = null;
 				if(xreznummer.contains("KG")){
 					preisvec = ParameterLaden.vKGPreise;
 				}else if(xreznummer.contains("MA")){
@@ -252,7 +252,7 @@ public class RezeptDaten extends JXPanel{
 		
 		
 	}
-	public String leistungTesten(int leistung,Vector<Vector> preisevec,int veczahl){
+	public String leistungTesten(int leistung,Vector<Vector<String>> preisevec,int veczahl){
 		String retwert = "----";
 		if(veczahl==-1 || veczahl==0){
 			return retwert;

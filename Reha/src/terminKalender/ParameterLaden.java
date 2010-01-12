@@ -21,11 +21,11 @@ public static Vector<Kollegen> vKKollegen = new Vector<Kollegen>();
 public static Vector<ArrayList> pKollegen = new Vector<ArrayList>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();
 
-public static Vector<Vector> vKGPreise = new Vector<Vector>();
-public static Vector<Vector> vMAPreise = new Vector<Vector>();
-public static Vector<Vector> vERPreise = new Vector<Vector>();
-public static Vector<Vector> vLOPreise = new Vector<Vector>();
-public static Vector<Vector> vRHPreise = new Vector<Vector>();
+public static Vector<Vector<String>> vKGPreise = new Vector<Vector<String>>();
+public static Vector<Vector<String>> vMAPreise = new Vector<Vector<String>>();
+public static Vector<Vector<String>> vERPreise = new Vector<Vector<String>>();
+public static Vector<Vector<String>> vLOPreise = new Vector<Vector<String>>();
+public static Vector<Vector<String>> vRHPreise = new Vector<Vector<String>>();
 
 /*
 public static Vector<ArrayList> vKGPreise = new Vector<ArrayList>();

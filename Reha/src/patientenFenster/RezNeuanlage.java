@@ -85,7 +85,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public boolean neu = false;
 	public String feldname = "";
 	public Vector<String> vec = null;
-	public Vector<Vector> preisvec = null;
+	public Vector<Vector<String>> preisvec = null;
 	private boolean klassenReady = false;
 	private boolean initReady = false;
 	private static final long serialVersionUID = 1L;
