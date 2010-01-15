@@ -48,12 +48,17 @@ public JRtaComboBox(Vector<Vector<String>> ve,int item,int ret){
 	this.vec = ve;
 	this.cmbdisplay = item;
 	this.cmbretvalue = ret;
-	if(this.vec.get(0) instanceof Vector){
-		fillCombo(this.vec);		
-	}else{
-		fillOneDimension(this.vec);
+	try{
+		if(this.vec == null){
+			
+		}else if(this.vec.get(0) instanceof Vector){
+			fillCombo(this.vec);		
+		}else{
+			fillOneDimension(this.vec);
+		}
+	}catch(Exception ex){
+		
 	}
-
 	addKeyListener(this);
 	addActionListener(this);
 }

@@ -21,8 +21,8 @@ public class DblCellEditor extends AbstractCellEditor implements TableCellEditor
     public Object getCellEditorValue() {
     	String foo;
     	try{
-    	foo = ((JFormattedTextField)component).getText().replaceAll(",", ".");
-        if(foo.length()==0){foo ="0.00";}
+    		foo = ((JFormattedTextField)component).getText().replaceAll(",", ".");
+    		if(foo.length()==0){foo ="0.00";}
     	}catch(Exception ex){
     		foo = "0.00";
     	}
@@ -35,13 +35,14 @@ public class DblCellEditor extends AbstractCellEditor implements TableCellEditor
         ((JFormattedTextField)component).setText(String.valueOf(value));
         ((JFormattedTextField)component).selectAll();
         ((JFormattedTextField)component).setHorizontalAlignment(SwingConstants.RIGHT);
+        
         // Return the configured component
         //System.out.println("I've been Called!!");
         return component;
     }
     
 
-    @Override
+
     public boolean isCellEditable(EventObject evt) {
         if (evt instanceof MouseEvent) {
         	mitMaus = true;

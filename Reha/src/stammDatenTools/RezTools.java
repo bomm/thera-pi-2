@@ -104,6 +104,15 @@ public class RezTools {
 		
 	}
 /********************************************************************************/
+	public static boolean zweiPositionenBeiHB(String preisgruppe){
+		int pg = Integer.parseInt(preisgruppe)-1;
+		if(SystemConfig.vHBRegeln.get(pg).get(2).trim().equals("") &&
+				SystemConfig.vHBRegeln.get(pg).get(3).trim().equals("")	){
+			return false;
+		}
+		return true;
+	}
+/********************************************************************************/
 	public static String getPreisAktFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
@@ -111,7 +120,7 @@ public class RezTools {
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(suchenin);
+				ret = vec.get(i).get(suchenin).toString();
 				break;
 			}
 		}
@@ -124,7 +133,7 @@ public class RezTools {
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(suchenin);
+				ret = vec.get(i).get(suchenin).toString();
 				break;
 			}
 		}
@@ -137,7 +146,7 @@ public class RezTools {
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(1).equals(pos)){
-				ret = vec.get(i).get(suchenin);
+				ret = vec.get(i).get(suchenin).toString();
 				break;
 			}
 		}
@@ -149,7 +158,7 @@ public class RezTools {
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(1).equals(pos)){
-				ret = vec.get(i).get(suchenin);
+				ret = vec.get(i).get(suchenin).toString();
 				break;
 			}
 		}
@@ -164,7 +173,7 @@ public class RezTools {
 		String ret = "-1";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(suchenin).equals(pos)){
-				ret = vec.get(i).get(idpos);
+				ret = vec.get(i).get(idpos).toString();
 				break;
 			}
 		}
@@ -177,7 +186,7 @@ public class RezTools {
 		String ret = "";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(suchenin);
+				ret = vec.get(i).get(suchenin).toString();
 				break;
 			}
 		}
@@ -190,7 +199,7 @@ public class RezTools {
 		String ret = "";
 		for(i = 0; i < lang;i++){
 			if(vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(1);
+				ret = vec.get(i).get(1).toString();
 				break;
 			}
 		}
@@ -202,11 +211,25 @@ public class RezTools {
 		String ret = "";
 		for(i = 0; i < lang;i++){
 			if(vec.get(i).get(suchenin).equals(pos)){
-				ret = vec.get(i).get(1);
+				ret = vec.get(i).get(1).toString();
 				break;
 			}
 		}
 		return ret;
+	}
+	public static Object[] getKurzformUndIDFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		int idpos = vec.get(0).size()-1;
+		Object[] retobj = {"",""};
+		for(i = 0; i < lang;i++){
+			if(vec.get(i).get(suchenin).equals(pos)){
+				retobj[0] = vec.get(i).get(1).toString();
+				retobj[1] = vec.get(i).get(idpos).toString();
+				break;
+			}
+		}
+		return retobj.clone();
 	}
 
 	public static String getIDFromKurzform(String kurzform,Vector<Vector<String>> vec){
@@ -215,7 +238,7 @@ public class RezTools {
 		String ret = "";
 		for(i = 0; i < lang;i++){
 			if(vec.get(i).get(1).equals(kurzform)){
-				ret = vec.get(i).get(idpos); 
+				ret = vec.get(i).get(idpos).toString(); 
 				break;
 			}
 		}

@@ -1539,6 +1539,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		        	return true;
 		        }else if(col == 2){
 		        	return true;
+		        }else if(col == 3){
+		        	return true;
 		        }else if(col == 11){
 		        	return true;
 		        } else{
