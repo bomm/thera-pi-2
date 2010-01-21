@@ -141,8 +141,17 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
-		if(cmd.equals("einlesen")){doEinlesen();}
+		if(cmd.equals("einlesen")){
+			String[] reznr = {"KG","MA","ER","LO"};
+			abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
+			doEinlesen();
+			//setPreisVec(cmbDiszi.getSelectedIndex());
+		}
 		
+	}
+	private void setPreisVec(int pos){
+		String[] reznr = {"KG","MA","ER","LO"};
+		abrRez.setPreisVec(reznr[pos]);
 	}
 	
 	/*********

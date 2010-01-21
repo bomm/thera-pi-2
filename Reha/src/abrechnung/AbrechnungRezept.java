@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -74,7 +76,7 @@ import terminKalender.ParameterLaden;
 
 
 
-public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
+public class AbrechnungRezept extends JXPanel implements HyperlinkListener,ActionListener{
 	/**
 	 * 
 	 */
@@ -91,8 +93,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 					null,null,null,null,null,null,null,null,null,null,
 					null,null,null,null,null,null,null,null,null,null};
 	
-	Vector<Vector<String>> vec_tabelle = new Vector<Vector<String>>();
-	Vector<String> vecdummy = new Vector<String>();
+	Vector<Vector<Object>> vec_tabelle = new Vector<Vector<Object>>();
+	Vector<Object> vecdummy = new Vector<Object>();
 	
 	Vector<Vector<String>>vec_rez = null;
 	Vector<Vector<String>>vec_pat = null;
@@ -114,7 +116,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 	Vector<Vector<String>> preisvec = null;
 	
 	JRtaComboBox cmbkuerzel = null;
-	JComboBox cmbbreak = null;
+	JRtaComboBox cmbbreak = null;
 	JComboBox cmbpreis = null;
 	
 	public JXTable tageTbl = null;
@@ -135,6 +137,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 		eltern = xeltern;
 		setLayout(new BorderLayout());
 		//add(getEinzelRezPanel(),BorderLayout.CENTER);
+		cmbkuerzel = new JRtaComboBox( (Vector<Vector<String>>) vec_kuerzel,0,1);
 		add(getSplitPane(),BorderLayout.CENTER);
 		
 		SwingUtilities.invokeLater(new Runnable(){
@@ -185,6 +188,30 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 		}else if(xreznummer.contains("RH")){
 			preisvec = ParameterLaden.vRHPreise;
 		}
+		//vec_kuerzel.clear();
+		int idpos = preisvec.get(0).size()-1;
+		for(int i = 0;i< preisvec.size();i++){
+			kundid.clear();
+			kundid.add(preisvec.get(i).get(1));
+			kundid.add(preisvec.get(i).get(idpos));
+			//vec_kuerzel.add( (Vector<String>)kundid.clone() );
+		}
+		//cmbkuerzel.setDataVectorVector((Vector<Vector<String>>)vec_kuerzel.clone(), 0, 1);
+		System.out.println("Einstellen des KürzelVectors ---> "+vec_kuerzel);
+		
+	}
+	public void setKuerzelVec(String xreznummer){
+		if(xreznummer.contains("KG")){
+			preisvec = ParameterLaden.vKGPreise;
+		}else if(xreznummer.contains("MA")){
+			preisvec = ParameterLaden.vMAPreise;
+		}else if(xreznummer.contains("ER")){
+			preisvec = ParameterLaden.vERPreise;
+		}else if(xreznummer.contains("LO")){
+			preisvec = ParameterLaden.vLOPreise;
+		}else if(xreznummer.contains("RH")){
+			preisvec = ParameterLaden.vRHPreise;
+		}
 		vec_kuerzel.clear();
 		int idpos = preisvec.get(0).size()-1;
 		for(int i = 0;i< preisvec.size();i++){
@@ -194,7 +221,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 			vec_kuerzel.add( (Vector<String>)kundid.clone() );
 		}
 		//cmbkuerzel.setDataVectorVector((Vector<Vector<String>>)vec_kuerzel.clone(), 0, 1);
-		System.out.println(vec_kuerzel);
+		System.out.println("Einstellen des KürzelVectors ---> "+vec_kuerzel);
 		
 	}
 	public boolean setNewRez(String rez){
@@ -239,7 +266,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
         jXTreeTable.setRootVisible(false);
         jXTreeTable.getColumnModel().getColumn(0).setCellEditor(new MyDateCellEditor());
 
-        cmbkuerzel = new JRtaComboBox(vec_kuerzel,0,1);
+        
         jXTreeTable.getColumn(1).setCellEditor(new DefaultCellEditor(cmbkuerzel));
 
         //jXTreeTable.getColumn(0).setCellEditor(new MyDateCellEditor());
@@ -377,11 +404,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 		tageTbl.getColumn(8).setMaxWidth(0);
 		//TableCellEditor datEdit = new TableCellEditor(new JXDatePicker());
 		tageTbl.getColumn(0).setCellEditor(new MyDateCellEditor());
-		
+		cmbpreis = new JRtaComboBox(vec_kuerzel,0,1);
+
+		tageTbl.getColumn(1).setCellEditor(new DefaultCellEditor(cmbkuerzel));
 		tageTbl.getColumn(3).setCellEditor(new JXTable.NumberEditor());
 		//tageTbl.getColumn(3).setCellEditor(new DblCellEditor());
 		tageTbl.getColumn(3).setCellRenderer(new DoubleTableCellRenderer() );
-		
+		tageTbl.setEditable(true);
+		tageTbl.setCellSelectionEnabled(true);
 		JScrollPane jscrt = JCompTools.getTransparentScrollPane(tageTbl);
 		jscrt.validate();
 		/***************************
@@ -493,6 +523,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 			}
 		}
 		String splitvec = null;
+		try{
+			System.out.println("Vector ========= "+(Vector<Vector<String>>) vec_kuerzel.clone());
+			System.out.println("Combobox = "+cmbkuerzel);
+			cmbkuerzel.setDataVectorVector( (Vector<Vector<String>>) vec_kuerzel.clone(), 0, 1);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			System.out.println("VecKuerzel = "+vec_kuerzel);
+		}
+
 		for(int i = 0; i < vectage.size();i++){
 			splitvec = vectage.get(i).get(3);
 			behandlungen = splitvec.split(",");
@@ -516,6 +555,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 				//System.out.println("Keine Behandlungen im Terminblatt = "+anzahlbehandlungen);
 				//System.out.println("Anzahl-Hausbesuch  keine Beh. im Terminblatt= "+anzahlhb);
 				constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb);
+				this.tageMod.setRowCount(0);
+
+				if(vec_tabelle.size()>0){
+					for(int i2 = 0;i2<vec_tabelle.size();i2++){
+						tageMod.addRow((Vector<Object>)vec_tabelle.get(i2).clone());
+					}
+					tageTbl.setRowSelectionInterval(0,0);
+					tageTbl.scrollRowToVisible(0);
+				}
+				this.tageTbl.validate();
 			}
 		}
 		//System.out.println(vec_tabelle);
@@ -556,7 +605,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 				vecdummy.add(RezTools.getPreisAktFromID(id[i], preisgruppe, preisvec));
 				//untersuchen ob befreit
 				//.....
-				vecdummy.add(Boolean.valueOf(true).toString());
+				vecdummy.add(Boolean.valueOf(true));
 				//untersuchen ob unter 18
 				//.....
 				
@@ -564,7 +613,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 				//.....
 				vecdummy.add(rechneRezGeb(vecdummy.get(3).toString()));
 				System.out.println(vecdummy.clone());
-				vec_tabelle.add((Vector<String>)vecdummy.clone());
+				vec_tabelle.add((Vector<Object>)vecdummy.clone());
 			}
 		}
 
@@ -1041,6 +1090,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener{
 			return abr;
 		}
     }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	
 /************************
@@ -1064,9 +1118,11 @@ class MyTageTableModel extends DefaultTableModel{
 		   if(columnIndex==1)
 			   return String.class;
 		   if(columnIndex==2){
-			   return Boolean.class;
+			   return String.class;
 		   }if(columnIndex==3){
 			   return Double.class;
+		   }if(columnIndex==4){
+			   return Boolean.class;
 		   }else{
 			   return String.class;
 		   }

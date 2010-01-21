@@ -69,6 +69,18 @@ public void listenerLoeschen(){
 	this.removeActionListener(this);
 }
 
+public void setDataVector2Dim(Vector<Vector<String>> ve,int item,int ret){
+	this.removeAllItems();
+	this.vec = ve;
+	this.cmbdisplay = item;
+	this.cmbretvalue = ret;
+	if(this.vec.get(0) instanceof Vector){
+		fillCombo(this.vec);		
+	}else{
+		fillOneDimension(this.vec);
+	}
+}
+
 public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
 	this.removeAllItems();
 	this.vec = ve;
