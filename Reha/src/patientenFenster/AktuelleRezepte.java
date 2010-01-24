@@ -1335,7 +1335,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xreznr;
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
-					String xcmd = "update verordn set zzstatus='"+0+"', befr='T' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					String xcmd = "update verordn set zzstatus='"+0+"', befr='T',rez_bez='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
 					new ExUndHop().setzeStatement(xcmd);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[0],currow,1);
 					tabaktrez.validate();
@@ -1347,7 +1347,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xreznr;
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
-					String xcmd = "update verordn set zzstatus='"+1+"', befr='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					String xcmd = "update verordn set zzstatus='"+1+"', befr='F',rez_bez='T' where rez_nr='"+xreznr+"' LIMIT 1"; 
 					new ExUndHop().setzeStatement(xcmd);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],currow,1);
 					tabaktrez.validate();
@@ -1360,7 +1360,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xreznr;
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
-					String xcmd = "update verordn set zzstatus='"+2+"', befr='F', rez_geb='0.00' where rez_nr='"+xreznr+"' LIMIT 1"; 
+					String xcmd = "update verordn set zzstatus='"+2+"', befr='F', rez_geb='0.00',rez_bez='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
 					new ExUndHop().setzeStatement(xcmd);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[2],currow,1);
 					tabaktrez.validate();

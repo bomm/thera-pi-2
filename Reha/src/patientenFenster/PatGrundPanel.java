@@ -1132,7 +1132,7 @@ public void patStammEventOccurred(PatStammEvent evt) {
 						}else{
 							aktRezept.suchePatUeberRez = true;
 							aktRezept.holeRezepte(xpatint,xrez.split("#REZHOLEN-")[1].trim());
-							System.out.println("Suche Patient �ber Rezeptnummer "+xrez.split("#REZHOLEN-")[1].trim());
+							System.out.println("Suche Patient über Rezeptnummer "+xrez.split("#REZHOLEN-")[1].trim());
 						}
 						return null;
 					}
@@ -1197,6 +1197,10 @@ public void patStammEventOccurred(PatStammEvent evt) {
 			//System.out.println("Tabtitel von "+y+" = "+jtab.getTitleAt(y));
 		}
 	}
+	if(evt.getDetails()[0].equals("#PATEDIT")){
+		neuanlagePatient(false,"");	
+	}
+	
 	if(evt.getDetails()[0].equals("#CLOSING")){
 		if(sucheComponent != null){
 			this.ptp.removePatStammEventListener((PatStammEventListener) this);

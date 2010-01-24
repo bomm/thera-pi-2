@@ -1,5 +1,6 @@
 package abrechnung;
 
+import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
@@ -16,14 +17,17 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.EventObject;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -33,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.CellEditorListener;
@@ -59,10 +64,16 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
+import patientenFenster.AktuelleRezepte;
+
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.sun.star.drawing.Alignment;
+
+import events.PatStammEvent;
+import events.PatStammEventClass;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -118,6 +129,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	JRtaComboBox cmbkuerzel = null;
 	JRtaComboBox cmbbreak = null;
 	JComboBox cmbpreis = null;
+	JCheckBox chkzuzahl = null;
+	
+	boolean patAktuellFrei = false;
+	boolean patVorjahrFrei = false;
+	boolean patU18 = false;
+	String	patFreiAb;
+	String	patFreiBis;
+	boolean  gebuehrBezahlt;
+	Double  gebuehrBetrag;
+	boolean mitPauschale;
 	
 	public JXTable tageTbl = null;
 	public MyTageTableModel tageMod = new MyTageTableModel();
@@ -138,6 +159,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		setLayout(new BorderLayout());
 		//add(getEinzelRezPanel(),BorderLayout.CENTER);
 		cmbkuerzel = new JRtaComboBox( (Vector<Vector<String>>) vec_kuerzel,0,1);
+		cmbkuerzel.setActionCommand("cmbkuerzel");
+		cmbkuerzel.addActionListener(this);
 		add(getSplitPane(),BorderLayout.CENTER);
 		
 		SwingUtilities.invokeLater(new Runnable(){
@@ -403,15 +426,27 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		tageTbl.getColumn(8).setMinWidth(0);
 		tageTbl.getColumn(8).setMaxWidth(0);
 		//TableCellEditor datEdit = new TableCellEditor(new JXDatePicker());
-		tageTbl.getColumn(0).setCellEditor(new MyDateCellEditor());
+		MyTableStringDatePicker pic = new MyTableStringDatePicker();
+		tageTbl.getColumn(0).setCellEditor(pic);
 		cmbpreis = new JRtaComboBox(vec_kuerzel,0,1);
+		cmbpreis.setActionCommand("preis");
+		cmbpreis.addActionListener(this);
+		cmbpreis.setVisible(true);
 
 		tageTbl.getColumn(1).setCellEditor(new DefaultCellEditor(cmbkuerzel));
 		tageTbl.getColumn(3).setCellEditor(new JXTable.NumberEditor());
 		//tageTbl.getColumn(3).setCellEditor(new DblCellEditor());
 		tageTbl.getColumn(3).setCellRenderer(new DoubleTableCellRenderer() );
+
+		chkzuzahl = new JCheckBox();
+		chkzuzahl.setVerticalAlignment(SwingConstants.CENTER);
+		chkzuzahl.setHorizontalAlignment(SwingConstants.CENTER);
+		chkzuzahl.setActionCommand("zuzahlung");
+		chkzuzahl.setVisible(true);
+		chkzuzahl.addActionListener(this);
+		tageTbl.getColumn(4).setCellEditor(new DefaultCellEditor(chkzuzahl));
+
 		tageTbl.setEditable(true);
-		tageTbl.setCellSelectionEnabled(true);
 		JScrollPane jscrt = JCompTools.getTransparentScrollPane(tageTbl);
 		jscrt.validate();
 		/***************************
@@ -463,10 +498,35 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		if(vec_rez.size()<=0){
 			return;
 		}
-
+		gebuehrBezahlt = vec_rez.get(0).get(14).trim().equals("T");
+		gebuehrBetrag = Double.parseDouble(vec_rez.get(0).get(13));
+		//                                       0         1         2             3     4       5 
 		vec_pat = SqlInfo.holeFelder("select  t1.n_name,t1.v_name,t1.geboren,t1.strasse,t1.plz,t1.ort,"+
-				"t1.v_nummer,t1.kv_status,t1.kv_nummer,t2.nachname,t2.bsnr,t2.arztnum,t3.kassen_nam1 from pat5 t1,arzt t2,kass_adr t3 where t1.pat_intern='"+
+		//            6             7            8              9     10         11        12
+				"t1.v_nummer,t1.kv_status,t1.kv_nummer,"+"t1.befreit,t1.bef_ab,bef_dat,t1.jahrfrei,"+
+		//           13         14         15       16      		
+				"t2.nachname,t2.bsnr,t2.arztnum,t3.kassen_nam1 from pat5 t1,arzt t2,kass_adr t3 where t1.pat_intern='"+
 				vec_rez.get(0).get(0)+"' AND t2.id ='"+vec_rez.get(0).get(16)+"' AND t3.id='"+vec_rez.get(0).get(37)+"' LIMIT 1");
+		if(vec_pat.get(0).get(9).equals("T")){
+			patAktuellFrei = true;
+		}else{
+			patAktuellFrei  = false;
+		}
+		if(! vec_pat.get(0).get(12).trim().equals("")){
+			patVorjahrFrei = true;
+		}else{
+			patVorjahrFrei = false;
+		}
+		patFreiAb = vec_pat.get(0).get(10);
+		patFreiBis = vec_pat.get(0).get(11);
+		patU18 = DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)));
+		/*
+		boolean patAktuellFrei = false;
+		boolean patVorjahrFrei = false;
+		boolean patU18 = false;
+		String	patFreiAb;
+		String	patFreiBis;
+		*/
 		//System.out.println("PatArztVektor = "+vec_pat);
 		//System.out.println(rootRezept.getRoot().toString());
 		//Object rootNode = treeRezept.getModel().getRoot();
@@ -549,6 +609,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					//System.out.println("Anzahl-Hausbesuch  (!=1)= "+anzahlhb);
 				}
 				constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb);
+				this.tageMod.setRowCount(0);
+
+				if(vec_tabelle.size()>0){
+					for(int i2 = 0;i2<vec_tabelle.size();i2++){
+						tageMod.addRow((Vector<Object>)vec_tabelle.get(i2).clone());
+					}
+					tageTbl.setRowSelectionInterval(0,0);
+					tageTbl.scrollRowToVisible(0);
+				}
+				this.tageTbl.validate();
+
 			}else{
 				//Es sind keine  Behandlungsformen im Terminblatt verzeichnet;
 				//in anzahlbehandlungen steht die tatsächliche Anzahl
@@ -567,9 +638,156 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				this.tageTbl.validate();
 			}
 		}
+		doGebuehren();
 		//System.out.println(vec_tabelle);
 		
 	}
+	/******************************
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	private void doGebuehren(){
+		boolean amBeginnFrei = false;
+		boolean amEndeFrei = false;
+
+		boolean volleZuzahlung = true;
+
+		boolean unter18 = false;
+		
+		boolean vollFrei = false;
+		boolean teilFrei = false;
+		
+		boolean jahresWechsel = false;
+		if(patU18){
+			unter18 = true;
+			vollFrei = true;
+			amBeginnFrei = true;
+			volleZuzahlung = false;
+			doFreiAb(0,vec_tabelle.size(),false);
+		}else{
+			Object[] u18 = RezTools.unter18Check(vec_tabelle, DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)) );
+			System.out.println("Unter 18 = "+u18[0]+" / ab Position = "+u18[1]+" Splitting erforderlich = "+u18[2]);
+			if( ( (Boolean)u18[0]) && (! (Boolean)u18[2]) ){
+				//Während der Kompletten Behandlung unter 18;
+				unter18 = true;
+				vollFrei = true;
+				amBeginnFrei = true;
+				volleZuzahlung = false;
+				doFreiAb(0,vec_tabelle.size(),false);
+			}else if(( (Boolean)u18[0]) && ( (Boolean)u18[2])) {
+				//Während der Behandlung 18 geworden, Rezept muß gesplittet werden;
+				unter18 = true;
+				teilFrei = true;
+				amBeginnFrei = true;
+				volleZuzahlung = false;
+				mitPauschale = false;
+				doFreiAb(0,(Integer)u18[1],false);
+			}
+		}
+
+		Object[] newYear = RezTools.jahresWechselCheck(vec_tabelle);
+		System.out.println("Jahreswechsel = "+newYear[0]+" / JahresWechsel ab Position = "+newYear[1]+" / Rezept vollständig im Vorjahr  = "+newYear[2]);
+		int wechselfall = 0;
+		int altfall = 0;
+		int neufall = 0;
+		if((Boolean)newYear[0] && (Boolean)newYear[2]){
+			//Das Rezept ist komplett im Vorjahr abgearbeitet worden
+			if(patVorjahrFrei && (!unter18)){
+				altfall = 1;
+				doFreiAb(0,vec_tabelle.size(),false);
+				mitPauschale = false;
+			}
+			
+		}else if((Boolean)newYear[0] && (!(Boolean)newYear[2])){
+			//Das Rezept ist erstreckt sich über den Jahreswechsel
+			if(gebuehrBezahlt){  //1.Fall
+				// die Gebühr wurde bereits bezahlt was soviel heißt wie es muß verrechnet werden
+				// doFreiAb(0,vec_tabelle.size(),true);
+				mitPauschale = true;
+				wechselfall = 1;
+			}else if(patVorjahrFrei && patAktuellFrei && (!gebuehrBezahlt)){ //2.Fall
+				// im Vorjahr befreit und jetzt schon wieder befreit und kein Vermerk bezahlt
+				doFreiAb(0,vec_tabelle.size(),false);
+				mitPauschale = false;
+				wechselfall = 2;
+			}else if( (patVorjahrFrei) && (!patAktuellFrei) ){ //3.Fall
+				// im Vorjahr befreit und jetzt zuzahlungspflichtig
+				doFreiAb(0,(Integer)newYear[1],false);
+				mitPauschale = false;
+				wechselfall = 3;
+			}else if((!patVorjahrFrei) && (!patAktuellFrei) && (!unter18) ){ //4.Fall
+				//weder im Vorjahr noch im aktuellen Jahr befreit
+				doFreiAb(0,vec_tabelle.size(),true);
+				mitPauschale = true;
+				wechselfall = 4;
+			}else if((!patVorjahrFrei) && (patAktuellFrei) && (!unter18)){ //5.Fall
+				// war nicht im Vorjahr befreit ist aber jetzt befreit
+				doFreiAb((Integer) newYear[1],vec_tabelle.size(),true);
+				mitPauschale = true;
+				wechselfall = 5;
+			}
+		}else if(!(Boolean)newYear[0]){
+			//Das Rezept wurde vollständig im aktuelle Jahr abgearbeitet
+			if(patAktuellFrei && (!gebuehrBezahlt)){
+				doFreiAb(0,vec_tabelle.size(),false);
+				mitPauschale = false;
+				neufall = 1;
+			}else if(patAktuellFrei && gebuehrBezahlt ){
+				doFreiAb(0,vec_tabelle.size(),true);
+				mitPauschale = true;
+				neufall = 2;
+			}
+		}
+		System.out.println("/*****************************************/");
+		System.out.println("Im aktuellen Jahr befreit? = "+patAktuellFrei);
+		System.out.println("               Befreit ab? = "+(DatFunk.datumOk(patFreiAb)==null ? "keine Angaben" : DatFunk.datumOk(patFreiAb)) );
+		System.out.println("              Befreit bis? = "+(DatFunk.datumOk(patFreiBis)==null ? "keine Angaben" : DatFunk.datumOk(patFreiBis)) );
+		System.out.println("   Im VorjahrJahr befreit? = "+patVorjahrFrei);
+		System.out.println("     Patient ist unter 18? = "+patU18);
+		System.out.println("   Rezeptgebühren bezahlt? = "+gebuehrBezahlt);
+		System.out.println("    Rezeptgebühren Betrag? = "+gebuehrBetrag);
+		System.out.println("     Mit 10 EUR Pauschale? = "+mitPauschale);
+		System.out.println("    Konstellation nur alt? = "+altfall);
+		System.out.println("    Konstellation wechsel? = "+wechselfall);
+		System.out.println("    Konstellation nur neu? = "+neufall);
+		System.out.println("/*****************************************/");		
+		/*
+		boolean patAktuellFrei = false;
+		boolean patVorjahrFrei = false;
+		boolean patU18 = false;
+		String	patFreiAb;
+		String	patFreiBis;
+		gebuehrBezahlt = vec_rez.get(0).get(14).trim().equals("T");
+		gebuehrBetrag = Double.parseDouble(vec_rez.get(0).get(13));
+
+		*/
+		
+		
+		///// Jetzt der Tarifwchsel-Check
+		// erst einlesen ab wann der Tarif gültig ist
+		// dann testen ob Rzeptdatum nach diesem Datum liegt wenn ja sind Preise o.k.
+		// wenn nein -> testen welche Anwendungsregel gilt und entsprchend in einer
+		// for next Schleife die Preise anpassen!
+		// bevor jetzt weitergemacht werden kann muß der Vector für die Behandlungen erstellt werden!!!!!
+
+	}
+	private void doFreiAb(int von, int bis,boolean pflichtig){
+		for(int i = von; i < bis; i++){
+			tageMod.setValueAt( pflichtig, i, 4);	
+			if(!pflichtig){
+				tageMod.setValueAt(0.00, i, 5);	
+			}
+		}
+		
+	}
+	/*******************************
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	/*******************************/
 	private void constructTagVector(String datum,String[] behandlungen,int anzahlbehandlungen,int anzahlhb){
 		String[] abrfall = new String[anzahlbehandlungen];
@@ -593,7 +811,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//System.out.println(""+i+". Behandlung aus RezeptTabelle = "+abrfall[i]);
 			}
 		}
-		boolean zuBeginnFrei = false;
 		for(int i = 0; i < anzahlbehandlungen;i++){
 			if(! abrfall[i].trim().equals("")){
 				vecdummy.clear();
@@ -601,6 +818,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				vecdummy.add(abrfall[i]);
 				vecdummy.add("1,00");
 				//Preisuntersuchen ob alt oder neu....
+				
 				//.....
 				vecdummy.add(RezTools.getPreisAktFromID(id[i], preisgruppe, preisvec));
 				//untersuchen ob befreit
@@ -612,11 +830,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//untersuchen ob teilweise frei
 				//.....
 				vecdummy.add(rechneRezGeb(vecdummy.get(3).toString()));
-				System.out.println(vecdummy.clone());
+				//System.out.println(vecdummy.clone());
 				vec_tabelle.add((Vector<Object>)vecdummy.clone());
 			}
 		}
-
 	}
 	/**************************/
 	private String rechneRezGeb(String preis){
@@ -818,7 +1035,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"</tr>"+
 		/********Patient********/
 		"<tr>"+
-		"<th rowspan=\"5\" valign=\"top\"><img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=52 height=52></th>" +
+		"<th rowspan=\"5\" valign=\"top\"><a href=\"http://patedit.de\"><img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=52 height=52 border=0></a></th>" +
 		"<td class=\"spalte1\" align=\"right\">"+
 		"Patient"+
 		"</td><td class=\"spalte2\" align=\"left\">"+
@@ -856,7 +1073,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"<tr>"+
 		"<td class=\"spalte1\" align=\"right\">"+
 		"Zuzahlungs-Status"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
+		"</td><td class=\"spalte2\" id=\"zzpflicht\" align=\"left\">"+
 		(vec_rez.get(0).get(27).equals("T") ? "befreit" : "zuzahlungspflichtig")+
 		"</td>"+
 		"</tr>"+
@@ -867,11 +1084,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"</tr>"+
 		/********Arzt********/
 		"<tr>"+
-		"<th rowspan=\"3\" valign=\"top\"><img src='file:///"+Reha.proghome+"icons/system-users.png' width=52 height=52></th>" +
+		"<th rowspan=\"3\" valign=\"top\"><a href=\"http://arztedit.de\"><img src='file:///"+Reha.proghome+"icons/system-users.png' width=52 height=52 border=0></a></th>" +
 		"<td class=\"spalte1\" align=\"right\">"+
 		"verordnender Arzt"+
 		"</td><td class=\"spalte2\" align=\"left\">"+
-		StringTools.EGross(vec_pat.get(0).get(9))+
+		StringTools.EGross(vec_pat.get(0).get(13))+
 		"</td>"+
 		"</tr>"+
 		/*******/
@@ -879,7 +1096,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"<td class=\"spalte1\" align=\"right\">"+
 		"Betriebsstätte"+
 		"</td><td class=\"spalte2\" align=\"left\">"+
-		(vec_pat.get(0).get(10).trim().equals("") ? "999999999" : vec_pat.get(0).get(10).trim())+
+		(vec_pat.get(0).get(14).trim().equals("") ? "999999999" : vec_pat.get(0).get(14).trim())+
 		"</td>"+
 		"</tr>"+
 		/*******/
@@ -887,7 +1104,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"<td class=\"spalte1\" align=\"right\">"+
 		"LANR"+
 		"</td><td class=\"spalte2\" align=\"left\">"+
-		(vec_pat.get(0).get(11).trim().equals("") ? "999999999" : vec_pat.get(0).get(11).trim())+
+		(vec_pat.get(0).get(15).trim().equals("") ? "999999999" : vec_pat.get(0).get(15).trim())+
 		"</td>"+
 		"</tr>"+
 		/*******/
@@ -903,7 +1120,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	@Override
 	public void hyperlinkUpdate(HyperlinkEvent event) {
 	    if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-	        	System.out.println(event.getURL());
+        	System.out.println(event.getURL());
+	    	if(event.getURL().toString().contains("rezedit")){
+	    		
+	    	}
+	    	if(event.getURL().toString().contains("patedit")){
+	    		SucheNachAllem.doPatSuchen(vec_rez.get(0).get(0).trim(), vec_rez.get(0).get(1),this);
+	    	}
+
 	      }
 	}
 	
@@ -1092,7 +1316,28 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
     }
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		String cmd = arg0.getActionCommand();
+		if(cmd.equals("cmbkuerzel")){
+			System.out.println(arg0);
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					System.out.println("Wert von cmbKuerzel = "+cmbkuerzel.getValueAt(1)+
+							" / DisplayWert = "+cmbkuerzel.getValueAt(0)+ " Selektierte Tabellenzeile = "+
+							tageTbl.getSelectedRow()	);
+				}
+			});
+			return;
+		}
+		if(cmd.equals("zuzahlung")){
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					System.out.println("Wert der CheckBox = "+chkzuzahl.isSelected()+ " Selektierte Tabellenzeile = "+
+							tageTbl.getSelectedRow()	);
+				}
+			});
+
+		}
+		
 		
 	}
 
@@ -1123,6 +1368,8 @@ class MyTageTableModel extends DefaultTableModel{
 			   return Double.class;
 		   }if(columnIndex==4){
 			   return Boolean.class;
+		   }if(columnIndex==5){
+			   return Double.class;
 		   }else{
 			   return String.class;
 		   }
@@ -1199,3 +1446,62 @@ class MyDate2CellEditor extends AbstractCellEditor implements TableCellEditor {
 	
 }
 
+class SucheNachAllem{
+	public static void doPatSuchen(String patint,String reznr,Object source){
+		String pat_int;
+		pat_int = patint;
+		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		final String xreznr = reznr;
+		if(patient == null){
+			final String xpat_int = pat_int;
+			final Object xsource = source;
+			new SwingWorker<Void,Void>(){
+				protected Void doInBackground() throws Exception {
+					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+					while( (xpatient == null) ){
+						Thread.sleep(20);
+						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					}
+					while(  (!AktuelleRezepte.initOk) ){
+						Thread.sleep(20);
+					}
+					
+					String s1 = "#PATSUCHEN";
+					String s2 = (String) xpat_int;
+					PatStammEvent pEvt = new PatStammEvent(xsource);
+					pEvt.setPatStammEvent("PatSuchen");
+					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+					PatStammEventClass.firePatStammEvent(pEvt);
+					/*
+					s1 = "#PATEDIT";
+					s2 = (String) xpat_int;
+					pEvt.setPatStammEvent("PatEdit");
+					pEvt.setDetails(s1,s2,"#PATEDIT-"+xreznr) ;
+					PatStammEventClass.firePatStammEvent(pEvt);
+					*/
+
+					return null;
+				}
+				
+			}.execute();
+		}else{
+			Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+			String s1 = "#PATSUCHEN";
+			String s2 = (String) pat_int;
+			PatStammEvent pEvt = new PatStammEvent(source);
+			pEvt.setPatStammEvent("PatSuchen");
+			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+			PatStammEventClass.firePatStammEvent(pEvt);
+			/*
+			s1 = "#PATEDIT";
+			s2 = (String) pat_int;
+			pEvt.setPatStammEvent("PatEdit");
+			pEvt.setDetails(s1,s2,"#PATEDIT-"+xreznr) ;
+			PatStammEventClass.firePatStammEvent(pEvt);
+			*/
+
+		}
+	}
+	
+}

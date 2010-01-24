@@ -1120,6 +1120,61 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );		
 	}
+	/***************************************************/
+	/***************************************************/
+	/******Funktionen für Abrechnung nach §302**********/
+	/***************************************************/
+	public static Object[] unter18Check(Vector<Vector<Object>> behandlungsfall,String geburtstag){
+						// unter 18               ab Vector x über 18      gesplittet
+		Object[] ret = {Boolean.valueOf(true),behandlungsfall.size(),Boolean.valueOf(false)};
+		String tag1 = (String)behandlungsfall.get(behandlungsfall.size()-1).get(0);
+		String tag2 = (String)behandlungsfall.get(0).get(0);
+		if(DatFunk.Unter18(tag1, geburtstag)){
+			return ret;
+		}
+		if( (!DatFunk.Unter18(tag1, geburtstag)) && (!DatFunk.Unter18(tag2, geburtstag))){
+			ret[0] = false;
+			ret[1] = -1;
+			ret[2] = false;
+			return ret;
+		}
+
+		int i;
+		for(i = 0; i < behandlungsfall.size();i++){
+			tag1 = (String)behandlungsfall.get(i).get(0);
+			if(! DatFunk.Unter18(tag1, geburtstag)){
+				break;
+			}
+		}
+		ret[0] = true;
+		ret[1] = i;
+		ret[2] = true;
+		return ret;
+	}
+	/***************************************************/
+	/***************************************************/
+	public static Object[] jahresWechselCheck(Vector<Vector<Object>> behandlungsfall){
+		//                Jahreswechsel       ab Position  vollständig im alten Jahr
+		Object[]  ret = {Boolean.valueOf(false), -1       ,Boolean.valueOf(false)};
+		if( ((String)behandlungsfall.get(0).get(0)).endsWith(SystemConfig.aktJahr)){
+			return ret;
+		}
+		for(int i = 0;i < behandlungsfall.size();i++){
+			if(! ((String)behandlungsfall.get(i).get(0)).endsWith(SystemConfig.aktJahr)){
+					ret[0] = true;
+					ret[2] = true;
+			}else{
+				ret[0] = true;
+				ret[1] = i;
+				ret[2] = false;
+				break;				
+			}
+		}
+		return ret;
+	}
+	
+	/***************************************************/
+	/***************************************************/
 
 }
 class ZuzahlModell{

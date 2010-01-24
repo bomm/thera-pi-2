@@ -158,10 +158,14 @@ public void keyPressed(KeyEvent arg0) {
 		return;
 	}
 	if(code == KeyEvent.VK_ESCAPE){
-		this.getParent().dispatchEvent(arg0);
-		this.getParent().getParent().dispatchEvent(arg0);
-		this.getParent().getParent().getParent().dispatchEvent(arg0);
-		this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		try{
+			this.getParent().dispatchEvent(arg0);
+			this.getParent().getParent().dispatchEvent(arg0);
+			this.getParent().getParent().getParent().dispatchEvent(arg0);
+			this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		}catch(Exception ex){
+			
+		}
 		return;
 	}
 	if(code == 38){
