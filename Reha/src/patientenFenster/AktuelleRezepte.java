@@ -47,6 +47,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import jxTableTools.DateTableCellEditor;
+import jxTableTools.MyTableStringDatePicker;
 import jxTableTools.TableTool;
 import krankenKasse.KassenFormulare;
 import oOorgTools.OOTools;
@@ -70,7 +71,6 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
-import systemTools.MyTableStringDatePicker;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 

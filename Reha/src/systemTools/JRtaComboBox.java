@@ -112,7 +112,8 @@ private void fillOneDimension(Vector ve){
 }
 
 private void fillCombo(Vector ve){
-	int lang = ve.size()-1;
+	//int lang = ve.size()-1;
+	int lang = ve.size();
 	for(int i = 0;i < lang;i++){
 		addItem( (String) ((Vector)ve.get(i)).get(this.cmbdisplay));
 	}

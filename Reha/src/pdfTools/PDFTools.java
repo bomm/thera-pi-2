@@ -78,4 +78,19 @@ public class PDFTools {
 		return table;
 
 	}
+	public static float getPdfPositionX(float fx){
+		return (595.0f/210.0f)*fx;
+	}
+	public static float getPdfPositionY(float fy){
+		return (842.0f/297.0f)*fy;
+	}
+
+	public static Float[] getPdfPositionXY(float fx, float fy, float fcSpace){
+		Float [] fret = {0.f,0.f,0.f};
+		fret[0] = (595.0f/210.0f)*fx;
+		fret[1] = (842.0f/297.0f)*fy;
+		fret[2] = fcSpace;
+		return fret;
+	}
+
 }

@@ -1,0 +1,63 @@
+package jxTableTools;
+
+
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.JComponent;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.TableCellEditor;
+
+import org.jdesktop.swingx.JXDatePicker;
+
+import systemTools.JRtaCheckBox;
+import systemTools.JRtaComboBox;
+
+public class MyTableCheckBox extends AbstractCellEditor implements TableCellEditor{ 
+	// This is the component that will handle the editing of the cell value 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JComponent component = new JRtaCheckBox(); 
+	 
+	// This method is called when a cell value is edited by the user. 
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
+		if (isSelected)	{ 
+			((JRtaCheckBox)component).setVerticalAlignment(SwingConstants.CENTER);
+			((JRtaCheckBox)component).setHorizontalAlignment(SwingConstants.CENTER);
+			((JRtaCheckBox)component).setOpaque(false);
+
+			((JRtaCheckBox)component).setSelected(Boolean.valueOf((Boolean)table.getValueAt(rowIndex,vColIndex)) );
+			((JRtaCheckBox)component).setVisible(true);
+			return component;
+		} // This method is called when editing is completed. 
+		return null;
+		
+	}
+	public Component getComponent(){
+		return component;
+	}
+	
+	// 'value' is value contained in the cell located at (rowIndex, vColIndex) 
+	// It must return the new value to be stored in the cell. 
+	public Object getCellEditorValue() { 
+		return ( ((JRtaCheckBox)component).isSelected() ); 
+	} 
+
+	 public boolean stopCellEditing() {
+		 fireEditingStopped();
+		 return super.stopCellEditing();
+	 }
+	 public void cancelCellEditing() {
+		 fireEditingCanceled();
+		 super.cancelCellEditing();
+	    }
+}

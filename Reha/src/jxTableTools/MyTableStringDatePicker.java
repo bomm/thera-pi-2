@@ -1,6 +1,8 @@
-package systemTools;
+package jxTableTools;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,7 +14,7 @@ import javax.swing.table.TableCellEditor;
 
 import org.jdesktop.swingx.JXDatePicker;
 
-public class MyTableStringDatePicker extends AbstractCellEditor implements TableCellEditor { 
+public class MyTableStringDatePicker extends AbstractCellEditor implements TableCellEditor,ActionListener{ 
 	// This is the component that will handle the editing of the cell value 
 	/**
 	 * 
@@ -34,14 +36,30 @@ public class MyTableStringDatePicker extends AbstractCellEditor implements Table
 				e.printStackTrace();
 			}
 			// Return the configured component 
+			((JXDatePicker)component).setVisible(true);
 			return component;
 		} // This method is called when editing is completed. 
 		return null;
 		
+	}
+	public Component getComponent(){
+		return component;
 	}
 	// 'value' is value contained in the cell located at (rowIndex, vColIndex) 
 	// It must return the new value to be stored in the cell. 
 	public Object getCellEditorValue() { 
 		return ( sdf.format( ((JXDatePicker)component).getDate() )  ); 
 	} 
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("Action Performed in JXDatePicker");
+		fireEditingStopped();
+	}
+	 public boolean stopCellEditing() {
+		 fireEditingStopped();
+		 return super.stopCellEditing();
+	 }
+	 public void cancelCellEditing() {
+		 fireEditingCanceled();
+	    	super.cancelCellEditing();
+	    }
 }
