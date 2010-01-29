@@ -20,23 +20,42 @@ import org.jdesktop.swingx.JXDatePicker;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 
-public class MyTableCheckBox extends AbstractCellEditor implements TableCellEditor{ 
+public class MyTableCheckBox extends AbstractCellEditor implements TableCellEditor,ActionListener{ 
 	// This is the component that will handle the editing of the cell value 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	JComponent component = new JRtaCheckBox(); 
+	JComponent component = null; //new JRtaCheckBox(); 
+	
+	public MyTableCheckBox(){
+		component = new JRtaCheckBox();
+		((JRtaCheckBox)component).setVerticalAlignment(SwingConstants.CENTER);
+		((JRtaCheckBox)component).setHorizontalAlignment(SwingConstants.CENTER);
+		((JRtaCheckBox)component).setOpaque(true);
+		//((JRtaCheckBox)component).addActionListener(this);		
+
+	}
+	public MyTableCheckBox(JRtaCheckBox box, ActionListener al){
+		component = box;
+		
+		((JRtaCheckBox)component).setVerticalAlignment(SwingConstants.CENTER);
+		((JRtaCheckBox)component).setHorizontalAlignment(SwingConstants.CENTER);
+		((JRtaCheckBox)component).setOpaque(true);
+		
+		((JRtaCheckBox)component).addActionListener(al);
+
+	}
 	 
 	// This method is called when a cell value is edited by the user. 
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
 		if (isSelected)	{ 
-			((JRtaCheckBox)component).setVerticalAlignment(SwingConstants.CENTER);
-			((JRtaCheckBox)component).setHorizontalAlignment(SwingConstants.CENTER);
-			((JRtaCheckBox)component).setOpaque(false);
-
+			//((JRtaCheckBox)component).setVerticalAlignment(SwingConstants.CENTER);
+			//((JRtaCheckBox)component).setHorizontalAlignment(SwingConstants.CENTER);
+			((JRtaCheckBox)component).setOpaque(true);
+			((JRtaCheckBox)component).setBackground(table.getSelectionBackground());
 			((JRtaCheckBox)component).setSelected(Boolean.valueOf((Boolean)table.getValueAt(rowIndex,vColIndex)) );
-			((JRtaCheckBox)component).setVisible(true);
+			//((JRtaCheckBox)component).setVisible(true);
 			return component;
 		} // This method is called when editing is completed. 
 		return null;
@@ -60,4 +79,9 @@ public class MyTableCheckBox extends AbstractCellEditor implements TableCellEdit
 		 fireEditingCanceled();
 		 super.cancelCellEditing();
 	    }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		System.out.println("Interner ActionListener selected="+((JRtaCheckBox)component).isSelected());
+		
+	}
 }

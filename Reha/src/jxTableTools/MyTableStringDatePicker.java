@@ -19,13 +19,29 @@ public class MyTableStringDatePicker extends AbstractCellEditor implements Table
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
 	JComponent component = new JXDatePicker(); 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy"); 
 	// This method is called when a cell value is edited by the user. 
+
+	public MyTableStringDatePicker(){
+		//((JXDatePicker)component).addActionListener(((JComponent)component).getParent() );
+		((JXDatePicker)component).addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//label.setText(((JXDatePicker)component).getDate().toString());
+			}
+		});
+	}
+	public MyTableStringDatePicker(JXDatePicker xcomponent){
+		//((JXDatePicker)component).addActionListener(((JComponent)component).getParent() );
+		this.component = xcomponent;
+	}
+
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
 		if (isSelected)	{ 
 			((JXDatePicker)component).getEditor().setEditable(false);
+
 			// cell (and perhaps other cells) are selected } 
 			// Configure the component with the specified value 
 			//((JXDatePicker)component).setDate((Date) table.getValueAt(rowIndex,vColIndex) );
@@ -61,5 +77,5 @@ public class MyTableStringDatePicker extends AbstractCellEditor implements Table
 	 public void cancelCellEditing() {
 		 fireEditingCanceled();
 	    	super.cancelCellEditing();
-	    }
+	 }
 }

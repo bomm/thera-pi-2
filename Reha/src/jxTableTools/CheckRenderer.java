@@ -1,30 +1,45 @@
 package jxTableTools;
+
+
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
+
+import systemTools.JRtaCheckBox;
+
 import java.awt.Color;
 import java.awt.Component;
 
-public class ColorRenderer extends JLabel
+public class CheckRenderer extends JCheckBox
                            implements TableCellRenderer {
     Border unselectedBorder = null;
     Border selectedBorder = null;
     boolean isBordered = true;
 
-    public ColorRenderer(boolean isBordered) {
+    public CheckRenderer(boolean isBordered) {
         this.isBordered = isBordered;
         setOpaque(true); //MUST do this for background to show up.
+        setVerticalAlignment(SwingConstants.CENTER);
+		setHorizontalAlignment(SwingConstants.CENTER);
+		
+
     }
 
     public Component getTableCellRendererComponent(
-                            JTable table, Object color,
+                            JTable table, Object value,
                             boolean isSelected, boolean hasFocus,
                             int row, int column) {
-        Color newColor = (Color)color;
 
-        setBackground(newColor);
+
+    	if(isSelected){
+    		setBackground(table.getSelectionBackground());
+    	}else{
+    		setBackground(table.getBackground());
+    	}
         if (isBordered) {
             if (isSelected) {
                 if (selectedBorder == null) {
@@ -41,10 +56,6 @@ public class ColorRenderer extends JLabel
             }
         }
 
-     
-        setToolTipText("RGB Wert: " + newColor.getRed() + ", "
-                                     + newColor.getGreen() + ", "
-                                     + newColor.getBlue());
         
         return this;
     }

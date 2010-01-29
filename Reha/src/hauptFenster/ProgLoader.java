@@ -73,9 +73,9 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 	JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 	if(termin != null){
 		if(ansicht==2){
-			JOptionPane.showMessageDialog(null,"Um die Wochenarbeitszeit zu starten,\nschlie�en Sie bitte zun�chst den Terminkalender");
+			JOptionPane.showMessageDialog(null,"Um die Wochenarbeitszeit zu starten,\nschließen Sie bitte zunächst den Terminkalender");
 		}
-		System.out.println("Der Terminkalender befindet sich in Container "+((JTerminInternal)termin).getDesktop());
+		//System.out.println("Der Terminkalender befindet sich in Container "+((JTerminInternal)termin).getDesktop());
 		containerHandling(((JTerminInternal)termin).getDesktop());
 		((JTerminInternal)termin).aktiviereDiesenFrame(((JTerminInternal)termin).getName());
 		if( ((JTerminInternal)termin).isIcon() ){

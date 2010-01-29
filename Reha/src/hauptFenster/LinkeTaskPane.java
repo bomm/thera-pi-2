@@ -32,12 +32,15 @@ import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TooManyListenersException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
@@ -45,15 +48,19 @@ import kurzAufrufe.KurzAufrufe;
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI;
 
+import dialoge.DatumWahl;
+
 import sqlTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
 import systemTools.TestePatStamm;
+import terminKalender.TerminFenster;
 import ag.ion.bion.officelayer.text.ITextDocument;
 
 public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener, DropTargetListener {
@@ -68,11 +75,16 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	private static JXTaskPane tp3 = null;	
 	private static JXTaskPane tp4 = null;	
 	private static JXTaskPane tp5 = null;
+	private static JXTaskPane tp6 = null;
 	private JXHyperlink oo1 = null;
 	private JXHyperlink oo2 = null;
 	public static boolean OOok = true;
 	public static LinkeTaskPane thisClass = null;
 	public static ITextDocument itestdocument = null;
+	private ActionListener al;
+	private String aktTag = "x";
+	private String wahlTag = "y";
+	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	public LinkeTaskPane(){
 		super();
 
@@ -121,7 +133,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxTPcontainer.add(getNuetzliches());		
 		
 		jxTPcontainer.add(getSystemEinstellungen());
-		
+		jxTPcontainer.add(getMonatsUebersicht());
 		/**
 		 * dann f�gen wir den TaskpaneContainer der ScrollPane hinzu
 		 */
@@ -265,7 +277,14 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
-
+		jxLink = new JXHyperlink();
+		jxLink.setText("Monatsübersicht");
+		jxLink.setActionCommand("monthview");
+		//img = new ImageIcon(Reha.proghome+"icons/chronometer.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		//jxLink.setIcon(new ImageIcon(img));		
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
+		jxLink.addActionListener(this);
+		tp4.add(jxLink);
 		//tp4.setExpanded(true);
 		return tp4;
 	}
@@ -385,6 +404,62 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp2.add(jxLink);
 		return tp2;
 	}
+	
+	private JXTaskPane getMonatsUebersicht(){
+		tp6 = new JXTaskPane();
+		UIManager.put("TaskPane.titleBackgroundGradientStart",Color.WHITE);
+		UIManager.put("TaskPane.titleBackgroundGradientEnd",new Color(200,212,247));
+		UIManager.put("TaskPane.background",new Color(214,223,247));
+		UIManager.put("TaskPane.useGradient", Boolean.TRUE);
+		WindowsTaskPaneUI wui = new WindowsTaskPaneUI();
+		tp6.setUI(wui);
+		tp6.setTitle("Monatsübersicht");
+		final JXMonthView monthView = new JXMonthView ();
+		  monthView.setPreferredColumnCount (1);
+		  monthView.setPreferredRowCount (1);
+		  monthView.setTraversable(true);
+		  monthView.setShowingWeekNumber(true);
+		  al = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(TerminFenster.getThisClass()!= null){
+					Date dat = monthView.getSelectionDate();
+					if(dat==null){
+						return;
+					}
+					wahlTag = sdf.format(monthView.getSelectionDate());
+					if(wahlTag.equals(aktTag)){
+						return;
+					}
+					aktTag = wahlTag;
+					Reha.thisClass.progLoader.ProgTerminFenster(1, 0);
+					TerminFenster.getThisClass().springeAufDatum(aktTag);
+				}else{
+					Date dat = monthView.getSelectionDate();
+					if(dat==null){
+						return;
+					}
+					wahlTag = sdf.format(monthView.getSelectionDate());
+					if(wahlTag.equals(aktTag)){
+						return;
+					}
+					aktTag = wahlTag;
+					Reha.thisClass.progLoader.ProgTerminFenster(1, 0);
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							TerminFenster.getThisClass().springeAufDatum(aktTag);
+							
+						}
+					});
+				}
+				
+			}
+		  };
+		  monthView.addActionListener(al);
+		  tp6.add(monthView);
+		  tp6.setCollapsed(true);
+		return tp6;
+	}
 
 	
 	public static void UpdateUI(){
@@ -393,7 +468,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp2.updateUI();		
 		tp3.updateUI();
 		tp4.updateUI();
-		tp5.updateUI();		
+		tp5.updateUI();	
+		tp6.updateUI();
 		//System.out.println("TaskPane-Container L&F");
 	}
 	/**
@@ -484,7 +560,10 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				//MaskenErstellen();
 				break;
 			}
-			
+			if (cmd.equals("monthview")){
+				new DatumWahl(200,200);
+				break;
+			}
 			
 			if (cmd.equals("OpenOffice-Writer")){
 				OOTools.starteLeerenWriter();

@@ -24,14 +24,26 @@ public class MyTableComboBox extends AbstractCellEditor implements TableCellEdit
 	/**
 	 * 
 	 */
+	JComponent component =null;
+	public MyTableComboBox(){
+		component = new JRtaComboBox();
+	}
+	
+	public MyTableComboBox(JRtaComboBox comboParam){
+		component = comboParam;
+	}
 	private static final long serialVersionUID = 1L;
-	JComponent component = new JRtaComboBox(); 
+ 
 	 
 	// This method is called when a cell value is edited by the user. 
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
 		if (isSelected)	{ 
-			((JRtaComboBox)component).setSelectedVecIndex(0, (String)table.getValueAt(rowIndex,vColIndex) );
-			((JRtaComboBox)component).setVisible(true);
+			if(((JRtaComboBox)component).vec != null){
+				((JRtaComboBox)component).setSelectedVecIndex(0, (String)table.getValueAt(rowIndex,vColIndex) );
+				((JRtaComboBox)component).setVisible(true);
+			}else{
+				((JRtaComboBox)component).setSelectedItem( (String)table.getValueAt(rowIndex,vColIndex) );
+			}
 			return component;
 		} // This method is called when editing is completed. 
 		return null;
@@ -48,7 +60,11 @@ public class MyTableComboBox extends AbstractCellEditor implements TableCellEdit
 	// It must return the new value to be stored in the cell. 
 	public Object getCellEditorValue() { 
 		try{
-			return ( ((JRtaComboBox)component).getValueAt(0)  );
+			if(((JRtaComboBox)component).vec != null){
+				return ( ((JRtaComboBox)component).getValueAt(0)  );	
+			}else{
+				return ( ((JRtaComboBox)component).getSelectedItem() );
+			}
 		}catch(Exception ex){
 			return null;
 		}

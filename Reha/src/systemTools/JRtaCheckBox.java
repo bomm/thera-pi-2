@@ -46,7 +46,11 @@ public void propertyChange(PropertyChangeEvent arg0) {
 public void focusGained(FocusEvent arg0) {
 	// TODO Auto-generated method stub
 	//System.out.println("Focus "+arg0);
-	this.getParent().dispatchEvent(arg0);
+	try{
+		this.getParent().dispatchEvent(arg0);
+	}catch(Exception ex){
+		
+	}
 }
 
 @Override
@@ -68,10 +72,14 @@ public void keyPressed(KeyEvent arg0) {
 		return;
 	}
 	if(code == KeyEvent.VK_ESCAPE){
-		this.getParent().dispatchEvent(arg0);
-		this.getParent().getParent().dispatchEvent(arg0);
-		this.getParent().getParent().getParent().dispatchEvent(arg0);
-		this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		try{
+			this.getParent().dispatchEvent(arg0);
+			this.getParent().getParent().dispatchEvent(arg0);
+			this.getParent().getParent().getParent().dispatchEvent(arg0);
+			this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		}catch(Exception ex){
+			
+		}
 		return;
 	}
 	if(code == 38){

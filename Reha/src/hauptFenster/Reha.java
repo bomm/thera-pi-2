@@ -852,9 +852,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			jxRechts.setName("RechtesGrundpanel");
 			jxRechts.setBackground(Color.WHITE);
 			jxRechts.setBorder(BorderFactory.createEmptyBorder(5,0,5,5));
+			/*
 			jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
         		jxLinks,
-        		jxRechts); 
+        		jxRechts);
+        	*/	 
+			jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+	        		jxRechts,
+	        		jxLinks);
 			jSplitLR.setBackground(Color.WHITE);
 			jSplitLR.setDividerSize(7);
 			jSplitLR.addPropertyChangeListener(new PropertyChangeListener(){
@@ -867,8 +872,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			jSplitLR.setDividerBorderVisible(false);
 			jSplitLR.setName("GrundSplitLinksRechts");
 			jSplitLR.setOneTouchExpandable(true);
-			jSplitLR.setDividerLocation(250);
-
+			//jSplitLR.setDividerLocation(250);
+			jSplitLR.setDividerLocation(Toolkit.getDefaultToolkit().getScreenSize().width-250);
 			((BasicSplitPaneUI) jSplitLR.getUI()).getDivider().setBackground(Color.WHITE);
 
 			desktop = new JXPanel(new BorderLayout());
