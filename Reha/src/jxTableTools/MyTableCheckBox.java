@@ -44,7 +44,7 @@ public class MyTableCheckBox extends AbstractCellEditor implements TableCellEdit
 		((JRtaCheckBox)component).setOpaque(true);
 		
 		((JRtaCheckBox)component).addActionListener(al);
-
+		((JRtaCheckBox)component).addActionListener(this);
 	}
 	 
 	// This method is called when a cell value is edited by the user. 
@@ -81,6 +81,7 @@ public class MyTableCheckBox extends AbstractCellEditor implements TableCellEdit
 	    }
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		fireEditingStopped();
 		System.out.println("Interner ActionListener selected="+((JRtaCheckBox)component).isSelected());
 		
 	}
