@@ -21,6 +21,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
 import org.jdesktop.swingx.JXPanel;
@@ -205,7 +206,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		//System.out.println(rootKasse.getChildAt(knoten));
 		String kasse = rootKasse.getChildAt(knoten).toString();
 		String dsz = diszis[cmbDiszi.getSelectedIndex()];
-		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select rez_nr,pat_intern from fertige where rezklasse='"+dsz+"' AND name1='"+
+		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select rez_nr,pat_intern,ediok from fertige where rezklasse='"+dsz+"' AND name1='"+
 				kasse+"' ORDER BY pat_intern");
 		
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) rootKasse.getChildAt(knoten);
@@ -213,7 +214,9 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		for(int i = 0;i<vecKassen.size();i++){
 			String name = SqlInfo.holeFelder("select n_name from pat5 where pat_intern='"+
 					vecKassen.get(i).get(1)+"' LIMIT 1").get(0).get(0);
-			treeitem = new DefaultMutableTreeNode(vecKassen.get(i).get(0)+"-"+name);
+			String bild = (vecKassen.get(i).get(2).equals("T") ? "<img src=file:///"+Reha.proghome+"icons/Haken_klein.gif>" : "");
+			treeitem = new DefaultMutableTreeNode("<html>"+vecKassen.get(i).get(0)+"-"+name+bild+"</html>");
+			//treeitem = new DefaultMutableTreeNode(vecKassen.get(i).get(0)+"-"+name);
 			node.add(treeitem);
 		}
 
@@ -233,7 +236,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	/*******************************************/
 	private void doKassenTreeAuswerten(int pathCount,String path){
-		//System.out.println("PathCount = "+arg0.getPath().getPathCount());
+		System.out.println("Path = "+path);
 		if(pathCount==2){
 			//Kasse ausgewählt
 			return;
@@ -241,7 +244,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		if(pathCount==3){
 			//Rezept ausgewählt
 			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			if(! this.abrRez.setNewRez(path)){
+			if(! this.abrRez.setNewRez(path.replace("<html>", ""))){
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				return;
 			}

@@ -9,8 +9,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -36,6 +38,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -47,10 +50,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
@@ -142,7 +147,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	JLabel[] labs = {null,null,null,null,null,null,null,null,null,null,
 					null,null,null,null,null,null,null,null,null,null,
 					null,null,null,null,null,null,null,null,null,null};
-	
+
+	JLabel aktRezNum = null;
 	Vector<Vector<Object>> vec_tabelle = new Vector<Vector<Object>>();
 	Vector<Object> vecdummy = new Vector<Object>();
 	
@@ -227,7 +233,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private int popUpX;
 	private int popUpY;
 	
-
+	ActionListener tbaction = null;
+	Rectangle rec = new Rectangle(0,0,0,0);
 	public AbrechnungRezept(Abrechnung1 xeltern){
 		eltern = xeltern;
 		setLayout(new BorderLayout());
@@ -256,7 +263,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		jSplitOU.setName("BrowserSplitObenUnten");
 		jSplitOU.setOneTouchExpandable(true);
 		//jSplitOU.setDividerLocation(jpan.getHeight());
-		
+		jpan.add(getToolbar(),BorderLayout.NORTH);
 		jpan.add(jSplitOU,BorderLayout.CENTER);
 
 		return jpan;
@@ -352,7 +359,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			String dummy1 = rez.split(",")[2];
 			String dummy2 = dummy1.split("-")[0];
 			//System.out.println("Neues Rezept = "+dummy2);
-
+			aktRezNum.setText(dummy2);
 			setPreisVec(dummy2);
 			setWerte(dummy2);		
 		}catch(Exception ex){
@@ -370,8 +377,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 	private JXPanel getTageTree(){
 		JXPanel jpan = new JXPanel(new BorderLayout());
-		FormLayout lay = new FormLayout("0dlu,20dlu,fill:0:grow(1.0),20dlu,0dlu",
-				"0dlu,p,15dlu,fill:0:grow(0.5),2dlu,fill:0:grow(0.5),60dlu");
+		FormLayout lay = new FormLayout("0dlu,0dlu,fill:0:grow(1.0),20dlu,0dlu",
+				"0dlu,p,0dlu,fill:0:grow(0.5),2dlu,fill:0:grow(0.5),60dlu");
 		jpan.setLayout(lay);
 		CellConstraints cc = new CellConstraints();
 		
@@ -569,12 +576,49 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		jtb.setRollover(true);
 		jtb.setBorder(null);
 		jtb.setOpaque(false);
+		tbaction = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String cmd = arg0.getActionCommand();
+			}
+		};
+		JXPanel rezpan = new JXPanel(new BorderLayout());
+		rezpan.setBorder(BorderFactory.createEtchedBorder(1));
+		//rezpan.setPreferredSize(new Dimension(150,0));
+		rezpan.setSize(100,30);
+		rezpan.setMaximumSize(new Dimension(150,30));
+		rezpan.setOpaque(false);
+		aktRezNum = new JLabel();
+		aktRezNum.setHorizontalAlignment(JLabel.CENTER);
+		aktRezNum.setFont(new Font("Tahoma",Font.PLAIN,15));
+		aktRezNum.setForeground(Color.BLUE);
+		rezpan.add(aktRezNum,BorderLayout.CENTER);
+		jtb.add(rezpan);
+		
+		tbbuts[2] = new JButton();
+		tbbuts[2].setIcon(SystemConfig.hmSysIcons.get("abschliessen"));
+		tbbuts[2].setToolTipText("Rezept abschließen");
+		tbbuts[2].setActionCommand("abschliessen");
+		tbbuts[2].addActionListener(tbaction);
+		jtb.add(tbbuts[2]);
+
+		jtb.addSeparator(new Dimension(30,0));
+		
 		tbbuts[0] = new JButton();
 		tbbuts[0].setIcon(SystemConfig.hmSysIcons.get("print"));
+		tbbuts[0].setToolTipText("Rezept taxieren");
+		tbbuts[0].setActionCommand("taxieren");
+		tbbuts[0].addActionListener(tbaction);
 		jtb.add(tbbuts[0]);
+
 		tbbuts[1] = new JButton();
 		tbbuts[1].setIcon(SystemConfig.hmSysIcons.get("scanner"));
+		tbbuts[1].setToolTipText("Rezept scannen");
+		tbbuts[1].setActionCommand("scannen");
+		tbbuts[1].addActionListener(tbaction);
 		jtb.add(tbbuts[1]);
+
+
 		return jtb;
 	}
 	private void setWerte(String rez_nr){
@@ -1462,6 +1506,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		if(rez_nr==null){
 			return;
 		}
+
 		String dummy="";
 		String text = 
 		"<html><head>"+
@@ -1477,7 +1522,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"</head>"+
 		"<div style=margin-left:30px;>"+
 		"<font face=\"Tahoma\"><style=margin-left=30px;>"+
-		"<b>"+rez_nr+"<b><br><br>"+
+		"<br>"+
 		"<table>"+
 		/*****Rezept****/
 		/*******/
@@ -1621,6 +1666,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"</div>"+
 		"</html>";
 		this.htmlPane.setText(text);
+		((JScrollPane)this.htmlPane.getParent().getParent()).validate();
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				JViewport vp = ((JScrollPane)htmlPane.getParent().getParent()).getViewport();
+				vp.setViewPosition(new Point(0,0));
+				((JScrollPane)htmlPane.getParent().getParent()).validate();
+			}
+		});
 	}
 	private String getHTMLPositionen(){
 		StringBuffer sbuf = new StringBuffer();
@@ -2006,8 +2059,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
 					if(aktRow < 0){return;}
-					setEinzelPreis((String) ((JRtaComboBox)arg0X.getSource()).getValueAt(1));
-					aktualisiereTree();
+					setEinzelPreis((String)((JRtaComboBox)arg0X.getSource()).getValueAt(0),(String)((JRtaComboBox)arg0X.getSource()).getValueAt(1));
+					getVectorFromNodes();					
+					doTreeRezeptWertermitteln();
+					doPositionenErmitteln();
+					parseHTML(vec_rez.get(0).get(1).trim());
 				}
 			});
 			return;
@@ -2083,14 +2139,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		jXTreeTable.repaint();
 	}
-	private void setEinzelPreis(String id){
+	private void setEinzelPreis(String bez,String id){
 		try{
 			if(aktNode.abr.alterpreis.equals("alt")){
 				aktNode.abr.preis = Double.valueOf(RezTools.getPreisAltFromID(id, preisgruppe, preisvec).replace(",", "."));
 				aktNode.abr.preisid = id;
+				aktNode.abr.bezeichnung = bez;
 			}else{
 				aktNode.abr.preis = Double.valueOf(RezTools.getPreisAktFromID(id, preisgruppe, preisvec).replace(",", "."));
 				aktNode.abr.preisid = id;
+				aktNode.abr.bezeichnung = bez;
 			}
 			if(aktNode.abr.zuzahlung){
 				aktNode.abr.rezgeb = rechneRezGebFromDouble(aktNode.abr.preis);
