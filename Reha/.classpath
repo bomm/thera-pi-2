@@ -36,6 +36,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/PDFRenderer-2009_09_20.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/junit-4.5.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/looks-2.3.0.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-2010_01_24.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

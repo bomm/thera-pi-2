@@ -21,6 +21,17 @@ import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
 
 public class RezTools {
+	public static boolean mitJahresWechsel(String datum){
+		boolean ret = false;
+		try{
+			if( (Integer.parseInt(datum.substring(6))-Integer.parseInt(SystemConfig.aktJahr)) < 0){
+				ret = true;
+			}
+		}catch(Exception ex){
+			
+		}
+		return ret;
+	}
 	
 	public static Vector<String> holeEinzelTermineAusRezept(String xreznr,String termine){
 		Vector<String> xvec = null;
@@ -287,12 +298,14 @@ public class RezTools {
 
 			if(new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(63))) <= 0){
 				// Kasse erfordert keine Zuzahlung
+				System.out.println("Kasse erfordert keine Zuzahlung");
 				zm.allefrei = true;
 				iret = 0;
 				break;
 			}
 			if(new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(39))) == 1){
 				// Hat bereits bezahlt normal behandeln (zzstatus == 1)
+				System.out.println("Hat bereits bezahlt normal behandeln (zzstatus == 1)");
 				zm.allezuzahl = true;
 				iret = 2;
 				//break;
@@ -301,6 +314,7 @@ public class RezTools {
 			/************************ Jetzt der Ober-Scheißdreck für den Achtzehner-Test***********************/
 			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(60)).equals("T")){
 				// Es ist ein unter 18 Jahre Test notwendig
+				System.out.println("Es ist ein unter 18 Jahre Test notwendig");
 				if(bTermine){
 					
 					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.patDaten.get(4))); 
@@ -347,23 +361,26 @@ public class RezTools {
 			}
 
 			/************************ Keine Befreiung Aktuell und keine Vorjahr (Normalfall************************/
-			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(12)).equals("F") && 
-					(((String)Reha.thisClass.patpanel.vecaktrez.get(59)).trim().equals("")) ){
-				// Es liegt weder eine Befreiung f�r dieses noch f�r letztes Jahr vor.
+			if((boolean) ((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("F") && 
+					(((String)Reha.thisClass.patpanel.patDaten.get(69)).trim().equals("")) ){
+				// Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.
 				// Standard
+				System.out.println("Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.");
 				iret = 2;
 				break;
 			}
 			/************************ Aktuell Befreit und im Vorjahr auch befreit************************/			
-			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(12)).equals("T") && 
-					(((String)Reha.thisClass.patpanel.vecaktrez.get(59)).equals(SystemConfig.vorJahr)) ){
+			if((boolean) ((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("T") && 
+					(!((String)Reha.thisClass.patpanel.patDaten.get(69)).equals("")) ){
 				// Es liegt eine Befreiung vor und im Vorjahr ebenfenfalls befreit
+				System.out.println("Es liegt eine Befreiung vor und im Vorjahr ebenfenfalls befreit");
 				iret = 0;
 				break;
 			}
 			/************************ aktuell Nicht frei, Vorjahr frei************************/
-			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(12)).equals("F") && 
-					(((String)Reha.thisClass.patpanel.vecaktrez.get(59)).trim().equals(SystemConfig.vorJahr)) ){
+			if((boolean) (((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("F")) && 
+					(!((String)Reha.thisClass.patpanel.patDaten.get(69)).equals("")) ){
+				System.out.println("aktuell Nicht frei, Vorjahr frei");
 				if(!bMitJahresWechsel){//Alle Termine aktuell
 					iret = 2;
 				}else{// es gibt Termine im Vorjahr
@@ -382,9 +399,11 @@ public class RezTools {
 				}
 				break;
 			}
-			/************************Aktuelle Befreiung aber nicht im Vorjahr************************/			
-			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(12)).equals("T") && 
+			/************************Aktuelle Befreiung aber nicht im Vorjahr************************/		
+			// Fehler !!!!!!!!!!!!!!!!!!!!!!! muß korrigiert werden!!!!!!!!!!!!!!!!!!!!!!!
+			if((boolean) ((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("T") && 
 					(((String)Reha.thisClass.patpanel.vecaktrez.get(59)).trim().equals("")) ){
+				System.out.println("Aktuelle Befreiung aber nicht im Vorjahr");
 				if(!bMitJahresWechsel){//Alle Termine aktuell
 					iret = 0;
 				}else{// es gibt Termine im Vorjahr
@@ -757,7 +776,7 @@ public class RezTools {
 		//((BigDecimal)retobj[0]).add(BigDecimal.valueOf(new Double(1.00)));
 		//((BigDecimal) retobj[0]).add(new BigDecimal(rezwert));
 		Object[] retobj = {(BigDecimal) rezwert,(Double)rezgeb};
-		System.out.println("Die tats�chlich HB-Anzahl = "+realhbAnz);
+		System.out.println("Die tatsächlich HB-Anzahl = "+realhbAnz);
 		System.out.println("Der Rezeptwert zu Beginn = "+retobj[0]);
 		if(zm.hausbesuch){ //Hausbesuch
 			System.out.println("Hausbesuch ist angesagt");

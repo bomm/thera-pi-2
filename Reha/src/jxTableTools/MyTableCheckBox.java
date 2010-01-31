@@ -82,7 +82,7 @@ public class MyTableCheckBox extends AbstractCellEditor implements TableCellEdit
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		fireEditingStopped();
-		System.out.println("Interner ActionListener selected="+((JRtaCheckBox)component).isSelected());
+		//System.out.println("Interner ActionListener selected="+((JRtaCheckBox)component).isSelected());
 		
 	}
 }

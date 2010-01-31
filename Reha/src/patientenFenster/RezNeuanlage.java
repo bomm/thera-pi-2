@@ -49,6 +49,7 @@ import events.RehaTPEventListener;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
@@ -1150,15 +1151,38 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				szzstatus = "0";
 				break;
 			}
-			//System.out.println("ZuzahlStatus = Zuzahlung (zun�chst) erforderlich, pr�fe ob befreit oder unter 18");
+			//System.out.println("ZuzahlStatus = Zuzahlung (zunächst) erforderlich, prüfe ob befreit oder unter 18");
 			if(Reha.thisClass.patpanel.patDaten.get(30).equals("T")){
-				System.out.println("ZuzahlStatus = Patient ist befreit");
-				//laut Patientenstamm befreit aber evtl. noch nicht f�r dieses Rezept.
-				//deshalb pr�fen ob bereits bezahlt;
+				System.out.println("aktuelles Jahr ZuzahlStatus = Patient ist befreit");
+				//laut Patientenstamm befreit aber evtl. noch nicht für dieses Rezept.
+				//deshalb prüfen ob bereits bezahlt;
+				
+				//bereits bezahlt deshalb Status = 1 == bezahlt
 				if(this.vec.get(14).equals("T")){
 					szzstatus = "1";
 				}else{
-					szzstatus = "0";				
+					
+					if(RezTools.mitJahresWechsel(DatFunk.sDatInDeutsch(this.vec.get(2)))){
+						
+						String vorjahr = Reha.thisClass.patpanel.patDaten.get(69); 
+						if(vorjahr.trim().equals("")){
+							if(this.vec.get(34).indexOf(vorjahr)>=0){
+								szzstatus = "2";
+							}else{
+								szzstatus = "0";
+							}
+						}else{
+							szzstatus = "0";
+						}
+						System.out.println("Über den jahreswechsel....");
+					}else{
+						szzstatus = "0";
+					}
+					//Im Patientenstamm liegt eine aktuelle befreiung vor  
+					//testen ob sich das Rezept über den Jahreswechsel erstreckt
+					//wenn ja war er damals auch befreit, wenn ja Status == 0
+					//wenn nein Status == 2 == nicht befreit und nicht bezahlt
+					//szzstatus = "0";				
 				}
 				break;
 			}

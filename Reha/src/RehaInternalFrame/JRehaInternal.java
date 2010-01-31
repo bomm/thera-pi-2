@@ -340,7 +340,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 						try{
 							iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
 						}catch(Exception ex){
-							// Hier muß der Kram mit iconified
+							// Hier muï¿½ der Kram mit iconified
 							if(Reha.thisClass.desktops[idesk].getComponent(layers) instanceof JDesktopIcon){
 								/*
 								try {
@@ -423,7 +423,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		AktiveFenster.loescheFenster(this.getName());
-		System.out.println("In JRehaInternal alles gelöscht");
+		System.out.println("In JRehaInternal alles gelï¿½scht");
 		/*
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
@@ -528,7 +528,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Muaus ist außerhalb des Fensters");
+		//System.out.println("Muaus ist auï¿½erhalb des Fensters");
 	}
 
 	@Override
@@ -595,7 +595,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	public void setzeIcon(){
 		if(this.isIcon){
-			//System.out.println("Komponente Resized im Behälter - "+ this.desktop);
+			//System.out.println("Komponente Resized im Behï¿½lter - "+ this.desktop);
 			JDesktopIcon di = this.getDesktopIcon();
 			di.setLocation((5*this.compOrder)+(this.compOrder*di.getWidth()), Reha.thisClass.desktops[this.desktop].getHeight()-di.getHeight());
 			
@@ -620,7 +620,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 
 		jPopupMenu.addSeparator();
 		jmen = new JMenuItem();
-		jmen.setText("jetzt(!) Fenster auf verfügbare Größe anpassen");
+		jmen.setText("jetzt(!) Fenster auf verfÃ¼gbare GrÃ¶ÃŸe anpassen");
 		jmen.setEnabled(true);
 		jmen.setRolloverEnabled(true);
 		jmen.setActionCommand("anpassen");
@@ -628,7 +628,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		jPopupMenu.add(jmen);
 		jPopupMenu.addSeparator();
 
-		JCheckBoxMenuItem cbMenuItem = new JCheckBoxMenuItem("stets versuchen das Fenster auf maximale Größe einstellen");
+		JCheckBoxMenuItem cbMenuItem = new JCheckBoxMenuItem("stets versuchen das Fenster auf maximale GrÃ¶ÃŸe einstellen");
 		cbMenuItem.setSelected((stetsgross ? true : false));
 		cbMenuItem.setActionCommand("stetsgross");
 		cbMenuItem.addActionListener(this);		
@@ -655,7 +655,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		jPopupMenu.add(jmen);
 
 		jmen = new JMenuItem();
-		jmen.setText("Fenster schließen");
+		jmen.setText("Fenster schlieÃŸen");
 		jmen.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/buttonred.png"));
 		jmen.setEnabled(true);
 		jmen.setActionCommand("schliessen");
@@ -904,7 +904,7 @@ class CustomPinPanel extends JButton{
 		setPreferredSize(new Dimension(15,15));
 		addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				//System.out.println("Action ausgelöst von: "+((JComponent)evt.getSource()).getName());
+				//System.out.println("Action ausgelï¿½st von: "+((JComponent)evt.getSource()).getName());
 				if(((JComponent)evt.getSource()).getName().equals("GRUEN")){
 					((JRehaInternal)getParent().getParent()).gruenGedrueckt();
 				}

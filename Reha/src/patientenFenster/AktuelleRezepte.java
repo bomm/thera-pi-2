@@ -529,7 +529,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				//System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
 				//System.out.println("Event = "+e);
 				if (e == null) {
-
+					return false;
 					//System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
 				}
 				if (e instanceof MouseEvent) {
@@ -838,7 +838,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.repaint();
 		anzahlTermine.setText("Anzahl Terimine: "+lines);
 		if(lines > 0){
-			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
+			//tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
 		inEinzelTermine = false;
