@@ -33,8 +33,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TooManyListenersException;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -55,9 +58,14 @@ import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI;
 
+import patientenFenster.AktuelleRezepte;
+
 import dialoge.DatumWahl;
+import events.PatStammEvent;
+import events.PatStammEventClass;
 
 import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.TestePatStamm;
 import terminKalender.TerminFenster;
@@ -169,6 +177,45 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		jxLink.setEnabled(true);
+		DropTarget dndt = new DropTarget();
+		DropTargetListener dropTargetListener =
+			 new DropTargetListener() {
+			  public void dragEnter(DropTargetDragEvent e) {}
+			  public void dragExit(DropTargetEvent e) {}
+			  public void dragOver(DropTargetDragEvent e) {}
+			  public void drop(DropTargetDropEvent e) {
+				  String mitgebracht = "";
+			    try {
+			      Transferable tr = e.getTransferable();
+			      DataFlavor[] flavors = tr.getTransferDataFlavors();
+			      for (int i = 0; i < flavors.length; i++){
+			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
+			      }
+			      System.out.println(mitgebracht);
+			      if(mitgebracht.indexOf("°") >= 0){
+			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
+			    		  return;
+			    	  }
+			    	  doPatientDrop(mitgebracht.split("°")[2].trim());
+			    	  //ProgLoader.ProgRoogleFenster(0, mitgebracht);
+			    	  //Reha.thisClass.progLoader.ProgRoogleFenster(0, mitgebracht);
+			      }
+			      System.out.println(mitgebracht+" auf Patientenstamm gedropt");
+			    } catch (Throwable t) { t.printStackTrace(); }
+			    // Ein Problem ist aufgetreten
+			    e.dropComplete(true);
+			  }
+			  public void dropActionChanged(
+			         DropTargetDragEvent e) {}
+		};
+		try {
+			dndt.addDropTargetListener(dropTargetListener);
+		} catch (TooManyListenersException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		jxLink.setDropTarget(dndt);
+		
 		tp1.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("Arzte");
@@ -743,6 +790,61 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		}
 
 
+	}
+	private void doPatientDrop(String rez_nr){
+		String pat_int = "";
+		String reznr = rez_nr;
+		int ind = reznr.indexOf("\\");
+		if(ind >= 0){
+			reznr = reznr.substring(0,ind);
+		}
+		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+		if(vec.size() == 0){
+			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
+			return;
+		}
+		
+		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List) new ArrayList() );
+		if(vec.size() == 0){
+			JOptionPane.showMessageDialog(null,"Patient mit zugeordneter Rezeptnummer -> "+reznr+" <- wurde nicht gefunden");
+			return;
+		}
+		pat_int = (String) vec.get(0);
+		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		final String xreznr = reznr;
+		if(patient == null){
+			final String xpat_int = pat_int;
+			new SwingWorker<Void,Void>(){
+				protected Void doInBackground() throws Exception {
+					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+					while( (xpatient == null) ){
+						Thread.sleep(20);
+						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					}
+					while(  (!AktuelleRezepte.initOk) ){
+						Thread.sleep(20);
+					}
+					
+					String s1 = "#PATSUCHEN";
+					String s2 = (String) xpat_int;
+					PatStammEvent pEvt = new PatStammEvent(Reha.thisClass.terminpanel);
+					pEvt.setPatStammEvent("PatSuchen");
+					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+					PatStammEventClass.firePatStammEvent(pEvt);
+					return null;
+				}
+				
+			}.execute();
+		}else{
+			Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+			String s1 = "#PATSUCHEN";
+			String s2 = (String) pat_int;
+			PatStammEvent pEvt = new PatStammEvent(Reha.thisClass.terminpanel);
+			pEvt.setPatStammEvent("PatSuchen");
+			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+			PatStammEventClass.firePatStammEvent(pEvt);
+		}		
 	}
 	
 /************************************************************/

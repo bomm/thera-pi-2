@@ -113,6 +113,7 @@ public class SystemConfig {
 	
 	public static Vector<String> vPreisGruppen;
 	public static Vector<Integer> vZuzahlRegeln;
+	public static Vector<String> vPreisGueltig;
 	public static Vector <Vector<String>> vNeuePreiseAb;
 	public static Vector<Vector<Integer>> vNeuePreiseRegel;
 	public static Vector<Vector<String>> vHBRegeln;
@@ -602,6 +603,7 @@ public class SystemConfig {
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		int tarife = inif.getIntegerProperty("PreisGruppen", "AnzahlPreisGruppen");
 		vPreisGruppen = new Vector<String>() ;
+		vPreisGueltig = new Vector<String>() ;
 		vZuzahlRegeln = new Vector<Integer>();
 		vNeuePreiseAb = new Vector<Vector<String>>();
 		vNeuePreiseRegel = new Vector<Vector<Integer>>();
@@ -613,7 +615,9 @@ public class SystemConfig {
 
 		for(int i = 1; i <= tarife; i++){
 			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
+			vPreisGueltig.add(inif.getStringProperty("PreisGruppen","PGGueltig"+i));
 			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
+
 			//vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
 			//vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}

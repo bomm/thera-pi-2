@@ -2820,8 +2820,6 @@ class RehaSockServer{
 			output.flush();
 			output.close();
 			input.close();
-
-
 		}
 		if(serv != null){
 			serv.close();
@@ -2830,7 +2828,6 @@ class RehaSockServer{
 		}else{
 			System.out.println("Socket wurde geschlossen");
 		}
-
 		return;
 	}
 }

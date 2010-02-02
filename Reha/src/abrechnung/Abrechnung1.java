@@ -2,12 +2,15 @@ package abrechnung;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -17,7 +20,9 @@ import javax.swing.SwingWorker;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -26,6 +31,16 @@ import hauptFenster.UIFSplitPane;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+import org.jdesktop.swingx.treetable.MutableTreeTableNode;
+import org.jdesktop.swingx.treetable.TreeTableNode;
+
+
+
+
+
+
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -36,6 +51,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
+import terminKalender.DatFunk;
 
 import RehaInternalFrame.JAbrechnungInternal;
 
@@ -59,12 +75,18 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	JButton[] butLinks = {null,null,null,null};
 	JRtaComboBox cmbDiszi = null;
 	JXTree treeKasse = null;
-	public DefaultMutableTreeNode rootKasse;
-	public DefaultTreeModel treeModelKasse;
-
 	
+//	public DefaultMutableTreeNode rootKasse;
+//	public DefaultTreeModel treeModelKasse;
+
+	public JXTTreeNode rootKasse;
+	public KassenTreeModel treeModelKasse;
+
+	Vector<String> existiertschon = new Vector<String>();	
 	/*******Controls für die rechte Seite*********/
 	AbrechnungRezept abrRez = null;
+	
+	public String aktuellerPat = "";
 	public Abrechnung1(JAbrechnungInternal xjry){
 		super();
 		this.setJry(xjry);
@@ -98,7 +120,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		cmbDiszi = new JRtaComboBox(new String[] {"Physio-Rezept","Massage/Lymphdrainage-Rezept","Ergotherapie-Rezept","Logopädie-Rezept"});
 		cmbDiszi.setSelectedItem(SystemConfig.initRezeptKlasse);
 		cmbDiszi.setActionCommand("einlesen");
-		cmbDiszi.addActionListener(this);
+		
 		pb.add(cmbDiszi,cc.xy(2,4));
 		/*
 		butLinks[0] = new JButton("Abrechnungsdaten einlesen");
@@ -107,18 +129,25 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		pb.addLabel("",cc.xy(2,6));
 		pb.add(butLinks[0],cc.xy(2,8));
 		*/
-		rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
-		treeModelKasse = new DefaultTreeModel(rootKasse);
-		treeKasse = new JXTree( rootKasse );
+		//rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
+		//rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
+		rootKasse = new JXTTreeNode(new KnotenObjekt("Abrechnung für Kasse...","",false),true);
+		treeModelKasse = new KassenTreeModel((JXTTreeNode) rootKasse);
+
+		treeKasse = new JXTree(treeModelKasse);
+		treeKasse.setModel(treeModelKasse);
 		treeKasse.setName("kassentree");
 		treeKasse.getSelectionModel().addTreeSelectionListener(this);
+		treeKasse.setCellRenderer(new MyRenderer(new ImageIcon(Reha.proghome+"icons/Haken_klein.gif")));
 		JScrollPane jscrk = JCompTools.getTransparentScrollPane(treeKasse);
-		pb.add(jscrk,cc.xy(2, 10));
+		pb.add(jscrk,cc.xy(2, 6));
 		
 		doEinlesen();
+		
 		pb.getPanel().validate();
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
 		jscr.validate();
+		cmbDiszi.addActionListener(this);
 		return jscr;
 	}
 	private JXPanel getRight(){
@@ -143,8 +172,13 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("einlesen")){
+			//rootKasse.removeAllChildren();
 			String[] reznr = {"KG","MA","ER","LO"};
 			abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
+			if(abrRez.rezeptSichtbar){
+				abrRez.setRechtsAufNull();
+	    		aktuellerPat = "";
+			}
 			doEinlesen();
 			//setPreisVec(cmbDiszi.getSelectedIndex());
 		}
@@ -163,34 +197,48 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
+					existiertschon.clear();
 					String dsz = diszis[cmbDiszi.getSelectedIndex()];
-					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select name1,ikktraeger from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger");
+					
+					String cmd = "select name1,ikktraeger from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger";
+
+					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
+					System.out.println("Insgesamt fertige Rezepte der Disziplin "+dsz+" = "+vecKassen.size());
 					if(vecKassen.size() <= 0){
 						kassenBaumLoeschen();
-						treeKasse.setEnabled(false);
 						return null;
 					}
-					int aeste = 0;
 					kassenBaumLoeschen();
 					treeKasse.setEnabled(true);
-					String kas = vecKassen.get(0).get(0).trim();
+					String kas = vecKassen.get(0).get(0).trim().toUpperCase();
 					String ktraeger = vecKassen.get(0).get(1).trim();
-					astAnhaengen(kas);
-					rezepteAnhaengen(aeste);
+					
+					existiertschon.add(ktraeger);
+
+					int aeste = 0;					
+					astAnhaengen(kas,ktraeger);
+					rezepteAnhaengen(0);
 					aeste++;
+					
+					
+
+
+
 					for(int i = 0; i < vecKassen.size();i++){
-						System.out.println(ktraeger);
-						System.out.println(vecKassen.get(i).get(1));
-						if(! vecKassen.get(i).get(1).equals(ktraeger)){
-							kas = vecKassen.get(i).get(0);
+						//System.out.println(ktraeger);
+						//System.out.println(vecKassen.get(i).get(1));
+						if(! existiertschon.contains(vecKassen.get(i).get(1).trim().toUpperCase())){
+							kas = vecKassen.get(i).get(0).trim().toUpperCase();
 							ktraeger = vecKassen.get(i).get(1);
-							astAnhaengen(kas);
+							existiertschon.add(ktraeger);
+							astAnhaengen(kas,ktraeger);
 							rezepteAnhaengen(aeste);
 							aeste++;
+
 							treeKasse.repaint();
 						}
 					}
-					
+					treeKasse.validate();
 					treeKasse.setRootVisible(true);
 					treeKasse.expandRow(0);
 					treeKasse.repaint();
@@ -202,55 +250,69 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		}.execute();
 	}
 	private void rezepteAnhaengen(int knoten){
-		System.out.println("Knoten von root "+rootKasse.getChildCount());
-		//System.out.println(rootKasse.getChildAt(knoten));
-		String kasse = rootKasse.getChildAt(knoten).toString();
+		String ktraeger = ((JXTTreeNode)rootKasse.getChildAt(knoten)).knotenObjekt.ktraeger;
 		String dsz = diszis[cmbDiszi.getSelectedIndex()];
-		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder("select rez_nr,pat_intern,ediok from fertige where rezklasse='"+dsz+"' AND name1='"+
-				kasse+"' ORDER BY pat_intern");
+		String cmd = "select rez_nr,pat_intern,ediok from fertige where rezklasse='"+dsz+"' AND ikktraeger='"+
+		ktraeger+"' ORDER BY pat_intern";
+
+		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
+
+		JXTTreeNode node = (JXTTreeNode) rootKasse.getChildAt(knoten);
+		JXTTreeNode treeitem = null;
 		
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) rootKasse.getChildAt(knoten);
-		DefaultMutableTreeNode treeitem = null;
+		JXTTreeNode meinitem = null;
 		for(int i = 0;i<vecKassen.size();i++){
-			String name = SqlInfo.holeFelder("select n_name from pat5 where pat_intern='"+
-					vecKassen.get(i).get(1)+"' LIMIT 1").get(0).get(0);
-			String bild = (vecKassen.get(i).get(2).equals("T") ? "<img src=file:///"+Reha.proghome+"icons/Haken_klein.gif>" : "");
-			treeitem = new DefaultMutableTreeNode("<html>"+vecKassen.get(i).get(0)+"-"+name+bild+"</html>");
-			//treeitem = new DefaultMutableTreeNode(vecKassen.get(i).get(0)+"-"+name);
-			node.add(treeitem);
+			System.out.println("In Rezeptanhängen "+i);
+			cmd = "select n_name from pat5 where pat_intern='"+
+				vecKassen.get(i).get(1)+"' LIMIT 1";
+
+			String name = SqlInfo.holeFelder(cmd).get(0).get(0);
+
+			KnotenObjekt rezeptknoten = new KnotenObjekt(vecKassen.get(i).get(0)+"-"+name,
+					vecKassen.get(i).get(0),
+					(vecKassen.get(i).get(2).equals("T")? true : false));
+			rezeptknoten.ktraeger = ktraeger;
+			rezeptknoten.pat_intern = vecKassen.get(i).get(1);
+			meinitem = new JXTTreeNode(rezeptknoten,true);
+
+			treeModelKasse.insertNodeInto(meinitem,node,node.getChildCount());
+			treeKasse.validate();
 		}
 
 	}
-	private void astAnhaengen(String ast){
-		System.out.println("HauptAst wird angehängt");
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(ast);
-		rootKasse.add(node);
+	private void astAnhaengen(String ast,String ktraeger){
+		KnotenObjekt knoten = new KnotenObjekt(ast,"",false);
+		knoten.ktraeger = ktraeger;
+		JXTTreeNode node = new JXTTreeNode(knoten,true);
+		treeModelKasse.insertNodeInto(node, rootKasse, rootKasse.getChildCount());
 		treeKasse.validate();
-		treeModelKasse.reload();
 	}
 	private void kassenBaumLoeschen(){
-		System.out.println("Kassenbaum wird gelöscht");
-		treeKasse.collapseAll();
-		rootKasse.removeAllChildren();
+		try{
+		int childs;	
+		while( (childs=rootKasse.getChildCount()) > 0){
+			System.out.println("HauptKnoten überig = "+childs);
+			treeModelKasse.removeNodeFromParent((JXTTreeNode) ((JXTTreeNode) treeModelKasse.getRoot()).getChildAt(0));
+		}
 		treeKasse.validate();
+		treeKasse.repaint();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 	/*******************************************/
-	private void doKassenTreeAuswerten(int pathCount,String path){
-		System.out.println("Path = "+path);
-		if(pathCount==2){
-			//Kasse ausgewählt
-			return;
-		}
-		if(pathCount==3){
+	private void doKassenTreeAuswerten(KnotenObjekt node){
 			//Rezept ausgewählt
 			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			if(! this.abrRez.setNewRez(path.replace("<html>", ""))){
+			if(! this.abrRez.setNewRez(node.rez_num,node.fertig) ){
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				return;
 			}
+				
+
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			return;
-		}
+
 	}
 	/*******************************************/	
 	private void doAufraeumen(){
@@ -270,27 +332,152 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	    }
 	    */
 		System.out.println("arg0 = "+arg0.getPath().getPathCount());
-		doKassenTreeAuswerten(arg0.getPath().getPathCount(),arg0.getPath().toString());
-	    if(arg0.getSource().equals(treeModelKasse)){
-	    	doKassenTreeAuswerten(arg0.getPath().getPathCount(),arg0.getPath().toString());
-	    }
-	}
-	public void analysiereRezept(String rez,String pat){
-		//rezeptdaten holen
-		//testen ob 18 oder im Behandlungsverlauf 18 geworden
-		//testen ob befreit
-		//testen ob wechsel zwischen befreit und nicht befreit
-		//testen ob Tarifwechsel während der Behandlung
-		/**
-		 * 
-		 */
-		// erforderliche Variablen
-		//boolean vollfrei
-		//boolean teilfrei
-		//boolean frei anfang
-		//boolean tarifwechsel
-		//String stichtag_jahreswechsel = 31.12.Vorjahr
-		//String stichtag_tarifwechsel = xx.xx.xxxx
-	}
+		//doKassenTreeAuswerten(arg0.getPath().getPathCount(),arg0.getPath().toString());
+    	TreePath tp =  treeKasse.getSelectionPath();
+    	if(tp==null){
+    		return;
+    	}
+    	JXTTreeNode node = (JXTTreeNode) tp.getLastPathComponent();
+    	String rez_nr = ((JXTTreeNode)node).knotenObjekt.rez_num;
+    	if(!rez_nr.trim().equals("")){
+    		doKassenTreeAuswerten(node.knotenObjekt);
+    		aktuellerPat = node.knotenObjekt.pat_intern;
+    	}else{
+    		abrRez.setRechtsAufNull();
+    		aktuellerPat = "";
+    	}
+    	System.out.println("RezeptNummer von Knoten = " +((JXTTreeNode)node).knotenObjekt.rez_num);
 
+	}
+	public void setRezeptOk(boolean ok){
+    	treeKasse.getSelectionCount();
+    	TreePath path = treeKasse.getSelectionPath();
+    	JXTTreeNode node = (JXTTreeNode) path.getLastPathComponent();
+    	((KnotenObjekt)node.getUserObject()).fertig = ok;
+    	treeKasse.repaint();
+	}
+	/***************************************/
+	private static class JXTTreeNode extends DefaultMutableTreeNode {
+    	private boolean enabled = false;
+    	private KnotenObjekt knotenObjekt = null;
+    	public JXTTreeNode(KnotenObjekt obj,boolean enabled){
+    		super();
+    		this.enabled = enabled;
+   			this.knotenObjekt = obj;
+   			if(obj != null){
+   				this.setUserObject(obj);
+   			}
+    	}
+ 
+		public boolean isEnabled() {
+			return enabled;
+		}
+		
+		public KnotenObjekt getObject(){
+			return knotenObjekt;
+		}
+    }
+	/***************************************/	
+	class KnotenObjekt{
+		public String titel;
+		public boolean fertig;
+		public String rez_num;
+		public String ktraeger;
+		public String pat_intern;
+		public KnotenObjekt(String titel,String rez_num,boolean fertig){
+			this.titel = titel;
+			this.fertig = fertig;
+			this.rez_num = rez_num;
+		}
+	}
+	/*************************************/
+	private class KassenTreeModel extends DefaultTreeModel {
+		 public KassenTreeModel(JXTTreeNode node) {
+	            super((TreeNode) node);
+	        }
+		 public Object getValueAt(Object node, int column) {
+			 JXTTreeNode jXnode = (JXTTreeNode) node;
+
+	        	KnotenObjekt  o = null;
+	        	o =  (KnotenObjekt) jXnode.getUserObject();
+	        	switch (column) {
+            	case 0:
+            		return o.titel;
+            	case 1:
+            		return o.fertig;
+            		
+	        	}
+	        	return jXnode.getObject().titel;
+		 } 
+		 public int getColumnCount() {
+	            return 3;
+	        }
+	      public void setValueAt(Object value, Object node, int column){
+	    	  JXTTreeNode jXnode = (JXTTreeNode) node;
+	    	  KnotenObjekt  o;
+	    	  o = jXnode.getObject();
+	    	  switch (column) {
+	            case 0:
+					o.titel =((String) value) ;
+					break;
+	            case 1:
+					o.fertig =((Boolean) value) ;
+	            	break;
+	    	  }
+	      } 
+	      public Class<?> getColumnClass(int column) {
+	            switch (column) {
+	            case 0:
+	                return String.class;
+	            case 1:
+	                return Boolean.class;
+	            }
+	            return Object.class;
+	      }      
+	}
+	/*****************************************/
+	private class MyRenderer extends DefaultTreeCellRenderer {
+		Icon fertigIcon;
+
+		public MyRenderer(Icon icon) {
+		fertigIcon = icon;
+		}
+
+		public Component getTreeCellRendererComponent(
+		JTree tree,
+		Object value,
+		boolean sel,
+		boolean expanded,
+		boolean leaf,
+		int row,
+		boolean hasFocus) {
+
+		super.getTreeCellRendererComponent(
+		tree, value, sel,
+		expanded, leaf, row,
+		hasFocus);
+		KnotenObjekt o = ((JXTTreeNode)value).knotenObjekt;
+		if (leaf && istFertig(value)) {
+			setIcon(fertigIcon);
+			this.setText(o.titel);
+			setToolTipText("Verordnung "+o.rez_num+" kann dirket abgerechnet werden.");
+		} else {
+			setToolTipText(null);
+			this.setText(o.titel);
+		}
+		return this;
+		}	
+
+	}
+	protected boolean istFertig(Object value) {
+		DefaultMutableTreeNode node =
+		(DefaultMutableTreeNode)value;
+		KnotenObjekt fertig =
+		(KnotenObjekt)(node.getUserObject());
+		boolean istfertig = fertig.fertig;
+		if(istfertig){
+			return true;
+		}
+		return false;
+	}
 }
