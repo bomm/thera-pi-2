@@ -162,7 +162,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	Vector<String> kundid = new Vector<String>();
 
 	Vector<String>vec_poskuerzel = new Vector<String>();
+	Vector<String>vec_pospos = new Vector<String>();
 	Vector<Integer>vec_posanzahl = new Vector<Integer>();
+	
 	
 	JXTree treeRezept = null;
 	
@@ -249,6 +251,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	StringBuffer edibuf = new StringBuffer();
 	StringBuffer htmlpos = new StringBuffer();
 	StringBuffer htmlposbuf = new StringBuffer();
+	String[] zzpflicht = {"keine gesetzliche Zuzahlung",
+			"Zuzahlungsbefreit",
+			"keine Zuzahlung trotz schriftlicher Zahlungsaufforderung",
+			"Zuzahlungspflichtig",
+			"Übergang zuzahlungspflichtig zu zuzahlungsfrei",
+			"Übergang zuzahlungsfrei zu zuzahlungspflichtig"
+	};
+	
+	boolean inworker = false;
+	
 	
 	public AbrechnungRezept(Abrechnung1 xeltern){
 		eltern = xeltern;
@@ -380,7 +392,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 		};
 		Collections.sort(vec_kuerzel,comparator);
-		System.out.println("Aus Funktion setKuerzelVec="+vec_kuerzel);
+		//System.out.println("Aus Funktion setKuerzelVec="+vec_kuerzel);
 		try{
 			mycomb2.setVector(vec_kuerzel,0,1);
 			//mycomb.setVector(vec_kuerzel,0,1);			
@@ -402,7 +414,18 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				setWerte(rez);
 			}else{
 				System.out.println("Einlesen aus Edifact-Daten");
-				//Rezept wird von Edifact eingelesen
+				aktRezNum.setText(rez);
+				setKuerzelVec(rez);
+				if(holeEDIFACT(rez)){
+					while(inworker){
+						Thread.sleep(20);
+					}
+					prepareTreeFromVector(true);
+					doTreeRezeptWertermitteln();
+					parseHTML(rez.trim());
+					doPositionenErmitteln();
+				}
+				
 			}
 			rezeptSichtbar = true;;
 			
@@ -627,17 +650,47 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				if(cmd.equals("abschliessen")){
 					if(rezeptFertig){
 						rezeptFertig = false;
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground()
+									throws Exception {
+								SqlInfo.sqlAusfuehren("update fertige set ediok='F',edifact='' where rez_nr='"+vec_rez.get(0).get(1)+"' LIMIT 1");
+								return null;
+							}
+							
+						}.execute();
 					}else{
 						if(macheEDIFACT()){
-							rezeptFertig = true;	
+							rezeptFertig = true;
+							new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+									SqlInfo.sqlAusfuehren("update fertige set ediok='T',edifact='"+StringTools.Escaped(edibuf.toString())+"' where rez_nr='"+vec_rez.get(0).get(1)+"' LIMIT 1");
+									return null;
+								}
+								
+							}.execute();
 						}else{
 							rezeptFertig = false;
+							new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+									SqlInfo.sqlAusfuehren("update fertige set ediok='F',edifact='' where rez_nr='"+vec_rez.get(0).get(1)+"' LIMIT 1");
+									return null;
+								}
+								
+							}.execute();
 						}
 						
 						//hier den Edifact einbauen
 					}
 					eltern.setRezeptOk(rezeptFertig);
 
+				}
+				if(cmd.equals("scannen")){
+					eltern.starteAbrechnung();
 				}
 			}
 		};
@@ -746,6 +799,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		vec_tabelle.clear();
 		vec_poskuerzel.clear();
 		vec_posanzahl.clear();
+		vec_pospos.clear();
 		String[] behandlungen = null;
 		
 		preisgruppe = vec_rez.get(0).get(41);
@@ -829,7 +883,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	 * 
 	 */
 	private void doGebuehren(){
-		zuZahlungsIndex = "zuzahlungspflichtig";
+		zuZahlungsIndex = 	zzpflicht[3];
+		zuZahlungsPos = "3";
 		int nodes;
 		if((nodes =getNodeCount())<= 0){return;}
 		
@@ -846,7 +901,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		boolean jahresWechsel = false;
 		zuZahlungsPos = "3";
 		if(SystemConfig.vZuzahlRegeln.get(Integer.valueOf(preisgruppe)-1).equals("0")){
-			zuZahlungsIndex = "Kasse ohne Zuzahlung";
+			zuZahlungsIndex = zzpflicht[0];
 			zuZahlungsPos = "0";
 			doTreeFreiAb(0,nodes,false);
 			return;
@@ -858,7 +913,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			volleZuzahlung = false;
 			mitPauschale = false;
 			doTreeFreiAb(0,nodes,false);
-			zuZahlungsIndex = "unter 18";
+			zuZahlungsIndex = zzpflicht[0];
 			zuZahlungsPos = "0";
 			//doTreeFreiAb(0,vec_tabelle.size(),false);
 
@@ -873,7 +928,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				volleZuzahlung = false;
 				mitPauschale = false;
 				doTreeFreiAb(0,nodes,false);
-				zuZahlungsIndex = "unter 18";
+				zuZahlungsIndex = zzpflicht[0];
 				zuZahlungsPos = "0";
 				//doTreeFreiAb(0,vec_tabelle.size(),false);
 			}else if(( (Boolean)u18[0]) && ( (Boolean)u18[2])) {
@@ -885,7 +940,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				mitPauschale = false;
 				doTreeFreiAb(0,(Integer)u18[1],false);
 				doTreeFreiAb((Integer)u18[1],nodes,true);
-				zuZahlungsIndex = "Übergang unter 18 zu Volljährigkeit";
+				zuZahlungsIndex = zzpflicht[5];
 				zuZahlungsPos = "5";
 			}
 		}
@@ -902,7 +957,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				altfall = 1;
 				doTreeFreiAb(0,nodes,false);
 				mitPauschale = false;
-				zuZahlungsIndex = "Befreiung aus Vorjahr";
+				zuZahlungsIndex = zzpflicht[1];
 				zuZahlungsPos = "1";
 			}
 			
@@ -914,7 +969,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				doTreeFreiAb(0,nodes,true);
 				mitPauschale = true;
 				wechselfall = 1;
-				zuZahlungsIndex = "zuzahlungspflichtig";
+				zuZahlungsIndex = zzpflicht[3];
 				zuZahlungsPos = "3";
 			}else if(patVorjahrFrei && patAktuellFrei && (!gebuehrBezahlt)){ //2.Fall
 				// im Vorjahr befreit und jetzt schon wieder befreit und kein Vermerk bezahlt
@@ -922,7 +977,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//doTreeFreiAb(0,vec_tabelle.size(),false);
 				mitPauschale = false;
 				wechselfall = 2;
-				zuZahlungsIndex = "befreit";
+				zuZahlungsIndex = zzpflicht[1];
 				zuZahlungsPos = "1";
 			}else if( (patVorjahrFrei) && (!patAktuellFrei) ){ //3.Fall
 				// im Vorjahr befreit und jetzt zuzahlungspflichtig
@@ -931,14 +986,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//doFreiAb(0,(Integer)newYear[1],false);
 				mitPauschale = false;
 				wechselfall = 3;
-				zuZahlungsIndex = "Übergang befreit zu nicht befreit";
+				zuZahlungsIndex = zzpflicht[5];
 				zuZahlungsPos = "5";
 			}else if((!patVorjahrFrei) && (!patAktuellFrei) && (!unter18) ){ //4.Fall
 				//weder im Vorjahr noch im aktuellen Jahr befreit und auch nicht unter 18
 				doTreeFreiAb(0,nodes,true);
 				mitPauschale = true;
 				wechselfall = 4;
-				zuZahlungsIndex = "zuzahlungspflichtig";
+				zuZahlungsIndex = zzpflicht[3];
 				zuZahlungsPos = "3";
 			}else if((!patVorjahrFrei) && (patAktuellFrei) && (!unter18)){ //5.Fall
 				// war nicht im Vorjahr nicht befreit ist aber jetzt befreit
@@ -947,7 +1002,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//doFreiAb((Integer) newYear[1],vec_tabelle.size(),true);
 				mitPauschale = true;
 				wechselfall = 5;
-				zuZahlungsIndex = "Übergang nicht befreit zu befreit";
+				zuZahlungsIndex = zzpflicht[4];
 				zuZahlungsPos = "4";
 			}
 		}else if(!(Boolean)newYear[0]){
@@ -957,14 +1012,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//doFreiAb(0,vec_tabelle.size(),false);
 				mitPauschale = false;
 				neufall = 1;
-				zuZahlungsIndex = "befreit (aus Vorjahr)";
+				zuZahlungsIndex = zzpflicht[1];
 				zuZahlungsPos = "1";
 			}else if(patAktuellFrei && gebuehrBezahlt ){
 				doTreeFreiAb(0,nodes,true);
 				//doFreiAb(0,vec_tabelle.size(),true);
 				mitPauschale = true;
 				neufall = 2;
-				zuZahlungsIndex = "zuzahlungspflichtig";
+				zuZahlungsIndex = zzpflicht[3];
 				zuZahlungsPos = "3";
 			}
 		}
@@ -1209,11 +1264,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private void doPositionenErmitteln(){
 		vec_poskuerzel.clear();
 		vec_posanzahl.clear();
+		vec_pospos.clear();
 		int lang = 0;
 		if( (lang=vec_tabelle.size())<=0){return;}
 		for(int i = 0; i < lang;i++){
 			if(! vec_poskuerzel.contains((vec_tabelle.get(i).get(1) )) ){
 				vec_poskuerzel.add(vec_tabelle.get(i).get(1).toString());
+				vec_pospos.add(RezTools.getPosFromID(vec_tabelle.get(i).get(9).toString(), preisgruppe, preisvec));
 				vec_posanzahl.add(1);
 			}else{
 				int pos = vec_poskuerzel.indexOf(vec_tabelle.get(i).get(1) );
@@ -1224,6 +1281,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		System.out.println("****************nachfolgende Positionen wurden ermittelt****************");
 		System.out.println(vec_poskuerzel);
 		System.out.println(vec_posanzahl);
+		System.out.println(vec_pospos);
 	}
 	private void doZeileWertermitteln(){
 		
@@ -1691,9 +1749,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"<td class=\"spalte1\" align=\"right\">"+
 		"Zuzahlungs-Status"+
 		"</td><td class=\"spalte2\" id=\"zzpflicht\" align=\"left\">"+
-		(zuZahlungsIndex.equals("zuzahlungspflichtig") ? "" : "<b><font color=#FF0000>")+
+		(zuZahlungsIndex.equals("Zuzahlungspflichtig") ? "" : "<b><font color=#FF0000>")+
 		zuZahlungsIndex+
-		(zuZahlungsIndex.equals("zuzahlungspflichtig") ? "" : "</font></b>")+
+		(zuZahlungsIndex.equals("Zuzahlungspflichtig") ? "" : "</font></b>")+
 		"</td>"+
 		"</tr>"+
 		/*******/
@@ -1740,7 +1798,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		"<td class=\"spalte1\" align=\"right\">"+
 		"Zuzahlung"+
 		"</td><td class=\"spalte2\" align=\"left\">"+
-		"<b>"+dfx.format(zuzahlungWert)+"</b>"+
+		(zuzahlungWert > 0 && vec_rez.get(0).get(14).equals("F") ? getNoZuZahl() : "<b>"+dfx.format(zuzahlungWert)+"</b>")+
 		"</td>"+
 		"</tr>"+
 		/*******/
@@ -1762,6 +1820,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 		});
 	}
+	private String getNoZuZahl(){
+		return "<b><font color=#FF0000><a href=\"http://nozz.de\">"+dfx.format(zuzahlungWert)+"</a></font></b>";
+	}
 	private String getHTMLPositionen(){
 		
 		htmlposbuf.setLength(0);
@@ -1782,6 +1843,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	@Override
 	public void hyperlinkUpdate(HyperlinkEvent event) {
 	    if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+	    	System.out.println(event.getURL().toString());
 	    	if(event.getURL().toString().contains("rezedit")){
 	    		
 	    	}
@@ -2595,7 +2657,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		demoTreeTableModel.insertNodeInto(xnode, node, node.getChildCount());
 
 	}
-	private void prepareTreeFromVector(){
+	private void prepareTreeFromVector(boolean zeigefertige ){
 		AbrFall abr;
 		if(vec_tabelle.size()<=0){return;}
 		String testdatum = "";
@@ -2616,7 +2678,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					(Boolean)vec_tabelle.get(i).get(10));
 			if(!testdatum.trim().equals(abr.datum.trim())){
 				tag++;
-				abr.unterbrechung = vectage.get(tag-1).get(2);
+				if(!zeigefertige){
+					abr.unterbrechung = vectage.get(tag-1).get(2);					
+				}
 				abr.titel= Integer.toString(tag)+".Tag";
 				knoten = new JXTTreeTableNode(abr.datum,abr,true);
 				demoTreeTableModel.insertNodeInto(knoten, root, root.getChildCount());
@@ -2625,7 +2689,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				continue;
 				
 			}else{
-				abr.unterbrechung = vectage.get(tag-1).get(2);
+				if(!zeigefertige){
+					abr.unterbrechung = vectage.get(tag-1).get(2);
+				}	
 				foo = new JXTTreeTableNode("",abr,true);
 				demoTreeTableModel.insertNodeInto(foo, knoten, knoten.getChildCount());
 				testdatum = new String(abr.datum);
@@ -2676,14 +2742,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		System.out.println("Will become Visible - "+arg0);
 		
 	}
+	/************************************************************************/
 
 	private boolean macheEDIFACT(){
 		boolean ret = true;
 		double gesamt = 0.00;
 		double rez = 0.00;
-		double pauschal = (mitPauschale ? 10.00 : 0.00);		
-		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+"GESAMT="+"REZGEB=";
+		double pauschal = (mitPauschale ? 10.00 : 0.00);
 		edibuf.setLength(0);
+		edibuf.trimToSize();
+		
 		String test = vec_pat.get(0).get(6);
 		if( (test.trim().length()> 12) || (test.trim().length()==0) ){
 			//Versichertennummer falsch oder nicht angegeben
@@ -2772,6 +2840,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		edibuf.append(dfx.format(rez)+plus);
 		edibuf.append(dfx.format(pauschal)+EOL);
 		
+
+		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+
+			":GESAMT="+dfx.format(gesamt)+":REZGEB="+dfx.format(rez+pauschal)+
+			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+"\n";
+		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
+		edibuf.insert(0,vec_posanzahl.toString()+"\n");
+		edibuf.insert(0,vec_pospos.toString()+"\n");
+		edibuf.insert(0, kopfzeile);
 		System.out.println(edibuf.toString());
 		return ret;
 	}	
@@ -2788,6 +2864,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		return deutschDat.substring(6)+deutschDat.substring(3,5)+deutschDat.substring(0,2);
 	}
+	private String datumFromEdiDeutsch(String deutschDat){
+		return deutschDat.substring(6)+"."+deutschDat.substring(4,6)+"."+deutschDat.substring(0,4);
+	}
+
 	private String hochKomma(String string){
 		String str = string.replace("?", "??");
 		str = string.replace("'", "?'");
@@ -2796,9 +2876,131 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		str = str.replace(",", "?,");
 		return str;
 	}
+	/************************************************************************/
+	private boolean holeEDIFACT(String rez_nr){
 
-	/************************
- * 
+		boolean ret = true;
+		edibuf.setLength(0);
+		edibuf.trimToSize();
+		try{
+			edibuf.append(SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+rez_nr+"'").get(0).get(0));
+		}catch(Exception ex){}
+		if(edibuf.length()<=0){
+			JOptionPane.showMessageDialog(null,"EDIFACT-Code kann nicht abgeholt werden");
+		}
+		String[] zeilen = edibuf.toString().split("\n");
+		String[] positionen = zeilen[0].split(":");
+ 
+		zuZahlungsPos = zeilen[zeilen.length-2].split("\\+")[4];
+		zuZahlungsIndex = zzpflicht[Integer.parseInt(zuZahlungsPos)];
+		this.preisgruppe = positionen[0].split("=")[1];
+		this.mitPauschale = (Double.parseDouble(zeilen[zeilen.length-1].split("\\+")[4].replace(",", ".").replace("'", "")) > Double.parseDouble("0.00") ? true : false);
+		int lang = zeilen.length;
+		final String xrez_nr = rez_nr;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					inworker = true;
+					sucheRezept(xrez_nr);
+					inworker = false;
+				}catch(Exception ex){
+					inworker = false;
+				}
+				return null;
+			}
+		}.execute();
+
+
+		baumLoeschen();
+		vecdummy.clear();
+		vec_tabelle.clear();
+		String [] pos;
+		String id;
+		String datum;
+		String aktuell;
+		for(int i = 4; i < lang;i++){
+			pos = zeilen[i].split("\\+");
+			if(pos[0].equals("EHE")){
+				datum = datumFromEdiDeutsch(pos[6]);
+				vecdummy.add( (String) datum );
+				id = RezTools.getIDFromPos(pos[3], preisgruppe, preisvec);
+				vecdummy.add((String) RezTools.getKurzformFromID(id, preisvec) );
+				vecdummy.add((Double) Double.valueOf(pos[4].replace(",", ".")));
+				vecdummy.add((Double) Double.valueOf(pos[5].replace(",", ".")));
+				if(pos.length==8){
+					vecdummy.add((boolean) Boolean.valueOf(true));
+					vecdummy.add((Double) Double.valueOf(pos[7].replace(",", ".").replace("'", "")));
+				}else{
+					vecdummy.add((boolean) Boolean.valueOf(false));
+					vecdummy.add((Double) Double.valueOf("0.00"));
+				}
+				if(i < (lang-1)){
+					if(zeilen[i+1].split("\\+")[0].equals("TXT")){
+						vecdummy.add( (String) zeilen[i+1].split("\\+")[1].replace("'",""));
+					}else{
+						vecdummy.add( (String) "");
+					}
+				}else{
+					vecdummy.add( (String) "");
+				}
+				if( (aktuell=RezTools.getPreisAktFromID(id, preisgruppe, preisvec).trim().replace(".", ",")).equals(pos[5].trim()) ){
+					vecdummy.add( (String) "aktuell");
+				}else{
+					vecdummy.add( (String) "alt");
+				}
+				vecdummy.add( (String) DatFunk.sDatInSQL(datum));
+				vecdummy.add( (String) id);
+				vecdummy.add((boolean) Boolean.valueOf(false));
+				vec_tabelle.add((Vector<Object>)vecdummy.clone());
+				vecdummy.clear();
+				//public AbrFall(String titel,String datum,String bezeichnung,Double anzahl,Double preis,
+				//	boolean zuzahlung,double rezgeb,String unterbrechung,String alterpreis,String sqldatum,String preisid,boolean niezuzahl){
+			}
+
+		}
+		return ret;
+	}
+	/************************/
+	private void baumLoeschen(){
+		while( (root.getChildCount()) > 0){
+			demoTreeTableModel.removeNodeFromParent((MutableTreeTableNode) root.getChildAt(0));
+		}
+	}
+
+	 
+	private void sucheRezept(String rez_nr){
+		String cmd = "select * from verordn where rez_nr='"+rez_nr.trim()+"' LIMIT 1";
+		//System.out.println("Kommando = "+cmd);
+		vec_rez = SqlInfo.holeFelder(cmd);
+		//System.out.println("RezeptVektor = "+vec_rez);
+		if(vec_rez.size()<=0){
+			return;
+		}
+		gebuehrBezahlt = vec_rez.get(0).get(14).trim().equals("T");
+		gebuehrBetrag = Double.parseDouble(vec_rez.get(0).get(13));
+		//                                       0         1         2             3     4       5 
+		vec_pat = SqlInfo.holeFelder("select  t1.n_name,t1.v_name,t1.geboren,t1.strasse,t1.plz,t1.ort,"+
+		//            6             7            8              9     10         11        12
+				"t1.v_nummer,t1.kv_status,t1.kv_nummer,"+"t1.befreit,t1.bef_ab,bef_dat,t1.jahrfrei,"+
+		//           13         14         15       16      		
+				"t2.nachname,t2.bsnr,t2.arztnum,t3.kassen_nam1 from pat5 t1,arzt t2,kass_adr t3 where t1.pat_intern='"+
+				vec_rez.get(0).get(0)+"' AND t2.id ='"+vec_rez.get(0).get(16)+"' AND t3.id='"+vec_rez.get(0).get(37)+"' LIMIT 1");
+		if(vec_pat.get(0).get(9).equals("T")){
+			patAktuellFrei = true;
+		}else{
+			patAktuellFrei  = false;
+		}
+		if(! vec_pat.get(0).get(12).trim().equals("")){
+			patVorjahrFrei = true;
+		}else{
+			patVorjahrFrei = false;
+		}
+		patFreiAb = vec_pat.get(0).get(10);
+		patFreiBis = vec_pat.get(0).get(11);
+		patU18 = DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)));
+	}
+ /* 
  * 
  * 	
  */

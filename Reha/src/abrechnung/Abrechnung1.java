@@ -13,6 +13,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -81,7 +82,17 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 
 	public JXTTreeNode rootKasse;
 	public KassenTreeModel treeModelKasse;
-
+	public JXTTreeNode aktuellerKnoten;
+	public JXTTreeNode aktuellerKassenKnoten;
+	public int kontrollierteRezepte;
+	
+	public StringBuffer positionenBuf = new StringBuffer();
+	Double[] preis00 = {null,null,null};
+	Double[] preis11 = {null,null,null};
+	Double[] preis31 = {null,null,null};
+	Double[] preis51 = {null,null,null};
+	
+	
 	Vector<String> existiertschon = new Vector<String>();	
 	/*******Controls für die rechte Seite*********/
 	AbrechnungRezept abrRez = null;
@@ -322,38 +333,105 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
-		TreePath path = arg0.getNewLeadSelectionPath();
-		/*
-		String[] split = path.toString().split(",");
-	    System.out.println("Pfad als ganzes = "+path.toString());
-	    System.out.println("Pfad-Count = "+path.getPathCount());
-	    for(int i = 0;i<split.length;i++){
-	    	System.out.println("****"+split[i]);
-	    }
-	    */
-		System.out.println("arg0 = "+arg0.getPath().getPathCount());
-		//doKassenTreeAuswerten(arg0.getPath().getPathCount(),arg0.getPath().toString());
+		//TreePath path = arg0.getNewLeadSelectionPath();
     	TreePath tp =  treeKasse.getSelectionPath();
+		kontrollierteRezepte = 0;
     	if(tp==null){
+
     		return;
     	}
     	JXTTreeNode node = (JXTTreeNode) tp.getLastPathComponent();
     	String rez_nr = ((JXTTreeNode)node).knotenObjekt.rez_num;
     	if(!rez_nr.trim().equals("")){
+    		aktuellerKnoten = node;
     		doKassenTreeAuswerten(node.knotenObjekt);
     		aktuellerPat = node.knotenObjekt.pat_intern;
+    		aktuellerKassenKnoten =(JXTTreeNode) ((JXTTreeNode)aktuellerKnoten).getParent();
     	}else{
     		abrRez.setRechtsAufNull();
+    		aktuellerKnoten = (JXTTreeNode)node;
+    		System.out.println("AktuellerKnoten = "+aktuellerKnoten);
+    		if(aktuellerKnoten.getParent() != null){
+    			if(((JXTTreeNode)aktuellerKnoten.getParent()).isRoot()){
+    	    		aktuellerKassenKnoten =(JXTTreeNode) ((JXTTreeNode)aktuellerKnoten);
+    			}
+        		System.out.println("Pfad zu Parent = "+new TreePath(aktuellerKnoten.getParent()).toString());    			
+    		}else{
+    			aktuellerKassenKnoten = null;
+    		}
     		aktuellerPat = "";
+    		
     	}
-    	System.out.println("RezeptNummer von Knoten = " +((JXTTreeNode)node).knotenObjekt.rez_num);
+    	if(aktuellerKassenKnoten != null){
+        	new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					int lang = aktuellerKassenKnoten.getChildCount();
+					for(int i = 0; i < lang;i++){
+						if( ((JXTTreeNode)aktuellerKassenKnoten.getChildAt(i)).knotenObjekt.fertig ){
+							kontrollierteRezepte++;
+						}
+					}
+					System.out.println("Es gibt insgesamt "+kontrollierteRezepte+" Rezepte die für diese Kasse abgerechnet werden können");
+					return null;
+				}
+        		
+        	}.execute();
+    	}
+
 
 	}
+	/**************************************************/
+	public void starteAbrechnung(){
+		if(aktuellerKassenKnoten==null){
+			JOptionPane.showMessageDialog(null, "Keine Kasse für die Abrechnung ausgewählt!");
+			return;
+		}
+		if(kontrollierteRezepte <=0){
+			JOptionPane.showMessageDialog(null, "Keine Kasse für die Abrechnung ausgewählt!");
+			return;
+			
+		}
+		holeEdifact();
+	}
+	/*************************************************/
+	private void holeEdifact(){
+		int lang = aktuellerKassenKnoten.getChildCount();
+		JXTTreeNode node;
+		Vector<Vector<String>> vec;
+		positionenBuf.setLength(0);
+		positionenBuf.trimToSize();
+		for(int i = 0; i < lang;i++){
+			node = (JXTTreeNode) aktuellerKassenKnoten.getChildAt(i);
+			if(node.knotenObjekt.fertig){
+				vec = SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+(String) node.knotenObjekt.rez_num+"'");
+				try{
+					anhaengenEdifact(vec.get(0).get(0));
+				}catch(Exception ex){}
+			}
+		}
+		System.out.println("Gesamte Abrechungspositionen = \n"+positionenBuf.toString());
+	}
+	/*************************************************/
+	private void anhaengenEdifact(String string){
+		String[] edi = string.split("\n");
+		String[] preise = edi[0].split(":");
+		System.out.println(edi[0]);
+		for(int i = 4; i < edi.length;i++){
+			positionenBuf.append(edi[i]+"\n");
+		}
+	}
+	/*************************************************/
 	public void setRezeptOk(boolean ok){
     	treeKasse.getSelectionCount();
     	TreePath path = treeKasse.getSelectionPath();
     	JXTTreeNode node = (JXTTreeNode) path.getLastPathComponent();
     	((KnotenObjekt)node.getUserObject()).fertig = ok;
+    	if(ok){
+    		kontrollierteRezepte++;
+    	}else{
+    		kontrollierteRezepte--;
+    	}
     	treeKasse.repaint();
 	}
 	/***************************************/
