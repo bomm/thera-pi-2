@@ -466,7 +466,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	private void doAuftragsDatei(){
 		auftragsBuf.append("500000"+"01"+"00000348"+"000");
-		auftragsBuf.append(aktEsol);
+		auftragsBuf.append("ESOL0"+aktEsol);
 		auftragsBuf.append("     ");
 		auftragsBuf.append(StringTools.fuelleMitZeichen(Reha.aktIK, " ", false, 15));
 		auftragsBuf.append(StringTools.fuelleMitZeichen(Reha.aktIK, " ", false, 15));
@@ -562,6 +562,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		String[] datesplit = date.toString().split(" ");
 		System.out.println(date.toString());
 		if(mitsekunden){
+			System.out.println("Zeit mit Sekunden"+datesplit[3].substring(0,2)+datesplit[3].substring(3,5)+datesplit[3].substring(6,8));
 			return datesplit[3].substring(0,2)+datesplit[3].substring(3,5)+datesplit[3].substring(6,8);
 		}
 		return datesplit[3].substring(0,2)+datesplit[3].substring(3,5);
