@@ -350,10 +350,10 @@ public class SqlInfo {
 		//innerhalb der spalten, bezogen auf die Spalten -> OR-Suche
 		String ret = praefix;
 		String cmd = test;
-		//zunächst versuchen daß immer nur ein Leerzeichen zwischen den Begriffen existiert 
+		//zunï¿½chst versuchen daï¿½ immer nur ein Leerzeichen zwischen den Begriffen existiert 
 		cmd = cmd.replaceAll("   ", " ");
 		cmd = cmd.replaceAll("  ", " ");
-		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daß er nix finder!!!
+		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daï¿½ er nix finder!!!
 		/*
 		String[] felder = suchein;
 		String[] split = cmd.split(" ");
@@ -429,7 +429,7 @@ public class SqlInfo {
 	
 	public static int erzeugeNummer(String nummer){
 		int reznr = -1;
-		/****** Zunächst eine neue Rezeptnummer holen ******/
+		/****** Zunï¿½chst eine neue Rezeptnummer holen ******/
 		Vector numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
@@ -469,6 +469,51 @@ public class SqlInfo {
 
 	}
 	
+	public static int erzeugeNummerMitMax(String nummer,int max){
+		int reznr = -1;
+		/****** Zunï¿½chst eine neue Rezeptnummer holen ******/
+		Vector numvec = null;
+		try {
+			Reha.thisClass.conn.setAutoCommit(false);
+			String numcmd = nummer+",id";
+			//System.out.println("numcmd = "+numcmd);
+			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
+			//System.out.println(Reha.aktIK);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(numvec.size() > 0){
+			reznr = Integer.parseInt(  (String)((Vector) numvec).get(0) );
+			if((reznr+1) > max){
+				reznr = 1;
+			}
+			//System.out.println("Neue Rezeptnummer = "+reznr);
+			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
+			//System.out.println("Kommando = "+cmd);
+			new ExUndHop().setzeStatement(cmd);
+			//System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+			try {
+				Reha.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				Reha.thisClass.conn.rollback();
+				Reha.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		numvec = null;
+		return reznr;
+
+	}
+
 	/*******************************************/
 	public static int zaehleSaetze(String tabelle, String bedingung){
 		int retid = -1;
@@ -654,6 +699,58 @@ public class SqlInfo {
 		return ret;
 	}
 /*****************************************/
+	public static String holeEinzelFeld(String xstmt){
+		Statement stmt = null;
+		ResultSet rs = null;
+		String ret = "";
+		ResultSetMetaData rsMetaData = null;
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = xstmt;
+			rs = stmt.executeQuery(sstmt);
+			while(rs.next()){
+						 ret =  (rs.getString(1)==null  ? "" :  rs.getString(1)).trim() ;
+						 break;
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			return ret;
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+			System.out.println("SQLState: " + ev.getSQLState());
+			System.out.println("VendorError: " + ev.getErrorCode());
+		}
+		finally {
+			if(rsMetaData != null){
+				rsMetaData = null;
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return ret;
+	}
+/*****************************************/
+	
 	/*****************************************/
 	public static Vector<Vector<String>> holeFelder(String xstmt){
 		Statement stmt = null;

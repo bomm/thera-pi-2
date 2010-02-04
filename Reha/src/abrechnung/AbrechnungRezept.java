@@ -959,6 +959,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				mitPauschale = false;
 				zuZahlungsIndex = zzpflicht[1];
 				zuZahlungsPos = "1";
+			}else{
+				altfall = 2;
+				doTreeFreiAb(0,nodes,true);
+				mitPauschale = true;
+				zuZahlungsIndex = zzpflicht[3];
+				zuZahlungsPos = "3";
 			}
 			
 		}else if((Boolean)newYear[0] && (!(Boolean)newYear[2])){
@@ -2843,7 +2849,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+
 			":GESAMT="+dfx.format(gesamt)+":REZGEB="+dfx.format(rez+pauschal)+
-			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+"\n";
+			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+":KASSENID="+vec_rez.get(0).get(37)+"\n";
 		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
 		edibuf.insert(0,vec_posanzahl.toString()+"\n");
 		edibuf.insert(0,vec_pospos.toString()+"\n");

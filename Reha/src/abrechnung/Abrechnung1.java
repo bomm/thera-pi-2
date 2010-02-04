@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -52,6 +54,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
+import systemTools.StringTools;
 import terminKalender.DatFunk;
 
 import RehaInternalFrame.JAbrechnungInternal;
@@ -68,6 +71,14 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private JAbrechnungInternal jry;
 	private UIFSplitPane jSplitLR = null;
 	
+	final String plus = "+";
+	final String EOL = "'\n";
+	final String SOZ = "?";
+	public String abzurechnendeKassenID = "";
+	String ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,ik_email;
+	String aktEsol;
+	String aktDfue;
+	String aktRechnung;
 	String[] diszis = {"KG","MA","ER","LO"};
 
 	/*******Controls für die linke Seite*********/
@@ -87,11 +98,16 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	public int kontrollierteRezepte;
 	
 	public StringBuffer positionenBuf = new StringBuffer();
-	Double[] preis00 = {null,null,null};
-	Double[] preis11 = {null,null,null};
-	Double[] preis31 = {null,null,null};
-	Double[] preis51 = {null,null,null};
+	public StringBuffer unbBuf = new StringBuffer();
+	public StringBuffer unzBuf = new StringBuffer();
+	public StringBuffer gesamtBuf = new StringBuffer();
+	public int positionenAnzahl = 0;
 	
+	Double[] preis00 = {0.00,0.00,0.00};
+	Double[] preis11 = {0.00,0.00,0.00};
+	Double[] preis31 = {0.00,0.00,0.00};
+	Double[] preis51 = {0.00,0.00,0.00};
+	DecimalFormat dfx = new DecimalFormat( "0.00" );	
 	
 	Vector<String> existiertschon = new Vector<String>();	
 	/*******Controls für die rechte Seite*********/
@@ -392,36 +408,152 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			return;
 			
 		}
+		preis00 = setzePreiseAufNull(preis00);
+		preis11 = setzePreiseAufNull(preis11);
+		preis31 = setzePreiseAufNull(preis31);
+		preis51 = setzePreiseAufNull(preis51);
+		positionenBuf.setLength(0);positionenBuf.trimToSize();
+		unbBuf.setLength(0);unbBuf.trimToSize();
+		unzBuf.setLength(0);unzBuf.trimToSize();
+		gesamtBuf.setLength(0);gesamtBuf.trimToSize();
+		positionenAnzahl = 0;
 		holeEdifact();
+		macheKopfDaten();
+		macheEndeDaten();
+		gesamtBuf.append(unbBuf.toString());
+		gesamtBuf.append(positionenBuf.toString());
+		gesamtBuf.append(unzBuf.toString());
+		System.out.println(gesamtBuf.toString());
+		System.out.println("Anzahl Positonen (reine Abrechnugsdaten) = "+positionenAnzahl);
+		
+	}
+	/*************************************************/
+	private void macheEndeDaten(){
+		String zeilenzahl = StringTools.fuelleMitZeichen(Integer.toString(positionenAnzahl+5), "0", true, 6);  
+		unzBuf.append("UNT"+plus+zeilenzahl+plus+"00002"+EOL);
+		unzBuf.append("UNZ"+plus+"000002"+plus+aktDfue+EOL);
+	}
+	private void macheKopfDaten(){
+		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1 from kass_adr where id='"+abzurechnendeKassenID+"'";
+		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+		ik_kasse = vec.get(0).get(0);
+		ik_kostent = vec.get(0).get(1);
+		ik_nutzer = vec.get(0).get(2);
+		ik_physika = vec.get(0).get(3);
+		ik_papier = vec.get(0).get(4);
+		ik_email = vec.get(0).get(5);
+		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
+		aktDfue = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("dfue", 99999)), "0", true, 5);
+		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+		System.out.println(aktEsol + "  - "+aktDfue);
+		unbBuf.append("UNB+UNOC:3+"+Reha.aktIK+plus+ik_nutzer+plus);
+		unbBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+":"+getEdiTimeString()+plus);
+		unbBuf.append(aktDfue+plus+"B"+plus+"SL"+Reha.aktIK.substring(2,8)+"S01"+plus+"2"+EOL);
+		unbBuf.append("UNH+00001+SLGA:06:0:0"+EOL);
+		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+plus+Reha.aktIK+EOL);
+		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
+		unbBuf.append("UST"+plus+SystemConfig.hmFirmenDaten.get("Steuernummer")+plus+"J"+EOL);
+		unbBuf.append("GES"+plus+"00"+plus+dfx.format(preis00[0])+plus+dfx.format(preis00[1])+plus+dfx.format(preis00[2])+EOL);
+		unbBuf.append("GES"+plus+"11"+plus+dfx.format(preis11[0])+plus+dfx.format(preis11[1])+plus+dfx.format(preis11[2])+EOL);
+		unbBuf.append("GES"+plus+"31"+plus+dfx.format(preis31[0])+plus+dfx.format(preis31[1])+plus+dfx.format(preis31[2])+EOL);
+		unbBuf.append("GES"+plus+"51"+plus+dfx.format(preis51[0])+plus+dfx.format(preis51[1])+plus+dfx.format(preis51[2])+EOL);
+		unbBuf.append("NAM"+plus+SystemConfig.hmFirmenDaten.get("Ikbezeichnung")+plus+
+				SystemConfig.hmFirmenDaten.get("Anrede").trim()+" "+
+				SystemConfig.hmFirmenDaten.get("Nachname").trim()+plus+SystemConfig.hmFirmenDaten.get("Telefon")+EOL);
+		unbBuf.append("UNT+000010+00001"+EOL);
+		unbBuf.append("UNH+00002+SLGA:06:0:0"+EOL);
+		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+EOL);
+		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
+		getEdiTimeString();
+	}
+	/*************************************************/	
+	private Double[] setzePreiseAufNull(Double[] preis){
+		preis[0] = 0.00;
+		preis[1] = 0.00;
+		preis[2] = 0.00;
+		return preis;
+	}
+	private String getEdiDatumFromDeutsch(String deutschDat){
+		if(deutschDat.trim().length()<10){
+			return "";
+		}
+		return deutschDat.substring(6)+deutschDat.substring(3,5)+deutschDat.substring(0,2);
+	}
+	private String getEdiTimeString(){
+		Date date = new Date();
+		String[] datesplit = date.toString().split(" ");
+		return datesplit[3].substring(0,2)+datesplit[3].substring(3,5);
 	}
 	/*************************************************/
 	private void holeEdifact(){
 		int lang = aktuellerKassenKnoten.getChildCount();
 		JXTTreeNode node;
 		Vector<Vector<String>> vec;
-		positionenBuf.setLength(0);
-		positionenBuf.trimToSize();
 		for(int i = 0; i < lang;i++){
 			node = (JXTTreeNode) aktuellerKassenKnoten.getChildAt(i);
 			if(node.knotenObjekt.fertig){
 				vec = SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+(String) node.knotenObjekt.rez_num+"'");
 				try{
+					if(i==0){
+						abzurechnendeKassenID = holeAbrechnungsKasse(vec.get(0).get(0));
+					}
 					anhaengenEdifact(vec.get(0).get(0));
 				}catch(Exception ex){}
 			}
 		}
-		System.out.println("Gesamte Abrechungspositionen = \n"+positionenBuf.toString());
+		/*
+		for(int i = 0; i < 3;i++){
+			System.out.println("Gesamt   = "+preis00[i]);
+			System.out.println("Status 1 = "+preis11[i]);
+			System.out.println("Status 3 = "+preis51[i]);
+			System.out.println("Status 5 = "+preis51[i]);
+			System.out.println("**********************");
+		}
+		*/
+
+	}
+	/*************************************************/
+	private String holeAbrechnungsKasse(String edifact){
+		String[] komplett = edifact.split("\n");
+		String[] zeile1 = komplett[0].split(":");
+		return zeile1[zeile1.length-1].split("=")[1];
 	}
 	/*************************************************/
 	private void anhaengenEdifact(String string){
 		String[] edi = string.split("\n");
 		String[] preise = edi[0].split(":");
-		System.out.println(edi[0]);
+		String status = "";
+		try{
+			status = edi[4].split("\\+")[2];
+		}catch(Exception ex){
+			status = "10001";
+		}
 		for(int i = 4; i < edi.length;i++){
 			positionenBuf.append(edi[i]+"\n");
+			positionenAnzahl++;
+		}
+		if(status.startsWith("1")){
+			preis11 = addierePreise(preis11,edi[edi.length-1]);
+		}else if(status.startsWith("3")){
+			preis31 = addierePreise(preis31,edi[edi.length-1]);
+		}else if(status.startsWith("5")){
+			preis51 = addierePreise(preis51,edi[edi.length-1]);
 		}
 	}
 	/*************************************************/
+	private Double[] addierePreise(Double[] preis,String zeile){
+		String[] zahlen = zeile.split("\\+");
+		Double brutto = Double.parseDouble(zahlen[1].replace(",", "."));
+		Double zuzahl  = Double.parseDouble(zahlen[2].replace(",", "."));
+		preis[1] = preis[1]+ brutto;
+		preis[2] = preis[2]+ zuzahl;
+		preis[0] = preis[0] + (brutto-zuzahl);
+		preis00[0] = preis00[0] + (brutto-zuzahl);
+		preis00[1] = preis00[1] + (brutto);
+		preis00[2] = preis00[2] + (zuzahl);
+		return preis;
+	}
+	/*************************************************/	
 	public void setRezeptOk(boolean ok){
     	treeKasse.getSelectionCount();
     	TreePath path = treeKasse.getSelectionPath();
@@ -462,6 +594,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		public String rez_num;
 		public String ktraeger;
 		public String pat_intern;
+		public String entschluessel;
+
 		public KnotenObjekt(String titel,String rez_num,boolean fertig){
 			this.titel = titel;
 			this.fertig = fertig;
