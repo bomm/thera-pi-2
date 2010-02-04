@@ -6,6 +6,10 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -72,7 +76,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private UIFSplitPane jSplitLR = null;
 	
 	final String plus = "+";
-	final String EOL = "'\n";
+	final String EOL = "'"+System.getProperty("line.separator");
 	final String SOZ = "?";
 	public String abzurechnendeKassenID = "";
 	String ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,ik_email;
@@ -87,6 +91,9 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	JButton[] butLinks = {null,null,null,null};
 	JRtaComboBox cmbDiszi = null;
 	JXTree treeKasse = null;
+	File f;
+	FileWriter fw;
+	BufferedWriter bw;
 	
 //	public DefaultMutableTreeNode rootKasse;
 //	public DefaultTreeModel treeModelKasse;
@@ -101,7 +108,9 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	public StringBuffer unbBuf = new StringBuffer();
 	public StringBuffer unzBuf = new StringBuffer();
 	public StringBuffer gesamtBuf = new StringBuffer();
+	public StringBuffer auftragsBuf = new StringBuffer();
 	public int positionenAnzahl = 0;
+	public String abrDateiName = "";
 	
 	Double[] preis00 = {0.00,0.00,0.00};
 	Double[] preis11 = {0.00,0.00,0.00};
@@ -416,7 +425,10 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		unbBuf.setLength(0);unbBuf.trimToSize();
 		unzBuf.setLength(0);unzBuf.trimToSize();
 		gesamtBuf.setLength(0);gesamtBuf.trimToSize();
+		auftragsBuf.setLength(0);auftragsBuf.trimToSize();
 		positionenAnzahl = 0;
+		abrDateiName = "";
+		
 		holeEdifact();
 		macheKopfDaten();
 		macheEndeDaten();
@@ -425,7 +437,65 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		gesamtBuf.append(unzBuf.toString());
 		System.out.println(gesamtBuf.toString());
 		System.out.println("Anzahl Positonen (reine Abrechnugsdaten) = "+positionenAnzahl);
+
+		try {
+			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
+			fw = new FileWriter(f);
+		    bw = new BufferedWriter(fw); 
+		    bw.write(gesamtBuf.toString()); 
+		    bw.close(); 
+		    fw.close();
+		    doVerschluesseln(aktEsol+".org");
+		    doAuftragsDatei();
+			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf");
+			fw = new FileWriter(f);
+		    bw = new BufferedWriter(fw); 
+		    bw.write(auftragsBuf.toString()); 
+		    bw.close(); 
+		    fw.close();
+		    System.out.println("Zeilenumbruch = "+ System.getProperty("line.separator"));
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		
+	}
+	private void doVerschluesseln(String datei){
+		
+	}
+	private void doAuftragsDatei(){
+		auftragsBuf.append("500000"+"01"+"00000348"+"000");
+		auftragsBuf.append(aktEsol);
+		auftragsBuf.append("     ");
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Reha.aktIK, " ", false, 15));
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Reha.aktIK, " ", false, 15));
+		auftragsBuf.append(StringTools.fuelleMitZeichen(ik_nutzer, " ", false, 15));
+		auftragsBuf.append(StringTools.fuelleMitZeichen(ik_physika, " ", false, 15));
+		auftragsBuf.append("000000");
+		auftragsBuf.append("000000");
+		auftragsBuf.append(abrDateiName);
+		auftragsBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+getEdiTimeString(true));
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
+		auftragsBuf.append("000000");
+		auftragsBuf.append("0");
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(gesamtBuf.length()), "0", true, 12) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(gesamtBuf.length()), "0", true, 12) );
+		auftragsBuf.append("I800");
+		auftragsBuf.append("0303");
+		auftragsBuf.append("   ");
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 5) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 8) );
+		auftragsBuf.append("0");
+		auftragsBuf.append("00");
+		auftragsBuf.append("0");
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 10) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 6) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 28) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 44) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 30) );
 	}
 	/*************************************************/
 	private void macheEndeDaten(){
@@ -447,8 +517,12 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 		System.out.println(aktEsol + "  - "+aktDfue);
 		unbBuf.append("UNB+UNOC:3+"+Reha.aktIK+plus+ik_nutzer+plus);
-		unbBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+":"+getEdiTimeString()+plus);
-		unbBuf.append(aktDfue+plus+"B"+plus+"SL"+Reha.aktIK.substring(2,8)+"S01"+plus+"2"+EOL);
+		unbBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+":"+getEdiTimeString(false)+plus);
+		unbBuf.append(aktDfue+plus+"B"+plus);
+		abrDateiName = "SL"+Reha.aktIK.substring(2,8)+"S"+getEdiMonat();
+		unbBuf.append(abrDateiName+plus);
+		unbBuf.append("2"+EOL);
+		//unbBuf.append(aktDfue+plus+"B"+plus+"SL"+Reha.aktIK.substring(2,8)+"S"+getEdiMonat()+plus+"2"+EOL);
 		unbBuf.append("UNH+00001+SLGA:06:0:0"+EOL);
 		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+plus+Reha.aktIK+EOL);
 		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
@@ -464,7 +538,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		unbBuf.append("UNH+00002+SLGA:06:0:0"+EOL);
 		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+EOL);
 		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
-		getEdiTimeString();
+		getEdiTimeString(false);
 	}
 	/*************************************************/	
 	private Double[] setzePreiseAufNull(Double[] preis){
@@ -473,15 +547,23 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		preis[2] = 0.00;
 		return preis;
 	}
+	private String getEdiMonat(){
+		String tag = DatFunk.sHeute();
+		return tag.substring(3,5);
+	}
 	private String getEdiDatumFromDeutsch(String deutschDat){
 		if(deutschDat.trim().length()<10){
 			return "";
 		}
 		return deutschDat.substring(6)+deutschDat.substring(3,5)+deutschDat.substring(0,2);
 	}
-	private String getEdiTimeString(){
+	private String getEdiTimeString(boolean mitsekunden){
 		Date date = new Date();
 		String[] datesplit = date.toString().split(" ");
+		System.out.println(date.toString());
+		if(mitsekunden){
+			return datesplit[3].substring(0,2)+datesplit[3].substring(3,5)+datesplit[3].substring(6,8);
+		}
 		return datesplit[3].substring(0,2)+datesplit[3].substring(3,5);
 	}
 	/*************************************************/
@@ -529,7 +611,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			status = "10001";
 		}
 		for(int i = 4; i < edi.length;i++){
-			positionenBuf.append(edi[i]+"\n");
+			positionenBuf.append(edi[i]+System.getProperty("line.separator") );
 			positionenAnzahl++;
 		}
 		if(status.startsWith("1")){
