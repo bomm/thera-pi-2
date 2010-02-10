@@ -156,11 +156,22 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 				@Override
 				protected Void doInBackground() throws Exception {
 					holeAktKasse(xkass);
+					SwingUtilities.invokeLater(new Runnable(){
+						public  void run(){
+					 		setzeFocus();
+						}
+					});
 					return null;
 				}
 				
 			}.execute();
 			
+		}else{
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+			 		setzeFocus();
+				}
+			});
 		}
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
@@ -185,14 +196,14 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			    	TerminFenster.thisClass.setUpdateVerbot(true);
 			    }
 			    */
-				SwingUtilities.invokeLater(new Runnable(){
-					public  void run(){
-				 		setzeFocus();
-					}
-				});
 			}
 		});
 		
+		SwingUtilities.invokeLater(new Runnable(){
+			public  void run(){
+		 		setzeFocus();
+			}
+		});
 
 		
 	}

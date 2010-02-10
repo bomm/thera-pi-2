@@ -223,7 +223,7 @@ public void KassenFenster(int setPos,String kid) {
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JKasseInternal)kassejry).aktiviereDiesenFrame( ((JKasseInternal)kassejry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	
+	Reha.thisClass.kassenpanel.setzeFocus();
 }
 public void loescheKasse(){
 	kassejry = null;
@@ -270,6 +270,7 @@ public void ArztFenster(int setPos,String aid) {
 	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JArztInternal)arztjry).aktiviereDiesenFrame( ((JArztInternal)arztjry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	Reha.thisClass.arztpanel.setzeFocus();
 	
 }
 public void loescheArzt(){

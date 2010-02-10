@@ -117,11 +117,22 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				@Override
 				protected Void doInBackground() throws Exception {
 					holeAktArzt(xarzt);
+					SwingUtilities.invokeLater(new Runnable(){
+						public  void run(){
+					 		setzeFocus();
+						}
+					});
 					return null;
 				}
 				
 			}.execute();
 			
+		}else{
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+			 		setzeFocus();
+				}
+			});
 		}
 
 
@@ -148,13 +159,14 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			    	TerminFenster.thisClass.setUpdateVerbot(true);
 			    }
 			    */
-				SwingUtilities.invokeLater(new Runnable(){
-					public  void run(){
-				 		setzeFocus();
-					}
-				});
 			}
 		});
+		SwingUtilities.invokeLater(new Runnable(){
+			public  void run(){
+		 		setzeFocus();
+			}
+		});
+
 	}
 	private ArztPanel getInstance(){
 		return this;

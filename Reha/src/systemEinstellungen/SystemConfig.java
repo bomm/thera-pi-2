@@ -170,9 +170,9 @@ public class SystemConfig {
 		String jahrHeute = DatFunk.sHeute().substring(6);
 		if(! aktJahr.equals(jahrHeute) ){
 			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
-					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zur�ckgesetzt wurden\n"+
-					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist da� alle Jahresabschlu�arbeiten erledigt worden sind!!!!");
-			System.out.println("Aktuelles Jahr wurde ver�nder auf "+jahrHeute);
+					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
+					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
+			System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
 			aktJahr = new String(jahrHeute);
 			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
 			ini.save();
@@ -1012,6 +1012,7 @@ public class SystemConfig {
 			xscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleX");
 			yscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleY");
 			try{
+				System.out.println(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i]));
 				if((xscale >0) && (yscale > 0)){
 					ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])).getImage().getScaledInstance(xscale,yscale, Image.SCALE_SMOOTH);
 					hmSysIcons.put(bilder[i], new ImageIcon(ico));				
@@ -1026,8 +1027,6 @@ public class SystemConfig {
 		}
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		System.out.println("System-Icons wurden geladen");
-
-		
 	}
 	
 	public static void compTest(){

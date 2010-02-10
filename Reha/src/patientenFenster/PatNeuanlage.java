@@ -697,6 +697,7 @@ private KVKWrapper kvw;
 				//System.out.println("code = "+arg0.getKeyCode());
 				//System.out.println("char = "+arg0.getKeyChar());
 				if(arg0.getKeyChar()=='?'){
+					arg0.consume();
 					String[] suchkrit = new String[] {jtf[17].getText().replaceAll("\\?", ""),jtf[33].getText()};
 					arztAuswahl(suchkrit);
 				}

@@ -174,7 +174,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		treeKasse.setModel(treeModelKasse);
 		treeKasse.setName("kassentree");
 		treeKasse.getSelectionModel().addTreeSelectionListener(this);
-		treeKasse.setCellRenderer(new MyRenderer(new ImageIcon(Reha.proghome+"icons/Haken_klein.gif")));
+		treeKasse.setCellRenderer(new MyRenderer(SystemConfig.hmSysIcons.get("zuzahlok")));
 		JScrollPane jscrk = JCompTools.getTransparentScrollPane(treeKasse);
 		pb.add(jscrk,cc.xy(2, 6));
 		
