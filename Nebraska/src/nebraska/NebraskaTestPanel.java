@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import org.bouncycastle.asn1.ASN1Object;
@@ -109,12 +110,18 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		pb.addLabel("Passwort (max. 6 Zeichen)",cc.xy(2,8));
 		pb.add((tn1[3] = new JTextField(Constants.PRAXIS_KS_PW)),cc.xy(4,8));
 		tabmodprax = new MyCertTableModel();
-		tabmodprax.setColumnIdentifiers(new String[] {"Alias","Zert/Key","CA-Root","Gültig bis","zurückgezogen"});
+		tabmodprax.setColumnIdentifiers(new String[] {"Alias","Zert oder Key?","CA-Root","Gültig bis","zurückgezogen"});
 		tabprax = new JXTable(tabmodprax);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabprax);
 		jscr.validate();
 		pb.add(jscr,cc.xyw(2,10,3,CellConstraints.FILL,CellConstraints.BOTTOM));
-		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				doFuelleTabelle(false);
+				return null;
+			}
+		}.execute();
 		pb.getPanel().validate();
 		return pb.getPanel();
 	}
@@ -137,12 +144,18 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		pb.addLabel("Passwort (max. 6 Zeichen)",cc.xy(2,10));
 		pb.add((tn2[4] = new JTextField(Constants.TEST_CA_KS_PW)),cc.xy(4,10));
 		tabmodca = new MyCertTableModel();
-		tabmodca.setColumnIdentifiers(new String[] {"Alias","Zert/Key","CA-Root","Gültig bis","zurückgezogen"});
+		tabmodca.setColumnIdentifiers(new String[] {"Alias","Zert oder Key?","CA-Root","Gültig bis","zurückgezogen"});
 		tabca = new JXTable(tabmodca);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabca);
 		jscr.validate();
 		pb.add(jscr,cc.xyw(2,12,3,CellConstraints.FILL,CellConstraints.BOTTOM));
-		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				doFuelleTabelle(true);
+				return null;
+			}
+		}.execute();
 		pb.getPanel().validate();
 		return pb.getPanel();
 	}
@@ -181,6 +194,14 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		but.setActionCommand(cmd);
 		but.addActionListener(this);
 		return but;
+	}
+	public void doFuelleTabelle(boolean isRoot) throws Exception{
+		// Hier werden die beiden Tabellen mit den Angaben zu enthaltenen Zertifikaten gefüllt
+		String keystore = (isRoot ? "" : "");
+		String pw = (isRoot ? "" : "");
+		MyCertTableModel mod = (isRoot ? tabmodca : tabmodprax);
+		KeyStore store = BCStatics2.loadStore(Constants.KEYSTORE_DIR+File.separator+keystore, pw);
+		//Hier die Enumeration durch die Aliases und dann die Tabellen füllen
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0){
