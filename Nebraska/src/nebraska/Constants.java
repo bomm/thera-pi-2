@@ -36,7 +36,7 @@ public class Constants {
 			inifile = System.getProperty("user.dir")+ File.separator +"nebraska_windows.conf";
 		}else if(System.getProperty("os.name").contains("Linux")){
 			inifile = System.getProperty("user.dir")+ File.separator +"nebraska_linux.conf";			
-		}else if(System.getProperty("os.name").contains("String für MaxOSX")){
+		}else if(System.getProperty("os.name").contains("String für MaxOSX????")){
 			inifile = System.getProperty("user.dir")+ File.separator +"nebraska_mac.conf";
 		}
 		
