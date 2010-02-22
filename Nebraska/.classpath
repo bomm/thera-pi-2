@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/unoloader.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/ag.ion.noa_2.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/bootstrapconnector.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/java_uno.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/java_uno_accessbridge.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/juh.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/jurt.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/jut.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/officebean.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/registry-3.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/ridl.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/sandbox.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/unoil.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/bcprov-ext-jdk16-145.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/forms-1.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/base-core.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
