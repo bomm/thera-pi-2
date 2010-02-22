@@ -298,9 +298,9 @@ public class BCStatics2 {
 		FileReader reader;
 		int zertifikate = 0;
 		int eingelesen = 0;
-		reader = new FileReader(pfad+sret);
+		reader = new FileReader(pfad+File.separator+sret);
 		BufferedReader in
-		   = new BufferedReader(new FileReader(pfad+sret));
+		   = new BufferedReader(reader);//new BufferedReader(new FileReader(pfad+sret));
 
 		StringBuffer buf = new StringBuffer();
 		String zeile = "";
