@@ -9,7 +9,7 @@ public class Constants {
 //	public static final String KEYSTORE_DIR = "C:/Nebraska/";
 //	public static final String OPENOFFICE_HOME = "C:/Programme/OpenOffice.org 3";
 //	public static final String OPENOFFICE_JARS = "C:/RehaVerwaltung/RTAJars/openofficeorg";
-	public static String inifile = null;
+	public static String INI_FILE = null;
 	public static String CRYPTO_FILES_DIR = null;
 	public static String KEYSTORE_DIR = null;
 	public static String OPENOFFICE_HOME = null;
@@ -33,15 +33,15 @@ public class Constants {
 	
 	Constants(){
 		if(System.getProperty("os.name").contains("Windows")){
-			inifile = System.getProperty("user.dir")+ File.separator +"nebraska_windows.conf";
+			INI_FILE = System.getProperty("user.dir")+ File.separator +"nebraska_windows.conf";
 		}else if(System.getProperty("os.name").contains("Linux")){
-			inifile = System.getProperty("user.dir")+ File.separator +"nebraska_linux.conf";			
+			INI_FILE = System.getProperty("user.dir")+ File.separator +"nebraska_linux.conf";			
 		}else if(System.getProperty("os.name").contains("String für MaxOSX????")){
-			inifile = System.getProperty("user.dir")+ File.separator +"nebraska_mac.conf";
+			INI_FILE = System.getProperty("user.dir")+ File.separator +"nebraska_mac.conf";
 		}
 		
-		INIFile inif = new INIFile(inifile);
-		System.out.println(inifile);
+		INIFile inif = new INIFile(INI_FILE);
+		System.out.println(INI_FILE);
 		CRYPTO_FILES_DIR = inif.getStringProperty("Pfade","CRYPTO_FILES_DIR" );
 		KEYSTORE_DIR = inif.getStringProperty("Pfade","KEYSTORE_DIR" );
 		OPENOFFICE_HOME = inif.getStringProperty("Pfade","OPENOFFICE_HOME" );

@@ -222,7 +222,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		}
 	}
 	private void saveTestCase(){
-		INIFile inif = new INIFile(Constants.inifile);
+		INIFile inif = new INIFile(Constants.INI_FILE);
 		// In der Entwicklungsversion werden verschiedene Items nicht gespeichert z.b. CE oder PRAXIS_O
 		inif.setStringProperty("Praxis", "PRAXIS_OU_ALIAS", tn1[0].getText().trim(),null);
 		inif.setStringProperty("Praxis", "PRAXIS_OU_FIRMA", tn1[1].getText().trim(),null);
