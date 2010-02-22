@@ -234,6 +234,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		inif.setStringProperty("TestCA", "TEST_CA_CN", tn2[3].getText().trim(),null);
 		inif.setStringProperty("TestCA", "TEST_CA_KS_PW", tn2[4].getText().trim(),null);
 		inif.save();
+		JOptionPane.showMessageDialog(null, "Die aktuellen Angaben zu Praxis und CA wurden gesichert in Datei:\n"+Constants.INI_FILE);
 		
 	}
 	public void doVergleichen()throws Exception{
