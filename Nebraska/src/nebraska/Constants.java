@@ -10,11 +10,10 @@ public class Constants {
 //	public static final String OPENOFFICE_HOME = "C:/Programme/OpenOffice.org 3";
 //	public static final String OPENOFFICE_JARS = "C:/RehaVerwaltung/RTAJars/openofficeorg";
 	public static String inifile = null;
-	public static String CRYPTO_FILES_DIR = "/home/bodo/thera-pi/Nebraska/tmp";
-	public static String KEYSTORE_DIR = "/home/bodo/thera-pi/Nebraska";
-	public static String OPENOFFICE_HOME = "/usr/lib/openoffice";
-	public static String OPENOFFICE_JARS = "/home/bodo/thera-pi/RehaVerwaltung/RTAJars/openofficeorg";
-	
+	public static String CRYPTO_FILES_DIR = null;
+	public static String KEYSTORE_DIR = null;
+	public static String OPENOFFICE_HOME = null;
+	public static String OPENOFFICE_JARS = null;
 
 	public static String PRAXIS_CE = null;
 	public static String PRAXIS_OU_FIRMA = null;
