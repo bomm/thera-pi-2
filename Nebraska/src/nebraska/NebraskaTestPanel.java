@@ -29,9 +29,12 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -40,8 +43,10 @@ import org.bouncycastle.asn1.pkcs.CertificationRequestInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMWriter;
+import org.jdesktop.swingx.JXTable;
 
 import utils.INIFile;
+import utils.JCompTools;
 import utils.OOorgTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -68,6 +73,11 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 	public static String caPassw;
 	public static String annahmeKeyFile;
 	
+	public JXTable tabprax;
+	public JXTable tabca;
+	public MyCertTableModel tabmodprax;
+	public MyCertTableModel tabmodca;
+	
 	public KeyPair kpprax = null; 
 	public KeyPair kpca = null;
 	
@@ -87,7 +97,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 	
 	private JPanel getTN1(){
 		FormLayout lay = new FormLayout("5dlu,right:max(50dlu;p),5dlu,p:g,5dlu",
-				"5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p");
+				"5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu:g,75dlu");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.addLabel("OU=IK-Alias ( z.B.: IK540840108)",cc.xy(2,2));
@@ -98,14 +108,21 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		pb.add((tn1[2] = new JTextField(Constants.PRAXIS_CN)),cc.xy(4,6));
 		pb.addLabel("Passwort (max. 6 Zeichen)",cc.xy(2,8));
 		pb.add((tn1[3] = new JTextField(Constants.PRAXIS_KS_PW)),cc.xy(4,8));
-
+		tabmodprax = new MyCertTableModel();
+		tabmodprax.setColumnIdentifiers(new String[] {"Alias","Zert/Key","CA-Root","Gültig bis","zurückgezogen"});
+		tabprax = new JXTable(tabmodprax);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabprax);
+		jscr.validate();
+		pb.add(jscr,cc.xyw(2,10,3,CellConstraints.FILL,CellConstraints.BOTTOM));
+		
 		pb.getPanel().validate();
 		return pb.getPanel();
 	}
 
 	private JPanel getTN2(){
 		FormLayout lay = new FormLayout("5dlu,right:max(50dlu;p),5dlu,p:g,5dlu",
-				"5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu");
+		//		 1    2  3   4  5   6  7   8  9   10  11    12
+				"5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu:g,75dlu");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.getPanel().setBackground(Color.WHITE);
@@ -119,6 +136,12 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		pb.add((tn2[3] = new JTextField(Constants.TEST_CA_O)),cc.xy(4,8));
 		pb.addLabel("Passwort (max. 6 Zeichen)",cc.xy(2,10));
 		pb.add((tn2[4] = new JTextField(Constants.TEST_CA_KS_PW)),cc.xy(4,10));
+		tabmodca = new MyCertTableModel();
+		tabmodca.setColumnIdentifiers(new String[] {"Alias","Zert/Key","CA-Root","Gültig bis","zurückgezogen"});
+		tabca = new JXTable(tabmodca);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabca);
+		jscr.validate();
+		pb.add(jscr,cc.xyw(2,12,3,CellConstraints.FILL,CellConstraints.BOTTOM));
 		
 		pb.getPanel().validate();
 		return pb.getPanel();
@@ -147,7 +170,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.add((but2[0] = macheBut("KStore gen.","kgen2")),cc.xy(2,2));
 		pb.add((but2[1] = macheBut("Request read / Reply generate","requread")),cc.xy(4,2));
-		pb.add((but2[2] = macheBut("save TestCase","savetc")),cc.xy(4,4));
+		pb.add((but2[2] = macheBut("save TestCase-settings","savetc")),cc.xy(4,4));
 		pb.getPanel().validate();
 		return pb.getPanel();
 
@@ -513,6 +536,25 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		}
 		praxisPassw = vecprax.get(3);
 		caPassw = vecca.get(4);
+	}
+
+	class MyCertTableModel extends DefaultTableModel{
+		   /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public Class getColumnClass(int columnIndex) {
+			   if(columnIndex==1 ){
+				   return JLabel.class;}
+			   else{
+				   return String.class;
+			   }
+		}
+
+		public boolean isCellEditable(int row, int col) {
+		          return false;
+        }
 	}
 
 }

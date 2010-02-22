@@ -25,7 +25,9 @@ public class Nebraska {
 	public static JFrame jf;
 	
 	public static void main(String[] args) throws Exception{
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+		if(System.getProperty("os.name").contains("Windows")){
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");			
+		}
 		//UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 		new Constants();
 		jf = new JFrame();

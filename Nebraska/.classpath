@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/bcprov-ext-jdk16-145.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/forms-1.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/base-core.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
