@@ -230,8 +230,8 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		inif.setStringProperty("Praxis", "PRAXIS_KS_PW", tn1[3].getText().trim(),null);
 		inif.setStringProperty("TestCA", "TEST_CA_OU_ALIAS", tn2[0].getText().trim(),null);
 		inif.setStringProperty("TestCA", "TEST_CA_OU_FIRMA", tn2[1].getText().trim(),null);
-		inif.setStringProperty("TestCA", "TEST_CA_O", tn2[2].getText().trim(),null);
-		inif.setStringProperty("TestCA", "TEST_CA_CN", tn2[3].getText().trim(),null);
+		inif.setStringProperty("TestCA", "TEST_CA_O", tn2[3].getText().trim(),null);
+		inif.setStringProperty("TestCA", "TEST_CA_CN", tn2[2].getText().trim(),null);
 		inif.setStringProperty("TestCA", "TEST_CA_KS_PW", tn2[4].getText().trim(),null);
 		inif.save();
 		JOptionPane.showMessageDialog(null, "Die aktuellen Angaben zu Praxis und CA wurden gesichert in Datei:\n"+Constants.INI_FILE);

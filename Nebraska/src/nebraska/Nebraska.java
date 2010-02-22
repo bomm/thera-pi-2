@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -24,7 +25,7 @@ public class Nebraska {
 	public static JFrame jf;
 	
 	public static void main(String[] args) throws Exception{
-		//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+		UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		//UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 		new Constants();
 		jf = new JFrame();
