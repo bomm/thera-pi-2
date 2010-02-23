@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -17,7 +16,6 @@ import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -27,15 +25,15 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.cert.CertStore;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.spec.EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.sql.Time;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.crypto.Cipher;
@@ -50,29 +48,21 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEREncodable;
 import org.bouncycastle.asn1.DERObject;
-import org.bouncycastle.asn1.DERObjectIdentifier;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.pkcs.CertificationRequestInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Attribute;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.asn1.x509.X509Extensions;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.provider.asymmetric.ec.KeyFactory;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
-import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
-import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 import utils.DatFunk;
 import utils.NUtils;
@@ -370,11 +360,14 @@ public class BCStatics2 {
 		InputStream in = new FileInputStream(new File(keystore+ xalias+".p12"));
 		store.load(in,pw.toCharArray());
 		in.close();
-		String[] splits = cert.getSubjectDN().toString().split(",");
+		String subjectDN = cert.getSubjectDN().toString();
+		String[] splits = subjectDN.split(",");
 		if(splits.length==5){
 			alias = splits[3].split("=")[1];
 			System.out.println("xalias = "+xalias+" - alias = "+alias);
-
+		} else {
+			alias = subjectDN;
+		}
 			if(!store.containsAlias(alias.trim())){	
 				store.setCertificateEntry(alias, cert);
 				System.out.println("Zertifikat von "+alias+" der Datenbank "+keystore + File.separator +xalias+".p12"+" hinzugefügt");
@@ -396,7 +389,6 @@ public class BCStatics2 {
 				cert.getBasicConstraints();
 			
 			}	
-		}
 	}
 	
 	public static void deleteCertFromStore(String alias,String keystoreFile,String pw) throws Exception{
@@ -448,6 +440,28 @@ public class BCStatics2 {
 			return cert;
 	 }
 
+		public static void readCertReply(String keystoreDir, String keystoreFile, String keystorePassword)
+		throws Exception {
+		 String pfad = keystoreDir;
+		 String datei = chooser(pfad);
+		 providerTest();
+		 if(datei.equals("")){return;}
+
+		File f = new File(datei);
+
+    	CMSSignedData sd = new CMSSignedData(new FileInputStream(f));
+    	CertStore certs = sd.getCertificatesAndCRLs ("Collection", "BC");
+
+    	Collection<?> certColl = certs.getCertificates(null);
+   	    for (Iterator<?> certIt = certColl.iterator(); certIt.hasNext(); ) {
+   	    	X509Certificate cert = (X509Certificate) certIt.next();
+   	    	X500Principal subject = cert.getSubjectX500Principal();
+   	    	System.out.println ("Subject: " + subject);
+   	    	X500Principal issuer = cert.getIssuerX500Principal();
+   	    	System.out.println ("Issuer: " + issuer);
+   			BCStatics2.importCertIntoStore(cert,keystoreDir + File.separator +keystoreFile,keystorePassword,"");
+    	}
+	}
 
 	/*********************************************/
 	public static KeyPair generateRSAKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException{

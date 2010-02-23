@@ -6,25 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.math.BigInteger;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.RSAPrivateKeySpec;
-import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -381,8 +372,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		BCStatics2.verschluesseln(vecprax.get(0),keystoreDir + File.separator +vecprax.get(0).replace("IK", ""),praxisPassw);
 	}
 	public void doReadAndManageReply() throws Exception{
-		X509Certificate cert = BCStatics.readSingleCert(keystoreDir);
-		BCStatics2.importCertIntoStore(cert,keystoreDir + File.separator +vecprax.get(0).replace("IK", ""),praxisPassw,"");
+		BCStatics2.readCertReply(keystoreDir,vecprax.get(0).replace("IK", ""),praxisPassw);
 	}
 	public void doRequestEinlesen()throws Exception{
 		BCStatics2.providerTest();

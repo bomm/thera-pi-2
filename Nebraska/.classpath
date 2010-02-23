@@ -20,5 +20,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/forms-1.2.1.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/base-core.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/swingx-1.6.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/bcmail.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
