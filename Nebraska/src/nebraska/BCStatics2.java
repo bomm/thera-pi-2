@@ -363,11 +363,11 @@ public class BCStatics2 {
 		pemReader.close();
 	}
 
-	public static void importCertIntoStore(X509Certificate cert,String keystoreDir,String pw,String xalias) throws Exception{
+	public static void importCertIntoStore(X509Certificate cert,String keystore,String pw,String xalias) throws Exception{
 		KeyStore store;
 		String alias;
 		store = KeyStore.getInstance("BCPKCS12","BC");
-		InputStream in = new FileInputStream(new File(keystoreDir+ File.separator +xalias+".p12"));
+		InputStream in = new FileInputStream(new File(keystore+ xalias+".p12"));
 		store.load(in,pw.toCharArray());
 		in.close();
 		String[] splits = cert.getSubjectDN().toString().split(",");
@@ -377,21 +377,21 @@ public class BCStatics2 {
 
 			if(!store.containsAlias(alias.trim())){	
 				store.setCertificateEntry(alias, cert);
-				System.out.println("Zertifikat von "+alias+" der Datenbank "+keystoreDir + File.separator +xalias+".p12"+" hinzugefügt");
+				System.out.println("Zertifikat von "+alias+" der Datenbank "+keystore + File.separator +xalias+".p12"+" hinzugefügt");
 				ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 				store.store(bOut,pw.toCharArray());
 				bOut.close();
-				FileStatics.BytesToFile(bOut.toByteArray(), new File(keystoreDir + File.separator +xalias+".p12"));
+				FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore +xalias+".p12"));
 			}else{
 				System.out.println("Zertifikat von "+alias+" bereits enthalten");
 				int frage = JOptionPane.showConfirmDialog(null,"Zertifikat ist bereits in der Datenbank enthalten.\nTrotzdem importieren?","Achtung!",JOptionPane.YES_NO_OPTION);
 				if(frage==JOptionPane.YES_OPTION){
 					store.setCertificateEntry(alias, cert);
-					System.out.println("Zertifikat von "+alias+" der Datenbank "+keystoreDir + File.separator +xalias+".p12"+" hinzugefügt");
+					System.out.println("Zertifikat von "+alias+" der Datenbank "+keystore + File.separator +xalias+".p12"+" hinzugefügt");
 					ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 					store.store(bOut,pw.toCharArray());
 					bOut.close();
-					FileStatics.BytesToFile(bOut.toByteArray(), new File(keystoreDir + File.separator +xalias+".p12"));
+					FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore + File.separator +xalias+".p12"));
 				}
 				cert.getBasicConstraints();
 			
