@@ -46,6 +46,7 @@ public class FileStatics {
 			  // Datei schreiben
 			  FileOutputStream fileOut = new FileOutputStream(fileout);
 			  fileOut.write(data);
+			  fileOut.flush();
 			  fileOut.close();
 			}
 
