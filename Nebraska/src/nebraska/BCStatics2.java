@@ -92,8 +92,8 @@ public class BCStatics2 {
 		}
 		storePrivateToPem(keypair,name);
 		storePublicToPem(keypair,name);
-		FileStatics.BytesToFile(cert.getEncoded(),new File(NebraskaTestPanel.keystoreDir+name));
-		certToFile(cert,cert.getEncoded(),NebraskaTestPanel.keystoreDir+name);
+		FileStatics.BytesToFile(cert.getEncoded(),new File(NebraskaTestPanel.keystoreDir+ File.separator +name));
+		certToFile(cert,cert.getEncoded(),NebraskaTestPanel.keystoreDir+ File.separator +name);
 		store = KeyStore.getInstance("BCPKCS12","BC");
 		store.load(null,null);
 		String alias = (isroot ? cavec.get(0) : praxvec.get(0));
@@ -107,7 +107,7 @@ public class BCStatics2 {
 
 		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 		store.store(bOut,passw.toCharArray());
-		FileStatics.BytesToFile(bOut.toByteArray(),new File(NebraskaTestPanel.keystoreDir+name+".p12"));
+		FileStatics.BytesToFile(bOut.toByteArray(),new File(NebraskaTestPanel.keystoreDir + File.separator +name+".p12"));
 		bOut.close();
 		System.out.println("\n*********************Zertifikat Beginn************************");
 		System.out.println(cert);
@@ -195,15 +195,15 @@ public class BCStatics2 {
 		*/
 		/****Unterschrift****/
 		
-		String pfad = NebraskaTestPanel.keystoreDir + keystorefile + ".p12" ;
+		String pfad = NebraskaTestPanel.keystoreDir + File.separator  + keystorefile + ".p12" ;
 		KeyStore store = KeyStore.getInstance("BCPKCS12","BC");
 		FileInputStream fin = new FileInputStream(new File(pfad));
 		store.load(fin, passw.toCharArray());
 		fin.close();
-		store = loadStore(NebraskaTestPanel.keystoreDir + keystorefile,NebraskaTestPanel.caPassw);
+		store = loadStore(NebraskaTestPanel.keystoreDir + File.separator + keystorefile,NebraskaTestPanel.caPassw);
 		X509Certificate rootCert = (X509Certificate) store.getCertificate(alias);
 		//X509Certificate rootCert = readSingleCert(NebraskaTestPanel.keystoreDir);
-		PrivateKey rootPkey = getPrivateFromPem(NebraskaTestPanel.keystoreDir + keystorefile);
+		PrivateKey rootPkey = getPrivateFromPem(NebraskaTestPanel.keystoreDir + File.separator + keystorefile);
 
 		X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
 		certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
@@ -331,7 +331,7 @@ public class BCStatics2 {
 	}
 	public static X509Certificate makeCertFromPem(String keystoreDir,StringBuffer buf) throws Exception{
 		X509Certificate cert = null;
-		File f = new File(keystoreDir+"temp.pem");
+		File f = new File(keystoreDir+ File.separator +"temp.pem");
 		FileWriter writer;
 		writer = new FileWriter(f);
 		writer.write(buf.toString());
@@ -347,7 +347,7 @@ public class BCStatics2 {
 		return cert;
 	}
 	public static void importCertsPEM(String keystoreDir, StringBuffer buf,String pw,String xalias) throws Exception{
-		File f = new File(keystoreDir+"temp.pem");
+		File f = new File(keystoreDir+ File.separator +"temp.pem");
 		FileWriter writer;
 		writer = new FileWriter(f);
 		writer.write(buf.toString());
@@ -363,11 +363,11 @@ public class BCStatics2 {
 		pemReader.close();
 	}
 
-	public static void importCertIntoStore(X509Certificate cert,String keystore,String pw,String xalias) throws Exception{
+	public static void importCertIntoStore(X509Certificate cert,String keystoreDir,String pw,String xalias) throws Exception{
 		KeyStore store;
 		String alias;
 		store = KeyStore.getInstance("BCPKCS12","BC");
-		InputStream in = new FileInputStream(new File(keystore+xalias+".p12"));
+		InputStream in = new FileInputStream(new File(keystoreDir+ File.separator +xalias+".p12"));
 		store.load(in,pw.toCharArray());
 		in.close();
 		String[] splits = cert.getSubjectDN().toString().split(",");
@@ -377,21 +377,21 @@ public class BCStatics2 {
 
 			if(!store.containsAlias(alias.trim())){	
 				store.setCertificateEntry(alias, cert);
-				System.out.println("Zertifikat von "+alias+" der Datenbank "+keystore+xalias+".p12"+" hinzugefügt");
+				System.out.println("Zertifikat von "+alias+" der Datenbank "+keystoreDir + File.separator +xalias+".p12"+" hinzugefügt");
 				ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 				store.store(bOut,pw.toCharArray());
 				bOut.close();
-				FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore+xalias+".p12"));
+				FileStatics.BytesToFile(bOut.toByteArray(), new File(keystoreDir + File.separator +xalias+".p12"));
 			}else{
 				System.out.println("Zertifikat von "+alias+" bereits enthalten");
 				int frage = JOptionPane.showConfirmDialog(null,"Zertifikat ist bereits in der Datenbank enthalten.\nTrotzdem importieren?","Achtung!",JOptionPane.YES_NO_OPTION);
 				if(frage==JOptionPane.YES_OPTION){
 					store.setCertificateEntry(alias, cert);
-					System.out.println("Zertifikat von "+alias+" der Datenbank "+keystore+xalias+".p12"+" hinzugefügt");
+					System.out.println("Zertifikat von "+alias+" der Datenbank "+keystoreDir + File.separator +xalias+".p12"+" hinzugefügt");
 					ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 					store.store(bOut,pw.toCharArray());
 					bOut.close();
-					FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore+xalias+".p12"));
+					FileStatics.BytesToFile(bOut.toByteArray(), new File(keystoreDir + File.separator +xalias+".p12"));
 				}
 				cert.getBasicConstraints();
 			
@@ -399,11 +399,11 @@ public class BCStatics2 {
 		}
 	}
 	
-	public static void deleteCertFromStore(String alias,String keystore,String pw) throws Exception{
+	public static void deleteCertFromStore(String alias,String keystoreFile,String pw) throws Exception{
 		KeyStore store;
 		providerTest();
 		store = KeyStore.getInstance("BCPKCS12","BC");
-		InputStream in = new FileInputStream(new File(keystore+".p12"));
+		InputStream in = new FileInputStream(new File(keystoreFile +".p12"));
 		store.load(in,pw.toCharArray());
 		in.close();
 		Enumeration en = store.aliases();
@@ -427,8 +427,8 @@ public class BCStatics2 {
 		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 		store.store(bOut,"196205".toCharArray());
 		System.out.println("fertig gestored....");
-		FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore+".p12"));
-		//BCStatics2.storeToFile(keystore+".p12",bOut.toByteArray());
+		FileStatics.BytesToFile(bOut.toByteArray(), new File(keystoreFile+".p12"));
+		//BCStatics2.storeToFile(keystoreFile+".p12",bOut.toByteArray());
 		bOut.close();
 	}
 
@@ -626,8 +626,8 @@ public class BCStatics2 {
 	  * @param alias
 	  * @throws Exception
 	  */
-	 public static void verschluesseln(String alias,String keystore,String pw) throws Exception{
-		 String pfad = keystore;
+	 public static void verschluesseln(String alias,String keystoreFile,String pw) throws Exception{
+		 String pfad = keystoreFile;
 		 String datei = BCStatics2.chooser(pfad);
 		 if(datei.equals("")){
 			 return;
@@ -637,7 +637,7 @@ public class BCStatics2 {
 		 KeyStore store;
 		 store = KeyStore.getInstance("BCPKCS12","BC");
 		 InputStream in;
-		 in = new FileInputStream(new File(keystore+".p12"));
+		 in = new FileInputStream(new File(keystoreFile+".p12"));
 		 store.load(in,pw.toCharArray());
 		 if(store.containsAlias(alias)){
 			 X509Certificate cert = (X509Certificate)store.getCertificate(alias);
@@ -688,13 +688,13 @@ public class BCStatics2 {
 	 * 	 
 	 */
 
-	 public static KeyStore loadStore(String keystorefile,String pw) throws Exception{
+	 public static KeyStore loadStore(String keystoreFile,String pw) throws Exception{
 		 	providerTest();
 		 KeyStore store;
 
 			String alias;
 			store = KeyStore.getInstance("BCPKCS12","BC");
-			InputStream in = new FileInputStream(new File(keystorefile+".p12"));
+			InputStream in = new FileInputStream(new File(keystoreFile+".p12"));
 			store.load(in,pw.toCharArray());
 			in.close();	
 			return store;
@@ -703,28 +703,28 @@ public class BCStatics2 {
 		 	providerTest();
 		 	ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 			keystore.store(bOut,pw.toCharArray());
-			FileStatics.BytesToFile(bOut.toByteArray(),new File(NebraskaTestPanel.keystoreDir+name+".p12"));
+			FileStatics.BytesToFile(bOut.toByteArray(),new File(NebraskaTestPanel.keystoreDir+ File.separator +name+".p12"));
 			bOut.close();
 	 }
 
 	 public static void storePrivateToPem(KeyPair keypair,String name) throws Exception{
-			FileWriter fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+name+".prv"));
+			FileWriter fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+ File.separator +name+".prv"));
 	        PEMWriter pemWriter = new PEMWriter(fWriter, "BC");
 	        pemWriter.writeObject(keypair.getPrivate());
 	        pemWriter.close();
 	        fWriter.close();
 	        /*
-			fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+name+".pub"));
+			fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+ File.separator +name+".pub"));
 	        pemWriter = new PEMWriter(fWriter, "BC");
 	        pemWriter.writeObject(keypair.getPublic());
 	        pemWriter.close();
 	        fWriter.close();
-			fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+name+".sls"));
+			fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+ File.separator +name+".sls"));
 	        pemWriter = new PEMWriter(fWriter, "BC");
 	        pemWriter.writeObject(keypair);
 	        .close();
 	        fWriter.close();
-	        FileReader fReader = new FileReader(new File(NebraskaTestPanel.keystoreDir+name+".prv"));
+	        FileReader fReader = new FileReader(new File(NebraskaTestPanel.keystoreDir+ File.separator +name+".prv"));
 	        PEMReader pReader = new PEMReader(fReader);
 	        KeyPair pKey = (KeyPair)pReader.readObject();
 	        if(pKey.getPrivate().equals(keypair.getPrivate())){
@@ -735,7 +735,7 @@ public class BCStatics2 {
 			*/
 	 }
 	 public static void storePublicToPem(KeyPair keypair,String name) throws Exception{
-			FileWriter fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+name+".pub"));
+			FileWriter fWriter = new FileWriter(new File(NebraskaTestPanel.keystoreDir+ File.separator +name+".pub"));
 	        PEMWriter pemWriter = new PEMWriter(fWriter, "BC");
 	        pemWriter.writeObject(keypair.getPublic());
 	        pemWriter.close();

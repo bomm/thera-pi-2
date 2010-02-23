@@ -370,11 +370,11 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		KeyStore store = BCStatics2.loadStore(datei, praxisPassw);
 		store.setKeyEntry(vecprax.get(0), kpprax.getPrivate(),praxisPassw.toCharArray(), chain);
 		BCStatics2.saveStore(store, praxisPassw, vecprax.get(0).replace("IK", ""));
-		//BCStatics2.certToFile(cert, cert.getEncoded(), keystoreDir+"test");
+		//BCStatics2.certToFile(cert, cert.getEncoded(), keystoreDir+ File.separator +"test");
 		
 
 		//System.out.println(cert);
-		//FileStatics.BytesToFile(cert.getEncoded(), new File(keystoreDir+"test.p7b"));
+		//FileStatics.BytesToFile(cert.getEncoded(), new File(keystoreDir+ File.separator +"test.p7b"));
 		
 	}
 	public void doEncode() throws Exception{
@@ -494,7 +494,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		String datei = "";
 		String keystore = "";
 		if(isRoot){
-			String testdatei = keystoreDir+vecca.get(0).replace("IK", ""); 
+			String testdatei = keystoreDir+ File.separator +vecca.get(0).replace("IK", ""); 
 			File f = new File(testdatei+".prv");
 			if(f.exists()){
 				KeyPair kp = BCStatics2.getBothFromPem(datei);
@@ -503,14 +503,14 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 					kpca = BCStatics2.generateRSAKeyPair();
 			}
 			datei =tn2[0].getText().trim().replace("IK", "");
-			keystore =  keystoreDir+datei+".p12";
+			keystore =  keystoreDir+ File.separator +datei+".p12";
 			if(datei.trim().equals("")){
 				Nebraska.jf.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				JOptionPane.showMessageDialog(null,"Kein Alias angegeben");
 				return false;
 			}
 		}else{
-			String testdatei = keystoreDir+vecprax.get(0).replace("IK", ""); 
+			String testdatei = keystoreDir + File.separator +vecprax.get(0).replace("IK", ""); 
 			File f = new File(testdatei+".prv");
 			if(f.exists()){
 				KeyPair kp = BCStatics2.getBothFromPem(datei);
