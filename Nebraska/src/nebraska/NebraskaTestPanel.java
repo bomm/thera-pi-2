@@ -200,6 +200,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		String keystore = (isRoot ? "" : "");
 		String pw = (isRoot ? "" : "");
 		MyCertTableModel mod = (isRoot ? tabmodca : tabmodprax);
+		mod.setRowCount(0);
 		KeyStore store = BCStatics2.loadStore(Constants.KEYSTORE_DIR+File.separator+keystore, pw);
 		//Hier die Enumeration durch die Aliases und dann die Tabellen füllen
 	}
