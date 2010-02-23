@@ -391,7 +391,7 @@ public class BCStatics2 {
 					ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 					store.store(bOut,pw.toCharArray());
 					bOut.close();
-					FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore + File.separator +xalias+".p12"));
+					FileStatics.BytesToFile(bOut.toByteArray(), new File(keystore +xalias+".p12"));
 				}
 				cert.getBasicConstraints();
 			
