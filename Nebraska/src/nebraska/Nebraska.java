@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
@@ -23,6 +24,7 @@ public class Nebraska {
 	public static IOfficeApplication officeapplication;
 	public static HashMap<String,String> hmZertifikat = new HashMap<String,String>();
 	public static JFrame jf;
+	public static JTabbedPaneOrganizer jtbo;
 	
 	public static void main(String[] args) throws Exception{
 		if(System.getProperty("os.name").contains("Windows")){
@@ -31,15 +33,21 @@ public class Nebraska {
 		//UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 		new Constants();
 		jf = new JFrame();
-		jf.setPreferredSize(new Dimension(1000,600));
+		jf.setPreferredSize(new Dimension(1000,700));
 		jf.setTitle("Nebraska");
 		jf.setLocation(200,200);
-		//jf.setContentPane(new NebraskaPanel());
-		jf.setContentPane(new NebraskaTestPanel());
+		jtbo = new JTabbedPaneOrganizer(); 
+		jf.setContentPane(jtbo);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.pack();
 		jf.setVisible(true);
 		starteOfficeApplication();
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				jtbo.setHeader(0);
+			}
+		});
+
 	}
     public static void starteOfficeApplication () throws Exception {
         new SwingWorker<Void,Void>(){

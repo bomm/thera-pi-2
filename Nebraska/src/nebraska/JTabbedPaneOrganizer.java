@@ -68,7 +68,7 @@ public class JTabbedPaneOrganizer extends JXPanel implements ChangeListener{
 		vecdescript.add("....Geben Sie hier bitte Ihre Stammdaten ein\n" +
                 "Wenn die Stammdaten komplett sind können Sie den Antrag ausdrucken, unterzeichnen und anschließend per FAX\n" +
                 "an die ITSG senden. (FAX-Nr. der ITSG finden Sie auf dem Antrag).\n\n"+
-                "Wenn Sie die Schaltfläche 'Request-erzeugen' wird für Sie ein Schlüsselpaar erzeugt und automatisiert an die ITSG per Mail versandt.");
+                "Wenn Sie die Schaltfläche 'Request-erzeugen' drücken, wird für Sie ein Schlüsselpaar erzeugt und automatisiert an die ITSG per Mail versandt.");
 		vecimg.add(ico);
 		
 		

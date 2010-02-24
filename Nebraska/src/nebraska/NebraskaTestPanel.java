@@ -6,8 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyStore;
@@ -16,7 +18,10 @@ import java.security.cert.CertPath;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -28,15 +33,20 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
+import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.pkcs.CertificationRequestInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMWriter;
 import org.jdesktop.swingx.JXTable;
 
+import pdfDrucker.PDFDrucker;
+
+import utils.DatFunk;
 import utils.INIFile;
 import utils.JCompTools;
 import utils.OOorgTools;
@@ -44,6 +54,9 @@ import utils.OOorgTools;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 
 public class NebraskaTestPanel  extends JPanel implements ActionListener{
 	/**
@@ -73,7 +86,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 	public KeyPair kpprax = null; 
 	public KeyPair kpca = null;
 	
-	NebraskaTestPanel(){
+	public NebraskaTestPanel(){
 		super();                   //     1      2                3         4          5            6
 		FormLayout lay = new FormLayout("2dlu,fill:0:grow(0.5),2dlu,fill:0:grow(0.5),2dlu",
 	//    1     2          3          4     5
@@ -175,6 +188,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 		pb.add((but2[0] = macheBut("KStore gen.","kgen2")),cc.xy(2,2));
 		pb.add((but2[1] = macheBut("Request read / Reply generate","requread")),cc.xy(4,2));
 		pb.add((but2[2] = macheBut("save TestCase-settings","savetc")),cc.xy(4,4));
+		pb.add((but2[3] = macheBut("Zert.Antrag","certantrag")),cc.xy(2,4));
 		pb.getPanel().validate();
 		return pb.getPanel();
 
@@ -252,10 +266,57 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 			if(cmd.equals("savetc")){
 				saveTestCase();
 			}
+			if(cmd.equals("certantrag")){
+				doCertAntrag();
+			}
 
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+	}
+	private void doCertAntrag() throws Exception{
+		// Umbau zum test der MD5-Fingerprints
+		//ASN1InputStream ain = new ASN1InputStream(new FileInputStream(Constants.KEYSTORE_DIR+File.separator+"40091472.p10"));
+		/*
+		ASN1InputStream ain = new ASN1InputStream(new FileInputStream(Constants.KEYSTORE_DIR+File.separator+"54084010.p10"));
+		DERObject derob = ain.readObject();
+		PKCS10CertificationRequest csr = new PKCS10CertificationRequest(
+            	  derob.getDEREncoded() );
+		System.out.println("Fingerprint von Certifikation-Request:"+BCStatics2.getMD5fromByte(derob.getDEREncoded()));
+		PublicKey key = csr.getPublicKey("BC");
+
+		System.out.println(key);
+		System.out.println("Fingerprint vom Public-Key: "+BCStatics2.getMD5fromByte(key.getEncoded()));
+		
+		
+		CertificationRequestInfo csrInfo = csr.getCertificationRequestInfo();
+		System.out.println("SubjectDN: "+csrInfo.getSubject());
+		System.out.println("SubjectDN: "+csrInfo.getSubjectPublicKeyInfo().getPublicKey());
+		System.out.println("SubjectDN: "+BCStatics2.getMD5fromByte(csrInfo.getSubjectPublicKeyInfo().getPublicKeyData().getBytes()));
+		*/
+		String outFile = null;
+		PdfReader reader = new PdfReader(Constants.KEYSTORE_DIR+File.separator+"vorlagen"+File.separator+"Zertifizierungsantrag.pdf");
+		outFile = Constants.KEYSTORE_DIR+File.separator+"vorlagen"+File.separator+"Zertifizierungsantrag"+DatFunk.sHeute()+".pdf"; 
+		FileOutputStream out = new FileOutputStream(outFile);
+		PdfStamper stamper = new PdfStamper(reader, out);
+		AcroFields form = stamper.getAcroFields();
+		Map fieldMap = form.getFields();
+        Set keys = fieldMap.keySet();
+        for (Iterator it = keys.iterator(); it.hasNext();){
+            String fieldName = (String) it.next();
+            AcroFields.Item field = (AcroFields.Item) fieldMap.get(fieldName);
+        	System.out.println(fieldName);
+            if(fieldName.equals("IK")){
+            	//fieldMap.put("IK", "540840108");
+            	//System.out.println("Feld IK ersetzt");
+            	form.setField(fieldName, "540840108");
+            }
+        }
+        stamper.setFormFlattening(true);
+        stamper.close();
+        reader.close();
+        //PDFDrucker.setup(outFile);
+        
 	}
 	private void saveTestCase(){
 		INIFile inif = new INIFile(Constants.INI_FILE);
@@ -420,10 +481,11 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
         ASN1Sequence aseq = ASN1Sequence.getInstance(asno);
         System.out.println(aseq);
         System.out.println(aseq.size());
+        SubjectPublicKeyInfo spub = null;
         for(int i = 0; i < aseq.size();i++){
         	System.out.println("Objec Nr."+i+" aus der ASN1-Struktur = "+aseq.getObjectAt(i));
         	if(aseq.getObjectAt(i) instanceof SubjectPublicKeyInfo){
-        		SubjectPublicKeyInfo spub = (SubjectPublicKeyInfo) aseq.getObjectAt(i);
+        		spub = (SubjectPublicKeyInfo) aseq.getObjectAt(i);
         		System.out.println("Public Key des Requests = "+spub.getPublicKeyData());
         		System.out.println("SHA1-Hash aus dem PubKey des Requests = "+BCStatics2.getSHA1fromByte(spub.getPublicKeyData().getEncoded()));
         	}
@@ -451,10 +513,12 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
         Nebraska.hmZertifikat.put("<Subjectcn>","CN="+vecprax.get(2));
         Nebraska.hmZertifikat.put("<Algorithm>",kpprax.getPublic().getAlgorithm());
         
-        String sha1 = BCStatics2.getSHA1fromByte(kpprax.getPublic().getEncoded());
+        String sha1 = BCStatics2.getSHA1fromByte(spub.getPublicKeyData().getBytes());
+        //String sha1 = BCStatics2.getSHA1fromByte(kpprax.getPublic().getEncoded());
         Nebraska.hmZertifikat.put("<Sha1publickey>",BCStatics2.macheHexDump(sha1, 20," "));
         
-        String md5 = BCStatics2.getMD5fromByte(kpprax.getPublic().getEncoded());
+        String md5 = BCStatics2.getMD5fromByte(spub.getPublicKeyData().getBytes());
+        //String md5 = BCStatics2.getMD5fromByte(kpprax.getPublic().getEncoded());
         Nebraska.hmZertifikat.put("<Md5publickey>",BCStatics2.macheHexDump(md5, 20," "));
         
         sha1 = BCStatics2.getSHA1fromByte(request.getEncoded());
@@ -473,7 +537,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
         
         hexstring = new BigInteger(pub.getPublicExponent().toByteArray()).toString(16);
         Nebraska.hmZertifikat.put("<Exponent>",(hexstring.length()==5 ? "0"+hexstring : hexstring  ));
-		OOorgTools.starteStandardFormular(keystoreDir + File.separator +"ZertBegleitzettel.ott", null);
+		OOorgTools.starteStandardFormular(keystoreDir + File.separator +"vorlagen"+File.separator+"ZertBegleitzettel.ott", null);
 		Nebraska.jf.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}            
 
