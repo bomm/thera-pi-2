@@ -49,7 +49,6 @@ public class FileStatics {
 			  fileOut.flush();
 			  fileOut.close();
 			}
-
 			catch (IOException e)
 			{
 			  e.printStackTrace();
