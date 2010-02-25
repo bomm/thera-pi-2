@@ -26,13 +26,15 @@ public class JTabbedPaneOrganizer extends JXPanel implements ChangeListener{
 	private Vector<String> vectitel = new Vector<String>();
 	private Vector<String> vecdescript = new Vector<String>();
 	private Vector<ImageIcon> vecimg = new Vector<ImageIcon>();
+	private ZertAntrag zertAntrag;
 	public JTabbedPaneOrganizer(){
 		super();
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		jtb = new JTabbedPane();
 		doHeader();
-		jtb.addTab("Zertifikats-Antrag stellen", new ZertAntrag());
+		zertAntrag = new ZertAntrag();
+		jtb.addTab("Zertifikats-Antrag stellen",zertAntrag );
 		jtb.addTab("Zertifikate auswerten", new JXPanel());
 		jtb.addTab("Manuell verschlüsseln", new JXPanel());
 		jtb.addTab("Test- und Experimentierpanel", new NebraskaTestPanel());
@@ -45,7 +47,7 @@ public class JTabbedPaneOrganizer extends JXPanel implements ChangeListener{
         jxh.validate();
         jtb.validate();
 		validate();
-
+		zertAntrag.setzeFocus();
 
 
 	}

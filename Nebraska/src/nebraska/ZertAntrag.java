@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -68,7 +69,7 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 			setOpaque(false);
 			JPanel jpan = new JPanel(new BorderLayout());
 			jpan.setOpaque(false);
-			jpan.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+			jpan.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 			FormLayout lay1 = new FormLayout("10dlu,fill:0:grow,10dlu",
 					"10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu,p,5dlu");
 			CellConstraints c1 = new CellConstraints();
@@ -148,6 +149,18 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 					return null;
 				}
 			}.execute();
+	}
+	public void setzeFocus(){
+ 		SwingUtilities.invokeLater(new Runnable(){
+ 			public void run(){
+ 				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+ 				tf[0].requestFocus();
+ 			}
+ 		});
 	}
 	private JPanel getButtonPanel(){
 		FormLayout lay2 = new FormLayout("10dlu,fill:0:grow(0.25),5dlu,fill:0:grow(0.25),5dlu,fill:0:grow(0.25),5dlu,fill:0:grow(0.25),5dlu","2dlu,10dlu,p,10dlu");
@@ -450,7 +463,7 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 		   ikPfad = pfad+File.separator+"ini"+File.separator+ik+File.separator+"firmen.ini";
 		   mandantLesen(ikPfad.replace("\\", "/"));
 		}
-		
+		tf[0].requestFocus();
 	}
 	private void mandantLesen(String ikPfad){
 		//System.out.println("Pfad zu der firmen.ini = "+ikPfad);
