@@ -100,6 +100,12 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 					fl = new FocusListener(){
 						@Override
 						public void focusGained(FocusEvent arg0) {
+							if(((JComponent)arg0.getSource()) instanceof JRtaTextField){
+								((JRtaTextField)((JComponent)arg0.getSource())).setSelectionStart(0);
+								((JRtaTextField)((JComponent)arg0.getSource())).setSelectionEnd(0);
+								((JRtaTextField)((JComponent)arg0.getSource())).setCaretPosition(0);
+							}
+
 							int y = ((JComponent)arg0.getSource()).getBounds().y+
 							((JComponent)arg0.getSource()).getParent().getBounds().y+15;
 							Rectangle rec1 =((JComponent)arg0.getSource()).getBounds();
@@ -116,6 +122,9 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 						}
 						@Override
 						public void focusLost(FocusEvent arg0) {
+							if(((JComponent)arg0.getSource()) instanceof JRtaTextField){
+								((JRtaTextField)((JComponent)arg0.getSource())).setCaretPosition(0);
+							}
 						}
 					};
 					newPolicy = new Vector<Component>();

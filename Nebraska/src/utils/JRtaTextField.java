@@ -43,6 +43,8 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
 
+
+
 //import terminKalender.DateInputTextField;
 
 
@@ -435,6 +437,7 @@ public void focusLost(FocusEvent e) {
 public void focusGained(FocusEvent e) {	
 	if( ((JRtaTextField)e.getComponent()).isEditable()){
 		e.getComponent().setBackground(Color.YELLOW);
+		
 		//((JRtaTextField)e.getComponent()).setBorder(null);
 	}
 
@@ -444,7 +447,11 @@ public void focusGained(FocusEvent e) {
 	 	   {
 
 	 		   if(getSelectOnFocus()){
-		 		   ((JRtaTextField) xe.getComponent()).select(0,((JRtaTextField) xe.getComponent()).getText().length());
+	 			  ((JRtaTextField) xe.getComponent()).select(((JRtaTextField) xe.getComponent()).getText().length(),0);
+	 			  ((JRtaTextField) xe.getComponent()).setCaretPosition(0);
+	 			  //((JRtaTextField) xe.getComponent()).setSelectionStart(((JRtaTextField) xe.getComponent()).getText().length());
+	 			  //((JRtaTextField) xe.getComponent()).setSelectionEnd(0);
+	 			   
 		 		   //System.out.println(((JRtaTextField) xe.getComponent()).getName()+" soll bei Focus eine Selection erhalten");
 	 		   }else{
 	 			   ((JRtaTextField) xe.getComponent()).setCaretPosition(0);					
