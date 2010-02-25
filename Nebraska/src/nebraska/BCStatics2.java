@@ -104,6 +104,7 @@ public class BCStatics2 {
 		System.out.println("*********************Zertifikat Ende***************************\n");
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static X509Certificate generateRootCert(KeyPair pair,Vector<String>vecca) throws InvalidKeyException, NoSuchProviderException, SecurityException, SignatureException{
 		providerTest();
 		X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
@@ -398,7 +399,7 @@ public class BCStatics2 {
 		InputStream in = new FileInputStream(new File(keystoreFile +".p12"));
 		store.load(in,pw.toCharArray());
 		in.close();
-		Enumeration en = store.aliases();
+		Enumeration<?> en = store.aliases();
 		if(alias == null){
 			while (en.hasMoreElements()){
 				String aliases = (String)en.nextElement();

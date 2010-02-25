@@ -1,14 +1,12 @@
 package nebraska;
 
 import java.awt.BorderLayout;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.io.File;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -18,6 +16,10 @@ import org.jdesktop.swingx.JXTitledPanel;
 
 
 public class JTabbedPaneOrganizer extends JXPanel implements ChangeListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6554044579478248774L;
 	public JXTitledPanel jxTitel;
 	public JTabbedPane jtb;
 	public JXHeader jxh;
@@ -30,12 +32,13 @@ public class JTabbedPaneOrganizer extends JXPanel implements ChangeListener{
 		setLayout(new BorderLayout());
 		jtb = new JTabbedPane();
 		doHeader();
-		jtb.addTab("Zert-Antrag stellen", new ZertAntrag());
+		jtb.addTab("Zertifikats-Antrag stellen", new ZertAntrag());
 		jtb.addTab("Zertifikate auswerten", new JXPanel());
 		jtb.addTab("Manuell verschlüsseln", new JXPanel());
 		jtb.addTab("Test- und Experimentierpanel", new NebraskaTestPanel());
 		jtb.addChangeListener(this);
         jxh = new JXHeader();
+        ((JLabel)jxh.getComponent(1)).setVerticalAlignment(JLabel.NORTH);
         add(jxh, BorderLayout.NORTH);
         add(jtb, BorderLayout.CENTER);
         
@@ -58,7 +61,8 @@ public class JTabbedPaneOrganizer extends JXPanel implements ChangeListener{
         int sel = pane.getSelectedIndex();
         jxh.setTitle(vectitel.get(sel));
         jxh.setDescription(vecdescript.get(sel));
-        jxh.setIcon(vecimg.get(sel));        
+        jxh.setIcon(vecimg.get(sel));   
+
 	}
 	private void doHeader(){
 		ImageIcon ico;

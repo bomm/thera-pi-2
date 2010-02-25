@@ -437,7 +437,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 	}
 	public void doRequestEinlesen()throws Exception{
 		BCStatics2.providerTest();
-		String request = FileStatics.chooser(keystoreDir);
+		String request = FileStatics.fileChooser(keystoreDir,"Request (.p10) öffnen");
 		if(request.trim().equals("")){return;}
 		if(request.indexOf(".p10") < 0){return;}
 		setVecs();

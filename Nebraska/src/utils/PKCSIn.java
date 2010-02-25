@@ -25,7 +25,7 @@ import org.bouncycastle.openssl.PEMReader;
 public class PKCSIn {
 	public static void main(String[] args) {
         try{
-
+        	
         PEMReader pemReader = new PEMReader( new InputStreamReader(new FileInputStream("C:/Nebraska/" + "510841109.pem")));
 
          PKCS10CertificationRequest certRequest = (PKCS10CertificationRequest)pemReader.readObject();
