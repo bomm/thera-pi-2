@@ -567,7 +567,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 			String testdatei = keystoreDir + File.separator +vecprax.get(0).replace("IK", ""); 
 			File f = new File(testdatei+".prv");
 			if(f.exists()){
-				KeyPair kp = BCStatics2.getBothFromPem(datei);
+				KeyPair kp = BCStatics2.getBothFromPem(testdatei);
 				kpprax = kp;
 			}else if(kpprax==null){
 				kpprax = BCStatics2.generateRSAKeyPair();
