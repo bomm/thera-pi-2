@@ -67,7 +67,7 @@ public class NebraskaUtil {
 	 * @return
 	 */
 	public static String normalizeIK(String input) {
-		return input.replaceFirst("^[iI][kK]", "").trim();
+		return input.trim().replaceFirst("^[iI][kK]", "").trim();
 	}
 	
 	static Date certificateStart(Date date) {
