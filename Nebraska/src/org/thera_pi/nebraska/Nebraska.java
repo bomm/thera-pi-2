@@ -1,11 +1,15 @@
 package org.thera_pi.nebraska;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -22,11 +26,13 @@ import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Collection;
 import java.util.Date;
-import java.util.regex.Pattern;
+import java.util.Iterator;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -37,6 +43,7 @@ import org.bouncycastle.asn1.pkcs.CertificationRequestInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 public class Nebraska {
@@ -379,44 +386,131 @@ public class Nebraska {
 			throw new NebraskaCryptoException(e);
 		}
 
-		String subjectDN = selfsignedCert.getSubjectDN().getName();
-		String[] dnParts = subjectDN.split(",");
-		for(int i = 0; i < dnParts.length; i++) {
-			String[] keyVal = dnParts[i].trim().split(" *= *", 2);
-			if(keyVal.length == 2) {
-				if("CN".equals(keyVal[0])) {
-					personName = keyVal[1];
-				} else if("OU".equals(keyVal[0])) {
-					if(!Pattern.matches("^IK[0-9]+$", keyVal[1])) {
-						institutionName = keyVal[1];
-					}
-				}
-			}
-		}
+		NebraskaPrincipal subject = new NebraskaPrincipal(
+				selfsignedCert.getSubjectDN().getName());
+		personName = subject.getPersonName();
+		institutionName = subject.getInstitutionName();
 	}
 	
 	/**
 	 * Read certificate file (PKCS#7 reply from CA) and save certificates to keystore.
 	 * 
 	 * @param fileName certificate file to read
+	 * @throws NebraskaFileException 
+	 * @throws NebraskaCryptoException 
 	 */
-	public void importCertificateReply(String fileName) {
-		// FIXME read file and store certificates in keystore
-		/* Wie können privater Schlüssel, selbstsigniertes Zertifikat und offizielles
-		 * Zertifikat im Keystore abgelegt werden?
+	public void importCertificateReply(String fileName) throws NebraskaFileException, NebraskaCryptoException {
+		/* TODO Wie können privater Schlüssel, selbstsigniertes Zertifikat und offizielles
+		 * Zertifikat sinnvoll im Keystore abgelegt werden?
 		 * Einzeln mit unterschiedlichem Alias? Alles zusammen?
 		 */
+		File certFile = new File(fileName);
+		InputStream certStream;
+		try {
+			certStream = new FileInputStream(certFile);
+		} catch (FileNotFoundException e) {
+			throw new NebraskaFileException(e);
+		}
+
+		try {
+			CertificateFactory certFactory = CertificateFactory.getInstance("X509", "BC");
+			Collection<?> certColl = certFactory.generateCertificates(certStream);
+		for (Iterator<?> certIt = certColl.iterator(); certIt.hasNext(); ) {
+   	    	X509Certificate cert = (X509Certificate) certIt.next();
+   	    	X500Principal subject = cert.getSubjectX500Principal();
+   	    	// X500Principal issuer = cert.getIssuerX500Principal();
+   	    	String alias = "IK" + new NebraskaPrincipal(subject.getName()).getInstitutionID();
+   	    	keyStore.setCertificateEntry(alias, cert);
+    	}
+		} catch (CertificateException e) {
+			throw new NebraskaCryptoException(e);
+		} catch (NoSuchProviderException e) {
+			throw new NebraskaCryptoException(e);
+		} catch (KeyStoreException e) {
+			throw new NebraskaCryptoException(e);
+		}
 	}
 	
 	/**
 	 * Read receiver certificates from file (annahme-pkcs.key) and save to keystore.
 	 * 
 	 * @param fileName receiver certificates file to read
+	 * @throws NebraskaFileException on file related errors
+	 * @throws NebraskaCryptoException on cryptography related errors
 	 */
-	public void importReceiverCertificates(String fileName) {
-		// FIXME import receiver certs
+	public void importReceiverCertificates(String fileName) throws NebraskaFileException, NebraskaCryptoException {
+		final String certHeader = "-----BEGIN CERTIFICATE-----";
+		final String certTrailer = "-----END CERTIFICATE-----";
+		final String separator = System.getProperty("line.separator");
+
+		File receiverCertFile = new File(fileName);
+		FileInputStream receiverCertStream;
+		try {
+			receiverCertStream = new FileInputStream(receiverCertFile);
+		} catch (FileNotFoundException e) {
+			throw new NebraskaFileException(e);
+		}
+		BufferedReader receiverCertReader = new BufferedReader(new InputStreamReader(receiverCertStream));
+
+		StringBuffer certBuf = new StringBuffer(certHeader + separator);
+		String line;
+		boolean empty = true;
+		try {
+			while((line = receiverCertReader.readLine()) != null)
+			{
+				// end of certificate
+				if(line.trim().length() == 0)
+				{
+					if(!empty) {
+						certBuf.append(certTrailer + separator);
+						readAndStoreCert(certBuf);
+						certBuf.setLength(0);
+						certBuf.append(certHeader + separator);
+						empty = true;
+					}
+				}
+				else
+				{
+					empty = false;
+					certBuf.append(line + separator);
+				}
+			}
+			if(!empty)
+			{
+				certBuf.append(certTrailer + separator);
+				readAndStoreCert(certBuf);
+			}
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
+	}
+
+	private void readAndStoreCert(StringBuffer certBuf) throws NebraskaCryptoException, NebraskaFileException {
+		StringReader certBufReader = new StringReader(certBuf.toString());
+		PEMReader pemReader = new PEMReader(certBufReader);
+		Object o;
+		try {
+			o = pemReader.readObject();
+			if (o instanceof X509Certificate){
+				X509Certificate cert = (X509Certificate) o;
+				storeCertificate(cert);
+		}	
+		pemReader.close();
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
 	}
 	
+	private void storeCertificate(X509Certificate cert) throws NebraskaCryptoException {
+		NebraskaPrincipal subject = new NebraskaPrincipal(cert.getSubjectDN().getName());
+		String alias = "IK" + subject.getInstitutionID();
+		try {
+			keyStore.setCertificateEntry(alias, cert);
+		} catch (KeyStoreException e) {
+			throw new NebraskaCryptoException(e);
+		}
+	}
+
 	/**
 	 * Delete expired certificates from keystore.
 	 */
