@@ -11,7 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -30,6 +35,10 @@ import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.swingx.JXPanel;
 
+import pdfDrucker.PDFDrucker;
+import pdfDrucker.PDFPrintPage2;
+
+import utils.DatFunk;
 import utils.INIFile;
 import utils.JCompTools;
 import utils.JRtaCheckBox;
@@ -39,6 +48,9 @@ import utils.JRtaTextField;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 
 public class ZertAntrag extends JXPanel implements ListSelectionListener, ActionListener {
 	
@@ -57,8 +69,22 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 	
 	JRtaCheckBox[] jcb = {null};
 	JButton[] jbut = {null,null,null,null,null};
+	/*
+	String[] hmText = {"IK","NameAntragsteller","Ansprechpartner","Strasse",
+						"PLZ","Ort","Betriebsnummer","Telefon","Telefax","E-Mail",
+						"Softwarehaus","Fachanwendung","Kundenkennwort",
+						"RechnungName","RechnungStrasse","RechnungPLZ","RechnungOrt",
+						"Bemerkung1","Bemerkung2","Bemerkung3","Bemerkung4"				
+	};
+	String[] hmRadio = {"Kontrollkaestchen1","Kontrollkaestchen2","Kontrollkaestchen3",
+						"Kontrollkaestchen4","Kontrollkaestchen5","Kontrollkaestchen6"
+	};
+	*/
+	String[][] resultRadio1 = {{"Ja","Nein","Nein"},{"Nein","Ja","Nein"},{"Nein","Nein","Ja"}};
+	String[][] resultRadio2 = {{"Ja","Nein"},{"Nein","Ja"}};
+	HashMap<String,String> hmPdf = new HashMap<String,String>();
 	
-	Vector<Component> newPolicy;
+	Vector<Component> newPolicy = new Vector<Component>();
 	MyStammFocusTraversalPolicy myPolicy;
 	FocusListener fl;
 	JScrollPane jscr;
@@ -127,7 +153,6 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 							}
 						}
 					};
-					newPolicy = new Vector<Component>();
 					for(int i = 0;i < 10;i++){
 						tf[i].addFocusListener(fl);
 						newPolicy.add(tf[i]);
@@ -172,15 +197,16 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
  		});
 	}
 	private JPanel getButtonPanel(){
-		FormLayout lay2 = new FormLayout("10dlu,fill:0:grow(0.25),5dlu,fill:0:grow(0.25),5dlu,fill:0:grow(0.25),5dlu,fill:0:grow(0.25),5dlu","2dlu,10dlu,p,10dlu");
+		FormLayout lay2 = new FormLayout("10dlu,fill:0:grow(0.2),5dlu,fill:0:grow(0.2),5dlu,fill:0:grow(0.2),5dlu,fill:0:grow(0.2),5dlu,fill:0:grow(0.2),5dlu","2dlu,10dlu,p,10dlu");
 		PanelBuilder a1 = new PanelBuilder(lay2);
 		CellConstraints c1 = new CellConstraints();
 		a1.getPanel().setOpaque(false);
 		a1.addSeparator("");
 		a1.add((jbut[0]=macheBut("Datenimport aus Thera-Pi","therapiimport")),c1.xy(2,3));
-		a1.add((jbut[0]=macheBut("Zert-Antrag drucken","antragprint")),c1.xy(4,3));
-		a1.add((jbut[1]=macheBut("Zert-Request erzeugen","requestmachen")),c1.xy(6,3));
-		a1.add((jbut[1]=macheBut("Zert-Reply einlesen","replyeinlesen")),c1.xy(8,3));
+		a1.add((jbut[1]=macheBut("Zert-Antrag drucken","antragprint")),c1.xy(4,3));
+		a1.add((jbut[2]=macheBut("Zert-Request erzeugen","requestmachen")),c1.xy(6,3));
+		a1.add((jbut[3]=macheBut("Zert-Reply einlesen","replyeinlesen")),c1.xy(8,3));
+		a1.add((jbut[4]=macheBut("Annahmest. einlesen","annahmeeinlesen")),c1.xy(10,3));
 		a1.getPanel().validate();
 		return a1.getPanel();
 	}
@@ -493,9 +519,91 @@ public class ZertAntrag extends JXPanel implements ListSelectionListener, Action
 		tf[11].setText("Thera-Pi / Nebraska");
 		jrb[3].setSelected(true);
 	}
+ 
 	private void doAntragPrint(){
-		
+		hmPdf.clear();
+		if(  (tf[0].getText().trim().equals("")) || (tf[0].getText().trim().length() != 9) ){
+			JOptionPane.showMessageDialog(null, "Die Angabe einer korrekten(!) IK wäre nicht schlecht");
+			return;
+		}
+		for(int i = 0;i < tf.length;i++){
+			hmPdf.put(tf[i].getName(),tf[i].getText().trim());
+		}
+		int antwort = -1;
+		if(jrb[0].isSelected() || jrb[1].isSelected()){
+			if(jrb[0].isSelected()){
+				antwort = 0;
+			}else{
+				antwort = 1;
+			}
+			hmPdf.put(jrb[0].getName(), resultRadio2[antwort][0]);
+			hmPdf.put(jrb[1].getName(), resultRadio2[antwort][1]);
+		}else{
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie an wie Sie die Zertifizierungsantwort erhalten wollen");
+			return;
+		}
+		if(jrb[2].isSelected() || jrb[3].isSelected() || jrb[4].isSelected()){
+			if(jrb[2].isSelected()){
+				antwort = 0;
+			}else if(jrb[3].isSelected()){
+				antwort = 1;
+			}else{
+				antwort = 2;
+			}
+			hmPdf.put(jrb[2].getName(), resultRadio1[antwort][0]);
+			hmPdf.put(jrb[3].getName(), resultRadio1[antwort][1]);
+			hmPdf.put(jrb[4].getName(), resultRadio1[antwort][2]);
+		}else{
+			JOptionPane.showMessageDialog(null, "Bitte geben Sie an wie Sie die Datei (Zertifikatsanforderung) der ITSG übermitteln wollen");
+			return;
+		}
+		if(jcb[0].isSelected()){
+			hmPdf.put(jcb[0].getName(), "Ja");
+		}else{
+			hmPdf.put(jcb[0].getName(), "Nein");
+		}
+		hmPdf.put("Datum",DatFunk.sHeute());
+		try {
+			doPdfFuellen();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+	private void doPdfFuellen() throws Exception{
+		String outFile = null;
+		PdfReader reader = new PdfReader(Constants.KEYSTORE_DIR+File.separator+"vorlagen"+File.separator+"Zertifizierungsantrag.pdf");
+		outFile = Constants.KEYSTORE_DIR+File.separator+"vorlagen"+File.separator+"Zertifizierungsantrag"+DatFunk.sHeute()+".pdf"; 
+		FileOutputStream out = new FileOutputStream(outFile);
+		PdfStamper stamper = new PdfStamper(reader, out);
+		AcroFields form = stamper.getAcroFields();
+		Map fieldMap = form.getFields();
+        Set keys = fieldMap.keySet();
+        for (Iterator it = keys.iterator(); it.hasNext();){
+            String fieldName = (String) it.next();
+            AcroFields.Item field = (AcroFields.Item) fieldMap.get(fieldName);
+        	System.out.println(fieldName);
+        	try{
+        		form.setField(fieldName,hmPdf.get(fieldName));
+        	}catch(Exception ex){
+        		ex.printStackTrace();
+        	}
+        }
+        stamper.setFormFlattening(true);
+        stamper.close();
+        reader.close();
+        out.close();
+
+        String text = "Der Antrag wurde generiert und in der Datei -> "+outFile+" <- gespeichert\n\n"+
+        "Soll der Antrag jetzt auf Ihrem Standarddrucker gedruckt werden?";
+        int frage = JOptionPane.showConfirmDialog(null, text, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+        if(frage == JOptionPane.YES_OPTION){
+        	PDFDrucker.setup(outFile);
+        	//PDFPrintPage2 pPage2 = new PDFPrintPage2(outFile);
+        	//pPage2.printFile(outFile, false);
+
+        }
+	}
+
 	private void doRequestMachen(){
 		
 	}
