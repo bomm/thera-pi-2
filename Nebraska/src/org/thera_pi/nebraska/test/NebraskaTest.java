@@ -38,14 +38,14 @@ public class NebraskaTest extends TestCase {
 
 	public void testGenerateKeyPair() throws NebraskaCryptoException, NebraskaFileException {
 		assertFalse(nebraska.hasPrivateKey());
-		nebraska.generateKeyPair("abcdef", true);
+		nebraska.generateKeyPair(true);
 		assertTrue(nebraska.hasPrivateKey());
 	}
 
 	public void testCreateCertificateRequest() throws NebraskaCryptoException, NebraskaFileException, IOException {
 		StringBuffer md5Hash = new StringBuffer();
 		assertFalse(nebraska.hasPrivateKey());
-		nebraska.generateKeyPair("abcdef", true);
+		nebraska.generateKeyPair(true);
 		assertTrue(nebraska.hasPrivateKey());
 
 		File requestFile = new File(requestFilename);
@@ -62,7 +62,7 @@ public class NebraskaTest extends TestCase {
 
 	public void testGetPublicKeyMD5() throws NebraskaCryptoException, NebraskaFileException {
 		assertFalse(nebraska.hasPrivateKey());
-		nebraska.generateKeyPair("abcdef", true);
+		nebraska.generateKeyPair(true);
 		assertTrue(nebraska.hasPrivateKey());
 
 		String fingerprint = nebraska.getPublicKeyMD5();
