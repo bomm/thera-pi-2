@@ -13,4 +13,6 @@ class NebraskaConstants {
 	static final String CERTIFICATE_SIGNATURE_ALGORITHM = "SHA1WithRSAEncryption";
 	static final String CRQ_SIGNATURE_ALGORITHM = "SHA1withRSA";
 	static final String FINGERPRINT_ALGORITHM = "MD5";
+	static final String CERTIFICATE_TYPE = "X509";
+	static final String CERTSTORE_TYPE = "Collection";
 }

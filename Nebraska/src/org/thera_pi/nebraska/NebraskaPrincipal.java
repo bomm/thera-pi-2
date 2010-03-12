@@ -50,11 +50,20 @@ public class NebraskaPrincipal {
 		this.personName = personName;
 	}
 
+	public String getAlias() {
+		if(institutionID != null && institutionID.length() > 0)
+		{
+			return institutionID;
+		}
+		return distinguishedName.replace(" ", "");
+	}
+	
 	private String country;
 	private String organization;
 	private String institutionName;
 	private String institutionID;
 	private String personName;
+	private String distinguishedName;
 	
 	public NebraskaPrincipal() {
 		
@@ -70,6 +79,7 @@ public class NebraskaPrincipal {
 	}
 	
 	public NebraskaPrincipal(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
 		String[] dnParts = distinguishedName.split(",");
 		for(int i = 0; i < dnParts.length; i++) {
 			String[] keyVal = dnParts[i].trim().split(" *= *", 2);

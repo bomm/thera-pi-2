@@ -40,7 +40,7 @@ public class NebraskaEncryptor {
 	 * @param nebraska reference to Nebraska object that contains the key store
 	 * @throws NebraskaCryptoException 
 	 */
-	protected NebraskaEncryptor(String IK, Nebraska nebraska) throws NebraskaCryptoException {
+	NebraskaEncryptor(String IK, Nebraska nebraska) throws NebraskaCryptoException {
 		this.receiverIK = IK;
 		this.nebraska = nebraska;
 		
@@ -75,16 +75,7 @@ public class NebraskaEncryptor {
 	 * @throws NebraskaCryptoException 
 	 */
 	private void readCertificateChain() throws NebraskaCryptoException {
-		X509Certificate cert = senderCert;
-		
-		String subject = cert.getSubjectDN().getName();
-		String issuer = cert.getIssuerDN().getName();
-		while(!subject.equals(issuer))
-		{
-			String alias = issuer;
-			cert = nebraska.getCertificate(alias);
-		}
-		// FIXME Auto-generated method stub
+		certificateChain = nebraska.getSenderCertChain();
 	}
 
 	/**

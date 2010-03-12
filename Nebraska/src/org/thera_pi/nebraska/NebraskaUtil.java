@@ -70,6 +70,15 @@ public class NebraskaUtil {
 		return input.trim().replaceFirst("^[iI][kK]", "").trim();
 	}
 	
+	public static String getCertAlias(String input) {
+		return "IK" + normalizeIK(input);
+	}
+	
+	public static String getKeyAlias(String input) {
+		// return "key.IK" + normalizeIK(input);
+		return "IK" + normalizeIK(input);
+	}
+	
 	static Date certificateStart(Date date) {
 		return certificateStartOrEnd(date, false);
 	}
