@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import org.thera_pi.nebraska.Nebraska;
 import org.thera_pi.nebraska.NebraskaCryptoException;
+import org.thera_pi.nebraska.NebraskaDecryptor;
 import org.thera_pi.nebraska.NebraskaEncryptor;
 import org.thera_pi.nebraska.NebraskaFileException;
 
@@ -36,6 +37,14 @@ public class TestMain {
 			encryptor.encryptToSelf(inStream, outStream);
 			inStream.close();
 			outStream.close();
+			
+			inStream = new FileInputStream(basedir + "encrypted.dat");
+			outStream = new FileOutputStream(basedir + "decrypted.dat");
+			NebraskaDecryptor decryptor = nebraska.getDecryptor();
+			decryptor.decrypt(inStream, outStream);
+			inStream.close();
+			outStream.close();
+			
 		} catch (NebraskaCryptoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
