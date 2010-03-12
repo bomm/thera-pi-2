@@ -101,4 +101,24 @@ public class NebraskaPrincipal {
 		}
 	}
 	
+	public boolean equals(Object o)
+	{
+		if(o == null) return false;
+		if(!(o instanceof NebraskaPrincipal)) return false;
+
+		NebraskaPrincipal other = (NebraskaPrincipal) o;
+		if((this.country == null) != (other.country == null)) return false;
+		if((this.organization == null) != (other.organization == null)) return false;
+		if((this.institutionID == null) != (other.institutionID == null)) return false;
+		if((this.institutionName == null) != (other.institutionName == null)) return false;
+		if((this.personName == null) != (other.personName == null)) return false;
+		
+		if(this.country != null && !this.country.equals(other.country)) return false;
+		if(this.organization != null && !this.organization.equals(other.organization)) return false;
+		if(this.institutionID != null && !this.institutionID.equals(other.institutionID)) return false;
+		if(this.institutionName != null && !this.institutionName.equals(other.institutionName)) return false;
+		if(this.personName != null && !this.personName.equals(other.personName)) return false;
+
+		return true;
+	}
 }

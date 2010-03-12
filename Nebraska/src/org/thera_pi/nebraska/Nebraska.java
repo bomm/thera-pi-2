@@ -723,4 +723,9 @@ public class Nebraska {
 	{
 		return new NebraskaEncryptor(receiverIK, this);
 	}
+	
+	public NebraskaDecryptor getDecryptor() throws NebraskaCryptoException
+	{
+		return new NebraskaDecryptor(this);
+	}
 }

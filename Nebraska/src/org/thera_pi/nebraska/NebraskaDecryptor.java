@@ -4,20 +4,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.cert.CertStore;
+import java.security.cert.CertStoreException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.bouncycastle.cms.CMSEnvelopedDataParser;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.RecipientInformationStore;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 
 public class NebraskaDecryptor {
 
@@ -33,7 +39,7 @@ public class NebraskaDecryptor {
 	 * @param nebraska reference to Nebraska object that contains the key store
 	 * @throws NebraskaCryptoException 
 	 */
-	protected NebraskaDecryptor(Nebraska nebraska) throws NebraskaCryptoException {
+	NebraskaDecryptor(Nebraska nebraska) throws NebraskaCryptoException {
 		this.nebraska = nebraska;
 		certificate = nebraska.getSenderCertificate();
 		privateKey = nebraska.getSenderKey();
@@ -61,15 +67,17 @@ public class NebraskaDecryptor {
 		RecipientInformationStore  recipients = parser.getRecipientInfos();
 	      Collection<?>  c = recipients.getRecipients();
 	      Iterator<?> it = c.iterator();
-	      
+
+	      NebraskaPrincipal myPrincipal = new NebraskaPrincipal(this.issuer);
 	      while (it.hasNext())
 	      {
 	          RecipientInformation   recipient = (RecipientInformation)it.next();
 	          RecipientId rid = recipient.getRID();
 	          String issuer = rid.getIssuer().getName();
 	          BigInteger serial = rid.getSerialNumber();
-	          
-	          if(issuer.equals(this.issuer) && serial.equals(this.serial))
+
+	          NebraskaPrincipal receiverPrincipal = new NebraskaPrincipal(issuer);
+	          if(myPrincipal.equals(receiverPrincipal) && this.serial.equals(serial))
 	          {
 		          CMSTypedStream recData;
 		          try {
@@ -80,15 +88,89 @@ public class NebraskaDecryptor {
 		          } catch (CMSException e) {
 		        	  throw new NebraskaCryptoException(e);
 		          }
-		          processDataStream(recData.getContentStream());
+		          processSignedData(recData.getContentStream(), outStream);
 		          break;
 	          }
 	      }
 	}
 
-	private void processDataStream(InputStream contentStream) {
+	private void processSignedData(InputStream signedContentStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
 		// TODO Auto-generated method stub
+		CMSSignedDataParser parser;
+		try {
+			parser = new CMSSignedDataParser(signedContentStream);
+		} catch (CMSException e) {
+			throw new NebraskaCryptoException(e);
+		}
+
+		CMSTypedStream signedContent = parser.getSignedContent();
+		System.out.println(signedContent.getContentType());
 		
+		InputStream contentStream = signedContent.getContentStream();
+		
+		try {
+			byte[] buffer = new byte[1024];
+			int len;
+			while((len = contentStream.read(buffer)) > 0)
+			{
+				outStream.write(buffer, 0, len);
+			}
+			outStream.flush();
+		
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
+
+		try {
+			signedContent.drain();
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
+
+		CertStore certs = null;
+		SignerInformationStore signers = null;
+		try {
+			certs = parser.getCertificatesAndCRLs(NebraskaConstants.CERTSTORE_TYPE, NebraskaConstants.SECURITY_PROVIDER);
+			signers = parser.getSignerInfos();
+		} catch (NoSuchAlgorithmException e) {
+      	  throw new NebraskaCryptoException(e);
+		} catch (NoSuchProviderException e) {
+      	  throw new NebraskaCryptoException(e);
+		} catch (CMSException e) {
+      	  throw new NebraskaCryptoException(e);
+		}
+
+		Collection<?> c = signers.getSigners();
+		Iterator<?> it = c.iterator();
+
+		while (it.hasNext())
+		{
+			SignerInformation signer = (SignerInformation)it.next();
+			Collection<?> certCollection;
+			try {
+				certCollection = certs.getCertificates(signer.getSID());
+			} catch (CertStoreException e) {
+	      	  throw new NebraskaCryptoException(e);
+			}
+
+			Iterator<?> certIt = certCollection.iterator();
+			X509Certificate cert = (X509Certificate)certIt.next();
+
+			try {
+				System.out.println("verify returns: " + signer.verify(cert, NebraskaConstants.SECURITY_PROVIDER));
+			} catch (CertificateExpiredException e) {
+		      	  throw new NebraskaCryptoException(e);
+			} catch (CertificateNotYetValidException e) {
+		      	  throw new NebraskaCryptoException(e);
+			} catch (NoSuchAlgorithmException e) {
+		      	  throw new NebraskaCryptoException(e);
+			} catch (NoSuchProviderException e) {
+		      	  throw new NebraskaCryptoException(e);
+			} catch (CMSException e) {
+		      	  throw new NebraskaCryptoException(e);
+			}
+		}
+
 	}
 
 }
