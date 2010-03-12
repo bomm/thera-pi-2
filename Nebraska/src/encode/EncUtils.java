@@ -67,14 +67,14 @@ public class EncUtils {
 		 sgen.addCertificatesAndCRLs(certsAndCRLs);
 		 CMSProcessable dataToSign = new CMSProcessableFile(new File(inFile));
 		 CMSSignedData signed = sgen.generate(dataToSign,true,"BC");
-		 FileStatics.BytesToFile(signed.getEncoded(),new File(inFile+".sign") );
+		 FileStatics.BytesToFile(signed.getEncoded(),new File(inFile+".signall") );
 		 CMSProcessable process = signed.getSignedContent();
 		 ByteArrayOutputStream out = new ByteArrayOutputStream();
 		 process.write(out);
 		 out.flush();
 		 out.close();
 		 FileStatics.BytesToFile(out.toByteArray(),new File(inFile+".signonly") );
-		 FileStatics.BytesToFile(signed.getEncoded(),new File(inFile+".signall") );
+
 		 /******************Enveloped Data*************************/
 		 CMSEnvelopedDataGenerator gen = new CMSEnvelopedDataGenerator();
 		 gen.addKeyTransRecipient(certRecipient); //IKK
