@@ -71,12 +71,11 @@ public class NebraskaUtil {
 	}
 	
 	public static String getCertAlias(String input) {
-		return "IK" + normalizeIK(input);
+		return input.trim();
 	}
 	
 	public static String getKeyAlias(String input) {
-		// return "key.IK" + normalizeIK(input);
-		return "IK" + normalizeIK(input);
+		return input.trim();
 	}
 	
 	static Date certificateStart(Date date) {
