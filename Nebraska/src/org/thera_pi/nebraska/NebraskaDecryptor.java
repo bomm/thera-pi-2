@@ -94,7 +94,7 @@ public class NebraskaDecryptor {
 	      }
 	}
 
-	private void processSignedData(InputStream signedContentStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
+	public void processSignedData(InputStream signedContentStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
 		// TODO Auto-generated method stub
 		CMSSignedDataParser parser;
 		try {
@@ -121,17 +121,17 @@ public class NebraskaDecryptor {
 			throw new NebraskaFileException(e);
 		}
 
-		try {
-			signedContent.drain();
-		} catch (IOException e) {
-			throw new NebraskaFileException(e);
-		}
+//		try {
+//			signedContent.drain();
+//		} catch (IOException e) {
+//			throw new NebraskaFileException(e);
+//		}
 
 		CertStore certs = null;
-		SignerInformationStore signers = null;
+		SignerInformationStore signerInformation = null;
 		try {
 			certs = parser.getCertificatesAndCRLs(NebraskaConstants.CERTSTORE_TYPE, NebraskaConstants.SECURITY_PROVIDER);
-			signers = parser.getSignerInfos();
+			signerInformation = parser.getSignerInfos();
 		} catch (NoSuchAlgorithmException e) {
       	  throw new NebraskaCryptoException(e);
 		} catch (NoSuchProviderException e) {
@@ -140,12 +140,12 @@ public class NebraskaDecryptor {
       	  throw new NebraskaCryptoException(e);
 		}
 
-		Collection<?> c = signers.getSigners();
-		Iterator<?> it = c.iterator();
+		Collection<?> signerColl = signerInformation.getSigners();
+		Iterator<?> signerIterator = signerColl.iterator();
 
-		while (it.hasNext())
+		while (signerIterator.hasNext())
 		{
-			SignerInformation signer = (SignerInformation)it.next();
+			SignerInformation signer = (SignerInformation)signerIterator.next();
 			Collection<?> certCollection;
 			try {
 				certCollection = certs.getCertificates(signer.getSID());
@@ -153,11 +153,15 @@ public class NebraskaDecryptor {
 	      	  throw new NebraskaCryptoException(e);
 			}
 
-			Iterator<?> certIt = certCollection.iterator();
-			X509Certificate cert = (X509Certificate)certIt.next();
+			Iterator<?> certIterator = certCollection.iterator();
+			X509Certificate cert = (X509Certificate)certIterator.next();
 
+			String subject = cert.getSubjectX500Principal().getName();
+			String issuer = cert.getIssuerX500Principal().getName();
+
+			boolean verified;
 			try {
-				System.out.println("verify returns: " + signer.verify(cert, NebraskaConstants.SECURITY_PROVIDER));
+				verified = signer.verify(cert, NebraskaConstants.SECURITY_PROVIDER);
 			} catch (CertificateExpiredException e) {
 		      	  throw new NebraskaCryptoException(e);
 			} catch (CertificateNotYetValidException e) {
@@ -169,6 +173,7 @@ public class NebraskaDecryptor {
 			} catch (CMSException e) {
 		      	  throw new NebraskaCryptoException(e);
 			}
+			System.out.println("verify returns: " + verified);
 		}
 
 	}

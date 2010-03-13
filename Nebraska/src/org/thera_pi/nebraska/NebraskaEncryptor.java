@@ -1,6 +1,8 @@
 package org.thera_pi.nebraska;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -89,7 +91,7 @@ public class NebraskaEncryptor {
 	public void encrypt(InputStream inStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
 		encryptToReceiverOrSelf(inStream, outStream, false);
 	}
-	
+
 	/**
 	 * Encrypt data for the receiver specified in constructor and for sender.
 	 * 
@@ -160,13 +162,27 @@ public class NebraskaEncryptor {
 		}
 
 		// DER encoded output
-		byte[] encodedSignedData;
+		byte[] encodedSignedData = null;
 		try {
 			encodedSignedData = signedData.getEncoded();
 		} catch (IOException e) {
 			throw new NebraskaFileException(e);
 		}
 
+		// FIXME remove debug output
+		FileOutputStream debugOutput;
+		try {
+			debugOutput = new FileOutputStream("/home/bodo/thera-pi/test/signed.dat");
+			debugOutput.write(encodedSignedData);
+			debugOutput.close();
+		} catch (FileNotFoundException e) {
+			throw new NebraskaFileException(e);
+		}
+		catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
+		
+		
 		// second processing step: encrypt data
 		
 		CMSEnvelopedDataGenerator envelopedGenerator = new CMSEnvelopedDataGenerator();

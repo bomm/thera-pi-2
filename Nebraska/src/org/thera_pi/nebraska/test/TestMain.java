@@ -33,7 +33,7 @@ public class TestMain {
 			nebraska.importReceiverCertificates("annahme-pkcs.key");
 			FileInputStream inStream = new FileInputStream(basedir + "plain.txt");
 			FileOutputStream outStream = new FileOutputStream(basedir + "encrypted.dat");
-			NebraskaEncryptor encryptor = nebraska.getEncryptor("102109128");
+			NebraskaEncryptor encryptor = nebraska.getEncryptor("109900019");
 			encryptor.encryptToSelf(inStream, outStream);
 			inStream.close();
 			outStream.close();
@@ -41,7 +41,8 @@ public class TestMain {
 			inStream = new FileInputStream(basedir + "encrypted.dat");
 			outStream = new FileOutputStream(basedir + "decrypted.dat");
 			NebraskaDecryptor decryptor = nebraska.getDecryptor();
-			decryptor.decrypt(inStream, outStream);
+			decryptor.processSignedData(new FileInputStream(basedir + "signed.dat"), outStream);
+//			decryptor.decrypt(inStream, outStream);
 			inStream.close();
 			outStream.close();
 			
