@@ -26,7 +26,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/sandbox.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/unoil.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/mail.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/ag.ion.noa_2.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/javaxpcom.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/jna-3.0.7.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/forms-1.2.1.jar"/>
@@ -37,5 +36,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/junit-4.5.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/looks-2.3.0.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/swingx-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/RTAJars/openofficeorg/ag.ion.noa_2.2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -84,7 +84,7 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -97,6 +97,7 @@ import kvKarte.KVKWrapper;
 import menus.TerminMenu;
 import oOorgTools.OOTools;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXRootPane;
@@ -1747,7 +1748,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     { 
 
     	final String OPEN_OFFICE_ORG_PATH = SystemConfig.OpenOfficePfad;
-    	//final String OPEN_OFFICE_ORG_PATH = "C:\\Programme\\OpenOffice.org 2.3";
+
         try
         {
             String path = OPEN_OFFICE_ORG_PATH;
@@ -1760,7 +1761,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             //officeapplication.getDesktopService().activateTerminationPrevention(); 
             System.out.println("Open-Office wurde gestartet");
             System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
-			//OOTools.holeClipBoard();
             new SwingWorker<Void,Void>(){
 
 				@Override
@@ -1768,21 +1768,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					// TODO Auto-generated method stub
             		System.out.println("OpenOffice -> Aufruf");
             		Reha.thisClass.Rehaprogress.setIndeterminate(false);
-            		try{
-            			
-            		if (Reha.officeapplication.getDocumentService().getCurrentDocuments()[0] != null){
-            			//Reha.officeapplication.getDocumentService().getCurrentDocuments()[0].close();
-            			//System.out.println("Open Office-Fenster geschlossen");
-            		}
-            		}catch (DocumentException e) {
-    					// TODO Auto-generated catch block
-    					e.printStackTrace();
-    				}
-            		catch (OfficeApplicationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
 					return null;
 				}
             	

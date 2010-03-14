@@ -8,7 +8,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
+
+
 
 import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;

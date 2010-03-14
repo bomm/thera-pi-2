@@ -64,8 +64,14 @@ class AkutListe{
 		if( (lang = vec.size()) > 0){
 			IDocumentService documentService = null;
 			try {
+				if(!Reha.officeapplication.isActive()){
+					Reha.starteOfficeApplication();
+				}
 				documentService = Reha.officeapplication.getDocumentService();
 			} catch (OfficeApplicationException e) {
+				if(documentService==null){
+					System.out.println("Die Java-Access-Bridge ist zusammengebrochen...");
+				}
 				e.printStackTrace();
 			}
 			IDocument document = null;

@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -16,11 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
-import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -29,33 +23,16 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
-import oOorgTools.OOTools;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import sqlTools.ExUndHop;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
-import systemTools.LeistungTools;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -260,9 +237,11 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		// TODO Auto-generated method stub
 		
 		if(arg0.getActionCommand().equals("uebernahme")){
+			System.out.println("In Übernahme");
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
+					System.out.println("In SwingWorker");
 					if(rbut[0].isSelected()){
 						gutachtenArt.setText("ebericht");	
 					}else{

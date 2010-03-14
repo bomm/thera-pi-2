@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
 
@@ -91,6 +93,7 @@ public class OOTools{
 		System.out.println("Starte Datei -> "+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
+
 		} catch (OfficeApplicationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -240,8 +243,13 @@ public class OOTools{
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
-		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-		textDocument.getFrame().setFocus();
+		final ITextDocument xtextDocument = textDocument;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				xtextDocument.getFrame().setFocus();
+			}
+		});
 	}
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
@@ -332,6 +340,10 @@ public class OOTools{
 	public static ITextDocument starteLeerenWriter(){
 		ITextDocument textDocument = null;
 		try {
+			if(!Reha.officeapplication.isActive()){
+				Reha.officeapplication.activate();
+				//Reha.starteOfficeApplication();
+			}
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
 			textDocument = (ITextDocument)document;
@@ -343,7 +355,6 @@ public class OOTools{
 			exception.printStackTrace();
 		} 
 		catch (NOAException exception) {
-			Reha.starteOfficeApplication();
 			exception.printStackTrace();
 		}
 		return textDocument;
@@ -351,6 +362,10 @@ public class OOTools{
 		
 	public ITextDocument starteWriterMitDatei(String url){
 		try {
+			if(!Reha.officeapplication.isActive()){
+				Reha.officeapplication.activate();
+				//Reha.starteOfficeApplication();
+			}
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			DocumentDescriptor docdescript = new DocumentDescriptor();
 			docdescript.setURL(url);

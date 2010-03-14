@@ -14,7 +14,7 @@ Class-Path: RTAJars/adsjdbc.jar
  RTAJars/swing-worker.jar 
  RTAJars/swingx-1.6.jar 
  RTAJars/openofficeorg/unoloader.jar 
- RTAJars/openofficeorg/ag.ion.noa_2.2.1.jar 
+ RTAJars/openofficeorg/ag.ion.noa_2.2.2.jar 
  RTAJars/openofficeorg/bootstrapconnector.jar 
  RTAJars/openofficeorg/java_uno.jar 
  RTAJars/openofficeorg/java_uno_accessbridge.jar 

@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
+
+import org.jdesktop.swingworker.SwingWorker;
+
 
 import oOorgTools.OOTools;
 

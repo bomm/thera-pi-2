@@ -1,17 +1,13 @@
 package patientenFenster;
 
 import hauptFenster.ContainerConfig;
-
-import hauptFenster.SuchenDialog;
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
+import hauptFenster.SuchenDialog;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -21,20 +17,14 @@ import java.awt.event.MouseListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
 
-import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.jdesktop.swingx.border.DropShadowBorder;
 
 import rehaContainer.RehaTP;
 import systemEinstellungen.SystemConfig;
@@ -154,7 +144,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 		eingaben[3].setPreferredSize(new Dimension(50,20));
 		builder.add(eingaben[3],cc.xyw(4, 6,5));
 
-		builder.add(new JXLabel("Straße"),cc.xy(2, 8));
+		builder.add(new JXLabel("Straï¿½e"),cc.xy(2, 8));
 		eingaben[4] = new JRtaTextField("GROSS",false);
 		eingaben[4].setName(name+".Strasse");		
 		eingaben[4].setBackground(Color.WHITE);		
@@ -226,7 +216,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 			if(setOben == 0){
 				ContainerConfig conf = new ContainerConfig();
 				conf.addContainer("personen16.gif",evt.getDetails()[0],this.getParent().getParent().getParent().getParent().getParent(),null);
-				System.out.println("Name für Container verkleinern = "+ss);
+				System.out.println("Name fï¿½r Container verkleinern = "+ss);
 				//	rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			}	
 		}	
@@ -316,11 +306,11 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 		    }
 			@Override
 			public void patStammEventOccurred(PatStammEvent evt) {
-				//System.out.println("Event-Empfangen für :"+((Component) evt.getSource()).getName());
+				//System.out.println("Event-Empfangen fï¿½r :"+((Component) evt.getSource()).getName());
 				// TODO Auto-generated method stub
 				if(evt.getDetails()[2].contains(this.getName())){
 					if(evt.getPatStammEvent().equals("PatSuchen")){
-						System.out.println("Event-Empfangen für :"+evt);
+						System.out.println("Event-Empfangen fï¿½r :"+evt);
 						System.out.println("PatIntern =  :"+evt.getDetails()[1]);
 						patThread = new PatientSuchen(evt.getDetails()[1],this);
 						patThread.run();

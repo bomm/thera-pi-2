@@ -57,7 +57,7 @@ import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.DefaultStyledDocument;
@@ -70,6 +70,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -488,7 +489,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
         	g2d.fillRect(x, y, sizex, sizey);
         	g2d.setColor(Color.BLACK);
         	g2d.drawString(""+sizex+"-"+sizey, x+(sizex/2), y+(sizey/2));
-        	System.out.println("Location = "+x+"-"+y+" Größen = "+sizex+"-"+sizey);
+        	System.out.println("Location = "+x+"-"+y+" Grï¿½ï¿½en = "+sizex+"-"+sizey);
     	}
   	
 

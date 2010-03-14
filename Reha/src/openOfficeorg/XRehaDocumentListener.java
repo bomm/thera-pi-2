@@ -8,10 +8,10 @@ import ag.ion.bion.officelayer.event.IDocumentListener;
 import ag.ion.bion.officelayer.event.IEvent;
 import ag.ion.bion.officelayer.event.IEventListener;
 
-public class RehaDocumentListener extends DocumentAdapter implements IDocumentListener{
+public class XRehaDocumentListener extends DocumentAdapter implements IDocumentListener{
 	private IOfficeApplication officeAplication = null;
 	
-	public RehaDocumentListener(IOfficeApplication officeAplication) {
+	public XRehaDocumentListener(IOfficeApplication officeAplication) {
 		this.officeAplication = officeAplication;
 	}
 	@Override

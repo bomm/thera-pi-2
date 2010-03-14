@@ -60,7 +60,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -88,6 +88,7 @@ import jxTableTools.MyTableComboBox;
 import jxTableTools.MyTableStringDatePicker;
 
 import org.jdesktop.swinghelper.layer.JXGlassPane;
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXPanel;

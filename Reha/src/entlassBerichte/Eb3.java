@@ -23,10 +23,11 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
 
 import oOorgTools.OOTools;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
@@ -140,6 +141,9 @@ public class Eb3 implements RehaEventListener  {
 			        		// wenn noch kein frame erstellt wurde und der outbuffe leer ist;
 			        	
 			        			System.out.println("Neuanlage Bericht -> constructNewDocument");
+			        			if(!Reha.officeapplication.isActive()){
+			        				Reha.starteOfficeApplication();
+			        			}
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
 					        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
 					        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
@@ -153,6 +157,10 @@ public class Eb3 implements RehaEventListener  {
 										throws Exception {
 									InputStream ins = null;
 									try{
+										if(!Reha.officeapplication.isActive()){
+											Reha.starteOfficeApplication();
+										}
+
 					        			System.out.println("starte Dokument mit temp. Stream-Daten");
 					        			ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 					        			if(ins.available() > 0){
@@ -173,13 +181,16 @@ public class Eb3 implements RehaEventListener  {
 					        				ins.close();
 					        			}
 									}catch(Exception ex2){
+										inseitenaufbau = false;
 										ex2.printStackTrace();
+										return null;
 									}
 									
 				        			new SwingWorker<Void,Void>(){
 										@Override
 										protected Void doInBackground()
 												throws Exception {
+											try{
 											String url = tempPfad+"EBfliesstext.pdf";
 						        			outtemp = new ByteArrayOutputStream();
 						    				eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
@@ -188,7 +199,11 @@ public class Eb3 implements RehaEventListener  {
 						    				outtemp.close();
 						    				bytebufferok = true;
 						    				pdfok = true;
+											}catch(Exception ex){
+												inseitenaufbau = false;
+											}
 						    				return null;
+
 										}
 				        			}.execute();
 									XController xController = eltern.document.getXTextDocument().getCurrentController();

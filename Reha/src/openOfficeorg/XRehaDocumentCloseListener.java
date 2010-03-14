@@ -33,7 +33,7 @@ package openOfficeorg;
  ****************************************************************************/
 
 /*
- * Last changes made by $Author: steinhilber $, $Date: 2009-05-20 10:02:39 $
+ * Last changes made by $Author: steinhilber $, $Date: 2010-03-14 15:38:35 $
  */
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -47,11 +47,11 @@ import ag.ion.bion.officelayer.event.IEvent;
  * are discussed in Snippet04.
  * This listener is used in all Snippets starting from Snippet05.
  * 
- * @author Sebastian Rösgen
+ * @author Sebastian Rï¿½sgen
  * @version $Revision: 1.1 $
  * @date 17.03.2006
  */
-public class RehaDocumentCloseListener implements ICloseListener {
+public class XRehaDocumentCloseListener implements ICloseListener {
 
 	private IOfficeApplication officeAplication = null;
 	
@@ -59,10 +59,10 @@ public class RehaDocumentCloseListener implements ICloseListener {
 	/**
 	 * Constructs a new SnippetDocumentCloseListener
 	 * 
-	 * @author Sebastian Rösgen
+	 * @author Sebastian Rï¿½sgen
 	 * @date 17.03.2006
 	 */
-	public RehaDocumentCloseListener(IOfficeApplication officeAplication) {
+	public XRehaDocumentCloseListener(IOfficeApplication officeAplication) {
 		this.officeAplication = officeAplication;
 	}
   //----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ public class RehaDocumentCloseListener implements ICloseListener {
    * @param closeEvent close event
    * @param getsOwnership information about the ownership
    * 
-   * @author Sebastian Rösgen
+   * @author Sebastian Rï¿½sgen
 	 * @date 17.03.2006
    */ 
 	public void queryClosing(ICloseEvent closeEvent, boolean getsOwnership) {
@@ -85,7 +85,7 @@ public class RehaDocumentCloseListener implements ICloseListener {
    * 
    * @param closeEvent close event
    * 
-   * @author Sebastian Rösgen
+   * @author Sebastian Rï¿½sgen
 	 * @date 17.03.2006
    */
 
@@ -109,7 +109,7 @@ public class RehaDocumentCloseListener implements ICloseListener {
    * 
    * @param event source event
    * 
-   * @author Sebastian Rösgen
+   * @author Sebastian Rï¿½sgen
 	 * @date 17.03.2006
    */
 	public void disposing(IEvent event) {

@@ -28,7 +28,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -37,6 +37,7 @@ import javax.swing.event.TableModelListener;
 
 import oOorgTools.OOTools;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
@@ -831,18 +832,35 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		if(this.berichtart.equals("entlassbericht")){
 			Component com;
+			try{
 			com = ebt.getTab1().getSeite();
 			ListenerTools.removeListeners(com);
 			com = null;
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			try{
 			com = ebt.getTab2().getSeite();
 			ListenerTools.removeListeners(com);
 			com = null;
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			try{
 			com = ebt.getTab3().getSeite();
 			ListenerTools.removeListeners(com);
 			com = null;
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			try{
 			com = ebt.getTab4().getSeite();
 			ListenerTools.removeListeners(com);
 			com = null;
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
 			ebt.seite1.stitelalt = null;
 			ebt.seite1.stitelneu = null;
 			ebt.seite1.eltern = null;

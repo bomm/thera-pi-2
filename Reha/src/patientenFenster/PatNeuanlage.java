@@ -42,7 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
 import javax.swing.UIManager;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
@@ -52,6 +52,7 @@ import krankenKasse.KassenFormulare;
 import kvKarte.KVKWrapper;
 import oOorgTools.OOTools;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -293,7 +294,8 @@ private KVKWrapper kvw;
 		UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
 		UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
 	
-		//validate();
+		validate();
+		repaint();
 		
 	}
 	
