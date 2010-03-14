@@ -363,7 +363,7 @@ private KVKWrapper kvw;
 			protected Void doInBackground() throws Exception {
 
 		 		List<String> nichtlesen = Arrays.asList(new String[] {"anamnese","pat_text"});
-				Vector felder = SqlInfo.holeSatz("pat5", "*", "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'",nichtlesen);
+				Vector<?> felder = SqlInfo.holeSatz("pat5", "*", "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'",nichtlesen);
 				int gros = felder.size();
 				int anzahlf = fedits.length;
 				int anzahlc = fchecks.length;
