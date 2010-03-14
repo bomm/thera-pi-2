@@ -116,7 +116,6 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 
 				@Override
 				protected Void doInBackground() throws Exception {
-					holeAktArzt(xarzt);
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
 					 		setzeFocus();
