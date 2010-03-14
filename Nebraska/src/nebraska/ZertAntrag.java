@@ -36,7 +36,6 @@ import javax.swing.event.ListSelectionListener;
 import org.jdesktop.swingx.JXPanel;
 
 import pdfDrucker.PDFDrucker;
-import pdfDrucker.PDFPrintPage2;
 
 import utils.DatFunk;
 import utils.INIFile;
