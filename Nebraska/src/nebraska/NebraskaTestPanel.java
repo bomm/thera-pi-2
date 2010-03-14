@@ -1173,7 +1173,7 @@ public class NebraskaTestPanel  extends JPanel implements ActionListener{
 
 		
 		//boolean geklappt = BCStatics2.installReply(keyStore, trustStore, "196205", "C=DE,O=Datenaustausch im Gesundheits- und Sozialwesen", in, true, true, kp.getPrivate());
-		boolean geklappt = BCStatics3.installReply(keyStore, trustStore, "196205", "IK540840108", in, true, true, kp.getPrivate());
+		boolean geklappt = BCStatics2.installReply(keyStore, trustStore, "196205", "IK540840108", in, true, true, kp.getPrivate());
 		System.out.println("Reply wurde korrekt eingelesen und die Kette aufgebaut -> "+geklappt);
 		/**********************************/
 		ByteArrayOutputStream bOut1 = new ByteArrayOutputStream();
