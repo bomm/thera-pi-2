@@ -19,22 +19,40 @@ import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.cert.CertPath;
+import java.security.cert.CertPathBuilder;
 import java.security.cert.CertStore;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CollectionCertStoreParameters;
+import java.security.cert.PKIXBuilderParameters;
+import java.security.cert.PKIXCertPathBuilderResult;
+import java.security.cert.TrustAnchor;
+import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -56,19 +74,23 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
+import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
+import sun.rmi.runtime.Log;
 import utils.DatFunk;
 import utils.NUtils;
 
 public class BCStatics2 {
-	
+	private static List<CertificateEventListener> listeners = new CopyOnWriteArrayList<CertificateEventListener>();
+
 	public static void createKeyStore(String name,String passw,boolean isroot,Vector<String> praxvec,Vector<String>cavec,KeyPair kp) throws Exception{
 		providerTest();
 		KeyStore store;
@@ -408,7 +430,7 @@ public class BCStatics2 {
 						store.deleteEntry(aliases);
 						System.out.println("Store Entry mit alias "+aliases+" wurde gel�scht!");
 					}else{
-						
+						store.deleteEntry(aliases);
 					}
 				}
 			}	
@@ -454,14 +476,72 @@ public class BCStatics2 {
     	CertStore certs = sd.getCertificatesAndCRLs ("Collection", "BC");
 
     	Collection<?> certColl = certs.getCertificates(null);
+    	Vector<X509Certificate> certVec = new Vector<X509Certificate>();
    	    for (Iterator<?> certIt = certColl.iterator(); certIt.hasNext(); ) {
    	    	X509Certificate cert = (X509Certificate) certIt.next();
+   	    	certVec.add(cert);
    	    	X500Principal subject = cert.getSubjectX500Principal();
    	    	System.out.println ("Subject: " + subject);
    	    	X500Principal issuer = cert.getIssuerX500Principal();
    	    	System.out.println ("Issuer: " + issuer);
    			BCStatics2.importCertIntoStore(cert,keystoreDir + File.separator +keystoreFile,keystorePassword,"");
     	}
+			//doCertPath(certVec,keystoreDir,keystoreFile,keystorePassword);
+	}
+	private static void doCertPath(Vector<X509Certificate> certVec,String keystoreDir, String keystoreFile, String keystorePassword) throws Exception{
+		X509Certificate[] chain = new X509Certificate[certVec.size()];
+		
+			for(int i = 0; i < certVec.size();i++){
+				chain[i] = certVec.get(i);
+		}
+		CertificateFactory fact = CertificateFactory.getInstance("X509","BC");
+		CertPath certPath = fact.generateCertPath(Arrays.asList(chain));
+		byte[] encoded = certPath.getEncoded();
+		//System.out.println(new String(encoded));
+		//System.out.println(certPath);
+		List<? extends Certificate> chain2 = certPath.getCertificates();
+		KeyStore store = KeyStore.getInstance("BCPKCS12","BC");
+		store.load(null,null);
+		
+		for(int i = 0; i < chain2.size();i++){
+			String alias = BCStatics3.extrahiereAlias(((X509Certificate)chain2.get(i)).getSubjectDN().toString()).trim();
+			System.out.println("Alias = "+alias);
+			//BCStatics2.importCertIntoStore((X509Certificate) chain2.get(i),keystoreDir + File.separator +keystoreFile,keystorePassword,"");
+			store.setCertificateEntry( alias, (X509Certificate)chain2.get(i));
+		}
+		X509Certificate[] chain3 = {chain[1],chain[0],chain[2]};
+		CollectionCertStoreParameters params = new CollectionCertStoreParameters(Arrays.asList(chain3));
+		CertStore cstore = CertStore.getInstance("Collection",params,"BC");
+		
+		CertPathBuilder builder = CertPathBuilder.getInstance("PKIX","BC");
+		X509CertSelector endConstraints = new X509CertSelector();
+		endConstraints.setSerialNumber(chain3[2].getSerialNumber());
+		endConstraints.setIssuer(chain3[2].getIssuerX500Principal().getEncoded());
+		
+		PKIXBuilderParameters buildParms = new PKIXBuilderParameters(
+				Collections.singleton(new TrustAnchor((X509Certificate) chain3[0],null)),endConstraints);
+
+		buildParms.addCertStore(cstore);
+		
+		PKIXCertPathBuilderResult result = 
+			(PKIXCertPathBuilderResult) builder.build(buildParms);
+		
+		CertPath path = result.getCertPath();
+		Iterator it = path.getCertificates().iterator();
+		while(it.hasNext()){
+			System.out.println( ((X509Certificate)it.next()).getSubjectX500Principal() );
+		}
+		System.out.println(result.getTrustAnchor().getTrustedCert().getSubjectX500Principal());
+		/*
+		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+		store.store(bOut,"196205".toCharArray());
+		FileStatics.BytesToFile(bOut.toByteArray(),new File(Constants.KEYSTORE_DIR + File.separator +"teststore"+".p12"));
+		bOut.close();
+		*/
+		//KeyStore keyStore = BCStatics2.loadStore(Constants.KEYSTORE_DIR+File.separator+keystoreFile, keystorePassword);
+		
+		//keyStore.
+		//keyStore.
 	}
 
 	/*********************************************/
@@ -656,43 +736,79 @@ public class BCStatics2 {
 		 store.load(in,pw.toCharArray());
 		 if(store.containsAlias(alias)){
 			 X509Certificate cert = (X509Certificate)store.getCertificate(alias);
-			 cert.getPublicKey();
+			 PublicKey pubKey = cert.getPublicKey();
+				ASN1InputStream aIn = new ASN1InputStream(cert.getPublicKey().getEncoded());
+				SubjectPublicKeyInfo sub = SubjectPublicKeyInfo.getInstance(aIn.readObject());
 
-			 /*java.security.interfaces.RSAPublicKey pub =
-				(java.security.interfaces.RSAPublicKey)cert.getPublicKey();
-				BigInteger pue_bi = pub.getPublicExponent();
-*/
-			 	String sha = getSHA1fromByte(cert.getPublicKey().getEncoded());
+			 	String sha = getSHA1fromByte(sub.getPublicKeyData().getBytes());
 			 	System.out.println(sha);
-			 	byte[] newbyte = new byte[20];
+			 	System.out.println(datei);
+				byte[] input = FileStatics.BytesFromFile(new File(datei));
+				byte[] out = new byte[input.length];
+				System.out.println("\nLänge des Original-File-Bytestreams="+input.length);
+				System.out.println("****************Beginn Original-File******************************************");
+				System.out.println(new String(input));
+				System.out.println("****************Ende Original-File*********************************************");
+
+
+			 	byte[] keyBytes = new byte[20];
 			 	for(int i = 0; i < 40; i+=2){
-			 		newbyte[i/2] = sha.substring(i,i+2).getBytes()[0];
+			 		keyBytes[i/2] = sha.substring(i,i+2).getBytes()[0];
 			 	}
-			 	SecretKeySpec key = new SecretKeySpec(newbyte,"DES-EDE3-CBC");
-			 	IvParameterSpec ivSpec = new IvParameterSpec(new byte[8]);
+			
+			 	/**********************************Encrypt***************************************/
+			 	byte[] msgNumber = new byte[] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 			 	
-			 	
-			 	//Cipher	cipher = Cipher.getInstance("DESEDE/CBC/NoPadding", "BC");
-			 	Cipher	cipher = Cipher.getInstance("DESEDE/CBC/TBCPadding", "BC");
-				System.out.println(datei);
-				byte[] sigBytes = FileStatics.BytesFromFile(new File(datei));
-				byte[] out = new byte[sigBytes.length];
-				System.out.println("L�nge des Bytestreams="+sigBytes.length);
- 
-				cipher.init(Cipher.ENCRYPT_MODE, key,ivSpec); 
-				//cipher.init(Cipher.ENCRYPT_MODE,  cert.getPublicKey());
-				 int offset = 0;
-				 byte[] result = cipher.update(sigBytes);
+			 	IvParameterSpec zeroIV = new IvParameterSpec(new byte[8]);
+
+			 	SecretKeySpec key = new SecretKeySpec(keyBytes,Constants.SECRET_KEY_DES_DER3_CBC /*"DES-EDE3-CBC"*/);
+
+			 	Cipher	cipher = Cipher.getInstance(Constants.CIPHER_AND_PADDING /*"DESEDE/CBC/TBCPadding"*/, "BC");
+
+				cipher.init(Cipher.ENCRYPT_MODE, key,zeroIV); 
 				
-				 
-				 cipher.doFinal();
-				 FileStatics.BytesToFile(out,new File(datei+".cipher"));
-				 System.out.println( new String(result));				 
-				 //cipher = Cipher.getInstance("DESEDE/CBC/TBCPadding", "BC");
-				 cipher.init(Cipher.DECRYPT_MODE, key,ivSpec);
-				 byte[] decode = cipher.update(result);
-				 cipher.doFinal();
-				 System.out.println( new String(decode));
+				IvParameterSpec encryptionIV = new IvParameterSpec(cipher.doFinal(msgNumber),0,8);
+
+				cipher.init(Cipher.ENCRYPT_MODE, key,encryptionIV);
+				
+				byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
+				
+				int ctLength = cipher.update(input,0,input.length,cipherText, 0);
+				
+				ctLength += cipher.doFinal(cipherText,ctLength);
+				
+				FileStatics.BytesToFile(cipherText, new File(datei+".cipher"));
+				//gleich wieder einlesen
+				cipherText = FileStatics.BytesFromFile(new File(datei+".cipher"));
+				/*************************Ende - Encrypt*******************************/
+				
+				System.out.println("\nLänge des Encrypted-File-Bytestreams="+ctLength);
+				System.out.println("****************Beginn Encrypted-File******************************************");
+				System.out.println(new String(cipherText));
+				System.out.println("****************Ende Encrypted-File*********************************************");
+
+				/**********************************Decrypt*****************************/
+				cipher.init(Cipher.ENCRYPT_MODE, key,zeroIV);
+				
+				IvParameterSpec decryptionIV = new IvParameterSpec(cipher.doFinal(msgNumber),0,8);
+				
+				cipher.init(Cipher.DECRYPT_MODE, key,decryptionIV);
+				
+				//byte[] plainText = new byte[cipher.getOutputSize(ctLength)];
+				byte[] plainText = new byte[cipher.getOutputSize(cipherText.length)];
+				
+				//int ptLength = cipher.update(cipherText, 0,ctLength,plainText,0);
+				int ptLength = cipher.update(cipherText, 0,cipherText.length,plainText,0);
+				
+				ptLength += cipher.doFinal(plainText, ptLength);
+				
+				/**********************************Ende - Decrypt*****************************/
+				
+				System.out.println("\nLänge des Decrypted-File-Bytestreams="+ptLength);
+				System.out.println("****************Beginn Dencrypted-File******************************************");				
+				System.out.println(new String(FileStatics.TransferByteArray(plainText, 0, ptLength)));
+				System.out.println("****************Ende Dencrypted-File******************************************");				
+				FileStatics.BytesToFile(FileStatics.TransferByteArray(plainText, 0, ptLength), new File(datei+".plain"));
 				 
 		 }
 	 }
@@ -705,7 +821,7 @@ public class BCStatics2 {
 
 	 public static KeyStore loadStore(String keystoreFile,String pw) throws Exception{
 		 	providerTest();
-		 KeyStore store;
+		 	KeyStore store;
 
 			String alias;
 			store = KeyStore.getInstance("BCPKCS12","BC");
@@ -792,7 +908,7 @@ public class BCStatics2 {
 	 public static String chooser(String pfad){
 			//String pfad = "C:/Lost+Found/verschluesselung/";
 			String sret = "";
-			final JFileChooser chooser = new JFileChooser("Verzeichnis w�hlen");
+			final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
 	        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 	        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 	        final File file = new File(pfad);
@@ -858,6 +974,304 @@ public class BCStatics2 {
 		 }
 		 return ganzerString;
 	 }
+/************************************************************************/
+	 public static boolean installReply(KeyStore keyStore, 
+			 							KeyStore trustStore, 
+			 							String keyPassword, 
+			 							String alias, 
+			 							InputStream inputStream, 
+			 							boolean trustCACerts,
+			 							boolean validateRoot,PrivateKey privkey) throws Exception {
+
+	// Check that there is a certificate for the specified alias
+		 
+	X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
+	if (certificate == null) {
+		System.out.println("Certificate not found for alias: " + alias);
+		return false;
+	}
+	// Retrieve the private key of the stored certificate
+	//PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, keyPassword.toCharArray());
+	PrivateKey privKey = privkey;
+	
+	//PrivateKey privKey = privkey;	 
+	// Load certificates found in the PEM input stream
+	List<X509Certificate> certs = new ArrayList<X509Certificate>();
+	for (Certificate cert : CertificateFactory.getInstance("X509").generateCertificates(inputStream)) {
+		certs.add((X509Certificate) cert);
+	}
+	if (certs.isEmpty()) {
+		throw new Exception("Reply has no certificates");
+	}
+	List<X509Certificate> newCerts;
+	if (certs.size() == 1) {
+		// Reply has only one certificate
+		newCerts = establishCertChain(keyStore, trustStore, certificate, certs.get(0), trustCACerts);
+		System.out.println("Beginn Only one certs******************************");
+		System.out.println("Only one certs Anzahl = "+newCerts.size());
+		System.out.println("End Only one certs******************************");
+	} else {
+		//Reply has a chain of certificates
+		newCerts = validateReply(keyStore, trustStore, alias, certificate, certs, trustCACerts, validateRoot);
+		System.out.println("Beginn Chain of certs******************************"+keyStore+"-"+trustStore+"-"+alias+"-"+certificate+"-"+certs);
+		System.out.println("*****************Chain of certs Anzahl = "+newCerts.size());
+		System.out.println("End Chain of certs******************************");		
+	}
+	if (newCerts != null) {
+		keyStore.setKeyEntry(alias, privKey, keyPassword.toCharArray(),
+				newCerts.toArray(new X509Certificate[newCerts.size()]));
+		// Notify listeners that a new certificate has been created
+		for (CertificateEventListener listener : listeners) {
+			try {
+				listener.certificateSigned(keyStore, alias, newCerts);
+			}
+			catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+		System.out.println("Returnwert von installReply != null "+true);
+		return true;
+	} else {
+		System.out.println("New Certs == null");
+		System.out.println("Returnwert von installReply"+newCerts);
+		return false;
+	}
+	}
+/***************************************************/
+	 private static List<X509Certificate> establishCertChain(KeyStore keyStore, KeyStore trustStore,
+             X509Certificate certificate,
+             X509Certificate certReply, boolean trustCACerts)
+             throws Exception {
+		 System.out.println("KeyStore = "+keyStore);
+		 System.out.println("TrusStore = "+trustStore);
+		 System.out.println("Certificate = "+certificate);
+		 System.out.println("Reply = "+certReply);
+		 //System.out.println("trustCACerts  = "+trustCACerts);
+		 if (certificate != null) {
+			 PublicKey publickey = certificate.getPublicKey();
+			 PublicKey publickey1 = certReply.getPublicKey();
+			 if (!publickey.equals(publickey1)) {
+				 throw new Exception("Public keys in reply and keystore don't match");
+			 }
+			 if (certReply.equals(certificate)) {
+				 throw new Exception("Certificate reply and certificate in keystore are identical");
+			 }
+		 }
+		 Map<Principal, List<X509Certificate>> knownCerts = new Hashtable<Principal, List<X509Certificate>>();
+		 
+		 if (keyStore.size() > 0) {
+			 knownCerts.putAll(getCertsByIssuer(keyStore));
+		 }
+		 if (trustCACerts && trustStore.size() > 0) {
+			 knownCerts.putAll(getCertsByIssuer(trustStore));
+			 
+		 }
+		 LinkedList<X509Certificate> answer = new LinkedList<X509Certificate>();
+		 if (buildChain(certReply, answer, knownCerts)) {
+			System.out.println("Returnwert von establishCertChain "+answer);
+			 return answer;
+		 } else {
+			 throw new Exception("Failed to establish chain from reply");
+		 }
+	 }
 
 
+/**
+* Builds the certificate chain of the specified certificate based on the known list of certificates
+* that were issued by their respective Principals. Returns true if the entire chain of all certificates
+* was successfully built.
+*
+* @param certificate certificate to build its chain.
+* @param answer      the certificate chain for the corresponding certificate.
+* @param knownCerts  list of known certificates grouped by their issues (i.e. Principals).
+* @return true if the entire chain of all certificates was successfully built.
+*/
+	 private static boolean buildChain(X509Certificate certificate, LinkedList<X509Certificate> answer,
+		 Map<Principal, List<X509Certificate>> knownCerts) {
+		 Principal subject = certificate.getSubjectDN();
+		 Principal issuer = certificate.getIssuerDN();
+		 // Check if the certificate is a root certificate (i.e. was issued by the same Principal that
+		 //is present in the subject)
+		 if (subject.equals(issuer)) {
+			 answer.addFirst(certificate);
+			 System.out.println("Returnwert von buildChain "+true);
+			 return true;
+		 }
+		 // Get the list of known certificates of the certificate's issuer
+		 List<X509Certificate> issuerCerts = knownCerts.get(issuer);
+		 if (issuerCerts == null || issuerCerts.isEmpty()) {
+			 // No certificates were found so building of chain failed
+			 System.out.println("Returnwert von buildChain "+false);
+			 return false;
+		 }
+		 for (X509Certificate issuerCert : issuerCerts) {
+			 PublicKey publickey = issuerCert.getPublicKey();
+			 try {
+				 // Verify the certificate with the specified public key
+				 certificate.verify(publickey);
+				 // Certificate was verified successfully so build chain of issuer's certificate
+				 if (!buildChain(issuerCert, answer, knownCerts)) {
+					 System.out.println("Returnwert von buildChain-2 "+false);
+					 return false;
+				 }
+			 }
+			 catch (Exception exception) {
+				 // Failed to verify certificate
+				 System.out.println("Returnwert von buildChain Exception "+false);
+				 return false;
+			 }
+		 }
+		 answer.addFirst(certificate);
+		 System.out.println("Returnwert von buildChain Ende "+true);
+		 return true;
+	 }
+	 
+/***************************************************/
+	 private static Map<Principal, List<X509Certificate>> getCertsByIssuer(KeyStore ks)
+     throws Exception {
+		 Map<Principal, List<X509Certificate>> answer = new HashMap<Principal, List<X509Certificate>>();
+		 Enumeration<String> aliases = ks.aliases();
+		 while (aliases.hasMoreElements()) {
+			 String alias = aliases.nextElement();
+			 X509Certificate cert = (X509Certificate) ks.getCertificate(alias);
+			 if (cert != null) {
+				 Principal subjectDN = (Principal) cert.getSubjectDN();
+				 List<X509Certificate> vec = answer.get(subjectDN);
+				 if (vec == null) {
+					 vec = new ArrayList<X509Certificate>();
+					 vec.add(cert);
+				 }
+				 else {
+					 if (!vec.contains(cert)) {
+						 vec.add(cert);
+					 }
+				 }
+				 answer.put(subjectDN, vec);
+			 }
+		 }
+		 return answer;
+	 }
+	 
+/***************************************************/
+	    private static List<X509Certificate> validateReply(KeyStore keyStore, KeyStore trustStore, String alias,
+                X509Certificate userCert, List<X509Certificate> replyCerts,
+                boolean trustCACerts, boolean verifyRoot)
+                throws Exception {
+	    	// order the certs in the reply (bottom-up).
+			// System.out.println("KeyStore = "+keyStore);
+			 //System.out.println("TrusStore = "+trustStore);
+			 //System.out.println("Alias = "+alias);
+			 //System.out.println("UserCert = "+userCert);
+			 //System.out.println("ReplyCerts  = "+replyCerts);
+			 //System.out.println("TrustCACerts  = "+trustCACerts);
+			 //System.out.println("verifyRoot  = "+verifyRoot);
+	    	int i;
+	    	PublicKey userPubKey = userCert.getPublicKey();
+	    	for (i = 0; i < replyCerts.size(); i++) {
+	    		if (userPubKey.equals(replyCerts.get(i).getPublicKey())) {
+	    			break;
+	    		}
+	    	}
+	    	if (i == replyCerts.size()) {
+	    		throw new Exception("Certificate reply does not contain public key for <alias>: " + alias);
+	    	}
+
+	    	X509Certificate tmpCert = replyCerts.get(0);
+	    	replyCerts.set(0, replyCerts.get(i));
+	    	replyCerts.set(i, tmpCert);
+	    	Principal issuer = (Principal) replyCerts.get(0).getIssuerDN();
+
+	    	for (i = 1; i < replyCerts.size() - 1; i++) {
+	    		// find a cert in the reply whose "subject" is the same as the
+	    		// given "issuer"
+	    		int j;
+	    		for (j = i; j < replyCerts.size(); j++) {
+	    			Principal subject = (Principal) replyCerts.get(j).getSubjectDN();
+	    			if (subject.equals(issuer)) {
+	    				tmpCert = replyCerts.get(i);
+	    				replyCerts.set(i, replyCerts.get(j));
+	    				replyCerts.set(j, tmpCert);
+	    				issuer = (Principal) replyCerts.get(i).getIssuerDN();
+	    				break;
+	    			}
+	    		}
+	    		if (j == replyCerts.size()) {
+	    			throw new Exception("Incomplete certificate chain in reply");
+	    		}
+	    	}
+
+	    	// now verify each cert in the ordered chain
+	    	for (i = 0; i < replyCerts.size() - 1; i++) {
+	    		PublicKey pubKey = replyCerts.get(i + 1).getPublicKey();
+	    		try {
+	    			replyCerts.get(i).verify(pubKey);
+	    		}
+	    		catch (Exception e) {
+	    			throw new Exception(
+	    					"Certificate chain in reply does not verify: " + e.getMessage());
+	    		}
+	    	}
+
+	    	if (!verifyRoot) {
+	    		return replyCerts;
+	    	}
+
+	    	// do we trust the (root) cert at the top?
+	    	X509Certificate topCert = replyCerts.get(replyCerts.size() - 1);
+	    	boolean foundInKeyStore = keyStore.getCertificateAlias(topCert) != null;
+	    	boolean foundInCAStore = trustCACerts && (trustStore.getCertificateAlias(topCert) != null);
+	    	if (!foundInKeyStore && !foundInCAStore) {
+	    		boolean verified = false;
+	    		X509Certificate rootCert = null;
+	    		if (trustCACerts) {
+	    			System.out.println("Der CACerts wird vertraut*************************");
+	    			for (Enumeration<String> aliases = trustStore.aliases(); aliases.hasMoreElements();) {
+	    				String name = aliases.nextElement();
+	    				rootCert = (X509Certificate) trustStore.getCertificate(name);
+	    				if (rootCert != null) {
+	    					try {
+	    						topCert.verify(rootCert.getPublicKey());
+	    						verified = true;
+	    						break;
+	    					}
+	    					catch (Exception e) {
+	    						// Ignore
+	    					}
+	    				}
+	    			}
+	    		}else{
+	    			System.out.println("Der CACerts wird nicht!!!!!vertraut*************************");
+	    		}
+	    		if (!verified) {
+	    			return null;
+	    		}
+	    		else {
+	    			// Check if the cert is a self-signed cert
+	    			if (!topCert.getSubjectDN().equals(topCert.getIssuerDN())) {
+	    				//append the (self-signed) root CA cert to the chain
+	    				replyCerts.add(rootCert);
+	    			}
+	    		}
+	    	}
+
+	    	return replyCerts;
+	    }
+	    public static void addListener(CertificateEventListener listener) {
+	        if (listener == null) {
+	            throw new NullPointerException();
+	        }
+	        listeners.add(listener);
+	    }
+
+	    /**
+	     * Unregisters a listener to receive events.
+	     *
+	     * @param listener the listener.
+	     */
+	    public static void removeListener(CertificateEventListener listener) {
+	        listeners.remove(listener);
+	    }
+
+	 
+/***************************************************/	 
 }

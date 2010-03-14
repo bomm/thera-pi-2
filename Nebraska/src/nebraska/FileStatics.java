@@ -54,6 +54,44 @@ public class FileStatics {
 			  e.printStackTrace();
 			}		
 		}
+	 	public static void SomeBytesToFile(byte[] xdata,int from,int to,File fileout){
+			try
+			{
+			  // Byte Array laden
+			  //byte[] data = xdata;
+			  byte[] data = new byte[to - from];
+			  for(int i = from; i < to;i++){
+				data[i] = xdata[i];  
+			  }
+			  // Zu erzeugende Datei angeben
+			  // Datei schreiben
+			  FileOutputStream fileOut = new FileOutputStream(fileout);
+			  fileOut.write(data);
+			  fileOut.flush();
+			  fileOut.close();
+			}
+			catch (IOException e)
+			{
+			  e.printStackTrace();
+			}		
+		}
+
+	 	public static byte[] TransferByteArray(byte[] source,int from,int to){
+	 		
+			try
+			{
+			  // Byte Array laden
+			  //byte[] data = xdata;
+			  byte[] target = new byte[to - from];
+			  for(int i = from; i < to;i++){
+				target[i] = source[i];  
+			  }
+			  return target;
+			}catch(Exception ex){
+				
+			}
+			return null;
+		}
 	 	
 	 	public static byte[] inputStreamToBytes(InputStream in) throws IOException {
 
