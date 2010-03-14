@@ -31,18 +31,22 @@ public class TestMain {
 			nebraska.importKeyPair(basedir + "540840108.prv");
 			nebraska.importCertificateReply(basedir + "540840108.p7c");
 			nebraska.importReceiverCertificates("annahme-pkcs.key");
-			FileInputStream inStream = new FileInputStream(basedir + "plain.txt");
-			FileOutputStream outStream = new FileOutputStream(basedir + "encrypted.dat");
-			NebraskaEncryptor encryptor = nebraska.getEncryptor("109900019");
-			encryptor.encryptToSelf(inStream, outStream);
-			inStream.close();
-			outStream.close();
+			FileInputStream inStream;
+			FileOutputStream outStream;
+//			inStream = new FileInputStream(basedir + "plain.txt");
+//			inStream = new FileInputStream(basedir + "plain.txt");
+//			outStream = new FileOutputStream(basedir + "encrypted.dat");
+//			NebraskaEncryptor encryptor = nebraska.getEncryptor("109900019");
+//			encryptor.encryptToSelf(inStream, outStream);
+//			inStream.close();
+//			outStream.close();
 			
-			inStream = new FileInputStream(basedir + "encrypted.dat");
+//			inStream = new FileInputStream(basedir + "encrypted.dat");
+			inStream = new FileInputStream(basedir + "TSOL0021.org.encoded");
 			outStream = new FileOutputStream(basedir + "decrypted.dat");
 			NebraskaDecryptor decryptor = nebraska.getDecryptor();
-			decryptor.processSignedData(new FileInputStream(basedir + "signed.dat"), outStream);
-//			decryptor.decrypt(inStream, outStream);
+//			decryptor.processSignedData(new FileInputStream(basedir + "signed.dat"), outStream);
+			decryptor.decrypt(inStream, outStream);
 			inStream.close();
 			outStream.close();
 			

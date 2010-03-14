@@ -79,7 +79,7 @@ public class NebraskaDecryptor {
 	          NebraskaPrincipal receiverPrincipal = new NebraskaPrincipal(issuer);
 	          if(myPrincipal.equals(receiverPrincipal) && this.serial.equals(serial))
 	          {
-		          CMSTypedStream recData;
+		          CMSTypedStream recData = null;
 		          try {
 					recData = recipient.getContentStream(privateKey, 
 							  NebraskaConstants.SECURITY_PROVIDER);
