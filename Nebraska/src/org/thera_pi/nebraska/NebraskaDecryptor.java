@@ -94,6 +94,15 @@ public class NebraskaDecryptor {
 	      }
 	}
 
+	/**
+	 * Process the signed data stream created by the decryption step
+	 * and check the validity of the signature.
+	 * 
+	 * @param signedContentStream signed data stream
+	 * @param outStream stream to write the plain data to
+	 * @throws NebraskaCryptoException
+	 * @throws NebraskaFileException
+	 */
 	public void processSignedData(InputStream signedContentStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
 		// TODO Auto-generated method stub
 		CMSSignedDataParser parser;

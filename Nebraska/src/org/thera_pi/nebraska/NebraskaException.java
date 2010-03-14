@@ -1,5 +1,12 @@
 package org.thera_pi.nebraska;
 
+/**
+ * This class is used to group the different exceptions thrown by the
+ * Nebraska library. It is never thrown directly.
+ * 
+ * @author bodo
+ *
+ */
 public abstract class NebraskaException extends Exception {
 
 	/**

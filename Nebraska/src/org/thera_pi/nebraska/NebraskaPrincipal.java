@@ -4,12 +4,14 @@ import java.util.regex.Pattern;
 
 /**
  * This class represents a principal (subject or issuer of a certificate).
- * It is used to split the distinguished name string into the usual fields.
+ * It is used to split the distinguished name string into the usual fields
+ * and provides a comparison function.
  *    
  * @author bodo
  *
  */
 public class NebraskaPrincipal {
+	// getters and setters
 	public String getCountry() {
 		return country;
 	}
@@ -50,6 +52,13 @@ public class NebraskaPrincipal {
 		this.personName = personName;
 	}
 
+	/**
+	 * Create an alias from the name fields.
+	 * Uses the institution ID (IK) field if present, otherwise the 
+	 * full distinguished name without spaces.
+	 * 
+	 * @return the alias
+	 */
 	public String getAlias() {
 		if(institutionID != null && institutionID.length() > 0)
 		{
@@ -69,6 +78,15 @@ public class NebraskaPrincipal {
 		
 	}
 	
+	/**
+	 * Create a principal object from individual name fields.
+	 * 
+	 * @param country
+	 * @param organization
+	 * @param institutionName
+	 * @param institutionID
+	 * @param personName
+	 */
 	public NebraskaPrincipal(String country, String organization,
 			String institutionName, String institutionID, String personName) {
 		this.country = country;
@@ -78,6 +96,11 @@ public class NebraskaPrincipal {
 		this.personName = personName;
 	}
 	
+	/**
+	 * create a principal object from a distinguished name string.
+	 * 
+	 * @param distinguishedName
+	 */
 	public NebraskaPrincipal(String distinguishedName) {
 		this.distinguishedName = distinguishedName;
 		String[] dnParts = distinguishedName.split(",");
@@ -101,24 +124,35 @@ public class NebraskaPrincipal {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object o)
 	{
+		// other object must exist and must be of this object's class.
 		if(o == null) return false;
 		if(!(o instanceof NebraskaPrincipal)) return false;
 
 		NebraskaPrincipal other = (NebraskaPrincipal) o;
+		/* If a field exists in one object but not in the other,
+		 * the objects are not equal.
+		 */
 		if((this.country == null) != (other.country == null)) return false;
 		if((this.organization == null) != (other.organization == null)) return false;
 		if((this.institutionID == null) != (other.institutionID == null)) return false;
 		if((this.institutionName == null) != (other.institutionName == null)) return false;
 		if((this.personName == null) != (other.personName == null)) return false;
 		
+		/* if any of the existing fields is not equal to the corresponding field
+		 * of the other object they are not equal. 
+		 */
 		if(this.country != null && !this.country.equals(other.country)) return false;
 		if(this.organization != null && !this.organization.equals(other.organization)) return false;
 		if(this.institutionID != null && !this.institutionID.equals(other.institutionID)) return false;
 		if(this.institutionName != null && !this.institutionName.equals(other.institutionName)) return false;
 		if(this.personName != null && !this.personName.equals(other.personName)) return false;
 
+		// Objects must be equal if we reached this.
 		return true;
 	}
 }

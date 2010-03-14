@@ -52,12 +52,17 @@ public class NebraskaEncryptor {
 		readCertificateChain();
 	}
 	
+	/**
+	 * Get the signer's private key and store it in this object.
+	 *  
+	 * @throws NebraskaCryptoException
+	 */
 	private void readSenderKey() throws NebraskaCryptoException {
 		this.senderKey = nebraska.getSenderKey();
 	}
 
 	/**
-	 * Read the receiver's certificate from the keystore.
+	 * Get the receiver's certificate and store it in this object.
 	 * @throws NebraskaCryptoException 
 	 */
 	private void readReceiverCert() throws NebraskaCryptoException {
@@ -65,7 +70,7 @@ public class NebraskaEncryptor {
 	}
 
 	/**
-	 * Read the sender's certificate from the keystore.
+	 * Get the sender's certificate and store it in this object.
 	 * @throws NebraskaCryptoException 
 	 */
 	private void readSenderCert() throws NebraskaCryptoException {
@@ -73,7 +78,7 @@ public class NebraskaEncryptor {
 	}
 
 	/**
-	 * Read the the certificate chain (CA certificates) from the key store.
+	 * Get the sender's certificate chain (CA certificates) and store it in this object.
 	 * @throws NebraskaCryptoException 
 	 */
 	private void readCertificateChain() throws NebraskaCryptoException {

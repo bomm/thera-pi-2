@@ -62,9 +62,9 @@ public class NebraskaUtil {
 	}
 	
 	/**
-	 * remove leading IK from input
-	 * @param input
-	 * @return
+	 * Remove leading IK from input.
+	 * @param input an institution ID string, optionally with leading "IK"
+	 * @return normalized institution ID
 	 */
 	public static String normalizeIK(String input) {
 		return input.trim().replaceFirst("^[iI][kK]", "").trim();
@@ -82,6 +82,20 @@ public class NebraskaUtil {
 		return certificateStartOrEnd(date, false);
 	}
 
+	static Date certificateEnd(Date date) {
+		return certificateStartOrEnd(date, true);
+	}
+
+	/**
+	 * Generate a start or end date for the validity of a certificate.
+	 * Use the beginning of the specified day as start date or for an end date add 
+	 * the certificate duration in years and subtract one millisecond to get the
+	 * end of the day before.
+	 *  
+	 * @param date the date to be used as a start date
+	 * @param end flag to select end date instead of start date 
+	 * @return the start or end date for a certificate's validity
+	 */
 	static private Date certificateStartOrEnd(Date date, boolean end) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -97,10 +111,14 @@ public class NebraskaUtil {
 		return calendar.getTime();
 	}
 
-	static Date certificateEnd(Date date) {
-		return certificateStartOrEnd(date, true);
-	}
-
+	/**
+	 * Convert a byte array to a hexadecimal string representation
+	 * and use a separator between the bytes for better readability.
+	 * Intended to be used for MD5 fingerprints.
+	 * 
+	 * @param bytes the byte array to be converted
+	 * @return the string representation
+	 */
 	public static String toHexString(byte[] bytes) {
 		StringBuffer result = new StringBuffer();
 		for(int i = 0; i < bytes.length; i++) {

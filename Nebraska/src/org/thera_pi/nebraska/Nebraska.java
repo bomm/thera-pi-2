@@ -255,6 +255,13 @@ public class Nebraska {
 		saveKeystore();
 	}
 
+	/**
+	 * generate self-signed certificate from key pair
+	 * 
+	 * @param keyPair key pair
+	 * @return self-signed certificate
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 */
 	private X509Certificate generateSelfSignedCert(KeyPair keyPair)
 			throws NebraskaCryptoException {
 		// FIXME get serial number of existing certificate and increment
@@ -539,6 +546,13 @@ public class Nebraska {
 		saveKeystore();
 	}
 
+	/**
+	 * read certificate from string buffer and store it in key store
+	 * 
+	 * @param certBuf certificate in PEM format with header and trailer line
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on file or I/O related errors
+	 */
 	private void readAndStoreCert(StringBuffer certBuf) throws NebraskaCryptoException, NebraskaFileException {
 		StringReader certBufReader = new StringReader(certBuf.toString());
 		PEMReader pemReader = new PEMReader(certBufReader);
@@ -555,6 +569,14 @@ public class Nebraska {
 		}
 	}
 	
+	/**
+	 * Store certificate in key store with an alias generated from the 
+	 * certificate's subject distinguished name. Works in memory only, 
+	 * does not save the keystore file.
+	 * 
+	 * @param cert certificate to store
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 */
 	private void storeCertificate(X509Certificate cert) throws NebraskaCryptoException {
 		NebraskaPrincipal subject = new NebraskaPrincipal(cert.getSubjectDN().getName());
 		String alias = NebraskaUtil.getCertAlias(subject.getAlias());
@@ -673,6 +695,12 @@ public class Nebraska {
 		return entry.getPrivateKey();
 	}
 
+	/**
+	 * Read the certificate chain for the sender/signer from the key store
+	 * 
+	 * @return certificate chain
+	 * @throws NebraskaCryptoException
+	 */
 	CertStore getSenderCertChain() throws NebraskaCryptoException
 	{
 		String alias = certAlias;
@@ -706,10 +734,24 @@ public class Nebraska {
 		}
 		
 	}
+	
+	/**
+	 * Read the sender/signer certificate from key store.
+	 * 
+	 * @return certificate
+	 * @throws NebraskaCryptoException
+	 */
 	X509Certificate getSenderCertificate() throws NebraskaCryptoException {
 		return (X509Certificate) getCertificate(IK);
 	}
 
+	/**
+	 * Read the certificate for a specified institution ID (IK) from key store.
+	 *  
+	 * @param institutionID desired institution
+	 * @return certificate
+	 * @throws NebraskaCryptoException
+	 */
 	X509Certificate getCertificate(String institutionID) throws NebraskaCryptoException {
 		String alias = NebraskaUtil.getCertAlias(institutionID);
 		try {
@@ -719,11 +761,24 @@ public class Nebraska {
 		}
 	}
 	
+	/**
+	 * Get an encryptor object that will encrypt data for the specified receiver.
+	 * 
+	 * @param receiverIK receiver's institution ID
+	 * @return encryptor object
+	 * @throws NebraskaCryptoException
+	 */
 	public NebraskaEncryptor getEncryptor(String receiverIK) throws NebraskaCryptoException
 	{
 		return new NebraskaEncryptor(receiverIK, this);
 	}
 	
+	/**
+	 * Get a decryptor object that will decrypt data for the own institution ID.
+	 * 
+	 * @return decryptor object
+	 * @throws NebraskaCryptoException
+	 */
 	public NebraskaDecryptor getDecryptor() throws NebraskaCryptoException
 	{
 		return new NebraskaDecryptor(this);
