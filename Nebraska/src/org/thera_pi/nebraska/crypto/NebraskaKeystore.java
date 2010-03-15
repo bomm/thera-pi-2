@@ -1,4 +1,4 @@
-package org.thera_pi.nebraska;
+package org.thera_pi.nebraska.crypto;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,7 +52,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
-public class Nebraska {
+public class NebraskaKeystore {
 	private BouncyCastleProvider bcProvider;
 
 	private String keystoreFileName;
@@ -89,7 +89,7 @@ public class Nebraska {
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
 	 */
-	public Nebraska(String keystoreFileName, String keystorePassword, String keyPassword, String IK)
+	public NebraskaKeystore(String keystoreFileName, String keystorePassword, String keyPassword, String IK)
 	throws NebraskaCryptoException, NebraskaFileException
 	{
 		this(keystoreFileName, keystorePassword, keyPassword, IK, null, null);
@@ -109,7 +109,7 @@ public class Nebraska {
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
 	 */
-	public Nebraska(String keystoreFileName,
+	public NebraskaKeystore(String keystoreFileName,
 			String keystorePassword, String keyPassword, String institutionID, String institutionName, String personName)
 	throws NebraskaCryptoException, NebraskaFileException
 	{

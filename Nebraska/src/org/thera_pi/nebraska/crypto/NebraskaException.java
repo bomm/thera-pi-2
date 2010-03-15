@@ -1,4 +1,4 @@
-package org.thera_pi.nebraska;
+package org.thera_pi.nebraska.crypto;
 
 /**
  * This class is used to group the different exceptions thrown by the

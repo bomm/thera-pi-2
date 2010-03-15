@@ -1,7 +1,7 @@
-package org.thera_pi.nebraska;
+package org.thera_pi.nebraska.crypto;
 
 /**
- * This exception is thrown when Nebraska is not fully initialized for the
+ * This exception is thrown when NebraskaKeystore is not fully initialized for the
  * requested operation, e.g. when a constructor with a reduced set of parameters
  * is called and the operation need unspecified parameters.
  * 

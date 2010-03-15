@@ -1,4 +1,4 @@
-package org.thera_pi.nebraska;
+package org.thera_pi.nebraska.crypto;
 
 import java.text.Normalizer;
 import java.util.Calendar;

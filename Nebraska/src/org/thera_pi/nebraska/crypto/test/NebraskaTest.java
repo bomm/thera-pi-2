@@ -1,4 +1,4 @@
-package org.thera_pi.nebraska.test;
+package org.thera_pi.nebraska.crypto.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,13 +6,13 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.thera_pi.nebraska.Nebraska;
-import org.thera_pi.nebraska.NebraskaCryptoException;
-import org.thera_pi.nebraska.NebraskaFileException;
-import org.thera_pi.nebraska.NebraskaNotInitializedException;
+import org.thera_pi.nebraska.crypto.NebraskaKeystore;
+import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
+import org.thera_pi.nebraska.crypto.NebraskaFileException;
+import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
 public class NebraskaTest extends TestCase {
-	private Nebraska nebraska;
+	private NebraskaKeystore nebraskaKeystore;
 	private final String keystoreFilename = "/tmp/keystore.p12";
 	private final String requestFilename = "/tmp/request.p10";
 	
@@ -22,7 +22,7 @@ public class NebraskaTest extends TestCase {
 		if(keystoreFile.exists()) {
 			keystoreFile.delete();
 		}
-		nebraska = new Nebraska(keystoreFilename, "123456", "abcdef", "IK123456789", "Test Institution", "Max Mustermann");
+		nebraskaKeystore = new NebraskaKeystore(keystoreFilename, "123456", "abcdef", "IK123456789", "Test Institution", "Max Mustermann");
 	}
 
 	protected void tearDown() throws Exception {
@@ -38,23 +38,23 @@ public class NebraskaTest extends TestCase {
 	}
 
 	public void testGenerateKeyPair() throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
-		assertFalse(nebraska.hasPrivateKey());
-		nebraska.generateKeyPair(true);
-		assertTrue(nebraska.hasPrivateKey());
+		assertFalse(nebraskaKeystore.hasPrivateKey());
+		nebraskaKeystore.generateKeyPair(true);
+		assertTrue(nebraskaKeystore.hasPrivateKey());
 	}
 
 	public void testCreateCertificateRequest() throws NebraskaCryptoException, NebraskaFileException, IOException, NebraskaNotInitializedException {
 		StringBuffer md5Hash = new StringBuffer();
-		assertFalse(nebraska.hasPrivateKey());
-		nebraska.generateKeyPair(true);
-		assertTrue(nebraska.hasPrivateKey());
+		assertFalse(nebraskaKeystore.hasPrivateKey());
+		nebraskaKeystore.generateKeyPair(true);
+		assertTrue(nebraskaKeystore.hasPrivateKey());
 
 		File requestFile = new File(requestFilename);
 		if(requestFile.exists()) {
 			requestFile.delete();
 		}
 		FileOutputStream requestStream = new FileOutputStream(requestFile);
-		nebraska.createCertificateRequest(requestStream, md5Hash);
+		nebraskaKeystore.createCertificateRequest(requestStream, md5Hash);
 		requestStream.close();
 		
 		assertTrue(requestFile.exists());
@@ -62,13 +62,13 @@ public class NebraskaTest extends TestCase {
 	}
 
 	public void testGetPublicKeyMD5() throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
-		assertFalse(nebraska.hasPrivateKey());
-		nebraska.generateKeyPair(true);
-		assertTrue(nebraska.hasPrivateKey());
+		assertFalse(nebraskaKeystore.hasPrivateKey());
+		nebraskaKeystore.generateKeyPair(true);
+		assertTrue(nebraskaKeystore.hasPrivateKey());
 
-		String fingerprint = nebraska.getPublicKeyMD5();
+		String fingerprint = nebraskaKeystore.getPublicKeyMD5();
 		assertNotNull(fingerprint);
-		assertEquals(fingerprint, nebraska.getPublicKeyMD5());
+		assertEquals(fingerprint, nebraskaKeystore.getPublicKeyMD5());
 		assertTrue(fingerprint.length() == 47);
 		// FIXME find a way to really check the fingerprint 
 	}

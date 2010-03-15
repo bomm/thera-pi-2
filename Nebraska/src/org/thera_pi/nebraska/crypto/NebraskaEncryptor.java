@@ -1,4 +1,4 @@
-package org.thera_pi.nebraska;
+package org.thera_pi.nebraska.crypto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,7 +32,7 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
  */
 public class NebraskaEncryptor {
 	private String receiverIK;
-	private Nebraska nebraska;
+	private NebraskaKeystore nebraskaKeystore;
 	private X509Certificate receiverCert;
 	private X509Certificate senderCert;
 	private PrivateKey senderKey;
@@ -51,13 +51,13 @@ public class NebraskaEncryptor {
 	 * Create a Nebraska encryptor for specified receiver.
 	 * 
 	 * @param IK receiver ID (IK)
-	 * @param nebraska reference to Nebraska object that contains the key store
+	 * @param nebraskaKeystore reference to NebraskaKeystore object that contains the key store
 	 * @throws NebraskaCryptoException 
 	 * @throws NebraskaNotInitializedException 
 	 */
-	NebraskaEncryptor(String IK, Nebraska nebraska) throws NebraskaCryptoException, NebraskaNotInitializedException {
+	NebraskaEncryptor(String IK, NebraskaKeystore nebraskaKeystore) throws NebraskaCryptoException, NebraskaNotInitializedException {
 		this.receiverIK = IK;
-		this.nebraska = nebraska;
+		this.nebraskaKeystore = nebraskaKeystore;
 		
 		readReceiverCert();
 		readSenderCert();
@@ -72,7 +72,7 @@ public class NebraskaEncryptor {
 	 * @throws NebraskaNotInitializedException 
 	 */
 	private void readSenderKey() throws NebraskaCryptoException, NebraskaNotInitializedException {
-		this.senderKey = nebraska.getSenderKey();
+		this.senderKey = nebraskaKeystore.getSenderKey();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class NebraskaEncryptor {
 	 * @throws NebraskaCryptoException 
 	 */
 	private void readReceiverCert() throws NebraskaCryptoException {
-		receiverCert = nebraska.getCertificate(receiverIK);
+		receiverCert = nebraskaKeystore.getCertificate(receiverIK);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class NebraskaEncryptor {
 	 * @throws NebraskaCryptoException 
 	 */
 	private void readSenderCert() throws NebraskaCryptoException {
-		senderCert = nebraska.getSenderCertificate();
+		senderCert = nebraskaKeystore.getSenderCertificate();
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class NebraskaEncryptor {
 	 * @throws NebraskaNotInitializedException 
 	 */
 	private void readCertificateChain() throws NebraskaCryptoException, NebraskaNotInitializedException {
-		certificateChain = nebraska.getSenderCertChain();
+		certificateChain = nebraskaKeystore.getSenderCertChain();
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package org.thera_pi.nebraska;
+package org.thera_pi.nebraska.crypto;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import org.bouncycastle.cms.SignerInformationStore;
 
 public class NebraskaDecryptor {
 
-	private Nebraska nebraska;
+	private NebraskaKeystore nebraskaKeystore;
 	private X509Certificate certificate;
 	private PrivateKey privateKey;
 	private String issuer;
@@ -36,14 +36,14 @@ public class NebraskaDecryptor {
 	/**
 	 * Create a Nebraska decryptor for self
 	 * 
-	 * @param nebraska reference to Nebraska object that contains the key store
+	 * @param nebraskaKeystore reference to NebraskaKeystore object that contains the key store
 	 * @throws NebraskaCryptoException 
 	 * @throws NebraskaNotInitializedException 
 	 */
-	NebraskaDecryptor(Nebraska nebraska) throws NebraskaCryptoException, NebraskaNotInitializedException {
-		this.nebraska = nebraska;
-		certificate = nebraska.getSenderCertificate();
-		privateKey = nebraska.getSenderKey();
+	NebraskaDecryptor(NebraskaKeystore nebraskaKeystore) throws NebraskaCryptoException, NebraskaNotInitializedException {
+		this.nebraskaKeystore = nebraskaKeystore;
+		certificate = nebraskaKeystore.getSenderCertificate();
+		privateKey = nebraskaKeystore.getSenderKey();
 		issuer = certificate.getIssuerDN().getName();
 		serial = certificate.getSerialNumber();
 	}
