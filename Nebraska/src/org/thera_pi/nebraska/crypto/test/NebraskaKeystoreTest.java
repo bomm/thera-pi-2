@@ -11,7 +11,7 @@ import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
-public class NebraskaTest extends TestCase {
+public class NebraskaKeystoreTest extends TestCase {
 	private NebraskaKeystore nebraskaKeystore;
 	private final String keystoreFilename = "/tmp/keystore.p12";
 	private final String requestFilename = "/tmp/request.p10";
