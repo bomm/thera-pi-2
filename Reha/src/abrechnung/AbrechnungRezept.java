@@ -273,9 +273,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				jSplitOU.setDividerLocation(100);
-				//jSplitOU.setDividerLocation(getHeight());
-				//System.out.println("Höhe ="+getHeight());
+				jSplitOU.setDividerLocation(getHeight()-100);
 			}
 		});
 		

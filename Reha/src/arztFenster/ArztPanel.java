@@ -93,19 +93,9 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		super();
 		setBorder(null);
 		this.jry = jry;
-		//this.thisClass = this;
+
 		addFocusListener(this);
-		/*
-		Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(600,550);
-	     float[] dist = {0.0f, 0.75f};
-	     Color[] colors = {Color.WHITE,Colors.TaskPaneBlau.alpha(0.45f)};
-	     
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     */
-	     setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztPanel"));
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("ArztPanel"));
 	     
 		
 		setLayout(new BorderLayout());
@@ -118,6 +108,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				protected Void doInBackground() throws Exception {
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
+							holeAktArzt(xarzt);
 					 		setzeFocus();
 						}
 					});
