@@ -24,12 +24,13 @@ public class NebraskaUtil {
 	 * @return Subject DN string
 	 */
 	public static String getSubjectDN(String IK, String institutionName, String personName) {
-		X500Principal principal = new X500Principal(
-			NebraskaConstants.X500_PRINCIPAL_COMMON + "," +
-				" OU=" + normalizeDnField(institutionName) + 
-				", OU=IK" + normalizeDnField(normalizeIK(IK)) +
-				", CN=" + normalizeDnField(personName));
-		return principal.getName();
+		NebraskaPrincipal principal = new NebraskaPrincipal(
+				NebraskaConstants.X500_PRINCIPAL_COUNTRY, 
+				NebraskaConstants.X500_PRINCIPAL_ORGANIZATION, 
+				institutionName, 
+				IK, 
+				personName);
+		return principal.getDistinguishedName();
 	}
 
 	/**
@@ -70,18 +71,47 @@ public class NebraskaUtil {
 		return input.trim().replaceFirst("^[iI][kK]", "").trim();
 	}
 	
-	public static String getCertAlias(String input) {
-		return input.trim();
+	/**
+	 * Get alias for certificate (optionally with private key) for specified institution ID.
+	 * Currently the alias is identical to the institution ID.
+	 * 
+	 * @param institutionID the institution ID (IK)
+	 * @return the alias
+	 */
+	public static String getCertAlias(String institutionID) {
+		return institutionID.trim();
 	}
 	
-	public static String getKeyAlias(String input) {
-		return input.trim();
+	/**
+	 * Get alias for self-signed key pair for specified institution ID.
+	 * Currently the alias the institution ID prepended with new.
+	 * 
+	 * @param institutionID the institution ID (IK)
+	 * @return the alias
+	 */
+	public static String getNewKeyAlias(String institutionID) {
+		return "new." + institutionID.trim();
 	}
 	
+	/**
+	 * Generate a start date for the validity of a certificate.
+	 * Use the beginning of the specified day as start date.
+	 * 
+	 * @param date specifies the beginning day of the certificate's validity
+	 * @return The beginning of the specified day.
+	 */
 	static Date certificateStart(Date date) {
 		return certificateStartOrEnd(date, false);
 	}
 
+	/**
+	 * Generate an end date for the validity of a certificate.
+	 * The specified day defines the start date. The end date will be calculated
+	 * from the start date with the default validity duration.
+	 * 
+	 * @param date specifies the beginning day of the certificate's validity
+	 * @return The end of the day CERTIFICATE_YEARS after the start of validity.
+	 */
 	static Date certificateEnd(Date date) {
 		return certificateStartOrEnd(date, true);
 	}

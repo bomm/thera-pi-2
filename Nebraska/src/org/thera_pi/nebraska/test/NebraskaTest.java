@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import org.thera_pi.nebraska.Nebraska;
 import org.thera_pi.nebraska.NebraskaCryptoException;
 import org.thera_pi.nebraska.NebraskaFileException;
+import org.thera_pi.nebraska.NebraskaNotInitializedException;
 
 public class NebraskaTest extends TestCase {
 	private Nebraska nebraska;
@@ -36,13 +37,13 @@ public class NebraskaTest extends TestCase {
 		fail("Not yet implemented");
 	}
 
-	public void testGenerateKeyPair() throws NebraskaCryptoException, NebraskaFileException {
+	public void testGenerateKeyPair() throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
 		assertFalse(nebraska.hasPrivateKey());
 		nebraska.generateKeyPair(true);
 		assertTrue(nebraska.hasPrivateKey());
 	}
 
-	public void testCreateCertificateRequest() throws NebraskaCryptoException, NebraskaFileException, IOException {
+	public void testCreateCertificateRequest() throws NebraskaCryptoException, NebraskaFileException, IOException, NebraskaNotInitializedException {
 		StringBuffer md5Hash = new StringBuffer();
 		assertFalse(nebraska.hasPrivateKey());
 		nebraska.generateKeyPair(true);
@@ -60,7 +61,7 @@ public class NebraskaTest extends TestCase {
 //		assertEquals("", md5Hash.toString());
 	}
 
-	public void testGetPublicKeyMD5() throws NebraskaCryptoException, NebraskaFileException {
+	public void testGetPublicKeyMD5() throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
 		assertFalse(nebraska.hasPrivateKey());
 		nebraska.generateKeyPair(true);
 		assertTrue(nebraska.hasPrivateKey());

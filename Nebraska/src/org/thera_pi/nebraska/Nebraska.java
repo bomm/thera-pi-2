@@ -53,24 +53,38 @@ import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 public class Nebraska {
+	private BouncyCastleProvider bcProvider;
+
 	private String keystoreFileName;
 	private String keystorePassword;
-	private String IK;
+	private String keyPassword;
+	private File keystoreFile;
+	private KeyStore keyStore;
+
+	// data of signer/sender
+	private String institutionID;
 	private String institutionName;
 	private String personName;
-	private KeyStore keyStore;
-	private File keystoreFile;
-	private String keyAlias;
-	private String keyPassword;
-	private BouncyCastleProvider bcProvider;
-	private String certAlias;
+	
+	// cache for alias strings
+	/**
+	 * Alias for a newly created key with self-signed certificate
+	 */
+	private String newKeyAlias;
+	/**
+	 * Alias for a officially certified key. 
+	 */
+	private String keyCertAlias;
 
 	/**
-	 * Initialize keystore for specified principal using specified file.
-	 * 
-	 * @param keystoreFileName name of keystore file
-	 * @param keystorePassword password for keystore file
-	 * @param keyPassword TODO
+	 * Initialize key store for specified principal using specified file.
+	 * This constructor can be used if the key store already contains a certificate
+	 * for the specified ID. The missing fields institution name and person name
+	 * can be read from the existing certificate or must be specified using setters.
+	 *  
+	 * @param keystoreFileName name of key store file
+	 * @param keystorePassword password for key store file
+	 * @param keyPassword password for private key
 	 * @param IK institution ID
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
@@ -82,25 +96,25 @@ public class Nebraska {
 	}
 
 	/**
-	 * Initialize keystore for specified principal using specified file.
+	 * Initialize key store for specified principal using specified file.
+	 * Since this constructor specifies all fields it is possible to generate 
+	 * a key pair or certificate request without using setters.
 	 * 
-	 * @param keystoreFileName name of keystore file
-	 * @param keystorePassword password for keystore file
+	 * @param keystoreFileName name of key store file
+	 * @param keystorePassword password for key store file
 	 * @param keyPassword password for private key
-	 * @param IK institution ID
-	 * @param institutionName
-	 * @param personName
+	 * @param institutionID institution ID number (IK)
+	 * @param institutionName institution name
+	 * @param personName person name
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
 	 */
 	public Nebraska(String keystoreFileName,
-			String keystorePassword, String keyPassword, String IK, String institutionName, String personName)
+			String keystorePassword, String keyPassword, String institutionID, String institutionName, String personName)
 	throws NebraskaCryptoException, NebraskaFileException
 	{
 		this.keystoreFileName = keystoreFileName;
-		this.IK = NebraskaUtil.normalizeIK(IK);
-		this.keyAlias = NebraskaUtil.getKeyAlias(IK);
-		this.certAlias = NebraskaUtil.getCertAlias(IK);
+		this.institutionID = NebraskaUtil.normalizeIK(institutionID);
 		this.institutionName = institutionName;
 		this.personName = personName;
 
@@ -110,6 +124,48 @@ public class Nebraska {
 		initSecurityProvider();
 		initKeystore();
 
+	}
+
+	/**
+	 * Switch to a different institution as sender/signer.
+	 * 
+	 * @param keyPassword password for private key
+	 * @param institutionID institution ID number (IK)
+	 * 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on I/O related errors
+	 */
+	public void setIdentification(String keyPassword,
+			String institutionID)
+	throws NebraskaCryptoException, NebraskaFileException
+	{
+		setIdentification(keyPassword, institutionID, null, null);
+	}
+
+	/**
+	 * Switch to a different institution as sender/signer.
+	 * 
+	 * @param keyPassword password for private key
+	 * @param institutionID institution ID number (IK)
+	 * @param institutionName institution name
+	 * @param personName person name
+	 * 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on I/O related errors
+	 */
+	public void setIdentification(String keyPassword,
+			String institutionID, String institutionName, String personName)
+	throws NebraskaCryptoException, NebraskaFileException
+	{
+		this.institutionID = NebraskaUtil.normalizeIK(institutionID);
+		this.institutionName = institutionName;
+		this.personName = personName;
+
+		this.keyPassword = keyPassword;
+		
+		// clear cache
+		newKeyAlias = null;
+		keyCertAlias = null;
 	}
 
 	/**
@@ -127,7 +183,7 @@ public class Nebraska {
 	}
 
 	/**
-	 * Load keystore from file or initialize new keystore and save to file.
+	 * Load key store from file or initialize new key store and save to file.
 	 * 
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
@@ -162,7 +218,7 @@ public class Nebraska {
 	}
 
 	/**
-	 * Save keystore data to file.
+	 * Save key store data to file.
 	 * 
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
@@ -186,22 +242,29 @@ public class Nebraska {
 	}
 	
 	/**
-	 * Check if keystore contains private key for IK.
+	 * Check if key store contains private key for institution ID.
+	 * The result will be true if a key entry is present either with an officially
+	 * signed certificate or with a self-signed certificate.
 	 * 
 	 * @return true if private key exists
-	 * @throws NebraskaCryptoException 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public boolean hasPrivateKey() throws NebraskaCryptoException
+	public boolean hasPrivateKey() throws NebraskaCryptoException, NebraskaNotInitializedException
 	{
 		try {
-			return keyStore.containsAlias(keyAlias) && keyStore.entryInstanceOf(keyAlias, KeyStore.PrivateKeyEntry.class);
+			// first check for entry with officially signed certificate
+			return (keyStore.containsAlias(getKeyCertAlias()) && keyStore.entryInstanceOf(getKeyCertAlias(), KeyStore.PrivateKeyEntry.class)) ||
+				// second check for self-signed certificate
+				(keyStore.containsAlias(getNewKeyAlias()) && keyStore.entryInstanceOf(getNewKeyAlias(), KeyStore.PrivateKeyEntry.class));
 		} catch (KeyStoreException e) {
 			throw new NebraskaCryptoException(e);
 		}
 	}
 	
 	/**
-	 * Check if keystore contains certificate for IK.
+	 * Check if key store contains certificate for IK.
 	 * 
 	 * @return true if certificate exists
 	 */
@@ -218,12 +281,19 @@ public class Nebraska {
 	 * 
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
 	public void generateKeyPair(boolean overwrite)
-		throws NebraskaCryptoException, NebraskaFileException
+		throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException
 	{
+		if((institutionID == null) || (institutionName == null) || (personName == null))
+		{
+			throw new NebraskaNotInitializedException(new Exception(
+					"institution ID or name or person name not initialized"));
+		}
 		try {
-			if(!overwrite && keyStore.containsAlias(keyAlias)) {
+			if(!overwrite && keyStore.containsAlias(getNewKeyAlias())) {
 				throw new NebraskaCryptoException(new Exception("overwriting existing key not allowed"));
 			}
 		} catch (KeyStoreException e) {
@@ -245,7 +315,7 @@ public class Nebraska {
 		Certificate[] chain = { cert };
 		try
 		{
-			keyStore.setKeyEntry(keyAlias, keyPair.getPrivate(), keyPassword.toCharArray(), chain);
+			keyStore.setKeyEntry(getNewKeyAlias(), keyPair.getPrivate(), keyPassword.toCharArray(), chain);
 		} catch (IllegalStateException e) {
 			throw new NebraskaCryptoException(e);
 		} catch (KeyStoreException e) {
@@ -253,6 +323,48 @@ public class Nebraska {
 		}
 
 		saveKeystore();
+	}
+
+	/**
+	 * Getter for newKeyAlias with lazy initialization.
+	 * Alias for a newly generated key that does not yet have a certificate from a CA. 
+	 * 
+	 * @return the key alias
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
+	 */
+	private String getNewKeyAlias() throws NebraskaNotInitializedException {
+		if(newKeyAlias == null)
+		{
+			if(institutionID == null)
+			{
+				throw new NebraskaNotInitializedException(new Exception(
+						"institution ID not initialized"));
+			}
+			newKeyAlias = NebraskaUtil.getNewKeyAlias(institutionID);
+		}
+		return newKeyAlias;
+	}
+
+	/**
+	 * Getter for keyCertAlias with lazy initialization.
+	 * Alias for a key certified by a CA.
+	 * 
+	 * @return the alias for certified key
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
+	 */
+	private String getKeyCertAlias() throws NebraskaNotInitializedException {
+		if(keyCertAlias == null)
+		{
+			if(institutionID == null)
+			{
+				throw new NebraskaNotInitializedException(new Exception(
+						"institution ID not initialized"));
+			}
+			keyCertAlias = NebraskaUtil.getCertAlias(institutionID);
+		}
+		return keyCertAlias;
 	}
 
 	/**
@@ -308,8 +420,10 @@ public class Nebraska {
 	 * @param outputStream the stream to write the certificate request to (or null)
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public void createCertificateRequest(OutputStream requestStream) throws NebraskaCryptoException, NebraskaFileException {
+	public void createCertificateRequest(OutputStream requestStream) throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
 		createCertificateRequest(requestStream, null);
 	}
 
@@ -320,8 +434,10 @@ public class Nebraska {
 	 * @param md5Hash StringBuffer for MD5 fingerprint of public key (or null)
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public void createCertificateRequest(OutputStream requestStream, StringBuffer md5Hash) throws NebraskaCryptoException, NebraskaFileException {
+	public void createCertificateRequest(OutputStream requestStream, StringBuffer md5Hash) throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
 		if((institutionName == null) || (personName == null)) {
 			readNameFromCert();
 		}
@@ -404,8 +520,10 @@ public class Nebraska {
 	 * Fill instiutionName and personName from existing certificate for IK
 	 * 
 	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	private void readNameFromCert() throws NebraskaCryptoException {
+	private void readNameFromCert() throws NebraskaCryptoException, NebraskaNotInitializedException {
 		KeyStore.PrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 		
 		X509Certificate selfsignedCert;
@@ -426,9 +544,11 @@ public class Nebraska {
 	 * 
 	 * @param fileName certificate file to read
 	 * @throws NebraskaFileException 
-	 * @throws NebraskaCryptoException 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public void importCertificateReply(String fileName) throws NebraskaFileException, NebraskaCryptoException {
+	public void importCertificateReply(String fileName) throws NebraskaFileException, NebraskaCryptoException, NebraskaNotInitializedException {
 
 		// we must already have the private key
 		if(!hasPrivateKey())
@@ -446,7 +566,7 @@ public class Nebraska {
 		}
 		Collection<?> certColl;
 		try {
-			CertificateFactory certFactory = CertificateFactory.getInstance(NebraskaConstants.CERTIFICATE_TYPE, NebraskaConstants.SECURITY_PROVIDER); // FIXME
+			CertificateFactory certFactory = CertificateFactory.getInstance(NebraskaConstants.CERTIFICATE_TYPE, NebraskaConstants.SECURITY_PROVIDER);
 			certColl = certFactory.generateCertificates(certStream);
 		} catch (CertificateException e) {
 			throw new NebraskaCryptoException(e);
@@ -461,9 +581,10 @@ public class Nebraska {
 		for (Iterator<?> certIt = certColl.iterator(); certIt.hasNext(); ) {
 			X509Certificate cert = (X509Certificate) certIt.next();
 			X500Principal subject = cert.getSubjectX500Principal();
-			String IK = new NebraskaPrincipal(subject.getName()).getInstitutionID();
-			if(IK != null && IK.equals(this.IK))
+			String certIK = new NebraskaPrincipal(subject.getName()).getInstitutionID();
+			if(certIK != null && certIK.equals(this.institutionID))
 			{
+				// FIXME check if certificate matches private key
 				matches = true;
 			}
 			certs.add(cert);
@@ -480,7 +601,7 @@ public class Nebraska {
 		
 		try
 		{
-			keyStore.setKeyEntry(keyAlias, entry.getPrivateKey(), keyPassword.toCharArray(), chain);
+			keyStore.setKeyEntry(getKeyCertAlias(), entry.getPrivateKey(), keyPassword.toCharArray(), chain);
 		} catch (IllegalStateException e) {
 			throw new NebraskaCryptoException(e);
 		} catch (KeyStoreException e) {
@@ -609,9 +730,17 @@ public class Nebraska {
 	 * 
 	 * @param keyFileName the file to read
 	 * @throws NebraskaFileException 
-	 * @throws NebraskaCryptoException 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public void importKeyPair(String keyFileName) throws NebraskaFileException, NebraskaCryptoException {
+	public void importKeyPair(String keyFileName) throws NebraskaFileException, NebraskaCryptoException, NebraskaNotInitializedException {
+		if(institutionID == null)
+		{
+			throw new NebraskaNotInitializedException(new Exception(
+					"institution ID not initialized"));
+		}
+
 		// first read key pair from file
   		FileReader fReader;
   		KeyPair keyPair = null;
@@ -630,7 +759,7 @@ public class Nebraska {
 		// setKeyEntry() needs a certificate chain, that's why we use a self-signed certificate 
 		X509Certificate[] chain = { generateSelfSignedCert(keyPair) };
 		try {
-			keyStore.setKeyEntry(keyAlias, keyPair.getPrivate(), keyPassword.toCharArray(), chain);
+			keyStore.setKeyEntry(getNewKeyAlias(), keyPair.getPrivate(), keyPassword.toCharArray(), chain);
 		} catch (KeyStoreException e) {
 			throw new NebraskaCryptoException(e);
 		}
@@ -644,7 +773,7 @@ public class Nebraska {
 	 * @return Subject DN string
 	 */
 	public String getSubjectDN() {
-		return NebraskaUtil.getSubjectDN(IK, institutionName, personName);
+		return NebraskaUtil.getSubjectDN(institutionID, institutionName, personName);
 	}
 	
 	/**
@@ -655,8 +784,10 @@ public class Nebraska {
 	 * @return MD5 fingerprint as String
 	 * @throws NebraskaCryptoException on cryptography related errors
 	 * @throws NebraskaFileException on I/O related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public String getPublicKeyMD5() throws NebraskaCryptoException, NebraskaFileException {
+	public String getPublicKeyMD5() throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException {
 		StringBuffer md5Hash = new StringBuffer();
 		createCertificateRequest(null, md5Hash);
 		return md5Hash.toString();
@@ -666,13 +797,19 @@ public class Nebraska {
 	 * Retrieve my private key from the keystore. 
 	 * @return the private key
 	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
 	private KeyStore.PrivateKeyEntry getPrivateKeyEntry()
-			throws NebraskaCryptoException {
+			throws NebraskaCryptoException, NebraskaNotInitializedException {
 		KeyStore.Entry keyEntry;
 		try {
-			keyEntry = keyStore.getEntry(keyAlias,
+			keyEntry = keyStore.getEntry(getKeyCertAlias(),
 					new KeyStore.PasswordProtection(keyPassword.toCharArray()));
+			if(keyEntry == null) {
+				keyEntry = keyStore.getEntry(getNewKeyAlias(),
+						new KeyStore.PasswordProtection(keyPassword.toCharArray()));
+			}
 		} catch (NoSuchAlgorithmException e) {
 			throw new NebraskaCryptoException(e);
 		} catch (UnrecoverableEntryException e) {
@@ -690,7 +827,7 @@ public class Nebraska {
 		return privateKeyEntry;
 	}
 
-	PrivateKey getSenderKey() throws NebraskaCryptoException {
+	PrivateKey getSenderKey() throws NebraskaCryptoException, NebraskaNotInitializedException {
 		KeyStore.PrivateKeyEntry entry = getPrivateKeyEntry();
 		return entry.getPrivateKey();
 	}
@@ -699,11 +836,13 @@ public class Nebraska {
 	 * Read the certificate chain for the sender/signer from the key store
 	 * 
 	 * @return certificate chain
-	 * @throws NebraskaCryptoException
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	CertStore getSenderCertChain() throws NebraskaCryptoException
+	CertStore getSenderCertChain() throws NebraskaCryptoException, NebraskaNotInitializedException
 	{
-		String alias = certAlias;
+		String alias = getKeyCertAlias();
 		try {
 			Certificate[] certs = keyStore.getCertificateChain(alias);
 			Collection<X509Certificate> certColl = new ArrayList<X509Certificate>();
@@ -739,10 +878,10 @@ public class Nebraska {
 	 * Read the sender/signer certificate from key store.
 	 * 
 	 * @return certificate
-	 * @throws NebraskaCryptoException
+	 * @throws NebraskaCryptoException on cryptography related errors
 	 */
 	X509Certificate getSenderCertificate() throws NebraskaCryptoException {
-		return (X509Certificate) getCertificate(IK);
+		return (X509Certificate) getCertificate(institutionID);
 	}
 
 	/**
@@ -750,7 +889,7 @@ public class Nebraska {
 	 *  
 	 * @param institutionID desired institution
 	 * @return certificate
-	 * @throws NebraskaCryptoException
+	 * @throws NebraskaCryptoException on cryptography related errors
 	 */
 	X509Certificate getCertificate(String institutionID) throws NebraskaCryptoException {
 		String alias = NebraskaUtil.getCertAlias(institutionID);
@@ -766,9 +905,11 @@ public class Nebraska {
 	 * 
 	 * @param receiverIK receiver's institution ID
 	 * @return encryptor object
-	 * @throws NebraskaCryptoException
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public NebraskaEncryptor getEncryptor(String receiverIK) throws NebraskaCryptoException
+	public NebraskaEncryptor getEncryptor(String receiverIK) throws NebraskaCryptoException, NebraskaNotInitializedException
 	{
 		return new NebraskaEncryptor(receiverIK, this);
 	}
@@ -777,9 +918,11 @@ public class Nebraska {
 	 * Get a decryptor object that will decrypt data for the own institution ID.
 	 * 
 	 * @return decryptor object
-	 * @throws NebraskaCryptoException
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
 	 */
-	public NebraskaDecryptor getDecryptor() throws NebraskaCryptoException
+	public NebraskaDecryptor getDecryptor() throws NebraskaCryptoException, NebraskaNotInitializedException
 	{
 		return new NebraskaDecryptor(this);
 	}

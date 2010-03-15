@@ -38,8 +38,9 @@ public class NebraskaDecryptor {
 	 * 
 	 * @param nebraska reference to Nebraska object that contains the key store
 	 * @throws NebraskaCryptoException 
+	 * @throws NebraskaNotInitializedException 
 	 */
-	NebraskaDecryptor(Nebraska nebraska) throws NebraskaCryptoException {
+	NebraskaDecryptor(Nebraska nebraska) throws NebraskaCryptoException, NebraskaNotInitializedException {
 		this.nebraska = nebraska;
 		certificate = nebraska.getSenderCertificate();
 		privateKey = nebraska.getSenderKey();
@@ -130,11 +131,11 @@ public class NebraskaDecryptor {
 			throw new NebraskaFileException(e);
 		}
 
-//		try {
-//			signedContent.drain();
-//		} catch (IOException e) {
-//			throw new NebraskaFileException(e);
-//		}
+		try {
+			signedContent.drain();
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
 
 		CertStore certs = null;
 		SignerInformationStore signerInformation = null;
@@ -182,7 +183,6 @@ public class NebraskaDecryptor {
 			} catch (CMSException e) {
 		      	  throw new NebraskaCryptoException(e);
 			}
-			System.out.println("verify returns: " + verified);
 		}
 
 	}

@@ -11,6 +11,13 @@ import java.util.regex.Pattern;
  *
  */
 public class NebraskaPrincipal {
+	private String country;
+	private String organization;
+	private String institutionName;
+	private String institutionID;
+	private String personName;
+	private String distinguishedName;
+	
 	// getters and setters
 	public String getCountry() {
 		return country;
@@ -18,6 +25,8 @@ public class NebraskaPrincipal {
 
 	public void setCountry(String country) {
 		this.country = country;
+		// force re-generation
+		this.distinguishedName = null;
 	}
 
 	public String getOrganization() {
@@ -26,6 +35,8 @@ public class NebraskaPrincipal {
 
 	public void setOrganization(String organization) {
 		this.organization = organization;
+		// force re-generation
+		this.distinguishedName = null;
 	}
 
 	public String getInstitutionName() {
@@ -34,6 +45,8 @@ public class NebraskaPrincipal {
 
 	public void setInstitutionName(String institutionName) {
 		this.institutionName = institutionName;
+		// force re-generation
+		this.distinguishedName = null;
 	}
 
 	public String getInstitutionID() {
@@ -42,6 +55,8 @@ public class NebraskaPrincipal {
 
 	public void setInstitutionID(String institutionID) {
 		this.institutionID = institutionID;
+		// force re-generation
+		this.distinguishedName = null;
 	}
 
 	public String getPersonName() {
@@ -50,6 +65,8 @@ public class NebraskaPrincipal {
 
 	public void setPersonName(String personName) {
 		this.personName = personName;
+		// force re-generation
+		this.distinguishedName = null;
 	}
 
 	/**
@@ -65,17 +82,6 @@ public class NebraskaPrincipal {
 			return institutionID;
 		}
 		return distinguishedName.replace(" ", "");
-	}
-	
-	private String country;
-	private String organization;
-	private String institutionName;
-	private String institutionID;
-	private String personName;
-	private String distinguishedName;
-	
-	public NebraskaPrincipal() {
-		
 	}
 	
 	/**
@@ -122,6 +128,71 @@ public class NebraskaPrincipal {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Helper class to append only existing name parts to a distinguished name string.
+	 * 
+	 * @author bodo
+	 *
+	 */
+	private class DistinguishedNameBuffer {
+		StringBuffer buf = new StringBuffer();
+
+		/**
+		 * Append key=value if value is not null.
+		 * 
+		 * @param key key string
+		 * @param value value string
+		 */
+		public void appendPart(String key, String value)
+		{
+			appendPart(key, null, value);
+		}
+		/**
+		 * Append key=prefixvalue if value is not null.
+		 * Intended for institution ID (IK).
+		 * 
+		 * @param key key string
+		 * @param prefix prefix string
+		 * @param value value string
+		 */
+		public void appendPart(String key, String prefix, String value)
+		{
+			if(value != null)
+			{
+				if(buf.length() > 0) buf.append(", ");
+				buf.append(key);
+				if(!key.endsWith("=")) buf.append("=");
+				buf.append(prefix);
+				buf.append(value);
+			}
+		}
+		public String toString()
+		{
+			return buf.toString();
+		}
+	}
+	
+	/**
+	 * Reconstruct distinguished name from name parts if necessary and 
+	 * return distinguished name.
+	 * 
+	 * @return distinguishedName
+	 */
+	public String getDistinguishedName()
+	{
+		if(distinguishedName == null)
+		{
+			DistinguishedNameBuffer buf = new DistinguishedNameBuffer();
+			buf.appendPart("C", country);
+			buf.appendPart("O", organization);
+			buf.appendPart("OU=",institutionName);
+			buf.appendPart("OU", "IK", institutionID);
+			buf.appendPart("CN", personName);
+			distinguishedName = buf.toString();
+		}
+		return distinguishedName;
 	}
 	
 	/* (non-Javadoc)

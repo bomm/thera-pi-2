@@ -1,6 +1,8 @@
 package org.thera_pi.nebraska;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,14 +37,25 @@ public class NebraskaEncryptor {
 	private X509Certificate senderCert;
 	private PrivateKey senderKey;
 	private CertStore certificateChain;
+	private boolean encryptToSelf;
+	
+	public boolean isEncryptToSelf() {
+		return encryptToSelf;
+	}
+
+	public void setEncryptToSelf(boolean encryptToSelf) {
+		this.encryptToSelf = encryptToSelf;
+	}
+
 	/**
 	 * Create a Nebraska encryptor for specified receiver.
 	 * 
 	 * @param IK receiver ID (IK)
 	 * @param nebraska reference to Nebraska object that contains the key store
 	 * @throws NebraskaCryptoException 
+	 * @throws NebraskaNotInitializedException 
 	 */
-	NebraskaEncryptor(String IK, Nebraska nebraska) throws NebraskaCryptoException {
+	NebraskaEncryptor(String IK, Nebraska nebraska) throws NebraskaCryptoException, NebraskaNotInitializedException {
 		this.receiverIK = IK;
 		this.nebraska = nebraska;
 		
@@ -51,13 +64,14 @@ public class NebraskaEncryptor {
 		readSenderKey();
 		readCertificateChain();
 	}
-	
+
 	/**
 	 * Get the signer's private key and store it in this object.
 	 *  
 	 * @throws NebraskaCryptoException
+	 * @throws NebraskaNotInitializedException 
 	 */
-	private void readSenderKey() throws NebraskaCryptoException {
+	private void readSenderKey() throws NebraskaCryptoException, NebraskaNotInitializedException {
 		this.senderKey = nebraska.getSenderKey();
 	}
 
@@ -80,45 +94,51 @@ public class NebraskaEncryptor {
 	/**
 	 * Get the sender's certificate chain (CA certificates) and store it in this object.
 	 * @throws NebraskaCryptoException 
+	 * @throws NebraskaNotInitializedException 
 	 */
-	private void readCertificateChain() throws NebraskaCryptoException {
+	private void readCertificateChain() throws NebraskaCryptoException, NebraskaNotInitializedException {
 		certificateChain = nebraska.getSenderCertChain();
 	}
 
 	/**
-	 * Encrypt data for the receiver specified in constructor.
-	 * 
-	 * @param inStream plain text data stream
-	 * @param outStream encrypted data stream
-	 * @throws NebraskaFileException 
-	 * @throws NebraskaCryptoException 
+	 * Sign and encrypt data from input file and write result to output file.
+	 *  
+	 * @param inFileName input file
+	 * @param outFileName output file
+	 * @return size of resulting output file
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on I/O related errors
 	 */
-	public void encrypt(InputStream inStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
-		encryptToReceiverOrSelf(inStream, outStream, false);
+	public long encrypt(String inFileName, String outFileName) throws NebraskaCryptoException, NebraskaFileException {
+		InputStream inStream;
+		OutputStream outStream;
+		File outFile;
+		try {
+			inStream = new FileInputStream(inFileName);
+			outFile = new File(outFileName);
+			outStream = new FileOutputStream(outFile);
+		} catch (FileNotFoundException e) {
+			throw new NebraskaFileException(e);
+		}
+		encrypt(inStream, outStream);
+		try {
+			outStream.close();
+			inStream.close();
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
+		return outFile.length();
 	}
 
 	/**
-	 * Encrypt data for the receiver specified in constructor and for sender.
-	 * 
-	 * @param inStream plain text data stream
-	 * @param outStream encrypted data stream
-	 * @throws NebraskaFileException 
-	 * @throws NebraskaCryptoException 
-	 */
-	public void encryptToSelf(InputStream inStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
-		encryptToReceiverOrSelf(inStream, outStream, true);
-	}
-	
-	/**
-	 * Encrypt data for the receiver specified in constructor and for sender.
+	 * Sign and encrypt data from input and write to output.
 	 * 
 	 * @param inStream plain text data stream
 	 * @param outStream encrypted data stream
 	 * @throws NebraskaCryptoException 
 	 * @throws NebraskaFileException 
 	 */
-	private void encryptToReceiverOrSelf(InputStream inStream, OutputStream outStream,
-			boolean toSelf) throws NebraskaCryptoException, NebraskaFileException {
+	public void encrypt(InputStream inStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
 		/*
 		 * To get the input as byte array we copy all data to a 
 		 * ByteArrayOutputStream and retrieve the byte array from it.
@@ -174,20 +194,6 @@ public class NebraskaEncryptor {
 			throw new NebraskaFileException(e);
 		}
 
-		// FIXME remove debug output
-		FileOutputStream debugOutput;
-		try {
-			debugOutput = new FileOutputStream("/home/bodo/thera-pi/test/signed.dat");
-			debugOutput.write(encodedSignedData);
-			debugOutput.close();
-		} catch (FileNotFoundException e) {
-			throw new NebraskaFileException(e);
-		}
-		catch (IOException e) {
-			throw new NebraskaFileException(e);
-		}
-		
-		
 		// second processing step: encrypt data
 		
 		CMSEnvelopedDataGenerator envelopedGenerator = new CMSEnvelopedDataGenerator();
@@ -196,7 +202,7 @@ public class NebraskaEncryptor {
 		envelopedGenerator.addKeyTransRecipient((X509Certificate) receiverCert);
 		
 		// optionally the sender may also decrypt it
-		if(toSelf) {
+		if(encryptToSelf) {
 			envelopedGenerator.addKeyTransRecipient((X509Certificate) senderCert);
 		}
 		
