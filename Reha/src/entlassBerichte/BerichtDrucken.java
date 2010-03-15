@@ -19,7 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
@@ -117,7 +117,7 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 		pb.add(checks[3],cc.xy(2,9));
 		checks[4] = new JRtaCheckBox("Alle Exemplare erstellen!!");
 		pb.add(checks[4],cc.xy(2,11));
-		checks[5] = new JRtaCheckBox("Im PDF-Reader öffnen");
+		checks[5] = new JRtaCheckBox("Im PDF-Reader ï¿½ffnen");
 		pb.add(checks[5],cc.xy(2,13));
 		
 		drucken = new JButton("Druck starten");
@@ -167,11 +167,11 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 			if( name != null){
 				doDrucken();
 			}
-			System.out.println("Return gedrückt");
+			System.out.println("Return gedrï¿½ckt");
 		}
 		if(arg0.getKeyCode()==27){
 			arg0.consume();
-			System.out.println("ESC gedrückt");
+			System.out.println("ESC gedrï¿½ckt");
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 			return;

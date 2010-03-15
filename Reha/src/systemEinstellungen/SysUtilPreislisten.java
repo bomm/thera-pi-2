@@ -32,7 +32,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.DblCellEditor;

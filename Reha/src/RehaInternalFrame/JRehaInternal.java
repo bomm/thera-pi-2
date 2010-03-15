@@ -50,7 +50,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.JInternalFrame.JDesktopIcon;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;

@@ -51,7 +51,7 @@ import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.table.DefaultTableModel;

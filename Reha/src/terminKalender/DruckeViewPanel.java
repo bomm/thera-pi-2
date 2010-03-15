@@ -18,7 +18,7 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 
 import org.jdesktop.swingx.JXPanel;
 

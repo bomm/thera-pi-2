@@ -28,7 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 
 import oOorgTools.OOTools;
 

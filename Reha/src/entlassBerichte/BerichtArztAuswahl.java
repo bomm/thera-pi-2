@@ -18,7 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXDialog;

@@ -21,7 +21,7 @@ import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 
 import dialoge.SchluesselDialog;
 

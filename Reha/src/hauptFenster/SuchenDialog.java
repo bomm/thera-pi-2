@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -384,13 +384,13 @@ public class SuchenDialog extends JXDialog {
 //							System.out.println("nord");
 							break;
 						}
-						if ((e.getX() <= 4 && e.getY() >= (((JComponent) e.getSource()).getHeight()-4))){ //süd-west
+						if ((e.getX() <= 4 && e.getY() >= (((JComponent) e.getSource()).getHeight()-4))){ //sï¿½d-west
 							insize = true;
 							sizeart = 4;
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cswsize);
-//							System.out.println("südwest");
+//							System.out.println("sï¿½dwest");
 							break;
 						}
 						if ((e.getX() <= 4)){ //west
@@ -402,23 +402,23 @@ public class SuchenDialog extends JXDialog {
 //							System.out.println("west");
 							break;
 						}
-						if ((e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && //süd-ost
+						if ((e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && //sï¿½d-ost
 								e.getY() >= (((JComponent) e.getSource()).getHeight()-4)){ 
 							insize = true;
 							sizeart = 6;
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(csesize);
-//							System.out.println("südost");
+//							System.out.println("sï¿½dost");
 							break;
 						}
-						if (e.getY() >= (((JComponent) e.getSource()).getHeight()-2)){ //süd
+						if (e.getY() >= (((JComponent) e.getSource()).getHeight()-2)){ //sï¿½d
 							insize = true;
 							sizeart = 7;
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cssize);
-//							System.out.println("süd");
+//							System.out.println("sï¿½d");
 							break;
 						}
 						if (e.getX() >= (((JComponent) e.getSource()).getWidth()-4)){ //ost
@@ -485,7 +485,7 @@ public class SuchenDialog extends JXDialog {
 								setCursor(cnsize);
 								break;
 							}	
-							if(sizeart==4){ //süd-west
+							if(sizeart==4){ //sï¿½d-west
 								dim.width = (oX > orgbounds[0] ? dim.width-(oX-orgbounds[0]) : dim.width+(orgbounds[0]-oX));
 								dim.height = (oY > orgbounds[1] ? dim.height+(oY-orgbounds[1]) : dim.height-(orgbounds[1]-oY));						
 								dim.width = (dim.width < 185 ? 185 : dim.width);
@@ -509,7 +509,7 @@ public class SuchenDialog extends JXDialog {
 								setCursor(cwsize);
 								break;
 							}
-							if(sizeart==6){ //süd-ost
+							if(sizeart==6){ //sï¿½d-ost
 								dim.width = (oX > orgbounds[0] ? dim.width+(oX-orgbounds[0]) : dim.width-(orgbounds[0]-oX));
 								dim.height = (oY > orgbounds[1] ? dim.height+(oY-orgbounds[1]) : dim.height-(orgbounds[1]-oY));						
 								dim.width = (dim.width < 185 ? 185 : dim.width);
@@ -521,7 +521,7 @@ public class SuchenDialog extends JXDialog {
 								setCursor(cwsize);
 								break;
 							}
-							if(sizeart==7){ //süd
+							if(sizeart==7){ //sï¿½d
 								//dim.width = (oX > orgbounds[0] ? dim.width+(oX-orgbounds[0]) : dim.width-(orgbounds[0]-oX));
 								dim.height = (oY > orgbounds[1] ? dim.height+(oY-orgbounds[1]) : dim.height-(orgbounds[1]-oY));						
 								dim.width = (dim.width < 185 ? 185 : dim.width);
@@ -686,7 +686,7 @@ public class SuchenDialog extends JXDialog {
 					//dataVector.addElement(rowVector);
 				}
 				
-				System.out.println("Größe ds Result Satzes = "+dataVector.size());
+				System.out.println("Grï¿½ï¿½e ds Result Satzes = "+dataVector.size());
 				/*
 				((DefaultTableModel) jtable.getModel()).setDataVector(dataVector,reiheVector);
 				jtable.getColumnModel().getColumn(0).setPreferredWidth(100);
