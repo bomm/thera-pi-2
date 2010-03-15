@@ -368,7 +368,11 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		eltern.jtab = new JTabbedPane();
 		//Reha.thisClass.patpanel.jtab.setBorder(null);
 		eltern.jtab.addFocusListener(eltern.getFocusListener());
-		eltern.jtab.setUI(new WindowsTabbedPaneUI());
+		try{
+			eltern.jtab.setUI(new WindowsTabbedPaneUI());
+		}catch(Exception ex){
+			// Kein KarstenLentzsch LAF
+		}
 		JXPanel tabpan = new JXPanel(new BorderLayout());
 		tabpan.setBorder(BorderFactory.createEmptyBorder(0,0, 0, 0));
 		tabpan.setOpaque(true);

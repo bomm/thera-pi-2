@@ -1,6 +1,7 @@
 package entlassBerichte;
 
 import javax.swing.JTabbedPane;
+import javax.swing.plaf.TabbedPaneUI;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
@@ -13,7 +14,11 @@ public class NachsorgeTab {
 	public NachsorgeTab(EBerichtPanel xeltern){
 		eltern = xeltern;
 		tab = new JTabbedPane();
-		tab.setUI(new WindowsTabbedPaneUI());
+		try{
+			tab.setUI(new WindowsTabbedPaneUI());
+		}catch(Exception ex){
+			// Kein KarstenLentsch LAF
+		}
 		seite1 = new Ns1(eltern); 
 		seite2 = new Ns2(eltern);
 		tab.addTab("Reha-Nachsorge Seite-1", seite1.getSeite());

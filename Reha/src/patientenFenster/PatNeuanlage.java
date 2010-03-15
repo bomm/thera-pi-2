@@ -191,7 +191,11 @@ private KVKWrapper kvw;
 		UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
 		
 		JTabbedPane patTab = new JTabbedPane();
-		patTab.setUI(new WindowsTabbedPaneUI());
+		try{
+			patTab.setUI(new WindowsTabbedPaneUI());
+		}catch(Exception ex){
+			// Kein KarstenLentsch LAF
+		}
 		TabbedPaneUI tpUi = patTab.getUI();
 
 		patTab.setOpaque(false);

@@ -91,6 +91,9 @@ public class OOTools{
 		IDocumentService documentService = null;;
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		System.out.println("Starte Datei -> "+url);
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+		}
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 
@@ -254,6 +257,9 @@ public class OOTools{
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+		}
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
@@ -341,8 +347,7 @@ public class OOTools{
 		ITextDocument textDocument = null;
 		try {
 			if(!Reha.officeapplication.isActive()){
-				Reha.officeapplication.activate();
-				//Reha.starteOfficeApplication();
+				Reha.starteOfficeApplication();
 			}
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
@@ -363,8 +368,7 @@ public class OOTools{
 	public ITextDocument starteWriterMitDatei(String url){
 		try {
 			if(!Reha.officeapplication.isActive()){
-				Reha.officeapplication.activate();
-				//Reha.starteOfficeApplication();
+				Reha.starteOfficeApplication();
 			}
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			DocumentDescriptor docdescript = new DocumentDescriptor();
@@ -393,6 +397,9 @@ public class OOTools{
 	}
 	public static ITextDocument starteWriterMitStream(InputStream is, String titel){
 		try {
+			if(!Reha.officeapplication.isActive()){
+				Reha.starteOfficeApplication();
+			}
 			DocumentDescriptor d = new DocumentDescriptor();
         	d.setTitle(titel);
         	d.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER));
@@ -423,6 +430,9 @@ public class OOTools{
 
 	public ISpreadsheetDocument starteCalcMitDatei(String url){
 		try {
+			if(!Reha.officeapplication.isActive()){
+				Reha.starteOfficeApplication();
+			}
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
 			DocumentDescriptor docdescript = new DocumentDescriptor();
 			docdescript.setURL(url);

@@ -276,7 +276,11 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 		//System.out.println(tabbedPane.getUI());
-		tabbedPane.setUI(new WindowsTabbedPaneUI());
+		try{
+			tabbedPane.setUI(new WindowsTabbedPaneUI());
+		}catch(Exception ex){
+			//Kein KarstenLentzsch LAF
+		}
 		tabbedPane.addKeyListener(this);
 		tabbedPane.addChangeListener(this);
 		

@@ -128,6 +128,9 @@ import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
 import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.event.ITerminateEvent;
+import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import arztFenster.ArztPanel;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -411,7 +414,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			try {
 				//UIManager.setLookAndFeel((aktLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"));
 				//UIManager.setLookAndFeel((aktLookAndFeel = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"));
-				
+				//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 				UIManager.setLookAndFeel((aktLookAndFeel = SystemConfig.aHauptFenster.get(4)));
 
 			} catch (ClassNotFoundException e1) {
@@ -474,6 +477,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             	  UIManager.put(key, fontUIDresource);
               }
            }
+
           
            //new ListUIManagerValues();
            
@@ -486,6 +490,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				System.out.println("ProgHome = "+Reha.proghome);
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();
+		   		Reha.starteOfficeApplication();
 			}
 		});
 		
@@ -1751,6 +1756,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
         try
         {
+        	System.out.println("**********Open-Office wird gestartet***************");
             String path = OPEN_OFFICE_ORG_PATH;
             Map <String, String>config = new HashMap<String, String>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
@@ -1758,9 +1764,29 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
+            officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
+            	  public void queryTermination(ITerminateEvent terminateEvent) {
+            	    super.queryTermination(terminateEvent);
+            	    try {
+            	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
+            	      if (docs.length == 1) { //can only be one document, otherwise no termination would be called! 
+            	        docs[0].close();
+            	        System.out.println("OfficeApplication Terminated");
+            	      }
+            	    }
+            	    catch (DocumentException e) {
+            	      e.printStackTrace();
+            	    } catch (OfficeApplicationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	  }
+            	});
+            
             //officeapplication.getDesktopService().activateTerminationPrevention(); 
             System.out.println("Open-Office wurde gestartet");
             System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
+            
             new SwingWorker<Void,Void>(){
 
 				@Override
@@ -1768,6 +1794,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					// TODO Auto-generated method stub
             		System.out.println("OpenOffice -> Aufruf");
             		Reha.thisClass.Rehaprogress.setIndeterminate(false);
+            		try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return null;
 				}
             	
@@ -2584,13 +2616,13 @@ final class DbNachladen implements Runnable{
 
 final class ErsterLogin implements Runnable{
 	private void Login(){
-	
+		/*
 		new Thread(){
 			public void run(){
 			Reha.starteOfficeApplication();
 			}
 		}.start();
-
+		*/
 		ProgLoader.PasswortDialog(0);
 
 	}
@@ -2669,6 +2701,7 @@ final class PreisListenLaden implements Runnable{
 				e.printStackTrace();
 			}
 		}	
+
 		new Thread(new ErsterLogin()).start();
 	}
 	

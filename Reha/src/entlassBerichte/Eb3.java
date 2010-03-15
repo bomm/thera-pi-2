@@ -92,6 +92,10 @@ public class Eb3 implements RehaEventListener  {
 		pan.setBorder(BorderFactory.createEmptyBorder(0, 0, 3, 0));
 		pan.setVisible(true);
 		pan.setName("ooNativePanel");
+		if(!Reha.officeapplication.isActive()){
+			System.out.println("Aktiviere Office...");
+			Reha.starteOfficeApplication();
+		}
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -151,23 +155,31 @@ public class Eb3 implements RehaEventListener  {
 								eltern.meldeInitOk(2);
 
 			        	}else{
+							if(!Reha.officeapplication.isActive()){
+								System.out.println("Aktiviere Office...");
+								Reha.starteOfficeApplication();
+								Thread.sleep(100);
+							}
 			        		new SwingWorker<Void,Void>(){
 								@Override
 								protected Void doInBackground()
 										throws Exception {
 									InputStream ins = null;
 									try{
-										if(!Reha.officeapplication.isActive()){
-											Reha.starteOfficeApplication();
-										}
 
 					        			System.out.println("starte Dokument mit temp. Stream-Daten");
 					        			ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 					        			if(ins.available() > 0){
 						        			DocumentDescriptor descript = new DocumentDescriptor();
 						        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+						        			try{
 						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
 						        			eltern.meldeInitOk(2);
+						        			}catch(Exception ex){
+												Reha.starteOfficeApplication();
+							        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+							        			eltern.meldeInitOk(2);
+						        			}
 					        			}else{
 					        				DocumentDescriptor descript = new DocumentDescriptor();
 						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,descript);

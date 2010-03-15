@@ -20,11 +20,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingWorker;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
@@ -64,8 +65,9 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		setLayout(new BorderLayout());
 		this.tbltext = new String(dtext);
 		String x = new String(dtext);
-		x = x.replace("\r","");
-		x = x.replace("\n","<br>");
+		x = x.replace(System.getProperty("line.separator"),"<br>");
+		//x = x.replace("\r","");
+		//x = x.replace("\n","<br>");
 		x = x.replace("^Tab^","&nbsp;");
 		x = x.replace("^CRLF^","<br>");
 		this.savetext = "<html>"+x+"</html>";
@@ -127,8 +129,9 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	public void neueDaten(String dtext,Vector vec){
 		this.tbltext = new String(dtext);
 		String x = new String(dtext);
-		x = x.replace("\r","");
-		x = x.replace("\n","<br>");
+		x = x.replace(System.getProperty("line.separator"),"<br>");
+		//x = x.replace("\r","");
+		//x = x.replace("\n","<br>");
 		x = x.replace("^Tab^","&nbsp;");
 		x = x.replace("^CRLF^","<br>");
 		this.savetext = new String("<html>"+x+"</html>");
@@ -272,8 +275,9 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	private void werteUebergeben(){
 		String x = darstellung.getText();
 		x = x.replaceAll("&nbsp;", "\t");
-		x = x.replaceAll("<br>","\r\n");
-		x = x.replaceAll("\n","");
+		x = x.replace("<br>",System.getProperty("line.separator"));
+		//x = x.replaceAll("<br>","\r\n");
+		//x = x.replaceAll("\n","");
 		x = x.replace("</b>","");
 		x = x.replace("<b>","");
 		x = x.replace("</font>","");		

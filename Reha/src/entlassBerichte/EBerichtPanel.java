@@ -182,12 +182,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(berichttyp.contains("E-Bericht") || berichttyp.contains("LVA-A") || berichttyp.contains("BfA-A") 
 				|| berichttyp.contains("GKV-A")){
 			cbktraeger = new JRtaComboBox(SystemConfig.vGutachtenEmpfaenger);
+			
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
+			
 			ebtab = getEBerichtTab();
 			ebtab.setSelectedIndex(0);
 			add(ebtab,BorderLayout.CENTER);
 			ebtab.addChangeListener(this);
+			
 			UIManager.put("TabbedPane.tabsOpaque", Boolean.TRUE);
 			UIManager.put("TabbedPane.contentOpaque", Boolean.TRUE);
 			//rvVorlagen[0]  = vorlagenPfad+"RV-EBericht-Seite1-Variante2.pdf";

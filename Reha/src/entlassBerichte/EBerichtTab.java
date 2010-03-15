@@ -21,7 +21,11 @@ public class EBerichtTab {
 	public EBerichtTab(EBerichtPanel xeltern){
 		eltern = xeltern;
 		tab = new JTabbedPane();
-		tab.setUI(new WindowsTabbedPaneUI());
+		try{
+			tab.setUI(new WindowsTabbedPaneUI());
+		}catch(Exception ex){
+			// kein KarstenLentzsch looks
+		}
 		try{
 			System.out.println("Starte Seite 1");
 			seite1 = new Eb1(eltern);

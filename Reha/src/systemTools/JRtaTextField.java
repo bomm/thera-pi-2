@@ -70,8 +70,8 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 	public JRtaTextField(String type,boolean selectWhenFocus){
 		
-		
-		new JFormattedTextField();
+		super();
+		//new JFormattedTextField();
 		setRtaType(type,this,selectWhenFocus);
 		
 		this.addFocusListener(this);
@@ -82,8 +82,8 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 	public JRtaTextField(String type,boolean selectWhenFocus,String text){
 		
-		
-		new JFormattedTextField();
+		super();
+		//new JFormattedTextField();
 		setRtaType(type,this,selectWhenFocus);
 		//this.addFocusListener(this);
 		setText(text);
@@ -110,7 +110,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	}
 	/*****************/
 	public JRtaTextField(String type,boolean selectWhenFocus,String gleitkomma,String xalign){
-		
+		super();
 		this.nachkommas = new Integer(gleitkomma.split("\\.")[1]); 
 		//setupFormat(nachkommas);
 

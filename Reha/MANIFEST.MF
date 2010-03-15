@@ -3,11 +3,12 @@ Sealed: true
 Main-Class: hauptFenster.Reha
 Class-Path: RTAJars/adsjdbc.jar 
  RTAJars/Filters.jar 
- RTAJars/forms-1.2.1.jar 
+ RTAJars/forms-1.3.0.jar 
  RTAJars/jmock-1.1.0RC1.jar 
  RTAJars/junit-4.5.jar 
  RTAJars/JXLayer-2008_03_02.jar 
- RTAJars/looks-2.3.0.jar 
+ RTAJars/looks-2.3.1.jar 
+ RTAJars/jgoodies-common-0.9.9.jar 
  RTAJars/MultipleGradientPaint.jar 
  RTAJars/mysql-connector-java-5.1.5-bin.jar 
  RTAJars/swing-layout.jar 
