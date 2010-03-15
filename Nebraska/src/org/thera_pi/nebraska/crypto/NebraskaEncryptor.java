@@ -25,7 +25,8 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
 
 /**
  * This object can be used to encrypt data with the certificate of a specified receiver.
- * Optionally it can add an encryption using the sender's certificate to allow decryption by the sender.
+ * Optionally it can add an encryption using the sender's certificate to allow 
+ * decryption by the sender.
  * 
  * @author bodo
  *
@@ -51,52 +52,17 @@ public class NebraskaEncryptor {
 	 * Create a Nebraska encryptor for specified receiver.
 	 * 
 	 * @param IK receiver ID (IK)
-	 * @param nebraskaKeystore reference to NebraskaKeystore object that contains the key store
-	 * @throws NebraskaCryptoException 
-	 * @throws NebraskaNotInitializedException 
+	 * @param nebraskaKeystore reference to NebraskaKeystore object for access to the keys
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
 	 */
 	NebraskaEncryptor(String IK, NebraskaKeystore nebraskaKeystore) throws NebraskaCryptoException, NebraskaNotInitializedException {
 		this.receiverIK = IK;
 		this.nebraskaKeystore = nebraskaKeystore;
 		
-		readReceiverCert();
-		readSenderCert();
-		readSenderKey();
-		readCertificateChain();
-	}
-
-	/**
-	 * Get the signer's private key and store it in this object.
-	 *  
-	 * @throws NebraskaCryptoException
-	 * @throws NebraskaNotInitializedException 
-	 */
-	private void readSenderKey() throws NebraskaCryptoException, NebraskaNotInitializedException {
-		this.senderKey = nebraskaKeystore.getSenderKey();
-	}
-
-	/**
-	 * Get the receiver's certificate and store it in this object.
-	 * @throws NebraskaCryptoException 
-	 */
-	private void readReceiverCert() throws NebraskaCryptoException {
 		receiverCert = nebraskaKeystore.getCertificate(receiverIK);
-	}
-
-	/**
-	 * Get the sender's certificate and store it in this object.
-	 * @throws NebraskaCryptoException 
-	 */
-	private void readSenderCert() throws NebraskaCryptoException {
+		senderKey = nebraskaKeystore.getSenderKey();
 		senderCert = nebraskaKeystore.getSenderCertificate();
-	}
-
-	/**
-	 * Get the sender's certificate chain (CA certificates) and store it in this object.
-	 * @throws NebraskaCryptoException 
-	 * @throws NebraskaNotInitializedException 
-	 */
-	private void readCertificateChain() throws NebraskaCryptoException, NebraskaNotInitializedException {
 		certificateChain = nebraskaKeystore.getSenderCertChain();
 	}
 
@@ -131,12 +97,14 @@ public class NebraskaEncryptor {
 	}
 
 	/**
-	 * Sign and encrypt data from input and write to output.
+	 * Sign and encrypt data from input stream and write to output stream.
+	 * Input stream will be copied to a byte array using a ByteArrayOutputStream
+	 * for further processing.
 	 * 
 	 * @param inStream plain text data stream
 	 * @param outStream encrypted data stream
-	 * @throws NebraskaCryptoException 
-	 * @throws NebraskaFileException 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on I/O related errors
 	 */
 	public void encrypt(InputStream inStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
 		/*
