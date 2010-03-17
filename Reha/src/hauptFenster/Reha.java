@@ -471,7 +471,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				System.out.println("ProgHome = "+Reha.proghome);
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();
-		   		Reha.starteOfficeApplication();
+		   		//Reha.starteOfficeApplication();
 			}
 		});
 		
@@ -2466,13 +2466,13 @@ final class DbNachladen implements Runnable{
 
 final class ErsterLogin implements Runnable{
 	private void Login(){
-		/*
 		new Thread(){
 			public void run(){
 			Reha.starteOfficeApplication();
+			OOTools.ooOrgAnmelden();
 			}
 		}.start();
-		*/
+		
 		ProgLoader.PasswortDialog(0);
 
 	}

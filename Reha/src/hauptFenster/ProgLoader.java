@@ -17,7 +17,9 @@ import javax.swing.SwingUtilities;
 import krankenKasse.KassenPanel;
 import menus.OOIFTest;
 
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.therapi.reha.patient.PatientHauptPanel;
 
 import patientenFenster.PatGrundPanel;
 import rehaContainer.RehaTP;
@@ -400,6 +402,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 		Reha.thisClass.progressStarten(false);
 		return;
 	}
+	try{
 	JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 	if(patient != null){
 		containerHandling(((JPatientInternal)patient).getDesktop());
@@ -428,12 +431,14 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.setName(name);
 	patjry.setSize(new Dimension(900,650));
 	patjry.setPreferredSize(new Dimension(900,650));
-	//PatGrundPanel patpan = new PatGrundPanel(jry);
-	//patjry.setContent(new PatGrundPanel(patjry));
-
-	Reha.thisClass.patpanel = new PatGrundPanel(patjry);
-	patjry.setContent(Reha.thisClass.patpanel);
-
+	
+	//Bisheriges Programm
+	//Reha.thisClass.patpanel = new PatGrundPanel(patjry);
+	//patjry.setContent(Reha.thisClass.patpanel);
+	
+	JXPanel content = new PatientHauptPanel();
+	patjry.setContent(content);
+	
 	patjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
 	patjry.setLocation(comps*10, comps*10);
@@ -447,11 +452,14 @@ public void ProgPatientenVerwaltung(int setPos) {
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run()
 	 	   {
-	 			patjry.setzeSuche();
+	 			//patjry.setzeSuche();
 	 			System.out.println("Focus auf PatPanel gesetzt");
 	 	   }
 	});
 	Reha.thisClass.progressStarten(false);
+	}catch(Exception ex){
+		ex.printStackTrace();
+	}
 	return; 
 
 }

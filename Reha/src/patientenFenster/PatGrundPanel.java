@@ -654,7 +654,6 @@ public FocusListener getFocusListener(){
 
 
 public void starteSuche(){
-	//System.out.println("Suche wurde aktiviert");
 	if(tfsuchen.getText().trim().equals("")){
 		String cmd = "<html>Sie haben <b>kein</b> Suchkriterium eingegeben.<br>"+
 		"Das bedeutet Sie laden den <b>kompletten Patientenstamm!!!<b><br><br>"+
@@ -672,7 +671,6 @@ public void starteSuche(){
 			lastseek = tfsuchen.getText().trim();
 		}
 		((SuchenDialog) sucheComponent).setVisible(true);
-		//((SuchenDialog) sucheComponent).setzeFocusAufSucheFeld();
 	}else{
 		sucheComponent = new SuchenDialog(null,Reha.thisClass.patpanel,tfsuchen.getText());
 		Point thispoint = Reha.thisClass.patpanel.getLocationOnScreen();
@@ -680,7 +678,6 @@ public void starteSuche(){
 		((SuchenDialog) sucheComponent).setVisible(true);
 		lastseek = tfsuchen.getText().trim();
 	}
-	
 }
 
 public void doMemoAction(ActionEvent arg0){
@@ -1619,7 +1616,7 @@ class PatNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			rtp = null;
 			dispose();
 			super.dispose();
-			System.out.println("****************Patient Neu/�ndern -> Listener entfernt (Closed)**********");
+			System.out.println("****************Patient Neu/ändern -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -1631,19 +1628,15 @@ class JPatTextField extends JRtaTextField{
 
 	public JPatTextField(String type, boolean selectWhenFocus) {
 		super(type, selectWhenFocus);
-		// TODO Auto-generated constructor stub
 		setOpaque(false);
 		setEditable(false);
 		setBorder(null);
 		addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
-					//final String xname = getName();
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
-							// TODO Auto-generated method stub
-							//System.out.println("In Mousedoppelklick "+xname);
 							String s1 = "#KORRIGIEREN";
 							String s2 = getName();
 							PatStammEvent pEvt = new PatStammEvent(this);
@@ -1652,12 +1645,9 @@ class JPatTextField extends JRtaTextField{
 							PatStammEventClass.firePatStammEvent(pEvt);	
 							return null;
 						}
-						
 					}.execute();
 				}
 			}
-			
-			
 		});
 	}
 	

@@ -72,7 +72,7 @@ ArztNeuKurz ank = null;
 public JXPanel grundPanel = null;
 public String arztbisher;
 /*************/
-PinPanel pinPanel;
+//PinPanel pinPanel;
 private RehaTPEventClass rtp = null;
 /************/
 
@@ -120,7 +120,11 @@ private RehaTPEventClass rtp = null;
 				*/
 			}
 		});
-		setzeFocus();
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				setzeFocus();
+			}
+		});
 	}
 	private void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){

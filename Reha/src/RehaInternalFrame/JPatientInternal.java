@@ -1,42 +1,21 @@
 package RehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
-import hauptFenster.SuchenDialog;
 
 import java.awt.event.FocusListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
-import javax.accessibility.Accessible;
-import javax.accessibility.AccessibleRole;
-import javax.accessibility.AccessibleValue;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.JComponent.AccessibleJComponent;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-
-import patientenFenster.AktuelleRezepte;
-import patientenFenster.Dokumentation;
-import patientenFenster.Gutachten;
-import patientenFenster.Historie;
-import patientenFenster.PatGrundPanel;
-import patientenFenster.TherapieBerichte;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
-
-import terminKalender.TerminFenster;
 
 public class JPatientInternal extends JRehaInternal implements FocusListener, RehaEventListener{
 	/**
@@ -71,21 +50,26 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("Lösche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		//Nächsten JInternalFrame aktivieren
+		try{
+		System.out.println("LÃ¶sche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//NÃ¤chsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		//JInternalFram von Desktop lösen
+		//JInternalFram von Desktop lÃ¶sen
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
 		rEvent = null;
 		this.removeInternalFrameListener(this);
 		
-		Reha.thisFrame.requestFocus();
-		Reha.thisClass.patpanel.fl = null;
-		Reha.thisClass.patpanel.kli = null;
-		Reha.thisClass.patpanel.gplst = null;
-		Reha.thisClass.patpanel.newPolicy = null;
+		try{
+			Reha.thisFrame.requestFocus();
+			Reha.thisClass.patpanel.fl = null;
+			Reha.thisClass.patpanel.kli = null;
+			Reha.thisClass.patpanel.gplst = null;
+			Reha.thisClass.patpanel.newPolicy = null;
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		
 		String s1 = new String("#CLOSING");
 		String s2 = "";
@@ -122,6 +106,9 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		 		   Reha.thisClass.progLoader.loeschePatient();
 		 	   }
 		});
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 
 
 		

@@ -999,7 +999,7 @@ public class SystemConfig {
 				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
 				"kleinehilfe","achtung","vorschau","patstamm","arztstamm","kassenstamm","drvlogo","personen16",
 				"forward","wecker16","mond","roogle","scannergross","rot","gruen","inaktiv","buttonrot","buttongruen",
-				"statusoffen","statuszu","statusset","abschliessen"};
+				"statusoffen","statuszu","statusset","abschliessen","bombe"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		Image ico = null;
@@ -1012,7 +1012,7 @@ public class SystemConfig {
 			xscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleX");
 			yscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleY");
 			try{
-				System.out.println(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i]));
+				//System.out.println(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i]));
 				if((xscale >0) && (yscale > 0)){
 					ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])).getImage().getScaledInstance(xscale,yscale, Image.SCALE_SMOOTH);
 					hmSysIcons.put(bilder[i], new ImageIcon(ico));				

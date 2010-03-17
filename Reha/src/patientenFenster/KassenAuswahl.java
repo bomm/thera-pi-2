@@ -46,7 +46,11 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 
+import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
 public class KassenAuswahl extends RehaSmartDialog{
 	
@@ -55,43 +59,39 @@ public class KassenAuswahl extends RehaSmartDialog{
 	String suchid = "";
 	public JXTable kassenwahltbl = null;
 	public JButton neukasse = null;
+	public JButton suchekasse = null;
+	public JButton uebernahmekasse = null;
+	public JButton abbrechenkasse = null;
 	public MyKassenWahlModel kassenwahlmod = null;
 	public JRtaTextField[] elterntfs;
 	JXPanel content = null;
 	KassenNeuKurz knk = null;
 	public JXPanel grundPanel = null;
 	public String kassenbisher;
-
+	private RehaTPEventClass rtp = null;
 
 
 	public KassenAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String kassennum){
 		super(owner, name);
 		//setSize(430,300);
-		setSize(450,400);
+		setSize(550,350);
 		this.suchkrit = suchegleichnach[0];
 		this.suchid = suchegleichnach[1];
 		this.elterntfs = elterntf;
 		this.kassenbisher = kassennum;
-
 		super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
 	    super.getSmartTitledPanel().setTitle("Krankenkasse auswählen");
 	     
+	    this.setName(name);
+	    pinPanel = new PinPanel();
+	    pinPanel.setName(name);
+	    pinPanel.getGruen().setVisible(false);
+	    this.setPinPanel(pinPanel);
+	    rtp = new RehaTPEventClass();
+	    rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
+	     
 		grundPanel = new JXPanel(new BorderLayout());
-		/************BackgroundPainter basteln************/
-		/*
-		Point2D start = new Point2D.Float(0, 0);
-		Point2D end = new Point2D.Float(0,getHeight());
-	    float[] dist = {0.0f, 0.75f};
-	    // Color[] colors = {Color.WHITE,new Color(231,120,23)};
-	    Color[] colors = {Color.WHITE,Colors.Green.alpha(0.45f)};
-	    //Color[] colors = {Color.WHITE,getBackground()};
-	    p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	    mp = new MattePainter(p);
-	    */
-	    /************Ende BackgroundPainter basteln************/
-	    //cp = new CompoundPainter(mp);
 		grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("KassenAuswahl"));
 		content = getAuswahl();
 		grundPanel.add(content,BorderLayout.CENTER);
@@ -104,13 +104,65 @@ public class KassenAuswahl extends RehaSmartDialog{
 				((JComponent)getContentPanel()).getActionMap().put("doSuchen", new KassenWahlAction());
 			}
 		});
-		
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				setzeFocus();
+			}
+		});
 	}
+	private void setzeFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public  void run(){		
+				tf.requestFocus();
+			}
+		});
+	}
+
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+		// TODO Auto-generated method stub
+		try{
+			if(evt.getDetails()[0] != null){
+				if(evt.getDetails()[0].equals(this.getName())){
+					doAbbrechen();
+					if(rtp != null){
+						this.setVisible(false);
+						rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+						rtp = null;
+						pinPanel = null;
+						this.dispose();
+						super.dispose();
+						System.out.println("****************Arztkurz -> Listener entfernt**************");				
+					}
+				}
+			}
+		}catch(NullPointerException ne){
+			System.out.println("In PatNeuanlage" +evt);
+		}
+	}
+	public void doAbbrechen(){
+		if(kassenbisher.length() <= 1){
+			//System.out.println("Arzt = "+arztbisher);
+			elterntfs[0].setText("***nachtragen!!!***");			
+			elterntfs[1].setText("999999999");
+			
+		}else{
+			elterntfs[0].setText(kassenbisher);			
+		}
+		if(rtp != null){
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
+			pinPanel = null;
+			System.out.println("****************Arztkurz -> Listener entfernt**************");
+		}
+		dispose();
+	}
+	
+	
 	public JXPanel getAuswahl(){
 		JXPanel jpan = new JXPanel();
 		jpan.setOpaque(false);
 		jpan.setBackground(Color.WHITE);
-		FormLayout lay = new FormLayout("5dlu,p,3dlu,100dlu:g,3dlu,40dlu,fill:0:grow(1.00),5dlu","3dlu,p,3dlu,150dlu:g,5dlu");
+		FormLayout lay = new FormLayout("5dlu,p,3dlu,60dlu,3dlu,40dlu,fill:0:grow(1.00),5dlu","3dlu,p,3dlu,150dlu:g,5dlu");
 		CellConstraints cc = new CellConstraints();
 		jpan.setLayout(lay);
 		jpan.add(new JLabel("Kasse finden:"),cc.xy(2,2));
@@ -120,6 +172,13 @@ public class KassenAuswahl extends RehaSmartDialog{
 		KeyListener akl = new KassenListener();
 		tf.addKeyListener(akl);
 		jpan.add(tf,cc.xy(4,2));
+		/***********/
+		FormLayout lay2 = new FormLayout("fill:0:grow(0.25),2dlu,fill:0:grow(0.25),2dlu,fill:0:grow(0.25),2dlu,fill:0:grow(0.25)","p");
+		CellConstraints cc2 = new CellConstraints();
+		JXPanel neupan = new JXPanel();
+		neupan.setOpaque(false);
+		neupan.setLayout(lay2);
+
 		neukasse = new JButton("neu anlegen");
 		neukasse.setName("neukasse");
 		neukasse.setMnemonic(KeyEvent.VK_N);
@@ -129,7 +188,44 @@ public class KassenAuswahl extends RehaSmartDialog{
 				neuAnlageKassen();
 			}
 	    });
-		jpan.add(neukasse,cc.xyw(6,2,2));
+		neupan.add(neukasse,cc2.xy(1,1));
+
+		suchekasse = new JButton("suchen");
+		suchekasse.setToolTipText("suche Arzt");
+		suchekasse.setName("suchekasse");
+		suchekasse.setMnemonic(KeyEvent.VK_S);
+		suchekasse.addKeyListener(akl);
+		suchekasse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				fuelleTabelle(tf.getText().trim());
+				tf.requestFocus();
+			}
+	    }); 
+		neupan.add(suchekasse,cc2.xy(3,1));
+		uebernahmekasse = new JButton("übernahme");
+		uebernahmekasse.setToolTipText("ausgewählten Arzt übernehmen");
+		uebernahmekasse.setName("suchearzt");
+		uebernahmekasse.addKeyListener(akl);
+		uebernahmekasse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				werteUebergeben();
+			}
+	    }); 
+		neupan.add(uebernahmekasse,cc2.xy(5,1));
+		abbrechenkasse = new JButton("abbrechen");
+		abbrechenkasse.setToolTipText("Kassenauswahl abbrechen");		
+		abbrechenkasse.setName("suchearzt");
+		abbrechenkasse.setMnemonic(KeyEvent.VK_A);
+		abbrechenkasse.addKeyListener(akl);
+		abbrechenkasse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				doAbbrechen();
+			}
+	    }); 
+		neupan.add(abbrechenkasse,cc2.xy(7,1));
+		
+		neupan.validate();
+		jpan.add(neupan,cc.xyw(6,2,2));
 		
 		kassenwahlmod = new MyKassenWahlModel();
 		String[] column = 	{"Kürzel","Name1","Name2","Ort", "IK",""};
@@ -149,7 +245,6 @@ public class KassenAuswahl extends RehaSmartDialog{
 		kassenwahltbl.setEditable(false);
 		kassenwahltbl.setSortable(true);
 		kassenwahltbl.setSelectionMode(0);
-		
 		kassenwahltbl.getColumn(0).setMinWidth(50);
 		kassenwahltbl.getColumn(0).setMaxWidth(50);
 		kassenwahltbl.getColumn(1).setMinWidth(150);		

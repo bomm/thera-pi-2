@@ -61,6 +61,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	private NumberFormat gleitDisplayFormat;
 	private NumberFormat gleitEditFormat;
 	private int nachkommas = 0;
+	private KeyListener kl;
 
 	/**
 	 * 

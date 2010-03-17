@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import org.jdesktop.swingworker.SwingWorker;
+
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
 
@@ -689,6 +691,38 @@ public class OOTools{
 		topWindow.toFront();
 
 		
+	}
+	public static void ooOrgAnmelden(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws java.lang.Exception {
+		        IDocumentDescriptor docdescript = new DocumentDescriptor();
+		       	docdescript.setHidden(true);
+				IDocument document = null;
+				ITextDocument textDocument = null;
+				Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+				try {
+					if(!Reha.officeapplication.isActive()){
+						Reha.starteOfficeApplication();
+					}
+					
+					IDocumentService documentService = Reha.officeapplication.getDocumentService();
+					document = documentService.constructNewDocument(IDocument.WRITER, docdescript);
+					textDocument = (ITextDocument)document;
+					textDocument.close();
+					System.err.println("Initiales Dokument wurde produziert und wieder geschlossen");
+				} 
+				catch (OfficeApplicationException exception) {
+					exception.printStackTrace();
+				} 
+				catch (NOAException exception) {
+					exception.printStackTrace();
+				}
+				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+				return null;
+			}
+			
+		}.execute();
 	}
 	public static void holeClipBoard() {
 

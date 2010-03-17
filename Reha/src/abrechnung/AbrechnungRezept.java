@@ -273,7 +273,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				jSplitOU.setDividerLocation(getHeight()-100);
+				jSplitOU.setDividerLocation(getHeight()-200);
 			}
 		});
 		
@@ -689,8 +689,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 				}
 				if(cmd.equals("scannen")){
+
+				}
+				if(cmd.equals("abrechnungstarten")){
 					eltern.starteAbrechnung();
 				}
+				
 			}
 		};
 		JXPanel rezpan = new JXPanel(new BorderLayout());
@@ -728,6 +732,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		tbbuts[1].setActionCommand("scannen");
 		tbbuts[1].addActionListener(tbaction);
 		jtb.add(tbbuts[1]);
+		
+		jtb.addSeparator(new Dimension(40,0));
+		tbbuts[3] = new JButton();
+		tbbuts[3].setIcon(SystemConfig.hmSysIcons.get("bombe"));
+		tbbuts[3].setToolTipText("Die gewählte Kasse abrechnen");
+		tbbuts[3].setActionCommand("abrechnungstarten");
+		tbbuts[3].addActionListener(tbaction);
+		jtb.add(tbbuts[3]);
 
 
 		return jtb;
