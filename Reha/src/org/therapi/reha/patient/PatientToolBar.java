@@ -1,7 +1,5 @@
 package org.therapi.reha.patient;
 
-import hauptFenster.Reha;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -40,7 +38,6 @@ public class PatientToolBar extends JXPanel{
 				"right:max(39dlu;p),3dlu,p,90,fill:0:grow(0.60),0dlu,7dlu,right:max(39dlu;p),3dlu,p,40dlu,2dlu,p,50dlu,fill:0:grow(0.30),5dlu,10dlu",
 				// 1                 2  3  4   5  6	  7  8   9 10     11
 		"fill:0:grow(0.50),p,fill:0:grow(0.50)");
-
 		CellConstraints cc = new CellConstraints();
 		setLayout(lay);
 		JLabel lbl = new JLabel("Kriterium:");
@@ -120,8 +117,8 @@ public class PatientToolBar extends JXPanel{
 		patientHauptPanel.jbut[6].addActionListener(patientHauptPanel.toolBarAction);
 		jtb.add(patientHauptPanel.jbut[6]);
 		add(jtb,cc.xyw(20,2,8));
-		
 	}
+	
 	public void reactOnMouse(MouseEvent arg0){
 		if(arg0.getSource() instanceof JLabel){
 			if(((JComponent)arg0.getSource()).getName().equals("Suchen")){
@@ -155,6 +152,5 @@ public class PatientToolBar extends JXPanel{
 		patientHauptPanel.toolBarMouse = null;
 		patientHauptPanel = null;
 	}
-
 
 }

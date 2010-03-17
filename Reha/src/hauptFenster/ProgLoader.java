@@ -436,7 +436,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 	//Reha.thisClass.patpanel = new PatGrundPanel(patjry);
 	//patjry.setContent(Reha.thisClass.patpanel);
 	
-	JXPanel content = new PatientHauptPanel();
+	JXPanel content = new PatientHauptPanel(name);
 	patjry.setContent(content);
 	
 	patjry.addComponentListener(Reha.thisClass);

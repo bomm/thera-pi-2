@@ -11,17 +11,15 @@ public class PatStammEventClass {
 	    protected static javax.swing.event.EventListenerList listenerList =
 	        new javax.swing.event.EventListenerList();
 
-
-
 	    // This methods allows classes to unregister for RehaEvents
 		public void removePatStammEventListener(PatStammEventListener ooListener) {
 			// TODO Auto-generated method stub
-			System.out.println("PatStamm Object Listener gelöscht "+ooListener);
+			System.out.println("PatStamm Object Listener gelï¿½scht "+ooListener);
 			listenerList.remove(PatStammEventListener.class, ooListener);
 		}
 		public void addPatStammEventListener(PatStammEventListener ooListener) {
 			// TODO Auto-generated method stub
-			System.out.println("PatStamm Object Listener hinzugefügt "+ooListener);
+			System.out.println("PatStamm Object Listener hinzugefï¿½gt "+ooListener);
 			listenerList.add(PatStammEventListener.class, ooListener);
 		}
 
@@ -36,8 +34,6 @@ public class PatStammEventClass {
 	            }
 	        }
 	    }
-
-
 		public javax.swing.event.EventListenerList getListenerList(){
 			return listenerList;
 		}

@@ -3,6 +3,7 @@ package org.therapi.reha.patient;
 import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -28,6 +29,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
+import events.PatStammEventListener;
 
 /**
  * @author juergen
@@ -45,11 +47,6 @@ public class PatientHauptPanel extends JXPanel{
 	//SuchenFenster
 	public Object sucheComponent = null;
 	
-	//Instanz-Variable für die einzelnen Panels
-	private PatientToolBar patToolBarPanel = null;
-	private PatientMemoPanel patMemoPanel = null;
-	private PatientMultiFunctionPanel patMultiFunctionPanel = null;
-	
 	//ToolBar-Controls & Listener
 	public JButton[] jbut = {null,null,null,null,null,null,null};
 	public JFormattedTextField tfsuchen;
@@ -64,13 +61,25 @@ public class PatientHauptPanel extends JXPanel{
 	public MouseListener stammDatenMouse;
 	public KeyListener stammDatenKeys;
 	
-
-	public PatientHauptPanel(){
+	//PatStamm-Event Listener == extrem wichtig
+	private PatStammEventListener patientStammEventListener = null;
+	private PatStammEventClass ptp = null;
+	
+	//Instanz-Variable für die einzelnen Panels
+	private PatientToolBar patToolBarPanel = null;
+	private PatientMemoPanel patMemoPanel = null;
+	private PatientMultiFunctionPanel patMultiFunctionPanel = null;
+	
+	/*******************************************************/
+	public PatientHauptPanel(String name){
 		super();
+		setName(name);
 		setDoubleBuffered(true);
 
 		patientLogic = new PatientLogic(this);
 		
+		createPatStammListener();
+
 		createActionListeners();
 		createKeyListeners();
 		createMouseListeners();
@@ -84,6 +93,7 @@ public class PatientHauptPanel extends JXPanel{
 		add(constructSplitPaneLR(),cc.xyw(1,3,3));
 		setVisible(true);
 	}
+	/*******************************************************/
 	
 	private UIFSplitPane constructSplitPaneLR(){
 		UIFSplitPane jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -94,6 +104,7 @@ public class PatientHauptPanel extends JXPanel{
 		jSplitLR.setDividerBorderVisible(true);
 		jSplitLR.setName("PatGrundSplitLinksRechts");
 		jSplitLR.setOneTouchExpandable(true);
+		jSplitLR.setDividerColor(Color.LIGHT_GRAY);		
 		jSplitLR.validate();
 		return jSplitLR;
 	}
@@ -110,6 +121,7 @@ public class PatientHauptPanel extends JXPanel{
 		jSplitRechtsOU.setDividerBorderVisible(true);
 		jSplitRechtsOU.setName("PatGrundSplitRechteSeiteObenUnten");
 		jSplitRechtsOU.setOneTouchExpandable(true);
+		jSplitRechtsOU.setDividerColor(Color.LIGHT_GRAY);
 		jSplitRechtsOU.validate();
 		return jSplitRechtsOU;
 	}
@@ -130,16 +142,36 @@ public class PatientHauptPanel extends JXPanel{
 		return patToolBarPanel;
 
 	}
+	/*****************Dieser EventListener handled alle wesentlichen Funktionen inklusive der CloseWindow-Methode*************/
+	private void createPatStammListener(){
+		patientStammEventListener = new PatStammEventListener(){
+			@Override
+			public void patStammEventOccurred(PatStammEvent evt) {
+			}
+		};
+		this.ptp = new PatStammEventClass();
+		this.ptp.addPatStammEventListener((PatStammEventListener)patientStammEventListener);
+		
+	}
+
+	/****************************************************/	
+	/**
+	 * Installiert die ActionListeners für alle drei Panels
+	 * 
+	 */
 	private void createActionListeners(){
 		toolBarAction = new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					
 				}
-				
 			};
 	}
-	/****************************************************/	
+	/****************************************************/
+	/**
+	 * Installiert die KeyListeners für alle drei Panels
+	 * 
+	 */
 	private void createKeyListeners(){
 		//PateintToolBar
 		toolBarKeys = new KeyListener(){
@@ -154,9 +186,13 @@ public class PatientHauptPanel extends JXPanel{
 			public void keyTyped(KeyEvent arg0) {
 			}
 		};	
-		
 	}
 	/****************************************************/
+	/**
+	 * Installiert die MouseListeners für alle drei Panels
+	 * 
+	 */
+	
 	private void createMouseListeners(){
 		toolBarMouse = new MouseListener(){
 			public void mouseClicked(MouseEvent arg0) {
@@ -196,19 +232,24 @@ public class PatientHauptPanel extends JXPanel{
 			}
 		};
 	}
+
 	
+	
+	/****************************************************/	
 	/**
 	 * 
 	 * Aufräumarbeiten
 	 * zuerst die Listener entfernen
 	 * 
 	 */
-	public void removeAllListeners(){
-		// Zuerst die Controlls der PatientenToolBar
+	public void allesAufraeumen(){
 		patToolBarPanel.fireAufraeumen();
-		
+		patMemoPanel.fireAufraeumen();
+		patMultiFunctionPanel.fireAufraeumen();
 	}
-/***********Inner-Class JPatTextField*************/
+	
+	
+	/***********Inner-Class JPatTextField*************/
 	class JPatTextField extends JRtaTextField{
 	/**
 	 * 
