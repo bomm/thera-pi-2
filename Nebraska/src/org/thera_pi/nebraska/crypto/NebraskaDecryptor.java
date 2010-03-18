@@ -27,7 +27,6 @@ import org.bouncycastle.cms.SignerInformationStore;
 
 public class NebraskaDecryptor {
 
-	private NebraskaKeystore nebraskaKeystore;
 	private X509Certificate certificate;
 	private PrivateKey privateKey;
 	private String issuer;
@@ -41,7 +40,6 @@ public class NebraskaDecryptor {
 	 * @throws NebraskaNotInitializedException 
 	 */
 	NebraskaDecryptor(NebraskaKeystore nebraskaKeystore) throws NebraskaCryptoException, NebraskaNotInitializedException {
-		this.nebraskaKeystore = nebraskaKeystore;
 		certificate = nebraskaKeystore.getSenderCertificate();
 		privateKey = nebraskaKeystore.getSenderKey();
 		issuer = certificate.getIssuerDN().getName();
@@ -166,9 +164,6 @@ public class NebraskaDecryptor {
 			Iterator<?> certIterator = certCollection.iterator();
 			X509Certificate cert = (X509Certificate)certIterator.next();
 
-			String subject = cert.getSubjectX500Principal().getName();
-			String issuer = cert.getIssuerX500Principal().getName();
-
 			boolean verified;
 			try {
 				verified = signer.verify(cert, NebraskaConstants.SECURITY_PROVIDER);
@@ -182,6 +177,10 @@ public class NebraskaDecryptor {
 		      	  throw new NebraskaCryptoException(e);
 			} catch (CMSException e) {
 		      	  throw new NebraskaCryptoException(e);
+			}
+			if(!verified)
+			{
+				throw new NebraskaCryptoException(new Exception("signature verification failed"));
 			}
 		}
 

@@ -4,8 +4,6 @@ import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.security.auth.x500.X500Principal;
-
 public class NebraskaUtil {
 	
 	/**

@@ -33,7 +33,6 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
  */
 public class NebraskaEncryptor {
 	private String receiverIK;
-	private NebraskaKeystore nebraskaKeystore;
 	private X509Certificate receiverCert;
 	private X509Certificate senderCert;
 	private PrivateKey senderKey;
@@ -58,8 +57,6 @@ public class NebraskaEncryptor {
 	 */
 	NebraskaEncryptor(String IK, NebraskaKeystore nebraskaKeystore) throws NebraskaCryptoException, NebraskaNotInitializedException {
 		this.receiverIK = IK;
-		this.nebraskaKeystore = nebraskaKeystore;
-		
 		receiverCert = nebraskaKeystore.getCertificate(receiverIK);
 		senderKey = nebraskaKeystore.getSenderKey();
 		senderCert = nebraskaKeystore.getSenderCertificate();
