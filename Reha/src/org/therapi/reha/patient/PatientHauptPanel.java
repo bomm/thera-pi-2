@@ -4,6 +4,7 @@ import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,18 +12,29 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import patientenFenster.Dokumentation;
+import patientenFenster.Gutachten;
+import patientenFenster.Historie;
+import patientenFenster.TherapieBerichte;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+import RehaInternalFrame.JPatientInternal;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -61,22 +73,71 @@ public class PatientHauptPanel extends JXPanel{
 	public MouseListener stammDatenMouse;
 	public KeyListener stammDatenKeys;
 	
+	//MemoPanel-Controls & Listener
+	public JTabbedPane memotab = null;
+	public JButton[] memobut = {null,null,null,null,null,null};
+	public JTextArea[] pmemo = {null,null};
+	public ActionListener memoAction = null;
+	
+	//MultiFunctionPanel-Controls & Listener
+	JTabbedPane multiTab = null;
+	public AktuelleRezepte2 aktRezept = null;
+	public Historie historie = null;
+	public TherapieBerichte berichte = null;
+	public Dokumentation dokumentation = null;
+	public Gutachten gutachten = null;
+	public String[] tabTitel = {"aktuelle Rezepte",
+			"Rezept-Historie",
+			"Therapieberichte",
+			"Dokumentation",
+			"Gutachten",
+			"Arzt & KK",
+			"Plandaten"};	
+	public JLabel[] rezlabs = {null,null,null,null,null,
+			null,null,null,null,null,
+			null,null,null,null,null};
+	public JTextArea rezdiag = null;
+
+	public ImageIcon[] imgzuzahl = {null,null,null,null};
+	public ImageIcon[] imgrezstatus = {null,null};
+	public Vector<String> patDaten = new Vector<String>();
+	public Vector<String> vecaktrez = null;
+	public Vector<String> vecakthistor = null;
+	
+
+	
+	
 	//PatStamm-Event Listener == extrem wichtig
 	private PatStammEventListener patientStammEventListener = null;
 	private PatStammEventClass ptp = null;
 	
 	//Instanz-Variable für die einzelnen Panels
 	private PatientToolBar patToolBarPanel = null;
+	private PatientStammDatenPanel stammDatenPanel = null;
 	private PatientMemoPanel patMemoPanel = null;
 	private PatientMultiFunctionPanel patMultiFunctionPanel = null;
 	
+	//Gemeinsam genutzte Variable
+	public Font font = new Font("Courier New",Font.BOLD,13);
+	public Font fehler = new Font("Courier",Font.ITALIC,13);
+	public String aktPatID = "";
+	public int autoPatid = -1;
+	public int aid = -1;
+	public int kid = -1;
+	public boolean patDatenOk = false;
+	public boolean rezDatenOk = false;
+
+
+	//Bezug zum unterliegenden JInternalFrame
+	JPatientInternal patientInternal = null;
 	/*******************************************************/
-	public PatientHauptPanel(String name){
+	public PatientHauptPanel(String name,JPatientInternal internal){
 		super();
 		setName(name);
 		setDoubleBuffered(true);
 
 		patientLogic = new PatientLogic(this);
+		patientInternal = internal;
 		
 		createPatStammListener();
 
@@ -84,7 +145,8 @@ public class PatientHauptPanel extends JXPanel{
 		createKeyListeners();
 		createMouseListeners();
 		
-		setBackgroundPainter(Reha.thisClass.compoundPainter.get("HauptPanel"));
+		//setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs2"));
+		//setBackgroundPainter(Reha.thisClass.compoundPainter.get("HauptPanel"));
 		FormLayout lay = new FormLayout("0dlu,fill:0:grow(0.33),fill:0:grow(0.66)","0dlu,p,fill:0:grow(1.0)");
 		CellConstraints cc = new CellConstraints();
 		setLayout(lay);
@@ -108,10 +170,6 @@ public class PatientHauptPanel extends JXPanel{
 		jSplitLR.validate();
 		return jSplitLR;
 	}
-	private JXPanel getStammDatenPatient(){
-		JXPanel stammDatenPatient = new PatientStammDatenPanel(this);
-		return stammDatenPatient;
-	}
 	private UIFSplitPane constructSplitPaneOU(){
 		UIFSplitPane jSplitRechtsOU =  UIFSplitPane.createStrippedSplitPane(JSplitPane.VERTICAL_SPLIT,
         		getMemosPatient(),
@@ -124,6 +182,14 @@ public class PatientHauptPanel extends JXPanel{
 		jSplitRechtsOU.setDividerColor(Color.LIGHT_GRAY);
 		jSplitRechtsOU.validate();
 		return jSplitRechtsOU;
+	}
+	private JScrollPane getStammDatenPatient(){
+		stammDatenPanel = new PatientStammDatenPanel(this);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(stammDatenPanel );
+		jscr.validate();
+		JScrollPane jscr2 = JCompTools.getTransparent2ScrollPane(jscr);
+		jscr2.validate();
+		return jscr2;
 	}
 	private JScrollPane getMemosPatient(){
 		patMemoPanel  = new PatientMemoPanel(this);
@@ -142,11 +208,15 @@ public class PatientHauptPanel extends JXPanel{
 		return patToolBarPanel;
 
 	}
+	public JTabbedPane getTab(){
+		return multiTab;
+	}
 	/*****************Dieser EventListener handled alle wesentlichen Funktionen inklusive der CloseWindow-Methode*************/
 	private void createPatStammListener(){
 		patientStammEventListener = new PatStammEventListener(){
 			@Override
 			public void patStammEventOccurred(PatStammEvent evt) {
+				patientLogic.patStammEventOccurred(evt);
 			}
 		};
 		this.ptp = new PatStammEventClass();
@@ -165,7 +235,14 @@ public class PatientHauptPanel extends JXPanel{
 				public void actionPerformed(ActionEvent arg0) {
 					
 				}
-			};
+		};
+		memoAction = new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					patMemoPanel.doMemoAction(arg0);
+				}
+		};
+	
 	}
 	/****************************************************/
 	/**
@@ -248,38 +325,68 @@ public class PatientHauptPanel extends JXPanel{
 		patMultiFunctionPanel.fireAufraeumen();
 	}
 	
+	public void setzeFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+			 		  if(! tfsuchen.hasFocus()){
+			 			  if(! patientInternal.getActive()){
+			 				 patientInternal.activateInternal();
+			 				  SwingUtilities.invokeLater(new Runnable(){
+			 					  public  void run(){
+			 						  tfsuchen.requestFocus();
+			 					  }
+			 				  }); 	   	
+		 				  }else{
+		 					 SwingUtilities.invokeLater(new Runnable(){
+								  public  void run(){
+									  tfsuchen.requestFocus();
+								  }
+		 					 }); 	   	
+		 				  }
+					  }else{
+						  SwingUtilities.invokeLater(new Runnable(){
+							  public  void run(){
+								  tfsuchen.requestFocus();
+							  }
+						  }); 	   	
+					  }
+			 	   }
+		}); 	   	
+	}
 	
-	/***********Inner-Class JPatTextField*************/
-	class JPatTextField extends JRtaTextField{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2904164740273664807L;
+}
+/***********Inner-Class JPatTextField*************/
+class JPatTextField extends JRtaTextField{
+/**
+ * 
+ */
+private static final long serialVersionUID = 2904164740273664807L;
 
-		public JPatTextField(String type, boolean selectWhenFocus) {
-			super(type, selectWhenFocus);
-			setOpaque(false);
-			setEditable(false);
-			setBorder(null);
-			addMouseListener(new MouseAdapter(){
-				public void mouseClicked(MouseEvent arg0) {
-					if(arg0.getClickCount()==2 && arg0.getButton()==1){
-						new SwingWorker<Void,Void>(){
-							@Override
-							protected Void doInBackground() throws Exception {
-								String s1 = "#KORRIGIEREN";
-								String s2 = getName();
-								PatStammEvent pEvt = new PatStammEvent(this);
-								pEvt.setPatStammEvent("PatSuchen");
-								pEvt.setDetails(s1,s2,"") ;
-								PatStammEventClass.firePatStammEvent(pEvt);	
-								return null;
-							}
-						}.execute();
-					}
+	public JPatTextField(String type, boolean selectWhenFocus) {
+		super(type, selectWhenFocus);
+		setOpaque(false);
+		setEditable(false);
+		setBorder(null);
+		addMouseListener(new MouseAdapter(){
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							String s1 = "#KORRIGIEREN";
+							String s2 = getName();
+							PatStammEvent pEvt = new PatStammEvent(this);
+							pEvt.setPatStammEvent("PatSuchen");
+							pEvt.setDetails(s1,s2,"") ;
+							PatStammEventClass.firePatStammEvent(pEvt);	
+							return null;
+						}
+					}.execute();
 				}
-			});
-		}
-	}	
+			}
+		});
+	}
+}	
 /**************************************************/
+class DatenHolen{
 }

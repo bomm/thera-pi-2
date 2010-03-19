@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -33,6 +34,7 @@ public class PatientToolBar extends JXPanel{
 		super();
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
+		setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 		FormLayout lay = new FormLayout("3dlu,right:max(35dlu;p),3dlu,p,45dlu,fill:0:grow(0.10),0dlu ,right:max(39dlu;p),3dlu, p,45dlu,7dlu,"+
 				//  2-teSpalte (13)  14  15 16     17            18   19      20             21   22  23    24 25  26      27                28
 				"right:max(39dlu;p),3dlu,p,90,fill:0:grow(0.60),0dlu,7dlu,right:max(39dlu;p),3dlu,p,40dlu,2dlu,p,50dlu,fill:0:grow(0.30),5dlu,10dlu",
@@ -132,7 +134,7 @@ public class PatientToolBar extends JXPanel{
 		if(e.getKeyCode() == 10){
 			if(((JComponent)e.getSource()).getName() != null){
 				if( ((JComponent) e.getSource()).getName().equals("suchenach") ){
-					//starteSuche();
+					patientHauptPanel.patientLogic.starteSuche();
 				}
 			}
 		}
