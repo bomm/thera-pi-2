@@ -11,14 +11,11 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import patientenFenster.AktuelleRezepte;
-import patientenFenster.PatGrundPanel;
-
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
+import terminKalender.ParameterLaden;
 
 public class RezTools {
 	public static boolean mitJahresWechsel(String datum){

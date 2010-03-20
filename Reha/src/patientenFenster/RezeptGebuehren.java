@@ -403,7 +403,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		//System.out.println("Rezeptstamm -> "+cmd);
 		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 		if(row >= 0){
-			Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],row,1);
+			//Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],row,1);
+			Reha.thisClass.patpanel.getMultiFuncPanel().getAktRez().setDtblmValues(Reha.thisClass.patpanel.imgzuzahl[1],row,1);
 			Reha.thisClass.patpanel.aktRezept.tabaktrez.repaint();
 		}
 	}

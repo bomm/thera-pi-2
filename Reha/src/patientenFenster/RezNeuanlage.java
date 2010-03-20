@@ -859,7 +859,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 						String aliste = Reha.thisClass.patpanel.patDaten.get(63)+ "@"+xaneu+"@\n";
 						Reha.thisClass.patpanel.patDaten.set(63,aliste+ "@"+xaneu+"@\n");
 						System.out.println("Arztliste in Rezept Neu = "+aliste);
-						Reha.thisClass.patpanel.arztListeSpeichernString(aliste,false,Reha.thisClass.patpanel.aktPatID);
+						Reha.thisClass.patpanel.getLogic().arztListeSpeichernString(aliste,false,Reha.thisClass.patpanel.aktPatID);
 						SwingUtilities.invokeLater(new Runnable(){
 						 	   public  void run(){
 						 			jtf[2].requestFocus();

@@ -1,12 +1,26 @@
 package org.therapi.reha.patient;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
 
 import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import org.jdesktop.swingx.JXPanel;
+
+import systemTools.JCompTools;
+import systemTools.StringTools;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -18,20 +32,220 @@ public class PatientStammDatenPanel extends JXPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = -4929837198414837133L;
+	private HyperlinkListener linkListener = null;
 	PatientHauptPanel patientHauptPanel = null;
-	
+	JEditorPane htmlPane = null;	
+	StringBuffer buf1 = new StringBuffer();
+	StringBuffer buf2 = new StringBuffer();
+	PatientStammDatenLogic stammDatenLogic = null;
 	public PatientStammDatenPanel(PatientHauptPanel patHauptPanel){
 		super();
+		stammDatenLogic = new PatientStammDatenLogic(patHauptPanel,this);
+		createLinkListener();
 		setLayout(new BorderLayout());
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
-		setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
-		add(getStammDatenPanel(),BorderLayout.CENTER);
+		setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));
+		getStammDatenPanel();
+		//add(getStammDatenPanel(),BorderLayout.CENTER);
+		add(getHTMLPanel(),BorderLayout.CENTER);
+		setPreferredSize(new Dimension(200,0));
+		validate();
 	}
-	
+	public PatientStammDatenLogic getLogic(){
+		return stammDatenLogic;
+	}
 	public void fireAufraeumen(){
-
+		htmlPane.removeHyperlinkListener(linkListener);
+		linkListener = null;
+		htmlPane = null;
+		stammDatenLogic = null;
 	}
+
+	private void createLinkListener(){
+		linkListener = new HyperlinkListener(){
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent arg0) {
+				stammDatenLogic.reactOnHyperlink(arg0);
+				
+			}
+		};
+	}
+	private JScrollPane getHTMLPanel(){
+		htmlPane = new JEditorPane(/*initialURL*/);
+        htmlPane.setContentType("text/html");
+        htmlPane.setEditable(false);
+        htmlPane.setOpaque(false);
+        htmlPane.addHyperlinkListener(linkListener);
+        parseHTML(false);
+        JScrollPane jscr = JCompTools.getTransparentScrollPane(htmlPane);
+        jscr.validate();
+		return jscr;
+	}
+	private String makeLink(String toLink,String linkTarget){
+		return "<a href=\"http://"+linkTarget+".de\">"+toLink+"</a>";
+	}
+	public void parseHTML(boolean parse){
+		if(!parse){
+			htmlPane.setText(getLeerHtml());
+			return;
+		}
+		try{
+			buf1.setLength(0);
+			buf1.trimToSize();
+			//String text = 
+			buf1.append("<html><head>");
+			buf1.append("<STYLE TYPE=\"text/css\">");
+			buf1.append("<!--");
+			buf1.append("A{text-decoration:none;background-color:transparent;border:none}");
+			buf1.append("TD{font-family: Arial; font-size: 12pt; padding-left:5px;padding-right:5px;padding-top:0px,padding-bottom:0px}");
+			buf1.append(".spalte1{color:#0000FF;}");
+			buf1.append(".spalte2{color:#333333;}");
+			buf1.append(".spalte3{color:#000000;}");
+			buf1.append("--->");
+			buf1.append("</STYLE>");
+			buf1.append("</head>");
+			buf1.append("<div style=margin-left:5px;>");
+			buf1.append("<font face=\"Tahoma\"><style=margin-left=5px;>");
+			/*"<br>"+*/
+			buf1.append("<table>");
+			/*****Rezept****/
+			/*******/
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">"+"<img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=36 height=36 border=0>");
+			buf1.append("</tr></td>" );
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(0).trim()),"ANREDE")+" "+
+					makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(1).trim()),"TITEL"));
+			buf1.append("</tr></td>" );
+			buf1.append("<tr><td class=\"spalte3\" align=\"left\">");
+			buf1.append("<b><font color=#000000>"+makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(2)),"N_NAME")+", "+
+					makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(3)),"V_NAME")+"</font></b>");
+			buf1.append("</tr></td>" );
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append("geb.: "+"<b><font color=#000000>"+makeLink(DatFunk.sDatInDeutsch(patientHauptPanel.patDaten.get(4)),"GEBOREN")+"</font></b>");
+			buf1.append("</tr></td>" );
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(21)),"STRASSE"));
+			buf1.append("</tr></td>" );
+
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink(patientHauptPanel.patDaten.get(23),"PLZ")+" "+makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(24)),"ORT"));
+			buf1.append("</tr></td>");
+
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append("&nbsp;");
+			buf1.append("</tr></td>");
+
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink("Tel.(p): "+StringTools.EGross(patientHauptPanel.patDaten.get(18)),"TELEFONP"));
+			buf1.append("</tr></td>");
+			
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink("Tel.(g): "+StringTools.EGross(patientHauptPanel.patDaten.get(19)),"TELEFONG"));
+			buf1.append("</tr></td>");
+			
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink("Mobil: "+StringTools.EGross(patientHauptPanel.patDaten.get(20)),"TELEFONM"));
+			buf1.append("</tr></td>");
+
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink("Email: "+patientHauptPanel.patDaten.get(50).toLowerCase(),"EMAILA"));
+			buf1.append("</tr></td>");
+
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append("&nbsp;");
+			buf1.append("</tr></td>" );
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append("<img src='file:///"+Reha.proghome+"icons/krankenkasse.png' width=30 height=30 border=0><b>"+"+"+"</b>");
+			buf1.append("<img src='file:///"+Reha.proghome+"icons/system-users.png' width=30 height=30 border=0>");
+			buf1.append("</tr></td>");
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(13)),"KASSE"));
+			buf1.append("</tr></td>");
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append(makeLink("Hausarzt: "+StringTools.EGross(patientHauptPanel.patDaten.get(25)),"ARZT"));
+			buf1.append("</tr></td>");
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append("&nbsp;");
+			buf1.append("</tr></td>" );
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf1.append("<img src='file:///"+Reha.proghome+"icons/evolution-addressbook.png' width=32 height=32 border=0>");
+			buf1.append("</tr></td>" );
+			buf1.append(getAkutDaten());
+
+			buf1.append("</table>");
+			buf1.append("</font>");
+			buf1.append("</div>");
+			buf1.append("</html>");
+			this.htmlPane.setText(buf1.toString());
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		((JScrollPane)this.htmlPane.getParent().getParent()).validate();
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				try{
+				JViewport vp = ((JScrollPane)htmlPane.getParent().getParent()).getViewport();
+				vp.setViewPosition(new Point(0,0));
+				((JScrollPane)htmlPane.getParent().getParent()).validate();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+			}
+		});
+	}
+	private String getAkutDaten(){
+		buf2.setLength(0);
+		buf2.trimToSize();
+		String dummy;
+		buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
+		dummy = patientHauptPanel.patDaten.get(56).trim();
+		buf2.append(makeLink("Therapeut: "+(dummy.equals("") ? "<font color=#FF0000>k.A.</font>" : dummy.toString()),"THERAPEUT"));
+		buf2.append("</tr></td>");
+		if(patientHauptPanel.patDaten.get(33).equals("T")){
+			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
+			dummy = patientHauptPanel.patDaten.get(46).trim();
+			buf2.append(makeLink("Akutpat.: <font color=#FF0000>JA bis "+(dummy.length()==10 ? DatFunk.sDatInDeutsch(dummy.toString()) : "k.A.")+"</font>","AKUTPAT"));
+			buf2.append("</tr></td>");
+		}else{
+			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf2.append(makeLink("Akutpat.: Nein","AKUTPAT"));
+			buf2.append("</tr></td>");
+		}
+		if(! patientHauptPanel.patDaten.get(36).trim().equals("")){
+			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf2.append("<u><i>Terminwünsche</i></u>");
+			buf2.append("</tr></td>");		
+			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf2.append(makeLink(patientHauptPanel.patDaten.get(36),"TERMINE1"));
+			buf2.append("</tr></td>");		
+		}
+		if(! patientHauptPanel.patDaten.get(37).trim().equals("")){
+			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf2.append(makeLink(patientHauptPanel.patDaten.get(37),"TERMINE2"));
+			buf2.append("</tr></td>");		
+		}
+		return buf2.toString();
+	}
+	private String getLeerHtml(){
+		buf2.setLength(0);
+		buf2.trimToSize();
+		buf2.append("<html>");
+		buf2.append("<div style=margin-left:5px;>");
+		buf2.append("<font face=\"Tahoma\"><style=margin-left=5px;>");
+			/*"<br>"+*/
+		buf2.append("<table>");
+			/*****Rezept****/
+			/*******/
+		buf2.append("<tr><td class=\"spalte1\" align=\"left\">"+"<img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=52 height=52 border=0>");
+		buf2.append("</tr></td>");
+		buf2.append("</table>");
+		buf2.append("</font>");
+		buf2.append("</html>");
+		return buf2.toString();
+		
+	}
+ 
 	private JXPanel getStammDatenPanel(){   //1         2            3       4    5           6           7         8         
 		FormLayout lay = new FormLayout("3dlu,right:max(38dlu;p),3dlu,55dlu:g,3dlu,right:max(39dlu;p),3dlu,45dlu:g,5dlu",
 				// 1     2  3  4  5  6	7  8  9 10 11 12 13

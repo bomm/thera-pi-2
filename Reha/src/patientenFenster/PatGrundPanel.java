@@ -86,7 +86,6 @@ import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
-
 public class PatGrundPanel extends JXPanel implements KeyListener, PatStammEventListener,ContainerListener{
 	
 public JXPanel patGrund = null;
@@ -147,6 +146,7 @@ public Vector vecakthistor = null;
 public ImageIcon[] imgs = {null,null,null,null,null};
 public JLabel[] imglabs = {null,null,null,null,null};
 public Vector<Component> newPolicy;
+public boolean patDatenOk = false;
 /*
 final public String[] tabTitel = {"<html>aktuelle Rezepte",
 		"<html>Rezept-Historie",
@@ -443,10 +443,11 @@ public boolean sucheHatFocus(){
 		return false;
 	}
 }
-
+public JTabbedPane getTab(){
+	return jtab;
+}
 public void holeFormulare(){
 	new SwingWorker<Void,Void>(){
-
 		@Override
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
@@ -1036,7 +1037,8 @@ public void patStammEventOccurred(PatStammEvent evt) {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						new DatenHolen(xpatint);
+						//new DatenHolen(xpatint);
+						DatenHolen(xpatint);
 						SwingUtilities.invokeLater(new Runnable(){
 						 	   public  void run()
 						 	   {
@@ -1058,17 +1060,24 @@ public void patStammEventOccurred(PatStammEvent evt) {
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-									Reha.thisClass.patpanel.patDaten.clear();
-									Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+xpatint+"'", Arrays.asList(new String[] {}));
-									//System.out.println("Fertig mit einlesen der kompletten Pat-Daten");
-									PatTools.constructPatHMap();		
-									ArztTools.constructArztHMap("");
-									KasseTools.constructKasseHMap("");
+						long zeit = System.currentTimeMillis();
+						while(! Reha.thisClass.patpanel.patDatenOk){
+							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 10000){
+								return null;
+							}
+						}
+						//Reha.thisClass.patpanel.patDaten.clear();
+						//Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+xpatint+"'", Arrays.asList(new String[] {}));
+						//System.out.println("Fertig mit einlesen der kompletten Pat-Daten");
+						PatTools.constructPatHMap();		
+						ArztTools.constructArztHMap("");
+						KasseTools.constructKasseHMap("");
 
-									new Thread(){
-										public void run(){
-										}
-									}.start();
+						new Thread(){
+							public void run(){
+							}
+						}.start();
 						return null;
 					}
 				}.execute();
@@ -1150,7 +1159,7 @@ public void patStammEventOccurred(PatStammEvent evt) {
 			}
 		}.start();
 		
-		//Reha.thisClass.patpanel.jtab.validate();
+		//Reha.thisClass.patpanel.getTab().validate();
 		int i = jtab.getTabCount();
 		for(int y = 0;y < i;y++){
 			//System.out.println("Tabtitel von "+y+" = "+jtab.getTitleAt(y));
@@ -1203,6 +1212,110 @@ public void componentRemoved(ContainerEvent arg0) {
 	//System.out.println("Container removed "+arg0.getChild());
 	
 }
+public void DatenHolen(String patint){
+	Statement stmt = null;
+	ResultSet rs = null;
+	String sstmt = "";
+
+	sstmt = "select * from pat5 where PAT_INTERN ='"+patint+"'";
+		
+	try {
+		stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+		            ResultSet.CONCUR_UPDATABLE );
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	try{
+		rs = stmt.executeQuery(sstmt);
+		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		while( rs.next()){
+			
+			ResultSetMetaData met = (ResultSetMetaData) rs.getMetaData();
+			int cols = met.getColumnCount();
+			int type;
+			String colname = "";
+			String colvalue = "";
+			Reha.thisClass.patpanel.patDatenOk = false;
+			Reha.thisClass.patpanel.patDaten.clear();
+			
+			for(int i = 0; i < cols; i++){
+				Reha.thisClass.patpanel.patDaten.add((rs.getString(i+1)==null ? "" : rs.getString(i+1)) );
+				if(i < 15){
+				colname = Reha.thisClass.patpanel.ptfield[i].getName();
+				
+				if(colname.equals("GEBOREN")){
+					colvalue = DatFunk.sDatInDeutsch(rs.getString("GEBOREN"))+" "; 	
+				}else{
+					colvalue = rs.getString(colname);
+				}
+				Reha.thisClass.patpanel.ptfield[i].setText(StringTools.EGross(colvalue));
+				}
+			}
+			Reha.thisClass.patpanel.patDatenOk = true;
+			//InputStream ins = null;
+			String instring = (rs.getString("ANAMNESE")==null ? "" : rs.getString("ANAMNESE"));
+			//System.out.println("Anamnese inhalt = "+instring);
+			if(instring.equals("")){
+				Reha.thisClass.patpanel.pmemo[0].setText("");
+			}else{
+				Reha.thisClass.patpanel.pmemo[0].setText(instring);				
+			}
+			instring = (rs.getString("PAT_TEXT")==null ? "" : rs.getString("PAT_TEXT"));
+			//System.out.println("Pat_text inhalt = "+instring);			
+			if(instring.equals("")){
+				Reha.thisClass.patpanel.pmemo[1].setText("");
+			}else{
+				Reha.thisClass.patpanel.pmemo[1].setText(instring);				
+			}
+			Reha.thisClass.patpanel.autoPatid = rs.getInt("id");
+			Reha.thisClass.patpanel.aid = StringTools.ZahlTest(rs.getString("arztid"));
+			Reha.thisClass.patpanel.kid = StringTools.ZahlTest(rs.getString("kassenid"));
+			if(Reha.thisClass.patpanel.aid < 0){
+				Reha.thisClass.patpanel.ptfield[13].setForeground(Color.RED);
+				Reha.thisClass.patpanel.ptfield[13].setFont(Reha.thisClass.patpanel.fehler);
+			}else{
+				Reha.thisClass.patpanel.ptfield[13].setForeground(Color.BLUE);
+				Reha.thisClass.patpanel.ptfield[13].setFont(Reha.thisClass.patpanel.font);
+			}
+			if(Reha.thisClass.patpanel.kid < 0){
+				Reha.thisClass.patpanel.ptfield[14].setForeground(Color.RED);				
+				Reha.thisClass.patpanel.ptfield[14].setFont(Reha.thisClass.patpanel.fehler);
+			}else{
+				Reha.thisClass.patpanel.ptfield[14].setForeground(Color.BLUE);				
+				Reha.thisClass.patpanel.ptfield[14].setFont(Reha.thisClass.patpanel.font);
+			}
+
+		}
+		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+
+	}catch(SQLException ev){
+		System.out.println("SQLException: " + ev.getMessage());
+		System.out.println("SQLState: " + ev.getSQLState());
+		System.out.println("VendorError: " + ev.getErrorCode());
+	} 
+
+
+	finally {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException sqlEx) { // ignore }
+				rs = null;
+			}
+		}
+	
+		if (stmt != null) {
+			try {
+				stmt.close();
+			} catch (SQLException sqlEx) { // ignore }
+				stmt = null;
+			}
+		}
+	}
+  }
+
 
 
 /*********************************
@@ -1236,15 +1349,23 @@ class DatenHolen{
 			int type;
 			String colname = "";
 			String colvalue = "";
-			for(int i = 0; i < 15; i++){
+			Reha.thisClass.patpanel.patDatenOk = false;
+			Reha.thisClass.patpanel.patDaten.clear();
+			
+			for(int i = 0; i < cols; i++){
+				Reha.thisClass.patpanel.patDaten.add((rs.getString(i+1)==null ? "" : rs.getString(i+1)) );
+				if(i < 15){
 				colname = Reha.thisClass.patpanel.ptfield[i].getName();
+				
 				if(colname.equals("GEBOREN")){
 					colvalue = DatFunk.sDatInDeutsch(rs.getString("GEBOREN"))+" "; 	
 				}else{
 					colvalue = rs.getString(colname);
 				}
 				Reha.thisClass.patpanel.ptfield[i].setText(StringTools.EGross(colvalue));
+				}
 			}
+			Reha.thisClass.patpanel.patDatenOk = true;
 			//InputStream ins = null;
 			String instring = (rs.getString("ANAMNESE")==null ? "" : rs.getString("ANAMNESE"));
 			//System.out.println("Anamnese inhalt = "+instring);

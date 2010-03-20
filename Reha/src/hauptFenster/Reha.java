@@ -106,8 +106,11 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.PatientHauptPanel;
 
 import patientenFenster.PatGrundPanel;
+
+//import patientenFenster.PatGrundPanel;
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -150,7 +153,8 @@ import events.RehaEventListener;
 //@SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
-	public PatGrundPanel patpanel = null;
+	//public PatGrundPanel patpanel = null;
+	public PatientHauptPanel patpanel = null;
 	public EBerichtPanel eberichtpanel = null;
 	public KassenPanel kassenpanel = null;
 	public ArztPanel arztpanel = null;

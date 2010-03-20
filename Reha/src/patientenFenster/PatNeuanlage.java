@@ -553,7 +553,7 @@ private KVKWrapper kvw;
 		final String xpatintern = spatintern;
 		new Thread(){
 			public void run(){
-				Reha.thisClass.patpanel.arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
+				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				System.out.println("Es wirde die ArztListe gespeichert.....");
 				finalise();

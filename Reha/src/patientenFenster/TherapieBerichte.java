@@ -198,7 +198,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 					}
 					anz = dtblm.getRowCount();
-					Reha.thisClass.patpanel.jtab.setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
+					Reha.thisClass.patpanel.getTab().setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
 					if(anz > 0){
 						setzeRezeptPanelAufNull(false);
 						if(xrez_nr.equals("")){
@@ -293,7 +293,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		//tabbericht
 		TableTool.loescheRow(tabbericht, wahl);
 		int anzber = tabbericht.getRowCount();
-		Reha.thisClass.patpanel.jtab.setTitleAt(2,macheHtmlTitel(anzber,"Therapieberichte"));
+		Reha.thisClass.patpanel.getTab().setTitleAt(2,macheHtmlTitel(anzber,"Therapieberichte"));
 		if(anzber > 0){
 		}else{
 		}

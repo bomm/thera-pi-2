@@ -704,6 +704,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		return ret;
 	}
 	/*************************************************/
+	@SuppressWarnings("unchecked")
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;
 		final String xrez_nr = rez_nr;
@@ -713,7 +714,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			protected Void doInBackground() throws Exception {
 		*/
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
+				Vector<Vector<String>> vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
 						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
 
@@ -745,7 +746,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	                    }.start();
 					}
 				}
-				Reha.thisClass.patpanel.jtab.setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
+				Reha.thisClass.patpanel.getTab().setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;
@@ -800,8 +801,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			}
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	        
-	        int firstIndex = e.getFirstIndex();
-	        int lastIndex = e.getLastIndex();
+	        //int firstIndex = e.getFirstIndex();
+	        //int lastIndex = e.getLastIndex();
 	        boolean isAdjusting = e.getValueIsAdjusting();
 	        if(isAdjusting){
 	        	return;

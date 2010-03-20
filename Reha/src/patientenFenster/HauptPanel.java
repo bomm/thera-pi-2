@@ -366,7 +366,7 @@ public class HauptPanel extends JXPanel implements ComponentListener{
 		rechts.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
 		eltern.jtab = new JTabbedPane();
-		//Reha.thisClass.patpanel.jtab.setBorder(null);
+		//Reha.thisClass.patpanel.getTab().setBorder(null);
 		eltern.jtab.addFocusListener(eltern.getFocusListener());
 		try{
 			eltern.jtab.setUI(new WindowsTabbedPaneUI());

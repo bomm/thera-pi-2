@@ -22,6 +22,8 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import patientenFenster.PatGrundPanel;
+
+//import patientenFenster.PatGrundPanel;
 import rehaContainer.RehaTP;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
@@ -415,7 +417,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 			}
 		}
 		Reha.thisClass.progressStarten(false);
-		Reha.thisClass.patpanel.setzeFocus();
+		//Reha.thisClass.patpanel.setzeFocus();
 		((JPatientInternal)patient).setzeSuche();
 		return;
 	}
@@ -432,12 +434,13 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.setSize(new Dimension(900,650));
 	patjry.setPreferredSize(new Dimension(900,650));
 	
-	//Bisheriges Programm
+	//Bisheriges Fenster
 	//Reha.thisClass.patpanel = new PatGrundPanel(patjry);
 	//patjry.setContent(Reha.thisClass.patpanel);
-	
-	JXPanel content = new PatientHauptPanel(name);
-	patjry.setContent(content);
+
+	//Vorschlag
+	Reha.thisClass.patpanel = new PatientHauptPanel(name,patjry);
+	patjry.setContent(Reha.thisClass.patpanel);
 	
 	patjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
@@ -452,7 +455,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run()
 	 	   {
-	 			//patjry.setzeSuche();
+	 		   patjry.setzeSuche();
 	 			System.out.println("Focus auf PatPanel gesetzt");
 	 	   }
 	});

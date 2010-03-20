@@ -216,7 +216,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			dtblm.addRow((Vector) xvec.clone());
 			tabbericht.setRowSelectionInterval(tabbericht.getRowCount()-1, tabbericht.getRowCount()-1);
 		}
-		Reha.thisClass.patpanel.jtab.setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"Gutachten"));
+		Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"Gutachten"));
 		anzahlGutachten.setText("Anzahl Gutachten: "+Integer.toString(tabbericht.getRowCount()));
 	}
 	public void holeGutachten(String patint,String rez){
@@ -251,7 +251,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 								}
 							}
 							anz = dtblm.getRowCount();
-							Reha.thisClass.patpanel.jtab.setTitleAt(4,macheHtmlTitel(anz,"Gutachten"));
+							Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(anz,"Gutachten"));
 							anzahlGutachten.setText("Anzahl sozialmed. Gutachten: "+anz);
 							if(anz > 0){
 								setzeRezeptPanelAufNull(false);
@@ -427,7 +427,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			int uebrig = tabbericht.getRowCount();
 			
 			anzahlGutachten.setText("Anzahl Gutachten: "+Integer.toString(uebrig));
-			Reha.thisClass.patpanel.jtab.setTitleAt(4,macheHtmlTitel(uebrig,"Gutachten"));
+			Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(uebrig,"Gutachten"));
 			if(uebrig <= 0){
 				holeGutachten(Reha.thisClass.patpanel.patDaten.get(29),"");
 			}else{

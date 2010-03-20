@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.EventObject;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -66,7 +67,7 @@ import patientenFenster.AusfallRechnung;
 import patientenFenster.KeinRezept;
 import patientenFenster.RezNeuanlage;
 import patientenFenster.RezTestPanel;
-import patientenFenster.RezeptDaten;
+
 import patientenFenster.RezeptGebuehren;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -114,7 +115,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 	public String[] indphysio = null;
 	public String[] indergo = null;
 	public String[] indlogo = null;
-	public RezeptDaten2 jpan1 = null;
+	public RezeptDaten2 rezDatenPanel = null;
 	public JButton[] aktrbut = {null,null,null,null,null,null,null,null,null};
 	public boolean suchePatUeberRez = false;
 	public String rezAngezeigt = "";
@@ -202,8 +203,8 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 					dummy.add(getTermine(),dumcc.xyw(1, 1, 7));
 					dummy.add(getTerminToolbar(),dumcc.xyw(1, 3, 7));
 
-					jpan1 = new RezeptDaten2(xeltern);
-					vollPanel.add(jpan1,vpcc.xyw(1,4,1));
+					rezDatenPanel = new RezeptDaten2(xeltern);
+					vollPanel.add(rezDatenPanel,vpcc.xyw(1,4,1));
 					indiSchluessel();
 					initOk = true;
 				}catch(Exception ex){
@@ -229,6 +230,9 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 	}
 	public void getAktDates(){
 		
+	}
+	public void setDtblmValues(ImageIcon ico,int row,int col){
+		dtblm.setValueAt(ico,row,col);
 	}
 	public void formulareAuswerten(){
 		int row = tabaktrez.getSelectedRow(); 
@@ -414,9 +418,14 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					//while(inRezeptDaten && !RezeptDaten.feddisch){					
-					while(!RezeptDaten.feddisch){
+					long zeit = System.currentTimeMillis();
+					while(!RezeptDaten2.feddisch){
 						try {
 							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 10000){
+								JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten");
+								return;
+							}
 							//System.out.println("in der warteschleife....");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -696,14 +705,14 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 							
 						}
 						tabaktrez.setRowSelectionInterval(row, row);
-						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
+						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
 						tabaktrez.scrollRowToVisible(row);
 						holeEinzelTermine(row,null);
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
 						tabaktrez.setRowSelectionInterval(0, 0);
-						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
+						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
 						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
 					
@@ -739,7 +748,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 					String reznr = (String)tabaktrez.getValueAt(xrow,0);
 					rezAngezeigt = reznr;
 					String id = (String)tabaktrez.getValueAt(xrow,7);
-					jpan1.setRezeptDaten(reznr,id);
+					rezDatenPanel.setRezeptDaten(reznr,id);
 					System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
 			});	
@@ -951,7 +960,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				rezneugefunden = false;
 				return;
 			}
-			if(!RezeptDaten.feddisch){
+			if(!RezeptDaten2.feddisch){
 				return;
 			}
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
@@ -970,21 +979,25 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
-	                	RezeptDaten.feddisch = false;
+	                	RezeptDaten2.feddisch = false;
 	                	final int ix = i;
 	                	new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
-								// TODO Auto-generated method stub
-								if(suchePatUeberRez){
-									suchePatUeberRez = false;
-									return null;
+								try{
+									if(suchePatUeberRez){
+										suchePatUeberRez = false;
+										return null;
+									}
+		                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		                    		holeEinzelTermine(ix,null);
+		                    		
+		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
+		    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+								}catch(Exception ex){
+		    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+									ex.printStackTrace();
 								}
-	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-	                    		holeEinzelTermine(ix,null);
-	                    		
-	    						jpan1.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
-	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								return null;
 							}
 	                		
@@ -1225,7 +1238,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				}
 				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
-				int anzrow = tabaktrez.getRowCount();
+				//int anzrow = tabaktrez.getRowCount();
 				if(currow == -1){
 					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> löschen <- ausgewählt");
 					return;
@@ -1269,9 +1282,9 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 			}
 			
 			if(cmd.equals("arztbericht")){
-				// hier  mu� noch getestet werden:
+				// hier  muß noch getestet werden:
 				// 1 ist es eine Neuanlage oder soll ein bestehender Ber. editiert werden
-				// 2 ist ein Ber. �berhaupt angefordert
+				// 2 ist ein Ber. überhaupt angefordert
 				// 3 gibt es einen Rezeptbezug oder nicht
 				if(aktPanel.equals("leerPanel")){
 					JOptionPane.showMessageDialog(null,"Ich sag jetz nix....\n\n"+
@@ -1703,8 +1716,8 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(new Vector(),lneu,feldname));
 			neuRez.getSmartTitledPanel().setTitle("RezeptNeuanlage");
 		}else{
-			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(jpan1.vecaktrez,lneu,feldname));
-			neuRez.getSmartTitledPanel().setTitle("editieren Rezept ---> "+jpan1.vecaktrez.get(1));
+			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(rezDatenPanel.vecaktrez,lneu,feldname));
+			neuRez.getSmartTitledPanel().setTitle("editieren Rezept ---> "+rezDatenPanel.vecaktrez.get(1));
 		}
 		neuRez.getSmartTitledPanel().getContentContainer().setName("RezeptNeuanlage");
 		neuRez.setName("RezeptNeuanlage");
@@ -1719,17 +1732,22 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 		pinPanel = null;
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
-				RezeptDaten.feddisch = false;
-				jpan1.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
-				while(!RezeptDaten.feddisch){
+				RezeptDaten2.feddisch = false;
+				rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
+				long zeit = System.currentTimeMillis();
+				while(!RezeptDaten2.feddisch){
 					try {
 						Thread.sleep(20);
+						if(System.currentTimeMillis()-zeit > 10000){
+							JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten");
+							return;
+						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
-				System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten.feddisch);
+				System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten2.feddisch);
 				if(((String)Reha.thisClass.patpanel.vecaktrez.get(39)).equals("")){
 					System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
 					Reha.thisClass.patpanel.vecaktrez.set(39,"0");

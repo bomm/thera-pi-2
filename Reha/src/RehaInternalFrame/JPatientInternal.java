@@ -28,24 +28,10 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		this.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
-
-
-		//addInternalFrameListener(this);
-		// TODO Auto-generated constructor stub
 	}
-	/*
-	@Override
-	public void internalFrameActivated(InternalFrameEvent arg0) {
-		isActive = true;
-		requestFocus();
-		toFront();
-		super.repaint();
-		frameAktivieren(super.getName());
-	}
-	*/
+
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		// TODO Auto-generated method stub
 		System.out.println("Internal-Pat-Frame in schliessen***************");
 	}
 	@Override
@@ -63,12 +49,15 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		
 		try{
 			Reha.thisFrame.requestFocus();
+			/*
 			Reha.thisClass.patpanel.fl = null;
 			Reha.thisClass.patpanel.kli = null;
 			Reha.thisClass.patpanel.gplst = null;
 			Reha.thisClass.patpanel.newPolicy = null;
+			*/
 		}catch(Exception ex){
-			ex.printStackTrace();
+			System.out.println("Fehler beim schließen des IFrames");
+			//ex.printStackTrace();
 		}
 		
 		String s1 = new String("#CLOSING");
@@ -80,8 +69,17 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		
 		System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
-		Reha.thisClass.patpanel.jry = null;
-		Reha.thisClass.patpanel = null;
+		Reha.thisClass.patpanel.allesAufraeumen();
+		if(Reha.thisClass.patpanel.getInternal() != null){
+			Reha.thisClass.patpanel.setInternalToNull();
+			Reha.thisClass.patpanel = null;
+		}
+		/*
+		if(Reha.thisClass.patpanel.jry != null){
+			Reha.thisClass.patpanel.jry = null;
+			Reha.thisClass.patpanel = null;
+		}
+		*/
 		//Gutachten.gutachten = null;
 		//Historie.historie = null;
 		//Dokumentation.doku = null;

@@ -23,7 +23,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -31,6 +30,7 @@ import org.jdesktop.swingx.JXPanel;
 import patientenFenster.Dokumentation;
 import patientenFenster.Gutachten;
 import patientenFenster.Historie;
+import patientenFenster.PatGrundPanel;
 import patientenFenster.TherapieBerichte;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
@@ -54,7 +54,7 @@ public class PatientHauptPanel extends JXPanel{
 	private static final long serialVersionUID = 36015777152668128L;
 
 	//Logik-Klasse für PatientHauptPanel
-	PatientLogic patientLogic = null;
+	PatientHauptLogic patientLogic = null;
 	
 	//SuchenFenster
 	public Object sucheComponent = null;
@@ -112,7 +112,7 @@ public class PatientHauptPanel extends JXPanel{
 	private PatStammEventClass ptp = null;
 	
 	//Instanz-Variable für die einzelnen Panels
-	private PatientToolBar patToolBarPanel = null;
+	private PatientToolBarPanel patToolBarPanel = null;
 	private PatientStammDatenPanel stammDatenPanel = null;
 	private PatientMemoPanel patMemoPanel = null;
 	private PatientMultiFunctionPanel patMultiFunctionPanel = null;
@@ -136,7 +136,7 @@ public class PatientHauptPanel extends JXPanel{
 		setName(name);
 		setDoubleBuffered(true);
 
-		patientLogic = new PatientLogic(this);
+		patientLogic = new PatientHauptLogic(this);
 		patientInternal = internal;
 		
 		createPatStammListener();
@@ -145,7 +145,7 @@ public class PatientHauptPanel extends JXPanel{
 		createKeyListeners();
 		createMouseListeners();
 		
-		//setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs2"));
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs2"));
 		//setBackgroundPainter(Reha.thisClass.compoundPainter.get("HauptPanel"));
 		FormLayout lay = new FormLayout("0dlu,fill:0:grow(0.33),fill:0:grow(0.66)","0dlu,p,fill:0:grow(1.0)");
 		CellConstraints cc = new CellConstraints();
@@ -154,9 +154,22 @@ public class PatientHauptPanel extends JXPanel{
 		add(getToolBarPatient(),cc.xyw(1, 2, 3));
 		add(constructSplitPaneLR(),cc.xyw(1,3,3));
 		setVisible(true);
+		setzeFocus();
 	}
 	/*******************************************************/
-	
+	public PatientHauptLogic getLogic(){
+		return patientLogic;
+	}
+	public PatientHauptPanel getInstance(){
+		return this;
+	}
+	public JPatientInternal getInternal(){
+		return patientInternal;
+	}
+	public void setInternalToNull(){
+		patientInternal = null;
+	}
+
 	private UIFSplitPane constructSplitPaneLR(){
 		UIFSplitPane jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
         		getStammDatenPatient(),
@@ -166,7 +179,8 @@ public class PatientHauptPanel extends JXPanel{
 		jSplitLR.setDividerBorderVisible(true);
 		jSplitLR.setName("PatGrundSplitLinksRechts");
 		jSplitLR.setOneTouchExpandable(true);
-		jSplitLR.setDividerColor(Color.LIGHT_GRAY);		
+		jSplitLR.setDividerColor(Color.LIGHT_GRAY);
+		jSplitLR.setDividerLocation(200);
 		jSplitLR.validate();
 		return jSplitLR;
 	}
@@ -180,6 +194,7 @@ public class PatientHauptPanel extends JXPanel{
 		jSplitRechtsOU.setName("PatGrundSplitRechteSeiteObenUnten");
 		jSplitRechtsOU.setOneTouchExpandable(true);
 		jSplitRechtsOU.setDividerColor(Color.LIGHT_GRAY);
+		jSplitRechtsOU.setDividerLocation(175);
 		jSplitRechtsOU.validate();
 		return jSplitRechtsOU;
 	}
@@ -204,13 +219,27 @@ public class PatientHauptPanel extends JXPanel{
 		return jscr;		
 	}
 	private JXPanel getToolBarPatient(){
-		patToolBarPanel = new PatientToolBar(this);
+		patToolBarPanel = new PatientToolBarPanel(this);
 		return patToolBarPanel;
 
 	}
 	public JTabbedPane getTab(){
 		return multiTab;
 	}
+	public PatientStammDatenPanel getStammDaten(){
+		return stammDatenPanel;
+	}
+	public PatientMemoPanel getMemo(){
+		return patMemoPanel;
+	}
+	public PatientMultiFunctionPanel getMultiFuncPanel(){
+		return patMultiFunctionPanel;
+	}
+	
+	public void starteSuche(){
+		patientLogic.starteSuche();
+	}
+
 	/*****************Dieser EventListener handled alle wesentlichen Funktionen inklusive der CloseWindow-Methode*************/
 	private void createPatStammListener(){
 		patientStammEventListener = new PatStammEventListener(){
@@ -233,7 +262,7 @@ public class PatientHauptPanel extends JXPanel{
 		toolBarAction = new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					
+					patToolBarPanel.getLogic().reactOnAction(arg0);
 				}
 		};
 		memoAction = new ActionListener(){
@@ -254,7 +283,7 @@ public class PatientHauptPanel extends JXPanel{
 		toolBarKeys = new KeyListener(){
 			@Override
 			public void keyPressed(KeyEvent e) {
-				patToolBarPanel.reactOnKeys(e);
+				patToolBarPanel.getLogic().reactOnKeyPressed(e);
 			}
 			@Override
 			public void keyReleased(KeyEvent arg0) {
@@ -273,7 +302,7 @@ public class PatientHauptPanel extends JXPanel{
 	private void createMouseListeners(){
 		toolBarMouse = new MouseListener(){
 			public void mouseClicked(MouseEvent arg0) {
-				patToolBarPanel.reactOnMouse(arg0);
+				patToolBarPanel.getLogic().reactOnMouseClicked(arg0);
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
@@ -320,40 +349,18 @@ public class PatientHauptPanel extends JXPanel{
 	 * 
 	 */
 	public void allesAufraeumen(){
-		patToolBarPanel.fireAufraeumen();
+		stammDatenPanel.fireAufraeumen();
+		patToolBarPanel.getLogic().fireAufraeumen();
 		patMemoPanel.fireAufraeumen();
 		patMultiFunctionPanel.fireAufraeumen();
+		this.ptp.removePatStammEventListener(patientStammEventListener);
+		ptp = null;
+		patientLogic.fireAufraeumen();
 	}
 	
 	public void setzeFocus(){
-		SwingUtilities.invokeLater(new Runnable(){
-		 	   public  void run(){
-			 		  if(! tfsuchen.hasFocus()){
-			 			  if(! patientInternal.getActive()){
-			 				 patientInternal.activateInternal();
-			 				  SwingUtilities.invokeLater(new Runnable(){
-			 					  public  void run(){
-			 						  tfsuchen.requestFocus();
-			 					  }
-			 				  }); 	   	
-		 				  }else{
-		 					 SwingUtilities.invokeLater(new Runnable(){
-								  public  void run(){
-									  tfsuchen.requestFocus();
-								  }
-		 					 }); 	   	
-		 				  }
-					  }else{
-						  SwingUtilities.invokeLater(new Runnable(){
-							  public  void run(){
-								  tfsuchen.requestFocus();
-							  }
-						  }); 	   	
-					  }
-			 	   }
-		}); 	   	
+		patientLogic.setzeFocus();
 	}
-	
 }
 /***********Inner-Class JPatTextField*************/
 class JPatTextField extends JRtaTextField{

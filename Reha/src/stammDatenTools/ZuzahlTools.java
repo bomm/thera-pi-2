@@ -8,8 +8,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import patientenFenster.AktuelleRezepte;
-import patientenFenster.PatGrundPanel;
+
+
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -23,7 +23,7 @@ public class ZuzahlTools {
 		String rez_geb = "";
 		int zzregel = -1; 
 		if(kassid.equals("-1")){
-			JOptionPane.showMessageDialog(null,"Keine gültige Kasse angegeben");
+			JOptionPane.showMessageDialog(null,"Keine gÃ¼ltige Kasse angegeben");
 			return false;
 		}
 		if(rez_nr.equals("")){
@@ -53,7 +53,7 @@ public class ZuzahlTools {
 	}
 	/**********************************************************/
 	public static Object[] unter18TestDirekt(Vector<String> termine,boolean azTest,boolean jahrTest){
-						// Rez geb fällig   //Anzahl Term   //Anzahl frei  //Anzahl unfrei  //Zuzahlstatus
+						// Rez geb fï¿½llig   //Anzahl Term   //Anzahl frei  //Anzahl unfrei  //Zuzahlstatus
 		Object[] ret = {new Boolean(false),new Integer(-1),new Integer(-1),new Integer(-1),new Integer(-1)};
 		//Vector vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		Vector<String> tage  = (Vector<String>)termine.clone();
@@ -109,8 +109,8 @@ public class ZuzahlTools {
 				long tagex = DatFunk.TageDifferenz(geburtstag ,gebtag);
 				//System.out.println("Tagex = ---------------> "+tagex);
 				if(tagex <= 0 && tagex > -45){
-					//JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljährigkeit\n"+
-							//"Unter Umständen wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
+					//JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Volljï¿½hrigkeit\n"+
+							//"Unter Umstï¿½nden wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
 					Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),3);
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
 					ret[4] = new Integer(3);					
@@ -205,7 +205,7 @@ public class ZuzahlTools {
 		String preisgrp = "";
 		int zzregel = -1;
 		if(kassid.equals("-1")){
-			JOptionPane.showMessageDialog(null,"Keine gültige Kasse angegeben");
+			JOptionPane.showMessageDialog(null,"Keine gï¿½ltige Kasse angegeben");
 			return -1;
 		}
 		Vector vec = SqlInfo.holeFelder("select preisgruppe from kass_adr where id='"+kassid.trim()+"' LIMIT 1");

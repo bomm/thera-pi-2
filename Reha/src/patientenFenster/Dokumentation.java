@@ -946,7 +946,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							setzeRezeptPanelAufNull(true);
 							dokubut[5].setEnabled(false);
 						}
-						Reha.thisClass.patpanel.jtab.setTitleAt(3,macheHtmlTitel(tabdokus.getRowCount(),"Dokumentation"));
+						Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(tabdokus.getRowCount(),"Dokumentation"));
 					}
 					return null;
 				}
@@ -1974,7 +1974,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					dtblm.setValueAt(tabIcons[zzbild], i, 1);
 					//dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
 				}
-				Reha.thisClass.patpanel.jtab.setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
+				Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					int anzeigen = -1;

@@ -676,7 +676,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	                    }.start();
 					}
 				}
-				Reha.thisClass.patpanel.jtab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
+				Reha.thisClass.patpanel.getTab().setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					//int anzeigen = -1;
@@ -1237,7 +1237,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				int uebrig = tabaktrez.getRowCount();
 				
 				anzahlRezepte.setText("Anzahl Rezepte: "+Integer.toString(uebrig));
-				Reha.thisClass.patpanel.jtab.setTitleAt(0,macheHtmlTitel(uebrig,"aktuelle Rezepte"));
+				Reha.thisClass.patpanel.getTab().setTitleAt(0,macheHtmlTitel(uebrig,"aktuelle Rezepte"));
 				if(uebrig <= 0){
 					holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
 				}else{

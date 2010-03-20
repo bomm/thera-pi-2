@@ -3,13 +3,10 @@ package org.therapi.reha.patient;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
@@ -22,18 +19,20 @@ import systemTools.Colors;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class PatientToolBar extends JXPanel{
+public class PatientToolBarPanel extends JXPanel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8491959397526727602L;
 	PatientHauptPanel patientHauptPanel = null;
+	PatientToolBarLogic patToolLogic = null;
 	JLabel sucheLabel = null;
 	
-	public PatientToolBar(PatientHauptPanel patHauptPanel){
+	public PatientToolBarPanel(PatientHauptPanel patHauptPanel){
 		super();
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
+		patToolLogic = new PatientToolBarLogic(patHauptPanel,this);
 		setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 		FormLayout lay = new FormLayout("3dlu,right:max(35dlu;p),3dlu,p,45dlu,fill:0:grow(0.10),0dlu ,right:max(39dlu;p),3dlu, p,45dlu,7dlu,"+
 				//  2-teSpalte (13)  14  15 16     17            18   19      20             21   22  23    24 25  26      27                28
@@ -120,39 +119,9 @@ public class PatientToolBar extends JXPanel{
 		jtb.add(patientHauptPanel.jbut[6]);
 		add(jtb,cc.xyw(20,2,8));
 	}
-	
-	public void reactOnMouse(MouseEvent arg0){
-		if(arg0.getSource() instanceof JLabel){
-			if(((JComponent)arg0.getSource()).getName().equals("Suchen")){
-				//Reha.thisClass.patpanel.starteSuche();
-				return;
-			}
-		}
+	public PatientToolBarLogic getLogic(){
+		return patToolLogic;
 	}
 	
-	public void reactOnKeys(KeyEvent e){
-		if(e.getKeyCode() == 10){
-			if(((JComponent)e.getSource()).getName() != null){
-				if( ((JComponent) e.getSource()).getName().equals("suchenach") ){
-					patientHauptPanel.patientLogic.starteSuche();
-				}
-			}
-		}
-	}
-	
-	public void fireAufraeumen(){
-		for(int i = 0; i < patientHauptPanel.jbut.length;i++){
-			if(patientHauptPanel.jbut[i] != null){
-				patientHauptPanel.jbut[i].removeActionListener(patientHauptPanel.toolBarAction);
-				patientHauptPanel.jbut[i] = null;
-			}
-		}
-		patientHauptPanel.toolBarAction = null;
-		patientHauptPanel.tfsuchen.removeKeyListener(patientHauptPanel.toolBarKeys);
-		patientHauptPanel.toolBarKeys = null;
-		sucheLabel.removeMouseListener(patientHauptPanel.toolBarMouse);
-		patientHauptPanel.toolBarMouse = null;
-		patientHauptPanel = null;
-	}
 
 }

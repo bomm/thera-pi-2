@@ -23,6 +23,7 @@ public class PatientMultiFunctionPanel extends JXPanel{
 	 */
 	private static final long serialVersionUID = -1284209871875228012L;
 	PatientHauptPanel patientHauptPanel = null;
+	
 	public PatientMultiFunctionPanel(PatientHauptPanel patHauptPanel){
 		super();
 		setLayout(new BorderLayout());
@@ -75,6 +76,8 @@ public class PatientMultiFunctionPanel extends JXPanel{
 		rechts.revalidate();
 		return rechts;
 	}
-	
+	public AktuelleRezepte2 getAktRez(){
+		return patientHauptPanel.aktRezept;
+	}
 
 }
