@@ -779,7 +779,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				//System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
 			//System.out.println("Termivector = "+tvec);
-			dtermm.addRow((Vector)tvec.clone());
+			dtermm.addRow((Vector<?>)tvec.clone());
 		}
 		tabaktterm.validate();
 		tabaktterm.repaint();
@@ -794,11 +794,12 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 		tabaktrez.validate();
 		tabaktrez.repaint();
 	}
+	@SuppressWarnings("unchecked")
 	private void holeEinzelTermine(int row,Vector<String> vvec){
 		inEinzelTermine = true;
 		Vector<String> xvec = null;
 		if(vvec == null){
-			xvec = SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,7)+"'", Arrays.asList(new String[] {}));			
+			xvec = (Vector<String>) SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,7)+"'", Arrays.asList(new String[] {}));			
 		}else{
 			xvec = vvec;
 		}
@@ -863,10 +864,8 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 		int reihen = dtermm.getRowCount();
 		StringBuffer sb = new StringBuffer();
 		String sdat = "";
-		//System.out.println("Speichern Einzeltermine f�r rezept"+tabaktrez.getValueAt(tabaktrez.getSelectedRow(),0) ); 
 		for(int i = 0;i<reihen;i++){
 			sdat = (dtermm.getValueAt(i,0)!= null ? ((String)dtermm.getValueAt(i,0)).trim() : ".  .");
-			//System.out.println("Sdat = "+sdat);
 			dtermm.setValueAt((sdat.equals(".  .") ? " " : DatFunk.sDatInSQL(sdat)), i, 4);
 			sb.append((sdat.equals(".  .") ?  "  .  .    @" : sdat)+"@");
 			sb.append((dtermm.getValueAt(i,1)!= null ? ((String)dtermm.getValueAt(i,1)).trim() : "")+"@");
@@ -874,26 +873,19 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 			sb.append((dtermm.getValueAt(i,3)!= null ? ((String)dtermm.getValueAt(i,3)).trim() : "")+"@");			
 			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
-
-		//String stmt = "update verordn set termine='"+sb.toString()+"' where id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 6)+"'";
-		//System.out.println(sb.toString());
 		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
-		//new ExUndHop().setzeStatement(stmt);
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		// TODO Auto-generated method stub
-		//System.out.println("PropertyChange->"+arg0);
-		
 	}
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
-		// TODO Auto-generated method stub
 		boolean update = false;
-		int fi = arg0.getFirstRow();
-		int fl = arg0.getLastRow();
+		//int fi = arg0.getFirstRow();
+		//int fl = arg0.getLastRow();
 		int col = arg0.getColumn();
 		int type = arg0.getType();
+
 		String stype = "";
 		if(type == TableModelEvent.UPDATE){
 			stype = "Update";
@@ -904,7 +896,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 		if(type == TableModelEvent.DELETE){
 			stype = "Delete";
 		}
-		
+
 		if( (col >=  0 && col < 4 && type == TableModelEvent.UPDATE) ){
 				final int xcol = col;
 				new Thread(){
@@ -927,13 +919,12 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				System.out.println("Hier den Termintest");
 				if(Reha.thisClass.patpanel.vecaktrez.get(60).equals("T")){
 					Vector<String>tage = new Vector<String>();
-					Vector v = dtermm.getDataVector();
+					Vector<?> v = dtermm.getDataVector();
 					for(int i = 0; i < v.size();i++){
-						tage.add((String) ((Vector)v.get(i)).get(0));
+						tage.add((String) ((Vector<?>)v.get(i)).get(0));
 					}
 					Object[] ret =  ZuzahlTools.unter18TestDirekt(tage,true,false);
-					String resultgleich = "";
-					
+					//String resultgleich = "";
 				}
 				if(!Reha.thisClass.patpanel.patDaten.get(69).equals("")){
 					ZuzahlTools.jahresWechselTest((String)Reha.thisClass.patpanel.vecaktrez.get(1),true,false);	
@@ -944,11 +935,10 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
-		// TODO Auto-generated method stub
 		int index;
 		if( (index = arg0.getFirstIndex()) >= 0){
 			if(! arg0.getValueIsAdjusting()){
-				//System.out.println("ListSelectionEvent->"+arg0.getFirstIndex());				
+				
 			}
 		}
 		

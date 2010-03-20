@@ -2476,7 +2476,6 @@ final class ErsterLogin implements Runnable{
 			OOTools.ooOrgAnmelden();
 			}
 		}.start();
-		
 		ProgLoader.PasswortDialog(0);
 
 	}
@@ -2523,7 +2522,7 @@ final class PreisListenLaden implements Runnable{
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
 		Reha.thisClass.jxLinks.setAlpha(1.0f);
 		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		new SocketClient().setzeInitStand("INITENDE");
+		//new SocketClient().setzeInitStand("INITENDE");
 		Reha.thisClass.initok = true;
 	}
 	public void run() {

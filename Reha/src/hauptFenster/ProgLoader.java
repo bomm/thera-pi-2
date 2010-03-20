@@ -17,13 +17,9 @@ import javax.swing.SwingUtilities;
 import krankenKasse.KassenPanel;
 import menus.OOIFTest;
 
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptPanel;
 
-import patientenFenster.PatGrundPanel;
-
-//import patientenFenster.PatGrundPanel;
 import rehaContainer.RehaTP;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
@@ -473,7 +469,7 @@ public void loeschePatient(){
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {
- 
+	new SocketClient().setzeInitStand("INITENDE"); 
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));	
 	String name = "PasswortDialog"+WinNum.NeueNummer();
 	RehaTP jtp = new RehaTP(setPos); 

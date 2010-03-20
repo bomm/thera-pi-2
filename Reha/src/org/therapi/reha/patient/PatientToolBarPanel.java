@@ -26,7 +26,7 @@ public class PatientToolBarPanel extends JXPanel{
 	private static final long serialVersionUID = 8491959397526727602L;
 	PatientHauptPanel patientHauptPanel = null;
 	PatientToolBarLogic patToolLogic = null;
-	JLabel sucheLabel = null;
+	public JLabel sucheLabel = null;
 	
 	public PatientToolBarPanel(PatientHauptPanel patHauptPanel){
 		super();
@@ -49,17 +49,18 @@ public class PatientToolBarPanel extends JXPanel{
 		add(patientHauptPanel.jcom,cc.xyw(4,2,8));
 		
 		sucheLabel = new JLabel("finde Pat. -->");
-		lbl.setName("Suchen");
-		lbl.setIcon(SystemConfig.hmSysIcons.get("find"));
-		lbl.addMouseListener(patientHauptPanel.toolBarMouse);
-		add(lbl,cc.xy(13,2));
+		sucheLabel.setName("Suchen");
+		sucheLabel.setIcon(SystemConfig.hmSysIcons.get("find"));
+		sucheLabel.addMouseListener(patientHauptPanel.toolBarMouse);
+		sucheLabel.addFocusListener(patientHauptPanel.toolBarFocus);
+		add(sucheLabel,cc.xy(13,2));
 		patientHauptPanel.tfsuchen = new JFormattedTextField();
 		patientHauptPanel.tfsuchen.setFont(new Font("Tahoma",Font.BOLD,11));
 		patientHauptPanel.tfsuchen.setBackground(Colors.PiOrange.alpha(0.15f));
 		patientHauptPanel.tfsuchen.setForeground(new Color(136,136,136));
 		patientHauptPanel.tfsuchen.setName("suchenach");
 		patientHauptPanel.tfsuchen.addKeyListener(patientHauptPanel.toolBarKeys);
-		//patientHauptPanel.tfsuchen.addFocusListener(getTextFieldFocusListener());		
+		patientHauptPanel.tfsuchen.addFocusListener(patientHauptPanel.toolBarFocus);		
 		add(patientHauptPanel.tfsuchen,cc.xyw(15, 2, 3));
 		
 		JToolBar jtb = new JToolBar();

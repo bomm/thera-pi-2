@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -30,7 +32,6 @@ import org.jdesktop.swingx.JXPanel;
 import patientenFenster.Dokumentation;
 import patientenFenster.Gutachten;
 import patientenFenster.Historie;
-import patientenFenster.PatGrundPanel;
 import patientenFenster.TherapieBerichte;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
@@ -66,6 +67,7 @@ public class PatientHauptPanel extends JXPanel{
 	public ActionListener toolBarAction;
 	public MouseListener toolBarMouse;
 	public KeyListener toolBarKeys;
+	public FocusListener toolBarFocus;
 	
 	//StammDaten-Controls & Listener
 	public JPatTextField[] ptfield = {null,null,null,null,null,null,
@@ -78,6 +80,7 @@ public class PatientHauptPanel extends JXPanel{
 	public JButton[] memobut = {null,null,null,null,null,null};
 	public JTextArea[] pmemo = {null,null};
 	public ActionListener memoAction = null;
+	public int inMemo = -1;
 	
 	//MultiFunctionPanel-Controls & Listener
 	JTabbedPane multiTab = null;
@@ -144,6 +147,7 @@ public class PatientHauptPanel extends JXPanel{
 		createActionListeners();
 		createKeyListeners();
 		createMouseListeners();
+		createFocusListeners();
 		
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("getTabs2"));
 		//setBackgroundPainter(Reha.thisClass.compoundPainter.get("HauptPanel"));
@@ -234,6 +238,10 @@ public class PatientHauptPanel extends JXPanel{
 	}
 	public PatientMultiFunctionPanel getMultiFuncPanel(){
 		return patMultiFunctionPanel;
+	
+	}
+	public PatientToolBarPanel getToolBar(){
+		return patToolBarPanel;
 	}
 	
 	public void starteSuche(){
@@ -292,6 +300,18 @@ public class PatientHauptPanel extends JXPanel{
 			public void keyTyped(KeyEvent arg0) {
 			}
 		};	
+	}
+	private void createFocusListeners(){
+		toolBarFocus = new FocusListener(){
+			@Override
+			public void focusGained(FocusEvent e) {
+				patToolBarPanel.getLogic().reactOnFocusGained(e);	
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+			
+		};
 	}
 	/****************************************************/
 	/**

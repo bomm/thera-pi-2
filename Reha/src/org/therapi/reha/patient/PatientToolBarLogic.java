@@ -1,6 +1,9 @@
 package org.therapi.reha.patient;
 
+import hauptFenster.Reha;
+
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -20,6 +23,10 @@ public class PatientToolBarLogic {
 	public void reactOnMouseClicked(MouseEvent arg0){
 		if(arg0.getSource() instanceof JLabel){
 			if(((JComponent)arg0.getSource()).getName().equals("Suchen")){
+				if(patientHauptPanel.inMemo > -1){
+					Reha.thisClass.patpanel.pmemo[patientHauptPanel.inMemo].requestFocus();
+					return;
+				}
 				patientHauptPanel.starteSuche();
 				return;
 			}
@@ -48,7 +55,19 @@ public class PatientToolBarLogic {
 		patientHauptPanel.toolBarKeys = null;
 		patientToolBarPanel.sucheLabel.removeMouseListener(patientHauptPanel.toolBarMouse);
 		patientHauptPanel.toolBarMouse = null;
+		patientToolBarPanel.sucheLabel.removeFocusListener(patientHauptPanel.toolBarFocus);
+		patientHauptPanel.tfsuchen.removeFocusListener(patientHauptPanel.toolBarFocus);
+		patientHauptPanel.toolBarFocus = null;
+		patientToolBarPanel.sucheLabel = null;		
 		patientHauptPanel = null;
+	}
+	public void reactOnFocusGained(FocusEvent e){
+		if(((JComponent)e.getSource()).getName().equals("suchenach") && patientHauptPanel.inMemo > -1 ){
+			Reha.thisClass.patpanel.pmemo[patientHauptPanel.inMemo].requestFocus();
+		}
+		if(!patientHauptPanel.getInternal().getActive()){
+			patientHauptPanel.getInternal().setSpecialActive(true);
+		}	
 	}
 	public void reactOnAction(ActionEvent arg0){
 		String cmd = arg0.getActionCommand();

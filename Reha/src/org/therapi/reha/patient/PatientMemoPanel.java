@@ -33,7 +33,7 @@ public class PatientMemoPanel extends JXPanel{
 	 */
 	private static final long serialVersionUID = 1894163619378832811L;
 	PatientHauptPanel patientHauptPanel = null;
-	int inMemo;
+	
 	public PatientMemoPanel(PatientHauptPanel patHauptPanel){
 		super();
 		setLayout(new BorderLayout());
@@ -54,7 +54,7 @@ public class PatientMemoPanel extends JXPanel{
 		}
 		String sc = arg0.getActionCommand();
 		if(sc.equals("kedit")){
-			inMemo = 0;
+			patientHauptPanel.inMemo = 0;
 			patientHauptPanel.memobut[0].setEnabled(false);
 			patientHauptPanel.memobut[1].setEnabled(true);
 			patientHauptPanel.memobut[2].setEnabled(true);
@@ -65,7 +65,7 @@ public class PatientMemoPanel extends JXPanel{
 			return;
 		}
 		if(sc.equals("kedit2")){
-			inMemo = 1;
+			patientHauptPanel.inMemo = 1;
 			patientHauptPanel.memobut[3].setEnabled(false);
 			patientHauptPanel.memobut[4].setEnabled(true);
 			patientHauptPanel.memobut[5].setEnabled(true);
@@ -85,7 +85,7 @@ public class PatientMemoPanel extends JXPanel{
 			String cmd = "update pat5 set anamnese='"+StringTools.Escaped(Reha.thisClass.patpanel.pmemo[0].getText())+"' where id='"+
 			Reha.thisClass.patpanel.autoPatid+"'";
 			new ExUndHop().setzeStatement(cmd);
-			inMemo = -1;
+			patientHauptPanel.inMemo = -1;
 			return;
 		}
 		if(sc.equals("ksave2")){
@@ -98,7 +98,7 @@ public class PatientMemoPanel extends JXPanel{
 			String cmd = "update pat5 set pat_text='"+StringTools.Escaped(Reha.thisClass.patpanel.pmemo[1].getText())+"' where id='"+
 			Reha.thisClass.patpanel.autoPatid+"'";
 			new ExUndHop().setzeStatement(cmd);
-			inMemo = -1;
+			patientHauptPanel.inMemo = -1;
 			return;
 		}
 		if(sc.equals("kbreak")){
@@ -109,7 +109,7 @@ public class PatientMemoPanel extends JXPanel{
 			patientHauptPanel.pmemo[0].setEditable(false);
 			patientHauptPanel.memobut[3].setEnabled(true);
 			patientHauptPanel.pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+patientHauptPanel.autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
-			inMemo = -1;
+			patientHauptPanel.inMemo = -1;
 			return;
 		}
 		if(sc.equals("kbreak2")){
@@ -120,7 +120,7 @@ public class PatientMemoPanel extends JXPanel{
 			patientHauptPanel.pmemo[1].setEditable(false);
 			patientHauptPanel.memobut[0].setEnabled(true);		
 			patientHauptPanel.pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+patientHauptPanel.autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
-			inMemo = -1;
+			patientHauptPanel.inMemo = -1;
 			return;
 		}
 		

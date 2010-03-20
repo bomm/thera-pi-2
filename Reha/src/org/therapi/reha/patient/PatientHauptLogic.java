@@ -3,17 +3,12 @@ package org.therapi.reha.patient;
 import hauptFenster.Reha;
 import hauptFenster.SuchenDialog;
 
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -24,17 +19,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenFormulare;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 
 import patientenFenster.PatNeuanlage;
-
-
-
-
-
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
@@ -43,13 +32,8 @@ import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.DatFunk;
-
-import com.mysql.jdbc.ResultSetMetaData;
-
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
-
 import events.PatStammEvent;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
@@ -130,8 +114,8 @@ public class PatientHauptLogic {
 			}
 		}
 		if (patientHauptPanel.sucheComponent != null){
-			Point thispoint = Reha.thisClass.patpanel.getLocationOnScreen();
-			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x+30, thispoint.y+80);
+			Point thispoint = patientHauptPanel.tfsuchen.getLocationOnScreen();
+			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x-60, thispoint.y+25);
 			if(! patientHauptPanel.tfsuchen.getText().trim().equals(lastseek)){
 				((SuchenDialog) patientHauptPanel.sucheComponent).suchDasDing(patientHauptPanel.tfsuchen.getText());
 				lastseek = patientHauptPanel.tfsuchen.getText().trim();
@@ -139,14 +123,19 @@ public class PatientHauptLogic {
 			((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
 		}else{
 			patientHauptPanel.sucheComponent = new SuchenDialog(null,Reha.thisClass.patpanel,patientHauptPanel.tfsuchen.getText());
-			Point thispoint = Reha.thisClass.patpanel.getLocationOnScreen();
-			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x+30, thispoint.y+80);
+			Point thispoint = patientHauptPanel.tfsuchen.getLocationOnScreen();
+			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x-60, thispoint.y+25);
 			((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
 			lastseek = patientHauptPanel.tfsuchen.getText().trim();
 		}
 	}
 	class PatientAction extends AbstractAction {
-	    public void actionPerformed(ActionEvent e) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6195808468235028392L;
+
+		public void actionPerformed(ActionEvent e) {
 	        //System.out.println("Patient Action = "+e.getActionCommand());
 	        //System.out.println(e);
 	        if(e.getActionCommand().equals("f")){
@@ -319,10 +308,10 @@ public class PatientHauptLogic {
 		
 		
 	}
-	public void arztListeSpeichernVector(Vector vec, boolean inNeu, String xpatintern){
+	public void arztListeSpeichernVector(Vector<?> vec, boolean inNeu, String xpatintern){
 		String aliste = "";
 		for(int i = 0;i < vec.size();i++){
-			aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
+			aliste = aliste+"@"+((String)((Vector<?>)vec.get(i)).get(5))+"@\n";
 		}
 		String sets = "aerzte='"+aliste+"'";
 		SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
