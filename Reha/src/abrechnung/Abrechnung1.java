@@ -110,6 +110,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	public StringBuffer unzBuf = new StringBuffer();
 	public StringBuffer gesamtBuf = new StringBuffer();
 	public StringBuffer auftragsBuf = new StringBuffer();
+	public StringBuffer buf = new StringBuffer();
+	public StringBuffer htmlBuf = new StringBuffer();
 	public int positionenAnzahl = 0;
 	public String abrDateiName = "";
 	
@@ -117,6 +119,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	Double[] preis11 = {0.00,0.00,0.00};
 	Double[] preis31 = {0.00,0.00,0.00};
 	Double[] preis51 = {0.00,0.00,0.00};
+	
+	Double[] kassenUmsatz = {0.00,0.00};
 	DecimalFormat dfx = new DecimalFormat( "0.00" );	
 	
 	Vector<String> existiertschon = new Vector<String>();	
@@ -393,19 +397,49 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 				@Override
 				protected Void doInBackground() throws Exception {
 					int lang = aktuellerKassenKnoten.getChildCount();
+					kassenUmsatz[0] = 0.00;
+					kassenUmsatz[1] = 0.00;
 					for(int i = 0; i < lang;i++){
 						if( ((JXTTreeNode)aktuellerKassenKnoten.getChildAt(i)).knotenObjekt.fertig ){
 							kontrollierteRezepte++;
+							holeUmsaetze(((JXTTreeNode)aktuellerKassenKnoten.getChildAt(i)).knotenObjekt.rez_num);
 						}
 					}
+					setHtmlRechts(lang,kontrollierteRezepte);
 					System.out.println("Es gibt insgesamt "+kontrollierteRezepte+" Rezepte die für diese Kasse abgerechnet werden können");
 					return null;
 				}
-        		
         	}.execute();
     	}
 
 
+	}
+	public void setHtmlRechts(int gesamt,int gut){
+		htmlBuf.setLength(0);
+		htmlBuf.trimToSize();
+		htmlBuf.append("<html>");
+		htmlBuf.append("Fertige Rezepte für diese Kasse: "+gesamt);
+		htmlBuf.append("Abrechnungsfähige Rezepte für diese Kasse: "+gut);
+		htmlBuf.append("Umsatz aller abrechnungsfähigen Rezepte: "+dfx.format(kassenUmsatz[0]));
+		htmlBuf.append("Enthaltene Rezeptgebühren: "+dfx.format(kassenUmsatz[1]));
+		htmlBuf.append("</html>");
+		//abrRez.setHtmlText(htmlBuf.toString());
+	}
+	public void holeUmsaetze(String rez_nr){
+		buf.setLength(0);
+		buf.trimToSize();
+		try{
+			buf.append(SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+rez_nr+"'").get(0).get(0));
+		}catch(Exception ex){}
+		if(buf.length()<=0){
+			JOptionPane.showMessageDialog(null,"Kassenumsatz für Rezept +"+rez_nr+" kann nicht abgeholt werden");
+		}
+		//System.out.println(buf.toString());
+		String[] zeilen = buf.toString().split("\n");
+		String[] positionen = zeilen[0].split(":");
+		//PG=1:PATINTERN=16961:REZNUM=KG57747:GESAMT=102,30:REZGEB=20,26:REZANTEIL=10,26:REZPAUSCHL=10,00:KASSENID=116
+		kassenUmsatz[0] = kassenUmsatz[0]+ Double.valueOf(positionen[3].split("=")[1]);
+		kassenUmsatz[1] = kassenUmsatz[1]+ Double.valueOf(positionen[4].split("=")[1]);
 	}
 	/**************************************************/
 	public void starteAbrechnung(){

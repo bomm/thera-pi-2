@@ -7,9 +7,7 @@ import hauptFenster.UIFSplitPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -19,27 +17,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.EventObject;
-import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -50,7 +39,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -58,10 +46,7 @@ import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-
-import javax.swing.event.CellEditorListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
@@ -70,24 +55,17 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.text.NumberFormatter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import jxTableTools.CheckRenderer;
 import jxTableTools.DblCellEditor;
 import jxTableTools.DoubleTableCellRenderer;
 import jxTableTools.MitteRenderer;
 import jxTableTools.MyTableCheckBox;
 import jxTableTools.MyTableComboBox;
-import jxTableTools.MyTableStringDatePicker;
 
-import org.jdesktop.swinghelper.layer.JXGlassPane;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXMonthView;
@@ -95,25 +73,14 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.JXTable.NumberEditor;
-import org.jdesktop.swingx.calendar.DateSelectionModel.SelectionMode;
 import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 import org.therapi.reha.patient.AktuelleRezepte;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import com.sun.star.drawing.Alignment;
-
-import events.PatStammEvent;
-import events.PatStammEventClass;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -125,6 +92,12 @@ import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import events.PatStammEvent;
+import events.PatStammEventClass;
 
 
 
@@ -754,6 +727,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		rezeptSichtbar = false;
 		return;
 		
+	}
+	public void setHtmlText(String text){
+		htmlPane.setText(text);
 	}
 	private void setWerte(String rez_nr){
 
