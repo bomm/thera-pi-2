@@ -38,7 +38,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class RezeptDaten2 extends JXPanel{
+public class RezeptDaten extends JXPanel{
 	/**
 	 * 
 	 */
@@ -51,7 +51,7 @@ public class RezeptDaten2 extends JXPanel{
 	public static boolean feddisch = false;
 
 	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. außerhalb d.R."};
-	public RezeptDaten2(PatientHauptPanel eltern){
+	public RezeptDaten(PatientHauptPanel eltern){
 		super();
 		this.setOpaque(false);
 		setBorder(null);
@@ -79,7 +79,7 @@ public class RezeptDaten2 extends JXPanel{
 		});
 	}
 	public void setRezeptDaten(String reznummer,String sid){
-		RezeptDaten2.feddisch = false;		
+		RezeptDaten.feddisch = false;		
 		reznum.setText(reznummer);
 		Reha.thisClass.patpanel.aktRezept.rezAngezeigt = reznummer;
 		//AktuelleRezepte.aktRez.rezAngezeigt = reznummer;
@@ -226,7 +226,7 @@ public class RezeptDaten2 extends JXPanel{
 						}
 					}
 
-					RezeptDaten2.feddisch = true;
+					RezeptDaten.feddisch = true;
 
 					new Thread(){
 						public void run(){

@@ -66,7 +66,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.search.Searchable;
 
-import patientenFenster.PatGrundPanel;
+
 import patientenFenster.PatNeuanlage;
 
 

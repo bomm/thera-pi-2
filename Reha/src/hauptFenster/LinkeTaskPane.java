@@ -58,8 +58,9 @@ import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI;
+import org.therapi.reha.patient.AktuelleRezepte;
 
-import patientenFenster.AktuelleRezepte;
+
 
 import dialoge.DatumWahl;
 import events.PatStammEvent;

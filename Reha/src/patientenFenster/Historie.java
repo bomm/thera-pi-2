@@ -57,9 +57,6 @@ import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
 
-import patientenFenster.AktuelleRezepte.MyAktRezeptTableModel;
-import patientenFenster.AktuelleRezepte.MyTermTableModel;
-import patientenFenster.AktuelleRezepte.RezepteListSelectionHandler;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

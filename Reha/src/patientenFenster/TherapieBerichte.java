@@ -36,8 +36,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.event.TableColumnModelExtListener;
 
-import patientenFenster.AktuelleRezepte.MyAktRezeptTableModel;
-import patientenFenster.AktuelleRezepte.MyTermTableModel;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;

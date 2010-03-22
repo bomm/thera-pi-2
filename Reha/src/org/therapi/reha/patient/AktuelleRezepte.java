@@ -66,6 +66,7 @@ import patientenFenster.ArztBericht;
 import patientenFenster.AusfallRechnung;
 import patientenFenster.KeinRezept;
 import patientenFenster.RezNeuanlage;
+import patientenFenster.RezTest;
 import patientenFenster.RezTestPanel;
 
 import patientenFenster.RezeptGebuehren;
@@ -93,7 +94,7 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 
-public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,TableModelListener,TableColumnModelExtListener,PropertyChangeListener, ActionListener{
+public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,TableModelListener,TableColumnModelExtListener,PropertyChangeListener, ActionListener{
 	/**
 	 * 
 	 */
@@ -115,7 +116,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 	public String[] indphysio = null;
 	public String[] indergo = null;
 	public String[] indlogo = null;
-	public RezeptDaten2 rezDatenPanel = null;
+	public RezeptDaten rezDatenPanel = null;
 	public JButton[] aktrbut = {null,null,null,null,null,null,null,null,null};
 	public boolean suchePatUeberRez = false;
 	public String rezAngezeigt = "";
@@ -129,7 +130,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 	int iformular = -1;
 
 	//public boolean lneu = false;
-	public AktuelleRezepte2(PatientHauptPanel eltern){
+	public AktuelleRezepte(PatientHauptPanel eltern){
 		super();
 		//aktRez = this;
 
@@ -203,7 +204,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 					dummy.add(getTermine(),dumcc.xyw(1, 1, 7));
 					dummy.add(getTerminToolbar(),dumcc.xyw(1, 3, 7));
 
-					rezDatenPanel = new RezeptDaten2(xeltern);
+					rezDatenPanel = new RezeptDaten(xeltern);
 					vollPanel.add(rezDatenPanel,vpcc.xyw(1,4,1));
 					indiSchluessel();
 					initOk = true;
@@ -419,7 +420,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					//while(inRezeptDaten && !RezeptDaten.feddisch){					
 					long zeit = System.currentTimeMillis();
-					while(!RezeptDaten2.feddisch){
+					while(!RezeptDaten.feddisch){
 						try {
 							Thread.sleep(20);
 							if(System.currentTimeMillis()-zeit > 10000){
@@ -950,7 +951,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 				rezneugefunden = false;
 				return;
 			}
-			if(!RezeptDaten2.feddisch){
+			if(!RezeptDaten.feddisch){
 				return;
 			}
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
@@ -969,7 +970,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
-	                	RezeptDaten2.feddisch = false;
+	                	RezeptDaten.feddisch = false;
 	                	final int ix = i;
 	                	new SwingWorker<Void,Void>(){
 							@Override
@@ -1722,10 +1723,10 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 		pinPanel = null;
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
-				RezeptDaten2.feddisch = false;
+				RezeptDaten.feddisch = false;
 				rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
 				long zeit = System.currentTimeMillis();
-				while(!RezeptDaten2.feddisch){
+				while(!RezeptDaten.feddisch){
 					try {
 						Thread.sleep(20);
 						if(System.currentTimeMillis()-zeit > 10000){
@@ -1737,7 +1738,7 @@ public class AktuelleRezepte2  extends JXPanel implements ListSelectionListener,
 						e.printStackTrace();
 					}
 				}
-				System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten2.feddisch);
+				System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten.feddisch);
 				if(((String)Reha.thisClass.patpanel.vecaktrez.get(39)).equals("")){
 					System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
 					Reha.thisClass.patpanel.vecaktrez.set(39,"0");
@@ -1829,10 +1830,8 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 	
 }
 /************************************/
+/*
 class RezTest extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5410743025474817628L;
 	private RehaTPEventClass rtp = null;
 	public RezTest(){
@@ -1874,3 +1873,4 @@ class RezTest extends RehaSmartDialog implements RehaTPEventListener,WindowListe
 		}
 	}
 }
+*/

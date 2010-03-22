@@ -32,6 +32,7 @@ import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
+import terminKalender.DatFunk;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.PatStammEvent;
@@ -351,11 +352,16 @@ public class PatientHauptLogic {
 							SwingUtilities.invokeLater(new Runnable(){
 							 	   public  void run()
 							 	   {
-							 		   String titel = "Patient: "+Reha.thisClass.patpanel.ptfield[2].getText()+", "+
-							 					Reha.thisClass.patpanel.ptfield[3].getText()+" geboren am: "+
-							 					Reha.thisClass.patpanel.ptfield[4].getText();
+							 		   try{
+							 		   String titel = "Patient: "+Reha.thisClass.patpanel.patDaten.get(2)+", "+
+							 					Reha.thisClass.patpanel.patDaten.get(3)+" geboren am: "+
+							 					DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4))+" - "+
+							 					"Patienten-ID: "+Reha.thisClass.patpanel.patDaten.get(29);
 							 			Reha.thisClass.patpanel.patientInternal.setzeTitel(titel);
 							 			//System.out.println("neuer Titel = "+titel);
+							 		   }catch(Exception ex){
+							 			   ex.printStackTrace();
+							 		   }
 							 	   }
 							});
 							return null;

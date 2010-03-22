@@ -5,15 +5,12 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -30,7 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -41,23 +37,18 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
+
+import patientenFenster.ArztBericht;
+import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
+import systemTools.JCompTools;
+import systemTools.JRtaTextField;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import patientenFenster.ArztBericht;
-import patientenFenster.ArztNeuKurz;
-import patientenFenster.PatGrundPanel;
-
-import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
 import dialoge.RehaSmartDialog;
 
 public class ThTextBlock extends RehaSmartDialog{

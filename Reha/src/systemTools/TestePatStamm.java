@@ -5,7 +5,7 @@ import hauptFenster.Reha;
 
 import javax.swing.JComponent;
 
-import patientenFenster.PatGrundPanel;
+
 import RehaInternalFrame.JPatientInternal;
 
 public class TestePatStamm {
@@ -22,8 +22,8 @@ public class TestePatStamm {
 		}
 		if(! (Reha.thisClass.patpanel.patDaten == null)){	
 			if(Reha.thisClass.patpanel.patDaten.size() > 0){
-				//System.out.println("größe der PatDaten = "+PatGrundPanel.thisClass.patDaten.size());
-				//System.out.println("größe der PatDaten = "+PatGrundPanel.thisClass.patDaten);
+				//System.out.println("grï¿½ï¿½e der PatDaten = "+PatGrundPanel.thisClass.patDaten.size());
+				//System.out.println("grï¿½ï¿½e der PatDaten = "+PatGrundPanel.thisClass.patDaten);
 				return (String) Reha.thisClass.patpanel.patDaten.get(67);
 			}	
 		}else{

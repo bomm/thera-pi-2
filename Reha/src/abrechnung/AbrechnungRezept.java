@@ -105,10 +105,7 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
-
-import patientenFenster.AktuelleRezepte;
-import patientenFenster.RezeptDaten;
-
+import org.therapi.reha.patient.AktuelleRezepte;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -223,6 +220,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	MyTableComboBox mycomb4;
 	MyTableCheckBox mycheck;
 	JRtaCheckBox check;
+	
+	StringBuffer buf1 = new StringBuffer();
+	StringBuffer buf2 = new StringBuffer();
 	
 	private UIFSplitPane jSplitOU = null;
 	private String[] voArt = {"Erstverordnung","Folgeverordnung","Folgeverordn. außerhalb d. Regelf."};
@@ -1670,164 +1670,170 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 
 		String dummy="";
-		String text = 
-		"<html><head>"+
-		"<STYLE TYPE=\"text/css\">"+
-		"<!--"+
-		"A{text-decoration:none;background-color:transparent;border:none}"+
-		"TD{font-family: Arial; font-size: 12pt; padding-left:5px;padding-right:30px}"+
-		".spalte1{color:#0000FF;}"+
-		".spalte2{color:#333333;}"+
-		".spalte2{color:#333333;}"+
-		"--->"+
-		"</STYLE>"+
-		"</head>"+
-		"<div style=margin-left:30px;>"+
-		"<font face=\"Tahoma\"><style=margin-left=30px;>"+
-		"<br>"+
-		"<table>"+
+		//String text =
+		buf1.setLength(0);
+		buf1.trimToSize();
+		
+		buf1.append("<html><head>");
+		buf1.append("<STYLE TYPE=\"text/css\">");
+		buf1.append("<!--");
+		buf1.append("A{text-decoration:none;background-color:transparent;border:none}");
+		buf1.append("TD{font-family: Arial; font-size: 12pt; padding-left:5px;padding-right:30px}");
+		buf1.append(".spalte1{color:#0000FF;}");
+		buf1.append(".spalte2{color:#333333;}");
+		buf1.append(".spalte2{color:#333333;}");
+		buf1.append("--->");
+		buf1.append("</STYLE>");
+		buf1.append("</head>");
+		buf1.append("<div style=margin-left:30px;>");
+		buf1.append("<font face=\"Tahoma\"><style=margin-left=30px;>");
+		buf1.append("<br>");
+		buf1.append("<table>");
 		/*****Rezept****/
 		/*******/
-		"<tr>"+
-		"<th rowspan=\"4\"><a href=\"http://rezedit.de\"><img src='file:///"+Reha.proghome+"icons/Rezept.png' border=0></a></th>" +
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Ausstellungsdatum"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		DatFunk.sDatInDeutsch(vec_rez.get(0).get(2))+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<th rowspan=\"4\"><a href=\"http://rezedit.de\"><img src='file:///"+Reha.proghome+"icons/Rezept.png' border=0></a></th>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Ausstellungsdatum");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Verordnungsart"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		voArt[Integer.parseInt(vec_rez.get(0).get(27))]+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Verordnungsart");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(voArt[Integer.parseInt(vec_rez.get(0).get(27))]);
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Indikationsschlüssel"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		(vec_rez.get(0).get(44).startsWith("kein Indi") ? "<b><font color=#FF0000>"+vec_rez.get(0).get(44)+"</font></b>" : vec_rez.get(0).get(44))+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Indikationsschlüssel");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append((vec_rez.get(0).get(44).startsWith("kein Indi") ? "<b><font color=#FF0000>"+vec_rez.get(0).get(44)+"</font></b>" : vec_rez.get(0).get(44)));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Hausbesuch"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		(vec_rez.get(0).get(43).equals("T") ? "JA" : "NEIN")+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Hausbesuch");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append((vec_rez.get(0).get(43).equals("T") ? "JA" : "NEIN"));
+		buf1.append("</td>");
+		buf1.append("</tr>");
+		buf1.append(getHTMLPositionen());
 		/*******/
-		"<tr>"+
-		"<td>&nbsp;"+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td>&nbsp;");
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/********Patient********/
-		"<tr>"+
-		"<th rowspan=\"5\" valign=\"top\"><a href=\"http://patedit.de\"><img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=52 height=52 border=0></a></th>" +
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Patient"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		StringTools.EGross(vec_pat.get(0).get(0))+", "+
-		StringTools.EGross(vec_pat.get(0).get(1))+", geb.am "+DatFunk.sDatInDeutsch(vec_pat.get(0).get(2))+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<th rowspan=\"5\" valign=\"top\"><a href=\"http://patedit.de\"><img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=52 height=52 border=0></a></th>" );
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Patient");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(StringTools.EGross(vec_pat.get(0).get(0))+", ");
+		buf1.append(StringTools.EGross(vec_pat.get(0).get(1))+", geb.am "+DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Adresse"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		StringTools.EGross(vec_pat.get(0).get(3))+", "+
-		vec_pat.get(0).get(4)+" "+
-		StringTools.EGross(vec_pat.get(0).get(5))+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Adresse");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(StringTools.EGross(vec_pat.get(0).get(3))+", ");
+		buf1.append(vec_pat.get(0).get(4)+" ");
+		buf1.append(StringTools.EGross(vec_pat.get(0).get(5)));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Versicherten-Status"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		vec_pat.get(0).get(7)+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Versicherten-Status");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(vec_pat.get(0).get(7));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Mitgliedsnummer"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		vec_pat.get(0).get(6)+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Mitgliedsnummer");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(vec_pat.get(0).get(6));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Zuzahlungs-Status"+
-		"</td><td class=\"spalte2\" id=\"zzpflicht\" align=\"left\">"+
-		(zuZahlungsIndex.equals("Zuzahlungspflichtig") ? "" : "<b><font color=#FF0000>")+
-		zuZahlungsIndex+
-		(zuZahlungsIndex.equals("Zuzahlungspflichtig") ? "" : "</font></b>")+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Zuzahlungs-Status");
+		buf1.append("</td><td class=\"spalte2\" id=\"zzpflicht\" align=\"left\">");
+		buf1.append((zuZahlungsIndex.equals("Zuzahlungspflichtig") ? "" : "<b><font color=#FF0000>"));
+		buf1.append(zuZahlungsIndex);
+		buf1.append((zuZahlungsIndex.equals("Zuzahlungspflichtig") ? "" : "</font></b>"));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td>&nbsp;"+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td>&nbsp;");
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/********Arzt********/
-		"<tr>"+
-		"<th rowspan=\"3\" valign=\"top\"><a href=\"http://arztedit.de\"><img src='file:///"+Reha.proghome+"icons/system-users.png' width=52 height=52 border=0></a></th>" +
-		"<td class=\"spalte1\" align=\"right\">"+
-		"verordnender Arzt"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		StringTools.EGross(vec_pat.get(0).get(13))+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<th rowspan=\"3\" valign=\"top\"><a href=\"http://arztedit.de\"><img src='file:///"+Reha.proghome+"icons/system-users.png' width=52 height=52 border=0></a></th>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("verordnender Arzt");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append(StringTools.EGross(vec_pat.get(0).get(13)));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Betriebsstätte"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		(vec_pat.get(0).get(14).trim().equals("") ? "999999999" : vec_pat.get(0).get(14).trim())+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Betriebsstätte");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append((vec_pat.get(0).get(14).trim().equals("") ? "999999999" : vec_pat.get(0).get(14).trim()));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"LANR"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		(vec_pat.get(0).get(15).trim().equals("") ? "999999999" : vec_pat.get(0).get(15).trim())+
-		"</td>"+
-		"</tr>"+
+		buf1.append("<tr>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("LANR");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append((vec_pat.get(0).get(15).trim().equals("") ? "999999999" : vec_pat.get(0).get(15).trim()));
+		buf1.append("</td>");
+		buf1.append("</tr>");
 		/*******/
-		"<tr>"+
-		"<td>&nbsp;</td>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Rezeptwert"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		"<b>"+dfx.format(rezeptWert)+"</b>"+
-		"</td>"+
-		"</tr>"+
-		"<tr>"+
-		"<td>&nbsp;</td>"+
-		"<td class=\"spalte1\" align=\"right\">"+
-		"Zuzahlung"+
-		"</td><td class=\"spalte2\" align=\"left\">"+
-		(zuzahlungWert > 0 && vec_rez.get(0).get(14).equals("F") ? getNoZuZahl() : "<b>"+dfx.format(zuzahlungWert)+"</b>")+
-		"</td>"+
-		"</tr>"+
+		/*
+		buf1.append("<tr>");
+		buf1.append("<td>&nbsp;</td>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Rezeptwert");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append("<b>"+dfx.format(rezeptWert)+"</b>");
+		buf1.append("</td>");
+		buf1.append("</tr>");
+		buf1.append("<tr>");
+		buf1.append("<td>&nbsp;</td>");
+		buf1.append("<td class=\"spalte1\" align=\"right\">");
+		buf1.append("Zuzahlung");
+		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf1.append((zuzahlungWert > 0 && vec_rez.get(0).get(14).equals("F") ? getNoZuZahl() : "<b>"+dfx.format(zuzahlungWert)+"</b>"));
+		buf1.append("</td>");
+		buf1.append("</tr>");
+		*/
 		/*******/
-		getHTMLPositionen()+
+		
 
 //Double rezeptWert;
 //Double zuzahlungWert;
-		"</table>"+
-		"</font>"+
-		"</div>"+
-		"</html>";
-		this.htmlPane.setText(text);
+		buf1.append("</table>");
+		buf1.append("</font>");
+		buf1.append("</div>");
+		buf1.append("</html>");
+		this.htmlPane.setText(buf1.toString());
 		((JScrollPane)this.htmlPane.getParent().getParent()).validate();
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -1843,8 +1849,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private String getHTMLPositionen(){
 		
 		htmlposbuf.setLength(0);
+		htmlposbuf.trimToSize();
+		System.out.println("Größe des Positionen-Vectors = "+vec_poskuerzel.size());
 		//vec_poskuerzel.clear();
 		//vec_posanzahl.clear();
+		/*
 		for(int i = 0; i < vec_poskuerzel.size();i++){
 			htmlposbuf.append("<tr>"+
 		"<td>&nbsp;</td>"+
@@ -1855,6 +1864,39 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			htmlposbuf.append("</td>"+
 					"</tr>");
 		}
+		*/
+		for(int i = 0; i < vec_poskuerzel.size();i++){
+			htmlposbuf.append("<tr><td>&nbsp;</td><td class=\"spalte1\" align=\"right\">");
+			htmlposbuf.append(vec_poskuerzel.get(i));
+			htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
+			htmlposbuf.append(Integer.toString(vec_posanzahl.get(i))+" x");
+			htmlposbuf.append("</td></tr>");
+			/*
+			if(i < vec_poskuerzel.size()){
+			}else{
+				htmlposbuf.append("<tr><td>&nbsp;</td><td class=\"spalte1\" align=\"right\">");
+				htmlposbuf.append("</td></tr>");
+			}
+			*/
+
+		}
+		htmlposbuf.append("<tr>");
+		htmlposbuf.append("<td>&nbsp;</td>");
+		htmlposbuf.append("<td class=\"spalte1\" align=\"right\">");
+		htmlposbuf.append("Rezeptwert");
+		htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
+		htmlposbuf.append("<b>"+dfx.format(rezeptWert)+"</b>");
+		htmlposbuf.append("</td>");
+		htmlposbuf.append("</tr>");
+		htmlposbuf.append("<tr>");
+		htmlposbuf.append("<td>&nbsp;</td>");
+		htmlposbuf.append("<td class=\"spalte1\" align=\"right\">");
+		htmlposbuf.append("Zuzahlung");
+		htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
+		htmlposbuf.append((zuzahlungWert > 0 && vec_rez.get(0).get(14).equals("F") ? getNoZuZahl() : "<b>"+dfx.format(zuzahlungWert)+"</b>"));
+		htmlposbuf.append("</td>");
+		htmlposbuf.append("</tr>");
+
 		return htmlposbuf.toString();
 	}
 	@Override
@@ -2927,8 +2969,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				return null;
 			}
 		}.execute();
-
-
+		vec_pospos.clear();
+		macheVector(vec_pospos,zeilen[1],0);
+		vec_posanzahl.clear();
+		macheVector(vec_posanzahl,zeilen[2],1);
+		vec_poskuerzel.clear();		
+		macheVector(vec_poskuerzel,zeilen[3],0);
+/*
+		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
+		edibuf.insert(0,vec_posanzahl.toString()+"\n");
+		edibuf.insert(0,vec_pospos.toString()+"\n");
+*/
 		baumLoeschen();
 		vecdummy.clear();
 		vec_tabelle.clear();
@@ -2977,6 +3028,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		}
 		return ret;
+	}
+	private void macheVector(Vector vec, String svec,int type){
+		//type 0 = String, type 1 = int;
+		String ergebnis = svec.substring(1);
+		ergebnis = ergebnis.substring(0,ergebnis.length()-1);
+		System.out.println("Ergebnisstring = "+ergebnis);
+		String[] teile = ergebnis.split(",");
+		for(int i = 0 ; i< teile.length;i++){
+			vec.add((type==0 ? teile[i].trim() : Integer.parseInt(teile[i].trim())));
+		}
 	}
 	/************************/
 	private void baumLoeschen(){

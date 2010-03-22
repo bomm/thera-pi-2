@@ -215,7 +215,11 @@ public class SystemConfig {
 			NurSets();
 			break;
 		case 9:
-			TKFarben();
+			try{
+				TKFarben();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			break;
 		case 10:
 			GruppenLesen();

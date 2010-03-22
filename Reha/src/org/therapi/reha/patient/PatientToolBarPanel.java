@@ -33,7 +33,8 @@ public class PatientToolBarPanel extends JXPanel{
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
 		patToolLogic = new PatientToolBarLogic(patHauptPanel,this);
-		setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+		setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		//setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 		FormLayout lay = new FormLayout("3dlu,right:max(35dlu;p),3dlu,p,45dlu,fill:0:grow(0.10),0dlu ,right:max(39dlu;p),3dlu, p,45dlu,7dlu,"+
 				//  2-teSpalte (13)  14  15 16     17            18   19      20             21   22  23    24 25  26      27                28
 				"right:max(39dlu;p),3dlu,p,90,fill:0:grow(0.60),0dlu,7dlu,right:max(39dlu;p),3dlu,p,40dlu,2dlu,p,50dlu,fill:0:grow(0.30),5dlu,10dlu",
@@ -43,7 +44,7 @@ public class PatientToolBarPanel extends JXPanel{
 		setLayout(lay);
 		JLabel lbl = new JLabel("Kriterium:");
 		add(lbl,cc.xy(2,2));
-		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","Patienten Nummer","Telefonnummer","Notizen","Versäumte Termine","Arzt","PLZ"});
+		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","2.Kriterium noch unbelegt","3.Kriterium noch unbelegt","4.Kriterium noch unbelegt","5.Kriterium noch unbelegt","6.Kriterium noch unbelegt","7.Kriterium noch unbelegt"});
 		patientHauptPanel.jcom.setBackground(new Color(247,209,176));
 		add(patientHauptPanel.jcom,cc.xyw(15, 2, 3));
 		add(patientHauptPanel.jcom,cc.xyw(4,2,8));

@@ -70,8 +70,9 @@ import kurzAufrufe.KurzAufrufe;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
+import org.therapi.reha.patient.AktuelleRezepte;
 
-import patientenFenster.AktuelleRezepte;
+
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;

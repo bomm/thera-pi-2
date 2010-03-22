@@ -84,7 +84,7 @@ public class PatientHauptPanel extends JXPanel{
 	
 	//MultiFunctionPanel-Controls & Listener
 	JTabbedPane multiTab = null;
-	public AktuelleRezepte2 aktRezept = null;
+	public AktuelleRezepte aktRezept = null;
 	public Historie historie = null;
 	public TherapieBerichte berichte = null;
 	public Dokumentation dokumentation = null;

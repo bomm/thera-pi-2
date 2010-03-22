@@ -37,7 +37,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import patientenFenster.PatGrundPanel.PatientAction;
+
 
 import sqlTools.SqlInfo;
 import systemTools.Colors;

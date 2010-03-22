@@ -10,8 +10,8 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import patientenFenster.AktuelleRezepte;
-import patientenFenster.PatGrundPanel;
+
+
 import RehaInternalFrame.JPatientInternal;
 import RehaInternalFrame.JTerminInternal;
 

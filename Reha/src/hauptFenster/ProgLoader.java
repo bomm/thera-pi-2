@@ -230,7 +230,7 @@ public void loescheKasse(){
 	Reha.thisClass.kassenpanel = null;
 }
 
-/**************^�rzteverwaltung Echtfunktion***********************/
+/**************Ärzteverwaltung Echtfunktion***********************/
 public void ArztFenster(int setPos,String aid) {
 	if(! Reha.DbOk){
 		return;
@@ -469,7 +469,7 @@ public void loeschePatient(){
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {
-	new SocketClient().setzeInitStand("INITENDE"); 
+	 
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));	
 	String name = "PasswortDialog"+WinNum.NeueNummer();
 	RehaTP jtp = new RehaTP(setPos); 

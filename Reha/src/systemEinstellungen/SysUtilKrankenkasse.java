@@ -55,7 +55,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import patientenFenster.RezeptDaten;
+
 
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;

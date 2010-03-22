@@ -6,31 +6,28 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
+
+import terminKalender.ParameterLaden;
 
 import com.sun.star.awt.KeyModifier;
 
 import dialoge.RehaSmartDialog;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
-
-import terminKalender.ParameterLaden;
 
 public class PassWort extends JXPanel implements KeyListener, ActionListener{
 
@@ -107,10 +104,11 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 		//jgrid.add(pwButton,gridBagConstraints2);
 		jgrid.add(butpanel);
 		jgrid.add(new JLabel(""));
+		
 		this.add(jgrid,BorderLayout.CENTER);
 		this.setVisible(true);
 		this.addKeyListener(this);
-
+		Reha.thisClass.setzeInitEnde();
 	}
 
 	private void passWortCheck(){

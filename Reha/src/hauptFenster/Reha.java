@@ -108,7 +108,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.therapi.reha.patient.PatientHauptPanel;
 
-import patientenFenster.PatGrundPanel;
+
 
 //import patientenFenster.PatGrundPanel;
 import roogle.RoogleFenster;
@@ -334,13 +334,23 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}.start();
 		/**************************/
 		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws java.lang.Exception {
+				Runtime.getRuntime().exec("java -jar "+proghome+"RehaxSwing.jar");
+				return null;
+			}
+			
+		}.execute();
+		
+		/*
 		ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar",proghome+"RehaxSwing.jar");
 				try {
 					processBuilder.start();
 				} catch (IOException e2) {
 					e2.printStackTrace();
 				}
-
+		*/
 		System.out.println("starte RehaxSwing");
 		int i=0;
 		while(warten && i < 50){
@@ -480,6 +490,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		});
 		
 	}
+	public void setzeInitEnde(){
+		System.out.println("poste INITENDE über Socket");
+		new SocketClient().setzeInitStand("INITENDE");	
+	}
+	
 	private void doCompoundPainter(){
 		new SwingWorker<Void,Void>(){
 
@@ -2276,9 +2291,9 @@ final class DatenbankStarten implements Runnable{
 				new SocketClient().setzeInitStand("Datenbanktreiber installieren");
         		System.out.println(sDB+" Treiber gestartet");
 				Class.forName(SystemConfig.vDatenBank.get(0).get(0)).newInstance();
-			}else{
+			}/*else{
 				Class.forName(SystemConfig.vDatenBank.get(1).get(0)).newInstance();
-			}	
+			}*/	
 
     	}
     	catch (InstantiationException e) {
@@ -2294,9 +2309,9 @@ final class DatenbankStarten implements Runnable{
 	    				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
 	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false",
 	    						SystemConfig.vDatenBank.get(0).get(3),SystemConfig.vDatenBank.get(0).get(4));
-	    			}else{	
+	    			}/*else{	
 	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
-	    			}	
+	    			}*/	
 	        		Reha.DbOk = true;
 
 	        	} 
@@ -2331,101 +2346,96 @@ final class DatenbankStarten implements Runnable{
 		}
 		StarteDB();
 		if (Reha.DbOk){
-			if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
-					(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
-
-			}else{
-				Date zeit = new Date();
-				String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='ein'";
-				new ExUndHop().setzeStatement(stx);
-			}
-			new SocketClient().setzeInitStand("Datenbank starten");
-
-			System.out.println("Connection ok");
-			new SocketClient().setzeInitStand("Datenbank ok");
-
-			ParameterLaden.Init();
-			new SocketClient().setzeInitStand("Systemparameter laden");
 			
-			Reha.thisClass.shiftLabel.setText("Term-User ok!");
-			Reha.sysConf.SystemInit(3);
-			ParameterLaden.Passwort();
-			new SocketClient().setzeInitStand("Systemparameter ok");
-			
-			Reha.thisClass.shiftLabel.setText("Prog-User ok!");
+				if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
+						(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
 
-			/************************/
-			//System.setProperty("nativeswing.webbrowser.runtime","xulrunner.exe");
-			//NativeInterface.initialize();
-			//NativeInterface.open();
-			/************************/
-			new SocketClient().setzeInitStand("Native Interface ok");
-			
-			Reha.thisClass.shiftLabel.setText("Native Interface ok!");
-			Reha.sysConf.SystemInit(4);
-			new SocketClient().setzeInitStand("Emailparameter");
-
-			Reha.sysConf.SystemInit(6);
-			new SocketClient().setzeInitStand("Roogle-Gruppen ok!");
-
-			Reha.sysConf.SystemInit(7);
-			new SocketClient().setzeInitStand("Verzeichnisse");
-
-			new SocketClient().setzeInitStand("Mandanten-Daten einlesen");
-			Reha.sysConf.SystemInit(11);
-			new SocketClient().setzeInitStand("TK-Farben einlesen");			
-			Reha.sysConf.SystemInit(9);
-			SystemConfig.InetSeitenEinlesen();
-			/*
-			new SocketClient().setzeInitStand("Hilfe-Server starten");
-			
-			if(SystemConfig.HilfeServerIstDatenServer){
-				Reha.thisClass.hilfeConn = Reha.thisClass.conn;
-			}else{
-				new Thread(new HilfeDatenbankStarten()).start();
-			}
-			*/
-			new SocketClient().setzeInitStand("Tarifgruppen einlesen");
-			SystemConfig.TarifeLesen();
-			new SocketClient().setzeInitStand("HashMaps initialisieren");
-			SystemConfig.HashMapsVorbereiten();
-			new SocketClient().setzeInitStand("Desktop konfigurieren");
-			SystemConfig.DesktopLesen();
-			new SocketClient().setzeInitStand("Patientenstamm init");
-			SystemConfig.PatientLesen();
-			new SocketClient().setzeInitStand("Gerätetreiber initialiseieren");
-			SystemConfig.GeraeteInit();
-			new SocketClient().setzeInitStand("Arztgruppen einlesen");
-			SystemConfig.ArztGruppenInit();
-			new SocketClient().setzeInitStand("Rezeptparameter einlesen");
-			SystemConfig.RezeptInit();
-			new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
-			SystemConfig.TherapBausteinInit();
-			SystemConfig.compTest();
-			new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
-			SystemConfig.FremdProgs();
-			new SocketClient().setzeInitStand("Geräteliste erstellen");
-			SystemConfig.GeraeteListe();
-			SystemConfig.CompanyInit();
-			FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
-			if(SystemConfig.sBarcodeAktiv.equals("1")){
-				try {
-					new BarCodeScanner(SystemConfig.sBarcodeCom);
-				} catch (Exception e) {
-					System.out.println("Barcode-Scanner konnte nicht installiert werden");
-				} catch (java.lang.Exception e) {
-					e.printStackTrace();
+				}else{
+					Date zeit = new Date();
+					String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='ein'";
+					new ExUndHop().setzeStatement(stx);
 				}
-			}
-			new SocketClient().setzeInitStand("Firmendaten einlesen");
-			Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
-			Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
-			Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
-			System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
-			SystemConfig.FirmenDaten();			
-			new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
-			SystemConfig.GutachtenInit();
-			new Thread(new PreisListenLaden()).start();
+				new SocketClient().setzeInitStand("Datenbank starten");
+
+				System.out.println("Connection ok");
+				new SocketClient().setzeInitStand("Datenbank ok");
+
+				ParameterLaden.Init();
+				new SocketClient().setzeInitStand("Systemparameter laden");
+				
+				Reha.thisClass.shiftLabel.setText("Term-User ok!");
+				Reha.sysConf.SystemInit(3);
+				ParameterLaden.Passwort();
+				new SocketClient().setzeInitStand("Systemparameter ok");
+				
+				Reha.thisClass.shiftLabel.setText("Prog-User ok!");
+
+				/************************/
+				//System.setProperty("nativeswing.webbrowser.runtime","xulrunner.exe");
+				//NativeInterface.initialize();
+				//NativeInterface.open();
+				/************************/
+				new SocketClient().setzeInitStand("Native Interface ok");
+				
+				Reha.thisClass.shiftLabel.setText("Native Interface ok!");
+				Reha.sysConf.SystemInit(4);
+				new SocketClient().setzeInitStand("Emailparameter");
+
+				Reha.sysConf.SystemInit(6);
+				new SocketClient().setzeInitStand("Roogle-Gruppen ok!");
+
+				Reha.sysConf.SystemInit(7);
+				new SocketClient().setzeInitStand("Verzeichnisse");
+
+				new SocketClient().setzeInitStand("Mandanten-Daten einlesen");
+				Reha.sysConf.SystemInit(11);
+				new SocketClient().setzeInitStand("TK-Farben einlesen");			
+				Reha.sysConf.SystemInit(9);
+
+				//SystemConfig.InetSeitenEinlesen();
+
+				new SocketClient().setzeInitStand("Tarifgruppen einlesen");
+				SystemConfig.TarifeLesen();
+				new SocketClient().setzeInitStand("HashMaps initialisieren");
+				SystemConfig.HashMapsVorbereiten();
+				new SocketClient().setzeInitStand("Desktop konfigurieren");
+				SystemConfig.DesktopLesen();
+				new SocketClient().setzeInitStand("Patientenstamm init");
+				SystemConfig.PatientLesen();
+				new SocketClient().setzeInitStand("Gerätetreiber initialiseieren");
+				SystemConfig.GeraeteInit();
+				new SocketClient().setzeInitStand("Arztgruppen einlesen");
+				SystemConfig.ArztGruppenInit();
+				new SocketClient().setzeInitStand("Rezeptparameter einlesen");
+				SystemConfig.RezeptInit();
+				new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
+				SystemConfig.TherapBausteinInit();
+				SystemConfig.compTest();
+				new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
+				SystemConfig.FremdProgs();
+				new SocketClient().setzeInitStand("Geräteliste erstellen");
+				SystemConfig.GeraeteListe();
+				SystemConfig.CompanyInit();
+				FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
+				if(SystemConfig.sBarcodeAktiv.equals("1")){
+					try {
+						new BarCodeScanner(SystemConfig.sBarcodeCom);
+					} catch (Exception e) {
+						System.out.println("Barcode-Scanner konnte nicht installiert werden");
+					} catch (java.lang.Exception e) {
+						e.printStackTrace();
+					}
+				}
+				new SocketClient().setzeInitStand("Firmendaten einlesen");
+				Vector<Vector<String>> vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
+				Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
+				Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
+				System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
+				SystemConfig.FirmenDaten();			
+				new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
+				SystemConfig.GutachtenInit();
+				new Thread(new PreisListenLaden()).start();
+			
 		}else{
 			new SocketClient().setzeInitStand("INITENDE");
 		}
@@ -2522,7 +2532,7 @@ final class PreisListenLaden implements Runnable{
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
 		Reha.thisClass.jxLinks.setAlpha(1.0f);
 		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		//new SocketClient().setzeInitStand("INITENDE");
+		new SocketClient().setzeInitStand("INITENDE");
 		Reha.thisClass.initok = true;
 	}
 	public void run() {
@@ -2580,6 +2590,7 @@ class SocketClient {
 
 		output.write(bytes);
 		output.flush();
+		System.out.println("Schreibe auf socket -> "+this.stand);
 		int zahl = input.available();
 		if (zahl > 0){
 			byte[] lesen = new byte[zahl];

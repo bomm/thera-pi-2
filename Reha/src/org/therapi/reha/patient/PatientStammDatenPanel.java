@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -45,8 +47,10 @@ public class PatientStammDatenPanel extends JXPanel{
 		setLayout(new BorderLayout());
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
+		
 		setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));
-		getStammDatenPanel();
+		
+		//getStammDatenPanel();
 		//add(getStammDatenPanel(),BorderLayout.CENTER);
 		add(getHTMLPanel(),BorderLayout.CENTER);
 		setPreferredSize(new Dimension(200,0));
@@ -205,11 +209,11 @@ public class PatientStammDatenPanel extends JXPanel{
 		if(patientHauptPanel.patDaten.get(33).equals("T")){
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 			dummy = patientHauptPanel.patDaten.get(46).trim();
-			buf2.append(makeLink("Akutpat.: <font color=#FF0000>JA bis "+(dummy.length()==10 ? DatFunk.sDatInDeutsch(dummy.toString()) : "k.A.")+"</font>","AKUTPAT"));
+			buf2.append(makeLink("Akutpat.: <font color=#FF0000>JA bis "+(dummy.length()==10 ? DatFunk.sDatInDeutsch(dummy.toString()) : "k.A.")+"</font>","AKUTBIS"));
 			buf2.append("</tr></td>");
 		}else{
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
-			buf2.append(makeLink("Akutpat.: Nein","AKUTPAT"));
+			buf2.append(makeLink("Akutpat.: Nein","AKUTBIS"));
 			buf2.append("</tr></td>");
 		}
 		if(! patientHauptPanel.patDaten.get(36).trim().equals("")){
