@@ -19,6 +19,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -114,6 +115,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	public StringBuffer htmlBuf = new StringBuffer();
 	public int positionenAnzahl = 0;
 	public String abrDateiName = "";
+	JEditorPane htmlPane = null;
 	
 	Double[] preis00 = {0.00,0.00,0.00};
 	Double[] preis11 = {0.00,0.00,0.00};
@@ -181,11 +183,21 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		treeKasse.getSelectionModel().addTreeSelectionListener(this);
 		treeKasse.setCellRenderer(new MyRenderer(SystemConfig.hmSysIcons.get("zuzahlok")));
 		JScrollPane jscrk = JCompTools.getTransparentScrollPane(treeKasse);
+		jscrk.validate();
 		pb.add(jscrk,cc.xy(2, 6));
 		
 		doEinlesen();
 		
+		htmlPane = new JEditorPane(/*initialURL*/);
+        htmlPane.setContentType("text/html");
+        htmlPane.setEditable(false);
+        htmlPane.setOpaque(false);
+		jscrk = JCompTools.getTransparentScrollPane(htmlPane);
+		jscrk.validate();
+		pb.add(jscrk,cc.xy(2,10));
+		
 		pb.getPanel().validate();
+        
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(pb.getPanel());
 		jscr.validate();
 		cmbDiszi.addActionListener(this);
@@ -384,6 +396,9 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
     		if(aktuellerKnoten.getParent() != null){
     			if(((JXTTreeNode)aktuellerKnoten.getParent()).isRoot()){
     	    		aktuellerKassenKnoten =(JXTTreeNode) ((JXTTreeNode)aktuellerKnoten);
+    	    		System.out.println("Aktueller Knoten ist Root");
+    			}else{
+    				System.out.println("Aktueller Knoten ungleich Root");
     			}
         		System.out.println("Pfad zu Parent = "+new TreePath(aktuellerKnoten.getParent()).toString());    			
     		}else{
@@ -392,38 +407,73 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
     		aktuellerPat = "";
     		
     	}
-    	if(aktuellerKassenKnoten != null){
+		kassenUmsatz[0] = 0.00;
+		kassenUmsatz[1] = 0.00;
+    	if(aktuellerKassenKnoten != null){		
+    		rechneKasse(aktuellerKassenKnoten);
+    	}	
+    	
+	}
+	public void setKassenUmsatzNeu(){
+		kassenUmsatz[0] = 0.00;
+		kassenUmsatz[1] = 0.00;
+    	if(aktuellerKassenKnoten != null){		
+    		rechneKasse(aktuellerKassenKnoten);
+    	}	
+	}
+	public void rechneKasse(JXTTreeNode aktKasse){
+		kontrollierteRezepte = 0;
+			final JXTTreeNode xaktKasse = aktKasse;
         	new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					int lang = aktuellerKassenKnoten.getChildCount();
-					kassenUmsatz[0] = 0.00;
-					kassenUmsatz[1] = 0.00;
-					for(int i = 0; i < lang;i++){
-						if( ((JXTTreeNode)aktuellerKassenKnoten.getChildAt(i)).knotenObjekt.fertig ){
-							kontrollierteRezepte++;
-							holeUmsaetze(((JXTTreeNode)aktuellerKassenKnoten.getChildAt(i)).knotenObjekt.rez_num);
+					try{
+						int lang = xaktKasse.getChildCount();
+						for(int i = 0; i < lang;i++){
+							if( ((JXTTreeNode)xaktKasse.getChildAt(i)).knotenObjekt.fertig ){
+								kontrollierteRezepte++;
+								holeUmsaetze(((JXTTreeNode)xaktKasse.getChildAt(i)).knotenObjekt.rez_num);
+							}
 						}
+						setHtmlRechts(lang,kontrollierteRezepte);
+						System.out.println("Es gibt insgesamt "+kontrollierteRezepte+" Rezepte die für diese Kasse abgerechnet werden können");
+					}catch(Exception ex){
+						ex.printStackTrace();
 					}
-					setHtmlRechts(lang,kontrollierteRezepte);
-					System.out.println("Es gibt insgesamt "+kontrollierteRezepte+" Rezepte die für diese Kasse abgerechnet werden können");
 					return null;
 				}
         	}.execute();
-    	}
-
-
 	}
 	public void setHtmlRechts(int gesamt,int gut){
 		htmlBuf.setLength(0);
 		htmlBuf.trimToSize();
-		htmlBuf.append("<html>");
-		htmlBuf.append("Fertige Rezepte für diese Kasse: "+gesamt);
-		htmlBuf.append("Abrechnungsfähige Rezepte für diese Kasse: "+gut);
-		htmlBuf.append("Umsatz aller abrechnungsfähigen Rezepte: "+dfx.format(kassenUmsatz[0]));
-		htmlBuf.append("Enthaltene Rezeptgebühren: "+dfx.format(kassenUmsatz[1]));
+		htmlBuf.append("<html><head>");
+		htmlBuf.append("<STYLE TYPE=\"text/css\">");
+		htmlBuf.append("<!--");
+		htmlBuf.append("A{text-decoration:none;background-color:transparent;border:none}");
+		htmlBuf.append("TD{font-family: Tahoma; font-size: 11pt; padding-left:5px;padding-right:30px}");
+		htmlBuf.append(".spalte1{color:#0000FF;}");
+		htmlBuf.append(".spalte2{color:#333333;}");
+		htmlBuf.append(".spalte2{color:#333333;}");
+		htmlBuf.append("--->");
+		htmlBuf.append("</STYLE>");
+		htmlBuf.append("</head>");
+		htmlBuf.append("<div style=margin-left:0px;>");
+		htmlBuf.append("<font face=\"Tahoma\"><style=margin-left=0px;>");
+		htmlBuf.append("<br>");
+		htmlBuf.append("<table>");
+		htmlBuf.append("<tr><td>fertige Rezepte:</td>");
+		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+gesamt+"</td></tr>");
+		htmlBuf.append("<tr><td>abrechnungsfähig:</td>");
+		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+gut+"</td></tr>");
+		htmlBuf.append("<tr><td>Umsatz:</td>");
+		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+dfx.format(kassenUmsatz[0])+"</td></tr>");
+		htmlBuf.append("<tr><td>enth. Rezeptgeb.: </td>");
+		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+dfx.format(kassenUmsatz[1])+"</td></tr>");		
+		htmlBuf.append("</table>");
+		htmlBuf.append("</div>");
 		htmlBuf.append("</html>");
-		//abrRez.setHtmlText(htmlBuf.toString());
+		htmlPane.setText(htmlBuf.toString());
 	}
 	public void holeUmsaetze(String rez_nr){
 		buf.setLength(0);
@@ -438,8 +488,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		String[] zeilen = buf.toString().split("\n");
 		String[] positionen = zeilen[0].split(":");
 		//PG=1:PATINTERN=16961:REZNUM=KG57747:GESAMT=102,30:REZGEB=20,26:REZANTEIL=10,26:REZPAUSCHL=10,00:KASSENID=116
-		kassenUmsatz[0] = kassenUmsatz[0]+ Double.valueOf(positionen[3].split("=")[1]);
-		kassenUmsatz[1] = kassenUmsatz[1]+ Double.valueOf(positionen[4].split("=")[1]);
+		kassenUmsatz[0] = kassenUmsatz[0]+ Double.valueOf(positionen[3].split("=")[1].replace(",", "."));
+		kassenUmsatz[1] = kassenUmsatz[1]+ Double.valueOf(positionen[4].split("=")[1].replace(",", "."));
 	}
 	/**************************************************/
 	public void starteAbrechnung(){
@@ -615,6 +665,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 					if(i==0){
 						abzurechnendeKassenID = holeAbrechnungsKasse(vec.get(0).get(0));
 					}
+					//hier den Edifact-Code Analysieren und die Rechnungsdatei erstellen;
 					anhaengenEdifact(vec.get(0).get(0));
 				}catch(Exception ex){}
 			}

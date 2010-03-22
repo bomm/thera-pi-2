@@ -627,6 +627,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 							protected Void doInBackground()
 									throws Exception {
 								SqlInfo.sqlAusfuehren("update fertige set ediok='F',edifact='' where rez_nr='"+vec_rez.get(0).get(1)+"' LIMIT 1");
+								eltern.setKassenUmsatzNeu();								
 								return null;
 							}
 							
@@ -639,6 +640,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 								protected Void doInBackground()
 										throws Exception {
 									SqlInfo.sqlAusfuehren("update fertige set ediok='T',edifact='"+StringTools.Escaped(edibuf.toString())+"' where rez_nr='"+vec_rez.get(0).get(1)+"' LIMIT 1");
+									eltern.setKassenUmsatzNeu();
 									return null;
 								}
 								
@@ -659,7 +661,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 						//hier den Edifact einbauen
 					}
 					eltern.setRezeptOk(rezeptFertig);
-
 				}
 				if(cmd.equals("scannen")){
 
