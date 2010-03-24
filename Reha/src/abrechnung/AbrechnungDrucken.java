@@ -1,29 +1,21 @@
 package abrechnung;
 
+import hauptFenster.Reha;
+
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
-import com.sun.star.beans.Property;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.beans.XPropertySetInfo;
-import com.sun.star.lang.XMultiComponentFactory;
-import com.sun.star.lang.XMultiServiceFactory;
-import com.sun.star.uno.UnoRuntime;
-
-import hauptFenster.Reha;
-import ag.ion.bion.officelayer.beans.IPropertyKey;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.internal.text.TextTableProperties;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableCell;
 import ag.ion.bion.officelayer.text.ITextTableCellProperties;
-import ag.ion.bion.officelayer.text.ITextTableProperties;
+
+import com.sun.star.beans.XPropertySet;
 
 public class AbrechnungDrucken {
 	int aktuellePosition = 0;
