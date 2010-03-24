@@ -10,6 +10,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -128,7 +130,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	Vector<String> existiertschon = new Vector<String>();	
 	/*******Controls für die rechte Seite*********/
 	AbrechnungRezept abrRez = null;
-	
+	AbrechnungDrucken abrDruck = null;	
 	public String aktuellerPat = "";
 	public Abrechnung1(JAbrechnungInternal xjry){
 		super();
@@ -498,7 +500,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			return;
 		}
 		if(kontrollierteRezepte <=0){
-			JOptionPane.showMessageDialog(null, "Keine Kasse für die Abrechnung ausgewählt!");
+			JOptionPane.showMessageDialog(null, "Für die ausgewählte Kasse sind keine Rezepte zur Abrechnung freigegeben!");
 			return;
 			
 		}
@@ -591,6 +593,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private void macheKopfDaten(){
 		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1 from kass_adr where id='"+abzurechnendeKassenID+"'";
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+		System.out.println(cmd);
 		ik_kasse = vec.get(0).get(0);
 		ik_kostent = vec.get(0).get(1);
 		ik_nutzer = vec.get(0).get(2);
@@ -654,6 +657,11 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	/*************************************************/
 	private void holeEdifact(){
+		try {
+			abrDruck = new AbrechnungDrucken(Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMRechnungGKV.ott");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		int lang = aktuellerKassenKnoten.getChildCount();
 		JXTTreeNode node;
 		Vector<Vector<String>> vec;
@@ -662,10 +670,11 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			if(node.knotenObjekt.fertig){
 				vec = SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+(String) node.knotenObjekt.rez_num+"'");
 				try{
-					if(i==0){
+					//if(i==0){
 						abzurechnendeKassenID = holeAbrechnungsKasse(vec.get(0).get(0));
-					}
-					//hier den Edifact-Code Analysieren und die Rechnungsdatei erstellen;
+					//}
+					analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
+					//hier den Edifact-Code analysieren und die Rechnungsdatei erstellen;
 					anhaengenEdifact(vec.get(0).get(0));
 				}catch(Exception ex){}
 			}
@@ -681,11 +690,67 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		*/
 
 	}
+	private void analysierenEdifact(String edifact,String rez_num){
+		Vector<String> position = new Vector<String>();
+		Vector<BigDecimal>anzahl = new Vector<BigDecimal>();
+		Vector<BigDecimal>preis = new Vector<BigDecimal>();
+		Vector<BigDecimal>einzelpreis = new Vector<BigDecimal>();
+		Vector<BigDecimal>rezgeb = new Vector<BigDecimal>();
+		BigDecimal bdAnzahl = null;
+		String[] zeilen = edifact.split("\n");
+		String[] woerter;
+		String dummy;
+		int pos = 0;
+		for(int i = 0; i < zeilen.length;i++){
+			if(zeilen[i].contains("EHE")){
+				woerter = zeilen[i].split("\\+");
+				if(!position.contains(woerter[3])){
+					position.add(woerter[3]);
+					bdAnzahl = BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")));
+					anzahl.add(bdAnzahl);
+					preis.add(BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", "."))).multiply(
+							bdAnzahl ));
+					if(woerter.length==8){
+						dummy = woerter[7].replace("'", "").replace(",", ".");
+						rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)));
+					}else{
+						rezgeb.add(BigDecimal.valueOf(Double.valueOf("0.00")));
+					}
+					einzelpreis.add(BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", "."))));
+				}else{
+					pos = position.indexOf(woerter[3]);
+					bdAnzahl = BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")));
+					anzahl.set(pos, anzahl.get(pos).add(BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")))));
+					preis.set(pos, preis.get(pos).add(BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", "."))).multiply(
+							bdAnzahl)));
+					if(woerter.length==8){
+						dummy = woerter[7].replace("'", "").replace(",", ".");
+						rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy))));
+					}
+				}
+			}
+		}
+		String[] splits = zeilen[0].split(":");
+		
+		try {
+			abrDruck.setDaten("Steinhilber, Jürgen",
+					"1",
+					splits[2].split("=")[1], 
+					position,
+					anzahl,
+					einzelpreis,
+					preis,
+					rezgeb,
+					(splits[6].split("=")[1].equals("10,00") ? true : false));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
 	/*************************************************/
 	private String holeAbrechnungsKasse(String edifact){
 		String[] komplett = edifact.split("\n");
 		String[] zeile1 = komplett[0].split(":");
-		return zeile1[zeile1.length-1].split("=")[1];
+		return zeile1[zeile1.length-3].split("=")[1];
 	}
 	/*************************************************/
 	private void anhaengenEdifact(String string){
@@ -723,7 +788,15 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		return preis;
 	}
 	/*************************************************/	
+	public boolean isRezeptSelected(){
+    	if(treeKasse.getSelectionCount()<=0){
+    		return false;
+    	}
+    	TreePath path = treeKasse.getSelectionPath();
+    	return	(path.getPathCount()>=3);
+	}
 	public void setRezeptOk(boolean ok){
+		
     	treeKasse.getSelectionCount();
     	TreePath path = treeKasse.getSelectionPath();
     	JXTTreeNode node = (JXTTreeNode) path.getLastPathComponent();

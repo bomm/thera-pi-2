@@ -620,6 +620,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("abschliessen")){
+					if(!eltern.isRezeptSelected()){
+						JOptionPane.showMessageDialog(null, "Kein Rezept zum Auf-/Abschließen ausgewählt");
+						return;
+					}
+
 					if(rezeptFertig){
 						rezeptFertig = false;
 						new SwingWorker<Void,Void>(){
@@ -2879,7 +2884,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+
 			":GESAMT="+dfx.format(gesamt)+":REZGEB="+dfx.format(rez+pauschal)+
-			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+":KASSENID="+vec_rez.get(0).get(37)+"\n";
+			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+":KASSENID="+vec_rez.get(0).get(37)+
+			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+"\n";
+
 		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
 		edibuf.insert(0,vec_posanzahl.toString()+"\n");
 		edibuf.insert(0,vec_pospos.toString()+"\n");
