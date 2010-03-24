@@ -127,7 +127,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	Double[] kassenUmsatz = {0.00,0.00};
 	DecimalFormat dfx = new DecimalFormat( "0.00" );	
 	
-	Vector<String> existiertschon = new Vector<String>();	
+	Vector<String> existiertschon = new Vector<String>();
+	Vector<Vector<String>> kassenIKs = new Vector<Vector<String>>(); 
 	/*******Controls für die rechte Seite*********/
 	AbrechnungRezept abrRez = null;
 	AbrechnungDrucken abrDruck = null;	
@@ -188,7 +189,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		jscrk.validate();
 		pb.add(jscrk,cc.xy(2, 6));
 		
-		doEinlesen();
+		doEinlesen(null);
 		
 		htmlPane = new JEditorPane(/*initialURL*/);
         htmlPane.setContentType("text/html");
@@ -223,6 +224,9 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	public JAbrechnungInternal getJry() {
 		return jry;
 	}
+	public JXTTreeNode getaktuellerKassenKnoten(){
+		return aktuellerKassenKnoten;
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
@@ -234,7 +238,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 				abrRez.setRechtsAufNull();
 	    		aktuellerPat = "";
 			}
-			doEinlesen();
+			doEinlesen(null);
 			//setPreisVec(cmbDiszi.getSelectedIndex());
 		}
 		
@@ -247,7 +251,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	/*********
 	 * Einlesen der abrechnungsdaten
 	 */
-	private void doEinlesen(){
+	public void doEinlesen(JXTTreeNode aktKassenNode ){
+		final JXTTreeNode xaktKassenNode = aktKassenNode;
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -258,7 +263,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 					String cmd = "select name1,ikktraeger from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger";
 
 					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
-					System.out.println("Insgesamt fertige Rezepte der Disziplin "+dsz+" = "+vecKassen.size());
+
 					if(vecKassen.size() <= 0){
 						kassenBaumLoeschen();
 						return null;
@@ -280,8 +285,6 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 
 
 					for(int i = 0; i < vecKassen.size();i++){
-						//System.out.println(ktraeger);
-						//System.out.println(vecKassen.get(i).get(1));
 						if(! existiertschon.contains(vecKassen.get(i).get(1).trim().toUpperCase())){
 							kas = vecKassen.get(i).get(0).trim().toUpperCase();
 							ktraeger = vecKassen.get(i).get(1);
@@ -295,7 +298,10 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 					}
 					treeKasse.validate();
 					treeKasse.setRootVisible(true);
-					treeKasse.expandRow(0);
+
+					treeKasse.expandRow(0);						
+
+
 					treeKasse.repaint();
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -317,7 +323,6 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		
 		JXTTreeNode meinitem = null;
 		for(int i = 0;i<vecKassen.size();i++){
-			System.out.println("In Rezeptanhängen "+i);
 			cmd = "select n_name from pat5 where pat_intern='"+
 				vecKassen.get(i).get(1)+"' LIMIT 1";
 
@@ -346,7 +351,6 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		try{
 		int childs;	
 		while( (childs=rootKasse.getChildCount()) > 0){
-			System.out.println("HauptKnoten überig = "+childs);
 			treeModelKasse.removeNodeFromParent((JXTTreeNode) ((JXTTreeNode) treeModelKasse.getRoot()).getChildAt(0));
 		}
 		treeKasse.validate();
@@ -394,15 +398,14 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
     	}else{
     		abrRez.setRechtsAufNull();
     		aktuellerKnoten = (JXTTreeNode)node;
-    		System.out.println("AktuellerKnoten = "+aktuellerKnoten);
     		if(aktuellerKnoten.getParent() != null){
     			if(((JXTTreeNode)aktuellerKnoten.getParent()).isRoot()){
     	    		aktuellerKassenKnoten =(JXTTreeNode) ((JXTTreeNode)aktuellerKnoten);
-    	    		System.out.println("Aktueller Knoten ist Root");
+    	    		//System.out.println("Aktueller Knoten ist Root");
     			}else{
-    				System.out.println("Aktueller Knoten ungleich Root");
+    				//System.out.println("Aktueller Knoten ungleich Root");
     			}
-        		System.out.println("Pfad zu Parent = "+new TreePath(aktuellerKnoten.getParent()).toString());    			
+        		//System.out.println("Pfad zu Parent = "+new TreePath(aktuellerKnoten.getParent()).toString());    			
     		}else{
     			aktuellerKassenKnoten = null;
     		}
@@ -438,7 +441,6 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 							}
 						}
 						setHtmlRechts(lang,kontrollierteRezepte);
-						System.out.println("Es gibt insgesamt "+kontrollierteRezepte+" Rezepte die für diese Kasse abgerechnet werden können");
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
@@ -455,8 +457,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		htmlBuf.append("A{text-decoration:none;background-color:transparent;border:none}");
 		htmlBuf.append("TD{font-family: Tahoma; font-size: 11pt; padding-left:5px;padding-right:30px}");
 		htmlBuf.append(".spalte1{color:#0000FF;}");
-		htmlBuf.append(".spalte2{color:#333333;}");
-		htmlBuf.append(".spalte2{color:#333333;}");
+		htmlBuf.append(".spalte2{color:#FF0000;}");
+		htmlBuf.append(".spalte3{color:#333333;}");
 		htmlBuf.append("--->");
 		htmlBuf.append("</STYLE>");
 		htmlBuf.append("</head>");
@@ -465,9 +467,10 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		htmlBuf.append("<br>");
 		htmlBuf.append("<table>");
 		htmlBuf.append("<tr><td>fertige Rezepte:</td>");
-		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+gesamt+"</td></tr>");
+		htmlBuf.append("<td class=\"spalte1\" align=\"right\"><b>"+gesamt+"</b></td></tr>");
 		htmlBuf.append("<tr><td>abrechnungsfähig:</td>");
-		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+gut+"</td></tr>");
+		htmlBuf.append((gesamt != gut ? "<td class=\"spalte2\" align=\"right\">" : "<td class=\"spalte1\" align=\"right\">" )+
+					"<b>"+gut+"</b></td></tr>");
 		htmlBuf.append("<tr><td>Umsatz:</td>");
 		htmlBuf.append("<td class=\"spalte1\" align=\"right\">"+dfx.format(kassenUmsatz[0])+"</td></tr>");
 		htmlBuf.append("<tr><td>enth. Rezeptgeb.: </td>");
@@ -522,8 +525,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		gesamtBuf.append(unbBuf.toString());
 		gesamtBuf.append(positionenBuf.toString());
 		gesamtBuf.append(unzBuf.toString());
-		System.out.println(gesamtBuf.toString());
-		System.out.println("Anzahl Positonen (reine Abrechnugsdaten) = "+positionenAnzahl);
+		//System.out.println(gesamtBuf.toString());
+		//System.out.println("Anzahl Positonen (reine Abrechnugsdaten) = "+positionenAnzahl);
 
 		try {
 			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
@@ -540,7 +543,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		    bw.write(auftragsBuf.toString()); 
 		    bw.close(); 
 		    fw.close();
-		    System.out.println("Zeilenumbruch = "+ System.getProperty("line.separator"));
+		    //System.out.println("Zeilenumbruch = "+ System.getProperty("line.separator"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -592,18 +595,19 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	private void macheKopfDaten(){
 		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1 from kass_adr where id='"+abzurechnendeKassenID+"'";
-		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+		kassenIKs.clear();
+		kassenIKs = SqlInfo.holeFelder(cmd);
 		System.out.println(cmd);
-		ik_kasse = vec.get(0).get(0);
-		ik_kostent = vec.get(0).get(1);
-		ik_nutzer = vec.get(0).get(2);
-		ik_physika = vec.get(0).get(3);
-		ik_papier = vec.get(0).get(4);
-		ik_email = vec.get(0).get(5);
+		ik_kasse = kassenIKs.get(0).get(0);
+		ik_kostent = kassenIKs.get(0).get(1);
+		ik_nutzer = kassenIKs.get(0).get(2);
+		ik_physika = kassenIKs.get(0).get(3);
+		ik_papier = kassenIKs.get(0).get(4);
+		ik_email = kassenIKs.get(0).get(5);
 		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
 		aktDfue = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("dfue", 99999)), "0", true, 5);
 		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
-		System.out.println(aktEsol + "  - "+aktDfue);
+		//System.out.println(aktEsol + "  - "+aktDfue);
 		unbBuf.append("UNB+UNOC:3+"+Reha.aktIK+plus+ik_nutzer+plus);
 		unbBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+":"+getEdiTimeString(false)+plus);
 		unbBuf.append(aktDfue+plus+"B"+plus);
@@ -648,9 +652,9 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private String getEdiTimeString(boolean mitsekunden){
 		Date date = new Date();
 		String[] datesplit = date.toString().split(" ");
-		System.out.println(date.toString());
+		//System.out.println(date.toString());
 		if(mitsekunden){
-			System.out.println("Zeit mit Sekunden"+datesplit[3].substring(0,2)+datesplit[3].substring(3,5)+datesplit[3].substring(6,8));
+			//System.out.println("Zeit mit Sekunden"+datesplit[3].substring(0,2)+datesplit[3].substring(3,5)+datesplit[3].substring(6,8));
 			return datesplit[3].substring(0,2)+datesplit[3].substring(3,5)+datesplit[3].substring(6,8);
 		}
 		return datesplit[3].substring(0,2)+datesplit[3].substring(3,5);
@@ -658,7 +662,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	/*************************************************/
 	private void holeEdifact(){
 		try {
-			abrDruck = new AbrechnungDrucken(Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMRechnungGKV.ott");
+			abrDruck = new AbrechnungDrucken(Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMRechnungGKV.ott",this.ik_papier,this.aktRechnung);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -691,6 +695,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 
 	}
 	private void analysierenEdifact(String edifact,String rez_num){
+		//System.out.println(edifact);
 		Vector<String> position = new Vector<String>();
 		Vector<BigDecimal>anzahl = new Vector<BigDecimal>();
 		Vector<BigDecimal>preis = new Vector<BigDecimal>();
@@ -733,8 +738,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		String[] splits = zeilen[0].split(":");
 		
 		try {
-			abrDruck.setDaten("Steinhilber, Jürgen",
-					"1",
+			abrDruck.setDaten(splits[9].split("=")[1],
+					splits[10].split("=")[1],
 					splits[2].split("=")[1], 
 					position,
 					anzahl,
@@ -750,7 +755,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	private String holeAbrechnungsKasse(String edifact){
 		String[] komplett = edifact.split("\n");
 		String[] zeile1 = komplett[0].split(":");
-		return zeile1[zeile1.length-3].split("=")[1];
+		return zeile1[7].split("=")[1];
 	}
 	/*************************************************/
 	private void anhaengenEdifact(String string){

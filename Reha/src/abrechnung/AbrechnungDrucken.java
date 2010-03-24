@@ -30,8 +30,13 @@ public class AbrechnungDrucken {
 	ITextTable textTable = null;
 	ITextDocument textDocument = null;
 	int positionen;
+	String rechnungNummer;
+	String papierIK;
 	DecimalFormat dfx = new DecimalFormat( "0.00" );
-	public AbrechnungDrucken(String url) throws Exception{
+	int zugabe = 0;
+	public AbrechnungDrucken(String url,String papierIk,String rnr) throws Exception{
+		this.papierIK = papierIk;
+		this.rechnungNummer = rnr;
 		starteDokument(url);
 	}
 	public void setDaten(String nameVorname,
@@ -46,34 +51,69 @@ public class AbrechnungDrucken {
 			BigDecimal netto;
 		positionen = posvec.size();
 		int anz;
-		textTable.addRow(positionen);
+		String dummy;
+		BigDecimal gesamtPreise = new BigDecimal(Double.valueOf("0.00"));
+		BigDecimal gesamtZuzahlung =new BigDecimal(Double.valueOf("0.00"));
+		BigDecimal gesamtNetto = new BigDecimal(Double.valueOf("0.00"));
+		
+		textTable.addRow(positionen+2);
 		ITextTableCell[] tcells = null;
-		ITextTableCellProperties props = null;
-		for(int i = 0; i < positionen;i++){
-			textTable.getCell(1,aktuellePosition+(i+1)).getTextService().getText().setText(posvec.get(i));
-			anz = Double.valueOf(anzahlvec.get(i).doubleValue()).intValue();
-			textTable.getCell(2,aktuellePosition+(i+1)).getTextService().getText().setText(Integer.toString(anz));
-			textTable.getCell(3,aktuellePosition+(i+1)).getTextService().getText().setText(dfx.format(einzelpreis.get(i).doubleValue()));
-			textTable.getCell(4,aktuellePosition+(i+1)).getTextService().getText().setText(dfx.format(gesamtpreis.get(i).doubleValue()));
-			textTable.getCell(5,aktuellePosition+(i+1)).getTextService().getText().setText(dfx.format(zuzahlung.get(i).doubleValue()));
-			netto = gesamtpreis.get(i).subtract(zuzahlung.get(i));
-			textTable.getCell(6,aktuellePosition+(i+1)).getTextService().getText().setText(dfx.format(netto.doubleValue()));
-			tcells = textTable.getRow(aktuellePosition+(i+1)).getCells();
-			for(int i2 = 0;i2<tcells.length;i2++){
-				props = tcells[i2].getProperties();
-				XPropertySet xprops = props.getXPropertySet();
-				xprops.setPropertyValue("TopBorderDistance", 0);
-				xprops.setPropertyValue("BottomBorderDistance", 0);
-				xprops.setPropertyValue("LeftBorderDistance", 0);
-				xprops.setPropertyValue("RightBorderDistance", 0);
 
-				tcells[i2].getCharacterProperties().setFontSize(8.f);
+		tcells = textTable.getRow(aktuellePosition+1).getCells();
+		setPositionenCells(false,tcells);
+		textTable.getCell(0,aktuellePosition+1).getTextService().getText().setText(nameVorname);
+		textTable.getCell(0,aktuellePosition+2).getTextService().getText().setText(status+" - "+rezNr);
+		int i;
+		for(i = 0; i < positionen;i++){
+			textTable.getCell(1,aktuellePosition+(i+2)).getTextService().getText().setText(posvec.get(i));
+			anz = Double.valueOf(anzahlvec.get(i).doubleValue()).intValue();
+			textTable.getCell(2,aktuellePosition+(i+2)).getTextService().getText().setText(Integer.toString(anz));
+			textTable.getCell(3,aktuellePosition+(i+2)).getTextService().getText().setText(dfx.format(einzelpreis.get(i).doubleValue()));
+			textTable.getCell(4,aktuellePosition+(i+2)).getTextService().getText().setText(dfx.format(gesamtpreis.get(i).doubleValue()));
+			textTable.getCell(5,aktuellePosition+(i+2)).getTextService().getText().setText(dfx.format(zuzahlung.get(i).doubleValue()));
+			netto = gesamtpreis.get(i).subtract(zuzahlung.get(i));
+			textTable.getCell(6,aktuellePosition+(i+2)).getTextService().getText().setText(dfx.format(netto.doubleValue()));
+			tcells = textTable.getRow(aktuellePosition+(i+2)).getCells();
+			setPositionenCells(false,tcells);
+			gesamtPreise = gesamtPreise.add(gesamtpreis.get(i));
+			gesamtZuzahlung = gesamtZuzahlung.add(zuzahlung.get(i));
+		}
+		if(mitPauschale){
+			gesamtZuzahlung = gesamtZuzahlung.add(BigDecimal.valueOf(Double.valueOf("10.00")));
+		}
+		gesamtNetto = gesamtNetto.add(gesamtPreise.subtract(gesamtZuzahlung));
+		/****************/
+		tcells = textTable.getRow(aktuellePosition+(i+2)).getCells();
+		setPositionenCells(true,tcells);
+		dummy = dfx.format(gesamtPreise.doubleValue());
+		textTable.getCell(4,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
+		dummy = dfx.format(gesamtZuzahlung.doubleValue());
+		textTable.getCell(5,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
+		dummy = dfx.format(gesamtNetto.doubleValue());
+		textTable.getCell(6,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
+		/****************/		
+		aktuellePosition += (positionen+2);
+	}
+	private void setPositionenCells(boolean italicAndBold,ITextTableCell[] tcells) throws Exception{
+		ITextTableCellProperties props = null;
+		for(int i2 = 0;i2<tcells.length;i2++){
+			props = tcells[i2].getProperties();
+			XPropertySet xprops = props.getXPropertySet();
+			xprops.setPropertyValue("TopBorderDistance", 0);
+			xprops.setPropertyValue("BottomBorderDistance", 0);
+			//xprops.setPropertyValue("LeftBorderDistance", 0);
+			//xprops.setPropertyValue("RightBorderDistance", 0);
+			tcells[i2].getCharacterProperties().setFontSize(8.f);
+			tcells[i2].getCharacterProperties().setFontUnderline(false);
+			if(italicAndBold){
+				tcells[i2].getCharacterProperties().setFontItalic(true);
+				tcells[i2].getCharacterProperties().setFontBold(true);
+			}else{
+				tcells[i2].getCharacterProperties().setFontItalic(false);
 				tcells[i2].getCharacterProperties().setFontBold(false);
-				tcells[i2].getCharacterProperties().setFontUnderline(false);
 			}
 		}
-		aktuellePosition += positionen;
-		
+
 	}
 	public void druckeRechnung(int anzahl){
 		

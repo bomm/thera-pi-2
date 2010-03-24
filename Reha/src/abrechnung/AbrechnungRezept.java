@@ -385,7 +385,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				setKuerzelVec(rez);
 				setWerte(rez);
 			}else{
-				System.out.println("Einlesen aus Edifact-Daten");
+				//System.out.println("Einlesen aus Edifact-Daten");
 				aktRezNum.setText(rez);
 				setKuerzelVec(rez);
 				if(holeEDIFACT(rez)){
@@ -546,8 +546,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 		}else{
 			((JXTTreeTableNode)aktNode).abr.zuzahlung = Boolean.valueOf(zuzahl);
-			System.out.println(((JXTTreeTableNode)aktNode).abr.bezeichnung);
-			System.out.println( "Zuzahlung ="+((JXTTreeTableNode)aktNode).abr.zuzahlung);
+			//System.out.println(((JXTTreeTableNode)aktNode).abr.bezeichnung);
+			//System.out.println( "Zuzahlung ="+((JXTTreeTableNode)aktNode).abr.zuzahlung);
 			if(this.aktRow==0){
 				this.mitPauschale = zuzahl;
 			}
@@ -598,7 +598,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		ActionListener al = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(mv.getSelectionDate());
+				//System.out.println(mv.getSelectionDate());
 			}
 		};
 		mv.addActionListener(this);
@@ -768,14 +768,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		patFreiAb = vec_pat.get(0).get(10);
 		patFreiBis = vec_pat.get(0).get(11);
 		patU18 = DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)));
-		System.out.println("Vec_Rez = "+vec_rez);
-		System.out.println("Vec_Pat = "+vec_pat);
+		//System.out.println("Vec_Rez = "+vec_rez);
+		//System.out.println("Vec_Pat = "+vec_pat);
 		ermittleAbrechnungsfall(true);
 		if(hausbesuch){
 			doHausbesuchKomplett();
 			getVectorFromNodes();
 		}
-		System.out.println("Nodes insgesamt ="+getNodeCount()+" VectorLänge = "+vec_tabelle.size());
+		//System.out.println("Nodes insgesamt ="+getNodeCount()+" VectorLänge = "+vec_tabelle.size());
 		doGebuehren();
 		doPositionenErmitteln();
 		doTreeRezeptWertermitteln();
@@ -827,7 +827,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		String splitvec = null;
 		try{
-			System.out.println("Vector ========= "+(Vector<Vector<String>>) vec_kuerzel.clone());
+			//System.out.println("Vector ========= "+(Vector<Vector<String>>) vec_kuerzel.clone());
 			//ystem.out.println("Combobox = "+cmbkuerzel);
 			//cmbkuerzel.setDataVectorVector( (Vector<Vector<String>>) vec_kuerzel.clone(), 0, 1);
 		}catch(Exception ex){
@@ -850,14 +850,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//Positionen = length+hbposanzahl;
 				//System.out.println("Länge des Feldes = "+behandlungen.length);
 				//anzahlbehandlungen = behandlungen.length;
-				System.out.println("Konstruiere Abrechnungsfall aus behandlungen.length");
+				//System.out.println("Konstruiere Abrechnungsfall aus behandlungen.length");
 				constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb);
 			}else{
 				//Es sind keine  Behandlungsformen im Terminblatt verzeichnet;
 				//in anzahlbehandlungen steht die tatsächliche Anzahl
 				//System.out.println("Keine Behandlungen im Terminblatt = "+anzahlbehandlungen);
 				//System.out.println("Anzahl-Hausbesuch  keine Beh. im Terminblatt= "+anzahlhb);
-				System.out.println("Konstruiere Abrechnungsfall aus Rezeptangaben");
+				//System.out.println("Konstruiere Abrechnungsfall aus Rezeptangaben");
 				constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb);
 			}
 		}
@@ -1059,8 +1059,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String erster = getDatumErsterTag();
 		String letzter = getDatumLetzterTag();
 		
-		System.out.println(DatFunk.TageDifferenz(datum, getDatumErsterTag()));
-		System.out.println(DatFunk.TageDifferenz("31.12.2009", "31.12.2009"));
+		//System.out.println(DatFunk.TageDifferenz(datum, getDatumErsterTag()));
+		//System.out.println(DatFunk.TageDifferenz("31.12.2009", "31.12.2009"));
 
 		if(regel==1){
 			//erste Behandlung >= Stichtag alle zu neuem Tarif
@@ -1109,8 +1109,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				if( DatFunk.TageDifferenz(splitdatum,abr.datum ) < 0){
 					abr.alterpreis = "alt";
 					String preis = RezTools.getPreisAltFromID(abr.preisid, preisgruppe, preisvec).replace(",", ".");
-					System.out.println("Alter Preis = "+preis);
-					System.out.println("PreisID = "+abr.preisid);
+					//System.out.println("Alter Preis = "+preis);
+					//System.out.println("PreisID = "+abr.preisid);
 					try{
 						abr.preis = Double.valueOf(preis);
 					}catch(Exception ex){}
@@ -1146,7 +1146,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			JOptionPane.showMessageDialog(null,"Achtung die Anzahl der Behandlungstage stimmt nicht mit der\n"+
 					"Angabe Anzahl Hausbesuche im Rezeptstamm überein");
 		}
-		System.out.println("zugrundeLiegende Preisgruppe = "+preisgruppe);
+		//System.out.println("zugrundeLiegende Preisgruppe = "+preisgruppe);
 		String tag = ""; 
 		int pos = 0;
 		String position;
@@ -1160,7 +1160,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			
 			JXTTreeTableNode node = (JXTTreeTableNode)root.getChildAt(i);
 			tag = node.abr.datum;
-			System.out.println("Behandlungstag "+tag+" HB hinzufügen");
+			//System.out.println("Behandlungstag "+tag+" HB hinzufügen");
 			//Zunächst die Position HB-Einzeln oder HB-Mit hinzufügen
 			if(vollepackung){
 				position = hauptziffer; 
@@ -1213,7 +1213,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			JOptionPane.showMessageDialog(null,"Achtung die Anzahl der Behandlungstage stimmt nicht mit der\n"+
 					"Angabe Anzahl Hausbesuche im Rezeptstamm überein");
 		}
-		System.out.println("zugrundeLiegende Preisgruppe = "+preisgruppe);
+		//System.out.println("zugrundeLiegende Preisgruppe = "+preisgruppe);
 		String tag = ""; 
 		int pos = 0;
 		String position;
@@ -1277,50 +1277,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				vec_posanzahl.set(pos, anzahl+1);
 			}
 		}
-		System.out.println("****************nachfolgende Positionen wurden ermittelt****************");
-		System.out.println(vec_poskuerzel);
-		System.out.println(vec_posanzahl);
-		System.out.println(vec_pospos);
+		//System.out.println("****************nachfolgende Positionen wurden ermittelt****************");
+		//System.out.println(vec_poskuerzel);
+		//System.out.println(vec_posanzahl);
+		//System.out.println(vec_pospos);
 	}
 	private void doZeileWertermitteln(){
 		
 	}
-	/*
-	private void doRezeptWertermitteln(){
-		int lang = 0;
-		rezeptWert = 0.00;
-		zuzahlungWert = 0.00;
-
-		BigDecimal dummy1 = BigDecimal.valueOf(Double.parseDouble("0.00"));
-		BigDecimal dummy2 = BigDecimal.valueOf(Double.parseDouble("0.00"));
-
-		BigDecimal ddummy1 = BigDecimal.valueOf(Double.parseDouble("0.00"));
-		BigDecimal ddummy2 = BigDecimal.valueOf(Double.parseDouble("0.00"));
-
-		if( (lang=tageMod.getRowCount())<=0){return;}
-		//System.out.println("Vectorlänge von vec_tabelle = "+lang);
-		Object ob1 = null;
-		Object ob2 = null;
-		Object ob3 = null;
-		for(int i = 0; i < lang;i++){
-			ob1 = tageMod.getValueAt(i, 2);
-			ob2 = tageMod.getValueAt(i, 3);
-			ob3 = tageMod.getValueAt(i, 5);
-			ddummy1 = dummy1.add(  (BigDecimal.valueOf((Double)ob1).multiply(BigDecimal.valueOf((Double)ob2)))   );
-			ddummy2 = dummy2.add(  (BigDecimal.valueOf((Double)ob1).multiply(BigDecimal.valueOf((Double)ob3)))   );
-			dummy1 = ddummy1;
-			dummy2 = ddummy2;
-		}
-		if(mitPauschale){
-			ddummy2 = dummy2.add(BigDecimal.valueOf(Double.parseDouble("10.00")));
-		}
-		rezeptWert = ddummy1.doubleValue();
-		zuzahlungWert = ddummy2.doubleValue();
-		System.out.println("Rezeptwert Gesamt = "+dfx.format(rezeptWert));
-		System.out.println("Zuzahlung Gesamt = "+dfx.format(zuzahlungWert));
-
-	}
-	*/
+	
 	private void doTreeRezeptWertermitteln(){
 		int lang = 0;
 		rezeptWert = 0.00;
@@ -1362,15 +1327,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		rezeptWert = ddummy1.doubleValue();
 		zuzahlungWert = ddummy2.doubleValue();
-		System.out.println("Rezeptwert Gesamt = "+dfx.format(rezeptWert));
-		System.out.println("Zuzahlung Gesamt = "+dfx.format(zuzahlungWert));
+		//System.out.println("Rezeptwert Gesamt = "+dfx.format(rezeptWert));
+		//System.out.println("Zuzahlung Gesamt = "+dfx.format(zuzahlungWert));
 
 	}
 
 	private void doTreeFreiAb(int von, int bis,boolean pflichtig){
-		System.out.println("Starte bei "+von);
-		System.out.println("Ende bei "+bis);
-		System.out.println("Setze Zuzahlungs-Flag="+pflichtig);
+		//System.out.println("Starte bei "+von);
+		//System.out.println("Ende bei "+bis);
+		//System.out.println("Setze Zuzahlungs-Flag="+pflichtig);
 		for(int i = von; i < bis; i++){
 			AbrFall abr = holeAbrFall(i);
 				if((!pflichtig) || (abr.niezuzahl)){
@@ -1397,12 +1362,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		if(behandlungen!=null){
 			for(int i = 0; i < anzahlbehandlungen;i++){
 				//abrfall[i] = RezTools.getKurzformFromPos(behandlungen[i].trim(), preisgruppe, preisvec);
-				System.out.println("Behandlung = "+behandlungen[i]);
+				//System.out.println("Behandlung = "+behandlungen[i]);
 				abrObject = RezTools.getKurzformUndIDFromPos(behandlungen[i].trim(), preisgruppe, preisvec);
 				abrfall[i] = abrObject[0].toString();
 				id[i] = abrObject[1].toString();
 				//System.out.println(""+i+". Behandlung aus Terminblatt = "+abrfall[i]);
-				System.out.println(""+i+". id = "+id[i]);
+				//System.out.println(""+i+". id = "+id[i]);
 			}
 		}else{
 			for(int i = 0; i < anzahlbehandlungen;i++){
@@ -1437,7 +1402,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				vecdummy.add(Boolean.valueOf(false));
 
 				vec_tabelle.add((Vector<Object>)vecdummy.clone());
-				System.out.println(vecdummy);
+				//System.out.println(vecdummy);
 			}
 		}
 	}
@@ -1832,35 +1797,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		
 		htmlposbuf.setLength(0);
 		htmlposbuf.trimToSize();
-		System.out.println("Größe des Positionen-Vectors = "+vec_poskuerzel.size());
-		//vec_poskuerzel.clear();
-		//vec_posanzahl.clear();
-		/*
-		for(int i = 0; i < vec_poskuerzel.size();i++){
-			htmlposbuf.append("<tr>"+
-		"<td>&nbsp;</td>"+
-		"<td class=\"spalte1\" align=\"right\">");
-			htmlposbuf.append(vec_poskuerzel.get(i));
-			htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
-			htmlposbuf.append(Integer.toString(vec_posanzahl.get(i))+" x");
-			htmlposbuf.append("</td>"+
-					"</tr>");
-		}
-		*/
+	
 		for(int i = 0; i < vec_poskuerzel.size();i++){
 			htmlposbuf.append("<tr><td>&nbsp;</td><td class=\"spalte1\" align=\"right\">");
 			htmlposbuf.append(vec_poskuerzel.get(i));
 			htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
 			htmlposbuf.append(Integer.toString(vec_posanzahl.get(i))+" x");
 			htmlposbuf.append("</td></tr>");
-			/*
-			if(i < vec_poskuerzel.size()){
-			}else{
-				htmlposbuf.append("<tr><td>&nbsp;</td><td class=\"spalte1\" align=\"right\">");
-				htmlposbuf.append("</td></tr>");
-			}
-			*/
-
 		}
 		htmlposbuf.append("<tr>");
 		htmlposbuf.append("<td>&nbsp;</td>");
@@ -2001,9 +1944,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 							for(int i = 0; i < lang; i++){
 								if(aktNode == holeNode(i)){
 									aktRow = i;
-									System.out.println("Zeilennummer =  = "+i);
-									System.out.println("Node selektiert = "+aktNode.abr.bezeichnung);
-									System.out.println("Behandlungsdatum selektiert = "+aktNode.abr.datum+" / "+aktNode.abr.bezeichnung);
+									//System.out.println("Zeilennummer =  = "+i);
+									//System.out.println("Node selektiert = "+aktNode.abr.bezeichnung);
+									//System.out.println("Behandlungsdatum selektiert = "+aktNode.abr.datum+" / "+aktNode.abr.bezeichnung);
 									break;
 								}
 							}
@@ -2099,7 +2042,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
             	o.rezgeb = (((Boolean)o.zuzahlung) ? rechneRezGebFromDouble(o.preis) : (Double) 0.00);
             	break;
             case 5:
-            	System.out.println("in SetValue Zuzahlung="+value);
+            	//System.out.println("in SetValue Zuzahlung="+value);
             	o.zuzahlung = ((Boolean)value);
             	o.rezgeb = (((Boolean)value) ? rechneRezGebFromDouble(o.preis) : (Double) 0.00);
             	break;
@@ -2287,7 +2230,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		if(cmd.equals("zuzahlung")){
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
-					System.out.println("Wert der CheckBox = "+((JRtaCheckBox)mycheck.getComponent()).isSelected()+ " Selektierte Tabellenzeile = ");
+					//System.out.println("Wert der CheckBox = "+((JRtaCheckBox)mycheck.getComponent()).isSelected()+ " Selektierte Tabellenzeile = ");
 				}
 			});
 
@@ -2415,10 +2358,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				break;
 				
 			}
-			System.out.println( DatFunk.TageDifferenz(((JXTTreeTableNode)root.getChildAt(i)).abr.datum, tag) );
+			//System.out.println( DatFunk.TageDifferenz(((JXTTreeTableNode)root.getChildAt(i)).abr.datum, tag) );
 			
 		}
-		System.out.println( "******>Neuer Tag wird eingefügt bei Index = "+einfuegenbei);
+		//System.out.println( "******>Neuer Tag wird eingefügt bei Index = "+einfuegenbei);
 		
 		if(einfuegenbei == count){
 			demoTreeTableModel.insertNodeInto(macheTag(tag,einfuegenbei), root, count);
@@ -2453,7 +2396,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private JXTTreeTableNode macheTag(String tag,int einfuegen){
 		JXTTreeTableNode node = null;
 		//AbrFall fall= null;
-		System.out.println(vec_rez.get(0).get(34));
+		//System.out.println(vec_rez.get(0).get(34));
 		String[] tage = vec_rez.get(0).get(34).split("\n");
 		int zaehler = 0;
 		String alletage = ""; 
@@ -2465,7 +2408,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				zaehler++;
 			}
 		}
-		System.out.println(alletage);
+		//System.out.println(alletage);
 		vec_rez.get(0).set(34,alletage);
 		/******Entscheidender Funktionsaufruf****************************/
 		ermittleAbrechnungsfall(false);
@@ -2488,7 +2431,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 		}
 		
-		System.out.println(node);
+		//System.out.println(node);
 		
 		return node;
 	}
@@ -2775,12 +2718,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	}
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
-		System.out.println("Will become Invisible - "+arg0);		// TODO Auto-generated method stub
+		//System.out.println("Will become Invisible - "+arg0);		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
-		System.out.println("Will become Visible - "+arg0);
+		//System.out.println("Will become Visible - "+arg0);
 		
 	}
 	/************************************************************************/
@@ -2885,13 +2828,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+
 			":GESAMT="+dfx.format(gesamt)+":REZGEB="+dfx.format(rez+pauschal)+
 			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+":KASSENID="+vec_rez.get(0).get(37)+
-			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+"\n";
+			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+":STATUS="+vec_pat.get(0).get(7)+"\n";
 
 		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
 		edibuf.insert(0,vec_posanzahl.toString()+"\n");
 		edibuf.insert(0,vec_pospos.toString()+"\n");
 		edibuf.insert(0, kopfzeile);
-		System.out.println(edibuf.toString());
+		//System.out.println(edibuf.toString());
 		return ret;
 	}	
 
@@ -3017,7 +2960,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		//type 0 = String, type 1 = int;
 		String ergebnis = svec.substring(1);
 		ergebnis = ergebnis.substring(0,ergebnis.length()-1);
-		System.out.println("Ergebnisstring = "+ergebnis);
+		//System.out.println("Ergebnisstring = "+ergebnis);
 		String[] teile = ergebnis.split(",");
 		for(int i = 0 ; i< teile.length;i++){
 			vec.add((type==0 ? teile[i].trim() : Integer.parseInt(teile[i].trim())));

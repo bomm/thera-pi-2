@@ -2,6 +2,7 @@ package org.therapi.reha.patient;
 
 
 
+import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
@@ -82,6 +83,8 @@ import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
+
+import RehaInternalFrame.JAbrechnungInternal;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -1434,6 +1437,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String cmd = "insert into fertige set ikktraeger='"+ikkost+"', ikkasse='"+ikkass+"', "+
 				"name1='"+kname+"', rez_nr='"+rnr+"', pat_intern='"+patint+"', rezklasse='"+rnr.substring(0,2)+"'";
 				SqlInfo.sqlAusfuehren(cmd);
+				JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
+				if(abrech1 != null){
+					Reha.thisClass.abrechnung1panel.doEinlesen(Reha.thisClass.abrechnung1panel.getaktuellerKassenKnoten());
+				}
 				
 			}else{
 				// bereits abgeschlossen muß geöffnet werden
@@ -1446,6 +1453,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String rnr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
 				String cmd = "delete from fertige where rez_nr='"+rnr+"' LIMIT 1";
 				SqlInfo.sqlAusfuehren(cmd);
+				JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
+				if(abrech1 != null){
+					Reha.thisClass.abrechnung1panel.doEinlesen(Reha.thisClass.abrechnung1panel.getaktuellerKassenKnoten());
+				}
 			}
 	}
 	private boolean doTageTest(String starttag,int tage){
