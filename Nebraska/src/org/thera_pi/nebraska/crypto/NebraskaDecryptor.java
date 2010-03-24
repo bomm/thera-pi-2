@@ -103,7 +103,6 @@ public class NebraskaDecryptor {
 	 * @throws NebraskaFileException
 	 */
 	public void processSignedData(InputStream signedContentStream, OutputStream outStream) throws NebraskaCryptoException, NebraskaFileException {
-		// TODO Auto-generated method stub
 		CMSSignedDataParser parser;
 		try {
 			parser = new CMSSignedDataParser(signedContentStream);
@@ -112,7 +111,6 @@ public class NebraskaDecryptor {
 		}
 
 		CMSTypedStream signedContent = parser.getSignedContent();
-		System.out.println(signedContent.getContentType());
 		
 		InputStream contentStream = signedContent.getContentStream();
 		
@@ -164,7 +162,7 @@ public class NebraskaDecryptor {
 			Iterator<?> certIterator = certCollection.iterator();
 			X509Certificate cert = (X509Certificate)certIterator.next();
 
-			boolean verified;
+			boolean verified = false;
 			try {
 				verified = signer.verify(cert, NebraskaConstants.SECURITY_PROVIDER);
 			} catch (CertificateExpiredException e) {
