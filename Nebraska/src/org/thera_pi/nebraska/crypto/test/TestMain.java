@@ -31,6 +31,7 @@ public class TestMain {
 			nebraskaKeystore.importKeyPair(basedir + "540840108.prv");
 			nebraskaKeystore.importCertificateReply(basedir + "540840108.p7c");
 			nebraskaKeystore.importReceiverCertificates("annahme-pkcs.key");
+			nebraskaKeystore.exportKey(basedir + "private-key.pem", "abcdef");
 			FileInputStream inStream;
 			FileOutputStream outStream;
 			String inFileName = basedir + "plain.txt";
@@ -44,7 +45,7 @@ public class TestMain {
 			outStream.close();
 			
 			long size = encryptor.encrypt(inFileName, outFileName);
-			System.out.println("oputput file " + outFileName + " size " + size);
+			System.out.println("output file " + outFileName + " size " + size);
 			inStream = new FileInputStream(outFileName);
 //			inStream = new FileInputStream(basedir + "TSOL0021.org.encoded");
 			outStream = new FileOutputStream(basedir + "decrypted.dat");

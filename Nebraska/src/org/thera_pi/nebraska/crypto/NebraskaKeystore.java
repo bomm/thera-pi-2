@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +28,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.CertStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -50,6 +52,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 public class NebraskaKeystore {
@@ -716,13 +719,31 @@ public class NebraskaKeystore {
 	}
 	
 	/**
-	 * Export private key and certificate to file.
+	 * Export key pair to file.
 	 * 
 	 * @param fileName the file to write
 	 * @param keyPassword password for private key
+	 * @throws NebraskaNotInitializedException if Nebraska key store is not properly initialized
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on I/O related errors
 	 */
-	public void exportKeyAndCertificate(String fileName, String keyPassword) {
-		// FIXME export private key and certificate
+	public void exportKey(String fileName, String keyPassword) throws NebraskaCryptoException, NebraskaNotInitializedException, NebraskaFileException {
+		PrivateKeyEntry keyEntry = getPrivateKeyEntry();
+		PrivateKey privateKey = keyEntry.getPrivateKey();
+		FileWriter fWriter;
+		try {
+			fWriter = new FileWriter(new File(fileName));
+		} catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
+        PEMWriter pemWriter = new PEMWriter(fWriter, "BC");
+        try {
+        	pemWriter.writeObject(privateKey);
+        	pemWriter.close();
+        	fWriter.close();
+        } catch (IOException e) {
+			throw new NebraskaFileException(e);
+		}
 	}
 	
 	/**
