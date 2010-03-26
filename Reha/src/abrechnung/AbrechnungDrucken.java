@@ -4,32 +4,83 @@ import hauptFenster.Reha;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
+
+import oOorgTools.OOTools;
+
+import org.jdesktop.swingworker.SwingWorker;
+
+import sqlTools.SqlInfo;
 
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableCell;
 import ag.ion.bion.officelayer.text.ITextTableCellProperties;
+import ag.ion.bion.officelayer.text.TextException;
 
 import com.sun.star.beans.XPropertySet;
 
 public class AbrechnungDrucken {
 	int aktuellePosition = 0;
 	ITextTable textTable = null;
+	ITextTable textEndbetrag = null;
 	ITextDocument textDocument = null;
 	int positionen;
 	String rechnungNummer;
 	String papierIK;
 	DecimalFormat dfx = new DecimalFormat( "0.00" );
 	int zugabe = 0;
-	public AbrechnungDrucken(String url,String papierIk,String rnr) throws Exception{
+	BigDecimal rechnungsBetrag = new BigDecimal(Double.valueOf("0.00"));
+	BigDecimal rechnungsGesamt = new BigDecimal(Double.valueOf("0.00"));
+	BigDecimal rechnungsRezgeb = new BigDecimal(Double.valueOf("0.00"));
+	HashMap<String,String> hmAdresse = new HashMap<String,String>(); 
+	public AbrechnungDrucken(String url) throws Exception{
+		starteDokument(url);
+	}
+	public void setIKundRnr(String papierIk,String rnr){
 		this.papierIK = papierIk;
 		this.rechnungNummer = rnr;
-		starteDokument(url);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					holeAdresse(papierIK);
+					setRechnungsBetrag();
+					ersetzePlatzhaler();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+		}.execute();
+	}
+	/********************/
+	private void holeAdresse(String papIK){
+		String[] hmKeys = {"<gkv1>","<gkv2>","<gkv3>","<gkv4>","<gkv5>","<gkv6>"};
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select * from kass_adr where ik_kasse ='"+papIK+"'");
+		if(vec.size()==0){
+			for(int i = 0; i < hmKeys.length-1;i++){
+				hmAdresse.put(hmKeys[i], "");
+			}
+			hmAdresse.put(hmKeys[5],rechnungNummer);
+			return;
+		}
+		hmAdresse.put(hmKeys[0],vec.get(0).get(2) );
+		hmAdresse.put(hmKeys[1],vec.get(0).get(3) );
+		hmAdresse.put(hmKeys[2],vec.get(0).get(4) );
+		hmAdresse.put(hmKeys[3],vec.get(0).get(5)+" "+vec.get(0).get(6));
+		hmAdresse.put(hmKeys[4],"");
+		hmAdresse.put(hmKeys[5],rechnungNummer);
 	}
 	public void setDaten(String nameVorname,
 			String status,
@@ -73,7 +124,11 @@ public class AbrechnungDrucken {
 		if(mitPauschale){
 			gesamtZuzahlung = gesamtZuzahlung.add(BigDecimal.valueOf(Double.valueOf("10.00")));
 		}
+		
 		gesamtNetto = gesamtNetto.add(gesamtPreise.subtract(gesamtZuzahlung));
+		rechnungsRezgeb = rechnungsRezgeb.add(gesamtZuzahlung);
+		rechnungsGesamt = rechnungsGesamt.add(gesamtPreise);
+		rechnungsBetrag = rechnungsBetrag.add(gesamtNetto);
 		/****************/
 		tcells = textTable.getRow(aktuellePosition+(i+2)).getCells();
 		setPositionenCells(true,tcells);
@@ -86,6 +141,12 @@ public class AbrechnungDrucken {
 		/****************/		
 		aktuellePosition += (positionen+2);
 	}
+	public void setRechnungsBetrag() throws TextException{
+		textEndbetrag.getCell(2,0).getTextService().getText().setText(dfx.format(rechnungsGesamt.doubleValue())+" EUR");
+		textEndbetrag.getCell(3,1).getTextService().getText().setText(dfx.format(rechnungsRezgeb.doubleValue())+" EUR");
+		textEndbetrag.getCell(4,2).getTextService().getText().setText(dfx.format(rechnungsBetrag.doubleValue())+" EUR");
+	}
+
 	private void setPositionenCells(boolean italicAndBold,ITextTableCell[] tcells) throws Exception{
 		ITextTableCellProperties props = null;
 		for(int i2 = 0;i2<tcells.length;i2++){
@@ -125,8 +186,43 @@ public class AbrechnungDrucken {
 		/**********************/
 		textDocument = (ITextDocument)document;
 		textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
-
-
+		textEndbetrag = textDocument.getTextTableService().getTextTable("Tabelle2");
+	}
+	@SuppressWarnings("unchecked")
+	private void ersetzePlatzhaler(){
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		String placeholderDisplayText = "";
+		for (int i = 0; i < placeholders.length; i++) {
+			boolean schonersetzt = false;
+			try{
+				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			}catch(com.sun.star.uno.RuntimeException ex){
+				ex.printStackTrace();
+			}
+		    Set<?> entries = hmAdresse.entrySet();
+		    Iterator<?> it = entries.iterator();
+		    while (it.hasNext() && (!schonersetzt)) {
+		      Map.Entry entry = (Map.Entry) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText.toLowerCase())){
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    if(!schonersetzt){
+		    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    }
+		}	
 	}
 
 }

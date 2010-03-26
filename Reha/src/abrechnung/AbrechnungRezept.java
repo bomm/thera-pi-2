@@ -2772,7 +2772,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			edibuf.append("EHE+"+disziplinGruppe+plus+SystemConfig.vPreisGueltig.get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
 			edibuf.append(RezTools.getPosFromID(node.abr.preisid, preisgruppe, preisvec)+plus);
 			edibuf.append(dfx.format(node.abr.anzahl)+plus);
-			gesamt += node.abr.preis;
+			System.out.println("Abrechnungspreis = "+BigDecimal.valueOf(node.abr.preis)+ " / "+"Abrechnung-Anzahl = "+BigDecimal.valueOf(node.abr.anzahl));
+//			System.out.println("Abrechnung-Anzahl = "+BigDecimal.valueOf(node.abr.anzahl));
+			gesamt += BigDecimal.valueOf(node.abr.preis).multiply(BigDecimal.valueOf(node.abr.anzahl)).doubleValue();
+			System.out.println("Gesamtpreis = "+dfx.format(BigDecimal.valueOf(node.abr.preis).multiply(BigDecimal.valueOf(node.abr.anzahl)).doubleValue()));
 			edibuf.append(dfx.format(node.abr.preis)+plus);
 			edibuf.append(ediDatumFromDeutsch(node.abr.datum));
 			if(node.abr.rezgeb > 0){

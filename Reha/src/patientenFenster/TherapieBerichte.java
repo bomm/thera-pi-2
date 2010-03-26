@@ -130,7 +130,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	}
 	
 	
-	public void setzeRezeptPanelAufNull(boolean aufnull){
+	public void setzeBerichtPanelAufNull(boolean aufnull){
 		if(aufnull){
 			if(aktPanel.equals("vollPanel")){
 				wechselPanel.remove(vollPanel);
@@ -198,7 +198,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 					anz = dtblm.getRowCount();
 					Reha.thisClass.patpanel.getTab().setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
 					if(anz > 0){
-						setzeRezeptPanelAufNull(false);
+						setzeBerichtPanelAufNull(false);
 						if(xrez_nr.equals("")){
 							tabbericht.setRowSelectionInterval(0,0);							
 						}else{
@@ -215,7 +215,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						wechselPanel.revalidate();
 						wechselPanel.repaint();					
 					}else{
-						setzeRezeptPanelAufNull(true);
+						setzeBerichtPanelAufNull(true);
 						anzahlBerichte.setText("Anzahl Therapieberichte: "+anz);
 						wechselPanel.revalidate();
 						wechselPanel.repaint();

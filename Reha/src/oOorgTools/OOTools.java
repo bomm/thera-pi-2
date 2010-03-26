@@ -146,12 +146,6 @@ public class OOTools{
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
-			/*
-			for(int y = 0 ; y < placeholders.length;y++){
-				System.out.println(placeholders[y].getDisplayText());
-			}
-			System.out.println("************feddisch mit den Placeholders********************");
-			*/
 		} catch (TextException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -232,7 +226,7 @@ public class OOTools{
 		    	  }
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("");
-		    		  //OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }

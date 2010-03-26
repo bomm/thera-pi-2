@@ -8,8 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -46,12 +51,20 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableNode;
+import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
+import org.thera_pi.nebraska.crypto.NebraskaDecryptor;
+import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
+import org.thera_pi.nebraska.crypto.NebraskaFileException;
+import org.thera_pi.nebraska.crypto.NebraskaKeystore;
+import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
 
 
 
 
 
+
+import ag.ion.bion.officelayer.text.TextException;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -532,11 +545,20 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
 			fw = new FileWriter(f);
 		    bw = new BufferedWriter(fw); 
-		    bw.write(gesamtBuf.toString()); 
+		    bw.write(gesamtBuf.toString());
+		    bw.flush();
+
 		    bw.close(); 
 		    fw.close();
-		    doVerschluesseln(aktEsol+".org");
-		    doAuftragsDatei();
+		    
+		    int originalSize = Integer.parseInt(Long.toString(f.length()));
+		    int encryptedSize = doVerschluesseln(aktEsol+".org");
+		    if(encryptedSize < 0){
+		    	JOptionPane.showMessageDialog(null, "Es ist ein Fehler in der Verschlüsselung aufgetreten!");
+		    	return;
+		    }
+		    
+		    doAuftragsDatei(originalSize,encryptedSize);
 			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf");
 			fw = new FileWriter(f);
 		    bw = new BufferedWriter(fw); 
@@ -551,10 +573,44 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		} 
 		
 	}
-	private void doVerschluesseln(String datei){
-		
+	private int doVerschluesseln(String datei){
+		try {
+			NebraskaKeystore store = new NebraskaKeystore("C:/Nebraska/540840108.p12", "196205","196205", "IK540840108");
+			NebraskaEncryptor encryptor = store.getEncryptor("IK108018007");
+			//encryptor.setEncryptToSelf(true);
+			String inFile = Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org";
+			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));
+			/*
+			NebraskaDecryptor decryptor = store.getDecryptor();
+			InputStream inStream;
+			try {
+				inStream = new FileInputStream(inFile.replace(".org", ""));
+				File outFile = new File(inFile.replace(".org", "")+".decrypted");
+				OutputStream outStream = new FileOutputStream(outFile);
+				decryptor.decrypt(inStream,outStream);
+				inStream.close();
+				outStream.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
+			return Integer.parseInt(Long.toString(size));
+			
+		} catch (NebraskaCryptoException e) {
+			e.printStackTrace();
+		} catch (NebraskaFileException e) {
+			e.printStackTrace();
+		} catch (NebraskaNotInitializedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
-	private void doAuftragsDatei(){
+	private void doAuftragsDatei(int originalSize,int encryptedSize){
 		auftragsBuf.append("500000"+"01"+"00000348"+"000");
 		auftragsBuf.append("ESOL0"+aktEsol);
 		auftragsBuf.append("     ");
@@ -571,8 +627,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
 		auftragsBuf.append("000000");
 		auftragsBuf.append("0");
-		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(gesamtBuf.length()), "0", true, 12) );
-		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(gesamtBuf.length()), "0", true, 12) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(originalSize), "0", true, 12) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(encryptedSize), "0", true, 12) );
 		auftragsBuf.append("I800");
 		auftragsBuf.append("0303");
 		auftragsBuf.append("   ");
@@ -594,6 +650,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		unzBuf.append("UNZ"+plus+"000002"+plus+aktDfue+EOL);
 	}
 	private void macheKopfDaten(){
+		
 		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1 from kass_adr where id='"+abzurechnendeKassenID+"'";
 		kassenIKs.clear();
 		kassenIKs = SqlInfo.holeFelder(cmd);
@@ -607,6 +664,14 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
 		aktDfue = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("dfue", 99999)), "0", true, 5);
 		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				abrDruck.setIKundRnr(ik_papier, aktRechnung);
+				return null;
+			}
+			
+		}.execute();
 		//System.out.println(aktEsol + "  - "+aktDfue);
 		unbBuf.append("UNB+UNOC:3+"+Reha.aktIK+plus+ik_nutzer+plus);
 		unbBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+":"+getEdiTimeString(false)+plus);
@@ -662,7 +727,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	/*************************************************/
 	private void holeEdifact(){
 		try {
-			abrDruck = new AbrechnungDrucken(Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMRechnungGKV.ott",this.ik_papier,this.aktRechnung);
+			abrDruck = new AbrechnungDrucken(Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMRechnungGKV.ott");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -674,25 +739,13 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			if(node.knotenObjekt.fertig){
 				vec = SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+(String) node.knotenObjekt.rez_num+"'");
 				try{
-					//if(i==0){
-						abzurechnendeKassenID = holeAbrechnungsKasse(vec.get(0).get(0));
-					//}
-					analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
+					abzurechnendeKassenID = holeAbrechnungsKasse(vec.get(0).get(0));
 					//hier den Edifact-Code analysieren und die Rechnungsdatei erstellen;
+					analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
 					anhaengenEdifact(vec.get(0).get(0));
 				}catch(Exception ex){}
 			}
 		}
-		/*
-		for(int i = 0; i < 3;i++){
-			System.out.println("Gesamt   = "+preis00[i]);
-			System.out.println("Status 1 = "+preis11[i]);
-			System.out.println("Status 3 = "+preis51[i]);
-			System.out.println("Status 5 = "+preis51[i]);
-			System.out.println("**********************");
-		}
-		*/
-
 	}
 	private void analysierenEdifact(String edifact,String rez_num){
 		//System.out.println(edifact);
