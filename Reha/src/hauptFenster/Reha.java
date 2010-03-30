@@ -366,7 +366,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		if(! f.exists()){
 			new SocketClient().setzeInitStand("Kopiere win32com.dll");
 			try {
-				FileTools.copyFile(new File(proghome+"RTAJars/win32com.dll"),f, 4096, false);
+				FileTools.copyFile(new File(proghome+"Libraries/lib/serial/win32com.dll"),f, 4096, false);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -377,7 +377,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		if(! f.exists()){
 			try {
 				new SocketClient().setzeInitStand("Kopiere comm.jar");
-				FileTools.copyFile(new File(proghome+"RTAJars/comm.jar"),f, 4096, false);
+				FileTools.copyFile(new File(proghome+"Libraries/lib/serial/comm.jar"),f, 4096, false);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -388,14 +388,23 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		if(! f.exists()){
 			try {
 				new SocketClient().setzeInitStand("Kopiere javax.comm.properties");
-				FileTools.copyFile(new File(proghome+"RTAJars/javax.comm.properties"),f, 4096, false);
+				FileTools.copyFile(new File(proghome+"Libraries/lib/serial/javax.comm.properties"),f, 4096, false);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}else{
 			System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
-		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws java.lang.Exception {
+				new SocketClient().setzeInitStand("System-Parameter laden");
+				SystemConfig.SystemIconsInit();
+				iconsOk = true;
+				return null;
+			}
+		}.execute();
+		/*
 		new Thread(){
 			public void run(){
 				new SocketClient().setzeInitStand("System-Parameter laden");
@@ -403,6 +412,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				iconsOk = true;
 			}
 		}.start();
+		*/
 
 		System.out.println("RehaxSwing wurde gestartet");
 		/*********/
@@ -491,8 +501,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		
 	}
 	public void setzeInitEnde(){
-		System.out.println("poste INITENDE über Socket");
-		new SocketClient().setzeInitStand("INITENDE");	
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws java.lang.Exception {
+				System.out.println("poste INITENDE über Socket");
+				new SocketClient().setzeInitStand("INITENDE");
+				return null;
+			}
+			
+		}.execute();
 	}
 	
 	private void doCompoundPainter(){
@@ -2532,7 +2549,8 @@ final class PreisListenLaden implements Runnable{
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
 		Reha.thisClass.jxLinks.setAlpha(1.0f);
 		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		new SocketClient().setzeInitStand("INITENDE");
+		Reha.thisClass.setzeInitEnde();
+		//new SocketClient().setzeInitStand("INITENDE");
 		Reha.thisClass.initok = true;
 	}
 	public void run() {

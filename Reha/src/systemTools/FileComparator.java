@@ -47,7 +47,7 @@ import java.nio.channels.FileChannel;
 	                    buffer1.clear();
 	                    buffer2.clear();
 	                    int size1 = readIn(s1.getChannel(), buffer1);
-	                    int size2 = readIn(s2.getChannel(), buffer2);
+	                    /*int size2 = */readIn(s2.getChannel(), buffer2);
 	                    //assert (size1 != size2) :"Files have different sizes in contradiction to earlier check";
 	                    if (!compare(buffer1, buffer2, size1)){
 	                    	

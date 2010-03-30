@@ -10,8 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import javax.swing.filechooser.FileFilter;
-
 public class FileTools {
 	public static boolean deleteAllFiles(File dir){
 		File[] files = dir.listFiles();
@@ -67,13 +65,13 @@ public class FileTools {
 		ArrayList<File> matches = new ArrayList<File> ();
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
-				if (files[i].getName().equalsIgnoreCase(find)) { // überprüft ob der Dateiname mit dem Suchstring
-										 // übereinstimmt. Groß-/Kleinschreibung wird
+				if (files[i].getName().equalsIgnoreCase(find)) { // ï¿½berprï¿½ft ob der Dateiname mit dem Suchstring
+										 // ï¿½bereinstimmt. Groï¿½-/Kleinschreibung wird
 										 // ignoriert.
 					matches.add(files[i]);
 				}
 				if (files[i].isDirectory()) {
-					matches.addAll(searchFile(files[i], find)); // fügt der ArrayList die ArrayList mit den
+					matches.addAll(searchFile(files[i], find)); // fï¿½gt der ArrayList die ArrayList mit den
 										    // Treffern aus dem Unterordner hinzu
 				}
 			}
@@ -122,7 +120,7 @@ public class FileTools {
 	            dest.delete();
 	        } else {
 	            throw new IOException(
-	                    "Kann existierende Datei nicht überschreiben: " + dest.getName());
+	                    "Kann existierende Datei nicht ï¿½berschreiben: " + dest.getName());
 	        }
 	    }
 	    byte[] buffer = new byte[bufSize];
@@ -145,7 +143,7 @@ public class FileTools {
 	        // bei einem throw geschlossen werden.
 	        // Falls in null ist, ist out auch null!
 	        if (in != null) {
-	            //Falls tatsächlich in.close() und out.close()
+	            //Falls tatsï¿½chlich in.close() und out.close()
 	            //Exceptions werfen, die jenige von 'out' geworfen wird.
 	            try {
 	            	out.flush();

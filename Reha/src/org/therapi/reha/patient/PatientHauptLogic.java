@@ -208,10 +208,10 @@ public class PatientHauptLogic {
 		// jetzt das RezeptPanel KeinRezept anhängen
 		patientHauptPanel.getStammDaten().htmlPane.setText("");
 		patientHauptPanel.aktRezept.setzeRezeptPanelAufNull(true);
-		patientHauptPanel.historie.setzeRezeptPanelAufNull(true);
+		patientHauptPanel.historie.setzeHistoriePanelAufNull(true);
 		patientHauptPanel.berichte.setzeBerichtPanelAufNull(true);
-		patientHauptPanel.dokumentation.setzeRezeptPanelAufNull(true);
-		patientHauptPanel.gutachten.setzeRezeptPanelAufNull(true);
+		patientHauptPanel.dokumentation.setzeDokuPanelAufNull(true);
+		patientHauptPanel.gutachten.setzeGutachtenPanelAufNull(true);
 		// dann die Icons löschen
 		patientHauptPanel.pmemo[0].setText("");
 		patientHauptPanel.pmemo[1].setText("");

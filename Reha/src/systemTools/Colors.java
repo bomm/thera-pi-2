@@ -169,7 +169,7 @@ return sb.toString();
 
 public String toHexString() {
 
-Color c = _myColor;
+//Color c = _myColor;
 
 StringBuilder sb = new StringBuilder();
 

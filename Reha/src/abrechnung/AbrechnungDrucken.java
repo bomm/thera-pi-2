@@ -44,6 +44,7 @@ public class AbrechnungDrucken {
 	BigDecimal rechnungsGesamt = new BigDecimal(Double.valueOf("0.00"));
 	BigDecimal rechnungsRezgeb = new BigDecimal(Double.valueOf("0.00"));
 	HashMap<String,String> hmAdresse = new HashMap<String,String>(); 
+	int anzahlRezepte = 0;
 	public AbrechnungDrucken(String url) throws Exception{
 		starteDokument(url);
 	}
@@ -94,6 +95,7 @@ public class AbrechnungDrucken {
 			BigDecimal netto;
 		positionen = posvec.size();
 		int anz;
+		anzahlRezepte++;
 		String dummy;
 		BigDecimal gesamtPreise = new BigDecimal(Double.valueOf("0.00"));
 		BigDecimal gesamtZuzahlung =new BigDecimal(Double.valueOf("0.00"));

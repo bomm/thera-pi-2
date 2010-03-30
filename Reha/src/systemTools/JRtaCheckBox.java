@@ -15,6 +15,10 @@ import javax.swing.JCheckBox;
 
 public class JRtaCheckBox extends JCheckBox implements ActionListener,PropertyChangeListener,FocusListener,KeyListener{
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7927719190910584318L;
 public JRtaCheckBox(){
 	super();
 	addKeyListener(this);

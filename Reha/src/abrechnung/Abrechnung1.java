@@ -1,5 +1,8 @@
 package abrechnung;
 
+import hauptFenster.Reha;
+import hauptFenster.UIFSplitPane;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -8,67 +11,37 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
-
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-
-import hauptFenster.Reha;
-import hauptFenster.UIFSplitPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
-import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
-import org.jdesktop.swingx.treetable.MutableTreeTableNode;
-import org.jdesktop.swingx.treetable.TreeTableNode;
 import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
-import org.thera_pi.nebraska.crypto.NebraskaDecryptor;
 import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
-
-
-
-
-
-
-
-import ag.ion.bion.officelayer.text.TextException;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -77,8 +50,11 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-
 import RehaInternalFrame.JAbrechnungInternal;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import events.PatStammEvent;
 import events.PatStammEventListener;
@@ -201,6 +177,14 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		JScrollPane jscrk = JCompTools.getTransparentScrollPane(treeKasse);
 		jscrk.validate();
 		pb.add(jscrk,cc.xy(2, 6));
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+				return null;
+			}
+			
+		}.execute();
 		
 		doEinlesen(null);
 		
@@ -221,6 +205,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	private JXPanel getRight(){
 		this.abrRez = new AbrechnungRezept(this);
+		this.abrRez.setRechtsAufNull();
 		return abrRez;
 	}
 
@@ -265,7 +250,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	 * Einlesen der abrechnungsdaten
 	 */
 	public void doEinlesen(JXTTreeNode aktKassenNode ){
-		final JXTTreeNode xaktKassenNode = aktKassenNode;
+		//final JXTTreeNode xaktKassenNode = aktKassenNode;
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -319,6 +304,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
+				Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 				return null;
 			}
 		}.execute();
@@ -332,7 +318,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
 
 		JXTTreeNode node = (JXTTreeNode) rootKasse.getChildAt(knoten);
-		JXTTreeNode treeitem = null;
+		//JXTTreeNode treeitem = null;
 		
 		JXTTreeNode meinitem = null;
 		for(int i = 0;i<vecKassen.size();i++){
@@ -362,8 +348,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	}
 	private void kassenBaumLoeschen(){
 		try{
-		int childs;	
-		while( (childs=rootKasse.getChildCount()) > 0){
+			
+		while( (rootKasse.getChildCount()) > 0){
 			treeModelKasse.removeNodeFromParent((JXTTreeNode) ((JXTTreeNode) treeModelKasse.getRoot()).getChildAt(0));
 		}
 		treeKasse.validate();
@@ -453,7 +439,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 								holeUmsaetze(((JXTTreeNode)xaktKasse.getChildAt(i)).knotenObjekt.rez_num);
 							}
 						}
-						setHtmlRechts(lang,kontrollierteRezepte);
+						setHtmlLinksUnten(lang,kontrollierteRezepte);
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
@@ -461,7 +447,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 				}
         	}.execute();
 	}
-	public void setHtmlRechts(int gesamt,int gut){
+	public void setHtmlLinksUnten(int gesamt,int gut){
 		htmlBuf.setLength(0);
 		htmlBuf.trimToSize();
 		htmlBuf.append("<html><head>");
@@ -552,7 +538,19 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		    fw.close();
 		    
 		    int originalSize = Integer.parseInt(Long.toString(f.length()));
-		    int encryptedSize = doVerschluesseln(aktEsol+".org");
+		    int encryptedSize = originalSize;
+			String skeystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
+			File fkeystore = new File(skeystore);
+			if(! fkeystore.exists()){
+				String message = "<html>Auf Ihrem System ist keine (ITSG) Zertifikatsdatenbank vorhanden.<br>"+
+				"Eine Verschlüsselung gemäß §302 SGB V kann daher nicht durchgeführt werden.<br><br>"+
+				"Melden Sie sich im Forum <a href='http://www.thera-pi.org'>Thera-Pi.org</a> und fragen Sie nach dem\n Verschlüsseler 'Nebraska'</html>";
+				JOptionPane.showMessageDialog(null, message);
+
+			}else{
+			    encryptedSize = doVerschluesseln(aktEsol+".org");
+			}
+		    
 		    if(encryptedSize < 0){
 		    	JOptionPane.showMessageDialog(null, "Es ist ein Fehler in der Verschlüsselung aufgetreten!");
 		    	return;

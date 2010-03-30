@@ -254,7 +254,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 							Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(anz,"Gutachten"));
 							anzahlGutachten.setText("Anzahl sozialmed. Gutachten: "+anz);
 							if(anz > 0){
-								setzeRezeptPanelAufNull(false);
+								setzeGutachtenPanelAufNull(false);
 								if(xrez_nr.equals("")){
 									tabbericht.setRowSelectionInterval(0,0);							
 								}else{
@@ -270,7 +270,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 								wechselPanel.revalidate();
 								wechselPanel.repaint();					
 							}else{
-								setzeRezeptPanelAufNull(true);
+								setzeGutachtenPanelAufNull(true);
 								gutbut[0].setEnabled(true);
 								wechselPanel.revalidate();
 								wechselPanel.repaint();
@@ -334,7 +334,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		}
 		return jtb;
 	}
-	public void setzeRezeptPanelAufNull(boolean aufnull){
+	public void setzeGutachtenPanelAufNull(boolean aufnull){
 		if(aufnull){
 			if(aktPanel.equals("vollPanel")){
 				wechselPanel.remove(vollPanel);

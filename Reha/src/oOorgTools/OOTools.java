@@ -3,6 +3,7 @@ package oOorgTools;
 import java.awt.Cursor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,7 @@ import com.sun.xml.internal.bind.v2.runtime.property.Property;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
@@ -250,6 +252,69 @@ public class OOTools{
 			}
 		});
 	}
+	/*******************************************************************************************/
+	@SuppressWarnings("unchecked")
+	public static void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
+		//String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
+		String drucker = "";
+		IDocumentService documentService = null;
+		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		//System.out.println("Starte Datei -> "+url);
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+		}
+
+		documentService = Reha.officeapplication.getDocumentService();
+
+        IDocumentDescriptor docdescript = new DocumentDescriptor();
+       	docdescript.setHidden(true);
+        docdescript.setAsTemplate(true);
+		IDocument document = null;
+
+		document = documentService.loadDocument(url,docdescript);
+		ITextDocument textDocument = (ITextDocument)document;
+		/**********************/
+		if(drucker != null){
+			String druckerName = null;
+			druckerName = textDocument.getPrintService().getActivePrinter().getName();
+			//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
+			IPrinter iprint = null;
+			if(! druckerName.equals(drucker)){
+				iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
+				textDocument.getPrintService().setActivePrinter(iprint);
+			}
+		}
+		/**********************/
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+
+		placeholders = textFieldService.getPlaceholderFields();
+		String placeholderDisplayText = "";
+
+		for (int i = 0; i < placeholders.length; i++) {
+			placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			Set<?> entries = taxWerte.entrySet();
+		    Iterator<?> it = entries.iterator();
+			    while (it.hasNext()) {
+			      Map.Entry entry = (Map.Entry) it.next();
+			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+			    	  try{
+			    		  
+			    	  }catch(com.sun.star.uno.RuntimeException ex){
+			    		  System.out.println("Fehler bei "+placeholderDisplayText);
+			    	  }
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+
+			    	  break;
+			      }
+			    }
+		}
+		//textDocument.print();
+		//textDocument.close();
+		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);		
+		
+	}
+	/*******************************************************************************************/
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
@@ -283,8 +348,8 @@ public class OOTools{
 			e.printStackTrace();
 		}
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean loeschen = false;
-			boolean schonersetzt = false;
+			//boolean loeschen = false;
+			//boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 
 			//System.out.println(placeholderDisplayText);	

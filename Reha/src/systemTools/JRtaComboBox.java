@@ -8,16 +8,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 
 
 public class JRtaComboBox extends JComboBox implements ActionListener,PropertyChangeListener,FocusListener,KeyListener{
-public Vector vec  = null;
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6867094510690570951L;
+public Vector<?> vec  = null;
 public int cmbdisplay;
 public int cmbretvalue;
 public JRtaComboBox(){
@@ -33,7 +35,7 @@ public JRtaComboBox(String[] ss){
 public JRtaComboBox(Vector<String> ve){
 	super();
 	this.vec = ve;
-	if(this.vec.get(0) instanceof Vector){
+	if(this.vec.get(0) instanceof Vector<?>){
 		fillCombo(this.vec);		
 	}else{
 		fillOneDimension(this.vec);
@@ -51,7 +53,7 @@ public JRtaComboBox(Vector<Vector<String>> ve,int item,int ret){
 	try{
 		if(this.vec == null){
 			
-		}else if(this.vec.get(0) instanceof Vector){
+		}else if(this.vec.get(0) instanceof Vector<?>){
 			fillCombo(this.vec);		
 		}else{
 			fillOneDimension(this.vec);
@@ -74,7 +76,7 @@ public void setDataVector2Dim(Vector<Vector<String>> ve,int item,int ret){
 	this.vec = ve;
 	this.cmbdisplay = item;
 	this.cmbretvalue = ret;
-	if(this.vec.get(0) instanceof Vector){
+	if(this.vec.get(0) instanceof Vector<?>){
 		fillCombo(this.vec);		
 	}else{
 		fillOneDimension(this.vec);
@@ -86,7 +88,7 @@ public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
 	this.vec = ve;
 	this.cmbdisplay = item;
 	this.cmbretvalue = ret;
-	if(this.vec.get(0) instanceof Vector){
+	if(this.vec.get(0) instanceof Vector<?>){
 		fillCombo(this.vec);		
 	}else{
 		fillOneDimension(this.vec);
@@ -95,7 +97,7 @@ public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
 public void setSelectedVecIndex(int index, String vergleich){
 	int lang = getItemCount();
 	for(int i = 0;i < lang;i++){
-		if(((String)((Vector)this.vec.get(i)).get(index)).equals(vergleich)){
+		if(((String)((Vector<?>)this.vec.get(i)).get(index)).equals(vergleich)){
 			setSelectedIndex(i);
 			break;
 		}
@@ -104,30 +106,30 @@ public void setSelectedVecIndex(int index, String vergleich){
 public void setDataVector(Vector <String> ve,int item,int ret){
 	
 }
-private void fillOneDimension(Vector ve){
+private void fillOneDimension(Vector<?> ve){
 	int lang = ve.size();
 	for(int i = 0;i < lang;i++){
 		addItem( (String) ve.get(i));
 	}
 }
 
-private void fillCombo(Vector ve){
+private void fillCombo(Vector<?> ve){
 	//int lang = ve.size()-1;
 	int lang = ve.size();
 	for(int i = 0;i < lang;i++){
-		addItem( (String) ((Vector)ve.get(i)).get(this.cmbdisplay));
+		addItem( (String) ((Vector<?>)ve.get(i)).get(this.cmbdisplay));
 	}
 	
 }
 
 public Object getSecValue(){
-	return ((Object)((Vector)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
+	return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
 }
 public Object getValue(){
-	return ((String)((Vector)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
+	return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
 }
 public Object getValueAt(int pos){
-	return ((String)((Vector)vec.get(this.getSelectedIndex())).get(pos) );
+	return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(pos) );
 }
 
 @Override

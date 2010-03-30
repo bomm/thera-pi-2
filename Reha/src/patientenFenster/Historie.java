@@ -366,7 +366,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		return dummypan;
 	}
 	
-	public void setzeRezeptPanelAufNull(boolean aufnull){
+	public void setzeHistoriePanelAufNull(boolean aufnull){
 		if(aufnull){
 			if(aktPanel.equals("vollPanel")){
 				wechselPanel.remove(vollPanel);
@@ -745,7 +745,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}
 				Reha.thisClass.patpanel.getTab().setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
 				if(anz > 0){
-					setzeRezeptPanelAufNull(false);
+					setzeHistoriePanelAufNull(false);
 					int anzeigen = -1;
 					if(xrez_nr.length() > 0){
 						int row = 0;
@@ -772,7 +772,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					wechselPanel.revalidate();
 					wechselPanel.repaint();					
 				}else{
-					setzeRezeptPanelAufNull(true);
+					setzeHistoriePanelAufNull(true);
 					anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
 					wechselPanel.revalidate();
 					wechselPanel.repaint();

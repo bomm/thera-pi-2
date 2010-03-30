@@ -559,7 +559,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		return dummypan;
 	}
 	
-	public void setzeRezeptPanelAufNull(boolean aufnull){
+	public void setzeDokuPanelAufNull(boolean aufnull){
 		if(aufnull){
 			if(aktPanel.equals("vollPanel")){
 				wechselPanel.remove(vollPanel);
@@ -845,10 +845,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 			*/
 			if(aktPanel.equals("leerPanel")){
-				this.setzeRezeptPanelAufNull(false);
+				this.setzeDokuPanelAufNull(false);
 			}
 			try {
-				setzeRezeptPanelAufNull(false);
+				setzeDokuPanelAufNull(false);
 //				vollpanel.validate();
 				if(scanner==null){
 					System.out.println("Neustart des Scannersystems erforderlich");
@@ -943,7 +943,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							if(plusminus != null){
 								loescheBilderPan();						
 							}
-							setzeRezeptPanelAufNull(true);
+							setzeDokuPanelAufNull(true);
 							dokubut[5].setEnabled(false);
 						}
 						Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(tabdokus.getRowCount(),"Dokumentation"));
@@ -1019,7 +1019,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				return;
 			}
 			if(aktPanel.equals("leerPanel")){
-				this.setzeRezeptPanelAufNull(false);
+				this.setzeDokuPanelAufNull(false);
 			}
 
 			BufferedImage img = null;
@@ -1374,7 +1374,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		aktivesBild=0;
 		
 		if(this.dtblm.getRowCount()==0){
-			this.setzeRezeptPanelAufNull(true);
+			this.setzeDokuPanelAufNull(true);
 		}
 		
 	}
@@ -1976,7 +1976,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
 				if(anz > 0){
-					setzeRezeptPanelAufNull(false);
+					setzeDokuPanelAufNull(false);
 					int anzeigen = -1;
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);	
 					tabdokus.setRowSelectionInterval(0, 0);
@@ -1990,7 +1990,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					dokubut[5].setEnabled(true);
 
 				}else{
-					setzeRezeptPanelAufNull(true);
+					setzeDokuPanelAufNull(true);
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: 0");
 					wechselPanel.revalidate();
 					wechselPanel.repaint();
