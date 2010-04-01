@@ -5,6 +5,7 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -23,6 +24,10 @@ import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -50,6 +55,9 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+
+
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXHeader;
@@ -407,13 +415,15 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 	root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Abrechnung §302");
-	treeitem = new DefaultMutableTreeNode("Zertifikat-Request produzieren");
+	node = new DefaultMutableTreeNode( "Abrechnung und §302");
+	treeitem = new DefaultMutableTreeNode("Nebraska / Zertifikatshandling");
 	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("ITSG Zertifikat einlesen");
+	treeitem = new DefaultMutableTreeNode("Abrechnungsformulare und Drucker");
 	node.add(treeitem ); 
+	/*
 	treeitem = new DefaultMutableTreeNode("Annahmekey abholen/einlesen");
-	node.add(treeitem ); 
+	node.add(treeitem );
+	*/ 
 	treeitem = new DefaultMutableTreeNode("Kostenträgerdatei einlesen");
 	node.add(treeitem ); 
 	root.add(node);
@@ -777,8 +787,30 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
-
+		if(util.equals("Nebraska / Zertifikatshandling")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try {
+						Runtime.getRuntime().exec("java -jar "+Reha.proghome+"Nebraska.jar "+Reha.aktIK);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
 				
+			}.execute();
+		}
+		if(util.equals("Abrechnungsformulare und Drucker")){
+			jxInhaltRechts = new SysUtilAbrechnungFormulare();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+
+		
 		
 		jxInhaltRechts = new SysUtilVorlage();
 		jxInhaltRechts.setVisible(true);

@@ -160,6 +160,8 @@ public class SystemConfig {
 	public static Vector<String> vGutachtenArzt;
 	public static Vector<String> vGutachtenDisplay;
 	public static String sGutachtenOrt;
+	
+	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
 	                     
 	public SystemConfig(){
 	
@@ -994,7 +996,22 @@ public class SystemConfig {
 		vGutachtenDisplay.add(inif.getStringProperty("AbsenderDisplayAdresse", "Display3"));
 	}
 	
-
+	public static void AbrechnungParameter(){
+		hmAbrechnung.clear();
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/abrechnung.ini");
+		hmAbrechnung.put("hmgkvformular", inif.getStringProperty("HMGKVRechnung", "Rformular"));
+		hmAbrechnung.put("hmgkvrechnungdrucker", inif.getStringProperty("HMGKVRechnung", "Rdrucker"));
+		hmAbrechnung.put("hmgkvtaxierdrucker", inif.getStringProperty("HMGKVRechnung", "Tdrucker"));
+		hmAbrechnung.put("hmgkvbegleitzettel", inif.getStringProperty("HMGKVRechnung", "Begleitzettel"));
+		hmAbrechnung.put("hmgkvrauchdrucken", inif.getStringProperty("HMGKVRechnung", "Rauchdrucken"));
+		hmAbrechnung.put("hmgkvrexemplare", inif.getStringProperty("HMGKVRechnung", "Rexemplare"));
+		hmAbrechnung.put("hmpriformular", inif.getStringProperty("HMPRIRechnung", "Pformular"));
+		hmAbrechnung.put("hmpridrucker", inif.getStringProperty("HMPRIRechnung", "Pdrucker"));
+		hmAbrechnung.put("hmpriexemplare", inif.getStringProperty("HMPRIRechnung", "Pexemplare"));
+		hmAbrechnung.put("hmbgeformular", inif.getStringProperty("HMBGERechnung", "Bformular"));
+		hmAbrechnung.put("hmbgedrucker", inif.getStringProperty("HMBGERechnung", "Bdrucker"));
+		hmAbrechnung.put("hmbgeexemplare", inif.getStringProperty("HMBGERechnung", "Bexemplare"));
+	}
 	public static void SystemIconsInit(){
 		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",
 				"nichtgesperrt","rezeptgebuehr","ausfallrechnung","arztbericht","privatrechnung",

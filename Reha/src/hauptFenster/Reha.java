@@ -126,7 +126,7 @@ import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import RehaInternalFrame.JRehaInternal;
-import abrechnung.Abrechnung1;
+import abrechnung.AbrechnungGKV;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -160,7 +160,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public ArztPanel arztpanel = null;
 	public TerminFenster terminpanel = null;
 	public RoogleFenster rooglepanel = null;
-	public Abrechnung1 abrechnung1panel = null;
+	public AbrechnungGKV abrechnung1panel = null;
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
 	//private JDesktopPane jDesktopPane = null;
@@ -2451,6 +2451,7 @@ final class DatenbankStarten implements Runnable{
 				SystemConfig.FirmenDaten();			
 				new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
 				SystemConfig.GutachtenInit();
+				SystemConfig.AbrechnungParameter();
 				new Thread(new PreisListenLaden()).start();
 			
 		}else{

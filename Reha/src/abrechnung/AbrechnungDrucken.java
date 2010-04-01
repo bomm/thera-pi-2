@@ -15,6 +15,7 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -30,6 +31,7 @@ import ag.ion.bion.officelayer.text.TextException;
 
 import com.sun.star.beans.XPropertySet;
 
+@SuppressWarnings("unused")
 public class AbrechnungDrucken {
 	int aktuellePosition = 0;
 	ITextTable textTable = null;
@@ -43,21 +45,30 @@ public class AbrechnungDrucken {
 	BigDecimal rechnungsBetrag = new BigDecimal(Double.valueOf("0.00"));
 	BigDecimal rechnungsGesamt = new BigDecimal(Double.valueOf("0.00"));
 	BigDecimal rechnungsRezgeb = new BigDecimal(Double.valueOf("0.00"));
-	HashMap<String,String> hmAdresse = new HashMap<String,String>(); 
+	HashMap<String,String> hmAdresse = new HashMap<String,String>();
+	AbrechnungGKV eltern = null;
 	int anzahlRezepte = 0;
-	public AbrechnungDrucken(String url) throws Exception{
+	public AbrechnungDrucken(AbrechnungGKV eltern,String url) throws Exception{
+		this.eltern = eltern;
 		starteDokument(url);
 	}
-	public void setIKundRnr(String papierIk,String rnr){
+	public void setIKundRnr(String papierIk,String rnr,HashMap<String,String> hmap){
 		this.papierIK = papierIk;
 		this.rechnungNummer = rnr;
+		this.hmAdresse = hmap;
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-					holeAdresse(papierIK);
 					setRechnungsBetrag();
-					ersetzePlatzhaler();
+					ersetzePlatzhalter();
+					int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
+					for(int i = 0; i < exemplare; i++){
+						textDocument.print();
+					}
+					textDocument.close();
+					textDocument = null;
+					eltern.abrDruck = null;
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -66,23 +77,7 @@ public class AbrechnungDrucken {
 		}.execute();
 	}
 	/********************/
-	private void holeAdresse(String papIK){
-		String[] hmKeys = {"<gkv1>","<gkv2>","<gkv3>","<gkv4>","<gkv5>","<gkv6>"};
-		Vector<Vector<String>> vec = SqlInfo.holeFelder("select * from kass_adr where ik_kasse ='"+papIK+"'");
-		if(vec.size()==0){
-			for(int i = 0; i < hmKeys.length-1;i++){
-				hmAdresse.put(hmKeys[i], "");
-			}
-			hmAdresse.put(hmKeys[5],rechnungNummer);
-			return;
-		}
-		hmAdresse.put(hmKeys[0],vec.get(0).get(2) );
-		hmAdresse.put(hmKeys[1],vec.get(0).get(3) );
-		hmAdresse.put(hmKeys[2],vec.get(0).get(4) );
-		hmAdresse.put(hmKeys[3],vec.get(0).get(5)+" "+vec.get(0).get(6));
-		hmAdresse.put(hmKeys[4],"");
-		hmAdresse.put(hmKeys[5],rechnungNummer);
-	}
+
 	public void setDaten(String nameVorname,
 			String status,
 			String rezNr, 
@@ -175,23 +170,20 @@ public class AbrechnungDrucken {
 	}
 	public void starteDokument(String url) throws Exception{
 		IDocumentService documentService = null;;
-
 		documentService = Reha.officeapplication.getDocumentService();
-
 		IDocumentDescriptor docdescript = new DocumentDescriptor();
-        //docdescript.setHidden(true);
+        docdescript.setHidden(true);
         docdescript.setAsTemplate(true);
 		IDocument document = null;
-
 		document = documentService.loadDocument(url,docdescript);
-
 		/**********************/
 		textDocument = (ITextDocument)document;
+		OOTools.druckerSetzen(textDocument, SystemConfig.hmAbrechnung.get("hmgkvrechnungdrucker"));
 		textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
 		textEndbetrag = textDocument.getTextTableService().getTextTable("Tabelle2");
 	}
-	@SuppressWarnings("unchecked")
-	private void ersetzePlatzhaler(){
+	
+	private void ersetzePlatzhalter(){
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
 		try {
@@ -199,32 +191,20 @@ public class AbrechnungDrucken {
 		} catch (TextException e) {
 			e.printStackTrace();
 		}
-		String placeholderDisplayText = "";
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean schonersetzt = false;
-			try{
-				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			}catch(com.sun.star.uno.RuntimeException ex){
-				ex.printStackTrace();
+			if(placeholders[i].getDisplayText().toLowerCase().equals("<gkv1>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<gkv1>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<gkv2>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<gkv2>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<gkv3>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<gkv3>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<gkv4>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<gkv4>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<gkv5>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<gkv6>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<gkv6>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<gkv6>"));
 			}
-		    Set<?> entries = hmAdresse.entrySet();
-		    Iterator<?> it = entries.iterator();
-		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
-		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText.toLowerCase())){
-		    	  if(((String)entry.getValue()).trim().equals("")){
-		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-		    	  }else{
-			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
-		    	  }
-		    	  schonersetzt = true;
-		    	  break;
-		      }
-		    }
-		    if(!schonersetzt){
-		    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-		    }
-		}	
+		}
 	}
-
 }

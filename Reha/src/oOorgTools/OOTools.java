@@ -274,16 +274,7 @@ public class OOTools{
 		document = documentService.loadDocument(url,docdescript);
 		ITextDocument textDocument = (ITextDocument)document;
 		/**********************/
-		if(drucker != null){
-			String druckerName = null;
-			druckerName = textDocument.getPrintService().getActivePrinter().getName();
-			//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
-			IPrinter iprint = null;
-			if(! druckerName.equals(drucker)){
-				iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
-				textDocument.getPrintService().setActivePrinter(iprint);
-			}
-		}
+		OOTools.druckerSetzen(textDocument, SystemConfig.hmAbrechnung.get("hmgkvtaxierdrucker"));
 		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
@@ -783,6 +774,34 @@ public class OOTools{
 			
 		}.execute();
 	}
+	
+	public static void druckerSetzen(ITextDocument textDocument,String drucker){
+
+		/**********************/
+		if(drucker != null){
+			String druckerName = null;
+			try {
+				druckerName = textDocument.getPrintService().getActivePrinter().getName();
+			} catch (NOAException e) {
+				e.printStackTrace();
+			}
+			//Wenn nicht gleich wie im Übergebenen Parameter angegeben -> Drucker wechseln
+			IPrinter iprint = null;
+			if(! druckerName.equals(drucker)){
+				try {
+					iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
+				} catch (NOAException e) {
+					e.printStackTrace();
+				}
+				try {
+					textDocument.getPrintService().setActivePrinter(iprint);
+				} catch (NOAException e) {
+					e.printStackTrace();
+				}
+			}
+		}		
+	}
+	
 	public static void holeClipBoard() {
 
 		System.out.println("Connected to a running office ...");

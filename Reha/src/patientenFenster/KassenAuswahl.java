@@ -96,7 +96,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		content = getAuswahl();
 		grundPanel.add(content,BorderLayout.CENTER);
 		getSmartTitledPanel().setContentContainer(grundPanel);
-		final JXPanel thispan = content;
+		//final JXPanel thispan = content;
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);

@@ -25,12 +25,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -78,6 +82,7 @@ import stammDatenTools.ZuzahlTools;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.IconListRenderer;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
@@ -92,6 +97,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import dialoge.ToolsDialog;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
@@ -283,7 +289,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				aktPanel = "leerPanel";
 				aktrbut[0].setEnabled(true);
 				for(int i = 1; i < 9;i++){
-					aktrbut[i].setEnabled(false);	
+					try{
+						aktrbut[i].setEnabled(false);
+					}catch(Exception ex){}	
 				}
 				//PatGrundPanel.thisClass.jtab.setIconAt(0, SystemConfig.hmSysIcons.get("zuzahlnichtok"));
 			}else{
@@ -298,7 +306,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
 				for(int i = 0; i < 9;i++){
-					aktrbut[i].setEnabled(true);	
+					try{
+						aktrbut[i].setEnabled(true);
+					}catch(Exception ex){}
 				}
 				//PatGrundPanel.thisClass.jtab.setIconAt(0, SystemConfig.hmSysIcons.get("zuzahlok"));
 			}
@@ -342,6 +352,31 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[2].addActionListener(this);		
 		jtb.add(aktrbut[2]);
 		jtb.addSeparator(new Dimension(30,0));
+		
+		aktrbut[8] = new JButton();
+		aktrbut[8].setIcon(SystemConfig.hmSysIcons.get("print"));
+		aktrbut[8].setToolTipText("Rezeptbezogenen Brief/Formular erstellen");
+		aktrbut[8].setActionCommand("rezeptbrief");
+		aktrbut[8].addActionListener(this);		
+		jtb.add(aktrbut[8]);
+		
+		aktrbut[7] = new JButton();
+		aktrbut[7].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
+		aktrbut[7].setToolTipText("Arztbericht erstellen/ändern");
+		aktrbut[7].setActionCommand("arztbericht");
+		aktrbut[7].addActionListener(this);		
+		jtb.add(aktrbut[7]);
+		jtb.addSeparator(new Dimension(30,0));
+
+		aktrbut[3] = new JButton();
+		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		aktrbut[3].setToolTipText("Werkzeugkiste für aktuelle Rezepte");
+		aktrbut[3].setActionCommand("werkzeuge");
+		aktrbut[3].addActionListener(this);
+		jtb.add(aktrbut[3]);
+
+		
+		/*
 		aktrbut[4] = new JButton();
 		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
 		aktrbut[4].setToolTipText("Rezeptgebühren kassieren");
@@ -369,21 +404,26 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[6].addActionListener(this);		
 		jtb.add(aktrbut[6]);
 		jtb.addSeparator(new Dimension(30,0));
+		
 		aktrbut[7] = new JButton();
 		aktrbut[7].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
 		aktrbut[7].setToolTipText("Arztbericht erstellen/ändern");
 		aktrbut[7].setActionCommand("arztbericht");
 		aktrbut[7].addActionListener(this);		
 		jtb.add(aktrbut[7]);
+		
 		aktrbut[8] = new JButton();
 		aktrbut[8].setIcon(SystemConfig.hmSysIcons.get("print"));
 		aktrbut[8].setToolTipText("Rezeptbezogenen Brief/Formular erstellen");
 		aktrbut[8].setActionCommand("rezeptbrief");
 		aktrbut[8].addActionListener(this);		
 		jtb.add(aktrbut[8]);
+		*/
 
 		for(int i = 0; i < 9;i++){
-			aktrbut[i].setEnabled(false);
+			try{
+				aktrbut[i].setEnabled(false);
+			}catch(Exception ex){};	
 		}
 		return jtb;
 	}
@@ -1256,20 +1296,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				
 			}
+			/******************************/
 			if(cmd.equals("rezeptgebuehr")){
-				if(aktPanel.equals("leerPanel")){
-					JOptionPane.showMessageDialog(null,"Ich sag jetz nix....\n\n"+
-							"....außer - und von welchem der nicht vorhandenen Rezepte wollen Sie Rezeptgebühren kassieren....");
-					return;
-				}
-				int currow = tabaktrez.getSelectedRow();
-				int anzrow = tabaktrez.getRowCount();
-				if(currow == -1){
-					JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewählt");
-					return;
-				}				
-				doRezeptGebuehr( ((JComponent)arg0.getSource()).getLocationOnScreen() );
-
+				rezeptGebuehr();
 			}
 			if(cmd.equals("barcode")){
 				doBarcode();
@@ -1326,21 +1355,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}.execute();
 			}
 			if(cmd.equals("ausfallrechnung")){
-				final JComponent comp = ((JComponent)arg0.getSource());
-				new SwingWorker<Void,Void>(){
-					@Override
-					protected Void doInBackground() throws Exception {
-						System.out.println("in Ausfallrechnung");
-						AusfallRechnung ausfall = new AusfallRechnung( (Point)comp.getLocationOnScreen() );
-						ausfall.setModal(true);
-						//#ausfall.setLocationRelativeTo(null);
-						ausfall.toFront();
-						ausfall.setVisible(true);
-						ausfall = null;
-						return null;
-					}
-					
-				}.execute();
+				ausfallRechnung();
 			}
 			if(cmd.equals("statusfrei")){
 				if(rezGeschlossen()){return;}
@@ -1383,18 +1398,52 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				formulareAuswerten();				
 			}
 			if(cmd.equals("rezeptabschliessen")){
-				try{
-					if(this.neuDlgOffen){return;}
-					doAbschlussTest();	
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-				
+				rezeptAbschliessen();
+			}
+			if(cmd.equals("werkzeuge")){
+				new ToolsDlgAktuelleRezepte("",aktrbut[3].getLocationOnScreen());
 			}
 			
 		}
 
 	}
+	private void rezeptAbschliessen(){
+		try{
+			if(this.neuDlgOffen){return;}
+			doAbschlussTest();	
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	private void ausfallRechnung(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				System.out.println("in Ausfallrechnung");
+				AusfallRechnung ausfall = new AusfallRechnung(  aktrbut[3].getLocationOnScreen() );
+				ausfall.setModal(true);
+				ausfall.toFront();
+				ausfall.setVisible(true);
+				ausfall = null;
+				return null;
+			}
+		}.execute();
+	}
+	private void rezeptGebuehr(){
+		if(aktPanel.equals("leerPanel")){
+			JOptionPane.showMessageDialog(null,"Ich sag jetz nix....\n\n"+
+					"....außer - und von welchem der nicht vorhandenen Rezepte wollen Sie Rezeptgebühren kassieren....");
+			return;
+		}
+		int currow = tabaktrez.getSelectedRow();
+		int anzrow = tabaktrez.getRowCount();
+		if(currow == -1){
+			JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewählt");
+			return;
+		}				
+		doRezeptGebuehr( aktrbut[3].getLocationOnScreen() );
+	}
+	
 	private void doAbschlussTest(){
 		int currow = tabaktrez.getSelectedRow();
 		if(currow < 0){return;}
@@ -1788,8 +1837,47 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		return (Vector)dtermm.getDataVector().clone();
 	}
 	
+/**********************************************/
+
+	class ToolsDlgAktuelleRezepte{
+		public ToolsDlgAktuelleRezepte(String command,Point pt){
+
+			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("Rezeptgebühren kassieren",SystemConfig.hmSysIcons.get("rezeptgebuehr"));
+			icons.put("BarCode auf Rezept drucken",SystemConfig.hmSysIcons.get("barcode"));
+			icons.put("Ausfallrechnung drucken",SystemConfig.hmSysIcons.get("ausfallrechnung"));
+			icons.put("Rezept abschließen",SystemConfig.hmSysIcons.get("statusset"));
+			// create a list with some test data
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept abschließen"});
+			list.setCellRenderer(new IconListRenderer(icons));	
+			int rueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list,rueckgabe);
+			tDlg.setPreferredSize(new Dimension(200,200));
+			tDlg.setLocation(pt.x-70,pt.y+30);
+			tDlg.pack();
+			tDlg.setVisible(true);
+			switch(tDlg.rueckgabe){
+			case 0:
+				rezeptGebuehr();
+				break;
+			case 1:
+				doBarcode();
+				break;
+			case 2:
+				ausfallRechnung();
+				break;
+			case 3:
+				rezeptAbschliessen();
+				break;
+				
+			}
+			System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+		}
+	}
+
 
 }
+
 class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
 	/**
 	 * 

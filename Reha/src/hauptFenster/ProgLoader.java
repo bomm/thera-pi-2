@@ -36,7 +36,7 @@ import RehaInternalFrame.JKasseInternal;
 import RehaInternalFrame.JPatientInternal;
 import RehaInternalFrame.JRehaInternal;
 import RehaInternalFrame.JTerminInternal;
-import abrechnung.Abrechnung1;
+import abrechnung.AbrechnungGKV;
 import arztFenster.ArztPanel;
 import benutzerVerwaltung.BenutzerVerwaltung;
 import dialoge.PinPanel;
@@ -351,7 +351,7 @@ public void Abrechnung1Fenster(int setPos) {
 	abrechjry.setName(name);
 	abrechjry.setSize(new Dimension(850,700));
 	abrechjry.setPreferredSize(new Dimension(850,700));
-	Reha.thisClass.abrechnung1panel = new Abrechnung1(abrechjry); 
+	Reha.thisClass.abrechnung1panel = new AbrechnungGKV(abrechjry); 
 	abrechjry.setContent(Reha.thisClass.abrechnung1panel);	
 	abrechjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();

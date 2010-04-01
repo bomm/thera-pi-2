@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -59,7 +60,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import events.PatStammEvent;
 import events.PatStammEventListener;
 
-public class Abrechnung1 extends JXPanel implements PatStammEventListener,ActionListener,TreeSelectionListener{
+public class AbrechnungGKV extends JXPanel implements PatStammEventListener,ActionListener,TreeSelectionListener{
 
 	/**
 	 * 
@@ -120,9 +121,12 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	Vector<Vector<String>> kassenIKs = new Vector<Vector<String>>(); 
 	/*******Controls für die rechte Seite*********/
 	AbrechnungRezept abrRez = null;
-	AbrechnungDrucken abrDruck = null;	
+	AbrechnungDrucken abrDruck = null;
+	
+	HashMap<String,String> hmAnnahme = null;
+	int abrechnungRezepte = 0;
 	public String aktuellerPat = "";
-	public Abrechnung1(JAbrechnungInternal xjry){
+	public AbrechnungGKV(JAbrechnungInternal xjry){
 		super();
 		this.setJry(xjry);
 		setLayout(new BorderLayout());
@@ -239,8 +243,8 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			doEinlesen(null);
 			//setPreisVec(cmbDiszi.getSelectedIndex());
 		}
-		
 	}
+	
 	private void setPreisVec(int pos){
 		String[] reznr = {"KG","MA","ER","LO"};
 		abrRez.setPreisVec(reznr[pos]);
@@ -506,6 +510,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			return;
 			
 		}
+		abrechnungRezepte = 0;
 		preis00 = setzePreiseAufNull(preis00);
 		preis11 = setzePreiseAufNull(preis11);
 		preis31 = setzePreiseAufNull(preis31);
@@ -544,7 +549,7 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 			if(! fkeystore.exists()){
 				String message = "<html>Auf Ihrem System ist keine (ITSG) Zertifikatsdatenbank vorhanden.<br>"+
 				"Eine Verschlüsselung gemäß §302 SGB V kann daher nicht durchgeführt werden.<br><br>"+
-				"Melden Sie sich im Forum <a href='http://www.thera-pi.org'>Thera-Pi.org</a> und fragen Sie nach dem\n Verschlüsseler 'Nebraska'</html>";
+				"Melden Sie sich im Forum <a href='http://www.thera-pi.org'>www.Thera-Pi.org</a> und fragen Sie nach dem<br>Verschlüsseler <b>'Nebraska'</b></html>";
 				JOptionPane.showMessageDialog(null, message);
 
 			}else{
@@ -665,10 +670,16 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				abrDruck.setIKundRnr(ik_papier, aktRechnung);
+				hmAnnahme = holeAdresseAnnahmestelle();
+				String kostentr = holeNameKostentraeger();
+				if(abrDruck != null){
+					abrDruck.setIKundRnr(ik_papier, aktRechnung,hmAnnahme);					
+				}
+				new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,kostentr,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
+				rezepteUebertragen();
+				rechnungAnlegen();
 				return null;
 			}
-			
 		}.execute();
 		//System.out.println(aktEsol + "  - "+aktDfue);
 		unbBuf.append("UNB+UNOC:3+"+Reha.aktIK+plus+ik_nutzer+plus);
@@ -696,6 +707,37 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		getEdiTimeString(false);
 	}
 	/*************************************************/	
+	private AbrechnungGKV getInstance(){
+		return this;
+	}
+	private String holeNameKostentraeger(){
+
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select name1 from ktraeger where ikkasse ='"+ik_kostent+"' LIMIT 1");
+		if(vec.size()==0){
+			return "";
+		}
+		return vec.get(0).get(0);
+	}
+	private HashMap<String,String> holeAdresseAnnahmestelle(){
+		HashMap<String,String> hmAdresse = new HashMap<String,String>();
+		String[] hmKeys = {"<gkv1>","<gkv2>","<gkv3>","<gkv4>","<gkv5>","<gkv6>"};
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort from kass_adr where ik_kasse ='"+ik_papier+"' LIMIT 1");
+		if(vec.size()==0){
+			for(int i = 0; i < hmKeys.length-1;i++){
+				hmAdresse.put(hmKeys[i], "");
+			}
+			hmAdresse.put(hmKeys[5],aktRechnung);
+			return hmAdresse;
+		}
+		hmAdresse.put(hmKeys[0],vec.get(0).get(0) );
+		hmAdresse.put(hmKeys[1],vec.get(0).get(1) );
+		hmAdresse.put(hmKeys[2],vec.get(0).get(2) );
+		hmAdresse.put(hmKeys[3],vec.get(0).get(3)+" "+vec.get(0).get(4));
+		hmAdresse.put(hmKeys[4],"");
+		hmAdresse.put(hmKeys[5],aktRechnung);
+		return hmAdresse;
+	}
+	
 	private Double[] setzePreiseAufNull(Double[] preis){
 		preis[0] = 0.00;
 		preis[1] = 0.00;
@@ -725,8 +767,16 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 	/*************************************************/
 	private void holeEdifact(){
 		try {
-			abrDruck = new AbrechnungDrucken(Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMRechnungGKV.ott");
+			if(SystemConfig.hmAbrechnung.get("hmgkvtaxierdrucker").equals("1")){
+				abrDruck = new AbrechnungDrucken(this,Reha.proghome+
+						"vorlagen/"+
+						Reha.aktIK+
+						"/"+
+						SystemConfig.hmAbrechnung.get("hmgkvformular"));				
+			}
+
 		} catch (Exception e) {
+			abrDruck = null;
 			e.printStackTrace();
 		}
 		int lang = aktuellerKassenKnoten.getChildCount();
@@ -789,15 +839,18 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		String[] splits = zeilen[0].split(":");
 		
 		try {
-			abrDruck.setDaten(splits[9].split("=")[1],
-					splits[10].split("=")[1],
-					splits[2].split("=")[1], 
-					position,
-					anzahl,
-					einzelpreis,
-					preis,
-					rezgeb,
-					(splits[6].split("=")[1].equals("10,00") ? true : false));
+			abrechnungRezepte++;
+			if(abrDruck != null){
+				abrDruck.setDaten(splits[9].split("=")[1],
+						splits[10].split("=")[1],
+						splits[2].split("=")[1], 
+						position,
+						anzahl,
+						einzelpreis,
+						preis,
+						rezgeb,
+						(splits[6].split("=")[1].equals("10,00") ? true : false));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -990,4 +1043,11 @@ public class Abrechnung1 extends JXPanel implements PatStammEventListener,Action
 		}
 		return false;
 	}
+	private void rezepteUebertragen(){
+		
+	}
+	private void rechnungAnlegen(){
+		
+	}
+
 }

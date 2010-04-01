@@ -64,6 +64,10 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class KassenFormulare extends JXDialog implements FocusListener, ActionListener, WindowListener, KeyListener,RehaTPEventListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1061187207556100041L;
 	String eigenName = null;
 	KassenFormulare thisClass;
 	JXPanel jcc;
@@ -84,6 +88,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		this.titel = titel;
 		//this.formular = formular;
 		tfrueck = rueckform;
+		tfrueck.setText("");
 		this.setUndecorated(true);
 		this.setName("KFormularWahl");
 		jtp = new JXTitledPanel();
@@ -108,16 +113,27 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 
 		thisClass = this;
 		setSize(250,250);
-
-
-
-		jList1.setSelectedIndex(0);
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
-
 		validate();
 		
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				setzeFocus();
+			}
+		});
+
+
 	}
+	private void setzeFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				jList1.requestFocus();
+				jList1.setSelectedIndex(0);
+			}
+		});
+	}		
+
 	public KassenFormulare getInstance(){
 		return this;
 	}
@@ -182,6 +198,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	
 	public void FensterSchliessen(String welches){
 		this.jtp.removeMouseListener(mymouse);
+		this.jtp.removeMouseMotionListener(this.mymouse);
 		mymouse = null; 
 		if(rtp != null){
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);

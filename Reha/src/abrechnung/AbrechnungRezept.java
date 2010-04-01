@@ -116,7 +116,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	 * 
 	 */
 	private static final long serialVersionUID = 8387184772704779192L;
-	private Abrechnung1 eltern;
+	private AbrechnungGKV eltern;
 	JToolBar tb = null;
 	
 	DecimalFormat dfx = new DecimalFormat( "0.00" );
@@ -246,7 +246,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	boolean inworker = false;
 	
 	
-	public AbrechnungRezept(Abrechnung1 xeltern){
+	public AbrechnungRezept(AbrechnungGKV xeltern){
 		eltern = xeltern;
 		setLayout(new BorderLayout());
 		cmbkuerzel = new JRtaComboBox( (Vector<Vector<String>>) vec_kuerzel,0,1);
@@ -598,16 +598,19 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		item = new JMenuItem("neuen Tag einfügen");
 		item.setActionCommand("tagneu");
 		item.addActionListener(this);
+		if(rezeptFertig){item.setEnabled(false);}
 		jPopupMenu.add(item);
 		jPopupMenu.addSeparator();
 		item = new JMenuItem("neue Behandlung einfügen");
 		item.setActionCommand("behandlungneu");
 		item.addActionListener(this);
+		if(rezeptFertig){item.setEnabled(false);}		
 		jPopupMenu.add(item);
 		jPopupMenu.addSeparator();
 		item = new JMenuItem("Behandlung löschen");
 		item.setActionCommand("behandlungloeschen");
 		item.addActionListener(this);
+		if(rezeptFertig){item.setEnabled(false);}		
 		jPopupMenu.add(item);
 		
 
