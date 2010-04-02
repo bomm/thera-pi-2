@@ -1,12 +1,6 @@
 package stammDatenTools;
 
 import hauptFenster.Reha;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
-
-
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 import terminKalender.DatFunk;

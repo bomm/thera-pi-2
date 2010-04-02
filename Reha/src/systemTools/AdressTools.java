@@ -41,13 +41,14 @@ public class AdressTools {
 		if(isnosex){
 			str[4] = "Sehr geehrte Damen und Herren";
 		}else if((!isnosex) && (isherr)){
-			str[4] = "Sehr geehrter Herr"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+nname;
+			str[4] = "Sehr geehrter Herr"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+StringTools.EGross(nname).trim();
 		}else if((!isnosex) && (!isherr)){
-			str[4] = "Sehr geehrte Frau"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+nname;
+			str[4] = "Sehr geehrte Frau"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+StringTools.EGross(nname).trim();
 		}
 		return str;
 	}
 	
+
 	public static String[] macheFirmenAdresse(){
 		String[] str = null;
 		return str;

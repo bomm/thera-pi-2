@@ -2,13 +2,23 @@ package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
+
+import systemEinstellungen.SystemConfig;
+import systemTools.IconListRenderer;
+import dialoge.ToolsDialog;
 
 
 
@@ -91,7 +101,41 @@ public class PatientToolBarLogic {
 			//new SMS();
 			patientHauptPanel.getLogic().setzeFocus();
 		}
-
+		if(cmd.equals("werkzeuge")){
+			new ToolsDlgPatient("",patientHauptPanel.jbut[4].getLocationOnScreen());
+			//patientHauptPanel.getLogic().setzeFocus();
+		}
+	}
+	class ToolsDlgPatient{
+		public ToolsDlgPatient(String command,Point pt){
+			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("(e)Mail für Patient erstellen (Alt+M)",SystemConfig.hmSysIcons.get("email"));
+			icons.put("SMS für Patient erstellen (Alt+S)",SystemConfig.hmSysIcons.get("sms"));
+			icons.put("Zusatzinformationen zum aktuellen Patient (Alt+I)",SystemConfig.hmSysIcons.get("info"));
+			// create a list with some test data
+			JList list = new JList(	new Object[] {"(e)Mail für Patient erstellen (Alt+M)", 
+					"SMS für Patient erstellen (Alt+S)", 
+					"Zusatzinformationen zum aktuellen Patient (Alt+I)"});
+			list.setCellRenderer(new IconListRenderer(icons));	
+			int rueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktueller Patient",list,rueckgabe);
+			tDlg.setPreferredSize(new Dimension(300,200));
+			tDlg.setLocation(pt.x-200,pt.y+30);
+			tDlg.pack();
+			tDlg.setVisible(true);
+			switch(tDlg.rueckgabe){
+			case 0:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+				
+			}
+			tDlg = null;
+		}
 	}
 
 

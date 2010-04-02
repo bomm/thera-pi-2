@@ -64,10 +64,11 @@ public class AbrechnungDrucken {
 					ersetzePlatzhalter();
 					int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
 					for(int i = 0; i < exemplare; i++){
-						textDocument.print();
+						//textDocument.print();
 					}
-					textDocument.close();
-					textDocument = null;
+					//textDocument.close();
+					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+					//textDocument = null;
 					eltern.abrDruck = null;
 				}catch(Exception ex){
 					ex.printStackTrace();

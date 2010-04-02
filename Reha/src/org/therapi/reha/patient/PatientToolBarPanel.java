@@ -90,7 +90,7 @@ public class PatientToolBarPanel extends JXPanel{
 		patientHauptPanel.jbut[2].addActionListener(patientHauptPanel.toolBarAction);
 		jtb.add(patientHauptPanel.jbut[2]);
 
-		jtb.addSeparator(new Dimension(15,25));
+		jtb.addSeparator(new Dimension(30,0));
 
 		patientHauptPanel.jbut[3] = new JButton();
 		patientHauptPanel.jbut[3].setIcon(SystemConfig.hmSysIcons.get("print"));
@@ -99,6 +99,16 @@ public class PatientToolBarPanel extends JXPanel{
 		patientHauptPanel.jbut[3].addActionListener(patientHauptPanel.toolBarAction);
 		jtb.add(patientHauptPanel.jbut[3]);
 
+		jtb.addSeparator(new Dimension(30,0));
+		
+		patientHauptPanel.jbut[4] = new JButton();
+		patientHauptPanel.jbut[4].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		patientHauptPanel.jbut[4].setToolTipText("Werkzeugkiste für aktuellen Patient");
+		patientHauptPanel.jbut[4].setActionCommand("werkzeuge");
+		patientHauptPanel.jbut[4].addActionListener(patientHauptPanel.toolBarAction);
+		jtb.add(patientHauptPanel.jbut[4]);
+		
+		/*
 		patientHauptPanel.jbut[4] = new JButton();
 		patientHauptPanel.jbut[4].setIcon(SystemConfig.hmSysIcons.get("email"));
 		patientHauptPanel.jbut[4].setToolTipText("(e)Mail für Patient erstellen (Alt+M)");
@@ -119,6 +129,7 @@ public class PatientToolBarPanel extends JXPanel{
 		patientHauptPanel.jbut[6].setActionCommand("zusatzinfo");
 		patientHauptPanel.jbut[6].addActionListener(patientHauptPanel.toolBarAction);
 		jtb.add(patientHauptPanel.jbut[6]);
+		*/
 		add(jtb,cc.xyw(20,2,8));
 	}
 	public PatientToolBarLogic getLogic(){

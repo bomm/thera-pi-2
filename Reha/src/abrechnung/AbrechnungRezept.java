@@ -9,7 +9,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -88,6 +90,7 @@ import org.therapi.reha.patient.AktuelleRezepte;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+import systemTools.AdressTools;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
@@ -926,9 +929,18 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		vec_pat = SqlInfo.holeFelder("select  t1.n_name,t1.v_name,t1.geboren,t1.strasse,t1.plz,t1.ort,"+
 		//            6             7            8              9     10         11        12
 				"t1.v_nummer,t1.kv_status,t1.kv_nummer,"+"t1.befreit,t1.bef_ab,t1.bef_dat,t1.jahrfrei,"+
+		//           13         14         15       16      	
+				"t2.nachname,t2.bsnr,t2.arztnum,t3.kassen_nam1 from pat5 t1,arzt t2,kass_adr t3 where t1.pat_intern='"+
+				vec_rez.get(0).get(0)+"' AND t2.id ='"+vec_rez.get(0).get(16)+"' AND t3.id='"+vec_rez.get(0).get(37)+"' LIMIT 1");
+		//                                       0         1         2             3     4       5 
+		/*
+		vec_pat = SqlInfo.holeFelder("select  t1.n_name,t1.v_name,t1.geboren,t1.strasse,t1.plz,t1.ort,"+
+		//            6             7            8              9     10         11        12
+				"t1.v_nummer,t1.kv_status,t1.kv_nummer,"+"t1.befreit,t1.bef_ab,t1.bef_dat,t1.jahrfrei,"+
 		//           13         14         15       16      		
 				"t2.nachname,t2.bsnr,t2.arztnum,t3.kassen_nam1 from pat5 t1,arzt t2,kass_adr t3 where t1.pat_intern='"+
 				vec_rez.get(0).get(0)+"' AND t2.id ='"+vec_rez.get(0).get(16)+"' AND t3.id='"+vec_rez.get(0).get(37)+"' LIMIT 1");
+		*/
 		if(vec_pat.get(0).get(9).equals("T")){
 			patAktuellFrei = true;
 		}else{
@@ -1020,14 +1032,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//System.out.println("Länge des Feldes = "+behandlungen.length);
 				//anzahlbehandlungen = behandlungen.length;
 				//System.out.println("Konstruiere Abrechnungsfall aus behandlungen.length");
-				constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb);
+				constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb,i);
 			}else{
 				//Es sind keine  Behandlungsformen im Terminblatt verzeichnet;
 				//in anzahlbehandlungen steht die tatsächliche Anzahl
 				//System.out.println("Keine Behandlungen im Terminblatt = "+anzahlbehandlungen);
 				//System.out.println("Anzahl-Hausbesuch  keine Beh. im Terminblatt= "+anzahlhb);
 				//System.out.println("Konstruiere Abrechnungsfall aus Rezeptangaben");
-				constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb);
+				constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb,i);
 			}
 		}
 		
@@ -1520,7 +1532,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	 * 
 	 */
 	/*******************************/
-	private void constructTagVector(String datum,String[] behandlungen,int anzahlbehandlungen,int anzahlhb){
+	private void constructTagVector(String datum,String[] behandlungen,int anzahlbehandlungen,int anzahlhb,int tag){
 		String[] abrfall = new String[anzahlbehandlungen];
 		String[] id = new String[anzahlbehandlungen];
 		Object[] abrObject = {"",""};
@@ -1544,30 +1556,35 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 		}
 		System.out.println("anzahl Behandlungen =*************************"+anzahlbehandlungen);
+		int posanzahl = 0;
 		for(int i = 0; i < anzahlbehandlungen;i++){
 			if(! abrfall[i].trim().equals("")){
 				vecdummy.clear();
-				vecdummy.add(datum);
-				vecdummy.add(abrfall[i]);
-				vecdummy.add(Double.valueOf("1.00"));
-				//Preisuntersuchen ob alt oder neu....
-				
-				//.....
-				vecdummy.add(Double.valueOf(RezTools.getPreisAktFromID(id[i], preisgruppe, preisvec).replace(",", ".")));
-				//untersuchen ob befreit
-				//.....
-				vecdummy.add(Boolean.valueOf(true));
+				//Hier testen ob Anzahlen unterschiedlich sind
+				posanzahl = Integer.parseInt(vec_rez.get(0).get(3+i));
+				if((tag+1) <= posanzahl){
+					vecdummy.add(datum);
+					vecdummy.add(abrfall[i]);
+					vecdummy.add(Double.valueOf("1.00"));
+					//Preisuntersuchen ob alt oder neu....
+					
+					//.....
+					vecdummy.add(Double.valueOf(RezTools.getPreisAktFromID(id[i], preisgruppe, preisvec).replace(",", ".")));
+					//untersuchen ob befreit
+					//.....
+					vecdummy.add(Boolean.valueOf(true));
 
-				vecdummy.add(Double.valueOf(rechneRezGeb(vecdummy.get(3).toString()).replace(",", ".")) );
-				
-				vecdummy.add((String) "-" );
-				vecdummy.add((String) "aktuell" );
-				vecdummy.add((String) DatFunk.sDatInSQL(datum) );
-				vecdummy.add((String) id[i]);
-				vecdummy.add(Boolean.valueOf(false));
+					vecdummy.add(Double.valueOf(rechneRezGeb(vecdummy.get(3).toString()).replace(",", ".")) );
+					
+					vecdummy.add((String) "-" );
+					vecdummy.add((String) "aktuell" );
+					vecdummy.add((String) DatFunk.sDatInSQL(datum) );
+					vecdummy.add((String) id[i]);
+					vecdummy.add(Boolean.valueOf(false));
 
-				vec_tabelle.add((Vector<Object>)vecdummy.clone());
-				//System.out.println(vecdummy);
+					vec_tabelle.add((Vector<Object>)vecdummy.clone());
+					//System.out.println(vecdummy);
+				}
 			}
 		}
 	}
@@ -1957,7 +1974,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		});
 	}
 	private String getNoZuZahl(){
-		return "<b><font color=#FF0000><a href=\"http://nozz.de\">"+dfx.format(zuzahlungWert)+"</a></font></b>";
+		return "<b><font color=#FF0000><a href=\"http://nozz.de\">"+dfx.format(zuzahlungWert)+" (nicht bezahlt!)</a></font></b>";
 	}
 	private String getHTMLPositionen(){
 		
@@ -2000,17 +2017,91 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	    	if(event.getURL().toString().contains("patedit")){
 	    		SucheNachAllem.doPatSuchen(vec_rez.get(0).get(0).trim(), vec_rez.get(0).get(1),this);
 	    	}
+	    	if(event.getURL().toString().contains("nozz.de")){
+	    		PointerInfo info = MouseInfo.getPointerInfo();
+	    	    Point location = info.getLocation();
+	    		doRezeptgebuehrRechnung(location);
+	    	}
 
 	      }
 	}
+	/*************************
+	 * 	
+	 */
+	private void doRezeptgebuehrRechnung(Point location){
+		HashMap<String,String> hmRezgeb = new HashMap<String,String>();
+		int rueckgabe = -1;
+		String behandl = "";
+		for(int i = 0; i < vec_poskuerzel.size();i++){
+			behandl=behandl+vec_posanzahl.get(i)+"*"+vec_poskuerzel.get(i).substring(0,2)+(i < (vec_poskuerzel.size()-1) ? "," : "" );
+		}
+		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+
+		String cmd = "select abwadress,id from pat5 where pat_intern='"+vec_rez.get(0).get(0)+"' LIMIT 1";
+		Vector<Vector<String>> adrvec = SqlInfo.holeFelder(cmd);
+		String[] adressParams = null;
+		if(adrvec.get(0).get(0).equals("T")){
+			adressParams = holeAbweichendeAdresse(adrvec.get(0).get(1));
+		}else{
+			adressParams = getAdressParams(adrvec.get(0).get(1));
+		}
+		for(int i = 0; i < adressParams.length;i++){
+			System.out.println("Adressfeld "+i+" = "+adressParams[i]);
+		}
+		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
+		hmRezgeb.put("<rgbehandlung>",behandl);
+		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));
+		hmRezgeb.put("<rgbetrag>",dfx.format(zuzahlungWert));
+		hmRezgeb.put("<rgpauschale>","5,00");
+		hmRezgeb.put("<rggesamt>","0,00");
+		hmRezgeb.put("<rganrede>",adressParams[0]);
+		hmRezgeb.put("<rgname>",adressParams[1]);
+		hmRezgeb.put("<rgstrasse>",adressParams[2]);
+		hmRezgeb.put("<rgort>",adressParams[3]);
+		hmRezgeb.put("<rgbanrede>",adressParams[4]);
+		hmRezgeb.put("<rgpatintern>",vec_rez.get(0).get(0));
+		RezeptGebuehrRechnung rgeb = new RezeptGebuehrRechnung(Reha.thisFrame,"Nachberechnung Rezeptgebühren",rueckgabe,hmRezgeb);
+		rgeb.setSize(new Dimension(250,300));
+		rgeb.setLocation(location.x-50,location.y-50);
+		rgeb.pack();
+		rgeb.setVisible(true);
+
+		//this.aktRezNum.getText()
+		//Positionenvec_poskuerzel.get(i)
+		//vec_posanzahl.get(i)
+		//AusstellungsDatum DatFunk.sDatInDeutsch(vec_rez.get(0).get(2))
+		//zuzahlung zuzahlungWert
+		//Bearbeitungsgebühr
+		
+	}
+	private String[] getAdressParams(String patid){
+		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+		String cmd = "select anrede,titel,n_name,v_name,strasse,plz,ort from pat5 where id='"+
+		patid+"' LIMIT 1";
+		Vector<Vector<String>> abwvec = SqlInfo.holeFelder(cmd);
+		Object[] obj = { (Object)abwvec.get(0).get(0),(Object)abwvec.get(0).get(1),(Object)abwvec.get(0).get(2),
+			(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
+			(Object)abwvec.get(0).get(6)
+			};
+		return AdressTools.machePrivatAdresse(obj);
+	}
+	private String[] holeAbweichendeAdresse(String patid){
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+		String cmd = "select abwanrede,abwtitel,abwn_name,abwv_name,abwstrasse,abwplz,abwort from pat5 where id='"+
+			patid+"' LIMIT 1";
+		Vector<Vector<String>> abwvec = SqlInfo.holeFelder(cmd);
+		Object[] obj = { (Object)abwvec.get(0).get(0),(Object)abwvec.get(0).get(1),(Object)abwvec.get(0).get(2),
+				(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
+				(Object)abwvec.get(0).get(6)
+				};
+		return AdressTools.machePrivatAdresse(obj);
+	}
 	
-/*************************
- * 
- * 
- * 
- * 
- * 	
- */
+	/*************************
+	 * 	
+	 */
 	class AbrechnungListSelectionHandler implements ListSelectionListener {
 
 	    public void valueChanged(ListSelectionEvent e) {
@@ -2949,7 +3040,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}else{
 				edibuf.append(EOL);
 			}
-			if(!node.abr.unterbrechung.trim().equals("")){
+			if( (!node.abr.unterbrechung.trim().equals("")) && (!node.abr.unterbrechung.trim().equals("-")) ){
 				edibuf.append("TXT+"+node.abr.unterbrechung.trim()+EOL);
 			}
 			
@@ -2992,7 +3083,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+
 			":GESAMT="+dfx.format(gesamt)+":REZGEB="+dfx.format(rez+pauschal)+
 			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+":KASSENID="+vec_rez.get(0).get(37)+
-			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+":STATUS="+vec_pat.get(0).get(7)+"\n";
+			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+":STATUS="+vec_pat.get(0).get(7)+":HB="+hausbesuch+"\n";
 
 		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
 		edibuf.insert(0,vec_posanzahl.toString()+"\n");
@@ -3085,7 +3176,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		for(int i = 4; i < lang;i++){
 			pos = zeilen[i].split("\\+");
 			if(pos[0].equals("EHE")){
-				datum = datumFromEdiDeutsch(pos[6]);
+				datum = datumFromEdiDeutsch(pos[6]).replace("'", "");
 				vecdummy.add( (String) datum );
 				id = RezTools.getIDFromPos(pos[3], preisgruppe, preisvec);
 				vecdummy.add((String) RezTools.getKurzformFromID(id, preisvec) );
@@ -3100,7 +3191,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				}
 				if(i < (lang-1)){
 					if(zeilen[i+1].split("\\+")[0].equals("TXT")){
-						vecdummy.add( (String) zeilen[i+1].split("\\+")[1].replace("'",""));
+						vecdummy.add( (String) zeilen[i+1].split("\\+")[1].replace("'","").replace("-",""));
 					}else{
 						vecdummy.add( (String) "");
 					}
@@ -3115,6 +3206,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				vecdummy.add( (String) DatFunk.sDatInSQL(datum));
 				vecdummy.add( (String) id);
 				vecdummy.add((boolean) Boolean.valueOf(false));
+				//System.out.println(vecdummy);
 				vec_tabelle.add((Vector<Object>)vecdummy.clone());
 				vecdummy.clear();
 				//public AbrFall(String titel,String datum,String bezeichnung,Double anzahl,Double preis,

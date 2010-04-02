@@ -16,7 +16,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -55,7 +54,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		this.jList.addMouseListener(this);
 		this.rueckgabe = rueckgabe;
 		this.jtp = new JXTitledPanel();
-		this.jtp.setName("KFormularWahl");
+		this.jtp.setName("ToolsDlg");
 		this.mymouse = new DragWin(this);
 		this.jtp.addMouseListener(mymouse);
 		this.jtp.addMouseMotionListener(mymouse);
@@ -72,7 +71,6 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		this.rtp = new RehaTPEventClass();
 		this.rtp.addRehaTPEventListener((RehaTPEventListener) this);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setzeFocus();
@@ -93,10 +91,6 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		content.add(new JScrollPane(list), BorderLayout.CENTER);
 		
 		return content;
-	}
-	
-	private ToolsDialog getInstance(){
-		return this;
 	}
 	
 	
@@ -224,14 +218,15 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	public void FensterSchliessen(String welches){
 		this.jtp.removeMouseListener(this.mymouse);
 		this.jtp.removeMouseMotionListener(this.mymouse);
-		jList.removeKeyListener(this);
-		jList.removeMouseListener(this);
-		mymouse = null; 
-		if(rtp != null){
-			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-			rtp=null;			
+		this.jList.removeKeyListener(this);
+		this.jList.removeMouseListener(this);
+		this.mymouse = null; 
+		if(this.rtp != null){
+			this.rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			this.rtp=null;			
 		}
 		setVisible(false);
+		this.jList = null;
 		this.dispose();
 	}
 

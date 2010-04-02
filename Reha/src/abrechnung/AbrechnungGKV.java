@@ -767,7 +767,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/*************************************************/
 	private void holeEdifact(){
 		try {
-			if(SystemConfig.hmAbrechnung.get("hmgkvtaxierdrucker").equals("1")){
+			if(SystemConfig.hmAbrechnung.get("hmgkvrauchdrucken").equals("1")){
 				abrDruck = new AbrechnungDrucken(this,Reha.proghome+
 						"vorlagen/"+
 						Reha.aktIK+
@@ -851,6 +851,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 						rezgeb,
 						(splits[6].split("=")[1].equals("10,00") ? true : false));
 			}
+			System.out.println("Rezept Nr. ="+abrechnungRezepte+" ********Abrechnungsposition Anfang********");
+			System.out.println(splits[9].split("=")[1]);
+			System.out.println(splits[10].split("=")[1]);
+			System.out.println(splits[2].split("=")[1]);
+			System.out.println(position);
+			System.out.println(anzahl);
+			System.out.println(preis);
+			System.out.println(rezgeb);
+			System.out.println("mit Pauschale = "+(splits[6].split("=")[1].equals("10,00") ? true : false));
+			System.out.println("Rezept Nr. ="+abrechnungRezepte+" ********Abrechnungsposition Ende********");
+			/////////////////Hier die Sätze in der Rechnungsdatei anlegen///////////////
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		

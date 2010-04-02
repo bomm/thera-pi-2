@@ -1871,7 +1871,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 				
 			}
-			System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			tDlg = null;
+			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
 	}
 
