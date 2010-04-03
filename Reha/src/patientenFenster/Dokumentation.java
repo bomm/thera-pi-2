@@ -58,7 +58,9 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -73,6 +75,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -116,6 +119,7 @@ import systemTools.Colors;
 import systemTools.FileComparator;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
+import systemTools.IconListRenderer;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
@@ -156,6 +160,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.mysql.jdbc.PreparedStatement;
 
 import dialoge.PinPanel;
+import dialoge.ToolsDialog;
 
 public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener, ScannerListener{
 	//public static Dokumentation doku = null;
@@ -565,7 +570,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				wechselPanel.remove(vollPanel);
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
-				dokubut[2].setEnabled(false);
+				try{
+					dokubut[2].setEnabled(false);
+				}catch(Exception ex ){}	
 				wechselPanel.validate();
 				wechselPanel.repaint();
 				for(int i = 0; i < 4;i++){
@@ -747,7 +754,15 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		dokubut[0].addActionListener(this);
 		jtb.add(dokubut[0]);
 	
-		
+		jtb.addSeparator(new Dimension(40,0));
+		dokubut[1] = new JButton();
+		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		dokubut[1].setToolTipText("Scannereinstellungen ändern");
+		dokubut[1].setActionCommand("werkzeuge");
+		dokubut[1].addActionListener(this);		
+		jtb.add(dokubut[1]);
+
+		/*
 		dokubut[1] = new JButton();
 		dokubut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
 		dokubut[1].setToolTipText("Scannereinstellungen ändern");
@@ -766,14 +781,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 
 		dokubut[4] = new JButton();
-		Image img = new ImageIcon(Reha.proghome+"icons/openoffice.png").getImage().getScaledInstance(26,26,Image.SCALE_SMOOTH);
-		dokubut[4].setIcon(new ImageIcon(img));
-		//dokubut[4].setIcon(SystemConfig.hmSysIcons.get("oofiles"));
+		dokubut[4].setIcon(SystemConfig.hmSysIcons.get("openoffice26"));
 		dokubut[4].setToolTipText("OpenOffice-Dokument (Writer oder Calc) in Doku aufnehmen");
 		dokubut[4].setActionCommand("Oofiles");
 		dokubut[4].addActionListener(this);
 		dokubut[4].setEnabled(false);
 		jtb.add(dokubut[4]);
+		*/
 		
 		
 
@@ -963,9 +977,38 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					return null;
 				}
 			}.execute();	
+		}else if(cmd.equals("werkzeuge")){
+			new ToolsDlgDokumentation("",dokubut[1].getLocationOnScreen());
 		}
 	}
-	
+	private void doScanEdit(Point pt){
+		final Point ptx = pt;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				ScannerUtil su = new ScannerUtil(new Point(ptx.x,ptx.y+32));
+				su.setModal(true);
+				su.setVisible(true);
+				try {
+					Thread.sleep(20);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				updateInfoLab();
+
+				return null;
+			}
+		}.execute();
+
+	}
+	private void doHolePhoto(){
+		ladeJpeg();
+	}
+	private void doHoleOO(){
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		ladeOoDocs();
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	}
 	private void ladeOoDocs(){
 		String[] bild = oeffneBild(new String[] {"odt","ods","???"},false);
 		if(bild.length > 0){
@@ -1985,9 +2028,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if((!dokubut[0].isEnabled()) && SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1")){
 						dokubut[0].setEnabled(true);						
 					}
+					dokubut[5].setEnabled(true);
+					dokubut[1].setEnabled(true);
+					/*
 					dokubut[3].setEnabled(true);	
 					dokubut[4].setEnabled(true);
 					dokubut[5].setEnabled(true);
+					*/
 
 				}else{
 					setzeDokuPanelAufNull(true);
@@ -1998,9 +2045,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if((!dokubut[0].isEnabled()) && SystemConfig.hmDokuScanner.get("aktivieren").trim().equals("1")){
 						dokubut[0].setEnabled(true);						
 					}
+					dokubut[1].setEnabled(true);
+					dokubut[5].setEnabled(false);
+					/*
 					dokubut[3].setEnabled(true);	
 					dokubut[4].setEnabled(true);
 					dokubut[5].setEnabled(false);
+					*/
 
 				}
 				
@@ -2248,6 +2299,47 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 		}
 		
+	}
+/****************************/
+
+	class ToolsDlgDokumentation{
+		public ToolsDlgDokumentation(String command,Point pt){
+
+			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("Scanner einstellungen",SystemConfig.hmSysIcons.get("scanner"));
+			icons.put("Photo von DigiCam holen",SystemConfig.hmSysIcons.get("camera"));
+			icons.put("Office-Dokument aufnehmen",SystemConfig.hmSysIcons.get("openoffice26"));
+			icons.put("Neues Office-Dokument erstellen",SystemConfig.hmSysIcons.get("openoffice26"));
+			// create a list with some test data
+			JList list = new JList(	new Object[] {"Scanner einstellungen",
+					"Photo von DigiCam holen", 
+					"Office-Dokument aufnehmen",
+					"Neues Office-Dokument erstellen"});
+			list.setCellRenderer(new IconListRenderer(icons));	
+			int rueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list,rueckgabe);
+			tDlg.setPreferredSize(new Dimension(200,200));
+			tDlg.setLocation(pt.x-70,pt.y+30);
+			tDlg.pack();
+			tDlg.setVisible(true);
+			switch(tDlg.rueckgabe){
+			case 0:
+				doScanEdit(pt);
+				break;
+			case 1:
+				doHolePhoto();
+				break;
+			case 2:
+				doHoleOO();
+				break;
+			case 3:
+				//rezeptAbschliessen();
+				break;
+				
+			}
+			tDlg = null;
+			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+		}
 	}
 	
 

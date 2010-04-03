@@ -62,14 +62,19 @@ public class AbrechnungDrucken {
 				try{
 					setRechnungsBetrag();
 					ersetzePlatzhalter();
-					int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
-					for(int i = 0; i < exemplare; i++){
-						//textDocument.print();
+					
+					if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+						textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+					}else{
+						int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
+						for(int i = 0; i < exemplare; i++){
+							textDocument.print();
+						}
+						textDocument.close();
+						textDocument = null;
 					}
-					//textDocument.close();
-					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-					//textDocument = null;
 					eltern.abrDruck = null;
+					//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -84,6 +89,7 @@ public class AbrechnungDrucken {
 			String rezNr, 
 			Vector<String> posvec,
 			Vector<BigDecimal> anzahlvec,
+			Vector<BigDecimal> anzahltagevec,
 			Vector<BigDecimal> einzelpreis,
 			Vector<BigDecimal> gesamtpreis,
 			Vector<BigDecimal> zuzahlung,

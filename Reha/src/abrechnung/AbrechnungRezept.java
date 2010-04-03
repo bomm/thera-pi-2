@@ -1315,8 +1315,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		double anzahlkm = 0.00;
 		
 		int maxanzahl = root.getChildCount();
-
-		anzahlkm = Double.parseDouble(vec_hb.get(0).get(1).replace(",", "."));
+		try{
+			anzahlkm = Double.parseDouble(vec_hb.get(0).get(1).replace(",", "."));	
+		}catch(NumberFormatException ex){
+			anzahlkm = Double.parseDouble("0.00");
+		}
+		
 		/*********Jetzt geht's los ***********/
 		//System.out.println("HB-Regeln = "+SystemConfig.vHBRegeln);
 		if(maxanzahl < insgesamthb){
@@ -1576,7 +1580,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 					vecdummy.add(Double.valueOf(rechneRezGeb(vecdummy.get(3).toString()).replace(",", ".")) );
 					
-					vecdummy.add((String) "-" );
+					vecdummy.add((String) "" );
 					vecdummy.add((String) "aktuell" );
 					vecdummy.add((String) DatFunk.sDatInSQL(datum) );
 					vecdummy.add((String) id[i]);
@@ -2029,6 +2033,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	 * 	
 	 */
 	private void doRezeptgebuehrRechnung(Point location){
+		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+aktRezNum.getText()+
+					"' AND rnr LIKE 'RGR-%' LIMIT 1");
+		if(testvec.size() > 0){
+			JOptionPane.showMessageDialog(null,"Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!");
+			return;
+		}
 		HashMap<String,String> hmRezgeb = new HashMap<String,String>();
 		int rueckgabe = -1;
 		String behandl = "";
@@ -2045,9 +2055,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			adressParams = holeAbweichendeAdresse(adrvec.get(0).get(1));
 		}else{
 			adressParams = getAdressParams(adrvec.get(0).get(1));
-		}
-		for(int i = 0; i < adressParams.length;i++){
-			System.out.println("Adressfeld "+i+" = "+adressParams[i]);
 		}
 		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
 		hmRezgeb.put("<rgbehandlung>",behandl);
@@ -2974,7 +2981,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	}
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
-		//System.out.println("Will become Invisible - "+arg0);		// TODO Auto-generated method stub
+		//System.out.println("Will become Invisible - "+arg0);		
+		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -3083,7 +3091,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String kopfzeile = "PG="+preisgruppe+":PATINTERN="+vec_rez.get(0).get(0).trim()+":REZNUM="+vec_rez.get(0).get(1)+
 			":GESAMT="+dfx.format(gesamt)+":REZGEB="+dfx.format(rez+pauschal)+
 			":REZANTEIL="+dfx.format(rez)+":REZPAUSCHL="+dfx.format(pauschal)+":KASSENID="+vec_rez.get(0).get(37)+
-			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+":STATUS="+vec_pat.get(0).get(7)+":HB="+hausbesuch+"\n";
+			":ARZTID="+vec_rez.get(0).get(16)+":PATIENT="+vec_pat.get(0).get(0)+", "+vec_pat.get(0).get(1)+":STATUS="+vec_pat.get(0).get(7)+":HB="+hausbesuch+":ZZINDEX="+zuZahlungsIndex+"\n";
 
 		edibuf.insert(0,vec_poskuerzel.toString()+"\n");
 		edibuf.insert(0,vec_posanzahl.toString()+"\n");

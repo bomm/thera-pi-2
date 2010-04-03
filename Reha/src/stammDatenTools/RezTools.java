@@ -187,6 +187,21 @@ public class RezTools {
 		}
 		return ret;
 	}
+	public static String getIDFromPos(String pos,String preisgruppe,String disziplin){
+		Vector<Vector<String>> vec = holePreisVector(disziplin);
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		String ret = "-1";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(suchenin).equals(pos)){
+				ret = vec.get(i).get(idpos).toString();
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	public static String getPosFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
@@ -252,6 +267,22 @@ public class RezTools {
 		}
 		return ret;
 	}
+
+	public static Vector<Vector<String>> holePreisVector(String disziplin){
+		if(disziplin.startsWith("KG")){
+			return  (Vector<Vector<String>>)ParameterLaden.vKGPreise;
+		}else if(disziplin.startsWith("MA")){
+			return  (Vector<Vector<String>>)ParameterLaden.vMAPreise;
+		}else if(disziplin.startsWith("ER")){
+			return  (Vector<Vector<String>>)ParameterLaden.vERPreise;
+		}else if(disziplin.startsWith("LO")){
+			return  (Vector<Vector<String>>)ParameterLaden.vLOPreise;
+		}else if(disziplin.startsWith("RH")){
+			return  (Vector<Vector<String>>)ParameterLaden.vRHPreise;
+		}
+		return null;
+	}
+	
 	/*	
 	class ZuzahlModell{
 		public int gesamtZahl;

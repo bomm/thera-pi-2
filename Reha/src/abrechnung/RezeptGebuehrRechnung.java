@@ -72,7 +72,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	private JButton[] but = {null,null};
 	private HashMap<String,String> hmRezgeb = null;
 	DecimalFormat dcf = new DecimalFormat ( "#########0.00" );
-	
+	String rgnrNummer;
 	public RezeptGebuehrRechnung(JXFrame owner,String titel,int rueckgabe,HashMap<String,String> hmRezgeb){
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		this.setUndecorated(true);
@@ -215,6 +215,17 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	}
 	private void buchungStarten(){
 		
+		StringBuffer buf = new StringBuffer();
+		buf.append("insert into rgaffaktura set ");
+		buf.append("rnr='"+hmRezgeb.get("<rgnr>")+"', ");
+		buf.append("reznr='"+hmRezgeb.get("<rgreznum>")+"', ");
+		buf.append("pat_intern='"+hmRezgeb.get("<rgpatintern>")+"', ");
+		buf.append("rgesamt='"+hmRezgeb.get("<rggesamt>").replace(",",".")+"', ");
+		buf.append("roffen='"+hmRezgeb.get("<rggesamt>").replace(",",".")+"', ");
+		buf.append("rgbetrag='"+hmRezgeb.get("<rgbetrag>").replace(",",".")+"', ");
+		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
+		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
+		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
 	}
 	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;
@@ -260,12 +271,16 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			      }
 			    }
 		}
-		for(int i = 0; i < 2; i++){
-			//textDocument.print();
+		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		}else{
+			for(int i = 0; i < 2; i++){
+				textDocument.print();
+			}
+			textDocument.close();
+			textDocument = null;
 		}
-		//
-		//textDocument.close();
-		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);		
+		
 		
 	}
 	@Override

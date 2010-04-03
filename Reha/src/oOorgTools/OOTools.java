@@ -307,59 +307,6 @@ public class OOTools{
 	}
 	/*******************************************************************************************/
 	/*******************************************************************************************/
-	@SuppressWarnings("unchecked")
-	public static void starteRGRechnung(String url,HashMap<String,String> rgWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
-		//String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
-		//String drucker = "";
-		IDocumentService documentService = null;
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		//System.out.println("Starte Datei -> "+url);
-		if(!Reha.officeapplication.isActive()){
-			Reha.starteOfficeApplication();
-		}
-
-		documentService = Reha.officeapplication.getDocumentService();
-
-        IDocumentDescriptor docdescript = new DocumentDescriptor();
-       	docdescript.setHidden(true);
-        docdescript.setAsTemplate(true);
-		IDocument document = null;
-
-		document = documentService.loadDocument(url,docdescript);
-		ITextDocument textDocument = (ITextDocument)document;
-		/**********************/
-		OOTools.druckerSetzen(textDocument, SystemConfig.hmAbrechnung.get("hmgkvrechnungdrucker"));
-		/**********************/
-		ITextFieldService textFieldService = textDocument.getTextFieldService();
-		ITextField[] placeholders = null;
-
-		placeholders = textFieldService.getPlaceholderFields();
-		String placeholderDisplayText = "";
-
-		for (int i = 0; i < placeholders.length; i++) {
-			placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			Set<?> entries = rgWerte.entrySet();
-		    Iterator<?> it = entries.iterator();
-			    while (it.hasNext()) {
-			      Map.Entry entry = (Map.Entry) it.next();
-			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-			    	  try{
-			    		  
-			    	  }catch(com.sun.star.uno.RuntimeException ex){
-			    		  System.out.println("Fehler bei "+placeholderDisplayText);
-			    	  }
-			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
-
-			    	  break;
-			      }
-			    }
-		}
-		//textDocument.print();
-		//textDocument.close();
-		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);		
-		
-	}
-	/*******************************************************************************************/
 
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;

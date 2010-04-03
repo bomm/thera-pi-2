@@ -34,9 +34,13 @@ public class BegleitzettelDrucken {
 		try {
 			starteDokument(url);
 			ersetzePlatzhalter();
-			textDocument.print();
-			textDocument.close();
-			textDocument = null;
+			if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+			}else{
+				textDocument.print();
+				textDocument.close();
+				textDocument = null;
+			}			
 			this.eltern = null;
 		} catch (Exception e) {
 			e.printStackTrace();

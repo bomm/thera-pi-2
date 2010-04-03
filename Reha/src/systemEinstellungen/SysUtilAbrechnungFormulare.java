@@ -46,9 +46,12 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 	JRtaComboBox[] jcmb = {null,null,null,null,null,null,null};
 	JButton[] but = {null,null,null,null,null};
 	JRtaTextField[] tf = {null,null,null,null};
-	JRtaRadioButton[] rbut = {null,null};
+	JRtaRadioButton[] rbut = {null,null,null,null,null,null,null,null};
 	String[] exemplare = {"0","1","2","3","4","5"};
 	ButtonGroup bg = new ButtonGroup();
+	ButtonGroup bg2 = new ButtonGroup();
+	ButtonGroup bg3 = new ButtonGroup();
+	ButtonGroup bg4 = new ButtonGroup();
 	public SysUtilAbrechnungFormulare(){
 		super(new BorderLayout());
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
@@ -85,8 +88,8 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 20dlu, 120dlu, 4dlu, 40dlu", //, 4dlu, 40dlu, 4dlu, 40dlu",
-			       //1.    2.  3.   4.  5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.  20. 21.  22.  23.  24   25  26    27   28   29   30   31  32  33   34   35  36   37  38   39  40    41    42  43  44 45   46   47
-					"p, 10dlu, p, 3dlu, p, 3dlu, p,  3dlu, p, 2dlu, p, 3dlu, p, 10dlu, p, 10dlu, p, 3dlu, p, 3dlu, p, 10dlu, p,  10dlu, p,  3dlu , p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p");
+			       //1.    2.  3.   4.  5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.  20. 21.  22.  23.  24   25  26    27   28   29   30   31  32   33   34   35  36   37  38   39  40    41    42  43  44 45   46   47
+					"p, 10dlu, p, 3dlu, p, 3dlu, p,  3dlu, p, 2dlu, p, 3dlu, p, 10dlu, p, 10dlu, p, 3dlu, p, 3dlu, p, 10dlu, p,  10dlu, p,  3dlu , p, 3dlu, p, 10dlu, p,10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -117,6 +120,9 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		builder.addLabel("Rechnungsexemplare",cc.xy(1,13));
 		jcmb[2] = new JRtaComboBox(exemplare);
 		builder.add(jcmb[2],cc.xy(5,13));
+		
+		
+		/********************************************/
 		
 		builder.addSeparator("Heilmittelabrechnung Privatpatienten", cc.xyw(1, 15, 5));
 		
@@ -149,6 +155,15 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		builder.addLabel("Rechnungsexemplare",cc.xy(1,29));
 		jcmb[6] = new JRtaComboBox(exemplare);
 		builder.add(jcmb[6],cc.xy(5,29));
+		
+		builder.addSeparator("Gemeinsame Einstellungen", cc.xyw(1, 31, 5));
+		
+		builder.addLabel("alle Ausdrucke",cc.xy(1,33));
+		builder.add(rbut[2] = macheRadio("direkt zum Drucker leiten","druckdirekt"),cc.xyw(3,33,3));
+		bg2.add(rbut[2]);
+		builder.add(rbut[3] = macheRadio("im OpenOffice-Writer öffnen","druckoffice"),cc.xyw(3,35,3));
+		bg2.add(rbut[3]);
+		
 
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -267,7 +282,14 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		/***BGE****/		
 		tf[2].setText(SystemConfig.hmAbrechnung.get("hmbgeformular"));
 		jcmb[5].setSelectedItem(SystemConfig.hmAbrechnung.get("hmbgedrucker"));
-		jcmb[6].setSelectedItem(SystemConfig.hmAbrechnung.get("hmbgeexemplare"));		
+		jcmb[6].setSelectedItem(SystemConfig.hmAbrechnung.get("hmbgeexemplare"));	
+		wert = SystemConfig.hmAbrechnung.get("hmallinoffice");
+		if(wert.equals("1")){
+			rbut[3].setSelected(true);
+		}else{
+			rbut[2].setSelected(true);
+		}
+		
 	}
 	private void doSpeichern(){
 		String wert = "";
@@ -287,7 +309,8 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		inif.setStringProperty("HMBGERechnung", "Bformular",tf[2].getText().trim() , null);
 		inif.setStringProperty("HMBGERechnung", "Bdrucker",((String) jcmb[5].getSelectedItem()).trim() , null);
 		inif.setStringProperty("HMBGERechnung", "Bexemplare",(String)jcmb[6].getSelectedItem() , null);
-		
+		wert = (rbut[3].isSelected() ? "1" : "0");
+		inif.setStringProperty("GemeinsameParameter", "InOfficeStarten",wert , null);
 		inif.save();
 		new SwingWorker<Void,Void>(){
 			@Override

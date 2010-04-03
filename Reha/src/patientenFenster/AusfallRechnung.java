@@ -84,7 +84,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	
 	public JButton uebernahme;
 	public JButton abbrechen;
-
+	public String afrNummer;
 	public AusfallRechnung(Point pt){
 		super(null,"AusfallRechnung");		
 
@@ -258,6 +258,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				@Override
 				protected Void doInBackground() throws Exception {
 					starteAusfallRechnung(Reha.proghome+"vorlagen/"+Reha.aktIK+"/AusfallRechnung.ott");
+					doBuchen();
 					return null;
 				}
 			}.execute();
@@ -283,6 +284,18 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			this.dispose();
 		}
 
+	}
+	private void doBuchen(){
+		StringBuffer buf = new StringBuffer();
+		buf.append("insert into rgaffaktura set ");
+		buf.append("rnr='"+afrNummer+"', ");
+		buf.append("reznr='"+(String)Reha.thisClass.patpanel.vecaktrez.get(1)+"', ");
+		buf.append("pat_intern='"+(String)Reha.thisClass.patpanel.vecaktrez.get(0)+"', ");
+		buf.append("rgesamt='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
+		buf.append("roffen='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
+		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
+		//System.out.println(buf.toString());
+		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
@@ -344,7 +357,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		}
 		SystemConfig.hmAdrAFRDaten.put("<AFRgesamt>",df.format( gesamt));
 		/// Hier mu� noch die Rechnungsnummer bezogen und eingetragen werden
-		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>","AF-010101");
+		afrNummer = "AFR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("afrnr"));
+		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>",afrNummer);
 	}
 	public void keyPressed(KeyEvent event) {
 		if(event.getKeyCode()==10){

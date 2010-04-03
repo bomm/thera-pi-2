@@ -253,7 +253,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
     		kf.setLocation(pt.x-100,pt.y+32);
     		kf.setModal(true);
     		kf.setVisible(true);
-    		iformular = new Integer(formularid.getText());
+    		if(!formularid.getText().equals("")){
+        		iformular = new Integer(formularid.getText());    			
+    		}
     		kf = null;
     		if(iformular >= 0){
     			new SwingWorker<Void,Void>(){
@@ -266,15 +268,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
     			}.execute();
     			
     		}
- 
-    		//System.out.println("Es wurde Formular "+iformular+" gewählt");
-        	
-		}else{
-			String mes = "Wenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
-			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
-			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
-			"Sie dürfen also hoffen....\n\n";
-			JOptionPane.showMessageDialog(null, mes);
+ 		}else{
 			iformular = -1;
 		}
 		
@@ -1410,6 +1404,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	private void rezeptAbschliessen(){
 		try{
 			if(this.neuDlgOffen){return;}
+			int pghmr = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41));
+			if(SystemConfig.vHMRAbrechnung.get(pghmr-1) < 1){
+				String meldung = "Die Tarifgruppe dieser Verordnung unterliegt nicht den Heilmittelrichtlinien.\n\n"+
+				"Abschließen des Rezeptes ist nicht erforderlich";
+				JOptionPane.showMessageDialog(null,meldung);
+				return;
+			}
 			doAbschlussTest();	
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -1846,9 +1847,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("Rezeptgebühren kassieren",SystemConfig.hmSysIcons.get("rezeptgebuehr"));
 			icons.put("BarCode auf Rezept drucken",SystemConfig.hmSysIcons.get("barcode"));
 			icons.put("Ausfallrechnung drucken",SystemConfig.hmSysIcons.get("ausfallrechnung"));
-			icons.put("Rezept abschließen",SystemConfig.hmSysIcons.get("statusset"));
+			icons.put("Rezept ab-/aufschließen",SystemConfig.hmSysIcons.get("statusset"));
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept abschließen"});
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list,rueckgabe);

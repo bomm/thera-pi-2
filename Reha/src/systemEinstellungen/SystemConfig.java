@@ -112,6 +112,7 @@ public class SystemConfig {
 	public static HashMap<String,Integer> hmContainer = null;
 	
 	public static Vector<String> vPreisGruppen;
+	public static Vector<Integer> vHMRAbrechnung;
 	public static Vector<Integer> vZuzahlRegeln;
 	public static Vector<String> vPreisGueltig;
 	public static Vector <Vector<String>> vNeuePreiseAb;
@@ -615,6 +616,7 @@ public class SystemConfig {
 		vNeuePreiseRegel = new Vector<Vector<Integer>>();
 		vHBRegeln = new Vector<Vector<String>>();
 		vBerichtRegeln = new Vector<String>();
+		vHMRAbrechnung = new Vector<Integer>();
 		//xxx
 
 		Vector<String> vec = new Vector<String>();
@@ -623,7 +625,7 @@ public class SystemConfig {
 			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 			vPreisGueltig.add(inif.getStringProperty("PreisGruppen","PGGueltig"+i));
 			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
-
+			vHMRAbrechnung.add(inif.getIntegerProperty("HMRAbrechnung","HMRAbrechnung"+i));
 			//vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
 			//vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}
@@ -1005,12 +1007,16 @@ public class SystemConfig {
 		hmAbrechnung.put("hmgkvbegleitzettel", inif.getStringProperty("HMGKVRechnung", "Begleitzettel"));
 		hmAbrechnung.put("hmgkvrauchdrucken", inif.getStringProperty("HMGKVRechnung", "Rauchdrucken"));
 		hmAbrechnung.put("hmgkvrexemplare", inif.getStringProperty("HMGKVRechnung", "Rexemplare"));
+
 		hmAbrechnung.put("hmpriformular", inif.getStringProperty("HMPRIRechnung", "Pformular"));
 		hmAbrechnung.put("hmpridrucker", inif.getStringProperty("HMPRIRechnung", "Pdrucker"));
 		hmAbrechnung.put("hmpriexemplare", inif.getStringProperty("HMPRIRechnung", "Pexemplare"));
+		
 		hmAbrechnung.put("hmbgeformular", inif.getStringProperty("HMBGERechnung", "Bformular"));
 		hmAbrechnung.put("hmbgedrucker", inif.getStringProperty("HMBGERechnung", "Bdrucker"));
 		hmAbrechnung.put("hmbgeexemplare", inif.getStringProperty("HMBGERechnung", "Bexemplare"));
+		
+		hmAbrechnung.put("hmallinoffice", inif.getStringProperty("GemeinsameParameter", "InOfficeStarten"));
 	}
 	public static void SystemIconsInit(){
 		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",
@@ -1020,7 +1026,7 @@ public class SystemConfig {
 				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
 				"kleinehilfe","achtung","vorschau","patstamm","arztstamm","kassenstamm","drvlogo","personen16",
 				"forward","wecker16","mond","roogle","scannergross","rot","gruen","inaktiv","buttonrot","buttongruen",
-				"statusoffen","statuszu","statusset","abschliessen","bombe"};
+				"statusoffen","statuszu","statusset","abschliessen","bombe","openoffice26"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		Image ico = null;
