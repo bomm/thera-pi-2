@@ -82,7 +82,7 @@ public class EmailSendenExtern {
     	           	messageBodyPart.setDataHandler(new DataHandler(source));
     	           	messageBodyPart.setFileName(attachments.get(i)[1]);
     	           	multipart.addBodyPart(messageBodyPart);
-    	           	System.out.println("In Email Files = "+attachments.get(i)[1]);
+    	           	//System.out.println("In Email Files = "+attachments.get(i)[1]);
             	}
             }
             msg.setContent(multipart);

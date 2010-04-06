@@ -227,6 +227,46 @@ public class SqlInfo {
 		return (Vector)retvec;
 	}
 /*****************************************/
+	public static Vector<String> holeFeldNamen(String tabelle, boolean ausnahmen, List lausnahmen){
+		Vector<String> vec = new Vector<String>();
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+		            ResultSet.CONCUR_UPDATABLE );
+			rs = stmt.executeQuery("describe "+tabelle);
+			while(rs.next()){
+				 if(ausnahmen){
+					 if(! lausnahmen.contains(rs.getString(1).toLowerCase() )){
+						 vec.add( rs.getString(1).toLowerCase() );
+					 }
+				 }else{
+					 vec.add( rs.getString(1).toLowerCase() );
+				 }
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return vec;
+	}
 
 	public static Vector holeFeldForUpdate(String tabelle, String feld, String kriterium){
 		Statement stmt = null;

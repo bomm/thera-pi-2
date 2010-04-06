@@ -703,7 +703,18 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					doTaxieren();
 				}
 				if(cmd.equals("abrechnungstarten")){
-					eltern.starteAbrechnung();
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							Reha.thisClass.progressStarten(true);
+							eltern.abrDlg = new AbrechnungDlg();
+							eltern.abrDlg.pack();
+							eltern.abrDlg.setLocationRelativeTo(eltern.getInstance());
+							eltern.abrDlg.setzeLabel("starte Heilmittelabrechnung");
+							eltern.starteAbrechnung();
+							return null;
+						}
+					}.execute();
 				}
 				
 			}

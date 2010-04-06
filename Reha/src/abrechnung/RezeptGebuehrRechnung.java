@@ -390,6 +390,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			this.rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			this.rtp=null;			
 		}
+		this.pinPanel = null;
 		setVisible(false);
 		this.dispose();
 	}	

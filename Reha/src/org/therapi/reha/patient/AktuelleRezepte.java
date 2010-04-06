@@ -91,6 +91,8 @@ import terminKalender.DatFunk;
 
 import RehaInternalFrame.JAbrechnungInternal;
 
+import abrechnung.AbrechnungPrivat;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -1444,7 +1446,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}				
 		doRezeptGebuehr( aktrbut[3].getLocationOnScreen() );
 	}
-	
+
 	private void doAbschlussTest(){
 		int currow = tabaktrez.getSelectedRow();
 		if(currow < 0){return;}
@@ -1547,6 +1549,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			return false;
 		}
 	}
+	private void privatRechnung(){
+		//Preisgruppe ermitteln
+		int preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41));
+		Point pt = aktrbut[3].getLocationOnScreen();
+		pt.x = pt.x-75;
+		pt.y = pt.y+30;
+		AbrechnungPrivat abrechnungPrivat = new AbrechnungPrivat(Reha.thisFrame,"Privat- / BG-Rechnung erstellen",-1,preisgruppe);
+		abrechnungPrivat.setLocation(pt);
+		abrechnungPrivat.pack();
+		abrechnungPrivat.setVisible(true);
+		int rueckgabe = abrechnungPrivat.rueckgabe;
+		abrechnungPrivat = null;
+	}
+	
 	private void doAbschliessen(){
 		
 	}
@@ -1848,8 +1864,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("BarCode auf Rezept drucken",SystemConfig.hmSysIcons.get("barcode"));
 			icons.put("Ausfallrechnung drucken",SystemConfig.hmSysIcons.get("ausfallrechnung"));
 			icons.put("Rezept ab-/aufschließen",SystemConfig.hmSysIcons.get("statusset"));
+			icons.put("Privat/BG Rechnung erstellen",SystemConfig.hmSysIcons.get("privatrechnung"));
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen"});
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat/BG Rechnung erstellen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list,rueckgabe);
@@ -1869,6 +1886,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			case 3:
 				rezeptAbschliessen();
+				break;
+			case 4:
+				privatRechnung();
 				break;
 				
 			}
