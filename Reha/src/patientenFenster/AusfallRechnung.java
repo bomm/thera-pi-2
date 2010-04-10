@@ -313,7 +313,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		String[] inpos = {null,null};
 		String spos = "";
 		String sart = "";
-		Double gesamt = new Double(0.00); 
+		Double gesamt = new Double(0.00);
+		int preisgruppe = 0;
 		/*
 		List<String> lAdrAFRDaten = Arrays.asList(new String[]{"<AFRposition1>","<AFRposition2>","<AFRposition3>"
 				,"<AFRposition4>","<AFRpreis1>","<AFRpreis2>","<AFRpreis3>","<AFRpreis4>","<AFRgesamt>","<AFRnummer>"});
@@ -335,7 +336,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
 				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
-				inpos = LeistungTools.getLeistung(sart, spos);	
+				preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;		
+				inpos = LeistungTools.getLeistung(sart, spos,preisgruppe);	
 				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
 				SystemConfig.hmAdrAFRDaten.put(mapkurz,inpos[1]);
 				//System.out.println(inpos[0]);
@@ -345,7 +347,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
 				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
-				inpos = LeistungTools.getLeistung(sart, spos);	
+				preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
+				inpos = LeistungTools.getLeistung(sart, spos,preisgruppe);	
 
 				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,"0,00");

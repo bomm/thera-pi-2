@@ -48,9 +48,11 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -108,6 +110,8 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.therapi.reha.patient.PatientHauptPanel;
 
+import preisListenHandling.MachePreisListe;
+
 
 
 //import patientenFenster.PatGrundPanel;
@@ -116,6 +120,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.Meldungen;
@@ -281,6 +286,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public final Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:
 	
 	public static boolean demoversion = true;
+	public static boolean vollbetrieb = false;
 	
 	public GradientPaint gp1 = new GradientPaint(0,0,new Color(112,141,255),0,25,Color.WHITE,true);	
 	public GradientPaint gp2 = new GradientPaint(0,0,new Color(112,141,120),0,25,Color.WHITE,true);
@@ -333,24 +339,44 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 		}.start();
 		/**************************/
-		
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws java.lang.Exception {
-				Runtime.getRuntime().exec("java -jar "+proghome+"RehaxSwing.jar");
+				try{
+					Runtime.getRuntime().exec("java -jar "+proghome+"RehaxSwing.jar");
+				}catch(NullPointerException ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
-			
 		}.execute();
-		
-		/*
-		ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar",proghome+"RehaxSwing.jar");
-				try {
-					processBuilder.start();
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
 		*/
+		new Thread(){
+			public  void run(){
+				Process process;
+				try {
+					process = new ProcessBuilder("java", "-jar",proghome+"RehaxSwing.jar").start();
+					InputStream is = process.getInputStream();
+					
+					InputStreamReader isr = new InputStreamReader(is);
+					BufferedReader br = new BufferedReader(isr);
+					String line;
+						       
+			       while ((line = br.readLine()) != null) {
+			         System.out.println("Lade Adobe "+line);
+			       }
+			       is.close();
+			       isr.close();
+			       br.close();
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}		
+		}.start();
+		
 		System.out.println("starte RehaxSwing");
 		int i=0;
 		while(warten && i < 50){
@@ -395,6 +421,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}else{
 			System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
+		new Thread(){
+			public void run(){
+				new SocketClient().setzeInitStand("System-Icons laden");
+				SystemConfig.SystemIconsInit();
+				iconsOk = true;
+			}
+		}.start();
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws java.lang.Exception {
@@ -404,6 +438,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				return null;
 			}
 		}.execute();
+		*/
 		/*
 		new Thread(){
 			public void run(){
@@ -1738,12 +1773,24 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				@Override
 				protected Void doInBackground() throws Exception {
             		System.out.println("OpenOffice -> Aufruf");
+          
             		Reha.thisClass.Rehaprogress.setIndeterminate(false);
+            	    if(Reha.DbOk){
+            	    	for(int i = 1;i<6;i++){
+            	    		new MachePreisListe("kgtarif"+i);
+            	    		new MachePreisListe("matarif"+i);
+            	    		new MachePreisListe("ertarif"+i);
+            	    		new MachePreisListe("lotarif"+i);
+            	    		new MachePreisListe("rhtarif"+i);
+            	    	}
+            	    }
+            		
             		try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+			
 					return null;
 				}
             }.execute();
@@ -2363,7 +2410,6 @@ final class DatenbankStarten implements Runnable{
 		}
 		StarteDB();
 		if (Reha.DbOk){
-			
 				if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
 						(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
 
@@ -2372,6 +2418,10 @@ final class DatenbankStarten implements Runnable{
 					String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='ein'";
 					new ExUndHop().setzeStatement(stx);
 				}
+				try {
+				
+				Thread.sleep(50);
+				 
 				new SocketClient().setzeInitStand("Datenbank starten");
 
 				System.out.println("Connection ok");
@@ -2406,23 +2456,30 @@ final class DatenbankStarten implements Runnable{
 
 				new SocketClient().setzeInitStand("Mandanten-Daten einlesen");
 				Reha.sysConf.SystemInit(11);
-				new SocketClient().setzeInitStand("TK-Farben einlesen");			
+				//new SocketClient().setzeInitStand("TK-Farben einlesen");			
 				Reha.sysConf.SystemInit(9);
 
 				//SystemConfig.InetSeitenEinlesen();
 
-				new SocketClient().setzeInitStand("Tarifgruppen einlesen");
-				SystemConfig.TarifeLesen();
+				//new SocketClient().setzeInitStand("Tarifgruppen einlesen");
+				//SystemConfig.TarifeLesen();
+
+				Thread.sleep(50);				
 				new SocketClient().setzeInitStand("HashMaps initialisieren");
 				SystemConfig.HashMapsVorbereiten();
+				Thread.sleep(50);
 				new SocketClient().setzeInitStand("Desktop konfigurieren");
 				SystemConfig.DesktopLesen();
+				Thread.sleep(50);
 				new SocketClient().setzeInitStand("Patientenstamm init");
 				SystemConfig.PatientLesen();
+				Thread.sleep(50);
 				new SocketClient().setzeInitStand("Gerätetreiber initialiseieren");
 				SystemConfig.GeraeteInit();
+				Thread.sleep(50);
 				new SocketClient().setzeInitStand("Arztgruppen einlesen");
 				SystemConfig.ArztGruppenInit();
+				Thread.sleep(50);
 				new SocketClient().setzeInitStand("Rezeptparameter einlesen");
 				SystemConfig.RezeptInit();
 				new SocketClient().setzeInitStand("Bausteine für Therapie-Berichte laden");
@@ -2453,9 +2510,24 @@ final class DatenbankStarten implements Runnable{
 				SystemConfig.GutachtenInit();
 				SystemConfig.AbrechnungParameter();
 				new Thread(new PreisListenLaden()).start();
+				}catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}catch (NullPointerException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}	
+
 			
 		}else{
-			new SocketClient().setzeInitStand("INITENDE");
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
+					new SocketClient().setzeInitStand("INITENDE");
+					return null;
+				}
+			}.execute();
+
 		}
 	}
 }
@@ -2537,21 +2609,78 @@ final class ErsterLogin implements Runnable{
 
 final class PreisListenLaden implements Runnable{
 	private void Einlesen(){
-		new SocketClient().setzeInitStand("Preisliste KG einlesen");
-		ParameterLaden.PreiseEinlesen("KG");
-		new SocketClient().setzeInitStand("Preisliste MA einlesen");
-		ParameterLaden.PreiseEinlesen("MA");
-		new SocketClient().setzeInitStand("Preisliste ER einlesen");
-		ParameterLaden.PreiseEinlesen("ER");
-		new SocketClient().setzeInitStand("Preisliste LO einlesen");
-		ParameterLaden.PreiseEinlesen("LO");
-		new SocketClient().setzeInitStand("Preisliste RH einlesen");
-		ParameterLaden.PreiseEinlesen("RH");
-		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
+		
+		//ParameterLaden.PreiseEinlesen("KG");
+
+		//ParameterLaden.PreiseEinlesen("MA");
+
+		//ParameterLaden.PreiseEinlesen("ER");
+		
+		//ParameterLaden.PreiseEinlesen("LO");
+
+		//ParameterLaden.PreiseEinlesen("RH");
+
 		Reha.thisClass.jxLinks.setAlpha(1.0f);
 		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		Reha.thisClass.setzeInitEnde();
+		
 		//new SocketClient().setzeInitStand("INITENDE");
+		
+		//MachePreisListe.preiseFuellenNeu();
+
+		//long zeit = System.currentTimeMillis();
+		new SocketClient().setzeInitStand("Preisliste Physio einlesen");
+		SystemPreislisten.ladePreise("Physio");
+		new SocketClient().setzeInitStand("Preisliste Massage einlesen");
+		SystemPreislisten.ladePreise("Massage");
+		new SocketClient().setzeInitStand("Preisliste Ergo einlesen");
+		SystemPreislisten.ladePreise("Ergo");
+		new SocketClient().setzeInitStand("Preisliste Logo einlesen");		
+		SystemPreislisten.ladePreise("Logo");
+		new SocketClient().setzeInitStand("Preisliste Reha einlesen");		
+		SystemPreislisten.ladePreise("Reha");
+		SystemPreislisten.ladePreise("Common");
+		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
+		/*
+		System.out.println(SystemPreislisten.vKGPreise);
+		System.out.println(SystemPreislisten.vKGPreise.get(0));
+		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
+		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
+		System.out.println("*************************************************************");
+		System.out.println(SystemPreislisten.hmPreise.get("Physio"));
+		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
+		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
+		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
+		System.out.println("******Benötigte Zeit zum Einlesen aller Preislisten = "+(System.currentTimeMillis()-zeit)+" Millisekunden");
+		*/
+		/*
+		System.out.println(SystemPreislisten.vKGPreise);
+		System.out.println(SystemPreislisten.vKGPreise.get(0));
+		System.out.println(SystemPreislisten.vKGPreise.get(1));
+		System.out.println(SystemPreislisten.vKGPreise.get(2));
+		System.out.println(SystemPreislisten.vKGPreise.get(3));
+		System.out.println(SystemPreislisten.vKGPreise.get(4));
+
+		System.out.println(SystemPreislisten.vKGPreise);
+		System.out.println(SystemPreislisten.vKGPreise.get(0));
+		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
+		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
+		System.out.println("*************************************************************");
+		System.out.println(SystemPreislisten.hmPreise.get("Physio"));
+		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
+		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
+		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
+
+		System.out.println(SystemPreislisten.hmPreisGruppen.get("Physio"));
+		System.out.println(SystemPreislisten.hmPreisBereich.get("Physio"));
+		System.out.println(SystemPreislisten.hmZuzahlRegeln.get("Physio"));
+		System.out.println(SystemPreislisten.hmHMRAbrechnung.get("Physio"));
+		System.out.println(SystemPreislisten.hmNeuePreiseAb.get("Physio"));
+		System.out.println(SystemPreislisten.hmNeuePreiseRegel.get("Physio"));
+		System.out.println(SystemPreislisten.hmHBRegeln.get("Physio"));
+		System.out.println(SystemPreislisten.hmBerichtRegeln.get("Physio"));
+		*/
+
+		Reha.thisClass.setzeInitEnde();
 		Reha.thisClass.initok = true;
 	}
 	public void run() {

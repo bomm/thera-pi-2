@@ -22,6 +22,7 @@ public class JRtaComboBox extends JComboBox implements ActionListener,PropertyCh
 public Vector<?> vec  = null;
 public int cmbdisplay;
 public int cmbretvalue;
+public String startElement = "";
 public JRtaComboBox(){
 	super();
 	addKeyListener(this);
@@ -94,6 +95,19 @@ public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
 		fillOneDimension(this.vec);
 	}
 }
+public void setDataVectorWithStartElement(Vector<Vector<String>> ve,int item,int ret,String startElement){
+	this.removeAllItems();
+	this.vec = ve;
+	this.cmbdisplay = item;
+	this.cmbretvalue = ret;
+	this.startElement = startElement;
+	if(this.vec.get(0) instanceof Vector<?>){
+		fillComboWithStartElement(this.vec,this.startElement);		
+	}else{
+		fillOneDimensionWithStartElement(this.vec,this.startElement);
+	}
+}
+
 public void setSelectedVecIndex(int index, String vergleich){
 	int lang = getItemCount();
 	for(int i = 0;i < lang;i++){
@@ -106,6 +120,24 @@ public void setSelectedVecIndex(int index, String vergleich){
 public void setDataVector(Vector <String> ve,int item,int ret){
 	
 }
+private void fillOneDimensionWithStartElement(Vector<?> ve,String startElement){
+	int lang = ve.size();	
+	addItem(startElement);
+	for(int i = 0;i < lang;i++){
+		addItem( (String) ve.get(i));
+	}
+}
+
+private void fillComboWithStartElement(Vector<?> ve,String startElement){
+	//int lang = ve.size()-1;
+	int lang = ve.size();
+	addItem(startElement);
+	for(int i = 0;i < lang;i++){
+		addItem( (String) ((Vector<?>)ve.get(i)).get(this.cmbdisplay));
+	}
+	
+}
+
 private void fillOneDimension(Vector<?> ve){
 	int lang = ve.size();
 	for(int i = 0;i < lang;i++){
@@ -123,13 +155,27 @@ private void fillCombo(Vector<?> ve){
 }
 
 public Object getSecValue(){
-	return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
+	if(this.startElement.equals("")){
+		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );		
+	}else{
+		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(this.cmbretvalue) );
+	}
+
 }
 public Object getValue(){
-	return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
+	if(this.startElement.equals("")){
+		return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );		
+	}else{
+		return ((String)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(this.cmbretvalue) );
+	}
 }
 public Object getValueAt(int pos){
-	return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(pos) );
+	if(this.startElement.equals("")){
+		return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(pos) );		
+	}else{
+		return ((String)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(pos) );		
+	}
+
 }
 
 @Override

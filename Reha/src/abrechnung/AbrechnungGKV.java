@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -84,11 +85,12 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	final String EOL = "'"+System.getProperty("line.separator");
 	final String SOZ = "?";
 	public String abzurechnendeKassenID = "";
-	String ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,ik_email;
+	String ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,ik_email,ik_preisgruppe;
 	String name_kostent;
 	String aktEsol;
 	String aktDfue;
 	String aktRechnung;
+	String aktDisziplin = "";
 	String[] diszis = {"KG","MA","ER","LO"};
 	
 	boolean annahmeAdresseOk = false;
@@ -188,7 +190,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		*/
 		//rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
 		//rootKasse = new DefaultMutableTreeNode( "Abrechnung für Kasse..." );
-		rootKasse = new JXTTreeNode(new KnotenObjekt("Abrechnung für Kasse...","",false,""),true);
+		rootKasse = new JXTTreeNode(new KnotenObjekt("Abrechnung für Kasse...","",false,"",""),true);
 		treeModelKasse = new KassenTreeModel((JXTTreeNode) rootKasse);
 
 		treeKasse = new JXTree(treeModelKasse);
@@ -253,7 +255,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		if(cmd.equals("einlesen")){
 			//rootKasse.removeAllChildren();
 			String[] reznr = {"KG","MA","ER","LO"};
-			abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
+			String[] diszis = {"Physio","Massage","Ergo","Logo"};
+			aktDisziplin = diszis[cmbDiszi.getSelectedIndex()];
+			//abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
 			if(abrRez.rezeptSichtbar){
 				abrRez.setRechtsAufNull();
 	    		aktuellerPat = "";
@@ -265,7 +269,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	
 	private void setPreisVec(int pos){
 		String[] reznr = {"KG","MA","ER","LO"};
-		abrRez.setPreisVec(reznr[pos]);
+		//abrRez.setPreisVec(reznr[pos]);
+		JOptionPane.showMessageDialog(null, "Aufruf von setPreisVec in AbrechnungGKV");
 	}
 	
 	/*********
@@ -362,7 +367,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			KnotenObjekt rezeptknoten = new KnotenObjekt(vecKassen.get(i).get(0)+"-"+name,
 					vecKassen.get(i).get(0),
 					(vecKassen.get(i).get(2).equals("T")? true : false),
-					vecKassen.get(i).get(3));
+					vecKassen.get(i).get(3),"");
 			rezeptknoten.ktraeger = ktraeger;
 			rezeptknoten.pat_intern = vecKassen.get(i).get(1);
 			meinitem = new JXTTreeNode(rezeptknoten,true);
@@ -373,7 +378,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 	}
 	private void astAnhaengen(String ast,String ktraeger,String ikkasse){
-		KnotenObjekt knoten = new KnotenObjekt(ast,"",false,"");
+		KnotenObjekt knoten = new KnotenObjekt(ast,"",false,"","");
 		knoten.ktraeger = ktraeger;
 		knoten.ikkasse = ikkasse;
 		JXTTreeNode node = new JXTTreeNode(knoten,true);
@@ -397,12 +402,25 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			//Rezept ausgewählt
 			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			Reha.thisClass.progressStarten(true);
-			if(! this.abrRez.setNewRez(node.rez_num,node.fertig) ){
-				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				return;
+			try{
+				if(! this.abrRez.setNewRez(node.rez_num,node.fertig,aktDisziplin) ){
+					Reha.thisClass.progressStarten(false);
+					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					JOptionPane.showMessageDialog(null,"Rezept konnte nicht ausgewertet werden");
+					return;
+				}
+			}catch(Exception ex){
+				ex.printStackTrace();
 			}
+			System.out.println("Rezept "+node.rez_num+" fertig eingestellt");
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			Reha.thisClass.progressStarten(false);
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					Reha.thisClass.progressStarten(false);					
+				}
+			});
+
+			
 			return;
 
 	}
@@ -580,7 +598,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			return;
 		}
 		abzurechnendeKassenID = getAktKTraeger();
-		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1 from kass_adr where ik_kasse='"+abzurechnendeKassenID+"' LIMIT 1";
+		String preisgr = getPreisgruppenKuerzel(aktDisziplin);
+		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1,"+preisgr+" from kass_adr where ik_kasse='"+abzurechnendeKassenID+"' LIMIT 1";
 		kassenIKs.clear();
 		kassenIKs = SqlInfo.holeFelder(cmd);
 		System.out.println(cmd);
@@ -598,7 +617,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		ik_physika = kassenIKs.get(0).get(3);
 		ik_papier = kassenIKs.get(0).get(4);
 		ik_email = kassenIKs.get(0).get(5);
-		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()]);
+		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(6))-1);
 		name_kostent = holeNameKostentraeger();
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -704,7 +723,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
-		abrDlg.setzeLabel("erstelle Email an: "+"");
+		abrDlg.setzeLabel("erstelle Email an: "+SystemConfig.hmEmailExtern.get("SenderAdresse"));
 		doEmail();
 		abrDlg.setzeLabel("übertrage Rezepte in Historie");
 		doUebertragen();
@@ -717,44 +736,39 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	}
 	/********************************************************************/	
 	private void doEmail(){
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				try{
-				System.out.println("Starte Emailversand.....");	
-				String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
-				//String pophost = SystemConfig.hmEmailExtern.get("Pop3Host");
-				String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
-				String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
-				String pass1 = SystemConfig.hmEmailExtern.get("Password");
-				String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
-				String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
-				String text = "";
-				boolean authx = (authent.equals("0") ? false : true);
-				boolean bestaetigen = false;
-				String[] encodedDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org","esol0"+aktEsol+".org"};
-				String[] aufDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf","esol0"+aktEsol+".auf"};
-				ArrayList<String[]> attachments = new ArrayList<String[]>();
-				attachments.add(encodedDat);
-				attachments.add(aufDat);
-				EmailSendenExtern oMail = new EmailSendenExtern();
-				try{
-					oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, Reha.aktIK, text,attachments,authx,bestaetigen);
-					oMail = null;
-					System.out.println("Emailversand beendet.....");
-				}catch(Exception e){
-					JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
-		        			"Mögliche Ursachen:\n"+
-		        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
-		        			"- Sie haben keinen Kontakt zum Internet");
-					e.printStackTrace( );
-				}
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-				return null;
+		try{
+			System.out.println("Erstelle Emailparameter.....");	
+			String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
+			//String pophost = SystemConfig.hmEmailExtern.get("Pop3Host");
+			String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
+			String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
+			String pass1 = SystemConfig.hmEmailExtern.get("Password");
+			String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
+			String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
+			String text = "";
+			boolean authx = (authent.equals("0") ? false : true);
+			boolean bestaetigen = false;
+			String[] encodedDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org","esol0"+aktEsol+".org"};
+			String[] aufDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf","esol0"+aktEsol+".auf"};
+			ArrayList<String[]> attachments = new ArrayList<String[]>();
+			attachments.add(encodedDat);
+			attachments.add(aufDat);
+			EmailSendenExtern oMail = new EmailSendenExtern();
+			try{
+				System.out.println("Starte Emailversand.....");
+				oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, Reha.aktIK, text,attachments,authx,bestaetigen);
+				oMail = null;
+				System.out.println("Emailversand beendet.....");
+			}catch(Exception e){
+				e.printStackTrace( );
+				JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
+	        			"Mögliche Ursachen:\n"+
+	        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
+	        			"- Sie haben keinen Kontakt zum Internet");
 			}
-		}.execute();
+		}catch(Exception ex){
+				ex.printStackTrace();
+		}
 	}
 	/********************************************************************/
 	private void doLoescheRezepte(){
@@ -781,6 +795,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	}
 	/***************************************************************/
 	private void doUebertragen(){
+		try{
 		String aktiverPatient = "";
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		if(patient != null){
@@ -822,9 +837,11 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					}
 				}
 			}
-			System.out.println(historieBuf.toString());
+			//System.out.println(historieBuf.toString());
+			System.out.println("Übertrage Rezept "+abgerechneteRezepte.get(i2)+" in Langzeitarchiv = Historie");
+
 			SqlInfo.sqlAusfuehren(historieBuf.toString());
-			//abrDlg.setzeLabel("lösche Rezepte in Historie, lösche Rezept: "+abgerechneteRezepte.get(i2));
+
 			if(aktiverPatient.equals(abgerechnetePatienten.get(i2)) ){
 				posteAktualisierung(aktiverPatient.toString());
 			}
@@ -837,11 +854,15 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			 * 
 			 *  
 			 */
-
-			SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");			
-
-			//SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
-			//SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+			
+			//SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");			
+			if(Reha.vollbetrieb){
+				SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+				SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+			}
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 	}
 	private void posteAktualisierung(String patid){
@@ -1391,6 +1412,21 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
     	}
     	treeKasse.repaint();
 	}
+	public String getPreisgruppenKuerzel(String disziplin){
+		if(disziplin.equals("Physio")){
+			return "pgkg";
+		}else if(disziplin.equals("Massage")){
+			return "pgma";
+		}else if(disziplin.equals("Ergo")){
+			return "pger";
+		}else if(disziplin.equals("Logo")){
+			return "pglo";
+		}else if(disziplin.equals("Reha")){
+			return "pgrh";
+		}else{
+			return "pgkg";
+		}
+	}
 	/***************************************/
 	private static class JXTTreeNode extends DefaultMutableTreeNode {
     	private boolean enabled = false;
@@ -1421,12 +1457,14 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		public String pat_intern;
 		public String entschluessel;
 		public String ikkasse;
+		public String preisgruppe;
 		
-		public KnotenObjekt(String titel,String rez_num,boolean fertig,String ikkasse){
+		public KnotenObjekt(String titel,String rez_num,boolean fertig,String ikkasse,String preisgruppe){
 			this.titel = titel;
 			this.fertig = fertig;
 			this.rez_num = rez_num;
 			this.ikkasse = ikkasse;
+			this.preisgruppe = preisgruppe;
 		}
 	}
 	/*************************************/

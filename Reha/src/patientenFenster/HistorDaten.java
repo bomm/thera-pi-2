@@ -27,6 +27,7 @@ import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
@@ -163,16 +164,27 @@ public class HistorDaten extends JXPanel{
 					rezlabs[7].setText(" ");
 				}
 				Vector<Vector<String>> preisvec = null;
+				int prgruppe = 0;
+				try{
+					 prgruppe = Integer.parseInt((String)vecaktrez.get(41));
+				}catch(Exception ex){
+					
+				}
 				if(xreznummer.contains("KG")){
-					preisvec = ParameterLaden.vKGPreise;
+					//preisvec = ParameterLaden.vKGPreise;
+					preisvec = SystemPreislisten.hmPreise.get("Physio").get(prgruppe);
 				}else if(xreznummer.contains("MA")){
-					preisvec = ParameterLaden.vMAPreise;
+					//preisvec = ParameterLaden.vMAPreise;
+					preisvec = SystemPreislisten.hmPreise.get("Massage").get(prgruppe);					
 				}else if(xreznummer.contains("ER")){
-					preisvec = ParameterLaden.vERPreise;
+					//preisvec = ParameterLaden.vERPreise;
+					preisvec = SystemPreislisten.hmPreise.get("Ergo").get(prgruppe);
 				}else if(xreznummer.contains("LO")){
-					preisvec = ParameterLaden.vLOPreise;
+					//preisvec = ParameterLaden.vLOPreise;
+					preisvec = SystemPreislisten.hmPreise.get("Logo").get(prgruppe);
 				}else if(xreznummer.contains("RH")){
-					preisvec = ParameterLaden.vRHPreise;
+					//preisvec = ParameterLaden.vRHPreise;
+					preisvec = SystemPreislisten.hmPreise.get("Reha").get(prgruppe);
 				}
 				rezlabs[8].setText( leistungTesten(0,preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
 
@@ -233,7 +245,7 @@ public class HistorDaten extends JXPanel{
 		}
 		*/
 		for(int i = 0;i<preisevec.size();i++){
-			if( new Integer( (String) ((Vector)preisevec.get(i)).get(35)) == veczahl ){
+			if( new Integer( (String) ((Vector)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
 				return StringTools.NullTest((String)vecaktrez.get(leistung+3))+"  *  "+
 				(String) ((Vector)preisevec.get(i)).get(1);
 			}
@@ -244,11 +256,18 @@ public class HistorDaten extends JXPanel{
 	
 	public JScrollPane getDatenPanel(){
 		JScrollPane jscr = null;
+		/*
 		FormLayout lay = new FormLayout("fill:0:grow(0.33),2px,fill:0:grow(0.33),2px,fill:0:grow(0.33)",
 		//FormLayout lay = new FormLayout("p,fill:0:grow(0.50),p,fill:0:grow(0.50),p",
 				//      1.Sep                2.Sep                              3.Sep
 				//1 2   3  4   5  6   7  8   9 10   11 12  13 14  15 16  17  18 19  20 21 22  23 24       25
 				"p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p,2dlu,p,2dlu,p, 2dlu,p,5dlu,p,5dlu,p,2dlu,p,20dlu:g,22px" );
+		*/
+		FormLayout lay = new FormLayout("fill:0:grow(0.33),2px,fill:0:grow(0.33),2px,fill:0:grow(0.33)",
+				//FormLayout lay = new FormLayout("p,fill:0:grow(0.50),p,fill:0:grow(0.50),p",
+						//      1.Sep                2.Sep                              3.Sep
+						//1 2   3  4   5  6   7  8   9 10   11 12  13 14  15 16  17  18 19  20 21 22  23 24       25
+						"p,1dlu,p,1dlu,p,1dlu,p,1dlu,p,5dlu,p,1dlu,p,1dlu,p, 1dlu,p,5dlu,p,5dlu,p,1dlu,p,20dlu:g,0px" );		
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder jpan = new PanelBuilder(lay);
 		jpan.getPanel().setOpaque(false);

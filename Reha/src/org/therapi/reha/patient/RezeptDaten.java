@@ -28,6 +28,7 @@ import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
@@ -150,18 +151,31 @@ public class RezeptDaten extends JXPanel{
 						Reha.thisClass.patpanel.rezlabs[7].setText(" ");
 					}
 					Vector<Vector<String>> preisvec = null;
-					if(xreznummer.contains("KG")){
-						preisvec = ParameterLaden.vKGPreise;
-					}else if(xreznummer.contains("MA")){
-						preisvec = ParameterLaden.vMAPreise;
-					}else if(xreznummer.contains("ER")){
-						preisvec = ParameterLaden.vERPreise;
-					}else if(xreznummer.contains("LO")){
-						preisvec = ParameterLaden.vLOPreise;
-					}else if(xreznummer.contains("RH")){
-						preisvec = ParameterLaden.vRHPreise;
+					int prgruppe = 0;
+					try{
+						 prgruppe = Integer.parseInt((String)vecaktrez.get(41))-1;
+					}catch(Exception ex){
+						
 					}
-
+					//if(prgruppe==0){prgruppe++;}
+					if(xreznummer.contains("KG")){
+						//preisvec = ParameterLaden.vKGPreise;
+						preisvec = SystemPreislisten.hmPreise.get("Physio").get(prgruppe);
+					}else if(xreznummer.contains("MA")){
+						//preisvec = ParameterLaden.vMAPreise;
+						preisvec = SystemPreislisten.hmPreise.get("Massage").get(prgruppe);					
+					}else if(xreznummer.contains("ER")){
+						//preisvec = ParameterLaden.vERPreise;
+						preisvec = SystemPreislisten.hmPreise.get("Ergo").get(prgruppe);
+					}else if(xreznummer.contains("LO")){
+						//preisvec = ParameterLaden.vLOPreise;
+						preisvec = SystemPreislisten.hmPreise.get("Logo").get(prgruppe);
+					}else if(xreznummer.contains("RH")){
+						//preisvec = ParameterLaden.vRHPreise;
+						preisvec = SystemPreislisten.hmPreise.get("Reha").get(prgruppe);
+					}
+					//System.out.println(preisvec);
+					//System.out.println("PreisGruppe = "+prgruppe);
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
 							int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
@@ -255,7 +269,7 @@ public class RezeptDaten extends JXPanel{
 			return retwert;
 		}
 		for(int i = 0;i<preisevec.size();i++){
-			if( new Integer( (String) ((Vector)preisevec.get(i)).get(35)) == veczahl ){
+			if( new Integer( (String) ((Vector)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
 				return StringTools.NullTest((String)vecaktrez.get(leistung+3))+"  *  "+
 				(String) ((Vector)preisevec.get(i)).get(1);
 			}

@@ -111,6 +111,7 @@ public class SystemConfig {
 	*/
 	public static HashMap<String,Integer> hmContainer = null;
 	
+	/*
 	public static Vector<String> vPreisGruppen;
 	public static Vector<Integer> vHMRAbrechnung;
 	public static Vector<Integer> vZuzahlRegeln;
@@ -119,6 +120,8 @@ public class SystemConfig {
 	public static Vector<Vector<Integer>> vNeuePreiseRegel;
 	public static Vector<Vector<String>> vHBRegeln;
 	public static Vector<String> vBerichtRegeln;
+	*/
+	
 	public static Vector<String> vPatMerker = null;
 	public static Vector<ImageIcon> vPatMerkerIcon = null;
 	
@@ -606,6 +609,7 @@ public class SystemConfig {
 	public static void GruppenLesen(){
 		oGruppen = new GruppenEinlesen().init();
 	}
+	/*
 	public static void TarifeLesen(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		int tarife = inif.getIntegerProperty("PreisGruppen", "AnzahlPreisGruppen");
@@ -626,8 +630,6 @@ public class SystemConfig {
 			vPreisGueltig.add(inif.getStringProperty("PreisGruppen","PGGueltig"+i));
 			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
 			vHMRAbrechnung.add(inif.getIntegerProperty("HMRAbrechnung","HMRAbrechnung"+i));
-			//vNeuePreiseAb.add(inif.getStringProperty("PreisGruppen","NeuePreiseAb"+i));
-			//vNeuePreiseRegel.add(inif.getIntegerProperty("PreisGruppen","NeuePreiseRegel"+i));
 		}
 		tarife = inif.getIntegerProperty("HBRegeln", "AnzahlHBRegeln");
 		for(int i = 1; i <= tarife; i++){
@@ -663,6 +665,7 @@ public class SystemConfig {
 		System.out.println("Neue Preise Regeln = "+vNeuePreiseRegel);
 
 	}
+	*/
 	public static void HashMapsVorbereiten(){
 		/********************/
 		hmAdrKDaten = new HashMap<String,String>();

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Vector;
 
 import systemEinstellungen.SystemConfig;
+import systemTools.StringTools;
 
 public class SqlInfo {
 	
@@ -107,7 +108,7 @@ public class SqlInfo {
 		return retid;
 	}
 /*******************************/
-	public static Vector holeSatz(String tabelle, String felder, String kriterium, List ausschliessen){
+	public static Vector<String> holeSatz(String tabelle, String felder, String kriterium, List<?> ausschliessen){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
@@ -161,11 +162,11 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec;
+		return (Vector<String>)retvec;
 	}
 /*****************************************/
 	/*******************************/
-	public static Vector holeSatzLimit(String tabelle, String felder, String kriterium,int[] limit, List ausschliessen){
+	public static Vector<String> holeSatzLimit(String tabelle, String felder, String kriterium,int[] limit, List<?> ausschliessen){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
@@ -224,10 +225,10 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec;
+		return (Vector<String>)retvec;
 	}
 /*****************************************/
-	public static Vector<String> holeFeldNamen(String tabelle, boolean ausnahmen, List lausnahmen){
+	public static Vector<String> holeFeldNamen(String tabelle, boolean ausnahmen, List<?> lausnahmen){
 		Vector<String> vec = new Vector<String>();
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -268,7 +269,7 @@ public class SqlInfo {
 		return vec;
 	}
 
-	public static Vector holeFeldForUpdate(String tabelle, String feld, String kriterium){
+	public static Vector<String> holeFeldForUpdate(String tabelle, String feld, String kriterium){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
@@ -312,7 +313,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec;
+		return (Vector<String>)retvec;
 	}
 
 	/*******************************/
@@ -393,43 +394,7 @@ public class SqlInfo {
 		//zun�chst versuchen da� immer nur ein Leerzeichen zwischen den Begriffen existiert 
 		cmd = cmd.replaceAll("   ", " ");
 		cmd = cmd.replaceAll("  ", " ");
-		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld da� er nix finder!!!
-		/*
-		String[] felder = suchein;
-		String[] split = cmd.split(" ");
-		if(split.length==1){
-			ret = ret +" (";
-			for(int i = 0; i < felder.length;i++){
-				ret = ret+felder[i]+" like '%"+cmd+"%'";
-				if(i < felder.length-1){
-					ret = ret+ " OR ";
-				}
-			}
-			ret = ret +") ";
-			return ret;
-		}
-		
-		
-		ret = ret +"( ";
-		for(int i = 0; i < split.length;i++){
-			if(! split[i].equals("")){
-				ret = ret +" (";
-				for(int i2 = 0; i2 < felder.length;i2++){
-					ret = ret+felder[i2]+" like '%"+split[i]+"%'";
-					if(i2 < felder.length-1){
-						ret = ret+ " OR ";
-					}
-				}
-				ret = ret +") ";
-				if(i < split.length-1){
-					ret = ret+ " AND ";
-				}
-			}
-			
-		}
-		ret = ret +") ";
-		return ret;
-		*/
+		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daß er nix finder!!!
 		String[] felder = suchein;
 		String[] split = cmd.split(" ");
 		if(split.length==1){
@@ -478,16 +443,12 @@ public class SqlInfo {
 			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
 			//System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(numvec.size() > 0){
 			reznr = new Integer( (String)((Vector) numvec).get(0) );
-			//System.out.println("Neue Rezeptnummer = "+reznr);
 			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
-			//System.out.println("Kommando = "+cmd);
-			new ExUndHop().setzeStatement(cmd);
-			//System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+			SqlInfo.sqlAusfuehren(cmd);
 			try {
 				Reha.thisClass.conn.setAutoCommit(true);
 			} catch (SQLException e) {
@@ -980,6 +941,49 @@ public class SqlInfo {
 		}
 		return is;
 	}
-
+	public static boolean transferRowToAnotherDB(String sourcedb,
+			String targetdb,
+			String rez_nr,
+			boolean ausnahmen,
+			List<?> lausnahmen){
+		
+		boolean ret = false;
+		StringBuffer transferBuf = new StringBuffer();
+		StringBuffer insertBuf = new StringBuffer();
+		Vector<String> feldNamen = SqlInfo.holeFeldNamen(sourcedb,ausnahmen,lausnahmen );
+		transferBuf.append("select ");
+		int rezeptFelder = 0;
+		for(int i = 0; i < feldNamen.size();i++){
+			if(i > 0){
+				transferBuf.append(","+feldNamen.get(i));				
+			}else{
+				transferBuf.append(feldNamen.get(i));
+			}
+		}
+		transferBuf.append(" from "+sourcedb+" where rez_nr='");
+		Vector<Vector<String>> vec = SqlInfo.holeFelder(transferBuf.toString()+rez_nr+"'");
+		
+		if(vec.size()<=0){
+			return false;
+		}
+		try{
+			rezeptFelder = vec.get(0).size();	
+			insertBuf.append("insert into "+targetdb+" set ");
+			for(int i = 0; i < rezeptFelder;i++){
+				if(!vec.get(0).get(i).equals("")){
+					if(i > 0){
+						insertBuf.append(","+feldNamen.get(i)+"='"+StringTools.Escaped(vec.get(0).get(i))+"'");
+					}else{
+						insertBuf.append(feldNamen.get(i)+"='"+StringTools.Escaped(vec.get(0).get(i))+"'");
+					}
+				}
+			}
+			SqlInfo.sqlAusfuehren(insertBuf.toString());
+			return true;
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return ret;
+	}
 
 }

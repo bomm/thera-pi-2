@@ -351,6 +351,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		String[] inpos = {null,null};
 		String spos = "";
 		String sart = "";
+		int preisgruppe = 0;
 		Double gesamt = new Double(0.00); 
 		/*
 		List<String> lAdrAFRDaten = Arrays.asList(new String[]{"<AFRposition1>","<AFRposition2>","<AFRposition3>"
@@ -369,11 +370,13 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,s);
 				gesamt = gesamt+preis;
-				
+				//spos = art_dbeh1 etc.
 				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
+				//sart = rezeptnummer;
 				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
-				inpos = LeistungTools.getLeistung(sart, spos);	
+				preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
+				inpos = LeistungTools.getLeistung(sart, spos,preisgruppe);	
 				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
 				SystemConfig.hmAdrAFRDaten.put(mapkurz,inpos[1]);
 				//System.out.println(inpos[0]);
@@ -383,7 +386,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
 				sart = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 				sart = sart.substring(0,2);
-				inpos = LeistungTools.getLeistung(sart, spos);	
+				preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
+				inpos = LeistungTools.getLeistung(sart, spos,preisgruppe);	
 
 				SystemConfig.hmAdrAFRDaten.put(mappos,leistung[i].getText());
 				SystemConfig.hmAdrAFRDaten.put(mappreis,"0,00");

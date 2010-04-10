@@ -326,14 +326,14 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
+		/*
 		jxLink = new JXHyperlink();
 		jxLink.setText("Monatsübersicht");
 		jxLink.setActionCommand("monthview");
-		//img = new ImageIcon(Reha.proghome+"icons/chronometer.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-		//jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
+		*/
 		//tp4.setExpanded(true);
 		return tp4;
 	}

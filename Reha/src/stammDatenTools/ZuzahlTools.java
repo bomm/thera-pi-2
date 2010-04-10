@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import terminKalender.DatFunk;
 
 public class ZuzahlTools {
@@ -205,14 +206,15 @@ public class ZuzahlTools {
 		String preisgrp = "";
 		int zzregel = -1;
 		if(kassid.equals("-1")){
-			JOptionPane.showMessageDialog(null,"Keine g�ltige Kasse angegeben");
+			JOptionPane.showMessageDialog(null,"Keine gültige Kasse angegeben");
 			return -1;
 		}
 		Vector vec = SqlInfo.holeFelder("select preisgruppe from kass_adr where id='"+kassid.trim()+"' LIMIT 1");
 		System.out.println("Die Preisgruppe von KassenID ="+kassid.trim()+" = "+((String)((Vector)vec.get(0)).get(0)) );
 		preisgrp = ((String)((Vector)vec.get(0)).get(0));
 		
-		zzregel = SystemConfig.vZuzahlRegeln.get(new Integer(preisgrp)-1);
+		//zzregel = SystemConfig.vZuzahlRegeln.get(new Integer(preisgrp)-1);
+		zzregel = SystemPreislisten.hmZuzahlRegeln.get("Physio").get(new Integer(preisgrp)-1);
 		return zzregel;
 	}
 	

@@ -49,6 +49,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -259,7 +260,9 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		//int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19};
 		int anzahlf = fedits.length;
 		String dbid = this.kassenId;
-		String stmt = "update kass_adr set ";
+		StringBuffer kkBuffer = new StringBuffer();
+		//String stmt = "update kass_adr set ";
+		kkBuffer.append("update kass_adr set ");
 		if(this.neuAnlage){
 			int iid = SqlInfo.holeId("kass_adr", "KASSEN_NAM1");
 			if(iid==-1){
@@ -270,11 +273,19 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			this.kassenId = dbid;
 		}
 		for(int i = 0; i < anzahlf; i++){
-			stmt = stmt + jtf[fedits[i]].getName() + "='"+jtf[fedits[i]].getText().trim()+"' ,";
+			//stmt = stmt + jtf[fedits[i]].getName() + "='"+jtf[fedits[i]].getText().trim()+"' ,";
+			kkBuffer.append(jtf[fedits[i]].getName() + "='"+jtf[fedits[i]].getText().trim()+"' ,");
 		}
-		stmt = stmt + "preisgruppe ='"+ new Integer(this.tarifGruppe.getSelectedIndex()+1).toString()+"'"+
-				"where id='"+dbid+"'";
-		new ExUndHop().setzeStatement(stmt);
+		//stmt = stmt + "preisgruppe ='"+ new Integer(this.tarifGruppe.getSelectedIndex()+1).toString()+"', "+
+		kkBuffer.append("preisgruppe ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
+		kkBuffer.append("pgkg ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
+		kkBuffer.append("pgma ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
+		kkBuffer.append("pger ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
+		kkBuffer.append("pglo ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
+		kkBuffer.append("pgrh ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"' ");
+		kkBuffer.append("where id='"+dbid+"'");
+		//new ExUndHop().setzeStatement(stmt);
+		SqlInfo.sqlAusfuehren(kkBuffer.toString());
 		System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
 	}
 	public void tabelleAktualisieren(){
@@ -377,9 +388,9 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				int gruppen = SystemConfig.vPreisGruppen.size();
+				int gruppen = SystemPreislisten.hmPreisGruppen.get("Common").size();
 				for(int i = 0; i < gruppen;i++){
-					tarifGruppe.addItem(SystemConfig.vPreisGruppen.get(i));
+					tarifGruppe.addItem(SystemPreislisten.hmPreisGruppen.get("Common").get(i));
 				}
 				tarifGruppe.setSelectedIndex(0);
 				return null;

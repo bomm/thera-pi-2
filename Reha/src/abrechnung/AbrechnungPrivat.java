@@ -34,9 +34,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import dialoge.DragWin;
 import dialoge.PinPanel;
 
@@ -72,14 +74,17 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 
 	public AbrechnungPrivat(JXFrame owner,String titel,int rueckgabe,int preisgruppe) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
+		final int ipg = preisgruppe-1;
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				preisliste = RezTools.holePreisVector(Reha.thisClass.patpanel.vecaktrez.get(1).substring(0,2));
+				System.out.println("Preisgruppe = "+ipg);
+				preisliste = SystemPreislisten.hmPreise.get(RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1))).get(ipg);
 				preisok = true;
 				return null;
 			}
 		}.execute();
+
 		this.rueckgabe = rueckgabe;
 		this.preisgruppe = preisgruppe;
 		this.setUndecorated(true);
@@ -121,8 +126,11 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		pan.setOpaque(false);
 		JLabel lab = new JLabel("Preisgruppe wählen:");
 		pan.add(lab,cc.xy(3,3));
-		jcmb = new JRtaComboBox(SystemConfig.vPreisGruppen);
+		//jcmb = new JRtaComboBox(SystemConfig.vPreisGruppen);
+		jcmb = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get(StringTools.getDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1))));
 		jcmb.setSelectedIndex(this.preisgruppe-1);
+		jcmb.setActionCommand("neuertarif");
+		jcmb.addActionListener(this);
 		pan.add(jcmb,cc.xy(3,5));
 		jrb[0] = new JRtaRadioButton("Formular für Privatrechnung verwenden");
 		pan.add(jrb[0],cc.xy(3,7));
@@ -207,6 +215,27 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	private void doBGE(){
 		
 	}
+	private void doNeuerTarif(){
+		int itarif = jcmb.getSelectedIndex(); 
+		preisliste = SystemPreislisten.hmPreise.get(RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1))).get(itarif);
+		System.out.println("stelle neuen Tarif ein....");
+		if(!Reha.thisClass.patpanel.vecaktrez.get(8).equals("0")){
+			labs[0].setText(Reha.thisClass.patpanel.vecaktrez.get(3)+" * "+
+					RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(8), preisliste));
+		}
+		if(!Reha.thisClass.patpanel.vecaktrez.get(9).equals("0")){
+			labs[1].setText(Reha.thisClass.patpanel.vecaktrez.get(4)+" * "+
+					RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(9), preisliste));
+		}
+		if(!Reha.thisClass.patpanel.vecaktrez.get(10).equals("0")){
+			labs[2].setText(Reha.thisClass.patpanel.vecaktrez.get(5)+" * "+
+					RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(10), preisliste));
+		}
+		if(!Reha.thisClass.patpanel.vecaktrez.get(11).equals("0")){
+			labs[3].setText(Reha.thisClass.patpanel.vecaktrez.get(6)+" * "+
+					RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(11), preisliste));
+		}
+	}
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
@@ -223,6 +252,10 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
+		if(cmd.equals("neuertarif")){
+			doNeuerTarif();
+			return;
+		}
 		if(cmd.equals("abbrechen")){
 			this.rueckgabe = -1;
 			FensterSchliessen("dieses");
@@ -303,6 +336,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	public void FensterSchliessen(String welches){
 		this.jtp.removeMouseListener(this.mymouse);
 		this.jtp.removeMouseMotionListener(this.mymouse);
+		this.jcmb.removeActionListener(this);
 		this.content.removeKeyListener(this);
 		for(int i = 0; i < 2;i++){
 			but[i].removeActionListener(this);

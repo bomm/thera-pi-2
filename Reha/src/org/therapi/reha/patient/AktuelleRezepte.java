@@ -81,6 +81,7 @@ import stammDatenTools.RezTools;
 import stammDatenTools.ZuzahlTools;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
 import systemTools.JCompTools;
@@ -1407,7 +1408,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		try{
 			if(this.neuDlgOffen){return;}
 			int pghmr = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41));
-			if(SystemConfig.vHMRAbrechnung.get(pghmr-1) < 1){
+			String disziplin = StringTools.getDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
+			//if(SystemConfig.vHMRAbrechnung.get(pghmr-1) < 1){
+			if(SystemPreislisten.hmHMRAbrechnung.get(disziplin).get(pghmr-1) < 1){	
 				String meldung = "Die Tarifgruppe dieser Verordnung unterliegt nicht den Heilmittelrichtlinien.\n\n"+
 				"Abschließen des Rezeptes ist nicht erforderlich";
 				JOptionPane.showMessageDialog(null,meldung);

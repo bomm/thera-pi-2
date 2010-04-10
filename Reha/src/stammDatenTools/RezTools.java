@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
@@ -112,10 +113,10 @@ public class RezTools {
 		
 	}
 /********************************************************************************/
-	public static boolean zweiPositionenBeiHB(String preisgruppe){
+	public static boolean zweiPositionenBeiHB(String disziplin,String preisgruppe){
 		int pg = Integer.parseInt(preisgruppe)-1;
-		if(SystemConfig.vHBRegeln.get(pg).get(2).trim().equals("") &&
-				SystemConfig.vHBRegeln.get(pg).get(3).trim().equals("")	){
+		if(SystemPreislisten.hmHBRegeln.get(disziplin).get(pg).get(2).trim().equals("") &&
+				SystemPreislisten.hmHBRegeln.get(disziplin).get(pg).get(3).trim().equals("")	){
 			return false;
 		}
 		return true;
@@ -124,11 +125,10 @@ public class RezTools {
 	public static String getPreisAktFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-1;
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(suchenin).toString();
+				ret = vec.get(i).get(3).toString();
 				break;
 			}
 		}
@@ -137,11 +137,10 @@ public class RezTools {
 	public static String getPreisAltFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
-		int suchenin = (Integer.parseInt(preisgruppe)*4);
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(suchenin).toString();
+				ret = vec.get(i).get(4).toString();
 				break;
 			}
 		}
@@ -150,11 +149,10 @@ public class RezTools {
 /***************************************/
 	public static String getPreisAktFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-1;
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(1).equals(pos)){
-				ret = vec.get(i).get(suchenin).toString();
+				ret = vec.get(i).get(3).toString();
 				break;
 			}
 		}
@@ -162,11 +160,10 @@ public class RezTools {
 	}
 	public static String getPreisAltFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
-		int suchenin = (Integer.parseInt(preisgruppe)*4);
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(1).equals(pos)){
-				ret = vec.get(i).get(suchenin).toString();
+				ret = vec.get(i).get(4).toString();
 				break;
 			}
 		}
@@ -177,24 +174,22 @@ public class RezTools {
 	public static String getIDFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "-1";
 		for(i = 0; i < lang;i++){
-			if( vec.get(i).get(suchenin).equals(pos)){
+			if( vec.get(i).get(2).equals(pos)){
 				ret = vec.get(i).get(idpos).toString();
 				break;
 			}
 		}
 		return ret;
 	}
-	public static String getIDFromPos(String pos,String preisgruppe,String disziplin){
-		Vector<Vector<String>> vec = holePreisVector(disziplin);
+	public static String getIDFromPosX(String pos,String preisgruppe,String disziplin){
+		Vector<Vector<String>> vec = holePreisVector(disziplin,Integer.parseInt(preisgruppe)-1);
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "-1";
 		for(i = 0; i < lang;i++){
-			if( vec.get(i).get(suchenin).equals(pos)){
+			if( vec.get(i).get(2).equals(pos)){
 				ret = vec.get(i).get(idpos).toString();
 				break;
 			}
@@ -205,11 +200,10 @@ public class RezTools {
 	public static String getPosFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "";
 		for(i = 0; i < lang;i++){
 			if( vec.get(i).get(idpos).equals(id)){
-				ret = vec.get(i).get(suchenin).toString();
+				ret = vec.get(i).get(2).toString();
 				break;
 			}
 		}
@@ -242,11 +236,11 @@ public class RezTools {
 	}
 	public static Object[] getKurzformUndIDFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		//int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		int idpos = vec.get(0).size()-1;
 		Object[] retobj = {"",""};
 		for(i = 0; i < lang;i++){
-			if(vec.get(i).get(suchenin).equals(pos)){
+			if(vec.get(i).get(2).equals(pos)){
 				retobj[0] = vec.get(i).get(1).toString();
 				retobj[1] = vec.get(i).get(idpos).toString();
 				break;
@@ -268,17 +262,22 @@ public class RezTools {
 		return ret;
 	}
 
-	public static Vector<Vector<String>> holePreisVector(String disziplin){
+	public static Vector<Vector<String>> holePreisVector(String disziplin,int preisgruppe){
 		if(disziplin.startsWith("KG")){
-			return  (Vector<Vector<String>>)ParameterLaden.vKGPreise;
+			//return  (Vector<Vector<String>>)ParameterLaden.vKGPreise;
+			return SystemPreislisten.hmPreise.get("Physio").get(preisgruppe);			
 		}else if(disziplin.startsWith("MA")){
-			return  (Vector<Vector<String>>)ParameterLaden.vMAPreise;
+			//return  (Vector<Vector<String>>)ParameterLaden.vMAPreise;
+			return SystemPreislisten.hmPreise.get("Massage").get(preisgruppe);			
 		}else if(disziplin.startsWith("ER")){
-			return  (Vector<Vector<String>>)ParameterLaden.vERPreise;
+			//return  (Vector<Vector<String>>)ParameterLaden.vERPreise;
+			return SystemPreislisten.hmPreise.get("Ergo").get(preisgruppe);
 		}else if(disziplin.startsWith("LO")){
-			return  (Vector<Vector<String>>)ParameterLaden.vLOPreise;
+			//return  (Vector<Vector<String>>)ParameterLaden.vLOPreise;
+			return SystemPreislisten.hmPreise.get("Logo").get(preisgruppe);
 		}else if(disziplin.startsWith("RH")){
-			return  (Vector<Vector<String>>)ParameterLaden.vRHPreise;
+			//return  (Vector<Vector<String>>)ParameterLaden.vRHPreise;
+			return SystemPreislisten.hmPreise.get("Reha").get(preisgruppe);
 		}
 		return null;
 	}
@@ -456,9 +455,9 @@ public class RezTools {
 		zm.hausbesuch = ((String)Reha.thisClass.patpanel.vecaktrez.get(43)).equals("T");
 		zm.hbvoll = ((String)Reha.thisClass.patpanel.vecaktrez.get(61)).equals("T");
 		zm.hbheim = ((String)Reha.thisClass.patpanel.patDaten.get(44)).equals("T");
-		zm.km = new Integer(StringTools.ZahlTest(((String)Reha.thisClass.patpanel.patDaten.get(48))));
-		zm.preisgruppe = new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(41)));
-		zm.gesamtZahl = new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(64)));
+		zm.km = StringTools.ZahlTest(((String)Reha.thisClass.patpanel.patDaten.get(48)));
+		zm.preisgruppe = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(41)));
+		zm.gesamtZahl = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(64)));
 		//Hausbesuch als logischen wert
 
 		if(iret==0){
@@ -704,14 +703,14 @@ public class RezTools {
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
 		System.out.println("----------------------------------------------------");
-		System.out.println("Endg�ltige und geparste Rezeptgeb�hr = "+s+" EUR");
+		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		//System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 	}
 		
 
 	public static void constructEndeFreiRezHMap(ZuzahlModell zm,boolean anfang){
-		System.out.println("*****�ber Ende Frei*********");
+		System.out.println("*****Über Ende Frei*********");
 		constructAnfangFreiRezHMap(zm,anfang);
 	}	
 	public static Vector<Vector<String>>splitteTermine(String terms){
@@ -770,8 +769,11 @@ public class RezTools {
 		return ret;
 	}
 	public static String PreisUeberPosition(String position,int preisgruppe,String disziplin,boolean neu ){
+		JOptionPane.showMessageDialog(null, "Aufruf der Funktion PreisUeberPosition");
 		String ret = null;
 		Vector preisvec = null;
+		preisvec = SystemPreislisten.hmPreise.get(putRezNrGetDisziplin(disziplin)).get(preisgruppe-1);
+		/*
 		if(disziplin.equals("KG")){
 			preisvec = ParameterLaden.vKGPreise;			
 		}
@@ -784,11 +786,12 @@ public class RezTools {
 		if(disziplin.equals("LO")){
 			preisvec = ParameterLaden.vLOPreise;			
 		}
+		*/
 		//System.out.println("Beginne Suche nach dem Preis von Position ---> "+position);
 		for(int i = 0; i < preisvec.size();i++){
 			//System.out.println(""+i+" - "+((String)((Vector)preisvec.get(i)).get( (1+(preisgruppe*4)-3))) );
-			if(  ((String)((Vector)preisvec.get(i)).get( (1+(preisgruppe*4)-3))).equals(position) ){
-				ret =  ((String)((Vector)preisvec.get(i)).get( ( 1+(preisgruppe*4)-(neu ? 2 : 1))));
+			if(  ((String)((Vector)preisvec.get(i)).get(2)).equals(position) ){
+				ret =  ((String)((Vector)preisvec.get(i)).get(3+(neu ? 0 : 1)));
 				System.out.println("Der Preis von "+position+" = "+ret);
 				return ret;
 			}
@@ -797,7 +800,20 @@ public class RezTools {
 		return ret;
 	}
 	
-
+	public static String putRezNrGetDisziplin(String reznr){
+		if(reznr.startsWith("KG")){
+			return "Physio";
+		}else if(reznr.startsWith("MA")){
+			return "Massage";
+		}else if(reznr.startsWith("ER")){
+			return "Ergo";
+		}else if(reznr.startsWith("LO")){
+			return "Logo";
+		}else if(reznr.startsWith("RH")){
+			return "Reha";
+		}
+		return "Physio";
+	}
 	public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb,int realhbAnz){
 		
 		//Object[] retobj = {new BigDecimal(new Double(0.00)),(Double)rezgeb};
@@ -810,27 +826,35 @@ public class RezTools {
 			System.out.println("Hausbesuch ist angesagt");
 			String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
 			String rezid = SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2);
+			/*
 			String zz =  SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(4);
 			String kmgeld = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(2);
 			String kmpausch = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(3);			
 			String hbpos = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(0);
 			String hbmit = SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(1);
-			//f�r jede Disziplin eine anderes praefix
-			String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
+			*/
+			String zz =  SystemPreislisten.hmHBRegeln.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1).get(4);
+			String kmgeld = SystemPreislisten.hmHBRegeln.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1).get(2);
+			String kmpausch = SystemPreislisten.hmHBRegeln.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1).get(3);			
+			String hbpos = SystemPreislisten.hmHBRegeln.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1).get(0);
+			String hbmit = SystemPreislisten.hmHBRegeln.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1).get(1);
 
+			//für jede Disziplin eine anderes praefix
+			String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
+			/*
 			kmgeld = kmgeld.replaceAll("x",ersatz); 
 			kmpausch = kmpausch.replaceAll("x",ersatz); 
 			hbpos = hbpos.replaceAll("x",ersatz); 
 			hbmit = hbmit.replaceAll("x",ersatz);
-			
+			*/
 			String preis = "";
 			BigDecimal bdrezgeb;
 			BigDecimal bdposwert;
 			BigDecimal bdpreis;
 			BigDecimal bdendrezgeb;
 			BigDecimal testpr;
-			SystemConfig.hmAdrRDaten.put("<Rwegkm>",new Integer(zm.km).toString());
-			SystemConfig.hmAdrRDaten.put("<Rhbanzahl>",new Integer(zm.gesamtZahl).toString() );
+			SystemConfig.hmAdrRDaten.put("<Rwegkm>",Integer.toString(zm.km));
+			SystemConfig.hmAdrRDaten.put("<Rhbanzahl>",Integer.toString(zm.gesamtZahl) );
 			DecimalFormat dfx = new DecimalFormat( "0.00" );
 
 			if(zm.hbheim){ // und zwar im Heim
@@ -870,8 +894,8 @@ public class RezTools {
 						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 					}
 					/*******************************/
-					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden k�nnen
-						System.out.println("Es k�nnten Kilometer abgerechnet werden");
+					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
+						System.out.println("Es könnten Kilometer abgerechnet werden");
 						if(zm.km > 0 ){
 							System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 
@@ -946,7 +970,7 @@ public class RezTools {
 								
 
 							}else{
-								JOptionPane.showMessageDialog(null, "Dieser Kostentr�ger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+								JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 								SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");
 								SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
 								SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
@@ -956,7 +980,7 @@ public class RezTools {
 							
 						}
 					}else{// es k�nnen keine Kilometer abgerechnet werden
-						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verf�gung");
+						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
 						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1105,7 +1129,7 @@ public class RezTools {
 					}else{
 						System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
 						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verf�gung stellt
-							System.out.println("Die Kasse stellt eine Wegpauschale zur Verf�gung");
+							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
 							preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);

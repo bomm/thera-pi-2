@@ -30,8 +30,9 @@ Class-Path: Libraries/lib/sql/adsjdbc.jar
  Libraries/lib/serial/comm.jar 
  Libraries/lib/serial/javaxpcom.jar 
  Libraries/lib/serial/javax.comm.properties 
- Libraries/lib/mail/mail.jar 
- Libraries/lib/mail/smtp.jar 
+ Libraries/lib/net/mail.jar 
+ Libraries/lib/net/smtp.jar 
+ Libraries/lib/apachecommons/commons-net-2.0.jar 
  Libraries/lib/itext/iText-2.1.6.jar 
  Libraries/lib/mmscomputing/uk.co.mmscomputing.device.twain.jar 
  Nebraska.jar 

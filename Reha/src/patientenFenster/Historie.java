@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -25,12 +26,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -57,13 +61,15 @@ import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
 
-
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.ToolsDialog;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.IconListRenderer;
 import systemTools.JCompTools;
 import terminKalender.DatFunk;
 
@@ -132,8 +138,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				//vollPanel = new JXPanel();
 				//HistorPanel vollPanel = new HistorPanel();
 				vollPanel = new HistorPanel();
-
-				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+				FormLayout vplay = new FormLayout("fill:0:grow(0.75),5dlu,fill:0:grow(0.25),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+//				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
 				CellConstraints vpcc = new CellConstraints();
 				vollPanel.setLayout(vplay);
 				vollPanel.setOpaque(false);
@@ -373,7 +379,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				wechselPanel.add(leerPanel);
 				aktPanel = "leerPanel";
 				for(int i = 0; i < 4;i++){
-					histbut[i].setEnabled(false);
+					try{
+						histbut[i].setEnabled(false);
+					}catch(Exception ex){
+						
+					}
 				}
 			}
 		}else{
@@ -382,7 +392,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				wechselPanel.add(vollPanel);
 				aktPanel = "vollPanel";
 				for(int i = 0; i < 4;i++){
-					histbut[i].setEnabled(true);
+					try{
+						histbut[i].setEnabled(true);
+					}catch(Exception ex){
+						
+					}
 				}
 			}
 		}
@@ -402,7 +416,19 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		histbut[0].setActionCommand("arztbericht");
 		histbut[0].addActionListener(this);		
 		jtb.add(histbut[0]);
+		
+		jtb.addSeparator(new Dimension(30,0));
+		
+		histbut[1] = new JButton();
+		histbut[1].setIcon(SystemConfig.hmSysIcons.get("tools"));
+		histbut[1].setToolTipText("Werkzeugkiste für die Historie");
+		histbut[1].setActionCommand("werkzeuge");
+		histbut[1].addActionListener(this);		
+		jtb.add(histbut[1]);
+		
+		
 
+		/*
 		histbut[1] = new JButton();
 		histbut[1].setIcon(SystemConfig.hmSysIcons.get("info2"));
 		histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
@@ -423,8 +449,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		histbut[3].setActionCommand("historprinttage");
 		histbut[3].addActionListener(this);		
 		jtb.add(histbut[3]);
+		*/
 		for(int i = 0; i < 4;i++){
-			histbut[i].setEnabled(false);
+			try{
+				histbut[i].setEnabled(false);
+			}catch(Exception ex){
+				
+			}
 		}
 		
 		
@@ -662,6 +693,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}else if(cmd.equals("historprinttage")){
 			return;			
 		}
+		if(cmd.equals("werkzeuge")){
+			new ToolsDlgHistorie("",histbut[1].getLocationOnScreen());
+		}
+
 		
 	}
 	@Override
@@ -845,7 +880,73 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	        }
 	        //System.out.println(output.toString());
 	    }
-	}   
+	} 
+	/*
+	histbut[1] = new JButton();
+	histbut[1].setIcon(SystemConfig.hmSysIcons.get("info2"));
+	histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
+	histbut[1].setActionCommand("historinfo");
+	histbut[1].addActionListener(this);		
+	jtb.add(histbut[1]);
+
+	histbut[2] = new JButton();
+	histbut[2].setIcon(SystemConfig.hmSysIcons.get("euro"));
+	histbut[2].setToolTipText("Gesamtumsatz des Patienten (aller aktuellen und in der Historie befindlichen Rezepte)");
+	histbut[2].setActionCommand("historumsatz");
+	histbut[2].addActionListener(this);		
+	jtb.add(histbut[2]);
+	
+	histbut[3] = new JButton();
+	histbut[3].setIcon(SystemConfig.hmSysIcons.get("einzeltage"));
+	histbut[3].setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
+	histbut[3].setActionCommand("historprinttage");
+	histbut[3].addActionListener(this);		
+	jtb.add(histbut[3]);
+	*/
+	
+	class ToolsDlgHistorie{
+		public ToolsDlgHistorie(String command,Point pt){
+
+			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("Gesamtumsatz dieses Patienten",SystemConfig.hmSysIcons.get("euro"));
+			icons.put("Behandlungstage drucken",SystemConfig.hmSysIcons.get("einzeltage"));
+			// create a list with some test data
+			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten", "Behandlungstage drucken"});
+			list.setCellRenderer(new IconListRenderer(icons));	
+			int rueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list,rueckgabe);
+			tDlg.setPreferredSize(new Dimension(200,200));
+			tDlg.setLocation(pt.x-70,pt.y+30);
+			tDlg.pack();
+			tDlg.setVisible(true);
+			switch(tDlg.rueckgabe){
+			case 0:
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						doRechneAlles();
+						return null;
+					}
+				}.execute();				
+				break;
+			case 1:
+				//doBarcode();
+				break;
+			case 2:
+				//ausfallRechnung();
+				break;
+			case 3:
+				//rezeptAbschliessen();
+				break;
+			case 4:
+				//privatRechnung();
+				break;
+				
+			}
+			tDlg = null;
+			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+		}
+	}
 	
 
 }

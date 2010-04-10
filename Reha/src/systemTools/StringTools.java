@@ -216,5 +216,18 @@ public class StringTools {
 		}
 		return sret;
 	}
-
+	public static String getDisziplin(String reznr){
+		if(reznr.startsWith("KG")){
+			return "Physio";
+		}else if(reznr.startsWith("MA")){
+			return "Massage";
+		}else if(reznr.startsWith("ER")){
+			return "Ergo";
+		}else if(reznr.startsWith("LO")){
+			return "Logo";
+		}else if(reznr.startsWith("RH")){
+			return "Reha";
+		}
+		return "Physio";
+	}
 }

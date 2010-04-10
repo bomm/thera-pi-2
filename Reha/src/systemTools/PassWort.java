@@ -108,7 +108,7 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 		this.add(jgrid,BorderLayout.CENTER);
 		this.setVisible(true);
 		this.addKeyListener(this);
-		Reha.thisClass.setzeInitEnde();
+
 	}
 
 	private void passWortCheck(){

@@ -55,6 +55,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaTextField gueltig = null;
 	JButton[] button = {null,null,null,null,null,null};
 	JButton plServer = null;
+	int kurztext = 1;
 	
 	JXTable preislisten = null;
 	MyPreislistenTableModel modpreis = new MyPreislistenTableModel();
@@ -81,7 +82,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaCheckBox neuaufalt = null;
 	Vector<String> delvec = new Vector<String>();
 	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};	
-	
+
+	String[] disziplin = {"Physio","Massage","Ergo","Logo","Reha"};
+ 	
 	KeyListener kl = null;
 	
 	public SysUtilPreislisten(){
@@ -135,21 +138,24 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jcmb[0],cc.xyw(3,1,7));
 		
 		builder.addLabel("Tarifgruppe auswählen",cc.xy(1, 3));
-		jcmb[1] = new JRtaComboBox(SystemConfig.vPreisGruppen);
+		//jcmb[1] = new JRtaComboBox(SystemConfig.vPreisGruppen);
+		jcmb[1] = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get(disziplin[jcmb[0].getSelectedIndex()]));
 		jcmb[1].setActionCommand("tabelleRegeln");
 		jcmb[1].addActionListener(this);
 		builder.add(jcmb[1],cc.xyw(3,3,7));
 
 		builder.addLabel("gültig ab",cc.xy(1,5));
 		gueltig = new JRtaTextField("DATUM",true);
-		gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));
+		//gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));
+		gueltig.setText(SystemPreislisten.hmNeuePreiseAb.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
 		builder.add(gueltig, cc.xy(3,5));
 
 		builder.addLabel("Anwendungsregel",cc.xyw(4,5,4,CellConstraints.RIGHT,CellConstraints.CENTER));
 		String[] zzart = new String[] {"nicht relevant","erste Behandlung >=","Rezeptdatum >=","beliebige Behandlung >=","Rezept splitten"};
 		jcmb[2] = new JRtaComboBox(zzart);
 		
-		int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
+		//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
+		int einstellung = ((Integer) SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
 		jcmb[2].setSelectedIndex(einstellung);
 		
 		builder.add(jcmb[2],cc.xy(9,5));
@@ -204,29 +210,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(posdel,cc.xy(9, 11));
 		builder.addLabel("Anderungen speichern?",cc.xyw(1,13,3));
 		builder.add(speichern, cc.xy(5, 13));
-		/*
-		kl = new KeyListener(){
-			@Override
-			public void keyPressed(KeyEvent e) {
-				String name = ((JComponent)e.getSource()).getName();
-				if(name != null){
-					System.out.println("In KL ------>TastaturEvent von "+name+" ausgel�st. Gedr�ckte Taste = "+e.getKeyCode());
-				}
-			}
-			@Override
-			public void keyReleased(KeyEvent e) {
-			}
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			
-		};
-		JSpinner jspin = new JSpinner(new SpinnerNumberModel(10, 0, 100, 1));
-		jspin.setName("JSPIN");
-		myEditor myEdit = new myEditor(jspin,kl);
-		jspin.setEditor(myEdit);
-		builder.add(jspin, cc.xy(9, 13));
-		*/
+
 		builder.add(abbruch, cc.xy(9, 13));
 		
 		return builder.getPanel();
@@ -274,9 +258,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(cmd.equals("tabelleRegeln")){
 			delvec.clear();
 			tabelleRegeln();
-			int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
+			//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
+			int einstellung = ((Integer) SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
 			jcmb[2].setSelectedIndex(einstellung);
-
 		}
 		if(cmd.equals("plUpdate")){
 			SwingUtilities.invokeLater(new Runnable(){
@@ -301,7 +285,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			doZurueck();
 		}
 		if(cmd.equals("pleinlesen")){
-			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+			String[] lists = {"Physio","Massage","Ergo","Logo","Reha"};
 			testeAllepreise(lists[jcmb[0].getSelectedIndex()]);
 		}
 		if(cmd.equals("plwahl")){
@@ -310,8 +294,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			//neue Position in lokaler Liste
 			int row = preislisten.getRowCount();
 			Vector nvec = new Vector();
-			nvec.add("");
-			nvec.add("");
+			nvec.add("00000");
+			nvec.add("Neu-"+Integer.toString(kurztext));
+			kurztext++;
 			nvec.add("");
 			nvec.add(new Double("0.00"));
 			nvec.add(new Double("0.00"));
@@ -397,6 +382,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		String hmpos,kurz,lang,akt,alt,sid;
 		String sdb = dbtarife[jcmb[0].getSelectedIndex()];
 		String gruppe = new Integer(jcmb[1].getSelectedIndex()+1).toString();
+		int igruppe = jcmb[1].getSelectedIndex()+1;
 		String cmd;
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		for(int i = 0; i < anzahl; i++){
@@ -408,15 +394,15 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			sid = (String)modpreis.getValueAt(i,5);
 			if(sid.equals("-1")){
 				// neu
-				cmd = "insert into "+sdb+" set leistung='"+lang+"', kuerzel='"+kurz+"', T"+gruppe+"_POS='"+
-				hmpos+"', T"+gruppe+"_AKT='"+akt+"', T"+gruppe+"_ALT='"+alt+"', T"+gruppe+"_PROZ='0.00'";
-				System.out.println(cmd);
-				//SqlInfo.sqlAusfuehren(cmd);
+				cmd = "insert into "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
+				hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00'";
+				//System.out.println(cmd);
+				SqlInfo.sqlAusfuehren(cmd);
 				
 			}else{
 				// bestehend
-				cmd = "update "+sdb+" set leistung='"+lang+"', kuerzel='"+kurz+"', T"+gruppe+"_POS='"+
-				hmpos+"', T"+gruppe+"_AKT='"+akt+"', T"+gruppe+"_ALT='"+alt+"', T"+gruppe+"_PROZ='0.00' where id='"+
+				cmd = "update "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
+				hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00' where id='"+
 				sid+"'";
 				//System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
@@ -429,15 +415,18 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			xgueltig = "";
 		}
 		
-		((Vector)SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), xgueltig);
-		((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), jcmb[2].getSelectedIndex());
-		String[] diszis = {"Physio","Massage","Ergo","Logo","REHA"};
+		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
 		String dis = diszis[jcmb[0].getSelectedIndex()]; 
 		int diswelche = jcmb[1].getSelectedIndex()+1;
 
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
-		inif.setStringProperty("PreisRegeln", "Preis"+dis+"Ab"+(diswelche),xgueltig , null);
-		inif.setIntegerProperty("PreisRegeln", "Preis"+dis+"Regel"+(diswelche),regel , null);
+		//((Vector)SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), xgueltig);
+		//((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), jcmb[2].getSelectedIndex());
+		SystemPreislisten.hmNeuePreiseAb.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),xgueltig);
+		SystemPreislisten.hmNeuePreiseRegel.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),jcmb[2].getSelectedIndex());
+
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+		inif.setStringProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisAb"+(diswelche),xgueltig , null);
+		inif.setIntegerProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisRegel"+(diswelche),regel , null);
 		inif.save();
 		if(delvec.size()>0){
 			for(int i = 0;i < delvec.size();i++){
@@ -445,10 +434,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				SqlInfo.sqlAusfuehren(cmd);
 			}
 		}
-		String[] diszi = {"KG","MA","ER","LO","RH"};
-		ParameterLaden.PreiseEinlesen(diszi[jcmb[0].getSelectedIndex()]);
+		//String[] diszi = {"KG","MA","ER","LO","RH"};
+		//ParameterLaden.PreiseEinlesen(diszi[jcmb[0].getSelectedIndex()]);
+		SystemPreislisten.ladePreise(diszis[jcmb[0].getSelectedIndex()]);
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		Reha.thisClass.Rehaprogress.setIndeterminate(false);
+		JOptionPane.showMessageDialog(null,"Preisliste wurde erfolgreich gespeichert");
 	}
 	private void doZurueck(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -544,7 +535,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				if(frage == JOptionPane.YES_OPTION){
 					Vector xvec = new Vector();
 					xvec.add( ((String)((Vector)preis.get(i)).get(0)) );
-					xvec.add( "" );
+					xvec.add( "Neu-"+Integer.toString(kurztext) );
+					kurztext++;
 					xvec.add( ((String)((Vector)preis.get(i)).get(3)) );
 					xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
 					xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
@@ -557,7 +549,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			}else{
 				Vector xvec = new Vector();
 				xvec.add( ((String)((Vector)preis.get(i)).get(0)) );
-				xvec.add( "" );
+				xvec.add( "Neu-"+Integer.toString(kurztext)  );
+				kurztext++;
 				xvec.add( ((String)((Vector)preis.get(i)).get(3)) );
 				xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
 				xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
@@ -720,17 +713,22 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
 	
 	public void tabelleRegeln(){
-		Vector preisvec = holePreisVec();
+
 		String spreisart = new Integer(jcmb[1].getSelectedIndex() +1).toString();
+		Vector preisvec = holePreisVec();
 		int ipreis = jcmb[1].getSelectedIndex()+1;
 		int anzahl = preisvec.size();
 		modpreis.setRowCount(0);
+		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
+		//String disziplin = jcmb[0].getSelectedItem().toString();
+		int preisgruppe = jcmb[1].getSelectedIndex();
 		//System.out.println("Preisvec = "+preisvec);
 		Vector vec = new Vector();
 		int idpos = 0;
 		if(anzahl > 0){
 			idpos = ((Vector)preisvec.get(0)).size()-1;
 		}
+		/*
 		for(int i = 0;i < anzahl ; i++){
 			vec.clear();
 			vec.add( (String) ((Vector)preisvec.get(i)).get( 2+(ipreis*4)-4) );
@@ -749,12 +747,41 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			vec.add( (String) ((Vector)preisvec.get(i)).get(idpos) );
 			modpreis.addRow((Vector)vec.clone());
 		}
+		*/
+		for(int i = 0;i < anzahl ; i++){
+			vec.clear();
+			vec.add( (String) ((Vector)preisvec.get(i)).get(2));
+			vec.add((String)((Vector)preisvec.get(i)).get(1));
+			vec.add((String)((Vector)preisvec.get(i)).get(0));
+			try{
+				vec.add(new Double( (String) ((Vector)preisvec.get(i)).get( 3) ) );
+			}catch(Exception ex){
+				vec.add(new Double(0.00));
+			}
+			try{
+				vec.add(new Double(  (String) ((Vector)preisvec.get(i)).get( 4) ) );
+			}catch(Exception ex){
+				vec.add(new Double(0.00));
+			}
+			vec.add( (String) ((Vector)preisvec.get(i)).get(idpos) );
+			modpreis.addRow((Vector)vec.clone());
+		}
+		
+		/*
 		if(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()).equals("")){
 			gueltig.setText("  .  .    ");
 			System.out.println("Gültigkeitsdatum nicht angegeben");
 		}else{
 			gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));			
 		}
+		*/
+		if(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe).equals("")){
+			gueltig.setText("  .  .    ");
+			System.out.println("Gültigkeitsdatum nicht angegeben");
+		}else{
+			gueltig.setText(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe));			
+		}
+		
 
 		preislisten.validate();
 		
@@ -763,9 +790,13 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
  
 	private Vector holePreisVec(){
-		String diszi = (String)jcmb[0].getSelectedItem();
-		if(diszi.contains("REHA")){
-			return ParameterLaden.vRHPreise;
+		int pgs = jcmb[0].getSelectedIndex();
+		int pgGruppe = jcmb[1].getSelectedIndex();
+		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
+		return SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe);
+		/*
+		if(diszi.contains("Reha")){
+			//return ParameterLaden.vRHPreise;
 		}
 		if(diszi.contains("Physio")){
 			return ParameterLaden.vKGPreise;
@@ -780,6 +811,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			return ParameterLaden.vLOPreise;
 		}
 		return new Vector();
+		*/
 	}
 /*****************vor Ende Klassenklammer*************/	
 }

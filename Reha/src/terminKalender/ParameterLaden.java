@@ -21,11 +21,13 @@ public static Vector<Kollegen> vKKollegen = new Vector<Kollegen>();
 public static Vector<ArrayList> pKollegen = new Vector<ArrayList>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();
 
+/*
 public static Vector<Vector<String>> vKGPreise = new Vector<Vector<String>>();
 public static Vector<Vector<String>> vMAPreise = new Vector<Vector<String>>();
 public static Vector<Vector<String>> vERPreise = new Vector<Vector<String>>();
 public static Vector<Vector<String>> vLOPreise = new Vector<Vector<String>>();
 public static Vector<Vector<String>> vRHPreise = new Vector<Vector<String>>();
+*/
 
 /*
 public static Vector<ArrayList> vKGPreise = new Vector<ArrayList>();
@@ -306,8 +308,8 @@ public static void Passwort() {
 	
 }
 /********************************************************/
+/*
 public static void PreiseEinlesen(String preisklasse) {
-	// TODO Auto-generated method stub
 	Reha obj = Reha.thisClass;
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -351,54 +353,40 @@ public static void PreiseEinlesen(String preisklasse) {
 		}else if(preisklasse=="RH"){
 			rs = stmt.executeQuery("SELECT * from rhtarif");
 		}
-		
-		//ArrayList<String> aPreise = new ArrayList<String>();
 		Vector<String> vPreise = new Vector<String>();
 	 	String test = "";
 	 	while( rs.next()){
-	 		//System.out.println("Anzahl Spalten "+rs.getMetaData().getColumnCount());
 	 		int i = rs.getMetaData().getColumnCount();
 	 		int start;
 	 		for(start=1;start<=i;start++){
 		 		test = rs.getString(start);
-		 		//aPreise.add((test != null ?  test : "" ));
 		 		vPreise.add((test != null ?  test : "" ));
 	 		}
 	 		for(i = 0;i<1;i++){
 	 			if(preisklasse == "KG"){
-	 				//vKGPreise.add((ArrayList)aPreise.clone());
-	 			 	//aPreise.clear();
 	 				vKGPreise.add((Vector)vPreise.clone());
 	 				vPreise.clear();
 	 				break;
 	 			}
 	 			if(preisklasse == "MA"){
-	 				//vMAPreise.add((ArrayList)aPreise.clone());
-	 			 	//aPreise.clear();
 	 				vMAPreise.add((Vector)vPreise.clone());
 	 			 	vPreise.clear();
 
 	 				break;
 	 			}
 	 			if(preisklasse == "ER"){
-	 				//vERPreise.add((ArrayList)aPreise.clone());
-	 			 	//aPreise.clear();
 	 				vERPreise.add((Vector)vPreise.clone());
 	 			 	vPreise.clear();
 
 	 				break;
 	 			}
 	 			if(preisklasse == "LO"){
-	 				//vLOPreise.add((ArrayList)aPreise.clone());
-	 			 	//aPreise.clear();
 	 				vLOPreise.add((Vector)vPreise.clone());
 	 			 	vPreise.clear();
 	 			 	
 	 				break;
 	 			}
 	 			if(preisklasse == "RH"){
-	 				//vRHPreise.add((ArrayList)aPreise.clone());
-	 			 	//aPreise.clear();
 	 				vRHPreise.add((Vector)vPreise.clone());
 	 			 	vPreise.clear();	 			 	
 	 				break;
@@ -465,8 +453,9 @@ public static void PreiseEinlesen(String preisklasse) {
 
 	}
 	
+	
 }
-
+*/
 
 
 

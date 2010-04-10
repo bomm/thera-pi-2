@@ -31,6 +31,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
@@ -83,14 +84,23 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 					int iid;
 					tfs[14].setText(Integer.toString(tarifGruppe.getSelectedIndex()+1));
 					tfs[15].setText(Integer.toString( iid = SqlInfo.holeId("kass_adr", "kassen_nam1")));
-					String stmt = "update kass_adr set ";
+					StringBuffer kkBuffer = new StringBuffer();
+					kkBuffer.append("update kass_adr set ");
+					//String stmt = "update kass_adr set ";
 					for(int i = 0; i < 15; i++){
-						stmt = stmt+ (i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";
+						kkBuffer.append((i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"', ");						
 					}
- 
-					stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
-					System.out.println(stmt);
-					new ExUndHop().setzeStatement(stmt);
+					kkBuffer.append("preisgruppe ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1).toString()+"', ");
+					kkBuffer.append("pgkg ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
+					kkBuffer.append("pgma ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
+					kkBuffer.append("pger ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
+					kkBuffer.append("pglo ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
+					kkBuffer.append("pgrh ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"' ");
+					kkBuffer.append(" where id ='"+Integer.toString(iid)+"'");
+					//stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
+					//System.out.println(stmt);
+					System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(tarifGruppe.getSelectedIndex()+1));
+					SqlInfo.sqlAusfuehren(kkBuffer.toString());
 					eltern.zurueckZurTabelle(tfs);
 					return null;
 				}
@@ -142,9 +152,10 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				int gruppen = SystemConfig.vPreisGruppen.size();
+				int gruppen = SystemPreislisten.hmPreisGruppen.get("Common").size();
+				//int gruppen = SystemConfig.vPreisGruppen.size();
 				for(int i = 0; i < gruppen;i++){
-					tarifGruppe.addItem(SystemConfig.vPreisGruppen.get(i));
+					tarifGruppe.addItem(SystemPreislisten.hmPreisGruppen.get("Common").get(i));
 				}
 				tarifGruppe.setSelectedIndex(0);
 				return null;

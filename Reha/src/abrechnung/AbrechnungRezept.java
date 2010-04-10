@@ -90,6 +90,7 @@ import org.therapi.reha.patient.AktuelleRezepte;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.AdressTools;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -126,6 +127,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	
 	String preisgruppe = "-1";
+	String aktDisziplin = "";
 	
 	JButton[] tbbuts = {null,null,null,null};
 	JLabel[] labs = {null,null,null,null,null,null,null,null,null,null,
@@ -291,6 +293,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
         jscr.validate();
 		return jscr;
 	}
+	/*
 	public void setPreisVec(String xreznummer){
 		if(xreznummer.contains("KG")){
 			preisvec = (Vector<Vector<String>>)ParameterLaden.vKGPreise;
@@ -325,33 +328,40 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			kundid.add(preisvec.get(i).get(idpos));
 		}
 	}
-	public void setKuerzelVec(String xreznummer){
+	*/
+	public void setKuerzelVec(String xreznummer,String preisgr){
+		System.out.println("Aktuelle Disziplin = "+aktDisziplin);
+		System.out.println("Preisgruppe = "+preisgr);
 		if(xreznummer.contains("KG")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vKGPreise;
+			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("KG", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "2";
 			disziplinGruppe = "22";
 			preisregelIndex = 0;
+			aktDisziplin = "Physio";
 		}else if(xreznummer.contains("MA")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vMAPreise;
+			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("MA", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "1";
 			disziplinGruppe = "21";
 			preisregelIndex = 1;
+			aktDisziplin = "Massage";			
 		}else if(xreznummer.contains("ER")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vERPreise;
+			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("ER", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "5";
 			disziplinGruppe = "26";
 			preisregelIndex = 2;
+			aktDisziplin = "Ergo";			
 		}else if(xreznummer.contains("LO")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vLOPreise;
+			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("LO", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "3";
 			disziplinGruppe = "23";
 			preisregelIndex = 3;
+			aktDisziplin = "Logo";			
 		}else if(xreznummer.contains("RH")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vRHPreise;
+			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("RH", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "8";
 			disziplinGruppe = "29";
 			preisregelIndex = 4;
-
+			aktDisziplin = "Reha";
 		}
 		vec_kuerzel.clear();
 		int idpos = preisvec.get(0).size()-1;
@@ -390,22 +400,25 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		*/
 		
 	}
-	public boolean setNewRez(String rez,boolean schonfertig){
+	public boolean setNewRez(String rez,boolean schonfertig,String aktDisziplin){
 		//try{
 //			String dummy1 = rez.split(",")[2];
 //			String dummy2 = dummy1.split("-")[0];
 			//System.out.println("Neues Rezept = "+dummy2);
+			String preisgr = SqlInfo.holeEinzelFeld("select preisgruppe from verordn where rez_nr='"+rez+"' LIMIT 1");
+			this.aktDisziplin = aktDisziplin;
 			rezeptFertig = schonfertig;
 			if(!rezeptFertig){
 				jXTreeTable.setEditable(true);
 				aktRezNum.setText(rez);
-				setKuerzelVec(rez);
+				setKuerzelVec(rez,preisgr);
 				setWerte(rez);
+				Reha.thisClass.progressStarten(false);
 			}else{
 				//System.out.println("Einlesen aus Edifact-Daten");
 				jXTreeTable.setEditable(false);
 				aktRezNum.setText(rez);
-				setKuerzelVec(rez);
+				setKuerzelVec(rez,preisgr);
 				if(holeEDIFACT(rez)){
 					while(inworker){
 						try {
@@ -772,10 +785,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			return;
 		}
 		//Prüfen ob Rezept abgeschlossen ist. Wenn nicht zurück
+		/*
 		String kilometerpos = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(2).replace("x",disziplinIndex);
 		String pauschalepos = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(3).replace("x",disziplinIndex);
 		String hauptziffer = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(0).replace("x",disziplinIndex);
 		String mehrereziffer = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(1).replace("x",disziplinIndex);
+		*/
+		String kilometerpos = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(2);
+		String pauschalepos = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(3);
+		String hauptziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(0);
+		String mehrereziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(1);
+
 		HashMap<String,String> taxWerte = new HashMap<String,String>(); 
 		JXTTreeTableNode node;
 		
@@ -965,8 +985,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		patFreiAb = vec_pat.get(0).get(10);
 		patFreiBis = vec_pat.get(0).get(11);
 		patU18 = DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)));
-		//System.out.println("Vec_Rez = "+vec_rez);
-		//System.out.println("Vec_Pat = "+vec_pat);
 		ermittleAbrechnungsfall(true);
 		if(hausbesuch){
 			doHausbesuchKomplett();
@@ -1012,7 +1030,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		if(vec_rez.get(0).get(43).equals("T")){
 			hausbesuch= true;
-			if(RezTools.zweiPositionenBeiHB(preisgruppe)){
+			if(RezTools.zweiPositionenBeiHB(aktDisziplin,preisgruppe)){
 				anzahlposhb = 2;
 				anzahlhb=Integer.valueOf(vec_rez.get(0).get(64));
 			}else{
@@ -1023,9 +1041,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			hausbesuch = false;
 		}
 		String splitvec = null;
-			//System.out.println("Vector ========= "+(Vector<Vector<String>>) vec_kuerzel.clone());
-			//ystem.out.println("Combobox = "+cmbkuerzel);
-			//cmbkuerzel.setDataVectorVector( (Vector<Vector<String>>) vec_kuerzel.clone(), 0, 1);
 
 		if(construct){
 			int childs;
@@ -1085,7 +1100,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		mitPauschale = true;
 		boolean jahresWechsel = false;
 		zuZahlungsPos = "3";
-		if(SystemConfig.vZuzahlRegeln.get(Integer.valueOf(preisgruppe)-1).equals("0")){
+		if(SystemPreislisten.hmZuzahlRegeln.get(aktDisziplin).get(Integer.valueOf(preisgruppe)-1).equals("0")){
 			zuZahlungsIndex = zzpflicht[0];
 			zuZahlungsPos = "0";
 			doTreeFreiAb(0,nodes,false);
@@ -1154,7 +1169,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			
 		}else if((Boolean)newYear[0] && (!(Boolean)newYear[2])){
 			//Das Rezept ist erstreckt sich über den Jahreswechsel
-			if(gebuehrBezahlt){  //1.Fall
+			if(gebuehrBezahlt && !patVorjahrFrei){  //1.Fall
 				// die Gebühr wurde bereits bezahlt was soviel heißt wie es muß verrechnet werden
 				// doFreiAb(0,vec_tabelle.size(),true);
 				doTreeFreiAb(0,nodes,true);
@@ -1243,11 +1258,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	/***************************TarifWechselCheck********************************/
 	private void doTarifWechselCheck(){
 		int tarifgruppe = Integer.valueOf(preisgruppe)-1;
-		String datum = SystemConfig.vNeuePreiseAb.get(this.preisregelIndex).get(tarifgruppe);
+		//String datum = SystemConfig.vNeuePreiseAb.get(this.preisregelIndex).get(tarifgruppe);
+		String datum = SystemPreislisten.hmNeuePreiseAb.get(aktDisziplin).get(tarifgruppe);
 		if(datum.trim().equals("")){
 			return;
 		}
-		int regel = SystemConfig.vNeuePreiseRegel.get(this.preisregelIndex).get(tarifgruppe);
+		//int regel = SystemConfig.vNeuePreiseRegel.get(this.preisregelIndex).get(tarifgruppe);
+		int regel = SystemPreislisten.hmNeuePreiseRegel.get(aktDisziplin).get(tarifgruppe);
 		String erster = getDatumErsterTag();
 		String letzter = getDatumLetzterTag();
 		
@@ -1343,10 +1360,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int pos = 0;
 		String position;
 		boolean immerfrei = false;
+		/*
 		String kilometerpos = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(2).replace("x",disziplinIndex);
 		String pauschalepos = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(3).replace("x",disziplinIndex);
 		String hauptziffer = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(0).replace("x",disziplinIndex);
 		String mehrereziffer = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(1).replace("x",disziplinIndex);
+		*/
+		String kilometerpos = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(2);
+		String pauschalepos = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(3);
+		String hauptziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(0);
+		String mehrereziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(1);
+
 		System.out.println("Anzahl Kilometer = "+anzahlkm);
 		for(int i = 0; i < maxanzahl;i++){
 			
@@ -1360,7 +1384,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				position = mehrereziffer;
 			}
 			if(heimbewohner){
-				immerfrei = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(4).equals("0");
+				immerfrei = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(4).equals("0");
 			}
 			System.out.println("Es ist ein Heimbewohner ="+heimbewohner+" HB-Ziffern sind immer frei="+immerfrei);
 			// Die Hauptziffer anhängen
@@ -1410,10 +1434,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int pos = 0;
 		String position;
 		boolean immerfrei = false;
+		/*
 		String kilometerpos = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(2).replace("x",disziplinIndex);
 		String pauschalepos = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(3).replace("x",disziplinIndex);
 		String hauptziffer = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(0).replace("x",disziplinIndex);
 		String mehrereziffer = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(1).replace("x",disziplinIndex);
+		*/
+		String kilometerpos = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(2);
+		String pauschalepos = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(3);
+		String hauptziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(0);
+		String mehrereziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(1);
+
 		System.out.println("Anzahl Kilometer = "+anzahlkm);
 
 			
@@ -1427,7 +1458,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			position = mehrereziffer;
 		}
 		if(heimbewohner){
-			immerfrei = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(4).equals("0");
+			//immerfrei = SystemConfig.vHBRegeln.get(Integer.parseInt(preisgruppe)-1).get(4).equals("0");
+			immerfrei = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(4).equals("0");
 		}
 		System.out.println("Es ist ein Heimbewohner ="+heimbewohner+" HB-Ziffern sind immer frei="+immerfrei);
 		// Die Hauptziffer anhängen
@@ -1951,26 +1983,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		buf1.append("</td>");
 		buf1.append("</tr>");
 		/*******/
-		/*
-		buf1.append("<tr>");
-		buf1.append("<td>&nbsp;</td>");
-		buf1.append("<td class=\"spalte1\" align=\"right\">");
-		buf1.append("Rezeptwert");
-		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
-		buf1.append("<b>"+dfx.format(rezeptWert)+"</b>");
-		buf1.append("</td>");
-		buf1.append("</tr>");
-		buf1.append("<tr>");
-		buf1.append("<td>&nbsp;</td>");
-		buf1.append("<td class=\"spalte1\" align=\"right\">");
-		buf1.append("Zuzahlung");
-		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
-		buf1.append((zuzahlungWert > 0 && vec_rez.get(0).get(14).equals("F") ? getNoZuZahl() : "<b>"+dfx.format(zuzahlungWert)+"</b>"));
-		buf1.append("</td>");
-		buf1.append("</tr>");
-		*/
-		/*******/
-		
 
 //Double rezeptWert;
 //Double zuzahlungWert;
@@ -2129,8 +2141,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	        int lastIndex = e.getLastIndex();
 	        boolean isAdjusting = e.getValueIsAdjusting();
 	        if(isAdjusting){
-	        	//System.out.println("isAdjusting-Return bei RowIndex="+firstIndex);
-	        	//System.out.println("Reihe="+tageTbl.getSelectedRow());
 	        	return;
 	        }
 			//StringBuffer output = new StringBuffer();
@@ -2146,25 +2156,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	                	new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
+
 								int row = jXTreeTable.getSelectedRow();
 								int col = jXTreeTable.getSelectedColumn();
-								//System.out.println(jXTreeTable.getValueAt(row, col));
-								//demoTreeTableModel
-								//JXTTreeTableNode
-								//System.out.println("ChildCount = "+demoTreeTableModel.getRoot().getChildCount());
-								//JXTTreeTableNode node = jXTreeTable.i
-								//System.out.println("Gewählt wurde Reihe="+jXTreeTable.getSelectedRow());
-								//System.out.println("Gewählt wurde Spalte="+ jXTreeTable.getSelectedColumn());
 								for(int i = 0; i < root.getChildCount();i++ ){
 									JXTTreeTableNode node = (JXTTreeTableNode) root.getChildAt(i);
-									//System.out.println("Bezeichnung = "+i+".0 "+node.abr.bezeichnung);
 									int childs = node.getChildCount();
-									//System.out.println("Kinder von root="+childs);
-									//System.out.println("Hauptknoten="+root.getIndex(node));
 									for(int i2 = 0; i2 < childs; i2++){
 										JXTTreeTableNode node2 = (JXTTreeTableNode) node.getChildAt(i2);
-										//System.out.println("Bezeichnung = "+i+"."+(i2+1)+node2.abr.bezeichnung);
-										//System.out.println("Kindknoten="+node.getIndex(node2));
 									}
 								}
 								
@@ -3044,7 +3043,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		JXTTreeTableNode node;
 		for(int i = 0; i < getNodeCount();i++){
 			node = holeNode(i);
-			edibuf.append("EHE+"+disziplinGruppe+plus+SystemConfig.vPreisGueltig.get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
+			edibuf.append("EHE+"+disziplinGruppe+plus+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
+//			edibuf.append("EHE+"+disziplinGruppe+plus+SystemConfig.vPreisGueltig.get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
 			edibuf.append(RezTools.getPosFromID(node.abr.preisid, preisgruppe, preisvec)+plus);
 			edibuf.append(dfx.format(node.abr.anzahl)+plus);
 			System.out.println("Abrechnungspreis = "+BigDecimal.valueOf(node.abr.preis)+ " / "+"Abrechnung-Anzahl = "+BigDecimal.valueOf(node.abr.anzahl));
