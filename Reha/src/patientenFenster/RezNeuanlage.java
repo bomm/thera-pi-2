@@ -429,6 +429,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("Anzahl / Heilmittel 1",cc.xy(1, 19));
 		jpan.add(jtf[4],cc.xy(3, 19));
 		jcmb[2] = new JRtaComboBox();
+		jcmb[2].setName("leistung1");
 		jcmb[2].setActionCommand("leistung1");
 		jcmb[2].addActionListener(this);
 		jpan.add(jcmb[2],cc.xyw(5, 19,3));
@@ -436,6 +437,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("Anzahl / Heilmittel 2",cc.xy(1, 21));
 		jpan.add(jtf[5],cc.xy(3, 21));
 		jcmb[3] = new JRtaComboBox();
+		jcmb[3].setName("leistung2");
 		jcmb[3].setActionCommand("leistung2");
 		jcmb[3].addActionListener(this);
 		jpan.add(jcmb[3],cc.xyw(5, 21,3));
@@ -444,6 +446,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(jtf[6],cc.xy(3, 23));
 		jcmb[4] = new JRtaComboBox();
 		jcmb[4].setActionCommand("leistung3");
+		jcmb[4].setName("leistung3");
 		jcmb[4].addActionListener(this);
 		jpan.add(jcmb[4],cc.xyw(5, 23,3));
 
@@ -451,6 +454,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.add(jtf[7],cc.xy(3, 25));
 		jcmb[5] = new JRtaComboBox();
 		jcmb[5].setActionCommand("leistung4");
+		jcmb[5].setName("leistung4");
 		jcmb[5].addActionListener(this);
 		jpan.add(jcmb[5],cc.xyw(5, 25,3));
 		
@@ -1197,24 +1201,46 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		itest = jcmb[2].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise1='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos1='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel1='"+preisvec.get(itest-1).get(1)+"', ");
+			
 		}else{
 			sbuf.append("art_dbeh1='0', ");
 		}
 		itest = jcmb[3].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise2='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos2='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel2='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh2='0', ");
 		}
 		itest = jcmb[4].getSelectedIndex();
+		/*
+		System.out.println("Itest von ComboBox Leistung 3 = "+itest);
+		System.out.println("getValue-Wert von ComboBox Leistung 3 = "+jcmb[4].getValue());
+		System.out.println("Art_dbe3 = "+jcmb[4].getValue());
+		System.out.println("Pos3 = "+preisvec.get(itest-1).get(2)+"', ");		
+		System.out.println("Kuerzel3 = "+preisvec.get(itest-1).get(1)+"', ");
+		System.out.println("Preis3 = "+preisvec.get(itest-1).get(3)+"', ");
+		System.out.println("Tatsächlich geschrieben wird Art_dbeh3="+preisvec.get(itest-1).get(9));
+		*/
 		if(itest > 0){
 			sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise3='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos3='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel3='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh3='0', ");
 		}
 		itest = jcmb[5].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise4='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos4='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel4='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh4='0', ");
 		}
@@ -1320,29 +1346,35 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("zzstatus='"+szzstatus+"', ");
 		int leistung;
 		String[] str;
+		/*
 		int xid;
 		for(int i = 0;i < 4;i++){
+			System.out.println(jcmb[i+2].getName());
 			xid = ( jcmb[i+2].getSelectedIndex()-1);
 			if(xid >= 0){
 				leistung = leistungTesten(i, Integer.parseInt( (String)preisvec.get(xid).get(9)) ) ;	
 			}else{
 				leistung = -1;
 			}
+			System.out.println("Leistung intWert = "+leistung);
+			System.out.println("xidWert = "+xid);
 			if(leistung >= 0){
 				str = holePreis(xid,new Integer(jtf[13].getText()) );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
+				System.out.println("Leistung Nr."+i+" = "+str[0]+" / "+str[1]);
 			}else{
 				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
+		*/
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 		sbuf.append("jahrfrei='"+Reha.thisClass.patpanel.patDaten.get(69)+"', ");
 		sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
 		sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.parseInt(jtf[13].getText())-1 )+"'");
-		sbuf.append(" where id='"+this.vec.get(35)+"'");
+		sbuf.append(" where id='"+this.vec.get(35)+"' LIMIT 1");
 
 		SqlInfo.sqlAusfuehren(sbuf.toString());
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
@@ -1405,24 +1437,36 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		itest = jcmb[2].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise1='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos1='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel1='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh1='0', ");
 		}
 		itest = jcmb[3].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise2='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos2='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel2='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh2='0', ");
 		}
 		itest = jcmb[4].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise3='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos3='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel3='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh3='0', ");
 		}
 		itest = jcmb[5].getSelectedIndex();
 		if(itest > 0){
 			sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(9)+"', ");
+			sbuf.append("preise4='"+preisvec.get(itest-1).get(3)+"', ");
+			sbuf.append("pos4='"+preisvec.get(itest-1).get(2)+"', ");
+			sbuf.append("kuerzel4='"+preisvec.get(itest-1).get(1)+"', ");
 		}else{
 			sbuf.append("art_dbeh4='0', ");
 		}
@@ -1486,11 +1530,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			szzstatus = "2";				
 		}
 		sbuf.append("zzstatus='"+szzstatus+"', ");
+		/*
 		int leistung;
 		String[] str;
 		int xid;
 		for(int i = 0;i < 4;i++){
 			xid = ( jcmb[i+2].getSelectedIndex()-1);
+			System.out.println(jcmb[i+2].getName());
 			if(xid >= 0){
 				leistung = leistungTesten(i, Integer.parseInt( (String)preisvec.get(xid).get(9)) ) ;	
 			}else{
@@ -1500,11 +1546,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				str = holePreis(xid,preisgruppe );
 				sbuf.append("preise"+(i+1)+"='"+str[0]+"', ");
 				sbuf.append("pos"+(i+1)+"='"+str[1]+"', ");
+				System.out.println("Leistung Nr."+i+" = "+str[0]+" / "+str[1]);
 			}else{
 				sbuf.append("preise"+(i+1)+"='0.00', ");
 				sbuf.append("pos"+(i+1)+"='', ");
 			}
 		}
+		*/
 		sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 		sbuf.append("unter18='"+unter18+"', ");
 		sbuf.append("jahrfrei='"+Reha.thisClass.patpanel.patDaten.get(69)+"', ");
@@ -1512,7 +1560,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
 		sbuf.append("befr='"+Reha.thisClass.patpanel.patDaten.get(30)+"', ");
 		sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(new Integer(jtf[13].getText())-1 )+"'");
-		sbuf.append("where id='"+Integer.toString(rezidneu)+"' ");
+		sbuf.append("where id='"+Integer.toString(rezidneu)+"'  LIMIT 1");
 		SqlInfo.sqlAusfuehren(sbuf.toString());
 		System.out.println("Rezept wurde mit Preisgruppe "+jtf[13].getText()+" gespeichert");
 		final int xreznr = reznr;

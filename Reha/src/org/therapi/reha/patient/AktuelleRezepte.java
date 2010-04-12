@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -73,7 +72,6 @@ import patientenFenster.KeinRezept;
 import patientenFenster.RezNeuanlage;
 import patientenFenster.RezTest;
 import patientenFenster.RezTestPanel;
-
 import patientenFenster.RezeptGebuehren;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -89,9 +87,6 @@ import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-
-import RehaInternalFrame.JAbrechnungInternal;
-
 import abrechnung.AbrechnungPrivat;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -1154,6 +1149,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -1564,6 +1560,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		abrechnungPrivat.setVisible(true);
 		int rueckgabe = abrechnungPrivat.rueckgabe;
 		abrechnungPrivat = null;
+		if(rueckgabe==-2){
+			neuanlageRezept(false,"");
+		}
+
 	}
 	
 	private void doAbschliessen(){
@@ -1784,7 +1784,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.getSmartTitledPanel().setPreferredSize(new Dimension (480,630));
 		neuRez.setPinPanel(pinPanel);
 		if(lneu){
-			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(new Vector(),lneu,feldname));
+			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname));
 			neuRez.getSmartTitledPanel().setTitle("RezeptNeuanlage");
 		}else{
 			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(rezDatenPanel.vecaktrez,lneu,feldname));
@@ -1853,8 +1853,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuDlgOffen = false;
 
 	}
-	public Vector getModelTermine() {
-		return (Vector)dtermm.getDataVector().clone();
+	@SuppressWarnings("unchecked")
+	public Vector<String> getModelTermine() {
+		return (Vector<String>)dtermm.getDataVector().clone();
 	}
 	
 /**********************************************/

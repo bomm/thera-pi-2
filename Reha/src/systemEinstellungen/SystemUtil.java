@@ -400,6 +400,8 @@ private JScrollPane getParameterListe(){
 	treeitem = new DefaultMutableTreeNode("Heilmittelkatalog einlesen");
 	node.add(treeitem );
 	*/ 
+	treeitem = new DefaultMutableTreeNode("Positionskürzel bearbeiten");
+	node.add(treeitem );
 	treeitem = new DefaultMutableTreeNode("Tarifgruppen bearbeiten");
 	node.add(treeitem );
 	treeitem = new DefaultMutableTreeNode("Preise bearbeiten/importieren");

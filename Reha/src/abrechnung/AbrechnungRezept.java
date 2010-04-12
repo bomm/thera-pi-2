@@ -884,9 +884,19 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		taxWerte.put("<t18>",aktRezNum.getText());
 		
 		try {
+			String bcform = SqlInfo.holeEinzelFeld("select barcodeform from verordn where rez_nr='"+aktRezNum.getText().trim()+"' LIMIT 1");
 			String formular = "";
+			/*
 			if(((String)eltern.cmbDiszi.getSelectedItem()).contains("Logo")){
 				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA4.ott";
+			}else{
+				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
+			}
+			*/
+			if(bcform.equals("1")){
+				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA4.ott";
+			}else if(bcform.equals("0")){
+				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 			}else{
 				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 			}

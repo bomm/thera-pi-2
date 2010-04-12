@@ -209,6 +209,12 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		return builder.getPanel();
 	}
 	private JPanel getKnopfPanel(){
+		button[4] = new JButton("neu");
+		button[4].setActionCommand("neu");
+		button[4].addActionListener(this);
+		if(!Reha.vollbetrieb){
+			button[4].setEnabled(false);			
+		}
 		button[5] = new JButton("abbrechen");
 		button[5].setActionCommand("abbrechen");
 		button[5].addActionListener(this);
@@ -216,7 +222,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		button[6].setActionCommand("speichern");
 		button[6].addActionListener(this);		
 									//      1.                      2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout jpanlay = new FormLayout("right:max(126dlu;p), 100dlu, 40dlu, 4dlu, 40dlu",
+		FormLayout jpanlay = new FormLayout("right:max(126dlu;p), 50dlu, 40dlu,10dlu, 40dlu, 4dlu, 40dlu",
        //1.    2. 3.   4.   5.   6.     7.    8. 9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
 		"p, 10dlu, p");
 		
@@ -224,10 +230,11 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		jpan.getPanel().setOpaque(false);		
 		CellConstraints jpancc = new CellConstraints();
 		
-		jpan.addSeparator("", jpancc.xyw(1,1,5));
-		jpan.add(button[5], jpancc.xy(3,3));
-		jpan.add(button[6], jpancc.xy(5,3));
-		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+		jpan.addSeparator("", jpancc.xyw(1,1,7));
+		jpan.add(button[4], jpancc.xy(3,3));
+		jpan.add(button[5], jpancc.xy(5,3));
+		jpan.add(button[6], jpancc.xy(7,3));
+		jpan.addLabel("Neue Tarifgruppe / Änderungen speichern?", jpancc.xy(1,3));
 		
 		
 		return jpan.getPanel();
@@ -469,6 +476,11 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			return;
 		}
 		if(cmd.equals("abbrechen")){
+			SystemUtil.abbrechen();
+			SystemUtil.thisClass.parameterScroll.requestFocus();
+			return;
+		}
+		if(cmd.equals("neu")){
 			return;
 		}
 	}

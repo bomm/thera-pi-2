@@ -122,6 +122,20 @@ public class RezTools {
 		return true;
 	}
 /********************************************************************************/
+
+	public static String getLangtextFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		int idpos = vec.get(0).size()-1;
+		String ret = "kein Lantext vorhanden";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(idpos).equals(id)){
+				ret = vec.get(i).get(0).toString();
+				break;
+			}
+		}
+		return ret;
+	}
+
 	public static String getPreisAktFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
 		int idpos = vec.get(0).size()-1;
@@ -151,7 +165,7 @@ public class RezTools {
 		int lang = vec.size(),i;
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
-			if( vec.get(i).get(1).equals(pos)){
+			if( vec.get(i).get(2).equals(pos)){
 				ret = vec.get(i).get(3).toString();
 				break;
 			}

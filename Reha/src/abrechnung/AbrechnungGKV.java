@@ -2,7 +2,6 @@ package abrechnung;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
-import hauptFenster.SuchenDialog;
 import hauptFenster.UIFSplitPane;
 
 import java.awt.BorderLayout;
@@ -60,7 +59,6 @@ import systemTools.JRtaRadioButton;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 import RehaInternalFrame.JAbrechnungInternal;
-import RehaInternalFrame.JPatientInternal;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -254,7 +252,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("einlesen")){
 			//rootKasse.removeAllChildren();
-			String[] reznr = {"KG","MA","ER","LO"};
+			//String[] reznr = {"KG","MA","ER","LO"};
 			String[] diszis = {"Physio","Massage","Ergo","Logo"};
 			aktDisziplin = diszis[cmbDiszi.getSelectedIndex()];
 			//abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
@@ -266,12 +264,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			//setPreisVec(cmbDiszi.getSelectedIndex());
 		}
 	}
-	
+	/*
 	private void setPreisVec(int pos){
 		String[] reznr = {"KG","MA","ER","LO"};
 		//abrRez.setPreisVec(reznr[pos]);
 		JOptionPane.showMessageDialog(null, "Aufruf von setPreisVec in AbrechnungGKV");
 	}
+	*/
 	
 	/*********
 	 * Einlesen der abrechnungsdaten
@@ -649,31 +648,31 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		gesamtBuf.append(unzBuf.toString());
 		abrDlg.setzeLabel("übertrage EDIFACT in Datenbank");
 
-		
-		PreparedStatement ps = null;
-		try {
-			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(
-			    "insert into edifact (r_nummer, r_datum,r_edifact) VALUES (?,?,?)");
-		    ps.setString(1, aktRechnung);
-		    ps.setString(2, DatFunk.sDatInSQL(DatFunk.sHeute()));
-		    ps.setBytes(3, gesamtBuf.toString().getBytes());
-		    ps.executeUpdate();
-		    ps.close();
-		    ps = null;
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		finally{
-			if(ps != null){
-				try {
-					ps.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+		if(Reha.vollbetrieb){
+			PreparedStatement ps = null;
+			try {
+				ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(
+				    "insert into edifact (r_nummer, r_datum,r_edifact) VALUES (?,?,?)");
+			    ps.setString(1, aktRechnung);
+			    ps.setString(2, DatFunk.sDatInSQL(DatFunk.sHeute()));
+			    ps.setBytes(3, gesamtBuf.toString().getBytes());
+			    ps.executeUpdate();
+			    ps.close();
+			    ps = null;
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			finally{
+				if(ps != null){
+					try {
+						ps.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					ps = null;
 				}
-				ps = null;
 			}
 		}
-
 		//System.out.println(gesamtBuf.toString());
 		//System.out.println("Anzahl Positonen (reine Abrechnugsdaten) = "+positionenAnzahl);
 		try {
@@ -726,7 +725,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		abrDlg.setzeLabel("erstelle Email an: "+SystemConfig.hmEmailExtern.get("SenderAdresse"));
 		doEmail();
 		abrDlg.setzeLabel("übertrage Rezepte in Historie");
-		doUebertragen();
+		if(Reha.vollbetrieb){
+			doUebertragen();			
+		}
 		abrDlg.setzeLabel("organisiere Abrechnungsprogramm");
 		doLoescheRezepte();
 		Reha.thisClass.progressStarten(false);
@@ -856,10 +857,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			 */
 			
 			//SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");			
-			if(Reha.vollbetrieb){
-				SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
-				SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
-			}
+			SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+			
 		}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -1139,7 +1139,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			System.out.println("       IK-Kostenträger = "+ik_kostent);
 			System.out.println("             Disziplin = "+diszis[cmbDiszi.getSelectedIndex()]);
 			System.out.println("          Rechnung Nr. = "+aktRechnung);
-			anlegenOP();
+			if(Reha.vollbetrieb){
+				anlegenOP();				
+			}
+
 		}
 	}
 	
@@ -1173,7 +1176,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		Vector<BigDecimal>abrtage = new Vector<BigDecimal>();
 		BigDecimal bdAnzahl = null;
 		BigDecimal einzelPreisTest = null;
-		BigDecimal zuzahlTest = null;
+		//BigDecimal zuzahlTest = null;
 		String[] zeilen = edifact.split("\n");
 		boolean preisUmstellung = false;
 		boolean zuzahlUmstellung = false;
@@ -1268,17 +1271,19 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			System.out.println("Rezept Nr. ="+abrechnungRezepte+" ********Abrechnungsposition Ende********");
 			*/
 			/////////////////Hier die Sätze in der Rechnungsdatei anlegen///////////////
-			schreibeInRechnungDB(
-					splits,
-					position,
-					anzahl,
-					abrtage,
-					einzelpreis,
-					preis,
-					rezgeb,
-					preisUmstellung,
-					zuzahlUmstellung);
-
+			if(Reha.vollbetrieb){
+				schreibeInRechnungDB(
+						splits,
+						position,
+						anzahl,
+						abrtage,
+						einzelpreis,
+						preis,
+						rezgeb,
+						preisUmstellung,
+						zuzahlUmstellung);
+				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		

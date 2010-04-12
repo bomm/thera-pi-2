@@ -943,7 +943,8 @@ public class SqlInfo {
 	}
 	public static boolean transferRowToAnotherDB(String sourcedb,
 			String targetdb,
-			String rez_nr,
+			String dbfield,
+			String argument,
 			boolean ausnahmen,
 			List<?> lausnahmen){
 		
@@ -960,8 +961,9 @@ public class SqlInfo {
 				transferBuf.append(feldNamen.get(i));
 			}
 		}
-		transferBuf.append(" from "+sourcedb+" where rez_nr='");
-		Vector<Vector<String>> vec = SqlInfo.holeFelder(transferBuf.toString()+rez_nr+"'");
+		transferBuf.append(" from "+sourcedb+" where "+dbfield+"='"+argument+"' LIMIT 1");
+		System.out.println(transferBuf.toString());
+		Vector<Vector<String>> vec = SqlInfo.holeFelder(transferBuf.toString());
 		
 		if(vec.size()<=0){
 			return false;

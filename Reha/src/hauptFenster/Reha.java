@@ -364,7 +364,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					String line;
 						       
 			       while ((line = br.readLine()) != null) {
-			         System.out.println("Lade Adobe "+line);
+			         System.out.println("Lese Socket "+line);
 			       }
 			       is.close();
 			       isr.close();
@@ -1400,10 +1400,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("hmabrechnung");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
+			/*
 			men = new JMenuItem("Heilmittel-Privatliquidation");
 			men.setActionCommand("hmprivatabrechnung");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
+			*/
 			abrechnungMenu.addSeparator();
 			men = new JMenuItem("Reha-Abrechnung");
 			men.setActionCommand("rehaabrechnung");
