@@ -93,8 +93,10 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	
 	boolean preisok = false;
 	boolean hausBesuch = false;
-	boolean hbPauschale = false;
 	boolean hbEinzeln = false;
+	boolean hbPauschale = false;
+	boolean hbmitkm = false;
+
 	int kmBeiHB = 0;
 	
 	Vector<String> originalPos = new Vector<String>();
@@ -344,29 +346,31 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	}
 	private void doFaktura(String kostentraeger){
 		// Hier die Sätze in die faktura-datenbank schreiben
-		if(Reha.thisClass.patpanel.vecaktrez.get(62).trim().equals("T")){
-			new ExUndHop().setzeStatement("delete from fertige where rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim()+"' LIMIT 1");			
+		String plz = "";
+		String ort = "";
+		try{
+			int idummy = hmAdresse.get("<pri4>").indexOf(" ");
+			plz = hmAdresse.get("<pri4>").substring(0,idummy).trim();
+			ort = hmAdresse.get("<pri4>").substring(idummy).trim();
+		}catch(Exception ex){}
+		for(int i = 0; i < originalAnzahl.size();i++){
+			
 		}
-
 	}
 	private void doOffenePosten(String kostentraeger){
 		
 	}
 	private void doUebertrag(){
-	 if(!Reha.vollbetrieb){
-		 return;
-	 }
-	 String rez_nr = Reha.thisClass.patpanel.vecaktrez.get(1).toString();
-	 SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
-	 new SwingWorker<Void,Void>(){
-		@Override
-		protected Void doInBackground() throws Exception {
-			String rez_nr = Reha.thisClass.patpanel.vecaktrez.get(1).toString();
-			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
-			Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
-			return null;
-		}
-	 }.execute();
+		 if(!Reha.vollbetrieb){
+			 return;
+		 }
+		 String rez_nr = Reha.thisClass.patpanel.vecaktrez.get(1).toString();
+		 SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
+		 SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
+		 Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
+			if(Reha.thisClass.patpanel.vecaktrez.get(62).trim().equals("T")){
+				new ExUndHop().setzeStatement("delete from fertige where rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim()+"' LIMIT 1");			
+			}
 	}
 	private void doTabelle(){
 		 if(!Reha.vollbetrieb){
@@ -375,6 +379,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		int row =  Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 		if(row >= 0){
 			TableTool.loescheRowAusModel(Reha.thisClass.patpanel.aktRezept.tabaktrez, row);
+			Reha.thisClass.patpanel.aktRezept.setzeKarteiLasche();
 		}
 	}
 	
@@ -475,13 +480,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		if(hausBesuch){
 			analysiereHausbesuch();
 		}
-		/*
+
 		System.out.println("Anzahlen = "+originalAnzahl);
 		System.out.println("Positionen = "+originalPos);
 		System.out.println("ID in Preisliste = "+originalId);
 		System.out.println("EinzelPeise = "+einzelPreis);			
 		System.out.println("Langtexte = "+originalLangtext);
-		*/
+
 		
 		
 		for(int i = 0; i < originalAnzahl.size();i++){
@@ -502,7 +507,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 
 		/***********Hausbesuch voll abrechnen******/
 		int hbanzahl = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(64));
-		
+
 		if(this.hbEinzeln){
 
 			String pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(0);
@@ -525,7 +530,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					originalPos.add(pos.toString());
 					einzelPreis.add(Double.parseDouble(preis.toString()));
 					originalLangtext.add("Wegegeldpauschale");
-					labs[5].setText(hbanzahl+" * "+pos+" (Einzelpreis = "+preis+")");					
+					labs[5].setText(hbanzahl+" * "+pos+" (Einzelpreis = "+preis+")");
+					hbPauschale = true;
 				}
 			}else{
 				/*******es wurden zwar Kilometer angegeben aber diese Preisgruppe kennt keine Wegegebühr****/
@@ -540,6 +546,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					einzelPreis.add(Double.parseDouble(preis.toString()));
 					originalLangtext.add("Wegegeld / km");
 					labs[5].setText((hbanzahl*patKilometer)+" * "+pos+" (Einzelpreis = "+preis+")");
+					hbmitkm = true;
 				}
 			}
  

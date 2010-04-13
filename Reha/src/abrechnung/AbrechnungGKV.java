@@ -839,13 +839,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				}
 			}
 			//System.out.println(historieBuf.toString());
-			System.out.println("Übertrage Rezept "+abgerechneteRezepte.get(i2)+" in Langzeitarchiv = Historie");
+			//System.out.println("Übertrage Rezept "+abgerechneteRezepte.get(i2)+" in Langzeitarchiv = Historie");
 
 			SqlInfo.sqlAusfuehren(historieBuf.toString());
 
-			if(aktiverPatient.equals(abgerechnetePatienten.get(i2)) ){
-				posteAktualisierung(aktiverPatient.toString());
-			}
 			
 			/***
 			 * 
@@ -859,6 +856,12 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			//SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");			
 			SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
 			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+
+			if(aktiverPatient.equals(abgerechnetePatienten.get(i2)) ){
+				posteAktualisierung(aktiverPatient.toString());
+				//Reha.thisClass.patpanel.aktRezept.setzeKarteiLasche();
+			}
+
 			
 		}
 		}catch(Exception ex){

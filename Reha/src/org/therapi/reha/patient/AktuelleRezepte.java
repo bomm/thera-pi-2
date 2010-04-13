@@ -775,6 +775,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}.execute();
 		
 	}
+	public void setzeKarteiLasche(){
+		Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(tabaktrez.getRowCount(),"aktuelle Rezepte"));
+	}
 	public void setRezeptDaten(){
 		int row = this.tabaktrez.getSelectedRow();
 		if(row >= 0){
