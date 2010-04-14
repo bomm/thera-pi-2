@@ -115,6 +115,7 @@ import preisListenHandling.MachePreisListe;
 
 
 //import patientenFenster.PatGrundPanel;
+import rehaInternalFrame.JRehaInternal;
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -130,8 +131,9 @@ import systemTools.WinNum;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-import RehaInternalFrame.JRehaInternal;
+import verkauf.Verkauf;
 import abrechnung.AbrechnungGKV;
+import abrechnung.Rehaabrechnung;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -139,7 +141,10 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
+import anmeldungUmsatz.Anmeldungen;
+import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
+import barKasse.Barkasse;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -158,17 +163,23 @@ import events.RehaEventListener;
 //@SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
-	//public PatGrundPanel patpanel = null;
+
 	public PatientHauptPanel patpanel = null;
 	public EBerichtPanel eberichtpanel = null;
 	public KassenPanel kassenpanel = null;
 	public ArztPanel arztpanel = null;
 	public TerminFenster terminpanel = null;
 	public RoogleFenster rooglepanel = null;
-	public AbrechnungGKV abrechnung1panel = null;
+	public AbrechnungGKV abrechnungpanel = null;
+	public Anmeldungen anmeldungenpanel = null;
+	public Umsaetze umsaetzepanel = null;
+	public Verkauf verkaufpanel = null;
+	public Barkasse barkassenpanel = null;
+	public Rehaabrechnung rehaabrechnungpanel = null;
+	
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
-	//private JDesktopPane jDesktopPane = null;
+
 	private JMenuBar jJMenuBar = null;
 	private JMenu fileMenu = null;
 	private JMenu stammMenu = null;
@@ -285,8 +296,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public final Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
 	public final Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:
 	
-	public static boolean demoversion = true;
-	public static boolean vollbetrieb = false;
 	
 	public GradientPaint gp1 = new GradientPaint(0,0,new Color(112,141,255),0,25,Color.WHITE,true);	
 	public GradientPaint gp2 = new GradientPaint(0,0,new Color(112,141,120),0,25,Color.WHITE,true);
@@ -294,6 +303,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	/**************************/
 	public JXPanel desktop = null;
 	public ProgLoader progLoader =null;
+	public static boolean demoversion = true;
+	public static boolean vollbetrieb = false;
+
 	//  
 	//@jve:decl-index=0:
 	/**
@@ -339,19 +351,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 		}.start();
 		/**************************/
-		/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws java.lang.Exception {
-				try{
-					Runtime.getRuntime().exec("java -jar "+proghome+"RehaxSwing.jar");
-				}catch(NullPointerException ex){
-					ex.printStackTrace();
-				}
-				return null;
-			}
-		}.execute();
-		*/
+	
 		new Thread(){
 			public  void run(){
 				Process process;
@@ -364,14 +364,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					String line;
 						       
 			       while ((line = br.readLine()) != null) {
-			         System.out.println("Lese Socket "+line);
+			         //System.out.println("Lese Socket "+line);
 			       }
 			       is.close();
 			       isr.close();
 			       br.close();
 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}		
@@ -1084,11 +1083,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		Reha.sysConf = sysConf;
 	}
 
-	/**
-	 * This method initializes JXRootPane	
-	 * 	
-	 * @return org.jdesktop.swingx.JXRootPane	
-	 */
+	/*
 	private JXRootPane getJXRootPane() {
 		if (JXRootPane == null) {
 			JXRootPane = new JXRootPane();
@@ -1097,6 +1092,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}
 		return JXRootPane;
 	}
+	*/
 	private JXStatusBar getJXStatusBar() {
 		if (jXStatusBar == null) {
 			UIManager.put("Separator.foreground", new Color(231,120,23) );
@@ -1147,7 +1143,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-			messageLabel = new JLabel("Init: o.k. ");
+			messageLabel = new JLabel("Starte OO.org");
 			messageLabel.setVerticalAlignment(SwingConstants.CENTER);
 			messageLabel.setHorizontalAlignment(SwingConstants.LEFT);
 			jxPinContainer.add(messageLabel);
@@ -1459,6 +1455,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			verkaufMenu = new JMenu();
 			verkaufMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			verkaufMenu.setText("Verkauf");
+			JMenuItem men = new JMenuItem("Verkäufe tätigen");
+			men.setActionCommand("verkauf");
+			men.addActionListener(this);
+			verkaufMenu.add(men);
+			
 		}
 		return verkaufMenu;
 	}
@@ -2312,23 +2313,27 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("hmabrechnung")){
-		Reha.thisClass.progLoader.Abrechnung1Fenster(1);
+		Reha.thisClass.progLoader.AbrechnungFenster(1);
 		return;
 	}
 	if(cmd.equals("rehaabrechnung")){
-		Meldungen.NichtFertig("Reha-Abrechnung");
+		Reha.thisClass.progLoader.RehaabrechnungFenster(1,"");
 		return;
 	}
 	if(cmd.equals("barkasse")){
-		Meldungen.NichtFertig("Barkasse abrechnen");
+		Reha.thisClass.progLoader.BarkassenFenster(1,"");
 		return;
 	}
 	if(cmd.equals("anmeldezahlen")){
-		Meldungen.NichtFertig("Anmeldezahlen ermitteln");
+		Reha.thisClass.progLoader.AnmeldungenFenster(1,"");
 		return;
 	}
 	if(cmd.equals("tagesumsatz")){
-		Meldungen.NichtFertig("Tagesumsätze ermitteln");
+		Reha.thisClass.progLoader.UmsatzFenster(1,"");
+		return;
+	}
+	if(cmd.equals("verkauf")){
+		Reha.thisClass.progLoader.VerkaufFenster(1,"");
 		return;
 	}
 }
@@ -2740,7 +2745,7 @@ class SocketClient {
 
 		output.write(bytes);
 		output.flush();
-		System.out.println("Schreibe auf socket -> "+this.stand);
+		//System.out.println("Schreibe auf socket -> "+this.stand);
 		int zahl = input.available();
 		if (zahl > 0){
 			byte[] lesen = new byte[zahl];
@@ -2753,7 +2758,12 @@ class SocketClient {
 	}
 }
 class MyGradPanel extends JXPanel  {
-    public void paint(Graphics g){
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2882847000287058980L;
+
+	public void paint(Graphics g){
       Graphics2D g2d = (Graphics2D)g;
       Color s1 = Colors.TaskPaneBlau.alpha(1.0f);
       Color e = Color.WHITE;

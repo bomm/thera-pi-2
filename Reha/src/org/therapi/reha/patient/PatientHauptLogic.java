@@ -554,7 +554,6 @@ public class PatientHauptLogic {
 		}); 	   	
 	}
 
-	@SuppressWarnings("unchecked")
 	public void datenHolen(String patint){
 		Reha.thisClass.patpanel.patDatenOk = false;
 		Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5"," * ", "PAT_INTERN ='"+patint+"'", Arrays.asList(new String[] {}) );

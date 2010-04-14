@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import jxTableTools.TableTool;
@@ -35,7 +36,6 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -43,6 +43,7 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.StringTools;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -115,8 +116,11 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	ITextTable textEndbetrag = null;
 	ITextDocument textDocument = null;
 	int aktuellePosition = 0;
-	
+	int patKilometer = 0;	
 	AbrechnungDlg abrDlg = null;
+	
+	StringBuffer writeBuf = new StringBuffer();
+	StringBuffer rechnungBuf = new StringBuffer();
 	
 	public AbrechnungPrivat(JXFrame owner,String titel,int rueckgabe,int preisgruppe) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
@@ -278,12 +282,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		}
 		FensterSchliessen("dieses");
 	}
+	/*
 	private AbrechnungPrivat getInstance(){
 		return this;
 	}
+	*/
 	private void doPrivat(){
 		try {
-			//System.out.println(SystemConfig.hmAdrPDaten);
 			Thread.sleep(50);
 			hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
 			hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );
@@ -298,12 +303,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			startePositionen();
 			abrDlg.setzeLabel("Erstelle Ausdruck");
 			starteDrucken();
-			abrDlg.setzeLabel("Erstelle Rechnung");			
-			doFaktura("privat");
-			abrDlg.setzeLabel("Erstelle OffenePosten");
-			doOffenePosten("privat");
-			abrDlg.setzeLabel("Übertrage Rezept in Historie");			
-			doUebertrag();
+			abrDlg.setzeLabel("Erstelle Rechnung");
+			if(Reha.vollbetrieb){			
+				doFaktura("privat");
+				abrDlg.setzeLabel("Erstelle OffenePosten");
+				doOffenePosten("privat");
+				abrDlg.setzeLabel("Übertrage Rezept in Historie");
+				doUebertrag();
+			}
 			doTabelle();
 			abrDlg.setVisible(false);
 			abrDlg.dispose();
@@ -314,7 +321,6 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	}
 	private void doBGE(){
 		try {
-			//System.out.println(SystemConfig.hmAdrKDaten);
 			Thread.sleep(50);
 			hmAdresse.put("<pri1>",SystemConfig.hmAdrKDaten.get("<Kadr1>") );
 			hmAdresse.put("<pri2>",SystemConfig.hmAdrKDaten.get("<Kadr2>") );
@@ -329,12 +335,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			startePositionen();
 			abrDlg.setzeLabel("Erstelle Ausdruck");			
 			starteDrucken();
-			abrDlg.setzeLabel("Erstelle Rechnung");		
-			doFaktura("bge");
-			abrDlg.setzeLabel("Erstelle OffenePosten");			
-			doOffenePosten("bge");
-			abrDlg.setzeLabel("Übertrage Rezept in Historie");			
-			doUebertrag();
+			abrDlg.setzeLabel("Erstelle Rechnung");
+			if(Reha.vollbetrieb){
+				doFaktura("bge");
+				abrDlg.setzeLabel("Erstelle OffenePosten");			
+				doOffenePosten("bge");
+				abrDlg.setzeLabel("Übertrage Rezept in Historie");	
+				doUebertrag();
+			}
 			doTabelle();
 			abrDlg.setVisible(false);
 			abrDlg.dispose();
@@ -346,45 +354,123 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	}
 	private void doFaktura(String kostentraeger){
 		// Hier die Sätze in die faktura-datenbank schreiben
+		
 		String plz = "";
 		String ort = "";
+		int hbpos = -1;
+		int wgpos = -1;
+		int diff = originalPos.size()-originalId.size();
+		if(diff==2){
+			hbpos=originalId.size()+1;
+			wgpos=originalId.size()+2;
+		}else if(diff==1){
+			hbpos=originalId.size()+1;
+		}
 		try{
 			int idummy = hmAdresse.get("<pri4>").indexOf(" ");
 			plz = hmAdresse.get("<pri4>").substring(0,idummy).trim();
 			ort = hmAdresse.get("<pri4>").substring(idummy).trim();
 		}catch(Exception ex){}
-		for(int i = 0; i < originalAnzahl.size();i++){
-			
+		for(int i = 0; i < originalPos.size();i++){
+			writeBuf.setLength(0);
+			writeBuf.trimToSize();
+			if(i==0){
+				writeBuf.append("insert into faktura set kassen_nam='"+StringTools.EscapedDouble(hmAdresse.get("<pri1>"))+"', ");
+				writeBuf.append("kassen_na2='"+StringTools.EscapedDouble(hmAdresse.get("<pri2>"))+"', ");
+				writeBuf.append("strasse='"+StringTools.EscapedDouble(hmAdresse.get("<pri3>"))+"', ");
+				writeBuf.append("plz='"+plz+"', ort='"+ort+"', ");
+				writeBuf.append("name='"+StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)+", "+
+						Reha.thisClass.patpanel.patDaten.get(3) )+"', ");
+			}else{
+				writeBuf.append("insert into faktura set ");
+			}
+			writeBuf.append("lfnr='"+Integer.toString(i)+"', "); 
+			if(i == (hbpos-1)){
+				//Hausbesuch
+				writeBuf.append("pos_int='"+RezTools.getIDFromPos(originalPos.get(i), "", preisliste)+"', ");
+				writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
+				writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
+			}else if(i == (wgpos-1)){
+				//Weggebühren Kilometer und Pauschale differenzieren
+				writeBuf.append("pos_int='"+RezTools.getIDFromPos(originalPos.get(i), "", preisliste)+"', ");
+				writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
+				if(patKilometer > 0){
+					String tage = Integer.toString(originalAnzahl.get(i)/patKilometer);
+					writeBuf.append("anzahltage='"+tage+"', ");					
+					writeBuf.append("kilometer='"+dcf.format(Double.parseDouble(Integer.toString(patKilometer))).replace(",", ".")+"', ");
+				}else{
+					writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
+				}
+			}else{
+				writeBuf.append("pos_int='"+originalId.get(i)+"', ");
+				writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
+				writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
+			}
+			writeBuf.append("pos_kas='"+originalPos.get(i)+"', ");
+			writeBuf.append("kuerzel='"+RezTools.getKurzformFromPos(originalPos.get(i), "", preisliste)+"', ");
+			writeBuf.append("preis='"+dcf.format(einzelPreis.get(i)).replace(",", ".")+"', ");
+			writeBuf.append("gesamt='"+dcf.format(zeilenGesamt.get(i).doubleValue()).replace(",", ".")+"', ");
+			writeBuf.append("zuzahl='F', ");
+			writeBuf.append("zzbetrag='0.00', ");
+			writeBuf.append("netto='"+dcf.format(zeilenGesamt.get(i).doubleValue()).replace(",", ".")+"', ");
+			writeBuf.append("rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1)+"', ");
+			writeBuf.append("rezeptart='"+(kostentraeger.equals("privat") ? "1" : "2" )+"', ");
+			writeBuf.append("rnummer='"+aktRechnung+"', ");
+			writeBuf.append("pat_intern='"+Reha.thisClass.patpanel.vecaktrez.get(0)+"', ");
+			writeBuf.append("kassid='"+Reha.thisClass.patpanel.vecaktrez.get(37)+"', ");
+			writeBuf.append("arztid='"+Reha.thisClass.patpanel.vecaktrez.get(16)+"', ");
+			writeBuf.append("disziplin='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim().substring(0,2)+"', ");
+			writeBuf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
+			SqlInfo.sqlAusfuehren(writeBuf.toString());
+			//System.out.println(writeBuf.toString());
 		}
 	}
 	private void doOffenePosten(String kostentraeger){
-		
+		rechnungBuf.setLength(0);
+		rechnungBuf.trimToSize();
+		rechnungBuf.append("insert into rliste set ");
+		rechnungBuf.append("r_nummer='"+aktRechnung+"', ");
+		rechnungBuf.append("r_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+		if(kostentraeger.equals("privat")){
+			rechnungBuf.append("r_kasse='"+StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)+", "+
+					Reha.thisClass.patpanel.patDaten.get(3) )+"', ");
+		}else{
+			rechnungBuf.append("r_kasse='"+StringTools.EscapedDouble(hmAdresse.get("<pri1>"))+"', ");			
+		}
+		rechnungBuf.append("r_klasse='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim().substring(0,2)+"', ");
+		rechnungBuf.append("r_betrag='"+dcf.format(rechnungGesamt.doubleValue()).replace(",", ".")+"', ");
+		rechnungBuf.append("r_offen='"+dcf.format(rechnungGesamt.doubleValue()).replace(",", ".")+"', ");
+		rechnungBuf.append("r_zuzahl='0.00', ");
+		rechnungBuf.append("ikktraeger='"+Reha.thisClass.patpanel.vecaktrez.get(37)+"',");
+		rechnungBuf.append("pat_intern='"+Reha.thisClass.patpanel.vecaktrez.get(0)+"'");
+
+		SqlInfo.sqlAusfuehren(rechnungBuf.toString());		
 	}
 	private void doUebertrag(){
-		 if(!Reha.vollbetrieb){
-			 return;
-		 }
 		 String rez_nr = Reha.thisClass.patpanel.vecaktrez.get(1).toString();
+		 
 		 SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
-		 SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
-		 Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
-			if(Reha.thisClass.patpanel.vecaktrez.get(62).trim().equals("T")){
-				new ExUndHop().setzeStatement("delete from fertige where rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim()+"' LIMIT 1");			
-			}
-	}
-	private void doTabelle(){
-		 if(!Reha.vollbetrieb){
-			 return;
+		 
+		 if(Reha.thisClass.patpanel.vecaktrez.get(62).trim().equals("T")){
+			 SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim()+"' LIMIT 1");			
 		 }
+
+		 SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
+
+		 Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
+
+	}
+	
+	private void doTabelle(){
 		int row =  Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 		if(row >= 0){
 			TableTool.loescheRowAusModel(Reha.thisClass.patpanel.aktRezept.tabaktrez, row);
+			Reha.thisClass.patpanel.aktRezept.tabaktrez.repaint();
 			Reha.thisClass.patpanel.aktRezept.setzeKarteiLasche();
 		}
 	}
 	
 	private void doNeuerTarif(){
-		//int itarif = jcmb.getSelectedIndex(); 
 		preisliste = SystemPreislisten.hmPreise.get(this.disziplin).get(this.aktGruppe);
 		System.out.println("stelle neuen Tarif ein....");
 		String pos = "";
@@ -397,6 +483,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		originalLangtext.clear();
 		zeilenGesamt.clear();
 		rechnungGesamt = BigDecimal.valueOf(Double.parseDouble("0.00"));
+		patKilometer = 0;
 
 		if(!Reha.thisClass.patpanel.vecaktrez.get(8).equals("0")){
 			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(48));
@@ -517,7 +604,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			einzelPreis.add(Double.parseDouble(preis.toString()));
 			originalLangtext.add("Hausbesuchspauschale");
 			labs[4].setText(hbanzahl+" * "+pos+" (Einzelpreis = "+preis+")");
-			int patKilometer = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(48));
+			patKilometer = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(48));
 			if(patKilometer <= 0){
 				// Keine Kilometer Im Patientenstamm hinterlegt
 				if( (pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(3)).trim().equals("")){
@@ -602,21 +689,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			abrDlg = new AbrechnungDlg();
 			abrDlg.pack();
 			abrDlg.setLocationRelativeTo(null);
-			abrDlg.setVisible(true);
-			abrDlg.setzeLabel("Erstelle Rechnung für Rezept: "+Reha.thisClass.patpanel.vecaktrez.get(1));
-			long zeit = System.currentTimeMillis();
-			while(! abrDlg.isVisible() ){
-				try {
-					Thread.sleep(50);
-					if( (System.currentTimeMillis()-zeit) > 5000){
-						System.out.println("Zwangsabbruch....");
-						break;
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					break;
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					abrDlg.setVisible(true);
+					abrDlg.setzeLabel("Erstelle Rechnung für Rezept: "+Reha.thisClass.patpanel.vecaktrez.get(1));
 				}
-			}
+			});
+			
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {

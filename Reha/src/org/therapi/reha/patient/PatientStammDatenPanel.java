@@ -13,8 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -250,6 +248,7 @@ public class PatientStammDatenPanel extends JXPanel{
 		
 	}
  
+	@SuppressWarnings("unused")
 	private JXPanel getStammDatenPanel(){   //1         2            3       4    5           6           7         8         
 		FormLayout lay = new FormLayout("3dlu,right:max(38dlu;p),3dlu,55dlu:g,3dlu,right:max(39dlu;p),3dlu,45dlu:g,5dlu",
 				// 1     2  3  4  5  6	7  8  9 10 11 12 13

@@ -68,7 +68,6 @@ import jxTableTools.DoubleTableCellRenderer;
 import jxTableTools.MitteRenderer;
 import jxTableTools.MyTableCheckBox;
 import jxTableTools.MyTableComboBox;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -98,8 +97,6 @@ import systemTools.JRtaComboBox;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-import terminKalender.ParameterLaden;
-
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.text.TextException;
@@ -217,7 +214,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private String[] voIndex = {"01","02","10"};  
 
 	private String[] voBreak = {"","K","U","T","A"};
-	private String[] voPreis = {"akt. Tarif","alter Tarif"};
+	//private String[] voPreis = {"akt. Tarif","alter Tarif"};
 	JEditorPane htmlPane = null;
 	
 	private JXTTreeTableNode aktNode;
@@ -226,7 +223,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private TageTreeTableModel demoTreeTableModel = null;
 	private JXTreeTable jXTreeTable = null;
 	private JXTTreeTableNode foo = null;
-	private JXMonthView mv;
+	//private JXMonthView mv;
 	JDialog dlg;
 	
 	private int popUpX;
@@ -634,12 +631,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	}
 	private JXMonthView showView(){
 		final JXMonthView mv = new JXMonthView();
+		/*
 		ActionListener al = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//System.out.println(mv.getSelectionDate());
 			}
 		};
+		*/
 		mv.addActionListener(this);
 		mv.setName("picker2");
 		mv.setTraversable(true);
@@ -1009,11 +1008,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	}
 	/*****************************************************************************************/
 	private void ermittleAbrechnungsfall(boolean construct){
-		//vec_tabelle.clear();
-		
 		vectage = RezTools.macheTerminVector( vec_rez.get(0).get(34));
-		Vector<Vector<String>> vecabrfaelle = new Vector<Vector<String>>();
-		Vector<String> vecabrfall = new Vector<String>();
+		//Vector<Vector<String>> vecabrfaelle = new Vector<Vector<String>>();
+		//Vector<String> vecabrfall = new Vector<String>();
 		vec_tabelle.clear();
 		vec_poskuerzel.clear();
 		vec_posanzahl.clear();
@@ -1053,8 +1050,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String splitvec = null;
 
 		if(construct){
-			int childs;
-			while( (childs=root.getChildCount()) > 0){
+			while( root.getChildCount() > 0){
 				demoTreeTableModel.removeNodeFromParent((MutableTreeTableNode) root.getChildAt(0));
 			}
 		}

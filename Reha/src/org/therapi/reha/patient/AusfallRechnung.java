@@ -1,4 +1,4 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
 
@@ -45,7 +45,6 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import patientenFenster.TherapieBerichte.MyBerichtTableModel;
 import sqlTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;

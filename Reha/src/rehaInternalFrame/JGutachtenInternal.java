@@ -1,4 +1,4 @@
-package RehaInternalFrame;
+package rehaInternalFrame;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
@@ -58,10 +58,10 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		//Nächsten JInternalFrame aktivieren
+		System.out.println("Lï¿½sche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//Nï¿½chsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
-		//JInternalFram von Desktop lösen
+		//JInternalFram von Desktop lï¿½sen
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		((EBerichtPanel)this.inhalt).finalise();
 		//Listener deaktivieren

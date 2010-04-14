@@ -73,12 +73,12 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 
+import rehaInternalFrame.JRehaInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
-import RehaInternalFrame.JRehaInternal;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaTPEvent;

@@ -16,18 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-
-import patientenFenster.ArztAuswahl.ArztWahlAction;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -36,7 +28,15 @@ import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 public class ArztNeuKurz extends JXPanel implements ActionListener,KeyListener,FocusListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8412450784730057738L;
 	public JRtaTextField tfs[] = {null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null};
@@ -314,7 +314,7 @@ public class ArztNeuKurz extends JXPanel implements ActionListener,KeyListener,F
 		Rectangle rec1 =((JComponent)arg0.getSource()).getBounds();
 		Rectangle rec2 = jscr.getViewport().getViewRect();
 		JViewport vp = jscr.getViewport();
-		Rectangle rec3 = vp.getVisibleRect();
+		//Rectangle rec3 = vp.getVisibleRect();
 		if((rec1.y+((JComponent)arg0.getSource()).getHeight()) > (rec2.y+rec2.height)){
 			vp.setViewPosition(new Point(0,(rec2.y+rec2.height)-rec1.height));
 		}

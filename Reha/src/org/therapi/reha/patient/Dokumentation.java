@@ -1,4 +1,4 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 
 
@@ -109,8 +109,9 @@ import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
 
-import patientenFenster.Historie.HistorPanel;
-import patientenFenster.Historie.HistorRezepteListSelectionHandler;
+import patientenFenster.KeinRezept;
+import patientenFenster.MyAccessory;
+
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import sun.awt.image.ImageFormatException;

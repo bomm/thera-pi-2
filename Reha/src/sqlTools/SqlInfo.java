@@ -317,7 +317,7 @@ public class SqlInfo {
 	}
 
 	/*******************************/
-	public static Vector holeSaetze(String tabelle, String felder, String kriterium, List ausschliessen){
+	public static Vector<Vector<String>> holeSaetze(String tabelle, String felder, String kriterium, List ausschliessen){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
@@ -962,7 +962,7 @@ public class SqlInfo {
 			}
 		}
 		transferBuf.append(" from "+sourcedb+" where "+dbfield+"='"+argument+"' LIMIT 1");
-		System.out.println(transferBuf.toString());
+		//System.out.println(transferBuf.toString());
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(transferBuf.toString());
 		
 		if(vec.size()<=0){

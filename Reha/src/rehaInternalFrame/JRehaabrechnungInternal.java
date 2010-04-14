@@ -1,12 +1,11 @@
-package RehaInternalFrame;
-
-import java.beans.PropertyVetoException;
+package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
+import java.beans.PropertyVetoException;
+
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
@@ -14,26 +13,27 @@ import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 
-import arztFenster.ArztPanel;
-
-public class JArztInternal extends JRehaInternal implements RehaEventListener{
+public class JRehaabrechnungInternal extends JRehaInternal implements RehaEventListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8008877476910566497L;
 	RehaEventClass rEvent = null;
-	public JArztInternal(String titel, ImageIcon img, int desktop) {
+	public JRehaabrechnungInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
 	}
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		// TODO Auto-generated method stub
-		System.out.println("Internal-KassenFrame in schliessen***************");
+		System.out.println("Internal-Rehaabrechnung in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("Lösche ArztInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		//JInternalFram von Desktop lösen
+		System.out.println("LÃ¶sche Rehaabrechnung von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//JInternalFram von Desktop lÃ¶sen
 		Reha.thisClass.desktops[this.desktop].remove(this);
-		//Nächsten JInternalFrame aktivieren
+		//nÃ¤chsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
@@ -53,7 +53,7 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 		 	   public  void run()
 		 	   {
 				AktiveFenster.loescheFenster(name);
-				Reha.thisClass.progLoader.loescheArzt();
+				Reha.thisClass.progLoader.loescheRehaabrechnung();
 		 	   }
 		});
 
@@ -63,11 +63,6 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 		super.setzeTitel(stitel);
 		repaint();
 		
-	}
-	public void starteArztID(String aID){
-		if(aID.equals("")){return;}
-		((ArztPanel)inhalt).holeAktArzt(aID);
-		//ArztPanel.thisClass.holeAktArzt(aID);
 	}
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
@@ -79,7 +74,6 @@ public class JArztInternal extends JRehaInternal implements RehaEventListener{
 				try {
 					this.setIcon(true);
 				} catch (PropertyVetoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				this.setActive(false);

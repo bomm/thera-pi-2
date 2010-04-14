@@ -4,15 +4,12 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -24,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -32,19 +28,14 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import patientenFenster.ArztAuswahl.ArztListener;
-import patientenFenster.ArztAuswahl.ArztWahlAction;
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import sqlTools.SqlInfo;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -54,6 +45,10 @@ import events.RehaTPEventListener;
 
 public class KassenAuswahl extends RehaSmartDialog{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3081235395691267863L;
 	public JFormattedTextField tf = null;
 	String suchkrit = "";
 	String suchid = "";
@@ -73,7 +68,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 
 	public KassenAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String kassennum){
 		super(owner, name);
-		//setSize(430,300);
+
 		setSize(550,350);
 		this.suchkrit = suchegleichnach[0];
 		this.suchid = suchegleichnach[1];
@@ -294,22 +289,22 @@ public class KassenAuswahl extends RehaSmartDialog{
 			"%' or kassen_nam2 like '%"+suchkrit+ "%' or ort like '%"+suchkrit+"%' or ik_kasse like '%"+suchkrit+"%' order by kassen_nam1";			
 		}
 
-		Vector vec = SqlInfo.holeSaetze("kass_adr", "kuerzel,kassen_nam1,kassen_nam2,ort,ik_kasse,id", krit ,Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("kass_adr", "kuerzel,kassen_nam1,kassen_nam2,ort,ik_kasse,id", krit ,Arrays.asList(new String[]{}));
 		int bis = vec.size();
 		int i;
 		for(i = 0; i < bis; i++){
-			kassenwahlmod.addRow((Vector)vec.get(i));	
+			kassenwahlmod.addRow((Vector<?>)vec.get(i));	
 		}
 	}
 	
 	public void fuelleIdTabelle(String suchid){
 		kassenwahlmod.setRowCount(0);
 		kassenwahltbl.validate();
-		Vector vec = SqlInfo.holeSaetze("kass_adr", "kuerzel,kassen_nam1,kassen_nam2,ort,ik_kasse,id", "id='"+suchid+"'" ,Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("kass_adr", "kuerzel,kassen_nam1,kassen_nam2,ort,ik_kasse,id", "id='"+suchid+"'" ,Arrays.asList(new String[]{}));
 		int bis = vec.size();
 		int i;
 		for(i = 0; i < bis; i++){
-			kassenwahlmod.addRow((Vector)vec.get(i));	
+			kassenwahlmod.addRow((Vector<?>)vec.get(i));	
 		}
 	}
 
@@ -331,7 +326,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 	public void zurueckZurTabelle(JRtaTextField[] jtfs){
 		super.getSmartTitledPanel().setTitle("Kasse auswählen");
 		if(jtfs != null){
-			//{"K�rzel","Name1","Name2","Ort", "IK",""};
+			//{"Kürzel","Name1","Name2","Ort", "IK",""};
 			Vector<String> vec = new Vector<String>();
 			vec.add(jtfs[0].getText());
 			vec.add(jtfs[1].getText());
@@ -372,7 +367,12 @@ public class KassenAuswahl extends RehaSmartDialog{
 	}
 
 	class KassenWahlAction extends AbstractAction {
-	    public void actionPerformed(ActionEvent e) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 4162099265232433545L;
+
+		public void actionPerformed(ActionEvent e) {
 
 	        if(e.getActionCommand().equals("f")){
 	        	 tf.requestFocus();
@@ -431,21 +431,19 @@ public class KassenAuswahl extends RehaSmartDialog{
 	class MyKassenWahlModel extends DefaultTableModel{
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   if(columnIndex==0){return String.class;}
 			   else{return String.class;}
-	}
+		}
 
-		    public boolean isCellEditable(int row, int col) {
-		        //Note that the data/cell address is constant,
-		        //no matter where the cell appears onscreen.
-		    	return true;
-		      }
-			public Object getValueAt(int rowIndex, int columnIndex) {
-				String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
-				Object result = null;
-				result = theData;
-				return result;
-			}
+	    public boolean isCellEditable(int row, int col) {
+	    	return true;
+	    }
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
+			Object result = null;
+			result = theData;
+			return result;
+		}
 	}
 }

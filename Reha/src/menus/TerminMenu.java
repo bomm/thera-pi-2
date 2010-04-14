@@ -11,9 +11,9 @@ import javax.swing.KeyStroke;
 
 import org.jdesktop.swingx.JXTitledPanel;
 
+import rehaInternalFrame.JRehaInternal;
 import terminKalender.TerminFenster;
 
-import RehaInternalFrame.JRehaInternal;
 
 import java.awt.Component;
 import java.awt.Event;

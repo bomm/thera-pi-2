@@ -22,16 +22,15 @@ public class MyAccessory extends JComponent implements PropertyChangeListener {
 	private Image image;
 
 	public MyAccessory(JFileChooser chooser) {
-		// Listen for changes to the selected file
+
 		chooser.addPropertyChangeListener(this);
 
-		// Set a preferred size
 		setPreferredSize(new Dimension(150, 150));
 		this.setBounds(0, 10, 0, 0);
 		this.setBorder(BorderFactory.createEtchedBorder());
 	}
 
-	// This listener listens for changes to the selected file
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equals(evt
 				.getPropertyName())) {
@@ -48,7 +47,6 @@ public class MyAccessory extends JComponent implements PropertyChangeListener {
 			} catch (Exception ie) {
 			}
 			;
-			// Repaint this component
 			repaint();
 		}
 	}

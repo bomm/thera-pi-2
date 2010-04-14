@@ -1,4 +1,4 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
@@ -35,12 +35,13 @@ import jxTableTools.TableTool;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import patientenFenster.Historie.HistorPanel;
-import patientenFenster.TherapieBerichte.MyBerichtTableModel;
+import patientenFenster.GutachtenWahl;
+import patientenFenster.KeinRezept;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;

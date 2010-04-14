@@ -1,7 +1,6 @@
 package entlassBerichte;
 
 import javax.swing.JTabbedPane;
-import javax.swing.plaf.TabbedPaneUI;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 

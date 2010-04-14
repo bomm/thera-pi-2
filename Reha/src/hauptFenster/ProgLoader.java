@@ -21,6 +21,18 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rehaContainer.RehaTP;
+import rehaInternalFrame.JAbrechnungInternal;
+import rehaInternalFrame.JAnmeldungenInternal;
+import rehaInternalFrame.JArztInternal;
+import rehaInternalFrame.JBarkassenInternal;
+import rehaInternalFrame.JGutachtenInternal;
+import rehaInternalFrame.JKasseInternal;
+import rehaInternalFrame.JPatientInternal;
+import rehaInternalFrame.JRehaInternal;
+import rehaInternalFrame.JRehaabrechnungInternal;
+import rehaInternalFrame.JTerminInternal;
+import rehaInternalFrame.JUmsaetzeInternal;
+import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemUtil;
@@ -29,15 +41,13 @@ import systemTools.SplashPanel;
 import systemTools.WinNum;
 import terminKalender.DatFunk;
 import terminKalender.TerminFenster;
-import RehaInternalFrame.JAbrechnungInternal;
-import RehaInternalFrame.JArztInternal;
-import RehaInternalFrame.JGutachtenInternal;
-import RehaInternalFrame.JKasseInternal;
-import RehaInternalFrame.JPatientInternal;
-import RehaInternalFrame.JRehaInternal;
-import RehaInternalFrame.JTerminInternal;
+import verkauf.Verkauf;
 import abrechnung.AbrechnungGKV;
+import abrechnung.Rehaabrechnung;
+import anmeldungUmsatz.Anmeldungen;
+import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
+import barKasse.Barkasse;
 import benutzerVerwaltung.BenutzerVerwaltung;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -52,6 +62,12 @@ public JArztInternal arztjry = null;
 public JKasseInternal kassejry = null;
 public JTerminInternal terminjry = null;
 public JAbrechnungInternal abrechjry = null;
+public JAnmeldungenInternal anmeldungenjry = null;
+public JUmsaetzeInternal umsaetzejry = null;
+public JVerkaufInternal verkaufjry = null;
+public JBarkassenInternal barkassenjry = null;
+public JRehaabrechnungInternal rehaabrechnungjry = null;
+
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
 
@@ -324,11 +340,11 @@ public void loescheGutachten(){
 }
 
 /******************************************/
-public void Abrechnung1Fenster(int setPos) {
+public void AbrechnungFenster(int setPos) {
 	if(! Reha.DbOk){
 		return;
 	}
-	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
+	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung");
 	if(abrech1 != null){
 		System.out.println("InternalFrame Kassenabrechnung bereits geöffnet");
 		containerHandling(((JAbrechnungInternal)abrech1).getDesktop());
@@ -343,19 +359,19 @@ public void Abrechnung1Fenster(int setPos) {
 		return;
 	}
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-	String name = "Abrechnung-1"+WinNum.NeueNummer();
-	int containerNr = SystemConfig.hmContainer.get("Arzt");
+	String name = "Abrechnung"+WinNum.NeueNummer();
+	int containerNr = setPos;
 	containerHandling(containerNr);
 	abrechjry = new JAbrechnungInternal("thera-\u03C0  - Kassen-Abrechnung nach §302 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
-	AktiveFenster.setNeuesFenster("Abrechnung-1",(JComponent)abrechjry,1,(Container)abrechjry.getContentPane());
+	AktiveFenster.setNeuesFenster(name,(JComponent)abrechjry,1,(Container)abrechjry.getContentPane());
 	abrechjry.setName(name);
 	abrechjry.setSize(new Dimension(850,700));
 	abrechjry.setPreferredSize(new Dimension(850,700));
-	Reha.thisClass.abrechnung1panel = new AbrechnungGKV(abrechjry); 
-	abrechjry.setContent(Reha.thisClass.abrechnung1panel);	
+	Reha.thisClass.abrechnungpanel = new AbrechnungGKV(abrechjry); 
+	abrechjry.setContent(Reha.thisClass.abrechnungpanel);	
 	abrechjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	abrechjry.setLocation(comps*10, comps*10);
+	abrechjry.setLocation(comps*15, comps*15);
 	abrechjry.pack();
 	abrechjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(abrechjry);
@@ -364,15 +380,232 @@ public void Abrechnung1Fenster(int setPos) {
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	
 }
-public void loescheAbrechnung1(){
+public void loescheAbrechnung(){
 	abrechjry = null;
-	Reha.thisClass.abrechnung1panel = null;
+	Reha.thisClass.abrechnungpanel = null;
+}
+/**********************Neuanmeldungen****************************/
+public void AnmeldungenFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent anmeld = AktiveFenster.getFensterAlle("Anmeldungen");
+	if(anmeld != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JAnmeldungenInternal)anmeld).getDesktop());
+		((JAnmeldungenInternal)anmeld).aktiviereDiesenFrame( ((JAnmeldungenInternal)anmeld).getName());
+		if( ((JAnmeldungenInternal)anmeld).isIcon() ){
+			try {
+				((JAnmeldungenInternal)anmeld).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Anmeldungen"+WinNum.NeueNummer();
+	//int containerNr = SystemConfig.hmContainer.get("Arzt");
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	anmeldungenjry = new JAnmeldungenInternal("thera-\u03C0  - Ermittlung des Anmeldevolumens ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)anmeldungenjry,1,(Container)anmeldungenjry.getContentPane());
+	anmeldungenjry.setName(name);
+	anmeldungenjry.setSize(new Dimension(500,500));
+	anmeldungenjry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.anmeldungenpanel = new Anmeldungen(anmeldungenjry); 
+	anmeldungenjry.setContent(Reha.thisClass.anmeldungenpanel);	
+	anmeldungenjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	anmeldungenjry.setLocation(comps*15, comps*15);
+	anmeldungenjry.pack();
+	anmeldungenjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(anmeldungenjry);
+	anmeldungenjry.aktiviereDiesenFrame( anmeldungenjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	
+}
+public void loescheAnmeldungen(){
+	anmeldungenjry = null;
+	Reha.thisClass.anmeldungenpanel = null;
+}
+/*****************************Umsätze von bis*********************************/
+public void UmsatzFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent umsatz = AktiveFenster.getFensterAlle("Umsaetze");
+	if(umsatz != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JUmsaetzeInternal)umsatz).getDesktop());
+		((JUmsaetzeInternal)umsatz).aktiviereDiesenFrame( ((JUmsaetzeInternal)umsatz).getName());
+		if( ((JUmsaetzeInternal)umsatz).isIcon() ){
+			try {
+				((JUmsaetzeInternal)umsatz).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Umsaetze"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	umsaetzejry = new JUmsaetzeInternal("thera-\u03C0  - Ermittlung der realisierten Umsätze ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)umsaetzejry,1,(Container)umsaetzejry.getContentPane());
+	umsaetzejry.setName(name);
+	umsaetzejry.setSize(new Dimension(500,500));
+	umsaetzejry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.umsaetzepanel = new Umsaetze(umsaetzejry); 
+	umsaetzejry.setContent(Reha.thisClass.umsaetzepanel);	
+	umsaetzejry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	umsaetzejry.setLocation(comps*15, comps*15);
+	umsaetzejry.pack();
+	umsaetzejry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(umsaetzejry);
+	umsaetzejry.aktiviereDiesenFrame( umsaetzejry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 }
 
+public void loescheUmsaetze(){
+	umsaetzejry = null;
+	Reha.thisClass.umsaetzepanel = null;
+}
+/***************************Verkäufe in der Praxis*********************************/
+public void VerkaufFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent vk = AktiveFenster.getFensterAlle("Verkauf");
+	if(vk != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JVerkaufInternal)vk).getDesktop());
+		((JVerkaufInternal)vk).aktiviereDiesenFrame( ((JVerkaufInternal)vk).getName());
+		if( ((JVerkaufInternal)vk).isIcon() ){
+			try {
+				((JVerkaufInternal)vk).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Verkauf"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	verkaufjry = new JVerkaufInternal("thera-\u03C0  - Verkäufe tätigen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)verkaufjry,1,(Container)verkaufjry.getContentPane());
+	verkaufjry.setName(name);
+	verkaufjry.setSize(new Dimension(500,500));
+	verkaufjry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.verkaufpanel = new Verkauf(verkaufjry); 
+	verkaufjry.setContent(Reha.thisClass.verkaufpanel);	
+	verkaufjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	verkaufjry.setLocation(comps*15, comps*15);
+	verkaufjry.pack();
+	verkaufjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(verkaufjry);
+	verkaufjry.aktiviereDiesenFrame( verkaufjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
 
-/*****************************************/
+public void loescheVerkauf(){
+	verkaufjry = null;
+	Reha.thisClass.verkaufpanel = null;
+}
+/***********************Barkasse abrechnen*************************/
+public void BarkassenFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent bk = AktiveFenster.getFensterAlle("Barkasse");
+	if(bk != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JBarkassenInternal)bk).getDesktop());
+		((JBarkassenInternal)bk).aktiviereDiesenFrame( ((JBarkassenInternal)bk).getName());
+		if( ((JBarkassenInternal)bk).isIcon() ){
+			try {
+				((JBarkassenInternal)bk).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Barkasse"+WinNum.NeueNummer();
+	System.out.println("Neues Barkassenfenster = "+name);
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	barkassenjry = new JBarkassenInternal("thera-\u03C0  - Barkasse abrechnen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)barkassenjry,1,(Container)barkassenjry.getContentPane());
+	barkassenjry.setName(name);
+	barkassenjry.setSize(new Dimension(500,500));
+	barkassenjry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.barkassenpanel = new Barkasse(barkassenjry); 
+	barkassenjry.setContent(Reha.thisClass.barkassenpanel);	
+	barkassenjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	barkassenjry.setLocation(comps*15, comps*15);
+	barkassenjry.pack();
+	barkassenjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(barkassenjry);
+	barkassenjry.aktiviereDiesenFrame( barkassenjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
 
+public void loescheBarkasse(){
+	barkassenjry = null;
+	Reha.thisClass.barkassenpanel = null;
+}
+/*************************Rehaabrechnungen*************************/
+public void RehaabrechnungFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent rab = AktiveFenster.getFensterAlle("Rehaabrechnung");
+	if(rab != null){
+		containerHandling(((JRehaabrechnungInternal)rab).getDesktop());
+		((JRehaabrechnungInternal)rab).aktiviereDiesenFrame( ((JRehaabrechnungInternal)rab).getName());
+		if( ((JRehaabrechnungInternal)rab).isIcon() ){
+			try {
+				((JRehaabrechnungInternal)rab).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Rehaabrechnung"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	rehaabrechnungjry = new JRehaabrechnungInternal("thera-\u03C0  - ganztägig ambulante Reha abrechnen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)rehaabrechnungjry,1,(Container)rehaabrechnungjry.getContentPane());
+	rehaabrechnungjry.setName(name);
+	rehaabrechnungjry.setSize(new Dimension(500,500));
+	rehaabrechnungjry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.rehaabrechnungpanel = new Rehaabrechnung(rehaabrechnungjry); 
+	rehaabrechnungjry.setContent(Reha.thisClass.rehaabrechnungpanel);	
+	rehaabrechnungjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	rehaabrechnungjry.setLocation(comps*15, comps*15);
+	rehaabrechnungjry.pack();
+	rehaabrechnungjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(rehaabrechnungjry);
+	rehaabrechnungjry.aktiviereDiesenFrame( rehaabrechnungjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
 
+public void loescheRehaabrechnung(){
+	rehaabrechnungjry = null;
+	Reha.thisClass.rehaabrechnungpanel = null;
+}
+/***********************************************************/
 public static void InternalGut2(){
 	JInternalFrame iframe = new JInternalFrame();
 	iframe.setSize(900,650);

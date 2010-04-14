@@ -96,6 +96,7 @@ import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
+import rehaInternalFrame.JKasseInternal;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.KasseTools;
@@ -109,7 +110,6 @@ import systemTools.StringTools;
 import terminKalender.TerminFenster;
 import terminKalender.DatFunk;
 
-import RehaInternalFrame.JKasseInternal;
 
 public class KassenPanel extends JXPanel implements PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
 	JButton einlesen = null;

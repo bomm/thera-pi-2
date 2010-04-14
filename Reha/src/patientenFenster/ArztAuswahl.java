@@ -5,15 +5,12 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -26,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -34,16 +30,11 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-
 
 import sqlTools.SqlInfo;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -55,6 +46,10 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class ArztAuswahl extends RehaSmartDialog{
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3341922213135473923L;
 public JFormattedTextField tf = null;
 String suchkrit = "";
 String suchid = "";
@@ -104,20 +99,11 @@ private RehaTPEventClass rtp = null;
 		content = getAuswahl();
 		grundPanel.add(content,BorderLayout.CENTER);
 		getSmartTitledPanel().setContentContainer(grundPanel);
-
-		//this.getContentPanel().add(content);
-
-		final JXPanel thispan = content;
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);
 				((JComponent)getContentPanel()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
 				((JComponent)getContentPanel()).getActionMap().put("doSuchen", new ArztWahlAction());
-				/*
-				stroke = KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_MASK);
-				((JComponent)getContentPanel()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doNeu");
-				((JComponent)getContentPanel()).getActionMap().put("doNeu", new ArztWahlAction());
-				*/
 			}
 		});
 		SwingUtilities.invokeLater(new Runnable(){
@@ -134,7 +120,6 @@ private RehaTPEventClass rtp = null;
 		});
 	}
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
-		// TODO Auto-generated method stub
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
@@ -185,7 +170,6 @@ private RehaTPEventClass rtp = null;
 				neuAnlageArzt();
 			}
 	    });
-		//jpan.add(neuarzt,cc.xyw(6,2,2));
 		/************************/
 		neupan.add(neuarzt,cc2.xy(1,1));
 		suchearzt = new JButton("suchen");
@@ -203,7 +187,6 @@ private RehaTPEventClass rtp = null;
 		uebernahmearzt = new JButton("übernahme");
 		uebernahmearzt.setToolTipText("ausgewählten Arzt übernehmen");
 		uebernahmearzt.setName("suchearzt");
-		//uebernahmearzt.setMnemonic(KeyEvent.VK_B);
 		uebernahmearzt.addKeyListener(akl);
 		uebernahmearzt.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -226,8 +209,6 @@ private RehaTPEventClass rtp = null;
 		neupan.validate();
 		jpan.add(neupan,cc.xyw(6,2,2));
 		/************************/		
-
-		
 		arztwahlmod = new MyArztWahlModel();
 		String[] column = 	{"Name","Vorname","Strasse","Ort", "LANR",""};
 		arztwahlmod.setColumnIdentifiers(column);
@@ -295,6 +276,7 @@ private RehaTPEventClass rtp = null;
 		jpan.add(span,cc.xyw(2, 4,6));
 		return jpan;
 	}
+	
 	public void fuelleTabelle(String suchkrit){
 		arztwahlmod.setRowCount(0);
 		arztwahltbl.validate();
@@ -312,21 +294,21 @@ private RehaTPEventClass rtp = null;
 			"%' or klinik like '%"+suchkrit+ "%' or arztnum like '%"+suchkrit+"%' or ort like '%"+suchkrit+"%' order by nachname";			
 		}
 
-		Vector vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,id", krit ,Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,id", krit ,Arrays.asList(new String[]{}));
 		int bis = vec.size();
 		int i;
 		for(i = 0; i < bis; i++){
-			arztwahlmod.addRow((Vector)vec.get(i));	
+			arztwahlmod.addRow((Vector<?>)vec.get(i));	
 		}
 	}
 	public void fuelleIdTabelle(String suchid){
 		arztwahlmod.setRowCount(0);
 		arztwahltbl.validate();
-		Vector vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,id", "id='"+suchid+"'" ,Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,id", "id='"+suchid+"'" ,Arrays.asList(new String[]{}));
 		int bis = vec.size();
 		int i;
 		for(i = 0; i < bis; i++){
-			arztwahlmod.addRow((Vector)vec.get(i));	
+			arztwahlmod.addRow((Vector<?>)vec.get(i));	
 		}
 	}
 	public void werteUebergeben(){
@@ -393,7 +375,6 @@ private RehaTPEventClass rtp = null;
 	
 	public void doAbbrechen(){
 		if(arztbisher.length() <= 1){
-			//System.out.println("Arzt = "+arztbisher);
 			elterntfs[0].setText("***nachtragen!!!***");			
 			elterntfs[1].setText("999999999");
 			
@@ -411,7 +392,12 @@ private RehaTPEventClass rtp = null;
 
 	/************************************************************/	
 	class ArztWahlAction extends AbstractAction {
-	    public void actionPerformed(ActionEvent e) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = -6371294487538741375L;
+
+		public void actionPerformed(ActionEvent e) {
 
 	        if(e.getActionCommand().equals("f")){
 	        	 tf.requestFocus();
@@ -422,13 +408,11 @@ private RehaTPEventClass rtp = null;
 
 	    }
 	}
-	
 
 	class ArztListener implements KeyListener{
 
 		@Override
 		public void keyPressed(KeyEvent arg0) {
-			// TODO Auto-generated method stub
 			if(((JComponent)arg0.getSource()).getName().equals("suchfeld") && arg0.getKeyCode() == 10){
 				arg0.consume();
 				fuelleTabelle(tf.getText().trim());
@@ -472,25 +456,20 @@ class MyArztWahlModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return String.class;}
-		  /* if(columnIndex==1){return JLabel.class;}*/
 		   else{return String.class;}
-  //return (columnIndex == 0) ? Boolean.class : String.class;
-}
+	}
 
-	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
-	    	return true;
-	      }
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
-			Object result = null;
-			result = theData;
-			//result = theData;
-			return result;
-		}
+    public boolean isCellEditable(int row, int col) {
+    	return true;
+    }
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
+		Object result = null;
+		result = theData;
+		return result;
+	}
 	    
 	   
 }

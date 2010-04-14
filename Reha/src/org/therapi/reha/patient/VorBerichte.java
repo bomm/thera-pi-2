@@ -1,12 +1,10 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LinearGradientPaint;
@@ -19,8 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
-import java.text.DecimalFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -31,34 +27,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
 
-import patientenFenster.TherapieBerichte.MyBerichtTableModel;
-
-import sqlTools.ExUndHop;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-import ag.ion.noa.printing.IPrinter;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -71,6 +48,10 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3970089431666417693L;
 	boolean nurkopie;
 	boolean aushistorie;
 	public JButton uebernahme;
@@ -84,7 +65,6 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 	
 	public JXTable tabbericht = null;
 	public MyBerichtTableModel dtblm;
-	CompoundPainter cp = null;
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
 
@@ -113,17 +93,6 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-			     Point2D end = new Point2D.Float(Reha.thisClass.patpanel.getWidth(),100);
-			     float[] dist = {0.0f, 0.75f};
-			     Color[] colors = {Color.WHITE,Colors.Yellow.alpha(0.05f)};
-			     p =
-			         new LinearGradientPaint(start, end, dist, colors);
-			     mp = new MattePainter(p);
-			     cp = new CompoundPainter(mp);
-			     */
 			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("VorBerichte"));		
 				return null;
 			}
@@ -164,12 +133,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 		});
 	}
 /****************************************************/	
-	/*
-	public JButton okknopf;
-	public JRtaTextField gegeben;
-	public JLabel rueckgeld;
-	public JCheckBox direktdruck;
-	*/
+
 
 	private JPanel getGebuehren(){     // 1      2    3     4       5               6                7
 		FormLayout lay = new FormLayout("10dlu,80dlu,10dlu,80dlu,fill:0:grow(1.00),10dlu",
@@ -304,6 +268,10 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 	
 }
 class VorBerichtHintergrund extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1049788497941853572L;
 	ImageIcon hgicon;
 	int icx,icy;
 	AlphaComposite xac1 = null;

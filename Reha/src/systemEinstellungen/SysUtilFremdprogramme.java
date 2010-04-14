@@ -34,8 +34,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.Dokumentation;
 
-import patientenFenster.Dokumentation;
 import patientenFenster.MyAccessory;
 
 import systemEinstellungen.SysUtilKrankenkasse.MyVorlagenTableModel;

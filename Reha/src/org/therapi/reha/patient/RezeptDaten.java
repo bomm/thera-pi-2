@@ -32,7 +32,6 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -157,6 +156,7 @@ public class RezeptDaten extends JXPanel{
 					}catch(Exception ex){
 						
 					}
+					if(prgruppe < 0){prgruppe=0;}
 					//if(prgruppe==0){prgruppe++;}
 					if(xreznummer.contains("KG")){
 						//preisvec = ParameterLaden.vKGPreise;

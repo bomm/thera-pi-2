@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
@@ -28,7 +27,6 @@ import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.ComponentFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

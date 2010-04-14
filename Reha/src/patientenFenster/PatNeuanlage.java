@@ -42,9 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-
 import javax.swing.UIManager;
-import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.TableTool;
@@ -196,7 +194,7 @@ private KVKWrapper kvw;
 		}catch(Exception ex){
 			// Kein KarstenLentsch LAF
 		}
-		TabbedPaneUI tpUi = patTab.getUI();
+		//TabbedPaneUI tpUi = patTab.getUI();
 
 		patTab.setOpaque(false);
 		
@@ -291,7 +289,7 @@ private KVKWrapper kvw;
 		 	   public  void run(){
 		 			if(SystemConfig.sReaderAktiv.equals("1")){
 		 				kvw = new KVKWrapper(SystemConfig.sReaderName);
-		 				int ret = kvw.KVK_Einlesen();
+		 				kvw.KVK_Einlesen();
 		 			}
 		 	   }
 		});
@@ -442,7 +440,7 @@ private KVKWrapper kvw;
 		int anzahlc = fchecks.length;
 		int patintern = 0;
 		String name = "";
-		String wert = "";
+		//String wert = "";
 		String spatintern;
 		StringBuffer buf = new StringBuffer();
 		buf.append("update pat5 set ");
@@ -481,8 +479,6 @@ private KVKWrapper kvw;
 
 			}else{
 				buf.append(name+"='"+StringTools.Escaped(jtf[fedits[i]].getText())+"', ");
-				//buf.append(name+"='"+jtf[fedits[i]].getText()+"', "); // bislang o.k. 
-
 			}
 		}
 		buf.append("anrede='"+((String)cbanrede.getSelectedItem()).trim()+"'");
@@ -490,20 +486,16 @@ private KVKWrapper kvw;
 			name = jcheck[i].getName();
 			buf.append(", "+name+"='"+(jcheck[i].isSelected() ? "T' " : "F' " ));
 		}
-		//System.out.println("Inhalt = "+buf.toString());
+
 		if(!this.inNeu){
 			globPat_intern = Reha.thisClass.patpanel.aktPatID;
 			buf.append(" where pat_intern='"+globPat_intern+"'");
 			spatintern = Reha.thisClass.patpanel.aktPatID;
-			// Wenn Kasse ver�nder wurde....
+			// Wenn Kasse veränderr wurde....
 			if(!jtf[34].getText().trim().equals(kassenid)){
 				JOptionPane.showMessageDialog(null, "Achtung - Sie haben dem Patient eine neue Kasse zugewiesen.\n"+
 						"Eventuell ändert sich dadurch der Zuzahlungsstatus vorhandener Rezepte. Bitte prüfen!!!");
 			}
-
-			//if(!jtf[16].getText().trim().equals(befreitdatum) ){
-			System.out.println("Befreiung beim Start ="+freizumstart);
-			System.out.println("Befreiung beim Speichern ="+freibeimspeichern);
 			int zzregel = -1;
 			boolean doof = false;
 			if(! (freizumstart == freibeimspeichern)){
@@ -515,7 +507,7 @@ private KVKWrapper kvw;
 					doof = true;
 				}
 				if(!doof){
-					// hier w�re es optimal eine  ZuzahlToolsFunktion zu haben.....
+					// hier wäre es optimal eine  ZuzahlToolsFunktion zu haben.....
 					int anzahl = SqlInfo.zaehleSaetze("verordn", "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"' AND REZ_GEB='0.00'");
 					if(anzahl > 0){
 						String meldung = "Dieser Patient hat -> "+anzahl+" laufende Rezepte <- ohne Abschluss\n"+
@@ -532,7 +524,7 @@ private KVKWrapper kvw;
 						}
 					}
 				}else{
-					System.out.println("Doof = true and zzregel = "+zzregel);					
+					//System.out.println("Doof = true and zzregel = "+zzregel);					
 				}
 
 			}
@@ -700,8 +692,6 @@ private KVKWrapper kvw;
 		jtf[17].setName("arzt");
 		jtf[17].addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
-				//System.out.println("code = "+arg0.getKeyCode());
-				//System.out.println("char = "+arg0.getKeyChar());
 				if(arg0.getKeyChar()=='?'){
 					arg0.consume();
 					String[] suchkrit = new String[] {jtf[17].getText().replaceAll("\\?", ""),jtf[33].getText()};
@@ -1681,11 +1671,11 @@ private KVKWrapper kvw;
 		}
 	}
 	private void arztInTableAufnehmen(String aid,MyDocTableModel mod ){
-		Vector vecx;
+		Vector<Vector<String>> vecx;
 		if(mod != null){
 			vecx = SqlInfo.holeFelder("select arztnum,nachname,strasse,ort,bsnr,id  from arzt where id='"+aid+"' LIMIT 1" );
 			if(vecx.size() > 0){
-				mod.addRow((Vector)vecx.get(0));
+				mod.addRow((Vector<String>)vecx.get(0));
 			}
 		}else{
 			
@@ -1827,17 +1817,14 @@ private KVKWrapper kvw;
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   if(columnIndex==1){
 				   return String.class;}
 			   else{
 				   return String.class;
 			   }
-	           //return (columnIndex == 0) ? Boolean.class : String.class;
 	       }
 		   public boolean isCellEditable(int row, int col) {
-		        //Note that the data/cell address is constant,
-		        //no matter where the cell appears onscreen.
 		          return false;
 	      }
 	}
@@ -1865,7 +1852,7 @@ private KVKWrapper kvw;
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 					finalise();
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-					//System.out.println("****************Patient Neu/�ndern -> Listener entfernt**************");				
+					//System.out.println("****************Patient Neu/ändern -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
@@ -1876,17 +1863,15 @@ private KVKWrapper kvw;
 
 }
 class ArztListeSpeichern{
-	public ArztListeSpeichern(Vector vec,boolean neu,String xpatintern){
+	public ArztListeSpeichern(Vector<Vector<String>> vec,boolean neu,String xpatintern){
 		if(vec.size() <= 0){
 			return;
 		}
 		String cmd = "update pat5 set aerzte = '";
 		String aliste = "";
 		for(int i = 0;i < vec.size();i++){
-			aliste = aliste+"@"+((String)((Vector)vec.get(i)).get(5))+"@\n";
+			aliste = aliste+"@"+((String)((Vector<String>)vec.get(i)).get(5))+"@\n";
 		}
-		
-		//cmd = cmd+aliste+"' where pat_intern = '"+xpatintern+"'";
 		SqlInfo.aktualisiereSaetze("pat5", "aerzte='"+aliste+"'", "pat_intern='"+xpatintern+"'");
 		new ExUndHop().setzeStatement(cmd);
 		Reha.thisClass.patpanel.patDaten.set(63,aliste);

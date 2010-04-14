@@ -1,4 +1,4 @@
-package RehaInternalFrame;
+package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
@@ -32,7 +32,7 @@ public class JAbrechnungInternal extends JRehaInternal implements FocusListener,
 		}
 		@Override
 		public void internalFrameClosed(InternalFrameEvent arg0) {
-			System.out.println("JInternalFrame-Kassenabrechnung aufr‰umen");
+			System.out.println("JInternalFrame-Kassenabrechnung aufr√§umen");
 			Reha.thisClass.aktiviereNaechsten(this.desktop);
 			Reha.thisClass.desktops[this.desktop].remove(this);
 			rEvent.removeRehaEventListener(this);
@@ -40,7 +40,7 @@ public class JAbrechnungInternal extends JRehaInternal implements FocusListener,
 			this.removeAncestorListener(this);
 			AktiveFenster.loescheFenster("Abrechnung-1");
 			rEvent = null;
-			Reha.thisClass.progLoader.loescheAbrechnung1();
+			Reha.thisClass.progLoader.loescheAbrechnung();
 
 		}
 		@Override

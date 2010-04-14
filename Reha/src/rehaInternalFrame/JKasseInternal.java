@@ -1,5 +1,5 @@
 
-package RehaInternalFrame;
+package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
@@ -49,7 +49,7 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
-		System.out.println("Lösche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		System.out.println("Lï¿½sche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		rEvent.removeRehaEventListener((RehaEventListener) this);

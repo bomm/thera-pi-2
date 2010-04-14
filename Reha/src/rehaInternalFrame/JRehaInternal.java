@@ -1,4 +1,4 @@
-package RehaInternalFrame;
+package rehaInternalFrame;
 
 
 

@@ -1,10 +1,8 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -31,12 +28,11 @@ import javax.swing.table.DefaultTableModel;
 import jxTableTools.TableTool;
 
 import org.jdesktop.swingworker.SwingWorker;
-import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.event.TableColumnModelExtListener;
 
-
+import patientenFenster.KeinRezept;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -46,6 +42,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class TherapieBerichte  extends JXPanel implements ListSelectionListener,TableModelListener,TableColumnModelExtListener,PropertyChangeListener, ActionListener{ 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8769450467144413530L;
 	/**
 	 * 
 	 */
@@ -173,7 +173,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 				protected Void doInBackground() throws Exception {
 					try{
 					//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-					Vector vec = SqlInfo.holeSaetze("berhist", 
+					Vector<Vector<String>> vec = SqlInfo.holeSaetze("berhist", 
 							"berichtid," +
 							"bertitel," +
 							"verfasser," +
@@ -190,9 +190,9 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 
 						//int zzbild = 0;
-						if( (! ((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHA")) &&
-								(! ((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("ARZT"))	){
-							dtblm.addRow((Vector)vec.get(i));							
+						if( (! ((String)((Vector<String>)vec.get(i)).get(2)).toUpperCase().contains("REHA")) &&
+								(! ((String)((Vector<String>)vec.get(i)).get(2)).toUpperCase().contains("ARZT"))	){
+							dtblm.addRow((Vector<?>)vec.get(i));							
 						}
 					}
 					anz = dtblm.getRowCount();
@@ -210,7 +210,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 							}
 						}
 
-						int anzeigen = -1;
+						//int anzeigen = -1;
 						anzahlBerichte.setText("Anzahl Therapieberichte: "+anz);
 						wechselPanel.revalidate();
 						wechselPanel.repaint();					
@@ -260,14 +260,14 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		if(anfrage == JOptionPane.NO_OPTION){
 			return;
 		}
-		String xpat_int = Reha.thisClass.patpanel.patDaten.get(29);
+		//String xpat_int = Reha.thisClass.patpanel.patDaten.get(29);
 		String berid = (String)tabbericht.getValueAt(wahl,0);
-		// zun�chst aus der berhist l�schen
+		// zunächst aus der berhist löschen
 		String xcmd = "delete from berhist where berichtid='"+berid+"'";
 		new ExUndHop().setzeStatement(xcmd);
 		// jetzt ermitteln ob tabelle bericht1 (Therapeuten) oder bericht2 (Arzt) betroffen ist. 
 		String verfas = (String)dtblm.getValueAt(wahl, 2); 
-		Vector vec = null;
+		Vector<String> vec = null;
 		if(! verfas.toUpperCase().contains("REHA")){
 			// rez_nr ermitteln
 			vec = SqlInfo.holeSatz("bericht1", "bertyp", " berichtid='"+berid+"'", Arrays.asList(new String[] {}));
@@ -278,7 +278,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			new ExUndHop().setzeStatement(xcmd);
 		}
 		if(vec.size()>0){
-			// in verordn und in lza l�schversuch
+			// in verordn und in lza löschversuch
 			xcmd = "update verordn set berid='-1' where rez_nr='"+vec.get(0)+"'";
 			System.out.println(xcmd);
 			new ExUndHop().setzeStatement(xcmd);
@@ -499,34 +499,17 @@ class MyBerichtTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==1){
-			   //return JLabel.class;}
 		   		return String.class;}
 		   else{
 			   return String.class;
 		   }
-        //return (columnIndex == 0) ? Boolean.class : String.class;
     }
 
-	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
-	    	return false;
-	    	/*
-	        if (col == 0){
-	        	return true;
-	        }else if(col == 3){
-	        	return true;
-	        }else if(col == 7){
-	        	return true;
-	        }else if(col == 11){
-	        	return true;
-	        } else{
-	          return false;
-	        }
-	        */
-	      }
+    public boolean isCellEditable(int row, int col) {
+    	return false;
+    }
 	   
 }
 

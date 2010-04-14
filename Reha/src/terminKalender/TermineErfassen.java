@@ -12,9 +12,9 @@ import javax.swing.JOptionPane;
 
 
 
-import RehaInternalFrame.JPatientInternal;
-import RehaInternalFrame.JTerminInternal;
 
+import rehaInternalFrame.JPatientInternal;
+import rehaInternalFrame.JTerminInternal;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;

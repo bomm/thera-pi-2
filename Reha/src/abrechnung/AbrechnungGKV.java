@@ -50,6 +50,7 @@ import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
+import rehaInternalFrame.JAbrechnungInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -58,7 +59,6 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-import RehaInternalFrame.JAbrechnungInternal;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -588,6 +588,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		annahmeAdresseOk = false;
 		/**********************************/
 		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
+		aktDfue = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("dfue", 99999)), "0", true, 5);
 		if(aktRechnung.equals("-1")){
 			Reha.thisClass.progressStarten(false);
 			abrDlg.setVisible(false);
@@ -726,10 +728,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		doEmail();
 		abrDlg.setzeLabel("übertrage Rezepte in Historie");
 		if(Reha.vollbetrieb){
-			doUebertragen();			
+			doUebertragen();
+			abrDlg.setzeLabel("organisiere Abrechnungsprogramm");
 		}
-		abrDlg.setzeLabel("organisiere Abrechnungsprogramm");
-		doLoescheRezepte();
+		doLoescheRezepteAusTree();
 		Reha.thisClass.progressStarten(false);
 		abrDlg.setVisible(false);
 		abrDlg.dispose();
@@ -772,7 +774,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		}
 	}
 	/********************************************************************/
-	private void doLoescheRezepte(){
+	private void doLoescheRezepteAusTree(){
 		try{
 			int lang = aktuellerKassenKnoten.getChildCount();
 			JXTTreeNode node;
@@ -965,8 +967,6 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/***************************************************************/
 
 	private void macheKopfDaten(){
-		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
-		aktDfue = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("dfue", 99999)), "0", true, 5);
 		//aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -1157,7 +1157,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		rechnungBuf.append("insert into rliste set ");
 		rechnungBuf.append("r_nummer='"+aktRechnung+"', ");
 		rechnungBuf.append("r_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-		rechnungBuf.append("r_kasse='"+name_kostent+"', ");
+		rechnungBuf.append("r_kasse='"+name_kostent+" "+aktEsol+"', ");
 		rechnungBuf.append("r_klasse='"+diszis[cmbDiszi.getSelectedIndex()]+"', ");
 		rechnungBuf.append("r_betrag='"+dfx.format(preis00[0]).replace(",", ".")+"', ");
 		rechnungBuf.append("r_offen='"+dfx.format(preis00[0]).replace(",", ".")+"', ");

@@ -238,10 +238,10 @@ public class RezTools {
 	}
 	public static String getKurzformFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
-		int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
+		//int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "";
 		for(i = 0; i < lang;i++){
-			if(vec.get(i).get(suchenin).equals(pos)){
+			if(vec.get(i).get(2).trim().equals(pos.trim())){
 				ret = vec.get(i).get(1).toString();
 				break;
 			}

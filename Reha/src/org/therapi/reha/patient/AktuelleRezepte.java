@@ -66,8 +66,6 @@ import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
 
-import patientenFenster.ArztBericht;
-import patientenFenster.AusfallRechnung;
 import patientenFenster.KeinRezept;
 import patientenFenster.RezNeuanlage;
 import patientenFenster.RezTest;
@@ -776,7 +774,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 	}
 	public void setzeKarteiLasche(){
-		Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(tabaktrez.getRowCount(),"aktuelle Rezepte"));
+		if(tabaktrez.getRowCount()==0){
+			holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
+			Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(tabaktrez.getRowCount(),"aktuelle Rezepte"));
+		}else{
+			Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(tabaktrez.getRowCount(),"aktuelle Rezepte"));			
+		}
 	}
 	public void setRezeptDaten(){
 		int row = this.tabaktrez.getSelectedRow();
@@ -1493,7 +1496,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				SqlInfo.sqlAusfuehren(cmd);
 				JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
 				if(abrech1 != null){
-					Reha.thisClass.abrechnung1panel.doEinlesen(Reha.thisClass.abrechnung1panel.getaktuellerKassenKnoten());
+					Reha.thisClass.abrechnungpanel.doEinlesen(Reha.thisClass.abrechnungpanel.getaktuellerKassenKnoten());
 				}
 				
 			}else{
@@ -1509,7 +1512,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				SqlInfo.sqlAusfuehren(cmd);
 				JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
 				if(abrech1 != null){
-					Reha.thisClass.abrechnung1panel.doEinlesen(Reha.thisClass.abrechnung1panel.getaktuellerKassenKnoten());
+					Reha.thisClass.abrechnungpanel.doEinlesen(Reha.thisClass.abrechnungpanel.getaktuellerKassenKnoten());
 				}
 			}
 	}

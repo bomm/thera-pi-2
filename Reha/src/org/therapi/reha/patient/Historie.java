@@ -1,4 +1,4 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
 
@@ -50,6 +50,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import jxTableTools.DateTableCellEditor;
+import jxTableTools.TableTool;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -60,6 +61,9 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
+
+import patientenFenster.HistorDaten;
+import patientenFenster.KeinRezept;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -821,6 +825,32 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}.execute();
 */		
 	}
+	private void doUebertrag(){
+		int row = tabhistorie.getSelectedRow();
+		if(row >= 0){
+			try{
+			System.out.println("Transfer von Historie in aktuelle Rezept");
+			int mod = tabhistorie.convertRowIndexToModel(row);
+			String rez_nr = dtblm.getValueAt(mod, 0).toString().trim();
+			SqlInfo.transferRowToAnotherDB("lza", "verordn","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
+			SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+rez_nr+"'");
+			TableTool.loescheRowAusModel(tabhistorie, row);
+			setzeKarteiLasche();
+			Reha.thisClass.patpanel.aktRezept.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+		}
+		
+	}
+	public void setzeKarteiLasche(){
+		if(tabhistorie.getRowCount()==0){
+			holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
+			Reha.thisClass.patpanel.multiTab.setTitleAt(1,macheHtmlTitel(tabhistorie.getRowCount(),"Rezept-Historie"));
+		}else{
+			Reha.thisClass.patpanel.multiTab.setTitleAt(1,macheHtmlTitel(tabhistorie.getRowCount(),"Rezept-Historie"));			
+		}
+	}
 	
 	
 	/*************************************************/
@@ -930,6 +960,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}.execute();				
 				break;
 			case 1:
+				doUebertrag();
 				//doBarcode();
 				break;
 			case 2:

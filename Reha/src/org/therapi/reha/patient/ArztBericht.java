@@ -1,4 +1,4 @@
-package patientenFenster;
+package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
 
@@ -40,6 +40,8 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
+import patientenFenster.ArztAuswahl;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;

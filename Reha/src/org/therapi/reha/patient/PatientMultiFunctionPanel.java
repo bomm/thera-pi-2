@@ -9,10 +9,6 @@ import javax.swing.JTabbedPane;
 
 import org.jdesktop.swingx.JXPanel;
 
-import patientenFenster.Dokumentation;
-import patientenFenster.Gutachten;
-import patientenFenster.Historie;
-import patientenFenster.TherapieBerichte;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 

@@ -50,8 +50,8 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 	private int setOben;
 	JRtaTextField[] eingaben = {null,null,null,null,null,null,
 										null,null,null,null,null,null};
-	private JXPanel grundPanel=null;
-	private JXPanel formPanel=null;
+	//private JXPanel grundPanel=null;
+	//private JXPanel formPanel=null;
 	private RehaTPEventClass rtp = null;
 	private PatStammEventClass ptp = null;
 	private Component reverseFocus = null;
@@ -469,7 +469,9 @@ class PatientSuchen implements Runnable{
 }
 /**********************************************************/
 final class RezepteSuchen implements Runnable{
+	@SuppressWarnings("unused")
 	private String patIntern = "";
+	@SuppressWarnings("unused")
 	private PatientenFenster con = null;
 	private void SucheStarten(){
 		
@@ -486,6 +488,7 @@ final class RezepteSuchen implements Runnable{
 }
 /**********************************************************/
 final class HitorieSuchen implements Runnable{
+	@SuppressWarnings("unused")
 	private String patIntern;
 	private void SucheStarten(){
 	}	

@@ -5,8 +5,9 @@ import hauptFenster.Reha;
 
 import javax.swing.JComponent;
 
+import rehaInternalFrame.JPatientInternal;
 
-import RehaInternalFrame.JPatientInternal;
+
 
 public class TestePatStamm {
 	public static String PatStammArztID(){

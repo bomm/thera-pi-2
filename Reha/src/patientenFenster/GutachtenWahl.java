@@ -24,10 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JRtaCheckBox;
@@ -45,6 +43,11 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3293538336035629581L;
+
 	public JRtaCheckBox[] leistung = {null,null,null,null,null}; 
 
 	private RehaTPEventClass rtp = null;
@@ -58,7 +61,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 	JRadioButton[] rbut = {null,null};
 	JButton[] but = {null,null};
 	
-	CompoundPainter cp = null;
+	
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
 
@@ -86,17 +89,6 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
-				/*
-				Point2D start = new Point2D.Float(0, 0);
-			    Point2D end = new Point2D.Float(300,270);
-			    float[] dist = {0.0f, 0.75f};
-			    Color[] colors = {Color.WHITE,Colors.Gray.alpha(0.15f)};
-			    p =  new LinearGradientPaint(start, end, dist, colors);
-			    mp = new MattePainter(p);
-			    cp = new CompoundPainter(mp);
-			    rgb.setBackgroundPainter(cp);
-			    */
 			    rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("GutachtenWahl"));
 				return null;
 			}
@@ -108,15 +100,13 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		getSmartTitledPanel().setContentContainer(rgb);
 		getSmartTitledPanel().getContentContainer().setName("GutachtenWahl");
 		setName("GutachtenWahl");
-		//setModal(true);
-	    //Point lpt = new Point(pt.x-125,pt.y+30);
 		Point lpt = new Point(pt.x-150,pt.y+30);
 	    setLocation(lpt);
 	    
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
-		//pack();
+
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
 		 		   if(! rbut[0].hasFocus()){
@@ -140,11 +130,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 
 	
 /****************************************************/	
-	/*
-	ButtonGroup bg = new ButtonGroup();
-	JRtaRadioButton[] rbut = {null,null};
-	JButton[] but = {null,null};
-	*/
+
 
 	private JPanel getGutachten(){     // 1        2             3        4            5  
 		FormLayout lay = new FormLayout("15dlu,fill:0:grow(0.50),p,fill:0:grow(0.50),10dlu",
@@ -195,7 +181,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 /****************************************************/	
 	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
-		// TODO Auto-generated method stub
+
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){

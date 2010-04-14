@@ -40,6 +40,7 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.FileTools;
@@ -48,7 +49,6 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import terminKalender.DatFunk;
-import RehaInternalFrame.JGutachtenInternal;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import dialoge.PinPanel;

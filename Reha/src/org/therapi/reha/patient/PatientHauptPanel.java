@@ -29,13 +29,9 @@ import javax.swing.JTextArea;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import patientenFenster.Dokumentation;
-import patientenFenster.Gutachten;
-import patientenFenster.Historie;
-import patientenFenster.TherapieBerichte;
+import rehaInternalFrame.JPatientInternal;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import RehaInternalFrame.JPatientInternal;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

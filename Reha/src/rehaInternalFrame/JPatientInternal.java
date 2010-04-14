@@ -1,4 +1,4 @@
-package RehaInternalFrame;
+package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;

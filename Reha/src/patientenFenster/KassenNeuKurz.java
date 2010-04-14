@@ -24,20 +24,22 @@ import javax.swing.text.MaskFormatter;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
-import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener,FocusListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1352897625257609587L;
 	public KassenAuswahl eltern;
 	JScrollPane jscr = null;
 	JButton speichern = null;
@@ -86,7 +88,6 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 					tfs[15].setText(Integer.toString( iid = SqlInfo.holeId("kass_adr", "kassen_nam1")));
 					StringBuffer kkBuffer = new StringBuffer();
 					kkBuffer.append("update kass_adr set ");
-					//String stmt = "update kass_adr set ";
 					for(int i = 0; i < 15; i++){
 						kkBuffer.append((i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"', ");						
 					}
@@ -97,9 +98,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 					kkBuffer.append("pglo ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
 					kkBuffer.append("pgrh ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"' ");
 					kkBuffer.append(" where id ='"+Integer.toString(iid)+"'");
-					//stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
-					//System.out.println(stmt);
-					System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(tarifGruppe.getSelectedIndex()+1));
+
 					SqlInfo.sqlAusfuehren(kkBuffer.toString());
 					eltern.zurueckZurTabelle(tfs);
 					return null;
@@ -367,7 +366,6 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		Rectangle rec1 =((JComponent)arg0.getSource()).getBounds();
 		Rectangle rec2 = jscr.getViewport().getViewRect();
 		JViewport vp = jscr.getViewport();
-		Rectangle rec3 = vp.getVisibleRect();
 		if((rec1.y+((JComponent)arg0.getSource()).getHeight()) > (rec2.y+rec2.height)){
 			vp.setViewPosition(new Point(0,(rec2.y+rec2.height)-rec1.height));
 		}
@@ -380,19 +378,6 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		/*
-		if(((JComponent)arg0.getSource()).getName().equals("kuerzel")){
-			if( (tfs[0].getText().trim().equals("-")) && (!ohneKuerzel) ){
-				ohneKuerzel = true;
-				String message = "Tip:\n\nDie Vergabe von K�rzeln ist f�r die schnelle Bearbeitung einer Kasse (sp�ter) ideal\n"+
-				"Z.B.: 'AOK-RT' f�r die 'AOK Reutlingen'";
-				JOptionPane.showMessageDialog(null,message);
-				tarifGruppe.requestFocus();
-			}
-		}
-		*/
-		
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -763,6 +764,7 @@ public class OOTools{
 					textDocument = (ITextDocument)document;
 					textDocument.close();
 					System.err.println("Initiales Dokument wurde produziert und wieder geschlossen");
+					Reha.thisClass.messageLabel.setText("Init: o.k. ");
 				} 
 				catch (OfficeApplicationException exception) {
 					exception.printStackTrace();

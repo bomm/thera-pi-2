@@ -8,12 +8,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -21,29 +19,26 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
+
+import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
+import systemTools.IntegerTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 
-import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.IntegerTools;
-
 public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2430523963874902470L;
 	JButton knopf1 = null;
 	JButton knopf2 = null;
 	RohKeyListener kl = null;
@@ -54,11 +49,6 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		super(null, "KVKDaten");
 		thisPat = pat;
 
-		/*
-		PinPanel pinPanel = new PinPanel();
-		pinPanel.getGruen().setVisible(false);
-		setPinPanel(pinPanel);
-		*/
 		getSmartTitledPanel().setTitle("Daten der Versicherungskarte");
 
 
@@ -81,6 +71,10 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		
 	}
 	class JXRohDaten extends JXPanel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4983579331335529L;
 		ImageIcon hgicon;
 		int icx,icy;
 		AlphaComposite xac1 = null;
@@ -352,7 +346,6 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 				if(!thisPat.inNeu ){
 					String test1 = thisPat.jtf[11].getText().trim();
 					String test2 = gerGeboren.trim();
-//					System.out.println("test1 = "+test1+" test2="+test2 );
 					if(!test1.equals(test2)){
 						String dlg = "Das Geburtsdatum des aktuellen Patienten und das Geburtsdatum der KV-Karte stimmen nicht überein!\n"+
 						"übertragen wird daher (sicherheitshalber) --> nix!";
@@ -363,7 +356,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
  
 				
 				String kassik = "10"+SystemConfig.hmKVKDaten.get("Kassennummer").trim();
-				Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse", "ik_kasse='"+kassik+"'", Arrays.asList(new String[] {}));
+				Vector<String> vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse", "ik_kasse='"+kassik+"'", Arrays.asList(new String[] {}));
 				if(vec.size()==0){
 					JOptionPane.showMessageDialog(null, "Krankenkasse mit IK="+kassik+" ist im Krankenkassen-Stamm nicht vorhanden");
 					thisPat.jtf[12].setText("Achtung: vermutlich privat....".toUpperCase());
@@ -388,10 +381,8 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		return this;
 	}
 	class RohKeyListener implements KeyListener{
-
 		@Override
 		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
 			if(e.getKeyCode() == 10){
 				e.consume();
 				if(((JComponent)e.getSource()).getName().equals("uebernehmen")){

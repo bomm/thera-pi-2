@@ -2,15 +2,11 @@ package patientenFenster;
 
 import hauptFenster.Reha;
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -19,7 +15,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import javax.swing.TransferHandler;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -31,18 +26,21 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
-import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class HistorDaten extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2322653747361882977L;
 	//public JLabel[] rezlabs = {null,null,null,null,null,null,null,null,null};
 	public JRtaTextField reznum = null;
 	public JRtaTextField draghandler = null;
 	public ImageIcon hbimg = null; 
-	public Vector vecaktrez = null;
+	public Vector<String> vecaktrez = null;
 	
 	public JLabel[] rezlabs = {null,null,null,null,null,
 			null,null,null,null,null,
@@ -235,19 +233,10 @@ public class HistorDaten extends JXPanel{
 		if(veczahl==-1 || veczahl==0){
 			return retwert;
 		}
-		/*
-		if(veczahl <= preisevec.size()){
-			int idtest =  new Integer( (String) ((Vector)preisevec.get(veczahl-1)).get(35) );
-			if(idtest == veczahl){
-				return StringTools.NullTest((String)vecaktrez.get(3))+"  *  "+
-				(String) ((Vector)preisevec.get(veczahl-1)).get(1);
-			}
-		}
-		*/
 		for(int i = 0;i<preisevec.size();i++){
-			if( new Integer( (String) ((Vector)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
+			if( new Integer( (String) ((Vector<String>)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
 				return StringTools.NullTest((String)vecaktrez.get(leistung+3))+"  *  "+
-				(String) ((Vector)preisevec.get(i)).get(1);
+				(String) ((Vector<String>)preisevec.get(i)).get(1);
 			}
 		}
 		
@@ -256,13 +245,7 @@ public class HistorDaten extends JXPanel{
 	
 	public JScrollPane getDatenPanel(){
 		JScrollPane jscr = null;
-		/*
-		FormLayout lay = new FormLayout("fill:0:grow(0.33),2px,fill:0:grow(0.33),2px,fill:0:grow(0.33)",
-		//FormLayout lay = new FormLayout("p,fill:0:grow(0.50),p,fill:0:grow(0.50),p",
-				//      1.Sep                2.Sep                              3.Sep
-				//1 2   3  4   5  6   7  8   9 10   11 12  13 14  15 16  17  18 19  20 21 22  23 24       25
-				"p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p,2dlu,p,2dlu,p, 2dlu,p,5dlu,p,5dlu,p,2dlu,p,20dlu:g,22px" );
-		*/
+	
 		FormLayout lay = new FormLayout("fill:0:grow(0.33),2px,fill:0:grow(0.33),2px,fill:0:grow(0.33)",
 				//FormLayout lay = new FormLayout("p,fill:0:grow(0.50),p,fill:0:grow(0.50),p",
 						//      1.Sep                2.Sep                              3.Sep
