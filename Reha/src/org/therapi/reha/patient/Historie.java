@@ -960,8 +960,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}.execute();				
 				break;
 			case 1:
-				doUebertrag();
-				//doBarcode();
+				//doUebertrag();
 				break;
 			case 2:
 				//ausfallRechnung();

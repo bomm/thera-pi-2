@@ -107,12 +107,20 @@ public void setDataVectorWithStartElement(Vector<Vector<String>> ve,int item,int
 		fillOneDimensionWithStartElement(this.vec,this.startElement);
 	}
 }
-
+public void setRetValueAsDisplayIndex(String retValue){
+	int lang = getItemCount();
+	for(int i = 0;i < lang;i++){
+		if(((String)((Vector<?>)this.vec.get(i)).get(cmbretvalue)).equals(retValue)){
+			setSelectedIndex(i+(this.startElement.equals("")? 0 : 1));
+			break;
+		}
+	}
+}
 public void setSelectedVecIndex(int index, String vergleich){
 	int lang = getItemCount();
 	for(int i = 0;i < lang;i++){
 		if(((String)((Vector<?>)this.vec.get(i)).get(index)).equals(vergleich)){
-			setSelectedIndex(i);
+			setSelectedIndex(i+(this.startElement.equals("")? 0 : 1));
 			break;
 		}
 	}

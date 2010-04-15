@@ -131,13 +131,13 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		String test;
 		test = getText();
 		if(test.equals("")){
-			return new Double("0.00");
+			return Double.parseDouble("0.00");
 		}
 		if(test.indexOf(".") < 0 && test.indexOf(",") < 0 ){
-			return (new Double(test.trim()+".00"));
+			return (Double.parseDouble(test.trim()+".00"));
 			
 		}
-		double fielddbl = new Double(test.replaceAll(",", "."));
+		double fielddbl = Double.parseDouble(test.replaceAll(",", "."));
 		return fielddbl;
 	}
 	public void setDValueFromS(String value){
@@ -145,7 +145,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		//System.out.println(wert);
 		
 		DecimalFormat df = new DecimalFormat ( "#########0.00" );
-		setText( (wert.trim().equals("") ? df.format(new Double(0.00)) : df.format(new Double(wert)) )  );
+		setText( (wert.trim().equals("") ? df.format(Double.parseDouble("0.00")) : df.format(Double.parseDouble(wert)) )  );
 		return;
 	}
 
@@ -156,6 +156,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	public void listenerLoeschen(){
 		this.removeFocusListener(this);
 		this.removeKeyListener(this);
+		this.removePropertyChangeListener(this);
 	}
 	
 	
@@ -219,6 +220,11 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 				this.setDocument(new NurZahlenDocument(this));
 				break;
 			}
+			if(type.equals("FL")){ //Fließkomma
+				this.setDocument(new NurZahlenDocument(this));
+				break;
+			}
+
 		}
 
 	}

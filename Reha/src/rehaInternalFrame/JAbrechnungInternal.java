@@ -8,6 +8,7 @@ import java.beans.PropertyVetoException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
 import events.RehaEvent;
@@ -38,9 +39,18 @@ public class JAbrechnungInternal extends JRehaInternal implements FocusListener,
 			rEvent.removeRehaEventListener(this);
 			removeFocusListener(this);
 			this.removeAncestorListener(this);
-			AktiveFenster.loescheFenster("Abrechnung-1");
+			final String name = this.getName();
+
+			SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run()
+			 	   {
+					AktiveFenster.loescheFenster(name);
+					Reha.thisClass.progLoader.loescheAbrechnung();
+			 	   }
+			});
+			//AktiveFenster.loescheFenster("Abrechnung");
 			rEvent = null;
-			Reha.thisClass.progLoader.loescheAbrechnung();
+
 
 		}
 		@Override

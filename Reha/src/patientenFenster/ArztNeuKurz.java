@@ -256,7 +256,8 @@ public class ArztNeuKurz extends JXPanel implements ActionListener,KeyListener,F
 					}
 					stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
 					//System.out.println(stmt);
-					new ExUndHop().setzeStatement(stmt);
+					SqlInfo.sqlAusfuehren(stmt);
+					//new ExUndHop().setzeStatement(stmt);
 					eltern.zurueckZurTabelle(tfs);
 					return null;
 				}

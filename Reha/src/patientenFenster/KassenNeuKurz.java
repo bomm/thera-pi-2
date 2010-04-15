@@ -89,9 +89,9 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 					StringBuffer kkBuffer = new StringBuffer();
 					kkBuffer.append("update kass_adr set ");
 					for(int i = 0; i < 15; i++){
-						kkBuffer.append((i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"', ");						
+						kkBuffer.append((i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'");						
 					}
-					kkBuffer.append("preisgruppe ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1).toString()+"', ");
+					kkBuffer.append(", preisgruppe ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1).toString()+"', ");
 					kkBuffer.append("pgkg ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
 					kkBuffer.append("pgma ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");
 					kkBuffer.append("pger ='"+ Integer.toString(tarifGruppe.getSelectedIndex()+1)+"', ");

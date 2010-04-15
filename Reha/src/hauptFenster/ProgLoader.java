@@ -43,7 +43,7 @@ import terminKalender.DatFunk;
 import terminKalender.TerminFenster;
 import verkauf.Verkauf;
 import abrechnung.AbrechnungGKV;
-import abrechnung.Rehaabrechnung;
+import abrechnung.AbrechnungReha;
 import anmeldungUmsatz.Anmeldungen;
 import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
@@ -589,7 +589,7 @@ public void RehaabrechnungFenster(int setPos,String sparam) {
 	rehaabrechnungjry.setName(name);
 	rehaabrechnungjry.setSize(new Dimension(500,500));
 	rehaabrechnungjry.setPreferredSize(new Dimension(500,500));
-	Reha.thisClass.rehaabrechnungpanel = new Rehaabrechnung(rehaabrechnungjry); 
+	Reha.thisClass.rehaabrechnungpanel = new AbrechnungReha(rehaabrechnungjry); 
 	rehaabrechnungjry.setContent(Reha.thisClass.rehaabrechnungpanel);	
 	rehaabrechnungjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();

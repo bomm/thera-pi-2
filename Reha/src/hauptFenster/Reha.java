@@ -133,7 +133,7 @@ import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import verkauf.Verkauf;
 import abrechnung.AbrechnungGKV;
-import abrechnung.Rehaabrechnung;
+import abrechnung.AbrechnungReha;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -175,7 +175,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public Umsaetze umsaetzepanel = null;
 	public Verkauf verkaufpanel = null;
 	public Barkasse barkassenpanel = null;
-	public Rehaabrechnung rehaabrechnungpanel = null;
+	public AbrechnungReha rehaabrechnungpanel = null;
 	
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;

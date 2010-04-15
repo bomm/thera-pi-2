@@ -293,15 +293,16 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(cmd.equals("hinzu")){
 			//neue Position in lokaler Liste
 			int row = preislisten.getRowCount();
-			Vector nvec = new Vector();
-			nvec.add("00000");
-			nvec.add("Neu-"+Integer.toString(kurztext));
+			Vector<Object> nvec = new Vector<Object>();
+			nvec.add((String)"00000");
+			nvec.add( (String)"KurzNeu-"+Integer.toString(kurztext));
 			kurztext++;
 			nvec.add("");
 			nvec.add(new Double("0.00"));
 			nvec.add(new Double("0.00"));
 			nvec.add("-1");
 			modpreis.addRow((Vector) nvec.clone());
+			preislisten.validate();
 			preislisten.scrollRowToVisible(row);
 			preislisten.setRowSelectionInterval(row, row);
 		}
@@ -374,7 +375,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	private void doSpeichern(){
 		// in die Datenbank schreiben
 		// in den Vector schreiben
-		// G�ltig ab erneuern
+		// Gültig ab erneuern
 		// Anwendungsregel erneuern
 		//{"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
 		Reha.thisClass.Rehaprogress.setIndeterminate(true);
@@ -385,6 +386,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		int igruppe = jcmb[1].getSelectedIndex()+1;
 		String cmd;
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisClass.progressStarten(true);
 		for(int i = 0; i < anzahl; i++){
 			hmpos = (String)modpreis.getValueAt(i,0);
 			kurz = (String)modpreis.getValueAt(i,1);
@@ -404,11 +406,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				cmd = "update "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
 				hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00' where id='"+
 				sid+"'";
-				//System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
 			}
 
 		}
+		Reha.thisClass.progressStarten(true);
 		String xgueltig = gueltig.getText();
 		int regel = jcmb[2].getSelectedIndex();
 		if(xgueltig.trim().equals(".  .") || xgueltig.trim().equals("") ){
@@ -432,6 +434,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			for(int i = 0;i < delvec.size();i++){
 				cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
 				SqlInfo.sqlAusfuehren(cmd);
+				//System.out.println("Löschen mit Kommando = "+cmd);
 			}
 		}
 		//String[] diszi = {"KG","MA","ER","LO","RH"};

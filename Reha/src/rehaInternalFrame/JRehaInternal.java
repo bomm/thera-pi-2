@@ -1,4 +1,4 @@
-package rehaInternalFrame;
+ package rehaInternalFrame;
 
 
 
@@ -29,13 +29,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -43,26 +38,21 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import org.jdesktop.swingworker.SwingWorker;
-import javax.swing.JInternalFrame.JDesktopIcon;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
 import systemTools.ListenerTools;
 
 import com.jgoodies.looks.plastic.PlasticInternalFrameUI;
@@ -71,6 +61,10 @@ import events.RehaEvent;
 import events.RehaEventClass;
 
 public class JRehaInternal extends JInternalFrame implements ActionListener,ComponentListener,KeyListener,MouseListener,MouseMotionListener,InternalFrameListener,AncestorListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1404891339833332337L;
 	/**
 	 * 
 	 */

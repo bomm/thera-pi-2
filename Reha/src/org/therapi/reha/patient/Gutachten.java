@@ -214,7 +214,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		xvec.add("0");
 		xvec.add(patintern);
 		if(Reha.thisClass.patpanel.aktPatID.equals(patintern)){
-			dtblm.addRow((Vector) xvec.clone());
+			dtblm.addRow((Vector<?>) xvec.clone());
 			tabbericht.setRowSelectionInterval(tabbericht.getRowCount()-1, tabbericht.getRowCount()-1);
 		}
 		Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(tabbericht.getRowCount(),"Gutachten"));
@@ -230,7 +230,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 						protected Void doInBackground() throws Exception {
 							try{
 							//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-							Vector vec = SqlInfo.holeSaetze("berhist", 
+							Vector<Vector<String>> vec = SqlInfo.holeSaetze("berhist", 
 									"berichtid," +
 									"berichttyp," +
 									"verfasser," +
@@ -468,6 +468,10 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		
 	}
 	class GutachtenPanel extends JXPanel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5989619503530843816L;
 		ImageIcon hgicon;
 		int icx,icy;
 		AlphaComposite xac1 = null;
@@ -504,7 +508,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   if(columnIndex==1){
 				   //return JLabel.class;}
 			   		return String.class;}

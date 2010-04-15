@@ -2197,7 +2197,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
-	
+	public void	oooDokuNeu(String dokuart){
+		
+	}
 /**************************************************/
 	public static void speichernOoDocs(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
 		Statement stmt = null;;
@@ -2310,12 +2312,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			icons.put("Scanner einstellungen",SystemConfig.hmSysIcons.get("scanner"));
 			icons.put("Photo von DigiCam holen",SystemConfig.hmSysIcons.get("camera"));
 			icons.put("Office-Dokument aufnehmen",SystemConfig.hmSysIcons.get("openoffice26"));
-			icons.put("Neues Office-Dokument erstellen",SystemConfig.hmSysIcons.get("openoffice26"));
+			icons.put("Neue OO-Writer-Doku erstellen",SystemConfig.hmSysIcons.get("ooowriter"));
+			icons.put("Neue OO-Calc-Doku erstellen",SystemConfig.hmSysIcons.get("ooocalc"));
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Scanner einstellungen",
 					"Photo von DigiCam holen", 
 					"Office-Dokument aufnehmen",
-					"Neues Office-Dokument erstellen"});
+					"Neue OO-Writer-Doku erstellen",
+					"Neue OO-Calc-Doku erstellen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list,rueckgabe);
@@ -2334,7 +2338,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				doHoleOO();
 				break;
 			case 3:
-				//rezeptAbschliessen();
+				oooDokuNeu("writer");
+				break;
+			case 4:
+				oooDokuNeu("calc");
 				break;
 				
 			}

@@ -1,29 +1,28 @@
 package rehaInternalFrame;
 
-import java.awt.Dimension;
+import hauptFenster.AktiveFenster;
+import hauptFenster.Reha;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
-import hauptFenster.AktiveFenster;
-import hauptFenster.Reha;
-
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
 import systemTools.ListenerTools;
-
 import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 
-import arztFenster.ArztPanel;
-
 public class JGutachtenInternal extends JRehaInternal implements RehaEventListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3544685697060529055L;
 	RehaEventClass rEvent = null;
 	public JGutachtenInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
@@ -58,10 +57,10 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("L�sche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		//N�chsten JInternalFrame aktivieren
+		System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//nächsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
-		//JInternalFram von Desktop l�sen
+		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		((EBerichtPanel)this.inhalt).finalise();
 		//Listener deaktivieren
@@ -119,6 +118,7 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	}
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
+		//System.out.println(evt);
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
 			System.out.println("es ist ein Reha-Internal-Event");
 		}

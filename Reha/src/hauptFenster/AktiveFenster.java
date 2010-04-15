@@ -104,11 +104,8 @@ class AlleFenster implements Comparable<AlleFenster> {
 	    feltern = e;
 	  }
 	  public int compareTo(AlleFenster o) {
-	      //First order by name
 	      int result = fname.compareTo(o.fname);
 	      if (0 == result) {
-	        //if names are equal order by age, youngest first
-	        //result = fname - o.fname;
 	      }
 	      return result;
 }
