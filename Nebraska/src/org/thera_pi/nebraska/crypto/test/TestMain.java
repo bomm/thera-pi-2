@@ -22,7 +22,7 @@ import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 public class TestMain {
 
 	/**
-	 * @param args
+	 * @param args unused mandatory parameter
 	 */
 	public static void main(String[] args) {
 		try {
