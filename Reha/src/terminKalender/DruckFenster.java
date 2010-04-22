@@ -584,7 +584,7 @@ public void run(){
 
 	try {
 		String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.oTerminListe.NameTemplate;
-		//String url = SystemConfig.homeDir+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
+		//String url = Reha.proghome+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
 		//System.out.println("***************URL = "+url+"****************");
 		String terminDrucker = SystemConfig.oTerminListe.NameTerminDrucker;
 		//String terminDrucker = SystemConfig.oTerminListe.NameTerminDrucker;

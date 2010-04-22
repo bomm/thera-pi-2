@@ -129,7 +129,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		/****/
 	     /*
 	     JLabel jlbl = new JLabel("");
-	     jlbl.setIcon(new ImageIcon(SystemConfig.homeDir+"icons/werkzeug.gif"));
+	     jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 	     add(jlbl,BorderLayout.CENTER);
 	     */
 	     jscr = new JScrollPane();

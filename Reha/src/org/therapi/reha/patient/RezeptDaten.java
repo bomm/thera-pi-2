@@ -227,6 +227,7 @@ public class RezeptDaten extends JXPanel{
 					try{
 						zzbild = Integer.parseInt((String)vecaktrez.get(39) );
 					}catch(Exception ex){
+						zzbild = 0;
 						ex.printStackTrace();
 					}
 					

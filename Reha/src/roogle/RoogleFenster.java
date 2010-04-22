@@ -320,7 +320,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		jpRechts.setBackground(Color.WHITE);
 		JXLabel imglab = new JXLabel();
 		imglab.setIcon(SystemConfig.hmSysIcons.get("roogle"));
-		//imglab.setIcon(new ImageIcon(SystemConfig.homeDir+"icons/roogle.gif") );
+		//imglab.setIcon(new ImageIcon(Reha.proghome+"icons/roogle.gif") );
 		JXPanel dummy = new JXPanel();
 		dummy.setBackground(Color.WHITE);
 		dummy.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));

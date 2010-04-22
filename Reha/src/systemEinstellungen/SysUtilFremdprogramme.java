@@ -189,7 +189,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		builder.addLabel("Pfad zu OpenOffice", cc.xy(1, 9));
 		builder.add(oopfad, cc.xy(3, 9));
 		builder.add(button[2], cc.xy(5, 9));
-		builder.addLabel("AdobeReader auswählen", cc.xy(1,11));
+		builder.addLabel("PDF-Reader auswählen (z.B. AcrobatReader)", cc.xy(1,11));
 		builder.add(adobepfad, cc.xy(3, 11));
 		builder.add(button[3],cc.xy(5, 11));
 		builder.addLabel("Graphikbearbeitung auswählen", cc.xy(1,13));
@@ -321,11 +321,12 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		wert = oopfad.getText().trim();
 		inif.setStringProperty("OpenOffice.org", "OfficePfad", wert, null);
 		SystemConfig.OpenOfficePfad = wert;
-		wert = Reha.proghome+"RTAJars/openofficeorg";
+		wert = Reha.proghome+"Libraries/lib/openofficeorg";
 		inif.setStringProperty("OpenOffice.org", "OfficeNativePfad", wert, null);
 		SystemConfig.OpenOfficeNativePfad = wert;
 		inif.save();
 		SystemConfig.FremdProgs();
+		JOptionPane.showMessageDialog(null,"Einstellungen Fremdprogramme wurden erfolgreich gespeichert");
 	}
 
 	public String progWaehlen(int welchesProg){

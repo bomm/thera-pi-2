@@ -9,6 +9,10 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
+import barKasse.Barkasse;
+
+import anmeldungUmsatz.Anmeldungen;
+
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
@@ -36,6 +40,7 @@ public class JBarkassenInternal extends JRehaInternal implements RehaEventListen
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//Listener deaktivieren
 		rEvent.removeRehaEventListener((RehaEventListener) this);
+		((Barkasse)this.inhalt).doAufraeumen();
 		this.removeInternalFrameListener(this);
 		//
 		Reha.thisFrame.requestFocus();

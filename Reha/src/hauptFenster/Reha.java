@@ -525,7 +525,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha application = new Reha();
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 				application.getJFrame();
-				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( SystemConfig.homeDir+"icons/pi.png" ) );
+				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/pi.png" ) );
 				System.out.println("ProgHome = "+Reha.proghome);
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();

@@ -66,7 +66,7 @@ SuchenSeite eltern;
 	
 	public void run() {
 			String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.oTerminListe.NameTemplate;
-			//String url = SystemConfig.homeDir+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
+			//String url = Reha.proghome+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
 			//System.out.println("***************URL = "+url+"****************");
 			String terminDrucker = SystemConfig.oTerminListe.NameTerminDrucker;
 			int anzahl = termindat.size();
@@ -109,7 +109,7 @@ SuchenSeite eltern;
 			tbl = textDocument.getTextTableService().getTextTables();
 
 			if(tbl.length != AnzahlTabellen){
-				JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini überein.\nDruck nicht möglich");
+				JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini ï¿½berein.\nDruck nicht mï¿½glich");
 				textDocument.close();
 				eltern.cursorWait(false);
 				return;
@@ -155,7 +155,7 @@ SuchenSeite eltern;
 				searchDescriptor = new SearchDescriptor(patplatzhalter);
 				//SearchDescriptor searchDescriptor = new SearchDescriptor("^Name^");
 				searchDescriptor.setIsCaseSensitive(true);
-				//Suche durchführen
+				//Suche durchfï¿½hren
 				searchResult = textDocument.getSearchService().findFirst(searchDescriptor);
 				if(!searchResult.isEmpty()) {
 					//Ergebnis seletieren
@@ -273,7 +273,7 @@ SuchenSeite eltern;
 							}
 					        textRanges[0].setText(patname);
 						}
-						System.out.println("Suche ersetze durchgeführt*************");
+						System.out.println("Suche ersetze durchgefï¿½hrt*************");
 						*/
 						/*
 						ITextService textService = textDocument.getTextService();
@@ -408,7 +408,7 @@ SuchenSeite eltern;
 			}
 
 
-			// Anschließend die Vorlagendatei schließen
+			// Anschlieï¿½end die Vorlagendatei schlieï¿½en
 				//textDocument.close();
 					
 				if(!ldrucken){
@@ -423,7 +423,7 @@ SuchenSeite eltern;
 	private void sendeEmail(){
 		String emailaddy=null,pat_intern=null;
 		if(this.rezept.trim().equals("")){
-			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
+			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gï¿½ltige Email-Adresse ein");
 			try{
 				if(emailaddy.equals("")){
 					//DruckFenster.buttonsEinschalten();
@@ -444,7 +444,7 @@ SuchenSeite eltern;
 			
 			pat_intern = holeAusDB("select PAT_INTERN from verordn where REZ_NR ='"+trailing+"'");
 			if(pat_intern.equals("")){
-				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
+				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gï¿½ltige Email-Adresse ein");
 				try{
 					if(emailaddy.equals("")){
 						//DruckFenster.buttonsEinschalten();
@@ -457,7 +457,7 @@ SuchenSeite eltern;
 			}else{
 				emailaddy = holeAusDB("select EMAILA from pat5 where PAT_INTERN ='"+pat_intern+"'");
 				if(emailaddy.equals("")){
-					emailaddy = JOptionPane.showInputDialog(null,"Bitte geben Sie eine gültige Email-Adresse ein" , emailaddy);
+					emailaddy = JOptionPane.showInputDialog(null,"Bitte geben Sie eine gï¿½ltige Email-Adresse ein" , emailaddy);
 					try{
 						if(emailaddy.equals("")){
 						//DruckFenster.buttonsEinschalten();
@@ -483,7 +483,7 @@ SuchenSeite eltern;
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
-		//System.out.println("Empfängeradresse = "+emailaddy);
+		//System.out.println("Empfï¿½ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		boolean authx = (SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true);
@@ -518,8 +518,8 @@ SuchenSeite eltern;
 		/*********/
 	      if (text.equals("")){
 	    	  text = "Sehr geehrte Damen und Herren,\n"+
-					"im Dateianhang finden Sie die von Ihnen gewünschten Behandlungstermine.\n\n"+
-					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müßen 24 Stunden vorher\n"+
+					"im Dateianhang finden Sie die von Ihnen gewï¿½nschten Behandlungstermine.\n\n"+
+					"Termine die Sie nicht einhalten bzw. wahrnehmen kï¿½nnen, mï¿½ï¿½en 24 Stunden vorher\n"+
 					"abgesagt werden.\n\nIhr Planungs-Team vom RTA";
 	      }
 		String smtpHost = SystemConfig.hmEmailExtern.get("SmtpHost");

@@ -667,7 +667,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
 		System.out.println("Sektion = "+sektion);
 		itag = itag+1;
-		INIFile ini = new INIFile(SystemConfig.homeDir+"/ini/gruppen.ini");
+		INIFile ini = new INIFile(Reha.proghome+"/ini/gruppen.ini");
 		ini.setStringProperty(sektion, "WOTA"+itag, new Integer(jTblGruppen.getRowCount()).toString(), null);
 		ini.setStringProperty(sektion, "TA"+itag+"GR"+(row+1), plan1+"-"+plan2, null);
 		ini.setStringProperty(sektion, "TA"+itag+"ZE"+(row+1),druck, null);

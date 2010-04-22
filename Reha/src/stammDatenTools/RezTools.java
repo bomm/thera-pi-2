@@ -121,6 +121,15 @@ public class RezTools {
 		}
 		return true;
 	}
+	public static boolean keineWeggebuehrBeiHB(String disziplin,String preisgruppe){
+		int pg = Integer.parseInt(preisgruppe)-1;
+		if(SystemPreislisten.hmHBRegeln.get(disziplin).get(pg).get(2).trim().equals("") &&
+				SystemPreislisten.hmHBRegeln.get(disziplin).get(pg).get(3).trim().equals("")	){
+			return true;
+		}
+		return false;
+	}
+	
 /********************************************************************************/
 
 	public static String getLangtextFromID(String id,String preisgruppe,Vector<Vector<String>> vec){
@@ -783,30 +792,14 @@ public class RezTools {
 		return ret;
 	}
 	public static String PreisUeberPosition(String position,int preisgruppe,String disziplin,boolean neu ){
-		JOptionPane.showMessageDialog(null, "Aufruf der Funktion PreisUeberPosition");
+		//JOptionPane.showMessageDialog(null, "Aufruf der Funktion PreisUeberPosition");
 		String ret = null;
 		Vector preisvec = null;
 		preisvec = SystemPreislisten.hmPreise.get(putRezNrGetDisziplin(disziplin)).get(preisgruppe-1);
-		/*
-		if(disziplin.equals("KG")){
-			preisvec = ParameterLaden.vKGPreise;			
-		}
-		if(disziplin.equals("MA")){
-			preisvec = ParameterLaden.vMAPreise;
-		}
-		if(disziplin.equals("ER")){
-			preisvec = ParameterLaden.vERPreise;			
-		}
-		if(disziplin.equals("LO")){
-			preisvec = ParameterLaden.vLOPreise;			
-		}
-		*/
-		//System.out.println("Beginne Suche nach dem Preis von Position ---> "+position);
 		for(int i = 0; i < preisvec.size();i++){
-			//System.out.println(""+i+" - "+((String)((Vector)preisvec.get(i)).get( (1+(preisgruppe*4)-3))) );
 			if(  ((String)((Vector)preisvec.get(i)).get(2)).equals(position) ){
 				ret =  ((String)((Vector)preisvec.get(i)).get(3+(neu ? 0 : 1)));
-				System.out.println("Der Preis von "+position+" = "+ret);
+//				System.out.println("Der Preis von "+position+" = "+ret);
 				return ret;
 			}
 		}
@@ -828,6 +821,57 @@ public class RezTools {
 		}
 		return "Physio";
 	}
+	public static Object[] ermittleRezeptwert(Vector<String> vec){
+		Object[] retobj = {null,null,null};
+		return retobj;
+	}
+	public static Object[] ermittleHBwert(Vector<String> vec){
+		Object[] retobj = {null,null,null};
+		String disziplin = putRezNrGetDisziplin(vec.get(1));
+		String pos = "";
+		Double preis =0.00;
+		Double wgkm = 0.00;
+		Double wgpauschal = 0.00;
+		// erst testen ob HB-Einzeln oder HB-Mehrere
+		int anzahl = Integer.parseInt(vec.get(64));
+		int preisgruppe = Integer.parseInt(vec.get(41));
+		if(vec.get(61).equals("T")){
+			//Einzelhausbesuch
+			 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(0);
+			 preis = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+			 retobj[0] = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue();
+			 //testen ob Fahrtgeldüberhaupt gezahlt wird;
+			 if(keineWeggebuehrBeiHB(disziplin,Integer.toString(preisgruppe))){
+				 return retobj;
+			 }
+			 if(zweiPositionenBeiHB(disziplin,Integer.toString(preisgruppe))){
+				 //Weggebühr und pauschale
+				 if( (wgkm=Double.parseDouble(vec.get(7))) > 0 ){
+					 //Kilometer verwenden
+					 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(2);
+					 preis = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+					 BigDecimal kms = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl))));
+					 kms = kms.multiply(BigDecimal.valueOf(wgkm));
+					 retobj[1] = kms.doubleValue();
+					 return retobj;
+				 }else{
+					 //Pauschale verwenden
+					 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(3);
+					 preis = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+					 retobj[1] = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue();
+					 return retobj;
+				 }
+			 }
+		}else{
+			//Mehrere Hausbesuch
+			 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(1);
+			 preis = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+			 retobj[0] = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue();
+	}
+
+		return retobj;
+	}
+
 	public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb,int realhbAnz){
 		
 		//Object[] retobj = {new BigDecimal(new Double(0.00)),(Double)rezgeb};
@@ -1164,7 +1208,7 @@ public class RezTools {
 							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 							/*******************************/
 						}else{
-							JOptionPane.showMessageDialog(null, "Dieser Kostentr�ger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
+							JOptionPane.showMessageDialog(null, "Dieser Kostenträger kennt keine Weg-Pauschale, geben Sie im Patientenstamm die Anzahl Kilometer an" );
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
 							SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");						
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");

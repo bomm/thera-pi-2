@@ -567,13 +567,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		if(hausBesuch){
 			analysiereHausbesuch();
 		}
-
+		/*
 		System.out.println("Anzahlen = "+originalAnzahl);
 		System.out.println("Positionen = "+originalPos);
 		System.out.println("ID in Preisliste = "+originalId);
 		System.out.println("EinzelPeise = "+einzelPreis);			
 		System.out.println("Langtexte = "+originalLangtext);
-
+		*/
 		
 		
 		for(int i = 0; i < originalAnzahl.size();i++){

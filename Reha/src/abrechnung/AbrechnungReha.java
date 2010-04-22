@@ -1,5 +1,8 @@
 package abrechnung;
 
+import hauptFenster.AktiveFenster;
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -8,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -16,20 +21,37 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import rehaInternalFrame.JRehaabrechnungInternal;
 import sqlTools.SqlInfo;
+import stammDatenTools.PatTools;
+import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.ITextTable;
+import ag.ion.bion.officelayer.text.TextException;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import events.PatStammEvent;
+import events.PatStammEventClass;
 
 public class AbrechnungReha extends JXPanel{
 
@@ -60,6 +82,8 @@ public class AbrechnungReha extends JXPanel{
 
 	JButton[] jbut = {null,null,null,null,null};
 	Vector<Vector<String>> rehavec = new Vector<Vector<String>>(); 
+	Vector<Vector<String>> kassvec = new Vector<Vector<String>>();
+	Vector<Vector<String>> patvec = new Vector<Vector<String>>();
 
 	DecimalFormat dcf = new DecimalFormat("####0.00");
 	BigDecimal[] zeilenPreis = {BigDecimal.valueOf(Double.parseDouble("0.00")),
@@ -69,9 +93,26 @@ public class AbrechnungReha extends JXPanel{
 	BigDecimal gesamtPreis = BigDecimal.valueOf(Double.parseDouble("0.00"));
 	BigDecimal gesamtPatPreis = BigDecimal.valueOf(Double.parseDouble("0.00"));
 	boolean initOk = false;
-	
+	boolean abrechnungOk = true;
+	boolean istprivat = false;
 	ActionListener al;
 	KeyListener kl;
+
+	
+	ITextTable textTable = null;
+	ITextTable textEndbetrag = null;
+	ITextDocument textDocument = null;
+	int aktuellePosition = 0;
+
+
+	String aktRechnung;
+	int druckExemplare = 0;
+	String druckDrucker = "";
+	String druckFormular = "";
+	String druckIk = "";
+	StringBuffer rechnungBuf = new StringBuffer();
+	HashMap<String,String> hmRechnung = new HashMap<String,String>();
+	Vector<Vector<String>> vecposrechnung = new Vector<Vector<String>>();
 	
 	public AbrechnungReha(JRehaabrechnungInternal rai){
 		super();
@@ -111,11 +152,30 @@ public class AbrechnungReha extends JXPanel{
 				setzeFocus();
 			}
 		});
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					if(  (patient != null)  && (Reha.thisClass.patpanel.vecaktrez.size() > 0) ){
+						if(Reha.thisClass.patpanel.vecaktrez.get(1).startsWith("RH")){
+							tfrehanr[0].setText(Reha.thisClass.patpanel.vecaktrez.get(1));
+							doEinlesen(Reha.thisClass.patpanel.vecaktrez.get(1));
+							doRechnen();
+							initOk = true;
+						}
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+		}.execute();
 	}
+	
 	private void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				tfrehanr[0].setText("RH5529");
 				tfrehanr[0].requestFocus();
 			}
 		});
@@ -232,7 +292,6 @@ public class AbrechnungReha extends JXPanel{
 	}
 
 	private void doRechnen(){
-		
 		gesamtPreis = BigDecimal.valueOf(Double.parseDouble("0.00"));
 		for(int i = 0; i < 4;i++){
 			zeilenPreis[i] = BigDecimal.valueOf(Double.parseDouble(tfanzahl[i].getText().trim()+".00")).multiply(
@@ -251,22 +310,27 @@ public class AbrechnungReha extends JXPanel{
 	 
 		
 	private void doEinlesen(String rehanummer){
+		String suchenach = rehanummer;
 		if(rehanummer.equals("")){
 			JOptionPane.showMessageDialog(null, "Witzbolde gibt's....");
 			return;
 		}	
+		if(!rehanummer.startsWith("RH")){
+			tfrehanr[0].setText("RH"+rehanummer);
+			suchenach = "RH"+rehanummer;
+		}
 		rehavec.clear();
-		rehavec = SqlInfo.holeFelder("select * from verordn where rez_nr='"+rehanummer+"' LIMIT 1");
+		rehavec = SqlInfo.holeFelder("select * from verordn where rez_nr='"+suchenach+"' LIMIT 1");
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				holePatient(rehavec.get(0).get(0));
+				holePatientUndKostentraeger(rehavec.get(0).get(0).trim(),rehavec.get(0).get(37).trim().trim() );
 				return null;
 			}
 			
 		}.execute();
 		if(rehavec.size()<=0){
-			JOptionPane.showMessageDialog(null, "Reha-Verordnung mit Nummer "+rehanummer+" wurde nicht gefunden");
+			JOptionPane.showMessageDialog(null, "Reha-Verordnung mit Nummer "+suchenach+" wurde nicht gefunden");
 			return;
 		}
 		int preisgruppe = Integer.parseInt(rehavec.get(0).get(41));
@@ -285,16 +349,26 @@ public class AbrechnungReha extends JXPanel{
 	}
 	
 	
-	private void holePatient(String pat_intern){
-		Vector<Vector<String>> vec = SqlInfo.holeFelder("select n_name,v_name,geboren from pat5 where pat_intern='"+pat_intern+"' LIMIT 1");
-		if(vec.size()<=0){
+	private void holePatientUndKostentraeger(String pat_intern,String kassenid){
+		patvec = SqlInfo.holeFelder("select n_name,v_name,geboren,anrede,titel,strasse,plz,ort,kv_status from pat5 where pat_intern='"+pat_intern+"' LIMIT 1");
+		kassvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_kostent from kass_adr where id='"+kassenid+"' LIMIT 1");
+		
+		if(patvec.size()<=0){
 			patLabel.setText("Patient wurde nicht gefunden");
+			abrechnungOk = false;
 			return;
 		}
+		if(kassvec.size()<=0){
+			patLabel.setText("Kostenträger wurde nicht gefunden");
+			abrechnungOk = false;
+			return;
+		}
+		istprivat = kassvec.get(0).get(4).trim().equals("");
 		patLabel.setText(
-				StringTools.EGross(vec.get(0).get(0))+", "+
-				StringTools.EGross(vec.get(0).get(1))+", geb.am: "+
-				DatFunk.sDatInDeutsch(vec.get(0).get(2))
+				StringTools.EGross(patvec.get(0).get(0))+", "+
+				StringTools.EGross(patvec.get(0).get(1))+", geb.am: "+
+				DatFunk.sDatInDeutsch(patvec.get(0).get(2))+" - Kostenträger:"+
+				(istprivat ? "privat" : kassvec.get(0).get(0).trim())
 				);
 	}
 	private void controlsEinschalten(boolean einschalten){
@@ -342,6 +416,7 @@ public class AbrechnungReha extends JXPanel{
 		jckb[0].setSelected(false);
 		patGesamt.setText("");
 		kasseGesamt.setText("");
+		patLabel.setText("");
 		this.initOk = false;
 		setzeFocus();
 	}
@@ -381,7 +456,15 @@ public class AbrechnungReha extends JXPanel{
 				if(cmd.contains("abbrechen")){
 					allesAusschalten();
 				}
-
+				if(cmd.contains("korrektur")){
+					doKorrektur();
+					//allesAusschalten();
+				}
+				if(cmd.contains("drucken")){
+					aktuellePosition = 0;
+					doRehaAbrechnung();
+					//allesAusschalten();
+				}
 			}
 		};
 		kl = new KeyListener(){
@@ -405,6 +488,398 @@ public class AbrechnungReha extends JXPanel{
 			
 		};
 	}
+	private void doKorrektur(){
+		JOptionPane.showMessageDialog(null, "Korrektur-Funktion noch nicht implementiert");
+	}
+	private AbrechnungReha getInstance(){
+		return this;
+	}
+	private void doRehaAbrechnung(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try {
+					getInstance().setCursor(Reha.thisClass.wartenCursor);
+					if(abrechnungOk){
+						doHauptRechnungDrucken();
+						if(abrechnungOk){doFaktura();}
+						if(abrechnungOk){doAnlegenOP();}
+						if(jckb[0].isSelected()){
+							if(abrechnungOk){doEigenanteilDrucken();}
+							if(abrechnungOk){doFaktura();}
+							if(abrechnungOk){doAnlegenOP();	}
+						}
+						if(!abrechnungOk){
+							JOptionPane.showConfirmDialog(null, "Während der Rechnungserstellung iste ein Fehler aufgetreten!");
+						}else{
+							if(Reha.vollbetrieb){
+								doUebertragen();								
+							}
+						}
+						allesAusschalten();
+					}else{
+						JOptionPane.showConfirmDialog(null, "Die Abrechnung enthält Fehler. Bitte beheben Sie die Fehler und starten Sie die RehaAbrechnung erneut");
+						allesAusschalten();
+					}
+					getInstance().setCursor(Reha.thisClass.cdefault);
+				} catch (Exception e) {
+					allesAusschalten();
+				}
+				return null;
+			}
+		}.execute();
+	}
+	
+	private void doUebertragen(){
+		SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rehavec.get(0).get(1), true, Arrays.asList(new String[] {"id"}));
+		SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rehavec.get(0).get(1)+"'");
+		String aktiverPatient = "";
+		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		if(patient != null){
+			aktiverPatient = Reha.thisClass.patpanel.aktPatID;
+		}
+		if(aktiverPatient.equals(rehavec.get(0).get(0))){
+			posteAktualisierung(rehavec.get(0).get(0));
+		}
+	}
+	private void posteAktualisierung(String patid){
+		final String xpatid = patid;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				String s1 = new String("#PATSUCHEN");
+				String s2 = xpatid;
+				PatStammEvent pEvt = new PatStammEvent(getInstance());
+				pEvt.setPatStammEvent("PatSuchen");
+				pEvt.setDetails(s1,s2,"") ;
+				PatStammEventClass.firePatStammEvent(pEvt);		
+				return null;
+			}
+			
+		}.execute();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void doEigenanteilDrucken() throws Exception{
+		aktuellePosition = 0;
+		istprivat = true;
+		hmRechnung.clear();
+		String[] padressDaten = PatTools.constructPatHMapFromStrings(patvec.get(0).get(3),
+				patvec.get(0).get(4),patvec.get(0).get(1),patvec.get(0).get(0),
+				patvec.get(0).get(5),patvec.get(0).get(6),patvec.get(0).get(7));
+		hmRechnung.put("<pri1>",padressDaten[0]);
+		hmRechnung.put("<pri2>",padressDaten[1]);
+		hmRechnung.put("<pri3>",padressDaten[2]);
+		hmRechnung.put("<pri4>",padressDaten[3]);
+		hmRechnung.put("<pri5>",padressDaten[4]+",");
+		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+		if(aktRechnung.equals("-1")){
+			JOptionPane.showMessageDialog(null, "Fehler - Rechnungsnummer für Eigenanteile kann nicht bezogen werden" );
+			abrechnungOk = false;
+			return;
+		}
+		vecposrechnung.clear();
+		Vector<String> vecpos = new Vector<String>();
+		
+		
+		if( (jcmbpat[0].getSelectedIndex()==0) || (tfpatanzahl[0].getText().trim().equals(0)) ){
+			JOptionPane.showMessageDialog(null, "Fehler - Eigenenanteilsrechnung kann nicht erstellt werden" );
+			abrechnungOk = false;
+			return;
+		}
+		hmRechnung.put("<pri6>",aktRechnung);
+		hmRechnung.put("<pri7>",StringTools.EGross(patvec.get(0).get(0))+", "+
+				StringTools.EGross(patvec.get(0).get(1))+", geb.am: "+
+				DatFunk.sDatInDeutsch(patvec.get(0).get(2)));
+		this.druckIk = SystemConfig.hmAbrechnung.get("rehapriik");
+		this.druckDrucker = SystemConfig.hmAbrechnung.get("rehapridrucker");
+		this.druckFormular = SystemConfig.hmAbrechnung.get("rehapriformular");
+		this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehapriexemplare"));
+		hmRechnung.put("<pri8>",this.druckIk);
 
+		vecpos.add(jcmbpat[0].getSelectedItem().toString());
+		vecpos.add(tfpatanzahl[0].getText().trim());
+		vecpos.add(tfpatpreis[0].getText().trim());
+		vecpos.add(tfpatgesamt[0].getText().trim());
+		vecpos.add(jcmbpat[0].getValueAt(2).toString());
+		vecpos.add(jcmbpat[0].getValueAt(9).toString());
+		vecposrechnung.add((Vector<String>)((Vector<String>)vecpos).clone() );
+		gesamtPreis = BigDecimal.valueOf(Double.parseDouble(tfpatgesamt[0].getText().trim().replace(",", ".")));
+
+		starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+this.druckFormular,this.druckDrucker);
+		starteErsetzen(hmRechnung);
+		startePositionen(vecposrechnung,gesamtPreis);
+		starteDrucken(this.druckExemplare);
+		
+	}
+
+	private void doFaktura(){
+		String cmdKopf = "insert into faktura set ";
+		
+		for(int i = 0; i< vecposrechnung.size();i++){
+			//System.out.println("In RechnungFaktura "+hmRechnung);
+			rechnungBuf.setLength(0);
+			rechnungBuf.trimToSize();
+			rechnungBuf.append(cmdKopf);				
+			if(i==0){
+				rechnungBuf.append("kassen_nam='"+hmRechnung.get("<pri1>")+"', ");
+				rechnungBuf.append("kassen_na2='"+hmRechnung.get("<pri2>")+"', ");
+				rechnungBuf.append("strasse='"+hmRechnung.get("<pri3>")+"', ");
+				try{
+					if( hmRechnung.get("<pri4>").indexOf(" ") >= 0){
+						rechnungBuf.append("plz='"+hmRechnung.get("<pri4>").split(" ")[0]+"', ");	
+						rechnungBuf.append("ort='"+hmRechnung.get("<pri4>").split(" ")[1]+"', ");	
+						
+					}else{
+						rechnungBuf.append("plz='"+""+"', ");	
+						rechnungBuf.append("ort='"+hmRechnung.get("<pri4>")+"', ");
+					}
+					rechnungBuf.append("name='"+patvec.get(0).get(0)+","+patvec.get(0).get(1)+
+							",geb."+DatFunk.sDatInDeutsch(patvec.get(0).get(2))+"', ");
+				}catch(Exception ex){
+					System.out.println("PLZ/Ort nicht angegeben");
+				}
+			}
+			rechnungBuf.append("lfnr='"+Integer.toString(i)+"', ");
+			rechnungBuf.append("status='"+ patvec.get(0).get(8)+"', ");
+			rechnungBuf.append("pos_kas='"+ vecposrechnung.get(i).get(4) +"', ");
+			rechnungBuf.append("pos_int='"+ vecposrechnung.get(i).get(5) +"', ");
+			rechnungBuf.append("anzahl='"+  vecposrechnung.get(i).get(1) +"', ");
+			rechnungBuf.append("anzahltage='"+ vecposrechnung.get(i).get(1) +"', ");
+			rechnungBuf.append("preis='"+  vecposrechnung.get(i).get(2).replace(",", ".")  +"', ");
+			rechnungBuf.append("gesamt='"+  vecposrechnung.get(i).get(3).replace(",", ".")  +"', ");
+			rechnungBuf.append("zzbetrag='"+  "0.00" +"', ");
+			rechnungBuf.append("netto='"+  vecposrechnung.get(i).get(3).replace(",", ".")  +"', ");
+			rechnungBuf.append("pauschale='"+  "0.00" +"', ");
+			rechnungBuf.append("rez_nr='"+   rehavec.get(0).get(1) +"', ");		
+			rechnungBuf.append("rezeptart='8', ");
+			rechnungBuf.append("pat_intern='"+rehavec.get(0).get(0)+"', ");
+			rechnungBuf.append("rnummer='"+  aktRechnung +"', ");
+			rechnungBuf.append("kassid='"+rehavec.get(0).get(37)+"', ");
+			rechnungBuf.append("arztid='"+rehavec.get(0).get(16)+"', ");
+			rechnungBuf.append("disziplin='"+  "RH" +"', ");
+			rechnungBuf.append("rdatum='"+  DatFunk.sDatInSQL(DatFunk.sHeute()) +"'");
+			SqlInfo.sqlAusfuehren(rechnungBuf.toString());
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	private void doAnlegenOP(){
+		rechnungBuf.setLength(0);
+		rechnungBuf.trimToSize();
+		rechnungBuf.append("insert into rliste set ");
+		rechnungBuf.append("r_nummer='"+aktRechnung+"', ");
+		rechnungBuf.append("r_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+		String r_kasse;
+		if(istprivat){
+			r_kasse = hmRechnung.get("<pri2>");
+		}else{
+			r_kasse = hmRechnung.get("<pri1>");
+		}
+		rechnungBuf.append("r_kasse='"+r_kasse+"', ");
+		rechnungBuf.append("r_name='"+patvec.get(0).get(0)+","+patvec.get(0).get(1)+","+DatFunk.sDatInDeutsch(patvec.get(0).get(2))+"', ");
+		rechnungBuf.append("r_klasse='"+"RH"+"', ");
+		rechnungBuf.append("r_betrag='"+dcf.format(gesamtPreis.doubleValue()).replace(",", ".")+"', ");
+		rechnungBuf.append("r_offen='"+dcf.format(gesamtPreis.doubleValue()).replace(",", ".")+"', ");
+		rechnungBuf.append("r_zuzahl='"+"0.00"+"', ");
+		if(istprivat){
+			rechnungBuf.append("pat_intern='"+rehavec.get(0).get(0)+"', ");
+		}
+		rechnungBuf.append("ikktraeger='"+kassvec.get(0).get(6)+"'");
+		SqlInfo.sqlAusfuehren(rechnungBuf.toString());
+		
+	}
+	@SuppressWarnings("unchecked")
+	private void doHauptRechnungDrucken() throws Exception{
+		hmRechnung.clear();
+		//kassvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_kostent from kass_adr where id='"+kassenid+"' LIMIT 1");
+		//patvec = SqlInfo.holeFelder("select n_name,v_name,geboren,anrede,titel,strasse,plz,ort from pat5 where pat_intern='"+pat_intern+"' LIMIT 1");
+		try{
+			if(istprivat){
+				String[] padressDaten = PatTools.constructPatHMapFromStrings(patvec.get(0).get(3),
+						patvec.get(0).get(4),patvec.get(0).get(1),patvec.get(0).get(0),
+						patvec.get(0).get(5),patvec.get(0).get(6),patvec.get(0).get(7));
+				hmRechnung.put("<pri1>",padressDaten[0]);
+				hmRechnung.put("<pri2>",padressDaten[1]);
+				hmRechnung.put("<pri3>",padressDaten[2]);
+				hmRechnung.put("<pri4>",padressDaten[3]);
+				hmRechnung.put("<pri5>",padressDaten[4]+",");
+			}else{
+				//kassvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_ktraeger from kass_adr where id='"+kassenid+"' LIMIT 1");
+				hmRechnung.put("<pri1>",kassvec.get(0).get(0));
+				hmRechnung.put("<pri2>",kassvec.get(0).get(1));
+				hmRechnung.put("<pri3>",kassvec.get(0).get(2));
+				hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
+				hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
+
+				/*
+				if(kassvec.get(0).get(5).trim().equals("")){
+					hmRechnung.put("<pri1>",kassvec.get(0).get(0));
+					hmRechnung.put("<pri2>",kassvec.get(0).get(1));
+					hmRechnung.put("<pri3>",kassvec.get(0).get(2));
+					hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
+					hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
+				}else{
+					Vector<Vector<String>>papvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier from kass_adr where ik_kasse='"+kassvec.get(0).get(5)+"' LIMIT 1");
+					if(papvec.size()==0){
+						hmRechnung.put("<pri1>",kassvec.get(0).get(0));
+						hmRechnung.put("<pri2>",kassvec.get(0).get(1));
+						hmRechnung.put("<pri3>",kassvec.get(0).get(2));
+						hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
+						hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
+					}else{
+						hmRechnung.put("<pri1>",papvec.get(0).get(0));
+						hmRechnung.put("<pri2>",papvec.get(0).get(1));
+						hmRechnung.put("<pri3>",papvec.get(0).get(2));
+						hmRechnung.put("<pri4>",papvec.get(0).get(3)+" "+papvec.get(0).get(4));
+						hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
+					}
+				}
+				*/
+			}
+			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+			if(aktRechnung.equals("-1")){
+				JOptionPane.showMessageDialog(null, "Fehler - Rechnungsnummer für Reharechnung kann nicht bezogen werden" );
+				abrechnungOk = false;
+				return;
+			}
+			hmRechnung.put("<pri6>",aktRechnung);
+			hmRechnung.put("<pri7>",StringTools.EGross(patvec.get(0).get(0))+", "+
+					StringTools.EGross(patvec.get(0).get(1))+", geb.am: "+
+					DatFunk.sDatInDeutsch(patvec.get(0).get(2)));
+
+			if(jcmb[0].getSelectedItem().toString().contains("GKV")){
+				this.druckIk = SystemConfig.hmAbrechnung.get("rehagkvik");
+				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehagkvdrucker");
+				this.druckFormular = SystemConfig.hmAbrechnung.get("rehagkvformular");
+				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehagkvexemplare"));
+			}else if(jcmb[0].getSelectedItem().toString().contains("DRV")){
+				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
+				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
+				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
+				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
+			}else if(jcmb[0].getSelectedItem().toString().contains("PRI")){
+				this.druckIk = SystemConfig.hmAbrechnung.get("rehapriik");
+				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehapridrucker");
+				this.druckFormular = SystemConfig.hmAbrechnung.get("rehapriformular");
+				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehapriexemplare"));
+			}else{
+				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
+				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
+				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
+				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
+			}
+			hmRechnung.put("<pri8>",this.druckIk);
+
+			vecposrechnung.clear();
+
+			Vector<String> vecpos = new Vector<String>(); 
+			for(int i = 0; i < 4;i++){
+				vecpos.clear();
+				if(jcmb[i].getSelectedIndex()>0){
+					vecpos.add(jcmb[i].getSelectedItem().toString());
+					vecpos.add(tfanzahl[i].getText().trim());
+					vecpos.add(tfpreis[i].getText().trim());
+					vecpos.add(tfgesamt[i].getText().trim());
+					if(jcmb[i].getSelectedIndex()>0){
+						vecpos.add(jcmb[i].getValueAt(2).toString());
+						vecpos.add(jcmb[i].getValueAt(9).toString());
+					}else{
+						vecpos.add("");
+						vecpos.add("");
+					}
+					vecposrechnung.add((Vector<String>)((Vector<String>)vecpos).clone() );
+				}
+			}
+			
+			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+this.druckFormular,this.druckDrucker);
+			starteErsetzen(hmRechnung);
+			startePositionen(vecposrechnung,gesamtPreis);
+			starteDrucken(this.druckExemplare);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "In der Abrechnung ist ein Fehler aufgetreten, bitte beheben Sie den Fehler und starten Sie die Abrechnung erneut");
+			abrechnungOk = false;
+		}
+	}
+	
+	/******************Nachfolgend die OO.writer - Funktionen**************************/
+	public void starteDokument(String url,String drucker) throws Exception{
+		IDocumentService documentService = null;;
+		documentService = Reha.officeapplication.getDocumentService();
+		IDocumentDescriptor docdescript = new DocumentDescriptor();
+        docdescript.setHidden(true);
+        docdescript.setAsTemplate(true);
+		IDocument document = null;
+		document = documentService.loadDocument(url,docdescript);
+		/**********************/
+		textDocument = (ITextDocument)document;
+		OOTools.druckerSetzen(textDocument, drucker);
+		textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
+		textEndbetrag = textDocument.getTextTableService().getTextTable("Tabelle2");
+	}
+	private void starteErsetzen(HashMap<String,String> hmAdresse){
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < placeholders.length; i++) {
+			if(placeholders[i].getDisplayText().toLowerCase().equals("<pri1>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri1>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri2>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri2>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri3>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri3>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri4>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri4>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri5>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri5>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri6>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri6>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri7>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri7>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri8>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri8>"));
+			}
+		}
+		
+	}
+	private void startePositionen(Vector<Vector<String>> vecpositionen,BigDecimal gesamt) throws TextException{
+		aktuellePosition++;	 
+		for(int i = 0; i < vecpositionen.size();i++){
+			textTable.getCell(0,aktuellePosition).getTextService().getText().setText(vecpositionen.get(i).get(0));
+			textTable.getCell(1,aktuellePosition).getTextService().getText().setText(vecpositionen.get(i).get(1));
+			textTable.getCell(2,aktuellePosition).getTextService().getText().setText(vecpositionen.get(i).get(2));
+			textTable.getCell(3,aktuellePosition).getTextService().getText().setText(vecpositionen.get(i).get(3));
+			textTable.addRow(1);
+			aktuellePosition++;				
+		}
+		textEndbetrag.getCell(1,0).getTextService().getText().setText(dcf.format(gesamt.doubleValue())+" EUR");
+	}
+	private void starteDrucken(int exemplare) throws DocumentException{
+		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+					textDocument.getFrame().setFocus();
+				}
+			});
+		}else{
+			for(int i = 0; i < exemplare; i++){
+				textDocument.print();
+			}
+			textDocument.close();
+			textDocument = null;
+		}
+	}
+	
+	
+	/******************Ende der OO.writer - Funktionen*********************************/
 	
 }

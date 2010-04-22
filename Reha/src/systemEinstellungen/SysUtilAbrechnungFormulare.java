@@ -72,7 +72,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 			}
 		/****/
 	     //JLabel jlbl = new JLabel("");
-	     //jlbl.setIcon(new ImageIcon(SystemConfig.homeDir+"icons/werkzeug.gif"));
+	     //jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 	     //add(jlbl,BorderLayout.CENTER);
 	     JScrollPane jscr = new JScrollPane();
 	     jscr.setBorder(null);

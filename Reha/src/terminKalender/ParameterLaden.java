@@ -73,6 +73,10 @@ public static String getKollegenUeberReihe(int reihe){
 	return ret;
 }
 
+public static Kollegen getKollegen(int i){
+	return ((Kollegen)vKKollegen.get(i));
+}
+
 public static String getKollegenUeberDBZeile(int reihe){
 	String ret = "";
 	int lang = vKKollegen.size();

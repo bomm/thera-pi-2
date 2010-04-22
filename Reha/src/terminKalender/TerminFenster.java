@@ -1249,7 +1249,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					jPopupMenu.add(getTagesdialog());
 					jPopupMenu.addSeparator();
 					JMenu submenu = new JMenu("Termine tauschen");
-					submenu.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/refresh.gif"));
+					submenu.setIcon(new ImageIcon(Reha.proghome+"/icons/refresh.gif"));
 					submenu.add(getTauschemitvorherigem());
 					submenu.add(getTauschemitnachfolger());
 					jPopupMenu.add(submenu);
@@ -1259,7 +1259,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					jPopupMenu.add(getTerminedespatsuchen());
 					jPopupMenu.addSeparator();
 					submenu = new JMenu("Patient suchen / Telefonliste");
-					submenu.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/personen16.gif"));
+					submenu.setIcon(new ImageIcon(Reha.proghome+"/icons/personen16.gif"));
 					submenu.add(getPatientsuchen());
 					submenu.add(getTelefonliste());
 					jPopupMenu.add(submenu);
@@ -1267,7 +1267,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					jPopupMenu.add(getTerminliste());				
 					jPopupMenu.addSeparator();
 					submenu = new JMenu("Termine gruppieren");
-					submenu.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/failed.gif"));
+					submenu.setIcon(new ImageIcon(Reha.proghome+"/icons/failed.gif"));
 					submenu.add(getGruppezusammenfassen());
 					submenu.add(getGruppekopieren());
 					submenu.add(getGruppeeinfuegen());
@@ -1352,7 +1352,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (Tauschemitvorherigem == null) {
 				Tauschemitvorherigem = new JMenuItem();
 				Tauschemitvorherigem.setText("Termin mit Vorgängertermin tauschen");
-				Tauschemitvorherigem.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/oben.gif"));
+				Tauschemitvorherigem.setIcon(new ImageIcon(Reha.proghome+"/icons/oben.gif"));
 				Tauschemitvorherigem.setRolloverEnabled(true);
 				Tauschemitvorherigem.setEnabled(true);
 				Tauschemitvorherigem.addActionListener(this);
@@ -1364,7 +1364,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (Tauschemitnachfolger == null) {
 				Tauschemitnachfolger = new JMenuItem();
 				Tauschemitnachfolger.setText("Termin mit Nachfolgetermin tauschen");
-				Tauschemitnachfolger.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/unten.gif"));				
+				Tauschemitnachfolger.setIcon(new ImageIcon(Reha.proghome+"/icons/unten.gif"));				
 				Tauschemitnachfolger.setRolloverEnabled(true);
 				Tauschemitnachfolger.setEnabled(true);
 				Tauschemitnachfolger.addActionListener(this);
@@ -1387,7 +1387,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (Tagvor == null) {
 				Tagvor = new JMenuItem();
 				Tagvor.setText("einen Tag vorwärts blättern");
-				Tagvor.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/forward.gif"));
+				Tagvor.setIcon(new ImageIcon(Reha.proghome+"/icons/forward.gif"));
 				Tagvor.setRolloverEnabled(true);
 				Tagvor.setEnabled(true);
 				Tagvor.addActionListener(this);
@@ -1398,7 +1398,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if (Tagzurueck == null) {
 				Tagzurueck = new JMenuItem();
 				Tagzurueck.setText("einen Tag rückwärts blättern");
-				Tagzurueck.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/backward.gif"));
+				Tagzurueck.setIcon(new ImageIcon(Reha.proghome+"/icons/backward.gif"));
 				Tagzurueck.setRolloverEnabled(true);
 				Tagzurueck.setEnabled(true);
 				Tagzurueck.addActionListener(this);
@@ -3929,11 +3929,11 @@ private int gelesen;
 	    		}
 	    		if (!TerminFenster.getThisClass().getUpdateVerbot()){
 	    			try{
-	    			Reha.thisClass.shiftLabel.setText("in Update...");
+	    			//Reha.thisClass.shiftLabel.setText("in Update...");
 	    			TerminFenster.getThisClass().setUpdateVerbot(true);
 	    			TerminFenster.getThisClass().aktualisieren();
 	    			TerminFenster.getThisClass().setUpdateVerbot(false);	 
-	    			Reha.thisClass.shiftLabel.setText("Update ok.");	    			
+	    			//Reha.thisClass.shiftLabel.setText("Update ok.");	    			
 	    			gelesen++;
 	    			}catch(Exception ex){
 	    				break;

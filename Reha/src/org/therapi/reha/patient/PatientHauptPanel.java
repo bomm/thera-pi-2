@@ -125,7 +125,10 @@ public class PatientHauptPanel extends JXPanel{
 	public int kid = -1;
 	public boolean patDatenOk = false;
 	public boolean rezDatenOk = false;
-
+	public boolean historOk = false;
+	public boolean berichtOk = false;
+	public boolean dokuOk = false;
+	public boolean gutachtenOk = false;
 
 	//Bezug zum unterliegenden JInternalFrame
 	JPatientInternal patientInternal = null;

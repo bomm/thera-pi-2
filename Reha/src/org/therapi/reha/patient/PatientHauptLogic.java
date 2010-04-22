@@ -370,8 +370,8 @@ public class PatientHauptLogic {
 		//System.out.println("Detail 1 = "+evt.getDetails()[1]);	
 		if(evt.getDetails()[0].equals("#PATSUCHEN")){
 			final String xpatint = evt.getDetails()[1].trim();
-			patientHauptPanel.aktPatID = xpatint;
 			final String xrez = evt.getDetails()[2].trim();
+			patientHauptPanel.aktPatID = xpatint;
 			// Anzeigedaten holen
 
 			new Thread(){
@@ -405,22 +405,17 @@ public class PatientHauptLogic {
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
-										long zeit = System.currentTimeMillis();
-										while(! Reha.thisClass.patpanel.patDatenOk){
-											Thread.sleep(20);
-											if(System.currentTimeMillis()-zeit > 10000){
-												JOptionPane.showMessageDialog(null, "Fehler beim Bezug der Patientendaten");
-												return null;
-											}
-										}
-										PatTools.constructPatHMap();		
-										ArztTools.constructArztHMap("");
-										KasseTools.constructKasseHMap("");
-
-										new Thread(){
-											public void run(){
-											}
-										}.start();
+							long zeit = System.currentTimeMillis();
+							while(! Reha.thisClass.patpanel.patDatenOk){
+								Thread.sleep(20);
+								if(System.currentTimeMillis()-zeit > 10000){
+									JOptionPane.showMessageDialog(null, "Fehler beim Bezug der Patientendaten");
+									return null;
+								}
+							}
+							PatTools.constructPatHMap();		
+							ArztTools.constructArztHMap("");
+							KasseTools.constructKasseHMap("");
 							return null;
 						}
 					}.execute();
@@ -432,8 +427,20 @@ public class PatientHauptLogic {
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
+							long zeit = System.currentTimeMillis();
+							while(! Reha.thisClass.patpanel.patDatenOk){
+								Thread.sleep(20);
+								if(System.currentTimeMillis()-zeit > 10000){
+									JOptionPane.showMessageDialog(null, "Fehler beim Bezug der Rezeptdaten");
+									return null;
+								}
+							}
 							if(!xrez.contains("#REZHOLEN-")){
-								patientHauptPanel.aktRezept.holeRezepte(xpatint,"");	
+								if(xrez.trim().equals("")){
+									patientHauptPanel.aktRezept.holeRezepte(xpatint,"");									
+								}else{
+									patientHauptPanel.aktRezept.holeRezepte(xpatint,xrez.trim());
+								}
 							}else{
 								patientHauptPanel.aktRezept.suchePatUeberRez = true;
 								patientHauptPanel.aktRezept.holeRezepte(xpatint,xrez.split("#REZHOLEN-")[1].trim());

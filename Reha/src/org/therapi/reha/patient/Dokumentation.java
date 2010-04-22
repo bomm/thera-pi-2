@@ -210,6 +210,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public ImageIcon[] tabIcons = {null,null,null,null};
 	public String aktion  = "";
 	public String quelle = "";
+	public String nameOOorgDokuNeu;
 	//public JRtaTextField annika = null;
 	Scanner scanner;
 	public Dokumentation(){
@@ -231,7 +232,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		allesrein.setBorder(null);
 		
 		FormLayout lay = new FormLayout("5dlu,fill:0:grow(1.00),0dlu",
-		"0dlu,p,2dlu,p,2dlu,fill:0:grow(1.00),5dlu");
+		"0dlu,p,2dlu,p,2dlu,fill:0:grow(1.00),2dlu");
 		CellConstraints cc = new CellConstraints();
 		allesrein.setLayout(lay);
 		
@@ -255,7 +256,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				vollPanel = new JXPanel();
 				
 				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu",
-						"p,2dlu,125dlu,5dlu,fill:0:grow(1.00),0dlu");
+						"p,2dlu,100dlu,0dlu,fill:0:grow(1.00),0dlu");
 				CellConstraints vpcc = new CellConstraints();
 				vollPanel.setLayout(vplay);
 				vollPanel.setOpaque(false);
@@ -302,13 +303,13 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public JXPanel getToolBereich(){
 		JXPanel tbereich = new JXPanel();
 		tbereich.setOpaque(false);
-		FormLayout lay = new FormLayout("0dlu,fill:0:grow(1.00),0dlu","0dlu,fill:40:grow(1.00),59dlu");
+		FormLayout lay = new FormLayout("0dlu,fill:0:grow(1.00),0dlu","0dlu,fill:60:grow(1.00),1dlu,42dlu");
 		CellConstraints cc = new CellConstraints();
 		tbereich.setLayout(lay);
 
 		tbereich.add(getBildPanel(),cc.xy(2,2));
 		
-		tbereich.add(getInfoPanel(),cc.xy(2,3));
+		tbereich.add(getInfoPanel(),cc.xy(2,4,CellConstraints.DEFAULT,CellConstraints.BOTTOM));
 		tbereich.validate();
 		return tbereich;
 	}
@@ -321,9 +322,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		return bildscroll;
 	}
 	public JPanel getInfoPanel(){      // 1   2  3        4                5  6   7         8            9    10
-		FormLayout lay = new FormLayout("2dlu,p,20dlu,right:max(50dlu;p),2dlu,p,20dlu,right:max(50dlu;p),2dlu,p",
+		FormLayout lay = new FormLayout("2dlu,p,25dlu,right:max(50dlu;p),2dlu,p,20dlu,right:max(50dlu;p),2dlu,p",
        // 1    2  3    4   5  6   7  8   9
-		"10dlu,p,5dlu,p,1dlu,p,1dlu,p,10dlu");
+		" 0dlu,p,0dlu, p,0dlu,p,0dlu,p, 0dlu");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		//JPanel dummy2 = new JXPanel();
@@ -600,6 +601,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 ////////////////////////////
 //////////////////////////// Holt Doku aus der Doku-Datenbank
 ////////////////////////////
+	private Dokumentation getInstance(){
+		return this;
+	}
 	public void holeOorg(String sdatei,String sid){
 		Statement stmt = null;;
 		ResultSet rs = null;
@@ -621,10 +625,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					protected Void doInBackground() throws Exception {
 						if(xdatei.toLowerCase().endsWith("odt")){
 							ITextDocument itext = new OOTools().starteWriterMitDatei(xdatei);
-							itext.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid));
+							itext.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid,getInstance()));
 						}else if(xdatei.toLowerCase().endsWith("ods")){
 							ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(xdatei);
-							ispread.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid));
+							ispread.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid,getInstance()));
 						}
 						Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 						return null;
@@ -2197,11 +2201,46 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
-	public void	oooDokuNeu(String dokuart){
+	public void	oooDokuNeu(int art){
+		String[] welcheArt = {"OpenOffice-Writer","OpenOffice-Calc"};
+		String value = (String)JOptionPane.showInputDialog(null,
+				"Bitte einen Titel für die Dokumentation eingeben\n\n", "Benutzereingabe erforderlich....", JOptionPane.PLAIN_MESSAGE, null,
+				null, "Neue "+welcheArt[art]+" Dokumentation");
+		if( (value == null) || (value.length()==0)){
+			JOptionPane.showMessageDialog(null, "Kein Titel - kein speichern. Ganz einfach!!");
+			return;
+		}
+		String dest = null;
+		if(art==0){
+			String src = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EmptyWriterDoku.ott";
+			dest = Reha.proghome+"temp/"+Reha.aktIK+"/"+value+".odt";
+
+			try {
+				FileTools.copyFile(new File(src), new File(dest), 8192,true);
+				ITextDocument itext = new OOTools().starteWriterMitDatei(dest);
+				itext.addDocumentListener(new OoListener(Reha.officeapplication,dest,"",this));
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Fehler kann neues WriterDokument nicht erzeugen");
+			}
+		}else{
+			String src = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EmptyCalcDoku.ots";
+			dest = Reha.proghome+"temp/"+Reha.aktIK+"/"+value+".ods";
+			
+			try {
+				FileTools.copyFile(new File(src), new File(dest), 8192,true);
+				ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(dest);
+				ispread.addDocumentListener(new OoListener(Reha.officeapplication,dest,"",this));
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Fehler kann neues CalcDokument nicht erzeugen");
+			}
+		}
 		
 	}
 /**************************************************/
-	public static void speichernOoDocs(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
+	public void speichernOoDocs(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
@@ -2228,22 +2267,30 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(6,   //format - integer
 				ps.setBytes(7,   //dokutext - longtext								
 				ps.setBytes(8,   //dokublob - longblog /bin�r
+				ps.setBytes(9,   //groesse - longtext								
+				ps.setBytes(10,   //datei - longblog /bin�r
+				
 				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
 			  System.out.println("Setze InputStream "+dateiname);
 			  ps.setInt(1, dokuid);
-			  ps.setString(2, str[0]);			  
-			  ps.setString(3, str[1]);
-			  ps.setString(4, str[2]);			  
-			  ps.setInt(5, pat_intern);
-			  ps.setInt(6, format);			  
-			  ps.setString(7, str[3]);
+			  ps.setString(2, DatFunk.sDatInSQL(DatFunk.sHeute()));			  
+			  ps.setString(3, dateiname.substring(dateiname.replace("\\", "/").lastIndexOf("/")+1));
+			  ps.setString(4, Reha.aktUser);			  
+			  ps.setInt(5, Integer.parseInt(Reha.thisClass.patpanel.patDaten.get(29).trim()));
+			  ps.setInt(6,  (dateiname.endsWith(".odt") ? 1 : 2));			  
+			  ps.setString(7, dateiname.substring(dateiname.replace("\\", "/").lastIndexOf("/")+1));
 			  File f = new File(dateiname);
 			  byte[] b = FileTools.File2ByteArray(f);
 			  ps.setBytes(8,b);
 			  ps.setInt(9, (int)b.length);
-			  ps.setString(10, str[1]);
+			  ps.setString(10, dateiname.substring(dateiname.replace("\\", "/").lastIndexOf("/")+1));
 			  ps.execute();
+			  System.out.println("OOOrg-Doku wurde gespeichert");
+			  //String id = SqlInfo.holeEinzelFeld("select id from doku1 where dokuid='"+dokuid+"' LIMIT 1");
+			  //System.out.println("ID der neuen Doku ist "+id);
+			  holeDokus(Reha.thisClass.patpanel.patDaten.get(29).trim(),"");
+			  
 			}else{
 				//int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu
 				//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);	
@@ -2332,21 +2379,43 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				doScanEdit(pt);
 				break;
 			case 1:
+				if(Reha.thisClass.patpanel.aktPatID.equals("")){
+					keinAtiverPatient();
+					tDlg = null;
+					return;
+				}
 				doHolePhoto();
 				break;
 			case 2:
+				if(Reha.thisClass.patpanel.aktPatID.equals("")){
+					keinAtiverPatient();
+					tDlg = null;
+					return;
+				}
 				doHoleOO();
 				break;
 			case 3:
-				oooDokuNeu("writer");
+				if(Reha.thisClass.patpanel.aktPatID.equals("")){
+					keinAtiverPatient();
+					tDlg = null;
+					return;
+				}  // 0 = Writer
+				oooDokuNeu(0);
 				break;
 			case 4:
-				oooDokuNeu("calc");
+				if(Reha.thisClass.patpanel.aktPatID.equals("")){
+					keinAtiverPatient();
+					tDlg = null;
+					return;
+				}// 0 = Calc
+				oooDokuNeu(1);
 				break;
-				
 			}
 			tDlg = null;
 			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+		}
+		private void keinAtiverPatient(){
+			JOptionPane.showMessageDialog(null,"Kein Patient für Dokumentation ausgewählt");
 		}
 	}
 	
@@ -2362,7 +2431,7 @@ class MyDoku2TableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==1){
 			   return JLabel.class;}
 		   else{
@@ -2396,7 +2465,7 @@ class MyDokuTermTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return String.class;}
 		   /*else if(columnIndex==1){return JLabel.class;}*/
 		   else{return String.class;}
@@ -2427,10 +2496,21 @@ class OoListener implements IDocumentListener {
 	private String datei;
 	private String id;
 	private boolean geaendert = false;
-	public OoListener(IOfficeApplication officeAplication,String xdatei,String xid) {
+	private boolean neu = false;
+	private boolean warschoninsave = false;
+	private Dokumentation eltern;
+	IDocument document;
+	public OoListener(IOfficeApplication officeAplication,String xdatei,String xid,Dokumentation xeltern) {
 		this.officeAplication = officeAplication;
 		datei = xdatei;
+		geaendert = false;
 		id = xid;
+		eltern = xeltern;
+		if(xid.equals("")){
+			neu = true;
+		}else{
+			neu = false;
+		}
 	}
 	@Override
 	public void onAlphaCharInput(IDocumentEvent arg0) {
@@ -2493,8 +2573,7 @@ class OoListener implements IDocumentListener {
 	}
 	@Override
 	public void onSave(IDocumentEvent arg0) {
-		// TODO Auto-generated method stub
-		System.out.println("onSave");
+		//System.out.println("onSave");
 		
 	}
 	@Override
@@ -2511,18 +2590,14 @@ class OoListener implements IDocumentListener {
 	public void onSaveDone(IDocumentEvent arg0) {
 		// TODO Auto-generated method stub
 		//System.out.println("Savedone");
-		try {
-			IDocument doc = arg0.getDocument();
-			if(doc == null){
-				return;
-			}
-			String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
-			if(datei.equals(file)){
-				geaendert = true;
-			}
-		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		IDocument doc = arg0.getDocument();
+		if(doc == null){
+			return;
+		}
+		String file = arg0.getDocument().getPersistenceService().getLocation().getPath();
+		file = file.substring(1).replace("%20", " ");
+		if(datei.equals(file)){
+			geaendert = true;
 		}
 	}
 	@Override
@@ -2539,52 +2614,126 @@ class OoListener implements IDocumentListener {
 			if(doc == null){
 				return;
 			}
-			String file = arg0.getDocument().getLocationURL().toString().replaceAll("file:/", "");
-			if(geaendert && datei.equals(file)){
+			String file = arg0.getDocument().getPersistenceService().getLocation().getPath();
+			file = file.substring(1).replace("%20", " ");
+			if(geaendert && datei.equals(file) && (!neu)){
 				final String xfile = file;
 				final int xid = Integer.parseInt(id);
 				final IDocumentEvent xarg0 = arg0;
 				Thread.sleep(50);
 				new Thread(){
-					public void run(){				
-				int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+xfile+" wurde geändert\n\nWollen Sie die geänderte Fassung in die Patienten-Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-				if(frage == JOptionPane.YES_OPTION){
-					geaendert = false;
-							try {
-								Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-								Dokumentation.speichernOoDocs(xid, -1, xfile, -1, null, false);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}							
+					public void run(){
+						String nurDatei = datei.substring(datei.replace("\\", "/").lastIndexOf("/")+1);
+						int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei --> "+nurDatei+" <-- wurde geändert\n\nWollen Sie die geänderte Fassung in die Patienten-Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+						if(frage == JOptionPane.YES_OPTION){
+							geaendert = false;
+									try {
+										Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+										eltern.speichernOoDocs(xid, -1, xfile, -1, null, neu);
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}							
 
-				}
-
-				//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-				System.out.println("Listener entfernt - Datei geändert "+xfile);
+						}
+						//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
+						System.out.println("Listener entfernt - Datei geändert "+xfile);
 					}
 				}.start();
-				arg0.getDocument().removeDocumentListener(this);				
+				arg0.getDocument().removeDocumentListener(this);
+				warschoninsave = true;
 			}else if(datei.equals(file) && !geaendert){
 				arg0.getDocument().removeDocumentListener(this);
 				System.out.println("Listener entfernt - Datei nicht geändert"+file);
-			}
+				warschoninsave = true;
+			}else if(neu){
+				new Thread(){
+					public void run(){	
+						String nurDatei = datei.substring(datei.replace("\\", "/").lastIndexOf("/")+1);
+						int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei --> "+nurDatei+" <-- wurde geändert\n\nWollen Sie die geänderte Fassung in die Patienten-Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+						if(frage == JOptionPane.YES_OPTION){
+							geaendert = false;
+									try {
+										Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+										int nummer = SqlInfo.erzeugeNummer("doku");
+										eltern.speichernOoDocs(nummer, -1, datei, -1, null, neu);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}							
 
-		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+						}
+					}
+				}.start();	
+				arg0.getDocument().removeDocumentListener(this);
+			}else{
+				System.out.println("else");
+				System.out.println("Datei equals(file) = "+datei.equals(file));
+				System.out.println("Datei = "+datei);
+				System.out.println("File = "+file);
+				System.out.println("geändert = "+geaendert);
+				arg0.getDocument().removeDocumentListener(this);
+			}
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	@Override
 	public void disposing(IEvent arg0) {
-		// TODO Auto-generated method stub
+		/*
+		if(!warschoninsave){
+			try {
+				IDocument doc = this.document;
+				if(doc == null){
+					System.out.println("doc=null");
+					return;
+				}
+				String file = doc.getLocationURL().toString().replaceAll("file:/", "");
+				if(geaendert && datei.equals(file)){
+					final String xfile = file;
+					final int xid = Integer.parseInt(id);
+
+					Thread.sleep(50);
+					new Thread(){
+						public void run(){				
+					int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei "+xfile+" wurde geändert\n\nWollen Sie die geänderte Fassung in die Patienten-Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						geaendert = false;
+								try {
+									Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+									Dokumentation.speichernOoDocs(xid, -1, xfile, -1, null, neu);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}							
+
+					}
+
+					//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
+					System.out.println("Listener entfernt - Datei geändert "+xfile);
+						}
+					}.start();
+					doc.removeDocumentListener(this);				
+				}else if(datei.equals(file) && !geaendert){
+					doc.removeDocumentListener(this);
+					System.out.println("Listener entfernt - Datei nicht geändert"+file);
+				}
+				warschoninsave = true;
+
+			} catch (ag.ion.bion.officelayer.document.DocumentException e) {
+				e.printStackTrace();
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}else{
+			System.out.println("warschoninsave = "+warschoninsave);
+		}
+		*/
 		
 	}
 

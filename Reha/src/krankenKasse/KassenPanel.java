@@ -1125,7 +1125,7 @@ class MyKassenTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return String.class;}
 		  /* if(columnIndex==1){return JLabel.class;}*/
 		   else{return String.class;}

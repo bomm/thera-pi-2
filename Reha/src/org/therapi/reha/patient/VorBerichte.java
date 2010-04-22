@@ -144,7 +144,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 
 		pb.getPanel().setOpaque(false);
 		
-		diagnoseuebernahme = new JCheckBox("Diagnose ebenfalls �bernehmen");
+		diagnoseuebernahme = new JCheckBox("Diagnose ebenfalls übernehmen");
 		diagnoseuebernahme.setOpaque(false);
 		diagnoseuebernahme.setSelected(false);	
 		

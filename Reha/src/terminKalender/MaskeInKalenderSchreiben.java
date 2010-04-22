@@ -105,7 +105,7 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
 		jp1.setBackground(Color.WHITE);
         jp1.setLayout(new BorderLayout());
         //jp1.setLayout(new VerticalLayout(1));
-        String ss = SystemConfig.homeDir+"icons/header-image.png";
+        String ss = Reha.proghome+"icons/header-image.png";
         JXHeader header = new JXHeader("Hier schreiben Sie die Maskendefinition (=Wochenarbeitszeit) in den Terminkalender!\n\n",
         		"Äußerste Vorsicht im Umgang mit dieser Funktion ist sicherlich 'nicht ganz unangebracht'.....\n\n"+
                 "Stellen Sie vor allen Dingen sicher, daß wirklich nur Sie als Super-User Zugang zu dieser Funktion haben!\n" +

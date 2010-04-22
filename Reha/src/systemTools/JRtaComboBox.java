@@ -178,9 +178,11 @@ public Object getValue(){
 	}
 }
 public Object getValueAt(int pos){
+	if(vec.size()<=0){return "";}
 	if(this.startElement.equals("")){
 		return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(pos) );		
 	}else{
+		if(this.getSelectedIndex()==0){return "";}
 		return ((String)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(pos) );		
 	}
 

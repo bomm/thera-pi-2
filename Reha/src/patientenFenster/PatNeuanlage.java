@@ -126,6 +126,9 @@ boolean freibeimspeichern = false;
 public FocusListener flis;
 public boolean feldergefuellt = false;
 
+JLabel kassenLab;
+JLabel arztLab;
+
 Font font = null;
 JScrollPane jscr = null;
 public List<String>xfelder = Arrays.asList( new String[] {"anrede" ,"n_name","v_name","strasse","plz","ort","geboren","telefonp",
@@ -431,7 +434,7 @@ private KVKWrapper kvw;
 				|| jtf[4].getText().trim().equals("") || jtf[5].getText().trim().equals("")
 				|| jtf[6].getText().trim().equals("") || jtf[12].getText().trim().equals("")
 				|| jtf[11].getText().trim().equals(".  .") || jtf[17].getText().trim().equals("") ){
-			JOptionPane.showMessageDialog(null, "Die Daten des Patienten wurden unvollst�ndig eingegeben!\n\nSpeichern ist nicht m�glich.\n");
+			JOptionPane.showMessageDialog(null, "Die Daten des Patienten wurden unvollständig eingegeben!\n\nSpeichern ist nicht m�glich.\n");
 			cbanrede.requestFocus();
 			return;
 		}
@@ -537,12 +540,22 @@ private KVKWrapper kvw;
 			buf.append(",pat_intern='"+new Integer(patintern).toString() +"' where id='"+new Integer(neuid).toString()+"'");
 			spatintern = Integer.toString(patintern);
 		}
-		new ExUndHop().setzeStatement(buf.toString());
+		SqlInfo.sqlAusfuehren(buf.toString());
+		//new ExUndHop().setzeStatement(buf.toString());
 
 		
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		//final PatNeuanlage xthis = this;
+
+		String rez_num = "";
+		if(Reha.thisClass.patpanel.aktRezept.tabaktrez.getRowCount()>0){
+			int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
+			if(row>=0){
+				rez_num = Reha.thisClass.patpanel.aktRezept.tabaktrez.getValueAt(row,0).toString().trim();
+			}
+		}
 		final String xpatintern = spatintern;
+		final String xrez = rez_num;
 		new Thread(){
 			public void run(){
 				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
@@ -554,7 +567,7 @@ private KVKWrapper kvw;
 				String s2 = xpatintern;
 				PatStammEvent pEvt = new PatStammEvent(getInstance());
 				pEvt.setPatStammEvent("PatSuchen");
-				pEvt.setDetails(s1,s2,"") ;
+				pEvt.setDetails(s1,s2,xrez);
 				PatStammEventClass.firePatStammEvent(pEvt);
 				pEvt = null;
 				
@@ -694,7 +707,7 @@ private KVKWrapper kvw;
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyChar()=='?'){
 					arg0.consume();
-					String[] suchkrit = new String[] {jtf[17].getText().replaceAll("\\?", ""),jtf[33].getText()};
+					String[] suchkrit =  {jtf[17].getText().replaceAll("\\?", ""),jtf[33].getText()};
 					arztAuswahl(suchkrit);
 				}
 			}
@@ -731,7 +744,20 @@ private KVKWrapper kvw;
 					builder12.getPanel().setDoubleBuffered(true);
 					
 					builder12.addSeparator("Krankenversicherung", cc12.xyw(1, 1, 6));
-					builder12.addLabel("Kasse (?)", cc12.xy(1, 3));
+					kassenLab = new JLabel("Kasse");
+					kassenLab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
+					kassenLab.setHorizontalTextPosition(JLabel.LEFT);
+					kassenLab.addMouseListener(new MouseAdapter(){
+						public void mousePressed(MouseEvent ev){
+								SwingUtilities.invokeLater(new Runnable(){
+									public void run(){
+										String suchkrit = jtf[12].getText().replace("?", "");
+										kassenAuswahl(new String[] {suchkrit,jtf[34].getText().trim(),jtf[34].getText()});
+									}
+								});
+						}
+					});
+					builder12.add(kassenLab, cc12.xy(1, 3));
 					builder12.add(jtf[12], cc12.xyw(3, 3, 4));
 					builder12.addLabel("Kassen-IK", cc12.xy(1,5));
 					builder12.add(jtf[13], cc12.xyw(3, 5, 4));
@@ -745,8 +771,20 @@ private KVKWrapper kvw;
 					builder12.add(jtf[16], cc12.xy(6, 11));
 					
 					builder12.addSeparator("Arzt / Therapeut", cc12.xyw(1, 23, 6));
-
-					builder12.addLabel("Hausarzt (?)", cc12.xy(1, 25));
+					arztLab = new JLabel("Hausarzt");
+					arztLab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
+					arztLab.setHorizontalTextPosition(JLabel.LEFT);
+					arztLab.addMouseListener(new MouseAdapter(){
+						public void mousePressed(MouseEvent ev){
+							SwingUtilities.invokeLater(new Runnable(){
+								public void run(){
+									String[] suchkrit =  {jtf[17].getText().replace("?", ""),jtf[33].getText()};
+									arztAuswahl(suchkrit);
+								}
+							});
+						}
+					});
+					builder12.add(arztLab, cc12.xy(1, 25));
 					builder12.add(jtf[17], cc12.xyw(3, 25, 4));
 					builder12.addLabel("ArztNummer (LANR)", cc12.xy(1, 27));
 					builder12.add(jtf[18], cc12.xyw(3,27,4));
@@ -1512,8 +1550,8 @@ private KVKWrapper kvw;
 		 			jtf[19].requestFocus();
 		 	   }
 		});
-		if(jtf[17].getText().indexOf("\\?") >= 0){
-			String text = jtf[17].getText().replaceAll("\\?","");
+		if(jtf[17].getText().indexOf("?") >= 0){
+			String text = jtf[17].getText().replace("?","");
 			jtf[17].setText(text);
 		}
 
@@ -1533,8 +1571,8 @@ private KVKWrapper kvw;
 		 			jtf[14].requestFocus();
 		 	   }
 		});
-		if(jtf[12].getText().indexOf("\\?") >= 0){
-			String text = jtf[12].getText().replaceAll("\\?","");
+		if(jtf[12].getText().indexOf("?") >= 0){
+			String text = jtf[12].getText().replace("?","");
 			jtf[12].setText(text);
 		}
 	}
@@ -1832,6 +1870,7 @@ private KVKWrapper kvw;
 
 	public void aufraeumen(){
 		for(int i = 0; i < jtf.length;i++ ){
+			jtf[i].listenerLoeschen();
 			ListenerTools.removeListeners(jtf[i]);	
 		}
 		for(int i = 0; i < jcheck.length;i++ ){

@@ -544,8 +544,8 @@ public void BarkassenFenster(int setPos,String sparam) {
 	barkassenjry = new JBarkassenInternal("thera-\u03C0  - Barkasse abrechnen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)barkassenjry,1,(Container)barkassenjry.getContentPane());
 	barkassenjry.setName(name);
-	barkassenjry.setSize(new Dimension(500,500));
-	barkassenjry.setPreferredSize(new Dimension(500,500));
+	barkassenjry.setSize(new Dimension(500,370));
+	barkassenjry.setPreferredSize(new Dimension(500,370));
 	Reha.thisClass.barkassenpanel = new Barkasse(barkassenjry); 
 	barkassenjry.setContent(Reha.thisClass.barkassenpanel);	
 	barkassenjry.addComponentListener(Reha.thisClass);
@@ -587,13 +587,13 @@ public void RehaabrechnungFenster(int setPos,String sparam) {
 	rehaabrechnungjry = new JRehaabrechnungInternal("thera-\u03C0  - ganztägig ambulante Reha abrechnen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)rehaabrechnungjry,1,(Container)rehaabrechnungjry.getContentPane());
 	rehaabrechnungjry.setName(name);
-	rehaabrechnungjry.setSize(new Dimension(500,500));
-	rehaabrechnungjry.setPreferredSize(new Dimension(500,500));
+	rehaabrechnungjry.setSize(new Dimension(500,400));
+	rehaabrechnungjry.setPreferredSize(new Dimension(500,400));
 	Reha.thisClass.rehaabrechnungpanel = new AbrechnungReha(rehaabrechnungjry); 
 	rehaabrechnungjry.setContent(Reha.thisClass.rehaabrechnungpanel);	
 	rehaabrechnungjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	rehaabrechnungjry.setLocation(comps*15, comps*15);
+	rehaabrechnungjry.setLocation(comps*25, comps*25);
 	rehaabrechnungjry.pack();
 	rehaabrechnungjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(rehaabrechnungjry);
@@ -666,7 +666,6 @@ public void ProgPatientenVerwaltung(int setPos) {
 	//Bisheriges Fenster
 	//Reha.thisClass.patpanel = new PatGrundPanel(patjry);
 	//patjry.setContent(Reha.thisClass.patpanel);
-
 	//Vorschlag
 	Reha.thisClass.patpanel = new PatientHauptPanel(name,patjry);
 	patjry.setContent(Reha.thisClass.patpanel);

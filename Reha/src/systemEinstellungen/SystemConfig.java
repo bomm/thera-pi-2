@@ -6,11 +6,8 @@ package systemEinstellungen;
 
 import hauptFenster.Reha;
 
-
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Image;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,15 +15,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import systemTools.Verschluesseln;
-import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
+import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;
 
 
@@ -288,8 +284,9 @@ public class SystemConfig {
 			OpenOfficeNativePfad = ini.getStringProperty("OpenOffice.org","OfficeNativePfad");
 			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
-			homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
-			System.out.println(homeDir);
+			homeDir = Reha.proghome;
+			//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
+			System.out.println("HomeDir = "+homeDir);
 			return;
 	}
 	
@@ -1003,6 +1000,7 @@ public class SystemConfig {
 	
 	public static void AbrechnungParameter(){
 		hmAbrechnung.clear();
+		/********Heilmittelabrechnung********/
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/abrechnung.ini");
 		hmAbrechnung.put("hmgkvformular", inif.getStringProperty("HMGKVRechnung", "Rformular"));
 		hmAbrechnung.put("hmgkvrechnungdrucker", inif.getStringProperty("HMGKVRechnung", "Rdrucker"));
@@ -1018,6 +1016,21 @@ public class SystemConfig {
 		hmAbrechnung.put("hmbgeformular", inif.getStringProperty("HMBGERechnung", "Bformular"));
 		hmAbrechnung.put("hmbgedrucker", inif.getStringProperty("HMBGERechnung", "Bdrucker"));
 		hmAbrechnung.put("hmbgeexemplare", inif.getStringProperty("HMBGERechnung", "Bexemplare"));
+		/********Rehaabrechnung********/
+		hmAbrechnung.put("rehagkvformular", inif.getStringProperty("RehaGKVRechnung", "RehaGKVformular"));
+		hmAbrechnung.put("rehagkvdrucker", inif.getStringProperty("RehaGKVRechnung", "RehaGKVdrucker"));
+		hmAbrechnung.put("rehagkvexemplare", inif.getStringProperty("RehaGKVRechnung", "RehaGKVexemplare"));
+		hmAbrechnung.put("rehagkvik", inif.getStringProperty("RehaGKVRechnung", "RehaGKVik"));
+		
+		hmAbrechnung.put("rehadrvformular", inif.getStringProperty("RehaDRVRechnung", "RehaDRVformular"));
+		hmAbrechnung.put("rehadrvdrucker", inif.getStringProperty("RehaDRVRechnung", "RehaDRVdrucker"));
+		hmAbrechnung.put("rehadrvexemplare", inif.getStringProperty("RehaDRVRechnung", "RehaDRVexemplare"));
+		hmAbrechnung.put("rehadrvik", inif.getStringProperty("RehaDRVRechnung", "RehaDRVik"));
+		
+		hmAbrechnung.put("rehapriformular", inif.getStringProperty("RehaPRIRechnung", "RehaPRIformular"));
+		hmAbrechnung.put("rehapridrucker", inif.getStringProperty("RehaPRIRechnung", "RehaPRIdrucker"));
+		hmAbrechnung.put("rehapriexemplare", inif.getStringProperty("RehaPRIRechnung", "RehaPRIexemplare"));
+		hmAbrechnung.put("rehapriik", inif.getStringProperty("RehaPRIRechnung", "RehaPRIik"));
 		
 		hmAbrechnung.put("hmallinoffice", inif.getStringProperty("GemeinsameParameter", "InOfficeStarten"));
 	}

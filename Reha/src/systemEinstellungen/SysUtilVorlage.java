@@ -1,5 +1,7 @@
 package systemEinstellungen;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -26,7 +28,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListener {
 	public SysUtilVorlage(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilKalenderanlagen");
+		System.out.println("Aufruf SysUtilVorlage");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 	     Point2D start = new Point2D.Float(0, 0);
@@ -39,12 +41,12 @@ public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListen
 	     setBackgroundPainter(new CompoundPainter(mp));
 		/****/
 	     JLabel jlbl = new JLabel("");
-	     jlbl.setIcon(new ImageIcon(SystemConfig.homeDir+"icons/werkzeug.gif"));
+	     jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 	     add(jlbl,BorderLayout.CENTER);
 	     //add(getVorlagenSeite());
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",

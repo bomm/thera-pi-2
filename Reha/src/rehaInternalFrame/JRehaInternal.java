@@ -604,8 +604,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		JPopupMenu jPopupMenu = new JPopupMenu();
 		JMenuItem  jmen = new JMenuItem();
 		jmen.setText((this.desktop==0 ? "in den unteren Container verschieben" : "in den oberen Container verschieben"));
-		jmen.setIcon((this.desktop==0 ? new ImageIcon(SystemConfig.homeDir+"/icons/unten.gif") :
-			new ImageIcon(SystemConfig.homeDir+"/icons/oben.gif")));
+		jmen.setIcon((this.desktop==0 ? new ImageIcon(Reha.proghome+"/icons/unten.gif") :
+			new ImageIcon(Reha.proghome+"/icons/oben.gif")));
 		jmen.setRolloverEnabled(true);
 		jmen.setEnabled(true);
 		jmen.setActionCommand("verschieben");
@@ -642,7 +642,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		
 		jmen = new JMenuItem();
 		jmen.setText("Fenster zu Icon verkleinern");
-		jmen.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/buttongreen.png"));
+		jmen.setIcon(new ImageIcon(Reha.proghome+"/icons/buttongreen.png"));
 		jmen.setEnabled(true);
 		jmen.setActionCommand("icon");
 		jmen.addActionListener(this);
@@ -650,7 +650,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 
 		jmen = new JMenuItem();
 		jmen.setText("Fenster schließen");
-		jmen.setIcon(new ImageIcon(SystemConfig.homeDir+"/icons/buttonred.png"));
+		jmen.setIcon(new ImageIcon(Reha.proghome+"/icons/buttonred.png"));
 		jmen.setEnabled(true);
 		jmen.setActionCommand("schliessen");
 		jmen.addActionListener(this);

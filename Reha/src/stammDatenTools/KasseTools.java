@@ -24,12 +24,16 @@ public class KasseTools {
 		if(xid <= 0){
 			return;
 		}
-		List<String> nichtlesen = Arrays.asList(new String[] {""});
-		Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,kassen_nam2,strasse,plz,ort", "id='"+xid+"'", new ArrayList());
-		SystemConfig.hmAdrKDaten.put("<Kadr1>", ((String) vec.get(0)).trim());
-		SystemConfig.hmAdrKDaten.put("<Kadr2>", ((String)vec.get(1)).trim());
-		SystemConfig.hmAdrKDaten.put("<Kadr3>", ((String)vec.get(2)).trim());
-		SystemConfig.hmAdrKDaten.put("<Kadr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
+		try{
+			List<String> nichtlesen = Arrays.asList(new String[] {""});
+			Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,kassen_nam2,strasse,plz,ort", "id='"+xid+"'", new ArrayList());
+			SystemConfig.hmAdrKDaten.put("<Kadr1>", ((String) vec.get(0)).trim());
+			SystemConfig.hmAdrKDaten.put("<Kadr2>", ((String)vec.get(1)).trim());
+			SystemConfig.hmAdrKDaten.put("<Kadr3>", ((String)vec.get(2)).trim());
+			SystemConfig.hmAdrKDaten.put("<Kadr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
+		}catch(Exception ex){
+			
+		}
 	}
 
 }

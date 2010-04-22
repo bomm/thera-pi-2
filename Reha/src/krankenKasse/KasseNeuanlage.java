@@ -286,7 +286,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		kkBuffer.append("where id='"+dbid+"'");
 		//new ExUndHop().setzeStatement(stmt);
 		SqlInfo.sqlAusfuehren(kkBuffer.toString());
-		System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
+		//System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
 	}
 	public void tabelleAktualisieren(){
 
@@ -298,7 +298,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				vec.add(list.get(i));
 			}
 			kpan.ktblm.addRow((Vector)vec);
-			System.out.println("Tabellenzeile eingefügt");
+			//System.out.println("Tabellenzeile eingefügt");
 		}else{
 			int row = kpan.kassentbl.getSelectedRow();
 			int model = kpan.kassentbl.convertRowIndexToModel(row);

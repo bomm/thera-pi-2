@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.TooManyListenersException;
@@ -409,6 +410,16 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.addActionListener(this);
 		//jxLink.setEnabled(false);
 		tp5.add(jxLink);
+		jxLink = new JXHyperlink();
+		jxLink.setText("Textbausteine - anlegen");
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));	
+		img = new ImageIcon(Reha.proghome+"icons/abiword.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));
+		jxLink.setActionCommand("piTextb");
+		jxLink.addActionListener(this);
+		//jxLink.setEnabled(false);
+		tp5.add(jxLink);
+
 		tp5.setCollapsed(true);
 		return tp5;
 	}
@@ -696,6 +707,30 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new ladeProg(Reha.proghome+"piTool.jar");				
 				break;
 			}
+			if (cmd.equals("piTextb")){
+				new ladeProg(Reha.proghome+"TBedit.jar "+
+						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
+						Reha.proghome+"ini/textbaustein.ini");	
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						RehaSplash rspl = new RehaSplash(null,"Textbaustein-Editor laden....dieser Vorgang kann einige Sekunden dauern...");
+						long zeit = System.currentTimeMillis();
+						while(true){
+							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 2000){
+								break;
+							}
+						}
+						rspl.dispose();
+						return null;
+					}
+					
+				}.execute();
+				
+				break;
+			}
+			
 			if (cmd.equals("Akutliste")){
 				new SwingWorker<Void,Void>(){
 					@Override
@@ -890,14 +925,20 @@ public void dropActionChanged(DropTargetDragEvent arg0) {
 class ladeProg{
 
 	public ladeProg(String prog){
-	File f = new File(prog);
+	String progname= null;
+	if(prog.indexOf(" ")>=0){
+		progname = prog.split(" ")[0];
+	}else{
+		progname = prog;
+	}
+	File f = new File(progname);
 	if(! f.exists()){
 		JOptionPane.showMessageDialog(null,"Diese Software ist auf Ihrem System nicht installiert!");
 		return;
 	}
 	String vmload = "java -jar ";
 	String commandx = vmload + prog; 
-
+	//System.out.println(vmload+prog);
     File ausgabedatei = new File(Reha.proghome+"laden.bat"); 
     FileWriter fw;
 	try {
@@ -916,8 +957,17 @@ class ladeProg{
 		protected Void doInBackground() throws Exception {
 			// TODO Auto-generated method stub
 			try {
+				List<String>list = Arrays.asList(xprog.split(" "));
+				ArrayList<String> alist = new ArrayList<String>(list);
+				alist.add(0,"-jar");
+				alist.add(0,"java");
+				System.out.println(list);
+				System.out.println("Die Liste = "+alist);
 				
-				Process process = new ProcessBuilder("java","-jar",xprog).start();
+				//System.out.println("Starte Prozess mit "+xprog);
+				System.out.println("Liste = "+list);
+				Process process = new ProcessBuilder(alist).start();
+				//Process process = new ProcessBuilder("java","-jar",xprog).start();
 			       InputStream is = process.getInputStream();
 			       InputStreamReader isr = new InputStreamReader(is);
 			       BufferedReader br = new BufferedReader(isr);

@@ -120,7 +120,7 @@ public class FileTools {
 	            dest.delete();
 	        } else {
 	            throw new IOException(
-	                    "Kann existierende Datei nicht �berschreiben: " + dest.getName());
+	                    "Kann existierende Datei nicht üerschreiben: " + dest.getName());
 	        }
 	    }
 	    byte[] buffer = new byte[bufSize];

@@ -115,5 +115,38 @@ public class PatTools {
 		SystemConfig.hmAdrPDaten.put("<Ptitel>", titel);
 		SystemConfig.hmAdrPDaten.put("<Pid>", Reha.thisClass.patpanel.patDaten.get(66));
 	}
-	
+	public static String[] constructPatHMapFromStrings(String panrede,
+												String ptitel,
+												String pvorname,
+												String pnachname,
+												String pstrasse,
+												String pplz,
+												String port){
+		String[] adresse = {null,null,null,null,null};		
+		boolean isherr = false;
+		String anrede = StringTools.EGross(panrede);
+		if(anrede.toUpperCase().equals("HERR")){
+			isherr = true;
+		}
+		String titel =  StringTools.EGross(ptitel);
+		String vorname =  StringTools.EGross(pvorname);
+		String nachname =  StringTools.EGross(pnachname);
+		String strasse = StringTools.EGross(pstrasse);
+		String plzort = pplz+" "+StringTools.EGross(port);
+		String branrede = "";
+		if(isherr){
+				branrede = "Sehr geehrter Herr"+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+				adresse[0] = anrede;
+		}else{
+				branrede = "Sehr geehrte Frau"+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+				adresse[0] = anrede;
+		}
+		adresse[1]=vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+		adresse[2]=strasse;
+		adresse[3]=plzort;
+		adresse[4]=branrede;
+
+
+		return adresse;
+	}
 }
