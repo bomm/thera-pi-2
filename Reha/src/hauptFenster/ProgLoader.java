@@ -25,6 +25,7 @@ import rehaInternalFrame.JAbrechnungInternal;
 import rehaInternalFrame.JAnmeldungenInternal;
 import rehaInternalFrame.JArztInternal;
 import rehaInternalFrame.JBarkassenInternal;
+import rehaInternalFrame.JBeteiligungInternal;
 import rehaInternalFrame.JGutachtenInternal;
 import rehaInternalFrame.JKasseInternal;
 import rehaInternalFrame.JPatientInternal;
@@ -32,6 +33,7 @@ import rehaInternalFrame.JRehaInternal;
 import rehaInternalFrame.JRehaabrechnungInternal;
 import rehaInternalFrame.JTerminInternal;
 import rehaInternalFrame.JUmsaetzeInternal;
+import rehaInternalFrame.JUrlaubInternal;
 import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
@@ -41,6 +43,8 @@ import systemTools.SplashPanel;
 import systemTools.WinNum;
 import terminKalender.DatFunk;
 import terminKalender.TerminFenster;
+import urlaubBeteiligung.Beteiligung;
+import urlaubBeteiligung.Urlaub;
 import verkauf.Verkauf;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
@@ -67,6 +71,8 @@ public JUmsaetzeInternal umsaetzejry = null;
 public JVerkaufInternal verkaufjry = null;
 public JBarkassenInternal barkassenjry = null;
 public JRehaabrechnungInternal rehaabrechnungjry = null;
+public JBeteiligungInternal beteiligungjry = null;
+public JUrlaubInternal urlaubjry = null;
 
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
@@ -455,8 +461,8 @@ public void UmsatzFenster(int setPos,String sparam) {
 	umsaetzejry = new JUmsaetzeInternal("thera-\u03C0  - Ermittlung der realisierten Umsätze ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)umsaetzejry,1,(Container)umsaetzejry.getContentPane());
 	umsaetzejry.setName(name);
-	umsaetzejry.setSize(new Dimension(500,500));
-	umsaetzejry.setPreferredSize(new Dimension(500,500));
+	umsaetzejry.setSize(new Dimension(500,150));
+	umsaetzejry.setPreferredSize(new Dimension(500,150));
 	Reha.thisClass.umsaetzepanel = new Umsaetze(umsaetzejry); 
 	umsaetzejry.setContent(Reha.thisClass.umsaetzepanel);	
 	umsaetzejry.addComponentListener(Reha.thisClass);
@@ -606,6 +612,95 @@ public void loescheRehaabrechnung(){
 	Reha.thisClass.rehaabrechnungpanel = null;
 }
 /***********************************************************/
+public void BeteiligungFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent beteiligung = AktiveFenster.getFensterAlle("Beteiligung");
+	if(beteiligung != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JBeteiligungInternal)beteiligung).getDesktop());
+		((JBeteiligungInternal)beteiligung).aktiviereDiesenFrame( ((JBeteiligungInternal)beteiligung).getName());
+		if( ((JBeteiligungInternal)beteiligung).isIcon() ){
+			try {
+				((JBeteiligungInternal)beteiligung).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Beteiligung"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	beteiligungjry = new JBeteiligungInternal("thera-\u03C0  - Ermittlung der Umsatzbeteiligungen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)beteiligungjry,1,(Container)beteiligungjry.getContentPane());
+	beteiligungjry.setName(name);
+	beteiligungjry.setSize(new Dimension(500,500));
+	Reha.thisClass.beteiligungpanel = new Beteiligung(beteiligungjry); 
+	beteiligungjry.setContent(Reha.thisClass.beteiligungpanel);	
+	beteiligungjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	beteiligungjry.setLocation(comps*15, comps*15);
+	beteiligungjry.pack();
+	beteiligungjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(beteiligungjry);
+	beteiligungjry.aktiviereDiesenFrame( beteiligungjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
+
+public void loescheBeteiligung(){
+	beteiligungjry = null;
+	Reha.thisClass.beteiligungpanel = null;
+}
+/***************************Verkäufe in der Praxis*********************************/
+/***********************************************************/
+public void UrlaubFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent urlaub = AktiveFenster.getFensterAlle("Urlaub");
+	if(urlaub != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JUrlaubInternal)urlaub).getDesktop());
+		((JUrlaubInternal)urlaub).aktiviereDiesenFrame( ((JUrlaubInternal)urlaub).getName());
+		if( ((JUrlaubInternal)urlaub).isIcon() ){
+			try {
+				((JUrlaubInternal)urlaub).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Urlaub"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	urlaubjry = new JUrlaubInternal("thera-\u03C0  - Bearbeitung von Urlaub und Überstunden ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)urlaubjry,1,(Container)urlaubjry.getContentPane());
+	urlaubjry.setName(name);
+	urlaubjry.setSize(new Dimension(500,500));
+	urlaubjry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.urlaubpanel = new Urlaub(urlaubjry); 
+	urlaubjry.setContent(Reha.thisClass.urlaubpanel);	
+	urlaubjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	urlaubjry.setLocation(comps*15, comps*15);
+	urlaubjry.pack();
+	urlaubjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(urlaubjry);
+	urlaubjry.aktiviereDiesenFrame( urlaubjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
+
+public void loescheUrlaub(){
+	urlaubjry = null;
+	Reha.thisClass.urlaubpanel = null;
+}
+/***************************Verkäufe in der Praxis*********************************/
+
 public static void InternalGut2(){
 	JInternalFrame iframe = new JInternalFrame();
 	iframe.setSize(900,650);

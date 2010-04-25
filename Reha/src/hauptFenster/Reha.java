@@ -131,6 +131,8 @@ import systemTools.WinNum;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
+import urlaubBeteiligung.Beteiligung;
+import urlaubBeteiligung.Urlaub;
 import verkauf.Verkauf;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
@@ -173,6 +175,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public AbrechnungGKV abrechnungpanel = null;
 	public Anmeldungen anmeldungenpanel = null;
 	public Umsaetze umsaetzepanel = null;
+	public Beteiligung beteiligungpanel = null;
+	public Urlaub urlaubpanel = null;
 	public Verkauf verkaufpanel = null;
 	public Barkasse barkassenpanel = null;
 	public AbrechnungReha rehaabrechnungpanel = null;
@@ -1468,6 +1472,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			urlaubMenu = new JMenu();
 			urlaubMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			urlaubMenu.setText("Urlaub/Überstunden");
+			JMenuItem men = new JMenuItem("Urlaub-/Überstunden verwalten");
+			men.setActionCommand("urlaub");
+			men.addActionListener(this);
+			urlaubMenu.add(men);
+			urlaubMenu.addSeparator();
+			men = new JMenuItem("Umsatzbeteiligung ermitteln");
+			men.setActionCommand("umsatzbeteiligung");
+			men.addActionListener(this);
+			urlaubMenu.add(men);
+
 		}
 		return urlaubMenu;
 	}
@@ -2334,6 +2348,14 @@ public void actionPerformed(ActionEvent arg0) {
 	}
 	if(cmd.equals("verkauf")){
 		Reha.thisClass.progLoader.VerkaufFenster(1,"");
+		return;
+	}
+	if(cmd.equals("urlaub")){
+		Reha.thisClass.progLoader.UrlaubFenster(1,"");
+		return;
+	}
+	if(cmd.equals("umsatzbeteiligung")){
+		Reha.thisClass.progLoader.BeteiligungFenster(1,"");
 		return;
 	}
 }

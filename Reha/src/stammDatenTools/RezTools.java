@@ -871,6 +871,79 @@ public class RezTools {
 
 		return retobj;
 	}
+	public static Vector<String> macheUmsatzZeile(Vector<Vector<String>> vec,String tag){
+		Vector<String> retvec = new Vector<String>();
+		for(int i = 0; i < 12;i++){
+			retvec.add("");
+		}
+			
+		String disziplin = putRezNrGetDisziplin(vec.get(0).get(1));
+		String pos = "";
+		int preisgruppe = Integer.parseInt(vec.get(0).get(41));
+		String preis;
+		Double wgkm;
+		for(int i = 0;i<4;i++){
+			if(!vec.get(0).get(i+8).trim().equals("0")){
+				// hier kann man später noch untersuchen ob Positionen die mit Anzahl=1 aufgenommen wurden
+				// aufgeführt werden sollen (wg. evtl. Umsatzverfälschung)
+				// dafür kann der Parameter tag und das dbFeld termine verwendet werden
+				pos = RezTools.getKurzformFromID(vec.get(0).get(i+8).trim(),SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe));
+				retvec.set(i, pos);
+				retvec.set(i+6,vec.get(0).get(i+18).trim());
+			}else{
+				retvec.set(i, "-----");
+				retvec.set(i+6,"0.00");
+			}
+		}
+		//mit Hausbesuch?
+		if(vec.get(0).get(43).equals("T")){
+			//Hausbesuch einzeln?
+			if(vec.get(0).get(61).equals("T")){
+				pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(0);
+				preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+				 retvec.set(4, pos);
+				 retvec.set(10,preis);
+
+				 if(! keineWeggebuehrBeiHB(disziplin,Integer.toString(preisgruppe))){
+					 if(zweiPositionenBeiHB(disziplin,Integer.toString(preisgruppe))){
+						 //Weggebühr und pauschale
+						 if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 0 ){
+							 //Kilometer verwenden
+							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(2);
+							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+							 BigDecimal kms = BigDecimal.valueOf(Double.parseDouble(preis)).multiply(BigDecimal.valueOf(wgkm));
+							 retvec.set(5, pos);
+							 retvec.set(11,Double.toString(kms.doubleValue()));
+						 }else{
+							 //Pauschale verwenden
+							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(3);
+							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+							 retvec.set(5, pos);
+							 retvec.set(11,preis);
+						 }
+					 }
+					 
+				 }else{
+					 retvec.set(5, "-----");
+					 retvec.set(11,"0.00");
+				 }
+			}else{
+				//Hausbesuch mit
+				 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(1);
+				 preis =RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+				 retvec.set(4, pos);
+				 retvec.set(10,preis);
+				 retvec.set(5, "-----");
+				 retvec.set(11,"0.00");
+			}
+		}else{
+			retvec.set(4, "-----");
+			retvec.set(10,"0.00");
+			retvec.set(5, "-----");
+			retvec.set(11,"0.00");
+		}
+		return retvec;
+	}
 
 	public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb,int realhbAnz){
 		
