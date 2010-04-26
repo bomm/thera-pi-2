@@ -561,6 +561,34 @@ public class OOTools{
 		xStyleProps.setPropertyValue("Height", hoch);
 		xStyleProps.setPropertyValue("Width", breit);
 	}
+	public static void setzePapierFormatCalc(ISpreadsheetDocument document,int hoch,int breit) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
+		XSpreadsheetDocument xSpreadSheetDocument = document.getSpreadsheetDocument();
+		XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
+		xSpreadSheetDocument);
+		XNameContainer family = (XNameContainer) UnoRuntime.queryInterface(XNameContainer.class,
+		xSupplier.getStyleFamilies().getByName("PageStyles"));
+		XStyle xStyle = (XStyle) UnoRuntime.queryInterface(XStyle.class, family.getByName("Standard"));
+		XPropertySet xStyleProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+		xStyle);
+		xStyleProps.setPropertyValue("Height", hoch);
+		xStyleProps.setPropertyValue("Width", breit);
+	}
+	public static void setzeRaenderCalc(ISpreadsheetDocument document,int oben,int unten,int links,int rechts) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
+		XSpreadsheetDocument xSpreadSheetDocument = document.getSpreadsheetDocument();
+		XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
+		xSpreadSheetDocument);
+    	XNameContainer family = (XNameContainer) UnoRuntime.queryInterface(XNameContainer.class,
+    	xSupplier.getStyleFamilies().getByName("PageStyles"));
+    	XStyle xStyle = (XStyle) UnoRuntime.queryInterface(XStyle.class, family.getByName("Standard") );
+    	XPropertySet xStyleProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+    	xStyle);
+    	xStyleProps.setPropertyValue("TopMargin",oben);
+    	xStyleProps.setPropertyValue("BottomMargin",unten);
+    	xStyleProps.setPropertyValue("LeftMargin",links);
+    	xStyleProps.setPropertyValue("RightMargin",rechts);
+	}
+
+
 	public static void setzeRaender(ITextDocument textDocument,int oben,int unten,int links,int rechts) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
     	XTextDocument xTextDocument = textDocument.getXTextDocument();
     	XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
@@ -574,19 +602,6 @@ public class OOTools{
     	xStyleProps.setPropertyValue("BottomMargin",unten);
     	xStyleProps.setPropertyValue("LeftMargin",links);
     	xStyleProps.setPropertyValue("RightMargin",rechts);
-
-
-    	//Property[] props = xStyleProps.getPropertySetInfo().getProperties();
-    	/*
-    	for (int i = 0; i < props.length; i++) {
-    	System.out.println(props[i].Name + " = "
-    	+ xStyleProps.getPropertyValue(props[i].Name));
-    	//z.B. f�r A5
-    	//xStyleProps.setPropertyValue("Height", new Integer(21000));
-    	//xStyleProps.setPropertyValue("Width", new Integer(14800));
-    	}
-    	*/
-		
 	}
 	
 	public static ITextDocument  starteGKVBericht(String url,String drucker){
@@ -813,7 +828,7 @@ public class OOTools{
 		}		
 	}
 	/***********************OO-Calc Funktionen*******************************/
-	public static void doColWith(ISpreadsheetDocument spreadsheetDocument,String sheetName, int col_first,int col_last,int width) throws NoSuchElementException, WrappedTargetException, IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
+	public static void doColWidth(ISpreadsheetDocument spreadsheetDocument,String sheetName, int col_first,int col_last,int width) throws NoSuchElementException, WrappedTargetException, IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
 		XSpreadsheets spreadsheets = spreadsheetDocument.getSpreadsheetDocument().getSheets();
 		XSpreadsheet spreadsheet1 = (XSpreadsheet)UnoRuntime.queryInterface(XSpreadsheet.class,spreadsheets.getByName(sheetName));
 		XCellRange xCellRange = spreadsheet1.getCellRangeByPosition( 0, 0, col_last, 0 );
@@ -825,7 +840,7 @@ public class OOTools{
 			Object aColumnObj = xColumns.getByIndex(i);
 			xPropSet = (com.sun.star.beans.XPropertySet)
 			UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, aColumnObj);
-			xPropSet.setPropertyValue("Width", new Integer(width));
+			xPropSet.setPropertyValue("Width", width);
 		}
 	}
 	public static void doColTextAlign(ISpreadsheetDocument spreadsheetDocument,String sheetName, int col_first,int col_last,int col_textalign) throws NoSuchElementException, WrappedTargetException, IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
@@ -890,7 +905,7 @@ public class OOTools{
 		xPropSet = (com.sun.star.beans.XPropertySet)
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
 		xPropSet.setPropertyValue( "CharColor", color );
-		/* Beispiel für Auflistung der Propertynamen
+		/* Beispiel für Auflistung der Property-Namen
 		System.out.println("Start-CellPropertie*********************************");
 	      Property[] prop = xPropSet.getPropertySetInfo().getProperties();
 	      for(int i = 0; i < prop.length;i++){
@@ -901,20 +916,26 @@ public class OOTools{
 		*/
 	    
 	}
-	public static void doCellCharWeight(XSheetCellCursor cellCursor,int col,int row,float charweight) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
+	public static void doCellFontBold(XSheetCellCursor cellCursor,int col,int row) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
 		XCell cell= cellCursor.getCellByPosition(col,row);
         UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);
         com.sun.star.beans.XPropertySet xPropSet = null;
 		xPropSet = (com.sun.star.beans.XPropertySet)
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
-		xPropSet.setPropertyValue( "CharWeight", charweight );
+		xPropSet.setPropertyValue( "CharWeight",com.sun.star.awt.FontWeight.BOLD );
 		/* Beispiele für Fonthandling
-		xProps.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
-		xProps.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
-		xProps.setPropertyValue("CharHeight", new Float(12));
-		xText.insertString(xSentenceCursor, str_text, false);
+		xPropSet.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
+		xPropSet.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
+		xPropSet.setPropertyValue("CharHeight", new Float(12));
 		*/ 
-
+	}
+	public static void doCellFontItalic(XSheetCellCursor cellCursor,int col,int row) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
+		XCell cell= cellCursor.getCellByPosition(col,row);
+        UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);
+        com.sun.star.beans.XPropertySet xPropSet = null;
+		xPropSet = (com.sun.star.beans.XPropertySet)
+		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
+		xPropSet.setPropertyValue( "CharPosture", com.sun.star.awt.FontSlant.ITALIC );
 	}
 	
 	

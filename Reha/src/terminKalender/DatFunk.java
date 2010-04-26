@@ -48,6 +48,9 @@ public class DatFunk {
 		long anz_milli_2 = 0;
 		long anz_milli_3 = 0;
 		//boolean deutsch = false;
+		if(Tage==0){
+			return datum;
+		}
 		String[] datsplit = datum.split("\\."); 
 		Date dDatum;
 		String s;

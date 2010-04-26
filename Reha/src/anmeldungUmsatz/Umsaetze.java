@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
@@ -276,7 +278,8 @@ public class Umsaetze extends JXPanel{
 						akttag = DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304));
 						aktion1.setText(akttag+": ermittle Termin "+Integer.toString(i3+2)+" von "+Integer.toString(anzahltermine));
 
-						if(! (reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@FREI")){
+						if( (!(reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@FREI")) &&
+								(!(reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@INTERN"))	){
 							// Wenn der Termin nich leer ist
 							if((!reznum.trim().equals("")) && (reznum.trim().length()>2)){
 								
@@ -546,8 +549,13 @@ public class Umsaetze extends JXPanel{
 	}
 	/**
 	 * @throws OfficeApplicationException 
-	 * @throws NOAException *****************************/
-	private void starteCalc() throws OfficeApplicationException, NOAException{
+	 * @throws NOAException 
+	 * @throws IllegalArgumentException 
+	 * @throws PropertyVetoException 
+	 * @throws UnknownPropertyException 
+	 * @throws WrappedTargetException 
+	 * @throws NoSuchElementException *****************************/
+	private void starteCalc() throws OfficeApplicationException, NOAException, NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
@@ -557,7 +565,8 @@ public class Umsaetze extends JXPanel{
         docdescript.setAsTemplate(true);
 		document = documentService.constructNewDocument(IDocument.CALC, docdescript);
 		spreadsheetDocument = (ISpreadsheetDocument) document;
-		//spreadsheetDocument.getFrame().setFocus();		
+		OOTools.setzePapierFormatCalc((ISpreadsheetDocument) spreadsheetDocument, 21000, 29700);
+		OOTools.setzeRaenderCalc((ISpreadsheetDocument) spreadsheetDocument, 1000,1000, 1000, 1000);
 	}
 	private void doColWith(ISpreadsheetDocument spreadsheetDocument, int col_first,int col_last,int width) throws NoSuchElementException, WrappedTargetException, IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
 		XSpreadsheets spreadsheets = spreadsheetDocument.getSpreadsheetDocument().getSheets();

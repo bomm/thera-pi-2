@@ -887,7 +887,11 @@ public class RezTools {
 				// hier kann man später noch untersuchen ob Positionen die mit Anzahl=1 aufgenommen wurden
 				// aufgeführt werden sollen (wg. evtl. Umsatzverfälschung)
 				// dafür kann der Parameter tag und das dbFeld termine verwendet werden
-				pos = RezTools.getKurzformFromID(vec.get(0).get(i+8).trim(),SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe));
+				pos = RezTools.getKurzformFromID(vec.get(0).get(i+8).trim(),SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+				if(pos.trim().equals("")){
+					pos = RezTools.getKurzformFromPos(vec.get(0).get(i+48).trim(), Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));					
+				}
+				//System.out.println("Haupt-Position = "+pos);
 				retvec.set(i, pos);
 				retvec.set(i+6,vec.get(0).get(i+18).trim());
 			}else{
@@ -905,25 +909,36 @@ public class RezTools {
 				 retvec.set(10,preis);
 
 				 if(! keineWeggebuehrBeiHB(disziplin,Integer.toString(preisgruppe))){
+					 //System.out.println("Kasse kennt Weggebühr...");
 					 if(zweiPositionenBeiHB(disziplin,Integer.toString(preisgruppe))){
 						 //Weggebühr und pauschale
+						 //System.out.println("Kasse kennt km und Pauschale...");
 						 if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 0 ){
 							 //Kilometer verwenden
+							 //System.out.println("Kilometer verwenden...");
 							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(2);
 							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
 							 BigDecimal kms = BigDecimal.valueOf(Double.parseDouble(preis)).multiply(BigDecimal.valueOf(wgkm));
 							 retvec.set(5, pos);
 							 retvec.set(11,Double.toString(kms.doubleValue()));
+							 //System.out.println("Pos = "+pos);
+							 //System.out.println("Preis = "+preis);
 						 }else{
 							 //Pauschale verwenden
+							 //System.out.println("Pauschale verwenden....");
 							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(3);
 							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+							 System.out.println("Pos = "+pos);
+							 System.out.println("Preis = "+preis);
 							 retvec.set(5, pos);
 							 retvec.set(11,preis);
 						 }
+					 }else{
+						 System.out.println("Kann Weggebührmodalität nicht ermitteln....");
 					 }
 					 
 				 }else{
+					 System.out.println("Kasse kennt keine Weggebühr....");
 					 retvec.set(5, "-----");
 					 retvec.set(11,"0.00");
 				 }
