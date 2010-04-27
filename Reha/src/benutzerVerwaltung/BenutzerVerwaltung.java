@@ -82,7 +82,7 @@ public class BenutzerVerwaltung extends JScrollPane implements RehaTPEventListen
 	
 	private JXTable jxTable = null;
 	private AbstractTableModel tblDataModel = null; 
-	private String[] rechte = {"Alle Rechte (User root)","Rezepte abrechnen","Patientendaten ändern"};  
+	private String[] rechte = {"Alle Rechte (User root)","Rezepte abrechnen","Patientendaten ï¿½ndern"};  
 
 	public BenutzerEvent bevent = null;
 	public BenutzerVerwaltung(int setOben){
@@ -109,9 +109,9 @@ public class BenutzerVerwaltung extends JScrollPane implements RehaTPEventListen
         //jp1.setLayout(new VerticalLayout(1));
         String ss = "icons/header-image.png";
         JXHeader header = new JXHeader("Benutzerverwaltung",
-                "Hier legen Sie die Benutzernamen des Programmes fest. Sie können Passwörter erstellen oder ändern.\n" +
-                "Der Benutzername des eingeloggten Users erscheint später im Fenster-Titel. \n" +
-                "Darüberhinaus können Sie hier jedem Benutzer individuelle Berechtigungen für einzelne Programmteile zuweisen.",
+                "Hier legen Sie die Benutzernamen des Programmes fest. Sie kÃ¶nnen PasswÃ¶rter erstellen oder Ã¤ndern.\n" +
+                "Der Benutzername des eingeloggten Users erscheint spÃ¤ter im Fenster-Titel. \n" +
+                "DarÃ¼berhinaus kÃ¶nnen Sie hier jedem Benutzer individuelle Berechtigungen fÃ¼r einzelne Programmteile zuweisen.",
                 new ImageIcon(ss));
         //header.setBackgroundPainter(Reha.RehaPainter[0]);
         /*
@@ -216,7 +216,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 	if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="GRUEN"){
 		ContainerConfig conf = new ContainerConfig();
 		conf.addContainer("personen16.gif",evt.getDetails()[0],this.getParent().getParent().getParent().getParent().getParent(),null);
-		System.out.println("Name für Container verkleinern = "+ss);
+		System.out.println("Name fÃ¼r Container verkleinern = "+ss);
 		//rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 	}	
 	
@@ -254,7 +254,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			jpx.setLayout(layout);
 		 CellConstraints cc = new CellConstraints();
 
-		 JXLabel lbl = new JXLabel("Benutzer wählen");
+		 JXLabel lbl = new JXLabel("Benutzer wÃ¤hlen");
 		 jpx.add(lbl,cc.xy(2,1));
 		 
 		 cb = new JComboBox();
@@ -292,7 +292,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			});	
 		 jpx.add(bnew,cc.xy(2,5));
 
-		 bedit = new JXButton("Benutzer ändern");
+		 bedit = new JXButton("Benutzer Ã¤ndern");
 		 bedit.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					speichernBenutzer();
@@ -312,7 +312,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			});		 
 		 jpx.add(bsave,cc.xy(2,6));
 
-		 bdel = new JXButton("Benutzer löschen");
+		 bdel = new JXButton("Benutzer lÃ¶schen");
 		 bdel.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					loeschenBenutzer();				
@@ -482,17 +482,17 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 				{null,null},{null,null},{null,null},{null,null},{null,null}	};
 
 		String[] rehaRechte = {
-				"Benutzer ist ROOT und besitzt alle Rechte","Ändern von Patientestammdaten erlaubt",
-				"Darf patientenbezogene Umsätze einsehen",
+				"Benutzer ist ROOT und besitzt alle Rechte","Ã„ndern von Patientestammdaten erlaubt",
+				"Darf patientenbezogene UmsÃ¤tze einsehen",
 				"Hat volles Schreibrecht im Terminkalender","Darf nur leere Termine beschreiben",
-				"Darf mit 'Roogle' Termine überschreiben (Achtung!!!!!!)","Zugang zur Barkassen Abrechnung",
-				"Zugang zur Rezept-/Rehaabrechnung","Voller Zugang zur Urlaubs-/Überstundenermittlung",
-				"Darf eigenen Urlaub-/Überstunden einsehen","Zugang zur Anmeldestatistik",
-				"Zugang zum Modul Tagesumsätze","Zugang zum Modul Mitarbeiterumsatz",
+				"Darf mit 'Roogle' Termine Ã¼berschreiben (Achtung!!!!!!)","Zugang zur Barkassen Abrechnung",
+				"Zugang zur Rezept-/Rehaabrechnung","Voller Zugang zur Urlaubs-/Ãœberstundenermittlung",
+				"Darf eigenen Urlaub-/Ãœberstunden einsehen","Zugang zur Anmeldestatistik",
+				"Zugang zum Modul TagesumsÃ¤tze","Zugang zum Modul Mitarbeiterumsatz",
 				"Zugang zum Modul Freie Mitarbeiter-Abrechnung ","Zugang zum Verkaufsmodul",
 				"Zugang zum SQL-Modul (Achtung!!!!!!)", "Zugang zur Benutzerverwaltung",
-				"Darf alle Berichtsarten erstellen/ändern","Darf nur therapeutische Berichte erstellen/ändern",
-				"Kann alle Textbausteine erstellen/ändern","Kann nur therapeutische Textbausteine erstellen/ändern",
+				"Darf alle Berichtsarten erstellen/Ã¤ndern","Darf nur therapeutische Berichte erstellen/Ã¤ndern",
+				"Kann alle Textbausteine erstellen/Ã¤ndern","Kann nur therapeutische Textbausteine erstellen/Ã¤ndern",
 				"Darf alle Fremdprogramme starten","Darf nur Fremdprogramme bis Level-1 starten",
 				"Darf Zeitmasken anlegen","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt",
 				"Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt","Unbelegt"

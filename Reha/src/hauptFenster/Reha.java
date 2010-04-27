@@ -147,6 +147,7 @@ import anmeldungUmsatz.Anmeldungen;
 import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
 import barKasse.Barkasse;
+import benutzerVerwaltung.BenutzerRechte;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -180,6 +181,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public Verkauf verkaufpanel = null;
 	public Barkasse barkassenpanel = null;
 	public AbrechnungReha rehaabrechnungpanel = null;
+	public BenutzerRechte benutzerrechtepanel = null;
 	
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;

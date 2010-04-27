@@ -235,6 +235,7 @@ public class SystemConfig {
 		return;
 	}
 	private void DatenBank(){
+		try{
 		if (ini==null){
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
@@ -243,8 +244,14 @@ public class SystemConfig {
 		int i;
 		ArrayList<String> aKontakt;
 		aKontakt = new ArrayList<String>();
+		
 		vDatenBank = new Vector<ArrayList<String>>();
-		lesen =  Integer.parseInt(new String(ini.getStringProperty("DatenBank","AnzahlConnections")) );
+		System.out.println("INI-Verzeichnis = "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		System.out.println("IniFile = "+ini.getFileName());
+		System.out.println("Anzahl der Datenbanktreiber einlesen");
+		lesen =  ini.getIntegerProperty("DatenBank","AnzahlConnections") ;
+		//lesen =  Integer.parseInt(new String(ini.getStringProperty("DatenBank","AnzahlConnections")) );
+		System.out.println("Anzahl der Datenbanktreiber = "+lesen);
 		for (i=1;i<(lesen+1);i++){
 			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBTreiber"+i)) );
 			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBKontakt"+i)) );			
@@ -264,6 +271,9 @@ public class SystemConfig {
 			aKontakt.add(decrypted);
 			vDatenBank.add((ArrayList<String>) aKontakt.clone());
 			aKontakt.clear();
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		return;
 	}

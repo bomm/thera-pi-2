@@ -25,6 +25,7 @@ import rehaInternalFrame.JAbrechnungInternal;
 import rehaInternalFrame.JAnmeldungenInternal;
 import rehaInternalFrame.JArztInternal;
 import rehaInternalFrame.JBarkassenInternal;
+import rehaInternalFrame.JBenutzerInternal;
 import rehaInternalFrame.JBeteiligungInternal;
 import rehaInternalFrame.JGutachtenInternal;
 import rehaInternalFrame.JKasseInternal;
@@ -52,6 +53,7 @@ import anmeldungUmsatz.Anmeldungen;
 import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
 import barKasse.Barkasse;
+import benutzerVerwaltung.BenutzerRechte;
 import benutzerVerwaltung.BenutzerVerwaltung;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -73,6 +75,7 @@ public JBarkassenInternal barkassenjry = null;
 public JRehaabrechnungInternal rehaabrechnungjry = null;
 public JBeteiligungInternal beteiligungjry = null;
 public JUrlaubInternal urlaubjry = null;
+public JBenutzerInternal benutzerjry = null;
 
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
@@ -655,6 +658,50 @@ public void loescheBeteiligung(){
 	Reha.thisClass.beteiligungpanel = null;
 }
 /***************************Verkäufe in der Praxis*********************************/
+public void BenutzerrechteFenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent benutzer = AktiveFenster.getFensterAlle("Benutzerrechte");
+	if(benutzer != null){
+		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JBenutzerInternal)benutzer).getDesktop());
+		((JBenutzerInternal)benutzer).aktiviereDiesenFrame( ((JBenutzerInternal)benutzer).getName());
+		if( ((JBenutzerInternal)benutzer).isIcon() ){
+			try {
+				((JBenutzerInternal)benutzer).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "Benutzerrechte"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	benutzerjry = new JBenutzerInternal("thera-\u03C0  - Benutzer- und Rechteverwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)benutzerjry,1,(Container)benutzerjry.getContentPane());
+	benutzerjry.setName(name);
+	benutzerjry.setSize(new Dimension(800,500));
+	benutzerjry.setPreferredSize(new Dimension(800,500));
+	Reha.thisClass.benutzerrechtepanel = new BenutzerRechte(benutzerjry); 
+	benutzerjry.setContent(Reha.thisClass.benutzerrechtepanel);	
+	benutzerjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	benutzerjry.setLocation(comps*15, comps*15);
+	benutzerjry.pack();
+	benutzerjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(benutzerjry);
+	benutzerjry.aktiviereDiesenFrame(benutzerjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
+
+public void loescheBenutzerrechte(){
+	benutzerjry = null;
+	Reha.thisClass.benutzerrechtepanel = null;
+}
+
 /***********************************************************/
 public void UrlaubFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){

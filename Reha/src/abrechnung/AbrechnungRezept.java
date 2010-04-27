@@ -1742,7 +1742,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	}
 	private int getNodeCount(){
 		int ret = 0; 
-
 		int  rootAnzahl;
 		int  kindAnzahl;
 		JXTTreeTableNode rootNode;

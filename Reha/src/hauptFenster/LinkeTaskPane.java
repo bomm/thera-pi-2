@@ -441,14 +441,15 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setText("Benutzerverwaltung");
 		img = new ImageIcon(Reha.proghome+"icons/contact-new.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
 		jxLink.setIcon(new ImageIcon(img));		
-
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
-		if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
-				(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
+		if( (SystemConfig.dieseMaschine.toString().indexOf("RAKETE") >= 0) ||
+				(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") >= 0)	){
 			jxLink.setEnabled(true);
 		}else{
 			jxLink.setEnabled(false);			
 		}
+		System.out.println(SystemConfig.dieseMaschine.toString());
 		tp2.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("System Initialisierung");
@@ -641,7 +642,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			}
 
 			if (cmd.equals("Benutzerverwaltung")){
-				ProgLoader.ProgBenutzerVerwaltung(0);				
+				Reha.thisClass.progLoader.BenutzerrechteFenster(1,"");
+				//ProgLoader.ProgBenutzerVerwaltung(0);				
 				break;
 			}
 			if (cmd.equals("[Ru:gl] - Die Terminsuchmaschine")){

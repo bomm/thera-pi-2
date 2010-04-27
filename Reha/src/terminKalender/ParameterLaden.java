@@ -18,7 +18,7 @@ public class ParameterLaden {
 
 public static Vector<ArrayList> vKollegen = new Vector<ArrayList>();
 public static Vector<Kollegen> vKKollegen = new Vector<Kollegen>();
-public static Vector<ArrayList> pKollegen = new Vector<ArrayList>();
+public static Vector<Vector<String>> pKollegen = new Vector<Vector<String>>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();
 
 /*
@@ -267,7 +267,7 @@ public static void Passwort() {
 			rs.close();
 
 		rs = stmt.executeQuery("SELECT * from rehalogin");
-		ArrayList aKollegen = new ArrayList();
+		Vector<String> aKollegen = new Vector<String>();
 	 	String test = "";
 	 	while( rs.next()){
 	 		test = rs.getString("user");
@@ -280,7 +280,7 @@ public static void Passwort() {
 		 	aKollegen.add((test != null ?  test : "" ));		 	
 	 		test = rs.getString("id");
 		 	aKollegen.add((test != null ?  test : "" ));		 	
-		 	pKollegen.add((ArrayList)aKollegen.clone());
+		 	pKollegen.add((Vector<String>)aKollegen.clone());
 		 	aKollegen.clear();
 		}
 
