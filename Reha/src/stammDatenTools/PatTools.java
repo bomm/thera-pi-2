@@ -66,7 +66,7 @@ public class PatTools {
 			SystemConfig.hmAdrPDaten.put("<Pzigsten>", Integer.toString(ialter)+"-ten");
 		}
 
-		zeile1 = vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+		zeile1 = (titel.length() > 0 ? titel+" " : "")+vorname+" "+nachname;
 		zeile2 = strasse;
 		zeile3 = plzort;
 		if(titel.indexOf("med.") > 0){

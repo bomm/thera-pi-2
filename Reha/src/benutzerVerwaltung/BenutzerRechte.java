@@ -8,9 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,31 +15,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.AbstractCellEditor;
-import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.decorator.Highlighter;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
@@ -53,13 +44,12 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import rehaInternalFrame.JBenutzerInternal;
 import systemEinstellungen.SystemConfig;
+import systemTools.ButtonTools;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
-
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -102,6 +92,7 @@ public class BenutzerRechte extends JXPanel{
 	JPasswordField[] pws = {null,null};
 	JRtaComboBox jcmb = null;
 	JRtaCheckBox jchb = null;
+	String aktuelleRechte;
 	
 	private JXRechteTreeTableNode aktNode;
 	private int aktRow;
@@ -159,6 +150,8 @@ public class BenutzerRechte extends JXPanel{
 
 			root = new JXRechteTreeTableNode("root",null, true);
 	        rechteTreeTableModel = new RechteTreeTableModel(root);
+	        String[] colidentify = {"Programmfunktion","berechtigt"};
+	        rechteTreeTableModel.setColumnIdentifiers(Arrays.asList(colidentify));
 	        
 	        //Highlighter hl = HighlighterFactory.createAlternateStriping();
 
@@ -171,8 +164,6 @@ public class BenutzerRechte extends JXPanel{
 	        jXTreeTable.getColumn(1).setCellEditor(comborechte);
 	        jXTreeTable.setSelectionMode(0);
 	        jXTreeTable.setShowGrid(true, false);
-
-	        //jXTreeTable.setShowGrid(false);
 	        for(int i1 = 0; i1 < hauptGruppen.length;i1++){
 	        	JXRechteTreeTableNode node = new JXRechteTreeTableNode(hauptGruppen[i1].toString(),
 	        			new Rechte(hauptGruppen[i1],-1,null), true);
@@ -188,6 +179,8 @@ public class BenutzerRechte extends JXPanel{
 	        	rechteTreeTableModel.insertNodeInto(node, root, root.getChildCount());
 	        }
 	        jXTreeTable.addTreeSelectionListener(new RechteTreeSelectionListener() );
+	        jXTreeTable.setCellSelectionEnabled(true);
+	        jXTreeTable.setEditable(false);
 	        jXTreeTable.validate();
 
 	        jXTreeTable.repaint();
@@ -202,7 +195,7 @@ public class BenutzerRechte extends JXPanel{
 		//                                   1            2  3   4        5 
 		FormLayout lay = new FormLayout("fill:0:grow(0.5),80dlu,3dlu,80dlu,fill:0:grow(0.5)",
 		//       1             2   3   4  5   6  7   8  9  10  11  12  13 14   15 
-			"fill:0:grow(0.33),p,20dlu,p,1dlu,p,1dlu,p,1dlu,p,10dlu,p,5dlu,p,fill:0:grow(0.66)");
+			"fill:0:grow(0.33),p,20dlu,p,1dlu,p,1dlu,p,1dlu,p,25dlu,p,5dlu,p,fill:0:grow(0.66)");
 		CellConstraints cc = new CellConstraints();
 		JXPanel jpan = new JXPanel();
 		jpan.setLayout(lay);
@@ -238,6 +231,12 @@ public class BenutzerRechte extends JXPanel{
 		pws[1].setEnabled(false);
 		jpan.add(pws[1],cc.xy(4,10));
 
+		jpan.add((buts[0] = ButtonTools.macheButton("neuer Benutzer", "neu", al)),cc.xy(2,12));
+		jpan.add((buts[1] = ButtonTools.macheButton("Benutzer ändern", "edit", al)),cc.xy(4,12));
+		jpan.add((buts[2] = ButtonTools.macheButton("Benutzer speichern", "save", al)),cc.xy(2,14));
+		jpan.add((buts[3] = ButtonTools.macheButton("Benutzer löschen", "delete", al)),cc.xy(4,14));
+		//buts[2].setEnabled(false);
+		
 		
 		return jpan;
 	}
@@ -259,13 +258,15 @@ public class BenutzerRechte extends JXPanel{
 			tfs[0].setText("");
 			pws[0].setText("");
 			pws[1].setText("");
+			aktuelleRechte = "";
 		}else{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
 			pws[0].setText(jcmb.getValue().toString());
 			pws[1].setText(jcmb.getValue().toString());
+			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
+			System.out.println("Aktuelle Rechte sind "+aktuelleRechte);
 			aktualisiereTree();
 		}
-		
 	}
 	/*******************************/
 	private void aktualisiereTree(){
@@ -281,7 +282,26 @@ public class BenutzerRechte extends JXPanel{
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("benutzerwahl")){
 					doBenutzerWahl();
+					return;
 				}
+				if(cmd.equals("neu")){
+					jXTreeTable.setEditable(true);
+					return;
+				}
+				if(cmd.equals("edit")){
+					jXTreeTable.setEditable(true);
+					return;
+				}
+				if(cmd.equals("save")){
+					doSave();
+					jXTreeTable.setEditable(false);
+					return;
+				}
+				if(cmd.equals("delete")){
+					return;
+					
+				}
+				
 			}
 		};
 		kl = new KeyListener(){
@@ -297,6 +317,14 @@ public class BenutzerRechte extends JXPanel{
 		};
 	}
 	
+	private void doSave(){
+		int lang = getNodeCount();
+		for(int i = 0; i < lang;i++){
+			JXRechteTreeTableNode node = holeNode(i);
+			System.out.println(node.rechte.bildnummer);
+		}
+	}
+/******************************************************************/	
 	private int getNodeCount(){
 		int ret = 0; 
 		int  rootAnzahl;
@@ -425,7 +453,8 @@ public class BenutzerRechte extends JXPanel{
             		o.hauptgruppe =((String) value) ;
             		break;
             	case 1:
-            		o.rechteicon.setIcon(o.img[(Integer) value]) ;            		
+            		o.rechteicon.setIcon(o.img[(Integer) value]) ;   
+            		o.bildnummer = (Integer) value;
             		break;
             	case 2:
             		o.programmteil =((String) value) ;
@@ -585,7 +614,7 @@ public class BenutzerRechte extends JXPanel{
 		public void valueChanged(TreeSelectionEvent e) {
 			if (!isUpdating) {
 				isUpdating = true;
-				JXTreeTable tt = jXTreeTable;//(JXTreeTable) e.getSource();
+				JXTreeTable tt = jXTreeTable;
 				TreeTableModel ttmodel = tt.getTreeTableModel();
 				TreePath[] selpaths = tt.getTreeSelectionModel().getSelectionPaths();
 				
@@ -593,7 +622,6 @@ public class BenutzerRechte extends JXPanel{
 					ArrayList<TreePath> selPathList = new ArrayList<TreePath>(Arrays.asList(selpaths));
 					int i=1;
 					while(i<=selPathList.size()) {
-						//add all kiddies.
 						TreePath currPath = selPathList.get(i-1);
 						Object currentObj = currPath.getLastPathComponent();
 						int childCnt = ttmodel.getChildCount(currentObj);
