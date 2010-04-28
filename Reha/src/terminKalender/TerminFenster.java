@@ -1001,6 +1001,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 							if(!grobRaus){
 								wartenAufReady = true;
+								testeObAusmustern();
 								blockSetzen(11);								
 							}else{
 								wartenAufReady = false;								
@@ -3245,6 +3246,27 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
         	this.wocheAktuellerTag = DatFunk.sDatPlusTage(this.wocheAktuellerTag,+(richtung*7));
         	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
         }
+	}
+	private void testeObAusmustern(){
+		int xblock;
+		int xaktBehandler=0;
+		String xBehandler = "";
+		if(ansicht == NORMAL_ANSICHT){
+			xaktBehandler = Integer.parseInt(Integer.toString(belegung[aktiveSpalte[2]]));
+			xBehandler = (String) ParameterLaden.getKollegenUeberReihe(xaktBehandler+1);
+		}else  if(ansicht == WOCHEN_ANSICHT){
+			xaktBehandler = Integer.parseInt(Integer.toString(aktiveSpalte[2]));
+			xBehandler = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
+		}else  if(ansicht == MASKEN_ANSICHT){
+			return;
+		}
+		xblock = Integer.parseInt(Integer.toString(aktiveSpalte[0]));
+		String nametext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(xblock);
+		String reztext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(xblock);
+		String starttext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(xblock);
+		String sdauer = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(xblock);
+		String stestdat = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(5)).get(4);
+		terminAusmustern(stestdat+starttext,sdauer,xBehandler,nametext,reztext);
 	}
 	public void terminAusmustern(String tagundstart,String dauer,String behandler,String name,String reznum ){
 		for(int y = 0; y < terminVergabe.size();y++ ){

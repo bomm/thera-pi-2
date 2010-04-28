@@ -286,19 +286,23 @@ public class BenutzerRechte extends JXPanel{
 					return;
 				}
 				if(cmd.equals("neu")){
+					jXTreeTable.clearSelection();
 					jXTreeTable.setEnabled(true);
 					return;
 				}
 				if(cmd.equals("edit")){
+					jXTreeTable.clearSelection();
 					jXTreeTable.setEnabled(true);
 					return;
 				}
 				if(cmd.equals("save")){
 					doSave();
+					jXTreeTable.clearSelection();
 					jXTreeTable.setEnabled(false);
 					return;
 				}
 				if(cmd.equals("delete")){
+					jXTreeTable.clearSelection();
 					return;
 					
 				}

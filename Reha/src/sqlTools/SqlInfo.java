@@ -434,7 +434,7 @@ public class SqlInfo {
 	
 	public static int erzeugeNummer(String nummer){
 		int reznr = -1;
-		/****** Zun�chst eine neue Rezeptnummer holen ******/
+		/****** Zunächst eine neue Rezeptnummer holen ******/
 		Vector numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);

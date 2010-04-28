@@ -211,6 +211,7 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 			Collections.sort(termineVec,comparator);
 			
 		}
+		//System.out.println(termineVec);
 	}
 	
 	public void cursorWait(boolean ein){
@@ -463,10 +464,11 @@ public void actionPerformed(ActionEvent arg0) {
 			if(selected >=0){
 				String tagundstart = DatFunk.sDatInSQL(pliste.getValueAt(selected, 1).toString())+
 				pliste.getValueAt(selected, 2).toString();
-				String altdauer = pliste.getValueAt(selected, 3).toString();
-				String altbehandler = pliste.getValueAt(selected, 4).toString();
-				String altname = pliste.getValueAt(selected, 5).toString();
-				String altrezept = pliste.getValueAt(selected, 6).toString();
+				String altdauer = pliste.getValueAt(selected, 4).toString();
+				String altbehandler = pliste.getValueAt(selected, 5).toString();
+				String altname = pliste.getValueAt(selected, 8).toString();
+				String altrezept = pliste.getValueAt(selected, 9).toString();
+				System.out.println("TerminAusmustern = "+tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
 				Reha.thisClass.terminpanel.terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);				
 			}
 			int reihenselekt = pliste.getSelectedRow();
