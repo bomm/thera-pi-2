@@ -468,7 +468,7 @@ public void actionPerformed(ActionEvent arg0) {
 				String altbehandler = pliste.getValueAt(selected, 5).toString();
 				String altname = pliste.getValueAt(selected, 8).toString();
 				String altrezept = pliste.getValueAt(selected, 9).toString();
-				System.out.println("TerminAusmustern = "+tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
+				//System.out.println("TerminAusmustern = "+tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
 				Reha.thisClass.terminpanel.terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);				
 			}
 			int reihenselekt = pliste.getSelectedRow();

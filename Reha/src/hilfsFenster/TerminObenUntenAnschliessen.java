@@ -163,17 +163,27 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		xbuilder.add(builder.getPanel(),BorderLayout.CENTER);
 		return xbuilder;
 	}
-
+	private void testSelected(){
+		for(int i = 0; i < 4;i++){
+			if(jrb[i].isSelected()){
+				iAktion = i+1;
+				System.out.println("Aktion = "+iAktion);
+				break;
+			}
+		}
+	}
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getKeyCode()==38){
 			//auf
 			((Component) e.getSource()).transferFocusBackward();
+			//testSelected();
 		}
 		if(e.getKeyCode()==40){
 			//ab
 			((Component) e.getSource()).transferFocus();
+			//testSelected();
 		}
 		if(e.getKeyCode()==10){
 			String [] sret = {jrtaf[0].getText(),jrtaf[1].getText()};
@@ -260,12 +270,12 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 			for (int i = 0 ; i < 1 ; i++){
-				if( (sAktion =="Termin oben anschlie�en")){
+				if( (sAktion =="Termin oben anschließen")){
 					iAktion = 1;
 					zeitLoeschen();
 					break;
 				}
-				if( (sAktion== "Termin unten anschlie�en")){
+				if( (sAktion== "Termin unten anschließen")){
 					iAktion = 2;
 					zeitLoeschen();
 					break;
