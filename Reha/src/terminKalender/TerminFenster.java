@@ -2655,7 +2655,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				String confText = 
 					"Der Patient --> "+datenSpeicher[0]+" <--ist jetzt NEU im internen Speicher.\n\n"+
 					"BISLANG war der Patient --> "+terminVergabe.get(anzahl-1)[8]+" <-- im Speicher und damit in der Druckliste.\n"+
-					"Soll die bisherige Druckliste gel�scht werden und der Patient "+datenSpeicher[0]+
+					"Soll die bisherige Druckliste gelöscht werden und der Patient "+datenSpeicher[0]+
 					" übernommen werden?\n\n";
 					String meldungText = "Achtung!!! - wichtige Benutzeranfrage";
 					int abfrage = JOptionPane.showConfirmDialog(null,confText,meldungText,JOptionPane.YES_NO_OPTION);
@@ -3246,6 +3246,23 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
         	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
         }
 	}
+	public void terminAusmustern(String tagundstart,String dauer,String behandler,String name,String reznum ){
+		for(int y = 0; y < terminVergabe.size();y++ ){
+			if(terminVergabe.get(y)[3].trim().equals(tagundstart.trim()) &&
+					terminVergabe.get(y)[4].trim().equals(dauer.trim()) &&
+					terminVergabe.get(y)[5].trim().equals(behandler.trim()) &&
+					terminVergabe.get(y)[8].trim().equals(name.trim()) &&
+					terminVergabe.get(y)[9].trim().equals(reznum.trim()) ){
+				terminVergabe.remove(y);
+				break;
+			}
+		}
+		if(terminVergabe.size() > 0){
+			Reha.thisClass.mousePositionLabel.setText(Integer.toString(terminVergabe.size())+" * "+terminVergabe.get(0)[8]+" in Liste");	
+		}else{
+			Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
+		}
+	}
 	public void terminAufnehmen(int behandler,int block){
 		String[] sTerminVergabe = {null,null,null,null,null,null,null,null,null,null,null};
 		int xaktBehandler = behandler;
@@ -3293,6 +3310,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		sTerminVergabe[0] = DatFunk.WochenTag(sTerminVergabe[1]);	
 		sTerminVergabe[3] = sTerminVergabe[3]+sTerminVergabe[2];
 		terminVergabe.add(sTerminVergabe.clone());
+		if(terminVergabe.size() > 0){
+			Reha.thisClass.mousePositionLabel.setText(Integer.toString(terminVergabe.size())+" * "+terminVergabe.get(0)[8]+" in Liste");	
+		}else{
+			Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
+		}
+		
+		/*
+		for(int y = 0; y<terminVergabe.size();y++ ){
+			System.out.println("*********************");
+			for(int i = 0;i < sTerminVergabe.length;i++){
+				System.out.println(terminVergabe.get(y)[i]);		
+			}
+			System.out.println("*********************");
+		}
+		*/
+		
 	}
 	public void aktualisieren(){
         if(ansicht == NORMAL_ANSICHT){
@@ -3405,7 +3438,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]);
 				String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]);
 
-				// Hier testen ob alter Block mit Daten gef�llt war
+				// Hier testen ob alter Block mit Daten gefüllt war
 				if(!sname.equals("")){
 					int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie den bisherigen Eintrag -> "+sname+
 							" <- tatsächlich überschreiben?", "Achtung wichtige Benutzeranfrage!!!", JOptionPane.YES_NO_OPTION);
@@ -3467,6 +3500,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							if(!grobRaus){
 								//Stufe 2 - o.k.
 								if(altaktiveSpalte[2]==spAktiv){
+									//Termin verschieben und zwar in der selben Spalte;
 									String sbeginn = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(altaktiveSpalte[0]) ;
 									int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
 									//Suche nach Uhrzeit -> "+sbeginn
@@ -3474,13 +3508,57 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										if( ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2).equals(DRAG_UHR)){
 											aktiveSpalte[0] = i2;
 											aktiveSpalte[1] = i2;
+											try{
+												String tagundstart = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(5)).get(4);
+												tagundstart = tagundstart+((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(i2);
+												String altdauer = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(3)).get(i2);
+												String altname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(i2);
+												String altrezept = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(i2);
+												String altbehandler="";
+												if(ansicht == NORMAL_ANSICHT){
+													altbehandler = (String) ParameterLaden.getKollegenUeberReihe(behandler+1);
+												}else if(ansicht==WOCHEN_ANSICHT){
+													altbehandler = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
+												}
+												terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);
+
+											}catch(Exception ex){
+												ex.printStackTrace();
+											}
 											wartenAufReady = true;
 											blockSetzen(11);
 											break;
 										}
 									}
 								}else{
+									//Termin verschieben aber nicht in der selben Spalte
 									wartenAufReady = true;
+									
+									int ialtbehandler = 0;
+									int i2 = altaktiveSpalte[2];
+									int ibehandlung = altaktiveSpalte[0];
+									if(ansicht==NORMAL_ANSICHT){
+								    	  ialtbehandler = belegung[i2];
+								     }else if(ansicht==WOCHEN_ANSICHT){
+								    	  ialtbehandler = i2;
+								     }else if(ansicht==MASKEN_ANSICHT){
+								    	  ialtbehandler = i2;
+								    }	
+
+									String tagundstart = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(ialtbehandler)).get(5)).get(4);
+									tagundstart = tagundstart+((Vector<?>)((ArrayList<?>) vTerm.get(ialtbehandler)).get(2)).get(ibehandlung);
+									String altdauer = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(ialtbehandler)).get(3)).get(ibehandlung);
+									String altname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(ialtbehandler)).get(0)).get(ibehandlung);
+									String altrezept = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(ialtbehandler)).get(1)).get(ibehandlung);
+									String altbehandler="";
+									if(ansicht == NORMAL_ANSICHT){
+										altbehandler = (String) ParameterLaden.getKollegenUeberReihe(ialtbehandler+1);
+									}else if(ansicht==WOCHEN_ANSICHT){
+										altbehandler = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
+									}
+									System.out.println( tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
+									terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);
+
 									blockSetzen(11);
 									aktiveSpalte = spaltneu.clone();
 								}

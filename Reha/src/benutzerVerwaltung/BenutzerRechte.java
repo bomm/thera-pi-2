@@ -49,6 +49,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.Verschluesseln;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -65,20 +66,20 @@ public class BenutzerRechte extends JXPanel{
 	String[] hauptGruppen = {"Benutzer-Verwaltung","Patiente","Rezepte","Historie","Therapieberichte",
 			"Dokumentation","Gutachten","Terminkalender","[Ru:gl]"};
 
-	String[] gruppe0 = {"Benutzer anlegen/löschen","Alle Reche - SuperUser"};
+	String[] gruppe0 = {"Benutzer-Verwaltung öffnen","Benutzer anlegen/ändern/löschen","Benutzer hat alle Rechte = SuperUser"};
 
-	String[] gruppe1 = {"anlegen","ändern komplett","ändern nur Tel,Termine,etc","löschen"};
+	String[] gruppe1 = {"anlegen","komplett ändern","nur Teile ändern:Tel,Fax,Akut,mögl. Termine","löschen"};
 
-	String[] gruppe2 = {"anlegen","ändern","löschen","Gebühren kassieren","Ausfallrechnung erst.","Rezept abschließen",
+	String[] gruppe2 = {"anlegen","ändern","löschen","Gebühren kassieren","Ausfallrechnung erstellen","Rezept abschließen",
 			"Rezept aufschließen","Privat-/BG-Rechnung erstellen","Therapieberichte erstellen"};
 
-	String[] gruppe3 = {"Gesamtumsatz einsehen","einzelne Behandlungstage drucken","nachträglich Th.Berichte erstellen/ändern"};
+	String[] gruppe3 = {"Gesamtumsatz einsehen","einzelne Behandlungstage drucken","nachträglich Therapie-Berichte erstellen/ändern"};
 	
 	String[] gruppe4 = {"bestehende Berichte ändern","löschen"};
 	
 	String[] gruppe5 = {"löschen","Scannen","OOorg Doku erstellen"};
 	
-	String[] gruppe6 = {"anlegen","ändern","löschen","Stammdaten auf neues Gut. übertragen"};
+	String[] gruppe6 = {"anlegen","ändern","löschen","Stammdaten auf neues Gutachten übertragen"};
 	
 	String[] gruppe7 = {"löschen","Scannen","OOorg Doku erstellen"};
 	
@@ -180,7 +181,7 @@ public class BenutzerRechte extends JXPanel{
 	        }
 	        jXTreeTable.addTreeSelectionListener(new RechteTreeSelectionListener() );
 	        jXTreeTable.setCellSelectionEnabled(true);
-	        jXTreeTable.setEditable(false);
+	        jXTreeTable.setEnabled(false);
 	        jXTreeTable.validate();
 
 	        jXTreeTable.repaint();
@@ -285,16 +286,16 @@ public class BenutzerRechte extends JXPanel{
 					return;
 				}
 				if(cmd.equals("neu")){
-					jXTreeTable.setEditable(true);
+					jXTreeTable.setEnabled(true);
 					return;
 				}
 				if(cmd.equals("edit")){
-					jXTreeTable.setEditable(true);
+					jXTreeTable.setEnabled(true);
 					return;
 				}
 				if(cmd.equals("save")){
 					doSave();
-					jXTreeTable.setEditable(false);
+					jXTreeTable.setEnabled(false);
 					return;
 				}
 				if(cmd.equals("delete")){
@@ -319,10 +320,20 @@ public class BenutzerRechte extends JXPanel{
 	
 	private void doSave(){
 		int lang = getNodeCount();
+		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
 			JXRechteTreeTableNode node = holeNode(i);
 			System.out.println(node.rechte.bildnummer);
+			buf.append(Integer.toString(node.rechte.bildnummer));
 		}
+		String pw = buf.toString();
+		Verschluesseln man = Verschluesseln.getInstance();
+	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+		String encrypted = man.encrypt(pw);
+		System.out.println("Encrypted Name = "+man.encrypt(tfs[0].getText()));
+		System.out.println("Encrypted Rechte = "+encrypted);
+		System.out.println("Encrypted Pasword = "+man.encrypt(new String(pws[0].getPassword())));
+		
 	}
 /******************************************************************/	
 	private int getNodeCount(){

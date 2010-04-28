@@ -37,6 +37,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 
@@ -142,6 +144,8 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 	private static JButton jb3 = null;
 	private static JButton jb4 = null;
 	public static DruckFenster thisClass;
+	
+	public Vector<Vector<String>> termineVec = new Vector<Vector<String>>(); 
 	public DruckFenster(JXFrame owner,ArrayList<String[]> terminVergabe){
 		//super(frame, titlePanel());
 		super(owner,"DruckerListe");
@@ -149,6 +153,9 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 		setName(dieserName);
 		getSmartTitledPanel().setName(dieserName);
 		this.termine = terminVergabe;
+
+		macheTerminVec(terminVergabe);
+		
 		this.setModal(true);
 		this.setUndecorated(true);
 		this.setContentPanel(titlePanel() );
@@ -182,6 +189,30 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 		thisClass = this;
 	}		    
 /*******************************************************/	
+	private void macheTerminVec(ArrayList<String[]>  termine){
+		Vector<String> dummyTermin = new Vector<String>();
+		for(int i = 0; i < termine.size();i++){
+			dummyTermin.clear();
+			for(int i2 = 0; i2 < termine.get(i).length;i2++){
+				dummyTermin.add(termine.get(i)[i2]);
+			}
+			termineVec.add((Vector<String>)dummyTermin.clone());
+		}
+		if(dummyTermin.size() > 0){
+			Comparator<Vector> comparator = new Comparator<Vector>() {
+				@Override
+				public int compare(Vector o1, Vector o2) {
+					// TODO Auto-generated method stub
+					String s1 = (String)o1.get(3);
+					String s2 = (String)o2.get(3);
+					return s1.compareTo(s2);
+				}
+			};
+			Collections.sort(termineVec,comparator);
+			
+		}
+	}
+	
 	public void cursorWait(boolean ein){
 		if(!ein){
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -274,7 +305,7 @@ private JXPanel buttonPanel(){
 	jb2.addActionListener(this);
 	jb2.addKeyListener(this);	
 	bpanel.add(jb2);
-	jb3 = new JButton("Termin l�schen");
+	jb3 = new JButton("Termin löschen");
 	jb3.setPreferredSize(new Dimension(30,15));
 	jb3.addActionListener(this);
 	jb3.addKeyListener(this);	
@@ -300,14 +331,21 @@ private JXPanel titlePanel(){
 	return jtp;
 }
 
+@SuppressWarnings("unchecked")
 private JXPanel terminListe(){
 	JXPanel jpliste = new JXPanel(new BorderLayout());
 	jpliste.setBorder(null);
-	
-	TerminTableModel myTable = new TerminTableModel();
+	MyTerminTableModel myTable = new MyTerminTableModel();
+	//TerminTableModel myTable = new TerminTableModel();
 	String[] column = {"Tag","Datum","Uhrzeit","","Dauer","Therapeut","","","Termininhaber","Rez.Nr.",""};
-	myTable.columnNames = column;
-	myTable.data = (ArrayList<String[]>) termine.clone();
+	myTable.setColumnIdentifiers(column);
+	//myTable.columnNames = column;
+	for(int i = 0;i<termineVec.size();i++){
+		myTable.addRow(termineVec.get(i));
+	}
+	
+	
+	//myTable.data = (ArrayList<String[]>) termine;
 	//System.out.println("Klasse von Column 2 = "+myTable.getColumnClass(1));
 	//jxTable.setModel(tblDataModel);
 	pliste = new JXTable();
@@ -333,7 +371,7 @@ private JXPanel terminListe(){
 	pliste.getColumn(10).setMinWidth(0);
 	pliste.getColumn(10).setMaxWidth(0); //Datenvector				
 	pliste.setEditable(false);
-	pliste.setSortable(true);
+	//pliste.setSortable(true);
 	//SortOrder setSort = SortOrder.ASCENDING;
 	//pliste.setSortOrder(3,(SortOrder) setSort);
 	pliste.setSelectionMode(0);	
@@ -375,49 +413,62 @@ public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
 	for(int i = 0; i< 1;i++){
 		if(cmd.equals("Termine drucken")){
-			PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-			DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
-			PrintService   prservDflt = PrintServiceLookup.lookupDefaultPrintService();
-			//System.out.println("Default Printer = "+prservDflt);
-			PrintService[] prservices = PrintServiceLookup.lookupPrintServices( flavor, aset );
-			//System.out.println("Printer prservices = "+Arrays.asList(prservices));
-			//System.out.println("Printer aset = "+Arrays.asList(aset));
-			jb1.setEnabled(false);
-			jb2.setEnabled(false);
-			jb3.setEnabled(false);
-			jb4.setEnabled(false);	
-			cursorWait(true);
-			bestueckeOOo xbestueckeOOo = new bestueckeOOo();
-			xbestueckeOOo.DruckenOderEmail("Drucken");
+			if(pliste.getRowCount()> 0){
+				PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+				DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
+				PrintService   prservDflt = PrintServiceLookup.lookupDefaultPrintService();
+				//System.out.println("Default Printer = "+prservDflt);
+				PrintService[] prservices = PrintServiceLookup.lookupPrintServices( flavor, aset );
+				//System.out.println("Printer prservices = "+Arrays.asList(prservices));
+				//System.out.println("Printer aset = "+Arrays.asList(aset));
+				jb1.setEnabled(false);
+				jb2.setEnabled(false);
+				jb3.setEnabled(false);
+				jb4.setEnabled(false);	
+				cursorWait(true);
+				bestueckeOOo xbestueckeOOo = new bestueckeOOo();
+				xbestueckeOOo.DruckenOderEmail("Drucken");
+			}
 			break;
 		}
 		if(cmd.equals("Email senden")){
-			jb1.setEnabled(false);
-			jb2.setEnabled(false);
-			jb3.setEnabled(false);
-			jb4.setEnabled(false);			
-			cursorWait(true);
-			new Thread(new sendeTermine()).start();
+			if(pliste.getRowCount()> 0){
+				jb1.setEnabled(false);
+				jb2.setEnabled(false);
+				jb3.setEnabled(false);
+				jb4.setEnabled(false);			
+				cursorWait(true);
+				new Thread(new sendeTermine()).start();
+			}
 			break;
 		}
-		if(cmd.equals("Termin l�schen")){
+		if(cmd.equals("Termin löschen")){
 			int mc = JOptionPane.QUESTION_MESSAGE;
 			int bc = JOptionPane.YES_NO_CANCEL_OPTION;
 			if(pliste.getRowCount()<=0){
 				return;
 			}
-			String anfrage = "Wollen Sie den Termin nur in dieser Druckerliste l�schen?\n\n"+
-				"Ja  =   nur in der Druckerliste l�schen\n\n"+
+			String anfrage = "Wollen Sie den Termin nur in dieser Druckerliste löschen?\n\n"+
+				"Ja  =   nur in der Druckerliste löschen\n\n"+
 				"Nein  =   in Druckerliste und(!) im Terminkalender\n\n"+
-				"Abbrechen  =   weder noch und Tsch��...\n\n\n";
-			int ch = JOptionPane.showConfirmDialog (null,anfrage , "Termin l�schen aber wie?", bc, mc);
+				"Abbrechen  =   weder noch und Tschüß...\n\n\n";
+			int ch = JOptionPane.showConfirmDialog (null,anfrage , "Termin löschen aber wie?", bc, mc);
 			if(ch == JOptionPane.CANCEL_OPTION){
 				return;
 			}
 			
 			//System.out.println("Selektierte Reihe="+pliste.getSelectedRow());
 			int reihen = pliste.getRowCount();
-
+			int selected = pliste.getSelectedRow();
+			if(selected >=0){
+				String tagundstart = DatFunk.sDatInSQL(pliste.getValueAt(selected, 1).toString())+
+				pliste.getValueAt(selected, 2).toString();
+				String altdauer = pliste.getValueAt(selected, 3).toString();
+				String altbehandler = pliste.getValueAt(selected, 4).toString();
+				String altname = pliste.getValueAt(selected, 5).toString();
+				String altrezept = pliste.getValueAt(selected, 6).toString();
+				Reha.thisClass.terminpanel.terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);				
+			}
 			int reihenselekt = pliste.getSelectedRow();
 			int realindex = pliste.convertRowIndexToModel(reihenselekt);
 			//System.out.println("******Tats�chlicher Index = "+realindex);
@@ -427,60 +478,36 @@ public void actionPerformed(ActionEvent arg0) {
 				geklappt = satzSperrenUndLoeschen(realindex);
 				if(geklappt){
 					termine.remove(realindex);
+					
+					//terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);					
 				}else{
 					JOptionPane.showMessageDialog(null,"Die Kalenderspalte ist momentan gesperrt und kann deshalb nicht gel�scht werden!");
 					return;
 				}
+			}else{
+				JOptionPane.showMessageDialog(null,"Bitte denken Sie daran:\n"+
+						"Sie drucken einen Terminplan - haben zuvor einen Termin aus dem Terminplan gelöscht\n"+
+						"aber der Termin steht immer noch im Terminkalender - bitte keinen Ausfall produzieren");
 			}
-			
+			System.out.println("Realindex = "+realindex);			
 			if(reihen > 0){
 				getSmartTitledPanel().setTitle(Integer.toString(reihen-1)+ "  Termin(e) in der Druckerliste");
 				//xxx
 				pliste.setEditable(true);
-				((TerminTableModel) pliste.getModel()).deleteRow(pliste.convertRowIndexToModel(reihenselekt));
-				pliste.getColumn(0).setMaxWidth(80);
-				pliste.getColumn(1).setMaxWidth(100);
-				pliste.getColumn(2).setMaxWidth(80);	
-				
-				pliste.getColumn(3).setMinWidth(0);
-				pliste.getColumn(3).setMaxWidth(0); //SQL-Datum
-				pliste.getColumn(4).setMinWidth(40);
-				pliste.getColumn(4).setMaxWidth(40); //Dauer
-				pliste.getColumn(6).setMinWidth(0);
-				pliste.getColumn(6).setMaxWidth(0); //Behandler
-				pliste.getColumn(7).setMinWidth(0);
-				pliste.getColumn(7).setMaxWidth(0); //Block
-				pliste.getColumn(8).setMinWidth(180);
-				pliste.getColumn(8).setMaxWidth(200); //Name
-				pliste.getColumn(9).setMinWidth(80);
-				pliste.getColumn(9).setMaxWidth(80); //Rez.Nr.	
-				pliste.getColumn(10).setMinWidth(0);
-				pliste.getColumn(10).setMaxWidth(0); //Datenvector				
-				pliste.setEditable(false);
-				pliste.setSortable(true);
-				//SortOrder setSort = SortOrder.ASCENDING;
-				//pliste.setSortOrder(3,(SortOrder) setSort);
-				int reihenjetzt = pliste.getRowCount();
-				if (reihen > reihenselekt-1 && reihenjetzt > 0){
-					if(reihenselekt > 0){
-						pliste.setRowSelectionInterval(0,reihenselekt-1);
-					}else{
-						pliste.setRowSelectionInterval(0,0);						
-					}
-					
-				}else if(reihenselekt < reihenjetzt-1 && reihenjetzt > 1){
-					pliste.setRowSelectionInterval(0,reihenjetzt-1);
+				int select = pliste.getSelectedRow();
+				if(select >= 0){
+					((MyTerminTableModel)pliste.getModel()).removeRow(select);
+					pliste.validate();
+					pliste.repaint();
 				}
+				
 			}
 			break;
 		}
 		if(cmd.equals("Liste leeren")){
-			TerminTableModel myTable = new TerminTableModel();
-			String[] column = {"Tag","Datum","Uhrzeit","","Dauer","Therapeut","","","","",""};
-			myTable.columnNames = column;
-			myTable.data = new ArrayList<String[]>();
-			pliste.setModel(myTable);
-			termine.clear();
+			((MyTerminTableModel)pliste.getModel()).setRowCount(0);
+			pliste.validate();
+			pliste.repaint();
 			break;
 		}
 
@@ -513,8 +540,8 @@ public void keyTyped(KeyEvent arg0) {
 public static JXTable getTable(){
 	return pliste;
 }
-public static ArrayList<String[]> getTermine(){
-	return termine;
+public Vector<Vector<String>> getTermine(){
+	return termineVec;
 }
 public static void buttonsEinschalten(){
 	jb1.setEnabled(true);
@@ -561,7 +588,7 @@ private boolean satzSperrenUndLoeschen(int realindex){
 
 final class bestueckeOOo extends Thread implements Runnable{
 JXTable jtable = null; 
-ArrayList<String[]> oOTermine = null;
+Vector<Vector<String>> oOTermine = null;
 String aktion = "";
 String exporturl = "";
 public void DruckenOderEmail(String aktion){
@@ -571,11 +598,12 @@ public void DruckenOderEmail(String aktion){
 public void run(){
 	String[] tabName = null; 
 	jtable = DruckFenster.getTable();
-	oOTermine = DruckFenster.getTermine();
+	
+	oOTermine = getTermine();
 	if(oOTermine.size()==0){
 		JOptionPane.showMessageDialog (null, "In der Terminliste sind keine Termine vorhanden.\n"+
 				"Nicht vorhandene Termine k�nne nur sehr schwer (in diesem Fall gar nicht) ausgedrucket werden...\n\n"+
-				"Oh Herr schmei� Hirn ra.....");
+				"Oh Herr schmeiß Hirn ra.....");
 				DruckFenster.OOoFertig = 0;
 				DruckFenster.buttonsEinschalten();
 				DruckFenster.thisClass.cursorWait(false);
@@ -601,8 +629,8 @@ public void run(){
 		//
 		
 /*******************************/
-		String patname = (oOTermine.get(0)[8].indexOf("?")>=0 ? oOTermine.get(0)[8].substring(1).trim() : oOTermine.get(0)[8].trim());
-		String rez = (oOTermine.get(0)[9].trim().equals("") ? "" : " - "+oOTermine.get(0)[9].trim());
+		String patname = (oOTermine.get(0).get(8).indexOf("?")>=0 ? oOTermine.get(0).get(8).substring(1).trim() : oOTermine.get(0).get(8).trim());
+		String rez = (oOTermine.get(0).get(9).trim().equals("") ? "" : " - "+oOTermine.get(0).get(9).trim());
         patname = patname+rez;
         
 		IDocumentService documentService = Reha.officeapplication.getDocumentService();
@@ -619,7 +647,7 @@ public void run(){
 		tbl = textDocument.getTextTableService().getTextTables();
 
 		if(tbl.length != AnzahlTabellen){
-			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini �berein.\nDruck nicht m�glich");
+			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini überein.\nDruck nicht möglich");
 			textDocument.close();
 			DruckFenster.thisClass.cursorWait(false);
 			return;
@@ -893,22 +921,22 @@ public void run(){
 	}
 }
 final class sendeTermine extends Thread implements Runnable{
-	ArrayList<String[]> oOTermine = null;
+	Vector<Vector<String>> oOTermine = null;
 	String str = "";
 	String pat_intern = "";
 	String emailaddy = "";
 
 	public void run(){
-		oOTermine = DruckFenster.getTermine();
+		oOTermine = getTermine();
 		if(oOTermine.size()==0){
 			JOptionPane.showMessageDialog (null, "In der Terminliste sind keine Termine vorhanden.\n"+
-					"Nicht vorhandene Termine k�nne nur sehr schwer (in diesem Fall gar nicht) per Email versandt werden...\n\n"+
-					"Oh Herr schmei� Hirn ra.....");
+					"Nicht vorhandene Termine können nur sehr schwer (in diesem Fall gar nicht) per Email versandt werden...\n\n"+
+					"Oh Herr schmeiß Hirn ra.....");
 			DruckFenster.buttonsEinschalten();
 			return;
 		}
-		if(oOTermine.get(0)[9].equals("")){
-			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine g�ltige Email-Adresse ein");
+		if(oOTermine.get(0).get(9).equals("")){
+			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
 			try{
 				if(emailaddy.equals("")){
 					DruckFenster.buttonsEinschalten();
@@ -919,7 +947,7 @@ final class sendeTermine extends Thread implements Runnable{
 				return;
 			}
 		}else{
-			pat_intern = holeAusDB("select PAT_INTERN from verordn where REZ_NR ='"+oOTermine.get(0)[9]+"'");
+			pat_intern = holeAusDB("select PAT_INTERN from verordn where REZ_NR ='"+oOTermine.get(0).get(9)+"'");
 			if(pat_intern.equals("")){
 				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine g�ltige Email-Adresse ein");
 				try{
@@ -934,7 +962,7 @@ final class sendeTermine extends Thread implements Runnable{
 			}else{
 				emailaddy = holeAusDB("select EMAILA from pat5 where PAT_INTERN ='"+pat_intern+"'");
 				if(emailaddy.equals("")){
-					emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine g�ltige Email-Adresse ein");
+					emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
 					try{
 						if(emailaddy.equals("")){
 						DruckFenster.buttonsEinschalten();
@@ -1007,8 +1035,8 @@ final class sendeTermine extends Thread implements Runnable{
 		/*********/
 	      if (text.equals("")){
 	    	  text = "Sehr geehrte Damen und Herren,\n"+
-					"im Dateianhang finden Sie die von Ihnen gew�nschten Behandlungstermine.\n\n"+
-					"Termine die Sie nicht einhalten bzw. wahrnehmen k�nnen, m��en 24 Stunden vorher\n"+
+					"im Dateianhang finden Sie die von Ihnen gewünschten Behandlungstermine.\n\n"+
+					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müssenen 24 Stunden vorher\n"+
 					"abgesagt werden.\n\nIhr Planungs-Team vom RTA";
 	      }
 		String smtpHost = SystemConfig.hmEmailExtern.get("SmtpHost");
@@ -1071,101 +1099,30 @@ final class sendeTermine extends Thread implements Runnable{
 	
 }
 /*******************************************/
+class MyTerminTableModel extends DefaultTableModel{
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Class<?> getColumnClass(int columnIndex) {
+		   if(columnIndex==0){return String.class;}
+		   else{return String.class;}
+	}
+
+	public boolean isCellEditable(int row, int col) {
+		 	return true;
+	}
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+		Object result = null;
+		result = theData;
+		return result;
+	}
 }
 /******************************************/
-class TerminTableModel extends AbstractTableModel {
-    private static final boolean DEBUG = false;
-
-    //public String[] columnNames = null;
-    //public Object[][] data = null;    
-    
-    public String[] columnNames = { "", "",};
-
-    //public Object[][] data = {{"","","","","","",-1,-1}};
-    public ArrayList<String[]> data = null;
-
-    public int getColumnCount() {
-      return columnNames.length;
-    }
-
-    public int getRowCount() {
-      return data.size();
-    }
-    
-    public void deleteRow(int row){
-    	//System.out.println("Wert = "+getValueAt(row,3)); 
-    	printDebugData();
-    	data.remove(row);
-    	fireTableDataChanged();
-    	printDebugData();
-    	//fireTableChanged(null);
-    }
-
-    public String getColumnName(int col) {
-      return columnNames[col];
-    }
-
-    public Object getValueAt(int row, int col) {
-      return data.get(row)[col];
-    }
-
-    /*
-     * JTable uses this method to determine the default renderer/ editor for
-     * each cell. If we didn't implement this method, then the last column
-     * would contain text ("true"/"false"), rather than a check box.
-     */
-    public Class getColumnClass(int c) {
-    	return String.class;
-      //return getValueAt(0, c).getClass();
-    }
-
-    /*
-     * Don't need to implement this method unless your table's editable.
-     */
-    public boolean isCellEditable(int row, int col) {
-      //Note that the data/cell address is constant,
-      //no matter where the cell appears onscreen.
-      if (col < 1 ) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    /*
-     * Don't need to implement this method unless your table's data can
-     * change.
-     */
-    public void setValueAt(Object value, int row, int col) {
-      if (DEBUG) {
-        System.out.println("Setting value at " + row + "," + col
-            + " to " + value + " (an instance of "
-            + value.getClass() + ")");
-      }
-
-      //data.set(row)[col] = value;
-      fireTableCellUpdated(row, col);
-
-      if (DEBUG) {
-        System.out.println("New value of data:");
-        printDebugData();
-      }
-    }
-
-    private void printDebugData() {
-      int numRows = getRowCount();
-      int numCols = getColumnCount();
-
-      for (int i = 0; i < numRows; i++) {
-        System.out.print("    row " + i + ":");
-        for (int j = 0; j < numCols; j++) {
-          System.out.print("  " + data.get(i)[j]);
-        }
-        System.out.println();
-      }
-      System.out.println("--------------------------");
-    }
-  }
+}
+/******************************************/
 
 
 final class druckListeSperren{

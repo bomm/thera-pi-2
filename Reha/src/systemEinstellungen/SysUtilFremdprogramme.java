@@ -231,24 +231,28 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		String cmd = e.getActionCommand();
 		if(cmd.equals("oopfad")){
 			String pfad = progWaehlen(0);
-			oopfad.setText(pfad.replaceAll("\\\\", "/"));
+			if(pfad.trim().length() > 0){
+				oopfad.setText(pfad.replaceAll("\\\\", "/"));				
+			}
 			return;
 		}
 		if(cmd.equals("adobepfad")){
 			String pfad = progWaehlen(1);
-			if(!pfad.equals("")){
+			if(pfad.trim().length() > 0){
 				adobepfad.setText(pfad.replaceAll("\\\\", "/"));
 			}
 			return;
 		}
 		if(cmd.equals("grafpfad")){
 			String pfad = progWaehlen(1);
-			grafpfad.setText(pfad.replaceAll("\\\\", "/"));
+			if(pfad.trim().length() > 0){
+				grafpfad.setText(pfad.replaceAll("\\\\", "/"));
+			}	
 			return;
 		}
 		if(cmd.equals("hinzufuegen")){
 			String svorlage = progWaehlen(1);
-			if(svorlage.equals("")){
+			if(svorlage.trim().equals("")){
 				return;
 			}
 			Vector vec = new Vector();

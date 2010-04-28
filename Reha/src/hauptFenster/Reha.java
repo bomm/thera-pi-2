@@ -214,6 +214,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	
 	public JLabel shiftLabel = null;
 	public JLabel messageLabel = null;
+	public JLabel mousePositionLabel = null;
 	public JXPanel jxPinContainer = null;
 	public JXPanel jxCopyContainer = null;
 	public JLabel copyLabel = null;
@@ -1165,7 +1166,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-			final javax.swing.JLabel mousePositionLabel = new javax.swing.JLabel("230, 320");
+			mousePositionLabel = new javax.swing.JLabel("Druckliste = leer");
 	        mousePositionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 	        mousePositionLabel.setVerticalAlignment(SwingConstants.CENTER);
 	        bar2.add(mousePositionLabel);

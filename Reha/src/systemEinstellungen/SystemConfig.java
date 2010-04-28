@@ -1097,12 +1097,14 @@ public class SystemConfig {
 		ve2.add("2");
 		vec.add((Vector)ve2.clone());
 		Comparator<Vector> comparator = new Comparator<Vector>() {
-		    public int compare(String s1, String s2) {
+			/*
+			public int compare(String s1, String s2) {
 		        String[] strings1 = s1.split("\\s");
 		        String[] strings2 = s2.split("\\s");
 		        return strings1[strings1.length - 1]
 		            .compareTo(strings2[strings2.length - 1]);
 		    }
+		    */
 
 			@Override
 			public int compare(Vector o1, Vector o2) {
