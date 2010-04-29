@@ -44,6 +44,7 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import rehaInternalFrame.JBenutzerInternal;
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.ButtonTools;
 import systemTools.JCompTools;
@@ -82,9 +83,9 @@ public class BenutzerRechte extends JXPanel{
 	
 	String[] gruppe6 = {"anlegen","ändern","löschen","Stammdaten auf neues Gutachten übertragen"};
 	
-	String[] gruppe7 = {"löschen","Scannen","OOorg Doku erstellen"};
+	String[] gruppe7 = {"neue Termine eintragen","bestehende Termine löschen","Behandlungen bestätigen","Termine gruppieren erlauben","Drag & Drop erlauben"};
 	
-	String[] gruppe8 = {"anlegen","ändern","löschen","Stammdaten auf neues Gut. übertragen"};
+	String[] gruppe8 = {"[Ru:gl] öffnen","Termine überschreiben"};
 	
 	/*************************************/
 	
@@ -103,6 +104,7 @@ public class BenutzerRechte extends JXPanel{
 	private JXTreeTable jXTreeTable = null;
 	private JXRechteTreeTableNode foo = null;
 	private MyRechteComboBox comborechte = null;
+	private String userid = "";
 
 	
 	ActionListener al;
@@ -261,19 +263,34 @@ public class BenutzerRechte extends JXPanel{
 			pws[0].setText("");
 			pws[1].setText("");
 			aktuelleRechte = "";
+			userid="";
 		}else{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
 			pws[0].setText(jcmb.getValue().toString());
 			pws[1].setText(jcmb.getValue().toString());
+			System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
 			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
-			System.out.println("Aktuelle Rechte sind "+aktuelleRechte);
+			userid = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(4);
+			System.out.println(aktuelleRechte);
 			aktualisiereTree();
 		}
 	}
 	/*******************************/
 	private void aktualisiereTree(){
-        
-
+		int lang = getNodeCount();
+		int recht = 0;
+		for(int i = 0; i < lang;i++){
+			JXRechteTreeTableNode node = holeNode(i);
+			//System.out.println(node.rechte.bildnummer);
+			if(node.rechte.bildnummer >= 0){
+				System.out.println("Recht Nr."+recht+" = "+Integer.parseInt(aktuelleRechte.substring(recht,recht+1)));
+				rechteTreeTableModel.setValueAt((Integer)Integer.parseInt(aktuelleRechte.substring(recht,recht+1)) ,
+						node, 1);
+				recht++;
+			}
+		}
+		jXTreeTable.revalidate();
+		jXTreeTable.repaint();
 		
 	}
 	/*******************************/	
@@ -283,31 +300,38 @@ public class BenutzerRechte extends JXPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("benutzerwahl")){
+					doEditsEinAus(false);
+					jXTreeTable.clearSelection();
+					jXTreeTable.setEnabled(false);
 					doBenutzerWahl();
 					return;
 				}
 				if(cmd.equals("neu")){
 					jXTreeTable.clearSelection();
 					jXTreeTable.setEnabled(true);
+					doEditsEinAus(true);
 					return;
 				}
 				if(cmd.equals("edit")){
 					jXTreeTable.clearSelection();
 					jXTreeTable.setEnabled(true);
+					doEditsEinAus(true);
 					return;
 				}
 				if(cmd.equals("save")){
 					doSave();
 					jXTreeTable.clearSelection();
 					jXTreeTable.setEnabled(false);
+					doEditsEinAus(false);
 					return;
 				}
 				if(cmd.equals("delete")){
 					jXTreeTable.clearSelection();
+					jXTreeTable.setEnabled(false);
+					doEditsEinAus(false);
 					return;
 					
 				}
-				
 			}
 		};
 		kl = new KeyListener(){
@@ -322,7 +346,12 @@ public class BenutzerRechte extends JXPanel{
 			}
 		};
 	}
-	
+	private void doEditsEinAus(boolean ein){
+		tfs[0].setEnabled(ein);
+		pws[0].setEnabled(ein);
+		pws[1].setEnabled(ein);
+		buts[2].setEnabled(ein);
+	}
 	private void doSave(){
 		if ( !String.valueOf(pws[0].getPassword()).equals(
 				String.valueOf(pws[1].getPassword())) ){
@@ -333,16 +362,24 @@ public class BenutzerRechte extends JXPanel{
 		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
 			JXRechteTreeTableNode node = holeNode(i);
-			System.out.println(node.rechte.bildnummer);
-			buf.append(Integer.toString(node.rechte.bildnummer));
+			//System.out.println(node.rechte.bildnummer);
+			if(node.rechte.bildnummer >= 0){
+				buf.append(Integer.toString(node.rechte.bildnummer));	
+			}
+			
 		}
 		String pw = buf.toString();
 		Verschluesseln man = Verschluesseln.getInstance();
 	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 		String encrypted = man.encrypt(pw);
+		
 		System.out.println("Encrypted Name = "+man.encrypt(tfs[0].getText()));
 		System.out.println("Encrypted Rechte = "+encrypted);
 		System.out.println("Encrypted Pasword = "+man.encrypt(String.valueOf(pws[0].getPassword())));
+		
+		String cmd = "update rehalogin set user='"+man.encrypt(tfs[0].getText())+"', password='"+
+		man.encrypt(String.valueOf(pws[0].getPassword()))+"', rights='"+encrypted+"' where id='"+userid+"' LIMIT 1";
+		SqlInfo.sqlAusfuehren(cmd);
 		
 	}
 /******************************************************************/	

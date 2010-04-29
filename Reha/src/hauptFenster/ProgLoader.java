@@ -20,6 +20,7 @@ import menus.OOIFTest;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptPanel;
 
+import rechteTools.Rechte;
 import rehaContainer.RehaTP;
 import rehaInternalFrame.JAbrechnungInternal;
 import rehaInternalFrame.JAnmeldungenInternal;
@@ -662,6 +663,10 @@ public void BenutzerrechteFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
 		return;
 	}
+	if(!Rechte.hatRecht(Rechte.BenutzerDialog_Open)){
+		return;
+	}
+	
 	JComponent benutzer = AktiveFenster.getFensterAlle("Benutzerrechte");
 	if(benutzer != null){
 		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
@@ -843,7 +848,6 @@ public void loeschePatient(){
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {
-	 
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));	
 	String name = "PasswortDialog"+WinNum.NeueNummer();
 	RehaTP jtp = new RehaTP(setPos); 
@@ -865,6 +869,9 @@ public static void PasswortDialog(int setPos) {
 	rSmart.setLocation(x, y); 
 	rSmart.setVisible(true);
 	Reha.thisFrame.setCursor(new Cursor((Cursor.DEFAULT_CURSOR)));	
+	if(Reha.ProgRechte.equals("")){
+		System.exit(0);
+	}
 }
 /**************SplashPanel Echtfunktion*************************/
 public static RehaSmartDialog SplashPanelDialog(int setPos) {

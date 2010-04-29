@@ -1150,7 +1150,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-			messageLabel = new JLabel("Starte OO.org");
+			messageLabel = new JLabel("starte OpenOffice.org");
+			messageLabel.setForeground(Color.RED);
 			messageLabel.setVerticalAlignment(SwingConstants.CENTER);
 			messageLabel.setHorizontalAlignment(SwingConstants.LEFT);
 			jxPinContainer.add(messageLabel);
@@ -1182,6 +1183,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 	        Rehaprogress = new JProgressBar();
+	        Rehaprogress.setOpaque(false);
 	        Rehaprogress.setIndeterminate(true);
 	        Rehaprogress.setForeground(Color.RED);
 	        Rehaprogress.setBorder(null);
@@ -1779,9 +1781,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             	      }
             	    }
             	    catch (DocumentException e) {
-            	      e.printStackTrace();
+            	    	e.printStackTrace();
+            	    	Reha.thisClass.messageLabel = new JLabel("OO.org nicht Verfügbar!!!");
             	    } catch (OfficeApplicationException e) {
 						e.printStackTrace();
+						Reha.thisClass.messageLabel = new JLabel("OO.org nicht Verfügbar!!!");
 					}
             	  }
             	});
@@ -1816,6 +1820,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             }.execute();
         }
         catch (OfficeApplicationException e) {
+			Reha.thisClass.messageLabel = new JLabel("OO.org nicht Verfügbar!!!");
             e.printStackTrace();
         }
     }

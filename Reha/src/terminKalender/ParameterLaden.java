@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+import systemTools.Verschluesseln;
+
 public class ParameterLaden {
 
 
@@ -269,17 +271,43 @@ public static void Passwort() {
 		rs = stmt.executeQuery("SELECT * from rehalogin");
 		Vector<String> aKollegen = new Vector<String>();
 	 	String test = "";
+		Verschluesseln man = Verschluesseln.getInstance();
+	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 	 	while( rs.next()){
-	 		test = rs.getString("user");
-		 	aKollegen.add((test != null ?  test : "" ));
-		 	test = rs.getString("password");
-		 	aKollegen.add((test != null ?  test : "" ));
-	 		test = rs.getString("rights");
-		 	aKollegen.add((test != null ?  test : "" ));
-	 		test = rs.getString("email");
-		 	aKollegen.add((test != null ?  test : "" ));		 	
-	 		test = rs.getString("id");
-		 	aKollegen.add((test != null ?  test : "" ));		 	
+	 		try{
+	 			/*
+		 		test = rs.getString("user");
+			 	aKollegen.add((test != null ? test : "" ));
+			 	test = rs.getString("password");
+			 	aKollegen.add((test != null ?  test : "" ));
+		 		test = rs.getString("rights");
+			 	aKollegen.add((test != null ?  test : "" ));
+		 		test = rs.getString("email");
+			 	aKollegen.add((test != null ?  test : "" ));		 	
+		 		test = rs.getString("id");
+			 	aKollegen.add((test != null ?  test : "" ));
+			 	*/		 	
+			 	
+		 		test = rs.getString("user");
+			 	aKollegen.add((test != null ? man.decrypt(test) : "" ));
+			 	test = rs.getString("password");
+			 	aKollegen.add((test != null ?  man.decrypt(test) : "" ));
+		 		test = rs.getString("rights");
+			 	aKollegen.add((test != null ?  man.decrypt(test) : "" ));
+		 		test = rs.getString("email");
+			 	aKollegen.add((test != null ?  man.decrypt(test) : "" ));		 	
+		 		test = rs.getString("id");
+			 	aKollegen.add((test != null ?  test : "" ));
+			 			 	
+	 		}catch(Exception ex){
+	 			System.out.println("Fehler in der Entschlüsselung");
+			 	aKollegen.add("none");
+			 	aKollegen.add("none");
+			 	aKollegen.add("none");
+			 	aKollegen.add("none");
+		 		test = rs.getString("id");
+			 	aKollegen.add((test != null ?  test : "" ));		 	
+	 		}
 		 	pKollegen.add((Vector<String>)aKollegen.clone());
 		 	aKollegen.clear();
 		}

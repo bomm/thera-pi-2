@@ -67,6 +67,7 @@ import dialoge.DatumWahl;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -443,13 +444,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
-		if( (SystemConfig.dieseMaschine.toString().indexOf("RAKETE") >= 0) ||
-				(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") >= 0)	){
-			jxLink.setEnabled(true);
-		}else{
-			jxLink.setEnabled(false);			
-		}
-		System.out.println(SystemConfig.dieseMaschine.toString());
+		jxLink.setEnabled(true);	
 		tp2.add(jxLink);
 		jxLink = new JXHyperlink();
 		jxLink.setText("System Initialisierung");

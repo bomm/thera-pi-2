@@ -1,5 +1,6 @@
 package oOorgTools;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -786,12 +787,15 @@ public class OOTools{
 					textDocument = (ITextDocument)document;
 					textDocument.close();
 					System.err.println("Initiales Dokument wurde produziert und wieder geschlossen");
-					Reha.thisClass.messageLabel.setText("Init: o.k. ");
+					Reha.thisClass.messageLabel.setForeground(Color.BLACK);
+					Reha.thisClass.messageLabel.setText("OpenOffice.org: Init o.k.");
 				} 
 				catch (OfficeApplicationException exception) {
+					Reha.thisClass.messageLabel.setText("OO.org: nicht Verfügbar");
 					exception.printStackTrace();
 				} 
 				catch (NOAException exception) {
+					Reha.thisClass.messageLabel.setText("OO.org: nicht Verfügbar");
 					exception.printStackTrace();
 				}
 				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);

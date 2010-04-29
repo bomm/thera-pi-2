@@ -2165,7 +2165,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}	
 	private void holeFocus(){
 		oSpalten[aktiveSpalte[2]].requestFocus();
-		Reha.thisClass.messageLabel.setText("in hole");
+		//Reha.thisClass.messageLabel.setText("in hole");
 	}
 	private void focusHandling(int panel,int plusminus){
 		focus[panel] = focus[panel]+plusminus;
@@ -3280,8 +3280,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 		}
 		if(terminVergabe.size() > 0){
+			Reha.thisClass.mousePositionLabel.setForeground(Color.RED);
 			Reha.thisClass.mousePositionLabel.setText(Integer.toString(terminVergabe.size())+" * "+terminVergabe.get(0)[8]+" in Liste");	
 		}else{
+			Reha.thisClass.mousePositionLabel.setForeground(Color.BLACK);
 			Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
 		}
 	}
@@ -3313,31 +3315,38 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				return;
 			}
 		}
-		sTerminVergabe[8] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block);
-		sTerminVergabe[9] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(block);
-		sTerminVergabe[2] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(block);
-		sTerminVergabe[4] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(block);
-		sTerminVergabe[3] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(5)).get(4);
-				
-		if(ansicht == NORMAL_ANSICHT){
-			sTerminVergabe[5] = (String) ParameterLaden.getKollegenUeberReihe(xaktBehandler+1);
-			sTerminVergabe[6] = Integer.toString(behandler+1);
-		}else if(ansicht==WOCHEN_ANSICHT){
-			sTerminVergabe[5] = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
-			sTerminVergabe[6] = Integer.toString(wocheBehandler);
-		}
-		sTerminVergabe[10] = Integer.toString(behandler);
-		sTerminVergabe[7] = Integer.toString(block);
-		sTerminVergabe[1] = DatFunk.sDatInDeutsch(sTerminVergabe[3]);
-		sTerminVergabe[0] = DatFunk.WochenTag(sTerminVergabe[1]);	
-		sTerminVergabe[3] = sTerminVergabe[3]+sTerminVergabe[2];
-		terminVergabe.add(sTerminVergabe.clone());
-		if(terminVergabe.size() > 0){
-			Reha.thisClass.mousePositionLabel.setText(Integer.toString(terminVergabe.size())+" * "+terminVergabe.get(0)[8]+" in Liste");	
-		}else{
+		try{
+			sTerminVergabe[8] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block);
+			sTerminVergabe[9] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(block);
+			sTerminVergabe[2] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(block);
+			sTerminVergabe[4] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(block);
+			sTerminVergabe[3] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(5)).get(4);
+					
+			if(ansicht == NORMAL_ANSICHT){
+				sTerminVergabe[5] = (String) ParameterLaden.getKollegenUeberReihe(xaktBehandler+1);
+				sTerminVergabe[6] = Integer.toString(behandler+1);
+			}else if(ansicht==WOCHEN_ANSICHT){
+				sTerminVergabe[5] = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
+				sTerminVergabe[6] = Integer.toString(wocheBehandler);
+			}
+			sTerminVergabe[10] = Integer.toString(behandler);
+			sTerminVergabe[7] = Integer.toString(block);
+			sTerminVergabe[1] = DatFunk.sDatInDeutsch(sTerminVergabe[3]);
+			sTerminVergabe[0] = DatFunk.WochenTag(sTerminVergabe[1]);	
+			sTerminVergabe[3] = sTerminVergabe[3]+sTerminVergabe[2];
+			terminVergabe.add(sTerminVergabe.clone());
+			if(terminVergabe.size() > 0){
+				Reha.thisClass.mousePositionLabel.setForeground(Color.RED);
+				Reha.thisClass.mousePositionLabel.setText(Integer.toString(terminVergabe.size())+" * "+terminVergabe.get(0)[8]+" in Liste");	
+			}else{
+				Reha.thisClass.mousePositionLabel.setForeground(Color.BLACK);
+				Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
+			}
+		}catch(Exception ex){
+			terminVergabe.clear();
+			Reha.thisClass.mousePositionLabel.setForeground(Color.BLACK);
 			Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
 		}
-		
 		/*
 		for(int y = 0; y<terminVergabe.size();y++ ){
 			System.out.println("*********************");
@@ -3735,9 +3744,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					int anzahl = new Integer((String)vec.get(1));
 					if(tvec.size() >= anzahl){
 						if(tvec.size()==anzahl){
+							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- bereits voll!\n\nEine zusätzliche Behandlung wird nicht eingetragen");
 							///rezept voll
 							// nachfragen ob wirklich schreiben
 						}else{
+							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- bereits übervoll!!!!\n\nEine zusätzliche Behandlung wird nicht eingetragen");
 							//rezept bereits �bervoll
 							//nachfragen ob wirklich schreiben
 						}

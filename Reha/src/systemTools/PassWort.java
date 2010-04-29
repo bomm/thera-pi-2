@@ -15,6 +15,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import org.jdesktop.swingx.JXButton;
@@ -114,13 +115,14 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 	private void passWortCheck(){
 		int i,size;
 		boolean check = false;
-		String name="",rechte="",test=pwTextFeld.getText().toUpperCase();
+		String name="",rechte="",test=String.valueOf(pwTextFeld.getPassword());
 		size = ParameterLaden.pKollegen.size();
 		for(i=0;i<size;i++){
 			System.out.println(ParameterLaden.pKollegen.get(i).get(1));
 			if(test.equals(ParameterLaden.pKollegen.get(i).get(1))){
 				name = (String) ParameterLaden.pKollegen.get(i).get(0);
 				rechte = (String) ParameterLaden.pKollegen.get(i).get(2);
+				//System.out.println("Rechte = "+rechte);
 				Reha.ProgRechte = rechte;
 				Reha.thisFrame.setTitle(Reha.Titel+Reha.Titel2+"  -->  [Benutzer: "+name+"]");
 				Reha.aktUser = name;
@@ -129,15 +131,16 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 			}
 		}
 		if(!check){
+			JOptionPane.showMessageDialog(null, "Benutzer mit diesem Passwort ist nicht vorhanden\n\nVersuch "+Integer.toString(falscherLogin+1)+" von 3");
 			falscherLogin = falscherLogin+1;
 			pwTextFeld.requestFocus();
 			if(falscherLogin==3){
 				//Hier Email an Admin
 				falscherLogin = 0;
+				System.exit(0);
 			}
 		}else{
 			// Korrekter Login
-			System.out.println(this.grundContainer());
 			this.setName(this.grundContainer().getName());
 			RehaTPEvent rEvt = new RehaTPEvent(this);
 			rEvt.setRehaEvent("PinPanelEvent");
