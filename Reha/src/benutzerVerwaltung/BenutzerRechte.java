@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -323,6 +324,11 @@ public class BenutzerRechte extends JXPanel{
 	}
 	
 	private void doSave(){
+		if ( !String.valueOf(pws[0].getPassword()).equals(
+				String.valueOf(pws[1].getPassword())) ){
+			JOptionPane.showMessageDialog(null, "Passwort und Passwortwiederholung sind nicht identisch");
+			return;
+		}
 		int lang = getNodeCount();
 		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
@@ -336,7 +342,7 @@ public class BenutzerRechte extends JXPanel{
 		String encrypted = man.encrypt(pw);
 		System.out.println("Encrypted Name = "+man.encrypt(tfs[0].getText()));
 		System.out.println("Encrypted Rechte = "+encrypted);
-		System.out.println("Encrypted Pasword = "+man.encrypt(new String(pws[0].getPassword())));
+		System.out.println("Encrypted Pasword = "+man.encrypt(String.valueOf(pws[0].getPassword())));
 		
 	}
 /******************************************************************/	
