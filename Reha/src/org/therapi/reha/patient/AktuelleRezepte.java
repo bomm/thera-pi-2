@@ -71,6 +71,7 @@ import patientenFenster.RezNeuanlage;
 import patientenFenster.RezTest;
 import patientenFenster.RezTestPanel;
 import patientenFenster.RezeptGebuehren;
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -1244,7 +1245,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			}
 			if(cmd.equals("rezneu")){
-				
+				if(!Rechte.hatRecht(Rechte.Rezept_anlegen, true)){
+					return;
+				}
 				if(Reha.thisClass.patpanel.autoPatid <= 0){
 					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
 							"....und für welchen Patient wollen Sie ein neues Rezept anlegen....");
@@ -1264,6 +1267,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				break;
 			}
 			if(cmd.equals("rezdelete")){
+				if(!Rechte.hatRecht(Rechte.Rezept_delete, true)){
+					return;
+				}
 				if(aktPanel.equals("leerPanel")){
 					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
 							"....und welches der nicht vorhandenen Rezepte möchten Sie bitteschön löschen....");
@@ -1283,6 +1289,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 				String sqlcmd = "delete from verordn where id='"+rezid+"'";
+				SqlInfo.sqlAusfuehren(sqlcmd);
+				sqlcmd = "delete from fertige where id='"+rezid+"'";
 				new ExUndHop().setzeStatement(sqlcmd);
 				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
 				int uebrig = tabaktrez.getRowCount();
@@ -1297,6 +1305,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			/******************************/
 			if(cmd.equals("rezeptgebuehr")){
+				if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){
+					return;
+				}
 				rezeptGebuehr();
 			}
 			if(cmd.equals("barcode")){
@@ -1304,6 +1315,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			
 			if(cmd.equals("arztbericht")){
+				if(!Rechte.hatRecht(Rechte.Rezept_thbericht, true)){
+					return;
+				}
 				// hier  muß noch getestet werden:
 				// 1 ist es eine Neuanlage oder soll ein bestehender Ber. editiert werden
 				// 2 ist ein Ber. überhaupt angefordert
@@ -1354,9 +1368,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}.execute();
 			}
 			if(cmd.equals("ausfallrechnung")){
+				if(!Rechte.hatRecht(Rechte.Rezept_ausfallrechnung, true)){
+					return;
+				}
 				ausfallRechnung();
 			}
 			if(cmd.equals("statusfrei")){
+				if(!Rechte.hatRecht(Rechte.Rezept_editvoll, true)){
+					return;
+				}
 				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				String xreznr;
@@ -1369,6 +1389,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}	
 			}
 			if(cmd.equals("statusbezahlt")){
+				if(!Rechte.hatRecht(Rechte.Rezept_editvoll, true)){
+					return;
+				}
 				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				String xreznr;
@@ -1382,6 +1405,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			
 			}
 			if(cmd.equals("statusnichtbezahlt")){
+				if(!Rechte.hatRecht(Rechte.Rezept_editvoll, true)){
+					return;
+				}
 				if(rezGeschlossen()){return;}
 				int currow = tabaktrez.getSelectedRow();
 				String xreznr;
@@ -1457,6 +1483,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(currow < 0){return;}
 			if(dtblm.getValueAt(currow,5)==null){
 				// derzeit offen also abschliessen
+				if(!Rechte.hatRecht(Rechte.Rezept_lock, true)){
+					return;
+				}
 				int anzterm = dtermm.getRowCount();
 				if(anzterm <= 0){return;}
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
@@ -1500,6 +1529,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				
 			}else{
+				if(!Rechte.hatRecht(Rechte.Rezept_unlock, true)){
+					return;
+				}
 				// bereits abgeschlossen muß geöffnet werden
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[0],currow,5);
 				doAufschliessen();
@@ -1886,18 +1918,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			tDlg.setVisible(true);
 			switch(tDlg.rueckgabe){
 			case 0:
+				if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
 				rezeptGebuehr();
 				break;
 			case 1:
 				doBarcode();
 				break;
 			case 2:
+				if(!Rechte.hatRecht(Rechte.Rezept_ausfallrechnung, true)){return;}
 				ausfallRechnung();
 				break;
 			case 3:
 				rezeptAbschliessen();
 				break;
 			case 4:
+				if(!Rechte.hatRecht(Rechte.Rezept_privatrechnung, true)){return;}
 				privatRechnung();
 				break;
 				

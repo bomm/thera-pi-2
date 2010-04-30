@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import rechteTools.Rechte;
 import systemEinstellungen.SystemConfig;
 import systemTools.IconListRenderer;
 import dialoge.ToolsDialog;
@@ -125,10 +126,19 @@ public class PatientToolBarLogic {
 			tDlg.setVisible(true);
 			switch(tDlg.rueckgabe){
 			case 0:
+				if(!Rechte.hatRecht(Rechte.Patient_email, true)){
+					return;
+				}
 				break;
 			case 1:
+				if(!Rechte.hatRecht(Rechte.Patient_sms, true)){
+					return;
+				}
 				break;
 			case 2:
+				if(!Rechte.hatRecht(Rechte.Patient_zusatzinfo, true)){
+					return;
+				}
 				break;
 			case 3:
 				break;

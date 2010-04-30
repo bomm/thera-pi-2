@@ -32,6 +32,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import rechteTools.Rechte;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -127,7 +128,32 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 	   }
 		});	
 		initReady = true;
-		
+		if(!neu){
+			if(!Rechte.hatRecht(Rechte.Rezept_editvoll, false)){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						for(int i = 0; i < jtf.length;i++){
+							if(jtf[i] != null){
+								jtf[i].setEnabled(false);
+							}
+						}
+						for(int i = 0; i < jcb.length;i++){
+							if(jcb[i] != null){
+								jcb[i].setEnabled(false);
+							}
+						}
+						for(int i = 0; i < jcmb.length;i++){
+							if(jcmb[i] != null){
+								jcmb[i].setEnabled(false);
+							}
+						}
+						return null;
+					}
+					
+				}.execute();
+			}
+		}
 		
 
 	}
@@ -355,6 +381,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		kassenLab.setHorizontalTextPosition(JLabel.LEFT);
 		kassenLab.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent ev){
+				if(!Rechte.hatRecht(Rechte.Rezept_editvoll,false)){
+					return;
+				}
 				if(jtf[0].getText().trim().startsWith("?")){
 					jtf[0].requestFocus();
 				}else{
@@ -377,6 +406,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		arztLab.setHorizontalTextPosition(JLabel.LEFT);
 		arztLab.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent ev){
+				if(!Rechte.hatRecht(Rechte.Rezept_editvoll,false)){
+					return;
+				}
 				if(jtf[1].getText().trim().startsWith("?")){
 					jtf[1].requestFocus();
 				}else{

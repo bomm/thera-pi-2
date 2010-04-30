@@ -35,18 +35,29 @@ public class Rechte {
 	
 	public static int Rezept_anlegen		= 10;
 	public static int Rezept_editvoll		= 11;
-	public static int Rezept_editteil		= 12; //Reserve
-	public static int Rezept_delete			= 13;
-	public static int Rezept_gebuehren		= 14;
-	public static int Rezept_ausfallrechnung= 15;
-	public static int Rezept_lock			= 16;
-	public static int Rezept_unlock			= 17;
-	public static int Rezept_privatrechnung	= 18;
-	public static int Rezept_thbericht		= 19;
+	public static int Rezept_editteil		= 11; //Reserve
+	public static int Rezept_delete			= 12;
+	public static int Rezept_gebuehren		= 13;
+	public static int Rezept_ausfallrechnung= 14;
+	public static int Rezept_lock			= 15;
+	public static int Rezept_unlock			= 16;
+	public static int Rezept_privatrechnung	= 17;
+	public static int Rezept_thbericht		= 18;
+	
+	public static int Historie_gesamtumsatz	= 19;
+	public static int Historie_tagedrucken	= 20;
+	public static int Historie_thbericht	= 21;
 	
 	private static String[] rechteExt = {"Benutzerverwaltung öffnen","Benutzerrechte ändern","Super-User",
+		
 		"Neuen Patient anlegen","Patientendaten ändern","Patientendaten ändern","Patient löschen","Email an Patient versenden",
-		"SMS an Patient versenden","Zusatzinformationen einsehen"
+		"SMS an Patient versenden","Zusatzinformationen einsehen",
+		
+		"Rezepte neu anlegen","Rezepte ändern","Rezepte löschen","Rezeptgebühren kassieren","Ausfallrechnungen erstellen",
+		"Rezepte abschließen","Rezepte aufschließen","Privat- und BGE-Rechnungen erstellen","Therapieberichte erstellen",
+		
+		"Gesamtumsatz des Patienten ermitteln","Tage eines Historienrezeptes drucken","Nachträglich Therapieberichte erstellen"
+		
 		
 	};
 }

@@ -3,6 +3,7 @@ package benutzerVerwaltung;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -93,7 +94,7 @@ public class BenutzerRechte extends JXPanel{
 	/*************************************/
 	
 	JXPanel content = null;
-	JButton[] buts = {null,null,null,null,null};
+	JButton[] buts = {null,null,null,null,null,null};
 	JRtaTextField[] tfs = {null};
 	JPasswordField[] pws = {null,null};
 	JRtaComboBox jcmb = null;
@@ -242,8 +243,10 @@ public class BenutzerRechte extends JXPanel{
 		jpan.add((buts[1] = ButtonTools.macheButton("Benutzer ändern", "edit", al)),cc.xy(4,12));
 		jpan.add((buts[2] = ButtonTools.macheButton("Benutzer speichern", "save", al)),cc.xy(2,14));
 		jpan.add((buts[3] = ButtonTools.macheButton("Benutzer löschen", "delete", al)),cc.xy(4,14));
-		jpan.add((buts[4] = ButtonTools.macheButton("Vorgang abbrechen", "dobreak", al)),cc.xyw(2,16,3));
-		regleButtons("11010");
+		jpan.add((buts[4] = ButtonTools.macheButton("Vorgang abbrechen", "dobreak", al)),cc.xy(2,16));
+		jpan.add((buts[5] = ButtonTools.macheButton("Rechte importieren", "doimport", al)),cc.xy(4,16));
+		buts[5].setForeground(Color.BLUE);
+		regleButtons("110100");
 		return jpan;
 	}
 	
@@ -272,7 +275,7 @@ public class BenutzerRechte extends JXPanel{
 			pws[1].setText("");
 			aktuelleRechte = "";
 			userid="";
-			regleButtons("11010");
+			regleButtons("110100");
 		}else{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
 			pws[0].setText(jcmb.getValue().toString());
@@ -280,7 +283,7 @@ public class BenutzerRechte extends JXPanel{
 			System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
 			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
 			userid = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(4);
-			regleButtons("11010");
+			regleButtons("110100");
 			aktualisiereTree(false);
 		}
 	}
@@ -319,7 +322,7 @@ public class BenutzerRechte extends JXPanel{
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("benutzerwahl")){
 					neu = false;
-					regleButtons("11010");
+					regleButtons("110100");
 					doEditsEinAus(false);
 					doBenutzerWahl();
 					return;
@@ -327,14 +330,14 @@ public class BenutzerRechte extends JXPanel{
 				if(cmd.equals("neu")){
 					neu = true;
 					doEditsEinAus(true);
-					regleButtons("00101");					
+					regleButtons("001011");					
 					doNeu();
 					return;
 				}
 				if(cmd.equals("edit")){
 					neu = false;
 					doEditsEinAus(true);
-					regleButtons("00101");
+					regleButtons("001011");
 					doEdit();
 					return;
 				}
@@ -342,21 +345,24 @@ public class BenutzerRechte extends JXPanel{
 					doSave();
 					doEditsEinAus(false);
 					neu = false;
-					regleButtons("11010");
+					regleButtons("110100");
 					return;
 				}
 				if(cmd.equals("delete")){
 					doEditsEinAus(false);
 					neu = false;
 					doDelete();
-					regleButtons("11010");
+					regleButtons("110100");
 					return;
 				}
 				if(cmd.equals("dobreak")){
 					jcmb.setSelectedIndex(0);
 					doEditsEinAus(false);
 					neu = false;
-					regleButtons("11010");					
+					regleButtons("110100");					
+				}
+				if(cmd.equals("doimport")){
+					doImport();
 				}
 			}
 		};
@@ -373,11 +379,16 @@ public class BenutzerRechte extends JXPanel{
 		};
 	}
 	/********************************************/
+	private void doImport(){
+		
+	}
+	/********************************************/
 	private void doEdit(){
 		if(jcmb.getSelectedIndex()==0){
 			JOptionPane.showMessageDialog(null, "Depp!");
 			doEditsEinAus(false);
 			neu = false;
+			regleButtons("110100");
 			return;
 		}
 	}
@@ -386,7 +397,7 @@ public class BenutzerRechte extends JXPanel{
 		if(jcmb.getSelectedIndex()==0){
 			JOptionPane.showMessageDialog(null, "Depp!");
 			doEditsEinAus(false);
-			regleButtons("11010");
+			regleButtons("110100");
 			return;
 		}
 		if(jcmb.getSelectedItem().toString().trim().equals(Reha.aktUser)){

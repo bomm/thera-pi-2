@@ -70,6 +70,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.ToolsDialog;
 
+import rechteTools.Rechte;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
@@ -623,6 +624,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("arztbericht")){
+			if(!Rechte.hatRecht(Rechte.Historie_thbericht, true)){
+				return;
+			}
 			if(aktPanel.equals("leerPanel")){
 				JOptionPane.showMessageDialog(null,"Ich sag jetzt nix....\n\n"+
 						"....außer - und für welches der nicht vorhandenen Rezepte in der Historie wollen Sie einen Therapiebericht erstellen....");
@@ -951,6 +955,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			tDlg.setVisible(true);
 			switch(tDlg.rueckgabe){
 			case 0:
+				if(!Rechte.hatRecht(Rechte.Historie_gesamtumsatz, true)){
+					return;
+				}
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -960,6 +967,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}.execute();				
 				break;
 			case 1:
+				if(!Rechte.hatRecht(Rechte.Historie_tagedrucken, true)){
+					return;
+				}
 				//doUebertrag();
 				break;
 			case 2:
