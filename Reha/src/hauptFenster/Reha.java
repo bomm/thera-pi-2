@@ -250,7 +250,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean DbOk = false;
 	public static boolean HilfeDbOk = false;
 	
-	public static String ProgRechte = "0123";
+	public static String progRechte = "0123";
 	//public final static String Titel = "Thera-3.141592654";
 	public final static String Titel = "Thera-\u03C0";
 	public boolean KollegenOk = false;
@@ -432,6 +432,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				new SocketClient().setzeInitStand("System-Icons laden");
 				SystemConfig.SystemIconsInit();
 				iconsOk = true;
+				new SocketClient().setzeInitStand("System-Config initialisieren");
 			}
 		}.start();
 		/*
@@ -1831,7 +1832,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             public void eventDispatched(AWTEvent event)  {
                 if(event instanceof KeyEvent) {
                     KeyEvent keyEvent = (KeyEvent) event;
-                    if(ProgRechte.equals("")){
+                    if(progRechte.equals("")){
                     	return;
                     }
                     if(keyEvent.isAltDown() &&

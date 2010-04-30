@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.ImageIcon;
@@ -25,6 +26,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellEditor;
@@ -70,7 +72,8 @@ public class BenutzerRechte extends JXPanel{
 
 	String[] gruppe0 = {"Benutzer-Verwaltung öffnen","Benutzer anlegen/ändern/löschen","Benutzer hat alle Rechte = SuperUser"};
 
-	String[] gruppe1 = {"anlegen","komplett ändern","nur Teile ändern:Tel,Fax,Akut,mögl. Termine","löschen"};
+	String[] gruppe1 = {"anlegen","komplett ändern","nur Teile ändern:Tel,Fax,Akut,mögl. Termine","löschen",
+			"Email an Patient versenden","SMS an Patient versenden","Zusatzinfos einsehen"};
 
 	String[] gruppe2 = {"anlegen","ändern","löschen","Gebühren kassieren","Ausfallrechnung erstellen","Rezept abschließen",
 			"Rezept aufschließen","Privat-/BG-Rechnung erstellen","Therapieberichte erstellen"};
@@ -90,7 +93,7 @@ public class BenutzerRechte extends JXPanel{
 	/*************************************/
 	
 	JXPanel content = null;
-	JButton[] buts = {null,null,null,null};
+	JButton[] buts = {null,null,null,null,null};
 	JRtaTextField[] tfs = {null};
 	JPasswordField[] pws = {null,null};
 	JRtaComboBox jcmb = null;
@@ -105,7 +108,7 @@ public class BenutzerRechte extends JXPanel{
 	private JXRechteTreeTableNode foo = null;
 	private MyRechteComboBox comborechte = null;
 	private String userid = "";
-
+	private boolean neu = false;
 	
 	ActionListener al;
 	KeyListener kl;
@@ -198,8 +201,8 @@ public class BenutzerRechte extends JXPanel{
 	private JXPanel getButtonTeil(){
 		//                                   1            2  3   4        5 
 		FormLayout lay = new FormLayout("fill:0:grow(0.5),80dlu,3dlu,80dlu,fill:0:grow(0.5)",
-		//       1             2   3   4  5   6  7   8  9  10  11  12  13 14   15 
-			"fill:0:grow(0.33),p,20dlu,p,1dlu,p,1dlu,p,1dlu,p,25dlu,p,5dlu,p,fill:0:grow(0.66)");
+		//       1             2   3   4  5   6  7   8  9  10  11  12 13  14 15  16    17
+			"fill:0:grow(0.33),p,20dlu,p,1dlu,p,1dlu,p,1dlu,p,25dlu,p,5dlu,p,5dlu,p,fill:0:grow(0.66)");
 		CellConstraints cc = new CellConstraints();
 		JXPanel jpan = new JXPanel();
 		jpan.setLayout(lay);
@@ -214,7 +217,7 @@ public class BenutzerRechte extends JXPanel{
 		
 		lab = new JLabel("Benutzername");
 		jpan.add(lab,cc.xy(2,4,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		tfs[0] = new JRtaTextField("GROSS",false);
+		tfs[0] = new JRtaTextField("nix",false);
 		tfs[0].setEnabled(false);
 		jpan.add(tfs[0],cc.xy(4,4));
 		
@@ -239,9 +242,8 @@ public class BenutzerRechte extends JXPanel{
 		jpan.add((buts[1] = ButtonTools.macheButton("Benutzer ändern", "edit", al)),cc.xy(4,12));
 		jpan.add((buts[2] = ButtonTools.macheButton("Benutzer speichern", "save", al)),cc.xy(2,14));
 		jpan.add((buts[3] = ButtonTools.macheButton("Benutzer löschen", "delete", al)),cc.xy(4,14));
-		//buts[2].setEnabled(false);
-		
-		
+		jpan.add((buts[4] = ButtonTools.macheButton("Vorgang abbrechen", "dobreak", al)),cc.xyw(2,16,3));
+		regleButtons("11010");
 		return jpan;
 	}
 	
@@ -257,6 +259,12 @@ public class BenutzerRechte extends JXPanel{
 		rechteMap.put("gruppe8",gruppe8);		
 	}
 	/*******************************/
+	private void regleButtons(String enable){
+		for(int i = 0; i < buts.length;i++){
+			buts[i].setEnabled( (enable.substring(i,i+1).equals("1") ? true : false)  );
+		}
+	}
+	/*******************************/	
 	private void doBenutzerWahl(){
 		if(jcmb.getSelectedIndex()==0){
 			tfs[0].setText("");
@@ -264,6 +272,7 @@ public class BenutzerRechte extends JXPanel{
 			pws[1].setText("");
 			aktuelleRechte = "";
 			userid="";
+			regleButtons("11010");
 		}else{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
 			pws[0].setText(jcmb.getValue().toString());
@@ -271,21 +280,30 @@ public class BenutzerRechte extends JXPanel{
 			System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
 			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
 			userid = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(4);
-			System.out.println(aktuelleRechte);
-			aktualisiereTree();
+			regleButtons("11010");
+			aktualisiereTree(false);
 		}
 	}
 	/*******************************/
-	private void aktualisiereTree(){
+	private void aktualisiereTree(boolean allesaufnull){
 		int lang = getNodeCount();
 		int recht = 0;
 		for(int i = 0; i < lang;i++){
 			JXRechteTreeTableNode node = holeNode(i);
 			//System.out.println(node.rechte.bildnummer);
 			if(node.rechte.bildnummer >= 0){
-				System.out.println("Recht Nr."+recht+" = "+Integer.parseInt(aktuelleRechte.substring(recht,recht+1)));
-				rechteTreeTableModel.setValueAt((Integer)Integer.parseInt(aktuelleRechte.substring(recht,recht+1)) ,
-						node, 1);
+				if(allesaufnull){
+					rechteTreeTableModel.setValueAt(0 ,	node, 1);
+				}else{
+					try{
+						rechteTreeTableModel.setValueAt((Integer)Integer.parseInt(aktuelleRechte.substring(recht,recht+1)) ,
+							node, 1);
+					}catch(java.lang.NumberFormatException ex){
+						
+					}catch( java.lang.StringIndexOutOfBoundsException ex2){
+						
+					}
+				}
 				recht++;
 			}
 		}
@@ -300,37 +318,45 @@ public class BenutzerRechte extends JXPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("benutzerwahl")){
+					neu = false;
+					regleButtons("11010");
 					doEditsEinAus(false);
-					jXTreeTable.clearSelection();
-					jXTreeTable.setEnabled(false);
 					doBenutzerWahl();
 					return;
 				}
 				if(cmd.equals("neu")){
-					jXTreeTable.clearSelection();
-					jXTreeTable.setEnabled(true);
+					neu = true;
 					doEditsEinAus(true);
+					regleButtons("00101");					
+					doNeu();
 					return;
 				}
 				if(cmd.equals("edit")){
-					jXTreeTable.clearSelection();
-					jXTreeTable.setEnabled(true);
+					neu = false;
 					doEditsEinAus(true);
+					regleButtons("00101");
+					doEdit();
 					return;
 				}
 				if(cmd.equals("save")){
 					doSave();
-					jXTreeTable.clearSelection();
-					jXTreeTable.setEnabled(false);
 					doEditsEinAus(false);
+					neu = false;
+					regleButtons("11010");
 					return;
 				}
 				if(cmd.equals("delete")){
-					jXTreeTable.clearSelection();
-					jXTreeTable.setEnabled(false);
 					doEditsEinAus(false);
+					neu = false;
+					doDelete();
+					regleButtons("11010");
 					return;
-					
+				}
+				if(cmd.equals("dobreak")){
+					jcmb.setSelectedIndex(0);
+					doEditsEinAus(false);
+					neu = false;
+					regleButtons("11010");					
 				}
 			}
 		};
@@ -346,13 +372,75 @@ public class BenutzerRechte extends JXPanel{
 			}
 		};
 	}
+	/********************************************/
+	private void doEdit(){
+		if(jcmb.getSelectedIndex()==0){
+			JOptionPane.showMessageDialog(null, "Depp!");
+			doEditsEinAus(false);
+			neu = false;
+			return;
+		}
+	}
+	/********************************************/
+	private void doDelete(){
+		if(jcmb.getSelectedIndex()==0){
+			JOptionPane.showMessageDialog(null, "Depp!");
+			doEditsEinAus(false);
+			regleButtons("11010");
+			return;
+		}
+		if(jcmb.getSelectedItem().toString().trim().equals(Reha.aktUser)){
+			int anfrage = JOptionPane.showConfirmDialog(null, "Sie sind im Begriff sich selbst zu löschen!!!!\n\nWollen Sie  das wirklich?\n\n", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage==JOptionPane.YES_OPTION){
+				String id = (String) jcmb.getValueAt(4);				
+				String cmd = "delete from rehalogin where id='"+id+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(cmd);
+				jcmb.removeVector(jcmb.getSelectedIndex());
+				jcmb.setSelectedIndex(0);
+				doEditsEinAus(false);				
+			}
+		}else if(!jcmb.getSelectedItem().toString().trim().equals(Reha.aktUser)){
+			String user = jcmb.getSelectedItem().toString();
+			int anfrage = JOptionPane.showConfirmDialog(null, "Sie sind im Begriff einen Thera-Pi-Benutzer zu löschen!!!!\n\nWollen Sie  den Benutzer --> "+user+" <-- wirklich löschen?\n\n", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage==JOptionPane.YES_OPTION){
+				String id = (String) jcmb.getValueAt(4);				
+				String cmd = "delete from rehalogin where id='"+id+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(cmd);
+				jcmb.removeVector(jcmb.getSelectedIndex());
+			}
+			jcmb.setSelectedIndex(0);
+			doEditsEinAus(false);			
+		}
+	}
+	/********************************************/	
+	private void doNeu(){
+		tfs[0].setText("");
+		pws[0].setText("");
+		pws[1].setText("");
+		aktualisiereTree(true);
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				tfs[0].requestFocus();
+			}
+		});
+	}
+	/********************************************/
 	private void doEditsEinAus(boolean ein){
 		tfs[0].setEnabled(ein);
 		pws[0].setEnabled(ein);
 		pws[1].setEnabled(ein);
 		buts[2].setEnabled(ein);
+		if(!ein){
+			jXTreeTable.clearSelection();
+			jXTreeTable.setEnabled(false);
+		}else{
+			jXTreeTable.clearSelection();
+			jXTreeTable.setEnabled(true);
+		}
 	}
+	/********************************************/	
 	private void doSave(){
+		
 		if ( !String.valueOf(pws[0].getPassword()).equals(
 				String.valueOf(pws[1].getPassword())) ){
 			JOptionPane.showMessageDialog(null, "Passwort und Passwortwiederholung sind nicht identisch");
@@ -364,7 +452,7 @@ public class BenutzerRechte extends JXPanel{
 			JXRechteTreeTableNode node = holeNode(i);
 			//System.out.println(node.rechte.bildnummer);
 			if(node.rechte.bildnummer >= 0){
-				buf.append(Integer.toString(node.rechte.bildnummer));	
+				buf.append(Integer.toString(node.rechte.bildnummer));
 			}
 			
 		}
@@ -373,13 +461,41 @@ public class BenutzerRechte extends JXPanel{
 	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 		String encrypted = man.encrypt(pw);
 		
-		System.out.println("Encrypted Name = "+man.encrypt(tfs[0].getText()));
-		System.out.println("Encrypted Rechte = "+encrypted);
-		System.out.println("Encrypted Pasword = "+man.encrypt(String.valueOf(pws[0].getPassword())));
-		
-		String cmd = "update rehalogin set user='"+man.encrypt(tfs[0].getText())+"', password='"+
-		man.encrypt(String.valueOf(pws[0].getPassword()))+"', rights='"+encrypted+"' where id='"+userid+"' LIMIT 1";
-		SqlInfo.sqlAusfuehren(cmd);
+		if(!neu){
+			System.out.println("Username = "+tfs[0].getText());
+			System.out.println("Passwort = "+String.valueOf(pws[0].getPassword()));
+			System.out.println("Rechte   = "+String.valueOf(pw));
+			
+			String cmd = "update rehalogin set user='"+man.encrypt(tfs[0].getText())+"', password='"+
+			man.encrypt(String.valueOf(pws[0].getPassword()))+"', rights='"+encrypted+"' where id='"+userid+"' LIMIT 1";
+			SqlInfo.sqlAusfuehren(cmd);
+			jcmb.setNewValueAtCurrentPosition(0, tfs[0].getText());
+			jcmb.setNewValueAtCurrentPosition(1, String.valueOf(pws[1].getPassword()));
+			jcmb.setNewValueAtCurrentPosition(2, buf.toString());
+			if(Reha.aktUser.equals(jcmb.getSelectedItem().toString().trim())){
+				Reha.progRechte = buf.toString();
+			}
+		}else{
+			// neuen Benutzer anlegen erst noch entwickeln;
+			if(tfs[0].getText().equals("") || String.valueOf(pws[0].getPassword()).trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Benutzername und Passwort darf nicht leer sein");
+				jcmb.setSelectedIndex(0);
+				doEditsEinAus(false);
+				return;
+			}
+			int id = SqlInfo.holeId("rehalogin", "password");
+			Vector<String> vec = new Vector<String>();
+			vec.add(tfs[0].getText());
+			vec.add(String.valueOf(pws[0].getPassword()));
+			vec.add(buf.toString());
+			vec.add("");
+			vec.add(Integer.toString(id));
+			jcmb.addNewVector((Vector<String>)vec.clone());
+			String cmd = "update rehalogin set user='"+man.encrypt(tfs[0].getText())+"', password='"+
+			man.encrypt(String.valueOf(pws[0].getPassword()))+"', rights='"+encrypted+"' where id='"+Integer.toString(id)+"' LIMIT 1";
+			SqlInfo.sqlAusfuehren(cmd);
+		}
+		ParameterLaden.Passwort();
 		
 	}
 /******************************************************************/	

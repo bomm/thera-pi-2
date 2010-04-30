@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import systemTools.Verschluesseln;
 
 public class ParameterLaden {
@@ -295,18 +297,22 @@ public static void Passwort() {
 		 		test = rs.getString("rights");
 			 	aKollegen.add((test != null ?  man.decrypt(test) : "" ));
 		 		test = rs.getString("email");
-			 	aKollegen.add((test != null ?  man.decrypt(test) : "" ));		 	
+			 	aKollegen.add((test != null ?  test : "" ));		 	
 		 		test = rs.getString("id");
 			 	aKollegen.add((test != null ?  test : "" ));
 			 			 	
 	 		}catch(Exception ex){
+
 	 			System.out.println("Fehler in der Entschlüsselung");
 			 	aKollegen.add("none");
 			 	aKollegen.add("none");
 			 	aKollegen.add("none");
 			 	aKollegen.add("none");
 		 		test = rs.getString("id");
-			 	aKollegen.add((test != null ?  test : "" ));		 	
+			 	aKollegen.add((test != null ?  test : "" ));
+	 			JOptionPane.showMessageDialog(null, "Fehler in der Entschlüsselung bei User ID = "+test);
+			 	ex.printStackTrace();
+			 	
 	 		}
 		 	pKollegen.add((Vector<String>)aKollegen.clone());
 		 	aKollegen.clear();

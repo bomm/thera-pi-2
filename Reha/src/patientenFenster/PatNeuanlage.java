@@ -55,6 +55,7 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
@@ -160,7 +161,7 @@ int iformular = -1;
 
 private RehaTPEventClass rtp = null;
 
-
+boolean editvoll = false;
 private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 private KVKWrapper kvw;
@@ -177,8 +178,10 @@ private KVKWrapper kvw;
 		this.setDoubleBuffered(true);
 		this.patDaten = vec;
 		this.inNeu = neu;
-		if(! inNeu){
-			
+		if(inNeu){
+			editvoll = Rechte.hatRecht(Rechte.Patient_anlegen, false);
+		}else{
+			editvoll = Rechte.hatRecht(Rechte.Patient_editvoll, false);			
 		}
 		this.feldname = sfeldname;
 		this.setBackground(Color.WHITE);
@@ -201,14 +204,53 @@ private KVKWrapper kvw;
 
 		patTab.setOpaque(false);
 		
-	
+		
+		
 		patTab.addTab("1 - Stammdaten", Tab1());
 		patTab.addTab("2 - Zusätze", Tab2());
 		patTab.addTab("3 - Sonstiges", Tab3());
 		patTab.setMnemonicAt(0, (int) '1');
 		patTab.setMnemonicAt(1, (int) '2');		
-		patTab.setMnemonicAt(2, (int) '3');		
-		
+		patTab.setMnemonicAt(2, (int) '3');
+
+		if(!editvoll){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					for(int i = 0; i < jtf.length;i++){
+						if(jtf[i] != null){
+							jtf[i].setEnabled(false);	
+						}
+					}
+					for(int i = 0; i < jcheck.length;i++){
+						if(jcheck[i] != null){
+							jcheck[i].setEnabled(false);	
+						}
+					}
+					doclist.setEnabled(false);
+					pic0.setEnabled(false);
+					pic1.setEnabled(false);
+					knopf0.setEnabled(false);
+					knopf1.setEnabled(false);
+					knopf3.setEnabled(false);
+					cbanrede.setEnabled(false);
+					jcheck[1].setEnabled(true);
+					jtf[7].setEnabled(true);
+					jtf[8].setEnabled(true);
+					jtf[9].setEnabled(true);
+					jtf[10].setEnabled(true);
+					jtf[19].setEnabled(true);
+					jtf[27].setEnabled(true);
+					jtf[28].setEnabled(true);
+					jtf[29].setEnabled(true);
+					jtf[30].setEnabled(true);
+
+					return null;
+				}
+			}.execute();
+			
+		}
+
 		add(patTab,BorderLayout.CENTER);
 		
 		hgicon = Reha.rehaBackImg;
@@ -749,12 +791,14 @@ private KVKWrapper kvw;
 					kassenLab.setHorizontalTextPosition(JLabel.LEFT);
 					kassenLab.addMouseListener(new MouseAdapter(){
 						public void mousePressed(MouseEvent ev){
+							if(editvoll){
 								SwingUtilities.invokeLater(new Runnable(){
 									public void run(){
 										String suchkrit = jtf[12].getText().replace("?", "");
 										kassenAuswahl(new String[] {suchkrit,jtf[34].getText().trim(),jtf[34].getText()});
 									}
 								});
+							}
 						}
 					});
 					builder12.add(kassenLab, cc12.xy(1, 3));
@@ -776,12 +820,14 @@ private KVKWrapper kvw;
 					arztLab.setHorizontalTextPosition(JLabel.LEFT);
 					arztLab.addMouseListener(new MouseAdapter(){
 						public void mousePressed(MouseEvent ev){
-							SwingUtilities.invokeLater(new Runnable(){
-								public void run(){
-									String[] suchkrit =  {jtf[17].getText().replace("?", ""),jtf[33].getText()};
-									arztAuswahl(suchkrit);
-								}
-							});
+							if(editvoll){
+								SwingUtilities.invokeLater(new Runnable(){
+									public void run(){
+										String[] suchkrit =  {jtf[17].getText().replace("?", ""),jtf[33].getText()};
+										arztAuswahl(suchkrit);
+									}
+								});
+							}
 						}
 					});
 					builder12.add(arztLab, cc12.xy(1, 25));

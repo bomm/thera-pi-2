@@ -185,8 +185,28 @@ public Object getValueAt(int pos){
 		if(this.getSelectedIndex()==0){return "";}
 		return ((String)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(pos) );		
 	}
-
 }
+public void setNewValueAtCurrentPosition(int pos,Object newvalue){
+
+	if(this.startElement.equals("")){
+		((Vector<Object>)vec.get(this.getSelectedIndex())).set(pos,(String)newvalue);		
+	}else{
+		((Vector<Object>)vec.get(this.getSelectedIndex()-1)).set(pos,(String)newvalue);
+	}
+}
+public void addNewVector(Vector<String> newvec){
+	((Vector<Vector<String>>)vec).add( (Vector<String>) newvec);
+	addItem( (String)((Vector<String>)newvec).get(this.cmbdisplay) );
+}
+public void removeVector(int pos){
+	if(this.startElement.equals("")){
+		((Vector<Object>)vec).remove(pos);		
+	}else{
+		((Vector<Object>)vec).remove(pos-1);
+	}
+	this.removeItemAt(pos);
+}
+
 
 @Override
 public void propertyChange(PropertyChangeEvent arg0) {

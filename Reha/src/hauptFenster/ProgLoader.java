@@ -663,7 +663,7 @@ public void BenutzerrechteFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
 		return;
 	}
-	if(!Rechte.hatRecht(Rechte.BenutzerDialog_Open)){
+	if(!Rechte.hatRecht(Rechte.BenutzerDialog_open,true)){
 		return;
 	}
 	
@@ -869,7 +869,7 @@ public static void PasswortDialog(int setPos) {
 	rSmart.setLocation(x, y); 
 	rSmart.setVisible(true);
 	Reha.thisFrame.setCursor(new Cursor((Cursor.DEFAULT_CURSOR)));	
-	if(Reha.ProgRechte.equals("")){
+	if(Reha.progRechte.equals("")){
 		System.exit(0);
 	}
 }

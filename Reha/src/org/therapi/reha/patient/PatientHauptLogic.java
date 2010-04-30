@@ -24,6 +24,7 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 
 import patientenFenster.PatNeuanlage;
+import rechteTools.Rechte;
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
@@ -159,24 +160,40 @@ public class PatientHauptLogic {
 	}
 	
 	public void patNeu(){
+		if(!Rechte.hatRecht(Rechte.Patient_anlegen, true)){
+			return;
+		}
 		neuanlagePatient(true,"");
 	}
 	public void patEdit(){
-		if(!patientHauptPanel.aktPatID.equals("")){
-			neuanlagePatient(false,"");	
+		if(Rechte.hatRecht(Rechte.Patient_editteil, false) ||
+				Rechte.hatRecht(Rechte.Patient_editvoll, false)){
+			if(!patientHauptPanel.aktPatID.equals("")){
+				neuanlagePatient(false,"");	
+			}else{
+				JOptionPane.showMessageDialog(null, "Welchen Patient bitteschön wollen Sie editieren?");
+				setzeFocus();
+				return;
+			}
 		}else{
-			JOptionPane.showMessageDialog(null, "Welchen Patient bitteschön wollen Sie editieren?");
-			setzeFocus();
-			return;
+			Rechte.hatRecht(Rechte.Patient_editvoll, true);
 		}
 	}
 	public void editFeld(String feldname) {
-		if(! patientHauptPanel.aktPatID.equals("")){
-			neuanlagePatient(false, feldname);		
+		if(Rechte.hatRecht(Rechte.Patient_editteil, false) ||
+				Rechte.hatRecht(Rechte.Patient_editvoll, false)){
+			if(! patientHauptPanel.aktPatID.equals("")){
+				neuanlagePatient(false, feldname);		
+			}
+		}else{
+			Rechte.hatRecht(Rechte.Patient_editvoll, true);
 		}
 	}
 	
 	public void patDelete(){
+		if(! Rechte.hatRecht(Rechte.Patient_delete, true)){
+			return;
+		}
 		if(!patientHauptPanel.aktPatID.equals("")){
 			//String spat = patientHauptPanel.ptfield[2].getText().trim()+", "+patientHauptPanel.ptfield[3].getText().trim()+", geb.am "+patientHauptPanel.ptfield[4].getText().trim();
 			String spat = "Wollen Sie den aktuellen Patient wirklich löschen?";

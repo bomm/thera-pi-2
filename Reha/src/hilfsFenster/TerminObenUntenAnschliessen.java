@@ -242,6 +242,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 			if(sAktion=="Ok"){
 				String [] sret = {jrtaf[0].getText(),jrtaf[1].getText()};
 				TerminFenster.setDialogRet(iAktion,sret);
+				rSmart.setVisible(false);
 				rSmart.dispose();
 				tv = null;
 				break;
@@ -249,6 +250,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 			if(sAktion=="Abbruch"){
 				String [] sret = {null,null};
 				TerminFenster.setDialogRet(0,sret);
+				rSmart.setVisible(false);
 				rSmart.dispose();
 				tv = null;
 				break;

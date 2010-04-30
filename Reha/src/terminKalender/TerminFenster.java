@@ -16,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -216,7 +217,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public static int DRAG_MODE = -1;
 	public String DRAG_UHR;
 	public String DRAG_PAT;	
-	public String DRAG_NUMMER;	
+	public String DRAG_NUMMER;
+	public boolean terminGedropt = false;
+	public boolean setFromMouse = false;
+	public boolean terminBreak = false;
 	public JRehaInternal eltern;
 	
 	public JXPanel init(int setOben,int ansicht,JRehaInternal eltern) {
@@ -449,7 +453,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						break;
 					}
 					if ((e.getKeyCode()==123) && (ansicht < MASKEN_ANSICHT) ){
-						setAufruf();
+						setAufruf(null);
 						aktiveSpalte[2] = welche;
 						oSpalten[welche].requestFocus();
 						break;
@@ -819,7 +823,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							break;	
 						}
 						if ( (ec==123) && (ansicht != MASKEN_ANSICHT) ){
-							setAufruf();
+							setAufruf(null);
 							oSpalten[tspalte].requestFocus();
 							break;
 						}
@@ -906,6 +910,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 							if(!grobRaus){
 								wartenAufReady = true;
+								terminGedropt = false;
+								terminBreak = false;
 								datenAusSpeicherHolen();								
 							}else{
 								wartenAufReady = false;						
@@ -943,6 +949,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 							if(!grobRaus){
 								wartenAufReady = true;
+								terminGedropt = false;
+								terminBreak = false;
 								datenAusSpeicherHolen();								
 							}else{
 								wartenAufReady = false;						
@@ -2117,18 +2125,34 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * 
  * 
  */
-	public void setAufruf(){
+	public void setAufruf(Point p){
 		if (this.ansicht == 1){
 			JOptionPane.showMessageDialog (null, "Aufruf Terminset ist nur in der Normalansicht möglich (und sinnvoll...)");
 			return;			
 		}
-		Point xpoint = this.ViewPanel.getLocationOnScreen();
-		setUpdateVerbot(true);
-		swSetWahl = -1;
-		SetWahl sw = new SetWahl(this);
-		xpoint.x = xpoint.x +(this.ViewPanel.getWidth()/2) - (sw.getWidth()/2);
-		xpoint.y = xpoint.y +(this.ViewPanel.getHeight()/2) - (sw.getHeight()/2);
-		sw.setLocation(xpoint);
+		Point xpoint = null;
+		SetWahl sw = null;
+		if(p == null){
+			xpoint = this.ViewPanel.getLocationOnScreen();
+			setUpdateVerbot(true);
+			swSetWahl = -1;
+			sw = new SetWahl(this);
+			xpoint.x = xpoint.x +(this.ViewPanel.getWidth()/2) - (sw.getWidth()/2);
+			xpoint.y = xpoint.y +(this.ViewPanel.getHeight()/2) - (sw.getHeight()/2);
+			sw.setLocation(xpoint);
+
+		}else{
+			xpoint = p;
+			setUpdateVerbot(true);
+			swSetWahl = -1;
+			sw = new SetWahl(this);
+			//xpoint.x = xpoint.x +(this.ViewPanel.getWidth()/2) - (sw.getWidth()/2);
+			//xpoint.y = xpoint.y +(this.ViewPanel.getHeight()/2) - (sw.getHeight()/2);
+			xpoint.x = xpoint.x-(sw.getWidth()/2);
+			xpoint.y = xpoint.y-(sw.getHeight()/2);
+			sw.setLocation(xpoint);
+		}
+		
 		sw.pack();
 		sw.setVisible(true);
 		setUpdateVerbot(false);
@@ -2689,49 +2713,65 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			if(aktdauer < Integer.parseInt(datenSpeicher[3])){
 				dialogRetInt = 0;
-	 		   Point p = positionErmitteln();
-	 		   new TerminEinpassen(p.x,p.y);
-				switch(dialogRetInt){
-					case 0:
-						wartenAufReady = false;
-						break;
-					case 1:
-						datenSpeicher[2] = aktstart;
-						datenSpeicher[4] = aktend;
-						blockSetzen(4);
-						break;
-					case 2:
-						//in Nachfolgeblock k�rzen
-						datenSpeicher[2] = aktstart;
-						datenSpeicher[4] = aktend;
-						int ende1,ende2;
-						int aktanzahl = ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(0)).size()-1;
-						if(aktanzahl==aktblock){
-							//ende1 = 
-						}else{ //pr�fen ob nachfolgender Block gek�rzt werden kann oder ob zu klein
-							ende1 = (int) ZeitFunk.MinutenSeitMitternacht((String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(4)).get(aktblock+1));
-							ende2 = (int) ZeitFunk.MinutenSeitMitternacht(aktstart)+Integer.parseInt(datenSpeicher[3]);
-							
-							if (ende2 >= ende1){
-								JOptionPane.showMessageDialog (null, "Der nachfolgende Block ist von kürzerer Dauer\n"+
-										"als er für die von Ihnen gewünscht Operation sein müßte\n\n"+
-										"Kopiert wird daher --> nix!");
-								wartenAufReady = false;
+		 		   Point p = null; //positionErmitteln();
+	 			   if(!terminGedropt){
+	  				  p = positionErmitteln();
+	  			   }else{
+	  				   p = MouseInfo.getPointerInfo().getLocation();
+	  				   p.y = p.y+4;
+	  			   }
+		 		   new TerminEinpassen(p.x,p.y);
+					switch(dialogRetInt){
+						case 0:
+							terminBreak = true;
+							wartenAufReady = false;
+							break;
+						case 1:
+							datenSpeicher[2] = aktstart;
+							datenSpeicher[4] = aktend;
+							blockSetzen(4);
+							break;
+						case 2:
+							//in Nachfolgeblock kürzen
+							datenSpeicher[2] = aktstart;
+							datenSpeicher[4] = aktend;
+							int ende1,ende2;
+							int aktanzahl = ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(0)).size()-1;
+							if(aktanzahl==aktblock){
+								//ende1 = 
+							}else{ //pr�fen ob nachfolgender Block gekürzt werden kann oder ob zu klein
+								ende1 = (int) ZeitFunk.MinutenSeitMitternacht((String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(4)).get(aktblock+1));
+								ende2 = (int) ZeitFunk.MinutenSeitMitternacht(aktstart)+Integer.parseInt(datenSpeicher[3]);
 								
-							}else{
-								blockSetzen(6);
+								if (ende2 >= ende1){
+									JOptionPane.showMessageDialog (null, "Der nachfolgende Block ist von kürzerer Dauer\n"+
+											"als er für die von Ihnen gewünscht Operation sein müßte\n\n"+
+											"Kopiert wird daher --> nix!");
+									wartenAufReady = false;
+									
+								}else{
+									blockSetzen(6);
+								}
 							}
-						}
-						break;
+							break;
+					}
+					break;
 				}
-				break;
-			}
 			if(aktdauer > Integer.parseInt(datenSpeicher[3])){
 				dialogRetInt = 0;
- 			   Point p = positionErmitteln();
+				
+ 			   Point p = null;
+ 			   if(!terminGedropt){
+ 				  p = positionErmitteln();
+ 			   }else{
+ 				   p = MouseInfo.getPointerInfo().getLocation();
+ 				   p.y = p.y+4;
+ 			   }
 			   new TerminObenUntenAnschliessen(p.x,p.y);
+			   //System.out.println("DialogretInt = "+dialogRetInt);
 				switch(dialogRetInt){
 					case 0:
+						terminBreak = true;
 						wartenAufReady = false;
 						break;
 					case 1: 
@@ -2988,7 +3028,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			if(((AbstractButton) arg0.getSource()).getText() == "Behandler-Set aufrufen"){
 				setUpdateVerbot(true);
-				setAufruf();
+				setAufruf(MouseInfo.getPointerInfo().getLocation());
 				setUpdateVerbot(false);				
 				oSpalten[aktiveSpalte[2]].requestFocus();
 				break;
@@ -3399,7 +3439,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	@Override
 	public void dragExit(DropTargetEvent dte) {
-		System.out.println(dte.getSource());
+		//System.out.println(dte.getSource());
 	}
 	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
@@ -3416,7 +3456,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 			dragLab[aktiveSpalte[2]].setIcon(null);
 			dragLab[aktiveSpalte[2]].setText("");
-			System.out.println("Drag_Mode == Drag_None");
+			//System.out.println("Drag_Mode == Drag_None");
 			dtde.dropComplete(true);
 			return;
 		}
@@ -3425,7 +3465,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		try {
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-
+			terminGedropt = true;
 	        Transferable tr = dtde.getTransferable();
 	        DataFlavor[] flavors = tr.getTransferDataFlavors();
 	        for (int i = 0; i < flavors.length; i++){
@@ -3490,9 +3530,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					datenSpeicher[0]= teilen[1];		
 					datenSpeicher[1]= teilen[2];		
 					datenSpeicher[3]= teilen[3];
-					
-					datenAusSpeicherHolen();
-
+					try{
+						terminBreak = false;
+						datenAusSpeicherHolen();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					if(terminBreak){
+						oSpalten[altaktiveSpalte[2]].spalteDeaktivieren();
+						return;
+					}
 					int[] spaltneu = aktiveSpalte.clone();
 					if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_MOVE){
 
@@ -3509,8 +3556,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								e1.printStackTrace();
 							}
 						}
+						//System.out.println("Wert von Grobraus = "+grobRaus);
 						
 						if(!grobRaus){
+							try{
 							String sbeginnneu = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(spaltneu[0]); 
 							int spAktiv = aktiveSpalte[2];
 							aktiveSpalte = altaktiveSpalte.clone();
@@ -3528,6 +3577,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									e1.printStackTrace();
 								}
 							}
+							//System.out.println("Wert von Grobraus = "+grobRaus);
 							if(!grobRaus){
 								//Stufe 2 - o.k.
 								if(altaktiveSpalte[2]==spAktiv){
@@ -3587,7 +3637,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									}else if(ansicht==WOCHEN_ANSICHT){
 										altbehandler = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
 									}
-									System.out.println( tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
+									//System.out.println( tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
 									terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);
 
 									blockSetzen(11);
@@ -3606,7 +3656,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								aktiveSpalte = spaltneu.clone();
 								wartenAufReady = false;		
 							}
-							aktiveSpalte = spaltneu.clone();							
+							aktiveSpalte = spaltneu.clone();
+							}catch(Exception ex){
+								ex.printStackTrace();
+							}
 						}else{
 							aktiveSpalte = spaltneu.clone();
 							wartenAufReady = false;								
@@ -3763,7 +3816,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}else if(unter18 && !vorjahrfrei){
 							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus �ndern;
 							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
-							System.out.println("Geboren = "+geboren);
+							//System.out.println("Geboren = "+geboren);
 							if(DatFunk.Unter18(DatFunk.sHeute(), geboren)){
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
 							}else{

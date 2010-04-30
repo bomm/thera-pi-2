@@ -42,7 +42,7 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 	public static PassWort thisClass = null;
 	public PassWort(){
 		super();
-		Reha.ProgRechte = "";
+		Reha.progRechte = "";
 		setBorder(null);
 		thisClass = this;
 		setLayout(new BorderLayout());
@@ -123,7 +123,7 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 				name = (String) ParameterLaden.pKollegen.get(i).get(0);
 				rechte = (String) ParameterLaden.pKollegen.get(i).get(2);
 				//System.out.println("Rechte = "+rechte);
-				Reha.ProgRechte = rechte;
+				Reha.progRechte = rechte;
 				Reha.thisFrame.setTitle(Reha.Titel+Reha.Titel2+"  -->  [Benutzer: "+name+"]");
 				Reha.aktUser = name;
 				check = true;
