@@ -716,7 +716,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      if(behandler <= -1){
 					    	  return;
 					      }
-					      DRAG_PAT = 	 ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("\u00A9 ", "");
+					      DRAG_PAT = 	 ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]) ).replaceAll("\u00AE"  , "");
 					      DRAG_NUMMER = 	 (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) ;
 					      DRAG_UHR =   (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) ;
 					      altaktiveSpalte = aktiveSpalte.clone();
@@ -2623,7 +2623,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if (aktbehandler == -1){
 			return;
 		}
-		datenSpeicher[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("\u00A9 ", "");		
+		datenSpeicher[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("\u00AE"  , "");		
 		datenSpeicher[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		datenSpeicher[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);		
 
@@ -2645,7 +2645,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			return srueck;
 		}
 		try{
-		srueck[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("\u00A9 ", "");		
+		srueck[0]= (String) ((String)((Vector)((ArrayList)vTerm.get(aktbehandler)).get(0)).get(aktblock)).replaceAll("\u00AE"  , "");		
 		srueck[1]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(1)).get(aktblock);		
 		srueck[3]= (String) ((Vector)((ArrayList)vTerm.get(aktbehandler)).get(3)).get(aktblock);
 		return srueck;
@@ -3772,7 +3772,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		final String swreznum = sreznum;
 		final String sworigreznum = sorigreznum;		
 		final String swaltname = sname;
-		final String swname = sname.replaceAll("\u00A9 ","");
+		final String swname = sname.replaceAll("\u00AE"  ,"");
 		final String swbeginn = sbeginn;
 
 		final int swbehandler = xaktBehandler; 
@@ -3782,7 +3782,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			protected Void doInBackground() throws Exception {
 				Vector vec = null;
 				Vector tvec = null;
-				String copyright = "\u00A9 ";
+				String copyright = "\u00AE"  ;
 				try{
 				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 				if (vec.size() > 0){

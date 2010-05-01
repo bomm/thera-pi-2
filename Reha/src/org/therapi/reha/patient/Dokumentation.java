@@ -112,6 +112,7 @@ import org.jdesktop.swingx.renderer.StringValues;
 import patientenFenster.KeinRezept;
 import patientenFenster.MyAccessory;
 
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import sun.awt.image.ImageFormatException;
@@ -474,7 +475,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		tabdokus.getSelectionModel().addListSelectionListener( new DokuListSelectionHandler());
 		tabdokus.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
-				// TODO Auto-generated method stub
+				if(!Rechte.hatRecht(Rechte.Doku_open, true)){
+					return;
+				}
 				if(arg0.getClickCount()==2){
 					while(inDokuDaten){
 						try {
@@ -854,6 +857,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		if(cmd.equals("arztbericht")){
 			
 		}else if(cmd.equals("scannen")){
+			if(!Rechte.hatRecht(Rechte.Doku_scannen, true)){
+				return;
+			}
 			if(SystemConfig.sDokuScanner.equals("Scanner nicht aktiviert!")){
 				return;
 			}
@@ -885,6 +891,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				
 			return;			
 		}else if(cmd.equals("scanedit")){
+			if(!Rechte.hatRecht(Rechte.Doku_scannen, true)){
+				return;
+			}
 			Point pt = ((JComponent)arg0.getSource()).getLocationOnScreen();
 			final Point ptx = pt;
 			new SwingWorker<Void,Void>(){
@@ -928,6 +937,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//rehaSplash = null;
 			return;
 		}else if(cmd.equals("Dokudelete")){
+			if(!Rechte.hatRecht(Rechte.Doku_delete, true)){
+				return;
+			}
 			doDokudelete();
 			return;
 		}else if(cmd.equals("Dokuabbruch")){
@@ -944,6 +956,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}.execute();
 			return;
 		}else if(cmd.equals("delete")){
+			if(!Rechte.hatRecht(Rechte.Doku_delete, true)){
+				return;
+			}
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -2376,12 +2391,18 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			tDlg.setVisible(true);
 			switch(tDlg.rueckgabe){
 			case 0:
+				if(!Rechte.hatRecht(Rechte.Doku_scannen, true)){
+					return;
+				}
 				doScanEdit(pt);
 				break;
 			case 1:
 				if(Reha.thisClass.patpanel.aktPatID.equals("")){
 					keinAtiverPatient();
 					tDlg = null;
+					return;
+				}
+				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
 					return;
 				}
 				doHolePhoto();
@@ -2392,6 +2413,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					tDlg = null;
 					return;
 				}
+				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
+					return;
+				}
 				doHoleOO();
 				break;
 			case 3:
@@ -2400,6 +2424,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					tDlg = null;
 					return;
 				}  // 0 = Writer
+				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
+					return;
+				}
 				oooDokuNeu(0);
 				break;
 			case 4:
@@ -2408,6 +2435,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					tDlg = null;
 					return;
 				}// 0 = Calc
+				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
+					return;
+				}
 				oooDokuNeu(1);
 				break;
 			}

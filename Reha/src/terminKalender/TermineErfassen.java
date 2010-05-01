@@ -43,7 +43,7 @@ public class TermineErfassen implements Runnable {
 	@Override
 	public void run() {
 		heute = DatFunk.sHeute();
-		copyright = "\u00A9 ";
+		copyright = "\u00AE"  ;
 		int ret = -1;
 		try {
 			if((ret = testeVerordnung())==0){

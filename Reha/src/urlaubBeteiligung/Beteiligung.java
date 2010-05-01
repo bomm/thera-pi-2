@@ -77,7 +77,7 @@ public class Beteiligung  extends JXPanel{
 	String aktBehandlerNummer = "";
 	JLabel progresstext1 = null;
 	JProgressBar progressbar1 = null;
-	final String copyright = "\u00A9 ";
+	final String copyright = "\u00AE"  ;
 
 	int prozBehandl=0;
 	int prozHb=0;

@@ -42,6 +42,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import patientenFenster.GutachtenWahl;
 import patientenFenster.KeinRezept;
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -139,6 +140,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getClickCount()==2){
+					if(!Rechte.hatRecht(Rechte.Gutachten_editvoll, true)){
+						return;
+					}
 					// hier pr�fen welcher Berichtstyp und dementsprechend das Berichtsfenster �ffnen
 					///neuanlageRezept(false,"");
 					int wahl = tabbericht.getSelectedRow();
@@ -362,6 +366,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("gutneu")){
+			if(!Rechte.hatRecht(Rechte.Gutachten_anlegen, true)){
+				return;
+			}
 			final JComponent comp = ((JComponent)arg0.getSource());
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -397,6 +404,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			return;
 		}
 		if(cmd.equals("gutedit")){
+			if(!Rechte.hatRecht(Rechte.Gutachten_editvoll, true)){
+				return;
+			}
 			doBerichtEdit();
 			return;
 		}
@@ -404,6 +414,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			if(aktPanel.equals("leerPanel")){
 				JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
 						"....und welches der nicht vorhandenen Gutachten möchten Sie bitteschön löschen....");
+				return;
+			}
+			if(!Rechte.hatRecht(Rechte.Gutachten_delete, true)){
 				return;
 			}
 			int currow = tabbericht.getSelectedRow();
@@ -437,6 +450,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			return;
 		}
 		if(cmd.equals("guttools")){
+			
 			return;
 		}
 

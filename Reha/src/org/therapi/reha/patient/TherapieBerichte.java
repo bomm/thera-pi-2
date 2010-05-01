@@ -33,6 +33,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.event.TableColumnModelExtListener;
 
 import patientenFenster.KeinRezept;
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -252,6 +253,9 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 	}
 /*********/
 	private void doBerichtDelete(){
+		if(!Rechte.hatRecht(Rechte.Berichte_delete, true)){
+			return;
+		}
 		int wahl = tabbericht.getSelectedRow();
 		if(wahl < 0){
 			return;
@@ -308,6 +312,9 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		return verf;
 	}
 	private void doThBerichtEdit(int row){
+		if(!Rechte.hatRecht(Rechte.Berichte_editvoll, true)){
+			return;
+		}
 		String xreznr = (String) dtblm.getValueAt(row, 1);
 		String[] splitrez = xreznr.split(" ");
 		int bid = new Integer((String) dtblm.getValueAt(row, 0));

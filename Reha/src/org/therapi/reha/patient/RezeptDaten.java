@@ -22,6 +22,7 @@ import javax.swing.TransferHandler;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
@@ -63,6 +64,9 @@ public class RezeptDaten extends JXPanel{
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
 				if( (arg0.getSource() instanceof JLabel) && (arg0.getClickCount()==2)){
+					if(!Rechte.hatRecht(Rechte.Rezept_editvoll, true)){
+						return;
+					}
 					String anzhb = StringTools.NullTest((String)vecaktrez.get(64)).trim();
 					Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", anzhb);
 					if(ret == null){

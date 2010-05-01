@@ -61,6 +61,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.sun.star.uno.Exception;
 
+import dialoge.AaarghHinweis;
+
 public class BenutzerRechte extends JXPanel{
 	/**
 	 * 
@@ -69,7 +71,8 @@ public class BenutzerRechte extends JXPanel{
 	HashMap<String,String[]> rechteMap = new HashMap<String,String[]>();
 	JBenutzerInternal internal = null;
 	String[] hauptGruppen = {"Benutzer-Verwaltung","Patiente","Rezepte","Historie","Therapieberichte",
-			"Dokumentation","Gutachten","Terminkalender","[Ru:gl]"};
+			"Dokumentation","Gutachten","Terminkalender","Arbeitszeitmasken","[Ru:gl]","Abrechnung / Statistik / Umsatz","System-Initialisierung",
+			"Sonstige Programme und Funktionen"};
 
 	String[] gruppe0 = {"Benutzer-Verwaltung öffnen","Benutzer anlegen/ändern/löschen","Benutzer hat alle Rechte = SuperUser"};
 
@@ -83,18 +86,31 @@ public class BenutzerRechte extends JXPanel{
 	
 	String[] gruppe4 = {"bestehende Berichte ändern","löschen"};
 	
-	String[] gruppe5 = {"löschen","Scannen","OOorg Doku erstellen"};
+	String[] gruppe5 = {"öffnen / einsehen","Scannen","löschen","OOorg Doku erstellen"};
 	
 	String[] gruppe6 = {"anlegen","ändern","löschen","Stammdaten auf neues Gutachten übertragen"};
 	
 	String[] gruppe7 = {"neue Termine eintragen","bestehende Termine löschen","Behandlungen bestätigen","Termine gruppieren erlauben","Drag & Drop erlauben"};
 	
-	String[] gruppe8 = {"[Ru:gl] öffnen","Termine überschreiben"};
+	String[] gruppe8 = {"Masken erstellen / ändern","Masken in Kalender übertragen"};
 	
+	String[] gruppe9 = {"[Ru:gl] öffnen","Termine überschreiben"};
+	
+	String[] gruppe10 = {"Kassenabrechnung","Rehaabrechnung","Barkassen Abrechnung","Neuanmeldungen ermitteln","Umsätze von bis ermitteln","Mitarbeiterbeteiligung ermitteln",
+			"Urlaub-/Überstunden ermitteln"};
+	
+	String[] gruppe11 = {"Firmenangaben Mandanten","Datenbankparamtere","Kalender Grundeinstellungen","Kalender-Benuter verwalten",
+			"Behandlersets einstellen","Druckvorlage für Terminliste","Kalender-Farbdefinition","Gruppentermine verwalten",
+			"Neues Kalenderjahr anlegen","[Ru:gl]-Grundeinstellungen","[Ru:gl]-Gruppen definieren","Einstellungen Patientenfenster",
+			"Einstellungen Rezepte","Einstellungen Krankenfenster","Einstellungen Arztfenster","Emailparameter ändern","Geräteanschlüsse (Schnittstellen)",
+			"angeschlossene Geräte","Behandlunskürzel verwalten","Tarifgruppen bearbeiten","Preise bearbeiten/importieren",
+			"Nummernkreise verwalten","Nebraska benützen","Abrechnungsformulare und Druckparameter","Kostenträgerdatei einlesen","Fremdprogramme verwalten"};
+
+	String[] gruppe12 = {"Verkaufsmodul benutzen","Rehaformulare verwenden"};
 	/*************************************/
 	
 	JXPanel content = null;
-	JButton[] buts = {null,null,null,null,null,null};
+	JButton[] buts = {null,null,null,null,null,null,null};
 	JRtaTextField[] tfs = {null};
 	JPasswordField[] pws = {null,null};
 	JRtaComboBox jcmb = null;
@@ -202,8 +218,8 @@ public class BenutzerRechte extends JXPanel{
 	private JXPanel getButtonTeil(){
 		//                                   1            2  3   4        5 
 		FormLayout lay = new FormLayout("fill:0:grow(0.5),80dlu,3dlu,80dlu,fill:0:grow(0.5)",
-		//       1             2   3   4  5   6  7   8  9  10  11  12 13  14 15  16    17
-			"fill:0:grow(0.33),p,20dlu,p,1dlu,p,1dlu,p,1dlu,p,25dlu,p,5dlu,p,5dlu,p,fill:0:grow(0.66)");
+		//       1             2   3   4  5   6  7   8  9  10  11  12 13  14 15  16  17  18   19
+			"fill:0:grow(0.33),p,20dlu,p,1dlu,p,1dlu,p,1dlu,p,25dlu,p,5dlu,p,5dlu,p,15dlu,p,fill:0:grow(0.66)");
 		CellConstraints cc = new CellConstraints();
 		JXPanel jpan = new JXPanel();
 		jpan.setLayout(lay);
@@ -243,10 +259,13 @@ public class BenutzerRechte extends JXPanel{
 		jpan.add((buts[1] = ButtonTools.macheButton("Benutzer ändern", "edit", al)),cc.xy(4,12));
 		jpan.add((buts[2] = ButtonTools.macheButton("Benutzer speichern", "save", al)),cc.xy(2,14));
 		jpan.add((buts[3] = ButtonTools.macheButton("Benutzer löschen", "delete", al)),cc.xy(4,14));
-		jpan.add((buts[4] = ButtonTools.macheButton("Vorgang abbrechen", "dobreak", al)),cc.xy(2,16));
-		jpan.add((buts[5] = ButtonTools.macheButton("Rechte importieren", "doimport", al)),cc.xy(4,16));
+		jpan.add((buts[4] = ButtonTools.macheButton("Vorgang abbrechen", "dobreak", al)),cc.xyw(2,16,3));
+		
+		jpan.add((buts[5] = ButtonTools.macheButton("Rechte exportieren", "doexport", al)),cc.xy(2,18));
+		jpan.add((buts[6] = ButtonTools.macheButton("Rechte importieren", "doimport", al)),cc.xy(4,18));
 		buts[5].setForeground(Color.BLUE);
-		regleButtons("110100");
+		buts[6].setForeground(Color.RED);
+		regleButtons("1101000");
 		return jpan;
 	}
 	
@@ -259,7 +278,12 @@ public class BenutzerRechte extends JXPanel{
 		rechteMap.put("gruppe5",gruppe5);
 		rechteMap.put("gruppe6",gruppe6);
 		rechteMap.put("gruppe7",gruppe7);
-		rechteMap.put("gruppe8",gruppe8);		
+		rechteMap.put("gruppe8",gruppe8);
+		rechteMap.put("gruppe9",gruppe9);
+		rechteMap.put("gruppe10",gruppe10);
+		rechteMap.put("gruppe11",gruppe11);		
+		rechteMap.put("gruppe12",gruppe12);
+
 	}
 	/*******************************/
 	private void regleButtons(String enable){
@@ -275,7 +299,7 @@ public class BenutzerRechte extends JXPanel{
 			pws[1].setText("");
 			aktuelleRechte = "";
 			userid="";
-			regleButtons("110100");
+			regleButtons("1101000");
 		}else{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
 			pws[0].setText(jcmb.getValue().toString());
@@ -283,7 +307,7 @@ public class BenutzerRechte extends JXPanel{
 			System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
 			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
 			userid = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(4);
-			regleButtons("110100");
+			regleButtons("1101000");
 			aktualisiereTree(false);
 		}
 	}
@@ -322,7 +346,7 @@ public class BenutzerRechte extends JXPanel{
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("benutzerwahl")){
 					neu = false;
-					regleButtons("110100");
+					regleButtons("1101000");
 					doEditsEinAus(false);
 					doBenutzerWahl();
 					return;
@@ -330,14 +354,14 @@ public class BenutzerRechte extends JXPanel{
 				if(cmd.equals("neu")){
 					neu = true;
 					doEditsEinAus(true);
-					regleButtons("001011");					
+					regleButtons("0010111");					
 					doNeu();
 					return;
 				}
 				if(cmd.equals("edit")){
 					neu = false;
 					doEditsEinAus(true);
-					regleButtons("001011");
+					regleButtons("0010111");
 					doEdit();
 					return;
 				}
@@ -345,25 +369,29 @@ public class BenutzerRechte extends JXPanel{
 					doSave();
 					doEditsEinAus(false);
 					neu = false;
-					regleButtons("110100");
+					regleButtons("1101000");
 					return;
 				}
 				if(cmd.equals("delete")){
 					doEditsEinAus(false);
 					neu = false;
 					doDelete();
-					regleButtons("110100");
+					regleButtons("1101000");
 					return;
 				}
 				if(cmd.equals("dobreak")){
 					jcmb.setSelectedIndex(0);
 					doEditsEinAus(false);
 					neu = false;
-					regleButtons("110100");					
+					regleButtons("1101000");					
 				}
 				if(cmd.equals("doimport")){
 					doImport();
 				}
+				if(cmd.equals("doexport")){
+					doExport();
+				}
+
 			}
 		};
 		kl = new KeyListener(){
@@ -380,15 +408,19 @@ public class BenutzerRechte extends JXPanel{
 	}
 	/********************************************/
 	private void doImport(){
-		
+		JOptionPane.showMessageDialog(null, "Benutzer-Rechte importieren noch nicht implementiert");
+	}
+	private void doExport(){
+		JOptionPane.showMessageDialog(null, "Benutzer-Rechte exportieren noch nicht implementiert");
 	}
 	/********************************************/
 	private void doEdit(){
 		if(jcmb.getSelectedIndex()==0){
+			//new AaarghHinweis("Und welcher Benutzer soll geändert werden?","nicht zu fassen...");
 			JOptionPane.showMessageDialog(null, "Depp!");
 			doEditsEinAus(false);
 			neu = false;
-			regleButtons("110100");
+			regleButtons("1101000");
 			return;
 		}
 	}
@@ -397,7 +429,7 @@ public class BenutzerRechte extends JXPanel{
 		if(jcmb.getSelectedIndex()==0){
 			JOptionPane.showMessageDialog(null, "Depp!");
 			doEditsEinAus(false);
-			regleButtons("110100");
+			regleButtons("1101000");
 			return;
 		}
 		if(jcmb.getSelectedItem().toString().trim().equals(Reha.aktUser)){
@@ -473,9 +505,9 @@ public class BenutzerRechte extends JXPanel{
 		String encrypted = man.encrypt(pw);
 		
 		if(!neu){
-			System.out.println("Username = "+tfs[0].getText());
-			System.out.println("Passwort = "+String.valueOf(pws[0].getPassword()));
-			System.out.println("Rechte   = "+String.valueOf(pw));
+			//System.out.println("Username = "+tfs[0].getText());
+			//System.out.println("Passwort = "+String.valueOf(pws[0].getPassword()));
+			//System.out.println("Rechte   = "+String.valueOf(pw));
 			
 			String cmd = "update rehalogin set user='"+man.encrypt(tfs[0].getText())+"', password='"+
 			man.encrypt(String.valueOf(pws[0].getPassword()))+"', rights='"+encrypted+"' where id='"+userid+"' LIMIT 1";

@@ -48,6 +48,25 @@ public class Rechte {
 	public static int Historie_tagedrucken	= 20;
 	public static int Historie_thbericht	= 21;
 	
+	public static int Berichte_editvoll		= 22;
+	public static int Berichte_delete		= 23;
+
+	public static int Doku_open				= 24;
+	public static int Doku_scannen			= 25;
+	public static int Doku_delete			= 26;
+	public static int Doku_ooorg			= 27;
+	
+	public static int Gutachten_anlegen		= 28;
+	public static int Gutachten_editvoll	= 29;
+	public static int Gutachten_delete		= 30;
+	public static int Gutachten_copy		= 31;
+	
+	public static int Kalender_terminanlegen		= 32;
+	public static int Kalender_termindelete			= 33;
+	public static int Kalender_terminconfirm		= 34;
+	public static int Kalender_termingroup			= 35;
+	public static int Kalender_termindragdrop		= 36;
+
 	private static String[] rechteExt = {"Benutzerverwaltung öffnen","Benutzerrechte ändern","Super-User",
 		
 		"Neuen Patient anlegen","Patientendaten ändern","Patientendaten ändern","Patient löschen","Email an Patient versenden",
@@ -56,8 +75,15 @@ public class Rechte {
 		"Rezepte neu anlegen","Rezepte ändern","Rezepte löschen","Rezeptgebühren kassieren","Ausfallrechnungen erstellen",
 		"Rezepte abschließen","Rezepte aufschließen","Privat- und BGE-Rechnungen erstellen","Therapieberichte erstellen",
 		
-		"Gesamtumsatz des Patienten ermitteln","Tage eines Historienrezeptes drucken","Nachträglich Therapieberichte erstellen"
+		"Gesamtumsatz des Patienten ermitteln","Tage eines Historienrezeptes drucken","Nachträglich Therapieberichte erstellen",
 		
+		"Therapieberichte ändern","Therapieberichte löschen",
+		
+		"Dokumentation öffnen","Dokumentation scannen","Dokumentation löschen","Grafik- und OOorg-Dokumente erstellen",
+		
+		"Gutachten anlegen","Gutachten ändern","Gutachten löschen","Stammdaten auf neues Gutachten übertragen",
+		
+		"Termine eintragen / ändern","Termine löschen","Behandlungen bestätigen","Termine gruppieren","Termin Drag & Drop"
 		
 	};
 }

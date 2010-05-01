@@ -85,6 +85,7 @@ public class PatientStammDatenPanel extends JXPanel{
 		return jscr;
 	}
 	private String makeLink(String toLink,String linkTarget){
+		
 		return "<a href=\"http://"+linkTarget+".de\">"+toLink+"</a>";
 	}
 	public void parseHTML(boolean parse){
@@ -201,12 +202,12 @@ public class PatientStammDatenPanel extends JXPanel{
 		buf2.trimToSize();
 		String dummy;
 		buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
-		dummy = patientHauptPanel.patDaten.get(56).trim();
+		dummy = patientHauptPanel.patDaten.get(56).trim().replace("<", "&#60;");
 		buf2.append(makeLink("Therapeut: "+(dummy.equals("") ? "<font color=#FF0000>k.A.</font>" : dummy.toString()),"THERAPEUT"));
 		buf2.append("</tr></td>");
 		if(patientHauptPanel.patDaten.get(33).equals("T")){
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
-			dummy = patientHauptPanel.patDaten.get(46).trim();
+			dummy = patientHauptPanel.patDaten.get(46).trim().replace("<", "&#60;");
 			buf2.append(makeLink("Akutpat.: <font color=#FF0000>JA bis "+(dummy.length()==10 ? DatFunk.sDatInDeutsch(dummy.toString()) : "k.A.")+"</font>","AKUTBIS"));
 			buf2.append("</tr></td>");
 		}else{
@@ -219,12 +220,12 @@ public class PatientStammDatenPanel extends JXPanel{
 			buf2.append("<u><i>Terminwünsche</i></u>");
 			buf2.append("</tr></td>");		
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
-			buf2.append(makeLink(patientHauptPanel.patDaten.get(36),"TERMINE1"));
+			buf2.append(makeLink(patientHauptPanel.patDaten.get(36).replace("<", "&#60;"),"TERMINE1"));
 			buf2.append("</tr></td>");		
 		}
 		if(! patientHauptPanel.patDaten.get(37).trim().equals("")){
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
-			buf2.append(makeLink(patientHauptPanel.patDaten.get(37),"TERMINE2"));
+			buf2.append(makeLink(patientHauptPanel.patDaten.get(37).replace("<", "&#60;"),"TERMINE2"));
 			buf2.append("</tr></td>");		
 		}
 		return buf2.toString();
