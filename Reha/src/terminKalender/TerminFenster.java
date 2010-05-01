@@ -74,6 +74,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 
+import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -697,6 +698,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      if(sdaten[0]==null){
 					    	  return;
 					      }
+					      if(!Rechte.hatRecht(Rechte.Kalender_termindragdrop, false)){
+					    	  return;
+					      }
 					      dragStart = true;
 					      if(e.isAltDown()){
 					    	  DRAG_MODE = DRAG_MOVE;
@@ -1036,6 +1040,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 							if(!grobRaus){
 								wartenAufReady = true;
+								testeObAusmustern();
 								blockSetzen(10);								
 							}else{
 								wartenAufReady = false;								
@@ -3301,7 +3306,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			return;
 		}
 		xblock = Integer.parseInt(Integer.toString(aktiveSpalte[0]));
-		String nametext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(xblock);
+		String nametext = ((String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(xblock)).replaceAll("\u00AE"  ,"");
 		String reztext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(xblock);
 		String starttext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(xblock);
 		String sdauer = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(xblock);
@@ -3336,7 +3341,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if(terminVergabe.size()>0){
 			int anzahl = terminVergabe.size();
 			boolean gleiche = false;
-			String nametext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block);
+			String nametext = ((String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block)).replaceAll("\u00AE"  ,"");
 			String reztext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(block);
 			String starttext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(block);
 			String sdauer = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(block);
@@ -3356,7 +3361,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 		}
 		try{
-			sTerminVergabe[8] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block);
+			sTerminVergabe[8] = ((String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block)).replaceAll("\u00AE"  ,"");
 			sTerminVergabe[9] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(block);
 			sTerminVergabe[2] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(block);
 			sTerminVergabe[4] = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(block);

@@ -902,15 +902,15 @@ private void headerInfos(){
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("DruckvorlageTerminliste", icodummy);
 
-	/***********Numero f�nef***********/
+	/***********Numero fünef***********/
 	sdummy = "Kalenderfarben definieren";
 	htitel.put("Kalenderfarben", sdummy);
 	sdummy = "Die farbliche Darstellung der Termine im Kalender ist eine sehr effiziente Signalsprache. \n"+
-	"Sie k�nnen zwischen 4 vordefinierten Farbkombinationen wählen oder f�r die jeweilige Bedeutung eine eigene\n"+
+	"Sie können zwischen 4 vordefinierten Farbkombinationen wählen oder für die jeweilige Bedeutung eine eigene\n"+
 	"Kombination vergeben.\n"+
 	"Besondere Bedeutung haben die Codes 'A' bis 'H', die mit einer Bedeutung frei verknüpft werden können.\n"+
 	"Diese Codes können dann wie in der Tabelle angegeben in den Terminen hinter der Rezeptnummer eingetragen werden\n"+
-	"und bestimmen die Farbgebung (der Code f�r die Behandlungszeit wird dann nachrangig).";
+	"und bestimmen die Farbgebung (der Code für die Behandlungszeit wird dann nachrangig).";
 	hdescription.put("Kalenderfarben", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Kalenderfarben", icodummy);
@@ -918,7 +918,7 @@ private void headerInfos(){
 	/***********Numero sex***********/
 	sdummy = "Gruppentermine definieren";
 	htitel.put("Gruppentermine", sdummy);
-	sdummy = "Gruppentermine ist was f�r den Spezialisten\n"+
+	sdummy = "Gruppentermine ist was für den Spezialisten\n"+
 	"Der wird dann auch den Text schreiben....\n"+
 	"...und beim Hilfetext richtig ins Zeugs legen!";
 	hdescription.put("Gruppentermine", sdummy);
