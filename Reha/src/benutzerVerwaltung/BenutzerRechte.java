@@ -55,6 +55,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+import systemTools.StringTools;
 import systemTools.Verschluesseln;
 import terminKalender.ParameterLaden;
 
@@ -432,7 +433,12 @@ public class BenutzerRechte extends JXPanel{
 		JOptionPane.showMessageDialog(null, "Benutzer-Rechte importieren noch nicht implementiert");
 	}
 	private void doExport(){
-		JOptionPane.showMessageDialog(null, "Benutzer-Rechte exportieren noch nicht implementiert");
+		String rechtegruppe = "normaler Therapeut"; 
+		Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", rechtegruppe);
+		if(ret == null){
+			return;
+		}
+		String rechte = getRechte();
 	}
 	/********************************************/
 	private void doEdit(){
@@ -572,7 +578,20 @@ public class BenutzerRechte extends JXPanel{
 		ParameterLaden.Passwort();
 		
 	}
-/******************************************************************/	
+/******************************************************************/
+	private String getRechte(){
+		int lang = getNodeCount();
+		StringBuffer buf = new StringBuffer();
+		for(int i = 0; i < lang;i++){
+			JXRechteTreeTableNode node = holeNode(i);
+			//System.out.println(node.rechte.bildnummer);
+			if(node.rechte.bildnummer >= 0){
+				buf.append(Integer.toString(node.rechte.bildnummer));
+			}
+			
+		}
+		return buf.toString();
+	}
 	private int getNodeCount(){
 		int ret = 0; 
 		int  rootAnzahl;
