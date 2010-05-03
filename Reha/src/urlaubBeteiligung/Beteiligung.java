@@ -116,8 +116,8 @@ public class Beteiligung  extends JXPanel{
 		FormLayout lay = new FormLayout("fill:0:grow(0.5),5dlu,70dlu,3dlu,60dlu,3dlu,70dlu,3dlu,60dlu,"+
 		//10   11    12     13
 		"3dlu,70dlu,3dlu, 60dlu,25dlu,fill:0:grow(0.5)",
-		// 1   2  3   4  5   6  7    8  9  10
-		"10dlu,p,5dlu,p,5dlu,p,5dlu,p,2dlu,p");
+		// 1   2  3   4  5   6  7    8  9  10 11
+		"10dlu,p,5dlu,p,5dlu,p,5dlu,p,2dlu,p,10dlu");
 		CellConstraints cc = new CellConstraints();
 		content = new JXPanel();
 		content.setLayout(lay);

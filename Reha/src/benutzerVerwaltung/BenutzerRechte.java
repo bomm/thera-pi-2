@@ -46,6 +46,7 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
+import rechteTools.Rechte;
 import rehaInternalFrame.JBenutzerInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -90,23 +91,29 @@ public class BenutzerRechte extends JXPanel{
 	
 	String[] gruppe6 = {"anlegen","ändern","löschen","Stammdaten auf neues Gutachten übertragen"};
 	
-	String[] gruppe7 = {"nur in leere Termine eintragen","Termine vollständig eintragen","bestehende Termine löschen","Behandlungen bestätigen","Termine gruppieren erlauben","Drag & Drop erlauben"};
+	String[] gruppe7 = {"nur in leere Termine eintragen","Termine vollständig eintragen","bestehende Termine löschen","Behandlungen bestätigen","Termine gruppieren erlauben","Drag & Drop erlauben","unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen"};
 	
 	String[] gruppe8 = {"Masken erstellen / ändern","Masken in Kalender übertragen"};
 	
-	String[] gruppe9 = {"[Ru:gl] öffnen","Termine überschreiben"};
+	String[] gruppe9 = {"[Ru:gl] öffnen","Termine überschreiben","unbelegt 1 für zukünftige Erweiterungen","unbelegt für 2 zukünftige Erweiterungen"};
 	
 	String[] gruppe10 = {"Kassenabrechnung","Rehaabrechnung","Barkassen Abrechnung","Neuanmeldungen ermitteln","Umsätze von bis ermitteln","Mitarbeiterbeteiligung ermitteln",
-			"Urlaub-/Überstunden ermitteln"};
+			"Urlaub-/Überstunden ermitteln","unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
+			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen","unbelegt 7 für zukünftige Erweiterungen",
+			"unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen","unbelegt 10 für zukünftige Erweiterungen"};
 	
-	String[] gruppe11 = {"Firmenangaben Mandanten","Datenbankparamtere","Kalender Grundeinstellungen","Kalender-Benuter verwalten",
+	String[] gruppe11 = {"Firmenangaben Mandanten","Datenbankparameter","Kalender Grundeinstellungen","Kalender-Benuter verwalten",
 			"Behandlersets einstellen","Druckvorlage für Terminliste","Kalender-Farbdefinition","Gruppentermine verwalten",
 			"Neues Kalenderjahr anlegen","[Ru:gl]-Grundeinstellungen","[Ru:gl]-Gruppen definieren","Einstellungen Patientenfenster",
 			"Einstellungen Rezepte","Einstellungen Krankenfenster","Einstellungen Arztfenster","Emailparameter ändern","Geräteanschlüsse (Schnittstellen)",
 			"angeschlossene Geräte","Behandlunskürzel verwalten","Tarifgruppen bearbeiten","Preise bearbeiten/importieren",
-			"Nummernkreise verwalten","Nebraska benützen","Abrechnungsformulare und Druckparameter","Kostenträgerdatei einlesen","Fremdprogramme verwalten"};
+			"Nummernkreise verwalten","Nebraska benützen","Abrechnungsformulare und Druckparameter","Kostenträgerdatei einlesen","Fremdprogramme verwalten",
+			"unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
+			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen"};
 
-	String[] gruppe12 = {"Verkaufsmodul benutzen","Rehaformulare verwenden"};
+	String[] gruppe12 = {"Verkaufsmodul benutzen","Rehaformulare verwenden","unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
+			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen","unbelegt 7 für zukünftige Erweiterungen",
+			"unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen","unbelegt 10 für zukünftige Erweiterungen"};
 	/*************************************/
 	
 	JXPanel content = null;
@@ -304,13 +311,27 @@ public class BenutzerRechte extends JXPanel{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
 			pws[0].setText(jcmb.getValue().toString());
 			pws[1].setText(jcmb.getValue().toString());
-			System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
+			
+			//System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
 			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
+			if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerSuper_user, false) 
+					&& rechteTools.Rechte.testeRecht(aktuelleRechte, rechteTools.Rechte.BenutzerSuper_user)){
+				JOptionPane.showMessageDialog(null,"SuperUser-Rechte können nur von einem Benutzer mit SuperUser-Rechten geändert werden");
+				jcmb.setSelectedIndex(0);
+				tfs[0].setText("");
+				pws[0].setText("");
+				pws[1].setText("");
+				aktuelleRechte = "";
+				userid="";
+				regleButtons("1101000");
+				return;
+			}
 			userid = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(4);
 			regleButtons("1101000");
 			aktualisiereTree(false);
 		}
 	}
+
 	/*******************************/
 	private void aktualisiereTree(boolean allesaufnull){
 		int lang = getNodeCount();
@@ -489,6 +510,9 @@ public class BenutzerRechte extends JXPanel{
 			JOptionPane.showMessageDialog(null, "Passwort und Passwortwiederholung sind nicht identisch");
 			return;
 		}
+		if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerRechte_set, true)){
+			return;
+		}
 		int lang = getNodeCount();
 		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
@@ -500,6 +524,13 @@ public class BenutzerRechte extends JXPanel{
 			
 		}
 		String pw = buf.toString();
+		if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerSuper_user, false) 
+				&& rechteTools.Rechte.testeRecht(pw, rechteTools.Rechte.BenutzerSuper_user)){
+			JOptionPane.showMessageDialog(null,"SuperUser-Rechte können nur von einem Benutzer mit SuperUser-Rechten vergeben werden");
+			return;
+		}
+		
+		
 		Verschluesseln man = Verschluesseln.getInstance();
 	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 		String encrypted = man.encrypt(pw);

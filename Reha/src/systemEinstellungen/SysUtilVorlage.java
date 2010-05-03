@@ -26,7 +26,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListener {
-	public SysUtilVorlage(){
+	public SysUtilVorlage(ImageIcon img){
 		super(new BorderLayout());
 		System.out.println("Aufruf SysUtilVorlage");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
@@ -41,7 +41,8 @@ public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListen
 	     setBackgroundPainter(new CompoundPainter(mp));
 		/****/
 	     JLabel jlbl = new JLabel("");
-	     jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
+	     jlbl.setIcon(img);
+	     //jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 	     add(jlbl,BorderLayout.CENTER);
 	     //add(getVorlagenSeite());
 		return;

@@ -318,6 +318,9 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 	if(! Reha.DbOk){
 		return;
 	}
+	if(!Rechte.hatRecht(Rechte.Gutachten_anlegen, true)){
+		return;
+	}
 	JComponent gutachten = AktiveFenster.getFensterAlle("GutachtenFenster");
 	if(gutachten != null){
 		containerHandling(((JGutachtenInternal)gutachten).getDesktop());
@@ -360,6 +363,9 @@ public void loescheGutachten(){
 /******************************************/
 public void AbrechnungFenster(int setPos) {
 	if(! Reha.DbOk){
+		return;
+	}
+	if(!Rechte.hatRecht(Rechte.Funktion_kassenabrechnung, true)){
 		return;
 	}
 	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung");
@@ -407,6 +413,9 @@ public void AnmeldungenFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
 		return;
 	}
+	if(!Rechte.hatRecht(Rechte.Funktion_neuanmeldungen, true)){
+		return;
+	}
 	JComponent anmeld = AktiveFenster.getFensterAlle("Anmeldungen");
 	if(anmeld != null){
 		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
@@ -450,6 +459,9 @@ public void loescheAnmeldungen(){
 /*****************************Umsätze von bis*********************************/
 public void UmsatzFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
+		return;
+	}
+	if(!Rechte.hatRecht(Rechte.Funktion_umsatzvonbis, true)){
 		return;
 	}
 	JComponent umsatz = AktiveFenster.getFensterAlle("Umsaetze");
@@ -496,6 +508,9 @@ public void VerkaufFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
 		return;
 	}
+	if(!Rechte.hatRecht(Rechte.Sonstiges_verkaufsmodul, true)){
+		return;
+	}
 	JComponent vk = AktiveFenster.getFensterAlle("Verkauf");
 	if(vk != null){
 		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
@@ -538,6 +553,9 @@ public void loescheVerkauf(){
 /***********************Barkasse abrechnen*************************/
 public void BarkassenFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
+		return;
+	}
+	if(!Rechte.hatRecht(Rechte.Funktion_barkasse, true)){
 		return;
 	}
 	JComponent bk = AktiveFenster.getFensterAlle("Barkasse");
@@ -585,6 +603,9 @@ public void RehaabrechnungFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
 		return;
 	}
+	if(!Rechte.hatRecht(Rechte.Funktion_rehaabrechnung, true)){
+		return;
+	}
 	JComponent rab = AktiveFenster.getFensterAlle("Rehaabrechnung");
 	if(rab != null){
 		containerHandling(((JRehaabrechnungInternal)rab).getDesktop());
@@ -626,6 +647,9 @@ public void loescheRehaabrechnung(){
 /***********************************************************/
 public void BeteiligungFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
+		return;
+	}
+	if(!Rechte.hatRecht(Rechte.Funktion_mitarbeiterbeteiligung, true)){
 		return;
 	}
 	JComponent beteiligung = AktiveFenster.getFensterAlle("Beteiligung");
@@ -674,7 +698,6 @@ public void BenutzerrechteFenster(int setPos,String sparam) {
 	if(!Rechte.hatRecht(Rechte.BenutzerDialog_open,true)){
 		return;
 	}
-	
 	JComponent benutzer = AktiveFenster.getFensterAlle("Benutzerrechte");
 	if(benutzer != null){
 		System.out.println("InternalFrame Anmeldungen bereits geöffnet");

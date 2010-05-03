@@ -72,6 +72,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import rechteTools.Rechte;
 import rehaContainer.RehaTP;
 import systemTools.JRtaTextField;
 import systemTools.Verschluesseln;
@@ -155,6 +156,7 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 		jp1.setBackground(Color.WHITE);
         jp1.setLayout(new BorderLayout());
         //jp1.setLayout(new VerticalLayout(1));
+        //String ss = Reha.proghome+"icons/"+imagename; 
         String ss = Reha.proghome+"icons/header-image.png"; //"icons/header-image.png";
         header = new JXHeader("Mit der Systeminitialisierung....",
                 "....erstellen bzw. ändern Sie die Systemeinstellungen auf Ihre inividuelle Bedürfnisse hin.\n" +
@@ -456,7 +458,10 @@ private void auswertenSysUtil(String util){
 			cursorWait(true);
 		}
 		if(util.equals("Behandlersets definieren")){
-
+			if(!Rechte.hatRecht(Rechte.Systeminit_kalenderbenutzersets, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilBehandlerset();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -469,6 +474,10 @@ private void auswertenSysUtil(String util){
 			//headerInfos(0);
 			//SwingUtilities.invokeLater(new Runnable(){
 				//public  void run(){
+			if(!Rechte.hatRecht(Rechte.Systeminit_kalenderbenutzer, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilKalenderBenutzer();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -481,253 +490,195 @@ private void auswertenSysUtil(String util){
 		}
 		if(util.equals("Ru:gl-Gruppen definieren")){
 			//headerInfos(0);
-			//SwingUtilities.invokeLater(new Runnable(){
-				//public  void run(){
-
-
-					jxInhaltRechts = new SysUtilRoogleGruppen();
-					jxInhaltRechts.setVisible(true);
-					jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-					jxRechts.revalidate();
-					cursorWait(false);
-					setHeader("RoogleGrundeinstellungen");
-			 	  	//}
-			//});			
+			if(!Rechte.hatRecht(Rechte.Systeminit_ruglgruppen, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilRoogleGruppen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("Neues Kalenderjahr anlegen")){
 			//headerInfos(0);
-			//SwingUtilities.invokeLater(new Runnable(){
-				//public  void run(){
-					jxInhaltRechts = new SysUtilKalenderanlegen();
-					jxInhaltRechts.setVisible(true);
-					jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-					jxRechts.revalidate();
-					cursorWait(false);
-					setHeader("Kalenderjahranlegen");
-					//}
-			//});			
+			if(!Rechte.hatRecht(Rechte.Systeminit_kalenderjahranlegen, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilKalenderanlegen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("Kalenderjahranlegen");
 			break;
 		}
 		if(util.equals("Kalenderfarben definieren")){
 			//headerInfos(0);
-			//SwingUtilities.invokeLater(new Runnable(){
-				//public  void run(){
-			/*
-					new Thread(){
-						public void run(){*/
-							jxInhaltRechts = new SysUtilKalenderfarben();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();*/
-		 	  	//}
-			//});			
+			if(!Rechte.hatRecht(Rechte.Systeminit_kalenderfarbsets, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilKalenderfarben();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("Kalenderfarben");
 			break;
 		}
 		if(util.equals("Terminkal. Grundeinstellungen")){
 			//headerInfos(0);
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilKalendereinstell();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/
+			if(!Rechte.hatRecht(Rechte.Systeminit_kalendergrundeinstellung, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilKalendereinstell();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("TKGrundeinstellungen");			
 			break;
 		}
 		if(util.equals("Gruppentermine definieren")){
 			//headerInfos(0);
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){*/
-							jxInhaltRechts = new SysUtilGruppenDef();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_kalendergruppentermine, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilGruppenDef();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("Gruppentermine");
 			break;
 		}
 		if(util.equals("Emailparameter")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){*/
-							jxInhaltRechts = new SysUtilEmailparameter();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_eimailadressen, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilEmailparameter();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			break;
 		}
 		if(util.equals("Druckvorlage Terminliste")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilDruckvorlage();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_terminlistedruck, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilDruckvorlage();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("DruckvorlageTerminliste");
 			break;
 		}
 		if(util.equals("Ru:gl-Grundeinstellungen")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilRoogleEinstellungen();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_ruglgrundeinstellung, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilRoogleEinstellungen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("Datenbankparameter")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilDBdaten();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_datenbank, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilDBdaten();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("Firmenangaben Mandaten")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilMandanten();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_mandanten, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilMandanten();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("Patient")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilPatient();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_fensterpatient, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilPatient();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("PatientStammdaten");
 			break;
 		}
 		if(util.equals("Arzt")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilArzt();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_fensterarzt, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilArzt();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("Krankenkasse")){
-			/*
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					new Thread(){
-						public void run(){
-						*/
-							jxInhaltRechts = new SysUtilKrankenkasse();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
-						/*}
-					}.start();
-		 	  	}
-			});*/			
+			if(!Rechte.hatRecht(Rechte.Systeminit_fensterkasse, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilKrankenkasse();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("Rezepte")){
-
-							jxInhaltRechts = new SysUtilRezepte();
-							jxInhaltRechts.setVisible(true);
-							jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
-							jxRechts.revalidate();
-							cursorWait(false);
+			if(!Rechte.hatRecht(Rechte.Systeminit_fensterrezept, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilRezepte();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
 		if(util.equals("angeschlossene Geraete")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_geraete, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilGeraete();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -737,6 +688,10 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Anschlüsse")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_schnittstellen, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilAnschluesse();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -746,6 +701,10 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Fremdprogramme")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_fremdprogramme, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilFremdprogramme();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -755,6 +714,10 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Preise bearbeiten/importieren")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_preiseimportieren, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilPreislisten();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -773,6 +736,10 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Tarifgruppen bearbeiten")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_tarifgruppen, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilTarifgruppen();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -782,6 +749,10 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Kostenträgerdatei einlesen")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_kostentraegerdatei, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilKostentraeger();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -790,6 +761,10 @@ private void auswertenSysUtil(String util){
 			break;
 		}
 		if(util.equals("Nebraska / Zertifikatshandling")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_nebraska, false)){
+				doAccessDenied();
+				return;
+			}
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -804,6 +779,10 @@ private void auswertenSysUtil(String util){
 			}.execute();
 		}
 		if(util.equals("Abrechnungsformulare und Drucker")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_abrechnungformulare, false)){
+				doAccessDenied();
+				return;
+			}
 			jxInhaltRechts = new SysUtilAbrechnungFormulare();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
@@ -811,10 +790,10 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
-
-		
-		
-		jxInhaltRechts = new SysUtilVorlage();
+		if(SystemConfig.hmSysIcons.get("werkzeuge") == null){
+			SystemConfig.hmSysIcons.put("werkzeuge",new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
+		}
+		jxInhaltRechts = new SysUtilVorlage(SystemConfig.hmSysIcons.get("werkzeuge"));
 		jxInhaltRechts.setVisible(true);
 		jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
 		cursorWait(false);
@@ -824,6 +803,16 @@ private void auswertenSysUtil(String util){
 	
 }
 /*******************************************/
+private void doAccessDenied(){
+	if(SystemConfig.hmSysIcons.get("noaccess") == null){
+		SystemConfig.hmSysIcons.put("noaccess",new ImageIcon(Reha.proghome+"icons/"+"noaccess.gif"));
+	}
+	jxInhaltRechts = new SysUtilVorlage(SystemConfig.hmSysIcons.get("noaccess"));
+	jxInhaltRechts.setVisible(true);
+	jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+	cursorWait(false);
+	jxRechts.revalidate();
+}
 private void cursorWait(boolean ein){
 	if(!ein){
 		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
