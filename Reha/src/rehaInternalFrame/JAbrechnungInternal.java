@@ -26,10 +26,6 @@ public class JAbrechnungInternal extends JRehaInternal implements FocusListener,
 			this.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 			rEvent = new RehaEventClass();
 			rEvent.addRehaEventListener((RehaEventListener) this);
-
-
-			//addInternalFrameListener(this);
-			// TODO Auto-generated constructor stub
 		}
 		@Override
 		public void internalFrameClosed(InternalFrameEvent arg0) {
