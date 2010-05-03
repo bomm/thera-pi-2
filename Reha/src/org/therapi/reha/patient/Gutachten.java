@@ -16,12 +16,15 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -40,12 +43,15 @@ import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import dialoge.ToolsDialog;
+
 import patientenFenster.GutachtenWahl;
 import patientenFenster.KeinRezept;
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.IconListRenderer;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
@@ -450,7 +456,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			return;
 		}
 		if(cmd.equals("guttools")){
-			
+			new ToolsDlgGutachten("",gutbut[3].getLocationOnScreen());
 			return;
 		}
 
@@ -552,6 +558,33 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		      }
 		   
 	}
+
+	class ToolsDlgGutachten{
+		public ToolsDlgGutachten(String command,Point pt){
+			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("Stammdaten in neues Gutachten übertragen",SystemConfig.hmSysIcons.get("neu"));
+			icons.put("Textbausteine anlegen/ändern",SystemConfig.hmSysIcons.get("arztbericht"));
+			JList list = new JList(	new Object[] {"Stammdaten in neues Gutachten übertragen", "Textbausteine anlegen/ändern"});
+			list.setCellRenderer(new IconListRenderer(icons));	
+			int rueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Gutachten / E-Bericht",list,rueckgabe);
+			tDlg.setPreferredSize(new Dimension(300,200));
+			tDlg.setLocation(pt.x-70,pt.y+30);
+			tDlg.pack();
+			tDlg.setVisible(true);
+			switch(tDlg.rueckgabe){
+			case 0:
+				if(!Rechte.hatRecht(Rechte.Gutachten_copy, true)){return;}
+				break;
+			case 1:
+				if(!Rechte.hatRecht(Rechte.Sonstiges_textbausteinegutachten, true)){return;}
+				break;
+			}
+			tDlg = null;
+			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+		}
+	}
+
 	
 
 }

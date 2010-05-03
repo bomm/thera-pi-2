@@ -112,9 +112,10 @@ public class BenutzerRechte extends JXPanel{
 			"unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
 			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen"};
 
-	String[] gruppe12 = {"Verkaufsmodul benutzen","Rehaformulare verwenden","unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
-			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen","unbelegt 7 für zukünftige Erweiterungen",
-			"unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen","unbelegt 10 für zukünftige Erweiterungen"};
+	String[] gruppe12 = {"Verkaufsmodul benutzen","Rehaformulare verwenden","Textbausteine für Gutachten anlegen/ändern","unbelegt 1 für zukünftige Erweiterungen",
+			"unbelegt 2 für zukünftige Erweiterungen","unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen",
+			"unbelegt 7 für zukünftige Erweiterungen","unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen",
+			"unbelegt 10 für zukünftige Erweiterungen"};
 	/*************************************/
 	
 	JXPanel content = null;
