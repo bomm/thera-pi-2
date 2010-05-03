@@ -115,6 +115,7 @@ import preisListenHandling.MachePreisListe;
 
 
 //import patientenFenster.PatGrundPanel;
+import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
@@ -1291,6 +1292,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		    copyLabel.setName("copyLabel");
 		    copyLabel.addMouseListener(new MouseAdapter() {
 		        public void mousePressed(MouseEvent evt) {
+		        	if(!Rechte.hatRecht(Rechte.Kalender_termindragdrop, false)){
+		        		return;
+		        	}
 		            JComponent comp = (JComponent)evt.getSource();
 		            if( ((JLabel)comp).getText().equals("") ){
 		            	return;

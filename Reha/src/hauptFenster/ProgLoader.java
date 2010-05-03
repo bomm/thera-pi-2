@@ -96,6 +96,11 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 	if(! Reha.DbOk){
 		return;
 	}
+	if(ansicht == 2){
+		if(!Rechte.hatRecht(Rechte.Masken_erstellen, true)){
+			return;
+		}
+	}
 	JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 	if(termin != null){
 		if(ansicht==2){
@@ -114,6 +119,7 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 		return;
 	}
 	final int xansicht=ansicht;
+
 	SwingUtilities.invokeLater(new Runnable(){
 		public  void run(){
 			String name = "TerminFenster"+WinNum.NeueNummer();
@@ -192,7 +198,9 @@ public void ProgRoogleFenster(int setPos,String droptext) {
 	
 	new Thread(){
 		public void run(){
-			
+			if(!Rechte.hatRecht(Rechte.Rugl_open, true)){
+				return;
+			}
  		   	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
  			roogleDlg = new RoogleFenster(Reha.thisFrame,xdroptext);
  			roogleDlg.setSize(940,680);

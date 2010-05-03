@@ -93,6 +93,7 @@ import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.table.TableColumnExt;
 
 
+import rechteTools.Rechte;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
@@ -856,7 +857,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		sucheStarten.setEnabled((knopf[0]==1 ? true : false));
 		sucheStoppen.setEnabled((knopf[1]==1 ? true : false));
 		sucheWeiter.setEnabled((knopf[2]==1 ? true : false));	
-		auswahlUebernahme.setEnabled((knopf[3]==1 ? true : false));
+		if(!Rechte.hatRecht(Rechte.Rugl_write, false)){
+			auswahlUebernahme.setEnabled(false);
+		}else{
+			auswahlUebernahme.setEnabled((knopf[3]==1 ? true : false));			
+		}
 		auswahlDrucken.setEnabled((knopf[4]==1 ? true : false));
 		auswahlPerEmail.setEnabled((knopf[5]==1 ? true : false));
 		auswahlInDatei.setEnabled((knopf[6]==1 ? true : false));		
@@ -1055,7 +1060,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 							this.zeilengewaehlt++;
 							setzeZeilenAusgewaehlt(this.zeilengewaehlt);
 							if(this.zeilengewaehlt==1){
-								auswahlUebernahme.setEnabled(true);
+								if(!Rechte.hatRecht(Rechte.Rugl_write, false)){
+									auswahlUebernahme.setEnabled(false);									
+								}else{
+									auswahlUebernahme.setEnabled(true);									
+								}
 								auswahlDrucken.setEnabled(true);
 								auswahlPerEmail.setEnabled(true);
 								auswahlInDatei.setEnabled(true);
@@ -1149,7 +1158,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			}
 			setzeZeilenAusgewaehlt(this.zeilengewaehlt);
 			listenerEinschalten();
-			auswahlUebernahme.setEnabled(true);
+			if(!Rechte.hatRecht(Rechte.Rugl_write, false)){
+				auswahlUebernahme.setEnabled(false);									
+			}else{
+				auswahlUebernahme.setEnabled(true);									
+			}			
 			auswahlDrucken.setEnabled(true);
 			auswahlPerEmail.setEnabled(true);
 			auswahlInDatei.setEnabled(true);

@@ -61,11 +61,19 @@ public class Rechte {
 	public static int Gutachten_delete		= 30;
 	public static int Gutachten_copy		= 31;
 	
-	public static int Kalender_terminanlegen		= 32;
-	public static int Kalender_termindelete			= 33;
-	public static int Kalender_terminconfirm		= 34;
-	public static int Kalender_termingroup			= 35;
-	public static int Kalender_termindragdrop		= 36;
+	public static int Kalender_terminanlegenteil	= 32;
+	public static int Kalender_terminanlegenvoll	= 33;
+	public static int Kalender_termindelete			= 34;
+	public static int Kalender_terminconfirm		= 35;
+	public static int Kalender_termingroup			= 36;
+	public static int Kalender_termindragdrop		= 37;
+	
+	public static int Masken_erstellen				= 38;
+	public static int Masken_uebertragen			= 39;
+	
+	public static int Rugl_open						= 40;
+	public static int Rugl_write					= 41;
+	
 
 	private static String[] rechteExt = {"Benutzerverwaltung öffnen","Benutzerrechte ändern","Super-User",
 		
@@ -83,7 +91,11 @@ public class Rechte {
 		
 		"Gutachten anlegen","Gutachten ändern","Gutachten löschen","Stammdaten auf neues Gutachten übertragen",
 		
-		"Termine eintragen / ändern","Termine löschen","Behandlungen bestätigen","Termine gruppieren","Termin Drag & Drop"
+		"Eintrag nur in freie Termine erlauben","Termine vollständig eintragen / ändern","Termine löschen","Behandlungen bestätigen","Termine gruppieren","Termin Drag & Drop",
+		
+		"Wochenarbeitszeit erstellen","Wochenarbeitszeit in Terminkalender übertragen",
+		
+		"[Ru:gl] öffnen","Termine mit [Ru:gl] überschreiben"
 		
 	};
 }

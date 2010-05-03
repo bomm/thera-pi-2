@@ -831,7 +831,78 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							oSpalten[tspalte].requestFocus();
 							break;
 						}
+						/*********
+						 * 
+						 * 
+						 */
+						if (e.getKeyCode()==155 && e.isShiftDown()){
+							//Shift einfügen
+							//Daten in den Kalender schreiben (früher Aufruf über F3)
+							long zeit = System.currentTimeMillis();
+							boolean grobRaus = false;
+							while(wartenAufReady){
+								try {
+									Thread.sleep(20);
+									if( (System.currentTimeMillis()-zeit) > 1500){
+										grobRaus = true;
+										break;
+									}
+								} catch (InterruptedException e1) {
+									e1.printStackTrace();
+								}
+							}
+							if(!grobRaus){
+								wartenAufReady = true;
+								terminGedropt = false;
+								terminBreak = false;
+								datenAusSpeicherHolen();								
+							}else{
+								wartenAufReady = false;						
+							}
+							shiftGedrueckt = false;
+							gruppierenAktiv = false;
+							gruppierenBloecke[0] = -1;
+							gruppierenBloecke[1] = -1;	
+							oSpalten[gruppierenSpalte].setInGruppierung(false);
+							oSpalten[tspalte].requestFocus();							
+							break;
+						}
+						
+						if ( (e.getKeyCode()==155) && (e.isControlDown()) ){
+							//Daten in Speicher (früher Aufruf über F2)
+							//System.out.println("Strg+Einfg");
+							int xaktBehandler  = -1;
+							datenInSpeicherNehmen();
+							if(terminVergabe.size() > 0){
+								terminVergabe.clear();
+							}
+							if(ansicht == NORMAL_ANSICHT){
+								xaktBehandler = belegung[aktiveSpalte[2]];
+							}else  if(ansicht == WOCHEN_ANSICHT){
+								xaktBehandler = aktiveSpalte[2]; 
+							}else  if(ansicht == MASKEN_ANSICHT){
+								xaktBehandler = aktiveSpalte[2];
+							}
+							terminAufnehmen(xaktBehandler,aktiveSpalte[0]);
+							break;
+						}
+						
+						/********
+						 * 
+						 * 
+						 * 
+						 */
 						if (ec==16){
+							if(!Rechte.hatRecht(Rechte.Kalender_termingroup, false)){
+								System.out.println("Rückgabewert von hatRechte(termingroup) = "+Rechte.hatRecht(Rechte.Kalender_termingroup, false));
+								shiftGedrueckt = true;
+								gruppierenAktiv = false;
+								oSpalten[tspalte].shiftGedrueckt(true);
+								oSpalten[gruppierenSpalte].setInGruppierung(false);
+								gruppierenBloecke[0] = -1;
+								gruppierenBloecke[1] = -1;	
+								break;
+							}
 							shiftGedrueckt = true;
 							if(!gruppierenAktiv){
 								gruppierenAktiv = true;
@@ -879,55 +950,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(ec==80 && e.isAltDown()){
 							doPatSuchen();
 						}
-						if ( (e.getKeyCode()==155) && (e.isControlDown()) ){
-							//Daten in Speicher (f�her Aufruf �ber F2)
-							//System.out.println("Strg+Einfg");
-							int xaktBehandler  = -1;
-							datenInSpeicherNehmen();
-							if(terminVergabe.size() > 0){
-								terminVergabe.clear();
-							}
-							if(ansicht == NORMAL_ANSICHT){
-								xaktBehandler = belegung[aktiveSpalte[2]];
-							}else  if(ansicht == WOCHEN_ANSICHT){
-								xaktBehandler = aktiveSpalte[2]; 
-							}else  if(ansicht == MASKEN_ANSICHT){
-								xaktBehandler = aktiveSpalte[2];
-							}
-							terminAufnehmen(xaktBehandler,aktiveSpalte[0]);
-							break;
-						}
-						if (e.getKeyCode()==155 && e.isShiftDown()){
-							//Daten in den Kalender schreiben (f�her Aufruf �ber F3)
-							long zeit = System.currentTimeMillis();
-							boolean grobRaus = false;
-							while(wartenAufReady){
-								try {
-									Thread.sleep(20);
-									if( (System.currentTimeMillis()-zeit) > 1500){
-										grobRaus = true;
-										break;
-									}
-								} catch (InterruptedException e1) {
-									e1.printStackTrace();
-								}
-							}
-							if(!grobRaus){
-								wartenAufReady = true;
-								terminGedropt = false;
-								terminBreak = false;
-								datenAusSpeicherHolen();								
-							}else{
-								wartenAufReady = false;						
-							}
-							shiftGedrueckt = false;
-							gruppierenAktiv = false;
-							gruppierenBloecke[0] = -1;
-							gruppierenBloecke[1] = -1;	
-							oSpalten[gruppierenSpalte].setInGruppierung(false);
-							oSpalten[tspalte].requestFocus();							
-							break;
-						}
+						/*****************/
+						//ursprünglich an dieser Stelle
+						//
+						/*****************/
+						/**********************************************/
 						if ( (e.getKeyCode()==76) && (e.isControlDown()) ){
 							terminListe();
 							break;
@@ -986,7 +1013,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							break;
 						}
 						if ((e.getKeyCode()==118) && (e.isAltDown()) && (e.isShiftDown())){
-							//F7 + Schift + Alt
+							//F7 + Schift + Alt = Radikalkur!!!!!!!
+							if(!Rechte.hatRecht(Rechte.Kalender_termindelete, true)){
+								wartenAufReady = false;
+								shiftGedrueckt = false;
+								gruppierenAktiv = false;
+								e.consume();
+								oSpalten[tspalte].requestFocus();
+								break;
+							}
 							blockSetzen(999);
 							e.consume();
 							oSpalten[tspalte].requestFocus();
@@ -998,6 +1033,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						if (e.getKeyCode()==119){
 							//F8
+							if((!Rechte.hatRecht(Rechte.Kalender_termindelete, true))){
+								//getAktTestTermin("name").equals(""))
+								wartenAufReady = false;
+								shiftGedrueckt = false;
+								gruppierenAktiv = false;
+								e.consume();
+								oSpalten[tspalte].requestFocus();
+								break;
+							}
 							long zeit = System.currentTimeMillis();
 							boolean grobRaus = false;
 							while(wartenAufReady){
@@ -1025,6 +1069,17 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							break;
 						}
 						if (e.getKeyCode()==120){
+							//F9
+							if( (!Rechte.hatRecht(Rechte.Kalender_termindelete, false))){ 
+								Rechte.hatRecht(Rechte.Kalender_termindelete, true);
+								wartenAufReady = false;
+								shiftGedrueckt = false;
+								gruppierenAktiv = false;
+								e.consume();
+								oSpalten[tspalte].requestFocus();
+								break;
+								
+							}
 							long zeit = System.currentTimeMillis();
 							boolean grobRaus = false;
 							while(wartenAufReady){
@@ -1918,6 +1973,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		terminangaben[3] = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(3).get(block));
 		terminangaben[4] = ((String) ((ArrayList<Vector<String>>) vTerm.get(behandler)).get(4).get(block));
 		terminangaben[5] = Integer.toString(block);
+
+		/**************Test der Berechtigungen*****************/
+		if(!rechteTest(terminangaben[0])){
+			starteUnlock();
+			wartenAufReady = false;
+			setUpdateVerbot(false);
+			return;
+		}
+		/*****************************************************/
+		
 	if(lockok > 0){
 		this.zf = new Zeitfenster(this);
 		int x,y;
@@ -1989,6 +2054,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  * 
  * 	
  */
+	private boolean rechteTest(String testtermin){
+		/**************Test der Berechtigungen*****************/
+		boolean teil = Rechte.hatRecht(Rechte.Kalender_terminanlegenteil, false);
+		boolean voll = Rechte.hatRecht(Rechte.Kalender_terminanlegenvoll, false);
+		if( (testtermin.trim().equals("")) && (! (teil || voll)) ){
+			Rechte.hatRecht(Rechte.Kalender_terminanlegenteil, true);
+			return false;
+		}
+		if( (!testtermin.trim().equals(""))  && (!voll)){
+			Rechte.hatRecht(Rechte.Kalender_terminanlegenvoll, true);
+			return false;
+		}
+		/*****************************************************/
+		return true;
+	}
 	private void spaltenDatumSetzen(boolean heute){
 		if(heute){
 			spaltenDatum[0]=this.aktuellerTag;spaltenDatum[1]=this.aktuellerTag;spaltenDatum[2]=this.aktuellerTag;
@@ -2673,8 +2753,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		int aktdauer;
 		String aktstart;
 		String aktend;
+		String akttermdaten;
 		setUpdateVerbot(true); /****************///////
+
+		gruppierenAktiv = false;
+		gruppierenBloecke[0] = -1;
+		gruppierenBloecke[1] = -1;	
+		oSpalten[gruppierenSpalte].setInGruppierung(false);
+
+		
 		if(datenSpeicher[0]==null){
+			System.out.println("datenSpeicher[0] hat den Wert null -> return");
+			wartenAufReady = false;
 			setUpdateVerbot(false);
 			return;
 		}
@@ -2698,6 +2788,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 			}
 		}
+		
 		if(ansicht==NORMAL_ANSICHT){
 			aktbehandler = belegung[aktiveSpalte[2]];
 		}else if(ansicht==WOCHEN_ANSICHT){
@@ -2709,6 +2800,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		aktdauer = Integer.parseInt((String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(3)).get(aktblock));	
 		aktstart = (String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(2)).get(aktblock); 
 		aktend = (String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(4)).get(aktblock);
+		akttermdaten = (String) ((Vector<?>)((ArrayList<?>)vTerm.get(aktbehandler)).get(0)).get(aktblock);
+		/**************Test der Berechtigungen*****************/
+		if(!rechteTest(akttermdaten)){
+			wartenAufReady = false;
+			setUpdateVerbot(false);
+			return;
+		}
+		/*******************************************/
 		for(int i = 0; i<1; i++){
 			if(aktdauer == Integer.parseInt(datenSpeicher[3])){
 				datenSpeicher[2] = aktstart;
@@ -3064,6 +3163,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					JOptionPane.showMessageDialog(null,"Um die AZ-Definition in den Terminkalender zu übertragen empfiehlt es sich erst auszuwählen\nwelche(!) Definition übertragen werden soll....");
 					return;
 				}
+				if(!Rechte.hatRecht(Rechte.Masken_uebertragen, true)){
+					return;
+				}
 				setUpdateVerbot(true);
 				mb = new MaskeInKalenderSchreiben(Reha.thisFrame,maskenbelegung,(Vector) vTerm.clone());
 				mb.setSize(new Dimension(700,430));
@@ -3330,6 +3432,35 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}else{
 			Reha.thisClass.mousePositionLabel.setForeground(Color.BLACK);
 			Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
+		}
+	}
+	// wird gebraucht für Rechtetest gibt name des Termines zurück
+	private String getAktTestTermin(String retwert){
+		int retart = 0;
+		if(retwert.equals("name")){
+			retart = 0;
+		}else if(retwert.equals("rezeptnummer")){
+			retart = 1;
+		}else if(retwert.equals("beginn")){
+			retart = 2;
+		}else if(retwert.equals("dauer")){
+			retart = 3;
+		}else if(retwert.equals("ende")){
+			retart = 4;
+		}
+		int testBehandler = -1;
+		int block = aktiveSpalte[0];
+		if(ansicht == NORMAL_ANSICHT){
+			testBehandler = belegung[aktiveSpalte[2]];
+		}else  if(ansicht == WOCHEN_ANSICHT){
+			testBehandler = aktiveSpalte[2]; 
+		}else  if(ansicht == MASKEN_ANSICHT){
+			testBehandler = aktiveSpalte[2];
+		}
+		if(testBehandler <= 0){
+			return "terminbelegt";
+		}else{
+			return((String) ((Vector) ((ArrayList)  vTerm.get(testBehandler)).get(retart)).get(block)).trim();
 		}
 	}
 	public void terminAufnehmen(int behandler,int block){
