@@ -57,7 +57,7 @@ import events.RehaEventListener;
 
 public class Eb3 implements RehaEventListener  {
 	RehaEventClass rEvent = null;
-	JXPanel pan = null;
+	public JXPanel pan = null;
 	//Panel pan = null;
 	JXPanel parken = null;
 	JPanel oopan = null;
@@ -355,26 +355,39 @@ public class Eb3 implements RehaEventListener  {
 		
 	}
 	
-	public void textSpeichernInDB(boolean mittemp){
+	public boolean textSpeichernInDB(boolean mittemp){
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		//boolean ret = false;
 		//int bilder = 0;
 		//FileInputStream fis = null;
+		boolean fehler = false;
 
 		try {
 			if(eltern.document==null){
 				Reha.thisClass.progressStarten(false);
-				return;
+				return false;
 			}
 			if(!eltern.document.isOpen()){
 				Reha.thisClass.progressStarten(false);
-				return;
+				return false;
 			}
 			Reha.thisClass.progressStarten(true);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			eltern.document.getPersistenceService().export(out, new RTFFilter());
+			try{
+				if(eltern.document == null ){
+					System.out.println("Dokument == null");
+				}
+				eltern.document.getPersistenceService().export(out, new RTFFilter());				
+			}catch(Exception ex){
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null,"Fehler beim speichern, bitte erneut speichern drücken");
+				fehler = true;
+			}
+			if(fehler){
+				return false;
+			}
 			//EBerichtPanel.document.getPersistenceService().store(out);
 			InputStream ins = new ByteArrayInputStream(out.toByteArray());
 			String select = "Update bericht2 set freitext = ? where berichtid = ?";
@@ -384,7 +397,7 @@ public class Eb3 implements RehaEventListener  {
 			ps.execute();
 			ins.close();
 			if(mittemp){
-				if(eltern.document == null){return;}
+				if(eltern.document == null){return false;}
 				if(eltern.document.isOpen()){
 					String url = tempPfad+"EBfliesstext.pdf";
 					System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
@@ -401,6 +414,8 @@ public class Eb3 implements RehaEventListener  {
 			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){
 			ex.printStackTrace();
+			Reha.thisClass.progressStarten(false);
+			return false;
 		}
 		finally {
 			if (rs != null) {
@@ -425,6 +440,7 @@ public class Eb3 implements RehaEventListener  {
 				}
 			}
 		}
+		return true;
 		
 	}
 	

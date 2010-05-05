@@ -20,6 +20,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.JButton;
@@ -40,6 +41,16 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import com.sun.star.frame.XController;
+import com.sun.star.frame.XDesktop;
+import com.sun.star.frame.XModel;
+import com.sun.star.lang.XComponent;
+import com.sun.star.text.XTextDocument;
+import com.sun.star.text.XTextRange;
+import com.sun.star.text.XTextViewCursor;
+import com.sun.star.text.XTextViewCursorSupplier;
+import com.sun.star.uno.UnoRuntime;
+
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -49,8 +60,17 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import terminKalender.DatFunk;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.filter.RTFFilter;
+import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextRange;
+import ag.ion.bion.officelayer.text.IViewCursor;
+import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
+import ag.ion.noa.frame.IDispatchDelegate;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.RehaEvent;
@@ -310,8 +330,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -326,8 +344,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
 					Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
 				}else{
-					doSpeichernAlt();
-					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
+					if(doSpeichernAlt()){
+						JOptionPane.showMessageDialog(null,"Entlassbericht wurde erfolgreich gespeichert");	
+					}
 				}
 			}else if(berichtart.equals("nachsorgedokumentation")){
 				if(this.neu){
@@ -417,7 +436,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		if(cmd.equals("guttools")){
 			String xcmd = "<html>Tools für das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
-			JOptionPane.showMessageDialog(null,xcmd);
+			//JOptionPane.showMessageDialog(null,xcmd);
+			//this.insertFileAtCurrentPosition("C:/OODokumente/Unbedingt_vor_dem_Download_lesen.odt");
+			insertTextAtCurrentPosition("\n--neuer Text---");
 		}
 		if(cmd.equals("guttext")){
 			if(!neu){
@@ -426,13 +447,101 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}else{
 				document = OOTools.starteLeerenWriter();
 			}
+			/*
+			System.out.println("Hänge Focus-Listener ein");
+			officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
+				@Override
+				public void dispatch(Object[] arg0) {
+					System.out.println("Aufruf der überschriebenen Save.routine");
+				}
+				});
+			officeFrame.updateDispatches();
+			*/
+
+
 		}
 		
 	}
+	private void insertTextAtCurrentPosition(String text){
+		XModel xModel = officeFrame.getXFrame().getController().getModel();
+		XController xController = xModel.getCurrentController();
+		XTextDocument xTextDoc = (XTextDocument) UnoRuntime.queryInterface(XTextDocument.class, xModel); 
+		XTextViewCursorSupplier xViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class, xController);
+		XTextViewCursor xViewCursor = xViewCursorSupplier.getViewCursor();
+		XTextRange cursorStartRange = xViewCursor.getStart(); 
+		xViewCursor.setString(text);
+
+		/*
+		ITextCursor textCursor = null;
+
+		try {
+			textCursor = document.getTextService().getText().getTextCursorService().getTextCursor();
+		}catch (TextException e) {
+			e.printStackTrace();
+		}
+		textCursor.gotoEnd(false);
+		textCursor.getEnd().setText(text);
+		*/
+		/*
+		ITextCursor textCursor = null;
+		IViewCursor viewCursor = null;
+		try {
+			textCursor = document.getTextService().getText().getTextCursorService().getTextCursor();
+			viewCursor = document.getViewCursorService().getViewCursor();
+
+		ITextRange textRange = viewCursor.getStartTextRange();
+		textCursor.gotoRange(textRange, false);
+		textCursor.getStart().setText(text);
+		viewCursor = null;
+		textCursor = null;
+		textRange = null;
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		*/
+		
+	}
+	private void insertFileAtCurrentPosition(String file){
+		ITextCursor textCursor = null;
+		IViewCursor viewCursor = null;
+		try {
+			textCursor = document.getTextService().getText().getTextCursorService().getTextCursor();
+			viewCursor = document.getViewCursorService().getViewCursor();
+
+		ITextRange textRange = viewCursor.getStartTextRange();
+		textCursor.gotoRange(textRange, false);
+		textCursor.insertDocument(file);
+		} catch (TextException e) {
+			e.printStackTrace();
+		} catch (NOAException e) {
+			e.printStackTrace();
+		}
+	}
+	private void insertStremCurrentPosition(InputStream stream){
+		ITextCursor textCursor = null;
+		IViewCursor viewCursor = null;
+		try {
+			textCursor = document.getTextService().getText().getTextCursorService().getTextCursor();
+			viewCursor = document.getViewCursorService().getViewCursor();
+
+		ITextRange textRange = viewCursor.getStartTextRange();
+		textCursor.gotoRange(textRange, false);
+		textCursor.insertDocument(stream, new RTFFilter());
+		stream.close();
+		} catch (TextException e) {
+			e.printStackTrace();
+		} catch (NOAException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void doSpeichernNachsorgeAlt(){
 		try{
 			Reha.thisClass.progressStarten(true);
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			setCursor(Reha.thisClass.wartenCursor);
 			StringBuffer buf = new StringBuffer();
 			buf.append("update bericht2 set ");
 			// erst die Textfelder auswerten
@@ -481,9 +590,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			buf.append( " where berichtid = '"+berichtid+"'");
 			SqlInfo.sqlAusfuehren(buf.toString());
 			Reha.thisClass.progressStarten(false);
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.cdefault);
 			if(!jetztneu){
-				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				setCursor(Reha.thisClass.cdefault);
 				String empf = (String) cbktraeger.getSelectedItem();
 				String btype = (empf.contains("DRV") && empf.contains("Bund")? "IRENA Nachsorgedoku" : "ASP Nachsorgedoku");
 				Reha.thisClass.patpanel.gutachten.aktualisiereGutachten(DatFunk.sHeute(),btype,empf,"Reha-Arzt",berichtid,pat_intern);
@@ -494,19 +603,20 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}			
 		}catch(Exception ex){
 			ex.printStackTrace();
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.cdefault);
 			Reha.thisClass.progressStarten(false);
 		}
 	}
 	/*************************************************************************/
 	private void doSpeichernNachsorgeNeu(){
 		try{
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			setCursor(Reha.thisClass.wartenCursor);
 			Reha.thisClass.progressStarten(true);
 			int nummer = SqlInfo.erzeugeNummer("bericht");
 			berichtid = nummer;
 			String empf = (String) cbktraeger.getSelectedItem();
 			if(! empf.contains("DRV")){
+				setCursor(Reha.thisClass.cdefault);
 				Reha.thisClass.progressStarten(false);
 				return;
 			}
@@ -528,7 +638,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			Reha.thisClass.patpanel.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
 			
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.cdefault);
 		}catch(Exception ex){
 			Reha.thisClass.progressStarten(true);
 			ex.printStackTrace();
@@ -537,9 +647,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 /*************************************************************************/		
 
-	private void doSpeichernAlt(){
+	private boolean doSpeichernAlt(){
 		Reha.thisClass.progressStarten(true);
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		setCursor(Reha.thisClass.wartenCursor);
 		StringBuffer buf = new StringBuffer();
 		buf.append("update bericht2 set ");
 		for(int i = 0; i < 28;i++){
@@ -583,18 +693,30 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		for(int i = 8; i < 10;i++){
 			if(i == 8){
-				buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");				
+				try{
+					buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			}else{
-				buf.append(bta[i].getName()+"='"+bta[i].getText()+"'");				
+				try{
+					buf.append(bta[i].getName()+"='"+bta[i].getText()+"'");					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			}
 		}
 		buf.append( " where berichtid = '"+berichtid+"'");
 		//System.out.println(buf.toString());
 		SqlInfo.sqlAusfuehren(buf.toString());
 		
-		ebt.getTab3().textSpeichernInDB(true);
+		if (!ebt.getTab3().textSpeichernInDB(true)){
+			setCursor(Reha.thisClass.cdefault);
+			Reha.thisClass.progressStarten(false);
+			return false;
+		}
 		if(!jetztneu){
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.cdefault);
 			String empf = (String) cbktraeger.getSelectedItem();
 			Reha.thisClass.patpanel.gutachten.aktualisiereGutachten(DatFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Reha-Arzt",berichtid,pat_intern);
 			Reha.thisClass.progressStarten(false);
@@ -602,6 +724,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			jetztneu = false;
 			Reha.thisClass.progressStarten(false);
 		}
+		return true;
 	}
 	/*************************************************************************/	
 	private void doSpeichernNeu(){
