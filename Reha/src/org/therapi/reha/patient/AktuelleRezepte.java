@@ -1682,7 +1682,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   if(columnIndex==1 || columnIndex==5 ){
 				   return JLabel.class;}
 			   else{

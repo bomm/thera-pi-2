@@ -2187,7 +2187,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}else{
 					Date zeit = new Date();
 					String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
-					new ExUndHop().setzeStatement(stx);
+					SqlInfo.sqlAusfuehren(stx);
+					//new ExUndHop().setzeStatement(stx);
 				}
 			}
 
@@ -2204,6 +2205,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
 				frame[i].dispose();
 				frame[i] = null;
+			}
+			if(Reha.thisClass.conn != null){
+				try {
+					Reha.thisClass.conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(Reha.officeapplication != null){
+				//Reha.officeapplication.dispose();
 			}
 			System.exit(0);
 		}else{

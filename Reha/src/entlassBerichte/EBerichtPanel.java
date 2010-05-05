@@ -63,6 +63,7 @@ import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
@@ -122,7 +123,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	boolean[] initOk = {false,false,false,false};
 	public ITextDocument document = null;
 	
- 
+	ArztBausteine arztbaus = null; 
 	
 	public JRtaTextField[] barzttf = {null,null,null}; 
 
@@ -435,18 +436,31 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		if(cmd.equals("guttools")){
-			String xcmd = "<html>Tools für das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
+			arztbaus = new ArztBausteine(this);
+			arztbaus.setLocationRelativeTo(null);
+			arztbaus.pack();
+			arztbaus.setVisible(true);
+			//ebt.getTab3().insertTextAtCurrentPosition("\n--neuer Text---");
+
+			//String xcmd = "<html>Tools für das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
 			//JOptionPane.showMessageDialog(null,xcmd);
 			//this.insertFileAtCurrentPosition("C:/OODokumente/Unbedingt_vor_dem_Download_lesen.odt");
-			insertTextAtCurrentPosition("\n--neuer Text---");
+			//insertTextAtCurrentPosition("\n--neuer Text---");
 		}
 		if(cmd.equals("guttext")){
-			if(!neu){
-        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
-        		document = OOTools.starteWriterMitStream(is, "Vorhandener Bericht");
-			}else{
-				document = OOTools.starteLeerenWriter();
-			}
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					if(!neu){
+		        		InputStream is = SqlInfo.holeStream("bericht2","freitext","berichtid='"+berichtid+"'");
+		        		document = OOTools.starteWriterMitStream(is, "Vorhandener Bericht");
+					}else{
+						document = OOTools.starteLeerenWriter();
+					}
+					return null;
+				}
+			}.execute();
+
 			/*
 			System.out.println("Hänge Focus-Listener ein");
 			officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
@@ -462,7 +476,17 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		
 	}
-	private void insertTextAtCurrentPosition(String text){
+	private void insertTextAtCurrentPosition(String xtext){
+		
+	    IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
+	    ITextRange textRange = viewCursor.getStartTextRange();
+	    textRange.setText(xtext);
+	    try {
+			document.setModified(false);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+	    /*
 		XModel xModel = officeFrame.getXFrame().getController().getModel();
 		XController xController = xModel.getCurrentController();
 		XTextDocument xTextDoc = (XTextDocument) UnoRuntime.queryInterface(XTextDocument.class, xModel); 
@@ -470,6 +494,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		XTextViewCursor xViewCursor = xViewCursorSupplier.getViewCursor();
 		XTextRange cursorStartRange = xViewCursor.getStart(); 
 		xViewCursor.setString(text);
+		*/
 
 		/*
 		ITextCursor textCursor = null;
@@ -645,9 +670,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		Reha.thisClass.progressStarten(false);
 	}
-/*************************************************************************/		
+/**
+ * @throws DocumentException ***********************************************************************/		
 
-	private boolean doSpeichernAlt(){
+	private boolean doSpeichernAlt() {
 		Reha.thisClass.progressStarten(true);
 		setCursor(Reha.thisClass.wartenCursor);
 		StringBuffer buf = new StringBuffer();
@@ -709,7 +735,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		buf.append( " where berichtid = '"+berichtid+"'");
 		//System.out.println(buf.toString());
 		SqlInfo.sqlAusfuehren(buf.toString());
-		
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		if (!ebt.getTab3().textSpeichernInDB(true)){
 			setCursor(Reha.thisClass.cdefault);
 			Reha.thisClass.progressStarten(false);

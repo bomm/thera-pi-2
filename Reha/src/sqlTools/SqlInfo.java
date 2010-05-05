@@ -910,7 +910,7 @@ public class SqlInfo {
 		}
 		try{
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium;
+			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium+" LIMIT 1";
 			rs = stmt.executeQuery(sstmt);
 			if(rs.next()){
 				is = rs.getBinaryStream(1); 

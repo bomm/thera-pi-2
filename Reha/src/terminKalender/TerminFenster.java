@@ -3249,6 +3249,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			reznr = reznr.substring(0,ind);
 		}
 		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+		if(vec.size()==0){
+			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+		}
 		if(vec.size() == 0){
 			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
 			return;

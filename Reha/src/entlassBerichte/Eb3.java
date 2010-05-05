@@ -12,6 +12,8 @@ import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
@@ -32,6 +34,7 @@ import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.FileTools;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
@@ -39,9 +42,12 @@ import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IPersistenceService;
 import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextRange;
+import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
 
@@ -171,7 +177,7 @@ public class Eb3 implements RehaEventListener  {
 					        			ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 					        			if(ins.available() > 0){
 						        			DocumentDescriptor descript = new DocumentDescriptor();
-						        			descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
+						        			//descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 						        			try{
 						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
 						        			eltern.meldeInitOk(2);
@@ -275,7 +281,7 @@ public class Eb3 implements RehaEventListener  {
 	    	//System.out.println("parent == null");
 	    }
 	    parent.add(nativeView);
-	    
+
 	    parent.addContainerListener(new ContainerAdapter(){
 	    	public void componentAdded(ContainerEvent e) {
 	    		//System.out.println(" added to "+e);
@@ -328,20 +334,16 @@ public class Eb3 implements RehaEventListener  {
 				System.out.println("speichere temporär in: "+url);
 				outtemp = new ByteArrayOutputStream();
 				try {
-					eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
-					eltern.document.getPersistenceService().export(url, new PDFFilter());
+					eltern.document.getPersistenceService().store(outtemp);
+					//eltern.document.getPersistenceService().export(outtemp, RTFFilter.FILTER);
+					eltern.document.getPersistenceService().export(url, PDFFilter.FILTER);
 					eltern.document.setModified(false);
 				pdfok = true;
 				bytebufferok = false;
 				outtemp.close();
-				} catch (NOAException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				} catch (DocumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}else{
@@ -374,12 +376,33 @@ public class Eb3 implements RehaEventListener  {
 				return false;
 			}
 			Reha.thisClass.progressStarten(true);
+			//byte[] barr = null;
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try{
 				if(eltern.document == null ){
 					System.out.println("Dokument == null");
 				}
-				eltern.document.getPersistenceService().export(out, new RTFFilter());				
+				/*
+				eltern.document.close();
+				if(!eltern.document.isOpen()){
+					return false;					
+				}
+				*/
+				eltern.document.setModified(false);
+				nativeView.setVisible(true);
+				nativeView.requestFocus();
+
+				
+				//FileOutputStream fout = new FileOutputStream(Reha.proghome+"temp/"+Reha.aktIK+"/ootemp");
+				eltern.document.getPersistenceService().store(out);
+				//eltern.document.getPersistenceService().export(out, RTFFilter.FILTER);
+				//eltern.document.getPersistenceService().store(Reha.proghome+"temp/"+Reha.aktIK+"/ootemp");
+				//fout.flush();
+				//fout.close();
+				//barr = FileTools.File2ByteArray(new File(Reha.proghome+"temp/"+Reha.aktIK+"/ootemp"));
+	
+
+
 			}catch(Exception ex){
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null,"Fehler beim speichern, bitte erneut speichern drücken");
@@ -388,30 +411,34 @@ public class Eb3 implements RehaEventListener  {
 			if(fehler){
 				return false;
 			}
-			//EBerichtPanel.document.getPersistenceService().store(out);
+			
+			
 			InputStream ins = new ByteArrayInputStream(out.toByteArray());
-			String select = "Update bericht2 set freitext = ? where berichtid = ?";
+			String select = "Update bericht2 set freitext = ? where berichtid = ? LIMIT 1";
 			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 			ps.setAsciiStream(1,ins);
 			ps.setInt(2, eltern.berichtid);
 			ps.execute();
 			ins.close();
+			
 			if(mittemp){
 				if(eltern.document == null){return false;}
 				if(eltern.document.isOpen()){
 					String url = tempPfad+"EBfliesstext.pdf";
 					System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
 					outtemp = new ByteArrayOutputStream();
-					eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
-					eltern.document.getPersistenceService().export(url, new PDFFilter());
+					eltern.document.getPersistenceService().store(outtemp);
+					//eltern.document.getPersistenceService().export(outtemp, RTFFilter.FILTER);
+					eltern.document.getPersistenceService().export(url, PDFFilter.FILTER);
 					pdfok = true;
 					outtemp.close();
 				}			
 			}
-			ins.close();
 			out.close();
 			//EBerichtPanel.document.close();
 			Reha.thisClass.progressStarten(false);
+			
+
 		}catch(Exception ex){
 			ex.printStackTrace();
 			Reha.thisClass.progressStarten(false);
@@ -443,6 +470,20 @@ public class Eb3 implements RehaEventListener  {
 		return true;
 		
 	}
+	void insertTextAtCurrentPosition(String xtext){
+		
+	    IViewCursor viewCursor = eltern.document.getViewCursorService().getViewCursor();
+	    ITextRange textRange = viewCursor.getStartTextRange();
+	    textRange.setText(xtext);
+	    try {
+	    	eltern.document.setModified(false);
+	    	eltern.officeFrame.setFocus();
+	    	eltern.officeFrame.updateDispatches();
+    		refreshSize();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+	}	
 	
 	  public void configureOOOFrame(IOfficeApplication officeApplication, IFrame officeFrame) throws Throwable {
 		    ILayoutManager layoutManager = officeFrame.getLayoutManager();
@@ -458,7 +499,7 @@ public class Eb3 implements RehaEventListener  {
 		    officeFrame.disableDispatch(GlobalCommands.NEW_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.OPEN_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.EDIT_DOCUMENT);
-		   // officeFrame.disableDispatch(GlobalCommands.DIREKT_EXPORT_DOCUMENT);
+		    officeFrame.disableDispatch(GlobalCommands.SAVE);
 		    officeFrame.disableDispatch(GlobalCommands.MAIL_DOCUMENT);
 		    officeFrame.disableDispatch(GlobalCommands.OPEN_HYPERLINK_DIALOG);
 		    officeFrame.disableDispatch(GlobalCommands.EDIT_HYPERLINK);

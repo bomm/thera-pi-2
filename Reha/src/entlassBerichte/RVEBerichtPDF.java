@@ -1480,7 +1480,7 @@ public class RVEBerichtPDF {
 	private void doArztAuswaehlen(EBerichtPanel eltern){
 		try{
 			System.out.println("Starte Arztauswahl");
-			String titel = "Aerzte f�r GKV-Bericht ausw�hlen";
+			String titel = "Aerzte für GKV-Bericht auswählen";
 			EBPrintDlg printDlg = new EBPrintDlg();
 			//JDialog neuPat = new JDialog();
 			PinPanel pinPanel = new PinPanel();
