@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -29,7 +30,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -41,16 +41,6 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import com.sun.star.frame.XController;
-import com.sun.star.frame.XDesktop;
-import com.sun.star.frame.XModel;
-import com.sun.star.lang.XComponent;
-import com.sun.star.text.XTextDocument;
-import com.sun.star.text.XTextRange;
-import com.sun.star.text.XTextViewCursor;
-import com.sun.star.text.XTextViewCursorSupplier;
-import com.sun.star.uno.UnoRuntime;
-
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -60,10 +50,9 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import terminKalender.DatFunk;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.filter.ODTFilter;
 import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
@@ -71,7 +60,7 @@ import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
-import ag.ion.noa.frame.IDispatchDelegate;
+import ag.ion.noa.filter.OpenOfficeFilter;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.RehaEvent;
@@ -436,16 +425,15 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		if(cmd.equals("guttools")){
-			arztbaus = new ArztBausteine(this);
-			arztbaus.setLocationRelativeTo(null);
-			arztbaus.pack();
-			arztbaus.setVisible(true);
-			//ebt.getTab3().insertTextAtCurrentPosition("\n--neuer Text---");
-
-			//String xcmd = "<html>Tools für das Gutachtenmodul<br><br><b>ICD-10 Recherche<br>Aufruf der intelligenten Textbausteine</b><br><br>sind bislang nicht implementiert";
-			//JOptionPane.showMessageDialog(null,xcmd);
-			//this.insertFileAtCurrentPosition("C:/OODokumente/Unbedingt_vor_dem_Download_lesen.odt");
-			//insertTextAtCurrentPosition("\n--neuer Text---");
+			if(berichtart.equals("entlassbericht")){
+				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+				Point pt = new Point(dim.width-400,200);
+				arztbaus = new ArztBausteine(this,pt);
+				arztbaus.pack();
+				pt.x = dim.width-arztbaus.getWidth();
+				arztbaus.setLocation(pt);
+				arztbaus.setVisible(true);
+			}
 		}
 		if(cmd.equals("guttext")){
 			new SwingWorker<Void,Void>(){
@@ -476,7 +464,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		
 	}
-	private void insertTextAtCurrentPosition(String xtext){
+	public void insertTextAtCurrentPosition(String xtext){
 		
 	    IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
 	    ITextRange textRange = viewCursor.getStartTextRange();
@@ -486,47 +474,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-	    /*
-		XModel xModel = officeFrame.getXFrame().getController().getModel();
-		XController xController = xModel.getCurrentController();
-		XTextDocument xTextDoc = (XTextDocument) UnoRuntime.queryInterface(XTextDocument.class, xModel); 
-		XTextViewCursorSupplier xViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class, xController);
-		XTextViewCursor xViewCursor = xViewCursorSupplier.getViewCursor();
-		XTextRange cursorStartRange = xViewCursor.getStart(); 
-		xViewCursor.setString(text);
-		*/
-
-		/*
-		ITextCursor textCursor = null;
-
-		try {
-			textCursor = document.getTextService().getText().getTextCursorService().getTextCursor();
-		}catch (TextException e) {
-			e.printStackTrace();
-		}
-		textCursor.gotoEnd(false);
-		textCursor.getEnd().setText(text);
-		*/
-		/*
-		ITextCursor textCursor = null;
-		IViewCursor viewCursor = null;
-		try {
-			textCursor = document.getTextService().getText().getTextCursorService().getTextCursor();
-			viewCursor = document.getViewCursorService().getViewCursor();
-
-		ITextRange textRange = viewCursor.getStartTextRange();
-		textCursor.gotoRange(textRange, false);
-		textCursor.getStart().setText(text);
-		viewCursor = null;
-		textCursor = null;
-		textRange = null;
-		} catch (TextException e) {
-			e.printStackTrace();
-		}
-		*/
-		
 	}
-	private void insertFileAtCurrentPosition(String file){
+	public void insertFileAtCurrentPosition(String file){
 		ITextCursor textCursor = null;
 		IViewCursor viewCursor = null;
 		try {
@@ -542,7 +491,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			e.printStackTrace();
 		}
 	}
-	private void insertStremCurrentPosition(InputStream stream){
+	public void insertStreamAtCurrentPosition(InputStream stream){
+		if(ebtab.getSelectedIndex() != 2){
+			JOptionPane.showMessageDialog(null, "Sie sollten schon auf die Textseite wechseln, damit Sie sehen wo Sie was einfügen....");
+			ebtab.setSelectedIndex(2);
+			return;
+		}
 		ITextCursor textCursor = null;
 		IViewCursor viewCursor = null;
 		try {
@@ -551,16 +505,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 		ITextRange textRange = viewCursor.getStartTextRange();
 		textCursor.gotoRange(textRange, false);
-		textCursor.insertDocument(stream, new RTFFilter());
-		stream.close();
+		textCursor.insertDocument(stream,new OpenOfficeFilter());
 		} catch (TextException e) {
 			e.printStackTrace();
 		} catch (NOAException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 	
 	private void doSpeichernNachsorgeAlt(){
@@ -864,6 +814,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				}
 			}else{
 				System.out.println("dokument ist bereits null");
+			}
+			if(arztbaus != null){
+				arztbaus.dispose();
 			}
 			
 		}catch(Exception ex){
