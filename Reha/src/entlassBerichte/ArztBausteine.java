@@ -230,7 +230,9 @@ public class ArztBausteine extends JDialog implements WindowListener{
 					if((sysvar=isSysVar(dummy)) >= 0){
 						sucheErsetze(dummy,eltern.sysVarInhalt.get(sysvar),true);
 					}else{
-						Object ret = JOptionPane.showInputDialog(this,"Bitte Wert für '"+dummy+"' eingeben","Baustein: "+titel, 1);
+						String sanweisung = dummy.toString().replace("^", "");
+						Object ret = JOptionPane.showInputDialog(this,"<html>Bitte Wert für eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Baustein: "+titel, 1);						
+						//Object ret = JOptionPane.showInputDialog(this,"Bitte Wert für eingeben für: --> "+sanweisung+" <-- ","Baustein: "+titel, 1);
 						if(ret==null){
 							return true;
 							//sucheErsetze(dummy,"");

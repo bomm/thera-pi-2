@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -70,12 +71,15 @@ import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.ITextService;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.IViewCursorService;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
+import ag.ion.noa.search.ISearchResult;
+import ag.ion.noa.search.SearchDescriptor;
 
 public class OOTools{
 	public OOTools(){
@@ -250,6 +254,7 @@ public class OOTools{
 		    }
 		    /*****************/
 		}
+		sucheNachPlatzhalter(textDocument);
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
@@ -261,6 +266,62 @@ public class OOTools{
 			}
 		});
 	}
+	/*******************************************************************************************/
+	private static boolean sucheNachPlatzhalter(ITextDocument document){
+		IText text = document.getTextService().getText();
+		String stext = text.getText();
+		int start = 0;
+		int end = 0;
+		String dummy;
+		int vars = 0;
+		int sysvar = -1;
+		boolean noendfound = false;
+		while ((start = stext.indexOf("^")) >= 0){
+			noendfound = true;
+			for(int i = 1;i < 150;i++){
+				if(stext.substring(start+i,start+(i+1)).equals("^")){
+					dummy = stext.substring(start,start+(i+1));
+					String sanweisung = dummy.toString().replace("^", "");
+					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert für eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
+					if(ret==null){
+						return true;
+							//sucheErsetze(dummy,"");
+					}else{
+						sucheErsetze(document,dummy,((String)ret).trim(),false);
+						stext = text.getText();
+					}
+					noendfound = false;
+					vars++;
+					break;
+				}
+			}
+			if(noendfound){
+				JOptionPane.showMessageDialog(null,"Der Baustein ist fehlerhaft, eine Übernahme deshalb nicht möglich"+
+						"\n\nVermutete Ursache des Fehlers: es wurde ein Start-/Endezeichen '^' für Variable vergessen\n");
+				return false;
+			}
+		}
+		return true;
+	}
+	private static void sucheErsetze(ITextDocument document,String suchenach,String ersetzemit,boolean alle){
+		SearchDescriptor searchDescriptor = new SearchDescriptor(suchenach);
+		searchDescriptor.setIsCaseSensitive(true);
+		ISearchResult searchResult = null;
+		if(alle){
+			searchResult = document.getSearchService().findAll(searchDescriptor);
+		}else{
+			searchResult = document.getSearchService().findFirst(searchDescriptor);			
+		}
+
+		if(!searchResult.isEmpty()) {
+			ITextRange[] textRanges = searchResult.getTextRanges();
+			for (int resultIndex=0; resultIndex<textRanges.length; resultIndex++) {
+				textRanges[resultIndex].setText(ersetzemit);
+				
+			}
+		}
+	}
+	
 	/*******************************************************************************************/
 	@SuppressWarnings("unchecked")
 	public static void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
@@ -604,7 +665,7 @@ public class OOTools{
     	xStyleProps.setPropertyValue("LeftMargin",links);
     	xStyleProps.setPropertyValue("RightMargin",rechts);
 	}
-	
+	/*************************************************************************/
 	public static ITextDocument  starteGKVBericht(String url,String drucker){
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		IDocumentService documentService = null;;
@@ -674,7 +735,7 @@ public class OOTools{
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-				System.out.println(placeholderDisplayText);
+				//System.out.println(placeholderDisplayText);
 			}catch(com.sun.star.uno.RuntimeException ex){
 				System.out.println("************catch()*******************");
 				ex.printStackTrace();
@@ -730,31 +791,36 @@ public class OOTools{
 		    	  break;
 		      }
 		    }
+		    
 		    /*****************/
+		    
 		    entries = SystemConfig.hmEBerichtDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
-		    		  //placeholders[i].getTextRange().setText("\b");
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
 		    }
-		    if(!schonersetzt){
+		    
+		    
+		    if( (!schonersetzt) && (!placeholders[i].getDisplayText().equalsIgnoreCase("<bblock1>"))){
 		    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    }
 		    /*****************/
 		}
 		
-		return textDocument;
+		return textDocument;	
 	}
+		
+		
+	
 	public static void inDenVordergrund(ITextDocument textDocumentx){
 		ITextDocument textDocument = (ITextDocument) textDocumentx; 
 		IFrame officeFrame = textDocument.getFrame();

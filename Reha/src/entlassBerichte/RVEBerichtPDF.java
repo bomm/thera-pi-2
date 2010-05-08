@@ -26,7 +26,11 @@ import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
 
 import ag.ion.bion.officelayer.filter.PDFFilter;
+import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
@@ -109,7 +113,7 @@ public class RVEBerichtPDF {
 		Reha.thisClass.progressStarten(true);
 		File ft = new File(tempPfad+"EBfliesstext.pdf");
 		if(! ft.exists()){
-			JOptionPane.showMessageDialog(null, "<html>Flie�text noch nicht aufbereitet!<br>"+
+			JOptionPane.showMessageDialog(null, "<html>Fließtext noch nicht aufbereitet!<br>"+
 					"Wechseln sie auf den Karteireiter <b>'Fliesstext'</b> und starten Sie<br>"+
 					"die Druckvorschau erneut.");
 			return;
@@ -203,6 +207,7 @@ public class RVEBerichtPDF {
 			}
 		}
 	}
+	/****************************************************************/
 	private boolean starteGKVDruck(int[] exemplare,boolean vorschau){
 		try {
 
@@ -214,6 +219,7 @@ public class RVEBerichtPDF {
 					Reha.thisClass.progressStarten(true);
 					String id = SystemConfig.hmAdrADaten.get("<Aid>");
 					for(int i = 0; i < eltern.aerzte.length;i++){
+						//System.out.println("***********Mach HashMap für Arzt "+eltern.aerzte[i]);
 						ArztTools.constructArztHMap(eltern.aerzte[i]);
 						ByteArrayOutputStream baout = new ByteArrayOutputStream();
 						SystemConfig.hmEBerichtDaten.put("<Ebbeginn>",eltern.btf[15].getText() );
@@ -223,12 +229,24 @@ public class RVEBerichtPDF {
 						InputStream is = new ByteArrayInputStream(baout.toByteArray());
 						baout.flush();
 						baout.close();
-						System.out.println("Bytes available = "+is.available());
+						//System.out.println("Bytes available = "+is.available());
  						ITextDocument doc = OOTools.starteGKVBericht(Reha.proghome+"vorlagen/"+Reha.aktIK+"/GKVArztbericht2.ott", "");
  						Thread.sleep(100);
  						//doc.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument( is, RTFFilter.FILTER );
- 						
- 						doc.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument(is, OpenOfficeFilter.FILTER);
+ 						ITextFieldService textFieldService = doc.getTextFieldService();
+ 						ITextField[] placeholders = null;
+ 						placeholders = textFieldService.getPlaceholderFields();
+ 						//System.out.println("Anzahl PlaceHolders = "+placeholders.length);
+ 						for(int  p2 = 0 ; p2 < placeholders.length ; p2++ ){
+ 							if(placeholders[p2].getDisplayText().toLowerCase().equals("<bblock1>")){
+ 	 							ITextRange range = placeholders[p2].getTextRange();
+ 	 							ITextCursor textCursor;
+ 	 							textCursor = doc.getTextService().getText().getTextCursorService().getTextCursor();
+ 	 							textCursor.gotoRange(range, false);
+ 	 							textCursor.insertDocument(is, OpenOfficeFilter.FILTER);
+ 	 	 						break;
+ 							}
+ 						}
  						is.close();
  						ITextTable[] tbl = doc.getTextTableService().getTextTables();
  						int itbl = -1;
@@ -248,21 +266,24 @@ public class RVEBerichtPDF {
  						for(int d = 0; d < 5; d++){
  							if(! eltern.bta[d].getText().trim().equals("")){
  	 							if(d > 0){
- 	 								System.out.println("H�nge neue Zeilen an Tabelle: "+tbl[itbl].getName());
+ 	 								System.out.println("Hänge neue Zeilen an Tabelle: "+tbl[itbl].getName());
  	 								tbl[itbl].addRow(d);
  	 							}
- 								tbl[itbl].getCell(0,d).getTextService().getText().setText(new Integer(d+1).toString()+".");
+ 								tbl[itbl].getCell(0,d).getTextService().getText().setText(Integer.toString(d+1)+".");
  								tbl[itbl].getCell(1,d).getTextService().getText().setText(eltern.bta[d].getText().trim());
  							}
  						}
  						if(exemplare[5] > 0 || vorschau){
  							String tp = tempPfad+"PrintArzt"+Integer.toString(i)+System.currentTimeMillis()+".pdf";
- 							doc.getPersistenceService().export(tp, new PDFFilter());
+ 							doc.getPersistenceService().export(tp, PDFFilter.FILTER);
+ 							String tp2 = tempPfad+"PrintArzt"+Integer.toString(i)+System.currentTimeMillis()+".odt";
+ 							doc.getPersistenceService().export(tp2, OpenOfficeFilter.FILTER);
  							doc.close();
  							new ReaderStart(new String(tp));
  						}else{
  	 						IViewCursor viewCursor = doc.getViewCursorService().getViewCursor();
  	 						viewCursor.getPageCursor().jumpToFirstPage();
+ 	 						viewCursor.getPageCursor().jumpToStartOfPage();
  	 						doc.getFrame().getXFrame().getContainerWindow().setVisible(true);
  	 						doc.getFrame().setFocus();
  						}
@@ -271,9 +292,6 @@ public class RVEBerichtPDF {
 					Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					Reha.thisClass.progressStarten(false);
 					ArztTools.constructArztHMap(id);
-					//baout.close();
-					//is.close();
-					
 				}
 			}
 			if(vorschau){
@@ -309,25 +327,18 @@ public class RVEBerichtPDF {
 			}
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NOAException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ag.ion.bion.officelayer.document.DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TextException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
