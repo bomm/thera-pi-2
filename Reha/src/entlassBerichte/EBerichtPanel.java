@@ -23,6 +23,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -49,6 +51,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
+import systemTools.StringTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -88,7 +91,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			"DRV Hamburg","DRV Hessen","DRV Mecklenburg-Vorpommern","DRV Niedersachsen","DRV Rheinland-Pfalz",
 			"DRV Saarland","DRV Sachsen","DRV Sachsensen-Anhalt","DRV Schleswig-Holstein","DRV Thüringen","DRV Knappschaft Bahn/See","GKV"};
 //	String[] ktraeger = {"DRV Bund","DRV Baden-W�rttemberg","DRV Knappschaft Bahn/See","DRV Bayer","GKV"};
-
+	String[] sysvars = null;
+	List<String> listsysvars = null;
 	/**********************/
 	public JRtaComboBox cbktraeger = null;
 	/**********************/
@@ -165,7 +169,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public int[] druckversion = {0,0,0,0,0,0}; 
 	public String[] aerzte; 
 	
+	String[] varinhalt = {"^Heute^","^Anrede^","^PatName^","^PatVorname^","^Geburtsdatum^",
+			"^Strasse^","^PLZ^","^Ort^","^Aufnahme^","^Etlassung^",
+			"^arbeitsfähig?^","^Der/Die Pat.^","^der/die Pat.^",
+			"^Er/Sie^","^er/sie^","^seines/ihres^","^sein/ihr^"};
 	
+	public List<String> sysVarList = null;
+	public List<String> sysVarInhalt = null;
 	
 
 	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
@@ -227,6 +237,14 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		System.out.println("             Berichttyp ="+ this.berichttyp);
 		System.out.println("             Empfaenger ="+ this.empfaenger);
 		System.out.println("          Neuer Bericht ="+ this.neu);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				sysVarList = Arrays.asList(varinhalt);
+				return null;
+			}
+			
+		}.execute();
 	}
 	/******************************************************************/
 	public void setOOPanelDeIcon(){
@@ -1052,6 +1070,52 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		 	   }
 		});
 		System.out.println("BerichtDrucken ist disposed()");
+	}
+	
+	public void doSysVars(){
+		try{
+			boolean isherr = false;
+			String entlassform ="";
+			if(bcmb[1].getSelectedItem().toString().trim().equals("1")){
+				entlassform = "arbeitsfähig";
+			}else if(bcmb[1].getSelectedItem().toString().trim().equals("3")){
+				entlassform = "arbeitsunfähig";
+			}else{
+				entlassform = "nicht relevant";
+			}
+			if(Reha.thisClass.patpanel.patDaten.get(0).toString().trim().equalsIgnoreCase("Herr")){
+				isherr = true;
+			}
+			
+/*
+ 	String[] varinhalt = {"^Heute^","^Anrede^","^PatName^","^PatVorname^","^Geburtsdatum^",
+			"^Strasse^","^PLZ^","^Ort^","^Aufnahme^","^Etlassung^",
+			"^arbeitsfähig?^","^Der/Die Pat.^","^der/die Pat.^",
+			"^Er/Sie^","^er/sie^","^seines/ihres^","^sein/ihr^"};
+			
+ */
+			String[] dummy = {DatFunk.sHeute(),
+					(isherr ? "Herr" : "Frau"),
+					StringTools.EGross(btf[2].getText().split(",")[0].trim()), //name
+					StringTools.EGross(btf[2].getText().split(",")[1].trim()), //vorname
+					btf[3].getText().trim(), //geburtsdatum
+					StringTools.EGross(btf[4].getText().trim()), //strasse
+					StringTools.EGross(btf[5].getText().trim()), //plz
+					StringTools.EGross(btf[6].getText().trim()), //ort
+					btf[15].getText(), //aufnahmedatum
+					btf[16].getText(), //entlassdatum
+					entlassform,
+					(isherr ? "Der Patient" : "Die Patientin"),
+					(isherr ? "der Patient" : "die Patientin"),
+					(isherr ? "Er" : "Sie"),
+					(isherr ? "er" : "sie"),
+					(isherr ? "seines" : "ihres"),
+					(isherr ? "sein" : "ihr")
+			};
+			sysVarInhalt = Arrays.asList(dummy);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 

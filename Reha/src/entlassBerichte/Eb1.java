@@ -145,6 +145,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 						 			inGuiInit = false;
 									testeIK();
 									eltern.meldeInitOk(0);
+									eltern.doSysVars();
 									}catch(Exception ex){
 										ex.printStackTrace();
 									}

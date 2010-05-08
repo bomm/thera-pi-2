@@ -1760,8 +1760,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	
 
 	
-    public static void starteOfficeApplication()
-    { 
+    public static void starteOfficeApplication(){ 
 
     	final String OPEN_OFFICE_ORG_PATH = SystemConfig.OpenOfficePfad;
 

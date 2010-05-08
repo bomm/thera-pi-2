@@ -240,8 +240,6 @@ public class ArztBausteine extends JDialog implements WindowListener{
 					}
 					noendfound = false;
 					vars++;
-
-					
 					break;
 				}
 			}

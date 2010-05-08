@@ -412,11 +412,21 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		//jxLink.setEnabled(false);
 		tp5.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Textbausteine - anlegen");
+		jxLink.setText("Textbausteine - Therapiebericht");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));	
 		img = new ImageIcon(Reha.proghome+"icons/abiword.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
 		jxLink.setIcon(new ImageIcon(img));
 		jxLink.setActionCommand("piTextb");
+		jxLink.addActionListener(this);
+		//jxLink.setEnabled(false);
+		tp5.add(jxLink);
+
+		jxLink = new JXHyperlink();
+		jxLink.setText("Textbausteine - Gutachten");
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));	
+		img = new ImageIcon(Reha.proghome+"icons/abiword.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));
+		jxLink.setActionCommand("piArztTextb");
 		jxLink.addActionListener(this);
 		//jxLink.setEnabled(false);
 		tp5.add(jxLink);
@@ -727,6 +737,31 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				
 				break;
 			}
+			if (cmd.equals("piArztTextb")){
+				if(!Rechte.hatRecht(Rechte.Sonstiges_textbausteinegutachten, true)){
+					return;
+				}
+				new ladeProg(Reha.proghome+"ArztBaustein.jar "+
+						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						RehaSplash rspl = new RehaSplash(null,"Textbaustein-Editor laden....dieser Vorgang kann einige Sekunden dauern...");
+						long zeit = System.currentTimeMillis();
+						while(true){
+							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 2000){
+								break;
+							}
+						}
+						rspl.dispose();
+						return null;
+					}
+				}.execute();
+				break;
+			}
+			
+			
 			
 			if (cmd.equals("Akutliste")){
 				new SwingWorker<Void,Void>(){
