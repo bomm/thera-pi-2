@@ -225,19 +225,18 @@ public class ArztBausteine extends JDialog implements WindowListener{
 			for(int i = 1;i < 150;i++){
 				if(stext.substring(start+i,start+(i+1)).equals("^")){
 					dummy = stext.substring(start,start+(i+1));
-					System.out.println("Variable gefunden - Variablenname = "+dummy);
+					//System.out.println("Variable gefunden - Variablenname = "+dummy);
 					stext = stext.replace(dummy,"ersetzte Variable "+vars);
-					 
-					Object ret = JOptionPane.showInputDialog(this,"Bitte Wert für '"+dummy+"' eingeben","Baustein: "+titel, 1);
-					
-					if(ret==null){
-						return true;
-						//sucheErsetze(dummy,"");
-					}else if( (sysvar=isSysVar()) > 0){
-						
-						
+					if((sysvar=isSysVar(dummy)) >= 0){
+						sucheErsetze(dummy,eltern.sysVarInhalt.get(sysvar),true);
 					}else{
-						sucheErsetze(dummy,((String)ret).trim());
+						Object ret = JOptionPane.showInputDialog(this,"Bitte Wert für '"+dummy+"' eingeben","Baustein: "+titel, 1);
+						if(ret==null){
+							return true;
+							//sucheErsetze(dummy,"");
+						}else{
+							sucheErsetze(dummy,((String)ret).trim(),false);
+						}
 					}
 					noendfound = false;
 					vars++;
@@ -254,15 +253,19 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		}
 		return true;
 	}
-	private int isSysVar(){
-		int ret = -1;
-		return ret;
+	private int isSysVar(String svar){
+		return eltern.sysVarList.indexOf(svar);
 	}
-	private void sucheErsetze(String suchenach,String ersetzemit){
+	private void sucheErsetze(String suchenach,String ersetzemit,boolean alle){
 		SearchDescriptor searchDescriptor = new SearchDescriptor(suchenach);
 		searchDescriptor.setIsCaseSensitive(true);
-		
-		ISearchResult searchResult = document.getSearchService().findFirst(searchDescriptor);
+		ISearchResult searchResult = null;
+		if(alle){
+			searchResult = document.getSearchService().findAll(searchDescriptor);
+		}else{
+			searchResult = document.getSearchService().findFirst(searchDescriptor);			
+		}
+
 		if(!searchResult.isEmpty()) {
 			ITextRange[] textRanges = searchResult.getTextRanges();
 			for (int resultIndex=0; resultIndex<textRanges.length; resultIndex++) {
@@ -295,7 +298,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		}else{
 			String[] spalten = {"tbtitel","tbuntert"};
 			String where = SqlInfo.macheWhereKlausel("select tbthema,tbuntert,tbtitel,id from tbar where ", suchenach.getText().trim(), spalten);
-			System.out.println("where = "+where);
+			//System.out.println("where = "+where);
 			fuelleTabelle(where+" Order BY tbthema");
 		}
 	}
@@ -627,12 +630,17 @@ public class ArztBausteine extends JDialog implements WindowListener{
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-		document.close();
+		if(document.isOpen()){
+			document.close();
+		}
 		eltern.arztbaus = null;
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		System.out.println("in closing.....");
+		//System.out.println("in closing.....");
+		if(document.isOpen()){
+			document.close();
+		}
 	}
 	private void hideAllElements() throws UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException, NOAException{
         ILayoutManager layoutManager = officeFrame.getLayoutManager();
@@ -681,7 +689,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 	        }
 	        if (lsm.isSelectionEmpty()) {
 	        }else {
-	            int minIndex = lsm.getMinSelectionIndex();
+	            //int minIndex = lsm.getMinSelectionIndex();
 	            //int maxIndex = lsm.getMaxSelectionIndex();
 	            holeIdUndText();
 	        }
