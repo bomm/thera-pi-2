@@ -60,6 +60,7 @@ import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI;
 import org.therapi.reha.patient.AktuelleRezepte;
+import org.therapi.reha.patient.LadeProg;
 
 
 
@@ -666,7 +667,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 							"Der Thera-PI - Browser kann deshalb nicht gestartet werden");
 					return;
 				}
-				new ladeProg(Reha.proghome+"RehaWissen.jar");
+				new LadeProg(Reha.proghome+"RehaWissen.jar");
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -707,15 +708,15 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("piHelp")){
-				new ladeProg(Reha.proghome+"piHelp.jar");
+				new LadeProg(Reha.proghome+"piHelp.jar");
 				break;
 			}
 			if (cmd.equals("piTool")){
-				new ladeProg(Reha.proghome+"piTool.jar");				
+				new LadeProg(Reha.proghome+"piTool.jar");				
 				break;
 			}
 			if (cmd.equals("piTextb")){
-				new ladeProg(Reha.proghome+"TBedit.jar "+
+				new LadeProg(Reha.proghome+"TBedit.jar "+
 						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
 						Reha.proghome+"ini/textbaustein.ini");	
 				new SwingWorker<Void,Void>(){
@@ -741,7 +742,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				if(!Rechte.hatRecht(Rechte.Sonstiges_textbausteinegutachten, true)){
 					return;
 				}
-				new ladeProg(Reha.proghome+"ArztBaustein.jar "+
+				new LadeProg(Reha.proghome+"ArztBaustein.jar "+
 						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
 				new SwingWorker<Void,Void>(){
 					@Override
@@ -953,7 +954,7 @@ public void dropActionChanged(DropTargetDragEvent arg0) {
 }
 
 
-	
+/*	
 class ladeProg{
 
 	public ladeProg(String prog){
@@ -970,7 +971,6 @@ class ladeProg{
 	}
 	String vmload = "java -jar ";
 	String commandx = vmload + prog; 
-	//System.out.println(vmload+prog);
     File ausgabedatei = new File(Reha.proghome+"laden.bat"); 
     FileWriter fw;
 	try {
@@ -979,7 +979,6 @@ class ladeProg{
 	    bw.write(commandx); 
 	    bw.close(); 
 	} catch (IOException e1) {
-		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	} 
 	final String xprog = prog;
@@ -987,7 +986,6 @@ class ladeProg{
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			// TODO Auto-generated method stub
 			try {
 				List<String>list = Arrays.asList(xprog.split(" "));
 				ArrayList<String> alist = new ArrayList<String>(list);
@@ -996,10 +994,8 @@ class ladeProg{
 				System.out.println(list);
 				System.out.println("Die Liste = "+alist);
 				
-				//System.out.println("Starte Prozess mit "+xprog);
 				System.out.println("Liste = "+list);
 				Process process = new ProcessBuilder(alist).start();
-				//Process process = new ProcessBuilder("java","-jar",xprog).start();
 			       InputStream is = process.getInputStream();
 			       InputStreamReader isr = new InputStreamReader(is);
 			       BufferedReader br = new BufferedReader(isr);
@@ -1022,3 +1018,4 @@ class ladeProg{
 	}.execute();
 }
 }
+*/

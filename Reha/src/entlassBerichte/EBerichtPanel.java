@@ -21,7 +21,6 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -55,8 +54,6 @@ import systemTools.StringTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.filter.ODTFilter;
-import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
@@ -98,6 +95,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	/**********************/
 	public String pat_intern = null;
 	public int berichtid = -1;
+	public int uebernahmeid = -1;
 	public String berichttyp = null;
 	public String empfaenger = null;
 	public String berichtart = null;
@@ -178,7 +176,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public List<String> sysVarInhalt = null;
 	
 
-	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger ){
+	public EBerichtPanel(JGutachtenInternal xjry,String xpat_intern,int xberichtid,String xberichttyp,boolean xneu,String xempfaenger,int xuebernahmeid ){
 		setBorder(null);
 		
 		this.jry = xjry;
@@ -187,7 +185,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		this.berichttyp = xberichttyp;
 		this.empfaenger = xempfaenger;
 		this.neu = xneu;
-		
+		this.uebernahmeid = xuebernahmeid;
 
 		
 		evt = new RehaEventClass();
@@ -232,11 +230,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			inebericht = false;
 		}
 		
-		System.out.println("Bericht von Patient Nr. ="+ this.pat_intern);
-		System.out.println("             Bericht ID ="+ this.berichtid);
-		System.out.println("             Berichttyp ="+ this.berichttyp);
-		System.out.println("             Empfaenger ="+ this.empfaenger);
-		System.out.println("          Neuer Bericht ="+ this.neu);
+		System.out.println(" Bericht von Patient Nr. ="+ this.pat_intern);
+		System.out.println("              Bericht ID ="+ this.berichtid);
+		System.out.println("              Berichttyp ="+ this.berichttyp);
+		System.out.println("              Empfaenger ="+ this.empfaenger);
+		System.out.println("           Neuer Bericht ="+ this.neu);
+		System.out.println("Übernahme aus Bericht-ID ="+ this.uebernahmeid);
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {

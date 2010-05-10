@@ -314,7 +314,7 @@ public void loescheArzt(){
 
 
 /**************Gutachten Echtfunktion***********************/
-public void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu,String empfaenger ) {
+public void GutachenFenster(int setPos,String pat_intern,int berichtid,String berichttyp,boolean neu,String empfaenger,int uebernahmeid ) {
 	if(! Reha.DbOk){
 		return;
 	}
@@ -344,7 +344,7 @@ public void GutachenFenster(int setPos,String pat_intern,int berichtid,String be
 	gutjry.setName(name);
 	gutjry.setSize(new Dimension(900,Reha.thisClass.desktops[containerNr].getHeight()-20));
 	gutjry.setPreferredSize(new Dimension(900,Reha.thisClass.desktops[containerNr].getHeight()-20));
-	Reha.thisClass.eberichtpanel = new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger ); 
+	Reha.thisClass.eberichtpanel = new EBerichtPanel(gutjry,pat_intern,berichtid,berichttyp,neu,empfaenger,uebernahmeid ); 
 	gutjry.setContent(Reha.thisClass.eberichtpanel);
 	gutjry.addComponentListener(Reha.thisClass);
 	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();

@@ -12,8 +12,6 @@ import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
@@ -26,7 +24,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -34,7 +31,6 @@ import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.FileTools;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
@@ -42,13 +38,11 @@ import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IPersistenceService;
 import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
-import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
 
 import com.mysql.jdbc.PreparedStatement;
@@ -571,6 +565,7 @@ public class Eb3 implements RehaEventListener  {
 					 		   if(eltern.document != null){
 					 			   if(eltern.document.isOpen()){
 					 				  eltern.document.close();
+					 				  nativeView = null;
 					 			   }
 					 		   }
 						}

@@ -1,6 +1,6 @@
 package org.therapi.reha.patient;
 
-import hauptFenster.ProgLoader;
+import generalSplash.RehaSplash;
 import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
@@ -28,7 +28,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -38,12 +37,6 @@ import jxTableTools.TableTool;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
-import dialoge.ToolsDialog;
 
 import patientenFenster.GutachtenWahl;
 import patientenFenster.KeinRezept;
@@ -55,6 +48,11 @@ import systemTools.IconListRenderer;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.ToolsDialog;
 
 public class Gutachten extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
 
@@ -382,7 +380,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					try{
 						JRtaTextField tf = new JRtaTextField("nix",false);
 						System.out.println("in GutachtenWahl");
-						GutachtenWahl gwahl = new GutachtenWahl( (Point)comp.getLocationOnScreen(),tf );
+						GutachtenWahl gwahl = new GutachtenWahl( (Point)comp.getLocationOnScreen(),tf,"Neues Gutachten erstellen" );
 						System.out.println("Aufruf des Focus***********");
 						gwahl.setzeFocus();
 						gwahl.setVisible(true);
@@ -390,12 +388,12 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 						
 						System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
 						if(tf.getText().equalsIgnoreCase("ebericht")){
-							Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,""); 
+							Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,"",-1); 
 							//ProgLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,"" );			
 							return null;
 						}
 						if(tf.getText().equalsIgnoreCase("nachsorge")){
-							Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"Nachsorge",true,"" );
+							Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"Nachsorge",true,"",-1 );
 							//ProgLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"Nachsorge",true,"" );			
 							return null;
 						}
@@ -470,9 +468,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			return;
 		}
 		String bertyp = (String) tabbericht.getValueAt(row,1);
-		int berid = new Integer( (String) tabbericht.getValueAt(row,0) );
+		int berid = Integer.parseInt(tabbericht.getValueAt(row,0).toString());
 		String berempfaenger = (String) tabbericht.getValueAt(row,4);
-		Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,berid,bertyp,false,berempfaenger );
+		Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,berid,bertyp,false,berempfaenger,-1 );
 		//ProgLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,berid,bertyp,false,berempfaenger );
 		//ProgLoader.InternalGut2();
 	}
@@ -558,6 +556,70 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		      }
 		   
 	}
+	private  void doArztBausteine(){
+		new LadeProg(Reha.proghome+"ArztBaustein.jar "+
+				Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				RehaSplash rspl = new RehaSplash(null,"Textbaustein-Editor laden....dieser Vorgang kann einige Sekunden dauern...");
+				long zeit = System.currentTimeMillis();
+				while(true){
+					Thread.sleep(20);
+					if(System.currentTimeMillis()-zeit > 2000){
+						break;
+					}
+				}
+				rspl.dispose();
+				return null;
+			}
+		}.execute();
+	}
+	private void doBerichtCopy(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					JRtaTextField tf = new JRtaTextField("nix",false);
+					System.out.println("in GutachtenWahl");
+					GutachtenWahl gwahl = new GutachtenWahl( (Point)gutbut[3].getLocationOnScreen(),tf,"Stammdaten übertragen auf..." );
+					System.out.println("Aufruf des Focus***********");
+					gwahl.setzeFocus();
+					gwahl.setVisible(true);
+					//gwahl.setModal(true);
+					
+					System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
+					if(tf.getText().equalsIgnoreCase("ebericht")){
+						int row = tabbericht.getSelectedRow();
+						if(row < 0){
+							JOptionPane.showMessageDialog(null,"Kein Bericht für Datenübernahme ausgewählt");
+							return null;
+						}
+						int uebernahme = Integer.parseInt(tabbericht.getValueAt(row,0).toString());
+						Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,"",uebernahme); 
+						return null;
+					}
+					if(tf.getText().equalsIgnoreCase("nachsorge")){
+						int row = tabbericht.getSelectedRow();
+						if(row < 0){
+							JOptionPane.showMessageDialog(null,"Kein Bericht für Datenübernahme ausgewählt");
+							return null;
+						}
+						int uebernahme = Integer.parseInt(tabbericht.getValueAt(row,0).toString());
+						Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"Nachsorge",true,"",uebernahme );
+						return null;
+					}
+					gwahl = null;
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					
+				return null;
+			}
+		}.execute();
+		
+		
+	}
 
 	class ToolsDlgGutachten{
 		public ToolsDlgGutachten(String command,Point pt){
@@ -575,13 +637,15 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			switch(tDlg.rueckgabe){
 			case 0:
 				if(!Rechte.hatRecht(Rechte.Gutachten_copy, true)){return;}
+				doBerichtCopy();
 				break;
 			case 1:
 				if(!Rechte.hatRecht(Rechte.Sonstiges_textbausteinegutachten, true)){return;}
+				doArztBausteine();
 				break;
 			}
 			tDlg = null;
-			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			
 		}
 	}
 

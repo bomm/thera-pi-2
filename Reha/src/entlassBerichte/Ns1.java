@@ -14,6 +14,7 @@ import java.awt.event.ComponentListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -28,6 +29,7 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -127,6 +129,14 @@ public class Ns1 implements ActionListener,ComponentListener {
 								}
 				 				
 				 			}.execute();
+				 		}else if(eltern.uebernahmeid >= 0){
+				 			ladeDatenAusVorbericht(eltern.uebernahmeid);
+				 			SwingUtilities.invokeLater(new Runnable(){
+				 				public void run(){
+						 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));				 					
+				 				}
+				 			});
+				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empfäger des Gutachtens ein (Berichttyp).");
 				 		}else{
 				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empfäger des Gutachtens ein (Berichttyp).");
 				 			doKopfNeu();
@@ -142,6 +152,48 @@ public class Ns1 implements ActionListener,ComponentListener {
 	public JXPanel getSeite(){
 		return pan;
 	}
+	private void ladeDatenAusVorbericht(int vorbericht){
+		String cmd = "select vnummer,aigr,namevor,geboren,strasse,plz,ort,msnr,"+
+		"diag1,diag2,diag3,diag4,diag5,"+
+		"F_74,F_79,F_80,F_81,F_82,F_87,F_88,F_89,F_90,F_95,F_96,F_97,F_98,F_103,F_104,F_105,"+
+		"F_106,F_111,F_112,F_113 from bericht2 where berichtid='"+Integer.toString(vorbericht)+"' LIMIT 1";
+		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+		System.out.println(vec);
+		if(vec.size() > 0){
+			try{
+				for(int i = 0; i < 7;i++){
+					if(eltern.btf[i].getRtaType().equals("DATUM")){
+						if(vec.get(0).get(i).length()==10){
+							eltern.btf[i].setText( DatFunk.sDatInDeutsch(vec.get(0).get(i)) );
+						}
+					}else{
+						eltern.btf[i].setText(vec.get(0).get(i));
+					}
+				}
+				eltern.btf[8].setText(vec.get(0).get(7));
+				for(int i = 0; i < 5;i++){
+					eltern.bta[i].setText(vec.get(0).get(i+8));
+				}
+				for(int i = 0; i < 5;i++){
+					eltern.btf[i+13].setText(vec.get(0).get(i+13+(i*3)));
+				}
+				for(int i = 0; i < 5;i++){
+					eltern.bcmb[(i*3)].setSelectedItem(vec.get(0).get(i+14+(i*3)));
+				}
+				for(int i = 0; i < 5;i++){
+					eltern.bcmb[1+(i*3)].setSelectedItem(vec.get(0).get(i+15+(i*3)));
+				}
+				for(int i = 0; i < 5;i++){
+					eltern.bcmb[2+(i*3)].setSelectedItem(vec.get(0).get(i+16+(i*3)));
+				}
+				
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+		}
+		
+	}
+
 	/************************
 	 * 
 	 * 

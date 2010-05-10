@@ -65,7 +65,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
 
-	public GutachtenWahl(Point pt, JRtaTextField xtf){
+	public GutachtenWahl(Point pt, JRtaTextField xtf,String xtitel){
 		super(null,"GutachtenWahl");		
 
 		gutachtenArt = xtf;
@@ -75,7 +75,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		pinPanel.getGruen().setVisible(false);
 		super.getPinPanel().setName("GutachtenWahl");
 		//setPinPanel(pinPanel);
-		getSmartTitledPanel().setTitle("Neues Gutachten erstellen");
+		getSmartTitledPanel().setTitle(xtitel);
 
 		setSize(300,180);
 		setPreferredSize(new Dimension(250,180));
