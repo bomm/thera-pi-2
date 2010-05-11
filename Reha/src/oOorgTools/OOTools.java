@@ -282,7 +282,7 @@ public class OOTools{
 				if(stext.substring(start+i,start+(i+1)).equals("^")){
 					dummy = stext.substring(start,start+(i+1));
 					String sanweisung = dummy.toString().replace("^", "");
-					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert für eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
+					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
 					if(ret==null){
 						return true;
 							//sucheErsetze(dummy,"");
