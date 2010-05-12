@@ -68,6 +68,7 @@ public class SystemConfig {
 	private static INIFile ini; 
 	private static INIFile colini;
 	public static java.net.InetAddress dieseMaschine = null;
+	public static String PDFformularPfad;
 	public static String wissenURL = null;
 	public static String homeDir = null;
 	public static String homePageURL = null;
@@ -170,6 +171,8 @@ public class SystemConfig {
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
 		String jahrHeute = DatFunk.sHeute().substring(6);
+		PDFformularPfad = ini.getStringProperty("Formulare","PDFFormularPfad");
+		
 		if(! aktJahr.equals(jahrHeute) ){
 			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
 					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+

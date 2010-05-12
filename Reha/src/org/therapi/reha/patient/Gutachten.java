@@ -622,13 +622,51 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		
 		
 	}
+	private void doPdfStarten(int art){
+		int row = tabbericht.getSelectedRow();
+		if(row < 0){
+			JOptionPane.showMessageDialog(null,"Kein Bericht für Datenübernahme ausgewählt");
+			return;
+		}
+		new LadeProg(Reha.proghome+"PDFLoader.jar "+
+				Integer.toString(art)+" "+
+				tabbericht.getValueAt(row, 0).toString()+" "+
+				SystemConfig.PDFformularPfad+" "+
+				Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini"+" "+
+				Reha.thisClass.patpanel.patDaten.get(29));
+	}
 
 	class ToolsDlgGutachten{
 		public ToolsDlgGutachten(String command,Point pt){
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
 			icons.put("Stammdaten in neues Gutachten übertragen",SystemConfig.hmSysIcons.get("neu"));
-			icons.put("Textbausteine anlegen/ändern",SystemConfig.hmSysIcons.get("arztbericht"));
-			JList list = new JList(	new Object[] {"Stammdaten in neues Gutachten übertragen", "Textbausteine anlegen/ändern"});
+			icons.put("ASP-Patienten-Information",SystemConfig.hmSysIcons.get("info2"));
+			icons.put("ASP-Verordnung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("ASP-Anwesenheitsliste",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("ASP-Zustimmung des Patienten",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("IRENA-Patienten-Information",SystemConfig.hmSysIcons.get("info2"));
+			icons.put("IRENA-Verordnung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("IRENA-Anwesenheitsliste",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("IRENA-Zustimmung des Patienten",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("IRENA-Beginnmitteilung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("BfA - Reha-Verlängerung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("LVA - Wiedereingliederung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("BfA - Wiedereingliederung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("BfA - AHB-Aufnahmemitteilung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("ASP-Rechnungsformular",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("IRENA-Rechnungsformular",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("Reha-Anwesenheitsbescheinigung",SystemConfig.hmSysIcons.get("pdf"));
+			
+			JList list = new JList(	new Object[] {"Stammdaten in neues Gutachten übertragen", 
+					"ASP-Patienten-Information","ASP-Verordnung",
+					"ASP-Anwesenheitsliste","ASP-Zustimmung des Patienten",
+					"IRENA-Patienten-Information","IRENA-Verordnung","IRENA-Anwesenheitsliste","IRENA-Zustimmung des Patienten",
+					"IRENA-Beginnmitteilung",
+					"BfA - Reha-Verlängerung","LVA - Wiedereingliederung","BfA - Wiedereingliederung",
+					"BfA - AHB-Aufnahmemitteilung","ASP-Rechnungsformular","IRENA-Rechnungsformular",
+					"Reha-Anwesenheitsbescheinigung"});
+					
+			
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Gutachten / E-Bericht",list,rueckgabe);
@@ -642,12 +680,73 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				doBerichtCopy();
 				break;
 			case 1:
-				if(!Rechte.hatRecht(Rechte.Sonstiges_textbausteinegutachten, true)){return;}
-				doArztBausteine();
+				//ASP-Patienteninformation
+				doPdfStarten(90);
 				break;
+			case 2:
+				//ASP-Verordnung
+				doPdfStarten(1);
+				break;
+			case 3:
+				//ASP-Anwesenheitsliste
+				doPdfStarten(2);
+				break;
+			case 4:
+				//ASP-Zustimmungserklärung				
+				doPdfStarten(3);
+				break;
+			case 5:
+				//Irena-Patienteninformation
+				doPdfStarten(91);
+				break;
+			case 6:
+				//Irena-Verordnung
+				doPdfStarten(4);
+				break;
+			case 7:
+				//Irena-Anwesenheitsliste
+				doPdfStarten(5);
+				break;
+			case 8:
+				//Irena-Zustimmungserklärung
+				doPdfStarten(6);
+				break;
+			case 9:
+				//Irena-Beginnmitteilung
+				doPdfStarten(7);
+				break;
+			case 10:
+				//BfA-Rehaverlängerung
+				doPdfStarten(8);
+				break;
+			case 11:
+				//LVA-Wiedereingliederung
+				doPdfStarten(9);
+				break;
+			case 12:
+				//BfA-Wiedereingliederung
+				doPdfStarten(10);
+				break;
+			case 13:
+				//BfA-AHB-Aufnahmemitteilung
+				doPdfStarten(11);
+				break;
+			case 14:
+				//ASP-Rechnung
+				doPdfStarten(12);
+				break;
+			case 15:
+				//IRENA-Rechnung
+				doPdfStarten(13);
+				break;
+			case 16:
+				//Reha-Anwesenheitsbescheinigung
+				doPdfStarten(14);
+				break;
+	
 			}
+
 			tDlg = null;
-			
 		}
 	}
 
