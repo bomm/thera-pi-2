@@ -23,10 +23,10 @@ import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
-import utils.ButtonTools;
-import utils.DatFunk;
-import utils.JRtaTextField;
-import utils.MultiLineLabel;
+import org.thera_pi.nebraska.gui.utils.ButtonTools;
+import org.thera_pi.nebraska.gui.utils.DatFunk;
+import org.thera_pi.nebraska.gui.utils.JRtaTextField;
+import org.thera_pi.nebraska.gui.utils.MultiLineLabel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -188,10 +188,10 @@ public class NebraskaRequestDlg extends JDialog{
 					this.pathtokeystoredir+File.separator+this.ik+".p12",
 					pw.getText().trim(),
 					"",
-					"IK"+this.ik,
+					this.ik,
 					this.institution,
 					this.person);
-			keystore.generateKeyPair(false, true, privkeyfile, pathtoprivkeydir);
+			keystore.generateKeyPair(false);//, true, privkeyfile, pathtoprivkeydir);
 		} catch (NebraskaCryptoException e) {
 			e.printStackTrace();
 		} catch (NebraskaFileException e) {

@@ -12,8 +12,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
 
-import nebraska.Constants;
-
 public class NebraskaMain {
 	public static IOfficeApplication officeapplication;
 	public static HashMap<String,String> hmZertifikat = new HashMap<String,String>();
