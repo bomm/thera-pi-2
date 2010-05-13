@@ -23,9 +23,13 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -42,10 +46,12 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.FileTools;
+import systemTools.IconListRenderer;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
@@ -63,6 +69,7 @@ import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenOfficeFilter;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import dialoge.ToolsDialog;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
@@ -442,15 +449,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		if(cmd.equals("guttools")){
-			if(berichtart.equals("entlassbericht")){
-				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-				Point pt = new Point(dim.width-400,200);
-				arztbaus = new ArztBausteine(this,pt);
-				arztbaus.pack();
-				pt.x = dim.width-arztbaus.getWidth();
-				arztbaus.setLocation(pt);
-				arztbaus.setVisible(true);
-			}
+			new ToolsDlgEbericht("",gutbut[3].getLocationOnScreen());
 		}
 		if(cmd.equals("guttext")){
 			new SwingWorker<Void,Void>(){
@@ -1116,8 +1115,50 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			ex.printStackTrace();
 		}
 	}
+	private void doTextBausteine(){
+		if(berichtart.equals("entlassbericht")){
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			Point pt = new Point(dim.width-400,200);
+			arztbaus = new ArztBausteine(this,pt);
+			arztbaus.pack();
+			pt.x = dim.width-arztbaus.getWidth();
+			arztbaus.setLocation(pt);
+			arztbaus.setVisible(true);
+		}
+	}
 
+/********************************************/
+	class ToolsDlgEbericht{
+		public ToolsDlgEbericht(String command,Point pt){
 
+			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("Textbausteine abrufen",SystemConfig.hmSysIcons.get("arztbericht"));
+			icons.put("Bodymass-Index",SystemConfig.hmSysIcons.get("barcode"));
+			icons.put("ICD-10(GM) Recherche",SystemConfig.hmSysIcons.get("info2"));			
+			JList list = new JList(	new Object[] {"Textbausteine abrufen", 
+					"Bodymass-Index", "ICD-10(GM) Recherche"});
+			list.setCellRenderer(new IconListRenderer(icons));	
+			int rueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: ärztliche Gutachten",list,rueckgabe);
+			tDlg.setPreferredSize(new Dimension(250,200));
+			tDlg.setLocation(pt.x-20,pt.y+30);
+			tDlg.pack();
+			tDlg.setVisible(true);
+			switch(tDlg.rueckgabe){
+			case 0:
+				doTextBausteine();
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			}
+			tDlg = null;
+			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+		}
+	}
+/**********************************************/	
+	
 }
 
 class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
