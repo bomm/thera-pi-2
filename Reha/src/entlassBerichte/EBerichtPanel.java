@@ -1149,8 +1149,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				doTextBausteine();
 				break;
 			case 1:
+				JOptionPane.showMessageDialog(null, "Funktion Bodymass-Index noch nicht implementiert");
 				break;
 			case 2:
+				JOptionPane.showMessageDialog(null, "Funktion ICD-10(GM) Recherche noch nicht implementiert");
 				break;
 			}
 			tDlg = null;
