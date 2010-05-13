@@ -12,17 +12,23 @@ import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
 public class NebraskaKeystoreTest extends TestCase {
+	private static final String personName = "Max Mustermann";
+	private static final String institutionName = "Test Institution";
+	private static final String institutionId = "IK123456789";
+	private static final String keyPassword = "abcdef";
+	private static final String keystorePassword = "123456";
+	private static final String keystoreFilename = "/tmp/keystore.p12";
+	private static final String requestFilename = "/tmp/request.p10";
+
 	private NebraskaKeystore nebraskaKeystore;
-	private final String keystoreFilename = "/tmp/keystore.p12";
-	private final String requestFilename = "/tmp/request.p10";
-	
+
 	protected void setUp() throws Exception {
 		super.setUp();
 		File keystoreFile = new File(keystoreFilename);
 		if(keystoreFile.exists()) {
 			keystoreFile.delete();
 		}
-		nebraskaKeystore = new NebraskaKeystore(keystoreFilename, "123456", "abcdef", "IK123456789", "Test Institution", "Max Mustermann");
+		nebraskaKeystore = new NebraskaKeystore(keystoreFilename, keystorePassword, keyPassword, institutionId, institutionName, personName);
 	}
 
 	protected void tearDown() throws Exception {
