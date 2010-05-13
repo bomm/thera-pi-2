@@ -56,7 +56,7 @@ public class NebraskaEncryptor {
 	 * @throws NebraskaNotInitializedException if institution ID, institution name 
 	 */
 	NebraskaEncryptor(String IK, NebraskaKeystore nebraskaKeystore) throws NebraskaCryptoException, NebraskaNotInitializedException {
-		this.receiverIK = IK;
+		receiverIK = NebraskaUtil.normalizeIK(IK);
 		receiverCert = nebraskaKeystore.getCertificate(receiverIK);
 		senderKey = nebraskaKeystore.getSenderKey();
 		senderCert = nebraskaKeystore.getSenderCertificate();

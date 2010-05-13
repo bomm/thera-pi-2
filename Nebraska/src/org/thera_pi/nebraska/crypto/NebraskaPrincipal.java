@@ -98,7 +98,7 @@ public class NebraskaPrincipal {
 		this.country = country;
 		this.organization = organization;
 		this.institutionName = institutionName;
-		this.institutionID = institutionID;
+		this.institutionID = NebraskaUtil.normalizeIK(institutionID);
 		this.personName = personName;
 	}
 	

@@ -77,7 +77,7 @@ public class NebraskaUtil {
 	 * @return the alias
 	 */
 	public static String getCertAlias(String institutionID) {
-		return institutionID.trim();
+		return normalizeIK(institutionID);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class NebraskaUtil {
 	 * @return the alias
 	 */
 	public static String getNewKeyAlias(String institutionID) {
-		return "new." + institutionID.trim();
+		return "new." + normalizeIK(institutionID);
 	}
 	
 	/**
