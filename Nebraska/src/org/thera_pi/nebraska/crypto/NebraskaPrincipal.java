@@ -185,11 +185,11 @@ public class NebraskaPrincipal {
 		if(distinguishedName == null)
 		{
 			DistinguishedNameBuffer buf = new DistinguishedNameBuffer();
-			buf.appendPart("C", country);
-			buf.appendPart("O", organization);
-			buf.appendPart("OU=",institutionName);
-			buf.appendPart("OU", "IK", institutionID);
 			buf.appendPart("CN", personName);
+			buf.appendPart("OU", "IK", institutionID);
+			buf.appendPart("OU=",institutionName);
+			buf.appendPart("O", organization);
+			buf.appendPart("C", country);
 			distinguishedName = buf.toString();
 		}
 		return distinguishedName;
