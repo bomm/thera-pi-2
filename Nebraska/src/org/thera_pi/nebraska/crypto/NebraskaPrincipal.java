@@ -164,7 +164,10 @@ public class NebraskaPrincipal {
 				if(buf.length() > 0) buf.append(", ");
 				buf.append(key);
 				if(!key.endsWith("=")) buf.append("=");
-				buf.append(prefix);
+				if(prefix != null)
+				{
+					buf.append(prefix);
+				}
 				buf.append(value);
 			}
 		}
