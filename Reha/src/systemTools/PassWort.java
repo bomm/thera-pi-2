@@ -118,7 +118,7 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 		String name="",rechte="",test=String.valueOf(pwTextFeld.getPassword());
 		size = ParameterLaden.pKollegen.size();
 		for(i=0;i<size;i++){
-			System.out.println(ParameterLaden.pKollegen.get(i).get(1));
+			//System.out.println(ParameterLaden.pKollegen.get(i).get(1));
 			if(test.equals(ParameterLaden.pKollegen.get(i).get(1))){
 				name = (String) ParameterLaden.pKollegen.get(i).get(0);
 				rechte = (String) ParameterLaden.pKollegen.get(i).get(2);

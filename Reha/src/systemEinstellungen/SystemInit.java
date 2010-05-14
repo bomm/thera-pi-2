@@ -1,34 +1,20 @@
 package systemEinstellungen;
 
-
-
 import hauptFenster.Reha;
 import hauptFenster.UIFSplitPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -37,99 +23,47 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingworker.SwingWorker;
-import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXHeader;
-import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import rechteTools.Rechte;
-import rehaContainer.RehaTP;
-import systemTools.JRtaTextField;
-import systemTools.WinNum;
-import dialoge.PinPanel;
-import dialoge.RehaSmartDialog;
-import events.RehaTPEvent;
-import events.RehaTPEventClass;
-import events.RehaTPEventListener;
+import rehaInternalFrame.JSysteminitInternal;
 
 
+public class SystemInit extends JXPanel implements TreeSelectionListener{
 
-
-public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener, ActionListener, WindowListener, KeyListener, RehaTPEventListener{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3482074172384055074L;
-	private int setOben;
-
-	private RehaTPEventClass rtp = null;
-	private JXPanel jp1 = null;
-	private ArrayList<String[]> termine = new ArrayList<String[]>();
-	private JXPanel jtp = null;
-	private String dieserName = "";
-	private JXTable pliste = null;
-	private RehaTP  jp;
-	private JRtaTextField tfSuche = null;
-	private JXButton heute = null;
-	private JXButton heute4 = null;
-	private JTextArea tae = null;
-	private JXLabel lblsuche = null;
-	private JXLabel lbldatum = null;
-	private JXTable ttbl = null;
-	private String aktDatum = "";
-	private Vector vTdata = new Vector();
-	public static SystemUtil thisClass = null;
-
+	private static final long serialVersionUID = 4349616039904531899L;
 	private JXHeader header = null;  
 	private UIFSplitPane jSplitLR = null;
 	private JXPanel jxLinks = null;
 	private JXPanel jxRechts = null;
 	private JXPanel jxInhaltRechts = null;
-	
+
 	public JScrollPane parameterScroll = null;
-	//private JScrollPane panelScroll = null;
+	
 	private HashMap<String,String> htitel = new HashMap<String,String>();
 	private HashMap<String,String> hdescription = new HashMap<String,String>();
 	private HashMap<String,ImageIcon> hicon = new HashMap<String,ImageIcon>();
 	public DefaultMutableTreeNode root;
 	public DefaultTreeModel treeModel;
 	public JTree tree;
-	public SystemUtil(JXFrame owner){
-		
-		//super(frame, titlePanel());
-		super(owner,"SystemUtil");
-		this.dieserName = "SystemUtil"+WinNum.NeueNummer();
-		thisClass = this;
-		setName(this.dieserName);
-		getSmartTitledPanel().setName(this.dieserName);
 
-		this.setModal(true);
-		this.addWindowListener(this);
-		this.addKeyListener(this);
-		this.setUndecorated(true);
-		this.setContentPanel(titlePanel() );
-		getSmartTitledPanel().setTitle("Systeminitialisierung");
-		PinPanel pinPanel = new PinPanel();
-		pinPanel.getGruen().setVisible(false);
-		pinPanel.setName(dieserName);
-		pinPanel.setzeName(dieserName);
-		this.jp.setzeName(dieserName);
-		setPinPanel(pinPanel);
-		rtp = new RehaTPEventClass();
-		rtp.addRehaTPEventListener((RehaTPEventListener) this);
-		
-		
-		
-		JXPanel jp1 = new JXPanel();
-		jp1.setBorder(null);
-		jp1.setBackground(Color.WHITE);
-        jp1.setLayout(new BorderLayout());
+	
+	public SystemInit(JSysteminitInternal sai){
+		super();
+		setLayout(new BorderLayout());
         //jp1.setLayout(new VerticalLayout(1));
         //String ss = Reha.proghome+"icons/"+imagename; 
+		try{
+			//rtp = new RehaTPEventClass();
+			//rtp.addRehaTPEventListener((RehaTPEventListener) this);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
         String ss = Reha.proghome+"icons/header-image.png"; //"icons/header-image.png";
         header = new JXHeader("Mit der Systeminitialisierung....",
                 "....erstellen bzw. ändern Sie die Systemeinstellungen auf Ihre inividuelle Bedürfnisse hin.\n" +
@@ -138,7 +72,7 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
                 "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         header.setPreferredSize(new Dimension(0,150));
-        	jp1.add(header,BorderLayout.NORTH);
+        	add(header,BorderLayout.NORTH);
         	jxLinks = new JXPanel(new BorderLayout());
         	jxLinks.setBackground(Color.WHITE);
         	JXPanel dummy = new JXPanel();
@@ -166,7 +100,8 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
         	// hier mu� das add f�r die weitern Panels rein
         	jxRechts = new JXPanel(new BorderLayout());
     		/****/
-        	jxRechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
+    
+   	     	jxRechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
    	     	/****/
         	// hier mu� das add f�r die weitern Panels rein
         	jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -181,10 +116,8 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 			jSplitLR.setDividerLocation(260);
 
 			((BasicSplitPaneUI) jSplitLR.getUI()).getDivider().setBackground(Color.WHITE);
-			jp1.add(jSplitLR,BorderLayout.CENTER);
-			jp1.revalidate();
-			this.jtp.add(jp1);
-			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			add(jSplitLR,BorderLayout.CENTER);
+			revalidate();
 			auswertenSysUtil("nix");
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
@@ -205,10 +138,10 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 public void FensterSchliessen(String welches){
 	//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 	//webBrowser.dispose();
-	super.dispose();
-	this.dispose();
+	//super.dispose();
+	//this.dispose();
 }
-
+/*
 private static JXPanel titlePanel(){
 	SystemUtil.thisClass.jp = new RehaTP(0);
 	SystemUtil.thisClass.jp.getContentContainer().setLayout(new BorderLayout());
@@ -218,26 +151,12 @@ private static JXPanel titlePanel(){
 	SystemUtil.thisClass.jtp.setVisible(true);
 	return SystemUtil.thisClass.jtp;
 }
-
+*/
 
 public String dieserName(){
 	return this.getName();
 }
 
-public void rehaTPEventOccurred(RehaTPEvent evt) {
-	// TODO Auto-generated method stub
-	System.out.println("****************Schließen des SystemUtil-Fensters**************");
-	String ss =  this.getName();
-	System.out.println("SystemUtil "+this.getName()+" Eltern "+ss);
-	try{
-		//if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
-			FensterSchliessen(evt.getDetails()[0]);
-			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-		//}	
-	}catch(NullPointerException ne){
-		System.out.println("In DruckFenster" +evt);
-	}
-}
 
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
@@ -247,54 +166,6 @@ public void actionPerformed(ActionEvent arg0) {
 		}
 	}	
 }
-
-@Override
-public void keyPressed(KeyEvent arg0) {
-	System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
-	if(arg0.getKeyCode() == 27){
-		arg0.consume();
-		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-		FensterSchliessen(null);
-	}
-	if(arg0.getKeyCode() == 10){
-				arg0.consume();
-	}
-}
-@Override
-public void keyReleased(KeyEvent arg0) {
-	// TODO Auto-generated method stub
-	if(arg0.getKeyCode() == 10){
-		arg0.consume();
-	}
-}
-@Override
-public void keyTyped(KeyEvent arg0) {
-	// TODO Auto-generated method stub
-	if(arg0.getKeyCode() == 27){
-		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-		FensterSchliessen(null);
-	}	
-	if(arg0.getKeyCode() == 10){
-		arg0.consume();
-	}
-}
-
-public void windowClosed(WindowEvent arg0) {
-	// TODO Auto-generated method stub
-	rtp.removeRehaTPEventListener((RehaTPEventListener) this);	
-	Runtime r = Runtime.getRuntime();
-    r.gc();
-    long freeMem = r.freeMemory();
-    System.out.println("Freier Speicher nach  gc():    " + freeMem); 
-}
-
-
-public void windowClosing(WindowEvent arg0) {
-	// TODO Auto-generated method stub
-	rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-}
-
-
 
 private JScrollPane getParameterListe(){
 	DefaultMutableTreeNode treeitem = null;
@@ -781,9 +652,9 @@ private void doAccessDenied(){
 }
 private void cursorWait(boolean ein){
 	if(!ein){
-		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		this.setCursor(Reha.thisClass.cdefault);
 	}else{
-		this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		this.setCursor(Reha.thisClass.wartenCursor);
 	}
 }
 @Override
@@ -796,9 +667,8 @@ public void valueChanged(TreeSelectionEvent e) {
 }
 
 public static void abbrechen(){
-	
-	SystemUtil.thisClass.tree.setSelectionInterval(0,0);
-	SystemUtil.thisClass.auswertenSysUtil("nix");
+	Reha.thisClass.systeminitpanel.tree.setSelectionInterval(0,0);
+	Reha.thisClass.systeminitpanel.auswertenSysUtil("nix");
 }
 //private HashMap<String,String> htitel = new HashMap();
 //private HashMap<String,String> hdescription = new HashMap();
@@ -910,4 +780,7 @@ private void headerInfos(){
 	}
 
 /******************************************/
-}
+
+		
+}	
+

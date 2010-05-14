@@ -102,16 +102,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		System.out.println("Aufruf SysUtilKalenderBenutzer");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
-	     Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(400,500);
-	     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
-	     float[] dist = {0.0f, 0.5f};
-	     //Color[] colors = {Colors.TaskPaneBlau.alpha(1.0f), Color.WHITE};
-	     Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
 		
 		/*******Karteireiter erzeugen und Seite 1 in Scrollpane legen**********/
@@ -231,17 +222,17 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		builder.add(knopf6,cc.xy(9,1));
 		
 		builder.addLabel("Anrede", cc.xy(1,3));
-		anrede = new JRtaTextField("NORMAL",true);
+		anrede = new JRtaTextField("nix",true);
 		builder.add(anrede, cc.xy(3,3));
 		builder.addLabel("Vorname", cc.xy(1,5));
-		vorname = new JRtaTextField("NORMAL",true);
+		vorname = new JRtaTextField("nix",true);
 		builder.add(vorname, cc.xyw(3,5,3));
 		builder.addLabel("Nachname", cc.xy(1,7));
-		nachname = new JRtaTextField("NORMAL",true);
+		nachname = new JRtaTextField("nix",true);
 		builder.add(nachname, cc.xyw(3,7,3));
 		builder.addSeparator("Kalenderstammdaten", cc.xyw(1,9,9));
 		builder.addLabel("Matchcode", cc.xy(1,11));
-		matchcode = new JRtaTextField("NORMAL",true);
+		matchcode = new JRtaTextField("nix",true);
 		builder.add(matchcode, cc.xyw(3,11,3));
 		builder.addLabel("Arbeitsstd.", cc.xy(1,13));
 		arbstd = new JRtaTextField("FL",true,"10.2","RECHTS");

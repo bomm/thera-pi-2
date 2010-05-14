@@ -1,5 +1,7 @@
 package systemEinstellungen;
 
+import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -29,19 +31,12 @@ public class SysUtilPreisregeln extends JXPanel implements KeyListener, ActionLi
 		System.out.println("Aufruf SysUtilKalenderanlagen");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
-	     Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(400,500);
-	     float[] dist = {0.0f, 0.5f};
-	     Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
 	     add(getVorlagenSeite(),BorderLayout.CENTER);
 		return;
 	}
-	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode fï¿½r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",

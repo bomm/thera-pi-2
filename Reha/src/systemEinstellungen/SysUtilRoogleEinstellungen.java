@@ -48,14 +48,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 		System.out.println("Aufruf SysUtilRoogleEinstellungen");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
-	     Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(400,500);
-	     float[] dist = {0.0f, 0.5f};
-	     Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
 	     add(getVorlagenSeite());
 		return;

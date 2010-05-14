@@ -33,12 +33,14 @@ import rehaInternalFrame.JKasseInternal;
 import rehaInternalFrame.JPatientInternal;
 import rehaInternalFrame.JRehaInternal;
 import rehaInternalFrame.JRehaabrechnungInternal;
+import rehaInternalFrame.JSysteminitInternal;
 import rehaInternalFrame.JTerminInternal;
 import rehaInternalFrame.JUmsaetzeInternal;
 import rehaInternalFrame.JUrlaubInternal;
 import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemUtil;
 import systemTools.PassWort;
 import systemTools.SplashPanel;
@@ -77,6 +79,7 @@ public JRehaabrechnungInternal rehaabrechnungjry = null;
 public JBeteiligungInternal beteiligungjry = null;
 public JUrlaubInternal urlaubjry = null;
 public JBenutzerInternal benutzerjry = null;
+public JSysteminitInternal systeminitjry = null;
 
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
@@ -942,9 +945,52 @@ public static RehaSmartDialog SplashPanelDialog(int setPos) {
 }
 
 
-/**************RTA-Wissen Echtfunktion*************************/
+/**************System-Initialisierung*********************/
+public void SystemInit(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	JComponent sysinit = AktiveFenster.getFensterAlle("SystemInit");
+	if(sysinit != null){
+		System.out.println("InternalFrame SystemInit bereits geöffnet");
+		containerHandling(((JSysteminitInternal)sysinit).getDesktop());
+		((JSysteminitInternal)sysinit).aktiviereDiesenFrame( ((JSysteminitInternal)sysinit).getName());
+		if( ((JSysteminitInternal)sysinit).isIcon() ){
+			try {
+				((JSysteminitInternal)sysinit).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	String name = "SystemInit"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	systeminitjry = new JSysteminitInternal("thera-\u03C0  - System-Initialisierung und Einstellungen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)systeminitjry,1,(Container)systeminitjry.getContentPane());
+	systeminitjry.setName(name);
+	systeminitjry.setSize(new Dimension(850,620));
+	systeminitjry.setPreferredSize(new Dimension(850,620));
+	Reha.thisClass.systeminitpanel = new SystemInit(systeminitjry); 
+	systeminitjry.setContent(Reha.thisClass.systeminitpanel);	
+	systeminitjry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	systeminitjry.setLocation(comps*15, comps*15);
+	systeminitjry.pack();
+	systeminitjry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(systeminitjry);
+	systeminitjry.aktiviereDiesenFrame( systeminitjry.getName());
+	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+}
 
+public void loescheSysteminit(){
+	systeminitjry = null;
+	Reha.thisClass.systeminitpanel = null;
+}
 
+/*********************************************************************************/
 
 public static void SystemInitialisierung(){
     SwingUtilities.invokeLater(new Runnable(){

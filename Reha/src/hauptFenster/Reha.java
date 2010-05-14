@@ -122,6 +122,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.FileTools;
@@ -162,8 +163,6 @@ import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 
-
-
 //@SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
@@ -183,6 +182,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public Barkasse barkassenpanel = null;
 	public AbrechnungReha rehaabrechnungpanel = null;
 	public BenutzerRechte benutzerrechtepanel = null;
+	public SystemInit systeminitpanel = null;
 	
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
@@ -806,6 +806,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    mp = new MattePainter(p);
 			    cp = new CompoundPainter<Object>(mp);
 			    Reha.thisClass.compoundPainter.put("Zeitfenster",cp);			    		
+			    /*****************/
+				start = new Point2D.Float(0, 0);
+			    end = new Point2D.Float(400,500);
+			    dist = new float[] {0.0f, 0.5f};
+			    colors = new Color[] {Color.WHITE,Colors.Gray.alpha(0.15f)};
+			    p =  new LinearGradientPaint(start, end, dist, colors);
+			    mp = new MattePainter(p);
+			    cp = new CompoundPainter<Object>(mp);
+			    Reha.thisClass.compoundPainter.put("SystemInit",cp);
+
 			    /*****************/			    
 			    progLoader = new ProgLoader();
 				return null;

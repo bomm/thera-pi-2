@@ -1,5 +1,7 @@
 package systemEinstellungen;
 
+import hauptFenster.Reha;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -71,16 +73,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		System.out.println("Aufruf SysUtilBehandlerset");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
-	     Point2D start = new Point2D.Float(0, 0);
-	     Point2D end = new Point2D.Float(400,500);
-	     //Point2D end = new Point2D.Float(getParent().getParent().getWidth(),getParent().getParent().getHeight());
-	     float[] dist = {0.0f, 0.5f};
-	     //Color[] colors = {Colors.TaskPaneBlau.alpha(1.0f), Color.WHITE};
-	     Color[] colors = {Color.WHITE,getBackground()};
-	     LinearGradientPaint p =
-	         new LinearGradientPaint(start, end, dist, colors);
-	     MattePainter mp = new MattePainter(p);
-	     setBackgroundPainter(new CompoundPainter(mp));
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
 		jscroll = new JScrollPane();
 		jscroll.setOpaque(false);
