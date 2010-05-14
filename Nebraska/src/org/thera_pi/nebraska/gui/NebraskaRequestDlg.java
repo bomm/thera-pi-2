@@ -191,7 +191,7 @@ public class NebraskaRequestDlg extends JDialog{
 					this.ik,
 					this.institution,
 					this.person);
-			keystore.generateKeyPair(false);//, true, privkeyfile, pathtoprivkeydir);
+			keystore.generateKeyPairAndSaveToFile(false, privkeyfile, pathtoprivkeydir);
 		} catch (NebraskaCryptoException e) {
 			e.printStackTrace();
 		} catch (NebraskaFileException e) {

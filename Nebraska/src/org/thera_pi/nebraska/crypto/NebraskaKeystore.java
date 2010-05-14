@@ -195,6 +195,12 @@ public class NebraskaKeystore {
 	{
 		this.keystoreFile = new File(this.keystoreFileName);
 
+		File keystoreDir = keystoreFile.getAbsoluteFile().getParentFile();
+		if(!keystoreDir.exists())
+		{
+			keystoreDir.mkdirs();
+		}
+		
 		try {
 			keyStore = KeyStore.getInstance(NebraskaConstants.KEYSTORE_TYPE,NebraskaConstants.SECURITY_PROVIDER);
 
@@ -275,6 +281,34 @@ public class NebraskaKeystore {
 	{
 		// FIXME check if keystore contains certificate for IK
 		return false;
+	}
+	
+	/**
+	 * Create key pair and save to keystore.
+	 * Overwrite existing key pair only if requested.
+	 * Additionally save key pair to external file in specified directory.
+	 * 
+	 * @param overwrite flag to allow overwriting existing key pair
+	 * @param filename name of external key file
+	 * @param directory directory for key file
+	 * 
+	 * @throws NebraskaCryptoException on cryptography related errors
+	 * @throws NebraskaFileException on I/O related errors
+	 * @throws NebraskaNotInitializedException if institution ID, institution name 
+	 * or person name is not initialized
+	 */
+	public void generateKeyPairAndSaveToFile(boolean overwrite, String filename, String directory)
+		throws NebraskaCryptoException, NebraskaFileException, NebraskaNotInitializedException
+	{
+		File dir = new File(directory);
+		if(!dir.exists())
+		{
+			dir.mkdirs();
+		}
+		
+		generateKeyPair(overwrite);
+
+		exportKey(directory + File.separator + filename, keyPassword);
 	}
 	
 	/**
@@ -736,7 +770,7 @@ public class NebraskaKeystore {
 		} catch (IOException e) {
 			throw new NebraskaFileException(e);
 		}
-        PEMWriter pemWriter = new PEMWriter(fWriter, "BC");
+        PEMWriter pemWriter = new PEMWriter(fWriter, NebraskaConstants.SECURITY_PROVIDER);
         try {
         	pemWriter.writeObject(privateKey);
         	pemWriter.close();
