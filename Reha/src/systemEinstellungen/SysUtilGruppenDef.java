@@ -7,6 +7,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.LinearGradientPaint;
+import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -31,6 +39,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
+import jxTableTools.TableTool;
 import jxTableTools.ZeitTableCellEditor;
 
 import org.jdesktop.swingx.JXPanel;
@@ -63,6 +72,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	JButton jbdel = null;
 	JButton jbedit = null;
 	JButton jbsave = null;
+	JButton jbbreak = null;
 	JLabel gueltig = null;
 	JRtaTextField[] pbeginn = {null,null};
 	JRtaTextField[] pende = {null,null};	
@@ -80,8 +90,10 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	static String editGruppenName = null;
 	static String editGruppenGueltigAb = null;
 	static String gruppeninidat = Reha.proghome+"ini/"+Reha.aktIK+"/gruppen.ini";
+	
 	boolean ltermneu = false,ltermedit=false;
 	boolean lgruppeneu = false,lgruppeedit=false;
+	int termgewaehlt = -1;
 	public SysUtilGruppenDef(){
 		super(new GridLayout(1,1));
 		System.out.println("Aufruf SysUtilKalenderanlagen");
@@ -193,32 +205,38 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		builder.add(jscr,cc.xyw(1, 17, 11));
 
 		JXPanel editPan = new JXPanel();
-		FormLayout lay2 = new FormLayout("p,4dlu,p,4dlu,p,4dlu,p","p");
+		editPan.setOpaque(false);
+		FormLayout lay2 = new FormLayout("45dlu,4dlu,45dlu,4dlu,45dlu,4dlu,45dlu,fill:4dlu:grow(1.0),45dlu","p");
 		CellConstraints cc2 = new CellConstraints();
 		editPan.setLayout(lay2);
 
 		
-		jbneu = new JButton("neuer Termin");
+		jbneu = new JButton("neue");
 		jbneu.setActionCommand("neuertermin");
 		jbneu.addActionListener(this);
 		editPan.add(jbneu,cc2.xy(1,1));		
 
-		jbsave = new JButton("Termin speichern");
+		jbsave = new JButton("speichern");
 		jbsave.setActionCommand("speicherntermin");
 		jbsave.addActionListener(this);	
 		jbsave.setEnabled(false);
 		editPan.add(jbsave,cc2.xy(3,1));
 		
-		jbedit = new JButton("Termin ändern");
+		jbedit = new JButton("ändern");
 		jbedit.setActionCommand("aenderntermin");
 		jbedit.addActionListener(this);		
 		editPan.add(jbedit,cc2.xy(5,1));
 		
-		jbdel = new JButton("Termin löschen");
+		jbdel = new JButton("löschen");
 		jbdel.setActionCommand("loeschentermin");
 		jbdel.addActionListener(this);		
 		editPan.add(jbdel,cc2.xy(7,1));
 		
+		jbbreak = new JButton("abbrechen");
+		jbbreak.setActionCommand("abbrechentermin");
+		jbbreak.addActionListener(this);		
+		editPan.add(jbbreak,cc2.xy(9,1));
+
 		builder.add(editPan,cc.xyw(1, 19,11));
 		/*
 		builder.add(new JLabel("Wochentag ausw�hlen"),cc.xy(1, 3));
@@ -272,8 +290,12 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		jbsave.setEnabled((werte[9]==1 ? true : false));
 		jbedit.setEnabled((werte[10]==1 ? true : false));
 		jbdel.setEnabled((werte[11]==1 ? true : false));
+		jbbreak.setEnabled((werte[12]==1 ? true : false));
 		
 
+	}
+	private void insertGruppe(int reihe,String termindaten){
+		
 	}
 
 	private void gruppeEinstellen(){
@@ -367,8 +389,83 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		jTblGruppen.setName("tabelle");
 		jTblGruppen.addKeyListener(this);
 		jTblGruppen.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0), "selectNextColumnCell");
-
+		jTblGruppen.setDropTarget(new DropTarget(){
+		    private boolean fAccept;
+		    private boolean terminGedropt = false;
+		    private String mitgebracht = "";
+		    @Override
+		    public void dragEnter(DropTargetDragEvent dtde)
+		    {
+		        fAccept = false;
+		        DataFlavor flavors[] = dtde.getCurrentDataFlavors();
+		        
+		        int i;
+		        fAccept = true;
+		    }
+		    @Override
+		    public void dragExit(DropTargetEvent dte)
+		    {
+		        if (!fAccept) return;
+		 
+		    }
+		    @Override
+		    public void dragOver(DropTargetDragEvent dtde)
+		    {
+		    	Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
+		    	//System.out.println("Drag-Support"+dtde);
+		    	if (!fAccept) return;
+		 
+		    }
+			
+            @Override
+            public synchronized void drop(DropTargetDropEvent dtde) {
+                Point point = dtde.getLocation();
+                int column = jTblGruppen.columnAtPoint(point);
+                int row = jTblGruppen.rowAtPoint(point);
+                // handle drop inside current table
+                System.out.println("Gedroppt an Zeile="+row+" / Spalte="+column);
+                System.out.println(dtde);
+                if (!fAccept) return;
+        		try {
+        			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+        			terminGedropt = true;
+        	        Transferable tr = dtde.getTransferable();
+        	        DataFlavor[] flavors = tr.getTransferDataFlavors();
+        	        for (int i = 0; i < flavors.length; i++){
+        	        	if(flavors[i].getRepresentationClass().toString().equals("java.lang.String")){
+        	        		mitgebracht  =(String) tr.getTransferData(flavors[i]).toString();
+        	        	}
+        	        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
+        	        }
+        	      } catch (Throwable t) { t.printStackTrace(); }
+        	      dtde.dropComplete(true);
+        	      if(mitgebracht.startsWith("TERMDATINTERN") && (ltermedit || ltermneu)){
+        	    	  dropAuswerten(row,mitgebracht);
+        	      }
+                super.drop(dtde);
+            }
+        });
 		return; 
+	}
+	
+	private void dropAuswerten(int row, String dropdaten){
+		if(jTblGruppen.getRowCount()<= 0){
+			return;
+		}
+		String[] ddaten = dropdaten.split("°");
+		long zeit = ZeitFunk.MinutenSeitMitternacht(ddaten[4]);
+		String sdauer = ddaten[3].split(" Min.")[0];
+		int idauer = Integer.parseInt(sdauer);
+		int gesamtminuten = Long.valueOf(zeit).intValue()+idauer;
+		String endekal = ZeitFunk.MinutenZuZeit(gesamtminuten);
+		int modrowselected = jTblGruppen.convertRowIndexToModel(jTblGruppen.getSelectedRow());
+		dtblm.setValueAt(ddaten[4].substring(0,5), modrowselected, 2);
+		dtblm.setValueAt(endekal.substring(0,5), modrowselected, 3);
+		SwingUtilities.invokeLater(new Runnable(){
+			public  void run(){
+				jTblGruppen.editCellAt(jTblGruppen.getSelectedRow(), 0);
+			}
+		});
 	}
 
 	@Override
@@ -419,19 +516,19 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				break;
 			}
 			if(e.getActionCommand().equals("GruppeNeu")){
-				knopfGedoense(new int[]{0,0,1,0,0,0,0,0,0,0,0,0});
+				knopfGedoense(new int[]{0,0,1,0,0,0,0,0,0,0,0,0,0});
 				neuGruppenName = "";
 				neuGruppenGueltigAb = "";
 				neuGruppenDauer = "";
 				lgruppeneu = true;
 				NeueGruppe ng = new NeueGruppe("Neue Gruppe anlegen","",DatFunk.sHeute(),"0",true,true);
 				if(neuGruppenName.trim().equals("")){
-					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});	
+					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1,0});	
 				}
 				break;
 			}
 			if(e.getActionCommand().equals("GruppeAendern")){
-				knopfGedoense(new int[]{0,0,1,0,0,0,0,0,0,0,0,0});
+				knopfGedoense(new int[]{0,0,1,0,0,0,0,0,0,0,0,0,0});
 				neuGruppenName = "";
 				neuGruppenGueltigAb = "";
 				neuGruppenDauer = "";
@@ -440,9 +537,9 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				int igruppe = cmbGrName.getSelectedIndex();
 				String sgueltig = DatFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[0]);
 				String sdauer = new Long(SystemConfig.oGruppen.gruppenGueltig.get(igruppe)[2]).toString();
-				//NeueGruppe ng = new NeueGruppe("Gruppe �ndern",sgruppe,sgueltig,sdauer,true,false);
+				NeueGruppe ng = new NeueGruppe("Gruppe ändern",sgruppe,sgueltig,sdauer,true,false);
 				if(neuGruppenName.trim().equals("")){
-					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});	
+					knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1,0});
 				}
 				break;
 			}
@@ -456,7 +553,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 					}
 					lgruppeneu = false;
 				}
-				knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});
+				knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1,0});
 				break;
 			}
 			if(e.getActionCommand().equals("Uebertragen")){
@@ -484,8 +581,9 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			}
 			
 			if(e.getActionCommand().equals("neuertermin")){
+				termgewaehlt = -1;
 				ltermneu = true;
-				knopfGedoense(new int[]{0,0,0,0,0,0,0,0,0,1,0,0});
+				knopfGedoense(new int[]{0,0,0,0,0,0,0,0,0,1,0,0,1});
 				macheRowVec("","00:00","00:00","00:00","15");
 				jTblGruppen.setEditable(true);
 				jTblGruppen.requestFocus();
@@ -500,28 +598,30 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				break;
 			}
 			if(e.getActionCommand().equals("speicherntermin")){
-				knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1});
+				knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1,0});
 				jTblGruppen.setEditable(false);
 				macheSysVec(jTblGruppen.getSelectedRows()[0]);
 				ltermneu = false;
 				ltermedit = false;
+				termgewaehlt = -1;
 				break;
 			}
 			if(e.getActionCommand().equals("aenderntermin")){
+				termgewaehlt = -1;
 				if(jTblGruppen.getRowCount()==0){
 					JOptionPane.showMessageDialog(null,"Aha, Sie haben zwar keinen Termin definiert,\n"+
 					"wollen aber schon mal einen Termin ändern....");
 					return;
 				}
 				ltermedit = true;
-				knopfGedoense(new int[]{0,0,0,0,0,0,0,0,0,1,0,0});
+				knopfGedoense(new int[]{0,0,0,0,0,0,0,0,0,1,0,0,1});
 				jTblGruppen.setEditable(true);
 				jTblGruppen.requestFocus();
-				//jTblGruppen.setRowSelectionInterval(jTblGruppen.getRowCount()-1,jTblGruppen.getRowCount()-1);
 				SwingUtilities.invokeLater(new Runnable(){
 					public  void run(){
 						int[] wahl = jTblGruppen.getSelectedRows();
 						if(wahl.length > 0){
+							termgewaehlt = wahl[0];
 							jTblGruppen.setRowSelectionInterval(wahl[0],wahl[0]);
 							jTblGruppen.editCellAt(wahl[0], 0);
 						}else{
@@ -534,6 +634,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				break;
 			}
 			if(e.getActionCommand().equals("loeschentermin")){
+				termgewaehlt = -1;
 				if(jTblGruppen.getRowCount()==0){
 					JOptionPane.showMessageDialog(null,"Aha, Sie haben zwar keinen Termin definiert,\n"+
 					"wollen aber schon mal einen Termin löschen....");
@@ -558,6 +659,12 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				}
 				break;
 			}
+			if(e.getActionCommand().equals("abbrechentermin")){
+				knopfGedoense(new int[]{1,1,0,1,1,1,1,1,1,0,1,1,0});
+				gruppeEinstellen();
+				termgewaehlt = -1;
+			}
+			
 
 			//jbneu.setActionCommand("neuertermin");
 			//

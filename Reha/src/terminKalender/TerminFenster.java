@@ -724,7 +724,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					      DRAG_NUMMER = 	 (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]) ;
 					      DRAG_UHR =   (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(aktiveSpalte[0]) ;
 					      altaktiveSpalte = aktiveSpalte.clone();
-					      JLabel lab = new JLabel("TERMDATINTERN"+"°"+sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
+					      //JLabel lab = new JLabel("TERMDATINTERN"+"°"+sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min.");
+					      JLabel lab = new JLabel("TERMDATINTERN"+"°"+sdaten[0]+"°"+sdaten[1]+"°"+sdaten[3]+" Min."+"°"+DRAG_UHR);
 					      lab.setTransferHandler(new TransferHandler("text"));
 					      TransferHandler th = lab.getTransferHandler();
 					      th.exportAsDrag(lab, e, TransferHandler.COPY);

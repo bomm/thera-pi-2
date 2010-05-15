@@ -5,12 +5,14 @@ import hauptFenster.UIFSplitPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -55,14 +57,7 @@ public class SystemInit extends JXPanel implements TreeSelectionListener{
 	public SystemInit(JSysteminitInternal sai){
 		super();
 		setLayout(new BorderLayout());
-        //jp1.setLayout(new VerticalLayout(1));
-        //String ss = Reha.proghome+"icons/"+imagename; 
-		try{
-			//rtp = new RehaTPEventClass();
-			//rtp.addRehaTPEventListener((RehaTPEventListener) this);
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
+		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		
         String ss = Reha.proghome+"icons/header-image.png"; //"icons/header-image.png";
         header = new JXHeader("Mit der Systeminitialisierung....",
@@ -72,6 +67,8 @@ public class SystemInit extends JXPanel implements TreeSelectionListener{
                 "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         header.setPreferredSize(new Dimension(0,150));
+        header.setBackground(Color.WHITE);
+        ((JLabel)header.getComponent(1)).setVerticalAlignment(JLabel.NORTH);
         	add(header,BorderLayout.NORTH);
         	jxLinks = new JXPanel(new BorderLayout());
         	jxLinks.setBackground(Color.WHITE);
@@ -97,17 +94,18 @@ public class SystemInit extends JXPanel implements TreeSelectionListener{
         	jxLinks.add(dummy,BorderLayout.EAST);
 
         	jxLinks.add(getParameterListe(),BorderLayout.CENTER);
-        	// hier mu� das add f�r die weitern Panels rein
+        	// hier muß das add für die weitern Panels rein
         	jxRechts = new JXPanel(new BorderLayout());
     		/****/
     
    	     	jxRechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
    	     	/****/
-        	// hier mu� das add f�r die weitern Panels rein
+        	// hier muß das add für die weitern Panels rein
         	jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
         		jxLinks,
-        		jxRechts);        
-			jSplitLR.setBackground(Color.WHITE);
+        		jxRechts); 
+        	jSplitLR.setOpaque(false);
+			//jSplitLR.setBackground(Color.WHITE);
 			jSplitLR.setDividerSize(7);
 			//jSplitLR.setDividerBorderVisible(false);
 			jSplitLR.setDividerBorderVisible(true);

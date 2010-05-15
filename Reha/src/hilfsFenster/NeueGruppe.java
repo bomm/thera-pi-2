@@ -111,9 +111,9 @@ public class NeueGruppe implements KeyListener, ActionListener, FocusListener{
 		
 
 		if(this.aktuell){
-			builder.add(new JXLabel("gültig ab"),cc.xy(2,6));
+			builder.add(new JXLabel("gÃ¼ltig ab"),cc.xy(2,6));
 		}else{
-			builder.add(new JXLabel("gültig bis"),cc.xy(2,6));			
+			builder.add(new JXLabel("gÃ¼ltig bis"),cc.xy(2,6));			
 		}
 		jrtaf[2] = new JRtaTextField("DATUM",false);
 		//jrtaf[1].setPreferredSize(new Dimension(25,20));
