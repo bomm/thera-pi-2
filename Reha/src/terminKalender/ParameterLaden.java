@@ -129,7 +129,17 @@ public static String getZeigen(int kollege){
 	}
 public static String getAbteilung(int kollege){
 	return vKKollegen.get(kollege).Abteilung;
+}
+public static String searchAbteilung(int dbzeile){
+	String sret = "";
+	for(int i = 0; i < vKKollegen.size();i++){
+		if(vKKollegen.get(i).Reihe==dbzeile){
+			sret = vKKollegen.get(i).Abteilung;
+			break;
+		}
 	}
+	return sret;
+}
 
 public static void Init(){
 	Reha obj = Reha.thisClass;

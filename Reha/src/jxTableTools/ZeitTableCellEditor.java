@@ -7,6 +7,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
@@ -44,8 +45,15 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements TableCell
         }
 
         // Configure the component with the specified value
+        final Object xvalue = value;
         ((JFormattedTextField)component).setText((String)value);
-        ((JFormattedTextField)component).select(0,((String)value).length()-1);
+        SwingUtilities.invokeLater(new Runnable(){
+        	public void run(){
+                //((JFormattedTextField)component).select(0,((String)xvalue).length()-1);
+                ((JFormattedTextField)component).setCaretPosition(0);
+        	}
+        });
+
         tab = table;
         reihe = rowIndex;
         // Return the configured component

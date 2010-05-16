@@ -23,6 +23,7 @@ import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -96,6 +98,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import rechteTools.Rechte;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
+import systemTools.IntegerTools;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.ParameterLaden;
@@ -842,6 +845,26 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				});	
 				break;
 			}
+			if(name.equals("export")){
+				if(gewaehlt==0){
+					JOptionPane.showMessageDialog(null,"So so...,Sie haben zwar nix gewählt wollen es aber schon mal exportieren - das NIX....\nOh Herr schmeiß Hirn ra!");
+					return;
+				}
+				cursorWait(true);
+				SwingUtilities.invokeLater(new Runnable(){
+					public  void run(){
+						new Thread(){
+							public void run(){
+								auswahlExportieren();								
+							}
+						}.start();
+
+						//auswahlSchreiben();
+					}
+				});	
+				break;
+				
+			}
 
 		}
 	}
@@ -982,6 +1005,84 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		vecWahl.trimToSize();
 		this.zeilengewaehlt = 0;
 		sucheName.requestFocus();
+	}
+	private void auswahlExportieren(){
+		exportVectorInit();
+		int lang = vecWahl.size();
+		//Druckzeit sofern vorhanden in offizielle Druckzeit übertragen
+		for(int i = 0; i < lang;i++){
+			if(! ((Vector<String>)vecWahl.get(i)).get(11).trim().equals("")){
+				((Vector<String>)vecWahl.get(i)).set(6, ((Vector<String>)vecWahl.get(i)).get(11));
+			}
+		}
+		Comparator<Vector> comparator = new Comparator<Vector>() {
+			@Override
+			public int compare(Vector o1, Vector o2) {
+				String s1 = ((String)o1.get(15))+((String)o1.get(6));
+				String s2 = ((String)o2.get(15))+((String)o2.get(6));
+				return s1.compareTo(s2);
+			}
+		};
+		Collections.sort(vecWahl,comparator);
+		//System.out.println(vecWahl);
+		String drzeit = "";
+		String gruppe = "";
+		int kalzeile = -1;
+		int kollege = -1;
+		String zeile = "";
+		BufferedWriter bw = null;
+		try {
+			bw = new BufferedWriter(new FileWriter("C:/RehaplanExport.txt"));
+
+			for(int i = 0; i < lang;i++){
+				//Wenn Gruppensignal gesetzt
+				if( ((Vector<Boolean>)vecWahl.get(i)).get(19) ){
+					//dauer holen
+					drzeit = getGruppendauer(((Vector<String>)vecWahl.get(i)).get(8));
+				}else{
+					drzeit = getGruppendauer(((Vector<String>)vecWahl.get(i)).get(5));
+				}
+				//Jetzt die gruppenzugehörigkeit holen
+				try{
+					kalzeile = Integer.parseInt(((Vector<String>)vecWahl.get(i)).get(13).substring(0,2));
+					gruppe = ParameterLaden.searchAbteilung(kalzeile);
+					//System.out.println(((Vector<String>)vecWahl.get(i)).get(6)+"/"+((Vector<String>)vecWahl.get(i)).get(10));
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				//                        Datum auf deutsch                     Anfangszeit(=Druckzeit)
+				bw.write(((Vector<String>)vecWahl.get(i)).get(14)+"°"+((Vector<String>)vecWahl.get(i)).get(6)+
+				//   ermittelte Dauer                     Gruppenkürzel
+						"°"+drzeit+"°"+(gruppe.trim().equals("") ? "--" : gruppe)+"°"+
+				//   Matchcode Kalenderbenutzer
+						((Vector<String>)vecWahl.get(i)).get(10)+"°"+
+				//		
+						((Vector<String>)vecWahl.get(i)).get(8).replace("\\", "/Gruppe:_")
+						
+				);
+				bw.newLine();
+			}
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			try {
+				bw.flush();
+				bw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		
+		cursorWait(false);
+	}
+	private String getGruppendauer(String zeit){
+		String sret = "30";
+		int lastline = zeit.lastIndexOf("-");
+		String nurmin = zeit.substring(lastline+1);
+		sret = nurmin.split("Min.")[0];
+		return sret;
 	}
 
 	private void auswahlDrucken(boolean drucken){
@@ -1205,6 +1306,22 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			}
 		}	
 	}
+	private void exportVectorInit(){
+		int lang = dtblm.getRowCount(),i;
+		int durchlauf = 0;
+		Vector vec = null;
+		String name,nummer;
+		vecWahl.clear();
+		for(i=0;i<lang;i++){
+			if((Boolean)dtblm.getValueAt(i,0)){
+				setFortschrittSetzen(durchlauf++);
+				vecWahl.add( ((Vector<String>)dtblm.getDataVector().get(i)).clone());
+				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
+				((Vector)vecWahl.get(vecWahl.size()-1)).set(6, (String) dtblm.getValueAt(i,6));		
+			}
+		}	
+	}
+	
 	/********************************************************/
 	class SchreibeAuswahl extends SwingWorker<Void,Void>{
 
@@ -2698,7 +2815,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		machevec.add(nummer);								
 		machevec.add(skollege);								
 		machevec.add(rs.getString("TS"+(ii)).trim().substring(0,2)+":00");								
-		machevec.add(skollege); //fr�her sorter
+		machevec.add(skollege); //früher sorter
 		machevec.add(rs.getString("BEHANDLER"));		
 		machevec.add(sdatum);
 		machevec.add(sorigdatum);
@@ -2711,6 +2828,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	}
 
 	private Vector macheGruppenVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,Vector vecgruppe,boolean suchleer) throws SQLException{
+		
 		machevec.clear();
 		machevec.trimToSize();
 		//Vector vec = new Vector();

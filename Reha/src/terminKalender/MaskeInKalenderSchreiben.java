@@ -275,6 +275,7 @@ public void actionPerformed(ActionEvent arg0) {
 			 				   anhalten.setEnabled(true);
 			 				   starten.setEnabled(false);
 			 				   maskenEintragen();
+			 				  
 			 			   }
 			 		   }.start();
 						
@@ -387,7 +388,7 @@ public void maskenEintragen(){
 		}
 	}
 	anhalten.setEnabled(false);
-	starten.setEnabled(true);
+	//starten.setEnabled(true);
 
 	//1.Feststellen welcher Behandler betroffen ist
 	//2.Feststellen ab welchem Tag

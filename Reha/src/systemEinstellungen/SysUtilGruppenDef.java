@@ -388,6 +388,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		jTblGruppen.setEditable(false);
 		jTblGruppen.setName("tabelle");
 		jTblGruppen.addKeyListener(this);
+		jTblGruppen.setSortable(false);
 		jTblGruppen.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0), "selectNextColumnCell");
 		jTblGruppen.setDropTarget(new DropTarget(){
 		    private boolean fAccept;
@@ -463,7 +464,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		dtblm.setValueAt(endekal.substring(0,5), modrowselected, 3);
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
-				jTblGruppen.editCellAt(jTblGruppen.getSelectedRow(), 0);
+				jTblGruppen.editCellAt(jTblGruppen.getSelectedRow(), 1);
 			}
 		});
 	}
@@ -767,7 +768,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
 		System.out.println("Sektion = "+sektion);
 		itag = itag+1;
-		INIFile ini = new INIFile(Reha.proghome+"/ini/gruppen.ini");
+		INIFile ini = new INIFile(gruppeninidat);
 		ini.setStringProperty(sektion, "WOTA"+itag, new Integer(jTblGruppen.getRowCount()).toString(), null);
 		ini.setStringProperty(sektion, "TA"+itag+"GR"+(row+1), plan1+"-"+plan2, null);
 		ini.setStringProperty(sektion, "TA"+itag+"ZE"+(row+1),druck, null);
