@@ -351,7 +351,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		new Thread(){
 			public  void run(){
 				try {
-					System.out.println("Starte SocketServer");
+					//System.out.println("Starte SocketServer");
 					RehaSock = new RehaSockServer();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -384,7 +384,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}		
 		}.start();
 		
-		System.out.println("starte RehaxSwing");
+		//System.out.println("starte RehaxSwing");
 		int i=0;
 		while(warten && i < 50){
 		try {
@@ -404,7 +404,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+			//System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
 		}	
 		f = new File(javaPfad+"/lib/ext/comm.jar");
 		if(! f.exists()){
@@ -415,7 +415,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
+			//System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
 		}
 		f = new File(javaPfad+"/lib/javax.comm.properties");
 		if(! f.exists()){
@@ -426,7 +426,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
+			//System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
 		new Thread(){
 			public void run(){
@@ -457,7 +457,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}.start();
 		*/
 
-		System.out.println("RehaxSwing wurde gestartet");
+		//System.out.println("RehaxSwing wurde gestartet");
 		/*********/
 			SystemConfig sysConf = new SystemConfig();
 			setSystemConfig(sysConf);
@@ -535,7 +535,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 				application.getJFrame();
 				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/pi.png" ) );
-				System.out.println("ProgHome = "+Reha.proghome);
+				//System.out.println("ProgHome = "+Reha.proghome);
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();
 		   		//Reha.starteOfficeApplication();
@@ -547,7 +547,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws java.lang.Exception {
-				System.out.println("poste INITENDE über Socket");
+				//System.out.println("poste INITENDE über Socket");
 				new SocketClient().setzeInitStand("INITENDE");
 				return null;
 			}
@@ -827,10 +827,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	public void aktiviereNaechsten(int welchen){
 		JInternalFrame[] frame = desktops[welchen].getAllFrames();
-		System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+		//System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 		if(frame.length > 0){
 			for(int i = 0; i < frame.length;i++){
-				System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+				//System.out.println("InternalFrames übrig = "+frame[i].getTitle());
 				((JRehaInternal)frame[0]).toFront();
 				((JRehaInternal)frame[0]).setActive(true);
 				((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -840,7 +840,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			if(welchen==0){
 				frame = desktops[1].getAllFrames();
 				for(int i = 0; i < frame.length;i++){
-					System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					//System.out.println("InternalFrames übrig = "+frame[i].getTitle());
 					((JRehaInternal)frame[0]).toFront();
 					((JRehaInternal)frame[0]).setActive(true);
 					((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -850,7 +850,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}else{
 				frame = desktops[0].getAllFrames();
 				for(int i = 0; i < frame.length;i++){
-					System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					//System.out.println("InternalFrames übrig = "+frame[i].getTitle());
 					((JRehaInternal)frame[0]).toFront();
 					((JRehaInternal)frame[0]).setActive(true);
 					((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -1262,7 +1262,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				      for (int i = 0; i < flavors.length; i++){
 				        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]).toString());
 				      }
-				      System.out.println("Es wurde mitgebracht -> "+mitgebracht);
+				      //System.out.println("Es wurde mitgebracht -> "+mitgebracht);
 				      if(mitgebracht.indexOf("°") >= 0){
 			    		  String[] labs = mitgebracht.split("°");
 				    	  if(labs[0].contains("TERMDAT")){
@@ -1727,7 +1727,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						jry.addComponentListener(Reha.thisClass);
 						jry.setVisible(true);
 						Reha.thisClass.desktops[1].add(jry);
-						System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[1].getComponentCount());
+						//System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[1].getComponentCount());
 						try {
 							jry.setSelected(true);
 						} catch (PropertyVetoException e) {
@@ -1810,7 +1810,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 				@Override
 				protected Void doInBackground() throws Exception {
-            		System.out.println("OpenOffice -> Aufruf");
+            		//System.out.println("OpenOffice -> Aufruf");
           
             		Reha.thisClass.Rehaprogress.setIndeterminate(false);
             	    if(Reha.DbOk){
@@ -1883,7 +1883,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     if(keyEvent.isControlDown() &&
                     		keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
     					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
-    					System.out.println("Krankenkassen einlesen");
+    					//System.out.println("Krankenkassen einlesen");
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
@@ -2118,7 +2118,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		// TODO Auto-generated method stub
 		//System.out.println("Reha->Maus Taste losgelassen->"+arg0.getSource());		
 	}
-/************Motion f�r DragEvent******************/
+/************Motion für DragEvent******************/
 
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
@@ -2202,16 +2202,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 
 			JInternalFrame[] frame = desktops[0].getAllFrames();
-			System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+			//System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 			for(int i = 0; i < frame.length;i++){
-				System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
+				//System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
 				frame[i].dispose();
 				frame[i] = null;
 			}
 			frame = desktops[1].getAllFrames();
-			System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+			//System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 			for(int i = 0; i < frame.length;i++){
-				System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
+				//System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
 				frame[i].dispose();
 				frame[i] = null;
 			}
@@ -2252,15 +2252,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	@Override
 	public void windowStateChanged(WindowEvent arg0) {
-		System.out.println("WindowStateEvent: "+arg0);
+		//System.out.println("WindowStateEvent: "+arg0);
 	}
 	@Override
 	public void focusGained(FocusEvent e) {
-		System.out.println("fokus erhalten "+e);
+		//System.out.println("fokus erhalten "+e);
 	}
 	@Override
 	public void focusLost(FocusEvent e) {
-		System.out.println("fokus verloren "+e);
+		//System.out.println("fokus verloren "+e);
 	}
 	@Override
 	public void componentShown(ComponentEvent arg0) {
@@ -2337,7 +2337,7 @@ class Hintergrund extends JDesktopPane implements ComponentListener{
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
 	if(cmd.equals("patient")){
-		System.out.println("ActionListener patient");
+		//System.out.println("ActionListener patient");
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -2350,12 +2350,12 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("kasse")){
-		System.out.println("ActionListener kasse");		
+		//System.out.println("ActionListener kasse");		
 		Reha.thisClass.progLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
 		return;
 	}
 	if(cmd.equals("arzt")){
-		System.out.println("ActionListener arzt");	
+		//System.out.println("ActionListener arzt");	
 		Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 		return;
 	}
@@ -2415,7 +2415,7 @@ final class DatenbankStarten implements Runnable{
 		try{
 			if (sDB=="SQL"){
 				new SocketClient().setzeInitStand("Datenbanktreiber installieren");
-        		System.out.println(sDB+" Treiber gestartet");
+        		//System.out.println(sDB+" Treiber gestartet");
 				Class.forName(SystemConfig.vDatenBank.get(0).get(0)).newInstance();
 			}/*else{
 				Class.forName(SystemConfig.vDatenBank.get(1).get(0)).newInstance();
@@ -2486,7 +2486,7 @@ final class DatenbankStarten implements Runnable{
 				 
 				new SocketClient().setzeInitStand("Datenbank starten");
 
-				System.out.println("Connection ok");
+				//System.out.println("Connection ok");
 				new SocketClient().setzeInitStand("Datenbank ok");
 
 				ParameterLaden.Init();
@@ -2557,7 +2557,7 @@ final class DatenbankStarten implements Runnable{
 					try {
 						new BarCodeScanner(SystemConfig.sBarcodeCom);
 					} catch (Exception e) {
-						System.out.println("Barcode-Scanner konnte nicht installiert werden");
+						//System.out.println("Barcode-Scanner konnte nicht installiert werden");
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 					}
@@ -2837,7 +2837,7 @@ class RehaSockServer{
 	RehaSockServer() throws IOException{
 		try {
 			serv = new ServerSocket(1235);
-			System.out.println("Reha SocketServer gestartet auf Port 1235");
+			//System.out.println("Reha SocketServer gestartet auf Port 1235");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -2878,7 +2878,7 @@ class RehaSockServer{
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}								
-						System.out.println("INITENDE-angekommen");
+						//System.out.println("INITENDE-angekommen");
 						Reha.warten = false;
 						break;
 			}else{
@@ -2897,9 +2897,9 @@ class RehaSockServer{
 		if(serv != null){
 			serv.close();
 			serv = null;
-			System.out.println("Socket wurde geschlossen");
+			//System.out.println("Socket wurde geschlossen");
 		}else{
-			System.out.println("Socket war bereits geschlossen");
+			//System.out.println("Socket war bereits geschlossen");
 		}
 		return;
 	}

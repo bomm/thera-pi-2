@@ -25,8 +25,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -93,6 +95,7 @@ import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.table.TableColumnExt;
+import org.therapi.reha.patient.LadeProg;
 
 
 import rechteTools.Rechte;
@@ -520,7 +523,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		auswahlPerEmail.setActionCommand("email");
 		auswahlPerEmail.addActionListener(this);
 		
-		auswahlInDatei = new  JButton("Terminliste exportieren");
+		auswahlInDatei = new  JButton("Auswahl exportieren");
 		auswahlInDatei.setActionCommand("export");
 		auswahlInDatei.addActionListener(this);
 		
@@ -629,7 +632,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		jxSucheTable.getColumn(4).setMinWidth(40);	
 		jxSucheTable.getColumn(4).setMaxWidth(40);
 		jxSucheTable.getColumn(4).setCellRenderer(crenderer);
-		//L�nge des Termins
+		//Länge des Termins
 		jxSucheTable.getColumn(5).setMinWidth(40);	
 		jxSucheTable.getColumn(5).setMaxWidth(40);
 		jxSucheTable.getColumn(5).setCellRenderer(crenderer);		
@@ -1007,8 +1010,89 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		sucheName.requestFocus();
 	}
 	private void auswahlExportieren(){
+		JRtaTextField exportart = new JRtaTextField("nix",false);
+		ExportWahl exwahl = new ExportWahl(auswahlInDatei.getLocationOnScreen(),exportart,"Was soll exportiert werden?");
+		exwahl.setVisible(true);
+		if(exportart.getText().equals("rehaplan")){
+			if(rehaplanExport());
+			JOptionPane.showMessageDialog(null, "Plandateien wurden erfolgreich exportiert");
+		}else if(exportart.getText().equals("fahrdienstliste")){
+			if(fahrdienstExport());
+			JOptionPane.showMessageDialog(null, "Daten für Fahrdienstliste wurden erfolgreich exportiert");
+		}
+		cursorWait(false);
+	}	
+	private boolean fahrdienstExport(){
+		try{
+			exportVectorInit();
+			int lang = vecWahl.size();
+			if(lang <=0){
+				JOptionPane.showMessageDialog(null, "Keine Termine zum Exportieren in die Fahrdienstliste ausgewählt");
+				return false;
+			}
+			//Druckzeit sofern vorhanden in offizielle Druckzeit übertragen
+			for(int i = 0; i < lang;i++){
+				if(! ((Vector<String>)vecWahl.get(i)).get(11).trim().equals("")){
+					((Vector<String>)vecWahl.get(i)).set(6, ((Vector<String>)vecWahl.get(i)).get(11));
+				}
+			}
+			Comparator<Vector> comparator = new Comparator<Vector>() {
+				@Override
+				public int compare(Vector o1, Vector o2) {
+					String s1 = ((String)o1.get(15))+"/"+((String)o1.get(8)).replace("KGG-", "")+"/"+((String)o1.get(6));
+					String s2 = ((String)o2.get(15))+"/"+((String)o2.get(8)).replace("KGG-", "")+"/"+((String)o2.get(6));
+					//System.out.println("Ergebnis der Sortierung = "+s1.compareTo(s2)+" S1="+s1+" / S2="+s2);
+					return s1.compareTo(s2);
+				}
+			};
+			Collections.sort(vecWahl,comparator);
+			FileOutputStream outputFile = new  FileOutputStream(SystemConfig.hmVerzeichnisse.get("Fahrdienstrohdatei")+"FPSort.txt");
+            OutputStreamWriter out = new OutputStreamWriter(outputFile, "ISO-8859-1"); 
+			BufferedWriter bw = null;
+			String drzeit = "";
+			bw = new BufferedWriter(out);
+			//bw = new BufferedWriter(new FileWriter(SystemConfig.hmVerzeichnisse.get("Fahrdienstrohdatei")+"FPSort.txt"));
+			for(int i = 0; i < lang;i++){
+				if( ((Vector<Boolean>)vecWahl.get(i)).get(19) ){
+					//dauer holen
+					drzeit = getGruppendauer(((Vector<String>)vecWahl.get(i)).get(8));
+				}else{
+					drzeit = getGruppendauer(((Vector<String>)vecWahl.get(i)).get(5));
+				}
+				bw.write(((Vector<String>)vecWahl.get(i)).get(15)+"°"+((Vector<String>)vecWahl.get(i)).get(6)+
+						"°"+((Vector<String>)vecWahl.get(i)).get(10)+"°"+((Vector<String>)vecWahl.get(i)).get(8).replace("KGG-", "")+
+						"°"+((Vector<String>)vecWahl.get(i)).get(9)+"°"+drzeit
+						);
+				bw.newLine();
+			}
+			bw.flush();
+			bw.close();
+			out.close();
+			outputFile.close();
+			new LadeProg(Reha.proghome+"FahrdienstExporter.jar " +
+					Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		}catch(Exception ex){
+			ex.printStackTrace();
+			cursorWait(false);
+			return false;
+			
+		}
+		cursorWait(false);
+		return true;
+	}
+	private boolean rehaplanExport(){	
 		exportVectorInit();
 		int lang = vecWahl.size();
+		if(lang <=0){
+			JOptionPane.showMessageDialog(null, "Keine Termine zum Exportieren nach RehaPlaner ausgewählt");
+			return false;
+		}
+		if(sucheName.getText().trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Kein Name für die Exportdatei vorhanden (Suchefeld=leer)"+
+					"\n\nExport in Plandatei nicht möglich\n\n");
+			return false;
+		}
+
 		//Druckzeit sofern vorhanden in offizielle Druckzeit übertragen
 		for(int i = 0; i < lang;i++){
 			if(! ((Vector<String>)vecWahl.get(i)).get(11).trim().equals("")){
@@ -1030,9 +1114,12 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		int kalzeile = -1;
 		int kollege = -1;
 		String zeile = "";
-		BufferedWriter bw = null;
+
 		try {
-			bw = new BufferedWriter(new FileWriter("C:/RehaplanExport.txt"));
+			FileOutputStream outputFile = new  FileOutputStream(SystemConfig.hmVerzeichnisse.get("Rehaplaner")+sucheName.getText().trim()+".txt");
+	        OutputStreamWriter out = new OutputStreamWriter(outputFile, "ISO-8859-1"); 
+			BufferedWriter bw = null;
+			bw = new BufferedWriter(out);
 
 			for(int i = 0; i < lang;i++){
 				//Wenn Gruppensignal gesetzt
@@ -1057,25 +1144,22 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				//   Matchcode Kalenderbenutzer
 						((Vector<String>)vecWahl.get(i)).get(10)+"°"+
 				//		
-						((Vector<String>)vecWahl.get(i)).get(8).replace("\\", "/Gruppe:_")
+						((Vector<String>)vecWahl.get(i)).get(8).replaceFirst("\\\\", "").replace("\\", "/Gruppe:_")
 						
 				);
 				bw.newLine();
 			}
 			bw.flush();
 			bw.close();
+			out.close();
+			outputFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			try {
-				bw.flush();
-				bw.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			cursorWait(false);
+			return false;
 		}
-
-		
 		cursorWait(false);
+		return true;
 	}
 	private String getGruppendauer(String zeit){
 		String sret = "30";
@@ -2324,7 +2408,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 				setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
 				tabelleEinschalten();
 				listenerEinschalten();
-				//System.out.println("Vectorgr��e = "+getInstance().dtblm.getRowCount());
+				//System.out.println("Vectorgröße = "+getInstance().dtblm.getRowCount());
 				mussUnterbrechen = true;
 				jxSucheTable.revalidate();
 			}
@@ -2726,7 +2810,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		return vec;
 	}
 	private Vector sucheNachGruppenFreien(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,int gruppennr,Vector grupdat,boolean suchleer) throws SQLException{
-//		System.out.println("G�ltig ab:"+ datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(gruppennr)[0]));
+//		System.out.println("Gültig ab:"+ datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(gruppennr)[0]));
 		Vector vec = null;
 		vec = macheGruppenVector(rs,name,nummer,skollege,ikollege,ii,defdauer,grupdat,suchleer);
 		return vec;

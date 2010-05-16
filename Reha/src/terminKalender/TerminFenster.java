@@ -895,7 +895,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						 */
 						if (ec==16){
 							if(!Rechte.hatRecht(Rechte.Kalender_termingroup, false)){
-								System.out.println("Rückgabewert von hatRechte(termingroup) = "+Rechte.hatRecht(Rechte.Kalender_termingroup, false));
+								//System.out.println("Rückgabewert von hatRechte(termingroup) = "+Rechte.hatRecht(Rechte.Kalender_termingroup, false));
 								shiftGedrueckt = true;
 								gruppierenAktiv = false;
 								oSpalten[tspalte].shiftGedrueckt(true);
@@ -2764,7 +2764,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		
 		if(datenSpeicher[0]==null){
-			System.out.println("datenSpeicher[0] hat den Wert null -> return");
+			//System.out.println("datenSpeicher[0] hat den Wert null -> return");
 			wartenAufReady = false;
 			setUpdateVerbot(false);
 			return;

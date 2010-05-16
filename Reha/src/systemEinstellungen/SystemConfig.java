@@ -249,9 +249,9 @@ public class SystemConfig {
 		aKontakt = new ArrayList<String>();
 		
 		vDatenBank = new Vector<ArrayList<String>>();
-		System.out.println("INI-Verzeichnis = "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		System.out.println("IniFile = "+ini.getFileName());
-		System.out.println("Anzahl der Datenbanktreiber einlesen");
+		//System.out.println("INI-Verzeichnis = "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		//System.out.println("IniFile = "+ini.getFileName());
+		//System.out.println("Anzahl der Datenbanktreiber einlesen");
 		lesen =  ini.getIntegerProperty("DatenBank","AnzahlConnections") ;
 		//lesen =  Integer.parseInt(new String(ini.getStringProperty("DatenBank","AnzahlConnections")) );
 		System.out.println("Anzahl der Datenbanktreiber = "+lesen);
@@ -299,7 +299,7 @@ public class SystemConfig {
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
 			homeDir = Reha.proghome;
 			//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
-			System.out.println("HomeDir = "+homeDir);
+			//System.out.println("HomeDir = "+homeDir);
 			return;
 	}
 	
@@ -338,7 +338,7 @@ public class SystemConfig {
 		String[] ss = s.split(",");
 		KalenderHintergrund = new Color(Integer.parseInt(ss[0]),Integer.parseInt(ss[1]),Integer.parseInt(ss[2]));
 		KalenderAlpha = new Float(new String(ini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
-		System.out.println("Anzal Kollegen = "+AnzahlKollegen);
+		//System.out.println("Anzal Kollegen = "+AnzahlKollegen);
 		oTerminListe = new TerminListe().init();
 		Reha.thisClass.setzeInitStand("Gruppendefinition einlesen");
 		GruppenLesen();
@@ -448,13 +448,16 @@ public class SystemConfig {
 		hmVerzeichnisse.put("Icons",new String(Reha.proghome+"icons"));
 		hmVerzeichnisse.put("Temp",new String(Reha.proghome+"temp/"+Reha.aktIK));		
 		hmVerzeichnisse.put("Ini",new String(Reha.proghome+"ini/"+Reha.aktIK));		
+		hmVerzeichnisse.put("Rehaplaner",ini.getStringProperty("Verzeichnisse", "Rehaplaner"));
+		hmVerzeichnisse.put("Fahrdienstliste",ini.getStringProperty("Verzeichnisse", "Fahrdienstliste"));
+		hmVerzeichnisse.put("Fahrdienstrohdatei",ini.getStringProperty("Verzeichnisse", "Fahrdienstrohdatei"));
 	}
 	
 	private void TKFarben(){
 		if (colini==null){
 			colini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/color.ini");
 		}
-		System.out.println("In TK-Farben");
+		//System.out.println("In TK-Farben");
 		int anz  = new Integer( new String(colini.getStringProperty("Terminkalender","FarbenAnzahl")));
 		vSysColsNamen = new Vector<String>();
 		vSysColsBedeut = new Vector<String>();
@@ -900,7 +903,6 @@ public class SystemConfig {
 				vec.add( new String( gelenk.getBytes()  )  );
 				*/
 			}
-			System.out.println(vec);
 			hmTherapBausteine.put(prop2, (Vector) vec.clone());
 		}
 		for(int i = 0; i<4;i++){
@@ -1082,7 +1084,7 @@ public class SystemConfig {
 			ico = null;
 		}
 		//Reha.thisClass.copyLabel.setDropTarget(true);
-		System.out.println("System-Icons wurden geladen");
+		//System.out.println("System-Icons wurden geladen");
 	}
 	
 	public static void compTest(){
@@ -1118,7 +1120,18 @@ public class SystemConfig {
 			}
 		};
 		Collections.sort(vec,comparator);
-		System.out.println("Sortierter Vector = "+vec);
+		//System.out.println("Sortierter Vector = "+vec);
+		/*
+		static final Comparator<Employee> SENIORITY_ORDER =
+            new Comparator<Employee>() {
+			public int compare(Employee e1, Employee e2) {
+				int dateCmp = e2.hireDate().compareTo(e1.hireDate());
+				if (dateCmp != 0)
+					return dateCmp;
+				return (e1.number() < e2.number() ? -1 : (e1.number() == e2.number() ? 0 : 1));
+		}
+		};
+		 */
 	}
 	
 

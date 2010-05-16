@@ -475,10 +475,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		//System.out.println("Ingesamt Recht = "+size);
 		Object[][] dataVector = new Object[size][5];
 		//Object[][] meinObj = new Object[size][3];
-		System.out.println("Size*****************"+size);
+		//System.out.println("Size*****************"+size);
 		kollegenWahl = new Object[size][6];
 		kollegenAbteilung = new String[ParameterLaden.maxKalZeile+1];
-		System.out.println("Derzeit maximale Kalenderzeitle = "+ParameterLaden.maxKalZeile);
+		//System.out.println("Derzeit maximale Kalenderzeitle = "+ParameterLaden.maxKalZeile);
 		for(i=1;i<=size;i++){
 			dataVector[i-1][0] = Boolean.valueOf(false);
 			dataVector[i-1][1] = ParameterLaden.getMatchcode(i);
@@ -648,32 +648,32 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		builder.add(jb,cc.xy(2,11));
 		
 
-		String[] string = {"10","15","20","25","30","35","40","45","50","55","60","90","120"}; 
-		JComboBox jc = new JComboBox(string);
+		String[] xstring = {"10","15","20","25","30","35","40","45","50","55","60","90","120"}; 
+		JComboBox jc = new JComboBox(xstring);
 		jc.setSelectedItem(SystemConfig.RoogleZeiten.get("KG"));
 		jc.setName("CKG");
 		gruppenCombo[0] = jc;
 		builder.add(jc,cc.xy(4,3));
 		
-		jc = new JComboBox(string);
+		jc = new JComboBox(xstring);
 		jc.setSelectedItem(SystemConfig.RoogleZeiten.get("MA"));
 		jc.setName("CMA");
 		gruppenCombo[1] = jc;
 		builder.add(jc,cc.xy(4,5));		
 
-		jc = new JComboBox(string);
+		jc = new JComboBox(xstring);
 		jc.setSelectedItem(SystemConfig.RoogleZeiten.get("ER"));
 		jc.setName("CER");
 		gruppenCombo[2] = jc;
 		builder.add(jc,cc.xy(4,7));		
 
-		jc = new JComboBox(string);
+		jc = new JComboBox(xstring);
 		jc.setSelectedItem(SystemConfig.RoogleZeiten.get("LO"));
 		jc.setName("CLO");
 		gruppenCombo[3] = jc;
 		builder.add(jc,cc.xy(4,9));		
 		
-		jc = new JComboBox(string);
+		jc = new JComboBox(xstring);
 		jc.setSelectedItem(SystemConfig.RoogleZeiten.get("SP"));
 		jc.setName("CSP");
 		gruppenCombo[4] = jc;
@@ -1344,7 +1344,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 		if(rtp != null){
-			System.out.println("Entferne Listener in windowClosed");
+			//System.out.println("Entferne Listener in windowClosed");
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			ListenerTools.removeListeners(this);
@@ -1363,7 +1363,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		mymouse = null;
 		
 		if(tp2 != null){
-			System.out.println("Setze SuchenSeite auf null");
+			//System.out.println("Setze SuchenSeite auf null");
 			ListenerTools.removeListeners(tp2);
 			tp2.sucheDaten.clear();
 			tp2.sucheDaten = null;
@@ -1379,7 +1379,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			tp2 = null;
 		}
 		if(tp1 != null){
-			System.out.println("Setze RoogleFenster auf null");
+			//System.out.println("Setze RoogleFenster auf null");
 			ListenerTools.removeListeners(tp1);
 			ListenerTools.removeListeners(this);
 			jxTable = null;
@@ -1424,7 +1424,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-		System.out.println("In Closing***********************>");
+		//System.out.println("In Closing***********************>");
 
 
 		
@@ -1468,9 +1468,9 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	}	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println("****************Schlie�en des Roogle-Fensters**************");
+		//System.out.println("****************Schließen des Roogle-Fensters**************");
 		String ss =  this.getName();
-		System.out.println("Roogle - "+this.getName()+" Eltern "+ss);
+		//System.out.println("Roogle - "+this.getName()+" Eltern "+ss);
 		try{
 			if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
@@ -1588,8 +1588,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
         
         if(sel==1){
         	gewaehlt = 0;
-        	System.out.println("Zeitraum von = "+zeitraumEdit[0].getText());
-        	System.out.println("Zeitraum bis = "+zeitraumEdit[1].getText());
+        	//System.out.println("Zeitraum von = "+zeitraumEdit[0].getText());
+        	//System.out.println("Zeitraum bis = "+zeitraumEdit[1].getText());
         	tp2.datumEinstellen();
         	tp2.tageEinstellen();
         	//final JTabbedPane xpane = pane;
