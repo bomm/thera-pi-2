@@ -2231,6 +2231,9 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 									if( (keintest)  && (gruppe)){
 										if(name.equals("") && nummer.equals("")){
 											Vector vecgruppe;
+											if(abteilnr < 0){
+												break;
+											}
 											if( (vecgruppe = gruppenTest(rs,abteilnr,ii,defdauer,true)) != null){
 												//System.out.println("In Gruppensuchen nach Freien");
 													yvec = sucheNachGruppenFreien(rs,name,nummer,skollege,ikollege,ii,defdauer,abteilnr,vecgruppe,true);
@@ -2316,6 +2319,9 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 									}
 									if(name.contains(suchkrit1) && nummer.contains(suchkrit2) && (gruppe) ){
 										Vector vecgruppe;
+										if(abteilnr < 0){
+											break;
+										}
 										if( (vecgruppe = gruppenTest(rs,abteilnr,ii,defdauer,false)) != null){
 											//System.out.println("In Gruppensuchen nach Freien");
 												yvec = sucheNachGruppenFreien(rs,name,nummer,skollege,ikollege,ii,defdauer,abteilnr,vecgruppe,false);

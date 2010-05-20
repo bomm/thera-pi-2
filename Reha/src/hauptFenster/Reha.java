@@ -311,8 +311,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	/**************************/
 	public JXPanel desktop = null;
 	public ProgLoader progLoader =null;
-	public static boolean demoversion = true;
-	public static boolean vollbetrieb = false;
+	public static boolean demoversion = false;
+	public static boolean vollbetrieb = true;
 
 	//  
 	//@jve:decl-index=0:
@@ -1815,6 +1815,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             		Reha.thisClass.Rehaprogress.setIndeterminate(false);
             	    if(Reha.DbOk){
             	    	for(int i = 1;i<6;i++){
+            	    		
             	    		new MachePreisListe("kgtarif"+i);
             	    		new MachePreisListe("matarif"+i);
             	    		new MachePreisListe("ertarif"+i);
@@ -2480,7 +2481,20 @@ final class DatenbankStarten implements Runnable{
 					String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='ein'";
 					new ExUndHop().setzeStatement(stx);
 				}
+				
 				try {
+					/*
+            	    if(Reha.DbOk){
+            	    	for(int y = 1;y<6;y++){
+            	    		
+            	    		new MachePreisListe("kgtarif"+y);
+            	    		new MachePreisListe("matarif"+y);
+            	    		new MachePreisListe("ertarif"+y);
+            	    		new MachePreisListe("lotarif"+y);
+            	    		new MachePreisListe("rhtarif"+y);
+            	    	}
+            	    }
+					 */	
 				
 				Thread.sleep(50);
 				 
@@ -2671,23 +2685,24 @@ final class ErsterLogin implements Runnable{
 
 final class PreisListenLaden implements Runnable{
 	private void Einlesen(){
+		/*
+		ParameterLaden.PreiseEinlesen("KG");
+
+		ParameterLaden.PreiseEinlesen("MA");
+
+		ParameterLaden.PreiseEinlesen("ER");
 		
-		//ParameterLaden.PreiseEinlesen("KG");
+		ParameterLaden.PreiseEinlesen("LO");
 
-		//ParameterLaden.PreiseEinlesen("MA");
+		ParameterLaden.PreiseEinlesen("RH");
 
-		//ParameterLaden.PreiseEinlesen("ER");
-		
-		//ParameterLaden.PreiseEinlesen("LO");
-
-		//ParameterLaden.PreiseEinlesen("RH");
-
-		Reha.thisClass.jxLinks.setAlpha(1.0f);
-		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		
+		MachePreisListe.preiseFuellenNeu();	
+		*/	
 		//new SocketClient().setzeInitStand("INITENDE");
 		
-		//MachePreisListe.preiseFuellenNeu();
+		Reha.thisClass.jxLinks.setAlpha(1.0f);
+		Reha.thisClass.jxRechts.setAlpha(1.0f);
+
 
 		//long zeit = System.currentTimeMillis();
 		new SocketClient().setzeInitStand("Preisliste Physio einlesen");

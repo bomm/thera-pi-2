@@ -44,7 +44,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		jtp.setTitle("Wohin mit dem Termin???");
 		jtp.setContentContainer(getForm());
 	    jtp.setVisible(true);
-
+	    jtp.setName("WohinmitTermin");
 
 		rSmart = new RehaSmartDialog(null,"WohinmitTermin");
 		rSmart.setModal(true);

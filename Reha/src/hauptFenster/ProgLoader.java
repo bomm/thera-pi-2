@@ -109,7 +109,7 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 		if(ansicht==2){
 			JOptionPane.showMessageDialog(null,"Um die Wochenarbeitszeit zu starten,\nschließen Sie bitte zunächst den Terminkalender");
 		}
-		//System.out.println("Der Terminkalender befindet sich in Container "+((JTerminInternal)termin).getDesktop());
+		////System.out.println("Der Terminkalender befindet sich in Container "+((JTerminInternal)termin).getDesktop());
 		containerHandling(((JTerminInternal)termin).getDesktop());
 		((JTerminInternal)termin).aktiviereDiesenFrame(((JTerminInternal)termin).getName());
 		if( ((JTerminInternal)termin).isIcon() ){
@@ -257,7 +257,7 @@ public void KassenFenster(int setPos,String kid) {
 	kassejry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(kassejry);
 	((JRehaInternal)kassejry).setImmerGross( (SystemConfig.hmContainer.get("KasseOpti") > 0 ? true : false));
-	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
+	//System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JKasseInternal)kassejry).aktiviereDiesenFrame( ((JKasseInternal)kassejry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	Reha.thisClass.kassenpanel.setzeFocus();
@@ -304,7 +304,7 @@ public void ArztFenster(int setPos,String aid) {
 	arztjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(arztjry);
 	((JRehaInternal)arztjry).setImmerGross( (SystemConfig.hmContainer.get("ArztOpti") > 0 ? true : false));
-	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
+	//System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	((JArztInternal)arztjry).aktiviereDiesenFrame( ((JArztInternal)arztjry).getName());
 	Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	Reha.thisClass.arztpanel.setzeFocus();
@@ -373,7 +373,7 @@ public void AbrechnungFenster(int setPos) {
 	}
 	JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung");
 	if(abrech1 != null){
-		System.out.println("InternalFrame Kassenabrechnung bereits geöffnet");
+		//System.out.println("InternalFrame Kassenabrechnung bereits geöffnet");
 		containerHandling(((JAbrechnungInternal)abrech1).getDesktop());
 		((JAbrechnungInternal)abrech1).aktiviereDiesenFrame( ((JAbrechnungInternal)abrech1).getName());
 		if( ((JAbrechnungInternal)abrech1).isIcon() ){
@@ -421,7 +421,7 @@ public void AnmeldungenFenster(int setPos,String sparam) {
 	}
 	JComponent anmeld = AktiveFenster.getFensterAlle("Anmeldungen");
 	if(anmeld != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JAnmeldungenInternal)anmeld).getDesktop());
 		((JAnmeldungenInternal)anmeld).aktiviereDiesenFrame( ((JAnmeldungenInternal)anmeld).getName());
 		if( ((JAnmeldungenInternal)anmeld).isIcon() ){
@@ -469,7 +469,7 @@ public void UmsatzFenster(int setPos,String sparam) {
 	}
 	JComponent umsatz = AktiveFenster.getFensterAlle("Umsaetze");
 	if(umsatz != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JUmsaetzeInternal)umsatz).getDesktop());
 		((JUmsaetzeInternal)umsatz).aktiviereDiesenFrame( ((JUmsaetzeInternal)umsatz).getName());
 		if( ((JUmsaetzeInternal)umsatz).isIcon() ){
@@ -516,7 +516,7 @@ public void VerkaufFenster(int setPos,String sparam) {
 	}
 	JComponent vk = AktiveFenster.getFensterAlle("Verkauf");
 	if(vk != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JVerkaufInternal)vk).getDesktop());
 		((JVerkaufInternal)vk).aktiviereDiesenFrame( ((JVerkaufInternal)vk).getName());
 		if( ((JVerkaufInternal)vk).isIcon() ){
@@ -563,7 +563,7 @@ public void BarkassenFenster(int setPos,String sparam) {
 	}
 	JComponent bk = AktiveFenster.getFensterAlle("Barkasse");
 	if(bk != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JBarkassenInternal)bk).getDesktop());
 		((JBarkassenInternal)bk).aktiviereDiesenFrame( ((JBarkassenInternal)bk).getName());
 		if( ((JBarkassenInternal)bk).isIcon() ){
@@ -577,7 +577,7 @@ public void BarkassenFenster(int setPos,String sparam) {
 	}
 	Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	String name = "Barkasse"+WinNum.NeueNummer();
-	System.out.println("Neues Barkassenfenster = "+name);
+	//System.out.println("Neues Barkassenfenster = "+name);
 	int containerNr = setPos;
 	containerHandling(containerNr);
 	barkassenjry = new JBarkassenInternal("thera-\u03C0  - Barkasse abrechnen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
@@ -657,7 +657,7 @@ public void BeteiligungFenster(int setPos,String sparam) {
 	}
 	JComponent beteiligung = AktiveFenster.getFensterAlle("Beteiligung");
 	if(beteiligung != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JBeteiligungInternal)beteiligung).getDesktop());
 		((JBeteiligungInternal)beteiligung).aktiviereDiesenFrame( ((JBeteiligungInternal)beteiligung).getName());
 		if( ((JBeteiligungInternal)beteiligung).isIcon() ){
@@ -703,7 +703,7 @@ public void BenutzerrechteFenster(int setPos,String sparam) {
 	}
 	JComponent benutzer = AktiveFenster.getFensterAlle("Benutzerrechte");
 	if(benutzer != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JBenutzerInternal)benutzer).getDesktop());
 		((JBenutzerInternal)benutzer).aktiviereDiesenFrame( ((JBenutzerInternal)benutzer).getName());
 		if( ((JBenutzerInternal)benutzer).isIcon() ){
@@ -748,7 +748,7 @@ public void UrlaubFenster(int setPos,String sparam) {
 	}
 	JComponent urlaub = AktiveFenster.getFensterAlle("Urlaub");
 	if(urlaub != null){
-		System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		//System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JUrlaubInternal)urlaub).getDesktop());
 		((JUrlaubInternal)urlaub).aktiviereDiesenFrame( ((JUrlaubInternal)urlaub).getName());
 		if( ((JUrlaubInternal)urlaub).isIcon() ){
@@ -858,14 +858,14 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(patjry);
 	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
-	System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
+	//System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	((JPatientInternal)patjry).aktiviereDiesenFrame(((JPatientInternal)patjry).getName());
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run()
 	 	   {
 	 		   patjry.setzeSuche();
-	 			System.out.println("Focus auf PatPanel gesetzt");
+	 			//System.out.println("Focus auf PatPanel gesetzt");
 	 	   }
 	});
 	Reha.thisClass.progressStarten(false);
@@ -952,7 +952,7 @@ public void SystemInit(int setPos,String sparam) {
 	}
 	JComponent sysinit = AktiveFenster.getFensterAlle("SystemInit");
 	if(sysinit != null){
-		System.out.println("InternalFrame SystemInit bereits geöffnet");
+		//System.out.println("InternalFrame SystemInit bereits geöffnet");
 		containerHandling(((JSysteminitInternal)sysinit).getDesktop());
 		((JSysteminitInternal)sysinit).aktiviereDiesenFrame( ((JSysteminitInternal)sysinit).getName());
 		if( ((JSysteminitInternal)sysinit).isIcon() ){
@@ -1049,7 +1049,7 @@ public static void containerBelegen(int setPos,RehaTP jtp){
 		RehaSmartDialog rsm = new RehaSmartDialog(Reha.thisFrame,jtp.getContentContainer().getName());
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.setName(jtp.getName());
-		System.out.println("jtp.getName() = "+jtp.getName());
+		//System.out.println("jtp.getName() = "+jtp.getName());
 		jtp.setStandort(jtp.getName(),0);
 		rsm.setPinPanel(pinPanel);
 		rsm.setName(jtp.getName());
@@ -1063,10 +1063,10 @@ public static void containerBelegen(int setPos,RehaTP jtp){
 
 public void RehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	System.out.println("ProgLoader Systemausl�ser"+evt.getSource());
-	System.out.println("ProgLoader Event getDetails[0]: = "+evt.getDetails()[0]);
-	System.out.println("ProgLoader Event getDetails[1]: = "+evt.getDetails()[1]);
-	System.out.println(((JXTitledPanel) evt.getSource()).getContentContainer().getName());
+	//System.out.println("ProgLoader Systemausl�ser"+evt.getSource());
+	//System.out.println("ProgLoader Event getDetails[0]: = "+evt.getDetails()[0]);
+	//System.out.println("ProgLoader Event getDetails[1]: = "+evt.getDetails()[1]);
+	//System.out.println(((JXTitledPanel) evt.getSource()).getContentContainer().getName());
 }
 
 public static int PosTest(int pos){
@@ -1074,7 +1074,7 @@ public static int PosTest(int pos){
 		return 0;
 	}
 	if((pos==2) && (Reha.thisClass.jLeerUnten == null) ){
-		System.out.println("pos = "+pos);
+		//System.out.println("pos = "+pos);
 		return 0;
 	}
 	return pos;

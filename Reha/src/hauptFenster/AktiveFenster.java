@@ -21,36 +21,36 @@ public class AktiveFenster {
 	public static void setNeuesFenster(String name,JComponent referenz,int position,Container feltern){
 		AlleFenster neuFenst = new AlleFenster(name , referenz , position,feltern);
 		Fenster.add(neuFenst);
-		System.out.println(((AlleFenster)Fenster.get(Fenster.size()-1)).fname);
-		System.out.println(((AlleFenster)Fenster.get(Fenster.size()-1)).freferenz);
-		System.out.println(Fenster.size());
+		//System.out.println(((AlleFenster)Fenster.get(Fenster.size()-1)).fname);
+		//System.out.println(((AlleFenster)Fenster.get(Fenster.size()-1)).freferenz);
+		//System.out.println(Fenster.size());
 	}
 	
 	public static void loescheFenster(String name){
 		int i;
-		System.out.println("Aktive-Fenster: "+name+" wird gelöscht");
-		System.out.println("FensterElemente vor löschen "+Fenster.size());		
+		//System.out.println("Aktive-Fenster: "+name+" wird gelöscht");
+		//System.out.println("FensterElemente vor löschen "+Fenster.size());		
 		for(i=0;i<Fenster.size();i++){
 			if((boolean)((AlleFenster)Fenster.get(i)).fname.equals(name)){
-				System.out.println("Setze freferenz auf null!");
+				//System.out.println("Setze freferenz auf null!");
 				((AlleFenster)Fenster.get(i)).freferenz = null;
 				Fenster.removeElementAt(i);
 				Fenster.trimToSize();
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run()
 				 	   {
-				 			System.out.println("Total Memory  = "+Runtime.getRuntime().totalMemory());    
-				 		    System.out.println("Free Memory   = "+Runtime.getRuntime().freeMemory());
+				 			//System.out.println("Total Memory  = "+Runtime.getRuntime().totalMemory());    
+				 		    //System.out.println("Free Memory   = "+Runtime.getRuntime().freeMemory());
 				 		    Runtime r = Runtime.getRuntime();
 				 		    r.gc();
 				 		    long freeMem = r.freeMemory();
-				 		    System.out.println("Freed Memory  = "+freeMem);
+				 		    //System.out.println("Freed Memory  = "+freeMem);
 				 	   }
 				});				
 				break;
 			}
 		}
-		System.out.println("FensterElemente nach löschen "+Fenster.size());
+		//System.out.println("FensterElemente nach löschen "+Fenster.size());
 	}
 	public static JComponent getFenster(String name){
 		int i;

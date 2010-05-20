@@ -35,18 +35,24 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 
+import dialoge.PinPanel;
+
 import systemEinstellungen.SystemConfig;
+import systemTools.ListenerTools;
 import systemTools.StringTools;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;
 import events.RehaEventClass;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
-public class SuchenDialog extends JXDialog {
+public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 
 	private static final long serialVersionUID = 1L;
 	private JXPanel jContentPane = null;
-	private JXTitledPanel JXTitledPanel = null;
+	private JXTitledPanel jXTitledPanel = null;
 	private JXPanel jContent = null;  //  @jve:decl-index=0:visual-constraint="10,10"
 	private JXButton jButton = null;
 	private JXTable jtable = null;
@@ -82,6 +88,9 @@ public class SuchenDialog extends JXDialog {
 	private JComponent focusBack = null;
 	private String fname = "";  //  @jve:decl-index=0:
 	public DefaultTableModel tblDataModel;
+	
+	private RehaTPEventClass rtp = null;
+	private PinPanel pinPanel = null;
 	/**
 	 * @param 
 	 */
@@ -92,6 +101,8 @@ public class SuchenDialog extends JXDialog {
 		initialize();
 		jTextField.setText(fname);
 		new suchePatient().init(tblDataModel);
+		//rtp = new RehaTPEventClass();
+		//rtp.addRehaTPEventListener((RehaTPEventListener) this);
 		//suchePatient();
 		
 	}
@@ -100,10 +111,24 @@ public class SuchenDialog extends JXDialog {
 		jtable.validate();
 		
 	}
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+
+		try{
+			if(evt.getDetails()[0] != null){
+				if(evt.getDetails()[0].equals(this.getName())){
+					this.setVisible(false);
+					System.out.println("****************GutachtenWahl -> Listener entfernt**************");				
+				}
+			}
+		}catch(NullPointerException ne){
+			System.out.println("In PatNeuanlage" +evt);
+		}
+	}	
+	
 
 	public void suchDasDing(String suchkrit){
 		jTextField.setText(suchkrit);
-		JXTitledPanel.setTitle("Suche Patient..."+suchkrit);
+		jXTitledPanel.setTitle("Suche Patient..."+suchkrit);
 		System.out.println("**************Test*****************");
 		System.out.println("Suchkriterium = "+suchkrit);
 		new suchePatient().init(tblDataModel);
@@ -126,6 +151,7 @@ public class SuchenDialog extends JXDialog {
 				System.out.println("Weshalb windowClosing()"); // TODO Auto-generated Event stub windowClosing()
 			}
 		});
+		this.setName("PatSuchen");
 		this.setModal(false);
 		this.setResizable(true);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -284,7 +310,7 @@ public class SuchenDialog extends JXDialog {
 					if (e.getKeyCode() == 40 ||e.getKeyCode() == 38){
 						//sucheAbfeuern();
 					}
-					if (e.getKeyCode() == 83 && e.isShiftDown()){
+					if (e.getKeyCode() == KeyEvent.VK_F && e.isAltDown()){
 						jTextField.requestFocus();
 					}
 					if (e.getKeyCode() == 27){
@@ -348,11 +374,18 @@ public class SuchenDialog extends JXDialog {
 	 * @return org.jdesktop.swingx.JXTitledPanel	
 	 */
 	private JXTitledPanel getJXTitledPanel() {
-		if (JXTitledPanel == null) {
-			JXTitledPanel = new JXTitledPanel();
-			JXTitledPanel.setTitle("Suche Patient..."+this.fname);
-			JXTitledPanel.setTitleForeground(Color.WHITE);
-			JXTitledPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {   
+		if (jXTitledPanel == null) {
+			jXTitledPanel = new JXTitledPanel();
+			jXTitledPanel.setTitle("Suche Patient..."+this.fname);
+			jXTitledPanel.setTitleForeground(Color.WHITE);
+			jXTitledPanel.setName("PatSuchen");
+			/*
+			pinPanel = new PinPanel();
+			pinPanel.setName("PatSuchen");
+			pinPanel.getGruen().setVisible(false);
+			jXTitledPanel.setRightDecoration(pinPanel);
+			*/
+			jXTitledPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {   
 				public void mouseMoved(java.awt.event.MouseEvent e) {    
 					for(int i = 0; i < 1; i++){
 						sizeart=-1;
@@ -555,7 +588,7 @@ public class SuchenDialog extends JXDialog {
 				}
 			});
 
-			JXTitledPanel.addMouseListener(new java.awt.event.MouseAdapter() {   
+			jXTitledPanel.addMouseListener(new java.awt.event.MouseAdapter() {   
 				public void mouseExited(java.awt.event.MouseEvent e) {    
 					/*
 					clickX = -1;
@@ -584,7 +617,7 @@ public class SuchenDialog extends JXDialog {
 				}
 			});
 		}
-		return JXTitledPanel;
+		return jXTitledPanel;
 	}
 
 	/**

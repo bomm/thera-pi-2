@@ -33,6 +33,7 @@ public class LadeProg {
 		String vmload = "java -jar ";
 		String commandx = vmload + prog; 
 		//System.out.println(vmload+prog);
+		/*
 	    File ausgabedatei = new File(Reha.proghome+"laden.bat"); 
 	    FileWriter fw;
 		try {
@@ -44,6 +45,7 @@ public class LadeProg {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} 
+		*/
 		final String xprog = prog;
 		new SwingWorker<Void, Void>(){
 
@@ -55,11 +57,11 @@ public class LadeProg {
 					ArrayList<String> alist = new ArrayList<String>(list);
 					alist.add(0,"-jar");
 					alist.add(0,"java");
-					System.out.println(list);
-					System.out.println("Die Liste = "+alist);
+					//System.out.println(list);
+					//System.out.println("Die Liste = "+alist);
 					
 					//System.out.println("Starte Prozess mit "+xprog);
-					System.out.println("Liste = "+list);
+					//System.out.println("Liste = "+list);
 					Process process = new ProcessBuilder(alist).start();
 					//Process process = new ProcessBuilder("java","-jar",xprog).start();
 				       InputStream is = process.getInputStream();

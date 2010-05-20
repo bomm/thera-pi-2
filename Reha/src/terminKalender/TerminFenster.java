@@ -531,10 +531,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 
 				}else if(ansicht == MASKEN_ANSICHT){
+		
 					maskenbelegung = ParameterLaden.vKKollegen.get(wahl).Reihe ;
 					maskenwahl = wahl;
 					String maskenbehandler = (maskenbelegung < 10 ? "0"+maskenbelegung+"BEHANDLER" : Integer.toString(maskenbelegung)+"BEHANDLER");
 					String stmtmaske = "select * from masken where behandler = '"+maskenbehandler+"' ORDER BY art";
+					//System.out.println(stmtmaske);
 					maskenStatement(stmtmaske);
 					
 				}

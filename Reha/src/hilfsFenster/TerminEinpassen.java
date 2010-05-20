@@ -43,6 +43,7 @@ public class TerminEinpassen implements KeyListener, ActionListener, FocusListen
 		jtp.setTitle("Wohin mit dem Termin???");
 		jtp.setContentContainer(getForm());
 	    jtp.setVisible(true);
+	    jtp.setName("WohinmitTermin");
 
 
 		rSmart = new RehaSmartDialog(null,"WohinmitTermin");

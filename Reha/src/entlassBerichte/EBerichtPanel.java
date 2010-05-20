@@ -45,6 +45,7 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.therapi.reha.patient.LadeProg;
 
 
 import rehaInternalFrame.JGutachtenInternal;
@@ -1152,7 +1153,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				JOptionPane.showMessageDialog(null, "Funktion Bodymass-Index noch nicht implementiert");
 				break;
 			case 2:
-				JOptionPane.showMessageDialog(null, "Funktion ICD-10(GM) Recherche noch nicht implementiert");
+				new LadeProg(Reha.proghome+"ICDSuche.jar");
 				break;
 			}
 			tDlg = null;
