@@ -3303,6 +3303,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 	}
 	private void tauscheTermin(int richtung){
+		if(!Rechte.hatRecht(Rechte.Kalender_terminanlegenvoll, true)){
+			return;
+		}
 		String[][] tauschTermine = {{null,null,null,null,null},{null,null,null,null,null}};
 		int behandler=-1,block=-1,blockanzahl=-1,blockmax;
 		if(ansicht==NORMAL_ANSICHT){

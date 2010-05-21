@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -24,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
 import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
@@ -101,10 +104,22 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		initialize();
 		jTextField.setText(fname);
 		new suchePatient().init(tblDataModel);
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				setzeFocus();
+			}
+		});
 		//rtp = new RehaTPEventClass();
 		//rtp.addRehaTPEventListener((RehaTPEventListener) this);
 		//suchePatient();
 		
+	}
+	private void setzeFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				jTextField.requestFocus();
+			}
+		});
 	}
 	public void	setzeReihe(Vector vec){
 		tblDataModel.addRow(vec);
@@ -117,11 +132,11 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
 					this.setVisible(false);
-					System.out.println("****************GutachtenWahl -> Listener entfernt**************");				
+					//System.out.println("****************GutachtenWahl -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}	
 	
@@ -129,8 +144,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	public void suchDasDing(String suchkrit){
 		jTextField.setText(suchkrit);
 		jXTitledPanel.setTitle("Suche Patient..."+suchkrit);
-		System.out.println("**************Test*****************");
-		System.out.println("Suchkriterium = "+suchkrit);
+		//System.out.println("**************Test*****************");
+		//System.out.println("Suchkriterium = "+suchkrit);
 		new suchePatient().init(tblDataModel);
 		
 	}
@@ -148,7 +163,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		//thisClass = this;
 		SuchenDialog.this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
-				System.out.println("Weshalb windowClosing()"); // TODO Auto-generated Event stub windowClosing()
+				//System.out.println("Weshalb windowClosing()"); // TODO Auto-generated Event stub windowClosing()
 			}
 		});
 		this.setName("PatSuchen");
@@ -205,7 +220,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jtext.setPreferredSize(new Dimension(100,20));
 			jtext.addKeyListener(new java.awt.event.KeyAdapter() {   
 				public void keyPressed(java.awt.event.KeyEvent e) {    
-					System.out.println("keyPressed()"); // TODO Auto-generated Event stub keyPressed()
+					//System.out.println("keyPressed()"); // TODO Auto-generated Event stub keyPressed()
 					if (e.getKeyCode() == 10){
 						e.consume();
 						new SwingWorker<Void,Void>(){
@@ -246,7 +261,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					}
 				}
 				public void keyTyped(java.awt.event.KeyEvent e) {
-					System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
+					//System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
 				}
 			});
 			jp1.add(jtext);
@@ -276,7 +291,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			this.jtable.getColumn(3).setMaxWidth(0);
 			
 			InputMap inputMap = jtable.getInputMap(JComponent.WHEN_FOCUSED);
-			System.out.println("InputMap = "+inputMap);
+			//System.out.println("InputMap = "+inputMap);
 			inputMap.remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0));
 			jtable.setInputMap(JComponent.WHEN_FOCUSED,inputMap);			
 			//((DefaultTableModel) jtable.getModel()).setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -284,7 +299,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			//jtable.setModel(tblDataModel);
 			jtable.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyPressed(java.awt.event.KeyEvent e) {
-					//System.out.println("keyPressed() in JXTable"); // TODO Auto-generated Event stub keyPressed()
+					////System.out.println("keyPressed() in JXTable"); // TODO Auto-generated Event stub keyPressed()
 					if (e.getKeyCode() == 10){
 						/*
 						String s1 = new String("#PATSUCHEN");
@@ -322,11 +337,11 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 						
 			jtable.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseEntered(java.awt.event.MouseEvent e) {
-					//System.out.println("mouseEntered()"); // TODO Auto-generated Event stub mouseEntered()
+					////System.out.println("mouseEntered()"); // TODO Auto-generated Event stub mouseEntered()
 					SuchenDialog.this.setCursor(cdefault);
 				}
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					//System.out.println("mouseEntered()"); // TODO Auto-generated Event stub mouseEntered()
+					////System.out.println("mouseEntered()"); // TODO Auto-generated Event stub mouseEntered()
 					if(e.getClickCount() == 2){
 						sucheAbfeuern();
 						e.consume();
@@ -376,9 +391,22 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	private JXTitledPanel getJXTitledPanel() {
 		if (jXTitledPanel == null) {
 			jXTitledPanel = new JXTitledPanel();
+			
 			jXTitledPanel.setTitle("Suche Patient..."+this.fname);
 			jXTitledPanel.setTitleForeground(Color.WHITE);
 			jXTitledPanel.setName("PatSuchen");
+			JXButton jb2 = new JXButton();
+			jb2.setBorder(null);
+			jb2.setOpaque(false);
+			jb2.setPreferredSize(new Dimension(16,16));
+			jb2.setIcon(SystemConfig.hmSysIcons.get("rot"));
+			jb2.addMouseListener(new java.awt.event.MouseAdapter(){
+				public void mouseClicked(java.awt.event.MouseEvent e) {
+					e.consume();
+					fensterSchliessen();
+				}
+			});
+			jXTitledPanel.setRightDecoration(jb2);
 			/*
 			pinPanel = new PinPanel();
 			pinPanel.setName("PatSuchen");
@@ -396,7 +424,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cnwsize);
-//							System.out.println("nordwest");
+//							//System.out.println("nordwest");
 							break;
 						}
 						if( (e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && e.getY() <= 4){//nord-ost
@@ -405,7 +433,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cnesize);
-							//System.out.println("nordost");
+							////System.out.println("nordost");
 							break;
 						}
 						if(e.getY() <= 4){//nord
@@ -414,7 +442,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cnsize);
-//							System.out.println("nord");
+//							//System.out.println("nord");
 							break;
 						}
 						if ((e.getX() <= 4 && e.getY() >= (((JComponent) e.getSource()).getHeight()-4))){ //s�d-west
@@ -423,7 +451,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cswsize);
-//							System.out.println("s�dwest");
+//							//System.out.println("s�dwest");
 							break;
 						}
 						if ((e.getX() <= 4)){ //west
@@ -432,7 +460,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cwsize);
-//							System.out.println("west");
+//							//System.out.println("west");
 							break;
 						}
 						if ((e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && //s�d-ost
@@ -442,7 +470,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(csesize);
-//							System.out.println("s�dost");
+//							//System.out.println("s�dost");
 							break;
 						}
 						if (e.getY() >= (((JComponent) e.getSource()).getHeight()-2)){ //s�d
@@ -451,7 +479,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cssize);
-//							System.out.println("s�d");
+//							//System.out.println("s�d");
 							break;
 						}
 						if (e.getX() >= (((JComponent) e.getSource()).getWidth()-4)){ //ost
@@ -460,14 +488,14 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							orgbounds[0]=e.getXOnScreen();
 							orgbounds[1]=e.getYOnScreen();						
 							setCursor(cesize);
-//							System.out.println("ost");							
+//							//System.out.println("ost");							
 							break;
 						}
 
 						insize = false;
 						sizeart = -1;
 						setCursor(cdefault);
-						//System.out.println("default");
+						////System.out.println("default");
 
 					}
 				}
@@ -632,7 +660,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jButton.setText("Schliessen");
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					//System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					RehaEvent rEvt = new RehaEvent(this);
 					rEvt.setRehaEvent("Am Arsch lecken");
 					RehaEventClass.fireRehaEvent(rEvt);
@@ -673,7 +701,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		reiheVector.addElement("Geboren");
 		reiheVector.addElement("Patientennummer");
 		String[] suche;
-		System.out.println("DbType = "+SystemConfig.vDatenBank.get(0).get(2));
+		//System.out.println("DbType = "+SystemConfig.vDatenBank.get(0).get(2));
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));		
 		if (jTextField.getText().trim().contains(" ") ){
 			suche = jTextField.getText().split(" ");
@@ -686,17 +714,17 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			}else{ //ADS
 				sstmt = "Select n_name,v_name,geboren,pat_intern  from pat5 where n_name LIKE UPPER('"+
 				suche[0].trim() + "%') AND v_name LIKE UPPER('" + StringTools.Escaped(suche[1].trim()) +"%') order by n_name,v_name";
-				System.out.println("Statement = "+StringTools.Escaped(sstmt));
+				//System.out.println("Statement = "+StringTools.Escaped(sstmt));
 			}
 		}else{
 			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 				sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where n_name LIKE '"+
 				StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
 			}else{ //ADS
-				System.out.println("in der richtigen Suche DbType = "+SystemConfig.vDatenBank.get(0).get(2));
+				//System.out.println("in der richtigen Suche DbType = "+SystemConfig.vDatenBank.get(0).get(2));
 				sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where n_name LIKE UPPER('"+
 				StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
-				System.out.println("Statement = "+sstmt);
+				//System.out.println("Statement = "+sstmt);
 			}
 
 		}
@@ -712,14 +740,14 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					for(int i = 1; i <= 4; i++){
 						rowVector.addElement(rs.getString(i) != null ? rs.getString(i) : "");
 					}
-					//System.out.println("lesen");
+					////System.out.println("lesen");
 					setzeReihe((Vector)rowVector.clone());
 					//tblDataModel.addRow((Vector)rowVector.clone());
 					//jtable.validate();
 					//dataVector.addElement(rowVector);
 				}
 				
-				System.out.println("Gr��e ds Result Satzes = "+dataVector.size());
+				//System.out.println("Gr��e ds Result Satzes = "+dataVector.size());
 				/*
 				((DefaultTableModel) jtable.getModel()).setDataVector(dataVector,reiheVector);
 				jtable.getColumnModel().getColumn(0).setPreferredWidth(100);
@@ -729,13 +757,13 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -781,7 +809,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		reiheVector.addElement("PatNr.");
 		reiheVector.addElement("Anzahl1");
 		String[] suche;
-		System.out.println(SystemConfig.vDatenBank.get(0).get(2));
+		//System.out.println(SystemConfig.vDatenBank.get(0).get(2));
 		if (jTextField.getText().trim().contains(" ") ){
 			suche = jTextField.getText().split(" ");
 			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
@@ -809,7 +837,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				while( rs.next()){
 					Vector rowVector = new Vector();
 					for(int i = 1; i <= 4; i++){
-						//System.out.println(rs.getString(i));
+						////System.out.println(rs.getString(i));
 						rowVector.addElement(rs.getString(i));
 						//rowVector.addElement((i==2 ? (rs.getString(i) != null ? datFunk.sDatInDeutsch((String) rs.getString(i)) : "  .  .  ") : rs.getString(i)) );
 					//rowVector.addElement(rs.getString(i) );
@@ -827,13 +855,13 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				//this.jtable.setModel(tblDataModel);
 				//this.jtable.updateUI();
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {

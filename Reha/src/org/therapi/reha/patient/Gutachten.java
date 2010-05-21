@@ -633,7 +633,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				tabbericht.getValueAt(row, 0).toString()+" "+
 				SystemConfig.PDFformularPfad+" "+
 				Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini"+" "+
-				Reha.thisClass.patpanel.patDaten.get(29));
+				Reha.thisClass.patpanel.patDaten.get(29)+" "+
+				Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 	}
 
 	class ToolsDlgGutachten{
@@ -746,7 +747,13 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				break;
 			case 17:
 				//LVA-Entlassmitteilung
-				
+				try{
+					new LadeProg(Reha.proghome+"LVAEntlass.jar "+
+							" "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
+							Reha.thisClass.patpanel.vecaktrez.get(1));
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				break;
 	
 			}
