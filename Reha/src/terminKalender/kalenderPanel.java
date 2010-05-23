@@ -289,179 +289,171 @@ public void paintComponent( Graphics g ) {
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 							g2d.setColor( oCol.colWeiss);
 							if (sReznr.contains("@FREI")){
-								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sName, 5, (baseline));								
+								g2d.drawString(sName, 5, (baseline));								
 							}else{
-								g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sStart.substring(0,5)+"-"+
+								g2d.drawString(sStart.substring(0,5)+"-"+
 										sName
 										, 5, (baseline));
 							}
 							break;
 						}
-
+					//Wenn Rezeptnummer leer und Name leer	
 					if((sReznr.trim().isEmpty()) && (sName.trim().isEmpty())){
 						g2d.setColor(SystemConfig.aktTkCol.get("Freitermin")[0]);
-						//g2d.setColor( oCol.colTerminFrei);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 						g2d.setColor(SystemConfig.aktTkCol.get("Freitermin")[1]);
-						//g2d.setColor( oCol.colWeiss);
-						g2d.drawString(/*"s0"+*/sStart.substring(0,5), 5, (baseline));
+						g2d.drawString(sStart.substring(0,5), 5, (baseline));
 						break;
 					}
-
+					//Wenn Rezeptnummer mit @FREI belegt
 					if(sReznr.contains("@FREI")){
-						
 						g2d.setColor(SystemConfig.aktTkCol.get("AusserAZ")[0]);
-						//g2d.setColor( SystemConfig.KalenderHintergrund);
-
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz );
-						//g2d.setColor( Color.WHITE );
 						g2d.setColor(SystemConfig.aktTkCol.get("AusserAZ")[1]);
-						g2d.drawString(/*yEndeMin-yStartMin+"s1"+sStart.substring(0,5)*/sName, 5, (baseline));
-						//g2d.setComposite(original);
+						g2d.drawString(sName, 5, (baseline));
 						
 						break;
 					}
+					//Wenn Rezeptnummer @INTERN ist und der Name -RTA- enthält
 					if(sReznr.contains("@INTERN") && sName.contains("-RTA-")){
 						g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[0]);
-						//g2d.setColor(oCol.colOhneNummer );
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz );
 						g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[1]);
-						//g2d.setColor( Color.BLACK );
-						g2d.drawString(/*yEndeMin-yStartMin+"s2 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
-					if(sReznr.trim().isEmpty() && (!sName.trim().isEmpty())){
-						g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[0]);
-						//g2d.setColor( oCol.colOhneNummer);
-						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
-						//g2d.setColor( Color.BLACK );
-						g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[1]);						
-						g2d.drawString(/*yEndeMin-yStartMin+"s3 "+*/sStart.substring(0,5)+"-"+
-								sName
-								, 5, (baseline));
-						break;
+					//Wenn Rezeptnummer kleiner als zwei Zeichen ist  und der Name nicht leer ist
+					if( (sReznr.trim().length()<=2) && (!sName.trim().isEmpty())){
+						if(sReznr.trim().startsWith("RH")){
+							g2d.setColor(SystemConfig.aktTkCol.get("Rehapat")[0]);
+							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
+							g2d.setColor(SystemConfig.aktTkCol.get("Rehapat")[1]);
+							g2d.drawString(sStart.substring(0,5)+"-"+
+									sName
+									, 5, (baseline));
+
+						}else{
+							g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[0]);
+							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
+							g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[1]);						
+							g2d.drawString(sStart.substring(0,5)+"-"+
+									sName
+									, 5, (baseline));
+							break;
+						}
 					}
-					if((sReznr.length() < 2) && (!sName.isEmpty())){
-						g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[0]);
-						//g2d.setColor( oCol.colOhneNummer);
-						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
-						//g2d.setColor( Color.BLACK );
-						g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[1]);
-						g2d.drawString(/*yEndeMin-yStartMin+"s4 "+*/sStart.substring(0,5)+"-"+
-								sName
-								, 5, (baseline));
+					
+					//Wenn Rezeptnummer kleiner als zwei Zeichen ist und der Name leer ist
+					if((sReznr.length() <= 2) && (sName.isEmpty())){
+						if(sReznr.trim().startsWith("RH")){
+							g2d.setColor(SystemConfig.aktTkCol.get("Rehapat")[0]);
+							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
+							g2d.setColor(SystemConfig.aktTkCol.get("Rehapat")[1]);
+							g2d.drawString(sStart.substring(0,5)+"-"+
+									sName
+									, 5, (baseline));
+
+						}else{
+							g2d.setColor(SystemConfig.aktTkCol.get("Freitermin")[0]);
+							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
+							g2d.setColor(SystemConfig.aktTkCol.get("unvollst")[1]);
+							g2d.drawString(sStart.substring(0,5)+"-"+
+									sName
+									, 5, (baseline));
+						}
 						break;
 					}
 					/*************************************/
+					//ab hier die Definitionen mit den Farbsignalen
 					if(sReznr.contains("\\")){
 						if(sReznr.contains("\\H")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColH")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColH")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\F")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColF")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColF")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\M")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColM")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColM")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\A")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColA")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColA")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\B")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColB")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColA")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\C")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColC")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColC")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\D")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColD")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColD")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\E")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColE")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColE")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\F")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColF")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColF")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
 						}
 						if(sReznr.contains("\\G")){
 							g2d.setColor(SystemConfig.aktTkCol.get("ColG")[0]);
-							//g2d.setColor( oCol.colFahrDienst);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-							//g2d.setColor( Color.BLACK);
 							g2d.setColor(SystemConfig.aktTkCol.get("ColG")[1]);
-							g2d.drawString(/*yEndeMin-yStartMin+"s5"+*/sStart.substring(0,5)+"-"+
+							g2d.drawString(sStart.substring(0,5)+"-"+
 									sName
 									, 5, (baseline));
 							break;
@@ -469,145 +461,104 @@ public void paintComponent( Graphics g ) {
 						
 						
 					}
-					/* 
-					if(sReznr.contains("\\F")){
-						g2d.setColor( oCol.colFahrDienst);
-						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-						g2d.setColor( Color.BLACK);
-						g2d.drawString(sStart.substring(0,5)+"-"+
-								sName
-								, 5, (baseline));
-						break;
-					}
-					if(sReznr.contains("\\M")){
-						g2d.setColor( oCol.colZweiBehandler);
-						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-						g2d.setColor( Color.WHITE);
-						g2d.drawString(sStart.substring(0,5)+"-"+
-								sName
-								, 5, (baseline));
-						break;
-					}
-					*/
+					//Sonderprogramm für Rehatermine
 					if(sReznr.contains("RH")){
 						g2d.setColor(SystemConfig.aktTkCol.get("Rehapat")[0]);
-						//g2d.setColor( oCol.colRehaTermin);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
-						//g2d.setColor( Color.BLACK);
 						g2d.setColor(SystemConfig.aktTkCol.get("Rehapat")[1]);
-						g2d.drawString(/*yEndeMin-yStartMin+"s7"+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
+					//Sonderprogramm für Rehatermine
 					if(dauer==15){
 						g2d.setColor(SystemConfig.aktTkCol.get("15min")[0]);
-						//g2d.setColor( oCol.col15Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
 						g2d.setColor(SystemConfig.aktTkCol.get("15min")[1]);
-						//g2d.setColor( Color.WHITE);
-						g2d.drawString(/*yEndeMin-yStartMin+"s8"+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==20){
 						g2d.setColor(SystemConfig.aktTkCol.get("20min")[0]);						
-						//g2d.setColor( systemFarben.col20Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
 						g2d.setColor(SystemConfig.aktTkCol.get("20min")[1]);
-						//g2d.setColor( Color.BLACK);
-						g2d.drawString(/*yEndeMin-yStartMin+"s9"+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==25){
 						g2d.setColor(SystemConfig.aktTkCol.get("25min")[0]);						
-						//g2d.setColor( oCol.col25Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
 						g2d.setColor(SystemConfig.aktTkCol.get("25min")[1]);
-						//g2d.setColor( Color.BLACK);
-						g2d.drawString(/*yEndeMin-yStartMin+"s10 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==30){
 						g2d.setColor(SystemConfig.aktTkCol.get("30min")[0]);						
-						//g2d.setColor( oCol.col30Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
 						g2d.setColor(SystemConfig.aktTkCol.get("30min")[1]);
-						//g2d.setColor( Color.BLACK);
-						g2d.drawString(/*yEndeMin-yStartMin+"s11 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==40){
 						g2d.setColor(SystemConfig.aktTkCol.get("40min")[0]);
-						//g2d.setColor( oCol.col40Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 						g2d.setColor(SystemConfig.aktTkCol.get("40min")[1]);						
-						//g2d.setColor( Color.WHITE);
-						g2d.drawString(/*yEndeMin-yStartMin+"s12 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==45){
 						g2d.setColor(SystemConfig.aktTkCol.get("45min")[0]);
-						//g2d.setColor( oCol.col45Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 						g2d.setColor(SystemConfig.aktTkCol.get("45min")[1]);						
-						//g2d.setColor( Color.WHITE);
-						g2d.drawString(/*yEndeMin-yStartMin+"s13 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==50){
 						g2d.setColor(SystemConfig.aktTkCol.get("50min")[0]);
-						//g2d.setColor( oCol.col50Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);						
 						g2d.setColor(SystemConfig.aktTkCol.get("50min")[1]);
-						//g2d.setColor( Color.WHITE);
-						g2d.drawString(/*yEndeMin-yStartMin+"s14 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==60){
 						g2d.setColor(SystemConfig.aktTkCol.get("60min")[0]);
-						//g2d.setColor( oCol.col50Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 						g2d.setColor(SystemConfig.aktTkCol.get("60min")[1]);
-						//g2d.setColor( Color.WHITE);
-						g2d.drawString(/*yEndeMin-yStartMin+"s15 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					if(dauer==90){
 						g2d.setColor(SystemConfig.aktTkCol.get("90min")[0]);
-						//g2d.setColor( oCol.col50Min);
 						g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 						g2d.setColor(SystemConfig.aktTkCol.get("90min")[1]);
-						//g2d.setColor( Color.WHITE);
-						g2d.drawString(/*yEndeMin-yStartMin+"s15 "+*/sStart.substring(0,5)+"-"+
+						g2d.drawString(sStart.substring(0,5)+"-"+
 								sName
 								, 5, (baseline));
 						break;
 					}
 					g2d.setColor(SystemConfig.aktTkCol.get("unbekmin")[0]);
-					//g2d.setColor( oCol.colTerminFrei);
 					g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);	
 					g2d.setColor(SystemConfig.aktTkCol.get("unbekmin")[1]);					
-					//g2d.setColor( Color.WHITE);
-					g2d.drawString(/*yEndeMin-yStartMin+"s16 "+*/sStart.substring(0,5)+"-"+
+					g2d.drawString(sStart.substring(0,5)+"-"+
 							sName
 							, 5, (baseline));
-					//g2d.setComposite(original);
 					break;
 
 					/*******Klammer der k�nstlichen For-next******/
@@ -622,11 +573,7 @@ public void paintComponent( Graphics g ) {
 				g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
 			}
 			if(this.inGruppierung){
-				/*
-				g2d.setColor( Color.BLACK);
-				g2d.setStroke(new BasicStroke(3.0f));
-				g2d.drawRect(rahmen[0],rahmen[1],rahmen[2],rahmen[3]);
-				*/
+				
 				g2d.setColor( Color.BLACK);
 				Composite original = g2d.getComposite();
 				AlphaComposite ac1

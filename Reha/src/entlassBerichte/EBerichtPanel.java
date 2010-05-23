@@ -175,11 +175,39 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public int[] druckversion = {0,0,0,0,0,0}; 
 	public String[] aerzte; 
 	
+	String[] varinhalt = {
+			"^Heute^", //0
+			"^Anrede^",//1
+			"^PatName^",//2
+			"^PatVorname^",//3
+			"^Geburtsdatum^",//4
+			"^Strasse^",//5
+			"^PLZ^",//6
+			"^Ort^",//7
+			"^Aufnahme^",//8
+			"^Etlassung^",//9
+			"^arbeitsfähig?^",//10
+			"^Der/Die Pat.^",//11
+			"^der/die Pat.^",//12
+			"^Er/Sie^",//13
+			"^er/sie^",//14
+			"^Seines/Ihres^",//15
+			"^seines/ihres^",//16
+			"^Sein/Ihr^",//17
+			"^sein/ihr^",//18
+			"^Dem/Der Pat.^",//19
+			"^dem/der Pat.^",//20
+			"^Des/Der Pat.^",//21
+			"^des/der Pat.^",//22
+			"^Seine/Ihre^",//23
+			"^seine/ihre^",//24
+			};
+	/*
 	String[] varinhalt = {"^Heute^","^Anrede^","^PatName^","^PatVorname^","^Geburtsdatum^",
 			"^Strasse^","^PLZ^","^Ort^","^Aufnahme^","^Etlassung^",
 			"^arbeitsfähig?^","^Der/Die Pat.^","^der/die Pat.^",
 			"^Er/Sie^","^er/sie^","^seines/ihres^","^sein/ihr^"};
-	
+	*/
 	public List<String> sysVarList = null;
 	public List<String> sysVarInhalt = null;
 	
@@ -1093,6 +1121,38 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			"^Er/Sie^","^er/sie^","^seines/ihres^","^sein/ihr^"};
 			
  */
+			
+/*
+ 			
+ */
+			String[] varinhalt = {
+					"^Heute^", //0
+					"^Anrede^",//1
+					"^PatName^",//2
+					"^PatVorname^",//3
+					"^Geburtsdatum^",//4
+					"^Strasse^",//5
+					"^PLZ^",//6
+					"^Ort^",//7
+					"^Aufnahme^",//8
+					"^Etlassung^",//9
+					"^arbeitsfähig?^",//10
+					"^Der/Die Pat.^",//11
+					"^der/die Pat.^",//12
+					"^Er/Sie^",//13
+					"^er/sie^",//14
+					"^Seines/Ihres^",//15
+					"^seines/ihres^",//16
+					"^Sein/Ihr^",//17
+					"^sein/ihr^",//18
+					"^Dem/Der Pat.^",//19
+					"^dem/der Pat.^",//20
+					"^Des/Der Pat.^",//21
+					"^des/der Pat.^",//22
+					"^Seine/Ihre^",//23
+					"^seine/ihre^",//24
+					};
+
 			String[] dummy = {DatFunk.sHeute(),
 					(isherr ? "Herr" : "Frau"),
 					StringTools.EGross(btf[2].getText().split(",")[0].trim()), //name
@@ -1108,8 +1168,16 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					(isherr ? "der Patient" : "die Patientin"),
 					(isherr ? "Er" : "Sie"),
 					(isherr ? "er" : "sie"),
+					(isherr ? "Seines" : "Ihres"),
 					(isherr ? "seines" : "ihres"),
-					(isherr ? "sein" : "ihr")
+					(isherr ? "Sein" : "Ihr"),
+					(isherr ? "sein" : "ihr"),
+					(isherr ? "Dem Patienten" : "Der Patientin"),
+					(isherr ? "dem Patienten" : "der Patientin"),
+					(isherr ? "Des Patienten" : "Der Patientin"),
+					(isherr ? "des Patienten" : "der Patientin"),
+					(isherr ? "Seine" : "Ihre"),
+					(isherr ? "seine" : "ihre"),
 			};
 			sysVarInhalt = Arrays.asList(dummy);
 		}catch(Exception ex){

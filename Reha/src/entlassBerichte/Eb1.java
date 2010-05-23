@@ -148,6 +148,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 									testeIK();
 									eltern.meldeInitOk(0);
 									eltern.doSysVars();
+									testeObAlt();
 									}catch(Exception ex){
 										ex.printStackTrace();
 									}
@@ -170,6 +171,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 				 			JOptionPane.showMessageDialog(null,"Bitte stellen Sie als erstes den Empfäger des Gutachtens ein (Berichttyp).");
 				 			doKopfNeu();
 							eltern.doSysVars();
+				 			testeObAlt();
 				 		}
 				 		  
 				 	   }
@@ -1680,18 +1682,50 @@ public class Eb1 implements ActionListener,ComponentListener {
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("empfaenger")){
 			testeIK();
-			if( ((String)eltern.cbktraeger.getSelectedItem()).contains("GKV")){
+			if( ((String)eltern.cbktraeger.getSelectedItem()).contains("GKV") ){
+				//System.out.println("In alte Labels");
 				setzeNeueLabels(false);
 				eltern.ebt.getTab1().pan.revalidate();
 				eltern.bcmb[19].setEnabled(false);
 				eltern.bta[6].setEnabled(true);
 			}else{
 				// Hier noch das RV - Entlassdatum einbauen ggfls. ebenfalls alte labels zeigen
-				setzeNeueLabels(true);
+				if(eltern.btf[15].getText().length()==10){
+					if(DatFunk.TageDifferenz("31.12.2007",eltern.btf[15].getText() ) < 0){
+						setzeNeueLabels(false);
+					}else{
+						setzeNeueLabels(true);
+					}
+				}else{
+					setzeNeueLabels(true);
+				}
 				eltern.ebt.getTab1().pan.revalidate();
 				eltern.bcmb[19].setEnabled(true);
 				eltern.bta[6].setEnabled(false);				
 			}
+		}
+	}
+	public void testeObAlt(){
+		if( ((String)eltern.cbktraeger.getSelectedItem()).contains("GKV") ){
+			System.out.println("In alte Labels");
+			setzeNeueLabels(false);
+			eltern.ebt.getTab1().pan.revalidate();
+			eltern.bcmb[19].setEnabled(false);
+			eltern.bta[6].setEnabled(true);
+		}else{
+			// Hier noch das RV - Entlassdatum einbauen ggfls. ebenfalls alte labels zeigen
+			if(eltern.btf[15].getText().length()==10){
+				if(DatFunk.TageDifferenz("31.12.2007",eltern.btf[15].getText() ) < 0){
+					setzeNeueLabels(false);
+				}else{
+					setzeNeueLabels(true);
+				}
+			}else{
+				setzeNeueLabels(true);
+			}
+			eltern.ebt.getTab1().pan.revalidate();
+			eltern.bcmb[19].setEnabled(true);
+			eltern.bta[6].setEnabled(false);				
 		}
 	}
 	public void testeIK(){

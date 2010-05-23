@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
@@ -22,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.ColorEditor;
@@ -38,13 +42,14 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.LabelProvider;
 import org.jdesktop.swingx.renderer.StringValue;
 
+import rechteTools.Rechte;
 import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SysUtilKalenderfarben extends JXPanel implements KeyListener, ActionListener {
+public class SysUtilKalenderfarben extends JXPanel implements KeyListener, ActionListener, CellEditorListener {
 	
 	JXTable FarbTab = null;
 	JComboBox standard = null;
@@ -117,14 +122,40 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 					String[] dat = {"Code","Bedeutung","Hintergrund","Schriftfarbe", "Darstellung"};
 					ftm.setDataVector((Vector)SystemConfig.vSysColDlg.clone(), new Vector(Arrays.asList(dat))/*getColumnData(dat)*/);
 					FarbTab.setModel(ftm);
+					FarbTab.setColumnSelectionAllowed(false); 
+					FarbTab.setRowSelectionAllowed(true); 
+					FarbTab.setCellSelectionEnabled(true);
+					FarbTab.addMouseListener(new MouseAdapter(){
+						public void mousePressed(MouseEvent arg0){
+							arg0.consume();
+						}
+						public void mouseClicked(MouseEvent arg0) {
+							arg0.consume();
+							System.out.println("Im eigenen Mouseadapter");
+							if(arg0.getClickCount()==2){
+								int row = FarbTab.getSelectedRow();
+								int col = FarbTab.getSelectedColumn();
+								startCellEditing(FarbTab,row,col);
+							}
+							if(arg0.getClickCount()==1){
+								int row = FarbTab.getSelectedRow();
+								int col = FarbTab.getSelectedColumn();
+								FarbTab.setRowSelectionInterval(row, row);
+							}
+						}
+					});
+					
 					FarbTab.getColumn(2).setCellEditor( new ColorEditor());
 					FarbTab.getColumn(2).setCellRenderer( new ColorRenderer(true));
+					FarbTab.getColumn(2).getCellEditor().addCellEditorListener(this);
 					FarbTab.getColumn(3).setCellEditor( new ColorEditor());
 					FarbTab.getColumn(3).setCellRenderer( new ColorRenderer(true));
+					FarbTab.getColumn(3).getCellEditor().addCellEditorListener(this);
 					FarbTab.getColumn(4).setCellRenderer(new JLabelRenderer() );
 					FarbTab.setSortable(false);
 					FarbTab.validate();
-
+						
+						
 //		 	   }
 		//}); 	   
 
@@ -175,6 +206,20 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 
 	
 	}
+	private void startCellEditing(JXTable table,int row,int col){
+		final int xrows = row;
+		final int xcols = col;
+		final JXTable xtable = table;
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+		 		  xtable.setRowSelectionInterval(xrows, xrows);
+		 		 xtable.setColumnSelectionInterval(xcols, xcols);
+		 		  xtable.scrollRowToVisible(xrows);
+		 				xtable.editCellAt(xrows,xcols );
+		 	   }
+		});
+	}
+
 	private Vector getColumnData(String[] datx){
 		Vector col = new Vector();
 		for(int i= 0;i<datx.length;i++){
@@ -249,137 +294,60 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 		
 	}
 	private void saveColorData(int def){
-		String defName = ((String)standard.getSelectedItem()).trim();
-		int defNum = standard.getSelectedIndex();
-		int lang = SystemConfig.vSysColsNamen.size();
-		Color hg,vg;
-		String farbsplit;
-		if(def==0){
-			defName = "UserFarben";
-		}
-		//setStringProperty
-		INIFile ini = new INIFile(colorini);
-		for(int i = 0; i<lang;i++){
-			hg = ((Color)FarbTab.getValueAt(i, 2));
-			vg = ((Color)FarbTab.getValueAt(i, 3));
-			farbsplit = new Integer(hg.getRed()).toString()+","+new Integer(hg.getGreen()).toString()+","+
-			new Integer(hg.getBlue()).toString()+","+
-			new Integer(vg.getRed()).toString()+","+new Integer(vg.getGreen()).toString()+","+
-			new Integer(vg.getBlue()).toString();
-			ini.setStringProperty(defName,SystemConfig.vSysColsNamen.get(i) , farbsplit,null);
-			ini.setStringProperty("Terminkalender","FarbenBedeutung"+(i+1),((String)FarbTab.getValueAt(i, 1)),null);
-			SystemConfig.vSysColsObject.get(def).set(i, new Color[] {hg,vg});
-			//vSysColsBedeut.add(new String(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
-			SystemConfig.aktTkCol.put(SystemConfig.vSysColsNamen.get(i), new Color[] {hg,vg});
-			
-		}
+		try{
+			String defName = ((String)standard.getSelectedItem()).trim();
+			int defNum = standard.getSelectedIndex();
+			int lang = SystemConfig.vSysColsNamen.size();
+			Color hg,vg;
+			String farbsplit;
+			if(def==0){
+				defName = "UserFarben";
+			}
 
-		/*
-		for(int i = 0; i<lang;i++){
-			hg = ((Color)FarbTab.getValueAt(i, 2));
-			vg = ((Color)FarbTab.getValueAt(i, 3));
-			farbsplit = new Integer(hg.getRed()).toString()+","+new Integer(hg.getGreen()).toString()+","+
-			new Integer(hg.getBlue()).toString()+","+
-			new Integer(vg.getRed()).toString()+","+new Integer(vg.getGreen()).toString()+","+
-			new Integer(vg.getBlue()).toString();
-			RWJedeIni.schreibeIniDatei(Reha.proghome+"ini\\color.ini", 
-					defName,SystemConfig.vSysColsNamen.get(i) , farbsplit);
-			RWJedeIni.schreibeIniDatei(Reha.proghome+"ini\\color.ini",
-					"Terminkalender","FarbenBedeutung"+(i+1),((String)FarbTab.getValueAt(i, 1)) );
-			SystemConfig.vSysColsObject.get(def).set(i, new Color[] {hg,vg});
-			//vSysColsBedeut.add(new String(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
-			SystemConfig.aktTkCol.put(SystemConfig.vSysColsNamen.get(i), new Color[] {hg,vg});
+			INIFile ini = new INIFile(colorini);
+			for(int i = 0; i<lang;i++){
+				hg = ((Color)FarbTab.getValueAt(i, 2));
+				vg = ((Color)FarbTab.getValueAt(i, 3));
+				farbsplit = Integer.toString(hg.getRed())+","+Integer.toString(hg.getGreen())+","+
+				Integer.toString(hg.getBlue())+","+
+				Integer.toString(vg.getRed())+","+Integer.toString(vg.getGreen())+","+
+				Integer.toString(vg.getBlue());
+				ini.setStringProperty(defName,SystemConfig.vSysColsNamen.get(i) , farbsplit,null);
+				ini.setStringProperty("Terminkalender","FarbenBedeutung"+(i+1),((String)FarbTab.getValueAt(i, 1)),null);
+				SystemConfig.vSysColsObject.get(def).set(i, new Color[] {hg,vg});
+				//vSysColsBedeut.add(new String(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
+				SystemConfig.aktTkCol.put(SystemConfig.vSysColsNamen.get(i), new Color[] {hg,vg});
+				
+			}
+
 			
+			if(def==0){
+				SystemConfig.KalenderHintergrund = SystemConfig.aktTkCol.get("AusserAZ")[0];
+			}
+			TerminFenster.setDurchlass(new Float((String)alphawahl.getSelectedItem()) );
+			ini.save();
+			ini = null;
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-		*/
-		
-		if(def==0){
-			SystemConfig.KalenderHintergrund = SystemConfig.aktTkCol.get("AusserAZ")[0];
-		}
-		TerminFenster.setDurchlass(new Float((String)alphawahl.getSelectedItem()) );
-		ini.save();
-		ini = null;
 	}
 	
 	private void setColorData(int def){
-		int lang = FarbTab.getRowCount();
-		int i;
-		//System.out.println("in set color Data");
-		for(i=0;i<lang;i++){
-			FarbTab.setValueAt(SystemConfig.vSysColsObject.get(def).get(i)[0], i, 2);	
-			FarbTab.setValueAt(SystemConfig.vSysColsObject.get(def).get(i)[1], i, 3);
-			FarbTab.validate();
+		try{
+			int lang = FarbTab.getRowCount();
+			int i;
+			//System.out.println("in set color Data");
+			for(i=0;i<lang;i++){
+				FarbTab.setValueAt(SystemConfig.vSysColsObject.get(def).get(i)[0], i, 2);	
+				FarbTab.setValueAt(SystemConfig.vSysColsObject.get(def).get(i)[1], i, 3);
+				FarbTab.validate();
+			}
+		
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 	}
 	private Vector getColorData(){
-		/*
-		Vector vec = new Vector();
-		JLabel BeispielDummi = new JLabel("so sieht's aus");		
-
-		JLabel BeispielDummi = new JLabel("so sieht's aus");
-		Vector vec = new Vector();
-		Object[][]mydata = {
-            {"au�er AZ", "Pause/Freizeit", new Color(111,141,223),
-            new Color(111,141,223), BeispielDummi},
-            {"Terminl�cke", "verf�gbar", new Color(190, 0, 4),
-	        new Color(190, 0, 4), BeispielDummi},
-	        {"unvollst�ndig", "ohne Rezept-Nr.", new Color(	190, 190, 0),
-		    new Color(0, 0, 0), BeispielDummi},
-            {"15�", "Termin 15 min", new Color(204, 204, 204),
-		    new Color(25,25,25), BeispielDummi},
-            {"20�", "Termin 20 min", new Color(153,153,153),
-			new Color(25,25,25), BeispielDummi},
-            {"25�", "Termin 25 min", new Color(102, 102, 102),
-			new Color(255,255,255), BeispielDummi},
-			{"30�", "Termin 30 min", new Color(0, 102, 102),
-			new Color(255,255,255), BeispielDummi},
-			{"45�", "Termin 45 min", new Color(102, 102, 0),
-			new Color(255,255,51), BeispielDummi},
-			{"50�", "Termin 50 min", new Color(255,153,255),
-			new Color(0,0,0), BeispielDummi},
-			{"60�", "Termin 60 min", new Color(102, 0, 102),
-			new Color(255,255,51), BeispielDummi},
-			{"90�", "Termin 90 min", new Color(0,0,255),
-			new Color(255,255,51), BeispielDummi},
-			{"Reha-Termin", "Reha-Patient", new Color(0,255,255),
-			new Color(255,255,51), BeispielDummi},
-			{"\\A", "", new Color(255,255,255),
-			new Color(0,0,0), BeispielDummi},
-			{"\\B", "", new Color(240,240,240),
-			new Color(0,0,0), BeispielDummi},
-			{"\\C", "", new Color(225, 225, 225),
-			new Color(0,0,0), BeispielDummi},
-			{"\\D", "", new Color(210,210,210),
-			new Color(0,0,0), BeispielDummi},
-			{"\\E", "", new Color(195,195,195),
-			new Color(0,0,0), BeispielDummi},
-			{"\\F", "", new Color(180,180,180),
-			new Color(0,0,0), BeispielDummi},
-			{"\\G", "", new Color(165,165,165),
-			new Color(0,0,0), BeispielDummi},
-			{"\\H", "Hausbesuch", new Color(51,255,51),
-			new Color(0,0,0), BeispielDummi},
-			{"\\M", "mehrere Disziplinen", new Color(77,185,77),
-			new Color(0,0,0), BeispielDummi}			
-		};
-
-		
-		
-		for(int i = 0;i<mydata.length;i++){
-			Vector ovec = new Vector();
-			for(int j = 0;j<mydata[i].length;j++){
-				ovec.add(mydata[i][j]);
-			}
-			vec.add(ovec);
-		}
-		*/
-		/*
-		public static Vector<Vector<Color[]>> hmDefaultCols;
-		public static Vector<Color[]> vSysColsObject;
-		public static Vector<String> vSysColsNamen;
-		public static Vector<String> vSysDefNamen;
-		public static Vector<String> vSysColsBedeut;
-		*/
 		Vector vec = new Vector();
 		JLabel BeispielDummi = new JLabel("so sieht's aus");		
 		int i,lang;
@@ -394,6 +362,16 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 			vec.add(ovec.clone());
 		}
 		return (Vector)vec.clone();
+	}
+	@Override
+	public void editingCanceled(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void editingStopped(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 /*********Vor Ende Klassenklammer***************/	

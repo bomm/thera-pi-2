@@ -176,7 +176,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 
 		
 			builder.addLabel("Name der Gruppe", cc.xyw(1,3,3));
-			RGname = new JRtaTextField("NORMAL",true);
+			RGname = new JRtaTextField("nix",true);
 			RGname.setText(gruppenname[0]);
 			RGname.setEnabled(false);
 			builder.add(RGname, cc.xyw(5,3,4));

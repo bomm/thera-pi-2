@@ -134,7 +134,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		builder.add(SetName, cc.xyw(3,1,3));
 		
 		builder.addLabel("Name des Sets", cc.xy(1,3));
-		SetNeu = new JRtaTextField("NORMAL",true);
+		SetNeu = new JRtaTextField("nix",true);
 		builder.add(SetNeu, cc.xyw(3,3,3));
 		
 		builder.addSeparator("Kalenderspalten zuordnen", cc.xyw(1,5,9));

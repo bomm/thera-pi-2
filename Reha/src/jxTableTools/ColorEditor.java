@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 
 public class ColorEditor extends AbstractCellEditor
                          implements TableCellEditor,
@@ -18,6 +20,7 @@ public class ColorEditor extends AbstractCellEditor
     JColorChooser colorChooser;
     JDialog dialog;
     protected static final String EDIT = "edit";
+    boolean mitMaus = false;
 
     public ColorEditor() {
         //Set up the editor (from the table's point of view),
@@ -70,8 +73,24 @@ public class ColorEditor extends AbstractCellEditor
                                                  boolean isSelected,
                                                  int row,
                                                  int column) {
-        currentColor = (Color)value;
+    	
+    	currentColor = (Color)value;
         return button;
     }
+    
+    public boolean isCellEditable(EventObject evt) {
+        if (evt instanceof MouseEvent) {
+        	if(((MouseEvent)evt).getClickCount()==2){
+        		((MouseEvent)evt).consume();
+            	mitMaus = true;
+                return true;
+        	}
+        } else {
+        	mitMaus = false;
+            return true;
+        }
+        return false;
+    }
+
 }
 
