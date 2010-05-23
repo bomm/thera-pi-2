@@ -167,7 +167,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		for(int i = 0; i < 4;i++){
 			if(jrb[i].isSelected()){
 				iAktion = i+1;
-				System.out.println("Aktion = "+iAktion);
+				//System.out.println("Aktion = "+iAktion);
 				break;
 			}
 		}
@@ -213,7 +213,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(arg0.getSource());
+		////System.out.println(arg0.getSource());
 		String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 		for (int i = 0 ; i < 1 ; i++){
 			if( (sAktion =="Termin oben anschließen")){
@@ -267,7 +267,7 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 	
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		//System.out.println(arg0);
+		////System.out.println(arg0);
 		if(arg0.getSource() instanceof JRadioButton){
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 

@@ -314,7 +314,7 @@ public class BenutzerRechte extends JXPanel{
 			pws[0].setText(jcmb.getValue().toString());
 			pws[1].setText(jcmb.getValue().toString());
 			
-			//System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
+			////System.out.println(ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(0));
 			aktuelleRechte = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(2);
 			if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerSuper_user, false) 
 					&& rechteTools.Rechte.testeRecht(aktuelleRechte, rechteTools.Rechte.BenutzerSuper_user)){
@@ -340,7 +340,7 @@ public class BenutzerRechte extends JXPanel{
 		int recht = 0;
 		for(int i = 0; i < lang;i++){
 			JXRechteTreeTableNode node = holeNode(i);
-			//System.out.println(node.rechte.bildnummer);
+			////System.out.println(node.rechte.bildnummer);
 			if(node.rechte.bildnummer >= 0){
 				if(allesaufnull){
 					rechteTreeTableModel.setValueAt(0 ,	node, 1);
@@ -524,7 +524,7 @@ public class BenutzerRechte extends JXPanel{
 		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
 			JXRechteTreeTableNode node = holeNode(i);
-			//System.out.println(node.rechte.bildnummer);
+			////System.out.println(node.rechte.bildnummer);
 			if(node.rechte.bildnummer >= 0){
 				buf.append(Integer.toString(node.rechte.bildnummer));
 			}
@@ -543,9 +543,9 @@ public class BenutzerRechte extends JXPanel{
 		String encrypted = man.encrypt(pw);
 		
 		if(!neu){
-			//System.out.println("Username = "+tfs[0].getText());
-			//System.out.println("Passwort = "+String.valueOf(pws[0].getPassword()));
-			//System.out.println("Rechte   = "+String.valueOf(pw));
+			////System.out.println("Username = "+tfs[0].getText());
+			////System.out.println("Passwort = "+String.valueOf(pws[0].getPassword()));
+			////System.out.println("Rechte   = "+String.valueOf(pw));
 			
 			String cmd = "update rehalogin set user='"+man.encrypt(tfs[0].getText())+"', password='"+
 			man.encrypt(String.valueOf(pws[0].getPassword()))+"', rights='"+encrypted+"' where id='"+userid+"' LIMIT 1";
@@ -585,7 +585,7 @@ public class BenutzerRechte extends JXPanel{
 		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
 			JXRechteTreeTableNode node = holeNode(i);
-			//System.out.println(node.rechte.bildnummer);
+			////System.out.println(node.rechte.bildnummer);
 			if(node.rechte.bildnummer >= 0){
 				buf.append(Integer.toString(node.rechte.bildnummer));
 			}
@@ -916,9 +916,9 @@ public class BenutzerRechte extends JXPanel{
 							for(int i = 0; i < lang; i++){
 								if(aktNode == holeNode(i)){
 									aktRow = i;
-									//System.out.println("Zeilennummer =  = "+i);
-									//System.out.println("Node selektiert = "+aktNode.abr.bezeichnung);
-									//System.out.println("Behandlungsdatum selektiert = "+aktNode.abr.datum+" / "+aktNode.abr.bezeichnung);
+									////System.out.println("Zeilennummer =  = "+i);
+									////System.out.println("Node selektiert = "+aktNode.abr.bezeichnung);
+									////System.out.println("Behandlungsdatum selektiert = "+aktNode.abr.datum+" / "+aktNode.abr.bezeichnung);
 									break;
 								}
 							}

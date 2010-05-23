@@ -118,11 +118,11 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 		String name="",rechte="",test=String.valueOf(pwTextFeld.getPassword());
 		size = ParameterLaden.pKollegen.size();
 		for(i=0;i<size;i++){
-			//System.out.println(ParameterLaden.pKollegen.get(i).get(1));
+			////System.out.println(ParameterLaden.pKollegen.get(i).get(1));
 			if(test.equals(ParameterLaden.pKollegen.get(i).get(1))){
 				name = (String) ParameterLaden.pKollegen.get(i).get(0);
 				rechte = (String) ParameterLaden.pKollegen.get(i).get(2);
-				//System.out.println("Rechte = "+rechte);
+				////System.out.println("Rechte = "+rechte);
 				Reha.progRechte = rechte;
 				Reha.thisFrame.setTitle(Reha.Titel+Reha.Titel2+"  -->  [Benutzer: "+name+"]");
 				Reha.aktUser = name;
@@ -156,7 +156,7 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		//System.out.println(e);
+		////System.out.println(e);
 		int code = e.getKeyCode();
 		if(code==27){
 			e.consume();

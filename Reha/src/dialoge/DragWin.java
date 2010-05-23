@@ -70,7 +70,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 
 	@Override
 	public void mousePressed(java.awt.event.MouseEvent e) {
-		//System.out.println("Klick bei "+e.getY()+" / "+e.getY());
+		////System.out.println("Klick bei "+e.getY()+" / "+e.getY());
 		if (e.getY() <= 25){
 			clickY = e.getY();
 			clickX = e.getX();
@@ -110,13 +110,13 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 	@Override
 	public void mouseDragged(java.awt.event.MouseEvent e) {
 		//int center = (int) owner.getSize().getHeight();
-		//System.out.println("in Mousedragged");
-		//System.out.println("Insize = "+insize+" clickY="+clickY);
-		//System.out.println("Klick Y bei "+e.getY());
+		////System.out.println("in Mousedragged");
+		////System.out.println("Insize = "+insize+" clickY="+clickY);
+		////System.out.println("Klick Y bei "+e.getY());
 		//clickX = e.getX();
 		if (! insize && clickY > 0){
 			//RehaSmartDialog.thisClass.getLocationOnScreen();
-			//System.out.println("in Mousedragged");
+			////System.out.println("in Mousedragged");
 			final java.awt.event.MouseEvent ex = e;
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){

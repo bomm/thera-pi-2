@@ -138,8 +138,8 @@ public class PatientHauptLogic {
 		private static final long serialVersionUID = 6195808468235028392L;
 
 		public void actionPerformed(ActionEvent e) {
-	        //System.out.println("Patient Action = "+e.getActionCommand());
-	        //System.out.println(e);
+	        ////System.out.println("Patient Action = "+e.getActionCommand());
+	        ////System.out.println(e);
 	        if(e.getActionCommand().equals("f")){
 	        	 Reha.thisClass.patpanel.tfsuchen.requestFocus();
 	        }
@@ -312,7 +312,7 @@ public class PatientHauptLogic {
 		//neuPat.dispose();
 		neuPat = null;
 	    pinPanel = null;
-		System.out.println("Pat Neu/ändern ist disposed");
+		//System.out.println("Pat Neu/ändern ist disposed");
 		neuDlgOffen = false;
 		
 
@@ -338,11 +338,11 @@ public class PatientHauptLogic {
 						rtp = null;
 						this.dispose();
 						super.dispose();
-						System.out.println("****************Patient Neu/ändern -> Listener entfernt**************");				
+						//System.out.println("****************Patient Neu/ändern -> Listener entfernt**************");				
 					}
 				}
 			}catch(NullPointerException ne){
-				System.out.println("In PatNeuanlage" +evt);
+				//System.out.println("In PatNeuanlage" +evt);
 			}
 		}
 		public void windowClosed(WindowEvent arg0) {
@@ -352,7 +352,7 @@ public class PatientHauptLogic {
 				rtp = null;
 				dispose();
 				super.dispose();
-				System.out.println("****************Patient Neu/ändern -> Listener entfernt (Closed)**********");
+				//System.out.println("****************Patient Neu/ändern -> Listener entfernt (Closed)**********");
 			}
 		}
 		
@@ -365,16 +365,16 @@ public class PatientHauptLogic {
 		}
 		String sets = "aerzte='"+aliste+"'";
 		SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
-		System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
+		//System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
 		if(Reha.thisClass.patpanel.aktPatID.equals(xpatintern)){
-			System.out.println("Länge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
+			//System.out.println("Länge des patDaten.Arrays = "+Reha.thisClass.patpanel.patDaten.size());
 			Reha.thisClass.patpanel.patDaten.set(63,aliste);		
 		}
 	}
 	public void arztListeSpeichernString(String aliste,boolean inNeu,String xpatintern){
 		String sets = "aerzte='"+aliste+"'";
 		SqlInfo.aktualisiereSaetze("pat5",sets , "pat_intern='"+xpatintern+"'");
-		System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
+		//System.out.println("Sets = "+sets +" pat_Intern = "+xpatintern);
 		if(Reha.thisClass.patpanel.aktPatID.equals(xpatintern)){
 			Reha.thisClass.patpanel.patDaten.set(63,aliste);		
 		}
@@ -382,9 +382,9 @@ public class PatientHauptLogic {
 	
 	
 	public void patStammEventOccurred(PatStammEvent evt) {
-		//System.out.println("Event im Neuen PatStamm = "+evt);
-		//System.out.println("Detail 0 = "+evt.getDetails()[0]);
-		//System.out.println("Detail 1 = "+evt.getDetails()[1]);	
+		////System.out.println("Event im Neuen PatStamm = "+evt);
+		////System.out.println("Detail 0 = "+evt.getDetails()[0]);
+		////System.out.println("Detail 1 = "+evt.getDetails()[1]);	
 		if(evt.getDetails()[0].equals("#PATSUCHEN")){
 			final String xpatint = evt.getDetails()[1].trim();
 			final String xrez = evt.getDetails()[2].trim();
@@ -433,6 +433,10 @@ public class PatientHauptLogic {
 							PatTools.constructPatHMap();		
 							ArztTools.constructArztHMap("");
 							KasseTools.constructKasseHMap("");
+							if(((SuchenDialog) patientHauptPanel.sucheComponent) != null){
+								((SuchenDialog) patientHauptPanel.sucheComponent).dispose();
+								patientHauptPanel.sucheComponent = null;
+							}
 							return null;
 						}
 					}.execute();
@@ -518,7 +522,22 @@ public class PatientHauptLogic {
 
 			int i = patientHauptPanel.multiTab.getTabCount();
 			for(int y = 0;y < i;y++){
-				//System.out.println("Tabtitel von "+y+" = "+jtab.getTitleAt(y));
+				////System.out.println("Tabtitel von "+y+" = "+jtab.getTitleAt(y));
+			}
+		}
+		if(evt.getDetails()[0].equals("#SUCHENBEENDEN")){
+			if(((SuchenDialog) patientHauptPanel.sucheComponent) != null){
+				((SuchenDialog) patientHauptPanel.sucheComponent).dispose();
+				patientHauptPanel.sucheComponent = null;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						Runtime r = Runtime.getRuntime();
+					    r.gc();
+						return null;
+					}
+					
+				}.execute();
 			}
 		}
 		if(evt.getDetails()[0].equals("#PATEDIT")){
@@ -541,7 +560,7 @@ public class PatientHauptLogic {
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					//System.out.println("Korrigieren->"+evx.getSource());
+					////System.out.println("Korrigieren->"+evx.getSource());
 					editFeld(feld);
 					return null;
 				}
@@ -581,7 +600,7 @@ public class PatientHauptLogic {
 	public void datenHolen(String patint){
 		Reha.thisClass.patpanel.patDatenOk = false;
 		Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5"," * ", "PAT_INTERN ='"+patint+"'", Arrays.asList(new String[] {}) );
-		System.out.println("Größe der Daten = "+Reha.thisClass.patpanel.patDaten.size());
+		//System.out.println("Größe der Daten = "+Reha.thisClass.patpanel.patDaten.size());
 		if(Reha.thisClass.patpanel.patDaten.size() == 71){
 			if(Reha.thisClass.patpanel.patDaten.get(65).equals("")){
 				Reha.thisClass.patpanel.pmemo[0].setText("");

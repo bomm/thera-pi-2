@@ -16,12 +16,12 @@ public class OOEventClass {
 	    // This methods allows classes to unregister for RehaEvents
 		public void removeOOEventListener(OOEventListener ooListener) {
 			// TODO Auto-generated method stub
-			System.out.println("Office Object Listener gelöscht "+ooListener);
+			//System.out.println("Office Object Listener gelï¿½scht "+ooListener);
 			listenerList.remove(OOEventListener.class, ooListener);
 		}
 		public void addOOEventListener(OOEventListener ooListener) {
 			// TODO Auto-generated method stub
-			System.out.println("Office Object Listener hinzugefügt "+ooListener);
+			//System.out.println("Office Object Listener hinzugefï¿½gt "+ooListener);
 			listenerList.add(OOEventListener.class, ooListener);
 		}
 

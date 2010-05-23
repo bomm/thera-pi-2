@@ -27,18 +27,18 @@ public class RezTest extends RehaSmartDialog implements RehaTPEventListener,Wind
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
-					System.out.println("In rezNeuDlg set Visible false***************");
+					//System.out.println("In rezNeuDlg set Visible false***************");
 					this.setVisible(false);
 					this.dispose();
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					ListenerTools.removeListeners(this);					
 					super.dispose();
-					System.out.println("****************RezeptTest -> Listener entfernt**************");				
+					//System.out.println("****************RezeptTest -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In RezeptNeuanlage" +evt);
+			//System.out.println("In RezeptNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -50,7 +50,7 @@ public class RezTest extends RehaSmartDialog implements RehaTPEventListener,Wind
 			dispose();
 			ListenerTools.removeListeners(this);
 			super.dispose();
-			System.out.println("****************RezeptTest -> Listener entfernt (Closed)**********");
+			//System.out.println("****************RezeptTest -> Listener entfernt (Closed)**********");
 		}
 	}
 }

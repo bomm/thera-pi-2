@@ -13,7 +13,7 @@ public class ZipTools {
 	          new FileInputStream(zipname));
 	      ZipEntry entry;
 	      while ((entry = zin.getNextEntry()) != null) {
-	        System.out.println(entry.getName());
+	        //System.out.println(entry.getName());
 	        zin.closeEntry();
 	      }
 	      zin.close();
@@ -26,14 +26,15 @@ public class ZipTools {
 	      ZipInputStream zin = new ZipInputStream(
 	          new FileInputStream(zipname));
 	      ZipEntry entry;
-	      System.out.println("");
+	      //System.out.println("");
 	      while ((entry = zin.getNextEntry()) != null) {
 	        if (entry.getName().equals(name)) {
 	          BufferedReader in = new BufferedReader(
 	              new InputStreamReader(zin));
 	          String s;
-	          while ((s = in.readLine()) != null)
-	            System.out.println(s + "\n");
+	          
+	          //while ((s = in.readLine()) != null)
+	            //System.out.println(s + "\n");
 	        }
 	        zin.closeEntry();
 	      }

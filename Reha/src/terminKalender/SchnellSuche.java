@@ -151,7 +151,7 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
 /*********************************************************/
 	
 public void FensterSchliessen(String welches){
-	//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
+	////System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 	//webBrowser.dispose();
 	this.dispose();
 }
@@ -234,16 +234,16 @@ public String dieserName(){
 
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
+	//System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
 	String ss =  this.getName();
-	System.out.println("SchnellSucheFenster "+this.getName()+" Eltern "+ss);
+	//System.out.println("SchnellSucheFenster "+this.getName()+" Eltern "+ss);
 	try{
 		//if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 			FensterSchliessen(evt.getDetails()[0]);
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		//}	
 	}catch(NullPointerException ne){
-		System.out.println("In DruckFenster" +evt);
+		//System.out.println("In DruckFenster" +evt);
 	}
 
 
@@ -334,7 +334,7 @@ private void tageSuchen(int abheute){
 		stmts[4] = stmt;
 		/*
 		for(int i=0;i<5;i++){
-			System.out.println("Befehl = "+stmts[i]);
+			//System.out.println("Befehl = "+stmts[i]);
 		}
 		*/	
 		SuchenInTagen sIt = new SuchenInTagen();
@@ -360,14 +360,14 @@ public void suchenFocus(){
     Verschluesseln man = Verschluesseln.getInstance();
     man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
     final String encrypted = man.encrypt("s1b2rta");
-    System.out.println ("Verschl�sselt :"+encrypted);
+    //System.out.println ("Verschl�sselt :"+encrypted);
     final String decrypted = man.decrypt (encrypted);
-    System.out.println("Entschl�sselt :"+decrypted);
+    //System.out.println("Entschl�sselt :"+decrypted);
     */
   }
 @Override
 public void keyPressed(KeyEvent arg0) {
-	//System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
+	////System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
 	if(arg0.getKeyCode() == 27){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		FensterSchliessen(null);
@@ -426,7 +426,7 @@ final class SuchenInTagen extends Thread implements Runnable{
 			for(int i = 0; i<exStatement.length;i++){
 				try{
 					rs = (ResultSet) stmt.executeQuery(exStatement[i]);
-					//System.out.println("Nach for..."+exStatement[i]);
+					////System.out.println("Nach for..."+exStatement[i]);
 					//SchnellSuche.thisClass.setLabelDatum("nach ExecuteQuery");
 					while(rs.next()){
 						/*in Spalte 301 steht die Anzahl der belegten Bl�cke*/ 
@@ -474,14 +474,14 @@ final class SuchenInTagen extends Thread implements Runnable{
 					}
 					
 				}catch(SQLException ev){
-					System.out.println("SQLException: " + ev.getMessage());
-					System.out.println("SQLState: " + ev.getSQLState());
-					System.out.println("VendorError: " + ev.getErrorCode());
+					//System.out.println("SQLException: " + ev.getMessage());
+					//System.out.println("SQLState: " + ev.getSQLState());
+					//System.out.println("VendorError: " + ev.getErrorCode());
 				}	
 			}
 			SchnellSuche.thisClass.setTerminTable((Vector) treadVect.clone());
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -526,7 +526,7 @@ class SchnellSucheTableModel extends AbstractTableModel {
     }
     
     public void deleteRow(int row){
-    	//System.out.println("Wert = "+getValueAt(row,3)); 
+    	////System.out.println("Wert = "+getValueAt(row,3)); 
     	printDebugData();
     	data.remove(row);
     	fireTableDataChanged();
@@ -570,17 +570,17 @@ class SchnellSucheTableModel extends AbstractTableModel {
      * change.
      */
     public void setValueAt(Object value, int row, int col) {
-      if (DEBUG) {
-        System.out.println("Setting value at " + row + "," + col
-            + " to " + value + " (an instance of "
-            + value.getClass() + ")");
-      }
+      //if (DEBUG) {
+        //System.out.println("Setting value at " + row + "," + col
+        //    + " to " + value + " (an instance of "
+        //    + value.getClass() + ")");
+      //}
 
       //data.set(row)[col] = value;
       fireTableCellUpdated(row, col);
 
       if (DEBUG) {
-        System.out.println("New value of data:");
+        //System.out.println("New value of data:");
         printDebugData();
       }
     }
@@ -590,12 +590,12 @@ class SchnellSucheTableModel extends AbstractTableModel {
       int numCols = getColumnCount();
 
       for (int i = 0; i < numRows; i++) {
-        System.out.print("    row " + i + ":");
+        //System.out.print("    row " + i + ":");
         for (int j = 0; j < numCols; j++) {
-          System.out.print("  " +  ((ArrayList) ((Vector) data).get(i)).get(j) );
+          //System.out.print("  " +  ((ArrayList) ((Vector) data).get(i)).get(j) );
         }
-        System.out.println();
+        //System.out.println();
       }
-      System.out.println("--------------------------");
+      //System.out.println("--------------------------");
     }
   }

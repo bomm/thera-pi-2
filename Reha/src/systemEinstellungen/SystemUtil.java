@@ -203,7 +203,7 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 /*********************************************************/
 	
 public void FensterSchliessen(String welches){
-	//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
+	////System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 	//webBrowser.dispose();
 	super.dispose();
 	this.dispose();
@@ -226,16 +226,16 @@ public String dieserName(){
 
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	System.out.println("****************Schließen des SystemUtil-Fensters**************");
+	//System.out.println("****************Schließen des SystemUtil-Fensters**************");
 	String ss =  this.getName();
-	System.out.println("SystemUtil "+this.getName()+" Eltern "+ss);
+	//System.out.println("SystemUtil "+this.getName()+" Eltern "+ss);
 	try{
 		//if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 			FensterSchliessen(evt.getDetails()[0]);
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		//}	
 	}catch(NullPointerException ne){
-		System.out.println("In DruckFenster" +evt);
+		//System.out.println("In DruckFenster" +evt);
 	}
 }
 
@@ -250,7 +250,7 @@ public void actionPerformed(ActionEvent arg0) {
 
 @Override
 public void keyPressed(KeyEvent arg0) {
-	System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
+	//System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
 	if(arg0.getKeyCode() == 27){
 		arg0.consume();
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
@@ -285,7 +285,7 @@ public void windowClosed(WindowEvent arg0) {
 	Runtime r = Runtime.getRuntime();
     r.gc();
     long freeMem = r.freeMemory();
-    System.out.println("Freier Speicher nach  gc():    " + freeMem); 
+    //System.out.println("Freier Speicher nach  gc():    " + freeMem); 
 }
 
 
@@ -412,7 +412,7 @@ private JScrollPane getParameterListe(){
 }
 /*******************************************************************/
 private void auswertenSysUtil(String util){
-	System.out.println("SysUtil = "+util);
+	//System.out.println("SysUtil = "+util);
 	for(int i = 0; i<1; i++){
 		if(jxInhaltRechts!=null){
 			cursorWait(true);
@@ -789,7 +789,7 @@ private void cursorWait(boolean ein){
 @Override
 public void valueChanged(TreeSelectionEvent e) {
 	// TODO Auto-generated method stub
-	System.out.println(e);
+	//System.out.println(e);
 	TreePath path = e.getNewLeadSelectionPath(); 
     String[] split = path.toString().split(",");
     auswertenSysUtil(split[split.length-1].replaceAll("\\]","").trim());

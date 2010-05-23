@@ -39,11 +39,11 @@ public class OptiSperrThread extends Thread implements Runnable {
 		while(true){
 			anzahl = eltern.sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) ){
-				System.out.println("Unterbrechen und anzahl = 0");
+				//System.out.println("Unterbrechen und anzahl = 0");
 				break;
 			}
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==(this.aktuell-1)) ){
-				System.out.println("Unterbrechen und anzahl = this.aktuell == "+this.aktuell);
+				//System.out.println("Unterbrechen und anzahl = this.aktuell == "+this.aktuell);
 //				break;
 			}
 
@@ -72,7 +72,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 
 						eltern.dtblm.addRow(nvec);
 						eltern.jxSucheTable.repaint();
-						System.out.println("Aktuell = "+aktuell+" / Merken = "+merken+"/ Anzahl = "+anzahl);
+						//System.out.println("Aktuell = "+aktuell+" / Merken = "+merken+"/ Anzahl = "+anzahl);
 
 						merken = anzahl;
 						try {
@@ -83,7 +83,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 						}
 				}else{
 					try {
-						//System.out.println("Aktuell = "+aktuell+" / Merken = "+merken+"/ Anzahl = "+anzahl);
+						////System.out.println("Aktuell = "+aktuell+" / Merken = "+merken+"/ Anzahl = "+anzahl);
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -101,8 +101,8 @@ public class OptiSperrThread extends Thread implements Runnable {
 		}
 		nvec = null;
 		sperre = null;
-		System.out.println("Thread beendet");
-		System.out.println("Variable aktuelle zum Zeitpunkt des ThreadEnde = "+this.aktuell);
+		//System.out.println("Thread beendet");
+		//System.out.println("Variable aktuelle zum Zeitpunkt des ThreadEnde = "+this.aktuell);
 		
 		//Reha.thisClass.conn.setAutoCommit(false);
 		//SuchenSeite.setKnopfGedoense(new int[]  {0,0,0,0,0,0,0,1,1,1});
@@ -178,7 +178,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 				try {
 					rsx.close();
 				} catch (SQLException sqlEx) { // ignore }
-					System.out.println("Fehler bei ResultSet schliessen");					
+					//System.out.println("Fehler bei ResultSet schliessen");					
 					rsx = null;
 				}
 			}	
@@ -186,7 +186,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 				try {
 					stmtx.close();
 				} catch (SQLException sqlEx) { // ignore }
-					System.out.println("Fehler bei Statement schliessen");
+					//System.out.println("Fehler bei Statement schliessen");
 					stmtx = null;
 				}
 			}

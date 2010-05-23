@@ -35,7 +35,7 @@ public class PatTools {
 		boolean isherr = false;
 		boolean iskind = false;
 		//int lang = SystemConfig.hmAdrPDaten.hashCode();
-		//System.out.println(lang);
+		////System.out.println(lang);
 		//SystemConfig.hmAdrPDaten.put("<Padr1>", Reha.thisClass.patpanel.patDaten.get(0));
 		String anrede = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(0));
 		if(anrede.toUpperCase().equals("HERR")){

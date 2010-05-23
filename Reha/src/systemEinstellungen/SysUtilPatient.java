@@ -82,7 +82,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		boolean formok = true;
 	public SysUtilPatient(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilPatient");
+		//System.out.println("Aufruf SysUtilPatient");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		new SwingWorker<Void,Void>(){
@@ -433,7 +433,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 				SystemUtil.thisClass.parameterScroll.requestFocus();
 			}
 			if(cmd.equals("speichern")){
-				System.out.println("Es wird abgespeichert");
+				//System.out.println("Es wird abgespeichert");
 				doSpeichern();
 				if(formok){
 					JOptionPane.showMessageDialog(null,"Konfiguration wurden in Datei 'patient.ini' erfolgreich gespeichert!");					
@@ -455,7 +455,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	private void doSpeichern(){
 		String wert = "";
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
-		System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		wert = (unten.isSelected() ? "1" : "0");
 		SystemConfig.hmContainer.put("Patient", new Integer(wert));
 		inif.setStringProperty("Container", "StarteIn",wert , null);
@@ -564,10 +564,10 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		JComponent component = new JFormattedTextField();
 	   public TitelEditor(){
 		   //component = new JRtaTextField("NIX",true);
-		   System.out.println("editor-Component wurde initialisiert");
+		   //System.out.println("editor-Component wurde initialisiert");
 		   component.addKeyListener(new KeyAdapter(){
 			   public void keyPressed(KeyEvent arg0) {
-					//System.out.println("********Button in KeyPressed*********");	
+					////System.out.println("********Button in KeyPressed*********");	
 					if(arg0.getKeyCode()== 10){
 						arg0.consume();
 						stopCellEditing();
@@ -598,21 +598,21 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	            	 return false;
 	             }
 	          }
-			System.out.println("isCellEditable");
+			//System.out.println("isCellEditable");
 			return true;
 		}
 
 
 		@Override
 		public boolean shouldSelectCell(EventObject anEvent) {
-			System.out.println("in schouldCellSelect"+anEvent);
+			//System.out.println("in schouldCellSelect"+anEvent);
 			return super.shouldSelectCell(anEvent);
 		}
 
 		@Override
 		public boolean stopCellEditing() {
 			value = ((JFormattedTextField) component).getText();
-			System.out.println("in stopCellediting");
+			//System.out.println("in stopCellediting");
 			super.stopCellEditing();
 			return true;
 		}
@@ -625,12 +625,12 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	@Override
 	public void editingCanceled(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("In Hauptprogramm-Listener editingCanceled");
+		//System.out.println("In Hauptprogramm-Listener editingCanceled");
 	}
 	@Override
 	public void editingStopped(ChangeEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("In Hauptprogramm-Listener editingStopped");
+		//System.out.println("In Hauptprogramm-Listener editingStopped");
 	}
 	
 }

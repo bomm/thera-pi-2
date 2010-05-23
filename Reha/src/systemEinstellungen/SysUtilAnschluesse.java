@@ -44,10 +44,10 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 	
 	
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilAnschluesse");
+		//System.out.println("Aufruf SysUtilAnschluesse");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
-		System.out.println("Aufruf SysUtilGeraete");
+		//System.out.println("Aufruf SysUtilGeraete");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

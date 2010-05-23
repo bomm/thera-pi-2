@@ -617,7 +617,7 @@ public class AbrechnungReha extends JXPanel{
 		String cmdKopf = "insert into faktura set ";
 		
 		for(int i = 0; i< vecposrechnung.size();i++){
-			//System.out.println("In RechnungFaktura "+hmRechnung);
+			////System.out.println("In RechnungFaktura "+hmRechnung);
 			rechnungBuf.setLength(0);
 			rechnungBuf.trimToSize();
 			rechnungBuf.append(cmdKopf);				
@@ -637,7 +637,7 @@ public class AbrechnungReha extends JXPanel{
 					rechnungBuf.append("name='"+patvec.get(0).get(0)+","+patvec.get(0).get(1)+
 							",geb."+DatFunk.sDatInDeutsch(patvec.get(0).get(2))+"', ");
 				}catch(Exception ex){
-					System.out.println("PLZ/Ort nicht angegeben");
+					//System.out.println("PLZ/Ort nicht angegeben");
 				}
 			}
 			rechnungBuf.append("lfnr='"+Integer.toString(i)+"', ");

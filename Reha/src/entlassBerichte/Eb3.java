@@ -93,7 +93,7 @@ public class Eb3 implements RehaEventListener  {
 		pan.setVisible(true);
 		pan.setName("ooNativePanel");
 		if(!Reha.officeapplication.isActive()){
-			System.out.println("Aktiviere Office...");
+			//System.out.println("Aktiviere Office...");
 			Reha.starteOfficeApplication();
 		}
 		new SwingWorker<Void,Void>(){
@@ -105,7 +105,7 @@ public class Eb3 implements RehaEventListener  {
 					while(inseitenaufbau){
 						Thread.sleep(20);
 					}
-					System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
+					//System.out.println("Vorhandener Bericht - Seite wurde zum StartAufgebaut");
 				}catch(Exception ex){
 					Reha.thisClass.progressStarten(false);
 					ex.printStackTrace();
@@ -144,7 +144,7 @@ public class Eb3 implements RehaEventListener  {
 			        	if(eltern.neu){
 			        		// wenn noch kein frame erstellt wurde und der outbuffe leer ist;
 			        	
-			        			System.out.println("Neuanlage Bericht -> constructNewDocument");
+			        			//System.out.println("Neuanlage Bericht -> constructNewDocument");
 			        			if(!Reha.officeapplication.isActive()){
 			        				Reha.starteOfficeApplication();
 			        			}
@@ -156,7 +156,7 @@ public class Eb3 implements RehaEventListener  {
 
 			        	}else{
 							if(!Reha.officeapplication.isActive()){
-								System.out.println("Aktiviere Office...");
+								//System.out.println("Aktiviere Office...");
 								Reha.starteOfficeApplication();
 								Thread.sleep(100);
 							}
@@ -167,7 +167,7 @@ public class Eb3 implements RehaEventListener  {
 									InputStream ins = null;
 									try{
 
-					        			System.out.println("starte Dokument mit temp. Stream-Daten");
+					        			//System.out.println("starte Dokument mit temp. Stream-Daten");
 					        			ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 					        			if(ins.available() > 0){
 						        			DocumentDescriptor descript = new DocumentDescriptor();
@@ -225,7 +225,7 @@ public class Eb3 implements RehaEventListener  {
 									xtvc.gotoStart(false);
 
 									//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-									System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
+									//System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
 									// TODO Auto-generated method stub
 						        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
 						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
@@ -269,25 +269,25 @@ public class Eb3 implements RehaEventListener  {
 	    nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
 	    
 	    if(nativeView == null){
-	    	//System.out.println("nativeView == null");
+	    	////System.out.println("nativeView == null");
 	    }
 	    if(parent == null){
-	    	//System.out.println("parent == null");
+	    	////System.out.println("parent == null");
 	    }
 	    parent.add(nativeView);
 
 	    parent.addContainerListener(new ContainerAdapter(){
 	    	public void componentAdded(ContainerEvent e) {
-	    		//System.out.println(" added to "+e);
+	    		////System.out.println(" added to "+e);
 	    	    }
 	    	    public void componentRemoved(ContainerEvent e) {
-	    		//System.out.println(" removed from "+e);
+	    		////System.out.println(" removed from "+e);
 	    	    }
 	    });
 	    parent.addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e) {
 	        	
-        		System.out.println("In  NativeView Resize");
+        		//System.out.println("In  NativeView Resize");
         		refreshSize();
         		nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
         		parent.getLayout().layoutContainer(parent);
@@ -295,14 +295,14 @@ public class Eb3 implements RehaEventListener  {
         		eltern.ebt.getTab1().refreshSize();
 	        }  
 	        public void componentHidden(ComponentEvent e) {
-	            //System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
+	            ////System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
 	        }
 
 	        public void componentMoved(ComponentEvent e) {
-	        	//System.out.println(e.getComponent().getClass().getName() + " --- Moved");
+	        	////System.out.println(e.getComponent().getClass().getName() + " --- Moved");
 	        }
 	        public void componentShown(ComponentEvent e) {
-	        	//System.out.println(e.getComponent().getClass().getName() + " --- Shown");
+	        	////System.out.println(e.getComponent().getClass().getName() + " --- Shown");
 	            nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 		        parent.getLayout().layoutContainer(parent);
 		        parent.setVisible(true);
@@ -314,7 +314,7 @@ public class Eb3 implements RehaEventListener  {
 	    parent.getLayout().layoutContainer(parent);
 	    eltern.officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    parent.validate();
-	    //System.out.println("natveView eingeh�ngt in Panel "+parent.getName());
+	    ////System.out.println("natveView eingeh�ngt in Panel "+parent.getName());
     return eltern.officeFrame;
   }
 
@@ -325,7 +325,7 @@ public class Eb3 implements RehaEventListener  {
 		String url = tempPfad+"EBfliesstext.pdf";
 		if(eltern.document.isOpen()){
 			if(eltern.document.isModified()){
-				System.out.println("speichere temporär in: "+url);
+				//System.out.println("speichere temporär in: "+url);
 				outtemp = new ByteArrayOutputStream();
 				try {
 					eltern.document.getPersistenceService().store(outtemp);
@@ -341,7 +341,7 @@ public class Eb3 implements RehaEventListener  {
 					e.printStackTrace();
 				}
 			}else{
-				System.out.println("Dokukment wurde nicht verändert, temporäres speichern daher nicht erforderlich" );
+				//System.out.println("Dokukment wurde nicht verändert, temporäres speichern daher nicht erforderlich" );
 			}
 
 		}	
@@ -374,7 +374,7 @@ public class Eb3 implements RehaEventListener  {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try{
 				if(eltern.document == null ){
-					System.out.println("Dokument == null");
+					//System.out.println("Dokument == null");
 				}
 				/*
 				eltern.document.close();
@@ -419,7 +419,7 @@ public class Eb3 implements RehaEventListener  {
 				if(eltern.document == null){return false;}
 				if(eltern.document.isOpen()){
 					String url = tempPfad+"EBfliesstext.pdf";
-					System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
+					//System.out.println("Speichere in Datenbank und zusätzlich temporär in: "+url);
 					outtemp = new ByteArrayOutputStream();
 					eltern.document.getPersistenceService().store(outtemp);
 					//eltern.document.getPersistenceService().export(outtemp, RTFFilter.FILTER);
@@ -519,7 +519,7 @@ public class Eb3 implements RehaEventListener  {
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-					 		   System.out.println("Meldung Deiconified");
+					 		   //System.out.println("Meldung Deiconified");
 								//refreshSize();
 								//pan.setVisible(true);
 										 		   
@@ -556,7 +556,7 @@ public class Eb3 implements RehaEventListener  {
 			}
 			if(evt.getDetails()[0].contains("GutachtenFenster")){
 				if(evt.getDetails()[1].equals("#SCHLIESSEN")){
-					System.out.println("Lösche Listener von Eb3-------------->");
+					//System.out.println("Lösche Listener von Eb3-------------->");
 					try {
 						if(outtemp != null){
 							outtemp.close();

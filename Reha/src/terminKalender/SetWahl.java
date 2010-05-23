@@ -171,7 +171,7 @@ public class SetWahl extends JDialog {
 
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					//System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					DialogBeenden(jList1.getSelectedIndex());
 				}
 			});
@@ -192,7 +192,7 @@ public class SetWahl extends JDialog {
 			//jButton1.setIcon(new ImageIcon("C:/MeinWorkspace/pics/nichtok.gif"));
 			jButton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					//System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					DialogBeenden(-1);
 				}
 			});

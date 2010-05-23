@@ -196,7 +196,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			      for (int i = 0; i < flavors.length; i++){
 			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
 			      }
-			      //System.out.println(mitgebracht);
+			      ////System.out.println(mitgebracht);
 			      if(mitgebracht.indexOf("°") >= 0){
 			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
 			    		  return;
@@ -205,7 +205,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			    	  //ProgLoader.ProgRoogleFenster(0, mitgebracht);
 			    	  //Reha.thisClass.progLoader.ProgRoogleFenster(0, mitgebracht);
 			      }
-			      //System.out.println(mitgebracht+" auf Patientenstamm gedropt");
+			      ////System.out.println(mitgebracht+" auf Patientenstamm gedropt");
 			    } catch (Throwable t) { t.printStackTrace(); }
 			    // Ein Problem ist aufgetreten
 			    e.dropComplete(true);
@@ -278,7 +278,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			      for (int i = 0; i < flavors.length; i++){
 			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
 			      }
-			      //System.out.println(mitgebracht);
+			      ////System.out.println(mitgebracht);
 			      if(mitgebracht.indexOf("°") >= 0){
 			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
 			    		  return;
@@ -286,7 +286,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			    	  //ProgLoader.ProgRoogleFenster(0, mitgebracht);
 			    	  Reha.thisClass.progLoader.ProgRoogleFenster(0, mitgebracht);
 			      }
-			      //System.out.println(mitgebracht);
+			      ////System.out.println(mitgebracht);
 			    } catch (Throwable t) { t.printStackTrace(); }
 			    // Ein Problem ist aufgetreten
 			    e.dropComplete(true);
@@ -537,7 +537,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp4.updateUI();
 		tp5.updateUI();	
 		tp6.updateUI();
-		//System.out.println("TaskPane-Container L&F");
+		////System.out.println("TaskPane-Container L&F");
 	}
 	/**
 	 * Eigener Event-Handler man wird sehen ob das vern�ftig ist.
@@ -815,7 +815,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	@Override
 	public void componentResized(ComponentEvent e) {
 		// TODO Auto-generated method stub
-		//System.out.println("Linke-Task-Pane: "+e);
+		////System.out.println("Linke-Task-Pane: "+e);
 		
 	}
 	@Override
@@ -839,7 +839,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				for(int t=1;t<8;t++){
 					behandler  = (i<10 ? "0"+i+"BEHANDLER" : Integer.toString(i)+"BEHANDLER");
 					sstmt = "insert into masken set behandler='"+behandler+"' , art = '"+t+"' ,belegt='1', N1='@FREI', TS1='07:00:00', TD1='900', TE1='22:00:00'";
-					//System.out.println(sstmt);
+					////System.out.println(sstmt);
 					try {
 						stmt.execute(sstmt);
 					} catch (SQLException e) {
@@ -929,8 +929,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 @Override
 public void dragEnter(DropTargetDragEvent arg0) {
 	// TODO Auto-generated method stub
-	//System.out.println("Enter---->"+arg0);
-	//System.out.println(((JComponent)arg0.getSource()).getName());
+	////System.out.println("Enter---->"+arg0);
+	////System.out.println(((JComponent)arg0.getSource()).getName());
 	
 }
 @Override
@@ -946,7 +946,7 @@ public void dragOver(DropTargetDragEvent arg0) {
 @Override
 public void drop(DropTargetDropEvent arg0) {
 	// TODO Auto-generated method stub
-	//System.out.println(arg0);
+	////System.out.println(arg0);
 	
 }
 @Override
@@ -996,17 +996,17 @@ class ladeProg{
 				ArrayList<String> alist = new ArrayList<String>(list);
 				alist.add(0,"-jar");
 				alist.add(0,"java");
-				System.out.println(list);
-				System.out.println("Die Liste = "+alist);
+				//System.out.println(list);
+				//System.out.println("Die Liste = "+alist);
 				
-				System.out.println("Liste = "+list);
+				//System.out.println("Liste = "+list);
 				Process process = new ProcessBuilder(alist).start();
 			       InputStream is = process.getInputStream();
 			       InputStreamReader isr = new InputStreamReader(is);
 			       BufferedReader br = new BufferedReader(isr);
 			       String line;
 			       while ((line = br.readLine()) != null) {
-			         System.out.println(line);
+			         //System.out.println(line);
 			       }
 			       is.close();
 			       isr.close();

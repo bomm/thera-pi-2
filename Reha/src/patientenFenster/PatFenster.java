@@ -66,7 +66,7 @@ public class PatFenster extends JInternalFrame {
 		this.setClosable(true);
 		this.setResizable(true);
 		this.setVisible(true);
-		System.out.println("PatFenster ist gestartet");
+		//System.out.println("PatFenster ist gestartet");
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class PatFenster extends JInternalFrame {
 			jTextField.setPreferredSize(new Dimension(100, 20));
 			jTextField.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyReleased(java.awt.event.KeyEvent e) {
-					System.out.println("keyReleased()"+e.getKeyCode()); // TODO Auto-generated Event stub keyReleased()
+					//System.out.println("keyReleased()"+e.getKeyCode()); // TODO Auto-generated Event stub keyReleased()
 					if (e.getKeyCode() == 10){
 						SuchePatient();
 					}
@@ -143,7 +143,7 @@ public class PatFenster extends JInternalFrame {
 			jButton.setText("Suchen");
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					////System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					SuchePatient();
 				}
 			});
@@ -179,7 +179,7 @@ public class PatFenster extends JInternalFrame {
 				while( rs.next()){
 					Vector rowVector = new Vector();
 					for(int i = 1; i <= 4; i++){
-						//System.out.println(rs.getString(i));
+						////System.out.println(rs.getString(i));
 					rowVector.addElement((i==3 ? (rs.getString(i) != null ? DatFunk.sDatInDeutsch((String) rs.getString(i)) : "  .  .  ") : rs.getString(i)) );
 					//rowVector.addElement(rs.getString(i) );
 					}
@@ -189,13 +189,13 @@ public class PatFenster extends JInternalFrame {
 				this.jTable.setModel(tblDataModel);
 				this.jTable.updateUI();
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -234,13 +234,13 @@ public class PatFenster extends JInternalFrame {
 				jTextArea.setText(stext);
 				jTextArea.setCaretPosition(0);
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -298,13 +298,13 @@ public class PatFenster extends JInternalFrame {
 			jTable = new JTable();
 			jTable.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseClicked(java.awt.event.MouseEvent e) {
-					System.out.println("mouseClicked()"); // TODO Auto-generated Event stub mouseClicked()
+					//System.out.println("mouseClicked()"); // TODO Auto-generated Event stub mouseClicked()
 					PatientHoleAlles();
 				}
 			});
 			jTable.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyReleased(java.awt.event.KeyEvent e) {
-					System.out.println("keyReleased()"); // TODO Auto-generated Event stub keyReleased()
+					//System.out.println("keyReleased()"); // TODO Auto-generated Event stub keyReleased()
 					if(e.getKeyCode() == 40 || e.getKeyCode() == 38){
 						PatientHoleAlles();
 					}
@@ -317,7 +317,7 @@ public class PatFenster extends JInternalFrame {
 	private void PatientHoleAlles(){
 		int col = 3; //jTable.getSelectedColumn(); 
 		int row = jTable.getSelectedRow(); 
-		//System.out.println( jTable.getModel().getValueAt(row, col) );
+		////System.out.println( jTable.getModel().getValueAt(row, col) );
 		DBHoleAlles((String) jTable.getModel().getValueAt(row, col) );
 	}
 

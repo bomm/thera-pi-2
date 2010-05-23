@@ -29,7 +29,7 @@ public class DatFunk {
 		//String sDatumSQL= new String();
 		String[] splittArray = sDeutschDat.split("\\.");
 		//sDatumSQL = splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0]; 
-		//System.out.println(sDatumSQL);
+		////System.out.println(sDatumSQL);
 		return  splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0];
 	}
 
@@ -236,24 +236,24 @@ public class DatFunk {
 	
 	public static boolean Schaltjahr(int jahr) {
 		if( jahr == 0 ) {
-		    //System.out.println("Es gibt kein Jahr 0!");
+		    ////System.out.println("Es gibt kein Jahr 0!");
 			return false;
 		} else {
 			if( jahr % 4 == 0 ) {
 				if( jahr % 100 == 0 ) {
 					if( jahr % 400 == 0 ) {
-						//System.out.println("Schaltjahr!");
+						////System.out.println("Schaltjahr!");
 						return true;
 					} else {
-						//System.out.println("Kein Schaltjahr!");
+						////System.out.println("Kein Schaltjahr!");
 						return false;
 					}
 				} else {
-			    //System.out.println("Schaltjahr!");
+			    ////System.out.println("Schaltjahr!");
 				return true;
 				}
 			} else {
-				//System.out.println("Kein Schaltjahr!");
+				////System.out.println("Kein Schaltjahr!");
 				return false;
 			}
 		}
@@ -284,7 +284,7 @@ long timeFrueher = frueher.getTime();
 //Millisekunden --> Tage
 long diff = (timeSpaeter - timeFrueher) / 24 / 60 / 60 / 1000;
 
-System.out.println("Vergangen: " + diff + " Tage !");
+//System.out.println("Vergangen: " + diff + " Tage !");
 //-----------------------------------------
 
 *

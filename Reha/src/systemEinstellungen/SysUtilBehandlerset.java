@@ -70,7 +70,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 	
 	SysUtilBehandlerset(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilBehandlerset");
+		//System.out.println("Aufruf SysUtilBehandlerset");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -488,7 +488,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 			SystemConfig.NurSets();
 			//knopfGedoense(new int[]{1,1,1,0,0});
 			SetName.setSelectedIndex(aktSet);
-			System.out.println("Aktuelles Set = "+aktSet);
+			//System.out.println("Aktuelles Set = "+aktSet);
 			comboFuellen(false,aktSet);
 			lspeichern = false;
 			lneu = false;

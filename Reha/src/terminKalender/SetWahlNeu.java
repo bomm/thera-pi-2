@@ -181,23 +181,23 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(arg0.getKeyCode());
+		////System.out.println(arg0.getKeyCode());
 		if (arg0.getKeyCode()==10){
 			//arg0.consume();
 			if(ret != -1){
-				//System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
+				////System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
 				eltern.swSetWahl = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}else{
-				//System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
+				////System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
 				eltern.swSetWahl = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}	
 		}
 		if (arg0.getKeyCode()==27){
-			//System.out.println("ESC gedrückt");			
+			////System.out.println("ESC gedrï¿½ckt");			
 			eltern.swSetWahl = -1;
 			DialogBeenden(-1);
 			return;
@@ -235,7 +235,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 				rtp = null;
 			}	
 		}catch(NullPointerException ne){
-			//System.out.println("In RoogleFenster" +evt);
+			////System.out.println("In RoogleFenster" +evt);
 		}
 	}
 
@@ -261,8 +261,8 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 		if (arg0.getClickCount() == 2){
 			eltern.swSetWahl = jList1.getSelectedIndex();
 			FensterSchliessen("Dieses");
-			//System.out.println("In Mausdoppelklick");
-			//System.out.println(arg0.getSource());
+			////System.out.println("In Mausdoppelklick");
+			////System.out.println(arg0.getSource());
 		}
 	}
 	@Override

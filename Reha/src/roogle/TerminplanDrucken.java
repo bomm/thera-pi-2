@@ -67,7 +67,7 @@ SuchenSeite eltern;
 	public void run() {
 			String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.oTerminListe.NameTemplate;
 			//String url = Reha.proghome+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
-			//System.out.println("***************URL = "+url+"****************");
+			////System.out.println("***************URL = "+url+"****************");
 			String terminDrucker = SystemConfig.oTerminListe.NameTerminDrucker;
 			int anzahl = termindat.size();
 			int AnzahlTabellen = SystemConfig.oTerminListe.AnzahlTerminTabellen;
@@ -118,7 +118,7 @@ SuchenSeite eltern;
 			int x = 0;
 			for(int i=AnzahlTabellen;i>0;i--){
 				tabName[x] = tbl[(tbl.length-1)-x].getName(); 
-				//System.out.println(tabName[x]);
+				////System.out.println(tabName[x]);
 				x++;
 			}
 			/*********************/
@@ -197,7 +197,7 @@ SuchenSeite eltern;
 				}
 				for (int i = 0; i < placeholders.length; i++) {
 					String placeholderDisplayText = placeholders[i].getDisplayText();
-					//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+					////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 					if(placeholderDisplayText.equals("<^Name^>")){
 						placeholders[i].getTextRange().setText(patname);
 					}	
@@ -238,7 +238,7 @@ SuchenSeite eltern;
 						e.printStackTrace();
 					}
 					aktTerminInTabelle = 0;
-					//System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
+					////System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
 				}
 
 				/************Wenn die aktuelle Seite voll ist******************/
@@ -256,7 +256,7 @@ SuchenSeite eltern;
 					x = 0;
 					for(int i=AnzahlTabellen;i>0;i--){
 						tabName[x] = tbl[(tbl.length-1)-x].getName(); 
-						//System.out.println(tabName[x]);
+						////System.out.println(tabName[x]);
 						x++;
 					}
 					
@@ -273,7 +273,7 @@ SuchenSeite eltern;
 							}
 					        textRanges[0].setText(patname);
 						}
-						System.out.println("Suche ersetze durchgef�hrt*************");
+						//System.out.println("Suche ersetze durchgef�hrt*************");
 						*/
 						/*
 						ITextService textService = textDocument.getTextService();
@@ -300,7 +300,7 @@ SuchenSeite eltern;
 							}
 							for (int i = 0; i < placeholders.length; i++) {
 								String placeholderDisplayText = placeholders[i].getDisplayText();
-								//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+								////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 								if(placeholderDisplayText.equals("<^Name^>")){
 									placeholders[i].getTextRange().setText(patname);
 								}	
@@ -317,8 +317,8 @@ SuchenSeite eltern;
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					//System.out.println("textTable gesetzt*************");
-					//System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
+					////System.out.println("textTable gesetzt*************");
+					////System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
 				}
 				/********************/
 				/*public String tag;
@@ -349,7 +349,7 @@ SuchenSeite eltern;
 						}
 					}
 				}
-				//System.out.println("Drucke Termin Nr."+aktTermin);
+				////System.out.println("Drucke Termin Nr."+aktTermin);
 			
 				try {
 					if(spaltenNamen.indexOf("Datum") > 0){
@@ -398,7 +398,7 @@ SuchenSeite eltern;
 			}else{
 				exporturl = Reha.proghome+"temp/"+Reha.aktIK+"/Terminplan.pdf";
 				//exporturl = SystemConfig.hmVerzeichnisse.get("Temp")+"Terminplan.pdf";
-				//System.out.println("ExportURL = "+exporturl);
+				////System.out.println("ExportURL = "+exporturl);
 				try {
 					textDocument.getPersistenceService().export(exporturl, new PDFFilter());
 				} catch (DocumentException e) {
@@ -437,7 +437,7 @@ SuchenSeite eltern;
 			String trailing = null;
 			if(this.rezept.trim().contains("\\")){
 				trailing = this.rezept.substring(0,this.rezept.indexOf("\\"));
-				//System.out.println(trailing);
+				////System.out.println(trailing);
 			}else{
 				trailing = this.rezept.trim();
 			}
@@ -477,13 +477,13 @@ SuchenSeite eltern;
 		String[] anhang = {null,null};
 		anhang[0] = Reha.proghome+"temp/"+Reha.aktIK+"/Terminplan.pdf";
 		anhang[1] = "Terminplan.pdf";
-       	//System.out.println("In DruckenFenster - Files = "+anhang[1]);
+       	////System.out.println("In DruckenFenster - Files = "+anhang[1]);
 		attachments.add(anhang.clone());
 		
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
-		//System.out.println("Empf�ngeradresse = "+emailaddy);
+		////System.out.println("Empf�ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		boolean authx = (SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true);
@@ -505,7 +505,7 @@ SuchenSeite eltern;
 	         gelesen = new String(temp);
 	         text = gelesen;
 	         //Ausgabe des Strings
-	         //System.out.println(gelesen);
+	         ////System.out.println(gelesen);
 	         // Ressourcen freigeben
 	         fr.close();
 	      } catch (FileNotFoundException e1) {
@@ -553,13 +553,13 @@ SuchenSeite eltern;
 					sergebnis = (rs.getString(1) == null ? "" : rs.getString(1));
 				}
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {

@@ -59,7 +59,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 	static String colorini = Reha.proghome+"ini/"+Reha.aktIK+"/color.ini";	
 	public SysUtilKalenderfarben(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilKalenderfarben");
+		//System.out.println("Aufruf SysUtilKalenderfarben");
 		this.setBorder(BorderFactory.createEmptyBorder(15, 40, 15, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -304,7 +304,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 	private void setColorData(int def){
 		int lang = FarbTab.getRowCount();
 		int i;
-		System.out.println("in set color Data");
+		//System.out.println("in set color Data");
 		for(i=0;i<lang;i++){
 			FarbTab.setValueAt(SystemConfig.vSysColsObject.get(def).get(i)[0], i, 2);	
 			FarbTab.setValueAt(SystemConfig.vSysColsObject.get(def).get(i)[1], i, 3);

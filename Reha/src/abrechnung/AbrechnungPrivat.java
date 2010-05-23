@@ -128,7 +128,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				System.out.println("Preisgruppe = "+ipg);
+				//System.out.println("Preisgruppe = "+ipg);
 				disziplin = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
 				preisliste = SystemPreislisten.hmPreise.get(disziplin).get(ipg);
 				preisok = true;
@@ -422,7 +422,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			writeBuf.append("disziplin='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim().substring(0,2)+"', ");
 			writeBuf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 			SqlInfo.sqlAusfuehren(writeBuf.toString());
-			//System.out.println(writeBuf.toString());
+			////System.out.println(writeBuf.toString());
 		}
 	}
 	private void doOffenePosten(String kostentraeger){
@@ -472,7 +472,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	
 	private void doNeuerTarif(){
 		preisliste = SystemPreislisten.hmPreise.get(this.disziplin).get(this.aktGruppe);
-		System.out.println("stelle neuen Tarif ein....");
+		//System.out.println("stelle neuen Tarif ein....");
 		String pos = "";
 		String preis = "";
 		String anzahl = "";
@@ -568,11 +568,11 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			analysiereHausbesuch();
 		}
 		/*
-		System.out.println("Anzahlen = "+originalAnzahl);
-		System.out.println("Positionen = "+originalPos);
-		System.out.println("ID in Preisliste = "+originalId);
-		System.out.println("EinzelPeise = "+einzelPreis);			
-		System.out.println("Langtexte = "+originalLangtext);
+		//System.out.println("Anzahlen = "+originalAnzahl);
+		//System.out.println("Positionen = "+originalPos);
+		//System.out.println("ID in Preisliste = "+originalId);
+		//System.out.println("EinzelPeise = "+einzelPreis);			
+		//System.out.println("Langtexte = "+originalLangtext);
 		*/
 		
 		
@@ -589,8 +589,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	}
 	private void analysiereHausbesuch(){
 		this.aktGruppe = jcmb.getSelectedIndex();
-		System.out.println("Hausbesuch = "+this.hausBesuch);
-		System.out.println("Hausbesuch Einzeln = "+this.hbEinzeln);
+		//System.out.println("Hausbesuch = "+this.hausBesuch);
+		//System.out.println("Hausbesuch Einzeln = "+this.hbEinzeln);
 
 		/***********Hausbesuch voll abrechnen******/
 		int hbanzahl = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(64));

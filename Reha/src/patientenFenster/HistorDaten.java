@@ -164,10 +164,18 @@ public class HistorDaten extends JXPanel{
 				Vector<Vector<String>> preisvec = null;
 				int prgruppe = 0;
 				try{
+					 prgruppe = Integer.parseInt((String)vecaktrez.get(41))-1;
+				}catch(Exception ex){
+					
+				}
+				/*
+				int prgruppe = 0;
+				try{
 					 prgruppe = Integer.parseInt((String)vecaktrez.get(41));
 				}catch(Exception ex){
 					
 				}
+				*/
 				if(xreznummer.contains("KG")){
 					//preisvec = ParameterLaden.vKGPreise;
 					preisvec = SystemPreislisten.hmPreise.get("Physio").get(prgruppe);
@@ -194,7 +202,7 @@ public class HistorDaten extends JXPanel{
 					rezlabs[9].setForeground(Color.BLACK);
 					rezlabs[9].setText(stest+" / Wo.");					
 				}
-
+				
 				rezlabs[10].setText( leistungTesten(1,preisvec,StringTools.ZahlTest((String)vecaktrez.get(9))) );				
 				rezlabs[11].setText( leistungTesten(2,preisvec,StringTools.ZahlTest((String)vecaktrez.get(10))) );				
 				rezlabs[12].setText( leistungTesten(3,preisvec,StringTools.ZahlTest((String)vecaktrez.get(11))) );				
@@ -228,18 +236,19 @@ public class HistorDaten extends JXPanel{
 
 		
 	}
+	@SuppressWarnings("unchecked")
 	public String leistungTesten(int leistung,Vector<Vector<String>> preisevec,int veczahl){
 		String retwert = "----";
 		if(veczahl==-1 || veczahl==0){
 			return retwert;
 		}
 		for(int i = 0;i<preisevec.size();i++){
-			if( new Integer( (String) ((Vector<String>)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
+			if( new Integer( (String) ((Vector)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
 				return StringTools.NullTest((String)vecaktrez.get(leistung+3))+"  *  "+
-				(String) ((Vector<String>)preisevec.get(i)).get(1);
+				(String) ((Vector)preisevec.get(i)).get(1);
 			}
 		}
-		
+	
 		return retwert;
 	}
 	

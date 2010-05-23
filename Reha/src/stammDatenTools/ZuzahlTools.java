@@ -33,7 +33,7 @@ public class ZuzahlTools {
 				zzregel = getZuzahlRegel((String)((Vector)vec.get(i)).get(1));
 				zzid = (String)((Vector)vec.get(i)).get(4);
 				rez_geb = (String)((Vector)vec.get(i)).get(2);
-				System.out.println("Rezeptnummer = "+((Vector)vec.get(i)).get(0)+" Zuzahlregel = "+zzregel);
+				//System.out.println("Rezeptnummer = "+((Vector)vec.get(i)).get(0)+" Zuzahlregel = "+zzregel);
 				if(zzregel > 0 && rez_geb.equals("0.00")){
 					if(frei.equals("F")){
 						SqlInfo.aktualisiereSaetze("verordn", "befr='F',zzstatus='2'", "id='"+zzid+"'");
@@ -87,7 +87,7 @@ public class ZuzahlTools {
 					einergroesser = true;
 					break;
 				}
-				//System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
+				////System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
 						//" und dem Geburtstag "+geburtstag+" = "+
 						//datFunk.TageDifferenz(geburtstag ,stichtag));
 				
@@ -108,7 +108,7 @@ public class ZuzahlTools {
 				//String cmd = "update verordn set zzstatus='3' where rez_nr='"+rez_nr+" LIMIT 1";
 				//new ExUndHop().setzeStatement(cmd);
 				long tagex = DatFunk.TageDifferenz(geburtstag ,gebtag);
-				//System.out.println("Tagex = ---------------> "+tagex);
+				////System.out.println("Tagex = ---------------> "+tagex);
 				if(tagex <= 0 && tagex > -45){
 					//JOptionPane.showMessageDialog(null ,"Achtung es sind noch "+(tagex*-1)+" Tage bis zur Vollj�hrigkeit\n"+
 							//"Unter Umst�nden wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
@@ -170,7 +170,7 @@ public class ZuzahlTools {
 					break;
 				}
 				/*
-				System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
+				//System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
 						" und dem Geburtstag "+geburtstag+" = "+
 						datFunk.TageDifferenz(geburtstag ,stichtag));
 				*/		
@@ -199,7 +199,7 @@ public class ZuzahlTools {
 	public static void jahresWechselTest(String rez_nr,boolean azTest,boolean jahrTest){
 		Vector vec = SqlInfo.holeFelder("select termine,id from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		vec = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector)vec.get(0)).get(0));
-		//System.out.println(vec);
+		////System.out.println(vec);
 	}
 
 	public static int getZuzahlRegel(String kassid){
@@ -210,7 +210,7 @@ public class ZuzahlTools {
 			return -1;
 		}
 		Vector vec = SqlInfo.holeFelder("select preisgruppe from kass_adr where id='"+kassid.trim()+"' LIMIT 1");
-		System.out.println("Die Preisgruppe von KassenID ="+kassid.trim()+" = "+((String)((Vector)vec.get(0)).get(0)) );
+		//System.out.println("Die Preisgruppe von KassenID ="+kassid.trim()+" = "+((String)((Vector)vec.get(0)).get(0)) );
 		preisgrp = ((String)((Vector)vec.get(0)).get(0));
 		
 		//zzregel = SystemConfig.vZuzahlRegeln.get(new Integer(preisgrp)-1);

@@ -35,67 +35,67 @@ public class BlockHandling {
 	public int init(){
 		for(int i = 0;i<1;i++){
 			if(this.wasTun==1){
-				//System.out.println("in Block passt genau");
+				////System.out.println("in Block passt genau");
 				this.ret = blockPasstGenau();
 				break;
 			}
 			if(this.wasTun==2){
-				//System.out.println("in Block oben aschließen");				
+				////System.out.println("in Block oben aschlieï¿½en");				
 				this.ret = blockObenAnschliessen();
 				break;
 			}
 			if(this.wasTun==3){
-				//System.out.println("in Block unten aschließen");
+				////System.out.println("in Block unten aschlieï¿½en");
 				this.ret = blockUntenAnschliessen();
 				break;
 			}
 			if(this.wasTun==4){
-				//System.out.println("in Block ausehnen");
+				////System.out.println("in Block ausehnen");
 				this.ret = blockAusdehnen();
 				break;
 			}
 			if(this.wasTun==5){
-				//System.out.println("in Block manueller Start");
+				////System.out.println("in Block manueller Start");
 				this.ret = blockManuellStarten();
 				break;
 			}
 			if(this.wasTun==6){
-				//System.out.println("in Block Nachfolgeblock kürzen");
+				////System.out.println("in Block Nachfolgeblock kï¿½rzen");
 				this.ret = blockNachfolgeKuerzen();
 				break;
 			}
 			if(this.wasTun==7){
-				//System.out.println("in Block Vorgängerblock kürzen");
+				////System.out.println("in Block Vorgï¿½ngerblock kï¿½rzen");
 				//this.ret = blockVorblockKuerzen();
 				break;
 			}
 			if(this.wasTun==8){
-				//System.out.println("in Block Zusammenfassen");
+				////System.out.println("in Block Zusammenfassen");
 				this.ret = blockZusammenFassen();
 				break;
 			}
 			if(this.wasTun==10){
-				//System.out.println("in Freitermin eintragen");
+				////System.out.println("in Freitermin eintragen");
 				this.ret = blockFreiTermin();
 				break;
 			}
 			if(this.wasTun==11){
-				//System.out.println("in Blocklöschen");
+				////System.out.println("in Blocklï¿½schen");
 				this.ret = blockLoeschen();
 				break;
 			}			
 			if(this.wasTun==12){
-				//System.out.println("in mit Vorgänger tauschen");
+				////System.out.println("in mit Vorgï¿½nger tauschen");
 				this.ret = blockTauschen(-1);
 				break;
 			}			
 			if(this.wasTun==13){
-				//System.out.println("in mit Nachfolger tauschen");
+				////System.out.println("in mit Nachfolger tauschen");
 				this.ret = blockTauschen(1);
 				break;
 			}			
 			if(this.wasTun==999){
-				//System.out.println("Tag komplett löschen und auf null setzen");
+				////System.out.println("Tag komplett lï¿½schen und auf null setzen");
 				this.ret = blockAufNull();
 				break;
 			}			
@@ -107,7 +107,7 @@ public class BlockHandling {
 	}
 /*****************************************/	
 	private int blockPasstGenau(){
-			//System.out.println("Kollege = "+this.kollege);
+			////System.out.println("Kollege = "+this.kollege);
 			datenfeld.setFeld(kollege,0,block,daten[0]);
 			datenfeld.setFeld(kollege,1,block,daten[1]);
 			datenfeld.setFeld(kollege,2,block,daten[2]);
@@ -115,7 +115,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,4,block,daten[4]);
 			
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
-		//System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+		////System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 		kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 		//TerminFenster.starteUnlock();
 		Reha.thisClass.terminpanel.terminAufnehmen(kollege,block);
@@ -133,13 +133,13 @@ public class BlockHandling {
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block);
 			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[2])+Integer.parseInt(daten[3])) );
 			int differenz = Integer.parseInt(alteDaten[3])-Integer.parseInt(daten[3]); 
-			// jetzt bisherige daten mit neuen Daten überschreiben
+			// jetzt bisherige daten mit neuen Daten ï¿½berschreiben
 			datenfeld.setFeld(kollege,0,block,daten[0]);
 			datenfeld.setFeld(kollege,1,block,daten[1]);
 			datenfeld.setFeld(kollege,2,block,daten[2]);
 			datenfeld.setFeld(kollege,3,block,daten[3]);
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
-			//Blockzahl ermitteln und dann neuen Block einfügen
+			//Blockzahl ermitteln und dann neuen Block einfï¿½gen
 			int bloecke = block+1;
 			int maxblock = datenfeld.getAnzahlBloecke(kollege);
 			datenfeld.einfuegenBlock(kollege, bloecke);
@@ -153,10 +153,10 @@ public class BlockHandling {
 
 
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
-		//System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+		////System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 		kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 		Reha.thisClass.terminpanel.terminAufnehmen(kollege,block);
-		//System.out.println("0="+alteDaten[0]+"1="+alteDaten[1]+"2="+alteDaten[2]+"3="+alteDaten[3]+"4="+alteDaten[4]);
+		////System.out.println("0="+alteDaten[0]+"1="+alteDaten[1]+"2="+alteDaten[2]+"3="+alteDaten[3]+"4="+alteDaten[4]);
 		//TerminFenster.starteUnlock();
 		return 1;
 	}
@@ -173,17 +173,17 @@ public class BlockHandling {
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block);
 			
 			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[4])-Integer.parseInt(daten[3])) );
-			//System.out.println("neue Endzeit "+neueEndzeit );
+			////System.out.println("neue Endzeit "+neueEndzeit );
 			int differenz = Integer.parseInt(alteDaten[3])-Integer.parseInt(daten[3]); 
-			//System.out.println("Zeitdifferenz "+differenz );
-			// jetzt bisherige daten mit alten (korrigierten) Daten überschreiben
+			////System.out.println("Zeitdifferenz "+differenz );
+			// jetzt bisherige daten mit alten (korrigierten) Daten ï¿½berschreiben
 			datenfeld.setFeld(kollege,0,block,alteDaten[0]);
 			datenfeld.setFeld(kollege,1,block,alteDaten[1]);
 			datenfeld.setFeld(kollege,2,block,alteDaten[2]);
 			datenfeld.setFeld(kollege,3,block,Integer.toString(differenz));
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
 			
-			//Blockzahl ermitteln und dann neuen Block einfügen
+			//Blockzahl ermitteln und dann neuen Block einfï¿½gen
 			int bloecke = block+1;
 			int maxblock = datenfeld.getAnzahlBloecke(kollege);
 			datenfeld.einfuegenBlock(kollege, bloecke);
@@ -198,20 +198,20 @@ public class BlockHandling {
 
 
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
-		//System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+		////System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 		kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 		Reha.thisClass.terminpanel.terminAufnehmen(kollege,bloecke);
-		//System.out.println("0="+alteDaten[0]+"1="+alteDaten[1]+"2="+alteDaten[2]+"3="+alteDaten[3]+"4="+alteDaten[4]);
+		////System.out.println("0="+alteDaten[0]+"1="+alteDaten[1]+"2="+alteDaten[2]+"3="+alteDaten[3]+"4="+alteDaten[4]);
 		//TerminFenster.starteUnlock();
 		return 1;
 	}
 /*****************************************/	
 	private int blockAusdehnen(){
-			//System.out.println("Kollege = "+this.kollege);
+			////System.out.println("Kollege = "+this.kollege);
 			datenfeld.setFeld(kollege,0,block,daten[0]);
 			datenfeld.setFeld(kollege,1,block,daten[1]);
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
-		//System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+		////System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 		kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 		Reha.thisClass.terminpanel.setAktiverBlock(block);
 		Reha.thisClass.terminpanel.terminAufnehmen(kollege,block);
@@ -222,7 +222,7 @@ public class BlockHandling {
 	private int blockManuellStarten(){
 		String [] alteDaten = {null,null,null,null,null};
 		//int aktBlockzahl;
-			//System.out.println("Blockanzahl zu Beginn: "+datenfeld.getAnzahlBloecke(kollege));
+			////System.out.println("Blockanzahl zu Beginn: "+datenfeld.getAnzahlBloecke(kollege));
 			//Zuerste bisherige Blockdaten sichern
 			alteDaten[0] = datenfeld.getFeld(kollege,0,block);//Text
 			alteDaten[1] = datenfeld.getFeld(kollege,1,block);//RezNr.
@@ -230,14 +230,14 @@ public class BlockHandling {
 			alteDaten[3] = datenfeld.getFeld(kollege,3,block);//Dauer
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block);//Ende
 			int dummy = (int) (ZeitFunk.MinutenSeitMitternacht(daten[2])-ZeitFunk.MinutenSeitMitternacht(alteDaten[2]));
-			// jetzt bisherige daten mit alten (korrigierten) Daten überschreiben
+			// jetzt bisherige daten mit alten (korrigierten) Daten ï¿½berschreiben
 			datenfeld.setFeld(kollege,0,block,alteDaten[0]);
 			datenfeld.setFeld(kollege,1,block,alteDaten[1]);
 			datenfeld.setFeld(kollege,2,block,alteDaten[2]);
 			datenfeld.setFeld(kollege,3,block,new Integer(dummy).toString());
 			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[2])+dummy) );
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
-			//Blockzahl ermitteln und dann neuen Block einfügen
+			//Blockzahl ermitteln und dann neuen Block einfï¿½gen
 			int bloecke = block+1;
 			int maxblock = datenfeld.getAnzahlBloecke(kollege);
 			datenfeld.einfuegenBlock(kollege, bloecke);
@@ -249,7 +249,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,3,bloecke,daten[3]);
 			neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(daten[2])+Integer.parseInt(daten[3])) );			
 			datenfeld.setFeld(kollege,4,bloecke,neueEndzeit);
-			//Blockzahl ermitteln und dann neuen Block einfügen
+			//Blockzahl ermitteln und dann neuen Block einfï¿½gen
 			bloecke = bloecke+1;
 			maxblock++;
 			datenfeld.einfuegenBlock(kollege, bloecke);
@@ -264,7 +264,7 @@ public class BlockHandling {
 			
 		
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
-		//System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+		////System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 		kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 		Reha.thisClass.terminpanel.terminAufnehmen(kollege,bloecke-1);
 		Reha.thisClass.terminpanel.setAktiverBlock(bloecke-1);
@@ -281,7 +281,7 @@ public class BlockHandling {
 			alteDaten[3] = datenfeld.getFeld(kollege,3,block+1);//Dauer
 			alteDaten[4] = datenfeld.getFeld(kollege,4,block+1);//Ende
 			int dummy = (int) (ZeitFunk.MinutenSeitMitternacht(daten[2])-ZeitFunk.MinutenSeitMitternacht(alteDaten[2]));
-			// jetzt bisherige daten mit alten (korrigierten) Daten überschreiben
+			// jetzt bisherige daten mit alten (korrigierten) Daten ï¿½berschreiben
 			datenfeld.setFeld(kollege,0,block,daten[0]);
 			datenfeld.setFeld(kollege,1,block,daten[1]);
 			datenfeld.setFeld(kollege,2,block,daten[2]);
@@ -299,7 +299,7 @@ public class BlockHandling {
 			
 		
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
-		//System.out.println("Vermutlich falsch------>Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+		////System.out.println("Vermutlich falsch------>Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 		kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 		Reha.thisClass.terminpanel.terminAufnehmen(kollege,block);
 		return 1;
@@ -310,7 +310,7 @@ public class BlockHandling {
 		//int aktBlockzahl;
 		int [] grundDaten = TerminFenster.getThisClass().getGruppierenClipBoard();
 		int startBlock,endBlock;//,anzahlBloecke,anzahlGesamt;
-		//System.out.println("in Block-Handling"+grundDaten[0]+"/"+grundDaten[1]+"/"+grundDaten[2]+"/"+grundDaten[3]);
+		////System.out.println("in Block-Handling"+grundDaten[0]+"/"+grundDaten[1]+"/"+grundDaten[2]+"/"+grundDaten[3]);
 
 		if(grundDaten[0] > grundDaten[1]){
 			startBlock = grundDaten[1];
@@ -425,9 +425,9 @@ public class BlockHandling {
 		for (int ii = endBlock; ii > startBlock; ii--){
 			datenfeld.loeschenBlock(kollege,ii);
 		}
-		//System.out.println("Aktiver Block 0 = "+TerminFenster.thisClass.getAktiverBlock()[0]);
-		//System.out.println("Aktiver Block 2 = "+TerminFenster.thisClass.getAktiverBlock()[2]);
-		//System.out.println("Block in LöschenBlock = "+block);
+		////System.out.println("Aktiver Block 0 = "+TerminFenster.thisClass.getAktiverBlock()[0]);
+		////System.out.println("Aktiver Block 2 = "+TerminFenster.thisClass.getAktiverBlock()[2]);
+		////System.out.println("Block in Lï¿½schenBlock = "+block);
 
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
 		kbs.KalenderDaten(this.datenfeld,kollege ,db_datum,ibehandler);
@@ -436,7 +436,7 @@ public class BlockHandling {
 	}
 
 	private int blockTauschen(int richtung){
-		// -1 = mit Vorgänger
+		// -1 = mit Vorgï¿½nger
 		// +1 = mit Nachfolger
 		String[][] tauschTermine = {{null,null,null,null,null},{null,null,null,null,null}};
 		int [] bloecke = {block,block+richtung}; 
@@ -452,8 +452,8 @@ public class BlockHandling {
  			}
 		}
 		if(richtung < 0){
-			// mit Vorgängerblock tauschen
-			//bisheriger Vorgänger
+			// mit Vorgï¿½ngerblock tauschen
+			//bisheriger Vorgï¿½nger
 			datenfeld.setFeld(kollege,0,bloecke[1],tauschTermine[0][0]);
 			datenfeld.setFeld(kollege,1,bloecke[1],tauschTermine[0][1]);
 			datenfeld.setFeld(kollege,2,bloecke[1],tauschTermine[1][2]);
@@ -499,7 +499,7 @@ public class BlockHandling {
 		//return -1;
 	}
 	private int blockAufNull(){
-		//System.out.println("Kollege = "+this.kollege);
+		////System.out.println("Kollege = "+this.kollege);
 		datenfeld.setFeld(kollege,0,0,"");
 		datenfeld.setFeld(kollege,1,0,"@FREI");
 		datenfeld.setFeld(kollege,2,0,SystemConfig.KalenderUmfang[0]);
@@ -511,7 +511,7 @@ public class BlockHandling {
 		}
 		datenfeld.setAnzahlBloecke(kollege,1);
 	KalenderBeschreiben kbs = new KalenderBeschreiben();
-	//System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
+	////System.out.println("Kollege="+kollege+" Datum ist gleich="+datum[spalte]+" dbBehandler="+dbBehandler);
 	kbs.KalenderDaten(this.datenfeld, kollege,datum[spalte],dbBehandler);
 			return 1;
 }

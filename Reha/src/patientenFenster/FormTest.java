@@ -78,12 +78,12 @@ public class FormTest extends JInternalFrame {
 			/*
 			jFeld2.addFocusListener(new java.awt.event.FocusAdapter() {   
 				public void focusLost(java.awt.event.FocusEvent e) {    
-					//System.out.println("focusLost()"); // TODO Auto-generated Event stub focusLost()
+					////System.out.println("focusLost()"); // TODO Auto-generated Event stub focusLost()
 					e.getComponent().setBackground(Color.WHITE);
-					//System.out.println("Focus verloren"+e);
+					////System.out.println("Focus verloren"+e);
 				}
 				public void focusGained(java.awt.event.FocusEvent e) {
-					//System.out.println("focusGained()"); // TODO Auto-generated Event stub focusGained()
+					////System.out.println("focusGained()"); // TODO Auto-generated Event stub focusGained()
 					e.getComponent().setBackground(Color.YELLOW);
 					((JTextComponent) e.getComponent()).setCaretPosition(0);
 					((JTextComponent) e.getComponent()).setSelectionStart(0);
@@ -122,7 +122,7 @@ class PassVerifier extends InputVerifier {
 	@Override
 	public boolean verify(JComponent input) {
     	JFormattedTextField tf = (JFormattedTextField) input;
-    	System.out.println("verifiziert: "+tf.getText());
+    	//System.out.println("verifiziert: "+tf.getText());
     	//tf.setText(tf.getText().toUpperCase());
     	return "pass".equals(tf.getText());
     }
@@ -131,12 +131,12 @@ class PassVerifier extends InputVerifier {
         if (!verify(input)) {
             //Textfeld Vordergrund rot f�rben
             input.setForeground(java.awt.Color.RED);
-        	System.out.println("test-rot");
+        	//System.out.println("test-rot");
             return false;
         }
         else {
             input.setForeground(java.awt.Color.GREEN);
-        	System.out.println("test-gr�n");
+        	//System.out.println("test-gr�n");
             return true;
         }
     }

@@ -146,9 +146,9 @@ public class Eb2 {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {

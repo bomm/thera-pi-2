@@ -68,7 +68,7 @@ public class ZahlTableCellEditor extends AbstractCellEditor implements TableCell
     /*
     public boolean startCellEditing() {
         String s = (String)getCellEditorValue();
-		System.out.println("Zu Beginn der Editing / Ganzer String = "+s);
+		//System.out.println("Zu Beginn der Editing / Ganzer String = "+s);
         ((JFormattedTextField)component).setCaretPosition(0);
         return startCellEditing();
     }
@@ -79,12 +79,12 @@ public class ZahlTableCellEditor extends AbstractCellEditor implements TableCell
 		boolean ret = true;
 		if(s.trim().equals("") ){
 	    	((JFormattedTextField)component).setCaretPosition(0);
-			System.out.println("equals('') String= "+s);
+			//System.out.println("equals('') String= "+s);
 			return false;
 		}
 		if(new Integer(s.substring(0,1)) == 0 ){
 		    	((JFormattedTextField)component).setCaretPosition(0);
-				System.out.println("Erste Zahl = 0 String = "+s);
+				//System.out.println("Erste Zahl = 0 String = "+s);
 		    	return false;
 		}
 		return ret;

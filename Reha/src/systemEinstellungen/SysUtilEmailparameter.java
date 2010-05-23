@@ -60,7 +60,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 	HashMap<String,String> hmEmail = new HashMap<String,String>();
 	public SysUtilEmailparameter(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilEmailparameter");
+		//System.out.println("Aufruf SysUtilEmailparameter");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

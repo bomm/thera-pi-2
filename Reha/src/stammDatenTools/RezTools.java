@@ -74,14 +74,14 @@ public class RezTools {
 	public static Vector<Vector<String>> macheTerminVector(String termine){
 		String[] tlines = termine.split("\n");
 		int lines = tlines.length;
-		//System.out.println("Anzahl Termine = "+lines);
+		////System.out.println("Anzahl Termine = "+lines);
 		Vector<Vector<String>> tagevec = new Vector<Vector<String>>();
 		Vector<String> tvec = new Vector<String>();
 		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
 			terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			//System.out.println("Anzahl Splits = "+ieinzel);
+			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
@@ -92,9 +92,9 @@ public class RezTools {
 				}else{
 					tvec.add(new String(terdat[y]));					
 				}
-				//System.out.println("Feld "+y+" = "+terdat[y]);	
+				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
-			//System.out.println("Termivector = "+tvec);
+			////System.out.println("Termivector = "+tvec);
 			tagevec.add((Vector)tvec.clone());
 		}
 		if(tagevec.size() > 0 ){
@@ -343,19 +343,19 @@ public class RezTools {
 			}
 		}
 
-		System.out.println(vAktTermine);
+		//System.out.println(vAktTermine);
 		for(int i = 0;i < 1;i++){
 
-			if(new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(63))) <= 0){
+			if(Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(63))) <= 0){
 				// Kasse erfordert keine Zuzahlung
-				System.out.println("Kasse erfordert keine Zuzahlung");
+				//System.out.println("Kasse erfordert keine Zuzahlung");
 				zm.allefrei = true;
 				iret = 0;
 				break;
 			}
-			if(new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(39))) == 1){
+			if(Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(39))) == 1){
 				// Hat bereits bezahlt normal behandeln (zzstatus == 1)
-				System.out.println("Hat bereits bezahlt normal behandeln (zzstatus == 1)");
+				//System.out.println("Hat bereits bezahlt normal behandeln (zzstatus == 1)");
 				zm.allezuzahl = true;
 				iret = 2;
 				//break;
@@ -364,7 +364,7 @@ public class RezTools {
 			/************************ Jetzt der Ober-Scheißdreck für den Achtzehner-Test***********************/
 			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(60)).equals("T")){
 				// Es ist ein unter 18 Jahre Test notwendig
-				System.out.println("Es ist ein unter 18 Jahre Test notwendig");
+				//System.out.println("Es ist ein unter 18 Jahre Test notwendig");
 				if(bTermine){
 					
 					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.patDaten.get(4))); 
@@ -376,17 +376,17 @@ public class RezTools {
 							zm.allezuzahl = false;
 							zm.anfangfrei = true;
 							zm.teil1 = test[1];
-							System.out.println("Splitten frei für "+test[1]+" Tage, bezahlen für "+(maxAnzahl()-test[1]));
+							//System.out.println("Splitten frei für "+test[1]+" Tage, bezahlen für "+(maxAnzahl()-test[1]));
 							iret = 1;
 						}else{
 							zm.allezuzahl = true;
 							zm.teil1 = test[1];
-							System.out.println("Jeden Termin bezahlen insgesamt bezahlen für "+(maxAnzahl()-test[1]));
+							//System.out.println("Jeden Termin bezahlen insgesamt bezahlen für "+(maxAnzahl()-test[1]));
 							iret = 2;
 						}
 					}else{
 						//Voll befreit
-						System.out.println("Frei für "+test[1]+" Tage - also alle");
+						//System.out.println("Frei für "+test[1]+" Tage - also alle");
 						zm.allefrei = true;
 						iret = 0;
 					}
@@ -395,12 +395,12 @@ public class RezTools {
 					String geburtstag = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
 					String stichtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
 					if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
-						System.out.println("Normale Zuzahlung....");
+						//System.out.println("Normale Zuzahlung....");
 						zm.allefrei = false;
 						zm.allezuzahl = true;
 						iret = 2;
 					}else{
-						System.out.println("Alle Frei....");						
+						//System.out.println("Alle Frei....");						
 						zm.allefrei = true;
 						zm.allezuzahl = false;
 						iret = 0;
@@ -415,7 +415,7 @@ public class RezTools {
 					(((String)Reha.thisClass.patpanel.patDaten.get(69)).trim().equals("")) ){
 				// Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.
 				// Standard
-				System.out.println("Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.");
+				//System.out.println("Es liegt weder eine Befreiung für dieses noch für letztes Jahr vor.");
 				iret = 2;
 				break;
 			}
@@ -423,14 +423,14 @@ public class RezTools {
 			if((boolean) ((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("T") && 
 					(!((String)Reha.thisClass.patpanel.patDaten.get(69)).equals("")) ){
 				// Es liegt eine Befreiung vor und im Vorjahr ebenfenfalls befreit
-				System.out.println("Es liegt eine Befreiung vor und im Vorjahr ebenfenfalls befreit");
+				//System.out.println("Es liegt eine Befreiung vor und im Vorjahr ebenfenfalls befreit");
 				iret = 0;
 				break;
 			}
 			/************************ aktuell Nicht frei, Vorjahr frei************************/
 			if((boolean) (((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("F")) && 
 					(!((String)Reha.thisClass.patpanel.patDaten.get(69)).equals("")) ){
-				System.out.println("aktuell Nicht frei, Vorjahr frei");
+				//System.out.println("aktuell Nicht frei, Vorjahr frei");
 				if(!bMitJahresWechsel){//Alle Termine aktuell
 					iret = 2;
 				}else{// es gibt Termine im Vorjahr
@@ -438,7 +438,7 @@ public class RezTools {
 					if(!(Boolean)obj[0]){// alle Termine waren im Vorjahr 
 						iret = 0;
 					}else{// gemischte Termine
-						System.out.println("Termine aus dem Vorjahr(frei) = "+obj[1]+" Termine aus diesem Jahr(Zuzahlung) = "+obj[2]);
+						//System.out.println("Termine aus dem Vorjahr(frei) = "+obj[1]+" Termine aus diesem Jahr(Zuzahlung) = "+obj[2]);
 						zm.allefrei = false;
 						zm.allezuzahl = false;
 						zm.anfangfrei = true;
@@ -453,7 +453,7 @@ public class RezTools {
 			// Fehler !!!!!!!!!!!!!!!!!!!!!!! muß korrigiert werden!!!!!!!!!!!!!!!!!!!!!!!
 			if((boolean) ((String)Reha.thisClass.patpanel.patDaten.get(30)).equals("T") && 
 					(((String)Reha.thisClass.patpanel.vecaktrez.get(59)).trim().equals("")) ){
-				System.out.println("Aktuelle Befreiung aber nicht im Vorjahr");
+				//System.out.println("Aktuelle Befreiung aber nicht im Vorjahr");
 				if(!bMitJahresWechsel){//Alle Termine aktuell
 					iret = 0;
 				}else{// es gibt Termine im Vorjahr
@@ -461,7 +461,7 @@ public class RezTools {
 					if(!(Boolean)obj[0]){// alle Termine waren im Vorjahr 
 						iret = 2;
 					}else{// gemischte Termine
-						System.out.println("Termine aus dem Vorjahr(Zuzahlung) = "+obj[1]+" Termine aus diesem Jahr(frei) = "+obj[2]);
+						//System.out.println("Termine aus dem Vorjahr(Zuzahlung) = "+obj[1]+" Termine aus diesem Jahr(frei) = "+obj[2]);
 						zm.allefrei = false;
 						zm.allezuzahl = false;
 						zm.anfangfrei = false;
@@ -496,7 +496,7 @@ public class RezTools {
 			constructEndeFreiRezHMap(zm,false);
 		}
 
-		System.out.println("ZZ-Variante = "+iret);
+		//System.out.println("ZZ-Variante = "+iret);
 		return iret;
 	}
 	/************
@@ -510,12 +510,12 @@ public class RezTools {
 	 */
 	public static void constructNormalRezHMap(ZuzahlModell zm,boolean unregelmaessig){
 		/************************************/
-		System.out.println("*****In Normal HMap*********");
+		//System.out.println("*****In Normal HMap*********");
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
 		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
 		
-		//System.out.println("nach nullzuweisung " +xrezgeb.toString());
+		////System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
 		int i;
@@ -532,7 +532,7 @@ public class RezTools {
 		}
 		xrezgeb = xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
 		rezgeb = 10.00;
-		//System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
+		////System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
 		String runden;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;
@@ -543,7 +543,7 @@ public class RezTools {
 		
 		for(i = 0; i < 4; i++){
 			/*
-			System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
+			//System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
 					new Integer(artdbeh[i]).toString()+" / "+
 					preise[i].toString() );
 			*/		
@@ -555,9 +555,9 @@ public class RezTools {
 
 				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
 				rezwert = rezwert.add(poswert);
-				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
+				////System.out.println("Einzelpreis "+i+" = "+einzelpreis);
 				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
-				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
+				////System.out.println("test->Einzelpreis "+i+" = "+testpr);
 
 				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
 				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
@@ -565,7 +565,7 @@ public class RezTools {
 				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
 				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
 				rezgeb = rezgeb + endpos.doubleValue();
-				//System.out.println(rezgeb.toString());
+				////System.out.println(rezgeb.toString());
 
 			}else{
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");
@@ -590,9 +590,9 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rwert>", dfx.format(drezwert) );
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
-		//System.out.println("----------------------------------------------------");
-		//System.out.println("Endg�ltige und geparste Rezeptgeb�hr = "+s+" EUR");
-		//System.out.println(SystemConfig.hmAdrRDaten);
+		////System.out.println("----------------------------------------------------");
+		////System.out.println("Endg�ltige und geparste Rezeptgeb�hr = "+s+" EUR");
+		////System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 		
 		// Hier mu� noch Hausbesuchshandling eingebaut werden
@@ -624,20 +624,20 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 	}
 	public static void constructAnfangFreiRezHMap(ZuzahlModell zm,boolean anfang){
-		System.out.println("*****In Anfang-frei*********");
+		//System.out.println("*****In Anfang-frei*********");
 		if(anfang){
 			zm.gesamtZahl = new Integer(zm.teil2);
-			System.out.println("Restliche Behandlungen berechnen = "+zm.gesamtZahl);
+			//System.out.println("Restliche Behandlungen berechnen = "+zm.gesamtZahl);
 		}else{
 			zm.gesamtZahl = new Integer(zm.teil1);
-			System.out.println("Beginn der Behandlung berechnen = "+zm.gesamtZahl);
+			//System.out.println("Beginn der Behandlung berechnen = "+zm.gesamtZahl);
 		}
 
 		Double rezgeb = new Double(0.000);
 		BigDecimal[] preise = {null,null,null,null};
 		BigDecimal xrezgeb = BigDecimal.valueOf(new Double(0.000));
 		
-		//System.out.println("nach nullzuweisung " +xrezgeb.toString());
+		////System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
 		/***************/ //Einbauen f�r Barcode
@@ -666,7 +666,7 @@ public class RezTools {
 		}
 		
 
-		//System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
+		////System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
 		String runden;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;
@@ -677,7 +677,7 @@ public class RezTools {
 		
 		for(i = 0; i < 4; i++){
 			/*
-			System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
+			//System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
 					new Integer(artdbeh[i]).toString()+" / "+
 					preise[i].toString() );
 			*/		
@@ -689,9 +689,9 @@ public class RezTools {
 				//***********vorher nur anzahl[]*****************/
 				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(gesanzahl[i]))); 
 				rezwert = rezwert.add(poswert);
-				//System.out.println("Einzelpreis "+i+" = "+einzelpreis);
+				////System.out.println("Einzelpreis "+i+" = "+einzelpreis);
 				BigDecimal testpr = einzelpreis.setScale(2, BigDecimal.ROUND_HALF_UP);
-				//System.out.println("test->Einzelpreis "+i+" = "+testpr);
+				////System.out.println("test->Einzelpreis "+i+" = "+testpr);
 
 				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
 				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", Integer.toString(anzahl[i]) );
@@ -699,7 +699,7 @@ public class RezTools {
 				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
 				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
 				rezgeb = rezgeb + endpos.doubleValue();
-				//System.out.println(rezgeb.toString());
+				////System.out.println(rezgeb.toString());
 
 			}else{
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">","----");
@@ -725,33 +725,33 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rwert>", dfx.format(drezwert) );
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
-		System.out.println("----------------------------------------------------");
-		System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
-		//System.out.println(SystemConfig.hmAdrRDaten);
+		//System.out.println("----------------------------------------------------");
+		//System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
+		////System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 	}
 		
 
 	public static void constructEndeFreiRezHMap(ZuzahlModell zm,boolean anfang){
-		System.out.println("*****Über Ende Frei*********");
+		//System.out.println("*****Über Ende Frei*********");
 		constructAnfangFreiRezHMap(zm,anfang);
 	}	
 	public static Vector<Vector<String>>splitteTermine(String terms){
 		Vector<Vector<String>> termine = new Vector<Vector<String>>();
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
-		//System.out.println("Anzahl Termine = "+lines);
+		////System.out.println("Anzahl Termine = "+lines);
 		Vector<String> tvec = new Vector<String>();
 		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
 			terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			//System.out.println("Anzahl Splits = "+ieinzel);
+			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 					tvec.add((terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
 			}
-			//System.out.println("Termivector = "+tvec);
+			////System.out.println("Termivector = "+tvec);
 			termine.add((Vector<String>)tvec.clone());
 		}
 		return (Vector<Vector<String>>) termine.clone();
@@ -799,11 +799,11 @@ public class RezTools {
 		for(int i = 0; i < preisvec.size();i++){
 			if(  ((String)((Vector)preisvec.get(i)).get(2)).equals(position) ){
 				ret =  ((String)((Vector)preisvec.get(i)).get(3+(neu ? 0 : 1)));
-//				System.out.println("Der Preis von "+position+" = "+ret);
+//				//System.out.println("Der Preis von "+position+" = "+ret);
 				return ret;
 			}
 		}
-		//System.out.println("Der Preis von "+position+" wurde nicht gefunden!!");
+		////System.out.println("Der Preis von "+position+" wurde nicht gefunden!!");
 		return ret;
 	}
 	
@@ -891,7 +891,7 @@ public class RezTools {
 				if(pos.trim().equals("")){
 					pos = RezTools.getKurzformFromPos(vec.get(0).get(i+48).trim(), Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ));					
 				}
-				//System.out.println("Haupt-Position = "+pos);
+				////System.out.println("Haupt-Position = "+pos);
 				retvec.set(i, pos);
 				retvec.set(i+6,vec.get(0).get(i+18).trim());
 			}else{
@@ -909,36 +909,36 @@ public class RezTools {
 				 retvec.set(10,preis);
 
 				 if(! keineWeggebuehrBeiHB(disziplin,Integer.toString((preisgruppe==0 ? 1 : preisgruppe)))){
-					 //System.out.println("Kasse kennt Weggebühr...");
+					 ////System.out.println("Kasse kennt Weggebühr...");
 					 if(zweiPositionenBeiHB(disziplin,Integer.toString((preisgruppe==0 ? 1 : preisgruppe)))){
 						 //Weggebühr und pauschale
-						 //System.out.println("Kasse kennt km und Pauschale...");
+						 ////System.out.println("Kasse kennt km und Pauschale...");
 						 if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 0 ){
 							 //Kilometer verwenden
-							 //System.out.println("Kilometer verwenden...");
+							 ////System.out.println("Kilometer verwenden...");
 							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(2);
 							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)));
 							 BigDecimal kms = BigDecimal.valueOf(Double.parseDouble(preis)).multiply(BigDecimal.valueOf(wgkm));
 							 retvec.set(5, pos);
 							 retvec.set(11,Double.toString(kms.doubleValue()));
-							 //System.out.println("Pos = "+pos);
-							 //System.out.println("Preis = "+preis);
+							 ////System.out.println("Pos = "+pos);
+							 ////System.out.println("Preis = "+preis);
 						 }else{
 							 //Pauschale verwenden
-							 //System.out.println("Pauschale verwenden....");
+							 ////System.out.println("Pauschale verwenden....");
 							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(3);
 							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)));
-							 System.out.println("Pos = "+pos);
-							 System.out.println("Preis = "+preis);
+							 //System.out.println("Pos = "+pos);
+							 //System.out.println("Preis = "+preis);
 							 retvec.set(5, pos);
 							 retvec.set(11,preis);
 						 }
 					 }else{
-						 System.out.println("Kann Weggebührmodalität nicht ermitteln....");
+						 //System.out.println("Kann Weggebührmodalität nicht ermitteln....");
 					 }
 					 
 				 }else{
-					 System.out.println("Kasse kennt keine Weggebühr....");
+					 //System.out.println("Kasse kennt keine Weggebühr....");
 					 retvec.set(5, "-----");
 					 retvec.set(11,"0.00");
 				 }
@@ -966,10 +966,10 @@ public class RezTools {
 		//((BigDecimal)retobj[0]).add(BigDecimal.valueOf(new Double(1.00)));
 		//((BigDecimal) retobj[0]).add(new BigDecimal(rezwert));
 		Object[] retobj = {(BigDecimal) rezwert,(Double)rezgeb};
-		System.out.println("Die tatsächlich HB-Anzahl = "+realhbAnz);
-		System.out.println("Der Rezeptwert zu Beginn = "+retobj[0]);
+		//System.out.println("Die tatsächlich HB-Anzahl = "+realhbAnz);
+		//System.out.println("Der Rezeptwert zu Beginn = "+retobj[0]);
 		if(zm.hausbesuch){ //Hausbesuch
-			System.out.println("Hausbesuch ist angesagt");
+			//System.out.println("Hausbesuch ist angesagt");
 			String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
 			String rezid = SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2);
 			/*
@@ -1004,9 +1004,9 @@ public class RezTools {
 			DecimalFormat dfx = new DecimalFormat( "0.00" );
 
 			if(zm.hbheim){ // und zwar im Heim
-				System.out.println("Der HB ist im Heim");
+				//System.out.println("Der HB ist im Heim");
 				if(zm.hbvoll){// Volle Ziffer abrechnen?
-					System.out.println("Es kann der volle Hausbesuch abgerechnet werden");
+					//System.out.println("Es kann der volle Hausbesuch abgerechnet werden");
 					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
 					preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
 							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1041,9 +1041,9 @@ public class RezTools {
 					}
 					/*******************************/
 					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
-						System.out.println("Es könnten Kilometer abgerechnet werden");
+						//System.out.println("Es könnten Kilometer abgerechnet werden");
 						if(zm.km > 0 ){
-							System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
+							//System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 
 							preis = PreisUeberPosition(kmgeld,
 									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1079,9 +1079,9 @@ public class RezTools {
 
 							//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 						}else{// Keine Kilometer angegeben also pauschale verwenden
-							System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
+							//System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
 							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verf�gung stellt
-								System.out.println("Die Kasse stellt eine Wegpauschale zur Verf�gung");
+								//System.out.println("Die Kasse stellt eine Wegpauschale zur Verf�gung");
 								SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
 								preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1126,7 +1126,7 @@ public class RezTools {
 							
 						}
 					}else{// es k�nnen keine Kilometer abgerechnet werden
-						System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
+						//System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
 						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1170,7 +1170,7 @@ public class RezTools {
 
 					}
 				}else{//nur Mit-Hausbesuch
-					System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
+					//System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
 					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit); 
 					preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
 							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1221,7 +1221,7 @@ public class RezTools {
 					/*******************************/
 				}
 			}else{//nicht im Heim
-				System.out.println("Der Hausbesuch ist nicht in einem Heim");
+				//System.out.println("Der Hausbesuch ist nicht in einem Heim");
 				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
 				preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
 						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1230,9 +1230,9 @@ public class RezTools {
 				bdpreis = new BigDecimal(new Double(preis));
 				bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
 				//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-				//System.out.println("Der Positionswert-HB = "+bdposwert);
+				////System.out.println("Der Positionswert-HB = "+bdposwert);
 				retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
-				//System.out.println("Der Rezeptwert nach Addition  = "+((BigDecimal)retobj[0]).doubleValue());
+				////System.out.println("Der Rezeptwert nach Addition  = "+((BigDecimal)retobj[0]).doubleValue());
 				SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 
 				bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -1245,9 +1245,9 @@ public class RezTools {
 				
 
 				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden k�nnen
-					System.out.println("Es k�nnten Kilometer abgerechnet werden");
+					//System.out.println("Es k�nnten Kilometer abgerechnet werden");
 					if(zm.km > 0 ){
-						System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
+						//System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 						
 						preis = PreisUeberPosition(kmgeld,
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1273,9 +1273,9 @@ public class RezTools {
 
 
 					}else{
-						System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
+						//System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
 						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verf�gung stellt
-							System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+							//System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
 							preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
@@ -1327,15 +1327,19 @@ public class RezTools {
 			SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
 			SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 		}
-		System.out.println("Der Rezeptwert = "+retobj[0]);
+		//System.out.println("Der Rezeptwert = "+retobj[0]);
 		return retobj;
 		/*****************************************************/		
 		
 	}
 	public static void constructVirginHMap(){
+		try{
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
-		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );		
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 	/***************************************************/
 	/***************************************************/

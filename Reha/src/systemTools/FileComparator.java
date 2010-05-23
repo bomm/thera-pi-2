@@ -16,7 +16,7 @@ import java.nio.channels.FileChannel;
 	            this.bufferSize = bufferSize;
 	            buffer1 = ByteBuffer.allocate(bufferSize);
 	            buffer2 = ByteBuffer.allocate(bufferSize);
-	            System.out.println("Using: java.nio with non direct byte-buffers of size " + bufferSize + " bytes");
+	            //System.out.println("Using: java.nio with non direct byte-buffers of size " + bufferSize + " bytes");
 	        }
 	        
 	        private int readIn(FileChannel f, ByteBuffer buffer) throws IOException {

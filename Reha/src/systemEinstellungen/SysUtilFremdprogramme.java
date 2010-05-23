@@ -65,7 +65,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	public SysUtilFremdprogramme(){
 		
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilFremdprogramme");
+		//System.out.println("Aufruf SysUtilFremdprogramme");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

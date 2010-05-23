@@ -77,7 +77,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	public SysUtilRezepte(){
 		
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilRezepte");
+		//System.out.println("Aufruf SysUtilRezepte");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -304,7 +304,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(cmd.equals("speichern")){
-			System.out.println("Es wird abgespeichert");
+			//System.out.println("Es wird abgespeichert");
 			doSpeichern();
 			JOptionPane.showMessageDialog(null,"Konfiguration wurden in Datei 'rezept.ini' erfolgreich gespeichert!");					
 
@@ -476,10 +476,10 @@ class TitelEditor extends AbstractCellEditor implements TableCellEditor{
 	JComponent component = new JFormattedTextField();
 public TitelEditor(){
 	   //component = new JRtaTextField("NIX",true);
-	   System.out.println("editor-Component wurde initialisiert");
+	   //System.out.println("editor-Component wurde initialisiert");
 	   component.addKeyListener(new KeyAdapter(){
 		   public void keyPressed(KeyEvent arg0) {
-				System.out.println("********Button in KeyPressed*********");	
+				//System.out.println("********Button in KeyPressed*********");	
 				if(arg0.getKeyCode()== 10){
 					arg0.consume();
 					stopCellEditing();
@@ -510,21 +510,21 @@ public TitelEditor(){
          	 return false;
           }
        }
-		System.out.println("isCellEditable");
+		//System.out.println("isCellEditable");
 		return true;
 	}
 
 
 	@Override
 	public boolean shouldSelectCell(EventObject anEvent) {
-		System.out.println("in schouldCellSelect"+anEvent);
+		//System.out.println("in schouldCellSelect"+anEvent);
 		return super.shouldSelectCell(anEvent);
 	}
 
 	@Override
 	public boolean stopCellEditing() {
 		value = ((JFormattedTextField) component).getText();
-		System.out.println("in stopCellediting");
+		//System.out.println("in stopCellediting");
 		super.stopCellEditing();
 		return true;
 	}

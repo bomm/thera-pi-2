@@ -167,11 +167,11 @@ public class BerichtDrucken extends JXPanel implements ActionListener, KeyListen
 			if( name != null){
 				doDrucken();
 			}
-			System.out.println("Return gedrückt");
+			//System.out.println("Return gedrückt");
 		}
 		if(arg0.getKeyCode()==27){
 			arg0.consume();
-			System.out.println("ESC gedrückt");
+			//System.out.println("ESC gedrückt");
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 			return;

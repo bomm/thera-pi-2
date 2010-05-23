@@ -32,12 +32,12 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		//System.out.println("Internal-Pat-Frame in schliessen***************");
+		////System.out.println("Internal-Pat-Frame in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		try{
-		//System.out.println("Lösche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		////System.out.println("Lösche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//Nächsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		//JInternalFram von Desktop lösen
@@ -56,7 +56,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 			Reha.thisClass.patpanel.newPolicy = null;
 			*/
 		}catch(Exception ex){
-			//System.out.println("Fehler beim schließen des IFrames");
+			////System.out.println("Fehler beim schließen des IFrames");
 			//ex.printStackTrace();
 		}
 		
@@ -67,7 +67,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 		pEvt.setDetails(s1,s2,"") ;
 		PatStammEventClass.firePatStammEvent(pEvt);
 		
-		//System.out.println("Internal-Pat-Frame in geschlossen***************");
+		////System.out.println("Internal-Pat-Frame in geschlossen***************");
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		Reha.thisClass.patpanel.allesAufraeumen();
 		if(Reha.thisClass.patpanel.getInternal() != null){
@@ -134,7 +134,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
-			//System.out.println("es ist ein Reha-Internal-Event");
+			////System.out.println("es ist ein Reha-Internal-Event");
 		}
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){

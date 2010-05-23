@@ -218,7 +218,7 @@ public class BerichtArztAuswahl extends JXPanel implements ActionListener, KeyLi
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);
-		System.out.println(tf[0].getText()+" - "+tf[1].getText()+" - "+tf[2].getText());
+		//System.out.println(tf[0].getText()+" - "+tf[1].getText()+" - "+tf[2].getText());
 		if(!tf[2].getText().trim().equals("")){
 			Vector<Vector<String>> vec = SqlInfo.holeFelder("select nachname,vorname,strasse,ort,arztnum,bsnr,id from arzt where id = '"+tf[2].getText()+"' LIMIT 1");
 			if(vec.size() > 0){

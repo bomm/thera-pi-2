@@ -177,19 +177,19 @@ public class SystemConfig {
 			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
 					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
 					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
-			System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
+			//System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
 			aktJahr = new String(jahrHeute);
 			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
 			ini.save();
 		}else{
-			System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
+			//System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
 		}
 			
 		try {
 			dieseMaschine = java.net.InetAddress.getLocalHost();
 		}
 		catch (java.net.UnknownHostException uhe) {
-			System.out.println(uhe);
+			//System.out.println(uhe);
 		}
 		vorJahr = new Integer(new Integer(aktJahr)-1).toString();
 	}
@@ -249,12 +249,12 @@ public class SystemConfig {
 		aKontakt = new ArrayList<String>();
 		
 		vDatenBank = new Vector<ArrayList<String>>();
-		//System.out.println("INI-Verzeichnis = "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		//System.out.println("IniFile = "+ini.getFileName());
-		//System.out.println("Anzahl der Datenbanktreiber einlesen");
+		////System.out.println("INI-Verzeichnis = "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		////System.out.println("IniFile = "+ini.getFileName());
+		////System.out.println("Anzahl der Datenbanktreiber einlesen");
 		lesen =  ini.getIntegerProperty("DatenBank","AnzahlConnections") ;
 		//lesen =  Integer.parseInt(new String(ini.getStringProperty("DatenBank","AnzahlConnections")) );
-		System.out.println("Anzahl der Datenbanktreiber = "+lesen);
+		//System.out.println("Anzahl der Datenbanktreiber = "+lesen);
 		for (i=1;i<(lesen+1);i++){
 			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBTreiber"+i)) );
 			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBKontakt"+i)) );			
@@ -299,7 +299,7 @@ public class SystemConfig {
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
 			homeDir = Reha.proghome;
 			//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
-			//System.out.println("HomeDir = "+homeDir);
+			////System.out.println("HomeDir = "+homeDir);
 			return;
 	}
 	
@@ -338,7 +338,7 @@ public class SystemConfig {
 		String[] ss = s.split(",");
 		KalenderHintergrund = new Color(Integer.parseInt(ss[0]),Integer.parseInt(ss[1]),Integer.parseInt(ss[2]));
 		KalenderAlpha = new Float(new String(ini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
-		//System.out.println("Anzal Kollegen = "+AnzahlKollegen);
+		////System.out.println("Anzal Kollegen = "+AnzahlKollegen);
 		oTerminListe = new TerminListe().init();
 		Reha.thisClass.setzeInitStand("Gruppendefinition einlesen");
 		GruppenLesen();
@@ -457,7 +457,7 @@ public class SystemConfig {
 		if (colini==null){
 			colini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/color.ini");
 		}
-		//System.out.println("In TK-Farben");
+		////System.out.println("In TK-Farben");
 		int anz  = new Integer( new String(colini.getStringProperty("Terminkalender","FarbenAnzahl")));
 		vSysColsNamen = new Vector<String>();
 		vSysColsBedeut = new Vector<String>();
@@ -503,7 +503,7 @@ public class SystemConfig {
 			//Anzahl der Sets
 			colv = new Vector<Color[]>();
 			for(int j = 0; j < anz;j++){
-				//System.out.println("Bei i="+i+" /  und j="+j);
+				////System.out.println("Bei i="+i+" /  und j="+j);
 				String[] farb = new String(colini.getStringProperty( vSysDefNamen.get(i),vSysColsNamen.get(j))).split(",");
 				Color[] farbe = new Color[2];
 				farbe[0] = new Color(new Integer(farb[0]),new Integer(farb[1]),new Integer(farb[2]));
@@ -674,8 +674,8 @@ public class SystemConfig {
 			vNeuePreiseAb.add((Vector<String>)vpreisab.clone());
 			vNeuePreiseRegel.add((Vector<Integer>)vpreisreg.clone());
 		}
-		System.out.println("Neue Preise ab="+vNeuePreiseAb);
-		System.out.println("Neue Preise Regeln = "+vNeuePreiseRegel);
+		//System.out.println("Neue Preise ab="+vNeuePreiseAb);
+		//System.out.println("Neue Preise Regeln = "+vNeuePreiseRegel);
 
 	}
 	*/
@@ -887,7 +887,7 @@ public class SystemConfig {
 				vec.add( inif.getStringProperty("Textbausteine", prop2+(i2+1)) );
 				/*
 				try {
-					System.out.println(new String(gelenk.getBytes("UTF-8")));
+					//System.out.println(new String(gelenk.getBytes("UTF-8")));
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -896,7 +896,7 @@ public class SystemConfig {
 
 					b = gelenk.getBytes();
 				for(int y = 0; y < b.length;y++){
-					System.out.println(b[y]);
+					//System.out.println(b[y]);
 				}
 				
 				
@@ -1070,7 +1070,7 @@ public class SystemConfig {
 			xscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleX");
 			yscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleY");
 			try{
-				//System.out.println(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i]));
+				////System.out.println(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i]));
 				if((xscale >0) && (yscale > 0)){
 					ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])).getImage().getScaledInstance(xscale,yscale, Image.SCALE_SMOOTH);
 					hmSysIcons.put(bilder[i], new ImageIcon(ico));				
@@ -1078,13 +1078,13 @@ public class SystemConfig {
 					hmSysIcons.put(bilder[i], new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])));
 				}
 			}catch(Exception ex){
-				System.out.println("Fehler bei Bild "+bilder[i]);
+				//System.out.println("Fehler bei Bild "+bilder[i]);
 				ex.printStackTrace();
 			}
 			ico = null;
 		}
 		//Reha.thisClass.copyLabel.setDropTarget(true);
-		//System.out.println("System-Icons wurden geladen");
+		////System.out.println("System-Icons wurden geladen");
 	}
 	
 	public static void compTest(){
@@ -1120,7 +1120,7 @@ public class SystemConfig {
 			}
 		};
 		Collections.sort(vec,comparator);
-		//System.out.println("Sortierter Vector = "+vec);
+		////System.out.println("Sortierter Vector = "+vec);
 		/*
 		static final Comparator<Employee> SENIORITY_ORDER =
             new Comparator<Employee>() {

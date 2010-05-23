@@ -67,7 +67,7 @@ public class MyTableStringDatePicker extends AbstractCellEditor implements Table
 		return ( sdf.format( ((JXDatePicker)component).getDate() )  ); 
 	} 
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Action Performed in JXDatePicker");
+		//System.out.println("Action Performed in JXDatePicker");
 		fireEditingStopped();
 	}
 	 public boolean stopCellEditing() {

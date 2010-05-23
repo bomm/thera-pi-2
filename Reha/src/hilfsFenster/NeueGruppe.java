@@ -201,7 +201,7 @@ public class NeueGruppe implements KeyListener, ActionListener, FocusListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(arg0.getSource());
+		////System.out.println(arg0.getSource());
 		String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 		for (int i = 0 ; i < 1 ; i++){
 			if(sAktion=="Ok"){
@@ -221,7 +221,7 @@ public class NeueGruppe implements KeyListener, ActionListener, FocusListener{
 	}
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		//System.out.println(arg0);
+		////System.out.println(arg0);
 		if(arg0.getSource() instanceof JRadioButton){
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			//String sAktion = ((AbstractButton) arg0.getSource()).getText(); 

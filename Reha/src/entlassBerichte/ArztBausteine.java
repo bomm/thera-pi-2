@@ -225,7 +225,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 			for(int i = 1;i < 150;i++){
 				if(stext.substring(start+i,start+(i+1)).equals("^")){
 					dummy = stext.substring(start,start+(i+1));
-					//System.out.println("Variable gefunden - Variablenname = "+dummy);
+					////System.out.println("Variable gefunden - Variablenname = "+dummy);
 					stext = stext.replace(dummy,"ersetzte Variable "+vars);
 					if((sysvar=isSysVar(dummy)) >= 0){
 						sucheErsetze(dummy,eltern.sysVarInhalt.get(sysvar),true);
@@ -298,7 +298,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		}else{
 			String[] spalten = {"tbtitel","tbuntert"};
 			String where = SqlInfo.macheWhereKlausel("select tbthema,tbuntert,tbtitel,id from tbar where ", suchenach.getText().trim(), spalten);
-			//System.out.println("where = "+where);
+			////System.out.println("where = "+where);
 			fuelleTabelle(where+" Order BY tbthema");
 		}
 	}
@@ -479,9 +479,9 @@ public class ArztBausteine extends JDialog implements WindowListener{
 				retvec.clear();
 				retvec = null;
 			}catch(SQLException ev){
-				System.out.println("SQLException: " + ev.getMessage());
-				System.out.println("SQLState: " + ev.getSQLState());
-				System.out.println("VendorError: " + ev.getErrorCode());
+				//System.out.println("SQLException: " + ev.getMessage());
+				//System.out.println("SQLState: " + ev.getSQLState());
+				//System.out.println("VendorError: " + ev.getErrorCode());
 			}
 
 			finally {
@@ -637,7 +637,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		//System.out.println("in closing.....");
+		////System.out.println("in closing.....");
 		if(document.isOpen()){
 			document.close();
 		}

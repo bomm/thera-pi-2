@@ -58,7 +58,7 @@ public class SpezialGebuehren extends RehaSmartDialog implements RehaTPEventList
 			rtp = null;
 			super.dispose();
 			dispose();
-			System.out.println("****************SpezialGebuehr-> Listener entfernt**************");
+			//System.out.println("****************SpezialGebuehr-> Listener entfernt**************");
 		}
 		
 		
@@ -73,11 +73,11 @@ public class SpezialGebuehren extends RehaSmartDialog implements RehaTPEventList
 					rtp = null;
 					super.dispose();
 					this.dispose();
-					System.out.println("****************SpezialGebuehr-> Listener entfernt**************");				
+					//System.out.println("****************SpezialGebuehr-> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	

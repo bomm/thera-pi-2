@@ -73,12 +73,12 @@ public class ZeitCancelCellEditor extends AbstractCellEditor implements TableCel
 	
 	public boolean testeUhr(String s){
 		boolean ret = true;
-		System.out.println("substr 0,1 = "+s.substring(0,1));
-		System.out.println("substr 3,4 = "+s.substring(3,4));
+		//System.out.println("substr 0,1 = "+s.substring(0,1));
+		//System.out.println("substr 3,4 = "+s.substring(3,4));
 
 		if(s.trim().equals(":")){
 			((JFormattedTextField)component).setText("");
-			System.out.println("equals(':') String = "+s);
+			//System.out.println("equals(':') String = "+s);
 			return true;
 		}
 
@@ -114,7 +114,7 @@ public class ZeitCancelCellEditor extends AbstractCellEditor implements TableCel
 	@Override
 	public boolean stopCellEditing() {
         String s = (String)getCellEditorValue();
-		System.out.println("In stop cell Editing");
+		//System.out.println("In stop cell Editing");
         if (! testeUhr(s)) {
         	((JFormattedTextField)component).setCaretPosition(0);
             // Should display an error message at this point

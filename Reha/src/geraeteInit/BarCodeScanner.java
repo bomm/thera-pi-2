@@ -49,10 +49,10 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		portList = CommPortIdentifier.getPortIdentifiers();
 		while (portList.hasMoreElements()) {
 		    portId = (CommPortIdentifier) portList.nextElement();
-		    //System.out.println(portId);
+		    ////System.out.println(portId);
 		    if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				if (portId.getName().equals(port)) {
-				    System.out.println("Port gefunden und intitialisiert. Port = "+port);
+				    //System.out.println("Port gefunden und intitialisiert. Port = "+port);
 				    portFound = true;
 				    break;
 				    //BarCodeScanner reader = new BarCodeScanner(port);
@@ -60,7 +60,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    }
 		}
 		if(!portFound){
-			System.out.println("Port "+port+" wurde nicht gefunden");
+			//System.out.println("Port "+port+" wurde nicht gefunden");
 		}
 		String[] params = SystemConfig.hmGeraete.get(port);
 		baud = new Integer(params[0]);
@@ -82,8 +82,8 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    serialPort.setFlowControlMode( SerialPort.FLOWCONTROL_NONE ); //     
 
 		} catch (PortInUseException e) {
-			System.out.println("Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits belegt?");
-			System.out.println("Derzeitiger Besitzer = "+e.currentOwner);
+			//System.out.println("Port für Barcode-Scanner "+port+" konnte nicht geöffnet werden.\n\nBereits belegt?");
+			//System.out.println("Derzeitiger Besitzer = "+e.currentOwner);
 			return;
 			//JOptionPane.showMessageDialog(null, "Port f�r Barcode-Scanner "+port+" konnte nicht ge�ffnet werden.\n\nBereits bele?");
 		}
@@ -110,7 +110,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		} catch (UnsupportedCommOperationException e) {}
 		if(portFound){
 			readThread = new Thread(this);
-			System.out.println("Barcode-Thread gestartet\nBenutze Port: "+port);
+			//System.out.println("Barcode-Thread gestartet\nBenutze Port: "+port);
 			readThread.start();
 		}else{
 			JOptionPane.showMessageDialog(null, "Barcode-Scanner konnte nicht akiviert werden");
@@ -127,7 +127,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 				
 			}
 		}*/
-		//System.out.println("Scanner-Thread beendet");
+		////System.out.println("Scanner-Thread beendet");
 	}
 
 	@Override
@@ -135,33 +135,33 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		switch (event.getEventType()) {
 
 		case SerialPortEvent.BI:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;
 		case SerialPortEvent.OE:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.FE:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.PE:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.CD:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.CTS:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.DSR:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.RI:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 			break;			
 		case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-			System.out.println("Event Type "+event.getEventType());
+			//System.out.println("Event Type "+event.getEventType());
 		case SerialPortEvent.DATA_AVAILABLE:
-			//System.out.println("Data available");
+			////System.out.println("Data available");
 		    //byte[] readBuffer = new byte[30];
 		    byte[] outBuffer = null;
 		    String sout = null;
@@ -190,7 +190,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    	
 		    	byteArrayOutputStream.flush();
 		    	outString = sb.append( byteArrayOutputStream.toString() ).toString();
-		    	//System.out.println("String2 = "+outString);
+		    	////System.out.println("String2 = "+outString);
 		    	byteArrayOutputStream.close();
 				if(outString.length()>= 2){
 					if("KGMALOERRH".contains(outString.substring(0,2))){
@@ -205,7 +205,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						Thread erfassen = new Thread(new TermineErfassen(xoutString,tvec));
 						erfassen.start();
 					}else if(outString.substring(0,1).equals("S")){
-						//System.out.println("Schl�ssel Nr. "+outString.replaceAll("\\n", ""));
+						////System.out.println("Schl�ssel Nr. "+outString.replaceAll("\\n", ""));
 						outString = outString.substring(2).replaceAll("\\r","");
 						outString = outString.replaceAll("\\n","");
 						final String schluessel = outString;
@@ -231,7 +231,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 				byteArrayOutputStream = null;
 				
 		    } catch (IOException e){
-				System.out.println("****in Catch-Clause - Fehler in IO-System****");
+				//System.out.println("****in Catch-Clause - Fehler in IO-System****");
 				e.printStackTrace();
 		    } catch (InterruptedException e) {
 				e.printStackTrace();

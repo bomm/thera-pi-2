@@ -131,12 +131,12 @@ private RehaTPEventClass rtp = null;
 						pinPanel = null;
 						this.dispose();
 						super.dispose();
-						System.out.println("****************Arztkurz -> Listener entfernt**************");				
+						//System.out.println("****************Arztkurz -> Listener entfernt**************");				
 					}
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	
@@ -321,7 +321,7 @@ private RehaTPEventClass rtp = null;
 			if(rtp != null){
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				rtp = null;
-				System.out.println("****************Arztkurz -> Listener entfernt**************");
+				//System.out.println("****************Arztkurz -> Listener entfernt**************");
 				pinPanel = null;
 			}
 			this.dispose();
@@ -385,7 +385,7 @@ private RehaTPEventClass rtp = null;
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			pinPanel = null;
-			System.out.println("****************Arztkurz -> Listener entfernt**************");
+			//System.out.println("****************Arztkurz -> Listener entfernt**************");
 		}
 		dispose();
 	}

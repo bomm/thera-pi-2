@@ -72,8 +72,8 @@ public class Win_ChipDriveMicro100 {
 									outLen
 									);
 			
-			//System.out.println("Rückgabewert der Funktion  = "+new Integer(ret).toHexString(ret) );
-			//System.out.println("Output = "+Native.toString(output) );
+			////System.out.println("Rï¿½ckgabewert der Funktion  = "+new Integer(ret).toHexString(ret) );
+			////System.out.println("Output = "+Native.toString(output) );
 			}catch (UnsatisfiedLinkError e) {
 				e.printStackTrace();
 			}
@@ -81,7 +81,7 @@ public class Win_ChipDriveMicro100 {
 				String fehler = fehlerDeuten(ret,lib);	
 				return new String[] {Integer.toString(-1),fehler};
 			}
-			System.out.println(Native.toString(output));
+			//System.out.println(Native.toString(output));
 			if(fuelleHashMap(Native.toString(output))){
 				return new String[] {Integer.toString(ret),Native.toString(output)};
 			}else{

@@ -90,7 +90,7 @@ public class Anmeldungen extends JXPanel{
 		this.listdiszi = Arrays.asList(diszi1);
 		this.setName(this.internal.getName());
 		this.content.setName(this.internal.getName());
-		System.out.println("Name = "+getName());
+		//System.out.println("Name = "+getName());
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setzeFocus();
@@ -263,7 +263,7 @@ public class Anmeldungen extends JXPanel{
 	}
 
 	private void doRezeptZeigen(String pat_intern,String reznum){
-		System.out.println("Hole Daten von Patient "+pat_intern+" Rezept "+reznum);
+		//System.out.println("Hole Daten von Patient "+pat_intern+" Rezept "+reznum);
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		if(patient != null){
 			if(Reha.thisClass.patpanel.aktPatID.equals(pat_intern.trim())){
@@ -302,7 +302,7 @@ public class Anmeldungen extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				System.out.println("Suche Patient:"+xpatid+" und Rezept:"+xreznum);
+				//System.out.println("Suche Patient:"+xpatid+" und Rezept:"+xreznum);
 				String s1 = new String("#PATSUCHEN");
 				String s2 = xpatid;
 				PatStammEvent pEvt = new PatStammEvent(getInstance());
@@ -443,9 +443,9 @@ public class Anmeldungen extends JXPanel{
 				umsaetze[idisziplin] = bdgesamt.doubleValue();
 			}
 			/*
-			System.out.println("HB-Werte für Rezept: "+vec.get(1));
-			System.out.println(hbs[0]);
-			System.out.println(hbs[1]);
+			//System.out.println("HB-Werte für Rezept: "+vec.get(1));
+			//System.out.println(hbs[0]);
+			//System.out.println(hbs[1]);
 			*/
 		}
 		
@@ -460,7 +460,7 @@ public class Anmeldungen extends JXPanel{
 			try{
 				erstdate = vec.get(34).split("\\n")[0].split("@")[0];
 				long tage = DatFunk.TageDifferenz(DatFunk.sDatInDeutsch(vec.get(40)),erstdate);
-				System.out.println("Tage = "+tage);
+				//System.out.println("Tage = "+tage);
 				if(tage > 10){
 					return "verspätet";
 				}else{
@@ -473,7 +473,7 @@ public class Anmeldungen extends JXPanel{
 		heutedate = DatFunk.sHeute();
 		lastdate = DatFunk.sDatInDeutsch(vec.get(40));
 		long tage = DatFunk.TageDifferenz(lastdate,heutedate );
-		System.out.println("Tage ohne eingetragene Behandlung "+tage);
+		//System.out.println("Tage ohne eingetragene Behandlung "+tage);
 		if(tage > 10){
 			return "verspätet";
 		}else{

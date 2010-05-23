@@ -40,8 +40,8 @@ public class RehaEventClass {
 
         for (int i=0; i<listeners.length; i+=2) {
             if (listeners[i]==RehaEventListener.class) {
-                System.out.println("Listeners= "+listeners[i]);
-            	//evt.add("DummDödel");
+                //System.out.println("Listeners= "+listeners[i]);
+            	//evt.add("DummDï¿½del");
                 ((RehaEventListener)listeners[i+1]).rehaEventOccurred(evt);
             }
         }

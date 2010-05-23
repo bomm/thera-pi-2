@@ -62,7 +62,7 @@ public class DblCellEditor extends AbstractCellEditor implements KeyListener,Tab
 
         
         // Return the configured component
-        //System.out.println("I've been Called!!");
+        ////System.out.println("I've been Called!!");
         return component;
     }
     
@@ -86,7 +86,7 @@ public class DblCellEditor extends AbstractCellEditor implements KeyListener,Tab
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		if(mitMaus && arg0.getKeyCode()==10){
-			//System.out.println("in Maus + Return gedrückt");
+			////System.out.println("in Maus + Return gedrückt");
 			this.fireEditingStopped();
 		}
 	}

@@ -45,7 +45,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 		String[] zeitentext = {"KG","MA","ER","LO","SP"};
 	public SysUtilRoogleEinstellungen(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilRoogleEinstellungen");
+		//System.out.println("Aufruf SysUtilRoogleEinstellungen");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

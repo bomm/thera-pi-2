@@ -24,7 +24,7 @@ public class ReaderStart{
 					String line;
 					Reha.thisClass.progressStarten(false);							       
 					while ((line = br.readLine()) != null) {
-					     System.out.println("Lade Adobe "+line);
+					     //System.out.println("Lade Adobe "+line);
 					}
 					is.close();
 					isr.close();

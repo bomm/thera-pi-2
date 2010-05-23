@@ -24,8 +24,8 @@ public class IniSample
         INIFile ini = new INIFile("c:\\reha.ini");
         String kollegen =  ini.getStringProperty("Preferences","FeldSet1");
         String[] kolls = kollegen.split(",");
-        System.out.println(kolls.length);
-        System.out.println(kollegen);
+        //System.out.println(kolls.length);
+        //System.out.println(kollegen);
         ini.setStringProperty("Preferences","FeldSet13", "Doofilein2","Preferenz = Doofilein");
         ini.save();
         

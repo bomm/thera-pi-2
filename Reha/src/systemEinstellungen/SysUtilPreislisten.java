@@ -89,7 +89,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	
 	public SysUtilPreislisten(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilPreislisten");
+		//System.out.println("Aufruf SysUtilPreislisten");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -227,7 +227,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	public void keyPressed(KeyEvent e) {
 		String name = ((JComponent)e.getSource()).getName();
 		if(name != null){
-			System.out.println("Listener des Panels ----> TastaturEvent von "+name+" ausgelöst. Gedrückte Taste = "+e.getKeyChar());
+			//System.out.println("Listener des Panels ----> TastaturEvent von "+name+" ausgelöst. Gedrückte Taste = "+e.getKeyChar());
 		}
 		
 	}
@@ -391,7 +391,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				// neu
 				cmd = "insert into "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
 				hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00'";
-				//System.out.println(cmd);
+				////System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
 				
 			}else{
@@ -427,7 +427,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			for(int i = 0;i < delvec.size();i++){
 				cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
 				SqlInfo.sqlAusfuehren(cmd);
-				//System.out.println("Löschen mit Kommando = "+cmd);
+				////System.out.println("Löschen mit Kommando = "+cmd);
 			}
 		}
 		//String[] diszi = {"KG","MA","ER","LO","RH"};
@@ -489,7 +489,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
 	private void setzePreise(Vector preis){
 		Vector tab = modpreis.getDataVector();
-		System.out.println(preis);
+		//System.out.println(preis);
 		boolean mitbezeich = bezeich.isSelected();
 		String posnr;
 		int bisheranzahl;
@@ -599,7 +599,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(vec1.size()<= 0){
 				JOptionPane.showMessageDialog(null,"Bislang sind für -> "+disziplin+" <- keine Preislisten auf dem Server hinterlegt");
 		}else{
-				//System.out.println("Gr��e des Vectors = "+vec1.size());
+				////System.out.println("Gr��e des Vectors = "+vec1.size());
 				//buland = ((String)((Vector)vec1.get(0)).get(0)).trim();
 				//preisgr = ((String)((Vector)vec1.get(0)).get(1)).trim();
 				//vbuland.add(buland);
@@ -718,7 +718,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
 		//String disziplin = jcmb[0].getSelectedItem().toString();
 		int preisgruppe = jcmb[1].getSelectedIndex();
-		//System.out.println("Preisvec = "+preisvec);
+		////System.out.println("Preisvec = "+preisvec);
 		Vector vec = new Vector();
 		int idpos = 0;
 		if(anzahl > 0){
@@ -766,14 +766,14 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		/*
 		if(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()).equals("")){
 			gueltig.setText("  .  .    ");
-			System.out.println("Gültigkeitsdatum nicht angegeben");
+			//System.out.println("Gültigkeitsdatum nicht angegeben");
 		}else{
 			gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));			
 		}
 		*/
 		if(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe).equals("")){
 			gueltig.setText("  .  .    ");
-			System.out.println("Gültigkeitsdatum nicht angegeben");
+			//System.out.println("Gültigkeitsdatum nicht angegeben");
 		}else{
 			gueltig.setText(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe));			
 		}

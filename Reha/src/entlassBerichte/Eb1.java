@@ -211,7 +211,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		}
 		buf.append("ARZT1,ARZT2,ARZT3,");
 		buf.append("UNTDAT from bericht2 where berichtid='"+berichtid+"'");
-		//System.out.println(buf.toString());
+		////System.out.println(buf.toString());
 		holeSatz(buf);
 	}
 	
@@ -221,7 +221,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		"F_74,F_79,F_80,F_81,F_82,F_87,F_88,F_89,F_90,F_95,F_96,F_97,F_98,F_103,F_104,F_105,"+
 		"F_106,F_111,F_112,F_113 from bericht2 where berichtid='"+Integer.toString(vorbericht)+"' LIMIT 1";
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
-		System.out.println(vec);
+		//System.out.println(vec);
 		if(vec.size() > 0){
 			try{
 				for(int i = 0; i < 7;i++){
@@ -310,9 +310,9 @@ public class Eb1 implements ActionListener,ComponentListener {
 				}
 			}
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -1695,13 +1695,13 @@ public class Eb1 implements ActionListener,ComponentListener {
 		}
 	}
 	public void testeIK(){
-		System.out.println(SystemConfig.vGutachtenAbsAdresse);
+		//System.out.println(SystemConfig.vGutachtenAbsAdresse);
 		eltern.btf[28].setText(SystemConfig.vGutachtenIK.get(eltern.cbktraeger.getSelectedIndex()));		
 		eltern.btf[28].validate();
 		eltern.btf[28].repaint();
 	}
 	public void setzeNeueLabels(boolean neu){
-		System.out.println("Setze neue Labels");
+		//System.out.println("Setze neue Labels");
 		for(int i = 0; i < 17; i++){
 			for(int t = 0; t < labstitel[i].length; t++){
 				if(neu){
@@ -1740,7 +1740,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 			return;
 		}
 		eltern.ebtab.revalidate();
-		System.out.println("Aufruf refreshSize in EB1");
+		//System.out.println("Aufruf refreshSize in EB1");
 		jscr.validate();
 		pan.revalidate();
 		//pan.setVisible(true);

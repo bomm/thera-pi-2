@@ -51,7 +51,7 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 	private boolean kalNeuEnde = false;
 	public SysUtilKalendereinstell(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilKalendereinstell");
+		//System.out.println("Aufruf SysUtilKalendereinstell");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

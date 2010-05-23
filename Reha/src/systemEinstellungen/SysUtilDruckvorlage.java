@@ -113,7 +113,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 
 	public SysUtilDruckvorlage(){
 		super(new GridLayout(1,1));
-		//System.out.println("Aufruf SysUtilDruckvorlage");
+		////System.out.println("Aufruf SysUtilDruckvorlage");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -520,7 +520,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
             File inputVerzFile = chooser.getSelectedFile();
             //String inputVerzStr = inputVerzFile.getPath();
             
-            //System.out.println("Eingabepfad:" + inputVerzStr);
+            ////System.out.println("Eingabepfad:" + inputVerzStr);
             if(inputVerzFile.getName().trim().equals("")){
             	vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
             }else{
@@ -536,7 +536,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		IDocumentService documentService = null;
 		String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+vorlagenname.getText().trim();
 		//String url = urlx.replaceAll("/", "\\\\");
-		//System.out.println("Url = -------------->"+url);
+		////System.out.println("Url = -------------->"+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
@@ -596,7 +596,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 	}	
 	private void testDruck(){
 		String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+vorlagenname.getText().trim(); 
-		//System.out.println("***************URL = "+url+"****************");
+		////System.out.println("***************URL = "+url+"****************");
 		String terminDrucker = (String) druckername.getSelectedItem();
 		Vector<TermObjekt> termindat = new Vector<TermObjekt>();
 		termindat.add(new TermObjekt("Mo-01.12.2008","14:25","Fräulein Smilla...","2008-12-0114:00"));
@@ -680,7 +680,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		int x = 0;
 		for(int i=AnzahlTabellen;i>0;i--){
 			tabName[x] = tbl[(tbl.length-1)-x].getName(); 
-			//System.out.println(tabName[x]);
+			////System.out.println(tabName[x]);
 			x++;
 		}
 		/*********************/
@@ -769,7 +769,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				}
 				for (int i = 0; i < placeholders.length; i++) {
 					String placeholderDisplayText = placeholders[i].getDisplayText();
-					//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+					////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 					if(placeholderDisplayText.equals("<^Name^>")){
 						placeholders[i].getTextRange().setText(patname);
 					}	
@@ -815,7 +815,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 					thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}
 				aktTerminInTabelle = 0;
-				//System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
+				////System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
 			}
 
 			/************Wenn die aktuelle Seite voll ist******************/
@@ -835,7 +835,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				x = 0;
 				for(int i=AnzahlTabellen;i>0;i--){
 					tabName[x] = tbl[(tbl.length-1)-x].getName(); 
-					//System.out.println(tabName[x]);
+					////System.out.println(tabName[x]);
 					x++;
 				}
 				
@@ -855,7 +855,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				        textRanges[0].setText(patname);
 					}
 					*/
-					//System.out.println("Suche ersetze durchgef�hrt*************");
+					////System.out.println("Suche ersetze durchgef�hrt*************");
 				      ITextFieldService textFieldService = textDocument.getTextFieldService();
 				      ITextField[] placeholders = null;
 						try {
@@ -866,7 +866,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 						}
 						for (int i = 0; i < placeholders.length; i++) {
 							String placeholderDisplayText = placeholders[i].getDisplayText();
-							//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+							////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 							if(placeholderDisplayText.equals("<^Name^>")){
 								placeholders[i].getTextRange().setText(patname);
 							}	
@@ -885,8 +885,8 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 					e.printStackTrace();
 					thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}
-				//System.out.println("textTable gesetzt*************");
-				//System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
+				////System.out.println("textTable gesetzt*************");
+				////System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
 			}
 			/********************/
 			/*public String tag;

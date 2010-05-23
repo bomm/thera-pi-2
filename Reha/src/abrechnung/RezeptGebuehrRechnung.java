@@ -230,7 +230,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		//System.out.println("Starte Datei -> "+url);
+		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
@@ -263,7 +263,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			    	  try{
 			    		  
 			    	  }catch(com.sun.star.uno.RuntimeException ex){
-			    		  System.out.println("Fehler bei "+placeholderDisplayText);
+			    		  //System.out.println("Fehler bei "+placeholderDisplayText);
 			    	  }
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 

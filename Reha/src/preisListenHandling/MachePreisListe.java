@@ -46,7 +46,7 @@ public class MachePreisListe {
 					vec.get(i).get(0)+"', kuerzel='"+vec.get(i).get(1)+"', t_pos='"+
 					vec.get(i).get(2+((i2-1)*4))+"', t_akt='"+preis_akt+"', "+
 					"t_alt='"+preis_alt+"', id='"+vec.get(i).get(35)+"'";
-					System.out.println(cmd);
+					//System.out.println(cmd);
 					SqlInfo.sqlAusfuehren(cmd);
 				}
 			}
@@ -72,7 +72,7 @@ public class MachePreisListe {
 					vec.get(i).get(0)+"', kuerzel='"+vec.get(i).get(1)+"', t_pos='"+
 					vec.get(i).get(2+((i2-1)*4))+"', t_akt='"+preis_akt+"', "+
 					"t_alt='"+preis_alt+"', id='"+vec.get(i).get(35)+"'";
-					System.out.println(cmd);
+					//System.out.println(cmd);
 					SqlInfo.sqlAusfuehren(cmd);
 				}
 			}
@@ -95,7 +95,7 @@ public class MachePreisListe {
 					vec.get(i).get(0)+"', kuerzel='"+vec.get(i).get(1)+"', t_pos='"+
 					vec.get(i).get(2+((i2-1)*4))+"', t_akt='"+preis_akt+"', "+
 					"t_alt='"+preis_alt+"', id='"+vec.get(i).get(35)+"'";
-					System.out.println(cmd);
+					//System.out.println(cmd);
 					SqlInfo.sqlAusfuehren(cmd);
 				}
 			}
@@ -119,7 +119,7 @@ public class MachePreisListe {
 					vec.get(i).get(0)+"', kuerzel='"+vec.get(i).get(1)+"', t_pos='"+
 					vec.get(i).get(2+((i2-1)*4))+"', t_akt='"+preis_akt+"', "+
 					"t_alt='"+preis_alt+"', id='"+vec.get(i).get(35)+"'";
-					System.out.println(cmd);
+					//System.out.println(cmd);
 					SqlInfo.sqlAusfuehren(cmd);
 				}
 			}
@@ -143,7 +143,7 @@ public class MachePreisListe {
 					vec.get(i).get(0)+"', kuerzel='"+vec.get(i).get(1)+"', t_pos='"+
 					vec.get(i).get(2+((i2-1)*4))+"', t_akt='"+preis_akt+"', "+
 					"t_alt='"+preis_alt+"', id='"+vec.get(i).get(35)+"'";
-					System.out.println(cmd);
+					//System.out.println(cmd);
 					SqlInfo.sqlAusfuehren(cmd);
 				}
 			}

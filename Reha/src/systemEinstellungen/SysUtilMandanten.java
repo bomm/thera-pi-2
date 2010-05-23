@@ -115,7 +115,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		
 	public SysUtilMandanten(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilMandanten");
+		//System.out.println("Aufruf SysUtilMandanten");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -396,7 +396,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println(e.getKeyCode());
+		//System.out.println(e.getKeyCode());
 		if(e.getKeyCode() == 10){
 			e.consume();
 		}
@@ -689,7 +689,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		// TODO Auto-generated method stub
 		if(arg0.getSource() instanceof JRtaTextField){
 			Rectangle rec1 =((JComponent)arg0.getSource()).getBounds();
-			System.out.println("Rec1 = "+rec1);
+			//System.out.println("Rec1 = "+rec1);
 			Rectangle rec2 = jscr.getViewport().getViewRect();
 			JViewport vp = jscr.getViewport();
 			Rectangle rec3 = vp.getVisibleRect();
@@ -703,7 +703,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 
 			jscr.validate();
 			//vp.s
-			//System.out.println("Rec2 = "+rec2);
+			////System.out.println("Rec2 = "+rec2);
 			//jscr.scrollRectToVisible(rec1);
 			
 			//((JComponent)arg0.getSource()).scrollRectToVisible(rec2);
@@ -726,7 +726,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
   	verzeichnis.mkdirs();	
   	}
   	catch (Exception e){
-  		System.out.println ( "Fehler: " +e.getMessage());
+  		//System.out.println ( "Fehler: " +e.getMessage());
   	}	
   	}//Ende erstellen
   	

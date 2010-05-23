@@ -332,8 +332,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			
 		}
 		String javaPfad = java.lang.System.getProperty("java.home").replaceAll("\\\\","/");
-		System.out.println("Die JavaVersion = "+java.lang.System.getProperty("java.version"));
-		System.out.println("Der Pfad zu Java = "+javaPfad);
+		//System.out.println("Die JavaVersion = "+java.lang.System.getProperty("java.version"));
+		//System.out.println("Der Pfad zu Java = "+javaPfad);
 		if(args.length > 0){
 			String[] split = args[0].split("@");
 			aktIK = split[0];
@@ -346,12 +346,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			aktMandant = inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+DefaultMandant);			
 		}
 		Titel2 = "  -->  [Mandant: "+aktMandant+"]";
-		System.out.println(Titel2);
+		//System.out.println(Titel2);
 		/**************************/
 		new Thread(){
 			public  void run(){
 				try {
-					//System.out.println("Starte SocketServer");
+					////System.out.println("Starte SocketServer");
 					RehaSock = new RehaSockServer();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -372,7 +372,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					String line;
 						       
 			       while ((line = br.readLine()) != null) {
-			         //System.out.println("Lese Socket "+line);
+			         ////System.out.println("Lese Socket "+line);
 			       }
 			       is.close();
 			       isr.close();
@@ -384,7 +384,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}		
 		}.start();
 		
-		//System.out.println("starte RehaxSwing");
+		////System.out.println("starte RehaxSwing");
 		int i=0;
 		while(warten && i < 50){
 		try {
@@ -404,7 +404,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}else{
-			//System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+			////System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
 		}	
 		f = new File(javaPfad+"/lib/ext/comm.jar");
 		if(! f.exists()){
@@ -415,7 +415,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}else{
-			//System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
+			////System.out.println("Systemdateien comm.jar existiert bereits, kopieren nicht erforderlich");
 		}
 		f = new File(javaPfad+"/lib/javax.comm.properties");
 		if(! f.exists()){
@@ -426,7 +426,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}else{
-			//System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
+			////System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
 		new Thread(){
 			public void run(){
@@ -457,7 +457,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}.start();
 		*/
 
-		//System.out.println("RehaxSwing wurde gestartet");
+		////System.out.println("RehaxSwing wurde gestartet");
 		/*********/
 			SystemConfig sysConf = new SystemConfig();
 			setSystemConfig(sysConf);
@@ -535,7 +535,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 				application.getJFrame();
 				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/pi.png" ) );
-				//System.out.println("ProgHome = "+Reha.proghome);
+				////System.out.println("ProgHome = "+Reha.proghome);
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();
 		   		//Reha.starteOfficeApplication();
@@ -547,7 +547,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws java.lang.Exception {
-				//System.out.println("poste INITENDE über Socket");
+				////System.out.println("poste INITENDE über Socket");
 				new SocketClient().setzeInitStand("INITENDE");
 				return null;
 			}
@@ -827,10 +827,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	public void aktiviereNaechsten(int welchen){
 		JInternalFrame[] frame = desktops[welchen].getAllFrames();
-		//System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+		////System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 		if(frame.length > 0){
 			for(int i = 0; i < frame.length;i++){
-				//System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+				////System.out.println("InternalFrames übrig = "+frame[i].getTitle());
 				((JRehaInternal)frame[0]).toFront();
 				((JRehaInternal)frame[0]).setActive(true);
 				((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -840,7 +840,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			if(welchen==0){
 				frame = desktops[1].getAllFrames();
 				for(int i = 0; i < frame.length;i++){
-					//System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					////System.out.println("InternalFrames übrig = "+frame[i].getTitle());
 					((JRehaInternal)frame[0]).toFront();
 					((JRehaInternal)frame[0]).setActive(true);
 					((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -850,7 +850,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}else{
 				frame = desktops[0].getAllFrames();
 				for(int i = 0; i < frame.length;i++){
-					//System.out.println("InternalFrames übrig = "+frame[i].getTitle());
+					////System.out.println("InternalFrames übrig = "+frame[i].getTitle());
 					((JRehaInternal)frame[0]).toFront();
 					((JRehaInternal)frame[0]).setActive(true);
 					((JRehaInternal)frame[0]).getContent().requestFocus();
@@ -1091,8 +1091,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	    rehaEvent.addRehaEventListener(new RehaEventListener() {
 			@Override
 			public void RehaEventOccurred(RehaEvent evt) {
-				System.out.println("Event getSource: = "+evt.getSource());
-				System.out.println("Event Nachricht: = "+ evt.getRehaEvent());				
+				//System.out.println("Event getSource: = "+evt.getSource());
+				//System.out.println("Event Nachricht: = "+ evt.getRehaEvent());				
 			}
 	    });
 		*/
@@ -1262,7 +1262,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				      for (int i = 0; i < flavors.length; i++){
 				        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]).toString());
 				      }
-				      //System.out.println("Es wurde mitgebracht -> "+mitgebracht);
+				      ////System.out.println("Es wurde mitgebracht -> "+mitgebracht);
 				      if(mitgebracht.indexOf("°") >= 0){
 			    		  String[] labs = mitgebracht.split("°");
 				    	  if(labs[0].contains("TERMDAT")){
@@ -1556,7 +1556,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					Runtime r = Runtime.getRuntime();
 				    r.gc();
 				    long freeMem = r.freeMemory();
-				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 					if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
 						if(Reha.DbOk){
 							if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
@@ -1727,7 +1727,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						jry.addComponentListener(Reha.thisClass);
 						jry.setVisible(true);
 						Reha.thisClass.desktops[1].add(jry);
-						//System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[1].getComponentCount());
+						////System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[1].getComponentCount());
 						try {
 							jry.setSelected(true);
 						} catch (PropertyVetoException e) {
@@ -1776,7 +1776,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
         try
         {
-        	System.out.println("**********Open-Office wird gestartet***************");
+        	//System.out.println("**********Open-Office wird gestartet***************");
             String path = OPEN_OFFICE_ORG_PATH;
             Map <String, String>config = new HashMap<String, String>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
@@ -1791,7 +1791,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
             	      if (docs.length == 1) { 
             	        docs[0].close();
-            	        System.out.println("Letztes Dokument wurde geschlossen");
+            	        //System.out.println("Letztes Dokument wurde geschlossen");
             	      }
             	    }
             	    catch (DocumentException e) {
@@ -1803,14 +1803,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					}
             	  }
             	});
-            System.out.println("Open-Office wurde gestartet");
-            System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
+            //System.out.println("Open-Office wurde gestartet");
+            //System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
             
             new SwingWorker<Void,Void>(){
 
 				@Override
 				protected Void doInBackground() throws Exception {
-            		//System.out.println("OpenOffice -> Aufruf");
+            		////System.out.println("OpenOffice -> Aufruf");
           
             		Reha.thisClass.Rehaprogress.setIndeterminate(false);
             	    if(Reha.DbOk){
@@ -1884,7 +1884,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     if(keyEvent.isControlDown() &&
                     		keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==75) {  // Ctrl-K
     					JComponent kasse = AktiveFenster.getFensterAlle("KrankenKasse");
-    					//System.out.println("Krankenkassen einlesen");
+    					////System.out.println("Krankenkassen einlesen");
                     }
                     if(keyEvent.isControlDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
@@ -1926,7 +1926,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				// TODO Auto-generated method stub
 				MouseEvent mouseEvent = (MouseEvent) event;
 				if(event instanceof MouseEvent) {
-            		System.out.println("MausEvent = "+event);
+            		//System.out.println("MausEvent = "+event);
             	}
 			}
         	
@@ -2092,39 +2092,39 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("MausClick"+arg0);
+		////System.out.println("MausClick"+arg0);
 		
 	}
 
 
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Reha->Maus eingetreten->"+arg0.getSource());
+		////System.out.println("Reha->Maus eingetreten->"+arg0.getSource());
 	}
 
 
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Reha->Maus verlassen->"+arg0.getSource());		
+		////System.out.println("Reha->Maus verlassen->"+arg0.getSource());		
 	}
 
 
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Reha->Maus Taste gedr�ckt->"+arg0.getSource());
+		////System.out.println("Reha->Maus Taste gedr�ckt->"+arg0.getSource());
 	}
 
 
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Reha->Maus Taste losgelassen->"+arg0.getSource());		
+		////System.out.println("Reha->Maus Taste losgelassen->"+arg0.getSource());		
 	}
 /************Motion für DragEvent******************/
 
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("MausDragged"+arg0);
-		//System.out.println("Reha->Maus Taste drag->"+arg0.getSource());		
+		////System.out.println("MausDragged"+arg0);
+		////System.out.println("Reha->Maus Taste drag->"+arg0.getSource());		
 	}
 
 
@@ -2154,12 +2154,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 
 	public void rehaEventOccurred(RehaEvent evt) {
-		//System.out.println("Reha thisClass Event getSource: = "+evt.getSource());
-		//System.out.println("Reha thisClass Event Nachricht: = "+ evt.getRehaEvent());	
+		////System.out.println("Reha thisClass Event getSource: = "+evt.getSource());
+		////System.out.println("Reha thisClass Event Nachricht: = "+ evt.getRehaEvent());	
 		if(evt.getRehaEvent().equals("PatSuchen")){
-//			System.out.println("Event getSource.getDetails: = "+((RehaEvent) evt.getSource()).getDetails());
-			//System.out.println("Reha thisClass Event getDetails[0]: = "+evt.getDetails()[0]);
-			//System.out.println("Reha thisClass Event getDetails[1]: = "+evt.getDetails()[1]);			
+//			//System.out.println("Event getSource.getDetails: = "+((RehaEvent) evt.getSource()).getDetails());
+			////System.out.println("Reha thisClass Event getDetails[0]: = "+evt.getDetails()[0]);
+			////System.out.println("Reha thisClass Event getDetails[1]: = "+evt.getDetails()[1]);			
 		}
 	}
 	static Component WerHatFocus(){
@@ -2203,16 +2203,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 
 			JInternalFrame[] frame = desktops[0].getAllFrames();
-			//System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+			////System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 			for(int i = 0; i < frame.length;i++){
-				//System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
+				////System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
 				frame[i].dispose();
 				frame[i] = null;
 			}
 			frame = desktops[1].getAllFrames();
-			//System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
+			////System.out.println("Es gibt noch insgesamt "+frame.length+" in diesem Desktop");
 			for(int i = 0; i < frame.length;i++){
-				//System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
+				////System.out.println("InternalFrames wird geschlossen = "+frame[i].getTitle());
 				frame[i].dispose();
 				frame[i] = null;
 			}
@@ -2253,15 +2253,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	@Override
 	public void windowStateChanged(WindowEvent arg0) {
-		//System.out.println("WindowStateEvent: "+arg0);
+		////System.out.println("WindowStateEvent: "+arg0);
 	}
 	@Override
 	public void focusGained(FocusEvent e) {
-		//System.out.println("fokus erhalten "+e);
+		////System.out.println("fokus erhalten "+e);
 	}
 	@Override
 	public void focusLost(FocusEvent e) {
-		//System.out.println("fokus verloren "+e);
+		////System.out.println("fokus verloren "+e);
 	}
 	@Override
 	public void componentShown(ComponentEvent arg0) {
@@ -2338,7 +2338,7 @@ class Hintergrund extends JDesktopPane implements ComponentListener{
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
 	if(cmd.equals("patient")){
-		//System.out.println("ActionListener patient");
+		////System.out.println("ActionListener patient");
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -2351,12 +2351,12 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("kasse")){
-		//System.out.println("ActionListener kasse");		
+		////System.out.println("ActionListener kasse");		
 		Reha.thisClass.progLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
 		return;
 	}
 	if(cmd.equals("arzt")){
-		//System.out.println("ActionListener arzt");	
+		////System.out.println("ActionListener arzt");	
 		Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 		return;
 	}
@@ -2416,7 +2416,7 @@ final class DatenbankStarten implements Runnable{
 		try{
 			if (sDB=="SQL"){
 				new SocketClient().setzeInitStand("Datenbanktreiber installieren");
-        		//System.out.println(sDB+" Treiber gestartet");
+        		////System.out.println(sDB+" Treiber gestartet");
 				Class.forName(SystemConfig.vDatenBank.get(0).get(0)).newInstance();
 			}/*else{
 				Class.forName(SystemConfig.vDatenBank.get(1).get(0)).newInstance();
@@ -2443,9 +2443,9 @@ final class DatenbankStarten implements Runnable{
 
 	        	} 
 	        	catch (final SQLException ex) {
-	        		System.out.println("SQLException: " + ex.getMessage());
-	        		System.out.println("SQLState: " + ex.getSQLState());
-	        		System.out.println("VendorError: " + ex.getErrorCode());
+	        		//System.out.println("SQLException: " + ex.getMessage());
+	        		//System.out.println("SQLState: " + ex.getSQLState());
+	        		//System.out.println("VendorError: " + ex.getErrorCode());
 	        		Reha.DbOk = false;
 	        		int nochmals = JOptionPane.showConfirmDialog(null,"Die Datenbank konnte nicht gestartet werden, erneuter Versuch?","Wichtige Benuterzinfo",JOptionPane.YES_NO_OPTION);
 	        		if(nochmals == JOptionPane.YES_OPTION){
@@ -2500,7 +2500,7 @@ final class DatenbankStarten implements Runnable{
 				 
 				new SocketClient().setzeInitStand("Datenbank starten");
 
-				//System.out.println("Connection ok");
+				////System.out.println("Connection ok");
 				new SocketClient().setzeInitStand("Datenbank ok");
 
 				ParameterLaden.Init();
@@ -2571,7 +2571,7 @@ final class DatenbankStarten implements Runnable{
 					try {
 						new BarCodeScanner(SystemConfig.sBarcodeCom);
 					} catch (Exception e) {
-						//System.out.println("Barcode-Scanner konnte nicht installiert werden");
+						////System.out.println("Barcode-Scanner konnte nicht installiert werden");
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 					}
@@ -2580,7 +2580,7 @@ final class DatenbankStarten implements Runnable{
 				Vector<Vector<String>> vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
 				Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
 				Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
-				System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
+				//System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);
 				SystemConfig.FirmenDaten();			
 				new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
 				SystemConfig.GutachtenInit();
@@ -2629,9 +2629,9 @@ final class DbNachladen implements Runnable{
     		Reha.DbOk = true;
     	} 
     	catch (final SQLException ex) {
-    		System.out.println("SQLException: " + ex.getMessage());
-    		System.out.println("SQLState: " + ex.getSQLState());
-    		System.out.println("VendorError: " + ex.getErrorCode());
+    		//System.out.println("SQLException: " + ex.getMessage());
+    		//System.out.println("SQLState: " + ex.getSQLState());
+    		//System.out.println("VendorError: " + ex.getErrorCode());
     		Reha.DbOk = false;
     		int nochmals = JOptionPane.showConfirmDialog(null,"Wiederherstellung der Datenbankverbindung - erfolglos!\nErneut versuchen?","Wichtige Benuterzinfo",JOptionPane.YES_NO_OPTION);
     		if(nochmals == JOptionPane.YES_OPTION){
@@ -2718,43 +2718,43 @@ final class PreisListenLaden implements Runnable{
 		SystemPreislisten.ladePreise("Common");
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
 		/*
-		System.out.println(SystemPreislisten.vKGPreise);
-		System.out.println(SystemPreislisten.vKGPreise.get(0));
-		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
-		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
-		System.out.println("*************************************************************");
-		System.out.println(SystemPreislisten.hmPreise.get("Physio"));
-		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
-		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
-		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
-		System.out.println("******Benötigte Zeit zum Einlesen aller Preislisten = "+(System.currentTimeMillis()-zeit)+" Millisekunden");
+		//System.out.println(SystemPreislisten.vKGPreise);
+		//System.out.println(SystemPreislisten.vKGPreise.get(0));
+		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
+		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
+		//System.out.println("*************************************************************");
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio"));
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
+		//System.out.println("******Benötigte Zeit zum Einlesen aller Preislisten = "+(System.currentTimeMillis()-zeit)+" Millisekunden");
 		*/
 		/*
-		System.out.println(SystemPreislisten.vKGPreise);
-		System.out.println(SystemPreislisten.vKGPreise.get(0));
-		System.out.println(SystemPreislisten.vKGPreise.get(1));
-		System.out.println(SystemPreislisten.vKGPreise.get(2));
-		System.out.println(SystemPreislisten.vKGPreise.get(3));
-		System.out.println(SystemPreislisten.vKGPreise.get(4));
+		//System.out.println(SystemPreislisten.vKGPreise);
+		//System.out.println(SystemPreislisten.vKGPreise.get(0));
+		//System.out.println(SystemPreislisten.vKGPreise.get(1));
+		//System.out.println(SystemPreislisten.vKGPreise.get(2));
+		//System.out.println(SystemPreislisten.vKGPreise.get(3));
+		//System.out.println(SystemPreislisten.vKGPreise.get(4));
 
-		System.out.println(SystemPreislisten.vKGPreise);
-		System.out.println(SystemPreislisten.vKGPreise.get(0));
-		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
-		System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
-		System.out.println("*************************************************************");
-		System.out.println(SystemPreislisten.hmPreise.get("Physio"));
-		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
-		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
-		System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
+		//System.out.println(SystemPreislisten.vKGPreise);
+		//System.out.println(SystemPreislisten.vKGPreise.get(0));
+		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
+		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
+		//System.out.println("*************************************************************");
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio"));
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
+		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
 
-		System.out.println(SystemPreislisten.hmPreisGruppen.get("Physio"));
-		System.out.println(SystemPreislisten.hmPreisBereich.get("Physio"));
-		System.out.println(SystemPreislisten.hmZuzahlRegeln.get("Physio"));
-		System.out.println(SystemPreislisten.hmHMRAbrechnung.get("Physio"));
-		System.out.println(SystemPreislisten.hmNeuePreiseAb.get("Physio"));
-		System.out.println(SystemPreislisten.hmNeuePreiseRegel.get("Physio"));
-		System.out.println(SystemPreislisten.hmHBRegeln.get("Physio"));
-		System.out.println(SystemPreislisten.hmBerichtRegeln.get("Physio"));
+		//System.out.println(SystemPreislisten.hmPreisGruppen.get("Physio"));
+		//System.out.println(SystemPreislisten.hmPreisBereich.get("Physio"));
+		//System.out.println(SystemPreislisten.hmZuzahlRegeln.get("Physio"));
+		//System.out.println(SystemPreislisten.hmHMRAbrechnung.get("Physio"));
+		//System.out.println(SystemPreislisten.hmNeuePreiseAb.get("Physio"));
+		//System.out.println(SystemPreislisten.hmNeuePreiseRegel.get("Physio"));
+		//System.out.println(SystemPreislisten.hmHBRegeln.get("Physio"));
+		//System.out.println(SystemPreislisten.hmBerichtRegeln.get("Physio"));
 		*/
 
 		Reha.thisClass.setzeInitEnde();
@@ -2815,7 +2815,7 @@ class SocketClient {
 
 		output.write(bytes);
 		output.flush();
-		//System.out.println("Schreibe auf socket -> "+this.stand);
+		////System.out.println("Schreibe auf socket -> "+this.stand);
 		int zahl = input.available();
 		if (zahl > 0){
 			byte[] lesen = new byte[zahl];
@@ -2852,7 +2852,7 @@ class RehaSockServer{
 	RehaSockServer() throws IOException{
 		try {
 			serv = new ServerSocket(1235);
-			//System.out.println("Reha SocketServer gestartet auf Port 1235");
+			////System.out.println("Reha SocketServer gestartet auf Port 1235");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -2878,7 +2878,7 @@ class RehaSockServer{
 				sb.append(b);
 			}
 			test = new String(sb);
-			//System.out.println("Socket= "+test);			
+			////System.out.println("Socket= "+test);			
 			final String xtest = test;
 			if(xtest.equals("INITENDE")){
 						byte[] schreib = "ok".getBytes();
@@ -2893,7 +2893,7 @@ class RehaSockServer{
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}								
-						//System.out.println("INITENDE-angekommen");
+						////System.out.println("INITENDE-angekommen");
 						Reha.warten = false;
 						break;
 			}else{
@@ -2912,9 +2912,9 @@ class RehaSockServer{
 		if(serv != null){
 			serv.close();
 			serv = null;
-			//System.out.println("Socket wurde geschlossen");
+			////System.out.println("Socket wurde geschlossen");
 		}else{
-			//System.out.println("Socket war bereits geschlossen");
+			////System.out.println("Socket war bereits geschlossen");
 		}
 		return;
 	}
@@ -2946,9 +2946,9 @@ final class HilfeDatenbankStarten implements Runnable{
 	        			(Connection) DriverManager.getConnection(SystemConfig.hmHilfeServer.get("HilfeDBLogin"),
 	        					SystemConfig.hmHilfeServer.get("HilfeDBUser"),SystemConfig.hmHilfeServer.get("HilfeDBPassword"));
 	    }catch (final SQLException ex) {
-	        		System.out.println("SQLException: " + ex.getMessage());
-	        		System.out.println("SQLState: " + ex.getSQLState());
-	        		System.out.println("VendorError: " + ex.getErrorCode());
+	        		//System.out.println("SQLException: " + ex.getMessage());
+	        		//System.out.println("SQLState: " + ex.getSQLState());
+	        		//System.out.println("VendorError: " + ex.getErrorCode());
 	        		Reha.HilfeDbOk = false;
 	        		return;
 	    }

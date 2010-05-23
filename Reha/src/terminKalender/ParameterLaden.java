@@ -51,7 +51,7 @@ public static int suchen(String ss){
 	int lang = vKKollegen.size();
 	int i;
 	for (i=0;i<lang;i++){
-		//System.out.println(vKKollegen.get(i).Matchcode);
+		////System.out.println(vKKollegen.get(i).Matchcode);
 		if(vKKollegen.get(i).Matchcode.equals(ss)){
 			ret = i;
 			break;
@@ -68,7 +68,7 @@ public static String getKollegenUeberReihe(int reihe){
 	int lang = vKKollegen.size();
 	int i;
 	for (i=0;i<lang;i++){
-		//System.out.println(vKKollegen.get(i).Matchcode);
+		////System.out.println(vKKollegen.get(i).Matchcode);
 		if(vKKollegen.get(i).Reihe == reihe){
 			ret = vKKollegen.get(i).Matchcode;
 			break;
@@ -86,7 +86,7 @@ public static String getKollegenUeberDBZeile(int reihe){
 	int lang = vKKollegen.size();
 	int i;
 	for (i=0;i<lang;i++){
-		//System.out.println(vKKollegen.get(i).Matchcode);
+		////System.out.println(vKKollegen.get(i).Matchcode);
 		if(vKKollegen.get(i).Reihe == reihe){
 			ret = vKKollegen.get(i).Matchcode;
 			break;
@@ -227,15 +227,15 @@ public static void Init(){
 		 	durchlauf++;
 		}
 	 	Collections.sort(vKKollegen);
-	 	//System.out.println(vKKollegen);
+	 	////System.out.println(vKKollegen);
 	 	
-	 	//System.out.println("Index von a-Wolf = "+suchen("Verwaltung"));
+	 	////System.out.println("Index von a-Wolf = "+suchen("Verwaltung"));
 		}catch(SQLException ex){
-			System.out.println("Kollegen1="+ex);
+			//System.out.println("Kollegen1="+ex);
 			  
 		}
 	}catch(SQLException ex){
-		System.out.println("Kollegen2="+ex);
+		//System.out.println("Kollegen2="+ex);
 	}
 	finally {
 		if (rs != null) {
@@ -313,7 +313,7 @@ public static void Passwort() {
 			 			 	
 	 		}catch(Exception ex){
 
-	 			System.out.println("Fehler in der Entschlüsselung");
+	 			//System.out.println("Fehler in der Entschlüsselung");
 			 	aKollegen.add("none");
 			 	aKollegen.add("none");
 			 	aKollegen.add("none");
@@ -330,11 +330,11 @@ public static void Passwort() {
 
 
 		}catch(SQLException ex){
-			System.out.println("Kollegen1="+ex);
+			//System.out.println("Kollegen1="+ex);
 			  
 		}
 	}catch(SQLException ex){
-		System.out.println("Kollegen2="+ex);
+		//System.out.println("Kollegen2="+ex);
 	}
 	finally {
 		if (rs != null) {
@@ -477,11 +477,11 @@ public static void PreiseEinlesen(String preisklasse) {
 		
 
 		}catch(SQLException ex){
-			System.out.println("Kollegen1="+ex);
+			//System.out.println("Kollegen1="+ex);
 			  
 		}
 	}catch(SQLException ex){
-		System.out.println("Kollegen2="+ex);
+		//System.out.println("Kollegen2="+ex);
 	}
 	finally {
 		if (rs != null) {

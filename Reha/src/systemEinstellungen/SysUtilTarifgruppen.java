@@ -78,7 +78,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	JLabel lbltgruppe = null; 
 	public SysUtilTarifgruppen(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilKalenderanlagen");
+		//System.out.println("Aufruf SysUtilKalenderanlagen");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 5));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -522,10 +522,10 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		JComponent component = new JFormattedTextField();
 	   public TitelEditor(){
 		   //component = new JRtaTextField("NIX",true);
-		   System.out.println("editor-Component wurde initialisiert");
+		   //System.out.println("editor-Component wurde initialisiert");
 		   component.addKeyListener(new KeyAdapter(){
 			   public void keyPressed(KeyEvent arg0) {
-					System.out.println("********Button in KeyPressed*********");	
+					//System.out.println("********Button in KeyPressed*********");	
 					if(arg0.getKeyCode()== 10){
 						arg0.consume();
 						stopCellEditing();
@@ -556,21 +556,21 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	            	 return false;
 	             }
 	          }
-			System.out.println("isCellEditable");
+			//System.out.println("isCellEditable");
 			return true;
 		}
 
 
 		@Override
 		public boolean shouldSelectCell(EventObject anEvent) {
-			System.out.println("in schouldCellSelect"+anEvent);
+			//System.out.println("in schouldCellSelect"+anEvent);
 			return super.shouldSelectCell(anEvent);
 		}
 
 		@Override
 		public boolean stopCellEditing() {
 			value = ((JFormattedTextField) component).getText();
-			System.out.println("in stopCellediting");
+			//System.out.println("in stopCellediting");
 			super.stopCellEditing();
 			return true;
 		}

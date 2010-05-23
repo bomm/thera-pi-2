@@ -227,11 +227,11 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 					rtp = null;
 					this.dispose();
 					super.dispose();
-					System.out.println("****************Ausfallrechnung -> Listener entfernt**************");				
+					//System.out.println("****************Ausfallrechnung -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -243,7 +243,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			pinPanel = null;
 			dispose();
 			super.dispose();
-			System.out.println("****************Ausfallrechnung -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Ausfallrechnung -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -293,7 +293,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		buf.append("rgesamt='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
 		buf.append("roffen='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
-		//System.out.println(buf.toString());
+		////System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());
 	}
 	private void macheMemoEintrag(){
@@ -339,8 +339,8 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				inpos = LeistungTools.getLeistung(sart, spos,preisgruppe);	
 				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
 				SystemConfig.hmAdrAFRDaten.put(mapkurz,inpos[1]);
-				//System.out.println(inpos[0]);
-				//System.out.println(inpos[1]);
+				////System.out.println(inpos[0]);
+				////System.out.println(inpos[1]);
 				
 			}else{
 				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
@@ -372,7 +372,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 				this.dispose();
 			}
 
-			System.out.println("Return Gedrückt");
+			//System.out.println("Return Gedrückt");
 		}
 		if(event.getKeyCode()==27){
 			this.dispose();
@@ -380,7 +380,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	}
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
-		System.out.println("Starte Datei -> "+url);
+		//System.out.println("Starte Datei -> "+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
@@ -411,7 +411,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			boolean loeschen = false;
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			//System.out.println(placeholderDisplayText);	
+			////System.out.println(placeholderDisplayText);	
 		    /*****************/			
 			Set entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator it = entries.iterator();

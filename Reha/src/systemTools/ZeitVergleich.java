@@ -82,8 +82,8 @@ final class ZeitVergleich {
 		stunden = (minuten/60);
 		dummyminuten = minuten % 60;
 		sdummy = ""; 
-		//System.out.println("Stunden= "+stunden);
-		//System.out.println("Minuten= "+dummyminuten);
+		////System.out.println("Stunden= "+stunden);
+		////System.out.println("Minuten= "+dummyminuten);
 		if ((new Integer(stunden)).toString().length() == 1)
 			sret = "0"+ (Integer.toString(stunden));
 		else
@@ -102,12 +102,12 @@ final class ZeitVergleich {
 		long differenz = 0;
 		String zeit = "";
 		differenz = ZeitDifferenzInMinuten("07:00","12:30");
-		System.out.println("Zeitdifferenz = "+differenz);
+		//System.out.println("Zeitdifferenz = "+differenz);
 		differenz = MinutenSeitMitternacht("02:30:00");	
-		System.out.println("Minuten seit Mitternacht = "+differenz);
+		//System.out.println("Minuten seit Mitternacht = "+differenz);
 		int intzeit = 90;
 		zeit = MinutenZuZeit(intzeit);
-		System.out.println("Mitternacht + "+intzeit+" Minuten = Uhrzeit: "+zeit);	
+		//System.out.println("Mitternacht + "+intzeit+" Minuten = Uhrzeit: "+zeit);	
 	}
 
 }

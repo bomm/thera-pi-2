@@ -439,7 +439,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		JXPanel dummypan = new JXPanel(new BorderLayout());
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
-		System.out.println("Image icon bei Tabellenerstellung = "+(SystemConfig.hmSysIcons.get("pdf")==null));
+		//System.out.println("Image icon bei Tabellenerstellung = "+(SystemConfig.hmSysIcons.get("pdf")==null));
 		tabIcons[0]= SystemConfig.hmSysIcons.get("pdf");
 		tabIcons[1]= new ImageIcon(SystemConfig.hmSysIcons.get("ooowriter").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH));
 		tabIcons[2]= new ImageIcon(SystemConfig.hmSysIcons.get("ooocalc").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH));
@@ -500,7 +500,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					
 					/***********************/
 					String sdatei = SystemConfig.hmVerzeichnisse.get("Temp")+"/pdf"+tabdokus.getValueAt(row, 0)+".pdf";
-					System.out.println("Starte doku holen");
+					//System.out.println("Starte doku holen");
 					String sid = (String)tabdokus.getValueAt(row, 6);
 					File file = new File(sdatei);
 					if(file.exists()){
@@ -514,7 +514,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							       BufferedReader br = new BufferedReader(isr);
 							       String line;
 							       while ((line = br.readLine()) != null) {
-							         System.out.println(line);
+							         //System.out.println(line);
 							       }
 							       is.close();
 							       isr.close();
@@ -539,7 +539,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						}.execute();
 						holeDoku(sdatei,sid);
 						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-						System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
+						//System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
 						//rehaSplash.dispose();
 						//rehaSplash = null;
 					}
@@ -611,7 +611,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Statement stmt = null;;
 		ResultSet rs = null;
 		int bilder = 0;
-		System.out.println(sdatei);
+		//System.out.println(sdatei);
 
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -687,7 +687,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					       BufferedReader br = new BufferedReader(isr);
 					       String line;
 					       while ((line = br.readLine()) != null) {
-					         System.out.println(line);
+					         //System.out.println(line);
 					       }
 					       is.close();
 					       isr.close();
@@ -876,7 +876,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				setzeDokuPanelAufNull(false);
 //				vollpanel.validate();
 				if(scanner==null){
-					System.out.println("Neustart des Scannersystems erforderlich");
+					//System.out.println("Neustart des Scannersystems erforderlich");
 					scanStarten();					
 				}
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -884,7 +884,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
         		aktion = "bildgescannt";
 			} catch (ScannerIOException e) {
 				// TODO Auto-generated catch block
-				System.out.println("***************Fehler beim scannen*******************");
+				//System.out.println("***************Fehler beim scannen*******************");
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				e.printStackTrace();
 			}
@@ -1074,8 +1074,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	private void ladeJpeg(){
 		String[] bild = oeffneBild(new String[] {"jpg","xxx","xxx"},true);
 		if(bild.length > 0){
-			System.out.println(bild[0]);
-			System.out.println(bild[1].replaceAll("\\\\", "/"));
+			//System.out.println(bild[0]);
+			//System.out.println(bild[1].replaceAll("\\\\", "/"));
 			String bildpfad = bild[1].replaceAll("\\\\", "/");
 			if(! bildpfad.toLowerCase().endsWith(".jpg")){
 				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich JPEG Bilder unterstützt");
@@ -1127,7 +1127,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		       Runtime r = Runtime.getRuntime();
         	    r.gc();
         	    long freeMem = r.freeMemory();
-        	    System.out.println("Freier Speicher "+freeMem);
+        	    //System.out.println("Freier Speicher "+freeMem);
         	    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		        
 			} catch (IOException e) {
@@ -1262,7 +1262,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		FileOutputStream fout = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			//rehaSplash.setNewText("Erstelle Dokuseite "+(i+1));
-			System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
+			//System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(i));
 			Rectangle format = null;
 			try {
 			com.lowagie.text.Image jpg2 = com.lowagie.text.Image.getInstance(vecBilderPfad.get(i));
@@ -1279,7 +1279,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			if(format==null){
 				format = new Rectangle(jpg2.getPlainWidth(),jpg2.getPlainHeight()); 
 			}
-			System.out.println("Das Format = "+format);
+			//System.out.println("Das Format = "+format);
 			document = new Document();
 			document.setPageSize(format);	
 			document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1326,7 +1326,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			//rehaSplash.setNewText("Seiten zusammenf�hren - Seite"+(i+1)+" von "+vecBilderPfad.size());
 			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
-			System.out.println("Das Format = "+format);
+			//System.out.println("Das Format = "+format);
 			
 			try {
 				reader = new PdfReader(SystemConfig.hmVerzeichnisse.get("Temp")+"/pdfDokuSeite"+(i+1)+".pdf");
@@ -1371,7 +1371,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			Vector<String> vec,
 			boolean neu){			
 		   */
-		System.out.println("Beginne speichern");
+		//System.out.println("Beginne speichern");
 		//rehaSplash.setNewText("Dokumentation auf Server transferieren");
 		int dokuid = SqlInfo.erzeugeNummer("doku");
 		int pat_int = new Integer(Reha.thisClass.patpanel.aktPatID); //new Integer(annika.getText().trim());
@@ -1405,11 +1405,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//annika.requestFocus();
 			e.printStackTrace();
 		}
-		//System.out.println("Fertig mit speichern");
+		////System.out.println("Fertig mit speichern");
 	}
 	private void loescheBilderPan(){
-		System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "scan",".jpg"));
-		System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "pdf",".pdf"));
+		//System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "scan",".jpg"));
+		//System.out.println(FileTools.delFileWithSuffixAndPraefix(new File(SystemConfig.hmVerzeichnisse.get("Temp")), "pdf",".pdf"));
 		for(int i = 0 ; i < Labels.size(); i++){
 			bilderPan.remove(Labels.get(i));
 			Labels.get(i).setVisible(false);
@@ -1449,7 +1449,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			e1.printStackTrace();
 		}
 		if(!infolab[0].getText().equals(SystemConfig.sDokuScanner)){
-			System.out.println("Dokuscanner = "+SystemConfig.sDokuScanner);
+			//System.out.println("Dokuscanner = "+SystemConfig.sDokuScanner);
 			try {
 				if(scanner==null){
 					scanStarten();
@@ -1504,7 +1504,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					String reznr = (String)tabdokus.getValueAt(xrow,0);
 					String id = (String)tabdokus.getValueAt(xrow,6);
 					//jpan1.setRezeptDaten(reznr,id);
-					System.out.println("Aus Bericht....."+reznr+"....."+id);
+					//System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
 			});	
 
@@ -1517,7 +1517,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public void scanStarten(){
 		if((!scanaktiv) || 
 				SystemConfig.sDokuScanner.equals("") ){
-			System.out.println("Scanner = null");
+			//System.out.println("Scanner = null");
 			return;
 		}
 		if(scanner == null){
@@ -1589,7 +1589,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
     				device.setShowProgressBar(true);
     				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     			}catch(Exception e){
-    	            System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
+    	            //System.out.println("3\b"+getClass().getName()+".update:\n\tCannot retrieve image information.\n\t"+e);
     			}
     		}
     		/*****************************************************/      		
@@ -1600,23 +1600,23 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	                Runtime r = Runtime.getRuntime();
 	        	    r.gc();
 	        	    long freeMem = r.freeMemory();
-	        	    System.out.println("Freier Speicher "+freeMem);
-      	    	  	System.out.println("finished und nicht null = "+metadata.getStateStr());
+	        	    //System.out.println("Freier Speicher "+freeMem);
+      	    	  	//System.out.println("finished und nicht null = "+metadata.getStateStr());
     			}else{
-      	    	  	System.out.println("finished aber null = "+metadata.getStateStr());
+      	    	  	//System.out.println("finished aber null = "+metadata.getStateStr());
 	                Runtime r = Runtime.getRuntime();
 	        	    r.gc();
 	        	    long freeMem = r.freeMemory();
     			}
-    	        System.out.println("Scanvorgang wurde beendet");
+    	        //System.out.println("Scanvorgang wurde beendet");
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     	      }else{
-    	    	  System.out.println("nicht finished = "+metadata.getStateStr());	  
+    	    	  //System.out.println("nicht finished = "+metadata.getStateStr());	  
     	      }
     		
     		/*****************************************************/    		
 		}else if ( type.equals(ScannerIOMetadata.EXCEPTION)){
-			System.out.println("Exception in EXEPTION");
+			//System.out.println("Exception in EXEPTION");
     	    if(!metadata.getException().getMessage().contains("Failed during call to twain source")){
         	    JOptionPane.showMessageDialog(null,"Bezug des Scans fehlgeschlagen.\nVersuchen Sie es mit einer niedrigeren Auflösung\n\n"+
 	    		"Ideale Auflösung für Dokumentation: 150dpi");
@@ -1629,8 +1629,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
     	    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     		/*****************************************************/    	    
 		}else if ( ScannerIOMetadata.ACQUIRED.equals( type )){
-			System.out.println("ACUIRED");
-			System.out.println(metadata.getStateStr());
+			//System.out.println("ACUIRED");
+			//System.out.println(metadata.getStateStr());
 			if(metadata.getStateStr().contains("Transferring Data")){
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				if(metadata.getImage() != null){
@@ -1643,7 +1643,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 								"jpg", 
 								file ) ;
 						
-						System.out.println("Fertig mit Image schreiben");
+						//System.out.println("Fertig mit Image schreiben");
 				        final Image img = metadata.getImage().getScaledInstance(50, 65,Image.SCALE_SMOOTH);
 				        final String pfad = file.getAbsolutePath();
 				        new Thread(){
@@ -1652,11 +1652,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				        	}
 				        }.start();
 					} catch (IOException e) {
-						System.out.println("Exception in Statechange - ACOUIRED");
+						//System.out.println("Exception in Statechange - ACOUIRED");
 						e.printStackTrace();
 					}
 				}else{
-					System.out.println("ImageDate = null");
+					//System.out.println("ImageDate = null");
 				}
 				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
@@ -1725,7 +1725,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 /*****************/
 				Document document = null;
 					String datname = "";
-					System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(seite));
+					//System.out.println("Sende Seitengröße an Funktion "+vecBilderFormat.get(seite));
 					//Rectangle format = PageSize.A4.rotate();
 					Rectangle format = null;
 					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
@@ -1750,7 +1750,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					
 					
 					
-					System.out.println("Das Format = "+format);
+					//System.out.println("Das Format = "+format);
 					document = new Document();
 					document.setPageSize(format);	
 					document.setMargins(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1758,7 +1758,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					FileOutputStream fout = new FileOutputStream(datname);
 					PdfWriter writer = PdfWriter.getInstance(document, fout);  
 					document.open(); 
-					System.out.println("Die aktion = "+((String)vecBilderAktion.get(seite)) );
+					//System.out.println("Die aktion = "+((String)vecBilderAktion.get(seite)) );
 					if(((String)vecBilderAktion.get(seite)).equals("scanner")){
 						jpg2.scaleAbsoluteHeight(document.getPageSize().getHeight());
 						jpg2.scaleAbsoluteWidth(document.getPageSize().getWidth());
@@ -1818,7 +1818,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					       BufferedReader br = new BufferedReader(isr);
 					       String line;
 					       while ((line = br.readLine()) != null) {
-					         System.out.println(line);
+					         //System.out.println(line);
 					       }
 					       is.close();
 					       isr.close();
@@ -1895,7 +1895,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(arg0.getClickCount()==2){
-					System.out.println("LabeName = "+((JComponent)arg0.getSource()).getName());
+					//System.out.println("LabeName = "+((JComponent)arg0.getSource()).getName());
 					int seite = new Integer( ((JComponent)arg0.getSource()).getName().split("-")[1] );
 					File file = null;
 					String datei = "";
@@ -1937,7 +1937,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							}
 						}
 						
-						System.out.println("Starte :"+file.getAbsolutePath()+" "+datei);
+						//System.out.println("Starte :"+file.getAbsolutePath()+" "+datei);
 						//Runtime.getRuntime().exec(datei.trim());
 						Runtime.getRuntime().exec(file.getAbsolutePath().toString()+" "+datei.trim());
 			        } catch(IOException e) {
@@ -2124,7 +2124,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                    		//holeEinzelTermine(ix,null);
 	    						//jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
-	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
+	    						////System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	    						inDokuDaten = false;
 
@@ -2137,7 +2137,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	                }
 	            }
 	        }
-	        //System.out.println(output.toString());
+	        ////System.out.println(output.toString());
 	    }
 	}
 
@@ -2170,7 +2170,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(8,   //dokublob - longblog /bin�r
 				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
-			  System.out.println("Setze InputStream "+dateiname);
+			  //System.out.println("Setze InputStream "+dateiname);
 			  ps.setInt(1, dokuid);
 			  ps.setString(2, str[0]);			  
 			  ps.setString(3, str[1]);
@@ -2287,7 +2287,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				
 				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
-			  System.out.println("Setze InputStream "+dateiname);
+			  //System.out.println("Setze InputStream "+dateiname);
 			  ps.setInt(1, dokuid);
 			  ps.setString(2, DatFunk.sDatInSQL(DatFunk.sHeute()));			  
 			  ps.setString(3, dateiname.substring(dateiname.replace("\\", "/").lastIndexOf("/")+1));
@@ -2301,9 +2301,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			  ps.setInt(9, (int)b.length);
 			  ps.setString(10, dateiname.substring(dateiname.replace("\\", "/").lastIndexOf("/")+1));
 			  ps.execute();
-			  System.out.println("OOOrg-Doku wurde gespeichert");
+			  //System.out.println("OOOrg-Doku wurde gespeichert");
 			  //String id = SqlInfo.holeEinzelFeld("select id from doku1 where dokuid='"+dokuid+"' LIMIT 1");
-			  //System.out.println("ID der neuen Doku ist "+id);
+			  ////System.out.println("ID der neuen Doku ist "+id);
 			  holeDokus(Reha.thisClass.patpanel.patDaten.get(29).trim(),"");
 			  
 			}else{
@@ -2311,7 +2311,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);	
 				String select = "update doku1 set dokublob = ?, groesse = ?, datum = ? "+
 				" where id = ?";
-				System.out.println("Prepared statement: "+select);
+				//System.out.println("Prepared statement: "+select);
 				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 				  File f = new File(dateiname);
 				  byte[] b = FileTools.File2ByteArray(f);
@@ -2320,12 +2320,12 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  ps.setString(3, DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  ps.setString(4,new Integer(dokuid).toString());
 				  ps.execute();
-				  System.out.println("Fertig mit execute");
-				  System.out.println("Größe des Datenstroms="+b.length+" Bytes");
-				  System.out.println("Datei = "+f.getAbsolutePath());
-				  System.out.println("dokuid = "+Integer.toString(dokuid));
-				  System.out.println("Dateigröße = "+b.length+" Bytes");
-				  System.out.println("Datum = "+DatFunk.sDatInSQL(DatFunk.sHeute()));
+				  //System.out.println("Fertig mit execute");
+				  //System.out.println("Größe des Datenstroms="+b.length+" Bytes");
+				  //System.out.println("Datei = "+f.getAbsolutePath());
+				  //System.out.println("dokuid = "+Integer.toString(dokuid));
+				  //System.out.println("Dateigröße = "+b.length+" Bytes");
+				  //System.out.println("Datum = "+DatFunk.sDatInSQL(DatFunk.sHeute()));
 				  f.delete();
 				  Reha.thisClass.patpanel.dokumentation.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
@@ -2442,7 +2442,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				break;
 			}
 			tDlg = null;
-			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
 		private void keinAtiverPatient(){
 			JOptionPane.showMessageDialog(null,"Kein Patient für Dokumentation ausgewählt");
@@ -2603,7 +2603,7 @@ class OoListener implements IDocumentListener {
 	}
 	@Override
 	public void onSave(IDocumentEvent arg0) {
-		//System.out.println("onSave");
+		////System.out.println("onSave");
 		
 	}
 	@Override
@@ -2619,7 +2619,7 @@ class OoListener implements IDocumentListener {
 	@Override
 	public void onSaveDone(IDocumentEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Savedone");
+		////System.out.println("Savedone");
 		IDocument doc = arg0.getDocument();
 		if(doc == null){
 			return;
@@ -2633,7 +2633,7 @@ class OoListener implements IDocumentListener {
 	@Override
 	public void onSaveFinished(IDocumentEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("SaveFinisched");
+		////System.out.println("SaveFinisched");
 		
 	}
 	@Override
@@ -2667,14 +2667,14 @@ class OoListener implements IDocumentListener {
 
 						}
 						//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-						System.out.println("Listener entfernt - Datei geändert "+xfile);
+						//System.out.println("Listener entfernt - Datei geändert "+xfile);
 					}
 				}.start();
 				arg0.getDocument().removeDocumentListener(this);
 				warschoninsave = true;
 			}else if(datei.equals(file) && !geaendert){
 				arg0.getDocument().removeDocumentListener(this);
-				System.out.println("Listener entfernt - Datei nicht geändert"+file);
+				//System.out.println("Listener entfernt - Datei nicht geändert"+file);
 				warschoninsave = true;
 			}else if(neu){
 				new Thread(){
@@ -2696,11 +2696,11 @@ class OoListener implements IDocumentListener {
 				}.start();	
 				arg0.getDocument().removeDocumentListener(this);
 			}else{
-				System.out.println("else");
-				System.out.println("Datei equals(file) = "+datei.equals(file));
-				System.out.println("Datei = "+datei);
-				System.out.println("File = "+file);
-				System.out.println("geändert = "+geaendert);
+				//System.out.println("else");
+				//System.out.println("Datei equals(file) = "+datei.equals(file));
+				//System.out.println("Datei = "+datei);
+				//System.out.println("File = "+file);
+				//System.out.println("geändert = "+geaendert);
 				arg0.getDocument().removeDocumentListener(this);
 			}
 		} catch (NumberFormatException e) {
@@ -2717,7 +2717,7 @@ class OoListener implements IDocumentListener {
 			try {
 				IDocument doc = this.document;
 				if(doc == null){
-					System.out.println("doc=null");
+					//System.out.println("doc=null");
 					return;
 				}
 				String file = doc.getLocationURL().toString().replaceAll("file:/", "");
@@ -2742,13 +2742,13 @@ class OoListener implements IDocumentListener {
 					}
 
 					//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-					System.out.println("Listener entfernt - Datei geändert "+xfile);
+					//System.out.println("Listener entfernt - Datei geändert "+xfile);
 						}
 					}.start();
 					doc.removeDocumentListener(this);				
 				}else if(datei.equals(file) && !geaendert){
 					doc.removeDocumentListener(this);
-					System.out.println("Listener entfernt - Datei nicht geändert"+file);
+					//System.out.println("Listener entfernt - Datei nicht geändert"+file);
 				}
 				warschoninsave = true;
 
@@ -2761,7 +2761,7 @@ class OoListener implements IDocumentListener {
 			}
 			
 		}else{
-			System.out.println("warschoninsave = "+warschoninsave);
+			//System.out.println("warschoninsave = "+warschoninsave);
 		}
 		*/
 		

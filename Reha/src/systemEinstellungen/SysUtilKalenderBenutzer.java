@@ -99,7 +99,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		//super(new GridLayout(1,1));
 		super(new BorderLayout());
 		//super(new FlowLayout(FlowLayout.CENTER));
-		System.out.println("Aufruf SysUtilKalenderBenutzer");
+		//System.out.println("Aufruf SysUtilKalenderBenutzer");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -418,7 +418,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		jcomboWahl.setSelectedItem(aktuell);
 		comboAuswerten();
 		felderEinschalten(false);
-		System.out.println(statement);
+		//System.out.println(statement);
 		JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 		if(termin != null){
 			Reha.thisClass.terminpanel.setCombosOutside();
@@ -450,7 +450,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				}
 
 			}
-			System.out.println(statement);
+			//System.out.println(statement);
 		}
 	}
 	/**************************************************************************/	
@@ -570,8 +570,8 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 			testeKollegen();
 			ret = false;
 		}
-		//System.out.println("vkkollgen.size = "+ParameterLaden.vKKollegen.size());
-		//System.out.println("maxKalZeile = "+ParameterLaden.maxKalZeile);		
+		////System.out.println("vkkollgen.size = "+ParameterLaden.vKKollegen.size());
+		////System.out.println("maxKalZeile = "+ParameterLaden.maxKalZeile);		
 		return ret;
 	}
 	/***********************************************************/
@@ -605,11 +605,11 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				kollegenDaten.add(new String((test != null ?  test : "" )) );				
 				test = rs.getString("Nicht_zeig");
 				kollegenDaten.add(new String((test != null ?  test : "F" )) );
-				System.out.println(test);
+				//System.out.println(test);
 			}
 
 		}catch(SQLException ex){
-			System.out.println("Kollegen2="+ex);
+			//System.out.println("Kollegen2="+ex);
 		}
 		finally {
 			if (rs != null) {
@@ -660,7 +660,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 			}
 
 		}catch(SQLException ex){
-			System.out.println("Kollegen2="+ex);
+			//System.out.println("Kollegen2="+ex);
 		}
 		finally {
 			if (rs != null) {
@@ -690,7 +690,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 			stmt.execute(match);
 
 		}catch(SQLException ex){
-			System.out.println("Kollegen2="+ex);
+			//System.out.println("Kollegen2="+ex);
 		}
 		finally {
 			if (stmt != null) {
@@ -721,10 +721,10 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				ret = false;
 			}
 			}catch(SQLException ex){
-				System.out.println("Kollegen2="+ex);
+				//System.out.println("Kollegen2="+ex);
 			}
 	}catch(SQLException ex){
-			System.out.println("Kollegen2="+ex);
+			//System.out.println("Kollegen2="+ex);
 	}
 	finally {
 		if (rs != null) {

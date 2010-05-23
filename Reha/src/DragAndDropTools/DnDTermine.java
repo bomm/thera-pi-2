@@ -17,17 +17,17 @@ public class DnDTermine {
 			  // Die Maus betritt die Komponente mit
 			  // einem Objekt
 			  public void dragEnter(DropTargetDragEvent e) {
-				  System.out.println("Enter Es wurde gedroppt an Position -> "+e.getLocation());				  
+				  //System.out.println("Enter Es wurde gedroppt an Position -> "+e.getLocation());				  
 			  }
 
 			  // Die Komponente wird verlassen 
 			  public void dragExit(DropTargetEvent e) {
-				  System.out.println("Es wurde gedroppt an Position -> ");
+				  //System.out.println("Es wurde gedroppt an Position -> ");
 			  }
 
 			  // Die Maus bewegt sich �ber die Komponente
 			  public void dragOver(DropTargetDragEvent e) {
-				  System.out.println("Over Es wurde gedroppt an Position -> "+e.getLocation());				  
+				  //System.out.println("Over Es wurde gedroppt an Position -> "+e.getLocation());				  
 			  }
 
 			  public void drop(DropTargetDropEvent e) {
@@ -42,7 +42,7 @@ public class DnDTermine {
 			        // Wir setzen in das Label den Namen der ersten 
 			        // Datei
 			        //label.setText(files.get(0).toString());
-			        System.out.println("Es wurde gedroppt an Position -> "+e.getLocation());
+			        //System.out.println("Es wurde gedroppt an Position -> "+e.getLocation());
 			        e.dropComplete(true);
 			        return;
 			       }

@@ -62,37 +62,37 @@ public class OOIFTest extends JXPanel{
 			final NativeView nativeView = new NativeView(SystemConfig.OpenOfficeNativePfad);
 		    
 		    if(nativeView == null){
-		    	System.out.println("nativeView == null");
+		    	//System.out.println("nativeView == null");
 		    }
 		    if(parent == null){
-		    	System.out.println("parent == null");
+		    	//System.out.println("parent == null");
 		    }
 		    parent.add(nativeView);
 		    
 		    parent.addContainerListener(new ContainerAdapter(){
 		    	public void componentAdded(ContainerEvent e) {
-		    		System.out.println(" added to "+e);
+		    		//System.out.println(" added to "+e);
 		    	    }
 		    	    public void componentRemoved(ContainerEvent e) {
-		    		System.out.println(" removed from "+e);
+		    		//System.out.println(" removed from "+e);
 		    	    }
 		    });
 		    parent.addComponentListener(new ComponentAdapter(){
 		        public void componentResized(ComponentEvent e) {
-		        System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent");
+		        //System.out.println(e.getComponent().getClass().getName() + " -------- ResizeEvent");
 		          nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 		          parent.getLayout().layoutContainer(parent);
 		          parent.repaint();
 		        }  
 		        public void componentHidden(ComponentEvent e) {
-		            System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
+		            //System.out.println(e.getComponent().getClass().getName() + " --- Hidden");
 		        }
 
 		        public void componentMoved(ComponentEvent e) {
-		        	System.out.println(e.getComponent().getClass().getName() + " --- Moved");
+		        	//System.out.println(e.getComponent().getClass().getName() + " --- Moved");
 		        }
 		        public void componentShown(ComponentEvent e) {
-		        	System.out.println(e.getComponent().getClass().getName() + " --- Shown");
+		        	//System.out.println(e.getComponent().getClass().getName() + " --- Shown");
 		            nativeView.setPreferredSize(new Dimension(parent.getWidth(),parent.getHeight()-5));
 			        parent.getLayout().layoutContainer(parent);
 			        parent.setVisible(true);
@@ -104,7 +104,7 @@ public class OOIFTest extends JXPanel{
 		    parent.getLayout().layoutContainer(parent);
 		    IFrame officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 		    parent.validate();
-		    System.out.println("natveView eingehängt in Panel "+parent.getName());
+		    //System.out.println("natveView eingehï¿½ngt in Panel "+parent.getName());
 	    return officeFrame;		  
 		}
 		  

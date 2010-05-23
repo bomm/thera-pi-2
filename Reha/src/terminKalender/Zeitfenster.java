@@ -571,19 +571,19 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 			Beenden(0);
 		}
 		if(((JComponent)arg0.getSource()).getName().equals("radio1")){
-			//System.out.println("Rechenart = 0");
+			////System.out.println("Rechenart = 0");
 			rechenart = 0;
 			jSplitLR.setDividerLocation(399);
 			Dauer.requestFocus();			
 		}
 		if(((JComponent)arg0.getSource()).getName().equals("radio2")){
-			//System.out.println("Rechenart = 1");
+			////System.out.println("Rechenart = 1");
 			rechenart = 1;			
 			jSplitLR.setDividerLocation(399);
 			Dauer.requestFocus();						
 		}
 		if(((JComponent)arg0.getSource()).getName().equals("radio3")){
-			//System.out.println("Rechenart = 2");
+			////System.out.println("Rechenart = 2");
 			rechenart = 2;			
 			jSplitLR.setDividerLocation(399);
 			BeginnStunde.requestFocus();				

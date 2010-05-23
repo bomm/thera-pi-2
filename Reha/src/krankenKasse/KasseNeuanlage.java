@@ -189,7 +189,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		if(((JComponent)arg0.getSource()).getName().equals("TARIFGRUPPE") ){
 			
 			if(this.neuAnlage && (!jtf[0].getText().trim().equals("-")) ){
-				System.out.println("K�rzel = "+jtf[0].getText());
+				//System.out.println("K�rzel = "+jtf[0].getText());
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -251,7 +251,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				jtf[fedits[i]].setText((String) felder.get(ffelder[i]) );
 			}
 			int preisG = new Integer((String) felder.get(1))-1 ;
-			System.out.println("In Preisgruppe einstellen Preisgruppe = "+preisG);
+			//System.out.println("In Preisgruppe einstellen Preisgruppe = "+preisG);
 			tarifGruppe.setSelectedIndex((preisG >= 0 ? preisG : 0));
 		}
 	}
@@ -286,7 +286,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		kkBuffer.append("where id='"+dbid+"'");
 		//new ExUndHop().setzeStatement(stmt);
 		SqlInfo.sqlAusfuehren(kkBuffer.toString());
-		//System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
+		////System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
 	}
 	public void tabelleAktualisieren(){
 
@@ -298,7 +298,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				vec.add(list.get(i));
 			}
 			kpan.ktblm.addRow((Vector)vec);
-			//System.out.println("Tabellenzeile eingefügt");
+			////System.out.println("Tabellenzeile eingefügt");
 		}else{
 			int row = kpan.kassentbl.getSelectedRow();
 			int model = kpan.kassentbl.convertRowIndexToModel(row);
@@ -307,7 +307,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				kpan.ktblm.setValueAt(list.get(i), model, i);
 				//KassenPanel.thisClass.kassentbl.setValueAt(list.get(i), row, i);
 			}
-			System.out.println("Tabellenzeile aktualisiert");
+			//System.out.println("Tabellenzeile aktualisiert");
 		}
 		kpan.kassentbl.revalidate();
 		kpan.kassentbl.repaint();

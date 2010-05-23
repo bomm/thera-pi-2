@@ -96,7 +96,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	int termgewaehlt = -1;
 	public SysUtilGruppenDef(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilKalenderanlagen");
+		//System.out.println("Aufruf SysUtilKalenderanlagen");
 		this.setBorder(BorderFactory.createEmptyBorder(15, 40, 15, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -308,19 +308,19 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		vec1 = (Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(igruppe)).clone(); //.get(itag).clone();
 		Vector vec2 = new Vector();
 		if(((Vector)vec1.get(iakt)).size() == 0){
-			System.out.println("iakt = "+iakt+" = null also return");
+			//System.out.println("iakt = "+iakt+" = null also return");
 			tabellenRefresh();
 			return;
 		}
 		vec2 = (Vector)((Vector)vec1.get(iakt)).clone(); //.get(itag).clone();
 		Vector vec3 = new Vector();
 		if(((Vector)vec2.get(itag)).size() == 0){
-			System.out.println("tag = "+itag+" = null also return");
+			//System.out.println("tag = "+itag+" = null also return");
 			tabellenRefresh();
 			return;
 		}
 		vec3 = (Vector)((Vector)vec2.get(itag)).clone(); //.get(itag).clone();
-		System.out.println("Vektor 3 = "+vec3);
+		//System.out.println("Vektor 3 = "+vec3);
 		
 		
 		jTblGruppen.removeAll();
@@ -413,7 +413,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		    public void dragOver(DropTargetDragEvent dtde)
 		    {
 		    	Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
-		    	//System.out.println("Drag-Support"+dtde);
+		    	////System.out.println("Drag-Support"+dtde);
 		    	if (!fAccept) return;
 		 
 		    }
@@ -424,8 +424,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
                 int column = jTblGruppen.columnAtPoint(point);
                 int row = jTblGruppen.rowAtPoint(point);
                 // handle drop inside current table
-                System.out.println("Gedroppt an Zeile="+row+" / Spalte="+column);
-                System.out.println(dtde);
+                //System.out.println("Gedroppt an Zeile="+row+" / Spalte="+column);
+                //System.out.println(dtde);
                 if (!fAccept) return;
         		try {
         			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
@@ -766,7 +766,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			((Vector)((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).get(row)).set(4, vec.get(4));			
 		}
 		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
-		System.out.println("Sektion = "+sektion);
+		//System.out.println("Sektion = "+sektion);
 		itag = itag+1;
 		INIFile ini = new INIFile(gruppeninidat);
 		ini.setStringProperty(sektion, "WOTA"+itag, new Integer(jTblGruppen.getRowCount()).toString(), null);
@@ -782,8 +782,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		int itag = cmbWochenTag.getSelectedIndex();
 
 		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
-		System.out.println("Sektion = "+sektion);
-		System.out.println("Zum löschen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
+		//System.out.println("Sektion = "+sektion);
+		//System.out.println("Zum löschen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
 		((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).remove(row);
 		itag = itag+1;
 		INIFile ini = new INIFile(gruppeninidat);
@@ -873,8 +873,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		ini.save();
 		cmbGrName.removeItemAt(akt);
 		cmbGrName.setSelectedItem(((Vector)SystemConfig.oGruppen.gruppenNamen).get(0));
-		System.out.println("Neue Position = "+neupos);
-		System.out.println("Neues Item = "+(String) cmbGrName.getSelectedItem());
+		//System.out.println("Neue Position = "+neupos);
+		//System.out.println("Neues Item = "+(String) cmbGrName.getSelectedItem());
 		gruppeEinstellen();
 	}
 	private void definitionUebertragen(){
@@ -886,7 +886,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		INIFile ini = new INIFile(gruppeninidat);
 		for(int i = 0;i<7;i++){
 			int anzahl = ((Vector)vec.get(i)).size();
-			System.out.println("Anzahl Termine am Tag "+(i+1)+" = "+anzahl);
+			//System.out.println("Anzahl Termine am Tag "+(i+1)+" = "+anzahl);
 			ini.setStringProperty(sektion, "WOTA"+(i+1), new Integer(anzahl).toString(),null);
 			for(int v = 0;v<anzahl;v++){
 				int anzahl2 = ((Vector)((Vector)vec.get(i)).get(v)).size();

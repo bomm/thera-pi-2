@@ -58,7 +58,7 @@ public class SplashPanel extends JXPanel implements KeyListener, ActionListener{
         String ss = Reha.proghome+"icons/earth.gif";
         JXHeader header = new JXHeader("Opensource-Projekt Reha-Verwaltung",
         		"\nDas Entwicklerteam:\n\n"+
-        		"Jürgen Steinhilber, Alexander Gross, Daniela Barth, Steffen Rothländer........\n" +
+        		"Jï¿½rgen Steinhilber, Alexander Gross, Daniela Barth, Steffen Rothlï¿½nder........\n" +
         		".......\n"+
         		"hier folgen hoffentlich bald zahlreiche Namensnennungen\n\n"+ 
         		"Im Moment wird das System initialisiert\n" +
@@ -132,7 +132,7 @@ public class SplashPanel extends JXPanel implements KeyListener, ActionListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println(e);
+		//System.out.println(e);
 		int code = e.getKeyCode();
 		if(code==27){
 			e.consume();

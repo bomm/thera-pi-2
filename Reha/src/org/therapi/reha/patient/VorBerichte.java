@@ -207,11 +207,11 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 					rtp = null;
 					super.dispose();
 					this.dispose();
-					System.out.println("****************Rezeptgebühren -> Listener entfernt**************");				
+					//System.out.println("****************Rezeptgebühren -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -225,7 +225,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 			ListenerTools.removeListeners(abbrechen);
 			super.dispose();
 			dispose();
-			System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -252,7 +252,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 				this.dispose();
 			}
 
-			System.out.println("Return Gedr�ckt");
+			//System.out.println("Return Gedr�ckt");
 		}
 	}
 	public void doUebernahme(){

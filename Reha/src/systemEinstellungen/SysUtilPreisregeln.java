@@ -28,7 +28,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class SysUtilPreisregeln extends JXPanel implements KeyListener, ActionListener {
 	public SysUtilPreisregeln(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilKalenderanlagen");
+		//System.out.println("Aufruf SysUtilKalenderanlagen");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

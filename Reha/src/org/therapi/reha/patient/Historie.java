@@ -290,13 +290,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-				//System.out.println("keypressed in Editor");
+				////System.out.println("keypressed in Editor");
 				if(arg0.getKeyCode()==10){
 					//arg0.consume();
 					//tbl.stopCellEditing();
 				}
 				if(arg0.getKeyCode()==27){
-					//System.out.println("cancel in tabelle");
+					////System.out.println("cancel in tabelle");
 					//tbl.cancelCellEditing();
 				}
 			}
@@ -488,8 +488,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}
 
 		String terms = (String) xvec.get(0);
-		//System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
-		//System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
+		////System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
+		////System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
 		if(terms==null){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
@@ -504,13 +504,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
-		//System.out.println("Anzahl Termine = "+lines);
+		////System.out.println("Anzahl Termine = "+lines);
 		Vector tvec = new Vector();
 		dtermm.setRowCount(0);
 		for(int i = 0;i<lines;i++){
 			String[] terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			//System.out.println("Anzahl Splits = "+ieinzel);
+			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
@@ -519,9 +519,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}else{
 					tvec.add(terdat[y]);					
 				}
-				//System.out.println("Feld "+y+" = "+terdat[y]);	
+				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
-			//System.out.println("Termivector = "+tvec);
+			////System.out.println("Termivector = "+tvec);
 			dtermm.addRow((Vector)tvec.clone());
 		}
 		anzahlTermine.setText("Anzahl Termine: "+lines);
@@ -580,28 +580,28 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
 					for(int anz = 0;anz <4;anz++){
 						preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
-//						System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
-//						System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
+//						//System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
+//						//System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
 						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
 					}
 				}
 			}
 		}else{
 			String cmd = "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'";
-			System.out.println(cmd);
+			//System.out.println(cmd);
 			Vector vec = SqlInfo.holeSaetze(db, "id,rez_nr",cmd , Arrays.asList(new String[] {}));
 			rows = vec.size();
-			System.out.println("Gefundene aktuelle Rezepte: "+rows);
+			//System.out.println("Gefundene aktuelle Rezepte: "+rows);
 			for(int i = 0; i < rows;i++){
-				System.out.println(((Vector)vec.get(i)).get(1));
+				//System.out.println(((Vector)vec.get(i)).get(1));
 				String suchrez = (String)((Vector)vec.get(i)).get(0);//(String)tabhistorie.getValueAt(i,6);
 				Vector vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
 				if(vec2.size() > 0){
 					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
 					for(int anz = 0;anz <4;anz++){
 						preispos = BigDecimal.valueOf(new Double((String)vec2.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec2.get(anz)))) ;
-//						System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
-//						System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
+//						//System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
+//						//System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
 						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
 					}
 				}
@@ -663,15 +663,15 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				@Override
 				protected Void doInBackground() throws Exception {
 				*/
-					System.out.println("Vor arzbericht-aufruf");
+					//System.out.println("Vor arzbericht-aufruf");
 					ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,1,xxverfasser,"",xcurrow);
 					ab.setModal(true);
 					ab.setLocationRelativeTo(null);
 					//ab.toFront();
-					System.out.println("vor Arzbericht set Visible");
+					//System.out.println("vor Arzbericht set Visible");
 					ab.setVisible(true);
 					ab = null;
-					System.out.println("Arzbericht=null");
+					//System.out.println("Arzbericht=null");
 				/*	
 					return null;
 				}
@@ -727,7 +727,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					String reznr = (String)tabhistorie.getValueAt(xrow,0);
 					String id = (String)tabhistorie.getValueAt(xrow,6);
 					jpan1.setRezeptDaten(reznr,id);
-					System.out.println("Aus Bericht....."+reznr+"....."+id);
+					//System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
 			});	
 
@@ -773,7 +773,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					}
 					//((Vector)vec.get(i)).set(3, Reha.thisClass.patpanel.imgzuzahl[zzbild]);
 					
-					//System.out.println("Inhalt von zzstatus ="+zzbild);
+					////System.out.println("Inhalt von zzstatus ="+zzbild);
 					dtblm.addRow((Vector)vec.get(i));
 					
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
@@ -804,12 +804,12 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
 						tabhistorie.scrollRowToVisible(row);
 						holeEinzelTermine(row,null);
-						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
+						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
 						tabhistorie.setRowSelectionInterval(0, 0);
 						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
-						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
+						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
 					anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
 					wechselPanel.revalidate();
@@ -833,7 +833,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		int row = tabhistorie.getSelectedRow();
 		if(row >= 0){
 			try{
-			System.out.println("Transfer von Historie in aktuelle Rezept");
+			//System.out.println("Transfer von Historie in aktuelle Rezept");
 			int mod = tabhistorie.convertRowIndexToModel(row);
 			String rez_nr = dtblm.getValueAt(mod, 0).toString().trim();
 			SqlInfo.transferRowToAnotherDB("lza", "verordn","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
@@ -895,7 +895,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                    		holeEinzelTermine(ix,null);
 	    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
-	    						//System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
+	    						////System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
 	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	    						inRezeptDaten = false;
 								}catch(Exception ex){
@@ -912,7 +912,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	                }
 	            }
 	        }
-	        //System.out.println(output.toString());
+	        ////System.out.println(output.toString());
 	    }
 	} 
 	/*
@@ -984,7 +984,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				
 			}
 			tDlg = null;
-			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
 	}
 	

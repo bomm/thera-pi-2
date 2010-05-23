@@ -91,12 +91,12 @@ public class RVEBerichtPDF {
 			rvVorlagen[2]  = vorlagenPfad+"GKVBericht-Seite2-Variante2.pdf";
 			rvVorlagen[3]  = vorlagenPfad+"EBericht-Seite4-Variante2.pdf";
 		}
-		System.out.println("Nur Vorschau = "+nurVorschau);
+		//System.out.println("Nur Vorschau = "+nurVorschau);
 		if(!nurVorschau){
-			System.out.println("Drucken Kapitel 1 = "+versionen[0]);
-			System.out.println("Drucken Kapitel 2 = "+versionen[1]);
-			System.out.println("Drucken Kapitel 3 = "+versionen[2]);
-			System.out.println("Drucken Kapitel 4 = "+versionen[3]);
+			//System.out.println("Drucken Kapitel 1 = "+versionen[0]);
+			//System.out.println("Drucken Kapitel 2 = "+versionen[1]);
+			//System.out.println("Drucken Kapitel 3 = "+versionen[2]);
+			//System.out.println("Drucken Kapitel 4 = "+versionen[3]);
 		}
 		doRVVorschau(nurVorschau,versionen);
 	}
@@ -118,7 +118,7 @@ public class RVEBerichtPDF {
 					"die Druckvorschau erneut.");
 			return;
 		}
-		System.out.println("Konfiguriere Seite 1");
+		//System.out.println("Konfiguriere Seite 1");
 		if(RV && !altesFormular ){
 			geklappt = doSeite1Neu();			
 		}else{
@@ -128,7 +128,7 @@ public class RVEBerichtPDF {
 			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - 1 ");
 			return;
 		}
-		System.out.println("Konfiguriere Seite 2"); // Nur wenn RV-Tr�ger	
+		//System.out.println("Konfiguriere Seite 2"); // Nur wenn RV-Tr�ger	
 		if(RV){
 			geklappt = doSeite2();
 			if(!geklappt){
@@ -136,18 +136,18 @@ public class RVEBerichtPDF {
 				return;
 			}
 		}
-		System.out.println("Konfiguriere Seite 3");				
+		//System.out.println("Konfiguriere Seite 3");				
 		geklappt = doSeite3();
 		if(!geklappt){
 			JOptionPane.showMessageDialog(null,"Fehler beim Aufbau der Seite - KTL 1-2 ");
 			return;
 		}
-		System.out.println("Stelle Kapitel zusammen");
+		//System.out.println("Stelle Kapitel zusammen");
 		//final boolean xvorschau = vorschau;
 		final int[] exemplare = versionen;
 		//Falls nur Vorschau**************************************/
 		if(vorschau){
-			System.out.println("InDo Seitenzusammenstellen");
+			//System.out.println("InDo Seitenzusammenstellen");
 			geklappt = doSeitenZusammenstellen();	
 			if(!geklappt){
 				JOptionPane.showMessageDialog(null,"Fehler beim Zusammenstellen der Berichtseiten");
@@ -176,7 +176,7 @@ public class RVEBerichtPDF {
 		//Keine Vorschau direkt drucken***************************/	
 		}else{
 			if(RV){
-				System.out.println("Starte die Funktion starteRVDruck()");
+				//System.out.println("Starte die Funktion starteRVDruck()");
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -219,7 +219,7 @@ public class RVEBerichtPDF {
 					Reha.thisClass.progressStarten(true);
 					String id = SystemConfig.hmAdrADaten.get("<Aid>");
 					for(int i = 0; i < eltern.aerzte.length;i++){
-						//System.out.println("***********Mach HashMap für Arzt "+eltern.aerzte[i]);
+						////System.out.println("***********Mach HashMap für Arzt "+eltern.aerzte[i]);
 						ArztTools.constructArztHMap(eltern.aerzte[i]);
 						ByteArrayOutputStream baout = new ByteArrayOutputStream();
 						SystemConfig.hmEBerichtDaten.put("<Ebbeginn>",eltern.btf[15].getText() );
@@ -229,14 +229,14 @@ public class RVEBerichtPDF {
 						InputStream is = new ByteArrayInputStream(baout.toByteArray());
 						baout.flush();
 						baout.close();
-						//System.out.println("Bytes available = "+is.available());
+						////System.out.println("Bytes available = "+is.available());
  						ITextDocument doc = OOTools.starteGKVBericht(Reha.proghome+"vorlagen/"+Reha.aktIK+"/GKVArztbericht2.ott", "");
  						Thread.sleep(100);
  						//doc.getViewCursorService().getViewCursor().getTextCursorFromStart().insertDocument( is, RTFFilter.FILTER );
  						ITextFieldService textFieldService = doc.getTextFieldService();
  						ITextField[] placeholders = null;
  						placeholders = textFieldService.getPlaceholderFields();
- 						//System.out.println("Anzahl PlaceHolders = "+placeholders.length);
+ 						////System.out.println("Anzahl PlaceHolders = "+placeholders.length);
  						for(int  p2 = 0 ; p2 < placeholders.length ; p2++ ){
  							if(placeholders[p2].getDisplayText().toLowerCase().equals("<bblock1>")){
  	 							ITextRange range = placeholders[p2].getTextRange();
@@ -252,7 +252,7 @@ public class RVEBerichtPDF {
  						int itbl = -1;
  						boolean btblok = false;
  						for(int y = 0; y < tbl.length;y++){
- 							System.out.println("Tabellenname = "+tbl[y].getName());
+ 							//System.out.println("Tabellenname = "+tbl[y].getName());
  							if(tbl[y].getName().equals("Diagnosen")){
  								itbl = y;
  								btblok = true;
@@ -266,7 +266,7 @@ public class RVEBerichtPDF {
  						for(int d = 0; d < 5; d++){
  							if(! eltern.bta[d].getText().trim().equals("")){
  	 							if(d > 0){
- 	 								System.out.println("Hänge neue Zeilen an Tabelle: "+tbl[itbl].getName());
+ 	 								//System.out.println("Hänge neue Zeilen an Tabelle: "+tbl[itbl].getName());
  	 								tbl[itbl].addRow(d);
  	 							}
  								tbl[itbl].getCell(0,d).getTextService().getText().setText(Integer.toString(d+1)+".");
@@ -303,14 +303,14 @@ public class RVEBerichtPDF {
 			PdfCopy cop = new PdfCopy(docversion,new FileOutputStream(tempversion));
 			
 			docversion.open();
-			System.out.println(tempDateien[0][0] );
+			//System.out.println(tempDateien[0][0] );
 			File f = new File(tempDateien[0][0]);
-			System.out.println("Die Datei = "+tempDateien[0][0]+" existiert = "+f.exists() );
+			//System.out.println("Die Datei = "+tempDateien[0][0]+" existiert = "+f.exists() );
 			PdfReader reader = new PdfReader(tempDateien[0][0]);
 			cop.addPage(cop.getImportedPage(reader,1 ));
 			reader.close();
 			f = new File(tempDateien[2][0]);
-			System.out.println("Die Datei = "+tempDateien[2][0]+" existiert = "+f.exists() );
+			//System.out.println("Die Datei = "+tempDateien[2][0]+" existiert = "+f.exists() );
 			reader = new PdfReader(tempDateien[2][0]);
 			int seiten = reader.getNumberOfPages();
 			for(int i = 1 ; i <= seiten;i++){
@@ -356,7 +356,7 @@ public class RVEBerichtPDF {
 		String line;
 		 Reha.thisClass.progressStarten(false);							       
        while ((line = br.readLine()) != null) {
-         System.out.println("Lade Adobe "+line);
+         //System.out.println("Lade Adobe "+line);
        }
        is.close();
        isr.close();
@@ -1095,14 +1095,14 @@ public class RVEBerichtPDF {
 			String[] bereich = {"Bereich Reha","Bereich EDV","","",""};
 			// ZU diesem Zeitpunkt sind Bereits alle Seiten aufbereitet.
 			//Falls der Fliestext ebenfalls gedruck werden soll;
-			System.out.println("Kapitel Fliesstext erforderlich");
+			//System.out.println("Kapitel Fliesstext erforderlich");
 			if(exemplare[3] >= 0){
-				System.out.println("starte Kapitel Fliesstext");
+				//System.out.println("starte Kapitel Fliesstext");
 				seiten = doKapitelFiesstext();
-				System.out.println("Es wurden "+seiten+" Fliesstext zusammengestellt");
+				//System.out.println("Es wurden "+seiten+" Fliesstext zusammengestellt");
 			}
 			for(int empfaenger = 0; empfaenger < 5; empfaenger++){
-				System.out.println("in der Empf�ngerroutine");
+				//System.out.println("in der Empf�ngerroutine");
 				druckeEmpfaengerVersion(empfaenger,empfs[empfaenger],bereich[empfaenger],(seiten > 0 ? true : false),seiten,exemplare);
 				if(exemplare[4] <= 0){
 					return true;
@@ -1214,7 +1214,7 @@ public class RVEBerichtPDF {
 		
 		try {
 			Runtime.getRuntime().exec(xcmd);
-			System.out.println(xcmd);
+			//System.out.println(xcmd);
 			Reha.thisClass.progressStarten(false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -1227,7 +1227,7 @@ public class RVEBerichtPDF {
 			public void run(){
 				try {
 					Runtime.getRuntime().exec(xcmd);
-					System.out.println(xcmd);
+					//System.out.println(xcmd);
 					Reha.thisClass.progressStarten(false);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -1306,7 +1306,7 @@ public class RVEBerichtPDF {
 		readerflt.close();
 		cop.close();
 		
-		System.out.println(Integer.toString(seiten)+" Seiten Flie�text wurden zusammengestellt");	
+		//System.out.println(Integer.toString(seiten)+" Seiten Flie�text wurden zusammengestellt");	
 		return seiten;
 	}
 	public boolean doSeitenZusammenstellen(){
@@ -1319,7 +1319,7 @@ public class RVEBerichtPDF {
 		PdfReader reader = new PdfReader(tempPfad+"EBfliesstext.pdf");
 
 		int seiten = reader.getNumberOfPages();
-		System.out.println("Insgesamt Seiten Flie�text = "+seiten);
+		//System.out.println("Insgesamt Seiten Flie�text = "+seiten);
 	
 		PdfImportedPage page2;		
 		
@@ -1490,7 +1490,7 @@ public class RVEBerichtPDF {
 	}
 	private void doArztAuswaehlen(EBerichtPanel eltern){
 		try{
-			System.out.println("Starte Arztauswahl");
+			//System.out.println("Starte Arztauswahl");
 			String titel = "Aerzte für GKV-Bericht auswählen";
 			EBPrintDlg printDlg = new EBPrintDlg();
 			//JDialog neuPat = new JDialog();
@@ -1546,11 +1546,11 @@ class EBAerzteDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					this.dispose();
-					System.out.println("****************EGPrint -> Listener entfernt**************");				
+					//System.out.println("****************EGPrint -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -1560,7 +1560,7 @@ class EBAerzteDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			dispose();
-			System.out.println("****************EGPrint -> Listener entfernt (Closed)**********");
+			//System.out.println("****************EGPrint -> Listener entfernt (Closed)**********");
 		}
 		
 		

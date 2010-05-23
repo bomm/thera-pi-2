@@ -71,8 +71,8 @@ public static String MinutenZuZeit(int minuten){
 	stunden = (minuten/60);
 	dummyminuten = minuten % 60;
 	sdummy = ""; 
-	//System.out.println("Stunden= "+stunden);
-	//System.out.println("Minuten= "+dummyminuten);
+	////System.out.println("Stunden= "+stunden);
+	////System.out.println("Minuten= "+dummyminuten);
 	if ((new Integer(stunden)).toString().length() == 1)
 		sret = "0"+ (Integer.toString(stunden));
 	else
@@ -83,7 +83,7 @@ public static String MinutenZuZeit(int minuten){
 	else
 		sret = sret+":"+(Integer.toString(dummyminuten));		
 	sret = sret+":00";
-	//System.out.println("errechnete Zeit = "+sret);
+	////System.out.println("errechnete Zeit = "+sret);
 return sret;	
 }
 
@@ -91,12 +91,12 @@ public static void main(String[] argv){
 	long differenz = 0;
 	String zeit = "";
 	differenz = ZeitDifferenzInMinuten("07:00","12:30");
-	System.out.println("Zeitdifferenz = "+differenz);
+	//System.out.println("Zeitdifferenz = "+differenz);
 	differenz = MinutenSeitMitternacht("02:30:00");	
-	System.out.println("Minuten seit Mitternacht = "+differenz);
+	//System.out.println("Minuten seit Mitternacht = "+differenz);
 	int intzeit = 90;
 	zeit = MinutenZuZeit(intzeit);
-	System.out.println("Mitternacht + "+intzeit+" Minuten = Uhrzeit: "+zeit);	
+	//System.out.println("Mitternacht + "+intzeit+" Minuten = Uhrzeit: "+zeit);	
 }
 
 
@@ -116,8 +116,8 @@ public static long MinutenSeitMitternacht(String szeit1){
 	zeit2.setHours(Integer.parseInt("00"));
 	zeit2.setMinutes(Integer.parseInt("00"));
 	zeit2.setSeconds(Integer.parseInt("00"));
-	//System.out.println("Date-Wert = "+new Date().toString());
-	//System.out.println("Gregorian-Wert = "+ Calendar.getInstance());
+	////System.out.println("Date-Wert = "+new Date().toString());
+	////System.out.println("Gregorian-Wert = "+ Calendar.getInstance());
 	
 	Calendar c1 = Calendar.getInstance();
 	c1.set(Calendar.MONTH, 1);
@@ -133,14 +133,14 @@ public static long MinutenSeitMitternacht(String szeit1){
 	c2.set(Calendar.MINUTE,0);
 	c2.set(Calendar.SECOND,0);
 
-	//System.out.println("Gregorian gettime = "+sec1.getTimeInMillis());
-	//System.out.println("Date gettime = "+new Date().getTime());
+	////System.out.println("Gregorian gettime = "+sec1.getTimeInMillis());
+	////System.out.println("Date gettime = "+new Date().getTime());
 	
 	
-	//System.out.println("Zeitzone = "+TimeZone.getDefault());
-	System.out.println("Startzeit = Date"+szeit1+" / Minuten seit Mitternacht = "+
+	////System.out.println("Zeitzone = "+TimeZone.getDefault());
+	//System.out.println("Startzeit = Date"+szeit1+" / Minuten seit Mitternacht = "+
 			(((zeit1.getTime())-zeit2.getTime())/(1000*60)));
-	System.out.println("Startzeit = Gregorian"+szeit1+" / Minuten seit Mitternacht = "+
+	//System.out.println("Startzeit = Gregorian"+szeit1+" / Minuten seit Mitternacht = "+
 			(((c1.getTimeInMillis())-c2.getTimeInMillis())/(1000*60)));
 
 	return (((zeit1.getTime())-zeit2.getTime())/(1000*60));

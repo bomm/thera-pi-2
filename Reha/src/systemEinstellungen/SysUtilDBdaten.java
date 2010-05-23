@@ -53,7 +53,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 	
 	public SysUtilDBdaten(){
 		super(new GridLayout(1,1));
-		System.out.println("Aufruf SysUtilDBdaten");
+		//System.out.println("Aufruf SysUtilDBdaten");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -104,8 +104,8 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		dbtyp.setSelectedItem(SystemConfig.hmDBMandant.get(Reha.aktMandant).get(0));
 		dbtyp.setActionCommand("dbtyp");
 		dbtyp.addActionListener(this);
-		//System.out.println("DBType von "+Reha.aktMandant+"= "+SystemConfig.hmDBMandant.get(Reha.aktMandant).get(0));
-		System.out.println(SystemConfig.hmDBMandant.get(Reha.aktMandant));
+		////System.out.println("DBType von "+Reha.aktMandant+"= "+SystemConfig.hmDBMandant.get(Reha.aktMandant).get(0));
+		//System.out.println(SystemConfig.hmDBMandant.get(Reha.aktMandant));
 		treiber = new JRtaTextField("",true);
 		treiber.setText((String)SystemConfig.hmDBMandant.get(Reha.aktMandant).get(1));
 		server = new JRtaTextField("",true);
@@ -262,7 +262,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		
 	}
 	private void neuerDBMandant(){
-		//System.out.println("In Mandant einstellen="+mandant.getSelectedItem());
+		////System.out.println("In Mandant einstellen="+mandant.getSelectedItem());
 		String smandant = ((String) mandant.getSelectedItem()).trim();
 		dbtyp.setSelectedItem(SystemConfig.hmDBMandant.get(smandant).get(0));
 		treiber.setText((String)SystemConfig.hmDBMandant.get(smandant).get(1));
@@ -294,7 +294,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 						"Der Test kann einige Sekunden in Anspruch nehmen.\n\n"+
 						"Bitte brechen Sie den Test keinesfalls ab - solange bis Sie einen\n"+
 						"entsprechen Hinweis über Erfolg oder Mißerfolg erhalten";
-		System.out.println(skontakt);
+		//System.out.println(skontakt);
 		JOptionPane.showMessageDialog(null,messtext);
 		try {
 			Class.forName(ss2).newInstance();

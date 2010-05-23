@@ -178,8 +178,8 @@ public class RezeptDaten extends JXPanel{
 						//preisvec = ParameterLaden.vRHPreise;
 						preisvec = SystemPreislisten.hmPreise.get("Reha").get(prgruppe);
 					}
-					//System.out.println(preisvec);
-					//System.out.println("PreisGruppe = "+prgruppe);
+					////System.out.println(preisvec);
+					////System.out.println("PreisGruppe = "+prgruppe);
 					SwingUtilities.invokeLater(new Runnable(){
 						public  void run(){
 							int farbcode = StringTools.ZahlTest((String)vecaktrez.get(57));
@@ -239,7 +239,7 @@ public class RezeptDaten extends JXPanel{
 					if(row >= 0){
 						if(Reha.thisClass.patpanel.aktRezept.dtblm.getValueAt(row,1) != Reha.thisClass.patpanel.imgzuzahl[zzbild]){
 
-							System.out.println("Zuzahlungsstatus für Bilderstellung in Reihe "+row+" = "+zzbild);
+							//System.out.println("Zuzahlungsstatus für Bilderstellung in Reihe "+row+" = "+zzbild);
 							Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild],row,1);
 							Reha.thisClass.patpanel.aktRezept.tabaktrez.validate();
 						}

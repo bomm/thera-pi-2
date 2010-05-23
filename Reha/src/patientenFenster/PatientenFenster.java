@@ -210,18 +210,18 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 			FensterSchliessen(evt.getDetails()[0]);
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			ptp.removePatStammEventListener((PatStammEventListener)this);
-			System.out.println("Inhalt von ss = "+ss);
+			//System.out.println("Inhalt von ss = "+ss);
 		}	
 		if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="GRUEN"){
 			if(setOben == 0){
 				ContainerConfig conf = new ContainerConfig();
 				conf.addContainer("personen16.gif",evt.getDetails()[0],this.getParent().getParent().getParent().getParent().getParent(),null);
-				System.out.println("Name f�r Container verkleinern = "+ss);
+				//System.out.println("Name f�r Container verkleinern = "+ss);
 				//	rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			}	
 		}	
 		if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="RequestFocus"){
-			System.out.println("PatientenFenster - Focus erhalten**********");
+			//System.out.println("PatientenFenster - Focus erhalten**********");
 			if(reverseFocus==null){
 				eingaben[0].requestFocus();
 			}else{
@@ -232,7 +232,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 			}
 		}
 		}catch(NullPointerException ne){
-			System.out.println(evt);
+			//System.out.println(evt);
 		}
 
 		// TODO Auto-generated method stub
@@ -242,7 +242,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 		((RehaTP)this.getParent()).aktiviereIcon();
 	}
 	public void FensterSchliessen(String welches){
-		System.out.println("Eltern-->"+welches+" "+this.getParent());
+		//System.out.println("Eltern-->"+welches+" "+this.getParent());
 		if(setOben != 0){
 			//Reha.thisClass.TPschliessen(setOben,(Object) this.getParent(),welches);
 			if(sucheComponent != null){
@@ -294,7 +294,8 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 		    }
 
 		    void displayMessage(String prefix, FocusEvent e) {
-			System.out.println(prefix
+			//System.out.println(prefix
+		    	/*
 		                       + (e.isTemporary() ? " (temporary):" : ":")
 		                       +  e.getComponent().getClass().getName()
 		                       + (e.getComponent().getName() != null ?
@@ -302,23 +303,24 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 		                       + "; Opposite component: " 
 		                       + (e.getOppositeComponent() != null ?
 		                          e.getOppositeComponent().getClass().getName() : "null")
-				       + "<-- Ende"); 
+				       + "<-- Ende");
+				*/        
 		    }
 			@Override
 			public void patStammEventOccurred(PatStammEvent evt) {
-				//System.out.println("Event-Empfangen f�r :"+((Component) evt.getSource()).getName());
+				////System.out.println("Event-Empfangen f�r :"+((Component) evt.getSource()).getName());
 				// TODO Auto-generated method stub
 				if(evt.getDetails()[2].contains(this.getName())){
 					if(evt.getPatStammEvent().equals("PatSuchen")){
-						System.out.println("Event-Empfangen f�r :"+evt);
-						System.out.println("PatIntern =  :"+evt.getDetails()[1]);
+						//System.out.println("Event-Empfangen f�r :"+evt);
+						//System.out.println("PatIntern =  :"+evt.getDetails()[1]);
 						patThread = new PatientSuchen(evt.getDetails()[1],this);
 						patThread.run();
-						System.out.println("Klasse = "+evt.getSource().getClass());
-						System.out.println("Klasse Name = "+evt.getSource().getClass().getName());					
-						System.out.println("CanonicalName = "+SuchenDialog.class.getCanonicalName());
+						//System.out.println("Klasse = "+evt.getSource().getClass());
+						//System.out.println("Klasse Name = "+evt.getSource().getClass().getName());					
+						//System.out.println("CanonicalName = "+SuchenDialog.class.getCanonicalName());
 						if(evt.getSource().getClass().getName().contains(hauptFenster.SuchenDialog.class.getName())){ 
-							System.out.println("Source = "+evt.getSource());
+							//System.out.println("Source = "+evt.getSource());
 							sucheComponent = (Object) evt.getSource();	
 							((SuchenDialog) sucheComponent).setVisible(false);
 							if(reverseFocus != null){					
@@ -329,7 +331,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 						}
 					}else if(evt.getPatStammEvent().equals("DialogAnmelden-PatSuchen")){
 						if(evt.getSource().getClass().getName().contains(hauptFenster.SuchenDialog.class.getName())){ 
-							System.out.println("Source = "+evt.getSource());
+							//System.out.println("Source = "+evt.getSource());
 							sucheComponent = (Object) evt.getSource();	
 							((SuchenDialog) sucheComponent).setVisible(false);
 							/*
@@ -381,7 +383,7 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 			}
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				System.out.println("PatientenFenster KeyEvent = :"+arg0);
+				//System.out.println("PatientenFenster KeyEvent = :"+arg0);
 				// TODO Auto-generated method stub
 			}
 			@Override
@@ -412,7 +414,7 @@ class PatientSuchen implements Runnable{
 				sstmt = "Select *  from pat5 where PAT_INTERN = "+this.patIntern;
 		}else{ //ADS
 			sstmt = "Select *  from pat5 where PAT_INTERN = "+this.patIntern;
-				System.out.println("Statement = "+sstmt);
+				//System.out.println("Statement = "+sstmt);
 		}
 		try {
 			
@@ -434,13 +436,13 @@ class PatientSuchen implements Runnable{
 				//this.jtable.setModel(tblDataModel);
 				//this.jtable.updateUI();
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {

@@ -342,7 +342,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
             File inputVerzFile = chooser.getSelectedFile();
             String inputVerzStr = inputVerzFile.getPath();
             
-            System.out.println("Eingabepfad:" + inputVerzStr);
+            //System.out.println("Eingabepfad:" + inputVerzStr);
             if(inputVerzFile.getName().trim().equals("")){
             	return  "";
             	//vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);

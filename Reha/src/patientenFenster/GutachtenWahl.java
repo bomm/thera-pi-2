@@ -194,11 +194,11 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 					ListenerTools.removeListeners(but[1]);
 					super.dispose();
 					this.dispose();
-					System.out.println("****************GutachtenWahl -> Listener entfernt**************");				
+					//System.out.println("****************GutachtenWahl -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -213,7 +213,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 			ListenerTools.removeListeners(but[1]);
 			super.dispose();
 			dispose();
-			System.out.println("****************GutachtenWahl -> Listener entfernt (Closed)**********");
+			//System.out.println("****************GutachtenWahl -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -223,11 +223,11 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		// TODO Auto-generated method stub
 		
 		if(arg0.getActionCommand().equals("uebernahme")){
-			System.out.println("In Übernahme");
+			//System.out.println("In Übernahme");
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					System.out.println("In SwingWorker");
+					//System.out.println("In SwingWorker");
 					if(rbut[0].isSelected()){
 						gutachtenArt.setText("ebericht");	
 					}else{
@@ -278,7 +278,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 		if(event.getKeyCode()==10){
 			event.consume();
 			if(((JComponent)event.getSource()).getName() == null){
-				System.out.println(event.getSource());
+				//System.out.println(event.getSource());
 				return;
 			}
 			if( ((JComponent)event.getSource()).getName().equals("uebernahme")){
@@ -301,7 +301,7 @@ public class GutachtenWahl extends RehaSmartDialog implements RehaTPEventListene
 				}
 			}
 
-			System.out.println("Return Gedrückt");
+			//System.out.println("Return Gedrückt");
 		}
 	}
 

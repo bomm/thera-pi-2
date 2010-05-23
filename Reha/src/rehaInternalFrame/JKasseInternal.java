@@ -42,14 +42,14 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("Internal-KassenFrame in schliessen***************");
+		//System.out.println("Internal-KassenFrame in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();
-		System.out.println("L�sche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//System.out.println("L�sche KasseInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		rEvent.removeRehaEventListener((RehaEventListener) this);
@@ -75,7 +75,7 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
-			System.out.println("es ist ein Reha-Internal-Event");
+			//System.out.println("es ist ein Reha-Internal-Event");
 		}
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){

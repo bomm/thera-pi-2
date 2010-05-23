@@ -334,7 +334,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 				vec.add(list.get(i));
 			}
 			apan.atblm.addRow((Vector<String>)vec);
-			System.out.println("Tabellenzeile eingefügt");
+			//System.out.println("Tabellenzeile eingefügt");
 		}else{
 			int row = apan.arzttbl.getSelectedRow();
 			int model = apan.arzttbl.convertRowIndexToModel(row);
@@ -343,7 +343,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 				apan.atblm.setValueAt(list.get(i), model, i);
 				//KassenPanel.thisClass.kassentbl.setValueAt(list.get(i), row, i);
 			}
-			System.out.println("Tabellenzeile aktualisiert");
+			//System.out.println("Tabellenzeile aktualisiert");
 		}
 		apan.arzttbl.revalidate();
 		apan.arzttbl.repaint();
@@ -377,7 +377,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		}
 		stmt.append("facharzt ='"+ (arztgruppe.getSelectedItem()==null ? "" : (String)arztgruppe.getSelectedItem() )+"'");
 		stmt.append(" where id='"+dbid+"'");
-		System.out.println("Kommando = "+stmt);
+		//System.out.println("Kommando = "+stmt);
 		new ExUndHop().setzeStatement(stmt.toString());
 
 	}
@@ -392,7 +392,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
  		List<String> nichtlesen = Arrays.asList(new String[] {});
 		Vector<String> felder = SqlInfo.holeSatz("arzt", "*", "id='"+this.arztId+"'",nichtlesen);
 		int gros = felder.size();
-		System.out.println("Arztdaten von id"+this.arztId+" = "+felder);
+		//System.out.println("Arztdaten von id"+this.arztId+" = "+felder);
 		int anzahlf = felderpos.length;
 		if(gros > 0){
 			for(int i = 0; i < anzahlf;i++){
@@ -422,7 +422,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 						stmt = stmt+ (i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";
 					}
 					stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
-					//System.out.println(stmt);
+					////System.out.println(stmt);
 					new ExUndHop().setzeStatement(stmt);
 					//eltern.zurueckZurTabelle(tfs); **************wichtig
 					return null;

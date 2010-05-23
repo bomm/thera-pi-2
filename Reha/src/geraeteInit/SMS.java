@@ -23,22 +23,22 @@ class SMS
 			//phone=URLEncoder.encode("http://t-online.t-online.de/t-on/dien/sms/star/CP/start.html", "UTF-8"); 
 
 			if(debug) 
-				System.out.println("phone------>"+phone); 
+				//System.out.println("phone------>"+phone); 
 			message=URLEncoder.encode("SendMsg via Now.SMS", "UTF-8"); 
 
-			if(debug) 
-				System.out.println("message---->"+message); 
+			//if(debug) 
+				//System.out.println("message---->"+message); 
 		} 
 		catch (UnsupportedEncodingException e) 
 		{ 
-			System.out.println("Encoding not supported"); 
+			//System.out.println("Encoding not supported"); 
 		} 
 
 		//String url_str=ppgHost+"?PhoneNumber="+phone+"&Text="+message; 
 		String url_str=ppgHost+"?user="+username+"&password="+password+"&PhoneNumber="+phone+"&Text="+message; 
 
 		if(debug)                   
-			System.out.println("url string->"+url_str); 
+			//System.out.println("url string->"+url_str); 
 
 		
 		try
@@ -49,24 +49,25 @@ class SMS
 			connection.setDoOutput(false); 
 			connection.setDoInput(true); 
 
-			if(debug)                  
-				System.out.println("Opened Con->"+connection); 
+			//if(debug)                  
+				//System.out.println("Opened Con->"+connection); 
 	
-			String res=connection.getResponseMessage(); 
+			//String res=connection.getResponseMessage(); 
 		
-			if(debug) 
-				System.out.println("Get Resp  ->"+res); 
+			//if(debug) 
+				//System.out.println("Get Resp  ->"+res); 
 	
-			int code = connection.getResponseCode () ; 
-		
+			//int code = connection.getResponseCode () ; 
+				/*
 			if ( code == HttpURLConnection.HTTP_OK ) 
 			{ 
 				connection.disconnect() ; 
 			}
+			*/
 		}
 		catch(IOException e)
 		{
-			System.out.println("unable to create new url"+e.getMessage());
+			//System.out.println("unable to create new url"+e.getMessage());
 		}
 
 	

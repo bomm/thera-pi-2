@@ -145,7 +145,7 @@ public class ThTextBlock extends RehaSmartDialog{
 							@Override
 							protected Void doInBackground() throws Exception {
 								String mwk = macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
-								//System.out.println(mwk);
+								////System.out.println(mwk);
 								fuelleSucheInTabelle(mwk);
 								return null;
 							}
@@ -288,10 +288,10 @@ public class ThTextBlock extends RehaSmartDialog{
 				}
 			}
 			vectb = (Vector)tbvars.clone();
-			//System.out.println("Variablen Vector = "+tbvars);
+			////System.out.println("Variablen Vector = "+tbvars);
 		}
 		private void infoPosition(int diff,int i,int lang){
-			//System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
+			////System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
 		}
 		private void holeTbText(int tbid){
 			String text = (String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
@@ -324,7 +324,7 @@ public class ThTextBlock extends RehaSmartDialog{
 			incheckundstart = true;
 			int row = textblock.getSelectedRow();
 			if(row < 0){
-				//System.out.println("Keine Tabellenzeile ausgewählt");
+				////System.out.println("Keine Tabellenzeile ausgewählt");
 				incheckundstart = false;
 				return;
 			}
@@ -340,7 +340,7 @@ public class ThTextBlock extends RehaSmartDialog{
 						e.printStackTrace();
 					}
 					if((System.currentTimeMillis()-zeit) > 2000){
-						System.out.println("Zwangsabbruch akttbid immer noch nicht identisch");
+						//System.out.println("Zwangsabbruch akttbid immer noch nicht identisch");
 						inholetext = false;
 						break;
 					}
@@ -467,7 +467,7 @@ public class ThTextBlock extends RehaSmartDialog{
 		    public void valueChanged(ListSelectionEvent e) {
 				if(blockneugefunden || inholetext){
 					blockneugefunden = false;
-					//System.out.println("Wert von inholetext = "+inholetext);
+					////System.out.println("Wert von inholetext = "+inholetext);
 					return;
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();

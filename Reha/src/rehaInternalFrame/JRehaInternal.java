@@ -234,7 +234,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		int comp = nord.getComponentCount();
 		Component icomp;
 		for(int i = 0 ; i < comp ; i ++){
-			//System.out.println(nord.getComponent(i));
+			////System.out.println(nord.getComponent(i));
 			icomp = nord.getComponent(i);
 			if(icomp != null){
 				ListenerTools.removeListeners(icomp);
@@ -245,7 +245,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		ListenerTools.removeListeners(thisContent);
 		comp = thisContent.getComponentCount();
 		for(int i = 0 ; i < comp ; i ++){
-			//System.out.println(thisContent.getComponent(i));
+			////System.out.println(thisContent.getComponent(i));
 			icomp = thisContent.getComponent(i);
 			if(icomp != null){
 				ListenerTools.removeListeners(icomp);
@@ -255,7 +255,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		ListenerTools.removeListeners(inhalt);
 		comp = inhalt.getComponentCount();
 		for(int i = 0 ; i < comp ; i ++){
-			//System.out.println(inhalt.getComponent(i));
+			////System.out.println(inhalt.getComponent(i));
 			icomp = inhalt.getComponent(i);
 			if(icomp != null){
 				ListenerTools.removeListeners(icomp);
@@ -275,9 +275,9 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
-				//System.out.println(((JComponent)e.getSource()).getParent().getParent());
+				////System.out.println(((JComponent)e.getSource()).getParent().getParent());
 				if (inhalt != null){
-					//System.out.println("Inhalt soll Focus erhalten");
+					////System.out.println("Inhalt soll Focus erhalten");
 					inhalt.requestFocus();
 					setActive(true);
 					frameAktivieren(getName());
@@ -287,7 +287,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				//System.out.println("Fokus verloren. Neuer Fokusbesitzer = "+e.getOppositeComponent());
+				////System.out.println("Fokus verloren. Neuer Fokusbesitzer = "+e.getOppositeComponent());
 				// TODO Auto-generated method stub
 				//repaint();
 			}
@@ -320,7 +320,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 					}catch(java.lang.ClassCastException ex){
 						lays = frame;
 					}
-					//System.out.println("Auf Desktop "+idesk+" befinden sich "+coms+" Container. Name des Containers "+layers+" ist "+lays);					
+					////System.out.println("Auf Desktop "+idesk+" befinden sich "+coms+" Container. Name des Containers "+layers+" ist "+lays);					
 					if(!lays.equals(frame)){
 						((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).setActive(false);
 						try {
@@ -352,14 +352,14 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 					}
 
 				}catch(java.lang.ArrayIndexOutOfBoundsException ex){
-					System.out.println("****************Fehler**************");
+					//System.out.println("****************Fehler**************");
 					ex.printStackTrace();
 				}
 			}
 			
 		}
 		if(iframe != null){
-			//System.out.println("Name des aufgerufenen iFrames = "+iframe.getName());
+			////System.out.println("Name des aufgerufenen iFrames = "+iframe.getName());
 			iframe.setActive(true);
 			final JRehaInternal xiframe = iframe;
 			SwingUtilities.invokeLater(new Runnable(){
@@ -389,12 +389,12 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 			//repaint();
 			aktiviereDiesenFrame(getName());
 			//frameAktivieren(getName());
-			//System.out.println("JRehaInternal frame aktiviert = " +getName());
+			////System.out.println("JRehaInternal frame aktiviert = " +getName());
 		}
 		/*
 		if(! this.isActive){
-			System.out.println("Layer beim aktivieren = " +Reha.thisClass.desktops[this.desktop].getLayer(this));
-			System.out.println("Name der DesktopPane = "+Reha.thisClass.desktops[this.desktop].getName());
+			//System.out.println("Layer beim aktivieren = " +Reha.thisClass.desktops[this.desktop].getLayer(this));
+			//System.out.println("Name der DesktopPane = "+Reha.thisClass.desktops[this.desktop].getName());
 			this.isActive = true;
 			this.repaint();
 			this.toFront();
@@ -417,15 +417,15 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		AktiveFenster.loescheFenster(this.getName());
-		System.out.println("In JRehaInternal alles gel�scht");
+		//System.out.println("In JRehaInternal alles gel�scht");
 		/*
 		Runtime r = Runtime.getRuntime();
 	    r.gc();
 	    long freeMem = r.freeMemory();
 		*/
-	    //System.out.println("Superklasse------->Freier Speicher nach  gc():    " + freeMem);
+	    ////System.out.println("Superklasse------->Freier Speicher nach  gc():    " + freeMem);
 		//this.getParent().getParent().requestFocus();
-		//System.out.println("Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		////System.out.println("Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		// TODO Auto-generated method stub
 		
 	}
@@ -436,8 +436,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	@Override
 	public void internalFrameDeactivated(InternalFrameEvent arg0) {
-		//System.out.println("Frame = "+((JRehaInternal)arg0.getSource()).getName()+"Internal Deaktiviert = ID - "+arg0.getID());
-		//System.out.println("deaktiviert - "+arg0);
+		////System.out.println("Frame = "+((JRehaInternal)arg0.getSource()).getName()+"Internal Deaktiviert = ID - "+arg0.getID());
+		////System.out.println("deaktiviert - "+arg0);
 		isActive = false;
 		this.repaint();
 		/*
@@ -469,7 +469,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void internalFrameIconified(InternalFrameEvent arg0)	{
 		this.titel = getTitle();
-		//System.out.println("Iconified - Titel "+this.getComponent());
+		////System.out.println("Iconified - Titel "+this.getComponent());
 		// TODO Auto-generated method stub
 		
 	}
@@ -506,7 +506,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public void mouseClicked(MouseEvent arg0) {
 		if(arg0.getClickCount()==1 && !isActive){
 			feuereEvent(25554);
-			//System.out.println("SourceKlasse = "+ arg0.getSource().getClass());
+			////System.out.println("SourceKlasse = "+ arg0.getSource().getClass());
 		}
 		// TODO Auto-generated method stub
 		//setTitel(new Long(System.currentTimeMillis()).toString());
@@ -522,32 +522,32 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Muaus ist au�erhalb des Fensters");
+		////System.out.println("Muaus ist au�erhalb des Fensters");
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(this.getName()+"Muaus ist innerhalb des Fensters");		
+		////System.out.println(this.getName()+"Muaus ist innerhalb des Fensters");		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(this.getName()+"Muaustaste losgelassen");		
+		////System.out.println(this.getName()+"Muaustaste losgelassen");		
 	}
 	@Override
 	public void ancestorAdded(AncestorEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Ancestor event - "+arg0);
+		////System.out.println("Ancestor event - "+arg0);
 		
 	}
 	@Override
 	public void ancestorMoved(AncestorEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Ancestor-Moved->"+arg0);
+		////System.out.println("Ancestor-Moved->"+arg0);
 		//String ss = ((AncestorEvent)arg0).paramString();
-		//System.out.println("Ancestor-Moved-ParameterString->"+ss);
+		////System.out.println("Ancestor-Moved-ParameterString->"+ss);
 	}
 	@Override
 	public void ancestorRemoved(AncestorEvent arg0) {
@@ -557,12 +557,12 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(this.getName()+"-MausPosition "+arg0.getXOnScreen()+"-"+arg0.getYOnScreen());
+		////System.out.println(this.getName()+"-MausPosition "+arg0.getXOnScreen()+"-"+arg0.getYOnScreen());
 	}
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(this.getName()+"-MausPosition "+arg0.getXOnScreen()+"-"+arg0.getYOnScreen());		
+		////System.out.println(this.getName()+"-MausPosition "+arg0.getXOnScreen()+"-"+arg0.getYOnScreen());		
 	}
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
@@ -572,7 +572,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Component Moved->"+arg0);
+		////System.out.println("Component Moved->"+arg0);
 	}
 	@Override
 	public void componentResized(ComponentEvent arg0) {
@@ -589,14 +589,14 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	public void setzeIcon(){
 		if(this.isIcon){
-			//System.out.println("Komponente Resized im Beh�lter - "+ this.desktop);
+			////System.out.println("Komponente Resized im Beh�lter - "+ this.desktop);
 			JDesktopIcon di = this.getDesktopIcon();
 			di.setLocation((5*this.compOrder)+(this.compOrder*di.getWidth()), Reha.thisClass.desktops[this.desktop].getHeight()-di.getHeight());
 			
 		}
 	}
 	public void showPopUp(java.awt.event.MouseEvent evt){
-		//System.out.println("Aufruf des PopUpMenues an der Stelle X="+evt.getX()+" / Y="+evt.getY());
+		////System.out.println("Aufruf des PopUpMenues an der Stelle X="+evt.getX()+" / Y="+evt.getY());
 		JPopupMenu jPop = getTerminPopupMenu();
 		jPop.show( evt.getComponent(), evt.getX(), evt.getY() ); 
 	}
@@ -674,7 +674,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.removeInternalFrameListener(this);
 
 		this.setVisible(false);
-		//System.out.println("Layer vor dem Wechsel" +Reha.thisClass.desktops[vorher].getLayer(this));		
+		////System.out.println("Layer vor dem Wechsel" +Reha.thisClass.desktops[vorher].getLayer(this));		
 		Reha.thisClass.desktops[vorher].remove(this);
 		((JDesktopPane)Reha.thisClass.desktops[vorher]).updateUI();
 		Reha.thisClass.desktops[vorher].repaint();
@@ -698,7 +698,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		}
 
 		frameAktivieren(this.getName());
-		//System.out.println("Layer nach dem Wechsel" +Reha.thisClass.desktops[nachher].getLayer(this));		
+		////System.out.println("Layer nach dem Wechsel" +Reha.thisClass.desktops[nachher].getLayer(this));		
 		/*
 		try {
 			setSelected(true);
@@ -760,26 +760,26 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 				int deskaktiv=this.desktop;
 				int deskinaktiv = (deskaktiv==0 ? 1 : 0);
 				JInternalFrame[] frm = Reha.thisClass.desktops[deskaktiv].getAllFrames();
-				//System.out.println("Anzahl Fenster auf Desktop "+deskaktiv+" = "+frm.length);
+				////System.out.println("Anzahl Fenster auf Desktop "+deskaktiv+" = "+frm.length);
 				
 				for(int i = 0; i < frm.length;i++){
 						if(((JRehaInternal)frm[i]).getName().equals(xname)){
-							//System.out.println("In den Vordergrund "+xname);
+							////System.out.println("In den Vordergrund "+xname);
 							//((JRehaInternal)frm[i]).fireInternalFrameEvent(25554);
 						}else{
-							//System.out.println("In den Hintergrund "+xname);
-							//System.out.println("In den Hintergrund "+((JRehaInternal)frm[i]).getName());							
+							////System.out.println("In den Hintergrund "+xname);
+							////System.out.println("In den Hintergrund "+((JRehaInternal)frm[i]).getName());							
 							((JRehaInternal)frm[i]).fireInternalFrameEvent(25555);
 							((JRehaInternal)frm[i]).validateTree();
 						}
 				}
 				
 				JInternalFrame[] frmin = Reha.thisClass.desktops[deskinaktiv].getAllFrames();
-				//System.out.println("Anzahl Fenster auf Desktop "+deskinaktiv+" = "+frmin.length);				
+				////System.out.println("Anzahl Fenster auf Desktop "+deskinaktiv+" = "+frmin.length);				
 				for(int i = 0; i < frmin.length;i++){
 					
 					if(!((JRehaInternal)frmin[i]).getName().equals(xname)){
-						//System.out.println("Inaktiver Desktop Hintergrund -> "+((JRehaInternal)frmin[i]).getName());
+						////System.out.println("Inaktiver Desktop Hintergrund -> "+((JRehaInternal)frmin[i]).getName());
 						((JRehaInternal)frmin[i]).fireInternalFrameEvent(25555);
 						((JRehaInternal)frmin[i]).validateTree();
 						//((JRehaInternal)frmin[i]).repaint();
@@ -851,7 +851,7 @@ class RehaInternal extends BasicInternalFrameTitlePane{
 		int comp = this.getComponentCount();
 
 		for(int i = 0 ; i < comp ; i ++){
-			//System.out.println(this.getComponent(i));
+			////System.out.println(this.getComponent(i));
 			if(i < 4){
 				this.getComponent(i).setVisible(false);
 			}else{
@@ -898,7 +898,7 @@ class CustomPinPanel extends JButton{
 		setPreferredSize(new Dimension(15,15));
 		addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				//System.out.println("Action ausgel�st von: "+((JComponent)evt.getSource()).getName());
+				////System.out.println("Action ausgel�st von: "+((JComponent)evt.getSource()).getName());
 				if(((JComponent)evt.getSource()).getName().equals("GRUEN")){
 					((JRehaInternal)getParent().getParent()).gruenGedrueckt();
 				}

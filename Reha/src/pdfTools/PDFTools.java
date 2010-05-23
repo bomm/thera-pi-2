@@ -41,16 +41,16 @@ public class PDFTools {
 			Chunk ch = new Chunk();
 			HashMap map = ch.getAttributes();
 			if(map==null){
-				System.out.println("map == null");
+				//System.out.println("map == null");
 			}
 			if(map.isEmpty()){
-				System.out.println("map isEmpty");
+				//System.out.println("map isEmpty");
 			}
 			Set entries = map.entrySet();
 		    Iterator it = entries.iterator();
 		    while (it.hasNext()) {
 		    	 Map.Entry entry = (Map.Entry) it.next();
-		    	 System.out.println("Key:"+entry.getKey()+" - Wert:"+entry.getValue());
+		    	 //System.out.println("Key:"+entry.getKey()+" - Wert:"+entry.getValue());
 		    }
 
 			PdfPCell cell1 = new PdfPCell();

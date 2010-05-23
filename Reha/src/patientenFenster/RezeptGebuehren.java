@@ -198,7 +198,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		    			rueckgeld.setForeground(Color.BLUE);
 		    		}
 		    		rueckgeld.setText(df.format(rgtest) );
-		    		//System.out.println("Text = "+gegeben.getText()+ " inhalt von Test = "+test.toString());
+		    		////System.out.println("Text = "+gegeben.getText()+ " inhalt von Test = "+test.toString());
 		    	}
 		    }
 		});
@@ -296,7 +296,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 		for (int i = 0; i < placeholders.length; i++) {
 			String placeholderDisplayText = placeholders[i].getDisplayText();
-			//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+			////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 			placeholders[i].getTextRange().setText(SystemConfig.hmAdrRDaten.get(placeholderDisplayText));
 		}
 		if(direktdruck.isSelected()){
@@ -330,11 +330,11 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 					rtp = null;
 					super.dispose();
 					this.dispose();
-					System.out.println("****************Rezeptgebühren -> Listener entfernt**************");				
+					//System.out.println("****************Rezeptgebühren -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -345,7 +345,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			rtp = null;
 			super.dispose();
 			dispose();
-			System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Rezeptgebühren -> Listener entfernt (Closed)**********");
 		}
 		
 		
@@ -382,7 +382,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				this.dispose();
 				super.dispose();
 			}
-			System.out.println("Return Gedrückt");
+			//System.out.println("Return Gedrückt");
 		}
 	}
 	public void doBuchen(){
@@ -394,13 +394,13 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
 		"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
 		new ExUndHop().setzeStatement(cmd);
-		//System.out.println("Kassenbuch -> "+cmd);
+		////System.out.println("Kassenbuch -> "+cmd);
 		
 		cmd = "update verordn set rez_geb='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', "+
 		"rez_bez='T', zzstatus='1' where id='"+SystemConfig.hmAdrRDaten.get("<Rid>")+"'";
 		new ExUndHop().setzeStatement(cmd);
-		//System.out.println("Rezeptstamm -> "+cmd);
+		////System.out.println("Rezeptstamm -> "+cmd);
 		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 		if(row >= 0){
 			//Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],row,1);

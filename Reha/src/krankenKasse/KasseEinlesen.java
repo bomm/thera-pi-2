@@ -21,7 +21,7 @@ public class KasseEinlesen {
 	
 	public void KasseEinlesen(){
 		oeffneKostentraeger();
-	    System.out.println("Austritt aus KasseEinlesen");
+	    //System.out.println("Austritt aus KasseEinlesen");
  			
 
 	}
@@ -48,7 +48,7 @@ public class KasseEinlesen {
 	    if (result == JFileChooser.APPROVE_OPTION) {
 	        File inputVerzFile = chooser.getSelectedFile();
 	        String inputVerzStr = inputVerzFile.getPath();
-	        System.out.println("Eingabepfad:" + inputVerzStr);
+	        //System.out.println("Eingabepfad:" + inputVerzStr);
 	        if(inputVerzStr.trim().toUpperCase().indexOf(".KE") < 0){
 	        	JOptionPane.showMessageDialog(null,"Keine gültige Kostenträgerdatei!");
 	        }else{
@@ -63,7 +63,7 @@ public class KasseEinlesen {
 
 	        }
 	 
-	    System.out.println("Abbruch");
+	    //System.out.println("Abbruch");
 	    chooser.setVisible(false); 			
 		
 	    }

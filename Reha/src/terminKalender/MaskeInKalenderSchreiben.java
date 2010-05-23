@@ -91,8 +91,8 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
 		this.vTerm = (Vector) vTerm.clone();
 		this.maskenBehandler = maskenBehandler;
 		this.sBehandler = (maskenBehandler < 10 ? "0"+maskenBehandler+"BEHANDLER" : Integer.toString(maskenBehandler)+"BEHANDLER");
-		//System.out.println("Maskenbehandler = "+this.maskenBehandler);
-		//System.out.println("Maske von Behandler "+this.sBehandler);
+		////System.out.println("Maskenbehandler = "+this.maskenBehandler);
+		////System.out.println("Maske von Behandler "+this.sBehandler);
 		this.setModal(true);
 		this.setUndecorated(true);
 		//ParameterLaden.vKKollegen.get(von).Matchcode
@@ -153,7 +153,7 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
 /*******************************************************/			
 /*********************************************************/
 public void FensterSchliessen(String welches){
-	//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
+	////System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 	//webBrowser.dispose();
 	this.dispose();
 }
@@ -242,16 +242,16 @@ public String dieserName(){
 
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
+	//System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
 	String ss =  this.getName();
-	System.out.println("MaskeInKalenderSchreiben "+this.getName()+" Eltern "+ss);
+	//System.out.println("MaskeInKalenderSchreiben "+this.getName()+" Eltern "+ss);
 	try{
 		//if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 			FensterSchliessen(evt.getDetails()[0]);
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		//}	
 	}catch(NullPointerException ne){
-		System.out.println("In DruckFenster" +evt);
+		//System.out.println("In DruckFenster" +evt);
 	}
 
 
@@ -311,7 +311,7 @@ public void setAktuellesDatum(String aktDat){
 
 @Override
 public void keyPressed(KeyEvent arg0) {
-	//System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
+	////System.out.println(arg0.getKeyCode()+" - "+arg0.getSource());
 	if(arg0.getKeyCode() == 27){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		FensterSchliessen(null);
@@ -357,20 +357,20 @@ public void maskenEintragen(){
 		JOptionPane.showMessageDialog(null,"Ihr angegebenes Startdatum ist größer als das Stopdatum -> Depp!");
 		return;
 	}
-	//System.out.println("Anzahl Vector-Elemente = "+this.vTerm.size());
+	////System.out.println("Anzahl Vector-Elemente = "+this.vTerm.size());
 	int j = 0;
 	for(i = 0; i < this.vTerm.size();i++){
-		//System.out.println("Inhalt des Vector-Element "+i+" = "+this.vTerm.get(i));
-		//System.out.println("Anzahl Elemente von get("+i+") = "+((ArrayList)this.vTerm.get(i)).size());
+		////System.out.println("Inhalt des Vector-Element "+i+" = "+this.vTerm.get(i));
+		////System.out.println("Anzahl Elemente von get("+i+") = "+((ArrayList)this.vTerm.get(i)).size());
 		/*
 		for(j=0; j< ((ArrayList)this.vTerm.get(i)).size();j++){
-			System.out.println("Inhalte get("+i+") an Position "+j+" = "+((ArrayList)this.vTerm.get(i)).get(j));
+			//System.out.println("Inhalte get("+i+") an Position "+j+" = "+((ArrayList)this.vTerm.get(i)).get(j));
 		}
 		*/	
 	}
-	//System.out.println("Vector-Element1 = "+this.vTerm.size());	
+	////System.out.println("Vector-Element1 = "+this.vTerm.size());	
 	while(!stopUebertrag){
-		//System.out.println("Bearbeite Tag "+aktTag);
+		////System.out.println("Bearbeite Tag "+aktTag);
 		aktDatum.setText(aktTag);
 		wochenTag = DatFunk.TagDerWoche(aktTag);
 		String statement = macheStatement(DatFunk.sDatInSQL(aktTag),(ArrayList) this.vTerm.get(wochenTag-1));
@@ -413,7 +413,7 @@ public void maskenEintragen(){
 				  String [] split = {null,null};
 				  split = replace.split("\\\\");
 				  nummer =  split[0]+"\\\\"+split[1];
-				  //System.out.println("Backslashtermin = "+nummer);
+				  ////System.out.println("Backslashtermin = "+nummer);
 			  	
 			  }else{
 				  nummer = ((String)((Vector) list.get(1)).get(i));
@@ -460,13 +460,13 @@ final class SchreibeMaskeInKalender extends Thread implements Runnable{
 					geklappt =  stmt.execute(this.statement);
 					
 			}catch(SQLException ev){
-					System.out.println("SQLException: " + ev.getMessage());
-					System.out.println("SQLState: " + ev.getSQLState());
-					System.out.println("VendorError: " + ev.getErrorCode());
+					//System.out.println("SQLException: " + ev.getMessage());
+					//System.out.println("SQLState: " + ev.getSQLState());
+					//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {

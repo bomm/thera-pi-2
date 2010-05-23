@@ -16,14 +16,14 @@ public class XRehaDocumentListener extends DocumentAdapter implements IDocumentL
 	}
 	@Override
 	public void onAlphaCharInput(IDocumentEvent arg0) {
-		System.out.println("OO"+1);
+		//System.out.println("OO"+1);
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onFocus(IDocumentEvent arg0) {
-		System.out.println("OO Focus"+2);
+		//System.out.println("OO Focus"+2);
 		// TODO Auto-generated method stub
 		
 	}
@@ -66,7 +66,7 @@ public class XRehaDocumentListener extends DocumentAdapter implements IDocumentL
 
 	@Override
 	public void onMouseOut(IDocumentEvent arg0) {
-		System.out.println("OO"+2);
+		//System.out.println("OO"+2);
 		// TODO Auto-generated method stub
 		
 	}
@@ -85,14 +85,14 @@ public class XRehaDocumentListener extends DocumentAdapter implements IDocumentL
 
 	@Override
 	public void onNonAlphaCharInput(IDocumentEvent arg0) {
-		System.out.println("OO"+2);		
+		//System.out.println("OO"+2);		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onSave(IDocumentEvent arg0) {
-		System.out.println("OO"+3);
+		//System.out.println("OO"+3);
 		// TODO Auto-generated method stub
 		
 	}
@@ -133,7 +133,7 @@ public class XRehaDocumentListener extends DocumentAdapter implements IDocumentL
 		
 	}
 	public void notify(IDocumentEvent arg0) {
-		System.out.println(arg0);
+		//System.out.println(arg0);
 	
 	}
 

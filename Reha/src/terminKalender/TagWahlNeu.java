@@ -207,7 +207,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 					datePick.setName("datPick");
 					datePick.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							//System.out.println("Date-Picker*************"+e);
+							////System.out.println("Date-Picker*************"+e);
 						}
 					});
 
@@ -215,12 +215,12 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 					
 						
 						public void keyTyped(KeyEvent arg0) { 
-							//System.out.println("Woot"); 
+							////System.out.println("Woot"); 
 						} 
 					});
 					datePick.getLinkPanel().addKeyListener(new KeyAdapter(){
 						public void keyTyped(KeyEvent arg0) { 
-							//System.out.println("Woot"); 
+							////System.out.println("Woot"); 
 						} 
 					}); 
 					
@@ -285,10 +285,10 @@ public void setzeFocus(){
 @Override
 public void focusGained(FocusEvent arg0) {
 	if( ((JComponent)arg0.getSource()).getName().equals("datum")){
-		//System.out.println("focus erhalten "+arg0);
+		////System.out.println("focus erhalten "+arg0);
 	}
 	// TODO Auto-generated method stub
-	//System.out.println("focus erhalten "+arg0);
+	////System.out.println("focus erhalten "+arg0);
 	
 }
 
@@ -296,7 +296,7 @@ public void focusGained(FocusEvent arg0) {
 public void focusLost(FocusEvent arg0) {
 	if( ((JComponent)arg0.getSource()).getName() != null){
 		if( ((JComponent)arg0.getSource()).getName().equals("datum")){
-			//System.out.println("focus verloren "+arg0);
+			////System.out.println("focus verloren "+arg0);
 			try{
 				String opposite = ((JComponent)arg0.getOppositeComponent()).getName();
 				if( opposite.contains("TagWahl") || 
@@ -318,9 +318,9 @@ public void focusLost(FocusEvent arg0) {
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
-	System.out.println(arg0);
+	//System.out.println(arg0);
 	if(arg0.getActionCommand().equals("datePickerCommit")){
-		//System.out.println("Gew�hlt wurde das Datum: "+datePick.getEditor().getText().trim());
+		////System.out.println("Gew�hlt wurde das Datum: "+datePick.getEditor().getText().trim());
 		akttag = datePick.getEditor().getText().trim();
 		datum.setText(akttag );
 		wochentag.setText(DatFunk.WochenTag(akttag) );
@@ -400,7 +400,7 @@ public void componentShown(ComponentEvent arg0) {
 }
 @Override
 public void keyPressed(KeyEvent arg0) {
-	//System.out.println(arg0.getKeyCode()+" - "+arg0.getSource()+"Key Event");	
+	////System.out.println(arg0.getKeyCode()+" - "+arg0.getSource()+"Key Event");	
 	for(int i = 0;i<1;i++){
 		if(arg0.getKeyCode() == 27){
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
@@ -412,14 +412,14 @@ public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyCode() == 10){
 			//if(arg0.getSource() instanceof JRtaTextField){
 				((JComponent) arg0.getSource()).requestFocus();
-				//System.out.println(arg0.getKeyCode()+" - "+arg0.getSource()+"Soll Focus behalten");
+				////System.out.println(arg0.getKeyCode()+" - "+arg0.getSource()+"Soll Focus behalten");
 				arg0.consume();
 				zurueck();
 			//}	
 			break;
 		}
 		if(arg0.getKeyCode() == 33){
-			//System.out.println("tag + tag");
+			////System.out.println("tag + tag");
 			akttag = DatFunk.sDatPlusTage(akttag,1);
 			datePick.setDate(machePickerDatum(akttag));
 			datum.setText(akttag);
@@ -432,7 +432,7 @@ public void keyPressed(KeyEvent arg0) {
 			break;
 		}
 		if(arg0.getKeyCode() == 34){
-			//System.out.println("tag - tag");
+			////System.out.println("tag - tag");
 			akttag = DatFunk.sDatPlusTage(akttag,-1);
 			datePick.setDate(machePickerDatum(akttag));
 			datum.setText(akttag);
@@ -449,7 +449,7 @@ public void keyPressed(KeyEvent arg0) {
 }	
 @Override
 public void keyReleased(KeyEvent e) {
-	//System.out.println("Key event Released ");
+	////System.out.println("Key event Released ");
 	
 	if(e.getKeyCode() == 10){
 			((JComponent) e.getSource()).requestFocus();
@@ -463,7 +463,7 @@ public void keyReleased(KeyEvent e) {
 
 @Override
 public void keyTyped(KeyEvent e) {
-	//System.out.println("Key event Released ");
+	////System.out.println("Key event Released ");
 	if(e.getKeyCode() == 10){
 		((JComponent) e.getSource()).requestFocus();
 		e.consume();
@@ -493,7 +493,7 @@ public void windowClosed(WindowEvent arg0) {
 		rtp = null;
 	}
 	if(datum != null){
-		//System.out.println("Listeners von Tagwahl entfernen");
+		////System.out.println("Listeners von Tagwahl entfernen");
 		ListenerTools.removeListeners(datum);
 		datum = null;
 		ListenerTools.removeListeners(okbut);
@@ -536,7 +536,7 @@ class kalenderAction extends AbstractAction {
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
-	//System.out.println("in Abstract Action" +arg0);	
+	////System.out.println("in Abstract Action" +arg0);	
 }
 }
 
@@ -553,20 +553,20 @@ class MeinPicker extends JXDatePicker implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("pressed");
+		////System.out.println("pressed");
 		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("released");
+		////System.out.println("released");
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("typed");
+		////System.out.println("typed");
 	}
 	
 }

@@ -70,7 +70,7 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements TableCell
     public boolean startCellEditing() {
         String s = (String)getCellEditorValue();
     	//((JFormattedTextField)component).setCaretPosition(0);
-    	System.out.println("Zu Beginn der Editing / Ganzer String = "+s);
+    	//System.out.println("Zu Beginn der Editing / Ganzer String = "+s);
     	
     	if (! testeUhr(s) ) {
             return false;
@@ -82,9 +82,9 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements TableCell
 /*********************************/	
 	public boolean testeUhr(String s){
 		boolean ret = true;
-		System.out.println("substr 0,1 = "+s.substring(0,1));
-		System.out.println("substr 3,4 = "+s.substring(3,4));
-		System.out.println("Ganzer String = "+s);
+		//System.out.println("substr 0,1 = "+s.substring(0,1));
+		//System.out.println("substr 3,4 = "+s.substring(3,4));
+		//System.out.println("Ganzer String = "+s);
 			if(s.length() < 5){return false;}
 			if(new Integer(s.substring(0,1)) > 2 ){return false;}
 			if(new Integer(s.substring(3,4)) > 5 ){return false;}

@@ -211,7 +211,7 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 			Collections.sort(termineVec,comparator);
 			
 		}
-		//System.out.println(termineVec);
+		////System.out.println(termineVec);
 	}
 	
 	public void cursorWait(boolean ein){
@@ -347,7 +347,7 @@ private JXPanel terminListe(){
 	
 	
 	//myTable.data = (ArrayList<String[]>) termine;
-	//System.out.println("Klasse von Column 2 = "+myTable.getColumnClass(1));
+	////System.out.println("Klasse von Column 2 = "+myTable.getColumnClass(1));
 	//jxTable.setModel(tblDataModel);
 	pliste = new JXTable();
 	pliste.addKeyListener(this);
@@ -394,16 +394,16 @@ public String dieserName(){
 
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-	//System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
+	////System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
 	String ss =  this.getName();
-	//System.out.println("Durckerlistenfenster "+this.getName()+" Eltern "+ss);
+	////System.out.println("Durckerlistenfenster "+this.getName()+" Eltern "+ss);
 	try{
 		//if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 			FensterSchliessen(evt.getDetails()[0]);
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 		//}	
 	}catch(NullPointerException ne){
-		//System.out.println("In DruckFenster" +evt);
+		////System.out.println("In DruckFenster" +evt);
 	}
 
 
@@ -418,10 +418,10 @@ public void actionPerformed(ActionEvent arg0) {
 				PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 				DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
 				PrintService   prservDflt = PrintServiceLookup.lookupDefaultPrintService();
-				//System.out.println("Default Printer = "+prservDflt);
+				////System.out.println("Default Printer = "+prservDflt);
 				PrintService[] prservices = PrintServiceLookup.lookupPrintServices( flavor, aset );
-				//System.out.println("Printer prservices = "+Arrays.asList(prservices));
-				//System.out.println("Printer aset = "+Arrays.asList(aset));
+				////System.out.println("Printer prservices = "+Arrays.asList(prservices));
+				////System.out.println("Printer aset = "+Arrays.asList(aset));
 				jb1.setEnabled(false);
 				jb2.setEnabled(false);
 				jb3.setEnabled(false);
@@ -458,7 +458,7 @@ public void actionPerformed(ActionEvent arg0) {
 				return;
 			}
 			
-			//System.out.println("Selektierte Reihe="+pliste.getSelectedRow());
+			////System.out.println("Selektierte Reihe="+pliste.getSelectedRow());
 			int reihen = pliste.getRowCount();
 			int selected = pliste.getSelectedRow();
 			if(selected >=0){
@@ -468,12 +468,12 @@ public void actionPerformed(ActionEvent arg0) {
 				String altbehandler = pliste.getValueAt(selected, 5).toString();
 				String altname = pliste.getValueAt(selected, 8).toString();
 				String altrezept = pliste.getValueAt(selected, 9).toString();
-				//System.out.println("TerminAusmustern = "+tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
+				////System.out.println("TerminAusmustern = "+tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
 				Reha.thisClass.terminpanel.terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);				
 			}
 			int reihenselekt = pliste.getSelectedRow();
 			int realindex = pliste.convertRowIndexToModel(reihenselekt);
-			//System.out.println("******Tats�chlicher Index = "+realindex);
+			////System.out.println("******Tats�chlicher Index = "+realindex);
 
 			if(ch == JOptionPane.NO_OPTION){
 				boolean geklappt;
@@ -491,7 +491,7 @@ public void actionPerformed(ActionEvent arg0) {
 						"Sie drucken einen Terminplan - haben zuvor einen Termin aus dem Terminplan gelöscht\n"+
 						"aber der Termin steht immer noch im Terminkalender - bitte keinen Ausfall produzieren");
 			}
-			System.out.println("Realindex = "+realindex);			
+			//System.out.println("Realindex = "+realindex);			
 			if(reihen > 0){
 				getSmartTitledPanel().setTitle(Integer.toString(reihen-1)+ "  Termin(e) in der Druckerliste");
 				//xxx
@@ -570,10 +570,10 @@ private boolean satzSperrenUndLoeschen(int realindex){
 	befehle[1] = isstmt;
 	befehle[2] = neustmt;	
 	befehle[3] = sentsprerr;	
-	//System.out.println("Behfehl 1 = "+befehle[0]);
-	//System.out.println("Behfehl 2 = "+befehle[1]);
-	//System.out.println("Behfehl 3 = "+befehle[2]);
-	//System.out.println("Behfehl 4 = "+befehle[3]);	
+	////System.out.println("Behfehl 1 = "+befehle[0]);
+	////System.out.println("Behfehl 2 = "+befehle[1]);
+	////System.out.println("Behfehl 3 = "+befehle[2]);
+	////System.out.println("Behfehl 4 = "+befehle[3]);	
 	ret = new druckListeSperren().schongesperrt(befehle);
 	if (ret){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -615,7 +615,7 @@ public void run(){
 	try {
 		String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.oTerminListe.NameTemplate;
 		//String url = Reha.proghome+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
-		//System.out.println("***************URL = "+url+"****************");
+		////System.out.println("***************URL = "+url+"****************");
 		String terminDrucker = SystemConfig.oTerminListe.NameTerminDrucker;
 		//String terminDrucker = SystemConfig.oTerminListe.NameTerminDrucker;
 		int anzahl = oOTermine.size();
@@ -627,7 +627,7 @@ public void run(){
 		int ipatdrucken = SystemConfig.oTerminListe.PatNameDrucken;
 		int iheader = SystemConfig.oTerminListe.MitUeberschrift;
 		String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
-		//System.out.println("Platzhalter = "+patplatzhalter);
+		////System.out.println("Platzhalter = "+patplatzhalter);
 		//
 		
 /*******************************/
@@ -717,7 +717,7 @@ public void run(){
 				}
 				for (int i = 0; i < placeholders.length; i++) {
 					String placeholderDisplayText = placeholders[i].getDisplayText();
-					//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+					////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 					if(placeholderDisplayText.equals("<^Name^>")){
 						placeholders[i].getTextRange().setText(patname);
 					}	
@@ -751,7 +751,7 @@ public void run(){
 				aktTabelle = aktTabelle+1;
 				textTable = textDocument.getTextTableService().getTextTable(tabName[aktTabelle]);
 				aktTerminInTabelle = 0;
-				//System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
+				////System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
 			}
 
 			/************Wenn die aktuelle Seite voll ist******************/
@@ -769,7 +769,7 @@ public void run(){
 				x = 0;
 				for(int i=AnzahlTabellen;i>0;i--){
 					tabName[x] = tbl[(tbl.length-1)-x].getName(); 
-					//System.out.println(tabName[x]);
+					////System.out.println(tabName[x]);
 					x++;
 				}
 				
@@ -786,7 +786,7 @@ public void run(){
 						}
 				        textRanges[0].setText(patname);
 					}
-					System.out.println("Suche ersetze durchgef�hrt*************");
+					//System.out.println("Suche ersetze durchgef�hrt*************");
 					*/
 					/*
 					ITextService textService = textDocument.getTextService();
@@ -813,7 +813,7 @@ public void run(){
 						}
 						for (int i = 0; i < placeholders.length; i++) {
 							String placeholderDisplayText = placeholders[i].getDisplayText();
-							//System.out.println("Platzhalter-Name = "+placeholderDisplayText);
+							////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 							if(placeholderDisplayText.equals("<^Name^>")){
 								placeholders[i].getTextRange().setText(patname);
 							}	
@@ -829,8 +829,8 @@ public void run(){
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//System.out.println("textTable gesetzt*************");
-				//System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
+				////System.out.println("textTable gesetzt*************");
+				////System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
 			}
 			/********************/
 			if(spaltenNamen.contains("Wochentag")){
@@ -874,7 +874,7 @@ public void run(){
 		}else{
 			exporturl = Reha.proghome+"temp/"+Reha.aktIK+"/Terminplan.pdf";
 			//exporturl = SystemConfig.hmVerzeichnisse.get("Temp")+"Terminplan.pdf";
-			//System.out.println("ExportURL = "+exporturl);
+			////System.out.println("ExportURL = "+exporturl);
 			textDocument.getPersistenceService().export(exporturl, new PDFFilter());
 			textDocument.close();
 		}		
@@ -884,7 +884,7 @@ public void run(){
 		try{
 			while (Reha.officeapplication.getDocumentService().getCurrentDocuments()[0] != null){
 				Reha.officeapplication.getDocumentService().getCurrentDocuments()[0].close();
-				System.out.println("Fenster geschlossen");
+				//System.out.println("Fenster geschlossen");
 			}
 		}catch(java.lang.ArrayIndexOutOfBoundsException ex){}	
 		documentService.dispose();
@@ -1001,7 +1001,7 @@ final class sendeTermine extends Thread implements Runnable{
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
-		//System.out.println("Empf�ngeradresse = "+emailaddy);
+		////System.out.println("Empf�ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		boolean authx = (SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true);
@@ -1024,7 +1024,7 @@ final class sendeTermine extends Thread implements Runnable{
 	         gelesen = new String(temp);
 	         text = gelesen;
 	         //Ausgabe des Strings
-	         //System.out.println(gelesen);
+	         ////System.out.println(gelesen);
 	         // Ressourcen freigeben
 	         fr.close();
 	      } catch (FileNotFoundException e1) {
@@ -1069,13 +1069,13 @@ final class sendeTermine extends Thread implements Runnable{
 					sergebnis = (rs.getString(1) == null ? "" : rs.getString(1));
 				}
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -1142,15 +1142,15 @@ final class druckListeSperren{
 					sergebnis = (rs.getString(1) == null ? "" : rs.getString(1));
 				}
 				
-				System.out.println("Befehl ausgef�hrt"+exStatement[0]);
+				//System.out.println("Befehl ausgef�hrt"+exStatement[0]);
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -1170,15 +1170,15 @@ final class druckListeSperren{
 			}
 		}
 		
-		System.out.println("Ergebnis = "+sergebnis);
+		//System.out.println("Ergebnis = "+sergebnis);
 		if(sergebnis.trim().equals("")){
-			System.out.println("Befehl ausgef�hrt");
+			//System.out.println("Befehl ausgef�hrt");
 			boolean sper = sperren(exStatement[1]);
-			System.out.println("Befehl ausgef�hrt"+exStatement[1]);
+			//System.out.println("Befehl ausgef�hrt"+exStatement[1]);
 			sper = sperren(exStatement[2]);			
-			System.out.println("Befehl ausgef�hrt"+exStatement[2]);
+			//System.out.println("Befehl ausgef�hrt"+exStatement[2]);
 			sper = sperren(exStatement[3]);
-			System.out.println("Befehl ausgef�hrt"+exStatement[3]);			
+			//System.out.println("Befehl ausgef�hrt"+exStatement[3]);			
 			return true;
 		}else{
 			return false;
@@ -1196,13 +1196,13 @@ final class druckListeSperren{
 				boolergebnis = stmt.execute(exStatement);		
 				
 			}catch(SQLException ev){
-        		System.out.println("SQLException: " + ev.getMessage());
-        		System.out.println("SQLState: " + ev.getSQLState());
-        		System.out.println("VendorError: " + ev.getErrorCode());
+        		//System.out.println("SQLException: " + ev.getMessage());
+        		//System.out.println("SQLState: " + ev.getSQLState());
+        		//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {

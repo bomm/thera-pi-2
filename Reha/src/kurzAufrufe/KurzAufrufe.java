@@ -70,7 +70,7 @@ class AkutListe{
 				documentService = Reha.officeapplication.getDocumentService();
 			} catch (OfficeApplicationException e) {
 				if(documentService==null){
-					System.out.println("Die Java-Access-Bridge ist zusammengebrochen...");
+					//System.out.println("Die Java-Access-Bridge ist zusammengebrochen...");
 				}
 				e.printStackTrace();
 			}
@@ -190,7 +190,7 @@ class AkutListe{
 			tbc[2].setWidth((short) 1700);
 			tbc[3].setWidth((short) 1500);			
 			//tbc[4].setWidth((short) 7920);
-			System.out.println("Es gibt insgesamt "+tbc.length+" Column");
+			//System.out.println("Es gibt insgesamt "+tbc.length+" Column");
 
 			int cols = textTable.getColumnCount();
 			int rows = textTable.getRowCount();
@@ -231,8 +231,8 @@ class TelefonListe{
 	Vector dvec = new Vector();
 	Object tfobj = null;
 	public TelefonListe(Object obj) throws TextException{
-		//System.out.println("�bergebene Parameter = "+obj);	
-		//System.out.println("Einzelner Termin "+((String) ((Vector)((ArrayList) obj).get(0)).get(1)) );
+		////System.out.println("�bergebene Parameter = "+obj);	
+		////System.out.println("Einzelner Termin "+((String) ((Vector)((ArrayList) obj).get(0)).get(1)) );
 		tfobj = obj;
 		for(int i = 0; i <((Vector)((ArrayList) obj).get(0)).size(); i++){
 			if(((String) ((Vector)((ArrayList) obj).get(1)).get(i)).equals("@FREI")){
@@ -392,7 +392,7 @@ class TelefonListe{
 			tbc[3].setWidth((short) 1500);			
 			tbc[4].setWidth((short) 1500);
 			//tbc[4].setWidth((short) 7920);
-			System.out.println("Es gibt insgesamt "+tbc.length+" Column");
+			//System.out.println("Es gibt insgesamt "+tbc.length+" Column");
 
 			int cols = textTable.getColumnCount();
 			int rows = textTable.getRowCount();

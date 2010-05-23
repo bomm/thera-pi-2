@@ -574,7 +574,7 @@ public class Ns2 implements ActionListener {
 				return;
 			}
 			if(vec.size() > 0){
-				System.out.println("Das Datum = ***************"+vec.get(0).get(0));
+				//System.out.println("Das Datum = ***************"+vec.get(0).get(0));
 				if(! vec.get(0).get(0).trim().equals("")){
 					String entdat = DatFunk.sDatInDeutsch(vec.get(0).get(0));
 					if(DatFunk.DatumsWert(entdat) < DatFunk.DatumsWert("01.01.2007")){
@@ -601,7 +601,7 @@ public class Ns2 implements ActionListener {
 								Integer.toString(eltern.berichtid)+"' LIMIT 1" );
 						for(int i = 1;i<=10;i++){
 							pos = (i*4);
-							//System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
+							////System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
 							if(vec.get(0).get(pos).equals("0")){
 								istnull++;
 								if(istnull > 3){
@@ -665,9 +665,9 @@ public class Ns2 implements ActionListener {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -722,7 +722,7 @@ public class Ns2 implements ActionListener {
 		};
 		Collections.sort(vec,comparator);		
 		
-		//System.out.println("Dit ktltabelle = "+ktltabelle);
+		////System.out.println("Dit ktltabelle = "+ktltabelle);
 		Vector<String> vec2 = new Vector<String>();
 		vec2.add("./.");
 		vec2.add("");

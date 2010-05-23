@@ -44,7 +44,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         MaskFormatter formatter = null;
 	    try {
 	      if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage())) {
-	    	  //System.out.println("Formatter - Locale = Germany");
+	    	  ////System.out.println("Formatter - Locale = Germany");
 	        formatter = new MaskFormatter ("##.##.####");
 	      }
 	      else {
@@ -85,10 +85,10 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         ftf.getActionMap().put("check", new AbstractAction() {
 			@Override
         	public void actionPerformed(ActionEvent e) {
-				//System.out.println("Verify in ActionEvent = "+ftf.getInputVerifier().verify(ftf));
+				////System.out.println("Verify in ActionEvent = "+ftf.getInputVerifier().verify(ftf));
 		        if((!ftf.getInputVerifier().verify(ftf)) || 
 		        		(ftf.getText().trim().length()==7) ||(ftf.getText().trim().length()==9)){
-		        	//System.out.println("Verifyer in ActionEvent "+ftf.getText());
+		        	////System.out.println("Verifyer in ActionEvent "+ftf.getText());
 		        	ftf.setText("  .  .    ");
 		        	ftf.setCaretPosition(0);
 		        	ftf.postActionEvent();
@@ -100,7 +100,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 		        }
 		        /*
             	if (!ftf.isEditValid()) { //The text is invalid.
-            		System.out.println("Ungültige in ActionPerformed Eingabe ---------> "+ftf.getText());
+            		//System.out.println("Ungï¿½ltige in ActionPerformed Eingabe ---------> "+ftf.getText());
                     if (userSaysRevert()) { //reverted
                     	ftf.postActionEvent(); //inform the editor
                     }
@@ -125,7 +125,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 	    MaskFormatter formatter = null;
 	    try {
 	      if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage())) {
-	    	  //System.out.println("Formatter - Locale = Germany");
+	    	  ////System.out.println("Formatter - Locale = Germany");
 	        formatter = new MaskFormatter ("##.##.####");
 	      }
 	      else {
@@ -199,7 +199,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 		ftf.selectAll();
 		//ftf.setSelectionEnd(insstr.length()-1);
 		ftf.setCaretPosition(0);
-		System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
+		//System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
 		 		   
         
         return ftf;
@@ -218,7 +218,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
             return new Integer(((Number)o).intValue());
         } else {
             if (DEBUG) {
-                System.out.println("getCellEditorValue: o isn't a Number");
+                //System.out.println("getCellEditorValue: o isn't a Number");
             }
             try {
                 return integerFormat.parseObject(o.toString());
@@ -237,10 +237,10 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
     //of this method so that everything gets cleaned up.
     public boolean stopCellEditing() {
         JFormattedTextField ftf = (JFormattedTextField)getComponent();
-        //System.out.println("Verify in stopCell = "+ftf.getInputVerifier().verify(ftf));
+        ////System.out.println("Verify in stopCell = "+ftf.getInputVerifier().verify(ftf));
         if((!ftf.getInputVerifier().verify(ftf)) || 
         		(ftf.getText().trim().length()==7) ||(ftf.getText().trim().length()==9)){
-        	//System.out.println("stopCellEditing "+ftf.getText());
+        	////System.out.println("stopCellEditing "+ftf.getText());
         	ftf.setText("  .  .    ");
         	ftf.setCaretPosition(0);
         	return false;
@@ -257,8 +257,8 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
             } catch (java.text.ParseException exc) { }
 	    
         } else { //text is invalid
-        	System.out.println("Verify = "+ftf.getInputVerifier().verify(ftf));
-        	System.out.println("Ungültige Eingabe ---------> "+ftf.getText());
+        	//System.out.println("Verify = "+ftf.getInputVerifier().verify(ftf));
+        	//System.out.println("Ungï¿½ltige Eingabe ---------> "+ftf.getText());
             if (!userSaysRevert()) { //user wants to edit
             	return false; //don't let the editor go away
             } 
@@ -267,7 +267,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
         		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
         	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
-        			"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
+        			"trotzdem wï¿½rde ich an Ihrer Stelle das Datum noch einmal prï¿½fen.....");
         }
         fireEditingStopped();
         return super.stopCellEditing();
@@ -310,7 +310,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("in DateTableCellEditor "+arg0.getKeyCode());
+		////System.out.println("in DateTableCellEditor "+arg0.getKeyCode());
 		if(arg0.getKeyCode()==127){
 			((JFormattedTextField)arg0.getSource()).setText("  .  .    ");
 			((JFormattedTextField)arg0.getSource()).setCaretPosition(0);
@@ -318,7 +318,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 		if(arg0.getKeyCode()==10){
 			//fireEditingStopped();
 		}
-		System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
+		//System.out.println("Caret gesetzt auf ->"+ftf.getCaretPosition());
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {

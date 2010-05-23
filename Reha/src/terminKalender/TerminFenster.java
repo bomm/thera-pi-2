@@ -345,9 +345,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 
 		}catch(SQLException ex) {
-			System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-			System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());System.out.println("ErrorCode: " + ex.getErrorCode ());
-			System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+			//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+			//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());//System.out.println("ErrorCode: " + ex.getErrorCode ());
+			//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 			Reha.thisClass.shiftLabel.setText("Lock misslungen");
 		}
 		if(SystemConfig.UpdateIntervall > 0 && this.ansicht < 2){
@@ -536,7 +536,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					maskenwahl = wahl;
 					String maskenbehandler = (maskenbelegung < 10 ? "0"+maskenbelegung+"BEHANDLER" : Integer.toString(maskenbelegung)+"BEHANDLER");
 					String stmtmaske = "select * from masken where behandler = '"+maskenbehandler+"' ORDER BY art";
-					//System.out.println(stmtmaske);
+					////System.out.println(stmtmaske);
 					maskenStatement(stmtmaske);
 					
 				}
@@ -873,7 +873,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						
 						if ( (e.getKeyCode()==155) && (e.isControlDown()) ){
 							//Daten in Speicher (früher Aufruf über F2)
-							//System.out.println("Strg+Einfg");
+							////System.out.println("Strg+Einfg");
 							int xaktBehandler  = -1;
 							datenInSpeicherNehmen();
 							if(terminVergabe.size() > 0){
@@ -897,7 +897,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						 */
 						if (ec==16){
 							if(!Rechte.hatRecht(Rechte.Kalender_termingroup, false)){
-								//System.out.println("Rückgabewert von hatRechte(termingroup) = "+Rechte.hatRecht(Rechte.Kalender_termingroup, false));
+								////System.out.println("Rückgabewert von hatRechte(termingroup) = "+Rechte.hatRecht(Rechte.Kalender_termingroup, false));
 								shiftGedrueckt = true;
 								gruppierenAktiv = false;
 								oSpalten[tspalte].shiftGedrueckt(true);
@@ -1251,7 +1251,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										setUpdateVerbot(false);
 									}
 								}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT mu� noch entwickelt werden!
-									//System.out.println("Maskenansicht-Doppelklick");
+									////System.out.println("Maskenansicht-Doppelklick");
 									lockok = 1;
 									Zeiteinstellen(e.getLocationOnScreen(),aktiveSpalte[2],aktiveSpalte[0]);
 									oSpalten[tspalte].requestFocus();
@@ -1781,7 +1781,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]
 						                                                                  ])).get(0)).size();
 						}catch(java.lang.ArrayIndexOutOfBoundsException ob){
-							System.out.println("Spalte nicht belegt");
+							//System.out.println("Spalte nicht belegt");
 						}
 					}else  if(ansicht==WOCHEN_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>)vTerm.get(aktiveSpalte[2])).get(0)).size();
@@ -2427,15 +2427,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				datenZeichnen(aSpaltenDaten);
 			}
 			} catch(SQLException ex){
-				System.out.println("Im Thread - Mache Statement");				
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("Im Thread - Mache Statement");				
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 			}
 
 	} catch(SQLException ex) {
-		System.out.println("Im Thread - Mache Statement");
-		System.out.println("von stmt -SQLState: " + ex.getSQLState());
+		//System.out.println("Im Thread - Mache Statement");
+		//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		if (ex.getSQLState().equals("08003")){
     		int nochmals = JOptionPane.showConfirmDialog(null,"Die Datenbank konnte nicht gestartet werden, erneuter Versuch?","Wichtige Benuterzinfo",JOptionPane.YES_NO_OPTION);
     		if(nochmals == JOptionPane.YES_OPTION){
@@ -2546,13 +2546,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}
 			} catch(SQLException ex){
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 			}
 
 	} catch(SQLException ex) {
-		System.out.println("von stmt -SQLState: " + ex.getSQLState());
+		//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 	}
 	finally {
 		if (rs != null) {
@@ -2634,7 +2634,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}
 			}catch(NullPointerException ne){
-				System.out.println(evt);
+				//System.out.println(evt);
 			}
 	}
 
@@ -2766,7 +2766,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		
 		if(datenSpeicher[0]==null){
-			//System.out.println("datenSpeicher[0] hat den Wert null -> return");
+			////System.out.println("datenSpeicher[0] hat den Wert null -> return");
 			wartenAufReady = false;
 			setUpdateVerbot(false);
 			return;
@@ -2875,7 +2875,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  				   p.y = p.y+4;
  			   }
 			   new TerminObenUntenAnschliessen(p.x,p.y);
-			   //System.out.println("DialogretInt = "+dialogRetInt);
+			   ////System.out.println("DialogretInt = "+dialogRetInt);
 				switch(dialogRetInt){
 					case 0:
 						terminBreak = true;
@@ -2913,19 +2913,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						zeit3 = (int) ZeitFunk.MinutenSeitMitternacht(datenSpeicher[2]);
 						zeit4 = (int) ZeitFunk.MinutenSeitMitternacht(aktstart);
 						if ((zeit1 < zeit2) && (zeit3 > zeit4) ){
-							//System.out.println("case 4: blockSetzen(5)  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
+							////System.out.println("case 4: blockSetzen(5)  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							blockSetzen(5);
 							break;
 						}else if((zeit1 == zeit2) && (zeit3 > zeit4)){
 							blockSetzen(3);
-							//System.out.println("case 4: mu� unten andocken  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
+							////System.out.println("case 4: mu� unten andocken  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							break;
 						}else if((zeit1 < zeit2) && (zeit3 == zeit4)){
 							blockSetzen(2);
-							//System.out.println("case 4: mu� oben andocken  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
+							////System.out.println("case 4: mu� oben andocken  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							break;							
 						}else{
-							//System.out.println("case 4: pa�t nicht  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
+							////System.out.println("case 4: pa�t nicht  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							JOptionPane.showMessageDialog (null, "Die von Ihnen angegebene Startzeit "+datenSpeicher[2]+"\n"+
 									" und die Dauer des Termines von "+datenSpeicher[3]+" Minuten, passt hinten und\n"+
 									"verne nicht. Entweder ergibt dies Startzeit eine Überschneidung mit \n"+
@@ -3089,7 +3089,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		while(lockok == 0){
 			try {
 				Thread.sleep(20);
-				if((System.currentTimeMillis()-zeit) > 1500){
+				if((System.currentTimeMillis()-zeit) > 2500){
 					JOptionPane.showMessageDialog(null,"Fehler im Lock-Mechanismus -> Funktion LockVorbereiten(), bitte informieren Sie den Entwickler");
 					lockok = -1;
 				}
@@ -3534,11 +3534,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		/*
 		for(int y = 0; y<terminVergabe.size();y++ ){
-			System.out.println("*********************");
+			//System.out.println("*********************");
 			for(int i = 0;i < sTerminVergabe.length;i++){
-				System.out.println(terminVergabe.get(y)[i]);		
+				//System.out.println(terminVergabe.get(y)[i]);		
 			}
-			System.out.println("*********************");
+			//System.out.println("*********************");
 		}
 		*/
 		
@@ -3584,7 +3584,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	@Override
 	public void dragExit(DropTargetEvent dte) {
-		//System.out.println(dte.getSource());
+		////System.out.println(dte.getSource());
 	}
 	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
@@ -3595,18 +3595,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		String mitgebracht = null;
-		//System.out.println("Es wurde gedroppt");
+		////System.out.println("Es wurde gedroppt");
 		
 		if(TerminFenster.DRAG_MODE == TerminFenster.DRAG_NONE){
 			oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0], aktiveSpalte[0]);
 			dragLab[aktiveSpalte[2]].setIcon(null);
 			dragLab[aktiveSpalte[2]].setText("");
-			//System.out.println("Drag_Mode == Drag_None");
+			////System.out.println("Drag_Mode == Drag_None");
 			dtde.dropComplete(true);
 			return;
 		}
 		
-		//System.out.println("Drag_Mode != Drag_None");
+		////System.out.println("Drag_Mode != Drag_None");
 
 		try {
 			dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
@@ -3663,7 +3663,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 				}
 				String[] teilen;
-				//System.out.println("D&DÜbergabe = "+mitgebracht);
+				////System.out.println("D&DÜbergabe = "+mitgebracht);
 				if(mitgebracht.indexOf("°") >= 0 ){
 					teilen = mitgebracht.split("°");
 					if(! teilen[0].contains("TERMDAT")){
@@ -3701,7 +3701,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								e1.printStackTrace();
 							}
 						}
-						//System.out.println("Wert von Grobraus = "+grobRaus);
+						////System.out.println("Wert von Grobraus = "+grobRaus);
 						
 						if(!grobRaus){
 							try{
@@ -3722,7 +3722,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									e1.printStackTrace();
 								}
 							}
-							//System.out.println("Wert von Grobraus = "+grobRaus);
+							////System.out.println("Wert von Grobraus = "+grobRaus);
 							if(!grobRaus){
 								//Stufe 2 - o.k.
 								if(altaktiveSpalte[2]==spAktiv){
@@ -3782,7 +3782,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									}else if(ansicht==WOCHEN_ANSICHT){
 										altbehandler = (String) ParameterLaden.getKollegenUeberReihe(wocheBehandler);
 									}
-									//System.out.println( tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
+									////System.out.println( tagundstart+"/"+altdauer+"/"+altbehandler+"/"+altname+"/"+altrezept);
 									terminAusmustern(tagundstart,altdauer,altbehandler,altname,altrezept);
 
 									blockSetzen(11);
@@ -3961,7 +3961,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}else if(unter18 && !vorjahrfrei){
 							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus �ndern;
 							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
-							//System.out.println("Geboren = "+geboren);
+							////System.out.println("Geboren = "+geboren);
 							if(DatFunk.Unter18(DatFunk.sHeute(), geboren)){
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
 							}else{
@@ -4103,9 +4103,9 @@ class LockRecord implements Runnable{
 				
 		}catch(SQLException ex) {
 				this.gesperrt = false;
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
@@ -4130,9 +4130,9 @@ boolean success = false;
 				TerminFenster.setLockOk(0,"");
 				TerminFenster.getThisClass().wartenAufReady = false;
 			}catch(SQLException ex) {
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 				TerminFenster.getThisClass().wartenAufReady = false;
 				JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nDiese Terminspalte wurde bereits  von Benutzer \n\n" +
 						"einem anderen Benutzer gesperrt. Bitte brechen Sie den Eingabevorgang ab \n\n"+
@@ -4167,9 +4167,9 @@ class SetLock implements Runnable{
 				klappt = this.sState.execute("COMMIT");
 
 			}catch(SQLException ex) {
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());				
 			}
@@ -4210,9 +4210,9 @@ class DirectLockRecord implements Runnable{
 				
 			}catch(SQLException ex) {
 				this.gesperrt = false;
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
@@ -4329,7 +4329,7 @@ class DropSupport implements DropTargetListener
     public void dragOver(DropTargetDragEvent dtde)
     {
     	Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
-    	//System.out.println("Drag-Support"+dtde);
+    	////System.out.println("Drag-Support"+dtde);
     	if (!fAccept) return;
  
     }
@@ -4365,7 +4365,7 @@ class DragSupport implements DragGestureListener{
 	@Override
 	public void dragGestureRecognized(DragGestureEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("in datGasture "+arg0);
+		////System.out.println("in datGasture "+arg0);
 		
 	}
 	

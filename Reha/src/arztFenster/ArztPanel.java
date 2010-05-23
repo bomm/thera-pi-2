@@ -275,7 +275,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 					return;
 				}
 				// TODO Auto-generated method stub
-				System.out.println(" in Tabelle "+arg0.getKeyCode());
+				//System.out.println(" in Tabelle "+arg0.getKeyCode());
 				if(arg0.getKeyCode()== 10){
 					arg0.consume();
 					int row = arzttbl.getSelectedRow(); 
@@ -604,7 +604,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gew�hlt");
+    		//System.out.println("Es wurde Formular "+iformular+" gew�hlt");
         	
 		}else{
 			String mes = "\nWenn man einen Arzt anschreiben möchte, empfiehlt es sich\n"+ 
@@ -659,7 +659,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				Runtime r = Runtime.getRuntime();
 			    r.gc();
 			    long freeMem = r.freeMemory();
-			    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+			    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 			    */
 				return null;
 			}
@@ -825,10 +825,10 @@ class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			this.dispose();
-			System.out.println("****************Arzt Neu/ändern -> Listener entfernt**************");				
+			//System.out.println("****************Arzt Neu/ändern -> Listener entfernt**************");				
 	
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -837,7 +837,7 @@ class ArztNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
-			System.out.println("****************Arzt Neu/ändern -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Arzt Neu/ändern -> Listener entfernt (Closed)**********");
 		}
 		
 		

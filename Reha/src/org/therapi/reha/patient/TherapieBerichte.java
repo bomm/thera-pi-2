@@ -284,13 +284,13 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		if(vec.size()>0){
 			// in verordn und in lza löschversuch
 			xcmd = "update verordn set berid='-1' where rez_nr='"+vec.get(0)+"'";
-			System.out.println(xcmd);
+			//System.out.println(xcmd);
 			new ExUndHop().setzeStatement(xcmd);
 			xcmd = "update lza set berid='-1' where rez_nr='"+vec.get(0)+"'";
-			System.out.println(xcmd);
+			//System.out.println(xcmd);
 			new ExUndHop().setzeStatement(xcmd);			
 		}else{
-			System.out.println("Rezeptnummer konnte nicht ermittelt werden");
+			//System.out.println("Rezeptnummer konnte nicht ermittelt werden");
 		}
 		//tabbericht
 		TableTool.loescheRow(tabbericht, wahl);
@@ -320,17 +320,17 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		int bid = new Integer((String) dtblm.getValueAt(row, 0));
 		String xverfasser = (String) dtblm.getValueAt(row, 2);
 		//String xtitel = (String) dtblm.getValueAt(row, 1);
-		//System.out.println("aufruf des Berichtes mit der ID "+bid);
+		////System.out.println("aufruf des Berichtes mit der ID "+bid);
 		
 		String[] splitdiag1 = xreznr.split("\\(");
 		String[] splitdiag2 = splitdiag1[1].split("\\)");
 		/*
-		System.out.println("Die BerichtsID = ----------------->"+bid);
-		System.out.println("Die Rezeptnummer = --------------->"+splitrez[2]);
-		System.out.println("Die TB-Grupper = ----------------->"+splitdiag2[0]);
-		System.out.println("Der Verfasser = ------------------>"+xverfasser);
-		System.out.println("Aufruf aus Fenser Nr. = ---------->"+3);
-		System.out.println("Tabellenreihe = ------------------>"+row);
+		//System.out.println("Die BerichtsID = ----------------->"+bid);
+		//System.out.println("Die Rezeptnummer = --------------->"+splitrez[2]);
+		//System.out.println("Die TB-Grupper = ----------------->"+splitdiag2[0]);
+		//System.out.println("Der Verfasser = ------------------>"+xverfasser);
+		//System.out.println("Aufruf aus Fenser Nr. = ---------->"+3);
+		//System.out.println("Tabellenreihe = ------------------>"+row);
 		*/
 		ArztBericht ab = new ArztBericht(null,"arztberichterstellen",false,splitrez[2],bid,3,xverfasser,splitdiag2[0],row);
 		ab.setModal(true);

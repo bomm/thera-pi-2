@@ -225,17 +225,17 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(arg0.getKeyCode());
+		//System.out.println(arg0.getKeyCode());
 		if (arg0.getKeyCode()==10){
 			//arg0.consume();
 			if(ret != -1){
-				System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
+				//System.out.println("Beendet mit oben "+jList1.getSelectedIndex());
 				tfrueck.setText(Integer.toString(jList1.getSelectedIndex()));
 				//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
 				return;
 			}else{
-				System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
+				//System.out.println("Beendet mit unten "+jList1.getSelectedIndex());
 				tfrueck.setText(Integer.toString(jList1.getSelectedIndex()));
 				//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 				FensterSchliessen("Dieses");
@@ -243,7 +243,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 			}	
 		}
 		if (arg0.getKeyCode()==27){
-			System.out.println("ESC gedr�ckt");	
+			//System.out.println("ESC gedr�ckt");	
 			tfrueck.setText(Integer.toString(-1));
 			//KassenPanel.thisClass.iformular = -1;
 			DialogBeenden(-1);
@@ -265,7 +265,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	public void windowClosed(WindowEvent arg0) {
 		if(rtp != null){
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-			System.out.println("EventListener geschlossen");	
+			//System.out.println("EventListener geschlossen");	
 		}
 		if(mymouse != null){
 			jtp.removeMouseListener(mymouse);
@@ -275,16 +275,16 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println("****************Schließen des KassenFormular **************");
+		//System.out.println("****************Schließen des KassenFormular **************");
 		String ss =  getName();
-		System.out.println(getName()+" Eltern "+ss);
+		//System.out.println(getName()+" Eltern "+ss);
 		try{
 			if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
 				FensterSchliessen(evt.getDetails()[0]);
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			}	
 		}catch(NullPointerException ne){
-			System.out.println("Schließen des KassenFormular" +evt);
+			//System.out.println("Schließen des KassenFormular" +evt);
 		}
 	}
 

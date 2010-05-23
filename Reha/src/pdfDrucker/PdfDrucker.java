@@ -67,7 +67,7 @@ public class PdfDrucker {
         paper.setImageableArea(0., 0., 595., 842.);
 	    int width = ( int ) paper.getWidth ( );
 	    int height = ( int ) paper.getHeight ( );
-	    System.out.println("width:"+width+" / height:"+height);
+	    //System.out.println("width:"+width+" / height:"+height);
         pf.setPaper(paper);
         
         pjob.setJobName(f.getName());

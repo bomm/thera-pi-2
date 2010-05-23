@@ -37,9 +37,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -83,9 +83,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -140,9 +140,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -203,9 +203,9 @@ public class SqlInfo {
 			}
 			//Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -291,9 +291,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -355,9 +355,9 @@ public class SqlInfo {
 			retvec = null;
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rsMetaData != null){
@@ -439,16 +439,20 @@ public class SqlInfo {
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
 			String numcmd = nummer+",id";
-			//System.out.println("numcmd = "+numcmd);
+			////System.out.println("numcmd = "+numcmd);
 			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
-			//System.out.println(Reha.aktIK);
+			////System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		if(numvec.size() > 0){
-			reznr = new Integer( (String)((Vector) numvec).get(0) );
+			try{
+			reznr = Integer.parseInt( (String)((Vector) numvec).get(0) );
 			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
 			SqlInfo.sqlAusfuehren(cmd);
+			}catch(Exception ex){
+				reznr = -1;
+			}
 			try {
 				Reha.thisClass.conn.setAutoCommit(true);
 			} catch (SQLException e) {
@@ -477,9 +481,9 @@ public class SqlInfo {
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
 			String numcmd = nummer+",id";
-			//System.out.println("numcmd = "+numcmd);
+			////System.out.println("numcmd = "+numcmd);
 			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
-			//System.out.println(Reha.aktIK);
+			////System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -489,11 +493,11 @@ public class SqlInfo {
 			if((reznr+1) > max){
 				reznr = 1;
 			}
-			//System.out.println("Neue Rezeptnummer = "+reznr);
+			////System.out.println("Neue Rezeptnummer = "+reznr);
 			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
-			//System.out.println("Kommando = "+cmd);
+			////System.out.println("Kommando = "+cmd);
 			new ExUndHop().setzeStatement(cmd);
-			//System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
+			////System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
 			try {
 				Reha.thisClass.conn.setAutoCommit(true);
 			} catch (SQLException e) {
@@ -537,9 +541,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -576,14 +580,14 @@ public class SqlInfo {
 		try{
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium+" LIMIT 1";
-			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
+			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
-			//System.out.println(ret);
+			////System.out.println(ret);
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -620,14 +624,14 @@ public class SqlInfo {
 		try{
 			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium;
-			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
+			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
-			//System.out.println(ret);
+			////System.out.println(ret);
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -675,9 +679,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -723,9 +727,9 @@ public class SqlInfo {
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			return ret;
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}
 		finally {
 			if(rsMetaData != null){
@@ -786,9 +790,9 @@ public class SqlInfo {
 			retvec.clear();
 			retvec = null;
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}
 
 		finally {
@@ -839,9 +843,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -879,9 +883,9 @@ public class SqlInfo {
 			geklappt =  stmt.execute(sstmt);
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (stmt != null) {
@@ -917,9 +921,9 @@ public class SqlInfo {
 			}
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -962,7 +966,7 @@ public class SqlInfo {
 			}
 		}
 		transferBuf.append(" from "+sourcedb+" where "+dbfield+"='"+argument+"' LIMIT 1");
-		//System.out.println(transferBuf.toString());
+		////System.out.println(transferBuf.toString());
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(transferBuf.toString());
 		
 		if(vec.size()<=0){

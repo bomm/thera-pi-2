@@ -31,16 +31,16 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		rEvent.addRehaEventListener((RehaEventListener) this);
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 	          public void propertyChange(PropertyChangeEvent evt) {
-	        	//System.out.println(evt);
+	        	////System.out.println(evt);
 	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
 	            		  && evt.getNewValue().equals(Boolean.TRUE)){
 	            	  ((EBerichtPanel)getInhalt()).setOOPanelIcon();
             	  		revalidate();
-              			System.out.println("Jetzt icon...........");
+              			//System.out.println("Jetzt icon...........");
 	          }
 	              if (evt.getPropertyName().equalsIgnoreCase(JInternalFrame.IS_ICON_PROPERTY) 
 	            		  && evt.getNewValue().equals(Boolean.FALSE)){
-	            	  System.out.println("Jetzt normal...........");
+	            	  //System.out.println("Jetzt normal...........");
 	            	  ((EBerichtPanel)getInhalt()).setOOPanelDeIcon();
 	            	  //setSize(new Dimension(xWeit-1,yHoch-1));
 	            	  revalidate();
@@ -53,11 +53,11 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Internal-GutachtenFrame in schliessen***************");
+		////System.out.println("Internal-GutachtenFrame in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		//System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//nächsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//JInternalFram von Desktop lösen
@@ -118,9 +118,9 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	}
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
-		//System.out.println(evt);
+		////System.out.println(evt);
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
-			System.out.println("es ist ein Reha-Internal-Event");
+			//System.out.println("es ist ein Reha-Internal-Event");
 		}
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){

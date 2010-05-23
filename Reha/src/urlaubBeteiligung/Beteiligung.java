@@ -243,7 +243,7 @@ public class Beteiligung  extends JXPanel{
 									rezvec.add(vec.get(0).get(1).toString());
 									anzahlTagesBehandlungen++;
 								}
-								//System.out.println("Tag "+DatFunk.sDatInDeutsch(tag.get(304))+" TerminNr "+(i+1)+" = Rezeptnummer "+reznum);
+								////System.out.println("Tag "+DatFunk.sDatInDeutsch(tag.get(304))+" TerminNr "+(i+1)+" = Rezeptnummer "+reznum);
 							}
 						}else{
 							doKeineZuordnung("ohne Zuordnung: "+tag.get((i*5)),false);

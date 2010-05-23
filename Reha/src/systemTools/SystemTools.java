@@ -16,7 +16,7 @@ class CenterFenster {
 		xneu = po.x + (x/2);
 		yneu = po.y + (y/2);
 		pneu = new Point(xneu,yneu);
-		//System.out.println("point="+po+" x="+x+" y="+y+" pneu="+pneu);
+		////System.out.println("point="+po+" x="+x+" y="+y+" pneu="+pneu);
 		return pneu;
 	}
 }

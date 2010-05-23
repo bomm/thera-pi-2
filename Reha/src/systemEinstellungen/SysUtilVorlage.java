@@ -28,7 +28,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListener {
 	public SysUtilVorlage(ImageIcon img){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilVorlage");
+		//System.out.println("Aufruf SysUtilVorlage");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

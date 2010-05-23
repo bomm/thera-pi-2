@@ -196,7 +196,7 @@ public class BenutzerVerwaltung extends JScrollPane implements RehaTPEventListen
 	
 public void FensterSchliessen(String welches){
 	((RehaSmartDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-	//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
+	////System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 	//Reha.thisClass.TPschliessen(setOben,(Object) this.getParent().getParent().getParent().getParent().getParent(),welches);
 }
 
@@ -204,19 +204,19 @@ public void FensterSchliessen(String welches){
 @Override
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
-//	System.out.println("****************das darf doch nicht wahr sein**************");
+//	//System.out.println("****************das darf doch nicht wahr sein**************");
 	String ss = ((JXTitledPanel) this.getParent()).getContentContainer().getName();	
 //	
 
 	if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
-		System.out.println("Von BenutzerVerwaltung - ROT "+this.getName()+" Eltern "+ss);	
+		//System.out.println("Von BenutzerVerwaltung - ROT "+this.getName()+" Eltern "+ss);	
 		FensterSchliessen(evt.getDetails()[0]);
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 	}	
 	if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="GRUEN"){
 		ContainerConfig conf = new ContainerConfig();
 		conf.addContainer("personen16.gif",evt.getDetails()[0],this.getParent().getParent().getParent().getParent().getParent(),null);
-		System.out.println("Name für Container verkleinern = "+ss);
+		//System.out.println("Name für Container verkleinern = "+ss);
 		//rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 	}	
 	
@@ -388,7 +388,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			", password =" + hk+ passw+hk + ", rights="+ hk+sr+hk+" where ID="+ ParameterLaden.pKollegen.get(cb.getSelectedIndex()).get(4).toString();
 			
 		}
-		System.out.println(stmt);
+		//System.out.println(stmt);
 		MacheStatement(stmt);
 		if(neu){
 			aktuell = (cb.getSelectedIndex()+1);
@@ -464,7 +464,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 
 
 	private void WerteSetzen(int wert){
-		System.out.println("ItemIndex = "+wert);
+		//System.out.println("ItemIndex = "+wert);
 		tf.setText((String) ParameterLaden.pKollegen.get(wert).get(0));
 		pf[0].setText((String) ParameterLaden.pKollegen.get(wert).get(1));
 		pf[1].setText((String) ParameterLaden.pKollegen.get(wert).get(1));		
@@ -503,7 +503,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 		int i,size;
 		String sRechte = (String) ParameterLaden.pKollegen.get(wert).get(2);
 		size = sRechte.length() -1;
-		System.out.println("Ingesamt Recht = "+size);
+		//System.out.println("Ingesamt Recht = "+size);
 		for(i=0;i<40;i++){
 			Vector rowVector = new Vector();
 			rowVector.add("Art der Berechtigung "+i);
@@ -522,7 +522,7 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 		MyTableModel myTable = new MyTableModel();
 		myTable.columnNames = column;
 		myTable.data = dataVector;
-		System.out.println("Klasse von Column 2 = "+myTable.getColumnClass(1));
+		//System.out.println("Klasse von Column 2 = "+myTable.getColumnClass(1));
 		//jxTable.setModel(tblDataModel);
 		jxTable.setModel(myTable);
 		jxTable.getColumn(1).setMinWidth(100);	
@@ -546,9 +546,9 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 			try{
 				rs = stmt.execute(sstmt);				
 			}catch(SQLException ex) {
-				System.out.println("SQLException: " + ex.getMessage());
-        		System.out.println("SQLState: " + ex.getSQLState());
-        		System.out.println("VendorError: " + ex.getErrorCode());
+				//System.out.println("SQLException: " + ex.getMessage());
+        		//System.out.println("SQLState: " + ex.getSQLState());
+        		//System.out.println("VendorError: " + ex.getErrorCode());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -622,16 +622,16 @@ class MyTableModel extends AbstractTableModel {
      */
     public void setValueAt(Object value, int row, int col) {
       if (DEBUG) {
-        System.out.println("Setting value at " + row + "," + col
-            + " to " + value + " (an instance of "
-            + value.getClass() + ")");
+        //System.out.println("Setting value at " + row + "," + col
+            //+ " to " + value + " (an instance of "
+            //+ value.getClass() + ")");
       }
 
       data[row][col] = value;
       fireTableCellUpdated(row, col);
 
       if (DEBUG) {
-        System.out.println("New value of data:");
+        //System.out.println("New value of data:");
         printDebugData();
       }
     }
@@ -641,12 +641,12 @@ class MyTableModel extends AbstractTableModel {
       int numCols = getColumnCount();
 
       for (int i = 0; i < numRows; i++) {
-        System.out.print("    row " + i + ":");
+        //System.out.print("    row " + i + ":");
         for (int j = 0; j < numCols; j++) {
-          System.out.print("  " + data[i][j]);
+          //System.out.print("  " + data[i][j]);
         }
-        System.out.println();
+        //System.out.println();
       }
-      System.out.println("--------------------------");
+      //System.out.println("--------------------------");
     }
   }

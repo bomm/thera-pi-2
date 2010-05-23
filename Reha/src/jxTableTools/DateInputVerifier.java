@@ -26,8 +26,8 @@ public class DateInputVerifier extends InputVerifier {
 		this.input = tf;
 	}
     public boolean verify (final JComponent input) {
-    //System.out.println("Input getText = "+((JRtaTextField)input).getText());
-    //System.out.println("Länge des Inputs = "+((JRtaTextField)input).getText().length());    
+    ////System.out.println("Input getText = "+((JRtaTextField)input).getText());
+    ////System.out.println("Lï¿½nge des Inputs = "+((JRtaTextField)input).getText().length());    
         return this.isAlowedDate((JFormattedTextField)input);
       }
    
@@ -55,7 +55,7 @@ public class DateInputVerifier extends InputVerifier {
     	 return true;
      }
      String inhalt = input.getText();
-    	//System.out.println("In verify / input = "+input.getText());
+    	////System.out.println("In verify / input = "+input.getText());
       final DateFormat sdf = this.getDateFormat ();
       try {
     	String teil = inhalt.substring(6).trim();
@@ -71,15 +71,15 @@ public class DateInputVerifier extends InputVerifier {
     			jahrtausend = inhalt.substring(0,6).trim()+"20"+teil;    			
     		}
     		input.setText(jahrtausend);
-    		//System.out.println("Datum = "+jahrtausend);
+    		////System.out.println("Datum = "+jahrtausend);
     	}
     	if(inhalt.length() >= 8){
-    		//System.out.println("Länge des Strings = "+input.getText().length());
+    		////System.out.println("Lï¿½nge des Strings = "+input.getText().length());
     		if(inhalt.substring(6,7).equals("0")){
     			String korrekt = inhalt.substring(0,6);
     			korrekt = korrekt+"20"+inhalt.substring(6,8);
     			input.setText(korrekt);
-    			//System.out.println("korrigiertes Datum = "+korrekt);
+    			////System.out.println("korrigiertes Datum = "+korrekt);
     		}
     	}
         final Date d = sdf.parse (input.getText());
@@ -98,12 +98,12 @@ public class DateInputVerifier extends InputVerifier {
         if (((DateInputVerifier) input).getPlaceHolder() != null) {
           String noMaskValue = null;
           if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage ())) {
-        	  //System.out.println("InputVerifier - Locale = Germany");
+        	  ////System.out.println("InputVerifier - Locale = Germany");
             noMaskValue = input.getText().replace ('.',((JFormattedField) input).getPlaceHolder ());
           }
           else {
             noMaskValue = input.getText().replace ('-',((JRtaTextField) input).getPlaceHolder ());
-      	  	//System.out.println("InputVerifier - Locale = English");
+      	  	////System.out.println("InputVerifier - Locale = English");
           }
           for (char c : noMaskValue.toCharArray()) {
             if (c != ((JRtaTextField) input).getPlaceHolder()) return false;
@@ -111,8 +111,8 @@ public class DateInputVerifier extends InputVerifier {
           return true;
         }
         */
-    	  System.out.println("Unzulässige Datumseingabe");
-        JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
+    	  //System.out.println("Unzulï¿½ssige Datumseingabe");
+        JOptionPane.showMessageDialog(null,"Unzulï¿½ssige Datumseingabe");
         
         return false;
       }

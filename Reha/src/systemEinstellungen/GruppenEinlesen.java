@@ -38,7 +38,7 @@ public class GruppenEinlesen{
 			for(int j = 1; j<=2;j++){//Alte Definition und neue Definition
 				Vector gruppeTag = new Vector();
 				String rubrik = rubrikName+"_"+j;
-				System.out.println(rubrik);
+				//System.out.println(rubrik);
 				for(int k = 1;k<=7;k++){//Alle Wochentage
 					int gruppenAmTag = new Integer(ini.getStringProperty(rubrik, "WOTA"+k));
 					Vector gruppeAmTag = new Vector();

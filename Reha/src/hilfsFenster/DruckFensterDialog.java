@@ -96,17 +96,17 @@ public class DruckFensterDialog implements KeyListener, ActionListener, FocusLis
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		//System.out.println(arg0);
+		////System.out.println(arg0);
 		if(arg0.getSource() instanceof JRadioButton){
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 			for (int i = 0 ; i < 1 ; i++){
-				if( (sAktion =="Termin oben anschließen")){
+				if( (sAktion =="Termin oben anschlieï¿½en")){
 					iAktion = 1;
 					zeitLoeschen();
 					break;
 				}
-				if( (sAktion== "Termin unten anschließen")){
+				if( (sAktion== "Termin unten anschlieï¿½en")){
 					iAktion = 2;
 					zeitLoeschen();
 					break;

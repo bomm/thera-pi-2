@@ -31,11 +31,11 @@ public class TerminListe{
 		PatNamenPlatzhalter = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNamePlatzhalter");
 		MitUeberschrift = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "MitSpaltenUeberschrift"));
 		DirektDruck = (RWJedeIni.leseIniDatei(iniName, "TerminListe1", "DirektDruck").trim().equals("0") ? false : true);
-		System.out.println(AnzahlTerminTabellen);
-		//System.out.println(NameTabelle);
-		System.out.println(AnzahlTermineProTabelle);		
-		System.out.println(NameTemplate);
-		System.out.println(NameTerminDrucker);		
+		//System.out.println(AnzahlTerminTabellen);
+		////System.out.println(NameTabelle);
+		//System.out.println(AnzahlTermineProTabelle);		
+		//System.out.println(NameTemplate);
+		//System.out.println(NameTerminDrucker);		
 	return this;
 	}
 	

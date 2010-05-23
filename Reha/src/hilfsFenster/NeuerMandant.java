@@ -155,13 +155,13 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 				return false;
 			}
 			if(SystemConfig.Mandanten.get(i)[0].trim().equals(sret2)){
-				JOptionPane.showMessageDialog(null,"Für dieses IK wurde bereits ein Mandant angelegt");
+				JOptionPane.showMessageDialog(null,"Fï¿½r dieses IK wurde bereits ein Mandant angelegt");
 				jrtaf[1].requestFocus();
 				return false;
 			}
 		}
 		if(sret2.equals("") || sret2.length() != 9){
-			JOptionPane.showMessageDialog(null,"Angabe des IK ist ungültig (9-stellig?)");
+			JOptionPane.showMessageDialog(null,"Angabe des IK ist ungï¿½ltig (9-stellig?)");
 			jrtaf[1].requestFocus();
 			return false;
 		}
@@ -187,7 +187,7 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(arg0.getSource());
+		////System.out.println(arg0.getSource());
 		String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 		for (int i = 0 ; i < 1 ; i++){
 			if(sAktion=="Ok"){
@@ -206,7 +206,7 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 	}
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		//System.out.println(arg0);
+		////System.out.println(arg0);
 		// TODO Auto-generated method stub
 		
 	}

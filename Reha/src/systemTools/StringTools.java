@@ -158,7 +158,7 @@ public class StringTools {
 		}
 
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
-			//System.out.println(ex);
+			////System.out.println(ex);
 			return ""+test;
 		}
 

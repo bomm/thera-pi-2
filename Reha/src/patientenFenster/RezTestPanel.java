@@ -128,7 +128,7 @@ public class RezTestPanel extends JXPanel implements ActionListener,KeyListener,
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		System.out.println("Key-Pressed "+arg0.getKeyCode());
+		//System.out.println("Key-Pressed "+arg0.getKeyCode());
 		int code = arg0.getKeyCode();
 		if(code==40){this.transferFocus();return;}
 		if(code==38){this.transferFocusBackward();return;}

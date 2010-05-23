@@ -323,7 +323,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 					return;
 				}
 				// TODO Auto-generated method stub
-				System.out.println(" in Tabelle "+arg0.getKeyCode());
+				//System.out.println(" in Tabelle "+arg0.getKeyCode());
 				if(arg0.getKeyCode()== 10){
 					arg0.consume();
 					int row = kassentbl.getSelectedRow(); 
@@ -370,7 +370,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 				//Filter[] filterArray = { new PatternAndOrFilterAcrossAllColumns(vgl, 0, 7,match)  };
 				//FilterPipeline filters = new FilterPipeline(filterArray);
 				//kassentbl.setFilters(filters);				
-				System.out.println("In mehrfachsuche");
+				//System.out.println("In mehrfachsuche");
 			}else{
 				//Filter[] filterArray = { new PatternFilterAcrossAllColumns(vgl, 0, 7)  };
 				//FilterPipeline filters = new FilterPipeline(filterArray);
@@ -415,7 +415,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		if(treffer){
 			kassentbl.scrollCellToVisible(itreffer, 0);
 			kassentbl.setRowSelectionInterval(itreffer, itreffer);
-			System.out.println("nächster gefunden bei "+itreffer+" // suchestarten = "+suchestarten);
+			//System.out.println("nächster gefunden bei "+itreffer+" // suchestarten = "+suchestarten);
 			suchestarten = itreffer+1;
 			//JOptionPane.showMessageDialog(null,"Treffer bei "+itreffer);
 		
@@ -488,7 +488,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		if(inMemoEdit){
 			return;
 		}
-		System.out.println(arg0.getKeyCode());
+		//System.out.println(arg0.getKeyCode());
 		
 		if(arg0.getSource() instanceof JRtaTextField){
 			if(arg0.getKeyCode() == 10 && ((JComponent)arg0.getSource()).getName().equals("suchen")){
@@ -622,13 +622,13 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("TabelEvent "+e);
+		//System.out.println("TabelEvent "+e);
 		
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
-		System.out.println("PropertyChange "+evt);
+		//System.out.println("PropertyChange "+evt);
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
@@ -688,7 +688,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	public void holeText(){
 		int row = kassentbl.getSelectedRow(); 
 		if(row >= 0){
-			System.out.println("In HoleText");
+			//System.out.println("In HoleText");
 			String sid = new Integer((String) kassentbl.getValueAt(row, 7)).toString();
 			new HoleText(this,sid);
 			ta.setCaretPosition(0);
@@ -763,7 +763,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gew�hlt");
+    		//System.out.println("Es wurde Formular "+iformular+" gew�hlt");
         	
 		}else{
 			String mes = "\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
@@ -835,7 +835,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 				Runtime r = Runtime.getRuntime();
 			    r.gc();
 			    long freeMem = r.freeMemory();
-			    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+			    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 			    */
 				return null;
 			}
@@ -876,7 +876,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		for (int i = 0; i < placeholders.length; i++) {
 
 			String placeholderDisplayText = placeholders[i].getDisplayText();
-			System.out.println(placeholderDisplayText);	
+			//System.out.println(placeholderDisplayText);	
 			/*
 			int index1 = SystemConfig.lAdrKDaten.indexOf(placeholderDisplayText);
 			int index2 = SystemConfig.lAdrADaten.indexOf(placeholderDisplayText);
@@ -945,8 +945,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	    	if( inMemoEdit){
 	    		return;
 	    	}
-	        //System.out.println("Roogle Action test");
-	        //System.out.println(e);
+	        ////System.out.println("Roogle Action test");
+	        ////System.out.println(e);
 	        if(e.getActionCommand().equals("f")){
 	        	suchen.requestFocusInWindow();
 	        }
@@ -1040,9 +1040,9 @@ class HoleKassen{
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		kpan.setzeFocus();
 	}catch(SQLException ev){
-		System.out.println("SQLException: " + ev.getMessage());
-		System.out.println("SQLState: " + ev.getSQLState());
-		System.out.println("VendorError: " + ev.getErrorCode());
+		//System.out.println("SQLException: " + ev.getMessage());
+		//System.out.println("SQLState: " + ev.getSQLState());
+		//System.out.println("VendorError: " + ev.getErrorCode());
 	}	
 	finally {
 		if (rs != null) {
@@ -1092,9 +1092,9 @@ class HoleText{
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		
 	}catch(SQLException ev){
-		System.out.println("SQLException: " + ev.getMessage());
-		System.out.println("SQLState: " + ev.getSQLState());
-		System.out.println("VendorError: " + ev.getErrorCode());
+		//System.out.println("SQLException: " + ev.getMessage());
+		//System.out.println("SQLState: " + ev.getSQLState());
+		//System.out.println("VendorError: " + ev.getErrorCode());
 	}	
 	finally {
 		if (rs != null) {
@@ -1164,10 +1164,10 @@ class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			this.dispose();
-			System.out.println("****************Kasse Neu/ändern -> Listener entfernt**************");				
+			//System.out.println("****************Kasse Neu/ändern -> Listener entfernt**************");				
 	
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -1176,7 +1176,7 @@ class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
-			System.out.println("****************Kasse Neu/ändern -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Kasse Neu/ändern -> Listener entfernt (Closed)**********");
 		}
 		
 		

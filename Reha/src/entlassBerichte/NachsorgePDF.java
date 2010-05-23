@@ -592,7 +592,7 @@ public class NachsorgePDF {
 		
 		try {
 			Runtime.getRuntime().exec(xcmd);
-			System.out.println(xcmd);
+			//System.out.println(xcmd);
 			Reha.thisClass.progressStarten(false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

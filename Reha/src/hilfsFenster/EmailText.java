@@ -116,7 +116,7 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 	         gelesen = new String(temp);
 	         text = gelesen;
 	         //Ausgabe des Strings
-	         //System.out.println(gelesen);
+	         ////System.out.println(gelesen);
 	         // Ressourcen freigeben
 	         fr.close();
 	      } catch (FileNotFoundException e1) {
@@ -129,8 +129,8 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 		/*********/
 	      if (text.equals("")){
 	    	  text = "Sehr geehrte Damen und Herren,\n"+
-					"im Dateianhang finden Sie die von Ihnen gewünschten Behandlungstermine.\n\n"+
-					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müßen 24 Stunden vorher\n"+
+					"im Dateianhang finden Sie die von Ihnen gewï¿½nschten Behandlungstermine.\n\n"+
+					"Termine die Sie nicht einhalten bzw. wahrnehmen kï¿½nnen, mï¿½ï¿½en 24 Stunden vorher\n"+
 					"abgesagt werden.\n\nIhr Planungs-Team vom RTA";
 	      }
 		ta.setText(text);
@@ -199,10 +199,10 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println(arg0.getSource());
+		////System.out.println(arg0.getSource());
 		//String sAktion = ((AbstractButton) arg0.getSource()).getText();
-		//System.out.println("In Text abspeichern");
-		//System.out.println("ActionCommand = "+arg0.getActionCommand());
+		////System.out.println("In Text abspeichern");
+		////System.out.println("ActionCommand = "+arg0.getActionCommand());
 		for (int i = 0 ; i < 1 ; i++){
 
 			if(arg0.getActionCommand().equals("Speichern")){
@@ -239,16 +239,16 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		//System.out.println(arg0);
+		////System.out.println(arg0);
 		if(arg0.getSource() instanceof JRadioButton){
 			((AbstractButton) arg0.getSource()).setSelected(true);
 			String sAktion = ((AbstractButton) arg0.getSource()).getText(); 
 			for (int i = 0 ; i < 1 ; i++){
-				if( (sAktion =="Termin auf verfügbare Dauer kürzen")){
+				if( (sAktion =="Termin auf verfï¿½gbare Dauer kï¿½rzen")){
 					iAktion = 1;
 					break;
 				}
-				if( (sAktion== "Nachfolgenden Termin kürzen")){
+				if( (sAktion== "Nachfolgenden Termin kï¿½rzen")){
 					iAktion = 2;
 					break;
 				}

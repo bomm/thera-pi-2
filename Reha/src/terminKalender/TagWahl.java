@@ -108,17 +108,17 @@ public class TagWahl {
 			jTextField.setCaretPosition(0);
 			jTextField.addKeyListener(new java.awt.event.KeyListener() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
-					//System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
+					////System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
 					if(e.getKeyCode()==10){
 						e.consume();
 					}
 				}
 				public void keyPressed(java.awt.event.KeyEvent e) {
-					//System.out.println("keypressed()"); // TODO Auto-generated Event stub keyTyped()
+					////System.out.println("keypressed()"); // TODO Auto-generated Event stub keyTyped()
 					TagEinstellen(e, jTextField.getText());// TODO Auto-generated Event stub keyTyped()
 				}
 				public void keyReleased(java.awt.event.KeyEvent e) {
-					//System.out.println("keypreleased()e");
+					////System.out.println("keypreleased()e");
 					if(e.getKeyCode()==10){
 						e.consume();
 					}
@@ -128,16 +128,16 @@ public class TagWahl {
 	}
 	public void TagEinstellen(java.awt.event.KeyEvent e,String sTag){
 		//datFunk dat = new datFunk();
-		//System.out.println(e);		
+		////System.out.println(e);		
 		switch(e.getKeyCode()){
 			case 33: //Bild auf
-				//System.out.println("Bild auf");
+				////System.out.println("Bild auf");
 				jTextField.setText(DatFunk.sDatPlusTage(sTag, +1));
 				jLabel3.setText(DatFunk.WochenTag(jTextField.getText()));				
 				jTextField.setCaretPosition(0);
 				break;
 			case 34: //Bild ab
-				//System.out.println("Bild auf");
+				////System.out.println("Bild auf");
 				jTextField.setText(DatFunk.sDatPlusTage(sTag, -1));
 				jLabel3.setText(DatFunk.WochenTag(jTextField.getText()));
 				jTextField.setCaretPosition(0);
@@ -161,7 +161,7 @@ public class TagWahl {
 			jButton.setText("Ok");
 			jButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					//System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					////System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					SetzeButton(0);
 					jDialog.dispose();
 				}

@@ -125,7 +125,7 @@ public void paintComponent( Graphics g ) {
 			g2d.setColor( SystemConfig.KalenderHintergrund);
 			g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
 
-			//System.out.println("Anzahl Blöcke in kPanel "+this.panelNummer+" = "+anzahl);
+			////System.out.println("Anzahl Blï¿½cke in kPanel "+this.panelNummer+" = "+anzahl);
 			for(i=0;i<anzahl;i++){
 				/*
 				if(TerminFenster.getThisClass().getUpdateVerbot()){
@@ -144,7 +144,7 @@ public void paintComponent( Graphics g ) {
 				}catch(java.lang.ArrayIndexOutOfBoundsException bounds){
 					g2d.setColor( SystemConfig.KalenderHintergrund);
 					g2d.fillRect( 0, 0, this.getWidth(), this.getHeight());
-					//System.out.println("ArrayIndexOutOfBoundsException");
+					////System.out.println("ArrayIndexOutOfBoundsException");
 					break;
 				}
 				//if ( test != null){ 
@@ -232,12 +232,12 @@ public void paintComponent( Graphics g ) {
 									
 									if((!sName.equals("") || Reha.thisClass.terminpanel.ansicht==Reha.thisClass.terminpanel.MASKEN_ANSICHT) ){
 										if(yDifferenz < 12){
-											//System.out.println("Y-Differenz ist kleiner 12: "+yDifferenz);
+											////System.out.println("Y-Differenz ist kleiner 12: "+yDifferenz);
 											if(yDifferenz > 0){
 												Reha.thisClass.terminpanel.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
 												g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											}else{
-												//System.out.println("Y-Differenz ist kleiner 12 und kleiner 0: "+yDifferenz);
+												////System.out.println("Y-Differenz ist kleiner 12 und kleiner 0: "+yDifferenz);
 												//TerminFenster.thisClass.dragLab[this.panelNummer].setIcon(null);
 												//TerminFenster.thisClass.dragLab[this.panelNummer].setText("");
 											}
@@ -250,7 +250,7 @@ public void paintComponent( Graphics g ) {
 													, xStart+(yDifferenz), (baseline)-2);
 											*/
 										}else{
-											//System.out.println("Y-Differenz ist größer 12: "+yDifferenz);
+											////System.out.println("Y-Differenz ist grï¿½ï¿½er 12: "+yDifferenz);
 											Reha.thisClass.terminpanel.dragLab[this.panelNummer].setBounds(xStart+1,yStartMin,xStart+13, yDifferenz-1);
 											g2d.drawImage(this.dragImage.getImage(),xStart+1,yStartMin+(yDifferenz/2)-(this.dragImage.getIconHeight()/2),null);
 											g2d.drawString(sStart.substring(0,5)+"-"+
@@ -284,7 +284,7 @@ public void paintComponent( Graphics g ) {
 						}
 
 						if((this.blockAktiv >= 0) && (this.blockAktiv == i) && (this.spalteAktiv)){
-							//System.out.println("in aktiv zeichnen");
+							////System.out.println("in aktiv zeichnen");
 							g2d.setColor( oCol.colGrau1);
 							g2d.fillRect( xStart, yStartMin, xEnde, yDifferenz);
 							g2d.setColor( oCol.colWeiss);
@@ -610,7 +610,7 @@ public void paintComponent( Graphics g ) {
 					//g2d.setComposite(original);
 					break;
 
-					/*******Klammer der künstlichen For-next******/
+					/*******Klammer der kï¿½nstlichen For-next******/
 					}
 				}
 				if (anzahl == 0){
@@ -639,7 +639,7 @@ public void paintComponent( Graphics g ) {
 			}
 
 
-		//System.out.println("Anzahl = "+anzahl);
+		////System.out.println("Anzahl = "+anzahl);
 	} 	
 	/*******Klammer der paint-Methode**********/
 	public void datenZeichnen(Vector vect,int therapeut){
@@ -652,7 +652,7 @@ public void paintComponent( Graphics g ) {
 		dat.addElement( ((ArrayList)vect.get(therapeut)).get(4) );
 		dat.addElement( ((ArrayList)vect.get(therapeut)).get(5) );
 		anzahl = ((Vector)dat.get(0)).size();
-		//System.out.println("Vektor-Größe="+anzahl);
+		////System.out.println("Vektor-Grï¿½ï¿½e="+anzahl);
 		}else{
 			anzahl = 0;
 		}
@@ -790,12 +790,12 @@ public void paintComponent( Graphics g ) {
 /********************************/	
 	public int  blockGeklickt(int block){
 		if (block > -1 && anzahl > 0){
-			//System.out.println("Block >1, Block = "+block+" Anzahl="+anzahl);
+			////System.out.println("Block >1, Block = "+block+" Anzahl="+anzahl);
 			this.maleSchwarz = block;
 			this.spalteAktiv = true;
 			this.repaint();
 		}else{
-			//System.out.println("Block =-1, Block = "+block+" Anzahl="+anzahl);
+			////System.out.println("Block =-1, Block = "+block+" Anzahl="+anzahl);
 			this.maleSchwarz = -1;
 			this.spalteAktiv = false;
 			this.blockAktiv = -1;
@@ -811,7 +811,7 @@ public void paintComponent( Graphics g ) {
 	}
 
 	public void  spalteDeaktivieren(){
-			//System.out.println("Block =-1, Block = "+block+" Anzahl="+anzahl);
+			////System.out.println("Block =-1, Block = "+block+" Anzahl="+anzahl);
 			this.maleSchwarz = -1;
 			this.spalteAktiv = false;
 			this.blockAktiv = -1;
@@ -866,14 +866,14 @@ public void paintComponent( Graphics g ) {
 				this.gruppe[0] = block1;
 				this.gruppe[1] = block2;
 			}
-			//System.out.println("Startblock="+this.gruppe[0]+" / Endblock="+this.gruppe[1] );
+			////System.out.println("Startblock="+this.gruppe[0]+" / Endblock="+this.gruppe[1] );
 			 
 			sStart = (String)((Vector)dat.get(2)).get(this.gruppe[0]);
 			yStartMin = (int) ZeitFunk.MinutenSeitMitternacht(sStart)-zeitSpanneVon;
 			sEnde = (String)((Vector)dat.get(4)).get(this.gruppe[1]);					
 			dauer = (int)ZeitFunk.ZeitDifferenzInMinuten(sStart, sEnde);
 
-			//System.out.println("Start = "+sStart+" / Ende = "+sEnde);
+			////System.out.println("Start = "+sStart+" / Ende = "+sEnde);
 
 			fStartPix = ((float)yStartMin)*fPixelProMinute;
 			//fEndePix  = fStartPix+((float) dauer * fPixelProMinute);
@@ -885,14 +885,14 @@ public void paintComponent( Graphics g ) {
 			rahmen[1] = yStartMin;
 			rahmen[2] = this.getWidth();
 			rahmen[3] = yEndeMin;			
-			//System.out.println("Parameter = "+rahmen[0]+" / "+rahmen[1]+" / "+rahmen[2]+" / "+rahmen[3]);
+			////System.out.println("Parameter = "+rahmen[0]+" / "+rahmen[1]+" / "+rahmen[2]+" / "+rahmen[3]);
 			//y-start berechnen;
 			//y-ende berechnen;
 			this.repaint();
 
 	}
 		public void setInGruppierung(boolean gruppierung){
-			//System.out.println("in Gruppierung Wert = "+gruppierung);
+			////System.out.println("in Gruppierung Wert = "+gruppierung);
 		this.inGruppierung = gruppierung;
 	}
 		

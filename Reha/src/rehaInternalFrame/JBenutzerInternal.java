@@ -27,7 +27,7 @@ public class JBenutzerInternal extends JRehaInternal implements RehaEventListene
 	}
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		System.out.println("Internal-Barkasse in schliessen***************");
+		//System.out.println("Internal-Barkasse in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
@@ -53,7 +53,7 @@ public class JBenutzerInternal extends JRehaInternal implements RehaEventListene
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
-		 		System.out.println("LöscheFenster "+name);   
+		 		//System.out.println("LöscheFenster "+name);   
 				AktiveFenster.loescheFenster(name);
 				Reha.thisClass.progLoader.loescheBenutzerrechte();
 		 	   }
@@ -69,7 +69,7 @@ public class JBenutzerInternal extends JRehaInternal implements RehaEventListene
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
-			System.out.println("es ist ein Reha-Internal-Event");
+			//System.out.println("es ist ein Reha-Internal-Event");
 		}
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){

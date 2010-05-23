@@ -50,7 +50,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	
 	public SysUtilKostentraeger(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilKostentraeger");
+		//System.out.println("Aufruf SysUtilKostentraeger");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -146,7 +146,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		URL url = new URL(urltext);
 		   
 		      URLConnection conn = url.openConnection();
-		      //System.out.println(conn.getContentEncoding());
+		      ////System.out.println(conn.getContentEncoding());
 		      
 
 		      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
@@ -210,13 +210,13 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		URL url = new URL(urltext);
 		   
 		      URLConnection conn = url.openConnection();
-		      //System.out.println(conn.getContentEncoding());
+		      ////System.out.println(conn.getContentEncoding());
 		      
 		      int lang=0,gesamt;
 		      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 		      gesamt = conn.getContentLength();
 		      JOptionPane.showMessageDialog(null, "Länge des Contents = "+gesamt);
-		      System.out.println("Länge des Contents = "+conn.getContentLength());
+		      //System.out.println("Länge des Contents = "+conn.getContentLength());
 		      boolean start = false;
 		      Vector<Vector<String>> ktraegerdat = new Vector<Vector<String>>();
 		      Vector<String> kassendat = new Vector<String>();
@@ -250,8 +250,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		/***2-te Stufe***/
 		// hole feld ikdaten wo ikdaten nicht leer und email=leer
 		Vector<Vector<String>> vec1 = SqlInfo.holeFelder("select ikkostentraeger from ktraeger where ikdaten ='' AND email='' ORDER BY id");
-		System.out.println("Anzahl der felder ohne Emaildaten = "+vec1.size());
-		System.out.println("***********************************************");
+		//System.out.println("Anzahl der felder ohne Emaildaten = "+vec1.size());
+		//System.out.println("***********************************************");
 		Vector<String> vec2 = new Vector<String>();
 		Vector<Vector<String>> mailvec;
 		Vector<Vector<String>> dumyvec;
@@ -268,7 +268,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				
 				vec2.add(kostentr);
 				try{
-					System.out.println("IK-Kostenträger addiert = "+kostentr);
+					//System.out.println("IK-Kostenträger addiert = "+kostentr);
 					//Vom Kostenträger die IK-Datenholen
 					dummyvec = SqlInfo.holeFelder("select ikdaten,ikpapier,ikentschluesselung from ktraeger where ikkasse='"+kostentr+"' LIMIT 1");
 					daten = dummyvec.get(0).get(0);
@@ -380,7 +380,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		"ikentschluesselung='"+ikent+"', name1='"+nam1+"', name2='"+nam2+"', name3='"+nam3+"', "+
 		"adresse1='"+adr1+"', adresse2='"+adr2+"', adresse3='"+adr3+"', email ='"+xemail+"'"+
 		(existiert ? " where ikkasse='"+ikkas+"' LIMIT 1" : "");
-		System.out.println(cmd);
+		//System.out.println(cmd);
 		SqlInfo.sqlAusfuehren(cmd);
 		
 	}

@@ -50,11 +50,11 @@ public class ContainerConfig {
 		Reha.thisClass.jxPinContainer.revalidate();
 		jcomp.hide();
 		//((Component)((ArrayList)compVec.get(compAnzahl-1)).get(1)).hide();
-		//System.out.println("Vektorinhalt "+ compVec);
-		System.out.println("********Name = *********************");
-		System.out.println(sname);		
-		System.out.println("********Componente = *********************");
-		System.out.println(jcomp);
+		////System.out.println("Vektorinhalt "+ compVec);
+		//System.out.println("********Name = *********************");
+		//System.out.println(sname);		
+		//System.out.println("********Componente = *********************");
+		//System.out.println(jcomp);
 	}	
 	/*
 	public void addBrowserContainer(String simage,String sname,Component jcomp,BrowserFenster smd){
@@ -84,11 +84,11 @@ public class ContainerConfig {
 		Reha.thisClass.jxPinContainer.revalidate();
 		jcomp.hide();
 		//((Component)((ArrayList)compVec.get(compAnzahl-1)).get(1)).hide();
-		//System.out.println("Vektorinhalt "+ compVec);
-		System.out.println("********Name = *********************");
-		System.out.println(sname);		
-		System.out.println("********Componente = *********************");
-		System.out.println(jcomp);
+		////System.out.println("Vektorinhalt "+ compVec);
+		//System.out.println("********Name = *********************");
+		//System.out.println(sname);		
+		//System.out.println("********Componente = *********************");
+		//System.out.println(jcomp);
 	}		
 	*/
 	
@@ -124,7 +124,7 @@ public class ContainerConfig {
 					Reha.thisClass.jxPinContainer.revalidate();
 					
 					break;
-					//System.out.println( compVec);
+					////System.out.println( compVec);
 				}	
 			}
 			

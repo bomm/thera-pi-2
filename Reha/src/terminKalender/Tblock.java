@@ -82,12 +82,12 @@ private int dbBehandler;
 				int state;
 				switch(result){
 				case (1):
-					//System.out.println("***nicht erster und Ende = kleiner oder gleich Ende Folgeblock");
-					//beginn gleich aber ende nach hinten = folgeblock kürzen
+					////System.out.println("***nicht erster und Ende = kleiner oder gleich Ende Folgeblock");
+					//beginn gleich aber ende nach hinten = folgeblock kï¿½rzen
 					state = JOptionPane.showConfirmDialog(null,
 							"Die Endzeit Ihres Terminwunsches ragt in den nachfolgenden Termin\n"+
 							"Soll die Startzeit und Dauer des nachfolgenden Termines\n"+"" +
-							"entsprechend angepaßt (vekürzt) werden??",
+							"entsprechend angepaï¿½t (vekï¿½rzt) werden??",
 							"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 					if (state == JOptionPane.YES_OPTION) {
 								KuerzeNachBlock();
@@ -99,24 +99,24 @@ private int dbBehandler;
 				case (2):
 					TerminFenster.getThisClass().setUpdateVerbot(false);
 					TerminFenster.starteUnlock();	
-					//System.out.println("***nicht letzter Block  und Ende = größer als Ende Folgeblock");
+					////System.out.println("***nicht letzter Block  und Ende = grï¿½ï¿½er als Ende Folgeblock");
 					break;
 				case (3):
 					TerminFenster.getThisClass().setUpdateVerbot(false);
 					TerminFenster.starteUnlock();	
-					//System.out.println("***es ist der letzte Block  und Ende = kleiner oder gleich Ende Folgeblock");
+					////System.out.println("***es ist der letzte Block  und Ende = kleiner oder gleich Ende Folgeblock");
 					break;
 				case (4):
 					TerminFenster.getThisClass().setUpdateVerbot(false);
 					TerminFenster.starteUnlock();	
-					//System.out.println("***es ist der letzte Block  und Ende = größer als Kalenderende");					
+					////System.out.println("***es ist der letzte Block  und Ende = grï¿½ï¿½er als Kalenderende");					
 					break;				
 				case (5):
 					ObenAndockenUntenNeuBlock();
 					this.Eltern.neuerBlockAktiv(this.aktBlockNeu);
 					break;
 				}
-				//System.out.println("Rückgabewert: "+result);
+				////System.out.println("Rï¿½ckgabewert: "+result);
 				//setzeBlockPasstObenUntenNicht();
 				break;
 			}
@@ -144,7 +144,7 @@ private int dbBehandler;
 					TerminFenster.starteUnlock();	
 					break;
 				}
-				//System.out.println("Rückgabewert: "+result);
+				////System.out.println("Rï¿½ckgabewert: "+result);
 				//setzeBlockPasstUntenObenNicht();
 				break;
 			}			
@@ -156,10 +156,10 @@ private int dbBehandler;
 						// ragt in Vorblock ende ist gelich wie der start des Folgeblock
 						state = JOptionPane.showConfirmDialog(null,
 						"Die Startzeit Ihres Terminwunsches ragt in den vorherigen Termin!!!\n\n"+
-						"Soll der vorherige Termin entsprechend gekürzt werden?",
+						"Soll der vorherige Termin entsprechend gekï¿½rzt werden?",
 						"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 						if (state == JOptionPane.YES_OPTION) {
-							//System.out.println("Fehler bei --->KuerzeVorBlock()");
+							////System.out.println("Fehler bei --->KuerzeVorBlock()");
 							KuerzeVorBlock();
 						}else{
 							TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -167,13 +167,13 @@ private int dbBehandler;
 						}
 						break;
 					case (2):
-						// ragt in Vorblock ende ist früher als start Folgeblock // (vorblock kürzen und nachblock erforderlich)
+						// ragt in Vorblock ende ist frï¿½her als start Folgeblock // (vorblock kï¿½rzen und nachblock erforderlich)
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Startzeit Ihres Terminwunsches ragt in den vorherigen Termin!!!\n\n"+
-								"Soll der vorherige Termin entsprechend gekürzt werden?",
+								"Soll der vorherige Termin entsprechend gekï¿½rzt werden?",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
-									//System.out.println("Fehler bei --->KuerzeVorBlockUndNeuBlock()");
+									////System.out.println("Fehler bei --->KuerzeVorBlockUndNeuBlock()");
 									KuerzeVorBlockUndNeuBlock();
 								}else{
 									TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -181,15 +181,15 @@ private int dbBehandler;
 								}
 						break;
 					case (3):
-						// ragt in Vorblock ende ist später als start Folgeblock und kürzer als ende Folgeblock// (Kürzung Vor- und Nachblock erforderlich)
+						// ragt in Vorblock ende ist spï¿½ter als start Folgeblock und kï¿½rzer als ende Folgeblock// (Kï¿½rzung Vor- und Nachblock erforderlich)
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Startzeit Ihres Terminwunsches ragt sowohl in den vorherigen Termin\n"+
 								"als auch in den nachfolgenden Termin!!!\n\n"+
 								"Sollen sowohl der vorherige, als auch der nachfolgende\n"+"" +
-								"Termin entsprechend gekürzt werden??",
+								"Termin entsprechend gekï¿½rzt werden??",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
-									//System.out.println("Fehler bei --->KuerzeVorBlockUndNachBlock()");
+									////System.out.println("Fehler bei --->KuerzeVorBlockUndNachBlock()");
 									KuerzeVorUndNachBlock();
 								}else{
 									TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -205,11 +205,11 @@ private int dbBehandler;
 				int state;
 				switch(result){
 					case (1):
-						//beginn gleich aber ende nach hinten = folgeblock kürzen
+						//beginn gleich aber ende nach hinten = folgeblock kï¿½rzen
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Endzeit Ihres Terminwunsches ragt in den nachfolgenden Termin\n"+
 								"Soll die Startzeit und Dauer des nachfolgenden Termines\n"+"" +
-								"entsprechend angepaßt (verkürzt) werden??",
+								"entsprechend angepaï¿½t (verkï¿½rzt) werden??",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
 									KuerzeNachBlock();
@@ -222,7 +222,7 @@ private int dbBehandler;
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Endzeit Ihres Terminwunsches ragt in den nachfolgenden Termin\n"+
 								"Soll die Startzeit und Dauer des nachfolgenden Termines\n"+"" +
-								"entsprechend angepaßt (verkürzt) werden??",
+								"entsprechend angepaï¿½t (verkï¿½rzt) werden??",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
 									NeuVorBlockUndKuerzeNachBlock();
@@ -269,47 +269,47 @@ private int dbBehandler;
 		String sBeginn = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		String sEnde = this.feld.getFeld(this.Kollege,iEnde,this.Block);		
 		String sDauer = this.feld.getFeld(this.Kollege,iDauer,this.Block);
-		//System.out.println("++++Beginn PasstObenUntenNicht++++++");
+		////System.out.println("++++Beginn PasstObenUntenNicht++++++");
 		if( this.Beginn.equals(sBeginn) && (!this.Ende.equals(sEnde))){
-			//System.out.println("Ende Ungleich");
-			/**Wenn das angegebene Ende größer ist als das ende des Datenbankblocks**/
+			////System.out.println("Ende Ungleich");
+			/**Wenn das angegebene Ende grï¿½ï¿½er ist als das ende des Datenbankblocks**/
 			if(ZeitFunk.MinutenSeitMitternacht(this.Ende) > ZeitFunk.MinutenSeitMitternacht(sEnde)){
-				//System.out.println("Ende größer als Block");
+				////System.out.println("Ende grï¿½ï¿½er als Block");
 				//****ist der - aktuelle Block - kleiner als die Gesamtzahl**//
 				if((this.Block+1) < AnzahlOrigBloecke){
-					/***Wenn ja prüfen ob wenigstens das Ende des Folgeblockes kleiner ist**/
-					//System.out.println("Dies ist nicht der letzte Block");
+					/***Wenn ja prï¿½fen ob wenigstens das Ende des Folgeblockes kleiner ist**/
+					////System.out.println("Dies ist nicht der letzte Block");
 					if(ZeitFunk.MinutenSeitMitternacht(this.Ende) < ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){		
-						//System.out.println("Dies ist nicht der letzte Block und das Ende ist kleiner oder gleich dem Ende des Folgeblockes - Rückgabewert 1");						
+						////System.out.println("Dies ist nicht der letzte Block und das Ende ist kleiner oder gleich dem Ende des Folgeblockes - Rï¿½ckgabewert 1");						
 						return 1;
 					}else if(ZeitFunk.MinutenSeitMitternacht(this.Ende) == ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1))){
 						return -1;
 					}else{
-						//System.out.println("Dies ist nicht der letzte Block und das Ende ist größer als das Ende des Folgeblockes - Rückgabewert 2");
-						//**nicht der - letzte Block - und der nachfolgende kann gekürzt werden**//
+						////System.out.println("Dies ist nicht der letzte Block und das Ende ist grï¿½ï¿½er als das Ende des Folgeblockes - Rï¿½ckgabewert 2");
+						//**nicht der - letzte Block - und der nachfolgende kann gekï¿½rzt werden**//
 						return 2;
 					}
 				//***der aktuelle Block - ist der letzte Block****//
 				}else{
-					//System.out.println("Es handelt sich um den letzten Block");
+					////System.out.println("Es handelt sich um den letzten Block");
 					//**das angegebene Ende ist vor dem Ende des letzten Blockes
-					//System.out.println("Zeit1:"+zeitFunk.MinutenSeitMitternacht(this.Ende)+
+					////System.out.println("Zeit1:"+zeitFunk.MinutenSeitMitternacht(this.Ende)+
 					//		" Zeit2:"+zeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block)));
 					if(ZeitFunk.MinutenSeitMitternacht(this.Ende) <= ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block))){		
-						//System.out.println("Das Ende ist kleiner oder gleich des aktuellen (letzten) Blockes - Rückgabewert 3");
+						////System.out.println("Das Ende ist kleiner oder gleich des aktuellen (letzten) Blockes - Rï¿½ckgabewert 3");
 						return 3;
-					//**das angegebene Ende würden das Ende des letzten Blockes übersteigen**/
+					//**das angegebene Ende wï¿½rden das Ende des letzten Blockes ï¿½bersteigen**/
 					}else{
-						//System.out.println("Das Ende ist größer als das des aktuellen (letzten) Blockes - Rückgabewert 4");
+						////System.out.println("Das Ende ist grï¿½ï¿½er als das des aktuellen (letzten) Blockes - Rï¿½ckgabewert 4");
 						return 4;
 					}
 				}
 			}else{
-				//System.out.println("Das Ende ist kleiner als das bisherige Ende Rückgabewert 5");
+				////System.out.println("Das Ende ist kleiner als das bisherige Ende Rï¿½ckgabewert 5");
 				return 5;
 			}
 		}
-		//System.out.println("Beginn gleich und Ende ungleich trifft nicht zu (dann muß der Anfang unterschiedlich sein)");
+		////System.out.println("Beginn gleich und Ende ungleich trifft nicht zu (dann muï¿½ der Anfang unterschiedlich sein)");
 		return -1;
 	}
 /******************************/
@@ -323,21 +323,21 @@ private int dbBehandler;
 		String sBeginn = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		String sEnde = this.feld.getFeld(this.Kollege,iEnde,this.Block);		
 		String sDauer = this.feld.getFeld(this.Kollege,iDauer,this.Block);
-		//System.out.println("++++Beginn PasstUntenObenNicht++++++");
+		////System.out.println("++++Beginn PasstUntenObenNicht++++++");
 		if( this.Ende.equals(sEnde) && (!this.Beginn.equals(sBeginn))){ /****Das Ende gleich aber der Anfang nicht)***/
-			if (ZeitFunk.MinutenSeitMitternacht(sBeginn) < ZeitFunk.MinutenSeitMitternacht(this.Beginn) ){ /*** Die neue Beginnzeit später ist**/
-				//System.out.println("Endzeit gleich aber Beginnzeit später als bislang");
+			if (ZeitFunk.MinutenSeitMitternacht(sBeginn) < ZeitFunk.MinutenSeitMitternacht(this.Beginn) ){ /*** Die neue Beginnzeit spï¿½ter ist**/
+				////System.out.println("Endzeit gleich aber Beginnzeit spï¿½ter als bislang");
 				return 1;
 			}
 			
 		}else{
 			if( (ZeitFunk.MinutenSeitMitternacht(sBeginn) < ZeitFunk.MinutenSeitMitternacht(this.Beginn)) &&
 					(ZeitFunk.MinutenSeitMitternacht(sEnde) > ZeitFunk.MinutenSeitMitternacht(this.Ende)) ){
-				//System.out.println("Der Block liegt zwischen dem bisherigen Block");
+				////System.out.println("Der Block liegt zwischen dem bisherigen Block");
 				return 2;
 			}
 		}
-		//System.out.println("Der Beginn wurde vor den Ursprungsbeginn gestellt");
+		////System.out.println("Der Beginn wurde vor den Ursprungsbeginn gestellt");
 		return -1;
 	}
 /******************************/
@@ -370,9 +370,9 @@ private int dbBehandler;
 		aktName = this.feld.getFeld(this.Kollege,iName,this.Block);
 		aktNummer = this.feld.getFeld(this.Kollege,iNummer,this.Block);	
 		
-		/**** Hier noch Test einbauen ob nachfolgender Block leer und ob zusammengefaßt werden soll */
+		/**** Hier noch Test einbauen ob nachfolgender Block leer und ob zusammengefaï¿½t werden soll */
 
-		/****Als erste den neuen Block einfügen und beschreiben*****/
+		/****Als erste den neuen Block einfï¿½gen und beschreiben*****/
 		int neublocknum = this.Block+1;
 		this.feld.einfuegenBlock(this.Kollege,neublocknum);
 		if (! aktName.trim().isEmpty()){
@@ -399,7 +399,7 @@ private int dbBehandler;
 		//Endzeit eintragen		
 		this.feld.setFeld(this.Kollege,iEnde, this.Block, this.Ende);
 
-		//Blockzahl erhöhen und eintragen
+		//Blockzahl erhï¿½hen und eintragen
 		AnzahlOrigBloecke++;
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke);	
 		KalenderBeschreiben th = new KalenderBeschreiben();
@@ -444,7 +444,7 @@ private int dbBehandler;
 		//Endzeit eintragen		
 		this.feld.setFeld(this.Kollege,iEnde, this.Block, this.Ende);
 
-		/****Dann den neuen Block vor den bisherigen Block einfügen und beschreiben*****/		
+		/****Dann den neuen Block vor den bisherigen Block einfï¿½gen und beschreiben*****/		
 		int neublocknum = this.Block;
 		this.feld.einfuegenBlock(this.Kollege,neublocknum);
 		if (! aktName.trim().isEmpty()){
@@ -458,7 +458,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum,(String) Integer.toString(differenz));
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,this.Beginn);		
 
-		//Blockzahl erhöhen und eintragen
+		//Blockzahl erhï¿½hen und eintragen
 		AnzahlOrigBloecke++;
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke);	
 		KalenderBeschreiben th = new KalenderBeschreiben();
@@ -491,7 +491,7 @@ private int dbBehandler;
 		dauer_nachBlock = (int) (ZeitFunk.MinutenSeitMitternacht(endeBisher) -
 				ZeitFunk.MinutenSeitMitternacht( endeNeu));
 		dauer_aktBlock = dauerNeu;
-		/****im bisherigen Block lediglich die Zeitdaten verändern***/
+		/****im bisherigen Block lediglich die Zeitdaten verï¿½ndern***/
 		this.feld.setFeld(this.Kollege,iBeginn, this.Block,beginnBisher);
 		//Eingabe Dauer eintragen
 		this.feld.setFeld(this.Kollege,iDauer, this.Block, Integer.toString(dauer_vorBlock));
@@ -535,7 +535,7 @@ private int dbBehandler;
 							dauer_nachBlock	);
 		this.feld.setFeld(this.Kollege,iEnde, neublocknum, sEndeNeu);
 	
-		//Blockzahl erhöhen und eintragen
+		//Blockzahl erhï¿½hen und eintragen
 		AnzahlOrigBloecke = AnzahlOrigBloecke + 2;
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke);	
 		KalenderBeschreiben th = new KalenderBeschreiben();
@@ -545,17 +545,17 @@ private int dbBehandler;
 	}
 /******************************/	
 	private int BeginnRagtInVorBlock(){
-		//System.out.println("Die eingestellte Startzeit kollidiert mit den VorBlock");
+		////System.out.println("Die eingestellte Startzeit kollidiert mit den VorBlock");
 		// Testen ob versucht wurde vor dem Kalender-Nullpunkt zu starten = 07:00:00;
 		// Testen ob es sich um den ersten Block handelt;
-		// Testen ob Start und Dauer des Vorblocks eine Reduzierung zuläßt; 
+		// Testen ob Start und Dauer des Vorblocks eine Reduzierung zulï¿½ï¿½t; 
 		String sBeginn = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		String sEnde = this.feld.getFeld(this.Kollege,iEnde,this.Block);		
 		String sDauer = this.feld.getFeld(this.Kollege,iDauer,this.Block);
 		int endeVorBlock;
 		int startAktuell;
 		if(this.Block == 0){
-			//System.out.println("Terminblock = block 0");
+			////System.out.println("Terminblock = block 0");
 			JOptionPane.showMessageDialog(null,"Sie versuchen vor den Kalenderstart zu springen\n"+
 											"Termin kann nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 			return -1;
@@ -565,16 +565,16 @@ private int dbBehandler;
 
 		if((int) ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block-1)) >
 				startAktuell){
-			JOptionPane.showMessageDialog(null,"Der gewünschte Starttermin würde sich mit dem voangegangenen\n"+
-					"Termin überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
-			//System.out.println("Beginn Vorblock = nach dem Beginn des aktuellen Blocks");
+			JOptionPane.showMessageDialog(null,"Der gewï¿½nschte Starttermin wï¿½rde sich mit dem voangegangenen\n"+
+					"Termin ï¿½berschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
+			////System.out.println("Beginn Vorblock = nach dem Beginn des aktuellen Blocks");
 			return -1;
 		}
 		if( (this.Block < (AnzahlOrigBloecke-1)) && (startAktuell < endeVorBlock) ){
 			if(SystemConfig.TerminUeberlappung == 0){
-				JOptionPane.showMessageDialog(null,"Der gewünschte Starttermin würde sich mit dem voangegangenen\n"+
-						"Termin überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
-				//System.out.println("Terminüberlappung ist nicht erlaubt");
+				JOptionPane.showMessageDialog(null,"Der gewï¿½nschte Starttermin wï¿½rde sich mit dem voangegangenen\n"+
+						"Termin ï¿½berschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
+				////System.out.println("Terminï¿½berlappung ist nicht erlaubt");
 				return -1;
 			}
 			int endeAktuell,endeFolgeBlock,startFolgeBlock;
@@ -582,16 +582,16 @@ private int dbBehandler;
 			endeFolgeBlock = (int)ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iEnde,this.Block+1));
 			startFolgeBlock = (int)ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block+1));
 			if((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) == startFolgeBlock){
-				//System.out.println("Ende aktuell == Start Folgeblock");				
+				////System.out.println("Ende aktuell == Start Folgeblock");				
 				return 1;
 			}
 			if((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) < startFolgeBlock){
-				//System.out.println("Ende aktuell < Start Folgeblock");				
+				////System.out.println("Ende aktuell < Start Folgeblock");				
 				return 2;
 			}
 			if( ((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) > startFolgeBlock) && 
 					((int) ZeitFunk.MinutenSeitMitternacht(this.Ende) < endeFolgeBlock) ){
-				//System.out.println("Ende aktuell > startFolgeblock und < ende Folgeblock");
+				////System.out.println("Ende aktuell > startFolgeblock und < ende Folgeblock");
 				return 3;
 			}
 		}
@@ -603,7 +603,7 @@ private int dbBehandler;
 		String startVorblock = this.feld.getFeld(this.Kollege,iBeginn,this.Block-1);
 		int dauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		if(dauerVorBlock==0){
-			//System.out.println("KuerzeVorBlock: Die Dauer wäre 0 Minuten****************->");
+			////System.out.println("KuerzeVorBlock: Die Dauer wï¿½re 0 Minuten****************->");
 			TerminFenster.getThisClass().setUpdateVerbot(false);
 			TerminFenster.starteUnlock();
 			JOptionPane.showMessageDialog (null, "Die von Ihnen eingegebenen Terminangaben kollidieren\n"+
@@ -631,7 +631,7 @@ private int dbBehandler;
 		String startVorblock = this.feld.getFeld(this.Kollege,iBeginn,this.Block-1);
 		int dauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		if(dauerVorBlock==0){
-			//System.out.println("KuerzeVorBlockUndNeuBlock: Die Dauer wäre 0 Minuten****************->");
+			////System.out.println("KuerzeVorBlockUndNeuBlock: Die Dauer wï¿½re 0 Minuten****************->");
 			TerminFenster.getThisClass().setUpdateVerbot(false);
 			TerminFenster.starteUnlock();	
 			JOptionPane.showMessageDialog (null, "Die von Ihnen eingegebenen Terminangaben kollidieren\n"+
@@ -659,7 +659,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum,Integer.toString(neudauer));
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,ende);
 		this.feld.setAnzahlBloecke(this.Kollege,AnzahlOrigBloecke+1);
-		//System.out.println("Zeitdifferenz "+neudauer);
+		////System.out.println("Zeitdifferenz "+neudauer);
 		KalenderBeschreiben th = new KalenderBeschreiben();
 		th.KalenderDaten(this.feld,this.Kollege,aktDatum[this.Spalte],this.dbBehandler);
 	}	
@@ -669,7 +669,7 @@ private int dbBehandler;
 		String startVorblock = this.feld.getFeld(this.Kollege,iBeginn,this.Block-1);
 		int dauerVorBlock = (int)ZeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		if(dauerVorBlock==0){
-			//System.out.println("KuerzeVorUndNachBlock: Die Dauer wäre 0 Minuten****************->");
+			////System.out.println("KuerzeVorUndNachBlock: Die Dauer wï¿½re 0 Minuten****************->");
 			TerminFenster.getThisClass().setUpdateVerbot(false);
 			TerminFenster.starteUnlock();
 			JOptionPane.showMessageDialog (null, "Die von Ihnen eingegebenen Terminangaben kollidieren\n"+
@@ -702,35 +702,35 @@ private int dbBehandler;
 	private int EndeRagtInNachBlock(){
 		// Testen ob versucht wurde nach dem Kalender-Maximum zu enden = 22:00:00;
 		// Testen ob es sich um den letzten Block handelt;
-		// Testen ob Ende und Dauer des Nachblocks eine Reduzierung zuläßt;
+		// Testen ob Ende und Dauer des Nachblocks eine Reduzierung zulï¿½ï¿½t;
 		int ende = (int) ZeitFunk.MinutenSeitMitternacht(this.Ende);
 		String sende = this.feld.getFeld(this.Kollege,iEnde,this.Block);
 		int aktende = (int) ZeitFunk.MinutenSeitMitternacht(sende);
 		String sbeginn = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		if(ende >= SystemConfig.KalenderMilli[1]){
-			JOptionPane.showMessageDialog(null,"Die gewünschte Endzeit des Termines liegt nach der absoluten Endzeit\n"+
+			JOptionPane.showMessageDialog(null,"Die gewï¿½nschte Endzeit des Termines liegt nach der absoluten Endzeit\n"+
 					"des Terminkalenders und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 			return -1;
 		}
-		// verpacken in gültige if-abfrage
+		// verpacken in gï¿½ltige if-abfrage
 		if( (ende > aktende) && (this.Block < AnzahlOrigBloecke-1) ){
 			if(SystemConfig.TerminUeberlappung == 0){
-				JOptionPane.showMessageDialog(null,"Der gewünschte Endzeitpunkt würde sich mit anderen \n"+
-					"Terminen überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
-				//System.out.println("Terminüberlappung ist nicht erlaubt");
+				JOptionPane.showMessageDialog(null,"Der gewï¿½nschte Endzeitpunkt wï¿½rde sich mit anderen \n"+
+					"Terminen ï¿½berschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
+				////System.out.println("Terminï¿½berlappung ist nicht erlaubt");
 				return -1;
 			}
 			String sendefolge = this.feld.getFeld(this.Kollege,iEnde,this.Block+1);
 			int endefolge = (int) ZeitFunk.MinutenSeitMitternacht(sendefolge);
-			//anfang gleich aber ende nach hinten verschoben = folgeblock kürzen
+			//anfang gleich aber ende nach hinten verschoben = folgeblock kï¿½rzen
 			if( (this.Beginn.equals(sbeginn)) && (ende < endefolge)){
 				return 1;
 			}
 			int zbeginn = (int) ZeitFunk.MinutenSeitMitternacht(this.Beginn);
 			int aktbeginn = (int) ZeitFunk.MinutenSeitMitternacht(sbeginn);
-			//anfang nach hinten verschoben und ende nach hinten verschoben = neuen vorblock setzen und folgeblock kürzen
+			//anfang nach hinten verschoben und ende nach hinten verschoben = neuen vorblock setzen und folgeblock kï¿½rzen
 			if( (zbeginn > aktbeginn) && (ende < endefolge)){
-				//System.out.println("In NachBlock-Prüfung mit Vorblock");
+				////System.out.println("In NachBlock-Prï¿½fung mit Vorblock");
 				return 2;
 			}
 		}
@@ -778,7 +778,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum,Integer.toString(this.Dauer));		
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,this.Ende);
 
-		//System.out.println(this.Name+"/"+this.Nummer+"/"+this.Beginn+"/"+new Integer(this.Dauer).toString()+"/"+this.Ende);
+		////System.out.println(this.Name+"/"+this.Nummer+"/"+this.Beginn+"/"+new Integer(this.Dauer).toString()+"/"+this.Ende);
 		
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum+1,this.Ende);
 		String endeNachBlock = this.feld.getFeld(this.Kollege,iEnde,neublocknum+1);
@@ -839,7 +839,7 @@ class Felder{
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(2).insertElementAt("", iFeld);
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(3).insertElementAt("", iFeld);
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(4).insertElementAt("", iFeld);		
-		//System.out.println("Vor der Erhöhung"+getAnzahlBloecke(iKoll));
+		////System.out.println("Vor der Erhï¿½hung"+getAnzahlBloecke(iKoll));
 		setAnzahlBloecke(iKoll,getSize(iKoll));
 		return true;
 	}
@@ -849,7 +849,7 @@ class Felder{
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(2).removeElementAt(iFeld);
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(3).removeElementAt(iFeld);
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(4).removeElementAt(iFeld);		
-		//System.out.println("Vor der Erhöhung"+getAnzahlBloecke(iKoll));
+		////System.out.println("Vor der Erhï¿½hung"+getAnzahlBloecke(iKoll));
 		setAnzahlBloecke(iKoll,getSize(iKoll));
 		return true;
 	}
@@ -873,17 +873,17 @@ class KalenderBeschreiben extends Thread implements Runnable{
 		  this.iKoll = iKoll;
 		  this.datum = datum;
 		  this.dbKollege = dbKollege;
-		  //System.out.println("iKoll = "+iKoll);
-		  //System.out.println("datum = "+datum);
-		  //System.out.println("dbKollege = "+dbKollege);
+		  ////System.out.println("iKoll = "+iKoll);
+		  ////System.out.println("datum = "+datum);
+		  ////System.out.println("dbKollege = "+dbKollege);
 		  start();
 	  }
 	  public void run(){
 		  if(Reha.thisClass.terminpanel.getAnsicht()==2){
-			  //System.out.println("vKalDaten="+this.vKalDaten);
-			  //System.out.println("iKoll = "+this.iKoll);
-			  //System.out.println("datum = "+this.datum);
-			  //System.out.println("dbKollege = "+this.dbKollege);
+			  ////System.out.println("vKalDaten="+this.vKalDaten);
+			  ////System.out.println("iKoll = "+this.iKoll);
+			  ////System.out.println("datum = "+this.datum);
+			  ////System.out.println("dbKollege = "+this.dbKollege);
 			  maskenrun();
 			  return;
 		  }
@@ -906,7 +906,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 			  buff.append("TE" + Integer.toString(i+1) + "='" +vKalDaten.getFeld(iKoll,4,i).trim()+"', "  );
 		  }
 		  buff.append("BELEGT" + "='"+Integer.toString(anzahl).trim()+"', "  );
-		  //System.out.println("Kollege = "+iKoll);
+		  ////System.out.println("Kollege = "+iKoll);
 		  if(dbKollege == 0){
 			  	sKoll = ((iKoll)+1 >=10 ? Integer.toString(iKoll+1)+"BEHANDLER" : "0"+Integer.toString(iKoll+1)+"BEHANDLER");			  
 		  }else{
@@ -919,19 +919,19 @@ class KalenderBeschreiben extends Thread implements Runnable{
 
 		  buff.append("where datum = '"+DatFunk.sDatInSQL(this.datum)+"' ");
 		  buff.append("and behandler = '"+sKoll+"'");
-		  //System.out.println(buff.toString());
+		  ////System.out.println(buff.toString());
 		  threadStmt = buff.toString();
 			try {
 				this.sState = TerminFenster.getThisClass().privstmt;
 				klappt = this.sState.execute(threadStmt);
-				//System.out.println("Echtdaten geschrieben Erfolg: "+klappt);
+				////System.out.println("Echtdaten geschrieben Erfolg: "+klappt);
 				klappt = this.sState.execute("COMMIT");
 
-				//System.out.println("Echtdaten Commit Erfolg: "+klappt);				
+				////System.out.println("Echtdaten Commit Erfolg: "+klappt);				
 			}catch(SQLException ex) {
-				System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());System.out.println("ErrorCode: " + ex.getErrorCode ());
-				System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());//System.out.println("ErrorCode: " + ex.getErrorCode ());
+				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 			}
@@ -967,7 +967,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 
 		  buff.append("where art = '"+(iKoll+1)+"' ");
 		  buff.append("and behandler = '"+sKoll+"'");
-		  //System.out.println(buff.toString());
+		  ////System.out.println(buff.toString());
 		  threadStmt = buff.toString();
 		  TerminFenster.rechneMaske();
 		  try {
@@ -975,9 +975,9 @@ class KalenderBeschreiben extends Thread implements Runnable{
 			  klappt = this.sState.execute(threadStmt);
 			  klappt = this.sState.execute("COMMIT");
 		  }catch(SQLException ex) {
-			  System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-			  System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());System.out.println("ErrorCode: " + ex.getErrorCode ());
-			  System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+			  //System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+			  //System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());//System.out.println("ErrorCode: " + ex.getErrorCode ());
+			  //System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 			  Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 			  TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 		  }

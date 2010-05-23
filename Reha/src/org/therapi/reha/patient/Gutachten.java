@@ -379,14 +379,14 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				protected Void doInBackground() throws Exception {
 					try{
 						JRtaTextField tf = new JRtaTextField("nix",false);
-						System.out.println("in GutachtenWahl");
+						//System.out.println("in GutachtenWahl");
 						GutachtenWahl gwahl = new GutachtenWahl( (Point)comp.getLocationOnScreen(),tf,"Neues Gutachten erstellen" );
-						System.out.println("Aufruf des Focus***********");
+						//System.out.println("Aufruf des Focus***********");
 						gwahl.setzeFocus();
 						gwahl.setVisible(true);
 						//gwahl.setModal(true);
 						
-						System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
+						//System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
 						if(tf.getText().equalsIgnoreCase("ebericht")){
 							Reha.thisClass.progLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,"",-1); 
 							//ProgLoader.GutachenFenster(1,Reha.thisClass.patpanel.aktPatID ,-1,"E-Bericht",true,"" );			
@@ -462,9 +462,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 	}
 	private void doBerichtEdit(){
 		int row = tabbericht.getSelectedRow();
-		System.out.println("in doBerichtEdit");
+		//System.out.println("in doBerichtEdit");
 		if(row < 0){
-			System.out.println("keine Zeile vorhanden also return");
+			//System.out.println("keine Zeile vorhanden also return");
 			return;
 		}
 		String bertyp = (String) tabbericht.getValueAt(row,1);
@@ -581,16 +581,16 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			protected Void doInBackground() throws Exception {
 				try{
 					JRtaTextField tf = new JRtaTextField("nix",false);
-					System.out.println("in GutachtenWahl");
+					//System.out.println("in GutachtenWahl");
 					Point pt = (Point)gutbut[3].getLocationOnScreen();
 					pt.x = pt.x+150;
 					GutachtenWahl gwahl = new GutachtenWahl(pt ,tf,"<html><font color='#ffff66'>Stammdaten auf neues Gutachten übertragen</font></html>" );
-					System.out.println("Aufruf des Focus***********");
+					//System.out.println("Aufruf des Focus***********");
 					gwahl.setzeFocus();
 					gwahl.setVisible(true);
 					//gwahl.setModal(true);
 					
-					System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
+					//System.out.println("Der Rückgabewert der Auswahl = "+tf.getText() );
 					if(tf.getText().equalsIgnoreCase("ebericht")){
 						int row = tabbericht.getSelectedRow();
 						if(row < 0){
@@ -750,7 +750,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				try{
 					new LadeProg(Reha.proghome+"LVAEntlass.jar "+
 							" "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
-							Reha.thisClass.patpanel.vecaktrez.get(1));
+							Reha.thisClass.patpanel.vecaktrez.get(1)+" "+
+							Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}

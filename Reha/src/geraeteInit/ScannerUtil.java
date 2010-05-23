@@ -251,11 +251,11 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 					rgb = null;
 					this.dispose();
 					super.dispose();
-					System.out.println("****************Scanner-Util -> Listener entfernt**************");				
+					//System.out.println("****************Scanner-Util -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -267,7 +267,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			pinPanel = null;
 			dispose();
 			super.dispose();
-			System.out.println("****************Scanner-Util -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Scanner-Util -> Listener entfernt (Closed)**********");
 		}
 		scanner = null;
 
@@ -379,8 +379,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				inpos = LeistungTools.getLeistung(sart, spos,preisgruppe);	
 				SystemConfig.hmAdrAFRDaten.put(maplang,inpos[0]);
 				SystemConfig.hmAdrAFRDaten.put(mapkurz,inpos[1]);
-				//System.out.println(inpos[0]);
-				//System.out.println(inpos[1]);
+				////System.out.println(inpos[0]);
+				////System.out.println(inpos[1]);
 				
 			}else{
 				spos = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
@@ -410,12 +410,12 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 				this.dispose();
 			}
 
-			System.out.println("Return Gedrückt");
+			//System.out.println("Return Gedrückt");
 		}
 	}
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
-		System.out.println("Starte Datei -> "+url);
+		//System.out.println("Starte Datei -> "+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
@@ -446,7 +446,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			boolean loeschen = false;
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			//System.out.println(placeholderDisplayText);	
+			////System.out.println(placeholderDisplayText);	
 		    /*****************/			
 			Set entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator it = entries.iterator();

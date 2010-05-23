@@ -267,7 +267,7 @@ public class Umsaetze extends JXPanel{
 					progress1.setMinimum(0);
 					progress1.setMaximum(anzahltermine);
 
-					//System.out.println(kalUsers.get(i1).get(0)+" hat am "+DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304))+" Anzahl Termine = "+allDates.get(i1).get(i2).get(300));
+					////System.out.println(kalUsers.get(i1).get(0)+" hat am "+DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304))+" Anzahl Termine = "+allDates.get(i1).get(i2).get(300));
 
 					//2. und letzte Unterschleife für die einzelnen Termine pro Behandlunstag
 					behandlungenProTag = 0;
@@ -288,9 +288,9 @@ public class Umsaetze extends JXPanel{
 									if( (pos=rawreznum.indexOf("\\")) >= 0){
 										pos = reznum.indexOf("\\");
 										endreznum = allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim(); 
-										//System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim());
+										////System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim());
 									}else{
-										//System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).trim());
+										////System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).trim());
 										endreznum = allDates.get(i1).get(i2).get((i3*5)+1).trim();
 									}
 									//testen ob diese Rezeptnummer an selben Tag bereits einbezogen wurde!
@@ -333,14 +333,14 @@ public class Umsaetze extends JXPanel{
 						cols[i]+
 						Integer.toString(summenPos.get(summenPos.size()-1)[1]-1)+
 						")"; 
-						System.out.println(formula);
+						//System.out.println(formula);
 						doCellColor(i,summenPos.get(summenPos.size()-1)[1]-1,0xff0000);
 						doCellFormula(i,summenPos.get(summenPos.size()-1)[1]-1,formula);
 					}
 				}
 
-				System.out.println("StartRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[0]+
-						" EndRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[1]);
+				//System.out.println("StartRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[0]+
+						//" EndRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[1]);
 				
 				calcrow += 2;
 			}
@@ -368,7 +368,7 @@ public class Umsaetze extends JXPanel{
 				"N"+
 				Integer.toString(summenPos.get(i)[1])+
 				")";
-				System.out.println("\nSummenFormula = "+formula+"\n");
+				//System.out.println("\nSummenFormula = "+formula+"\n");
 				doCellNumberFormat(4,calcrow,2);
 				//doCellColor(4, calcrow, 0xff0000);
 				doCellFormula(4,calcrow,formula.toString());
@@ -383,7 +383,7 @@ public class Umsaetze extends JXPanel{
 			":"+
 			cols[4]+Integer.toString(rowend)+
 			")";
-			System.out.println("Summen Formel = "+formula);
+			//System.out.println("Summen Formel = "+formula);
 			doCellNumberFormat(4,calcrow,2);
 			doCellColor(4,calcrow,0xff0000);
 			doCellCharWeight(4,calcrow,com.sun.star.awt.FontWeight.BOLD);
@@ -511,8 +511,8 @@ public class Umsaetze extends JXPanel{
 											setCursor(Reha.thisClass.cdefault);
 											//aktion1.setText("  ");
 											//progress1.setValue(0);
-											//System.out.println("Daten wurden gesammelt von "+allDates.size()+" Behandlern");
-											//System.out.println("Anzahl Tage analysiert "+allDates.get(0).size());
+											////System.out.println("Daten wurden gesammelt von "+allDates.size()+" Behandlern");
+											////System.out.println("Anzahl Tage analysiert "+allDates.get(0).size());
 											return null;
 										}
 										
@@ -652,13 +652,13 @@ public class Umsaetze extends JXPanel{
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
 		xPropSet.setPropertyValue( "CharColor", color );
 		/*
-		System.out.println("Start-CellPropertie*********************************");
+		//System.out.println("Start-CellPropertie*********************************");
 	      Property[] prop = xPropSet.getPropertySetInfo().getProperties();
 	      for(int i = 0; i < prop.length;i++){
-	    	  System.out.println(prop[i].Name);
-	    	  System.out.println(prop[i].Attributes);
+	    	  //System.out.println(prop[i].Name);
+	    	  //System.out.println(prop[i].Attributes);
 	      }
-		System.out.println("End-CellPropertie*********************************");
+		//System.out.println("End-CellPropertie*********************************");
 		*/
 	    
 	}

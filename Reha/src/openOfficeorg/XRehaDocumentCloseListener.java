@@ -33,7 +33,7 @@ package openOfficeorg;
  ****************************************************************************/
 
 /*
- * Last changes made by $Author: steinhilber $, $Date: 2010-03-14 15:38:35 $
+ * Last changes made by $Author: thera-pi $, $Date: 2010-05-23 09:03:53 $
  */
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -48,7 +48,7 @@ import ag.ion.bion.officelayer.event.IEvent;
  * This listener is used in all Snippets starting from Snippet05.
  * 
  * @author Sebastian R�sgen
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @date 17.03.2006
  */
 public class XRehaDocumentCloseListener implements ICloseListener {
@@ -93,8 +93,8 @@ public class XRehaDocumentCloseListener implements ICloseListener {
 	public void notifyClosing(ICloseEvent closeEvent) {
 		/*try {
 			//officeAplication.deactivate(); // this is really necessary
-			System.out.println("Office application deactivated.");
-			System.out.println(closeEvent.getSourceObject());
+			//System.out.println("Office application deactivated.");
+			//System.out.println(closeEvent.getSourceObject());
 		}/* 	 
 		catch (OfficeApplicationException exception) {
 			System.err.println("Error closing office application!");

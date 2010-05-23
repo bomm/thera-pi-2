@@ -29,7 +29,7 @@ public class EmailSendenExtern {
         Properties properties = new Properties();
         // Den Properties wird die ServerAdresse hinzugef�gt
         if(properties.get("mail.smtp.host") != null){
-          System.out.println("Bereits belegt mit "+properties.get("mail.smtp.host"));	
+          //System.out.println("Bereits belegt mit "+properties.get("mail.smtp.host"));	
         }
         properties.clear();
         properties.put("mail.smtp.host", smtpHost);
@@ -56,8 +56,8 @@ public class EmailSendenExtern {
         // MailAuthenticator eine Session erzeugt
         Session session = Session.getInstance(properties, auth);
         //Session session = Session.getDefaultInstance(properties, auth);
-        System.out.println("Properties == "+properties);
-        System.out.println("Auth = "+auth);
+        //System.out.println("Properties == "+properties);
+        //System.out.println("Auth = "+auth);
             // Eine neue Message erzeugen
             Message msg = new MimeMessage(session);
             // Hier werden die Absender- und Empf�ngeradressen gesetzt
@@ -82,7 +82,7 @@ public class EmailSendenExtern {
     	           	messageBodyPart.setDataHandler(new DataHandler(source));
     	           	messageBodyPart.setFileName(attachments.get(i)[1]);
     	           	multipart.addBodyPart(messageBodyPart);
-    	           	//System.out.println("In Email Files = "+attachments.get(i)[1]);
+    	           	////System.out.println("In Email Files = "+attachments.get(i)[1]);
             	}
             }
             msg.setContent(multipart);
@@ -98,10 +98,10 @@ public class EmailSendenExtern {
             Transport tran = null;
    			tran = session.getTransport("smtp");
    			/*
-   			System.out.println("Sender Domain ="+smtpHost);
-   			System.out.println("Sender Adress ="+senderAddress);
-   			System.out.println("Sender Password ="+password);
-   			System.out.println("Benutzername  ="+username);
+   			//System.out.println("Sender Domain ="+smtpHost);
+   			//System.out.println("Sender Adress ="+senderAddress);
+   			//System.out.println("Sender Password ="+password);
+   			//System.out.println("Benutzername  ="+username);
    			tran.connect(smtpHost, 25, senderAddress, password);
    			*/
    			
@@ -171,7 +171,7 @@ public class EmailSendenExtern {
         public MailAuthenticator(String user, String password) {
             this.user = user;
             this.password = password;
-            //System.out.println("In Authenticator user ="+this.user+"  Passwort = "+this.password);
+            ////System.out.println("In Authenticator user ="+this.user+"  Passwort = "+this.password);
         }
  
         /**

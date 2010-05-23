@@ -117,7 +117,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	
 	SysUtilKalenderanlegen(){
 		super(new GridLayout(1,1));
-		//System.out.println("Aufruf SysUtilKalenderanlagen");
+		////System.out.println("Aufruf SysUtilKalenderanlagen");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -419,7 +419,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					}else{
 						speed = 40;
 					}
-					//System.out.println("Dauer der Pause = "+speed+" Millisekunden");
+					////System.out.println("Dauer der Pause = "+speed+" Millisekunden");
 				}
 			}
 
@@ -463,7 +463,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				sret = "Update flexkc set ";
 				sret = sret + "T1='"+ftext.trim().toUpperCase()+"', N1='@FREI', TS1='"+tstart+"', TD1='"+tdauer+"', TE1='"+tend+"',";
 				sret = sret + "BELEGT='1' Where DATUM='"+sqldat+"'";
-				//System.out.println(sret);
+				////System.out.println(sret);
 				SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
 				snk.setzeStatement(new String(sret));
 				try {
@@ -567,7 +567,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 								(ArrayList)((Vector)vecMasken.get(i-1)).get(DatFunk.TagDerWoche(akttag)-1),
 								(i<10 ? "0"+new Integer(i).toString()+"BEHANDLER" :new Integer(i).toString()+"BEHANDLER"),
 								AZPlan.isSelected());
-				//System.out.println(stmt);
+				////System.out.println(stmt);
 				SqlInfo.sqlAusfuehren(stmt);
 				//SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
 				//snk.setzeStatement(new String(stmt));
@@ -589,7 +589,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
 		Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
 		Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
-		System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);		
+		//System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);		
 //			}
 //		}.start();
 
@@ -608,7 +608,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					  String [] split = {null,null};
 					  split = replace.split("\\\\");
 					  nummer =  split[0]+"\\\\"+split[1];
-					  //System.out.println("Backslashtermin = "+nummer);
+					  ////System.out.println("Backslashtermin = "+nummer);
 				  	
 				  }else{
 					  nummer = ((String)((Vector) list.get(1)).get(i));
@@ -646,7 +646,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					  String [] split = {null,null};
 					  split = replace.split("\\\\");
 					  nummer =  split[0]+"\\\\"+split[1];
-					  //System.out.println("Backslashtermin = "+nummer);
+					  ////System.out.println("Backslashtermin = "+nummer);
 				  	
 				  }else{
 					  nummer = ((String)((Vector) list.get(1)).get(i));
@@ -679,7 +679,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		URL url = new URL(urltext);
 		   
 		      URLConnection conn = url.openConnection();
-		      //System.out.println(conn.getContentEncoding());
+		      ////System.out.println(conn.getContentEncoding());
 		      
 
 		      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
@@ -764,13 +764,13 @@ class HoleMaxDatum extends Thread implements Runnable{
 						}
 					}
 			}catch(SQLException ev){
-					System.out.println("SQLException: " + ev.getMessage());
-					System.out.println("SQLState: " + ev.getSQLState());
-					System.out.println("VendorError: " + ev.getErrorCode());
+					//System.out.println("SQLException: " + ev.getMessage());
+					//System.out.println("SQLState: " + ev.getSQLState());
+					//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {
@@ -879,18 +879,18 @@ class HoleMasken{
 		if(maxblock > 0){
 		//datenZeichnen(aSpaltenDaten);
 		//TerminFenster.rechneMaske();
-		//System.out.println("Anzahl Tage = "+SysUtilKalenderanlegen.aMaskenDaten.size());
-		//System.out.println("Inhalt = "+SysUtilKalenderanlegen.aMaskenDaten);
+		////System.out.println("Anzahl Tage = "+SysUtilKalenderanlegen.aMaskenDaten.size());
+		////System.out.println("Inhalt = "+SysUtilKalenderanlegen.aMaskenDaten);
 		}
 		} catch(SQLException ex){
-			System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-			System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-			System.out.println("ErrorCode: " + ex.getErrorCode ());
-			System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+			//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+			//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+			//System.out.println("ErrorCode: " + ex.getErrorCode ());
+			//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 		}
 
 } catch(SQLException ex) {
-	System.out.println("von stmt -SQLState: " + ex.getSQLState());
+	//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 	}
 	finally {
 		if (rs != null) {
@@ -938,14 +938,14 @@ class TesteKalender{
 				}
 			}
 		} catch(SQLException ex){
-			System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-			System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-			System.out.println("ErrorCode: " + ex.getErrorCode ());
-			System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+			//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
+			//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
+			//System.out.println("ErrorCode: " + ex.getErrorCode ());
+			//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 		}
 
 	} catch(SQLException ex) {
-		System.out.println("von stmt -SQLState: " + ex.getSQLState());
+		//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 	}
 	finally {
 		if (rs != null) {
@@ -1011,13 +1011,13 @@ class SchreibeNeuenKalender extends Thread implements Runnable{
 					geklappt =  stmt.execute(this.statement);
 					
 			}catch(SQLException ev){
-					System.out.println("SQLException: " + ev.getMessage());
-					System.out.println("SQLState: " + ev.getSQLState());
-					System.out.println("VendorError: " + ev.getErrorCode());
+					//System.out.println("SQLException: " + ev.getMessage());
+					//System.out.println("SQLState: " + ev.getSQLState());
+					//System.out.println("VendorError: " + ev.getErrorCode());
 			}	
 
 		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			//System.out.println("von stmt -SQLState: " + ex.getSQLState());
 		}
 
 		finally {

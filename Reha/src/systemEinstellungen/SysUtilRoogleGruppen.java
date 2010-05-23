@@ -88,7 +88,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 		
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
-				System.out.println("Aufruf der Seite RoogleGruppen definieren");
+				//System.out.println("Aufruf der Seite RoogleGruppen definieren");
 				jscroll.setViewportView(getRoogleGruppenLayout());
 				jscroll.validate();
 				add(jscroll);
@@ -217,7 +217,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			/*******************************/
 			xbuilder.add(new JScrollPane(Source), xcc.xywh(1, 9, 3, 5));
 			xbuilder.add(new JScrollPane(RGmembers), xcc.xywh(7, 9, 3, 5));
-			//System.out.println("Aufruf der Seite RoogleGruppen definieren");
+			////System.out.println("Aufruf der Seite RoogleGruppen definieren");
 			kollegenEntfernen();
 			xbuilder.getPanel().validate();
 				}
@@ -276,7 +276,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 					int x = vect.indexOf(glm.getDataVector().get(i));
 
 					if(x>=0){
-						//System.out.println("index = "+x+" entferne Kollege "+((Vector)vmitglieder.get(i)).get(0));
+						////System.out.println("index = "+x+" entferne Kollege "+((Vector)vmitglieder.get(i)).get(0));
 						vkollegen.removeElement(glm.getDataVector().get(i));
 						//klm.removeRow(x);
 					}
@@ -286,7 +286,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			klm.setDataVector((Vector) vkollegen.clone(), getColVector(kcolumn));
 			//Source.setSortOrder(0,SortOrder.ASCENDING);
 			Source.validate();
-			//System.out.println("nach entfernen"+klm.getDataVector().size());
+			////System.out.println("nach entfernen"+klm.getDataVector().size());
 			
 		}
 		
@@ -326,7 +326,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			
 			String inigruppe = "",inimitglied="",inianzahl="",iniakt="";
 			inianzahl = (!lneu ? new Integer(jcomboWahl.getItemCount()).toString() : new Integer(jcomboWahl.getItemCount()+1).toString() );
-			//System.out.println(inianzahl);
+			////System.out.println(inianzahl);
 			iniakt = (lneu ? 
 						new Integer( new Integer(inianzahl)).toString() :  
 						new Integer( jcomboWahl.getSelectedIndex()+1).toString() );
@@ -437,7 +437,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				vec.add(new String(ParameterLaden.getMatchcode(von)));				
  				vkollegen.add(vec.clone());
  			}
-			//System.out.println("Anzahl Kollegen nach f�llen = "+vkollegen.size());
+			////System.out.println("Anzahl Kollegen nach f�llen = "+vkollegen.size());
 		}
 		private void aendernHandeln(){
 			if(RGmembers.getRowCount()>0){
@@ -502,15 +502,15 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 					String st = (String)RGmembers.getValueAt(select[i],0);
 					klm.addRow(macheVektor(st));
 					vec.add(st);
-					//System.out.println("Selektiert = "+st);					
+					////System.out.println("Selektiert = "+st);					
 				}
 				
 				for(i=0;i<lang;i++){
 					j = ((Vector)glm.getDataVector()).size();
-					System.out.println("Anzahl = "+j);
+					//System.out.println("Anzahl = "+j);
 					for(count= 0;count<j;count++){
 						if(((Vector)glm.getDataVector().get(count)).get(0).equals(vec.get(i))){
-							//System.out.println("Treffer an "+count+ " = "+vec.get(i));
+							////System.out.println("Treffer an "+count+ " = "+vec.get(i));
 							glm.removeRow(count);
 							break;
 						}

@@ -134,7 +134,7 @@ public class SystemInit extends JXPanel implements TreeSelectionListener{
 /*********************************************************/
 	
 public void FensterSchliessen(String welches){
-	//System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
+	////System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());
 	//webBrowser.dispose();
 	//super.dispose();
 	//this.dispose();
@@ -281,7 +281,7 @@ private JScrollPane getParameterListe(){
 }
 /*******************************************************************/
 private void auswertenSysUtil(String util){
-	System.out.println("SysUtil = "+util);
+	//System.out.println("SysUtil = "+util);
 	for(int i = 0; i<1; i++){
 		if(jxInhaltRechts!=null){
 			cursorWait(true);
@@ -658,7 +658,7 @@ private void cursorWait(boolean ein){
 @Override
 public void valueChanged(TreeSelectionEvent e) {
 	// TODO Auto-generated method stub
-	System.out.println(e);
+	//System.out.println(e);
 	TreePath path = e.getNewLeadSelectionPath(); 
     String[] split = path.toString().split(",");
     auswertenSysUtil(split[split.length-1].replaceAll("\\]","").trim());

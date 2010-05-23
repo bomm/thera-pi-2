@@ -49,7 +49,7 @@ public class TermineErfassen implements Runnable {
 			if((ret = testeVerordnung())==0){
 				boolean termok = testeTermine(); 
 				if(!termok){
-					//System.out.println("Rezept steht an diesem Tag nicht im Kalender");
+					////System.out.println("Rezept steht an diesem Tag nicht im Kalender");
 				}
 				if(erstfund >= 0){
 					scheibeTermin();
@@ -61,7 +61,7 @@ public class TermineErfassen implements Runnable {
 					}
 					
 				}else{
-					System.out.println("Rezept steht an diesem Tag nicht im Kalender");
+					//System.out.println("Rezept steht an diesem Tag nicht im Kalender");
 					setTerminSuccess(false);
 					ergebnis = false;
 				}
@@ -72,14 +72,14 @@ public class TermineErfassen implements Runnable {
 				if(ret > 0){
 					setTerminSuccess(false);
 					ergebnis = false;
-					System.out.println("hier die Fehlerbehandlung einbauen---->Fehler = "+ret);
+					//System.out.println("hier die Fehlerbehandlung einbauen---->Fehler = "+ret);
 					switch (ret){
 					case 1:
-						System.out.println("Das Rezept nicht in Historie und nicht in Rez-Stamm");
+						//System.out.println("Das Rezept nicht in Historie und nicht in Rez-Stamm");
 					case 2:
-						System.out.println("Das Rezept wurde bereits abgerechnet");
+						//System.out.println("Das Rezept wurde bereits abgerechnet");
 					case 3:
-						System.out.println("Das Rezept wurde an diesen Tag bereits erfa�t");
+						//System.out.println("Das Rezept wurde an diesen Tag bereits erfa�t");
 					}
 				}
 			}
@@ -88,7 +88,7 @@ public class TermineErfassen implements Runnable {
 			ergebnis = false;
 
 		}
-		System.out.println("Terminerfassen beendet");
+		//System.out.println("Terminerfassen beendet");
 		alleterm = null;
 		return;
 	}
@@ -107,10 +107,10 @@ public class TermineErfassen implements Runnable {
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza","termine"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 			if(vec.size()==0){
-				//System.out.println("Rezept ist weder im aktuellen Rezeptstamm noch in der Historie");
+				////System.out.println("Rezept ist weder im aktuellen Rezeptstamm noch in der Historie");
 				return 1;
 			}else{
-				//System.out.println("Das Rezept wurde bereits abgerechnet");
+				////System.out.println("Das Rezept wurde bereits abgerechnet");
 				return 2;
 			}
 						
@@ -150,7 +150,7 @@ public class TermineErfassen implements Runnable {
 				this.kollege = new String((String)obj[1]);
 				string = "Rezeptnummer wurde gefunden bei Kollege "+(String)obj[1]+" an Block "+(Integer)obj[2]+" Rezeptnummer:"+(String)obj[3];
 				String stmt = " sperre = '"+(String)obj[1]+heute+"'";
-				//System.out.println(stmt);
+				////System.out.println(stmt);
 				int gesperrt = SqlInfo.zaehleSaetze("flexlock", stmt);
 				//if( gesperrt == 0 ){
 					String sblock  = Integer.toString(  (((Integer)obj[2]/5)+1)  );
@@ -159,7 +159,7 @@ public class TermineErfassen implements Runnable {
 						"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 						"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
 					new ExUndHop().setzeStatement(new String(stmt));
-					System.out.println("Ex und Hopp Statement =\n"+stmt+"\n************");
+					//System.out.println("Ex und Hopp Statement =\n"+stmt+"\n************");
 					*/
 					SqlInfo.aktualisiereSatz("flexkc",
 							"T"+sblock+" = '"+copyright+(String)obj[4]+"'",
@@ -185,10 +185,10 @@ public class TermineErfassen implements Runnable {
 									((ArrayList<Vector<String>>)((Vector)Reha.thisClass.terminpanel.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
 									Reha.thisClass.terminpanel.ViewPanel.repaint();
 								}else{
-									System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
+									//System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
 								}
 							}else{
-								System.out.println("Ansicht im TK = "+ansicht);
+								//System.out.println("Ansicht im TK = "+ansicht);
 							}
 						}
 					}catch(Exception ex){
@@ -213,7 +213,7 @@ public class TermineErfassen implements Runnable {
 	private Object[] untersucheTermine() throws Exception{
 		
 		int spalten = alleterm.size();
-		//System.out.println("eingelesene Spalten = "+spalten);
+		////System.out.println("eingelesene Spalten = "+spalten);
 		int i,y;
 		boolean gefunden = false;
 		
@@ -251,7 +251,7 @@ public class TermineErfassen implements Runnable {
 		int spalten = alleterm.size();
 		int mehrstellen = 0;
 		boolean termOk = false;
-		//System.out.println("eingelesene Spalten = "+spalten);
+		////System.out.println("eingelesene Spalten = "+spalten);
 		int i,y;
 		Object[] obj = {Boolean.valueOf(false),null,null,null,null,null,null,null};
 		for(i=(erstfund+1);i<spalten;i++){
@@ -310,10 +310,10 @@ public class TermineErfassen implements Runnable {
 										int iblock = new Integer(sblock)-1;
 										((ArrayList<Vector<String>>)((Vector)Reha.thisClass.terminpanel.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
 									}else{
-										System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
+										//System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
 									}
 								}else{
-									System.out.println("Ansicht im TK = "+ansicht);
+									//System.out.println("Ansicht im TK = "+ansicht);
 								}
 							}
 						}catch(Exception ex){
@@ -326,19 +326,19 @@ public class TermineErfassen implements Runnable {
 		if(termOk){
 			Reha.thisClass.terminpanel.ViewPanel.repaint();			
 		}
-		//System.out.println("Anzahl zus�tzlicher Fundstellen = "+mehrstellen);
+		////System.out.println("Anzahl zus�tzlicher Fundstellen = "+mehrstellen);
 	}
 	
 	
 	
 	/********************/
 	private void scheibeTermin() throws Exception{
-		//System.out.println("Eintritt in schreibeTermin");
+		////System.out.println("Eintritt in schreibeTermin");
 		int ikoll = (kollege.substring(0,1).equals("0") ?
 					new Integer(kollege.substring(1,2)) :
 					new Integer(kollege.substring(0,2)) 	
 					);
-		//System.out.println("Kollegen-Nummer = "+ikoll);
+		////System.out.println("Kollegen-Nummer = "+ikoll);
 		this.kollege = ParameterLaden.getKollegenUeberDBZeile(ikoll);
 		//String termkollege = 
 		sbuftermine = new StringBuffer();
@@ -347,8 +347,8 @@ public class TermineErfassen implements Runnable {
 		if(! ((String)vec.get(0)).trim().equals("")){
 			
 			sbuftermine.append((String)vec.get(0));
-			System.out.println("****Beginn Termine bisher****\n"+sbuftermine.toString()+"****Ende Termine****");
-			//System.out.println("termine bisher = "+sbuftermine.toString());
+			//System.out.println("****Beginn Termine bisher****\n"+sbuftermine.toString()+"****Ende Termine****");
+			////System.out.println("termine bisher = "+sbuftermine.toString());
 			//hier die Einzelnen Termin holen
 			vec2 = RezTools.splitteTermine(sbuftermine.toString());
 			int anzahl = vec2.size();
@@ -374,11 +374,11 @@ public class TermineErfassen implements Runnable {
 				}
 				terminneu = macheNeuTermin("zu viele Behandlungen");
 			}else{
-				//System.out.println("Es sind noch Termine Frei");
+				////System.out.println("Es sind noch Termine Frei");
 				terminneu = macheNeuTermin("");			}
 				
 		}else{
-			//System.out.println("der Termin ist der erste Termin.");
+			////System.out.println("der Termin ist der erste Termin.");
 			terminneu = macheNeuTermin("");			
 		}
 		sbuftermine.append(terminneu);

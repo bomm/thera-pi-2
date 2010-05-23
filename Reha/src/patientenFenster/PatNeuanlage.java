@@ -349,7 +349,7 @@ private KVKWrapper kvw;
 	
 	
 	public void geheAufFeld(String feld){
-		//System.out.println("Focus setzen auf "+feld);
+		////System.out.println("Focus setzen auf "+feld);
 		final String xfeld = feld;
 		new SwingWorker<Void,Void>(){
 
@@ -428,7 +428,7 @@ private KVKWrapper kvw;
 								name.contains("er_dat")){
 							String datum = new String((String)felder.get(ffelder[i]));
 							if(datum.trim().length() > 0){
-								//System.out.println("Datum w�re gewesen->"+datum+" L�nge->"+datum.trim().length());
+								////System.out.println("Datum w�re gewesen->"+datum+" L�nge->"+datum.trim().length());
 								jtf[fedits[i]].setText(DatFunk.sDatInDeutsch(datum) );								
 							}
 						}else{
@@ -454,11 +454,11 @@ private KVKWrapper kvw;
 				if(!jtf[35].getText().trim().equals("")){
 					jcheck[10].setEnabled(true);
 				}
-				System.out.println("Gehe auf Feld 1 -> "+getInstance().feldname);
+				//System.out.println("Gehe auf Feld 1 -> "+getInstance().feldname);
 				if(! "".equals(getInstance().feldname)){
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run(){
-								System.out.println("Gehe auf Feld 2 -> "+getInstance().feldname);
+								//System.out.println("Gehe auf Feld 2 -> "+getInstance().feldname);
 								feldergefuellt = true;
 								geheAufFeld(getInstance().feldname);
 					 	   }
@@ -488,7 +488,12 @@ private KVKWrapper kvw;
 		//String wert = "";
 		String spatintern;
 		StringBuffer buf = new StringBuffer();
-		buf.append("update pat5 set ");
+		if(this.inNeu){
+			buf.append("insert into pat5 set "); 
+		}else{
+			buf.append("update pat5 set ");			
+		}
+
 		for(int i = 1; i < anzahlf;i++){
 			name = jtf[fedits[i]].getName().trim();
 			if(name.contains("geboren") || 
@@ -502,7 +507,7 @@ private KVKWrapper kvw;
 					if(name.equals("bef_dat")){ //Wenn befreit bis testen ob er wert gr��er als heute
 						buf.append("befreit ='F', ");
 						freibeimspeichern = false;
-						System.out.println("Patient ist -> nicht <- befreit!");
+						//System.out.println("Patient ist -> nicht <- befreit!");
 					}
 				}else{
 					try{
@@ -511,7 +516,7 @@ private KVKWrapper kvw;
 							if( DatFunk.DatumsWert(jtf[fedits[i]].getText()) >= DatFunk.DatumsWert(DatFunk.sHeute()) ){
 								buf.append("befreit ='T', ");
 								freibeimspeichern = true;
-								System.out.println("Patient ist befreit!");
+								//System.out.println("Patient ist befreit!");
 							}else{
 								buf.append("befreit ='F', ");
 								freibeimspeichern = false;								
@@ -534,7 +539,7 @@ private KVKWrapper kvw;
 
 		if(!this.inNeu){
 			globPat_intern = Reha.thisClass.patpanel.aktPatID;
-			buf.append(" where pat_intern='"+globPat_intern+"'");
+			buf.append(" where pat_intern='"+globPat_intern+"' LIMIT 1");
 			spatintern = Reha.thisClass.patpanel.aktPatID;
 			// Wenn Kasse veränderr wurde....
 			if(!jtf[34].getText().trim().equals(kassenid)){
@@ -545,7 +550,7 @@ private KVKWrapper kvw;
 			boolean doof = false;
 			if(! (freizumstart == freibeimspeichern)){
 				if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) ){
-					System.out.println("Zuzahlregel = "+zzregel+" Kassen-ID = "+jtf[34].getText().trim());
+					//System.out.println("Zuzahlregel = "+zzregel+" Kassen-ID = "+jtf[34].getText().trim());
 				//if ( ((zzregel = ZuzahlTools.getZuzahlRegel(jtf[34].getText().trim())) <= 0) && freibeimspeichern){
 					JOptionPane.showMessageDialog(null,"Sie haben einen Kostenträger gwählt der keine Zuzahlung verlangt und\n"+
 							"jetzt wollen Sie im Feld Zuzahlungsbefreiung rummurksen???????\n\nNa ja.....");
@@ -569,17 +574,21 @@ private KVKWrapper kvw;
 						}
 					}
 				}else{
-					//System.out.println("Doof = true and zzregel = "+zzregel);					
+					////System.out.println("Doof = true and zzregel = "+zzregel);					
 				}
 
 			}
 		}else{
 			// Angelegt von aufgenommen werden
-			int neuid = SqlInfo.holeId("pat5", "n_name");
-			patintern = neuid+Reha.thisClass.patiddiff;
-			globPat_intern = new Integer(patintern).toString();
+			//int neuid = SqlInfo.holeId("pat5", "n_name");
+			patintern = SqlInfo.erzeugeNummer("pat"); //neuid+Reha.thisClass.patiddiff;
+			if(patintern < 0){
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug einer neuen Patientennummer\nNeustart des Programmes vermutlich erforderlich");
+				return;
+			}
+			globPat_intern = Integer.toString(patintern); //new Integer(patintern).toString();
 			buf.append(",anl_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
-			buf.append(",pat_intern='"+new Integer(patintern).toString() +"' where id='"+new Integer(neuid).toString()+"'");
+			buf.append(",pat_intern='"+globPat_intern +"'"); // where id='"+new Integer(neuid).toString()+"'");
 			spatintern = Integer.toString(patintern);
 		}
 		SqlInfo.sqlAusfuehren(buf.toString());
@@ -602,7 +611,7 @@ private KVKWrapper kvw;
 			public void run(){
 				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
-				System.out.println("Es wirde die ArztListe gespeichert.....");
+				//System.out.println("Es wirde die ArztListe gespeichert.....");
 				finalise();
 				((JXDialog)getInstance().getParent().getParent().getParent().getParent().getParent()).dispose();
 				String s1 = "#PATSUCHEN";
@@ -713,8 +722,8 @@ private KVKWrapper kvw;
 		jtf[12].setName("kasse");
 		jtf[12].addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
-				//System.out.println("code = "+arg0.getKeyCode());
-				//System.out.println("char = "+arg0.getKeyChar());
+				////System.out.println("code = "+arg0.getKeyCode());
+				////System.out.println("char = "+arg0.getKeyChar());
 				if(arg0.getKeyChar()=='?'){
 					String suchkrit = jtf[12].getText().replaceAll("\\?", "");
 					kassenAuswahl(new String[] {suchkrit,jtf[34].getText().trim(),jtf[34].getText()});
@@ -1382,14 +1391,14 @@ private KVKWrapper kvw;
 		if(this.inNeu){
 			return;
 		}
-		System.out.println("in doArztListe");
+		//System.out.println("in doArztListe");
 		String aerzte = Reha.thisClass.patpanel.patDaten.get(63);
 		String[] einzelarzt = null;
 		String[] arztdaten = null;
 		Vector arztvec = null;
 		if(!aerzte.trim().equals("")){
 			einzelarzt = aerzte.split("\n");
-			System.out.println("Anzahl Ärzte = "+einzelarzt.length);
+			//System.out.println("Anzahl Ärzte = "+einzelarzt.length);
 			for(int i = 0; i < einzelarzt.length;i++){
 				arztdaten = einzelarzt[i].split("@");
 				//docmod.setColumnIdentifiers(new String[] {"LANR","Nachname","Strasse","Ort","BSNR",""});
@@ -1409,7 +1418,7 @@ private KVKWrapper kvw;
 		if(SystemConfig.sReaderAktiv.equals("0")){
 			return;
 		}
-		//System.out.println("Aufruf der KVK");
+		////System.out.println("Aufruf der KVK");
 		KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
 		int ret = kvw.KVK_Einlesen();
 		if(ret==0){
@@ -1454,7 +1463,7 @@ private KVKWrapper kvw;
 		}else if(com.equals("u18ignore")){
 			
 		}else if(com.equals("vorjahrfrei")){
-			System.out.println("in checkBox Vorjahrfrei");
+			//System.out.println("in checkBox Vorjahrfrei");
 			if(jcheck[10].isSelected()){
 				jtf[35].setText("");
 		    }else{
@@ -1476,7 +1485,7 @@ private KVKWrapper kvw;
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Neuanlage Pressed "+arg0.getKeyCode());
+		////System.out.println("Neuanlage Pressed "+arg0.getKeyCode());
 		if(arg0.getKeyCode()== 10 || arg0.getKeyCode()==0){
 			arg0.consume();
 			if(((JComponent)arg0.getSource()).getName().equals("einlesen")){
@@ -1505,14 +1514,14 @@ private KVKWrapper kvw;
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Neuanlage Released "+arg0);		
+		////System.out.println("Neuanlage Released "+arg0);		
 		if(arg0.getKeyCode()== 10 || arg0.getKeyCode()==0)
 			arg0.consume();
 	}
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("Neuanlage Typed "+arg0);		
+		////System.out.println("Neuanlage Typed "+arg0);		
 		if(arg0.getKeyCode()== 10 || arg0.getKeyCode()==0)
 			arg0.consume();
 	}
@@ -1538,7 +1547,7 @@ private KVKWrapper kvw;
 		if( ((JComponent)arg0.getSource()).getName() != null){
 			if(((JComponent)arg0.getSource()).getName().equals("arzt")){
 				if(testObDialog(jtf[17].getText())){
-					System.out.println("Arzt-Dialog erforderlich");
+					//System.out.println("Arzt-Dialog erforderlich");
 					String[] suchenach = null;
 					if(jtf[17].getText().trim().length() > 1){
 						suchenach = new String[] {jtf[17].getText().trim().substring(1),jtf[33].getText().trim()}; 
@@ -1549,7 +1558,7 @@ private KVKWrapper kvw;
 				}
 			}else if(((JComponent)arg0.getSource()).getName().equals("kasse")){
 				if(testObDialog(jtf[12].getText())){
-					System.out.println("Kassen-Dialog erforderlich");
+					//System.out.println("Kassen-Dialog erforderlich");
 					String[] suchenach = null;
 					if(jtf[12].getText().trim().length() > 1){
 						suchenach = new String[] {jtf[12].getText().trim().substring(1),jtf[34].getText().trim()}; 
@@ -1565,7 +1574,7 @@ private KVKWrapper kvw;
 	@Override
 	public void focusLost(FocusEvent arg0) {
 		if( ((JComponent)arg0.getSource()).getName() != null){
-			System.out.println(((JComponent)arg0.getSource()).getName());
+			//System.out.println(((JComponent)arg0.getSource()).getName());
 		}
 
 		// TODO Auto-generated method stub
@@ -1582,7 +1591,7 @@ private KVKWrapper kvw;
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-				System.out.println("Beginne ArztOrganisation mit Arzt ID ="+jtf[33].getText());
+				//System.out.println("Beginne ArztOrganisation mit Arzt ID ="+jtf[33].getText());
 				aerzteOrganisieren(jtf[33].getText(),inNeu,docmod,doclist,true);
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -1637,7 +1646,7 @@ private KVKWrapper kvw;
 				@Override
 				protected Void doInBackground() throws Exception {
 					try{
-					System.out.println("Beginne ArztOrganisation mit Arzt ID ="+xtf.getText());
+					//System.out.println("Beginne ArztOrganisation mit Arzt ID ="+xtf.getText());
 					aerzteOrganisieren(xtf.getText(),inNeu,docmod,doclist,false);
 					}catch(Exception ex){
 						ex.printStackTrace();
@@ -1703,7 +1712,7 @@ private KVKWrapper kvw;
     			
     		}
  
-    		System.out.println("Es wurde Formular "+iformular+" gew�hlt");
+    		//System.out.println("Es wurde Formular "+iformular+" gew�hlt");
         	
 		}else{
 			String mes = "Wenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
@@ -1726,16 +1735,16 @@ private KVKWrapper kvw;
 		if(mod != null){
 			if(neu){
 				if(! inTableEnthalten(aid,mod)){
-					System.out.println("Neuanlage Pat. Arzt wird in Liste übernommen");
+					//System.out.println("Neuanlage Pat. Arzt wird in Liste übernommen");
 					mod.setRowCount(0);
 					arztInTableAufnehmen(aid,mod);
 					tbl.validate();
 				}else{
-					System.out.println("Neuanlage Pat. Arzt bereits in der Liste enthalten");
+					//System.out.println("Neuanlage Pat. Arzt bereits in der Liste enthalten");
 				}
 			}else{ // in Patient �ndern
 				if(! inTableEnthalten(aid,mod)){
-					System.out.println("Ändern Pat. Arzt wird in Liste übernommen");
+					//System.out.println("Ändern Pat. Arzt wird in Liste übernommen");
 					if(bloednachfragen){
 						int frage = JOptionPane.showConfirmDialog(null,"Den gewählten Arzt in die Arztliste dieses Patienten aufnehmen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 						if(frage == JOptionPane.YES_OPTION){
@@ -1747,7 +1756,7 @@ private KVKWrapper kvw;
 						tbl.validate();
 					}
 				}else{
-					System.out.println("Ändern Pat. Arzt bereits in der Liste enthalten");
+					//System.out.println("Ändern Pat. Arzt bereits in der Liste enthalten");
 				}
 			}
 		}else{ // funktion wurde �ber Rezept aufgerufen
@@ -1937,11 +1946,11 @@ private KVKWrapper kvw;
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 					finalise();
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-					//System.out.println("****************Patient Neu/ändern -> Listener entfernt**************");				
+					////System.out.println("****************Patient Neu/ändern -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In PatNeuanlage" +evt);
+			//System.out.println("In PatNeuanlage" +evt);
 		}
 		
 	}
@@ -1960,6 +1969,6 @@ class ArztListeSpeichern{
 		SqlInfo.aktualisiereSaetze("pat5", "aerzte='"+aliste+"'", "pat_intern='"+xpatintern+"'");
 		new ExUndHop().setzeStatement(cmd);
 		Reha.thisClass.patpanel.patDaten.set(63,aliste);
-		System.out.println(cmd);
+		//System.out.println(cmd);
 	}
 }

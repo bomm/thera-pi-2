@@ -29,7 +29,7 @@ public class JAbrechnungInternal extends JRehaInternal implements FocusListener,
 		}
 		@Override
 		public void internalFrameClosed(InternalFrameEvent arg0) {
-			System.out.println("JInternalFrame-Kassenabrechnung aufräumen");
+			//System.out.println("JInternalFrame-Kassenabrechnung aufräumen");
 			Reha.thisClass.aktiviereNaechsten(this.desktop);
 			Reha.thisClass.desktops[this.desktop].remove(this);
 			rEvent.removeRehaEventListener(this);
@@ -52,7 +52,7 @@ public class JAbrechnungInternal extends JRehaInternal implements FocusListener,
 		@Override
 		public void rehaEventOccurred(RehaEvent evt) {
 			if(evt.getRehaEvent().equals("REHAINTERNAL")){
-				//System.out.println("es ist ein Reha-Internal-Event");
+				////System.out.println("es ist ein Reha-Internal-Event");
 			}
 			if(evt.getDetails()[0].equals(this.getName())){
 				if(evt.getDetails()[1].equals("#ICONIFIED")){

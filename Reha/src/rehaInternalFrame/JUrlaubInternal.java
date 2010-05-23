@@ -30,7 +30,7 @@ public class JUrlaubInternal extends JRehaInternal implements RehaEventListener{
 	}
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		System.out.println("Internal-Barkasse in schliessen***************");
+		//System.out.println("Internal-Barkasse in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
@@ -56,7 +56,7 @@ public class JUrlaubInternal extends JRehaInternal implements RehaEventListener{
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run()
 		 	   {
-		 		System.out.println("LöscheFenster "+name);   
+		 		//System.out.println("LöscheFenster "+name);   
 				AktiveFenster.loescheFenster(name);
 				Reha.thisClass.progLoader.loescheUrlaub();
 		 	   }
@@ -72,7 +72,7 @@ public class JUrlaubInternal extends JRehaInternal implements RehaEventListener{
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
-			System.out.println("es ist ein Reha-Internal-Event");
+			//System.out.println("es ist ein Reha-Internal-Event");
 		}
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){

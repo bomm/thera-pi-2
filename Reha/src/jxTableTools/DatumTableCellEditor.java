@@ -101,7 +101,7 @@ public class DatumTableCellEditor extends DefaultCellEditor{
 	            return new Integer(((Number)o).intValue());
 	        } else {
 	            if (DEBUG) {
-	                System.out.println("getCellEditorValue: o isn't a Number");
+	                //System.out.println("getCellEditorValue: o isn't a Number");
 	            }
 	            try {
 	                return integerFormat.parseObject(o.toString());

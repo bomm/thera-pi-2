@@ -61,7 +61,7 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 		
 		
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilKasse");
+		//System.out.println("Aufruf SysUtilKasse");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));

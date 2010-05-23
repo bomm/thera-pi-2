@@ -48,8 +48,8 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		this.removeAll();
-		//System.out.println("L�sche Termin Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		//System.out.println("Termin-Internal geschlossen***************");
+		////System.out.println("L�sche Termin Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
+		////System.out.println("Termin-Internal geschlossen***************");
 
 		rEvent.removeRehaEventListener((RehaEventListener) this);
 		if(Reha.thisClass.terminpanel != null){
@@ -78,7 +78,7 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 		 			Runtime r = Runtime.getRuntime();
 		 		    r.gc();
 		 		    long freeMem = r.freeMemory();
-		 		    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
+		 		    ////System.out.println("Freier Speicher nach  gc():    " + freeMem);
 		 	   }
 		});
 		*/
@@ -87,7 +87,7 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		if(evt.getRehaEvent().equals("REHAINTERNAL")){
-			//System.out.println("es ist ein Reha-Internal-Event");
+			////System.out.println("es ist ein Reha-Internal-Event");
 		}
 		if(evt.getDetails()[0].equals(this.getName())){
 			if(evt.getDetails()[1].equals("#ICONIFIED")){

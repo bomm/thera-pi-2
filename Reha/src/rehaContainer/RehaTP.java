@@ -56,7 +56,7 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 			public void focusGained(java.awt.event.FocusEvent e) {    
 				Reha.thisClass.shiftLabel.setText("Dialog -Focus da");
 				if(thisClass.pinPanel != null){
-					//System.out.println("************RehaTP focus bekommen");
+					////System.out.println("************RehaTP focus bekommen");
 					thisClass.pinPanel.SetzeAktivButton(true);
 //					thisClass.getContentContainer().requestFocusInWindow();
 					RehaTPEvent tPEvent = new RehaTPEvent(this);   
@@ -69,7 +69,7 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 			public void focusLost(java.awt.event.FocusEvent e) {    
 				Reha.thisClass.shiftLabel.setText("Dialog -Focus weg");
 				if(thisClass.pinPanel != null){
-					//System.out.println("************RehaTP focus verloren");					
+					////System.out.println("************RehaTP focus verloren");					
 					thisClass.pinPanel.SetzeAktivButton(false);
 				}
 			}   
@@ -128,7 +128,7 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		//System.out.println("Maus geklickt" +arg0.getComponent());
+		////System.out.println("Maus geklickt" +arg0.getComponent());
 		thisClass.pinPanel.SetzeAktivButton(true);
 //		thisClass.getContentContainer().requestFocusInWindow();
 		RehaTPEvent tPEvent = new RehaTPEvent(this);   

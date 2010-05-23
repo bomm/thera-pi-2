@@ -107,7 +107,7 @@ public class OOTools{
 	public static void starteStandardFormular(String url,String drucker){
 		IDocumentService documentService = null;;
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		System.out.println("Starte Datei -> "+url);
+		//System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
@@ -171,9 +171,9 @@ public class OOTools{
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-				System.out.println(placeholderDisplayText);
+				//System.out.println(placeholderDisplayText);
 			}catch(com.sun.star.uno.RuntimeException ex){
-				System.out.println("************catch()*******************");
+				//System.out.println("************catch()*******************");
 				ex.printStackTrace();
 			}
 	
@@ -233,11 +233,11 @@ public class OOTools{
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  //System.out.println("Gefunden ->"+((String)entry.getValue()));
+		    	  ////System.out.println("Gefunden ->"+((String)entry.getValue()));
 		    	  try{
 		    		  
 		    	  }catch(com.sun.star.uno.RuntimeException ex){
-		    		  System.out.println("Fehler bei AdrRDaten");
+		    		  //System.out.println("Fehler bei AdrRDaten");
 		    	  }
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("");
@@ -329,7 +329,7 @@ public class OOTools{
 		//String drucker = "";
 		IDocumentService documentService = null;
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		//System.out.println("Starte Datei -> "+url);
+		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
@@ -362,7 +362,7 @@ public class OOTools{
 			    	  try{
 			    		  
 			    	  }catch(com.sun.star.uno.RuntimeException ex){
-			    		  System.out.println("Fehler bei "+placeholderDisplayText);
+			    		  //System.out.println("Fehler bei "+placeholderDisplayText);
 			    	  }
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 
@@ -380,7 +380,7 @@ public class OOTools{
 
 	public static void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
-		//System.out.println("Starte Datei -> "+url);
+		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
@@ -415,8 +415,8 @@ public class OOTools{
 			//boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 
-			//System.out.println(placeholderDisplayText);	
-			//System.out.println("Oiginal-Placeholder-Text = "+placeholders[i].getDisplayText());
+			////System.out.println(placeholderDisplayText);	
+			////System.out.println("Oiginal-Placeholder-Text = "+placeholders[i].getDisplayText());
 		    /*****************/
 			
 			Set entries = SystemConfig.hmAdrBDaten.entrySet();
@@ -425,10 +425,10 @@ public class OOTools{
 		      Map.Entry entry = (Map.Entry) it.next();
 		      String key = entry.getKey().toString().toLowerCase();
 		      if( (key.contains("<bblock") || key.contains("<btitel")) && key.equals(placeholderDisplayText) ){
-		    	  //System.out.println("enth�lt block oder titel");
+		    	  ////System.out.println("enth�lt block oder titel");
 		    	  int bblock;
 		    	  if(key.contains("<bblock")){
-			    	  //System.out.println("enth�lt block");
+			    	  ////System.out.println("enth�lt block");
 		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
@@ -441,7 +441,7 @@ public class OOTools{
 		    		  }
 		    	  }
 		    	  if(key.contains("<btitel")){
-			    	  //System.out.println("enth�lt titel");
+			    	  ////System.out.println("enth�lt titel");
 		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
@@ -460,7 +460,7 @@ public class OOTools{
 			    	  break;
 			      }
 		      }else{
-		    	  //System.out.println("in keinem von Beidem "+entry.getKey()+" - "+key+" - "+placeholderDisplayText);
+		    	  ////System.out.println("in keinem von Beidem "+entry.getKey()+" - "+key+" - "+placeholderDisplayText);
 		      }
 		    }
 		}
@@ -477,7 +477,7 @@ public class OOTools{
 			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
 			textDocument = (ITextDocument)document;
 			OOTools.inDenVordergrund(textDocument);
-			//System.out.println("In den Vordergrund");
+			////System.out.println("In den Vordergrund");
 			textDocument.getFrame().setFocus();
 		} 
 		catch (OfficeApplicationException exception) {
@@ -614,7 +614,7 @@ public class OOTools{
 		/*
 		com.sun.star.beans.Property[] props = xStyleProps.getPropertySetInfo().getProperties();
 		for (int i = 0; i < props.length; i++) {
-		System.out.println(props[i] .Name + " = "
+		//System.out.println(props[i] .Name + " = "
 		+ xStyleProps.getPropertyValue(props[i].Name));
 		}
 		//z.B. f�r A5
@@ -669,7 +669,7 @@ public class OOTools{
 	public static ITextDocument  starteGKVBericht(String url,String drucker){
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		IDocumentService documentService = null;;
-		System.out.println("Starte Datei -> "+url);
+		//System.out.println("Starte Datei -> "+url);
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
@@ -721,9 +721,9 @@ public class OOTools{
 			placeholders = textFieldService.getPlaceholderFields();
 			/*
 			for(int y = 0 ; y < placeholders.length;y++){
-				System.out.println(placeholders[y].getDisplayText());
+				//System.out.println(placeholders[y].getDisplayText());
 			}
-			System.out.println("************feddisch mit den Placeholders********************");
+			//System.out.println("************feddisch mit den Placeholders********************");
 			*/
 		} catch (TextException e) {
 			// TODO Auto-generated catch block
@@ -735,9 +735,9 @@ public class OOTools{
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-				//System.out.println(placeholderDisplayText);
+				////System.out.println(placeholderDisplayText);
 			}catch(com.sun.star.uno.RuntimeException ex){
-				System.out.println("************catch()*******************");
+				//System.out.println("************catch()*******************");
 				ex.printStackTrace();
 			}
 	
@@ -976,13 +976,13 @@ public class OOTools{
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
 		xPropSet.setPropertyValue( "CharColor", color );
 		/* Beispiel für Auflistung der Property-Namen
-		System.out.println("Start-CellPropertie*********************************");
+		//System.out.println("Start-CellPropertie*********************************");
 	      Property[] prop = xPropSet.getPropertySetInfo().getProperties();
 	      for(int i = 0; i < prop.length;i++){
-	    	  System.out.println(prop[i].Name);
-	    	  System.out.println(prop[i].Attributes);
+	    	  //System.out.println(prop[i].Name);
+	    	  //System.out.println(prop[i].Attributes);
 	      }
-		System.out.println("End-CellPropertie*********************************");
+		//System.out.println("End-CellPropertie*********************************");
 		*/
 	    
 	}
@@ -1012,7 +1012,7 @@ public class OOTools{
 	/*******************************************************/
 	public static void holeClipBoard() {
 
-		System.out.println("Connected to a running office ...");
+		//System.out.println("Connected to a running office ...");
         
 
 		try {
@@ -1039,16 +1039,16 @@ public class OOTools{
 
 		// print all available formats
 
-		System.out.println("Reading the clipboard...");
-		System.out.println("Available clipboard formats:");
+		//System.out.println("Reading the clipboard...");
+		//System.out.println("Available clipboard formats:");
 
 		DataFlavor aUniFlv = null;
 
 		for (int i=0;i<aDflvArr.length;i++)	{
-			System.out.println( "MimeType: " + 
-                aDflvArr[i].MimeType + 
-                " HumanPresentableName: " + 
-                aDflvArr[i].HumanPresentableName );    
+			//System.out.println( "MimeType: " + 
+            //    aDflvArr[i].MimeType + 
+              //  " HumanPresentableName: " + 
+            //    aDflvArr[i].HumanPresentableName );    
 
 			// if there is the format unicode text on the clipboard save the
 			// corresponding DataFlavor so that we can later output the string
@@ -1059,13 +1059,13 @@ public class OOTools{
 			}
 		}
 
-		System.out.println("");
+		//System.out.println("");
 		try{
 			if (aUniFlv != null){
-                System.out.println("Unicode text on the clipboard...");
+                //System.out.println("Unicode text on the clipboard...");
                 Object aData = xTransferable.getTransferData(aUniFlv);      
 
-                System.out.println(AnyConverter.toString(aData));
+                //System.out.println(AnyConverter.toString(aData));
 			}
 		}catch(UnsupportedFlavorException ex){
 			System.err.println( "Requested format is not available" );

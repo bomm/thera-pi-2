@@ -169,7 +169,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 					DateFormat clockFormat = new SimpleDateFormat("HH:mm:ss");
 					String cmd = "insert into anwesend set nname='"+tfs[0].getText()+"', datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', "+
 					"kommen='"+(String)clockFormat.format(new Date())+"', schrank='"+schluessel+"', pfand='"+tfs[1].getText()+"'";
-					//System.out.println(cmd);
+					////System.out.println(cmd);
 					clockFormat = null;
 					SqlInfo.sqlAusfuehren(cmd);
 					dispose();
@@ -193,7 +193,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		this.dispose();
 	}
 	public void windowClosed(WindowEvent arg0) {
-		System.out.println("In windowClosed von RehaSmartDialog");
+		//System.out.println("In windowClosed von RehaSmartDialog");
 		ListenerTools.removeListeners(tfs[0]);
 		ListenerTools.removeListeners(tfs[1]);
 		ListenerTools.removeListeners(buts[0]);
@@ -212,7 +212,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		System.out.println("In windowClosing.....");
+		//System.out.println("In windowClosing.....");
 		this.dispose();
 		
 	}

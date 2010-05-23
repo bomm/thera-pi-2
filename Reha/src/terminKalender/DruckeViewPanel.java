@@ -95,14 +95,14 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         	test2y = 19000.00F*100.0F/testy;
         	fx = rasterx/100*test2y;
         	fy = 19000.00F;
-        	System.out.println("H�hentest = "+test2y);
+        	//System.out.println("H�hentest = "+test2y);
         	
         }else{
         	fx = rasterx;
         	fy = testy;
         }
         
-        System.out.println("Die neuen Ma�e sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
+        //System.out.println("Die neuen Ma�e sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
 
         if(!useStream) {
           //with url
@@ -119,8 +119,8 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
                     true, pixelHeight, true, VertOrientation.TOP, HoriOrientation.LEFT,
                      TextContentAnchorType.AS_CHARACTER);
 */                     
-        	System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
-        	System.out.println("Seitenverh�ltnis = "+verhaeltnis);
+        	//System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
+        	//System.out.println("Seitenverh�ltnis = "+verhaeltnis);
         	
             graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,

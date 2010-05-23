@@ -461,7 +461,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 								JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten");
 								return;
 							}
-							//System.out.println("in der warteschleife....");
+							////System.out.println("in der warteschleife....");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -475,7 +475,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   int row = tabaktrez.rowAtPoint(point);
 				   tabaktrez.columnAtPoint(point);
 				   tabaktrez.setRowSelectionInterval(row, row);
-					//System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
+					////System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
 						//	"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
 					ZeigePopupMenu(arg0);
 					
@@ -576,16 +576,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			private static final long serialVersionUID = 1L;
 
 			public boolean editCellAt(int row, int column, EventObject e) {
-				//System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
-				//System.out.println("Event = "+e);
+				////System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
+				////System.out.println("Event = "+e);
 				if (e == null) {
 					return false;
-					//System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
+					////System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
 				}
 				if (e instanceof MouseEvent) {
 					MouseEvent mouseEvent = (MouseEvent) e;
 					if (mouseEvent.getClickCount() > 1) {
-						//System.out.println("edit!");
+						////System.out.println("edit!");
 					}
 				}
 
@@ -627,13 +627,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-				//System.out.println("keypressed in Editor");
+				////System.out.println("keypressed in Editor");
 				if(arg0.getKeyCode()==10){
 					//arg0.consume();
 					//tbl.stopCellEditing();
 				}else if(arg0.getKeyCode()==27){
 				
-					//System.out.println("cancel in tabelle");
+					////System.out.println("cancel in tabelle");
 					tbl.cancelCellEditing();
 				}else{/*
 					   int row = tabaktterm.getSelectedRow();
@@ -706,7 +706,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					}
 					//((Vector)vec.get(i)).set(3, PatGrundPanel.thisClass.imgzuzahl[zzbild]);
 					
-					//System.out.println("Inhalt von zzstatus ="+zzbild);
+					////System.out.println("Inhalt von zzstatus ="+zzbild);
 					dtblm.addRow((Vector)vec.get(i));
 					
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
@@ -743,12 +743,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
 						tabaktrez.scrollRowToVisible(row);
 						holeEinzelTermine(row,null);
-						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
+						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
 						tabaktrez.setRowSelectionInterval(0, 0);
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
-						//System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
+						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
 					
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
@@ -792,7 +792,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					rezAngezeigt = reznr;
 					String id = (String)tabaktrez.getValueAt(xrow,7);
 					rezDatenPanel.setRezeptDaten(reznr,id);
-					System.out.println("Aus Bericht....."+reznr+"....."+id);
+					//System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
 			});	
 
@@ -801,14 +801,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void updateEinzelTermine(String einzel){
 		String[] tlines = einzel.split("\n");
 		int lines = tlines.length;
-		//System.out.println("Anzahl Termine = "+lines);
+		////System.out.println("Anzahl Termine = "+lines);
 		Vector<String> tvec = new Vector<String>();
 		dtermm.setRowCount(0);
 		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
 			terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			//System.out.println("Anzahl Splits = "+ieinzel);
+			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
@@ -819,9 +819,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}else{
 					tvec.add(terdat[y]);					
 				}
-				//System.out.println("Feld "+y+" = "+terdat[y]);	
+				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
-			//System.out.println("Termivector = "+tvec);
+			////System.out.println("Termivector = "+tvec);
 			dtermm.addRow((Vector<?>)tvec.clone());
 		}
 		tabaktterm.validate();
@@ -848,8 +848,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 
 		String terms = (String) xvec.get(0);
-		//System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
-		//System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
+		////System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
+		////System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
 		if(terms==null){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
@@ -870,14 +870,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
-		//System.out.println("Anzahl Termine = "+lines);
+		////System.out.println("Anzahl Termine = "+lines);
 		Vector tvec = new Vector();
 		dtermm.setRowCount(0);
 		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
 			terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			//System.out.println("Anzahl Splits = "+ieinzel);
+			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
@@ -888,9 +888,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}else{
 					tvec.add(new String(terdat[y]));					
 				}
-				//System.out.println("Feld "+y+" = "+terdat[y]);	
+				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
-			//System.out.println("Termivector = "+tvec);
+			////System.out.println("Termivector = "+tvec);
 			dtermm.addRow((Vector)tvec.clone());
 		}
 		tabaktterm.validate();
@@ -959,7 +959,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	private void starteTests(){
 		new Thread(){
 			public void run(){
-				System.out.println("Hier den Termintest");
+				//System.out.println("Hier den Termintest");
 				if(Reha.thisClass.patpanel.vecaktrez.get(60).equals("T")){
 					Vector<String>tage = new Vector<String>();
 					Vector<?> v = dtermm.getDataVector();
@@ -1039,7 +1039,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	                }
 	            }
 	        }
-	        //System.out.println(output.toString());
+	        ////System.out.println(output.toString());
 	    }
 	}
 
@@ -1110,7 +1110,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	@Override
 	public void columnPropertyChange(PropertyChangeEvent arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("model-listener"+arg0);
+		////System.out.println("model-listener"+arg0);
 	}
 	@Override
 	public void columnAdded(TableColumnModelEvent arg0) {
@@ -1218,7 +1218,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					
 					Vector<Vector<String>> vec = (Vector<Vector<String>>)dtermm.getDataVector().clone();
 
-					//System.out.println("Unsortiert = "+vec);
+					////System.out.println("Unsortiert = "+vec);
 					
 					Comparator<Vector<String>> comparator = new Comparator<Vector<String>>() {
 						@Override
@@ -1230,7 +1230,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					};
 					Collections.sort(vec,comparator);
 					dtermm.setRowCount(0);
-					//System.out.println("Sortiert = "+vec);
+					////System.out.println("Sortiert = "+vec);
 					for(int y = 0;y < vec.size();y++){
 						dtermm.addRow(vec.get(y));
 					}
@@ -1347,7 +1347,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					String meldung = "<html>Für das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
 					JOptionPane.showMessageDialog(null, meldung);
 				}
-				//System.out.println("ArztberichtFenster erzeugen!");
+				////System.out.println("ArztberichtFenster erzeugen!");
 				final boolean xneuber = neuber;
 				final String xxreznr = xreznr;
 				final int xberid = berid;
@@ -1453,7 +1453,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				System.out.println("in Ausfallrechnung");
+				//System.out.println("in Ausfallrechnung");
 				AusfallRechnung ausfall = new AusfallRechnung(  aktrbut[3].getLocationOnScreen() );
 				ausfall.setModal(true);
 				ausfall.toFront();
@@ -1490,7 +1490,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(anzterm <= 0){return;}
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
 				String vgldat2 = (String) dtermm.getValueAt(0,0);
-				System.out.println("Tage differenz = "+DatFunk.TageDifferenz(vgldat1, vgldat2));
+				//System.out.println("Tage differenz = "+DatFunk.TageDifferenz(vgldat1, vgldat2));
 				//ist Rezeptdatum und Erstdatum > 10 Tage ?
 				if(DatFunk.TageDifferenz(vgldat1, vgldat2) > 10){
 					int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
@@ -1538,7 +1538,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String xcmd = "update verordn set abschluss='F' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
 				Reha.thisClass.patpanel.vecaktrez.set(62,(String)"F");
 				SqlInfo.sqlAusfuehren(xcmd);
-				//System.out.println(xcmd);
+				////System.out.println(xcmd);
 				String rnr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
 				String cmd = "delete from fertige where rez_nr='"+rnr+"' LIMIT 1";
 				SqlInfo.sqlAusfuehren(cmd);
@@ -1777,7 +1777,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			rezTest.pack();
 			rezTest.setVisible(true);
 			rezTest.dispose();
-			System.out.println("Rez unterbrechung geschlossen - Ergebnis = "+dummyLabel.getText());
+			//System.out.println("Rez unterbrechung geschlossen - Ergebnis = "+dummyLabel.getText());
 			ret = new String(dummyLabel.getText());
 			testPan.dummylab = null;
 			testPan = null;
@@ -1814,7 +1814,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
 		}else{
 			zzstatus = ((String)Reha.thisClass.patpanel.vecaktrez.get(39));
-			System.out.println("bisheriger Zuzahlungsstatus = "+zzstatus);
+			//System.out.println("bisheriger Zuzahlungsstatus = "+zzstatus);
 //			neuRez.getSmartTitledPanel().setTitle("editieren ---> "+ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geboren am: "+ptfield[4].getText().trim());		
 		}
 		neuRez.setSize(480,768);
@@ -1856,14 +1856,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						e.printStackTrace();
 					}
 				}
-				System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten.feddisch);
+				//System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten.feddisch);
 				if(((String)Reha.thisClass.patpanel.vecaktrez.get(39)).equals("")){
-					System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
+					//System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
 					Reha.thisClass.patpanel.vecaktrez.set(39,"0");
 				}else{
-					System.out.println("Zuzahlungsstatus neu = "+Reha.thisClass.patpanel.vecaktrez.get(39));
+					//System.out.println("Zuzahlungsstatus neu = "+Reha.thisClass.patpanel.vecaktrez.get(39));
 				}
-				System.out.println("Bild Einstellen -> "+new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(39)) );
+				//System.out.println("Bild Einstellen -> "+new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(39)) );
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(39))], 
 									tabaktrez.getSelectedRow(),1);
 				tabaktrez.validate();
@@ -1881,13 +1881,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					Runtime r = Runtime.getRuntime();
 				    r.gc();
 				    long freeMem = r.freeMemory();
-				    System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 			
 		 	   }
 		});
 	    */
 
-		//System.out.println("Pat Neu/�ndern ist disposed");
+		////System.out.println("Pat Neu/�ndern ist disposed");
 		neuDlgOffen = false;
 
 	}
@@ -1938,7 +1938,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 			}
 			tDlg = null;
-			//System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
 	}
 
@@ -1964,7 +1964,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
-					System.out.println("In rezNeuDlg set Visible false***************");
+					//System.out.println("In rezNeuDlg set Visible false***************");
 					this.setVisible(false);
 					this.dispose();
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
@@ -1972,11 +1972,11 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 					ListenerTools.removeListeners(this);					
 					super.dispose();
 
-					System.out.println("****************Rezept Neu/ändern -> Listener entfernt**************");				
+					//System.out.println("****************Rezept Neu/ändern -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In RezeptNeuanlage" +evt);
+			//System.out.println("In RezeptNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -1988,7 +1988,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			dispose();
 			ListenerTools.removeListeners(this);
 			super.dispose();
-			System.out.println("****************Rezept Neu/ändern -> Listener entfernt (Closed)**********");
+			//System.out.println("****************Rezept Neu/ändern -> Listener entfernt (Closed)**********");
 		}
 	}
 	
@@ -2012,18 +2012,18 @@ class RezTest extends RehaSmartDialog implements RehaTPEventListener,WindowListe
 		try{
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
-					System.out.println("In rezNeuDlg set Visible false***************");
+					//System.out.println("In rezNeuDlg set Visible false***************");
 					this.setVisible(false);
 					this.dispose();
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					ListenerTools.removeListeners(this);					
 					super.dispose();
-					System.out.println("****************RezeptTest -> Listener entfernt**************");				
+					//System.out.println("****************RezeptTest -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			System.out.println("In RezeptNeuanlage" +evt);
+			//System.out.println("In RezeptNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -2035,7 +2035,7 @@ class RezTest extends RehaSmartDialog implements RehaTPEventListener,WindowListe
 			dispose();
 			ListenerTools.removeListeners(this);
 			super.dispose();
-			System.out.println("****************RezeptTest -> Listener entfernt (Closed)**********");
+			//System.out.println("****************RezeptTest -> Listener entfernt (Closed)**********");
 		}
 	}
 }

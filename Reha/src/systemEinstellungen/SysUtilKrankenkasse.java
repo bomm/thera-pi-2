@@ -89,7 +89,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 	
 	public SysUtilKrankenkasse(){
 		super(new BorderLayout());
-		System.out.println("Aufruf SysUtilKasse");
+		//System.out.println("Aufruf SysUtilKasse");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
@@ -360,7 +360,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		System.out.println(cmd);
+		//System.out.println(cmd);
 		for(int i = 0;i < 1;i++){
 			if(cmd.equals("entfernenvorlage")){
 				int row = vorlagen.getSelectedRow();
@@ -403,7 +403,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 				SystemUtil.thisClass.parameterScroll.requestFocus();
 			}
 			if(cmd.equals("speichern")){
-				System.out.println("Es wird abgespeichert");
+				//System.out.println("Es wird abgespeichert");
 				doSpeichern();
 				if(formok){
 					JOptionPane.showMessageDialog(null,"Konfiguration wurden in Datei 'kasse.ini' erfolgreich gespeichert!");					
@@ -419,7 +419,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 	private void doSpeichern(){
 		String wert = "";
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
-		System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
+		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		wert = (unten.isSelected() ? "1" : "0");
 		SystemConfig.hmContainer.put("Kasse", new Integer(wert));
 		inif.setStringProperty("Container", "StarteIn",wert , null);
@@ -570,10 +570,10 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		JComponent component = new JFormattedTextField();
 	   public TitelEditor(){
 		   //component = new JRtaTextField("NIX",true);
-		   System.out.println("editor-Component wurde initialisiert");
+		   //System.out.println("editor-Component wurde initialisiert");
 		   component.addKeyListener(new KeyAdapter(){
 			   public void keyPressed(KeyEvent arg0) {
-					System.out.println("********Button in KeyPressed*********");	
+					//System.out.println("********Button in KeyPressed*********");	
 					if(arg0.getKeyCode()== 10){
 						arg0.consume();
 						stopCellEditing();
@@ -604,21 +604,21 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 	            	 return false;
 	             }
 	          }
-			System.out.println("isCellEditable");
+			//System.out.println("isCellEditable");
 			return true;
 		}
 
 
 		@Override
 		public boolean shouldSelectCell(EventObject anEvent) {
-			System.out.println("in schouldCellSelect"+anEvent);
+			//System.out.println("in schouldCellSelect"+anEvent);
 			return super.shouldSelectCell(anEvent);
 		}
 
 		@Override
 		public boolean stopCellEditing() {
 			value = ((JFormattedTextField) component).getText();
-			System.out.println("in stopCellediting");
+			//System.out.println("in stopCellediting");
 			super.stopCellEditing();
 			return true;
 		}

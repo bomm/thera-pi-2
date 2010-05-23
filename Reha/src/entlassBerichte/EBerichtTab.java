@@ -27,7 +27,7 @@ public class EBerichtTab {
 			// kein KarstenLentzsch looks
 		}
 		try{
-			System.out.println("Starte Seite 1");
+			//System.out.println("Starte Seite 1");
 			seite1 = new Eb1(eltern);
 			tab.addTab("E-Bericht Seite-1", seite1.getSeite());
 		}catch(Exception ex){
@@ -35,7 +35,7 @@ public class EBerichtTab {
 		}
 		
 		try{
-			System.out.println("Starte Seite 2");
+			//System.out.println("Starte Seite 2");
 			seite2 = new Eb2(eltern);
 			JScrollPane jscr = JCompTools.getTransparentScrollPane(seite2.getSeite());		
 			tab.addTab("E-Bericht Seite-2", jscr);
@@ -43,7 +43,7 @@ public class EBerichtTab {
 			ex.printStackTrace();
 		}
 		try{		
-			System.out.println("Starte Seite 3");
+			//System.out.println("Starte Seite 3");
 			seite3 = new Eb3(eltern);
 			tab.addTab("E-Bericht Freitext", seite3.getSeite());
 		}catch(Exception ex){
@@ -51,7 +51,7 @@ public class EBerichtTab {
 		}
 		
 		try{
-			System.out.println("Starte Seite 4");
+			//System.out.println("Starte Seite 4");
 			seite4 = new Eb4(eltern);
 			JScrollPane jscr = JCompTools.getTransparentScrollPane(seite4.getSeite());		
 			tab.addTab("E-Bericht KTL", jscr);
@@ -61,7 +61,7 @@ public class EBerichtTab {
 
 		/*
 		String bisher = eltern.jry.getTitle();
-		System.out.println("Bisheriger Titel = "+bisher);
+		//System.out.println("Bisheriger Titel = "+bisher);
 		bisher = bisher.replaceAll("</html>", "");
 		bisher = bisher.replaceAll("<html>", "");
 		String titel = "<html>";
@@ -73,7 +73,7 @@ public class EBerichtTab {
 		eltern.jry.setTitle(titel);
 		*/
 		String bisher = eltern.jry.getTitle();
-		System.out.println("Bisheriger Titel = "+bisher);
+		//System.out.println("Bisheriger Titel = "+bisher);
 		bisher = bisher.replaceAll("</html>", "");
 		bisher = bisher.replaceAll("<html>", "");
 		String titel = "";

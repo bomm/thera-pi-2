@@ -238,12 +238,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			inebericht = false;
 		}
 		
-		//System.out.println(" Bericht von Patient Nr. ="+ this.pat_intern);
-		//System.out.println("              Bericht ID ="+ this.berichtid);
-		//System.out.println("              Berichttyp ="+ this.berichttyp);
-		//System.out.println("              Empfaenger ="+ this.empfaenger);
-		//System.out.println("           Neuer Bericht ="+ this.neu);
-		//System.out.println("Übernahme aus Bericht-ID ="+ this.uebernahmeid);
+		////System.out.println(" Bericht von Patient Nr. ="+ this.pat_intern);
+		////System.out.println("              Bericht ID ="+ this.berichtid);
+		////System.out.println("              Berichttyp ="+ this.berichttyp);
+		////System.out.println("              Empfaenger ="+ this.empfaenger);
+		////System.out.println("           Neuer Bericht ="+ this.neu);
+		////System.out.println("Übernahme aus Bericht-ID ="+ this.uebernahmeid);
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -256,7 +256,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	/******************************************************************/
 	public void setOOPanelDeIcon(){
 		if(ebt != null){
-			//System.out.println("Vesuche OONative wiederherzustellen");
+			////System.out.println("Vesuche OONative wiederherzustellen");
 			ebt.seite3.getSeite().setSize(new Dimension(ebt.seite3.getSeite().getWidth(),ebt.seite3.getSeite().getHeight()));
 			ebt.seite3.refreshSize();
 			
@@ -265,7 +265,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	public void setOOPanelIcon(){
 		if(ebt != null){
-			//System.out.println("Vesuche OONative wiederherzustellen");
+			////System.out.println("Vesuche OONative wiederherzustellen");
 			ebt.seite3.getSeite().setSize(new Dimension(0,10));
 			ebt.seite3.refreshSize();
 			
@@ -288,7 +288,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return nat.getTab();
 	}
 	public void meldeInitOk(int seite){
-		//System.out.println("Meldung von Seite "+seite);
+		////System.out.println("Meldung von Seite "+seite);
 		initOk[seite] = true;
 		if(initOk[0] && initOk[1] && initOk[2] && initOk[3]){
 			Reha.thisClass.progressStarten(false);
@@ -434,7 +434,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					rvTraeger = false;
 				}
 				EBDrucken(gutbut[2].getLocationOnScreen(),drucken,titel);
-				//System.out.println("druckversion[0] hat den Wert "+druckversion[0]);
+				////System.out.println("druckversion[0] hat den Wert "+druckversion[0]);
 				if(druckversion[0] >= 0){
 					doVorschauEntlassBericht(false,druckversion,altesFormular,rvTraeger);
 				}
@@ -467,11 +467,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}.execute();
 
 			/*
-			//System.out.println("Hänge Focus-Listener ein");
+			////System.out.println("Hänge Focus-Listener ein");
 			officeFrame.addDispatchDelegate(GlobalCommands.SAVE, new IDispatchDelegate() {
 				@Override
 				public void dispatch(Object[] arg0) {
-					//System.out.println("Aufruf der überschriebenen Save.routine");
+					////System.out.println("Aufruf der überschriebenen Save.routine");
 				}
 				});
 			officeFrame.updateDispatches();
@@ -626,7 +626,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			neu = false;
 	/////		
 			doSpeichernNachsorgeAlt();
-			//System.out.println("Nach Speichern alt");
+			////System.out.println("Nach Speichern alt");
 			Reha.thisClass.patpanel.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Nachsorgedokumentation");
 			
@@ -700,7 +700,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		buf.append( " where berichtid = '"+berichtid+"'");
-		////System.out.println(buf.toString());
+		//////System.out.println(buf.toString());
 		SqlInfo.sqlAusfuehren(buf.toString());
 		try {
 			Thread.sleep(50);
@@ -742,9 +742,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			SqlInfo.sqlAusfuehren(cmd);
 			jetztneu = true; // ganz wichtig
 			neu = false;
-			//System.out.println("Historie- und Bericht wurden angelegt");
+			////System.out.println("Historie- und Bericht wurden angelegt");
 			doSpeichernAlt();
-			//System.out.println("Nach Speichern alt");
+			////System.out.println("Nach Speichern alt");
 			Reha.thisClass.patpanel.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -774,7 +774,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 				        ebtab.getSelectedIndex();
 						if(document.isModified()){
-							//System.out.println("in getrennt.....");
+							////System.out.println("in getrennt.....");
 							//if(sel != 2){
 								ebt.getTab3().tempTextSpeichern();
 								//document.close();
@@ -826,11 +826,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		try{
 			if(document != null){
 				if(document.isOpen()){
-					//System.out.println("dokument wird geschlossen");
+					////System.out.println("dokument wird geschlossen");
 					document.close();					
 				}
 			}else{
-				//System.out.println("dokument ist bereits null");
+				////System.out.println("dokument ist bereits null");
 			}
 			if(arztbaus != null){
 				arztbaus.dispose();
@@ -895,8 +895,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		// TODO Auto-generated method stub
-		////System.out.println(evt);
-		//System.out.println("In RehaEvent Occured: EbereichtPanel -> Schließenanforderung von InternalFrame");
+		//////System.out.println(evt);
+		////System.out.println("In RehaEvent Occured: EbereichtPanel -> Schließenanforderung von InternalFrame");
 		if(evt.getDetails()[0].contains("GutachtenFenster")){
 			if(evt.getDetails()[1].equals("#SCHLIESSEN")){
 				if(inebericht){
@@ -1064,11 +1064,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					Runtime r = Runtime.getRuntime();
 				    r.gc();
 				    long freeMem = r.freeMemory();
-				    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
+				    ////System.out.println("Freier Speicher nach  gc():    " + freeMem);
 				    */
 		 	   }
 		});
-		//System.out.println("BerichtDrucken ist disposed()");
+		////System.out.println("BerichtDrucken ist disposed()");
 	}
 	
 	public void doSysVars(){
@@ -1157,7 +1157,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				break;
 			}
 			tDlg = null;
-			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			//////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
 	}
 /**********************************************/	
@@ -1186,11 +1186,11 @@ class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 					rtp = null;
 					this.dispose();
-					//System.out.println("****************EGPrint -> Listener entfernt**************");				
+					////System.out.println("****************EGPrint -> Listener entfernt**************");				
 				}
 			}
 		}catch(NullPointerException ne){
-			//System.out.println("In PatNeuanlage" +evt);
+			////System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
@@ -1200,7 +1200,7 @@ class EBPrintDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLi
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			dispose();
-			//System.out.println("**************** In Panel EGPrint -> Listener entfernt (Closed)**********");
+			////System.out.println("**************** In Panel EGPrint -> Listener entfernt (Closed)**********");
 		}
 		
 		
