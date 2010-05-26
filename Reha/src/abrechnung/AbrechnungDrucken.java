@@ -67,7 +67,9 @@ public class AbrechnungDrucken {
 						textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 					}else{
 						int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
+						System.out.println("Es müssen "+exemplare+" gedruckt werden");
 						for(int i = 0; i < exemplare; i++){
+							System.out.println("Drucke Ausfertigung "+Integer.toString(i+1)	);
 							textDocument.print();
 						}
 						textDocument.close();

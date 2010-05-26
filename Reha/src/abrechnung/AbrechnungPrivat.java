@@ -887,8 +887,9 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}else{
 				exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmbgeexemplare"));
 			}
-			
+			System.out.println("Es müssen "+exemplare+" gedruckt werden");
 			for(int i = 0; i < exemplare; i++){
+				System.out.println("Druck "+Integer.toString(i)	);
 				textDocument.print();
 			}
 			textDocument.close();

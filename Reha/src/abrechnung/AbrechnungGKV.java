@@ -144,6 +144,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	HashMap<String,String> hmAnnahme = null;
 	int abrechnungRezepte = 0;
 	public String aktuellerPat = "";
+	
+	String rlistekasse;
+	String rlisteesol;
 	public AbrechnungGKV(JAbrechnungInternal xjry){
 		super();
 		this.setJry(xjry);
@@ -907,6 +910,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/***************************************************************/	
 	private int doVerschluesseln(String datei){
 		try {
+			rlisteesol = aktEsol.toString();
 			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
 			NebraskaKeystore store = new NebraskaKeystore(keystore, "123456","123456", Reha.aktIK);
 			NebraskaEncryptor encryptor = store.getEncryptor(ik_nutzer);
@@ -1049,6 +1053,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		if(vec.size()==0){
 			return "";
 		}
+		rlistekasse = vec.get(0).get(0);
 		return vec.get(0).get(0);
 	}
 	
@@ -1175,7 +1180,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		rechnungBuf.append("insert into rliste set ");
 		rechnungBuf.append("r_nummer='"+aktRechnung+"', ");
 		rechnungBuf.append("r_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-		rechnungBuf.append("r_kasse='"+name_kostent+" "+aktEsol+"', ");
+		rechnungBuf.append("r_kasse='"+rlistekasse+" "+rlisteesol+"', ");
 		rechnungBuf.append("r_klasse='"+diszis[cmbDiszi.getSelectedIndex()]+"', ");
 		rechnungBuf.append("r_betrag='"+dfx.format(preis00[0]).replace(",", ".")+"', ");
 		rechnungBuf.append("r_offen='"+dfx.format(preis00[0]).replace(",", ".")+"', ");

@@ -86,7 +86,6 @@ public class RezeptDaten extends JXPanel{
 		RezeptDaten.feddisch = false;		
 		reznum.setText(reznummer);
 		Reha.thisClass.patpanel.aktRezept.rezAngezeigt = reznummer;
-		//AktuelleRezepte.aktRez.rezAngezeigt = reznummer;
 		final String xreznummer = reznummer;
 		final String xsid = sid;
 		

@@ -2440,11 +2440,13 @@ final class DatenbankStarten implements Runnable{
 	    			}/*else{	
 	    				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
 	    			}*/	
+	    			int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
+	    			new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
 	        		Reha.DbOk = true;
 
 	        	} 
 	        	catch (final SQLException ex) {
-	        		//System.out.println("SQLException: " + ex.getMessage());
+	        		System.out.println("SQLException: " + ex.getMessage());
 	        		//System.out.println("SQLState: " + ex.getSQLState());
 	        		//System.out.println("VendorError: " + ex.getErrorCode());
 	        		Reha.DbOk = false;
@@ -2624,6 +2626,9 @@ final class DbNachladen implements Runnable{
 				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
 				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false","entwickler","entwickler");
 				JOptionPane.showMessageDialog(null,"Die Wiederherstellung der Datenbankverbindung war - erfolgreich!");
+    			int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
+    			new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
+
 			}else{	
 				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
 			}	

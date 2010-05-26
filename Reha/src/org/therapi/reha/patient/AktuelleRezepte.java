@@ -367,49 +367,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jtb.add(aktrbut[3]);
 
 		
-		/*
-		aktrbut[4] = new JButton();
-		aktrbut[4].setIcon(SystemConfig.hmSysIcons.get("rezeptgebuehr"));
-		aktrbut[4].setToolTipText("Rezeptgebühren kassieren");
-		aktrbut[4].setActionCommand("rezeptgebuehr");
-		aktrbut[4].addActionListener(this);		
-		jtb.add(aktrbut[4]);
-		aktrbut[3] = new JButton();
-		aktrbut[3].setIcon(SystemConfig.hmSysIcons.get("barcode"));
-		aktrbut[3].setToolTipText("Rezept mit Barcode bedrucken");
-		aktrbut[3].setActionCommand("barcode");
-		aktrbut[3].addActionListener(this);
-		jtb.add(aktrbut[3]);		
-		jtb.addSeparator(new Dimension(30,0));
-		aktrbut[5] = new JButton();
-		aktrbut[5].setIcon(SystemConfig.hmSysIcons.get("ausfallrechnung"));
-		aktrbut[5].setToolTipText("Ausfallrechnung erstellen");
-		aktrbut[5].setActionCommand("ausfallrechnung");
-		aktrbut[5].addActionListener(this);		
-		jtb.add(aktrbut[5]);
-		aktrbut[6] = new JButton();
-		aktrbut[6].setIcon(SystemConfig.hmSysIcons.get("statusset"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/privatrechnung.png"));
-		aktrbut[6].setToolTipText("Rezept abschließen");
-		aktrbut[6].setActionCommand("rezeptabschliessen");
-		aktrbut[6].addActionListener(this);		
-		jtb.add(aktrbut[6]);
-		jtb.addSeparator(new Dimension(30,0));
-		
-		aktrbut[7] = new JButton();
-		aktrbut[7].setIcon(SystemConfig.hmSysIcons.get("arztbericht"));
-		aktrbut[7].setToolTipText("Arztbericht erstellen/ändern");
-		aktrbut[7].setActionCommand("arztbericht");
-		aktrbut[7].addActionListener(this);		
-		jtb.add(aktrbut[7]);
-		
-		aktrbut[8] = new JButton();
-		aktrbut[8].setIcon(SystemConfig.hmSysIcons.get("print"));
-		aktrbut[8].setToolTipText("Rezeptbezogenen Brief/Formular erstellen");
-		aktrbut[8].setActionCommand("rezeptbrief");
-		aktrbut[8].addActionListener(this);		
-		jtb.add(aktrbut[8]);
-		*/
+	
 
 		for(int i = 0; i < 9;i++){
 			try{
@@ -461,9 +419,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 								JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten");
 								return;
 							}
-							////System.out.println("in der warteschleife....");
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten\n Bitte Administrator verständigen (Exception)\n\n"+e.getMessage());
 							e.printStackTrace();
 						}
 					}
@@ -475,8 +432,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   int row = tabaktrez.rowAtPoint(point);
 				   tabaktrez.columnAtPoint(point);
 				   tabaktrez.setRowSelectionInterval(row, row);
-					////System.out.println("Rechte Maustaste gedrückt auf Tabelle\n"+
-						//	"Selektiertes Rezept = "+tabaktrez.getValueAt(row, 0));
 					ZeigePopupMenu(arg0);
 					
 				}
@@ -499,8 +454,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 
 		});
-		//tabaktrez.getSelectionModel().addListSelectionListener(this);
-		//dtblm.addTableModelListener(this);
 		dummypan.setPreferredSize(new Dimension(0,100));
 		JScrollPane aktrezscr = JCompTools.getTransparentScrollPane((Component)tabaktrez); 
 		aktrezscr.getVerticalScrollBar().setUnitIncrement(15);
@@ -539,14 +492,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 		JButton jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("neu"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
 		jbut.setToolTipText("Neuen Termin eintragen");
 		jbut.setActionCommand("terminplus");
 		jbut.addActionListener(this);
 		jtb.add(jbut);
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
 		jbut.setToolTipText("Termin löschen");
 		jbut.setActionCommand("terminminus");
 		jbut.addActionListener(this);		
@@ -554,7 +505,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jtb.addSeparator(new Dimension(40,0));
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("sort"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/alphab_sort_22.png"));
+
 		jbut.setActionCommand("terminsortieren");
 		jbut.addActionListener(this);		
 		jbut.setToolTipText("Termine nach Datum sortieren");		
@@ -713,16 +664,23 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[rezstatus],i,5);
 					if(i==0){
 						final int ix = i;
-	                    new Thread(){
-	                    	public void run(){
-								if(suchePatUeberRez){
-									suchePatUeberRez = false;
-									return;
-								}else{
-		                    		holeEinzelTermine(ix,null);									
-								}
-	                    	}
-	                    }.start();
+						if(suchePatUeberRez){
+							suchePatUeberRez = false;
+						}else{
+							if(!inEinzelTermine){
+								new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										inEinzelTermine = true;
+										holeEinzelTermine(ix,null);
+										inEinzelTermine = false;
+										return null;
+									}
+									
+								}.execute();
+							}
+						}
 					}
 				}
 				Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
@@ -742,7 +700,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						tabaktrez.setRowSelectionInterval(row, row);
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
 						tabaktrez.scrollRowToVisible(row);
-						holeEinzelTermine(row,null);
+						if(!inEinzelTermine){
+							inEinzelTermine = true;
+							holeEinzelTermine(row,null);
+							inEinzelTermine = false;
+						}
 						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
@@ -888,9 +850,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}else{
 					tvec.add(new String(terdat[y]));					
 				}
-				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
-			////System.out.println("Termivector = "+tvec);
 			dtermm.addRow((Vector)tvec.clone());
 		}
 		tabaktterm.validate();
@@ -987,7 +947,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 	}
 	class RezepteListSelectionHandler implements ListSelectionListener {
-
+		
 	    public void valueChanged(ListSelectionEvent e) {
 			if(rezneugefunden){
 				rezneugefunden = false;
@@ -1023,7 +983,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 										return null;
 									}
 		                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		                    		holeEinzelTermine(ix,null);
+		                			if(!inEinzelTermine ){
+		                				inEinzelTermine = true;
+		                				holeEinzelTermine(ix,null);
+		                				inEinzelTermine = false;
+		                			}
 		                    		
 		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
 		    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1734,7 +1698,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 
 		int art = RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
-		new RezeptGebuehren(bereitsbezahlt,false,pt);
+		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
+	}
+	public void setZuzahlImage(int imageno){
+		int row = tabaktrez.getSelectedRow();
+		if(row < 0){
+			JOptionPane.showMessageDialog(null,"Achtung kann Icon für korrekte Zuzahlung nicht setzen.\n"+
+					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
+					"Sie den Administrator");
+			return;
+		}
+		dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[imageno], row, 1);
+		tabaktrez.repaint();
 	}
 	private void doBarcode(){
 		int art = RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
@@ -1997,47 +1972,3 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 	
 }
 /************************************/
-/*
-class RezTest extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
-	private static final long serialVersionUID = 5410743025474817628L;
-	private RehaTPEventClass rtp = null;
-	public RezTest(){
-		super(null,"RezeptTest");
-		this.setName("RezeptTest");
-		//super.getPinPanel().setName("RezeptNeuanlage");
-		rtp = new RehaTPEventClass();
-		rtp.addRehaTPEventListener((RehaTPEventListener) this);
-
-	}
-	public void rehaTPEventOccurred(RehaTPEvent evt) {
-		try{
-			if(evt.getDetails()[0] != null){
-				if(evt.getDetails()[0].equals(this.getName())){
-					//System.out.println("In rezNeuDlg set Visible false***************");
-					this.setVisible(false);
-					this.dispose();
-					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-					rtp = null;
-					ListenerTools.removeListeners(this);					
-					super.dispose();
-					//System.out.println("****************RezeptTest -> Listener entfernt**************");				
-				}
-			}
-		}catch(NullPointerException ne){
-			//System.out.println("In RezeptNeuanlage" +evt);
-		}
-	}
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		if(rtp != null){
-			this.setVisible(false);			
-			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
-			rtp = null;
-			dispose();
-			ListenerTools.removeListeners(this);
-			super.dispose();
-			//System.out.println("****************RezeptTest -> Listener entfernt (Closed)**********");
-		}
-	}
-}
-*/

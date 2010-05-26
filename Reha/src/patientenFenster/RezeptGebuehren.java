@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -33,6 +34,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.AktuelleRezepte;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -75,10 +77,12 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	CompoundPainter cp = null;
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
-
-	public RezeptGebuehren(boolean kopie,boolean historie,Point pt){
-		super(null,"RezeptGebuehr");		
-
+	private AktuelleRezepte aktuelleRezepte;
+	public RezeptGebuehren(AktuelleRezepte aktrez,boolean kopie,boolean historie,Point pt){
+		super(null,"RezeptGebuehr");
+		if(aktrez!=null){
+			this.aktuelleRezepte = aktrez;			
+		}
 		this.nurkopie = kopie;
 		this.aushistorie = historie;
 		
@@ -387,27 +391,33 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 	}
 	public void doBuchen(){
-		String cmd = "insert into kasse set einnahme='"+
+		String cmd = null;
+		try{
+		cmd = "insert into kasse set einnahme='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
 		Reha.thisClass.patpanel.patDaten.get(2)+","+
 		SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
 		"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
 		"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
-		new ExUndHop().setzeStatement(cmd);
+		SqlInfo.sqlAusfuehren(cmd);
 		////System.out.println("Kassenbuch -> "+cmd);
-		
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Die bezahlten Rezeptgebühren konnten nicht verbucht werden.\n+" +
+					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
+					"Sie den Administrator");
+		}
+		try{
 		cmd = "update verordn set rez_geb='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', "+
-		"rez_bez='T', zzstatus='1' where id='"+SystemConfig.hmAdrRDaten.get("<Rid>")+"'";
+		"rez_bez='T', zzstatus='1' where rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
 		SqlInfo.sqlAusfuehren(cmd);
-		//new ExUndHop().setzeStatement(cmd);
-		////System.out.println("Rezeptstamm -> "+cmd);
-		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
-		if(row >= 0){
-			//Reha.thisClass.patpanel.aktRezept.dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],row,1);
-			Reha.thisClass.patpanel.getMultiFuncPanel().getAktRez().setDtblmValues(Reha.thisClass.patpanel.imgzuzahl[1],row,1);
-			Reha.thisClass.patpanel.aktRezept.tabaktrez.repaint();
+		aktuelleRezepte.setZuzahlImage(1);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
+					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
+					"Sie den Administrator");
+			
 		}
 	}
 	

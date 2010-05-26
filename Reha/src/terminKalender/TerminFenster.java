@@ -76,6 +76,7 @@ import org.therapi.reha.patient.AktuelleRezepte;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
+import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -4203,6 +4204,7 @@ class SetLock implements Runnable{
 				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
 				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
 				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
+				new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'"); 
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());				
 			}
@@ -4237,6 +4239,7 @@ class DirectLockRecord implements Runnable{
 					TerminFenster.setLockSpalte(TerminFenster.getLockStatement());
 					Reha.thisClass.messageLabel.setText("Lock erfolgreich");
 				}else{
+					new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 					TerminFenster.setLockOk(-1,rs.getString("maschine"));
 					Reha.thisClass.messageLabel.setText("Lock misslungen");
 				}
@@ -4246,7 +4249,7 @@ class DirectLockRecord implements Runnable{
 				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
 				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
 				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
-
+				new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
 				
@@ -4278,6 +4281,7 @@ private int gelesen;
 	    			//Reha.thisClass.shiftLabel.setText("Update ok.");	    			
 	    			gelesen++;
 	    			}catch(Exception ex){
+						new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 	    				break;
 	    			}
 	    			//********>Toolkit.getDefaultToolkit().beep();
