@@ -648,8 +648,13 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		builder.add(jb,cc.xy(2,11));
 		
 
-		String[] xstring = {"10","15","20","25","30","35","40","45","50","55","60","90","120"}; 
-		JComboBox jc = new JComboBox(xstring);
+		String[] xstring = {"10","15","20","25","30","35","40","45","50","55","60","90","120"};
+		JComboBox jc = null;
+		try{
+			jc = new JComboBox(xstring);
+		}catch(Exception ex){
+			
+		}
 		jc.setSelectedItem(SystemConfig.RoogleZeiten.get("KG"));
 		jc.setName("CKG");
 		gruppenCombo[0] = jc;

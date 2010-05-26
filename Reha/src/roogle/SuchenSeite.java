@@ -1181,7 +1181,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				cursorWait(false);
 				return;
 			}
-
+			int minpos = 0;
 			for(i=0;i<lang;i++){
 				boolean isdruckzeit = (  ((String)((Vector)vecWahl.get(i)).get(11)).trim().equals("")
 								?  false 
@@ -1200,13 +1200,30 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				
 				if(isdruckzeit && ((String)((Vector)vecWahl.get(i)).get(12)).trim().equals("")){
 					if(((String)((Vector)vecWahl.get(i)).get(8)).contains("\\\\")){
+						//System.out.println(((Vector)vecWahl.get(i)).get(8));
 						termtext = ((String)((Vector)vecWahl.get(i)).get(8)).substring(7);
+						if(termtext.contains("BWB")){
+							termtext = ((String)((Vector)vecWahl.get(i)).get(10));
+						}else{
+							if(termtext.contains("Min.")){
+								minpos = termtext.lastIndexOf("-");
+								termtext = termtext.substring(0,minpos);
+							}
+						}
+						/*
+						 * 
 						if(termtext.contains("Gruppe:_")){
 							termtext = termtext.substring(8);
+							System.out.println("in variante 1= "+termtext);
 						}else{
 							termtext = ((String)((Vector)vecWahl.get(i)).get(10));  // neu eingef�gt am 06.04.2009
+							System.out.println("in variante 2= "+termtext);
 						}
+						*/
+						//System.out.println("in variante 2= "+termtext);
+
 					}else{
+
 						termtext = ((String)((Vector)vecWahl.get(i)).get(8));
 						if(termtext.contains("Gruppe:_")){
 							termtext = termtext.substring(8);
@@ -2996,6 +3013,9 @@ private synchronized int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 		e1.printStackTrace();
 	}
 	*/
+	try{
+		
+
 	String sperre;
 	sperre = (String)((Vector)vecx).get(13)+
 						(String)((Vector)vecx).get(14) ; 
@@ -3062,6 +3082,9 @@ private synchronized int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 				stmtx = null;
 			}
 		}
+	}catch(Exception ex){
+		ex.printStackTrace();
+	}
 				
 		return 0;
 	}
@@ -3145,7 +3168,9 @@ class WorkerTabelle extends SwingWorker<Void,Void>{
 		sperrDatum.clear();
 		Vector nvec;
 		String sperre;
+		try{
 		while(true){
+			
 			anzahl = sucheDaten.size();
 			if( (SuchenSeite.mussUnterbrechen) && (anzahl==0) && (getTreffer()==anzahl) ){
 				break;
@@ -3195,6 +3220,10 @@ class WorkerTabelle extends SwingWorker<Void,Void>{
 			}
 			
 		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+			
 		setWorkerFertig(true);
 		nvec = null;
 		sperre = null;

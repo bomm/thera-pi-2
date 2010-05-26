@@ -78,11 +78,11 @@ public class PatientenFenster extends JXPanel implements RehaTPEventListener, Pa
 		
 		this.addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusGained(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("Patient -Focus da");
+				//Reha.thisClass.shiftLabel.setText("Patient -Focus da");
 				
 			}	   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("Patient -Focus weg");
+				//Reha.thisClass.shiftLabel.setText("Patient -Focus weg");
 			}   
 		});	
 		

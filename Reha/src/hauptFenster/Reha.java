@@ -1218,6 +1218,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	        shiftLabel.setForeground(Color.RED);
 	        shiftLabel.setVerticalAlignment(SwingConstants.CENTER);
 	        shiftLabel.setHorizontalAlignment(SwingConstants.LEFT);
+	        shiftLabel.setForeground(Color.RED);
 	        bar2.add(shiftLabel,BorderLayout.WEST);
 	        bar.add(bar2);
 	        sbkomplett.add(bar,sbcc.xy(10,2));
@@ -2520,7 +2521,7 @@ final class DatenbankStarten implements Runnable{
 				/************************/
 				new SocketClient().setzeInitStand("Native Interface ok");
 				
-				Reha.thisClass.shiftLabel.setText("Native Interface ok!");
+				//Reha.thisClass.shiftLabel.setText("Native Interface ok!");
 				Reha.sysConf.SystemInit(4);
 				new SocketClient().setzeInitStand("Emailparameter");
 

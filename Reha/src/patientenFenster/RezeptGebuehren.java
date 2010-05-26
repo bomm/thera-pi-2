@@ -57,6 +57,7 @@ import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
 import hauptFenster.Reha;
 import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JRtaTextField;
@@ -399,7 +400,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		cmd = "update verordn set rez_geb='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', "+
 		"rez_bez='T', zzstatus='1' where id='"+SystemConfig.hmAdrRDaten.get("<Rid>")+"'";
-		new ExUndHop().setzeStatement(cmd);
+		SqlInfo.sqlAusfuehren(cmd);
+		//new ExUndHop().setzeStatement(cmd);
 		////System.out.println("Rezeptstamm -> "+cmd);
 		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 		if(row >= 0){

@@ -235,11 +235,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		ViewPanel = new JXPanel(new BorderLayout());
 		ViewPanel.addFocusListener(new java.awt.event.FocusAdapter() {   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("VP Focus weg");
+				//Reha.thisClass.shiftLabel.setText("VP Focus weg");
 			
 			}
 			public void focusGained(java.awt.event.FocusEvent e) {
-				Reha.thisClass.shiftLabel.setText("VP Focus da");
+				//Reha.thisClass.shiftLabel.setText("VP Focus da");
 			
 			}
 		});
@@ -248,10 +248,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		GrundFlaeche = getGrundFlaeche();
 		GrundFlaeche.addFocusListener(new java.awt.event.FocusAdapter() {   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("GF Focus weg");
+				//Reha.thisClass.shiftLabel.setText("GF Focus weg");
 			}
 			public void focusGained(java.awt.event.FocusEvent e) {
-				Reha.thisClass.shiftLabel.setText("GF Focus da");
+				//Reha.thisClass.shiftLabel.setText("GF Focus da");
 				
 				holeFocus();
 			}
@@ -285,11 +285,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		ViewPanel.addFocusListener(new java.awt.event.FocusAdapter() {   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("VP Focus weg");
+				//Reha.thisClass.shiftLabel.setText("VP Focus weg");
 		
 			}
 			public void focusGained(java.awt.event.FocusEvent e) {
-				Reha.thisClass.shiftLabel.setText("VP Focus da");
+				//Reha.thisClass.shiftLabel.setText("VP Focus da");
 				((JRehaInternal)Reha.thisClass.terminpanel.eltern).feuereEvent(25554);
 				((JRehaInternal)Reha.thisClass.terminpanel.eltern).feuereEvent(25554);
 				if(! Reha.thisClass.terminpanel.eltern.isSelected()){
@@ -348,7 +348,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
 			//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());//System.out.println("ErrorCode: " + ex.getErrorCode ());
 			//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
-			Reha.thisClass.shiftLabel.setText("Lock misslungen");
+			//Reha.thisClass.shiftLabel.setText("Lock misslungen");
 		}
 		if(SystemConfig.UpdateIntervall > 0 && this.ansicht < 2){
 			db_Aktualisieren = new Thread(new sperrTest());
@@ -443,7 +443,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 					if ( (e.getKeyCode()==33 || e.getKeyCode()==34) && (ansicht < MASKEN_ANSICHT) ){
 						e.consume();
-						//Neuer Tag soll gew�hlt werden
+						//Neuer Tag soll gewählt werden
 						panelTastenAuswerten(e);
 						break;
 					}
@@ -872,7 +872,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						
 						if ( (e.getKeyCode()==155) && (e.isControlDown()) ){
-							//Daten in Speicher (früher Aufruf über F2)
+							//Daten in Speicher (früher Aufruf über F3)
 							////System.out.println("Strg+Einfg");
 							int xaktBehandler  = -1;
 							datenInSpeicherNehmen();
@@ -1269,7 +1269,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			});
 			oSpalten[tspalte].addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
 				public void mouseDragged(java.awt.event.MouseEvent e) {
-					Reha.thisClass.shiftLabel.setText("Spalte"+tspalte+"  / Drag:X="+e.getX()+" Y="+e.getY());
+					//Reha.thisClass.shiftLabel.setText("Spalte"+tspalte+"  / Drag:X="+e.getX()+" Y="+e.getY());
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
@@ -1727,101 +1727,117 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		case 38: //Pfeil auf
 			if(!gruppierenAktiv){
-				if( ((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)) ||
-						((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (maskenbelegung >= 0))){
+				try{
+					if( ((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)) ||
+							((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (maskenbelegung >= 0))){
+						if(ansicht==NORMAL_ANSICHT){
+							anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
+						}else if(ansicht==WOCHEN_ANSICHT){
+							anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
+						}else if(ansicht==MASKEN_ANSICHT){
+							anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();						
+						}
+						if(anz > 1){
+							if(aktiveSpalte[0] == 0){
+								aktiveSpalte[0] = anz-1;
+								aktiveSpalte[1] = anz-1;
+							}else{
+								aktiveSpalte[0] = aktiveSpalte[0]-1;
+									aktiveSpalte[1] = aktiveSpalte[0]-1;
+							}
+							if(dragLab[aktiveSpalte[2]].getIcon()!= null){
+								dragLab[aktiveSpalte[2]].setIcon(null);
+								dragLab[aktiveSpalte[2]].setText("");
+								oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
+							}
+							oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
+							oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
+						}	
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+			}else{
+				try{
 					if(ansicht==NORMAL_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
 					}else if(ansicht==WOCHEN_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
 					}else if(ansicht==MASKEN_ANSICHT){
-						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();						
+						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
 					}
-					if(anz > 1){
-						if(aktiveSpalte[0] == 0){
-							aktiveSpalte[0] = anz-1;
-							aktiveSpalte[1] = anz-1;
-						}else{
-							aktiveSpalte[0] = aktiveSpalte[0]-1;
-								aktiveSpalte[1] = aktiveSpalte[0]-1;
-						}
+					if( (gruppierenBloecke[1] >0) && (anz>0) ){
+						gruppierenBloecke[1]=gruppierenBloecke[1]-1;
 						if(dragLab[aktiveSpalte[2]].getIcon()!= null){
 							dragLab[aktiveSpalte[2]].setIcon(null);
 							dragLab[aktiveSpalte[2]].setText("");
 							oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 						}
-						oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
-						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
-					}	
-				}
-			}else{
-				if(ansicht==NORMAL_ANSICHT){
-					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
-				}else if(ansicht==WOCHEN_ANSICHT){
-					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
-				}else if(ansicht==MASKEN_ANSICHT){
-					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
-				}
-				if( (gruppierenBloecke[1] >0) && (anz>0) ){
-					gruppierenBloecke[1]=gruppierenBloecke[1]-1;
-					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
-						dragLab[aktiveSpalte[2]].setIcon(null);
-						dragLab[aktiveSpalte[2]].setText("");
-						oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
+						oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
 					}
-					oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
-				}					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			}
 			break;
 		case 40: //Pfeil ab
 			if(!gruppierenAktiv){
-				if( ((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)) ||
-						((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (maskenbelegung >= 0))){
-					if(ansicht==NORMAL_ANSICHT){
-						try{
-						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]
-						                                                                  ])).get(0)).size();
-						}catch(java.lang.ArrayIndexOutOfBoundsException ob){
-							//System.out.println("Spalte nicht belegt");
+				try{
+					if( ((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (belegung[aktiveSpalte[2]] >= 0)) ||
+							((aktiveSpalte[0] >= 0) && (aktiveSpalte[2] >= 0) && (maskenbelegung >= 0))){
+						if(ansicht==NORMAL_ANSICHT){
+							try{
+							anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]
+							                                                                  ])).get(0)).size();
+							}catch(java.lang.ArrayIndexOutOfBoundsException ob){
+								//System.out.println("Spalte nicht belegt");
+							}
+						}else  if(ansicht==WOCHEN_ANSICHT){
+							anz = ((Vector<?>)((ArrayList<?>)vTerm.get(aktiveSpalte[2])).get(0)).size();
+						}else  if(ansicht==MASKEN_ANSICHT){
+							anz = ((Vector<?>)((ArrayList<?>)vTerm.get(aktiveSpalte[2])).get(0)).size();
 						}
-					}else  if(ansicht==WOCHEN_ANSICHT){
-						anz = ((Vector<?>)((ArrayList<?>)vTerm.get(aktiveSpalte[2])).get(0)).size();
-					}else  if(ansicht==MASKEN_ANSICHT){
-						anz = ((Vector<?>)((ArrayList<?>)vTerm.get(aktiveSpalte[2])).get(0)).size();
+						if(anz > 1){
+							if(aktiveSpalte[0] == anz-1){
+								aktiveSpalte[0] = 0;
+								aktiveSpalte[1] = 0;
+							}else{
+								aktiveSpalte[0] =aktiveSpalte[0]+1;	
+								aktiveSpalte[1] =aktiveSpalte[0]+1;					
+							}
+							if(dragLab[aktiveSpalte[2]].getIcon()!= null){
+								dragLab[aktiveSpalte[2]].setIcon(null);
+								dragLab[aktiveSpalte[2]].setText("");
+								oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
+							}
+							oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
+							oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
+						}
 					}
-					if(anz > 1){
-						if(aktiveSpalte[0] == anz-1){
-							aktiveSpalte[0] = 0;
-							aktiveSpalte[1] = 0;
-						}else{
-							aktiveSpalte[0] =aktiveSpalte[0]+1;	
-							aktiveSpalte[1] =aktiveSpalte[0]+1;					
-						}
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+			}else{
+				try{
+					if(ansicht==NORMAL_ANSICHT){
+						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
+					}else if(ansicht==WOCHEN_ANSICHT){
+						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
+					}else if(ansicht==MASKEN_ANSICHT){
+						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
+					}
+					if( (gruppierenBloecke[1]< anz-1) && anz > 0){
+						gruppierenBloecke[1]=gruppierenBloecke[1]+1;
 						if(dragLab[aktiveSpalte[2]].getIcon()!= null){
 							dragLab[aktiveSpalte[2]].setIcon(null);
 							dragLab[aktiveSpalte[2]].setText("");
 							oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
 						}
-						oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);
-						oSpalten[aktiveSpalte[2]].schwarzAbgleich(aktiveSpalte[0],aktiveSpalte[0]);
+						oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
 					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
-			}else{
-				if(ansicht==NORMAL_ANSICHT){
-					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
-				}else if(ansicht==WOCHEN_ANSICHT){
-					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
-				}else if(ansicht==MASKEN_ANSICHT){
-					anz = ((Vector<?>)((ArrayList<?>) vTerm.get(aktiveSpalte[2])).get(0)).size();
-				}
-				if( (gruppierenBloecke[1]< anz-1) && anz > 0){
-					gruppierenBloecke[1]=gruppierenBloecke[1]+1;
-					if(dragLab[aktiveSpalte[2]].getIcon()!= null){
-						dragLab[aktiveSpalte[2]].setIcon(null);
-						dragLab[aktiveSpalte[2]].setText("");
-						oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
-					}
-					oSpalten[gruppierenSpalte].gruppierungZeichnen(gruppierenBloecke.clone());
-				}	
 			}
 			break;
 		case 37: //Pfeil nach links
@@ -1930,7 +1946,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					sperreAnzeigen();
 					setUpdateVerbot(false);					
 				}
-			}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT mu� noch entwickelt werden!
+			}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT muß noch entwickelt werden!
 				e.consume();
 				lockok = 1;
 				if(intagWahl){
@@ -2149,9 +2165,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void setUpdateVerbot(boolean lwert){
 		this.updateverbot = lwert;
 		if(lwert){
-			Reha.thisClass.shiftLabel.setText("Update-Verbot");			
+			//Reha.thisClass.shiftLabel.setText("Update-Verbot");			
 		}else{
-			Reha.thisClass.shiftLabel.setText("Update ok.");			
+			//Reha.thisClass.shiftLabel.setText("Update ok.");			
 		}
 		return;
 	}
@@ -3474,6 +3490,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 	public void terminAufnehmen(int behandler,int block){
 		String[] sTerminVergabe = {null,null,null,null,null,null,null,null,null,null,null};
+		String nametext = "";
+		String reztext = "";
+		String sdauer = "";
 		int xaktBehandler = behandler;
 		if(ansicht==MASKEN_ANSICHT){
 			return;
@@ -3481,10 +3500,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if(terminVergabe.size()>0){
 			int anzahl = terminVergabe.size();
 			boolean gleiche = false;
-			String nametext = ((String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block)).replaceAll("\u00AE"  ,"");
-			String reztext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(block);
+			nametext = ((String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(0)).get(block)).replaceAll("\u00AE"  ,"");
+			reztext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(1)).get(block);
 			String starttext = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(2)).get(block);
-			String sdauer = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(block);
+			sdauer = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(3)).get(block);
 			String stestdat = (String) ((Vector) ((ArrayList)  vTerm.get(xaktBehandler)).get(5)).get(4);
 		
 			for(int i = 0; i < anzahl;i++){
@@ -3497,6 +3516,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}
 			if(gleiche){
+				try{
+					Reha.thisClass.shiftLabel.setText("bereit für F2= "+nametext+"°"+reztext+"°"+sdauer+" Min.");	
+				}catch(Exception ex){
+					ex.printStackTrace();
+					Reha.thisClass.shiftLabel.setText("");
+				}				
 				return;
 			}
 		}
@@ -3527,11 +3552,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Reha.thisClass.mousePositionLabel.setForeground(Color.BLACK);
 				Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
 			}
+			try{
+				Reha.thisClass.shiftLabel.setText("bereit für F2= "+sTerminVergabe[8]+"°"+sTerminVergabe[9]+"°"+sTerminVergabe[4]+" Min.");	
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}catch(Exception ex){
 			terminVergabe.clear();
 			Reha.thisClass.mousePositionLabel.setForeground(Color.BLACK);
 			Reha.thisClass.mousePositionLabel.setText("Druckliste = leer");
+			Reha.thisClass.shiftLabel.setText("");
 		}
+		
+				
 		/*
 		for(int y = 0; y<terminVergabe.size();y++ ){
 			//System.out.println("*********************");
@@ -4295,7 +4328,7 @@ class DragAndMove extends Thread implements Runnable{
 			protected Void doInBackground() throws Exception {
 
 				while(PixelzuMinute >= 0){
-					Reha.thisClass.shiftLabel.setText(""+PixelzuMinute);
+					//Reha.thisClass.shiftLabel.setText(""+PixelzuMinute);
 					sleep(40);
 				}
 
@@ -4328,7 +4361,7 @@ class DropSupport implements DropTargetListener
 
     public void dragOver(DropTargetDragEvent dtde)
     {
-    	Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
+    	//Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
     	////System.out.println("Drag-Support"+dtde);
     	if (!fAccept) return;
  

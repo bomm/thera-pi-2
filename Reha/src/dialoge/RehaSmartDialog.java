@@ -278,7 +278,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void windowActivated(java.awt.event.WindowEvent e) {    
-		Reha.thisClass.shiftLabel.setText("Dialog -Focus da");
+		//Reha.thisClass.shiftLabel.setText("Dialog -Focus da");
 		if(pinPanel != null){
 			jtp.getContentContainer().requestFocus();
 			pinPanel.SetzeAktivButton(true);
@@ -303,7 +303,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void windowDeactivated(java.awt.event.WindowEvent e) {    
-		Reha.thisClass.shiftLabel.setText("Dialog -Focus weg");
+		//Reha.thisClass.shiftLabel.setText("Dialog -Focus weg");
 		if(pinPanel != null){
 			pinPanel.SetzeAktivButton(false);
 		}

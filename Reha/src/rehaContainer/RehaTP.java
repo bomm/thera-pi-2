@@ -48,13 +48,13 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 
 		this.addKeyListener(new java.awt.event.KeyAdapter() {
 			public void keyPressed(java.awt.event.KeyEvent e) {
-				Reha.thisClass.shiftLabel.setText("KeyPressed-RehaTP");
+				//Reha.thisClass.shiftLabel.setText("KeyPressed-RehaTP");
 			}
 		});	
 			
 		this.addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusGained(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("Dialog -Focus da");
+				//Reha.thisClass.shiftLabel.setText("Dialog -Focus da");
 				if(thisClass.pinPanel != null){
 					////System.out.println("************RehaTP focus bekommen");
 					thisClass.pinPanel.SetzeAktivButton(true);
@@ -67,7 +67,7 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 				}
 			}   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				Reha.thisClass.shiftLabel.setText("Dialog -Focus weg");
+				//Reha.thisClass.shiftLabel.setText("Dialog -Focus weg");
 				if(thisClass.pinPanel != null){
 					////System.out.println("************RehaTP focus verloren");					
 					thisClass.pinPanel.SetzeAktivButton(false);

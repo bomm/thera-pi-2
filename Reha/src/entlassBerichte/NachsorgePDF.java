@@ -529,7 +529,7 @@ public class NachsorgePDF {
 		cb.moveText(xempfaenger[0], xempfaenger[1]);
 		cb.setFontAndSize(bf,10.5f);
 		//cb.setCharacterSpacing(xempfaenger[2]);
-		cb.showText("Ausfertigung f�r "+empfaenger);
+		cb.showText("Ausfertigung für "+empfaenger);
 		cb.endText();
 	}
 	

@@ -620,11 +620,28 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		ik_email = kassenIKs.get(0).get(5);
 		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(6))-1);
 		name_kostent = holeNameKostentraeger();
+		if(ik_email.trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Emailadresse zugewiesen\n"+
+					"Abrechnung nach §302 ist nicht möglich!");
+		}
+		if(ik_papier.trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Papierannahmestelle zugewiesen\n"+
+			"Abrechnung nach §302 ist nicht möglich!");
+		}
+		if(ik_nutzer.trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Nutzer mit Entschlüsselungsbefugnis zugewiesen\n"+
+			"Abrechnung nach §302 ist nicht möglich!");
+		}
+		if(ik_physika.trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Empfänger der Abrechnungsdaten zugewiesen\n"+
+			"Abrechnung nach §302 ist nicht möglich!");
+		}
+		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-					
+
 					hmAnnahme = holeAdresseAnnahmestelle();
 					annahmeAdresseOk = true;
 				}catch(Exception ex){
@@ -702,6 +719,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			}else{
 				
 			    encryptedSize = doVerschluesseln(aktEsol+".org");
+
 			}
 		    
 		    if(encryptedSize < 0){
@@ -747,7 +765,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
 			String pass1 = SystemConfig.hmEmailExtern.get("Password");
 			String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
-			String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
+			String recipient = ik_email;//SystemConfig.hmEmailExtern.get("SenderAdresse");
 			String text = "";
 			boolean authx = (authent.equals("0") ? false : true);
 			boolean bestaetigen = false;
@@ -889,9 +907,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/***************************************************************/	
 	private int doVerschluesseln(String datei){
 		try {
-			NebraskaKeystore store = new NebraskaKeystore("C:/Nebraska/540840108.p12", "196205","196205", "IK540840108");
-			NebraskaEncryptor encryptor = store.getEncryptor("IK"+ik_nutzer);
-			//encryptor.setEncryptToSelf(true);
+			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
+			NebraskaKeystore store = new NebraskaKeystore(keystore, "123456","123456", Reha.aktIK);
+			NebraskaEncryptor encryptor = store.getEncryptor(ik_nutzer);
 			String inFile = Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org";
 			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));
 			/*

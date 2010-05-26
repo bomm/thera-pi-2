@@ -412,7 +412,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		    @Override
 		    public void dragOver(DropTargetDragEvent dtde)
 		    {
-		    	Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
+		    	//Reha.thisClass.shiftLabel.setText(dtde.getLocation().toString());
 		    	////System.out.println("Drag-Support"+dtde);
 		    	if (!fAccept) return;
 		 

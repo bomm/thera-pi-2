@@ -50,6 +50,8 @@ public class TermineErfassen implements Runnable {
 				boolean termok = testeTermine(); 
 				if(!termok){
 					////System.out.println("Rezept steht an diesem Tag nicht im Kalender");
+					JOptionPane.showMessageDialog(null, "Dieses Rezept ist nicht am heutigen Tag im Kalender");
+					return;
 				}
 				if(erstfund >= 0){
 					scheibeTermin();
@@ -79,7 +81,7 @@ public class TermineErfassen implements Runnable {
 					case 2:
 						//System.out.println("Das Rezept wurde bereits abgerechnet");
 					case 3:
-						//System.out.println("Das Rezept wurde an diesen Tag bereits erfa�t");
+						//System.out.println("Das Rezept wurde an diesen Tag bereits erfaßt");
 					}
 				}
 			}
@@ -198,7 +200,7 @@ public class TermineErfassen implements Runnable {
 				/*
 				}else{
 					JOptionPane.showMessageDialog(null, "Die Spalte ist momentan gesperrt, der Termin kann zwar\n"+
-					"nicht markiert werden, wird aber im Rezeptstamm erfa�t");
+					"nicht markiert werden, wird aber im Rezeptstamm erfaßt");
 				}
 				*/
 				ret = true;

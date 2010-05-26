@@ -205,7 +205,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 						Thread erfassen = new Thread(new TermineErfassen(xoutString,tvec));
 						erfassen.start();
 					}else if(outString.substring(0,1).equals("S")){
-						////System.out.println("Schl�ssel Nr. "+outString.replaceAll("\\n", ""));
+						////System.out.println("Schlüssel Nr. "+outString.replaceAll("\\n", ""));
 						outString = outString.substring(2).replaceAll("\\r","");
 						outString = outString.replaceAll("\\n","");
 						final String schluessel = outString;

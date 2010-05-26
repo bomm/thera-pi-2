@@ -1712,8 +1712,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void doRezeptGebuehr(Point pt){
 		boolean bereitsbezahlt = false;
 		// noch zu erledigen
-		// erst pr�fen ob Zuzahlstatus = 0, wenn ja zur�ck;
-		// dann pr�fen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
+		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
+		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("0") ){
 			JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
 			return;
@@ -1748,6 +1748,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Bges>",StringTools.fuelleMitZeichen(
 				SystemConfig.hmAdrRDaten.get("<Rwert>"), " ", true, 6));
 		SystemConfig.hmAdrRDaten.put("<Bnr>",SystemConfig.hmAdrRDaten.get("<Rnummer>"));
+		//System.out.println("Es wird folgender Bacrode genommen "+url);
 		
 		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		

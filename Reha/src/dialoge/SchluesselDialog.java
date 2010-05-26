@@ -123,7 +123,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		FormLayout lay = new FormLayout("0dlu,right:max(40dlu;p),10dlu,120dlu,50dlu","10dlu,p,10dlu,p,10dlu,p,10dlu,p,10dlu");
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
-		pb.addLabel("Schl�ssel",cc.xy(2, 2));
+		pb.addLabel("Schlüssel",cc.xy(2, 2));
 		schluessellab = new JLabel(schluessel) ;
 		schluessellab.setFont(fon);
 		pb.add(schluessellab,cc.xy(4, 2));
