@@ -133,6 +133,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);	
 	Vector<String> titel = new Vector<String>() ;
 	Vector<String> formular = new Vector<String>();
+	Vector<String> aktTerminBuffer  = new Vector<String>();
+	int aktuellAngezeigt = -1;
 	int iformular = -1;
 
 	//public boolean lneu = false;
@@ -633,10 +635,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			@SuppressWarnings("unchecked")
 			@Override
 			protected Void doInBackground() throws Exception {
+				try{
+				aktTerminBuffer.clear();
+				aktTerminBuffer.trimToSize();
 		
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 				Vector<Vector<String>> vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
-						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,abschluss,pat_intern,id", 
+						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,abschluss,pat_intern,id,termine", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
 				int anz = vec.size();
 				
@@ -644,7 +649,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					if(i==0){
 						dtblm.setRowCount(0);						
 					}
-
+					aktTerminBuffer.add(String.valueOf(vec.get(i).get(8)));
 					int zzbild = 0;
 					int rezstatus = 0;
 					if( ((Vector)vec.get(i)).get(1) == null){
@@ -667,28 +672,36 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						if(suchePatUeberRez){
 							suchePatUeberRez = false;
 						}else{
+							/*
 							if(!inEinzelTermine){
 								new SwingWorker<Void,Void>(){
 									@Override
 									protected Void doInBackground()
 											throws Exception {
-										inEinzelTermine = true;
-										holeEinzelTermine(ix,null);
-										inEinzelTermine = false;
+										try{
+											inEinzelTermine = true;
+											holeEinzelTermine(ix,null,"aus suche (hole Rezepte)");
+											inEinzelTermine = false;
+										}catch(Exception ex){
+											inEinzelTermine = false;
+										}
 										return null;
 									}
 									
 								}.execute();
 							}
+							*/
 						}
 					}
 				}
+				/************** Bis hierher hat man die Sätze eingelesen ********************/
 				Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
+				int row = 0;
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
 					//int anzeigen = -1;
 					if(xrez_nr.length() > 0){
-						int row = 0;
+						row = 0;
 						rezneugefunden = true;
 						for(int ii = 0; ii < anz;ii++){
 							if(tabaktrez.getValueAt(ii,0).equals(xrez_nr)){
@@ -697,20 +710,40 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							}
 							
 						}
-						tabaktrez.setRowSelectionInterval(row, row);
+						//tabaktrez.setRowSelectionInterval(row, row);
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
-						tabaktrez.scrollRowToVisible(row);
+						/*
 						if(!inEinzelTermine){
-							inEinzelTermine = true;
-							holeEinzelTermine(row,null);
-							inEinzelTermine = false;
+							try{
+								inEinzelTermine = true;
+								holeEinzelTermine(row,null,"in if anz > 0 ebenfalls in hole rezepte");
+								inEinzelTermine = false;
+							}catch(Exception ex){
+								inEinzelTermine = false;
+							}
 						}
+						*/
 						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
 					}else{
 						rezneugefunden = true;
-						tabaktrez.setRowSelectionInterval(0, 0);
+						//tabaktrez.setRowSelectionInterval(0, 0);
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
 						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
+					}
+					
+					try{
+						if(! inEinzelTermine){
+							inEinzelTermine = true;
+							holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));
+							aktuellAngezeigt = row;
+							//holeEinzelTermineAktuell(0,null,aktTerminBuffer.get(row));
+							tabaktrez.setRowSelectionInterval(row, row);
+							tabaktrez.scrollRowToVisible(row);
+							inEinzelTermine = false;
+						}
+
+					}catch(Exception ex){
+
 					}
 					
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);
@@ -725,11 +758,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					wechselPanel.repaint();
 					dtblm.setRowCount(0);
 					dtermm.setRowCount(0);
-					
+					aktuellAngezeigt = -1;
 					Reha.thisClass.patpanel.vecaktrez.clear();
 					Reha.thisClass.patpanel.vecaktrez = null;
 				}
-				
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 			
@@ -799,8 +834,88 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.validate();
 		tabaktrez.repaint();
 	}
+	private void termineAufNull(){
+		dtermm.setRowCount(0);
+		tabaktterm.validate();
+		anzahlTermine.setText("Anzahl Termine: 0");
+		SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
+		SystemConfig.hmAdrRDaten.put("<Rerstdat>","");		
+	}
+	public void holeEinzelTermineAusRezept(String xreznr,String termine){
+		try{
+		Vector<String> xvec = null;
+		Vector retvec = new Vector();
+		String terms = null;
+		if(termine == null){
+			xvec = SqlInfo.holeSatz("verordn", "termine,pat_intern", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
+			if(xvec.size()==0){
+				termineAufNull();
+				return;
+			}else{
+				terms = (String) xvec.get(0);	
+			}
+		}else{
+			terms = termine;
+		}
+		if(terms==null){
+			termineAufNull();
+			return;
+		}
+		if(terms.equals("")){
+			termineAufNull();
+			return;
+		}
+		String[] tlines = terms.split("\n");
+		int lines = tlines.length;
+		Vector<String> tvec = new Vector<String>();
+		for(int i = 0;i<lines;i++){
+			tvec.clear();
+			String[] terdat = tlines[i].split("@");
+			int ieinzel = terdat.length;
+			for(int y = 0; y < ieinzel;y++){
+				if(y==0){
+					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+				}else{
+					tvec.add(new String(terdat[y]));					
+				}
+			}
+			retvec.add(tvec.clone());
+
+		}
+		Comparator<Vector> comparator = new Comparator<Vector>() {
+			@Override
+			public int compare(Vector o1, Vector o2) {
+				// TODO Auto-generated method stub
+				String s1 = (String)o1.get(4);
+				String s2 = (String)o2.get(4);
+				return s1.compareTo(s2);
+			}
+		};
+		Collections.sort(retvec,comparator);
+		//System.out.println(retvec);
+		termineInTabelle((Vector)retvec.clone());
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	private void termineInTabelle( Vector<Vector<String>> terms){
+		dtermm.setRowCount(0);
+		//System.out.println(terms);
+		for(int i = 0; i < terms.size();i++){
+			if(i==0){
+				SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terms.get(i).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(i).get(0))) );	
+			}
+			dtermm.addRow((Vector<?>)terms.get(i));
+		}
+		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terms.get(terms.size()-1).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(terms.size()-1).get(0))) );
+		
+		tabaktterm.validate();
+		anzahlTermine.setText("Anzahl Termine: "+terms.size());
+		
+	}
 	@SuppressWarnings("unchecked")
-	private void holeEinzelTermine(int row,Vector<String> vvec){
+	private void holeEinzelTermineAktuell(int row,Vector<String> vvec,String aufruf){
+		//System.out.println("Aufruf aus --> "+aufruf);
 		inEinzelTermine = true;
 		Vector<String> xvec = null;
 		if(vvec == null){
@@ -845,7 +960,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(y==0){
 					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
 					if(i==0){
-						SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
+						SystemConfig.hmAdrRDaten.put("<Rerstdat>",String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
 					}
 				}else{
 					tvec.add(new String(terdat[y]));					
@@ -877,6 +992,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
 		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
+		if(aktuellAngezeigt>=0){
+			aktTerminBuffer.set(aktuellAngezeigt, sb.toString());
+		}
+
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
@@ -984,9 +1103,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 									}
 		                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		                			if(!inEinzelTermine ){
-		                				inEinzelTermine = true;
-		                				holeEinzelTermine(ix,null);
-		                				inEinzelTermine = false;
+		                				try{
+		                					inEinzelTermine = true;
+		                					//holeEinzelTermineAktuell(0,null,aktTerminBuffer.get(ix));
+		                					//holeEinzelTermine(ix,null,"aus rezeptselect Listener");
+		                					//System.out.println(aktTerminBuffer.get(ix));
+		        							holeEinzelTermineAusRezept("",aktTerminBuffer.get(ix));
+		        							aktuellAngezeigt = ix;
+		                					inEinzelTermine = false;
+
+		                				}catch(Exception ex){
+		                					inEinzelTermine = false;
+		                				}
 		                			}
 		                    		
 		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));

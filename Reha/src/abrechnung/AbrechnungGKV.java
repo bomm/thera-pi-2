@@ -147,6 +147,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	
 	String rlistekasse;
 	String rlisteesol;
+	
 	public AbrechnungGKV(JAbrechnungInternal xjry){
 		super();
 		this.setJry(xjry);
@@ -478,6 +479,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
     	if(aktuellerKassenKnoten != null){	
     		rechneKasse(aktuellerKassenKnoten);
     	}	
+	}
+	public String getAbrechnungKasse(){
+		System.out.println(((JXTTreeNode)aktuellerKnoten).knotenObjekt.ktraeger);
+		return ((JXTTreeNode)aktuellerKnoten).knotenObjekt.ktraeger;
 	}
 	public void rechneKasse(JXTTreeNode aktKasse){
 		kontrollierteRezepte = 0;
@@ -910,7 +915,6 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/***************************************************************/	
 	private int doVerschluesseln(String datei){
 		try {
-			rlisteesol = aktEsol.toString();
 			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
 			NebraskaKeystore store = new NebraskaKeystore(keystore, "123456","123456", Reha.aktIK);
 			NebraskaEncryptor encryptor = store.getEncryptor(ik_nutzer);
@@ -978,6 +982,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 28) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 44) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 30) );
+		rlisteesol = String.valueOf(aktEsol); //aktEsol.toString();
+		rlistekasse = String.valueOf(getAbrechnungKasse());
 	}
 	/*************************************************/
 	private void macheEndeDaten(){
@@ -1053,7 +1059,6 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		if(vec.size()==0){
 			return "";
 		}
-		rlistekasse = vec.get(0).get(0);
 		return vec.get(0).get(0);
 	}
 	

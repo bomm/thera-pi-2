@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -24,7 +25,10 @@ import javax.swing.SwingUtilities;
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
+
+import patientenFenster.KassenAuswahl;
 
 import rehaInternalFrame.JRehaabrechnungInternal;
 import sqlTools.SqlInfo;
@@ -36,6 +40,7 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -46,6 +51,8 @@ import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
+import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -66,6 +73,7 @@ public class AbrechnungReha extends JXPanel{
 	JRehaabrechnungInternal internal = null;
 	JXPanel content;
 	JLabel patLabel = null;
+	JLabel kassenLabel = null;
 	JLabel kasseGesamt = null;
 	JLabel patGesamt = null;
 	JRtaTextField[] tfanzahl = {null,null,null,null};
@@ -80,9 +88,10 @@ public class AbrechnungReha extends JXPanel{
 	JRtaTextField[] tfpatgesamt = {null};
 	JRtaComboBox[] jcmbpat = {null};
 
-	JButton[] jbut = {null,null,null,null,null};
+	JButton[] jbut = {null,null,null,null,null,null};
 	Vector<Vector<String>> rehavec = new Vector<Vector<String>>(); 
 	Vector<Vector<String>> kassvec = new Vector<Vector<String>>();
+	Vector<Vector<String>> rechnungvec = new Vector<Vector<String>>();
 	Vector<Vector<String>> patvec = new Vector<Vector<String>>();
 
 	DecimalFormat dcf = new DecimalFormat("####0.00");
@@ -110,6 +119,7 @@ public class AbrechnungReha extends JXPanel{
 	String druckDrucker = "";
 	String druckFormular = "";
 	String druckIk = "";
+	String anschriftID = "";
 	StringBuffer rechnungBuf = new StringBuffer();
 	HashMap<String,String> hmRechnung = new HashMap<String,String>();
 	Vector<Vector<String>> vecposrechnung = new Vector<Vector<String>>();
@@ -157,6 +167,9 @@ public class AbrechnungReha extends JXPanel{
 			protected Void doInBackground() throws Exception {
 				try{
 					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					if(Reha.thisClass.patpanel == null){
+						return null;
+					}
 					if(  (patient != null)  && (Reha.thisClass.patpanel.vecaktrez.size() > 0) ){
 						if(Reha.thisClass.patpanel.vecaktrez.get(1).startsWith("RH")){
 							tfrehanr[0].setText(Reha.thisClass.patpanel.vecaktrez.get(1));
@@ -215,7 +228,7 @@ public class AbrechnungReha extends JXPanel{
 		//     1           2    3    4     5     6    7     8
 		"fill:0:grow(0.5),40dlu,5dlu,120dlu,5dlu,40dlu,5dlu,40dlu,fill:0:grow(0.5)",
 		//  1  2  3    4  5   6  7   8  9  10 11  12  13 14  15  16  17  18 19 20
-		"20dlu,p,20dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,20dlu,p,5dlu,p,2dlu,p"
+		"20dlu,p,15dlu,p,2dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,20dlu,p,5dlu,p,2dlu,p"
 		);
 		CellConstraints cc = new CellConstraints();
 		content = new JXPanel();
@@ -224,51 +237,56 @@ public class AbrechnungReha extends JXPanel{
 		content.add(lab,cc.xy(2,2));
 		tfrehanr[0] = new JRtaTextField("GROSS",true);
 		content.add(tfrehanr[0],cc.xy(4,2));
-		content.add((jbut[4] = macheBut("einlesen","einlesen")),cc.xyw(6,2,3));
+		content.add((jbut[4] = macheBut("einlesen","einlesen")),cc.xy(6,2));
+		content.add((jbut[5] = macheBut("Anschrift","anschrift")),cc.xy(8,2));
 		patLabel = new JLabel(" ");
 		patLabel.setForeground(Color.BLUE);
 		content.add(patLabel,cc.xyw(2,4,7));
+		kassenLabel = new JLabel(" ");
+		kassenLabel.setForeground(Color.BLUE);
+		content.add(kassenLabel,cc.xyw(2,6,7));
+		
 		for(int i = 0; i < 4;i++){
 			tfanzahl[i] = new JRtaTextField("ZAHLEN",true);
-			content.add(tfanzahl[i],cc.xy(2,6+(i*2)));
-			content.add((jcmb[i]=macheCombo("combo_"+Integer.toString(i))),cc.xy(4, 6+(i*2)));
+			content.add(tfanzahl[i],cc.xy(2,8+(i*2)));
+			content.add((jcmb[i]=macheCombo("combo_"+Integer.toString(i))),cc.xy(4, 8+(i*2)));
 			tfpreis[i] = new JRtaTextField("FL",true,"6.2","RECHTS");
-			content.add(tfpreis[i],cc.xy(6,6+(i*2)));
+			content.add(tfpreis[i],cc.xy(6,8+(i*2)));
 			tfgesamt[i] = new JRtaTextField("FL",true,"6.2","RECHTS");
 			tfgesamt[i].setEditable(false);
-			content.add(tfgesamt[i],cc.xy(8,6+(i*2)));
+			content.add(tfgesamt[i],cc.xy(8,8+(i*2)));
 		}
 		lab = new JLabel("Kassenrechnung Summe :");
 		lab.setForeground(Color.BLUE);
-		content.add(lab,cc.xy(4,14));
+		content.add(lab,cc.xy(4,16));
 		kasseGesamt = new JLabel("0,00");
 		kasseGesamt.setForeground(Color.RED);
 		kasseGesamt.setHorizontalAlignment(JLabel.RIGHT);
-		content.add(kasseGesamt,cc.xy(8,14));
+		content.add(kasseGesamt,cc.xy(8,16));
 		
 		jckb[0] = new JRtaCheckBox("zusätzlich Eigenanteile der Patienten abrechnen");
 		jckb[0].setActionCommand("auchpatliquidieren");
 		jckb[0].addActionListener(al);
-		content.add(jckb[0] ,cc.xyw(2,16,7));
+		content.add(jckb[0] ,cc.xyw(2,18,7));
 		tfpatanzahl[0]= new JRtaTextField("ZAHLEN",true);
 		tfpatanzahl[0].setEnabled(false);
-		content.add(tfpatanzahl[0] ,cc.xy(2,18));
+		content.add(tfpatanzahl[0] ,cc.xy(2,20));
 		jcmbpat[0]=macheCombo("combopat");
 		jcmbpat[0].setEnabled(false);
-		content.add(jcmbpat[0],cc.xy(4, 18));
+		content.add(jcmbpat[0],cc.xy(4, 20));
 		tfpatpreis[0] = new JRtaTextField("FL",true,"6.2","RECHTS");
 		tfpatpreis[0].setEnabled(false);
-		content.add(tfpatpreis[0],cc.xy(6,18));
+		content.add(tfpatpreis[0],cc.xy(6,20));
 		tfpatgesamt[0] = new JRtaTextField("FL",true,"6.2","RECHTS");
 		tfpatgesamt[0].setEditable(false);
-		content.add(tfpatgesamt[0],cc.xy(8,18));
+		content.add(tfpatgesamt[0],cc.xy(8,20));
 		lab = new JLabel("Patientenrechung Summe :");
 		lab.setForeground(Color.BLUE);
-		content.add(lab,cc.xy(4,20));
+		content.add(lab,cc.xy(4,22));
 		patGesamt = new JLabel("0,00");
 		patGesamt.setForeground(Color.RED);
 		patGesamt.setHorizontalAlignment(JLabel.RIGHT);
-		content.add(patGesamt,cc.xy(8,20));
+		content.add(patGesamt,cc.xy(8,22));
 		content.validate();
 		return content;
 	}
@@ -324,7 +342,8 @@ public class AbrechnungReha extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				holePatientUndKostentraeger(rehavec.get(0).get(0).trim(),rehavec.get(0).get(37).trim().trim() );
+				holePatientUndKostentraeger(rehavec.get(0).get(0).trim(),rehavec.get(0).get(37).trim());
+				holeRechnungsAnschrift(rehavec.get(0).get(37).trim());
 				return null;
 			}
 			
@@ -352,7 +371,8 @@ public class AbrechnungReha extends JXPanel{
 	private void holePatientUndKostentraeger(String pat_intern,String kassenid){
 		patvec = SqlInfo.holeFelder("select n_name,v_name,geboren,anrede,titel,strasse,plz,ort,kv_status from pat5 where pat_intern='"+pat_intern+"' LIMIT 1");
 		kassvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_kostent from kass_adr where id='"+kassenid+"' LIMIT 1");
-		
+		rechnungvec = (Vector<Vector<String>>)kassvec.clone();
+		anschriftID = rehavec.get(0).get(37).trim().trim();
 		if(patvec.size()<=0){
 			patLabel.setText("Patient wurde nicht gefunden");
 			abrechnungOk = false;
@@ -367,9 +387,10 @@ public class AbrechnungReha extends JXPanel{
 		patLabel.setText(
 				StringTools.EGross(patvec.get(0).get(0))+", "+
 				StringTools.EGross(patvec.get(0).get(1))+", geb.am: "+
-				DatFunk.sDatInDeutsch(patvec.get(0).get(2))+" - Kostenträger:"+
-				(istprivat ? "privat" : kassvec.get(0).get(0).trim())
+				DatFunk.sDatInDeutsch(patvec.get(0).get(2))+(istprivat ? " - privat" : "")
 				);
+		doKassenLabel();
+				
 	}
 	private void controlsEinschalten(boolean einschalten){
 		if(einschalten){
@@ -414,9 +435,10 @@ public class AbrechnungReha extends JXPanel{
 			}
 		}
 		jckb[0].setSelected(false);
-		patGesamt.setText("");
-		kasseGesamt.setText("");
-		patLabel.setText("");
+		patGesamt.setText(" ");
+		kasseGesamt.setText(" ");
+		patLabel.setText(" ");
+		kassenLabel.setText(" "); 
 		this.initOk = false;
 		setzeFocus();
 	}
@@ -465,6 +487,10 @@ public class AbrechnungReha extends JXPanel{
 					doRehaAbrechnung();
 					//allesAusschalten();
 				}
+				if(cmd.contains("anschrift")){
+					doAnschrift();
+				}
+				
 			}
 		};
 		kl = new KeyListener(){
@@ -488,11 +514,55 @@ public class AbrechnungReha extends JXPanel{
 			
 		};
 	}
+	private void doKassenLabel(){
+		kassenLabel.setText(rechnungvec.get(0).get(0)+" "+
+				rechnungvec.get(0).get(1)+" "+rechnungvec.get(0).get(2)+" "+
+				rechnungvec.get(0).get(3)+" "+rechnungvec.get(0).get(4));
+	}
+
+
 	private void doKorrektur(){
 		JOptionPane.showMessageDialog(null, "Korrektur-Funktion noch nicht implementiert");
 	}
 	private AbrechnungReha getInstance(){
 		return this;
+	}
+	private void holeRechnungsAnschrift(String id){
+		rechnungvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_kostent from kass_adr where id='"+id+"' LIMIT 1");
+		doKassenLabel();
+	}
+
+	private void doAnschrift(){
+		//KassenAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String kassennum){
+		JRtaTextField[] tfs = {null,null,null};
+		tfs[0] = new JRtaTextField("nix",false);
+		tfs[1] = new JRtaTextField("nix",false);
+		tfs[2] = new JRtaTextField("nix",false);
+		tfs[1].setText(anschriftID);
+		//System.out.println(tfs[1].getText());
+		//this.suchkrit = suchegleichnach[0];
+		//this.suchid = suchegleichnach[1];
+
+		String[] suchegleichnach = {null,null};
+		suchegleichnach[0] = "";
+		suchegleichnach[1] = "";
+		Point p = jbut[5].getLocationOnScreen();
+		KassenAuswahl kwahl = new KassenAuswahl(null,"RechnungsAnschrift",suchegleichnach,tfs,"");
+		kwahl.setLocation(p.x-50,p.y+30);
+		kwahl.fuelleIdTabelle(tfs[1].getText());
+		kwahl.pack();
+		kwahl.setModal(true);
+		kwahl.setVisible(true);
+		if(! tfs[0].getText().contains("***")){
+			if(! tfs[2].getText().trim().equals(anschriftID)){
+				anschriftID = String.valueOf(tfs[2].getText().trim());
+				holeRechnungsAnschrift(anschriftID);
+			}
+		}
+		for(int i = 0; i < 3; i++){
+			tfs[i].listenerLoeschen();
+			tfs[i] = null;
+		}
 	}
 	private void doRehaAbrechnung(){
 		new SwingWorker<Void,Void>(){
@@ -505,6 +575,7 @@ public class AbrechnungReha extends JXPanel{
 						if(abrechnungOk){doFaktura();}
 						if(abrechnungOk){doAnlegenOP();}
 						if(jckb[0].isSelected()){
+							Thread.sleep(300);
 							if(abrechnungOk){doEigenanteilDrucken();}
 							if(abrechnungOk){doFaktura();}
 							if(abrechnungOk){doAnlegenOP();	}
@@ -523,6 +594,9 @@ public class AbrechnungReha extends JXPanel{
 					}
 					getInstance().setCursor(Reha.thisClass.cdefault);
 				} catch (Exception e) {
+					getInstance().setCursor(Reha.thisClass.cdefault);
+					JOptionPane.showMessageDialog(null, "Fehler bei der Abrechnung\n"+e.getMessage());
+					e.printStackTrace();
 					allesAusschalten();
 				}
 				return null;
@@ -607,10 +681,13 @@ public class AbrechnungReha extends JXPanel{
 		gesamtPreis = BigDecimal.valueOf(Double.parseDouble(tfpatgesamt[0].getText().trim().replace(",", ".")));
 
 		starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+this.druckFormular,this.druckDrucker);
+		System.out.println("Dokument gestartet");
 		starteErsetzen(hmRechnung);
+		System.out.println("suche ersetzen abeschlossen");
 		startePositionen(vecposrechnung,gesamtPreis);
+		System.out.println("Positionen gesetzt");
 		starteDrucken(this.druckExemplare);
-		
+		System.out.println("Druck gestartet");
 	}
 
 	private void doFaktura(){
@@ -628,7 +705,8 @@ public class AbrechnungReha extends JXPanel{
 				try{
 					if( hmRechnung.get("<pri4>").indexOf(" ") >= 0){
 						rechnungBuf.append("plz='"+hmRechnung.get("<pri4>").split(" ")[0]+"', ");	
-						rechnungBuf.append("ort='"+hmRechnung.get("<pri4>").split(" ")[1]+"', ");	
+						int leeran = hmRechnung.get("<pri4>").indexOf(" ");
+						rechnungBuf.append("ort='"+hmRechnung.get("<pri4>").substring(leeran).trim()+"', ");	
 						
 					}else{
 						rechnungBuf.append("plz='"+""+"', ");	
@@ -710,12 +788,19 @@ public class AbrechnungReha extends JXPanel{
 				hmRechnung.put("<pri5>",padressDaten[4]+",");
 			}else{
 				//kassvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_ktraeger from kass_adr where id='"+kassenid+"' LIMIT 1");
+				hmRechnung.put("<pri1>",rechnungvec.get(0).get(0));
+				hmRechnung.put("<pri2>",rechnungvec.get(0).get(1));
+				hmRechnung.put("<pri3>",rechnungvec.get(0).get(2));
+				hmRechnung.put("<pri4>",rechnungvec.get(0).get(3)+" "+rechnungvec.get(0).get(4));
+				hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
+
+				/*
 				hmRechnung.put("<pri1>",kassvec.get(0).get(0));
 				hmRechnung.put("<pri2>",kassvec.get(0).get(1));
 				hmRechnung.put("<pri3>",kassvec.get(0).get(2));
 				hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
 				hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
-
+				*/
 				/*
 				if(kassvec.get(0).get(5).trim().equals("")){
 					hmRechnung.put("<pri1>",kassvec.get(0).get(0));
@@ -757,7 +842,8 @@ public class AbrechnungReha extends JXPanel{
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehagkvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehagkvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehagkvexemplare"));
-			}else if(jcmb[0].getSelectedItem().toString().contains("DRV")){
+			}else if(jcmb[0].getSelectedItem().toString().contains("LVA")||
+					jcmb[0].getSelectedItem().toString().contains("BFA")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
@@ -807,19 +893,37 @@ public class AbrechnungReha extends JXPanel{
 	}
 	
 	/******************Nachfolgend die OO.writer - Funktionen**************************/
-	public void starteDokument(String url,String drucker) throws Exception{
-		IDocumentService documentService = null;;
-		documentService = Reha.officeapplication.getDocumentService();
+	public void starteDokument(String url,String drucker) {
+		System.out.println("URL="+url);
+		System.out.println("Drucker="+drucker);
+		IDocumentService documentService = null;
+		try {
+			documentService = Reha.officeapplication.getDocumentService();
+		} catch (OfficeApplicationException e) {
+			e.printStackTrace();
+		}
 		IDocumentDescriptor docdescript = new DocumentDescriptor();
         docdescript.setHidden(true);
         docdescript.setAsTemplate(true);
 		IDocument document = null;
-		document = documentService.loadDocument(url,docdescript);
+		try {
+			document = documentService.loadDocument(url,docdescript);
+		} catch (NOAException e) {
+			e.printStackTrace();
+		}
 		/**********************/
 		textDocument = (ITextDocument)document;
 		OOTools.druckerSetzen(textDocument, drucker);
-		textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
-		textEndbetrag = textDocument.getTextTableService().getTextTable("Tabelle2");
+		try {
+			textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		try {
+			textEndbetrag = textDocument.getTextTableService().getTextTable("Tabelle2");
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
 	}
 	private void starteErsetzen(HashMap<String,String> hmAdresse){
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
@@ -871,8 +975,12 @@ public class AbrechnungReha extends JXPanel{
 				}
 			});
 		}else{
-			for(int i = 0; i < exemplare; i++){
-				textDocument.print();
+			PrintProperties printprop = new PrintProperties ((short)exemplare,null);
+			textDocument.getPrintService().print(printprop);
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			textDocument.close();
 			textDocument = null;

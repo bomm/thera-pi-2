@@ -121,6 +121,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	String[][] tempDateien = {null,null,null,null,null};
 	boolean[] initOk = {false,false,false,false};
 	public ITextDocument document = null;
+	public boolean bereitsoffen = false;
 	
 	ArztBausteine arztbaus = null; 
 	
@@ -232,6 +233,29 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		setLayout(new BorderLayout());
 		
 		add(this.getToolbar(),BorderLayout.NORTH);
+		if(!neu){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					int offen = SqlInfo.zaehleSaetze("berlock","berichtid='"+Integer.toString(berichtid)+"'" );
+					if(offen > 0){
+						bereitsoffen = true;
+						gutbut[0].setEnabled(false);
+						JOptionPane.showMessageDialog(null, "Der Bericht wird derzeit von einem anderen Teilnehmer bearbetet!\n"+
+								"Sie können den Bericht zwar öffnen jedoch keine Veränderungen abspeichern!!!!\n\n"+
+								"Bearbeiter: "+
+								SqlInfo.holeEinzelFeld("select maschine from berlock where berichtid='"+Integer.toString(berichtid)+"'" ));
+					}else{
+						bereitsoffen = false;
+						String cmd = "insert into berlock set berichtid='"+
+						Integer.toString(berichtid)+"', maschine='"+SystemConfig.dieseMaschine.toString()+"'";
+						SqlInfo.sqlAusfuehren(cmd);
+					}
+					return null;
+				}
+			}.execute();
+			
+		}
 
 		if(berichttyp.contains("E-Bericht") || berichttyp.contains("LVA-A") || berichttyp.contains("BfA-A") 
 				|| berichttyp.contains("GKV-A")){
@@ -276,6 +300,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			@Override
 			protected Void doInBackground() throws Exception {
 				sysVarList = Arrays.asList(varinhalt);
+				
 				return null;
 			}
 			
@@ -308,7 +333,6 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		for(int i = 0; i < 4; i++){
 			gutbut[i].setEnabled(false);
 		}
-
 		return ebt.getTab();
 	}
 	private JTabbedPane getNachsorgeTab(){
@@ -324,6 +348,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			for(int i = 0; i < 4; i++){
 				gutbut[i].setEnabled(true);
 			}
+			if(bereitsoffen){
+				gutbut[0].setEnabled(false);
+			}
+			
 
 		}
 	}
@@ -941,6 +969,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "EB", ".pdf");
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "NS", ".pdf");
 				FileTools.delFileWithSuffixAndPraefix(new File(tempPfad), "Print", ".pdf");
+				if(!neu){
+					String cmd = "delete from berlock where berichtid='"+Integer.toString(berichtid)+"' LIMIT 1";
+					SqlInfo.sqlAusfuehren(cmd);
+				}
+
 				document = null;
 			}
 		}

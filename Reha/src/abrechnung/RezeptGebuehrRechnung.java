@@ -44,6 +44,7 @@ import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
+import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -274,9 +275,8 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		}else{
-			for(int i = 0; i < 2; i++){
-				textDocument.print();
-			}
+			PrintProperties printprop = new PrintProperties ((short) 2 ,null);
+			textDocument.getPrintService().print(printprop);
 			textDocument.close();
 			textDocument = null;
 		}

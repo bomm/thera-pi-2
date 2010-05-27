@@ -28,6 +28,7 @@ import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableCell;
 import ag.ion.bion.officelayer.text.ITextTableCellProperties;
 import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.sun.star.beans.XPropertySet;
 
@@ -67,13 +68,13 @@ public class AbrechnungDrucken {
 						textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 					}else{
 						int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
-						System.out.println("Es müssen "+exemplare+" gedruckt werden");
-						for(int i = 0; i < exemplare; i++){
-							System.out.println("Drucke Ausfertigung "+Integer.toString(i+1)	);
-							textDocument.print();
-						}
+						
+						PrintProperties printprop = new PrintProperties ((short)exemplare,null);
+						textDocument.getPrintService().print(printprop);
+						Thread.sleep(200);
 						textDocument.close();
 						textDocument = null;
+
 					}
 					eltern.abrDruck = null;
 					//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);

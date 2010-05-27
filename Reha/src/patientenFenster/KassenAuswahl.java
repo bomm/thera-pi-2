@@ -134,6 +134,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 			//System.out.println("In PatNeuanlage" +evt);
 		}
 	}
+	
 	public void doAbbrechen(){
 		if(kassenbisher.length() <= 1){
 			////System.out.println("Arzt = "+arztbisher);

@@ -54,6 +54,7 @@ import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -877,7 +878,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		textEndbetrag.getCell(1,0).getTextService().getText().setText(dcf.format(rechnungGesamt.doubleValue())+" EUR");
 
 	}
-	private void starteDrucken() throws DocumentException{
+	private void starteDrucken() throws DocumentException, InterruptedException{
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		}else{
@@ -887,11 +888,9 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}else{
 				exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmbgeexemplare"));
 			}
-			System.out.println("Es müssen "+exemplare+" gedruckt werden");
-			for(int i = 0; i < exemplare; i++){
-				System.out.println("Druck "+Integer.toString(i)	);
-				textDocument.print();
-			}
+			PrintProperties printprop = new PrintProperties ((short)exemplare,null);
+			textDocument.getPrintService().print(printprop);
+			Thread.sleep(200);
 			textDocument.close();
 			textDocument = null;
 		}
