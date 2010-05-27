@@ -759,8 +759,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.setRowCount(0);
 					dtermm.setRowCount(0);
 					aktuellAngezeigt = -1;
-					Reha.thisClass.patpanel.vecaktrez.clear();
-					Reha.thisClass.patpanel.vecaktrez = null;
+					if(Reha.thisClass.patpanel.vecaktrez != null){
+						Reha.thisClass.patpanel.vecaktrez.clear();
+					}
 				}
 				}catch(Exception ex){
 					ex.printStackTrace();

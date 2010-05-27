@@ -11,6 +11,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -19,6 +21,7 @@ import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,9 +52,13 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
-public class ThTextBlock extends RehaSmartDialog{
+public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
 	public JFormattedTextField tf = null;
 	String suchkrit = "";
 	String suchid = "";
@@ -61,7 +68,7 @@ public class ThTextBlock extends RehaSmartDialog{
 	public Container dummyPan = null;
 	public Container dummyArzt = null;
 	/***************/
-	public JRtaTextField suchenach = null;
+	public JFormattedTextField suchenach = null;
 	public JXTable textblock = null;
 	public MyTextBlockModel modtextblock = null;
 	public JTextArea tbtext = null;
@@ -84,19 +91,26 @@ public class ThTextBlock extends RehaSmartDialog{
 	List<String> sysVars2;
 	String[][] sysInhalt1;
 	String[] sysInhalt2;
-
+	private RehaTPEventClass rtp = null;
 	
 		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr) {
 			super(owner, name);
-			//setSize(430,300);
+			System.out.println("Name des Fensters = "+name);
 			setSize(450,600);
 			this.suchkrit = diag;
+			this.setName(name);
 			this.abr = abr;
-			grundPanel = new JXPanel(new BorderLayout());			
+			
+			rtp = new RehaTPEventClass();
+			rtp.addRehaTPEventListener((RehaTPEventListener) this);
+
+			grundPanel = new JXPanel(new BorderLayout());
+			grundPanel.setName(name);
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
 					grundPanel.setBackgroundPainter(Reha.thisClass.compoundPainter.get("TextBlock"));
+
 					macheSysVars1();
 					macheSysVars2();
 					return null;
@@ -104,11 +118,26 @@ public class ThTextBlock extends RehaSmartDialog{
 				
 			}.execute();
 		    super.getSmartTitledPanel().setTitleForeground(Color.WHITE);
+		    super.getSmartTitledPanel().setName(name);
+
+		    pinPanel = new PinPanel();
+			pinPanel.getGruen().setVisible(false);
+			pinPanel.setName(name);
+			pinPanel.setzeName(name);
+			setPinPanel(pinPanel);
+			
+			this.addWindowListener(this);
+			this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
 //		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+suchkrit+"</font></b>";
 //		    super.getSmartTitledPanel().setTitle(xtitel);
 			content = getAuswahl();
+			content.setName(name);
 			grundPanel.add(content,BorderLayout.CENTER);
+			grundPanel.setName(name);
 			getSmartTitledPanel().setContentContainer(grundPanel);
+			getSmartTitledPanel().setName(name);
+			
 
 			//this.getContentPanel().add(content);
 			
@@ -118,6 +147,13 @@ public class ThTextBlock extends RehaSmartDialog{
 					KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);
 					grundPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
 					grundPanel.getActionMap().put("doSuchen", new BausteinAction());
+					SwingUtilities.invokeLater(new Runnable(){
+						public  void run(){
+							setzeFocus();		
+						}
+					});	
+
+					
 				}
 			});
 			
@@ -134,8 +170,61 @@ public class ThTextBlock extends RehaSmartDialog{
 				}
 			}.start();
 		}
+		
+		private void setzeFocus(){
+			SwingUtilities.invokeLater(new Runnable(){
+				public  void run(){
+					suchenach.requestFocus();		
+				}
+			});	
+		}
+		
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			if(rtp != null){
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+			}
+			ListenerSchliessen();
+			FensterSchliessen("");
+			System.out.println("In Textblock closed");
+			pinPanel = null;
+			super.pinPanel = null;
+			super.dispose();
+
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			FensterSchliessen("");
+			System.out.println("In Textblock closing");
+		}
+
+
+		
+		public void rehaTPEventOccurred(RehaTPEvent evt) {
+			String ss =  this.getName();
+			try{
+				System.out.println("Schließe Fenster Textbaustein");
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				FensterSchliessen(evt.getDetails()[0]);
+			}catch(NullPointerException ne){
+				ne.printStackTrace();
+			}
+
+
+		}
+		public void FensterSchliessen(String welches){
+			if(rtp != null){
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+			}
+			this.dispose();
+		}
+		
+		
 		private JPanel getAuswahl(){
-			suchenach = new JRtaTextField("NIX",true);
+			suchenach = new JFormattedTextField();
 			suchenach.addKeyListener(new KeyAdapter(){
 				public void keyPressed(KeyEvent arg0) {
 					if(arg0.getKeyCode()==10){
@@ -154,7 +243,7 @@ public class ThTextBlock extends RehaSmartDialog{
 					
 					if(arg0.getKeyCode()==27){
 						arg0.consume();
-						dispose();
+						FensterSchliessen("null");
 					}
 					
 				}
@@ -193,7 +282,7 @@ public class ThTextBlock extends RehaSmartDialog{
 						tbCheckundStart();
 					}
 					if(arg0.getKeyCode()==27){
-						dispose();
+						FensterSchliessen("null");
 					}
 
 				}	
@@ -370,7 +459,8 @@ public class ThTextBlock extends RehaSmartDialog{
 				abr.schreibeTextBlock(block,new String(tbtext.getText()) );
 				incheckundstart = false;
 				inholetext = false;
-				this.dispose();
+				FensterSchliessen("null");
+				//this.dispose();
 			}
 			incheckundstart = false;
 			inholetext = false;
@@ -387,7 +477,8 @@ public class ThTextBlock extends RehaSmartDialog{
 				abr.schreibeTextBlock(block,new String(jtfrueck.getText()) );
 				incheckundstart = false;
 				inholetext = false;
-				this.dispose();
+				FensterSchliessen("");
+				//this.dispose();
 			}
 			//JOptionPane.showMessageDialog(null,jtfrueck.getText());
 			inholetext = false;

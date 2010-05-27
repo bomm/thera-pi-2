@@ -78,6 +78,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 		this.setPreferredSize(new Dimension(299,77));
 		this.setContentPane(getJContentPane());
 		this.setUndecorated(true);
+		this.setAlwaysOnTop(true);
 		this.WerteSetzen(true);
 		NamePatient.setCaretPosition(0);
 		this.addKeyListener(this);

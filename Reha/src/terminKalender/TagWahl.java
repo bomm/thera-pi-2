@@ -51,6 +51,7 @@ public class TagWahl {
 			//jDialog.setModal(true);
 			jDialog.setContentPane(getJContentPane(sDatText,tag));
 			jTextField.setCaretPosition(0);
+			jDialog.setAlwaysOnTop(true);
 		}
 		return jDialog;
 	}

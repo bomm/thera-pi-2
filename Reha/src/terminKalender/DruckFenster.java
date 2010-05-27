@@ -242,6 +242,9 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 	/*********************************************************/
 	
 public void FensterSchliessen(String welches){
+	if(rtp != null){
+		rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
+	}
 	this.dispose();
 }
 
@@ -520,6 +523,7 @@ public void actionPerformed(ActionEvent arg0) {
 public void keyPressed(KeyEvent arg0) {
 	if(arg0.getKeyCode() == 27){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		rtp = null;
 		FensterSchliessen(null);
 	}
 	// TODO Auto-generated method stub
@@ -535,6 +539,7 @@ public void keyTyped(KeyEvent arg0) {
 	// TODO Auto-generated method stub
 	if(arg0.getKeyCode() == 27){
 		rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+		rtp = null;
 		FensterSchliessen(null);
 	}	
 }

@@ -74,7 +74,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 		eigenName = "TagWahl"+WinNum.NeueNummer(); 
 		this.setModal(true);
 		this.setUndecorated(true);
-
+		this.setAlwaysOnTop(true);
 		this.addFocusListener(this);
 		this.addWindowListener(this);
 		this.addKeyListener(this);
