@@ -4160,7 +4160,7 @@ boolean success = false;
 				this.sState = TerminFenster.getThisClass().privstmt;
 				success = this.sState.execute("Delete from flexlock where sperre = '"+TerminFenster.getLockSpalte()+"' AND maschine = '"+SystemConfig.dieseMaschine+"'");
 				success = this.sState.execute("COMMIT");
-				Reha.thisClass.messageLabel.setText("Entserrung efolgreich");
+				//Reha.thisClass.messageLabel.setText("Entserrung efolgreich");
 				TerminFenster.setLockOk(0,"");
 				TerminFenster.getThisClass().wartenAufReady = false;
 			}catch(SQLException ex) {
@@ -4168,8 +4168,9 @@ boolean success = false;
 				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
 				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 				TerminFenster.getThisClass().wartenAufReady = false;
+				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 				JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nDiese Terminspalte wurde bereits  von Benutzer \n\n" +
-						"einem anderen Benutzer gesperrt. Bitte brechen Sie den Eingabevorgang ab \n\n"+
+						"gesperrt. Bitte brechen Sie den Eingabevorgang ab \n\n"+
 						"und versuchen es später erneut!!");
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
@@ -4193,7 +4194,7 @@ class SetLock implements Runnable{
 	  private boolean klappt=false;;
 	  public void LockSetzen(){
 			threadStmt = "insert into flexlock set sperre = '"+TerminFenster.getLockStatement()+
-			"' , maschine = '"+SystemConfig.dieseMaschine+"'";
+			"' , maschine = '"+SystemConfig.dieseMaschine+"', zeit='"+Long.toString(System.currentTimeMillis())+"'";
 			try {
 				this.sState = TerminFenster.getThisClass().privstmt;
 				
@@ -4204,7 +4205,8 @@ class SetLock implements Runnable{
 				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
 				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
 				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
-				new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'"); 
+				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+				//new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'"); 
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());				
 			}
@@ -4232,14 +4234,15 @@ class DirectLockRecord implements Runnable{
 				if(!rs.next()){
 
 					threadStmt = "insert into flexlock set sperre = '"+TerminFenster.getLockStatement()+
-					"' , maschine = '"+SystemConfig.dieseMaschine+"'";
+					"' , maschine = '"+SystemConfig.dieseMaschine+"', zeit='"+Long.toString(System.currentTimeMillis())+"'";
 					this.gesperrt = this.sState.execute(threadStmt);
 					this.gesperrt = this.sState.execute("COMMIT");
 					TerminFenster.setLockOk(1,"");
 					TerminFenster.setLockSpalte(TerminFenster.getLockStatement());
 					Reha.thisClass.messageLabel.setText("Lock erfolgreich");
 				}else{
-					new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+					SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+					//new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 					TerminFenster.setLockOk(-1,rs.getString("maschine"));
 					Reha.thisClass.messageLabel.setText("Lock misslungen");
 				}
@@ -4249,7 +4252,8 @@ class DirectLockRecord implements Runnable{
 				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
 				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
 				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
-				new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+				//new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
 				Reha.thisClass.messageLabel.setText("Lock misslungen");
 				
@@ -4281,7 +4285,7 @@ private int gelesen;
 	    			//Reha.thisClass.shiftLabel.setText("Update ok.");	    			
 	    			gelesen++;
 	    			}catch(Exception ex){
-						new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+	    				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 	    				break;
 	    			}
 	    			//********>Toolkit.getDefaultToolkit().beep();
