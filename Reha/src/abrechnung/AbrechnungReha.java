@@ -983,7 +983,6 @@ public class AbrechnungReha extends JXPanel{
 				e.printStackTrace();
 			}
 			textDocument.close();
-			textDocument = null;
 		}
 	}
 	

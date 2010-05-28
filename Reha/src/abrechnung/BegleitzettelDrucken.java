@@ -40,7 +40,7 @@ public class BegleitzettelDrucken {
 				textDocument.print();
 				Thread.sleep(200);
 				textDocument.close();
-				textDocument = null;
+
 			}			
 			this.eltern = null;
 		} catch (Exception e) {

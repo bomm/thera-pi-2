@@ -384,7 +384,7 @@ public class RVEBerichtPDF {
 		
 		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 
-		// Die Ausfertigung h�ndeln...---				
+		// Die Ausfertigung handeln...---				
 		PdfContentByte cb = stamper.getOverContent(1);
 		Float [] pos = {null,null,null};
 		float fy0 =  0.25f;
@@ -600,7 +600,7 @@ public class RVEBerichtPDF {
 		
 		stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 
-		// Die Ausfertigung h�ndeln...---				
+		// Die Ausfertigung handeln...---				
 		PdfContentByte cb = stamper.getOverContent(1);
 		Float [] pos = {null,null,null};
 		float fy0 =  0.25f;
@@ -1089,9 +1089,9 @@ public class RVEBerichtPDF {
 			
 			int seiten = 0;
 			
-			String[] empfs = {"den RV-Tr�ger - "+(String) eltern.cbktraeger.getSelectedItem(),
-					"den RV-Tr�ger - "+(String) eltern.cbktraeger.getSelectedItem(),
-					"den behandelnden Arzt","die Rehabilitationseinrichtung","die Krakenkasse"};
+			String[] empfs = {"den RV-Träger - "+(String) eltern.cbktraeger.getSelectedItem(),
+					"den RV-Träger - "+(String) eltern.cbktraeger.getSelectedItem(),
+					"den behandelnden Arzt","die Rehabilitationseinrichtung","die Krankenkasse"};
 			String[] bereich = {"Bereich Reha","Bereich EDV","","",""};
 			// ZU diesem Zeitpunkt sind Bereits alle Seiten aufbereitet.
 			//Falls der Fliestext ebenfalls gedruck werden soll;
@@ -1429,7 +1429,7 @@ public class RVEBerichtPDF {
 		cb.moveText(xempfaenger[0], xempfaenger[1]);
 		cb.setFontAndSize(bf,9.5f);
 		//cb.setCharacterSpacing(xempfaenger[2]);
-		cb.showText("Ausfertigung f�r "+empfaenger);
+		cb.showText("Ausfertigung für "+empfaenger);
 		cb.endText();
 		cb.beginText();
 		cb.moveText(xbereich[0], xbereich[1]);

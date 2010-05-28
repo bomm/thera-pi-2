@@ -892,7 +892,6 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			textDocument.getPrintService().print(printprop);
 			Thread.sleep(200);
 			textDocument.close();
-			textDocument = null;
 		}
 	}
 

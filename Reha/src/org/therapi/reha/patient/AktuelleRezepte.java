@@ -1853,8 +1853,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				SystemConfig.hmAdrRDaten.get("<Rwert>"), " ", true, 6));
 		SystemConfig.hmAdrRDaten.put("<Bnr>",SystemConfig.hmAdrRDaten.get("<Rnummer>"));
 		//System.out.println("Es wird folgender Bacrode genommen "+url);
-		
-		OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
+		OOTools.starteBacrodeFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		
 	}
 	public String rezUnterbrechung(boolean lneu,String feldname,int behandlung){

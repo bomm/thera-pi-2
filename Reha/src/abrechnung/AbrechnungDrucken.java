@@ -73,7 +73,7 @@ public class AbrechnungDrucken {
 						textDocument.getPrintService().print(printprop);
 						Thread.sleep(200);
 						textDocument.close();
-						textDocument = null;
+						
 
 					}
 					eltern.abrDruck = null;

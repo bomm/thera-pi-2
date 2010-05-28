@@ -104,6 +104,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		initialize();
 		jTextField.setText(fname);
 		new suchePatient().init(tblDataModel);
+		this.setAlwaysOnTop(true);
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setzeFocus();

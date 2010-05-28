@@ -608,7 +608,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		}
 		abzurechnendeKassenID = getAktKTraeger();
 		String preisgr = getPreisgruppenKuerzel(aktDisziplin);
-		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,email1,"+preisgr+" from kass_adr where ik_kasse='"+abzurechnendeKassenID+"' LIMIT 1";
+		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,"+preisgr+" from kass_adr where ik_kasse='"+abzurechnendeKassenID+"' LIMIT 1";
 		kassenIKs.clear();
 		kassenIKs = SqlInfo.holeFelder(cmd);
 		//System.out.println(cmd);
@@ -625,8 +625,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		ik_nutzer = kassenIKs.get(0).get(2);
 		ik_physika = kassenIKs.get(0).get(3);
 		ik_papier = kassenIKs.get(0).get(4);
-		ik_email = kassenIKs.get(0).get(5);
-		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(6))-1);
+		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ik_kasse='"+ik_physika+"' LIMIT 1");
+		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(5))-1);
 		name_kostent = holeNameKostentraeger();
 		if(ik_email.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Emailadresse zugewiesen\n"+
@@ -750,7 +750,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
-		abrDlg.setzeLabel("erstelle Email an: "+SystemConfig.hmEmailExtern.get("SenderAdresse"));
+		abrDlg.setzeLabel("erstelle Email an: "+ik_email);
 		doEmail();
 		abrDlg.setzeLabel("übertrage Rezepte in Historie");
 		if(Reha.vollbetrieb){

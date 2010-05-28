@@ -891,8 +891,11 @@ public static void PasswortDialog(int setPos) {
 	jtp.getContentContainer().setName(name);
     jtp.setVisible(true);
 	RehaSmartDialog rSmart = new RehaSmartDialog(null,name);
-	rSmart.setModal(true);
+
+	rSmart.setAlwaysOnTop(false);
 	rSmart.setSize(new Dimension(700,300));
+	rSmart.setModal(true);
+
 	//rSmart.getTitledPanel().setTitle("Passwort-Eingabe");
 	rSmart.setContentPanel(jtp.getContentContainer());
 	Toolkit toolkit = Toolkit.getDefaultToolkit();
