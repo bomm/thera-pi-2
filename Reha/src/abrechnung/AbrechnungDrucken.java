@@ -68,7 +68,7 @@ public class AbrechnungDrucken {
 						textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 					}else{
 						int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
-						
+						Thread.sleep(100);
 						PrintProperties printprop = new PrintProperties ((short)exemplare,null);
 						textDocument.getPrintService().print(printprop);
 						Thread.sleep(200);

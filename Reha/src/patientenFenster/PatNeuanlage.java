@@ -265,7 +265,7 @@ private KVKWrapper kvw;
 
 //****************Checken ob Preisgruppen bedient werden****************		
 		
-		// nur f�r den ersten Focus setzen
+		// nur für den ersten Focus setzen
 		flis = new FocusListener(){
 
 			@Override

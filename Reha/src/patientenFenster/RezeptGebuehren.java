@@ -410,9 +410,15 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		try{
 		cmd = "update verordn set rez_geb='"+
 		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', "+
-		"rez_bez='T', zzstatus='1' where rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1)/*SystemConfig.hmAdrRDaten.get("<Rnummer>")*/+"' LIMT 1";
+		"rez_bez='T', zzstatus='1' where rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")/*SystemConfig.hmAdrRDaten.get("<Rnummer>")*/+"' LIMT 1";
 		SqlInfo.sqlAusfuehren(cmd);
-		aktuelleRezepte.setZuzahlImage(1);
+		try{
+			aktuelleRezepte.setZuzahlImage(1);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
+					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
+					"Sie den Administrator");
+		}
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+

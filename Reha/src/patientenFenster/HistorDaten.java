@@ -48,7 +48,7 @@ public class HistorDaten extends JXPanel{
 	public JTextArea rezdiag = null;
 	
 
-	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. au�erhalb d.R."};
+	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. außerhalb d.R."};
 	/*
 	ImageIcon hgicon;
 	int icx,icy;

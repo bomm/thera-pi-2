@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -142,6 +144,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	Vector<String> abgerechnetePatienten = new Vector<String>();
 	Vector<Vector<String>> preisVector = null;
 	HashMap<String,String> hmAnnahme = null;
+	HashMap<String,String> hmKostentraeger = new HashMap<String,String>();
 	int abrechnungRezepte = 0;
 	public String aktuellerPat = "";
 	
@@ -561,6 +564,23 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/**************************************************/
 	
 	public void starteAbrechnung(){
+		try{
+			hmKostentraeger.clear();
+			if(!Reha.officeapplication.isActive()){
+				try{
+					Reha.starteOfficeApplication();
+					if(!Reha.officeapplication.isActive()){
+						doDlgAbort();
+						JOptionPane.showMessageDialog(null, "Das OpenOffice-System reagiert nicht korrekt!\nAbrechnung wird nicht gestartet");
+						return;
+					}
+				}catch(Exception ex){
+					doDlgAbort();
+					JOptionPane.showMessageDialog(null, "Das OpenOffice-System reagiert nicht korrekt!\nAbrechnung wird nicht gestartet");
+					return;
+
+				}
+			}
 		if(aktuellerKassenKnoten==null){
 			abrDlg.setVisible(false);
 			abrDlg.dispose();
@@ -597,6 +617,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		/**********************************/
 		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
+	    /************************************************/
+		hmKostentraeger.put("aktesol",String.valueOf(aktEsol));
+		/************************************************/
 		aktDfue = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("dfue", 99999)), "0", true, 5);
 		if(aktRechnung.equals("-1")){
 			Reha.thisClass.progressStarten(false);
@@ -625,38 +648,63 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		ik_nutzer = kassenIKs.get(0).get(2);
 		ik_physika = kassenIKs.get(0).get(3);
 		ik_papier = kassenIKs.get(0).get(4);
-		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ik_kasse='"+ik_physika+"' LIMIT 1");
+		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_physika+"' LIMIT 1");
 		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(5))-1);
 		name_kostent = holeNameKostentraeger();
+		String test = "IK der Krankenkasse: "+ik_kasse+"\n"+
+		"IK des Kostenträgers: "+ik_kostent+"\n"+ 
+		"IK des Nutzer mit EntschlüsselungsbefungnisKostenträgers: "+ik_nutzer+"\n"+
+		"IK der Datenannahmestelle: "+ik_physika+"\n"+
+		"IK der Papierannahmestelle: "+ik_papier+"\n"+
+		"Emailadresse der Datenannahmestelle: "+ik_email+"\n"+
+		"Name des Kostenträgers: "+name_kostent;
+		
+		/************************************************/
+		hmKostentraeger.put("name1",String.valueOf(name_kostent));
+		/************************************************/
+		int anfrage = JOptionPane.showConfirmDialog(null,test , "Die Abrechnung mit diesen Parametern starten?", JOptionPane.YES_NO_OPTION);
+		if(anfrage != JOptionPane.YES_OPTION){
+			doDlgAbort();
+			return;
+		}
 		if(ik_email.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Emailadresse zugewiesen\n"+
 					"Abrechnung nach §302 ist nicht möglich!");
+			doDlgAbort();
+			return;
 		}
 		if(ik_papier.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Papierannahmestelle zugewiesen\n"+
 			"Abrechnung nach §302 ist nicht möglich!");
+			doDlgAbort();
+			return;
 		}
 		if(ik_nutzer.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Nutzer mit Entschlüsselungsbefugnis zugewiesen\n"+
 			"Abrechnung nach §302 ist nicht möglich!");
+			doDlgAbort();
+			return;
 		}
 		if(ik_physika.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Empfänger der Abrechnungsdaten zugewiesen\n"+
 			"Abrechnung nach §302 ist nicht möglich!");
+			doDlgAbort();
+			return;
 		}
-		
+		hmAnnahme = holeAdresseAnnahmestelle();
+		annahmeAdresseOk = true;
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
 
-					hmAnnahme = holeAdresseAnnahmestelle();
-					annahmeAdresseOk = true;
 				}catch(Exception ex){
 				}
 				return null;
 			}
 		}.execute();
+		*/
 		/********
 		 * 
 		 * 
@@ -700,8 +748,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				}
 			}
 		}
-		////System.out.println(gesamtBuf.toString());
-		////System.out.println("Anzahl Positonen (reine Abrechnugsdaten) = "+positionenAnzahl);
+
 		try {
 			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
 			fw = new FileWriter(f);
@@ -711,6 +758,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 		    bw.close(); 
 		    fw.close();
+		    int a = 0;
+		   
 			abrDlg.setzeLabel("Rechnungsdatei verschlüsseln");
 		    int originalSize = Integer.parseInt(Long.toString(f.length()));
 		    int encryptedSize = originalSize;
@@ -741,6 +790,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		    
 		    doAuftragsDatei(originalSize,encryptedSize);
 		    
+			
 			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf");
 			fw = new FileWriter(f);
 		    bw = new BufferedWriter(fw); 
@@ -751,7 +801,19 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			e.printStackTrace();
 		} 
 		abrDlg.setzeLabel("erstelle Email an: "+ik_email);
-		doEmail();
+		
+		try{
+			doEmail();
+			String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" wurden erfolgreich\n"+
+			"an die Adresse "+ik_email+" versandt.\n";
+			JOptionPane.showMessageDialog(null, meldung);
+
+		}catch(Exception ex){
+			String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" sollten an die"+
+			"Adresse "+ik_email+" gesendet werden.\n\n"+
+			"Versand ist fehlgeschlagen, bitte von Hand erneut senden";
+			JOptionPane.showMessageDialog(null, meldung);
+		}
 		abrDlg.setzeLabel("übertrage Rezepte in Historie");
 		if(Reha.vollbetrieb){
 			doUebertragen();
@@ -762,8 +824,26 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		abrDlg.setVisible(false);
 		abrDlg.dispose();
 		abrDlg = null;
+		}catch(Exception ex){
+			if(abrDlg != null){
+				Reha.thisClass.progressStarten(false);
+				abrDlg.setVisible(false);
+				abrDlg.dispose();
+				abrDlg = null;
+			}
+			JOptionPane.showMessageDialog(null,"Fehler beim Abrechnungsvorgang:\n"+ex.getMessage());
+			ex.printStackTrace();
+		}
 	}
-	/********************************************************************/	
+	/********************************************************************/
+	private void doDlgAbort(){
+		if(abrDlg != null){
+			Reha.thisClass.progressStarten(false);
+			abrDlg.setVisible(false);
+			abrDlg.dispose();
+			abrDlg = null;
+		}
+	}
 	private void doEmail(){
 		try{
 			//System.out.println("Erstelle Emailparameter.....");	
@@ -773,11 +853,14 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
 			String pass1 = SystemConfig.hmEmailExtern.get("Password");
 			String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
-			String recipient = ik_email;//SystemConfig.hmEmailExtern.get("SenderAdresse");
+
+			//String recipient = "m.schuchmann@rta.de"+","+SystemConfig.hmEmailExtern.get("SenderAdresse");
+			String recipient = ik_email+","+SystemConfig.hmEmailExtern.get("SenderAdresse");
 			String text = "";
 			boolean authx = (authent.equals("0") ? false : true);
 			boolean bestaetigen = false;
-			String[] encodedDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org","esol0"+aktEsol+".org"};
+			String[] encodedDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol,"esol0"+aktEsol};
+			//String[] encodedDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org","esol0"+aktEsol+".org"};
 			String[] aufDat = {Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf","esol0"+aktEsol+".auf"};
 			ArrayList<String[]> attachments = new ArrayList<String[]>();
 			attachments.add(encodedDat);
@@ -788,6 +871,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, Reha.aktIK, text,attachments,authx,bestaetigen);
 				oMail = null;
 				//System.out.println("Emailversand beendet.....");
+				
 			}catch(Exception e){
 				e.printStackTrace( );
 				JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
@@ -920,26 +1004,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			NebraskaEncryptor encryptor = store.getEncryptor(ik_nutzer);
 			String inFile = Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org";
 			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));
-			/*
-			NebraskaDecryptor decryptor = store.getDecryptor();
-			InputStream inStream;
-			try {
-				inStream = new FileInputStream(inFile.replace(".org", ""));
-				File outFile = new File(inFile.replace(".org", "")+".decrypted");
-				OutputStream outStream = new FileOutputStream(outFile);
-				decryptor.decrypt(inStream,outStream);
-				inStream.close();
-				outStream.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
 			return Integer.parseInt(Long.toString(size));
-			
 		} catch (NebraskaCryptoException e) {
 			e.printStackTrace();
 		} catch (NebraskaFileException e) {
@@ -1061,6 +1126,37 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		}
 		return vec.get(0).get(0);
 	}
+	private void holeAlleKostentraegerDaten(){
+		abzurechnendeKassenID = getAktKTraeger();
+		String preisgr = getPreisgruppenKuerzel(aktDisziplin);
+		String cmd = "select ik_kasse,ik_kostent,ik_nutzer,ik_physika,ik_papier,"+preisgr+" from kass_adr where ik_kasse='"+abzurechnendeKassenID+"' LIMIT 1";
+		kassenIKs.clear();
+		kassenIKs = SqlInfo.holeFelder(cmd);
+		//System.out.println(cmd);
+		if(kassenIKs.size()<=0){
+			Reha.thisClass.progressStarten(false);
+			abrDlg.setVisible(false);
+			abrDlg.dispose();
+			abrDlg = null;
+			JOptionPane.showMessageDialog(null, "Fehler - Daten der Krankenkasse konnten nicht ermittelt werden");
+			return;
+		}
+		ik_kasse = kassenIKs.get(0).get(0);
+		ik_kostent = kassenIKs.get(0).get(1);
+		ik_nutzer = kassenIKs.get(0).get(2);
+		ik_physika = kassenIKs.get(0).get(3);
+		ik_papier = kassenIKs.get(0).get(4);
+		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_physika+"' LIMIT 1");
+		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(5))-1);
+		name_kostent = holeNameKostentraeger();
+		String test = "IK der Krankenkasse: "+ik_kasse+"\n"+
+		"IK des Kostenträgers: "+ik_kostent+"\n"+ 
+		"IK des Nutzer mit EntschlüsselungsbefungnisKostenträgers: "+ik_nutzer+"\n"+
+		"IK der Datenannahmestelle: "+ik_physika+"\n"+
+		"IK der Papierannahmestelle: "+ik_papier+"\n"+
+		"Emailadresse der Datenannahmestelle: "+ik_email+"\n"+
+		"Name des Kostenträgers: "+name_kostent;
+	}
 	
 	/***************************************************************/
 	
@@ -1180,12 +1276,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/***************************************************************/
 	
 	private void anlegenOP(){
+		/************************************************/
 		rechnungBuf.setLength(0);
 		rechnungBuf.trimToSize();
 		rechnungBuf.append("insert into rliste set ");
 		rechnungBuf.append("r_nummer='"+aktRechnung+"', ");
 		rechnungBuf.append("r_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-		rechnungBuf.append("r_kasse='"+rlistekasse+" "+rlisteesol+"', ");
+		rechnungBuf.append("r_kasse='"+hmKostentraeger.get("name1")+", "+"esol0"+hmKostentraeger.get("aktesol")+"', ");
 		rechnungBuf.append("r_klasse='"+diszis[cmbDiszi.getSelectedIndex()]+"', ");
 		rechnungBuf.append("r_betrag='"+dfx.format(preis00[0]).replace(",", ".")+"', ");
 		rechnungBuf.append("r_offen='"+dfx.format(preis00[0]).replace(",", ".")+"', ");
@@ -1332,6 +1429,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			Vector<BigDecimal>rezgeb,
 			boolean preisUmstellung,
 			boolean zuzahlUmstellung){
+			try{
+				if(hmAnnahme.get("<gkv1>").trim().equals("")){
+					holeAdresseAnnahmestelle();
+				}
+			}catch(Exception ex){
+				holeAdresseAnnahmestelle();
+			}
 			abrDlg.setzeLabel("Rechnungssatz erstellen für Rezept: "+kopf[2].split("=")[1]);
 			String cmdKopf = "insert into faktura set ";
 			for(int i = 0; i< positionen.size();i++){
@@ -1347,7 +1451,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 						rechnungBuf.append("ort='"+hmAnnahme.get("<gkv4>").split(" ")[1]+"', ");
 						rechnungBuf.append("name='"+kopf[9].split("=")[1]+"', ");
 					}catch(Exception ex){
-						//System.out.println("PLZ/Ort nicht angegeben");
+						JOptionPane.showMessageDialog(null, "Fehler in der Adressaufbereitung - Tabelle=Faktura");
+						ex.printStackTrace();
 					}
 				}
 				rechnungBuf.append("lfnr='"+Integer.toString(i)+"', ");

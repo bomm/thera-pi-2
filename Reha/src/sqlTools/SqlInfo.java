@@ -16,7 +16,12 @@ import systemTools.StringTools;
 
 public class SqlInfo {
 	
-/***********************************/	
+/***********************************/
+	public static void loescheLocksMaschine(){
+		int stelle = SystemConfig.dieseMaschine.toString().indexOf("/");
+		String maschine = SystemConfig.dieseMaschine.toString().substring(0,stelle);
+		SqlInfo.sqlAusfuehren("delete from flexlock where comp like '"+maschine+"'");
+	}
 	public static boolean gibtsSchon(String sstmt){
 		boolean gibtsschon = false;
 		Statement stmt = null;

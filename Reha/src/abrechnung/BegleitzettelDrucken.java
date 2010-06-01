@@ -33,10 +33,12 @@ public class BegleitzettelDrucken {
 		this.eltern = eltern;
 		try {
 			starteDokument(url);
+			Thread.sleep(50);
 			ersetzePlatzhalter();
 			if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 			}else{
+				Thread.sleep(200);
 				textDocument.print();
 				Thread.sleep(200);
 				textDocument.close();

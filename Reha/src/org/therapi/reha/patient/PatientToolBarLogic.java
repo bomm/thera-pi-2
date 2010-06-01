@@ -68,9 +68,12 @@ public class PatientToolBarLogic {
 		patientHauptPanel.toolBarMouse = null;
 		patientToolBarPanel.sucheLabel.removeFocusListener(patientHauptPanel.toolBarFocus);
 		patientHauptPanel.tfsuchen.removeFocusListener(patientHauptPanel.toolBarFocus);
+		patientHauptPanel.tfsuchen.getDropTarget().removeDropTargetListener(patientHauptPanel.dropTargetListener);
+		patientHauptPanel.dropTargetListener = null;
 		patientHauptPanel.toolBarFocus = null;
 		patientToolBarPanel.sucheLabel = null;		
 		patientHauptPanel = null;
+
 	}
 	public void reactOnFocusGained(FocusEvent e){
 		if(((JComponent)e.getSource()).getName().equals("suchenach") && patientHauptPanel.inMemo > -1 ){

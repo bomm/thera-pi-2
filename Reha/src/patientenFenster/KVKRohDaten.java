@@ -354,14 +354,32 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 					}
 				}
  
-				
+				boolean inkassenstamm = true;
 				String kassik = "10"+SystemConfig.hmKVKDaten.get("Kassennummer").trim();
-				Vector<String> vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse", "ik_kasse='"+kassik+"'", Arrays.asList(new String[] {}));
+				Vector<String> vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse,id", "ik_kasse='"+kassik+"'", Arrays.asList(new String[] {}));
+				/*
 				if(vec.size()==0){
-					JOptionPane.showMessageDialog(null, "Krankenkasse mit IK="+kassik+" ist im Krankenkassen-Stamm nicht vorhanden");
-					thisPat.jtf[12].setText("Achtung: vermutlich privat....".toUpperCase());
+					//Die kasse wure nicht gefunden im aktuellen Kassenstamm
+					vec =SqlInfo.holeSatz("ktraeger", "ikkasse,ikkostentraeger,ikpapier,ikdaten,ikentschluesselung,name1,name2,adresse1,adresse2,adresse3,id", "ikkasse='"+kassik+"'", Arrays.asList(new String[] {}));
+					boolean neukasse = doNeueKasse(vec);
+					inkassenstamm = false;
 				}else{
+					//Kasse in Kassenstamm vorhanden
+					inkassenstamm = true;
 					thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankekasse"));
+					thisPat.jtf[34].setText(vec.get(2));
+				}
+				*/
+				try{
+					if(vec.size()==0){
+						JOptionPane.showMessageDialog(null, "Krankenkasse mit IK="+kassik+" ist im Krankenkassen-Stamm nicht vorhanden");
+						thisPat.jtf[12].setText("Achtung: vermutlich privat....".toUpperCase());
+					}else{
+						thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankekasse"));
+						thisPat.jtf[34].setText(vec.get(2));
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
 				thisPat.jtf[13].setText(kassik);
 				thisPat.jtf[14].setText(SystemConfig.hmKVKDaten.get("Versichertennummer"));
@@ -379,6 +397,10 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 	}
 	public KVKRohDaten getInstance(){
 		return this;
+	}
+	private boolean doNeueKasse(Vector<String> vec){
+		boolean ret = false;
+		return ret;
 	}
 	class RohKeyListener implements KeyListener{
 		@Override

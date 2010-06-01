@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.mail.Address;
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -62,8 +63,10 @@ public class EmailSendenExtern {
             Message msg = new MimeMessage(session);
             // Hier werden die Absender- und Empf�ngeradressen gesetzt
             msg.setFrom(new InternetAddress(senderAddress));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
-                    recipientsAddress, false));
+        	msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
+                    recipientsAddress, false));            	
+
+            
             // Der Betreff und Body der Message werden gesetzt
             msg.setSubject(subject);
             //msg.setText(text);

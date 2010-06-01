@@ -3,6 +3,14 @@ package org.therapi.reha.patient;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.util.TooManyListenersException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -54,6 +62,31 @@ public class PatientToolBarPanel extends JXPanel{
 		sucheLabel.setIcon(SystemConfig.hmSysIcons.get("find"));
 		sucheLabel.addMouseListener(patientHauptPanel.toolBarMouse);
 		sucheLabel.addFocusListener(patientHauptPanel.toolBarFocus);
+
+		patientHauptPanel.dropTargetListener =
+			 new DropTargetListener() {
+			  public void dragEnter(DropTargetDragEvent e) {
+				  if(!patientHauptPanel.tfsuchen.getText().equals("")){
+					  patientHauptPanel.tfsuchen.setText("");					  
+				  }
+			  }
+			  public void dragExit(DropTargetEvent e) {}
+			  public void dragOver(DropTargetDragEvent e) {}
+			  public void drop(DropTargetDropEvent e) {
+				  //String mitgebracht = "";
+				    try {
+					    patientHauptPanel.patientLogic.starteSuche();
+					    //System.out.println("erhalte Drop = "+mitgebracht);
+				    } catch (Throwable t) {
+				    	t.printStackTrace();
+						System.out.println("Fehler***************1********");
+				    }
+			    	e.dropComplete(true);
+			  	}
+			  public void dropActionChanged(
+			         DropTargetDragEvent e) {System.out.println(e);}
+		};	
+		//sucheLabel.setDropTarget(dndt);
 		add(sucheLabel,cc.xy(13,2));
 		patientHauptPanel.tfsuchen = new JFormattedTextField();
 		patientHauptPanel.tfsuchen.setFont(new Font("Tahoma",Font.BOLD,11));
@@ -61,7 +94,13 @@ public class PatientToolBarPanel extends JXPanel{
 		patientHauptPanel.tfsuchen.setForeground(new Color(136,136,136));
 		patientHauptPanel.tfsuchen.setName("suchenach");
 		patientHauptPanel.tfsuchen.addKeyListener(patientHauptPanel.toolBarKeys);
-		patientHauptPanel.tfsuchen.addFocusListener(patientHauptPanel.toolBarFocus);		
+		patientHauptPanel.tfsuchen.addFocusListener(patientHauptPanel.toolBarFocus);
+		//patientHauptPanel.tfsuchen.setDropTarget(dndt);
+		try {
+			patientHauptPanel.tfsuchen.getDropTarget().addDropTargetListener(patientHauptPanel.dropTargetListener);
+		} catch (TooManyListenersException e1) {
+			e1.printStackTrace();
+		}
 		add(patientHauptPanel.tfsuchen,cc.xyw(15, 2, 3));
 		
 		JToolBar jtb = new JToolBar();

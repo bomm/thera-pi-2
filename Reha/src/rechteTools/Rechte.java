@@ -137,7 +137,7 @@ public class Rechte {
 	public static int Sonstiges_verkaufsmodul			= 94;
 	public static int Sonstiges_rehaformulare			= 95;
 	public static int Sonstiges_textbausteinegutachten	= 96;
-	public static int Sonstiges_unbelegt1				= 97;
+	public static int Sonstiges_rezepttransfer			= 97;
 	public static int Sonstiges_unbelegt2				= 98;
 	public static int Sonstiges_unbelegt3				= 99;
 	public static int Sonstiges_unbelegt4				= 100;
@@ -187,7 +187,7 @@ public class Rechte {
 		"unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
 		"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen",
 		
-		"Verkaufsmodul benutzen","Rehaformulare verwenden","Textbausteine für Gutachten anlegen/ändern","unbelegt-1","unbelegt-2","unbelegt-3","unbelegt-4","unbelegt-5",
+		"Verkaufsmodul benutzen","Rehaformulare verwenden","Textbausteine für Gutachten anlegen/ändern","Rezepte transferieren","unbelegt-2","unbelegt-3","unbelegt-4","unbelegt-5",
 		"unbelegt-6","unbelegt-7","unbelegt-8","unbelegt-9","unbelegt-10"
 		
 	};

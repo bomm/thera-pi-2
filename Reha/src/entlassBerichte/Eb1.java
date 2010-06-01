@@ -1146,7 +1146,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);
 		ent.add(lab,ccent.xy(1, 2));
 		eltern.bcmb[7] = new JRtaComboBox(erfolg);
-		eltern.bcmb[7].setName("F_81");
+		eltern.bcmb[7].setName("F_89");
 		ent.add(eltern.bcmb[7],ccent.xy(1, 3));
 		tit.add(ent.getPanel(),cctit.xy(10, 7,CellConstraints.LEFT,CellConstraints.BOTTOM));
 		

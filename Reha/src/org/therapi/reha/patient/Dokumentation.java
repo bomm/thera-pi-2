@@ -937,7 +937,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			//rehaSplash = null;
 			return;
 		}else if(cmd.equals("Dokudelete")){
-			if(!Rechte.hatRecht(Rechte.Doku_delete, true)){
+			if(!Rechte.hatRecht(Rechte.Doku_scannen, true)){
 				return;
 			}
 			doDokudelete();

@@ -5,6 +5,7 @@ import hauptFenster.UIFSplitPane;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -64,6 +65,7 @@ public class PatientHauptPanel extends JXPanel{
 	public MouseListener toolBarMouse;
 	public KeyListener toolBarKeys;
 	public FocusListener toolBarFocus;
+	public DropTargetListener dropTargetListener;
 	
 	//StammDaten-Controls & Listener
 	public JPatTextField[] ptfield = {null,null,null,null,null,null,

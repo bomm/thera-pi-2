@@ -417,7 +417,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					while(!RezeptDaten.feddisch){
 						try {
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 10000){
+							if(System.currentTimeMillis()-zeit > 5000){
 								JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten");
 								return;
 							}
@@ -734,7 +734,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					try{
 						if(! inEinzelTermine){
 							inEinzelTermine = true;
+							try{
 							holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));
+							}catch(Exception ex){
+								ex.printStackTrace();
+							}
 							aktuellAngezeigt = row;
 							//holeEinzelTermineAktuell(0,null,aktTerminBuffer.get(row));
 							tabaktrez.setRowSelectionInterval(row, row);
@@ -994,9 +998,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
 		if(aktuellAngezeigt>=0){
-			aktTerminBuffer.set(aktuellAngezeigt, sb.toString());
+			try{
+				aktTerminBuffer.set(aktuellAngezeigt, sb.toString());
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}
-
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
@@ -1109,7 +1116,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		                					//holeEinzelTermineAktuell(0,null,aktTerminBuffer.get(ix));
 		                					//holeEinzelTermine(ix,null,"aus rezeptselect Listener");
 		                					//System.out.println(aktTerminBuffer.get(ix));
-		        							holeEinzelTermineAusRezept("",aktTerminBuffer.get(ix));
+		                					try{
+			        							holeEinzelTermineAusRezept("",aktTerminBuffer.get(ix));		                						
+		                					}catch(Exception ex){
+		                						ex.printStackTrace();
+		                					}
 		        							aktuellAngezeigt = ix;
 		                					inEinzelTermine = false;
 

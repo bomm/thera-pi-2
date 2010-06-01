@@ -342,10 +342,15 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabhistorie.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
+				long zeit = System.currentTimeMillis();
 				if(arg0.getClickCount()==2){
 					while(inRezeptDaten){
 						try {
 							Thread.sleep(20);
+							if((System.currentTimeMillis()-zeit) > 2000){
+								return;
+							}
+							
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -839,11 +844,14 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			SqlInfo.transferRowToAnotherDB("lza", "verordn","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
 			SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+rez_nr+"'");
 			TableTool.loescheRowAusModel(tabhistorie, row);
+			new sqlTools.ExUndHop().setzeStatement("delete from faktura where rez_nr='"+rez_nr+"'");
 			setzeKarteiLasche();
 			Reha.thisClass.patpanel.aktRezept.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
+		}else{
+			JOptionPane.showMessageDialog(null, "Kein Historien-Rezept für den Übertrag in aktuelle Rezepte ausgewählt!");
 		}
 		
 	}
@@ -944,8 +952,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
 			icons.put("Gesamtumsatz dieses Patienten",SystemConfig.hmSysIcons.get("euro"));
 			icons.put("Behandlungstage drucken",SystemConfig.hmSysIcons.get("einzeltage"));
+			icons.put("Transfer in aktuelle Rezepte",SystemConfig.hmSysIcons.get("undo"));
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten", "Behandlungstage drucken"});
+			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten",
+					"Behandlungstage drucken","Transfer in aktuelle Rezepte"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list,rueckgabe);
@@ -973,7 +983,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				//doUebertrag();
 				break;
 			case 2:
-				//ausfallRechnung();
+				if(!Rechte.hatRecht(Rechte.Sonstiges_rezepttransfer, true)){
+					return;
+				}
+				int anfrage = JOptionPane.showConfirmDialog(null, "Das ausgewählte Rezept wirklich zurück in den aktuellen Rezeptstamm transferieren?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				if(anfrage == JOptionPane.YES_OPTION){
+					doUebertrag();					
+				}
 				break;
 			case 3:
 				//rezeptAbschliessen();

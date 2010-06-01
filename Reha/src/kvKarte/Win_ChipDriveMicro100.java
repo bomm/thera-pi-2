@@ -72,7 +72,7 @@ public class Win_ChipDriveMicro100 {
 									outLen
 									);
 			
-			////System.out.println("R�ckgabewert der Funktion  = "+new Integer(ret).toHexString(ret) );
+			////System.out.println("Rückgabewert der Funktion  = "+new Integer(ret).toHexString(ret) );
 			////System.out.println("Output = "+Native.toString(output) );
 			}catch (UnsatisfiedLinkError e) {
 				e.printStackTrace();

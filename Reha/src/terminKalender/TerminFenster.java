@@ -861,7 +861,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								terminBreak = false;
 								datenAusSpeicherHolen();								
 							}else{
-								wartenAufReady = false;						
+								wartenAufReady = false;
+								SqlInfo.loescheLocksMaschine();
 							}
 							shiftGedrueckt = false;
 							gruppierenAktiv = false;
@@ -988,6 +989,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								terminBreak = false;
 								datenAusSpeicherHolen();								
 							}else{
+								SqlInfo.loescheLocksMaschine();
 								wartenAufReady = false;						
 							}
 							shiftGedrueckt = false;
@@ -1064,6 +1066,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								testeObAusmustern();
 								blockSetzen(11);								
 							}else{
+								SqlInfo.loescheLocksMaschine();
 								wartenAufReady = false;								
 							}
 
@@ -1102,6 +1105,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								testeObAusmustern();
 								blockSetzen(10);								
 							}else{
+								SqlInfo.loescheLocksMaschine();
 								wartenAufReady = false;								
 							}
 							oSpalten[tspalte].requestFocus();							
@@ -1209,9 +1213,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								if(ansicht==NORMAL_ANSICHT){
 									setLockStatement((belegung[tspalte]+1 >=10 ? Integer.toString(belegung[tspalte]+1)+"BEHANDLER" : "0"+(belegung[tspalte]+1)+"BEHANDLER"),aktuellerTag);
 									new Thread(new LockRecord()).start();
+									long lockzeit = System.currentTimeMillis();
 									while(lockok == 0){
 										try {
 											Thread.sleep(20);
+											if(System.currentTimeMillis()-lockzeit > 1500){
+												break;
+											}
 										} catch (InterruptedException e1) {
 											e1.printStackTrace();
 										}
@@ -1223,8 +1231,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										setUpdateVerbot(false);
 									}else{
 										lockok = 0;
-										sperreAnzeigen();
+										sperreAnzeigen("");
 										setUpdateVerbot(false);
+										SqlInfo.loescheLocksMaschine();
 									}
 								}else if(ansicht==WOCHEN_ANSICHT){	//WOCHEN_ANSICHT mu� noch entwickelt werden!
 									if(aktiveSpalte[2] == 0){
@@ -1234,9 +1243,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),DatFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 									}
 									new Thread(new LockRecord()).start();
+									long lockzeit = System.currentTimeMillis();
 									while(lockok == 0){
 										try {
 											Thread.sleep(20);
+											if(System.currentTimeMillis()-lockzeit > 1500){
+												break;
+											}
 										} catch (InterruptedException e1) {
 											e1.printStackTrace();
 										}
@@ -1248,8 +1261,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										setUpdateVerbot(false);
 									}else{
 										lockok = 0;
-										sperreAnzeigen();
+										sperreAnzeigen("(e.getClickCount() == 2) && (e.getButton() == java.awt.event.MouseEvent.BUTTON1)");
 										setUpdateVerbot(false);
+										SqlInfo.loescheLocksMaschine();
 									}
 								}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT mu� noch entwickelt werden!
 									////System.out.println("Maskenansicht-Doppelklick");
@@ -1708,9 +1722,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				return;
 			}
 			intagWahl = true;
-			tagSprung(this.aktuellerTag,1);
-			if(aktiveSpalte[2]>=0){
-				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);				
+			try{
+				tagSprung(this.aktuellerTag,1);
+				if(aktiveSpalte[2]>=0){
+					oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);				
+				}
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler beim Aufruf des Datumdialog. Fehler =\n"+ex.getMessage());
 			}
 			intagWahl = false;
 			break;
@@ -1719,9 +1737,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				return;
 			}
 			intagWahl = true;
-			tagSprung(this.aktuellerTag,-1);
-			if(aktiveSpalte[2]>=0){
-				oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);				
+			try{
+				tagSprung(this.aktuellerTag,-1);
+				if(aktiveSpalte[2]>=0){
+					oSpalten[aktiveSpalte[2]].setSpalteaktiv(false);				
+				}
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler beim Aufruf des Datumdialog. Fehler =\n"+ex.getMessage());				
 			}
 			intagWahl = false;
 			break;
@@ -1894,9 +1916,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			if(ansicht==NORMAL_ANSICHT){
 				setLockStatement((belegung[aktiveSpalte[2]]+1 >=10 ? Integer.toString(belegung[aktiveSpalte[2]]+1)+"BEHANDLER" : "0"+(belegung[aktiveSpalte[2]]+1)+"BEHANDLER"),aktuellerTag);
 				new Thread (new LockRecord()).start();
+				long lockzeit = System.currentTimeMillis();
 				while(lockok == 0){
 					try {
 						Thread.sleep(20);
+						if(System.currentTimeMillis()-lockzeit > 1500){
+							break;
+						}
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
@@ -1914,8 +1940,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setUpdateVerbot(false);
 				}else{
 					lockok = 0;
-					sperreAnzeigen();
-					setUpdateVerbot(false);					
+					sperreAnzeigen("ansicht==NORMAL_ANSICHT - case Taste = 10");
+					setUpdateVerbot(false);	
+					SqlInfo.loescheLocksMaschine();
+					interminEdit = false;
 				}
 			}else if(ansicht==WOCHEN_ANSICHT){
 				if(aktiveSpalte[2] == 0){
@@ -1924,9 +1952,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),DatFunk.sDatPlusTage(getWocheErster(),aktiveSpalte[2]) );											
 				}
 				new Thread(new LockRecord()).start();
+				long lockzeit = System.currentTimeMillis();
 				while(lockok == 0){
 					try {
 						Thread.sleep(20);
+						if(System.currentTimeMillis()-lockzeit > 1500){
+							break;
+						}
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
@@ -1944,8 +1976,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setUpdateVerbot(false);
 				}else{
 					lockok = 0;
-					sperreAnzeigen();
-					setUpdateVerbot(false);					
+					sperreAnzeigen("ansicht==WOCHEN_ANSICHT - case Taste = 10");
+					setUpdateVerbot(false);	
+					interminEdit = false;
+					SqlInfo.loescheLocksMaschine();
 				}
 			}else if(ansicht==MASKEN_ANSICHT){	//WOCHEN_ANSICHT muß noch entwickelt werden!
 				e.consume();
@@ -2704,10 +2738,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		return Reha.thisClass.terminpanel;
 	}
 	
-	private void sperreAnzeigen(){
+	private void sperreAnzeigen(String programmteil){
 		JOptionPane.showMessageDialog (null, "Diese Terminspalte ist derzeit gesperrt von Benutzer \n\n" +
 				"---> "+lockmessage+
-				"\n\n und kann deshalb nicht veränder werden!");
+				"\n\n und kann deshalb nicht veränder werden!\n\n"+
+				"Bitte informieren Sie den Administrator und notiern Sie zuvor -> "+programmteil);
 	}
 	public static void starteUnlock(){
 		new Thread(new UnlockRecord()).start();
@@ -2969,19 +3004,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	}
 /******************
 * Nachfolgend das Blockhandling
-* �bergabe = 1 Block passt genaut
-* �bergabe = 2 Block oben anschlie�en
-* �bergabe = 3 Block unten anschlie�en
-* �bergabe = 4 Block ausdehnen
-* �bergabe = 5 Startzeit wurde manuell festgelegt
-* �bergabe = 6 Nachfolgenden Block k�rzen
-* �bergabe = 7 Vorblock k�rzen
-* �bergabe = 8 Gruppierten Terminblock zusammenfassen 
-* �bergabe = 9 Gruppierten Terminblock l�schen	
-* �bergabe = 10 Freitermin eintragen
-* �bergabe = 10 Block l�schen
-* �bergabe = 11 Block tauschen mit vorg�nger
-* �bergabe = 12 Block tauschen mit nachfolger
+* Übergabe = 1 Block passt genaut
+* Übergabe = 2 Block oben anschließen
+* Übergabe = 3 Block unten anschließen
+* Übergabe = 4 Block ausdehnen
+* Übergabe = 5 Startzeit wurde manuell festgelegt
+* Übergabe = 6 Nachfolgenden Block kürzen
+* Übergabe = 7 Vorblock kürzen
+* Übergabe = 8 Gruppierten Terminblock zusammenfassen 
+* Übergabe = 9 Gruppierten Terminblock löschen	
+* Übergabe = 10 Freitermin eintragen
+* Übergabe = 10 Block löschen
+* Übergabe = 11 Block tauschen mit vorgänger
+* Übergabe = 12 Block tauschen mit nachfolger
 */
 		private void blockSetzen(int wohin){
 			int gesperrt=0;
@@ -2989,7 +3024,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			setzeRueckgabe();
 
 			if(gesperrt < 0){
-				sperreAnzeigen();
+				sperreAnzeigen("in blockSetzen - Parameter="+Integer.toString(wohin));
+				SqlInfo.loescheLocksMaschine();
 				return;
 			}else{
 				setUpdateVerbot(true);
@@ -3108,10 +3144,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Thread.sleep(20);
 				if((System.currentTimeMillis()-zeit) > 2500){
 					JOptionPane.showMessageDialog(null,"Fehler im Lock-Mechanismus -> Funktion LockVorbereiten(), bitte informieren Sie den Entwickler");
+					SqlInfo.loescheLocksMaschine();
 					lockok = -1;
 				}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
+				SqlInfo.loescheLocksMaschine();
 			}
 		}
 		return lockok;
@@ -3291,12 +3329,20 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				protected Void doInBackground() throws Exception {
 					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 					Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+					long whilezeit = System.currentTimeMillis(); 
 					while( (xpatient == null) ){
 						Thread.sleep(20);
 						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+						if(System.currentTimeMillis()-whilezeit > 2500){
+							break;
+						}
 					}
+					whilezeit = System.currentTimeMillis();
 					while(  (!AktuelleRezepte.initOk) ){
 						Thread.sleep(20);
+						if(System.currentTimeMillis()-whilezeit > 2500){
+							break;
+						}
 					}
 					
 					String s1 = "#PATSUCHEN";
@@ -3736,7 +3782,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 						}
 						////System.out.println("Wert von Grobraus = "+grobRaus);
-						
+						zeit = System.currentTimeMillis();
 						if(!grobRaus){
 							try{
 							String sbeginnneu = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(spaltneu[0]); 
@@ -3833,15 +3879,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									}
 							}else{
 								aktiveSpalte = spaltneu.clone();
-								wartenAufReady = false;		
+								wartenAufReady = false;
+								SqlInfo.loescheLocksMaschine();
 							}
 							aktiveSpalte = spaltneu.clone();
 							}catch(Exception ex){
 								ex.printStackTrace();
+								SqlInfo.loescheLocksMaschine();
 							}
 						}else{
 							aktiveSpalte = spaltneu.clone();
-							wartenAufReady = false;								
+							wartenAufReady = false;
+							SqlInfo.loescheLocksMaschine();
 						}					
 					}
 					if((spaltneu[2] != altaktiveSpalte[2]) && (altaktiveSpalte[2]>=0)){

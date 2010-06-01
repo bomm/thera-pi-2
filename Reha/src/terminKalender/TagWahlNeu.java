@@ -84,7 +84,6 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 		this.getParent().setName("Eltern-"+eigenName);
 			
 		this.setUndecorated(true);
-
 		this.addFocusListener(this);
 		this.addWindowListener(this);
 		this.addKeyListener(this);
@@ -152,6 +151,7 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 				
 			}
 		});
+		this.setAlwaysOnTop(true);
 		this.setModal(true);
 		validate();
 		SwingUtilities.invokeLater(new Runnable(){

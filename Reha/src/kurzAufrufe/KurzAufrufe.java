@@ -149,7 +149,7 @@ class AkutListe{
 					  text = (String) ((Vector)vec.get(i)).get(0);
 					  textTable.getCell(0,i+1).getTextService().getText().setText(text);
 
-					  text = (String) ((Vector)vec.get(i)).get(1)+",\r"+ (String)((Vector)vec.get(i)).get(2);
+					  text = (String) ((Vector)vec.get(i)).get(1)+"\r"+ (String)((Vector)vec.get(i)).get(2);
 					  textTable.getCell(1,i+1).getTextService().getText().setText(text);
 					  
 					  text = "";

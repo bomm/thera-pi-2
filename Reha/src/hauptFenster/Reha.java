@@ -215,6 +215,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	
 	public JLabel shiftLabel = null;
 	public JLabel messageLabel = null;
+	public JLabel dbLabel = null;
 	public JLabel mousePositionLabel = null;
 	public JXPanel jxPinContainer = null;
 	public JXPanel jxCopyContainer = null;
@@ -1142,10 +1143,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			JXPanel bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-			JLabel lab = new JLabel("Benutzer: Admin");
-			lab.setVerticalAlignment(JLabel.CENTER);
-			lab.setHorizontalAlignment(JLabel.LEFT);
-			bar2.add(lab);
+			dbLabel = new JLabel(" ");
+			//JLabel lab = new JLabel("Benutzer: Admin");
+			dbLabel.setVerticalAlignment(JLabel.CENTER);
+			dbLabel.setHorizontalAlignment(JLabel.LEFT);
+			bar2.add(dbLabel);
 			bar.add(bar2);
 			sbkomplett.add(bar,sbcc.xy(2, 2));
 
@@ -1560,16 +1562,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 					if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
 						if(Reha.DbOk){
-							if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
-									(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
-								//fare niente
-							}else{
-								Date zeit = new Date();
-								String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
-								new ExUndHop().setzeStatement(stx);
-							}
+							Date zeit = new Date();
+							String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
+							new ExUndHop().setzeStatement(stx);
 						}
-
 						System.exit(0);
 					}else{
 						return;
@@ -2192,15 +2188,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public void windowClosing(WindowEvent arg0) {
 		if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
 			if(Reha.DbOk){
-				if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
-						(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
-					//fare niente
-				}else{
-					Date zeit = new Date();
-					String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
-					SqlInfo.sqlAusfuehren(stx);
-					//new ExUndHop().setzeStatement(stx);
-				}
+				Date zeit = new Date();
+				String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
+				SqlInfo.sqlAusfuehren(stx);
 			}
 
 			JInternalFrame[] frame = desktops[0].getAllFrames();
@@ -2442,6 +2432,9 @@ final class DatenbankStarten implements Runnable{
 	    			}*/	
 	    			int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
 	    			new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
+	    			if(obj.dbLabel != null){
+	    				obj.dbLabel.setText(SystemConfig.vDatenBank.get(0).get(1));
+	    			}
 	        		Reha.DbOk = true;
 
 	        	} 
@@ -2476,15 +2469,9 @@ final class DatenbankStarten implements Runnable{
 		}
 		StarteDB();
 		if (Reha.DbOk){
-				if( (SystemConfig.dieseMaschine.toString().indexOf("10.8.0.6") > 0) ||
-						(SystemConfig.dieseMaschine.toString().indexOf("192.168.2.55") > 0)	){
-
-				}else{
-					Date zeit = new Date();
-					String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='ein'";
-					new ExUndHop().setzeStatement(stx);
-				}
-				
+			Date zeit = new Date();
+			String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='ein'";
+			new ExUndHop().setzeStatement(stx);
 				try {
 					/*
             	    if(Reha.DbOk){

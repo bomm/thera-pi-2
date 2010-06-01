@@ -297,6 +297,17 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
 			hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
 			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+			if(!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))) ){
+				String meldung = "Fehler!!!! aktuelle Patientendaten - soll = "+StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))+"\n"+
+				"Istdaten sind\n"+
+				hmAdresse.get("<pri1>")+"\n"+
+				hmAdresse.get("<pri2>")+"\n"+
+				hmAdresse.get("<pri3>")+"\n"+
+				hmAdresse.get("<pri4>")+"\n"+
+				hmAdresse.get("<pri5>");
+				JOptionPane.showMessageDialog(null,meldung);
+				return;
+			}
 			hmAdresse.put("<pri6>",aktRechnung);
 			abrDlg.setzeLabel("Starte OpenOffice.org");
 			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmpriformular"));

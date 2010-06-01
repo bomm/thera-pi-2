@@ -783,9 +783,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		SystemConfig.hmAdrBDaten.put("<Badr4>", str[3]);
 		SystemConfig.hmAdrBDaten.put("<Bbanrede>", str[4]);
 		if(Reha.thisClass.patpanel.patDaten.get(0).toUpperCase().equals("HERR")){
-			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihren Patieten");
+			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihren Patienten");
 		}else{
-			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihre Patietin");
+			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihre Patientin");
 		}
 		for(int i = 0; i < 4; i++){
 			SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);

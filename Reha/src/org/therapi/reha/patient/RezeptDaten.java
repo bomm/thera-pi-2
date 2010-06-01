@@ -88,11 +88,11 @@ public class RezeptDaten extends JXPanel{
 		Reha.thisClass.patpanel.aktRezept.rezAngezeigt = reznummer;
 		final String xreznummer = reznummer;
 		final String xsid = sid;
-		
+		/*
 		new SwingWorker<Void,Void>(){
 			@SuppressWarnings("unchecked")
 			@Override
-			protected Void doInBackground() throws Exception {
+			protected Void doInBackground() throws Exception {*/
 				try{
 					vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) ));
 					Reha.thisClass.patpanel.vecaktrez = vecaktrez;
@@ -245,7 +245,17 @@ public class RezeptDaten extends JXPanel{
 					}
 
 					RezeptDaten.feddisch = true;
-
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							RezTools.constructVirginHMap();
+							ArztTools.constructArztHMap((String)vecaktrez.get(16));
+							KasseTools.constructKasseHMap((String)vecaktrez.get(37));
+							return null;
+						}
+						
+					}.execute();
+					/*
 					new Thread(){
 						public void run(){
 							RezTools.constructVirginHMap();
@@ -254,15 +264,16 @@ public class RezeptDaten extends JXPanel{
 							//int i = RezTools.testeRezGebArt(true,reznum.getText().trim(),(String)vecaktrez.get(34));
 						}
 					}.start();
+					*/
 				
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
 				
-				
+				/*
 				return null;
 			}
-		}.execute();
+		}.execute();*/
 		
 		
 	}
