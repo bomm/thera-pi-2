@@ -21,6 +21,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -95,6 +98,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import dialoge.ToolsDialog;
+import emailHandling.EmailSendenExtern;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
@@ -430,12 +434,32 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					neuanlageRezept(false,"");
 				}
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
-				   Point point = arg0.getPoint();
-				   int row = tabaktrez.rowAtPoint(point);
-				   tabaktrez.columnAtPoint(point);
-				   tabaktrez.setRowSelectionInterval(row, row);
-					ZeigePopupMenu(arg0);
-					
+				   if(Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+					   Point point = arg0.getPoint();
+					   int row = tabaktrez.rowAtPoint(point);
+					   tabaktrez.columnAtPoint(point);
+					   tabaktrez.setRowSelectionInterval(row, row);
+					   ZeigePopupMenu(arg0);
+				   }else{
+					   EmailSendenExtern oMail = new EmailSendenExtern();
+						String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
+						String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
+						String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
+						String pass1 = SystemConfig.hmEmailExtern.get("Password");
+						String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
+						String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
+						ArrayList<String[]> attachments = new ArrayList<String[]>();
+						boolean authx = (authent.equals("0") ? false : true);
+						boolean bestaetigen = false;
+						try {
+							oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, "Fehler", "Rechte-Maustaste im Rezept ausgelöst",attachments,authx,bestaetigen);
+						} catch (AddressException e) {
+							e.printStackTrace();
+						} catch (MessagingException e) {
+							e.printStackTrace();
+						}
+
+				   }
 				}
 			}
 		});
@@ -576,7 +600,25 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.getColumn(4).setMinWidth(0);
 		tabaktterm.getColumn(4).setMaxWidth(0);
 		tabaktterm.setOpaque(true);
-
+		tabaktterm.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent arg0){
+					arg0.consume();
+			}
+			public void mouseClicked(MouseEvent arg0) {
+				arg0.consume();
+				System.out.println("Im eigenen Mouseadapter");
+				if(arg0.getClickCount()==2){
+					int row = tabaktterm.getSelectedRow();
+					int col = tabaktterm.getSelectedColumn();
+					startCellEditing(tabaktterm,row,col);
+				}
+				if(arg0.getClickCount()==1){
+					int row = tabaktterm.getSelectedRow();
+					int col = tabaktterm.getSelectedColumn();
+					tabaktterm.setRowSelectionInterval(row, row);
+				}
+			}
+		});
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
 				// TODO Auto-generated method stub
@@ -613,6 +655,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		JScrollPane termscr = JCompTools.getTransparentScrollPane(tabaktterm);
 		termscr.getVerticalScrollBar().setUnitIncrement(15);
 		return termscr;
+	}
+	private void startCellEditing(JXTable table,int row,int col){
+		final int xrows = row;
+		final int xcols = col;
+		final JXTable xtable = table;
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+		 		  xtable.setRowSelectionInterval(xrows, xrows);
+		 		 xtable.setColumnSelectionInterval(xcols, xcols);
+		 		  xtable.scrollRowToVisible(xrows);
+		 				xtable.editCellAt(xrows,xcols );
+		 	   }
+		});
 	}
 
 	
@@ -711,6 +766,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							
 						}
 						//tabaktrez.setRowSelectionInterval(row, row);
+						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, 7)+"'", Arrays.asList(new String[] {}) ));
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
 						/*
 						if(!inEinzelTermine){
@@ -727,6 +783,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					}else{
 						rezneugefunden = true;
 						//tabaktrez.setRowSelectionInterval(0, 0);
+						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, 7)+"'", Arrays.asList(new String[] {}) ));
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
 						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
@@ -784,20 +841,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(tabaktrez.getRowCount(),"aktuelle Rezepte"));			
 		}
 	}
+	public void aktualisiereVector(String rid){
+		String[] strg = {};
+		Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+rid+"'", Arrays.asList(strg) ));
+		setRezeptDaten();
+	}
 	public void setRezeptDaten(){
 		int row = this.tabaktrez.getSelectedRow();
 		if(row >= 0){
 			final int xrow = row;
-			SwingUtilities.invokeLater(new Runnable(){
-				public  void run(){
-					String reznr = (String)tabaktrez.getValueAt(xrow,0);
-					rezAngezeigt = reznr;
-					String id = (String)tabaktrez.getValueAt(xrow,7);
-					rezDatenPanel.setRezeptDaten(reznr,id);
-					//System.out.println("Aus Bericht....."+reznr+"....."+id);
-				}
-			});	
-
+			String reznr = (String)tabaktrez.getValueAt(row,0);
+			rezAngezeigt = reznr;
+			String id = (String)tabaktrez.getValueAt(row,7);
+			rezDatenPanel.setRezeptDaten(reznr,id);
 		}
 	}
 	public void updateEinzelTermine(String einzel){
@@ -1128,7 +1184,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		                					inEinzelTermine = false;
 		                				}
 		                			}
-		                    		
+		                			Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(ix, 7)+"'", Arrays.asList(new String[] {}) ));
+		                			Reha.thisClass.patpanel.aktRezept.rezAngezeigt = (String)tabaktrez.getValueAt(ix, 0);
 		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
 		    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								}catch(Exception ex){
@@ -1828,7 +1885,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
-				(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
+				(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
 			String reznr = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
 			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung für Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
@@ -1906,7 +1963,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	}
  
 	public void neuanlageRezept(boolean lneu,String feldname){
-		String zzstatus = "";
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
@@ -1918,19 +1974,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			JOptionPane.showMessageDialog(null, "neuDlgOffen hat den wert true");
 			return;
 		}
+		try{
 		neuDlgOffen = true;
 		RezNeuDlg neuRez = new RezNeuDlg();
-		//JDialog neuPat = new JDialog();
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.setName("RezeptNeuanlage");
 		pinPanel.getGruen().setVisible(false);
-		//neuRez.setPinPanel(pinPanel);
 		if(lneu){
 			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
-		}else{
-			zzstatus = ((String)Reha.thisClass.patpanel.vecaktrez.get(39));
-			//System.out.println("bisheriger Zuzahlungsstatus = "+zzstatus);
-//			neuRez.getSmartTitledPanel().setTitle("editieren ---> "+ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geboren am: "+ptfield[4].getText().trim());		
 		}
 		neuRez.setSize(480,768);
 		neuRez.setPreferredSize(new Dimension(480,630));
@@ -1940,69 +1991,45 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname));
 			neuRez.getSmartTitledPanel().setTitle("RezeptNeuanlage");
 		}else{
-			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(rezDatenPanel.vecaktrez,lneu,feldname));
-			neuRez.getSmartTitledPanel().setTitle("editieren Rezept ---> "+rezDatenPanel.vecaktrez.get(1));
+			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(Reha.thisClass.patpanel.vecaktrez,lneu,feldname));
+			neuRez.getSmartTitledPanel().setTitle("editieren Rezept ---> "+Reha.thisClass.patpanel.vecaktrez.get(1));
 		}
 		neuRez.getSmartTitledPanel().getContentContainer().setName("RezeptNeuanlage");
 		neuRez.setName("RezeptNeuanlage");
 		neuRez.setModal(true);
 		neuRez.setLocationRelativeTo(null);
-		//neuRez.setTitle("Patienten Neuanlage");
 		neuRez.pack();
 		neuRez.setVisible(true);
-
 		neuRez.dispose();
 		neuRez = null;
 		pinPanel = null;
 		if(!lneu){
 			if(tabaktrez.getRowCount()>0){
+				try{
 				RezeptDaten.feddisch = false;
-				rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 0),(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
-				long zeit = System.currentTimeMillis();
-				while(!RezeptDaten.feddisch){
-					try {
-						Thread.sleep(20);
-						if(System.currentTimeMillis()-zeit > 10000){
-							JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rezeptdaten");
-							return;
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				//System.out.println("Rezeptdaten fertig geladen = "+RezeptDaten.feddisch);
-				if(((String)Reha.thisClass.patpanel.vecaktrez.get(39)).equals("")){
-					//System.out.println("zuzahlstatus provisorisch gesetzt!!!!!!!!");
-					Reha.thisClass.patpanel.vecaktrez.set(39,"0");
-				}else{
-					//System.out.println("Zuzahlungsstatus neu = "+Reha.thisClass.patpanel.vecaktrez.get(39));
-				}
-				//System.out.println("Bild Einstellen -> "+new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(39)) );
-				dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(39))], 
+				System.out.println("rufe Rezeptnummer "+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
+				aktualisiereVector((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
+
+					
+				dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[Integer.parseInt((String)Reha.thisClass.patpanel.vecaktrez.get(39))], 
 									tabaktrez.getSelectedRow(),1);
 				tabaktrez.validate();
 				tabaktrez.repaint();
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null,"Fehler in der Darstellung eines abgespeicherten Rezeptes");
+					ex.printStackTrace();
+				}
 			}
 		}else{
 			if(aktPanel.equals("leerPanel")){
 				holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
 			}
 		}
-		   /*
-		SwingUtilities.invokeLater(new Runnable(){
-		 	   public  void run(){
-
-					Runtime r = Runtime.getRuntime();
-				    r.gc();
-				    long freeMem = r.freeMemory();
-				    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
-			
-		 	   }
-		});
-	    */
-
-		////System.out.println("Pat Neu/�ndern ist disposed");
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler beim Öffnen des Rezeptfensters");
+		}
+		////System.out.println("Pat Neu/Andern ist disposed");
 		neuDlgOffen = false;
 
 	}

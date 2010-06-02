@@ -1125,7 +1125,7 @@ public class RezTools {
 							}
 							
 						}
-					}else{// es k�nnen keine Kilometer abgerechnet werden
+					}else{// es können keine Kilometer abgerechnet werden
 						//System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
 						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),

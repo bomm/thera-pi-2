@@ -102,7 +102,11 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 
 			@Override
 			protected Void doInBackground() throws Exception {
-			     rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezeptGebuehren"));		
+				try{
+					rgb.setBackgroundPainter(Reha.thisClass.compoundPainter.get("RezeptGebuehren"));
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler im BackgroundPainter Rezeptgebühren");
+				}
 				return null;
 			}
 			
@@ -359,66 +363,95 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		if(arg0.getActionCommand().equals("okknopf")){
-			new Thread(){
-				public void run(){
-					if(!nurkopie){
-						doBuchen();
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						if(!nurkopie){
+							doBuchen();
+						}
+						rezGebDrucken();
+						doSchliessen();
+					}catch(Exception ex){
+						ex.printStackTrace();
 					}
-					rezGebDrucken();
+					return null;
 				}
-			}.start();
-			this.dispose();
-			super.dispose();
+				
+			}.execute();
 		}
+	}
+	public void doSchliessen(){
+		this.dispose();
+		super.dispose();
 	}
 	
 	public void keyPressed(KeyEvent event) {
 		if(event.getKeyCode()==10){
 			event.consume();
-			if( ((JComponent)event.getSource()).getName().equals("okknopf")){
-				new Thread(){
-					public void run(){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
 						if(!nurkopie){
 							doBuchen();
 						}
 						rezGebDrucken();
+						doSchliessen();
+					}catch(Exception ex){
+						ex.printStackTrace();
 					}
-				}.start();
-				this.dispose();
-				super.dispose();
-			}
+					return null;
+				}
+			}.execute();
 			//System.out.println("Return Gedrückt");
 		}
 	}
 	public void doBuchen(){
 		String cmd = null;
 		try{
-		cmd = "insert into kasse set einnahme='"+
-		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
-		DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
-		Reha.thisClass.patpanel.patDaten.get(2)+","+
-		SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
-		"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
-		"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
-		SqlInfo.sqlAusfuehren(cmd);
-		////System.out.println("Kassenbuch -> "+cmd);
+			cmd = "insert into kasse set einnahme='"+
+			SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
+			DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
+			Reha.thisClass.patpanel.patDaten.get(2)+","+
+			SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
+			"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
+			"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			////System.out.println("Kassenbuch -> "+cmd);
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Die bezahlten Rezeptgebühren konnten nicht verbucht werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
 					"Sie den Administrator");
 		}
 		try{
-		cmd = "update verordn set rez_geb='"+
-		SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', "+
-		"rez_bez='T', zzstatus='1' where rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")/*SystemConfig.hmAdrRDaten.get("<Rnummer>")*/+"' LIMT 1";
-		SqlInfo.sqlAusfuehren(cmd);
-		try{
-			aktuelleRezepte.setZuzahlImage(1);
-		}catch(Exception ex){
-			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
+			
+			try{	
+				String cmd2 = "update verordn set rez_geb='"+
+				SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replace(",",".")+"', "+
+				"rez_bez='T', zzstatus='1' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(cmd2.toString());
+				String test = "Bitte kontrollieren!!!!!!\n\n"+
+				"Rezeptnummer = "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n\n"+
+				"Rezeptgebühren = "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n\n";
+				//System.out.println(cmd2);
+				JOptionPane.showMessageDialog(null, test);
+			}catch(Exception ex){
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null,"Achtung Fehler im Modul Rezeptgebühr, bitte notieren Sie die nachfolgende Fehlermeldung");
+				JOptionPane.showMessageDialog(null, "Fehler beim einstellen der Rezeptgebühr im Rezept\n\n"+
+						"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
+						"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+						"\nSql-Befehl = "+cmd+"\n\n"+
+						"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
+			}
+			try{
+				aktuelleRezepte.setZuzahlImage(1);
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
 					"Sie den Administrator");
-		}
+			}
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+

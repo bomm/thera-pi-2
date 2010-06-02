@@ -52,7 +52,7 @@ public class PatientToolBarPanel extends JXPanel{
 		setLayout(lay);
 		JLabel lbl = new JLabel("Kriterium:");
 		add(lbl,cc.xy(2,2));
-		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","2.Kriterium noch unbelegt","3.Kriterium noch unbelegt","4.Kriterium noch unbelegt","5.Kriterium noch unbelegt","6.Kriterium noch unbelegt","7.Kriterium noch unbelegt"});
+		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","Patienten-ID","3.Kriterium noch unbelegt","4.Kriterium noch unbelegt","5.Kriterium noch unbelegt","6.Kriterium noch unbelegt","7.Kriterium noch unbelegt"});
 		patientHauptPanel.jcom.setBackground(new Color(247,209,176));
 		add(patientHauptPanel.jcom,cc.xyw(15, 2, 3));
 		add(patientHauptPanel.jcom,cc.xyw(4,2,8));

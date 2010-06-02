@@ -83,7 +83,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		//super(owner,null);
 		this.name = name;
 		this.setName(name);
-		this.setAlwaysOnTop(true);
+		//this.setAlwaysOnTop(true);
 		setName(name);
 		
 

@@ -864,6 +864,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								wartenAufReady = false;
 								SqlInfo.loescheLocksMaschine();
 							}
+							
 							shiftGedrueckt = false;
 							gruppierenAktiv = false;
 							gruppierenBloecke[0] = -1;
@@ -3084,6 +3085,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setUpdateVerbot(false);
 				}
 			}
+			wartenAufReady = false;
 			setUpdateVerbot(false);
 		}
 		public void setUpdateVector(Vector vTerm){
@@ -3148,6 +3150,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					lockok = -1;
 				}
 			} catch (InterruptedException e1) {
+				JOptionPane.showMessageDialog(null, "Fehler im Modul lockVorbereiten");
 				e1.printStackTrace();
 				SqlInfo.loescheLocksMaschine();
 			}
@@ -3309,6 +3312,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+			if(vec.size() > 0){
+				JOptionPane.showMessageDialog(null, "Achtung das Rezept ist bereits abgerechnet und befindet sich in der Historie");
+			}
 		}
 		if(vec.size() == 0){
 			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
@@ -4171,7 +4177,7 @@ class LockRecord implements Runnable{
 		  this.sState = TerminFenster.getThisClass().privstmt;
 		  
 		try {
-				threadStmt = "select * from flexlock where sperre = '"+TerminFenster.getLockStatement()+"'";
+				threadStmt = "select * from flexlock where sperre = '"+TerminFenster.getLockStatement()+"' LIMIT 1";
 				rs = this.sState.executeQuery(threadStmt);
 				if(!rs.next()){
 					new Thread(new SetLock()).start();
@@ -4205,30 +4211,9 @@ class UnlockRecord implements Runnable{
 Statement sState = null;
 boolean success = false;
 	  public void SatzEntsperren(){
-			try {
-				this.sState = TerminFenster.getThisClass().privstmt;
-				success = this.sState.execute("Delete from flexlock where sperre = '"+TerminFenster.getLockSpalte()+"' AND maschine = '"+SystemConfig.dieseMaschine+"'");
-				success = this.sState.execute("COMMIT");
-				//Reha.thisClass.messageLabel.setText("Entserrung efolgreich");
-				TerminFenster.setLockOk(0,"");
-				TerminFenster.getThisClass().wartenAufReady = false;
-			}catch(SQLException ex) {
-				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
-				TerminFenster.getThisClass().wartenAufReady = false;
-				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
-				JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nDiese Terminspalte wurde bereits  von Benutzer \n\n" +
-						"gesperrt. Bitte brechen Sie den Eingabevorgang ab \n\n"+
-						"und versuchen es später erneut!!");
-				Reha.thisClass.messageLabel.setText("Entsperren misslungen");
-				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());
-
-			}
-
+			this.sState = TerminFenster.getThisClass().privstmt;
+			SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 	  }
-	  
-	  
 	  public void run(){
 	    SatzEntsperren();
 	  }
@@ -4251,11 +4236,7 @@ class SetLock implements Runnable{
 				klappt = this.sState.execute("COMMIT");
 
 			}catch(SQLException ex) {
-				//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-				//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());
-				//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
 				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
-				//new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'"); 
 				Reha.thisClass.messageLabel.setText("Entsperren misslungen");			
 				TerminFenster.setLockOk(-1," Durch Fehler in SQL-Statement:" +ex.getMessage());				
 			}
@@ -4278,7 +4259,7 @@ class DirectLockRecord implements Runnable{
 		  this.sState = TerminFenster.getThisClass().privstmt;
 		  
 		try {
-				threadStmt = "select * from flexlock where sperre = '"+TerminFenster.getLockStatement()+"'";
+				threadStmt = "select * from flexlock where sperre = '"+TerminFenster.getLockStatement()+"' LIMT 1";
 				rs = this.sState.executeQuery(threadStmt);
 				if(!rs.next()){
 

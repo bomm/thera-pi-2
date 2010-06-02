@@ -124,7 +124,8 @@ public class PatientHauptLogic {
 			}
 			((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
 		}else{
-			patientHauptPanel.sucheComponent = new SuchenDialog(null,Reha.thisClass.patpanel,patientHauptPanel.tfsuchen.getText());
+			patientHauptPanel.sucheComponent = new SuchenDialog(null,Reha.thisClass.patpanel,
+					patientHauptPanel.tfsuchen.getText(),patientHauptPanel.jcom.getSelectedIndex());
 			Point thispoint = patientHauptPanel.tfsuchen.getLocationOnScreen();
 			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x-60, thispoint.y+25);
 			((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
@@ -308,6 +309,7 @@ public class PatientHauptLogic {
 		neuPat.setTitle("Patienten Neuanlage");
 		neuPat.pack();
 		neuPat.setModal(true);
+		//neuPat.setAlwaysOnTop(true);
 		neuPat.setVisible(true);
 		//neuPat.dispose();
 		neuPat = null;

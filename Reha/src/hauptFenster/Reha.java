@@ -2433,7 +2433,9 @@ final class DatenbankStarten implements Runnable{
 	    			int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
 	    			new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
 	    			if(obj.dbLabel != null){
-	    				obj.dbLabel.setText(SystemConfig.vDatenBank.get(0).get(1));
+	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
+	    				db = db.substring(0,db.indexOf("/"));
+	    				obj.dbLabel.setText("V=0602/05 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 

@@ -335,6 +335,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcmb[0].setActionCommand("rezeptklasse");
 		jcmb[0].addActionListener(this);
 		/********************/
+		
 		if(this.neu){
 			jcmb[0].setSelectedItem(SystemConfig.initRezeptKlasse);
 		}else{

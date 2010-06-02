@@ -94,13 +94,15 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	
 	private RehaTPEventClass rtp = null;
 	private PinPanel pinPanel = null;
+	public  int suchart = 0;
 	/**
 	 * @param 
 	 */
-	public SuchenDialog(JXFrame owner,JComponent focusBack,String fname) {
+	public SuchenDialog(JXFrame owner,JComponent focusBack,String fname,int art) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		this.focusBack = (focusBack == null ? null : focusBack);
 		this.fname = (String) (fname.equals("") ? "" : fname);
+		this.suchart = art;
 		initialize();
 		jTextField.setText(fname);
 		new suchePatient().init(tblDataModel);
@@ -700,7 +702,10 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		reiheVector.addElement("Patientennummer");
 		String[] suche;
 		////System.out.println("DbType = "+SystemConfig.vDatenBank.get(0).get(2));
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));		
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));	
+		if(suchart == 0){
+			
+		
 		if (jTextField.getText().trim().contains(" ") ){
 			suche = jTextField.getText().split(" ");
 			 
@@ -725,6 +730,12 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				////System.out.println("Statement = "+sstmt);
 			}
 
+		}
+		
+		}else if(suchart == 1){
+			sstmt = "select n_name,v_name,geboren,pat_intern from pat5 where pat_intern = '"+jTextField.getText().trim()+"' LIMIT 1";
+		}else{
+			return;
 		}
 		try {
 			

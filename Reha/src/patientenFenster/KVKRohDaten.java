@@ -355,21 +355,18 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 				}
  
 				boolean inkassenstamm = true;
+				String[] list = {};
 				String kassik = "10"+SystemConfig.hmKVKDaten.get("Kassennummer").trim();
-				Vector<String> vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse,id", "ik_kasse='"+kassik+"'", Arrays.asList(new String[] {}));
-				/*
+				Vector<String> vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse,id", "ik_kasse='"+kassik+"'", Arrays.asList(list));
 				if(vec.size()==0){
-					//Die kasse wure nicht gefunden im aktuellen Kassenstamm
-					vec =SqlInfo.holeSatz("ktraeger", "ikkasse,ikkostentraeger,ikpapier,ikdaten,ikentschluesselung,name1,name2,adresse1,adresse2,adresse3,id", "ikkasse='"+kassik+"'", Arrays.asList(new String[] {}));
-					boolean neukasse = doNeueKasse(vec);
-					inkassenstamm = false;
-				}else{
-					//Kasse in Kassenstamm vorhanden
-					inkassenstamm = true;
-					thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankekasse"));
-					thisPat.jtf[34].setText(vec.get(2));
+					Vector<String> vec2 = SqlInfo.holeSatz("ktraeger", " * ", "ikkasse='"+kassik+"'", Arrays.asList(list));
+					if(vec2.size() > 0){
+						kasseAnlegen(vec2);
+					}else{
+						JOptionPane.showMessageDialog(null, "Die Krankenkasse ist weder im Kassenstamm noch in der Kostenträgerdatei vorhanden!\n"+
+								"Bitte informieren Sie den Systemadministrator");
+					}
 				}
-				*/
 				try{
 					if(vec.size()==0){
 						JOptionPane.showMessageDialog(null, "Krankenkasse mit IK="+kassik+" ist im Krankenkassen-Stamm nicht vorhanden");
@@ -395,12 +392,22 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 			
 		}.execute();
 	}
+	private void kasseAnlegen(Vector<String> vec){
+		String ikkasse = vec.get(0);
+		String ikktraeger = vec.get(1);
+		String iknutzer = vec.get(4);
+		String ikdaten = vec.get(3);
+		String ikpapier = vec.get(2);
+		String email = vec.get(11);
+		String name1 = vec.get(5);
+		String name2 = vec.get(6);
+		String plz = vec.get(8);
+		String ort = vec.get(9);
+		String strasse = vec.get(10);
+	}
+
 	public KVKRohDaten getInstance(){
 		return this;
-	}
-	private boolean doNeueKasse(Vector<String> vec){
-		boolean ret = false;
-		return ret;
 	}
 	class RohKeyListener implements KeyListener{
 		@Override
