@@ -156,7 +156,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
          "<td>\n" +
          "<font color=red>"+
          "<font size=+1>"+
-         SystemConfig.hmKVKDaten.get("Krankekasse")+
+         SystemConfig.hmKVKDaten.get("Krankenkasse")+
          "</font>"+
          "</td></tr>\n" +
          //         
@@ -322,7 +322,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		knopf2 = null;
 	}
 	/*
-	SystemConfig.hmKVKDaten.put("Krankekasse", hmdaten[0].split("=")[1]);
+	SystemConfig.hmKVKDaten.put("Krankenkasse", hmdaten[0].split("=")[1]);
 	SystemConfig.hmKVKDaten.put("Kassennummer", hmdaten[1].split("=")[1]);
 	SystemConfig.hmKVKDaten.put("Kartennummer", hmdaten[2].split("=")[1]);
 	SystemConfig.hmKVKDaten.put("Versichertennummer", hmdaten[3].split("=")[1]);			
@@ -354,45 +354,53 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 					}
 				}
  
-				boolean inkassenstamm = true;
+				//boolean inkassenstamm = true;
 				String[] list = {};
+				//Für den Echtbetrieb!
 				String kassik = "10"+SystemConfig.hmKVKDaten.get("Kassennummer").trim();
 				Vector<String> vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,ik_kasse,id", "ik_kasse='"+kassik+"'", Arrays.asList(list));
+
 				if(vec.size()==0){
 					Vector<String> vec2 = SqlInfo.holeSatz("ktraeger", " * ", "ikkasse='"+kassik+"'", Arrays.asList(list));
 					if(vec2.size() > 0){
-						kasseAnlegen(vec2);
+						int rueck = kasseAnlegen(vec2);
+						if(rueck >= 0){
+							//kasse soll angelegt werden
+							//kassenid setzen
+							thisPat.jtf[34].setText(Integer.toString(rueck));
+						}else{
+							JOptionPane.showMessageDialog(null, "Die Krankenkasse muß manuell angelegt werden!\n\n"+
+									"Bitte informieren Sie den Systemadministrator");
+						}
 					}else{
 						JOptionPane.showMessageDialog(null, "Die Krankenkasse ist weder im Kassenstamm noch in der Kostenträgerdatei vorhanden!\n"+
+								"Die Kasse muß deshalb manuell angelegt werden!\n\n"+
 								"Bitte informieren Sie den Systemadministrator");
 					}
+				}else{
+					//Kasse existiert!!! 
+					//kassenid setzen
+					thisPat.jtf[34].setText(vec.get(2));
 				}
-				try{
-					if(vec.size()==0){
-						JOptionPane.showMessageDialog(null, "Krankenkasse mit IK="+kassik+" ist im Krankenkassen-Stamm nicht vorhanden");
-						thisPat.jtf[12].setText("Achtung: vermutlich privat....".toUpperCase());
-					}else{
-						thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankekasse"));
-						thisPat.jtf[34].setText(vec.get(2));
-					}
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-				thisPat.jtf[13].setText(kassik);
+				thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankenkasse"));
+				thisPat.jtf[13].setText(SystemConfig.hmKVKDaten.get("Kassennummer"));
 				thisPat.jtf[14].setText(SystemConfig.hmKVKDaten.get("Versichertennummer"));
 				thisPat.jtf[15].setText(SystemConfig.hmKVKDaten.get("Statusext"));
+				
 				thisPat.jtf[2].setText(SystemConfig.hmKVKDaten.get("Nachname").toUpperCase());
 				thisPat.jtf[3].setText(SystemConfig.hmKVKDaten.get("Vorname").toUpperCase());
 				thisPat.jtf[4].setText(SystemConfig.hmKVKDaten.get("Strasse").toUpperCase());
 				thisPat.jtf[5].setText(SystemConfig.hmKVKDaten.get("Plz").toUpperCase());				
 				thisPat.jtf[6].setText(SystemConfig.hmKVKDaten.get("Ort").toUpperCase());				
 				thisPat.jtf[11].setText(gerGeboren);
+
 				return null;
 			}
 			
 		}.execute();
 	}
-	private void kasseAnlegen(Vector<String> vec){
+	private int kasseAnlegen(Vector<String> vec){
+		int id = -1;
 		String ikkasse = vec.get(0);
 		String ikktraeger = vec.get(1);
 		String iknutzer = vec.get(4);
@@ -404,6 +412,75 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		String plz = vec.get(8);
 		String ort = vec.get(9);
 		String strasse = vec.get(10);
+
+		if(ikdaten.trim().equals("")){
+			ikdaten = SqlInfo.holeEinzelFeld("select ikdaten from ktraeger where ikkasse='"+ikktraeger+"' LIMIT 1");
+		}
+		if(ikpapier.trim().equals("")){
+			ikpapier = SqlInfo.holeEinzelFeld("select ikpapier from ktraeger where ikkasse='"+ikktraeger+"' LIMIT 1");
+		}
+		if(email.trim().equals("") && (!ikdaten.trim().equals(""))){
+			email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ikdaten+"' LIMIT 1");
+		}
+		
+		String cmd = "<html><b>Die Kasse ist im aktuellen Kassenstamm nicht enthalten!<br><br>"+
+		"Die Kasse wurde jedoch in der Kostenträgerdatei gefunden!"+"<br><br><font color=blue>"+
+		name1+"<br>"+name2+"<br>"+strasse+"<br>"+plz+" "+ort+"<br><br></font></b>"+
+		"IK-Kasse: "+ikkasse+"<br>"+
+		"IK-Kostenträger: "+ikktraeger+"<br>"+
+		"IK-Nutzer für Entschl.: "+iknutzer+"<br>"+
+		"IK-Datenannahmestelle: "+ikdaten+"<br>"+
+		"Email Datenannahmest.: "+email+"<br>"+
+		"IK-Papierannahmestelle: "+ikpapier+"<br><br>"+
+		"<b>Soll die Kassen mit diesen Daten in den Kassenstamm übernommen werden?</b><br><br></html>";
+		int anfrage = JOptionPane.showConfirmDialog(null, cmd, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+
+		if(anfrage == JOptionPane.YES_OPTION){
+			id = SqlInfo.holeId("kass_adr", "kmemo");
+			String sql = "update kass_adr set kassen_nam1='"+name1+"', kassen_nam2='"+name2+"', strasse='"+
+			strasse+"', plz='"+plz+"', ort='"+ort+"', ik_kasse='"+ikkasse+"', ik_kostent='"+
+			ikktraeger+"', ik_physika='"+ikdaten+"', ik_nutzer='"+iknutzer+"', ik_papier='"+ikpapier+"', "+
+			"kmemo='' where id='"+Integer.toString(id)+"' LIMIT 1";
+			SqlInfo.sqlAusfuehren(sql);
+			
+			/**********Datenannahmestelle**********/
+			if(SqlInfo.holeEinzelFeld("select ik_kasse from kass_adr where ik_kasse='"+ikdaten+"' LIMIT 1").equals("")){
+				JOptionPane.showMessageDialog(null, "Datenannahmestelle wird ebenfalls importiert");
+				Vector<Vector<String>> dvec = SqlInfo.holeFelder("select * from ktraeger where ikkasse='"+ikdaten+"' LIMIT 1");
+				if(dvec.size()<=0){
+					JOptionPane.showMessageDialog(null,"Datenannahmestelle konnte nicht gefunden!\n\nDatenannahmestelle bitte manuell anlegen\n");
+				}else{
+					sql = "insert into kass_adr set kassen_nam1='"+dvec.get(0).get(5)+"', "+
+					"kassen_nam2='"+dvec.get(0).get(6)+"', "+
+					"strasse='"+dvec.get(0).get(10)+"', "+
+					"plz='"+dvec.get(0).get(8)+"', "+
+					"ort='"+dvec.get(0).get(9)+"', "+
+					"ik_kasse='"+dvec.get(0).get(0)+"', "+
+					"email1='"+dvec.get(0).get(11)+"'";
+					SqlInfo.sqlAusfuehren(sql);
+				}
+			}
+			/**********Papierannahmestelle**********/
+			if(SqlInfo.holeEinzelFeld("select ik_kasse from kass_adr where ik_kasse='"+ikpapier+"' LIMIT 1").equals("")){
+				JOptionPane.showMessageDialog(null, "Papierannahmestelle wird ebenfalls importiert");				
+				Vector<Vector<String>> dvec = SqlInfo.holeFelder("select * from ktraeger where ikkasse='"+ikpapier+"' LIMIT 1");
+				if(dvec.size()<=0 || ikpapier.equals("")){
+					JOptionPane.showMessageDialog(null,"Papierannahmestelle konnte nicht gefunden!\n\nPapierannahmestelle bitte manuell anlegen\n");
+				}else{
+					sql = "insert into kass_adr set kassen_nam1='"+dvec.get(0).get(5)+"', "+
+					"kassen_nam2='"+dvec.get(0).get(6)+"', "+
+					"strasse='"+dvec.get(0).get(10)+"', "+
+					"plz='"+dvec.get(0).get(8)+"', "+
+					"ort='"+dvec.get(0).get(9)+"', "+
+					"ik_kasse='"+dvec.get(0).get(0)+"', "+
+					"email1='"+dvec.get(0).get(11)+"'";
+					SqlInfo.sqlAusfuehren(sql);
+				}
+			}
+			/**********Papierannahmestelle**********/
+		}
+		return id;
+		
 	}
 
 	public KVKRohDaten getInstance(){
