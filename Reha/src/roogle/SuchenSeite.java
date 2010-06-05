@@ -653,7 +653,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		jxSucheTable.getColumn(8).setMinWidth(80);	
 		//Rezeptnummer
 		jxSucheTable.getColumn(9).setMinWidth(55);	
-		jxSucheTable.getColumn(9).setMaxWidth(55);
+		jxSucheTable.getColumn(9).setMaxWidth(80);
 		//Behandler
 		jxSucheTable.getColumn(10).setCellRenderer(new ToolTipRenderer(new Color(204,255,255)));
 		jxSucheTable.getColumn(10).setMinWidth(65);	

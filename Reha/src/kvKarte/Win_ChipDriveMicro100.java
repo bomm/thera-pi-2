@@ -93,7 +93,7 @@ public class Win_ChipDriveMicro100 {
 		public boolean fuelleHashMap(String hm){
 			String[] hmdaten = hm.split("\r\n");
 			if(hmdaten.length == 15){
-				SystemConfig.hmKVKDaten.put("Krankekasse", hmdaten[0].split("=")[1]);
+				SystemConfig.hmKVKDaten.put("Krankenkasse", hmdaten[0].split("=")[1]);
 				SystemConfig.hmKVKDaten.put("Kassennummer", hmdaten[1].split("=")[1]);
 				SystemConfig.hmKVKDaten.put("Kartennummer", hmdaten[2].split("=")[1]);
 				SystemConfig.hmKVKDaten.put("Versichertennummer", hmdaten[3].split("=")[1]);			

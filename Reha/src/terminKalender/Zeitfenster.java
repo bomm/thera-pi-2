@@ -319,25 +319,30 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 	
 	public void keyPressed(KeyEvent arg0) {
 		if (arg0.getKeyCode() == 27){
+			arg0.consume();
 			Beenden(0);
 			return;
 		}
 		if(((JComponent)arg0.getSource()).getName().equals("Ok")){
 			if (arg0.getKeyCode()==10){
+				arg0.consume();
 	    		Beenden(1);
 				return;
 	    	}
 	    	if (arg0.getKeyCode()==20){
+				arg0.consume();
 	    		Beenden(0);
 				return;
 	    	}
 		}
 		if(((JComponent)arg0.getSource()).getName().equals("Abbruch")){
 			if (arg0.getKeyCode()==10){
+				arg0.consume();
 	    		Beenden(0);
 				return;
 	    	}
 	    	if (arg0.getKeyCode()==20){
+				arg0.consume();
 	    		Beenden(0);
 				return;
 	    	}
@@ -347,6 +352,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 			|| name=="EndeStunde" || name=="EndeMinute" || name=="Abbruch"
 			|| name=="Rezeptnummer" || name=="NamePatient"){
 	    	if (arg0.getKeyCode()==20){
+				arg0.consume();
 	    		Beenden(0);
 				return;
 	    	}

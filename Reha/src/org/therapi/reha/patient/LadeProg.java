@@ -69,7 +69,7 @@ public class LadeProg {
 				       BufferedReader br = new BufferedReader(isr);
 				       String line;
 				       while ((line = br.readLine()) != null) {
-				         //System.out.println(line);
+				         System.out.println(line);
 				       }
 				       is.close();
 				       isr.close();

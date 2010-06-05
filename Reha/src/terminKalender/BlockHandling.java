@@ -80,12 +80,12 @@ public class BlockHandling {
 				break;
 			}
 			if(this.wasTun==11){
-				////System.out.println("in Blockl�schen");
+				////System.out.println("in Blocklöschen");
 				this.ret = blockLoeschen();
 				break;
 			}			
 			if(this.wasTun==12){
-				////System.out.println("in mit Vorg�nger tauschen");
+				////System.out.println("in mit Vorgänger tauschen");
 				this.ret = blockTauschen(-1);
 				break;
 			}			
@@ -95,7 +95,7 @@ public class BlockHandling {
 				break;
 			}			
 			if(this.wasTun==999){
-				////System.out.println("Tag komplett l�schen und auf null setzen");
+				////System.out.println("Tag komplett löschen und auf null setzen");
 				this.ret = blockAufNull();
 				break;
 			}			
@@ -427,7 +427,7 @@ public class BlockHandling {
 		}
 		////System.out.println("Aktiver Block 0 = "+TerminFenster.thisClass.getAktiverBlock()[0]);
 		////System.out.println("Aktiver Block 2 = "+TerminFenster.thisClass.getAktiverBlock()[2]);
-		////System.out.println("Block in L�schenBlock = "+block);
+		////System.out.println("Block in löschenBlock = "+block);
 
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
 		kbs.KalenderDaten(this.datenfeld,kollege ,db_datum,ibehandler);
@@ -436,7 +436,7 @@ public class BlockHandling {
 	}
 
 	private int blockTauschen(int richtung){
-		// -1 = mit Vorg�nger
+		// -1 = mit Vorgänger
 		// +1 = mit Nachfolger
 		String[][] tauschTermine = {{null,null,null,null,null},{null,null,null,null,null}};
 		int [] bloecke = {block,block+richtung}; 
@@ -451,9 +451,13 @@ public class BlockHandling {
 				tauschTermine[x][y] = datenfeld.getFeld(kollege,y,bloecke[x]);//Text
  			}
 		}
+		String name = "";
+		String reznr = "";
 		if(richtung < 0){
-			// mit Vorg�ngerblock tauschen
-			//bisheriger Vorg�nger
+			// mit Vorgängerblock tauschen
+			//bisheriger Vorgänger
+			name = datenfeld.getFeld(kollege,0,bloecke[1]);
+			reznr = datenfeld.getFeld(kollege,1,bloecke[1]);
 			datenfeld.setFeld(kollege,0,bloecke[1],tauschTermine[0][0]);
 			datenfeld.setFeld(kollege,1,bloecke[1],tauschTermine[0][1]);
 			datenfeld.setFeld(kollege,2,bloecke[1],tauschTermine[1][2]);
@@ -470,11 +474,20 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,2,bloecke[0],EndeUhr);
 			datenfeld.setFeld(kollege,3,bloecke[0],tauschTermine[1][3]);
 			datenfeld.setFeld(kollege,4,bloecke[0],tauschTermine[0][4]);
+			/*
+			if(name.equals("") && reznr.equals("")){
+				System.out.println("Mit Vorgängerblock tauschen leere Blöcke müssen zusammengefasst werden");
+			}
+			*/
 			KalenderBeschreiben kbs = new KalenderBeschreiben();
 			kbs.KalenderDaten(this.datenfeld,kollege ,db_datum,ibehandler);
 			//TerminFenster.thisClass.neuerBlockAktiv(bloecke[0]);
 			return 1;
 		}else{
+			//mit Nachfolgeblock tauschen
+			//bisheriger Vorgänger
+			name = datenfeld.getFeld(kollege,0,bloecke[0]);
+			reznr = datenfeld.getFeld(kollege,1,bloecke[0]);
 			datenfeld.setFeld(kollege,0,bloecke[0],tauschTermine[1][0]);
 			datenfeld.setFeld(kollege,1,bloecke[0],tauschTermine[1][1]);
 			datenfeld.setFeld(kollege,2,bloecke[0],tauschTermine[0][2]);
@@ -491,12 +504,21 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,2,bloecke[1],EndeUhr);
 			datenfeld.setFeld(kollege,3,bloecke[1],tauschTermine[0][3]);
 			datenfeld.setFeld(kollege,4,bloecke[1],tauschTermine[1][4]);
+			/*
+			if(name.equals("") && reznr.equals("")){
+				System.out.println("Mit Nachfolgetermin tauschen leere Blöcke müssen zusammengefasst werden");
+			}
+			*/
 			KalenderBeschreiben kbs = new KalenderBeschreiben();
 			kbs.KalenderDaten(this.datenfeld,kollege ,db_datum,ibehandler);
 			//TerminFenster.thisClass.neuerBlockAktiv(bloecke[1]); 
 			return 1;
 		}
 		//return -1;
+	}
+	private void sucheNachLeerBlock(){
+		
+		
 	}
 	private int blockAufNull(){
 		////System.out.println("Kollege = "+this.kollege);

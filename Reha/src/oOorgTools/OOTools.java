@@ -104,32 +104,34 @@ public class OOTools{
 		textCursor.setString("");
 	}
 	
-	public static void starteStandardFormular(String url,String drucker){
-		IDocumentService documentService = null;;
+	public static void starteStandardFormular(String url,String drucker) {
+		IDocumentService documentService = null;
+		ITextDocument textDocument = null;
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		//System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
-		try {
+		try{
 			documentService = Reha.officeapplication.getDocumentService();
 
 		} catch (OfficeApplicationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        IDocumentDescriptor docdescript = new DocumentDescriptor();
-       	docdescript.setHidden(true);
-        docdescript.setAsTemplate(true);
+		IDocumentDescriptor docdescript = new DocumentDescriptor();
+		docdescript.setHidden(true);
+		docdescript.setAsTemplate(true);
 		IDocument document = null;
 		//ITextTable[] tbl = null;
+		
 		try {
 			document = documentService.loadDocument(url,docdescript);
 		} catch (NOAException e) {
 
 			e.printStackTrace();
 		}
-		ITextDocument textDocument = (ITextDocument)document;
+		textDocument = (ITextDocument)document;
 		/**********************/
 		if(drucker != null){
 			String druckerName = null;
@@ -166,6 +168,7 @@ public class OOTools{
 			e.printStackTrace();
 		}
 		String placeholderDisplayText = "";
+		try{
 		for (int i = 0; i < placeholders.length; i++) {
 			boolean loeschen = false;
 			boolean schonersetzt = false;
@@ -176,7 +179,7 @@ public class OOTools{
 				//System.out.println("************catch()*******************");
 				ex.printStackTrace();
 			}
-	
+
 		    /*****************/			
 			Set entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator it = entries.iterator();
@@ -254,10 +257,25 @@ public class OOTools{
 		    }
 		    /*****************/
 		}
+		}catch(java.lang.IllegalArgumentException ex){
+			JOptionPane.showMessageDialog(null,"Fehler in der Dokumentvorlage");
+			if(document != null){
+				document.close();
+				try {
+					Reha.officeapplication.deactivate();
+				} catch (OfficeApplicationException e) {
+					e.printStackTrace();
+				}
+				Reha.officeapplication.dispose();
+				return;
+			}
+		}
 		sucheNachPlatzhalter(textDocument);
 		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
+
+
 		final ITextDocument xtextDocument = textDocument;
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -265,6 +283,7 @@ public class OOTools{
 				xtextDocument.getFrame().setFocus();
 			}
 		});
+
 	}
 	/*******************************************************************************************/
 	public static void starteBacrodeFormular(String url,String drucker){

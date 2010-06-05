@@ -11,6 +11,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 
@@ -20,7 +22,7 @@ public class SqlInfo {
 	public static void loescheLocksMaschine(){
 		int stelle = SystemConfig.dieseMaschine.toString().indexOf("/");
 		String maschine = SystemConfig.dieseMaschine.toString().substring(0,stelle);
-		SqlInfo.sqlAusfuehren("delete from flexlock where comp like '"+maschine+"'");
+		SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+maschine+"%'");
 	}
 	public static boolean gibtsSchon(String sstmt){
 		boolean gibtsschon = false;
@@ -882,15 +884,13 @@ public class SqlInfo {
 			            ResultSet.CONCUR_UPDATABLE );
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
 		}
 		try{
 			geklappt =  stmt.execute(sstmt);
 			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			//System.out.println("SQLException: " + ev.getMessage());
-			//System.out.println("SQLState: " + ev.getSQLState());
-			//System.out.println("VendorError: " + ev.getErrorCode());
+			System.out.println("SQLException: " + ev.getMessage());
 		}	
 		finally {
 			if (stmt != null) {

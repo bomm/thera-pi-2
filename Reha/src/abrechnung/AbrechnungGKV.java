@@ -1105,7 +1105,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				SystemConfig.hmFirmenDaten.get("Anrede").trim()+" "+
 				SystemConfig.hmFirmenDaten.get("Nachname").trim()+plus+SystemConfig.hmFirmenDaten.get("Telefon")+EOL);
 		unbBuf.append("UNT+000010+00001"+EOL);
-		unbBuf.append("UNH+00002+SLGA:06:0:0"+EOL);
+		unbBuf.append("UNH+00002+SLLA:06:0:0"+EOL);
 		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+EOL);
 		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
 		getEdiTimeString(false);

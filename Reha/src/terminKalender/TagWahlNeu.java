@@ -403,18 +403,19 @@ public void keyPressed(KeyEvent arg0) {
 	////System.out.println(arg0.getKeyCode()+" - "+arg0.getSource()+"Key Event");	
 	for(int i = 0;i<1;i++){
 		if(arg0.getKeyCode() == 27){
+			arg0.consume();
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			this.dispose();
-			arg0.consume();
+
 			break;
 			//FensterSchliessen(null);
 		}
 		if(arg0.getKeyCode() == 10){
 			//if(arg0.getSource() instanceof JRtaTextField){
+			arg0.consume();
 				((JComponent) arg0.getSource()).requestFocus();
 				////System.out.println(arg0.getKeyCode()+" - "+arg0.getSource()+"Soll Focus behalten");
-				arg0.consume();
-				zurueck();
+			zurueck();
 			//}	
 			break;
 		}
@@ -452,11 +453,12 @@ public void keyReleased(KeyEvent e) {
 	////System.out.println("Key event Released ");
 	
 	if(e.getKeyCode() == 10){
+		e.consume();
 			((JComponent) e.getSource()).requestFocus();
-			e.consume();
 			zurueck();
 	}	
 	if(e.getKeyCode() == 27){
+		e.consume();
 		this.dispose();
 	}	
 }
@@ -465,11 +467,13 @@ public void keyReleased(KeyEvent e) {
 public void keyTyped(KeyEvent e) {
 	////System.out.println("Key event Released ");
 	if(e.getKeyCode() == 10){
-		((JComponent) e.getSource()).requestFocus();
 		e.consume();
+		((JComponent) e.getSource()).requestFocus();
+
 		zurueck();
 	}	
 	if(e.getKeyCode() == 27){
+		e.consume();
 		this.dispose();
 	}	
 }

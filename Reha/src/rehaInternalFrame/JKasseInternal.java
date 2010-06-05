@@ -81,13 +81,25 @@ public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 			if(evt.getDetails()[1].equals("#ICONIFIED")){
 				try {
 					this.setIcon(true);
+					isIcon = true;
 				} catch (PropertyVetoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				this.setActive(false);
 			}
 		}
-	}	
+		if(evt.getDetails()[0].equals(this.getName())){
+			if(evt.getDetails()[1].equals("#DEICONIFIED")){
+				try {
+					this.setIcon(false);
+					isIcon = false;
+				} catch (PropertyVetoException e) {
+					e.printStackTrace();
+				}
+				this.setActive(true);
+				repaint();
+			}
+		}
+	}
 	
 }

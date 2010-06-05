@@ -601,9 +601,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.getColumn(4).setMaxWidth(0);
 		tabaktterm.setOpaque(true);
 		tabaktterm.addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent arg0){
-					arg0.consume();
-			}
+			/*
 			public void mouseClicked(MouseEvent arg0) {
 				arg0.consume();
 				System.out.println("Im eigenen Mouseadapter");
@@ -618,6 +616,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					tabaktterm.setRowSelectionInterval(row, row);
 				}
 			}
+			*/
+			public void mousePressed(MouseEvent arg0){
+				arg0.consume();
+				int row = tabaktterm.getSelectedRow();
+				int col = tabaktterm.getSelectedColumn();
+				if(arg0.getClickCount()==1){
+					tabaktterm.requestFocus();
+					tabaktterm.setRowSelectionInterval(row, row);
+				}else if(arg0.getClickCount()==2 ){
+					startCellEditing(tabaktterm,row,col);
+				}
+				
+		}
+
 		});
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {

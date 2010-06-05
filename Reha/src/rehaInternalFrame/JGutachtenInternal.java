@@ -26,7 +26,9 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	RehaEventClass rEvent = null;
 	public JGutachtenInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);
-		this.setIconifiable(false);
+
+		this.setIconifiable(true);
+		//this.setIconifiable(false);
 		rEvent = new RehaEventClass();
 		rEvent.addRehaEventListener((RehaEventListener) this);
 		this.addPropertyChangeListener(new PropertyChangeListener() {
@@ -116,6 +118,25 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 		if(aID.equals("")){return;}
 		//ArztPanel.thisClass.holeAktArzt(aID);
 	}
+	
+	@Override
+	public void rehaEventOccurred(RehaEvent evt) {
+		if(evt.getRehaEvent().equals("REHAINTERNAL")){
+			//System.out.println("es ist ein Reha-Internal-Event");
+		}
+		if(evt.getDetails()[0].equals(this.getName())){
+			if(evt.getDetails()[1].equals("#ICONIFIED")){
+				try {
+					this.setIcon(true);
+				} catch (PropertyVetoException e) {
+					e.printStackTrace();
+				}
+				this.setActive(false);
+			}
+		}
+		
+	}
+	/*
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		////System.out.println(evt);
@@ -137,7 +158,17 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 				this.setActive(false);
 			}
 		}
-	}		
-	
+	}
+	*/	
+	/*
+	@Override
+	  public void moveToBack() {
+		    //do nothing as this breaks the ooo window
+		  }
+	@Override
+	  public void moveToFront() {
+	    //do nothing as this breaks the ooo window
+	  }
+	*/
 
 }

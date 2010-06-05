@@ -108,6 +108,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import preisListenHandling.MachePreisListe;
@@ -117,6 +118,7 @@ import preisListenHandling.MachePreisListe;
 //import patientenFenster.PatGrundPanel;
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
+import rehaInternalFrame.OOODesktopManager;
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -882,7 +884,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			jFrame.addWindowStateListener(this);			
 			jFrame.addComponentListener(this);
 			jFrame.addContainerListener(this);
-			
+
 			new Thread(new SplashStarten()).start();
 
 			jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -980,11 +982,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			desktops[0].setName("DesktopOben");
 			desktops[0].setOpaque(false);
 			desktops[0].setSize(2000,2000);
+			desktops[0].setDesktopManager(new OOODesktopManager(0));
 			desktops[0].addFocusListener(this);
 			desktops[0].addMouseListener(this);
 			desktops[0].addMouseMotionListener(this);
 			desktops[0].addComponentListener(this);
-			desktops[0].addContainerListener(this);			
+			desktops[0].addContainerListener(this);	
+			
 			jpOben.add(desktops[0]);		
 
 		    jp2.add(jpOben,BorderLayout.CENTER);
@@ -1016,11 +1020,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			desktops[1].setName("DesktopUnten");
 			desktops[1].setOpaque(false);
 			desktops[1].setSize(2000,2000);
+			desktops[1].setDesktopManager(new OOODesktopManager(1));
 			desktops[1].addFocusListener(this);
 			desktops[1].addMouseListener(this);
 			desktops[1].addMouseMotionListener(this);
 			desktops[1].addComponentListener(this);
 			desktops[1].addContainerListener(this);
+			
 		    jpUnten.add(desktops[1]);
 		    jp2.add(jpUnten,BorderLayout.CENTER);
 		    jxRechtsUnten.add(jp2,BorderLayout.CENTER);
@@ -1456,6 +1462,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			statistikMenu = new JMenu();
 			statistikMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			statistikMenu.setText("Statistiken");
+			JMenuItem men = new JMenuItem("LVA/BfA Statistik");
+			men.setActionCommand("lvastatistik");
+			men.addActionListener(this);
+			statistikMenu.add(men);			
+
 		}
 		return statistikMenu;
 	}
@@ -2383,6 +2394,11 @@ public void actionPerformed(ActionEvent arg0) {
 		Reha.thisClass.progLoader.BeteiligungFenster(1,"");
 		return;
 	}
+	if(cmd.equals("lvastatistik")){
+		new LadeProg(Reha.proghome+"RehaStatistik.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		return;
+	}
+	
 }
 /*********************************************/
 }
@@ -2435,7 +2451,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0602/05 - DB="+db);
+	    				obj.dbLabel.setText("V=0604/02 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 
@@ -2610,18 +2626,24 @@ final class DbNachladen implements Runnable{
 				e.printStackTrace();
 			}
 		}
-		try {
+    	try {
 			if (sDB=="SQL"){
 				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
-				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false","entwickler","entwickler");
-				JOptionPane.showMessageDialog(null,"Die Wiederherstellung der Datenbankverbindung war - erfolgreich!");
-    			int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
-    			new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
-
-			}else{	
-				Reha.thisClass.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
-			}	
+				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
+				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false",
+						SystemConfig.vDatenBank.get(0).get(3),SystemConfig.vDatenBank.get(0).get(4));
+			}/*else{	
+				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(1).get(1),"","");
+			}*/	
+			int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
+			new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
+			if(obj.dbLabel != null){
+				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
+				db = db.substring(0,db.indexOf("/"));
+				obj.dbLabel.setText("V=0604/02 - DB="+db);
+			}
     		Reha.DbOk = true;
+
     	} 
     	catch (final SQLException ex) {
     		//System.out.println("SQLException: " + ex.getMessage());

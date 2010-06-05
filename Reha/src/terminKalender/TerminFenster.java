@@ -346,10 +346,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 
 		}catch(SQLException ex) {
-			//System.out.println("von ResultSet SQLState: " + ex.getSQLState());
-			//System.out.println("von ResultSet ErrorCode: " + ex.getErrorCode ());//System.out.println("ErrorCode: " + ex.getErrorCode ());
-			//System.out.println("von ResultSet ErrorMessage: " + ex.getMessage ());
-			//Reha.thisClass.shiftLabel.setText("Lock misslungen");
+			SqlInfo.loescheLocksMaschine();
 		}
 		if(SystemConfig.UpdateIntervall > 0 && this.ansicht < 2){
 			db_Aktualisieren = new Thread(new sperrTest());
@@ -515,7 +512,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 
 					}catch(java.lang.ArrayIndexOutOfBoundsException ex){
-						
+						SqlInfo.loescheLocksMaschine();
 					}
 				}else if(ansicht == WOCHEN_ANSICHT){
 					try{
@@ -528,7 +525,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}						
 						}
 					}catch(java.lang.ArrayIndexOutOfBoundsException ex){
-						
+						SqlInfo.loescheLocksMaschine();
 					}
 
 				}else if(ansicht == MASKEN_ANSICHT){
@@ -2817,11 +2814,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		gruppierenBloecke[1] = -1;	
 		oSpalten[gruppierenSpalte].setInGruppierung(false);
 
-		
+
 		if(datenSpeicher[0]==null){
 			////System.out.println("datenSpeicher[0] hat den Wert null -> return");
 			wartenAufReady = false;
 			setUpdateVerbot(false);
+			SqlInfo.loescheLocksMaschine();
 			return;
 		}
 		//****Hier rein die Abfrage ob die Druckerliste neu gestartet werden soll!
@@ -2861,6 +2859,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		if(!rechteTest(akttermdaten)){
 			wartenAufReady = false;
 			setUpdateVerbot(false);
+			SqlInfo.loescheLocksMaschine();
 			return;
 		}
 		/*******************************************/
@@ -2992,6 +2991,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				break;
 			}
 		}
+		SqlInfo.loescheLocksMaschine();
 		setUpdateVerbot(false);
 	}
 	public int[] getAktiverBlock(){
@@ -3085,6 +3085,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					setUpdateVerbot(false);
 				}
 			}
+			SqlInfo.loescheLocksMaschine();
 			wartenAufReady = false;
 			setUpdateVerbot(false);
 		}

@@ -85,6 +85,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public int yHoch = -1;
 	//private static final long serialVersionUID = 1L;
 	public JComponent nord = null;
+	public boolean isIcon = false; 
 	public JRehaInternal(String titel,ImageIcon img,int desktop){
 		super();
 		this.setBackground(Color.WHITE);
@@ -182,6 +183,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 			evt.setDetails(this.getName(), "#ICONIFIED");
 			evt.setRehaEvent("REHAINTERNAL");
 			RehaEventClass.fireRehaEvent(evt);
+			isIcon = true;
+			
 			/*
 			this.setTitle(this.titel);
 			this.setIcon(true);
@@ -326,7 +329,6 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 						try {
 							((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).setSelected(false);
 						} catch (PropertyVetoException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).repaint();
@@ -334,18 +336,12 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 						try{
 							iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
 						}catch(Exception ex){
-							// Hier mu� der Kram mit iconified
+							// Hier muß der Kram mit iconified
 							if(Reha.thisClass.desktops[idesk].getComponent(layers) instanceof JDesktopIcon){
-								/*
-								try {
-									setIcon(true);
-									//((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).setIcon(true);
-								} catch (PropertyVetoException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								*/
+								
 							}else{
+								((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).isIcon = false;
+								System.out.println("icon = false "+((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).getName());
 								iframe = ((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers));
 							}
 						}
@@ -458,7 +454,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 				evt.setDetails(getName(), "#DEICONIFIED");
 				evt.setRehaEvent("REHAINTERNAL");
 				RehaEventClass.fireRehaEvent(evt);
-				isActive = true;
+				setActive(true);
 				repaint();
 				return null;
 			}
@@ -468,10 +464,20 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	@Override
 	public void internalFrameIconified(InternalFrameEvent arg0)	{
-		this.titel = getTitle();
-		////System.out.println("Iconified - Titel "+this.getComponent());
-		// TODO Auto-generated method stub
-		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				RehaEvent evt = new RehaEvent(this);
+				evt.setDetails(getName(), "#ICONIFIED");
+				evt.setRehaEvent("REHAINTERNAL");
+				RehaEventClass.fireRehaEvent(evt);
+				titel = getTitle();
+				setActive(false);
+				repaint();
+				return null;
+			}
+			
+		}.execute();
 	}
 	@Override
 	public void internalFrameOpened(InternalFrameEvent arg0) {
@@ -901,6 +907,7 @@ class CustomPinPanel extends JButton{
 				////System.out.println("Action ausgel�st von: "+((JComponent)evt.getSource()).getName());
 				if(((JComponent)evt.getSource()).getName().equals("GRUEN")){
 					((JRehaInternal)getParent().getParent()).gruenGedrueckt();
+					((JRehaInternal)getParent().getParent()).isIcon = true;
 				}
 				if(((JComponent)evt.getSource()).getName().equals("ROT")){
 					((JRehaInternal)getParent().getParent()).rotGedrueckt();
