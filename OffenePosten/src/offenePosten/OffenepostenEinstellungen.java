@@ -110,7 +110,7 @@ public class OffenepostenEinstellungen extends JXPanel{
 		chk[1].setSelected((Boolean)OffenePosten.mahnParameter.get("inofficestarten")  );
 		content.add(chk[1], cc.xy(4, 14));
 
-		lab = new JLabel("Suche nach Mahnkandidaten erst ab Datum");
+		lab = new JLabel("Alle Rechnungen ausblenden vor Datum");
 		content.add(lab,cc.xy(2,16,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 
 		tfs[4] = new JRtaTextField("DATUM",true);
@@ -176,7 +176,7 @@ public class OffenepostenEinstellungen extends JXPanel{
 			swert = DatFunk.sDatInSQL(tfs[4].getText());
 		}catch(Exception ex){
 			swert = "1995-01-01";
-			JOptionPane.showMessageDialog(null,"Datumswert für Suchen ab.. falsch eingegeben, nehme den 01.01.1995");
+			JOptionPane.showMessageDialog(null,"Datumswert für 'Alles ausblenden..' falsch eingegeben, nehme den 01.01.1995");
 		}
 		inif.setStringProperty("General", "AuswahlErstAb", (String) swert, null);
 		OffenePosten.mahnParameter.put("erstsuchenab",(String)swert);

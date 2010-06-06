@@ -302,8 +302,9 @@ public class OffenepostenPanel extends JXPanel{
 		String cmd = "update rliste set r_offen='"+tfs[0].getText().replace(",", ".")+"', r_bezdatum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id ='"+Integer.toString(id)+"' LIMIT 1";
 		
-		//System.out.println(cmd);
-		SqlInfo.sqlAusfuehren(cmd);
+		if(!OffenePosten.testcase){
+			SqlInfo.sqlAusfuehren(cmd);			
+		}
 		schreibeAbfrage();			
 		tfs[0].setText("0,00");			
 	}

@@ -53,7 +53,7 @@ public class OffenePosten implements WindowListener{
 	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
 	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
-	public static String dbIpAndName = "jdbc:mysql://192.168.2.3:3306/rtadaten";
+	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/dbf";
 	public static String dbUser = "rtauser";
 	public static String dbPassword = "rtacurie";
 	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
@@ -63,7 +63,7 @@ public class OffenePosten implements WindowListener{
 
 	public static HashMap<String,Object> mahnParameter = new HashMap<String,Object>();
 	
-	public static boolean testcase = true;
+	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
 		OffenePosten application = new OffenePosten();
@@ -100,17 +100,30 @@ public class OffenePosten implements WindowListener{
 				mahnParameter.put("exemplare", (Integer) inif.getIntegerProperty("General","MahnungExemplare") );
 				mahnParameter.put("inofficestarten", (Boolean) (inif.getIntegerProperty("General","InOfficeStarten").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
 				mahnParameter.put("erstsuchenab", (String) inif.getStringProperty("General","AuswahlErstAb") );
+				mahnParameter.put("formular1", (String) inif.getStringProperty("General","FormularMahnung1")  );
+				mahnParameter.put("formular2", (String) inif.getStringProperty("General","FormularMahnung2")  );
+				mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
+				mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
+				mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
 			}else{
 				mahnParameter.put("frist1", (Integer) 31 );
 				mahnParameter.put("frist2", (Integer) 11 );
 				mahnParameter.put("frist3", (Integer) 11);
 				mahnParameter.put("einzelmahnung", (Boolean) Boolean.TRUE);
 				mahnParameter.put("drucker", (String) "RICOH Aficio MP C2800 PS SW" );
-				mahnParameter.put("exemplare", (Integer) 2 );
+				mahnParameter.put("exemplare", (Integer) 5 );
 				mahnParameter.put("inofficestarten", (Boolean) Boolean.TRUE);
 				mahnParameter.put("erstsuchenab", (String) "2009-01-01" );
+				mahnParameter.put("formular1", (String) "2009-01-01" );
+				mahnParameter.put("formular2", (String) "2009-01-01" );
+				mahnParameter.put("formular3", (String) "2009-01-01" );
+				mahnParameter.put("formular4", (String) "2009-01-01" );
+				mahnParameter.put("diralterechnungen", "l:/projekte/rta/dbf/rechnung/" );				
 			}
-
+			if(testcase){
+				System.out.println(mahnParameter);
+				System.out.println("TestCase = "+testcase);
+			}
 			final OffenePosten xoffeneposten = application;
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -161,8 +174,8 @@ public class OffenePosten implements WindowListener{
 		thisClass = this;
 		jFrame = new JFrame();
 		jFrame.addWindowListener(this);
-		jFrame.setSize(700,600);
-		jFrame.setTitle("Thera-Pi Modul:Reha-Statistik");
+		jFrame.setSize(1000,750);
+		jFrame.setTitle("Thera-Pi  Offene-Posten / Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
 		OffenepostenTab otab = new OffenepostenTab();

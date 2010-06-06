@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -13,6 +14,8 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+
+import Tools.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
@@ -32,7 +35,9 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 	public JTabbedPane jtb;
 	public JXHeader jxh;
 
-	
+	OffenepostenPanel oppanel = null;
+	OffenepostenMahnungen omahnpanel = null;
+	OffenepostenEinstellungen oeinstellungpanel = null;
 	
 	public OffenepostenTab(){
 		super();
@@ -40,11 +45,15 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		setLayout(new BorderLayout());
 		jtb = new JTabbedPane();
 		jtb.setUI(new WindowsTabbedPaneUI());
-		jtb.addTab("Rechnungen ausbuchen", new OffenepostenPanel(this));
-
-		jtb.addTab("Mahnungen erstellen", new OffenepostenMahnungen(this));
 		
-		jtb.addTab("Einstellungen", new OffenepostenEinstellungen(this));
+		oppanel = new OffenepostenPanel(this);
+		jtb.addTab("Rechnungen ausbuchen", oppanel);
+
+		omahnpanel = new OffenepostenMahnungen(this);
+		jtb.addTab("Mahnungen erstellen", omahnpanel);
+		
+		oeinstellungpanel = new OffenepostenEinstellungen(this);
+		jtb.addTab("Einstellungen", oeinstellungpanel);
 
         jtb.addChangeListener(this);
 		doHeader();
@@ -104,6 +113,43 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
         jxh.setTitle(vectitel.get(sel));
         jxh.setDescription(vecdescript.get(sel));
         jxh.setIcon(vecimg.get(sel));   
+	}
+	
+	public String getNotBefore(){
+		try{
+			return DatFunk.sDatInSQL(oeinstellungpanel.tfs[4].getText());
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler beim Bezug des Startdatums, nehme 01.01.1995");
+		}
+		return "1995-01-01";
+	}
+	public int getFrist(int frist){
+		if(frist == 1){
+			try{
+				return Integer.parseInt(oeinstellungpanel.tfs[0].getText());
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Frist Tage für Mahnstufe 1, nehme 31 Tage");
+			}
+			return 31;
+		}
+		if(frist == 2){
+			try{
+				return Integer.parseInt(oeinstellungpanel.tfs[1].getText());
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Frist Tage für Mahnstufe 1, nehme 11 Tage");
+			}
+			return 11;
+		}
+		if(frist == 3){
+			try{
+				return Integer.parseInt(oeinstellungpanel.tfs[2].getText());
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Frist Tage für Mahnstufe 3, nehme 11 Tage");
+			}
+			return 11;
+		}
+		
+		return -1;
 	}
 
 
