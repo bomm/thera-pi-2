@@ -579,8 +579,9 @@ public class OOTools{
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler im OpenOffice-System - Therapiebericht kann nicht erstellt werden");
+			return;
 		}
         IDocumentDescriptor docdescript = new DocumentDescriptor();
        	docdescript.setHidden(false);

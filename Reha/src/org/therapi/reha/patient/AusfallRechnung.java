@@ -389,11 +389,15 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+		}
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler im OpenOffice-System - Ausfallrechnung kann nicht erstellt werden");
+			return;
 		}
         IDocumentDescriptor docdescript = new DocumentDescriptor();
        	docdescript.setHidden(false);
