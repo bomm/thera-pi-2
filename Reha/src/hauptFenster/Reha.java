@@ -1454,6 +1454,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("tagesumsatz");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
+			abrechnungMenu.addSeparator();
+			men = new JMenuItem("Offene Posten / Mahnwesen");
+			men.setActionCommand("offeneposten");
+			men.addActionListener(this);
+			abrechnungMenu.add(men);
+			
 		}
 		return abrechnungMenu;
 	}
@@ -2335,7 +2341,7 @@ class Hintergrund extends JDesktopPane implements ComponentListener{
 	
 	
 }
-/*******************/
+/**********Actions**********/
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
@@ -2398,6 +2404,13 @@ public void actionPerformed(ActionEvent arg0) {
 		new LadeProg(Reha.proghome+"RehaStatistik.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
+	if(cmd.equals("offeneposten")){
+		if(!Rechte.hatRecht(Rechte.Funktion_offeneposten, true)){
+			return;
+		}
+		new LadeProg(Reha.proghome+"OffenePosten.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		return;
+	}
 	
 }
 /*********************************************/
@@ -2451,7 +2464,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0604/02 - DB="+db);
+	    				obj.dbLabel.setText("V=0606/01 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 

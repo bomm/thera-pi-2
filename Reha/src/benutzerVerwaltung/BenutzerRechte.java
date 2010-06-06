@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -99,7 +100,7 @@ public class BenutzerRechte extends JXPanel{
 	String[] gruppe9 = {"[Ru:gl] öffnen","Termine überschreiben","unbelegt 1 für zukünftige Erweiterungen","unbelegt für 2 zukünftige Erweiterungen"};
 	
 	String[] gruppe10 = {"Kassenabrechnung","Rehaabrechnung","Barkassen Abrechnung","Neuanmeldungen ermitteln","Umsätze von bis ermitteln","Mitarbeiterbeteiligung ermitteln",
-			"Urlaub-/Überstunden ermitteln","unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen",
+			"Urlaub-/Überstunden ermitteln","Offene Posten / Mahnwesen","unbelegt 2 für zukünftige Erweiterungen",
 			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen","unbelegt 7 für zukünftige Erweiterungen",
 			"unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen","unbelegt 10 für zukünftige Erweiterungen"};
 	
@@ -124,8 +125,9 @@ public class BenutzerRechte extends JXPanel{
 	JPasswordField[] pws = {null,null};
 	JRtaComboBox jcmb = null;
 	JRtaCheckBox jchb = null;
-	String aktuelleRechte;
-	
+	String aktuelleRechte = null;
+	String klartextLabel = null;
+	String elternTitel = null;
 	private JXRechteTreeTableNode aktNode;
 	private int aktRow;
 	private JXRechteTreeTableNode root = null;
@@ -141,6 +143,7 @@ public class BenutzerRechte extends JXPanel{
 	public BenutzerRechte(JBenutzerInternal bint){
 		super();
 		this.internal = bint;
+		elternTitel = this.internal.getTitle();
 		putRechte();
 		makeListeners();
 		this.setLayout(new BorderLayout());
@@ -251,6 +254,12 @@ public class BenutzerRechte extends JXPanel{
 		jpan.add(lab,cc.xy(2,6,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		jchb = new JRtaCheckBox("im Klartext anzeigen");
 		jpan.add(jchb,cc.xy(4,6));
+		if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerSuper_user, false)){
+			jchb.setSelected(false);
+			jchb.setEnabled(false);
+		}
+		jchb.setActionCommand("klartext");
+		jchb.addActionListener(al);
 		
 		lab = new JLabel("Passwort");
 		jpan.add(lab,cc.xy(2,8,CellConstraints.RIGHT,CellConstraints.DEFAULT));
@@ -299,6 +308,10 @@ public class BenutzerRechte extends JXPanel{
 		for(int i = 0; i < buts.length;i++){
 			buts[i].setEnabled( (enable.substring(i,i+1).equals("1") ? true : false)  );
 		}
+		if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerSuper_user,false)){
+			buts[5].setEnabled(false); 
+			buts[6].setEnabled(false);
+		}
 	}
 	/*******************************/	
 	private void doBenutzerWahl(){
@@ -308,6 +321,7 @@ public class BenutzerRechte extends JXPanel{
 			pws[1].setText("");
 			aktuelleRechte = "";
 			userid="";
+			this.internal.setTitle(elternTitel);
 			regleButtons("1101000");
 		}else{
 			tfs[0].setText(jcmb.getSelectedItem().toString());
@@ -327,6 +341,11 @@ public class BenutzerRechte extends JXPanel{
 				userid="";
 				regleButtons("1101000");
 				return;
+			}
+			if(jchb.isSelected()){
+				this.internal.setTitle(elternTitel+" [PW:"+jcmb.getValue().toString()+"]");
+			}else{
+				this.internal.setTitle(elternTitel);
 			}
 			userid = ParameterLaden.pKollegen.get(jcmb.getSelectedIndex()-1).get(4);
 			regleButtons("1101000");
@@ -414,6 +433,9 @@ public class BenutzerRechte extends JXPanel{
 				if(cmd.equals("doexport")){
 					doExport();
 				}
+				if(cmd.equals("klartext")){
+					doKlartext();
+				}
 
 			}
 		};
@@ -430,16 +452,47 @@ public class BenutzerRechte extends JXPanel{
 		};
 	}
 	/********************************************/
+	private void doKlartext(){
+		if(jchb.isSelected() && (jcmb.getSelectedIndex()>0)){
+			this.internal.setTitle(elternTitel+"  [ PW: "+jcmb.getValue().toString()+" ]");
+		}else{
+			this.internal.setTitle(elternTitel);
+		}
+
+	}
+	/********************************************/
 	private void doImport(){
-		JOptionPane.showMessageDialog(null, "Benutzer-Rechte importieren noch nicht implementiert");
+		Verschluesseln man = Verschluesseln.getInstance();
+	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+	    Vector<Vector<String>> vec = SqlInfo.holeFelder("select * from restricttemplates");
+	    for(int i = 0; i < vec.size();i++){
+	    	vec.get(i).set(0, man.decrypt(vec.get(i).get(0)) );
+	    	vec.get(i).set(1, man.decrypt(vec.get(i).get(1)) );
+	    }
+	    JRtaTextField importRechte = new JRtaTextField("nix",false);
+	    //Point pt, JRtaTextField xtf,String xtitel,Vector<Vector<String>> rechte
+	    RechteImport rimport = new RechteImport(buts[6].getLocationOnScreen(),importRechte,"Rechte-Gruppe auswählen",vec);
+	    rimport.pack();
+	    rimport.setModal(true);
+	    rimport.setVisible(true);
+	    if(!importRechte.getText().equals("")){
+	    	setImportRechte(importRechte.getText());	    	
+	    }
+    			
 	}
 	private void doExport(){
 		String rechtegruppe = "normaler Therapeut"; 
-		Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die neue Anzahl für Hausbesuch ein", rechtegruppe);
+		Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte einen Namen für die Rechte-Gruppe ein", rechtegruppe);
 		if(ret == null){
 			return;
 		}
+		Verschluesseln man = Verschluesseln.getInstance();
+	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+
 		String rechte = getRechte();
+		String cmd = "insert into restricttemplates set abteilung='"+man.encrypt(ret.toString())+"', sammlung='"+man.encrypt(rechte)+"'";
+		System.out.println(cmd);
+		SqlInfo.sqlAusfuehren(cmd);
 	}
 	/********************************************/
 	private void doEdit(){
@@ -593,6 +646,27 @@ public class BenutzerRechte extends JXPanel{
 		}
 		return buf.toString();
 	}
+	private void setImportRechte(String rechte){
+
+			int lang = getNodeCount();
+
+			int recht = 0;
+			for(int i = 0; i < lang;i++){
+				JXRechteTreeTableNode node = holeNode(i);
+				if(node.rechte.bildnummer >= 0){
+					node.rechte.bildnummer = Integer.parseInt(rechte.substring(recht,recht+1));
+					node.rechte.setRechteIcon(Integer.parseInt(rechte.substring(recht,recht+1)));
+					//System.out.println(node.rechte.programmteil);
+					//System.out.println(Integer.parseInt(rechte.substring(recht,recht+1)));
+					//System.out.println(node.rechte.bildnummer);
+					recht++;
+				}
+			}
+			
+			jXTreeTable.validate();
+			jXTreeTable.repaint();
+	}
+	
 	private int getNodeCount(){
 		int ret = 0; 
 		int  rootAnzahl;
@@ -787,10 +861,14 @@ public class BenutzerRechte extends JXPanel{
 			this.rechteicon = new JLabel("");
     		if(rechteicon>=0){
     			this.rechteicon.setHorizontalAlignment(JLabel.CENTER);
-        		this.rechteicon.setIcon(img[rechteicon]);
+    			this.rechteicon.setIcon(img[rechteicon]);
         		this.bildnummer = rechteicon;
     		}
     		
+    	}
+    	public void setRechteIcon(int icon){
+			this.rechteicon.setIcon(img[icon]);
+    		this.bildnummer = icon;
     	}
     }
     class MyRechteComboBox extends AbstractCellEditor implements TableCellEditor{ 

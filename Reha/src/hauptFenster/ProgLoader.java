@@ -808,7 +808,7 @@ public static void InternalGut2(){
 	
 }
 
-/**************Pateintenverwaltung Echtfunktion***********************/
+/**************Patientenverwaltung Echtfunktion***********************/
 public void ProgPatientenVerwaltung(int setPos) {
 	if(! Reha.DbOk){
 		Reha.thisClass.progressStarten(false);

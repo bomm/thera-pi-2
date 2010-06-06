@@ -19,6 +19,7 @@ import org.jdesktop.swingworker.SwingWorker;
 
 public class LadeProg {
 	public LadeProg(String prog){
+		
 		String progname= null;
 		if(prog.indexOf(" ")>=0){
 			progname = prog.split(" ")[0];
@@ -30,6 +31,7 @@ public class LadeProg {
 			JOptionPane.showMessageDialog(null,"Diese Software ist auf Ihrem System nicht installiert!");
 			return;
 		}
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		String vmload = "java -jar ";
 		String commandx = vmload + prog; 
 		////System.out.println(vmload+prog);
@@ -63,6 +65,7 @@ public class LadeProg {
 					////System.out.println("Starte Prozess mit "+xprog);
 					////System.out.println("Liste = "+list);
 					Process process = new ProcessBuilder(alist).start();
+					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 					//Process process = new ProcessBuilder("java","-jar",xprog).start();
 				       InputStream is = process.getInputStream();
 				       InputStreamReader isr = new InputStreamReader(is);
@@ -77,12 +80,11 @@ public class LadeProg {
 
 
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 					e.printStackTrace();
 				}
 				return null;
 			}
-			
 		}.execute();
 	}
 }	

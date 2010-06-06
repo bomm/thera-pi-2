@@ -31,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -256,11 +257,21 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					starteAusfallRechnung(Reha.proghome+"vorlagen/"+Reha.aktIK+"/AusfallRechnung.ott");
-					doBuchen();
+					try{
+						starteAusfallRechnung(Reha.proghome+"vorlagen/"+Reha.aktIK+"/AusfallRechnung.ott");
+						doBuchen();
+						if(leistung[4].isSelected()){
+							macheMemoEintrag();
+						}
+					}catch(Exception ex){
+							ex.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Fehler bei der Erstellung der Ausfallrechnung");
+					}
+					getInstance().dispose();
 					return null;
 				}
 			}.execute();
+			/*
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -270,19 +281,16 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 					return null;
 				}
 			}.execute();
-
-
 			this.dispose();
-			/********
-			 * 
-			 * Hier noch schnell buchen entwickeln und feddisch...
-			 * 
-			 */
+			*/
 		}
 		if(arg0.getActionCommand().equals("abbrechen")){
 			this.dispose();
 		}
 
+	}
+	private AusfallRechnung getInstance(){
+		return this;
 	}
 	private void doBuchen(){
 		StringBuffer buf = new StringBuffer();
@@ -408,7 +416,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			e.printStackTrace();
 		}
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean loeschen = false;
+			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 			////System.out.println(placeholderDisplayText);	
@@ -439,7 +447,6 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		    }
 		    /*****************/
 		}
-		
 		
 	}
 	
