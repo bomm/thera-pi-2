@@ -596,8 +596,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public void setzeIcon(){
 		if(this.isIcon){
 			////System.out.println("Komponente Resized im Beh�lter - "+ this.desktop);
-			JDesktopIcon di = this.getDesktopIcon();
-			di.setLocation((5*this.compOrder)+(this.compOrder*di.getWidth()), Reha.thisClass.desktops[this.desktop].getHeight()-di.getHeight());
+			//JDesktopIcon di = this.getDesktopIcon();
+			//di.setLocation((5*this.compOrder)+(this.compOrder*di.getWidth()), Reha.thisClass.desktops[this.desktop].getHeight()-di.getHeight());
 			
 		}
 	}
