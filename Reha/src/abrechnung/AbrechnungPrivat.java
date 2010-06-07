@@ -118,7 +118,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	ITextDocument textDocument = null;
 	int aktuellePosition = 0;
 	int patKilometer = 0;	
-	AbrechnungDlg abrDlg = null;
+	//AbrechnungDlg abrDlg = null;
 	
 	StringBuffer writeBuf = new StringBuffer();
 	StringBuffer rechnungBuf = new StringBuffer();
@@ -310,24 +310,21 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}
 			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 			hmAdresse.put("<pri6>",aktRechnung);
-			abrDlg.setzeLabel("Starte OpenOffice.org");
+
 			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmpriformular"));
 			starteErsetzen();
 			startePositionen();
-			abrDlg.setzeLabel("Erstelle Ausdruck");
+
 			starteDrucken();
-			abrDlg.setzeLabel("Erstelle Rechnung");
+
 			if(Reha.vollbetrieb){			
 				doFaktura("privat");
-				abrDlg.setzeLabel("Erstelle OffenePosten");
+
 				doOffenePosten("privat");
-				abrDlg.setzeLabel("Übertrage Rezept in Historie");
+
 				doUebertrag();
 			}
 			doTabelle();
-			abrDlg.setVisible(false);
-			abrDlg.dispose();
-			abrDlg = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -342,24 +339,21 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			hmAdresse.put("<pri5>","Sehr geehrte Damen und Herren" );
 			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 			hmAdresse.put("<pri6>",aktRechnung);
-			abrDlg.setzeLabel("Starte OpenOffice.org");			
+			
 			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmpriformular"));
 			starteErsetzen();
 			startePositionen();
-			abrDlg.setzeLabel("Erstelle Ausdruck");			
+			
 			starteDrucken();
-			abrDlg.setzeLabel("Erstelle Rechnung");
+
 			if(Reha.vollbetrieb){
 				doFaktura("bge");
-				abrDlg.setzeLabel("Erstelle OffenePosten");			
+			
 				doOffenePosten("bge");
-				abrDlg.setzeLabel("Übertrage Rezept in Historie");	
+	
 				doUebertrag();
 			}
 			doTabelle();
-			abrDlg.setVisible(false);
-			abrDlg.dispose();
-			abrDlg = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -699,16 +693,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			FensterSchliessen("dieses");
 		}else{
 			this.rueckgabe = 0;
-			abrDlg = new AbrechnungDlg();
-			abrDlg.pack();
-			abrDlg.setLocationRelativeTo(null);
-			SwingUtilities.invokeLater(new Runnable(){
-				public void run(){
-					abrDlg.setVisible(true);
-					abrDlg.setzeLabel("Erstelle Rechnung für Rezept: "+Reha.thisClass.patpanel.vecaktrez.get(1));
-				}
-			});
-			
+			doRgRechnungPrepare();
+			/*
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -716,6 +702,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					return null;
 				}
 			}.execute();
+			*/
 		}
 		
 	}

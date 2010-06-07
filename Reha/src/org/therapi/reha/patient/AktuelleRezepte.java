@@ -11,6 +11,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -42,6 +43,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -550,8 +552,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
 
+			private static final long serialVersionUID = 1L;
+			@Override
 			public boolean editCellAt(int row, int column, EventObject e) {
 				////System.out.println("edit! in Zeile: "+row+" Spalte: "+column);
 				////System.out.println("Event = "+e);
@@ -562,13 +565,22 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if (e instanceof MouseEvent) {
 					MouseEvent mouseEvent = (MouseEvent) e;
 					if (mouseEvent.getClickCount() > 1) {
-						////System.out.println("edit!");
+						//System.out.println("edit!");
+						return super.editCellAt(row, column, e);
+					}
+				}else if (e instanceof KeyEvent) {
+					KeyEvent keyEvent = (KeyEvent) e;
+					if (keyEvent.getKeyChar()==10) {
+						//System.out.println("edit!");
+						return super.editCellAt(row, column, e);
 					}
 				}
 
-				return super.editCellAt(row, column, e);
+				return false;
+				
 			}
 		};
+
 		//abaktterm.setSurrendersFocusOnKeystroke(false);
 		//tabaktterm.setVerifyInputWhenFocusTarget(true);
 
@@ -581,6 +593,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//tabaktterm.setSortOrder(4,(SortOrder) setSort);
 		tabaktterm.setSelectionMode(0);
 		tabaktterm.setHorizontalScrollEnabled(true);
+
 
 		//tbl = new DateTableCellEditor();
 		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(tbl);
@@ -600,36 +613,45 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.getColumn(4).setMinWidth(0);
 		tabaktterm.getColumn(4).setMaxWidth(0);
 		tabaktterm.setOpaque(true);
+		tabaktterm.setAutoStartEditOnKeyStroke(false);
 		tabaktterm.addMouseListener(new MouseAdapter(){
-			/*
-			public void mouseClicked(MouseEvent arg0) {
-				arg0.consume();
-				System.out.println("Im eigenen Mouseadapter");
-				if(arg0.getClickCount()==2){
-					int row = tabaktterm.getSelectedRow();
-					int col = tabaktterm.getSelectedColumn();
-					startCellEditing(tabaktterm,row,col);
-				}
-				if(arg0.getClickCount()==1){
-					int row = tabaktterm.getSelectedRow();
-					int col = tabaktterm.getSelectedColumn();
-					tabaktterm.setRowSelectionInterval(row, row);
-				}
-			}
-			*/
+			
 			public void mousePressed(MouseEvent arg0){
 				arg0.consume();
-				int row = tabaktterm.getSelectedRow();
-				int col = tabaktterm.getSelectedColumn();
-				if(arg0.getClickCount()==1){
-					tabaktterm.requestFocus();
-					tabaktterm.setRowSelectionInterval(row, row);
-				}else if(arg0.getClickCount()==2 ){
-					startCellEditing(tabaktterm,row,col);
-				}
+				//tabaktterm.requestFocus();
+				SwingUtilities.invokeLater(new Runnable(){
+					public void run(){
+						int row = tabaktterm.getSelectedRow();
+						int col = tabaktterm.getSelectedColumn();
+						tabaktterm.setRowSelectionInterval(row, row);
+						tabaktterm.setColumnSelectionInterval(col, col);
+						//tabaktterm.setCellSelectionEnabled(true);
+					}
+				});
 				
-		}
+				/*
+				if(arg0.getClickCount()==2 ){
+					startCellEditing(tabaktterm,row,col);					
+				}
+				*/	
+			}
+			public void mouseReleased(MouseEvent arg0){
+				arg0.consume();
+			}
+			public void mouseClicked(MouseEvent arg0) {
+				arg0.consume();
+				//System.out.println("Im eigenen Mouseadapter");
+				if(arg0.getClickCount()==2){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							int row = tabaktterm.getSelectedRow();
+							int col = tabaktterm.getSelectedColumn();
+							startCellEditing(tabaktterm,row,col);							
+						}
+					});
 
+				}
+			}
 		});
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
@@ -674,9 +696,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		final JXTable xtable = table;
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 		  xtable.setRowSelectionInterval(xrows, xrows);
-		 		 xtable.setColumnSelectionInterval(xcols, xcols);
-		 		  xtable.scrollRowToVisible(xrows);
+		 		  //xtable.setRowSelectionInterval(xrows, xrows);
+		 		 //xtable.setColumnSelectionInterval(xcols, xcols);
+		 		  //xtable.scrollRowToVisible(xrows);
 		 				xtable.editCellAt(xrows,xcols );
 		 	   }
 		});
@@ -1338,6 +1360,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		for(int i = 0; i < 1; i++){
 			if(cmd.equals("terminplus")){
 				if(rezGeschlossen()){return;}
+				try{
 				Vector<String> vec = new Vector<String>();
 				vec.add(DatFunk.sHeute());
 				vec.add("");
@@ -1350,16 +1373,41 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				vec.add(DatFunk.sDatInSQL(DatFunk.sHeute()));
 				dtermm.addRow((Vector<String>)vec.clone());
 				tabaktterm.validate();
-				anzahlTermine.setText("Anzahl Terimine: "+tabaktterm.getRowCount());
-				tabaktterm.setRowSelectionInterval(tabaktterm.getRowCount()-1, tabaktterm.getRowCount()-1);
+				int tanzahl = tabaktterm.getRowCount();
+				anzahlTermine.setText("Anzahl Terimine: "+Integer.toString(tanzahl));
+				termineSpeichern();
+				starteTests();
+
+
+				tabaktterm.setRowSelectionInterval(tanzahl-1, tanzahl-1);
+				/*
+				int max = ((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().getMaximum();
 				
-				new Thread(){
+				Rectangle visible = ((JViewport)tabaktterm.getParent()).getVisibleRect();
+			    Rectangle bounds = ((JViewport)tabaktterm.getParent()).getBounds();
+			    visible.y = bounds.height - visible.height;
+			    ((JViewport)tabaktterm.getParent()).scrollRectToVisible(visible);
+			    */
+			    //((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().setValue(max+1);
+			    /*
+				((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().setValue(max+1);
+				((JScrollPane)tabaktterm.getParent().getParent()).validate();
+				//tabaktterm.scrollRectToVisible(tabaktterm.getCellRect(tanzahl+1, 0, false));
+				 
+				 */
+				SwingUtilities.invokeLater(new Runnable(){
 					public void run(){
-						termineSpeichern();
-						starteTests();						
+						tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
 					}
-				}.start();
-				
+					
+				});
+				tabaktterm.validate();
+				tabaktterm.repaint();
+
+				//tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				break;
 				
 			}

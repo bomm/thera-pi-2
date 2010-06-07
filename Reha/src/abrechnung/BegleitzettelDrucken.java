@@ -24,30 +24,26 @@ public class BegleitzettelDrucken {
 	String rechnungNummer;
 	HashMap<String,String> annahmeStelle = null;
 	AbrechnungGKV eltern;
-	public BegleitzettelDrucken(AbrechnungGKV eltern,int anzahlRezepte,String kostentrIK,String kostentrName, HashMap<String,String> annahme,String rnr,String url){
+	public BegleitzettelDrucken(AbrechnungGKV eltern,int anzahlRezepte,String kostentrIK,String kostentrName, HashMap<String,String> annahme,String rnr,String url) throws Exception{
 		this.anzahlRezepte = anzahlRezepte;
 		this.annahmeStelle = annahme;
 		this.kostentrIK = kostentrIK;
 		this.kostentrName = kostentrName;
 		this.rechnungNummer = rnr; 
 		this.eltern = eltern;
-		try {
-			starteDokument(url);
-			Thread.sleep(50);
-			ersetzePlatzhalter();
-			if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
-				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-			}else{
-				Thread.sleep(200);
-				textDocument.print();
-				Thread.sleep(200);
-				textDocument.close();
-
-			}			
-			this.eltern = null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		starteDokument(url);
+		Thread.sleep(100);
+		ersetzePlatzhalter();
+		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		}else{
+			Thread.sleep(100);
+			textDocument.print();
+			Thread.sleep(100);
+			textDocument.close();
+			Thread.sleep(100);
+		}			
 	}
 	
 	private void starteDokument(String url) throws Exception{

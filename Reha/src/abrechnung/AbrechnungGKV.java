@@ -1077,11 +1077,18 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				}
 
 				if(abrDruck != null){
-					abrDruck.setIKundRnr(ik_papier, aktRechnung,hmAnnahme);					
+					abrDruck.setIKundRnr(ik_papier, aktRechnung,hmAnnahme);	
+					abrDruck = null;
+				}else{
+					JOptionPane.showMessageDialog(null, "Fehler im Rechnungsdruck - Fehler = abrDruck==null");
 				}
-				new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
-				rezepteUebertragen();
-				rechnungAnlegen();
+				try{
+					new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
+					rezepteUebertragen();
+					rechnungAnlegen();
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler im Modul BegleitzettlDrucken - Fehler ist Exception ex");
+				}
 				return null;
 			}
 		}.execute();
@@ -1223,6 +1230,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			}
 
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Fehler im Modul Rechnungdruck in AbrechnungGKV.java");
 			abrDruck = null;
 			e.printStackTrace();
 		}

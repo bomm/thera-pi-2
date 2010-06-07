@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -18,6 +20,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
@@ -57,6 +60,36 @@ public class AbrechnungDrucken {
 		this.papierIK = papierIk;
 		this.rechnungNummer = rnr;
 		this.hmAdresse = hmap;
+		try {
+			setRechnungsBetrag();
+			ersetzePlatzhalter();
+			if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+			}else{
+				int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
+				try {
+					Thread.sleep(100);
+					PrintProperties printprop = new PrintProperties ((short)exemplare,null);
+					textDocument.getPrintService().print(printprop);
+					Thread.sleep(200);
+					textDocument.close();
+					Thread.sleep(100);
+
+				} catch (InterruptedException e) {
+					JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = InterruptedException" );
+					e.printStackTrace();
+				} catch (DocumentException e) {
+					JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = DocumentException" );
+					e.printStackTrace();
+				}
+			}
+		} catch (TextException e) {
+			JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = TextException" );
+			e.printStackTrace();
+		}
+
+		
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -73,6 +106,8 @@ public class AbrechnungDrucken {
 						textDocument.getPrintService().print(printprop);
 						Thread.sleep(200);
 						textDocument.close();
+						Thread.sleep(100);
+						
 						
 
 					}
@@ -84,6 +119,7 @@ public class AbrechnungDrucken {
 				return null;
 			}
 		}.execute();
+		*/
 	}
 	/********************/
 
