@@ -721,6 +721,8 @@ public class OffenepostenMahnungen extends JXPanel{
 					rtfs[1].setText( StringTools.EGross((String) aobj[1]) );
 					rtfs[2].setText( StringTools.EGross((String) aobj[2]) );
 					rtfs[3].setText( ((String) aobj[3])+" "+StringTools.EGross((String) aobj[4]) );
+					dbfreader.close();
+					dbfreader = null;
 				}catch(Exception ex){
 					ex.printStackTrace();
 					JOptionPane.showConfirmDialog(null,"Keine verwertbaren Adesssdaten vorhanden in 'ehemaliger' Rechnungsdatei "+rdatei);					
