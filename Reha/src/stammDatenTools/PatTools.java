@@ -1,5 +1,7 @@
 package stammDatenTools;
 
+import javax.swing.JOptionPane;
+
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
@@ -34,6 +36,7 @@ public class PatTools {
 	public static void constructPatHMap(){
 		boolean isherr = false;
 		boolean iskind = false;
+		try{
 		//int lang = SystemConfig.hmAdrPDaten.hashCode();
 		////System.out.println(lang);
 		//SystemConfig.hmAdrPDaten.put("<Padr1>", Reha.thisClass.patpanel.patDaten.get(0));
@@ -43,7 +46,8 @@ public class PatTools {
 		}
 		String titel =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(1));
 		String vorname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3));
-		String nachname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2));
+		String nachname = StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)));
+		//String nachname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2));
 		String strasse = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(21));
 		String plzort = Reha.thisClass.patpanel.patDaten.get(23)+" "+StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(24));
 		String geboren = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
@@ -114,6 +118,10 @@ public class PatTools {
 		SystemConfig.hmAdrPDaten.put("<Pemail>", Reha.thisClass.patpanel.patDaten.get(50));
 		SystemConfig.hmAdrPDaten.put("<Ptitel>", titel);
 		SystemConfig.hmAdrPDaten.put("<Pid>", Reha.thisClass.patpanel.patDaten.get(66));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Fehler beim zusammenstellen der Patienten HashMap");
+		}
 	}
 	public static String[] constructPatHMapFromStrings(String panrede,
 												String ptitel,

@@ -774,8 +774,7 @@ public class AbrechnungReha extends JXPanel{
 	@SuppressWarnings("unchecked")
 	private void doHauptRechnungDrucken() throws Exception{
 		hmRechnung.clear();
-		//kassvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier,ik_kostent from kass_adr where id='"+kassenid+"' LIMIT 1");
-		//patvec = SqlInfo.holeFelder("select n_name,v_name,geboren,anrede,titel,strasse,plz,ort from pat5 where pat_intern='"+pat_intern+"' LIMIT 1");
+
 		try{
 			if(istprivat){
 				String[] padressDaten = PatTools.constructPatHMapFromStrings(patvec.get(0).get(3),
@@ -793,40 +792,10 @@ public class AbrechnungReha extends JXPanel{
 				hmRechnung.put("<pri3>",rechnungvec.get(0).get(2));
 				hmRechnung.put("<pri4>",rechnungvec.get(0).get(3)+" "+rechnungvec.get(0).get(4));
 				hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
-
-				/*
-				hmRechnung.put("<pri1>",kassvec.get(0).get(0));
-				hmRechnung.put("<pri2>",kassvec.get(0).get(1));
-				hmRechnung.put("<pri3>",kassvec.get(0).get(2));
-				hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
-				hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
-				*/
-				/*
-				if(kassvec.get(0).get(5).trim().equals("")){
-					hmRechnung.put("<pri1>",kassvec.get(0).get(0));
-					hmRechnung.put("<pri2>",kassvec.get(0).get(1));
-					hmRechnung.put("<pri3>",kassvec.get(0).get(2));
-					hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
-					hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
-				}else{
-					Vector<Vector<String>>papvec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort,ik_papier from kass_adr where ik_kasse='"+kassvec.get(0).get(5)+"' LIMIT 1");
-					if(papvec.size()==0){
-						hmRechnung.put("<pri1>",kassvec.get(0).get(0));
-						hmRechnung.put("<pri2>",kassvec.get(0).get(1));
-						hmRechnung.put("<pri3>",kassvec.get(0).get(2));
-						hmRechnung.put("<pri4>",kassvec.get(0).get(3)+" "+kassvec.get(0).get(4));
-						hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
-					}else{
-						hmRechnung.put("<pri1>",papvec.get(0).get(0));
-						hmRechnung.put("<pri2>",papvec.get(0).get(1));
-						hmRechnung.put("<pri3>",papvec.get(0).get(2));
-						hmRechnung.put("<pri4>",papvec.get(0).get(3)+" "+papvec.get(0).get(4));
-						hmRechnung.put("<pri5>","Sehr geehrte Damen und Herren,");
-					}
-				}
-				*/
 			}
+			
 			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
+			
 			if(aktRechnung.equals("-1")){
 				JOptionPane.showMessageDialog(null, "Fehler - Rechnungsnummer für Reharechnung kann nicht bezogen werden" );
 				abrechnungOk = false;
@@ -836,30 +805,36 @@ public class AbrechnungReha extends JXPanel{
 			hmRechnung.put("<pri7>",StringTools.EGross(patvec.get(0).get(0))+", "+
 					StringTools.EGross(patvec.get(0).get(1))+", geb.am: "+
 					DatFunk.sDatInDeutsch(patvec.get(0).get(2)));
-
-			if(jcmb[0].getSelectedItem().toString().contains("GKV")){
+			/*******************************/
+			//int testik = 0;
+			if(jcmb[0].getSelectedItem().toString().toUpperCase().contains("GKV")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehagkvik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehagkvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehagkvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehagkvexemplare"));
-			}else if(jcmb[0].getSelectedItem().toString().contains("LVA")||
-					jcmb[0].getSelectedItem().toString().contains("BFA")){
+			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().contains("LVA")||
+					jcmb[0].getSelectedItem().toString().toUpperCase().contains("BFA")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
-			}else if(jcmb[0].getSelectedItem().toString().contains("PRI")){
+				//testik = 1;
+			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().contains("PRI")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehapriik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehapridrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehapriformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehapriexemplare"));
+				//testik = 2;
 			}else{
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
+				//testik = 3;
 			}
 			hmRechnung.put("<pri8>",this.druckIk);
+			//JOptionPane.showMessageDialog(null,"Verwende IK "+this.druckIk+" in Testvariante = "+Integer.toString(testik));
+			/*******************************/
 
 			vecposrechnung.clear();
 
