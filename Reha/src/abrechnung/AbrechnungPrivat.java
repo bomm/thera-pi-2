@@ -193,7 +193,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		pan.add(jcmb,cc.xy(3,5));
 		jrb[0] = new JRtaRadioButton("Formular für Privatrechnung verwenden");
 		pan.add(jrb[0],cc.xy(3,7));
-		jrb[1] = new JRtaRadioButton("Formular für BGE-Rechnung verwenden");
+		jrb[1] = new JRtaRadioButton("Formular für Kostenträger Rechnung verwenden");
 		pan.add(jrb[1],cc.xy(3,9));
 		bg.add(jrb[0]);
 		bg.add(jrb[1]);

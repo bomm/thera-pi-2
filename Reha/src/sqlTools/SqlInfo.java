@@ -874,7 +874,55 @@ public class SqlInfo {
 		}
 		return ret;
 	}
-/*****************************************/
+	public static Vector<String> holeFeld(String sstmt){
+		Statement stmt = null;
+		ResultSet rs = null;
+		String ret = "";
+		Vector<String> vecret = new Vector<String>();
+			
+		try {
+			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			rs = stmt.executeQuery(sstmt);
+
+			while(rs.next()){
+				ret = (rs.getString(1)==null  ? "" :  rs.getString(1));
+				vecret.add(String.valueOf(ret));
+			}
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
+		}	
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return vecret;
+	}
+
+	/*****************************************/
 	public static void sqlAusfuehren(String sstmt){
 		boolean geklappt = false;
 		Statement stmt = null;
@@ -972,6 +1020,7 @@ public class SqlInfo {
 		}
 		transferBuf.append(" from "+sourcedb+" where "+dbfield+"='"+argument+"' LIMIT 1");
 		////System.out.println(transferBuf.toString());
+		//System.out.println(transferBuf.toString());
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(transferBuf.toString());
 		
 		if(vec.size()<=0){
@@ -989,6 +1038,7 @@ public class SqlInfo {
 					}
 				}
 			}
+			//System.out.println(insertBuf.toString());
 			SqlInfo.sqlAusfuehren(insertBuf.toString());
 			return true;
 		}catch(Exception ex){

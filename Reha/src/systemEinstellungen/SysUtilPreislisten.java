@@ -17,6 +17,7 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -84,7 +85,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};	
 
 	String[] disziplin = {"Physio","Massage","Ergo","Logo","Reha"};
- 	
+ 	JRtaComboBox kuerzelcombo = new JRtaComboBox();
 	KeyListener kl = null;
 	
 	public SysUtilPreislisten(){
@@ -102,6 +103,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			protected Void doInBackground() throws Exception {
 				try{
 				plupdate = getPlupdate();
+
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -111,7 +113,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	     }.execute();
 
 	}
-	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 70dlu, 4dlu, 10dlu, 4dlu, 70dlu",
@@ -129,6 +131,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jcmb[0].setActionCommand("tabelleRegeln");
 		jcmb[0].addActionListener(this);
 		builder.add(jcmb[0],cc.xyw(3,1,7));
+		
+		String[] xkuerzel = {"KG","MA","ER","LO","RH"};
+		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[0]+"'" );
+		System.out.println(xvec);
+		kuerzelcombo.setDataVector(xvec);
+
 		
 		builder.addLabel("Tarifgruppe auswählen",cc.xy(1, 3));
 		//jcmb[1] = new JRtaComboBox(SystemConfig.vPreisGruppen);
@@ -162,7 +170,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
 		preislisten = new JXTable(modpreis);
 		preislisten.getColumn(0).setMaxWidth(65);
-		preislisten.getColumn(1).setMaxWidth(65);
+		preislisten.getColumn(1).setMaxWidth(85);
+		preislisten.getColumn(1).setCellEditor(new DefaultCellEditor(kuerzelcombo));
 		preislisten.getColumn(3).setCellRenderer(new DoubleTableCellRenderer());
 		preislisten.getColumn(3).setCellEditor(new DblCellEditor());
 		preislisten.getColumn(3).setMaxWidth(50);
@@ -254,6 +263,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
 			int einstellung = ((Integer) SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
 			jcmb[2].setSelectedIndex(einstellung);
+			String[] xkuerzel = {"KG","MA","ER","LO","RH"};
+			kuerzelcombo.setDataVector(SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"'" ));
 		}
 		if(cmd.equals("plUpdate")){
 			SwingUtilities.invokeLater(new Runnable(){

@@ -106,8 +106,10 @@ public class HistorDaten extends JXPanel{
 				String stest = StringTools.NullTest((String)vecaktrez.get(43));
 				Reha.thisClass.patpanel.vecakthistor = vecaktrez;
 				if( stest.equals("T") ){
+					rezlabs[1].setText(StringTools.NullTest((String)vecaktrez.get(64))+" *");
 					rezlabs[1].setIcon(hbimg);
 				}else{
+					rezlabs[1].setText("");
 					rezlabs[1].setIcon(null);
 				}
 				rezlabs[2].setText("angelegt von: "+StringTools.NullTest((String)vecaktrez.get(45)));

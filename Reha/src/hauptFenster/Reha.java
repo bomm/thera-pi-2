@@ -261,6 +261,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static String aktLookAndFeel = "";
 	public static SystemConfig sysConf = null;
 	public static IOfficeApplication officeapplication;
+	
+	public static BarCodeScanner barcodeScanner = null;
 	//public TerminFenster TerminFenster[]={null,null,null,null,null}; 
 		
 	public static RehaSockServer RehaSock = null;
@@ -1581,7 +1583,19 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						if(Reha.DbOk){
 							Date zeit = new Date();
 							String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
-							new ExUndHop().setzeStatement(stx);
+							SqlInfo.sqlAusfuehren(stx);
+						}
+						if(Reha.thisClass.conn != null){
+							try {
+								Reha.thisClass.conn.close();
+								System.out.println("Datenbankverbindung geschlossen");
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+						}
+						if(Reha.barcodeScanner != null){
+							Reha.barcodeScanner.serialPort.close();
+							System.out.println("Serielle-Schnittstelle geschlossen");
 						}
 						System.exit(0);
 					}else{
@@ -2199,7 +2213,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-
+		if(Reha.barcodeScanner != null){
+			Reha.barcodeScanner.serialPort.close();
+			System.out.println("Serielle Schnittstelle wurde geschlossen");	
+		}
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
@@ -2227,9 +2244,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			if(Reha.thisClass.conn != null){
 				try {
 					Reha.thisClass.conn.close();
+					System.out.println("Datenbankverbindung wurde geschlossen");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+			}
+			if(Reha.barcodeScanner != null){
+				Reha.barcodeScanner.serialPort.close();
+				System.out.println("Serielle Schnittstelle wurde geschlossen");	
 			}
 			if(Reha.officeapplication != null){
 				//Reha.officeapplication.dispose();
@@ -2464,7 +2486,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0607/06 - DB="+db);
+	    				obj.dbLabel.setText("V=0609/01 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 
@@ -2590,7 +2612,7 @@ final class DatenbankStarten implements Runnable{
 				FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
 				if(SystemConfig.sBarcodeAktiv.equals("1")){
 					try {
-						new BarCodeScanner(SystemConfig.sBarcodeCom);
+						Reha.barcodeScanner = new BarCodeScanner(SystemConfig.sBarcodeCom);
 					} catch (Exception e) {
 						////System.out.println("Barcode-Scanner konnte nicht installiert werden");
 					} catch (java.lang.Exception e) {

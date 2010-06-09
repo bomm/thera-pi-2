@@ -1277,6 +1277,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					szzstatus = "2";				
 				}
 			}
+			sbuf.append("unter18='"+((DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))) ? "T', " : "F', "));
 			sbuf.append("zzstatus='"+szzstatus+"', ");
 			int leistung;
 			String[] str;

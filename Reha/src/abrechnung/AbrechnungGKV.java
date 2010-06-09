@@ -1052,7 +1052,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	}
 	/*************************************************/
 	private void macheEndeDaten(){
-		String zeilenzahl = StringTools.fuelleMitZeichen(Integer.toString(positionenAnzahl+5), "0", true, 6);  
+		String zeilenzahl = StringTools.fuelleMitZeichen(Integer.toString(positionenAnzahl+4), "0", true, 6);  
 		unzBuf.append("UNT"+plus+zeilenzahl+plus+"00002"+EOL);
 		unzBuf.append("UNZ"+plus+"000002"+plus+aktDfue+EOL);
 	}
@@ -1253,13 +1253,16 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 							}
 						}
 					}
+					Thread.sleep(75);
 					//abzurechnendeKassenID = holeAbrechnungsKasse(vec.get(0).get(0));
 					abgerechneteRezepte.add((String) node.knotenObjekt.rez_num);
 					abgerechnetePatienten.add((String) node.knotenObjekt.pat_intern);
 					//hier den Edifact-Code analysieren und die Rechnungsdatei erstellen;
 					analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
 					anhaengenEdifact(vec.get(0).get(0));
-				}catch(Exception ex){}
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null,"Unbekannter Fehler bei Edifact anhängen");
+				}
 			}
 		}
 		if(abgerechneteRezepte.size() > 0){
@@ -1322,15 +1325,15 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		for(int i = 0; i < zeilen.length;i++){
 			if(zeilen[i].contains("EHE")){
 				woerter = zeilen[i].split("\\+");
-				if(!position.contains(woerter[3])){
-					position.add(woerter[3]);
-					bdAnzahl = BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")));
+				if(!position.contains(woerter[2])){
+					position.add(woerter[2]);
+					bdAnzahl = BigDecimal.valueOf(Double.valueOf(woerter[3].replace(",", ".")));
 					anzahl.add(bdAnzahl);
 					abrtage.add(BigDecimal.valueOf(Double.valueOf("1.00")));
-					preis.add(BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", "."))).multiply(
+					preis.add(BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", "."))).multiply(
 							bdAnzahl ));
-					if(woerter.length==8){
-						dummy = woerter[7].replace("'", "").replace(",", ".");
+					if(woerter.length==7){
+						dummy = woerter[6].replace("'", "").replace(",", ".");
 						rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)));
 						einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)));
 					}else{
@@ -1338,21 +1341,21 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 						einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf("0.00")));						
 					}
 					
-					einzelpreis.add(BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", "."))));
+					einzelpreis.add(BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", "."))));
 					
 				}else{
-					pos = position.indexOf(woerter[3]);
-					einzelPreisTest = BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", ".")));
+					pos = position.indexOf(woerter[2]);
+					einzelPreisTest = BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")));
 					if(!einzelPreisTest.equals(einzelpreis.get(pos))){
 						preisUmstellung = true;
 					}
-					bdAnzahl = BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")));
-					anzahl.set(pos, anzahl.get(pos).add(BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", ".")))));
-					preis.set(pos, preis.get(pos).add(BigDecimal.valueOf(Double.valueOf(woerter[5].replace(",", "."))).multiply(
+					bdAnzahl = BigDecimal.valueOf(Double.valueOf(woerter[3].replace(",", ".")));
+					anzahl.set(pos, anzahl.get(pos).add(BigDecimal.valueOf(Double.valueOf(woerter[3].replace(",", ".")))));
+					preis.set(pos, preis.get(pos).add(BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", "."))).multiply(
 							bdAnzahl)));
 					abrtage.set(pos,abrtage.get(pos).add(BigDecimal.valueOf(Double.valueOf("1.00"))));
-					if(woerter.length==8){
-						dummy = woerter[7].replace("'", "").replace(",", ".");
+					if(woerter.length==7){
+						dummy = woerter[6].replace("'", "").replace(",", ".");
 						rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy))));
 						if(! BigDecimal.valueOf(Double.valueOf(dummy)).equals(einzelzuzahlung.get(pos))){
 							////System.out.println("Einzelzuzahlung = "+einzelzuzahlung.get(pos));

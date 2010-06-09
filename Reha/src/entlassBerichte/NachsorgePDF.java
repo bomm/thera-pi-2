@@ -77,7 +77,7 @@ public class NachsorgePDF {
 		BaseFont bf = null;
 		//PdfReader reader = null;
 		try {
-			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1250,BaseFont.EMBEDDED/*NOT_EMBEDDED*/);
 			//String text = "";
 			Float [] pos = {null,null,null};
 			float fy0 =  0.25f;
@@ -113,11 +113,13 @@ public class NachsorgePDF {
 						break;
 					}
 				}
-				cb.setCharacterSpacing(0.25f);				
+				cb.setCharacterSpacing(0.25f);	
+				
 				ColumnText ct = new ColumnText(cb);
 				ct.setSimpleColumn(rechneX(28.5f), rechneY(112.f),rechneX(190.0f),rechneY(162.f),8.25f,Element.ALIGN_BOTTOM);
 				Phrase ph = new Phrase();
 				ph.setFont(FontFactory.getFont("Courier",9,Font.PLAIN));
+
 				ph.add(eltern.bta[7].getText().trim());
 				ct.addText(ph);
 				ct.go();
@@ -132,7 +134,7 @@ public class NachsorgePDF {
 									getFloats(124.05f,90.35f,fy1),getFloats(124.05f,82.25f,fy1),getFloats(124.05f,74.25f,fy1),
 									getFloats(159.8f,90.35f,fy1),getFloats(159.8f,82.25f,fy1),getFloats(159.8f,74.25f,fy1)
 				};
-				bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1250,BaseFont.EMBEDDED/*NOT_EMBEDDED*/);
 				for(i = 7; i < 19; i++){
 					setzeText(cb,poswert1[i-7][0], poswert1[i-7][1],poswert1[i-7][2],bf,12,( eltern.bchb[i].isSelected() ? "X" : "") );
 				}
@@ -155,7 +157,7 @@ public class NachsorgePDF {
 				ct.addText(ph);
 				ct.go();
 				//Ort und Datum
-				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+				bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1250,BaseFont.EMBEDDED/*NOT_EMBEDDED*/);
 				String text = eltern.btf[23].getText().trim();
 				//Float [] fsign = getFloats(24.25f,27.60f,fy1);
 				Float [] fort = getFloats(28.f,28.0f,fy0);
@@ -197,7 +199,7 @@ public class NachsorgePDF {
 		BaseFont bf = null;
 		PdfReader reader = null;
 		try {
-			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			bf = BaseFont.createFont(BaseFont.COURIER_BOLD,BaseFont.CP1250,BaseFont.EMBEDDED /*.NOT_EMBEDDED*/);
 			reader = new PdfReader (pdfPfad);
 			stamper = new PdfStamper(reader,new  FileOutputStream(tempDateien[0][0]));
 			PdfContentByte cb = stamper.getOverContent(1);
@@ -280,7 +282,7 @@ public class NachsorgePDF {
 			//                         abreitsf�hig nein!				  								
 								getFloats(48.25f,22.5f,fy0)
 			};
-			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			bf = BaseFont.createFont(BaseFont.HELVETICA,BaseFont.CP1250,BaseFont.EMBEDDED/*.NOT_EMBEDDED*/);
 			for(int i = 0; i < 7; i++){
 				setzeText(cb,poswert1[i][0], poswert1[i][1],poswert1[i][2],bf,12,( eltern.bchb[i].isSelected() ? "X" : "") );
 			}
@@ -472,7 +474,7 @@ public class NachsorgePDF {
 		float xanzahl = rechneX(startwerte[6]);	
 		BaseFont bf;
 		try {
-			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
+			bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1250,BaseFont.EMBEDDED/*.NOT_EMBEDDED*/);
 			setzeText(cb,xcode, ystartunten,stretch,bf,12,eltern.ktltfc[ktlpos].getText());
 			setzeText(cb,xdauer, ystartunten,stretch,bf,12,eltern.ktltfd[ktlpos].getText());
 			if(eltern.ktltfa[ktlpos].getText().trim().length()==1 ){
@@ -524,7 +526,7 @@ public class NachsorgePDF {
 		Float[] xempfaenger = getFloats(27.5f,281.60f,fy0);
 		//Float[] xbereich = getFloats(155.5f,277.60f,fy0);
 
-		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA_BOLD,BaseFont.CP1252,BaseFont.NOT_EMBEDDED); 
+		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA_BOLD,BaseFont.CP1250,BaseFont.EMBEDDED/*.NOT_EMBEDDED*/); 
 		cb.beginText();
 		cb.moveText(xempfaenger[0], xempfaenger[1]);
 		cb.setFontAndSize(bf,10.5f);

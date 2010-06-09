@@ -3048,7 +3048,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		JXTTreeTableNode node;
 		for(int i = 0; i < getNodeCount();i++){
 			node = holeNode(i);
-			edibuf.append("EHE+"+disziplinGruppe+plus+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
+			edibuf.append("EHE+"+disziplinGruppe+":"+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
 //			edibuf.append("EHE+"+disziplinGruppe+plus+SystemConfig.vPreisGueltig.get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
 			edibuf.append(RezTools.getPosFromID(node.abr.preisid, preisgruppe, preisvec)+plus);
 			edibuf.append(dfx.format(node.abr.anzahl)+plus);
@@ -3200,15 +3200,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		for(int i = 4; i < lang;i++){
 			pos = zeilen[i].split("\\+");
 			if(pos[0].equals("EHE")){
-				datum = datumFromEdiDeutsch(pos[6]).replace("'", "");
+				datum = datumFromEdiDeutsch(pos[5]).replace("'", "");
 				vecdummy.add( (String) datum );
-				id = RezTools.getIDFromPos(pos[3], preisgruppe, preisvec);
+				id = RezTools.getIDFromPos(pos[2], preisgruppe, preisvec);
 				vecdummy.add((String) RezTools.getKurzformFromID(id, preisvec) );
+				vecdummy.add((Double) Double.valueOf(pos[3].replace(",", ".")));
 				vecdummy.add((Double) Double.valueOf(pos[4].replace(",", ".")));
-				vecdummy.add((Double) Double.valueOf(pos[5].replace(",", ".")));
-				if(pos.length==8){
+				if(pos.length==7){
 					vecdummy.add((boolean) Boolean.valueOf(true));
-					vecdummy.add((Double) Double.valueOf(pos[7].replace(",", ".").replace("'", "")));
+					vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")));
 				}else{
 					vecdummy.add((boolean) Boolean.valueOf(false));
 					vecdummy.add((Double) Double.valueOf("0.00"));
@@ -3222,7 +3222,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				}else{
 					vecdummy.add( (String) "");
 				}
-				if( (aktuell=RezTools.getPreisAktFromID(id, preisgruppe, preisvec).trim().replace(".", ",")).equals(pos[5].trim()) ){
+				if( (aktuell=RezTools.getPreisAktFromID(id, preisgruppe, preisvec).trim().replace(".", ",")).equals(pos[4].trim()) ){
 					vecdummy.add( (String) "aktuell");
 				}else{
 					vecdummy.add( (String) "alt");

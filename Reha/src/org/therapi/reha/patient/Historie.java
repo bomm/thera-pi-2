@@ -838,7 +838,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		int row = tabhistorie.getSelectedRow();
 		if(row >= 0){
 			try{
-			//System.out.println("Transfer von Historie in aktuelle Rezept");
 			int mod = tabhistorie.convertRowIndexToModel(row);
 			String rez_nr = dtblm.getValueAt(mod, 0).toString().trim();
 			SqlInfo.transferRowToAnotherDB("lza", "verordn","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));

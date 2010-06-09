@@ -125,8 +125,12 @@ public void setSelectedVecIndex(int index, String vergleich){
 		}
 	}
 }
-public void setDataVector(Vector <String> ve,int item,int ret){
-	
+public void setDataVector(Vector <String> ve){
+	int lang = ve.size();
+	this.removeAllItems();
+	for(int i = 0;i < lang;i++){
+		addItem( (String) ve.get(i));
+	}
 }
 private void fillOneDimensionWithStartElement(Vector<?> ve,String startElement){
 	int lang = ve.size();	

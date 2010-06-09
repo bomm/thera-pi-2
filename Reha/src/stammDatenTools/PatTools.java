@@ -47,6 +47,12 @@ public class PatTools {
 		String titel =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(1));
 		String vorname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3));
 		String nachname = StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)));
+		
+		if(nachname.trim().equals("") && vorname.trim().equals("")){
+			JOptionPane.showMessageDialog(null, "Ausgewählter Patient hat weder Vor- noch Nachname!!!\n+Zifix 'luja");
+			return;
+		}
+		
 		//String nachname =  StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2));
 		String strasse = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(21));
 		String plzort = Reha.thisClass.patpanel.patDaten.get(23)+" "+StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(24));

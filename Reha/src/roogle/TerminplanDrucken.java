@@ -84,13 +84,17 @@ SuchenSeite eltern;
 			String rez = (rezept.trim().equals("") ? "" : " - "+rezept.trim());
 	        patname = patname+rez;
 			IDocumentService documentService = null;;
-			
-			try {
-				documentService = Reha.officeapplication.getDocumentService();
-			} catch (OfficeApplicationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(!Reha.officeapplication.isActive()){
+				Reha.starteOfficeApplication();
 			}
+			try{
+				documentService = Reha.officeapplication.getDocumentService();
+
+			} catch (OfficeApplicationException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"Fehler im OpenOffice-System, Terminplan kann nicht gedruckt werden");
+			}
+			
 	        IDocumentDescriptor docdescript = new DocumentDescriptor();
 	        docdescript.setHidden(true);
 	        docdescript.setAsTemplate(true);

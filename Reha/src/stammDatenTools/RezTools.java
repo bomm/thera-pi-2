@@ -250,7 +250,7 @@ public class RezTools {
 		//int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "";
 		for(i = 0; i < lang;i++){
-			if(vec.get(i).get(2).trim().equals(pos.trim())){
+			if(vec.get(i).get(2).trim().equals(pos.trim()) && (!vec.get(i).get(1).equals("Isokin")) ){
 				ret = vec.get(i).get(1).toString();
 				break;
 			}
@@ -263,7 +263,7 @@ public class RezTools {
 		int idpos = vec.get(0).size()-1;
 		Object[] retobj = {"",""};
 		for(i = 0; i < lang;i++){
-			if(vec.get(i).get(2).equals(pos)){
+			if(vec.get(i).get(2).equals(pos) && (!vec.get(i).get(1).equals("Isokin"))){
 				retobj[0] = vec.get(i).get(1).toString();
 				retobj[1] = vec.get(i).get(idpos).toString();
 				break;

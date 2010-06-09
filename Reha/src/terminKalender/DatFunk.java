@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 //import java.text.ParseException;
 //import javax.swing.JFormattedTextField;
 
+import javax.swing.JOptionPane;
+
 public class DatFunk {
 
 
@@ -18,11 +20,16 @@ public class DatFunk {
 		if(sJavaDat==null){
 			return "  .  .    ";
 		}
-		//if(sJavaDat.length() != 10){
-		//	return "  .  .    ";
-		//}
+		if(sJavaDat.trim().length() != 10 ){
+			return "  .  .    ";
+		}
 		String[] splittArray = sJavaDat.split("-");
-		return splittArray[2]+"."+splittArray[1]+"."+splittArray[0];
+		try{
+			return splittArray[2]+"."+splittArray[1]+"."+splittArray[0];
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Datumsumwandlung -> Datumsformat = deutsches Datumsformat");
+		}
+		return null;
 	}
 	
 	public static String sDatInSQL(String sDeutschDat){
@@ -30,7 +37,12 @@ public class DatFunk {
 		String[] splittArray = sDeutschDat.split("\\.");
 		//sDatumSQL = splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0]; 
 		////System.out.println(sDatumSQL);
-		return  splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0];
+		try{
+			return  splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0];
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Datumsumwandlung -> Datumsformat = Sql-Datumsformat");
+		}
+		return null;
 	}
 
 	public static String sHeute(){
