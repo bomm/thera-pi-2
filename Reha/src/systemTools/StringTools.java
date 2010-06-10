@@ -35,7 +35,7 @@ public class StringTools {
 		}
 		if(test.indexOf(" - ") > -1){
 			neuString = "";
-			String[] splitString = test.split("-");
+			String[] splitString = test.split(" - ");
 			for(int i = 0;i < splitString.length;i++){
 				neuString = neuString + 
 							(splitString[i].substring(0,1).toUpperCase())+

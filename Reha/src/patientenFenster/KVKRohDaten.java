@@ -383,7 +383,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 					thisPat.jtf[34].setText(vec.get(2));
 				}
 				thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankenkasse"));
-				thisPat.jtf[13].setText(SystemConfig.hmKVKDaten.get("Kassennummer"));
+				thisPat.jtf[13].setText("10"+SystemConfig.hmKVKDaten.get("Kassennummer"));
 				thisPat.jtf[14].setText(SystemConfig.hmKVKDaten.get("Versichertennummer"));
 				thisPat.jtf[15].setText(SystemConfig.hmKVKDaten.get("Statusext"));
 				

@@ -563,16 +563,16 @@ class NurZahlenDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			super.insertString(offs, str, a);
-			////System.out.println("Offset: "+offs);
 			text = textField.getText();
 			if ((text.length() == 1) & (text.equals("-")))
 				return;
-			Integer.parseInt(text);
+			Long.parseLong(text);
 		}
 		catch (NumberFormatException e)
 		{
+			e.printStackTrace();
 			super.remove(offs, 1);
-			//Toolkit.getDefaultToolkit().beep();
+			Toolkit.getDefaultToolkit().beep();
 		}
 	}
 }

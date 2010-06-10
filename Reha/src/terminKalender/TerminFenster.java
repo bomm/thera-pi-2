@@ -3291,6 +3291,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private void doPatSuchen(){
 		String pat_int;
 		int xaktBehandler= 0;
+		boolean inhistorie = false;
 		if(aktiveSpalte[0] < 0){
 			return;
 		}
@@ -3315,6 +3316,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
 			if(vec.size() > 0){
 				JOptionPane.showMessageDialog(null, "Achtung das Rezept ist bereits abgerechnet und befindet sich in der Historie");
+				inhistorie = true;
 			}
 		}
 		if(vec.size() == 0){
@@ -3330,6 +3332,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		pat_int = (String) vec.get(0);
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		final String xreznr = reznr;
+		final boolean xinhistorie = inhistorie;
 		if(patient == null){
 			final String xpat_int = pat_int;
 			new SwingWorker<Void,Void>(){
@@ -3358,6 +3361,11 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					pEvt.setPatStammEvent("PatSuchen");
 					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
 					PatStammEventClass.firePatStammEvent(pEvt);
+					if(xinhistorie){
+						Reha.thisClass.patpanel.getTab().setSelectedIndex(1);	
+					}else{
+						Reha.thisClass.patpanel.getTab().setSelectedIndex(0);
+					}
 					return null;
 				}
 				
@@ -3370,6 +3378,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			pEvt.setPatStammEvent("PatSuchen");
 			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
 			PatStammEventClass.firePatStammEvent(pEvt);
+			if(xinhistorie){
+				Reha.thisClass.patpanel.getTab().setSelectedIndex(1);	
+			}else{
+				Reha.thisClass.patpanel.getTab().setSelectedIndex(0);
+			}
+
 		}
 	}
 	private void tauscheTermin(int richtung){

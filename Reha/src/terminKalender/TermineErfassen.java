@@ -89,7 +89,8 @@ public class TermineErfassen implements Runnable {
 					new ErrorMail("Rezept am heutigen Tag nicht eingetragen: Rezept = "+scanrez,
 							SystemConfig.dieseMaschine.toString(),
 							this.kollege,
-							SystemConfig.hmEmailIntern.get("Username"));
+							SystemConfig.hmEmailIntern.get("Username"),
+							"Fehler-Mail");
 					//System.out.println("Rezept steht an diesem Tag nicht im Kalender");
 					setTerminSuccess(false);
 					ergebnis = false;
@@ -113,7 +114,8 @@ public class TermineErfassen implements Runnable {
 						new ErrorMail("Das gescannte Rezept existiert weder im aktuellen Rezeptstamm noch in der Historie.\nRezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 								SystemConfig.dieseMaschine.toString(),
 								Reha.aktUser,
-								SystemConfig.hmEmailIntern.get("Username"));
+								SystemConfig.hmEmailIntern.get("Username"),
+								"Fehler-Mail");
 
 						break;
 					case 2:
@@ -123,7 +125,8 @@ public class TermineErfassen implements Runnable {
 						new ErrorMail("Das gescannte Rezept ist bereits abgerechnet. Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 								SystemConfig.dieseMaschine.toString(),
 								Reha.aktUser,
-								SystemConfig.hmEmailIntern.get("Username"));
+								SystemConfig.hmEmailIntern.get("Username"),
+								"Fehler-Mail");
 
 						break;
 					case 3:
@@ -133,7 +136,8 @@ public class TermineErfassen implements Runnable {
 						new ErrorMail("Doppelerfassung eines Rezeptes. Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 								SystemConfig.dieseMaschine.toString(),
 								Reha.aktUser,
-								SystemConfig.hmEmailIntern.get("Username"));
+								SystemConfig.hmEmailIntern.get("Username"),
+								"Fehler-Mail");
 
 						break;
 					}
@@ -441,7 +445,7 @@ public class TermineErfassen implements Runnable {
 					"verwendet werden!!!!<br><br>"+
 					"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
 					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?</font></html>";
-				}else{
+				}else if(anzahl > lautrezept){
 					variante = 1;
 					message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
 					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+lautrezept+"</font><br>"+
@@ -454,7 +458,8 @@ public class TermineErfassen implements Runnable {
 					new ErrorMail("Hinweis das Rezept ist bereits"+(variante==0 ? " voll. " : " übervoll!!! ")+" Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 							SystemConfig.dieseMaschine.toString(),
 							Reha.aktUser,
-							SystemConfig.hmEmailIntern.get("Username"));
+							SystemConfig.hmEmailIntern.get("Username"),
+							"Fehler-Mail!!!!!");
 					
 				}
 				if(frage == JOptionPane.NO_OPTION){
@@ -464,11 +469,25 @@ public class TermineErfassen implements Runnable {
 				new ErrorMail("Trotz Hinweis!!! Aufnahme in das Rezept. Rezept ist aber bereits"+(variante==0 ? " voll. " : " übervoll!!! ")+" Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 						SystemConfig.dieseMaschine.toString(),
 						Reha.aktUser,
-						SystemConfig.hmEmailIntern.get("Username"));
+						SystemConfig.hmEmailIntern.get("Username"),
+						"Fehler-Mail!!!!!");
 				
 			}else{
 				////System.out.println("Es sind noch Termine Frei");
-				terminneu = macheNeuTermin("");			}
+				terminneu = macheNeuTermin("");
+				if(anzahl == (lautrezept-1)){
+					String message = "<html><b><font size='5'>Das Rezept ist jetzt voll"+
+					"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
+					"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
+					JOptionPane.showMessageDialog(null, message);
+
+					new ErrorMail("Letzte Behandlung Rezept = voll.\nRezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
+							SystemConfig.dieseMaschine.toString(),
+							Reha.aktUser,
+							SystemConfig.hmEmailIntern.get("Username"),
+							"Rezept voll!!!!!");
+				}
+			}
 				
 		}else{
 			////System.out.println("der Termin ist der erste Termin.");

@@ -496,7 +496,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(48));
 			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(8));
 			originalAnzahl.add(Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(3)));
-			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(8), "", preisliste)); 
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(8), "", preisliste).replace("30Min.", "").replace("45Min.", "")); 
 
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(8),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(3);
@@ -516,7 +516,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(49));
 			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(9));
 			originalAnzahl.add(Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(4)));
-			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(9), "", preisliste));
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(9), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
 			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(9),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(4);
@@ -536,7 +536,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(50));
 			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(10));
 			originalAnzahl.add(Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(5)));
-			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(10), "", preisliste));
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(10), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
 			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(10),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(5);
@@ -556,7 +556,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(51));
 			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(11));
 			originalAnzahl.add(Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(6)));
-			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(11), "", preisliste));
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(11), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
 			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(11),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(6);

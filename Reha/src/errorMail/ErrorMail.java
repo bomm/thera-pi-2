@@ -15,13 +15,15 @@ public class ErrorMail extends Thread{
 	String maschine = null;
 	String benutzer = null;
 	String sender = null;
+	String titel = null;
 	
-	public ErrorMail(String text,String comp,String user,String senderadress){
+	public ErrorMail(String text,String comp,String user,String senderadress,String xtitel){
 		super();
 		this.fehlertext = String.valueOf(text);
 		this.maschine = String.valueOf(comp);
 		this.benutzer = String.valueOf(user);
 		this.sender = String.valueOf(senderadress);
+		this.titel = String.valueOf(xtitel);
 		start();
 	}
 	public void run(){
@@ -42,7 +44,7 @@ public class ErrorMail extends Thread{
 			"eingeloggter Benutzer: "+this.benutzer+"\n"+
 			"Absenderadresse: "+this.sender;
 			try {
-				oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, "Fehler-Mail", emailtext,attachments,authx,bestaetigen);
+				oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, titel, emailtext,attachments,authx,bestaetigen);
 			} catch (AddressException e) {
 				e.printStackTrace();
 			} catch (MessagingException e) {

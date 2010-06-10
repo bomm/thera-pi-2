@@ -1580,7 +1580,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				    long freeMem = r.freeMemory();
 				    //System.out.println("Freier Speicher nach  gc():    " + freeMem);
 					if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
-						if(Reha.DbOk){
+						if(Reha.DbOk &&  (Reha.thisClass.conn != null) ){
 							Date zeit = new Date();
 							String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
 							SqlInfo.sqlAusfuehren(stx);
@@ -1594,8 +1594,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 							}
 						}
 						if(Reha.barcodeScanner != null){
-							Reha.barcodeScanner.serialPort.close();
-							System.out.println("Serielle-Schnittstelle geschlossen");
+							try{
+								BarCodeScanner.serialPort.close();
+								Reha.barcodeScanner = null;
+								System.out.println("Serielle-Schnittstelle geschlossen");
+							}catch(NullPointerException ex){
+								
+							}
 						}
 						System.exit(0);
 					}else{
@@ -2214,14 +2219,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	@Override
 	public void windowClosed(WindowEvent arg0) {
 		if(Reha.barcodeScanner != null){
-			Reha.barcodeScanner.serialPort.close();
+			BarCodeScanner.serialPort.close();
 			System.out.println("Serielle Schnittstelle wurde geschlossen");	
 		}
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
-			if(Reha.DbOk){
+			if(Reha.DbOk &&  (Reha.thisClass.conn != null) ){
 				Date zeit = new Date();
 				String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
 				SqlInfo.sqlAusfuehren(stx);
@@ -2244,14 +2249,21 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			if(Reha.thisClass.conn != null){
 				try {
 					Reha.thisClass.conn.close();
+					Reha.thisClass.conn = null;
 					System.out.println("Datenbankverbindung wurde geschlossen");
 				} catch (SQLException e) {
 					e.printStackTrace();
+					System.exit(0);
 				}
 			}
 			if(Reha.barcodeScanner != null){
-				Reha.barcodeScanner.serialPort.close();
-				System.out.println("Serielle Schnittstelle wurde geschlossen");	
+				try{
+				BarCodeScanner.serialPort.close();
+				Reha.barcodeScanner = null;
+				System.out.println("Serielle Schnittstelle wurde geschlossen");
+				}catch(NullPointerException ex){
+					System.exit(0);
+				}
 			}
 			if(Reha.officeapplication != null){
 				//Reha.officeapplication.dispose();
@@ -2486,7 +2498,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0609/01 - DB="+db);
+	    				obj.dbLabel.setText("V=0609/03 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 

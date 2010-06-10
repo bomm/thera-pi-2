@@ -641,6 +641,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			abrDlg.dispose();
 			abrDlg = null;
 			JOptionPane.showMessageDialog(null, "Fehler - Daten der Krankenkasse konnten nicht ermittelt werden");
+			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			return;
 		}
 		ik_kasse = kassenIKs.get(0).get(0);
@@ -649,6 +650,28 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		ik_physika = kassenIKs.get(0).get(3);
 		ik_papier = kassenIKs.get(0).get(4);
 		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_physika+"' LIMIT 1");
+		if(ik_email.equals("")){
+			ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kasse+"' LIMIT 1");
+		}
+		if(ik_email.equals("")){
+			ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kostent+"' LIMIT 1");
+		}
+
+		if(ik_email.trim().equals("")){
+			JOptionPane.showMessageDialog(null,"Emailadresse ist weder der Datenannahmestelle noch dem Kostenträger\noder der Kasse selbst zugeordnet."+
+			"\n\n Bitte geben Sie die Emailadresse von Hand ein");
+			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Emailadresse der Datenannahmestelle ein","");
+			if(ret == null){
+				Reha.thisClass.progressStarten(false);
+				abrDlg.setVisible(false);
+				abrDlg.dispose();
+				abrDlg = null;
+				JOptionPane.showMessageDialog(null, "Fehler - keine Emailadresse eingegeben");
+				SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
+				return;
+			}
+			ik_email = String.valueOf(ret);
+		}
 		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(5))-1);
 		name_kostent = holeNameKostentraeger();
 		String test = "IK der Krankenkasse: "+ik_kasse+"\n"+
@@ -665,29 +688,34 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		int anfrage = JOptionPane.showConfirmDialog(null,test , "Die Abrechnung mit diesen Parametern starten?", JOptionPane.YES_NO_OPTION);
 		if(anfrage != JOptionPane.YES_OPTION){
 			doDlgAbort();
+			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			return;
 		}
 		if(ik_email.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Emailadresse zugewiesen\n"+
 					"Abrechnung nach §302 ist nicht möglich!");
 			doDlgAbort();
+			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			return;
 		}
 		if(ik_papier.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Papierannahmestelle zugewiesen\n"+
 			"Abrechnung nach §302 ist nicht möglich!");
 			doDlgAbort();
+			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			return;
 		}
 		if(ik_nutzer.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Nutzer mit Entschlüsselungsbefugnis zugewiesen\n"+
 			"Abrechnung nach §302 ist nicht möglich!");
+			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			doDlgAbort();
 			return;
 		}
 		if(ik_physika.trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Empfänger der Abrechnungsdaten zugewiesen\n"+
 			"Abrechnung nach §302 ist nicht möglich!");
+			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			doDlgAbort();
 			return;
 		}

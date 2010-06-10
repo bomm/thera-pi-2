@@ -869,16 +869,23 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	private void doPatientDrop(String rez_nr){
 		String pat_int = "";
 		String reznr = rez_nr;
+		boolean inhistorie = false;
 		int ind = reznr.indexOf("\\");
 		if(ind >= 0){
 			reznr = reznr.substring(0,ind);
 		}
+		
 		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
 		if(vec.size() == 0){
-			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
-			return;
+			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+			if(vec.size() == 0){
+				JOptionPane.showMessageDialog(null,"Rezept weder im aktuellen Rezeptstamm nochin derHistorie vorhanden!\nIst die eingetragene Rzeptnummer korrekt?");
+				return;
+			}else{
+				JOptionPane.showMessageDialog(null,"Rezept ist bereits abgerechnet und somit in der Historie des Patienten!");
+				inhistorie = true;
+			}
 		}
-		
 		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List) new ArrayList() );
 		if(vec.size() == 0){
 			JOptionPane.showMessageDialog(null,"Patient mit zugeordneter Rezeptnummer -> "+reznr+" <- wurde nicht gefunden");
@@ -887,6 +894,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		pat_int = (String) vec.get(0);
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		final String xreznr = reznr;
+		final boolean xinhistorie = inhistorie;
 		if(patient == null){
 			final String xpat_int = pat_int;
 			new SwingWorker<Void,Void>(){
@@ -907,6 +915,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					pEvt.setPatStammEvent("PatSuchen");
 					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
 					PatStammEventClass.firePatStammEvent(pEvt);
+					if(xinhistorie){
+						Reha.thisClass.patpanel.getTab().setSelectedIndex(1);	
+					}else{
+						Reha.thisClass.patpanel.getTab().setSelectedIndex(0);
+					}
+
 					return null;
 				}
 				
@@ -919,6 +933,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			pEvt.setPatStammEvent("PatSuchen");
 			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
 			PatStammEventClass.firePatStammEvent(pEvt);
+			if(xinhistorie){
+				Reha.thisClass.patpanel.getTab().setSelectedIndex(1);	
+			}else{
+				Reha.thisClass.patpanel.getTab().setSelectedIndex(0);
+			}
+
 		}		
 	}
 	
