@@ -130,6 +130,7 @@ import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.Meldungen;
 import systemTools.RehaPainters;
+import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
 import systemTools.WinNum;
 import terminKalender.DatFunk;
@@ -1461,6 +1462,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("offeneposten");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
+			abrechnungMenu.addSeparator();
+			men = new JMenuItem("Rechnungskorrektur / Rechnungskopie");
+			men.setActionCommand("rechnungskorrektur");
+			men.addActionListener(this);
+			abrechnungMenu.add(men);
 			
 		}
 		return abrechnungMenu;
@@ -1493,6 +1499,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			toolsMenu = new JMenu();
 			toolsMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			toolsMenu.setText("Tools");
+			JMenuItem men = new JMenuItem("Rezeptnummer suchen");
+			men.setActionCommand("rezeptfahnder");
+			men.addActionListener(this);
+			toolsMenu.add(men);			
+
 		}
 		return toolsMenu;
 	}
@@ -2445,6 +2456,19 @@ public void actionPerformed(ActionEvent arg0) {
 		new LadeProg(Reha.proghome+"OffenePosten.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
+	if(cmd.equals("rezeptfahnder")){
+		new RezeptFahnder();
+	}
+	if(cmd.equals("rechnungskorrektur")){
+		if(! Rechte.hatRecht(Rechte.Funktion_kassenabrechnung, false)){
+			JOptionPane.showMessageDialog(null, "Keine Berechtigung -> Funktion Korrektur einer Rechnung");
+			return;
+		}
+		new LadeProg(Reha.proghome+"RehaBillEdit.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+	}
+
+	
+	
 	
 }
 /*********************************************/
@@ -2498,7 +2522,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0609/03 - DB="+db);
+	    				obj.dbLabel.setText("V=0610/01 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 

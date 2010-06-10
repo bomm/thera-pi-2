@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -43,7 +47,7 @@ import Tools.SqlInfo;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class OffenepostenPanel extends JXPanel{
+public class OffenepostenPanel extends JXPanel implements TableModelListener{
 
 	/**
 	 * 
@@ -147,6 +151,9 @@ public class OffenepostenPanel extends JXPanel{
 		tab = new JXTable(tabmod);
 		tab.setHorizontalScrollEnabled(true);
 		tab.getColumn(0).setCellRenderer(new Tools.MitteRenderer());
+		
+		//tab.getColumn(1).setCellEditor();
+		
 		tab.getColumn(4).setCellRenderer(new Tools.MitteRenderer());
 		tab.getColumn(5).setCellRenderer(new Tools.DoubleTableCellRenderer());
 		tab.getColumn(6).setCellRenderer(new Tools.DoubleTableCellRenderer());
@@ -154,8 +161,11 @@ public class OffenepostenPanel extends JXPanel{
 		tab.getColumn(5).setCellEditor(new Tools.DblCellEditor());
 		tab.getColumn(6).setCellEditor(new Tools.DblCellEditor());
 		tab.getColumn(8).setCellEditor(new Tools.DblCellEditor());
+		
 		tab.getSelectionModel().addListSelectionListener( new OPListSelectionHandler());
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
+		
+		
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
 		content.add(jscr,cc.xyw(2,4,13));
@@ -203,6 +213,9 @@ public class OffenepostenPanel extends JXPanel{
 		
 		return content;
 	}
+	private OffenepostenPanel getInstance(){
+		return this;
+	}
 	
 	private void startKeyListener(){
 		kl = new KeyListener(){
@@ -238,7 +251,9 @@ public class OffenepostenPanel extends JXPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("ausbuchen")){
+					tabmod.removeTableModelListener(getInstance());
 					doAusbuchen();
+					tabmod.addTableModelListener(getInstance());
 					setzeFocus();
 				}
 			}
@@ -252,8 +267,10 @@ public class OffenepostenPanel extends JXPanel{
 				try{
 					OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 					setzeFocus();
+					tabmod.removeTableModelListener(getInstance());
 					doSuchen();
 					schreibeAbfrage();
+					tabmod.addTableModelListener(getInstance());
 					suchen.setEnabled(true);
 					buts[0].setEnabled(true);
 
@@ -469,7 +486,8 @@ public class OffenepostenPanel extends JXPanel{
 	    }
 
 		public boolean isCellEditable(int row, int col) {
-			if(col==12){
+			
+			if(col < 15){
 				return true;				
 			}
 			return false;
@@ -590,6 +608,45 @@ public class OffenepostenPanel extends JXPanel{
 	        }
 
 	    }
+	}
+
+
+	@Override
+	public void tableChanged(TableModelEvent arg0) {
+		if(arg0.getType() == TableModelEvent.INSERT){
+			System.out.println("Insert");
+			return;
+		}
+		if(arg0.getType() == TableModelEvent.UPDATE){
+			try{
+				int col = arg0.getColumn();
+				int row = arg0.getFirstRow();
+				String colname = tabmod.getColumnName(col).toString();
+				String value = "";
+				String id = Integer.toString((Integer)tabmod.getValueAt(row,15));
+				if( tabmod.getColumnClass(col) == Boolean.class){
+					value = (tabmod.getValueAt(row,col) == Boolean.FALSE ? "F" : "T");
+				}else if(tabmod.getColumnClass(col) == Date.class){
+					value = tabmod.getValueAt(row,col).toString();
+				}else if(tabmod.getColumnClass(col) == Double.class){
+					value = dcf.format((Double)tabmod.getValueAt(row,col)).replace(",",".");
+				}else if(tabmod.getColumnClass(col) == Integer.class){
+					value = Integer.toString((Integer)tabmod.getValueAt(row,15));
+				}else if(tabmod.getColumnClass(col) == String.class){
+					value = tabmod.getValueAt(row,col).toString();
+				}
+				String cmd = "update rliste set "+colname+"='"+value+"' where id='"+id+"' LIMIT 1";
+				//System.out.println(cmd);
+				SqlInfo.sqlAusfuehren(cmd);
+			
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler in der Dateneingbe");
+			}
+			
+			
+			return;
+		}
+
 	}
 
 

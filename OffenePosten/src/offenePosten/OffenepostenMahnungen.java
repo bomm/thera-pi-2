@@ -692,6 +692,14 @@ public class OffenepostenMahnungen extends JXPanel{
 		}
 		String rnr = tabmod.getValueAt( tab.convertRowIndexToModel(row)  ,0).toString();
 		if(SqlInfo.gibtsSchon("select rnummer from faktura where rnummer = '"+rnr+"' LIMIT 1")){
+			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			try{
+				doFakturaGedoense(rnr,row);
+			}catch(Exception ex){
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (neu)");
+			}
+			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			// bereits in der neuen faktura Datenbank enthalten also kann man sich den mit mit dbf&co sparen
 		}else{
 			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -699,10 +707,13 @@ public class OffenepostenMahnungen extends JXPanel{
 				doDbfGedoense(rnr,row);
 			}catch(Exception ex){
 				ex.printStackTrace();
-				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten");
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (alt)");
 			}
 			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
+	}
+	private void doFakturaGedoense(String rnr,int row){
+		//muß noch entwickelt werden
 	}
 	private void doDbfGedoense(String rnr, int row){
 		String rdatei = ((String)OffenePosten.mahnParameter.get("diralterechnungen"))+rnr+".dbf";

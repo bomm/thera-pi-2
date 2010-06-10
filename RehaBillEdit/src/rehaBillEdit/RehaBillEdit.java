@@ -1,4 +1,4 @@
-package offenePosten;
+package rehaBillEdit;
 
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
@@ -26,11 +26,11 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
 
+public class RehaBillEdit implements WindowListener {
 
-
-
-public class OffenePosten implements WindowListener{
-
+	/**
+	 * @param args
+	 */
 	/**
 	 * @param args
 	 */
@@ -38,7 +38,7 @@ public class OffenePosten implements WindowListener{
 	JFrame jFrame;
 	public static JFrame thisFrame = null;
 	public Connection conn;
-	public static OffenePosten thisClass;
+	public static RehaBillEdit thisClass;
 	
 	public static IOfficeApplication officeapplication;
 	
@@ -53,20 +53,22 @@ public class OffenePosten implements WindowListener{
 	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
 	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
-	public static String dbIpAndName = "jdbc:mysql://192.168.2.3:3306/rtadaten";
+	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
 	public static String dbUser = "rtauser";
 	public static String dbPassword = "rtacurie";
 	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
 	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
 	public static String progHome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";
-
-	public static HashMap<String,Object> mahnParameter = new HashMap<String,Object>();
+	public static String hmRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	
 	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
-		OffenePosten application = new OffenePosten();
+		RehaBillEdit application = new RehaBillEdit();
 		application.getInstance();
 		
 		if(args.length > 0 || testcase){
@@ -88,48 +90,22 @@ public class OffenePosten implements WindowListener{
 				inif = new INIFile(args[0]+"ini/"+args[1]+"/fremdprog.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
+
+				inif = new INIFile(args[0]+"ini/"+args[1]+"/abrechnung.ini");
+				String rechnung = inif.getStringProperty("HMPRIRechnung","Pformular");
+				rechnung = rechnung.replace(".ott", "");
+				rechnung = rechnung+"Kopie.ott";
+				hmRechnungPrivat = rechnung;
+
 				progHome = args[0];
 				aktIK = args[1];
-				
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/offeneposten.ini");
-				mahnParameter.put("frist1", (Integer) inif.getIntegerProperty("General","TageBisMahnung1") );
-				mahnParameter.put("frist2", (Integer) inif.getIntegerProperty("General","TageBisMahnung2") );
-				mahnParameter.put("frist3", (Integer) inif.getIntegerProperty("General","TageBisMahnung3") );
-				mahnParameter.put("einzelmahnung", (Boolean) (inif.getIntegerProperty("General","EinzelMahnung").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-				mahnParameter.put("drucker", (String) inif.getStringProperty("General","MahnungDrucker") );
-				mahnParameter.put("exemplare", (Integer) inif.getIntegerProperty("General","MahnungExemplare") );
-				mahnParameter.put("inofficestarten", (Boolean) (inif.getIntegerProperty("General","InOfficeStarten").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-				mahnParameter.put("erstsuchenab", (String) inif.getStringProperty("General","AuswahlErstAb") );
-				mahnParameter.put("formular1", (String) inif.getStringProperty("General","FormularMahnung1")  );
-				mahnParameter.put("formular2", (String) inif.getStringProperty("General","FormularMahnung2")  );
-				mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
-				mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
-				mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
-			}else{
-				mahnParameter.put("frist1", (Integer) 31 );
-				mahnParameter.put("frist2", (Integer) 11 );
-				mahnParameter.put("frist3", (Integer) 11);
-				mahnParameter.put("einzelmahnung", (Boolean) Boolean.TRUE);
-				mahnParameter.put("drucker", (String) "RICOH Aficio MP C2800 PS SW" );
-				mahnParameter.put("exemplare", (Integer) 5 );
-				mahnParameter.put("inofficestarten", (Boolean) Boolean.TRUE);
-				mahnParameter.put("erstsuchenab", (String) "2009-01-01" );
-				mahnParameter.put("formular1", (String) "2009-01-01" );
-				mahnParameter.put("formular2", (String) "2009-01-01" );
-				mahnParameter.put("formular3", (String) "2009-01-01" );
-				mahnParameter.put("formular4", (String) "2009-01-01" );
-				mahnParameter.put("diralterechnungen", "l:/projekte/rta/dbf/rechnung/" );				
 			}
-			if(testcase){
-				System.out.println(mahnParameter);
-				System.out.println("TestCase = "+testcase);
-			}
-			final OffenePosten xoffeneposten = application;
+
+			final RehaBillEdit xapplication = application;
 			new SwingWorker<Void,Void>(){
 				@Override
-				
 				protected Void doInBackground() throws java.lang.Exception {
-					xoffeneposten.starteDB();
+					xapplication.starteDB();
 					long zeit = System.currentTimeMillis();
 					while(! DbOk){
 						try {
@@ -142,10 +118,9 @@ public class OffenePosten implements WindowListener{
 						}
 					}
 					if(!DbOk){
-						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
-						System.exit(0);
+						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");				
 					}
-					OffenePosten.starteOfficeApplication();
+					xapplication.starteOfficeApplication();
 					return null;
 				}
 				
@@ -174,13 +149,11 @@ public class OffenePosten implements WindowListener{
 		thisClass = this;
 		jFrame = new JFrame();
 		jFrame.addWindowListener(this);
-		jFrame.setSize(1000,750);
-		jFrame.setTitle("Thera-Pi  Offene-Posten / Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
+		jFrame.setSize(1000,500);
+		jFrame.setTitle("Thera-Pi  Rechnungen korrigieren / Duplikate erstellen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
-		OffenepostenTab otab = new OffenepostenTab();
-		otab.setHeader(0);
-		jFrame.getContentPane().add (otab);
+		jFrame.getContentPane().add (new RehaBillEditTab());
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
 		return jFrame;
@@ -189,7 +162,7 @@ public class OffenePosten implements WindowListener{
 	
 	/********************/
 	
-	public OffenePosten getInstance(){
+	public RehaBillEdit getInstance(){
 		thisClass = this;
 		return this;
 	}
@@ -205,8 +178,8 @@ public class OffenePosten implements WindowListener{
 	
 	public static void stoppeDB(){
 		try {
-			OffenePosten.thisClass.conn.close();
-			OffenePosten.thisClass.conn = null;
+			RehaBillEdit.thisClass.conn.close();
+			RehaBillEdit.thisClass.conn = null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 			
@@ -217,7 +190,7 @@ public class OffenePosten implements WindowListener{
 	 */
 	final class DatenbankStarten implements Runnable{
 		private void StarteDB(){
-			final OffenePosten obj = OffenePosten.thisClass;
+			final RehaBillEdit obj = RehaBillEdit.thisClass;
 
 			final String sDB = "SQL";
 			if (obj.conn != null){
@@ -230,30 +203,30 @@ public class OffenePosten implements WindowListener{
 	        } catch (InstantiationException e) {
 				e.printStackTrace();
         		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
-        		OffenePosten.DbOk = false;
+        		RehaBillEdit.DbOk = false;
 	    		return ;
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
         		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
-        		OffenePosten.DbOk = false;
+        		RehaBillEdit.DbOk = false;
 	    		return ;
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
         		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
-        		OffenePosten.DbOk = false;
+        		RehaBillEdit.DbOk = false;
 	    		return ;
 			}	
         	try {
         		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
-				OffenePosten.DbOk = true;
+				RehaBillEdit.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
         	catch (final SQLException ex) {
         		System.out.println("SQLException: " + ex.getMessage());
         		System.out.println("SQLState: " + ex.getSQLState());
         		System.out.println("VendorError: " + ex.getErrorCode());
-        		OffenePosten.DbOk = false;
+        		RehaBillEdit.DbOk = false;
         
         	}
 	        return;
@@ -273,9 +246,9 @@ public class OffenePosten implements WindowListener{
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-		if(OffenePosten.thisClass.conn != null){
+		if(RehaBillEdit.thisClass.conn != null){
 			try {
-				OffenePosten.thisClass.conn.close();
+				RehaBillEdit.thisClass.conn.close();
 				System.out.println("Datenbankverbindung wurde geschlossen");
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -285,9 +258,9 @@ public class OffenePosten implements WindowListener{
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		if(OffenePosten.thisClass.conn != null){
+		if(RehaBillEdit.thisClass.conn != null){
 			try {
-				OffenePosten.thisClass.conn.close();
+				RehaBillEdit.thisClass.conn.close();
 				System.out.println("Datenbankverbindung wurde geschlossen");
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -312,7 +285,7 @@ public class OffenePosten implements WindowListener{
 	
     public static void starteOfficeApplication(){ 
 
-    	final String OPEN_OFFICE_ORG_PATH = OffenePosten.officeProgrammPfad;
+    	final String OPEN_OFFICE_ORG_PATH = RehaBillEdit.officeProgrammPfad;
 
         try
         {
@@ -321,7 +294,7 @@ public class OffenePosten implements WindowListener{
             Map <String, String>config = new HashMap<String, String>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,OffenePosten.officeNativePfad);
+            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,RehaBillEdit.officeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {

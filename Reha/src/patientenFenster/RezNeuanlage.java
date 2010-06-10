@@ -964,6 +964,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}.execute();
 	}
 	private void holePreisGruppe(String id){
+		try{
 		Vector<Vector<String>> vec = SqlInfo.holeFelder("select preisgruppe,pgkg,pgma,pger,pglo,pgrh from kass_adr where id='"+id+"' LIMIT 1");
 		if(vec.size()>0){
 			for(int i = 1; i < vec.get(0).size();i++){
@@ -973,6 +974,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			jtf[13].setText((String)vec.get(0).get(0));
 		}else{
 			JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
+		}
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!\n"+
+					"Untersuchen Sie die Krankenkasse im Kassenstamm un weisen Sie dieser Kasse die entsprechend Preisgruppe zu");
 		}
 	}
 	/***********
