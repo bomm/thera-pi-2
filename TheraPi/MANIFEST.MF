@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Sealed: true
+Main-Class: theraPi.TheraPi
+Class-Path:  Libraries/lib/jgoodies/looks-2.3.1.jar 
+ Libraries/lib/jgoodies/jgoodies-common-0.9.9.jar 
+ Libraries/lib/swingx/swing-worker.jar 
+ Libraries/lib/swingx/swingx-1.6.jar 
+
+
+
