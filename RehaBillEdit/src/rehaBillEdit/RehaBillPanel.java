@@ -806,7 +806,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			for(int i = 0; i < tabmod.getRowCount();i++){
 				try{
 					int id = ((Integer)tabmod.getValueAt(i, 8));
-					String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec);
+					String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
 					//System.out.println(langtext);
 					String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
 					//System.out.println(preis);

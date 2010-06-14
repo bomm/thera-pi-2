@@ -2,6 +2,8 @@ package abrechnung;
 
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 import oOorgTools.OOTools;
 
 import systemEinstellungen.SystemConfig;
@@ -31,19 +33,44 @@ public class BegleitzettelDrucken {
 		this.kostentrName = kostentrName;
 		this.rechnungNummer = rnr; 
 		this.eltern = eltern;
-		
-		starteDokument(url);
+
+		try{
+			starteDokument(url);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler im Modul starteDokument() Begleitzettl\n"+ex.getMessage());	
+		}
 		Thread.sleep(100);
-		ersetzePlatzhalter();
+
+		try{
+			ersetzePlatzhalter();
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler im Modul ersetzePlatzhalter() Begleitzettl\n"+ex.getMessage());
+		}
+		
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		}else{
+			try{
+				Thread.sleep(100);
+				textDocument.print();
+				try{
+					while(textDocument.getPrintService().isActivePrinterBusy()){
+						Thread.sleep(50);
+					}
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler im Modul isActivePrinterBusy() Begleitzettl\n"+ex.getMessage());
+				}
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler im Modul print() Begleitzettl\n"+ex.getMessage());					
+			}
+			Thread.sleep(150);
+			try{
+				textDocument.close();
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler im Modul close() Begleitzettl\n"+ex.getMessage());
+			}
 			Thread.sleep(100);
-			textDocument.print();
-			Thread.sleep(100);
-			textDocument.close();
-			Thread.sleep(100);
-		}			
+		}
 	}
 	
 	private void starteDokument(String url) throws Exception{

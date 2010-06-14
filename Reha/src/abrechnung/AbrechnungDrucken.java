@@ -31,6 +31,7 @@ import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableCell;
 import ag.ion.bion.officelayer.text.ITextTableCellProperties;
 import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
 import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.sun.star.beans.XPropertySet;
@@ -71,15 +72,21 @@ public class AbrechnungDrucken {
 					Thread.sleep(100);
 					PrintProperties printprop = new PrintProperties ((short)exemplare,null);
 					textDocument.getPrintService().print(printprop);
-					Thread.sleep(200);
+					while(textDocument.getPrintService().isActivePrinterBusy()){
+						Thread.sleep(50);
+					}
+					Thread.sleep(150);
 					textDocument.close();
-					Thread.sleep(100);
+					Thread.sleep(150);
 
 				} catch (InterruptedException e) {
 					JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = InterruptedException" );
 					e.printStackTrace();
 				} catch (DocumentException e) {
 					JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = DocumentException" );
+					e.printStackTrace();
+				} catch (NOAException e) {
+					JOptionPane.showMessageDialog(null,"Fehler in der Abfrage isActivePrinterBusy()" );
 					e.printStackTrace();
 				}
 			}

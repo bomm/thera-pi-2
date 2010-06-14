@@ -554,9 +554,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			 */
 	}
 	private void neuerArzt(){
-		jtf[0] = new JRtaTextField("NORMAL",false);
-		jtf[1] = new JRtaTextField("NORMAL",false);
-		jtf[2] = new JRtaTextField("NORMAL",false);
+		jtf[0] = new JRtaTextField("nix",false);
+		jtf[1] = new JRtaTextField("nix",false);
+		jtf[2] = new JRtaTextField("nix",false);
 		ArztAuswahl awahl = new ArztAuswahl(null,"arztwahlfuerbericht",
 				new String[] {rlab[2].getText(),Integer.toString(arztid)},
 				jtf,rlab[2].getText());

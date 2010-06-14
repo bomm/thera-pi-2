@@ -2071,7 +2071,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int rueckgabe = -1;
 		String behandl = "";
 		for(int i = 0; i < vec_poskuerzel.size();i++){
-			behandl=behandl+vec_posanzahl.get(i)+"*"+vec_poskuerzel.get(i).substring(0,2)+(i < (vec_poskuerzel.size()-1) ? "," : "" );
+			//behandl=behandl+vec_posanzahl.get(i)+"*"+vec_poskuerzel.get(i).substring(0,2)+(i < (vec_poskuerzel.size()-1) ? "," : "" );
+			behandl=behandl+vec_posanzahl.get(i)+"*"+vec_poskuerzel.get(i)+(i < (vec_poskuerzel.size()-1) ? "," : "" );
 		}
 		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"

@@ -2802,6 +2802,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	 *  Shift+Einfg.
 	 */
 	private void datenAusSpeicherHolen(){
+		//System.out.println("Warten auf Ready = "+wartenAufReady);
+		try{
 		int aktbehandler=-1;
 		int aktdauer;
 		String aktstart;
@@ -2927,7 +2929,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
  				   p.y = p.y+4;
  			   }
 			   new TerminObenUntenAnschliessen(p.x,p.y);
-			   ////System.out.println("DialogretInt = "+dialogRetInt);
+			   //System.out.println("DialogretInt = "+dialogRetInt);
+			   
 				switch(dialogRetInt){
 					case 0:
 						terminBreak = true;
@@ -2993,6 +2996,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		SqlInfo.loescheLocksMaschine();
 		setUpdateVerbot(false);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SqlInfo.loescheLocksMaschine();
+			setUpdateVerbot(false);
+			wartenAufReady = false;
+		}
 	}
 	public int[] getAktiverBlock(){
 		return aktiveSpalte;
@@ -3082,6 +3091,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 				}else{
 					starteUnlock();
+					wartenAufReady = false;
 					setUpdateVerbot(false);
 				}
 			}
@@ -3802,7 +3812,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								e1.printStackTrace();
 							}
 						}
-						////System.out.println("Wert von Grobraus = "+grobRaus);
+						System.out.println("Wert von Grobraus = "+grobRaus);
 						zeit = System.currentTimeMillis();
 						if(!grobRaus){
 							try{
@@ -3812,6 +3822,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							wartenAufReady = true;
 							grobRaus = false;
 							setUpdateVerbot(true);
+							/*
+							//xx
 							while(getUpdateVerbot()){
 								try {
 									Thread.sleep(20);
@@ -3823,7 +3835,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									e1.printStackTrace();
 								}
 							}
-							////System.out.println("Wert von Grobraus = "+grobRaus);
+							*/
+							//System.out.println("Wert von Grobraus = "+grobRaus);
 							if(!grobRaus){
 								//Stufe 2 - o.k.
 								if(altaktiveSpalte[2]==spAktiv){
@@ -4330,7 +4343,8 @@ private int gelesen;
 	    			//Reha.thisClass.shiftLabel.setText("Update ok.");	    			
 	    			gelesen++;
 	    			}catch(Exception ex){
-	    				SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
+	    				SqlInfo.loescheLocksMaschine();
+	    				//SqlInfo.sqlAusfuehren("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine+"%'");
 	    				break;
 	    			}
 	    			//********>Toolkit.getDefaultToolkit().beep();

@@ -376,6 +376,7 @@ public class BlockHandling {
 	}
 	/*****************************************/	
 	private int blockLoeschen(){
+		try{
 		String [] alteDaten = {null,null,null,null,null};
 		String test1="";
 		String test2="";
@@ -431,6 +432,10 @@ public class BlockHandling {
 
 		KalenderBeschreiben kbs = new KalenderBeschreiben();
 		kbs.KalenderDaten(this.datenfeld,kollege ,db_datum,ibehandler);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return -10;
+		}
 		
 	return 1;	
 	}

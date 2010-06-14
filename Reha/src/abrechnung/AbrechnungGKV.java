@@ -1111,11 +1111,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					JOptionPane.showMessageDialog(null, "Fehler im Rechnungsdruck - Fehler = abrDruck==null");
 				}
 				try{
-					new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
 					rezepteUebertragen();
 					rechnungAnlegen();
 				}catch(Exception ex){
-					JOptionPane.showMessageDialog(null, "Fehler im Modul BegleitzettlDrucken - Fehler ist Exception ex");
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Fehler im Modul Rezept übertragen und Rechnung anlegen\n"+ex.getMessage());
+				}
+				try{
+					Thread.sleep(100);
+					new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler im Modul BegleitzettlDrucken - Fehler-Exception: ex\n"+ex.getMessage());
 				}
 				return null;
 			}
@@ -1286,8 +1292,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					abgerechneteRezepte.add((String) node.knotenObjekt.rez_num);
 					abgerechnetePatienten.add((String) node.knotenObjekt.pat_intern);
 					//hier den Edifact-Code analysieren und die Rechnungsdatei erstellen;
-					analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
-					anhaengenEdifact(vec.get(0).get(0));
+					try{
+						analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null,"Unbekannter Fehler bei Edifact analysierenEdifact()\n"+ex.getLocalizedMessage());
+					}
+					try{
+						anhaengenEdifact(vec.get(0).get(0));	
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null,"Unbekannter Fehler bei Edifact anhaengenEdifact()\n"+ex.getLocalizedMessage());
+					}
+					
 				}catch(Exception ex){
 					JOptionPane.showMessageDialog(null,"Unbekannter Fehler bei Edifact anhängen");
 				}
@@ -1400,6 +1415,12 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 						}
 					}
 				}
+			}
+			try {
+				Thread.sleep(15);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"Fehler in Thread.sleep(25) analysierenEdifact\n"+e.getMessage());
 			}
 		}
 		String[] splits = zeilen[0].split(":");
@@ -1544,6 +1565,11 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		for(int i = 4; i < edi.length;i++){
 			positionenBuf.append(edi[i]+System.getProperty("line.separator") );
 			positionenAnzahl++;
+		}
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		if(status.startsWith("1")){
 			preis11 = addierePreise(preis11,edi[edi.length-1]);

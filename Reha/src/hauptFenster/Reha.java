@@ -2438,7 +2438,8 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("urlaub")){
-		Reha.thisClass.progLoader.UrlaubFenster(1,"");
+		new LadeProg(Reha.proghome+"RehaUrlaub.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		//Reha.thisClass.progLoader.UrlaubFenster(1,"");
 		return;
 	}
 	if(cmd.equals("umsatzbeteiligung")){
@@ -2522,7 +2523,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0610/01 - DB="+db);
+	    				obj.dbLabel.setText("V=0611/01 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 

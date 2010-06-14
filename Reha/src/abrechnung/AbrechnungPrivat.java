@@ -850,6 +850,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri5>"));				
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri6>")){
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri6>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pnname>")){
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<pnname>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pvname>")){
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<pvname>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pgeboren>")){
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<pgeboren>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<panrede>")){
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<panrede>"));
 			}
 		}
 		

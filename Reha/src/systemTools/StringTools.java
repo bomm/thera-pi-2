@@ -165,6 +165,11 @@ public class StringTools {
 		return neuString.trim();
 	}
 	
+	public static String EGross2(String test){
+		String retString = "";
+		return retString;
+	}
+	
 	public static String NullTest(String string){
 		if(string==null){
 			return "";
