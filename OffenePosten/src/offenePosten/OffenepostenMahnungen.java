@@ -713,7 +713,52 @@ public class OffenepostenMahnungen extends JXPanel{
 		}
 	}
 	private void doFakturaGedoense(String rnr,int row){
-		//muß noch entwickelt werden
+		Vector<Vector<String>> vecx =
+			SqlInfo.holeFelder("select kassen_nam,kassen_na2,strasse,plz,ort from faktura where rnummer='"+
+					rnr+"' and lfnr='0' LIMIT 1");
+		if(vecx.size() <= 0){
+			JOptionPane.showMessageDialog(null, "Rechnungsdaten können nicht ermittelt werden");
+			return;
+		}
+		rtfs[0].setText( vecx.get(0).get(0));
+		rtfs[1].setText( vecx.get(0).get(1));
+		rtfs[2].setText( vecx.get(0).get(2));
+		rtfs[3].setText( vecx.get(0).get(3)+" "+vecx.get(0).get(4));
+		
+		rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), 0).toString() );
+		rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), 1).toString()) );
+		rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 5) ) );
+		rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6) ) );
+		
+		Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 9);
+		if(test==null){
+			rtfs[8].setText("  .  .    ");
+		}else if(test.toString().trim().length() != 10){
+			rtfs[8].setText("  .  .    ");	
+		}else{
+			rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
+		}
+		
+		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 10);
+		if(test==null){
+			rtfs[9].setText("  .  .    ");
+		}else if(test.toString().trim().length() != 10){
+			rtfs[9].setText("  .  .    ");	
+		}else{
+			rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
+		}
+		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 11);
+		if(test==null){
+			rtfs[10].setText("  .  .    ");
+		}else if(test.toString().trim().length() != 10){
+			rtfs[10].setText("  .  .    ");
+		}else{
+			rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
+		}
+		cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), 12) );
+
+
+		
 	}
 	private void doDbfGedoense(String rnr, int row){
 		String rdatei = ((String)OffenePosten.mahnParameter.get("diralterechnungen"))+rnr+".dbf";

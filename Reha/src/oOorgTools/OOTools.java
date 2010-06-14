@@ -89,6 +89,7 @@ public class OOTools{
 		
 	}
 	public static void loescheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
+		try{
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.goToRange(placeholders.getTextRange(), false);
 		XController xController = textDocument.getXTextDocument().getCurrentController();
@@ -102,6 +103,9 @@ public class OOTools{
 		textCursor.goLeft((short) 1, false);
 		textCursor.gotoRange(viewCursor.getTextCursorFromEnd().getEnd(), true);
 		textCursor.setString("");
+		}catch(java.lang.IllegalArgumentException ex){
+			
+		}
 	}
 	
 	public static void starteStandardFormular(String url,String drucker) {
@@ -258,6 +262,7 @@ public class OOTools{
 		    /*****************/
 		}
 		}catch(java.lang.IllegalArgumentException ex){
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null,"Fehler in der Dokumentvorlage");
 			if(document != null){
 				document.close();

@@ -27,6 +27,7 @@ import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.IntegerTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -436,48 +437,88 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		int anfrage = JOptionPane.showConfirmDialog(null, cmd, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 
 		if(anfrage == JOptionPane.YES_OPTION){
-			id = SqlInfo.holeId("kass_adr", "kmemo");
-			String sql = "update kass_adr set kassen_nam1='"+name1+"', kassen_nam2='"+name2+"', strasse='"+
-			strasse+"', plz='"+plz+"', ort='"+ort+"', ik_kasse='"+ikkasse+"', ik_kostent='"+
-			ikktraeger+"', ik_physika='"+ikdaten+"', ik_nutzer='"+iknutzer+"', ik_papier='"+ikpapier+"', "+
-			"kmemo='' where id='"+Integer.toString(id)+"' LIMIT 1";
-			SqlInfo.sqlAusfuehren(sql);
-			
-			/**********Datenannahmestelle**********/
-			if(SqlInfo.holeEinzelFeld("select ik_kasse from kass_adr where ik_kasse='"+ikdaten+"' LIMIT 1").equals("")){
-				JOptionPane.showMessageDialog(null, "Datenannahmestelle wird ebenfalls importiert");
-				Vector<Vector<String>> dvec = SqlInfo.holeFelder("select * from ktraeger where ikkasse='"+ikdaten+"' LIMIT 1");
-				if(dvec.size()<=0){
-					JOptionPane.showMessageDialog(null,"Datenannahmestelle konnte nicht gefunden!\n\nDatenannahmestelle bitte manuell anlegen\n");
-				}else{
-					sql = "insert into kass_adr set kassen_nam1='"+dvec.get(0).get(5)+"', "+
-					"kassen_nam2='"+dvec.get(0).get(6)+"', "+
-					"strasse='"+dvec.get(0).get(10)+"', "+
-					"plz='"+dvec.get(0).get(8)+"', "+
-					"ort='"+dvec.get(0).get(9)+"', "+
-					"ik_kasse='"+dvec.get(0).get(0)+"', "+
-					"email1='"+dvec.get(0).get(11)+"'";
-					SqlInfo.sqlAusfuehren(sql);
+			try{
+				  String[] list = new String[SystemPreislisten.hmPreisGruppen.get("Common").size()];
+				  for(int i = 0; i < list.length;i++){
+					  list[i] = SystemPreislisten.hmPreisGruppen.get("Common").get(i);
+				  }
+				 String value = (String) JOptionPane.showInputDialog(
+				                   null,
+				                   "Bitte wählen Sie die zutreffende Preisgruppe aus",
+				                   "Title",
+				                   JOptionPane.QUESTION_MESSAGE,
+				                   null,
+				                   list,        // selection values
+				                   SystemPreislisten.hmPreisGruppen.get("Common").get(0));      //
+				String pg =  Integer.toString( SystemPreislisten.hmPreisGruppen.get("Common").indexOf(value)+1 );
+				id = SqlInfo.holeId("kass_adr", "kmemo");
+				StringBuffer buf = new StringBuffer();
+				buf.append("update kass_adr set ");
+				buf.append("kassen_nam1='"+name1+"', ");
+				buf.append("kassen_nam2='"+name2+"', ");
+				buf.append("strasse='"+strasse+"', ");
+				buf.append("plz='"+plz+"', ");
+				buf.append("ort='"+ort+"', ");
+				buf.append("ik_kasse='"+ikkasse+"', ");
+				buf.append("ik_kostent='"+ikktraeger+"', ");
+				buf.append("ik_physika='"+ikdaten+"', ");
+				buf.append("ik_nutzer='"+iknutzer+"', ");
+				buf.append("ik_papier='"+ikpapier+"', ");
+				buf.append("kmemo='', ");
+				buf.append("preisgruppe='"+pg+"', ");
+				buf.append("pgkg='"+pg+"', ");
+				buf.append("pgma='"+pg+"', ");
+				buf.append("pger='"+pg+"', ");
+				buf.append("pglo='"+pg+"', ");
+				buf.append("pgrh='"+pg+"' ");
+				buf.append("where id='"+Integer.toString(id)+"' LIMIT 1");
+				/*
+				String sql = "update kass_adr set kassen_nam1='"+name1+"', kassen_nam2='"+name2+"', strasse='"+
+				strasse+"', plz='"+plz+"', ort='"+ort+"', ik_kasse='"+ikkasse+"', ik_kostent='"+
+				ikktraeger+"', ik_physika='"+ikdaten+"', ik_nutzer='"+iknutzer+"', ik_papier='"+ikpapier+"', "+
+				"kmemo='' where id='"+Integer.toString(id)+"' LIMIT 1";
+				SqlInfo.sqlAusfuehren(sql);
+				*/
+				SqlInfo.sqlAusfuehren(buf.toString());
+				
+				/**********Datenannahmestelle**********/
+				if(SqlInfo.holeEinzelFeld("select ik_kasse from kass_adr where ik_kasse='"+ikdaten+"' LIMIT 1").equals("")){
+					JOptionPane.showMessageDialog(null, "Datenannahmestelle wird ebenfalls importiert");
+					Vector<Vector<String>> dvec = SqlInfo.holeFelder("select * from ktraeger where ikkasse='"+ikdaten+"' LIMIT 1");
+					if(dvec.size()<=0){
+						JOptionPane.showMessageDialog(null,"Datenannahmestelle konnte nicht gefunden!\n\nDatenannahmestelle bitte manuell anlegen\n");
+					}else{
+						String sql = "insert into kass_adr set kassen_nam1='"+dvec.get(0).get(5)+"', "+
+						"kassen_nam2='"+dvec.get(0).get(6)+"', "+
+						"strasse='"+dvec.get(0).get(10)+"', "+
+						"plz='"+dvec.get(0).get(8)+"', "+
+						"ort='"+dvec.get(0).get(9)+"', "+
+						"ik_kasse='"+dvec.get(0).get(0)+"', "+
+						"email1='"+dvec.get(0).get(11)+"'";
+						SqlInfo.sqlAusfuehren(sql);
+					}
 				}
-			}
-			/**********Papierannahmestelle**********/
-			if(SqlInfo.holeEinzelFeld("select ik_kasse from kass_adr where ik_kasse='"+ikpapier+"' LIMIT 1").equals("")){
-				JOptionPane.showMessageDialog(null, "Papierannahmestelle wird ebenfalls importiert");				
-				Vector<Vector<String>> dvec = SqlInfo.holeFelder("select * from ktraeger where ikkasse='"+ikpapier+"' LIMIT 1");
-				if(dvec.size()<=0 || ikpapier.equals("")){
-					JOptionPane.showMessageDialog(null,"Papierannahmestelle konnte nicht gefunden!\n\nPapierannahmestelle bitte manuell anlegen\n");
-				}else{
-					sql = "insert into kass_adr set kassen_nam1='"+dvec.get(0).get(5)+"', "+
-					"kassen_nam2='"+dvec.get(0).get(6)+"', "+
-					"strasse='"+dvec.get(0).get(10)+"', "+
-					"plz='"+dvec.get(0).get(8)+"', "+
-					"ort='"+dvec.get(0).get(9)+"', "+
-					"ik_kasse='"+dvec.get(0).get(0)+"', "+
-					"email1='"+dvec.get(0).get(11)+"'";
-					SqlInfo.sqlAusfuehren(sql);
+				/**********Papierannahmestelle**********/
+				if(SqlInfo.holeEinzelFeld("select ik_kasse from kass_adr where ik_kasse='"+ikpapier+"' LIMIT 1").equals("")){
+					JOptionPane.showMessageDialog(null, "Papierannahmestelle wird ebenfalls importiert");				
+					Vector<Vector<String>> dvec = SqlInfo.holeFelder("select * from ktraeger where ikkasse='"+ikpapier+"' LIMIT 1");
+					if(dvec.size()<=0 || ikpapier.equals("")){
+						JOptionPane.showMessageDialog(null,"Papierannahmestelle konnte nicht gefunden!\n\nPapierannahmestelle bitte manuell anlegen\n");
+					}else{
+						String sql = "insert into kass_adr set kassen_nam1='"+dvec.get(0).get(5)+"', "+
+						"kassen_nam2='"+dvec.get(0).get(6)+"', "+
+						"strasse='"+dvec.get(0).get(10)+"', "+
+						"plz='"+dvec.get(0).get(8)+"', "+
+						"ort='"+dvec.get(0).get(9)+"', "+
+						"ik_kasse='"+dvec.get(0).get(0)+"', "+
+						"email1='"+dvec.get(0).get(11)+"'";
+						SqlInfo.sqlAusfuehren(sql);
+					}
 				}
+				/**********Papierannahmestelle**********/
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler bei der Erstellung der neuen Krankenkasse");
 			}
-			/**********Papierannahmestelle**********/
 		}
 		return id;
 		

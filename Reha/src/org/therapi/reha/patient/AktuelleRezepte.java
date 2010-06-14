@@ -267,6 +267,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 					@Override
 					protected Void doInBackground() throws Exception {
+						RezTools.constructFormularHMap();
 						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 						return null;
 					}

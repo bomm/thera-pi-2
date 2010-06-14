@@ -404,6 +404,8 @@ public class BlockHandling {
 			test2 = datenfeld.getFeld(kollege,1,block-1);//Text
 			if( test1.trim().equals("") && test2.trim().equals("") ){
 				startBlock= block-1;
+				Reha.thisClass.terminpanel.setAktiverBlock(startBlock);
+				//System.out.println("startBlock = "+startBlock);
 				alteDaten[2] = datenfeld.getFeld(kollege,2,block-1);//Start
 			}
 		}
@@ -412,6 +414,7 @@ public class BlockHandling {
 			test2 = datenfeld.getFeld(kollege,1,block+1);//Text
 			if( test1.trim().equals("") && test2.trim().equals("") ){
 				endBlock= block+1;
+				//System.out.println("endBlock = "+endBlock);
 				alteDaten[4] = datenfeld.getFeld(kollege,4,block+1);//Ende
 			}
 		}

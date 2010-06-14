@@ -3444,6 +3444,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public void springeAufDatum(String datum){
 		//tagBlaettern((int)DatFunk.TageDifferenz(this.aktuellerTag,datum));
 		datGewaehlt = datum;
+		if(ansicht == WOCHEN_ANSICHT){
+			this.wocheAktuellerTag = DatFunk.WocheErster(datum);	
+		}
 		suchSchonMal();
 		//tagSprung(datum,(int)DatFunk.TageDifferenz(this.aktuellerTag,datum));
 	}

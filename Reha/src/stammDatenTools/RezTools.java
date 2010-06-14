@@ -1341,6 +1341,29 @@ public class RezTools {
 			ex.printStackTrace();
 		}
 	}
+	
+	public static void constructFormularHMap(){
+		try{
+			DecimalFormat dfx = new DecimalFormat( "0.00" );	
+		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
+		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
+		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );
+		for(int i = 3; i < 7;i++){
+			if( ! Reha.thisClass.patpanel.vecaktrez.get(i).equals("0") ){
+				SystemConfig.hmAdrRDaten.put("<Rposition"+(i-2)+">",(String)Reha.thisClass.patpanel.vecaktrez.get(45+i) );
+				Double preis = Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(15+i));
+
+				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i-2)+">", dfx.format(preis).replace(".",",") );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i-2)+">", (String)Reha.thisClass.patpanel.vecaktrez.get(i) );
+				BigDecimal gesamt = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(i) ))) ;
+				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i-2)+">", dfx.format(gesamt).replace(".",",") );
+			}
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
 	/***************************************************/
 	/***************************************************/
 	/******Funktionen für Abrechnung nach §302**********/

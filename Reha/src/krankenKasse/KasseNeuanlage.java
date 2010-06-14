@@ -258,35 +258,40 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	public void datenSpeichern(){
 		//int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17};
 		//int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19};
+		try{
 		int anzahlf = fedits.length;
 		String dbid = this.kassenId;
 		StringBuffer kkBuffer = new StringBuffer();
 		//String stmt = "update kass_adr set ";
 		kkBuffer.append("update kass_adr set ");
 		if(this.neuAnlage){
-			int iid = SqlInfo.holeId("kass_adr", "KASSEN_NAM1");
-			if(iid==-1){
+			int iid = SqlInfo.holeId("kass_adr", "kmemo");
+			if(iid == -1){
 				JOptionPane.showMessageDialog(null, "Fehler beim Anlegen einer neuen Kasse, bitte erneut versuchen -> speichern");
 				return;
 			}
-			dbid = new Integer(iid).toString();
+			dbid = Integer.toString(iid);
 			this.kassenId = dbid;
 		}
 		for(int i = 0; i < anzahlf; i++){
-			//stmt = stmt + jtf[fedits[i]].getName() + "='"+jtf[fedits[i]].getText().trim()+"' ,";
-			kkBuffer.append(jtf[fedits[i]].getName() + "='"+jtf[fedits[i]].getText().trim()+"' ,");
+
+			kkBuffer.append(jtf[fedits[i]].getName() + "='"+jtf[fedits[i]].getText().trim()+"', ");
+			
 		}
-		//stmt = stmt + "preisgruppe ='"+ new Integer(this.tarifGruppe.getSelectedIndex()+1).toString()+"', "+
+		kkBuffer.append("kmemo ='', ");
 		kkBuffer.append("preisgruppe ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
 		kkBuffer.append("pgkg ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
 		kkBuffer.append("pgma ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
 		kkBuffer.append("pger ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
 		kkBuffer.append("pglo ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"', ");
 		kkBuffer.append("pgrh ='"+ Integer.toString(this.tarifGruppe.getSelectedIndex()+1)+"' ");
-		kkBuffer.append("where id='"+dbid+"'");
-		//new ExUndHop().setzeStatement(stmt);
+		kkBuffer.append("where id='"+dbid+"' LIMIT 1");
+
 		SqlInfo.sqlAusfuehren(kkBuffer.toString());
-		////System.out.println("In Preisgruppe abspeichern Preisgruppe = "+Integer.toString(this.tarifGruppe.getSelectedIndex()+1));
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler beim Abspeichern der Kasse");
+		}
+
 	}
 	public void tabelleAktualisieren(){
 

@@ -79,7 +79,8 @@ public class DatFunk {
 					Locale.GERMANY);
 
 		if (anz_milli_2==0){
-			dDatum = new Date();
+			//dDatum = new Date();
+			dDatum = new Date(DatFunk.DatumsWert(datum));
 		}else{
 			dDatum = new Date(anz_milli_3);
 		}
