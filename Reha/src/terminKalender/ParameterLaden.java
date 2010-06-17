@@ -327,6 +327,16 @@ public static void Passwort() {
 		 	pKollegen.add((Vector<String>)aKollegen.clone());
 		 	aKollegen.clear();
 		}
+		Comparator<Vector> comparator = new Comparator<Vector>() {
+			@Override
+			public int compare(Vector o1, Vector o2) {
+				String s1 = (String)o1.get(0);
+				String s2 = (String)o2.get(0);
+				return s1.compareTo(s2);
+			}
+		};
+		Collections.sort(pKollegen,comparator);
+
 
 
 		}catch(SQLException ex){

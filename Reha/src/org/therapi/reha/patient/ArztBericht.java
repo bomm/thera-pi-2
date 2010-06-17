@@ -773,7 +773,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			JOptionPane.showMessageDialog(null,"Der zugeordnete Arzt ist nicht gültig bitte wählen Sie einen neuen Arzt!");
 			return;
 		}
-		String[] str = AdressTools.machePrivatAdresse(vec.toArray());
+		String[] str = AdressTools.machePrivatAdresse(vec.toArray(),false);
 		for(int i = 0; i < str.length; i++){
 			//System.out.println("Ergebnis von str"+i+" = "+str[i]);
 		}

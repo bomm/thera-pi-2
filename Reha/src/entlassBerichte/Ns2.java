@@ -185,7 +185,7 @@ public class Ns2 implements ActionListener {
 		eltern.bchb[11] = new JRtaCheckBox("");
 		eltern.bchb[11].setName("F_141");
 		titl.add(eltern.bchb[11],cctitl.xywh(5,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		titl.add(this.getLabelArialFettRot("Suchberatung"),cctitl.xywh(7,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));	
+		titl.add(this.getLabelArialFettRot("Suchtberatung"),cctitl.xywh(7,4,1,2,CellConstraints.DEFAULT,CellConstraints.CENTER));	
 
 		eltern.bchb[12] = new JRtaCheckBox("");
 		eltern.bchb[12].setName("F_140");

@@ -340,7 +340,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 			hmAdresse.put("<pri6>",aktRechnung);
 			
-			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmpriformular"));
+			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmbgeformular"));
 			starteErsetzen();
 			startePositionen();
 			
@@ -442,7 +442,10 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			rechnungBuf.append("r_kasse='"+StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)+", "+
 					Reha.thisClass.patpanel.patDaten.get(3) )+"', ");
 		}else{
-			rechnungBuf.append("r_kasse='"+StringTools.EscapedDouble(hmAdresse.get("<pri1>"))+"', ");			
+			rechnungBuf.append("r_kasse='"+StringTools.EscapedDouble(hmAdresse.get("<pri1>"))+"', ");
+			String rname = StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)+","+
+					Reha.thisClass.patpanel.patDaten.get(3)+","+DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)) );
+			rechnungBuf.append("r_name='"+rname+"', ");
 		}
 		rechnungBuf.append("r_klasse='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim().substring(0,2)+"', ");
 		rechnungBuf.append("r_betrag='"+dcf.format(rechnungGesamt.doubleValue()).replace(",", ".")+"', ");
@@ -450,7 +453,6 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		rechnungBuf.append("r_zuzahl='0.00', ");
 		rechnungBuf.append("ikktraeger='"+Reha.thisClass.patpanel.vecaktrez.get(37)+"',");
 		rechnungBuf.append("pat_intern='"+Reha.thisClass.patpanel.vecaktrez.get(0)+"'");
-
 		SqlInfo.sqlAusfuehren(rechnungBuf.toString());		
 	}
 	private void doUebertrag(){
@@ -851,13 +853,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri6>")){
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri6>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pnname>")){
-				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<pnname>"));
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<Pnname>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pvname>")){
-				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<pvname>"));
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<Pvname>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pgeboren>")){
-				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<pgeboren>"));
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<Pgeboren>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<panrede>")){
-				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<panrede>"));
+				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<Panrede>"));
 			}
 		}
 		

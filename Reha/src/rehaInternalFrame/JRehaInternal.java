@@ -86,6 +86,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	//private static final long serialVersionUID = 1L;
 	public JComponent nord = null;
 	public boolean isIcon = false; 
+	public boolean doNotClose = false;
 	public JRehaInternal(String titel,ImageIcon img,int desktop){
 		super();
 		this.setBackground(Color.WHITE);
@@ -172,8 +173,11 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.titel = titel;
 		this.setTitle(this.titel);
 		repaint();
-	
 	}
+	public void setDoNotClose(boolean canClose){
+		this.doNotClose = canClose;
+	}
+	
 
 	public void gruenGedrueckt(){
 		//try {
@@ -201,6 +205,9 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	
 	public void rotGedrueckt(){
+		if(doNotClose){
+			return;
+		}
 		this.dispose();
 	}
 	public boolean getActive(){
@@ -882,7 +889,12 @@ class RehaInternal extends BasicInternalFrameTitlePane{
 		g2d.drawString(((JRehaInternal)getParent()).getTitle(), 5, 15);
 		int x = this.getWidth()-21;
 		if(this.img1 != null){
-			g2d.drawImage((Image)this.img1, x, 5, this);
+			if(((JRehaInternal)getParent()).doNotClose){
+				g2d.drawImage((Image)this.img3, x, 5, this);	
+			}else{
+				g2d.drawImage((Image)this.img1, x, 5, this);
+			}
+			
 			if(((JRehaInternal)getParent()).getActive()){
 				g2d.drawImage((Image)this.img2, x-20, 5, this);
 			}else{
@@ -910,7 +922,10 @@ class CustomPinPanel extends JButton{
 					((JRehaInternal)getParent().getParent()).isIcon = true;
 				}
 				if(((JComponent)evt.getSource()).getName().equals("ROT")){
-					((JRehaInternal)getParent().getParent()).rotGedrueckt();
+					if(! ((JRehaInternal)getParent().getParent()).doNotClose){
+						((JRehaInternal)getParent().getParent()).rotGedrueckt();	
+					}
+					
 				}
 
 			}

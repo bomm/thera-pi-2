@@ -2247,8 +2247,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					doUebertrag();					
 				}
 				break;
-				
-				
 			}
 			tDlg = null;
 			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);

@@ -45,6 +45,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
@@ -72,6 +73,7 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -86,6 +88,8 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
 import org.therapi.reha.patient.AktuelleRezepte;
 
+import patientenFenster.KassenAuswahl;
+
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -94,6 +98,7 @@ import systemTools.AdressTools;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
+import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
@@ -127,6 +132,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	String aktDisziplin = "";
 	
 	JButton[] tbbuts = {null,null,null,null};
+	JToggleButton tog = null;
 	JLabel[] labs = {null,null,null,null,null,null,null,null,null,null,
 					null,null,null,null,null,null,null,null,null,null,
 					null,null,null,null,null,null,null,null,null,null};
@@ -208,6 +214,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 	StringBuffer buf1 = new StringBuffer();
 	StringBuffer buf2 = new StringBuffer();
+	StringBuffer buf3 = new StringBuffer();
 	
 	private UIFSplitPane jSplitOU = null;
 	private String[] voArt = {"Erstverordnung","Folgeverordnung","Folgeverordn. außerhalb d. Regelf."};
@@ -247,6 +254,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 	boolean inworker = false;
 	
+	JRtaTextField[] aKasse = {new JRtaTextField("nix",false),
+			new JRtaTextField("nix",false),
+			new JRtaTextField("nix",false)};
 	
 	public AbrechnungRezept(AbrechnungGKV xeltern){
 		eltern = xeltern;
@@ -290,45 +300,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
         jscr.validate();
 		return jscr;
 	}
-	/*
-	public void setPreisVec(String xreznummer){
-		if(xreznummer.contains("KG")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vKGPreise;
-			disziplinIndex = "2";
-			disziplinGruppe = "22";
-			preisregelIndex = 0;
-		}else if(xreznummer.contains("MA")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vMAPreise;
-			disziplinIndex = "1";
-			disziplinGruppe = "21";			
-			preisregelIndex = 1;
-		}else if(xreznummer.contains("ER")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vERPreise;
-			disziplinIndex = "5";
-			disziplinGruppe = "26";			
-			preisregelIndex = 2;
-		}else if(xreznummer.contains("LO")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vLOPreise;
-			disziplinIndex = "3";
-			disziplinGruppe = "23";			
-			preisregelIndex = 3;
-		}else if(xreznummer.contains("RH")){
-			preisvec = (Vector<Vector<String>>)ParameterLaden.vRHPreise;
-			disziplinIndex = "8";
-			disziplinGruppe = "29";			
-			preisregelIndex = 4;
-		}
-		int idpos = preisvec.get(0).size()-1;
-		for(int i = 0;i< preisvec.size();i++){
-			kundid.clear();
-			kundid.add(preisvec.get(i).get(1));
-			kundid.add(preisvec.get(i).get(idpos));
-		}
-	}
-	*/
 	public void setKuerzelVec(String xreznummer,String preisgr){
-		//System.out.println("Aktuelle Disziplin = "+aktDisziplin);
-		//System.out.println("Preisgruppe = "+preisgr);
 		if(xreznummer.contains("KG")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("KG", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "2";
@@ -410,6 +382,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				aktRezNum.setText(rez);
 				setKuerzelVec(rez,preisgr);
 				setWerte(rez);
+				regleAbrechnungsModus();
 				Reha.thisClass.progressStarten(false);
 			}else{
 				////System.out.println("Einlesen aus Edifact-Daten");
@@ -426,6 +399,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					}
 					prepareTreeFromVector(true);
 					doTreeRezeptWertermitteln();
+					
+					regleAbrechnungsModus();
+					
 					parseHTML(rez.trim());
 					doPositionenErmitteln();
 				}
@@ -652,7 +628,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		jtb.setOpaque(false);
 		jtb.setRollover(true);
 		jtb.setBorder(null);
-		jtb.setOpaque(false);
+
 		tbaction = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -728,6 +704,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 						}
 					}.execute();
 				}
+				if(cmd.equals("302oderIV")){
+					regleAbrechnungsModus();
+				}
+
 				
 			}
 		};
@@ -766,6 +746,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		tbbuts[1].setActionCommand("scannen");
 		tbbuts[1].addActionListener(tbaction);
 		jtb.add(tbbuts[1]);
+
+		jtb.addSeparator(new Dimension(40,0));
+		
+		tog = new JToggleButton();
+		tog.setIcon(SystemConfig.hmSysIcons.get("abrdreizwei"));
+		tog.setToolTipText("§ 302 oder IV Abrechnung");
+		tog.setActionCommand("302oderIV");
+		tog.addActionListener(tbaction);
+		jtb.add(tog);
 		
 		jtb.addSeparator(new Dimension(40,0));
 		tbbuts[3] = new JButton();
@@ -913,6 +902,39 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 
 	}
+	private void regleAbrechnungsModus(){
+		
+		if(tog.isSelected()){
+			eltern.abrechnungsModus = eltern.ABR_MODE_IV;
+			tog.setIcon(SystemConfig.hmSysIcons.get("abriv"));
+			if(this.jXTreeTable.getRowCount() > 0){
+				String ivkasse = vec_rez.get(0).get(37);
+				macheHashMapIV(ivkasse);
+				parseHTML(vec_rez.get(0).get(1).trim());
+			}
+		}else{
+			eltern.abrechnungsModus = eltern.ABR_MODE_302;
+			tog.setIcon(SystemConfig.hmSysIcons.get("abrdreizwei"));
+			//eltern.hmAlternativeKasse.clear();
+			if(this.jXTreeTable.getRowCount() > 0){
+				addiereKassenWahl(false);
+				parseHTML(vec_rez.get(0).get(1).trim());
+			}
+
+		}
+	}
+	private void macheHashMapIV(String id){
+		String cmd = "select kassen_nam1,kassen_nam2,strasse,plz,ort,id from kass_adr where id='"+id.trim()+"' LIMIT 1";
+		Vector<Vector<String>> iv_vec = SqlInfo.holeFelder(cmd);
+		eltern.hmAlternativeKasse.put("<Ivnam1>", iv_vec.get(0).get(0) );
+		eltern.hmAlternativeKasse.put("<Ivnam2>", iv_vec.get(0).get(1) );
+		eltern.hmAlternativeKasse.put("<Ivstrasse>", iv_vec.get(0).get(2) );
+		eltern.hmAlternativeKasse.put("<Ivplz>", iv_vec.get(0).get(3) );
+		eltern.hmAlternativeKasse.put("<Ivort>", iv_vec.get(0).get(4) );
+		eltern.hmAlternativeKasse.put("<Ivid>", iv_vec.get(0).get(5) );
+		addiereKassenWahl(true);
+		
+	}
 	public void setRechtsAufNull(){
 		while( root.getChildCount() > 0){
 			demoTreeTableModel.removeNodeFromParent((MutableTreeTableNode) root.getChildAt(0));
@@ -949,6 +971,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 		rezeptSichtbar = false;
 		return;
+		
+	}
+	public void addiereKassenWahl(boolean sichtbar){
 		
 	}
 	public void setHtmlText(String text){
@@ -1988,7 +2013,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		buf1.append("</td>");
 		buf1.append("</tr>");
 		/*******/
-
+		if(eltern.abrechnungsModus.equals(eltern.ABR_MODE_IV)){
+			buf1.append(getIVKassenAdresse());
+		}
 //Double rezeptWert;
 //Double zuzahlungWert;
 		buf1.append("</table>");
@@ -2004,6 +2031,52 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				((JScrollPane)htmlPane.getParent().getParent()).validate();
 			}
 		});
+	}
+	private String getIVKassenAdresse(){
+		buf3.setLength(0);
+		buf3.trimToSize();
+		/*******/
+		buf1.append("<tr>");
+		buf1.append("<td>&nbsp;");
+		buf1.append("</td>");
+		buf1.append("</tr>");
+
+		
+		buf3.append("<tr>");
+		buf3.append("<th rowspan=\"4\" valign=\"top\"><a href=\"http://alternativekrankenkasse.de\"><img src='file:///"+Reha.proghome+"icons/krankenkasse.png' width=52 height=52 border=0></a></th>");
+		buf3.append("<td class=\"spalte1\" align=\"right\">");
+		buf3.append("<b>Adresse für die</b>");
+		buf3.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf3.append(eltern.hmAlternativeKasse.get("<Ivnam1>"));
+		buf3.append("</td>");
+		buf3.append("</tr>");
+		
+
+		buf3.append("<tr>");
+		buf3.append("<td class=\"spalte1\" align=\"right\">");
+		buf3.append("<b>IV-Rechnung</b>");
+		buf3.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf3.append(eltern.hmAlternativeKasse.get("<Ivnam2>"));
+		buf3.append("</td>");
+		buf3.append("</tr>");
+				
+		buf3.append("<tr>");
+		buf3.append("<td class=\"spalte1\" align=\"right\">");
+		buf3.append("");
+		buf3.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf3.append(eltern.hmAlternativeKasse.get("<Ivstrasse>"));
+		buf3.append("</td>");
+		buf3.append("</tr>");
+
+		buf3.append("<tr>");
+		buf3.append("<td class=\"spalte1\" align=\"right\">");
+		buf3.append("");
+		buf3.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf3.append(eltern.hmAlternativeKasse.get("<Ivplz>")+ " "+
+				eltern.hmAlternativeKasse.get("<Ivort>"));
+		buf3.append("</td>");
+		buf3.append("</tr>");
+		return buf3.toString();
 	}
 	private String getNoZuZahl(){
 		return "<b><font color=#FF0000><a href=\"http://nozz.de\">"+dfx.format(zuzahlungWert)+" (nicht bezahlt!)</a></font></b>";
@@ -2054,8 +2127,40 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	    	    Point location = info.getLocation();
 	    		doRezeptgebuehrRechnung(location);
 	    	}
+	    	if(event.getURL().toString().contains("alternativekrankenkasse")){
+	    		doNeueKasseFuerIV();
+	    	}
 
 	      }
+	}
+	private void doNeueKasseFuerIV(){
+		aKasse[0].setText(eltern.hmAlternativeKasse.get("<Ivnam1>").trim());
+		aKasse[1].setText(eltern.hmAlternativeKasse.get("<Ivid>").trim());
+		String[] suchegleichnach = {eltern.hmAlternativeKasse.get("<Ivnam1>").trim(),
+				eltern.hmAlternativeKasse.get("<Ivid>").trim()
+		};
+		
+		//public KassenAuswahl(JXFrame owner, String name,String[] suchegleichnach,JRtaTextField[] elterntf,String kassennum){
+		KassenAuswahl kwahl = new KassenAuswahl(null,
+				"ivkassensuche",
+				suchegleichnach,
+				aKasse,
+				eltern.hmAlternativeKasse.get("<Ivid>").trim()	);
+		kwahl.pack();
+		kwahl.setModal(true);
+		kwahl.setVisible(true);
+		System.out.println(aKasse[0].getText());
+		System.out.println(aKasse[1].getText());
+		System.out.println(aKasse[2].getText());
+		
+		if(!aKasse[2].getText().trim().equals(suchegleichnach[1]) && !aKasse[2].getText().trim().equals("")){
+			System.out.println("Es wurde eine neue Kasse gewählt");
+			macheHashMapIV(aKasse[2].getText().trim());
+			parseHTML(vec_rez.get(0).get(1).trim());
+
+		}else{
+			System.out.println("kasse ist gleich geblieben");
+		}
 	}
 	/*************************
 	 * 	
@@ -2121,7 +2226,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
 			(Object)abwvec.get(0).get(6)
 			};
-		return AdressTools.machePrivatAdresse(obj);
+		return AdressTools.machePrivatAdresse(obj,true);
 	}
 	private String[] holeAbweichendeAdresse(String patid){
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
@@ -2132,7 +2237,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
 				(Object)abwvec.get(0).get(6)
 				};
-		return AdressTools.machePrivatAdresse(obj);
+		return AdressTools.machePrivatAdresse(obj,true);
 	}
 	
 	/*************************

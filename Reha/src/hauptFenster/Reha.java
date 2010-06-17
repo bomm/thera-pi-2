@@ -560,6 +560,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			
 		}.execute();
 	}
+	private void ende()	{
+		try {
+			Runtime.getRuntime().exec("cmd /c start.bat");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
 	
 	private void doCompoundPainter(){
 		new SwingWorker<Void,Void>(){
@@ -1594,7 +1602,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						if(Reha.DbOk &&  (Reha.thisClass.conn != null) ){
 							Date zeit = new Date();
 							String stx = "Insert into eingeloggt set comp='"+SystemConfig.dieseMaschine+"', zeit='"+zeit.toString()+"', einaus='aus'";
-							SqlInfo.sqlAusfuehren(stx);
+							SqlInfo.sqlAusfuehren(stx);	
 						}
 						if(Reha.thisClass.conn != null){
 							try {
@@ -2438,6 +2446,9 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("urlaub")){
+		if(! Rechte.hatRecht(Rechte.Funktion_urlaubueberstunden, true)){
+			return;
+		}
 		new LadeProg(Reha.proghome+"RehaUrlaub.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		//Reha.thisClass.progLoader.UrlaubFenster(1,"");
 		return;
@@ -2459,6 +2470,7 @@ public void actionPerformed(ActionEvent arg0) {
 	}
 	if(cmd.equals("rezeptfahnder")){
 		new RezeptFahnder();
+		return;
 	}
 	if(cmd.equals("rechnungskorrektur")){
 		if(! Rechte.hatRecht(Rechte.Funktion_kassenabrechnung, false)){
@@ -2466,6 +2478,7 @@ public void actionPerformed(ActionEvent arg0) {
 			return;
 		}
 		new LadeProg(Reha.proghome+"RehaBillEdit.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		return;
 	}
 
 	
@@ -2523,7 +2536,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0611/01 - DB="+db);
+	    				obj.dbLabel.setText("V=0617/04 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 

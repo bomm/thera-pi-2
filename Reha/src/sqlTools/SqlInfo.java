@@ -13,6 +13,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
+
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 
@@ -933,6 +935,7 @@ public class SqlInfo {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
+			System.exit(0);
 		}
 		try{
 			geklappt =  stmt.execute(sstmt);

@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -27,9 +28,11 @@ import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -51,12 +54,14 @@ import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
+import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
 import rehaInternalFrame.JAbrechnungInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.StringTools;
@@ -148,8 +153,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	int abrechnungRezepte = 0;
 	public String aktuellerPat = "";
 	
+	
 	String rlistekasse;
 	String rlisteesol;
+	
+	JRtaCheckBox soll302 = null; 
+	HashMap<String,String> hmAlternativeKasse = new HashMap<String,String>();
+	JButton alternativeKK = null;
+	
+	public String abrechnungsModus = "abrechnung302";
+	final String ABR_MODE_302 = "abrechnung302";
+	final String ABR_MODE_IV = "abrechnungIV";
 	
 	public AbrechnungGKV(JAbrechnungInternal xjry){
 		super();
@@ -179,7 +193,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		PanelBuilder pb = new PanelBuilder(lay);
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setBackground(Color.WHITE);
-		
+		//pb.add(getIVPanel(),cc.xy(2,1));
 		pb.addLabel("Heilmittel auswählen",cc.xy(2,2));
 		cmbDiszi = new JRtaComboBox(new String[] {"Physio-Rezept","Massage/Lymphdrainage-Rezept","Ergotherapie-Rezept","Logopädie-Rezept"});
 		cmbDiszi.setSelectedItem(SystemConfig.initRezeptKlasse);
@@ -232,6 +246,27 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		cmbDiszi.addActionListener(this);
 		return jscr;
 	}
+	private JXPanel getIVPanel(){
+		JXPanel jpan = new JXPanel();
+		jpan.setOpaque(false);
+		String xwerte = "0dlu,fill:0:grow(1.0),0dlu";
+		//               1    2  3  4   5   6  7
+		String ywerte = "5dlu,p,3dlu,p,25dlu";
+		FormLayout lay = new FormLayout(xwerte,ywerte);
+		CellConstraints cc = new CellConstraints();
+		jpan.setLayout(lay);
+		soll302 = new JRtaCheckBox("Abrechnung nach §302 erstellen");
+		soll302.setSelected(true);
+		soll302.setOpaque(false);
+		jpan.add(soll302,cc.xy(2,2));
+		alternativeKK = new JButton("Adresse...");
+		alternativeKK.setActionCommand("alternativeadresse");
+		alternativeKK.addActionListener(this);
+		Image img = new ImageIcon(Reha.proghome+"icons/krankenkasse.png").getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH);
+		alternativeKK.setIcon(new ImageIcon(img));
+		jpan.add(alternativeKK,cc.xy(2,4));
+		return jpan;
+	}
 	private JXPanel getRight(){
 		this.abrRez = new AbrechnungRezept(this);
 		this.abrRez.setRechtsAufNull();
@@ -269,6 +304,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			}
 			doEinlesen(null);
 			//setPreisVec(cmbDiszi.getSelectedIndex());
+		}
+		if(cmd.equals("alternativeadresse")){
+			
 		}
 	}
 	/*
@@ -552,7 +590,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			buf.append(SqlInfo.holeFelder("select edifact from fertige where rez_nr='"+rez_nr+"'").get(0).get(0));
 		}catch(Exception ex){}
 		if(buf.length()<=0){
-			JOptionPane.showMessageDialog(null,"Kassenumsatz für Rezept +"+rez_nr+" kann nicht abgeholt werden");
+			JOptionPane.showMessageDialog(null,"Kassenumsatz für Rezept + "+rez_nr+" kann nicht abgeholt werden. Modul holeUmsatz() (Edifact)");
 		}
 		////System.out.println(buf.toString());
 		String[] zeilen = buf.toString().split("\n");
@@ -616,7 +654,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		annahmeAdresseOk = false;
 		/**********************************/
 		aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
-		aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);
+		if(abrechnungsModus.equals(ABR_MODE_302)){
+			aktEsol = StringTools.fuelleMitZeichen(Integer.toString(SqlInfo.erzeugeNummerMitMax("esol", 999)), "0", true, 3);	
+		}
 	    /************************************************/
 		hmKostentraeger.put("aktesol",String.valueOf(aktEsol));
 		/************************************************/
@@ -644,95 +684,114 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			return;
 		}
+		/*
+		public String abrechnungsModus = "abrechnung302";
+		final String ABR_MODE_302 = "abrechnung302";
+		final String ABR_MODE_IV = "abrechnungIV";
+		*/
+		
 		ik_kasse = kassenIKs.get(0).get(0);
 		ik_kostent = kassenIKs.get(0).get(1);
 		ik_nutzer = kassenIKs.get(0).get(2);
 		ik_physika = kassenIKs.get(0).get(3);
 		ik_papier = kassenIKs.get(0).get(4);
 		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_physika+"' LIMIT 1");
-		if(ik_email.equals("")){
-			ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kasse+"' LIMIT 1");
-		}
-		if(ik_email.equals("")){
-			ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kostent+"' LIMIT 1");
-		}
 
-		if(ik_email.trim().equals("")){
-			JOptionPane.showMessageDialog(null,"Emailadresse ist weder der Datenannahmestelle noch dem Kostenträger\noder der Kasse selbst zugeordnet."+
-			"\n\n Bitte geben Sie die Emailadresse von Hand ein");
-			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Emailadresse der Datenannahmestelle ein","");
-			if(ret == null){
-				Reha.thisClass.progressStarten(false);
-				abrDlg.setVisible(false);
-				abrDlg.dispose();
-				abrDlg = null;
-				JOptionPane.showMessageDialog(null, "Fehler - keine Emailadresse eingegeben");
-				SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
-				return;
+		if(abrechnungsModus.equals(ABR_MODE_302)){
+			if(ik_email.equals("")){
+				ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kasse+"' LIMIT 1");
 			}
-			ik_email = String.valueOf(ret);
+			if(ik_email.equals("")){
+				ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kostent+"' LIMIT 1");
+			}
+
+			if(ik_email.trim().equals("")){
+				JOptionPane.showMessageDialog(null,"Emailadresse ist weder der Datenannahmestelle noch dem Kostenträger\noder der Kasse selbst zugeordnet."+
+				"\n\n Bitte geben Sie die Emailadresse von Hand ein");
+				Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Emailadresse der Datenannahmestelle ein","");
+				if(ret == null){
+					Reha.thisClass.progressStarten(false);
+					abrDlg.setVisible(false);
+					abrDlg.dispose();
+					abrDlg = null;
+					JOptionPane.showMessageDialog(null, "Fehler - keine Emailadresse eingegeben");
+					SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
+					return;
+				}
+				ik_email = String.valueOf(ret);
+			}
 		}
 		preisVector = RezTools.holePreisVector(diszis[cmbDiszi.getSelectedIndex()],Integer.parseInt(kassenIKs.get(0).get(5))-1);
 		name_kostent = holeNameKostentraeger();
-		String test = "IK der Krankenkasse: "+ik_kasse+"\n"+
-		"IK des Kostenträgers: "+ik_kostent+"\n"+ 
-		"IK des Nutzer mit EntschlüsselungsbefungnisKostenträgers: "+ik_nutzer+"\n"+
-		"IK der Datenannahmestelle: "+ik_physika+"\n"+
-		"IK der Papierannahmestelle: "+ik_papier+"\n"+
-		"Emailadresse der Datenannahmestelle: "+ik_email+"\n"+
-		"Name des Kostenträgers: "+name_kostent;
 		
-		/************************************************/
-		hmKostentraeger.put("name1",String.valueOf(name_kostent));
-		/************************************************/
+		String test = "";
+		if(abrechnungsModus.equals(ABR_MODE_302)){
+			test = "IK der Krankenkasse: "+ik_kasse+"\n"+
+			"IK des Kostenträgers: "+ik_kostent+"\n"+ 
+			"IK des Nutzer mit EntschlüsselungsbefungnisKostenträgers: "+ik_nutzer+"\n"+
+			"IK der Datenannahmestelle: "+ik_physika+"\n"+
+			"IK der Papierannahmestelle: "+ik_papier+"\n"+
+			"Emailadresse der Datenannahmestelle: "+ik_email+"\n"+
+			"Name des Kostenträgers: "+name_kostent;
+			
+			/************************************************/
+			hmKostentraeger.put("name1",String.valueOf(name_kostent));
+			/************************************************/
+		}else{
+			test = "IK der Krankenkasse: "+ik_kasse+"\n"+
+			"Keine Abrechnung nach § 302!!!\n\n"+
+			"Rechnungsanschrift:\n"+
+			hmAlternativeKasse.get("<Ivnam1>")+"\n"+
+			hmAlternativeKasse.get("<Ivnam2>")+"\n"+
+			hmAlternativeKasse.get("<Ivstrasse>")+"\n"+
+			hmAlternativeKasse.get("<Ivplz>")+" "+
+			hmAlternativeKasse.get("<Ivort>");
+			//hmAlternativeKasse.get("<Ivid>");
+			hmKostentraeger.put("name1",String.valueOf(hmAlternativeKasse.get("<Ivnam1>")));
+		}
 		int anfrage = JOptionPane.showConfirmDialog(null,test , "Die Abrechnung mit diesen Parametern starten?", JOptionPane.YES_NO_OPTION);
 		if(anfrage != JOptionPane.YES_OPTION){
 			doDlgAbort();
 			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
 			return;
 		}
-		if(ik_email.trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Emailadresse zugewiesen\n"+
-					"Abrechnung nach §302 ist nicht möglich!");
-			doDlgAbort();
-			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
-			return;
-		}
-		if(ik_papier.trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Papierannahmestelle zugewiesen\n"+
-			"Abrechnung nach §302 ist nicht möglich!");
-			doDlgAbort();
-			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
-			return;
-		}
-		if(ik_nutzer.trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Nutzer mit Entschlüsselungsbefugnis zugewiesen\n"+
-			"Abrechnung nach §302 ist nicht möglich!");
-			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
-			doDlgAbort();
-			return;
-		}
-		if(ik_physika.trim().equals("")){
-			JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Empfänger der Abrechnungsdaten zugewiesen\n"+
-			"Abrechnung nach §302 ist nicht möglich!");
-			SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
-			doDlgAbort();
-			return;
-		}
-		hmAnnahme = holeAdresseAnnahmestelle();
-		annahmeAdresseOk = true;
-		/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				try{
-
-				}catch(Exception ex){
-				}
-				return null;
+		/*****************************************/
+		if(abrechnungsModus.equals(ABR_MODE_302)){
+			if(ik_email.trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Emailadresse zugewiesen\n"+
+						"Abrechnung nach §302 ist nicht möglich!");
+				doDlgAbort();
+				SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
+				return;
 			}
-		}.execute();
-		*/
+			if(ik_papier.trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Papierannahmestelle zugewiesen\n"+
+				"Abrechnung nach §302 ist nicht möglich!");
+				doDlgAbort();
+				SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
+				return;
+			}
+			if(ik_nutzer.trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Nutzer mit Entschlüsselungsbefugnis zugewiesen\n"+
+				"Abrechnung nach §302 ist nicht möglich!");
+				SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
+				doDlgAbort();
+				return;
+			}
+			if(ik_physika.trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Dieser Kasse ist keine Empfänger der Abrechnungsdaten zugewiesen\n"+
+				"Abrechnung nach §302 ist nicht möglich!");
+				SqlInfo.sqlAusfuehren("update nummern set rnr='"+aktRechnung+"' where mandant='"+Reha.aktIK+"' LIMIT 1");
+				doDlgAbort();
+				return;
+			}
+			hmAnnahme = holeAdresseAnnahmestelle(true);
+			annahmeAdresseOk = true;
+		}else{
+			hmAnnahme = holeAdresseAnnahmestelle(false);
+			annahmeAdresseOk = true;
+		}
+	
 		/********
 		 * 
 		 * 
@@ -751,7 +810,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		gesamtBuf.append(unzBuf.toString());
 		abrDlg.setzeLabel("übertrage EDIFACT in Datenbank");
 
-		if(Reha.vollbetrieb){
+		if(Reha.vollbetrieb && abrechnungsModus.equals(ABR_MODE_302)){
 			PreparedStatement ps = null;
 			try {
 				ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(
@@ -777,71 +836,76 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			}
 		}
 
-		try {
-			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
-			fw = new FileWriter(f);
-		    bw = new BufferedWriter(fw); 
-		    bw.write(gesamtBuf.toString());
-		    bw.flush();
+		if(abrechnungsModus.equals(ABR_MODE_302)){
+			try {
+				f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
+				fw = new FileWriter(f);
+			    bw = new BufferedWriter(fw); 
+			    bw.write(gesamtBuf.toString());
+			    bw.flush();
 
-		    bw.close(); 
-		    fw.close();
-		    int a = 0;
-		   
-			abrDlg.setzeLabel("Rechnungsdatei verschlüsseln");
-		    int originalSize = Integer.parseInt(Long.toString(f.length()));
-		    int encryptedSize = originalSize;
-			String skeystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
-			File fkeystore = new File(skeystore);
-			if(! fkeystore.exists()){
-				abrDlg.setzeLabel("Rechnungsdatei verschlüsseln - fehlgeschlagen!!!");
-				String message = "<html>Auf Ihrem System ist keine (ITSG) Zertifikatsdatenbank vorhanden.<br>"+
-				"Eine Verschlüsselung gemäß §302 SGB V kann daher nicht durchgeführt werden.<br><br>"+
-				"Melden Sie sich im Forum <a href='http://www.thera-pi.org'>www.Thera-Pi.org</a> und fragen Sie nach dem<br>Verschlüsseler <b>'Nebraska'</b></html>";
-				Reha.thisClass.progressStarten(false);
-				JOptionPane.showMessageDialog(null, message);
+			    bw.close(); 
+			    fw.close();
+			    int a = 0;
+			   
+				abrDlg.setzeLabel("Rechnungsdatei verschlüsseln");
+			    int originalSize = Integer.parseInt(Long.toString(f.length()));
+			    int encryptedSize = originalSize;
+				String skeystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
+				File fkeystore = new File(skeystore);
+				if(! fkeystore.exists()){
+					abrDlg.setzeLabel("Rechnungsdatei verschlüsseln - fehlgeschlagen!!!");
+					String message = "<html>Auf Ihrem System ist keine (ITSG) Zertifikatsdatenbank vorhanden.<br>"+
+					"Eine Verschlüsselung gemäß §302 SGB V kann daher nicht durchgeführt werden.<br><br>"+
+					"Melden Sie sich im Forum <a href='http://www.thera-pi.org'>www.Thera-Pi.org</a> und fragen Sie nach dem<br>Verschlüsseler <b>'Nebraska'</b></html>";
+					Reha.thisClass.progressStarten(false);
+					JOptionPane.showMessageDialog(null, message);
 
-			}else{
+				}else{
+					
+				    encryptedSize = doVerschluesseln(aktEsol+".org");
+
+				}
+			    
+			    if(encryptedSize < 0){
+			    	JOptionPane.showMessageDialog(null, "Es ist ein Fehler in der Verschlüsselung aufgetreten!");
+					Reha.thisClass.progressStarten(false);
+					abrDlg.setVisible(false);
+					abrDlg.dispose();
+					abrDlg = null;
+			    	return;
+			    }
+			    
+			    doAuftragsDatei(originalSize,encryptedSize);
+			    
 				
-			    encryptedSize = doVerschluesseln(aktEsol+".org");
-
-			}
-		    
-		    if(encryptedSize < 0){
-		    	JOptionPane.showMessageDialog(null, "Es ist ein Fehler in der Verschlüsselung aufgetreten!");
-				Reha.thisClass.progressStarten(false);
-				abrDlg.setVisible(false);
-				abrDlg.dispose();
-				abrDlg = null;
-		    	return;
-		    }
-		    
-		    doAuftragsDatei(originalSize,encryptedSize);
-		    
+				f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf");
+				fw = new FileWriter(f);
+			    bw = new BufferedWriter(fw); 
+			    bw.write(auftragsBuf.toString()); 
+			    bw.close(); 
+			    fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+			abrDlg.setzeLabel("erstelle Email an: "+ik_email);
 			
-			f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf");
-			fw = new FileWriter(f);
-		    bw = new BufferedWriter(fw); 
-		    bw.write(auftragsBuf.toString()); 
-		    bw.close(); 
-		    fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		abrDlg.setzeLabel("erstelle Email an: "+ik_email);
-		
-		try{
-			doEmail();
-			String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" wurden erfolgreich\n"+
-			"an die Adresse "+ik_email+" versandt.\n";
-			JOptionPane.showMessageDialog(null, meldung);
+			try{
+				doEmail();
+				String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" wurden erfolgreich\n"+
+				"an die Adresse "+ik_email+" versandt.\n";
+				JOptionPane.showMessageDialog(null, meldung);
 
-		}catch(Exception ex){
-			String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" sollten an die"+
-			"Adresse "+ik_email+" gesendet werden.\n\n"+
-			"Versand ist fehlgeschlagen, bitte von Hand erneut senden";
-			JOptionPane.showMessageDialog(null, meldung);
+			}catch(Exception ex){
+				String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" sollten an die"+
+				"Adresse "+ik_email+" gesendet werden.\n\n"+
+				"Versand ist fehlgeschlagen, bitte von Hand erneut senden";
+				JOptionPane.showMessageDialog(null, meldung);
+			}
 		}
+		
+		/*********************************************/
+		
 		abrDlg.setzeLabel("übertrage Rezepte in Historie");
 		if(Reha.vollbetrieb){
 			doUebertragen();
@@ -862,6 +926,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			JOptionPane.showMessageDialog(null,"Fehler beim Abrechnungsvorgang:\n"+ex.getMessage());
 			ex.printStackTrace();
 		}
+		this.abrRez.setRechtsAufNull();
 	}
 	/********************************************************************/
 	private void doDlgAbort(){
@@ -1105,7 +1170,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				}
 
 				if(abrDruck != null){
-					abrDruck.setIKundRnr(ik_papier, aktRechnung,hmAnnahme);	
+					abrDruck.setIKundRnr(ik_papier, aktRechnung,hmAnnahme);
 					abrDruck = null;
 				}else{
 					JOptionPane.showMessageDialog(null, "Fehler im Rechnungsdruck - Fehler = abrDruck==null");
@@ -1117,11 +1182,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					ex.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Fehler im Modul Rezept übertragen und Rechnung anlegen\n"+ex.getMessage());
 				}
-				try{
-					Thread.sleep(100);
-					new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
-				}catch(Exception ex){
-					JOptionPane.showMessageDialog(null, "Fehler im Modul BegleitzettlDrucken - Fehler-Exception: ex\n"+ex.getMessage());
+				if(abrechnungsModus.equals(ABR_MODE_302)){
+					try{
+						Thread.sleep(100);
+						new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, "Fehler im Modul BegleitzettlDrucken - Fehler-Exception: ex\n"+ex.getMessage());
+					}
 				}
 				return null;
 			}
@@ -1201,23 +1268,33 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	
 	/***************************************************************/
 	
-	private HashMap<String,String> holeAdresseAnnahmestelle(){
+	private HashMap<String,String> holeAdresseAnnahmestelle(boolean nach302){
 		HashMap<String,String> hmAdresse = new HashMap<String,String>();
 		String[] hmKeys = {"<gkv1>","<gkv2>","<gkv3>","<gkv4>","<gkv5>","<gkv6>"};
-		Vector<Vector<String>> vec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort from kass_adr where ik_kasse ='"+ik_papier+"' LIMIT 1");
-		if(vec.size()==0){
-			for(int i = 0; i < hmKeys.length-1;i++){
-				hmAdresse.put(hmKeys[i], "");
+		if(nach302){
+			Vector<Vector<String>> vec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort from kass_adr where ik_kasse ='"+ik_papier+"' LIMIT 1");
+			if(vec.size()==0){
+				for(int i = 0; i < hmKeys.length-1;i++){
+					hmAdresse.put(hmKeys[i], "");
+				}
+				hmAdresse.put(hmKeys[5],aktRechnung);
+				return hmAdresse;
 			}
+			hmAdresse.put(hmKeys[0],vec.get(0).get(0) );
+			hmAdresse.put(hmKeys[1],vec.get(0).get(1) );
+			hmAdresse.put(hmKeys[2],vec.get(0).get(2) );
+			hmAdresse.put(hmKeys[3],vec.get(0).get(3)+" "+vec.get(0).get(4));
+			hmAdresse.put(hmKeys[4],"");
 			hmAdresse.put(hmKeys[5],aktRechnung);
 			return hmAdresse;
+		}else{
+			hmAdresse.put(hmKeys[0],hmAlternativeKasse.get("<Ivnam1>") );
+			hmAdresse.put(hmKeys[1],hmAlternativeKasse.get("<Ivnam2>") );
+			hmAdresse.put(hmKeys[2],hmAlternativeKasse.get("<Ivstrasse>") );
+			hmAdresse.put(hmKeys[3],hmAlternativeKasse.get("<Ivplz>")+" "+hmAlternativeKasse.get("<Ivort>"));
+			hmAdresse.put(hmKeys[4],"");
+			hmAdresse.put(hmKeys[5],aktRechnung);
 		}
-		hmAdresse.put(hmKeys[0],vec.get(0).get(0) );
-		hmAdresse.put(hmKeys[1],vec.get(0).get(1) );
-		hmAdresse.put(hmKeys[2],vec.get(0).get(2) );
-		hmAdresse.put(hmKeys[3],vec.get(0).get(3)+" "+vec.get(0).get(4));
-		hmAdresse.put(hmKeys[4],"");
-		hmAdresse.put(hmKeys[5],aktRechnung);
 		return hmAdresse;
 	}
 	
@@ -1491,10 +1568,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			boolean zuzahlUmstellung){
 			try{
 				if(hmAnnahme.get("<gkv1>").trim().equals("")){
-					holeAdresseAnnahmestelle();
+					holeAdresseAnnahmestelle(true);
 				}
 			}catch(Exception ex){
-				holeAdresseAnnahmestelle();
+				holeAdresseAnnahmestelle(true);
 			}
 			abrDlg.setzeLabel("Rechnungssatz erstellen für Rezept: "+kopf[2].split("=")[1]);
 			String cmdKopf = "insert into faktura set ";

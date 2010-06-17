@@ -1,7 +1,7 @@
 package systemTools;
 
 public class AdressTools {
-	public static String[] machePrivatAdresse(Object[] oin){
+	public static String[] machePrivatAdresse(Object[] oin,boolean egross){
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
 		String[] str = {null,null,null,null,null,null,null};
 		String anrede =  ( ((String)oin[0]) == null ? "" : ((String)oin[0]) ).trim();
@@ -15,37 +15,71 @@ public class AdressTools {
 		//String banrede = ""; 
 		boolean isherr = false;
 		boolean isnosex = false;
-		if(((String)oin[0]).toUpperCase().equals("HERR")){
-			anrede = StringTools.EGross(anrede);
-			isherr = true;
-		}else if(((String)oin[0]).toUpperCase().equals("FRAU")){
-			anrede = StringTools.EGross(anrede);
-			isherr = false;
+		if(egross){
+			if(((String)oin[0]).toUpperCase().equals("HERR")){
+				anrede = StringTools.EGross(anrede);
+				isherr = true;
+			}else if(((String)oin[0]).toUpperCase().equals("FRAU")){
+				anrede = StringTools.EGross(anrede);
+				isherr = false;
+			}else{
+				isnosex = true; 
+			}
+			str[0] = anrede;
+			str[1] = String.valueOf((titel.length() > 0 ? " "+StringTools.EGross(titel) : "")+" "+
+					StringTools.EGross(vname)+" "+
+					StringTools.EGross(nname) ).trim();
+			str[2] = StringTools.EGross(strasse);
+			str[3] = (plz+" "+StringTools.EGross(ort)).trim();
+			
+			String anredetitel = "";
+			if(titel.indexOf("med.") > 0){
+				anredetitel = titel.replace("med.", "");				
+			}else{
+				anredetitel = titel;
+			}
+			
+			if(isnosex){
+				str[4] = "Sehr geehrte Damen und Herren";
+			}else if((!isnosex) && (isherr)){
+				str[4] = "Sehr geehrter Herr"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+StringTools.EGross(nname).trim();
+			}else if((!isnosex) && (!isherr)){
+				str[4] = "Sehr geehrte Frau"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+StringTools.EGross(nname).trim();
+			}
+			return str;
 		}else{
-			isnosex = true; 
+			if(((String)oin[0]).toUpperCase().equals("HERR")){
+				anrede = "Herr";
+				isherr = true;
+			}else if(((String)oin[0]).toUpperCase().equals("FRAU")){
+				anrede = "Frau";
+				isherr = false;
+			}else{
+				isnosex = true; 
+			}
+			str[0] = anrede;
+			str[1] =String.valueOf((titel.length() > 0 ? " "+titel : "")+" "+
+					vname+" "+
+					nname ).trim();
+			str[2] = strasse;
+			str[3] = (plz+" "+ort).trim();
+			
+			String anredetitel = "";
+			if(titel.indexOf("med.") > 0){
+				anredetitel = titel.replace("med.", "");				
+			}else{
+				anredetitel = titel;
+			}
+			
+			if(isnosex){
+				str[4] = "Sehr geehrte Damen und Herren";
+			}else if((!isnosex) && (isherr)){
+				str[4] = "Sehr geehrter Herr"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+nname.trim();
+			}else if((!isnosex) && (!isherr)){
+				str[4] = "Sehr geehrte Frau"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+nname.trim();
+			}
+			return str;
 		}
-		str[0] = anrede;
-		str[1] = new String((titel.length() > 0 ? " "+StringTools.EGross(titel) : "")+" "+
-				StringTools.EGross(vname)+" "+
-				StringTools.EGross(nname) ).trim();
-		str[2] = StringTools.EGross(strasse);
-		str[3] = (plz+" "+StringTools.EGross(ort)).trim();
-		
-		String anredetitel = "";
-		if(titel.indexOf("med.") > 0){
-			anredetitel = titel.replace("med.", "");				
-		}else{
-			anredetitel = titel;
-		}
-		
-		if(isnosex){
-			str[4] = "Sehr geehrte Damen und Herren";
-		}else if((!isnosex) && (isherr)){
-			str[4] = "Sehr geehrter Herr"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+StringTools.EGross(nname).trim();
-		}else if((!isnosex) && (!isherr)){
-			str[4] = "Sehr geehrte Frau"+(anredetitel.trim().length() > 0 ? " "+anredetitel.trim() : "")+" "+StringTools.EGross(nname).trim();
-		}
-		return str;
 	}
 	
 

@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.DblCellEditor;
 import jxTableTools.DoubleTableCellRenderer;
+import jxTableTools.MitteRenderer;
 import jxTableTools.TableTool;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -115,6 +116,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
+		try{
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 70dlu, 4dlu, 70dlu, 4dlu, 10dlu, 4dlu, 70dlu",
        //1.    2. 3.   4.   5.   6.  7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
@@ -134,8 +136,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		
 		String[] xkuerzel = {"KG","MA","ER","LO","RH"};
 		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[0]+"'" );
-		System.out.println(xvec);
-		kuerzelcombo.setDataVector(xvec);
+		if(xvec.size() > 0){
+			//System.out.println(xvec);
+			kuerzelcombo.setDataVector(xvec);
+		}
 
 		
 		builder.addLabel("Tarifgruppe auswählen",cc.xy(1, 3));
@@ -167,7 +171,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		plServer.addActionListener(this);
 		builder.add(plServer,cc.xyw(3,7,7));
 		
-		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
+		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt","id"});
 		preislisten = new JXTable(modpreis);
 		preislisten.getColumn(0).setMaxWidth(65);
 		preislisten.getColumn(1).setMaxWidth(85);
@@ -179,7 +183,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		preislisten.getColumn(4).setCellEditor(new DblCellEditor());
 		preislisten.getColumn(4).setMaxWidth(50);
 		preislisten.getColumn(5).setMinWidth(0);
-		preislisten.getColumn(5).setMaxWidth(0);
+		preislisten.getColumn(5).setMaxWidth(50);
+		preislisten.getColumn(5).setCellRenderer(new MitteRenderer());
 		preislisten.setSortable(false);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(preislisten);
 		
@@ -216,6 +221,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(abbruch, cc.xy(9, 13));
 		
 		return builder.getPanel();
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Fehler bei der Erstellung des Combo-Box-Panels");
+		}
+		return null;
 	}
 	private void fuelleMitWerten(){
 		int aktiv;
@@ -382,71 +392,78 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		// Gültig ab erneuern
 		// Anwendungsregel erneuern
 		//{"HM-Pos.","Kurzbez.","Langtext","aktuell","alt",""});
-		Reha.thisClass.Rehaprogress.setIndeterminate(true);
-		int anzahl = modpreis.getRowCount();
-		String hmpos,kurz,lang,akt,alt,sid;
-		String sdb = dbtarife[jcmb[0].getSelectedIndex()];
-		String gruppe = new Integer(jcmb[1].getSelectedIndex()+1).toString();
-		int igruppe = jcmb[1].getSelectedIndex()+1;
-		String cmd;
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		Reha.thisClass.progressStarten(true);
-		for(int i = 0; i < anzahl; i++){
-			hmpos = (String)modpreis.getValueAt(i,0);
-			kurz = (String)modpreis.getValueAt(i,1);
-			lang = (String)modpreis.getValueAt(i,2);
-			akt = new Double((Double)modpreis.getValueAt(i,3)).toString().replaceAll(",", ".");
-			alt = new Double((Double)modpreis.getValueAt(i,4)).toString().replaceAll(",", ".");
-			sid = (String)modpreis.getValueAt(i,5);
-			if(sid.equals("-1")){
-				// neu
-				cmd = "insert into "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
-				hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00'";
-				////System.out.println(cmd);
-				SqlInfo.sqlAusfuehren(cmd);
-				
-			}else{
-				// bestehend
-				cmd = "update "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
-				hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00' where id='"+
-				sid+"'";
-				SqlInfo.sqlAusfuehren(cmd);
+		try{
+			Reha.thisClass.Rehaprogress.setIndeterminate(true);
+			int anzahl = modpreis.getRowCount();
+			String hmpos,kurz,lang,akt,alt,sid;
+			String sdb = dbtarife[jcmb[0].getSelectedIndex()];
+			String gruppe = new Integer(jcmb[1].getSelectedIndex()+1).toString();
+			int igruppe = jcmb[1].getSelectedIndex()+1;
+			String cmd;
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisClass.progressStarten(true);
+			for(int i = 0; i < anzahl; i++){
+				hmpos = (String)modpreis.getValueAt(i,0);
+				kurz = (String)modpreis.getValueAt(i,1);
+				lang = (String)modpreis.getValueAt(i,2);
+				akt = new Double((Double)modpreis.getValueAt(i,3)).toString().replaceAll(",", ".");
+				alt = new Double((Double)modpreis.getValueAt(i,4)).toString().replaceAll(",", ".");
+				sid = (String)modpreis.getValueAt(i,5);
+				if(sid.equals("-1")){
+					// neu
+					cmd = "insert into "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
+					hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00'";
+					////System.out.println(cmd);
+					SqlInfo.sqlAusfuehren(cmd);
+					
+				}else{
+					// bestehend
+					cmd = "update "+sdb+Integer.toString(igruppe)+" set leistung='"+lang+"', kuerzel='"+kurz+"', T_POS='"+
+					hmpos+"', T_AKT='"+akt+"', T_ALT='"+alt+"', T_PROZ='0.00' where id='"+
+					sid+"'";
+					SqlInfo.sqlAusfuehren(cmd);
+				}
+
 			}
-
-		}
-		Reha.thisClass.progressStarten(true);
-		String xgueltig = gueltig.getText();
-		int regel = jcmb[2].getSelectedIndex();
-		if(xgueltig.trim().equals(".  .") || xgueltig.trim().equals("") ){
-			xgueltig = "";
-		}
-		
-		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
-		String dis = diszis[jcmb[0].getSelectedIndex()]; 
-		int diswelche = jcmb[1].getSelectedIndex()+1;
-
-		//((Vector)SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), xgueltig);
-		//((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), jcmb[2].getSelectedIndex());
-		SystemPreislisten.hmNeuePreiseAb.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),xgueltig);
-		SystemPreislisten.hmNeuePreiseRegel.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),jcmb[2].getSelectedIndex());
-
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
-		inif.setStringProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisAb"+(diswelche),xgueltig , null);
-		inif.setIntegerProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisRegel"+(diswelche),regel , null);
-		inif.save();
-		if(delvec.size()>0){
-			for(int i = 0;i < delvec.size();i++){
-				cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
-				SqlInfo.sqlAusfuehren(cmd);
-				////System.out.println("Löschen mit Kommando = "+cmd);
+			Reha.thisClass.progressStarten(true);
+			String xgueltig = gueltig.getText();
+			int regel = jcmb[2].getSelectedIndex();
+			if(xgueltig.trim().equals(".  .") || xgueltig.trim().equals("") ){
+				xgueltig = "";
 			}
+			
+			String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
+			String dis = diszis[jcmb[0].getSelectedIndex()]; 
+			int diswelche = jcmb[1].getSelectedIndex()+1;
+
+			//((Vector)SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), xgueltig);
+			//((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), jcmb[2].getSelectedIndex());
+			SystemPreislisten.hmNeuePreiseAb.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),xgueltig);
+			SystemPreislisten.hmNeuePreiseRegel.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),jcmb[2].getSelectedIndex());
+
+			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+			inif.setStringProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisAb"+(diswelche),xgueltig , null);
+			inif.setIntegerProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisRegel"+(diswelche),regel , null);
+			inif.save();
+			if(delvec.size()>0){
+				for(int i = 0;i < delvec.size();i++){
+					cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
+					SqlInfo.sqlAusfuehren(cmd);
+					////System.out.println("Löschen mit Kommando = "+cmd);
+				}
+			}
+			//String[] diszi = {"KG","MA","ER","LO","RH"};
+			//ParameterLaden.PreiseEinlesen(diszi[jcmb[0].getSelectedIndex()]);
+			SystemPreislisten.ladePreise(diszis[jcmb[0].getSelectedIndex()]);
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisClass.Rehaprogress.setIndeterminate(false);
+			JOptionPane.showMessageDialog(null,"Preisliste wurde erfolgreich gespeichert");
+		}catch(Exception ex){
+			ex.printStackTrace();
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisClass.Rehaprogress.setIndeterminate(false);
+			JOptionPane.showMessageDialog(null,"Fehler beim Abspeichern der Preisliste");
 		}
-		//String[] diszi = {"KG","MA","ER","LO","RH"};
-		//ParameterLaden.PreiseEinlesen(diszi[jcmb[0].getSelectedIndex()]);
-		SystemPreislisten.ladePreise(diszis[jcmb[0].getSelectedIndex()]);
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		Reha.thisClass.Rehaprogress.setIndeterminate(false);
-		JOptionPane.showMessageDialog(null,"Preisliste wurde erfolgreich gespeichert");
 	}
 	private void doZurueck(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -460,43 +477,50 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		});
 	}
 	private void doUebernahme(){
-		if(modserver.getRowCount()<=0){
-			JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
-					"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
-					"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
-			// dummer Spruch
-			return;
+		try{
+			if(modserver.getRowCount()<=0){
+				JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
+						"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
+						"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
+				// dummer Spruch
+				return;
+			}
+			int row = plserver.getSelectedRow();
+			if(row < 0){
+				JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
+						"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
+						"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
+				// dummer Spruch			
+				return;
+			}
+			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+			String msg = "<html><b><font color='#ff0000' size=+2>Bitte sorgfältig lesen!!!!</font></b><br><br><br>"+
+			"Die von Ihnen ausgewählte Disziplin ist: <b><font color='#ff0000'> "+lists[jcmb[0].getSelectedIndex()]+"</font></b><br><br>"+
+			"Die von Ihnen ausgewählte Tarifgruppe ist: <b><font color='#ff0000'> "+(String)jcmb[1].getSelectedItem()+"</font></b><br><br>"+
+			"In die o.g. Tarifgruppe werden die Preise übernommen von:<br>"+
+			"Preisliste: <b><font color='#ff0000'>"+plserver.getValueAt(row, 1)+"</font></b><br>"+
+			"Gültigkeitsbereich: <b><font color='#ff0000'>"+plserver.getValueAt(row, 2)+"</font></b><br><br><br>"+
+			"Wollen Sie den Preislisten-Import mit diesen Einstellungen durchführen<br><br></html>";
+			int frage = JOptionPane.showConfirmDialog(null,msg,"Achtung absolut wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			if(frage != JOptionPane.YES_OPTION){
+				return;
+			}
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisClass.Rehaprogress.setIndeterminate(true);
+			if(neuaufalt.isSelected()){
+				doSetzeNeuAufAlt();			
+			}
+			Vector preis = doHolePreiseNeu();
+			setzePreise(preis);
+			doZurueck();
+			Reha.thisClass.Rehaprogress.setIndeterminate(false);
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			Reha.thisClass.Rehaprogress.setIndeterminate(false);
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			JOptionPane.showMessageDialog(null, "Fehler beim Preislistenimport");
 		}
-		int row = plserver.getSelectedRow();
-		if(row < 0){
-			JOptionPane.showMessageDialog(null, "1. Schritt: Verfügbare Preislisten ermitteln\n"+
-					"2. Schritt: Gewünschte Preisliste in der Tabelle auswählen\n"+
-					"3. Schritt: Die ausgewählte Preisliste übernehmen - aber eben erst im 3. Schritt!");
-			// dummer Spruch			
-			return;
-		}
-		String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
-		String msg = "<html><b><font color='#ff0000' size=+2>Bitte sorgfältig lesen!!!!</font></b><br><br><br>"+
-		"Die von Ihnen ausgewählte Disziplin ist: <b><font color='#ff0000'> "+lists[jcmb[0].getSelectedIndex()]+"</font></b><br><br>"+
-		"Die von Ihnen ausgewählte Tarifgruppe ist: <b><font color='#ff0000'> "+(String)jcmb[1].getSelectedItem()+"</font></b><br><br>"+
-		"In die o.g. Tarifgruppe werden die Preise übernommen von:<br>"+
-		"Preisliste: <b><font color='#ff0000'>"+plserver.getValueAt(row, 1)+"</font></b><br>"+
-		"Gültigkeitsbereich: <b><font color='#ff0000'>"+plserver.getValueAt(row, 2)+"</font></b><br><br><br>"+
-		"Wollen Sie den Preislisten-Import mit diesen Einstellungen durchführen<br><br></html>";
-		int frage = JOptionPane.showConfirmDialog(null,msg,"Achtung absolut wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
-		if(frage != JOptionPane.YES_OPTION){
-			return;
-		}
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		Reha.thisClass.Rehaprogress.setIndeterminate(true);
-		if(neuaufalt.isSelected()){
-			doSetzeNeuAufAlt();			
-		}
-		Vector preis = doHolePreiseNeu();
-		setzePreise(preis);
-		doZurueck();
-		Reha.thisClass.Rehaprogress.setIndeterminate(false);
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 	private void setzePreise(Vector preis){
 		Vector tab = modpreis.getDataVector();
@@ -512,7 +536,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			for(int b = 0; b < bisheranzahl; b++){
 				if( ((String)((Vector)tab.get(b)).get(0)).trim().equals(posnr.trim())){
 					getroffen = true;
-					modpreis.setValueAt(new Double(((String)((Vector)preis.get(i)).get(1))), b, 3);
+					modpreis.setValueAt(Double.parseDouble(((String)((Vector)preis.get(i)).get(1))), b, 3);
 					if(mitbezeich){
 						modpreis.setValueAt(((String)((Vector)preis.get(i)).get(3)), b, 2);						
 					}
@@ -545,8 +569,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 					xvec.add( "Neu-"+Integer.toString(kurztext) );
 					kurztext++;
 					xvec.add( ((String)((Vector)preis.get(i)).get(3)) );
-					xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
-					xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
+					xvec.add( Double.parseDouble( ((String)((Vector)preis.get(i)).get(1)) ) );
+					xvec.add( Double.parseDouble( ((String)((Vector)preis.get(i)).get(1)) ) );
 					xvec.add("-1" );						
 					modpreis.addRow(xvec);
 					return;
@@ -559,8 +583,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				xvec.add( "Neu-"+Integer.toString(kurztext)  );
 				kurztext++;
 				xvec.add( ((String)((Vector)preis.get(i)).get(3)) );
-				xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
-				xvec.add( new Double( ((String)((Vector)preis.get(i)).get(1)) ) );
+				xvec.add( Double.parseDouble( ((String)((Vector)preis.get(i)).get(1)) ) );
+				xvec.add( Double.parseDouble( ((String)((Vector)preis.get(i)).get(1)) ) );
 				xvec.add("-1" );						
 				modpreis.addRow(xvec);
 			}
@@ -721,7 +745,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	
 	public void tabelleRegeln(){
 
-		String spreisart = new Integer(jcmb[1].getSelectedIndex() +1).toString();
+		String spreisart = Integer.toString(jcmb[1].getSelectedIndex() +1);
 		Vector preisvec = holePreisVec();
 		int ipreis = jcmb[1].getSelectedIndex()+1;
 		int anzahl = preisvec.size();
@@ -735,53 +759,25 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(anzahl > 0){
 			idpos = ((Vector)preisvec.get(0)).size()-1;
 		}
-		/*
-		for(int i = 0;i < anzahl ; i++){
-			vec.clear();
-			vec.add( (String) ((Vector)preisvec.get(i)).get( 2+(ipreis*4)-4) );
-			vec.add((String)((Vector)preisvec.get(i)).get(1));
-			vec.add((String)((Vector)preisvec.get(i)).get(0));
-			try{
-				vec.add(new Double( (String) ((Vector)preisvec.get(i)).get( 2+(ipreis*4)-3) ) );
-			}catch(Exception ex){
-				vec.add(new Double(0.00));
-			}
-			try{
-				vec.add(new Double(  (String) ((Vector)preisvec.get(i)).get( 2+(ipreis*4)-2) ) );
-			}catch(Exception ex){
-				vec.add(new Double(0.00));
-			}
-			vec.add( (String) ((Vector)preisvec.get(i)).get(idpos) );
-			modpreis.addRow((Vector)vec.clone());
-		}
-		*/
 		for(int i = 0;i < anzahl ; i++){
 			vec.clear();
 			vec.add( (String) ((Vector)preisvec.get(i)).get(2));
 			vec.add((String)((Vector)preisvec.get(i)).get(1));
 			vec.add((String)((Vector)preisvec.get(i)).get(0));
 			try{
-				vec.add(new Double( (String) ((Vector)preisvec.get(i)).get( 3) ) );
+				vec.add(Double.parseDouble( (String) ((Vector)preisvec.get(i)).get( 3) ) );
 			}catch(Exception ex){
-				vec.add(new Double(0.00));
+				vec.add(Double.parseDouble("0.00"));
 			}
 			try{
-				vec.add(new Double(  (String) ((Vector)preisvec.get(i)).get( 4) ) );
+				vec.add(Double.parseDouble(  (String) ((Vector)preisvec.get(i)).get( 4) ) );
 			}catch(Exception ex){
-				vec.add(new Double(0.00));
+				vec.add(Double.parseDouble("0.00"));
 			}
 			vec.add( (String) ((Vector)preisvec.get(i)).get(idpos) );
 			modpreis.addRow((Vector)vec.clone());
 		}
 		
-		/*
-		if(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()).equals("")){
-			gueltig.setText("  .  .    ");
-			//System.out.println("Gültigkeitsdatum nicht angegeben");
-		}else{
-			gueltig.setText(SystemConfig.vNeuePreiseAb.get(jcmb[0].getSelectedIndex()).get(jcmb[1].getSelectedIndex()));			
-		}
-		*/
 		if(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe).equals("")){
 			gueltig.setText("  .  .    ");
 			//System.out.println("Gültigkeitsdatum nicht angegeben");
@@ -797,28 +793,17 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
  
 	private Vector holePreisVec(){
+		try{
 		int pgs = jcmb[0].getSelectedIndex();
 		int pgGruppe = jcmb[1].getSelectedIndex();
 		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		return SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe);
-		/*
-		if(diszi.contains("Reha")){
-			//return ParameterLaden.vRHPreise;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Preisliste");
 		}
-		if(diszi.contains("Physio")){
-			return ParameterLaden.vKGPreise;
-		}
-		if(diszi.contains("Massage")){
-			return ParameterLaden.vMAPreise;
-		}		
-		if(diszi.contains("Ergo")){
-			return ParameterLaden.vERPreise;
-		}
-		if(diszi.contains("Logo")){
-			return ParameterLaden.vLOPreise;
-		}
-		return new Vector();
-		*/
+		return null;
 	}
 /*****************vor Ende Klassenklammer*************/	
 }
@@ -831,7 +816,7 @@ class MyPreislistenTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		if(columnIndex==3 || columnIndex==4){
 			return Double.class;
 		}
@@ -839,6 +824,9 @@ class MyPreislistenTableModel extends DefaultTableModel{
     }
 
 	public boolean isCellEditable(int row, int col) {
+		if(col == 5){
+			return false;
+		}
 		return true;
 	}
 	   
@@ -849,14 +837,9 @@ class MyServerTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		return String.class;
-		/*
-		if(columnIndex==3 || columnIndex==4){
-			return Double.class;
-		}
-		   return String.class;
-		*/   
+
  }
 
 	public boolean isCellEditable(int row, int col) {
@@ -864,11 +847,4 @@ class MyServerTableModel extends DefaultTableModel{
 	}
 	   
 }
-/*
-class myEditor extends  javax.swing.JSpinner.NumberEditor{
-	public myEditor(JSpinner arg0,KeyListener kl) {
-		super(arg0);
-		this.getTextField().addKeyListener(kl);
-	}
-}
-*/
+

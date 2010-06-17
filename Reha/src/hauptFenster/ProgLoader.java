@@ -840,6 +840,9 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,0,(Container)patjry.getContentPane());
+	
+	//patjry.setDoNotClose(true);
+	
 	patjry.setName(name);
 	patjry.setSize(new Dimension(900,650));
 	patjry.setPreferredSize(new Dimension(900,650));
