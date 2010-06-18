@@ -1510,6 +1510,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			JMenuItem men = new JMenuItem("Rezeptnummer suchen");
 			men.setActionCommand("rezeptfahnder");
 			men.addActionListener(this);
+			toolsMenu.add(men);
+			toolsMenu.addSeparator();
+			men = new JMenuItem("Kassenbuch erstellen");
+			men.setActionCommand("kassenbuch");
+			men.addActionListener(this);
 			toolsMenu.add(men);			
 
 		}

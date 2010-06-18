@@ -730,6 +730,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 		buf.append( " where berichtid = '"+berichtid+"'");
+		//System.out.println(buf.toString());
 		SqlInfo.sqlAusfuehren(buf.toString());
 		/******************************************************************************************/
 		buf = new StringBuffer();

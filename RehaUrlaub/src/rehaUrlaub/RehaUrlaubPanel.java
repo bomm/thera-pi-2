@@ -174,6 +174,7 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 				}
 				holeTabellen();
 				holeKalUser();
+				funkcombo[0].setSelectedItem(DatFunk.sHeute().substring(6));
 				return null;
 			}
 			
