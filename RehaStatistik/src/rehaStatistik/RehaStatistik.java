@@ -28,6 +28,7 @@ import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import com.sun.star.uno.Exception;
 
 import Tools.INIFile;
+import Tools.SystemPreislisten;
 import Tools.Verschluesseln;
 
 
@@ -63,6 +64,9 @@ public class RehaStatistik implements WindowListener{
 	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
 	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
 	
+	public static String proghome = "C:/RehaVerwaltung/";
+	public static String aktIK = "510841109";
+	
 	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
@@ -72,6 +76,8 @@ public class RehaStatistik implements WindowListener{
 		if(args.length > 0 || testcase){
 			if(!testcase){
 				System.out.println("hole daten aus INI-Datei "+args[0]);
+				proghome = args[0];
+				aktIK = args[1];
 				INIFile inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
 				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
 				dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
@@ -107,16 +113,20 @@ public class RehaStatistik implements WindowListener{
 						}
 					}
 					if(!DbOk){
-						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht ge�ffnet werden!\nReha-Statistik kann nicht gestartet werden");				
+						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
+						System.exit(0);
 					}
-					xapplication.starteOfficeApplication();
+					RehaStatistik.starteOfficeApplication();
+					SystemPreislisten.ladePreise("Reha");
+					System.out.println(SystemPreislisten.hmPreise.get("Reha"));
+					System.out.println(SystemPreislisten.hmPreisGruppen.get("Reha"));
 					return null;
 				}
 				
 			}.execute();
 			application.getJFrame();
 		}else{
-			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter �bergeben!\nReha-Statistik kann nicht gestartet werden");
+			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\nReha-Statistik kann nicht gestartet werden");
 			System.exit(0);
 		}
 		

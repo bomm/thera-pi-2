@@ -5,12 +5,16 @@ package rehaStatistik;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -24,6 +28,7 @@ import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.OOTools;
 import Tools.SqlInfo;
+import Tools.SystemPreislisten;
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -82,6 +87,15 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 	IDocument document  = null;
 	XSheetCellCursor cellCursor = null;
 	String sheetName = "Tabelle1";
+	
+	int dlgRet = -1;
+	String von = "";
+	String bis = "";	
+	Vector<String> rehaArt = new Vector<String>();
+	Vector<Integer> rehaFaelle = new Vector<Integer>();
+	Vector<Integer> rehaTage = new Vector<Integer>();
+	Vector<Vector<String>> unklareFaelle = new Vector<Vector<String>>();
+	String[] ktraegerArt = {"BFA","LVA","KBS","AOK","IKK","BKK","LKK","BKN","DAK","PRI","BGE","ORTHO"};
 	
 	public StatistikPanel(){
 		super();
@@ -173,9 +187,300 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 				}
 			}.execute();
 		}
+		if(cmd.equals("quartalstarten")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					doQuartalStatistik();
+					return null;
+				}
+			}.execute();
+		}
+		if(cmd.equals("gkvjahr")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					doJahresStatistik();
+					return null;
+				}
+			}.execute();
+		}
+	}
+	/************************/
+	private void doJahresStatistik(){
+		dlgRet = -1;
+		Point pt = buts[1].getLocationOnScreen();
+		von = "";
+		bis = "";
+		ZeitraumFenster zf = new ZeitraumFenster(this);
+		zf.setPreferredSize(new Dimension(250,150));
+		zf.setLocation(pt.x-50, pt.y+30);
+		zf.setModal(true);
+		zf.pack();
+		zf.setVisible(true);
+		zf = null;
+		//System.out.println("DialogRückgabe="+dlgRet+"\nvon = "+von+"\nbis = "+bis);
+		if(dlgRet >= 0){
+			holeJahr();
+		}
+	}
+	private void holeJahr(){
+			//                     0       1         2        3       4      5
+			String cmd = "select rez_nr,pat_intern,anzahl1,art_dbeh1,kid,preisgruppe from lza where rez_datum >='"+
+			von+"' and rez_datum <= '"+bis+"' and rez_nr like 'RH%'";
+			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+			System.out.println(vec.size());
+			int kuerzelID = -1;
+			int unbekannte = 0;
+			rehaArt.clear();
+			rehaFaelle.clear();
+			rehaTage.clear();
+			unklareFaelle.clear();
+			Vector<String> dummy = new Vector<String>();
+			List<String> rehaKuerzel = Arrays.asList(ktraegerArt);
+			for(int i = 0; i < rehaKuerzel.size();i++){
+				rehaFaelle.add(0);
+				rehaTage.add(0);
+			}
+
+			for(int i = 0; i < vec.size();i++){
+				kuerzelID = holeKuerzelID(vec.get(i).get(3),vec.get(i).get(5),vec.get(i).get(4),rehaKuerzel);
+				if(kuerzelID < 0){
+					unbekannte++;
+					dummy.clear();
+					dummy.add(vec.get(i).get(0));
+					dummy.add(vec.get(i).get(1));
+					dummy.add(vec.get(i).get(2));
+					unklareFaelle.add((Vector<String>)dummy.clone());
+				}else{
+					rehaFaelle.set(kuerzelID,rehaFaelle.get(kuerzelID)+1 );
+					rehaTage.set(kuerzelID, rehaTage.get(kuerzelID)+Integer.parseInt(vec.get(i).get(2)));
+				}
+			}
+			if(unbekannte > 0){
+				JOptionPane.showMessageDialog(null, "Unklare Rehafälle wurden entdeckt: "+Integer.toString(unbekannte)+" Fälle");
+			}
+			starteCalcJahr(rehaKuerzel);
+
+		
+	}
+	//	String[] ktraegerArt = {"BFA","LVA","KNP","AOK","IKK","BKK","LKK","DAK","PRI","BGE"};
+	private int holeKuerzelID(String behandlung,String preisgruppe,String kassenID,List<String> kuerzel){
+		int ret = -1;
+		
+		Vector<Vector<String>> vec = SystemPreislisten.hmPreise.get("Reha").get(Integer.parseInt(preisgruppe)-1);
+		String kurz = "";
+		Vector<Vector<String>> knamen = null;
+		for(int i = 0; i < vec.size();i++){
+			if(vec.get(i).get(9).equals(behandlung)){
+				kurz = vec.get(i).get(1).toUpperCase();
+				if(kurz.contains("BFA")){
+					return kuerzel.indexOf("BFA");
+				}else if(kurz.contains("LVA")){
+					return kuerzel.indexOf("LVA");
+				}else if(kurz.contains("KBS")){
+					return kuerzel.indexOf("KBS");
+				}else if(kurz.contains("GKV") && preisgruppe.equals("2")){
+					return kuerzel.indexOf("DAK");
+				}else if(preisgruppe.equals("3") && (kurz.contains("GKV") || kurz.contains("PRI"))   ){
+					return kuerzel.indexOf("PRI");
+				}else if(preisgruppe.equals("3") && kurz.contains("ORTH") ){
+					return kuerzel.indexOf("ORTHO");
+				}else if(kurz.contains("GKV") && preisgruppe.equals("1")){
+					knamen = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2 from kass_adr where id='"+kassenID+"' LIMIT 1");
+					if(beinhaltetFragment(knamen,"innung","ikk")){
+						return kuerzel.indexOf("IKK");
+					}else if(beinhaltetFragment(knamen,"aok","orts")){
+						return kuerzel.indexOf("AOK");
+					}else if(beinhaltetFragment(knamen,"bkk","betriebs")){
+						return kuerzel.indexOf("BKK");
+					}else if(beinhaltetFragment(knamen,"lkk","landw")){
+						return kuerzel.indexOf("LKK");
+					}else if(beinhaltetFragment(knamen,"knappsch","bundes")){
+						return kuerzel.indexOf("BKN");
+					}
+				}else if(preisgruppe.equals("4")){
+					return kuerzel.indexOf("BGE");
+				}
+			}
+		}
+		
+		
+		return ret;
+	}
+	private boolean beinhaltetFragment(Vector<Vector<String>> knamen,String krit1,String krit2){
+		boolean ret = false;
+		for(int i = 0; i < knamen.size();i++){
+			if(knamen.get(i).get(0).toUpperCase().contains(krit1.toUpperCase()) || 
+					knamen.get(i).get(1).toUpperCase().contains(krit2.toUpperCase())	){
+				return true;
+			}
+		}
+		return ret;
+	}
+	private void starteCalcJahr(List<String> ktraeger){
+		try {
+	
+			starteCalc();
+			OOTools.doColWidth(spreadsheetDocument,sheetName,0,0,10000);
+			OOTools.doColWidth(spreadsheetDocument,sheetName,1,2,3000);
+			OOTools.doCellValue(cellCursor, 0, 0, (String) "GKV - Jahresstatistik");
+			OOTools.doCellFontBold(cellCursor, 0, 0);
+			OOTools.doCellValue(cellCursor, 0, 1, (String) "Zeitraum: "+DatFunk.sDatInDeutsch(von)+
+					" bis "+DatFunk.sDatInDeutsch(bis));
+			OOTools.doCellFontBold(cellCursor, 0, 1);
+			for(int i = 0; i <ktraeger.size();i++){
+				OOTools.doCellValue(cellCursor, 0, i+3, (String) ktraeger.get(i));
+				OOTools.doCellValue(cellCursor, 1, i+3, (Double) Double.parseDouble(Integer.toString(rehaFaelle.get(i))));
+				OOTools.doCellValue(cellCursor, 2, i+3, (Double) Double.parseDouble(Integer.toString(rehaTage.get(i))));
+			}
+			if(unklareFaelle.size() > 0){
+				int zeile = ktraeger.size()+5;
+				OOTools.doCellValue(cellCursor, 0, zeile, (String) "unklare Rehafälle");
+				zeile++;
+				for(int i = 0; i < unklareFaelle.size();i++){
+					OOTools.doCellValue(cellCursor, 0, zeile, (String) unklareFaelle.get(i).get(0)+" - "+
+							unklareFaelle.get(i).get(1));
+					OOTools.doCellValue(cellCursor, 2, zeile, (Double) Double.parseDouble(unklareFaelle.get(i).get(2)));
+					zeile++;
+				}
+				
+			}
+			zeigeCalc();
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+		} catch (WrappedTargetException e) {
+			e.printStackTrace();
+		} catch (UnknownPropertyException e) {
+			e.printStackTrace();
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (OfficeApplicationException e) {
+			e.printStackTrace();
+		} catch (NOAException e) {
+			e.printStackTrace();
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	/************************/
+	/**********
+	 * 
+	 * 
+	 * LVA-Quartalsstatistik
+	 * 
+	 */
+	private void doQuartalStatistik(){
+		dlgRet = -1;
+		Point pt = buts[1].getLocationOnScreen();
+		von = "";
+		bis = "";
+		ZeitraumFenster zf = new ZeitraumFenster(this);
+		zf.setPreferredSize(new Dimension(250,150));
+		zf.setLocation(pt.x-50, pt.y+30);
+		zf.setModal(true);
+		zf.pack();
+		zf.setVisible(true);
+		zf = null;
+		//System.out.println("DialogRückgabe="+dlgRet+"\nvon = "+von+"\nbis = "+bis);
+		if(dlgRet >= 0){
+			holeQuartal();
+		}
+	}
+	private void holeQuartal(){
+		//                     0       1         2        3       4      5
+		String cmd = "select rez_nr,pat_intern,anzahl1,art_dbeh1,kid,preisgruppe from lza where rez_datum >='"+
+		von+"' and rez_datum <= '"+bis+"' and rez_nr like 'RH%'";
+		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+		System.out.println(vec.size());
+		String kuerzel = "";
+		rehaArt.clear();
+		rehaFaelle.clear();
+		rehaTage.clear();
+
+		int position = -1;
+		for(int i = 0; i < vec.size();i++){
+			kuerzel = holeKuerzel(vec.get(i).get(3),vec.get(i).get(5));
+			if( (position = rehaArt.indexOf(kuerzel)) < 0){
+				rehaArt.add(String.valueOf(kuerzel));
+				rehaFaelle.add(1);
+				rehaTage.add(Integer.parseInt(vec.get(i).get(2)));
+			}else{
+				rehaFaelle.set(position, rehaFaelle.get(position)+1);
+				rehaTage.set(position, rehaTage.get(position)+Integer.parseInt(vec.get(i).get(2)));
+			}
+		}
+		if(rehaArt.size() > 0){
+			starteCalcQuartal();
+		}
+	}
+	private String holeKuerzel(String behandlung,String preisgruppe){
+		String ret = "";
+		Vector<Vector<String>> vec = SystemPreislisten.hmPreise.get("Reha").get(Integer.parseInt(preisgruppe)-1);
+		for(int i = 0; i < vec.size();i++){
+			if(vec.get(i).get(9).equals(behandlung)){
+				if(preisgruppe.equals("3")){
+					return "PRI-"+vec.get(i).get(1).toUpperCase();
+				}else if(preisgruppe.equals("4")){
+					return "BGE-"+vec.get(i).get(1).toUpperCase();
+				}else{
+					return vec.get(i).get(1).toUpperCase();	
+				}
+				
+			}
+		}
+		return ret;
+	}
+	private void starteCalcQuartal(){
+		try {
+			/*
+			rehaArt.clear();
+			rehaFaelle.clear();
+			rehaTage.clear();
+			rehaPreisgruppe.clear();
+			*/
+			starteCalc();
+			OOTools.doColWidth(spreadsheetDocument,sheetName,0,0,10000);
+			OOTools.doColWidth(spreadsheetDocument,sheetName,1,2,3000);
+			OOTools.doCellValue(cellCursor, 0, 0, (String) "LVA-Quartalsstatistik");
+			OOTools.doCellFontBold(cellCursor, 0, 0);
+			OOTools.doCellValue(cellCursor, 0, 1, (String) "Zeitraum: "+DatFunk.sDatInDeutsch(von)+
+					" bis "+DatFunk.sDatInDeutsch(bis));
+			OOTools.doCellFontBold(cellCursor, 0, 1);
+			for(int i = 0; i < rehaArt.size();i++){
+				OOTools.doCellValue(cellCursor, 0, i+3, (String) rehaArt.get(i));
+				OOTools.doCellValue(cellCursor, 1, i+3, (Double) Double.parseDouble(Integer.toString(rehaFaelle.get(i))));
+				OOTools.doCellValue(cellCursor, 2, i+3, (Double) Double.parseDouble(Integer.toString(rehaTage.get(i))));
+			}
+			zeigeCalc();
+		} catch (NoSuchElementException e) {
+			e.printStackTrace();
+		} catch (WrappedTargetException e) {
+			e.printStackTrace();
+		} catch (UnknownPropertyException e) {
+			e.printStackTrace();
+		} catch (PropertyVetoException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (OfficeApplicationException e) {
+			e.printStackTrace();
+		} catch (NOAException e) {
+			e.printStackTrace();
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+	/***********
+	 * 
+	 * 
+	 * 
+	 * LVA / BfA Wochenstatistik
+	 * 
+	 * 
+	 * *************/
 	private void doWochenStatistik(){
 
 		unklar.clear();
@@ -571,6 +876,16 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void zeigeCalc(){
+		final ISpreadsheetDocument xspredsheetDocument = spreadsheetDocument;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				xspredsheetDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				xspredsheetDocument.getFrame().setFocus();
+			}
+		});
 	}
 
 }
