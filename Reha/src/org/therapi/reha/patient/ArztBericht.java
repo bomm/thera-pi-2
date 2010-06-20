@@ -87,7 +87,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	int arztid;
 	JButton jbutbericht = null;
 	public  JRtaTextField[] jtf = {null,null,null};
-	private JTextPane[] icfblock = {null,null,null,null};
+	//private JTextPane[] icfblock = {null,null,null,null};
+	private JTextArea[] icfblock = {null,null,null,null};
 	private ThTextBlock thblock = null;
 	private String disziplin = null;
 	private int zuletztaktiv = 0;
@@ -214,7 +215,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pb.add(lab,cc.xy(2,2));
 		lab = new JLabel("F2 für Textblock-Aufruf");
 		pb.add(lab,cc.xy(6,2));
-		icfblock[0] = new JTextPane();
+		//icfblock[0] = new JTextPane();
+		icfblock[0] = new JTextArea();
+		icfblock[0].setWrapStyleWord(true);
+		icfblock[0].setLineWrap(true);
 		icfblock[0].setFont(fon);
 		icfblock[0].setForeground(Color.BLUE);
 		JScrollPane span = JCompTools.getTransparentScrollPane(icfblock[0]);
@@ -223,7 +227,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		lbltext ="<html>2.Block: weitere therapierelevante Aspekte&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Aktivitäten / Teilhabe)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,6));		
-		icfblock[1] = new JTextPane();
+		//icfblock[1] = new JTextPane();
+		icfblock[1] = new JTextArea();
+		icfblock[1].setWrapStyleWord(true);
+		icfblock[1].setLineWrap(true);
 		icfblock[1].setFont(fon);
 		icfblock[1].setForeground(Color.BLUE);
 		span = JCompTools.getTransparentScrollPane(icfblock[1]);
@@ -232,7 +239,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		lbltext = "<html>3.Block: prognostische Einschätzung&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,10));		
-		icfblock[2] = new JTextPane();
+		//icfblock[2] = new JTextPane();
+		icfblock[2] = new JTextArea();
+		icfblock[2].setWrapStyleWord(true);
+		icfblock[2].setLineWrap(true);
 		icfblock[2].setFont(fon);
 		icfblock[2].setForeground(Color.BLUE);
 		span = JCompTools.getTransparentScrollPane(icfblock[2]);
@@ -241,7 +251,10 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		lbltext = "<html>4.Block: Reserveblock&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - personbezogene Faktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,14));		
-		icfblock[3] = new JTextPane();
+		//icfblock[3] = new JTextPane();
+		icfblock[3] = new JTextArea();
+		icfblock[3].setWrapStyleWord(true);
+		icfblock[3].setLineWrap(true);
 		icfblock[3].setFont(fon);
 		icfblock[3].setForeground(Color.BLUE);
 		span = JCompTools.getTransparentScrollPane(icfblock[3]);
@@ -793,8 +806,25 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", "");	
 				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", "");
 			}else{
-				//String sblock = icfblock[i].getText().replaceAll("\\n", "")+"\r";
-				String sblock = icfblock[i].getText()+"\n";
+				String sblock = icfblock[i].getText().replace(System.getProperty("line.separator"),"\n");
+
+				sblock = sblock.replace("\f\r","");
+				sblock = sblock.replace("\f","");
+				sblock = sblock.replace("\n\r","");
+				sblock = sblock.replace("\r\n","");
+				//sblock = sblock.replace("\\r",System.getProperty("line.separator") );
+				sblock = sblock.replace("\r","" );
+
+				sblock = sblock +"\n";
+				/*
+				if(i==1){
+					for(int y = 0; y < sblock.length();y++){
+						System.out.println(sblock.substring(y,y+1));
+						System.out.println((int)sblock.substring(y,y+1).toCharArray()[0]);
+					}
+				}
+				*/
+				//String sblock = icfblock[i].getText()+"\n";
 				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">",sblock);
 				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
 			}

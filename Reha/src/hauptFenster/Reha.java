@@ -2541,7 +2541,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0617/04 - DB="+db);
+	    				obj.dbLabel.setText("V=0620/01 - DB="+db);
 	    			}
 	        		Reha.DbOk = true;
 
@@ -2730,7 +2730,7 @@ final class DbNachladen implements Runnable{
 			if(obj.dbLabel != null){
 				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 				db = db.substring(0,db.indexOf("/"));
-				obj.dbLabel.setText("V=0606/02 - DB="+db);
+				obj.dbLabel.setText("V=0620/01 - DB="+db);
 			}
     		Reha.DbOk = true;
 
