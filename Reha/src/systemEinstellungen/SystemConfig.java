@@ -264,13 +264,28 @@ public class SystemConfig {
 			aKontakt.add(new String(sbenutzer));
 			String pw = new String(ini.getStringProperty("DatenBank","DBPasswort"+i));
 			String decrypted = null;
-			if(pw != null){
-				Verschluesseln man = Verschluesseln.getInstance();
-				man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
-				decrypted = man.decrypt (pw);
+			if(!pw.equals("")){
+				if(pw != null){
+					Verschluesseln man = Verschluesseln.getInstance();
+					man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+					decrypted = man.decrypt (pw);
+				}else{
+					decrypted = new String("");
+					JOptionPane.showMessageDialog(null,"Passwort der MySql-Datenbank = null");
+				}
 			}else{
-				decrypted = new String("");
+				Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte das Passwort für die MySql-Datenbank ein", "");
+				if(ret == null){
+					decrypted = new String("");
+				}else{
+					decrypted = ((String)ret).trim();
+					Verschluesseln man = Verschluesseln.getInstance();
+					man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+					ini.setStringProperty("DatenBank","DBPasswort"+i,man.encrypt(((String)ret)),null);
+					ini.save();
+				}
 			}
+
 			aKontakt.add(decrypted);
 			vDatenBank.add((ArrayList<String>) aKontakt.clone());
 			aKontakt.clear();

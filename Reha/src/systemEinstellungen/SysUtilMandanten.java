@@ -535,6 +535,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		macheVerzeichnis("vorlagen",neuik);
 		macheVerzeichnis("temp",neuik);	
 		macheVerzeichnis("edifact",neuik);
+		macheVerzeichnis("keystore",neuik);
 		
 		INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
 		int AnzahlMandanten = inif.getIntegerProperty("TheraPiMandanten", "AnzahlMandanten")+1;

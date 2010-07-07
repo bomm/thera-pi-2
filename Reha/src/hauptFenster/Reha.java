@@ -320,6 +320,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
+	public static String aktuelleVersion = "V=0707/01 - DB=";
 	//  
 	//@jve:decl-index=0:
 	/**
@@ -2541,7 +2542,7 @@ final class DatenbankStarten implements Runnable{
 	    			if(obj.dbLabel != null){
 	    				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 	    				db = db.substring(0,db.indexOf("/"));
-	    				obj.dbLabel.setText("V=0620/01 - DB="+db);
+	    				obj.dbLabel.setText(Reha.aktuelleVersion+db);
 	    			}
 	        		Reha.DbOk = true;
 
@@ -2730,7 +2731,7 @@ final class DbNachladen implements Runnable{
 			if(obj.dbLabel != null){
 				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 				db = db.substring(0,db.indexOf("/"));
-				obj.dbLabel.setText("V=0620/01 - DB="+db);
+				obj.dbLabel.setText(Reha.aktuelleVersion+db);
 			}
     		Reha.DbOk = true;
 

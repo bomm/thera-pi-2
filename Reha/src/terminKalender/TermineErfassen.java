@@ -86,11 +86,13 @@ public class TermineErfassen implements Runnable {
 					"Gescannte Rezeptnummer -><font color='#ff0000'> "+scanrez+"</font></font></b></html>";
 					JOptionPane.showMessageDialog(null, htmlmeldung);
 					//public ErrorMail(String text,String comp,String user,String senderadress){
+					/*
 					new ErrorMail("Rezept am heutigen Tag nicht eingetragen: Rezept = "+scanrez,
 							SystemConfig.dieseMaschine.toString(),
 							this.kollege,
 							SystemConfig.hmEmailIntern.get("Username"),
 							"Fehler-Mail");
+					*/		
 					//System.out.println("Rezept steht an diesem Tag nicht im Kalender");
 					setTerminSuccess(false);
 					ergebnis = false;
@@ -111,33 +113,38 @@ public class TermineErfassen implements Runnable {
 						"existiert weder im<font color='#ff0000'> aktuellen Rezeptstamm</font><br>noch in der<font color='#ff0000'> Historie</font>"+
 						"<br><br>Bitte melden Sie dieses Rezept dem Administrator</font></b></html>";
 						JOptionPane.showMessageDialog(null, htmlmeldung );
+						/*
 						new ErrorMail("Das gescannte Rezept existiert weder im aktuellen Rezeptstamm noch in der Historie.\nRezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 								SystemConfig.dieseMaschine.toString(),
 								Reha.aktUser,
 								SystemConfig.hmEmailIntern.get("Username"),
 								"Fehler-Mail");
-
+						*/
 						break;
 					case 2:
 						JOptionPane.showMessageDialog(null, "<html><b><font size='5'>Dieses Rezept wurde bereits abgerechnet!</font><br><br>"+
 								"Das gescannte Rezept -><font size='6' color='#ff0000'> "+scanrez+"<br></font></html>");
 						//System.out.println("Das Rezept wurde bereits abgerechnet");
+						/*
 						new ErrorMail("Das gescannte Rezept ist bereits abgerechnet. Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 								SystemConfig.dieseMaschine.toString(),
 								Reha.aktUser,
 								SystemConfig.hmEmailIntern.get("Username"),
 								"Fehler-Mail");
+						*/		
 
 						break;
 					case 3:
 						JOptionPane.showMessageDialog(null, "<html><b><font size='5'>Dieses Rezept wurde am heutigen Tab bereits erfaßt!<br><br>"+
 								"Das gescannte Rezept -><font size='6' color='#ff0000'> "+scanrez+"<br></font></html>");
 						//System.out.println("Das Rezept wurde an diesen Tag bereits erfaßt");
+						/*
 						new ErrorMail("Doppelerfassung eines Rezeptes. Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 								SystemConfig.dieseMaschine.toString(),
 								Reha.aktUser,
 								SystemConfig.hmEmailIntern.get("Username"),
 								"Fehler-Mail");
+						*/		
 
 						break;
 					}
@@ -455,23 +462,26 @@ public class TermineErfassen implements Runnable {
 				}
 				int frage = JOptionPane.showConfirmDialog(null, message, "Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 				if(variante > 0){
+					/*
 					new ErrorMail("Hinweis das Rezept ist bereits"+(variante==0 ? " voll. " : " übervoll!!! ")+" Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 							SystemConfig.dieseMaschine.toString(),
 							Reha.aktUser,
 							SystemConfig.hmEmailIntern.get("Username"),
 							"Fehler-Mail!!!!!");
+					*/		
 					
 				}
 				if(frage == JOptionPane.NO_OPTION){
 				  return;
 				}
 				terminneu = macheNeuTermin("zu viele Behandlungen");
+				/*
 				new ErrorMail("Trotz Hinweis!!! Aufnahme in das Rezept. Rezept ist aber bereits"+(variante==0 ? " voll. " : " übervoll!!! ")+" Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 						SystemConfig.dieseMaschine.toString(),
 						Reha.aktUser,
 						SystemConfig.hmEmailIntern.get("Username"),
 						"Fehler-Mail!!!!!");
-				
+				*/
 			}else{
 				////System.out.println("Es sind noch Termine Frei");
 				terminneu = macheNeuTermin("");
@@ -480,12 +490,13 @@ public class TermineErfassen implements Runnable {
 					"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
 					"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
 					JOptionPane.showMessageDialog(null, message);
-
+					/*
 					new ErrorMail("Letzte Behandlung Rezept = voll.\nRezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 							SystemConfig.dieseMaschine.toString(),
 							Reha.aktUser,
 							SystemConfig.hmEmailIntern.get("Username"),
 							"Rezept voll!!!!!");
+					*/		
 				}
 			}
 				

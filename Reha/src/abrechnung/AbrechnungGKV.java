@@ -699,6 +699,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 		if(abrechnungsModus.equals(ABR_MODE_302)){
 			if(ik_email.equals("")){
+				ik_email = SqlInfo.holeEinzelFeld("select email1 from kass_adr where ik_kasse='"+ik_physika+"' LIMIT 1");
+			}
+			if(ik_email.equals("")){
 				ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kasse+"' LIMIT 1");
 			}
 			if(ik_email.equals("")){
