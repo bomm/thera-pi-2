@@ -292,7 +292,7 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 						return kuerzel.indexOf("IKK");
 					}else if(beinhaltetFragment(knamen,"aok","orts")){
 						return kuerzel.indexOf("AOK");
-					}else if(beinhaltetFragment(knamen,"bkk","betriebs")){
+					}else if(beinhaltetFragment(knamen,"bkk","betrieb")){
 						return kuerzel.indexOf("BKK");
 					}else if(beinhaltetFragment(knamen,"lkk","landw")){
 						return kuerzel.indexOf("LKK");

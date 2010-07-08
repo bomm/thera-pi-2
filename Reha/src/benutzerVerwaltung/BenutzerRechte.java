@@ -100,7 +100,7 @@ public class BenutzerRechte extends JXPanel{
 	String[] gruppe9 = {"[Ru:gl] öffnen","Termine überschreiben","unbelegt 1 für zukünftige Erweiterungen","unbelegt für 2 zukünftige Erweiterungen"};
 	
 	String[] gruppe10 = {"Kassenabrechnung","Rehaabrechnung","Barkassen Abrechnung","Neuanmeldungen ermitteln","Umsätze von bis ermitteln","Mitarbeiterbeteiligung ermitteln",
-			"Urlaub-/Überstunden ermitteln","Offene Posten / Mahnwesen","unbelegt 2 für zukünftige Erweiterungen",
+			"Urlaub-/Überstunden ermitteln","Offene Posten / Mahnwesen","Kassenbuch anlegen / ändern",
 			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen","unbelegt 7 für zukünftige Erweiterungen",
 			"unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen","unbelegt 10 für zukünftige Erweiterungen"};
 	

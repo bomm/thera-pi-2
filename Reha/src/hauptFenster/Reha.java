@@ -320,7 +320,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=0707/01 - DB=";
+	public static String aktuelleVersion = "V=0708/01 - DB=";
 	//  
 	//@jve:decl-index=0:
 	/**
@@ -2486,6 +2486,15 @@ public void actionPerformed(ActionEvent arg0) {
 		new LadeProg(Reha.proghome+"RehaBillEdit.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
+	if(cmd.equals("kassenbuch")){
+		if(!Rechte.hatRecht(Rechte.Funktion_kassenbuch, true)){
+			return;
+		}
+		new LadeProg(Reha.proghome+"RehaKassenbuch.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		return;
+	}
+
+	
 
 	
 	
