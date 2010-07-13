@@ -246,7 +246,7 @@ class TelefonListe{
 			if(((String) ((Vector)((ArrayList) obj).get(1)).get(i)).equals("")){
 				String daten[] = {"","","","",""};
 				daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(i)).substring(0,5)+ " Uhr";
-				daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(i))+"\r\rKeine Zuordnung m�glich!";
+				daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(i))+"\r\rKeine Zuordnung möglich!";
 				daten[2] = "keine RezNr.";
 				daten[4] = "???";
 				dvec.add(daten);
@@ -256,7 +256,7 @@ class TelefonListe{
 			testeReznr(((String) ((Vector)((ArrayList) obj).get(1)).get(i)),i);
 		}
 		if(dvec.size()==0){
-			JOptionPane.showMessageDialog(null, "F�r die aktuelle Terminspalte kann kein Patient zugeordnet werden");
+			JOptionPane.showMessageDialog(null, "Für die aktuelle Terminspalte kann kein Patient zugeordnet werden");
 			return;
 		}else{
 			druckeTelefonListe();
@@ -272,7 +272,7 @@ class TelefonListe{
 		Vector vec1 = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
 		if(vec1.size() == 0){
 			daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
-			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung m�glich, falsche Rezeptnummer???";
+			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, falsche Rezeptnummer???";
 			daten[2] = xreznr;
 			daten[4] = "???";
 			dvec.add(daten);
@@ -282,7 +282,7 @@ class TelefonListe{
 		Vector vec2 = SqlInfo.holeSatz("pat5", felder, "pat_intern='"+vec1.get(0)+"'",(List) new ArrayList() );
 		if(vec2.size() == 0){
 			daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ "Uhr";
-			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung m�glich, Patient nicht gefunden";
+			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, Patient nicht gefunden";
 			daten[2] = xreznr;
 			daten[4] = "???";
 			//dvec.add(daten.clone());

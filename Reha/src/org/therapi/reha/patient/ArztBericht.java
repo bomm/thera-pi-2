@@ -66,6 +66,7 @@ import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
+@SuppressWarnings("unused")
 public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
 	/**
 	 * 
@@ -180,7 +181,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pack();
 	}
 	private void setzeRezDatum(){
-		Vector vec = null;
+		Vector<String> vec = null;
 		if(  (vec = SqlInfo.holeSatz("verordn", "rez_datum", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}) )).size() > 0 ){
 			rezdatum = (String) vec.get(0);
 		}else if((vec = SqlInfo.holeSatz("lza", "rez_datum", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}) )).size() > 0){
@@ -196,7 +197,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			return;
 		}
 		String felder = "BERSTAND,BERBESO,BERPROG,BERVORS";
-		Vector vec = SqlInfo.holeSatz("bericht1",felder , "berichtid='"+Integer.toString(this.berichtid)+"'", Arrays.asList(new String[]{}));
+		Vector<String> vec = SqlInfo.holeSatz("bericht1",felder , "berichtid='"+Integer.toString(this.berichtid)+"'", Arrays.asList(new String[]{}));
 		for(int i = 0;i < 4;i++){
 			icfblock[i].setText((String)vec.get(i));
 		}
@@ -263,6 +264,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		//System.out.println("Rückgabe des JPanels");
 		return pb.getPanel();
 	}
+	@SuppressWarnings("unchecked")
 	private JScrollPane getFunktionsPanel(){
 
 		FormLayout lay = new FormLayout(
@@ -311,7 +313,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				arztid = new Integer(-1);
 			}
 		}else{
-			Vector vec;
+			Vector<String> vec;
 			name =  (String)(vec = SqlInfo.holeSatz("berhist", "empfaenger,empfid", "berichtid='"+Integer.toString(this.berichtid)+"'", Arrays.asList(new String[] {}))).get(0) ;
 			arztid =StringTools.ZahlTest((String) vec.get(1));						
 		}
@@ -352,7 +354,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}else if((!this.reznr.equals("")) && (this.aufrufvon == 1)){
 			diagnose.setText((String)Reha.thisClass.patpanel.vecakthistor.get(23));
 		}else{
-			Vector vec = null;
+			Vector<String> vec = null;
 			vec = SqlInfo.holeSatz("verordn", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
 			if(vec.size() > 0){
 				diagnose.setText((String)vec.get(0));
@@ -524,7 +526,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
-							Vector vec = SqlInfo.holeSatz("bericht1",
+							Vector<String> vec = SqlInfo.holeSatz("bericht1",
 									"berstand,berbeso,berprog,bervors,diagnose", 
 									"berichtid='"+vorberichtid+"'", 
 									Arrays.asList(new String[] {})
@@ -778,7 +780,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 				"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
 				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>"});
 		*/
-		Vector vec = SqlInfo.holeSatz("arzt", 
+		Vector<String> vec = SqlInfo.holeSatz("arzt", 
 				"anrede,titel,nachname,vorname,strasse,plz,ort",
 				" id='"+arztid+"'", 
 				Arrays.asList(new String[] {}));
@@ -881,6 +883,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		}
 	}
 class TextBausteine extends AbstractAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6869230574347804165L;
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(thblock == null){
@@ -982,6 +989,7 @@ class TextBausteine extends AbstractAction {
 		
 		
 	}
+	@SuppressWarnings("unchecked")
 	private void setzeHmAufNull(){
 		Set entries = SystemConfig.hmAdrBDaten.entrySet();
 	    Iterator it = entries.iterator();

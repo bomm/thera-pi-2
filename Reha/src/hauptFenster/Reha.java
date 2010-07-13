@@ -86,6 +86,7 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
@@ -139,6 +140,7 @@ import terminKalender.TerminFenster;
 import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
 import verkauf.Verkauf;
+import wecker.Wecker;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -320,7 +322,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=0708/01 - DB=";
+	public static String aktuelleVersion = "V=0711/01 - DB=";
+	
+	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
+	public static Timer fangoTimer = null;
+	public static boolean timerLaeuft = false;
+	public static boolean timerInBearbeitung = false;
 	//  
 	//@jve:decl-index=0:
 	/**
@@ -443,27 +450,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				new SocketClient().setzeInitStand("System-Config initialisieren");
 			}
 		}.start();
-		/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws java.lang.Exception {
-				new SocketClient().setzeInitStand("System-Parameter laden");
-				SystemConfig.SystemIconsInit();
-				iconsOk = true;
-				return null;
-			}
-		}.execute();
-		*/
-		/*
-		new Thread(){
-			public void run(){
-				new SocketClient().setzeInitStand("System-Parameter laden");
-				SystemConfig.SystemIconsInit();
-				iconsOk = true;
-			}
-		}.start();
-		*/
-
 		////System.out.println("RehaxSwing wurde gestartet");
 		/*********/
 			SystemConfig sysConf = new SystemConfig();
@@ -546,6 +532,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();
 		   		//Reha.starteOfficeApplication();
+				Reha.thisClass.starteTimer();
 			}
 		});
 		
@@ -1627,6 +1614,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 								
 							}
 						}
+						if(Reha.timerLaeuft){
+							Reha.fangoTimer.stop();
+							Reha.timerLaeuft = false;
+						}
 						System.exit(0);
 					}else{
 						return;
@@ -2293,6 +2284,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			if(Reha.officeapplication != null){
 				//Reha.officeapplication.dispose();
 			}
+			if(Reha.timerLaeuft){
+				Reha.fangoTimer.stop();
+				Reha.timerLaeuft = false;
+			}
 			System.exit(0);
 		}else{
 			return;
@@ -2400,10 +2395,27 @@ class Hintergrund extends JDesktopPane implements ComponentListener{
 	
 	
 }
+/***************************/
+public void starteTimer(){
+	Reha.fangoTimer = new Timer(60000,this);
+	Reha.fangoTimer.setActionCommand("testeFango");
+	Reha.fangoTimer.start();
+	Reha.timerLaeuft = true;
+}
+
 /**********Actions**********/
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
+	if(cmd.equals("testeFango")){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws java.lang.Exception {
+				Wecker.testeWecker();
+				return null;
+			}
+		}.execute();
+	}
 	if(cmd.equals("patient")){
 		////System.out.println("ActionListener patient");
 		new SwingWorker<Void,Void>(){

@@ -18,7 +18,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/juh.jar"/>
-	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/junit-3.8.1.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/jurt.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/jut.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/nativeunix.zip"/>
@@ -31,10 +30,10 @@
 	<classpathentry kind="lib" path="/Libraries/lib/mmscomputing/uk.co.mmscomputing.device.sane.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/looks-2.3.1.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/jna_junit/junit-4.5.jar"/>
-	<classpathentry kind="lib" path="/Libraries/lib/jna_junit/jna-3.0.7.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/jna_junit/jna_WindowUtils.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/net/smtp.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/net/mail.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Nebraska.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/jna_junit/jna-3.2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

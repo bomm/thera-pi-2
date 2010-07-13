@@ -151,13 +151,14 @@ public class PatFenster extends JInternalFrame {
 		return jButton;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void SuchePatient(){
 		Statement stmt = null;
 		ResultSet rs = null;
 		String sstmt = "";
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
 		DefaultTableModel tblDataModel = new DefaultTableModel();
-		Vector reiheVector = new Vector();
+		Vector<String> reiheVector = new Vector<String>();
 		reiheVector.addElement("Nachname");
 		reiheVector.addElement("Nachname");
 		reiheVector.addElement("Geboren");
@@ -177,13 +178,13 @@ public class PatFenster extends JInternalFrame {
 			try{
 				rs = (ResultSet) stmt.executeQuery(sstmt);		
 				while( rs.next()){
-					Vector rowVector = new Vector();
+					Vector<String> rowVector = new Vector<String>();
 					for(int i = 1; i <= 4; i++){
 						////System.out.println(rs.getString(i));
 					rowVector.addElement((i==3 ? (rs.getString(i) != null ? DatFunk.sDatInDeutsch((String) rs.getString(i)) : "  .  .  ") : rs.getString(i)) );
 					//rowVector.addElement(rs.getString(i) );
 					}
-					dataVector.addElement(rowVector);
+					dataVector.addElement((Vector)rowVector);
 				}
 				tblDataModel.setDataVector(dataVector,reiheVector);
 				this.jTable.setModel(tblDataModel);

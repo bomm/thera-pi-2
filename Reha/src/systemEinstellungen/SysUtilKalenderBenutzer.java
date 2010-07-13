@@ -344,8 +344,8 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 	}
 	/**************************************************************************/
 	private void neuHandeln(){
-		if(ParameterLaden.vKKollegen.size() == 60){
-			JOptionPane.showMessageDialog(null, "Es existieren bereits 60 Kalenderbenutzer! Derezeit ist die Benutzeranzahl auf 60 limitiert!");
+		if(ParameterLaden.vKKollegen.size() == 99){
+			JOptionPane.showMessageDialog(null, "Es existieren bereits 99 Kalenderbenutzer! Derezeit ist die Benutzeranzahl auf 99 limitiert!");
 			return;
 		}
 		lneu = true;

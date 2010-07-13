@@ -74,6 +74,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.TestePatStamm;
 import terminKalender.TerminFenster;
+import wecker.Wecker;
 import ag.ion.bion.officelayer.text.ITextDocument;
 
 public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener, DropTargetListener {
@@ -324,19 +325,61 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink = new JXHyperlink();
 		jxLink.setText("Akutliste - kurzfristige Termine");
 		jxLink.setActionCommand("Akutliste");
-		img = new ImageIcon(Reha.proghome+"icons/chronometer.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		img = new ImageIcon(Reha.proghome+"icons/vcalendar.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
 		jxLink.setIcon(new ImageIcon(img));		
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp4.add(jxLink);
-		/*
+		
 		jxLink = new JXHyperlink();
-		jxLink.setText("Monatsübersicht");
-		jxLink.setActionCommand("monthview");
+		jxLink.setText("Thera-\u03C0"+" Erinnerungs-System");
+		//img = new ImageIcon(Reha.proghome+"icons/wecker.gif").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		img = new ImageIcon(Reha.proghome+"icons/chronometer.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
+		jxLink.setActionCommand("neuerwecker");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
+		dndt = new DropTarget();
+		dropTargetListener =
+			 new DropTargetListener() {
+			  public void dragEnter(DropTargetDragEvent e) {}
+			  public void dragExit(DropTargetEvent e) {}
+			  public void dragOver(DropTargetDragEvent e) {}
+			  public void drop(DropTargetDropEvent e) {
+				  String mitgebracht = "";
+			    try {
+			      Transferable tr = e.getTransferable();
+			      DataFlavor[] flavors = tr.getTransferDataFlavors();
+			      for (int i = 0; i < flavors.length; i++){
+			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
+			      }
+			      ////System.out.println(mitgebracht);
+			      if(mitgebracht.indexOf("°") >= 0){
+			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
+			    		  return;
+			    	  }
+			    	  //ProgLoader.ProgRoogleFenster(0, mitgebracht);
+			    	  doWeckerDrop(mitgebracht);
+			      }
+			      ////System.out.println(mitgebracht);
+			    } catch (Throwable t) { t.printStackTrace(); }
+			    // Ein Problem ist aufgetreten
+			    e.dropComplete(true);
+			  }
+			  public void dropActionChanged(
+			         DropTargetDragEvent e) {}
+		};
+		try {
+			dndt.addDropTargetListener(dropTargetListener);
+		} catch (TooManyListenersException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		jxLink.setDropTarget(dndt);
+		jxLink.setName("Rugl");
+		
 		tp4.add(jxLink);
-		*/
+		
 		//tp4.setExpanded(true);
 		return tp4;
 	}
@@ -796,6 +839,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				}.execute();
 				break;
 			}
+			if (cmd.equals("neuerwecker")){
+				Wecker wecker = new Wecker(null);
+				wecker.pack();
+				wecker.setVisible(true);
+				wecker = null;
+			}
 
 
 		}
@@ -865,6 +914,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		}
 
 
+	}
+	private void doWeckerDrop(String drops){
+		Wecker wecker = new Wecker(drops);
+		wecker.pack();
+		wecker.setVisible(true);
+		wecker = null;
 	}
 	private void doPatientDrop(String rez_nr){
 		String pat_int = "";

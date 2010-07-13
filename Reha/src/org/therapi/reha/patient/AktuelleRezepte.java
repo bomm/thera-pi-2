@@ -11,7 +11,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -43,7 +42,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
-import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -789,7 +787,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[rezstatus],i,5);
 					if(i==0){
-						final int ix = i;
+						//final int ix = i;
 						if(suchePatUeberRez){
 							suchePatUeberRez = false;
 						}else{
@@ -917,7 +915,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void setRezeptDaten(){
 		int row = this.tabaktrez.getSelectedRow();
 		if(row >= 0){
-			final int xrow = row;
+			//final int xrow = row;
 			String reznr = (String)tabaktrez.getValueAt(row,0);
 			rezAngezeigt = reznr;
 			String id = (String)tabaktrez.getValueAt(row,7);
@@ -970,10 +968,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 		SystemConfig.hmAdrRDaten.put("<Rerstdat>","");		
 	}
+	@SuppressWarnings("unchecked")
 	public void holeEinzelTermineAusRezept(String xreznr,String termine){
 		try{
 		Vector<String> xvec = null;
-		Vector retvec = new Vector();
+		Vector<Vector<String>> retvec = new Vector<Vector<String>>();
 		String terms = null;
 		if(termine == null){
 			xvec = SqlInfo.holeSatz("verordn", "termine,pat_intern", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
@@ -1008,7 +1007,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					tvec.add(new String(terdat[y]));					
 				}
 			}
-			retvec.add(tvec.clone());
+			retvec.add((Vector<String>)tvec.clone());
 
 		}
 		Comparator<Vector> comparator = new Comparator<Vector>() {
@@ -1042,7 +1041,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		anzahlTermine.setText("Anzahl Termine: "+terms.size());
 		
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private void holeEinzelTermineAktuell(int row,Vector<String> vvec,String aufruf){
 		//System.out.println("Aufruf aus --> "+aufruf);
 		inEinzelTermine = true;
@@ -1134,13 +1133,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	}
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
-		boolean update = false;
+		//boolean update = false;
 		//int fi = arg0.getFirstRow();
 		//int fl = arg0.getLastRow();
 		int col = arg0.getColumn();
 		int type = arg0.getType();
-
-		String stype = "";
+		/*
+		String stype; // = "";
 		if(type == TableModelEvent.UPDATE){
 			stype = "Update";
 		}
@@ -1150,6 +1149,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(type == TableModelEvent.DELETE){
 			stype = "Delete";
 		}
+		*/
 
 		if( (col >=  0 && col < 4 && type == TableModelEvent.UPDATE) ){
 				final int xcol = col;
@@ -1177,7 +1177,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					for(int i = 0; i < v.size();i++){
 						tage.add((String) ((Vector<?>)v.get(i)).get(0));
 					}
-					Object[] ret =  ZuzahlTools.unter18TestDirekt(tage,true,false);
+					/*Object[] ret =  */ZuzahlTools.unter18TestDirekt(tage,true,false);
 					//String resultgleich = "";
 				}
 				if(!Reha.thisClass.patpanel.patDaten.get(69).equals("")){
@@ -1189,8 +1189,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
-		int index;
-		if( (index = arg0.getFirstIndex()) >= 0){
+		//int index;
+		if( (/*index = */arg0.getFirstIndex()) >= 0){
 			if(! arg0.getValueIsAdjusting()){
 				
 			}
@@ -1209,8 +1209,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	        
-	        int firstIndex = e.getFirstIndex();
-	        int lastIndex = e.getLastIndex();
+	        //int firstIndex = e.getFirstIndex();
+	        //int lastIndex = e.getLastIndex();
 	        boolean isAdjusting = e.getValueIsAdjusting();
 	        if(isAdjusting){
 	        	return;
@@ -1770,7 +1770,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			return;
 		}
 		int currow = tabaktrez.getSelectedRow();
-		int anzrow = tabaktrez.getRowCount();
+		//int anzrow = tabaktrez.getRowCount();
 		if(currow == -1){
 			JOptionPane.showMessageDialog(null,"Kein Rezept zum -> kassieren <- ausgewählt");
 			return;
@@ -1948,7 +1948,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   if(columnIndex==0){return String.class;}
 			   /*else if(columnIndex==1){return JLabel.class;}*/
 			   else{return String.class;}
@@ -2033,7 +2033,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			bereitsbezahlt = true;
 		}
 
-		int art = RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		/*int art = */RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
 		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
 	}
 	public void setZuzahlImage(int imageno){
@@ -2048,7 +2048,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.repaint();
 	}
 	private void doBarcode(){
-		int art = RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		/*int art = */RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
 		//String ik = "510884019";
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
 		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)Reha.thisClass.patpanel.vecaktrez.get(1)+"*");

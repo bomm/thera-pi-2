@@ -546,6 +546,7 @@ private KVKWrapper kvw;
 				JOptionPane.showMessageDialog(null, "Achtung - Sie haben dem Patient eine neue Kasse zugewiesen.\n"+
 						"Eventuell ändert sich dadurch der Zuzahlungsstatus vorhandener Rezepte. Bitte prüfen!!!");
 			}
+			@SuppressWarnings("unused")
 			int zzregel = -1;
 			boolean doof = false;
 			if(! (freizumstart == freibeimspeichern)){
@@ -569,6 +570,7 @@ private KVKWrapper kvw;
 							String pat_intern = Reha.thisClass.patpanel.aktPatID;
 							String geboren = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
 							String befreit = (freibeimspeichern ? "T" : "F");
+							@SuppressWarnings("unused")
 							String datum = (freibeimspeichern ? "" : jtf[16].getText().trim());
 							ZuzahlTools.zzStatusEdit(pat_intern, geboren, "", befreit, jtf[34].getText().trim());
 						}
