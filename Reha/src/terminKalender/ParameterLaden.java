@@ -513,9 +513,9 @@ public static void PreiseEinlesen(String preisklasse) {
 	
 	
 }
+
+
 */
-
-
 
 /********************************************************/
 }

@@ -322,7 +322,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=0711/01 - DB=";
+	public static String aktuelleVersion = "V=0716/01 - DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -2826,13 +2826,13 @@ final class PreisListenLaden implements Runnable{
 		ParameterLaden.PreiseEinlesen("RH");
 
 		MachePreisListe.preiseFuellenNeu();	
-		*/	
-		//new SocketClient().setzeInitStand("INITENDE");
 		
+		*/
+
 		Reha.thisClass.jxLinks.setAlpha(1.0f);
 		Reha.thisClass.jxRechts.setAlpha(1.0f);
-
-
+		
+		
 		//long zeit = System.currentTimeMillis();
 		new SocketClient().setzeInitStand("Preisliste Physio einlesen");
 		SystemPreislisten.ladePreise("Physio");
@@ -2846,6 +2846,7 @@ final class PreisListenLaden implements Runnable{
 		SystemPreislisten.ladePreise("Reha");
 		SystemPreislisten.ladePreise("Common");
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
+		
 		/*
 		//System.out.println(SystemPreislisten.vKGPreise);
 		//System.out.println(SystemPreislisten.vKGPreise.get(0));

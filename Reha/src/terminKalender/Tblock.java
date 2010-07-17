@@ -87,7 +87,7 @@ private int dbBehandler;
 					state = JOptionPane.showConfirmDialog(null,
 							"Die Endzeit Ihres Terminwunsches ragt in den nachfolgenden Termin\n"+
 							"Soll die Startzeit und Dauer des nachfolgenden Termines\n"+"" +
-							"entsprechend angepa�t (vek�rzt) werden??",
+							"entsprechend angepaßt (vekürzt) werden??",
 							"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 					if (state == JOptionPane.YES_OPTION) {
 								KuerzeNachBlock();
@@ -99,7 +99,7 @@ private int dbBehandler;
 				case (2):
 					TerminFenster.getThisClass().setUpdateVerbot(false);
 					TerminFenster.starteUnlock();	
-					////System.out.println("***nicht letzter Block  und Ende = gr��er als Ende Folgeblock");
+					////System.out.println("***nicht letzter Block  und Ende = größer als Ende Folgeblock");
 					break;
 				case (3):
 					TerminFenster.getThisClass().setUpdateVerbot(false);
@@ -109,14 +109,14 @@ private int dbBehandler;
 				case (4):
 					TerminFenster.getThisClass().setUpdateVerbot(false);
 					TerminFenster.starteUnlock();	
-					////System.out.println("***es ist der letzte Block  und Ende = gr��er als Kalenderende");					
+					////System.out.println("***es ist der letzte Block  und Ende = größer als Kalenderende");					
 					break;				
 				case (5):
 					ObenAndockenUntenNeuBlock();
 					this.Eltern.neuerBlockAktiv(this.aktBlockNeu);
 					break;
 				}
-				////System.out.println("R�ckgabewert: "+result);
+				////System.out.println("Rückgabewert: "+result);
 				//setzeBlockPasstObenUntenNicht();
 				break;
 			}
@@ -144,7 +144,7 @@ private int dbBehandler;
 					TerminFenster.starteUnlock();	
 					break;
 				}
-				////System.out.println("R�ckgabewert: "+result);
+				////System.out.println("Rückgabewert: "+result);
 				//setzeBlockPasstUntenObenNicht();
 				break;
 			}			
@@ -156,7 +156,7 @@ private int dbBehandler;
 						// ragt in Vorblock ende ist gelich wie der start des Folgeblock
 						state = JOptionPane.showConfirmDialog(null,
 						"Die Startzeit Ihres Terminwunsches ragt in den vorherigen Termin!!!\n\n"+
-						"Soll der vorherige Termin entsprechend gek�rzt werden?",
+						"Soll der vorherige Termin entsprechend gekürzt werden?",
 						"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 						if (state == JOptionPane.YES_OPTION) {
 							////System.out.println("Fehler bei --->KuerzeVorBlock()");
@@ -170,7 +170,7 @@ private int dbBehandler;
 						// ragt in Vorblock ende ist fr�her als start Folgeblock // (vorblock k�rzen und nachblock erforderlich)
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Startzeit Ihres Terminwunsches ragt in den vorherigen Termin!!!\n\n"+
-								"Soll der vorherige Termin entsprechend gek�rzt werden?",
+								"Soll der vorherige Termin entsprechend gekürzt werden?",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
 									////System.out.println("Fehler bei --->KuerzeVorBlockUndNeuBlock()");
@@ -186,7 +186,7 @@ private int dbBehandler;
 								"Die Startzeit Ihres Terminwunsches ragt sowohl in den vorherigen Termin\n"+
 								"als auch in den nachfolgenden Termin!!!\n\n"+
 								"Sollen sowohl der vorherige, als auch der nachfolgende\n"+"" +
-								"Termin entsprechend gek�rzt werden??",
+								"Termin entsprechend gekürzt werden??",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
 									////System.out.println("Fehler bei --->KuerzeVorBlockUndNachBlock()");
@@ -209,7 +209,7 @@ private int dbBehandler;
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Endzeit Ihres Terminwunsches ragt in den nachfolgenden Termin\n"+
 								"Soll die Startzeit und Dauer des nachfolgenden Termines\n"+"" +
-								"entsprechend angepa�t (verk�rzt) werden??",
+								"entsprechend angepaßt (verkürzt) werden??",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
 									KuerzeNachBlock();
@@ -222,7 +222,7 @@ private int dbBehandler;
 						state = JOptionPane.showConfirmDialog(null,
 								"Die Endzeit Ihres Terminwunsches ragt in den nachfolgenden Termin\n"+
 								"Soll die Startzeit und Dauer des nachfolgenden Termines\n"+"" +
-								"entsprechend angepa�t (verk�rzt) werden??",
+								"entsprechend angepaßt (verkürzt) werden??",
 								"Benutzeranweisung erforderlich",JOptionPane.YES_NO_OPTION);
 								if (state == JOptionPane.YES_OPTION) {
 									NeuVorBlockUndKuerzeNachBlock();
