@@ -68,8 +68,9 @@ public class PatientStammDatenPanel extends JXPanel{
 		linkListener = new HyperlinkListener(){
 			@Override
 			public void hyperlinkUpdate(HyperlinkEvent arg0) {
-				stammDatenLogic.reactOnHyperlink(arg0);
-				
+				if(!patientHauptPanel.getLogic().neuDlgOffen){
+					stammDatenLogic.reactOnHyperlink(arg0);
+				}
 			}
 		};
 	}

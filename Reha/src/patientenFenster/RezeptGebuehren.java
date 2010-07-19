@@ -408,34 +408,21 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 	}
 	public void doBuchen(){
-		String cmd = null;
 		try{
-			cmd = "insert into kasse set einnahme='"+
-			SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
-			DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
-			Reha.thisClass.patpanel.patDaten.get(2)+","+
-			SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
-			"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
-			"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
-			SqlInfo.sqlAusfuehren(cmd);
-			////System.out.println("Kassenbuch -> "+cmd);
-		}catch(Exception ex){
-			JOptionPane.showMessageDialog(null,"Die bezahlten Rezeptgebühren konnten nicht verbucht werden.\n+" +
-					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
-					"Sie den Administrator");
-		}
-		try{
-			
+			String cmd = null;
 			try{	
 				String cmd2 = "update verordn set rez_geb='"+
 				SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replace(",",".")+"', "+
 				"rez_bez='T', zzstatus='1' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
 				SqlInfo.sqlAusfuehren(cmd2.toString());
+				Reha.thisClass.patpanel.vecaktrez.set(39, "1");
+				/*
 				String test = "Bitte kontrollieren!!!!!!\n\n"+
 				"Rezeptnummer = "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n\n"+
 				"Rezeptgebühren = "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n\n";
+				*/
 				//System.out.println(cmd2);
-				JOptionPane.showMessageDialog(null, test);
+				//JOptionPane.showMessageDialog(null, test);
 			}catch(Exception ex){
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null,"Achtung Fehler im Modul Rezeptgebühr, bitte notieren Sie die nachfolgende Fehlermeldung");
@@ -452,6 +439,26 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
 					"Sie den Administrator");
 			}
+			/**/
+
+			try{
+				cmd = "insert into kasse set einnahme='"+
+				SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replaceAll(",",".")+"', datum='"+
+				DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
+				Reha.thisClass.patpanel.patDaten.get(2)+","+
+				SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
+				"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
+				"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+				////System.out.println("Kassenbuch -> "+cmd);
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Die bezahlten Rezeptgebühren konnten nicht verbucht werden.\n+" +
+						"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
+						"Sie den Administrator");
+			}
+			
+			
+			/**/
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+

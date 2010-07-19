@@ -11,9 +11,11 @@ public class PatientStammDatenLogic {
 	}
 	public void reactOnHyperlink(HyperlinkEvent arg0){
 	    if (arg0.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-	    	patHauptPanel.getLogic().editFeld(extractFieldName(arg0.getURL().toString()));
-	    }	
-	}
+	    	if(!patHauptPanel.getLogic().neuDlgOffen){
+		    	patHauptPanel.getLogic().editFeld(extractFieldName(arg0.getURL().toString()));	    		
+	    	}
+	    }
+	}    
 	private String extractFieldName(String url){
 		String ext = url.substring(7);
 		return ext.replace(".de", "");

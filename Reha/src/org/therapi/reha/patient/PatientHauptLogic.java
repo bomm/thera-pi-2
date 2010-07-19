@@ -45,7 +45,7 @@ public class PatientHauptLogic {
 	
 	public PatientHauptPanel patientHauptPanel = null;
 	private String lastseek = "";
-	private boolean neuDlgOffen = false;
+	public boolean neuDlgOffen = false;
 	private Vector<String> titel = new Vector<String>();
 	private Vector<String> formular = new Vector<String>();
 	private int iformular;
