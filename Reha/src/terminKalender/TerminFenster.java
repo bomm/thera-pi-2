@@ -4059,7 +4059,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						return null; 
 					}
 					tvec = RezTools.splitteTermine(termbuf.toString());
-					int anzahl = new Integer((String)vec.get(1));
+					int anzahl = Integer.parseInt((String)vec.get(1));
 					if(tvec.size() >= anzahl){
 						if(tvec.size()==anzahl){
 							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- bereits voll!\n\nEine zusätzliche Behandlung wird nicht eingetragen");

@@ -410,7 +410,7 @@ class KalenderFarbenModel extends DefaultTableModel{
 	    	if(col==4 ){
 	    		return false;
 	    	}
-	    	if(col==1 && (row >=14 && row < 22) ){
+	    	if(col==1 && (row >=14 && row <= 22) ){
 	    		return true;
 	    	}
 

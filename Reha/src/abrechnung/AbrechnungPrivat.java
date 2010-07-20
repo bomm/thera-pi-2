@@ -26,6 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import jxTableTools.TableTool;
 import oOorgTools.OOTools;
@@ -65,7 +67,7 @@ import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
-public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionListener, MouseListener, KeyListener,RehaTPEventListener{
+public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionListener, MouseListener, KeyListener,RehaTPEventListener, ChangeListener{
 	/**
 	 * 
 	 */
@@ -81,6 +83,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	private JRtaComboBox jcmb = null;
 	private JRtaRadioButton[] jrb = {null,null};
 	private JLabel[] labs = {null,null,null,null,null,null,null};
+	private JLabel adr1 = null;
+	private JLabel adr2 = null;
 	//private JRtaTextField[] tfs = {null,null,null,null,null};
 	private JButton[] but = {null,null,null};
 	//private HashMap<String,String> hmRezgeb = null;
@@ -171,17 +175,23 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		JXPanel pan = new JXPanel();
 		//                                1           2             3             4     5     6                7
 		FormLayout lay = new FormLayout("20dlu,fill:0:grow(0.5),p,fill:0:grow(0.5),20dlu",
-				//1          2         3   4   5  6    7  8    9  10  11  12 13 14  15 16  17  18  19 20  21  22 23
-				"20dlu,fill:0:grow(0.5),p, 2dlu,p,10dlu,p,3dlu,p,5dlu, p,1dlu,p,1dlu,p,1dlu,p ,1dlu,p,1dlu,p,1dlu,p, fill:0:grow(0.5),5dlu");
+				//1    2   3  4  5   6   7  8   9  10  11  12 13 14  15 16  17  18  19 20  21  22 23  24 25  26
+				"20dlu,p,2dlu,p,10dlu,p,2dlu,p,10dlu,p,3dlu,p,5dlu, p,1dlu,p,1dlu,p,1dlu,p ,1dlu,p,1dlu,p,1dlu,p, fill:0:grow(0.5),5dlu");
 		pan.setLayout(lay);
 		CellConstraints cc = new CellConstraints();
 		pan.setOpaque(false);
 		JLabel lab = new JLabel("Abrechnung Rezeptnummer: "+Reha.thisClass.patpanel.vecaktrez.get(1));
 		lab.setForeground(Color.BLUE);
 		pan.add(lab ,cc.xy(3, 1,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		adr1  = new JLabel(" ");
+		adr1.setForeground(Color.BLUE);
+		pan.add(adr1 ,cc.xy(3, 2));
+		adr2  = new JLabel(" ");
+		adr2.setForeground(Color.BLUE);
+		pan.add(adr2 ,cc.xy(3, 4));
 		
 		lab = new JLabel("Preisgruppe wählen:");
-		pan.add(lab,cc.xy(3,3));
+		pan.add(lab,cc.xy(3,6));
 		//jcmb = new JRtaComboBox(SystemConfig.vPreisGruppen);
 
 
@@ -190,18 +200,23 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		this.aktGruppe = this.preisgruppe-1;
 		jcmb.setActionCommand("neuertarif");
 		jcmb.addActionListener(this);
-		pan.add(jcmb,cc.xy(3,5));
+		pan.add(jcmb,cc.xy(3,8));
 		jrb[0] = new JRtaRadioButton("Formular für Privatrechnung verwenden");
-		pan.add(jrb[0],cc.xy(3,7));
+		jrb[0].addChangeListener(this);
+		pan.add(jrb[0],cc.xy(3,10));
 		jrb[1] = new JRtaRadioButton("Formular für Kostenträger Rechnung verwenden");
-		pan.add(jrb[1],cc.xy(3,9));
+		jrb[1].addChangeListener(this);
+		pan.add(jrb[1],cc.xy(3,12));
 		bg.add(jrb[0]);
 		bg.add(jrb[1]);
 		if(preisgruppe==4){
 			jrb[1].setSelected(true);
+			regleBGE();
 		}else{
 			jrb[0].setSelected(true);
+			reglePrivat();
 		}
+
 		if(!Reha.thisClass.patpanel.vecaktrez.get(8).equals("0")){
 			labs[0] = new JLabel();
 			/*
@@ -209,23 +224,23 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(8), preisliste));
 			*/		
 			labs[0].setForeground(Color.BLUE);
-			pan.add(labs[0],cc.xy(3, 11));
+			pan.add(labs[0],cc.xy(3, 14));
 
 		}
 		if(!Reha.thisClass.patpanel.vecaktrez.get(9).equals("0")){
 			labs[1] = new JLabel();
 			labs[1].setForeground(Color.BLUE);
-			pan.add(labs[1],cc.xy(3, 13));
+			pan.add(labs[1],cc.xy(3, 16));
 		}
 		if(!Reha.thisClass.patpanel.vecaktrez.get(10).equals("0")){
 			labs[2] = new JLabel();
 			labs[2].setForeground(Color.BLUE);			
-			pan.add(labs[2],cc.xy(3, 15));
+			pan.add(labs[2],cc.xy(3, 18));
 		}
 		if(!Reha.thisClass.patpanel.vecaktrez.get(11).equals("0")){
 			labs[3] = new JLabel();
 			labs[3].setForeground(Color.BLUE);			
-			pan.add(labs[3],cc.xy(3, 17));
+			pan.add(labs[3],cc.xy(3, 20));
 		}
 		// Mit Hausbesuch
 		if(Reha.thisClass.patpanel.vecaktrez.get(43).equals("T")){
@@ -236,14 +251,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}
 			labs[4] = new JLabel();
 			labs[4].setForeground(Color.RED);
-			pan.add(labs[4],cc.xy(3, 19));
+			pan.add(labs[4],cc.xy(3, 22));
 			labs[5] = new JLabel();
 			labs[5].setForeground(Color.RED);
-			pan.add(labs[5],cc.xy(3, 21));
+			pan.add(labs[5],cc.xy(3, 24));
 		}
 		labs[6] = new JLabel();
 		labs[6].setForeground(Color.BLUE);
-		pan.add(labs[6],cc.xy(3, 23));
+		pan.add(labs[6],cc.xy(3, 26));
 
 		doNeuerTarif();
 		pan.validate();
@@ -288,6 +303,22 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		return this;
 	}
 	*/
+	private void holePrivat(){
+		hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
+		hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );
+		hmAdresse.put("<pri3>",SystemConfig.hmAdrPDaten.get("<Padr2>") );
+		hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
+		hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
+		return;
+	}
+	private void holeBGE(){
+		hmAdresse.put("<pri1>",SystemConfig.hmAdrKDaten.get("<Kadr1>") );
+		hmAdresse.put("<pri2>",SystemConfig.hmAdrKDaten.get("<Kadr2>") );
+		hmAdresse.put("<pri3>",SystemConfig.hmAdrKDaten.get("<Kadr3>") );
+		hmAdresse.put("<pri4>",SystemConfig.hmAdrKDaten.get("<Kadr4>") );
+		hmAdresse.put("<pri5>","Sehr geehrte Damen und Herren" );
+		return;
+	}
 	private void doPrivat(){
 		try {
 			Thread.sleep(50);
@@ -297,8 +328,10 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
 			hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
 			
-			if(!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))) ){
-				String meldung = "Fehler!!!! aktuelle Patientendaten - soll = "+StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))+"\n"+
+			if((!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2))))) ||
+					(!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(3)))))	){
+				String meldung = "Fehler!!!! aktuelle Patientendaten - soll = "+StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(3)))+" "+
+				StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))+"\n"+
 				"Istdaten sind\n"+
 				hmAdresse.get("<pri1>")+"\n"+
 				hmAdresse.get("<pri2>")+"\n"+
@@ -675,10 +708,29 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		// TODO Auto-generated method stub
 		
 	}
-
+	private void regleBGE(){
+		holeBGE();
+		adr1.setText( (hmAdresse.get("<pri1>").trim().equals("")? " " : hmAdresse.get("<pri1>") )  );
+		adr2.setText( (hmAdresse.get("<pri2>").trim().equals("")? " " : hmAdresse.get("<pri2>") )  );
+		//adr1.getParent().validate();
+	}
+	private void reglePrivat(){
+		holePrivat();
+		adr1.setText( (hmAdresse.get("<pri1>").trim().equals("")? " " : hmAdresse.get("<pri1>") )  );
+		adr2.setText( (hmAdresse.get("<pri2>").trim().equals("")? " " : hmAdresse.get("<pri2>") )  );
+		//adr1.getParent().validate();
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
+		if(cmd.equals("privatadresse")){
+			reglePrivat();
+			return;
+		}
+		if(cmd.equals("kassendresse")){
+			regleBGE();
+			return;
+		}
 		if(cmd.equals("neuertarif")){
 			this.aktGruppe = jcmb.getSelectedIndex();
 			doNeuerTarif();
@@ -693,18 +745,10 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		if(cmd.equals("abbrechen")){
 			this.rueckgabe = -1;
 			FensterSchliessen("dieses");
-		}else{
+		}
+		if(cmd.equals("ok")){
 			this.rueckgabe = 0;
 			doRgRechnungPrepare();
-			/*
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					doRgRechnungPrepare();
-					return null;
-				}
-			}.execute();
-			*/
 		}
 		
 	}
@@ -901,6 +945,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			textDocument.getPrintService().print(printprop);
 			Thread.sleep(200);
 			textDocument.close();
+		}
+	}
+	@Override
+	public void stateChanged(ChangeEvent arg0) {
+		if(jrb[0].isSelected()){
+			reglePrivat();
+		}else{
+			regleBGE();
 		}
 	}
 

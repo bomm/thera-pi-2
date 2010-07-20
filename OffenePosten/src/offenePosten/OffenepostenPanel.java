@@ -37,6 +37,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+
+
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
@@ -153,7 +155,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		tab.getColumn(0).setCellRenderer(new Tools.MitteRenderer());
 		
 		//tab.getColumn(1).setCellEditor();
-		
+		DateTableCellEditor tble = new DateTableCellEditor();
 		tab.getColumn(4).setCellRenderer(new Tools.MitteRenderer());
 		tab.getColumn(5).setCellRenderer(new Tools.DoubleTableCellRenderer());
 		tab.getColumn(6).setCellRenderer(new Tools.DoubleTableCellRenderer());
@@ -162,6 +164,12 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		tab.getColumn(6).setCellEditor(new Tools.DblCellEditor());
 		tab.getColumn(8).setCellEditor(new Tools.DblCellEditor());
 		
+		tab.getColumn(1).setCellEditor(tble);
+		tab.getColumn(7).setCellEditor(tble);
+		tab.getColumn(9).setCellEditor(tble);
+		tab.getColumn(10).setCellEditor(tble);
+		tab.getColumn(11).setCellEditor(tble);
+
 		tab.getSelectionModel().addListSelectionListener( new OPListSelectionHandler());
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		
@@ -627,7 +635,17 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 				if( tabmod.getColumnClass(col) == Boolean.class){
 					value = (tabmod.getValueAt(row,col) == Boolean.FALSE ? "F" : "T");
 				}else if(tabmod.getColumnClass(col) == Date.class){
-					value = tabmod.getValueAt(row,col).toString();
+					if(tabmod.getValueAt(row,col)==null ){
+						value =  "1900-01-01";
+					}else{
+						String test = tabmod.getValueAt(row,col).toString();
+						if(test.contains(".")){
+							value = DatFunk.sDatInSQL(test);
+						}else{
+							value = test;
+						}
+					}
+					//value = tabmod.getValueAt(row,col).toString();
 				}else if(tabmod.getColumnClass(col) == Double.class){
 					value = dcf.format((Double)tabmod.getValueAt(row,col)).replace(",",".");
 				}else if(tabmod.getColumnClass(col) == Integer.class){

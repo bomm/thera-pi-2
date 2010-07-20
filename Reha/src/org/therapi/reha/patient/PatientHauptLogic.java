@@ -432,9 +432,21 @@ public class PatientHauptLogic {
 									return null;
 								}
 							}
-							PatTools.constructPatHMap();		
-							ArztTools.constructArztHMap("");
-							KasseTools.constructKasseHMap("");
+							try{
+								PatTools.constructPatHMap();
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null, "Fehler bei PatTools.constructPatHMap()");
+							}
+							try{
+								ArztTools.constructArztHMap("");
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null, "Fehler bei	ArztTools.constructArztHMap('')");
+							}
+							try{
+								KasseTools.constructKasseHMap("");
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null, "Fehler bei	KasseTools.constructKasseHMap('')");
+							}
 							if(((SuchenDialog) patientHauptPanel.sucheComponent) != null){
 								((SuchenDialog) patientHauptPanel.sucheComponent).dispose();
 								patientHauptPanel.sucheComponent = null;

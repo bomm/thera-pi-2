@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 import krankenKasse.KassenPanel;
 import menus.OOIFTest;
 
-import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;

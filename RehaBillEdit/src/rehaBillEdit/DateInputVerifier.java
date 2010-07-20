@@ -1,4 +1,4 @@
-package Tools;
+package rehaBillEdit;
 
 import java.awt.Color;
 import java.text.DateFormat;
@@ -16,6 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+
+import Tools.IntegerTools;
 
 
 

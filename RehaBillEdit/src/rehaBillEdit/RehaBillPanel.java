@@ -37,6 +37,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 
+
+
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
@@ -241,10 +243,15 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		tabmod.setColumnIdentifiers(spalten);
 		tab = new JXTable(tabmod);
 		tab.setHorizontalScrollEnabled(true);
+		DateTableCellEditor tble = new DateTableCellEditor();
+
+
 		for(int i = 0; i < feldNamen.size();i++){
 			if(feldNamen.get(i).get(1).contains("decimal(")){
 				tab.getColumn(i).setCellRenderer(new Tools.DoubleTableCellRenderer());
 				tab.getColumn(i).setCellEditor(new Tools.DblCellEditor());
+			}else if(feldNamen.get(i).get(1).contains("date")){
+				tab.getColumn(i).setCellEditor(tble);
 			}
 		}
 		/*
@@ -419,7 +426,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			if(i ==0 ){
 				buf.append(feldNamen.get(i).get(0)+"='"+retWert(row,i)+"'");
 			}else{
-				buf.append(", "+feldNamen.get(i).get(0)+"='"+retWert(row,i)+"'");
+					buf.append(", "+feldNamen.get(i).get(0)+"='"+retWert(row,i)+"'");					
 			}
 		}
 		return buf.toString();
@@ -444,7 +451,16 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		if( tabmod.getColumnClass(col) == Boolean.class){
 			value = (tabmod.getValueAt(row,col) == Boolean.FALSE ? "F" : "T");
 		}else if(tabmod.getColumnClass(col) == Date.class){
-			value = (tabmod.getValueAt(row,col)==null  ? "1900-01-01" : tabmod.getValueAt(row,col).toString());
+			if(tabmod.getValueAt(row,col)==null ){
+				value =  "1900-01-01";
+			}else{
+				String test = tabmod.getValueAt(row,col).toString();
+				if(test.contains(".")){
+					value = DatFunk.sDatInSQL(test);
+				}else{
+					value = test;
+				}
+			}
 		}else if(tabmod.getColumnClass(col) == Double.class){
 			value = dcf.format((Double)tabmod.getValueAt(row,col)).replace(",",".");
 		}else if(tabmod.getColumnClass(col) == Integer.class){

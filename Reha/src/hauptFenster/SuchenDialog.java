@@ -4,7 +4,6 @@ package hauptFenster;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -17,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -26,11 +24,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
-import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
@@ -38,11 +35,9 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import dialoge.PinPanel;
-
 import systemEinstellungen.SystemConfig;
-import systemTools.ListenerTools;
 import systemTools.StringTools;
+import dialoge.PinPanel;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;
@@ -66,8 +61,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	//private SuchenDialog thisClass = null;
 	private int clickX;
 	private int clickY;
-	private int weiteX;
-	private int hoeheY;
+	//private int weiteX;
+	//private int hoeheY;
 	//private int locationX;
 	//private int locationY;
 	private Cursor cmove = new Cursor(Cursor.MOVE_CURSOR);  //  @jve:decl-index=0:
@@ -639,8 +634,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					if (e.getY() <= 25){
 						clickY = e.getY();
 						clickX = e.getX();
-						weiteX = (int) ((Component) e.getSource()).getBounds().getWidth();
-						hoeheY = (int) ((Component) e.getSource()).getBounds().getHeight();						
+						//weiteX = (int) ((Component) e.getSource()).getBounds().getWidth();
+						//hoeheY = (int) ((Component) e.getSource()).getBounds().getHeight();						
 					}
 				}
 			});
