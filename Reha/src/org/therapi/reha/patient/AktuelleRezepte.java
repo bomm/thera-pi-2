@@ -11,6 +11,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -2196,6 +2198,24 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		
 	}
+	private void doTageDrucken(){
+		int akt = 		this.tabaktrez.getSelectedRow();
+		if(akt < 0){
+			JOptionPane.showMessageDialog(null, "Kein aktuelles Rezept für Übertrag in Clipboard ausgewählt");
+			return;
+		}
+		String stage = "Rezeptnummer: "+this.tabaktrez.getValueAt(akt,0).toString()+" - Rezeptdatum: "+this.tabaktrez.getValueAt(akt,2).toString()+"\n";
+		int tage = this.dtermm.getRowCount();
+		 
+ 
+		for(int i = 0; i < tage;i++){
+			stage = stage + Integer.toString(i+1)+"\t"+dtermm.getValueAt(i, 0).toString()+"\n";
+		}
+		copyToClipboard(stage);
+	}
+	public static void copyToClipboard(String s) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
+    }	
 
 	
 /**********************************************/
@@ -2209,13 +2229,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("Ausfallrechnung drucken",SystemConfig.hmSysIcons.get("ausfallrechnung"));
 			icons.put("Rezept ab-/aufschließen",SystemConfig.hmSysIcons.get("statusset"));
 			icons.put("Privat-/BG-/Nachsorge-Rechnung erstellen",SystemConfig.hmSysIcons.get("privatrechnung"));
+			icons.put("Behandlungstage in Clipboard",SystemConfig.hmSysIcons.get("einzeltage"));
 			icons.put("Transfer in Historie",SystemConfig.hmSysIcons.get("redo"));
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Transfer in Historie"});
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Behandlungstage in Clipboard","Transfer in Historie"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list,rueckgabe);
-			tDlg.setPreferredSize(new Dimension(250,200));
+			tDlg.setPreferredSize(new Dimension(250,230));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
 			tDlg.setVisible(true);
@@ -2239,6 +2260,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				privatRechnung();
 				break;
 			case 5:
+				doTageDrucken();
+				break;
+			case 6:
 				if(!Rechte.hatRecht(Rechte.Sonstiges_rezepttransfer, true)){
 					return;
 				}

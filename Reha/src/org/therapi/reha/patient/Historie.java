@@ -12,6 +12,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -944,17 +946,34 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	histbut[3].addActionListener(this);		
 	jtb.add(histbut[3]);
 	*/
-	
+	private void doTageDrucken(){
+		int akt = 		this.tabhistorie.getSelectedRow();
+		if(akt < 0){
+			JOptionPane.showMessageDialog(null, "Kein Historien-Rezept für Übertrag in Clipboard ausgewählt");
+			return;
+		}
+		String stage = "Rezeptnummer: "+tabhistorie.getValueAt(akt,0).toString()+" - Rezeptdatum: "+tabhistorie.getValueAt(akt,2).toString()+"\n";
+		int tage = dtermm.getRowCount();
+		 
+ 
+		for(int i = 0; i < tage;i++){
+			stage = stage + Integer.toString(i+1)+"\t"+dtermm.getValueAt(i, 0).toString()+"\n";
+		}
+		copyToClipboard(stage);
+	}
+	public static void copyToClipboard(String s) {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
+    }	
 	class ToolsDlgHistorie{
 		public ToolsDlgHistorie(String command,Point pt){
 
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
 			icons.put("Gesamtumsatz dieses Patienten",SystemConfig.hmSysIcons.get("euro"));
-			icons.put("Behandlungstage drucken",SystemConfig.hmSysIcons.get("einzeltage"));
+			icons.put("Behandlungstage in Clipboard",SystemConfig.hmSysIcons.get("einzeltage"));
 			icons.put("Transfer in aktuelle Rezepte",SystemConfig.hmSysIcons.get("undo"));
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten",
-					"Behandlungstage drucken","Transfer in aktuelle Rezepte"});
+					"Behandlungstage in Clipboard","Transfer in aktuelle Rezepte"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list,rueckgabe);
@@ -979,6 +998,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				if(!Rechte.hatRecht(Rechte.Historie_tagedrucken, true)){
 					return;
 				}
+				doTageDrucken();
 				//doUebertrag();
 				break;
 			case 2:

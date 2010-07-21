@@ -1501,7 +1501,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								break;
 							}
 						}else{
-							// Zun�chst den Vector mit dem Tag holen der immer �berpr�ft werden mu�				
+							// Zunächst den Vector mit dem Tag holen der immer überprüft werden muß				
 							try {
 								vec = sucheZeile(i);
 							} catch (SQLException e) {
@@ -1519,17 +1519,17 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								int tkende = (int) ZeitFunk.MinutenSeitMitternacht( ZeitFunk.MinutenZuZeit(tkstart+tkdauer) );
 								int plende = (int) ZeitFunk.MinutenSeitMitternacht( ZeitFunk.MinutenZuZeit(plstart+pldauer) );
 
-								//2. Abfrage ob Beginn sp�ter und Ende fr�her - Mittelblock erforderlich - 2 neue Bl�cke!
+								//2. Abfrage ob Beginn später und Ende früher - Mittelblock erforderlich - 2 neue Bl�cke!
 								if((tkstart != plstart) && (tkdauer != pldauer) && (tkende != plende)){
 									schreibeTermin(vec,i,1,tkstart,tkdauer,tkende,plstart,pldauer,plende,name,nummer);
 									break;
 								}
-								//3. Abfrage ob Beginn gleich und Ende fr�her - Nachblock erforderlich - 1 neuer Block!
+								//3. Abfrage ob Beginn gleich und Ende früher - Nachblock erforderlich - 1 neuer Block!
 								if((tkstart == plstart) && (tkdauer != pldauer)){
 									schreibeTermin(vec,i,2,tkstart,tkdauer,tkende,plstart,pldauer,plende,name,nummer);
 									break;
 								}
-								//4. Abfrage ob Beginn sp�ter und Ende gleich - Vorblock erforderlich - 1 neuer Block!
+								//4. Abfrage ob Beginn später und Ende gleich - Vorblock erforderlich - 1 neuer Block!
 								if((tkstart != plstart) && (tkdauer != pldauer) && (tkende==plende)){
 									schreibeTermin(vec,i,3,tkstart,tkdauer,tkende,plstart,pldauer,plende,name,nummer);
 									break;

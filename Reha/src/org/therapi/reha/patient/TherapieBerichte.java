@@ -182,7 +182,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 							"empfaenger," +
 							"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat," +
 							"empfid",
-							"pat_intern='"+xpatint+"' ORDER BY erstelldat", Arrays.asList(new String[]{}));
+							"pat_intern='"+xpatint+"' ORDER BY berichtid DESC", Arrays.asList(new String[]{}));
 					int anz = vec.size();
 					dtblm.setRowCount(0);
 					for(int i = 0; i < anz;i++){

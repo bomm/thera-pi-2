@@ -612,29 +612,33 @@ public class PatientHauptLogic {
 	}
 
 	public void datenHolen(String patint){
-		Reha.thisClass.patpanel.patDatenOk = false;
-		Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5"," * ", "PAT_INTERN ='"+patint+"'", Arrays.asList(new String[] {}) );
-		//System.out.println("Größe der Daten = "+Reha.thisClass.patpanel.patDaten.size());
-		if(Reha.thisClass.patpanel.patDaten.size() == 71){
-			if(Reha.thisClass.patpanel.patDaten.get(65).equals("")){
-				Reha.thisClass.patpanel.pmemo[0].setText("");
-			}else{
-				Reha.thisClass.patpanel.pmemo[0].setText(Reha.thisClass.patpanel.patDaten.get(65));				
-			}
-			if(Reha.thisClass.patpanel.patDaten.get(64).equals("")){
-				Reha.thisClass.patpanel.pmemo[1].setText("");
-			}else{
-				Reha.thisClass.patpanel.pmemo[1].setText(Reha.thisClass.patpanel.patDaten.get(64));				
-			}
-			Reha.thisClass.patpanel.autoPatid = Integer.parseInt(Reha.thisClass.patpanel.patDaten.get(66));
-			Reha.thisClass.patpanel.aid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(67));
-			Reha.thisClass.patpanel.kid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(68));
-			Reha.thisClass.patpanel.patDatenOk = true;
-			Reha.thisClass.patpanel.getStammDaten().parseHTML(true);			
-		}else{
-			JOptionPane.showMessageDialog(null, "Fehler beim Einlesen der Patientendaten");
+		try{
 			Reha.thisClass.patpanel.patDatenOk = false;
-			Reha.thisClass.patpanel.getStammDaten().parseHTML(false);
+			Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5"," * ", "PAT_INTERN ='"+patint+"'", Arrays.asList(new String[] {}) );
+			//System.out.println("Größe der Daten = "+Reha.thisClass.patpanel.patDaten.size());
+			if(Reha.thisClass.patpanel.patDaten.size() == 71){
+				if(Reha.thisClass.patpanel.patDaten.get(65).equals("")){
+					Reha.thisClass.patpanel.pmemo[0].setText("");
+				}else{
+					Reha.thisClass.patpanel.pmemo[0].setText(Reha.thisClass.patpanel.patDaten.get(65));				
+				}
+				if(Reha.thisClass.patpanel.patDaten.get(64).equals("")){
+					Reha.thisClass.patpanel.pmemo[1].setText("");
+				}else{
+					Reha.thisClass.patpanel.pmemo[1].setText(Reha.thisClass.patpanel.patDaten.get(64));				
+				}
+				Reha.thisClass.patpanel.autoPatid = Integer.parseInt(Reha.thisClass.patpanel.patDaten.get(66));
+				Reha.thisClass.patpanel.aid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(67));
+				Reha.thisClass.patpanel.kid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(68));
+				Reha.thisClass.patpanel.patDatenOk = true;
+				Reha.thisClass.patpanel.getStammDaten().parseHTML(true);			
+			}else{
+				JOptionPane.showMessageDialog(null, "Fehler beim Einlesen der Patientendaten");
+				Reha.thisClass.patpanel.patDatenOk = false;
+				Reha.thisClass.patpanel.getStammDaten().parseHTML(false);
+			}
+		}catch(Exception ex){
+			Reha.thisClass.patpanel.patDatenOk = true;
 		}
 		
 	}

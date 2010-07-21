@@ -617,6 +617,9 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			JOptionPane.showMessageDialog(null,"Schwerwiegender Fehler beim Bezug einer neuen Berichts-ID!");
 			return false;
 		}
+		Reha.thisClass.patpanel.vecaktrez.set(54,Integer.toString(berichtnr));
+		Reha.thisClass.patpanel.rezlabs[7].setForeground(Color.BLACK);
+		Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht o.k.");
 		
 		////System.out.println("************************************************************************************");
 		String tbs = (String) tbwahl.getSelectedItem(); 
@@ -624,8 +627,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		"bertitel='"+"Bericht zu "+this.reznr+" ("+tbs+")', "+
 		"empfaenger='"+rlab[2].getText()+"', empfid='"+arztid+"', berichtid='"+berichtnr+"', "+
 		"pat_intern='"+this.pat_intern+"'";
-		
-		new ExUndHop().setzeStatement(new String(cmd));
+		//SqlInfo.sqlAusfuehren(String.valueOf(cmd));
+		new ExUndHop().setzeStatement(String.valueOf(cmd));
 		long zeit = System.currentTimeMillis();
 		while(! ExUndHop.processdone){
 			try {
@@ -659,7 +662,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			}
 		}
 
-		new ExUndHop().setzeStatement(new String(cmd));
+		new ExUndHop().setzeStatement(String.valueOf(cmd));
 		//System.out.println("Bericht-wurde gespeichert");
 
 		final int xberichtnr = berichtnr;
