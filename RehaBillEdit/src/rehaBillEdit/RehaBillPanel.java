@@ -220,6 +220,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		return jpan;
 	}
 	private JXPanel getTable(){
+		
 		String xwerte = "fill:0:grow(1.0)";
 		String ywerte = "22dlu,155dlu:g,5dlu,p,5dlu";
 		
@@ -307,6 +308,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 				}
 				if(cmd.equals("drucken")){
 					try{
+						System.out.println("Druck wird gestartet");
 						starteDrucken();	
 					}catch(Exception ex){
 						ex.printStackTrace();
@@ -775,34 +777,39 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	}
 	
 	private void starteDrucken(){
-		if(tab.getRowCount()<=0){
-			JOptionPane.showMessageDialog(null,"Depp - deppader!\n\nRowCount()==0\n");
-			return;
+		try{
+			if(tab.getRowCount()<=0){
+				JOptionPane.showMessageDialog(null,"Depp - deppader!\n\nRowCount()==0\n");
+				return;
+			}
+			String kassenid = Integer.toString( ((Integer)tabmod.getValueAt(0, 32)) );
+			String disziplin = ((String)tabmod.getValueAt(0, 38)).trim().toLowerCase();
+			String pgruppe = SqlInfo.holeEinzelFeld("select preisgruppe from kass_adr where id='"+kassenid+"' LIMIT 1");
+			if(pgruppe.equals("")){
+				JOptionPane.showMessageDialog(null, "Kann Preisgruppe nicht ermitteln");
+				return;
+			}
+			RehaBillEdit.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			int preisgruppe = Integer.parseInt(pgruppe);
+			String test = ((String)tabmod.getValueAt(0, 0)).trim();
+			String cmd = "select * from "+disziplin.toLowerCase()+"tarif"+preisgruppe;
+			System.out.println(cmd);
+			Vector<Vector<String>> preisvec = SqlInfo.holeFelder(cmd);
+			if(test.equalsIgnoreCase("Herr") || test.equalsIgnoreCase("Frau") ){
+				//es ist eine Rechnung an Privatpersonen
+				macheHashMap("privat", (! disziplin.equals("rh")) , preisvec);
+			}else{
+				//es ist eine Rechnung an den Kostenträger
+				macheHashMap("institution", (! disziplin.equals("rh")), preisvec);
+			}
+			RehaBillEdit.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-		String kassenid = Integer.toString( ((Integer)tabmod.getValueAt(0, 32)) );
-		String disziplin = ((String)tabmod.getValueAt(0, 38)).trim().toLowerCase();
-		String pgruppe = SqlInfo.holeEinzelFeld("select preisgruppe from kass_adr where id='"+kassenid+"' LIMIT 1");
-		if(pgruppe.equals("")){
-			JOptionPane.showMessageDialog(null, "Kann Preisgruppe nicht ermitteln");
-			return;
-		}
-		RehaBillEdit.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		int preisgruppe = Integer.parseInt(pgruppe);
-		String test = ((String)tabmod.getValueAt(0, 0)).trim();
-		String cmd = "select * from "+disziplin.toLowerCase()+"tarif"+preisgruppe;
-		System.out.println(cmd);
-		Vector<Vector<String>> preisvec = SqlInfo.holeFelder(cmd);
-		if(test.equalsIgnoreCase("Herr") || test.equalsIgnoreCase("Frau") ){
-			//es ist eine Rechnung an Privatpersonen
-			macheHashMap("privat", (! disziplin.equals("rh")) , preisvec);
-		}else{
-			//es ist eine Rechnung an den Kostenträger
-			macheHashMap("institution", (! disziplin.equals("rh")), preisvec);
-		}
-		RehaBillEdit.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 	
 	private void macheHashMap(String fuerwen,boolean heilmittel, Vector<Vector<String>> preisvec){
+		try{
 		originalPos.clear();
 		originalAnzahl.clear();
 		einzelPreis.clear();
@@ -811,6 +818,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		originalLangtext.clear();
 		aktuellePosition = 0;
 		if( fuerwen.equals("privat") && heilmittel ){
+			try{
 			System.out.println("in privat und heilmittel");
 			hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
 			hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
@@ -818,6 +826,9 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
 			hmAdresse.put("<pri5>",rnummerAlt.getText() );
 			hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			
 			for(int i = 0; i < tabmod.getRowCount();i++){
 				try{
@@ -855,11 +866,59 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 
 			
 		}else if( fuerwen.equals("institution") && heilmittel ){
+			try{
+				System.out.println("in privat und heilmittel");
+				hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
+				hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
+				hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
+				hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+				hmAdresse.put("<pri5>",rnummerAlt.getText() );
+				hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				
+				for(int i = 0; i < tabmod.getRowCount();i++){
+					try{
+						int id = ((Integer)tabmod.getValueAt(i, 8));
+						String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
+						//System.out.println(langtext);
+						String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
+						//System.out.println(preis);
+						originalLangtext.add(langtext);
+						originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
+						einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
+						gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
+						aktuellePosition++;	
+						
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+
+				}
+				try {
+					System.out.println(originalAnzahl);
+					System.out.println(einzelPreis);
+					System.out.println(gesamtPreis);
+					System.out.println(rechnungGesamt);
+					System.out.println(RehaBillEdit.hmRechnungPrivat);
+					starteDokument( RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmRechnungPrivat );
+					System.out.println(RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmRechnungPrivat);
+					starteErsetzen();
+					aktuellePosition = 0;
+					startePositionen();
+					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			
 		}else if( fuerwen.equals("privat") && (!heilmittel) ){
 			
 		}else if( fuerwen.equals("institution") && (!heilmittel) ){
 			
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		
 	}
