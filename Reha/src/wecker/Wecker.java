@@ -643,6 +643,7 @@ final class TerminAbgelaufen extends RehaSmartDialog implements WindowListener{
 		JLabel lab = new JLabel("Bitte Passwort eingeben");
 		jpan2.add(lab,cc2.xy(2, 2));
 		pwfield = new JPasswordField();
+		pwfield.setBackground(Color.YELLOW);
 		pwfield.setName("pwfield");
 		pwfield.addKeyListener(klton);
 		jpan2.add(pwfield,cc2.xy(4, 2));
