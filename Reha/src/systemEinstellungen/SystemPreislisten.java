@@ -47,6 +47,7 @@ public class SystemPreislisten {
 	@SuppressWarnings("unchecked")
 	public static void ladePreise(String disziplin){
 		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Common"};
+
 		List<String> list = Arrays.asList(diszis);
 		int treffer = list.indexOf(disziplin);
 		
@@ -343,6 +344,40 @@ public class SystemPreislisten {
 			dummy.add(f.getStringProperty("BerichtRegeln_"+disziplin, "Bericht"+Integer.toString(i+1)));
 		}
 	}
+	public static void loescheHashMaps(){
+		hmPreise.clear();
+		hmPreisGruppen.clear();
+		hmPreisBereich.clear();
+		hmZuzahlRegeln.clear();	
+		hmHMRAbrechnung.clear();
+		hmNeuePreiseAb.clear();
+		hmNeuePreiseRegel.clear();
+		hmHBRegeln.clear();
+		hmBerichtRegeln.clear();
+				
+		dummy.clear();
+		intdummy.clear();
+		hbdummy.clear();
+		hbdummy_1.clear();
+		preisliste.clear();
+		
+		hmPreisGruppen.clear();
+		hmPreisBereich.clear();
+		hmZuzahlRegeln.clear();	
+		hmHMRAbrechnung.clear();
+		hmNeuePreiseAb.clear();
+		hmNeuePreiseRegel.clear();
+		hmHBRegeln.clear();
+		hmBerichtRegeln.clear();
+				
+		dummy.trimToSize();
+		intdummy.trimToSize();
+		hbdummy.trimToSize();
+		hbdummy_1.trimToSize();
+		preisliste.trimToSize();
+
+	}
+
 class Sortiere{
 	Vector<Vector<String>> vector = null;
 	public Sortiere (Vector<Vector<String>> vec){

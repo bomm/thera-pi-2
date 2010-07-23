@@ -6,6 +6,8 @@ import java.util.Vector;
 
 import systemEinstellungen.SystemConfig;
 
+
+
 public class BlockHandling {
 	int ret = -1;
 	int wasTun = -1;
@@ -459,13 +461,13 @@ public class BlockHandling {
 				tauschTermine[x][y] = datenfeld.getFeld(kollege,y,bloecke[x]);//Text
  			}
 		}
-		String name = "";
-		String reznr = "";
+		//String name = "";
+		//String reznr = "";
 		if(richtung < 0){
 			// mit Vorgängerblock tauschen
 			//bisheriger Vorgänger
-			name = datenfeld.getFeld(kollege,0,bloecke[1]);
-			reznr = datenfeld.getFeld(kollege,1,bloecke[1]);
+			//name = datenfeld.getFeld(kollege,0,bloecke[1]);
+			//reznr = datenfeld.getFeld(kollege,1,bloecke[1]);
 			datenfeld.setFeld(kollege,0,bloecke[1],tauschTermine[0][0]);
 			datenfeld.setFeld(kollege,1,bloecke[1],tauschTermine[0][1]);
 			datenfeld.setFeld(kollege,2,bloecke[1],tauschTermine[1][2]);
@@ -494,8 +496,8 @@ public class BlockHandling {
 		}else{
 			//mit Nachfolgeblock tauschen
 			//bisheriger Vorgänger
-			name = datenfeld.getFeld(kollege,0,bloecke[0]);
-			reznr = datenfeld.getFeld(kollege,1,bloecke[0]);
+			//name = datenfeld.getFeld(kollege,0,bloecke[0]);
+			//reznr = datenfeld.getFeld(kollege,1,bloecke[0]);
 			datenfeld.setFeld(kollege,0,bloecke[0],tauschTermine[1][0]);
 			datenfeld.setFeld(kollege,1,bloecke[0],tauschTermine[1][1]);
 			datenfeld.setFeld(kollege,2,bloecke[0],tauschTermine[0][2]);
@@ -524,6 +526,8 @@ public class BlockHandling {
 		}
 		//return -1;
 	}
+	
+	@SuppressWarnings("unused")
 	private void sucheNachLeerBlock(){
 		
 		

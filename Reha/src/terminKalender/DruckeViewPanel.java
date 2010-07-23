@@ -3,36 +3,23 @@ package terminKalender;
 import hauptFenster.Reha;
 
 import java.awt.Cursor;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import org.jdesktop.swingworker.SwingWorker;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sun.awt.image.ImageFormatException;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import com.sun.star.beans.PropertyValue;
-import com.sun.star.text.HoriOrientation;
-import com.sun.star.text.TextContentAnchorType;
-import com.sun.star.text.VertOrientation;
-
-
-
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
@@ -41,8 +28,13 @@ import ag.ion.bion.officelayer.text.ITextContentService;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextDocumentImage;
-import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.noa.graphic.GraphicInfo;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import com.sun.star.text.HoriOrientation;
+import com.sun.star.text.TextContentAnchorType;
+import com.sun.star.text.VertOrientation;
 
 
 

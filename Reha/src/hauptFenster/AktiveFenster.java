@@ -43,7 +43,7 @@ public class AktiveFenster {
 				 		    ////System.out.println("Free Memory   = "+Runtime.getRuntime().freeMemory());
 				 		    Runtime r = Runtime.getRuntime();
 				 		    r.gc();
-				 		    long freeMem = r.freeMemory();
+				 		    //long freeMem = r.freeMemory();
 				 		    ////System.out.println("Freed Memory  = "+freeMem);
 				 	   }
 				});				

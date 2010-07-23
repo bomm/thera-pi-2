@@ -3,16 +3,14 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Vector;
@@ -31,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -43,9 +42,8 @@ import jxTableTools.MitteRenderer;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
+import preisListenHandling.MachePreisListe;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 
@@ -165,6 +163,69 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		tarife.setSelectionMode(0);
 		tarife.setSortable(false);
 		tarife.getSelectionModel().addListSelectionListener( new TarifeListSelectionHandler());
+		tarife.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				tarife.requestFocus();
+				if(arg0.getClickCount()==1){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							tarife.setRowSelectionInterval(tarife.getSelectedRow(), tarife.getSelectedRow());
+							tarife.setColumnSelectionInterval(tarife.getSelectedColumn(), tarife.getSelectedColumn());
+							//startCellEditing(tarife,tarife.getSelectedRow(),tarife.getSelectedColumn());
+						}
+					});
+					return;
+				}else if(arg0.getClickCount()==2){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							tarife.setRowSelectionInterval(tarife.getSelectedRow(), tarife.getSelectedRow());
+							tarife.setColumnSelectionInterval(tarife.getSelectedColumn(), tarife.getSelectedColumn());
+							startCellEditing(tarife,tarife.getSelectedRow(),tarife.getSelectedColumn());
+						}
+					});
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			private void startCellEditing(JXTable table,int row,int col){
+				final int xrows = row;
+				final int xcols = col;
+				final JXTable xtable = table;
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run(){
+				 		  xtable.setRowSelectionInterval(xrows, xrows);
+				 		 xtable.setColumnSelectionInterval(xcols, xcols);
+				 		  xtable.scrollRowToVisible(xrows);
+				 				xtable.editCellAt(xrows,xcols );
+				 	   }
+				});
+			}
+
+			
+		});
 		
         //                                      1.            2.     3.     4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 80dlu:g",
@@ -237,7 +298,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		//int lang = SystemConfig.vPreisGruppen.size();
 		String diszi = (String)disziplin.getSelectedItem();
 		int lang = SystemPreislisten.hmPreisGruppen.get(diszi).size();
-		Vector vec = new Vector<String>();
+		Vector<String> vec = new Vector<String>();
 		String wert = "";
 		for(int i = 0;i < lang;i++){
 			vec.clear();
@@ -321,7 +382,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				vec.add("  - JA -  ");
 			}			
 
-			modtarife.addRow((Vector)vec.clone());
+			modtarife.addRow((Vector<?>)vec.clone());
 		}
 		tarife.validate();
 		tarife.repaint();
@@ -329,7 +390,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	}
 	
 	private void doSpeichern(){
-		String wert = "";
+		//String wert = "";
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
 
 		//int lang = SystemConfig.vPreisGruppen.size();
@@ -345,87 +406,114 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		String[] resultwgpausch = {"",disziindex[idiszi]+"9903"};
 
 		for(int i = 0;i<lang;i++){
-			//Preisgruppen-Name
-			swert = new String((String) tarife.getValueAt(i, 0));
-			//SystemConfig.vPreisGruppen.set(i, swert);
-			SystemPreislisten.hmPreisGruppen.get(diszi).set(i,swert);
-			inif.setStringProperty("PreisGruppen_"+diszi, "PGName"+(i+1),swert , null);
-			
-			//Zuzahlregel-einstellen
-			swert = new String((String) tarife.getValueAt(i, 1));
-			int zzreg = stringPosErmitteln(zzregel,swert);
-			//SystemConfig.vZuzahlRegeln.set(i, zzreg);
-			SystemPreislisten.hmZuzahlRegeln.get(diszi).set(i, zzreg);
-			
-			inif.setIntegerProperty("ZuzahlRegeln_"+diszi, "ZuzahlRegel"+(i+1),zzreg , null);
-			
-			//Preisver�nderung-einstellen
-			/**********
-			 * Abpr�fen welche Disziplin
-			 */
-			swert = new String((String) tarife.getValueAt(i, 2));
-			if(swert.equals(".  .")){
-				swert="";
-			}
-			
-			//((Vector)SystemConfig.vNeuePreiseAb.get(disziplin.getSelectedIndex())).set(i, swert);
-			SystemPreislisten.hmNeuePreiseAb.get(diszi).set(i, swert);
-			//Vergessen!!!!!!
-			inif.setStringProperty("PreisRegeln_"+diszi, "PreisAb"+(i+1),swert , null);
-			
-			//Splittingregel-einstellen
-			swert = new String((String) tarife.getValueAt(i, 3));
-			zzreg = stringPosErmitteln(zzart,swert);
-			//((Vector)SystemConfig.vNeuePreiseRegel.get(disziplin.getSelectedIndex())).set(i, zzreg);
-			SystemPreislisten.hmNeuePreiseRegel.get(diszi).set(i, zzreg);
-			inif.setIntegerProperty("PreisRegeln_"+diszi, "PreisRegel"+(i+1),zzreg , null);
+			try{
+				//Preisgruppen-Name
+				swert = new String((String) tarife.getValueAt(i, 0));
+				//SystemConfig.vPreisGruppen.set(i, swert);
+				SystemPreislisten.hmPreisGruppen.get(diszi).set(i,swert);
+				inif.setStringProperty("PreisGruppen_"+diszi, "PGName"+(i+1),swert , null);
+				
+				//Zuzahlregel-einstellen
+				swert = new String((String) tarife.getValueAt(i, 1));
+				int zzreg = stringPosErmitteln(zzregel,swert);
+				//SystemConfig.vZuzahlRegeln.set(i, zzreg);
+				SystemPreislisten.hmZuzahlRegeln.get(diszi).set(i, zzreg);
+				
+				inif.setIntegerProperty("ZuzahlRegeln_"+diszi, "ZuzahlRegel"+(i+1),zzreg , null);
+				
+				//Preisver�nderung-einstellen
+				/**********
+				 * Abpr�fen welche Disziplin
+				 */
+				swert = new String((String) tarife.getValueAt(i, 2));
+				if(swert.equals(".  .")){
+					swert="";
+				}
+				
+				//((Vector)SystemConfig.vNeuePreiseAb.get(disziplin.getSelectedIndex())).set(i, swert);
+				SystemPreislisten.hmNeuePreiseAb.get(diszi).set(i, swert);
+				//Vergessen!!!!!!
+				inif.setStringProperty("PreisRegeln_"+diszi, "PreisAb"+(i+1),swert , null);
+				
+				//Splittingregel-einstellen
+				swert = new String((String) tarife.getValueAt(i, 3));
+				zzreg = stringPosErmitteln(zzart,swert);
+				//((Vector)SystemConfig.vNeuePreiseRegel.get(disziplin.getSelectedIndex())).set(i, zzreg);
+				SystemPreislisten.hmNeuePreiseRegel.get(diszi).set(i, zzreg);
+				inif.setIntegerProperty("PreisRegeln_"+diszi, "PreisRegel"+(i+1),zzreg , null);
 
-			swert = new String((String) tarife.getValueAt(i, 4));
-			int treffer = Arrays.asList(getBereichLang()).indexOf(swert);
-			if(treffer < 0){
-				SystemPreislisten.hmPreisBereich.get(diszi).set(i, "-1");
-				inif.setStringProperty("PreisGruppen_"+diszi, "PGBereich"+(i+1),"-1" , null);
-			}else{
-				SystemPreislisten.hmPreisBereich.get(diszi).set(i, getBereichKurz()[treffer]);
-				inif.setStringProperty("PreisGruppen_"+diszi, "PGBereich"+(i+1),getBereichKurz()[treffer] , null);
+				swert = new String((String) tarife.getValueAt(i, 4));
+				int treffer = Arrays.asList(getBereichLang()).indexOf(swert);
+				if(treffer < 0){
+					SystemPreislisten.hmPreisBereich.get(diszi).set(i, "-1");
+					inif.setStringProperty("PreisGruppen_"+diszi, "PGBereich"+(i+1),"-1" , null);
+				}else{
+					SystemPreislisten.hmPreisBereich.get(diszi).set(i, getBereichKurz()[treffer]);
+					inif.setStringProperty("PreisGruppen_"+diszi, "PGBereich"+(i+1),getBereichKurz()[treffer] , null);
+				}
+				/*
+			 	String[] janein = {"  - JA -  ","  - NEIN -  "};
+				String[] hbmehrereart = {"nicht abrechenbar","x9902 Mehrere o. Wegegeld","x9934 Mehrere incl. Wegegeld","8602 BG (Einzel) o. Wegegeld","53 Beih. (Einzel) o. Wegegeld"};
+				String[] hbeinzelart = {"nicht abrechenbar","x9901 Einzel o. Wegegeld","x9933 Einzel incl. Wegegeld","8602 BG Einzel o. Wegegeld","53 Beih. Einzel o. Wegegeld"};
+				String[] wgkm = {"nicht abrechenbar","x9907 (teilw.GKV u.teilw.BG)","8603 (teilw. BG)","54 (Beihilfe)"};
+				String[] wgpausch = {"nicht abrechenbar","x9903 (teilw. GKV)"};
+				 */
+				swert = new String((String) tarife.getValueAt(i, 5));
+				treffer = Arrays.asList(janein).indexOf(swert);
+				
+				SystemPreislisten.hmHMRAbrechnung.get(diszi).set(i, (treffer==0 ? 1 : 0));
+				inif.setIntegerProperty("HMRAbrechnung_"+diszi, "HMRAbrechnung"+(i+1), (treffer==0 ? 1 : 0), null);
+				
+				
+				swert = new String((String) tarife.getValueAt(i, 6));
+				treffer = Arrays.asList(hbeinzelart).indexOf(swert);
+				if(treffer >= 0){
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(0, resulthbeinzel[treffer]);
+					inif.setStringProperty("HBRegeln_"+diszi, "HBPosVoll"+(i+1), resulthbeinzel[treffer], null);
+				}else{
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(0, "");
+					inif.setStringProperty("HBRegeln_"+diszi, "HBPosVoll"+(i+1), "", null);
+				}
+				
+				swert = new String((String) tarife.getValueAt(i, 7));
+				treffer = Arrays.asList(hbmehrereart).indexOf(swert);
+				if(treffer >= 0){
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(1, resulthbmehrere[treffer]);
+					inif.setStringProperty("HBRegeln_"+diszi, "HBPosMit"+(i+1), resulthbmehrere[treffer], null);
+				}else{
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(1, "");
+					inif.setStringProperty("HBRegeln_"+diszi, "HBPosMit"+(i+1), "", null);
+				}
+				
+				swert = new String((String) tarife.getValueAt(i, 8));
+				treffer = Arrays.asList(wgkm).indexOf(swert);
+				if(treffer >= 0){
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(2, resultwgkm[treffer]);
+					inif.setStringProperty("HBRegeln_"+diszi, "HBKilometer"+(i+1), resultwgkm[treffer], null);
+				}else{
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(2, "");
+					inif.setStringProperty("HBRegeln_"+diszi, "HBKilometer"+(i+1),"", null);
+				}
+
+				
+				swert = new String((String) tarife.getValueAt(i, 9));
+				treffer = Arrays.asList(wgpausch).indexOf(swert);
+				if(treffer >= 0){
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(3, resultwgpausch[treffer]);
+					inif.setStringProperty("HBRegeln_"+diszi, "HBPauschal"+(i+1), resultwgpausch[treffer], null);
+				}else{
+					SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(3, "");
+					inif.setStringProperty("HBRegeln_"+diszi, "HBPauschal"+(i+1), "", null);
+				}
+				
+						
+				swert = new String((String) tarife.getValueAt(i, 10));
+				treffer = Arrays.asList(janein).indexOf(swert);
+				SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(4, (treffer==0 ? "1" : "0"));
+				inif.setStringProperty("HBRegeln_"+diszi, "HBHeimMitZuZahl"+(i+1), (treffer==0 ? "1" : "0"), null);
+			}catch(Exception ex){
+				ex.printStackTrace();
 			}
-			/*
-		 	String[] janein = {"  - JA -  ","  - NEIN -  "};
-			String[] hbmehrereart = {"nicht abrechenbar","x9902 Mehrere o. Wegegeld","x9934 Mehrere incl. Wegegeld","8602 BG (Einzel) o. Wegegeld","53 Beih. (Einzel) o. Wegegeld"};
-			String[] hbeinzelart = {"nicht abrechenbar","x9901 Einzel o. Wegegeld","x9933 Einzel incl. Wegegeld","8602 BG Einzel o. Wegegeld","53 Beih. Einzel o. Wegegeld"};
-			String[] wgkm = {"nicht abrechenbar","x9907 (teilw.GKV u.teilw.BG)","8603 (teilw. BG)","54 (Beihilfe)"};
-			String[] wgpausch = {"nicht abrechenbar","x9903 (teilw. GKV)"};
-			 */
-			swert = new String((String) tarife.getValueAt(i, 5));
-			treffer = Arrays.asList(janein).indexOf(swert);
-			SystemPreislisten.hmHMRAbrechnung.get(diszi).set(i, (treffer==0 ? 1 : 0));
-			inif.setIntegerProperty("HMRAbrechnung_"+diszi, "HMRAbrechnung"+(i+1), (treffer==0 ? 1 : 0), null);
-			
-			
-			swert = new String((String) tarife.getValueAt(i, 6));
-			treffer = Arrays.asList(hbeinzelart).indexOf(swert);
-			SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(0, resulthbeinzel[treffer]);
-			inif.setStringProperty("HBRegeln_"+diszi, "HBPosVoll"+(i+1), resulthbeinzel[treffer], null);
-			
-			swert = new String((String) tarife.getValueAt(i, 7));
-			treffer = Arrays.asList(hbmehrereart).indexOf(swert);
-			SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(1, resulthbmehrere[treffer]);
-			inif.setStringProperty("HBRegeln_"+diszi, "HBPosMit"+(i+1), resulthbmehrere[treffer], null);
-			
-			swert = new String((String) tarife.getValueAt(i, 8));
-			treffer = Arrays.asList(wgkm).indexOf(swert);
-			SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(2, resultwgkm[treffer]);
-			inif.setStringProperty("HBRegeln_"+diszi, "HBKilometer"+(i+1), resultwgkm[treffer], null);
-			
-			swert = new String((String) tarife.getValueAt(i, 9));
-			treffer = Arrays.asList(wgpausch).indexOf(swert);
-			SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(3, resultwgpausch[treffer]);
-			inif.setStringProperty("HBRegeln_"+diszi, "HBPauschal"+(i+1), resultwgpausch[treffer], null);
-					
-			swert = new String((String) tarife.getValueAt(i, 10));
-			treffer = Arrays.asList(janein).indexOf(swert);
-			SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(4, (treffer==0 ? "1" : "0"));
-			inif.setStringProperty("HBRegeln_"+diszi, "HBHeimMitZuZahl"+(i+1), (treffer==0 ? "1" : "0"), null);
 		}
 		inif.save();
 		JOptionPane.showMessageDialog(null,"Konfiguration für -> "+diszi+" <- wurde erfolgreich gespeichert");
@@ -474,6 +562,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			return;
 		}
 		if(cmd.equals("neu")){
+			doNeueGruppe();
 			return;
 		}
 	}
@@ -498,15 +587,68 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				"24","25","91","99"};
 		return ret;
 	}
+	private void doNeueGruppe(){
+		String message = "<html><b>In der Folge wird eine neue Tarifgruppe angelegt,<br>gültig für die Disziplinen<br><br>"+
+		"<font color='#0000ff'>Physio<br>Massage<br>Ergo<br>Logo<br>Reha</font><br><br>"+
+		"Wollen Sie die Tarifgruppe jetzt anlegen<b><br></html>";
+		int anfrage = JOptionPane.showConfirmDialog(null, message, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		if(anfrage == JOptionPane.YES_OPTION){
+			macheNeuePreistabelle();
+			setzeIniEintraege(tarife.getRowCount()+1);
+			SystemPreislisten.loescheHashMaps();
+			SystemPreislisten.ladePreise("Physio");
+			SystemPreislisten.ladePreise("Massage");
+			SystemPreislisten.ladePreise("Ergo");
+			SystemPreislisten.ladePreise("Logo");
+			SystemPreislisten.ladePreise("Reha");
+			SystemPreislisten.ladePreise("Common");
+			fuelleMitWerten(disziplin.getSelectedIndex());
+		}
+	}
+	private void setzeIniEintraege(int position){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+		inif.setIntegerProperty("PreisGruppen_Common", "AnzahlPreisGruppen", position, null);
+		inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), "neue Preisgruppe", null);
+		inif.setStringProperty("PreisGruppen_Common", "PGBereich"+Integer.toString(position), "00", null);
+		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
+		for(int i = 0; i < diszis.length;i++){
+			inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
+			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), "neue Preisgruppe", null);
+			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBereich"+Integer.toString(position), "00", null);
+			
+			inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisAb"+Integer.toString(position), "", null);
+			inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisRegel"+Integer.toString(position), "0", null);
+			
+			inif.setStringProperty("ZuzahlRegeln_"+diszis[i], "ZuzahlRegel"+Integer.toString(position), "0", null);
+			
+			inif.setStringProperty("BerichtRegeln_"+diszis[i], "Bericht"+Integer.toString(position), "", null);
+			
+			inif.setStringProperty("HBRegeln_"+diszis[i], "HBPosVoll"+Integer.toString(position), "", null);
+			inif.setStringProperty("HBRegeln_"+diszis[i], "HBPosMit"+Integer.toString(position), "", null);
+			inif.setStringProperty("HBRegeln_"+diszis[i], "HBKilometer"+Integer.toString(position), "", null);
+			inif.setStringProperty("HBRegeln_"+diszis[i], "HBPauschal"+Integer.toString(position), "", null);
+			inif.setStringProperty("HBRegeln_"+diszis[i], "HBHeimMitZuZahl"+Integer.toString(position), "", null);
+			
+			inif.setStringProperty("HMRAbrechnung_"+diszis[i], "HMRAbrechnung"+Integer.toString(position), "0", null);
+		}
+		inif.save();
+	}
+	private void macheNeuePreistabelle(){
+		String[] tabName = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};
+		int anzahltarife = tarife.getRowCount()+1;
+		for(int i = 0; i < tabName.length; i++){
+			new MachePreisListe(tabName[i]+Integer.toString(anzahltarife));
+		}
+	}
 	class MyTarifeTableModel extends DefaultTableModel{
 		   /**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			 return String.class;
-	       }
+		}
 		
 
 	    public boolean isCellEditable(int row, int col) {
@@ -518,6 +660,10 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	/**********************************************/
 	/**********************************************/
 	class TitelEditor extends AbstractCellEditor implements TableCellEditor{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8334815830491722997L;
 		Object value;
 		JComponent component = new JFormattedTextField();
 	   public TitelEditor(){
@@ -586,8 +732,8 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	    public void valueChanged(ListSelectionEvent e) {
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	        
-	        int firstIndex = e.getFirstIndex();
-	        int lastIndex = e.getLastIndex();
+	        //int firstIndex = e.getFirstIndex();
+	        //int lastIndex = e.getLastIndex();
 	        boolean isAdjusting = e.getValueIsAdjusting();
 	        if(isAdjusting){
 	        	return;

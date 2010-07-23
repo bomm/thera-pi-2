@@ -73,7 +73,6 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -89,7 +88,6 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 import patientenFenster.KassenAuswahl;
-
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -300,6 +298,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
         jscr.validate();
 		return jscr;
 	}
+	@SuppressWarnings("unchecked")
 	public void setKuerzelVec(String xreznummer,String preisgr){
 		if(xreznummer.contains("KG")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("KG", Integer.parseInt(preisgr.trim())-1);
@@ -341,7 +340,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			vec_kuerzel.add( (Vector<String>)kundid.clone() );
 		}
 		Comparator<Vector> comparator = new Comparator<Vector>() {
-		    public int compare(String s1, String s2) {
+		    @SuppressWarnings("unused")
+			public int compare(String s1, String s2) {
 		        String[] strings1 = s1.split("\\s");
 		        String[] strings2 = s2.split("\\s");
 		        return strings1[strings1.length - 1]
@@ -787,10 +787,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		HashMap<String,String> taxWerte = new HashMap<String,String>(); 
 		JXTTreeTableNode node;
 		
+		@SuppressWarnings("unused")
 		String km = "";
+		@SuppressWarnings("unused")
 		boolean hb = false;
+		@SuppressWarnings("unused")
 		boolean hbmit = false;
+		@SuppressWarnings("unused")
 		boolean wgkm = false;
+		@SuppressWarnings("unused")
 		boolean wgpausch = false;
 		//boolean hbcecked = false;
 		boolean kmchecked = false;
@@ -1126,16 +1131,22 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int nodes;
 		if((nodes =getNodeCount())<= 0){return;}
 		
+		@SuppressWarnings("unused")
 		boolean amBeginnFrei = false;
+		@SuppressWarnings("unused")
 		boolean amEndeFrei = false;
 
+		@SuppressWarnings("unused")
 		boolean volleZuzahlung = true;
 
 		boolean unter18 = false;
 		
+		@SuppressWarnings("unused")
 		boolean vollFrei = false;
+		@SuppressWarnings("unused")
 		boolean teilFrei = false;
 		mitPauschale = true;
+		@SuppressWarnings("unused")
 		boolean jahresWechsel = false;
 		zuZahlungsPos = "3";
 		if(SystemPreislisten.hmZuzahlRegeln.get(aktDisziplin).get(Integer.valueOf(preisgruppe)-1).equals("0")){

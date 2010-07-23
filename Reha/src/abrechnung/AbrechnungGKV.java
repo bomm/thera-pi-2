@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -24,15 +23,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -54,7 +49,6 @@ import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
 import rehaInternalFrame.JAbrechnungInternal;
 import sqlTools.SqlInfo;
@@ -246,6 +240,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		cmbDiszi.addActionListener(this);
 		return jscr;
 	}
+	/*
 	private JXPanel getIVPanel(){
 		JXPanel jpan = new JXPanel();
 		jpan.setOpaque(false);
@@ -267,6 +262,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		jpan.add(alternativeKK,cc.xy(2,4));
 		return jpan;
 	}
+	*/
 	private JXPanel getRight(){
 		this.abrRez = new AbrechnungRezept(this);
 		this.abrRez.setRechtsAufNull();
@@ -469,11 +465,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 	}
 	/*******************************************/	
+	/*
 	private void doAufraeumen(){
 		butLinks[0].removeActionListener(this);
 		cmbDiszi.removeActionListener(this);
 		treeKasse.getSelectionModel().removeTreeSelectionListener(this);
 	}
+	*/
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
 		//TreePath path = arg0.getNewLeadSelectionPath();
@@ -849,7 +847,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 			    bw.close(); 
 			    fw.close();
-			    int a = 0;
+//			    int a = 0;
 			   
 				abrDlg.setzeLabel("Rechnungsdatei verschlüsseln");
 			    int originalSize = Integer.parseInt(Long.toString(f.length()));
@@ -1237,6 +1235,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		}
 		return vec.get(0).get(0);
 	}
+	/*
 	private void holeAlleKostentraegerDaten(){
 		abzurechnendeKassenID = getAktKTraeger();
 		String preisgr = getPreisgruppenKuerzel(aktDisziplin);
@@ -1268,7 +1267,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		"Emailadresse der Datenannahmestelle: "+ik_email+"\n"+
 		"Name des Kostenträgers: "+name_kostent;
 	}
-	
+	*/
 	/***************************************************************/
 	
 	private HashMap<String,String> holeAdresseAnnahmestelle(boolean nach302){
@@ -1626,16 +1625,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	}
 	
 	/***************************************************************/
-	
+	/*
 	private String holeAbrechnungsKasse(String edifact){
 		String[] komplett = edifact.split("\n");
 		String[] zeile1 = komplett[0].split(":");
 		return zeile1[7].split("=")[1];
 	}
+	*/
 	/*************************************************/
 	private void anhaengenEdifact(String string){
 		String[] edi = string.split("\n");
-		String[] preise = edi[0].split(":");
+		//String[] preise = edi[0].split(":");
 		String status = "";
 		try{
 			status = edi[4].split("\\+")[2];
@@ -1714,8 +1714,14 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		}
 	}
 	/***************************************/
+	
 	private static class JXTTreeNode extends DefaultMutableTreeNode {
-    	private boolean enabled = false;
+    	/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2195590211796817012L;
+		@SuppressWarnings("unused")
+		public boolean enabled = false;
     	private KnotenObjekt knotenObjekt = null;
     	public JXTTreeNode(KnotenObjekt obj,boolean enabled){
     		super();
@@ -1725,15 +1731,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
    				this.setUserObject(obj);
    			}
     	}
- 
+    	/*
 		public boolean isEnabled() {
 			return enabled;
 		}
+		*/
 		
 		public KnotenObjekt getObject(){
 			return knotenObjekt;
 		}
     }
+    
 	/***************************************/	
 	class KnotenObjekt{
 		public String titel;
@@ -1755,10 +1763,15 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	}
 	/*************************************/
 	private class KassenTreeModel extends DefaultTreeModel {
-		 public KassenTreeModel(JXTTreeNode node) {
+		 /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6391618556224740611L;
+		public KassenTreeModel(JXTTreeNode node) {
 	            super((TreeNode) node);
 	        }
-		 public Object getValueAt(Object node, int column) {
+		 @SuppressWarnings("unused")
+		public Object getValueAt(Object node, int column) {
 			 JXTTreeNode jXnode = (JXTTreeNode) node;
 
 	        	KnotenObjekt  o = null;
@@ -1772,10 +1785,12 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	        	}
 	        	return jXnode.getObject().titel;
 		 } 
-		 public int getColumnCount() {
+		 @SuppressWarnings("unused")
+		public int getColumnCount() {
 	            return 3;
 	        }
-	      public void setValueAt(Object value, Object node, int column){
+	      @SuppressWarnings("unused")
+		public void setValueAt(Object value, Object node, int column){
 	    	  JXTTreeNode jXnode = (JXTTreeNode) node;
 	    	  KnotenObjekt  o;
 	    	  o = jXnode.getObject();
@@ -1788,7 +1803,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	            	break;
 	    	  }
 	      } 
-	      public Class<?> getColumnClass(int column) {
+	      @SuppressWarnings("unused")
+		public Class<?> getColumnClass(int column) {
 	            switch (column) {
 	            case 0:
 	                return String.class;
@@ -1800,6 +1816,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	}
 	/*****************************************/
 	private class MyRenderer extends DefaultTreeCellRenderer {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2333990367290526356L;
 		Icon fertigIcon;
 
 		public MyRenderer(Icon icon) {

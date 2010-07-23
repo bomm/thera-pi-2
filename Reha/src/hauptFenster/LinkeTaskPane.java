@@ -22,19 +22,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.TooManyListenersException;
@@ -45,7 +38,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-
 import javax.swing.UIManager;
 
 import kurzAufrufe.KurzAufrufe;
@@ -62,12 +54,6 @@ import org.jdesktop.swingx.plaf.windows.WindowsTaskPaneUI;
 import org.therapi.reha.patient.AktuelleRezepte;
 import org.therapi.reha.patient.LadeProg;
 
-
-
-import dialoge.DatumWahl;
-import events.PatStammEvent;
-import events.PatStammEventClass;
-
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -76,6 +62,9 @@ import systemTools.TestePatStamm;
 import terminKalender.TerminFenster;
 import wecker.Wecker;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import dialoge.DatumWahl;
+import events.PatStammEvent;
+import events.PatStammEventClass;
 
 public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentListener, DropTargetListener {
 	/**
@@ -930,9 +919,9 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			reznr = reznr.substring(0,ind);
 		}
 		
-		Vector vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+		Vector<String> vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List<?>) new ArrayList<String>() );
 		if(vec.size() == 0){
-			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List<?>) new ArrayList<String>() );
 			if(vec.size() == 0){
 				JOptionPane.showMessageDialog(null,"Rezept weder im aktuellen Rezeptstamm nochin derHistorie vorhanden!\nIst die eingetragene Rzeptnummer korrekt?");
 				return;
@@ -941,7 +930,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				inhistorie = true;
 			}
 		}
-		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List) new ArrayList() );
+		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List<?>) new ArrayList<String>() );
 		if(vec.size() == 0){
 			JOptionPane.showMessageDialog(null,"Patient mit zugeordneter Rezeptnummer -> "+reznr+" <- wurde nicht gefunden");
 			return;

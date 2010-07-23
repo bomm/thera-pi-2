@@ -4067,10 +4067,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							// nachfragen ob wirklich schreiben
 						}else{
 							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- bereits übervoll!!!!\n\nEine zusätzliche Behandlung wird nicht eingetragen");
-							//rezept bereits �bervoll
+							//rezept bereits übervoll
 							//nachfragen ob wirklich schreiben
 						}
 					}else{
+						if(tvec.size() == (anzahl-1)){
+							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- jetzt voll!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten");	
+						}
 						termbuf.append(macheNeuTermin(ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),
 								"",(String) vec.get(2),(String) vec.get(3),(String) vec.get(4),(String) vec.get(5)));
 						/********************************/
@@ -4109,13 +4112,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						String sblock = Integer.toString(aktiveSpalte[0]+1);
 						String toupdate = "T"+sblock+" = '"+copyright+swname+"'";
 						String towhere = "datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' AND "+
-						"behandler='"+(swbehandler < 10 ? "0"+Integer.toString(swbehandler+1)+"BEHANDLER" : Integer.toString(swbehandler+1)+"BEHANDLER"   )+"' "+
+						"behandler='"+( (swbehandler+1) < 10 ? "0"+Integer.toString(swbehandler+1)+"BEHANDLER" : Integer.toString(swbehandler+1)+"BEHANDLER"   )+"' "+
 						"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
 						"' AND N"+sblock+"='"+sworigreznum+"'"; 
  
 						SqlInfo.aktualisiereSatz("flexkc",
 								toupdate,
 								towhere);
+						//System.out.println("Update-Blöcke: "+toupdate);
+						//System.out.println("Update-Bedingung: "+towhere);
 						/**********Ende Datenbank beschreiben*************/
 						((ArrayList<Vector<String>>) vTerm.get(swbehandler)).get(0).set(aktiveSpalte[0],copyright+swname);
 						oSpalten[aktiveSpalte[2]].repaint();

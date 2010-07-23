@@ -777,14 +777,16 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			vec.add( (String) ((Vector)preisvec.get(i)).get(idpos) );
 			modpreis.addRow((Vector)vec.clone());
 		}
-		
+		try{
 		if(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe).equals("")){
 			gueltig.setText("  .  .    ");
 			//System.out.println("Gültigkeitsdatum nicht angegeben");
 		}else{
 			gueltig.setText(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe));			
 		}
-		
+		}catch(Exception ex){
+			gueltig.setText("  .  .    ");
+		}
 
 		preislisten.validate();
 		

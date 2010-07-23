@@ -38,7 +38,7 @@ public class AbrechnungDlg extends JDialog{
 	jpan.setPreferredSize(new Dimension(400,100));
 	jpan.setBackground(Color.WHITE);
 	jpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-	@SuppressWarnings("unused")
+
 	FormLayout lay = new FormLayout("fill:0:grow(0.5),p,fill:0:grow(0.5)",
 			"fill:0:grow(0.5),p,15dlu,p,fill:0:grow(0.5)");
 	jpan.setLayout(lay);

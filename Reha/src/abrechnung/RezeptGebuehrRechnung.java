@@ -68,6 +68,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	private PinPanel pinPanel = null;
 	private JXPanel content = null;
 	private RehaTPEventClass rtp = null;
+	@SuppressWarnings("unused")
 	private int rueckgabe;
 	private JRtaTextField[] tfs = {null,null,null,null,null};
 	private JButton[] but = {null,null};
@@ -228,6 +229,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
 	}
+	@SuppressWarnings("unchecked")
 	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;
 		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));

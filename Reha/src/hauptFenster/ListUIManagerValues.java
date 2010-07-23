@@ -1,12 +1,6 @@
 package hauptFenster;
 
 
-import java.util.Map;
-
-import javax.swing.LookAndFeel;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 	/**
 	 * @author Tom
 	 *
@@ -17,7 +11,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 	     * @param args
 	     */
 	    public static void main(String[] args) throws Exception {
-	 
+	    	/*
 	        LookAndFeelInfo[] lookAndFeelInfos = UIManager
 	                .getInstalledLookAndFeels();
 	        for(int i = 0; i < lookAndFeelInfos.length; i++){
@@ -58,7 +52,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
     	    }catch(Exception ex){
     	    	//System.out.println("Fehler....");
     	    }
-    	    
+    */	    
 	}
+	
 	}	    
 

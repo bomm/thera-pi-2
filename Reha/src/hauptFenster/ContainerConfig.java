@@ -15,8 +15,8 @@ import dialoge.RehaSmartDialog;
 public class ContainerConfig {
 
 	private int compAnzahl = 0;
-	public static Vector compVec = new Vector();
-	private ArrayList compArr = new ArrayList();
+	public static Vector<Object> compVec = new Vector<Object>();
+	private ArrayList<Object> compArr = new ArrayList<Object>();
 
 	
 	public ContainerConfig(){
@@ -32,7 +32,7 @@ public class ContainerConfig {
 		jb1.setIcon(img1);
 		jb1.setName("icon-"+sname);
 		jb1.setToolTipText(sname);
-		compArr.add(sname);
+		compArr.add((String)sname);
 		compArr.add(jcomp);
 		compArr.add(jb1);
 		compArr.add(smd);
@@ -108,7 +108,7 @@ public class ContainerConfig {
 							((RehaSmartDialog)((ArrayList)compVec.get(i)).get(3)).requestFocus();
 						}else if(((ArrayList)compVec.get(i)).get(3) instanceof JDialog){
 							((JDialog)((ArrayList)compVec.get(i)).get(3)).setVisible(true);
-							((JDialog)((ArrayList)compVec.get(i)).get(3)).requestFocus();
+							((JDialog)((ArrayList<?>)compVec.get(i)).get(3)).requestFocus();
 						}
 					}else{
 						((RehaSmartDialog)((ArrayList)compVec.get(i)).get(1)).requestFocus();						

@@ -21,11 +21,11 @@ public class MachePreisListe {
 			  "T_PAUSCHAL decimal(6,2) DEFAULT \"0.00\","+
 			  "ZUZAHLUNG enum(\"T\",\"F\") DEFAULT \"F\","+
 			  "ZZART tinyint(4) DEFAULT 0,"+
-			  //"ID int(11) NOT NULL AUTO_INCREMENT,"+
-			  "ID int(11) DEFAULT 0)"+
-			  //"PRIMARY KEY (ID)"+
-			  //") ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1";
-				" ENGINE=MyISAM DEFAULT CHARSET=latin1";
+			  "ID int(11) NOT NULL AUTO_INCREMENT,"+
+			  //"ID int(11) DEFAULT 0)"+
+			  "PRIMARY KEY (ID)"+
+			  ") ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1";
+				//" ENGINE=MyISAM DEFAULT CHARSET=latin1";
 	SqlInfo.sqlAusfuehren(StringTools.EscapedDouble(machetabelle));
 	}
 	/*
