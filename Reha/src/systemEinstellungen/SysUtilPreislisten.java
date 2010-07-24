@@ -131,6 +131,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jcmb[0] = new JRtaComboBox(SystemConfig.rezeptKlassen);
 		jcmb[0].setSelectedItem(SystemConfig.initRezeptKlasse);
 		jcmb[0].setActionCommand("tabelleRegeln");
+		jcmb[0].setName("rezeptklassen");
 		jcmb[0].addActionListener(this);
 		builder.add(jcmb[0],cc.xyw(3,1,7));
 		
@@ -145,7 +146,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.addLabel("Tarifgruppe auswählen",cc.xy(1, 3));
 		//jcmb[1] = new JRtaComboBox(SystemConfig.vPreisGruppen);
 		jcmb[1] = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get(disziplin[jcmb[0].getSelectedIndex()]));
+
 		jcmb[1].setActionCommand("tabelleRegeln");
+		jcmb[1].setName("disziplin");
 		jcmb[1].addActionListener(this);
 		builder.add(jcmb[1],cc.xyw(3,3,7));
 
@@ -262,6 +265,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		// TODO Auto-generated method stub
 		
 	}
+	private SysUtilPreislisten getInstance(){
+		return this;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -270,11 +276,28 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(cmd.equals("tabelleRegeln")){
 			delvec.clear();
 			tabelleRegeln();
+			
+			
 			//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
 			int einstellung = ((Integer) SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
 			jcmb[2].setSelectedIndex(einstellung);
 			String[] xkuerzel = {"KG","MA","ER","LO","RH"};
 			kuerzelcombo.setDataVector(SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"'" ));
+			
+
+			if(((JComponent)e.getSource()).getName().equals("rezeptklassen")){
+				SwingUtilities.invokeLater(new Runnable(){
+					public void run(){
+						jcmb[1].removeActionListener(getInstance());
+						int aktuell = jcmb[1].getSelectedIndex();
+						jcmb[1].setDataVector(SystemPreislisten.hmPreisGruppen.get(disziplin[jcmb[0].getSelectedIndex()]));
+						jcmb[1].setSelectedIndex(aktuell);
+						jcmb[1].addActionListener(getInstance());
+					}
+				});
+			}
+
+			
 		}
 		if(cmd.equals("plUpdate")){
 			SwingUtilities.invokeLater(new Runnable(){

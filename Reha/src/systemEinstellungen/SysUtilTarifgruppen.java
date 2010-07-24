@@ -593,8 +593,15 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		"Wollen Sie die Tarifgruppe jetzt anlegen<b><br></html>";
 		int anfrage = JOptionPane.showConfirmDialog(null, message, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.YES_OPTION){
+			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte einen gemeinsamen Namen für die neue Preisgruppe ein", "gemeinsamer Name");
+			if(ret == null){
+				return;
+			}
+			if(ret.equals("")){
+				return;
+			}
 			macheNeuePreistabelle();
-			setzeIniEintraege(tarife.getRowCount()+1);
+			setzeIniEintraege(tarife.getRowCount()+1,String.valueOf(ret));
 			SystemPreislisten.loescheHashMaps();
 			SystemPreislisten.ladePreise("Physio");
 			SystemPreislisten.ladePreise("Massage");
@@ -605,15 +612,15 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			fuelleMitWerten(disziplin.getSelectedIndex());
 		}
 	}
-	private void setzeIniEintraege(int position){
+	private void setzeIniEintraege(int position,String commonname){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
 		inif.setIntegerProperty("PreisGruppen_Common", "AnzahlPreisGruppen", position, null);
-		inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), "neue Preisgruppe", null);
+		inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), commonname, null);
 		inif.setStringProperty("PreisGruppen_Common", "PGBereich"+Integer.toString(position), "00", null);
 		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
 		for(int i = 0; i < diszis.length;i++){
 			inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
-			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), "neue Preisgruppe", null);
+			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), commonname, null);
 			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBereich"+Integer.toString(position), "00", null);
 			
 			inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisAb"+Integer.toString(position), "", null);

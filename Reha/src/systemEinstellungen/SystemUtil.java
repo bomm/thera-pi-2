@@ -796,7 +796,6 @@ public void valueChanged(TreeSelectionEvent e) {
 }
 
 public static void abbrechen(){
-	
 	SystemUtil.thisClass.tree.setSelectionInterval(0,0);
 	SystemUtil.thisClass.auswertenSysUtil("nix");
 }
