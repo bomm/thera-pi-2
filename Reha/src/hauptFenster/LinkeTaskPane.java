@@ -686,7 +686,6 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 
 			if (cmd.equals("Benutzerverwaltung")){
 				Reha.thisClass.progLoader.BenutzerrechteFenster(1,"");
-				//ProgLoader.ProgBenutzerVerwaltung(0);				
 				break;
 			}
 			if (cmd.equals("[Ru:gl] - Die Terminsuchmaschine")){

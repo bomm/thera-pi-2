@@ -56,7 +56,7 @@ import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
 import barKasse.Barkasse;
 import benutzerVerwaltung.BenutzerRechte;
-import benutzerVerwaltung.BenutzerVerwaltung;
+
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import entlassBerichte.EBerichtPanel;
@@ -165,35 +165,6 @@ public void loescheTermine(){
 	Reha.thisClass.terminpanel = null;
 }
 
-/**************OpenOffice Echtfunktion*******************************/
-
-
-/**************Benutzerverwaltung Echtfunktion***********************/
-public static void ProgBenutzerVerwaltung(int setPos) {
-	final int xsetPos = setPos;
-    SwingUtilities.invokeLater(new Runnable(){
-	public  void run()
- 	   {	
- 		   Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
- 		   String name = "Benutzerverwaltung"+WinNum.NeueNummer();
- 		   RehaTP jtp = new RehaTP(xsetPos); 
- 		   jtp.setBorder(null);
- 		   PinPanel pinPanel = new PinPanel();
- 		   jtp.setPinPanel(pinPanel);
- 		   jtp.setRightDecoration((JComponent) pinPanel );
- 		   jtp.setTitle("Benutzer-Verwaltung");
- 		   jtp.setContentContainer(new BenutzerVerwaltung(xsetPos));
- 		   jtp.getContentContainer().setName(name);
- 		   jtp.setzeName(name);
- 		   jtp.setVisible(true);
- 		   AktiveFenster.setNeuesFenster(name, jtp,PosTest(xsetPos),jtp.getParent());
- 		   containerBelegen(xsetPos,jtp);
- 		   jtp.validate();
- 		   Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
- 	   }
-	});
-
-}
 /**************Roogle Echtfunktion***********************/
 public void ProgRoogleFenster(int setPos,String droptext) {
 	final String xdroptext = droptext;
