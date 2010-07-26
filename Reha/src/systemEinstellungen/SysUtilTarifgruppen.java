@@ -557,8 +557,8 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			return;
 		}
 		if(cmd.equals("abbrechen")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 			return;
 		}
 		if(cmd.equals("neu")){

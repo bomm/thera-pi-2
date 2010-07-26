@@ -143,8 +143,8 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 			doSpeichern("COM"+new Integer(anschluss.getSelectedIndex()+1).toString());
 		}
 		if(cmd.equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();			
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();			
 		}
 	}
 	private void doConfig(String com){

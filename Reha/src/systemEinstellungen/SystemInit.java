@@ -53,6 +53,7 @@ public class SystemInit extends JXPanel implements TreeSelectionListener{
 	public DefaultTreeModel treeModel;
 	public JTree tree;
 
+
 	
 	public SystemInit(JSysteminitInternal sai){
 		super();
@@ -127,7 +128,7 @@ public class SystemInit extends JXPanel implements TreeSelectionListener{
 
 		 	  	}
 			});			
-
+			
 			
 	}		    
 /*******************************************************/			

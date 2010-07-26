@@ -469,8 +469,8 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 		}
 		felderEinschalten(false);
 		comboAuswerten();
-		SystemUtil.abbrechen();
-		SystemUtil.thisClass.parameterScroll.requestFocus();
+		SystemInit.abbrechen();
+		//SystemUtil.thisClass.parameterScroll.requestFocus();
 	}
 	/**************************************************************************/	
 	private void listeHandeln(){

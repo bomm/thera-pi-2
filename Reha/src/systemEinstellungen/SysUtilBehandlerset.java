@@ -331,8 +331,8 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		comboAuswerten();
 		lspeichern = false;
 		lneu = false;
-		SystemUtil.abbrechen();
-		SystemUtil.thisClass.parameterScroll.requestFocus();
+		SystemInit.abbrechen();
+		//SystemUtil.thisClass.parameterScroll.requestFocus();
 
 	}
 	private void neuHandeln(){

@@ -82,7 +82,7 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 	private JXTable ttbl = null;
 	private String aktDatum = "";
 	private Vector vTdata = new Vector();
-	public static SystemUtil thisClass = null;
+	public static SystemUtil ungueltig_thisClass = null;
 
 	private JXHeader header = null;  
 	private UIFSplitPane jSplitLR = null;
@@ -102,8 +102,9 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 		
 		//super(frame, titlePanel());
 		super(owner,"SystemUtil");
+		try{
 		this.dieserName = "SystemUtil"+WinNum.NeueNummer();
-		thisClass = this;
+
 		setName(this.dieserName);
 		getSmartTitledPanel().setName(this.dieserName);
 
@@ -138,54 +139,54 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
                 "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         header.setPreferredSize(new Dimension(0,150));
-        	jp1.add(header,BorderLayout.NORTH);
-        	jxLinks = new JXPanel(new BorderLayout());
-        	jxLinks.setBackground(Color.WHITE);
-        	JXPanel dummy = new JXPanel();
-        	dummy.setBorder(null);
-        	dummy.setBackground(Color.WHITE);
-        	dummy.setPreferredSize(new Dimension(10,20));
-        	jxLinks.add(dummy,BorderLayout.NORTH);
-        	dummy = new JXPanel();
-        	dummy.setBorder(null);
-        	dummy.setBackground(Color.WHITE);
-        	dummy.setPreferredSize(new Dimension(10,20));
-        	jxLinks.add(dummy,BorderLayout.SOUTH);
-        	dummy = new JXPanel();
-        	dummy.setBorder(null);
-        	dummy.setBackground(Color.WHITE);
-        	dummy.setPreferredSize(new Dimension(10,20));
-        	jxLinks.add(dummy,BorderLayout.WEST);
-        	dummy = new JXPanel();
-        	dummy.setBorder(null);
-        	dummy.setBackground(Color.WHITE);
-        	dummy.setPreferredSize(new Dimension(10,20));
-        	jxLinks.add(dummy,BorderLayout.EAST);
+    	jp1.add(header,BorderLayout.NORTH);
+    	jxLinks = new JXPanel(new BorderLayout());
+    	jxLinks.setBackground(Color.WHITE);
+    	JXPanel dummy = new JXPanel();
+    	dummy.setBorder(null);
+    	dummy.setBackground(Color.WHITE);
+    	dummy.setPreferredSize(new Dimension(10,20));
+    	jxLinks.add(dummy,BorderLayout.NORTH);
+    	dummy = new JXPanel();
+    	dummy.setBorder(null);
+    	dummy.setBackground(Color.WHITE);
+    	dummy.setPreferredSize(new Dimension(10,20));
+    	jxLinks.add(dummy,BorderLayout.SOUTH);
+    	dummy = new JXPanel();
+    	dummy.setBorder(null);
+    	dummy.setBackground(Color.WHITE);
+    	dummy.setPreferredSize(new Dimension(10,20));
+    	jxLinks.add(dummy,BorderLayout.WEST);
+    	dummy = new JXPanel();
+    	dummy.setBorder(null);
+    	dummy.setBackground(Color.WHITE);
+    	dummy.setPreferredSize(new Dimension(10,20));
+    	jxLinks.add(dummy,BorderLayout.EAST);
 
-        	jxLinks.add(getParameterListe(),BorderLayout.CENTER);
-        	// hier mu� das add f�r die weitern Panels rein
-        	jxRechts = new JXPanel(new BorderLayout());
-    		/****/
-        	jxRechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
-   	     	/****/
-        	// hier mu� das add f�r die weitern Panels rein
-        	jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-        		jxLinks,
-        		jxRechts);        
-			jSplitLR.setBackground(Color.WHITE);
-			jSplitLR.setDividerSize(7);
-			//jSplitLR.setDividerBorderVisible(false);
-			jSplitLR.setDividerBorderVisible(true);
-			jSplitLR.setName("GrundSplitLinksRechts");
-			jSplitLR.setOneTouchExpandable(true);
-			jSplitLR.setDividerLocation(260);
+    	jxLinks.add(getParameterListe(),BorderLayout.CENTER);
+    	// hier mu� das add f�r die weitern Panels rein
+    	jxRechts = new JXPanel(new BorderLayout());
+		/****/
+    	jxRechts.setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
+	     	/****/
+    	// hier mu� das add f�r die weitern Panels rein
+    	jSplitLR =  UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+    		jxLinks,
+    		jxRechts);        
+		jSplitLR.setBackground(Color.WHITE);
+		jSplitLR.setDividerSize(7);
+		//jSplitLR.setDividerBorderVisible(false);
+		jSplitLR.setDividerBorderVisible(true);
+		jSplitLR.setName("GrundSplitLinksRechts");
+		jSplitLR.setOneTouchExpandable(true);
+		jSplitLR.setDividerLocation(260);
 
-			((BasicSplitPaneUI) jSplitLR.getUI()).getDivider().setBackground(Color.WHITE);
-			jp1.add(jSplitLR,BorderLayout.CENTER);
-			jp1.revalidate();
-			this.jtp.add(jp1);
-			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			auswertenSysUtil("nix");
+		((BasicSplitPaneUI) jSplitLR.getUI()).getDivider().setBackground(Color.WHITE);
+		jp1.add(jSplitLR,BorderLayout.CENTER);
+		jp1.revalidate();
+		this.jtp.add(jp1);
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		auswertenSysUtil("nix");
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					new Thread(){
@@ -195,9 +196,12 @@ public class SystemUtil extends RehaSmartDialog implements TreeSelectionListener
 					}.start();
 
 		 	  	}
-			});			
-
-			
+			});	
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		ungueltig_thisClass = this;
+			System.out.println("1. thisClass = "+ungueltig_thisClass);
 	}		    
 /*******************************************************/			
 /*********************************************************/
@@ -210,13 +214,13 @@ public void FensterSchliessen(String welches){
 }
 
 private static JXPanel titlePanel(){
-	SystemUtil.thisClass.jp = new RehaTP(0);
-	SystemUtil.thisClass.jp.getContentContainer().setLayout(new BorderLayout());
-	SystemUtil.thisClass.jtp = (JXPanel) SystemUtil.thisClass.jp.getContentContainer();
-	SystemUtil.thisClass.jtp.setSize(new Dimension(200,200));
-	SystemUtil.thisClass.jtp.setName(SystemUtil.thisClass.dieserName);
-	SystemUtil.thisClass.jtp.setVisible(true);
-	return SystemUtil.thisClass.jtp;
+	SystemUtil.ungueltig_thisClass.jp = new RehaTP(0);
+	SystemUtil.ungueltig_thisClass.jp.getContentContainer().setLayout(new BorderLayout());
+	SystemUtil.ungueltig_thisClass.jtp = (JXPanel) SystemUtil.ungueltig_thisClass.jp.getContentContainer();
+	SystemUtil.ungueltig_thisClass.jtp.setSize(new Dimension(200,200));
+	SystemUtil.ungueltig_thisClass.jtp.setName(SystemUtil.ungueltig_thisClass.dieserName);
+	SystemUtil.ungueltig_thisClass.jtp.setVisible(true);
+	return SystemUtil.ungueltig_thisClass.jtp;
 }
 
 
@@ -766,6 +770,7 @@ private void auswertenSysUtil(String util){
 		jxRechts.revalidate();
 
 	}
+	System.out.println("thisClass = "+ungueltig_thisClass);
 	
 }
 /*******************************************/
@@ -795,9 +800,10 @@ public void valueChanged(TreeSelectionEvent e) {
     auswertenSysUtil(split[split.length-1].replaceAll("\\]","").trim());
 }
 
-public static void abbrechen(){
-	SystemUtil.thisClass.tree.setSelectionInterval(0,0);
-	SystemUtil.thisClass.auswertenSysUtil("nix");
+public static void ungueltig_abbrechen(){
+	System.out.println("thisClass= "+ungueltig_thisClass);
+	SystemUtil.ungueltig_thisClass.auswertenSysUtil("nix");
+	//SystemUtil.thisClass.tree.setSelectionInterval(0,0);
 }
 //private HashMap<String,String> htitel = new HashMap();
 //private HashMap<String,String> hdescription = new HashMap();
@@ -816,7 +822,7 @@ private void headerInfos(){
 	sdummy = "Terminkalender-Grundeinstellungen";
 	htitel.put("TKGrundeinstellungen", sdummy);
 	sdummy = "Die Grundeinstellungen beeinflussen die Struktur und die Funktionen der Kalenderdatenbank. Änderungen von Tagesbeginn \n"+
-	"oder -ende f�hren zur Neudefinition ALLER bestehenden Datenbanken. Dieser Vorgang benötigt viel Rechenkapazität und dauert daher\n"+
+	"oder -ende führen zur Neudefinition ALLER bestehenden Datenbanken. Dieser Vorgang benötigt viel Rechenkapazität und dauert daher\n"+
 	"entsprechend lange.\n"+
 	"Der Refreshtakt definiert, in welchem Zyklus die Bildschirmanzeige mit der Datenbank abgeglichen wird. Einzelplatzinstallationen\n "+
 	"arbeiten dabei ohne zeitliche Verzögerung.";

@@ -405,8 +405,8 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 
 		}
 		if(e.getActionCommand().equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 
 

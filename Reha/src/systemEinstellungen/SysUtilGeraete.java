@@ -238,8 +238,8 @@ private JPanel getKnopfPanel(){
 			return;
 		}
 		if(com.equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();			
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();			
 		}
 	}
 

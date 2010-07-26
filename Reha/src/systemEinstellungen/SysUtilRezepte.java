@@ -300,8 +300,8 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
 		if(cmd.equals("abbrechen")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(cmd.equals("speichern")){
 			//System.out.println("Es wird abgespeichert");

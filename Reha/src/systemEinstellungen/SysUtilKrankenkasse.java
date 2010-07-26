@@ -399,8 +399,8 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 			}
 			
 			if(cmd.equals("abbrechen")){
-				SystemUtil.abbrechen();
-				SystemUtil.thisClass.parameterScroll.requestFocus();
+				SystemInit.abbrechen();
+				//SystemUtil.thisClass.parameterScroll.requestFocus();
 			}
 			if(cmd.equals("speichern")){
 				//System.out.println("Es wird abgespeichert");

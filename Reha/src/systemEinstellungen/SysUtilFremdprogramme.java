@@ -278,8 +278,8 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			progtab.validate();
 		}
 		if(cmd.equals("abbrechen")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(cmd.equals("speichern")){
 			doSpeichern();

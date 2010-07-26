@@ -199,8 +199,8 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 			JOptionPane.showMessageDialog(null,"Die Aufnahme einer 'Nicht-MySQL-Datenbank' wird erst später verfügbar sein");
 		}
 		if(e.getActionCommand().equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(e.getActionCommand().equals("dbtyp")){
 			dbtypEinstellen();

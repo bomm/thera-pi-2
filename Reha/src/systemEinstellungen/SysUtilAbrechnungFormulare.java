@@ -247,8 +247,8 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 			return;
 		}
 		if(cmd.equals("abbrechen")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 			return;
 		}
 		if(cmd.equals("speichern")){

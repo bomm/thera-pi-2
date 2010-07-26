@@ -183,8 +183,8 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 			SystemConfig.KalenderBarcode = scan.isSelected();
 		}
 		if(e.getActionCommand().equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(e.getActionCommand().equals("unlock")){
 			String cmd = "delete from flexlock";

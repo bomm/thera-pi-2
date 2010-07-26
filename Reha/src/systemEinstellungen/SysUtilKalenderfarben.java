@@ -285,8 +285,8 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 				break;
 			}
 			if(e.getActionCommand().equals("abbrechen")){
-				SystemUtil.abbrechen();
-				SystemUtil.thisClass.parameterScroll.requestFocus();
+				SystemInit.abbrechen();
+				//SystemUtil.thisClass.parameterScroll.requestFocus();
 			}
 
 

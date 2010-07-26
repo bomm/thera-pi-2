@@ -429,8 +429,8 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 				break;
 			}
 			if(cmd.equals("abbrechen")){
-				SystemUtil.abbrechen();
-				SystemUtil.thisClass.parameterScroll.requestFocus();
+				SystemInit.abbrechen();
+				//SystemUtil.thisClass.parameterScroll.requestFocus();
 			}
 			if(cmd.equals("speichern")){
 				//System.out.println("Es wird abgespeichert");

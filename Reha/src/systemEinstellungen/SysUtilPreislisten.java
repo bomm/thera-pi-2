@@ -387,8 +387,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 		if(cmd.equals("abbruch")){
 			//Position in lokaler Liste l�schen
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 		if(cmd.equals("uebernehmen")){
 			//Positionen der Tabelle �bernehmen

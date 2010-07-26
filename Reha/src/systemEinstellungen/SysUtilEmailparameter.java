@@ -223,8 +223,8 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 			testeEmail();
 		}
 		if(e.getActionCommand().equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 
 		

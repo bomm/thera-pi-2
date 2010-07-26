@@ -195,8 +195,8 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 
 		}
 		if(e.getActionCommand().equals("abbruch")){
-			SystemUtil.abbrechen();
-			SystemUtil.thisClass.parameterScroll.requestFocus();
+			SystemInit.abbrechen();
+			//SystemUtil.thisClass.parameterScroll.requestFocus();
 		}
 
 	}
