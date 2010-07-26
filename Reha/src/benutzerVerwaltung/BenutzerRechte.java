@@ -114,7 +114,7 @@ public class BenutzerRechte extends JXPanel{
 			"unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen"};
 
 	String[] gruppe12 = {"Verkaufsmodul benutzen","Rehaformulare verwenden","Textbausteine für Gutachten anlegen/ändern","Rezepte in Historie schieben und umgekehrt",
-			"im Rezept gespeicherte Behandlungsarten löschen","unbelegt 3 für zukünftige Erweiterungen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen",
+			"im Rezept gespeicherte Behandlungsarten löschen","Geburtstagsbriefe erstellen","unbelegt 4 für zukünftige Erweiterungen","unbelegt 5 für zukünftige Erweiterungen","unbelegt 6 für zukünftige Erweiterungen",
 			"unbelegt 7 für zukünftige Erweiterungen","unbelegt 8 für zukünftige Erweiterungen","unbelegt 9 für zukünftige Erweiterungen",
 			"unbelegt 10 für zukünftige Erweiterungen"};
 	/*************************************/

@@ -174,6 +174,14 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        		  kassendat.add(text.trim());
 		        		  continue;
 		        	  }
+		        	  if( (index = text.indexOf("\">Gültig")) >= 0){
+		        		  text = text.substring(index+2);
+		        		  text = text.replace("</span>", "");
+		        		  text = text.replace("Gültig ab", "");
+		        		  text = text.replace("dem", "");
+		        		  kassendat.add(text.trim());
+		        		  continue;
+		        	  }
 		        	  if( ((index = text.indexOf("href=\"/upload/")) >= 0) && (gestartet)  ){
 		        		  text = text.substring(index+6);
 		        		  text = text.substring(0,text.indexOf("\""));

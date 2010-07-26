@@ -302,7 +302,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	}
 	public JScrollPane getTabelle(){
 		ktblm = new MyKassenTableModel();
-		String[] column = 	{"Kürzel","Name1","Name2","Ort","Telefon","Telefax","IK-Kasse",""};
+		String[] column = 	{"Kürzel","Name1","Name2","Ort","Telefon","Telefax","IK-Kasse","id"};
 		ktblm.setColumnIdentifiers(column);
 		kassentbl = new JXTable(ktblm);
 		kassentbl.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.Green.alpha(0.2f)));
@@ -314,8 +314,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		kassentbl.getColumn(1).setMinWidth(220);
 		kassentbl.getColumn(4).setMinWidth(100);
 		kassentbl.getColumn(5).setMinWidth(100);
-		kassentbl.getColumn(7).setMinWidth(0);
-		kassentbl.getColumn(7).setMaxWidth(0);
+		kassentbl.getColumn(7).setMinWidth(30);
+		//kassentbl.getColumn(7).setMaxWidth(0);
 		kassentbl.addKeyListener(this);
 		kassentbl.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {

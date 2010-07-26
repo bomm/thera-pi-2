@@ -253,7 +253,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	}
 	public JScrollPane getTabelle(){
 		atblm = new MyArztTableModel();
-		String[] column = 	{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
+		String[] column = 	{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt","id"};
 		atblm.setColumnIdentifiers(column);
 		arzttbl = new JXTable(atblm);
 		arzttbl.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.Blue.alpha(0.1f)));
@@ -266,8 +266,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		arzttbl.getColumn(2).setMinWidth(100);
 		arzttbl.getColumn(3).setMinWidth(100);
 		arzttbl.getColumn(4).setMinWidth(100);
-		arzttbl.getColumn(9).setMinWidth(0);
-		arzttbl.getColumn(9).setMaxWidth(0);
+		arzttbl.getColumn(9).setMinWidth(30);
+		//arzttbl.getColumn(9).setMaxWidth(30);
 		arzttbl.addKeyListener(this);
 		arzttbl.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
@@ -596,8 +596,12 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 
 					@Override
 					protected Void doInBackground() throws Exception {
-						ArztTools.constructArztHMap(xid);
-						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
+						try{
+							ArztTools.constructArztHMap(xid);
+							OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
+						}catch(Exception ex){
+							JOptionPane.showMessageDialog(null, "Fehler beim Bezug der Arztadresse");
+						}
 						return null;
 					}
     			}.execute();

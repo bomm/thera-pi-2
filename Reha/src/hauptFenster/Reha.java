@@ -1427,7 +1427,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men = new JMenuItem("Kassenbuch erstellen");
 			men.setActionCommand("kassenbuch");
 			men.addActionListener(this);
-			toolsMenu.add(men);			
+			toolsMenu.add(men);		
+			toolsMenu.addSeparator();
+			men = new JMenuItem("Geburtstagsbriefe erstellen");
+			men.setActionCommand("geburtstagsbriefe");
+			men.addActionListener(this);
+			toolsMenu.add(men);		
+
 		}
 		return toolsMenu;
 	}
@@ -2145,6 +2151,13 @@ public void actionPerformed(ActionEvent arg0) {
 			return;
 		}
 		new LadeProg(Reha.proghome+"RehaKassenbuch.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		return;
+	}
+	if(cmd.equals("geburtstagsbriefe")){
+		if(!Rechte.hatRecht(Rechte.Sonstiges_geburtstagsbriefe, true)){
+			return;
+		}
+		new LadeProg(Reha.proghome+"GBriefe.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
 	

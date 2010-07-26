@@ -1,11 +1,14 @@
 package stammDatenTools;
 
+import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.JComponent;
 
 
 import sqlTools.SqlInfo;
@@ -75,12 +78,16 @@ public class ArztTools {
 		SystemConfig.hmAdrADaten.put("<Aid>", (String) vec.get(16));
 		
 		//"<Aihrer>","<Apatientin>","<Adie>"
-		if(! Reha.thisClass.patpanel.aktPatID.equals("")){
-			boolean bfrau = ( ((String)vec.get(0)).equalsIgnoreCase("FRAU") ? true : false );
-			SystemConfig.hmAdrADaten.put("<Aihrer>", (bfrau ? "Ihrer" : "Ihres"));
-			SystemConfig.hmAdrADaten.put("<Apatientin>", (bfrau ? "Patientin" : "Patienten"));
-			SystemConfig.hmAdrADaten.put("<Adie>", (bfrau ? "die" : "den"));
-			
+		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		if(patient != null){
+			if(! Reha.thisClass.patpanel.aktPatID.equals("")){
+				boolean bfrau = ( ((String)vec.get(0)).equalsIgnoreCase("FRAU") ? true : false );
+				SystemConfig.hmAdrADaten.put("<Aihrer>", (bfrau ? "Ihrer" : "Ihres"));
+				SystemConfig.hmAdrADaten.put("<Apatientin>", (bfrau ? "Patientin" : "Patienten"));
+				SystemConfig.hmAdrADaten.put("<Adie>", (bfrau ? "die" : "den"));
+				
+			}
 		}
+
 	}
 }
