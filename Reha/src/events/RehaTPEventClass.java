@@ -4,19 +4,9 @@ package events;
 
 
 
-import java.awt.Container;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
-
-import dialoge.RehaSmartDialog;
-
-
-
-
-import rehaContainer.RehaTP;
-import terminKalender.TerminFenster;
 
 //Add the event registration and notification code to a class.
 public class RehaTPEventClass{
@@ -24,15 +14,18 @@ public class RehaTPEventClass{
     protected static javax.swing.event.EventListenerList listenerList =
         new javax.swing.event.EventListenerList();
 
-    private static List _listeners = new ArrayList();
+    @SuppressWarnings("unchecked")
+	private static List _listeners = new ArrayList();
     
-    public void addListener(RehaTPEventListener l){
+    @SuppressWarnings("unchecked")
+	public void addListener(RehaTPEventListener l){
     	_listeners.add(l);
     }
     public synchronized void removeListener(RehaTPEventListener l){
     	_listeners.remove(l);
     }
-    public static void _fireRehaTPEvent(RehaTPEvent evt) {
+    @SuppressWarnings("unchecked")
+	public static void _fireRehaTPEvent(RehaTPEvent evt) {
         
         // Each listener occupies two elements - the first is the listener class
         // and the second is the listener instance

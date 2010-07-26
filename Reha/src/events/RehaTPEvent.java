@@ -1,6 +1,5 @@
 package events;
 
-import java.util.EventListener;
 import java.util.EventObject;
 
 // Declare the event. It must extend EventObject.
@@ -8,6 +7,7 @@ public class RehaTPEvent extends EventObject {
     /**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private Object source;
 	private String sRehaEvent = "";
 	private String[] sDetails = {"",""};

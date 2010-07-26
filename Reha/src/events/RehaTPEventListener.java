@@ -4,10 +4,7 @@ package events;
 
 
 
-import java.awt.Container;
 import java.util.EventListener;
-
-import terminKalender.TerminFenster;
 
 //Declare the listener class. It must extend EventListener.
 //A class must implement this interface to get RehaEvents.

@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 
 import org.jdesktop.swingx.JXDialog;
@@ -17,6 +16,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class RehaSplash extends JXDialog{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2264881674273471822L;
 	public JLabel lbl = null;
 	public RehaSplash thisClass;
 	public RehaSplash(Image img,String string){

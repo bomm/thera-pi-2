@@ -1,24 +1,16 @@
 package geraeteInit;
 
-import hauptFenster.Reha;
-
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,19 +20,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import org.jdesktop.swingworker.SwingWorker;
 
 import oOorgTools.OOTools;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-
 
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.LeistungTools;
@@ -66,8 +53,14 @@ import dialoge.RehaSmartDialog;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
+import hauptFenster.Reha;
 
 public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7878966572279505811L;
+
 	public JRtaCheckBox[] leistung = {null,null,null,null}; 
 
 	private RehaTPEventClass rtp = null;
@@ -343,6 +336,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 		//this.dispose();
 
 	}
+	@SuppressWarnings("unused")
 	private void macheAFRHmap(){
 		String mappos = "";
 		String mappreis = "";

@@ -8,7 +8,6 @@ import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
@@ -50,7 +49,7 @@ public class FortschrittDlg extends JXDialog{
 	jpan.setPreferredSize(new Dimension(400,100));
 	jpan.setBackground(Color.WHITE);
 	jpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-	@SuppressWarnings("unused")
+	
 	FormLayout lay = new FormLayout("fill:0:grow(0.5),p,fill:0:grow(0.5)",
 			"fill:0:grow(0.5),p,15dlu,p,3dlu,p,fill:0:grow(0.5)");
 	jpan.setLayout(lay);

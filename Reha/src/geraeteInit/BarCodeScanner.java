@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 import java.util.Vector;
@@ -21,22 +20,21 @@ import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+
 import org.jdesktop.swingworker.SwingWorker;
 
-import dialoge.SchluesselDialog;
-
-import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import terminKalender.TerminFenster;
-import terminKalender.TermineErfassen;
 import terminKalender.DatFunk;
+import terminKalender.TermineErfassen;
+import dialoge.SchluesselDialog;
 
 
 
 
 public class BarCodeScanner implements Runnable, SerialPortEventListener{
 	   static CommPortIdentifier portId = null;
-	   static Enumeration  portList = null;
+	   @SuppressWarnings("unchecked")
+	static Enumeration  portList = null;
 	   InputStream inputStream = null;
 	   static OutputStream outputStream = null;
 	   public static SerialPort serialPort = null;
@@ -130,6 +128,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		////System.out.println("Scanner-Thread beendet");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void serialEvent(SerialPortEvent event)  {
 		switch (event.getEventType()) {
@@ -163,8 +162,8 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		case SerialPortEvent.DATA_AVAILABLE:
 			////System.out.println("Data available");
 		    //byte[] readBuffer = new byte[30];
-		    byte[] outBuffer = null;
-		    String sout = null;
+		    //byte[] outBuffer = null;
+		    //String sout = null;
 		    StringBuffer sb = new StringBuffer();
 		    //char[] zeichen = new char[1];  
 		    byte[] buffer = fbuffer; //new byte[1024];
