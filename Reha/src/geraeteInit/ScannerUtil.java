@@ -407,6 +407,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			//System.out.println("Return Gedrückt");
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
@@ -437,13 +438,13 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			e.printStackTrace();
 		}
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean loeschen = false;
+			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 			////System.out.println(placeholderDisplayText);	
 		    /*****************/			
-			Set entries = SystemConfig.hmAdrPDaten.entrySet();
-		    Iterator it = entries.iterator();
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
 		      Map.Entry entry = (Map.Entry) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
@@ -475,6 +476,10 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	
 }
 class ScannerUtilHintergrund extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2862600734998377499L;
 	ImageIcon hgicon;
 	int icx,icy;
 	AlphaComposite xac1 = null;

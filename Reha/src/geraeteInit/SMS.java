@@ -1,8 +1,9 @@
 package geraeteInit;
-import java.net.*; 
-import java.io.*; 
-import javax.swing.*; 
-import javax.net.ssl.HttpsURLConnection; 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 
 class SMS 
