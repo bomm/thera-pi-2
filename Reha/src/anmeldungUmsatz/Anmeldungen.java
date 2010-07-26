@@ -40,12 +40,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
-import events.RehaTPEventClass;
-import events.RehaTPEventListener;
-import fortschrittDlg.FortschrittDlg;
 
 public class Anmeldungen extends JXPanel{
 
@@ -342,7 +336,7 @@ public class Anmeldungen extends JXPanel{
 				//fortschrittDlg.fortschritt.setIndeterminate(false);
 				//fortschrittDlg.fortschritt.setMinimum(0);
 				//fortschrittDlg.fortschritt.setMaximum(anzahl-1);
-				long zeit = System.currentTimeMillis();
+				//long zeit = System.currentTimeMillis();
 				Vector<Vector<String>> vec = SqlInfo.holeFelder("select * from verordn where datum >='"+dat1+"' AND datum <='"+dat2+"'");
 				Vector<String> vec2 = new Vector<String>();
 				String fehler = "";
@@ -480,15 +474,6 @@ public class Anmeldungen extends JXPanel{
 			return "";
 		}
 	}
-	private void beendeFortschritt(){
-		/*
-		if(fortschrittDlg != null){
-			fortschrittDlg.setVisible(false);
-			fortschrittDlg.dispose();
-			fortschrittDlg = null;
-		}
-		*/
-	}
 
 	class MyAnmeldeTableModel extends DefaultTableModel{
 		   /**
@@ -505,7 +490,7 @@ public class Anmeldungen extends JXPanel{
 	    	return true;
 	    }
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+			String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
 			Object result = null;
 			result = theData;
 			return result;

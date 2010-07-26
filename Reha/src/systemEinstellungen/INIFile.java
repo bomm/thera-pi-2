@@ -59,13 +59,15 @@ public final class INIFile
     private String mstrTimeStampFmt = "dd.mm.yyyy hh:mm:ss";
 
     /** Variable to denote the successfull load operation. */
-    private boolean mblnLoaded = false;
+    @SuppressWarnings("unused")
+	private boolean mblnLoaded = false;
 
     /** Variable to hold the ini file name and full path */
     private String mstrFile;
 
     /** Variable to hold the sections in an ini file. */
-    private LinkedHashMap mhmapSections;
+    @SuppressWarnings("unchecked")
+	private LinkedHashMap mhmapSections;
 
     /** Variable to hold environment variables **/
     private Properties mpropEnv;
@@ -74,7 +76,8 @@ public final class INIFile
      * Create a iniFile object from the file named in the parameter.
      * @param pstrPathAndName The full path and name of the ini file to be used.
      */
-    public INIFile(String pstrPathAndName)
+    @SuppressWarnings("unchecked")
+	public INIFile(String pstrPathAndName)
     {
         this.mpropEnv = getEnvVars();
         this.mhmapSections = new LinkedHashMap();
@@ -367,7 +370,8 @@ public final class INIFile
      * @param pstrSection the section name
      * @param pstrComments the comments.
      */
-    public void addSection(String pstrSection, String pstrComments)
+    @SuppressWarnings("unchecked")
+	public void addSection(String pstrSection, String pstrComments)
     {
         INISection objSec   = null;
 
@@ -387,7 +391,8 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @pstrVal the string value to be persisted
      */
-    public void setStringProperty(String pstrSection, String pstrProp, 
+    @SuppressWarnings("unchecked")
+	public void setStringProperty(String pstrSection, String pstrProp, 
                     				String pstrVal, String pstrComments)
     {
         INISection objSec   = null;
@@ -407,6 +412,7 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @param pblnVal the boolean value to be persisted
      */
+    @SuppressWarnings("unchecked")
     public void setBooleanProperty(String pstrSection, String pstrProp, 
                     				boolean pblnVal, String pstrComments)
     {
@@ -430,6 +436,7 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @param pintVal the int property to be persisted.
      */
+    @SuppressWarnings("unchecked")    
     public void setIntegerProperty(String pstrSection, String pstrProp, 
                     				int pintVal, String pstrComments)
     {
@@ -450,6 +457,7 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @param plngVal the long value to be persisted.
      */
+    @SuppressWarnings("unchecked")    
     public void setLongProperty(String pstrSection, String pstrProp, 
                     			long plngVal, String pstrComments)
     {
@@ -470,6 +478,7 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @param pdblVal the double value to be persisted.
      */
+    @SuppressWarnings("unchecked")    
     public void setDoubleProperty(String pstrSection, String pstrProp, 
                     				double pdblVal, String pstrComments)
     {
@@ -490,6 +499,7 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @param pdtVal the date value to be persisted.
      */
+    @SuppressWarnings("unchecked")    
     public void setDateProperty(String pstrSection, String pstrProp, 
                     			Date pdtVal, String pstrComments)
     {
@@ -511,6 +521,7 @@ public final class INIFile
      * @param pstrProp the property to be set.
      * @param ptsVal the timestamp value to be persisted.
      */
+    @SuppressWarnings("unchecked")    
     public void setTimestampProperty(String pstrSection, String pstrProp, 
                     					Timestamp ptsVal, String pstrComments)
     {
@@ -562,6 +573,7 @@ public final class INIFile
      * Returns a string array containing names of all sections in INI file.
      * @return the string array of section names
      */
+    @SuppressWarnings("unchecked")    
     public String[] getAllSectionNames()
     {
         int        iCntr  = 0;
@@ -614,6 +626,7 @@ public final class INIFile
      * @param pstrSection the name of the section for which properties are to be retrieved.
      * @return the map of properties.
      */
+    @SuppressWarnings("unchecked")    
     public Map getProperties(String pstrSection)
     {
         Map        hmRet = null;
@@ -660,6 +673,7 @@ public final class INIFile
      * Flush changes back to the disk file. If the disk file does not exists then
      * creates the new one. 
      */
+    @SuppressWarnings("unchecked")    
     public boolean save()
     {
         boolean    blnRet    = false;
@@ -784,6 +798,7 @@ public final class INIFile
      * Reads the INI file and load its contentens into a section collection after 
      * parsing the file line by line. 
      */
+    @SuppressWarnings("unchecked")    
     private void loadFile()
     {
         int            iPos       = -1;
@@ -1107,6 +1122,7 @@ public final class INIFile
      * @version 1.0
      * @since 1.0
      */
+    @SuppressWarnings("unchecked")    
     private class INISection
     {
         /** Variable to hold any comments associated with this section */
@@ -1146,7 +1162,8 @@ public final class INIFile
          * Returns any comments associated with this section
          * @return the comments
          */
-        public String getSecComments()
+        @SuppressWarnings("unused")
+		public String getSecComments()
         {
             return this.mstrComment;
         }
@@ -1155,7 +1172,8 @@ public final class INIFile
          * Returns name of the section.
          * @return Name of the section.
          */
-        public String getSecName()
+        @SuppressWarnings("unused")
+		public String getSecName()
         {
             return this.mstrName;
         }
@@ -1173,7 +1191,8 @@ public final class INIFile
          * Sets the section name.
          * @param pstrName the section name.
          */
-        public void setSecName(String pstrName)
+        @SuppressWarnings("unused")
+		public void setSecName(String pstrName)
         {
             this.mstrName = pstrName;
         }
@@ -1313,7 +1332,8 @@ public final class INIFile
          * @param pstrName the name of this property.
          * @param pstrValue the value of this property.
          */
-        public INIProperty(String pstrName, String pstrValue)
+        @SuppressWarnings("unused")
+		public INIProperty(String pstrName, String pstrValue)
         {
             this.mstrName = pstrName;
             this.mstrValue = pstrValue;
@@ -1336,7 +1356,8 @@ public final class INIFile
          * Returns the string identifier (key part) of this property.
          * @return the string identifier of this property.
          */
-        public String getPropName()
+        @SuppressWarnings("unused")
+		public String getPropName()
         {
             return this.mstrName;
         }
@@ -1375,7 +1396,8 @@ public final class INIFile
          * Returns comments associated with this property.
          * @return the associated comments if any.
          */
-        public String getPropComments()
+        @SuppressWarnings("unused")
+		public String getPropComments()
         {
             return this.mstrComments;
         }
@@ -1384,7 +1406,8 @@ public final class INIFile
          * Sets the string identifier (key part) of a property
          * @param pstrName the string identifier of a property
          */
-        public void setPropName(String pstrName)
+        @SuppressWarnings("unused")
+		public void setPropName(String pstrName)
         {
             this.mstrName = pstrName;
         }
@@ -1393,7 +1416,8 @@ public final class INIFile
          * Sets the property value
          * @param pstrValue the value for the property
          */
-        public void setPropValue(String pstrValue)
+        @SuppressWarnings("unused")
+		public void setPropValue(String pstrValue)
         {
             this.mstrValue = pstrValue;
         }
@@ -1402,7 +1426,8 @@ public final class INIFile
          * Sets the comments for a property
          * @param pstrComments the comments
          */
-        public void setPropComments(String pstrComments)
+        @SuppressWarnings("unused")
+		public void setPropComments(String pstrComments)
         {
             this.mstrComments = delRemChars(pstrComments);
         }

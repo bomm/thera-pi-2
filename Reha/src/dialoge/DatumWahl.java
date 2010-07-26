@@ -21,8 +21,6 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.JXPanel;
 
-import com.jgoodies.forms.layout.FormLayout;
-
 import rehaContainer.RehaTP;
 import terminKalender.TerminFenster;
 
@@ -79,12 +77,13 @@ public class DatumWahl implements KeyListener, ActionListener, FocusListener{
 	}
 	
 	private JXPanel getForm(){
-		 
+		/* 
 		FormLayout layout = 
 			new FormLayout("10dlu,p,10dlu,p,2dlu,p,100dlu,40dlu",
 			"10dlu,p,3dlu,p,3dlu,p,3dlu,p,3dlu,p,5dlu");
 			//new FormLayout("10dlu,p,4dlu,p,50dlu,p",
 			//		"10dlu,p,3dlu,p,3dlu,p,3dlu,p");
+		 */
 		JXPanel xbuilder = new JXPanel();
 		xbuilder.setBorder(null);
 		xbuilder.setLayout(new BorderLayout());

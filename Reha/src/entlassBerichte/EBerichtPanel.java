@@ -1159,6 +1159,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 /*
  			
  */
+			@SuppressWarnings("unused")
 			String[] varinhalt = {
 					"^Heute^", //0
 					"^Anrede^",//1

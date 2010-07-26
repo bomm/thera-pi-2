@@ -1,6 +1,5 @@
 package events;
 
-import java.util.EventListener;
 import java.util.EventObject;
 
 // Declare the event. It must extend EventObject.
@@ -8,9 +7,11 @@ public class RehaEvent extends EventObject {
     /**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private Object source;
 	private String sRehaEvent = "";
 	private String[] sDetails = {"",""};
+	@SuppressWarnings("unused")
 	private String name = "";
 	private static final long serialVersionUID = 1L;
 

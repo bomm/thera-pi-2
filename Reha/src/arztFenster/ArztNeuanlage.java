@@ -387,7 +387,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	}
 
 	
-	@SuppressWarnings("unchecked")
+
 	private void fuelleFelder(){
  		List<String> nichtlesen = Arrays.asList(new String[] {});
 		Vector<String> felder = SqlInfo.holeSatz("arzt", "*", "id='"+this.arztId+"'",nichtlesen);
@@ -399,7 +399,6 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 				tfs[i].setText((String) felder.get(felderpos[i]) );
 			}
 			arztgruppe.setSelectedItem((String) felder.get(7));
-			//jta.setText((String) felder.get(13));
 		}
 		
 	}

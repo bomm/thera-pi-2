@@ -44,6 +44,7 @@ public class SystemConfig {
 	public static Vector<String> vSysColsCode;	
 	public static Vector<String> vSysDefNamen;
 
+	@SuppressWarnings("unchecked")
 	public static Vector vSysColDlg;
 	public static HashMap<String,Color[]> aktTkCol;
 	public static boolean[] RoogleTage = {false,false,false,false,false,false,false};
@@ -81,6 +82,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmVerzeichnisse  = null;
 	public static HashMap<String,String> hmFirmenDaten  = null;
 
+	@SuppressWarnings("unchecked")
 	public static HashMap<String,Vector> hmDBMandant  = null;
 	public static Vector<String[]>Mandanten = null;
 	public static Vector<String[]>DBTypen = null;	
@@ -150,6 +152,7 @@ public class SystemConfig {
 	public static String[] rezBarCodName = null;
 	public static Vector<String>rezBarCodForm = null;
 	
+	@SuppressWarnings("unchecked")
 	public static HashMap<String,Vector> hmTherapBausteine = null; 
 	public static String[] berichttitel = {null,null,null,null};
 	public static String  thberichtdatei = "";

@@ -414,6 +414,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}.start();
 
 		/*********/
+		
 		SystemConfig sysConf = new SystemConfig();
 		
 		setSystemConfig(sysConf);

@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -30,19 +29,16 @@ import systemTools.ButtonTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
-
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
-import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.sun.star.beans.Property;
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.container.NoSuchElementException;
@@ -405,6 +401,7 @@ public class Umsaetze extends JXPanel{
 		}
 	}
 	/**********************/	
+	@SuppressWarnings("unchecked")
 	private int testeKalenderUser(){
 		int lang = ParameterLaden.vKKollegen.size();
 		Vector<Object> vec = new Vector<Object>();
@@ -415,12 +412,14 @@ public class Umsaetze extends JXPanel{
 				vec.clear();
 				vec.add((String)ParameterLaden.getMatchcode(i));
 				vec.add((Integer)ParameterLaden.getDBZeile(i));
+				
 				kalUsers.add((Vector<Object>)vec.clone());
 			}	
 		}
 		return kalUsers.size();
 	}
 	/**********************/
+	@SuppressWarnings("unchecked")
 	private int ermittleFaelle(String datum_von,String datum_bis){
 		int lang = kalUsers.size();
 		int behandler = 0;

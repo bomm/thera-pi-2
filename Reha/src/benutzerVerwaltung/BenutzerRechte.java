@@ -5,13 +5,10 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,7 +44,6 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
-import rechteTools.Rechte;
 import rehaInternalFrame.JBenutzerInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -56,15 +52,12 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
-import systemTools.StringTools;
 import systemTools.Verschluesseln;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.sun.star.uno.Exception;
-
-import dialoge.AaarghHinweis;
 
 public class BenutzerRechte extends JXPanel{
 	/**
@@ -129,11 +122,12 @@ public class BenutzerRechte extends JXPanel{
 	String klartextLabel = null;
 	String elternTitel = null;
 	private JXRechteTreeTableNode aktNode;
+	@SuppressWarnings("unused")
 	private int aktRow;
 	private JXRechteTreeTableNode root = null;
 	private RechteTreeTableModel rechteTreeTableModel = null;
 	private JXTreeTable jXTreeTable = null;
-	private JXRechteTreeTableNode foo = null;
+	//private JXRechteTreeTableNode foo = null;
 	private MyRechteComboBox comborechte = null;
 	private String userid = "";
 	private boolean neu = false;
@@ -563,6 +557,7 @@ public class BenutzerRechte extends JXPanel{
 		}
 	}
 	/********************************************/	
+	@SuppressWarnings("unchecked")
 	private void doSave(){
 		
 		if ( !String.valueOf(pws[0].getPassword()).equals(
@@ -672,10 +667,10 @@ public class BenutzerRechte extends JXPanel{
 		int  rootAnzahl;
 		int  kindAnzahl;
 		JXRechteTreeTableNode rootNode;
-		JXRechteTreeTableNode childNode;
+		//JXRechteTreeTableNode childNode;
 		rootAnzahl =  root.getChildCount();
 		if(rootAnzahl<=0){return 0;}
-		int geprueft = 0;
+		//int geprueft = 0;
 		for(int i = 0; i < rootAnzahl;i++){
 			rootNode = (JXRechteTreeTableNode) root.getChildAt(i);
 			ret += 1;
@@ -733,7 +728,8 @@ public class BenutzerRechte extends JXPanel{
 	
 /****************************************************************************************/
     private static class JXRechteTreeTableNode extends DefaultMutableTreeTableNode {
-    	private boolean enabled = false;
+    	@SuppressWarnings("unused")
+		public boolean enabled = false;
     	private Rechte rechte = null;
     	public JXRechteTreeTableNode(String name,Rechte rechte ,boolean enabled){
     		super(name);
@@ -743,7 +739,7 @@ public class BenutzerRechte extends JXPanel{
    				this.setUserObject(rechte);
    			}
     	}
- 
+    	/*
 		public boolean isEnabled() {
 			return enabled;
 		}
@@ -751,10 +747,11 @@ public class BenutzerRechte extends JXPanel{
 		public Rechte getObject(){
 			return rechte;
 		}
+		*/
     }
 	private class RechteTreeTableModel extends DefaultTreeTableModel {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		//SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		//DecimalFormat dfx = new DecimalFormat( "0.00" );
 		
         public RechteTreeTableModel(JXRechteTreeTableNode jXrechteTreeTableNode) {
             super(jXrechteTreeTableNode);

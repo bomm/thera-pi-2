@@ -12,9 +12,10 @@ public class GruppenEinlesen{
 	public Vector<String> gruppenNamen;
 	public Vector<Integer> gruppenDauer;
 	public Vector<Long[]> gruppenGueltig;
-	public Vector gruppeAlle = new Vector();
+	public Vector<Vector<Object>> gruppeAlle = new Vector<Vector<Object>>();
 	public int anzahl;
 	private INIFile ini;
+	@SuppressWarnings("unchecked")
 	public GruppenEinlesen init(){
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/gruppen.ini");
 		//ini = new INIFile("/RehaVerwaltung/ini/gruppen.ini");

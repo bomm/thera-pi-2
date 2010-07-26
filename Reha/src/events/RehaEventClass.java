@@ -1,12 +1,5 @@
 package events;
 
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
-
-import dialoge.RehaSmartDialog;
-
-import hauptFenster.Reha;
 
 
 

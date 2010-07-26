@@ -349,7 +349,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		jpan.validate();
 		return jpan;
 	}
-	@SuppressWarnings("unchecked")
+
 	private void fuelleTabelle(String where){
 		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
 		Vector<Vector<String>> vec;
@@ -372,7 +372,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		}
 		suchen.requestFocus();
 	}
-	@SuppressWarnings("unchecked")
+
 	public void holeAktArzt(String id){
 		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
 

@@ -317,6 +317,7 @@ public class SystemPreislisten {
 			intdummy.add(f.getIntegerProperty("HMRAbrechnung_"+disziplin, "HMRAbrechnung"+Integer.toString(i+1)));
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public static void getHBRegeln(INIFile f,String disziplin,int tarife){
 		for(int i = 0; i < tarife;i++){
 			hbdummy_1.clear();

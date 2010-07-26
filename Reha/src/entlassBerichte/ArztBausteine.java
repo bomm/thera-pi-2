@@ -38,7 +38,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -49,7 +48,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -70,13 +68,11 @@ import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
-import ag.ion.noa.internal.frame.LayoutManager;
 import ag.ion.noa.search.ISearchResult;
 import ag.ion.noa.search.SearchDescriptor;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
@@ -208,7 +204,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		IText text = document.getTextService().getText();
 		String stext = text.getText();
 		int start = 0;
-		int end = 0;
+		//int end = 0;
 		String dummy;
 		int vars = 0;
 		int sysvar = -1;
@@ -302,11 +298,13 @@ public class ArztBausteine extends JDialog implements WindowListener{
 			fuelleTabelle(where+" Order BY tbthema");
 		}
 	}
+	/*
 	private void doActionTest(String action){
 		if(action.equals("tabellenklick")){
 			
 		}
 	}
+	*/
 	private void holeIdUndText(){
 		int row = bausteintbl.getSelectedRow();
 		if(row >= 0){
@@ -322,6 +320,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		
 		return content;
 	}
+	/*
 	private JTabbedPane getTabs(){
 		UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 		UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
@@ -341,6 +340,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 
 		return tab;
 	}
+	*/
 	private JXPanel getTabPage1(){
 		FormLayout lay = new FormLayout("0dlu,fill:0:grow(1.0),0dlu",
 				"5dlu,p,5dlu,fill:0:grow(0.5),5dlu,fill:0:grow(0.5),5dlu");
@@ -463,7 +463,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 					bausteinmod.addRow((Vector<?>)retvec.clone());
 
 					if(bausteine==0){
-						final String id = ((Vector<String>)retvec).get(3).toString();
+						//final String id = ((Vector<String>)retvec).get(3).toString();
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {

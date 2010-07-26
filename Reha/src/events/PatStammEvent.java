@@ -1,6 +1,5 @@
 package events;
 
-import java.util.EventListener;
 import java.util.EventObject;
 
 public class PatStammEvent extends EventObject {
@@ -9,6 +8,7 @@ public class PatStammEvent extends EventObject {
 	    /**
 		 * 
 		 */
+		@SuppressWarnings("unused")
 		private Object source;
 		private String sPatStammEvent = "";
 		private String[] sDetails = {"","",""};

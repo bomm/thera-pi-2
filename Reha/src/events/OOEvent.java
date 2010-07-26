@@ -1,5 +1,4 @@
 package events;
-import java.util.EventListener;
 import java.util.EventObject;
 
 public class OOEvent extends EventObject {
@@ -8,6 +7,7 @@ public class OOEvent extends EventObject {
 	    /**
 		 * 
 		 */
+		@SuppressWarnings("unused")
 		private Object source;
 		private String sOOEvent = "";
 		private String[] sDetails = {"",""};

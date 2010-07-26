@@ -22,6 +22,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 
+@SuppressWarnings("unused")
 public class EmailSendenExtern {
     public void sendMail(String smtpHost,String username,String password,String senderAddress,String recipientsAddress,String subject,String text,ArrayList<String[]>attachments,boolean authx,boolean bestaetigen ) throws AddressException, MessagingException{
 

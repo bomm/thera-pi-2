@@ -293,9 +293,9 @@ public class Barkasse extends JXPanel{
 		docdescript.setAsTemplate(true);
 		docdescript.setHidden(true);
 		document = documentService.loadDocument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/Barkasse.ott",docdescript);
-		ITextTable[] tbl = null;
+		//ITextTable[] tbl = null;
 		ITextDocument textDocument = (ITextDocument)document;
-		tbl = textDocument.getTextTableService().getTextTables();
+		//tbl = textDocument.getTextTableService().getTextTables();
 		ITextTable textTable = null;
 		textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
 		textTable.getCell(2,0).getTextService().getText().setText(einlab.getText()+" €");

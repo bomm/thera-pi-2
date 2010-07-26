@@ -141,7 +141,7 @@ public class SchluesselDialog extends JDialog implements WindowListener{
 		pb.getPanel().validate();
 		return pb.getPanel();
 	}
-	@SuppressWarnings("unchecked")
+
 	private void testeSchluessel(){
 		Vector<String> vec = SqlInfo.holeSatz("anwesend", " * " ,"schrank ='"+schluessel+"'" , Arrays.asList(new String[] {}));
 		if(vec.size()<=0){

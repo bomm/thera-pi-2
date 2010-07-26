@@ -627,6 +627,8 @@ public class Eb3 implements RehaEventListener  {
 			
 		}
 		*/
+		
+		/*
 		private String getStatus(){
 			boolean newframeok = false;
 			boolean bytebufferok = false;
@@ -641,6 +643,7 @@ public class Eb3 implements RehaEventListener  {
 			"framegetrennt  = "+framegetrennt+"\n";
 			return ret;
 		}
+		*/
 		
 
 }

@@ -48,6 +48,11 @@ import events.RehaTPEventListener;
 public class RechteImport extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 357869906417195786L;
+
 	public JRtaCheckBox[] leistung = {null,null,null,null,null}; 
 
 	private RehaTPEventClass rtp = null;
