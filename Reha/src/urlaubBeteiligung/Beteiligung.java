@@ -21,16 +21,24 @@ import javax.swing.SwingUtilities;
 
 import oOorgTools.OOTools;
 
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXPanel;
 
+import rehaInternalFrame.JBeteiligungInternal;
+import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
+import systemTools.ButtonTools;
+import systemTools.JRtaCheckBox;
+import systemTools.JRtaComboBox;
+import systemTools.JRtaTextField;
+import terminKalender.DatFunk;
+import terminKalender.ParameterLaden;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
-import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -45,16 +53,6 @@ import com.sun.star.sheet.XSheetCellCursor;
 import com.sun.star.sheet.XSpreadsheet;
 import com.sun.star.sheet.XSpreadsheets;
 import com.sun.star.uno.UnoRuntime;
-
-import rehaInternalFrame.JBeteiligungInternal;
-import sqlTools.SqlInfo;
-import stammDatenTools.RezTools;
-import systemTools.ButtonTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
-import systemTools.JRtaCheckBox;
-import terminKalender.DatFunk;
-import terminKalender.ParameterLaden;
 
 public class Beteiligung  extends JXPanel{
 
@@ -171,6 +169,7 @@ public class Beteiligung  extends JXPanel{
 		content.validate();
 		return content;
 	}
+	@SuppressWarnings("unchecked")
 	private Vector<Vector<String>> doKollegen(){
 		int lang = ParameterLaden.vKollegen.size();
 		veckolls.clear();
@@ -195,7 +194,7 @@ public class Beteiligung  extends JXPanel{
 	}
 	
 	private void doTagAnalysieren(Vector<String> tag,int anzahltermine){
-		String reznum,patname;
+		String reznum;
 		Vector<Vector<String>> vec;
 		boolean inhistory = false;
 		boolean ohnezuordnung = false;
@@ -603,10 +602,11 @@ public class Beteiligung  extends JXPanel{
 		});
 		
 	}
+	/*
 	private void doBehandlung(){
 		
 	}
-
+	*/
 	public void doAufraeumen(){
 		
 	}

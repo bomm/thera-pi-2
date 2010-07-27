@@ -1,5 +1,7 @@
 package wecker;
 
+import hauptFenster.Reha;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -31,30 +33,29 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-
 import sqlTools.SqlInfo;
 import systemTools.ButtonTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;
-
 import utils.JCompTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import arztFenster.ArztNeuanlage;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
-import hauptFenster.Reha;
 
 public class Wecker extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8884397927377259156L;
 	private RehaTPEventClass rtp = null;
 	JXPanel content = null;
 	
@@ -358,6 +359,7 @@ public class Wecker extends RehaSmartDialog implements RehaTPEventListener,Windo
 		   
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void doNeuTermin(){
 		int minuten = 0; 
 		try{
@@ -585,12 +587,14 @@ final class TerminAbgelaufen extends RehaSmartDialog implements WindowListener{
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
+			@SuppressWarnings("unused")
 			TerminAbgelaufen tab = getInstance();
 			tab = null;
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 			this.doAufraeumen();
+			@SuppressWarnings("unused")
 			TerminAbgelaufen tab = getInstance();
 			tab = null;
 	}

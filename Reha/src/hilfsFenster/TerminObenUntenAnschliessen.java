@@ -163,7 +163,8 @@ public class TerminObenUntenAnschliessen implements KeyListener, ActionListener,
 		xbuilder.add(builder.getPanel(),BorderLayout.CENTER);
 		return xbuilder;
 	}
-	private void testSelected(){
+	
+	public void testSelected(){
 		for(int i = 0; i < 4;i++){
 			if(jrb[i].isSelected()){
 				iAktion = i+1;
