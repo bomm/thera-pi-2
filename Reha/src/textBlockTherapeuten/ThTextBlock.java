@@ -59,6 +59,10 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -170735450415633105L;
 	public JFormattedTextField tf = null;
 	String suchkrit = "";
 	String suchid = "";
@@ -141,7 +145,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 
 			//this.getContentPanel().add(content);
 			
-			final JPanel thispan = content;
+			//final JPanel thispan = content;
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);

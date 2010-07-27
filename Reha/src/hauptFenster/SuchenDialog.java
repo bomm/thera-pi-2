@@ -807,7 +807,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		String sstmt = "";
 		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
 		//DefaultTableModel tblDataModel = new DefaultTableModel();
-		Vector reiheVector = new Vector();
+		Vector<String> reiheVector = new Vector<String>();
 		reiheVector.addElement("RezeptNr");
 		reiheVector.addElement("Datum");
 		reiheVector.addElement("PatNr.");
