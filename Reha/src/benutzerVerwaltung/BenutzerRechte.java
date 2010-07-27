@@ -625,6 +625,7 @@ public class BenutzerRechte extends JXPanel{
 			SqlInfo.sqlAusfuehren(cmd);
 		}
 		ParameterLaden.Passwort();
+		jcmb.setDataVectorWithStartElement(ParameterLaden.pKollegen, 0, 1, "./.");
 		
 	}
 /******************************************************************/
