@@ -559,7 +559,7 @@ public class BenutzerRechte extends JXPanel{
 	/********************************************/	
 	@SuppressWarnings("unchecked")
 	private void doSave(){
-		
+		String aktuelleruser = tfs[0].getText();
 		if ( !String.valueOf(pws[0].getPassword()).equals(
 				String.valueOf(pws[1].getPassword())) ){
 			JOptionPane.showMessageDialog(null, "Passwort und Passwortwiederholung sind nicht identisch");
@@ -625,7 +625,10 @@ public class BenutzerRechte extends JXPanel{
 			SqlInfo.sqlAusfuehren(cmd);
 		}
 		ParameterLaden.Passwort();
+		jcmb.removeActionListener(al);
 		jcmb.setDataVectorWithStartElement(ParameterLaden.pKollegen, 0, 1, "./.");
+		jcmb.addActionListener(al);
+		jcmb.setSelectedItem(aktuelleruser);
 		
 	}
 /******************************************************************/
