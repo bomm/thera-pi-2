@@ -657,6 +657,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			icons.put("ASP-Rechnungsformular",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("IRENA-Rechnungsformular",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("Reha-Anwesenheitsbescheinigung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("GKV-Verlängerungsantrag",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("LVA-Entlassmitteilung",SystemConfig.hmSysIcons.get("neu"));
 			
 			JList list = new JList(	new Object[] {"Stammdaten in neues Gutachten übertragen", 
@@ -666,7 +667,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					"IRENA-Beginnmitteilung",
 					"BfA - Reha-Verlängerung","LVA - Wiedereingliederung","BfA - Wiedereingliederung",
 					"BfA - AHB-Aufnahmemitteilung","ASP-Rechnungsformular","IRENA-Rechnungsformular",
-					"Reha-Anwesenheitsbescheinigung","LVA-Entlassmitteilung"});
+					"Reha-Anwesenheitsbescheinigung","GKV-Verlängerungsantrag","LVA-Entlassmitteilung"});
 					
 			
 			list.setCellRenderer(new IconListRenderer(icons));	
@@ -746,6 +747,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				doPdfStarten(14);
 				break;
 			case 17:
+				doPdfStarten(15);
+				break;
+			case 18:
 				//LVA-Entlassmitteilung
 				try{
 					new LadeProg(Reha.proghome+"LVAEntlass.jar "+
