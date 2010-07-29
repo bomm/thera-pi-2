@@ -839,6 +839,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 		if(abrechnungsModus.equals(ABR_MODE_302)){
 			try {
+				
 				f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org");
 				fw = new FileWriter(f);
 			    bw = new BufferedWriter(fw); 
@@ -847,7 +848,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 			    bw.close(); 
 			    fw.close();
-//			    int a = 0;
+
 			   
 				abrDlg.setzeLabel("Rechnungsdatei verschlüsseln");
 			    int originalSize = Integer.parseInt(Long.toString(f.length()));
@@ -886,10 +887,12 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			    bw.write(auftragsBuf.toString()); 
 			    bw.close(); 
 			    fw.close();
+			    
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 
 			abrDlg.setzeLabel("erstelle Email an: "+ik_email);
+
 			
 			try{
 				doEmail();
@@ -903,6 +906,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				"Versand ist fehlgeschlagen, bitte von Hand erneut senden";
 				JOptionPane.showMessageDialog(null, meldung);
 			}
+			
 		}
 		
 		/*********************************************/
@@ -1374,7 +1378,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					try{
 						analysierenEdifact(vec.get(0).get(0),(String) node.knotenObjekt.rez_num);
 					}catch(Exception ex){
+						ex.printStackTrace();
 						JOptionPane.showMessageDialog(null,"Unbekannter Fehler bei Edifact analysierenEdifact()\n"+ex.getLocalizedMessage());
+
 					}
 					try{
 						anhaengenEdifact(vec.get(0).get(0));	
@@ -1445,7 +1451,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		String dummy;
 		int pos = 0;
 		for(int i = 0; i < zeilen.length;i++){
-			if(zeilen[i].contains("EHE")){
+			if(zeilen[i].startsWith("EHE+")){
 				woerter = zeilen[i].split("\\+");
 				if(!position.contains(woerter[2])){
 					position.add(woerter[2]);

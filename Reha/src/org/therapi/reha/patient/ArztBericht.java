@@ -622,6 +622,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			Reha.thisClass.patpanel.vecaktrez.set(54,Integer.toString(berichtnr));
 			Reha.thisClass.patpanel.rezlabs[7].setForeground(Color.BLACK);
 			Reha.thisClass.patpanel.rezlabs[7].setText("Therapiebericht o.k.");
+		}else if(this.aufrufvon == 1){
+			
 		}
 		
 		////System.out.println("************************************************************************************");
