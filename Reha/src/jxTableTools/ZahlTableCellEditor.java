@@ -8,6 +8,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
@@ -50,8 +51,14 @@ public class ZahlTableCellEditor extends AbstractCellEditor implements TableCell
         }
 
         // Configure the component with the specified value
-        ((JFormattedTextField)component).setText(((String)value).trim());
-        ((JFormattedTextField)component).setCaretPosition(0);
+        final Object xvalue = value;
+        SwingUtilities.invokeLater(new Runnable(){
+        	public void run(){
+                ((JFormattedTextField)component).setText(((String)xvalue).trim());
+                ((JFormattedTextField)component).setCaretPosition(0);
+        		
+        	}
+        });
         tab = table;
    
         //((JFormattedTextField)component).select(0,((String)value).length()-1);

@@ -18,6 +18,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
@@ -603,6 +605,27 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		dtblm.setColumnIdentifiers(column);
 		jxSucheTable = new JXTable(dtblm);
 		jxSucheTable.setDoubleBuffered(true);
+		/*
+		jxSucheTable.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent arg0){
+				arg0.consume();
+			}
+			public void mouseClicked(MouseEvent arg0) {
+				arg0.consume();
+				System.out.println("Im eigenen Mouseadapter");
+				if(arg0.getClickCount()==2){
+					int row = jxSucheTable.getSelectedRow();
+					int col = jxSucheTable.getSelectedColumn();
+					startCellEditing(jxSucheTable,row,col);
+				}
+				if(arg0.getClickCount()==1){
+					int row = jxSucheTable.getSelectedRow();
+					int col = jxSucheTable.getSelectedColumn();
+					jxSucheTable.setRowSelectionInterval(row, row);
+				}
+			}
+		});
+		 */
 		/***************************/		
 		//jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping(new Color(204,255,255)));
@@ -664,7 +687,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		jxSucheTable.getColumn(11).setMaxWidth(45);
 		jxSucheTable.getColumn(11).setCellRenderer(crenderer);
 		((TableColumnExt)jxSucheTable.getColumn(11)).setCellEditor((TableCellEditor) new ZeitCancelCellEditor());
-		// �brige daten sind versteckt
+		// Übrige daten sind versteckt
 		jxSucheTable.getColumn(12).setMinWidth(0);	
 		jxSucheTable.getColumn(12).setMaxWidth(0);		
 		jxSucheTable.getColumn(13).setMinWidth(0);	
@@ -687,6 +710,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		jxSucheTable.setSortable(false);
 		jxSucheTable.validate();
 		jxSucheTable.setName("RoogleSuche");
+
 		
 		//jxSucheTable.addTableModelListener(this);
 		/***************************/
@@ -705,7 +729,19 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	/******************************************/
 	
-	
+	private void startCellEditing(JXTable table,int row,int col){
+		final int xrows = row;
+		final int xcols = col;
+		final JXTable xtable = table;
+		SwingUtilities.invokeLater(new Runnable(){
+		 	   public  void run(){
+		 		  xtable.setRowSelectionInterval(xrows, xrows);
+		 		 xtable.setColumnSelectionInterval(xcols, xcols);
+		 		  xtable.scrollRowToVisible(xrows);
+		 				xtable.editCellAt(xrows,xcols );
+		 	   }
+		});
+	}	
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
