@@ -84,7 +84,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	//public static Historie historie = null;
 	JXPanel leerPanel = null;
 	//JXPanel vollPanel = null;
-	HistorPanel vollPanel = null;
+	public HistorPanel vollPanel = null;
 	JXPanel wechselPanel = null;
 	public JLabel anzahlTermine= null;
 	public JLabel anzahlHistorie= null;
@@ -192,6 +192,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 	}
 	class HistorPanel extends JXPanel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1044284924785143054L;
 		ImageIcon hgicon;
 		int icx,icy;
 		AlphaComposite xac1 = null;
