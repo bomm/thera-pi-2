@@ -96,7 +96,7 @@ public class RehaBillEdit implements WindowListener {
 				rechnung = rechnung.replace(".ott", "");
 				rechnung = rechnung+"Kopie.ott";
 				hmRechnungPrivat = rechnung;
-
+				rhRechnungKasse = inif.getStringProperty("RehaDRVRechnung","RehaDRVformular");
 				progHome = args[0];
 				aktIK = args[1];
 			}

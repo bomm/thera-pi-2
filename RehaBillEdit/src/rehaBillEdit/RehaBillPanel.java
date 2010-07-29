@@ -915,6 +915,52 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		}else if( fuerwen.equals("privat") && (!heilmittel) ){
 			
 		}else if( fuerwen.equals("institution") && (!heilmittel) ){
+			try{
+				System.out.println("in privat und heilmittel");
+				hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
+				hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
+				hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
+				hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+				hmAdresse.put("<pri5>",rnummerAlt.getText() );
+				hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				
+				for(int i = 0; i < tabmod.getRowCount();i++){
+					try{
+						int id = ((Integer)tabmod.getValueAt(i, 8));
+						String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
+						//System.out.println(langtext);
+						String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
+						//System.out.println(preis);
+						originalLangtext.add(langtext);
+						originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
+						einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
+						gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
+						aktuellePosition++;	
+						
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+
+				}
+				try {
+					System.out.println(originalAnzahl);
+					System.out.println(einzelPreis);
+					System.out.println(gesamtPreis);
+					System.out.println(rechnungGesamt);
+					System.out.println(RehaBillEdit.hmRechnungPrivat);
+					starteDokument( RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.rhRechnungKasse );
+					System.out.println(RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.rhRechnungKasse);
+					starteErsetzen();
+					aktuellePosition = 0;
+					startePositionen();
+					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			
 			
 		}
 		}catch(Exception ex){
