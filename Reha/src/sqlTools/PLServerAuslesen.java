@@ -36,7 +36,6 @@ public class PLServerAuslesen {
 			stmt =  con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try{
@@ -86,17 +85,42 @@ public class PLServerAuslesen {
 		return (Vector<Vector<String>>) retkomplett;
 	}
 	
+	public static void sqlAusfuehren(String sstmt){
+		Statement stmt = null;
+		try {
+			stmt =  con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
+		}
+		try{
+			stmt.execute(sstmt);
+			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}catch(SQLException ev){
+			System.out.println("SQLException: " + ev.getMessage());
+		}	
+		finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return;
+	}
 	
 	public boolean oeffnePLConnection(){
 		try{
 			Class.forName("de.root1.jpmdbc.Driver");
     	}
     	catch ( final Exception e ){
-    		JOptionPane.showMessageDialog(null,"Fehler beim Laden des Datenbanktreibers.\nAnwendung wird beendet");
+    		JOptionPane.showMessageDialog(null,"Fehler beim Laden des Datenbanktreibers für Preislisten-Server");
     		return false;
         }
     	try {
-			System.out.println("Starte de.root1.jpmdbc.Drive");
 			Properties connProperties = new Properties();
 			connProperties.setProperty("user", "dbo336243054");
 			connProperties.setProperty("password", "allepreise");
@@ -105,10 +129,10 @@ public class PLServerAuslesen {
 			connProperties.setProperty("compression","false");
 			connProperties.setProperty("NO_DRIVER_INFO", "1");
 			con =  DriverManager.getConnection("jdbc:jpmdbc:http://www.thera-pi.org/jpmdbc.php?db336243054",connProperties);
-			System.out.println("MySql gestartet");
+			
 			Date zeit = new Date();
 			String stx = "Insert into eingeloggt set comp='"+"Preis-Listen "+java.net.InetAddress.getLocalHost()+": import"+"', zeit='"+zeit.toString()+"', einaus='ein';";
-			new ExUndHop().setzeStatement(stx);
+			sqlAusfuehren(stx);
 			
     	} 
     	catch (final SQLException ex) {
@@ -117,7 +141,7 @@ public class PLServerAuslesen {
     		System.out.println("VendorError-1: " + ex.getErrorCode());
     		JOptionPane.showMessageDialog(null,"Fehler: Datenbankkontakt zum Preislisten-Server konnte nicht hergestellt werden.");
     		return false;
-    	} catch (UnknownHostException e) {
+    	}catch (UnknownHostException e) {
 			e.printStackTrace();
 			return false;
 		}
