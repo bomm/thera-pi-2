@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/net/mail.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Nebraska.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/jna_junit/jna-3.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/sql/jpmdbc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

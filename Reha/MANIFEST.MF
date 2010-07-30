@@ -11,6 +11,7 @@ Class-Path: Libraries/lib/sql/adsjdbc.jar
  Libraries/lib/swingx/swingx-1.6.jar 
  Libraries/lib/swingx/pdf-renderer-1.0.5.jar 
  Libraries/lib/sql/mysql-connector-java-5.1.5-bin.jar 
+ Libraries/lib/sql/jpmdbc.jar 
  Libraries/lib/openofficeorg/unoloader.jar 
  Libraries/lib/openofficeorg/ag.ion.noa_2.2.2.jar 
  Libraries/lib/openofficeorg/bootstrapconnector.jar 

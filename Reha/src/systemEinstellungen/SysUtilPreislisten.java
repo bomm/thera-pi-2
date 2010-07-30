@@ -38,6 +38,7 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import sqlTools.PLServerAuslesen;
 import sqlTools.SqlInfo;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -615,7 +616,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		
 	}
 	
-	private Vector doHolePreiseNeu(){
+	private Vector<?> doHolePreiseNeu(){
 		int row = plserver.getSelectedRow();
 		String hmsparte = (String) plserver.getValueAt(row, 0);
 		String preisgruppe = (String) plserver.getValueAt(row, 1);
@@ -624,12 +625,13 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			bundesland = "./.";
 		}
 		String cmd = null;
-
 		cmd = "select posnr,preis,gueltigab,langtext from allepreise where disziplin='"+
-		hmsparte+"' AND buland='"+bundesland+"' AND preisgruppe='"+preisgruppe+"'"; 
-		
-		Vector vec =  SqlInfo.holeFelder(cmd);
-		return (Vector) vec.clone();
+		hmsparte+"' AND buland='"+bundesland+"' AND preisgruppe='"+preisgruppe+"'";
+		//Vector vec =  SqlInfo.holeFelder(cmd);
+		PLServerAuslesen plServ = new PLServerAuslesen();
+		Vector<Vector<String>> vec = PLServerAuslesen.holeFelder(cmd);
+		plServ.schliessePLConnection();
+		return (Vector<?>) vec.clone();
 		
 	}
 	private void doSetzeNeuAufAlt(){
@@ -653,7 +655,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		Vector vbuland = new Vector();
 		Vector vpreisgruppe = new Vector();
 		modserver.setRowCount(0);
-		vec1 = SqlInfo.holeFelder("select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe");
+		String cmd = "select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe";
+		//vec1 = SqlInfo.holeFelder("select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe");
+		PLServerAuslesen plServ = new PLServerAuslesen();
+		vec1 = PLServerAuslesen.holeFelder(cmd);
+		plServ.schliessePLConnection();
+
 		if(vec1.size()<= 0){
 				JOptionPane.showMessageDialog(null,"Bislang sind für -> "+disziplin+" <- keine Preislisten auf dem Server hinterlegt");
 		}else{
