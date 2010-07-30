@@ -1,7 +1,11 @@
 package jxTableTools;
 
 import java.awt.Component;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.text.ParseException;
+import java.util.EventObject;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
@@ -12,12 +16,13 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
-public class ZeitTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+public class ZeitTableCellEditor extends AbstractCellEditor implements KeyListener,TableCellEditor {
     // This is the component that will handle the editing of the cell value
     JComponent component = new JFormattedTextField();
     MaskFormatter mf = new MaskFormatter();
     JTable tab;
     int reihe;
+    boolean mitMaus;
     
     public ZeitTableCellEditor(){
         try {
@@ -32,6 +37,20 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements TableCell
 		((JFormattedTextField)component).setFormatterFactory(factory);
     	
     }
+    @Override
+    public boolean isCellEditable(EventObject evt) {
+        if (evt instanceof MouseEvent) {
+        	if(((MouseEvent)evt).getClickCount()==2){
+        		((MouseEvent)evt).consume();
+            	mitMaus = true;
+                return true;
+        	}
+        } else {
+        	mitMaus = false;
+            return true;
+        }
+        return false;
+    }    
     
 
     // This method is called when a cell value is edited by the user.
@@ -111,6 +130,30 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements TableCell
         tab.setRowSelectionInterval(reihe,reihe);
         return super.stopCellEditing();
     }
+
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		if(arg0.getKeyCode()==10){
+			////System.out.println("in Maus + Return gedrückt");
+			this.fireEditingStopped();
+		}
+		if(arg0.getKeyCode()==27){
+			this.cancelCellEditing();
+		}
+	}
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 
 
