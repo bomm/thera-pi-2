@@ -1514,7 +1514,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						if((tkstart==plstart) && (tkdauer==pldauer)){
 							// Beginn und Dauer sind gleich geblieben
 							if((name.equals("")) &&	(nummer.equals(""))){
-								// Termin wird gel�scht es m�ssen die Bl�cke vorher und nachher getestet werden;
+								// Termin wird gelöscht es müssen die Blöcke vorher und nachher getestet werden;
 								// deshalb zuerst Vector mit dem Tag holen
 								try {
 									vec = sucheZeile(i);
@@ -1555,7 +1555,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								int tkende = (int) ZeitFunk.MinutenSeitMitternacht( ZeitFunk.MinutenZuZeit(tkstart+tkdauer) );
 								int plende = (int) ZeitFunk.MinutenSeitMitternacht( ZeitFunk.MinutenZuZeit(plstart+pldauer) );
 
-								//2. Abfrage ob Beginn später und Ende früher - Mittelblock erforderlich - 2 neue Bl�cke!
+								//2. Abfrage ob Beginn später und Ende früher - Mittelblock erforderlich - 2 neue Blöcke!
 								if((tkstart != plstart) && (tkdauer != pldauer) && (tkende != plende)){
 									schreibeTermin(vec,i,1,tkstart,tkdauer,tkende,plstart,pldauer,plende,name,nummer);
 									break;
@@ -1592,7 +1592,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		int block = (Integer) jxSucheTable.getValueAt(zeile,16);
 		int geaendert = Integer.parseInt( (String) jxSucheTable.getValueAt(zeile,18) );
 		if(vecgross != geaendert ){
-			////System.out.println("vermerkt sind "+vecgross+" Bl�cke / tats�chlich in der Datenbank sind "+geaendert+" Bl�cke");
+			////System.out.println("vermerkt sind "+vecgross+" Blöcke / tatsächlich in der Datenbank sind "+geaendert+" Blöcke");
 			block += (vecgross-geaendert);
 		}
 
@@ -1716,19 +1716,19 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		int bloecke = vec.size(); 
 		int geaendert = Integer.parseInt( (String) jxSucheTable.getValueAt(zeile,18) );
 		if(bloecke != geaendert ){
-			////System.out.println("vermerkt sind "+bloecke+" Bl�cke / tats�chlich in der Datenbank sind "+geaendert+" Bl�cke");
+			////System.out.println("vermerkt sind "+bloecke+" Blöcke / tatsächlich in der Datenbank sind "+geaendert+" Blöcke");
 			block += (bloecke-geaendert);
 		}
 		String stmt = null;
-		// nur den nachfolgenden Block pr�fen!!
+		// nur den nachfolgenden Block prüfen!!
 		for(int i=0;i<1;i++){
 			if(block == 1){
 				
 
 				// es gibt nur einen Block 
 				if(bloecke==1){
-					////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im ersten Block / insgesamt existieren "+vec.size()+" Bl�cke");
-					// es gibt mehrere bl�cke
+					////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im ersten Block / insgesamt existieren "+vec.size()+" Blöcke");
+					// es gibt mehrere blöcke
 					((Vector)vec.get(block-1)).set(0, "");
 					((Vector)vec.get(block-1)).set(1, "");					
 					stmt = macheStat(vec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
@@ -1736,8 +1736,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					////System.out.println(stmt);
 					break;
 				}else{
-				//es gibt mehrere bloecke und der betroffene block = der erste, also mu� der nachfolgende untersucht werden.
-					////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im ersten Block / insgesamt existieren "+vec.size()+" Bl�cke");
+				//es gibt mehrere bloecke und der betroffene block = der erste, also muß der nachfolgende untersucht werden.
+					////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im ersten Block / insgesamt existieren "+vec.size()+" Blöcke");
 					String xname,xnummer;
 					xname = (String) ((Vector)vec.get(1)).get(0);
 					xnummer = (String) ((Vector)vec.get(1)).get(1);
@@ -1768,7 +1768,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					}
 				}
 			}	
-			// es gibt mehrere Bl�cke aber der betroffene ist der letzte nur den vorherigen Block pr�fen
+			// es gibt mehrere Blöcke aber der betroffene ist der letzte nur den vorherigen Block prüfen
 			if(block == bloecke){
 				////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im ersten Block / insgesamt existieren "+vec.size()+" Bl�cke");
 				String xname,xnummer;
@@ -1872,7 +1872,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 
 				
 			}
-			////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im Block Nr. "+block+" / insgesamt existieren "+vec.size()+" Bl�cke");
+			////System.out.println(jxSucheTable.getValueAt(zeile,8)+" ist im Block Nr. "+block+" / insgesamt existieren "+vec.size()+" Blöcke");
 			
 		}
 		if(stmt!=null){
