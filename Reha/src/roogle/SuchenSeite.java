@@ -55,8 +55,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -182,6 +184,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	public String selektbeginn;
 	public String schichtbeginn;
 	public RoogleFenster eltern;
+	public boolean nachfolgerloeschen = false;
 	SuchenSeite(RoogleFenster xeltern){
 		super();
 		setBorder(null);
@@ -605,27 +608,71 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		dtblm.setColumnIdentifiers(column);
 		jxSucheTable = new JXTable(dtblm);
 		jxSucheTable.setDoubleBuffered(true);
-		/*
+		jxSucheTable.setAutoStartEditOnKeyStroke(false);
 		jxSucheTable.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent arg0){
 				arg0.consume();
 			}
 			public void mouseClicked(MouseEvent arg0) {
 				arg0.consume();
-				System.out.println("Im eigenen Mouseadapter");
 				if(arg0.getClickCount()==2){
 					int row = jxSucheTable.getSelectedRow();
 					int col = jxSucheTable.getSelectedColumn();
-					startCellEditing(jxSucheTable,row,col);
+					if( (Boolean) jxSucheTable.getValueAt(row, 0)){
+						startCellEditing(jxSucheTable,row,col);						
+					}
+					return;
+				}
+				if(arg0.getClickCount()==1 && arg0.getButton()==3){
+					int row = jxSucheTable.getSelectedRow();
+					int col = jxSucheTable.getSelectedColumn();
+					jxSucheTable.setRowSelectionInterval(row, row);
+					if( (Boolean) jxSucheTable.getValueAt(row, 0)){
+						if(col==7){
+							ZeigePopupMenuDauer(arg0,jxSucheTable.getValueAt(row, col).toString());
+						}
+					}
+					return;
 				}
 				if(arg0.getClickCount()==1){
 					int row = jxSucheTable.getSelectedRow();
 					int col = jxSucheTable.getSelectedColumn();
 					jxSucheTable.setRowSelectionInterval(row, row);
+					return;
 				}
 			}
 		});
-		 */
+		/*
+		jxSucheTable.addKeyListener(new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode() == KeyEvent.VK_SPACE){
+					//arg0.consume();
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							int row = jxSucheTable.getSelectedRow();
+							int col = jxSucheTable.getSelectedColumn();
+							startCellEditing(jxSucheTable,row,col);
+						}
+					});
+				}
+			}
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		*/
+
+		
 		/***************************/		
 		//jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping());
 		jxSucheTable.setHighlighters(HighlighterFactory.createSimpleStriping(new Color(204,255,255)));
@@ -741,7 +788,34 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		 				xtable.editCellAt(xrows,xcols );
 		 	   }
 		});
-	}	
+	}
+	
+	private void ZeigePopupMenuDauer(java.awt.event.MouseEvent me,String dauer){
+		JPopupMenu jPop = getDauerPopupMenu(dauer);
+		
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	/*
+	private void ZeigePopupStartzeit(java.awt.event.MouseEvent me){
+		JPopupMenu jPop = getBehandlungsartLoeschenMenu();
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	*/
+	
+	private JPopupMenu getDauerPopupMenu(String dauer){
+		JPopupMenu jPopupMenu = new JPopupMenu();
+		JMenuItem item = new JMenuItem("alle nachfolgenden Termine auf die Dauer "+dauer+" Minuten setzen, Nachfolgeblock löschen sofern erforderlich ?");
+		item.setActionCommand("dauerneublockdelete");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		item = new JMenuItem("alle nachfolgenden Termine auf die Dauer "+dauer+" Minuten setzen, Nachfolgeblock im Original belassen ?");
+		item.setActionCommand("dauerneublocksave");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		return jPopupMenu;
+	}
+
+
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
@@ -904,7 +978,24 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				break;
 				
 			}
+			if(name.equals("dauerneublockdelete")){
+				setzeNeueDauer();
+				this.nachfolgerloeschen = true;
+			}
 
+		}
+	}
+	private void setzeNeueDauer(){
+		int start = jxSucheTable.getSelectedRow();
+		int ende = jxSucheTable.getRowCount();
+		if(start < 0 || ende == 0){
+			return;
+		}
+		String dauer = jxSucheTable.getValueAt(start, 7).toString();
+		for(int i = (start+1); i < ende; i++){
+			if( (Boolean) jxSucheTable.getValueAt(i, 0)){
+				jxSucheTable.setValueAt((String)dauer, i, 7);	
+			}
 		}
 	}
 	private void knopfGedoense(int[] knopf){
@@ -1284,7 +1375,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 		if(arg0.getType() == TableModelEvent.INSERT){
-			////System.out.println("Tabellen-Zeile eingef�gt");
+			////System.out.println("Tabellen-Zeile eingefügt");
 		}
 		if(arg0.getType() == TableModelEvent.UPDATE){
 
@@ -1338,7 +1429,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 							}
 	
 						}
-						// Pr�fung einbauen ob Beginnzeit + Dauer nicht Endzeit �bersteigt bzw. vor Planbeginnzeit liegt.
+						// Prüfung einbauen ob Beginnzeit + Dauer nicht Endzeit �bersteigt bzw. vor Planbeginnzeit liegt.
 						//jxSucheTable.setValueAt("", arg0.getFirstRow(), 6);
 				}
 				if(arg0.getColumn() == 7){

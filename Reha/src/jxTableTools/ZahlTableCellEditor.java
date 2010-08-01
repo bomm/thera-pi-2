@@ -94,7 +94,8 @@ public class ZahlTableCellEditor extends AbstractCellEditor implements KeyListen
             	mitMaus = true;
                 return true;
         	}
-        } else {
+        } else if(evt instanceof KeyEvent) {
+        	((KeyEvent)evt).consume();
         	mitMaus = false;
             return true;
         }
