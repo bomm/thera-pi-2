@@ -1,9 +1,7 @@
 package rehaBillEdit;
 
 import java.awt.BorderLayout;
-import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
@@ -19,11 +17,11 @@ public class RehaBillEditTab extends JXPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = -7580783032048353314L;
-	
+	/*
 	private Vector<String> vectitel = new Vector<String>();
 	private Vector<String> vecdescript = new Vector<String>();
 	private Vector<ImageIcon> vecimg = new Vector<ImageIcon>();
-
+	*/
 	JTabbedPane billEditTab = null;
 	public JXTitledPanel jxTitel;
 	public JXHeader jxh;

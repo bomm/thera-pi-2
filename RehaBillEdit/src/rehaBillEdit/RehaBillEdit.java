@@ -120,7 +120,7 @@ public class RehaBillEdit implements WindowListener {
 					if(!DbOk){
 						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");				
 					}
-					xapplication.starteOfficeApplication();
+					RehaBillEdit.starteOfficeApplication();
 					return null;
 				}
 				

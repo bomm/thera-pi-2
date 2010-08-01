@@ -691,7 +691,9 @@ public class OffenepostenMahnungen extends JXPanel{
 			return;
 		}
 		String rnr = tabmod.getValueAt( tab.convertRowIndexToModel(row)  ,0).toString();
-		if(SqlInfo.gibtsSchon("select rnummer from faktura where rnummer = '"+rnr+"' LIMIT 1")){
+		String cmd = "select rnummer from faktura where rnummer = '"+rnr+"' LIMIT 1";
+		//System.out.println(cmd);
+		if(SqlInfo.gibtsSchon(cmd)){
 			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			try{
 				doFakturaGedoense(rnr,row);
