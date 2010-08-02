@@ -1,11 +1,16 @@
 package hmrCheck;
 
+import java.util.Vector;
+
 public class HMRCheck {
-	
-	public HMRCheck(){
-		
+	Vector<Integer> anzahl = null;
+	Vector<String> positionen = null;
+	String indischluessel = null;
+	public HMRCheck(String indi,Vector<Integer> vecanzahl,Vector<String>vecpositionen){
+		indischluessel = indi;
+		anzahl = vecanzahl;
+		positionen = vecpositionen;
 	}
-	
 	/*
 	 * 
 	 * Abhängig vom Indikationsschlüssel muß geprüft werden
@@ -16,5 +21,9 @@ public class HMRCheck {
 	 * 5. 
 	 * 
 	 */
-
+	
+	public boolean check(){
+		boolean ret = true;
+		return ret;
+	}
 }

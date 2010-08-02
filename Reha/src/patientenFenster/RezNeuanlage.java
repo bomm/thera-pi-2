@@ -1,6 +1,7 @@
 package patientenFenster;
 
 import hauptFenster.Reha;
+import hmrCheck.HMRCheck;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -72,6 +73,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	public JButton speichern = null;
 	public JButton abbrechen = null;
+	public JButton hmrcheck = null;
 	
 	public boolean neu = false;
 	public String feldname = "";
@@ -253,8 +255,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addKeyListener(this);
 		jpan.setOpaque(false);
 		FormLayout lay = new FormLayout(
-		        // 1                2          3             4      5    
-				"fill:0:grow(0.33),50dlu,fill:0:grow(0.33),50dlu,fill:0:grow(0.33)",
+		        // 1                2          3             4      5               6          7 
+				"fill:0:grow(0.25),50dlu,fill:0:grow(0.25),50dlu,fill:0:grow(0.25),50dlu,fill:0:grow(0.25)",
 				// 1  2  3  
 				"5dlu,p,5dlu");
 		CellConstraints cc = new CellConstraints();
@@ -266,12 +268,19 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		speichern.setMnemonic(KeyEvent.VK_S);
 		jpan.add(speichern,cc.xy(2,2));
 		
+		hmrcheck = new JButton("HMR-Check");
+		hmrcheck.setActionCommand("hmrcheck");
+		hmrcheck.addActionListener(this);
+		hmrcheck.addKeyListener(this);
+		hmrcheck.setMnemonic(KeyEvent.VK_H);
+		jpan.add(hmrcheck,cc.xy(4,2));
+
 		abbrechen = new JButton("abbrechen");
 		abbrechen.setActionCommand("abbrechen");
 		abbrechen.addActionListener(this);
 		abbrechen.addKeyListener(this);
 		abbrechen.setMnemonic(KeyEvent.VK_A);		
-		jpan.add(abbrechen,cc.xy(4,2));
+		jpan.add(abbrechen,cc.xy(6,2));
 
 		return jpan;
 	}	
@@ -633,6 +642,21 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}.execute();
 			return;
 		}
+		if(e.getActionCommand().equals("hmrcheck") ){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+						doHmrCheck();						
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+			}.execute();
+			return;
+		}
+
 		if(e.getActionCommand().equals("Hausbesuche") ){
 			if(jcb[1].isSelected()){
 				// Hausbesuch gewählt
@@ -689,6 +713,33 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	private void doRechnen(int comb){
 		//unbelegt
+	}
+	private void doHmrCheck(){
+		int itest = 0; //jcmb[2].getSelectedIndex();
+		String indi = (String)jcmb[6].getSelectedItem();
+		if(indi.equals("") || indi.contains("kein IndiSchl.")){
+			System.out.println("Kein Indikationsschlüssel angegeben");
+			return;
+		}
+		indi = indi.replace(" ", "");
+		Vector<Integer> anzahlen = new Vector<Integer>();
+		Vector<String> hmpositionen = new Vector<String>();
+		for(int i = 2;i <= 5;i++ ){
+			itest = jcmb[i].getSelectedIndex();
+			if(itest > 0){
+				System.out.println(itest);
+				anzahlen.add( Integer.parseInt(jtf[2+i].getText()) );
+				hmpositionen.add(preisvec.get(itest-1).get(2));
+			}
+		}
+		System.out.println(indi+" "+anzahlen+" - "+hmpositionen);
+		if(hmpositionen.size() > 0){
+			boolean checkok = new HMRCheck(indi,anzahlen,hmpositionen).check();
+			speichern.setEnabled(checkok);
+		}else{
+			JOptionPane.showMessageDialog(null, "Keine Behandlungspositionen angegeben, HMR-Check nicht möglich!!!");
+		}
+		
 	}
 
 	
