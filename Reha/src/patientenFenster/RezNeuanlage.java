@@ -734,7 +734,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		System.out.println(indi+" "+anzahlen+" - "+hmpositionen);
 		if(hmpositionen.size() > 0){
-			boolean checkok = new HMRCheck(indi,anzahlen,hmpositionen).check();
+			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen).check();
 			speichern.setEnabled(checkok);
 		}else{
 			JOptionPane.showMessageDialog(null, "Keine Behandlungspositionen angegeben, HMR-Check nicht möglich!!!");

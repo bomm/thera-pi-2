@@ -856,6 +856,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					protected Void doInBackground() throws Exception {
 						knopfGedoense(new int[]  {1,0,0,0,0,0,0,0,0,0});
 						roogleZuruecksetzen();
+						nachfolgerloeschen = false;
 						return null;
 					}
 					
@@ -982,7 +983,10 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				setzeNeueDauer();
 				this.nachfolgerloeschen = true;
 			}
-
+			if(name.equals("dauerneublocksave")){
+				setzeNeueDauer();
+				this.nachfolgerloeschen = false;
+			}
 		}
 	}
 	private void setzeNeueDauer(){
@@ -1555,10 +1559,16 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			//Hier wird gel�scht unbedingt vorher fragen bevor
+			//Hier wird gelöscht unbedingt vorher fragen bevor
 			if(  (schreibeName.getText().trim().equals("")) && (schreibeNummer.getText().trim().equals(""))){
 				int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie wirklich die ausgewählten Termine löschen (=freigeben) ?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+				/*
 				if(anfrage == JOptionPane.NO_OPTION){
+					setKnopfGedoense(new int[]  {0,0,0,1,1,1,1,1,1,1});
+					return null;
+				}
+				*/
+				if(anfrage != JOptionPane.YES_OPTION){
 					setKnopfGedoense(new int[]  {0,0,0,1,1,1,1,1,1,1});
 					return null;
 				}
@@ -1615,7 +1625,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								}
 								break;
 							}else{
-								// nur Statement bilden und weg damit... kein Vector ged�nse
+								// nur Statement bilden und weg damit... kein Vector gedönse
 								String snum = Integer.toString(((Integer) jxSucheTable.getValueAt(i, 16)));
 								String stmt = "Update flexkc set T"+snum+"='"+StringTools.EscapedDouble(name)+"', N"+snum+"='"+nummer+"' where id='"+
 								((String)jxSucheTable.getValueAt(i, 17)).trim()+"'";
@@ -1731,6 +1741,11 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				break;
 			}
 			if(art==2){
+				//hier muß eingegriffen werden wenn beim Überschreiben mit
+				//veränderter Dauer der Nachblock gelöscht werden soll
+				//ebenfalls muß dann überprüft werden ob er übernächste Block ebenfalls ein Leerblock ist
+				//in dem Fall müßte dann der Leerblock zusammengefaßt werden 
+				//die Blockanzahl bliebe also gleich!!!
 				for(i=0;i<vecgross;i++){
 					if(i==(block-1)){
 						Vector aktvec = new Vector();
@@ -1740,20 +1755,60 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 						aktvec.add(Integer.toString(pldauer));
 						aktvec.add(ZeitFunk.MinutenZuZeit(plstart+pldauer));
 						newvec.add(aktvec);
-						
-						Vector nachvec = new Vector();
-						nachvec.add( ((String)((Vector)vec.get(i)).get(0)) ) ;
-						nachvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
-						nachvec.add( (String)aktvec.get(4) ) ;						
-						nachvec.add( Integer.toString(tkdauer-pldauer)) ;
-						nachvec.add( ZeitFunk.MinutenZuZeit(tkende) ) ;
-						newvec.add(nachvec);
-
+						if(i < (vecgross-1) ){
+							//hier rein die Abfrage ob Nachfolgeblock
+							//leer ist
+							if( ((String)((Vector)vec.get(i+1)).get(0)).equals("") && 
+									((String)((Vector)vec.get(i+1)).get(1)).equals("") &&
+									nachfolgerloeschen){
+								Vector nachvec = new Vector();
+								nachvec.add( "" ) ;
+								nachvec.add( "" ) ;
+								nachvec.add( (String)aktvec.get(4) ) ;
+								//Dauer neu einstellen
+								long dauer = ZeitFunk.ZeitDifferenzInMinuten((String)aktvec.get(4),
+										((String)((Vector)vec.get(i+1)).get(4)) );
+								
+								nachvec.add( Long.toString(dauer) ) ;
+								//Ende neu einstellen
+								nachvec.add( ((String)((Vector)vec.get(i+1)).get(4)) );
+								newvec.add(nachvec);
+								i+= 1;
+								continue;
+							}else{
+								if(nachfolgerloeschen){
+									Vector nachvec = new Vector();
+									nachvec.add( "" ) ;
+									nachvec.add( "" ) ;
+									nachvec.add( (String)aktvec.get(4) ) ;						
+									nachvec.add( Integer.toString(tkdauer-pldauer)) ;
+									nachvec.add( ZeitFunk.MinutenZuZeit(tkende) ) ;
+									newvec.add(nachvec);
+								}else{
+									Vector nachvec = new Vector();
+									nachvec.add( ((String)((Vector)vec.get(i)).get(0)) ) ;
+									nachvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
+									nachvec.add( (String)aktvec.get(4) ) ;						
+									nachvec.add( Integer.toString(tkdauer-pldauer)) ;
+									nachvec.add( ZeitFunk.MinutenZuZeit(tkende) ) ;
+									newvec.add(nachvec);
+								}
+							}
+						}else{
+							Vector nachvec = new Vector();
+							nachvec.add( ((String)((Vector)vec.get(i)).get(0)) ) ;
+							nachvec.add( ((String)((Vector)vec.get(i)).get(1)) ) ;
+							nachvec.add( (String)aktvec.get(4) ) ;						
+							nachvec.add( Integer.toString(tkdauer-pldauer)) ;
+							nachvec.add( ZeitFunk.MinutenZuZeit(tkende) ) ;
+							newvec.add(nachvec);
+						}
 					}else{
 						newvec.add(vec.get(i));
 					}
-					
 				}
+				//System.out.println("Nachblock gesetzt");
+				//System.out.println(newvec);
 				String stmt = macheStat(newvec,Integer.parseInt((String)jxSucheTable.getValueAt(zeile,17)),name,nummer);
 				////System.out.println("Nur mit Nachblock "+stmt);
 				try {
@@ -3253,7 +3308,11 @@ class MyDefaultTableModel extends DefaultTableModel{
 	        }else if(col == 6){
 	        	return true;
 	        }else if(col == 7){
-	        	return true;
+	        	if((Boolean) getValueAt(row,0)){
+	        		return true;
+	        	}else{
+	        		return false;
+	        	}
 	        }else if(col == 11){
 	        	return true;
 	        } else{

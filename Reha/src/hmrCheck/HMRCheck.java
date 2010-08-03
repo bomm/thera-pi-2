@@ -6,7 +6,8 @@ public class HMRCheck {
 	Vector<Integer> anzahl = null;
 	Vector<String> positionen = null;
 	String indischluessel = null;
-	public HMRCheck(String indi,Vector<Integer> vecanzahl,Vector<String>vecpositionen){
+	String diszis[] = {"2","1","5","3","8"};
+	public HMRCheck(String indi,int idiszi,Vector<Integer> vecanzahl,Vector<String>vecpositionen){
 		indischluessel = indi;
 		anzahl = vecanzahl;
 		positionen = vecpositionen;
@@ -21,7 +22,6 @@ public class HMRCheck {
 	 * 5. 
 	 * 
 	 */
-	
 	public boolean check(){
 		boolean ret = true;
 		return ret;
