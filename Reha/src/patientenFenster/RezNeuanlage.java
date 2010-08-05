@@ -727,7 +727,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		int itest = 0; //jcmb[2].getSelectedIndex();
 		String indi = (String)jcmb[6].getSelectedItem();
 		if(indi.equals("") || indi.contains("kein IndiSchl.")){
-			JOptionPane.showMessageDialog(null, "Kein Indikationsschlüssel angegeben\nDie Angaben sind nicht gemäß den gültigen Heilmittelrichtlinien!");
+			JOptionPane.showMessageDialog(null, "<html><b>Kein Indikationsschlüssel angegeben.<br>Die Angaben sind <font color='#ff0000'>nicht</font> gemäß den gültigen Heilmittelrichtlinien!</b></html>");
 			return;
 		}
 		indi = indi.replace(" ", "");
@@ -743,7 +743,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		if(hmpositionen.size() > 0){
 			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec).check();
 			//new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec);
-			speichern.setEnabled(checkok);
+			//speichern.setEnabled(checkok);
 			if(checkok){
 				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
 			}

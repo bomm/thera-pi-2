@@ -56,7 +56,7 @@ public class HMRCheck {
 		}
 		for(int i = 0; i < anzahl.size();i++){
 			if(anzahl.get(i) > maxprorezept){
-				JOptionPane.showMessageDialog(null,"<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal\n"+Integer.toString(maxprorezept)+" Behandlungen pro Rezept erlaubt!!</b></html>"); 
+				JOptionPane.showMessageDialog(null,"<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+" Behandlungen</font> pro Rezept erlaubt!!</b></html>"); 
 				return false;
 			}
 		}
