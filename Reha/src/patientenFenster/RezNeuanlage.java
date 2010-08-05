@@ -718,7 +718,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		int itest = 0; //jcmb[2].getSelectedIndex();
 		String indi = (String)jcmb[6].getSelectedItem();
 		if(indi.equals("") || indi.contains("kein IndiSchl.")){
-			System.out.println("Kein Indikationsschlüssel angegeben");
+			JOptionPane.showMessageDialog(null, "Kein Indikationsschlüssel angegeben");
+			//System.out.println("Kein Indikationsschlüssel angegeben");
 			return;
 		}
 		indi = indi.replace(" ", "");
@@ -727,14 +728,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		for(int i = 2;i <= 5;i++ ){
 			itest = jcmb[i].getSelectedIndex();
 			if(itest > 0){
-				System.out.println(itest);
+				//System.out.println(itest);
 				anzahlen.add( Integer.parseInt(jtf[2+i].getText()) );
 				hmpositionen.add(preisvec.get(itest-1).get(2));
 			}
 		}
-		System.out.println(indi+" "+anzahlen+" - "+hmpositionen);
+		//System.out.println(indi+" "+anzahlen+" - "+hmpositionen);
 		if(hmpositionen.size() > 0){
-			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen).check();
+			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec).check();
 			speichern.setEnabled(checkok);
 		}else{
 			JOptionPane.showMessageDialog(null, "Keine Behandlungspositionen angegeben, HMR-Check nicht möglich!!!");
