@@ -25,7 +25,7 @@ public class HMRCheck {
 		positionen = vecpositionen;
 		preisgruppe = xpreisgruppe;
 		preisvec = xpreisvec;
-		
+		//aktualisiereHMRs();
 	}
 	/*
 	 * 
@@ -56,7 +56,7 @@ public class HMRCheck {
 		}
 		for(int i = 0; i < anzahl.size();i++){
 			if(anzahl.get(i) > maxprorezept){
-				JOptionPane.showMessageDialog(null,"Bei Indikationsschlüssel "+indischluessel+" sind maximal\n"+Integer.toString(maxprorezept)+" Behandlungen pro Rezept erlaubt!!"); 
+				JOptionPane.showMessageDialog(null,"<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal\n"+Integer.toString(maxprorezept)+" Behandlungen pro Rezept erlaubt!!</b></html>"); 
 				return false;
 			}
 		}
@@ -64,16 +64,22 @@ public class HMRCheck {
 			for(int i = 0; i < positionen.size();i++){
 				if(i==0){
 					if(! Arrays.asList(vorrangig).contains(positionen.get(i))){
+						showDialog(true,getHeilmittel(positionen.get(i)),positionen.get(i),vorrangig);
+						/*
 						JOptionPane.showMessageDialog(null,"Bei Indikationsschlüssel "+indischluessel+" ist das vorrangige Heilmittel\n"+
 								"--> "+getHeilmittel(positionen.get(i))+" <-- "+
 								" nicht erlaubt!!\n\n"+"Mögliche vorrangie Heilmittel sind:\n"+getErlaubteHeilmittel(vorrangig));
+						*/		
 						return false;
 					}
 				}else{
 					if(! Arrays.asList(ergaenzend).contains(positionen.get(i))){
+						showDialog(false,getHeilmittel(positionen.get(i)),positionen.get(i),ergaenzend);
+						/*
 						JOptionPane.showMessageDialog(null,"Bei Indikationsschlüssel "+indischluessel+" ist das ergaenzende Heilmittel\n"+
 								"--> "+getHeilmittel(positionen.get(i))+" <-- "+
 								" nicht erlaubt!!\n\n"+"Mögliche ergaenzende Heilmittel sind:\n"+getErlaubteHeilmittel(ergaenzend));
+						*/		
 						return false;
 					}
 				}
@@ -85,13 +91,27 @@ public class HMRCheck {
 		
 		return ret;
 	}
+	private void showDialog(boolean vorrangig,String heilmittel,String hmpos,String[] positionen){
+		String meldung = "<html>"+"Bei dem Indikationsschlüssel <b><font color='#ff0000'>"+indischluessel+"</font></b> ist das "+(vorrangig ? "vorrangige " : "ergänzende")+
+		" Heilmittel<br><br>--> <b><font color='#ff0000'>"+heilmittel+"</font></b> <-- nicht erlaubt!<br><br><br>"+
+		"Mögliche "+(vorrangig ? "vorrangige " : "ergänzende")+" Heilmittel sind:<br><b><font color='#ff0000'>"+
+		getErlaubteHeilmittel(positionen)+"</font></b></html>";
+		JOptionPane.showMessageDialog(null, meldung);
+		
+	}
+	/************************/
 	private String getErlaubteHeilmittel(String[] heilmittel){
 		StringBuffer buf = new StringBuffer();
+		String hm = "";
 		for(int i = 0;i < heilmittel.length;i++){
-			buf.append(getHeilmittel(heilmittel[i])+"\n");
+			hm = getHeilmittel(heilmittel[i]);
+			if(!hm.equals("")){
+				buf.append(getHeilmittel(heilmittel[i])+"<br>");				
+			}
 		}
-		return (buf.toString().equals("") ? "\nkeine\n" : buf.toString());
+		return (buf.toString().equals("") ? "<br>keine<br>" : buf.toString());
 	}
+	/************************/	
 	private String getHeilmittel(String heilmittel){
 		for(int i = 0;i < preisvec.size();i++){
 			if(preisvec.get(i).get(2).equals(heilmittel)){
@@ -100,4 +120,25 @@ public class HMRCheck {
 		}
 		return "";
 	}
+	/************************/
+	/*
+	private void aktualisiereHMRs(){
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select ergaenzend,maxergaenzend,id from hmrcheck  where ergaenzend LIKE '%1508%'");
+		String sanzahl = "";
+		String cmd = "";
+		System.out.println("Anzahl indis = "+vec.size());
+		for(int i = 0; i < vec.size();i++){
+			
+			try{
+				sanzahl = vec.get(i).get(1).split("@")[0];
+			}catch(Exception ex){
+				sanzahl = "6";
+			}
+			cmd = "update hmrcheck set ergaenzend='"+vec.get(i).get(0)+"@1531', maxergaenzend='"+
+			vec.get(i).get(1)+"@"+sanzahl+"' where id ='"+vec.get(i).get(2)+"' LIMIT 1";
+			System.out.println(cmd);
+			SqlInfo.sqlAusfuehren(cmd);
+		}
+	}
+	*/
 }

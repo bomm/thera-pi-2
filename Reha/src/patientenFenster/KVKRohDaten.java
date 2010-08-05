@@ -286,8 +286,13 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
          "</td>\n" +
          "<td>\n" +
          "<font color=blue><b>"+
-         "<font size=+1>"+
-         monate[IntegerTools.trailNullAndRetInt(gueltig.substring(0, 2))-1]+" - 20"+gueltig.substring(2)+
+         "<font size=+1>";
+         try{
+        	 initialText = initialText + monate[IntegerTools.trailNullAndRetInt(gueltig.substring(0, 2))-1]+" - 20"+gueltig.substring(2);
+         }catch(Exception ex){
+        	 initialText = initialText+"keine Angaben";
+         }
+         initialText = initialText+
          "</b>"+
          "</font>"+         
          "</td></tr>\n" +

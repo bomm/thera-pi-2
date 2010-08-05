@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -30,7 +29,6 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import rechteTools.Rechte;
@@ -714,12 +712,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private void doRechnen(int comb){
 		//unbelegt
 	}
-	private void doHmrCheck(){
+	private void mustHmrCheck(){
+		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()])==1  ){
+			this.hmrcheck.setEnabled(false);
+		}
+	}
+	private void doHmrCheck( ){
+		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()])==0  ){
+			this.hmrcheck.setEnabled(true);
+			JOptionPane.showMessageDialog(null, "HMR-Check ist bei diesem Kostenträger nicht erforderlich");
+			return;
+		}
+		//System.out.println(SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()]));
 		int itest = 0; //jcmb[2].getSelectedIndex();
 		String indi = (String)jcmb[6].getSelectedItem();
 		if(indi.equals("") || indi.contains("kein IndiSchl.")){
-			JOptionPane.showMessageDialog(null, "Kein Indikationsschlüssel angegeben");
-			//System.out.println("Kein Indikationsschlüssel angegeben");
+			JOptionPane.showMessageDialog(null, "Kein Indikationsschlüssel angegeben\nDie Angaben sind nicht gemäß den gültigen Heilmittelrichtlinien!");
 			return;
 		}
 		indi = indi.replace(" ", "");
@@ -728,15 +736,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		for(int i = 2;i <= 5;i++ ){
 			itest = jcmb[i].getSelectedIndex();
 			if(itest > 0){
-				//System.out.println(itest);
 				anzahlen.add( Integer.parseInt(jtf[2+i].getText()) );
 				hmpositionen.add(preisvec.get(itest-1).get(2));
 			}
 		}
-		//System.out.println(indi+" "+anzahlen+" - "+hmpositionen);
 		if(hmpositionen.size() > 0){
 			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec).check();
+			//new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec);
 			speichern.setEnabled(checkok);
+			if(checkok){
+				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
+			}
 		}else{
 			JOptionPane.showMessageDialog(null, "Keine Behandlungspositionen angegeben, HMR-Check nicht möglich!!!");
 		}
@@ -846,6 +856,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		for(int i = 0; i < anz; i++){
 			jcmb[6].addItem(indis[i]);
 		}
+		
 		return;
 	}
 	public void ladePreise(String[] artdbeh){
