@@ -1,8 +1,5 @@
 package kvKarte;
 
-import javax.swing.JOptionPane;
-
-import systemEinstellungen.SystemConfig;
 import hauptFenster.Reha;
 
 public class KVKWrapper {
@@ -14,6 +11,11 @@ public class KVKWrapper {
 		int ret = -1;
 		if(Reha.osVersion.contains("Windows")){
 			if(sReaderName.equals("Chipdrive micro 100")){
+				Win_ChipDriveMicro100 wcm = new Win_ChipDriveMicro100();
+				ret = wcm.patientEinlesen();
+				return ret;
+			}
+			if(sReaderName.equals("SCM-Micro SCR3xx-Serie")){
 				Win_ChipDriveMicro100 wcm = new Win_ChipDriveMicro100();
 				ret = wcm.patientEinlesen();
 				return ret;
