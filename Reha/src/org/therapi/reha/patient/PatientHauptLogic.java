@@ -408,6 +408,7 @@ public class PatientHauptLogic {
 						 					DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4))+" - "+
 						 					"Patienten-ID: "+Reha.thisClass.patpanel.patDaten.get(29);
 								 		   	Reha.thisClass.patpanel.patientInternal.setzeTitel(titel);
+								 		   	macheAlleHashMaps();
 							 		   }catch(Exception ex){
 							 			   ex.printStackTrace();
 							 		   }
@@ -419,43 +420,10 @@ public class PatientHauptLogic {
 				}
 			}.start();
 			// kmplette Patdaten holen		
-			new Thread(){
-				public void run(){
-					new SwingWorker<Void,Void>(){
-						@Override
-						protected Void doInBackground() throws Exception {
-							long zeit = System.currentTimeMillis();
-							while(! Reha.thisClass.patpanel.patDatenOk){
-								Thread.sleep(20);
-								if(System.currentTimeMillis()-zeit > 10000){
-									JOptionPane.showMessageDialog(null, "Fehler beim Bezug der Patientendaten");
-									return null;
-								}
-							}
-							try{
-								PatTools.constructPatHMap();
-							}catch(Exception ex){
-								JOptionPane.showMessageDialog(null, "Fehler bei PatTools.constructPatHMap()");
-							}
-							try{
-								ArztTools.constructArztHMap("");
-							}catch(Exception ex){
-								JOptionPane.showMessageDialog(null, "Fehler bei	ArztTools.constructArztHMap('')");
-							}
-							try{
-								KasseTools.constructKasseHMap("");
-							}catch(Exception ex){
-								JOptionPane.showMessageDialog(null, "Fehler bei	KasseTools.constructKasseHMap('')");
-							}
-							if(((SuchenDialog) patientHauptPanel.sucheComponent) != null){
-								((SuchenDialog) patientHauptPanel.sucheComponent).dispose();
-								patientHauptPanel.sucheComponent = null;
-							}
-							return null;
-						}
-					}.execute();
-				}
-			}.start();
+			//new Thread(){
+				//public void run(){
+				//}
+			//}.start();
 			// Rezeptdaten holen
 			new Thread(){
 				public void run(){		
@@ -641,6 +609,33 @@ public class PatientHauptLogic {
 			Reha.thisClass.patpanel.patDatenOk = true;
 		}
 		
+	}
+	private void macheAlleHashMaps(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					PatTools.constructPatHMap();
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler bei PatTools.constructPatHMap()");
+				}
+				try{
+					ArztTools.constructArztHMap("");
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler bei	ArztTools.constructArztHMap('')");
+				}
+				try{
+					KasseTools.constructKasseHMap("");
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler bei	KasseTools.constructKasseHMap('')");
+				}
+				if(((SuchenDialog) patientHauptPanel.sucheComponent) != null){
+					((SuchenDialog) patientHauptPanel.sucheComponent).dispose();
+					patientHauptPanel.sucheComponent = null;
+				}
+				return null;
+			}
+		}.execute();
 	}
 	
 	
