@@ -200,6 +200,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		hmRezgeb.put("<rgbetrag>",dcf.format(Double.parseDouble(tfs[2].getText().replace(",","."))));
 		hmRezgeb.put("<rgpauschale>",dcf.format(Double.parseDouble(tfs[3].getText().replace(",","."))));
 		hmRezgeb.put("<rgnr>","RGR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("rgrnr")));
+		hmRezgeb.put("<rgbehandlung>",tfs[4].getText().trim());
 		String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/RezeptgebuehrRechnung.ott";
 		try {
 			officeStarten(url);

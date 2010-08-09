@@ -905,7 +905,6 @@ class TextBausteine extends AbstractAction {
 			thblock.setModal(true);
 			thblock.setLocationRelativeTo(grundPanel);
 			thblock.pack();
-			thblock.setVisible(true);
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					icfblock[zuletztaktiv].requestFocus();
@@ -916,9 +915,13 @@ class TextBausteine extends AbstractAction {
 					}
 		   	  	}
 			});
+			thblock.setVisible(true);
+			if(thblock != null){
+				thblock.dispose();	
+				thblock = null;
+			}
 			
 		}else{
-			thblock.setVisible(true);
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					icfblock[zuletztaktiv].requestFocus();
@@ -929,6 +932,7 @@ class TextBausteine extends AbstractAction {
 					}
 		   	  	}
 			});
+			thblock.setVisible(true);
 		}
 	}
 	 

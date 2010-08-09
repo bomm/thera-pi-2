@@ -591,7 +591,7 @@ public class RezTools {
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		String s = df.format( rezgeb);
 		////System.out.println("----------------------------------------------------");
-		////System.out.println("Endg�ltige und geparste Rezeptgeb�hr = "+s+" EUR");
+		////System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		////System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 		
@@ -846,7 +846,7 @@ public class RezTools {
 			 }
 			 if(zweiPositionenBeiHB(disziplin,Integer.toString(preisgruppe))){
 				 //Weggebühr und pauschale
-				 if( (wgkm=Double.parseDouble(vec.get(7))) > 0 ){
+				 if( (wgkm=Double.parseDouble(vec.get(7))) > 7 ){
 					 //Kilometer verwenden
 					 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(2);
 					 preis = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
@@ -913,7 +913,7 @@ public class RezTools {
 					 if(zweiPositionenBeiHB(disziplin,Integer.toString((preisgruppe==0 ? 1 : preisgruppe)))){
 						 //Weggebühr und pauschale
 						 ////System.out.println("Kasse kennt km und Pauschale...");
-						 if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 0 ){
+						 if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 7 ){
 							 //Kilometer verwenden
 							 ////System.out.println("Kilometer verwenden...");
 							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(2);
@@ -1042,7 +1042,7 @@ public class RezTools {
 					/*******************************/
 					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
 						//System.out.println("Es könnten Kilometer abgerechnet werden");
-						if(zm.km > 0 ){
+						if(zm.km > 7 ){
 							//System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 
 							preis = PreisUeberPosition(kmgeld,
@@ -1245,8 +1245,8 @@ public class RezTools {
 				
 
 				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden k�nnen
-					//System.out.println("Es k�nnten Kilometer abgerechnet werden");
-					if(zm.km > 0 ){
+					//System.out.println("Es könnten Kilometer abgerechnet werden");
+					if(zm.km > 7 ){
 						//System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
 						
 						preis = PreisUeberPosition(kmgeld,
@@ -1305,7 +1305,7 @@ public class RezTools {
 
 						}
 					}
-				}else{// es k�nnen keine Kilometer abgerechnet werden
+				}else{// es können keine Kilometer abgerechnet werden
 					SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");		
 					SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----");				
 					SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
