@@ -182,7 +182,11 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					doWochenStatistik();
+					try{
+						doWochenStatistik();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 					return null;
 				}
 			}.execute();
@@ -191,7 +195,11 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					doQuartalStatistik();
+					try{
+						doQuartalStatistik();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 					return null;
 				}
 			}.execute();
@@ -200,7 +208,11 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					doJahresStatistik();
+					try{
+						doJahresStatistik();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 					return null;
 				}
 			}.execute();
@@ -844,8 +856,16 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 			for(int i = 0; i < angemeldet.size();i++){
 				status1.setText("ermittle angemeldete Rehafälle: "+Integer.toString(i+1)+" von "+angemeldet.size());
 				name = SqlInfo.holePatFeld("n_name","pat_intern='"+angemeldet.get(i).get(1)+"'")+", "+SqlInfo.holePatFeld("v_name","pat_intern='"+angemeldet.get(i).get(1)+"'");
+				try{
 				angelegtam = DatFunk.sDatInDeutsch(anwesend.get(i).get(2));
 				rehaart = getRehaArt(angemeldet.get(i).get(5));
+				}catch(Exception ex){
+					System.out.println("Größe des Vectors = "+anwesend.size()+" - Druchlauf = "+i);
+					System.out.println(getRehaArt(angemeldet.get(i).get(5)));
+					System.out.println("Name = "+name);
+					angelegtam = "nicht zu ermitteln";
+
+				}
 				OOTools.doCellValue(cellCursor, 0, calcrow, rehaart+" - "+name+" angelegt am: "+angelegtam+" Rehaverordnung: "+angemeldet.get(i).get(0));
 				OOTools.doCellFontName(cellCursor, 0, calcrow, "Courier New");
 				calcrow+=1;

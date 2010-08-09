@@ -174,7 +174,7 @@ public class RehaKassenbuchPanel extends JXPanel{
 			doKBFuellen(tabelle,von, bis);
 			doKBErmitteln();
 		}catch(Exception ex){
-			JOptionPane.showMessageDialog(null,"Fehler bei der Ausf�hrung neues Kassenbuch erzeugen");
+			JOptionPane.showMessageDialog(null,"Fehler bei der Ausführung neues Kassenbuch erzeugen");
 		}
 	}
 	public void doKBErzeugen(String tabelle){
