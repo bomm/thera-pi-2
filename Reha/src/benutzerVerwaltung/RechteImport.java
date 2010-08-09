@@ -28,10 +28,9 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.thera_pi.nebraska.gui.utils.JRtaComboBox;
-
 
 import systemTools.JRtaCheckBox;
+import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 
