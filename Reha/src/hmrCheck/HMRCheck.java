@@ -5,6 +5,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import patientenFenster.RezNeuanlage;
+
 import sqlTools.SqlInfo;
 
 public class HMRCheck {
@@ -13,18 +15,20 @@ public class HMRCheck {
 	Vector<Vector<String>> preisvec = null;
 	String indischluessel = null;
 	String diszis[] = {"2","1","5","3","8"};
+	RezNeuanlage rezanlage = null;
 	int disziplin;
 	int preisgruppe;
 	final String maxanzahl = "Die Höchstmenge pro Rezept bei ";
 	final String rotein = "<>";
 	public HMRCheck(String indi,int idiszi,Vector<Integer> vecanzahl,Vector<String>vecpositionen,
-			int xpreisgruppe,Vector<Vector<String>> xpreisvec){
+			int xpreisgruppe,Vector<Vector<String>> xpreisvec,RezNeuanlage xrezanlage){
 		indischluessel = indi;
 		disziplin = idiszi;
 		anzahl = vecanzahl;
 		positionen = vecpositionen;
 		preisgruppe = xpreisgruppe;
 		preisvec = xpreisvec;
+		rezanlage = xrezanlage;
 		//aktualisiereHMRs();
 	}
 	/*

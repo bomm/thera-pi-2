@@ -332,7 +332,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					existiertschon.clear();
 					String dsz = diszis[cmbDiszi.getSelectedIndex()];
 					
-					String cmd = "select name1,ikktraeger,ikkasse from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger";
+					String cmd = "select name1,ikktraeger,ikkasse from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger,id";
 
 					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
 

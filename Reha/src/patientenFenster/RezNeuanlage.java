@@ -741,7 +741,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}
 		if(hmpositionen.size() > 0){
-			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec).check();
+			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec,this).check();
 			//new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec);
 			//speichern.setEnabled(checkok);
 			if(checkok){
