@@ -15,7 +15,11 @@ import java.util.EventObject;
 public class ColorEditor extends AbstractCellEditor
                          implements TableCellEditor,
 			            ActionListener {
-    Color currentColor;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8312963895999621800L;
+	Color currentColor;
     JButton button;
     JColorChooser colorChooser;
     JDialog dialog;

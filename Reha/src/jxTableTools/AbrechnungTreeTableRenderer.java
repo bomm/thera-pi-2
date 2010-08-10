@@ -8,6 +8,10 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 public class AbrechnungTreeTableRenderer extends JLabel implements TableCellRenderer {
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 private boolean isBordered;
 public AbrechnungTreeTableRenderer(boolean isBordered) {
 	this.isBordered = isBordered;

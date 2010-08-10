@@ -2,14 +2,16 @@ package jxTableTools;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Date;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 public class ColAlignRenderer extends JLabel implements TableCellRenderer{
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5690508896668147474L;
 Color hinterGrund = null;
 int align = 0;
 	   public ColAlignRenderer(Color col,int ali){

@@ -1,22 +1,22 @@
 package jxTableTools;
 
 
+import java.awt.Component;
+
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
-import systemTools.JRtaCheckBox;
-
-import java.awt.Color;
-import java.awt.Component;
-
 public class CheckRenderer extends JCheckBox
                            implements TableCellRenderer {
-    Border unselectedBorder = null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1154825134666384570L;
+	Border unselectedBorder = null;
     Border selectedBorder = null;
     boolean isBordered = true;
 
