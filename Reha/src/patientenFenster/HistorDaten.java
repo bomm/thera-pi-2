@@ -211,11 +211,19 @@ public class HistorDaten extends JXPanel{
 
 				stest = StringTools.NullTest((String)vecaktrez.get(44));
 				if(stest.equals("") || stest.equals("kein IndiSchl.") ){
-					rezlabs[13].setForeground(Color.RED);
-					rezlabs[13].setText("??? "+stest);					
+					if(!vecaktrez.get(1).startsWith("RH")){
+						rezlabs[13].setForeground(Color.RED);
+						rezlabs[13].setText("??? "+stest);
+					}else{
+						rezlabs[13].setText("");
+					}
 				}else{
-					rezlabs[13].setForeground(Color.BLACK);
-					rezlabs[13].setText(stest);					
+					if(!vecaktrez.get(1).startsWith("RH")){
+						rezlabs[13].setForeground(Color.BLACK);
+						rezlabs[13].setText(stest);				
+					}else{
+						rezlabs[13].setText("");
+					}
 				}
 
 				

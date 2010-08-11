@@ -58,6 +58,12 @@ public class HMRCheck {
 		for(int i = 0; i < ergaenzend.length;i++){
 			ergaenzend[i] = diszis[disziplin]+ergaenzend[i];
 		}
+		//hier einbauen:
+		//testen auf WS1,Ex1 etc. hier ist keine Folgeverordnung möglich
+		//testen auf Doppelbehandlung und Verordnungsmenge
+		//testen auf außerhalb des Regelfalles (hebt) die Verordnungsmenge auf
+		//
+
 		for(int i = 0; i < anzahl.size();i++){
 			if(anzahl.get(i) > maxprorezept){
 				JOptionPane.showMessageDialog(null,"<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+" Behandlungen</font> pro Rezept erlaubt!!</b></html>"); 

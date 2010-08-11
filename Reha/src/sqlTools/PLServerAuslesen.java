@@ -39,7 +39,7 @@ public class PLServerAuslesen {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = xstmt;
 			rs = stmt.executeQuery(sstmt);
 			while(rs.next()){
@@ -52,7 +52,7 @@ public class PLServerAuslesen {
 				 }
 				 retkomplett.add((Vector<String>)retvec.clone());
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 			retvec.clear();
 			retvec = null;
 		}catch(SQLException ev){
@@ -95,7 +95,7 @@ public class PLServerAuslesen {
 		}
 		try{
 			stmt.execute(sstmt);
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
 		}	

@@ -1840,6 +1840,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}else{
 				try{
+					if(belegung[aktiveSpalte[2]]==-1){return;}
 					if(ansicht==NORMAL_ANSICHT){
 						anz = ((Vector<?>)((ArrayList<?>) vTerm.get(belegung[aktiveSpalte[2]])).get(0)).size();
 					}else if(ansicht==WOCHEN_ANSICHT){
@@ -3759,14 +3760,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					behandler = i;
 				}
 				if(behandler <= -1){
-					return;
-				}
-				if((altaktiveSpalte[0]==aktiveSpalte[0]) && (altaktiveSpalte[2]==aktiveSpalte[2])){
+					//System.out.println("behandler <= -1");
 					return;
 				}
 
 				String sname = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).get(aktiveSpalte[0]);
 				String sreznum = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(1)).get(aktiveSpalte[0]);
+
 
 				// Hier testen ob alter Block mit Daten gefüllt war
 				if(!sname.equals("")){
@@ -3781,8 +3781,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				if(mitgebracht.indexOf("°") >= 0 ){
 					teilen = mitgebracht.split("°");
 					if(! teilen[0].contains("TERMDAT")){
+						//System.out.println("! teilen[0].contains('TERMDAT')");
 						return;
 					}
+					
+					if((altaktiveSpalte[0]==aktiveSpalte[0]) && (altaktiveSpalte[2]==aktiveSpalte[2]) &&
+							sname.equals(teilen[1]) && sreznum.equals(teilen[2])){
+						//System.out.println("altaktiveSpalte[0]==aktiveSpalte[0]) && (altaktiveSpalte[2]==aktiveSpalte[2])");
+						return;
+					}
+					
 					teilen[3] = teilen[3].toUpperCase();
 					teilen[3] = teilen[3].replaceAll(" MIN.", "");
 
@@ -3797,6 +3805,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 					if(terminBreak){
 						oSpalten[altaktiveSpalte[2]].spalteDeaktivieren();
+						//System.out.println("oSpalten[altaktiveSpalte[2]].spalteDeaktivieren()");
 						return;
 					}
 					int[] spaltneu = aktiveSpalte.clone();
@@ -3815,7 +3824,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								e1.printStackTrace();
 							}
 						}
-						System.out.println("Wert von Grobraus = "+grobRaus);
+						//System.out.println("Wert von Grobraus = "+grobRaus);
 						zeit = System.currentTimeMillis();
 						if(!grobRaus){
 							try{
@@ -3843,7 +3852,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							if(!grobRaus){
 								//Stufe 2 - o.k.
 								if(altaktiveSpalte[2]==spAktiv){
-									//Termin verschieben und zwar in der selben Spalte;
+									
+									//System.out.println("Termin verschieben und zwar in der selben Spalte");//
 									String sbeginn = (String) ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(2)).get(altaktiveSpalte[0]) ;
 									int lang = ((Vector<?>)((ArrayList<?>) vTerm.get(behandler)).get(0)).size();
 									//Suche nach Uhrzeit -> "+sbeginn
@@ -3874,7 +3884,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										}
 									}
 								}else{
-									//Termin verschieben aber nicht in der selben Spalte
+									//System.out.println("Termin verschieben aber nicht in der selben Spalte");
+									//
 									wartenAufReady = true;
 									
 									int ialtbehandler = 0;
@@ -3953,7 +3964,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 					}
 
-				}catch(Exception ex){}
+				}catch(Exception ex){ex.printStackTrace();}
 				if(altaktiveSpalte[2] >= 0){
 					dragLab[aktiveSpalte[2]].setIcon(null);
 					dragLab[aktiveSpalte[2]].setText("");

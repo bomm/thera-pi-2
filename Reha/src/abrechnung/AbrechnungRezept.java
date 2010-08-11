@@ -2099,7 +2099,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 		for(int i = 0; i < vec_poskuerzel.size();i++){
 			htmlposbuf.append("<tr><td>&nbsp;</td><td class=\"spalte1\" align=\"right\">");
-			htmlposbuf.append("<b>"+vec_poskuerzel.get(i)+"</b>");
+			htmlposbuf.append(vec_pospos.get(i)+" - "+" <b>"+vec_poskuerzel.get(i)+"</b>");
 			htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
 			htmlposbuf.append("<b>"+Integer.toString(vec_posanzahl.get(i))+" x"+"</b>");
 			htmlposbuf.append("</td></tr>");

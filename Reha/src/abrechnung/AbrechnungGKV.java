@@ -332,7 +332,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					existiertschon.clear();
 					String dsz = diszis[cmbDiszi.getSelectedIndex()];
 					
-					String cmd = "select name1,ikktraeger,ikkasse from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger,id";
+					String cmd = "select name1,ikktraeger,ikkasse,id from fertige where rezklasse='"+dsz+"' ORDER BY ikktraeger , id";
 
 					Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
 
@@ -390,7 +390,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		String ktraeger = ((JXTTreeNode)rootKasse.getChildAt(knoten)).knotenObjekt.ktraeger;
 		String dsz = diszis[cmbDiszi.getSelectedIndex()];
 		String cmd = "select rez_nr,pat_intern,ediok,ikkasse from fertige where rezklasse='"+dsz+"' AND ikktraeger='"+
-		ktraeger+"' ORDER BY pat_intern";
+		ktraeger+"' ORDER BY id,pat_intern";
 
 		Vector <Vector<String>> vecKassen = SqlInfo.holeFelder(cmd);
 

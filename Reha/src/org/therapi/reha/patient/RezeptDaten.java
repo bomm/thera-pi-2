@@ -206,12 +206,20 @@ public class RezeptDaten extends JXPanel{
 					Reha.thisClass.patpanel.rezlabs[12].setText( leistungTesten(3,preisvec,StringTools.ZahlTest((String)Reha.thisClass.patpanel.vecaktrez.get(11))) );				
 
 					stest = StringTools.NullTest((String)Reha.thisClass.patpanel.vecaktrez.get(44));
-					if(stest.equals("") || stest.equals("kein IndiSchl.") ){
-						Reha.thisClass.patpanel.rezlabs[13].setForeground(Color.RED);
-						Reha.thisClass.patpanel.rezlabs[13].setText("??? "+stest);					
+					if( (stest.equals("") || stest.equals("kein IndiSchl."))  ){
+						if(!Reha.thisClass.patpanel.vecaktrez.get(1).startsWith("RH")){
+							Reha.thisClass.patpanel.rezlabs[13].setForeground(Color.RED);
+							Reha.thisClass.patpanel.rezlabs[13].setText("??? "+stest);					
+						}else{
+							Reha.thisClass.patpanel.rezlabs[13].setText("");
+						}
 					}else{
-						Reha.thisClass.patpanel.rezlabs[13].setForeground(Color.BLACK);
-						Reha.thisClass.patpanel.rezlabs[13].setText(stest);					
+						if(!Reha.thisClass.patpanel.vecaktrez.get(1).startsWith("RH")){
+							Reha.thisClass.patpanel.rezlabs[13].setForeground(Color.BLACK);
+							Reha.thisClass.patpanel.rezlabs[13].setText(stest);
+						}else{
+							Reha.thisClass.patpanel.rezlabs[13].setText("");
+						}	
 					}
 
 					
