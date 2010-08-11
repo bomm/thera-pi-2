@@ -7,13 +7,16 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
 public class ZeitCancelCellEditor extends AbstractCellEditor implements TableCellEditor {
-    // This is the component that will handle the editing of the cell value
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4850040467284880352L;
+	// This is the component that will handle the editing of the cell value
     JComponent component = new JFormattedTextField();
     MaskFormatter mf = new MaskFormatter();
     JTable tab;
@@ -60,7 +63,7 @@ public class ZeitCancelCellEditor extends AbstractCellEditor implements TableCel
         return ((JFormattedTextField)component).getText();
     }
 	public boolean startCellEditing() {
-        String s = (String)getCellEditorValue();
+        //String s = (String)getCellEditorValue();
     	((JFormattedTextField)component).setCaretPosition(0);
     	/*
     	if (! testeUhr(s) ) {

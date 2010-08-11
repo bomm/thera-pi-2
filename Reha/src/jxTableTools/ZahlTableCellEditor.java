@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.EventObject;
 
@@ -16,10 +15,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
-import javax.swing.text.NumberFormatter;
 
 public class ZahlTableCellEditor extends AbstractCellEditor implements KeyListener,TableCellEditor {
-    // This is the component that will handle the editing of the cell value
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3685277778189732325L;
+	// This is the component that will handle the editing of the cell value
     JComponent component = new JFormattedTextField();
     MaskFormatter mf = new MaskFormatter();
     boolean mitMaus = false;

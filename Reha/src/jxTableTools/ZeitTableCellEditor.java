@@ -17,7 +17,11 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
 public class ZeitTableCellEditor extends AbstractCellEditor implements KeyListener,TableCellEditor {
-    // This is the component that will handle the editing of the cell value
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3654965278742138928L;
+	// This is the component that will handle the editing of the cell value
     JComponent component = new JFormattedTextField();
     MaskFormatter mf = new MaskFormatter();
     JTable tab;
@@ -64,7 +68,7 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements KeyListen
         }
 
         // Configure the component with the specified value
-        final Object xvalue = value;
+        //final Object xvalue = value;
         ((JFormattedTextField)component).setText((String)value);
         SwingUtilities.invokeLater(new Runnable(){
         	public void run(){

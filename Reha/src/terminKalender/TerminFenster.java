@@ -61,7 +61,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-
 import javax.swing.TransferHandler;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -73,10 +72,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.therapi.reha.patient.AktuelleRezepte;
 
-
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
-import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -140,7 +137,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private int aktSet = 0; //Welches Set soll dargestellt werden
  
 	private Vector<Object> aSpaltenDaten = new Vector<Object>();  //nimmt die Termindaten auf  
-	private Vector vTerm = new Vector();  //  Wird gebraucht zur Daten�bergabe auf die Spalten
+	private Vector vTerm = new Vector();  //  Wird gebraucht zur Datenübergabe auf die Spalten
 	private boolean updateverbot = false;
 
 	
