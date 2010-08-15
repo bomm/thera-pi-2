@@ -15,20 +15,35 @@ public class HMRCheck {
 	Vector<Vector<String>> preisvec = null;
 	String indischluessel = null;
 	String diszis[] = {"2","1","5","3","8"};
-	RezNeuanlage rezanlage = null;
+	//RezNeuanlage rezanlage = null;
 	int disziplin;
 	int preisgruppe;
 	final String maxanzahl = "Die Höchstmenge pro Rezept bei ";
 	final String rotein = "<>";
+	boolean testok = true;
+	String fehlertext = "";
+	int rezeptart;
+	String reznummer = null;
+	boolean AdRrezept = false;
+	boolean folgerezept = false;
+	boolean neurezept = false;
+	
+	String[] rezarten = {"Erstverodnung","Folgeverordnung",	"außerhalb des Regelfalles"};
+	
 	public HMRCheck(String indi,int idiszi,Vector<Integer> vecanzahl,Vector<String>vecpositionen,
-			int xpreisgruppe,Vector<Vector<String>> xpreisvec,RezNeuanlage xrezanlage){
+			int xpreisgruppe,Vector<Vector<String>> xpreisvec,int xrezeptart,String xreznr){
 		indischluessel = indi;
 		disziplin = idiszi;
 		anzahl = vecanzahl;
 		positionen = vecpositionen;
 		preisgruppe = xpreisgruppe;
 		preisvec = xpreisvec;
-		rezanlage = xrezanlage;
+		//rezanlage = xrezanlage;
+		rezeptart =xrezeptart;
+		reznummer = xreznr;
+		if(reznummer.equals("")){
+			neurezept = true;
+		}
 		//aktualisiereHMRs();
 	}
 	/*
@@ -42,13 +57,18 @@ public class HMRCheck {
 	 * 
 	 */
 	public boolean check(){
-		boolean ret = true;
+		
+		AdRrezept = (rezeptart==2);
+		folgerezept = (rezeptart==1);
+		
 		Vector<Vector<String>> vec = SqlInfo.holeFelder("select * from hmrcheck where indischluessel='"+
 				indischluessel+"' LIMIT 1");
-		if(vec.size() <= 0){
-			JOptionPane.showMessageDialog(null,"Indikationsschlüssel "+indischluessel+" unbekannt!"); 
+
+		if(vec.size() <= 0 || indischluessel.equals("")){
+			JOptionPane.showMessageDialog(null,"Indikationsschlüssel "+indischluessel+" unbekannt oder nicht angegeben!"); 
 			return false;
 		}
+
 		int maxprorezept = Integer.parseInt(vec.get(0).get(2));
 		String[] vorrangig = vec.get(0).get(3).split("@");
 		String[] ergaenzend = vec.get(0).get(5).split("@");
@@ -59,48 +79,63 @@ public class HMRCheck {
 			ergaenzend[i] = diszis[disziplin]+ergaenzend[i];
 		}
 		//hier einbauen:
-		//testen auf WS1,Ex1 etc. hier ist keine Folgeverordnung möglich
-		//testen auf Doppelbehandlung und Verordnungsmenge
-		//testen auf außerhalb des Regelfalles (hebt) die Verordnungsmenge auf
-		//
+		//testen auf WS1,Ex1 etc. hier ist keine Folgeverordnung möglich // Status:erledigt!!
+		//testen auf Doppelbehandlung und Verordnungsmenge // Status:ausstehend
+		//testen auf außerhalb des Regelfalles (hebt) die Verordnungsmenge auf // Status:erledigt aber halblebig
+		//testen auf Rezdatum und Behandlungsbeginn = 0.k. // Status:ausstehend
+		//testen ob Unterbrechungen zwischen den Behandlungen o.k. // Status:ausstehend
 
+		// mögliche Höchstmenge pro Rezept wurde überschritten?
 		for(int i = 0; i < anzahl.size();i++){
-			if(anzahl.get(i) > maxprorezept){
-				JOptionPane.showMessageDialog(null,"<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+" Behandlungen</font> pro Rezept erlaubt!!</b></html>"); 
-				return false;
+			if( (anzahl.get(i) > maxprorezept) && (!AdRrezept) ) {
+				fehlertext = String.valueOf("<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+" Behandlungen</font> pro Rezept erlaubt!!</b><br><br>");
+				testok = false;
 			}
+		}
+		//Wenn im Indikationsschlüssel "1" enthalten ist - außer ZNS - dann keine Folgeverordnung möglich
+		if( (indischluessel.indexOf("1")>=0) && 
+				(indischluessel.indexOf("ZNS") < 0) &&
+				(rezeptart > 0) ){
+			fehlertext = fehlertext + String.valueOf( (fehlertext.length() <= 0 ? "<html>" : "")+
+					"<b>Bei Indikationsschlüssel "+indischluessel+" ist keine<br><font color='#ff0000'>"+
+					rezarten[rezeptart]+
+					"</font> erlaubt!!</b><br><br>");
+			testok = false;
+			
 		}
 		try{
 			for(int i = 0; i < positionen.size();i++){
 				if(i==0){
 					if(! Arrays.asList(vorrangig).contains(positionen.get(i))){
-						showDialog(true,getHeilmittel(positionen.get(i)),positionen.get(i),vorrangig);
-						/*
-						JOptionPane.showMessageDialog(null,"Bei Indikationsschlüssel "+indischluessel+" ist das vorrangige Heilmittel\n"+
-								"--> "+getHeilmittel(positionen.get(i))+" <-- "+
-								" nicht erlaubt!!\n\n"+"Mögliche vorrangie Heilmittel sind:\n"+getErlaubteHeilmittel(vorrangig));
-						*/		
-						return false;
+						fehlertext = fehlertext+String.valueOf(
+								getDialogText(true,getHeilmittel(positionen.get(i)),positionen.get(i),vorrangig));
+						testok = false;
 					}
 				}else{
 					if(! Arrays.asList(ergaenzend).contains(positionen.get(i))){
-						showDialog(false,getHeilmittel(positionen.get(i)),positionen.get(i),ergaenzend);
-						/*
-						JOptionPane.showMessageDialog(null,"Bei Indikationsschlüssel "+indischluessel+" ist das ergaenzende Heilmittel\n"+
-								"--> "+getHeilmittel(positionen.get(i))+" <-- "+
-								" nicht erlaubt!!\n\n"+"Mögliche ergaenzende Heilmittel sind:\n"+getErlaubteHeilmittel(ergaenzend));
-						*/		
-						return false;
+						fehlertext = fehlertext+String.valueOf(
+								getDialogText(false,getHeilmittel(positionen.get(i)),positionen.get(i),ergaenzend));
+						testok = false;
 					}
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		
-		
-		return ret;
+		if(! testok){
+			JOptionPane.showMessageDialog(null,fehlertext+"</html>");
+		}
+		return testok;
 	}
+	private String getDialogText(boolean vorrangig,String heilmittel,String hmpos,String[] positionen){
+		String meldung = (fehlertext.length() <= 0 ? "<html>" : "")+"Bei dem Indikationsschlüssel <b><font color='#ff0000'>"+indischluessel+"</font></b> ist das "+(vorrangig ? "vorrangige " : "ergänzende")+
+		" Heilmittel<br><br>--> <b><font color='#ff0000'>"+heilmittel+"</font></b> <-- nicht erlaubt!<br><br><br>"+
+		"Mögliche "+(vorrangig ? "vorrangige " : "ergänzende")+" Heilmittel sind:<br><b><font color='#ff0000'>"+
+		getErlaubteHeilmittel(positionen)+"</font></b><br><br>";
+		return meldung;
+		
+	}
+
 	private void showDialog(boolean vorrangig,String heilmittel,String hmpos,String[] positionen){
 		String meldung = "<html>"+"Bei dem Indikationsschlüssel <b><font color='#ff0000'>"+indischluessel+"</font></b> ist das "+(vorrangig ? "vorrangige " : "ergänzende")+
 		" Heilmittel<br><br>--> <b><font color='#ff0000'>"+heilmittel+"</font></b> <-- nicht erlaubt!<br><br><br>"+

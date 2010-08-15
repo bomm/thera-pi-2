@@ -741,9 +741,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}
 		if(hmpositionen.size() > 0){
-			boolean checkok = new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec,this).check();
-			//new HMRCheck(indi,jcmb[0].getSelectedIndex(),anzahlen,hmpositionen,preisgruppen[jcmb[0].getSelectedIndex()],preisvec);
-			//speichern.setEnabled(checkok);
+			boolean checkok = new HMRCheck(
+					indi,
+					jcmb[0].getSelectedIndex(),
+					anzahlen,hmpositionen,
+					preisgruppen[jcmb[0].getSelectedIndex()],
+					preisvec,jcmb[1].getSelectedIndex(),
+					(this.neu ? "" : this.vec.get(1).trim() )
+					).check();
 			if(checkok){
 				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
 			}
