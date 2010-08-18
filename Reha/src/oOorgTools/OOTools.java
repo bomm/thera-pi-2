@@ -567,10 +567,20 @@ public class OOTools{
 			      }
 			    }
 		}
-		//textDocument.print();
-		//textDocument.close();
-		textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);		
-		
+		textDocument.print();
+		textDocument.close();
+		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		}else{
+			try{
+				Thread.sleep(100);
+				textDocument.print();
+				Thread.sleep(100);
+			}catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			textDocument.close();
+		}	
 	}
 	/*******************************************************************************************/
 	/*******************************************************************************************/

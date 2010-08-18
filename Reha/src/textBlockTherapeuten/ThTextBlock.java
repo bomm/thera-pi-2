@@ -249,6 +249,17 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 						arg0.consume();
 						FensterSchliessen("null");
 					}
+					if (arg0.getKeyCode() == 40){
+						arg0.consume();
+						if (textblock.getRowCount() > 0){
+							textblock.requestFocus();
+							if(textblock.getSelectedRow()>=0){
+								textblock.requestFocus();
+							}else{
+								textblock.setRowSelectionInterval(0, 0);	
+							}
+						}
+					}
 					
 				}
 			});
