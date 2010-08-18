@@ -27,6 +27,7 @@ public class HMRCheck {
 	boolean AdRrezept = false;
 	boolean folgerezept = false;
 	boolean neurezept = false;
+	boolean doppelbehandlung = false;
 	
 	String[] rezarten = {"Erstverodnung","Folgeverordnung",	"außerhalb des Regelfalles"};
 	
@@ -80,7 +81,7 @@ public class HMRCheck {
 		}
 		//hier einbauen:
 		//testen auf WS1,Ex1 etc. hier ist keine Folgeverordnung möglich // Status:erledigt!!
-		//testen auf Doppelbehandlung und Verordnungsmenge // Status:ausstehend
+		//testen auf Doppelbehandlung und Verordnungsmenge // Status:erledigt
 		//testen auf außerhalb des Regelfalles (hebt) die Verordnungsmenge auf // Status:erledigt aber halblebig
 		//testen auf Rezdatum und Behandlungsbeginn = 0.k. // Status:ausstehend
 		//testen ob Unterbrechungen zwischen den Behandlungen o.k. // Status:ausstehend
@@ -94,7 +95,7 @@ public class HMRCheck {
 		}
 		//Wenn im Indikationsschlüssel "1" enthalten ist - außer ZNS - dann keine Folgeverordnung möglich
 		if( (indischluessel.indexOf("1")>=0) && 
-				(indischluessel.indexOf("ZNS") < 0) &&
+				(indischluessel.indexOf("ZN") < 0) &&
 				(rezeptart > 0) ){
 			fehlertext = fehlertext + String.valueOf( (fehlertext.length() <= 0 ? "<html>" : "")+
 					"<b>Bei Indikationsschlüssel "+indischluessel+" ist keine<br><font color='#ff0000'>"+
@@ -104,13 +105,31 @@ public class HMRCheck {
 			
 		}
 		try{
+			if(positionen.size() >= 2){
+				if(positionen.get(0).equals(positionen.get(1))){
+					doppelbehandlung = true;
+					int doppelgesamt = anzahl.get(0) + anzahl.get(1);
+					if((doppelgesamt > maxprorezept) && (!AdRrezept)){
+						fehlertext = String.valueOf("<html><b>Die Doppelbehandlung bei Indikationsschlüssel "+indischluessel+
+								", übersteigt<br>die maximal erlaubte Höchstverordnungsmenge pro Rezept von<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+
+								" Behandlungen</font>!!</b><br><br>Wechsel auf -> außerhalb des Regelfalles <- ist erforderlich<br><br>");
+						testok = false;
+					}
+				}
+			}
+			// jetzt haben wir schon einmal die Doppelbehandlung
+			// dann testen ob die Positionsnummer überhaupt ein zugelassenes vorrangiges Heilmittel ist.
+			
 			for(int i = 0; i < positionen.size();i++){
+				//Hier Doppelbehandlung einbauen start
 				if(i==0){
 					if(! Arrays.asList(vorrangig).contains(positionen.get(i))){
 						fehlertext = fehlertext+String.valueOf(
 								getDialogText(true,getHeilmittel(positionen.get(i)),positionen.get(i),vorrangig));
 						testok = false;
 					}
+				}else if(i==1 && doppelbehandlung){
+					
 				}else{
 					if(! Arrays.asList(ergaenzend).contains(positionen.get(i))){
 						fehlertext = fehlertext+String.valueOf(
@@ -118,6 +137,7 @@ public class HMRCheck {
 						testok = false;
 					}
 				}
+				//Hier Doppelbehandlung einbauen ende
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();

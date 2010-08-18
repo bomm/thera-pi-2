@@ -2131,7 +2131,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	    		
 	    	}
 	    	if(event.getURL().toString().contains("patedit")){
+	    		int anfrage = JOptionPane.showConfirmDialog(null, "Soll das aktuelle Rezept wieder aufgeschlossen werden?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+	    		if(anfrage == JOptionPane.YES_OPTION){
+	    			eltern.loescheKnoten();
+	    		}
 	    		SucheNachAllem.doPatSuchen(vec_rez.get(0).get(0).trim(), vec_rez.get(0).get(1),this);
+
 	    	}
 	    	if(event.getURL().toString().contains("nozz.de")){
 	    		PointerInfo info = MouseInfo.getPointerInfo();
@@ -2177,11 +2182,18 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	 * 	
 	 */
 	private void doRezeptgebuehrRechnung(Point location){
+		boolean buchen = true;
 		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+aktRezNum.getText()+
 					"' AND rnr LIKE 'RGR-%' LIMIT 1");
+
 		if(testvec.size() > 0){
-			JOptionPane.showMessageDialog(null,"Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!");
-			return;
+			int anfrage = JOptionPane.showConfirmDialog(null, "Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!"+
+					"Wollen Sie eine Kopie erstellen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			//JOptionPane.showMessageDialog(null,"Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!");
+			if(anfrage != JOptionPane.YES_OPTION){
+				return;				
+			}
+			buchen = false;
 		}
 		HashMap<String,String> hmRezgeb = new HashMap<String,String>();
 		int rueckgabe = -1;
@@ -2213,7 +2225,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		hmRezgeb.put("<rgort>",adressParams[3]);
 		hmRezgeb.put("<rgbanrede>",adressParams[4]);
 		hmRezgeb.put("<rgpatintern>",vec_rez.get(0).get(0));
-		RezeptGebuehrRechnung rgeb = new RezeptGebuehrRechnung(Reha.thisFrame,"Nachberechnung Rezeptgebühren",rueckgabe,hmRezgeb);
+		RezeptGebuehrRechnung rgeb = new RezeptGebuehrRechnung(Reha.thisFrame,"Nachberechnung Rezeptgebühren",rueckgabe,hmRezgeb,buchen);
 		rgeb.setSize(new Dimension(250,300));
 		rgeb.setLocation(location.x-50,location.y-50);
 		rgeb.pack();

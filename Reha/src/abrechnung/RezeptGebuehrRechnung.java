@@ -75,12 +75,14 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	private HashMap<String,String> hmRezgeb = null;
 	DecimalFormat dcf = new DecimalFormat ( "#########0.00" );
 	String rgnrNummer;
-	public RezeptGebuehrRechnung(JXFrame owner,String titel,int rueckgabe,HashMap<String,String> hmRezgeb){
+	boolean buchen;
+	public RezeptGebuehrRechnung(JXFrame owner,String titel,int rueckgabe,HashMap<String,String> hmRezgeb,boolean auchbuchen){
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		this.setUndecorated(true);
 		this.setName("RezgebDlg");
 		this.rueckgabe = rueckgabe;
 		this.hmRezgeb = hmRezgeb;
+		this.buchen = auchbuchen;
 		this.jtp = new JXTitledPanel();
 		this.jtp.setName("RezgebDlg");
 		this.mymouse = new DragWin(this);
@@ -213,7 +215,9 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		buchungStarten();
+		if(this.buchen){
+			buchungStarten();			
+		}
 		FensterSchliessen("dieses");
 	}
 	private void buchungStarten(){

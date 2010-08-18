@@ -4,6 +4,7 @@ package org.therapi.reha.patient;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
+import hmrCheck.HMRCheck;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -1803,7 +1805,92 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						//Abgeschlossen trotz verspäteter Behandlungsbeginn;
 					}
 				}
+				if(Reha.thisClass.patpanel.patDaten.get(14).trim().equals("")){
+					JOptionPane.showMessageDialog(null, "Die im Patientenstamm zugewiesene Krankenkasse hat keine Kassennummer");
+					return;
+				}
+				if(Reha.thisClass.patpanel.patDaten.get(15).trim().equals("")){
+					JOptionPane.showMessageDialog(null, "Der Mitgliedsstatus fehlt im Patientenstamm, bitte eintragen");
+					return;
+				}
+				if(Reha.thisClass.patpanel.patDaten.get(16).trim().equals("")){
+					JOptionPane.showMessageDialog(null, "Die Krankenkassen-Mitgliedsnummer fehlt im Patientenstamm, bitte eintragen");
+					return;
+				}
+				if(!Reha.thisClass.patpanel.patDaten.get(68).trim().equals(
+						Reha.thisClass.patpanel.vecaktrez.get(37))){
+					JOptionPane.showMessageDialog(null, "ID der Krankenkasse im Patientenstamm paßt nicht zu der ID der Krankenkasse im Rezept");
+					return;					
+				}
+				
 				if(! doTageTest(vgldat2,anzterm)){return;}
+
+				/*********************/
+				String diszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
+				int idtest = 0;
+				String indi = Reha.thisClass.patpanel.vecaktrez.get(44);
+				if(indi.equals("") || indi.contains("kein IndiSchl.")){
+					JOptionPane.showMessageDialog(null, "<html><b>Kein Indikationsschlüssel angegeben.<br>Die Angaben sind <font color='#ff0000'>nicht</font> gemäß den gültigen Heilmittelrichtlinien!</b></html>");
+					return;
+				}
+				indi = indi.replace(" ", "");
+				Vector<Integer> anzahlen = new Vector<Integer>();
+				Vector<String> hmpositionen = new Vector<String>();
+				String preisgruppe = Reha.thisClass.patpanel.vecaktrez.get(41);
+				String position = "";
+				String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
+				List<String> list = Arrays.asList(diszis);
+				for(int i = 2;i <= 5;i++ ){
+					try{
+						idtest = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(6+i));	
+					}catch(Exception ex){
+						idtest = 0;
+					}
+					if(idtest > 0){
+						try{
+							anzahlen.add( Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(1+i)) );	
+						}catch(Exception ex){
+							anzahlen.add(0);
+						}
+						try{
+							position = RezTools.getPosFromID(Integer.toString(idtest),preisgruppe , SystemPreislisten.hmPreise.get(diszi).get(Integer.parseInt(preisgruppe)-1) ); 
+							hmpositionen.add(position);
+						}catch(Exception ex){
+							hmpositionen.add("");
+						}
+						
+					}
+				}
+				/*
+				System.out.println("Anzahlen="+anzahlen);
+				System.out.println("Positionen="+hmpositionen);
+				System.out.println("Disziplin="+diszi);
+				System.out.println("Preisgruppe"+preisgruppe);
+				System.out.println("Preisvector"+SystemPreislisten.hmPreise.get(diszi).get(Integer.parseInt(preisgruppe)-1));
+				*/
+				if(hmpositionen.size() > 0){
+					boolean checkok = new HMRCheck(
+							indi,
+							list.indexOf(diszi),
+							anzahlen,hmpositionen,
+							Integer.parseInt(preisgruppe),
+							SystemPreislisten.hmPreise.get(diszi).get(Integer.parseInt(preisgruppe)-1),
+							Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(27)),
+							(Reha.thisClass.patpanel.vecaktrez.get(1)) 
+							).check();
+					//System.out.println("Rückgabewert des HMR-Checks="+checkok);
+					if(!checkok){
+						int anfrage = JOptionPane.showConfirmDialog(null, "Das Rezept entspricht nicht den geltenden Heilmittelrichtlinien\nWollen Sie diesen Rezept trotzdem abschließen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+						if(anfrage != JOptionPane.YES_OPTION){
+							return;							
+						}
+					}
+				}else{
+					JOptionPane.showMessageDialog(null, "Keine Behandlungspositionen angegeben, HMR-Check nicht möglich!!!");
+					return;
+				}
+				/*********************/
+				/********************************************************************************/
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[1],currow,5);
 				doAbschliessen();
 				String xcmd = "update verordn set abschluss='T' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
@@ -1826,6 +1913,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				"name1='"+kname+"', rez_nr='"+rnr+"', pat_intern='"+patint+"', rezklasse='"+rnr.substring(0,2)+"'";
 				SqlInfo.sqlAusfuehren(cmd);
 				JComponent abrech1 = AktiveFenster.getFensterAlle("Abrechnung-1");
+				/********************************************************************************/				
+ 
 				if(abrech1 != null){
 					Reha.thisClass.abrechnungpanel.doEinlesen(Reha.thisClass.abrechnungpanel.getaktuellerKassenKnoten());
 				}

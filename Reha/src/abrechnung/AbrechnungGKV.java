@@ -472,6 +472,30 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		treeKasse.getSelectionModel().removeTreeSelectionListener(this);
 	}
 	*/
+	public void loescheKnoten(){
+		//rezept aus fertige löschen
+		//Verschluß des Rezeptes aufheben
+		//Knoten löschen
+		//wenn einziger Knoten den kassenKnoten löschen
+		String rez_nr = this.aktuellerKnoten.knotenObjekt.rez_num;
+		String cmd = "delete from fertige where rez_nr='"+rez_nr+"' LIMIT 1";
+		SqlInfo.sqlAusfuehren(cmd);
+		cmd = "update verordn set abschluss='F' where rez_nr='"+rez_nr+"' LIMIT 1";
+		SqlInfo.sqlAusfuehren(cmd);
+		try{
+			treeModelKasse.removeNodeFromParent(this.aktuellerKnoten);			
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Kritische Situation bei Aktion aufschließen des Rezeptes");
+		}
+		this.aktuellerKassenKnoten.getNextNode();
+		int anzahlrez = this.aktuellerKassenKnoten.getChildCount();
+		if(anzahlrez==0){
+			treeModelKasse.removeNodeFromParent(this.aktuellerKassenKnoten);
+		}else{
+			this.rechneKasse(this.aktuellerKassenKnoten);
+		}
+		this.abrRez.setRechtsAufNull();
+	}
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
 		//TreePath path = arg0.getNewLeadSelectionPath();
@@ -896,9 +920,11 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			
 			try{
 				doEmail();
+				/*
 				String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" wurden erfolgreich\n"+
 				"an die Adresse "+ik_email+" versandt.\n";
 				JOptionPane.showMessageDialog(null, meldung);
+				*/
 
 			}catch(Exception ex){
 				String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" sollten an die"+
