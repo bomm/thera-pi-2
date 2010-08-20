@@ -56,6 +56,10 @@ import dialoge.ToolsDialog;
 
 public class Gutachten extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8660918000056202078L;
 	//public static Gutachten gutachten = null;
 	JXPanel leerPanel = null;
 	JXPanel vollPanel = null;
@@ -247,7 +251,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 									"DATE_FORMAT(editdat,'%d.%m.%Y') AS deditdat," +
 									"empfid,"+
 									"bertitel",
-									"pat_intern='"+xpatint+"' ORDER BY erstelldat", Arrays.asList(new String[]{}));
+									"pat_intern='"+xpatint+"' ORDER BY berichtid DESC", Arrays.asList(new String[]{}));
 							int anz = vec.size();
 							dtblm.setRowCount(0);
 							for(int i = 0; i < anz;i++){
