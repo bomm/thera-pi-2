@@ -1341,7 +1341,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.addActionListener(this);
 			stammMenu.add(men);
 			stammMenu.addSeparator();
-			men = new JMenuItem("Aerzte");
+			men = new JMenuItem("Ärzte");
 			men.setActionCommand("arzt");
 			men.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Event.CTRL_MASK, false));
 			men.setMnemonic(KeyEvent.VK_A);
