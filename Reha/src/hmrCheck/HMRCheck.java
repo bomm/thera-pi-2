@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 import patientenFenster.RezNeuanlage;
 
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
+import terminKalender.DatFunk;
 
 public class HMRCheck {
 	Vector<Integer> anzahl = null;
@@ -24,6 +26,7 @@ public class HMRCheck {
 	String fehlertext = "";
 	int rezeptart;
 	String reznummer = null;
+	String rezdatum = null;
 	boolean AdRrezept = false;
 	boolean folgerezept = false;
 	boolean neurezept = false;
@@ -32,7 +35,7 @@ public class HMRCheck {
 	String[] rezarten = {"Erstverodnung","Folgeverordnung",	"außerhalb des Regelfalles"};
 	
 	public HMRCheck(String indi,int idiszi,Vector<Integer> vecanzahl,Vector<String>vecpositionen,
-			int xpreisgruppe,Vector<Vector<String>> xpreisvec,int xrezeptart,String xreznr){
+			int xpreisgruppe,Vector<Vector<String>> xpreisvec,int xrezeptart,String xreznr,String xrezdatum){
 		indischluessel = indi;
 		disziplin = idiszi;
 		anzahl = vecanzahl;
@@ -45,6 +48,7 @@ public class HMRCheck {
 		if(reznummer.equals("")){
 			neurezept = true;
 		}
+		rezdatum = xrezdatum; 
 		//aktualisiereHMRs();
 	}
 	/*
@@ -87,15 +91,19 @@ public class HMRCheck {
 		//testen ob Unterbrechungen zwischen den Behandlungen o.k. // Status:ausstehend
 
 		// mögliche Höchstmenge pro Rezept wurde überschritten?
+		//System.out.println("Max pro Rezept="+maxprorezept);
+		//System.out.println("Anzahlen = "+anzahl);
 		for(int i = 0; i < anzahl.size();i++){
 			if( (anzahl.get(i) > maxprorezept) && (!AdRrezept) ) {
-				fehlertext = String.valueOf("<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+" Behandlungen</font> pro Rezept erlaubt!!</b><br><br>");
+				fehlertext = String.valueOf("<html><b>Bei Indikationsschlüssel "+indischluessel+" sind maximal<br><font color='#ff0000'>"+Integer.toString(maxprorezept)+" Behandlungen</font> pro Rezept erlaubt!!<br><br>" +
+						"Möglickeit -> Ändern der Rezeptart auf außerhalb des Regelfalles<br><br></b>");
 				testok = false;
 			}
 		}
 		//Wenn im Indikationsschlüssel "1" enthalten ist - außer ZNS - dann keine Folgeverordnung möglich
 		if( (indischluessel.indexOf("1")>=0) && 
 				(indischluessel.indexOf("ZN") < 0) &&
+				(indischluessel.indexOf("LY") < 0) &&
 				(rezeptart > 0) ){
 			fehlertext = fehlertext + String.valueOf( (fehlertext.length() <= 0 ? "<html>" : "")+
 					"<b>Bei Indikationsschlüssel "+indischluessel+" ist keine<br><font color='#ff0000'>"+
@@ -138,6 +146,52 @@ public class HMRCheck {
 					}
 				}
 				//Hier Doppelbehandlung einbauen ende
+			}
+			
+			//Jetzt auf Rezeptbeginn testen
+			if(neurezept){
+				//long differenz = DatFunk.TageDifferenz(this.rezdatum,DatFunk.sHeute()); 
+				long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute());
+				if(differenz < 0){
+					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
+					Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
+					testok = false;
+				}else if( differenz >10){
+					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Das Rezept ist bislang <font color='#ff0000'>"+
+					Long.toString(differenz)+" Tage </font> alt</b><br><br>";
+					testok = false;
+				}
+			}else{
+				String cmd = "select termine from verordn where rez_nr='"+reznummer+"' LIMIT 1";
+				String termine = SqlInfo.holeFeld(cmd).get(0);
+				//Keine Termine notiert
+				if(termine.trim().equals("")){
+					//long differenz = DatFunk.TageDifferenz(this.rezdatum,DatFunk.sHeute()); 
+					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute());
+					if(differenz < 0){
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
+						testok = false;
+					}else if( differenz >10){
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Das Rezept ist bislang <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tage </font> alt</b><br><br>";
+						testok = false;
+					}
+				}else{
+					//long differenz = DatFunk.TageDifferenz(this.rezdatum,
+							//RezTools.holeEinzelTermineAusRezept(null, termine).get(0)	);
+					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,RezTools.holeEinzelTermineAusRezept(null, termine).get(0));
+					if(differenz < 0){
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
+						testok = false;
+					}else if( differenz >10){
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tage </font></b><br><br>";
+						testok = false;
+					}
+
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -206,4 +260,19 @@ public class HMRCheck {
 		}
 	}
 	*/
+	public static long hmrTageErmitteln(int preisgruppe,String rezdatum,String testdatum){
+		long differenz = DatFunk.TageDifferenz(rezdatum, testdatum	);
+		int wotag = DatFunk.TagDerWoche(rezdatum);
+		//System.out.println("Tag der Woche der Rezeptausstellung = "+wotag);
+		//System.out.println("Preisgruppe = "+preisgruppe);
+		//System.out.println("Tage Differenz insgesamt = "+differenz);
+		if(preisgruppe != 1 && differenz > 10){
+			if(wotag >= 3){
+				differenz -= 2;
+			}else{
+				differenz -= 1;	
+			}
+		}
+		return differenz;
+	}
 }
