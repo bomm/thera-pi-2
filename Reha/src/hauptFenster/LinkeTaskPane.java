@@ -213,7 +213,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		
 		tp1.add(jxLink);
 		jxLink = new JXHyperlink();
-		jxLink.setText("Arzte");
+		jxLink.setText("Ärzte");
 		jxLink.setActionCommand("Arztstamm");
 		jxLink.setToolTipText("Strg+A = Arztstamm starten");
 		img = new ImageIcon(Reha.proghome+"icons/system-users.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
