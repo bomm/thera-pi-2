@@ -659,7 +659,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(jcb[1].isSelected()){
 				// Hausbesuch gewählt
 				if(Reha.thisClass.patpanel.patDaten.get(44).equals("T")){
-					jcb[5].setEnabled(true);	
+					//System.out.println("aktuelle Preisgruppe = "+preisgruppe);
+					if(this.preisgruppe!=1 && (jcmb[0].getSelectedIndex() <= 1) ){
+						jcb[5].setEnabled(true);						
+					}
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
@@ -740,14 +743,20 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				hmpositionen.add(preisvec.get(itest-1).get(2));
 			}
 		}
+		if(jtf[2].getText().trim().equals(".  .")){
+			JOptionPane.showMessageDialog(null, "Rezeptdatum nicht korrekt angegeben HMR-Check nicht möglich");
+			return;
+		}
 		if(hmpositionen.size() > 0){
 			boolean checkok = new HMRCheck(
 					indi,
 					jcmb[0].getSelectedIndex(),
-					anzahlen,hmpositionen,
+					anzahlen,
+					hmpositionen,
 					preisgruppen[jcmb[0].getSelectedIndex()],
 					preisvec,jcmb[1].getSelectedIndex(),
-					(this.neu ? "" : this.vec.get(1).trim() )
+					(this.neu ? "" : this.vec.get(1).trim()),
+					jtf[2].getText().trim()
 					).check();
 			if(checkok){
 				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
