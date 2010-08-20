@@ -1790,13 +1790,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(!Rechte.hatRecht(Rechte.Rezept_lock, true)){
 					return;
 				}
+				
 				int anzterm = dtermm.getRowCount();
 				if(anzterm <= 0){return;}
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
 				String vgldat2 = (String) dtermm.getValueAt(0,0);
-				//System.out.println("Tage differenz = "+DatFunk.TageDifferenz(vgldat1, vgldat2));
-				//ist Rezeptdatum und Erstdatum > 10 Tage ?
-				if(DatFunk.TageDifferenz(vgldat1, vgldat2) > 10){
+				System.out.println(vgldat1+" / "+vgldat2);
+				/***Kann ausgeschaltet werden wenn die HMRCheck-Tabelle vollständig befüll ist**/
+				// ist ohnehin nur halblebig
+				int dummypeisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
+				long differenz = HMRCheck.hmrTageErmitteln(dummypeisgruppe,vgldat1,vgldat2);
+				if(differenz < 0){
+					JOptionPane.showMessageDialog(null, "Behandlungsbeginn ist vor dem Rezeptdatum!");
+					return;
+				}else if(differenz > 10){
 					int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 					//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
 					if(anfrage != JOptionPane.YES_OPTION){
@@ -1805,6 +1812,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						//Abgeschlossen trotz verspäteter Behandlungsbeginn;
 					}
 				}
+				/***/
 				if(Reha.thisClass.patpanel.patDaten.get(14).trim().equals("")){
 					JOptionPane.showMessageDialog(null, "Die im Patientenstamm zugewiesene Krankenkasse hat keine Kassennummer");
 					return;
@@ -1824,6 +1832,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				
 				if(! doTageTest(vgldat2,anzterm)){return;}
+				
 
 				/*********************/
 				String diszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
@@ -1873,10 +1882,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							indi,
 							list.indexOf(diszi),
 							anzahlen,hmpositionen,
-							Integer.parseInt(preisgruppe),
+							Integer.parseInt(preisgruppe)-1,
 							SystemPreislisten.hmPreise.get(diszi).get(Integer.parseInt(preisgruppe)-1),
 							Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(27)),
-							(Reha.thisClass.patpanel.vecaktrez.get(1)) 
+							(Reha.thisClass.patpanel.vecaktrez.get(1)),
+							DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.vecaktrez.get(2))
 							).check();
 					//System.out.println("Rückgabewert des HMR-Checks="+checkok);
 					if(!checkok){
