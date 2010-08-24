@@ -113,13 +113,13 @@ public class Ns1 implements ActionListener,ComponentListener {
 								protected Void doInBackground()
 										throws Exception {
 									try{
-									eltern.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+									eltern.setCursor(Reha.thisClass.wartenCursor);
 									Reha.thisClass.progressStarten(true);	
 						 			laden();
 						 			eltern.btf[0].requestFocusInWindow();
 						 			jscr.scrollRectToVisible(new Rectangle(0,0,0,0));
 						 			Reha.thisClass.progressStarten(false);
-						 			eltern.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						 			eltern.setCursor(Reha.thisClass.normalCursor);
 						 			inGuiInit = false;
 									testeIK();
 									}catch(Exception ex){
@@ -1070,7 +1070,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			rs = stmt.executeQuery(buf.toString());
 
 			if(rs.next()){
@@ -1100,7 +1100,7 @@ public class Ns1 implements ActionListener,ComponentListener {
 				}
 			
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());

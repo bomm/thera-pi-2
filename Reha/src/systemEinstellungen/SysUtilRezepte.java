@@ -210,7 +210,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 					row = vorlagen.convertRowIndexToModel(row);
 					int col = vorlagen.getSelectedColumn();	
 					if(col==1){
-						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						setCursor(Reha.thisClass.wartenCursor);
 						String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
 						if(svorlage.equals("")){
 							return;
@@ -310,7 +310,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 
 		}
 		if(cmd.equals("vorlagenneu")){
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			setCursor(Reha.thisClass.wartenCursor);
 			String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
 			if(! svorlage.equals("")){
 				datLabel.setText(svorlage);
@@ -385,7 +385,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
             }
         });
         chooser.setVisible(true);
-        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        setCursor(Reha.thisClass.normalCursor);
         final int result = chooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {

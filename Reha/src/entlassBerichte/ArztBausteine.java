@@ -447,7 +447,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 			}
 			try{
 				String sstmt = null;
-				Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 				if(cmd.equals("")){
 					sstmt = "select tbthema,tbuntert,tbtitel,id from tbar Order BY tbthema";					
 				}else{
@@ -475,7 +475,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 
 					bausteine++;
 				}
-				Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 				retvec.clear();
 				retvec = null;
 			}catch(SQLException ev){

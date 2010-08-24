@@ -129,7 +129,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		/**
 		 * 
 		 * this.disziplin = this.reznr.substring(0,2);		
-		 * hier den Fall f�r ohne Rezeptbezug einbauen!!!!!
+		 * hier den Fall für ohne Rezeptbezug einbauen!!!!!
 		 * JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		 */
 		//System.out.println("In Arztbericht erstellen - ändern -> "+berichtid+" - "+neu+" - "+reznr);
@@ -349,24 +349,49 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		diagnose.setEditable(true);
 		diagnose.setOpaque(false);
 		diagnose.setForeground(Color.BLUE);
-		if((! this.reznr.equals("")) && (this.aufrufvon == 0)){
-			diagnose.setText((String)Reha.thisClass.patpanel.vecaktrez.get(23));
-		}else if((!this.reznr.equals("")) && (this.aufrufvon == 1)){
-			diagnose.setText((String)Reha.thisClass.patpanel.vecakthistor.get(23));
-		}else{
-			Vector<String> vec = null;
-			vec = SqlInfo.holeSatz("verordn", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
-			if(vec.size() > 0){
-				diagnose.setText((String)vec.get(0));
-			}else{
-				vec = SqlInfo.holeSatz("lza", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
-				if(vec.size()>0){
-					diagnose.setText((String)vec.get(0));	
-				}else{
-					diagnose.setText("Diagnose kann nicht ermittelt werden bitte von Originalrezept übernehmen!!!!!!!!!");
+		try{
+			String xdiagnose = "";
+			if((! this.reznr.equals("")) && (this.aufrufvon == 0)){
+				xdiagnose = (String)Reha.thisClass.patpanel.vecaktrez.get(23);
+				if(xdiagnose.equals("") ){
+					xdiagnose = SqlInfo.holeEinzelFeld("select diagnose from bericht1 where berichtid='"+
+							Integer.toString(this.berichtid)+"' LIMIT 1");
 				}
-					
+				diagnose.setText(xdiagnose);	
+			}else if((!this.reznr.equals("")) && (this.aufrufvon == 1)){
+				xdiagnose = (String)Reha.thisClass.patpanel.vecakthistor.get(23);
+				if(xdiagnose.equals("") ){
+					xdiagnose = SqlInfo.holeEinzelFeld("select diagnose from bericht1 where berichtid='"+
+							Integer.toString(this.berichtid)+"' LIMIT 1");
+				}
+				diagnose.setText(xdiagnose);	
+				
+			}else{
+				Vector<String> vec = null;
+				vec = SqlInfo.holeSatz("verordn", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
+				if(vec.size() > 0){
+					xdiagnose = (String)vec.get(0);
+					try{
+						if(xdiagnose.equals("") ){
+							xdiagnose = SqlInfo.holeEinzelFeld("select diagnose from bericht1 where berichtid='"+
+									Integer.toString(this.berichtid)+"' LIMIT 1");
+						}
+					}catch(Exception ex){
+						ex.printStackTrace();
+						diagnose.setText("Diagnose kann nicht ermittelt werden bitte von Originalrezept übernehmen!!!!!!!!!");
+					}
+					diagnose.setText(xdiagnose);
+				}else{
+					vec = SqlInfo.holeSatz("lza", "diagnose", "rez_nr='"+this.reznr+"'", Arrays.asList(new String[] {}));
+					if(vec.size()>0){
+						diagnose.setText((String)vec.get(0));	
+					}else{
+						diagnose.setText("Diagnose kann nicht ermittelt werden bitte von Originalrezept übernehmen!!!!!!!!!");
+					}
+				}
 			}
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler bei der Ermittlung der Diagnose");
 		}
 		JScrollPane span = JCompTools.getTransparentScrollPane(diagnose);
 		pb.add(span,cc.xyw(2,24,3));

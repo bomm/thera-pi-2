@@ -150,6 +150,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		getRootPane().addKeyListener(this);
 		addKeyListener(this);
 	    xEvent = new RehaTPEventClass();
+	    //setCursor(Reha.thisClass.normalCursor);
 	    
 
 	}

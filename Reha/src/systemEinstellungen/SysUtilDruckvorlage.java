@@ -327,7 +327,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("file")){
 			//DateiDialog zur Auswahl der Vorlage;
-	        thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	        thisClass.setCursor(Reha.thisClass.wartenCursor);
 			SwingUtilities.invokeLater(new Runnable(){
 		        public  void run()
 	           	   {
@@ -342,7 +342,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		}
 		if(e.getActionCommand().equals("filetext")){
 			//Mit OpenOffice Vorlage �ffnen
-			thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.wartenCursor);
 	        //Reha.thisFrame.getGlassPane().setCursor(Cursor.WAIT_CURSOR);
 			SwingUtilities.invokeLater(new Runnable(){
 		        public  void run()
@@ -357,7 +357,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		}
 		if(e.getActionCommand().equals("mailtext")){
 			//Eingabefenster f�r Emailtext
-			thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.wartenCursor);
 	        //Reha.thisFrame.getGlassPane().setCursor(Cursor.WAIT_CURSOR);
 			SwingUtilities.invokeLater(new Runnable(){
 		        public  void run()
@@ -374,7 +374,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		}
 		if(e.getActionCommand().equals("testen")){
 			//TestDruck mit OpenOffice
-			thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.wartenCursor);
 	        //Reha.thisFrame.getGlassPane().setCursor(Cursor.WAIT_CURSOR);
 			SwingUtilities.invokeLater(new Runnable(){
 		        public  void run()
@@ -390,7 +390,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		}
 		if(e.getActionCommand().equals("speichern")){
 			//TestDruck mit OpenOffice
-			thisClass.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.wartenCursor);
 	        //Reha.thisFrame.getGlassPane().setCursor(Cursor.WAIT_CURSOR);
 			SwingUtilities.invokeLater(new Runnable(){
 		        public  void run()
@@ -476,7 +476,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			SystemConfig.oTerminListe.DirektDruck = false;			
 		}
 		ini.save();
-		thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		thisClass.setCursor(Reha.thisClass.normalCursor);
 	}
 	
 	private void speichernKonfig(){
@@ -513,7 +513,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
             }
         });
         chooser.setVisible(true);
-        thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        thisClass.setCursor(Reha.thisClass.normalCursor);
         final int result = chooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -554,7 +554,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		 * Saichtext basteln und einsetzen
 		 */
 		ITextTable textTable = null;		
-        thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        thisClass.setCursor(Reha.thisClass.normalCursor);
 	}
 	@Override
 	public void focusGained(FocusEvent arg0) {
@@ -611,19 +611,19 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		int AnzahlTabellen = new Integer(tabanz.getText().trim());
 		if(AnzahlTabellen == 0){
 			JOptionPane.showMessageDialog(null, "Ohne Termintabelle kein Terminplan und deshalb auch kein Test!");
-			thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.normalCursor);
 			return;
 		}
 		int maxTermineProTabelle = new Integer(zeilanz.getText().trim());
 		if(maxTermineProTabelle == 0){
 			JOptionPane.showMessageDialog(null, "Mit der Angabe Termine pro Tabelle == 0 -> kein Terminplan und deshalb auch kein Test!");
-			thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.normalCursor);
 			return;			
 		}
 		int maxTermineProSeite = AnzahlTabellen * maxTermineProTabelle;
 		int spaltenProtabelle = new Integer(spaltanz.getText().trim());
 		if(spaltenProtabelle==0){
-			thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.normalCursor);
 			JOptionPane.showMessageDialog(null, "Ohne Spalten keine Tabelle, ohne Tabelle kein Terminplan -> und deshalb auch kein Test!");
 			return;			
 		}
@@ -673,7 +673,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		if(tbl.length != AnzahlTabellen){
 			JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit Ihren Angaben überein.\nDer Test wird abgebrochen!");
 			textDocument.close();
-			thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.normalCursor);
 			return;
 		}
 		tabName = new String[AnzahlTabellen];
@@ -702,7 +702,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				thisClass.setCursor(Reha.thisClass.normalCursor);
 			}
 			try {
 				textDocument.getPrintService().setActivePrinter(iprint);
@@ -710,7 +710,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");				
 				e.printStackTrace();
-				thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));				
+				thisClass.setCursor(Reha.thisClass.normalCursor);				
 			}
 		}
 		//Jetzt den Platzhalter ^Name^ suchen
@@ -735,12 +735,12 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 					e.printStackTrace();
-					thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					thisClass.setCursor(Reha.thisClass.normalCursor);
 				}
 		        //Selektion durch eigenen Text ersetzen
 		        textRanges[0].setText(patname);
 			}else{
-				thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				thisClass.setCursor(Reha.thisClass.normalCursor);
 				JOptionPane.showMessageDialog (null, "Suche nach ^Name^ war erfolglos");				
 			}
 			*/
@@ -791,7 +791,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		} catch (TextException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
-			thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			thisClass.setCursor(Reha.thisClass.normalCursor);
 			e.printStackTrace();
 		}
 
@@ -812,7 +812,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 					e.printStackTrace();
-					thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					thisClass.setCursor(Reha.thisClass.normalCursor);
 				}
 				aktTerminInTabelle = 0;
 				////System.out.println("Spaltenwechsel nach Spalte"+aktTabelle);
@@ -829,7 +829,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 					e.printStackTrace();
-					thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					thisClass.setCursor(Reha.thisClass.normalCursor);
 				}
 				tbl = textDocument.getTextTableService().getTextTables();
 				x = 0;
@@ -850,7 +850,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 							// TODO Auto-generated catch block
 							JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 							e.printStackTrace();
-							thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+							thisClass.setCursor(Reha.thisClass.normalCursor);
 						}
 				        textRanges[0].setText(patname);
 					}
@@ -883,7 +883,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 					e.printStackTrace();
-					thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					thisClass.setCursor(Reha.thisClass.normalCursor);
 				}
 				////System.out.println("textTable gesetzt*************");
 				////System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
@@ -907,7 +907,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 							// TODO Auto-generated catch block
 							JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 							e.printStackTrace();
-							thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+							thisClass.setCursor(Reha.thisClass.normalCursor);
 						}					
 					}
 				}else{
@@ -917,7 +917,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 						e.printStackTrace();
-						thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						thisClass.setCursor(Reha.thisClass.normalCursor);
 					}
 				}
 			}
@@ -941,7 +941,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(null, "Druckvorlage und aktuelle Definition passen nicht zusammen");
 				e.printStackTrace();
-				thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				thisClass.setCursor(Reha.thisClass.normalCursor);
 			}
 			
 			/********************/
@@ -960,7 +960,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
         
 
 
-		thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		thisClass.setCursor(Reha.thisClass.normalCursor);
 	}
 /********************************************/
 	class TermObjekt implements Comparable<TermObjekt>{

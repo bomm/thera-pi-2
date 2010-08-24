@@ -111,7 +111,7 @@ public class OOTools{
 	public static void starteStandardFormular(String url,String drucker) {
 		IDocumentService documentService = null;
 		ITextDocument textDocument = null;
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		//System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
@@ -276,7 +276,7 @@ public class OOTools{
 			}
 		}
 		sucheNachPlatzhalter(textDocument);
-		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
 
@@ -293,10 +293,15 @@ public class OOTools{
 	/*******************************************************************************************/
 	public static void starteBacrodeFormular(String url,String drucker){
 		IDocumentService documentService = null;;
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		//System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
@@ -442,7 +447,7 @@ public class OOTools{
 		    /*****************/
 		}
 		sucheNachPlatzhalter(textDocument);
-		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
 		final ITextDocument xtextDocument = textDocument;
@@ -525,7 +530,7 @@ public class OOTools{
 		//String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 		//String drucker = "";
 		IDocumentService documentService = null;
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
@@ -875,7 +880,7 @@ public class OOTools{
 	}
 	/*************************************************************************/
 	public static ITextDocument  starteGKVBericht(String url,String drucker){
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
 		try {

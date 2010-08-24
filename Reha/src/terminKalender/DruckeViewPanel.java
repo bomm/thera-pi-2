@@ -52,7 +52,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		if(printPan == null){
 			return null;
 		}
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		int pixelWidth = printPan.getWidth();
 		int pixelHeight = printPan.getHeight();
 		bufimg = new BufferedImage(pixelWidth,pixelHeight,BufferedImage.TYPE_INT_RGB);
@@ -141,7 +141,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         textContentService.insertTextContent(textCursor.getEnd(),
             textDocumentImage);
 
-		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 
 		
 		return null;

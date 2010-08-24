@@ -440,12 +440,12 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	/*******************************************/
 	private void doKassenTreeAuswerten(KnotenObjekt node){
 			//Rezept ausgewählt
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			setCursor(Reha.thisClass.wartenCursor);
 			Reha.thisClass.progressStarten(true);
 			try{
 				if(! this.abrRez.setNewRez(node.rez_num,node.fertig,aktDisziplin) ){
 					Reha.thisClass.progressStarten(false);
-					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					setCursor(Reha.thisClass.normalCursor);
 					JOptionPane.showMessageDialog(null,"Rezept konnte nicht ausgewertet werden");
 					return;
 				}
@@ -453,7 +453,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				ex.printStackTrace();
 			}
 			//System.out.println("Rezept "+node.rez_num+" fertig eingestellt");
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
 					Reha.thisClass.progressStarten(false);					

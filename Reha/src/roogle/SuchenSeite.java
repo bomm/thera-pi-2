@@ -341,9 +341,9 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	public void cursorWait(boolean ein){
 		if(!ein){
-			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			this.setCursor(Reha.thisClass.normalCursor);
 		}else{
-			this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			this.setCursor(Reha.thisClass.wartenCursor);
 		}
 	}
 

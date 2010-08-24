@@ -346,7 +346,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
         }
     });
     chooser.setVisible(true);
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    setCursor(Reha.thisClass.normalCursor);
     final int result = chooser.showOpenDialog(null);
 
     if (result == JFileChooser.APPROVE_OPTION) {

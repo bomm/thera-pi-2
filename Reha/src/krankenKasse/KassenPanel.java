@@ -1016,7 +1016,7 @@ class HoleKassen{
 	}
 	try{
 		rs = stmt.executeQuery(sstmt);
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		Vector xvec = new Vector();
 		int anzahl = 0;
 		while( rs.next()){
@@ -1037,7 +1037,7 @@ class HoleKassen{
 			kpan.holeText();
 		}
 		
-		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		kpan.setzeFocus();
 	}catch(SQLException ev){
 		//System.out.println("SQLException: " + ev.getMessage());
@@ -1083,13 +1083,13 @@ class HoleText{
 	}
 	try{
 		rs = stmt.executeQuery(sstmt);
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		if( rs.next()){
 			pan.setMemo(rs.getString(1));
 		}else{
 			pan.setMemo("");
 		}
-		Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		
 	}catch(SQLException ev){
 		//System.out.println("SQLException: " + ev.getMessage());

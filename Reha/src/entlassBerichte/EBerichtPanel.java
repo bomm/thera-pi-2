@@ -327,7 +327,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 
 	private JTabbedPane getEBerichtTab(){
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		setCursor(Reha.thisClass.wartenCursor);
 		Reha.thisClass.progressStarten(true);
 		ebt = new EBerichtTab(this);
 		for(int i = 0; i < 4; i++){
@@ -344,7 +344,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		initOk[seite] = true;
 		if(initOk[0] && initOk[1] && initOk[2] && initOk[3]){
 			Reha.thisClass.progressStarten(false);
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 			for(int i = 0; i < 4; i++){
 				gutbut[i].setEnabled(true);
 			}
@@ -804,7 +804,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			////System.out.println("Nach Speichern alt");
 			Reha.thisClass.patpanel.gutachten.neuesGutachten(Integer.toString(berichtid),
 					btype,"Reha-Arzt",DatFunk.sHeute() ,empf, pat_intern,"Reha-Entlassbericht");
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 			Reha.thisClass.progressStarten(false);
 		}catch(Exception ex){
 			Reha.thisClass.progressStarten(true);

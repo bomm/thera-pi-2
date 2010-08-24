@@ -2387,7 +2387,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				" AND behandler = '"+sbehandler+
 				"BEHANDLER'";
 				macheStatement(sstate,iansicht);
-				Reha.thisClass.terminpanel.eltern.setTitle(DatFunk.WochenTag(serster)+" "+serster+"  bis  "+DatFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+" ---- [Wochenansicht]");
+				Reha.thisClass.terminpanel.eltern.setTitle(DatFunk.WochenTag(serster)+" "+serster+"  bis  "+DatFunk.WochenTag(sletzter)+" "+sletzter+"-----Behandler:"+sbehandler+"-----KW:"+DatFunk.KalenderWoche(serster)+" ----- [Wochenansicht]");
 			}
 			return sstate;
 		}

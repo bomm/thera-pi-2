@@ -69,7 +69,7 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 		/****************************************************************/
 		rSmart.setLocationRelativeTo(null); 
 		rSmart.setVisible(true);
-		SysUtilDruckvorlage.thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		SysUtilDruckvorlage.thisClass.setCursor(Reha.thisClass.normalCursor);
 
 				
 	}

@@ -424,7 +424,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			String gruppe = new Integer(jcmb[1].getSelectedIndex()+1).toString();
 			int igruppe = jcmb[1].getSelectedIndex()+1;
 			String cmd;
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			setCursor(Reha.thisClass.wartenCursor);
 			Reha.thisClass.progressStarten(true);
 			for(int i = 0; i < anzahl; i++){
 				hmpos = (String)modpreis.getValueAt(i,0);
@@ -471,20 +471,20 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			inif.save();
 			if(delvec.size()>0){
 				for(int i = 0;i < delvec.size();i++){
-					cmd = "delete from "+sdb+" where id='"+delvec.get(i)+"'";
+					cmd = "delete from "+sdb+Integer.toString(igruppe)+" where id='"+delvec.get(i)+"'";
 					SqlInfo.sqlAusfuehren(cmd);
-					////System.out.println("Löschen mit Kommando = "+cmd);
+					System.out.println("Löschen mit Kommando = "+cmd);
 				}
 			}
 			//String[] diszi = {"KG","MA","ER","LO","RH"};
 			//ParameterLaden.PreiseEinlesen(diszi[jcmb[0].getSelectedIndex()]);
 			SystemPreislisten.ladePreise(diszis[jcmb[0].getSelectedIndex()]);
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 			Reha.thisClass.Rehaprogress.setIndeterminate(false);
 			JOptionPane.showMessageDialog(null,"Preisliste wurde erfolgreich gespeichert");
 		}catch(Exception ex){
 			ex.printStackTrace();
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 			Reha.thisClass.Rehaprogress.setIndeterminate(false);
 			JOptionPane.showMessageDialog(null,"Fehler beim Abspeichern der Preisliste");
 		}
@@ -529,7 +529,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			if(frage != JOptionPane.YES_OPTION){
 				return;
 			}
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			setCursor(Reha.thisClass.wartenCursor);
 			Reha.thisClass.Rehaprogress.setIndeterminate(true);
 			if(neuaufalt.isSelected()){
 				doSetzeNeuAufAlt();			
@@ -538,11 +538,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			setzePreise(preis);
 			doZurueck();
 			Reha.thisClass.Rehaprogress.setIndeterminate(false);
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 		}catch(Exception ex){
 			ex.printStackTrace();
 			Reha.thisClass.Rehaprogress.setIndeterminate(false);
-			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			setCursor(Reha.thisClass.normalCursor);
 			JOptionPane.showMessageDialog(null, "Fehler beim Preislistenimport");
 		}
 	}
@@ -829,7 +829,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		int pgs = jcmb[0].getSelectedIndex();
 		int pgGruppe = jcmb[1].getSelectedIndex();
 		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		setCursor(Reha.thisClass.normalCursor);
 		return SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe);
 		}catch(Exception ex){
 			ex.printStackTrace();

@@ -40,11 +40,11 @@ public class SqlInfo {
 		}
 		try{
 			rs = stmt.executeQuery(sstmt);
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			if(rs.next()){
 				gibtsschon = true;
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -82,7 +82,7 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt1 = "insert into "+tabelle+" set "+feld+" = '"+SystemConfig.dieseMaschine+"'";
 			stmt.execute(sstmt1);			
 			String sstmt2 = "select id from "+tabelle+" where "+feld+" = '"+SystemConfig.dieseMaschine+"'";
@@ -90,7 +90,7 @@ public class SqlInfo {
 			if(rs.next()){
 				retid = rs.getInt("id");
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -130,7 +130,7 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+felder+" from "+tabelle+" where "+kriterium+" LIMIT 1";
 			rs = stmt.executeQuery(sstmt);
 			int nichtlesen = ausschliessen.size();
@@ -147,7 +147,7 @@ public class SqlInfo {
 					 }
 				 }
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -192,7 +192,7 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			//Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+felder+" from "+tabelle+" "+kriterium+" LIMIT "+Integer.toString(limit[0])+
 			","+Integer.toString(limit[1])+"";
 			rs = stmt.executeQuery(sstmt);
@@ -210,7 +210,7 @@ public class SqlInfo {
 					 }
 				 }
 			}
-			//Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			//Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -291,14 +291,14 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium;
 			rs = stmt.executeQuery(sstmt);
 			if(rs.next()){
 				 retvec.add( (rs.getString(1)==null  ? "" :  rs.getString(1)) );						 
 				 retvec.add( (rs.getString(2)==null  ? "" :  rs.getString(2)) );
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -340,7 +340,7 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+felder+" from "+tabelle+" where "+kriterium;
 			rs = stmt.executeQuery(sstmt);
 			
@@ -362,7 +362,7 @@ public class SqlInfo {
 			}
 			retvec.clear();
 			retvec = null;
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -542,13 +542,13 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt1 = "select count(*) from "+tabelle+" where "+bedingung;
 			rs = stmt.executeQuery(sstmt1);			
 			if(rs.next()){
 				retid = rs.getInt(1);
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -587,12 +587,12 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium+" LIMIT 1";
 			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
 			////System.out.println(ret);
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -631,12 +631,12 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium;
 			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
 			////System.out.println(ret);
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -679,14 +679,14 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+feld+" from pat5 where "+kriterium+" LIMIT 1";
 			rs = stmt.executeQuery(sstmt);
 
 			if(rs.next()){
 				ret = (rs.getString(feld)==null  ? "" :  rs.getString(feld));
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -726,14 +726,14 @@ public class SqlInfo {
 			return "";
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = xstmt;
 			rs = stmt.executeQuery(sstmt);
 			while(rs.next()){
 						 ret =  (rs.getString(1)==null  ? "" :  rs.getString(1)).trim() ;
 						 break;
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 			return ret;
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
@@ -782,7 +782,7 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = xstmt;
 			rs = stmt.executeQuery(sstmt);
 			while(rs.next()){
@@ -795,7 +795,7 @@ public class SqlInfo {
 				 }
 				 retkomplett.add((Vector<String>)retvec.clone());
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 			retvec.clear();
 			retvec = null;
 		}catch(SQLException ev){
@@ -843,14 +843,14 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+feld+" from verordn where "+kriterium+" LIMIT 1";
 			rs = stmt.executeQuery(sstmt);
 
 			if(rs.next()){
 				ret = (rs.getString(feld)==null  ? "" :  rs.getString(feld));
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -890,14 +890,14 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			rs = stmt.executeQuery(sstmt);
 
 			while(rs.next()){
 				ret = (rs.getString(1)==null  ? "" :  rs.getString(1));
 				vecret.add(String.valueOf(ret));
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());
@@ -939,7 +939,7 @@ public class SqlInfo {
 		}
 		try{
 			geklappt =  stmt.execute(sstmt);
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
 		}	
@@ -969,13 +969,13 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium+" LIMIT 1";
 			rs = stmt.executeQuery(sstmt);
 			if(rs.next()){
 				is = rs.getBinaryStream(1); 
 			}
-			Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			//System.out.println("SQLException: " + ev.getMessage());
 			//System.out.println("SQLState: " + ev.getSQLState());

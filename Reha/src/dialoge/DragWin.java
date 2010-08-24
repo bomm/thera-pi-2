@@ -1,5 +1,7 @@
 package dialoge;
 
+import hauptFenster.Reha;
+
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -14,6 +16,7 @@ import javax.swing.SwingUtilities;
 public class DragWin extends MouseAdapter implements MouseListener, MouseMotionListener{
 	public int clickX;
 	public int clickY;
+	/*
 	public Cursor cmove = new Cursor(Cursor.MOVE_CURSOR);  //  @jve:decl-index=0:
 	public Cursor cnsize = new Cursor(Cursor.N_RESIZE_CURSOR);  //  @jve:decl-index=0:
 	public Cursor cnwsize = new Cursor(Cursor.NW_RESIZE_CURSOR);  //  @jve:decl-index=0:
@@ -23,8 +26,8 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 	public Cursor csesize = new Cursor(Cursor.SE_RESIZE_CURSOR);  //  @jve:decl-index=0:
 	public Cursor cssize = new Cursor(Cursor.S_RESIZE_CURSOR);  //  @jve:decl-index=0:
 	public Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
-	public Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:
-
+	public Cursor cdefault = Reha.thisClass.normalCursor;  //  @jve:decl-index=0:
+	*/
 	public boolean insize;
 	
 	public int[] waagrecht = {0,0};
@@ -88,13 +91,13 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 		//final java.awt.event.MouseEvent ex = e;
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
-				owner.setCursor(cdefault);
+				owner.setCursor(Reha.thisClass.cdefault);
 				clickX = -1;
 				clickY = -1;
 				orgbounds[0] = -1;
 				orgbounds[1] = -1;					
 				insize = false;
-				owner.setCursor(cdefault);
+				owner.setCursor(Reha.thisClass.cdefault);
 				hilfsint = owner.getWidth()/2;
 				waagrecht[0] = hilfsint-15;
 				waagrecht[1] = hilfsint+15;
@@ -120,7 +123,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 			final java.awt.event.MouseEvent ex = e;
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
-					owner.setCursor(cmove);
+					owner.setCursor(Reha.thisClass.cmove);
 					owner.setLocation(ex.getXOnScreen()-clickX,ex.getYOnScreen()-clickY);
 		 	  	}
 			});
@@ -144,7 +147,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen(),ex.getYOnScreen());
-					owner.setCursor(cnwsize);
+					owner.setCursor(Reha.thisClass.cnwsize);
 					break;
 				}
 				if(sizeart==2){ //nord-ost
@@ -156,7 +159,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen()-dim.width,ex.getYOnScreen());
-					owner.setCursor(cnesize);
+					owner.setCursor(Reha.thisClass.cnesize);
 					break;
 				}
 				if(sizeart==3){ //nord
@@ -167,7 +170,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen()-ex.getX(),ex.getYOnScreen());
-					owner.setCursor(cnsize);
+					owner.setCursor(Reha.thisClass.cnsize);
 					break;
 				}	
 				if(sizeart==4){ //s�d-west
@@ -179,7 +182,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen(),ex.getYOnScreen()-dim.height);
-					owner.setCursor(cswsize);
+					owner.setCursor(Reha.thisClass.cswsize);
 					break;
 				}
 				if(sizeart==5){ //west
@@ -190,7 +193,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen(),ex.getYOnScreen()-ex.getY());
-					owner.setCursor(cwsize);
+					owner.setCursor(Reha.thisClass.cwsize);
 					break;
 				}
 				if(sizeart==6){ //s�d-ost
@@ -202,7 +205,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen()-dim.width,ex.getYOnScreen()-dim.height);
-					owner.setCursor(cwsize);
+					owner.setCursor(Reha.thisClass.cwsize);
 					break;
 				}
 				if(sizeart==7){ //s�d
@@ -213,7 +216,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen()-ex.getX(),ex.getYOnScreen()-dim.height);
-					owner.setCursor(cssize);
+					owner.setCursor(Reha.thisClass.cssize);
 					break;
 				}
 				if(sizeart==8){ //ost
@@ -224,12 +227,12 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 					orgbounds[1] = oY;
 					owner.setSize(dim);
 					owner.setLocation(ex.getXOnScreen()-ex.getX(),ex.getYOnScreen()-ex.getY());
-					owner.setCursor(cesize);
+					owner.setCursor(Reha.thisClass.cesize);
 					break;
 				}
 
 				insize = false;
-				owner.setCursor(cdefault);
+				owner.setCursor(Reha.thisClass.cdefault);
 			}
 	       //	}
 			//});
@@ -237,7 +240,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 		}else{
 
 			insize = false;
-			owner.setCursor(cdefault);
+			owner.setCursor(Reha.thisClass.cdefault);
 		}
 	}
 
@@ -245,13 +248,13 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 	public void mouseMoved(java.awt.event.MouseEvent e) {    
 		for(int i = 0; i < 1; i++){
 			sizeart=-1;
-			owner.setCursor(cdefault);
+			owner.setCursor(Reha.thisClass.cdefault);
 			if ((e.getX() <= 4 && e.getY() <= 4)){ //nord-west
 				insize = true;
 				sizeart = 1;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cnwsize);
+				owner.setCursor(Reha.thisClass.cnwsize);
 				break;
 			}
 			if( (e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && e.getY() <= 4){//nord-ost
@@ -259,7 +262,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 2;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cnesize);
+				owner.setCursor(Reha.thisClass.cnesize);
 				break;
 			}
 			if(e.getY() <= 6 && WertZwischen(e.getX(),waagrecht[0],waagrecht[1])){//nord
@@ -267,7 +270,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 3;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cnsize);
+				owner.setCursor(Reha.thisClass.cnsize);
 				break;
 			}
 			if ((e.getX() <= 4 && e.getY() >= (((JComponent) e.getSource()).getHeight()-4))){ //s�d-west
@@ -275,7 +278,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 4;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cswsize);
+				owner.setCursor(Reha.thisClass.cswsize);
 				break;
 			}
 			if ((e.getX() <= 6) && WertZwischen(e.getY(),senkrecht[0],senkrecht[1])){ //west
@@ -283,7 +286,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 5;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cwsize);
+				owner.setCursor(Reha.thisClass.cwsize);
 				break;
 			}
 			if ((e.getX()>=  (((JComponent) e.getSource()).getWidth()-4)) && //s�d-ost
@@ -292,7 +295,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 6;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(csesize);
+				owner.setCursor(Reha.thisClass.csesize);
 				break;
 			}
 			if (e.getY() >= (((JComponent) e.getSource()).getHeight()-4) && WertZwischen(e.getX(),waagrecht[0],waagrecht[1])){ //s�d
@@ -300,7 +303,7 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 7;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cssize);
+				owner.setCursor(Reha.thisClass.cssize);
 				break;
 			}
 			if (e.getX() >= (((JComponent) e.getSource()).getWidth()-6) && WertZwischen(e.getY(),senkrecht[0],senkrecht[1])){ //ost
@@ -308,13 +311,13 @@ public class DragWin extends MouseAdapter implements MouseListener, MouseMotionL
 				sizeart = 8;
 				orgbounds[0]=e.getXOnScreen();
 				orgbounds[1]=e.getYOnScreen();						
-				owner.setCursor(cesize);
+				owner.setCursor(Reha.thisClass.cesize);
 				break;
 			}
 
 			insize = false;
 			sizeart = -1;
-			owner.setCursor(cdefault);
+			owner.setCursor(Reha.thisClass.cdefault);
 
 		}
 	}

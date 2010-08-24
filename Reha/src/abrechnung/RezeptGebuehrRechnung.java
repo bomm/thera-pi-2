@@ -237,7 +237,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	@SuppressWarnings("unchecked")
 	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;
-		Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();

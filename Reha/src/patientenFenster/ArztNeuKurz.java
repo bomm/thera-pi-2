@@ -248,19 +248,18 @@ public class ArztNeuKurz extends JXPanel implements ActionListener,KeyListener,F
 					}
 					int iid;
 					tfs[13].setText((String)arztgruppe.getSelectedItem());
-					tfs[14].setText(new Integer( iid = SqlInfo.holeId("arzt", "nachname")).toString());
+					tfs[14].setText(Integer.toString(iid = SqlInfo.holeId("arzt", "nachname")));
 					String stmt = "update arzt set ";
 					for(int i = 0; i < 14; i++){
-						stmt = stmt+ (i==0 ? "": ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";
+						stmt = stmt+ (i==0 ? "" : ", ")+tfs[i].getName()+"='"+tfs[i].getText()+"'";
 					}
 					stmt = stmt + " where id ='"+Integer.toString(iid)+"'";
-					////System.out.println(stmt);
+					//System.out.println(stmt);
 					SqlInfo.sqlAusfuehren(stmt);
 					//new ExUndHop().setzeStatement(stmt);
 					eltern.zurueckZurTabelle(tfs);
 					return null;
 				}
-				
 			}.execute();
 		}else{
 			eltern.zurueckZurTabelle(null);

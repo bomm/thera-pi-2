@@ -79,7 +79,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	//private Cursor csesize = new Cursor(Cursor.SE_RESIZE_CURSOR);  //  @jve:decl-index=0:
 	//private Cursor cssize = new Cursor(Cursor.S_RESIZE_CURSOR);  //  @jve:decl-index=0:
 	//private Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
-	//private Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:
+	//private Cursor cdefault = Reha.thisClass.normalCursor;  //  @jve:decl-index=0:
 
 	private boolean insize;
 	private int[] orgbounds = {0,0};
@@ -637,7 +637,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		reiheVector.addElement("Geboren");
 		reiheVector.addElement("Patientennummer");
 		String[] suche;
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));	
+		setCursor(Reha.thisClass.wartenCursor);	
 		if(suchart == 0){
 			
 		
@@ -679,7 +679,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					}
 					setzeReihe((Vector<String>)rowVector.clone());
 				}
-				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				setCursor(Reha.thisClass.normalCursor);
 				
 			}catch(SQLException ev){
 			}	

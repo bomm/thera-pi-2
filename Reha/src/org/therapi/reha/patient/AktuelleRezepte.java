@@ -1237,7 +1237,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 										suchePatUeberRez = false;
 										return null;
 									}
-		                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		                			setCursor(Reha.thisClass.wartenCursor);
 		                			if(!inEinzelTermine ){
 		                				try{
 		                					inEinzelTermine = true;
@@ -1259,9 +1259,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		                			Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(ix, 7)+"'", Arrays.asList(new String[] {}) ));
 		                			Reha.thisClass.patpanel.aktRezept.rezAngezeigt = (String)tabaktrez.getValueAt(ix, 0);
 		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
-		    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		    						setCursor(Reha.thisClass.normalCursor);
 								}catch(Exception ex){
-		    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		    						setCursor(Reha.thisClass.normalCursor);
 									ex.printStackTrace();
 									JOptionPane.showMessageDialog(null, "Fehler im ListSelection-Listener aktuelle Rezepte");
 								}

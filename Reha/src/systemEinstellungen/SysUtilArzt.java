@@ -223,7 +223,7 @@ private JPanel getKnopfPanel(){
 					row = vorlagen.convertRowIndexToModel(row);
 					int col = vorlagen.getSelectedColumn();	
 					if(col==1){
-						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						setCursor(Reha.thisClass.wartenCursor);
 						String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
 						if(svorlage.equals("")){
 							return;
@@ -354,7 +354,7 @@ private JPanel getKnopfPanel(){
 				
 			}
 			if(cmd.equals("neuvorlagen")){
-				setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				setCursor(Reha.thisClass.wartenCursor);
 				String svorlage = dateiDialog(Reha.proghome+"vorlagen/"+Reha.aktIK);
 				if(svorlage.equals("")){
 					return;
@@ -468,7 +468,7 @@ private JPanel getKnopfPanel(){
 
         });
         chooser.setVisible(true);
-        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        setCursor(Reha.thisClass.normalCursor);
         final int result = chooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {

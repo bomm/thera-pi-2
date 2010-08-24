@@ -335,7 +335,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
             }
         });
         chooser.setVisible(true);
-        //thisClass.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        //thisClass.setCursor(Reha.thisClass.normalCursor);
         final int result = chooser.showOpenDialog(null);
         chooser.setVisible(false);
         if (result == JFileChooser.APPROVE_OPTION) {

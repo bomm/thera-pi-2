@@ -905,15 +905,15 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 								// TODO Auto-generated method stub
 								inRezeptDaten = true;
-	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+	                			setCursor(Reha.thisClass.wartenCursor);
 	                    		holeEinzelTermine(ix,null);
 	    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
 	    						////System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
-	    						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	    						setCursor(Reha.thisClass.normalCursor);
 	    						inRezeptDaten = false;
 								}catch(Exception ex){
 									ex.printStackTrace();
-									setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+									setCursor(Reha.thisClass.normalCursor);
 								}
 
 	    						return null;
