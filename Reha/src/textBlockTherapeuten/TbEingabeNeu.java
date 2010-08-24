@@ -63,8 +63,8 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		super();
 		setOpaque(false);
 		setLayout(new BorderLayout());
-		this.tbltext = new String(dtext);
-		String x = new String(dtext);
+		this.tbltext = String.valueOf(dtext);
+		String x = String.valueOf(dtext);
 		x = x.replace(System.getProperty("line.separator"),"<br>");
 		//x = x.replace("\r","");
 		//x = x.replace("\n","<br>");
@@ -127,14 +127,14 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	/****************************************/
 	
 	public void neueDaten(String dtext,Vector vec){
-		this.tbltext = new String(dtext);
-		String x = new String(dtext);
+		this.tbltext = String.valueOf(dtext);
+		String x = String.valueOf(dtext);
 		x = x.replace(System.getProperty("line.separator"),"<br>");
 		//x = x.replace("\r","");
 		//x = x.replace("\n","<br>");
 		x = x.replace("^Tab^","&nbsp;");
 		x = x.replace("^CRLF^","<br>");
-		this.savetext = new String("<html>"+x+"</html>");
+		this.savetext = String.valueOf("<html>"+x+"</html>");
 		this.varvec = vec;
 		this.aktvector = 0;
 		this.maxvector = vec.size()-1;
@@ -287,7 +287,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		x = x.replace("</html>","");		
 		x = x.replace("<html>","");
 		//JOptionPane.showMessageDialog(null,x);
-		this.rueck.setText(new String(x));
+		this.rueck.setText(String.valueOf(x));
 	
 	}
 	private void testeAufRot(){
@@ -301,7 +301,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 			return;
 		}
 		aktreplace = "<b><font color='#ff0000'>"+varvec.get(aktvector)+"</font></b>";
-		this.savetext = new String(this.savetext.replace(varvec.get(aktvector), aktreplace));
+		this.savetext = String.valueOf(this.savetext.replace(varvec.get(aktvector), aktreplace));
 		darstellung.setText(this.savetext);
 		darstellung.repaint();
 	}

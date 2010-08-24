@@ -513,7 +513,7 @@ private boolean satzSperrenUndLoeschen(int realindex){
 	String sdatum = termine.get(realindex)[1];
 	String sstmt = "select * from flexlock where sperre = '"+behandlernum+sdatum+"'";
 	String isstmt = "insert into flexlock set sperre = '"+behandlernum+sdatum+"'";
-	int iblock = new Integer(termine.get(realindex)[7]);
+	int iblock = Integer.valueOf(termine.get(realindex)[7]);
 	String neustmt = "update flexkc set T"+(iblock+1)+
 			"='', N"+(iblock+1)+
 			" = '' where DATUM = '"+termine.get(realindex)[3].substring(0,10)+"' AND BEHANDLER = '"+
@@ -975,7 +975,7 @@ final class sendeTermine extends Thread implements Runnable{
 	         // Lesevorgang
 	         fr.read(temp);
 	         // Umwandlung des char-Arrays in einen String
-	         gelesen = new String(temp);
+	         gelesen = String.valueOf(temp);
 	         text = gelesen;
 	         //Ausgabe des Strings
 	         ////System.out.println(gelesen);

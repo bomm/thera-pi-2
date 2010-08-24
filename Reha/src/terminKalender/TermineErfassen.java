@@ -224,7 +224,7 @@ public class TermineErfassen implements Runnable {
 			//System.out.println(copyright.trim());
 			//System.out.println("if(!(String)obj[4]).contains(copyright.trim()) "+ obj[4]+" contains("+copyright.trim()+")");
 			if( !((String)obj[4]).contains(copyright.trim())){
-				this.kollege = new String((String)obj[1]);
+				this.kollege = String.valueOf((String)obj[1]);
 				string = "Rezeptnummer wurde gefunden bei Kollege "+(String)obj[1]+" an Block "+(Integer)obj[2]+" Rezeptnummer:"+(String)obj[3];
 				String stmt = " sperre = '"+(String)obj[1]+heute+"'";
 				////System.out.println(stmt);
@@ -235,7 +235,7 @@ public class TermineErfassen implements Runnable {
 					stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 						"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 						"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
-					new ExUndHop().setzeStatement(new String(stmt));
+					new ExUndHop().setzeStatement(String.valueOf(stmt));
 					//System.out.println("Ex und Hopp Statement =\n"+stmt+"\n************");
 					*/
 					SqlInfo.aktualisiereSatz("flexkc",
@@ -248,9 +248,9 @@ public class TermineErfassen implements Runnable {
 						String snum = ((String)obj[1]).substring(0, 2);
 						int inum;
 						if(snum.substring(0,1).equals("0)")){
-							inum = new Integer(snum.substring(1,2))-1;
+							inum = Integer.valueOf(snum.substring(1,2))-1;
 						}else{
-							inum = new Integer(snum.substring(0,2))-1;						
+							inum = Integer.valueOf(snum.substring(0,2))-1;						
 						}
 
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
@@ -258,7 +258,7 @@ public class TermineErfassen implements Runnable {
 							int ansicht;
 							if((ansicht = Reha.thisClass.terminpanel.ansicht) == 0){
 								if(Reha.thisClass.terminpanel.getAktuellerTag().equals(DatFunk.sHeute())){
-									int iblock = new Integer(sblock)-1;
+									int iblock = Integer.valueOf(sblock)-1;
 									((ArrayList<Vector<String>>)((Vector)Reha.thisClass.terminpanel.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
 									Reha.thisClass.terminpanel.ViewPanel.repaint();
 								}else{
@@ -313,7 +313,7 @@ public class TermineErfassen implements Runnable {
 					obj[5] = (String) ((Vector)alleterm.get(i)).get( ((y*5))+2 ); // Beginn
 					obj[6] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
 					obj[7] = (String) ((Vector)alleterm.get(i)).get(bloecke-2) ;//Datum
-					//((Vector)alleterm.get(i)).set((y*5), copyright+new String((String)obj[4]));
+					//((Vector)alleterm.get(i)).set((y*5), copyright+String.valueOf((String)obj[4]));
 					//System.out.println("Gefunden in Spalte "+Integer.toString(i+1)+
 					//		" in Block "+Integer.toString(y+1)+" Ergebnis = "+obj[3]);
 					gefunden = true;
@@ -363,7 +363,7 @@ public class TermineErfassen implements Runnable {
 							stmt = "Update flexkc set T"+sblock+" = '"+copyright+(String)obj[4]+"' where datum = '"+(String)obj[7]+"' AND "+
 								"behandler = '"+(String)obj[1]+"' AND TS"+sblock+" = '"+(String)obj[5]+"' AND T"+sblock+" = '"+(String)obj[4]+
 								"' AND N"+sblock+" LIKE '%"+scanrez+"%' LIMIT 1";
-							new ExUndHop().setzeStatement(new String(stmt));
+							new ExUndHop().setzeStatement(String.valueOf(stmt));
 							*/
 							SqlInfo.aktualisiereSatz("flexkc",
 							"T"+sblock+" = '"+copyright+(String)obj[4]+"'",
@@ -390,7 +390,7 @@ public class TermineErfassen implements Runnable {
 										if(!termOk){
 											termOk = true;
 										}
-										int iblock = new Integer(sblock)-1;
+										int iblock = Integer.valueOf(sblock)-1;
 										((ArrayList<Vector<String>>)((Vector)Reha.thisClass.terminpanel.getDatenVector()).get(inum)).get(0).set(iblock,copyright+(String)obj[4]);
 									}else{
 										//System.out.println("Aktueller Tag = "+Reha.thisClass.terminpanel.getAktuellerTag());
@@ -418,8 +418,8 @@ public class TermineErfassen implements Runnable {
 	private void scheibeTermin() throws Exception{
 		////System.out.println("Eintritt in schreibeTermin");
 		int ikoll = (kollege.substring(0,1).equals("0") ?
-					new Integer(kollege.substring(1,2)) :
-					new Integer(kollege.substring(0,2)) 	
+					Integer.valueOf(kollege.substring(1,2)) :
+					Integer.valueOf(kollege.substring(0,2)) 	
 					);
 		////System.out.println("Kollegen-Nummer = "+ikoll);
 		this.kollege = ParameterLaden.getKollegenUeberDBZeile(ikoll);
@@ -435,7 +435,7 @@ public class TermineErfassen implements Runnable {
 			//hier die Einzelnen Termin holen
 			vec2 = RezTools.splitteTermine(sbuftermine.toString());
 			int anzahl = vec2.size();
-			int lautrezept = new Integer((String)vec.get(1)); 
+			int lautrezept = Integer.valueOf((String)vec.get(1)); 
 			if(anzahl >= lautrezept){
 				String message = "";
 				int variante = -1;

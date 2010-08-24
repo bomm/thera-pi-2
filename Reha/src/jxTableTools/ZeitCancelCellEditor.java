@@ -89,24 +89,24 @@ public class ZeitCancelCellEditor extends AbstractCellEditor implements TableCel
 				((JFormattedTextField)component).setText("");
 				return true;
 			}
-			if(new Integer(s.substring(0,1)) > 2 ){
+			if(Integer.valueOf(s.substring(0,1)) > 2 ){
 				((JFormattedTextField)component).setText("");
 				return true;
 			}
-			if(new Integer(s.substring(3,4)) > 5 ){
+			if(Integer.valueOf(s.substring(3,4)) > 5 ){
 				((JFormattedTextField)component).setText("");
 				return true;
 			}
-			if(new Integer(s.substring(0,2)) > 24 ){
+			if(Integer.valueOf(s.substring(0,2)) > 24 ){
 				((JFormattedTextField)component).setText("");
 				return true;
 			}
-			if(new Integer(s.substring(0,2)) == 24 ){
-				if(new Integer(s.substring(3,4)) > 0 ){
+			if(Integer.valueOf(s.substring(0,2)) == 24 ){
+				if(Integer.valueOf(s.substring(3,4)) > 0 ){
 					((JFormattedTextField)component).setText("");
 					return true;
 				}
-				if(new Integer(s.substring(4,5)) > 0 ){
+				if(Integer.valueOf(s.substring(4,5)) > 0 ){
 					((JFormattedTextField)component).setText("");
 					return true;
 				}

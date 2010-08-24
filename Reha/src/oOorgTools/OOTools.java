@@ -642,7 +642,7 @@ public class OOTools{
 		    	  int bblock;
 		    	  if(key.contains("<bblock")){
 			    	  ////System.out.println("enth�lt block");
-		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
+		    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
 		    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -655,7 +655,7 @@ public class OOTools{
 		    	  }
 		    	  if(key.contains("<btitel")){
 			    	  ////System.out.println("enth�lt titel");
-		    		  bblock = new Integer(key.substring((key.length()-2),(key.length()-1)) );
+		    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
 		    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -1207,7 +1207,7 @@ public class OOTools{
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
 		xPropSet.setPropertyValue( "CharWeight",com.sun.star.awt.FontWeight.BOLD );
 		/* Beispiele für Fonthandling
-		xPropSet.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
+		xPropSet.setPropertyValue("CharFontStyleName", String.valueOf("Times New Roman"));
 		xPropSet.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
 		xPropSet.setPropertyValue("CharHeight", new Float(12));
 		*/ 

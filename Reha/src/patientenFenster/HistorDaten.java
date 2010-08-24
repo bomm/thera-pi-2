@@ -253,7 +253,7 @@ public class HistorDaten extends JXPanel{
 			return retwert;
 		}
 		for(int i = 0;i<preisevec.size();i++){
-			if( new Integer( (String) ((Vector)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
+			if( Integer.valueOf( (String) ((Vector)preisevec.get(i)).get(preisevec.get(i).size()-1)) == veczahl ){
 				return StringTools.NullTest((String)vecaktrez.get(leistung+3))+"  *  "+
 				(String) ((Vector)preisevec.get(i)).get(1);
 			}

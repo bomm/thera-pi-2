@@ -224,7 +224,7 @@ public class Eb4 implements ActionListener {
 			dum = new PanelBuilder(dummy);
 			dum.getPanel().setOpaque(false);
 			ccdum = new CellConstraints();
-			lab = new JLabel(new Integer(i+1+((seite-1)*25)).toString()+".");
+			lab = new JLabel(Integer.valueOf(i+1+((seite-1)*25)).toString()+".");
 			dum.add(lab,ccdum.xy(2,2,CellConstraints.RIGHT,CellConstraints.CENTER));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(4, 1, 1, 2,CellConstraints.DEFAULT,CellConstraints.FILL));
 			dum.add(getRand(Color.GRAY),cckopf.xywh(1, 1, 13, 1,CellConstraints.FILL,CellConstraints.DEFAULT));				
@@ -344,7 +344,7 @@ public class Eb4 implements ActionListener {
 								Integer.toString(eltern.berichtid)+"' LIMIT 1" );
 						for(int i = 1;i<50;i++){
 							pos = (i*4);
-							////System.out.println(new Integer(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
+							////System.out.println(Integer.valueOf(i).toString()+". Massnahmennummer = "+vec.get(0).get(pos));
 							if(vec.get(0).get(pos).equals("0")){
 								istnull++;
 								if(istnull > 3){
@@ -440,7 +440,7 @@ public class Eb4 implements ActionListener {
 			return;
 		}
 		String cmd = arg0.getActionCommand();
-		int combo = new Integer(cmd);
+		int combo = Integer.valueOf(cmd);
 
 		eltern.ktltfc[combo].setText((String)eltern.ktlcmb[combo].getValueAt(1));
 		eltern.ktltfd[combo].setText((String)eltern.ktlcmb[combo].getValueAt(2));

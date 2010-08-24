@@ -85,12 +85,12 @@ public class RezTools {
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					tvec.add(String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
 					if(i==0){
-						SystemConfig.hmAdrRDaten.put("<Rerstdat>",new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
+						SystemConfig.hmAdrRDaten.put("<Rerstdat>",String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
 					}
 				}else{
-					tvec.add(new String(terdat[y]));					
+					tvec.add(String.valueOf(terdat[y]));					
 				}
 				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
@@ -393,7 +393,7 @@ public class RezTools {
 				}else{
 					//Es stehen keine Termine f�r Analyse zur Verf�gung also mu� das Fenster f�r manuelle Eingabe ge�ffnet werden!!
 					String geburtstag = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
-					String stichtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+					String stichtag = DatFunk.sHeute().substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 					if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 						//System.out.println("Normale Zuzahlung....");
 						zm.allefrei = false;
@@ -526,8 +526,8 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );		
 		for(i = 0;i < 4;i++){
-			anzahl[i] = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
-			artdbeh[i] = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(i+8));
+			anzahl[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
+			artdbeh[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+8));
 			preise[i] = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));
 		}
 		xrezgeb = xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
@@ -543,8 +543,8 @@ public class RezTools {
 		
 		for(i = 0; i < 4; i++){
 			/*
-			//System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
-					new Integer(artdbeh[i]).toString()+" / "+
+			//System.out.println(Integer.valueOf(anzahl[i]).toString()+" / "+ 
+					Integer.valueOf(artdbeh[i]).toString()+" / "+
 					preise[i].toString() );
 			*/		
 			if(artdbeh[i] > 0){
@@ -560,7 +560,7 @@ public class RezTools {
 				////System.out.println("test->Einzelpreis "+i+" = "+testpr);
 
 				SystemConfig.hmAdrRDaten.put("<Rproz"+(i+1)+">", dfx.format(testpr) );
-				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", new Integer(anzahl[i]).toString() );
+				SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", Integer.valueOf(anzahl[i]).toString() );
 				
 				endpos = testpr.multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
 				SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", dfx.format(endpos) );
@@ -578,7 +578,7 @@ public class RezTools {
 		}
 		/*****************************************************/
 		if(zm.hausbesuch){ //Hausbesuch
-			Object[] obi = hbNormal(zm,rezwert,rezgeb,new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(64))));
+			Object[] obi = hbNormal(zm,rezwert,rezgeb,Integer.valueOf(((String)Reha.thisClass.patpanel.vecaktrez.get(64))));
 			rezwert = ((BigDecimal)obi[0]);
 			rezgeb = (Double)obi[1];
 		}
@@ -626,10 +626,10 @@ public class RezTools {
 	public static void constructAnfangFreiRezHMap(ZuzahlModell zm,boolean anfang){
 		//System.out.println("*****In Anfang-frei*********");
 		if(anfang){
-			zm.gesamtZahl = new Integer(zm.teil2);
+			zm.gesamtZahl = Integer.valueOf(zm.teil2);
 			//System.out.println("Restliche Behandlungen berechnen = "+zm.gesamtZahl);
 		}else{
-			zm.gesamtZahl = new Integer(zm.teil1);
+			zm.gesamtZahl = Integer.valueOf(zm.teil1);
 			//System.out.println("Beginn der Behandlung berechnen = "+zm.gesamtZahl);
 		}
 
@@ -650,12 +650,12 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",(String)Reha.thisClass.patpanel.vecaktrez.get(2) );		
 		for(i = 0;i < 4;i++){
-			gesanzahl[i] = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
-			anzahl[i] = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
+			gesanzahl[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
+			anzahl[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
 			if(! (anzahl[i] < zm.gesamtZahl)){
-				anzahl[i] = new Integer(zm.gesamtZahl);
+				anzahl[i] = Integer.valueOf(zm.gesamtZahl);
 			}
-			artdbeh[i] = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(i+8));
+			artdbeh[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+8));
 			preise[i] = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));
 		}
 		xrezgeb = xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
@@ -677,8 +677,8 @@ public class RezTools {
 		
 		for(i = 0; i < 4; i++){
 			/*
-			//System.out.println(new Integer(anzahl[i]).toString()+" / "+ 
-					new Integer(artdbeh[i]).toString()+" / "+
+			//System.out.println(Integer.valueOf(anzahl[i]).toString()+" / "+ 
+					Integer.valueOf(artdbeh[i]).toString()+" / "+
 					preise[i].toString() );
 			*/		
 			if(artdbeh[i] > 0){
@@ -712,10 +712,10 @@ public class RezTools {
 		}
 		/*****************************************************/
 		if(zm.hausbesuch){ //Hausbesuch
-			if(zm.gesamtZahl > new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(64)))){
-				zm.gesamtZahl = new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(64))); 
+			if(zm.gesamtZahl > Integer.valueOf(((String)Reha.thisClass.patpanel.vecaktrez.get(64)))){
+				zm.gesamtZahl = Integer.valueOf(((String)Reha.thisClass.patpanel.vecaktrez.get(64))); 
 			}
-			Object[] obi = hbNormal(zm,rezwert,rezgeb,new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(64))));
+			Object[] obi = hbNormal(zm,rezwert,rezgeb,Integer.valueOf(((String)Reha.thisClass.patpanel.vecaktrez.get(64))));
 			rezwert = ((BigDecimal)obi[0]);
 			rezgeb = (Double)obi[1];
 		}
@@ -762,7 +762,7 @@ public class RezTools {
 		for(int i = 0; i < vtage.size();i++){
 			if( ((String)vtage.get(i)).equals(jahr) ){
 				ret[0] = true;
-				ret[1] = new Integer(i);
+				ret[1] = Integer.valueOf(i);
 				break;
 			}
 		}
@@ -773,7 +773,7 @@ public class RezTools {
 		for(int i = 0; i < vtage.size();i++){
 			if(!((String)vtage.get(i)).substring(6).equals(jahr) ){
 				ret[0] = true;
-				ret[1] = new Integer(i);
+				ret[1] = Integer.valueOf(i);
 				ret[2] = maxAnzahl()-(Integer)ret[1];
 				break;
 			}
@@ -784,9 +784,9 @@ public class RezTools {
 		int ret = -1;
 		int test;
 		for(int i = 3; i < 7;i++){
-			test = new Integer(((String)Reha.thisClass.patpanel.vecaktrez.get(i)));
+			test = Integer.valueOf(((String)Reha.thisClass.patpanel.vecaktrez.get(i)));
 			if(test > ret){
-				ret = new Integer(test);
+				ret = Integer.valueOf(test);
 			}
 		}
 		return ret;
@@ -1061,7 +1061,7 @@ public class RezTools {
 								bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 								SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
 								SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
-								SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );
+								SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
 								retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 							}else{
 								SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
@@ -1098,7 +1098,7 @@ public class RezTools {
 									bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 									SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
 									SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
-									SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );								
+									SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );								
 									retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 								}else{
 									SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
@@ -1143,7 +1143,7 @@ public class RezTools {
 								testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
 								bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 								SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
-								SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );							
+								SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );							
 								SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
 								retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 							}else{
@@ -1189,7 +1189,7 @@ public class RezTools {
 							bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 							SystemConfig.hmAdrRDaten.put("<Rhbproz>", dfx.format(testpr.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", dfx.format(bdendrezgeb.doubleValue()));
-							//SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );					
+							//SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );					
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>","----" );
 							SystemConfig.hmAdrRDaten.put("<Rwpreis>","0,00" );						
 							SystemConfig.hmAdrRDaten.put("<Rweganzahl>","----" );
@@ -1266,7 +1266,7 @@ public class RezTools {
 						bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 						SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
 						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
-						SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
 						retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 						/*******************************/
 
@@ -1292,7 +1292,7 @@ public class RezTools {
 							bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 							SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
-							SystemConfig.hmAdrRDaten.put("<Rweganzahl>",new Integer(zm.gesamtZahl).toString() );
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
 							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
 							/*******************************/
 						}else{

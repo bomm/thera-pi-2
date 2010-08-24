@@ -61,8 +61,8 @@ public class PatTools {
 			String zeile2 = "";
 			String zeile3 = "";
 			String branrede = "";
-			int jahrheute = new Integer(DatFunk.sHeute().substring(6));
-			int jahrgeboren = new Integer(geboren.substring(6));
+			int jahrheute = Integer.valueOf(DatFunk.sHeute().substring(6));
+			int jahrgeboren = Integer.valueOf(geboren.substring(6));
 			int ialter = jahrheute - jahrgeboren;
 			
 			

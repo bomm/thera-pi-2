@@ -750,7 +750,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		
 		/*
 		String ret = "<html>"+titel+
-		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		(anz > 0 ? " - <font color='#ff0000'>"+Integer.valueOf(anz).toString()+"<font></html>" : " - <font color='#000000'>"+Integer.valueOf(anz).toString()+"</font>");
 		*/
 		return ret;
 	}
@@ -780,7 +780,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					if( ((Vector)vec.get(i)).get(1) == null){
 						zzbild = 0;
 					}else if(!((Vector)vec.get(i)).get(1).equals("")){
-						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
+						zzbild = Integer.valueOf((String) ((Vector)vec.get(i)).get(1) );
 					}
 					//((Vector)vec.get(i)).set(3, Reha.thisClass.patpanel.imgzuzahl[zzbild]);
 					

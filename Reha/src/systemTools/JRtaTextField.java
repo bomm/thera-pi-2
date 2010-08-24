@@ -95,7 +95,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	/*****************/
 	public JRtaTextField(String type,boolean selectWhenFocus,String gleitkomma,String xalign){
 		super();
-		this.nachkommas = new Integer(gleitkomma.split("\\.")[1]); 
+		this.nachkommas = Integer.valueOf(gleitkomma.split("\\.")[1]); 
 		//setupFormat(nachkommas);
 
 		new JFormattedTextField(createFormatter("#########0.00"));
@@ -713,7 +713,7 @@ class NurStundenDocument extends javax.swing.text.PlainDocument
 			super.insertString(offs, str, a);
 			////System.out.println("Offset: "+offs);
 			text = textField.getText();
-			if (new Integer(text) > 24){
+			if (Integer.valueOf(text) > 24){
 				super.remove(offs, 1);
 				//Toolkit.getDefaultToolkit().beep();
 				return;
@@ -752,7 +752,7 @@ class NurMinutenDocument extends javax.swing.text.PlainDocument
 			super.insertString(offs, str, a);
 			////System.out.println("Offset: "+offs);
 			text = textField.getText();
-			if (new Integer(text) > 59){
+			if (Integer.valueOf(text) > 59){
 				super.remove(offs, 1);
 				//Toolkit.getDefaultToolkit().beep();				
 				return;
@@ -865,7 +865,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==1) {                          // Tage 32-39 unterbinden
 	    if(textComponent.getText().substring(0, 1).equals("3")) {
-	     int tag = new Integer(zeichen).intValue();
+	     int tag = Integer.valueOf(zeichen).intValue();
 	     if(tag>1) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;
@@ -874,7 +874,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==1) {                          // Tag 00 unterbinden
 	    if(textComponent.getText().substring(0, 1).equals("0")) {
-	     int tag = new Integer(zeichen).intValue();
+	     int tag = Integer.valueOf(zeichen).intValue();
 	     if(tag==0) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;
@@ -897,7 +897,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==4) {                         // Monate 13-19 unterbinden
 	    if(textComponent.getText().substring(3, 4).equals("1")) {
-	     int monat = new Integer(zeichen).intValue();
+	     int monat = Integer.valueOf(zeichen).intValue();
 	     if(monat>2) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;
@@ -906,7 +906,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==4) {                         // Monat 00 unterbinden
 	         if(textComponent.getText().substring(3, 4).equals("0")) {
-	     int monat = new Integer(zeichen).intValue();
+	     int monat = Integer.valueOf(zeichen).intValue();
 	     if(monat==0) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;

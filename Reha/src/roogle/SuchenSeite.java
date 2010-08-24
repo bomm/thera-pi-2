@@ -1523,8 +1523,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		String name,nummer;
 		vecWahl.clear();
 
-		//name = new String(schreibeName.getText().trim());
-		//nummer = new String(schreibeNummer.getText().trim().replace("\\", "\\\\") );
+		//name = String.valueOf(schreibeName.getText().trim());
+		//nummer = String.valueOf(schreibeNummer.getText().trim().replace("\\", "\\\\") );
 		////System.out.println("Rezeptnummer = "+nummer);
 
 		for(i=0;i<lang;i++){
@@ -2034,7 +2034,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	}
 	/*****************************************/	
 	private String macheStat(Vector vec,int id,String name,String nummer){
-		String stmt = "";//new String();
+		String stmt = "";//String.valueOf();
 		int gross = vec.size(),i;
 		String rnummer = null;
 		String snummer = null;
@@ -2565,7 +2565,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 					
 				aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
 				setFortschrittSetzen(++ftage);
-				sqlAlt = new String(sqlAkt);
+				sqlAlt = String.valueOf(sqlAkt);
 				sqlAkt = DatFunk.sDatInSQL(aktDatum );
 				}else{
 					aktDatum = DatFunk.sDatPlusTage(aktDatum, 1);
@@ -3220,7 +3220,7 @@ private synchronized int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
 					String st = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
 					"zeit='"+zeit+"'";
 					stmtx.execute(st);
-					//new ExUndHop().setzeStatement(new String(st));
+					//new ExUndHop().setzeStatement(String.valueOf(st));
 					/*
 					try {
 						Thread.sleep(10);
@@ -3457,7 +3457,7 @@ class WorkerTabelle extends SwingWorker<Void,Void>{
 						String st = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
 						"zeit='"+zeit+"'";
 						stmtx.execute(st);
-						//new ExUndHop().setzeStatement(new String(st));
+						//new ExUndHop().setzeStatement(String.valueOf(st));
 						try {
 							Thread.sleep(10);
 						} catch (InterruptedException e) {

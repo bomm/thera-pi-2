@@ -20,7 +20,7 @@ public class GruppenEinlesen{
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/gruppen.ini");
 		//ini = new INIFile("/RehaVerwaltung/ini/gruppen.ini");
 
-		anzahl = new Integer(ini.getStringProperty("Gruppen", "GruppenAnzahl")); 
+		anzahl = Integer.valueOf(ini.getStringProperty("Gruppen", "GruppenAnzahl")); 
 		gruppenNamen = new Vector<String>();
 		gruppenNamen = new Vector<String>();
 		gruppenGueltig = new Vector<Long[]>();
@@ -41,7 +41,7 @@ public class GruppenEinlesen{
 				String rubrik = rubrikName+"_"+j;
 				//System.out.println(rubrik);
 				for(int k = 1;k<=7;k++){//Alle Wochentage
-					int gruppenAmTag = new Integer(ini.getStringProperty(rubrik, "WOTA"+k));
+					int gruppenAmTag = Integer.valueOf(ini.getStringProperty(rubrik, "WOTA"+k));
 					Vector gruppeAmTag = new Vector();
 					for(int l = 1;l<= gruppenAmTag;l++){//einzelne Tage einlesen
 						Vector<Object> gruppenParam = new Vector<Object>();

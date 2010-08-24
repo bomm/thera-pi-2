@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
@@ -515,8 +514,8 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		        document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 		            IDocument.WRITER,
 		            DocumentDescriptor.DEFAULT);
-	        	OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
-	        	OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+	        	OOTools.setzePapierFormat(document, Integer.valueOf(25199), Integer.valueOf(19299));
+	        	OOTools.setzeRaender(document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 	        	hideAllElements();
 		        nativeView.validate();
 		        

@@ -689,7 +689,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		int row = kassentbl.getSelectedRow(); 
 		if(row >= 0){
 			//System.out.println("In HoleText");
-			String sid = new Integer((String) kassentbl.getValueAt(row, 7)).toString();
+			String sid = Integer.valueOf((String) kassentbl.getValueAt(row, 7)).toString();
 			new HoleText(this,sid);
 			ta.setCaretPosition(0);
 			final String xsid = sid;
@@ -728,14 +728,14 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	public void formulareAuswerten(){
 		int row = kassentbl.getSelectedRow(); 
 		if(row >= 0){
-			String sid = new Integer((String) kassentbl.getValueAt(row, 7)).toString();
+			String sid = Integer.valueOf((String) kassentbl.getValueAt(row, 7)).toString();
     		iformular = -1;
     		KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
     		Point pt = jbut[3].getLocationOnScreen();
     		kf.setLocation(pt.x-100,pt.y+25);
     		kf.setModal(true);
     		kf.setVisible(true);
-    		iformular = new Integer(formularid.getText());
+    		iformular = Integer.valueOf(formularid.getText());
     		kf = null;
     		final String xid = sid;
     		if(iformular >= 0){

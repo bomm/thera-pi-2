@@ -620,7 +620,7 @@ public class AbrechnungReha extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				String s1 = new String("#PATSUCHEN");
+				String s1 = String.valueOf("#PATSUCHEN");
 				String s2 = xpatid;
 				PatStammEvent pEvt = new PatStammEvent(getInstance());
 				pEvt.setPatStammEvent("PatSuchen");

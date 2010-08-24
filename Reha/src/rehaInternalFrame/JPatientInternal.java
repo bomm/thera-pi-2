@@ -60,7 +60,7 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 			//ex.printStackTrace();
 		}
 		
-		String s1 = new String("#CLOSING");
+		String s1 = String.valueOf("#CLOSING");
 		String s2 = "";
 		PatStammEvent pEvt = new PatStammEvent(this);
 		pEvt.setPatStammEvent("PatSuchen");

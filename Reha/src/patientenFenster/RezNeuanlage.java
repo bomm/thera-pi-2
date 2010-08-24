@@ -372,7 +372,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					jtf[0].requestFocus();
 				}
 				String[] suchkrit = new String[] {jtf[0].getText().replace("?", ""),jtf[11].getText()};
-				jtf[0].setText(new String(suchkrit[0]));
+				jtf[0].setText(String.valueOf(suchkrit[0]));
 				kassenAuswahl(suchkrit);
 			}
 		});
@@ -397,7 +397,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					jtf[1].requestFocus();
 				}
 				String[] suchkrit = new String[] {jtf[1].getText().replace("?", ""),jtf[12].getText()};
-				jtf[1].setText(new String(suchkrit[0]));
+				jtf[1].setText(String.valueOf(suchkrit[0]));
 				arztAuswahl(suchkrit);
 			}
 		});
@@ -696,7 +696,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		/*********************/		
 		if(e.getActionCommand().contains("leistung") && initReady){
 			int lang = e.getActionCommand().length();
-			doRechnen( new Integer( e.getActionCommand().substring(lang-1 ) ) );
+			doRechnen( Integer.valueOf( e.getActionCommand().substring(lang-1 ) ) );
 			String test = (String)((JRtaComboBox)e.getSource()).getSelectedItem();
 			if(test==null){
 				return;
@@ -894,7 +894,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("arzt")){
 			String[] suchkrit = new String[] {jtf[1].getText().replace("?", ""),jtf[12].getText()};
-			jtf[1].setText(new String(suchkrit[0]));
+			jtf[1].setText(String.valueOf(suchkrit[0]));
 			arztAuswahl(suchkrit);
 		}
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("ktraeger")){
@@ -937,7 +937,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	private void arztAuswahl(String[] suchenach){
 		jtf[2].requestFocus();
-		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {jtf[1],new JRtaTextField("",false),jtf[12]},new String(jtf[1].getText().trim()));
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {jtf[1],new JRtaTextField("",false),jtf[12]},String.valueOf(jtf[1].getText().trim()));
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);
@@ -1182,7 +1182,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	/*********************************/
 	private String[] holePreis(int ivec,int ipreisgruppe){
 		if(ivec > 0){
-			int prid = new Integer((String) this.preisvec.get(ivec).get(this.preisvec.get(ivec).size()-1));
+			int prid = Integer.valueOf((String) this.preisvec.get(ivec).get(this.preisvec.get(ivec).size()-1));
 			Vector xvec = ((Vector)this.preisvec.get(ivec));
 			return new String[] {(String)xvec.get(3),(String)xvec.get(2)};
 		}else{
@@ -1226,7 +1226,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest2)+"', ");
 			sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 			sbuf.append("lastedit='"+Reha.aktUser+"', ");
-			sbuf.append("rezeptart='"+new Integer(jcmb[1].getSelectedIndex()).toString()+"', ");
+			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[1].getSelectedIndex()).toString()+"', ");
 			sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("hausbes='"+(jcb[1].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("arztbericht='"+(jcb[2].isSelected() ? "T" : "F")+"', ");
@@ -1278,17 +1278,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
-			sbuf.append("barcodeform='"+new Integer(jcmb[7].getSelectedIndex()).toString()+"', ");
+			sbuf.append("barcodeform='"+Integer.valueOf(jcmb[7].getSelectedIndex()).toString()+"', ");
 			sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
 			sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
 			
 			if(jcmb[8].getSelectedIndex() > 0){
-				sbuf.append("farbcode='"+new Integer(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
+				sbuf.append("farbcode='"+Integer.valueOf(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
 			}else{
 				sbuf.append("farbcode='-1', ");
 			}
 			////System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
-			Integer izuzahl = new Integer(jtf[13].getText());
+			Integer izuzahl = Integer.valueOf(jtf[13].getText());
 			String szzstatus = "";
 			String unter18 = "F";
 			for(int i = 0; i < 1;i++){
@@ -1411,7 +1411,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			int rezidneu = SqlInfo.holeId("verordn", "diagnose");
 			sbuf.append("update verordn set rez_nr='"+nummer.toUpperCase()+
-					new Integer(reznr).toString()+"', ");
+					Integer.valueOf(reznr).toString()+"', ");
 			sbuf.append("pat_intern='"+jtf[27].getText()+"', ");
 			sbuf.append("patid='"+jtf[26].getText()+"', ");
 			sbuf.append("ktraeger='"+jtf[0].getText()+"', ");
@@ -1432,7 +1432,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest2)+"', ");
 			sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 			sbuf.append("lastedit='"+Reha.aktUser+"', ");
-			sbuf.append("rezeptart='"+new Integer(jcmb[1].getSelectedIndex()).toString()+"', ");
+			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[1].getSelectedIndex()).toString()+"', ");
 			sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("hausbes='"+(jcb[1].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("arztbericht='"+(jcb[2].isSelected() ? "T" : "F")+"', ");
@@ -1494,7 +1494,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			
 	/*******************************************/		
-			Integer izuzahl = new Integer(jtf[13].getText());
+			Integer izuzahl = Integer.valueOf(jtf[13].getText());
 			String unter18 = "F";
 			String szzstatus = "";
 			for(int i = 0; i < 1;i++){
@@ -1516,7 +1516,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				}
 				if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))){
 					////System.out.println("ZuzahlStatus = Patient ist unter 18 also befreit...");
-					String gebtag = DatFunk.sHeute().substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+					String gebtag = DatFunk.sHeute().substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 					long tage = DatFunk.TageDifferenz(DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)) ,gebtag);
 					//System.out.println("Differenz in Tagen = "+tage);
 					//System.out.println("Geburtstag = "+gebtag);
@@ -1541,7 +1541,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("anzahlkm='"+(jtf[25].getText().trim().equals("") ? "0.00" : jtf[25].getText().trim())+"', ");		
 			sbuf.append("befr='"+Reha.thisClass.patpanel.patDaten.get(30)+"', ");
-			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(new Integer(jtf[13].getText())-1 )+"'");
+			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.valueOf(jtf[13].getText())-1 )+"'");
 			sbuf.append("where id='"+Integer.toString(rezidneu)+"'  LIMIT 1");
 			SqlInfo.sqlAusfuehren(sbuf.toString());
 			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[13].getText()+" gespeichert");

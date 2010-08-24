@@ -416,7 +416,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 			}
 			
 			if(cmd.contains("iwahl")){
-				int wahl = new Integer(cmd.substring(cmd.length()-1));
+				int wahl = Integer.valueOf(cmd.substring(cmd.length()-1));
 				setCursor(Reha.thisClass.wartenCursor);
 				String sicon = dateiDialog(Reha.proghome+"icons/");
 				if(! sicon.equals("")){
@@ -457,11 +457,11 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		wert = (unten.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("Patient", new Integer(wert));
+		SystemConfig.hmContainer.put("Patient", Integer.valueOf(wert));
 		inif.setStringProperty("Container", "StarteIn",wert , null);
 		
 		wert = (optimize.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("PatientOpti",new Integer(wert));
+		SystemConfig.hmContainer.put("PatientOpti",Integer.valueOf(wert));
 		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
 
 		int rows = vorlagen.getRowCount();
@@ -477,7 +477,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 				break;
 			}else{
 				formok = true;
-				inif.setStringProperty("Formulare", "PatientFormulareAnzahl",new Integer(rows).toString() , null);				
+				inif.setStringProperty("Formulare", "PatientFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
 			}
 		}
 		if(formok){

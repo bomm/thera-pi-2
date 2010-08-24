@@ -7,7 +7,6 @@ import hauptFenster.UIFSplitPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -1109,7 +1108,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				String s1 = new String("#PATSUCHEN");
+				String s1 = String.valueOf("#PATSUCHEN");
 				String s2 = xpatid;
 				PatStammEvent pEvt = new PatStammEvent(getInstance());
 				pEvt.setPatStammEvent("PatSuchen");

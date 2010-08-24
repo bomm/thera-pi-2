@@ -297,20 +297,20 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		// hier testen ob ohne Rezeptbezug, wenn ja kann der Vector nicht verwendet werden
 		if((! this.reznr.equals("")) && (this.aufrufvon < 1)){
 			name = (String)Reha.thisClass.patpanel.vecaktrez.get(15);
-			arztid = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(16));
+			arztid = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(16));
 		}else if((! this.reznr.equals("")) && (this.aufrufvon == 1)){
 			name = (String)Reha.thisClass.patpanel.patDaten.get(25);
 			try{
-				arztid = new Integer((String)Reha.thisClass.patpanel.patDaten.get(26));
+				arztid = Integer.valueOf((String)Reha.thisClass.patpanel.patDaten.get(26));
 			}catch(java.lang.NumberFormatException ex){
-				arztid = new Integer(-1);
+				arztid = Integer.valueOf(-1);
 			}
 		}else if((this.reznr.equals("")) && (this.aufrufvon < 3)){
 			name = (String)Reha.thisClass.patpanel.patDaten.get(25);
 			try{
-				arztid = new Integer((String)Reha.thisClass.patpanel.patDaten.get(26));
+				arztid = Integer.valueOf((String)Reha.thisClass.patpanel.patDaten.get(26));
 			}catch(java.lang.NumberFormatException ex){
-				arztid = new Integer(-1);
+				arztid = Integer.valueOf(-1);
 			}
 		}else{
 			Vector<String> vec;
@@ -606,7 +606,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		if(!jtf[2].getText().equals("")){
 			rlab[2].setText(jtf[0].getText());
 			if(!jtf[2].getText().equals("")){
-				arztid = new Integer(jtf[2].getText());					
+				arztid = Integer.valueOf(jtf[2].getText());					
 			}else{
 				arztid = -1;
 			}

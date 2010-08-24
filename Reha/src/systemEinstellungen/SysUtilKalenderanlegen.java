@@ -465,7 +465,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				sret = sret + "BELEGT='1' Where DATUM='"+sqldat+"'";
 				////System.out.println(sret);
 				SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
-				snk.setzeStatement(new String(sret));
+				snk.setzeStatement(String.valueOf(sret));
 				try {
 					Thread.sleep(speed);
 				} catch (InterruptedException e) {
@@ -491,7 +491,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			pv.execute();
 			for(i = 1;i<61;i++){
 				
-				String sbehandler = (i<10 ? "0"+new Integer(i).toString()+"BEHANDLER" : new Integer(i).toString()+"BEHANDLER");
+				String sbehandler = (i<10 ? "0"+Integer.valueOf(i).toString()+"BEHANDLER" : Integer.valueOf(i).toString()+"BEHANDLER");
 				String stmtmaske = "select * from masken where behandler = '"+sbehandler+"' ORDER BY art";
 				new HoleMasken(stmtmaske);
 				try {
@@ -540,7 +540,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 			dblaeuft = false;
 			return;
 		}
-		kalTage = (DatFunk.Schaltjahr( new Integer(KalMake.getText())) ? (366) : (365));
+		kalTage = (DatFunk.Schaltjahr( Integer.valueOf(KalMake.getText())) ? (366) : (365));
 		Fortschritt.setMinimum(1);
 		Fortschritt.setMaximum(kalTage*60  );
 		Fortschritt.setStringPainted(true);
@@ -548,7 +548,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		String starttag = "01.01."+KalMake.getText();
 		String stoptag 	= "31.12."+KalMake.getText();
 		//String stoptag 	= "02.01."+KalMake.getText();
-		String akttag =  new String(starttag);
+		String akttag =  String.valueOf(starttag);
 		progress = 0;
 		int i;
 		ProgressVerarbeiten pv = new ProgressVerarbeiten(Fortschritt);
@@ -565,12 +565,12 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 
 				stmt = macheStatement(DatFunk.sDatInSQL(akttag),
 								(ArrayList)((Vector)vecMasken.get(i-1)).get(DatFunk.TagDerWoche(akttag)-1),
-								(i<10 ? "0"+new Integer(i).toString()+"BEHANDLER" :new Integer(i).toString()+"BEHANDLER"),
+								(i<10 ? "0"+Integer.valueOf(i).toString()+"BEHANDLER" :Integer.valueOf(i).toString()+"BEHANDLER"),
 								AZPlan.isSelected());
 				////System.out.println(stmt);
 				SqlInfo.sqlAusfuehren(stmt);
 				//SchreibeNeuenKalender snk = new SchreibeNeuenKalender();
-				//snk.setzeStatement(new String(stmt));
+				//snk.setzeStatement(String.valueOf(stmt));
 				try {
 					Thread.sleep(speed);
 					//Thread.sleep(15);
@@ -598,7 +598,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	private String macheStatement(String sqldat,ArrayList list,String sBehandler,boolean mitmaske){
 		String sret = null;
 		int i,j;
-		int bloecke =new Integer( (String)  ((Vector) list.get(5)).get(0) );
+		int bloecke =Integer.valueOf( (String)  ((Vector) list.get(5)).get(0) );
 		String nummer;
 		if(mitmaske){
 			sret = "Insert into flexkc set ";
@@ -620,7 +620,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				sret = sret + "TD"+ (i+1) + "='" + ((Vector) list.get(3)).get(i) + "', ";			
 				sret = sret + "TE"+ (i+1) + "='" + ((Vector) list.get(4)).get(i) + "', ";
 			}
-			sret = sret + "BELEGT='"+new Integer(bloecke).toString()+"', DATUM='"+sqldat+"' , BEHANDLER='"+sBehandler+"'";
+			sret = sret + "BELEGT='"+Integer.valueOf(bloecke).toString()+"', DATUM='"+sqldat+"' , BEHANDLER='"+sBehandler+"'";
 		}else{
 			//
 			String tstart = SystemConfig.KalenderUmfang[0];
@@ -636,7 +636,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	private String macheStatement2(String sqldat,ArrayList list,String sBehandler,boolean mitmaske){
 		String sret = "";
 		int i,j;
-		int bloecke =new Integer( (String)  ((Vector) list.get(5)).get(0) );
+		int bloecke =Integer.valueOf( (String)  ((Vector) list.get(5)).get(0) );
 		String nummer;
 		if(mitmaske){
 			//sret = "Insert into flexkc set ";
@@ -658,7 +658,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 				sret = sret + "TD"+ (i+1) + "='" + ((Vector) list.get(3)).get(i) + "', ";			
 				sret = sret + "TE"+ (i+1) + "='" + ((Vector) list.get(4)).get(i) + "', ";
 			}
-			sret = sret + "BELEGT='"+new Integer(bloecke).toString()+"', DATUM='"+sqldat+"' , BEHANDLER='"+sBehandler+"'";
+			sret = sret + "BELEGT='"+Integer.valueOf(bloecke).toString()+"', DATUM='"+sqldat+"' , BEHANDLER='"+sBehandler+"'";
 		}else{
 			//
 			String tstart = SystemConfig.KalenderUmfang[0];
@@ -750,11 +750,11 @@ class HoleMaxDatum extends Thread implements Runnable{
 					if(rs.next()){
 						if(rs.getString(1) != null){
 						String datum = rs.getString(1);
-						int altjahr = new Integer(datum.substring(0,4));
-						SysUtilKalenderanlegen.KalBis.setText(new Integer(altjahr).toString());
-						SysUtilKalenderanlegen.KalMake.setText(new Integer(altjahr+1).toString());
-						//SysUtilKalenderanlegen.setJahr(new Integer(altjahr+1).toString());
-						SysUtilKalenderanlegen.setJahr(new Integer(altjahr+1).toString());
+						int altjahr = Integer.valueOf(datum.substring(0,4));
+						SysUtilKalenderanlegen.KalBis.setText(Integer.valueOf(altjahr).toString());
+						SysUtilKalenderanlegen.KalMake.setText(Integer.valueOf(altjahr+1).toString());
+						//SysUtilKalenderanlegen.setJahr(Integer.valueOf(altjahr+1).toString());
+						SysUtilKalenderanlegen.setJahr(Integer.valueOf(altjahr+1).toString());
 
 						}else{
 							String datum = DatFunk.sHeute().substring(6);

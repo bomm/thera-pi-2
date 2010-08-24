@@ -283,14 +283,14 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		for(i=0;i<lang;i++){
 			fach[i] = (String)((ArrayList)SystemConfig.aTerminKalender.get(i).get(0)).get(0);
 			teilnehmer[i] = ((ArrayList<String[]>)SystemConfig.aTerminKalender.get(i).get(1)).get(0);
-			SetName.addItem(new String(fach[i]));
+			SetName.addItem(String.valueOf(fach[i]));
 		}
 		if(erster){
 			SetName.setSelectedIndex(0);
-			SetNeu.setText(new String(fach[0]));
+			SetNeu.setText(String.valueOf(fach[0]));
 		}else{
 			SetName.setSelectedIndex(index);
-			SetNeu.setText(new String(fach[index]));
+			SetNeu.setText(String.valueOf(fach[index]));
 			SetName.setEnabled(true);
 			SetNeu.setEnabled(false);
 		}
@@ -442,7 +442,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 			for(i=0;i<7;i++){
 				set = set+(i>0 ? ","+Spalten[i].getSelectedItem() : Spalten[i].getSelectedItem());
 			}
-			SystemConfig.UpdateIni("Kalender", "AnzahlSets", new Integer(setAnzahl).toString());
+			SystemConfig.UpdateIni("Kalender", "AnzahlSets", Integer.valueOf(setAnzahl).toString());
 			SystemConfig.UpdateIni("Kalender", setAktuellName, setXname);
 			SystemConfig.UpdateIni("Kalender", setInhaltName, set);
 
@@ -470,7 +470,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 			int i,j;
 			int iniSet = 0;
 			String set = "";
-			SystemConfig.UpdateIni("Kalender", "AnzahlSets", new Integer(anzahlSets-1).toString());
+			SystemConfig.UpdateIni("Kalender", "AnzahlSets", Integer.valueOf(anzahlSets-1).toString());
 			lspeichern = true;
 			for(i=0;i<anzahlSets;i++){
 				if(i != aktSet){

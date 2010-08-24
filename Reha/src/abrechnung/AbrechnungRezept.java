@@ -1836,7 +1836,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				abr.titel= Integer.toString(tag)+".Tag";
 				knoten = new JXTTreeTableNode(abr.datum,abr,true);
 				demoTreeTableModel.insertNodeInto(knoten, root, root.getChildCount());
-				testdatum = new String(abr.datum);
+				testdatum = String.valueOf(abr.datum);
 				////System.out.println(testdatum);
 				continue;
 				
@@ -1844,7 +1844,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				abr.unterbrechung = vectage.get(tag-1).get(2);
 				foo = new JXTTreeTableNode("",abr,true);
 				demoTreeTableModel.insertNodeInto(foo, knoten, knoten.getChildCount());
-				testdatum = new String(abr.datum);
+				testdatum = String.valueOf(abr.datum);
 				////System.out.println("In einzelner Funktion "+testdatum);
 				continue;
 			}
@@ -3079,7 +3079,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				abr.titel= Integer.toString(tag)+".Tag";
 				knoten = new JXTTreeTableNode(abr.datum,abr,true);
 				demoTreeTableModel.insertNodeInto(knoten, root, root.getChildCount());
-				testdatum = new String(abr.datum);
+				testdatum = String.valueOf(abr.datum);
 				////System.out.println(testdatum);
 				continue;
 				
@@ -3089,7 +3089,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				}	
 				foo = new JXTTreeTableNode("",abr,true);
 				demoTreeTableModel.insertNodeInto(foo, knoten, knoten.getChildCount());
-				testdatum = new String(abr.datum);
+				testdatum = String.valueOf(abr.datum);
 				////System.out.println("In einzelner Funktion "+testdatum);
 				continue;
 			}

@@ -220,8 +220,8 @@ public class PatFenster extends JInternalFrame {
 	private void DBHoleAlles(String patnummer){
 		Statement stmt = null;
 		ResultSet rs = null;
-		String sstmt = new String();
-;
+		String sstmt = String.valueOf("");
+
 		String stext = "";
 		sstmt = "Select * from pat5 where pat_intern = '"+patnummer+"'";
 		try {

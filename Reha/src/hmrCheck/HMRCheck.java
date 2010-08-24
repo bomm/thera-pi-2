@@ -1,11 +1,11 @@
 package hmrCheck;
 
+import hauptFenster.Reha;
+
 import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
-
-import patientenFenster.RezNeuanlage;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -31,8 +31,14 @@ public class HMRCheck {
 	boolean folgerezept = false;
 	boolean neurezept = false;
 	boolean doppelbehandlung = false;
+	boolean unter18 = false;
 	
 	String[] rezarten = {"Erstverodnung","Folgeverordnung",	"außerhalb des Regelfalles"};
+
+	String[] keinefolgevo = {"EX1a","EX1b","EX1c","WS1a","WS1b","WS1c","WS1d","WS1e",
+			"AT1a","AT1b","AT1c","SB4","ST3"};
+	String[] nurunter18 = {"ZN1a","ZN1b","ZN1c","EN1","PS1"};
+	String[] nurueber18 = {"ZN2a","ZN2b","ZN2c","EN2"};
 	
 	public HMRCheck(String indi,int idiszi,Vector<Integer> vecanzahl,Vector<String>vecpositionen,
 			int xpreisgruppe,Vector<Vector<String>> xpreisvec,int xrezeptart,String xreznr,String xrezdatum){
@@ -45,6 +51,7 @@ public class HMRCheck {
 		//rezanlage = xrezanlage;
 		rezeptart =xrezeptart;
 		reznummer = xreznr;
+		unter18 = DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)));
 		if(reznummer.equals("")){
 			neurezept = true;
 		}
@@ -100,18 +107,30 @@ public class HMRCheck {
 				testok = false;
 			}
 		}
-		//Wenn im Indikationsschlüssel "1" enthalten ist - außer ZNS - dann keine Folgeverordnung möglich
-		if( (indischluessel.indexOf("1")>=0) && 
-				(indischluessel.indexOf("ZN") < 0) &&
-				(indischluessel.indexOf("LY") < 0) &&
-				(rezeptart > 0) ){
+		//Checken ob Indischlüssel in der Liste der Schlüssel ohne Folgeverordnung enthalten ist
+		if( (Arrays.asList(keinefolgevo).contains(indischluessel)) && (rezeptart > 0) ){
 			fehlertext = fehlertext + String.valueOf( (fehlertext.length() <= 0 ? "<html>" : "")+
 					"<b>Bei Indikationsschlüssel "+indischluessel+" ist keine<br><font color='#ff0000'>"+
 					rezarten[rezeptart]+
 					"</font> erlaubt!!</b><br><br>");
 			testok = false;
-			
 		}
+		//Hier der Check ob für Kinder ein Erwachsenen-Indischlüssel verwendet wurde z.B. ZN2a
+		if( (unter18) && (Arrays.asList(nurueber18).contains(indischluessel)) ){
+			fehlertext = fehlertext + String.valueOf( (fehlertext.length() <= 0 ? "<html>" : "")+
+					"<b>Der Indikationsschlüssel "+indischluessel+" ist nur bei <br><font color='#ff0000'>"+
+					"Erwachsenen über 18 Jahren"+
+					"</font> erlaubt!!</b><br><br>");
+			testok = false;
+		//Hier der Check ob für Erwachsene ein Kinder-Indischlüssel verwendet wurde z.B. ZN1a
+		}else if((!unter18) && (Arrays.asList(nurunter18).contains(indischluessel))){
+			fehlertext = fehlertext + String.valueOf( (fehlertext.length() <= 0 ? "<html>" : "")+
+					"<b>Der Indikationsschlüssel "+indischluessel+" ist nur bei <br><font color='#ff0000'>"+
+					"Kindern und Jugendlichen bis 18 Jahren"+
+					"</font> erlaubt!!</b><br><br>");
+			testok = false;
+		}
+		
 		try{
 			if(positionen.size() >= 2){
 				if(positionen.get(0).equals(positionen.get(1))){
@@ -209,7 +228,7 @@ public class HMRCheck {
 		return meldung;
 		
 	}
-
+	/*
 	private void showDialog(boolean vorrangig,String heilmittel,String hmpos,String[] positionen){
 		String meldung = "<html>"+"Bei dem Indikationsschlüssel <b><font color='#ff0000'>"+indischluessel+"</font></b> ist das "+(vorrangig ? "vorrangige " : "ergänzende")+
 		" Heilmittel<br><br>--> <b><font color='#ff0000'>"+heilmittel+"</font></b> <-- nicht erlaubt!<br><br><br>"+
@@ -218,6 +237,7 @@ public class HMRCheck {
 		JOptionPane.showMessageDialog(null, meldung);
 		
 	}
+	*/
 	/************************/
 	private String getErlaubteHeilmittel(String[] heilmittel){
 		StringBuffer buf = new StringBuffer();

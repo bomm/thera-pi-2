@@ -10,7 +10,7 @@ public class StringTools {
 			return "";
 		}
 
-		String test = new String(string.trim());
+		String test = String.valueOf(string.trim());
 		String neuString = "";
 		try{
 		for(int y = 0; y < 1; y++){
@@ -186,7 +186,7 @@ public class StringTools {
 		}else{
 			int zahl;
 			try {
-				zahl = new Integer(string.trim());
+				zahl = Integer.valueOf(string.trim());
 			}catch(NumberFormatException ex){
 				zahl = -1;
 			}

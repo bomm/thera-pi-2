@@ -236,7 +236,7 @@ public class BlockHandling {
 			datenfeld.setFeld(kollege,0,block,alteDaten[0]);
 			datenfeld.setFeld(kollege,1,block,alteDaten[1]);
 			datenfeld.setFeld(kollege,2,block,alteDaten[2]);
-			datenfeld.setFeld(kollege,3,block,new Integer(dummy).toString());
+			datenfeld.setFeld(kollege,3,block,Integer.valueOf(dummy).toString());
 			String neueEndzeit = ZeitFunk.MinutenZuZeit((int) (ZeitFunk.MinutenSeitMitternacht(alteDaten[2])+dummy) );
 			datenfeld.setFeld(kollege,4,block,neueEndzeit);
 			//Blockzahl ermitteln und dann neuen Block einf�gen

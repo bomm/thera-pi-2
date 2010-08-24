@@ -581,7 +581,7 @@ public class Umsaetze extends JXPanel{
 			Object aColumnObj = xColumns.getByIndex(i);
 			xPropSet = (com.sun.star.beans.XPropertySet)
 			UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, aColumnObj);
-			xPropSet.setPropertyValue("Width", new Integer(width));
+			xPropSet.setPropertyValue("Width", Integer.valueOf(width));
 		}
 	}
 	private void doColTextAlign(ISpreadsheetDocument spreadsheetDocument, int col_first,int col_last,int col_textalign) throws NoSuchElementException, WrappedTargetException, IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
@@ -669,7 +669,7 @@ public class Umsaetze extends JXPanel{
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
 		xPropSet.setPropertyValue( "CharWeight", charweight );
 		/*
-		xProps.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
+		xProps.setPropertyValue("CharFontStyleName", String.valueOf("Times New Roman"));
 		xProps.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
 		xProps.setPropertyValue("CharHeight", new Float(12));
 		xText.insertString(xSentenceCursor, str_text, false);

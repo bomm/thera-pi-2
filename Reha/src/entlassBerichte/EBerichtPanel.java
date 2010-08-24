@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -46,7 +45,6 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.therapi.reha.patient.LadeProg;
-
 
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;

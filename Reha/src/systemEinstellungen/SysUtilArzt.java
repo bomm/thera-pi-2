@@ -401,11 +401,11 @@ private JPanel getKnopfPanel(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
 		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		wert = (unten.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("Arzt", new Integer(wert));
+		SystemConfig.hmContainer.put("Arzt", Integer.valueOf(wert));
 		inif.setStringProperty("Container", "StarteIn",wert , null);
 		
 		wert = (optimize.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("ArztOpti",new Integer(wert));
+		SystemConfig.hmContainer.put("ArztOpti",Integer.valueOf(wert));
 		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
 
 		int rows = vorlagen.getRowCount();
@@ -421,7 +421,7 @@ private JPanel getKnopfPanel(){
 				break;
 			}else{
 				formok = true;
-				inif.setStringProperty("Formulare", "ArztFormulareAnzahl",new Integer(rows).toString() , null);				
+				inif.setStringProperty("Formulare", "ArztFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
 			}
 		}
 		if(formok){
@@ -431,7 +431,7 @@ private JPanel getKnopfPanel(){
 			}
 		}
 		rows = gruppen.getRowCount();
-		inif.setStringProperty("ArztGruppen", "AnzahlGruppen",new Integer(rows).toString() , null);		
+		inif.setStringProperty("ArztGruppen", "AnzahlGruppen",Integer.valueOf(rows).toString() , null);		
 		for(int i = 0;i<rows;i++){
 			inif.setStringProperty("ArztGruppen", "Gruppe"+(i+1),(String)gruppen.getValueAt(i, 0) , null);
 		}

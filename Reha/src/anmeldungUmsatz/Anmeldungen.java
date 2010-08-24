@@ -297,7 +297,7 @@ public class Anmeldungen extends JXPanel{
 			@Override
 			protected Void doInBackground() throws Exception {
 				//System.out.println("Suche Patient:"+xpatid+" und Rezept:"+xreznum);
-				String s1 = new String("#PATSUCHEN");
+				String s1 = String.valueOf("#PATSUCHEN");
 				String s2 = xpatid;
 				PatStammEvent pEvt = new PatStammEvent(getInstance());
 				pEvt.setPatStammEvent("PatSuchen");

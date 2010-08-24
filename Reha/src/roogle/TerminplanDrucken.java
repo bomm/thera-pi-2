@@ -506,7 +506,7 @@ SuchenSeite eltern;
 	         // Lesevorgang
 	         fr.read(temp);
 	         // Umwandlung des char-Arrays in einen String
-	         gelesen = new String(temp);
+	         gelesen = String.valueOf(temp);
 	         text = gelesen;
 	         //Ausgabe des Strings
 	         ////System.out.println(gelesen);

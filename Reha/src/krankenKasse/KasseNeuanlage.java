@@ -250,7 +250,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			for(int i = 0; i < anzahlf;i++){
 				jtf[fedits[i]].setText((String) felder.get(ffelder[i]) );
 			}
-			int preisG = new Integer((String) felder.get(1))-1 ;
+			int preisG = Integer.valueOf((String) felder.get(1))-1 ;
 			//System.out.println("In Preisgruppe einstellen Preisgruppe = "+preisG);
 			tarifGruppe.setSelectedIndex((preisG >= 0 ? preisG : 0));
 		}

@@ -261,7 +261,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
     		kf.setModal(true);
     		kf.setVisible(true);
     		if(!formularid.getText().equals("")){
-        		iformular = new Integer(formularid.getText());    			
+        		iformular = Integer.valueOf(formularid.getText());    			
     		}
     		kf = null;
     		if(iformular >= 0){
@@ -745,7 +745,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 		/*
 		String ret = "<html>"+titel+
-		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		(anz > 0 ? " - <font color='#ff0000'>"+Integer.valueOf(anz).toString()+"<font></html>" : " - <font color='#000000'>"+Integer.valueOf(anz).toString()+"</font>");
 		*/
 		return ret;
 	}
@@ -778,7 +778,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					if( ((Vector)vec.get(i)).get(1) == null){
 						zzbild = 0;
 					}else if(!((Vector)vec.get(i)).get(1).equals("")){
-						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
+						zzbild = Integer.valueOf((String) ((Vector)vec.get(i)).get(1) );
 					}
 					if(((Vector)vec.get(i)).get(5).equals("T")){
 						rezstatus = 1;
@@ -940,7 +940,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					tvec.add(String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
 					if(i==0){
 						SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));						
 					}
@@ -1006,9 +1006,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			int ieinzel = terdat.length;
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					tvec.add(String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
 				}else{
-					tvec.add(new String(terdat[y]));					
+					tvec.add(String.valueOf(terdat[y]));					
 				}
 			}
 			retvec.add((Vector<String>)tvec.clone());
@@ -1090,12 +1090,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
-					tvec.add(new String((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					tvec.add(String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
 					if(i==0){
 						SystemConfig.hmAdrRDaten.put("<Rerstdat>",String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));						
 					}
 				}else{
-					tvec.add(new String(terdat[y]));					
+					tvec.add(String.valueOf(terdat[y]));					
 				}
 			}
 			dtermm.addRow((Vector)tvec.clone());
@@ -1555,7 +1555,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 				aktTerminBuffer.remove(currow);
 				
-				currow = TableTool.loescheRow(tabaktrez, new Integer(currow));
+				currow = TableTool.loescheRow(tabaktrez, Integer.valueOf(currow));
 				int uebrig = tabaktrez.getRowCount();
 				
 				anzahlRezepte.setText("Anzahl Rezepte: "+Integer.toString(uebrig));
@@ -2154,7 +2154,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
 		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)Reha.thisClass.patpanel.vecaktrez.get(1)+"*");
 		//SystemConfig.hmAdrRDaten.put("<Bcode>","*"+"KG500000"+"*");
-		int iurl = new Integer((String)Reha.thisClass.patpanel.vecaktrez.get(46));
+		int iurl = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(46));
 		String url = SystemConfig.rezBarCodForm.get((iurl < 0 ? 0 : iurl));
 		SystemConfig.hmAdrRDaten.put("<Bzu>",StringTools.fuelleMitZeichen(
 				SystemConfig.hmAdrRDaten.get("<Rendbetrag>"), " ", true, 5));
@@ -2191,7 +2191,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			rezTest.setVisible(true);
 			rezTest.dispose();
 			//System.out.println("Rez unterbrechung geschlossen - Ergebnis = "+dummyLabel.getText());
-			ret = new String(dummyLabel.getText());
+			ret = String.valueOf(dummyLabel.getText());
 			testPan.dummylab = null;
 			testPan = null;
 			rezTest = null;

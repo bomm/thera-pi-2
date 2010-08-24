@@ -61,9 +61,9 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 			//System.out.println("Port "+port+" wurde nicht gefunden");
 		}
 		String[] params = SystemConfig.hmGeraete.get(port);
-		baud = new Integer(params[0]);
-		bits = new Integer(params[1]);
-		stopbit = new Integer(params[3]);
+		baud = Integer.valueOf(params[0]);
+		bits = Integer.valueOf(params[1]);
+		stopbit = Integer.valueOf(params[3]);
 		if(params[2].equals("EVEN")){
 			parity = SerialPort.PARITY_EVEN;
 		}else if(params[2].equals("ODD")){

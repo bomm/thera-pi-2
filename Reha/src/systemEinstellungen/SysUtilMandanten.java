@@ -541,12 +541,12 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
 		int AnzahlMandanten = inif.getIntegerProperty("TheraPiMandanten", "AnzahlMandanten")+1;
 		//int AnzahlMandanten = mandant.getItemCount()+1;
-		inif.setStringProperty("TheraPiMandanten", "AnzahlMandanten",new Integer(AnzahlMandanten).toString(),null);
+		inif.setStringProperty("TheraPiMandanten", "AnzahlMandanten",Integer.valueOf(AnzahlMandanten).toString(),null);
 		inif.setStringProperty("TheraPiMandanten", "MAND-IK"+AnzahlMandanten,neuik,null);
 		inif.setStringProperty("TheraPiMandanten", "MAND-NAME"+AnzahlMandanten,neuname,null);
 		if(defman.isSelected()){
 			inif.setStringProperty("TheraPiMandanten", "AuswahlImmerZeigen","1",null);
-			inif.setStringProperty("TheraPiMandanten", "DefaultMandant",new Integer(AnzahlMandanten).toString(),null);
+			inif.setStringProperty("TheraPiMandanten", "DefaultMandant",Integer.valueOf(AnzahlMandanten).toString(),null);
 		}else{
 			inif.setStringProperty("TheraPiMandanten", "AuswahlImmerZeigen","0",null);			
 		}

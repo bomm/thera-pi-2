@@ -445,7 +445,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			sqlcmd = "delete from bericht2ktl where berichtid='"+berichtid+"'";
 			new ExUndHop().setzeStatement(sqlcmd);
 			
-			currow = TableTool.loescheRow(tabbericht, new Integer(currow));
+			currow = TableTool.loescheRow(tabbericht, Integer.valueOf(currow));
 			int uebrig = tabbericht.getRowCount();
 			
 			anzahlGutachten.setText("Anzahl Gutachten: "+Integer.toString(uebrig));

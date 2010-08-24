@@ -249,7 +249,7 @@ public class PatientHauptLogic {
 						@Override
 						protected Void doInBackground() throws Exception {
 							if(! formularid.getText().equals("") ){
-								iformular = new Integer(formularid.getText());
+								iformular = Integer.valueOf(formularid.getText());
 								if(iformular >=0){
 									String sdatei = formular.get(iformular);
 									OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+sdatei,null);

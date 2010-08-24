@@ -35,6 +35,6 @@ public class SystemFarben {
 	public static Color farbenErstellen(String farbe){
 		//int[] farbeAusRgbString = {0,0,0};
 		String[] sfarbe = farbe.split(",");
-		return new Color(new Integer(sfarbe[0]),new Integer(sfarbe[1]),new Integer(sfarbe[2]));
+		return new Color(Integer.valueOf(sfarbe[0]),Integer.valueOf(sfarbe[1]),Integer.valueOf(sfarbe[2]));
 	}
 }

@@ -328,7 +328,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		return jContentPane;
 	}
 	public void sucheAbfeuern(){
-		String s1 = new String("#PATSUCHEN");
+		String s1 = String.valueOf("#PATSUCHEN");
 		String s2 = (String) jtable.getValueAt(jtable.getSelectedRow(), 3);
 		setDetails(s1,s2) ;
 		PatStammEvent pEvt = new PatStammEvent(SuchenDialog.this);
@@ -337,7 +337,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		PatStammEventClass.firePatStammEvent(pEvt);		
 	}
 	public void sucheBeenden(){
-		String s1 = new String("#SUCHENBEENDEN");
+		String s1 = String.valueOf("#SUCHENBEENDEN");
 		String s2 = (String) "";
 		setDetails(s1,s2) ;
 		PatStammEvent pEvt = new PatStammEvent(SuchenDialog.this);

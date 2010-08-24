@@ -426,7 +426,7 @@ private KVKWrapper kvw;
 								name.contains("bef_dat") ||
 								name.contains("bef_ab") ||
 								name.contains("er_dat")){
-							String datum = new String((String)felder.get(ffelder[i]));
+							String datum = String.valueOf((String)felder.get(ffelder[i]));
 							if(datum.trim().length() > 0){
 								////System.out.println("Datum w�re gewesen->"+datum+" L�nge->"+datum.trim().length());
 								jtf[fedits[i]].setText(DatFunk.sDatInDeutsch(datum) );								
@@ -588,9 +588,9 @@ private KVKWrapper kvw;
 				JOptionPane.showMessageDialog(null,"Fehler beim Bezug einer neuen Patientennummer\nNeustart des Programmes vermutlich erforderlich");
 				return;
 			}
-			globPat_intern = Integer.toString(patintern); //new Integer(patintern).toString();
+			globPat_intern = Integer.toString(patintern); //Integer.valueOf(patintern).toString();
 			buf.append(",anl_datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
-			buf.append(",pat_intern='"+globPat_intern +"'"); // where id='"+new Integer(neuid).toString()+"'");
+			buf.append(",pat_intern='"+globPat_intern +"'"); // where id='"+Integer.valueOf(neuid).toString()+"'");
 			spatintern = Integer.toString(patintern);
 		}
 		SqlInfo.sqlAusfuehren(buf.toString());
@@ -611,7 +611,7 @@ private KVKWrapper kvw;
 		final String xrez = rez_num;
 		new Thread(){
 			public void run(){
-				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, new String(globPat_intern));
+				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, String.valueOf(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				//System.out.println("Es wirde die ArztListe gespeichert.....");
 				finalise();
@@ -1698,7 +1698,7 @@ private KVKWrapper kvw;
     		kf.setLocation(pt.x-100,pt.y+25);
     		kf.setModal(true);
     		kf.setVisible(true);
-    		iformular = new Integer(formularid.getText());
+    		iformular = Integer.valueOf(formularid.getText());
     		kf = null;
     		final String xid = sid;
     		if(iformular >= 0){

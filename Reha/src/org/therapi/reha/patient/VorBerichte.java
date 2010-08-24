@@ -259,7 +259,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 		int row = tabbericht.getSelectedRow();
 		int altid = -1;
 		if(row >=0){
-			altid = new Integer((String)tabbericht.getValueAt(row,0));
+			altid = Integer.valueOf((String)tabbericht.getValueAt(row,0));
 			clazz.vorberichtid = altid;
 			clazz.vorberichtdiagnose = diagnoseuebernahme.isSelected();
 		}

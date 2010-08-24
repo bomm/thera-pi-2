@@ -337,7 +337,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 				for(int i = 0;i<anz;i++){
 					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
 					if(i==0){
-						holeTbText( new Integer((String)((Vector)vec.get(i)).get(2)) );
+						holeTbText( Integer.valueOf((String)((Vector)vec.get(i)).get(2)) );
 					}
 				}
 				textblock.setRowSelectionInterval(0, 0);
@@ -353,7 +353,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 				for(int i = 0;i<anz;i++){
 					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
 					if(i==0){
-						holeTbText( new Integer((String)((Vector)vec.get(i)).get(2)) );
+						holeTbText( Integer.valueOf((String)((Vector)vec.get(i)).get(2)) );
 					}
 				}
 				textblock.setRowSelectionInterval(0, 0);
@@ -381,7 +381,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 						var = var+test;
 						if(test.equals("^")){
 							if(!var.equals("^CRLF^")){
-								tbvars.add(new String(var));								
+								tbvars.add(String.valueOf(var));								
 							}
 							start = false;
 							var = "";
@@ -433,7 +433,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 				return;
 			}
 			//int testeid1 = textblock.convertRowIndexToModel(row);
-			int testeid2 = new Integer((String)textblock.getValueAt(row, 2));
+			int testeid2 = Integer.valueOf((String)textblock.getValueAt(row, 2));
 			if(testeid2 != akttbid){
 				long zeit = System.currentTimeMillis();
 				while( akttbid != testeid2 ){
@@ -470,8 +470,8 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			}else{
 				
 				String sblock = (String) textblock.getValueAt(textblock.getSelectedRow(), 0);
-				int block = new Integer(sblock.substring(0,1))-1;
-				abr.schreibeTextBlock(block,new String(tbtext.getText()) );
+				int block = Integer.valueOf(sblock.substring(0,1))-1;
+				abr.schreibeTextBlock(block,String.valueOf(tbtext.getText()) );
 				incheckundstart = false;
 				inholetext = false;
 				FensterSchliessen("null");
@@ -488,8 +488,8 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			repaint();
 			if(!jtfrueck.getText().equals("")){
 				String sblock = (String) textblock.getValueAt(textblock.getSelectedRow(), 0);
-				int block = new Integer(sblock.substring(0,1))-1;
-				abr.schreibeTextBlock(block,new String(jtfrueck.getText()) );
+				int block = Integer.valueOf(sblock.substring(0,1))-1;
+				abr.schreibeTextBlock(block,String.valueOf(jtfrueck.getText()) );
 				incheckundstart = false;
 				inholetext = false;
 				FensterSchliessen("");
@@ -505,8 +505,8 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		private String macheWhereKlausel(String praefix,String test,String[] suchein){
 			String ret = praefix;
 			String cmd = test;
-			cmd = new String(cmd.replaceAll("   ", " "));
-			cmd = new String(cmd.replaceAll("  ", " "));
+			cmd = String.valueOf(cmd.replaceAll("   ", " "));
+			cmd = String.valueOf(cmd.replaceAll("  ", " "));
 			// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld da� er nix finder!!!
 			String[] felder = suchein;
 			String[] split = cmd.split(" ");
@@ -597,7 +597,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 								@Override
 								protected Void doInBackground() throws Exception {
 									inholetext = true;
-									holeTbText(new Integer((String)textblock.getValueAt(ix, 2)));
+									holeTbText(Integer.valueOf((String)textblock.getValueAt(ix, 2)));
 									return null;
 								}
 		                	}.execute();

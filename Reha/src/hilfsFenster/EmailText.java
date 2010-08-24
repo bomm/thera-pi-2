@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -113,7 +112,7 @@ public class EmailText implements KeyListener, ActionListener, FocusListener{
 	         // Lesevorgang
 	         fr.read(temp);
 	         // Umwandlung des char-Arrays in einen String
-	         gelesen = new String(temp);
+	         gelesen = String.valueOf(temp);
 	         text = gelesen;
 	         //Ausgabe des Strings
 	         ////System.out.println(gelesen);

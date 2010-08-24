@@ -110,7 +110,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==1) {                          // Tage 32-39 unterbinden
 	    if(textComponent.getText().substring(0, 1).equals("3")) {
-	     int tag = new Integer(zeichen).intValue();
+	     int tag = Integer.valueOf(zeichen).intValue();
 	     if(tag>1) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;
@@ -119,7 +119,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==1) {                          // Tag 00 unterbinden
 	    if(textComponent.getText().substring(0, 1).equals("0")) {
-	     int tag = new Integer(zeichen).intValue();
+	     int tag = Integer.valueOf(zeichen).intValue();
 	     if(tag==0) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;
@@ -142,7 +142,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==4) {                         // Monate 13-19 unterbinden
 	    if(textComponent.getText().substring(3, 4).equals("1")) {
-	     int monat = new Integer(zeichen).intValue();
+	     int monat = Integer.valueOf(zeichen).intValue();
 	     if(monat>2) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;
@@ -151,7 +151,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   }
 	   if(offset==4) {                         // Monat 00 unterbinden
 	         if(textComponent.getText().substring(3, 4).equals("0")) {
-	     int monat = new Integer(zeichen).intValue();
+	     int monat = Integer.valueOf(zeichen).intValue();
 	     if(monat==0) {
 	      //Toolkit.getDefaultToolkit().beep();
 	      return;

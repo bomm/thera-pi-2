@@ -3,7 +3,6 @@ package dialoge;
 import hauptFenster.Reha;
 
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

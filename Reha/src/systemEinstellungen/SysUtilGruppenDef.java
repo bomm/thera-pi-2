@@ -697,7 +697,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		}else{
 			dDatum = new Date(anz_milli);
 		}
-		s = new String(df.format(dDatum));
+		s = String.valueOf(df.format(dDatum));
 		s = s.substring(0,s.indexOf( ' ' )); 
 		if(iAktuell == 0){
 			gueltig.setText("gültig ab: "+s);
@@ -713,7 +713,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		
 		INIFile ini = new INIFile(gruppeninidat);
 		int anzahl = SystemConfig.oGruppen.gruppenNamen.size()+1;
-		ini.setStringProperty("Gruppen", "GruppenAnzahl", new Integer(anzahl).toString(), null);
+		ini.setStringProperty("Gruppen", "GruppenAnzahl", Integer.valueOf(anzahl).toString(), null);
 		ini.setStringProperty("Gruppen", "GruppenName"+anzahl,neuGruppenName , null);
 		ini.setStringProperty("Gruppen", "Gruppe"+anzahl+"NeuAb",neuGruppenGueltigAb , null);
 		ini.setStringProperty("Gruppen", "Gruppe"+anzahl+"AltBis",DatFunk.sDatPlusTage(neuGruppenGueltigAb, -1) , null);
@@ -769,11 +769,11 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		//System.out.println("Sektion = "+sektion);
 		itag = itag+1;
 		INIFile ini = new INIFile(gruppeninidat);
-		ini.setStringProperty(sektion, "WOTA"+itag, new Integer(jTblGruppen.getRowCount()).toString(), null);
+		ini.setStringProperty(sektion, "WOTA"+itag, Integer.valueOf(jTblGruppen.getRowCount()).toString(), null);
 		ini.setStringProperty(sektion, "TA"+itag+"GR"+(row+1), plan1+"-"+plan2, null);
 		ini.setStringProperty(sektion, "TA"+itag+"ZE"+(row+1),druck, null);
 		ini.setStringProperty(sektion, "TA"+itag+"TX"+(row+1),text, null);
-		ini.setStringProperty(sektion, "TA"+itag+"DA"+(row+1),new Integer(dauer).toString(), null);
+		ini.setStringProperty(sektion, "TA"+itag+"DA"+(row+1),Integer.valueOf(dauer).toString(), null);
 		ini.save();
 	}
 	private void loescheTermin(int row){
@@ -787,7 +787,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).remove(row);
 		itag = itag+1;
 		INIFile ini = new INIFile(gruppeninidat);
-		ini.setStringProperty(sektion, "WOTA"+itag, new Integer(jTblGruppen.getRowCount()).toString(), null);
+		ini.setStringProperty(sektion, "WOTA"+itag, Integer.valueOf(jTblGruppen.getRowCount()).toString(), null);
 		for(int i = 0;i<jTblGruppen.getRowCount();i++){
 			String zeit1 = (String)jTblGruppen.getValueAt(i,2);
 			String zeit2 = (String)jTblGruppen.getValueAt(i,3);
@@ -796,7 +796,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			ini.setStringProperty(sektion, "TA"+itag+"ZE"+(i+1),druckzeit, null);
 			String text = (String)jTblGruppen.getValueAt(i,0);
 			ini.setStringProperty(sektion, "TA"+itag+"TX"+(i+1),text, null);
-			String dauer = new Integer((Integer)jTblGruppen.getValueAt(i,4)).toString();
+			String dauer = Integer.valueOf((Integer)jTblGruppen.getValueAt(i,4)).toString();
 			ini.setStringProperty(sektion, "TA"+itag+"DA"+(i+1),dauer, null);
 		}
 		ini.save();
@@ -855,7 +855,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		
 		INIFile ini = new INIFile(gruppeninidat);
 		int neuzahl = ((Vector)SystemConfig.oGruppen.gruppenNamen).size();
-		ini.setStringProperty("Gruppen", "GruppenAnzahl",new Integer(neuzahl).toString(),null);
+		ini.setStringProperty("Gruppen", "GruppenAnzahl",Integer.valueOf(neuzahl).toString(),null);
 		for(int i = 0;i<neuzahl;i++){
 			String gname = (String) ((Vector)SystemConfig.oGruppen.gruppenNamen).get(i); 
 			ini.setStringProperty("Gruppen", "GruppenName"+(i+1),gname.trim() , null);
@@ -887,7 +887,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		for(int i = 0;i<7;i++){
 			int anzahl = ((Vector)vec.get(i)).size();
 			//System.out.println("Anzahl Termine am Tag "+(i+1)+" = "+anzahl);
-			ini.setStringProperty(sektion, "WOTA"+(i+1), new Integer(anzahl).toString(),null);
+			ini.setStringProperty(sektion, "WOTA"+(i+1), Integer.valueOf(anzahl).toString(),null);
 			for(int v = 0;v<anzahl;v++){
 				int anzahl2 = ((Vector)((Vector)vec.get(i)).get(v)).size();
 				String szeit1 = ZeitFunk.MinutenZuZeit( new Long((Long) ((Vector)((Vector)vec.get(i)).get(v)).get(0) ).intValue() );

@@ -72,7 +72,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 		tage[6] = sonntag;		
 		range = new JRtaTextField("ZAHLEN",true);
 		range.setPreferredSize(new Dimension(70,20));
-		range.setText(new Integer(SystemConfig.RoogleZeitraum).toString());
+		range.setText(Integer.valueOf(SystemConfig.RoogleZeitraum).toString());
 		for(int i = 0;i<7;i++){
 			tage[i].setSelected(SystemConfig.RoogleTage[i]);
 		}
@@ -191,7 +191,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 			SystemConfig.RoogleZeiten.put("LO", ((String)zeiten[3].getSelectedItem()));
 			SystemConfig.RoogleZeiten.put("SP", ((String)zeiten[4].getSelectedItem()));			
 			ini.save();
-			SystemConfig.RoogleZeitraum = new Integer(szeit);
+			SystemConfig.RoogleZeitraum = Integer.valueOf(szeit);
 
 		}
 		if(e.getActionCommand().equals("abbruch")){

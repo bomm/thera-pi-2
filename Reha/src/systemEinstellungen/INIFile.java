@@ -187,7 +187,7 @@ public final class INIFile
                 if (objProp != null)
                 {
                     strVal = objProp.getPropValue();
-                    if (strVal != null) intRet = new Integer(strVal);
+                    if (strVal != null) intRet = Integer.valueOf(strVal);
                 }
             }
             catch (NumberFormatException NFExIgnore)

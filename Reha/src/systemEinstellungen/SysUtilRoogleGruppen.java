@@ -325,11 +325,11 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			}
 			
 			String inigruppe = "",inimitglied="",inianzahl="",iniakt="";
-			inianzahl = (!lneu ? new Integer(jcomboWahl.getItemCount()).toString() : new Integer(jcomboWahl.getItemCount()+1).toString() );
+			inianzahl = (!lneu ? Integer.valueOf(jcomboWahl.getItemCount()).toString() : Integer.valueOf(jcomboWahl.getItemCount()+1).toString() );
 			////System.out.println(inianzahl);
 			iniakt = (lneu ? 
-						new Integer( new Integer(inianzahl)).toString() :  
-						new Integer( jcomboWahl.getSelectedIndex()+1).toString() );
+						Integer.valueOf( Integer.valueOf(inianzahl)).toString() :  
+						Integer.valueOf( jcomboWahl.getSelectedIndex()+1).toString() );
 			for(i = 0; i < RGmembers.getRowCount();i++){
 				if(i==0){
 					inimitglied = inimitglied+RGmembers.getValueAt(i,0);
@@ -338,13 +338,13 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				}
 			}
 			if(lneu){
-				SystemConfig.UpdateIni("Kalender", "RoogleAnzahlGruppen", new Integer(inianzahl).toString());
+				SystemConfig.UpdateIni("Kalender", "RoogleAnzahlGruppen", Integer.valueOf(inianzahl).toString());
 			}
 			SystemConfig.UpdateIni("Kalender", "RoogleNameGruppen"+iniakt, setXname);
 			SystemConfig.UpdateIni("Kalender", "RoogleFelderGruppen"+iniakt, inimitglied);
 			SystemConfig.RoogleGruppen();
 			if(lneu){
-				comboFuellen(new Integer(iniakt)-1);
+				comboFuellen(Integer.valueOf(iniakt)-1);
 			}else{
 				comboFuellen(iaktItem);
 			}
@@ -424,7 +424,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			Vector vec;
 			for(i=0;i<lang;i++){
 				vec = new Vector();
-				vec.add(new String(mitglieder[mgl][i]));				
+				vec.add(String.valueOf(mitglieder[mgl][i]));				
  				vmitglieder.add(vec.clone());
  			}
 		}	
@@ -434,7 +434,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 			vkollegen = new Vector();
 			for(von=1;von<bis;von++){
 				Vector vec = new Vector();
-				vec.add(new String(ParameterLaden.getMatchcode(von)));				
+				vec.add(String.valueOf(ParameterLaden.getMatchcode(von)));				
  				vkollegen.add(vec.clone());
  			}
 			////System.out.println("Anzahl Kollegen nach f�llen = "+vkollegen.size());
@@ -535,7 +535,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				int i,j;
 				int iniSet = 0;
 				String set = "";
-				SystemConfig.UpdateIni("Kalender", "RoogleAnzahlGruppen", new Integer(anzahlSets-1).toString());
+				SystemConfig.UpdateIni("Kalender", "RoogleAnzahlGruppen", Integer.valueOf(anzahlSets-1).toString());
 				lspeichern = true;
 				for(i=0;i<anzahlSets;i++){
 					if(i != aktSet){
@@ -600,7 +600,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 		private Vector macheVektor(String strg){
 			Vector vec = new Vector();
 			//vec.add(new Boolean(bool));
-			vec.add(new String(strg));
+			vec.add(String.valueOf(strg));
 			return vec;
 		}
 		

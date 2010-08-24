@@ -116,17 +116,17 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		Authent.setSelected((SystemConfig.hmEmailExtern.get("SmtpAuth")=="0" ? false : true));
 /*
 			hmEmailExtern = new HashMap<String,String>();
-			hmEmailExtern.put("SmtpHost",new String(ini.getStringProperty("EmailExtern","SmtpHost")));
-			hmEmailExtern.put("SmtpAuth",new String(ini.getStringProperty("EmailExtern","SmtpAuth")));			
-			hmEmailExtern.put("Pop3Host",new String(ini.getStringProperty("EmailExtern","Pop3Host")));
-			hmEmailExtern.put("Username",new String(ini.getStringProperty("EmailExtern","Username")));
-			String pw = new String(ini.getStringProperty("EmailExtern","Password"));
+			hmEmailExtern.put("SmtpHost",String.valueOf(ini.getStringProperty("EmailExtern","SmtpHost")));
+			hmEmailExtern.put("SmtpAuth",String.valueOf(ini.getStringProperty("EmailExtern","SmtpAuth")));			
+			hmEmailExtern.put("Pop3Host",String.valueOf(ini.getStringProperty("EmailExtern","Pop3Host")));
+			hmEmailExtern.put("Username",String.valueOf(ini.getStringProperty("EmailExtern","Username")));
+			String pw = String.valueOf(ini.getStringProperty("EmailExtern","Password"));
 			Verschluesseln man = Verschluesseln.getInstance();
 		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 			String decrypted = man.decrypt (pw);
-			hmEmailExtern.put("Password",new String(decrypted));
-			hmEmailExtern.put("SenderAdresse",new String(ini.getStringProperty("EmailExtern","SenderAdresse")));			
-			hmEmailExtern.put("Bestaetigen",new String(ini.getStringProperty("EmailExtern","EmpfangBestaetigen")));			
+			hmEmailExtern.put("Password",String.valueOf(decrypted));
+			hmEmailExtern.put("SenderAdresse",String.valueOf(ini.getStringProperty("EmailExtern","SenderAdresse")));			
+			hmEmailExtern.put("Bestaetigen",String.valueOf(ini.getStringProperty("EmailExtern","EmpfangBestaetigen")));			
 ********/
  		
 

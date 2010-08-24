@@ -323,7 +323,7 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("ok")){
-			tfrueck.setText(new Integer(jList1.getSelectedIndex()).toString());
+			tfrueck.setText(Integer.valueOf(jList1.getSelectedIndex()).toString());
 			//KassenPanel.thisClass.iformular = jList1.getSelectedIndex();
 			FensterSchliessen("Dieses");
 		}

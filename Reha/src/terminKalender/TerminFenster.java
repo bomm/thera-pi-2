@@ -730,7 +730,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 					public void mouseReleased(MouseEvent e) {
 					      JComponent c = (JComponent)e.getSource();
-					      int v = new Integer(c.getName().split("-")[1]);
+					      int v = Integer.valueOf(c.getName().split("-")[1]);
 					      dragLab[v].setText("");
 					      dragLab[v].setIcon(null);
 					      dragStart = false;
@@ -3119,7 +3119,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			  for(int i=0;i<anzahl;i++){
 				  ;
 				  if(! ((String) ((Vector<?>)((ArrayList<?>) Reha.thisClass.terminpanel.vTerm.get(tage)).get(1)).get(i)).trim().contains("@FREI")){
-					  //minuten_tag = minuten_tag + new Integer( ((String) ((Vector<?>)((ArrayList<?>)Reha.thisClass.terminpanel.vTerm.get(tage)).get(3)).get(i)).trim());
+					  //minuten_tag = minuten_tag + Integer.valueOf( ((String) ((Vector<?>)((ArrayList<?>)Reha.thisClass.terminpanel.vTerm.get(tage)).get(3)).get(i)).trim());
 					  minuten_tag = minuten_tag + Integer.parseInt( ((String) ((Vector<?>)((ArrayList<?>)Reha.thisClass.terminpanel.vTerm.get(tage)).get(3)).get(i)).trim());
 				  }
 			  }

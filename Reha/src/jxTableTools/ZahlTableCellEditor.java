@@ -111,7 +111,7 @@ public class ZahlTableCellEditor extends AbstractCellEditor implements KeyListen
 			//System.out.println("equals('') String= "+s);
 			return false;
 		}
-		if(new Integer(s.substring(0,1)) == 0 ){
+		if(Integer.valueOf(s.substring(0,1)) == 0 ){
 		    	((JFormattedTextField)component).setCaretPosition(0);
 				//System.out.println("Erste Zahl = 0 String = "+s);
 		    	return false;

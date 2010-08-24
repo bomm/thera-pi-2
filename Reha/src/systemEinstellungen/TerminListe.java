@@ -19,17 +19,17 @@ public class TerminListe{
 	public int MitUeberschrift;
 	public boolean DirektDruck;
 	public TerminListe init(){
-		AnzahlTerminTabellen = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTabellen"));
-		AnzahlSpaltenProTabellen = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlSpaltenProTabellen"));
+		AnzahlTerminTabellen = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTabellen"));
+		AnzahlSpaltenProTabellen = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlSpaltenProTabellen"));
 		for(int i = 0;i<AnzahlSpaltenProTabellen;i++){
 			NamenSpalten.add(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "InhaltSpalte"+(i+1)) );
 		}
-		AnzahlTermineProTabelle = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTermineProTabelle"));
+		AnzahlTermineProTabelle = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTermineProTabelle"));
 		NameTemplate = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "NameTemplate");
 		NameTerminDrucker = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "NameTerminDrucker");
-		PatNameDrucken = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNameDrucken"));
+		PatNameDrucken = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNameDrucken"));
 		PatNamenPlatzhalter = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNamePlatzhalter");
-		MitUeberschrift = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "MitSpaltenUeberschrift"));
+		MitUeberschrift = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "MitSpaltenUeberschrift"));
 		DirektDruck = (RWJedeIni.leseIniDatei(iniName, "TerminListe1", "DirektDruck").trim().equals("0") ? false : true);
 		//System.out.println(AnzahlTerminTabellen);
 		////System.out.println(NameTabelle);

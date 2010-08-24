@@ -23,7 +23,7 @@ public class ArztTools {
 		if(id.equals("")){
 			xid = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(67));			
 		}else{
-			xid = new Integer(id);
+			xid = Integer.valueOf(id);
 		}
 
 		if(xid <= 0){

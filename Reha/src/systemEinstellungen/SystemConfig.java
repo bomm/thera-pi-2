@@ -181,7 +181,7 @@ public class SystemConfig {
 					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
 					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
 			//System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
-			aktJahr = new String(jahrHeute);
+			aktJahr = String.valueOf(jahrHeute);
 			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
 			ini.save();
 		}else{
@@ -194,7 +194,7 @@ public class SystemConfig {
 		catch (java.net.UnknownHostException uhe) {
 			//System.out.println(uhe);
 		}
-		vorJahr = new Integer(new Integer(aktJahr)-1).toString();
+		vorJahr = Integer.valueOf(Integer.valueOf(aktJahr)-1).toString();
 	}
 	public void SystemInit(int i){
 		switch(i){
@@ -256,16 +256,16 @@ public class SystemConfig {
 		////System.out.println("IniFile = "+ini.getFileName());
 		////System.out.println("Anzahl der Datenbanktreiber einlesen");
 		lesen =  ini.getIntegerProperty("DatenBank","AnzahlConnections") ;
-		//lesen =  Integer.parseInt(new String(ini.getStringProperty("DatenBank","AnzahlConnections")) );
+		//lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("DatenBank","AnzahlConnections")) );
 		//System.out.println("Anzahl der Datenbanktreiber = "+lesen);
 		for (i=1;i<(lesen+1);i++){
-			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBTreiber"+i)) );
-			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBKontakt"+i)) );			
-			aKontakt.add(new String(ini.getStringProperty("DatenBank","DBType"+i)) );
-			String sbenutzer =new String(ini.getStringProperty("DatenBank","DBBenutzer"+i));
+			aKontakt.add(String.valueOf(ini.getStringProperty("DatenBank","DBTreiber"+i)) );
+			aKontakt.add(String.valueOf(ini.getStringProperty("DatenBank","DBKontakt"+i)) );			
+			aKontakt.add(String.valueOf(ini.getStringProperty("DatenBank","DBType"+i)) );
+			String sbenutzer =String.valueOf(ini.getStringProperty("DatenBank","DBBenutzer"+i));
 			//mandantDB.add(minif.getStringProperty("Application", "DBPasswort1"));
-			aKontakt.add(new String(sbenutzer));
-			String pw = new String(ini.getStringProperty("DatenBank","DBPasswort"+i));
+			aKontakt.add(String.valueOf(sbenutzer));
+			String pw = String.valueOf(ini.getStringProperty("DatenBank","DBPasswort"+i));
 			String decrypted = null;
 			if(!pw.equals("")){
 				if(pw != null){
@@ -273,13 +273,13 @@ public class SystemConfig {
 					man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 					decrypted = man.decrypt (pw);
 				}else{
-					decrypted = new String("");
+					decrypted = String.valueOf("");
 					JOptionPane.showMessageDialog(null,"Passwort der MySql-Datenbank = null");
 				}
 			}else{
 				Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte das Passwort für die MySql-Datenbank ein", "");
 				if(ret == null){
-					decrypted = new String("");
+					decrypted = String.valueOf("");
 				}else{
 					decrypted = ((String)ret).trim();
 					Verschluesseln man = Verschluesseln.getInstance();
@@ -333,10 +333,10 @@ public class SystemConfig {
 		ArrayList<String[]> aList2 = new ArrayList<String[]>();
 		ArrayList<ArrayList<ArrayList<String[]>>> aList3 = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		int lesen,i;
-		lesen =  Integer.parseInt(new String(ini.getStringProperty("Kalender","AnzahlSets")) );
+		lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("Kalender","AnzahlSets")) );
 		for (i=1;i<(lesen+1);i++){
-			aList1.add(new String(ini.getStringProperty("Kalender","NameSet"+i)) );
-			aList2.add(new String(ini.getStringProperty("Kalender","FeldSet"+i)).split(",") );
+			aList1.add(String.valueOf(ini.getStringProperty("Kalender","NameSet"+i)) );
+			aList2.add(String.valueOf(ini.getStringProperty("Kalender","FeldSet"+i)).split(",") );
 			aList3.add((ArrayList)aList1.clone());
 			aList3.add((ArrayList)aList2.clone());
 			aTerminKalender.add((ArrayList)aList3.clone());
@@ -344,18 +344,18 @@ public class SystemConfig {
 			aList2.clear();
 			aList3.clear();
 		}	
-		KalenderUmfang[0] = new String(ini.getStringProperty("Kalender","KalenderStart"));
-		KalenderUmfang[1] = new String(ini.getStringProperty("Kalender","KalenderEnde"));	
+		KalenderUmfang[0] = String.valueOf(ini.getStringProperty("Kalender","KalenderStart"));
+		KalenderUmfang[1] = String.valueOf(ini.getStringProperty("Kalender","KalenderEnde"));	
 		KalenderMilli[0] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[0]);
 		KalenderMilli[1] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[1]);		
 		KalenderBarcode =  (ini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
-		UpdateIntervall = new Integer(new String(ini.getStringProperty("Kalender","KalenderTimer")));
+		UpdateIntervall = Integer.valueOf(String.valueOf(ini.getStringProperty("Kalender","KalenderTimer")));
 		ParameterLaden kolLad = new ParameterLaden();
 		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;
-		String s = new String(ini.getStringProperty("Kalender","KalenderHintergrundRGB"));
+		String s = String.valueOf(ini.getStringProperty("Kalender","KalenderHintergrundRGB"));
 		String[] ss = s.split(",");
 		KalenderHintergrund = new Color(Integer.parseInt(ss[0]),Integer.parseInt(ss[1]),Integer.parseInt(ss[2]));
-		KalenderAlpha = new Float(new String(ini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
+		KalenderAlpha = new Float(String.valueOf(ini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
 		////System.out.println("Anzal Kollegen = "+AnzahlKollegen);
 		oTerminListe = new TerminListe().init();
 		Reha.thisClass.setzeInitStand("Gruppendefinition einlesen");
@@ -377,10 +377,10 @@ public class SystemConfig {
 		ArrayList<String[]> aList2 = new ArrayList<String[]>();
 		ArrayList<ArrayList<ArrayList<String[]>>> aList3 = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		int lesen,i;
-		lesen =  Integer.parseInt(new String(ini.getStringProperty("Kalender","AnzahlSets")) );
+		lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("Kalender","AnzahlSets")) );
 		for (i=1;i<(lesen+1);i++){
-			aList1.add(new String(ini.getStringProperty("Kalender","NameSet"+i)) );
-			aList2.add(new String(ini.getStringProperty("Kalender","FeldSet"+i)).split(",") );
+			aList1.add(String.valueOf(ini.getStringProperty("Kalender","NameSet"+i)) );
+			aList2.add(String.valueOf(ini.getStringProperty("Kalender","FeldSet"+i)).split(",") );
 			aList3.add((ArrayList)aList1.clone());
 			aList3.add((ArrayList)aList2.clone());
 			aTerminKalender.add((ArrayList)aList3.clone());
@@ -396,14 +396,14 @@ public class SystemConfig {
 		}	
 		aRoogleGruppen = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		int lesen,i;
-		lesen =  Integer.parseInt(new String(ini.getStringProperty("Kalender","RoogleAnzahlGruppen")) );
+		lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("Kalender","RoogleAnzahlGruppen")) );
 		ArrayList<String> aList1  = new ArrayList<String>();
 		ArrayList<String[]> aList2 = new ArrayList<String[]>();
 		ArrayList<ArrayList<ArrayList<String[]>>> aList3 = new ArrayList<ArrayList<ArrayList<String[]>>>();
 
 		for(i=1;i<=lesen;i++){
-			aList1.add(new String(ini.getStringProperty("Kalender","RoogleNameGruppen"+i)) );
-			aList2.add((String[]) new String(ini.getStringProperty("Kalender","RoogleFelderGruppen"+i)).split(",") );
+			aList1.add(String.valueOf(ini.getStringProperty("Kalender","RoogleNameGruppen"+i)) );
+			aList2.add((String[]) String.valueOf(ini.getStringProperty("Kalender","RoogleFelderGruppen"+i)).split(",") );
 			aList3.add((ArrayList)aList1.clone());
 			aList3.add((ArrayList) aList2.clone());
 			aRoogleGruppen.add((ArrayList)aList3.clone());
@@ -414,7 +414,7 @@ public class SystemConfig {
 		for(i=0;i<7;i++){
 			RoogleTage[i] = (ini.getStringProperty("RoogleEinstellungen","Tag"+(i+1)).trim().equals("0") ? false : true );
 		}
-		RoogleZeitraum = new Integer(ini.getStringProperty("RoogleEinstellungen","Zeitraum"));
+		RoogleZeitraum = Integer.valueOf(ini.getStringProperty("RoogleEinstellungen","Zeitraum"));
 		RoogleZeiten = new  HashMap<String,String>();
 		RoogleZeiten.put("KG",ini.getStringProperty("RoogleEinstellungen","KG") );
 		RoogleZeiten.put("MA",ini.getStringProperty("RoogleEinstellungen","MA") );
@@ -461,11 +461,11 @@ public class SystemConfig {
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		}
 		hmVerzeichnisse = new HashMap<String,String>();
-		hmVerzeichnisse.put("Programmverzeichnis",new String(Reha.proghome));
-		hmVerzeichnisse.put("Vorlagen",new String(Reha.proghome+"vorlagen/"+Reha.aktIK));
-		hmVerzeichnisse.put("Icons",new String(Reha.proghome+"icons"));
-		hmVerzeichnisse.put("Temp",new String(Reha.proghome+"temp/"+Reha.aktIK));		
-		hmVerzeichnisse.put("Ini",new String(Reha.proghome+"ini/"+Reha.aktIK));		
+		hmVerzeichnisse.put("Programmverzeichnis",String.valueOf(Reha.proghome));
+		hmVerzeichnisse.put("Vorlagen",String.valueOf(Reha.proghome+"vorlagen/"+Reha.aktIK));
+		hmVerzeichnisse.put("Icons",String.valueOf(Reha.proghome+"icons"));
+		hmVerzeichnisse.put("Temp",String.valueOf(Reha.proghome+"temp/"+Reha.aktIK));		
+		hmVerzeichnisse.put("Ini",String.valueOf(Reha.proghome+"ini/"+Reha.aktIK));		
 		hmVerzeichnisse.put("Rehaplaner",ini.getStringProperty("Verzeichnisse", "Rehaplaner"));
 		hmVerzeichnisse.put("Fahrdienstliste",ini.getStringProperty("Verzeichnisse", "Fahrdienstliste"));
 		hmVerzeichnisse.put("Fahrdienstrohdatei",ini.getStringProperty("Verzeichnisse", "Fahrdienstrohdatei"));
@@ -476,23 +476,23 @@ public class SystemConfig {
 			colini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/color.ini");
 		}
 		////System.out.println("In TK-Farben");
-		int anz  = new Integer( new String(colini.getStringProperty("Terminkalender","FarbenAnzahl")));
+		int anz  = Integer.valueOf( String.valueOf(colini.getStringProperty("Terminkalender","FarbenAnzahl")));
 		vSysColsNamen = new Vector<String>();
 		vSysColsBedeut = new Vector<String>();
 		vSysColsCode = new Vector<String>();
 		//ArrayList<String> colnames = new ArrayList<String>();
 		for(int i = 0;i<anz;i++){
-			vSysColsNamen.add(new String(colini.getStringProperty("Terminkalender","FarbenNamen"+(i+1))));
-			vSysColsBedeut.add(new String(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
-			vSysColsCode.add(new String(colini.getStringProperty("Terminkalender","FarbenCode"+(i+1))));			
-			//colnames.add(new String(colini.getStringProperty("Terminkalender","FarbenNamen")));
+			vSysColsNamen.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenNamen"+(i+1))));
+			vSysColsBedeut.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
+			vSysColsCode.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenCode"+(i+1))));			
+			//colnames.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenNamen")));
 		}
-		int def = new Integer( new String(colini.getStringProperty("Terminkalender","FarbenDefaults")));
+		int def = Integer.valueOf( String.valueOf(colini.getStringProperty("Terminkalender","FarbenDefaults")));
 		vSysDefNamen = new Vector<String>();
 		//ArrayList<String> defnames = new ArrayList<String>();		
 		for(int i = 0;i<def;i++){
-			vSysDefNamen.add(new String(colini.getStringProperty("Terminkalender","FarbenDefaultNamen"+(i+1))));
-			//defnames.add(new String(colini.getStringProperty("Terminkalender","FarbenDefaultNamen")));
+			vSysDefNamen.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenDefaultNamen"+(i+1))));
+			//defnames.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenDefaultNamen")));
 		}
 		/*
 		public static Vector<Vector<Color[]>> hmDefaultCols;
@@ -508,10 +508,10 @@ public class SystemConfig {
 		Vector<Color[]> colv = new Vector<Color[]>();
 		for(int j = 0; j < anz;j++){
 
-			String[] farb = new String(colini.getStringProperty( "UserFarben",vSysColsNamen.get(j))).split(",");
+			String[] farb = String.valueOf(colini.getStringProperty( "UserFarben",vSysColsNamen.get(j))).split(",");
 			Color[] farbe = new Color[2];
-			farbe[0] = new Color(new Integer(farb[0]),new Integer(farb[1]),new Integer(farb[2]));
-			farbe[1] = new Color(new Integer(farb[3]),new Integer(farb[4]),new Integer(farb[5]));
+			farbe[0] = new Color(Integer.valueOf(farb[0]),Integer.valueOf(farb[1]),Integer.valueOf(farb[2]));
+			farbe[1] = new Color(Integer.valueOf(farb[3]),Integer.valueOf(farb[4]),Integer.valueOf(farb[5]));
 			colv.add(farbe);
 		}
 		vSysColsObject.add((Vector<Color[]>)colv.clone());
@@ -522,10 +522,10 @@ public class SystemConfig {
 			colv = new Vector<Color[]>();
 			for(int j = 0; j < anz;j++){
 				////System.out.println("Bei i="+i+" /  und j="+j);
-				String[] farb = new String(colini.getStringProperty( vSysDefNamen.get(i),vSysColsNamen.get(j))).split(",");
+				String[] farb = String.valueOf(colini.getStringProperty( vSysDefNamen.get(i),vSysColsNamen.get(j))).split(",");
 				Color[] farbe = new Color[2];
-				farbe[0] = new Color(new Integer(farb[0]),new Integer(farb[1]),new Integer(farb[2]));
-				farbe[1] = new Color(new Integer(farb[3]),new Integer(farb[4]),new Integer(farb[5]));
+				farbe[0] = new Color(Integer.valueOf(farb[0]),Integer.valueOf(farb[1]),Integer.valueOf(farb[2]));
+				farbe[1] = new Color(Integer.valueOf(farb[3]),Integer.valueOf(farb[4]),Integer.valueOf(farb[5]));
 				colv.add(farbe);
 			}
 			vSysColsObject.add((Vector<Color[]>)colv.clone());
@@ -563,8 +563,8 @@ public class SystemConfig {
 		Mandanten = new Vector<String[]>();			
 		for(int i = 0; i < AnzahlMandanten;i++){
 			String[] mand = {null,null};
-			mand[0] = new String(inif.getStringProperty("TheraPiMandanten", "MAND-IK"+(i+1)));
-			mand[1] = new String(inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+(i+1)));
+			mand[0] = String.valueOf(inif.getStringProperty("TheraPiMandanten", "MAND-IK"+(i+1)));
+			mand[1] = String.valueOf(inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+(i+1)));
 			Mandanten.add(mand.clone());
 		}
 		hmDBMandant = new HashMap<String,Vector>(); 
@@ -584,9 +584,9 @@ public class SystemConfig {
 				man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 				decrypted = man.decrypt (pw);
 			}else{
-				decrypted = new String("");
+				decrypted = String.valueOf("");
 			}
-			mandantDB.add(new String(decrypted));
+			mandantDB.add(String.valueOf(decrypted));
 			hmDBMandant.put(Mandanten.get(i)[1],(Vector<String>)mandantDB.clone());
 		}
 		
@@ -621,7 +621,7 @@ public class SystemConfig {
 			hmHilfeServer.put("HilfeDBTreiber", inif.getStringProperty("TheraPiHilfe", "HilfeDBTreiber"));
 			hmHilfeServer.put("HilfeDBLogin", inif.getStringProperty("TheraPiHilfe", "HilfeDBLogin"));		
 			hmHilfeServer.put("HilfeDBUser", inif.getStringProperty("TheraPiHilfe", "HilfeDBUser"));
-			String pw = new String(inif.getStringProperty("TheraPiHilfe","HilfeDBPassword"));
+			String pw = String.valueOf(inif.getStringProperty("TheraPiHilfe","HilfeDBPassword"));
 			Verschluesseln man = Verschluesseln.getInstance();
 		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 			String decrypted = man.decrypt (pw);
@@ -844,7 +844,7 @@ public class SystemConfig {
 		if( (ags = inif.getIntegerProperty("ArztGruppen", "AnzahlGruppen")) > 0){
 			arztGruppen = new String[ags];
 			for(int i = 0; i < ags; i++){
-				arztGruppen[i] =  inif.getStringProperty("ArztGruppen", "Gruppe"+new Integer(i+1).toString());
+				arztGruppen[i] =  inif.getStringProperty("ArztGruppen", "Gruppe"+Integer.valueOf(i+1).toString());
 			}
 		}
 	}
@@ -860,12 +860,12 @@ public class SystemConfig {
 		int aktiv;
 		Vector<String> vec = new Vector<String>();
 		for(int i = 0;i < args;i++){
-			rezeptKlassen[i] = inif.getStringProperty("RezeptKlassen", "Klasse"+new Integer(i+1).toString());
-			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+new Integer(i+1).toString());
+			rezeptKlassen[i] = inif.getStringProperty("RezeptKlassen", "Klasse"+Integer.valueOf(i+1).toString());
+			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+Integer.valueOf(i+1).toString());
 			if(aktiv > 0){
 				vec.clear();
-				vec.add(new String(rezeptKlassen[i]));
-				vec.add(inif.getStringProperty("RezeptKlassen", "KlasseKurz"+new Integer(i+1).toString())  );
+				vec.add(String.valueOf(rezeptKlassen[i]));
+				vec.add(inif.getStringProperty("RezeptKlassen", "KlasseKurz"+Integer.valueOf(i+1).toString())  );
 				rezeptKlassenAktiv.add((Vector<String>)vec.clone());
 			}
 		}
@@ -905,7 +905,7 @@ public class SystemConfig {
 				vec.add( inif.getStringProperty("Textbausteine", prop2+(i2+1)) );
 				/*
 				try {
-					//System.out.println(new String(gelenk.getBytes("UTF-8")));
+					//System.out.println(String.valueOf(gelenk.getBytes("UTF-8")));
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -918,7 +918,7 @@ public class SystemConfig {
 				}
 				
 				
-				vec.add( new String( gelenk.getBytes()  )  );
+				vec.add( String.valueOf( gelenk.getBytes()  )  );
 				*/
 			}
 			hmTherapBausteine.put(prop2, (Vector) vec.clone());

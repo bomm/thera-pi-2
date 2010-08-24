@@ -44,8 +44,8 @@ public class LeistungTools {
 		int lang = vec.size();
 		for(int i = 0; i <lang;i++){
 			if( Integer.parseInt( (String) ((Vector)vec.get(i)).get(9)) == ipos ){
-				return new String[] {new String( (String) ((Vector)vec.get(i)).get(0)),
-						new String( (String) ((Vector)vec.get(i)).get(1))};
+				return new String[] {String.valueOf( (String) ((Vector)vec.get(i)).get(0)),
+						String.valueOf( (String) ((Vector)vec.get(i)).get(1))};
 				
 			}
 			

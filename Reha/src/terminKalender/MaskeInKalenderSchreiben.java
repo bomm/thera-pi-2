@@ -349,7 +349,7 @@ public void maskenEintragen(){
 	String aktTag = null;
 	startTag = getStartDatum();
 	stopTag = getEndDatum();
-	aktTag = new String(startTag);
+	aktTag = String.valueOf(startTag);
 	int wochenTag = 0;
 	int i = 0;
 	if(DatFunk.DatumsWert(startTag) > DatFunk.DatumsWert(stopTag)){
@@ -404,7 +404,7 @@ public void maskenEintragen(){
 	private String macheStatement(String sqldat,ArrayList list){
 		String sret = null;
 		int i,j;
-		int bloecke =new Integer( (String)  ((Vector) list.get(5)).get(0) );
+		int bloecke =Integer.valueOf( (String)  ((Vector) list.get(5)).get(0) );
 		sret = "Update flexkc set ";
 		String nummer;
 		for (i = 0; i<bloecke;i++){

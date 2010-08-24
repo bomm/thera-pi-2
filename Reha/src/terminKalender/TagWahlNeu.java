@@ -191,10 +191,10 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 					datePick = new MeinPicker();
 					Calendar cal1 = new GregorianCalendar();
 					String[] spl = starttag.split("\\.");
-					cal1.set(new Integer(spl[2]),
-							new Integer( (spl[1].substring(0,0).equals("0") ? spl[1].substring(1, 1) : spl[1]) )-1,
+					cal1.set(Integer.valueOf(spl[2]),
+							Integer.valueOf( (spl[1].substring(0,0).equals("0") ? spl[1].substring(1, 1) : spl[1]) )-1,
 							
-							new Integer( (spl[0].substring(0,0).equals("0") ? spl[0].substring(1, 1) : spl[0]) )
+							Integer.valueOf( (spl[0].substring(0,0).equals("0") ? spl[0].substring(1, 1) : spl[0]) )
 					);
 					datePick.setDate(machePickerDatum(starttag));
 					datePick.setEditor(new JRtaTextField("DATUM",false));
@@ -268,10 +268,10 @@ public class TagWahlNeu extends RehaSmartDialog implements  FocusListener, Actio
 	private Date machePickerDatum(String sdatum){
 		Calendar cal1 = new GregorianCalendar();
 		String[] spl = sdatum.split("\\.");
-		cal1.set(new Integer(spl[2]),
-				new Integer( (spl[1].substring(0,0).equals("0") ? spl[1].substring(1, 1) : spl[1]) )-1,
+		cal1.set(Integer.valueOf(spl[2]),
+				Integer.valueOf( (spl[1].substring(0,0).equals("0") ? spl[1].substring(1, 1) : spl[1]) )-1,
 				
-				new Integer( (spl[0].substring(0,0).equals("0") ? spl[0].substring(1, 1) : spl[0]) )
+				Integer.valueOf( (spl[0].substring(0,0).equals("0") ? spl[0].substring(1, 1) : spl[0]) )
 		);
 		return cal1.getTime();
 	}

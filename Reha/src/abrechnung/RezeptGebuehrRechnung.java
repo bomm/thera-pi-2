@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -33,6 +32,9 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
+import systemEinstellungen.SystemConfig;
+import systemTools.JRtaTextField;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -49,9 +51,6 @@ import ag.ion.noa.internal.printing.PrintProperties;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
 import dialoge.DragWin;
 import dialoge.PinPanel;
 import events.RehaTPEvent;

@@ -1,5 +1,6 @@
 package entlassBerichte;
-import java.awt.Cursor;
+import hauptFenster.Reha;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.WindowEvent;
@@ -16,15 +17,13 @@ import java.io.InputStreamReader;
 
 import javax.swing.JOptionPane;
 
-import org.jdesktop.swingworker.SwingWorker;
-
-
 import oOorgTools.OOTools;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 import stammDatenTools.ArztTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.ReaderStart;
-
 import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
@@ -56,8 +55,6 @@ import dialoge.RehaSmartDialog;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
-
-import hauptFenster.Reha;
 
 public class RVEBerichtPDF {
 	public EBerichtPanel eltern = null;
@@ -279,7 +276,7 @@ public class RVEBerichtPDF {
  							String tp2 = tempPfad+"PrintArzt"+Integer.toString(i)+System.currentTimeMillis()+".odt";
  							doc.getPersistenceService().export(tp2, OpenOfficeFilter.FILTER);
  							doc.close();
- 							new ReaderStart(new String(tp));
+ 							new ReaderStart(String.valueOf(tp));
  						}else{
  	 						IViewCursor viewCursor = doc.getViewCursorService().getViewCursor();
  	 						viewCursor.getPageCursor().jumpToFirstPage();
@@ -1162,10 +1159,10 @@ public class RVEBerichtPDF {
 						docversion.close();
 						cop.close();
 						if(blatt[5] > 0){
-							new ReaderStart(new String(tempversion));
-							//starteReader(new String(tempversion));
+							new ReaderStart(String.valueOf(tempversion));
+							//starteReader(String.valueOf(tempversion));
 						}else{
-							druckeVersion(new String(tempversion));							
+							druckeVersion(String.valueOf(tempversion));							
 						}
 						return;
 					}
@@ -1194,7 +1191,7 @@ public class RVEBerichtPDF {
 				Thread.sleep(50);
 				if(blatt[5] > 0){
 					new ReaderStart(tempversion);
-					//starteReader(new String(tempversion));
+					//starteReader(String.valueOf(tempversion));
 				}else{
 					druckeVersion(tempversion);							
 				}

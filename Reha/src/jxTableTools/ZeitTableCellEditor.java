@@ -109,12 +109,12 @@ public class ZeitTableCellEditor extends AbstractCellEditor implements KeyListen
 		//System.out.println("substr 3,4 = "+s.substring(3,4));
 		//System.out.println("Ganzer String = "+s);
 			if(s.length() < 5){return false;}
-			if(new Integer(s.substring(0,1)) > 2 ){return false;}
-			if(new Integer(s.substring(3,4)) > 5 ){return false;}
-			if(new Integer(s.substring(0,2)) > 24 ){return false;}
-			if(new Integer(s.substring(0,2)) == 24 ){
-				if(new Integer(s.substring(3,4)) > 0 ){return false;}
-				if(new Integer(s.substring(4,5)) > 0 ){return false;}
+			if(Integer.valueOf(s.substring(0,1)) > 2 ){return false;}
+			if(Integer.valueOf(s.substring(3,4)) > 5 ){return false;}
+			if(Integer.valueOf(s.substring(0,2)) > 24 ){return false;}
+			if(Integer.valueOf(s.substring(0,2)) == 24 ){
+				if(Integer.valueOf(s.substring(3,4)) > 0 ){return false;}
+				if(Integer.valueOf(s.substring(4,5)) > 0 ){return false;}
 			}
 						
 			

@@ -146,7 +146,7 @@ public class OptiSperrThread extends Thread implements Runnable {
 						String st = "insert into flexlock set sperre='"+sperre+"', maschine='"+SystemConfig.dieseMaschine+"', "+
 						"zeit='"+zeit+"'";
 						stmtx.execute(st);
-						//new ExUndHop().setzeStatement(new String(st));
+						//new ExUndHop().setzeStatement(String.valueOf(st));
 						try {
 							Thread.sleep(10);
 						} catch (InterruptedException e) {

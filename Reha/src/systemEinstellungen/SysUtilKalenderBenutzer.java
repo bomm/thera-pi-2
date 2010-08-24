@@ -76,7 +76,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 	
 	String Abt = null;
 	String ListLabel = null;{
-	Abt = new String("        Abteilung");
+	Abt = String.valueOf("        Abteilung");
 	//Abt.setHorizontalAlignment(JTextField.RIGHT);
 	ListLabel = "         MA-Liste";
 	//ListLabel.setHorizontalAlignment(JTextField.RIGHT);
@@ -386,7 +386,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 											"Abteilung='"+abteilung.getSelectedItem()+"', "+											
 											"Deftakt='"+(deftakt.getText().trim().equals("") ? "0" : deftakt.getText())+"', "+
 											"Nicht_Zeig='"+(naz.isSelected() ? "T" : "F")+"', "+
-											"Kalzeile='"+new Integer(speichernKalZeile).toString()+"'";											
+											"Kalzeile='"+Integer.valueOf(speichernKalZeile).toString()+"'";											
 			}else{
 				statement = "Insert into kollegen2 set Anrede='"+anrede.getText()+"', "+
 				"Vorname='"+vorname.getText()+"', "+
@@ -396,7 +396,7 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 				"Abteilung='"+abteilung.getSelectedItem()+"', "+											
 				"Deftakt='"+(deftakt.getText().trim().equals("") ? "0" : deftakt.getText())+"', "+											
 				"Nicht_Zeig='"+(naz.isSelected() ? "T" : "F")+"', "+
-				"Kalzeile='"+new Integer(speichernKalZeile).toString()+"'";											
+				"Kalzeile='"+Integer.valueOf(speichernKalZeile).toString()+"'";											
 			}
 		}else{
 			statement = "Update kollegen2 set Anrede='"+anrede.getText()+"', "+
@@ -512,9 +512,9 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 
 		for(int i = 0; i < ParameterLaden.vKKollegen.size();i++){
 			  try {
-				  textTable.getCell(0,i+1).getTextService().getText().setText(new Integer(i).toString());
+				  textTable.getCell(0,i+1).getTextService().getText().setText(Integer.valueOf(i).toString());
 				  textTable.getCell(1,i+1).getTextService().getText().setText(ParameterLaden.getMatchcode(i));
-				  textTable.getCell(2,i+1).getTextService().getText().setText(new Integer(ParameterLaden.getDBZeile(i)).toString());				  
+				  textTable.getCell(2,i+1).getTextService().getText().setText(Integer.valueOf(ParameterLaden.getDBZeile(i)).toString());				  
 				} 
 			  catch (TextException exception) {
 			  	exception.printStackTrace();
@@ -588,23 +588,23 @@ public class SysUtilKalenderBenutzer extends JXPanel implements KeyListener,Acti
 			String test = null;
 			while( rs.next()){
 				test = rs.getString("Anrede");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );
 				test = rs.getString("Vorname");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );
 				test = rs.getString("Nachname");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );
 				test = rs.getString("Matchcode");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );
 				test = rs.getString("Astunden");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );
 				test = rs.getString("Abteilung");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );
 				test = rs.getString("Deftakt");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );				
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );				
 				test = rs.getString("Kalzeile");
-				kollegenDaten.add(new String((test != null ?  test : "" )) );				
+				kollegenDaten.add(String.valueOf((test != null ?  test : "" )) );				
 				test = rs.getString("Nicht_zeig");
-				kollegenDaten.add(new String((test != null ?  test : "F" )) );
+				kollegenDaten.add(String.valueOf((test != null ?  test : "F" )) );
 				//System.out.println(test);
 			}
 

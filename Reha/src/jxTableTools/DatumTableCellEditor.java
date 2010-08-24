@@ -98,7 +98,7 @@ public class DatumTableCellEditor extends DefaultCellEditor{
 	        if (o instanceof Integer) {
 	            return o;
 	        } else if (o instanceof Number) {
-	            return new Integer(((Number)o).intValue());
+	            return Integer.valueOf(((Number)o).intValue());
 	        } else {
 	            if (DEBUG) {
 	                //System.out.println("getCellEditorValue: o isn't a Number");

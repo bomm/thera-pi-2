@@ -489,7 +489,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			/*
 			////System.out.println(""+i+dataVector[i-1][4]);
 			//System.out.println("*******Beginn*****");
-			//System.out.println(""+i+" Inhalt 1 ="+ new Integer((String)dataVector[i-1][3]));
+			//System.out.println(""+i+" Inhalt 1 ="+ Integer.valueOf((String)dataVector[i-1][3]));
 			//System.out.println(""+i+" Inhalt 2 ="+ new Boolean(false));
 			//System.out.println(""+i+" Inhalt 3 ="+ dataVector[i-1][2]);
 			//System.out.println(""+i+" Inhalt 4 ="+ dataVector[i-1][1]);
@@ -497,10 +497,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			//System.out.println("*******Ende*******");
 			*/
 			/*
-			kollegenWahl[ new Integer((String)dataVector[i-1][3]) -1][0] = new Integer((String)dataVector[i-1][3]);
-			kollegenWahl[ new Integer((String)dataVector[i-1][3]) -1][1] = new Boolean(false);
-			kollegenWahl[ new Integer((String)dataVector[i-1][3]) -1][2] = dataVector[i-1][2];
-			kollegenWahl[ new Integer((String)dataVector[i-1][3]) -1][3] = dataVector[i-1][1];
+			kollegenWahl[ Integer.valueOf((String)dataVector[i-1][3]) -1][0] = Integer.valueOf((String)dataVector[i-1][3]);
+			kollegenWahl[ Integer.valueOf((String)dataVector[i-1][3]) -1][1] = new Boolean(false);
+			kollegenWahl[ Integer.valueOf((String)dataVector[i-1][3]) -1][2] = dataVector[i-1][2];
+			kollegenWahl[ Integer.valueOf((String)dataVector[i-1][3]) -1][3] = dataVector[i-1][1];
 			*/
 			
 			kollegenWahl[ i-1][0] = Integer.parseInt((String)dataVector[i-1][3]); //dbzeile
@@ -1665,10 +1665,10 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     		        	if( ((Boolean)jxTable.getValueAt(i,0)) ){
     		        		gewaehlt = gewaehlt+1;
     		        		////System.out.println("Rang im Kalender="+(i)+" / suchen = JA");
-    		        		kollegenSuchen[new Integer((String)jxTable.getValueAt(i,3))]=true;
+    		        		kollegenSuchen[Integer.valueOf((String)jxTable.getValueAt(i,3))]=true;
     		        	}else{
     		        		////System.out.println("Rang im Kalender="+(i)+" / suchen = NEIN");
-    		        		kollegenSuchen[new Integer((String)jxTable.getValueAt(i,3))]=false;
+    		        		kollegenSuchen[Integer.valueOf((String)jxTable.getValueAt(i,3))]=false;
     		        	}
     		        	
     				}

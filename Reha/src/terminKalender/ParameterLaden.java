@@ -180,10 +180,10 @@ public static void Init(){
 		//List<Player> players = new ArrayList<Player>();
 		ArrayList<String> aKollegen = new ArrayList<String>();
 		//aSpaltenDaten.clear();
-	 	aKollegen.add(new String("./."));
-	 	aKollegen.add(new String(""));
-	 	aKollegen.add(new String(""));
-	 	aKollegen.add(new String("00"));
+	 	aKollegen.add(String.valueOf("./."));
+	 	aKollegen.add(String.valueOf(""));
+	 	aKollegen.add(String.valueOf(""));
+	 	aKollegen.add(String.valueOf("00"));
 	 	//aKollegen.add(durchlauf);
 	 	vKollegen.add((ArrayList)aKollegen.clone());
 

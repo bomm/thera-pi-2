@@ -84,12 +84,12 @@ final class ZeitVergleich {
 		sdummy = ""; 
 		////System.out.println("Stunden= "+stunden);
 		////System.out.println("Minuten= "+dummyminuten);
-		if ((new Integer(stunden)).toString().length() == 1)
+		if ((Integer.valueOf(stunden)).toString().length() == 1)
 			sret = "0"+ (Integer.toString(stunden));
 		else
 			sret = (Integer.toString(stunden));
 		
-		if ((new Integer(dummyminuten)).toString().length() == 1)
+		if ((Integer.valueOf(dummyminuten)).toString().length() == 1)
 			sret = sret+":0"+(Integer.toString(dummyminuten));
 		else
 			sret = sret+":"+(Integer.toString(dummyminuten));		

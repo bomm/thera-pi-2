@@ -158,7 +158,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		
 		/*
 		String ret = "<html>"+titel+
-		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		(anz > 0 ? " - <font color='#ff0000'>"+Integer.valueOf(anz).toString()+"<font></html>" : " - <font color='#000000'>"+Integer.valueOf(anz).toString()+"</font>");
 		*/
 		return ret;
 	}
@@ -243,7 +243,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 			for(int i = 0; i < iberichte; i++){
 				if(((String)dtblm.getValueAt(i,1)).contains(xrez)){
 					tabbericht.setRowSelectionInterval(i, i);
-					ret = new Integer(((String)dtblm.getValueAt(i,0)));
+					ret = Integer.valueOf(((String)dtblm.getValueAt(i,0)));
 					break;
 				}
 			}
@@ -317,7 +317,7 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		}
 		String xreznr = (String) dtblm.getValueAt(row, 1);
 		String[] splitrez = xreznr.split(" ");
-		int bid = new Integer((String) dtblm.getValueAt(row, 0));
+		int bid = Integer.valueOf((String) dtblm.getValueAt(row, 0));
 		String xverfasser = (String) dtblm.getValueAt(row, 2);
 		//String xtitel = (String) dtblm.getValueAt(row, 1);
 		////System.out.println("aufruf des Berichtes mit der ID "+bid);

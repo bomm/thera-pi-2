@@ -137,10 +137,10 @@ public class SysUtilAnschluesse extends JXPanel implements KeyListener, ActionLi
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
 		if(cmd.equals("anschluss")){
-			doConfig("COM"+new Integer(anschluss.getSelectedIndex()+1).toString());
+			doConfig("COM"+Integer.valueOf(anschluss.getSelectedIndex()+1).toString());
 		}
 		if(cmd.equals("speichern")){
-			doSpeichern("COM"+new Integer(anschluss.getSelectedIndex()+1).toString());
+			doSpeichern("COM"+Integer.valueOf(anschluss.getSelectedIndex()+1).toString());
 		}
 		if(cmd.equals("abbruch")){
 			SystemInit.abbrechen();

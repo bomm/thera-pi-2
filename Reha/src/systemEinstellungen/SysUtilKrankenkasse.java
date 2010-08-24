@@ -421,11 +421,11 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		wert = (unten.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("Kasse", new Integer(wert));
+		SystemConfig.hmContainer.put("Kasse", Integer.valueOf(wert));
 		inif.setStringProperty("Container", "StarteIn",wert , null);
 		
 		wert = (optimize.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("KasseOpti",new Integer(wert));
+		SystemConfig.hmContainer.put("KasseOpti",Integer.valueOf(wert));
 		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
 
 		int rows = vorlagen.getRowCount();
@@ -441,7 +441,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 				break;
 			}else{
 				formok = true;
-				inif.setStringProperty("Formulare", "KassenFormulareAnzahl",new Integer(rows).toString() , null);				
+				inif.setStringProperty("Formulare", "KassenFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
 			}
 		}
 		if(formok){

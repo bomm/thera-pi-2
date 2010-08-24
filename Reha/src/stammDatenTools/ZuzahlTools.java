@@ -55,7 +55,7 @@ public class ZuzahlTools {
 	/**********************************************************/
 	public static Object[] unter18TestDirekt(Vector<String> termine,boolean azTest,boolean jahrTest){
 						// Rez geb f�llig   //Anzahl Term   //Anzahl frei  //Anzahl unfrei  //Zuzahlstatus
-		Object[] ret = {new Boolean(false),new Integer(-1),new Integer(-1),new Integer(-1),new Integer(-1)};
+		Object[] ret = {new Boolean(false),Integer.valueOf(-1),Integer.valueOf(-1),Integer.valueOf(-1),Integer.valueOf(-1)};
 		//Vector vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		Vector<String> tage  = (Vector<String>)termine.clone();
 		if(tage.size()==0){
@@ -77,12 +77,12 @@ public class ZuzahlTools {
 		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
 			String stichtag = "";
 			String geburtstag = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
-			String gebtag = (DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(22))).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+			String gebtag = (DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(22))).substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 			
 			boolean einergroesser = false;
 			int erstergroesser = -1; 
 			for(int i = 0; i < tage.size();i++){
-				stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				stichtag = ((String)tage.get(i)).substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 				if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 					einergroesser = true;
 					break;
@@ -98,10 +98,10 @@ public class ZuzahlTools {
 				SqlInfo.aktualisiereSaetze("verordn", "zzstatus='2'", "rez_nr='"+rez_nr+"' LIMIT 1");
 				Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),2);				
 				ret[0] = new Boolean(true); 
-				ret[1] = new Integer(tage.size());
-				ret[2] = new Integer(erstergroesser-1);
+				ret[1] = Integer.valueOf(tage.size());
+				ret[2] = Integer.valueOf(erstergroesser-1);
 				ret[3] = ((Integer)ret[1]) - (Integer)ret[2];
-				ret[4] = new Integer(2);
+				ret[4] = Integer.valueOf(2);
 				return ret.clone();
 			}
 			if( (aktzzstatus.equals("2") || aktzzstatus.equals("1")) && (!einergroesser)){
@@ -114,11 +114,11 @@ public class ZuzahlTools {
 							//"Unter Umst�nden wechselt der Zuzahlungsstatus im Verlauf dieses Rezeptes");
 					Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),3);
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='3'", "rez_nr='"+rez_nr+"' LIMIT 1");
-					ret[4] = new Integer(3);					
+					ret[4] = Integer.valueOf(3);					
 				}else{
 					Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),0);
 					SqlInfo.aktualisiereSaetze("verordn", "zzstatus='0'", "rez_nr='"+rez_nr+"' LIMIT 1");
-					ret[4] = new Integer(0);
+					ret[4] = Integer.valueOf(0);
 				}
 				ret[0] = Boolean.valueOf(false); 
 				ret[1] = tage.size();
@@ -129,7 +129,7 @@ public class ZuzahlTools {
 			Reha.thisClass.patpanel.aktRezept.setzeBild(Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow(),0);			
 			ret[0] = Boolean.valueOf(false); 
 			ret[1] = tage.size();
-			ret[4] = new Integer(0);			
+			ret[4] = Integer.valueOf(0);			
 			
 		}
 		//AktuelleRezepte.aktRez.tabaktrez.validate();
@@ -140,7 +140,7 @@ public class ZuzahlTools {
 	/********************************************************/	
 	public static Object[] unter18TestAllesSuchen(String rez_nr,boolean azTest,boolean jahrTest){
 
-		Object[] ret = {new Boolean(false),new Integer(-1),new Integer(-1),new Integer(-1)};
+		Object[] ret = {new Boolean(false),Integer.valueOf(-1),Integer.valueOf(-1),Integer.valueOf(-1)};
 		Vector vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		Vector<String> tage  = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector<String>)vec.get(0)).get(0));
 		if(tage.size()==0){
@@ -164,7 +164,7 @@ public class ZuzahlTools {
 			boolean einergroesser = false;
 			int erstergroesser = -1; 
 			for(int i = 0; i < tage.size();i++){
-				stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+				stichtag = ((String)tage.get(i)).substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 				if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 					einergroesser = true;
 					break;
@@ -213,8 +213,8 @@ public class ZuzahlTools {
 		//System.out.println("Die Preisgruppe von KassenID ="+kassid.trim()+" = "+((String)((Vector)vec.get(0)).get(0)) );
 		preisgrp = ((String)((Vector)vec.get(0)).get(0));
 		
-		//zzregel = SystemConfig.vZuzahlRegeln.get(new Integer(preisgrp)-1);
-		zzregel = SystemPreislisten.hmZuzahlRegeln.get("Physio").get(new Integer(preisgrp)-1);
+		//zzregel = SystemConfig.vZuzahlRegeln.get(Integer.valueOf(preisgrp)-1);
+		zzregel = SystemPreislisten.hmZuzahlRegeln.get("Physio").get(Integer.valueOf(preisgrp)-1);
 		return zzregel;
 	}
 	
@@ -222,7 +222,7 @@ public class ZuzahlTools {
 		String stichtag = "";
 		int ret = -1;
 		for(int i = 0;i < tage.size();i++){
-			stichtag = ((String)tage.get(i)).substring(0,6)+new Integer(new Integer(SystemConfig.aktJahr)-18).toString();
+			stichtag = ((String)tage.get(i)).substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 			if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 				return new int[]{1,i};
 			}

@@ -149,8 +149,8 @@ public class Eb3 implements RehaEventListener  {
 			        				Reha.starteOfficeApplication();
 			        			}
 			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-					        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
-					        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+					        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
+					        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 					        	framegetrennt = false;
 								eltern.meldeInitOk(2);
 
@@ -183,8 +183,8 @@ public class Eb3 implements RehaEventListener  {
 					        			}else{
 					        				DocumentDescriptor descript = new DocumentDescriptor();
 						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,descript);
-								        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
-								        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+								        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
+								        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 								        	framegetrennt = false;
 											eltern.meldeInitOk(2);
 											JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
@@ -212,6 +212,7 @@ public class Eb3 implements RehaEventListener  {
 						    				bytebufferok = true;
 						    				pdfok = true;
 											}catch(Exception ex){
+												ex.printStackTrace();
 												inseitenaufbau = false;
 											}
 						    				return null;
@@ -227,8 +228,8 @@ public class Eb3 implements RehaEventListener  {
 									//eltern.document.getFrame().getXFrame().getContainerWindow().setVisible(true);
 									//System.out.println("Status vorhandener Bericht -> am Ende des 2. Durchlaufes = "+getStatus());
 									// TODO Auto-generated method stub
-						        	OOTools.setzePapierFormat(eltern.document, new Integer(25199), new Integer(19299));
-						        	OOTools.setzeRaender(eltern.document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+						        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
+						        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 						        	framegetrennt = false;
 									eltern.meldeInitOk(2);
 				        			pan.setSize(pan.getWidth()+1, pan.getHeight());

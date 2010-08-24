@@ -363,7 +363,7 @@ private int dbBehandler;
 		endeNeu = this.Ende;
 		beginnBisher = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		beginnNeu = this.Beginn;
-		dauerBisher = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block));
+		dauerBisher = Integer.valueOf(this.feld.getFeld(this.Kollege,iDauer,this.Block));
 		dauerNeu = this.Dauer;
 		differenz = dauerBisher-dauerNeu;
 		aktName = this.feld.getFeld(this.Kollege,iName,this.Block);
@@ -613,7 +613,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iEnde,this.Block-1,this.Beginn);
 
 		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,Integer.toString(dauerVorBlock));
-		//int dauerVorblock = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block-1));
+		//int dauerVorblock = Integer.valueOf(this.feld.getFeld(this.Kollege,iDauer,this.Block-1));
 		this.feld.setFeld(this.Kollege,iName,this.Block,this.Name);
 		this.feld.setFeld(this.Kollege,iNummer,this.Block,this.Nummer);		
 		this.feld.setFeld(this.Kollege,iBeginn,this.Block,this.Beginn);		
@@ -679,7 +679,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iEnde,this.Block-1,this.Beginn);
 		//int dauerVorBlock = (int)zeitFunk.ZeitDifferenzInMinuten(startVorblock,this.Beginn);
 		this.feld.setFeld(this.Kollege,iDauer,this.Block-1,Integer.toString(dauerVorBlock));
-		//int dauerVorblock = new Integer(this.feld.getFeld(this.Kollege,iDauer,this.Block-1));
+		//int dauerVorblock = Integer.valueOf(this.feld.getFeld(this.Kollege,iDauer,this.Block-1));
 
 		String endeNachBlock = this.feld.getFeld(this.Kollege,iEnde,this.Block+1);
 
@@ -777,7 +777,7 @@ private int dbBehandler;
 		this.feld.setFeld(this.Kollege,iDauer,neublocknum,Integer.toString(this.Dauer));		
 		this.feld.setFeld(this.Kollege,iEnde,neublocknum,this.Ende);
 
-		////System.out.println(this.Name+"/"+this.Nummer+"/"+this.Beginn+"/"+new Integer(this.Dauer).toString()+"/"+this.Ende);
+		////System.out.println(this.Name+"/"+this.Nummer+"/"+this.Beginn+"/"+Integer.valueOf(this.Dauer).toString()+"/"+this.Ende);
 		
 		this.feld.setFeld(this.Kollege,iBeginn,neublocknum+1,this.Ende);
 		String endeNachBlock = this.feld.getFeld(this.Kollege,iEnde,neublocknum+1);
@@ -823,7 +823,7 @@ class Felder{
 		return;
 	}
 	public int getAnzahlBloecke(int iKoll){
-		return new Integer( ((String) ((ArrayList<Vector<String>>) tvect.get(iKoll)).get(5).get(0)));
+		return Integer.valueOf( ((String) ((ArrayList<Vector<String>>) tvect.get(iKoll)).get(5).get(0)));
 	}
 	public int setAnzahlBloecke(int iKoll,int bloecke){
 		((ArrayList<Vector<String>>) tvect.get(iKoll)).get(5).set(0,Integer.toString(bloecke));

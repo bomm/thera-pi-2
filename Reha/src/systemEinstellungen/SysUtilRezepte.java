@@ -115,7 +115,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		int aktiv;
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
 		for(int i = 0;i < 5;i++){
-			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+new Integer(i+1).toString());
+			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+Integer.valueOf(i+1).toString());
 			if(aktiv > 0){
 				heilmittel[i].setSelected(true);
 			}else{
@@ -414,7 +414,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		inif.setStringProperty("RezeptKlassen", "InitKlasse",(String)voreinstellung.getSelectedItem(),null);
 		for(int i = 0; i < 5;i++){
 			iwert = (heilmittel[i].isSelected() ? 1 : 0);
-			inif.setIntegerProperty("RezeptKlassen", "KlasseAktiv"+new Integer(i+1).toString(),iwert,null);
+			inif.setIntegerProperty("RezeptKlassen", "KlasseAktiv"+Integer.valueOf(i+1).toString(),iwert,null);
 			
 		}
 		inif.setStringProperty("DruckOptionen", "RezGebDrucker",(String)druckername.getSelectedItem(),null);
@@ -435,7 +435,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			}
 		}
 		if(formok){
-			inif.setStringProperty("Formulare", "RezeptFormulareAnzahl",new Integer(rows).toString() , null);
+			inif.setStringProperty("Formulare", "RezeptFormulareAnzahl",Integer.valueOf(rows).toString() , null);
 			for(int i = 0;i<rows;i++){
 				inif.setStringProperty("Formulare", "RFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
 				inif.setStringProperty("Formulare", "RFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);

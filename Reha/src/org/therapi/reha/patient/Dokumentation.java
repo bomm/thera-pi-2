@@ -1041,7 +1041,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					File f = new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]);
 					if(f.exists()){
 						int dokuid = SqlInfo.erzeugeNummer("doku");
-						int pat_int = new Integer(Reha.thisClass.patpanel.aktPatID); //new Integer(annika.getText().trim());
+						int pat_int = Integer.valueOf(Reha.thisClass.patpanel.aktPatID); //Integer.valueOf(annika.getText().trim());
 
 							
 							speichernOoDocs(
@@ -1374,7 +1374,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		//System.out.println("Beginne speichern");
 		//rehaSplash.setNewText("Dokumentation auf Server transferieren");
 		int dokuid = SqlInfo.erzeugeNummer("doku");
-		int pat_int = new Integer(Reha.thisClass.patpanel.aktPatID); //new Integer(annika.getText().trim());
+		int pat_int = Integer.valueOf(Reha.thisClass.patpanel.aktPatID); //Integer.valueOf(annika.getText().trim());
 		try {
 			
 			doSpeichernDoku(
@@ -1398,7 +1398,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			loescheBilderPan();
 			dokubut[0].setEnabled(true);
 			dokubut[1].setEnabled(true);
-			//this.holeDokus(Reha.thisClass.patpanel.aktPatID,new Integer(dokuid).toString());
+			//this.holeDokus(Reha.thisClass.patpanel.aktPatID,Integer.valueOf(dokuid).toString());
 			setCursor(Reha.thisClass.normalCursor);
 			JOptionPane.showMessageDialog(null,"Fehler beim Speichern der Dokumentation \nDoku wurde nicht gespeichert");
 			//annika.setText("");
@@ -1563,7 +1563,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
       			Double[] setDim = getDims(SystemConfig.hmDokuScanner.get("seiten"));
     			TwainSource source = ((TwainIOMetadata)metadata).getSource();
     			try{
-    				int dpi= new Integer(SystemConfig.hmDokuScanner.get("aufloesung"));
+    				int dpi= Integer.valueOf(SystemConfig.hmDokuScanner.get("aufloesung"));
     				source.getCapability(TwainConstants.ICAP_UNITS,TwainConstants.MSG_GETCURRENT).setCurrentValue(TwainConstants.TWUN_INCHES);
     				source.getCapability(TwainConstants.ICAP_XRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi);
     				source.getCapability(TwainConstants.ICAP_YRESOLUTION,TwainConstants.MSG_GETCURRENT).setCurrentValue(dpi); 
@@ -1896,7 +1896,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			public void mousePressed(MouseEvent arg0) {
 				if(arg0.getClickCount()==2){
 					//System.out.println("LabeName = "+((JComponent)arg0.getSource()).getName());
-					int seite = new Integer( ((JComponent)arg0.getSource()).getName().split("-")[1] );
+					int seite = Integer.valueOf( ((JComponent)arg0.getSource()).getName().split("-")[1] );
 					File file = null;
 					String datei = "";
 					String grafik = SystemConfig.hmFremdProgs.get("GrafikProg").trim();
@@ -1946,10 +1946,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					
 				}else if(arg0.getClickCount()==1){
 					if(aktivesBild > 0){
-						int bild = new Integer( Labels.get(aktivesBild-1).getText().split("-")[1]); 
+						int bild = Integer.valueOf( Labels.get(aktivesBild-1).getText().split("-")[1]); 
 						Labels.get(bild-1).setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					}
-					aktivesBild = new Integer( ((JLabel)((JComponent)arg0.getSource())).getText().split("-")[1] );
+					aktivesBild = Integer.valueOf( ((JLabel)((JComponent)arg0.getSource())).getText().split("-")[1] );
 					Labels.get(aktivesBild-1).setBorder(BorderFactory.createLineBorder(Color.RED));
 				}
 				
@@ -2001,7 +2001,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 		/*
 		String ret = "<html>"+titel+
-		(anz > 0 ? " - <font color='#ff0000'>"+new Integer(anz).toString()+"<font></html>" : " - <font color='#000000'>"+new Integer(anz).toString()+"</font>");
+		(anz > 0 ? " - <font color='#ff0000'>"+Integer.valueOf(anz).toString()+"<font></html>" : " - <font color='#000000'>"+Integer.valueOf(anz).toString()+"</font>");
 		*/
 		return ret;
 	}
@@ -2031,7 +2031,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					if( ((Vector)vec.get(i)).get(1) == null){
 						zzbild = 0;
 					}else if(!((Vector)vec.get(i)).get(1).equals("")){
-						zzbild = new Integer((String) ((Vector)vec.get(i)).get(1) );
+						zzbild = Integer.valueOf((String) ((Vector)vec.get(i)).get(1) );
 					}
 					dtblm.addRow((Vector)vec.get(i));
 					dtblm.setValueAt(tabIcons[zzbild], i, 1);
@@ -2266,7 +2266,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
-			//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);
+			//Dokumentation.speichernOoDocs(Integer.valueOf(id), -1, file, -1, null, false);
 			if(neu){
 			String select = "Insert into doku1 set dokuid = ? , datum = ?, dokutitel = ?,"+
 			"benutzer = ?, pat_intern = ?, format = ?,"+
@@ -2308,7 +2308,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			  
 			}else{
 				//int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu
-				//Dokumentation.speichernOoDocs(new Integer(id), -1, file, -1, null, false);	
+				//Dokumentation.speichernOoDocs(Integer.valueOf(id), -1, file, -1, null, false);	
 				String select = "update doku1 set dokublob = ?, groesse = ?, datum = ? "+
 				" where id = ?";
 				//System.out.println("Prepared statement: "+select);
@@ -2318,7 +2318,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				  ps.setBytes(1,b);
 				  ps.setInt(2, (int)b.length);
 				  ps.setString(3, DatFunk.sDatInSQL(DatFunk.sHeute()));
-				  ps.setString(4,new Integer(dokuid).toString());
+				  ps.setString(4,Integer.valueOf(dokuid).toString());
 				  ps.execute();
 				  //System.out.println("Fertig mit execute");
 				  //System.out.println("Größe des Datenstroms="+b.length+" Bytes");

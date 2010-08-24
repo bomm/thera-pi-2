@@ -53,8 +53,8 @@ public class Win_ChipDriveMicro100 {
  
 			
 			Pointer hwnd = new IntByReference(0).getPointer();
-			String sCommand = new String(this.sCommand);
-			//String sCommand = new String("Device,Info");
+			String sCommand = String.valueOf(this.sCommand);
+			//String sCommand = String.valueOf("Device,Info");
 			Pointer cmdLen = new IntByReference(sCommand.length()).getPointer();
 
 			byte []sIn = "".getBytes();
@@ -72,7 +72,7 @@ public class Win_ChipDriveMicro100 {
 									outLen
 									);
 			
-			////System.out.println("Rückgabewert der Funktion  = "+new Integer(ret).toHexString(ret) );
+			////System.out.println("Rückgabewert der Funktion  = "+Integer.valueOf(ret).toHexString(ret) );
 			////System.out.println("Output = "+Native.toString(output) );
 			}catch (UnsatisfiedLinkError e) {
 				e.printStackTrace();
@@ -115,7 +115,7 @@ public class Win_ChipDriveMicro100 {
 		
 		public String fehlerDeuten(int ibr,SCard32 lib){
 			Pointer hwnd = new IntByReference(0).getPointer();
-			String sCommand = new String("System,Info");
+			String sCommand = String.valueOf("System,Info");
 			Pointer cmdLen = new IntByReference(sCommand.length()).getPointer();
 			byte []sIn = "".getBytes();
 			Pointer inLen = new IntByReference(0).getPointer();

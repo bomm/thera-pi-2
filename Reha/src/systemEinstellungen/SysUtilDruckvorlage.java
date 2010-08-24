@@ -196,11 +196,11 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
 		//NameTemplate = C:\RehaVerwaltung\vorlagen\terminliste5.odt
 		tabanz = new JRtaTextField("ZAHLEN", true);
-		tabanz.setText(new Integer( SystemConfig.oTerminListe.AnzahlTerminTabellen).toString() );
+		tabanz.setText(Integer.valueOf( SystemConfig.oTerminListe.AnzahlTerminTabellen).toString() );
 		zeilanz = new JRtaTextField("ZAHLEN", true);
-		zeilanz.setText(new Integer( SystemConfig.oTerminListe.AnzahlTermineProTabelle).toString() );
+		zeilanz.setText(Integer.valueOf( SystemConfig.oTerminListe.AnzahlTermineProTabelle).toString() );
 		spaltanz = new JRtaTextField("ZAHLEN", true);
-		spaltanz.setText(new Integer( SystemConfig.oTerminListe.AnzahlSpaltenProTabellen).toString() );
+		spaltanz.setText(Integer.valueOf( SystemConfig.oTerminListe.AnzahlSpaltenProTabellen).toString() );
 		spaltanz.setName("spaltenanzahl");
 		spaltanz.addFocusListener(this);
 		ddruck = new JRadioButton();
@@ -280,7 +280,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		spa[3] = spalte4;		
 		builder.add(spalte4, cc.xy(5, 37));
 		
-		int anz = new Integer(spaltanz.getText().trim());
+		int anz = Integer.valueOf(spaltanz.getText().trim());
 		for(int i = 0 ; i< 4;i++){
 			if(i < anz){
 				spa[i].setEnabled(true);
@@ -413,21 +413,21 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 	}
 	private void datenSpeichern(){
 		
-		int test1 = new Integer(tabanz.getText().trim());
+		int test1 = Integer.valueOf(tabanz.getText().trim());
 		if(test1==0){
 			JOptionPane.showMessageDialog(null,"Sie wollen eine Definition abspeichern mit Anzahl Tabelle = 0,\n\n"+
 					"Mit diesem IQ sind Sie ein Fall für THEORG! Diese Definition wird jedenfalls\n"+
 					"nicht abgespeichert!");
 			return;
 		}
-		int test2 = new Integer(spaltanz.getText().trim());		
+		int test2 = Integer.valueOf(spaltanz.getText().trim());		
 		if(test2==0){
 			JOptionPane.showMessageDialog(null,"Sie wollen eine Definition abspeichern mit Anzahl Spalten = 0,\n\n"+
 					"Mit diesem IQ sind Sie ein Fall für THEORG! Diese Definition wird jedenfalls\n"+
 					"nicht abgespeichert!");
 			return;
 		}
-		int test3 = new Integer(zeilanz.getText().trim());
+		int test3 = Integer.valueOf(zeilanz.getText().trim());
 		if(test3==0){
 			JOptionPane.showMessageDialog(null,"Sie wollen eine Definition abspeichern mit Terminzeile pro Tabelle  = 0,\n\n"+
 					"Mit diesem IQ sind Sie ein Fall für THEORG! Diese Definition wird jedenfalls\n"+
@@ -436,13 +436,13 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		}
 		
 		INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminliste.ini");
-		ini.setStringProperty("TerminListe1", "AnzahlTabellen", new Integer( test1).toString(), null);
+		ini.setStringProperty("TerminListe1", "AnzahlTabellen", Integer.valueOf( test1).toString(), null);
 		SystemConfig.oTerminListe.AnzahlTerminTabellen = test1;
 		
-		ini.setStringProperty("TerminListe1", "AnzahlSpaltenProTabellen", new Integer( test2).toString(), null);
+		ini.setStringProperty("TerminListe1", "AnzahlSpaltenProTabellen", Integer.valueOf( test2).toString(), null);
 		SystemConfig.oTerminListe.AnzahlSpaltenProTabellen = test2;
 		
-		ini.setStringProperty("TerminListe1", "AnzahlTermineProTabelle", new Integer( test3).toString(), null);
+		ini.setStringProperty("TerminListe1", "AnzahlTermineProTabelle", Integer.valueOf( test3).toString(), null);
 		SystemConfig.oTerminListe.AnzahlTermineProTabelle = test3;
 		
 		ini.setStringProperty("TerminListe1", "NameTemplate", vorlagenname.getText().trim(), null);
@@ -481,17 +481,17 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 	
 	private void speichernKonfig(){
 		/*
-		AnzahlTerminTabellen = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTabellen"));
-		AnzahlSpaltenProTabellen = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlSpaltenProTabellen"));
+		AnzahlTerminTabellen = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTabellen"));
+		AnzahlSpaltenProTabellen = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlSpaltenProTabellen"));
 		for(int i = 0;i<AnzahlSpaltenProTabellen;i++){
 			NamenSpalten.add(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "InhaltSpalte"+(i+1)) );
 		}
-		AnzahlTermineProTabelle = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTermineProTabelle"));
+		AnzahlTermineProTabelle = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTermineProTabelle"));
 		NameTemplate = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "NameTemplate");
 		NameTerminDrucker = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "NameTerminDrucker");
-		PatNameDrucken = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNameDrucken"));
+		PatNameDrucken = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNameDrucken"));
 		PatNamenPlatzhalter = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNamePlatzhalter");
-		MitUeberschrift = new Integer(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "MitSpaltenUeberschrift"));
+		MitUeberschrift = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "MitSpaltenUeberschrift"));
 		*/
 		
 	}
@@ -570,7 +570,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 				if(spaltanz.getText().trim().equals("")){
 					anzahl = 0;
 				}else{
-				   anzahl = new Integer(spaltanz.getText().trim());	
+				   anzahl = Integer.valueOf(spaltanz.getText().trim());	
 				}
 				if(anzahl == 0){
 					String text = "Also das ist ja zwar alles Ihre Sache...\n\n"+
@@ -608,20 +608,20 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		JRtaTextField zeilanz = null;
 		JRtaTextField spaltanz = null;
 */
-		int AnzahlTabellen = new Integer(tabanz.getText().trim());
+		int AnzahlTabellen = Integer.valueOf(tabanz.getText().trim());
 		if(AnzahlTabellen == 0){
 			JOptionPane.showMessageDialog(null, "Ohne Termintabelle kein Terminplan und deshalb auch kein Test!");
 			thisClass.setCursor(Reha.thisClass.normalCursor);
 			return;
 		}
-		int maxTermineProTabelle = new Integer(zeilanz.getText().trim());
+		int maxTermineProTabelle = Integer.valueOf(zeilanz.getText().trim());
 		if(maxTermineProTabelle == 0){
 			JOptionPane.showMessageDialog(null, "Mit der Angabe Termine pro Tabelle == 0 -> kein Terminplan und deshalb auch kein Test!");
 			thisClass.setCursor(Reha.thisClass.normalCursor);
 			return;			
 		}
 		int maxTermineProSeite = AnzahlTabellen * maxTermineProTabelle;
-		int spaltenProtabelle = new Integer(spaltanz.getText().trim());
+		int spaltenProtabelle = Integer.valueOf(spaltanz.getText().trim());
 		if(spaltenProtabelle==0){
 			thisClass.setCursor(Reha.thisClass.normalCursor);
 			JOptionPane.showMessageDialog(null, "Ohne Spalten keine Tabelle, ohne Tabelle kein Terminplan -> und deshalb auch kein Test!");

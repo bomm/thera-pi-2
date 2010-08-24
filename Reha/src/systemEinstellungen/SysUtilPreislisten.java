@@ -235,7 +235,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		int aktiv;
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
 		for(int i = 0;i < 5;i++){
-			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+new Integer(i+1).toString());
+			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+Integer.valueOf(i+1).toString());
 			if(aktiv > 0){
 				//heilmittel[i].setSelected(true);
 			}else{
@@ -421,7 +421,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			int anzahl = modpreis.getRowCount();
 			String hmpos,kurz,lang,akt,alt,sid;
 			String sdb = dbtarife[jcmb[0].getSelectedIndex()];
-			String gruppe = new Integer(jcmb[1].getSelectedIndex()+1).toString();
+			String gruppe = Integer.valueOf(jcmb[1].getSelectedIndex()+1).toString();
 			int igruppe = jcmb[1].getSelectedIndex()+1;
 			String cmd;
 			setCursor(Reha.thisClass.wartenCursor);

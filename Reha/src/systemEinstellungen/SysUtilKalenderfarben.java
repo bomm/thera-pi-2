@@ -315,7 +315,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 				ini.setStringProperty(defName,SystemConfig.vSysColsNamen.get(i) , farbsplit,null);
 				ini.setStringProperty("Terminkalender","FarbenBedeutung"+(i+1),((String)FarbTab.getValueAt(i, 1)),null);
 				SystemConfig.vSysColsObject.get(def).set(i, new Color[] {hg,vg});
-				//vSysColsBedeut.add(new String(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
+				//vSysColsBedeut.add(String.valueOf(colini.getStringProperty("Terminkalender","FarbenBedeutung"+(i+1))));
 				SystemConfig.aktTkCol.put(SystemConfig.vSysColsNamen.get(i), new Color[] {hg,vg});
 				
 			}
