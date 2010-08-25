@@ -5,7 +5,7 @@ package hauptFenster;
 import generalSplash.RehaSplash;
 
 import java.awt.Color;
-import java.awt.Cursor;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -591,10 +591,10 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					@Override
 					protected Void doInBackground() throws Exception {
 						try{
-							Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+							Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 							//ProgLoader.SystemInitialisierung();
 							Reha.thisClass.progLoader.SystemInit(1, "");
-							Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+							Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 						}catch(Exception ex){
 							ex.printStackTrace();
 						}
@@ -615,10 +615,10 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 						Reha.thisClass.progLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
 						//ProgLoader.KassenFenster(0,TestePatStamm.PatStammKasseID());
-						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 						return null;
 					}
 				}.execute();
@@ -629,10 +629,10 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 						Reha.thisClass.progLoader.ProgTerminFenster(1, 0);
 						//ProgLoader.ProgTerminFenster(1,0);
-						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 						return null;
 					}
 				}.execute();
@@ -642,10 +642,10 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 						Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
 						//ProgLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
-						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 						return null;
 					}
 				}.execute();
@@ -733,11 +733,11 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						setCursor(Reha.thisClass.wartenCursor);
 						Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
 						//Reha.thisClass.progLoader.ProgTerminFenster(0, 1);
 						//ProgLoader.ProgPatientenVerwaltung(1);
-						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						setCursor(Reha.thisClass.normalCursor);
 						return null;
 					}
 				}.execute();

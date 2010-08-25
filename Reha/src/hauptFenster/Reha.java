@@ -298,7 +298,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=0817/03-DB=";
+	public static String aktuelleVersion = "V=0824/03-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1211,7 +1211,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				      Transferable tr = e.getTransferable();
 				      DataFlavor[] flavors = tr.getTransferDataFlavors();
 				      for (int i = 0; i < flavors.length; i++){
-				        	mitgebracht  = new String((String) tr.getTransferData(flavors[i]).toString());
+				        	mitgebracht  = String.valueOf((String) tr.getTransferData(flavors[i]).toString());
 				      }
 				      if(mitgebracht.indexOf("°") >= 0){
 			    		  String[] labs = mitgebracht.split("°");
@@ -1637,8 +1637,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         				new SwingWorker<Void,Void>(){
         					@Override
         					protected Void doInBackground() throws Exception {
-        						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+        						Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
         						return null;
         					}
         				}.execute();
@@ -1670,9 +1670,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==65) {  // Ctrl-K
     					//JComponent arzt = AktiveFenster.getFensterAlle("ArztVerwaltung");
     					
-						Reha.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 						Reha.thisClass.progLoader.ArztFenster(0,TestePatStamm.PatStammArztID());
-						Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
                     }
                     
                     if(keyEvent.isControlDown() &&
@@ -2635,7 +2635,7 @@ class RehaSockServer{
 				char b = (char)byteStream;
 				sb.append(b);
 			}
-			test = new String(sb);
+			test = String.valueOf(sb);
 			final String xtest = test;
 			if(xtest.equals("INITENDE")){
 				byte[] schreib = "ok".getBytes();

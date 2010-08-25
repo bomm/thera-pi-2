@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/jgoodies-common-0.9.9.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/itext/iText-2.1.6.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/unoloader.jar"/>
-	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.2.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
@@ -36,5 +35,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Nebraska.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/jna_junit/jna-3.2.4.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/sql/jpmdbc.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
