@@ -2,7 +2,6 @@ package sqlTools;
 
 import hauptFenster.Reha;
 
-import java.awt.Cursor;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
