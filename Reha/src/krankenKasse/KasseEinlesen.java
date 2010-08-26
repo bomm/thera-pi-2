@@ -2,24 +2,17 @@ package krankenKasse;
 
 import hauptFenster.Reha;
 
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 
 public class KasseEinlesen {
 	
-	public void KasseEinlesen(){
+	public KasseEinlesen(){
 		oeffneKostentraeger();
 	    //System.out.println("Austritt aus KasseEinlesen");
  			
@@ -37,7 +30,8 @@ public class KasseEinlesen {
 	        public void propertyChange(PropertyChangeEvent e) {
 	            if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
 	                    || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-	                final File f = (File) e.getNewValue();
+	                @SuppressWarnings("unused")
+					final File f = (File) e.getNewValue();
 	            }
 	        }
 	    });

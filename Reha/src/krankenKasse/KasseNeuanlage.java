@@ -4,21 +4,15 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.LinearGradientPaint;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +21,6 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -38,25 +31,22 @@ import javax.swing.text.MaskFormatter;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
+
+import sqlTools.SqlInfo;
+import systemEinstellungen.SystemPreislisten;
+import systemTools.JCompTools;
+import systemTools.JRtaComboBox;
+import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
-import systemEinstellungen.SystemPreislisten;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
-
 public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListener,FocusListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7499352308908305654L;
 	Vector kasDaten = null;
 	String kassenId = "";
 	JRtaComboBox tarifGruppe = null;

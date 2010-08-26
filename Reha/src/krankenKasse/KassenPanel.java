@@ -4,12 +4,8 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
@@ -32,11 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -50,31 +43,22 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-
-
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-//import org.jdesktop.swingx.decorator.Filter;
-//import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-//import org.jdesktop.swingx.decorator.PatternFilter;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.search.Searchable;
 
-
-import patientenFenster.PatNeuanlage;
-
-
-
-
-
-
-
+import rehaInternalFrame.JKasseInternal;
+import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
+import stammDatenTools.KasseTools;
+import systemEinstellungen.INIFile;
+import systemEinstellungen.SystemConfig;
+import systemTools.Colors;
+import systemTools.JCompTools;
+import systemTools.JRtaTextField;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -83,7 +67,6 @@ import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 
@@ -96,22 +79,12 @@ import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
-import rehaInternalFrame.JKasseInternal;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import stammDatenTools.KasseTools;
-import systemEinstellungen.INIFile;
-import systemEinstellungen.SysUtilDruckvorlage;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
-import terminKalender.TerminFenster;
-import terminKalender.DatFunk;
-
 
 public class KassenPanel extends JXPanel implements PropertyChangeListener,TableModelListener,KeyListener,FocusListener,ActionListener, MouseListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8071861793718571588L;
 	JButton einlesen = null;
 	JXPanel contPan = null;
 	public JXTable kassentbl = null;
