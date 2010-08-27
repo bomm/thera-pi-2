@@ -151,7 +151,7 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 	
 	String[][] tageart = {{"----","----"},{"UuUu","UuUu"},{"FfFf","FfFf"},{"KkKk","KkKk"},
 			{"UuFf","UuFf"},{"Uu--","Uu--"},{"Ff--","Ff--"},
-			{"Kk--","Kk--"},{"K???","K???"},{"U???","KU??"}};
+			{"Kk--","Kk--"},{"K???","K???"},{"U???","U???"},{"F???","F???"} };
 	
 	boolean gestartet = false;
 
@@ -224,7 +224,16 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 					return;
 				}
 				if(cmd.equals("wocheermitteln")){
-					doErmitteln();
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							RehaUrlaub.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+							doErmitteln();
+							RehaUrlaub.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));							
+							return null;
+						}
+					}.execute();
+
 					return;
 				}
 				if(cmd.equals("calc")){
@@ -624,6 +633,7 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 				}else if(tabmod.getColumnClass(col) == String.class){
 					value = tabmod.getValueAt(row,col).toString();
 				}
+				//System.out.println("aufruf teste Woche");
 				testeWoche(row,col);
 			
 			}catch(Exception ex){
@@ -1031,12 +1041,12 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 				}
 				
 				if(termine.get(i).get( (b*5)+1 ).equalsIgnoreCase("@FREI") && 
-						termine.get(i).get(b*5).equalsIgnoreCase("KRANK")){
+						termine.get(i).get(b*5).toUpperCase().startsWith("KRANK")){
 					krank = true;
 					ikrank++;
 				}
 				if(termine.get(i).get( (b*5)+1 ).equalsIgnoreCase("@FREI") && 
-						termine.get(i).get( b*5 ).equalsIgnoreCase("URLAUB")){
+						termine.get(i).get( b*5 ).toUpperCase().startsWith("URLAUB")){
 					urlaub = true;
 					iurlaub++;
 				}
@@ -1121,15 +1131,20 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 	}
 	
 	public void testeWoche(int row,int col){
-		for(int i = 2; i < 16;i++){
+		for(int i = 2; i <= 17;i++){
+			//System.out.println("in der schleife "+i+" col = "+col);
 			if(col==i){
 				if(i % 2 == 0){
 					//System.out.println("Stunden wurden editiert");
+					tabmod.removeTableModelListener(this);
 					rechneWoche(row);
 					schreibeWoche(row);
+					tabmod.addTableModelListener(this);
 				}else{
 					//System.out.println("Tagart wurde gewählt");
+					tabmod.removeTableModelListener(this);
 					rechneTagArt(row,col);
+					tabmod.addTableModelListener(this);
 				}
 			}
 		}
@@ -1137,6 +1152,13 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 	
 	public void rechneTagArt(int row,int col){
 		String tag =  holeTagDatum( row, ((col+1)/2)-2 );
+		if(tabmod.getValueAt(row,col) instanceof Double){
+			tabmod.removeTableModelListener(this);
+			rechneWoche(row);
+			schreibeWoche(row);
+			tabmod.addTableModelListener(this);
+			return;
+		}
 		String wert = (String) tabmod.getValueAt(row,col);
 		//System.out.println(tag);
 		BigDecimal istarbeit = null;

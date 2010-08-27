@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/jgoodies/jgoodies-common-0.9.9.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/swingx/swingx-1.6.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/swingx/swing-worker.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.2.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/java_uno.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
@@ -22,5 +21,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/unoil.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/unoloader.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/dbf/jdbf.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

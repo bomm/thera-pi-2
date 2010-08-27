@@ -7,7 +7,7 @@ Class-Path: Libraries/lib/jgoodies/forms-1.3.0.jar
  Libraries/lib/swingx/swingx-1.6.jar 
  Libraries/lib/swingx/swing-worker.jar 
  Libraries/lib/openofficeorg/unoloader.jar 
- Libraries/lib/openofficeorg/ag.ion.noa_2.2.2.jar 
+ Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar 
  Libraries/lib/openofficeorg/bootstrapconnector.jar 
  Libraries/lib/openofficeorg/java_uno.jar 
  Libraries/lib/openofficeorg/java_uno_accessbridge.jar 
