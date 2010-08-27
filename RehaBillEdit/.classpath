@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/swingx/swingx-1.6.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/swingx/pdf-renderer-1.0.5.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/swingx/swing-worker.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/java_uno.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
