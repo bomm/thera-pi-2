@@ -42,7 +42,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 
 	public SysUtilNummernKreis(ImageIcon img){
 		super(new BorderLayout());
-		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
+		this.setBorder(BorderFactory.createEmptyBorder(15, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
@@ -77,7 +77,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
        //1.    2. 3.   4.   5.   6. 7.   8.  9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.  20.    21.   22.   23.
-		"p, 2dlu, p, 10dlu,10dlu,p,2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, "+
+		"p, 0dlu, p, p,7dlu,p,2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, "+
 	   // 21.  22.  23.  24. 25.  26. 27. 28.  29.  30.  31.  32.  33. 34.  35.  36.
 		"2dlu ,p , 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu,  p, 2dlu, p, 2dlu, p, 2dlu, p ");
 
@@ -136,25 +136,25 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 		tfs[8].setName("bericht");
 		builder.add(tfs[8],cc.xy(3,24));
 
-		builder.addLabel("Berichte",cc.xy(1,24));
+		builder.addLabel("Berichte",cc.xy(1,26));
 		tfs[9] = new JRtaTextField("ZAHLEN",true);
 		tfs[9].setName("bericht");
-		builder.add(tfs[9],cc.xy(3,24));
+		builder.add(tfs[9],cc.xy(3,26));
 
-		builder.addLabel("Ausfallrechnung",cc.xy(1,26));
+		builder.addLabel("Ausfallrechnung",cc.xy(1,28));
 		tfs[10] = new JRtaTextField("ZAHLEN",true);
 		tfs[10].setName("afrnr");
-		builder.add(tfs[10],cc.xy(3,26));
+		builder.add(tfs[10],cc.xy(3,28));
 
-		builder.addLabel("Rezeptgebührrechn.",cc.xy(1,28));
+		builder.addLabel("Rezeptgebührrechn.",cc.xy(1,30));
 		tfs[11] = new JRtaTextField("ZAHLEN",true);
 		tfs[11].setName("rgrnr");
-		builder.add(tfs[11],cc.xy(3,28));
+		builder.add(tfs[11],cc.xy(3,30));
 
-		builder.addLabel("Dokumentation",cc.xy(1,30));
+		builder.addLabel("Dokumentation",cc.xy(1,32));
 		tfs[12] = new JRtaTextField("ZAHLEN",true);
 		tfs[12].setName("doku");
-		builder.add(tfs[12],cc.xy(3,30));
+		builder.add(tfs[12],cc.xy(3,32));
 
 		//builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,32));
 		tfs[13] = new JRtaTextField("ZAHLEN",true);
