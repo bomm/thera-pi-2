@@ -381,12 +381,14 @@ private JScrollPane getParameterListe(){
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Fortlaufender Nummernkreis");
+	/*
 	treeitem = new DefaultMutableTreeNode("Patientennummer");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Rezeptnummer");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Rechnungsnummer");
-	node.add(treeitem ); 
+	node.add(treeitem );
+	*/ 
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Abrechnung und §302");
@@ -760,6 +762,20 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
+		if(util.equals("Fortlaufender Nummernkreis")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilNummernKreis(null);
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+		
+		
 		if(SystemConfig.hmSysIcons.get("werkzeuge") == null){
 			SystemConfig.hmSysIcons.put("werkzeuge",new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 		}

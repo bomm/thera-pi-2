@@ -3,14 +3,10 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,26 +14,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListener {
-	public SysUtilVorlage(ImageIcon img){
+public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionListener {
+	public SysUtilNummernKreis(ImageIcon img){
 		super(new BorderLayout());
 		//System.out.println("Aufruf SysUtilVorlage");
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
-	     JLabel jlbl = new JLabel("");
-	     jlbl.setIcon(img);
-	     //jlbl.setIcon(new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
-	     add(jlbl,BorderLayout.CENTER);
-	     //add(getVorlagenSeite());
+	    add(getVorlagenSeite());
 		return;
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/

@@ -222,9 +222,6 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem);
 	root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Emailparameter");
-	root.add(node);
-	/***/
 	node = new DefaultMutableTreeNode( "Geräte/Anschlüsse"); 
 	treeitem = new DefaultMutableTreeNode("Anschlüsse");
 	node.add(treeitem ); 
@@ -245,15 +242,6 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem );
 	root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Fortlaufender Nummernkreis");
-	treeitem = new DefaultMutableTreeNode("Patientennummer");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Rezeptnummer");
-	node.add(treeitem ); 
-	treeitem = new DefaultMutableTreeNode("Rechnungsnummer");
-	node.add(treeitem ); 
-	root.add(node);
-	/***/
 	node = new DefaultMutableTreeNode( "Abrechnung und §302");
 	treeitem = new DefaultMutableTreeNode("Nebraska / Zertifikatshandling");
 	node.add(treeitem ); 
@@ -267,9 +255,18 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 	root.add(node);
 	/***/
+	node = new DefaultMutableTreeNode( "Emailparameter");
+	root.add(node);
+	/***/
 	node = new DefaultMutableTreeNode( "Fremdprogramme");
 	root.add(node);
 	/***/
+	node = new DefaultMutableTreeNode( "Fortlaufender Nummernkreis");
+	root.add(node);
+	/***/
+	node = new DefaultMutableTreeNode( "Software-Updateservice");
+	root.add(node);
+
 
 
 	tree = new JTree( root );
@@ -625,6 +622,19 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
+		if(util.equals("Fortlaufender Nummernkreis")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilNummernKreis(null);
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+
 		if(SystemConfig.hmSysIcons.get("werkzeuge") == null){
 			SystemConfig.hmSysIcons.put("werkzeuge",new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 		}
