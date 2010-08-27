@@ -6,6 +6,7 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,8 +64,8 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			                      null,null,null};
 	JButton knopf4 = null;
 	JButton knopf5 = null;
-	int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17};
-	int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19};
+	int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17,12};
+	int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19,11};
 	KassenPanel kpan;
 
 	public KasseNeuanlage(Object eltern,KassenPanel xkpan,Vector vec,String id){
@@ -156,6 +157,12 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
 				fensterSchliessen();
 			}
+			if(((JComponent)arg0.getSource()).getName().equals("KV_NUMMER")){
+				//nur auslesen bei siebenstelliger KV-Nummer
+				if(jtf[12].getText().length() == 7){
+					ktraegerAuslesen();	
+				}
+			}
 		}
 		if(arg0.getKeyCode() == 27){
 			fensterSchliessen();
@@ -244,6 +251,35 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			//System.out.println("In Preisgruppe einstellen Preisgruppe = "+preisG);
 			tarifGruppe.setSelectedIndex((preisG >= 0 ? preisG : 0));
 		}
+		ktraegerAuslesen();
+	}
+	
+	public void ktraegerAuslesen (){
+ 		if(this.neuAnlage == true){
+ 				int iid = SqlInfo.holeId("kass_adr", "kmemo");
+ 				if(iid == -1){
+ 					JOptionPane.showMessageDialog(null, "Fehler beim Anlegen einer neuen Kasse, bitte erneut versuchen -> speichern");
+ 					return;
+ 				}
+ 				this.kassenId = Integer.toString(iid);
+ 		}
+ 		List<String> nichtlesen = Arrays.asList(new String[] {"KMEMO"});
+ 		Vector felder = SqlInfo.holeSatz("kass_adr", "*", "id='"+this.kassenId+"'",nichtlesen);
+ 		felder.setElementAt(jtf[12].getText(), 11);
+ 		Vector felder2 = SqlInfo.holeSatz("ktraeger", "*", "ikkasse='"+"10"+(String) felder.get(11)+"'",nichtlesen);
+ 		//		i=		    0  1  2  3  4 5 6 7 8  9 10
+ 		int[] fjtf =      {13,14,17,15,16,2,3,5,6, 4, 9};
+ 		int[] fktraeger = { 0, 1, 2, 3, 4,5,6,8,9,10,11};
+ 		if(felder2.size() > 0){
+ 			for(int i = 0; i < fjtf.length;i++){
+ 	 			//Änderungen markieren
+ 				if(!jtf[fjtf[i]].getText().equals(felder2.get(fktraeger[i]))){
+ 					jtf[fjtf[i]].setForeground(Color.BLUE);
+ 				}
+ 				//Änderungen übertragen
+ 				jtf[fjtf[i]].setText((String) felder2.get(fktraeger[i]));
+ 			}
+ 		}
 	}
 	public void datenSpeichern(){
 		//int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17};
@@ -347,6 +383,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		jtf[11].setName("EMAIL3");
 		jtf[12] = new JRtaTextField("ZAHLEN", true);
 		jtf[12].setName("KV_NUMMER");
+		jtf[12].addKeyListener(this);
 		jtf[13] = new JRtaTextField("ZAHLEN", true);
 		jtf[13].setName("IK_KASSE"); //aus Kostentr�gerdatei/Karte einlesen?
 		jtf[14] = new JRtaTextField("ZAHLEN", true);
@@ -356,7 +393,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		jtf[16] = new JRtaTextField("ZAHLEN", true);
 		jtf[16].setName("IK_NUTZER");
 		jtf[17] = new JRtaTextField("ZAHLEN", true);
-		jtf[17].setName("IK_PAPIER");
+		jtf[17].setName("IK_PAPIER");				
 		/*
 											//  1.           2.     3.       4.               5.     6.
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
@@ -365,20 +402,22 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 											//  1.           2.     3.       4.               5.     6.
 		*/
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu,right:max(60dlu;p), 4dlu, 60dlu",
-			       //1.   2.  3.   4.   5.   6  7   8    9   10   11  12  13  14   15   16  17  18   19   20   21  22   23  24   25   26   27  28  29   30   31   32  33  34   
-					"p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 0dlu");
+			       //1.   2.  3.   4.   5.   6  7   8    9   10   11  12  13  14   15   16  17  18   19   20   21  22   23  24   25   26   27  28  29   30   31   32  33  34   35   36
+					"p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 0dlu");
 					PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);	
 		CellConstraints cc = new CellConstraints();
-		
-		builder.addLabel("Kürzel", cc.xy(1,1));
-		builder.add(jtf[0], cc.xy(3,1));
-		builder.addLabel("Tarifgruppe", cc.xy(1,3));
+
+		builder.addLabel ("KV-Nummer lt. Rezept", cc.xy(1, 1));
+		builder.add(jtf[12], cc.xyw(3, 1, 4));
+		builder.addLabel("Kürzel", cc.xy(1,3));
+		builder.add(jtf[0], cc.xy(3,3));
+		builder.addLabel("Tarifgruppe", cc.xy(1,5));
 		tarifGruppe = new JRtaComboBox();
 		tarifGruppe.setName("TARIFGRUPPE");
 		tarifGruppe.addFocusListener(this);
-		builder.add(tarifGruppe, cc.xyw(3, 3, 4));
+		builder.add(tarifGruppe, cc.xyw(3, 5, 4));
 		new SwingWorker<Void,Void>(){
 
 			@Override
@@ -392,42 +431,42 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			}
 			
 		}.execute();
-		builder.addLabel("Name_1", cc.xy(1,5));
-		builder.add(jtf[2], cc.xyw(3, 5, 4));
-		builder.addLabel("Name_2", cc.xy(1,7));
-		builder.add(jtf[3], cc.xyw(3, 7, 4));
-		builder.addLabel("Strasse", cc.xy(1,9));
-		builder.add(jtf[4], cc.xyw(3, 9,4));
+		builder.addLabel("Name_1", cc.xy(1,7));
+		builder.add(jtf[2], cc.xyw(3, 7, 4));
+		builder.addLabel("Name_2", cc.xy(1,9));
+		builder.add(jtf[3], cc.xyw(3, 9, 4));
+		builder.addLabel("Strasse", cc.xy(1,11));
+		builder.add(jtf[4], cc.xyw(3, 11,4));
 
 
-		builder.addLabel("PLZ/Ort", cc.xy(1,11));
-		builder.add(jtf[5], cc.xy(3, 11));
-		builder.add(jtf[6], cc.xyw(4,11, 3));
+		builder.addLabel("PLZ/Ort", cc.xy(1,13));
+		builder.add(jtf[5], cc.xy(3, 13));
+		builder.add(jtf[6], cc.xyw(4,13, 3));
 
-		builder.addLabel("Telefon", cc.xy(1,13));
-		builder.add(jtf[7], cc.xyw(3, 13, 4));
-		builder.addLabel("Fax", cc.xy(1, 15));
-		builder.add(jtf[8], cc.xyw(3, 15, 4));
-		builder.addLabel("E-Mail", cc.xy(1, 17));
-		builder.add(jtf[9], cc.xyw(3, 17, 4));
+		builder.addLabel("Telefon", cc.xy(1,15));
+		builder.add(jtf[7], cc.xyw(3, 15, 4));
+		builder.addLabel("Fax", cc.xy(1, 17));
+		builder.add(jtf[8], cc.xyw(3, 17, 4));
+		builder.addLabel("E-Mail", cc.xy(1, 19));
+		builder.add(jtf[9], cc.xyw(3, 19, 4));
 		
-		builder.addSeparator("IK-Daten für maschinenlesbare Abrechnung", cc.xyw(1, 21, 6));		
+		builder.addSeparator("IK-Daten für maschinenlesbare Abrechnung", cc.xyw(1, 23, 6));		
 		
-		builder.addLabel("IK der Krankenkasse", cc.xy(1, 25));
-		builder.add(jtf[13], cc.xyw(3, 25, 4));
+		builder.addLabel("IK der Krankenkasse", cc.xy(1, 27));
+		builder.add(jtf[13], cc.xyw(3, 27, 4));
 		
-		builder.addLabel("IK des Kostenträgers", cc.xy(1, 27));
-		builder.add(jtf[14], cc.xyw(3, 27, 4));
+		builder.addLabel("IK des Kostenträgers", cc.xy(1, 29));
+		builder.add(jtf[14], cc.xyw(3, 29, 4));
 
-		builder.addLabel("IK der Datenannahmestelle", cc.xy(1, 29));
-		builder.add(jtf[15], cc.xyw(3, 29, 4));
+		builder.addLabel("IK der Datenannahmestelle", cc.xy(1, 31));
+		builder.add(jtf[15], cc.xyw(3, 31, 4));
 
-		builder.addLabel("IK Nutzer/Entschlüssellung", cc.xy(1, 31));
-		builder.add(jtf[16], cc.xyw(3, 31, 4));
+		builder.addLabel("IK Nutzer/Entschlüssellung", cc.xy(1, 33));
+		builder.add(jtf[16], cc.xyw(3, 33, 4));
 
-		builder.addLabel("IK Papierannahmestelle", cc.xy(1, 33));
-		builder.add(jtf[17], cc.xyw(3, 33, 4));
-		
+		builder.addLabel("IK Papierannahmestelle", cc.xy(1, 35));
+		builder.add(jtf[17], cc.xyw(3, 35, 4));
+				
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(builder.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		
@@ -475,6 +514,5 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		but.add(builder.getPanel(),BorderLayout.CENTER);
 		return but;
 	}
-	
 
 }
