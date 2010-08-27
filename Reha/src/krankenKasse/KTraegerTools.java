@@ -22,6 +22,6 @@ public class KTraegerTools {
 		return SqlInfo.holeEinzelFeld("select ikpapier from ktraeger where ikkasse='"+ik+"' LIMIT 1");
 	}
 	public static Vector<Vector<String>> getPapierAdresse(String ik){
-		return SqlInfo.holeFelder("select name1,name2,name3,adresse1,adresse1,adresse1,email from ktraeger where ikkasse='"+ik+"' LIMIT 1");
+		return SqlInfo.holeFelder("select name1,name2,name3,adresse1,adresse2,adresse3 from ktraeger where ikkasse='"+ik+"' LIMIT 1");
 	}
 }
