@@ -308,13 +308,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		String prog = java.lang.System.getProperty("user.dir");
+		String homedir = java.lang.System.getProperty("user.home");
 		osVersion = System.getProperty("os.name");
 		if(osVersion.contains("Linux")){
 			proghome = "/opt/RehaVerwaltung/";
 		}else if(osVersion.contains("Windows")){
 			proghome = prog.substring(0, 2)+"/RehaVerwaltung/";
-		}else if(osVersion.contains("OSX")){
-			
+		}else if(osVersion.contains("Mac OS X")){
+			proghome = homedir+"/RehaVerwaltung/";
 		}
 		String javaPfad = java.lang.System.getProperty("java.home").replaceAll("\\\\","/");
 		if(args.length > 0){
