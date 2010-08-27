@@ -228,7 +228,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		});
 		
         //                                      1.            2.     3.     4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 40dlu, 4dlu, 80dlu:g",
+		FormLayout lay = new FormLayout("right:120dlu, 20dlu, 40dlu, 40dlu, 4dlu, 80dlu:g",
        //1.    2. 3.   4.  5.   6.   7.   8.     9.    10.    11.    12.   13.  14.   15.   16.    17.   18.  19.  20.    21.    22.   23.   24     25    26    27    28   29
 		"p, 2dlu, p, 10dlu,p, 10dlu, p, 10dlu, 150dlu, 10dlu,  p,  10dlu");
 		
@@ -276,7 +276,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		button[6].setActionCommand("speichern");
 		button[6].addActionListener(this);		
 									//      1.                      2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout jpanlay = new FormLayout("right:max(126dlu;p), 50dlu, 40dlu,10dlu, 40dlu, 4dlu, 40dlu",
+		FormLayout jpanlay = new FormLayout("right:120dlu, 50dlu, 40dlu,10dlu, 40dlu, 4dlu, 40dlu",
        //1.    2. 3.   4.   5.   6.     7.    8. 9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
 		"p, 10dlu, p");
 		

@@ -634,6 +634,20 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
+		if(util.equals("Positionskürzel bearbeiten")){
+			if(!Rechte.hatRecht(Rechte.Systeminit_preiseimportieren, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilKuerzel();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+		
+		
 
 		if(SystemConfig.hmSysIcons.get("werkzeuge") == null){
 			SystemConfig.hmSysIcons.put("werkzeuge",new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
