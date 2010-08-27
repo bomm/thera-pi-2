@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -46,6 +47,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
+import sqlTools.SqlInfo;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 
@@ -582,8 +584,11 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		MandantEinlesen me = new MandantEinlesen();
 	    me.setzeMandant(mandant.getSelectedIndex());
 	    mandant.setEnabled(true);
-	    String cmd = "insert into nummern set mandant='"+neuik+"'";
-
+   		String cmd = "insert into nummern set pat='1',kg='1',ma='1',er='1',"+
+    		"lo='1',rh='1',rnr='1',esol='1',bericht='1',afrnr='1',rgrnr,doku='1',"+
+    		"dfue='1',mandant='"+neuik+"'";
+    		SqlInfo.sqlAusfuehren(cmd);
+	    //String cmd = "insert into nummern set mandant='"+neuik+"'";
 	    new ExUndHop().setzeStatement(cmd);
 	}
 	
