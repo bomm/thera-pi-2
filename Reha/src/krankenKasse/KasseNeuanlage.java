@@ -251,7 +251,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 			//System.out.println("In Preisgruppe einstellen Preisgruppe = "+preisG);
 			tarifGruppe.setSelectedIndex((preisG >= 0 ? preisG : 0));
 		}
-		ktraegerAuslesen();
+//		ktraegerAuslesen();
 	}
 	
 	public void ktraegerAuslesen (){
