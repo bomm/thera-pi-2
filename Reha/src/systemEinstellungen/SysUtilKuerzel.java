@@ -3,12 +3,19 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
@@ -22,6 +29,8 @@ import org.jdesktop.swingx.JXTable;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.KuerzelNeu;
 
 import sqlTools.SqlInfo;
 import systemTools.JCompTools;
@@ -40,6 +49,8 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	JButton[] button = {null,null,null,null,null,null,null};
 	JRtaComboBox disziplin = null;
 	String[] diszi = {"KG","MA","ER","LO","RH"};
+	String aktuelleID = "-1";
+	int aktuelleRow = -1;
 
 	SysUtilKuerzel(){
 		super(new BorderLayout());
@@ -82,7 +93,14 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		tblkuerzel.getColumn(2).setMaxWidth(80);
 		tblkuerzel.getColumn(2).setCellRenderer(mr);
 		tblkuerzel.getColumn(3).setMaxWidth(60);
-		tblkuerzel.getColumn(3).setCellRenderer(mr);		
+		tblkuerzel.getColumn(3).setCellRenderer(mr);
+		tblkuerzel.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent arg0) {
+				if(arg0.getClickCount()==2){
+					doKuerzelNeu(false);
+				}
+			}
+		});
 		builder.add(disziplin, cc.xy(6,5));
 		
 		builder.addSeparator("Kürzel-Verwaltung", cc.xyw(1, 7, 6));
@@ -96,6 +114,10 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		
 	}
 	private JPanel getKnopfPanel(){
+		button[3] = new JButton("ändern");
+		button[3].setActionCommand("aendern");
+		button[3].addActionListener(this);
+
 		button[4] = new JButton("neu");
 		button[4].setActionCommand("neu");
 		button[4].addActionListener(this);
@@ -105,11 +127,12 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		button[5] = new JButton("abbrechen");
 		button[5].setActionCommand("abbrechen");
 		button[5].addActionListener(this);
+		
 		button[6] = new JButton("speichern");
 		button[6].setActionCommand("speichern");
 		button[6].addActionListener(this);		
 									//      1.                      2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout jpanlay = new FormLayout("right:120dlu, 50dlu, 40dlu,10dlu, 40dlu, 4dlu, 40dlu",
+		FormLayout jpanlay = new FormLayout("right:120dlu, 50dlu, 40dlu,4dlu, 40dlu, 4dlu, 40dlu,4dlu,40dlu",
        //1.    2. 3.   4.   5.   6.     7.    8. 9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
 		"p, 10dlu, p");
 		
@@ -117,10 +140,11 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		jpan.getPanel().setOpaque(false);		
 		CellConstraints jpancc = new CellConstraints();
 		
-		jpan.addSeparator("", jpancc.xyw(1,1,7));
+		jpan.addSeparator("", jpancc.xyw(1,1,9));
 		jpan.add(button[4], jpancc.xy(3,3));
-		jpan.add(button[5], jpancc.xy(5,3));
+		jpan.add(button[3], jpancc.xy(5,3));
 		jpan.add(button[6], jpancc.xy(7,3));
+		jpan.add(button[5], jpancc.xy(9,3));
 		jpan.addLabel("Neue Kürzel / Änderungen speichern?", jpancc.xy(1,3));
 		
 		
@@ -156,9 +180,7 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	    }
 
 		public boolean isCellEditable(int row, int col) {
-			if(col == 1){
-				return true;
-			}
+			
 			return false;
 		}
 		   
@@ -171,6 +193,65 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		if(cmd.equals("disziplin")){
 			tabelleFuellen(diszi[disziplin.getSelectedIndex()],-1);
 			return;
+		}
+		if(cmd.equals("neu")){
+			doKuerzelNeu(true);
+		}
+		if(cmd.equals("aendern")){
+			if(tblkuerzel.getSelectedRow() < 0){
+				JOptionPane.showMessageDialog(null, "Kein Kürzel zur Bearbeitung ausgewählt");
+				return;
+			}
+			doKuerzelNeu(false);
+		}
+
+	}
+	private void doKuerzelNeu(boolean neu){
+		Point pt = button[4].getLocationOnScreen();
+		KuerzelNeu kNeuDlg = new KuerzelNeu(Reha.thisFrame,"Neues Positionskürzel anlegen",neu,this);
+		kNeuDlg.setPreferredSize(new Dimension(450,175));
+		kNeuDlg.setLocation(pt.x-150,pt.y-230);
+		kNeuDlg.pack();
+		kNeuDlg.setVisible(true);
+
+	}
+	public String[] getKuerzelDaten(){
+		String[] ret = {null,null};
+		int row = tblkuerzel.getSelectedRow();
+		if(row < 0){
+			System.out.println("Keine Reihe ausgewählt");
+			return ret;
+		}
+		aktuelleID = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 3).toString();
+		aktuelleRow = row;
+		ret[0] = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 0).toString();
+		ret[1] = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 1).toString();
+		return ret;
+	}
+	public void updateKuerzel(String kurz,String lang){
+		String cmd = "update kuerzel set kuerzel='"+kurz+"', leistung='"+lang+"' where id='"+aktuelleID+"' LIMIT 1";
+		SqlInfo.sqlAusfuehren(cmd);
+		int row = tblkuerzel.getSelectedRow();
+		
+		modkuerzel.setValueAt((String) kurz, tblkuerzel.convertRowIndexToModel(row), 0);
+		modkuerzel.setValueAt((String) lang, tblkuerzel.convertRowIndexToModel(row), 1);
+		tblkuerzel.validate();
+	}
+	public void insertKuerzel(String kurz,String lang){
+		boolean gibtsschon = SqlInfo.gibtsSchon("select kuerzel from kuerzel where kuerzel='"+kurz+"'");
+		if(gibtsschon){
+			JOptionPane.showMessageDialog(null, "Das Kürzel --> "+kurz+" <-- ist bereits vergeben");
+			return;
+		}
+		String cmd = "insert into kuerzel set kuerzel='"+kurz+"', leistung='"+lang+"', disziplin='"+
+		diszi[disziplin.getSelectedIndex()]+"'";
+		SqlInfo.sqlAusfuehren(cmd);
+		tabelleFuellen(diszi[disziplin.getSelectedIndex()],-1);
+		for(int i = 0;i < tblkuerzel.getRowCount();i++){
+			if(tblkuerzel.getValueAt(i, 0).toString().equals(kurz)){
+				tblkuerzel.setRowSelectionInterval(i, i);
+				break;
+			}
 		}
 	}
 

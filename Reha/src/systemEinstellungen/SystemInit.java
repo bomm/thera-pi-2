@@ -234,7 +234,7 @@ private JScrollPane getParameterListe(){
 	treeitem = new DefaultMutableTreeNode("Heilmittelkatalog einlesen");
 	node.add(treeitem );
 	*/ 
-	treeitem = new DefaultMutableTreeNode("Positionskürzel bearbeiten");
+	treeitem = new DefaultMutableTreeNode("Positionskürzel anlegen");
 	node.add(treeitem );
 	treeitem = new DefaultMutableTreeNode("Tarifgruppen bearbeiten");
 	node.add(treeitem );
@@ -634,7 +634,7 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
-		if(util.equals("Positionskürzel bearbeiten")){
+		if(util.equals("Positionskürzel anlegen")){
 			if(!Rechte.hatRecht(Rechte.Systeminit_preiseimportieren, false)){
 				doAccessDenied();
 				return;
