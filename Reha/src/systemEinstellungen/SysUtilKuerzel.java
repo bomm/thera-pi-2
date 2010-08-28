@@ -208,7 +208,8 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	}
 	private void doKuerzelNeu(boolean neu){
 		Point pt = button[4].getLocationOnScreen();
-		KuerzelNeu kNeuDlg = new KuerzelNeu(Reha.thisFrame,"Neues Positionskürzel anlegen",neu,this);
+		String stitel = (neu ? "Neues Positionskürzel anlegen" : "bestehendes Positionskürzel ändern"); 
+		KuerzelNeu kNeuDlg = new KuerzelNeu(Reha.thisFrame,stitel,neu,this);
 		kNeuDlg.setPreferredSize(new Dimension(450,175));
 		kNeuDlg.setLocation(pt.x-150,pt.y-230);
 		kNeuDlg.pack();
