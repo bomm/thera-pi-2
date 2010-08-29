@@ -1076,7 +1076,7 @@ public class SystemConfig {
 				"rechts","abbruch","pdf","euro","einzeltage","info2","bild","patbild","bunker","camera","oofiles",
 				"kleinehilfe","achtung","vorschau","patstamm","arztstamm","kassenstamm","drvlogo","personen16",
 				"forward","wecker16","mond","roogle","scannergross","rot","gruen","inaktiv","buttonrot","buttongruen",
-				"statusoffen","statuszu","statusset","abschliessen","bombe","openoffice26","tporgklein","undo","redo",
+				"statusoffen","statuszu","statusset","abschliessen","bombe","openoffice26","tporgklein","information","undo","redo",
 				"abrdreizwei","abriv"};
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
