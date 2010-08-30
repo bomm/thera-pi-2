@@ -10,7 +10,6 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
@@ -20,7 +19,11 @@ import systemTools.JRtaTextField;
 
 
 public class DblCellEditor extends AbstractCellEditor implements KeyListener,TableCellEditor {
-    JComponent component = new JRtaTextField("D",true,"6.2","");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JComponent component = new JRtaTextField("D",true,"6.2","");
     boolean mitMaus = false;
 
     // This method is called when editing is completed.

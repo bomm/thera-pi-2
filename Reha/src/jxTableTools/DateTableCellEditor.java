@@ -16,12 +16,9 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
-import javax.swing.text.NumberFormatter;
 
 import terminKalender.DatFunk;
 
@@ -30,9 +27,13 @@ import terminKalender.DatFunk;
 
 public class DateTableCellEditor extends DefaultCellEditor implements KeyListener{
 	
-    JFormattedTextField ftf;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	JFormattedTextField ftf;
     NumberFormat integerFormat;
-    private boolean DEBUG = false;
+    //private boolean DEBUG = false;
 
     public DateTableCellEditor() {
         super(new JFormattedTextField());
@@ -83,6 +84,11 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         
 
         ftf.getActionMap().put("check", new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
         	public void actionPerformed(ActionEvent e) {
 				////System.out.println("Verify in ActionEvent = "+ftf.getInputVerifier().verify(ftf));
@@ -112,6 +118,11 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
             }
         });
         ftf.getActionMap().put("escape", new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
         	public void actionPerformed(ActionEvent e) {
 					cancelCellEditing();
@@ -191,7 +202,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         	insstr = (String)value;
             ftf.setText(insstr);
         }
-        ftf.requestDefaultFocus();
+        ftf.requestFocus();
         ftf.setCaretColor(Color.BLACK);
 		ftf.requestFocus();
         ftf.setSelectionStart(0);
@@ -267,7 +278,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
         		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
         	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
-        			"trotzdem w�rde ich an Ihrer Stelle das Datum noch einmal pr�fen.....");
+        			"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
         }
         fireEditingStopped();
         return super.stopCellEditing();

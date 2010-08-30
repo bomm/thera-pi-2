@@ -10,29 +10,24 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.container.NoSuchElementException;
-import com.sun.star.lang.IllegalArgumentException;
-import com.sun.star.lang.WrappedTargetException;
-
 import oOorgTools.OOTools;
-
+import sqlTools.SqlInfo;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.internal.text.TextTableColumn;
-import ag.ion.bion.officelayer.text.IParagraph;
-import ag.ion.bion.officelayer.text.IParagraphProperties;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 
-import sqlTools.SqlInfo;
-import terminKalender.ParameterLaden;
-import terminKalender.DatFunk;
+import com.sun.star.beans.PropertyVetoException;
+import com.sun.star.beans.UnknownPropertyException;
+import com.sun.star.container.NoSuchElementException;
+import com.sun.star.lang.IllegalArgumentException;
+import com.sun.star.lang.WrappedTargetException;
 
 public class KurzAufrufe {
 	public static void starteFunktion(String funktion, Object obj1,Object obj2){
@@ -56,7 +51,7 @@ public class KurzAufrufe {
 }
 /*******************************************************************************************************/
 class AkutListe{
-	Vector vec = null;
+	Vector<Vector<String>> vec = null;
 	String felder = "therapeut,n_name,v_name,telefonp,telefong,telefonm,emaila,termine1,termine2,akutdat,akutbis";
 	public AkutListe() throws TextException{
 		vec = SqlInfo.holeSaetze("pat5", felder, "akutpat='T' order by therapeut", Arrays.asList(new String[] {}));
@@ -146,36 +141,36 @@ class AkutListe{
 					  		"termine1,"termine2";
 					  		,akutdat,akutbis
 					  */		
-					  text = (String) ((Vector)vec.get(i)).get(0);
+					  text = (String) ((Vector<?>)vec.get(i)).get(0);
 					  textTable.getCell(0,i+1).getTextService().getText().setText(text);
 
-					  text = (String) ((Vector)vec.get(i)).get(1)+"\r"+ (String)((Vector)vec.get(i)).get(2);
+					  text = (String) ((Vector<?>)vec.get(i)).get(1)+"\r"+ (String)((Vector<?>)vec.get(i)).get(2);
 					  textTable.getCell(1,i+1).getTextService().getText().setText(text);
 					  
 					  text = "";
-					  test = (String) ((Vector)vec.get(i)).get(3);
+					  test = (String) ((Vector<?>)vec.get(i)).get(3);
 					  text = text + (test.trim().equals("") ? "" : "p:"+test);
-					  test = (String) ((Vector)vec.get(i)).get(4);
+					  test = (String) ((Vector<?>)vec.get(i)).get(4);
 					  text = text + (test.trim().equals("") ? "" : "\r"+"g:"+test);
-					  test = (String) ((Vector)vec.get(i)).get(5);
+					  test = (String) ((Vector<?>)vec.get(i)).get(5);
 					  text = text + (test.trim().equals("") ? "" : "\r"+"m:"+test);
-					  test = (String) ((Vector)vec.get(i)).get(6);
+					  test = (String) ((Vector<?>)vec.get(i)).get(6);
 					  text = text + (test.trim().equals("") ? "" : "\r"+"e:"+test);
 					  textTable.getCell(2,i+1).getTextService().getText().setText(text);
 					  
 					  text = "";
-					  test = (String) ((Vector)vec.get(i)).get(9);
+					  test = (String) ((Vector<?>)vec.get(i)).get(9);
 					  test = (test.trim().equals("") ? "ab: " : "ab:  "+DatFunk.sDatInDeutsch(test));
 					  text = text + test;
-					  test = (String) ((Vector)vec.get(i)).get(10);
+					  test = (String) ((Vector<?>)vec.get(i)).get(10);
 					  test = (test.trim().equals("") ? "\rbis: " : "\rbis: "+DatFunk.sDatInDeutsch(test));
 					  text = text + test;
 					  textTable.getCell(3,i+1).getTextService().getText().setText(text);
 					  
 					  text = "";
-					  test = (String) ((Vector)vec.get(i)).get(7);
+					  test = (String) ((Vector<?>)vec.get(i)).get(7);
 					  text = text + (test.trim().equals("") ? "" : test);
-					  test = (String) ((Vector)vec.get(i)).get(8);
+					  test = (String) ((Vector<?>)vec.get(i)).get(8);
 					  text = text + (test.trim().equals("") ? "" : "\r"+test);
 					  textTable.getCell(4,i+1).getTextService().getText().setText(text);
 
@@ -192,7 +187,7 @@ class AkutListe{
 			//tbc[4].setWidth((short) 7920);
 			//System.out.println("Es gibt insgesamt "+tbc.length+" Column");
 
-			int cols = textTable.getColumnCount();
+			//int cols = textTable.getColumnCount();
 			int rows = textTable.getRowCount();
 			int rot = Color.RED.getRGB();
 			int blau = Color.BLUE.getRGB();
@@ -228,32 +223,32 @@ class AkutListe{
 }
 /*******************************************************************************************************/
 class TelefonListe{
-	Vector dvec = new Vector();
+	Vector<String[]> dvec = new Vector<String[]>();
 	Object tfobj = null;
 	public TelefonListe(Object obj) throws TextException{
 		////System.out.println("�bergebene Parameter = "+obj);	
 		////System.out.println("Einzelner Termin "+((String) ((Vector)((ArrayList) obj).get(0)).get(1)) );
 		tfobj = obj;
-		for(int i = 0; i <((Vector)((ArrayList) obj).get(0)).size(); i++){
-			if(((String) ((Vector)((ArrayList) obj).get(1)).get(i)).equals("@FREI")){
+		for(int i = 0; i <((Vector<?>)((ArrayList<?>) obj).get(0)).size(); i++){
+			if(((String) ((Vector<?>)((ArrayList<?>) obj).get(1)).get(i)).equals("@FREI")){
 				continue;
 			}
-			if(((String) ((Vector)((ArrayList) obj).get(0)).get(i)).equals("") &&
-					((String) ((Vector)((ArrayList) obj).get(1)).get(i)).equals("")){
+			if(((String) ((Vector<?>)((ArrayList<?>) obj).get(0)).get(i)).equals("") &&
+					((String) ((Vector<?>)((ArrayList<?>) obj).get(1)).get(i)).equals("")){
 				continue;
 			}
 
-			if(((String) ((Vector)((ArrayList) obj).get(1)).get(i)).equals("")){
+			if(((String) ((Vector<?>)((ArrayList<?>) obj).get(1)).get(i)).equals("")){
 				String daten[] = {"","","","",""};
-				daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(i)).substring(0,5)+ " Uhr";
-				daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(i))+"\r\rKeine Zuordnung möglich!";
+				daten[0] = ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(2)).get(i)).substring(0,5)+ " Uhr";
+				daten[1] = ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(0)).get(i))+"\r\rKeine Zuordnung möglich!";
 				daten[2] = "keine RezNr.";
 				daten[4] = "???";
-				dvec.add(daten);
+				dvec.add((String[])daten);
 				continue;
 			}
 
-			testeReznr(((String) ((Vector)((ArrayList) obj).get(1)).get(i)),i);
+			testeReznr(((String) ((Vector<?>)((ArrayList<?>) obj).get(1)).get(i)),i);
 		}
 		if(dvec.size()==0){
 			JOptionPane.showMessageDialog(null, "Für die aktuelle Terminspalte kann kein Patient zugeordnet werden");
@@ -269,27 +264,29 @@ class TelefonListe{
 		if(ind >= 0){
 			reznr = reznr.substring(0,ind);
 		}
-		Vector vec1 = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List) new ArrayList() );
+		List<String> nichtlesen = Arrays.asList(new String[] {});
+		Vector<String> vec1 = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",nichtlesen );
 		if(vec1.size() == 0){
-			daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
-			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, falsche Rezeptnummer???";
+			daten[0] = ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
+			daten[1] = ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, falsche Rezeptnummer???";
 			daten[2] = xreznr;
 			daten[4] = "???";
 			dvec.add(daten);
 			return;
 		}
 		String felder = "n_name,v_name,telefonp,telefong,telefonm,emaila,akutpat";
-		Vector vec2 = SqlInfo.holeSatz("pat5", felder, "pat_intern='"+vec1.get(0)+"'",(List) new ArrayList() );
+		//List<String> nichtlesen = Arrays.asList(new String[] {});
+		Vector<String> vec2 = SqlInfo.holeSatz("pat5", felder, "pat_intern='"+vec1.get(0)+"'",nichtlesen );
 		if(vec2.size() == 0){
-			daten[0] = ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ "Uhr";
-			daten[1] = ((String) ((Vector)((ArrayList) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, Patient nicht gefunden";
+			daten[0] = ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(2)).get(zaehler)).substring(0,5)+ "Uhr";
+			daten[1] = ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(0)).get(zaehler))+"\r\rKeine Zuordnung möglich, Patient nicht gefunden";
 			daten[2] = xreznr;
 			daten[4] = "???";
 			//dvec.add(daten.clone());
 			dvec.add(daten);
 			return;
 		}
-		daten[0] =  ((String) ((Vector)((ArrayList) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
+		daten[0] =  ((String) ((Vector<?>)((ArrayList<?>) tfobj).get(2)).get(zaehler)).substring(0,5)+ " Uhr";
 		daten[1] = vec2.get(0)+", "+vec2.get(1);
 		daten[2] = xreznr;
 		String telefon = ( ((String)vec2.get(2)).trim().length() > 0  ? "p:"+((String)vec2.get(2)) : "" );
@@ -370,15 +367,15 @@ class TelefonListe{
 			  catch (TextException exception) {
 			  	exception.printStackTrace();
 			}
-			  String text = "";
-			  String test = "";
+			  //String text = "";
+			  //String test = "";
 			for(int i = 0; i < lang;i++){
 				  try {
-					  textTable.getCell(0,i+1).getTextService().getText().setText(((String)((String[])((Vector)dvec).get(i))[0]) );
-					  textTable.getCell(1,i+1).getTextService().getText().setText(((String)((String[])((Vector)dvec).get(i))[1]) );
-					  textTable.getCell(2,i+1).getTextService().getText().setText(((String)((String[])((Vector)dvec).get(i))[2]) );					  
-					  textTable.getCell(3,i+1).getTextService().getText().setText(((String)((String[])((Vector)dvec).get(i))[3]) );
-					  textTable.getCell(4,i+1).getTextService().getText().setText(((String)((String[])((Vector)dvec).get(i))[4]) );					  
+					  textTable.getCell(0,i+1).getTextService().getText().setText(((String)((String[])((Vector<?>)dvec).get(i))[0]) );
+					  textTable.getCell(1,i+1).getTextService().getText().setText(((String)((String[])((Vector<?>)dvec).get(i))[1]) );
+					  textTable.getCell(2,i+1).getTextService().getText().setText(((String)((String[])((Vector<?>)dvec).get(i))[2]) );					  
+					  textTable.getCell(3,i+1).getTextService().getText().setText(((String)((String[])((Vector<?>)dvec).get(i))[3]) );
+					  textTable.getCell(4,i+1).getTextService().getText().setText(((String)((String[])((Vector<?>)dvec).get(i))[4]) );					  
 					  textTable.getCell(5,i+1).getTextService().getText().setText("" );					  
 					} 
 				  catch (TextException exception) {
@@ -394,7 +391,7 @@ class TelefonListe{
 			//tbc[4].setWidth((short) 7920);
 			//System.out.println("Es gibt insgesamt "+tbc.length+" Column");
 
-			int cols = textTable.getColumnCount();
+			//int cols = textTable.getColumnCount();
 			int rows = textTable.getRowCount();
 			int rot = Color.RED.getRGB();
 			int blau = Color.BLUE.getRGB();

@@ -577,7 +577,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	      });		
 	}	
 /****
- * die Comboboxen mit Werden f�llen
+ * die Comboboxen mit Werden füllen
  * 	
  */
 	public void setCombosOutside(){
@@ -788,7 +788,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Reha.thisClass.terminpanel.ViewPanel.repaint();
 			}
 		}catch(java.lang.NullPointerException n){
-			//fare niente - Terminkalender l�uft nicht!!
+			//fare niente - Terminkalender läuft nicht!!
 		}
 		
 	}

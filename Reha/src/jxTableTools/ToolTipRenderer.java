@@ -3,14 +3,16 @@ package jxTableTools;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Date;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 public class ToolTipRenderer extends JLabel implements TableCellRenderer{
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 Color hinterGrund1 = null;
 Color hinterGrund2 = null;
 int align = 0;

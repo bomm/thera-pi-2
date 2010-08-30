@@ -5,11 +5,14 @@ import java.text.DecimalFormat;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 public class DoubleTableCellRenderer extends DefaultTableCellRenderer
 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	DecimalFormat dform = new DecimalFormat("####0.00");
 	public Component getTableCellRendererComponent(final JTable table, final
 			Object value,boolean isSelected,boolean hasFocus,int row,int column){

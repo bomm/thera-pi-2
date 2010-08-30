@@ -10,7 +10,7 @@ public class TableTool {
 		
 	}
 	public static int loescheRow(JXTable table,int row){
-		int ret = -1;
+		//int ret = -1;
 		int currow = table.getSelectedRow();
 		int countrow = table.getRowCount()-1;
 		if(currow == -1){
@@ -30,7 +30,7 @@ public class TableTool {
 		}
 	}
 	public static int loescheRowAusModel(JXTable table,int row){
-		int ret = -1;
+		//int ret = -1;
 		int currow = table.convertRowIndexToModel(table.getSelectedRow());
 		int countrow = table.getRowCount()-1;
 		if(currow == -1){

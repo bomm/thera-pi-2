@@ -18,7 +18,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 */
 	private static final long serialVersionUID = 3644612166417593537L;
 	// **** Attribute
-	 private static final String JAHR  = "0123456789";// Erlaubte Ziffern Jahr
+	 public static final String JAHR  = "0123456789";// Erlaubte Ziffern Jahr
 	 private static final String DREI  = "0123";// Erlaubte Ziffern Tag 10er
 	 private static final String MONAT = "01";  // Erlaubte Zeichen Monat 10er
 	 private Calendar initDate = new GregorianCalendar(); // Calender fuers init
@@ -126,16 +126,16 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	     }
 	    }
 	   }
-	   if(offset==2) {                         // Monate auf 0x-1x pr�fen
+	   if(offset==2) {                         // Monate auf 0x-1x prüfen
 	                                           // (Caret links vom Trenner)
-	    if( MONAT.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
+	    if( MONAT.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
 	     return;
 	    }
 	   }
-	   if(offset==3) {                         // Monate auf 0x-1x pr�fen
+	   if(offset==3) {                         // Monate auf 0x-1x prüfen
 	                                           // (Caret rechts vom Trenner)
-	    if( MONAT.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
+	    if( MONAT.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
 	     return;
 	    }
@@ -170,9 +170,9 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einf�gen
 	  }
 	 }
-	 // **** �berschreiben Insert Ende
+	 // **** Überschreiben Insert Ende
 
-	 // **** �berschreiben Remove
+	 // **** Überschreiben Remove
 	 public void remove(int offset, int length) 
 	       throws BadLocationException {
 	  if(atSeparator(offset)) 
@@ -180,9 +180,9 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	  else
 	   textComponent.setCaretPosition(offset);
 	 }
-	 // **** �berschreiben Remove Ende
+	 // **** Überschreiben Remove Ende
 
-	 // **** Hilfsmethode f�r die Punkte zwischen den Feldern
+	 // **** Hilfsmethode für die Punkte zwischen den Feldern
 	 private boolean atSeparator(int offset) {
 	  return offset == trenner1 || offset == trenner2;
 	 }

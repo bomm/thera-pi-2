@@ -4,10 +4,6 @@ package jxTableTools;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Vector;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
@@ -15,10 +11,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 
-import org.jdesktop.swingx.JXDatePicker;
-
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
 
 public class MyTableCheckBox extends AbstractCellEditor implements TableCellEditor,ActionListener{ 
 	// This is the component that will handle the editing of the cell value 

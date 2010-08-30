@@ -2,16 +2,19 @@ package jxTableTools;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Date;
 
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 public class JLabelRenderer extends JLabel implements TableCellRenderer{
 
-	   public JLabelRenderer(){
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public JLabelRenderer(){
 	      setOpaque( true );
 	   }
 	   
