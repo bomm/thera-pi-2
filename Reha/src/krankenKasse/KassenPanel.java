@@ -99,8 +99,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	public JTextArea ta;
 	public boolean inMemoEdit = false; 
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);
-	Vector titel = new Vector<String>() ;
-	Vector formular = new Vector<String>();
+	Vector<String> titel = new Vector<String>() ;
+	Vector<String> formular = new Vector<String>();
 	int iformular = -1;
 	public KassenPanel(JKasseInternal jry,String kid){
 		super();
@@ -782,7 +782,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		}
 
 		neuKas.setPinPanel(pinPanel);
-		neuKas.getSmartTitledPanel().setContentContainer(new KasseNeuanlage(neuKas,getInstance(),new Vector(),id));
+		neuKas.getSmartTitledPanel().setContentContainer(new KasseNeuanlage(neuKas,getInstance(),new Vector<String>(),id));
 		neuKas.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
 		neuKas.setName("PatientenNeuanlage");
 		//neuPat.setContentPane(new PatNeuanlage(new Vector()));
