@@ -163,7 +163,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				String iKNummer = "";
 				JRtaTextField kVNummer;
 				kVNummer = new JRtaTextField("ZAHLEN", true);
-				if(neuAnlage == true ){
+				if(neuAnlage == true || jtf[12].getText().trim().equals("") ){
 					kVNummer.setText(JOptionPane.showInputDialog(
 									null,
 									"<html>Krankenkassennummer laut Rezept<br>" + 
