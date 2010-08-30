@@ -1,11 +1,7 @@
 package preisListenHandling;
 
-import java.util.Vector;
-
 import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.ParameterLaden;
 
 public class MachePreisListe {
 	
