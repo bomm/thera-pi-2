@@ -58,7 +58,7 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		installListener();
 		this.setUndecorated(true);
-		this.setName("ToolsDlg");	
+		this.setName("KuerzelDlg");	
 		this.eltern = xeltern;
 		this.neu = xneu;
 		this.jtp = new JXTitledPanel();

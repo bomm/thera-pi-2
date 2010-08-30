@@ -339,6 +339,8 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  	 			SqlInfo.sqlAusfuehren(cmd);
  	 			emailaddyok = true;
  	 			felder2.set(11, "");
+ 			}else{
+ 				felder2.set(11, "");
  			}
  		}
  		if( (felder2.get(0).equals("")) || (felder2.get(1).equals("")) || (felder2.get(2).equals(""))
@@ -369,7 +371,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  					}
  				}
  				//Änderungen übertragen
- 				// wenn der neue Inhalt nicht leer ist
+ 				// wenn der neue Inhalt nicht leer ist ansonsten nimm den alten Inhalt
  				jtf[fjtf[i]].setText( (!felder2.get(fktraeger[i]).equals("") ? (String) felder2.get(fktraeger[i])
  						: jtf[fjtf[i]].getText()) );
  			}
