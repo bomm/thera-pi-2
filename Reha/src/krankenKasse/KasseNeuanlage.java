@@ -304,14 +304,17 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  		//Wenn Datenannahmestelle fehlt
  		if(felder2.get(3).equals("")){
  			felder2.set(3, KTraegerTools.getDatenIK(felder2.get(1)));
- 		//Wenn logischer Empfänger (Entschlüsselungsbefugnis fehlt)	
- 		}else if(felder2.get(4).equals("")){
+ 		}
+ 		//Wenn logischer Empfänger (Entschlüsselungsbefugnis fehlt)
+ 		if(felder2.get(4).equals("")){
  			felder2.set(4, KTraegerTools.getNutzerIK(felder2.get(1)));
- 		//Wenn Papierannahmestelle fehlt	
- 		}else if(felder2.get(2).equals("")){
+ 		}
+ 		//Wenn Papierannahmestelle fehlt
+ 		if(felder2.get(2).equals("")){
  			felder2.set(2, KTraegerTools.getPapierIK(felder2.get(1)));
- 		//Wenn Emailadresse fehlt	
- 		}else if(felder2.get(11).equals("")){
+ 		}
+ 		//Wenn Emailadresse fehlt
+ 		if(felder2.get(11).equals("")){
  			//zunächst beim Kostenträger nachsehen
  			String email = KTraegerTools.getEmailAdresse(felder2.get(1));
  			//Falls keine gefunden bei der Datenannahmestelle nachsehen
