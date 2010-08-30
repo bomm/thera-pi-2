@@ -23,7 +23,6 @@ import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -59,16 +58,6 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -317,7 +306,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		return jscr;
 		
 	}
-	public void macheTabelle(Vector vec){
+	public void macheTabelle(Vector<?> vec){
 		if(vec.size()> 0){
 			ktblm.addRow(vec);	
 		}else{
@@ -326,18 +315,10 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		}
 		
 	}
+	/*
 	private void testeTabelle(){
 		String vgl = suchen.getText().trim().toUpperCase();
-		/*
-		int col1 = kassentbl.getColumn(0).getModelIndex();
-		int col2 = kassentbl.getColumn(1).getModelIndex();
-		int col3 = kassentbl.getColumn(2).getModelIndex();		
-		int col4 = kassentbl.getColumn(4).getModelIndex();		
-		Filter[] filterArray = { new PatternFilter("(.*"+vgl+"1st.*)|(.*Final.*)", 0, 1) };
-		Filter[] filterArray = { new PatternFilter("(.*"+"Reutlingen"+".*)", 0, 1) };
-		*/
 		String[] match = vgl.split(" ");
-
 		if(match.length > 1){
 			if(!match[1].trim().equals("")){
 				//Filter[] filterArray = { new PatternAndOrFilterAcrossAllColumns(vgl, 0, 7,match)  };
@@ -355,13 +336,6 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			//kassentbl.setFilters(filters);
 		}
 		suchen.requestFocus();
-
-
-/*PatternFilterAcrossAllColumns
-		kassentbl.setFilters(new FilterPipeline(
-	        new Filter[] { new PatternFilter(vgl, 0, col1),new PatternFilter("(.*"+vgl+".*)", 0, col2),
-	        		new PatternFilter("(.*"+vgl+".*)", 0, col3),new PatternFilter("(.*"+vgl+".*)", 0, col4)}));
-*/		
 		boolean treffer = false;
 		if(!treffer){return;}
 		int itreffer = -1;
@@ -402,6 +376,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		}
 		suchen.requestFocus();
 	}
+	*/
 	private JXPanel getEdits(){
 		JXPanel jpan = JCompTools.getEmptyJXPanel();
 		jpan.setOpaque(false);
@@ -523,7 +498,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		// TODO Auto-generated method stub
 		String sc = arg0.getActionCommand();
 		if(sc.equals("kedit")){
-			String sid = "";
+			//String sid = "";
 			int row = kassentbl.getSelectedRow();
 			if(row < 0){
 				String mes = "\nWenn man den Langtext einer Kasse ändern will, empfiehlt es sich\n"+ 
@@ -559,7 +534,8 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			ta.setForeground(Color.BLUE);
 			int row = kassentbl.getSelectedRow();
 			String sid =  (String) kassentbl.getValueAt(row,7);
-			Vector vec = SqlInfo.holeSatz("kass_adr", "KMEMO", "id='"+sid+"'", (List)new ArrayList());
+			List<String> nichtlesen = Arrays.asList(new String[] {});
+			Vector<String> vec = SqlInfo.holeSatz("kass_adr", "KMEMO", "id='"+sid+"'", nichtlesen);
 			ta.setText((String) vec.get(0));
 			return;
 		}
@@ -701,7 +677,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	public void formulareAuswerten(){
 		int row = kassentbl.getSelectedRow(); 
 		if(row >= 0){
-			String sid = Integer.valueOf((String) kassentbl.getValueAt(row, 7)).toString();
+			//String sid = Integer.valueOf((String) kassentbl.getValueAt(row, 7)).toString();
     		iformular = -1;
     		KassenFormulare kf = new KassenFormulare(Reha.thisFrame,titel,formularid);
     		Point pt = jbut[3].getLocationOnScreen();
@@ -710,23 +686,15 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
     		kf.setVisible(true);
     		iformular = Integer.valueOf(formularid.getText());
     		kf = null;
-    		final String xid = sid;
+    		//final String xid = sid;
     		if(iformular >= 0){
     			new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
 						try{
-						/*
-						List<String> nichtlesen = Arrays.asList(new String[] {""});
-						Vector vec = SqlInfo.holeSatz("kass_adr", "kassen_nam1,kassen_nam2,strasse,plz,ort", "id='"+xid+"'", new ArrayList());
-						SystemConfig.hmAdrKDaten.put("<Kadr1>", ((String) vec.get(0)).trim());
-						SystemConfig.hmAdrKDaten.put("<Kadr2>", ((String)vec.get(1)).trim());
-						SystemConfig.hmAdrKDaten.put("<Kadr3>", ((String)vec.get(2)).trim());
-						SystemConfig.hmAdrKDaten.put("<Kadr4>", ((String)vec.get(3)).trim()+" "+((String)vec.get(4)).trim()  );
-						*/
-						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
-						//ladeSchreiben(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
-						// TODO Auto-generated method stub
+							OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
+							//ladeSchreiben(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
+							// TODO Auto-generated method stub
 						}catch(Exception ex){
 							ex.printStackTrace();
 						}
@@ -735,10 +703,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
     			}.execute();
     			
     		}
- 
-    		//System.out.println("Es wurde Formular "+iformular+" gew�hlt");
-        	
-		}else{
+ 		}else{
 			String mes = "\nWenn man eine Kasse anschreiben möchte, empfiehlt es sich\n"+ 
 			"vorher die Kasse auszuwählen die man anschreiben möchte!!!\n\n"+
 			"Aber trösten Sie sich, unser Herrgott hat ein Herz für eine ganz spezielle Randgruppe.\n"+
@@ -817,6 +782,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		
 		
 	}
+	/*
 	private void ladeSchreiben(String url){
 		IDocumentService documentService = null;;
 		
@@ -849,52 +815,14 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		for (int i = 0; i < placeholders.length; i++) {
 
 			String placeholderDisplayText = placeholders[i].getDisplayText();
-			//System.out.println(placeholderDisplayText);	
-			/*
-			int index1 = SystemConfig.lAdrKDaten.indexOf(placeholderDisplayText);
-			int index2 = SystemConfig.lAdrADaten.indexOf(placeholderDisplayText);
-			int index3 = SystemConfig.lAdrPDaten.indexOf(placeholderDisplayText);
-			int index4 = SystemConfig.lAdrRDaten.indexOf(placeholderDisplayText);			
-			if(index1 >= 0 ){
-				String ph = SystemConfig.hmAdrKDaten.get(SystemConfig.lAdrKDaten.get(index1).trim());
-				if(ph.equals("")){
-					OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-				}else{
-					placeholders[i].getTextRange().setText(ph);					
-				}
-			}
-			if(index2>= 0 ){
-				String ph = SystemConfig.hmAdrADaten.get(SystemConfig.lAdrADaten.get(index2).trim());
-				if(ph.equals("")){
-					OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-				}else{
-					placeholders[i].getTextRange().setText(ph);					
-				}
-			}
-			if(index3>= 0 ){
-				String ph = SystemConfig.hmAdrPDaten.get(SystemConfig.lAdrPDaten.get(index3).trim());
-				if(ph.equals("")){
-					OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-				}else{
-					placeholders[i].getTextRange().setText(ph);					
-				}
-			}
-			if(index4>= 0 ){
-				String ph = SystemConfig.hmAdrRDaten.get(SystemConfig.lAdrRDaten.get(index4).trim());
-				if(ph.equals("")){
-					OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-				}else{
-					placeholders[i].getTextRange().setText(ph);					
-				}
-			}
-			*/
 
 		}
 	}
+	*/
 	public void holeAktKasse(String id){
 		//{"LANR","Nachname","Vorname","Strasse","Ort","Telefon","Telefax","Klinik","Facharzt",""};
 
-		Vector vec;
+		Vector<Vector<String>> vec;
 		if(id.equals("")){
 			return;
 		}else{
@@ -905,7 +833,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		int anzahl = 0;
 		if( (anzahl = vec.size()) > 0){
 			for(int i = 0; i < anzahl;i++ ){
-				this.ktblm.addRow((Vector)vec.get(i));
+				this.ktblm.addRow((Vector<?>)vec.get(i));
 			}
 			this.kassentbl.setRowSelectionInterval(0, 0);
 			holeText();
@@ -914,7 +842,12 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	}
 
 	class KasseAction extends AbstractAction {
-	    public void actionPerformed(ActionEvent e) {
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent e) {
 	    	if( inMemoEdit){
 	    		return;
 	    	}
@@ -990,7 +923,7 @@ class HoleKassen{
 	try{
 		rs = stmt.executeQuery(sstmt);
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
-		Vector xvec = new Vector();
+		Vector<String> xvec = new Vector<String>();
 		int anzahl = 0;
 		while( rs.next()){
 			anzahl++;
@@ -1002,7 +935,7 @@ class HoleKassen{
 			xvec.add(rs.getString("FAX"));			
 			xvec.add(rs.getString("IK_KASSE"));
 			xvec.add(rs.getString("id"));
-			kpan.macheTabelle((Vector)xvec.clone());
+			kpan.macheTabelle((Vector<?>)xvec.clone());
 			xvec.clear();
 		}
 		if(kpan.ktblm.getRowCount() > 0){
@@ -1111,7 +1044,7 @@ class MyKassenTableModel extends DefaultTableModel{
 	    	return true;
 	      }
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+			String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
 			Object result = null;
 			//result = theData.toUpperCase();
 			result = theData;
@@ -1123,6 +1056,10 @@ class MyKassenTableModel extends DefaultTableModel{
 
 
 class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private RehaTPEventClass rtp = null;
 	public KasseNeuDlg(){
 		super(null,"KassenNeuanlage");
