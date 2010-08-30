@@ -4,9 +4,9 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +14,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -35,6 +37,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
@@ -49,7 +52,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	 * 
 	 */
 	private static final long serialVersionUID = 7499352308908305654L;
-	Vector kasDaten = null;
+	Vector<String> kasDaten = null;
 	String kassenId = "";
 	JRtaComboBox tarifGruppe = null;
 	ImageIcon hgicon;
@@ -69,8 +72,13 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	int[] fedits =  {0,2,3,4,5,6,7,8,9,13,14,15,16,17,12};
 	int[] ffelder = {0,2,3,4,5,6,9,8,20,14,17,15,16,19,11};
 	KassenPanel kpan;
+	JLabel labKtraeger = null;
+	JLabel labKuerzel = null;
 
-	public KasseNeuanlage(Object eltern,KassenPanel xkpan,Vector vec,String id){
+	
+	boolean mitButton = false;
+	
+	public KasseNeuanlage(Object eltern,KassenPanel xkpan,Vector<String> vec,String id){
 		super();
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("KasseNeuanlage"));		
 		this.kasDaten = vec;
@@ -143,43 +151,55 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		 			}else if(xcomm.equals("abbrechen")){
 		 				fensterSchliessen();			
 		 			}else if(xcomm.equals ("vergleichKT")){
-	 					boolean validIKNummer = false;
-	 					String iKNummer = "";
-		 				JRtaTextField kVNummer;
-	 					kVNummer = new JRtaTextField("ZAHLEN", true);
-	 					if(neuAnlage == true ){
-	 						kVNummer.setText(JOptionPane.showInputDialog(
-	 										null,
-	 										"<html>Krankenkassennummer laut Rezept<br>" + 
-	 										"bitte 7-stellige Zahl eingeben",
-	 										"KV-Nummer eingeben",
-	 										JOptionPane.OK_CANCEL_OPTION));
-	 						if(!kVNummer.getText().equals("")){
-	 							if(kVNummer.getText().length() != 7) {
-	 								JOptionPane.showMessageDialog(null, "die KV-Nummer muss siebenstellig sein");
-	 							} else {
-	 								iKNummer = "10"+kVNummer.getText();
-	 								validIKNummer = true;
-	 							}
-	 						}
- 						}else /*neuAnlage == false*/{
- 							iKNummer = jtf[13].getText();
- 							validIKNummer = true;
- 						}
-		 				if(validIKNummer){
-							if(jtf[13].getText().equals("")){
-								jtf[13].setForeground(Color.BLUE);
-								jtf[13].setText(iKNummer);
-								jtf[12].setForeground(Color.BLUE);
-								jtf[12].setText(kVNummer.getText());
-							}
-							ktraegerAuslesen();
-						}
+		 				doVergleichKT();
 		 			}
 		 	   }
 		}); 	   				
 	}
-
+	private void doVergleichKT(){
+			boolean validIKNummer = false;
+				String iKNummer = "";
+				JRtaTextField kVNummer;
+				kVNummer = new JRtaTextField("ZAHLEN", true);
+				if(neuAnlage == true ){
+					kVNummer.setText(JOptionPane.showInputDialog(
+									null,
+									"<html>Krankenkassennummer laut Rezept<br>" + 
+									"bitte <b>7-stellige</b> Zahl eingeben</html>",
+									"KV-Nummer eingeben",
+									JOptionPane.OK_CANCEL_OPTION));
+					if(!kVNummer.getText().equals("")){
+						if( (kVNummer.getText().length() < 7) && kVNummer.getText().length() != 9) {
+							JOptionPane.showMessageDialog(null, "<html>die KV-Nummer <b>muss siebenstellig</b> sein</html>");
+						}else if(kVNummer.getText().length() == 9){
+							iKNummer = kVNummer.getText();
+							validIKNummer = true;
+						}else if(kVNummer.getText().length() == 7){
+							iKNummer = "10"+kVNummer.getText();
+							validIKNummer = true;
+						}else{
+							JOptionPane.showMessageDialog(null, "<html>die KV-Nummer <b>muss siebenstellig</b> sein</html>");
+						}
+					}
+				}else /*neuAnlage == false*/{
+					iKNummer.equals(jtf[13].getText());
+					validIKNummer = true;
+				}
+				if(validIKNummer){
+					if(jtf[13].getText().equals("")){
+						jtf[13].setForeground(Color.BLUE);
+						jtf[13].setText(iKNummer);
+						jtf[12].setForeground(Color.BLUE);
+						jtf[12].setText(kVNummer.getText());
+					}
+					ktraegerAuslesen();
+				}
+				SwingUtilities.invokeLater(new Runnable(){
+					public void run(){
+						jtf[0].requestFocus();
+					}
+				});
+	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyCode() == 10){
@@ -196,18 +216,23 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		if(arg0.getKeyCode() == 27){
 			fensterSchliessen();
 		}
+		if( ((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
+			if(arg0.getKeyChar()=='?'){
+				doVergleichKT();
+			}
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		if( ((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
+			jtf[0].setText(jtf[0].getText().replace("?", ""));
+		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void focusGained(FocusEvent arg0) {
@@ -242,34 +267,11 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	}
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		/*
-		if(((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
-			if(jtf[0].getText().trim().equals("-") && (!ohneKuerzel) && (this.neuAnlage)){
-				String message = "Tip:\nDie Vergabe von K�rzeln ist f�r die schnelle Bearbeitung einer Kasse (sp�ter) ideal\n\n"+
-				"Z.B.: 'AOK-RT' f�r die 'AOK Reutlingen'";
-				ohneKuerzel = true;
-				JOptionPane.showMessageDialog(null,message);
-				SwingUtilities.invokeLater(new Runnable(){
-				 	   public  void run(){
-							tarifGruppe.requestFocus();
-							return;
-				 	   }
-				}); 	  
-
-			}else{
-				SwingUtilities.invokeLater(new Runnable(){
-				 	   public  void run(){
-							tarifGruppe.requestFocus();
-							return;
-				 	   }
-				}); 	  
-			}
-		}
-		*/
 	}
+	
 	private void fuelleFelder(){
  		List<String> nichtlesen = Arrays.asList(new String[] {"KMEMO"});
-		Vector felder = SqlInfo.holeSatz("kass_adr", "*", "id='"+this.kassenId+"'",nichtlesen);
+		Vector<String> felder = SqlInfo.holeSatz("kass_adr", "*", "id='"+this.kassenId+"'",nichtlesen);
 		int gros = felder.size();
 		int anzahlf = fedits.length;
 		if(gros > 0){
@@ -292,9 +294,32 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  				this.kassenId = Integer.toString(iid);
  		}
  		List<String> nichtlesen = Arrays.asList(new String[] {"KMEMO"});
- 		Vector felder = SqlInfo.holeSatz("kass_adr", "*", "id='"+this.kassenId+"'",nichtlesen);
+ 		Vector<String> felder = SqlInfo.holeSatz("kass_adr", "*", "id='"+this.kassenId+"'",nichtlesen);
  		felder.setElementAt(jtf[13].getText(), 14);
- 		Vector felder2 = SqlInfo.holeSatz("ktraeger", "*", "ikkasse='"+(String) felder.get(14)+"'",nichtlesen);
+ 		Vector<String> felder2 = SqlInfo.holeSatz("ktraeger", "*", "ikkasse='"+(String) felder.get(14)+"'",nichtlesen);
+ 		if(felder2.size() <= 0){
+ 			JOptionPane.showMessageDialog(null, "Kein Eintrag in der Kostenträgerdatei vorhanden für IK="+felder.get(14));
+ 			return;
+ 		}
+ 		//Wenn Datenannahmestelle fehlt
+ 		if(felder2.get(3).equals("")){
+ 			felder2.set(3, KTraegerTools.getDatenIK(felder2.get(1)));
+ 		//Wenn logischer Empfänger (Entschlüsselungsbefugnis fehlt)	
+ 		}else if(felder2.get(4).equals("")){
+ 			felder2.set(4, KTraegerTools.getNutzerIK(felder2.get(1)));
+ 		//Wenn Papierannahmestelle fehlt	
+ 		}else if(felder2.get(2).equals("")){
+ 			felder2.set(2, KTraegerTools.getPapierIK(felder2.get(1)));
+ 		//Wenn Emailadresse fehlt	
+ 		}else if(felder2.get(11).equals("")){
+ 			//zunächst beim Kostenträger nachsehen
+ 			String email = KTraegerTools.getEmailAdresse(felder2.get(1));
+ 			//Falls keine gefunden bei der Datenannahmestelle nachsehen
+ 			if(email.equals("")){
+ 				email = KTraegerTools.getEmailAdresse(felder2.get(3));
+ 			}
+ 			felder2.set(11, email);
+ 		}
  		//		i=		    0  1  2  3  4 5 6 7 8  9 10
  		int[] fjtf =      {13,14,17,15,16,2,3,5,6, 4, 9};
  		int[] fktraeger = { 0, 1, 2, 3, 4,5,6,8,9,10,11};
@@ -352,22 +377,20 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	}
 	public void tabelleAktualisieren(){
 
-		List list = Arrays.asList(new String[] {jtf[0].getText(),jtf[2].getText(),
+		List<String> list = Arrays.asList(new String[] {jtf[0].getText(),jtf[2].getText(),
 				jtf[3].getText(),jtf[6].getText(),jtf[7].getText(),jtf[8].getText(),jtf[13].getText(),this.kassenId});
 		if(this.neuAnlage){
-			Vector vec = new Vector();
+			Vector<String> vec = new Vector<String>();
 			for(int i = 0; i < list.size();i++){
 				vec.add(list.get(i));
 			}
-			kpan.ktblm.addRow((Vector)vec);
-			////System.out.println("Tabellenzeile eingefügt");
+			kpan.ktblm.addRow((Vector<?>)vec);
 		}else{
 			int row = kpan.kassentbl.getSelectedRow();
 			int model = kpan.kassentbl.convertRowIndexToModel(row);
 			
 			for(int i = 0; i < 8;i++){
 				kpan.ktblm.setValueAt(list.get(i), model, i);
-				//KassenPanel.thisClass.kassentbl.setValueAt(list.get(i), row, i);
 			}
 			//System.out.println("Tabellenzeile aktualisiert");
 		}
@@ -390,7 +413,9 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
         DefaultFormatterFactory factory = new DefaultFormatterFactory(uppercase);
         jtf[0].setFormatterFactory(factory);
         jtf[0].addFocusListener(this);
-		knopf1 = new JButton("Kostenträgerdatei");
+        jtf[0].addKeyListener(this);
+        
+        knopf1 = new JButton("Kostenträgerdatei");
 		knopf1.setPreferredSize(new Dimension(70, 20));
 		knopf1.addActionListener(this);		
 		knopf1.setActionCommand("vergleichKT");
@@ -451,9 +476,24 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		builder.getPanel().setOpaque(false);	
 		CellConstraints cc = new CellConstraints();
 
-		builder.addLabel("Kürzel", cc.xy(1,1));
-		builder.add(jtf[0], cc.xy(3,1));
-		builder.add(knopf1, cc.xyw(4,1,3));
+		// abhängig von boolean mitButton entweder nur das Label mit Icon oder einen JButton
+		labKuerzel = new JLabel("Kürzel");
+		if(mitButton){
+			builder.add(knopf1, cc.xyw(4,1,3));			
+		}else{
+			labKuerzel.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
+			labKuerzel.setHorizontalTextPosition(JLabel.LEFT);
+			labKuerzel.addMouseListener(new MouseAdapter(){
+				public void mousePressed(MouseEvent arg0) {
+					doVergleichKT();
+				}				
+			});
+		}
+		//Ende Änderungsvorschlag
+		
+		builder.add(labKuerzel, cc.xy(1,1,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		builder.add(jtf[0], cc.xy(3,1,CellConstraints.DEFAULT,CellConstraints.CENTER));
+		
 		builder.addLabel("Tarifgruppe", cc.xy(1,3));
 		tarifGruppe = new JRtaComboBox();
 		tarifGruppe.setName("TARIFGRUPPE");
