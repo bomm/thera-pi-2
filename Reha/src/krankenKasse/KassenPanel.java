@@ -739,6 +739,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 		//JDialog neuPat = new JDialog();
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
+		pinPanel.setName("KassenNeuanlage");
 		neuKas.setPinPanel(pinPanel);
 		if(id.equals("")){
 			neuKas.getSmartTitledPanel().setTitle("Kranke-Kasse anlegen - nur der Herrgott weiß ob es sich lohnt diesen Lotterladen anzulegen");			
@@ -748,8 +749,9 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 
 		neuKas.setPinPanel(pinPanel);
 		neuKas.getSmartTitledPanel().setContentContainer(new KasseNeuanlage(neuKas,getInstance(),new Vector<String>(),id));
-		neuKas.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
-		neuKas.setName("PatientenNeuanlage");
+		neuKas.getSmartTitledPanel().getContentContainer().setName("KassenNeuanlage");
+		neuKas.getSmartTitledPanel().setName("KassenNeuanlage");
+		neuKas.setName("KassenNeuanlage");
 		//neuPat.setContentPane(new PatNeuanlage(new Vector()));
 		neuKas.setSize(500,490);
 		neuKas.setModal(true);
@@ -1070,12 +1072,13 @@ class KasseNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowL
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
-			this.setVisible(false);
-			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-			rtp = null;
-			this.dispose();
+			if(evt.getDetails()[0].equals("KassenNeuanlage")){
+				this.setVisible(false);
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+				this.dispose();
+			}
 			//System.out.println("****************Kasse Neu/ändern -> Listener entfernt**************");				
-	
 		}catch(NullPointerException ne){
 			//System.out.println("In PatNeuanlage" +evt);
 		}

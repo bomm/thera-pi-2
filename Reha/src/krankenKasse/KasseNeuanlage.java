@@ -1,6 +1,7 @@
 package krankenKasse;
 
 import hauptFenster.Reha;
+import hilfsFenster.MlaKassenChecker;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -74,8 +75,9 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	KassenPanel kpan;
 	JLabel labKtraeger = null;
 	JLabel labKuerzel = null;
-
 	
+
+
 	boolean mitButton = false;
 	
 	public KasseNeuanlage(Object eltern,KassenPanel xkpan,Vector<String> vec,String id){
@@ -285,6 +287,7 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 	}
 	
 	public void ktraegerAuslesen (){
+		boolean emailaddyok = false;
  		if(this.neuAnlage == true){
  				int iid = SqlInfo.holeId("kass_adr", "kmemo");
  				if(iid == -1){
@@ -314,15 +317,45 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  			felder2.set(2, KTraegerTools.getPapierIK(felder2.get(1)));
  		}
  		//Wenn Emailadresse fehlt
+ 		String email = "";
  		if(felder2.get(11).equals("")){
  			//zunächst beim Kostenträger nachsehen
- 			String email = KTraegerTools.getEmailAdresse(felder2.get(1));
+ 			email = KTraegerTools.getEmailAdresse(felder2.get(1));
  			//Falls keine gefunden bei der Datenannahmestelle nachsehen
- 			if(email.equals("")){
- 				email = KTraegerTools.getEmailAdresse(felder2.get(3));
- 			}
- 			felder2.set(11, email);
+ 		}else{
+ 			email = felder2.get(11);
  		}
+ 		// Jetzt nachsehen ob die Datenannahmestelle eine Emailadresse hat.
+ 		String email2 = KTraegerTools.getEmailAdresse(felder2.get(3));
+ 		if(! email2.trim().equals("")){
+ 			//alles palletti
+ 			//jetzt die Adresse aus dem Vector löschen
+ 			felder2.set(11, "");
+ 			emailaddyok = true;
+ 		}else{
+ 			//wenn in email eine Adresse steht.
+ 			if(! email.equals("")){
+ 	 			String cmd = "update ktraeger set email='"+email+"' where ikkasse='"+felder2.get(3)+"' LIMIT 1";
+ 	 			SqlInfo.sqlAusfuehren(cmd);
+ 	 			emailaddyok = true;
+ 	 			felder2.set(11, "");
+ 			}
+ 		}
+ 		if( (felder2.get(0).equals("")) || (felder2.get(1).equals("")) || (felder2.get(2).equals(""))
+ 				|| (felder2.get(3).equals("")) || (felder2.get(4).equals("")) || (!emailaddyok)){
+ 			String htmlMeldung = "<html>Achtung mit den ermittelten Daten keine maschinenlesbare Abrechnung<br>"+
+ 			"nach §302 SGB V <b>nicht durchgeführt</b>werden</html>";
+ 			JOptionPane.showMessageDialog(null,htmlMeldung );
+ 		}
+ 		/*
+ 		MlaKassenChecker mlaChecker = new MlaKassenChecker(Reha.thisFrame,this);
+ 		mlaChecker.setPreferredSize(((JDialog)this.eltern).getSize());
+ 		mlaChecker.pack();
+ 		mlaChecker.setLocation(((JDialog)this.eltern).getLocationOnScreen());
+ 		mlaChecker.setVisible(true);
+ 		((JDialog)this.eltern).toFront();
+		*/
+ 		
  		//		i=		    0  1  2  3  4 5 6 7 8  9 10
  		int[] fjtf =      {13,14,17,15,16,2,3,5,6, 4, 9};
  		int[] fktraeger = { 0, 1, 2, 3, 4,5,6,8,9,10,11};
@@ -336,7 +369,9 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  					}
  				}
  				//Änderungen übertragen
- 				jtf[fjtf[i]].setText((String) felder2.get(fktraeger[i]));
+ 				// wenn der neue Inhalt nicht leer ist
+ 				jtf[fjtf[i]].setText( (!felder2.get(fktraeger[i]).equals("") ? (String) felder2.get(fktraeger[i])
+ 						: jtf[fjtf[i]].getText()) );
  			}
  		}
 	}
