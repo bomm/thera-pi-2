@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
@@ -23,9 +22,6 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import systemTools.JRtaTextField;
-
-import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.DragWin;
@@ -44,8 +40,8 @@ public class MlaKassenChecker extends JXDialog implements  WindowListener, KeyLi
 	private PinPanel pinPanel = null;
 	private JXPanel content = null;
 	private RehaTPEventClass rtp = null;
-	private JRtaTextField[] tfs = {null,null};
-	private JButton[] buts = {null,null};
+	//private JRtaTextField[] tfs = {null,null};
+	//private JButton[] buts = {null,null};
 	boolean neu;
 	JLabel labKurz = null;
 	JLabel labLang = null;
@@ -88,7 +84,7 @@ public class MlaKassenChecker extends JXDialog implements  WindowListener, KeyLi
 		String xwerte = "fill:0:grow(0.5),100dlu,5dlu,120dlu,fill:0:grow(0.5)";
 		String ywerte = "fill:0:grow(0.5),p,5dlu,p,fill:0:grow(0.5),p";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
-		CellConstraints cc = new CellConstraints();
+		//CellConstraints cc = new CellConstraints();
 		content = new JXPanel();
 		content.setBackground(Color.WHITE);
 		content.setLayout(lay);
