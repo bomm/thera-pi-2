@@ -1,6 +1,8 @@
 package patientenFenster;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -9,7 +11,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -21,10 +28,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
+import krankenKasse.KTraegerTools;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
@@ -51,6 +61,10 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 			  null,null,null,null,null,
 			  null};
 
+	JLabel labKtraeger = null;
+	JLabel labKuerzel = null;
+	JButton knopf1 = null;
+	boolean mitButton = false;
 	
 	public KassenNeuKurz(KassenAuswahl eltern){
 		super();
@@ -126,7 +140,27 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		jpan.getPanel().addKeyListener(this);
 		CellConstraints cc = new CellConstraints();
 
-		jpan.add(new JLabel("Kuerzel"),cc.xy(1,2));
+		knopf1 = new JButton("Kostenträgerdatei");
+		knopf1.setPreferredSize(new Dimension(70, 20));
+		knopf1.addActionListener(this);		
+		knopf1.setActionCommand("vergleichKT");
+		knopf1.setName("Kostenträgerdatei");
+		knopf1.addKeyListener(this);
+		knopf1.setMnemonic(KeyEvent.VK_K);
+		knopf1.setToolTipText("auf Basis der Daten der Kostenträgerdatei erstellen");	
+		labKuerzel = new JLabel("Kürzel");
+		if(mitButton){
+			jpan.add(knopf1, cc.xyw(4,1,3));			
+		}else{
+			labKuerzel.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
+			labKuerzel.setHorizontalTextPosition(JLabel.LEFT);
+			labKuerzel.addMouseListener(new MouseAdapter(){
+				public void mousePressed(MouseEvent arg0) {
+					doVergleichKT();
+				}				
+			});
+		}
+		jpan.add(labKuerzel,cc.xy(1,2));
 		tfs[0] = new JRtaTextField("GROSS",true);
 		tfs[0].addKeyListener(this);
 		tfs[0].addFocusListener(this);
@@ -315,12 +349,116 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		String comm = arg0.getActionCommand();
 		if(comm.equals("speichern")){
 			panelWechsel(true);
+			return;
 		}
 		if(comm.equals("abbrechen")){
 			panelWechsel(false);
+			return;
 		}
-
+		if(comm.equals("vergleichKT")){
+			doVergleichKT();
+			return;
+		}
+		
 	}
+	private void doVergleichKT(){
+		boolean validIKNummer = false;
+			String iKNummer = "";
+			JRtaTextField kVNummer;
+			kVNummer = new JRtaTextField("ZAHLEN", true);
+
+				kVNummer.setText(JOptionPane.showInputDialog(
+								null,
+								"<html>Krankenkassennummer laut Rezept<br>" + 
+								"bitte <b>7-stellige</b> Zahl eingeben</html>",
+								"KV-Nummer eingeben",
+								JOptionPane.OK_CANCEL_OPTION));
+				if(!kVNummer.getText().equals("")){
+					if( (kVNummer.getText().length() < 7) && kVNummer.getText().length() != 9) {
+						JOptionPane.showMessageDialog(null, "<html>die KV-Nummer <b>muss siebenstellig</b> sein</html>");
+					}else if(kVNummer.getText().length() == 9){
+						iKNummer = kVNummer.getText();
+						validIKNummer = true;
+					}else if(kVNummer.getText().length() == 7){
+						iKNummer = "10"+kVNummer.getText();
+						validIKNummer = true;
+					}else{
+						JOptionPane.showMessageDialog(null, "<html>die KV-Nummer <b>muss siebenstellig</b> sein</html>");
+					}
+				}
+			if(validIKNummer){
+				ktraegerAuslesen(iKNummer);
+			}
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					tfs[0].requestFocus();
+				}
+			});
+	}
+	public void ktraegerAuslesen (String iKNummer){
+		boolean emailaddyok = false;
+ 		List<String> nichtlesen = Arrays.asList(new String[] {"KMEMO"});
+ 		Vector<String> felder2 = SqlInfo.holeSatz("ktraeger", "*", "ikkasse='"+(String) iKNummer+"'",nichtlesen);
+ 		if(felder2.size() <= 0){
+ 			JOptionPane.showMessageDialog(null, "Kein Eintrag in der Kostenträgerdatei vorhanden für IK="+iKNummer);
+ 			return;
+ 		}
+ 		//Wenn Datenannahmestelle fehlt
+ 		if(felder2.get(3).equals("")){
+ 			felder2.set(3, KTraegerTools.getDatenIK(felder2.get(1)));
+ 		}
+ 		//Wenn logischer Empfänger (Entschlüsselungsbefugnis fehlt)
+ 		if(felder2.get(4).equals("")){
+ 			felder2.set(4, KTraegerTools.getNutzerIK(felder2.get(1)));
+ 		}
+ 		//Wenn Papierannahmestelle fehlt
+ 		if(felder2.get(2).equals("")){
+ 			felder2.set(2, KTraegerTools.getPapierIK(felder2.get(1)));
+ 		}
+ 		//Wenn Emailadresse fehlt
+ 		String email = "";
+ 		if(felder2.get(11).equals("")){
+ 			//zunächst beim Kostenträger nachsehen
+ 			email = KTraegerTools.getEmailAdresse(felder2.get(1));
+ 			//Falls keine gefunden bei der Datenannahmestelle nachsehen
+ 		}else{
+ 			email = felder2.get(11);
+ 		}
+ 		// Jetzt nachsehen ob die Datenannahmestelle eine Emailadresse hat.
+ 		String email2 = KTraegerTools.getEmailAdresse(felder2.get(3));
+ 		if(! email2.trim().equals("")){
+ 			//alles palletti
+ 			//jetzt die Adresse aus dem Vector löschen
+ 			felder2.set(11, "");
+ 			emailaddyok = true;
+ 		}else{
+ 			//wenn in email eine Adresse steht.
+ 			if(! email.equals("")){
+ 	 			String cmd = "update ktraeger set email='"+email+"' where ikkasse='"+felder2.get(3)+"' LIMIT 1";
+ 	 			SqlInfo.sqlAusfuehren(cmd);
+ 	 			emailaddyok = true;
+ 	 			felder2.set(11, "");
+ 			}else{
+ 				felder2.set(11, "");
+ 			}
+ 		}
+ 		if( (felder2.get(0).equals("")) || (felder2.get(1).equals("")) || (felder2.get(2).equals(""))
+ 				|| (felder2.get(3).equals("")) || (felder2.get(4).equals("")) || (!emailaddyok)){
+ 			String htmlMeldung = "<html>Achtung mit den ermittelten Daten keine maschinenlesbare Abrechnung<br>"+
+ 			"nach §302 SGB V <b>nicht durchgeführt</b>werden</html>";
+ 			JOptionPane.showMessageDialog(null,htmlMeldung );
+ 		}
+ 		
+ 		System.out.println(felder2);
+ 		if(felder2.size() > 0){
+ 			int[] feldnum = {5,6,10,8,9,0,1, 3, 4, 2};
+ 			int[] editnum = {1,2,3 ,4,5,9,10,11,12,13};
+ 			for(int i = 0; i < feldnum.length;i++){
+ 				tfs[editnum[i]].setText(felder2.get(feldnum[i]));
+ 			}
+ 		}
+	}
+	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -342,6 +480,12 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 				panelWechsel(true);
 			}
 			}
+			if( ((JComponent)arg0.getSource()).getName().equals("kuerzel")){
+				if(arg0.getKeyChar()=='?'){
+					doVergleichKT();
+				}
+			}
+
 		}catch(java.lang.NullPointerException ex){
 			arg0.consume();
 		}
@@ -351,8 +495,9 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		if( ((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
+			tfs[0].setText(tfs[0].getText().replace("?", ""));
+		}
 	}
 
 	@Override
