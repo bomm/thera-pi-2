@@ -373,18 +373,18 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  		int[] fktraeger = { 0, 1, 2, 3, 4,5,6,8,9,10,11};
  		if(felder2.size() > 0){
  			for(int i = 0; i < fjtf.length;i++){
- 				if(!jtf[fjtf[i]].getText().equals(felder2.get(fktraeger[i]))){
- 					if(jtf[fjtf[i]].getText().length()!=0){
- 						jtf[fjtf[i]].setForeground(Color.RED); //Ersetzte Daten rot markieren
- 					} else{
- 						jtf[fjtf[i]].setForeground(Color.BLUE); //Hinzugefügte Daten blau markieren
- 					}
- 				}
  				//Änderungen übertragen außer Emailadresse
  				if(! jtf[fjtf[i]].getName().equals("EMAIL1")){
- 				// wenn der neue Inhalt nicht leer ist ansonsten nimm den alten Inhalt
- 	 				jtf[fjtf[i]].setText( (!felder2.get(fktraeger[i]).equals("") ? (String) felder2.get(fktraeger[i])
- 	 						: jtf[fjtf[i]].getText()) );
+ 	 				if(!jtf[fjtf[i]].getText().equals(felder2.get(fktraeger[i]))){
+ 	 					if(jtf[fjtf[i]].getText().length()!=0){
+ 	 						jtf[fjtf[i]].setForeground(Color.RED); //Ersetzte Daten rot markieren
+ 	 					} else{
+ 	 						jtf[fjtf[i]].setForeground(Color.BLUE); //Hinzugefügte Daten blau markieren
+ 	 					}
+ 	 				}
+ 	 				// wenn der neue Inhalt nicht leer ist ansonsten nimm den alten Inhalt
+ 	 	 				jtf[fjtf[i]].setText( (!felder2.get(fktraeger[i]).equals("") ? (String) felder2.get(fktraeger[i])
+ 	 	 						: jtf[fjtf[i]].getText()) );
  				}
  			}
  		}
