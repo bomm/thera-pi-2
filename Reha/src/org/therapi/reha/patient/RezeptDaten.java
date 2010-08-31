@@ -7,7 +7,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -24,7 +23,6 @@ import org.jdesktop.swingx.JXPanel;
 
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
@@ -88,7 +86,7 @@ public class RezeptDaten extends JXPanel{
 		reznum.repaint();
 		//Reha.thisClass.patpanel.aktRezept.rezAngezeigt = reznummer;
 		final String xreznummer = reznummer;
-		final String xsid = sid;
+		//final String xsid = sid;
 		/*
 		new SwingWorker<Void,Void>(){
 			@SuppressWarnings("unchecked")
