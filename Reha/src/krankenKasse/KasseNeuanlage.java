@@ -1,7 +1,6 @@
 package krankenKasse;
 
 import hauptFenster.Reha;
-import hilfsFenster.MlaKassenChecker;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -164,12 +163,23 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 				JRtaTextField kVNummer;
 				kVNummer = new JRtaTextField("ZAHLEN", true);
 				if(neuAnlage == true || jtf[13].getText().trim().equals("") ){
+					/*
+					JRtaTextField f = new JRtaTextField("ZAHLEN",true);
+					f.setColumns(9);
+					Object[] message={"<html>Krankenkassennummer laut Rezept<br>" + 
+							"bitte <b>7-stellige</b> Zahl eingeben</html>", f};
+					Object[] options={"OK", "Cancel"};
+					JOptionPane.showOptionDialog(null, message, "KV-Nummer eingeben", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, f);
+					kVNummer.setText(f.getText());
+					*/					
+					
 					kVNummer.setText(JOptionPane.showInputDialog(
 									null,
 									"<html>Krankenkassennummer laut Rezept<br>" + 
 									"bitte <b>7-stellige</b> Zahl eingeben</html>",
 									"KV-Nummer eingeben",
 									JOptionPane.OK_CANCEL_OPTION));
+									
 					if(!kVNummer.getText().equals("")){
 						if( (kVNummer.getText().length() < 7) && kVNummer.getText().length() != 9) {
 							JOptionPane.showMessageDialog(null, "<html>die KV-Nummer <b>muss siebenstellig</b> sein</html>");
@@ -370,10 +380,12 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
  						jtf[fjtf[i]].setForeground(Color.BLUE); //Hinzugefügte Daten blau markieren
  					}
  				}
- 				//Änderungen übertragen
+ 				//Änderungen übertragen außer Emailadresse
+ 				if(! jtf[fjtf[i]].getName().equals("EMAIL1")){
  				// wenn der neue Inhalt nicht leer ist ansonsten nimm den alten Inhalt
- 				jtf[fjtf[i]].setText( (!felder2.get(fktraeger[i]).equals("") ? (String) felder2.get(fktraeger[i])
- 						: jtf[fjtf[i]].getText()) );
+ 	 				jtf[fjtf[i]].setText( (!felder2.get(fktraeger[i]).equals("") ? (String) felder2.get(fktraeger[i])
+ 	 						: jtf[fjtf[i]].getText()) );
+ 				}
  			}
  		}
 	}
