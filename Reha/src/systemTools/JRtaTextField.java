@@ -553,7 +553,7 @@ class NurZahlenDocument extends javax.swing.text.PlainDocument
 		}
 		catch (NumberFormatException e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 			super.remove(offs, 1);
 			Toolkit.getDefaultToolkit().beep();
 		}
