@@ -39,7 +39,9 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import rehaContainer.RehaTP;
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
 import systemTools.Verschluesseln;
 import systemTools.WinNum;
@@ -73,6 +75,7 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
 	private JXLabel behandlerLabel = null;
 	private JXButton starten = null;
 	private JXButton anhalten = null;
+	private JRtaCheckBox ckbFeiertag = null;
 
 	private JXTitledPanel  jp;
 	private int maskenBehandler;
@@ -81,6 +84,10 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
 
 	private Vector vTerm = new Vector();
 	public static MaskeInKalenderSchreiben thisClass = null;
+	
+    Vector<String> feiertagDatum = new Vector<String>();
+    Vector<String> feiertagName = new Vector<String>();
+
 
 	public MaskeInKalenderSchreiben(JXFrame owner,int maskenBehandler,Vector vTerm){
 		//super(frame, titlePanel());
@@ -112,7 +119,7 @@ public class MaskeInKalenderSchreiben extends RehaSmartDialog implements ActionL
                 "In der Benutzerverwaltung können Sie die entsprechende Rechte erteilen bzw. wieder entziehen.\n\n" +
                 "Wenn Sie jetzt die (leere) Maskendefinition in Ihren Terminkalender übertragen, werden alle\n"+
                 "bereits existierenden Termine dieses Benutzers mit dessen leeren Maske überschrieben!!!!!\n\n"+
-                "Wenn Sie diesen Vorgang starten, sollten Sie diesen wirklich nur im äußersten Notfall(!!!) unterbrechen!\n\n"+
+                "Wenn Sie diesen Vorgang starten, sollten Sie diesen wirklich nur im äußersten Notfall(!!!) unterbrechen!\n"+
                 "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         jp1.add(header,BorderLayout.CENTER);
@@ -169,7 +176,8 @@ public JScrollPane eingabePanel(){
 */	
 	//,40dlu,80dlu,4dlu,80dlu,15dlu,80dlu,4dlu
 	FormLayout flay = new FormLayout("40dlu,right:120dlu,4dlu,80dlu,80dlu",
-	"15dlu,25dlu,15dlu,5dlu,15dlu,5dlu,15dlu,5dlu,15dlu"); //,30dlu,15dlu
+	// 1    2     3     4    5     6    7     8   9     10    11		
+	"15dlu,25dlu,15dlu,5dlu,15dlu,5dlu,15dlu,5dlu,15dlu,5dlu,15dlu"); //,30dlu,15dlu
 	JXPanel eingabep = new JXPanel(flay);
 	flay.layoutContainer(eingabep);
 	eingabep.setBorder(null);
@@ -200,22 +208,28 @@ public JScrollPane eingabePanel(){
 	endDatum.addKeyListener(this);
 	endDatum.setName("EndDatum");
 	eingabep.add(endDatum,cc.xy(4,5));
-
+	/********************************/
+	eingabep.add(new JXLabel("Feiertag berücksichtigen"),cc.xy(2,7));
+	ckbFeiertag = new JRtaCheckBox();
+	ckbFeiertag.setOpaque(false);
+	ckbFeiertag.setSelected(true);
+	eingabep.add(ckbFeiertag,cc.xy(4,7));
+	/********************************/
 	starten = new JXButton("Übertrag starten");
 	//starten.setPreferredSize(new Dimension(80,15));
 	starten.addActionListener(this);
 	starten.addKeyListener(this);	
-	eingabep.add(starten,cc.xy(2,7));
+	eingabep.add(starten,cc.xy(2,9));
 
 	anhalten = new JXButton("Übertrag anhalten");
 	//anhalten.setPreferredSize(new Dimension(80,15));	
 	anhalten.setEnabled(false);
 	anhalten.addActionListener(this);
 	anhalten.addKeyListener(this);
-	eingabep.add(anhalten,cc.xy(4,7));
+	eingabep.add(anhalten,cc.xy(4,9));
 	
 	aktDatum = new JXLabel("            ");
-	eingabep.add(aktDatum,cc.xy(2,9));
+	eingabep.add(aktDatum,cc.xy(2,11));
 	eingabep.setVisible(true);
 	eingabep.validate();
 	JScrollPane jrueck = new JScrollPane();
@@ -272,6 +286,7 @@ public void actionPerformed(ActionEvent arg0) {
 			 				   					"Die Feiertage lassen sich bequem in der System-Initialisierung organisieren, oder\n"+
 			 				   					"Sie schreiben die Feiertage von Hand in den Kalender";
 			 				   JOptionPane.showMessageDialog(null,hinweis);
+			 				   
 			 				   anhalten.setEnabled(true);
 			 				   starten.setEnabled(false);
 			 				   maskenEintragen();
@@ -341,7 +356,26 @@ public void keyTyped(KeyEvent arg0) {
 		FensterSchliessen(null);
 	}	
 }
-
+private void regleFeiertage(String start,String stop){
+	feiertagDatum.clear();
+    feiertagName.clear();
+    if(! this.ckbFeiertag.isSelected()){
+    	return;
+    }
+    String cmd = "";
+    int istart = Integer.parseInt(start.trim().substring(6));
+    int istop = Integer.parseInt(stop.trim().substring(6));
+    if(istop > istart){
+    	cmd = "select datsql,feiertag from feiertage where jahr >= '"+Integer.toString(istart)+"' order by datsql";
+    }else{
+    	cmd = "select datsql,feiertag from feiertage where jahr = '"+Integer.toString(istart)+"' order by datsql";
+    }
+    Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+    for(int i = 0; i < vec.size();i++){
+    	feiertagDatum.add(vec.get(i).get(0));
+    	feiertagName.add(vec.get(i).get(1));
+    }
+}
 public void maskenEintragen(){
 	stopUebertrag = false;
 	String startTag = null;
@@ -350,6 +384,10 @@ public void maskenEintragen(){
 	startTag = getStartDatum();
 	stopTag = getEndDatum();
 	aktTag = String.valueOf(startTag);
+	/*********************************************/
+	regleFeiertage(startTag,stopTag);
+	/*********************************************/
+	
 	int wochenTag = 0;
 	int i = 0;
 	if(DatFunk.DatumsWert(startTag) > DatFunk.DatumsWert(stopTag)){
@@ -403,6 +441,11 @@ public void maskenEintragen(){
 
 	private String macheStatement(String sqldat,ArrayList list){
 		String sret = null;
+		if(feiertagDatum.indexOf(sqldat) >= 0){
+			sret = macheFeiertag(sqldat,feiertagDatum.indexOf(sqldat));
+			return sret;
+		}
+
 		int i,j;
 		int bloecke =Integer.valueOf( (String)  ((Vector) list.get(5)).get(0) );
 		sret = "Update flexkc set ";
@@ -425,7 +468,19 @@ public void maskenEintragen(){
 			sret = sret + "TD"+ (i+1) + "='" + ((Vector) list.get(3)).get(i) + "', ";			
 			sret = sret + "TE"+ (i+1) + "='" + ((Vector) list.get(4)).get(i) + "', ";
 		}
-		sret = sret + "BELEGT='"+Integer.toString(bloecke)+"' WHERE DATUM='"+sqldat+"' AND BEHANDLER='"+this.sBehandler+"'";
+		sret = sret + "BELEGT='"+Integer.toString(bloecke)+"' WHERE DATUM='"+sqldat+"' AND BEHANDLER='"+this.sBehandler+"' LIMIT 1";
+		return sret;
+	}
+	private String macheFeiertag(String sqldat, int position){
+		String sret = null;
+		sret = "Update flexkc set ";
+		sret = sret + "T1='"+feiertagName.get(position).toUpperCase()+ "', " ;
+		sret = sret + "N1='@FREI', ";
+		sret = sret + "TS1='"+SystemConfig.KalenderUmfang[0]+"', ";
+		sret = sret + "TD1='"+Long.toString(ZeitFunk.ZeitDifferenzInMinuten(SystemConfig.KalenderUmfang[0],SystemConfig.KalenderUmfang[1]))+"', ";
+		sret = sret + "TE1='"+SystemConfig.KalenderUmfang[1]+"', ";
+		sret = sret + "BELEGT='1' WHERE DATUM='"+sqldat+"' AND BEHANDLER='"+this.sBehandler+"' LIMIT 1";
+		//System.out.println(sret);
 		return sret;
 	}
 
