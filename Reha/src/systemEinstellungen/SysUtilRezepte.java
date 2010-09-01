@@ -227,6 +227,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		builder.add(jscr,cc.xyw(1, 27,6));
 		
 		JPanel butPan = JCompTools.getEmptyJXPanel();
+		butPan.setOpaque(false);
 		FormLayout lay2 = new FormLayout("fill:0:grow(1.0),right:max(120dlu;p),4dlu,right:40dlu","p,2dlu,p");
 		butPan.setLayout(lay2);
 		CellConstraints cc2 = new CellConstraints();

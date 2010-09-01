@@ -106,8 +106,10 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		
 		builder.addLabel("folgende Ausdrucke erstellen",cc.xy(1,9));
 		builder.add(rbut[0] = macheRadio("nur den Begleitzettel ausdrucken","nurbegleitzettel"),cc.xyw(3,9,3));
+		rbut[0].setOpaque(false);
 		bg.add(rbut[0]);
 		builder.add(rbut[1] = macheRadio("Begleitzettel und Rechnung ausdrucken","beides"),cc.xyw(3,11,3));
+		rbut[1].setOpaque(false);
 		bg.add(rbut[1]);
 		
 		builder.addLabel("Rechnungsexemplare",cc.xy(1,13));
@@ -153,8 +155,10 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		
 		builder.addLabel("alle Ausdrucke",cc.xy(1,33));
 		builder.add(rbut[2] = macheRadio("direkt zum Drucker leiten","druckdirekt"),cc.xyw(3,33,3));
+		rbut[2].setOpaque(false);
 		bg2.add(rbut[2]);
 		builder.add(rbut[3] = macheRadio("im OpenOffice-Writer öffnen","druckoffice"),cc.xyw(3,35,3));
+		rbut[3].setOpaque(false);
 		bg2.add(rbut[3]);
 		
 

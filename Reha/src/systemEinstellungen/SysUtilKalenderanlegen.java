@@ -81,6 +81,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	JButton knopf3 = null;
 	JButton knopf4 = null;
 	JButton knopf5 = null;
+	JButton knopf6 = null;
 	static JXLabel KalMake = null;	
 	static JXLabel FeierTag = null;
 	JCheckBox AZPlan = null;
@@ -108,6 +109,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	static int kalTage;
 	static Vector<Object> vecMasken = new Vector<Object>();
 	Vector vecLeer = new Vector();
+	public static boolean jahrOk = false;
  
 	//static Vector<Object> aMaskenDaten = new Vector<Object>();
 	
@@ -133,6 +135,14 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	     add(jscr);
 	     HoleMaxDatum hmd = new HoleMaxDatum();
 	     hmd.setzeStatement("select max(DATUM) from flexkc");
+	     new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				doSucheNachFeiertagen();
+				return null;
+			}
+	    	 
+	     }.execute();
 		return;
 	}
 	
@@ -169,14 +179,20 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		knopf5.setActionCommand("take");
 		knopf5.addKeyListener(this);
 		
+		knopf6 = new JButton("speichern"); // Feiertage oder Betr.-Ferien in Datenbank schreiben
+		knopf6.setPreferredSize(new Dimension(70, 20));
+		knopf6.addActionListener(this);		
+		knopf6.setActionCommand("indbspeichern");
+		knopf6.addKeyListener(this);
  
 		FreiTage = new JXTable();
 		
 		KalBis = new JXLabel("");
 		KalMake = new JXLabel("");
 		AZPlan = new JCheckBox("");
+		AZPlan.setOpaque(false);
 		
-		//                                1.       2.     3.    4   5.
+		//                                1.    2.    3.    4      5.
 		FormLayout lay = new FormLayout("8dlu, p:g, 130dlu, 40dlu,20dlu",
        //1.    2.  3.  4.    5.  6.   7.   8.  9.  10.  11. 12.  13. 14.   15.  16.  17. 18   19  20   21   22   23   24   25  26   27   28   29  30    31  32   33  34    35   36    37  38   39     40    41   42   43  44   45  46   47   48  49   50  51  52   53  54   55  56   57  58    59   60   61    62
 		"p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 15dlu, p, 10dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, 80dlu, 2dlu, p, 10dlu, p, 10dlu, p,2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu");
@@ -236,7 +252,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		builder.add(BuLand, cc.xy(4,31));
 		
 		builder.addLabel("Kalenderjahr auswählen", cc.xyw(2, 33,2));
-		String[] jahr = {"2008","2009","2010","2011"};
+		String[] jahr = {"2008","2009","2010","2011","2012","2013","2014","2015"};
 		FJahr = new JComboBox(jahr);
 		FJahr.setSelectedIndex(0);
 		FJahr.setActionCommand("jahr");
@@ -259,9 +275,21 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		listscr = new JScrollPane(FreiTage);
 		//builder.add(FreiTage, cc.xyw(2, 39,3));
 		builder.add(listscr, cc.xyw(2, 39,3));
-		
-		builder.add(knopf3, cc.xy(2, 41));
-		builder.add(knopf4, cc.xy(4,41));
+
+		//FormLayout lay = new FormLayout("8dlu, p:g, 130dlu, 40dlu,20dlu",
+		/********hier neues JXPanel einbauen*******************/
+		JXPanel butpan = new JXPanel();
+		butpan.setOpaque(false);
+		FormLayout lay2 = new FormLayout("8dlu, p:g, 86dlu, 40dlu,4dlu,40dlu,20dlu","p");
+		CellConstraints cc2 = new CellConstraints();
+		butpan.setLayout(lay2);
+		butpan.add(knopf3, cc2.xy(2, 1));
+		butpan.add(knopf6, cc2.xy(4, 1));
+		butpan.add(knopf4, cc2.xy(6, 1));
+		butpan.validate();
+		builder.add(butpan, cc.xyw(1, 41,5));
+		//builder.add(knopf3, cc.xy(2, 41));
+		//builder.add(knopf4, cc.xy(4,41));
 		
 		
 		builder.addSeparator("4. Daten in Kalender übernehmen", cc.xyw(1, 43, 4));
@@ -388,6 +416,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
  
 				while(FreiTage.getSelectedRows().length > 0){;
 					int[] select = FreiTage.getSelectedRows();
+					doAusDbLoeschen(select[0]);
 					//ftm.removeRow(FreiTage.convertRowIndexToModel(select[0]));
 					ftm.removeRow(select[0]);
 				}
@@ -407,6 +436,8 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					public  void run(){
 						if(FJahr != null){
 							FeierTag.setText("Feiertagsliste für das Jahr -> "+FJahr.getSelectedItem()+" <- eintragen.");
+							doSucheNachFeiertagen();
+							//System.out.println("nach doSucheNachFeiertagen");
 						}	
 					}
 				});
@@ -422,9 +453,77 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					////System.out.println("Dauer der Pause = "+speed+" Millisekunden");
 				}
 			}
+			if(arg0.getActionCommand().equals("indbspeichern")){
+				doInDbSpeichern();
+			}
 
 		}
 	}
+	private void doInDbSpeichern(){
+		if(FreiTage.getRowCount() <= 0){
+			JOptionPane.showMessageDialog(null,"Keine Feiertage zum Speichern vorhanden");
+			return;
+		}
+		String ftjahr = FreiTage.getValueAt(0,0).toString().trim().substring(6);
+		//Erst alle bisherigen löschen;
+		String cmd = "delete from feiertage where jahr='"+ftjahr+"'";
+		SqlInfo.sqlAusfuehren(cmd);
+		String deutschdat = "",sqldat = "",feiertag = "",buland="";
+		for(int i = 0; i < FreiTage.getRowCount();i++){
+			try{
+				deutschdat = FreiTage.getValueAt(i,0).toString();
+				sqldat = DatFunk.sDatInSQL(deutschdat);
+				feiertag = FreiTage.getValueAt(i,1).toString().trim();
+				buland = FreiTage.getValueAt(i,2).toString().trim();
+				cmd = "insert into feiertage set datdeutsch='"+deutschdat+"', datsql='"+sqldat+"', "+
+				"feiertag='"+feiertag+"', buland='"+buland+"', jahr='"+ftjahr+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+				//System.out.println(cmd);
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler bei der Anlage des Feiertages -> "+feiertag);
+			}
+		}
+		JOptionPane.showMessageDialog(null,"Feiertage für das Jahr "+ftjahr+" wurden gespeichert!");
+	}
+	private void doSucheNachFeiertagen(){
+		long zeit = System.currentTimeMillis();
+		while(! SysUtilKalenderanlegen.jahrOk){
+			try {
+				Thread.sleep(50);
+				if(System.currentTimeMillis()-zeit > 5000){
+					JOptionPane.showMessageDialog(null,"Fehler bei der Datenbank-Recherche nach Feiertagen");
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		doErmittleFeiertage(FJahr.getSelectedItem().toString().trim());
+	}
+	private void doErmittleFeiertage(String jahr){
+		String cmd = "select * from feiertage where jahr='"+jahr+"' order by datsql";
+		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+		ftm.setRowCount(0);
+		Vector<String> dummyvec = new Vector<String>();
+		for(int i = 0;i < vec.size();i++){
+			dummyvec.clear();
+			dummyvec.add(vec.get(i).get(0));
+			dummyvec.add(vec.get(i).get(2));
+			dummyvec.add(vec.get(i).get(3));
+			ftm.addRow((Vector<?>)dummyvec.clone());
+		}
+		FreiTage.validate();
+	}
+	private void doAusDbLoeschen(int row){
+		if(row < 0){
+			//JOptionPane.showMessageDialog(null,"Kein Feiertag zum Löschen ausgewählt");
+			return;
+		}
+		String datum = ftm.getValueAt(FreiTage.convertRowIndexToModel(row), 0).toString();
+		String feiertag = ftm.getValueAt(FreiTage.convertRowIndexToModel(row), 1).toString();
+		String cmd = "delete from feiertage where datdeutsch='"+datum+"', and feiertag='"+feiertag+"' LIMIT 1";
+		SqlInfo.sqlAusfuehren(cmd);
+	}
+		
 	private void starteFTEintragen(){
 		int max = FreiTage.getRowCount();
 		int i;
@@ -674,7 +773,8 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	private void starteSession(String land,String jahr) throws IOException{
 		String urltext = "http://www.feiertage.net/csvfile.php?state="+land+"&year="+jahr+"&type=csv";
 		String text = null;
-		ftm.getDataVector().clear();
+		//ftm.getDataVector().clear();
+		ftm.setRowCount(0);
 		FreiTage.validate();
 		URL url = new URL(urltext);
 		   
@@ -712,6 +812,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		FJahr.setSelectedItem(item);
 		String ftext = "Feiertagsliste für das Jahr "+item+" eintragen";
 		FeierTag.setText(ftext);
+		//doErmittleFeiertage(item);
 	}
 
 }
@@ -755,12 +856,14 @@ class HoleMaxDatum extends Thread implements Runnable{
 						SysUtilKalenderanlegen.KalMake.setText(Integer.valueOf(altjahr+1).toString());
 						//SysUtilKalenderanlegen.setJahr(Integer.valueOf(altjahr+1).toString());
 						SysUtilKalenderanlegen.setJahr(Integer.valueOf(altjahr+1).toString());
+						SysUtilKalenderanlegen.jahrOk = true;
 
 						}else{
 							String datum = DatFunk.sHeute().substring(6);
 							SysUtilKalenderanlegen.KalBis.setText("leer");
 							SysUtilKalenderanlegen.KalMake.setText(datum);
-							SysUtilKalenderanlegen.setJahr(datum);							
+							SysUtilKalenderanlegen.setJahr(datum);
+							SysUtilKalenderanlegen.jahrOk = true;
 						}
 					}
 			}catch(SQLException ev){
