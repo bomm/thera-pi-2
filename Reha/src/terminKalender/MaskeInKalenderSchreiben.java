@@ -209,7 +209,7 @@ public JScrollPane eingabePanel(){
 	endDatum.setName("EndDatum");
 	eingabep.add(endDatum,cc.xy(4,5));
 	/********************************/
-	eingabep.add(new JXLabel("Feiertag berücksichtigen"),cc.xy(2,7));
+	eingabep.add(new JXLabel("Feiertage berücksichtigen"),cc.xy(2,7));
 	ckbFeiertag = new JRtaCheckBox();
 	ckbFeiertag.setOpaque(false);
 	ckbFeiertag.setSelected(true);
