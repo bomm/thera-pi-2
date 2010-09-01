@@ -436,7 +436,7 @@ public void maskenEintragen(){
 	//5. den Vector auslesen
 	//6. statement zurechtbasteln
 	//7. statement abschicken
-	//8. pr�fen ob tag +1 > bis zu welchem Tag wenn ja exit;
+	//8. prüfen ob tag +1 > bis zu welchem Tag wenn ja exit;
 }
 
 	private String macheStatement(String sqldat,ArrayList list){
@@ -446,7 +446,7 @@ public void maskenEintragen(){
 			return sret;
 		}
 
-		int i,j;
+		int i; //,j;
 		int bloecke =Integer.valueOf( (String)  ((Vector) list.get(5)).get(0) );
 		sret = "Update flexkc set ";
 		String nummer;
