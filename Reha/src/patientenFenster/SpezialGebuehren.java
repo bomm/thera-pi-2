@@ -18,6 +18,10 @@ import events.RehaTPEventListener;
 
 public class SpezialGebuehren extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private RehaTPEventClass rtp = null;
 
 	public SpezialGebuehren(JXFrame owner, String name) {

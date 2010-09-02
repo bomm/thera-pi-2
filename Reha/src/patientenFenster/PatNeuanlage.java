@@ -611,7 +611,7 @@ private KVKWrapper kvw;
 		final String xrez = rez_num;
 		new Thread(){
 			public void run(){
-				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector)docmod.getDataVector().clone(), inNeu, String.valueOf(globPat_intern));
+				Reha.thisClass.patpanel.getLogic().arztListeSpeichernVector((Vector<?>)docmod.getDataVector().clone(), inNeu, String.valueOf(globPat_intern));
 //				new ArztListeSpeichern((Vector)docmod.getDataVector().clone(),inNeu,globPat_intern);
 				//System.out.println("Es wirde die ArztListe gespeichert.....");
 				finalise();
@@ -1200,6 +1200,8 @@ private KVKWrapper kvw;
 		pat31.validate();
 		return pat31;
 	}
+	
+	@SuppressWarnings("unused")
 	private ImageIcon getPatBild(){
 		return null;
 	}
@@ -1397,7 +1399,7 @@ private KVKWrapper kvw;
 		String aerzte = Reha.thisClass.patpanel.patDaten.get(63);
 		String[] einzelarzt = null;
 		String[] arztdaten = null;
-		Vector arztvec = null;
+		Vector<?> arztvec = null;
 		if(!aerzte.trim().equals("")){
 			einzelarzt = aerzte.split("\n");
 			//System.out.println("Anzahl Ärzte = "+einzelarzt.length);
@@ -1406,7 +1408,7 @@ private KVKWrapper kvw;
 				//docmod.setColumnIdentifiers(new String[] {"LANR","Nachname","Strasse","Ort","BSNR",""});
 				arztvec = SqlInfo.holeFelder("select arztnum,nachname,strasse,ort,bsnr,id  from arzt where id='"+arztdaten[1]+"' LIMIT 1" );
 				if(arztvec.size() > 0){
-					docmod.addRow((Vector)arztvec.get(0));
+					docmod.addRow((Vector<?>)arztvec.get(0));
 				}
 			}
 			if(docmod.getRowCount()>0){
@@ -1800,12 +1802,13 @@ private KVKWrapper kvw;
 		}
 		return false;
 	}
+	@SuppressWarnings("unused")
 	private void speichernPatBild(boolean neu,ImageIcon ico,String pat_intern){
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		boolean ret = false;
-		int bilder = 0;
+		//boolean ret = false;
+		//int bilder = 0;
 	
 		//piTool.app.conn.setAutoCommit(true);
 		try {
@@ -1869,7 +1872,7 @@ private KVKWrapper kvw;
 	public static BufferedImage holePatBild(String pat_intern){
 		Statement stmt = null;;
 		ResultSet rs = null;
-		int bilder = 0;
+		//int bilder = 0;
 		Image bild = null;
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,

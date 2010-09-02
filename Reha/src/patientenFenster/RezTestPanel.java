@@ -1,7 +1,6 @@
 package patientenFenster;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -12,19 +11,15 @@ import java.awt.event.KeyListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JRadioButton;
 
-import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
-import org.therapi.reha.patient.AktuelleRezepte;
+
+import systemTools.JRtaRadioButton;
+import systemTools.ListenerTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
-import systemTools.ListenerTools;
 
 public class RezTestPanel extends JXPanel implements ActionListener,KeyListener,FocusListener{
 	/**

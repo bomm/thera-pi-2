@@ -1,5 +1,7 @@
 package patientenFenster;
 
+import hauptFenster.Reha;
+
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -9,42 +11,31 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LinearGradientPaint;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.therapi.reha.patient.AktuelleRezepte;
 
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
-import dialoge.PinPanel;
-import dialoge.RehaSmartDialog;
-import events.RehaTPEvent;
-import events.RehaTPEventClass;
-import events.RehaTPEventListener;
+import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
+import systemTools.JRtaTextField;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -57,15 +48,22 @@ import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
-import hauptFenster.Reha;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
 public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	boolean nurkopie;
 	boolean aushistorie;
 	public JButton okknopf;
@@ -74,7 +72,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	public JCheckBox direktdruck;
 	private RehaTPEventClass rtp = null;
 	private RgebHintergrund rgb;	
-	CompoundPainter cp = null;
+	//CompoundPainter cp = null;
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
 	private AktuelleRezepte aktuelleRezepte;
@@ -468,7 +466,12 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	}
 	
 }
+
 class RgebHintergrund extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	ImageIcon hgicon;
 	int icx,icy;
 	AlphaComposite xac1 = null;

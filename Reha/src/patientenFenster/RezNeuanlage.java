@@ -84,7 +84,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public boolean feldergefuellt = false;
 	private String nummer = null;
 	private String[] farbcodes = {null,null,null,null,null,null,null,null,null,null};
-	private String[] heilmittel = {"KG","MA","ER","LO","RH"};
+	//private String[] heilmittel = {"KG","MA","ER","LO","RH"};
 	
 	private String aktuelleDisziplin = "";
 	private int preisgruppen[] = {0,0,0,0,0};
@@ -215,8 +215,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	 			   // else bedeutet nicht neu - sondern ändern
 		 		   }else{
 		 			   int aid,kid;
-		 			   boolean beenden = false;
-		 			   String meldung = "";
+		 			   //boolean beenden = false;
+		 			   //String meldung = "";
 		 			   kid = StringTools.ZahlTest(jtf[11].getText());
 		 			   aid = StringTools.ZahlTest(jtf[12].getText());
 		 			   if(kid < 0 && aid < 0){
@@ -297,7 +297,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		PanelBuilder jpan = new PanelBuilder(lay);
 		jpan.setDefaultDialogBorder();
 		jpan.getPanel().setOpaque(false);
-		String ywerte = "";
+		//String ywerte = "";
 	
 		jtf[0] = new JRtaTextField("NIX",false); // kasse/kostenträger
 		jtf[1] = new JRtaTextField("NIX",false); // arzt
@@ -583,7 +583,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return 0;
 		}
 		for(int i = 0;i<preisvec.size();i++){
-			if( Integer.parseInt((String) ((Vector)preisvec.get(i)).get(preisvec.get(i).size()-1)) == veczahl ){
+			if( Integer.parseInt((String) ((Vector<?>)preisvec.get(i)).get(preisvec.get(i).size()-1)) == veczahl ){
 				return i+1;
 			}
 		}
@@ -715,6 +715,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	private void doRechnen(int comb){
 		//unbelegt
 	}
+	@SuppressWarnings("unused")
 	private void mustHmrCheck(){
 		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()])==1  ){
 			this.hmrcheck.setEnabled(false);
@@ -1013,6 +1014,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		kwahl.dispose();
 		kwahl = null;
 	}
+	
+	@SuppressWarnings("unused")
 	private void holePreisGruppeMitWorker(String id){
 		final String xid = id;
 		new SwingWorker<Void,Void>(){
@@ -1062,7 +1065,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	 * 
 	 */
 	private void ladeZusatzDatenNeu(){
-		String tests = "";
+		//String tests = "";
 		jtf[0].setText(Reha.thisClass.patpanel.patDaten.get(13));
 		jtf[11].setText(Reha.thisClass.patpanel.patDaten.get(68)); //kassenid
 		if(jtf[11].getText().trim().equals("")){
@@ -1154,6 +1157,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	
 	/********************************/
+	@SuppressWarnings("unused")
 	private Double holePreisDoubleX(String pos,int ipreisgruppe){
 		Double dbl = 0.0;
 		for(int i = 0; i < preisvec.size();i++){
@@ -1180,10 +1184,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 
 	/*********************************/
+	@SuppressWarnings("unused")
 	private String[] holePreis(int ivec,int ipreisgruppe){
 		if(ivec > 0){
 			int prid = Integer.valueOf((String) this.preisvec.get(ivec).get(this.preisvec.get(ivec).size()-1));
-			Vector xvec = ((Vector)this.preisvec.get(ivec));
+			Vector<?> xvec = ((Vector<?>)this.preisvec.get(ivec));
 			return new String[] {(String)xvec.get(3),(String)xvec.get(2)};
 		}else{
 			return new String[] {"0.00",""};
@@ -1290,6 +1295,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			////System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
 			Integer izuzahl = Integer.valueOf(jtf[13].getText());
 			String szzstatus = "";
+			@SuppressWarnings("unused")
 			String unter18 = "F";
 			for(int i = 0; i < 1;i++){
 				if(SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(izuzahl-1) <= 0){
@@ -1361,8 +1367,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			sbuf.append("unter18='"+((DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))) ? "T', " : "F', "));
 			sbuf.append("zzstatus='"+szzstatus+"', ");
-			int leistung;
-			String[] str;
+			//int leistung;
+			//String[] str;
 			sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 			sbuf.append("jahrfrei='"+Reha.thisClass.patpanel.patDaten.get(69)+"', ");
 			sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
