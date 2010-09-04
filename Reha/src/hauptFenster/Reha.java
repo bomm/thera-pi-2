@@ -1435,6 +1435,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("geburtstagsbriefe");
 			men.addActionListener(this);
 			toolsMenu.add(men);		
+			toolsMenu.addSeparator();
+			men = new JMenuItem("Sql-Modul");
+			men.setActionCommand("sqlmodul");
+			men.addActionListener(this);
+			toolsMenu.add(men);		
 
 		}
 		return toolsMenu;
@@ -2169,6 +2174,13 @@ public void actionPerformed(ActionEvent arg0) {
 			return;
 		}
 		new LadeProg(Reha.proghome+"GBriefe.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		return;
+	}
+	if(cmd.equals("sqlmodul")){
+		if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, true)){
+			return;
+		}
+		new LadeProg(Reha.proghome+"RehaSql.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
 	
