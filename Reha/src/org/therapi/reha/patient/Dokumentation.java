@@ -145,6 +145,7 @@ import ag.ion.bion.officelayer.event.IDocumentListener;
 import ag.ion.bion.officelayer.event.IEvent;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.noa.service.IServiceProvider;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -2630,6 +2631,10 @@ class OoListener implements IDocumentListener {
 			geaendert = true;
 		}
 	}
+	
+	private void doUebertragen(String file){
+		
+	}
 	@Override
 	public void onSaveFinished(IDocumentEvent arg0) {
 		// TODO Auto-generated method stub
@@ -2638,14 +2643,17 @@ class OoListener implements IDocumentListener {
 	}
 	@Override
 	public void onUnload(IDocumentEvent arg0) {
-		// TODO Auto-generated method stub
 		try {
+			
 			IDocument doc = arg0.getDocument();
 			if(doc == null){
+				System.out.println(geaendert+" - "+datei+" - "+neu+" doc = null ");
 				return;
 			}
+			
 			String file = arg0.getDocument().getPersistenceService().getLocation().getPath();
 			file = file.substring(1).replace("%20", " ");
+			System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 			if(geaendert && datei.equals(file) && (!neu)){
 				final String xfile = file;
 				final int xid = Integer.parseInt(id);
@@ -2666,17 +2674,17 @@ class OoListener implements IDocumentListener {
 									}							
 
 						}
-						//Reha.officeapplication.getDesktopService().removeDocumentListener(this);
-						//System.out.println("Listener entfernt - Datei geändert "+xfile);
 					}
 				}.start();
 				arg0.getDocument().removeDocumentListener(this);
 				warschoninsave = true;
 			}else if(datei.equals(file) && !geaendert){
+				System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 				arg0.getDocument().removeDocumentListener(this);
 				//System.out.println("Listener entfernt - Datei nicht geändert"+file);
 				warschoninsave = true;
 			}else if(neu){
+				System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 				new Thread(){
 					public void run(){	
 						String nurDatei = datei.substring(datei.replace("\\", "/").lastIndexOf("/")+1);
