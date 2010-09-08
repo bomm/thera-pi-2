@@ -223,9 +223,21 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				}
 			}
 		});
+		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+				long zeit = System.currentTimeMillis();
+				while(! RehaSql.DbOk){
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						if(System.currentTimeMillis()-zeit > 10000){
+							System.exit(0);
+						}
+						e.printStackTrace();
+					}
+				}
 				Vector<Vector<String>> vec = SqlInfo.holeFelder("show tables");
 				for(int i = 0;i<vec.size();i++){
 					alletablemod.addRow(vec.get(i));
@@ -605,12 +617,12 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		
 	private void doExecuteStatement(){
 		Statement stmt = null;
-
+		//auf delete und update testen und wenn ja auf Limit 1 testen und wenn nein SuperUser-Passwort anfordern
 		try {
 			textArea.setText("Ihr Statement: ["+sqlstatement.getText().trim()+"]\n"+textArea.getText());
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
-			stmt.execute(sqlstatement.getText());
+			stmt.executeUpdate(sqlstatement.getText());
 		} catch (SQLException e) {
 			textArea.setText(e.getMessage()+"\n"+textArea.getText());
 		}
@@ -628,12 +640,13 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	}
 	private void doOnlySuperUserExecuteStatement(){
 		Statement stmt = null;
-		
+		//SuperUser-Passwort anfordern		
 		try {
 			textArea.setText("Ihr Statement: ["+sqlstatement.getText().trim()+"]\n"+textArea.getText());
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
-			//stmt.execute(sqlstatement.getText());
+			stmt.executeUpdate(sqlstatement.getText());
+
 		} catch (SQLException e) {
 			textArea.setText(e.getMessage()+"\n"+textArea.getText());
 		}
@@ -658,10 +671,19 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			doOnlySuperUserExecuteStatement();
 			return;
 		}
+		
 		if(sqlstatement.getText().trim().toLowerCase().startsWith("update") || sqlstatement.getText().trim().toLowerCase().startsWith("insert") ||
 				sqlstatement.getText().trim().toLowerCase().startsWith("delete")){
 			doExecuteStatement();
+			return;
 		}
+		
+		/*
+		if(sqlstatement.getText().trim().toLowerCase().startsWith("select") || sqlstatement.getText().trim().toLowerCase().startsWith("show") ||
+				sqlstatement.getText().trim().toLowerCase().startsWith("describe")){
+			doExecuteStatement();
+		}
+		*/
 		autoIncCol = -1;
 		tabmod.removeTableModelListener(this);
 		tabmod.setRowCount(0);
