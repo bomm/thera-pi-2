@@ -623,6 +623,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 			stmt.executeUpdate(sqlstatement.getText());
+			tabmod.setRowCount(0);
+			tab.validate();
 		} catch (SQLException e) {
 			textArea.setText(e.getMessage()+"\n"+textArea.getText());
 		}
@@ -646,7 +648,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 			stmt.executeUpdate(sqlstatement.getText());
-
+			tabmod.setRowCount(0);
+			tab.validate();
 		} catch (SQLException e) {
 			textArea.setText(e.getMessage()+"\n"+textArea.getText());
 		}
