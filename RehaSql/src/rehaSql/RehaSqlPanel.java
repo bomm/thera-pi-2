@@ -617,7 +617,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		
 	private void doExecuteStatement(){
 		Statement stmt = null;
-		//auf delete und update testen und wenn ja auf Limit 1 testen und wenn nein SuperUser-Passwort anfordern
+		//ToDo auf delete und update testen und wenn ja auf Limit 1 testen und wenn nein SuperUser-Passwort anfordern
 		try {
 			textArea.setText("Ihr Statement: ["+sqlstatement.getText().trim()+"]\n"+textArea.getText());
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -640,7 +640,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	}
 	private void doOnlySuperUserExecuteStatement(){
 		Statement stmt = null;
-		//SuperUser-Passwort anfordern		
+		//ToDo SuperUser-Passwort anfordern		
 		try {
 			textArea.setText("Ihr Statement: ["+sqlstatement.getText().trim()+"]\n"+textArea.getText());
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
