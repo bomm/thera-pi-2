@@ -51,7 +51,7 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
                 "In diesem Fenster geben Sie Ihr persönliches Passwort ein.\n" +
                 "Abhängig vom Ihrem Passwort, haben Sie Zugang zu allen Programmteilen "+
                 "die für Sie persönlich freigeschaltet wurden.\n"+
-                "Noch kein Passwort? Dann geben Sie bitte das Universalpasswort 'rta' ein. \n\n" +
+                "Noch kein Passwort? Dann geben Sie bitte das Universalpasswort ein. \n\n" +
                 "Hinweis--> Nach 3-maliger Falscheingabe wird der Administrator per Email über den fehlgeschlagenen Login-Versuch informiert.",
                 new ImageIcon(ss));
         this.add(header,BorderLayout.NORTH);
