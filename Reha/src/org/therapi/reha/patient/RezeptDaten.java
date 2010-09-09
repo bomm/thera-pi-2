@@ -5,6 +5,8 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
@@ -12,7 +14,9 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -37,7 +41,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class RezeptDaten extends JXPanel{
+public class RezeptDaten extends JXPanel implements ActionListener{
 	/**
 	 * 
 	 */
@@ -48,6 +52,8 @@ public class RezeptDaten extends JXPanel{
 	public ImageIcon hbimg = null; 
 	public Vector<String> vecaktrez = null;
 	public static boolean feddisch = false;
+	private JPopupMenu jPopupMenu = null; 
+	private JMenuItem copyToBunker = null;
 
 	public String[] rezart = {"Erstverordnung","Folgeverordnung","Folgev. außerhalb d.R."};
 	public RezeptDaten(PatientHauptPanel eltern){
@@ -327,22 +333,26 @@ public class RezeptDaten extends JXPanel{
 		
 		reznum.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent e) {
-		    	int farbcode = StringTools.ZahlTest((String)Reha.thisClass.patpanel.vecaktrez.get(57));
-		    	TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
-		    	draghandler.setText(
-		    			"TERMDATEXT"+"°"+
-		    			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
-		    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+
-		    			Reha.thisClass.patpanel.patDaten.get(3)+"°"+
-		    			reznum.getText()+
-		    			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
-		    			"°"+Reha.thisClass.patpanel.rezlabs[14].getText()
-		    			);
-		      JComponent c = (JComponent)draghandler;
-		      TransferHandler th = c.getTransferHandler();
-		      th.exportAsDrag(c, e, TransferHandler.COPY); //TransferHandler.COPY
+		    	if(e.getButton()!=java.awt.event.MouseEvent.BUTTON3){
+			    	int farbcode = StringTools.ZahlTest((String)Reha.thisClass.patpanel.vecaktrez.get(57));
+			    	TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
+			    	draghandler.setText(
+			    			"TERMDATEXT"+"°"+
+			    			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
+			    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+
+			    			Reha.thisClass.patpanel.patDaten.get(3)+"°"+
+			    			reznum.getText()+
+			    			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
+			    			"°"+Reha.thisClass.patpanel.rezlabs[14].getText()
+			    			);
+			      JComponent c = (JComponent)draghandler;
+			      TransferHandler th = c.getTransferHandler();
+			      th.exportAsDrag(c, e, TransferHandler.COPY); //TransferHandler.COPY
+			    }else{
+			    	ZeigePopupMenu(e);
+			    }
 		    }
-		  });
+		});
 		draghandler = new JRtaTextField("GROSS",true);
 		draghandler.setTransferHandler(new TransferHandler("text"));		
 		/*
@@ -454,5 +464,44 @@ public class RezeptDaten extends JXPanel{
 		jscr.validate();
 		return jscr;
 	}
-
+	private void ZeigePopupMenu(java.awt.event.MouseEvent me){
+		JPopupMenu jPop = getTerminPopupMenu();
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	private JPopupMenu getTerminPopupMenu() {
+		if (jPopupMenu == null) {
+			jPopupMenu = new JPopupMenu();
+			jPopupMenu.add(copyToBunker());
+		}
+		return jPopupMenu;
+	}
+	private JMenuItem copyToBunker() {
+		if (copyToBunker == null) {
+			copyToBunker = new JMenuItem();
+			copyToBunker.setText("Rezept kopieren");
+			copyToBunker.setIcon(SystemConfig.hmSysIcons.get("bunker"));
+			copyToBunker.setRolloverEnabled(true);
+			copyToBunker.setEnabled(true);
+			copyToBunker.addActionListener(this);
+		}
+		return copyToBunker;
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("Rezept kopieren")){
+			int farbcode = StringTools.ZahlTest((String)Reha.thisClass.patpanel.vecaktrez.get(57));
+			TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
+			draghandler.setText(
+			//"TERMDATEXT"+"°"+
+			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
+			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+
+			Reha.thisClass.patpanel.patDaten.get(3)+"°"+
+			reznum.getText()+
+			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
+			"°"+Reha.thisClass.patpanel.rezlabs[14].getText()
+			);
+			Reha.thisClass.copyLabel.setText(draghandler.getText());
+		}
+		
+	}
 }
