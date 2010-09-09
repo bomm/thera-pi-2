@@ -137,7 +137,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jcmb[0],cc.xyw(3,1,7));
 		
 		String[] xkuerzel = {"KG","MA","ER","LO","RH"};
-		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[0]+"'" );
+		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"'" );
 		if(xvec.size() > 0){
 			//System.out.println(xvec);
 			kuerzelcombo.setDataVector(xvec);
