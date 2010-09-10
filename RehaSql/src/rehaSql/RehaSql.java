@@ -66,7 +66,7 @@ public class RehaSql implements WindowListener {
 	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	
-	public static boolean testcase = true;
+	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
 		RehaSql application = new RehaSql();

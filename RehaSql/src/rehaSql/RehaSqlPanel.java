@@ -127,6 +127,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	Vector<Vector<String>> vecStatements = new Vector<Vector<String>>();
 	
 	int autoIncCol = -1;
+	boolean isUpdateable = false;
+	String aktuelleTabelle = "";
 	
 	HashMap<String,String> hmAdresse = new HashMap<String,String>(); 
 	
@@ -593,6 +595,13 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 					value = (tabmod.getValueAt(row,col) == Boolean.FALSE ? "F" : "T");
 				}else if(tabmod.getColumnClass(col) == Date.class){
 					value = tabmod.getValueAt(row,col).toString();
+					if(value.trim().length()==10){
+						if(value.indexOf(".") == 2){
+							value = DatFunk.sDatInSQL(value);
+						}
+					}else{
+						value = "null";
+					}
 				}else if(tabmod.getColumnClass(col) == Double.class){
 					value = dcf.format((Double)tabmod.getValueAt(row,col)).replace(",",".");
 				}else if(tabmod.getColumnClass(col) == Integer.class){
@@ -600,6 +609,24 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				}else if(tabmod.getColumnClass(col) == String.class){
 					value = tabmod.getValueAt(row,col).toString();
 				}
+				if(autoIncCol < 0){
+					JOptionPane.showMessageDialog(null, "Keine auto_inc Spalte gefunden, Wert wird nicht in die Datenbank geschrieben");
+					return;
+				}else{
+					if(isUpdateable){
+						String cmd = "update "+aktuelleTabelle+" set "+colName.get(col)+" = '"+value+"' where "+colName.get(autoIncCol)+" = '"+tabmod.getValueAt(row, autoIncCol)+"' LIMIT 1";
+						SqlInfo.sqlAusfuehren(cmd);
+						//System.out.println(cmd);
+					}else{
+						String message = "der vorangegangene SELECT-Befehl bezog sich auf mehr als eine Tabelle.\n"+
+						"Solche Abfrageergebnisse können nicht direkt UPDATED werden.\n"+
+						"Lösung: mehrere SELECT Abfragen auf jeweils eine Tabelle bezogen";
+						JOptionPane.showMessageDialog(null, message);
+					}
+						
+					
+				}
+				
 			}catch(Exception ex){
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(null,"Fehler in der Dateneingbe");
@@ -618,6 +645,14 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	private void doExecuteStatement(){
 		Statement stmt = null;
 		//ToDo auf delete und update testen und wenn ja auf Limit 1 testen und wenn nein SuperUser-Passwort anfordern
+		if(sqlstatement.getText().toLowerCase().contains("delete") || 
+				sqlstatement.getText().toLowerCase().contains("update")){
+			if(!sqlstatement.getText().toLowerCase().contains("limit")){
+				//hier Super-User-Paswort abfragen
+			}
+			
+		}
+
 		try {
 			textArea.setText("Ihr Statement: ["+sqlstatement.getText().trim()+"]\n"+textArea.getText());
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -695,6 +730,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		colAutoinc.clear();
 		colClassName.clear();
 		colTypeName.clear();
+		isUpdateable = true;
+		aktuelleTabelle = "";
 		
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -709,8 +746,11 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			rs = stmt.executeQuery(sqlstatement.getText().trim());
 
 			md = (ResultSetMetaData) rs.getMetaData();
+			
 			int cols = md.getColumnCount();
+			String table0 = null;;
 			for(int i = 0; i < cols;i++){
+				
 				colName.add(md.getColumnName(i+1));
 				colType.add(md.getColumnType(i+1));
 				colClassName.add(md.getColumnClassName(i+1));
@@ -725,6 +765,14 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				colAutoinc.add(md.isAutoIncrement(i+1));
 				if(md.isAutoIncrement(i+1)){
 					autoIncCol = i;
+				}
+				if(i == 0){
+					table0 = md.getTableName(i+1);
+					aktuelleTabelle = String.valueOf(table0);
+				}else{
+					if(! table0.equals(md.getTableName(i+1)) ){
+						isUpdateable = false;
+					}
 				}
 	
 			}
