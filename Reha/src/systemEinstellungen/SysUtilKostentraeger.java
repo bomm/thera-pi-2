@@ -3,20 +3,16 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -27,16 +23,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
+import org.jdesktop.swingx.renderer.DefaultTableRenderer;
+import org.jdesktop.swingx.renderer.IconValues;
+import org.jdesktop.swingx.renderer.MappedValue;
+import org.jdesktop.swingx.renderer.StringValues;
 
 import sqlTools.SqlInfo;
 import systemTools.JCompTools;
-
-
+import terminKalender.DatFunk;
+import utils.INIFile;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -47,6 +46,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	JXTable ktrtbl = null;
 	MyKtraegerModel ktrmod = null;
 	JButton[] but = {null,null,null,null};
+	INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/ktraeger.ini");
+	private TableCellRenderer JLabelRenderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 	
 	public SysUtilKostentraeger(){
 		super(new BorderLayout());
@@ -79,11 +80,12 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		builder.add(but[0],cc.xy(1,3));
 		
 		ktrmod = new MyKtraegerModel();
-		ktrmod.setColumnIdentifiers(new String[] {"Kostenträger","gültig ab","Dateiname"});
+		ktrmod.setColumnIdentifiers(new String[] {"Kostenträger","gültig ab","Dateiname","DB Status"});
 		ktrtbl = new JXTable(ktrmod);
 		ktrtbl.getColumn(1).setMaxWidth(75);
 		ktrtbl.getColumn(2).setMinWidth(0);
-		ktrtbl.getColumn(2).setMaxWidth(0);
+		ktrtbl.getColumn(3).setMinWidth(0);
+		ktrtbl.getColumn(3).setCellRenderer(JLabelRenderer);
 		ktrtbl.setSortable(false);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(ktrtbl);
 		jscr.validate();
@@ -148,7 +150,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		      URLConnection conn = url.openConnection();
 		      ////System.out.println(conn.getContentEncoding());
 		      
-
+		      
 		      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 		      int durchlauf = 0;
 		      //Vector<Vector<String>> ktraegerdat = new Vector<Vector<String>>();
@@ -198,9 +200,73 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		          ++durchlauf;
 		      }
 		inS.close();
+		setFlags();
+	}
+	private void setFlags() {
 		if(ktrmod.getRowCount() > 0){
 			ktrtbl.setRowSelectionInterval(0, 0);
+			ImageIcon[] img = {SystemConfig.hmSysIcons.get("zuzahlok"),SystemConfig.hmSysIcons.get("zuzahlnichtok"),SystemConfig.hmSysIcons.get("kleinehilfe")};
+			String dateiName = "";
+			String kassenArtKurz = "";
+			int kANr;
+			for( int i = 0; i < ktrmod.getRowCount(); i++ ){
+				dateiName =(String) ktrmod.getValueAt(i, 2); //in eclipse column 1, da Datum nicht eingelesen wird
+				kassenArtKurz = dateiName.substring(0,2).toUpperCase();
+				kANr = inif.getIntegerProperty("KassenArtNr", kassenArtKurz);
+				ktrmod.setValueAt(inif.getStringProperty("KABezeichner", "KALang"+kANr),i,0);
+				if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals(dateiName) ){  
+					ktrmod.setValueAt(img[0],i,3); // beide Versionen gleich -> "aktuell"
+				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) > 0){
+					ktrmod.setValueAt(img[2],i,3); // GKV noch nicht gültig -> Erinnerungsfunktion wünschenswert
+				} else if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals("") ){ 
+					ktrmod.setValueAt(img[1],i,3); // noch nicht in INI-Datei -> "update"
+				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) <= 0){
+					if ( dateiNameCheck(dateiName,(String) ktrmod.getValueAt(i, 2)) ){// Wenn Dateiname aktueller als INI-Dateiname (Monat/Quartal, insbesondere aber auch Version
+						ktrmod.setValueAt(img[1],i,3); // GKV bereits gültig und neuer als Ini
+					} else {
+						ktrmod.setValueAt(img[0],i,3); //"DB aktuell 2"// GKV bereits gültig (ok), aber älter als Ini
+					}
+				} 	
+				 else {
+					ktrmod.setValueAt(img[2],i,3); 
+				}
+			}
 		}
+		
+	}
+	private boolean dateiNameCheck(String dateiNameGKV, String dateiNameIni) {
+		String abJahrGKV = dateiNameGKV.substring(6, 8);  // Stelle 7-8
+		String abJahrIni = dateiNameIni.substring(6, 8);  // Stelle 7-8
+		String abMonatGKV = dateiNameGKV.substring(4, 6); // Stelle 5-6
+		String abMonatIni = dateiNameIni.substring(4, 6);  // Stelle 5-6
+		if (Integer.getInteger(abJahrGKV) > Integer.getInteger(abJahrIni)) return true;
+		if (abMonatIni.substring(0).equals("Q")){
+			if (abMonatIni.substring(1).equals("1")){
+				abMonatIni= "01";
+			} else if (abMonatIni.substring(1).equals("1")){
+				abMonatIni= "04";
+			} else if (abMonatIni.substring(1).equals("1")){
+				abMonatIni= "07";
+			}else {
+				abMonatIni= "10";
+			}
+		}
+		if (abMonatGKV.substring(0).equals("Q")){
+			if (abMonatGKV.substring(1).equals("1")){
+				abMonatGKV= "01";
+			} else if (abMonatGKV.substring(1).equals("1")){
+				abMonatGKV= "04";
+			} else if (abMonatGKV.substring(1).equals("1")){
+				abMonatGKV= "07";
+			}else {
+				abMonatGKV= "10";
+			}
+		}
+		if (Integer.getInteger(abJahrGKV)>Integer.getInteger(abJahrIni)) return true;
+		else if ( (Integer.getInteger(abJahrGKV)==Integer.getInteger(abJahrIni)) 
+				&& (Integer.getInteger(dateiNameGKV.substring(12, 13))>Integer.getInteger(dateiNameGKV.substring(12, 13))) ) return true;
+		
+		return false;
 	}
 	public static String makeUTF8(final String toConvert){
 		try {
@@ -297,9 +363,16 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				
 			}
 		}
-		
-		
-			
+		int kANr = inif.getIntegerProperty("KassenArtNr", datei.substring(0,2).toUpperCase());
+		inif.setStringProperty("KTraegerDateien", "KTDatei"+kANr, datei.toString(), null);
+		inif.save();
+		try {
+			Thread.sleep(150);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		setFlags();
 	}
 	private void ktrAuswerten(Vector<String> ktr){
 		String ikkost ="";
@@ -398,7 +471,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		private static final long serialVersionUID = 1L;
 
 		public Class getColumnClass(int columnIndex) {
-			   if(columnIndex==0){return String.class;}
+			   if(columnIndex==3){return JLabel.class;}
 			   else{return String.class;}
 	}
 
@@ -408,7 +481,9 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		    	return false;
 		      }
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+				Object theData;
+				if (columnIndex==3){theData = (ImageIcon) ((Vector)getDataVector().get(rowIndex)).get(columnIndex);}
+				else{theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex);}
 				Object result = null;
 				result = theData;
 				return result;

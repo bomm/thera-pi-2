@@ -99,7 +99,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 	
 		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr) {
 			super(owner, name);
-			System.out.println("Name des Fensters = "+name);
+			//System.out.println("Name des Fensters = "+name);
 			setSize(450,600);
 			this.suchkrit = diag;
 			this.setName(name);
@@ -192,7 +192,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			this.removeWindowListener(this);
 			ListenerSchliessen();
 			//FensterSchliessen("");
-			System.out.println("In Textblock closed");
+			//System.out.println("In Textblock closed");
 			pinPanel = null;
 			super.pinPanel = null;
 			//super.dispose();
@@ -202,7 +202,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		@Override
 		public void windowClosing(WindowEvent arg0) {
 			FensterSchliessen("");
-			System.out.println("In Textblock closing");
+			//System.out.println("In Textblock closing");
 		}
 
 
@@ -210,7 +210,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		public void rehaTPEventOccurred(RehaTPEvent evt) {
 			String ss =  this.getName();
 			try{
-				System.out.println("Schließe Fenster Textbaustein");
+				////System.out.println("Schließe Fenster Textbaustein");
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				FensterSchliessen(evt.getDetails()[0]);
 			}catch(NullPointerException ne){
@@ -240,7 +240,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 							@Override
 							protected Void doInBackground() throws Exception {
 								String mwk = macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
-								////System.out.println(mwk);
+								//////System.out.println(mwk);
 								fuelleSucheInTabelle(mwk);
 								return null;
 							}
@@ -394,10 +394,10 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 				}
 			}
 			vectb = (Vector)tbvars.clone();
-			////System.out.println("Variablen Vector = "+tbvars);
+			//////System.out.println("Variablen Vector = "+tbvars);
 		}
 		private void infoPosition(int diff,int i,int lang){
-			////System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
+			//////System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
 		}
 		private void holeTbText(int tbid){
 			String text = (String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
@@ -430,7 +430,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			incheckundstart = true;
 			int row = textblock.getSelectedRow();
 			if(row < 0){
-				////System.out.println("Keine Tabellenzeile ausgewählt");
+				//////System.out.println("Keine Tabellenzeile ausgewählt");
 				incheckundstart = false;
 				return;
 			}
@@ -446,7 +446,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 						e.printStackTrace();
 					}
 					if((System.currentTimeMillis()-zeit) > 2000){
-						//System.out.println("Zwangsabbruch akttbid immer noch nicht identisch");
+						////System.out.println("Zwangsabbruch akttbid immer noch nicht identisch");
 						inholetext = false;
 						break;
 					}
@@ -575,7 +575,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		    public void valueChanged(ListSelectionEvent e) {
 				if(blockneugefunden || inholetext){
 					blockneugefunden = false;
-					////System.out.println("Wert von inholetext = "+inholetext);
+					//////System.out.println("Wert von inholetext = "+inholetext);
 					return;
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
