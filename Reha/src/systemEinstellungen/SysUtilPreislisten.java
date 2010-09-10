@@ -54,6 +54,10 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8748205631934202364L;
 	JRtaComboBox[] jcmb = {null,null,null,null};
 	JRtaTextField gueltig = null;
 	JButton[] button = {null,null,null,null,null,null};
@@ -734,21 +738,26 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jscr,cc.xyw(1,5,9));
 		
 		bezeich = new JRtaCheckBox();
+		bezeich.setOpaque(false);
 		builder.addLabel("Langtext-Bezeichnungen vom Preislistenserver übernehmen?",cc.xyw(1, 7, 8));
 		builder.add(bezeich,cc.xy(9, 7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
 		builder.addLabel("Bisher aktuelle Preise auf 'Alte-Preise' übertragen?",cc.xyw(1, 9, 8));
 		neuaufalt = new JRtaCheckBox();
+		neuaufalt.setOpaque(false);
 		neuaufalt.setSelected(true);
 		builder.add(neuaufalt,cc.xy(9, 9,CellConstraints.RIGHT,CellConstraints.BOTTOM));
 		//jradiogroup
 		jradio[0] = new JRtaRadioButton("nicht hinzufügen");
 		jradio[0].setHorizontalTextPosition(SwingConstants.LEFT);
+		jradio[0].setOpaque(false);
 		jradiogroup.add(jradio[0]);
 		jradio[1] = new JRtaRadioButton("vorher nachfragen");
-		jradio[1].setHorizontalTextPosition(SwingConstants.LEFT);		
+		jradio[1].setHorizontalTextPosition(SwingConstants.LEFT);
+		jradio[1].setOpaque(false);
 		jradiogroup.add(jradio[1]);
 		jradio[2] = new JRtaRadioButton("automat. hinzufügen");
 		jradio[2].setHorizontalTextPosition(SwingConstants.LEFT);
+		jradio[2].setOpaque(false);
 		jradiogroup.add(jradio[2]);
 		jradio[0].setSelected(true);
 		

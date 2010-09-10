@@ -10,6 +10,8 @@ import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -101,6 +103,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	int tblreihe;
 	String rezdatum = "";
 	boolean initok = false;
+	FocusListener fl = null;
 	//PinPanel pinPanel = null;
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
@@ -180,7 +183,32 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		});
 		//System.out.println("vor Pack");
 		pack();
+		setFocusListener();
+		for(int i = 0; i < 4;i++){
+			icfblock[i].addFocusListener(fl);
+		}
 		initok = true;
+	}
+	public void setFocusListener(){
+		fl = new FocusListener(){
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				for(int i = 0;i < 4;i++){
+					if( ((JComponent)arg0.getSource()).equals((JComponent)icfblock[i]) ){
+						zuletztaktiv = i;
+						break;
+					}
+				}
+				
+			}
+
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
 	}
 	private void setzeRezDatum(){
 		Vector<String> vec = null;
