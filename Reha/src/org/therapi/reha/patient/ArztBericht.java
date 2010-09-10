@@ -100,6 +100,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	String diag = "";
 	int tblreihe;
 	String rezdatum = "";
+	boolean initok = false;
 	//PinPanel pinPanel = null;
 	public ArztBericht(JXFrame owner, String name,boolean bneu,String reznr,int iberichtid,int aufruf,String xverfasser,String xdiag,int row) {
 		super(owner, name);
@@ -113,7 +114,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName(name);
 		setPinPanel(pinPanel);
-		super.getPinPanel().setName(name);
+		getPinPanel().setName(name);
 		
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -179,6 +180,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		});
 		//System.out.println("vor Pack");
 		pack();
+		initok = true;
 	}
 	private void setzeRezDatum(){
 		Vector<String> vec = null;
@@ -824,9 +826,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			return;
 		}
 		String[] str = AdressTools.machePrivatAdresse(vec.toArray(),false);
+		/*
 		for(int i = 0; i < str.length; i++){
 			//System.out.println("Ergebnis von str"+i+" = "+str[i]);
 		}
+		*/
 		SystemConfig.hmAdrBDaten.put("<Badr1>", str[0]);
 		SystemConfig.hmAdrBDaten.put("<Badr2>", str[1]);
 		SystemConfig.hmAdrBDaten.put("<Badr3>", str[2]);
@@ -924,8 +928,10 @@ class TextBausteine extends AbstractAction {
 	private static final long serialVersionUID = -6869230574347804165L;
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent arg0) { 
 		if(thblock == null){
+			//System.out.println("thblock == null");
+			initok = false;
 			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem(),getInstance());
 			thblock.setModal(true);
 			thblock.setLocationRelativeTo(grundPanel);
@@ -941,12 +947,13 @@ class TextBausteine extends AbstractAction {
 					try{
 					icfblock[zuletztaktiv].setCaretPosition(icfblock[zuletztaktiv].getText().length());
 					}catch(java.lang.IllegalArgumentException ex){
-						// da passiert jetzt halt nix
+						ex.printStackTrace();
 					}
 		   	  	}
 			});
 			
 		}else{
+			//System.out.println("thblock != null");
 			thblock.setVisible(true);
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
@@ -970,41 +977,40 @@ class TextBausteine extends AbstractAction {
  * Nachfolgend die Standards f�r RehaSmartDialog
  * 
  */
+	@Override
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
-			if(evt.getDetails()[0] != null){
-				if(evt.getDetails()[0].equals(this.getName())){
-					this.setVisible(false);
-					rtp.removeRehaTPEventListener((RehaTPEventListener) this);
-					rtp = null;
-					new Thread(){
-						public void run(){
-							if(! ishmnull){
-								setzeHmAufNull();
-							}
-							if(aufrufvon==0){
-								//System.out.println("Aufgerufen von "+aufrufvon);
-								Reha.thisClass.patpanel.aktRezept.setRezeptDaten();
-							}else if(aufrufvon==1){
-								Reha.thisClass.patpanel.historie.setRezeptDaten();
-								//Historie.historie.setRezeptDaten();									
-							}
+			if(evt.getDetails()[0].equals(this.getName())){
+				new Thread(){
+					public void run(){
+						if(! ishmnull){
+							setzeHmAufNull();
 						}
-					}.start();
-					this.dispose();
-					super.dispose();
-					//System.out.println("****************Arztbericht -> Listener entfernt**************"+this.getName());				
-				}
+						if(aufrufvon==0){
+							//System.out.println("Aufgerufen von "+aufrufvon);
+							Reha.thisClass.patpanel.aktRezept.setRezeptDaten();
+						}else if(aufrufvon==1){
+							Reha.thisClass.patpanel.historie.setRezeptDaten();
+							//Historie.historie.setRezeptDaten();									
+						}
+						rtp.removeRehaTPEventListener((RehaTPEventListener) getInstance());
+						rtp = null;
+						getInstance().dispose();
+						removeWindowListener(getInstance());
+						//System.out.println("****************Arztbericht -> Listener entfernt**************"+this.getName());				
+					}
+				}.start();
 			}
+
+
 		}catch(NullPointerException ne){
-			//System.out.println("In PatNeuanlage" +evt);
+			ne.printStackTrace();
 		}
 	}
-	public void windowClosed(WindowEvent arg0) {
-		// TODO Auto-generated method stub
+	@Override
+	public void windowClosing(WindowEvent arg0) {
 		if(rtp != null){
-			this.setVisible(false);			
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
 			rtp = null;
 			pinPanel = null;
@@ -1020,10 +1026,45 @@ class TextBausteine extends AbstractAction {
 						Reha.thisClass.patpanel.historie.setRezeptDaten();
 						//Historie.historie.setRezeptDaten();									
 					}
+					removeWindowListener(getInstance());
+					//this.dispose();
+					//super.dispose();
+					//System.out.println("****************Arztbericht -> Listener entfernt (in Closing)**********"+this.getName());
+
 				}
 			}.start();
-			this.dispose();
-			super.dispose();
+		}
+		
+	}
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		if(!initok){
+			//System.out.println("Return --> In window Closed - Arztbericht");
+			return;
+		}
+		//System.out.println("In window Closed - Arztbericht");
+		this.removeWindowListener(this);
+		if(rtp != null){
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
+			rtp = null;
+			pinPanel = null;
+			new Thread(){
+				public void run(){
+					if(! ishmnull){
+						setzeHmAufNull();	
+					}
+					if(aufrufvon==0){
+						//System.out.println("Aufgerufen von "+aufrufvon);
+						Reha.thisClass.patpanel.aktRezept.setRezeptDaten();
+					}else if(aufrufvon==1){
+						Reha.thisClass.patpanel.historie.setRezeptDaten();
+						//Historie.historie.setRezeptDaten();									
+					}
+					removeWindowListener(getInstance());
+				}
+			}.start();
+			//this.dispose();
+			//super.dispose();
 			//System.out.println("****************Arztbericht -> Listener entfernt (Closed)**********"+this.getName());
 		}
 		

@@ -189,12 +189,13 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				rtp = null;
 			}
+			this.removeWindowListener(this);
 			ListenerSchliessen();
-			FensterSchliessen("");
+			//FensterSchliessen("");
 			System.out.println("In Textblock closed");
 			pinPanel = null;
 			super.pinPanel = null;
-			super.dispose();
+			//super.dispose();
 
 		}
 
@@ -219,6 +220,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 
 		}
 		public void FensterSchliessen(String welches){
+			this.removeWindowListener(this);
 			if(rtp != null){
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				rtp = null;

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
@@ -29,20 +30,20 @@ public class PinPanel extends JXPanel implements ActionListener{
 
 	public PinPanel(){
 		super();
-	this.setBorder(null);
-	FlowLayout lay = new FlowLayout(FlowLayout.RIGHT,5,2);
-	//VerticalLayout lay = new VerticalLayout(3)
-	this.setLayout(lay);
-	this.setOpaque(false);
+		try{
+			this.setBorder(null);
+			FlowLayout lay = new FlowLayout(FlowLayout.RIGHT,5,2);
+			this.setLayout(lay);
+			this.setOpaque(false);
+			ZweiButtons();
+			img3 = SystemConfig.hmSysIcons.get("inaktiv");
+			thisClass = this;
+			this.setPreferredSize(new Dimension(50,20));
+			this.revalidate();
+		}catch(Exception ex){
+			
+		}
 
-	
-	
-	ZweiButtons();
-	img3 = SystemConfig.hmSysIcons.get("inaktiv");
-	thisClass = this;
-	this.setPreferredSize(new Dimension(50,20));
-	this.revalidate();
-	return;
 	}
 	
 	public void setzeName(String fenstername){
@@ -56,31 +57,29 @@ public class PinPanel extends JXPanel implements ActionListener{
 	}
 	
 	private void ZweiButtons(){
-		
-		jb1 = new JXButton();
-		jb1.setBorder(null);
-		jb1.setOpaque(false);
-		jb1.setPreferredSize(new Dimension(16,16));
-		img1 = SystemConfig.hmSysIcons.get("green"); 
-		jb1.setIcon(img1);
-		jb1.setActionCommand("gruen");
-		jb1.addActionListener(this);
-		//jb1.setEnabled(false);
-		//jb1.disable();
-		this.add(jb1);
-		
-		jb2 = new JXButton();
-		jb2.setBorder(null);
-		jb2.setOpaque(false);
-		jb2.setPreferredSize(new Dimension(16,16));
-		img2 = SystemConfig.hmSysIcons.get("rot"); //new ImageIcon(Reha.proghome+"icons/red.png");
-		jb2.setIcon(img2);
-		jb2.setActionCommand("rot");
-		jb2.addActionListener(this);
-
-		//jb2.setEnabled(false);
-		//jb2.disable();
+		try{
+			jb1 = new JXButton();
+			jb1.setBorder(null);
+			jb1.setOpaque(false);
+			jb1.setPreferredSize(new Dimension(16,16));
+			img1 = SystemConfig.hmSysIcons.get("green"); 
+			jb1.setIcon(img1);
+			jb1.setActionCommand("gruen");
+			jb1.addActionListener(this);
+			this.add(jb1);
+			
+			jb2 = new JXButton();
+			jb2.setBorder(null);
+			jb2.setOpaque(false);
+			jb2.setPreferredSize(new Dimension(16,16));
+			img2 = SystemConfig.hmSysIcons.get("rot"); //new ImageIcon(Reha.proghome+"icons/red.png");
+			jb2.setIcon(img2);
+			jb2.setActionCommand("rot");
+			jb2.addActionListener(this);
 		this.add(jb2);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 	
 	public void SetzeAktivButton(boolean aktiv){
@@ -115,20 +114,28 @@ public class PinPanel extends JXPanel implements ActionListener{
 			return;
 		}
 		if(cmd.equals("rot")){
-			String sEvent = getName();
-			RehaTPEvent rEvt = new RehaTPEvent(thisClass.getParent().getParent());
-			rEvt.setRehaEvent("PinPanelEvent");
-			rEvt.setDetails(sEvent,"ROT") ;
-			RehaTPEventClass.fireRehaTPEvent(rEvt);
-			int comps = this.getComponentCount();
-			Component comp = null;
-			for(int i = 0; i < comps;i++){
-				comp = this.getComponent(i);
-				ListenerTools.removeListeners(comp);
+			try{
+				
+				String sEvent = getName();
+				RehaTPEvent rEvt = new RehaTPEvent(thisClass.getParent().getParent());
+				rEvt.setRehaEvent("PinPanelEvent");
+				rEvt.setDetails(sEvent,"ROT") ;
+				RehaTPEventClass.fireRehaTPEvent(rEvt);
+				//System.out.println(rEvt);						
+
+				int comps = this.getComponentCount();
+				Component comp = null;
+				for(int i = 0; i < comps;i++){
+					comp = this.getComponent(i);
+					ListenerTools.removeListeners(comp);
+				}
+				img1 = null;
+				img2 = null;
+				img3 = null;
+				this.setVisible(false);
+			}catch(Exception ex){
+				ex.printStackTrace();
 			}
-			img1 = null;
-			img2 = null;
-			img3 = null;
 		}
 	}
 

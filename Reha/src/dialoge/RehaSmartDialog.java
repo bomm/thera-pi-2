@@ -149,8 +149,8 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		this.addWindowListener(this);
 		getRootPane().addKeyListener(this);
 		addKeyListener(this);
-	    xEvent = new RehaTPEventClass();
-	    //setCursor(Reha.thisClass.normalCursor);
+	    // vorher eingeschaltet //xEvent = new RehaTPEventClass();
+	    
 	    
 
 	}
@@ -251,7 +251,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 			ListenerTools.removeListeners(this);
 			this.removeWindowListener(this);
 			getRootPane().removeKeyListener(this);
-			xEvent.removeRehaTPEventListener(this);
+			//Vorher einegeschaltet //xEvent.removeRehaTPEventListener(this);
 		}catch(java.lang.NullPointerException ex){
 			
 		}
@@ -291,6 +291,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 		ListenerSchliessen();
+		this.removeWindowListener(this);
 		////System.out.println("Basisklasse wird geschlossen - "+getName()+" IgnoreReturn = "+ignorereturn);
 
 		

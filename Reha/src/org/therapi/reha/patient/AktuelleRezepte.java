@@ -1619,12 +1619,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
+						try{
 						ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,0,xxverfasser,"",xcurrow);
 						ab.setModal(true);
 						ab.setLocationRelativeTo(null);
 						ab.toFront();
 						ab.setVisible(true);
 						ab = null;
+						}catch(Exception ex){
+							ex.printStackTrace();
+							JOptionPane.showMessageDialog(null, ex.getMessage());
+						}
 						return null;
 					}
 					
@@ -2396,6 +2401,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
+			
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
 					//System.out.println("In rezNeuDlg set Visible false***************");
@@ -2408,9 +2414,14 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 
 					//System.out.println("****************Rezept Neu/ändern -> Listener entfernt**************");				
 				}
+			}else{
+				System.out.println("Details == null");
 			}
 		}catch(NullPointerException ne){
+			ne.printStackTrace();
 			//System.out.println("In RezeptNeuanlage" +evt);
+		}catch(Exception ex){
+			
 		}
 	}
 	public void windowClosed(WindowEvent arg0) {
