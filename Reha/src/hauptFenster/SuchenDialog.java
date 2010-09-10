@@ -356,7 +356,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		if (jXTitledPanel == null) {
 			jXTitledPanel = new JXTitledPanel();
 			
-			jXTitledPanel.setTitle("Suche Patient..."+this.fname);
+			String kriterium[]={"Nachname Vorname","Patienten-ID","Vorname Nachname",null,null,null,null};
+			jXTitledPanel.setTitle("Suche Patient..."+this.fname+" nach "+kriterium[suchart]);
 			jXTitledPanel.setTitleForeground(Color.WHITE);
 			jXTitledPanel.setName("PatSuchen");
 			JXButton jb2 = new JXButton();
@@ -662,6 +663,28 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		
 		}else if(suchart == 1){
 			sstmt = "select n_name,v_name,geboren,pat_intern from pat5 where pat_intern = '"+jTextField.getText().trim()+"' LIMIT 1";
+		}else if(suchart == 2){
+			
+			
+			if (jTextField.getText().trim().contains(" ") ){
+				suche = jTextField.getText().split(" ");
+				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
+					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern  from pat5 where v_name LIKE '"+
+					StringTools.Escaped(suche[0].trim()) +"%' AND n_name LIKE '"+StringTools.Escaped(suche[1].trim())+"%' order by n_name,v_name";
+				}else{ //ADS
+					sstmt = "Select n_name,v_name,geboren,pat_intern  from pat5 where v_name LIKE UPPER('"+
+					suche[0].trim() + "%') AND n_name LIKE UPPER('" + StringTools.Escaped(suche[1].trim()) +"%') order by n_name,v_name";
+				}
+			}else{
+				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
+					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where v_name LIKE '"+
+					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
+				}else{ //ADS
+					sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where v_name LIKE UPPER('"+
+					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
+				}
+			}
+			
 		}else{
 			return;
 		}
