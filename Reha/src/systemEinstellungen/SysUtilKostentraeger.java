@@ -61,7 +61,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		*/
 		return;
 	}
-	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
@@ -470,7 +470,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	class MyKtraegerModel extends DefaultTableModel{
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   if(columnIndex==3){return JLabel.class;}
 			   else{return String.class;}
 	}
