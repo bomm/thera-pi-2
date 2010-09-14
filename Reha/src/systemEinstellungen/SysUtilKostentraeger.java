@@ -63,8 +63,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
-        //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
+        //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.  10.
+		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 40dlu",
        //1.    2. 3.   4.   5.    6.     7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
 		"p, 10dlu,p, 10dlu,100dlu,10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  10dlu ,10dlu, 10dlu, p");
 		
@@ -73,7 +73,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Kostenträgerdateien abholen (IKK-Bundesverband)",cc.xyw(1,1,9));
+		builder.addSeparator("Kostenträgerdateien abholen (IKK-Bundesverband)",cc.xyw(1,1,10));
 		but[0] = new JButton("Serverkontakt herstellen");
 		but[0].setActionCommand("serverkontakt");
 		but[0].addActionListener(this);
@@ -84,14 +84,16 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		ktrtbl = new JXTable(ktrmod);
 		ktrtbl.getColumn(1).setMaxWidth(75);
 		ktrtbl.getColumn(2).setMinWidth(0);
+		ktrtbl.getColumn(2).setMaxWidth(110);
 		ktrtbl.getColumn(3).setMinWidth(0);
+		ktrtbl.getColumn(3).setMaxWidth(60);
 		ktrtbl.getColumn(3).setCellRenderer(JLabelRenderer);
 		ktrtbl.setSortable(false);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(ktrtbl);
 		jscr.validate();
-		builder.add(jscr,cc.xywh(1,5,9,1));
+		builder.add(jscr,cc.xywh(1,5,10,1));
 		
-		builder.addSeparator("Gewählte Datei in eigene Kostenträger einlesen",cc.xyw(1,7,9));
+		builder.addSeparator("Gewählte Datei in eigene Kostenträger einlesen",cc.xyw(1,7,10));
 		
 		but[1] = new JButton("abholen und verarbeiten");
 		but[1].setActionCommand("abholen");
@@ -144,6 +146,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	}
 	private void starteSession(String land,String jahr) throws IOException{
 		String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kostentraegerdateien.gkvnet";
+		//String urltext = "file:///C:/Dokumente und Einstellungen/Oliver.Behmer/Eigene Dateien/thera-pi/gkv.htm";
 		String text = null;
 		URL url = new URL(urltext);
 		   
@@ -168,19 +171,24 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        		  kassendat.add(text.trim());
 		        		  continue;
 		        	  }
-		        	  if( (index = text.indexOf("\">gültig")) >= 0){
+		        	  if( ((index = text.indexOf("\">gültig")) >= 0) || ((index = text.indexOf("\">Gültig")) >= 0)){ 
 		        		  text = text.substring(index+2);
 		        		  text = text.replace("</span>", "");
 		        		  text = text.replace("gültig ab", "");
-		        		  text = text.replace("dem", "");
-		        		  kassendat.add(text.trim());
-		        		  continue;
-		        	  }
-		        	  if( (index = text.indexOf("\">Gültig")) >= 0){
-		        		  text = text.substring(index+2);
-		        		  text = text.replace("</span>", "");
 		        		  text = text.replace("Gültig ab", "");
 		        		  text = text.replace("dem", "");
+		        		  text = text.replace("Januar", "01.");
+		        		  text = text.replace("Februar ", "02.");
+		        		  text = text.replace("März ", "03.");
+		        		  text = text.replace("April ", "04.");
+		        		  text = text.replace("Mai", "05.");
+		        		  text = text.replace("Juni ", "06.");
+		        		  text = text.replace("Juli ", "07.");
+		        		  text = text.replace("August ", "08.");
+		        		  text = text.replace("September ", "09.");
+		        		  text = text.replace("Oktober ", "10.");
+		        		  text = text.replace("November ", "11.");
+		        		  text = text.replace("Dezember ", "12.");
 		        		  kassendat.add(text.trim());
 		        		  continue;
 		        	  }
@@ -213,7 +221,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				dateiName =(String) ktrmod.getValueAt(i, 2); //in eclipse column 1, da Datum nicht eingelesen wird
 				kassenArtKurz = dateiName.substring(0,2).toUpperCase();
 				kANr = inif.getIntegerProperty("KassenArtNr", kassenArtKurz);
-				ktrmod.setValueAt(inif.getStringProperty("KABezeichner", "KALang"+kANr),i,0);
+				ktrmod.setValueAt(inif.getStringProperty("KABezeichner", "KALang"+kANr),i,0);				
 				if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals(dateiName) ){  
 					ktrmod.setValueAt(img[0],i,3); // beide Versionen gleich -> "aktuell"
 				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) > 0){
@@ -232,7 +240,6 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				}
 			}
 		}
-		
 	}
 	private boolean dateiNameCheck(String dateiNameGKV, String dateiNameIni) {
 		String abJahrGKV = dateiNameGKV.substring(6, 8);  // Stelle 7-8
