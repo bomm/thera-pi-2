@@ -896,7 +896,14 @@ class KalenderBeschreiben extends Thread implements Runnable{
 			  String [] split = {null,null};
 			  if(backtest.contains("\\")){
 				split = backtest.split("\\\\");
-				backtest = split[0]+"\\\\"+split[1];
+				if(split.length > 1){
+					backtest = split[0]+"\\\\"+split[1];	
+				}else if(split.length==1){
+				  backtest = split[0];
+				  System.out.println(backtest);
+				}else{
+					JOptionPane.showMessageDialog(null, "Die Rezeptnummer ist fehlerhaft. Bitte überprüfen sie die Rezeptnummer");
+				}
 			  }
 			  buff.append("T" + Integer.toString(i+1) + "='" +StringTools.Escaped(vKalDaten.getFeld(iKoll,0,i).trim())+"', " );
 			  buff.append("N" + Integer.toString(i+1) + "='" +backtest+"', "  );
