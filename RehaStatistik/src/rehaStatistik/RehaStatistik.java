@@ -67,7 +67,7 @@ public class RehaStatistik implements WindowListener{
 	public static String proghome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";
 	
-	public static boolean testcase = true;
+	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
 		RehaStatistik application = new RehaStatistik();

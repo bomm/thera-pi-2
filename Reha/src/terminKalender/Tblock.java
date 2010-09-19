@@ -900,7 +900,7 @@ class KalenderBeschreiben extends Thread implements Runnable{
 					backtest = split[0]+"\\\\"+split[1];	
 				}else if(split.length==1){
 				  backtest = split[0];
-				  System.out.println(backtest);
+				  //System.out.println(backtest);
 				}else{
 					JOptionPane.showMessageDialog(null, "Die Rezeptnummer ist fehlerhaft. Bitte überprüfen sie die Rezeptnummer");
 				}

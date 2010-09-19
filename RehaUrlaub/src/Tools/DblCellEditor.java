@@ -59,7 +59,6 @@ public class DblCellEditor extends AbstractCellEditor implements KeyListener,Tab
             ((JFormattedTextField)component).selectAll();
             ((JFormattedTextField)component).setHorizontalAlignment(SwingConstants.RIGHT);
             ((JFormattedTextField)component).setBackground(Color.YELLOW);
-
     	}else{
     		final String xvalue = String.valueOf(value);
     		SwingUtilities.invokeLater(new Runnable(){
@@ -71,7 +70,6 @@ public class DblCellEditor extends AbstractCellEditor implements KeyListener,Tab
     	            ((JFormattedTextField)component).setCaretPosition(0);
     			}
     		});
-                		
     	}
 
         

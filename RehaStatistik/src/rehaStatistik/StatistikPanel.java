@@ -95,7 +95,7 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 	Vector<Integer> rehaFaelle = new Vector<Integer>();
 	Vector<Integer> rehaTage = new Vector<Integer>();
 	Vector<Vector<String>> unklareFaelle = new Vector<Vector<String>>();
-	String[] ktraegerArt = {"BFA","LVA","KBS","AOK","IKK","BKK","LKK","BKN","DAK","PRI","BGE","ORTHO"};
+	String[] ktraegerArt = {"BFA","LVA","KNP","AOK","IKK","BKK","LKK","BKN","DAK","PRI","BGE","ORTHO"};
 	
 	public StatistikPanel(){
 		super();
@@ -290,8 +290,8 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 					return kuerzel.indexOf("BFA");
 				}else if(kurz.contains("LVA")){
 					return kuerzel.indexOf("LVA");
-				}else if(kurz.contains("KBS")){
-					return kuerzel.indexOf("KBS");
+				}else if(kurz.contains("KNP")){
+					return kuerzel.indexOf("KNP");
 				}else if(kurz.contains("GKV") && preisgruppe.equals("2")){
 					return kuerzel.indexOf("DAK");
 				}else if(preisgruppe.equals("3") && (kurz.contains("GKV") || kurz.contains("PRI"))   ){
@@ -518,8 +518,15 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 
 		status1.setText("Datensätze abholen");
 		String cmd = "select rez_nr,pat_intern,rez_datum,termine,anzahl1,art_dbeh1,kid,preisgruppe from verordn "+
-		"where ( (rez_nr like 'RH%') and (art_dbeh1='24' or art_dbeh1='25' or art_dbeh1='26' "+
-		"or art_dbeh1='27' or art_dbeh1='28' or art_dbeh1='29') )";
+		"where ( "+
+		"(rez_nr like 'RH%') and "+
+		"("+
+		"((art_dbeh1='1' or art_dbeh1='2' or art_dbeh1='3' "+
+		"or art_dbeh1='4' or art_dbeh1='6' or art_dbeh1='7') "+
+		"and preisgruppe='6')"+
+		"or ((art_dbeh1='28' or art_dbeh1='29') and preisgruppe != '6') )"+
+		")";
+		System.out.println(cmd);
 		Vector<Vector<String>> rehavec = SqlInfo.holeFelder(cmd);
 		int lang = rehavec.size();
 		//System.out.println("Es wurden insgesamt "+Integer.toString(lang)+" Reha-Verordnungen gefunden");
@@ -579,16 +586,16 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 	}
 	private void doAnwesend(int art){
 		switch(art){
-		case 24:
+		case 1:
 			anwesendlvamed++;
 			break;
-		case 25:
+		case 2:
 			anwesendlvaahb++;
 			break;
-		case 26:
+		case 3:
 			anwesendbfamed++;
 			break;
-		case 27:
+		case 4:
 			anwesendbfaahb++;
 			break;
 		case 28:
@@ -597,26 +604,26 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 		case 29:
 			anwesendgkvmed++;
 			break;
-		case 30:
+		case 6:
 			anwesendbahnseemed++;
 			break;
-		case 31:
+		case 7:
 			anwesendbahnseeahb++;
 			break;
 		}
 	}
 	private void doAngemeldet(int art){
 		switch(art){
-		case 24:
+		case 1:
 			angemeldetlvamed++;
 			break;
-		case 25:
+		case 2:
 			angemeldetlvaahb++;
 			break;
-		case 26:
+		case 3:
 			angemeldetbfamed++;
 			break;
-		case 27:
+		case 4:
 			angemeldetbfaahb++;
 			break;
 		case 28:
@@ -625,10 +632,10 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 		case 29:
 			angemeldetgkvmed++;
 			break;
-		case 30:
+		case 6:
 			angemeldetbahnseemed++;
 			break;
-		case 31:
+		case 7:
 			angemeldetbahnseeahb++;
 			break;
 		}
@@ -636,21 +643,21 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 	private String getRehaArt(String art){
 		int iart = Integer.parseInt(art);
 		switch(iart){
-		case 24:
+		case 1:
 			return  "DRV-BaWü (med)";
-		case 25:
+		case 2:
 			return  "DRV-BaWü (AHB)";
-		case 26:
+		case 3:
 			return  "DRV-Bund (med)";
-		case 27:
+		case 4:
 			return  "DRV-Bund (AHB)";		
 		case 28:
 			return  "GKV (med)";
 		case 29:
 			return  "GKV (AHB)";
-		case 30:
+		case 6:
 			return  "DRV-Knappsch.(med)";
-		case 31:
+		case 7:
 			return  "DRV-Knappsch.(AHB)";
 		}
 		return "unbekannte Rehaart";
