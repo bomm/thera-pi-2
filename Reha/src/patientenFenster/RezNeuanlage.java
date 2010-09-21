@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -749,13 +750,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return;
 		}
 		if(hmpositionen.size() > 0){
+			String[] idiszi = {"Physio-Rezept","Massage/Lymphdrainage-Rezept",
+					"Ergotherapie-Rezept","Logopädie-Rezept","REHA-Verordnung"};
 			boolean checkok = new HMRCheck(
 					indi,
-					jcmb[0].getSelectedIndex(),
+					Arrays.asList(idiszi).indexOf((String)jcmb[0].getSelectedItem().toString()),
 					anzahlen,
 					hmpositionen,
 					preisgruppen[jcmb[0].getSelectedIndex()],
-					preisvec,jcmb[1].getSelectedIndex(),
+					preisvec,
+					jcmb[1].getSelectedIndex(),
 					(this.neu ? "" : this.vec.get(1).trim()),
 					jtf[2].getText().trim()
 					).check();
