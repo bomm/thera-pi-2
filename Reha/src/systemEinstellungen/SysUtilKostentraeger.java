@@ -192,7 +192,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        		  text = text.replace("November", "11.");
 		        		  text = text.replace("Dezember", "12.");
 		        		  text= text.replace(" ", "");
-		        		  if (text.substring(1, 2).equals(".")== true) {
+		        		  //if (text.substring(1, 2).equals(".")== true) {
+		        		  if (text.substring(1, 2).equals(".")) {
 		        			  text="0"+text;
 		        		  }
 		        		  kassendat.add(text.trim());
