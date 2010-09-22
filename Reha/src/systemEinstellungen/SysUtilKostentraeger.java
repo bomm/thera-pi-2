@@ -146,7 +146,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	}
 	private void starteSession(String land,String jahr) throws IOException{
 		String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kostentraegerdateien.gkvnet";
-		//String urltext = "file:///C:/Dokumente und Einstellungen/Oliver.Behmer/Eigene Dateien/thera-pi/gkv.htm";
+		//String urltext = "file:///C:/RehaVerwaltung/Test/gkv.htm";
 		String text = null;
 		URL url = new URL(urltext);
 		   
@@ -171,24 +171,30 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        		  kassendat.add(text.trim());
 		        		  continue;
 		        	  }
-		        	  if( ((index = text.indexOf("\">gültig")) >= 0) || ((index = text.indexOf("\">Gültig")) >= 0)){ 
+		        	  if( ((index = text.indexOf("\">gültig")) >= 0) || ((index = text.indexOf("\">Gültig")) >= 0) || ((index = text.indexOf("\">gueltig")) >= 0)|| ((index = text.indexOf("\">Gueltig")) >= 0)){ 
 		        		  text = text.substring(index+2);
 		        		  text = text.replace("</span>", "");
 		        		  text = text.replace("gültig ab", "");
 		        		  text = text.replace("Gültig ab", "");
+		        		  text = text.replace("gueltig ab", "");
+		        		  text = text.replace("Gueltig ab", "");
 		        		  text = text.replace("dem", "");
 		        		  text = text.replace("Januar", "01.");
-		        		  text = text.replace("Februar ", "02.");
-		        		  text = text.replace("März ", "03.");
-		        		  text = text.replace("April ", "04.");
+		        		  text = text.replace("Februar", "02.");
+		        		  text = text.replace("März", "03.");
+		        		  text = text.replace("April", "04.");
 		        		  text = text.replace("Mai", "05.");
-		        		  text = text.replace("Juni ", "06.");
-		        		  text = text.replace("Juli ", "07.");
-		        		  text = text.replace("August ", "08.");
-		        		  text = text.replace("September ", "09.");
-		        		  text = text.replace("Oktober ", "10.");
-		        		  text = text.replace("November ", "11.");
-		        		  text = text.replace("Dezember ", "12.");
+		        		  text = text.replace("Juni", "06.");
+		        		  text = text.replace("Juli", "07.");
+		        		  text = text.replace("August", "08.");
+		        		  text = text.replace("September", "09.");
+		        		  text = text.replace("Oktober", "10.");
+		        		  text = text.replace("November", "11.");
+		        		  text = text.replace("Dezember", "12.");
+		        		  text= text.replace(" ", "");
+		        		  if (text.substring(1, 2).equals(".")== true) {
+		        			  text="0"+text;
+		        		  }
 		        		  kassendat.add(text.trim());
 		        		  continue;
 		        	  }
@@ -246,7 +252,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		String abJahrIni = dateiNameIni.substring(6, 8);  // Stelle 7-8
 		String abMonatGKV = dateiNameGKV.substring(4, 6); // Stelle 5-6
 		String abMonatIni = dateiNameIni.substring(4, 6);  // Stelle 5-6
-		if (Integer.getInteger(abJahrGKV) > Integer.getInteger(abJahrIni)) return true;
+		if (Integer.parseInt(abJahrGKV) > Integer.parseInt(abJahrIni)) return true;
 		if (abMonatIni.substring(0).equals("Q")){
 			if (abMonatIni.substring(1).equals("1")){
 				abMonatIni= "01";
@@ -269,9 +275,9 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				abMonatGKV= "10";
 			}
 		}
-		if (Integer.getInteger(abJahrGKV)>Integer.getInteger(abJahrIni)) return true;
-		else if ( (Integer.getInteger(abJahrGKV)==Integer.getInteger(abJahrIni)) 
-				&& (Integer.getInteger(dateiNameGKV.substring(12, 13))>Integer.getInteger(dateiNameGKV.substring(12, 13))) ) return true;
+		if (Integer.parseInt(abJahrGKV)>Integer.parseInt(abJahrIni)) return true;
+		else if ( (Integer.parseInt(abJahrGKV)==Integer.parseInt(abJahrIni)) 
+				&& (Integer.parseInt(dateiNameGKV.substring(11, 12))>Integer.parseInt(dateiNameGKV.substring(11, 12))) ) return true;
 		
 		return false;
 	}
