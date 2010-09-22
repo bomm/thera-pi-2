@@ -204,7 +204,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        		  text = text.substring(0,text.indexOf("\""));
 		        		  text = text.replace("/upload/", "");
 		        		  kassendat.add(text.trim());
-		        		  ktrmod.addRow((Vector<String>)kassendat.clone());
+		        		  ktrmod.addRow((Vector<?>)kassendat.clone());
 		        		  //ktraegerdat.add((Vector<String>)kassendat.clone());
 		        		  gestartet = false;
 		        		  continue;
