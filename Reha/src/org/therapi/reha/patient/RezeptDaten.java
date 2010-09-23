@@ -491,16 +491,16 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 		if (e.getActionCommand().equals("Rezept kopieren")){
 			int farbcode = StringTools.ZahlTest((String)Reha.thisClass.patpanel.vecaktrez.get(57));
 			TerminFenster.DRAG_MODE = TerminFenster.DRAG_UNKNOWN;
-			draghandler.setText(
-			//"TERMDATEXT"+"°"+
-			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
+			String dragText = 			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
 			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+
 			Reha.thisClass.patpanel.patDaten.get(3)+"°"+
 			reznum.getText()+
 			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
-			"°"+Reha.thisClass.patpanel.rezlabs[14].getText()
-			);
-			Reha.thisClass.copyLabel.setText(draghandler.getText());
+			"°"+Reha.thisClass.patpanel.rezlabs[14].getText();
+			//"TERMDATEXT"+"°"+
+			//draghandler.setText(dragText);
+			Reha.thisClass.copyLabel.setText(dragText);
+			Reha.thisClass.bunker.setText("TERMDATEXT"+"°"+dragText);
 		}
 		
 	}
