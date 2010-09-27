@@ -3,10 +3,13 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +25,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -43,11 +49,15 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilKostentraeger extends JXPanel implements KeyListener, ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JXTable ktrtbl = null;
 	MyKtraegerModel ktrmod = null;
 	JButton[] but = {null,null,null,null};
 	INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/ktraeger.ini");
-	private TableCellRenderer JLabelRenderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
+	private TableCellRenderer JLabelRenderer = null; //= new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 	
 	public SysUtilKostentraeger(){
 		super(new BorderLayout());
@@ -56,6 +66,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
+		JLabelRenderer = new KtreagerTblRenderer();
 	     add(getVorlagenSeite());
 	     /*
 		*/
@@ -225,14 +236,14 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 			String kassenArtKurz = "";
 			int kANr;
 			for( int i = 0; i < ktrmod.getRowCount(); i++ ){
-				dateiName =(String) ktrmod.getValueAt(i, 2); //in eclipse column 1, da Datum nicht eingelesen wird
+				dateiName =(String) ktrmod.getValueAt(i, 2); 
 				kassenArtKurz = dateiName.substring(0,2).toUpperCase();
 				kANr = inif.getIntegerProperty("KassenArtNr", kassenArtKurz);
 				ktrmod.setValueAt(inif.getStringProperty("KABezeichner", "KALang"+kANr),i,0);				
 				if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals(dateiName) ){  
 					ktrmod.setValueAt(img[0],i,3); // beide Versionen gleich -> "aktuell"
 				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) > 0){
-					ktrmod.setValueAt(img[2],i,3); // GKV noch nicht gültig -> Erinnerungsfunktion wünschenswert
+					ktrmod.setValueAt(img[2],i,3); // GKV noch nicht gültig -> TODO Erinnerungsfunktion wünschenswert
 				} else if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals("") ){ 
 					ktrmod.setValueAt(img[1],i,3); // noch nicht in INI-Datei -> "update"
 				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) <= 0){
@@ -323,7 +334,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		    	  }
 		    	  if(text.startsWith("UNT+") && gestartet){
 		    		  kassendat.add(text);
-		    		  ktraegerdat.add( (Vector<String>)kassendat.clone());
+		    		  ktraegerdat.add((Vector<String>)kassendat.clone());
 		    		  gestartet = false;
 		    		  continue;
 		    	  }
@@ -496,12 +507,54 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		      }
 			public Object getValueAt(int rowIndex, int columnIndex) {
 				Object theData;
-				if (columnIndex==3){theData = (ImageIcon) ((Vector)getDataVector().get(rowIndex)).get(columnIndex);}
-				else{theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex);}
+				if (columnIndex==3){theData = (ImageIcon) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex);}
+				else{theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex);}
 				Object result = null;
 				result = theData;
 				return result;
 			}
 	}
+	
+	class KtreagerTblRenderer extends JLabel implements TableCellRenderer{
+		/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			   public KtreagerTblRenderer(){
+				   super();
+				   this.setHorizontalAlignment(SwingConstants.CENTER);
+			   }
+			   @Override
+			   public Component getTableCellRendererComponent(JTable table, Object value,
+			         boolean isSelected, boolean hasFocus, int row, int column) {
+				   if (isSelected) {
+					   setOpaque(true);
+			    	   setForeground(table.getSelectionForeground());
+		               setBackground(table.getSelectionBackground());
+			       }else {
+					   setOpaque(true);	    	   
+		               setForeground(table.getForeground());
+		               setBackground(table.getBackground());
+			       }
+			        if(value instanceof ImageIcon){
+			        	//ImageIcon[] img = {SystemConfig.hmSysIcons.get("zuzahlok"),SystemConfig.hmSysIcons.get("zuzahlnichtok"),SystemConfig.hmSysIcons.get("kleinehilfe")};
+				    	  if( (value).equals(SystemConfig.hmSysIcons.get("zuzahlok")) ){
+				    		  setToolTipText("Datei aktuell");
+				    		  setIcon(SystemConfig.hmSysIcons.get("zuzahlok"));
+				    	  }else if( (value).equals(SystemConfig.hmSysIcons.get("zuzahlnichtok")) ){
+				    		  setToolTipText("update durchführen") ;
+				    		  setIcon(SystemConfig.hmSysIcons.get("zuzahlnichtok"));
+				    	  }else if( (value).equals(SystemConfig.hmSysIcons.get("kleinehilfe")) ){
+				    		  setToolTipText("Datei noch nicht gültig");
+				    		  setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
+				    	  }
+				     }else{
+				    	 //System.out.println(value.getClass());
+				     }
+			        return this;
+			   }
+			}
+
+	
 
 }
