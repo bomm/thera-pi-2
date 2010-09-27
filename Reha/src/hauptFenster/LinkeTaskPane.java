@@ -268,7 +268,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			      for (int i = 0; i < flavors.length; i++){
 			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
 			      }
-			      ////System.out.println(mitgebracht);
+			      //System.out.println("Es wurde mitgebracht "+mitgebracht);
 			      if(mitgebracht.indexOf("°") >= 0){
 			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
 			    		  return;

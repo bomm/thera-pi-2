@@ -236,14 +236,14 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 			String kassenArtKurz = "";
 			int kANr;
 			for( int i = 0; i < ktrmod.getRowCount(); i++ ){
-				dateiName =(String) ktrmod.getValueAt(i, 2); 
+				dateiName =(String) ktrmod.getValueAt(i, 2); //in eclipse column 1, da Datum nicht eingelesen wird
 				kassenArtKurz = dateiName.substring(0,2).toUpperCase();
 				kANr = inif.getIntegerProperty("KassenArtNr", kassenArtKurz);
 				ktrmod.setValueAt(inif.getStringProperty("KABezeichner", "KALang"+kANr),i,0);				
 				if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals(dateiName) ){  
 					ktrmod.setValueAt(img[0],i,3); // beide Versionen gleich -> "aktuell"
 				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) > 0){
-					ktrmod.setValueAt(img[2],i,3); // GKV noch nicht gültig -> TODO Erinnerungsfunktion wünschenswert
+					ktrmod.setValueAt(img[2],i,3); // GKV noch nicht gültig -> Erinnerungsfunktion wünschenswert
 				} else if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals("") ){ 
 					ktrmod.setValueAt(img[1],i,3); // noch nicht in INI-Datei -> "update"
 				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) <= 0){
@@ -539,13 +539,13 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 			        if(value instanceof ImageIcon){
 			        	//ImageIcon[] img = {SystemConfig.hmSysIcons.get("zuzahlok"),SystemConfig.hmSysIcons.get("zuzahlnichtok"),SystemConfig.hmSysIcons.get("kleinehilfe")};
 				    	  if( (value).equals(SystemConfig.hmSysIcons.get("zuzahlok")) ){
-				    		  setToolTipText("Datei aktuell");
+				    		  setToolTipText("Datei aktuell") ;
 				    		  setIcon(SystemConfig.hmSysIcons.get("zuzahlok"));
 				    	  }else if( (value).equals(SystemConfig.hmSysIcons.get("zuzahlnichtok")) ){
 				    		  setToolTipText("update durchführen") ;
 				    		  setIcon(SystemConfig.hmSysIcons.get("zuzahlnichtok"));
 				    	  }else if( (value).equals(SystemConfig.hmSysIcons.get("kleinehilfe")) ){
-				    		  setToolTipText("Datei noch nicht gültig");
+				    		  setToolTipText("Datei noch nicht gültig") ;
 				    		  setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
 				    	  }
 				     }else{
