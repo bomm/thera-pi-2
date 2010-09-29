@@ -583,12 +583,12 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		int i;
 		if(AZPlan.isSelected()){
 			Fortschritt.setMinimum(1);
-			Fortschritt.setMaximum(60);
+			Fortschritt.setMaximum(99);
 			dblaeuft = true;
 			progress = 1;
 			ProgressVerarbeiten pv = new ProgressVerarbeiten(Fortschritt);
 			pv.execute();
-			for(i = 1;i<61;i++){
+			for(i = 1;i<100;i++){
 				
 				String sbehandler = (i<10 ? "0"+Integer.valueOf(i).toString()+"BEHANDLER" : Integer.valueOf(i).toString()+"BEHANDLER");
 				String stmtmaske = "select * from masken where behandler = '"+sbehandler+"' ORDER BY art";
@@ -641,7 +641,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		}
 		kalTage = (DatFunk.Schaltjahr( Integer.valueOf(KalMake.getText())) ? (366) : (365));
 		Fortschritt.setMinimum(1);
-		Fortschritt.setMaximum(kalTage*60  );
+		Fortschritt.setMaximum(kalTage*99  );
 		Fortschritt.setStringPainted(true);
 
 		String starttag = "01.01."+KalMake.getText();
@@ -654,7 +654,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		pv.execute();
 		String stmt = null;
 		while(DatFunk.DatumsWert(akttag) <= DatFunk.DatumsWert(stoptag)){
-			for(i=1;i<61;i++){
+			for(i=1;i<100;i++){
 				durchgang ++;
 				if(durchgang > 200){
 					durchgang = 0;
