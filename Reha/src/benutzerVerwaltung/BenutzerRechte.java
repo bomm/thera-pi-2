@@ -86,7 +86,7 @@ public class BenutzerRechte extends JXPanel{
 	
 	String[] gruppe6 = {"anlegen","ändern","löschen","Stammdaten auf neues Gutachten übertragen"};
 	
-	String[] gruppe7 = {"nur in leere Termine eintragen","Termine vollständig eintragen","bestehende Termine löschen","Behandlungen bestätigen","Termine gruppieren erlauben","Drag & Drop erlauben","unbelegt 1 für zukünftige Erweiterungen","unbelegt 2 für zukünftige Erweiterungen"};
+	String[] gruppe7 = {"nur in leere Termine eintragen","Termine vollständig eintragen","bestehende Termine löschen","Behandlungen bestätigen","Termine gruppieren erlauben","Drag & Drop erlauben","Behandlungen im nachhinein bestätigen","unbelegt 2 für zukünftige Erweiterungen"};
 	
 	String[] gruppe8 = {"Masken erstellen / ändern","Masken in Kalender übertragen"};
 	

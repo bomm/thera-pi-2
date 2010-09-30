@@ -252,18 +252,12 @@ public class SystemConfig {
 		aKontakt = new ArrayList<String>();
 		
 		vDatenBank = new Vector<ArrayList<String>>();
-		////System.out.println("INI-Verzeichnis = "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		////System.out.println("IniFile = "+ini.getFileName());
-		////System.out.println("Anzahl der Datenbanktreiber einlesen");
 		lesen =  ini.getIntegerProperty("DatenBank","AnzahlConnections") ;
-		//lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("DatenBank","AnzahlConnections")) );
-		//System.out.println("Anzahl der Datenbanktreiber = "+lesen);
 		for (i=1;i<(lesen+1);i++){
 			aKontakt.add(String.valueOf(ini.getStringProperty("DatenBank","DBTreiber"+i)) );
 			aKontakt.add(String.valueOf(ini.getStringProperty("DatenBank","DBKontakt"+i)) );			
 			aKontakt.add(String.valueOf(ini.getStringProperty("DatenBank","DBType"+i)) );
 			String sbenutzer =String.valueOf(ini.getStringProperty("DatenBank","DBBenutzer"+i));
-			//mandantDB.add(minif.getStringProperty("Application", "DBPasswort1"));
 			aKontakt.add(String.valueOf(sbenutzer));
 			String pw = String.valueOf(ini.getStringProperty("DatenBank","DBPasswort"+i));
 			String decrypted = null;
