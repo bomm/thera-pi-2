@@ -73,7 +73,7 @@ public class Rechte {
 	public static int Kalender_terminconfirm		= 35;
 	public static int Kalender_termingroup			= 36;
 	public static int Kalender_termindragdrop		= 37;
-	public static int Kalender_unbelegt1			= 38;
+	public static int Kalender_terminconfirminpast	= 38;
 	public static int Kalender_unbelegt2			= 39;
 	
 	public static int Masken_erstellen				= 40;
@@ -167,7 +167,7 @@ public class Rechte {
 		"Gutachten anlegen","Gutachten ändern","Gutachten löschen","Stammdaten auf neues Gutachten übertragen",
 		
 		"Eintrag nur in freie Termine erlauben","Termine vollständig eintragen / ändern","Termine löschen","Behandlungen bestätigen","Termine gruppieren","Termin Drag & Drop",
-		"unbelegt-1","unbelegt-2",
+		"Behandlungen im nachhinein bestätigen","unbelegt-2",
 		
 		"Wochenarbeitszeit erstellen","Wochenarbeitszeit in Terminkalender übertragen",
 		
