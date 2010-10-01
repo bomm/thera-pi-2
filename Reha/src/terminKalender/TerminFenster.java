@@ -834,7 +834,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						 * 
 						 * 
 						 */
-						if ( (e.getKeyCode()==155 && e.isShiftDown()) || (e.getKeyCode()==86 && e.isControlDown()) ) {
+						if ( (e.getKeyCode()==155 && e.isShiftDown()) || (e.getKeyCode()==KeyEvent.VK_V && e.isControlDown()) ) {
 							//Shift einfügen (Shift+Einfg / Strg+V)
 							//Daten in den Kalender schreiben (früher Aufruf über F3)
 							long zeit = System.currentTimeMillis();
@@ -869,7 +869,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							break;
 						}
 						
-						if ( ((e.getKeyCode()==155) && (e.isControlDown())) || ((e.getKeyCode()==67) && (e.isControlDown()))  ) {
+						if ( ((e.getKeyCode()==155) && (e.isControlDown())) || ((e.getKeyCode()==KeyEvent.VK_C) && (e.isControlDown()))  ) {
 							//Daten in Speicher (früher Aufruf über F3)
 							////System.out.println("Strg+Einfg / Strg+C");
 							int xaktBehandler  = -1;
@@ -1033,7 +1033,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							//F7
 							break;
 						}
-						if ( (e.getKeyCode()==119) || (e.getKeyCode()==127 && e.isShiftDown()) || (e.getKeyCode()==88 && e.isControlDown()) ) {
+						if ( (e.getKeyCode()==119)  || (e.getKeyCode()==KeyEvent.VK_X && e.isControlDown()) ) {
 							//F8 / Shift-Entf / Strg-X
 							if((!Rechte.hatRecht(Rechte.Kalender_termindelete, true))){
 								//getAktTestTermin("name").equals(""))
