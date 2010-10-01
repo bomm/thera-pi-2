@@ -697,12 +697,14 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("Thera-PI - Browser")){
+				/*
 				File file = new File(Reha.proghome+"xulrunner/xulrunner.exe");
 				if(! file.exists()){
 					JOptionPane.showMessageDialog(null,"Die Mozilla-Runtime 'xulrunner' wurde nicht, oder nicht korrekt installiert\n"+
 							"Der Thera-PI - Browser kann deshalb nicht gestartet werden");
 					return;
 				}
+				*/
 				new LadeProg(Reha.proghome+"RehaWissen.jar");
 				new SwingWorker<Void,Void>(){
 					@Override
