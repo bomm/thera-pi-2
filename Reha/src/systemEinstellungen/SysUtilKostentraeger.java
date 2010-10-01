@@ -84,7 +84,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Kostenträgerdateien abholen (IKK-Bundesverband)",cc.xyw(1,1,10));
+		builder.addSeparator("Kostenträgerdateien abholen (GKV-Datenaustausch)",cc.xyw(1,1,10));
 		but[0] = new JButton("Serverkontakt herstellen");
 		but[0].setActionCommand("serverkontakt");
 		but[0].addActionListener(this);
@@ -163,9 +163,15 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		   
 		      URLConnection conn = url.openConnection();
 		      ////System.out.println(conn.getContentEncoding());
-		      
-		      
-		      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
+		      BufferedReader inS = null;
+		      try{
+		    	  inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
+		      }catch(Exception ex){
+		    	  JOptionPane.showMessageDialog(null, "Die Webseite\n"+urltext+"\nist derzeit nicht erreichbar!\n"+
+		    			  "Überprüfen Sie Ihre Internetverbindung und überprüfen Sie ggfls.\n"+
+		    			  "die o.g. Adresse mit Hilfe Ihres Browsers auf Verfügbarkeit");
+		    	  return;
+		      }
 		      int durchlauf = 0;
 		      //Vector<Vector<String>> ktraegerdat = new Vector<Vector<String>>();
 		      Vector<String> kassendat = new Vector<String>();
