@@ -1433,7 +1433,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 							}
 	
 						}
-						// Prüfung einbauen ob Beginnzeit + Dauer nicht Endzeit �bersteigt bzw. vor Planbeginnzeit liegt.
+						// Prüfung einbauen ob Beginnzeit + Dauer nicht Endzeit übersteigt bzw. vor Planbeginnzeit liegt.
 						//jxSucheTable.setValueAt("", arg0.getFirstRow(), 6);
 				}
 				if(arg0.getColumn() == 7){
@@ -1441,7 +1441,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 							jxSucheTable.setValueAt(jxSucheTable.getValueAt(arg0.getFirstRow(),5), arg0.getFirstRow(), 7);	
 						}
 						//jxSucheTable.setValueAt("", arg0.getFirstRow(), 7);
-						// Pr�fung einbauen ob Beginnzeit + Dauer nicht Endzeit �bersteigt bzw. vor Planbeginnzeit liegt.
+						// Prüfung einbauen ob Beginnzeit + Dauer nicht Endzeit übersteigt bzw. vor Planbeginnzeit liegt.
 				}
 
 			}
@@ -1599,6 +1599,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		
 		name = schreibeName.getText().trim();
 		nummer =schreibeNummer.getText().trim().replace("\\", "\\\\") ;
+		String meldung = "";
 		for(i=0;i<lang;i++){
 			
 			if((Boolean)dtblm.getValueAt(i,0)){
@@ -1611,6 +1612,20 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				tkdauer = Integer.parseInt((String)jxSucheTable.getValueAt(i, 5));
 				plstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 6)).trim()+":00");
 				pldauer = Integer.parseInt((String)jxSucheTable.getValueAt(i, 7));
+				if(pldauer > tkdauer){
+					meldung = "<html>Achtung der Termin vom<br><br><b>"+
+					jxSucheTable.getValueAt(i, 2).toString()+" - "+
+					jxSucheTable.getValueAt(i, 3).toString()+" - "+jxSucheTable.getValueAt(i, 10).toString()+
+					"<br><br></b>muß auf die verfügbare Dauer von<b><font color='#ff0000'> -> "+
+					Integer.toString(tkdauer)+" Minuten gekürzt <- </font></b>werden"+
+					"<br><br>wollen Sie das wirklich?</html>";
+					int frage = JOptionPane.showConfirmDialog(null, meldung,"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage != JOptionPane.YES_OPTION){
+						continue;
+					}
+					jxSucheTable.setValueAt(Integer.toString(tkdauer),i, 7);
+					pldauer = tkdauer;
+				}
 					for(int j = 0;j<1;j++){
 						if((tkstart==plstart) && (tkdauer==pldauer)){
 							// Beginn und Dauer sind gleich geblieben

@@ -579,7 +579,7 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 	    me.setzeMandant(mandant.getSelectedIndex());
 	    mandant.setEnabled(true);
    		String cmd = "insert into nummern set pat='1',kg='1',ma='1',er='1',"+
-    		"lo='1',rh='1',rnr='1',esol='1',bericht='1',afrnr='1',rgrnr,doku='1',"+
+    		"lo='1',rh='1',rnr='1',esol='1',bericht='1',afrnr='1',rgrnr='1',doku='1',"+
     		"dfue='1',mandant='"+neuik+"'";
     		SqlInfo.sqlAusfuehren(cmd);
 	    //String cmd = "insert into nummern set mandant='"+neuik+"'";
