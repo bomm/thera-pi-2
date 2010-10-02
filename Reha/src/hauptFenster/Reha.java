@@ -298,7 +298,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-10-02/01-DB=";
+	public static String aktuelleVersion = "V=2010-10-02/02-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -372,16 +372,19 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 		}
 		new SocketClient().setzeInitStand("Überprüfe Dateisystem");
-		File f = new File(javaPfad+"/bin/win32com.dll");
-		if(! f.exists()){
-			new SocketClient().setzeInitStand("Kopiere win32com.dll");
-			try {
-				FileTools.copyFile(new File(proghome+"Libraries/lib/serial/win32com.dll"),f, 4096, false);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else{
-			////System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+		File f = null;
+		if(osVersion.contains("Windows")){
+			f = new File(javaPfad+"/bin/win32com.dll");
+			if(! f.exists()){
+				new SocketClient().setzeInitStand("Kopiere win32com.dll");
+				try {
+					FileTools.copyFile(new File(proghome+"Libraries/lib/serial/win32com.dll"),f, 4096, false);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}else{
+				////System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
+			}	
 		}	
 		f = new File(javaPfad+"/lib/ext/comm.jar");
 		if(! f.exists()){
@@ -405,6 +408,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}else{
 			////System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
+
 		new Thread(){
 			public void run(){
 				new SocketClient().setzeInitStand("System-Icons laden");

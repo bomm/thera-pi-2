@@ -2311,6 +2311,9 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			int suchArt = 0;
 			int dbzeil = -1;
 			String szeil = "";
+			
+			int gruppereal,gruppewant;
+			
 			for(int j=0;j<1;j++){
 				if(suchkrit1.equals("")&& suchkrit2.equals("")){
 					// es wird nach leeren Terminen gesucht
@@ -2458,6 +2461,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 											if( (vecgruppe = gruppenTest(rs,abteilnr,ii,defdauer,true)) != null){
 												////System.out.println("In Gruppensuchen nach Freien");
 													yvec = sucheNachGruppenFreien(rs,name,nummer,skollege,ikollege,ii,defdauer,abteilnr,vecgruppe,true);
+													//System.out.println("Leersuche"+yvec);
 											}
 										}
 										break;
@@ -2499,8 +2503,13 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 									if(name.contains(suchkrit1) && !nummer.contains("@FREI") && (gruppe) ){
 										Vector vecgruppe;
 										if( (vecgruppe = gruppenTest(rs,abteilnr,ii,defdauer,false)) != null){
-											////System.out.println("In Gruppensuchen nach Freien");
 												yvec = sucheNachGruppenFreien(rs,name,nummer,skollege,ikollege,ii,defdauer,abteilnr,vecgruppe,false);
+												//System.out.println("Suchkrit 1 + Suchkrit 2 "+yvec);
+												gruppereal = Integer.parseInt( (String)yvec.get(5));
+												gruppewant = Integer.parseInt( (String)yvec.get(7));
+												if(gruppereal < gruppewant){
+													yvec.set(7,Integer.toString(gruppereal));				
+												}
 										}
 									}
 									break;
@@ -2518,8 +2527,14 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 									if(nummer.contains(suchkrit2) && (gruppe) ){
 										Vector vecgruppe;
 										if( (vecgruppe = gruppenTest(rs,abteilnr,ii,defdauer,false)) != null){
-											////System.out.println("In Gruppensuchen nach Freien");
 												yvec = sucheNachGruppenFreien(rs,name,nummer,skollege,ikollege,ii,defdauer,abteilnr,vecgruppe,false);
+												//System.out.println("Suchkrit 2 "+yvec);
+												gruppereal = Integer.parseInt( (String)yvec.get(5));
+												gruppewant = Integer.parseInt( (String)yvec.get(7));
+												if(gruppereal < gruppewant){
+													yvec.set(7,Integer.toString(gruppereal));				
+												}
+
 										}
 									}
 									break;
@@ -2546,6 +2561,12 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 										if( (vecgruppe = gruppenTest(rs,abteilnr,ii,defdauer,false)) != null){
 											////System.out.println("In Gruppensuchen nach Freien");
 												yvec = sucheNachGruppenFreien(rs,name,nummer,skollege,ikollege,ii,defdauer,abteilnr,vecgruppe,false);
+												//System.out.println("Suchkrit 1 + Suchkrit 2 "+yvec);
+												gruppereal = Integer.parseInt( (String)yvec.get(5));
+												gruppewant = Integer.parseInt( (String)yvec.get(7));
+												if(gruppereal < gruppewant){
+													yvec.set(7,Integer.toString(gruppereal));				
+												}
 										}
 									}
 									break;
@@ -2655,6 +2676,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	
 /********************************************/
 	private Vector gruppenTest(ResultSet rs, int gruppe,int feld,int defdauer,boolean suchleer) throws SQLException{
+
 		Vector vecret = null;
 		String sDatum = DatFunk.sDatInDeutsch(rs.getString("DATUM"));
 
@@ -2669,15 +2691,24 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		String xzeit = rs.getString("TS"+(feld)).trim().substring(0,5);
 		
 		int gross = (int)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).size();
-		////System.out.println("Termine = "+gross);
+		/*
+		System.out.println("\n***************************************\n");
+		System.out.println("Termine = "+gross);
+		System.out.println("Defdauer = "+defdauer);
+		System.out.println("VerfügbarDauer = "+xdauer);
+		System.out.println("SuchLeer = "+suchleer);
+		*/
 		for(int i = 0;i<gross;i++){
 			long lgrenzeklein =(Long) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).get(0);
 			long lgrenzegross =(Long) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).get(1); 	
-
+			
 			if(longPasstZwischen(lgrenzeklein,lgrenzegross,xzeit,(suchleer ? defdauer : xdauer))){
-				//vecret = (Vector) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i)).clone();
 				vecret = (Vector) ((Vector)((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(gruppe)).get(altneu)).get(taginwoche-1)).get(i));
-				return (Vector)vecret;//(Vector)vecret.clone();
+				/*
+				System.out.println("passt zwischen");
+				System.out.println(vecret);
+				*/
+				return (Vector)vecret;
 			}
 			
 			
