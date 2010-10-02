@@ -1603,7 +1603,6 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		for(i=0;i<lang;i++){
 			
 			if((Boolean)dtblm.getValueAt(i,0)){
-
 				setFortschrittSetzen(durchlauf++);
 				vecWahl.add(dtblm.getDataVector().get(i));
 				((Vector)vecWahl.get(vecWahl.size()-1)).set(11, (String) dtblm.getValueAt(i,11));
@@ -1612,6 +1611,14 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				tkdauer = Integer.parseInt((String)jxSucheTable.getValueAt(i, 5));
 				plstart = (int) ZeitFunk.MinutenSeitMitternacht(((String)jxSucheTable.getValueAt(i, 6)).trim()+":00");
 				pldauer = Integer.parseInt((String)jxSucheTable.getValueAt(i, 7));
+
+				// Abgleich der Verfügbaren Dauer mit der gewünschten Termindauer
+				// (Nur!) wenn es sich um Gruppentermine handelt kann u.U. die verfügbare Dauer
+				// kürzer sein als die (angeblich) gewünschte Dauer.
+				// Abfragen ob dem so ist, sofern ja, nachfragen ob die gewünschte Dauer auf die
+				// tatsächlich verfügbare Dauer gekürzt werden soll.
+				// Wird ja ausgewählt wird gekürzt, in jedem anderen Fall
+				// nach oben zum Schleifenanfang, jedenfalls wird dann nichts in den Kalender geschrieben.
 				if(pldauer > tkdauer){
 					meldung = "<html>Achtung der Termin vom<br><br><b>"+
 					jxSucheTable.getValueAt(i, 2).toString()+" - "+
