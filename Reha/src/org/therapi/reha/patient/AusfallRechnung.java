@@ -4,57 +4,36 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
 
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import sqlTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
 import systemTools.LeistungTools;
 import terminKalender.DatFunk;
-
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -77,6 +56,11 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListener,WindowListener, ActionListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public JRtaCheckBox[] leistung = {null,null,null,null,null}; 
 
 	private RehaTPEventClass rtp = null;
@@ -386,6 +370,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			this.dispose();
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
@@ -425,10 +410,10 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 			////System.out.println(placeholderDisplayText);	
 		    /*****************/			
-			Set entries = SystemConfig.hmAdrPDaten.entrySet();
-		    Iterator it = entries.iterator();
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<String,String> entry = ((Map.Entry<String,String>) it.next());
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
@@ -457,6 +442,10 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	
 }
 class AusfallRechnungHintergrund extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	ImageIcon hgicon;
 	int icx,icy;
 	AlphaComposite xac1 = null;
@@ -475,6 +464,7 @@ class AusfallRechnungHintergrund extends JXPanel{
 	@Override
 	public void paintComponent( Graphics g ) { 
 		super.paintComponent( g );
+		@SuppressWarnings("unused")
 		Graphics2D g2d = (Graphics2D)g;
 		
 		if(hgicon != null){

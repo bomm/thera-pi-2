@@ -258,9 +258,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 								if(i==0){
 									//dtblm.setRowCount(0);						
 								}
-								if(((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHAARZT") ||
-										((String)((Vector)vec.get(i)).get(2)).toUpperCase().contains("REHA-ARZT")	){
-									dtblm.addRow((Vector)vec.get(i));							
+								if(((String)((Vector<?>)vec.get(i)).get(2)).toUpperCase().contains("REHAARZT") ||
+										((String)((Vector<?>)vec.get(i)).get(2)).toUpperCase().contains("REHA-ARZT")	){
+									dtblm.addRow((Vector<?>)vec.get(i));							
 								}
 							}
 							anz = dtblm.getRowCount();
@@ -279,7 +279,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 									}
 								}
 
-								int anzeigen = -1;
+								//int anzeigen = -1;
 								wechselPanel.revalidate();
 								wechselPanel.repaint();					
 							}else{
@@ -428,7 +428,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				return;
 			}
 			int currow = tabbericht.getSelectedRow();
-			int anzrow = tabbericht.getRowCount();
+			//int anzrow = tabbericht.getRowCount();
 			if(currow == -1){
 				JOptionPane.showMessageDialog(null,"Kein Gutachten zum -> löschen <- ausgewählt");
 				return;
@@ -560,6 +560,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		      }
 		   
 	}
+	@SuppressWarnings("unused")
 	private  void doArztBausteine(){
 		new LadeProg(Reha.proghome+"ArztBaustein.jar "+
 				Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	

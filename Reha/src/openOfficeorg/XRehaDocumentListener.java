@@ -2,14 +2,12 @@ package openOfficeorg;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.event.DocumentAdapter;
-import ag.ion.bion.officelayer.event.ICloseEvent;
 import ag.ion.bion.officelayer.event.IDocumentEvent;
 import ag.ion.bion.officelayer.event.IDocumentListener;
 import ag.ion.bion.officelayer.event.IEvent;
-import ag.ion.bion.officelayer.event.IEventListener;
 
 public class XRehaDocumentListener extends DocumentAdapter implements IDocumentListener{
-	private IOfficeApplication officeAplication = null;
+	public IOfficeApplication officeAplication = null;
 	
 	public XRehaDocumentListener(IOfficeApplication officeAplication) {
 		this.officeAplication = officeAplication;

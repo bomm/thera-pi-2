@@ -33,11 +33,9 @@ package openOfficeorg;
  ****************************************************************************/
 
 /*
- * Last changes made by $Author: thera-pi $, $Date: 2010-05-23 09:03:53 $
+ * Last changes made by $Author: thera-pi $, $Date: 2010-10-06 18:35:54 $
  */
 import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-
 import ag.ion.bion.officelayer.event.ICloseEvent;
 import ag.ion.bion.officelayer.event.ICloseListener;
 import ag.ion.bion.officelayer.event.IEvent;
@@ -48,12 +46,12 @@ import ag.ion.bion.officelayer.event.IEvent;
  * This listener is used in all Snippets starting from Snippet05.
  * 
  * @author Sebastian R�sgen
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @date 17.03.2006
  */
 public class XRehaDocumentCloseListener implements ICloseListener {
 
-	private IOfficeApplication officeAplication = null;
+	public IOfficeApplication officeAplication = null;
 	
   //----------------------------------------------------------------------------
 	/**

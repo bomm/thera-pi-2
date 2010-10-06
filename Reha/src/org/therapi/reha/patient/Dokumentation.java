@@ -5,16 +5,12 @@ package org.therapi.reha.patient;
 
 import generalSplash.RehaSplash;
 import geraeteInit.ScannerUtil;
-
-import hauptFenster.LinkeTaskPane;
 import hauptFenster.Reha;
-
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -22,9 +18,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Toolkit;
-
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -33,30 +28,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.net.URLDecoder;
-import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -64,15 +49,11 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -82,7 +63,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -92,18 +72,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import jxTableTools.DateTableCellEditor;
 import jxTableTools.TableTool;
-import kurzAufrufe.KurzAufrufe;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
-import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-//import org.jdesktop.swingx.decorator.SortOrder;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
@@ -111,61 +86,52 @@ import org.jdesktop.swingx.renderer.StringValues;
 
 import patientenFenster.KeinRezept;
 import patientenFenster.MyAccessory;
-
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
-import sun.awt.image.ImageFormatException;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
-import systemTools.FileComparator;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.IconListRenderer;
 import systemTools.JCompTools;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
 import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
 import uk.co.mmscomputing.device.scanner.ScannerListener;
-import uk.co.mmscomputing.device.scanner.ScannerIOMetadata.Type;
 import uk.co.mmscomputing.device.twain.TwainConstants;
 import uk.co.mmscomputing.device.twain.TwainIOMetadata;
-import uk.co.mmscomputing.device.twain.TwainImageInfo;
 import uk.co.mmscomputing.device.twain.TwainImageLayout;
 import uk.co.mmscomputing.device.twain.TwainSource;
-
 import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.IDocumentEvent;
 import ag.ion.bion.officelayer.event.IDocumentListener;
 import ag.ion.bion.officelayer.event.IEvent;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.noa.service.IServiceProvider;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
-//import com.lowagie.text.Image;
 import com.mysql.jdbc.PreparedStatement;
 
-import dialoge.PinPanel;
 import dialoge.ToolsDialog;
 
 public class Dokumentation extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener, ScannerListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//public static Dokumentation doku = null;
 	JXPanel leerPanel = null;
 	//JXPanel vollPanel = null;
@@ -409,6 +375,10 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	}
 
 	class DokuPanel extends JXPanel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		ImageIcon hgicon;
 		int icx,icy;
 		AlphaComposite xac1 = null;
