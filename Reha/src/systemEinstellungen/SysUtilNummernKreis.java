@@ -136,29 +136,29 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 		tfs[8].setName("bericht");
 		builder.add(tfs[8],cc.xy(3,24));
 
-		builder.addLabel("Berichte",cc.xy(1,26));
+		builder.addLabel("Ausfallrechnung",cc.xy(1,26));
 		tfs[9] = new JRtaTextField("ZAHLEN",true);
-		tfs[9].setName("bericht");
+		tfs[9].setName("afrnr");
 		builder.add(tfs[9],cc.xy(3,26));
 
-		builder.addLabel("Ausfallrechnung",cc.xy(1,28));
+		builder.addLabel("Rezeptgebührrechn.",cc.xy(1,28));
 		tfs[10] = new JRtaTextField("ZAHLEN",true);
-		tfs[10].setName("afrnr");
+		tfs[10].setName("rgrnr");
 		builder.add(tfs[10],cc.xy(3,28));
 
-		builder.addLabel("Rezeptgebührrechn.",cc.xy(1,30));
+		builder.addLabel("Dokumentation",cc.xy(1,30));
 		tfs[11] = new JRtaTextField("ZAHLEN",true);
-		tfs[11].setName("rgrnr");
+		tfs[11].setName("doku");
 		builder.add(tfs[11],cc.xy(3,30));
 
-		builder.addLabel("Dokumentation",cc.xy(1,32));
+		builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,32));
 		tfs[12] = new JRtaTextField("ZAHLEN",true);
-		tfs[12].setName("doku");
+		tfs[12].setName("dfue");
 		builder.add(tfs[12],cc.xy(3,32));
 
 		//builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,32));
 		tfs[13] = new JRtaTextField("ZAHLEN",true);
-		tfs[13].setName("doku");
+		tfs[13].setName("mandant");
 
 		return builder.getPanel();
 	}

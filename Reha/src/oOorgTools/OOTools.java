@@ -1,7 +1,8 @@
 package oOorgTools;
 
+import hauptFenster.Reha;
+
 import java.awt.Color;
-import java.awt.Cursor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -9,14 +10,34 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.filter.RTFFilter;
+import ag.ion.bion.officelayer.presentation.IPresentationDocument;
+import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
+import ag.ion.bion.officelayer.text.IText;
+import ag.ion.bion.officelayer.text.ITextCursor;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.ITextRange;
+import ag.ion.bion.officelayer.text.IViewCursor;
+import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
+import ag.ion.noa.printing.IPrinter;
+import ag.ion.noa.search.ISearchResult;
+import ag.ion.noa.search.SearchDescriptor;
 
 import com.sun.star.awt.XTopWindow;
 import com.sun.star.beans.PropertyVetoException;
@@ -28,7 +49,7 @@ import com.sun.star.container.XNameContainer;
 import com.sun.star.datatransfer.DataFlavor;
 import com.sun.star.datatransfer.UnsupportedFlavorException;
 import com.sun.star.datatransfer.XTransferable;
-import com.sun.star.datatransfer.clipboard.*;
+import com.sun.star.datatransfer.clipboard.XClipboard;
 import com.sun.star.frame.XController;
 import com.sun.star.frame.XFrame;
 import com.sun.star.lang.IllegalArgumentException;
@@ -47,39 +68,10 @@ import com.sun.star.text.XText;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
-import com.sun.star.uno.AnyConverter;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.view.XLineCursor;
-import com.sun.xml.internal.bind.v2.runtime.property.Property;
-
-
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.filter.RTFFilter;
-import ag.ion.bion.officelayer.internal.text.TextDocument;
-import ag.ion.bion.officelayer.presentation.IPresentationDocument;
-import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
-import ag.ion.bion.officelayer.text.IText;
-import ag.ion.bion.officelayer.text.ITextCursor;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.ITextRange;
-import ag.ion.bion.officelayer.text.ITextService;
-import ag.ion.bion.officelayer.text.IViewCursor;
-import ag.ion.bion.officelayer.text.IViewCursorService;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-import ag.ion.noa.printing.IPrinter;
-import ag.ion.noa.search.ISearchResult;
-import ag.ion.noa.search.SearchDescriptor;
 
 public class OOTools{
 	public OOTools(){
@@ -174,7 +166,7 @@ public class OOTools{
 		String placeholderDisplayText = "";
 		try{
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean loeschen = false;
+			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
@@ -185,16 +177,16 @@ public class OOTools{
 			}
 
 		    /*****************/			
-			Set entries = SystemConfig.hmAdrPDaten.entrySet();
-		    Iterator it = entries.iterator();
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
-		      Map.Entry entry = (Map.Entry) it.next();
-		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  if(((String)entry.getValue()).trim().equals("")){
+		      Map.Entry<String,String> entry = (Map.Entry<String,String>) it.next();
+		      if(entry.getKey().toLowerCase().equals(placeholderDisplayText)){
+		    	  if(entry.getValue().trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("\b");
 		    		  //OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
-			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+			    	  placeholders[i].getTextRange().setText(entry.getValue());		    		  
 		    	  }
 		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;

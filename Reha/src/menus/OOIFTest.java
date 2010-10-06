@@ -25,9 +25,14 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
 
 public class OOIFTest extends JXPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JPanel noaPanel = null;
 	private IFrame             officeFrame       = null;
-  	private ITextDocument      document          = null;
+	@SuppressWarnings("unused")
+	private ITextDocument      document          = null;
 
 	
 	public OOIFTest(){

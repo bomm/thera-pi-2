@@ -25,8 +25,8 @@ public class Win_ChipDriveMicro100 {
 	static SCard32 lib = null;
 	static boolean isreg = false; 
 	public Win_ChipDriveMicro100(){
-		if(this.lib == null){
-			this.lib = SCard32.INSTANCE;			
+		if(Win_ChipDriveMicro100.lib == null){
+			Win_ChipDriveMicro100.lib = SCard32.INSTANCE;			
 		}
 		if(! isreg){
 			HWND hwnd = new HWND(); 
@@ -36,7 +36,8 @@ public class Win_ChipDriveMicro100 {
 			int i = Integer.parseInt(spbf[1].split("x")[1],16);
 			sCommand = "System,AddHWndMsg,"+i+",1524";
 			bufLen = 560;
-			String[] lesen = kartenAktion();
+			
+			kartenAktion();
 			isreg = true;
 		}
 
@@ -57,7 +58,7 @@ public class Win_ChipDriveMicro100 {
 			//String sCommand = String.valueOf("Device,Info");
 			Pointer cmdLen = new IntByReference(sCommand.length()).getPointer();
 
-			byte []sIn = "".getBytes();
+			//byte []sIn = "".getBytes();
 			Pointer inLen = new IntByReference(0).getPointer();
 			byte[] output = new byte[this.bufLen];
 			Pointer outLen = new IntByReference(this.bufLen).getPointer();		
@@ -117,12 +118,12 @@ public class Win_ChipDriveMicro100 {
 			Pointer hwnd = new IntByReference(0).getPointer();
 			String sCommand = String.valueOf("System,Info");
 			Pointer cmdLen = new IntByReference(sCommand.length()).getPointer();
-			byte []sIn = "".getBytes();
+			//byte []sIn = "".getBytes();
 			Pointer inLen = new IntByReference(0).getPointer();
 			byte[] output = new byte[560];
 			Pointer outLen = new IntByReference(560).getPointer();		
-			String str = null;
-			int ibrx = lib.SCardComand(
+			//String str = null;
+			/*int ibrx = */lib.SCardComand(
 					hwnd,
 					sCommand,
 					cmdLen,

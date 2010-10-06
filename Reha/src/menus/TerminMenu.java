@@ -1,25 +1,16 @@
 package menus;
 
 import hauptFenster.AktiveFenster;
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
+
+import java.awt.Event;
+import java.awt.Font;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-
-import org.jdesktop.swingx.JXTitledPanel;
-
-import rehaInternalFrame.JRehaInternal;
-import terminKalender.TerminFenster;
-
-
-import java.awt.Component;
-import java.awt.Event;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyVetoException;
 
 public class TerminMenu {
 

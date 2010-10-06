@@ -863,6 +863,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));
 							}catch(Exception ex){
 								ex.printStackTrace();
+								JOptionPane.showMessageDialog(null, "Fehler in holeEintelTermine");
+								JOptionPane.showMessageDialog(null, ex.getMessage());
 							}
 							aktuellAngezeigt = row;
 							//holeEinzelTermineAktuell(0,null,aktTerminBuffer.get(row));
@@ -873,7 +875,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 
 					}catch(Exception ex){
-
+						JOptionPane.showMessageDialog(null, "Fehler in holeEinzelTermine");
+						JOptionPane.showMessageDialog(null, ex.getMessage());
 					}
 					
 					anzahlRezepte.setText("Anzahl Rezepte: "+anz);

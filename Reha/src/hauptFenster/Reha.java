@@ -298,7 +298,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-10-02/02-DB=";
+	public static String aktuelleVersion = "V=2010-10-06/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -2377,7 +2377,7 @@ final class DatenbankStarten implements Runnable{
 				Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector<String>)vec.get(0)).get(0)) );
 
 				Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector<String>)vec.get(0)).get(1)) );
-
+				
 				SystemConfig.FirmenDaten();			
 
 				new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
