@@ -3,14 +3,10 @@ package roogle;
 
 import hauptFenster.Reha;
 
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -26,16 +22,12 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -43,17 +35,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -63,15 +50,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.decorator.ColorHighlighter;
-import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
@@ -79,9 +58,13 @@ import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
-import terminKalender.ParameterLaden;
-import terminKalender.TerminFenster;
 import terminKalender.DatFunk;
+import terminKalender.ParameterLaden;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
 import dialoge.DragWin;
 import dialoge.PinPanel;
@@ -105,7 +88,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 	private JXPanel wahl2 = null;	
 	private JXPanel wahl3 = null;	
 	private JXPanel wahl4 = null;	
-	private JXPanel dummySuchen = null;
+	//private JXPanel dummySuchen = null;
 	private JXPanel tp1 = null;
 	private SuchenSeite tp2 = null;	
 	private JXPanel jpLinks = null;
@@ -434,7 +417,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		setTableSelection(jxTable,0,0);
 	}
 	class RoogleAction extends AbstractAction {
-	        public void actionPerformed(ActionEvent e) {
+	        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
 	            ////System.out.println("Roogle Action test");
 	        	////System.out.println(e.paramString());
 	        	////System.out.println((int) e.getActionCommand().toCharArray()[0]);
@@ -560,7 +548,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			jxTable.setValueAt(Boolean.valueOf(mark),i, 0);
 		}
 	}
-	private void gruppenHandeln(ArrayList arr,boolean ein){
+	private void gruppenHandeln(ArrayList<String> arr,boolean ein){
 		int lang = jxTable.getRowCount();
 		int i = 0;
 		for(i=0;i<lang;i++){
@@ -1034,8 +1022,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 
 		String[] column = {"Gr.wählen","Gruppenname"};
 		Object[][] dataVector;
-		int i,size;
-		size = ParameterLaden.vKKollegen.size()-1;
+		int i;
+		//size = ParameterLaden.vKKollegen.size()-1;
 		int lang = SystemConfig.aRoogleGruppen.size();
 		if(lang > 0){
 			dataVector = new Object[lang][2];
@@ -1554,7 +1542,7 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 			}
 			
 			String[] sSet = ((ArrayList<String[]>)SystemConfig.aRoogleGruppen.get(arg0.getFirstRow()).get(1)).get(0);
-			ArrayList arr = new ArrayList();
+			ArrayList<String> arr = new ArrayList<String>();
 			for(int i = 0;i<sSet.length;i++){
 				arr.add(sSet[i]);
 			}
@@ -1599,7 +1587,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
         	tp2.tageEinstellen();
         	//final JTabbedPane xpane = pane;
     		SwingUtilities.invokeLater(new Runnable(){
-    			public  void run(){
+    			@SuppressWarnings("unchecked")
+				public  void run(){
     				int i;
     				int lang = jxTable.getRowCount();
 
@@ -1659,8 +1648,8 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
     						
     				}
 
-    				tp2.schicht = schicht;
-    	        	tp2.selektiv = select;
+    				SuchenSeite.schicht = schicht;
+    	        	SuchenSeite.selektiv = select;
     				for(i = 0;i<lang;i++){
     		        	if( ((Boolean)jxTable.getValueAt(i,0)) ){
     		        		gewaehlt = gewaehlt+1;
@@ -1703,7 +1692,12 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 }
 
 class MyRoogleTable1 extends AbstractTableModel {
-    private static final boolean DEBUG = false;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final boolean DEBUG = false;
 
     //public String[] columnNames = null;
     //public Object[][] data = null;    
@@ -1736,7 +1730,7 @@ class MyRoogleTable1 extends AbstractTableModel {
      * each cell. If we didn't implement this method, then the last column
      * would contain text ("true"/"false"), rather than a check box.
      */
-    public Class getColumnClass(int c) {
+    public Class<?> getColumnClass(int c) {
       return getValueAt(0, c).getClass();
     }
 
@@ -1791,7 +1785,12 @@ class MyRoogleTable1 extends AbstractTableModel {
     
 /******************************************/
 class MyRoogleGruppe extends AbstractTableModel {
-    private static final boolean DEBUG = false;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final boolean DEBUG = false;
 
     //public String[] columnNames = null;
     //public Object[][] data = null;    
@@ -1824,7 +1823,7 @@ class MyRoogleGruppe extends AbstractTableModel {
      * each cell. If we didn't implement this method, then the last column
      * would contain text ("true"/"false"), rather than a check box.
      */
-    public Class getColumnClass(int c) {
+    public Class<?> getColumnClass(int c) {
       return getValueAt(0, c).getClass();
     }
 

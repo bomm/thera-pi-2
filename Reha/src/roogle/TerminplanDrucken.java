@@ -14,8 +14,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import emailHandling.EmailSendenExtern;
-
+import systemEinstellungen.SystemConfig;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -23,22 +22,14 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.filter.PDFFilter;
-import ag.ion.bion.officelayer.text.IBookmark;
-import ag.ion.bion.officelayer.text.IBookmarkService;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
-import ag.ion.bion.officelayer.text.ITextRange;
-import ag.ion.bion.officelayer.text.ITextService;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
-import ag.ion.noa.search.ISearchResult;
-import ag.ion.noa.search.SearchDescriptor;
-import ag.ion.noa.text.TextRangeSelection;
-
-import systemEinstellungen.SystemConfig;
+import emailHandling.EmailSendenExtern;
 
 
 
@@ -73,11 +64,11 @@ SuchenSeite eltern;
 			int AnzahlTabellen = SystemConfig.oTerminListe.AnzahlTerminTabellen;
 			int maxTermineProTabelle = SystemConfig.oTerminListe.AnzahlTermineProTabelle;
 			int maxTermineProSeite = AnzahlTabellen * maxTermineProTabelle;
-			int spaltenProtabelle = SystemConfig.oTerminListe.AnzahlSpaltenProTabellen;
+			//int spaltenProtabelle = SystemConfig.oTerminListe.AnzahlSpaltenProTabellen;
 			Vector<String> spaltenNamen = SystemConfig.oTerminListe.NamenSpalten;
 			int ipatdrucken = SystemConfig.oTerminListe.PatNameDrucken;
 			int iheader = SystemConfig.oTerminListe.MitUeberschrift;
-			String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
+			//String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
 
 			//int anzahl = oOTermine.size();
 			String patname = (patient.indexOf("?")>=0 ? patient.substring(1).trim() : patient.trim());
@@ -152,45 +143,9 @@ SuchenSeite eltern;
 				}
 			}
 			//Jetzt den Platzhalter ^Name^ suchen
-			SearchDescriptor searchDescriptor = null;
-			ISearchResult searchResult = null;
+			//SearchDescriptor searchDescriptor = null;
+			//ISearchResult searchResult = null;
 			if(ipatdrucken  > 0){
-				/*
-				searchDescriptor = new SearchDescriptor(patplatzhalter);
-				//SearchDescriptor searchDescriptor = new SearchDescriptor("^Name^");
-				searchDescriptor.setIsCaseSensitive(true);
-				//Suche durchf�hren
-				searchResult = textDocument.getSearchService().findFirst(searchDescriptor);
-				if(!searchResult.isEmpty()) {
-					//Ergebnis seletieren
-					ITextRange[] textRanges = searchResult.getTextRanges();
-			        try {
-						textDocument.setSelection(new TextRangeSelection(textRanges[0]));
-					} catch (NOAException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			        //Selektion durch eigenen Text ersetzen
-			        textRanges[0].setText(patname);
-				}else{
-					JOptionPane.showMessageDialog (null, "Suche nach ^Name^ war erfolglos");				
-				}
-				*/
-				/*
-				ITextService textService = textDocument.getTextService();
-			      IBookmarkService bookmarkService = textService.getBookmarkService();
-			      IBookmark bookmark = bookmarkService.getBookmark("^Name^");
-			      if(bookmark != null){
-			      String name = bookmark.getName();
-			      bookmark.setText(patname);
-			      try {
-						textDocument.getTextFieldService().refresh();
-					} catch (TextException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			      }
-*/			      	
 		      ITextFieldService textFieldService = textDocument.getTextFieldService();
 		      ITextField[] placeholders = null;
 				try {
@@ -209,21 +164,18 @@ SuchenSeite eltern;
 			      
 			}
 			/********************************************/
-			int zeile = 0;
-			int startTabelle = 0;
+			//int zeile = 0;
+			//int startTabelle = 0;
 			int aktTabelle = 0;
 			int aktTermin = -1;
 			int aktTerminInTabelle = -1;
 			String druckDatum = "";
 			ITextTable textTable = null;
 			try {
-				//textTable = textDocument.getTextTableService().getTextTable(SystemConfig.oTerminListe.NameTabelle[0]);				
 				textTable = textDocument.getTextTableService().getTextTable(tabName[aktTabelle]);
 			} catch (TextException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			int aktseiten = 0;
 			while(true){
 				aktTerminInTabelle = aktTerminInTabelle+1;
 				aktTermin = aktTermin+1;
@@ -231,14 +183,12 @@ SuchenSeite eltern;
 				if(aktTermin >= anzahl){
 					break;
 				}
-				
 				/***********Wenn die Spalte voll ist und die aktuelle Tabelle nicht die letzte ist*/
 				if(aktTerminInTabelle >= maxTermineProTabelle && aktTabelle < AnzahlTabellen-1  ){
 					aktTabelle = aktTabelle+1;
 					try {
 						textTable = textDocument.getTextTableService().getTextTable(tabName[aktTabelle]);
 					} catch (TextException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					aktTerminInTabelle = 0;
@@ -253,58 +203,25 @@ SuchenSeite eltern;
 						textDocument.getViewCursorService().getViewCursor().getTextCursorFromEnd().insertPageBreak();
 						textDocument.getViewCursorService().getViewCursor().getTextCursorFromEnd().insertDocument(url) ;
 					} catch (NOAException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					tbl = textDocument.getTextTableService().getTextTables();
 					x = 0;
 					for(int i=AnzahlTabellen;i>0;i--){
 						tabName[x] = tbl[(tbl.length-1)-x].getName(); 
-						////System.out.println(tabName[x]);
 						x++;
 					}
 					
 					if(ipatdrucken  > 0){
-						/*
-						searchResult = textDocument.getSearchService().findFirst(searchDescriptor);
-						if(!searchResult.isEmpty()) {
-							ITextRange[] textRanges = searchResult.getTextRanges();
-					        try {
-								textDocument.setSelection(new TextRangeSelection(textRanges[0]));
-							} catch (NOAException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-					        textRanges[0].setText(patname);
-						}
-						//System.out.println("Suche ersetze durchgef�hrt*************");
-						*/
-						/*
-						ITextService textService = textDocument.getTextService();
-					      IBookmarkService bookmarkService = textService.getBookmarkService();
-					      IBookmark bookmark = bookmarkService.getBookmark("^Name^"+(++aktseiten));
-					      if(bookmark != null){
-					      String name = bookmark.getName();
-					      bookmark.setText(patname);
-					      try {
-								textDocument.getTextFieldService().refresh();
-							} catch (TextException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-					      }
-					      */
 					      ITextFieldService textFieldService = textDocument.getTextFieldService();
 					      ITextField[] placeholders = null;
 							try {
 								placeholders = textFieldService.getPlaceholderFields();
 							} catch (TextException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 							for (int i = 0; i < placeholders.length; i++) {
 								String placeholderDisplayText = placeholders[i].getDisplayText();
-								////System.out.println("Platzhalter-Name = "+placeholderDisplayText);
 								if(placeholderDisplayText.equals("<^Name^>")){
 									placeholders[i].getTextRange().setText(patname);
 								}	
@@ -321,15 +238,8 @@ SuchenSeite eltern;
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					////System.out.println("textTable gesetzt*************");
-					////System.out.println("Druck wird fortgesetzt bei Termin Nr.:"+aktTermin);
 				}
 				/********************/
-				/*public String tag;
-				public String beginn;
-				public String termtext;
-				public String sorter;
-				*/
 				//**************/Hier die Zellen*************//
 				if(spaltenNamen.contains("Wochentag")){
 					int zelle = spaltenNamen.indexOf("Wochentag");
@@ -340,7 +250,6 @@ SuchenSeite eltern;
 							try {
 								textTable.getCell(zelle,aktTerminInTabelle+iheader).getTextService().getText().setText(druckDatum.substring(0,2) );
 							} catch (TextException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}					
 						}
@@ -348,13 +257,10 @@ SuchenSeite eltern;
 						try {
 							textTable.getCell(zelle,aktTerminInTabelle+iheader).getTextService().getText().setText(druckDatum.substring(0,2) );
 						} catch (TextException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
-				////System.out.println("Drucke Termin Nr."+aktTermin);
-			
 				try {
 					if(spaltenNamen.indexOf("Datum") > 0){
 						int zelle = spaltenNamen.indexOf("Datum");
@@ -370,7 +276,6 @@ SuchenSeite eltern;
 					}
 
 				} catch (TextException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -398,30 +303,23 @@ SuchenSeite eltern;
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//JOptionPane.showMessageDialog (null, "Die Terminliste wurde aufbereitet und ausgedruckt\n");
 			}else{
 				exporturl = Reha.proghome+"temp/"+Reha.aktIK+"/Terminplan.pdf";
-				//exporturl = SystemConfig.hmVerzeichnisse.get("Temp")+"Terminplan.pdf";
-				////System.out.println("ExportURL = "+exporturl);
 				try {
 					textDocument.getPersistenceService().export(exporturl, new PDFFilter());
 				} catch (DocumentException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}			
 			}
-
-
-			// Anschlie�end die Vorlagendatei schlie�en
-				//textDocument.close();
-					
-				if(!ldrucken){
-					textDocument.close();
-					sendeEmail();
-					this.termindat = null;
-				}
-		
-				eltern.cursorWait(false);
+			// Anschließend die Vorlagendatei schließen
+			//textDocument.close();
+			if(!ldrucken){
+				textDocument.close();
+				sendeEmail();
+				this.termindat = null;
+			}
+	
+			eltern.cursorWait(false);
 		}
 	
 	private void sendeEmail(){
@@ -430,32 +328,26 @@ SuchenSeite eltern;
 			emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine g�ltige Email-Adresse ein");
 			try{
 				if(emailaddy.equals("")){
-					//DruckFenster.buttonsEinschalten();
 					return;
 				}
 			}catch(java.lang.NullPointerException ex){
-				//DruckFenster.buttonsEinschalten();
 				return;
 			}
 		}else{
 			String trailing = null;
 			if(this.rezept.trim().contains("\\")){
 				trailing = this.rezept.substring(0,this.rezept.indexOf("\\"));
-				////System.out.println(trailing);
 			}else{
 				trailing = this.rezept.trim();
 			}
-			
 			pat_intern = holeAusDB("select PAT_INTERN from verordn where REZ_NR ='"+trailing+"'");
 			if(pat_intern.equals("")){
 				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine g�ltige Email-Adresse ein");
 				try{
 					if(emailaddy.equals("")){
-						//DruckFenster.buttonsEinschalten();
 						return;
 					}
 				}catch(java.lang.NullPointerException ex){
-					//DruckFenster.buttonsEinschalten();
 					return;
 				}
 			}else{
@@ -464,11 +356,9 @@ SuchenSeite eltern;
 					emailaddy = JOptionPane.showInputDialog(null,"Bitte geben Sie eine g�ltige Email-Adresse ein" , emailaddy);
 					try{
 						if(emailaddy.equals("")){
-						//DruckFenster.buttonsEinschalten();
 						return;
 						}
 					}catch(java.lang.NullPointerException ex){
-						//DruckFenster.buttonsEinschalten();
 						return;
 					}
 				}else{
@@ -481,13 +371,11 @@ SuchenSeite eltern;
 		String[] anhang = {null,null};
 		anhang[0] = Reha.proghome+"temp/"+Reha.aktIK+"/Terminplan.pdf";
 		anhang[1] = "Terminplan.pdf";
-       	////System.out.println("In DruckenFenster - Files = "+anhang[1]);
 		attachments.add(anhang.clone());
 		
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
-		////System.out.println("Empf�ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		boolean authx = (SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true);

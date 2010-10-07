@@ -1633,7 +1633,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 					jxSucheTable.setValueAt(Integer.toString(tkdauer),i, 7);
 					pldauer = tkdauer;
 				}
-					for(int j = 0;j<1;j++){
+					for(int j = 0;j<1;){
 						if((tkstart==plstart) && (tkdauer==pldauer)){
 							// Beginn und Dauer sind gleich geblieben
 							if((name.equals("")) &&	(nummer.equals(""))){
@@ -1654,7 +1654,6 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 								try {
 									schreibeZeile(stmt);
 								} catch (SQLException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								break;
@@ -2242,7 +2241,6 @@ public void keyTyped(KeyEvent arg0) {
 /***********************Bereits jetzt f�r*************************/
 /***********************ein Update vorgesehen*********************/
 /*****************************************************************/
-@SuppressWarnings("unchecked")
 class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	Statement stmt = null;
 	ResultSet rs = null;
@@ -2351,7 +2349,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			String sperre;
 			String cmd;
 			int ret;
-			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!eltern.mussUnterbrechen)){
+			while( (DatFunk.DatumsWert(sqlAkt) <= DatFunk.DatumsWert(sqlEnde)) && (!SuchenSeite.mussUnterbrechen)){
 				setzeDatum(aktDatum );
 				if( tagDurchsuchen(aktDatum) ){
 
@@ -2439,7 +2437,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 							yvec = null;
 							int kaldauer = Integer.parseInt(rs.getString("TD"+(ii)));
 
-							for(j=0;j<1;j++){
+							for(j=0;j<1;){
 								boolean keintest = keinTest();
 								if( (suchArt==1) && (kaldauer < defdauer)){
 									// wenn die Terminkaldauer kleiner als die eingestellte Dauer
@@ -3339,7 +3337,6 @@ private synchronized void malen(ImageIcon bild,int wo){
 /**********************************************************************/
 
     
-@SuppressWarnings("unchecked")	
 class MyDefaultTableModel extends DefaultTableModel{
 	   /**
 	 * 
@@ -3701,10 +3698,10 @@ class TermObjekt implements Comparable<TermObjekt>{
 }
 
 class Rdaten extends Observable{
-	public Vector rvec; 
+	public Vector<String> rvec; 
 	public Rdaten(){
 		super();
-		rvec = new Vector();
+		rvec = new Vector<String>();
 	}
 	
 }
@@ -3726,7 +3723,7 @@ class EntsperreSatz extends Thread implements Runnable{
 			if(this.eltern == null){
 				//System.out.println("this.eltern.getZeit() == NULL");
 			}
-			boolean rs = stmt.execute("delete from flexlock where maschine='"+SystemConfig.dieseMaschine+"' AND zeit='"+this.eltern.getZeit()+"'");
+			stmt.execute("delete from flexlock where maschine='"+SystemConfig.dieseMaschine+"' AND zeit='"+this.eltern.getZeit()+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
