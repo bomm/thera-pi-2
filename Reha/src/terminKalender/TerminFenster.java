@@ -312,8 +312,19 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		
 		if(ansicht == WOCHEN_ANSICHT){
 			this.ansicht = NORMAL_ANSICHT;
-			oCombo[0].setSelectedItem("Verwaltung");
+			oCombo[0].setSelectedItem(SystemConfig.KalenderStartWADefaultUser);
 			setWochenanzeige();
+		}else if (ansicht == NORMAL_ANSICHT){
+			int lang = SystemConfig.aTerminKalender.size();
+			int pos = 0;
+			String[][] teilnehmer = new String[lang][7];
+			for(int i=0;i<lang;i++){
+				if (SystemConfig.aTerminKalender.get(i).get(0).contains(SystemConfig.KalenderStartNADefaultSet)) { pos = i; }
+				teilnehmer[i] = ((ArrayList<String[]>)SystemConfig.aTerminKalender.get(pos).get(1)).get(0);
+			}
+			for(int j=0;j<7;j++){
+				oCombo[j].setSelectedItem(teilnehmer[pos][j]);
+			}
 		}
 
 		setzeStatement();

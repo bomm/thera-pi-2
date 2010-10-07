@@ -59,6 +59,8 @@ public class SystemConfig {
 	public static boolean KalenderBarcode = false;
 	public static boolean KalenderLangesMenue = false;
 	public static boolean KalenderStartWochenAnsicht = false;
+	public static String KalenderStartWADefaultUser;
+	public static String KalenderStartNADefaultSet;
 	public static String[]  KalenderUmfang =  {null,null};
 	public static long[]  KalenderMilli =  {0,0};
 	public static int UpdateIntervall;
@@ -347,6 +349,8 @@ public class SystemConfig {
 		KalenderBarcode =  (ini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
 		KalenderLangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
 		KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
+		KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
+		KalenderStartNADefaultSet = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[1]);
 		UpdateIntervall = Integer.valueOf(String.valueOf(ini.getStringProperty("Kalender","KalenderTimer")));
 		ParameterLaden kolLad = new ParameterLaden();
 		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;
