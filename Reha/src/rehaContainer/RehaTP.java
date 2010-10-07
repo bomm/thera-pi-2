@@ -27,47 +27,34 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 	RehaTPEventClass rEvent = null;
 	private RehaTP thisClass = null;
 	public int setOben; 
-	//private boolean inClose;
 	private PinPanel pinPanel = null;
 	public String eigenerName = ""; 
 	public RehaTP(int setOben){
 		super();
 		thisClass = this;
 		this.setTitleForeground(Color.WHITE);
-		//int i = this.getComponentCount();
 		this.addFocusListener(this);
 		this.addMouseListener(this);
-		/*
-		rEvent = new RehaTPEventClass();
-		rEvent.addRehaTPEventListener(this);
-		*/
-	
 		this.setOben = setOben;
-
+		/*
 		this.addKeyListener(new java.awt.event.KeyAdapter() {
 			public void keyPressed(java.awt.event.KeyEvent e) {
-				//Reha.thisClass.shiftLabel.setText("KeyPressed-RehaTP");
 			}
-		});	
+		});
+		*/	
 			
 		this.addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusGained(java.awt.event.FocusEvent e) {    
-				//Reha.thisClass.shiftLabel.setText("Dialog -Focus da");
 				if(thisClass.pinPanel != null){
-					////System.out.println("************RehaTP focus bekommen");
 					thisClass.pinPanel.SetzeAktivButton(true);
-//					thisClass.getContentContainer().requestFocusInWindow();
 					RehaTPEvent tPEvent = new RehaTPEvent(this);   
 					tPEvent.setRehaEvent("FocusRequest");  
 					tPEvent.setDetails(thisClass.getName(), "RequestFocus");
 					RehaTPEventClass.fireRehaTPEvent(tPEvent);
-
 				}
 			}   
 			public void focusLost(java.awt.event.FocusEvent e) {    
-				//Reha.thisClass.shiftLabel.setText("Dialog -Focus weg");
 				if(thisClass.pinPanel != null){
-					////System.out.println("************RehaTP focus verloren");					
 					thisClass.pinPanel.SetzeAktivButton(false);
 				}
 			}   
@@ -106,8 +93,6 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 
 	@Override
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setStandort(String fenster,int setOben){
 		RehaTPEvent rEvt = new RehaTPEvent(this);
@@ -116,45 +101,28 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 	}
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		////System.out.println("Maus geklickt" +arg0.getComponent());
 		thisClass.pinPanel.SetzeAktivButton(true);
-//		thisClass.getContentContainer().requestFocusInWindow();
 		RehaTPEvent tPEvent = new RehaTPEvent(this);   
 		tPEvent.setRehaEvent("FocusRequest");  
 		tPEvent.setDetails(thisClass.getName(), "RequestFocus");
 		RehaTPEventClass.fireRehaTPEvent(tPEvent);
-		
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 }
