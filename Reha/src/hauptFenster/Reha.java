@@ -2348,7 +2348,7 @@ final class DatenbankStarten implements Runnable{
 
 				SystemConfig.TherapBausteinInit();
 
-				SystemConfig.compTest();
+				//SystemConfig.compTest();
 
 				new SocketClient().setzeInitStand("Fremdprogramme überprüfen");
 

@@ -5,7 +5,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -77,10 +76,10 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 	 * 
 	 */
 	private static final long serialVersionUID = -3482074172384055074L;
-	private int setOben;
+	//private int setOben;
 
 	private RehaTPEventClass rtp = null;
-	private JXPanel jp1 = null;
+	//private JXPanel jp1 = null;
 	private static ArrayList<String[]> termine = new ArrayList<String[]>();
 	private static JXPanel jtp = null;
 	private static String dieserName = "";
@@ -101,17 +100,17 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 		dieserName = "DruckerListe";
 		setName(dieserName);
 		getSmartTitledPanel().setName(dieserName);
-		this.termine = terminVergabe;
+		//this.termine = terminVergabe;
 
 		macheTerminVec(terminVergabe);
 		
 		this.setModal(true);
 		this.setUndecorated(true);
 		this.setContentPanel(titlePanel() );
-		this.jtp.setLayout(new BorderLayout());
-		this.jtp.add(terminInfo(),BorderLayout.NORTH);
-		this.jtp.add(terminListe(),BorderLayout.CENTER);
-		this.jtp.add(buttonPanel(),BorderLayout.SOUTH);		
+		DruckFenster.jtp.setLayout(new BorderLayout());
+		DruckFenster.jtp.add(terminInfo(),BorderLayout.NORTH);
+		DruckFenster.jtp.add(terminListe(),BorderLayout.CENTER);
+		DruckFenster.jtp.add(buttonPanel(),BorderLayout.SOUTH);		
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName(dieserName);
@@ -138,6 +137,7 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 		thisClass = this;
 	}		    
 /*******************************************************/	
+	@SuppressWarnings("unchecked")
 	private void macheTerminVec(ArrayList<String[]>  termine){
 		Vector<String> dummyTermin = new Vector<String>();
 		for(int i = 0; i < termine.size();i++){

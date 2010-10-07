@@ -2,15 +2,12 @@ package terminKalender;
 
 import hauptFenster.Reha;
 
-import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -20,7 +17,7 @@ import systemTools.Verschluesseln;
 public class ParameterLaden {
 
 
-public static Vector<ArrayList> vKollegen = new Vector<ArrayList>();
+public static Vector<ArrayList<String>> vKollegen = new Vector<ArrayList<String>>();
 public static Vector<Kollegen> vKKollegen = new Vector<Kollegen>();
 public static Vector<Vector<String>> pKollegen = new Vector<Vector<String>>();
 public static Vector<Kollegen> pKKollegen = new Vector<Kollegen>();

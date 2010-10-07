@@ -244,6 +244,7 @@ public class SystemConfig {
 		}
 		return;
 	}
+	@SuppressWarnings("unchecked")
 	private void DatenBank(){
 		try{
 		if (ini==null){
@@ -319,6 +320,7 @@ public class SystemConfig {
 			return;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void TerminKalender(){
 		if (ini==null){
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");			
@@ -356,7 +358,7 @@ public class SystemConfig {
 			ex.printStackTrace();
 		}
 		UpdateIntervall = Integer.valueOf(String.valueOf(ini.getStringProperty("Kalender","KalenderTimer")));
-		ParameterLaden kolLad = new ParameterLaden();
+		/*ParameterLaden kolLad = */new ParameterLaden();
 		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;
 		String s = String.valueOf(ini.getStringProperty("Kalender","KalenderHintergrundRGB"));
 		String[] ss = s.split(",");
@@ -371,6 +373,7 @@ public class SystemConfig {
 		
 		return;
 	}
+	@SuppressWarnings("unchecked")
 	public static void NurSets(){
 		if (ini==null){
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
@@ -395,6 +398,7 @@ public class SystemConfig {
 			aList3.clear();
 		}	
 	}
+	@SuppressWarnings("unchecked")
 	public static void  RoogleGruppen(){
 		if (ini==null){
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
@@ -477,6 +481,7 @@ public class SystemConfig {
 		hmVerzeichnisse.put("Fahrdienstrohdatei",ini.getStringProperty("Verzeichnisse", "Fahrdienstrohdatei"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void TKFarben(){
 		if (colini==null){
 			colini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/color.ini");
@@ -559,13 +564,14 @@ public class SystemConfig {
 		KalenderHintergrund = aktTkCol.get("AusserAZ")[0];
 
 	}
+	@SuppressWarnings({ "unchecked", "unchecked" })
 	public static void MandantenEinlesen(){
 
 		INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
 		int AnzahlMandanten = inif.getIntegerProperty("TheraPiMandanten", "AnzahlMandanten");
 		AuswahlImmerZeigen = inif.getIntegerProperty("TheraPiMandanten", "AuswahlImmerZeigen");
 		DefaultMandant = inif.getIntegerProperty("TheraPiMandanten", "DefaultMandant");
-		int LetzterMandant = inif.getIntegerProperty("TheraPiMandanten", "LetzterMandant");
+		//int LetzterMandant = inif.getIntegerProperty("TheraPiMandanten", "LetzterMandant");
 		Mandanten = new Vector<String[]>();			
 		for(int i = 0; i < AnzahlMandanten;i++){
 			String[] mand = {null,null};
@@ -854,6 +860,7 @@ public class SystemConfig {
 			}
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public static void RezeptInit(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
 		int args;
@@ -1113,7 +1120,7 @@ public class SystemConfig {
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		////System.out.println("System-Icons wurden geladen");
 	}
-	
+	/*
 	public static void compTest(){
 		Vector<Vector> vec = new Vector<Vector>();
 		Vector<String> ve2 = new Vector<String>();
@@ -1129,15 +1136,6 @@ public class SystemConfig {
 		ve2.add("2");
 		vec.add((Vector)ve2.clone());
 		Comparator<Vector> comparator = new Comparator<Vector>() {
-			/*
-			public int compare(String s1, String s2) {
-		        String[] strings1 = s1.split("\\s");
-		        String[] strings2 = s2.split("\\s");
-		        return strings1[strings1.length - 1]
-		            .compareTo(strings2[strings2.length - 1]);
-		    }
-		    */
-
 			@Override
 			public int compare(Vector o1, Vector o2) {
 				// TODO Auto-generated method stub
@@ -1147,20 +1145,9 @@ public class SystemConfig {
 			}
 		};
 		Collections.sort(vec,comparator);
-		////System.out.println("Sortierter Vector = "+vec);
-		/*
-		static final Comparator<Employee> SENIORITY_ORDER =
-            new Comparator<Employee>() {
-			public int compare(Employee e1, Employee e2) {
-				int dateCmp = e2.hireDate().compareTo(e1.hireDate());
-				if (dateCmp != 0)
-					return dateCmp;
-				return (e1.number() < e2.number() ? -1 : (e1.number() == e2.number() ? 0 : 1));
-		}
-		};
-		 */
-	}
 	
+	}
+	*/
 
 	
 	
