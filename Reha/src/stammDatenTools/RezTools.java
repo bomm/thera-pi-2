@@ -391,7 +391,7 @@ public class RezTools {
 						iret = 0;
 					}
 				}else{
-					//Es stehen keine Termine f�r Analyse zur Verf�gung also mu� das Fenster f�r manuelle Eingabe ge�ffnet werden!!
+					//Es stehen keine Termine für Analyse zur Verfügung also muß das Fenster für manuelle Eingabe geöffnet werden!!
 					String geburtstag = DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4));
 					String stichtag = DatFunk.sHeute().substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 					if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){

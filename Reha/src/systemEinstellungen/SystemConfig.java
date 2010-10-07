@@ -347,10 +347,14 @@ public class SystemConfig {
 		KalenderMilli[0] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[0]);
 		KalenderMilli[1] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[1]);		
 		KalenderBarcode =  (ini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
-		KalenderLangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
-		KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
-		KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
-		KalenderStartNADefaultSet = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[1]);
+		try{
+			KalenderLangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
+			KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
+			KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
+			KalenderStartNADefaultSet = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[1]);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		UpdateIntervall = Integer.valueOf(String.valueOf(ini.getStringProperty("Kalender","KalenderTimer")));
 		ParameterLaden kolLad = new ParameterLaden();
 		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;

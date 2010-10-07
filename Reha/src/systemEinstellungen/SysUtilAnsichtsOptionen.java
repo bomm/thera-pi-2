@@ -161,6 +161,8 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 		ini.setStringProperty("Kalender", "AnsichtDefault", defaultWA.getSelectedItem()+"@"+defaultNA.getSelectedItem(), null);
 		ini.save();
 		SystemConfig.KalenderStartWochenAnsicht = startWochenAnz.isSelected();
+		SystemConfig.KalenderStartNADefaultSet = defaultNA.getSelectedItem().toString();
+		SystemConfig.KalenderStartWADefaultUser = defaultWA.getSelectedItem().toString();
 	}
 	/**************************************************************************/	
 	private void abbrechenHandeln(){
