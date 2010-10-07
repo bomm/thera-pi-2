@@ -288,7 +288,7 @@ public class SystemConfig {
 			}
 
 			aKontakt.add(decrypted);
-			vDatenBank.add((ArrayList<String>) aKontakt.clone());
+			vDatenBank.add( (ArrayList<String>) aKontakt.clone());
 			aKontakt.clear();
 		}
 		}catch(Exception ex){
