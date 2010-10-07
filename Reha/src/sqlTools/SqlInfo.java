@@ -2,7 +2,6 @@ package sqlTools;
 
 import hauptFenster.Reha;
 
-import java.awt.Cursor;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -12,8 +11,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
-
-import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
@@ -326,11 +323,12 @@ public class SqlInfo {
 	}
 
 	/*******************************/
-	public static Vector<Vector<String>> holeSaetze(String tabelle, String felder, String kriterium, List ausschliessen){
+	@SuppressWarnings("unchecked")
+	public static Vector<Vector<String>> holeSaetze(String tabelle, String felder, String kriterium, List<String> ausschliessen){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
-		Vector<Vector> retkomplett = new Vector<Vector>();
+		Vector<Vector<String>> retkomplett = new Vector<Vector<String>>();
 		ResultSetMetaData rsMetaData = null;
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -358,15 +356,13 @@ public class SqlInfo {
 						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 					 }
 				 }
-				 retkomplett.add((Vector)retvec.clone());
+				 retkomplett.add((Vector<String>)((Vector<?>)retvec.clone()));
 			}
 			retvec.clear();
 			retvec = null;
 			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
-			//System.out.println("SQLException: " + ev.getMessage());
-			//System.out.println("SQLState: " + ev.getSQLState());
-			//System.out.println("VendorError: " + ev.getErrorCode());
+			JOptionPane.showMessageDialog(null, "Fehler in der MySqlFunktion-HoeleSaetze");
 		}	
 		finally {
 			if (rsMetaData != null){
@@ -444,10 +440,10 @@ public class SqlInfo {
 	public static int erzeugeNummer(String nummer){
 		int reznr = -1;
 		/****** Zunächst eine neue Rezeptnummer holen ******/
-		Vector numvec = null;
+		Vector<String> numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
-			String numcmd = nummer+",id";
+			//String numcmd = nummer+",id";
 			////System.out.println("numcmd = "+numcmd);
 			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
 			////System.out.println(Reha.aktIK);
@@ -456,8 +452,8 @@ public class SqlInfo {
 		}
 		if(numvec.size() > 0){
 			try{
-			reznr = Integer.parseInt( (String)((Vector) numvec).get(0) );
-			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
+			reznr = Integer.parseInt( (String)((Vector<String>) numvec).get(0) );
+			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector<String>) numvec).get(1)+"'";
 			SqlInfo.sqlAusfuehren(cmd);
 			}catch(Exception ex){
 				reznr = -1;
@@ -485,11 +481,11 @@ public class SqlInfo {
 	
 	public static int erzeugeNummerMitMax(String nummer,int max){
 		int reznr = -1;
-		/****** Zun�chst eine neue Rezeptnummer holen ******/
-		Vector numvec = null;
+		/****** Zunächst eine neue Rezeptnummer holen ******/
+		Vector<String> numvec = null;
 		try {
 			Reha.thisClass.conn.setAutoCommit(false);
-			String numcmd = nummer+",id";
+			//String numcmd = nummer+",id";
 			////System.out.println("numcmd = "+numcmd);
 			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
 			////System.out.println(Reha.aktIK);
@@ -498,12 +494,12 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		if(numvec.size() > 0){
-			reznr = Integer.parseInt(  (String)((Vector) numvec).get(0) );
+			reznr = Integer.parseInt(  (String)((Vector<String>) numvec).get(0) );
 			if((reznr+1) > max){
 				reznr = 1;
 			}
 			////System.out.println("Neue Rezeptnummer = "+reznr);
-			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector) numvec).get(1)+"'";
+			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector<String>) numvec).get(1)+"'";
 			////System.out.println("Kommando = "+cmd);
 			new ExUndHop().setzeStatement(cmd);
 			////System.out.println("bisherige Rezeptnummer = "+nummer.toUpperCase()+reznr+" / neue Rezeptnummer = "+nummer.toUpperCase()+(reznr+1));
@@ -590,7 +586,7 @@ public class SqlInfo {
 			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium+" LIMIT 1";
 			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
-			Object ret = stmt.execute(sstmt);
+			stmt.execute(sstmt);
 			////System.out.println(ret);
 			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
@@ -634,7 +630,7 @@ public class SqlInfo {
 			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium;
 			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
-			Object ret = stmt.execute(sstmt);
+			stmt.execute(sstmt);
 			////System.out.println(ret);
 			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
@@ -766,10 +762,11 @@ public class SqlInfo {
 /*****************************************/
 	
 	/*****************************************/
+	@SuppressWarnings("unchecked")
 	public static Vector<Vector<String>> holeFelder(String xstmt){
 		Statement stmt = null;
 		ResultSet rs = null;
-		String ret = "";
+		//String ret = "";
 		Vector<String> retvec = new Vector<String>();
 		Vector<Vector<String>> retkomplett = new Vector<Vector<String>>();	
 		ResultSetMetaData rsMetaData = null;
@@ -793,7 +790,7 @@ public class SqlInfo {
 						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 
 				 }
-				 retkomplett.add((Vector<String>)retvec.clone());
+				 retkomplett.add( ((Vector<String>)retvec.clone()));
 			}
 			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 			retvec.clear();
@@ -926,19 +923,17 @@ public class SqlInfo {
 
 	/*****************************************/
 	public static void sqlAusfuehren(String sstmt){
-		boolean geklappt = false;
 		Statement stmt = null;
 			
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
 			System.exit(0);
 		}
 		try{
-			geklappt =  stmt.execute(sstmt);
+			stmt.execute(sstmt);
 			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
 			System.out.println("SQLException: " + ev.getMessage());
