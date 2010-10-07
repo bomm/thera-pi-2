@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import systemEinstellungen.SystemConfig;
 
 public class TerminMenu {
 
@@ -52,7 +53,7 @@ public class TerminMenu {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					//System.out.println("Terminkalenderaufruf-Menü"); // TODO Auto-generated Event stub actionPerformed()
 					JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
-					Reha.thisClass.progLoader.ProgTerminFenster(0, 0);
+					Reha.thisClass.progLoader.ProgTerminFenster(0, (SystemConfig.KalenderStartWochenAnsicht ? 1 : 0));
 					//ProgLoader.ProgTerminFenster(0,0);
 					if(termin == null){
 

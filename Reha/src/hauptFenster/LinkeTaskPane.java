@@ -628,7 +628,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					@Override
 					protected Void doInBackground() throws Exception {
 						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
-						Reha.thisClass.progLoader.ProgTerminFenster(1, (SystemConfig.StartWochenAnsicht ? 1 : 0));
+						Reha.thisClass.progLoader.ProgTerminFenster(1, (SystemConfig.KalenderStartWochenAnsicht ? 1 : 0));
 						//ProgLoader.ProgTerminFenster(1,0);
 						Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 						return null;

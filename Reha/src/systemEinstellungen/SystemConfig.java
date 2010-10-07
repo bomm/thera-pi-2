@@ -57,8 +57,8 @@ public class SystemConfig {
 	public static int AnzahlKollegen;
 	public static Color KalenderHintergrund = null;
 	public static boolean KalenderBarcode = false;
-	public static boolean LangesMenue = false;
-	public static boolean StartWochenAnsicht = false;
+	public static boolean KalenderLangesMenue = false;
+	public static boolean KalenderStartWochenAnsicht = false;
 	public static String[]  KalenderUmfang =  {null,null};
 	public static long[]  KalenderMilli =  {0,0};
 	public static int UpdateIntervall;
@@ -345,8 +345,8 @@ public class SystemConfig {
 		KalenderMilli[0] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[0]);
 		KalenderMilli[1] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[1]);		
 		KalenderBarcode =  (ini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
-		LangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
-		StartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
+		KalenderLangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
+		KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
 		UpdateIntervall = Integer.valueOf(String.valueOf(ini.getStringProperty("Kalender","KalenderTimer")));
 		ParameterLaden kolLad = new ParameterLaden();
 		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;

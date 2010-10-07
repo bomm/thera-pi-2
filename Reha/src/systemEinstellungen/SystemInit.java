@@ -189,6 +189,8 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Behandlersets definieren");
 	node.add(treeitem );
+	treeitem = new DefaultMutableTreeNode("Startoptionen definieren");
+	node.add(treeitem );
 	treeitem = new DefaultMutableTreeNode("Druckvorlage Terminliste");
 	node.add(treeitem );
 	//treeitem = new DefaultMutableTreeNode("Termin-Drucker verwalten");
@@ -374,6 +376,15 @@ private void auswertenSysUtil(String util){
 			jxRechts.revalidate();
 			cursorWait(false);
 			setHeader("TKGrundeinstellungen");			
+			break;
+		}
+		if(util.equals("Startoptionen definieren")){
+			jxInhaltRechts = new SysUtilAnsichtsOptionen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			setHeader("Ansichtsoptionen");			
 			break;
 		}
 		if(util.equals("Gruppentermine definieren")){
@@ -709,7 +720,7 @@ private void headerInfos(){
 	sdummy = "Terminkalender-Grundeinstellungen";
 	htitel.put("TKGrundeinstellungen", sdummy);
 	sdummy = "Die Grundeinstellungen beeinflussen die Struktur und die Funktionen der Kalenderdatenbank. Änderungen von Tagesbeginn \n"+
-	"oder -ende f�hren zur Neudefinition ALLER bestehenden Datenbanken. Dieser Vorgang benötigt viel Rechenkapazität und dauert daher\n"+
+	"oder -ende führen zur Neudefinition ALLER bestehenden Datenbanken. Dieser Vorgang benötigt viel Rechenkapazität und dauert daher\n"+
 	"entsprechend lange.\n"+
 	"Der Refreshtakt definiert, in welchem Zyklus die Bildschirmanzeige mit der Datenbank abgeglichen wird. Einzelplatzinstallationen\n "+
 	"arbeiten dabei ohne zeitliche Verzögerung.";
@@ -736,7 +747,16 @@ private void headerInfos(){
 	hdescription.put("Behandlersets", sdummy);
 	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
 	hicon.put("Behandlersets", icodummy);
-
+	
+	/***********Numero tre bi***********/
+	sdummy = "Terminkalender Startoptionen";
+	htitel.put("Ansichtsoptionen", sdummy);
+	sdummy = "Der Terminkalender startet standardmäßig in der Normalansicht ohne vordefiniertem Behandlerset.\n"+
+	"Hier können Sie die Ansichtsoptionen festlegen die beim starten des Terminkalenders angewendet werden.\n";
+	hdescription.put("Ansichtsoptionen", sdummy);
+	icodummy = new ImageIcon(Reha.proghome+"icons/header-image.png");
+	hicon.put("Ansichtsoptionen", icodummy);
+	
 	/***********Numero vier***********/
 	sdummy = "Druckvorlage";
 	htitel.put("DruckvorlageTerminliste", sdummy);
