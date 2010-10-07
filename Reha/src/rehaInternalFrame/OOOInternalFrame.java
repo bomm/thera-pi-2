@@ -15,7 +15,11 @@ import javax.swing.JInternalFrame;
  */
 public class OOOInternalFrame extends JInternalFrame {
 
-  List<OOOInternalFrame> iconifiedOthers = new ArrayList<OOOInternalFrame>();
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -142374973576893910L;
+List<OOOInternalFrame> iconifiedOthers = new ArrayList<OOOInternalFrame>();
 
   public OOOInternalFrame() {
     super();

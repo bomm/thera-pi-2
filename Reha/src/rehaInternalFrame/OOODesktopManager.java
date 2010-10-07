@@ -1,7 +1,4 @@
 package rehaInternalFrame;
-import hauptFenster.Reha;
-
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
@@ -12,14 +9,17 @@ import javax.swing.DefaultDesktopManager;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JInternalFrame.JDesktopIcon;
 
 /*
  * THE LINES MARKED WITH XXX IS THE CHANGE THAT WAS DONE TO THE ORIGINAL METHODS FROM DefaultDesktopManager
  */
 public class OOODesktopManager extends DefaultDesktopManager {
 
-  Map<JInternalFrame, Rectangle> oldBounds = new HashMap<JInternalFrame, Rectangle>();
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4523597893478475048L;
+Map<JInternalFrame, Rectangle> oldBounds = new HashMap<JInternalFrame, Rectangle>();
   int desktopNo = 0;
   int aktuell = 0;
   String frameaktuell = "";
@@ -30,7 +30,7 @@ public class OOODesktopManager extends DefaultDesktopManager {
   public void iconifyFrame(JInternalFrame f) {
     JInternalFrame.JDesktopIcon desktopIcon;
     Container c = f.getParent();
-    JDesktopPane d = f.getDesktopPane();
+    //JDesktopPane d = f.getDesktopPane();
     boolean findNext = f.isSelected();
 
     desktopIcon = f.getDesktopIcon();
@@ -46,14 +46,10 @@ public class OOODesktopManager extends DefaultDesktopManager {
     }
 
     if (c instanceof JLayeredPane) {
-      JLayeredPane lp = (JLayeredPane) c;
+      //JLayeredPane lp = (JLayeredPane) c;
       int layer = JLayeredPane.getLayer(f);
       JLayeredPane.putLayer(desktopIcon, layer);
     }
-
-    // If we are maximized we already have the normal bounds recorded
-    // don't try to re-record them, otherwise we incorrectly set the
-    // normal bounds to maximized state.
     if (!f.isMaximum()) {
       f.setNormalBounds(f.getBounds());
     }
@@ -149,7 +145,7 @@ public class OOODesktopManager extends DefaultDesktopManager {
 /******************************************************/
   public void activateFrame(JInternalFrame f) {
     Container p = f.getParent();
-    Component[] c;
+    //Component[] c;
     JDesktopPane d = f.getDesktopPane();
     JInternalFrame currentlyActiveFrame = (d == null) ? null : d.getSelectedFrame();
     // fix for bug: 4162443

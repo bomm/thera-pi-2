@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
-import barKasse.Barkasse;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;

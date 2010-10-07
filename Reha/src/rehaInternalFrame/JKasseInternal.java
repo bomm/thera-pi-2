@@ -3,36 +3,22 @@ package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
-import hauptFenster.SuchenDialog;
 
-import java.awt.event.FocusListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 
-import javax.accessibility.Accessible;
-import javax.accessibility.AccessibleRole;
-import javax.accessibility.AccessibleValue;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
-import javax.swing.JComponent.AccessibleJComponent;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import krankenKasse.KassenPanel;
-
-import arztFenster.ArztPanel;
-
-import events.PatStammEvent;
-import events.PatStammEventClass;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 
-import terminKalender.TerminFenster;
-
 public class JKasseInternal extends JRehaInternal implements RehaEventListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 538247311504244175L;
 	RehaEventClass rEvent = null;
 	public JKasseInternal(String titel, ImageIcon img, int desktop) {
 		super(titel, img, desktop);

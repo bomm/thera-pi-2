@@ -1,4 +1,4 @@
- package rehaInternalFrame;
+package rehaInternalFrame;
 
 
 
@@ -71,19 +71,14 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	public String titel;
 	public JTextField tf = null;
 	public boolean isActive;
-	//public static JRehaInternal thisClass;
 	public JXPanel thisContent;
 	public int desktop;
 	public int compOrder;
-	private Point alt;
-	private Point akt;
-	private boolean aufwaerts;
 	private boolean stetsgross;
 	public JComponent inhalt;
 	public FocusListener fl = null;
 	public int xWeit = -1;
 	public int yHoch = -1;
-	//private static final long serialVersionUID = 1L;
 	public JComponent nord = null;
 	public boolean isIcon = false; 
 	public boolean doNotClose = false;
@@ -93,7 +88,6 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		this.setTitle(titel);
 		this.titel = titel;
 		this.desktop = desktop;
-		//this.setName("RehaInternal-X");
 		this.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 		this.getContentPane().setSize(new Dimension(this.getContentPane().getWidth(),this.getContentPane().getHeight()-20));
 		this.getContentPane().addMouseListener(this);
@@ -115,8 +109,6 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		thisContent.addMouseMotionListener(this);
 		thisContent.addComponentListener(this);
 		thisContent.addFocusListener(fl);
-		//this.addAncestorListener(this);
-
 		final String xtitel = titel;
 		this.setUI(new PlasticInternalFrameUI(this){
 			@Override
@@ -124,21 +116,13 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 				nord = new RehaInternal(w,xtitel,SystemConfig.hmSysIcons.get("rot"),
 						SystemConfig.hmSysIcons.get("gruen"),SystemConfig.hmSysIcons.get("inaktiv"),0);
 				return nord;
-				/*
-					return new RehaInternal(w,xtitel,getToolkit().getImage(Reha.proghome+"icons/red.png"),
-							getToolkit().getImage(Reha.proghome+"icons/green.png"),getToolkit().getImage(Reha.proghome+"icons/inaktiv.png"),0);
-				*/			
 			}
-
-
 		});
 		
 		DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 3, 0.7f, 7, false, true, true, true);
 
 		this.getContentPane().add(thisContent);
-		//thisClass = this;
 		this.setBorder(dropShadow);
-
 	}
 	public void setDesktop(int desktop){
 		this.desktop = desktop;
@@ -180,28 +164,13 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	
 
 	public void gruenGedrueckt(){
-		//try {
-			xWeit = this.getSize().width;
-			yHoch = this.getSize().height;
-			RehaEvent evt = new RehaEvent(this);
-			evt.setDetails(this.getName(), "#ICONIFIED");
-			evt.setRehaEvent("REHAINTERNAL");
-			RehaEventClass.fireRehaEvent(evt);
-			isIcon = true;
-			
-			/*
-			this.setTitle(this.titel);
-			this.setIcon(true);
-			this.toFront();
-			this.isActive = true;
-			*/
-			/*
-		} catch (PropertyVetoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-
+		xWeit = this.getSize().width;
+		yHoch = this.getSize().height;
+		RehaEvent evt = new RehaEvent(this);
+		evt.setDetails(this.getName(), "#ICONIFIED");
+		evt.setRehaEvent("REHAINTERNAL");
+		RehaEventClass.fireRehaEvent(evt);
+		isIcon = true;
 	}
 	
 	public void rotGedrueckt(){
@@ -215,18 +184,9 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	public void setActive(boolean active){
 		this.isActive = active;
-//		this.repaint();
-//		this.toFront();
 	}
 	
 	public void setSpecialActive(boolean active){
-		/*
-		this.isActive = active;
-		this.repaint();
-		this.toFront();
-		frameAktivieren(this.getName());
-		*/
-
 	}
 
 	public String getTitel(){
@@ -244,18 +204,15 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		int comp = nord.getComponentCount();
 		Component icomp;
 		for(int i = 0 ; i < comp ; i ++){
-			////System.out.println(nord.getComponent(i));
 			icomp = nord.getComponent(i);
 			if(icomp != null){
 				ListenerTools.removeListeners(icomp);
 				icomp = null;	
 			}
-			
 		}
 		ListenerTools.removeListeners(thisContent);
 		comp = thisContent.getComponentCount();
 		for(int i = 0 ; i < comp ; i ++){
-			////System.out.println(thisContent.getComponent(i));
 			icomp = thisContent.getComponent(i);
 			if(icomp != null){
 				ListenerTools.removeListeners(icomp);
@@ -265,14 +222,12 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		ListenerTools.removeListeners(inhalt);
 		comp = inhalt.getComponentCount();
 		for(int i = 0 ; i < comp ; i ++){
-			////System.out.println(inhalt.getComponent(i));
 			icomp = inhalt.getComponent(i);
 			if(icomp != null){
 				ListenerTools.removeListeners(icomp);
 				icomp = null;	
 			}
 		}
-		//thisClass = null;
 	}
 
 	public void setTitel(String titel){
@@ -284,22 +239,15 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		fl = new FocusListener(){
 			@Override
 			public void focusGained(FocusEvent e) {
-				// TODO Auto-generated method stub
-				////System.out.println(((JComponent)e.getSource()).getParent().getParent());
 				if (inhalt != null){
-					////System.out.println("Inhalt soll Focus erhalten");
 					inhalt.requestFocus();
 					setActive(true);
 					frameAktivieren(getName());
 					repaint();
 				}
-				//tfsuchen.requestFocusInWindow();
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				////System.out.println("Fokus verloren. Neuer Fokusbesitzer = "+e.getOppositeComponent());
-				// TODO Auto-generated method stub
-				//repaint();
 			}
 			
 		};
@@ -330,7 +278,6 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 					}catch(java.lang.ClassCastException ex){
 						lays = frame;
 					}
-					////System.out.println("Auf Desktop "+idesk+" befinden sich "+coms+" Container. Name des Containers "+layers+" ist "+lays);					
 					if(!lays.equals(frame)){
 						((JRehaInternal)Reha.thisClass.desktops[idesk].getComponent(layers)).setActive(false);
 						try {
@@ -355,7 +302,6 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 					}
 
 				}catch(java.lang.ArrayIndexOutOfBoundsException ex){
-					//System.out.println("****************Fehler**************");
 					ex.printStackTrace();
 				}
 			}
@@ -379,31 +325,14 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	  		 		   xiframe.repaint();
 	  		 	   }
 	  			});
-			
-
 		}
-			
 	}
 	@Override
 	public void internalFrameActivated(InternalFrameEvent arg0) {
 		
 		if(isSelected() && (!isActive)){
-			//isActive = true;
-			//repaint();
 			aktiviereDiesenFrame(getName());
-			//frameAktivieren(getName());
-			////System.out.println("JRehaInternal frame aktiviert = " +getName());
 		}
-		/*
-		if(! this.isActive){
-			//System.out.println("Layer beim aktivieren = " +Reha.thisClass.desktops[this.desktop].getLayer(this));
-			//System.out.println("Name der DesktopPane = "+Reha.thisClass.desktops[this.desktop].getName());
-			this.isActive = true;
-			this.repaint();
-			this.toFront();
-			frameAktivieren(this.getName());
-		}
-		*/
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
@@ -420,37 +349,14 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		Reha.thisFrame.requestFocus();
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		AktiveFenster.loescheFenster(this.getName());
-		//System.out.println("In JRehaInternal alles gel�scht");
-		/*
-		Runtime r = Runtime.getRuntime();
-	    r.gc();
-	    long freeMem = r.freeMemory();
-		*/
-	    ////System.out.println("Superklasse------->Freier Speicher nach  gc():    " + freeMem);
-		//this.getParent().getParent().requestFocus();
-		////System.out.println("Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void internalFrameDeactivated(InternalFrameEvent arg0) {
-		////System.out.println("Frame = "+((JRehaInternal)arg0.getSource()).getName()+"Internal Deaktiviert = ID - "+arg0.getID());
-		////System.out.println("deaktiviert - "+arg0);
 		isActive = false;
 		this.repaint();
-		/*
-		try {
-			setSelected(false);
-		} catch (PropertyVetoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 	}
 	@Override
 	public void internalFrameDeiconified(InternalFrameEvent arg0) {
@@ -465,9 +371,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 				repaint();
 				return null;
 			}
-			
 		}.execute();
-		
 	}
 	@Override
 	public void internalFrameIconified(InternalFrameEvent arg0)	{
@@ -483,129 +387,84 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 				repaint();
 				return null;
 			}
-			
 		}.execute();
 	}
 	@Override
 	public void internalFrameOpened(InternalFrameEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
 		if(arg0.getKeyCode()==27){
 			this.dispose();
 		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
 		if(arg0.getKeyCode()==27){
 			this.dispose();
 		}
-		
 	}
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
 		if(arg0.getKeyCode()==27){
 			this.dispose();
 		}
-		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if(arg0.getClickCount()==1 && !isActive){
 			feuereEvent(25554);
-			////System.out.println("SourceKlasse = "+ arg0.getSource().getClass());
 		}
-		// TODO Auto-generated method stub
-		//setTitel(new Long(System.currentTimeMillis()).toString());
-		//setTitle(new Long(System.currentTimeMillis()).toString());
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println("Muaus ist au�erhalb des Fensters");
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println(this.getName()+"Muaus ist innerhalb des Fensters");		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println(this.getName()+"Muaustaste losgelassen");		
 	}
 	@Override
 	public void ancestorAdded(AncestorEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println("Ancestor event - "+arg0);
-		
 	}
 	@Override
 	public void ancestorMoved(AncestorEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println("Ancestor-Moved->"+arg0);
-		//String ss = ((AncestorEvent)arg0).paramString();
-		////System.out.println("Ancestor-Moved-ParameterString->"+ss);
 	}
 	@Override
 	public void ancestorRemoved(AncestorEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println(this.getName()+"-MausPosition "+arg0.getXOnScreen()+"-"+arg0.getYOnScreen());
 	}
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println(this.getName()+"-MausPosition "+arg0.getXOnScreen()+"-"+arg0.getYOnScreen());		
 	}
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
-		////System.out.println("Component Moved->"+arg0);
 	}
 	@Override
 	public void componentResized(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
-		//+" ****************"+arg0);
 	}
 	@Override
 	public void componentShown(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setCompOrder(int com){
 		this.compOrder = com;
 	}
 	public void setzeIcon(){
 		if(this.isIcon){
-			////System.out.println("Komponente Resized im Beh�lter - "+ this.desktop);
-			//JDesktopIcon di = this.getDesktopIcon();
-			//di.setLocation((5*this.compOrder)+(this.compOrder*di.getWidth()), Reha.thisClass.desktops[this.desktop].getHeight()-di.getHeight());
-			
 		}
 	}
 	public void showPopUp(java.awt.event.MouseEvent evt){
@@ -673,17 +532,17 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	}
 	private void testeWechsel(){
 		int vorher=0,nachher=0;
-		for(int i = 0;i<1;i++){
+//		for(int i = 0;i<1;i++){
 		if(this.desktop==0){
 			vorher = 0;
 			nachher = 1;
-			break;
+//			break;
 		}else{
 			vorher = 1;
 			nachher = 0;
-			break;
+//			break;
 		}
-		}
+//		}
 		this.removeInternalFrameListener(this);
 
 		this.setVisible(false);
@@ -810,6 +669,10 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
  */
 
 class RehaInternal extends BasicInternalFrameTitlePane{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8563410987754087430L;
 	String titel = null;
 	Image img1 = null;
 	Image img2 = null;
@@ -864,7 +727,6 @@ class RehaInternal extends BasicInternalFrameTitlePane{
 		int comp = this.getComponentCount();
 
 		for(int i = 0 ; i < comp ; i ++){
-			////System.out.println(this.getComponent(i));
 			if(i < 4){
 				this.getComponent(i).setVisible(false);
 			}else{
@@ -874,10 +736,8 @@ class RehaInternal extends BasicInternalFrameTitlePane{
 		}
 		Paint newPaint = null;
 		if(((JRehaInternal)getParent()).getActive()){
-			//newPaint = this.gp1;
 			newPaint = new GradientPaint(0,0,new Color(112,141,255),0,getHeight(),Color.WHITE,true);			
 		}else{
-			//newPaint = this.gp2;
 			newPaint = new GradientPaint(0,0,new Color(128,128,128),0,getHeight(),Color.WHITE,true);			
 		}
 			
@@ -906,6 +766,10 @@ class RehaInternal extends BasicInternalFrameTitlePane{
 }
 /*********************************************************/
 class CustomPinPanel extends JButton{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9078107053879258413L;
 	CustomPinPanel(String titel,ImageIcon img,int position){
 		super(titel);
 		setBorder(null);
@@ -933,6 +797,7 @@ class CustomPinPanel extends JButton{
 	}
 	public void paintComponent(Graphics g)
 	{
+	@SuppressWarnings("unused")
 	Graphics2D g2d = (Graphics2D) g;
 		//g2d.drawImage(getToolkit().getImage("C:/RehaVerwaltung/icons/red.png"),0 ,20, this);
 		//g2d.drawImage(getToolkit().getImage("C:/RehaVerwaltung/icons/red.png"),40 ,20, this);		
