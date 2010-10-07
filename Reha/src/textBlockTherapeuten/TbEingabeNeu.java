@@ -18,27 +18,23 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
-import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
 import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,FocusListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6140253652035740939L;
 	JButton uebernahme = null;
 	JButton zurueck = null;
 	JButton abbrechen = null;
@@ -59,7 +55,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	String aktreplace = "";
 	
 	
-	public TbEingabeNeu(String dtext,Vector vec,ThTextBlock thb,JRtaTextField jtf){
+	public TbEingabeNeu(String dtext,Vector<String> vec,ThTextBlock thb,JRtaTextField jtf){
 		super();
 		setOpaque(false);
 		setLayout(new BorderLayout());
@@ -126,7 +122,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	
 	/****************************************/
 	
-	public void neueDaten(String dtext,Vector vec){
+	public void neueDaten(String dtext,Vector<String> vec){
 		this.tbltext = String.valueOf(dtext);
 		String x = String.valueOf(dtext);
 		x = x.replace(System.getProperty("line.separator"),"<br>");

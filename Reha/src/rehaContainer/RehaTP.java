@@ -1,7 +1,5 @@
 package rehaContainer;
 
-import hauptFenster.Reha;
-
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -28,10 +26,10 @@ public class RehaTP extends JXTitledPanel implements RehaTPEventListener,FocusLi
 	
 	RehaTPEventClass rEvent = null;
 	private RehaTP thisClass = null;
-	private int setOben; 
-	private boolean inClose;
+	public int setOben; 
+	//private boolean inClose;
 	private PinPanel pinPanel = null;
-	private String eigenerName = ""; 
+	public String eigenerName = ""; 
 	public RehaTP(int setOben){
 		super();
 		thisClass = this;

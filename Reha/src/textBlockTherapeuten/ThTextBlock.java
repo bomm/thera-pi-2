@@ -208,7 +208,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 
 		
 		public void rehaTPEventOccurred(RehaTPEvent evt) {
-			String ss =  this.getName();
+			//String ss =  this.getName();
 			try{
 				////System.out.println("Schließe Fenster Textbaustein");
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
@@ -331,15 +331,15 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+diag+"</font></b>";
 		    super.getSmartTitledPanel().setTitle(xtitel);
 		    this.suchkrit = diag;
-			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
+			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			//Vector<String> vec2 = new Vector<String>();
 			modtextblock.setRowCount(0);
 			if(anz>0){
 				for(int i = 0;i<anz;i++){
-					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
+					modtextblock.addRow((Vector<?>)((Vector<?>)vec.get(i)).clone() );
 					if(i==0){
-						holeTbText( Integer.valueOf((String)((Vector)vec.get(i)).get(2)) );
+						holeTbText( Integer.valueOf((String)((Vector<?>)vec.get(i)).get(2)) );
 					}
 				}
 				textblock.setRowSelectionInterval(0, 0);
@@ -347,28 +347,29 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			textblock.validate();
 		}
 		private void fuelleSucheInTabelle(String whereKlausel){
-			Vector vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));
+			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			modtextblock.setRowCount(0);
 			//Vector<String> vec2 = new Vector<String>();
 			if(anz>0){
 				for(int i = 0;i<anz;i++){
-					modtextblock.addRow((Vector)((Vector)vec.get(i)).clone() );
+					modtextblock.addRow((Vector<?>)((Vector<?>)vec.get(i)).clone() );
 					if(i==0){
-						holeTbText( Integer.valueOf((String)((Vector)vec.get(i)).get(2)) );
+						holeTbText( Integer.valueOf((String)((Vector<?>)vec.get(i)).get(2)) );
 					}
 				}
 				textblock.setRowSelectionInterval(0, 0);
 			}
 			textblock.validate();
 		}
+		@SuppressWarnings("unchecked")
 		private void testeTbText(String text){
 			/// Hier den SytemVariablen-Check einbauen!!!!!!!!!!!!!!!!!!!!
 			Vector<String> tbvars = new Vector<String>();
 			int lang =  text.length();
 			int i = 0;
 			boolean start = false;
-			boolean stop = false;
+			//boolean stop = false;
 			String var = "";
 			String test = "";
 			for(i = 0;i < lang;i++){
@@ -393,9 +394,10 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 					}
 				}
 			}
-			vectb = (Vector)tbvars.clone();
+			vectb = (Vector<String>)tbvars.clone();
 			//////System.out.println("Variablen Vector = "+tbvars);
 		}
+		@SuppressWarnings("unused")
 		private void infoPosition(int diff,int i,int lang){
 			//////System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
 		}
@@ -551,7 +553,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			 */
 			private static final long serialVersionUID = 1L;
 
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				   if(columnIndex==0){
 					   return String.class;
 				   }else{
@@ -564,7 +566,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		    	return true;
 		    }
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+				String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
 				Object result = null;
 				result = theData;
 				return result;
@@ -580,8 +582,8 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 				}
 		        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 
-		        int firstIndex = e.getFirstIndex();
-		        int lastIndex = e.getLastIndex();
+		        //int firstIndex = e.getFirstIndex();
+		        //int lastIndex = e.getLastIndex();
 		        boolean isAdjusting = e.getValueIsAdjusting();
 		        if(isAdjusting){
 		        	return;
@@ -611,6 +613,11 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		}
 
 		class BausteinAction extends AbstractAction {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				suchenach.requestFocus();

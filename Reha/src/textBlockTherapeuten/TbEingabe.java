@@ -25,11 +25,11 @@ public class TbEingabe extends RehaSmartDialog implements RehaTPEventListener,Wi
 	 */
 	private static final long serialVersionUID = 1L;
 	private ThTextBlock thb = null;
-	private JRtaTextField rueck = null;
+	public JRtaTextField rueck = null;
 	Vector<String> tbvec = null;
 	int tbaktid;
 
-	public TbEingabe(JXFrame owner, String name,ThTextBlock thb,Vector vtbs,int akttbid,JRtaTextField rueck) {
+	public TbEingabe(JXFrame owner, String name,ThTextBlock thb,Vector<String> vtbs,int akttbid,JRtaTextField rueck) {
 		super(owner, name);
 		this.thb = thb;
 		this.tbvec = vtbs;
