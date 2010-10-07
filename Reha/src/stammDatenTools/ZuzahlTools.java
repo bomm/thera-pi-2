@@ -19,7 +19,7 @@ import terminKalender.DatFunk;
 
 public class ZuzahlTools {
 	public static boolean zzStatusEdit(String pat_int,String geboren, String rez_nr,String frei, String kassid){
-		String preisgrp = "";
+		//String preisgrp = "";
 		String zzid = "";
 		String rez_geb = "";
 		int zzregel = -1; 
@@ -28,11 +28,11 @@ public class ZuzahlTools {
 			return false;
 		}
 		if(rez_nr.equals("")){
-			Vector vec = SqlInfo.holeFelder("select rez_nr,kid,rez_geb,befr,id from verordn where pat_intern='"+pat_int+"'");
+			Vector<Vector<String>> vec = SqlInfo.holeFelder("select rez_nr,kid,rez_geb,befr,id from verordn where pat_intern='"+pat_int+"'");
 			for(int i = 0;i < vec.size(); i++){
-				zzregel = getZuzahlRegel((String)((Vector)vec.get(i)).get(1));
-				zzid = (String)((Vector)vec.get(i)).get(4);
-				rez_geb = (String)((Vector)vec.get(i)).get(2);
+				zzregel = getZuzahlRegel((String)((Vector<?>)vec.get(i)).get(1));
+				zzid = (String)((Vector<?>)vec.get(i)).get(4);
+				rez_geb = (String)((Vector<?>)vec.get(i)).get(2);
 				//System.out.println("Rezeptnummer = "+((Vector)vec.get(i)).get(0)+" Zuzahlregel = "+zzregel);
 				if(zzregel > 0 && rez_geb.equals("0.00")){
 					if(frei.equals("F")){
@@ -53,6 +53,7 @@ public class ZuzahlTools {
 		return false;
 	}
 	/**********************************************************/
+	@SuppressWarnings("unchecked")
 	public static Object[] unter18TestDirekt(Vector<String> termine,boolean azTest,boolean jahrTest){
 						// Rez geb f�llig   //Anzahl Term   //Anzahl frei  //Anzahl unfrei  //Zuzahlstatus
 		Object[] ret = {new Boolean(false),Integer.valueOf(-1),Integer.valueOf(-1),Integer.valueOf(-1),Integer.valueOf(-1)};
@@ -71,7 +72,7 @@ public class ZuzahlTools {
 		Collections.sort(tage,comparator);
 		String rez_nr = (String) Reha.thisClass.patpanel.vecaktrez.get(1);
 		String unter18 = (String) Reha.thisClass.patpanel.vecaktrez.get(60);
-		String pat_int = (String) Reha.thisClass.patpanel.vecaktrez.get(0);
+		//String pat_int = (String) Reha.thisClass.patpanel.vecaktrez.get(0);
 		String aktzzstatus = (String) Reha.thisClass.patpanel.vecaktrez.get(39);
 		String aktzzregel = (String) Reha.thisClass.patpanel.vecaktrez.get(63);
 		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
@@ -138,10 +139,11 @@ public class ZuzahlTools {
 	/********************************************************/
 
 	/********************************************************/	
+	@SuppressWarnings("unchecked")
 	public static Object[] unter18TestAllesSuchen(String rez_nr,boolean azTest,boolean jahrTest){
 
 		Object[] ret = {new Boolean(false),Integer.valueOf(-1),Integer.valueOf(-1),Integer.valueOf(-1)};
-		Vector vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select termine,id,pat_intern,jahrfrei,unter18,zzregel,zzstatus from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		Vector<String> tage  = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector<String>)vec.get(0)).get(0));
 		if(tage.size()==0){
 			return ret;
@@ -196,6 +198,7 @@ public class ZuzahlTools {
 		return ret;
 	}
 	/********************************************************/
+	@SuppressWarnings("unchecked")
 	public static void jahresWechselTest(String rez_nr,boolean azTest,boolean jahrTest){
 		Vector vec = SqlInfo.holeFelder("select termine,id from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		vec = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector)vec.get(0)).get(0));
@@ -209,9 +212,9 @@ public class ZuzahlTools {
 			JOptionPane.showMessageDialog(null,"Keine gültige Kasse angegeben");
 			return -1;
 		}
-		Vector vec = SqlInfo.holeFelder("select preisgruppe from kass_adr where id='"+kassid.trim()+"' LIMIT 1");
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select preisgruppe from kass_adr where id='"+kassid.trim()+"' LIMIT 1");
 		//System.out.println("Die Preisgruppe von KassenID ="+kassid.trim()+" = "+((String)((Vector)vec.get(0)).get(0)) );
-		preisgrp = ((String)((Vector)vec.get(0)).get(0));
+		preisgrp = ((String)((Vector<String>)vec.get(0)).get(0));
 		
 		//zzregel = SystemConfig.vZuzahlRegeln.get(Integer.valueOf(preisgrp)-1);
 		zzregel = SystemPreislisten.hmZuzahlRegeln.get("Physio").get(Integer.valueOf(preisgrp)-1);
@@ -220,7 +223,7 @@ public class ZuzahlTools {
 	
 	public static int[] terminNachAchtzehn(Vector<String>tage,String geburtstag){
 		String stichtag = "";
-		int ret = -1;
+		//int ret = -1;
 		for(int i = 0;i < tage.size();i++){
 			stichtag = ((String)tage.get(i)).substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 			if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){

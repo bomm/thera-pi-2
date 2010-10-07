@@ -3,18 +3,15 @@ package stammDatenTools;
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JComponent;
 
-
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
-import terminKalender.DatFunk;
 
 public class ArztTools {
 	public static void constructArztHMap(String id){
@@ -30,7 +27,7 @@ public class ArztTools {
 			return;
 		}
 		List<String> nichtlesen = Arrays.asList(new String[] {""});
-		Vector vec = SqlInfo.holeSatz("arzt", " * ", "id='"+xid+"'", new ArrayList());
+		Vector<String> vec = SqlInfo.holeSatz("arzt", " * ", "id='"+xid+"'", nichtlesen);
 
 		/*
 		 * 	List<String> lAdrADaten = Arrays.asList(new String[]{"<Aadr1>","<Aadr2>","<Aadr3>","<Aadr4>","<Aadr5>",
@@ -47,8 +44,8 @@ public class ArztTools {
 		String strasse = (String) vec.get(4);
 		String plzort = (String) vec.get(5)+" "+(String) vec.get(6);
 		String zeile1 = "";
-		String zeile2 = "";
-		String zeile3 = "";
+		//String zeile2 = "";
+		//String zeile3 = "";
 		String branrede = "";
 		
 		SystemConfig.hmAdrADaten.put("<Aklinik>", ((String) vec.get(12)).trim() );

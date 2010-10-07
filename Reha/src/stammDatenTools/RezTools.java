@@ -16,7 +16,6 @@ import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-import terminKalender.ParameterLaden;
 
 public class RezTools {
 	public static boolean mitJahresWechsel(String datum){
@@ -31,14 +30,15 @@ public class RezTools {
 		return ret;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Vector<String> holeEinzelTermineAusRezept(String xreznr,String termine){
 		Vector<String> xvec = null;
-		Vector retvec = new Vector();
+		Vector<String> retvec = new Vector<String>();
 		String terms = null;
 		if(termine.equals("")){
 			xvec = SqlInfo.holeSatz("verordn", "termine,pat_intern", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
 			if(xvec.size()==0){
-				return (Vector)retvec.clone();
+				return (Vector<String>)retvec.clone();
 			}else{
 				terms = (String) xvec.get(0);	
 			}
@@ -56,7 +56,7 @@ public class RezTools {
 
 		for(int i = 0;i<lines;i++){
 			String[] terdat = tlines[i].split("@");
-			int ieinzel = terdat.length;
+			//int ieinzel = terdat.length;
 			retvec.add((terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
 		}
 		Comparator comparator = new Comparator<String>() {
@@ -71,6 +71,7 @@ public class RezTools {
 	}
 	
 /********************************************************************************/
+	@SuppressWarnings("unchecked")
 	public static Vector<Vector<String>> macheTerminVector(String termine){
 		String[] tlines = termine.split("\n");
 		int lines = tlines.length;
@@ -95,7 +96,7 @@ public class RezTools {
 				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
 			////System.out.println("Termivector = "+tvec);
-			tagevec.add((Vector)tvec.clone());
+			tagevec.add((Vector<String>)tvec.clone());
 		}
 		if(tagevec.size() > 0 ){
 			Comparator<Vector<String>> comparator = new Comparator<Vector<String>>() {
@@ -324,7 +325,7 @@ public class RezTools {
 		int iret = 0;
 		Vector<String> vAktTermine = null;
 		boolean bTermine = false;
-		int iTermine = -1;
+		//int iTermine = -1;
 		boolean bMitJahresWechsel = false;
 		ZuzahlModell zm = new ZuzahlModell();
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
@@ -337,7 +338,7 @@ public class RezTools {
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
-			iTermine = vAktTermine.size();
+			//iTermine = vAktTermine.size();
 			if( ((String)vAktTermine.get(0)).substring(6).equals(SystemConfig.vorJahr)){
 				bMitJahresWechsel = true;
 			}
@@ -533,7 +534,7 @@ public class RezTools {
 		xrezgeb = xrezgeb.add(BigDecimal.valueOf(new Double(10.00)));
 		rezgeb = 10.00;
 		////System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
-		String runden;
+//		String runden;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
@@ -589,13 +590,13 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", dfx.format(drezwert) );
 		DecimalFormat df = new DecimalFormat( "0.00" );
-		String s = df.format( rezgeb);
+		df.format( rezgeb);
 		////System.out.println("----------------------------------------------------");
 		////System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		////System.out.println(SystemConfig.hmAdrRDaten);
 		/***********************/
 		
-		// Hier mu� noch Hausbesuchshandling eingebaut werden
+		// Hier muß noch Hausbesuchshandling eingebaut werden
 		// Ebenso das Wegegeldhandling
 	}
 	
@@ -667,7 +668,7 @@ public class RezTools {
 		
 
 		////System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
-		String runden;
+		//String runden;
 		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
@@ -724,7 +725,7 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", dfx.format(rezgeb) );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", dfx.format(drezwert) );
 		DecimalFormat df = new DecimalFormat( "0.00" );
-		String s = df.format( rezgeb);
+		df.format( rezgeb);
 		//System.out.println("----------------------------------------------------");
 		//System.out.println("Endgültige und geparste Rezeptgebühr = "+s+" EUR");
 		////System.out.println(SystemConfig.hmAdrRDaten);
@@ -736,6 +737,7 @@ public class RezTools {
 		//System.out.println("*****Über Ende Frei*********");
 		constructAnfangFreiRezHMap(zm,anfang);
 	}	
+	@SuppressWarnings("unchecked")
 	public static Vector<Vector<String>>splitteTermine(String terms){
 		Vector<Vector<String>> termine = new Vector<Vector<String>>();
 		String[] tlines = terms.split("\n");
@@ -751,7 +753,6 @@ public class RezTools {
 			for(int y = 0; y < ieinzel;y++){
 					tvec.add((terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
 			}
-			////System.out.println("Termivector = "+tvec);
 			termine.add((Vector<String>)tvec.clone());
 		}
 		return (Vector<Vector<String>>) termine.clone();
@@ -794,11 +795,11 @@ public class RezTools {
 	public static String PreisUeberPosition(String position,int preisgruppe,String disziplin,boolean neu ){
 		//JOptionPane.showMessageDialog(null, "Aufruf der Funktion PreisUeberPosition");
 		String ret = null;
-		Vector preisvec = null;
+		Vector<?> preisvec = null;
 		preisvec = SystemPreislisten.hmPreise.get(putRezNrGetDisziplin(disziplin)).get(preisgruppe-1);
 		for(int i = 0; i < preisvec.size();i++){
-			if(  ((String)((Vector)preisvec.get(i)).get(2)).equals(position) ){
-				ret =  ((String)((Vector)preisvec.get(i)).get(3+(neu ? 0 : 1)));
+			if(  ((String)((Vector<?>)preisvec.get(i)).get(2)).equals(position) ){
+				ret =  ((String)((Vector<?>)preisvec.get(i)).get(3+(neu ? 0 : 1)));
 //				//System.out.println("Der Preis von "+position+" = "+ret);
 				return ret;
 			}
@@ -831,7 +832,7 @@ public class RezTools {
 		String pos = "";
 		Double preis =0.00;
 		Double wgkm = 0.00;
-		Double wgpauschal = 0.00;
+		//Double wgpauschal = 0.00;
 		// erst testen ob HB-Einzeln oder HB-Mehrere
 		int anzahl = Integer.parseInt(vec.get(64));
 		int preisgruppe = Integer.parseInt(vec.get(41));
@@ -970,7 +971,7 @@ public class RezTools {
 		//System.out.println("Der Rezeptwert zu Beginn = "+retobj[0]);
 		if(zm.hausbesuch){ //Hausbesuch
 			//System.out.println("Hausbesuch ist angesagt");
-			String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
+			//String[] praefix = {"1","2","5","3","MA","KG","ER","LO"};
 			String rezid = SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2);
 			/*
 			String zz =  SystemConfig.vHBRegeln.get(zm.preisgruppe-1).get(4);
@@ -986,7 +987,7 @@ public class RezTools {
 			String hbmit = SystemPreislisten.hmHBRegeln.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1).get(1);
 
 			//für jede Disziplin eine anderes praefix
-			String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
+			//String ersatz = praefix[Arrays.asList(praefix).indexOf(rezid)-4];
 			/*
 			kmgeld = kmgeld.replaceAll("x",ersatz); 
 			kmpausch = kmpausch.replaceAll("x",ersatz); 
