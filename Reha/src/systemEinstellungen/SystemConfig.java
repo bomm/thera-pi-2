@@ -59,8 +59,8 @@ public class SystemConfig {
 	public static boolean KalenderBarcode = false;
 	public static boolean KalenderLangesMenue = false;
 	public static boolean KalenderStartWochenAnsicht = false;
-	public static String KalenderStartWADefaultUser;
-	public static String KalenderStartNADefaultSet;
+	public static String KalenderStartWADefaultUser = "./.";
+	public static String KalenderStartNADefaultSet = "./.";
 	public static String[]  KalenderUmfang =  {null,null};
 	public static long[]  KalenderMilli =  {0,0};
 	public static int UpdateIntervall;
