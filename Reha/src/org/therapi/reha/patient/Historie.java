@@ -4,9 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -23,9 +21,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,7 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -58,7 +52,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
@@ -66,24 +59,24 @@ import org.jdesktop.swingx.renderer.StringValues;
 
 import patientenFenster.HistorDaten;
 import patientenFenster.KeinRezept;
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
-import dialoge.ToolsDialog;
-
 import rechteTools.Rechte;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
 import systemTools.JCompTools;
-import terminKalender.DatFunk;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.ToolsDialog;
 
 public class Historie extends JXPanel implements ActionListener, TableModelListener, PropertyChangeListener{
-	//public static Historie historie = null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7023226994175632749L;
 	JXPanel leerPanel = null;
-	//JXPanel vollPanel = null;
 	public HistorPanel vollPanel = null;
 	JXPanel wechselPanel = null;
 	public JLabel anzahlTermine= null;
@@ -105,7 +98,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 	public Historie(){
 		super();
-		//historie = this;
 		setOpaque(false);
 		setLayout(new BorderLayout());
 		/********zuerst das Leere Panel basteln**************/
@@ -141,47 +133,42 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-				// TODO Auto-generated method stub
-				//vollPanel = new JXPanel();
-				//HistorPanel vollPanel = new HistorPanel();
-				vollPanel = new HistorPanel();
-				FormLayout vplay = new FormLayout("fill:0:grow(0.75),5dlu,fill:0:grow(0.25),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
-//				FormLayout vplay = new FormLayout("fill:0:grow(0.60),5dlu,fill:0:grow(0.40),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
-				CellConstraints vpcc = new CellConstraints();
-				vollPanel.setLayout(vplay);
-				vollPanel.setOpaque(false);
-				vollPanel.setBorder(null);
-				
-				Font font = new Font("Tahome",Font.PLAIN,11);
-				anzahlHistorie = new JLabel("Anzahl Rezepte in Historie: 0");
-				anzahlHistorie.setFont(font);
-				vollPanel.add(anzahlHistorie,vpcc.xy(1,1));
-				
-				vollPanel.add(getTabelle(),vpcc.xywh(1,2,1,1));
+					vollPanel = new HistorPanel();
+					FormLayout vplay = new FormLayout("fill:0:grow(0.75),5dlu,fill:0:grow(0.25),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+					CellConstraints vpcc = new CellConstraints();
+					vollPanel.setLayout(vplay);
+					vollPanel.setOpaque(false);
+					vollPanel.setBorder(null);
+					
+					Font font = new Font("Tahome",Font.PLAIN,11);
+					anzahlHistorie = new JLabel("Anzahl Rezepte in Historie: 0");
+					anzahlHistorie.setFont(font);
+					vollPanel.add(anzahlHistorie,vpcc.xy(1,1));
+					
+					vollPanel.add(getTabelle(),vpcc.xywh(1,2,1,1));
 
-				anzahlTermine = new JLabel("Anzahl Termine: 0");
-				anzahlTermine.setFont(font);
-				anzahlTermine.setOpaque(false);
-				vollPanel.add(anzahlTermine,vpcc.xywh(3,1,1,1));
-				
-				JXPanel dummy = new JXPanel();
-				dummy.setOpaque(false);
-				//dummy.setBackground(Color.BLACK);
-				FormLayout dumlay = new FormLayout("fill:0:grow(0.25),p,fill:0:grow(0.25),p,fill:0:grow(0.25),p,fill:0:grow(0.25)",
-													"fill:0:grow(1.00),2dlu,p,2dlu");
-				CellConstraints dumcc = new CellConstraints();
-				dummy.setLayout(dumlay);
-				vollPanel.add(dummy,vpcc.xywh(3,2,1,3));
-				
-				
-				dummy.add(getTermine(),dumcc.xyw(1, 1, 7));
-				dummy.add(getTerminToolbar(),dumcc.xyw(1, 3, 7));
+					anzahlTermine = new JLabel("Anzahl Termine: 0");
+					anzahlTermine.setFont(font);
+					anzahlTermine.setOpaque(false);
+					vollPanel.add(anzahlTermine,vpcc.xywh(3,1,1,1));
+					
+					JXPanel dummy = new JXPanel();
+					dummy.setOpaque(false);
+					FormLayout dumlay = new FormLayout("fill:0:grow(0.25),p,fill:0:grow(0.25),p,fill:0:grow(0.25),p,fill:0:grow(0.25)",
+														"fill:0:grow(1.00),2dlu,p,2dlu");
+					CellConstraints dumcc = new CellConstraints();
+					dummy.setLayout(dumlay);
+					vollPanel.add(dummy,vpcc.xywh(3,2,1,3));
+					
+					
+					dummy.add(getTermine(),dumcc.xyw(1, 1, 7));
+					dummy.add(getTerminToolbar(),dumcc.xyw(1, 3, 7));
 
-				jpan1 = new HistorDaten();
-				vollPanel.add(jpan1,vpcc.xyw(1,4,1));
-				//indiSchluessel();
+					jpan1 = new HistorDaten();
+					vollPanel.add(jpan1,vpcc.xyw(1,4,1));
 				}catch(Exception ex){
 					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null,"Fehler im Modul Historie");
 				}
 			
 				return null;
@@ -210,12 +197,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			xac1 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.075f); 
 			xac2 = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1.0f);
 			*/			
-			
 		}
 
-		//@Override
 		public void paintComponent( Graphics g ) { 
 			super.paintComponent( g );
+			@SuppressWarnings("unused")
 			Graphics2D g2d = (Graphics2D)g;
 			
 			if(hgicon != null){
@@ -235,7 +221,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		
 		JButton jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("neu"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-add.png"));
 		jbut.setToolTipText("Neuen Termin eintragen");
 		jbut.setActionCommand("terminplus");
 		jbut.addActionListener(this);
@@ -244,7 +229,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("delete"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/list-remove.png"));
 		jbut.setToolTipText("Termin löschen");
 		jbut.setActionCommand("terminminus");
 		jbut.addActionListener(this);
@@ -254,7 +238,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		jtb.addSeparator(new Dimension(40,0));
 		jbut = new JButton();
 		jbut.setIcon(SystemConfig.hmSysIcons.get("sort"));
-		//jbut.setIcon(new ImageIcon(Reha.proghome+"icons/alphab_sort_22.png"));
 		jbut.setActionCommand("terminsortieren");
 		jbut.addActionListener(this);		
 		jbut.setToolTipText("Termine nach Datum sortieren");
@@ -275,17 +258,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabaktterm.addPropertyChangeListener(this);
 		tabaktterm.setEditable(false);
 		tabaktterm.setSortable(false);
-		//SortOrder setSort = SortOrder.ASCENDING;
-		//tabaktterm.setSortOrder(4,(SortOrder) setSort);
 		tabaktterm.setSelectionMode(0);
 		tabaktterm.setHorizontalScrollEnabled(true);
 		tbl = new DateTableCellEditor();
-		//tbl = new MyEditor(new JTextField());
 		tabaktterm.getColumnModel().getColumn(0).setCellEditor(tbl);
-		//tabaktterm.getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
-		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
-		//tabaktterm.getColumn(0).setCellEditor(new MyDateEditor(new SimpleDateFormat("dd.mm.yyyyy")));
-
 		tabaktterm.getColumn(0).setMinWidth(60);
 		tabaktterm.getColumn(1).setMinWidth(60);
 		tabaktterm.getColumn(2).setMinWidth(40);
@@ -295,23 +271,15 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabaktterm.setOpaque(true);
 		tabaktterm.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				////System.out.println("keypressed in Editor");
 				if(arg0.getKeyCode()==10){
-					//arg0.consume();
-					//tbl.stopCellEditing();
 				}
 				if(arg0.getKeyCode()==27){
-					////System.out.println("cancel in tabelle");
-					//tbl.cancelCellEditing();
 				}
 			}
 			
 		});
 		tabaktterm.validate();
 		tabaktterm.setName("AktTerm");
-		//tabaktterm.setPreferredSize(new Dimension(300,300));
-		//tabaktterm.addPropertyChangeListener(this);
 		JScrollPane termscr = JCompTools.getTransparentScrollPane(tabaktterm);
 		termscr.getVerticalScrollBar().setUnitIncrement(15);
 		return termscr;
@@ -335,7 +303,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabhistorie.getColumn(1).setMaxWidth(45);
 		tabhistorie.getColumn(2).setMaxWidth(75);
 		tabhistorie.getColumn(3).setMaxWidth(75);
-		//tabaktrez.getColumn(4).setMaxWidth(70);
 		tabhistorie.getColumn(5).setMinWidth(0);
 		tabhistorie.getColumn(5).setMaxWidth(0);		
 		tabhistorie.getColumn(6).setMinWidth(0);
@@ -343,11 +310,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabhistorie.validate();
 		tabhistorie.setName("AktRez");
 		tabhistorie.setSelectionMode(0);
-		//tabaktrez.addPropertyChangeListener(this);
 		tabhistorie.getSelectionModel().addListSelectionListener( new HistorRezepteListSelectionHandler());
 		tabhistorie.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				long zeit = System.currentTimeMillis();
 				if(arg0.getClickCount()==2){
 					while(inRezeptDaten){
@@ -358,11 +323,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 							}
 							
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
-					//neuanlageRezept(false,"");
 				}
 			}
 		});
@@ -370,7 +333,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode()==10){
 					arg0.consume();
-					//neuanlageRezept(false,"");
 				}
 				if(arg0.getKeyCode()==27){
 					arg0.consume();
@@ -378,8 +340,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			}
 
 		});
-		//tabaktrez.getSelectionModel().addListSelectionListener(this);
-		//dtblm.addTableModelListener(this);
 		dummypan.setPreferredSize(new Dimension(0,100));
 		JScrollPane aktrezscr = JCompTools.getTransparentScrollPane((Component)tabhistorie); 
 		aktrezscr.getVerticalScrollBar().setUnitIncrement(15);
@@ -441,31 +401,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		histbut[1].setActionCommand("werkzeuge");
 		histbut[1].addActionListener(this);		
 		jtb.add(histbut[1]);
-		
-		
-
-		/*
-		histbut[1] = new JButton();
-		histbut[1].setIcon(SystemConfig.hmSysIcons.get("info2"));
-		histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
-		histbut[1].setActionCommand("historinfo");
-		histbut[1].addActionListener(this);		
-		jtb.add(histbut[1]);
-
-		histbut[2] = new JButton();
-		histbut[2].setIcon(SystemConfig.hmSysIcons.get("euro"));
-		histbut[2].setToolTipText("Gesamtumsatz des Patienten (aller aktuellen und in der Historie befindlichen Rezepte)");
-		histbut[2].setActionCommand("historumsatz");
-		histbut[2].addActionListener(this);		
-		jtb.add(histbut[2]);
-		
-		histbut[3] = new JButton();
-		histbut[3].setIcon(SystemConfig.hmSysIcons.get("einzeltage"));
-		histbut[3].setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
-		histbut[3].setActionCommand("historprinttage");
-		histbut[3].addActionListener(this);		
-		jtb.add(histbut[3]);
-		*/
 		for(int i = 0; i < 4;i++){
 			try{
 				histbut[i].setEnabled(false);
@@ -473,15 +408,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				
 			}
 		}
-		
-		
 		return jtb;
 	}
-	
-	
-	
 
-	public void macheTabelle(Vector vec){
+	public void macheTabelle(Vector<String> vec){
 		if(vec.size()> 0){
 			dtblm.addRow(vec);	
 		}else{
@@ -490,8 +420,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}
 		
 	}
-	private void holeEinzelTermine(int row,Vector vvec){
-		Vector xvec = null;
+	private void holeEinzelTermine(int row,Vector<?> vvec){
+		Vector<?> xvec = null;
 		if(vvec == null){
 			xvec = SqlInfo.holeSatz("lza", "termine", "id='"+tabhistorie.getValueAt(row,6)+"'", Arrays.asList(new String[] {}));			
 		}else{
@@ -499,8 +429,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}
 
 		String terms = (String) xvec.get(0);
-		////System.out.println(terms+" / id der rezeptes = "+tabaktrez.getValueAt(row,4));
-		////System.out.println("Inhalt von Termine = *********\n"+terms+"**********");
 		if(terms==null){
 			dtermm.setRowCount(0);
 			tabaktterm.validate();
@@ -515,25 +443,20 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		}
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
-		////System.out.println("Anzahl Termine = "+lines);
-		Vector tvec = new Vector();
+		Vector<String> tvec = new Vector<String>();
 		dtermm.setRowCount(0);
 		for(int i = 0;i<lines;i++){
 			String[] terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
-			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
-					
 					tvec.add((terdat[y].trim().equals("") ? "  .  .    " : terdat[y]));
 				}else{
 					tvec.add(terdat[y]);					
 				}
-				////System.out.println("Feld "+y+" = "+terdat[y]);	
 			}
-			////System.out.println("Termivector = "+tvec);
-			dtermm.addRow((Vector)tvec.clone());
+			dtermm.addRow((Vector<?>)tvec.clone());
 		}
 		anzahlTermine.setText("Anzahl Termine: "+lines);
 		
@@ -574,45 +497,35 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		
 	}
 	public double doRechneHistorie(String db){
-		//String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","sp�t.Beginn","Pat-Nr.",""};
 		int rows = tabhistorie.getRowCount();
 		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
 		Double gesamtumsatz = new Double(0.00); 
-		//DecimalFormat dfx = new DecimalFormat( "0.00" );
 		if(db.equals("lza")){
 			if(rows <= 0){
-				//JOptionPane.showMessageDialog(null, "F�r diesen Patient wurde noch keine Verordnung abgerechnet!");
 				return new Double(0.00);
 			}
 			for(int i = 0; i < rows;i++){
 				String suchrez = (String)tabhistorie.getValueAt(i,6);
-				Vector vec = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
+				Vector<String> vec = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
 				if(vec.size() > 0){
 					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
 					for(int anz = 0;anz <4;anz++){
 						preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
-//						//System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
-//						//System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
 						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
 					}
 				}
 			}
 		}else{
 			String cmd = "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'";
-			//System.out.println(cmd);
-			Vector vec = SqlInfo.holeSaetze(db, "id,rez_nr",cmd , Arrays.asList(new String[] {}));
+			Vector<Vector<String>> vec = SqlInfo.holeSaetze(db, "id,rez_nr",cmd , Arrays.asList(new String[] {}));
 			rows = vec.size();
-			//System.out.println("Gefundene aktuelle Rezepte: "+rows);
 			for(int i = 0; i < rows;i++){
-				//System.out.println(((Vector)vec.get(i)).get(1));
-				String suchrez = (String)((Vector)vec.get(i)).get(0);//(String)tabhistorie.getValueAt(i,6);
-				Vector vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
+				String suchrez = (String)((Vector<?>)vec.get(i)).get(0);//(String)tabhistorie.getValueAt(i,6);
+				Vector<String> vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
 				if(vec2.size() > 0){
 					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
 					for(int anz = 0;anz <4;anz++){
 						preispos = BigDecimal.valueOf(new Double((String)vec2.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec2.get(anz)))) ;
-//						//System.out.println("Einzelpreis von "+anz+" von "+suchrez+" = "+(String)vec.get(anz+4)+" anzahl = "+(String)vec.get(anz));
-//						//System.out.println("PosUmsatz von "+suchrez+" = "+dfx.format(preispos.doubleValue()));
 						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
 					}
 				}
@@ -620,11 +533,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			
 		}
 		return gesamtumsatz;
-		/*
-		String ums = "Gesamtumsatz von Patient "+(String) Reha.thisClass.patpanel.patDaten.get(2)+", "+
-		(String) Reha.thisClass.patpanel.patDaten.get(3)+" = "+dfx.format(gesamtumsatz)+" EUR **********";
-		JOptionPane.showMessageDialog(null,ums);
-		*/
 	}
 	/******************
 	 * 
@@ -632,7 +540,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
 		String cmd = arg0.getActionCommand();
 		if(cmd.equals("arztbericht")){
 			if(!Rechte.hatRecht(Rechte.Historie_thbericht, true)){
@@ -669,33 +576,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			final int xberid = berid;
 			final int xcurrow = currow;
 			final String xxverfasser = xverfasser;
-			/*
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-				*/
-					//System.out.println("Vor arzbericht-aufruf");
-					ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,1,xxverfasser,"",xcurrow);
-					ab.setModal(true);
-					ab.setLocationRelativeTo(null);
-					//ab.toFront();
-					//System.out.println("vor Arzbericht set Visible");
-					ab.setVisible(true);
-					ab = null;
-					//System.out.println("Arzbericht=null");
-				/*	
-					return null;
-				}
-				
-			}.execute();
-			*/
-			/*
-			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",neuber,xreznr,berid,1,"","",currow);
+			ArztBericht ab = new ArztBericht(null,"arztberichterstellen",xneuber,xxreznr,xberid,1,xxverfasser,"",xcurrow);
 			ab.setModal(true);
 			ab.setLocationRelativeTo(null);
 			ab.setVisible(true);
 			ab = null;
-			*/
 			return;
 		}else if(cmd.equals("historinfo")){
 			return;			
@@ -703,7 +588,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
-					// TODO Auto-generated method stub
 					doRechneAlles();
 					return null;
 				}
@@ -738,20 +622,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					String reznr = (String)tabhistorie.getValueAt(xrow,0);
 					String id = (String)tabhistorie.getValueAt(xrow,6);
 					jpan1.setRezeptDaten(reznr,id);
-					//System.out.println("Aus Bericht....."+reznr+"....."+id);
 				}
 			});	
 
 		}
 	}	
 	private String macheHtmlTitel(int anz,String titel){
-		
 		String ret = titel+" - "+Integer.toString(anz);
-		
-		/*
-		String ret = "<html>"+titel+
-		(anz > 0 ? " - <font color='#ff0000'>"+Integer.valueOf(anz).toString()+"<font></html>" : " - <font color='#000000'>"+Integer.valueOf(anz).toString()+"</font>");
-		*/
 		return ret;
 	}
 	/*************************************************/
@@ -759,86 +636,68 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;
 		final String xrez_nr = rez_nr;
-/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-		*/
-				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector<Vector<String>> vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
-						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
-						"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
+				"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
+				"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
 
-				int anz = vec.size();
+		int anz = vec.size();
 
-				for(int i = 0; i < anz;i++){
-					if(i==0){
-						dtblm.setRowCount(0);						
-					}
-
-					int zzbild = 0;
-					if( ((Vector)vec.get(i)).get(1) == null){
-						zzbild = 0;
-					}else if(!((Vector)vec.get(i)).get(1).equals("")){
-						zzbild = Integer.valueOf((String) ((Vector)vec.get(i)).get(1) );
-					}
-					//((Vector)vec.get(i)).set(3, Reha.thisClass.patpanel.imgzuzahl[zzbild]);
-					
-					////System.out.println("Inhalt von zzstatus ="+zzbild);
-					dtblm.addRow((Vector)vec.get(i));
-					
-					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
-					if(i==0){
-						final int ix = i;
-	                    new Thread(){
-	                    	public void run(){
-	                    		holeEinzelTermine(ix,null);
-	                    	}
-	                    }.start();
-					}
-				}
-				Reha.thisClass.patpanel.getTab().setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
-				if(anz > 0){
-					setzeHistoriePanelAufNull(false);
-					int anzeigen = -1;
-					if(xrez_nr.length() > 0){
-						int row = 0;
-						rezneugefunden = true;
-						for(int ii = 0; ii < anz;ii++){
-							if(tabhistorie.getValueAt(ii,0).equals(xrez_nr)){
-								row = ii;
-								break;
-							}
-							
-						}
-						tabhistorie.setRowSelectionInterval(row, row);
-						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
-						tabhistorie.scrollRowToVisible(row);
-						holeEinzelTermine(row,null);
-						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");
-					}else{
-						rezneugefunden = true;
-						tabhistorie.setRowSelectionInterval(0, 0);
-						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
-						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
-					}
-					anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
-					wechselPanel.revalidate();
-					wechselPanel.repaint();					
-				}else{
-					setzeHistoriePanelAufNull(true);
-					anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
-					wechselPanel.revalidate();
-					wechselPanel.repaint();
-					dtblm.setRowCount(0);
-					dtermm.setRowCount(0);
-				}
-				/*					
-				return null;
+		for(int i = 0; i < anz;i++){
+			if(i==0){
+				dtblm.setRowCount(0);						
 			}
-		
-		}.execute();
-*/		
+
+			int zzbild = 0;
+			if( ((Vector)vec.get(i)).get(1) == null){
+				zzbild = 0;
+			}else if(!((Vector)vec.get(i)).get(1).equals("")){
+				zzbild = Integer.valueOf((String) ((Vector)vec.get(i)).get(1) );
+			}
+			dtblm.addRow((Vector)vec.get(i));
+			
+			dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
+			if(i==0){
+				final int ix = i;
+                new Thread(){
+                	public void run(){
+                		holeEinzelTermine(ix,null);
+                	}
+                }.start();
+			}
+		}
+		Reha.thisClass.patpanel.getTab().setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
+		if(anz > 0){
+			setzeHistoriePanelAufNull(false);
+			if(xrez_nr.length() > 0){
+				int row = 0;
+				rezneugefunden = true;
+				for(int ii = 0; ii < anz;ii++){
+					if(tabhistorie.getValueAt(ii,0).equals(xrez_nr)){
+						row = ii;
+						break;
+					}
+					
+				}
+				tabhistorie.setRowSelectionInterval(row, row);
+				jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
+				tabhistorie.scrollRowToVisible(row);
+				holeEinzelTermine(row,null);
+			}else{
+				rezneugefunden = true;
+				tabhistorie.setRowSelectionInterval(0, 0);
+				jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
+			}
+			anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
+			wechselPanel.revalidate();
+			wechselPanel.repaint();					
+		}else{
+			setzeHistoriePanelAufNull(true);
+			anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
+			wechselPanel.revalidate();
+			wechselPanel.repaint();
+			dtblm.setRowCount(0);
+			dtermm.setRowCount(0);
+		}
 	}
 	private void doUebertrag(){
 		int row = tabhistorie.getSelectedRow();
@@ -879,14 +738,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				return;
 			}
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-	        
-	        //int firstIndex = e.getFirstIndex();
-	        //int lastIndex = e.getLastIndex();
 	        boolean isAdjusting = e.getValueIsAdjusting();
 	        if(isAdjusting){
 	        	return;
 	        }
-			//StringBuffer output = new StringBuffer();
 	        if (lsm.isSelectionEmpty()) {
 
 	        } else {
@@ -901,16 +756,12 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 							@Override
 							protected Void doInBackground() throws Exception {
 								try{
-									
-
-								// TODO Auto-generated method stub
-								inRezeptDaten = true;
-	                			setCursor(Reha.thisClass.wartenCursor);
-	                    		holeEinzelTermine(ix,null);
-	    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
-	    						////System.out.println("rezeptdaten akutalisieren in ListSelectionHandler");
-	    						setCursor(Reha.thisClass.normalCursor);
-	    						inRezeptDaten = false;
+									inRezeptDaten = true;
+		                			setCursor(Reha.thisClass.wartenCursor);
+		                    		holeEinzelTermine(ix,null);
+		    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
+		    						setCursor(Reha.thisClass.normalCursor);
+		    						inRezeptDaten = false;
 								}catch(Exception ex){
 									ex.printStackTrace();
 									setCursor(Reha.thisClass.normalCursor);
@@ -925,31 +776,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	                }
 	            }
 	        }
-	        ////System.out.println(output.toString());
 	    }
-	} 
-	/*
-	histbut[1] = new JButton();
-	histbut[1].setIcon(SystemConfig.hmSysIcons.get("info2"));
-	histbut[1].setToolTipText("Zusatzinfos zum Rezept in der Historie");
-	histbut[1].setActionCommand("historinfo");
-	histbut[1].addActionListener(this);		
-	jtb.add(histbut[1]);
-
-	histbut[2] = new JButton();
-	histbut[2].setIcon(SystemConfig.hmSysIcons.get("euro"));
-	histbut[2].setToolTipText("Gesamtumsatz des Patienten (aller aktuellen und in der Historie befindlichen Rezepte)");
-	histbut[2].setActionCommand("historumsatz");
-	histbut[2].addActionListener(this);		
-	jtb.add(histbut[2]);
+	}
 	
-	histbut[3] = new JButton();
-	histbut[3].setIcon(SystemConfig.hmSysIcons.get("einzeltage"));
-	histbut[3].setToolTipText("Behandlungstage des Historien-Rezeptes drucken");
-	histbut[3].setActionCommand("historprinttage");
-	histbut[3].addActionListener(this);		
-	jtb.add(histbut[3]);
-	*/
 	private void doTageDrucken(){
 		int akt = 		this.tabhistorie.getSelectedRow();
 		if(akt < 0){
@@ -1003,7 +832,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					return;
 				}
 				doTageDrucken();
-				//doUebertrag();
 				break;
 			case 2:
 				if(!Rechte.hatRecht(Rechte.Sonstiges_rezepttransfer, true)){
@@ -1023,7 +851,6 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				
 			}
 			tDlg = null;
-			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
 	}
 	
@@ -1038,19 +865,15 @@ class MyHistorieTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==1){
 			   return JLabel.class;}
 		   else{
 			   return String.class;
 		   }
-        //return (columnIndex == 0) ? Boolean.class : String.class;
     }
 
 	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
-
 	        if (col == 0){
 	        	return true;
 	        }else if(col == 3){
@@ -1072,26 +895,22 @@ class MyHistorTermTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return String.class;}
-		   /*else if(columnIndex==1){return JLabel.class;}*/
 		   else{return String.class;}
-        //return (columnIndex == 0) ? Boolean.class : String.class;
     }
 
-	    public boolean isCellEditable(int row, int col) {
-	        //Note that the data/cell address is constant,
-	        //no matter where the cell appears onscreen.
-	        if (col == 0){
-	        	return true;
-	        }else if(col == 1){
-	        	return true;
-	        }else if(col == 2){
-	        	return true;
-	        }else if(col == 11){
-	        	return true;
-	        } else{
-	          return false;
-	        }
-	      }
+    public boolean isCellEditable(int row, int col) {
+        if (col == 0){
+        	return true;
+        }else if(col == 1){
+        	return true;
+        }else if(col == 2){
+        	return true;
+        }else if(col == 11){
+        	return true;
+        } else{
+          return false;
+        }
+      }
 }

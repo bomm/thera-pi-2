@@ -1,28 +1,12 @@
 package pdfTools;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import systemEinstellungen.SystemConfig;
-
 import com.lowagie.text.Chunk;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfTable;
 
 public class PDFTools {
 
@@ -39,6 +23,7 @@ public class PDFTools {
 
 			
 			Chunk ch = new Chunk();
+			/*
 			HashMap map = ch.getAttributes();
 			if(map==null){
 				//System.out.println("map == null");
@@ -52,7 +37,7 @@ public class PDFTools {
 		    	 Map.Entry entry = (Map.Entry) it.next();
 		    	 //System.out.println("Key:"+entry.getKey()+" - Wert:"+entry.getValue());
 		    }
-
+			*/
 			PdfPCell cell1 = new PdfPCell();
 			cell1.setPadding(0.f);
 			cell1.setFixedHeight(y2-y1);

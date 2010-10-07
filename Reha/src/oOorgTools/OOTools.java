@@ -180,13 +180,13 @@ public class OOTools{
 			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
-		      Map.Entry<String,String> entry = (Map.Entry<String,String>) it.next();
-		      if(entry.getKey().toLowerCase().equals(placeholderDisplayText)){
-		    	  if(entry.getValue().trim().equals("")){
+		      Map.Entry<?,?> entry = (Map.Entry<?, ?>) it.next();
+		      if(entry.getKey().toString().toLowerCase().equals(placeholderDisplayText)){
+		    	  if(entry.getValue().toString().trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("\b");
 		    		  //OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
-			    	  placeholders[i].getTextRange().setText(entry.getValue());		    		  
+			    	  placeholders[i].getTextRange().setText(entry.getValue().toString());		    		  
 		    	  }
 		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
@@ -197,7 +197,7 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrKDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -213,7 +213,7 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrADaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  //placeholders[i].getTextRange().setText("\b");
@@ -230,14 +230,16 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrRDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  /*
 		    	  ////System.out.println("Gefunden ->"+((String)entry.getValue()));
 		    	  try{
 		    		  
 		    	  }catch(com.sun.star.uno.RuntimeException ex){
 		    		  //System.out.println("Fehler bei AdrRDaten");
 		    	  }
+		    	  */
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("");
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -351,7 +353,7 @@ public class OOTools{
 		}
 		String placeholderDisplayText = "";
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean loeschen = false;
+			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
@@ -362,10 +364,10 @@ public class OOTools{
 			}
 	
 		    /*****************/			
-			Set entries = SystemConfig.hmAdrPDaten.entrySet();
-		    Iterator it = entries.iterator();
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("\b");
@@ -373,7 +375,6 @@ public class OOTools{
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -382,7 +383,7 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrKDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -398,7 +399,7 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrADaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  //placeholders[i].getTextRange().setText("\b");
@@ -406,7 +407,6 @@ public class OOTools{
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -415,14 +415,16 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrRDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  /*
 		    	  ////System.out.println("Gefunden ->"+((String)entry.getValue()));
 		    	  try{
 		    		  
 		    	  }catch(com.sun.star.uno.RuntimeException ex){
 		    		  //System.out.println("Fehler bei AdrRDaten");
 		    	  }
+		    	  */
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("");
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -465,10 +467,10 @@ public class OOTools{
 		IText text = document.getTextService().getText();
 		String stext = text.getText();
 		int start = 0;
-		int end = 0;
+		//int end = 0;
 		String dummy;
 		int vars = 0;
-		int sysvar = -1;
+		//int sysvar = -1;
 		boolean noendfound = false;
 		while ((start = stext.indexOf("^")) >= 0){
 			noendfound = true;
@@ -624,16 +626,16 @@ public class OOTools{
 			////System.out.println("Oiginal-Placeholder-Text = "+placeholders[i].getDisplayText());
 		    /*****************/
 			
-			Set entries = SystemConfig.hmAdrBDaten.entrySet();
-		    Iterator it = entries.iterator();
+			Set<?> entries = SystemConfig.hmAdrBDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      String key = entry.getKey().toString().toLowerCase();
 		      if( (key.contains("<bblock") || key.contains("<btitel")) && key.equals(placeholderDisplayText) ){
-		    	  ////System.out.println("enth�lt block oder titel");
+		    	  ////System.out.println("enthält block oder titel");
 		    	  int bblock;
 		    	  if(key.contains("<bblock")){
-			    	  ////System.out.println("enth�lt block");
+			    	  ////System.out.println("enthält block");
 		    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
@@ -822,7 +824,7 @@ public class OOTools{
 		//System.out.println(props[i] .Name + " = "
 		+ xStyleProps.getPropertyValue(props[i].Name));
 		}
-		//z.B. f�r A5
+		//z.B. für A5
 		 * 
 		 */
 		xStyleProps.setPropertyValue("Height", hoch);
@@ -936,7 +938,7 @@ public class OOTools{
 		}
 		String placeholderDisplayText = "";
 		for (int i = 0; i < placeholders.length; i++) {
-			boolean loeschen = false;
+			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
@@ -947,10 +949,10 @@ public class OOTools{
 			}
 	
 		    /*****************/			
-			Set entries = SystemConfig.hmAdrPDaten.entrySet();
-		    Iterator it = entries.iterator();
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
 		    while (it.hasNext()) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("\b");
@@ -967,7 +969,7 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrKDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -983,7 +985,7 @@ public class OOTools{
 		    entries = SystemConfig.hmAdrADaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  //placeholders[i].getTextRange().setText("\b");
@@ -1002,7 +1004,7 @@ public class OOTools{
 		    entries = SystemConfig.hmEBerichtDaten.entrySet();
 		    it = entries.iterator();
 		    while (it.hasNext() && (!schonersetzt)) {
-		      Map.Entry entry = (Map.Entry) it.next();
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -1268,7 +1270,8 @@ public class OOTools{
 		try{
 			if (aUniFlv != null){
                 //System.out.println("Unicode text on the clipboard...");
-                Object aData = xTransferable.getTransferData(aUniFlv);      
+                @SuppressWarnings("unused")
+				Object aData = xTransferable.getTransferData(aUniFlv);      
 
                 //System.out.println(AnyConverter.toString(aData));
 			}

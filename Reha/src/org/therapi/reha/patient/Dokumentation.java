@@ -32,7 +32,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,7 +61,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -483,8 +481,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							       InputStream is = process.getInputStream();
 							       InputStreamReader isr = new InputStreamReader(is);
 							       BufferedReader br = new BufferedReader(isr);
-							       String line;
-							       while ((line = br.readLine()) != null) {
+							       //String line;
+							       while ((br.readLine()) != null) {
 							         //System.out.println(line);
 							       }
 							       is.close();
@@ -497,22 +495,19 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						}.execute();
 					}else{
 						setCursor(Reha.thisClass.wartenCursor);
+						/*
 						final String xid = sid;
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
-								//rehaSplash = new RehaSplash(null,"Hole Dokumentation "+xid+" vom Server");
-								//rehaSplash.setVisible(true);
 								long zeit = System.currentTimeMillis();
 								return null;
 							}
 							
 						}.execute();
+						*/
 						holeDoku(sdatei,sid);
 						setCursor(Reha.thisClass.normalCursor);
-						//System.out.println("Doku fertig abgeholt Dateiname = "+sdatei);
-						//rehaSplash.dispose();
-						//rehaSplash = null;
 					}
 				}
 			}
@@ -581,7 +576,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public void holeOorg(String sdatei,String sid){
 		Statement stmt = null;;
 		ResultSet rs = null;
-		int bilder = 0;
+		//int bilder = 0;
 		//System.out.println(sdatei);
 
 		try {
@@ -637,7 +632,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public void holeDoku(String datei,String id){
 		Statement stmt = null;;
 		ResultSet rs = null;
-		int bilder = 0;
+		//int bilder = 0;
 		
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -656,8 +651,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					       InputStream is = process.getInputStream();
 					       InputStreamReader isr = new InputStreamReader(is);
 					       BufferedReader br = new BufferedReader(isr);
-					       String line;
-					       while ((line = br.readLine()) != null) {
+					       //String line;
+					       while ((br.readLine()) != null) {
 					         //System.out.println(line);
 					       }
 					       is.close();
@@ -804,7 +799,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	
 	
 
-	public void macheTabelle(Vector vec){
+	public void macheTabelle(Vector<?> vec){
 		if(vec.size()> 0){
 			dtblm.addRow(vec);	
 		}else{
@@ -1056,7 +1051,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				this.setzeDokuPanelAufNull(false);
 			}
 
-			BufferedImage img = null;
+			//BufferedImage img = null;
 			try {
 				setCursor(Reha.thisClass.wartenCursor);
 				commonName = Long.toString(System.currentTimeMillis()); 
@@ -1082,7 +1077,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 
 				FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+fname), 4096*5, false);
 
-		        final String pfad = bild[1];
+		        //final String pfad = bild[1];
 		        /*new Thread(){
 		        	public void run(){
 		        	*/
@@ -1097,7 +1092,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		       img2 = null; 		
 		       Runtime r = Runtime.getRuntime();
         	    r.gc();
-        	    long freeMem = r.freeMemory();
+        	    r.freeMemory();
         	    //System.out.println("Freier Speicher "+freeMem);
         	    setCursor(Reha.thisClass.normalCursor);
 		        
@@ -1150,7 +1145,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                    @SuppressWarnings("unused")
+					final File f = (File) e.getNewValue();
                 }
             }
         }; 
@@ -1296,7 +1292,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		PdfCopy copy = null;
 		for(int i = 0;i<vecBilderPfad.size();i++){
 			//rehaSplash.setNewText("Seiten zusammenf�hren - Seite"+(i+1)+" von "+vecBilderPfad.size());
-			Rectangle format = getLowagieForm(vecBilderFormat.get(i));
+			//Rectangle format = getLowagieForm(vecBilderFormat.get(i)); // vorher eingeschaltet....
 			//System.out.println("Das Format = "+format);
 			
 			try {
@@ -1465,7 +1461,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		// TODO Auto-generated method stub
 		
 	}
-	
+	/*
 	void setRezeptDaten(){
 		int row = this.tabdokus.getSelectedRow();
 		if(row >= 0){
@@ -1480,7 +1476,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			});	
 
 		}
-	}	
+	}
+	*/	
 	/**************************************************
 	 * 
 	 * 
@@ -1517,8 +1514,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 	}
 	private Double[] getDims(String seite){
-		List list = Arrays.asList( new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer","angepasst"});
-		String[] dims = new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"};
+		List<String> list = Arrays.asList( new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer","angepasst"});
+		//String[] dims = new String[] {"Din A6","Din A6-quer","Din A5","Din A5-quer","Din A4","Din A4-quer"};
 		Double[][] d =  new Double[][]  {{4.23,5.82},{4.23,5.82},{5.82,8.26},{5.82,8.26},{8.26,11.69},{8.26,11.69},{8.26,11.69}};
 		Double[] ret = {8.26,11.69};		
 		ret = d[list.indexOf(seite)].clone();
@@ -1570,14 +1567,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
     				metadata.setImage(null);
 	                Runtime r = Runtime.getRuntime();
 	        	    r.gc();
-	        	    long freeMem = r.freeMemory();
+	        	    r.freeMemory();
 	        	    //System.out.println("Freier Speicher "+freeMem);
       	    	  	//System.out.println("finished und nicht null = "+metadata.getStateStr());
     			}else{
       	    	  	//System.out.println("finished aber null = "+metadata.getStateStr());
 	                Runtime r = Runtime.getRuntime();
 	        	    r.gc();
-	        	    long freeMem = r.freeMemory();
+	        	    r.freeMemory();
     			}
     	        //System.out.println("Scanvorgang wurde beendet");
 				setCursor(Reha.thisClass.normalCursor);
@@ -1778,7 +1775,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					JOptionPane.showMessageDialog(null, "Der Pfad zu Ihrem Adobe-Acrobatreader ist nicht korrekt konfiguriert");
 					return;
 				}
-				final String xdatname = datname;
+				//final String xdatname = datname;
 				/*
 				new SwingWorker<Void,Void>(){
 					@Override
@@ -1986,7 +1983,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				try{
 		//{"Doku-Id","Doku-Art","Titel","erfa�t am","von","",""};
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
-				Vector vec = SqlInfo.holeSaetze("doku1", 
+				Vector<Vector<String>> vec = SqlInfo.holeSaetze("doku1", 
 						"dokuid,format,dokutitel,DATE_FORMAT(datum,'%d.%m.%Y') AS dokudatum," +
 						"benutzer,pat_intern,id,datei", 
 						"pat_intern='"+xpatint+"' ORDER BY dokuid DESC", Arrays.asList(new String[]{}));
@@ -1999,19 +1996,19 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					}
 
 					int zzbild = 0;
-					if( ((Vector)vec.get(i)).get(1) == null){
+					if( ((Vector<?>)vec.get(i)).get(1) == null){
 						zzbild = 0;
-					}else if(!((Vector)vec.get(i)).get(1).equals("")){
-						zzbild = Integer.valueOf((String) ((Vector)vec.get(i)).get(1) );
+					}else if(!((Vector<?>)vec.get(i)).get(1).equals("")){
+						zzbild = Integer.valueOf((String) ((Vector<?>)vec.get(i)).get(1) );
 					}
-					dtblm.addRow((Vector)vec.get(i));
+					dtblm.addRow((Vector<?>)vec.get(i));
 					dtblm.setValueAt(tabIcons[zzbild], i, 1);
 					//dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
 				}
 				Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(anz,"Dokumentation"));
 				if(anz > 0){
 					setzeDokuPanelAufNull(false);
-					int anzeigen = -1;
+					//int anzeigen = -1;
 					anzahlDokus.setText("Anzahl gespeicherter Dokumentationen: "+anz);	
 					tabdokus.setRowSelectionInterval(0, 0);
 					wechselPanel.revalidate();
@@ -2069,8 +2066,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			*/
 	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	        
-	        int firstIndex = e.getFirstIndex();
-	        int lastIndex = e.getLastIndex();
+	        //int firstIndex = e.getFirstIndex();
+	        //int lastIndex = e.getLastIndex();
 	        boolean isAdjusting = e.getValueIsAdjusting();
 	        if(isAdjusting){
 	        	return;
@@ -2083,7 +2080,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
-	                	final int ix = i;
+	                	//final int ix = i;
 	                	
 	                	new SwingWorker<Void,Void>(){
 
@@ -2117,9 +2114,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		boolean ret = false;
-		int bilder = 0;
-		FileInputStream fis = null;
+		//boolean ret = false;
+		//int bilder = 0;
+		//FileInputStream fis = null;
 		//piTool.app.conn.setAutoCommit(true);
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -2230,9 +2227,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		boolean ret = false;
-		int bilder = 0;
-		FileInputStream fis = null;
+		//boolean ret = false;
+		//int bilder = 0;
+		//FileInputStream fis = null;
 		//piTool.app.conn.setAutoCommit(true);
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -2493,12 +2490,12 @@ class MyDokuTermTableModel extends DefaultTableModel{
 
 class OoListener implements IDocumentListener {
 
-	private IOfficeApplication officeAplication = null;
+	public IOfficeApplication officeAplication = null;
 	private String datei;
 	private String id;
 	private boolean geaendert = false;
 	private boolean neu = false;
-	private boolean warschoninsave = false;
+	public boolean warschoninsave = false;
 	private Dokumentation eltern;
 	IDocument document;
 	public OoListener(IOfficeApplication officeAplication,String xdatei,String xid,Dokumentation xeltern) {
@@ -2602,6 +2599,7 @@ class OoListener implements IDocumentListener {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void doUebertragen(String file){
 		
 	}
@@ -2627,7 +2625,7 @@ class OoListener implements IDocumentListener {
 			if(geaendert && datei.equals(file) && (!neu)){
 				final String xfile = file;
 				final int xid = Integer.parseInt(id);
-				final IDocumentEvent xarg0 = arg0;
+				//final IDocumentEvent xarg0 = arg0;
 				Thread.sleep(50);
 				new Thread(){
 					public void run(){

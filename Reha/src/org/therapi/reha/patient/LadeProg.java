@@ -3,9 +3,7 @@ package org.therapi.reha.patient;
 import hauptFenster.Reha;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,41 +30,21 @@ public class LadeProg {
 			return;
 		}
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
-		String vmload = "java -jar ";
-		String commandx = vmload + prog; 
-		////System.out.println(vmload+prog);
-		/*
-	    File ausgabedatei = new File(Reha.proghome+"laden.bat"); 
-	    FileWriter fw;
-		try {
-			fw = new FileWriter(ausgabedatei);
-		    BufferedWriter bw = new BufferedWriter(fw); 
-		    bw.write(commandx); 
-		    bw.close(); 
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} 
-		*/
+		//String vmload = "java -jar ";
+		//String commandx = vmload + prog; 
+
 		final String xprog = prog;
 		new SwingWorker<Void, Void>(){
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				// TODO Auto-generated method stub
 				try {
 					List<String>list = Arrays.asList(xprog.split(" "));
 					ArrayList<String> alist = new ArrayList<String>(list);
 					alist.add(0,"-jar");
 					alist.add(0,"java");
-					////System.out.println(list);
-					////System.out.println("Die Liste = "+alist);
-					
-					////System.out.println("Starte Prozess mit "+xprog);
-					////System.out.println("Liste = "+list);
 					Process process = new ProcessBuilder(alist).start();
 					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
-					//Process process = new ProcessBuilder("java","-jar",xprog).start();
 				       InputStream is = process.getInputStream();
 				       InputStreamReader isr = new InputStreamReader(is);
 				       BufferedReader br = new BufferedReader(isr);

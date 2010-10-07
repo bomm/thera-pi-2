@@ -1,20 +1,22 @@
 package pdfDrucker;
 
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PagePanel;
-
-import java.awt.Graphics;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import javax.swing.*;
+
+import javax.swing.JFrame;
+
+import com.sun.pdfview.PDFFile;
+import com.sun.pdfview.PDFPage;
+import com.sun.pdfview.PagePanel;
 
 /**
  * An example of using the PagePanel class to show PDFs. For more advanced
@@ -65,8 +67,8 @@ public class PdfDrucker {
         final Paper paper = new Paper ( );
         paper.setSize(595.f, 842.f);
         paper.setImageableArea(0., 0., 595., 842.);
-	    int width = ( int ) paper.getWidth ( );
-	    int height = ( int ) paper.getHeight ( );
+	    //int width = ( int ) paper.getWidth ( );
+	    //int height = ( int ) paper.getHeight ( );
 	    //System.out.println("width:"+width+" / height:"+height);
         pf.setPaper(paper);
         

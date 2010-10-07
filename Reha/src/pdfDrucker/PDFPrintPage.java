@@ -1,11 +1,9 @@
 package pdfDrucker;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 
@@ -34,22 +32,18 @@ public class PDFPrintPage implements Printable {
 	      //double pheight = format.getImageableHeight();
 	      double pwidth = 595.f;
 	      double pheight = 842.f;
-
+	      
+	      /*
 	      Dimension dim;
           dim = page.getUnstretchedSize ((int) pwidth,
                                             (int) pheight,
                                             page.getBBox ());
 
-          //System.out.println("Die dimension = "+dim);
-          
-          //System.out.println("Pwidth = "+pwidth);
-	      //System.out.println("Pheight = "+pheight);
 
 	      double aspect = page.getAspectRatio();
-	      //System.out.println("Aspect = "+aspect);
 
 	      double paperaspect = pwidth / pheight;
-	      //System.out.println("Paperaspect = "+paperaspect);
+		*/
 
 	      Rectangle imgbounds;
 
