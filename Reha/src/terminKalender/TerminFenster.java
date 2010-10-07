@@ -1374,7 +1374,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					submenu.add(getCut());
 					submenu.add(getPaste());
 					submenu.add(getConfirm());
-					if (SystemConfig.LangesMenue){
+					if (SystemConfig.KalenderLangesMenue){
 						jPopupMenu.add(submenu);
 						jPopupMenu.addSeparator();						
 					}
@@ -1651,7 +1651,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Patientsuchen.setText("Patient suchen (über Rezept-Nummer)");
 				Patientsuchen.setToolTipText("Alt-P");
 				Patientsuchen.setIcon(SystemConfig.hmSysIcons.get("patsearch"));
-				//TODO ist der folgende Eintrag richtig? Bitte prüfen! Drud, 101003
 				Patientsuchen.setActionCommand("PatRezSuchen");				
 				Patientsuchen.setRolloverEnabled(true);
 				Patientsuchen.addActionListener(this);
