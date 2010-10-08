@@ -922,9 +922,9 @@ public class SqlInfo {
 	}
 
 	/*****************************************/
-	public static void sqlAusfuehren(String sstmt){
+	public static boolean sqlAusfuehren(String sstmt){
 		Statement stmt = null;
-			
+		boolean ret = true;	
 		try {
 			stmt =  Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
@@ -936,7 +936,8 @@ public class SqlInfo {
 			stmt.execute(sstmt);
 			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
+			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")\n\nBitte informieren Sie sofort den Administrator!!!");
+			ret = false;
 		}	
 		finally {
 			if (stmt != null) {
@@ -948,7 +949,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return;
+		return ret;
 	}
 
 	public static InputStream holeStream(String tabelle, String feld, String kriterium){
