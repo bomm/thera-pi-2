@@ -24,11 +24,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import javax.print.DocFlavor;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -59,8 +54,6 @@ import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
-import ag.ion.noa.search.ISearchResult;
-import ag.ion.noa.search.SearchDescriptor;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import emailHandling.EmailSendenExtern;
@@ -216,11 +209,11 @@ private JXPanel terminInfo(){
 
 	//jtinfo.setLayout(null);
 	jtinfo.setBorder(null);
-	if(this.termine.size() > 0){
+	if(DruckFenster.termine.size() > 0){
 		jtinfo.setPreferredSize(new Dimension(600,40));
-		String anzahlTermine = Integer.toString(this.termine.size());
-		String nameTermine = this.termine.get(0)[8];		
-		String nummerTermine = this.termine.get(0)[9];
+		String anzahlTermine = Integer.toString(DruckFenster.termine.size());
+		String nameTermine = DruckFenster.termine.get(0)[8];		
+		String nummerTermine = DruckFenster.termine.get(0)[9];
 		getSmartTitledPanel().setTitle(anzahlTermine+ "  Termin(e) in der Druckerliste");
 		JXLabel jl = new JXLabel("Termineintrag");
 		jtinfo.add(jl);
@@ -284,7 +277,6 @@ private JXPanel titlePanel(){
 	return jtp;
 }
 
-@SuppressWarnings("unchecked")
 private JXPanel terminListe(){
 	JXPanel jpliste = new JXPanel(new BorderLayout());
 	jpliste.setBorder(null);
@@ -347,7 +339,7 @@ public String dieserName(){
 public void rehaTPEventOccurred(RehaTPEvent evt) {
 	// TODO Auto-generated method stub
 	////System.out.println("****************das darf doch nicht wahr sein in DruckFenster**************");
-	String ss =  this.getName();
+	//String ss =  this.getName();
 	////System.out.println("Durckerlistenfenster "+this.getName()+" Eltern "+ss);
 	try{
 		//if (evt.getDetails()[0].equals(ss) && evt.getDetails()[1]=="ROT"){
@@ -367,11 +359,11 @@ public void actionPerformed(ActionEvent arg0) {
 	for(int i = 0; i< 1;i++){
 		if(cmd.equals("Termine drucken")){
 			if(pliste.getRowCount()> 0){
-				PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-				DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
-				PrintService   prservDflt = PrintServiceLookup.lookupDefaultPrintService();
+				//PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+				//DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
+				//PrintService   prservDflt = PrintServiceLookup.lookupDefaultPrintService();
 				////System.out.println("Default Printer = "+prservDflt);
-				PrintService[] prservices = PrintServiceLookup.lookupPrintServices( flavor, aset );
+				//PrintService[] prservices = PrintServiceLookup.lookupPrintServices( flavor, aset );
 				////System.out.println("Printer prservices = "+Arrays.asList(prservices));
 				////System.out.println("Printer aset = "+Arrays.asList(aset));
 				jb1.setEnabled(false);
@@ -576,11 +568,11 @@ public void run(){
 		int AnzahlTabellen = SystemConfig.oTerminListe.AnzahlTerminTabellen;
 		int maxTermineProTabelle = SystemConfig.oTerminListe.AnzahlTermineProTabelle;
 		int maxTermineProSeite = AnzahlTabellen * maxTermineProTabelle;
-		int spaltenProtabelle = SystemConfig.oTerminListe.AnzahlSpaltenProTabellen;
+		//int spaltenProtabelle = SystemConfig.oTerminListe.AnzahlSpaltenProTabellen;
 		Vector<String> spaltenNamen = SystemConfig.oTerminListe.NamenSpalten;
 		int ipatdrucken = SystemConfig.oTerminListe.PatNameDrucken;
 		int iheader = SystemConfig.oTerminListe.MitUeberschrift;
-		String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
+		//String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
 		////System.out.println("Platzhalter = "+patplatzhalter);
 		//
 		
@@ -626,41 +618,9 @@ public void run(){
 			textDocument.getPrintService().setActivePrinter(iprint);
 		}
 		//Jetzt den Platzhalter ^Name^ suchen
-		SearchDescriptor searchDescriptor = null;
-		ISearchResult searchResult = null;
+//		SearchDescriptor searchDescriptor = null;
+//		ISearchResult searchResult = null;
 		if(ipatdrucken  > 0){
-/*			
-			searchDescriptor = new SearchDescriptor(patplatzhalter);
-			//searchDescriptor = new SearchDescriptor("Name");
-			searchDescriptor.setIsCaseSensitive(false);
-			//Suche durchf�hren
-			searchResult = textDocument.getSearchService().findFirst(searchDescriptor);
-			if(!searchResult.isEmpty()) {
-				//Ergebnis seletieren
-				ITextRange[] textRanges = searchResult.getTextRanges();
-		        textDocument.setSelection(new TextRangeSelection(textRanges[0]));
-		        //Selektion durch eigenen Text ersetzen
-		        textRanges[0].setText(patname);
-			}else{
-				JOptionPane.showMessageDialog (null, "Suche nach "+patplatzhalter+" war erfolglos");				
-			}
-			
-*/			
-			/*
-			ITextService textService = textDocument.getTextService();
-		      IBookmarkService bookmarkService = textService.getBookmarkService();
-		      IBookmark bookmark = bookmarkService.getBookmark("^Name^");
-		      if(bookmark != null){
-		      String name = bookmark.getName();
-		      bookmark.setText(patname);
-		      try {
-					textDocument.getTextFieldService().refresh();
-				} catch (TextException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		      }	
-		      */	
 		      ITextFieldService textFieldService = textDocument.getTextFieldService();
 		      ITextField[] placeholders = null;
 				try {
@@ -684,14 +644,14 @@ public void run(){
 
 	
 		//int anzahl = (oOTermine.size() > 17 ? 17 : oOTermine.size()) ;
-		int zeile = 0;
-		int startTabelle = 0;
+		//int zeile = 0;
+		//int startTabelle = 0;
 		int aktTabelle = 0;
 		int aktTermin = -1;
 		int aktTerminInTabelle = -1;
 		String druckDatum = "";
 		ITextTable textTable = textDocument.getTextTableService().getTextTable(tabName[aktTabelle]);
-		int aktseiten = 0;
+		//int aktseiten = 0;
 		while(true){
 			aktTerminInTabelle = aktTerminInTabelle+1;
 			aktTermin = aktTermin+1;
@@ -1070,7 +1030,7 @@ class MyTerminTableModel extends DefaultTableModel{
 		 	return true;
 	}
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+		String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
 		Object result = null;
 		result = theData;
 		return result;
@@ -1086,7 +1046,7 @@ final class druckListeSperren{
 		Statement stmt = null;
 		ResultSet rs = null;
 		String sergebnis = "";
-		boolean gesperrt = false;
+		//boolean gesperrt = false;
 		try {
 			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
@@ -1127,11 +1087,11 @@ final class druckListeSperren{
 		//System.out.println("Ergebnis = "+sergebnis);
 		if(sergebnis.trim().equals("")){
 			//System.out.println("Befehl ausgef�hrt");
-			boolean sper = sperren(exStatement[1]);
+			sperren(exStatement[1]);
 			//System.out.println("Befehl ausgef�hrt"+exStatement[1]);
-			sper = sperren(exStatement[2]);			
+			sperren(exStatement[2]);			
 			//System.out.println("Befehl ausgef�hrt"+exStatement[2]);
-			sper = sperren(exStatement[3]);
+			sperren(exStatement[3]);
 			//System.out.println("Befehl ausgef�hrt"+exStatement[3]);			
 			return true;
 		}else{
