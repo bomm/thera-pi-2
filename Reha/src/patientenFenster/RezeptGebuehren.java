@@ -414,21 +414,33 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 					srgeb = (SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replace(",",".")==null ? 
 							"0.00" : SystemConfig.hmAdrRDaten.get("<Rendbetrag>").replace(",",".") );
 				}catch(Exception ex1){
+					JOptionPane.showMessageDialog(null, "Fehler-Nr. 1 beim einstellen der Rezeptgebühr im Rezept\n\n"+
+							"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
+							"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+							"\nSql-Befehl = "+cmd+"\n\n"+
+							"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
 					srgeb = "0.00";
 				}
+				Reha.thisClass.patpanel.vecaktrez.set(39, "1");
 				String cmd2 = "update verordn set rez_geb='"+
 				srgeb+
 				"rez_bez='T', zzstatus='1' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35).trim()+"' LIMIT 1";
-				SqlInfo.sqlAusfuehren(cmd2.toString());
-				Reha.thisClass.patpanel.vecaktrez.set(39, "1");
+				boolean allesok = SqlInfo.sqlAusfuehren(cmd2.toString());
+				if(!allesok){
+					JOptionPane.showMessageDialog(null, "Fehler-Nr. 2 beim einstellen der Rezeptgebühr im Rezept\n\n"+
+							"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
+							"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+							"\nSql-Befehl = "+cmd+"\n\n"+
+							"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
+				}
+
 			}catch(Exception ex2){
-				ex2.printStackTrace();
-				JOptionPane.showMessageDialog(null,"Achtung Fehler im Modul Rezeptgebühr, bitte notieren Sie die nachfolgende Fehlermeldung");
-				JOptionPane.showMessageDialog(null, "Fehler beim einstellen der Rezeptgebühr im Rezept\n\n"+
+				JOptionPane.showMessageDialog(null, "Fehler-Nr. 3 beim einstellen der Rezeptgebühr im Rezept\n\n"+
 						"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
 						"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
 						"\nSql-Befehl = "+cmd+"\n\n"+
 						"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
+				ex2.printStackTrace();
 			}
 			try{
 				aktuelleRezepte.setZuzahlImage(1);
