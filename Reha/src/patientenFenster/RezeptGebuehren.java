@@ -55,6 +55,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import errorMail.ErrorMail;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
@@ -416,31 +417,48 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				}catch(Exception ex1){
 					JOptionPane.showMessageDialog(null, "Fehler-Nr. 1 beim einstellen der Rezeptgebühr im Rezept\n\n"+
 							"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
-							"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+							"Der Wert für Rezeptnummer ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
 							"\nSql-Befehl = "+cmd+"\n\n"+
 							"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
 					srgeb = "0.00";
+					//ErrorMail(String text,String comp,String user,String senderadress,String xtitel)
+					new ErrorMail("Fehler bei Rezeptgebührenkassieren - Fehler-Nr. 1 - Reznr."+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+							"Computer: "+SystemConfig.dieseMaschine.toString(),
+							"Benutzer: "+Reha.aktUser,
+							SystemConfig.hmEmailIntern.get("Username"),
+							"Fehler-Mail");
+
 				}
 				Reha.thisClass.patpanel.vecaktrez.set(39, "1");
 				String cmd2 = "update verordn set rez_geb='"+
-				srgeb+
+				srgeb+"', "+
 				"rez_bez='T', zzstatus='1' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35).trim()+"' LIMIT 1";
 				boolean allesok = SqlInfo.sqlAusfuehren(cmd2.toString());
 				if(!allesok){
 					JOptionPane.showMessageDialog(null, "Fehler-Nr. 2 beim einstellen der Rezeptgebühr im Rezept\n\n"+
 							"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
-							"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+							"Der Wert für Rezeptnummer ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
 							"\nSql-Befehl = "+cmd+"\n\n"+
 							"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
+					new ErrorMail("Fehler bei Rezeptgebührenkassieren - Fehler-Nr. 2 - Reznr."+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+							"Computer: "+SystemConfig.dieseMaschine.toString(),
+							"Benutzer: "+Reha.aktUser,
+							SystemConfig.hmEmailIntern.get("Username"),
+							"Fehler-Mail");
+
 				}
 
 			}catch(Exception ex2){
 				JOptionPane.showMessageDialog(null, "Fehler-Nr. 3 beim einstellen der Rezeptgebühr im Rezept\n\n"+
 						"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
-						"Der Wert für Rezeptnumme ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+						"Der Wert für Rezeptnummer ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
 						"\nSql-Befehl = "+cmd+"\n\n"+
 						"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
-				ex2.printStackTrace();
+				new ErrorMail("Fehler bei Rezeptgebührenkassieren - Fehler-Nr. 3 - Reznr."+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+						"Computer: "+SystemConfig.dieseMaschine.toString(),
+						"Benutzer: "+Reha.aktUser,
+						SystemConfig.hmEmailIntern.get("Username"),
+						"Fehler-Mail");
 			}
 			try{
 				aktuelleRezepte.setZuzahlImage(1);
@@ -448,6 +466,12 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
 					"Sie den Administrator");
+				new ErrorMail("Fehler bei Rezeptgebührenkassieren - Der Zuzahlungsstatus im Rezeptstamm....Reznr.:"+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+						"Computer: "+SystemConfig.dieseMaschine.toString(),
+						"Benutzer: "+Reha.aktUser,
+						SystemConfig.hmEmailIntern.get("Username"),
+						"Fehler-Mail");
+
 			}
 			/**/
 
@@ -465,15 +489,23 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				JOptionPane.showMessageDialog(null,"Die bezahlten Rezeptgebühren konnten nicht verbucht werden.\n+" +
 						"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
 						"Sie den Administrator");
+				new ErrorMail("Die bezahlten Rezeptgebühren konnten nicht verbucht....Reznr.:"+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+						"Computer: "+SystemConfig.dieseMaschine.toString(),
+						"Benutzer: "+Reha.aktUser,
+						SystemConfig.hmEmailIntern.get("Username"),
+						"Fehler-Mail");
+								
 			}
-			
-			
 			/**/
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Der Zuzahlungsstatus im Rezeptstamm konnte nicht korrekt gesetzt werden.\n+" +
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer und verständigen\n"+
 					"Sie den Administrator");
-			
+			new ErrorMail("Der Zuzahlungsstatus im Rezeptstamm konnte nicht....Rnr.:"+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+					"Computer: "+SystemConfig.dieseMaschine.toString(),
+					"Benutzer: "+Reha.aktUser,
+					SystemConfig.hmEmailIntern.get("Username"),
+					"Fehler-Mail");
 		}
 	}
 	
