@@ -1,5 +1,7 @@
 package therapiDBAdmin;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
@@ -54,7 +56,8 @@ public class TheraPiDbAdmin implements WindowListener {
 		jFrame = new JFrame();
 		jFrame.setUndecorated(true);
 		jFrame.addWindowListener(this);
-		jFrame.setSize(1000,500);
+		Dimension ssize = Toolkit.getDefaultToolkit().getScreenSize(); 
+		jFrame.setSize(ssize.width,ssize.height);
 		jFrame.setTitle("Thera-Pi  MySql-Konfigurationsassistent");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);

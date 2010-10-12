@@ -82,6 +82,9 @@ public class Seite3 extends JXPanel  {
 							TheraPiDbAdmin.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 							JOptionPane.showMessageDialog(null,"Tabellen wurden erfolgreich importiert.");
 							eltern.setSeite3Ok(true);
+							eltern.sqlTab.setSelectedIndex(3);
+							//Runtime.getRuntime().exec("java -jar FirstRun.jar");
+							//System.exit(0);
 						}
 						}catch(Exception ex){
 							ex.printStackTrace();

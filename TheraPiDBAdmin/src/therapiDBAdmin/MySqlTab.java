@@ -32,11 +32,13 @@ public class MySqlTab  extends JXPanel implements ChangeListener{
 	JXPanel tab1 = null;
 	JXPanel tab2 = null;
 	JXPanel tab3 = null;
+	JXPanel tab4 = null;
 	
 	public static String iPAdresse = null;
 	public static String portAdresse = null;
 	public static String neuerUser = null;
 	public static String neuesPasswort = null;
+	public static String neuerDBName = null;
 	
 	private Vector<String> vectitel = new Vector<String>();
 	private Vector<String> vecdescript = new Vector<String>();
@@ -59,8 +61,9 @@ public class MySqlTab  extends JXPanel implements ChangeListener{
 		tab3 = new Seite3(this);
 		tab3.setName("Seite3");
 		sqlTab.add("<html><font size='5' >&nbsp;3 -  <font color='e77817'>Thera-Pi</font> Tabellen importieren&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/application-exit.png' width='32' height='32'></font></html>",tab3);
-		
-		
+		tab4 = new MyErstInstall(this);
+		tab4.setName("Seite4");
+		sqlTab.add("<html><font size='5' >&nbsp;4 -  <font color='e77817'>Thera-Pi</font> Eigene Firma (IK) einrichten&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/application-exit.png' width='32' height='32'></font></html>",tab4);
 		Component[] comp = sqlTab.getComponents();
 		for (int i = 0; i < comp.length;i++){
 			System.out.println(comp[i]);
@@ -108,6 +111,20 @@ public class MySqlTab  extends JXPanel implements ChangeListener{
 			TheraPiDbAdmin.seite3Ok = false;
 		}
 	}
+	public void setSeite4Ok(boolean ok){
+		if(ok){
+			sqlTab.setTitleAt(3, "<html><font size='5' >&nbsp;4 -  <font color='e77817'>Thera-Pi</font> Eigene Firma (IK) einrichten&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/clean.png' width='32' height='32'></font></html>");
+			TheraPiDbAdmin.seite3Ok = true;
+		}else{
+			sqlTab.setTitleAt(3, "<html><font size='5' >&nbsp;4 -  <font color='e77817'>Thera-Pi</font> Eigene Firma (IK) einrichten&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/application-exit.png' width='32' height='32'></font></html>");
+			TheraPiDbAdmin.seite3Ok = false;
+		}
+	}
+	public void setParams(String db,String user,String pw){
+		neuerDBName = db;
+		neuerUser = user;
+		neuesPasswort = pw;
+	}
 
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
@@ -153,6 +170,17 @@ public class MySqlTab  extends JXPanel implements ChangeListener{
 		vecdescript.add("....Hier können Sie Dateien manuell verschlüsseln\n" +
                 "Weshalb auch immer....");
 		vecimg.add(ico);
+		vectitel.add("<html><font size='5'><font color='e77817'>Thera-Pi</font> für den erstmaligen Start einrichten</font></html>");
+		vecdescript.add("<html>überprüfen Sie bitte ob alle u.g. Voraussetzungen auf Ihr System zutreffen.<br>" +
+                "1. <b>MySql</b> muß bereits lokal auf Ihrem Rechner, oder aber auf dem zukünftigen Datenbankserver <b>vollständig und lauffähig</b> installiert sein. <br>" +
+                "2. Sie müssen bereits eine <b>neue Datenbank</b> erstellt haben<br>" +
+                "3. Für diese Datenbank muß ein <b>Datenbankbenutzer</b> erstellt worden sein der von überall erreichbar sein sollte (Host=<b>'%'</b>)<br>"+
+                "4. Für den Datenbankbenutzer muß ein <b>Paßwort</b> erstellt worden sein<br>"+
+                "5. Sie haben die <b>Thera-Pi-Tabellen</b> bereits in Ihre neue Datenbank <b>importiert</b>.<br>"+
+                "<font color='aa0000'><b>Nur wenn Sie alle oben genannten Voraussetzungen erfüllen sollten Sie mit der Anpassung für den erstmaligen Start von Thera-Pi fortfahren.<br>Andernfalls brechen "+
+                "Sie an dieser Stelle ab, holen die versäumten Installationsschritte nach und starten Sie dann dieses Tool erneut.</b></font><br><br>"+"</html>");
+		vecimg.add(ico);
+		
 
 	}	
 	

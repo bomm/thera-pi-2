@@ -90,6 +90,7 @@ public class TheraPi implements WindowListener,KeyListener{
 			if(AuswahlImmerZeigen==0){
 				String s1 = inif.getStringProperty("TheraPiMandanten", "MAND-IK"+DefaultMandant);
 				String s2 = inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+DefaultMandant);
+				
 				String[] mand = {null,null};
 				mand[0] = s1;
 				mand[1] = s2;
@@ -397,6 +398,8 @@ class RehaStarter extends SwingWorker<Integer,Void>{
 		String programm = TheraPi.proghome+"Reha.jar";
 		System.out.println("Programmstart = "+programm);
 		String start = new String("javaw -jar "+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant);
+		System.out.println(start);
+		//JOptionPane.showMessageDialog(null, start);
 		Runtime.getRuntime().exec(start);
         System.out.println("Reha gestartet");
         System.out.println(start);

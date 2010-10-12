@@ -153,6 +153,7 @@ public class Seite2 extends JXPanel {
 			stmt.executeUpdate("GRANT ALL ON "+tfs[0].getText().trim()+".* TO '"+
 					tfs[1].getText().trim()+"'@'%' IDENTIFIED BY '"+
 					tfs[2].getText().trim()+"'");
+			eltern.setParams(tfs[0].getText().trim(),tfs[1].getText().trim(),tfs[2].getText().trim());
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null, ex.getMessage());
 			JOptionPane.showMessageDialog(null,"Anlegen des neuen Benutzers fehlgeschlagen, vermutlich existiert der Benutzer bereits!");

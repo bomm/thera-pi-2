@@ -101,6 +101,7 @@ public class Seite1 extends JXPanel{
 			TheraPiDbAdmin.conn_root = (Connection) DriverManager.getConnection(connection,
 					tfs[3].getText().trim(),
 					String.valueOf(pw.getPassword()));
+			//TheraPiDbAdmin.conn_root.close();
 			return true;
 		}catch(final SQLException ex){
 			JOptionPane.showMessageDialog(null, ex.getMessage());
