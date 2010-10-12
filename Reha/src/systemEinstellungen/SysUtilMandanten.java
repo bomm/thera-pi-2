@@ -578,12 +578,16 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 		MandantEinlesen me = new MandantEinlesen();
 	    me.setzeMandant(mandant.getSelectedIndex());
 	    mandant.setEnabled(true);
+	    Reha.testeNummernKreis();
+	    /*
    		String cmd = "insert into nummern set pat='1',kg='1',ma='1',er='1',"+
     		"lo='1',rh='1',rnr='1',esol='1',bericht='1',afrnr='1',rgrnr='1',doku='1',"+
     		"dfue='1',mandant='"+neuik+"'";
     		SqlInfo.sqlAusfuehren(cmd);
+    	*/	
 	    //String cmd = "insert into nummern set mandant='"+neuik+"'";
-	    new ExUndHop().setzeStatement(cmd);
+	    //new ExUndHop().setzeStatement(cmd);
+    	JOptionPane.showMessageDialog(null,"<html>Der neue Mandant wurde gespeichert<br><br><b>Ordnen Sie nun bitte dem neuen Mandanten eine Datenbankverbindung zu!</b><br></html>");	
 	}
 	
 
@@ -632,7 +636,8 @@ public class SysUtilMandanten extends JXPanel implements KeyListener, ActionList
 				copyFile(new File(Reha.proghome+"defaults/"+vz+"/"+dateien[i]),
 						new File(Reha.proghome+vz+"/"+sIK+"/"+dateien[i]),1024,true);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.out.println(Reha.proghome+"defaults/"+vz+"/"+dateien[i]);
+				System.out.println(Reha.proghome+vz+"/"+sIK+"/"+dateien[i]);
 				e.printStackTrace();
 			}
 		}

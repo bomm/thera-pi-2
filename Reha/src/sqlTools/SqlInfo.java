@@ -289,7 +289,7 @@ public class SqlInfo {
 		}
 		try{
 			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
-			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium;
+			String sstmt = "select "+feld+" from "+tabelle+kriterium;
 			rs = stmt.executeQuery(sstmt);
 			if(rs.next()){
 				 retvec.add( (rs.getString(1)==null  ? "" :  rs.getString(1)) );						 
@@ -445,7 +445,8 @@ public class SqlInfo {
 			Reha.thisClass.conn.setAutoCommit(false);
 			//String numcmd = nummer+",id";
 			////System.out.println("numcmd = "+numcmd);
-			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
+			//numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
+			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", " FOR UPDATE");
 			////System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -487,7 +488,7 @@ public class SqlInfo {
 			Reha.thisClass.conn.setAutoCommit(false);
 			//String numcmd = nummer+",id";
 			////System.out.println("numcmd = "+numcmd);
-			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
+			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", " FOR UPDATE");
 			////System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

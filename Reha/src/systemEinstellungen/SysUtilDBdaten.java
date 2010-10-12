@@ -13,7 +13,10 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -28,6 +31,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
+import sqlTools.SqlInfo;
 import systemTools.JRtaTextField;
 import systemTools.Verschluesseln;
 
@@ -193,7 +197,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 			speichernDBMandant();
 		}
 		if(e.getActionCommand().equals("testen")){
-			testenDBMandant();
+			testenDBMandant(getSelectedIK());
 		}		
 		if(e.getActionCommand().equals("neutyp")){
 			JOptionPane.showMessageDialog(null,"Die Aufnahme einer 'Nicht-MySQL-Datenbank' wird erst später verfügbar sein");
@@ -207,14 +211,29 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		}
 					
 	}
-	private void speichernDBMandant(){
-		String siniverz = null;
+	private String getSelectedIK(){
+		String ret = null;
 		String smandant = ((String) mandant.getSelectedItem()).trim();
 		for(int i = 0; i < SystemConfig.Mandanten.size();i++){
 			if(SystemConfig.Mandanten.get(i)[1].equals(smandant)){
-				siniverz = SystemConfig.Mandanten.get(i)[0];
+				ret = SystemConfig.Mandanten.get(i)[0];
+				break;
 			}
 		}
+		return ret;
+	}
+	private void speichernDBMandant(){
+		String siniverz = null;
+		//String smandant = ((String) mandant.getSelectedItem()).trim();
+		/*
+		for(int i = 0; i < SystemConfig.Mandanten.size();i++){
+			if(SystemConfig.Mandanten.get(i)[1].equals(smandant)){
+				siniverz = SystemConfig.Mandanten.get(i)[0];
+				break;
+			}
+		}
+		*/
+		siniverz = getSelectedIK();
 		String ss1,ss2,ss3,ss4,ss5,ss6,ss7;
 		ss1 = ((String) dbtyp.getSelectedItem()).trim();
 		ss2 = (treiber.getText().trim().equals("") ? "keineAngaben" : treiber.getText().trim());
@@ -258,8 +277,6 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 					"werden erst nach dem Neustart der ->Software<- wirksam\n\n"+
 					"Ein Neustart des Computers ist nicht notwendig.");
 		}
-
-		
 	}
 	private void neuerDBMandant(){
 		////System.out.println("In Mandant einstellen="+mandant.getSelectedItem());
@@ -279,7 +296,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		port.setText(SystemConfig.DBTypen.get(typ)[2]);
 	}
 
-	private void testenDBMandant(){
+	private void testenDBMandant(String selectedMandantIK){
 		String ss1,ss2,ss3,ss4,ss5,ss6,ss7;
 		ss1 = ((String) dbtyp.getSelectedItem()).trim();
 		ss2 = (treiber.getText().trim().equals("") ? "keineAngaben" : treiber.getText().trim());
@@ -315,6 +332,38 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 			Connection conn = (Connection) DriverManager.getConnection(skontakt,ss6,ss7);
 			JOptionPane.showMessageDialog(null,"Glückwunsch - die Datenbankparameter sind in Ordnung.\n"+
 					"Kontakt zur Datenbank konnte hergestellt werden!");
+			Statement stmt = null;
+			ResultSet rs = null;
+			try {
+				stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+				            ResultSet.CONCUR_UPDATABLE );
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return;
+			}
+			rs = stmt.executeQuery("select mandant from nummern LIMIT 1");
+			if(!rs.next()){
+		   		String cmd = "insert into nummern set pat='1',kg='1',ma='1',er='1',"+
+	    		"lo='1',rh='1',rnr='1',esol='1',bericht='1',afrnr='1',rgrnr='1',doku='1',"+
+	    		"dfue='1',mandant='"+selectedMandantIK+"'";
+		   		stmt.execute(cmd);
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
 			conn.close();
 			conn = null;
 		} catch (SQLException e) {

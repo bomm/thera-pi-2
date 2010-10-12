@@ -298,7 +298,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-10-08/01-DB=";
+	public static String aktuelleVersion = "V=2010-10-11/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -2067,13 +2067,13 @@ public void starteTimer(){
 	Reha.timerLaeuft = true;
 }
 public static void testeNummernKreis(){
-	String cmd = "select mandant from nummern where mandant = '"+Reha.aktIK+"' LIMIT 1";
+	String cmd = "select mandant from nummern LIMIT 1";
 	Vector<Vector<String>> vecnummern = SqlInfo.holeFelder(cmd);
 	if(vecnummern.size() <= 0){
 		cmd = "insert into nummern set pat='1',kg='1',ma='1',er='1',"+
 		"lo='1',rh='1',rnr='1',esol='1',bericht='1',afrnr='1',rgrnr='1',doku='1',"+
 		"dfue='1',mandant='"+Reha.aktIK+"'";
-		System.out.println(cmd);
+		//System.out.println(cmd);
 		SqlInfo.sqlAusfuehren(cmd);
 	}
 }
