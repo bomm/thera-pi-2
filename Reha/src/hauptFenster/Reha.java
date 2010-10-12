@@ -323,16 +323,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			aktIK = split[0];
 			aktMandant = split[1];
 			if(args.length > 1){
-
 				for(int i = 1; i < args.length;i++){
 					try{
-						aktMandant = aktMandant+" "+args[i];
+						aktMandant += " "+args[i];
 					}catch(NullPointerException ex){
-						
+						aktMandant = split[1];
 					}
 				}
-
-
 			}
 		}else{
 			INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
