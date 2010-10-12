@@ -322,6 +322,18 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			String[] split = args[0].split("@");
 			aktIK = split[0];
 			aktMandant = split[1];
+			if(args.length >= 1){
+
+				for(int i = 1; i < args.length;i++){
+					try{
+						aktMandant = aktMandant+" "+args[i];
+					}catch(NullPointerException ex){
+						
+					}
+				}
+
+
+			}
 		}else{
 			INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
 			int DefaultMandant = inif.getIntegerProperty("TheraPiMandanten", "DefaultMandant");

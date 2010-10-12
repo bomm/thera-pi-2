@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -65,9 +66,10 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 	     add(getVorlagenSeite());
 		return;
 	}
-	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	
 	private JPanel getVorlagenSeite(){
+		try{
 		
 		knopf2 = new JButton("abbrechen");
 		knopf2.setPreferredSize(new Dimension(70, 20));
@@ -105,7 +107,11 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		for(int i = 0; i < SystemConfig.DBTypen.size();i++){
 			dbtyp.addItem(SystemConfig.DBTypen.get(i)[0]);
 		}
-		dbtyp.setSelectedItem(SystemConfig.hmDBMandant.get(Reha.aktMandant).get(0));
+		try{
+			dbtyp.setSelectedItem(SystemConfig.hmDBMandant.get(Reha.aktMandant).get(0));
+		}catch(Exception ex){
+			
+		}
 		dbtyp.setActionCommand("dbtyp");
 		dbtyp.addActionListener(this);
 		////System.out.println("DBType von "+Reha.aktMandant+"= "+SystemConfig.hmDBMandant.get(Reha.aktMandant).get(0));
@@ -164,9 +170,18 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		builder.addSeparator("", cc.xyw(1,19,6));
 		builder.add(knopf2, cc.xy(4,21));
 		builder.add(knopf1, cc.xy(6, 21));
-		
-		
 		return builder.getPanel();
+		}catch(Exception ex){
+			StackTraceElement[] err = ex.getStackTrace();
+			StringBuffer buf = new StringBuffer();
+			for(int i = 0; i < err.length;i++){
+				buf.append(err[i].toString()+"\n");
+			}
+			JOptionPane.showMessageDialog(null,buf.toString());
+			JOptionPane.showMessageDialog(null, SystemConfig.hmDBMandant.toString());
+		}
+		
+		return null;
 	}
 
 	@Override
