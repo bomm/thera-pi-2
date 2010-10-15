@@ -65,9 +65,7 @@ public class MySqlTab  extends JXPanel implements ChangeListener{
 		tab4.setName("Seite4");
 		sqlTab.add("<html><font size='5' >&nbsp;4 -  <font color='e77817'>Thera-Pi</font> Eigene Firma (IK) einrichten&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/application-exit.png' width='32' height='32'></font></html>",tab4);
 		Component[] comp = sqlTab.getComponents();
-		for (int i = 0; i < comp.length;i++){
-			System.out.println(comp[i]);
-		}
+		
 		
 		
 		
@@ -114,10 +112,10 @@ public class MySqlTab  extends JXPanel implements ChangeListener{
 	public void setSeite4Ok(boolean ok){
 		if(ok){
 			sqlTab.setTitleAt(3, "<html><font size='5' >&nbsp;4 -  <font color='e77817'>Thera-Pi</font> Eigene Firma (IK) einrichten&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/clean.png' width='32' height='32'></font></html>");
-			TheraPiDbAdmin.seite3Ok = true;
+			TheraPiDbAdmin.seite4Ok = true;
 		}else{
 			sqlTab.setTitleAt(3, "<html><font size='5' >&nbsp;4 -  <font color='e77817'>Thera-Pi</font> Eigene Firma (IK) einrichten&nbsp;<img src='file:///"+TheraPiDbAdmin.proghome+"icons/application-exit.png' width='32' height='32'></font></html>");
-			TheraPiDbAdmin.seite3Ok = false;
+			TheraPiDbAdmin.seite4Ok = false;
 		}
 	}
 	public void setParams(String db,String user,String pw){

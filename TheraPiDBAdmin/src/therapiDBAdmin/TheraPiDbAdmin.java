@@ -23,7 +23,7 @@ public class TheraPiDbAdmin implements WindowListener {
 	public static JFrame thisFrame = null;
 	TheraPiDbAdmin thisClass = null;
 	public static String proghome = null;
-	public static boolean  seite1Ok = false,seite2Ok = false,seite3Ok = false; 
+	public static boolean  seite1Ok = false,seite2Ok = false,seite3Ok = false,seite4Ok = false; 
 
 	
 	public static void main(String[] args) {

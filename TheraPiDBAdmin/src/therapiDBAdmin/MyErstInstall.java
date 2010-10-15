@@ -21,6 +21,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
@@ -238,77 +239,120 @@ public class MyErstInstall extends JXPanel{
 		return ret;
 	}
 	private void doUmsetzen(){
-		boolean allesok = true;
-		String vz = TheraPiDbAdmin.proghome;
-		String[] copySource = {vz+"ini/510841109/",vz+"vorlagen/510841109/",vz+"edifact/510841109/",
-				vz+"keystore/510841109/",vz+"urlaub/510841109/",vz+"temp/510841109/"};
+		try{
+			boolean allesok = true;
+			String vz = TheraPiDbAdmin.proghome;
+			String[] copySource = {vz+"ini/510841109/",vz+"vorlagen/510841109/",vz+"edifact/510841109/",
+					vz+"keystore/510841109/",vz+"urlaub/510841109/",vz+"temp/510841109/"};
 
-		String[] copyTarget = {vz+"ini/"+tfs[0].getText().trim()+"/",vz+"vorlagen/"+tfs[0].getText().trim()+"/",vz+"edifact/"+tfs[0].getText().trim()+"/",
-				vz+"keystore/"+tfs[0].getText().trim()+"/",vz+"urlaub/"+tfs[0].getText().trim()+"/",vz+"temp/"+tfs[0].getText().trim()+"/"};
-		testOderMacheVz(copyTarget);
-		// Jetzt die neuen Verzeichnisse beschreiben
-		File defvz = null;
-		String[] dateien = null;
-		for(int j = 0; j < copySource.length;j++){
-			defvz = new File(copySource[j]);
-			dateien = defvz.list();
-			for(int i = 0 ;i < dateien.length;i++){
-				try {
-					lab1.setText("kopiere Datei");
-					lab2.setText(dateien[i]);
-
-					if(copySource[j].indexOf("keystore")<0){
-						copyFile(new File(copySource[j]+dateien[i]),
-								new File(copyTarget[j]+dateien[i]),1024,true);
+			String[] copyTarget = {vz+"ini/"+tfs[0].getText().trim()+"/",vz+"vorlagen/"+tfs[0].getText().trim()+"/",vz+"edifact/"+tfs[0].getText().trim()+"/",
+					vz+"keystore/"+tfs[0].getText().trim()+"/",vz+"urlaub/"+tfs[0].getText().trim()+"/",vz+"temp/"+tfs[0].getText().trim()+"/"};
+			testOderMacheVz(copyTarget);
+			// Jetzt die neuen Verzeichnisse beschreiben
+			File defvz = null;
+			String[] dateien = null;
+			for(int j = 0; j < copySource.length;j++){
+				defvz = new File(copySource[j]);
+				System.out.println("Lese Verzeichnis: "+copySource[j]);
+				dateien = defvz.list();
+				System.out.println("Anzahl Dateien im Verzeichnis "+copySource[j]+": "+dateien.length+" Dateien");
+				for(int i = 0 ;i < dateien.length;i++){
+					try {
+						System.out.println("Kopiere Dateien Nr. "+i+": "+dateien[i]);
+						lab1.setText("kopiere Datei");
+						lab2.setText(dateien[i]);
+						if(copySource[j].indexOf("keystore")<0){
+							copyFile(new File(copySource[j]+dateien[i]),
+									new File(copyTarget[j]+dateien[i]),1024,true);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+						allesok = false;
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					allesok = false;
 				}
 			}
-		}
-		if(!allesok){
-			JOptionPane.showMessageDialog(null, "Umsetzung auf Mandant "+tfs[0].getText().trim()+" fehlgeschlagen!\n\nFehlertext = Dateien kopieren\n\n+Bitte melden Sie sich im Forum und geben Sie den Fehlertext bekannt.");
-		}
-		//rehajava.ini beschreiben		
-		String decrypted = MySqlTab.neuesPasswort;
-		Verschluesseln man = Verschluesseln.getInstance();
-		man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBPasswort1", man.encrypt(decrypted));
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "AnzahlConnections", "1");
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBKontakt1", 
-				"jdbc:mysql://"+MySqlTab.iPAdresse+":3306/"+MySqlTab.neuerDBName);
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBName1",MySqlTab.neuerDBName);		
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBBenutzer1",MySqlTab.neuerUser);
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBServer1",MySqlTab.iPAdresse);
-		//firmen.ini beschreiben
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"firmen.ini", "Firma", "Ik",tfs[0].getText().trim() );
-		RWJedeIni.schreibeIniDatei(copyTarget[0]+"firmen.ini", "Firma", "Ikbezeichnung",tfs[1].getText().trim() );
-		//mandanten.ini beschreiben
-		String mandantenini = TheraPiDbAdmin.proghome+"ini/mandanten.ini";
-		RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "AnzahlMandanten","1" );
-		RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "AuswahlImmerZeigen","1" );
-		RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "DefaultMandant","1" );
-		RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "LetzterMandant","1" );
-		RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "MAND-IK1",tfs[0].getText().trim() );
-		RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "MAND-NAME1",tfs[1].getText().trim() );
-		
-		String[] stitel = {"Firma1","Firma2","Anrede","Nachname","Vorname",
-				"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
-				"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4"};
-		for(int i = 0; i < stitel.length;i++){
-			RWJedeIni.schreibeIniDatei(copyTarget[0]+"firmen.ini", "Firma",stitel[i], "" );
-		}
+			if(!allesok){
+				JOptionPane.showMessageDialog(null, "Umsetzung auf Mandant "+tfs[0].getText().trim()+" fehlgeschlagen!\n\nFehlertext = Dateien kopieren\n\n+Bitte melden Sie sich im Forum und geben Sie den Fehlertext bekannt.");
+			}
+			System.out.println("*************************************************************************");
+			System.out.println("Verzeichnisse wurden angelegt, alle erforderlichen Dateien wurden kopiert");
+			//rehajava.ini beschreiben	
+			System.out.println("*************************************************************************");
+			System.out.println("Beginne mit der Umsetzung der rehajava.ini");
 
-		eltern.setSeite4Ok(true);
-		JOptionPane.showMessageDialog(null, "IK erfolgreich umgesetzt, Thera-Pi wird nun gestartet....\n\n"+
-				"Das Passwort für den Thera-Pi-Zugang lautet: -> superuser <-");
-		try {
-			Runtime.getRuntime().exec("java -jar TheraPi.jar");
-		} catch (IOException e) {
-			e.printStackTrace();
+			String decrypted = MySqlTab.neuesPasswort;
+			Verschluesseln man = Verschluesseln.getInstance();
+			man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBPasswort1", man.encrypt(decrypted));
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "AnzahlConnections", "1");
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBKontakt1", 
+					"jdbc:mysql://"+MySqlTab.iPAdresse+":3306/"+MySqlTab.neuerDBName);
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBName1",MySqlTab.neuerDBName);		
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBBenutzer1",MySqlTab.neuerUser);
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"rehajava.ini", "DatenBank", "DBServer1",MySqlTab.iPAdresse);
+			//firmen.ini beschreiben
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"firmen.ini", "Firma", "Ik",tfs[0].getText().trim() );
+			RWJedeIni.schreibeIniDatei(copyTarget[0]+"firmen.ini", "Firma", "Ikbezeichnung",tfs[1].getText().trim() );
+			//mandanten.ini beschreiben
+			String mandantenini = TheraPiDbAdmin.proghome+"ini/mandanten.ini";
+			RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "AnzahlMandanten","1" );
+			RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "AuswahlImmerZeigen","1" );
+			RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "DefaultMandant","1" );
+			RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "LetzterMandant","1" );
+			RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "MAND-IK1",tfs[0].getText().trim() );
+			RWJedeIni.schreibeIniDatei(mandantenini, "TheraPiMandanten", "MAND-NAME1",tfs[1].getText().trim() );
+
+			System.out.println("*************************************************************************");
+			System.out.println("Umsetzung der rehajava.ini beendet");
+			System.out.println("*************************************************************************");
+			System.out.println("Lösche die Angaben der firmen.ini");
+			
+			String[] stitel = {"Firma1","Firma2","Anrede","Nachname","Vorname",
+					"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
+					"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4"};
+			for(int i = 0; i < stitel.length;i++){
+				RWJedeIni.schreibeIniDatei(copyTarget[0]+"firmen.ini", "Firma",stitel[i], "" );
+			}
+			System.out.println("*************************************************************************");
+			System.out.println("Aufbereitung der firmen.ini beendet");
+			try{
+				SwingUtilities.invokeLater(new Runnable(){
+					public void run(){
+						eltern.setSeite4Ok(true);					
+					}
+				});
+			}catch(Exception ex){
+				
+			}
+			JOptionPane.showMessageDialog(null, "IK erfolgreich umgesetzt, Thera-Pi wird nun gestartet....\n\n"+
+					"Das Passwort für den Thera-Pi-Zugang lautet: -> superuser <-");
+			try {
+				System.out.println("*************************************************************************");
+				System.out.println("Starte TheraPi");
+				
+				Runtime.getRuntime().exec("java -jar TheraPi.jar");
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Starten von Thera-Pi fehlgeschlagen!!!\n\n"+
+				"Programm wird beendet");
+
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Umsetzung auf eigenes IK fehlgeschlagen!!!\n\n"+
+			"Programm wird beendet");
 		}
-		System.exit(0);
+		System.out.println("*************************************************************************");
+		System.out.println("Beende PrepareTheraPi.jar");
+		try{
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					System.exit(0);					
+				}
+			});
+		}catch(Exception ex){
+			
+		}
 		
 	}
 	private void testOderMacheVz(String[] vzs){
