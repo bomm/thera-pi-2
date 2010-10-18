@@ -443,7 +443,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
  		}
  		if( (felder2.get(0).equals("")) || (felder2.get(1).equals("")) || (felder2.get(2).equals(""))
  				|| (felder2.get(3).equals("")) || (felder2.get(4).equals("")) || (!emailaddyok)){
- 			String htmlMeldung = "<html>Achtung mit den ermittelten Daten keine maschinenlesbare Abrechnung<br>"+
+ 			String htmlMeldung = "<html>Achtung mit den ermittelten Daten kann eine maschinenlesbare Abrechnung<br>"+
  			"nach §302 SGB V <b>nicht durchgeführt</b>werden</html>";
  			JOptionPane.showMessageDialog(null,htmlMeldung );
  		}

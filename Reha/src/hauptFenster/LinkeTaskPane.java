@@ -922,7 +922,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		if(vec.size() == 0){
 			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List<?>) new ArrayList<String>() );
 			if(vec.size() == 0){
-				JOptionPane.showMessageDialog(null,"Rezept weder im aktuellen Rezeptstamm nochin derHistorie vorhanden!\nIst die eingetragene Rzeptnummer korrekt?");
+				JOptionPane.showMessageDialog(null,"Rezept weder im aktuellen Rezeptstamm nochin derHistorie vorhanden!\nIst die eingetragene Rezeptnummer korrekt?");
 				return;
 			}else{
 				JOptionPane.showMessageDialog(null,"Rezept ist bereits abgerechnet und somit in der Historie des Patienten!");

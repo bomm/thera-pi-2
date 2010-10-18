@@ -3526,7 +3526,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 		}
 		if(vec.size() == 0){
-			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rzeptnummer korrekt?");
+			JOptionPane.showMessageDialog(null,"Rezept nicht gefunden!\nIst die eingetragene Rezeptnummer korrekt?");
 			return;
 		}
 		
