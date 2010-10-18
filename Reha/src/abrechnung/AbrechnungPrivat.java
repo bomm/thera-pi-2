@@ -650,8 +650,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 				// Keine Kilometer Im Patientenstamm hinterlegt
 				if( (pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(3)).trim().equals("")){
 					//Wegegeldpauschale ist nicht vorgesehen und Kilometer sind null - ganz schön blöd....
-					JOptionPane.showMessageDialog(null, "Im Patientenstamm sind keine Kilometer hinterlegt abert pauschale\n\n Wegegeldberechnung"+
-							"sind für diese Tarifgruppe nicht vorgesehen.\nWegegeld wird nicht abgerechnet!");
+					JOptionPane.showMessageDialog(null, "Im Patientenstamm sind keine Kilometer hinterlegt und eine pauschale\n"+
+							"Wegegeldberechnung ist für diese Tarifgruppe nicht vorgesehen.\nWegegeld wird nicht abgerechnet!");
 				}else{
 					preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
 					originalAnzahl.add(hbanzahl);

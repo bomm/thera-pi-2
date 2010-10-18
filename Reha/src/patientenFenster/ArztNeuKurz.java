@@ -115,7 +115,7 @@ public class ArztNeuKurz extends JXPanel implements ActionListener,KeyListener,F
 		jpan.add(tfs[6],cc.xyw(4, 10,3));
 
 		
-		jpan.addSeparator("Arztidetifikation",cc.xyw(1, 12, 6));
+		jpan.addSeparator("Arztidentifikation",cc.xyw(1, 12, 6));
 
 		
 		jpan.add(new JLabel("LANR"),cc.xy(1, 14));

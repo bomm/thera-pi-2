@@ -157,7 +157,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
-		builder.addLabel("Krezen Sie an welche Praxisart(en) Sie betreiben", cc.xyw(1, 1,6));
+		builder.addLabel("Kreuzen Sie an welche Praxisart(en) Sie betreiben", cc.xyw(1, 1,6));
 		builder.addLabel("Physio-Praxis", cc.xyw(4, 3, 2));
 		builder.add(heilmittel[0], cc.xy(6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addLabel("Massage-Praxis", cc.xyw(4, 5, 2));

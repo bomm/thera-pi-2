@@ -93,7 +93,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 				@Override
 				protected Void doInBackground() throws Exception {
 					if(tfs[1].getText().trim().equals("")){
-						JOptionPane.showMessageDialog(null, "Also der Name des neuen Krankenkasse sollte wenigstens angegeben werden!");
+						JOptionPane.showMessageDialog(null, "Also der Name der neuen Krankenkasse sollte wenigstens angegeben werden!");
 						return null;
 					}
 					int iid;
