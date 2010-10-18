@@ -462,7 +462,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						} catch (MessagingException e) {
 							e.printStackTrace();
 						}
-
 				   }
 				}
 			}
@@ -1802,21 +1801,25 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(anzterm <= 0){return;}
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
 				String vgldat2 = (String) dtermm.getValueAt(0,0);
+				String vgldat3 = (String) tabaktrez.getValueAt(currow, 4);
 				System.out.println(vgldat1+" / "+vgldat2);
 				/***Kann ausgeschaltet werden wenn die HMRCheck-Tabelle vollständig befüll ist**/
 				// ist ohnehin nur halblebig
 				int dummypeisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
-				long differenz = HMRCheck.hmrTageErmitteln(dummypeisgruppe,vgldat1,vgldat2);
+				long differenz = HMRCheck.hmrTageErmitteln(dummypeisgruppe,vgldat1,vgldat2,vgldat3);
 				if(differenz < 0){
 					JOptionPane.showMessageDialog(null, "Behandlungsbeginn ist vor dem Rezeptdatum!");
 					return;
 				}else if(differenz > 10){
-					int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-					//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
-					if(anfrage != JOptionPane.YES_OPTION){
-						return;
-					}else{
-						//Abgeschlossen trotz verspäteter Behandlungsbeginn;
+					//LetzterBeginn abhandeln
+					if(DatFunk.TageDifferenz(vgldat3, vgldat2) > 0){
+						int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!\nSpätester Behandlungsbeginn wurde ebenfalls überschritten\n\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+						//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
+						if(anfrage != JOptionPane.YES_OPTION){
+							return;
+						}else{
+							//Abgeschlossen trotz verspäteter Behandlungsbeginn;
+						}
 					}
 				}
 				/***/
@@ -1893,7 +1896,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							SystemPreislisten.hmPreise.get(diszi).get(Integer.parseInt(preisgruppe)-1),
 							Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(27)),
 							(Reha.thisClass.patpanel.vecaktrez.get(1)),
-							DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.vecaktrez.get(2))
+							DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.vecaktrez.get(2)),
+							DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.vecaktrez.get(40))
 							).check();
 					//System.out.println("Rückgabewert des HMR-Checks="+checkok);
 					if(!checkok){

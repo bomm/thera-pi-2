@@ -58,6 +58,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		this.mymouse = new DragWin(this);
 		this.jtp.addMouseListener(mymouse);
 		this.jtp.addMouseMotionListener(mymouse);
+		this.jtp.addMouseListener(this);
 		this.jtp.setContentContainer(getContent(list));
 		this.jtp.setTitleForeground(Color.WHITE);
 		this.jtp.setTitle(titel);

@@ -27,6 +27,7 @@ public class HMRCheck {
 	int rezeptart;
 	String reznummer = null;
 	String rezdatum = null;
+	String letztbeginn = null;
 	boolean AdRrezept = false;
 	boolean folgerezept = false;
 	boolean neurezept = false;
@@ -41,7 +42,7 @@ public class HMRCheck {
 	String[] nurueber18 = {"ZN2a","ZN2b","ZN2c","EN2"};
 	
 	public HMRCheck(String indi,int idiszi,Vector<Integer> vecanzahl,Vector<String>vecpositionen,
-			int xpreisgruppe,Vector<Vector<String>> xpreisvec,int xrezeptart,String xreznr,String xrezdatum){
+			int xpreisgruppe,Vector<Vector<String>> xpreisvec,int xrezeptart,String xreznr,String xrezdatum,String xletztbeginn){
 		indischluessel = indi;
 		disziplin = idiszi;
 		anzahl = vecanzahl;
@@ -55,7 +56,8 @@ public class HMRCheck {
 		if(reznummer.equals("")){
 			neurezept = true;
 		}
-		rezdatum = xrezdatum; 
+		rezdatum = xrezdatum;
+		letztbeginn = xletztbeginn;
 		//aktualisiereHMRs();
 	}
 	/*
@@ -169,45 +171,54 @@ public class HMRCheck {
 			
 			//Jetzt auf Rezeptbeginn testen
 			if(neurezept){
-				//long differenz = DatFunk.TageDifferenz(this.rezdatum,DatFunk.sHeute()); 
-				long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute());
+				//LetzterBeginn abhandeln
+				long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute(),letztbeginn);
 				if(differenz < 0){
 					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
 					Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
 					testok = false;
 				}else if( differenz >10){
-					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Das Rezept ist bislang <font color='#ff0000'>"+
-					Long.toString(differenz)+" Tage </font> alt</b><br><br>";
-					testok = false;
+					if(DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() ) > 0){
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tage </font><br>" +
+						"Behandlungsbeginn spätestens am: <font color='#ff0000'>"+letztbeginn+"</font> wurde ebenfalls überschritten</b><br><br>";
+						testok = false;
+					}
 				}
 			}else{
 				String cmd = "select termine from verordn where rez_nr='"+reznummer+"' LIMIT 1";
 				String termine = SqlInfo.holeFeld(cmd).get(0);
 				//Keine Termine notiert
 				if(termine.trim().equals("")){
-					//long differenz = DatFunk.TageDifferenz(this.rezdatum,DatFunk.sHeute()); 
-					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute());
+					//LetzterBeginn abhandeln
+					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute(),letztbeginn);
 					if(differenz < 0){
 						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
 						Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
 						testok = false;
 					}else if( differenz >10){
-						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Das Rezept ist bislang <font color='#ff0000'>"+
-						Long.toString(differenz)+" Tage </font> alt</b><br><br>";
-						testok = false;
+						if(DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() ) > 0){
+							fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+							Long.toString(differenz)+" Tage </font><br>" +
+							"Behandlungsbeginn spätestens am: <font color='#ff0000'>"+letztbeginn+"</font> wurde ebenfalls überschritten</b><br><br>";
+							testok = false;
+						}
 					}
 				}else{
-					//long differenz = DatFunk.TageDifferenz(this.rezdatum,
-							//RezTools.holeEinzelTermineAusRezept(null, termine).get(0)	);
-					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,RezTools.holeEinzelTermineAusRezept(null, termine).get(0));
+					//LetzterBeginn abhandeln
+					String erstbehandlung = RezTools.holeEinzelTermineAusRezept(null, termine).get(0);
+					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,erstbehandlung,letztbeginn);
 					if(differenz < 0){
 						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
 						Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
 						testok = false;
 					}else if( differenz >10){
-						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
-						Long.toString(differenz)+" Tage </font></b><br><br>";
-						testok = false;
+						if(DatFunk.TageDifferenz(letztbeginn,erstbehandlung ) > 0){
+							fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+							Long.toString(differenz)+" Tage </font><br>" +
+							"Behandlungsbeginn spätestens am: <font color='#ff0000'>"+letztbeginn+"</font> wurde ebenfalls überschritten</b><br><br>";
+							testok = false;
+						}
 					}
 
 				}
@@ -228,16 +239,6 @@ public class HMRCheck {
 		return meldung;
 		
 	}
-	/*
-	private void showDialog(boolean vorrangig,String heilmittel,String hmpos,String[] positionen){
-		String meldung = "<html>"+"Bei dem Indikationsschlüssel <b><font color='#ff0000'>"+indischluessel+"</font></b> ist das "+(vorrangig ? "vorrangige " : "ergänzende")+
-		" Heilmittel<br><br>--> <b><font color='#ff0000'>"+heilmittel+"</font></b> <-- nicht erlaubt!<br><br><br>"+
-		"Mögliche "+(vorrangig ? "vorrangige " : "ergänzende")+" Heilmittel sind:<br><b><font color='#ff0000'>"+
-		getErlaubteHeilmittel(positionen)+"</font></b></html>";
-		JOptionPane.showMessageDialog(null, meldung);
-		
-	}
-	*/
 	/************************/
 	private String getErlaubteHeilmittel(String[] heilmittel){
 		StringBuffer buf = new StringBuffer();
@@ -280,7 +281,7 @@ public class HMRCheck {
 		}
 	}
 	*/
-	public static long hmrTageErmitteln(int preisgruppe,String rezdatum,String testdatum){
+	public static long hmrTageErmitteln(int preisgruppe,String rezdatum,String testdatum,String letzter){
 		long differenz = DatFunk.TageDifferenz(rezdatum, testdatum	);
 		int wotag = DatFunk.TagDerWoche(rezdatum);
 		//System.out.println("Tag der Woche der Rezeptausstellung = "+wotag);

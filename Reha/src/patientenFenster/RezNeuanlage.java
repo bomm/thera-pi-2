@@ -761,7 +761,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					preisvec,
 					jcmb[1].getSelectedIndex(),
 					(this.neu ? "" : this.vec.get(1).trim()),
-					jtf[2].getText().trim()
+					jtf[2].getText().trim(),
+					(jtf[3].getText().trim().equals(".  .") ? jtf[2].getText().trim() : jtf[3].getText().trim())
 					).check();
 			if(checkok){
 				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
