@@ -673,7 +673,6 @@ private void auswertenSysUtil(String util){
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
 				}
 			}
 		}
