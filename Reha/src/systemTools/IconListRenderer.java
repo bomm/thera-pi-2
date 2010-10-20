@@ -4,12 +4,15 @@ import java.awt.Component;
 import java.util.Map;
 
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
 public class IconListRenderer extends DefaultListCellRenderer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3644063499689013575L;
 	private Map<Object, ImageIcon> icons = null;
 	 
 	public IconListRenderer(Map<Object, ImageIcon> icons) {

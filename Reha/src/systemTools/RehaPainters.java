@@ -3,27 +3,19 @@ package systemTools;
 
 
 
-import org.jdesktop.swingx.painter.Painter;
-
-
-
-
-
 import grad.GradientPainter;
 import grad.GradientSegment;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.LinearGradientPaint;
-//import java.awt.Paint;
 import java.awt.Point;
 import java.awt.SystemColor;
-import java.awt.geom.Point2D;
 
-
-
-//import org.apache.batik.ext.awt.LinearGradientPaint;
-import org.jdesktop.swingx.painter.*;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.GlossPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+import org.jdesktop.swingx.painter.Painter;
 
 public final class RehaPainters {
 

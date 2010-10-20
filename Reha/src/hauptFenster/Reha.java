@@ -125,6 +125,7 @@ import systemTools.TestePatStamm;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
+import testForUpdates.TestForUpdates;
 import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
 import verkauf.Verkauf;
@@ -304,6 +305,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static Timer fangoTimer = null;
 	public static boolean timerLaeuft = false;
 	public static boolean timerInBearbeitung = false;
+	
+	public static boolean updatesBereit = false;
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
@@ -519,6 +522,33 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
+	}
+	public void beendeSofort(){
+		this.jFrame.removeWindowListener(this);
+		if(Reha.thisClass.conn != null){
+			try {
+				Reha.thisClass.conn.close();
+				System.out.println("Datenbankverbindung geschlossen");
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		if(Reha.barcodeScanner != null){
+			try{
+				BarCodeScanner.serialPort.close();
+				Reha.barcodeScanner = null;
+				System.out.println("Serielle-Schnittstelle geschlossen");
+			}catch(NullPointerException ex){
+				
+			}
+		}
+		if(Reha.timerLaeuft){
+			Reha.fangoTimer.stop();
+			Reha.timerLaeuft = false;
+		}
+		System.exit(0);
+
 		System.exit(0);
 	}
 	
@@ -1043,6 +1073,27 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					jxLinks.add(new LinkeTaskPane(),BorderLayout.CENTER);
 					jxLinks.validate();
 					jFrame.getContentPane().validate();
+				}
+			}.start();
+			
+			
+			new Thread(){
+				public void run(){
+					try{
+						TestForUpdates tfupd = null;
+						tfupd = new TestForUpdates();
+						Reha.updatesBereit = tfupd.doFtpTest();
+						if(Reha.updatesBereit){
+							JOptionPane.showMessageDialog(null, "<html><b><font color='aa0000'>Es existieren Updates für Thera-Pi 1.0.</font></b><br><br>Bitte gehen Sie auf die Seite<br><br><b>System-Initialisierung -> 'Software-Updateservice'</b></html>");	
+						}
+					}catch(NullPointerException ex){
+						StackTraceElement[] element = ex.getStackTrace();
+						String cmd = "";
+						for(int i = 0; i < element.length;i++){
+							cmd = cmd+element[i]+"\n";
+						}
+						JOptionPane.showMessageDialog(null, "Suche nach Updates fehlgeschlagen!\nIst die Internetverbindung o.k.");
+					}
 				}
 			}.start();
 		}

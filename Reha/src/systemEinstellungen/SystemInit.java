@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -29,6 +30,7 @@ import org.jdesktop.swingx.JXPanel;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JSysteminitInternal;
+import theraPiUpdates.TheraPiUpdates;
 
 
 public class SystemInit extends JXPanel implements TreeSelectionListener{
@@ -656,6 +658,24 @@ private void auswertenSysUtil(String util){
 			jxRechts.revalidate();
 			cursorWait(false);
 			break;
+		}
+		if(util.equals("Software-Updateservice")){
+			if(!Reha.updatesBereit){
+				JOptionPane.showMessageDialog(null, "Aktuell sind keine Updates verfügbar");
+			}else{
+				int anfrage = JOptionPane.showConfirmDialog(null,
+						"<html>Es sind Updates verfügbar.<br>Um den Update-Explorer zu starten <b>muß Thera-Pi beendet werden</b>.<br>Wollen Sie den Update-Explorer jetzt ausführen und <b>Thera-Pi beenden</b>?</html>",
+						"Achtung: Wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
+				if(anfrage == JOptionPane.YES_OPTION){
+					try {
+						Runtime.getRuntime().exec("java -jar "+Reha.proghome+"TheraPiUpdates.jar");
+						Reha.thisClass.beendeSofort();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
 		}
 		
 		

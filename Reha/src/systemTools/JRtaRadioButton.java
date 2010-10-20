@@ -9,13 +9,16 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
 
 
 public class JRtaRadioButton extends JRadioButton implements ActionListener,PropertyChangeListener,FocusListener,KeyListener{
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5693155648152073997L;
 public JRtaRadioButton(){
 	super();
 	addKeyListener(this);

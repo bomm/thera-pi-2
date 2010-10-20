@@ -42,7 +42,7 @@ import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemUtil;
 import systemTools.PassWort;
-import systemTools.SplashPanel;
+
 import systemTools.WinNum;
 import terminKalender.DatFunk;
 import terminKalender.TerminFenster;
@@ -883,43 +883,6 @@ public static void PasswortDialog(int setPos) {
 		System.exit(0);
 	}
 }
-/**************SplashPanel Echtfunktion*************************/
-public static RehaSmartDialog SplashPanelDialog(int setPos) {
-	final int xsetPos = setPos;
-
-    SwingUtilities.invokeLater(new Runnable(){
- 	   public  void run()
- 	   {
-
- 		   RehaTP jtp = new RehaTP(xsetPos); 
- 		   String name = "SplashPanel"+WinNum.NeueNummer();
- 		   jtp.setBorder(null);
- 		   jtp.setTitle("Passwort-Eingabe");
- 		   jtp.setzeName(name);
- 		   jtp.setContentContainer(new SplashPanel());
- 		   jtp.getContentContainer().setName(name);
- 		   jtp.setVisible(true);
-
-
- 		   RehaSmartDialog rSmart = new RehaSmartDialog(null,name);
- 		   rSmart.setModal(true);
- 		   rSmart.setSize(new Dimension(700,300));
- 		   //	rSmart.getTitledPanel().setTitle("Passwort-Eingabe");
- 		   rSmart.setContentPanel(jtp.getContentContainer());
- 		   Toolkit toolkit = Toolkit.getDefaultToolkit();
- 		   Dimension screenSize = toolkit.getScreenSize();
- 		   //	Calculate the frame location
- 		   int x = (screenSize.width - rSmart.getWidth()) / 2;
- 		   int y = (screenSize.height - rSmart.getHeight()) / 2;
- 		   rSmart.setLocation(x, y); 
- 		   rSmart.setVisible(true);
- 		   ProgLoader.xsmart = rSmart;	
- 	   }
- 	});
- 		   
-    return ProgLoader.xsmart;
-}
-
 
 /**************System-Initialisierung*********************/
 public void SystemInit(int setPos,String sparam) {
