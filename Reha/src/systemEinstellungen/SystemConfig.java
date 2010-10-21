@@ -1112,8 +1112,8 @@ public class SystemConfig {
 					hmSysIcons.put(bilder[i], new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])));
 				}
 			}catch(Exception ex){
-				System.out.println("Fehler bei Bild: "+bilder[i]+" Bilddatei existiert nicht");
-				ex.printStackTrace();
+				System.out.println("Fehler!!!!!!!!! bei Bild: "+bilder[i]+". Fehler->Bilddatei existiert nicht");
+				//ex.printStackTrace();
 			}
 			ico = null;
 		}
