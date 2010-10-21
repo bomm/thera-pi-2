@@ -357,6 +357,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			public  void run(){
 				Process process;
 				try {
+					System.out.println("Starte RehaxSwing.jar");
 					process = new ProcessBuilder("java", "-jar",proghome+"RehaxSwing.jar").start();
 					InputStream is = process.getInputStream();
 					
@@ -364,11 +365,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					BufferedReader br = new BufferedReader(isr);
 				       
 					while ((br.readLine()) != null) {
-						
+						//System.out.println(br.readLine());
 					}
 					is.close();
 					isr.close();
 					br.close();
+					System.out.println("RehaxSwing beendet");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1076,9 +1078,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}
 			}.start();
 			
-			
-			new Thread(){
-				public void run(){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
 					try{
 						TestForUpdates tfupd = null;
 						tfupd = new TestForUpdates();
@@ -1094,10 +1096,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						}
 						JOptionPane.showMessageDialog(null, "Suche nach Updates fehlgeschlagen!\nIst die Internetverbindung o.k.");
 					}
+
+					return null;
 				}
-			}.start();
+				
+			}.execute();
 		}
-	
+		
+		
 		thisFrame = jFrame;
 		
 		jxLinks.setAlpha(0.3f);
@@ -2658,23 +2664,29 @@ class SocketClient {
 		}
 	}
 	private void serverStarten() throws IOException{
-		this.server = new Socket("localhost",1234);
-		OutputStream output = (OutputStream) server.getOutputStream();
-		InputStream input = server.getInputStream();
+		try{
+			this.server = new Socket("localhost",1234);
+			OutputStream output = (OutputStream) server.getOutputStream();
+			InputStream input = server.getInputStream();
 
-		byte[] bytes = this.stand.getBytes();
+			byte[] bytes = this.stand.getBytes();
 
-		output.write(bytes);
-		output.flush();
-		int zahl = input.available();
-		if (zahl > 0){
-			byte[] lesen = new byte[zahl];
-			input.read(lesen);
+			output.write(bytes);
+			output.flush();
+			int zahl = input.available();
+			if (zahl > 0){
+				byte[] lesen = new byte[zahl];
+				input.read(lesen);
+			}
+		
+			server.close();
+			input.close();
+			output.close();
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
+		}catch (IOException e) {
+			e.printStackTrace();
 		}
-	
-		server.close();
-		input.close();
-		output.close();
 	}
 }
 class MyGradPanel extends JXPanel  {
