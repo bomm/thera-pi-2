@@ -1101,10 +1101,10 @@ public class SystemConfig {
 		int lang = bilder.length;
 		int i;
 		for(i = 0; i < lang; i++){
-			xscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleX");
-			yscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleY");
 			try{
 				////System.out.println(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i]));
+				xscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleX");
+				yscale = inif.getIntegerProperty("Icons", bilder[i]+"ScaleY");
 				if((xscale >0) && (yscale > 0)){
 					ico = new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])).getImage().getScaledInstance(xscale,yscale, Image.SCALE_SMOOTH);
 					hmSysIcons.put(bilder[i], new ImageIcon(ico));				
@@ -1112,7 +1112,7 @@ public class SystemConfig {
 					hmSysIcons.put(bilder[i], new ImageIcon(Reha.proghome+"icons/"+inif.getStringProperty("Icons", bilder[i])));
 				}
 			}catch(Exception ex){
-				//System.out.println("Fehler bei Bild "+bilder[i]);
+				System.out.println("Fehler bei Bild: "+bilder[i]+" Bilddatei existiert nicht");
 				ex.printStackTrace();
 			}
 			ico = null;
