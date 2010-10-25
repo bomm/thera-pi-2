@@ -61,7 +61,8 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private void fuelleTextFelder(){
-		String cmd = "select * from nummern where mandant = '"+Reha.aktIK+"' LIMIT 1";
+		//String cmd = "select * from nummern where mandant = '"+Reha.aktIK+"' LIMIT 1";
+		String cmd = "select * from nummern LIMIT 1";
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
 		if(vec.size() <= 0){
 			JOptionPane.showMessageDialog(null,"Achtung für den aktuellen Mandanten existiert noch kein Nummernkreis");
@@ -224,7 +225,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 	}
 	private void doSpeichern(){
 		String meldung = "Folgende Nummern wurden geändert\n";
-		String cmd = (!nummernkreisok ? "insert into nummer set " : "update nummer set ") ;
+		String cmd = (!nummernkreisok ? "insert into nummern set " : "update nummern set ") ;
 		int edited = 0;
 		for(int i = 0; i < 14; i++){
 			if(! tfs[i].getText().trim().equals(originale.get(i))){
@@ -234,7 +235,8 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 			}
 		}
 		if(edited > 0){
-			cmd = cmd+(!nummernkreisok ? "" : " where mandant = '"+Reha.aktIK+"' LIMIT 1");
+			cmd = cmd+ " LIMIT 1";
+			//cmd = cmd+(!nummernkreisok ? "" : " where mandant = '"+Reha.aktIK+"' LIMIT 1");
 			meldung = meldung+"\n\n"+"Diese Nummern abspeichern?"+"\n";
 			int frage = JOptionPane.showConfirmDialog(null, meldung, "Die geänderten Nummern abspeichern", JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.YES_OPTION){
