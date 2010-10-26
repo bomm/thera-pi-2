@@ -11,6 +11,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.jdesktop.swingworker.SwingWorker;
+
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
@@ -1416,6 +1418,26 @@ public class RezTools {
 			}
 		}
 		return ret;
+	}
+	/***************************************************/
+	
+	public static void fuelleVolleTabelle(final String reznr,final String rezbehandler){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					Vector<Vector<String>> vec = SqlInfo.holeFelder("select pat_intern,rez_datum,id from verordn where rez_nr = '"+reznr+"' LIMIT 1" );
+					String cmd = "insert into volle set rez_nr='"+reznr+"', "+
+					"pat_intern='"+vec.get(0).get(0)+"', behandler='"+rezbehandler+"', "+
+					"fertigam='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', "+
+					"rez_datum='"+vec.get(0).get(1)+"', rezid='"+vec.get(0).get(2)+"'";
+					SqlInfo.sqlAusfuehren(cmd);
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null,"Fehler bei der Ausführung 'fuelleVolleTabelle'");
+				}
+				return null;
+			}
+		}.execute();
 	}
 	
 	/***************************************************/

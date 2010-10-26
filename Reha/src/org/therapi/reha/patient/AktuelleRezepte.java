@@ -1420,6 +1420,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 
 				tabaktterm.setRowSelectionInterval(tanzahl-1, tanzahl-1);
+				try{
+					if(tanzahl== Integer.parseInt( Reha.thisClass.patpanel.vecaktrez.get(3))){
+						RezTools.fuelleVolleTabelle( ((String)Reha.thisClass.patpanel.vecaktrez.get(1)) , Reha.aktUser);					
+					}
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+				}
 				/*
 				int max = ((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().getMaximum();
 				

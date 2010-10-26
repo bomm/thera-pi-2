@@ -4288,7 +4288,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 					}else{
 						if(tvec.size() == (anzahl-1)){
-							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- jetzt voll!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten");	
+							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- jetzt voll!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten");
+							try{
+								RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));	
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+							}
 						}
 						termbuf.append(macheNeuTermin(DatFunk.sDatInDeutsch(swdatum), ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),
 								"",(String) vec.get(2),(String) vec.get(3),(String) vec.get(4),(String) vec.get(5)));

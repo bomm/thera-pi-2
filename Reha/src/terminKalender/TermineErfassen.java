@@ -490,6 +490,13 @@ public class TermineErfassen implements Runnable {
 					"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
 					"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
 					JOptionPane.showMessageDialog(null, message);
+					try{
+						RezTools.fuelleVolleTabelle(scanrez, this.kollege);	
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+					}
+					
+					//Hier rein die Behandlung der Tabelle volle!!!!!!
 					/*
 					new ErrorMail("Letzte Behandlung Rezept = voll.\nRezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
 							SystemConfig.dieseMaschine.toString(),
