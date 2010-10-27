@@ -1086,10 +1086,31 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									e1.printStackTrace();
 								}
 							}
+							//System.out.println("GrobRaus = "+grobRaus);
 							if(!grobRaus){
+								
+								//int xaktBehandler = -1;
 								wartenAufReady = true;
 								testeObAusmustern();
+								
+								/************Neu Anfang*************/
+								datenInSpeicherNehmen(); 
+								/*
+								if(terminVergabe.size() > 0){
+									terminVergabe.clear();
+								}
+								if(ansicht == NORMAL_ANSICHT){
+									xaktBehandler = belegung[aktiveSpalte[2]];
+								}else  if(ansicht == WOCHEN_ANSICHT){
+									xaktBehandler = aktiveSpalte[2]; 
+								}else  if(ansicht == MASKEN_ANSICHT){
+									xaktBehandler = aktiveSpalte[2];
+								}
+								terminAufnehmen(xaktBehandler,aktiveSpalte[0]);
+								*/
+								/************Neu Ende*************/
 								blockSetzen(11);								
+
 							}else{
 								SqlInfo.loescheLocksMaschine();
 								wartenAufReady = false;								
@@ -1260,7 +1281,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 										setUpdateVerbot(false);
 										SqlInfo.loescheLocksMaschine();
 									}
-								}else if(ansicht==WOCHEN_ANSICHT){	//WOCHEN_ANSICHT mu� noch entwickelt werden!
+								}else if(ansicht==WOCHEN_ANSICHT){	//WOCHEN_ANSICHT muß noch entwickelt werden!
 									if(aktiveSpalte[2] == 0){
 
 										setLockStatement((wochenbelegung >=10 ? Integer.toString(wochenbelegung)+"BEHANDLER" : "0"+(wochenbelegung)+"BEHANDLER"),getWocheErster() );											
