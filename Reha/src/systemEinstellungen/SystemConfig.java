@@ -8,6 +8,7 @@ import hauptFenster.Reha;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,6 +62,7 @@ public class SystemConfig {
 	public static boolean KalenderStartWochenAnsicht = false;
 	public static String KalenderStartWADefaultUser = "./.";
 	public static String KalenderStartNADefaultSet = "./.";
+	public static boolean KalenderZeitLabelZeigen = false;
 	public static String[]  KalenderUmfang =  {null,null};
 	public static long[]  KalenderMilli =  {0,0};
 	public static int UpdateIntervall;
@@ -354,6 +356,7 @@ public class SystemConfig {
 			KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
 			KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
 			KalenderStartNADefaultSet = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[1]);
+			KalenderZeitLabelZeigen = (ini.getStringProperty("Kalender","ZeitLabelZeigen").trim().equals("0") ? false : true );
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -1079,7 +1082,35 @@ public class SystemConfig {
 		hmAbrechnung.put("rehapriik", inif.getStringProperty("RehaPRIRechnung", "RehaPRIik"));
 		
 		hmAbrechnung.put("hmallinoffice", inif.getStringProperty("GemeinsameParameter", "InOfficeStarten"));
-		//System.out.println(hmAbrechnung);
+		String INI_FILE = "";
+		if(System.getProperty("os.name").contains("Windows")){
+			INI_FILE = Reha.proghome+ "nebraska_windows.conf";
+		}else if(System.getProperty("os.name").contains("Linux")){
+			INI_FILE = Reha.proghome+ "nebraska_linux.conf";			
+		}else if(System.getProperty("os.name").contains("String für MaxOSX????")){
+			INI_FILE = Reha.proghome+"nebraska_mac.conf";
+		}
+		org.thera_pi.nebraska.gui.utils.Verschluesseln man = org.thera_pi.nebraska.gui.utils.Verschluesseln.getInstance();
+		man.init(org.thera_pi.nebraska.gui.utils.Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+		try{
+			inif = new INIFile(INI_FILE);
+			String pw = null;
+			String decrypted = null;
+			hmAbrechnung.put("hmkeystorepw", "");
+			int anzahl = inif.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
+			for(int i = 0; i < anzahl;i++){
+				if(inif.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i+1)).trim().equals("IK"+Reha.aktIK)){
+					pw = inif.getStringProperty("KeyStores", "KeyStorePw"+Integer.toString(i+1));
+					decrypted = man.decrypt(pw);
+					hmAbrechnung.put("hmkeystorepw", decrypted);
+					break;
+				}
+			}
+
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Zertifikatsdatenbank nicht vorhanden oder fehlerhaft.\nAbrechnung nach § 302 kann nicht durchgeführt werden.");
+		}
+		//System.out.println("Keystore-Passwort = "+hmAbrechnung.get("hmkeystorepw"));
 	}
 	public static void SystemIconsInit(){
 		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",

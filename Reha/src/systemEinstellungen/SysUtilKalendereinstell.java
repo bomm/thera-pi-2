@@ -48,6 +48,7 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 	JRtaTextField MIN2 = null;
 	JCheckBox scan = null;
 	JCheckBox langmenu = null;
+	JCheckBox zeitzeigen = null;
 	private boolean kalNeuAnfang = false;
 	private boolean kalNeuEnde = false;
 	public SysUtilKalendereinstell(){
@@ -95,6 +96,8 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 		scan.setSelected(SystemConfig.KalenderBarcode);
 		langmenu = new JCheckBox();
 		langmenu.setSelected(SystemConfig.KalenderLangesMenue);
+		zeitzeigen = new JCheckBox();
+		zeitzeigen.setSelected(SystemConfig.KalenderZeitLabelZeigen);
 		
 		STD1 = new JRtaTextField("STUNDEN", true);
 		STD1.setText(SystemConfig.KalenderUmfang[0].substring(0,2));
@@ -114,7 +117,7 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("left:max(120dlu;p), 20dlu, 15dlu, 3dlu, 4dlu, 3dlu, 15dlu",
        //1.    2. 3.   4.   5.   6.   7.    8.  9.  10.  11. 12.   13.  14.  15.  16.  17. 18.   19. 20.  21. 22.   23.  24.  25.
-		"p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 15dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
+		"p, 2dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p, 15dlu, p, 2dlu, p, 10dlu, p, 10dlu, p");
 
 		
 		PanelBuilder builder = new PanelBuilder(lay);
@@ -136,16 +139,18 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 		builder.add(scan, cc.xy(7,7, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addLabel("Langes Menü anzeigen",cc.xy(1, 9));
 		builder.add(langmenu, cc.xy(7, 9, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.addSeparator("", cc.xyw(1, 11, 7));
-		builder.addLabel("Abbruch ohne Übernahme", cc.xy(1, 13));
-		builder.add(knopf2, cc.xyw(3, 13, 5));
-		builder.addLabel("Parameter übernehmen", cc.xy(1, 15));
-		builder.add(knopf1, cc.xyw(3, 15, 5));
-		builder.addLabel("Fortschritt beim Verändern der Datenbank", cc.xy(1, 19, CellConstraints.LEFT, CellConstraints.BOTTOM));
-		builder.add(Fortschritt, cc.xyw(1, 19, 7));
-		builder.addSeparator("", cc.xyw(1,21,7));
-		builder.addLabel("gesperrte Spalten freigeben", cc.xy(1,23));
-		builder.add(knopf3, cc.xyw(3, 23, 5));		
+		builder.addLabel("Uhrzeit an Mausposition anzeigen",cc.xy(1, 11));
+		builder.add(zeitzeigen, cc.xy(7, 11, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.addSeparator("", cc.xyw(1, 13, 7));
+		builder.addLabel("Abbruch ohne Übernahme", cc.xy(1, 15));
+		builder.add(knopf2, cc.xyw(3, 15, 5));
+		builder.addLabel("Parameter übernehmen", cc.xy(1, 17));
+		builder.add(knopf1, cc.xyw(3, 17, 5));
+		builder.addLabel("Fortschritt beim Verändern der Datenbank", cc.xy(1, 21, CellConstraints.LEFT, CellConstraints.BOTTOM));
+		builder.add(Fortschritt, cc.xyw(1, 21, 7));
+		builder.addSeparator("", cc.xyw(1,23,7));
+		builder.addLabel("gesperrte Spalten freigeben", cc.xy(1,25));
+		builder.add(knopf3, cc.xyw(3, 25, 5));		
 	     SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					STD1.requestFocus();
@@ -184,9 +189,16 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			ini.setStringProperty("Kalender", "KalenderBarcode",(scan.isSelected() ? "1" : "0"),null);
 			ini.setStringProperty("Kalender", "LangesMenue", (langmenu.isSelected() ? "1" : "0"), null);
+			ini.setStringProperty("Kalender", "ZeitLabelZeigen", (zeitzeigen.isSelected() ? "1" : "0"), null);
 			ini.save();
 			SystemConfig.KalenderBarcode = scan.isSelected();
 			SystemConfig.KalenderLangesMenue = langmenu.isSelected();
+			SystemConfig.KalenderZeitLabelZeigen = zeitzeigen.isSelected();
+			if(Reha.thisClass.terminpanel != null){
+				Reha.thisClass.terminpanel.regleZeitLabel();
+				Reha.thisClass.terminpanel.getViewPanel().repaint();
+			}
+			
 		}
 		if(e.getActionCommand().equals("abbruch")){
 			SystemInit.abbrechen();

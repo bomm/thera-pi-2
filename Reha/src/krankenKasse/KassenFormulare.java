@@ -101,6 +101,13 @@ public class KassenFormulare extends JXDialog implements FocusListener, ActionLi
 
 
 	}
+	public void aufErsteElement(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				setzeFocus();
+			}
+		});
+	}
 	private void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){

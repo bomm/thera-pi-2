@@ -842,7 +842,10 @@ public void paintComponent( Graphics g ) {
 			////System.out.println("in Gruppierung Wert = "+gruppierung);
 		this.inGruppierung = gruppierung;
 	}
-		
+
+	public float getPixels(){
+		return this.fPixelProMinute;
+	}
 
 
 	/*********Klassen-ENDE-Klammer**************/

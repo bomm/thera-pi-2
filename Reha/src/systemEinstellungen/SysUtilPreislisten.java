@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
@@ -181,6 +184,69 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		
 		modpreis.setColumnIdentifiers(new String[] {"HM-Pos.","Kurzbez.","Langtext","aktuell","alt","id"});
 		preislisten = new JXTable(modpreis);
+		preislisten.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				preislisten.requestFocus();
+				if(arg0.getClickCount()==1){
+					final MouseEvent xarg0 = arg0;
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							preislisten.setRowSelectionInterval(preislisten.getSelectedRow(), preislisten.getSelectedRow());
+							preislisten.setColumnSelectionInterval(preislisten.getSelectedColumn(), preislisten.getSelectedColumn());
+							//startCellEditing(tarife,tarife.getSelectedRow(),tarife.getSelectedColumn());
+							xarg0.consume();
+						}
+					});
+					return;
+				}else if(arg0.getClickCount()==2){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							preislisten.setRowSelectionInterval(preislisten.getSelectedRow(), preislisten.getSelectedRow());
+							preislisten.setColumnSelectionInterval(preislisten.getSelectedColumn(), preislisten.getSelectedColumn());
+							startCellEditing(preislisten,preislisten.getSelectedRow(),preislisten.getSelectedColumn());
+						}
+					});
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			private void startCellEditing(JXTable table,int row,int col){
+				final int xrows = row;
+				final int xcols = col;
+				final JXTable xtable = table;
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run(){
+				 		  xtable.setRowSelectionInterval(xrows, xrows);
+				 		 xtable.setColumnSelectionInterval(xcols, xcols);
+				 		  xtable.scrollRowToVisible(xrows);
+				 				xtable.editCellAt(xrows,xcols );
+				 	   }
+				});
+			}
+		});
 		preislisten.getColumn(0).setMaxWidth(65);
 		preislisten.getColumn(1).setMaxWidth(85);
 		preislisten.getColumn(1).setCellEditor(new DefaultCellEditor(kuerzelcombo));

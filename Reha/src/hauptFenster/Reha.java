@@ -123,6 +123,7 @@ import systemTools.RehaPainters;
 import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
 import terminKalender.DatFunk;
+import terminKalender.FinalGlassPane;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import testForUpdates.TestForUpdates;
@@ -299,7 +300,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-10-26/01-DB=";
+	public static String aktuelleVersion = "V=2010-10-31/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1096,7 +1097,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						}
 						JOptionPane.showMessageDialog(null, "Suche nach Updates fehlgeschlagen!\nIst die Internetverbindung o.k.");
 					}
-
 					return null;
 				}
 				
@@ -1119,6 +1119,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	    RehaEventClass rehaEvent = new RehaEventClass();
 	    rehaEvent.addRehaEventListener(this);
 	    AktiveFenster.Init();
+	    
+	    
+		
 	    /*
 	    rehaEvent.addRehaEventListener(new RehaEventListener() {
 			@Override

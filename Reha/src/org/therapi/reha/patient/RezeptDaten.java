@@ -501,6 +501,16 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 			//draghandler.setText(dragText);
 			Reha.thisClass.copyLabel.setText(dragText);
 			Reha.thisClass.bunker.setText("TERMDATEXT"+"°"+dragText);
+			if(Reha.thisClass.terminpanel != null){
+				String[] daten = { (Reha.thisClass.patpanel.patDaten.get(0).startsWith("F") ? "F-" : "H-")+
+						Reha.thisClass.patpanel.patDaten.get(2),
+						Reha.thisClass.patpanel.vecaktrez.get(1),
+						Reha.thisClass.patpanel.vecaktrez.get(47)						
+				};
+				Reha.thisClass.terminpanel.setDatenVonExternInSpeicherNehmen(daten.clone());
+				Reha.thisClass.shiftLabel.setText("bereit für F2= "+daten[0]+"°"+daten[1]+"°"+daten[2]+" Min.");
+				//System.out.println("ShiftLabel gesetzt");
+			}
 		}
 		
 	}

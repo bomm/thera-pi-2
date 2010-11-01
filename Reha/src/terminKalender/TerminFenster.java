@@ -11,6 +11,7 @@ import hilfsFenster.TerminObenUntenAnschliessen;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,6 +40,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -198,6 +201,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private boolean gruppierenKopiert = false;
 	
 	public int iPixelProMinute = 0;
+	float fPixelProMinute = 0.f;
 
 	private ArrayList<String[]> terminVergabe = new ArrayList<String[]>();
 	
@@ -226,6 +230,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public boolean setFromMouse = false;
 	public boolean terminBreak = false;
 	public JRehaInternal eltern;
+	
+	FinalGlassPane fgp = null;
 	
 	public JXPanel init(int setOben,int ansicht,JRehaInternal eltern) {
 
@@ -336,8 +342,27 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 		setzeStatement();
 
+		if(SystemConfig.KalenderZeitLabelZeigen){
+			fgp = new FinalGlassPane(eltern);
+			eltern.setGlassPane(fgp);
+		}
+
 		return ViewPanel;
 
+	}
+	public void regleZeitLabel(){
+		if(!SystemConfig.KalenderZeitLabelZeigen){
+			fgp.setVisible(false);
+			fgp = null;
+		}else if(SystemConfig.KalenderZeitLabelZeigen){
+			if(fgp == null){
+				fgp = new FinalGlassPane(eltern);
+				eltern.setGlassPane(fgp);
+			}
+		}
+	}
+	public JXPanel getTerminFlaecheFromOutside(){
+		return TerminFlaeche;
 	}
 	public void finalise(){
 		vTerm.clear();
@@ -604,7 +629,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
 				((JComboBox)arg0.getSource()).setToolTipText("Become-Invisible Kalenderbenutzer: "+oCombo[welche].getSelectedItem());				
 			}
-	      });		
+	      });
 	}	
 /****
  * die Comboboxen mit Werden füllen
@@ -786,7 +811,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					oSpalten[6].zeitSpanne();		
 					GrundFlaeche.revalidate();
 					int iMaxHoehe = TerminFlaeche.getHeight();
-					float fPixelProMinute = (float) iMaxHoehe;
+					fPixelProMinute = (float) iMaxHoehe;
 					fPixelProMinute =(float) fPixelProMinute / 900;
 					iPixelProMinute = ((int) (fPixelProMinute));
 				}
@@ -794,6 +819,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			TerminFlaeche.revalidate();
 		}
 		return TerminFlaeche;
+	}
+	public float getPanelPixelProMinute(){
+		return oSpalten[0].getPixels();
 	}
 	
 /**
@@ -1207,7 +1235,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					}
 				}
 			});
-			oSpalten[tspalte].addMouseListener(new java.awt.event.MouseAdapter() {   
+			
+			oSpalten[tspalte].addMouseListener(new java.awt.event.MouseAdapter() { 
+				
 				public void mouseExited(java.awt.event.MouseEvent e) {    
 				}
 				public void mouseEntered(java.awt.event.MouseEvent e) {
@@ -1219,6 +1249,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
 					dragDaten.x = e.getX();
+					if(fgp != null){
+						if(!fgp.isVisible()){
+							fgp.setVisible(true);
+						}
+						fgp.eventDispatched(e);	
+					}
+					
+					
+					//fgp.setPoint(e.getPoint());
+					//fgp.repaint();
 				}				
 
 				public void mousePressed(java.awt.event.MouseEvent e) {
@@ -1331,10 +1371,23 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			oSpalten[tspalte].addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
 				public void mouseDragged(java.awt.event.MouseEvent e) {
 					//Reha.thisClass.shiftLabel.setText("Spalte"+tspalte+"  / Drag:X="+e.getX()+" Y="+e.getY());
+					if(fgp != null){
+						if(!fgp.isVisible()){
+							fgp.setVisible(true);
+						}
+						fgp.eventDispatched(e);	
+					}
+
 				}
 				public void mouseMoved(java.awt.event.MouseEvent e) {
 					dragDaten.y = e.getY();
 					dragDaten.x = e.getX();
+					if(fgp != null){
+						if(!fgp.isVisible()){
+							fgp.setVisible(true);
+						}
+						fgp.eventDispatched(e);	
+					}
 				}				
 			});
 			oSpalten[tspalte].addFocusListener(new java.awt.event.FocusAdapter() {   
@@ -2880,6 +2933,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	/********
 	 *  Strg+Einfg.
 	 */
+	public void setDatenVonExternInSpeicherNehmen(String[] daten){
+		datenSpeicher[0]= String.valueOf(daten[0]);		
+		datenSpeicher[1]= String.valueOf(daten[1]);		
+		datenSpeicher[3]= String.valueOf(daten[2]);		
+		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
+	}
 	private void datenInSpeicherNehmen(){
 		int aktbehandler = -1;
 		if(ansicht==NORMAL_ANSICHT){
@@ -4720,3 +4779,4 @@ class DragSupport implements DragGestureListener{
 	}
 	
 }
+

@@ -661,7 +661,17 @@ private void auswertenSysUtil(String util){
 		}
 		if(util.equals("Software-Updateservice")){
 			if(!Reha.updatesBereit){
-				JOptionPane.showMessageDialog(null, "Aktuell sind keine Updates verfügbar");
+				int anfrage = JOptionPane.showConfirmDialog(null,
+						"<html>Es sind keine Updates verfügbar.<br>Wollen Sie Thera-Pi trotzdem beenden und den Update-Explorer starten?</html>",
+						"Achtung: Wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
+				if(anfrage == JOptionPane.YES_OPTION){
+					try {
+						Runtime.getRuntime().exec("java -jar "+Reha.proghome+"TheraPiUpdates.jar TheraPiStarten");
+						Reha.thisClass.beendeSofort();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}else{
 				int anfrage = JOptionPane.showConfirmDialog(null,
 						"<html>Es sind Updates verfügbar.<br>Um den Update-Explorer zu starten <b>muß Thera-Pi beendet werden</b>.<br>Wollen Sie den Update-Explorer jetzt ausführen und <b>Thera-Pi beenden</b>?</html>",

@@ -1123,7 +1123,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	private int doVerschluesseln(String datei){
 		try {
 			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
-			NebraskaKeystore store = new NebraskaKeystore(keystore, "123456","123456", Reha.aktIK);
+			
+			NebraskaKeystore store = new NebraskaKeystore(keystore, SystemConfig.hmAbrechnung.get("hmkeystorepw"),"123456", Reha.aktIK);
+			//NebraskaKeystore store = new NebraskaKeystore(keystore, "123456","123456", Reha.aktIK);
 			NebraskaEncryptor encryptor = store.getEncryptor(ik_nutzer);
 			String inFile = Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".org";
 			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));

@@ -243,8 +243,16 @@ public class PatientHauptLogic {
 					Point pt = patientHauptPanel.jbut[3].getLocationOnScreen();
 					kf.setLocation(pt.x-100,pt.y+25);
 					kf.setModal(true);
+					final KassenFormulare xkf = kf;
+					SwingUtilities.invokeLater(new Runnable(){
+						@Override
+						public void run() {
+							xkf.aufErsteElement();
+						}
+						
+					});
 					kf.setVisible(true);
-					//final KassenFormulare xkf = kf;
+					
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {

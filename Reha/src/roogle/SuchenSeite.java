@@ -147,6 +147,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	private JLabel startLbl = null;
 	private JLabel stopLbl = null;
 	private JLabel aktLbl = null;
+	private JLabel aktLblLegende = null;
 	
 	private JLabel trefferLbl = null;	
 	private JLabel ausgewaehltLbl = null;
@@ -477,12 +478,13 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		CellConstraints dcc = new CellConstraints();
 		dummy.add(new JLabel("Start bei Datum:"), dcc.xy(2,3));
 		dummy.add(new JLabel("Stop  bei Datum:"), dcc.xy(2,5));
-		dummy.add(new JLabel("Aktuelles Datum:"), dcc.xy(2,7));		
+		aktLblLegende = new JLabel(" ");
+		dummy.add(aktLblLegende, dcc.xy(2,7));		
 		startLbl = new JLabel("01.01.2008");
 		startLbl.setForeground(Color.BLUE);
 		stopLbl = new JLabel("01.01.2008");		
 		stopLbl.setForeground(Color.BLUE);		
-		aktLbl = new JLabel("");
+		aktLbl = new JLabel(" ");
 		aktLbl.setForeground(Color.RED);
 		dummy.add(startLbl, dcc.xyw(6,3,1));
 		dummy.add(stopLbl, dcc.xyw(6,5,1));
@@ -1038,6 +1040,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		es.start();
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
+				aktLblLegende.setText("Aktuelles Datum:");
 				aktLbl.setText(getStartDatum());
 				mussUnterbrechen = false;
 				
@@ -1120,6 +1123,8 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 			return;
 		}
 		*/
+		aktLblLegende.setText(" ");
+		aktLbl.setText(" ");
 		dtblm.getDataVector().clear();
 		dtblm.getDataVector().trimToSize();
 		dtblm.setRowCount(0);
