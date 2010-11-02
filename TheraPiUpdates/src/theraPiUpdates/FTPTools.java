@@ -1,0 +1,279 @@
+package theraPiUpdates;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.SocketException;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+
+
+
+
+
+
+
+public class FTPTools {
+	Vector<String> datNamenFern = null;
+	public static FTPTools thisClass = null; 
+	public FTPClient ftpClient = null;
+    //public static int BUFFER_SIZE = 1024*1024;
+    public static int BUFFER_SIZE = 1024*8;
+    org.apache.commons.net.ftp.FTPFile[] files;	
+    
+	public FTPTools(){
+		ftpClient = new FTPClient();
+		thisClass = this;
+	}
+	
+	public FTPFile[] holeDatNamen(){
+	    	try {
+	    		ftpClient.connect(TheraPiUpdates.UpdateFTP);
+	    		//ftpClient.connect("www.thera-pi.org");
+				//ftpClient.getReplyString();
+				System.out.println(ftpClient.getReplyString());
+	    		
+				ftpClient.login(TheraPiUpdates.UpdateUser, TheraPiUpdates.UpdatePasswd);
+				//ftpClient.login("p8442191-pi", "AZ1704B8");
+				//ftpClient.getReplyString();
+				System.out.println(ftpClient.getReplyString());
+				
+				//ftpClient.cwd("."+TheraPiUpdates.UpdateVerzeichnis);
+				ftpClient.changeWorkingDirectory("."+TheraPiUpdates.UpdateVerzeichnis);
+	    		//ftpClient.changeWorkingDirectory("./HowTo");
+				//ftpClient.getReplyString();
+				System.out.println(ftpClient.getReplyString());
+				
+				//ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+				//System.out.println(ftpClient.getReplyString());
+				
+				ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+				System.out.println(ftpClient.getReplyString());
+				
+				ftpClient.setTcpNoDelay(true);
+				//ftpClient.getReplyString();
+				System.out.println(ftpClient.getReplyString());
+
+				String rueck = ftpClient.getStatus();
+				System.out.println("Status = :"+rueck);
+				//ftpClient.setBufferSize(BUFFER_SIZE);
+				/*
+				if(helpFenster.thisClass.wf != null){
+					helpFenster.thisClass.wf.setStand("Überprüfe Dateien");
+				}
+				*/
+
+				files = ftpClient.listFiles();
+				
+				ftpClient.logout();
+				ftpClient.disconnect();
+
+	    	} catch (SocketException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage());
+	    	} catch (IOException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage());    		
+
+	    	}
+		return files;  
+	}
+	
+	/*****************************************************/
+	public boolean holeDatei(String datfern,String vznah,boolean doprogress,UpdatePanel eltern,long groesse){
+		if(ftpClient == null){
+			return false;
+		}
+		if(!ftpClient.isConnected()){
+			if(!nurConnect()){
+				return false;				
+			}
+
+		}
+		ftpClient.enterLocalPassiveMode();
+		try {
+
+    		files = ftpClient.listFiles();
+    		// Untersuchen ob Datei vorhanden
+    		
+    		long max = -1;
+    		if(groesse < 0){
+        		for(int i = 0; i < files.length;i++){
+        			if(files[i].getName().equals(datfern)){
+        				max = files[i].getSize();
+        				System.out.println(files[i].getName());
+        			}
+        		}
+    		}else{
+    			max = Long.valueOf(groesse);
+    		}
+    		if(max < 0){
+    			ftpClient.logout();
+    			ftpClient.disconnect();
+    			return false;
+    		}
+    		
+			InputStream uis = null;
+			uis = ftpClient.retrieveFileStream(datfern);
+			
+			
+			System.out.println("**********************available**********************  "+max+" Bytes");
+			ftpClient.getReplyString();
+			FileOutputStream fos = null;;
+			fos = new FileOutputStream(vznah+datfern);
+
+			int n = 0;
+			byte[] buf = new byte[BUFFER_SIZE];
+			
+			int gesamt = 0;
+
+			if(doprogress){
+				eltern.pbar.setMinimum(0);
+				eltern.pbar.setMaximum(Integer.parseInt(Long.toString(max)));
+			}
+			
+			while ((n=uis.read(buf,0,buf.length))>0){
+				gesamt = gesamt + n;
+				fos.write(buf,0,n);
+				if(doprogress){
+					eltern.pbar.setValue(gesamt);
+				}
+			}
+
+			//System.out.println("Datei "+datfern+" wurde erfolgreich übertragen");
+			fos.flush();
+			fos.close();		
+			uis.close();
+			fos = null;
+			uis = null;
+			ftpClient.getReplyString();
+			//System.out.println("Nach Logout = "+reply);
+			ftpClient.logout();
+			ftpClient.getReplyString();
+			//System.out.println("Nach Disconnect = "+reply);
+			ftpClient.disconnect();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return false;
+		}
+	
+		return true;
+	}
+	
+	private boolean nurConnect(){
+		try {
+			ftpClient.connect(TheraPiUpdates.UpdateFTP);
+			ftpClient.getReplyString();
+			//System.out.println(ftpClient.getReplyString());
+			ftpClient.login(TheraPiUpdates.UpdateUser, TheraPiUpdates.UpdatePasswd);
+			ftpClient.getReplyString();
+			//System.out.println(ftpClient.getReplyString());
+			//ftpClient.cwd("."+TheraPiUpdates.UpdateVerzeichnis);
+			ftpClient.changeWorkingDirectory("."+TheraPiUpdates.UpdateVerzeichnis);
+			//ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+			ftpClient.getReplyString();
+			//System.out.println(ftpClient.getReplyString());
+
+		} catch (SocketException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	/*****************************************************/
+	public boolean holeDateiSilent(String datfern,String vznah,boolean doprogress){
+		if(ftpClient == null){
+			return false;
+		}
+		if(!ftpClient.isConnected()){
+			if(!nurConnect()){
+				return false;				
+			}
+
+		}
+		ftpClient.enterLocalPassiveMode();
+		try {
+
+    		files = ftpClient.listFiles();
+    		// Untersuchen ob Datei vorhanden
+    		
+
+    		
+			InputStream uis = null;
+			uis = ftpClient.retrieveFileStream(datfern);
+			
+			
+
+			ftpClient.getReplyString();
+			FileOutputStream fos = null;;
+			fos = new FileOutputStream(vznah+datfern);
+
+			int n = 0;
+			byte[] buf = new byte[BUFFER_SIZE];
+			
+			int gesamt = 0;
+
+			
+			while ((n=uis.read(buf,0,buf.length))>0){
+				gesamt = gesamt + n;
+				fos.write(buf,0,n);
+			}
+
+			//System.out.println("Datei "+datfern+" wurde erfolgreich übertragen");
+			fos.flush();
+			fos.close();		
+			uis.close();
+			fos = null;
+			uis = null;
+			ftpClient.getReplyString();
+			//System.out.println("Nach Logout = "+reply);
+			ftpClient.logout();
+			ftpClient.getReplyString();
+			//System.out.println("Nach Disconnect = "+reply);
+			ftpClient.disconnect();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return false;
+		}
+	
+		return true;
+	}
+	/*
+	private boolean nurConnect(){
+		try {
+			ftpClient.connect(TheraPiUpdates.HilfeFTP);
+			ftpClient.getReplyString();
+			//System.out.println(ftpClient.getReplyString());
+			ftpClient.login(TheraPiUpdates.HilfeUser, TheraPiUpdates.HilfePasswd);
+			ftpClient.getReplyString();
+			//System.out.println(ftpClient.getReplyString());
+			ftpClient.cwd("./updates");
+			ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+			ftpClient.getReplyString();
+			//System.out.println(ftpClient.getReplyString());
+
+		} catch (SocketException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	*/
+	
+	
+
+}
