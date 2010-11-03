@@ -1053,7 +1053,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		vec_posanzahl.clear();
 		vec_pospos.clear();
 		String[] behandlungen = null;
-		
+		//System.out.println("Anzahl Tage = "+vectage.size());
+		//System.out.println("Anzahl Tage im einzelnen"+vectage.size());
 		preisgruppe = vec_rez.get(0).get(41);
 		int anzahlbehandlungen = 0;
 
@@ -1068,6 +1069,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				break;
 			}
 		}
+		//System.out.println("******************Anzahl Behandlungen = "+anzahlbehandlungen);
 		//int anzahlhb = 0;
 		//int anzahlposhb = 0;
 		//boolean hausbesuch = false;
@@ -1646,6 +1648,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		//System.out.println("anzahl Behandlungen =*************************"+anzahlbehandlungen);
 		int posanzahl = 0;
+		boolean toomuch = false;
 		for(int i = 0; i < anzahlbehandlungen;i++){
 			if(! abrfall[i].trim().equals("")){
 				vecdummy.clear();
@@ -1673,9 +1676,37 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
 					////System.out.println(vecdummy);
+				}else{
+					toomuch = true;
+					vecdummy.add(datum);
+					vecdummy.add(abrfall[i]);
+					vecdummy.add(Double.valueOf("1.00"));
+					//Preisuntersuchen ob alt oder neu....
+					
+					//.....
+					vecdummy.add(Double.valueOf(RezTools.getPreisAktFromID(id[i], preisgruppe, preisvec).replace(",", ".")));
+					//untersuchen ob befreit
+					//.....
+					vecdummy.add(Boolean.valueOf(true));
+
+					vecdummy.add(Double.valueOf(rechneRezGeb(vecdummy.get(3).toString()).replace(",", ".")) );
+					
+					vecdummy.add((String) "" );
+					vecdummy.add((String) "aktuell" );
+					vecdummy.add((String) DatFunk.sDatInSQL(datum) );
+					vecdummy.add((String) id[i]);
+					vecdummy.add(Boolean.valueOf(false));
+
+					vec_tabelle.add((Vector<Object>)vecdummy.clone());
+					////System.out.println(vecdummy);
+
 				}
 			}
 		}
+		if(toomuch){
+			JOptionPane.showMessageDialog(null,"Achtung - Sie rechnen mehr Behandlungstage ab als im Rezept angegeben wurde!");			
+		}
+
 	}
 	private AbrFall holeAbrFall(int zeile){
 		AbrFall abrFall = null;
@@ -2165,17 +2196,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		kwahl.pack();
 		kwahl.setModal(true);
 		kwahl.setVisible(true);
-		System.out.println(aKasse[0].getText());
-		System.out.println(aKasse[1].getText());
-		System.out.println(aKasse[2].getText());
+		//System.out.println(aKasse[0].getText());
+		//System.out.println(aKasse[1].getText());
+		//System.out.println(aKasse[2].getText());
 		
 		if(!aKasse[2].getText().trim().equals(suchegleichnach[1]) && !aKasse[2].getText().trim().equals("")){
-			System.out.println("Es wurde eine neue Kasse gewählt");
+			//System.out.println("Es wurde eine neue Kasse gewählt");
 			macheHashMapIV(aKasse[2].getText().trim());
 			parseHTML(vec_rez.get(0).get(1).trim());
 
 		}else{
-			System.out.println("kasse ist gleich geblieben");
+			//System.out.println("kasse ist gleich geblieben");
 		}
 	}
 	/*************************
@@ -2767,18 +2798,26 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			
 		}
 		////System.out.println( "******>Neuer Tag wird eingefügt bei Index = "+einfuegenbei);
-		
+		JXTTreeTableNode neuNode = null;
+		try{
 		if(einfuegenbei == count){
-			demoTreeTableModel.insertNodeInto(macheTag(tag,einfuegenbei), root, count);
+			demoTreeTableModel.insertNodeInto(neuNode = macheTag(tag,einfuegenbei), root, count);
 			if(hausbesuch){
 				doHausbesuchEinzeln((JXTTreeTableNode) root.getChildAt(einfuegenbei), count);
 			}
 		}else{
-			demoTreeTableModel.insertNodeInto(macheTag(tag,einfuegenbei), root, einfuegenbei);
+			demoTreeTableModel.insertNodeInto(neuNode = macheTag(tag,einfuegenbei), root, einfuegenbei);
 			if(hausbesuch){
 				doHausbesuchEinzeln((JXTTreeTableNode) root.getChildAt(einfuegenbei), count);
 			}
 		}
+		//System.out.println(neuNode);
+		}catch(NullPointerException ex){
+			JOptionPane.showMessageDialog(null, "Tag kann nicht eingefügt werden");
+			//System.out.println(neuNode);
+			ex.printStackTrace();
+		}
+		
 	}
 /*************************************************************************************************************/
 	
@@ -2821,8 +2860,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		AbrFall abr = null;
 		JXTTreeTableNode childnode = null;
 		int neu = 0;
-		
+		try{
 		for(int i = 0; i < vec_tabelle.size();i++){
+			//System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
 			if(vec_tabelle.get(i).get(0).equals(tag)){
 				if(neu==0){
 					abr =constuctAbrFall(i,einfuegen+1);
@@ -2835,8 +2875,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				}
 			}
 		}
+		}catch(NullPointerException ex){
+			JOptionPane.showMessageDialog(null,"Fehler bei der Erstellung des Behanlungstages");
+		}
 		
-		////System.out.println(node);
+		//System.out.println(node);
 		
 		return node;
 	}

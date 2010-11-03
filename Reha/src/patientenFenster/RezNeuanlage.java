@@ -616,6 +616,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				@Override
 				protected Void doInBackground() throws Exception {
 					try{
+						if(! anzahlTest()){
+							return null;
+						}
 						if(getInstance().neu){
 							doSpeichernNeu();
 						}else{
@@ -712,6 +715,36 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			return; 
 		}
+	}
+	private boolean anzahlTest(){
+		int itest;
+		int maxanzahl=0,aktanzahl=0;
+		for(int i = 2; i < 6;i++){
+			itest = jcmb[i].getSelectedIndex();
+			if(itest > 0){
+				if(i == 2 ){
+					try{
+						maxanzahl = Integer.parseInt(jtf[i+2].getText());
+					}catch(Exception ex){
+						maxanzahl = 0;
+					}
+				}else{
+					try{
+						aktanzahl = Integer.parseInt(jtf[i+2].getText());
+					}catch(Exception ex){
+						aktanzahl = 0;
+					}
+					if(aktanzahl > maxanzahl){
+						String cmd = "Sie haben mehrere Heilmittel mit unterschiedlicher Anzahl eingegeben.\n"+
+						"Bitte geben Sie die Heilmittel so ein daß das Heilmittel mit der größten Anzahl oben steht\n"+
+						"und dann (bezogen auf die Anzahl) in absteigender Reihgenfolge nach unten"; 
+						JOptionPane.showMessageDialog(null,cmd);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 	private void doRechnen(int comb){
 		//unbelegt
