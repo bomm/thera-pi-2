@@ -170,7 +170,7 @@ public class TermineErfassen implements Runnable {
 	}
 	/********************/
 	public int testeVerordnung() throws Exception{
-		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos3,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
+		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza","termine"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 			if(vec.size()==0){
@@ -567,8 +567,8 @@ public class TermineErfassen implements Runnable {
 			"@"+
 			(String)vec.get(2)+
 			( ((String)vec.get(3)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
-			( ((String)vec.get(4)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
-			( ((String)vec.get(5)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
+			( ((String)vec.get(4)).trim().equals("") ? "" : ","+ ((String)vec.get(4)) )+
+			( ((String)vec.get(5)).trim().equals("") ? "" : ","+ ((String)vec.get(5)) )+
 			"@"+
 			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
 		return ret;
