@@ -1093,27 +1093,42 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				demoTreeTableModel.removeNodeFromParent((MutableTreeTableNode) root.getChildAt(0));
 			}
 		}
-		
+		boolean toomuchhinweis = false;
 		for(int i = 0; i < vectage.size();i++){
 			splitvec = vectage.get(i).get(3);
 			behandlungen = splitvec.split(",");
+			//System.out.println(vectage.size());
+			//System.out.println(vectage.get(i).get(0));
 			if(behandlungen.length > 0 && (!splitvec.trim().equals(""))){
 				//Es stehen Behandlungsdaten im Terminblatt;
 				//Positionen = length+hbposanzahl;
 				////System.out.println("Länge des Feldes = "+behandlungen.length);
 				//anzahlbehandlungen = behandlungen.length;
 				////System.out.println("Konstruiere Abrechnungsfall aus behandlungen.length");
-				constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb,i);
+				if((i+1) <= Integer.parseInt(vec_rez.get(0).get(3))){
+					constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb,i,false);	
+				}else if((i+1) > Integer.parseInt(vec_rez.get(0).get(3))){
+					constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb,i,true);
+					toomuchhinweis = true;
+				}
 			}else{
 				//Es sind keine  Behandlungsformen im Terminblatt verzeichnet;
 				//in anzahlbehandlungen steht die tatsächliche Anzahl
 				////System.out.println("Keine Behandlungen im Terminblatt = "+anzahlbehandlungen);
 				////System.out.println("Anzahl-Hausbesuch  keine Beh. im Terminblatt= "+anzahlhb);
 				////System.out.println("Konstruiere Abrechnungsfall aus Rezeptangaben");
-				constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb,i);
+				if((i+1) <= Integer.parseInt(vec_rez.get(0).get(3))){
+					constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb,i,false);	
+				}else if((i+1) > Integer.parseInt(vec_rez.get(0).get(3))){
+					constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb,i,true);
+					toomuchhinweis = true;
+				}
+
 			}
 		}
-		
+		if(toomuchhinweis){
+			JOptionPane.showMessageDialog(null,"Achtung - Sie rechnen mehr Behandlungstage ab als im Rezept angegeben wurde!");			
+		}
 
 		if(construct){
 			doFuelleTreeTable();
@@ -1623,7 +1638,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	 */
 	/*******************************/
 	@SuppressWarnings("unchecked")
-	private void constructTagVector(String datum,String[] behandlungen,int anzahlbehandlungen,int anzahlhb,int tag){
+	private void constructTagVector(String datum,String[] behandlungen,int anzahlbehandlungen,int anzahlhb,int tag,boolean toomuch){
 		String[] abrfall = new String[anzahlbehandlungen];
 		String[] id = new String[anzahlbehandlungen];
 		Object[] abrObject = {"",""};
@@ -1648,7 +1663,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		//System.out.println("anzahl Behandlungen =*************************"+anzahlbehandlungen);
 		int posanzahl = 0;
-		boolean toomuch = false;
+		
 		for(int i = 0; i < anzahlbehandlungen;i++){
 			if(! abrfall[i].trim().equals("")){
 				vecdummy.clear();
@@ -1676,8 +1691,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
 					////System.out.println(vecdummy);
-				}else{
-					/*
+				}else if(toomuch){
 					toomuch = true;
 					vecdummy.add(datum);
 					vecdummy.add(abrfall[i]);
@@ -1700,14 +1714,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
 					////System.out.println(vecdummy);
-					  
-					*/
 
 				}
 			}
 		}
 		if(toomuch){
-			JOptionPane.showMessageDialog(null,"Achtung - Sie rechnen mehr Behandlungstage ab als im Rezept angegeben wurde!");			
+			//JOptionPane.showMessageDialog(null,"Achtung - Sie rechnen mehr Behandlungstage ab als im Rezept angegeben wurde!");			
 		}
 
 	}

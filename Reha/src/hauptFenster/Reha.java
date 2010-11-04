@@ -123,7 +123,6 @@ import systemTools.RehaPainters;
 import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
 import terminKalender.DatFunk;
-import terminKalender.FinalGlassPane;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import testForUpdates.TestForUpdates;
