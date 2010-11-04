@@ -607,6 +607,7 @@ public class AbrechnungReha extends JXPanel{
 		SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rehavec.get(0).get(1), true, Arrays.asList(new String[] {"id"}));
 		SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rehavec.get(0).get(1)+"'");
 		String aktiverPatient = "";
+		SqlInfo.sqlAusfuehren("delete from volle where rez_nr='"+rehavec.get(0).get(1)+"'");
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		if(patient != null){
 			aktiverPatient = Reha.thisClass.patpanel.aktPatID;

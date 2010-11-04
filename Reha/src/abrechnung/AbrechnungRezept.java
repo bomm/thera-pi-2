@@ -1677,6 +1677,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
 					////System.out.println(vecdummy);
 				}else{
+					/*
 					toomuch = true;
 					vecdummy.add(datum);
 					vecdummy.add(abrfall[i]);
@@ -1699,6 +1700,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
 					////System.out.println(vecdummy);
+					  
+					*/
 
 				}
 			}
@@ -2769,6 +2772,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		dlg.pack();
 		dlg.setVisible(true);
 	}
+	
 	private void doTagNeu2(String tag){
 		// erst testen ob es dieses Datum schon gibt
 		//String neudatum = DatFunk.sDatInSQL(tag);
@@ -2801,12 +2805,18 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		JXTTreeTableNode neuNode = null;
 		try{
 		if(einfuegenbei == count){
-			demoTreeTableModel.insertNodeInto(neuNode = macheTag(tag,einfuegenbei), root, count);
+			neuNode =  macheTag(tag,einfuegenbei);
+			//hier muß noch größer als max-Angabe im Rezept rein
+			if(neuNode==null){return;}
+			demoTreeTableModel.insertNodeInto(neuNode, root, count);
 			if(hausbesuch){
 				doHausbesuchEinzeln((JXTTreeTableNode) root.getChildAt(einfuegenbei), count);
 			}
 		}else{
-			demoTreeTableModel.insertNodeInto(neuNode = macheTag(tag,einfuegenbei), root, einfuegenbei);
+			neuNode = macheTag(tag,einfuegenbei);
+			//hier muß noch größer als max-Angabe im Rezept rein
+			if(neuNode==null){return;}
+			demoTreeTableModel.insertNodeInto(neuNode, root, einfuegenbei);
 			if(hausbesuch){
 				doHausbesuchEinzeln((JXTTreeTableNode) root.getChildAt(einfuegenbei), count);
 			}
@@ -2861,28 +2871,56 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		JXTTreeTableNode childnode = null;
 		int neu = 0;
 		try{
-		for(int i = 0; i < vec_tabelle.size();i++){
-			//System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
-			if(vec_tabelle.get(i).get(0).equals(tag)){
-				if(neu==0){
-					abr =constuctAbrFall(i,einfuegen+1);
-					node = new JXTTreeTableNode(abr.datum,abr,true);
-					neu++;
-				}else{
-					abr = constuctAbrFall(i,einfuegen+1);
-					childnode = new JXTTreeTableNode(abr.datum,abr,true);
-					node.add(childnode);
+			for(int i = 0; i < vec_tabelle.size();i++){
+				System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
+				System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
+				if(vec_tabelle.get(i).get(0).equals(tag)){
+					if(neu==0){
+						abr =constuctAbrFall(i,einfuegen+1);
+						node = new JXTTreeTableNode(abr.datum,abr,true);
+						neu++;
+					}else{
+						abr = constuctAbrFall(i,einfuegen+1);
+						childnode = new JXTTreeTableNode(abr.datum,abr,true);
+						node.add(childnode);
+					}	
 				}
 			}
-		}
+			if(node==null){
+				System.out.println("Node = null Tage = -> "+tag);
+				System.out.println("Größe von vec_tabelle = -> "+vec_tabelle.size());
+				System.out.println("GetNodeCount() = -> "+getNodeCount());
+				abr = constuctNewAbrFall(vec_tabelle.size()-1,einfuegen+1,tag);
+				node = new JXTTreeTableNode(abr.datum,abr,true);
+			}
+
 		}catch(NullPointerException ex){
 			JOptionPane.showMessageDialog(null,"Fehler bei der Erstellung des Behanlungstages");
+			ex.printStackTrace();
 		}
-		
 		//System.out.println(node);
-		
+		//xx
 		return node;
 	}
+	private AbrFall constuctNewAbrFall(int vecindex, int tag,String datum){
+		//public AbrFall(String titel,String datum,String bezeichnung,Double anzahl,Double preis,
+				//boolean zuzahlung,double rezgeb,String unterbrechung,String alterpreis,String sqldatum,String preisid,boolean niezuzahl){
+
+		AbrFall abr = new AbrFall(Integer.toString(tag)+".Tag",
+				(String)datum,
+				(String)vec_tabelle.get(vecindex).get(1),
+				(Double)vec_tabelle.get(vecindex).get(2),
+				(Double)vec_tabelle.get(vecindex).get(3),
+				(Boolean)vec_tabelle.get(vecindex).get(4),
+				(Double)vec_tabelle.get(vecindex).get(5),
+				(String)vec_tabelle.get(vecindex).get(6),
+				(String)vec_tabelle.get(vecindex).get(7),
+				(String)DatFunk.sDatInSQL(datum),
+				(String)vec_tabelle.get(vecindex).get(9),
+				(Boolean)vec_tabelle.get(vecindex).get(10));
+		return abr;
+	}
+
 	private AbrFall constuctAbrFall(int vecindex, int tag){
 		AbrFall abr = new AbrFall(Integer.toString(tag)+".Tag",
 				(String)vec_tabelle.get(vecindex).get(0),

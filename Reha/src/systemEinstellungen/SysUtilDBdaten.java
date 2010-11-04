@@ -356,6 +356,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 				e.printStackTrace();
 				return;
 			}
+			/*
 			rs = stmt.executeQuery("select mandant from nummern LIMIT 1");
 			if(!rs.next()){
 		   		String cmd = "insert into nummern set pat='1',kg='1',ma='1',er='1',"+
@@ -363,6 +364,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 	    		"dfue='1',mandant='"+selectedMandantIK+"'";
 		   		stmt.execute(cmd);
 			}
+			*/
 			if (rs != null) {
 				try {
 					rs.close();

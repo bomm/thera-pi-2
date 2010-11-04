@@ -166,6 +166,7 @@ public class UpdatePanel extends JXPanel{
 					final int ix = i;
 					final String xupdate = upddatei;
 					final long xgross = gross;
+					final int xrow = row;
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
@@ -174,10 +175,19 @@ public class UpdatePanel extends JXPanel{
 							System.out.println(updatefiles.get(ix).get(1));
 							System.out.println(updatefiles.get(ix).get(0));
 							System.out.println(nurvz);
+							try{
+								if(updatefiles.get(ix).get(1).endsWith(".ini")){
+									File f = new File(updatefiles.get(ix).get(1));
+									f.renameTo(new File(updatefiles.get(ix).get(1).replace(".ini", ".bak")));
+								}
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null, "Fehler beim Umbenennen der Datei "+updatefiles.get(ix).get(1));
+							}
 							ftpt = new FTPTools();
 							ftpt.holeDatei(xupdate, nurvz, true, getInstance(),xgross);
 							ftpt = null;
 							pbar.setValue(0);
+							tabmod.setValueAt((ImageIcon) icokeinupdate,xrow, 3);
 							return null;
 						}
 
@@ -189,7 +199,7 @@ public class UpdatePanel extends JXPanel{
 			}
 		}
 		if(ok){
-			tabmod.setValueAt((ImageIcon) this.icokeinupdate,row, 3);	
+			//tabmod.setValueAt((ImageIcon) this.icokeinupdate,row, 3);	
 		}
 		
 	}

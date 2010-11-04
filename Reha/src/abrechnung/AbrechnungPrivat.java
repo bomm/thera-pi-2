@@ -499,6 +499,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		 SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
 
 		 Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
+		 SqlInfo.sqlAusfuehren("delete from volle where rez_nr='"+rez_nr+"'");
 
 	}
 	

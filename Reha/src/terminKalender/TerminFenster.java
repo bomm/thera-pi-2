@@ -4345,7 +4345,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Vector tvec = null;
 				String copyright = "\u00AE"  ;
 				try{
-				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
+				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 				if (vec.size() > 0){
 					StringBuffer termbuf = new StringBuffer();
 					termbuf.append((String) vec.get(0));
