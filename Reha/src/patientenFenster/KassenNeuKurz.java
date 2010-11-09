@@ -279,14 +279,14 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		tfs[12] = new JRtaTextField("ZAHLEN",true);
 		tfs[12].addKeyListener(this);
 		tfs[12].addFocusListener(this);
-		tfs[12].setName("ik_physika");
+		tfs[12].setName("ik_nutzer");
 		jpan.add(tfs[12],cc.xyw(3, 30,4));
 
 		jpan.add(new JLabel("IK Papierannahme"),cc.xy(1, 32));
 		tfs[13] = new JRtaTextField("ZAHLEN",true);
 		tfs[13].addKeyListener(this);
 		tfs[13].addFocusListener(this);
-		tfs[13].setName("ik_physika");
+		tfs[13].setName("ik_papier");
 		jpan.add(tfs[13],cc.xyw(3, 32,4));
 		
 		tfs[14] = new JRtaTextField("NIX",true);
@@ -476,7 +476,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 				panelWechsel(true);
 			}else if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
 				arg0.consume();
-				panelWechsel(true);
+				panelWechsel(false);
 			}
 			}
 			if( ((JComponent)arg0.getSource()).getName().equals("kuerzel")){
