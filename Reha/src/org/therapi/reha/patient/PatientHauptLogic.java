@@ -197,8 +197,8 @@ public class PatientHauptLogic {
 		}
 		if(!patientHauptPanel.aktPatID.equals("")){
 			//String spat = patientHauptPanel.ptfield[2].getText().trim()+", "+patientHauptPanel.ptfield[3].getText().trim()+", geb.am "+patientHauptPanel.ptfield[4].getText().trim();
-			String spat = "Wollen Sie den aktuellen Patient wirklich löschen?";
-	    	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie Patient -> "+spat+" <- wirklich löschen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			//String spat = "Wollen Sie den aktuellen Patient wirklich löschen?";
+	    	int frage = JOptionPane.showConfirmDialog(null, "Wollen Sie den aktuellen Patient wirklich löschen??", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 	    	if(frage != JOptionPane.YES_OPTION){
 	    		return;
 	    	}

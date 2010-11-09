@@ -282,9 +282,8 @@ public void actionPerformed(ActionEvent arg0) {
 			 		   new Thread(){
 			 			   public void run(){
 			 				   String hinweis = "Sie schreiben im Anschluß eine neue Wochenarbeitszeit in den Terminkalender!\n"+
-			 				   					"Dabei werden evtl. bestehende Feiertage oder Betriebsferien überschrieben.\n"+
-			 				   					"Die Feiertage lassen sich bequem in der System-Initialisierung organisieren, oder\n"+
-			 				   					"Sie schreiben die Feiertage von Hand in den Kalender";
+			 				   "Bitte unterbrechen Sie diesen Prozeß keinesfalls!";
+			 				   					
 			 				   JOptionPane.showMessageDialog(null,hinweis);
 			 				   
 			 				   anhalten.setEnabled(true);
