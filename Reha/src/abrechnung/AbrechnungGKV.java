@@ -96,7 +96,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	ButtonGroup bg = new ButtonGroup();
 	JRtaRadioButton[] rbLinks = {null,null,null,null};
 	JButton[] butLinks = {null,null,null,null};
-	JRtaComboBox cmbDiszi = null;
+	public JRtaComboBox cmbDiszi = null;
 	JXTree treeKasse = null;
 	File f;
 	FileWriter fw;
@@ -303,6 +303,16 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		if(cmd.equals("alternativeadresse")){
 			
 		}
+	}
+	public void einlesenErneuern(){
+		String[] diszis = {"Physio","Massage","Ergo","Logo"};
+		aktDisziplin = diszis[cmbDiszi.getSelectedIndex()];
+		//abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
+		if(abrRez.rezeptSichtbar){
+			abrRez.setRechtsAufNull();
+    		aktuellerPat = "";
+		}
+		doEinlesen(null);
 	}
 	/*
 	private void setPreisVec(int pos){
@@ -1307,11 +1317,15 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		if(nach302){
 			Vector<Vector<String>> vec = SqlInfo.holeFelder("select kassen_nam1,kassen_nam2,strasse,plz,ort from kass_adr where ik_kasse ='"+ik_papier+"' LIMIT 1");
 			if(vec.size()==0){
-				for(int i = 0; i < hmKeys.length-1;i++){
-					hmAdresse.put(hmKeys[i], "");
+				vec = SqlInfo.holeFelder("select name1,name2,adresse3,adresse1,adresse2 from ktraeger where ikkasse ='"+ik_papier+"' LIMIT 1");				
+				if(vec.size()==0){
+					for(int i = 0; i < hmKeys.length-1;i++){
+						hmAdresse.put(hmKeys[i], "");
+					}
+					hmAdresse.put(hmKeys[5],aktRechnung);
+					JOptionPane.showMessageDialog(null,"Achtung Daten für die Papierannahmestelle konnt nicht ermittelt werden (vermutlich wieder mal AOK....)!\n\nBitte die Daten von Hand auf den Ausdrucken eintragen");
+					return hmAdresse;
 				}
-				hmAdresse.put(hmKeys[5],aktRechnung);
-				return hmAdresse;
 			}
 			hmAdresse.put(hmKeys[0],vec.get(0).get(0) );
 			hmAdresse.put(hmKeys[1],vec.get(0).get(1) );

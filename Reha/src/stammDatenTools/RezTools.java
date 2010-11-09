@@ -2,8 +2,10 @@ package stammDatenTools;
 
 import hauptFenster.Reha;
 
+import java.awt.List;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +32,102 @@ public class RezTools {
 			
 		}
 		return ret;
+	}
+	public static Vector<ArrayList<?>> holePosUndAnzahlAusRezept(String xreznr){
+		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
+		ArrayList<String> positionen = new ArrayList<String>();
+		ArrayList<String> doppeltest = new ArrayList<String>();
+		ArrayList<Integer>anzahl = new ArrayList<Integer>();
+		
+		Vector<String> rezvec = null;
+		
+		rezvec = SqlInfo.holeSatz("verordn", "art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4"+
+				"anzahl1,anzahl2,anzahl3,anzahl4,", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
+		for(int i = 0; i < 4; i++){
+			if(! rezvec.get(i).equals("0")){
+				if(i==0){
+					positionen.add(rezvec.get(i));
+					anzahl.add(Integer.parseInt(rezvec.get(i+4)));
+					doppeltest.add(rezvec.get(i));
+				}else if(i==1){
+					doppeltest.add(rezvec.get(i));					
+					if(rezvec.get(i).equals(rezvec.get(i-1))){ //Doppelbehandlung
+						anzahl.set(0, Integer.parseInt(rezvec.get(0))+Integer.parseInt(rezvec.get(1)));	
+					}else{
+						positionen.add(rezvec.get(i));
+						anzahl.add(Integer.parseInt(rezvec.get(i+4)));
+					}
+				}else{
+					doppeltest.add(rezvec.get(i));
+					positionen.add(rezvec.get(i));
+					anzahl.add(Integer.parseInt(rezvec.get(i+4)));
+				}
+			}
+		}
+		xvec.add((ArrayList<?>)positionen.clone());
+		xvec.add((ArrayList<?>)anzahl.clone());
+		xvec.add((ArrayList<?>)doppeltest.clone());
+		return xvec;
+		
+	}
+	public static Vector<ArrayList<?>> holePosUndAnzahlAusTerminen(String xreznr){
+		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
+		Vector<String> termvec = holeEinzelZiffernAusRezept(xreznr,"");
+		String behandlungen = null;
+		String[] einzelbehandlung = null;
+		ArrayList<String> positionen = new ArrayList<String>();
+		ArrayList<Integer>anzahl = new ArrayList<Integer>();
+		int trefferbei = -1;
+		for(int i = 0; i < termvec.size();i++){
+			behandlungen = termvec.get(i);
+			if(! behandlungen.equals("")){
+				einzelbehandlung = behandlungen.split(",");
+				//Scheiße weil Doppelbehandlungen zusammengefaßt werden
+				for(int i2 = 0; i2 < einzelbehandlung.length;i2++){
+					trefferbei = positionen.indexOf(einzelbehandlung[i2]);
+					if(trefferbei >= 0){
+						anzahl.set(trefferbei,anzahl.get(trefferbei)+1 );
+					}else{
+						positionen.add(einzelbehandlung[i2]);
+						anzahl.add(1);
+					}
+				}
+			}
+		}
+		xvec.add((ArrayList<?>)positionen.clone());
+		xvec.add((ArrayList<?>)anzahl.clone());
+		return xvec;
+	}
+	@SuppressWarnings("unchecked")
+	public static Vector<String> holeEinzelZiffernAusRezept(String xreznr,String termine){
+		Vector<String> xvec = null;
+		Vector<String> retvec = new Vector<String>();
+		String terms = null;
+		if(termine.equals("")){
+			xvec = SqlInfo.holeSatz("verordn", "termine,pat_intern", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));			
+			if(xvec.size()==0){
+				return (Vector<String>)retvec.clone();
+			}else{
+				terms = (String) xvec.get(0);	
+			}
+		}else{
+			terms = termine;
+		}
+		if(terms==null){
+			return (Vector)retvec.clone();
+		}
+		if(terms.equals("")){
+			return (Vector)retvec.clone();
+		}
+		String[] tlines = terms.split("\n");
+		int lines = tlines.length;
+
+		for(int i = 0;i<lines;i++){
+			String[] terdat = tlines[i].split("@");
+			//int ieinzel = terdat.length;
+			retvec.add(terdat[3].trim());
+		}
+		return (Vector)retvec.clone();
 	}
 	
 	@SuppressWarnings("unchecked")

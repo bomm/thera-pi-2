@@ -1448,8 +1448,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					}
 					
 				});
+				
 				tabaktterm.validate();
 				tabaktterm.repaint();
+				//Nur zum Test der Funktion im Normalbetrieb nicht!!!! aktivieren
+				//System.out.println(RezTools.holeBehandlungenUndAnzahl((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
 
 				//tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
 				}catch(Exception ex){
@@ -1761,7 +1764,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				JOptionPane.showMessageDialog(null,meldung);
 				return;
 			}
-			doAbschlussTest();	
+			doAbschlussTest();
+			if(Reha.thisClass.abrechnungpanel != null){
+				String[] diszis = {"Physio","Massage","Ergo","Logo"};
+				String aktDisziplin = diszis[Reha.thisClass.abrechnungpanel.cmbDiszi.getSelectedIndex()];
+				if(RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1)).equals(aktDisziplin)){
+					Reha.thisClass.abrechnungpanel.einlesenErneuern();
+				}
+			}
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -1809,7 +1819,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
 				String vgldat2 = (String) dtermm.getValueAt(0,0);
 				String vgldat3 = (String) tabaktrez.getValueAt(currow, 4);
-				System.out.println(vgldat1+" / "+vgldat2);
+				//System.out.println(vgldat1+" / "+vgldat2);
 				/***Kann ausgeschaltet werden wenn die HMRCheck-Tabelle vollständig befüll ist**/
 				// ist ohnehin nur halblebig
 				int dummypeisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
