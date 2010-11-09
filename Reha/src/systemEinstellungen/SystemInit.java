@@ -178,7 +178,7 @@ private JScrollPane getParameterListe(){
 
 
 	DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Mandant(en) / Datenbank");
-	treeitem = new DefaultMutableTreeNode("Firmenangaben Mandaten");
+	treeitem = new DefaultMutableTreeNode("Firmenangaben Mandanten");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Datenbankparameter");
 	node.add(treeitem );
@@ -454,7 +454,7 @@ private void auswertenSysUtil(String util){
 			setHeader("RoogleGrundeinstellungen");
 			break;
 		}
-		if(util.equals("Firmenangaben Mandaten")){
+		if(util.equals("Firmenangaben Mandanten")){
 			if(!Rechte.hatRecht(Rechte.Systeminit_mandanten, false)){
 				doAccessDenied();
 				return;
