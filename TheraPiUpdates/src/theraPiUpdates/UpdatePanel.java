@@ -2,8 +2,12 @@ package theraPiUpdates;
 
 
 
+
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +26,12 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -43,11 +53,14 @@ public class UpdatePanel extends JXPanel{
 	 */
 	private static final long serialVersionUID = 8445390544969581869L;
 	TheraPiUpdates eltern = null;
+	UpdateTab updateTab = null;
 	
 	UpdateTableModel tabmod = null;
 	JXTable tab = null;
 
 	public JProgressBar pbar = null;
+	
+	public JTextArea ta = null;
 	
 	DecimalFormat dcf = new DecimalFormat("##########0.00");
 	SimpleDateFormat datumsFormat = new SimpleDateFormat ("dd.MM.yyyy  HH:mm:ss"); //Konv.
@@ -55,21 +68,31 @@ public class UpdatePanel extends JXPanel{
 	public static Vector<Vector<String>> updatefiles = new Vector<Vector<String>>();
 	public static Vector<String[]> mandvec = new Vector<String[]>();
 	
+	public UpdateListSelectionHandler updateListener = null;
+	
 	FTPTools ftpt = null;
 	
 	Image imgkeinupdate = new ImageIcon(TheraPiUpdates.proghome+"icons/clean.png").getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
 	Image imgupdate = new ImageIcon(TheraPiUpdates.proghome+"icons/application-exit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);	
 	ImageIcon icokeinupdate;
 	ImageIcon icoupdate;
-	UpdatePanel(TheraPiUpdates xeltern){
+	public FTPFile[] ffile = null;
+	
+	
+	UpdatePanel(TheraPiUpdates xeltern,UpdateTab xupdateTab){
 	
 		
 		super();
 		eltern = xeltern;
+		if(xupdateTab != null){
+			updateTab = xupdateTab;
+		}
 		setLayout(new BorderLayout());
 		add(getHeader(),BorderLayout.NORTH);
 		add(getContent(),BorderLayout.CENTER);
-
+		doUpdateCheck();
+	}
+	public void doUpdateCheck(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -100,13 +123,14 @@ public class UpdatePanel extends JXPanel{
 	private JXPanel getContent(){
 		JXPanel jpan = new JXPanel();
 		String xwerte = "5dlu,p:g,5dlu";
-		//                1     2    3    4      5   6  7      8
-		String ywerte = "10dlu,0dlu,0dlu,150dlu,5dlu,p,0dlu:g,10dlu";
+		//                1     2    3    4     5   6  7     8    9   10
+		String ywerte = "5dlu,0dlu,0dlu,100dlu,5dlu,p,2dlu,0dlu:g,5dlu,p,5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		jpan.setLayout(lay);
 		tabmod = new UpdateTableModel();
 		tabmod.setColumnIdentifiers(new String[] { "Update-Datei","Dateidatum/Uhrzeit","Größe in Bytes","aktuell"});
+
 		tab = new JXTable(tabmod);
 		tab.setSortable(false);
 		tab.addMouseListener(new MouseAdapter(){
@@ -116,6 +140,8 @@ public class UpdatePanel extends JXPanel{
 				}
 			}
 		});
+		updateListener = new UpdateListSelectionHandler();
+		tab.getSelectionModel().addListSelectionListener(updateListener);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
 		jscr.validate();
 		jpan.add(jscr,cc.xy(2,4));
@@ -123,6 +149,17 @@ public class UpdatePanel extends JXPanel{
 		pbar.setStringPainted(false);
 		jpan.add(pbar,cc.xy(2,6));
 		
+		ta = new JTextArea();
+		ta.setFont(new Font("Courier",Font.PLAIN,12));
+		ta.setLineWrap(true);
+		ta.setWrapStyleWord(true);
+		ta.setEditable(false);
+		ta.setBackground(Color.WHITE);
+		ta.setForeground(Color.BLUE);
+		jscr = JCompTools.getTransparentScrollPane(ta);
+		jscr.validate();
+		jpan.add(jscr,cc.xy(2,8,CellConstraints.FILL,CellConstraints.FILL));
+
 		JButton but = new JButton("Update-Explorer beenden");
 		but.addActionListener(new ActionListener(){
 			@Override
@@ -142,7 +179,7 @@ public class UpdatePanel extends JXPanel{
 				}
 			}
 		});
-		jpan.add(but,cc.xy(2,7,CellConstraints.RIGHT,CellConstraints.BOTTOM));
+		jpan.add(but,cc.xy(2,10,CellConstraints.RIGHT,CellConstraints.BOTTOM));
 		jpan.validate();
 
 		return jpan;
@@ -217,7 +254,8 @@ public class UpdatePanel extends JXPanel{
 			protected Void doInBackground() throws Exception {
 				TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				ftpt = new FTPTools();
-				FTPFile[] ffile = ftpt.holeDatNamen();
+				
+				ffile = ftpt.holeDatNamen();
 				Vector<Object> vec = new Vector<Object>();
 				for(int i = 0; i < ffile.length;i++){
 					if( (!ffile[i].getName().toString().trim().equals(".")) &&
@@ -409,5 +447,70 @@ public class UpdatePanel extends JXPanel{
 		}
 		   
 	}
+	private boolean testeObLogVorhanden(String datei){
+		for(int i = 0; i < ffile.length;i++){
+			if(ffile[i].getName().equals(datei+".log")){
+				return true;
+			}
+		}
+		return false;
+	}
+	private String holeLogText(String logDatei){
+		FTPTools ftp = new FTPTools();
+		return ftp.holeLogDateiSilent(logDatei);
+	}
+
+	class UpdateListSelectionHandler implements ListSelectionListener {
+
+	    public void valueChanged(ListSelectionEvent e) {
+	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	        boolean isAdjusting = e.getValueIsAdjusting();
+	        if(isAdjusting){
+	        	return;
+	        }
+	        if (lsm.isSelectionEmpty()) {
+
+	        } else {
+	            int minIndex = lsm.getMinSelectionIndex();
+	            int maxIndex = lsm.getMaxSelectionIndex();
+	            for (int i = minIndex; i <= maxIndex; i++) {
+	                if (lsm.isSelectedIndex(i)) {
+	                	final int ix = i;
+	                	
+	                	new SwingWorker<Void,Void>(){
+
+							@Override
+							protected Void doInBackground() throws Exception {
+								try{
+									int modi = tab.convertRowIndexToModel(ix);
+									if(testeObLogVorhanden(tabmod.getValueAt(modi,0).toString())){
+										TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+										try{
+											ta.setForeground(Color.BLUE);	
+											ta.setText(holeLogText( tabmod.getValueAt(modi,0).toString()+".log" ));
+										}catch(Exception ex){
+											ex.printStackTrace();
+											ta.setText("Fehler beim Bezug der Log-Datei");
+										}
+										TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+									}else{
+										ta.setForeground(Color.RED);
+										ta.setText("Für diese Update-Datei ist kein ChangeLog verfügbar");
+									}
+								}catch(Exception ex){
+									ex.printStackTrace();
+								}
+
+	    						return null;
+							}
+	                		
+	                	}.execute();
+
+	                    break;
+	                }
+	            }
+	        }
+	    }
+	}	
 
 }

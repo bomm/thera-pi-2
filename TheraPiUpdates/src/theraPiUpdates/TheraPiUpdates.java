@@ -36,6 +36,7 @@ public class TheraPiUpdates implements WindowListener {
 	public static String UpdateFTP = "";
 	public static String UpdateUser = "";
 	public static String UpdatePasswd = "";
+	public static boolean isDeveloper = false;
 
 	public static boolean testphase = false;
 	public static boolean starteTheraPi = false;
@@ -79,11 +80,17 @@ public class TheraPiUpdates implements WindowListener {
 		jFrame.setUndecorated(true);
 		jFrame.addWindowListener(this);
 		Dimension ssize = Toolkit.getDefaultToolkit().getScreenSize(); 
+		//jFrame.setSize(ssize.width-(ssize.width/4),ssize.height/2);
+		jFrame.setTitle("Thera-Pi  Update-Explorer");
 		jFrame.setSize(ssize.width*3/4>=800 ? ssize.width*3/4 : 800, ssize.height/2>=600 ? ssize.height/2 : 600);
-		jFrame.setTitle("Thera-Pi  MySql-Konfigurationsassistent");
+		//jFrame.setTitle("Thera-Pi  MySql-Konfigurationsassistent");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
-		jFrame.getContentPane().add (new UpdatePanel(thisClass));
+		if(TheraPiUpdates.isDeveloper){
+			jFrame.getContentPane().add (new UpdateTab(thisClass));	
+		}else{
+			jFrame.getContentPane().add (new UpdatePanel(thisClass,null));	
+		}
 		jFrame.setVisible(true);
 
 		thisFrame = jFrame;
@@ -143,6 +150,7 @@ public class TheraPiUpdates implements WindowListener {
 		}else{
 			UpdatePasswd = man.decrypt(ini.getStringProperty("TheraPiUpdates", "UpdatePasswd"));
 		}
+		isDeveloper = (ini.getStringProperty("TheraPiUpdates", "UpdateEntwickler").equals("0") ? false : true);
 	}
 
 
