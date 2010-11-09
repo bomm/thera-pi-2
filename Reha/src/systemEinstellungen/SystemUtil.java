@@ -311,7 +311,7 @@ private JScrollPane getParameterListe(){
 
 
 	DefaultMutableTreeNode node = new DefaultMutableTreeNode( "Mandant(en) / Datenbank");
-	treeitem = new DefaultMutableTreeNode("Firmenangaben Mandaten");
+	treeitem = new DefaultMutableTreeNode("Firmenangaben Mandant(en)");
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Datenbankparameter");
 	node.add(treeitem );
