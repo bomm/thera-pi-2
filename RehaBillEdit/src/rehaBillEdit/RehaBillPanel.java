@@ -362,7 +362,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		rechneNeu(false);
 	}
 	private void doZeileLoeschen(){
-		int anfrage = JOptionPane.showConfirmDialog(null, "Sie sind im Begriff die´ausgewählte Position unwiederbringlich\n"+
+		int anfrage = JOptionPane.showConfirmDialog(null, "Sie sind im Begriff die ausgewählte Position unwiederbringlich\n"+
 				"aus der Tabelle 'Faktura' zu löschen!\n\nWollen Sie das wirklich?\n", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.YES_OPTION){
 			int row = tab.getSelectedRow();
