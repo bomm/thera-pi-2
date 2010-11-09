@@ -79,7 +79,7 @@ public class TheraPiUpdates implements WindowListener {
 		jFrame.setUndecorated(true);
 		jFrame.addWindowListener(this);
 		Dimension ssize = Toolkit.getDefaultToolkit().getScreenSize(); 
-		jFrame.setSize(ssize.width-(ssize.width/4),ssize.height/2);
+		jFrame.setSize(ssize.width*3/4>=800 ? ssize.width*3/4 : 800, ssize.height/2>=600 ? ssize.height/2 : 600);
 		jFrame.setTitle("Thera-Pi  MySql-Konfigurationsassistent");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
