@@ -1037,11 +1037,32 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			getVectorFromNodes();
 		}
 		////System.out.println("Nodes insgesamt ="+getNodeCount()+" VectorLänge = "+vec_tabelle.size());
+		//Hier den TheraPiebericht einbauen;
 		doGebuehren();
+		String therapiebericht = SystemPreislisten.hmBerichtRegeln.get(this.aktDisziplin).get(Integer.parseInt(preisgruppe)-1) ;
+		if(therapiebericht != null){
+			if(!therapiebericht.equals("") && vec_rez.get(0).get(55).equals("T")){
+				//54 == Berichtid;
+				//55 == "T" = Arztbericht
+				String berichtid = vec_rez.get(0).get(54);
+				//String arztbericht = vec_rez.get(0).get(55);x
+				String dlgcmd = "<html>Für dieses Rezept wurde ein Therapiebericht angefordert!<br>"+
+				(berichtid.equals("") ? "Es wurde aber <b><font color=#FF0000>kein</font> Therapiebericht erstellt</b>" :	"Der Therapiebericht wurde <b>bereits erstellt</b>")+
+					"<br><br>Position Therapiebericht wird an den letzten Behandlungstag angehängt</html>";
+				JOptionPane.showMessageDialog(null, dlgcmd);
+				doTherapieBericht(therapiebericht);
+				this.getVectorFromNodes();
+			}
+		}
 		doPositionenErmitteln();
 		doTreeRezeptWertermitteln();
 		parseHTML(rez_nr.trim());
 		
+	}
+	private void doTherapieBericht(String berichtsposition){
+		JXTTreeTableNode xnode = (JXTTreeTableNode)root.getChildAt(root.getChildCount()-1);
+		JXTTreeTableNode ynode = (JXTTreeTableNode) getBasicNodeFromChild(xnode);
+		abrfallAnhaengen(xnode.getChildCount()-1,   ynode,  ynode.abr.datum,   berichtsposition,    Double.parseDouble("1.00"),true);
 	}
 	/*****************************************************************************************/
 	private void ermittleAbrechnungsfall(boolean construct){
