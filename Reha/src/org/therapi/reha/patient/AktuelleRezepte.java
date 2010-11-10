@@ -1452,7 +1452,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				tabaktterm.validate();
 				tabaktterm.repaint();
 				//Nur zum Test der Funktion im Normalbetrieb nicht!!!! aktivieren
-				//System.out.println(RezTools.holeBehandlungenUndAnzahl((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
+				System.out.println(RezTools.holePosUndAnzahlAusRezept((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
+				System.out.println(RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
 
 				//tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
 				}catch(Exception ex){
