@@ -49,10 +49,10 @@ public class RezTools {
 					positionen.add(rezvec.get(i));
 					anzahl.add(Integer.parseInt(rezvec.get(i+4)));
 					doppeltest.add(rezvec.get(i));
-				}else if(i==1){
+				}else if(i>=1){
 					doppeltest.add(rezvec.get(i));					
-					if(rezvec.get(i).equals(rezvec.get(i-1))){ //Doppelbehandlung
-						anzahl.set(0, Integer.parseInt(rezvec.get(0))+Integer.parseInt(rezvec.get(1)));	
+					if(rezvec.indexOf(rezvec.get(i))!=i){ //Doppelbehandlung, wenn die HMPos vor i schon mal aufgeführt ist. Hintergrund: Doppelbehandlungen müssen nicht auf i=0 und i=1 sein
+						anzahl.set(0, Integer.parseInt(rezvec.get(i+4))+Integer.parseInt(rezvec.get(rezvec.indexOf(rezvec.get(i))+4)));	
 					}else{
 						positionen.add(rezvec.get(i));
 						anzahl.add(Integer.parseInt(rezvec.get(i+4)));
