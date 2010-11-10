@@ -33,6 +33,7 @@ public class RezTools {
 		}
 		return ret;
 	}
+	
 	public static Vector<ArrayList<?>> holePosUndAnzahlAusRezept(String xreznr){
 		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
 		ArrayList<String> positionen = new ArrayList<String>();
@@ -46,7 +47,7 @@ public class RezTools {
 		for(int i = 0; i < 4; i++){
 			if(! rezvec.get(i).equals("0")){
 				if(i==0){
-					positionen.add(rezvec.get(i));
+					positionen.add( holePosAusIdUndRezNr( rezvec.get(i), xreznr) );
 					anzahl.add(Integer.parseInt(rezvec.get(i+4)));
 					doppeltest.add(rezvec.get(i));
 				}else if(i>=1){
@@ -54,15 +55,14 @@ public class RezTools {
 					if(rezvec.indexOf(rezvec.get(i))!=i){ //Doppelbehandlung, wenn die HMPos vor i schon mal aufgeführt ist. Hintergrund: Doppelbehandlungen müssen nicht auf i=0 und i=1 sein
 						anzahl.set(0, Integer.parseInt(rezvec.get(i+4))+Integer.parseInt(rezvec.get(rezvec.indexOf(rezvec.get(i))+4)));	
 					}else{
-						positionen.add(rezvec.get(i));
+						positionen.add( holePosAusIdUndRezNr( rezvec.get(i), xreznr) );
 						anzahl.add(Integer.parseInt(rezvec.get(i+4)));
 					}
 				}else{
 					doppeltest.add(rezvec.get(i));
-					positionen.add(rezvec.get(i));
+					positionen.add( holePosAusIdUndRezNr( rezvec.get(i),xreznr) );
 					anzahl.add(Integer.parseInt(rezvec.get(i+4)));
-				}
-			}
+				}			}
 		}
 		xvec.add((ArrayList<?>)positionen.clone());
 		xvec.add((ArrayList<?>)anzahl.clone());
@@ -169,7 +169,13 @@ public class RezTools {
 		Collections.sort(retvec,comparator);
 		return (Vector)retvec.clone();
 	}
-	
+	public static String holePosAusIdUndRezNr(String id,String reznr){
+		String diszi = RezTools.putRezNrGetDisziplin(reznr);
+		String preisgruppe = SqlInfo.holeEinzelFeld("select preisgruppe from verordn where rez_nr='"+reznr+"' LIMIT 1");
+		Vector<Vector<String>> preisvec = (Vector<Vector<String>>) SystemPreislisten.hmPreise.get(diszi).get(Integer.parseInt(preisgruppe)-1);
+		String pos = RezTools.getPosFromID(id, preisgruppe, preisvec) ;
+		return (pos==null ? "" : pos);
+	}
 /********************************************************************************/
 	@SuppressWarnings("unchecked")
 	public static Vector<Vector<String>> macheTerminVector(String termine){
