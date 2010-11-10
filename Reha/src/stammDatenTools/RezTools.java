@@ -41,8 +41,8 @@ public class RezTools {
 		
 		Vector<String> rezvec = null;
 		
-		rezvec = SqlInfo.holeSatz("verordn", "art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4"+
-				"anzahl1,anzahl2,anzahl3,anzahl4,", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
+		rezvec = SqlInfo.holeSatz("verordn", "art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4,"+
+				"anzahl1,anzahl2,anzahl3,anzahl4", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
 		for(int i = 0; i < 4; i++){
 			if(! rezvec.get(i).equals("0")){
 				if(i==0){
