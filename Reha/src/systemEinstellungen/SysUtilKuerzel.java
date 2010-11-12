@@ -239,7 +239,8 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		tblkuerzel.validate();
 	}
 	public void insertKuerzel(String kurz,String lang){
-		boolean gibtsschon = SqlInfo.gibtsSchon("select kuerzel from kuerzel where kuerzel='"+kurz+"'");
+		boolean gibtsschon = SqlInfo.gibtsSchon("select kuerzel from kuerzel where kuerzel='"+kurz+"' and disziplin='"+
+				diszi[disziplin.getSelectedIndex()]+"'");
 		if(gibtsschon){
 			JOptionPane.showMessageDialog(null, "Das Kürzel --> "+kurz+" <-- ist bereits vergeben");
 			return;

@@ -83,6 +83,7 @@ public class TheraPiUpdates implements WindowListener {
 		//jFrame.setSize(ssize.width-(ssize.width/4),ssize.height/2);
 		jFrame.setTitle("Thera-Pi  Update-Explorer");
 		jFrame.setSize(ssize.width*3/4>=800 ? ssize.width*3/4 : 800, ssize.height/2>=600 ? ssize.height/2 : 600);
+		jFrame.setPreferredSize(new Dimension(ssize.width*3/4>=800 ? ssize.width*3/4 : 800, ssize.height/2>=600 ? ssize.height/2 : 600));
 		//jFrame.setTitle("Thera-Pi  MySql-Konfigurationsassistent");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
@@ -91,6 +92,7 @@ public class TheraPiUpdates implements WindowListener {
 		}else{
 			jFrame.getContentPane().add (new UpdatePanel(thisClass,null));	
 		}
+		jFrame.pack();
 		jFrame.setVisible(true);
 
 		thisFrame = jFrame;
@@ -133,6 +135,7 @@ public class TheraPiUpdates implements WindowListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
 	public static void oeffneIniDatei(){
 		INIFile ini = new INIFile(proghome+"/ini/tpupdate.ini");
 		//System.out.println(proghome+"update.ini");

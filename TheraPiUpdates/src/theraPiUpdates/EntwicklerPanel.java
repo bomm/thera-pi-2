@@ -55,13 +55,14 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 		updateTab = xupdatetab;
 		setLayout(new BorderLayout());
 		add(doContent(),BorderLayout.CENTER);
+		validate();
 	}
 	private JXPanel doContent(){
 		JXPanel jpan = new JXPanel();
 		//                1    2     3    4   5    6     7
 		String xwerte = "5dlu,80dlu,5dlu,p:g,2dlu,60dlu,5dlu";
 		//                1     2    3    4   5   6  7     8      9  10  11  12
-		String ywerte = "15dlu, p ,10dlu, p,5dlu,p:g,5dlu,100dlu,2dlu,p,5dlu,p,5dlu";
+		String ywerte = "15dlu, p ,10dlu, p,5dlu,fill:0:grow(1.0),5dlu,100dlu,2dlu,p,5dlu,p,5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		jpan.setLayout(lay);
 		CellConstraints cc = new CellConstraints();
