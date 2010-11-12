@@ -295,7 +295,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		inif.setStringProperty("HMGKVRechnung", "Rdrucker",((String) jcmb[0].getSelectedItem()).trim() , null);
 		inif.setStringProperty("HMGKVRechnung", "Tdrucker",((String) jcmb[1].getSelectedItem()).trim() , null);
 		wert = (rbut[1].isSelected() ? "1" : "0");
-		inif.setStringProperty("HMGKVRechnung", "Begleitzettel","1" , null);
+		//inif.setStringProperty("HMGKVRechnung", "Begleitzettel","1" , null);
 		inif.setStringProperty("HMGKVRechnung", "Rauchdrucken",wert , null);
 		inif.setStringProperty("HMGKVRechnung", "Rexemplare",(String)jcmb[2].getSelectedItem() , null);
 
