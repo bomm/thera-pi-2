@@ -2,7 +2,6 @@ package stammDatenTools;
 
 import hauptFenster.Reha;
 
-import java.awt.List;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

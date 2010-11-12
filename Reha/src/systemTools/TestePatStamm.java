@@ -5,13 +5,11 @@ import hauptFenster.Reha;
 
 import javax.swing.JComponent;
 
-import rehaInternalFrame.JPatientInternal;
-
 
 
 public class TestePatStamm {
 	public static String PatStammArztID(){
-		String ret = "";
+		//String ret = "";
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		if(patient == null){
 			return "";
@@ -33,7 +31,7 @@ public class TestePatStamm {
 		return "";
 	}
 	public static String PatStammKasseID(){
-		String ret = "";
+		//String ret = "";
 		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
 		if(patient == null){
 			return "";

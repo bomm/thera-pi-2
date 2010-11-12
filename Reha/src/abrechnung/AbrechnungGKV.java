@@ -1227,7 +1227,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				if(abrechnungsModus.equals(ABR_MODE_302)){
 					try{
 						Thread.sleep(100);
-						new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
+						new BegleitzettelDrucken(getInstance(),abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmgkvbegleitzettel"));
 					}catch(Exception ex){
 						JOptionPane.showMessageDialog(null, "Fehler im Modul BegleitzettlDrucken - Fehler-Exception: ex\n"+ex.getMessage());
 					}
