@@ -216,6 +216,8 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		}
 		if(this.buchen){
 			buchungStarten();			
+		}else{
+			buchungUpdaten();
 		}
 		FensterSchliessen("dieses");
 	}
@@ -233,6 +235,22 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
 	}
+	private void buchungUpdaten(){
+		
+		StringBuffer buf = new StringBuffer();
+		buf.append("update rgaffaktura set ");
+		buf.append("rnr='"+hmRezgeb.get("<rgnr>")+"', ");
+		buf.append("reznr='"+hmRezgeb.get("<rgreznum>")+"', ");
+		buf.append("pat_intern='"+hmRezgeb.get("<rgpatintern>")+"', ");
+		buf.append("rgesamt='"+hmRezgeb.get("<rggesamt>").replace(",",".")+"', ");
+		buf.append("roffen='"+hmRezgeb.get("<rggesamt>").replace(",",".")+"', ");
+		buf.append("rgbetrag='"+hmRezgeb.get("<rgbetrag>").replace(",",".")+"', ");
+		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
+		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
+		buf.append(" where rnr='"+hmRezgeb.get("<rgnr>")+"' LIMIT 1");
+		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;

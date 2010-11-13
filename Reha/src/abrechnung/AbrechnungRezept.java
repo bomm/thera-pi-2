@@ -2256,7 +2256,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		if(testvec.size() > 0){
 			int anfrage = JOptionPane.showConfirmDialog(null, "Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!"+
 					"Wollen Sie eine Kopie erstellen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-			//JOptionPane.showMessageDialog(null,"Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!");
 			if(anfrage != JOptionPane.YES_OPTION){
 				return;				
 			}
