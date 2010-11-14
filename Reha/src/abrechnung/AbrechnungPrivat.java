@@ -62,6 +62,8 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.DragWin;
 import dialoge.PinPanel;
+import events.PatStammEvent;
+import events.PatStammEventClass;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
@@ -295,6 +297,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		}else{
 			doBGE();
 		}
+		posteAktualisierung((String) Reha.thisClass.patpanel.patDaten.get(29) );
 		FensterSchliessen("dieses");
 	}
 	/*
@@ -302,6 +305,23 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		return this;
 	}
 	*/
+	
+	private void posteAktualisierung(String patid){
+		final String xpatid = patid;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				String s1 = String.valueOf("#PATSUCHEN");
+				String s2 = xpatid;
+				PatStammEvent pEvt = new PatStammEvent(this);
+				pEvt.setPatStammEvent("PatSuchen");
+				pEvt.setDetails(s1,s2,"") ;
+				PatStammEventClass.firePatStammEvent(pEvt);		
+				return null;
+			}
+			
+		}.execute();
+	}
 	private void holePrivat(){
 		hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
 		hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );

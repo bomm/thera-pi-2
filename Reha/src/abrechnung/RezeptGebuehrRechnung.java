@@ -18,10 +18,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -32,6 +34,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
@@ -102,7 +105,12 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				setzeFelder();
+				if(buchen){
+					setzeFelderMitBuchung();	
+				}else{
+					setzeFelderOhneBuchung();					
+				}
+				
 			}
 		});
 		SwingUtilities.invokeLater(new Runnable(){
@@ -121,12 +129,32 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			}
 		});
 	}
-	private void setzeFelder(){
+	private void setzeFelderMitBuchung(){
 		tfs[0].setText(hmRezgeb.get("<rgreznum>"));
 		tfs[1].setText(hmRezgeb.get("<rgdatum>"));
 		tfs[2].setText(hmRezgeb.get("<rgbetrag>"));
 		tfs[3].setText(hmRezgeb.get("<rgpauschale>"));
 		tfs[4].setText(hmRezgeb.get("<rgbehandlung>"));
+	}
+	private void setzeFelderOhneBuchung(){
+		try{
+			String cmd = "select reznr,rdatum,rgbetrag,rpbetrag from rgaffaktura where reznr='"+
+			hmRezgeb.get("<rgreznum>")+"' LIMIT 1";
+			//System.out.println(cmd);
+			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+			if(vec.size() <= 0){
+				JOptionPane.showMessageDialog(null,"Diese Rezeptgebührrechnung ist nicht in der Tabelle rgaffaktura erfaßt");
+				return;
+			}
+		
+			tfs[0].setText(vec.get(0).get(0));
+			tfs[1].setText(DatFunk.sDatInDeutsch(vec.get(0).get(1)));
+			tfs[2].setText(vec.get(0).get(2));
+			tfs[3].setText(vec.get(0).get(3));
+			tfs[4].setText(hmRezgeb.get("<rgbehandlung>"));
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Daten für Rezeptgebührrechnung");
+		}
 	}
 	
 	private JXPanel getContent(){
@@ -200,7 +228,12 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		hmRezgeb.put("<rggesamt>",dcf.format(rezgeb));
 		hmRezgeb.put("<rgbetrag>",dcf.format(Double.parseDouble(tfs[2].getText().replace(",","."))));
 		hmRezgeb.put("<rgpauschale>",dcf.format(Double.parseDouble(tfs[3].getText().replace(",","."))));
-		hmRezgeb.put("<rgnr>","RGR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("rgrnr")));
+		if(this.buchen){
+			hmRezgeb.put("<rgnr>","RGR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("rgrnr")));	
+		}else{
+			hmRezgeb.put("<rgnr>",SqlInfo.holeEinzelFeld("select rnr from rgaffaktura where reznr='"+
+					hmRezgeb.get("<rgreznum>")+"' LIMIT 1"));
+		}
 		hmRezgeb.put("<rgbehandlung>",tfs[4].getText().trim());
 		String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/RezeptgebuehrRechnung.ott";
 		try {
@@ -248,6 +281,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		buf.append(" where rnr='"+hmRezgeb.get("<rgnr>")+"' LIMIT 1");
+		//System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
 	}
 	

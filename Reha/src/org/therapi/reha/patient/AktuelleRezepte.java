@@ -2316,6 +2316,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
 			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
 			Reha.thisClass.patpanel.aktRezept.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");					
+				}
+			});
 			setzeKarteiLasche();
 			}catch(Exception ex){
 				ex.printStackTrace();
