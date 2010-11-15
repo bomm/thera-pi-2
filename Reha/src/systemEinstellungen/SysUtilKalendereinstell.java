@@ -186,17 +186,24 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 			if(kalNeuAnfang || kalNeuEnde){
 				JOptionPane.showMessageDialog(null, "Die Funktion Kalenderzeiten verändern, wird während der Softwarentwicklung nicht aufgerufen!");
 			}
-			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-			ini.setStringProperty("Kalender", "KalenderBarcode",(scan.isSelected() ? "1" : "0"),null);
-			ini.setStringProperty("Kalender", "LangesMenue", (langmenu.isSelected() ? "1" : "0"), null);
-			ini.setStringProperty("Kalender", "ZeitLabelZeigen", (zeitzeigen.isSelected() ? "1" : "0"), null);
-			ini.save();
-			SystemConfig.KalenderBarcode = scan.isSelected();
-			SystemConfig.KalenderLangesMenue = langmenu.isSelected();
-			SystemConfig.KalenderZeitLabelZeigen = zeitzeigen.isSelected();
-			if(Reha.thisClass.terminpanel != null){
-				Reha.thisClass.terminpanel.regleZeitLabel();
-				Reha.thisClass.terminpanel.getViewPanel().repaint();
+			try{
+				INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
+				ini.setStringProperty("Kalender", "KalenderBarcode",(scan.isSelected() ? "1" : "0"),null);
+				ini.save();
+				ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
+				ini.setStringProperty("Kalender", "LangesMenue", (langmenu.isSelected() ? "1" : "0"), null);
+				ini.setStringProperty("Kalender", "ZeitLabelZeigen", (zeitzeigen.isSelected() ? "1" : "0"), null);
+				ini.save();
+				SystemConfig.KalenderBarcode = scan.isSelected();
+				SystemConfig.KalenderLangesMenue = langmenu.isSelected();
+				SystemConfig.KalenderZeitLabelZeigen = Boolean.valueOf(zeitzeigen.isSelected());
+				if(Reha.thisClass.terminpanel != null){
+					Reha.thisClass.terminpanel.regleZeitLabel();
+					Reha.thisClass.terminpanel.getViewPanel().repaint();
+				}
+				JOptionPane.showMessageDialog(null,"Konfiguration wurde erfolgreich gespeichert");
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Speichern der Konfiguration fehlgeschlagen");	
 			}
 			
 		}

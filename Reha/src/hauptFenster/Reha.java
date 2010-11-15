@@ -299,7 +299,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-11-14/03-DB=";
+	public static String aktuelleVersion = "V=2010-11-15/02-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1614,7 +1614,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 	public void setzeUi(String sUI,JScrollPane panel){
 	      try {
-	    	  SystemConfig.UpdateIni("HauptFenster","LookAndFeel",sUI);
+	    	  SystemConfig.UpdateIni("rehajava.ini","HauptFenster","LookAndFeel",sUI);
 	    	  UIManager.setLookAndFeel((aktLookAndFeel = sUI));
 	    	  SwingUtilities.updateComponentTreeUI(thisFrame);
 	    	  SwingUtilities.updateComponentTreeUI(this.jxRechtsOben);	    	  

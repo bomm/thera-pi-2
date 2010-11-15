@@ -338,10 +338,10 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				}
 			}
 			if(lneu){
-				SystemConfig.UpdateIni("Kalender", "RoogleAnzahlGruppen", Integer.valueOf(inianzahl).toString());
+				SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleAnzahlGruppen", Integer.valueOf(inianzahl).toString());
 			}
-			SystemConfig.UpdateIni("Kalender", "RoogleNameGruppen"+iniakt, setXname);
-			SystemConfig.UpdateIni("Kalender", "RoogleFelderGruppen"+iniakt, inimitglied);
+			SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleNameGruppen"+iniakt, setXname);
+			SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleFelderGruppen"+iniakt, inimitglied);
 			SystemConfig.RoogleGruppen();
 			if(lneu){
 				comboFuellen(Integer.valueOf(iniakt)-1);
@@ -535,7 +535,7 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 				int i,j;
 				int iniSet = 0;
 				String set = "";
-				SystemConfig.UpdateIni("Kalender", "RoogleAnzahlGruppen", Integer.valueOf(anzahlSets-1).toString());
+				SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleAnzahlGruppen", Integer.valueOf(anzahlSets-1).toString());
 				lspeichern = true;
 				for(i=0;i<anzahlSets;i++){
 					if(i != aktSet){
@@ -546,8 +546,8 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 						for(j=0;j<lang;j++){
 							set = set+(j>0 ? ","+mitglieder[i][j] : mitglieder[i][j]);
 						}
-						SystemConfig.UpdateIni("Kalender", "RoogleNameGruppen"+(++iniSet), gruppenname[i]);
-						SystemConfig.UpdateIni("Kalender", "RoogleFelderGruppen"+(++iniSet), set);
+						SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleNameGruppen"+(++iniSet), gruppenname[i]);
+						SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleFelderGruppen"+(++iniSet), set);
 					}
 				}
 				if(aktSet > 0){

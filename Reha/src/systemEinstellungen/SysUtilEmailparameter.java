@@ -252,7 +252,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		mailmap.put("SmtpHost", smtphost);
 		mailmap.put("Pop3Host", pophost);
 		mailmap.put("SmtpAuth", authent);		
-		INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/email.ini");
 		ini.setStringProperty(postfach, "SenderAdresse", sender, null);
 		ini.setStringProperty(postfach, "EmpfangBestaetigen", bestaetigung, null);	
 		ini.setStringProperty(postfach, "Username",benutzer , null);		

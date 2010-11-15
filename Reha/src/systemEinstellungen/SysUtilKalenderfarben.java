@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -324,11 +325,14 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 			if(def==0){
 				SystemConfig.KalenderHintergrund = SystemConfig.aktTkCol.get("AusserAZ")[0];
 			}
-			TerminFenster.setDurchlass(new Float((String)alphawahl.getSelectedItem()) );
+			TerminFenster.setDurchlass(Float.parseFloat((String)alphawahl.getSelectedItem()) );
+			SystemConfig.UpdateIni("terminkalender.ini", "Kalender", "KalenderHintergrundAlpha", (String)alphawahl.getSelectedItem());
 			ini.save();
 			ini = null;
+			JOptionPane.showMessageDialog(null,"Konfiguration in color.ini erfolgreich gespeichert");
 		}catch(Exception ex){
 			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Speichern der Konfiguration in color.ini fehlgeschlagen");
 		}
 	}
 	

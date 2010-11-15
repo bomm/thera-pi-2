@@ -249,10 +249,9 @@ public class SystemConfig {
 	@SuppressWarnings("unchecked")
 	private void DatenBank(){
 		try{
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-		}
+		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
+
 		int lesen;
 		int i;
 		ArrayList<String> aKontakt;
@@ -301,10 +300,9 @@ public class SystemConfig {
 	}
 
 	private void HauptFenster(){
-			if (ini==null){
-				ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-				//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-			}	
+			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
+
 			aHauptFenster = new ArrayList<String>();
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","Hintergrundbild"));
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","Bildgroesse"));			
@@ -324,21 +322,18 @@ public class SystemConfig {
 	
 	@SuppressWarnings("unchecked")
 	private void TerminKalender(){
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");			
-			//ini = new INIFile("/RehaVerwaltung/ini/rehajava.ini");
-			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-		}	
+		//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+		INIFile termkalini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
 		//(TestFenster) eltern.splashText("Lade Kalenderparameter");
 		aTerminKalender = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		ArrayList<String> aList1  = new ArrayList<String>();
 		ArrayList<String[]> aList2 = new ArrayList<String[]>();
 		ArrayList<ArrayList<ArrayList<String[]>>> aList3 = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		int lesen,i;
-		lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("Kalender","AnzahlSets")) );
+		lesen =  Integer.parseInt(String.valueOf(termkalini.getStringProperty("Kalender","AnzahlSets")) );
 		for (i=1;i<(lesen+1);i++){
-			aList1.add(String.valueOf(ini.getStringProperty("Kalender","NameSet"+i)) );
-			aList2.add(String.valueOf(ini.getStringProperty("Kalender","FeldSet"+i)).split(",") );
+			aList1.add(String.valueOf(termkalini.getStringProperty("Kalender","NameSet"+i)) );
+			aList2.add(String.valueOf(termkalini.getStringProperty("Kalender","FeldSet"+i)).split(",") );
 			aList3.add((ArrayList)aList1.clone());
 			aList3.add((ArrayList)aList2.clone());
 			aTerminKalender.add((ArrayList)aList3.clone());
@@ -346,12 +341,25 @@ public class SystemConfig {
 			aList2.clear();
 			aList3.clear();
 		}	
-		KalenderUmfang[0] = String.valueOf(ini.getStringProperty("Kalender","KalenderStart"));
-		KalenderUmfang[1] = String.valueOf(ini.getStringProperty("Kalender","KalenderEnde"));	
+		KalenderUmfang[0] = String.valueOf(termkalini.getStringProperty("Kalender","KalenderStart"));
+		KalenderUmfang[1] = String.valueOf(termkalini.getStringProperty("Kalender","KalenderEnde"));	
 		KalenderMilli[0] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[0]);
 		KalenderMilli[1] = ZeitFunk.MinutenSeitMitternacht(KalenderUmfang[1]);		
-		KalenderBarcode =  (ini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
+		KalenderBarcode =  (termkalini.getStringProperty("Kalender","KalenderBarcode").trim().equals("0") ? false : true );
+		UpdateIntervall = Integer.valueOf(String.valueOf(termkalini.getStringProperty("Kalender","KalenderTimer")));
+		/*ParameterLaden kolLad = */new ParameterLaden();
+		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;
+		String s = String.valueOf(termkalini.getStringProperty("Kalender","KalenderHintergrundRGB"));
+		String[] ss = s.split(",");
+		KalenderHintergrund = new Color(Integer.parseInt(ss[0]),Integer.parseInt(ss[1]),Integer.parseInt(ss[2]));
+		KalenderAlpha = new Float(String.valueOf(termkalini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
+		////System.out.println("Anzal Kollegen = "+AnzahlKollegen);
+		oTerminListe = new TerminListe().init();
+		Reha.thisClass.setzeInitStand("Gruppendefinition einlesen");
+		GruppenLesen();
+		//oGruppen = new GruppenEinlesen().init();
 		try{
+			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
 			KalenderLangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
 			KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
 			KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
@@ -360,28 +368,16 @@ public class SystemConfig {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		UpdateIntervall = Integer.valueOf(String.valueOf(ini.getStringProperty("Kalender","KalenderTimer")));
-		/*ParameterLaden kolLad = */new ParameterLaden();
-		AnzahlKollegen = ParameterLaden.vKKollegen.size()-1;
-		String s = String.valueOf(ini.getStringProperty("Kalender","KalenderHintergrundRGB"));
-		String[] ss = s.split(",");
-		KalenderHintergrund = new Color(Integer.parseInt(ss[0]),Integer.parseInt(ss[1]),Integer.parseInt(ss[2]));
-		KalenderAlpha = new Float(String.valueOf(ini.getStringProperty("Kalender","KalenderHintergrundAlpha")));
-		////System.out.println("Anzal Kollegen = "+AnzahlKollegen);
-		oTerminListe = new TerminListe().init();
-		Reha.thisClass.setzeInitStand("Gruppendefinition einlesen");
-		GruppenLesen();
-		//oGruppen = new GruppenEinlesen().init();
+		
 		
 		
 		return;
 	}
 	@SuppressWarnings("unchecked")
 	public static void NurSets(){
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-		}	
+		//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
+
 		//(TestFenster) eltern.splashText("Lade Kalenderparameter");
 		aTerminKalender = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		aTerminKalender.clear();
@@ -403,20 +399,18 @@ public class SystemConfig {
 	}
 	@SuppressWarnings("unchecked")
 	public static void  RoogleGruppen(){
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-		}	
+		INIFile roogleini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
+		//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
 		aRoogleGruppen = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		int lesen,i;
-		lesen =  Integer.parseInt(String.valueOf(ini.getStringProperty("Kalender","RoogleAnzahlGruppen")) );
+		lesen =  Integer.parseInt(String.valueOf(roogleini.getStringProperty("RoogleEinstellungen","RoogleAnzahlGruppen")) );
 		ArrayList<String> aList1  = new ArrayList<String>();
 		ArrayList<String[]> aList2 = new ArrayList<String[]>();
 		ArrayList<ArrayList<ArrayList<String[]>>> aList3 = new ArrayList<ArrayList<ArrayList<String[]>>>();
 
 		for(i=1;i<=lesen;i++){
-			aList1.add(String.valueOf(ini.getStringProperty("Kalender","RoogleNameGruppen"+i)) );
-			aList2.add((String[]) String.valueOf(ini.getStringProperty("Kalender","RoogleFelderGruppen"+i)).split(",") );
+			aList1.add(String.valueOf(roogleini.getStringProperty("RoogleEinstellungen","RoogleNameGruppen"+i)) );
+			aList2.add((String[]) String.valueOf(roogleini.getStringProperty("RoogleEinstellungen","RoogleFelderGruppen"+i)).split(",") );
 			aList3.add((ArrayList)aList1.clone());
 			aList3.add((ArrayList) aList2.clone());
 			aRoogleGruppen.add((ArrayList)aList3.clone());
@@ -425,54 +419,50 @@ public class SystemConfig {
 			aList3.clear();
 		}
 		for(i=0;i<7;i++){
-			RoogleTage[i] = (ini.getStringProperty("RoogleEinstellungen","Tag"+(i+1)).trim().equals("0") ? false : true );
+			RoogleTage[i] = (roogleini.getStringProperty("RoogleEinstellungen","Tag"+(i+1)).trim().equals("0") ? false : true );
 		}
-		RoogleZeitraum = Integer.valueOf(ini.getStringProperty("RoogleEinstellungen","Zeitraum"));
+		RoogleZeitraum = Integer.valueOf(roogleini.getStringProperty("RoogleEinstellungen","Zeitraum"));
 		RoogleZeiten = new  HashMap<String,String>();
-		RoogleZeiten.put("KG",ini.getStringProperty("RoogleEinstellungen","KG") );
-		RoogleZeiten.put("MA",ini.getStringProperty("RoogleEinstellungen","MA") );
-		RoogleZeiten.put("ER",ini.getStringProperty("RoogleEinstellungen","ER") );
-		RoogleZeiten.put("LO",ini.getStringProperty("RoogleEinstellungen","LO") );
-		RoogleZeiten.put("SP",ini.getStringProperty("RoogleEinstellungen","SP") );
+		RoogleZeiten.put("KG",roogleini.getStringProperty("RoogleEinstellungen","KG") );
+		RoogleZeiten.put("MA",roogleini.getStringProperty("RoogleEinstellungen","MA") );
+		RoogleZeiten.put("ER",roogleini.getStringProperty("RoogleEinstellungen","ER") );
+		RoogleZeiten.put("LO",roogleini.getStringProperty("RoogleEinstellungen","LO") );
+		RoogleZeiten.put("SP",roogleini.getStringProperty("RoogleEinstellungen","SP") );
 	}
 
 	private void EmailParameter(){
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		}
-			//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-			hmEmailExtern = new HashMap<String,String>();
-			hmEmailExtern.put("SmtpHost",ini.getStringProperty("EmailExtern","SmtpHost"));
-			hmEmailExtern.put("SmtpAuth",ini.getStringProperty("EmailExtern","SmtpAuth"));			
-			hmEmailExtern.put("Pop3Host",ini.getStringProperty("EmailExtern","Pop3Host"));
-			hmEmailExtern.put("Username",ini.getStringProperty("EmailExtern","Username"));
-			String pw = ini.getStringProperty("EmailExtern","Password");
-			Verschluesseln man = Verschluesseln.getInstance();
-		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
-			String decrypted = man.decrypt (pw);
-			hmEmailExtern.put("Password",decrypted);
-			hmEmailExtern.put("SenderAdresse",ini.getStringProperty("EmailExtern","SenderAdresse"));			
-			hmEmailExtern.put("Bestaetigen",ini.getStringProperty("EmailExtern","EmpfangBestaetigen"));			
-			/********************/
-			hmEmailIntern = new HashMap<String,String>();
-			hmEmailIntern.put("SmtpHost",ini.getStringProperty("EmailIntern","SmtpHost"));
-			hmEmailIntern.put("SmtpAuth",ini.getStringProperty("EmailIntern","SmtpAuth"));			
-			hmEmailIntern.put("Pop3Host",ini.getStringProperty("EmailIntern","Pop3Host"));
-			hmEmailIntern.put("Username",ini.getStringProperty("EmailIntern","Username"));
-			pw = ini.getStringProperty("EmailIntern","Password");
-			man = Verschluesseln.getInstance();
-		    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
-			decrypted = man.decrypt (pw);
-			hmEmailIntern.put("Password",decrypted);
-			hmEmailIntern.put("SenderAdresse",ini.getStringProperty("EmailIntern","SenderAdresse"));			
-			hmEmailIntern.put("Bestaetigen",ini.getStringProperty("EmailIntern","EmpfangBestaetigen"));			
+		INIFile emailini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/email.ini");
+		//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
+		hmEmailExtern = new HashMap<String,String>();
+		hmEmailExtern.put("SmtpHost",emailini.getStringProperty("EmailExtern","SmtpHost"));
+		hmEmailExtern.put("SmtpAuth",emailini.getStringProperty("EmailExtern","SmtpAuth"));			
+		hmEmailExtern.put("Pop3Host",emailini.getStringProperty("EmailExtern","Pop3Host"));
+		hmEmailExtern.put("Username",emailini.getStringProperty("EmailExtern","Username"));
+		String pw = emailini.getStringProperty("EmailExtern","Password");
+		Verschluesseln man = Verschluesseln.getInstance();
+	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+		String decrypted = man.decrypt (pw);
+		hmEmailExtern.put("Password",decrypted);
+		hmEmailExtern.put("SenderAdresse",emailini.getStringProperty("EmailExtern","SenderAdresse"));			
+		hmEmailExtern.put("Bestaetigen",emailini.getStringProperty("EmailExtern","EmpfangBestaetigen"));			
+		/********************/
+		hmEmailIntern = new HashMap<String,String>();
+		hmEmailIntern.put("SmtpHost",emailini.getStringProperty("EmailIntern","SmtpHost"));
+		hmEmailIntern.put("SmtpAuth",emailini.getStringProperty("EmailIntern","SmtpAuth"));			
+		hmEmailIntern.put("Pop3Host",emailini.getStringProperty("EmailIntern","Pop3Host"));
+		hmEmailIntern.put("Username",emailini.getStringProperty("EmailIntern","Username"));
+		pw = emailini.getStringProperty("EmailIntern","Password");
+		man = Verschluesseln.getInstance();
+	    man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+		decrypted = man.decrypt (pw);
+		hmEmailIntern.put("Password",decrypted);
+		hmEmailIntern.put("SenderAdresse",emailini.getStringProperty("EmailIntern","SenderAdresse"));			
+		hmEmailIntern.put("Bestaetigen",emailini.getStringProperty("EmailIntern","EmpfangBestaetigen"));			
 
 	}	
 	
 	private void Verzeichnisse(){
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		}
+		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		hmVerzeichnisse = new HashMap<String,String>();
 		hmVerzeichnisse.put("Programmverzeichnis",String.valueOf(Reha.proghome));
 		hmVerzeichnisse.put("Vorlagen",String.valueOf(Reha.proghome+"vorlagen/"+Reha.aktIK));
@@ -645,12 +635,12 @@ public class SystemConfig {
 	}	
  
 
-	public static void UpdateIni(String gruppe,String element,String wert){
-		if (ini==null){
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		}	
-		ini.setStringProperty(gruppe, element, wert, null);
-		ini.save();
+	public static void UpdateIni(String inidatei,String gruppe,String element,String wert){
+
+		INIFile	updateini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/"+inidatei);
+	
+		updateini.setStringProperty(gruppe, element, wert, null);
+		updateini.save();
 	}
 	public static void GruppenLesen(){
 		oGruppen = new GruppenEinlesen().init();

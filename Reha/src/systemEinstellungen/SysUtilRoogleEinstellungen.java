@@ -173,7 +173,7 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("speichern")){
-			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
 			for(int i = 0;i<7;i++){
 				ini.setStringProperty("RoogleEinstellungen", "Tag"+(i+1),(tage[i].isSelected() ? "1" : "0"),null);
 				SystemConfig.RoogleTage[i] = tage[i].isSelected();

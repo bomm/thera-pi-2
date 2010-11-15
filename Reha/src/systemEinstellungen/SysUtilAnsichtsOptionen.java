@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -156,13 +157,18 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 	}
 	/**************************************************************************/	
 	private void speichernHandeln(){
-		INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		ini.setStringProperty("Kalender", "StartWochenAnsicht", (startWochenAnz.isSelected() ? "1" : "0"), null);
-		ini.setStringProperty("Kalender", "AnsichtDefault", defaultWA.getSelectedItem()+"@"+defaultNA.getSelectedItem(), null);
-		ini.save();
-		SystemConfig.KalenderStartWochenAnsicht = startWochenAnz.isSelected();
-		SystemConfig.KalenderStartNADefaultSet = defaultNA.getSelectedItem().toString();
-		SystemConfig.KalenderStartWADefaultUser = defaultWA.getSelectedItem().toString();
+		try{
+			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
+			ini.setStringProperty("Kalender", "StartWochenAnsicht", (startWochenAnz.isSelected() ? "1" : "0"), null);
+			ini.setStringProperty("Kalender", "AnsichtDefault", defaultWA.getSelectedItem()+"@"+defaultNA.getSelectedItem(), null);
+			ini.save();
+			SystemConfig.KalenderStartWochenAnsicht = startWochenAnz.isSelected();
+			SystemConfig.KalenderStartNADefaultSet = defaultNA.getSelectedItem().toString();
+			SystemConfig.KalenderStartWADefaultUser = defaultWA.getSelectedItem().toString();
+			JOptionPane.showMessageDialog(null,"Konfiguration in kalender.ini erfolgreich gespeichert");
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Speichern der Konfiguration in kalender.ini fehlgeschlagen");
+		}
 	}
 	/**************************************************************************/	
 	private void abbrechenHandeln(){

@@ -393,8 +393,8 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 				set = set+(i>0 ? ","+Spalten[i].getSelectedItem() : Spalten[i].getSelectedItem());
 				teilnehmer[setIndex][i] = (String) Spalten[i].getSelectedItem();
 			}
-			SystemConfig.UpdateIni("Kalender", setAktuellName, setXname);
-			SystemConfig.UpdateIni("Kalender", setInhaltName, set);
+			SystemConfig.UpdateIni("terminkalender.ini","Kalender", setAktuellName, setXname);
+			SystemConfig.UpdateIni("terminkalender.ini","Kalender", setInhaltName, set);
 
 			SystemConfig.NurSets();
 			//comboFuellen(false,setIndex);
@@ -442,9 +442,9 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 			for(i=0;i<7;i++){
 				set = set+(i>0 ? ","+Spalten[i].getSelectedItem() : Spalten[i].getSelectedItem());
 			}
-			SystemConfig.UpdateIni("Kalender", "AnzahlSets", Integer.valueOf(setAnzahl).toString());
-			SystemConfig.UpdateIni("Kalender", setAktuellName, setXname);
-			SystemConfig.UpdateIni("Kalender", setInhaltName, set);
+			SystemConfig.UpdateIni("terminkalender.ini","Kalender", "AnzahlSets", Integer.valueOf(setAnzahl).toString());
+			SystemConfig.UpdateIni("terminkalender.ini","Kalender", setAktuellName, setXname);
+			SystemConfig.UpdateIni("terminkalender.ini","Kalender", setInhaltName, set);
 
 			SystemConfig.NurSets();
 			//comboFuellen(false,setIndex);
@@ -470,7 +470,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 			int i,j;
 			int iniSet = 0;
 			String set = "";
-			SystemConfig.UpdateIni("Kalender", "AnzahlSets", Integer.valueOf(anzahlSets-1).toString());
+			SystemConfig.UpdateIni("terminkalender.ini","Kalender", "AnzahlSets", Integer.valueOf(anzahlSets-1).toString());
 			lspeichern = true;
 			for(i=0;i<anzahlSets;i++){
 				if(i != aktSet){
@@ -478,8 +478,8 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 					for(j=0;j<7;j++){
 						set = set+(j>0 ? ","+teilnehmer[i][j] : teilnehmer[i][j]);
 					}
-					SystemConfig.UpdateIni("Kalender", "NameSet"+(++iniSet), fach[i]);
-					SystemConfig.UpdateIni("Kalender", "FeldSet"+(iniSet), set);
+					SystemConfig.UpdateIni("terminkalender.ini","Kalender", "NameSet"+(++iniSet), fach[i]);
+					SystemConfig.UpdateIni("terminkalender.ini","Kalender", "FeldSet"+(iniSet), set);
 				}
 			}
 			if(aktSet > 0){

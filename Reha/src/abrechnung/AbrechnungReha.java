@@ -538,6 +538,7 @@ public class AbrechnungReha extends JXPanel{
 		tfs[1] = new JRtaTextField("nix",false);
 		tfs[2] = new JRtaTextField("nix",false);
 		tfs[1].setText(anschriftID);
+
 		//System.out.println(tfs[1].getText());
 		//this.suchkrit = suchegleichnach[0];
 		//this.suchid = suchegleichnach[1];
@@ -681,13 +682,13 @@ public class AbrechnungReha extends JXPanel{
 		gesamtPreis = BigDecimal.valueOf(Double.parseDouble(tfpatgesamt[0].getText().trim().replace(",", ".")));
 
 		starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+this.druckFormular,this.druckDrucker);
-		System.out.println("Dokument gestartet");
+		//System.out.println("Dokument gestartet");
 		starteErsetzen(hmRechnung);
-		System.out.println("suche ersetzen abeschlossen");
+		//System.out.println("suche ersetzen abeschlossen");
 		startePositionen(vecposrechnung,gesamtPreis);
-		System.out.println("Positionen gesetzt");
+		//System.out.println("Positionen gesetzt");
 		starteDrucken(this.druckExemplare);
-		System.out.println("Druck gestartet");
+		//System.out.println("Druck gestartet");
 	}
 
 	private void doFaktura(){
@@ -869,8 +870,8 @@ public class AbrechnungReha extends JXPanel{
 	
 	/******************Nachfolgend die OO.writer - Funktionen**************************/
 	public void starteDokument(String url,String drucker) {
-		System.out.println("URL="+url);
-		System.out.println("Drucker="+drucker);
+		//System.out.println("URL="+url);
+		//System.out.println("Drucker="+drucker);
 		IDocumentService documentService = null;
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
