@@ -307,7 +307,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		if(cmd.equals("speichern")){
 			//System.out.println("Es wird abgespeichert");
 			doSpeichern();
-			JOptionPane.showMessageDialog(null,"Konfiguration wurden in Datei 'rezept.ini' erfolgreich gespeichert!");					
+			//JOptionPane.showMessageDialog(null,"Konfiguration wurden in Datei 'rezept.ini' erfolgreich gespeichert!");					
 
 		}
 		if(cmd.equals("vorlagenneu")){
@@ -409,6 +409,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	
 	
 	private void doSpeichern(){
+		try{
 		String wert = "";
 		int iwert;
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
@@ -448,6 +449,11 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		SystemConfig.rezGebDrucker = (String)druckername.getSelectedItem();
 		SystemConfig.rezBarcodeDrucker = (String)barcodedrucker.getSelectedItem();
 		SystemConfig.RezeptInit();
+		JOptionPane.showMessageDialog(null,"Konfiguration in rezept.ini erfolgreich gespeichert");
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Speichern der Konfiguration in rezept.ini fehlgeschlagen");
+		}
 	}
 
 }

@@ -754,7 +754,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			if (cmd.equals("piTextb")){
 				new LadeProg(Reha.proghome+"TBedit.jar "+
 						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
-						Reha.proghome+"ini/textbaustein.ini");	
+						Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");	
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {

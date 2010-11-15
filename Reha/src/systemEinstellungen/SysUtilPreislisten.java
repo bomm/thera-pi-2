@@ -375,9 +375,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			 	   public  void run(){
 			 		   JOptionPane.showMessageDialog(null,"Die Forumsteilnehmer von Thera-Pi.org sind bemüht\n"+
 			 				   "die Preislisten vollständig und aktuell zu halten.\n\n"+
-			 				   "Wir übernehmen aber keinerlei Garantie dafür daß dies zu jedem Zeitpunkt\n"+
+			 				   "Wir übernehmen aber keinerlei Garantie dafür, daß dies zu jedem Zeitpunkt\n"+
 			 				   "der Fall ist.\n\nBitte kontrollieren Sie nach jedem Preislistenimport die Daten auf\n"+
-			 				   "Vollständigkeit, herzlichen Dank");
+			 				   "Vollständigkeit und Richtigkeit der einzelnen Preise und Positionen.\n\n Herzlichen Dank dafür!");
 						String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
 						plEinlesen.setText("<html>Verfügbare Preislisten für <b><font color='#ff0000'>"+lists[jcmb[0].getSelectedIndex()]+"</font></b> ermitteln");
 						jcmb[3].removeAllItems();

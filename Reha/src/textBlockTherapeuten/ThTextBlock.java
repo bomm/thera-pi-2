@@ -95,15 +95,18 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 	List<String> sysVars2;
 	String[][] sysInhalt1;
 	String[] sysInhalt2;
+	
+	String reznummer = null;
 	private RehaTPEventClass rtp = null;
 	
-		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr) {
+		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr,String xreznummer) {
 			super(owner, name);
 			//System.out.println("Name des Fensters = "+name);
 			setSize(450,600);
 			this.suchkrit = diag;
 			this.setName(name);
 			this.abr = abr;
+			this.reznummer = xreznummer;
 			
 			rtp = new RehaTPEventClass();
 			rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -331,7 +334,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+diag+"</font></b>";
 		    super.getSmartTitledPanel().setTitle(xtitel);
 		    this.suchkrit = diag;
-			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
+			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tb"+this.reznummer.substring(0,2).toLowerCase(), "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			//Vector<String> vec2 = new Vector<String>();
 			modtextblock.setRowCount(0);
@@ -347,7 +350,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			textblock.validate();
 		}
 		private void fuelleSucheInTabelle(String whereKlausel){
-			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tbkg", "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));
+			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tb"+this.reznummer.substring(0,2).toLowerCase(), "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", whereKlausel , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			modtextblock.setRowCount(0);
 			//Vector<String> vec2 = new Vector<String>();
@@ -402,7 +405,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			//////System.out.println("Längendifferenz ="+diff+"  /  neuer Wert für Position i ="+i+" / neuer Wert für Textlänge lang="+lang);
 		}
 		private void holeTbText(int tbid){
-			String text = (String) SqlInfo.holeSatz("tbkg", "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
+			String text = (String) SqlInfo.holeSatz("tb"+this.reznummer.substring(0,2).toLowerCase(), "tbtext", "id='"+tbid+"'", Arrays.asList(new String[] {})).get(0);
 			text = testeAufSysVars(text);
 			tbtext.setText(text );
 			final int xtbid = tbid;

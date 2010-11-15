@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import stammDatenTools.RezTools;
 import systemTools.Verschluesseln;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
@@ -893,6 +894,7 @@ public class SystemConfig {
 			rezBarCodName = new String[] {null};
 			rezBarCodForm = new Vector<String>();
 		}
+		//System.out.println(rezeptKlassenAktiv);
 
 	}
 	public static void TherapBausteinInit() {
@@ -902,33 +904,19 @@ public class SystemConfig {
 		Vector<String> vec = new Vector<String>();
 		for(int i = 0; i<lang;i++){
 			vec.clear();
-			String prop = "Anzahl"+rezeptKlassenAktiv.get(i).get(1);
+			String prop = "AnzahlThemen_"+RezTools.putRezNrGetDisziplin(rezeptKlassenAktiv.get(i).get(1));
 			int lang2 = inif.getIntegerProperty("Textbausteine", prop);
-			String prop2 = rezeptKlassenAktiv.get(i).get(1);
-			String gelenk;
+			String prop2 = RezTools.putRezNrGetDisziplin(rezeptKlassenAktiv.get(i).get(1));
+			//System.out.println("****************************"+prop);
+			//System.out.println("****************************"+prop2);
+			//String gelenk;
 			for(int i2 = 0; i2 < lang2;i2++ ){
-				//gelenk = inif.getStringProperty("Textbausteine", prop2+(i2+1));
-				vec.add( inif.getStringProperty("Textbausteine", prop2+(i2+1)) );
-				/*
-				try {
-					//System.out.println(String.valueOf(gelenk.getBytes("UTF-8")));
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				byte[] b = null;
-
-					b = gelenk.getBytes();
-				for(int y = 0; y < b.length;y++){
-					//System.out.println(b[y]);
-				}
-				
-				
-				vec.add( String.valueOf( gelenk.getBytes()  )  );
-				*/
+				//vec.add( inif.getStringProperty("Textbausteine", prop2+(i2+1)) );
+				vec.add( inif.getStringProperty(prop2, "Thema"+(i2+1)) );
 			}
-			hmTherapBausteine.put(prop2, (Vector) vec.clone());
+			hmTherapBausteine.put(prop2, (Vector<?>) vec.clone());
 		}
+		//System.out.println(hmTherapBausteine);
 		for(int i = 0; i<4;i++){
 			berichttitel[i] = inif.getStringProperty("Bericht", "Block"+(i+1));	
 		}

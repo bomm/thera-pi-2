@@ -47,6 +47,7 @@ import patientenFenster.ArztAuswahl;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.AdressTools;
 import systemTools.Colors;
@@ -362,7 +363,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		name = "";
 		if(! this.reznr.equals("")){
 			name = this.reznr;
-			this.disziplin = name.substring(0,2);
+			this.disziplin = RezTools.putRezNrGetDisziplin(name.substring(0,2));
 		}else{
 			name = "ohne Rezeptbezug";
 		}
@@ -960,7 +961,7 @@ class TextBausteine extends AbstractAction {
 		if(thblock == null){
 			//System.out.println("thblock == null");
 			initok = false;
-			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem(),getInstance());
+			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem(),getInstance(),reznr);
 			thblock.setModal(true);
 			thblock.setLocationRelativeTo(grundPanel);
 			thblock.pack();
