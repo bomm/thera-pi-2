@@ -754,24 +754,36 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				colName.add(md.getColumnName(i+1));
 				colType.add(md.getColumnType(i+1));
 				colClassName.add(md.getColumnClassName(i+1));
-				if(md.getColumnType(i+1) == 1 && md.getColumnDisplaySize(i+1)==1){
-					//dann wird enum('T','F') also logisch vermutet und
-					//per Hand BOOLEAN eingetragen. Stimmt natürlich nicht wenn in der
-					//Tabellendefinition tatsächlich Spaltenbreite 1 und typ CHAR eingetragen ist. - Leider
-					colTypeName.add("BOOLEAN");
-				}else{
-					colTypeName.add(md.getColumnTypeName(i+1));
+				try{
+					if(md.getColumnType(i+1) == 1 && md.getColumnDisplaySize(i+1)==1){
+						//dann wird enum('T','F') also logisch vermutet und
+						//per Hand BOOLEAN eingetragen. Stimmt natürlich nicht wenn in der
+						//Tabellendefinition tatsächlich Spaltenbreite 1 und typ CHAR eingetragen ist. - Leider
+						colTypeName.add("BOOLEAN");
+					}else{
+						colTypeName.add(md.getColumnTypeName(i+1));
+					}
+				}catch(Exception ex){
+					colTypeName.add("VARCHAR");
 				}
-				colAutoinc.add(md.isAutoIncrement(i+1));
-				if(md.isAutoIncrement(i+1)){
-					autoIncCol = i;
+				try{
+					colAutoinc.add(md.isAutoIncrement(i+1));
+					if(md.isAutoIncrement(i+1)){
+						autoIncCol = i;
+					}
+				}catch(Exception ex){
+					colAutoinc.add(false);
 				}
 				if(i == 0){
 					table0 = md.getTableName(i+1);
 					aktuelleTabelle = String.valueOf(table0);
 				}else{
-					if(! table0.equals(md.getTableName(i+1)) ){
-						isUpdateable = false;
+					try{					
+						if(! table0.equals(md.getTableName(i+1)) ){
+							isUpdateable = false;
+						}
+					}catch(Exception ex){
+						
 					}
 				}
 	

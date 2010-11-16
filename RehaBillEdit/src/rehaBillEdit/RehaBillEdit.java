@@ -1,5 +1,9 @@
 package rehaBillEdit;
 
+
+
+
+
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -65,6 +69,10 @@ public class RehaBillEdit implements WindowListener {
 	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	
+	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
+	public static HashMap<String,String> hmFirmenDaten  = null;
+	public static HashMap<String,String> hmAdrPDaten = new HashMap<String,String>();
+	
 	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
@@ -99,6 +107,11 @@ public class RehaBillEdit implements WindowListener {
 				rhRechnungKasse = inif.getStringProperty("RehaDRVRechnung","RehaDRVformular");
 				progHome = args[0];
 				aktIK = args[1];
+				AbrechnungParameter(progHome);
+				FirmenDaten(progHome);
+			}else{
+				AbrechnungParameter(progHome);
+				FirmenDaten(progHome);
 			}
 
 			final RehaBillEdit xapplication = application;
@@ -279,6 +292,84 @@ public class RehaBillEdit implements WindowListener {
 	}
 	@Override
 	public void windowOpened(WindowEvent arg0) {
+	}
+	
+	public static void FirmenDaten(String proghome){
+		String[] stitel = {"Ik","Ikbezeichnung","Firma1","Firma2","Anrede","Nachname","Vorname",
+				"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
+				"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4","Bundesland"};
+		hmFirmenDaten = new HashMap<String,String>();
+		INIFile inif = new INIFile(proghome+"ini/"+RehaBillEdit.aktIK+"/firmen.ini");
+		for(int i = 0; i < stitel.length;i++){
+			hmFirmenDaten.put(stitel[i],inif.getStringProperty("Firma",stitel[i] ) );
+		}
+	}
+
+	public static void AbrechnungParameter(String proghome){
+		hmAbrechnung.clear();
+		/********Heilmittelabrechnung********/
+		INIFile inif = new INIFile(proghome+"ini/"+aktIK+"/abrechnung.ini");
+		hmAbrechnung.put("hmgkvformular", inif.getStringProperty("HMGKVRechnung", "Rformular"));
+		hmAbrechnung.put("hmgkvrechnungdrucker", inif.getStringProperty("HMGKVRechnung", "Rdrucker"));
+		hmAbrechnung.put("hmgkvtaxierdrucker", inif.getStringProperty("HMGKVRechnung", "Tdrucker"));
+		hmAbrechnung.put("hmgkvbegleitzettel", inif.getStringProperty("HMGKVRechnung", "Begleitzettel"));
+		hmAbrechnung.put("hmgkvrauchdrucken", inif.getStringProperty("HMGKVRechnung", "Rauchdrucken"));
+		hmAbrechnung.put("hmgkvrexemplare", inif.getStringProperty("HMGKVRechnung", "Rexemplare"));
+
+		hmAbrechnung.put("hmpriformular", inif.getStringProperty("HMPRIRechnung", "Pformular"));
+		hmAbrechnung.put("hmpridrucker", inif.getStringProperty("HMPRIRechnung", "Pdrucker"));
+		hmAbrechnung.put("hmpriexemplare", inif.getStringProperty("HMPRIRechnung", "Pexemplare"));
+		
+		hmAbrechnung.put("hmbgeformular", inif.getStringProperty("HMBGERechnung", "Bformular"));
+		hmAbrechnung.put("hmbgedrucker", inif.getStringProperty("HMBGERechnung", "Bdrucker"));
+		hmAbrechnung.put("hmbgeexemplare", inif.getStringProperty("HMBGERechnung", "Bexemplare"));
+		/********Rehaabrechnung********/
+		hmAbrechnung.put("rehagkvformular", inif.getStringProperty("RehaGKVRechnung", "RehaGKVformular"));
+		hmAbrechnung.put("rehagkvdrucker", inif.getStringProperty("RehaGKVRechnung", "RehaGKVdrucker"));
+		hmAbrechnung.put("rehagkvexemplare", inif.getStringProperty("RehaGKVRechnung", "RehaGKVexemplare"));
+		hmAbrechnung.put("rehagkvik", inif.getStringProperty("RehaGKVRechnung", "RehaGKVik"));
+		
+		hmAbrechnung.put("rehadrvformular", inif.getStringProperty("RehaDRVRechnung", "RehaDRVformular"));
+		hmAbrechnung.put("rehadrvdrucker", inif.getStringProperty("RehaDRVRechnung", "RehaDRVdrucker"));
+		hmAbrechnung.put("rehadrvexemplare", inif.getStringProperty("RehaDRVRechnung", "RehaDRVexemplare"));
+		hmAbrechnung.put("rehadrvik", inif.getStringProperty("RehaDRVRechnung", "RehaDRVik"));
+		
+		hmAbrechnung.put("rehapriformular", inif.getStringProperty("RehaPRIRechnung", "RehaPRIformular"));
+		hmAbrechnung.put("rehapridrucker", inif.getStringProperty("RehaPRIRechnung", "RehaPRIdrucker"));
+		hmAbrechnung.put("rehapriexemplare", inif.getStringProperty("RehaPRIRechnung", "RehaPRIexemplare"));
+		hmAbrechnung.put("rehapriik", inif.getStringProperty("RehaPRIRechnung", "RehaPRIik"));
+		
+		hmAbrechnung.put("hmallinoffice", inif.getStringProperty("GemeinsameParameter", "InOfficeStarten"));
+		String INI_FILE = "";
+		if(System.getProperty("os.name").contains("Windows")){
+			INI_FILE = proghome+ "nebraska_windows.conf";
+		}else if(System.getProperty("os.name").contains("Linux")){
+			INI_FILE = proghome+ "nebraska_linux.conf";			
+		}else if(System.getProperty("os.name").contains("String für MaxOSX????")){
+			INI_FILE = proghome+"nebraska_mac.conf";
+		}
+		/*
+		org.thera_pi.nebraska.gui.utils.Verschluesseln man = org.thera_pi.nebraska.gui.utils.Verschluesseln.getInstance();
+		man.init(org.thera_pi.nebraska.gui.utils.Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+		try{
+			inif = new INIFile(INI_FILE);
+			String pw = null;
+			String decrypted = null;
+			hmAbrechnung.put("hmkeystorepw", "");
+			int anzahl = inif.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
+			for(int i = 0; i < anzahl;i++){
+				if(inif.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i+1)).trim().equals("IK"+Reha.aktIK)){
+					pw = inif.getStringProperty("KeyStores", "KeyStorePw"+Integer.toString(i+1));
+					decrypted = man.decrypt(pw);
+					hmAbrechnung.put("hmkeystorepw", decrypted);
+					break;
+				}
+			}
+
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Zertifikatsdatenbank nicht vorhanden oder fehlerhaft.\nAbrechnung nach § 302 kann nicht durchgeführt werden.");
+		}
+		*/
 	}
 	
 	/***************************/

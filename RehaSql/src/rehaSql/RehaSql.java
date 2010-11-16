@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -65,7 +66,19 @@ public class RehaSql implements WindowListener {
 	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
-	
+	/*
+	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
+	public static String dbUser = "rtauser";
+	public static String dbPassword = "rtacurie";
+	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
+	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
+	public static String progHome = "C:/RehaVerwaltung/";
+	public static String aktIK = "510841109";
+	public static String hmRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	*/
 	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
@@ -121,8 +134,37 @@ public class RehaSql implements WindowListener {
 			}.execute();
 			application.getJFrame();
 		}else{
+			/*
+			final RehaSql xapplication = application;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
+					xapplication.starteDB();
+					long zeit = System.currentTimeMillis();
+					while(! DbOk){
+						try {
+							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 5000){
+								System.exit(0);
+							}
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					if(!DbOk){
+						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Sql kann nicht gestartet werden");				
+					}
+					RehaSql.starteOfficeApplication();
+					return null;
+				}
+				
+			}.execute();
+			application.getJFrame();
+			*/
+			
 			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\nReha-Sql kann nicht gestartet werden");
 			System.exit(0);
+			
 		}
 		
 	}
@@ -164,8 +206,13 @@ public class RehaSql implements WindowListener {
 	/*******************/
 	
 	public void starteDB(){
+		
+		//piHelpDatenbankStarten dbstart = new piHelpDatenbankStarten();
+		//dbstart.run(); 			
+		
 		DatenbankStarten dbstart = new DatenbankStarten();
-		dbstart.run(); 			
+		dbstart.run();
+		 			
 	}
 	
 	/*******************/
@@ -234,6 +281,66 @@ public class RehaSql implements WindowListener {
 	/*****************************************************************
 	 * 
 	 */
+	/**********************************************************
+	 * 
+	 */
+	final class piHelpDatenbankStarten implements Runnable{
+		private void StarteDB(){
+			final RehaSql obj = RehaSql.thisClass;
+
+			final String sDB = "SQL";
+			if (obj.conn != null){
+				try{
+				obj.conn.close();}
+				catch(final SQLException e){}
+			}
+			try{
+				Class.forName("de.root1.jpmdbc.Driver");
+				//Class.forName("com.mysql.jdbc.Driver").newInstance();
+	         
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Kein Kontakt zu MySql bei 1 & 1");
+        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+        		RehaSql.DbOk = false;
+	    		return ;
+			}	
+        	try {
+    			System.out.println("Starte de.root1.jpmdbc.Drive");
+    			//System.out.println("Starte Serveradresse:192.168.2.2");
+    			//obj.connMySql = (Connection) DriverManager.getConnection("jdbc:mysql://192.168.2.2:3306/dbf","entwickler","entwickler");
+    			Properties connProperties = new Properties();
+    			connProperties.setProperty("user", "dbo336243054");
+    			connProperties.setProperty("password", "allepreise");
+    			//connProperties.setProperty("host", "localhost");
+    			connProperties.setProperty("host", "db2614.1und1.de");	        			
+    			//connProperties.setProperty("host", "db2614.1und1.de");
+    			connProperties.setProperty("port", "3306");
+    			connProperties.setProperty("compression","false");
+    			connProperties.setProperty("NO_DRIVER_INFO", "1");
+
+    			obj.conn = (Connection) DriverManager.getConnection("jdbc:jpmdbc:http://www.thera-pi.org/jpmdbc.php?db336243054",connProperties);
+        		
+   				//obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+				RehaSql.DbOk = true;
+    			System.out.println("Datenbankkontakt hergestellt");
+        	} 
+        	catch (final SQLException ex) {
+				JOptionPane.showMessageDialog(null, "Kein Kontakt zu MySql bei 1 & 1");
+        		System.out.println("SQLException: " + ex.getMessage());
+        		System.out.println("SQLState: " + ex.getSQLState());
+        		System.out.println("VendorError: " + ex.getErrorCode());
+        		RehaSql.DbOk = false;
+        
+        	}
+	        return;
+		}
+		public void run() {
+			StarteDB();
+		}
+	
+	
+	}
 
 	@Override
 	public void windowActivated(WindowEvent arg0) {

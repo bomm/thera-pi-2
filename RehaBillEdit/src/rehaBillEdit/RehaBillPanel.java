@@ -2,21 +2,30 @@ package rehaBillEdit;
 
 
 
+
+
+
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -39,14 +48,18 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 
+
+
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaTextField;
+import Tools.PatTools;
 import Tools.RezTools;
 import Tools.SqlInfo;
 import Tools.TableTool;
+
 
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -100,14 +113,18 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	Vector<String> originalLangtext = new Vector<String>();
 
  
-	HashMap<String,String> hmAdresse = new HashMap<String,String>(); 
+	HashMap<String,String> hmAdresse = new HashMap<String,String>();
+	boolean is302er = false;
 	
 	ITextTable textTable = null;
 	ITextTable textEndbetrag = null;
 	ITextDocument textDocument = null;
 	int aktuellePosition = 0;
 	int patKilometer = 0;	
+	
+	int gkvForm;
 
+	JCheckBox[] check = {null,null};
 	
 	public RehaBillPanel(RehaBillEditTab eltern){
 		super();
@@ -146,6 +163,15 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		JLabel lab = new JLabel("finde RNr.:");
 		jpan.add(lab,cc.xy(2,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		tfs[0] = new JRtaTextField("nix",true);
+		tfs[0].addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent evt){
+				if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+					evt.consume();
+					tfs[0].requestFocus();
+					starteSuche();
+				}
+			}
+		});
 		jpan.add(tfs[0],cc.xy(4,2));
 		
 		JButton but = ButtonTools.macheButton("los...", "suchen", al);
@@ -235,14 +261,15 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		tabmod = new MyOffenePostenTableModel();
 		feldNamen = SqlInfo.holeFelder("describe faktura");
 		//Vector<Vector<String>> felder = SqlInfo.holeFelder("describe faktura");
-		System.out.println(feldNamen);
-		System.out.println(feldNamen.size());
+		//System.out.println(feldNamen);
+		//System.out.println(feldNamen.size());
 		String[] spalten = new String[feldNamen.size()];
 		for(int i= 0; i < feldNamen.size();i++){
 			spalten[i] = feldNamen.get(i).get(0);
 		}
 		tabmod.setColumnIdentifiers(spalten);
 		tab = new JXTable(tabmod);
+		tab.setSortable(false);
 		tab.setHorizontalScrollEnabled(true);
 		DateTableCellEditor tble = new DateTableCellEditor();
 
@@ -362,7 +389,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		rechneNeu(false);
 	}
 	private void doZeileLoeschen(){
-		int anfrage = JOptionPane.showConfirmDialog(null, "Sie sind im Begriff die ausgewählte Position unwiederbringlich\n"+
+		int anfrage = JOptionPane.showConfirmDialog(null, "Sie sind im Begriff die´ausgewählte Position unwiederbringlich\n"+
 				"aus der Tabelle 'Faktura' zu löschen!\n\nWollen Sie das wirklich?\n", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.YES_OPTION){
 			int row = tab.getSelectedRow();
@@ -371,12 +398,12 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			}
 			String id =tabmod.getValueAt(tab.convertRowIndexToModel(row),tabmod.getColumnCount()-1).toString().replace(".", "");
 			String cmd = "delete from faktura where id='"+id+"' LIMIT 1";
-			System.out.println(cmd);
+			//System.out.println(cmd);
 			SqlInfo.sqlAusfuehren(cmd);
 			TableTool.loescheRowAusModel(tab, row);
 			rechneNeu(false);
 			cmd = "update rliste set r_betrag='"+dcf.format(rechnungGesamt).replace(",",".")+"', r_offen='"+dcf.format(rechnungGesamt).replace(",",".")+"' where r_nummer='"+rnummerAlt.getText().trim()+"' LIMIT 1";
-			System.out.println(cmd);
+			//System.out.println(cmd);
 			SqlInfo.sqlAusfuehren(cmd);
 			for(int i = 0;i < tabmod.getRowCount();i++){
 				tabmod.setValueAt(i, tabmod.getRowCount()-1, 5);
@@ -408,12 +435,12 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			}else{
 				cmd = altFaktura(i);
 			}
-			System.out.println(cmd);
+			//System.out.println(cmd);
 			SqlInfo.sqlAusfuehren(cmd);
 		}
 		cmd = "update rliste set r_betrag='"+dcf.format(rechnungGesamt).replace(",",".")+"', r_offen='"+dcf.format(rechnungGesamt).replace(",",".")+"' where r_nummer='"+rnummerAlt.getText().trim()+"' LIMIT 1";
 		//cmd = "update rliste set r_betrag='"+dcf.format(rechnungGesamt).replace(",",".")+"' where r_nummer='"+rnummerAlt.getText().trim()+"' LIMIT 1";
-		System.out.println(cmd);
+		//System.out.println(cmd);
 		SqlInfo.sqlAusfuehren(cmd);
 
 		buts[0].setEnabled(true);
@@ -479,7 +506,8 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		if(c.equals("")){
 			return;
 		}
-		String cmd = "select * from faktura where rnummer='"+c+"' order by lfnr";
+		is302er = SqlInfo.holeEinzelFeld("select r_kasse from rliste where r_nummer='"+c+"' LIMIT 1").contains(", esol0");
+		String cmd = "select * from faktura where rnummer='"+c+"' order by id,lfnr";
 		try{
 			suchen(cmd);
 			bestueckeLabels( (tab.getRowCount() > 0) );
@@ -535,7 +563,10 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	    }
 
 		public boolean isCellEditable(int row, int col) {
-			
+			if(is302er && col > 4){
+				JOptionPane.showMessageDialog(null,"Für Abrechnungen nach §302 können lediglich die Adressfelder editiert werden");
+				return false;
+			}
 			if(col != 40){
 				return true;				
 			}
@@ -571,7 +602,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 		if(arg0.getType() == TableModelEvent.INSERT){
-			System.out.println("Insert");
+			//System.out.println("Insert");
 			return;
 		}
 		if(arg0.getType() == TableModelEvent.UPDATE){
@@ -742,31 +773,51 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		tabmod.removeTableModelListener(this);
 		BigDecimal reiheEinzel = BigDecimal.valueOf(Double.parseDouble("0.00"));
 		BigDecimal reiheGesamt = BigDecimal.valueOf(Double.parseDouble("0.00"));
+		BigDecimal reiheNetto = BigDecimal.valueOf(Double.parseDouble("0.00"));
+		BigDecimal reiheRezgeb = BigDecimal.valueOf(Double.parseDouble("0.00"));
+		BigDecimal reihePauschale = BigDecimal.valueOf(Double.parseDouble("0.00"));
+		BigDecimal rechnungPauschale = BigDecimal.valueOf(Double.parseDouble("0.00"));
 		rechnungGesamt = BigDecimal.valueOf(Double.parseDouble("0.00"));
 		BigDecimal reiheAnzahl = BigDecimal.valueOf(Double.parseDouble("0.00"));
 		String cmd= "";
 		String id = "";
+		String aktrezept = "";
+		
 		for(int i = 0; i < tabmod.getRowCount();i++){
+			reihePauschale = BigDecimal.valueOf(Double.parseDouble("0.00"));
+			if( (!tabmod.getValueAt(i, 19).toString().trim().equals(aktrezept)) &&
+					(((Integer)tabmod.getValueAt(i, 5))==0 )){
+				reihePauschale = BigDecimal.valueOf((Double)tabmod.getValueAt(i,20));
+				aktrezept = tabmod.getValueAt(0,19).toString();
+			}
 
 			id = tabmod.getValueAt(i,tabmod.getColumnCount()-1).toString().replace(".","");
 			reiheAnzahl = BigDecimal.valueOf(Double.parseDouble( tabmod.getValueAt(i,11).toString()  ));
 			reiheEinzel = BigDecimal.valueOf( (Double) tabmod.getValueAt(i,12) );
 			reiheGesamt = reiheAnzahl.multiply(reiheEinzel);
-			rechnungGesamt = rechnungGesamt.add(reiheGesamt);
+			reiheRezgeb = BigDecimal.valueOf(Double.parseDouble( tabmod.getValueAt(i,16).toString()  ));
+			reiheNetto = reiheGesamt.subtract(reiheRezgeb);
+
+			rechnungGesamt = rechnungGesamt.add(reiheNetto);
 			tabmod.setValueAt(reiheGesamt.doubleValue(),i,14);
-			tabmod.setValueAt(reiheGesamt.doubleValue(),i,17);
+			tabmod.setValueAt(reiheNetto.doubleValue(),i,17);
+			rechnungPauschale = rechnungPauschale.add(reihePauschale);
 			if(inDBschreiben){
 				cmd = "update faktura set anzahl='"+
 				Integer.toString(reiheAnzahl.intValue())+"', preis='"+
 				dcf.format(reiheEinzel).replace(",", ".")+"', gesamt='"+
 				dcf.format(reiheGesamt).replace(",", ".")+"', netto='"+
-				dcf.format(reiheGesamt).replace(",", ".")+"' where id='"+id+"' LIMIT 1";
-				System.out.println(cmd);
+				dcf.format(reiheNetto).replace(",", ".")+"', zzbetrag='"+
+				dcf.format(reiheRezgeb).replace(",", ".")+"', pauschale='"+
+				dcf.format(reihePauschale).replace(",", ".")+
+				"' where id='"+id+"' LIMIT 1";
+				//System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
 			}
 		}
-		System.out.println(rechnungGesamt);
-		rbetragNeu.setText(dcf.format(rechnungGesamt));
+		//System.out.println("Pauschalen insgesamt = "+rechnungPauschale);
+		//System.out.println("Rechnung gesamt = "+rechnungGesamt);
+		rbetragNeu.setText(dcf.format(rechnungGesamt.subtract(rechnungPauschale)));
 		if(inDBschreiben){
 			cmd = "update rliste set r_betrag='"+dcf.format(rechnungGesamt).replace(",",".")+"', r_offen='"+dcf.format(rechnungGesamt).replace(",",".")+"' where r_nummer='"+rnummerAlt.getText().trim()+"' LIMIT 1";
 //			cmd = "update rliste set r_betrag='"+dcf.format(rechnungGesamt).replace(",", ".")+"' where r_nummer='"+
@@ -817,107 +868,63 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		gesamtPreis.clear();
 		originalId.clear();
 		originalLangtext.clear();
+		hmAdresse.clear();
 		aktuellePosition = 0;
 		if( fuerwen.equals("privat") && heilmittel ){
-			try{
-			System.out.println("in privat und heilmittel");
-			hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
-			hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
-			hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
-			hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
-			hmAdresse.put("<pri5>",rnummerAlt.getText() );
-			hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-			
-			for(int i = 0; i < tabmod.getRowCount();i++){
-				try{
-					int id = ((Integer)tabmod.getValueAt(i, 8));
-					String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
-					//System.out.println(langtext);
-					String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
-					//System.out.println(preis);
-					originalLangtext.add(langtext);
-					originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
-					einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
-					gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
-					aktuellePosition++;	
-					
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-
-			}
-			try {
-				System.out.println(originalAnzahl);
-				System.out.println(einzelPreis);
-				System.out.println(gesamtPreis);
-				System.out.println(rechnungGesamt);
-				System.out.println(RehaBillEdit.hmRechnungPrivat);
-				starteDokument( RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmRechnungPrivat );
-				System.out.println(RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmRechnungPrivat);
-				starteErsetzen();
-				aktuellePosition = 0;
-				startePositionen();
-				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
+			System.out.println("privat und heilmittel");
+			doPrivatWiederholungsdruck(preisvec);
 			
 		}else if( fuerwen.equals("institution") && heilmittel ){
 			try{
-				System.out.println("in privat und heilmittel");
-				hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
-				hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
-				hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
-				hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
-				hmAdresse.put("<pri5>",rnummerAlt.getText() );
-				hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+				//Jetzt differenzieren zw. Kasse und BG
+				String reznr =  ((String)tabmod.getValueAt(0, 19)).trim();
+				int pg = -1;
+				try{
+					pg = Integer.parseInt(SqlInfo.holeEinzelFeld("select preisgruppe from lza where rez_nr='"+reznr+"' LIMIT 1"));	
+				}catch(Exception ex){
+					try{
+						pg = Integer.parseInt(SqlInfo.holeEinzelFeld("select preisgruppe from verordn where rez_nr='"+reznr+"' LIMIT 1"));
+					}catch(Exception ex2){
+						JOptionPane.showMessageDialog(null,"Das Rezept ist weder in der Historie noch im aktuellen Rezeptstamm vorhanden");
+						textDocument.close();
+						return;
+					}
+				}
+				if(pg != 4){
+					System.out.println("GKV und heilmittel");
+					if(is302er){
+						FormWahl wahl = new FormWahl();
+						wahl.setModal(true);
+						wahl.setSize(250, 250);
+						wahl.setLocationRelativeTo(null);
+						wahl.setVisible(true);
+						System.out.println("check1 "+check[0].isSelected());
+						System.out.println("check2 "+check[1].isSelected());
+						if(check[0].isSelected()){
+							doGKVWiederholungsdruck(reznr);	
+						}
+						if(check[1].isSelected()){
+							doBegleitzetteldruck(reznr);	
+						}
+						return;
+					}else{
+						doGKVWiederholungsdruck(reznr);
+						return;
+					}
+				}
+				System.out.println("BGE und heilmittel");
+				doBGEWiederholungsdruck(preisvec);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
-				
-				for(int i = 0; i < tabmod.getRowCount();i++){
-					try{
-						int id = ((Integer)tabmod.getValueAt(i, 8));
-						String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
-						//System.out.println(langtext);
-						String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
-						//System.out.println(preis);
-						originalLangtext.add(langtext);
-						originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
-						einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
-						gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
-						aktuellePosition++;	
-						
-					}catch(Exception ex){
-						ex.printStackTrace();
-					}
-
-				}
-				try {
-					System.out.println(originalAnzahl);
-					System.out.println(einzelPreis);
-					System.out.println(gesamtPreis);
-					System.out.println(rechnungGesamt);
-					System.out.println(RehaBillEdit.hmRechnungPrivat);
-					starteDokument( RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmRechnungPrivat );
-					System.out.println(RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmRechnungPrivat);
-					starteErsetzen();
-					aktuellePosition = 0;
-					startePositionen();
-					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 			
 		}else if( fuerwen.equals("privat") && (!heilmittel) ){
+			System.out.println("in privat und kein heilmittel==reha");
 			
 		}else if( fuerwen.equals("institution") && (!heilmittel) ){
 			try{
-				System.out.println("in privat und heilmittel");
+				System.out.println("in institution und kein heilmittel==reha");
+				System.out.println("in kasse und kein heilmittel");
 				hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
 				hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
 				hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
@@ -969,8 +976,252 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		}
 		
 	}
+	/*********************************************************************/
+	public void doPrivatWiederholungsdruck(Vector<Vector<String>> preisvec){
+		try{
+			Vector<String> vec = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+((String)tabmod.getValueAt(0, 31))+"'", Arrays.asList(new String[] {}));
+			PatTools.constructPatHMap(vec);
+			hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
+			hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
+			hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
+			hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+			hmAdresse.put("<pri5>",rnummerAlt.getText() );
+			hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+			hmAdresse.put("<pri7>",RehaBillEdit.hmAdrPDaten.get("<Pbanrede>"));
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
+			for(int i = 0; i < tabmod.getRowCount();i++){
+				try{
+					int id = ((Integer)tabmod.getValueAt(i, 8));
+					String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
+					//System.out.println(langtext);
+					String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
+					//System.out.println(preis);
+					originalLangtext.add(langtext);
+					originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
+					einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
+					gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
+					aktuellePosition++;	
+					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 
+			}
+			try {
+				System.out.println(RehaBillEdit.hmRechnungPrivat);
+				starteDokument( RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmAbrechnung.get("hmpriformular")+".Kopie.ott" );
+				System.out.println(RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmAbrechnung.get("hmpriformular")+".Kopie.ott" );
+				starteErsetzenPrivat();
+				aktuellePosition = 0;
+				startePositionen();
+				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		
+	}
 	
+	/*********************************************************************/
+	public void doBGEWiederholungsdruck(Vector<Vector<String>> preisvec){
+		hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
+		hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
+		hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
+		hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+
+		hmAdresse.put("<pri5>",rnummerAlt.getText() );
+		hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+		Vector<String> vec = SqlInfo.holeSatz("pat5","n_name,v_name,geboren", "pat_intern='"+((String)tabmod.getValueAt(0, 31))+"'", Arrays.asList(new String[] {}));
+		hmAdresse.put("<pri7>",vec.get(0));
+		hmAdresse.put("<pri8>",vec.get(1));
+		hmAdresse.put("<pri9>",DatFunk.sDatInDeutsch(vec.get(2)));
+		
+
+		for(int i = 0; i < tabmod.getRowCount();i++){
+			try{
+				int id = ((Integer)tabmod.getValueAt(i, 8));
+				String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
+				String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
+				originalLangtext.add(langtext);
+				originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
+				einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
+				gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
+				aktuellePosition++;	
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
+		}
+		try {
+			System.out.println(originalAnzahl);
+			System.out.println(einzelPreis);
+			System.out.println(gesamtPreis);
+			System.out.println(rechnungGesamt);
+			System.out.println(RehaBillEdit.hmRechnungPrivat);
+			starteDokument( RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmAbrechnung.get("hmbgeformular")+".Kopie.ott" );
+			System.out.println(RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmAbrechnung.get("hmbgeformular")+".Kopie.ott" );
+			starteErsetzenBG();
+			aktuellePosition = 0;
+			startePositionen();
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	/*********************************************************************/
+	public void doBegleitzetteldruck(String xreznr){
+		String aktrezept = "";
+		int rezanzahl = 0;
+		int lang = tabmod.getRowCount();
+		for(int i = 0; i < lang;i++){
+			if( (!tabmod.getValueAt(i, 19).toString().trim().equals(aktrezept)) &&
+					(((Integer)tabmod.getValueAt(i, 5)) == 0 )){
+				aktrezept = tabmod.getValueAt(i, 19).toString().trim();
+				rezanzahl++;
+			}
+		}
+		hmAdresse.put("<gkv1>",((String)tabmod.getValueAt(0, 0)).trim() );
+		hmAdresse.put("<gkv2>",((String)tabmod.getValueAt(0, 1)).trim() );
+		hmAdresse.put("<gkv3>",((String)tabmod.getValueAt(0, 2)).trim() );
+		hmAdresse.put("<gkv4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+		hmAdresse.put("<gkv5>",rnummerAlt.getText());
+		hmAdresse.put("<gkv12>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+		
+		//new BegleitzettelDrucken(abrechnungRezepte,ik_kostent,name_kostent,hmAnnahme, aktRechnung,Reha.proghome+"vorlagen/"+Reha.aktIK+"/HMBegleitzettelGKV.ott");
+		String ik_kostent = SqlInfo.holeEinzelFeld("select ik_kostent from kass_adr where id ='"+Integer.toString((Integer)tabmod.getValueAt(0, 32))+"' LIMIT 1" );
+		String name_kostent = SqlInfo.holeEinzelFeld("select name1 from ktraeger where ikkasse ='"+ik_kostent+"' LIMIT 1" );
+		name_kostent = name_kostent+"\n"+SqlInfo.holeEinzelFeld("select name2 from ktraeger where ikkasse ='"+ik_kostent+"' LIMIT 1" );
+		
+		
+		try {
+			new BegleitzettelDrucken(rezanzahl,
+					ik_kostent,
+					name_kostent,
+					hmAdresse, 
+					rnummerAlt.getText(),
+					RehaBillEdit.progHome+"vorlagen/"+RehaBillEdit.aktIK+"/"+RehaBillEdit.hmAbrechnung.get("hmgkvbegleitzettel")+".Kopie.ott");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	/*********************************************************************/
+	public void doGKVWiederholungsdruck(String xreznr){
+
+		String namenvornamen = "";
+		String status = "";
+		boolean mitpauschale = false;
+		int lang = tabmod.getRowCount();
+		
+		Vector<String> position = new Vector<String>();
+		Vector<BigDecimal>anzahl = new Vector<BigDecimal>();
+		Vector<BigDecimal>preis = new Vector<BigDecimal>();
+		Vector<BigDecimal>einzelpreis = new Vector<BigDecimal>();
+		Vector<BigDecimal>rezgeb = new Vector<BigDecimal>();
+		Vector<BigDecimal>abrtage = new Vector<BigDecimal>();
+		String dummy;
+		hmAdresse.put("<gkv1>",((String)tabmod.getValueAt(0, 0)).trim() );
+		hmAdresse.put("<gkv2>",((String)tabmod.getValueAt(0, 1)).trim() );
+		hmAdresse.put("<gkv3>",((String)tabmod.getValueAt(0, 2)).trim() );
+		hmAdresse.put("<gkv4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+		hmAdresse.put("<gkv5>",rnummerAlt.getText());
+		hmAdresse.put("<gkv6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+		AbrechnungDrucken druckKopie = null;
+		try {
+			druckKopie = new AbrechnungDrucken(RehaBillEdit.progHome+
+					"vorlagen/"+
+					RehaBillEdit.aktIK+
+					"/"+
+					RehaBillEdit.hmAbrechnung.get("hmgkvformular")+".Kopie.ott");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+
+		String aktrezept = String.valueOf(xreznr);
+		namenvornamen = String.valueOf(tabmod.getValueAt(0, 7).toString().trim());
+		status = String.valueOf(tabmod.getValueAt(0, 6).toString().trim());
+		mitpauschale = ((Double)tabmod.getValueAt(0, 20) > 0. ? true : false);
+		
+		for(int i = 0; i < lang;i++){
+			if(!tabmod.getValueAt(i, 19).toString().trim().equals(aktrezept) ){
+				try {
+					druckKopie.setDaten(namenvornamen,status,aktrezept,position,anzahl,abrtage,einzelpreis,preis,rezgeb,mitpauschale);
+					System.out.println("druckKopie -1");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				anzahl.clear();
+				einzelpreis.clear();
+				preis.clear();
+				rezgeb.clear();
+				abrtage.clear();
+				position.clear();
+				anzahl.add(BigDecimal.valueOf(Double.valueOf(Integer.toString((Integer) tabmod.getValueAt(i, 11)))));
+				einzelpreis.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 12)));
+				preis.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 14)));
+				rezgeb.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 16)));
+				position.add(String.valueOf(tabmod.getValueAt(i, 9)));
+				dummy = String.valueOf(tabmod.getValueAt(i, 7).toString().trim());
+				if(!dummy.equals("")){
+					namenvornamen = String.valueOf(dummy);	
+				}
+				status = String.valueOf(tabmod.getValueAt(i, 6).toString().trim());
+				aktrezept = String.valueOf(tabmod.getValueAt(i, 19).toString().trim());
+				mitpauschale = ((Double)tabmod.getValueAt(i, 20) > 0. ? true : false);
+				if(i== (lang-1)){
+					try {
+						druckKopie.setDaten(namenvornamen,status,aktrezept,position,anzahl,abrtage,einzelpreis,preis,rezgeb,mitpauschale);
+						System.out.println("druckKopie -1");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}else if(i==(lang-1)){
+				
+				anzahl.add(BigDecimal.valueOf(Double.valueOf(Integer.toString((Integer) tabmod.getValueAt(i, 11)))));
+				position.add(String.valueOf(tabmod.getValueAt(i, 9)));
+				einzelpreis.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 12)));
+				preis.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 14)));
+				rezgeb.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 16)));
+				dummy = String.valueOf(tabmod.getValueAt(i, 7).toString().trim());
+				if(!dummy.equals("")){
+					namenvornamen = String.valueOf(dummy);	
+				}
+				status = String.valueOf(tabmod.getValueAt(i, 6).toString().trim());
+				aktrezept = String.valueOf(tabmod.getValueAt(i, 19).toString().trim());
+				mitpauschale = ((Double)tabmod.getValueAt(i, 20) > 0. ? true : false);
+				try {
+					druckKopie.setDaten(namenvornamen,status,aktrezept,position,anzahl,abrtage,einzelpreis,preis,rezgeb,mitpauschale);
+					System.out.println("druckKopie -2");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}else{
+				anzahl.add(BigDecimal.valueOf(Double.valueOf(Integer.toString((Integer) tabmod.getValueAt(i, 11)))));
+				position.add(String.valueOf(tabmod.getValueAt(i, 9)));
+				einzelpreis.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 12)));
+				preis.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 14)));
+				rezgeb.add(BigDecimal.valueOf((Double) tabmod.getValueAt(i, 16)));
+				dummy = String.valueOf(tabmod.getValueAt(i, 7).toString().trim());
+				if(!dummy.equals("")){
+					namenvornamen = String.valueOf(dummy);	
+				}
+				status = String.valueOf(tabmod.getValueAt(i, 6).toString().trim());
+				aktrezept = String.valueOf(tabmod.getValueAt(i, 19).toString().trim());
+				mitpauschale = ((Double)tabmod.getValueAt(0, 20) > 0. ? true : false);
+			}
+		}
+		druckKopie.setIKundRnr(RehaBillEdit.aktIK,rnummerAlt.getText(),hmAdresse);
+	}
+	
+	/*********************************************************************/	
 	public void starteDokument(String url) throws Exception{
 		IDocumentService documentService = null;;
 		documentService = RehaBillEdit.officeapplication.getDocumentService();
@@ -1009,6 +1260,68 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		}
 		
 	}
+	private void starteErsetzenPrivat(){
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < placeholders.length; i++) {
+			if(placeholders[i].getDisplayText().toLowerCase().equals("<pri1>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri1>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri2>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri2>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri3>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri3>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri4>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri4>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri5>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri5>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri6>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri6>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri7>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri7>"));
+			}
+		}
+		
+	}
+	
+	private void starteErsetzenBG(){
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < placeholders.length; i++) {
+			if(placeholders[i].getDisplayText().toLowerCase().equals("<pri1>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri1>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri2>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri2>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri3>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri3>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri4>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri4>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri5>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri5>"));				
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri6>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri6>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri7>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri7>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri8>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri8>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri9>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri9>"));
+			}
+
+			
+		}
+		
+	}
+
 	private void startePositionen() throws TextException{
 		//ITextTableCell[] tcells;// = null;
 		//Vector<BigDecimal> einzelpreis = new Vector<BigDecimal>();
@@ -1033,5 +1346,35 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		textEndbetrag.getCell(1,0).getTextService().getText().setText(dcf.format(rechnungGesamt.doubleValue())+" EUR");
 
 	}
-
+	
+	class FormWahl extends JDialog{
+		JButton[] but = {null,null};
+		//JCheckBox[] check = {null,null};
+		FormWahl(){
+			super();
+			this.setContentPane(getContent());
+		}
+		private JXPanel getContent(){
+			JXPanel jpan = new JXPanel();
+			FormLayout lay = new FormLayout("10dlu:g,100dlu,10dlu:g","10dlu:g,p,5dlu,p,40dlu,p,10dlu:g");
+			CellConstraints cc = new CellConstraints();
+			jpan.setLayout(lay);
+			check[0] = new JCheckBox("Papierrechung drucken");
+			check[1] = new JCheckBox("DTA-Begleitzettel drucken");
+			check[0].setSelected(false);
+			check[1].setSelected(false);
+			jpan.add(check[0],cc.xy(2,2));
+			jpan.add(check[1],cc.xy(2,4));
+			but[0] = new JButton("Ausdrucke erstellen");
+			but[0].addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					dispose();
+				}
+			});
+			jpan.add(but[0],cc.xy(2,6));
+			
+			return jpan;
+		}
+	}
 }
