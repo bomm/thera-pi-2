@@ -95,7 +95,7 @@ public class TheraPi implements WindowListener,KeyListener{
 				mand[0] = s1;
 				mand[1] = s2;
 				mandvec.add(mand);
-				updateCheck();
+				//updateCheck();
 				StartMandant = s1+'@'+s2;
 				RehaStarter rst = new RehaStarter();
 				rst.execute();
@@ -119,7 +119,7 @@ public class TheraPi implements WindowListener,KeyListener{
 					mand[1] = new String(inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+(i+1)));
 					mandvec.add(mand);
 				}
-				updateCheck();
+				//updateCheck();
 				jDiag = application.getDialog();
 
 				jDiag.validate();
@@ -187,7 +187,7 @@ public class TheraPi implements WindowListener,KeyListener{
 				}
 				f = new File(updatefile);
 				if(!f.exists()){
-					JOptionPane.showMessageDialog(null, "Das angegebene Update-Verzeichnis existiert nicht");
+					//JOptionPane.showMessageDialog(null, "Das angegebene Update-Verzeichnis existiert nicht");
 					return;
 				}
 
@@ -396,9 +396,9 @@ class RehaStarter extends SwingWorker<Integer,Void>{
 	@Override
 	protected Integer doInBackground() throws Exception {
 		String programm = TheraPi.proghome+"Reha.jar";
-		System.out.println("Programmstart = "+programm);
+		System.out.println("In TheraPi.jar Programmstart = "+programm);
 		String start = new String("javaw -jar "+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant);
-		System.out.println(start);
+		System.out.println("Kommando ist "+start);
 		//JOptionPane.showMessageDialog(null, start);
 		Runtime.getRuntime().exec(start);
         System.out.println("Reha gestartet");

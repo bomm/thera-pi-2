@@ -82,7 +82,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		super();
 		
 			setOpaque(false);
-			allediszis = Arrays.asList(new String[] {"Physio","Massage","Ergotherapie","Logopädie","Reha"});
+			allediszis = Arrays.asList(new String[] {"Physio","Massage","Ergo","Logo","Reha"});
 	FormLayout laybau = new FormLayout("10dlu,fill:0:grow,10dlu",
 	 		
 	"10dlu,p,10dlu,fill:0:grow(1.0),10dlu,p,10dlu,p,10dlu,fill:0:grow(0.5),10dlu,p,10dlu");
@@ -154,7 +154,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		CellConstraints ccombox = new CellConstraints();
 	
 			combobox = new JComboBox();
-			combobox.setName("gelenk");
+			combobox.setName("thema");
 			combobox.addActionListener(this);
 			
 			tftitel = new JRtaTextField("nix",true);
@@ -337,13 +337,13 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		
 		pb.add(jrbtb[1],ccrad.xy(3,1));
 		jrbtb[2] = new JRtaRadioButton("Ergotherapie");
-		jrbtb[2].setActionCommand("Ergotherapie");
+		jrbtb[2].setActionCommand("Ergo");
 		bg.add(jrbtb[2]);
 		jrbtb[2].addActionListener(this);
 		
 		pb.add(jrbtb[2],ccrad.xy(5,1));
 		jrbtb[3] = new JRtaRadioButton("Logopädie");
-		jrbtb[3].setActionCommand("Logopädie");
+		jrbtb[3].setActionCommand("Logo");
 		bg.add(jrbtb[3]);
 		jrbtb[3].addActionListener(this);
 		
@@ -418,9 +418,9 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	}
 	public void ladeCombo(String disziplin){
 		combobox.removeAllItems();
-		int anzahl = SystemEinstellungen.hmGelenke.get(disziplin).size();
+		int anzahl = SystemEinstellungen.hmThema.get(disziplin).size();
 		for(int i = 0; i < anzahl; i++){
-			combobox.addItem((String) SystemEinstellungen.hmGelenke.get(disziplin).get(i));
+			combobox.addItem((String) SystemEinstellungen.hmThema.get(disziplin).get(i));
 		}
 		ladeOberbegriff(disziplin);
 	}
@@ -456,32 +456,36 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
-		System.out.println("ActionCommand = "+cmd);
+		
 		if(allediszis.contains(cmd)){
 			aktuellediszi = cmd;
 			ladeCombo(cmd);
 			if(cmd.equals("Physio")){
+				System.out.println("ActionCommand = "+cmd);
 				//checkbox[0].setSelected(true);
 				regleCheckBoxen(0);
 				return;
 			}
 			if(cmd.equals("Massage")){
 				//checkbox[1].setSelected(true);
+				System.out.println("ActionCommand = "+cmd);
 				regleCheckBoxen(1);
 				return;
 			}
-			if(cmd.equals("Ergotherapie")){
+			if(cmd.equals("Ergo")){
 				//checkbox[2].setSelected(true);
+				System.out.println("ActionCommand = "+cmd);
 				regleCheckBoxen(2);
 				return;
 			}
-			if(cmd.equals("Logopädie")){
+			if(cmd.equals("Logo")){
 				//checkbox[3].setSelected(true);
 				regleCheckBoxen(3);
 				return;
 			}
 			if(cmd.equals("Reha")){
 				//checkbox[4].setSelected(true);
+				System.out.println("ActionCommand = "+cmd);
 				regleCheckBoxen(4);
 				return;
 			}
@@ -490,8 +494,18 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		if(cmd.equals("comboBoxChanged") && combobox.getItemCount() > 0){
 			int pos = allediszis.indexOf(aktuellediszi);
 			if(pos >= 0){
-				aktuelledb = dbs[pos];
-				ladeDaten(dbs[pos],(String) combobox.getSelectedItem());				
+				try{
+					aktuelledb = dbs[pos];
+					//ladeDaten(dbs[pos],(String)allediszis.get(combobox.getSelectedIndex()) );
+					ladeDaten(dbs[pos],(String) combobox.getSelectedItem());				
+					System.out.println(dbs[pos]);
+					
+				}catch(Exception ex){
+					System.out.println("Datenbank = "+dbs[pos]);
+					System.out.println("ausgewählt = "+combobox.getSelectedIndex());
+					JOptionPane.showMessageDialog(null,"Fehler, bitte wählen Sie erneut aus...");
+					
+				}
 			}
 
 		}
