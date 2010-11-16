@@ -30,7 +30,6 @@ import org.jdesktop.swingx.JXPanel;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JSysteminitInternal;
-import theraPiUpdates.TheraPiUpdates;
 
 
 public class SystemInit extends JXPanel implements TreeSelectionListener{

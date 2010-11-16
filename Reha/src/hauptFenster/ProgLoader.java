@@ -40,7 +40,7 @@ import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
-import systemEinstellungen.SystemUtil;
+
 import systemTools.PassWort;
 
 import systemTools.WinNum;
@@ -930,7 +930,7 @@ public void loescheSysteminit(){
 }
 
 /*********************************************************************************/
-
+/*
 public static void SystemInitialisierung(){
     SwingUtilities.invokeLater(new Runnable(){
   	   public  void run()
@@ -944,7 +944,7 @@ public static void SystemInitialisierung(){
   	   }
  	});
 }
-
+*/
 
 public static void containerBelegen(int setPos,RehaTP jtp){
 	if (setPos==1){

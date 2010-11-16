@@ -3,11 +3,7 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -15,41 +11,34 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
 import jxTableTools.TableTool;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-//import org.jdesktop.swingx.decorator.SortOrder;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
@@ -60,6 +49,10 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilArzt extends JXPanel implements KeyListener, ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JButton[] button = {null,null,null,null,null,null,null};
 	JRtaTextField newgroup = null;
 	JRtaTextField newdoc = null;
@@ -126,7 +119,7 @@ public class SysUtilArzt extends JXPanel implements KeyListener, ActionListener 
 		for(int i = 0; i < lang;i++){
 			vec.clear();
 			vec.add(SystemConfig.arztGruppen[i]);
-			modarzt.addRow((Vector) vec.clone());
+			modarzt.addRow((Vector<?>) vec.clone());
 		}
 		if(gruppen.getRowCount() > 0){
 			gruppen.setRowSelectionInterval(0, 0);			
@@ -139,7 +132,7 @@ public class SysUtilArzt extends JXPanel implements KeyListener, ActionListener 
 			vec.clear();
 			vec.add(inif.getStringProperty("Formulare","AFormularText"+i));
 			vec.add(inif.getStringProperty("Formulare","AFormularName"+i));
-			modvorl.addRow((Vector)vec.clone());
+			modvorl.addRow((Vector<?>)vec.clone());
 		}
 		if(modvorl.getRowCount() > 0){
 			vorlagen.setRowSelectionInterval(0, 0);
@@ -335,14 +328,12 @@ private JPanel getKnopfPanel(){
 			if(cmd.equals("neugruppen")){
 				Vector<String> vec = new Vector<String>();
 				vec.add("");
-				modarzt.addRow((Vector)vec.clone());
+				modarzt.addRow((Vector<?>)vec.clone());
 				gruppen.validate();
 				gruppen.setRowSelectionInterval(0, 0);
-				int rows = gruppen.convertRowIndexToModel(gruppen.getSelectedRow());
-				
-				
+				//int rows = gruppen.convertRowIndexToModel(gruppen.getSelectedRow());
 				//int rows = modarzt.getRowCount(); 
-				final int xrows = rows;
+				//final int xrows = rows;
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run(){
 				 		  gruppen.requestFocus();
@@ -361,10 +352,10 @@ private JPanel getKnopfPanel(){
 				}
 
 
-				Vector vec = new Vector();
+				Vector<String> vec = new Vector<String>();
 				vec.add("");
 				vec.add(svorlage);
-				modvorl.addRow((Vector)vec.clone());
+				modvorl.addRow((Vector<?>)vec.clone());
 				vorlagen.validate();
 				int rows = modvorl.getRowCount(); 
 				final int xrows = rows -1;
@@ -462,7 +453,7 @@ private JPanel getKnopfPanel(){
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                    //final File f = (File) e.getNewValue();
                 }
             }
 
@@ -473,7 +464,7 @@ private JPanel getKnopfPanel(){
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File inputVerzFile = chooser.getSelectedFile();
-            String inputVerzStr = inputVerzFile.getPath();
+            //String inputVerzStr = inputVerzFile.getPath();
             
 
             if(inputVerzFile.getName().trim().equals("")){
@@ -496,7 +487,7 @@ private JPanel getKnopfPanel(){
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public Class getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			   return String.class;
 	       }
 
@@ -511,6 +502,10 @@ private JPanel getKnopfPanel(){
 	}
 	/**********************************************/
 	class TitelEditor extends AbstractCellEditor implements TableCellEditor{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		Object value;
 		JComponent component = new JFormattedTextField();
 	   public TitelEditor(){

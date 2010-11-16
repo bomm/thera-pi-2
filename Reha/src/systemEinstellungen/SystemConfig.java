@@ -8,11 +8,8 @@ import hauptFenster.Reha;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -159,8 +156,8 @@ public class SystemConfig {
 	public static String[] rezBarCodName = null;
 	public static Vector<String>rezBarCodForm = null;
 	
-	@SuppressWarnings("unchecked")
-	public static HashMap<String,Vector> hmTherapBausteine = null; 
+
+	public static HashMap<String,Vector<String>> hmTherapBausteine = null; 
 	public static String[] berichttitel = {null,null,null,null};
 	public static String  thberichtdatei = "";
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
@@ -558,7 +555,7 @@ public class SystemConfig {
 		KalenderHintergrund = aktTkCol.get("AusserAZ")[0];
 
 	}
-	@SuppressWarnings({ "unchecked", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public static void MandantenEinlesen(){
 
 		INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
@@ -897,9 +894,10 @@ public class SystemConfig {
 		//System.out.println(rezeptKlassenAktiv);
 
 	}
+	@SuppressWarnings("unchecked")
 	public static void TherapBausteinInit() {
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");
-		hmTherapBausteine = new HashMap<String,Vector>();
+		hmTherapBausteine = new HashMap<String,Vector<String>>();
 		int lang = rezeptKlassenAktiv.size();
 		Vector<String> vec = new Vector<String>();
 		for(int i = 0; i<lang;i++){
@@ -914,7 +912,7 @@ public class SystemConfig {
 				//vec.add( inif.getStringProperty("Textbausteine", prop2+(i2+1)) );
 				vec.add( inif.getStringProperty(prop2, "Thema"+(i2+1)) );
 			}
-			hmTherapBausteine.put(prop2, (Vector<?>) vec.clone());
+			hmTherapBausteine.put(prop2, (Vector<String>) vec.clone());
 		}
 		//System.out.println(hmTherapBausteine);
 		for(int i = 0; i<4;i++){
@@ -934,6 +932,7 @@ public class SystemConfig {
 			hmFirmenDaten.put(stitel[i],inif.getStringProperty("Firma",stitel[i] ) );
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public static void FremdProgs(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
 		vFremdProgs = new Vector<Vector<String>>();
@@ -943,7 +942,7 @@ public class SystemConfig {
 			progs.clear();
 			progs.add(inif.getStringProperty("FremdProgramme", "FremdProgrammName"+(i+1)));
 			progs.add(inif.getStringProperty("FremdProgramme", "FremdProgrammPfad"+(i+1)));
-			vFremdProgs.add((Vector)progs.clone());
+			vFremdProgs.add((Vector<String>)progs.clone());
 		}
 		hmFremdProgs = new HashMap<String,String>();
 		anzahl =  inif.getIntegerProperty("FestProg", "FestProgAnzahl");

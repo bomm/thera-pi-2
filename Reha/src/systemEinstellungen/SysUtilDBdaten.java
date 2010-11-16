@@ -2,23 +2,17 @@ package systemEinstellungen;
 
 import hauptFenster.Reha;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,13 +20,9 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
-import sqlTools.SqlInfo;
 import systemTools.JRtaTextField;
 import systemTools.Verschluesseln;
 
@@ -42,6 +32,10 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JComboBox mandant = null;
 	JComboBox dbtyp = null;
 	JButton knopf3 = null;
@@ -93,12 +87,14 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		knopf4.addKeyListener(this);
 		
 		mandant = new JComboBox() ;
-		int vecindex = 0;
+		//int vecindex = 0;
 		for(int i = 0; i < SystemConfig.Mandanten.size();i++){
 			mandant.addItem(SystemConfig.Mandanten.get(i)[1]);
+			/*
 			if(SystemConfig.Mandanten.get(i)[1].equals(Reha.aktMandant)){
 				vecindex = i;
 			}
+			*/
 		}
 		mandant.setSelectedItem(Reha.aktMandant);
 		mandant.setActionCommand("mandantwahl");
@@ -256,7 +252,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		ss4 = (port.getText().trim().equals("") ? "" : port.getText().trim());
 		ss5= (dbname.getText().trim().equals("") ? "" : dbname.getText().trim());
 		ss6 = (dbuser.getText().trim().equals("") ? "" : dbuser.getText().trim());
-		ss7 = (dbpasswort.getText().trim().equals("") ? "" : dbpasswort.getText().trim());
+		ss7 = (String.valueOf(dbpasswort.getPassword()).trim().equals("") ? "" : String.valueOf(dbpasswort.getPassword()).trim());
 		if(ss2.equals("keineAngaben") || ss3.equals("keineAngaben") ||
 				ss4.equals("keineAngaben") || ss5.equals("keineAngaben") ){
 			JOptionPane.showMessageDialog(null,"Die Datenbank-Parameter sind unvollständig!\nZurück mit o.k.");
@@ -319,7 +315,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		ss4 = (port.getText().trim().equals("") ? "" : ":"+port.getText().trim());
 		ss5= (dbname.getText().trim().equals("") ? "keineAngaben" : dbname.getText().trim());
 		ss6 = (dbuser.getText().trim().equals("") ? "" : dbuser.getText().trim());
-		ss7 = (dbpasswort.getText().trim().equals("") ? "" : dbpasswort.getText().trim());
+		ss7 = (String.valueOf(dbpasswort.getPassword()).trim().equals("") ? "" : String.valueOf(dbpasswort.getPassword()).trim());
 		String skontakt = "jdbc:"+ss1+"://"+ss3+ss4+"/"+ss5;
 		String messtext = "Im Anschluß wird getestet ob Sie mit den angegebenen Parametern auch tatsächlich\n"+
 						"einen Aufbau zur Datenbank durchführen können.\n\n"+

@@ -3,15 +3,10 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -20,17 +15,13 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
@@ -41,6 +32,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	PrintService[] services = null;	
 	String[] drucker = null;
 	JRtaComboBox[] jcmb = {null,null,null,null,null,null,null};
@@ -334,7 +329,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                    //final File f = (File) e.getNewValue();
                 }
             }
         });
@@ -344,7 +339,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
         chooser.setVisible(false);
         if (result == JFileChooser.APPROVE_OPTION) {
             File inputVerzFile = chooser.getSelectedFile();
-            String inputVerzStr = inputVerzFile.getPath();
+            //String inputVerzStr = inputVerzFile.getPath();
             
             //System.out.println("Eingabepfad:" + inputVerzStr);
             if(inputVerzFile.getName().trim().equals("")){

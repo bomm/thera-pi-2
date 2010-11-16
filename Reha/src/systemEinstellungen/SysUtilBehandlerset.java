@@ -2,35 +2,23 @@ package systemEinstellungen;
 
 import hauptFenster.Reha;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.plaf.ColorUIResource;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JRtaTextField;
 import terminKalender.ParameterLaden;
@@ -40,6 +28,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JButton knopf1 = null;
 	JButton knopf2 = null;
 	JButton knopf3 = null;
@@ -64,7 +56,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 
 	private boolean lneu = false;
 	private boolean lspeichern = false;
-	private int speichernKalZeile = 0;
+	//private int speichernKalZeile = 0;
 	
 	JScrollPane jscroll = null;
 	
@@ -281,7 +273,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 		fach = new String[lang];
 		SetName.removeAllItems();
 		for(i=0;i<lang;i++){
-			fach[i] = (String)((ArrayList)SystemConfig.aTerminKalender.get(i).get(0)).get(0);
+			fach[i] = (String)((ArrayList<?>)SystemConfig.aTerminKalender.get(i).get(0)).get(0);
 			teilnehmer[i] = ((ArrayList<String[]>)SystemConfig.aTerminKalender.get(i).get(1)).get(0);
 			SetName.addItem(String.valueOf(fach[i]));
 		}
@@ -351,7 +343,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 	}
 	/***********************************************************************/
 	private void speichernHandeln(){
-		int j;
+		//int j;
 		if(!lneu){
 			int i;
 			boolean abbruch = false;
@@ -368,7 +360,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 				lneu = false;
 				return;
 			}
-			int setAnzahl =  SetName.getItemCount();
+			//int setAnzahl =  SetName.getItemCount();
 			int setIndex = SetName.getSelectedIndex();
 			for(i=0;i<fach.length;i++){
 				if( (i!=setIndex) && (fach[i].trim().equals(setXname)) ){
@@ -399,7 +391,7 @@ public class SysUtilBehandlerset extends JXPanel implements KeyListener, ActionL
 			SystemConfig.NurSets();
 			//comboFuellen(false,setIndex);
 			knopfGedoense(new int[]{1,1,1,0,0});
-			int lang = SystemConfig.aTerminKalender.size();
+			//int lang = SystemConfig.aTerminKalender.size();
 			comboFuellen(false,setIndex);
 			lspeichern = false;
 		}else{

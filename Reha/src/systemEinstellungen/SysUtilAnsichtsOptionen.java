@@ -1,16 +1,15 @@
 package systemEinstellungen;
 
 import hauptFenster.Reha;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+
 import org.jdesktop.swingx.JXPanel;
 
 import systemTools.JRtaTextField;
@@ -125,6 +125,7 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 		return builder.getPanel();
 	}
 	/**************************************************************************/
+	@SuppressWarnings("unchecked")
 	private void comboFuellen(){
 		int von = 0;
 		int bis = ParameterLaden.vKKollegen.size();
