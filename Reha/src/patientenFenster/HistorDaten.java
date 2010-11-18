@@ -193,6 +193,9 @@ public class HistorDaten extends JXPanel{
 				}else if(xreznummer.contains("RH")){
 					//preisvec = ParameterLaden.vRHPreise;
 					preisvec = SystemPreislisten.hmPreise.get("Reha").get(prgruppe);
+				}else if(xreznummer.contains("PO")){
+					//preisvec = ParameterLaden.vRHPreise;
+					preisvec = SystemPreislisten.hmPreise.get("Podo").get(prgruppe);
 				}
 				rezlabs[8].setText( leistungTesten(0,preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
 

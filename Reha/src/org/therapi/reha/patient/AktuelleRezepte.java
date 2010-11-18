@@ -129,6 +129,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public String[] indphysio = null;
 	public String[] indergo = null;
 	public String[] indlogo = null;
+	public String[] indpodo = null;
 	public RezeptDaten rezDatenPanel = null;
 	public JButton[] aktrbut = {null,null,null,null,null,null,null,null,null};
 	public boolean suchePatUeberRez = false;
@@ -1313,6 +1314,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				"SP1","SP2","SP3","SP4","SP5","SP6",
 				"ST1","ST2","ST3","ST4",
 		};
+		indpodo = new String[] {
+				"kein IndiSchl.",
+				"DFa","DFb",
+				"DFc",
+		};
+
 		/*
 		String[] indischluessel = {
 								"WS1 a","WS1 b","WS1 c","WS1 d","WS1 e",
@@ -2277,7 +2284,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(tabaktrez.getRowCount()>0){
 				try{
 				RezeptDaten.feddisch = false;
-				System.out.println("rufe Rezeptnummer "+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
+				//System.out.println("rufe Rezeptnummer "+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
 				aktualisiereVector((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
 
 					

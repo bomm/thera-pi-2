@@ -190,6 +190,7 @@ public Object getValueAt(int pos){
 		return ((String)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(pos) );		
 	}
 }
+@SuppressWarnings("unchecked")
 public void setNewValueAtCurrentPosition(int pos,Object newvalue){
 
 	if(this.startElement.equals("")){
@@ -198,10 +199,12 @@ public void setNewValueAtCurrentPosition(int pos,Object newvalue){
 		((Vector<Object>)vec.get(this.getSelectedIndex()-1)).set(pos,(String)newvalue);
 	}
 }
+@SuppressWarnings("unchecked")
 public void addNewVector(Vector<String> newvec){
 	((Vector<Vector<String>>)vec).add( (Vector<String>) newvec);
 	addItem( (String)((Vector<String>)newvec).get(this.cmbdisplay) );
 }
+@SuppressWarnings("unchecked")
 public void removeVector(int pos){
 	if(this.startElement.equals("")){
 		((Vector<Object>)vec).remove(pos);		

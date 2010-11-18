@@ -3,10 +3,8 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 import hilfsFenster.NeueGruppe;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -19,9 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Vector;
@@ -39,16 +35,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 
-import jxTableTools.TableTool;
 import jxTableTools.ZeitTableCellEditor;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.table.TableColumnExt;
-
 
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
@@ -59,6 +51,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JComboBox cmbGrName = null;
 	JComboBox cmbWochenTag = null;
 	JComboBox cmbAktuell = null;
@@ -391,7 +387,11 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		jTblGruppen.setSortable(false);
 		jTblGruppen.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0), "selectNextColumnCell");
 		jTblGruppen.setDropTarget(new DropTarget(){
-		    private boolean fAccept;
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			private boolean fAccept;
 		    private boolean terminGedropt = false;
 		    private String mitgebracht = "";
 		    @Override
@@ -732,13 +732,13 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		gruppeEinstellen();
 	}
 	private void macheRowVec(String text,String druck,String plan1,String plan2,String dauer){
-		Vector vec = new Vector();
+		Vector<Object> vec = new Vector<Object>();
 		vec.add(text);
 		vec.add(druck);
 		vec.add(plan1);
 		vec.add(plan2);
 		vec.add(new Long(dauer));
-		dtblm.addRow((Vector)vec.clone());
+		dtblm.addRow((Vector<?>)vec.clone());
 		vec.clear();
 	}
 	private void macheSysVec(int row){

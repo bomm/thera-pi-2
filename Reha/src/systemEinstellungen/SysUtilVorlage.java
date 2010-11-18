@@ -3,29 +3,23 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public SysUtilVorlage(ImageIcon img){
 		super(new BorderLayout());
 		//System.out.println("Aufruf SysUtilVorlage");
@@ -41,6 +35,7 @@ public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListen
 		return;
 	}
 	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
+	/*
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
@@ -54,7 +49,7 @@ public class SysUtilVorlage extends JXPanel implements KeyListener, ActionListen
 		
 		return builder.getPanel();
 	}
-
+	*/
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub

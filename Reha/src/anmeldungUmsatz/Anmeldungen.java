@@ -54,13 +54,14 @@ public class Anmeldungen extends JXPanel{
 	JLabel[] erlab = {null,null,null,null};
 	JLabel[] lolab = {null,null,null,null};
 	JLabel[] rhlab = {null,null,null,null};
+	JLabel[] polab = {null,null,null,null};
 	JLabel[] summenlab = {null,null,null,null};
-	String[] diszi1 = {"KG","MA","ER","LO","RH"};
-	String[] diszi2 = {"Physio","Massage","Ergo","Logo","Reha"};
+	String[] diszi1 = {"KG","MA","ER","LO","RH","PO"};
+	String[] diszi2 = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 	List<String> listdiszi = null;
-	int[] anzahlRezepte = {0,0,0,0,0};
-	int[] anzahlEinheiten = {0,0,0,0,0};
-	Double[] umsaetze = {0.00,0.00,0.00,0.00,0.00};
+	int[] anzahlRezepte = {0,0,0,0,0,0};
+	int[] anzahlEinheiten = {0,0,0,0,0,0};
+	Double[] umsaetze = {0.00,0.00,0.00,0.00,0.00,0.00};
 	DecimalFormat dcf = new DecimalFormat("#####0.00");
 	
 	//String[] anzahlen = {"0","0","0","0","0","0"};
@@ -102,7 +103,7 @@ public class Anmeldungen extends JXPanel{
 		JLabel lab = null;			//   1                 2     3    4     5     6     7     8     9    10      11
 		FormLayout lay = new FormLayout("fill:0:grow(0.5),5dlu,20dlu,60dlu,20dlu,20dlu,60dlu,25dlu,60dlu,5dlu,fill:0:grow(0.5),",
 			// 1   2   3    4       5    6  7   8  9   10 11 12 13  14 15  16  17  18 19  20  21
-			"15dlu,p,15dlu,80dlu:g,10dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p,15dlu,p,15dlu");
+			"15dlu,p,15dlu,80dlu:g,10dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p,15dlu,p,15dlu");
 		CellConstraints cc = new CellConstraints();
 		this.content = new JXPanel();
 		this.content.setOpaque(false);
@@ -174,6 +175,11 @@ public class Anmeldungen extends JXPanel{
 		this.content.add((rhlab[2]=new JLabel("0")),cc.xy(7, 16,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((rhlab[3]=new JLabel("0,00")),cc.xyw(9, 16,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 
+		this.content.add((polab[0]=new JLabel("Podo")),cc.xyw(3, 18, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		this.content.add((polab[1]=new JLabel("0")),cc.xy(4, 18,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add((polab[2]=new JLabel("0")),cc.xy(7, 18,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add((polab[3]=new JLabel("0,00")),cc.xyw(9, 18,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		
 		summenlab[0] = new JLabel("Summen");
 		summenlab[0].setForeground(Color.RED);
 		summenlab[1] = new JLabel("0");
@@ -182,12 +188,12 @@ public class Anmeldungen extends JXPanel{
 		summenlab[2].setForeground(Color.RED);
 		summenlab[3] = new JLabel("0,00");
 		summenlab[3].setForeground(Color.RED);
-		this.content.add(summenlab[0],cc.xyw(3, 18, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
-		this.content.add(summenlab[1],cc.xy(4, 18,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		this.content.add(summenlab[2],cc.xy(7, 18,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		this.content.add(summenlab[3],cc.xyw(9, 18,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add(summenlab[0],cc.xyw(3, 20, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		this.content.add(summenlab[1],cc.xy(4, 20,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add(summenlab[2],cc.xy(7, 20,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add(summenlab[3],cc.xyw(9, 20,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		
-		this.content.add((this.buts[1] = ButtonTools.macheButton("komplette Rezeptdaten in OO-Calc übertragen", "calc", al)),cc.xyw(3, 20,8,CellConstraints.FILL,CellConstraints.DEFAULT));
+		this.content.add((this.buts[1] = ButtonTools.macheButton("komplette Rezeptdaten in OO-Calc übertragen", "calc", al)),cc.xyw(3, 22,8,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
 		return this.content;
 	}
@@ -384,6 +390,11 @@ public class Anmeldungen extends JXPanel{
 				rhlab[1].setText(Integer.toString(anzahlRezepte[4]));
 				rhlab[2].setText(Integer.toString(anzahlEinheiten[4]));
 				rhlab[3].setText(dcf.format(umsaetze[4]));
+				
+				polab[1].setText(Integer.toString(anzahlRezepte[5]));
+				polab[2].setText(Integer.toString(anzahlEinheiten[5]));
+				polab[3].setText(dcf.format(umsaetze[5]));
+
 				int anzahl1 = 0;
 				int anzahl2 = 0;
 				double umsatz1 = 0.00;

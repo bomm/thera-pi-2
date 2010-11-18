@@ -299,7 +299,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-11-16/01-DB=";
+	public static String aktuelleVersion = "V=2010-11-17/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -2566,8 +2566,11 @@ final class PreisListenLaden implements Runnable{
 
 		Reha.thisClass.jxLinks.setAlpha(1.0f);
 		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		
-		
+		/*
+		for(int i = 1; i < 7;i++){
+			new MachePreisListe("potarif"+Integer.toString(i));
+		}
+		*/
 		//long zeit = System.currentTimeMillis();
 		new SocketClient().setzeInitStand("Preisliste Physio einlesen");
 		SystemPreislisten.ladePreise("Physio");
@@ -2579,6 +2582,8 @@ final class PreisListenLaden implements Runnable{
 		SystemPreislisten.ladePreise("Logo");
 		new SocketClient().setzeInitStand("Preisliste Reha einlesen");		
 		SystemPreislisten.ladePreise("Reha");
+		new SocketClient().setzeInitStand("Preisliste Podologie einlesen");
+		SystemPreislisten.ladePreise("Podo");
 		SystemPreislisten.ladePreise("Common");
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
 		

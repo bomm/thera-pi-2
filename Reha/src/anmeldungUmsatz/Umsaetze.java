@@ -279,7 +279,7 @@ public class Umsaetze extends JXPanel{
 							// Wenn der Termin nich leer ist
 							if((!reznum.trim().equals("")) && (reznum.trim().length()>2)){
 								
-								if("KGMAERLORH".contains(reznum.substring(0,2))){
+								if("KGMAERLORHPO".contains(reznum.substring(0,2))){
 									rawreznum = reznum; 
 									if( (pos=rawreznum.indexOf("\\")) >= 0){
 										pos = reznum.indexOf("\\");

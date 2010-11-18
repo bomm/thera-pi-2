@@ -300,36 +300,42 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	}
 	@SuppressWarnings("unchecked")
 	public void setKuerzelVec(String xreznummer,String preisgr){
-		if(xreznummer.contains("KG")){
+		if(xreznummer.startsWith("KG")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("KG", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "2";
 			disziplinGruppe = "22";
 			preisregelIndex = 0;
 			aktDisziplin = "Physio";
-		}else if(xreznummer.contains("MA")){
+		}else if(xreznummer.startsWith("MA")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("MA", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "1";
 			disziplinGruppe = "21";
 			preisregelIndex = 1;
 			aktDisziplin = "Massage";			
-		}else if(xreznummer.contains("ER")){
+		}else if(xreznummer.startsWith("ER")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("ER", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "5";
 			disziplinGruppe = "26";
 			preisregelIndex = 2;
 			aktDisziplin = "Ergo";			
-		}else if(xreznummer.contains("LO")){
+		}else if(xreznummer.startsWith("LO")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("LO", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "3";
 			disziplinGruppe = "23";
 			preisregelIndex = 3;
 			aktDisziplin = "Logo";			
-		}else if(xreznummer.contains("RH")){
+		}else if(xreznummer.startsWith("RH")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("RH", Integer.parseInt(preisgr.trim())-1);
 			disziplinIndex = "8";
 			disziplinGruppe = "29";
 			preisregelIndex = 4;
 			aktDisziplin = "Reha";
+		}else if(xreznummer.startsWith("PO")){
+			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("PO", Integer.parseInt(preisgr.trim())-1);
+			disziplinIndex = "7";
+			disziplinGruppe = "71";
+			preisregelIndex = 5;
+			aktDisziplin = "Podo";
 		}
 		vec_kuerzel.clear();
 		int idpos = preisvec.get(0).size()-1;

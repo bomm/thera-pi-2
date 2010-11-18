@@ -97,7 +97,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
 		
-		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha"});
+		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
 		disziplin.setActionCommand("disziplin");
 		disziplin.addActionListener(this);
 		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel","Gültik.Bereich","§302-Abrechnung","Pos.HB-Einzeln","Pos.HB-Mehrere","Pos.Weg/km","Pos.Weg/Pauschal","HB-Heim mit Zuzahl."});
@@ -396,7 +396,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		//int lang = SystemConfig.vPreisGruppen.size();
 		int lang = tarife.getRowCount();
 		String diszi = (String)disziplin.getSelectedItem();
-		String[] disziindex = {"2","1","5","3","8"};
+		String[] disziindex = {"2","1","5","3","8","7"};
 		int idiszi = disziplin.getSelectedIndex();
 		String swert = "";
 		
@@ -609,6 +609,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			SystemPreislisten.ladePreise("Logo");
 			SystemPreislisten.ladePreise("Reha");
 			SystemPreislisten.ladePreise("Common");
+			SystemPreislisten.ladePreise("Podo");
 			fuelleMitWerten(disziplin.getSelectedIndex());
 		}
 	}
@@ -617,7 +618,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		inif.setIntegerProperty("PreisGruppen_Common", "AnzahlPreisGruppen", position, null);
 		inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), commonname, null);
 		inif.setStringProperty("PreisGruppen_Common", "PGBereich"+Integer.toString(position), "00", null);
-		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
+		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 		for(int i = 0; i < diszis.length;i++){
 			inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
 			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), commonname, null);
@@ -641,7 +642,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		inif.save();
 	}
 	private void macheNeuePreistabelle(){
-		String[] tabName = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};
+		String[] tabName = {"kgtarif","matarif","ertarif","lotarif","rhtarif","potarif"};
 		int anzahltarife = tarife.getRowCount()+1;
 		for(int i = 0; i < tabName.length; i++){
 			new MachePreisListe(tabName[i]+Integer.toString(anzahltarife));

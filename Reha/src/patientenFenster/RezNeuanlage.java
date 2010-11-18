@@ -88,7 +88,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	//private String[] heilmittel = {"KG","MA","ER","LO","RH"};
 	
 	private String aktuelleDisziplin = "";
-	private int preisgruppen[] = {0,0,0,0,0};
+	private int preisgruppen[] = {0,0,0,0,0,0};
 	int[] comboid = {-1,-1,-1,-1};
 	
 	MattePainter mp = null;
@@ -877,7 +877,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}else if(item.toLowerCase().contains("reha")){
 			aktuelleDisziplin = "Reha";
 			nummer = "rh";
-		}		
+		}else if(item.toLowerCase().contains("podo")){
+			aktuelleDisziplin = "Podo";
+			nummer = "po";
+		}				
 		preisvec = SystemPreislisten.hmPreise.get(aktuelleDisziplin).get(preisgruppe);
 		if(artdbeh!=null){
 			ladePreise(artdbeh);	
@@ -905,6 +908,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}else if(item.toLowerCase().contains("logo")){
 			anz = Reha.thisClass.patpanel.aktRezept.indlogo.length;
 			indis = Reha.thisClass.patpanel.aktRezept.indlogo; 
+		}else if(item.toLowerCase().contains("podo")){
+			anz = Reha.thisClass.patpanel.aktRezept.indpodo.length;
+			indis = Reha.thisClass.patpanel.aktRezept.indpodo; 
 		}
 		for(int i = 0; i < anz; i++){
 			jcmb[6].addItem(indis[i]);
@@ -1060,7 +1066,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-				Vector<Vector<String>> vec = SqlInfo.holeFelder("select preisgruppe,pgkg,pgma,pger,pglo,pgrh from kass_adr where id='"+xid+"' LIMIT 1");
+				Vector<Vector<String>> vec = SqlInfo.holeFelder("select preisgruppe,pgkg,pgma,pger,pglo,pgrh,pgpo from kass_adr where id='"+xid+"' LIMIT 1");
+				//System.out.println(vec);
 				if(vec.size()>0){
 					for(int i = 1; i < vec.get(0).size();i++){
 						preisgruppen[i-1] = Integer.parseInt(vec.get(0).get(i))-1;
@@ -1083,7 +1090,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	private void holePreisGruppe(String id){
 		try{
-		Vector<Vector<String>> vec = SqlInfo.holeFelder("select preisgruppe,pgkg,pgma,pger,pglo,pgrh from kass_adr where id='"+id+"' LIMIT 1");
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select preisgruppe,pgkg,pgma,pger,pglo,pgrh,pgpo from kass_adr where id='"+id+"' LIMIT 1");
+		//System.out.println(vec);
 		if(vec.size()>0){
 			for(int i = 1; i < vec.get(0).size();i++){
 				preisgruppen[i-1] = Integer.parseInt(vec.get(0).get(i))-1;
@@ -1286,6 +1294,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				
 			}else{
 				sbuf.append("art_dbeh1='0', ");
+				sbuf.append("preise1='0.00', ");
+				sbuf.append("pos1='', ");
+				sbuf.append("kuerzel1='', ");
+
 			}
 			itest = jcmb[3].getSelectedIndex();
 			if(itest > 0){
@@ -1295,6 +1307,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("kuerzel2='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
 				sbuf.append("art_dbeh2='0', ");
+				sbuf.append("preise2='0.00', ");
+				sbuf.append("pos2='', ");
+				sbuf.append("kuerzel2='', ");
 			}
 			itest = jcmb[4].getSelectedIndex();
 			if(itest > 0){
@@ -1304,6 +1319,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("kuerzel3='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
 				sbuf.append("art_dbeh3='0', ");
+				sbuf.append("preise3='0.00', ");
+				sbuf.append("pos3='', ");
+				sbuf.append("kuerzel3='', ");
 			}
 			itest = jcmb[5].getSelectedIndex();
 			if(itest > 0){
@@ -1313,6 +1331,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("kuerzel4='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
 				sbuf.append("art_dbeh4='0', ");
+				sbuf.append("preise3='0.00', ");
+				sbuf.append("pos3='', ");
+				sbuf.append("kuerzel3='', ");
 			}
 			sbuf.append("frequenz='"+jtf[8].getText()+"', ");
 			sbuf.append("dauer='"+jtf[9].getText()+"', ");

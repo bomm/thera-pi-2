@@ -2,15 +2,12 @@ package systemEinstellungen;
 
 import hauptFenster.Reha;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,10 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 
-import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JRtaTextField;
 import systemTools.Verschluesseln;
@@ -41,6 +35,10 @@ import emailHandling.EmailSendenExtern;
 
 public class SysUtilEmailparameter extends JXPanel implements KeyListener, ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JButton knopf1 = null;
 	JButton knopf2 = null;
 	JButton knopf3 = null;
@@ -233,8 +231,8 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		String sender = Mailadresse.getText().trim();
 		String bestaetigung  = (EmpfBest.isSelected() ? "1" : "0");
 		String benutzer = Benutzer.getText().trim();
-		String pass1 = Pass1.getText().trim();
-		String pass2 = Pass2.getText().trim();
+		String pass1 = String.valueOf(Pass1.getPassword()).trim();
+		String pass2 = String.valueOf(Pass2.getPassword()).trim();
 		if(!pass1.equals(pass2)){
 			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht überein");
 			return;
@@ -263,6 +261,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		ini.save();
 	
 	}
+	@SuppressWarnings("unchecked")
 	private void wechsleEmail(){
 		if(Postfach.getSelectedIndex()==0){
 			hmEmail = (HashMap<String,String>)SystemConfig.hmEmailExtern.clone();
@@ -284,14 +283,14 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		String sender = Mailadresse.getText().trim();
 		String bestaetigung  = (EmpfBest.isSelected() ? "1" : "0");
 		String benutzer = Benutzer.getText().trim();
-		String pass1 = Pass1.getText().trim();
-		String pass2 = Pass2.getText().trim();
+		String pass1 = String.valueOf(Pass1.getPassword()).trim();
+		String pass2 = String.valueOf(Pass2.getPassword()).trim();
 		if(!pass1.equals(pass2)){
 			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht überein");
 			return;
 		}
 		String smtphost = SMTPhost.getText().trim();
-		String pophost = POPhost.getText().trim();
+		//String pophost = POPhost.getText().trim();
 		String authent = ( Authent.isSelected() ? "1" : "0");
 		String text = "Herzlichen Glückwunsch Ihr Postfach ist perferkt konfiguriert\n\n"+
 				"Sie können diese Konfiguration nun abspeichern";

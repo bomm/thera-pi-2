@@ -17,6 +17,7 @@ public class SystemPreislisten {
 	public static Vector<Vector<Vector<String>>> vERPreise = new Vector<Vector<Vector<String>>>();
 	public static Vector<Vector<Vector<String>>> vLOPreise = new Vector<Vector<Vector<String>>>();
 	public static Vector<Vector<Vector<String>>> vRHPreise = new Vector<Vector<Vector<String>>>();
+	public static Vector<Vector<Vector<String>>> vPOPreise = new Vector<Vector<Vector<String>>>();
 	
 	public static HashMap<String,Vector<Vector<Vector<String>>>> hmPreise = new HashMap<String,Vector<Vector<Vector<String>>>>();
 	
@@ -46,7 +47,7 @@ public class SystemPreislisten {
 	
 	@SuppressWarnings("unchecked")
 	public static void ladePreise(String disziplin){
-		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Common"};
+		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Common","Podo"};
 
 		List<String> list = Arrays.asList(diszis);
 		int treffer = list.indexOf(disziplin);
@@ -278,6 +279,49 @@ public class SystemPreislisten {
 			dummy.clear();
 			return;
 		}
+		
+		if(treffer==6){
+			vPOPreise.clear();
+			for(int i = 0; i < tarife;i++){
+				preisliste.clear();
+				preisliste = (Vector<Vector<String>>)SqlInfo.holeFelder("select * from potarif"+Integer.toString(i+1));
+				Collections.sort((Vector)preisliste,comparator);
+				vPOPreise.add((Vector<Vector<String>> )preisliste.clone());
+			}
+			preisliste.clear();
+			hmPreise.put("Podo", vPOPreise);
+			dummy.clear();
+			getPreisGruppen(inif,"Podo",tarife);
+			hmPreisGruppen.put("Podo", (Vector<String>)dummy.clone() );
+			dummy.clear();
+			getPreisBereich(inif,"Podo",tarife);
+			hmPreisBereich.put("Podo", (Vector<String>)dummy.clone() );
+			dummy.clear();
+			intdummy.clear();
+			getNeuePreiseRegeln(inif,"Podo",tarife);
+			hmNeuePreiseRegel.put("Podo", (Vector<Integer>)intdummy.clone());
+			intdummy.clear();
+			getNeuePreiseAb(inif,"Podo",tarife);
+			hmNeuePreiseAb.put("Podo", (Vector<String>)dummy.clone() );
+			dummy.clear();				
+			intdummy.clear();
+			getZuzahlRegeln(inif,"Podo",tarife);
+			hmZuzahlRegeln.put("Podo", (Vector<Integer>)intdummy.clone());
+			intdummy.clear();
+			getHMRAbrechnung(inif,"Podo",tarife);
+			hmHMRAbrechnung.put("Podo", (Vector<Integer>)intdummy.clone());
+			intdummy.clear();
+			hbdummy.clear();
+			getHBRegeln(inif,"Podo",tarife);
+			hmHBRegeln.put("Podo", (Vector<Vector<String>>)hbdummy.clone());
+			hbdummy.clear();
+			dummy.clear();
+			getBerichtRegeln(inif,"Podo",tarife);
+			hmBerichtRegeln.put("Podo", (Vector<String>)dummy.clone() );
+			dummy.clear();
+			return;
+		}
+
 		if(treffer==5){
 			dummy.clear();
 			getPreisGruppen(inif,"Common",tarife);

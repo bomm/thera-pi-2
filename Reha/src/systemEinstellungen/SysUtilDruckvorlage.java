@@ -47,8 +47,6 @@ import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
-import ag.ion.noa.search.ISearchResult;
-import ag.ion.noa.search.SearchDescriptor;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -348,8 +346,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 	           	   {
 		        	new Thread(){
 		        		public void run(){
-		        			EmailText et = new EmailText();
-		        			
+		        			new EmailText();
 		        		}
 		        	}.start();
 	           	   }
@@ -462,9 +459,9 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		ini.save();
 		thisClass.setCursor(Reha.thisClass.normalCursor);
 	}
-	
+	/*
 	private void speichernKonfig(){
-		/*
+		
 		AnzahlTerminTabellen = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlTabellen"));
 		AnzahlSpaltenProTabellen = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "AnzahlSpaltenProTabellen"));
 		for(int i = 0;i<AnzahlSpaltenProTabellen;i++){
@@ -476,9 +473,8 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		PatNameDrucken = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNameDrucken"));
 		PatNamenPlatzhalter = RWJedeIni.leseIniDatei(iniName, "TerminListe1", "PatNamePlatzhalter");
 		MitUeberschrift = Integer.valueOf(RWJedeIni.leseIniDatei(iniName, "TerminListe1", "MitSpaltenUeberschrift"));
-		*/
-		
 	}
+	*/
 	private void dateiDialog(){
 
 		final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
@@ -492,7 +488,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                    //final File f = (File) e.getNewValue();
                 }
             }
         });
@@ -526,18 +522,18 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 		} catch (OfficeApplicationException e) {
 			e.printStackTrace();
 		}
-		IDocument document = null;
+		//IDocument document = null;
 		try {
-			document = documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
+			documentService.loadDocument(url,DocumentDescriptor.DEFAULT);
 			//document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
 		} catch (NOAException e) {
 			e.printStackTrace();
 		}
-		ITextDocument textDocument = (ITextDocument)document;
+		//ITextDocument textDocument = (ITextDocument)document;
 		/*
 		 * Saichtext basteln und einsetzen
 		 */
-		ITextTable textTable = null;		
+		//ITextTable textTable = null;		
         thisClass.setCursor(Reha.thisClass.normalCursor);
 	}
 	@Override
@@ -621,7 +617,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 
 		int ipatdrucken = (patname.isSelected() ? 1 : 0);
 		int iheader = (spaltenkopf.isSelected() ? 1 : 0);
-		String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
+		//String patplatzhalter = SystemConfig.oTerminListe.PatNamenPlatzhalter;
 		String[] tabName;
 		//int anzahl = oOTermine.size();
 		String patname = "Hr.Kracher,Karl";
@@ -698,8 +694,8 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			}
 		}
 		//Jetzt den Platzhalter ^Name^ suchen
-		SearchDescriptor searchDescriptor = null;
-		ISearchResult searchResult = null;
+		//SearchDescriptor searchDescriptor = null;
+		//ISearchResult searchResult = null;
 		if(ipatdrucken  > 0){
 /************************************************/
 			/*
@@ -762,8 +758,8 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 /************************************************/			
 		}
 		/********************************************/
-		int zeile = 0;
-		int startTabelle = 0;
+		//int zeile = 0;
+		//int startTabelle = 0;
 		int aktTabelle = 0;
 		int aktTermin = -1;
 		int aktTerminInTabelle = -1;

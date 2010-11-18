@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.EventListener;
 
 public class ListenerTools {
+	@SuppressWarnings("unchecked")
 	public static void removeListeners(Component comp)
     {
         Method []methods = comp.getClass().getMethods();
@@ -15,12 +16,12 @@ public class ListenerTools {
             if (name.startsWith("remove") && name.endsWith("Listener"))
             {
 
-                Class []params = method.getParameterTypes();
+                Class[]params = method.getParameterTypes();
                 if (params.length == 1)
                 {
                     EventListener []listeners = null;
                     try {
-                        listeners = comp.getListeners(params[0]);
+                        listeners =  comp.getListeners(params[0]);
                     }catch(Exception e){
                         // It is possible that someone could create a listener
                         // that doesn't extend from EventListener.  If so,ignore it

@@ -192,7 +192,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    	////System.out.println("String2 = "+outString);
 		    	byteArrayOutputStream.close();
 				if(outString.length()>= 2){
-					if("KGMALOERRH".contains(outString.substring(0,2))){
+					if("KGMAERLORHPO".contains(outString.substring(0,2))){
 						Vector tvec = null;
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 						if(termin != null){

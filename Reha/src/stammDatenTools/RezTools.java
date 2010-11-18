@@ -407,6 +407,9 @@ public class RezTools {
 		}else if(disziplin.startsWith("RH")){
 			//return  (Vector<Vector<String>>)ParameterLaden.vRHPreise;
 			return SystemPreislisten.hmPreise.get("Reha").get(preisgruppe);
+		}else if(disziplin.startsWith("PO")){
+			//return  (Vector<Vector<String>>)ParameterLaden.vRHPreise;
+			return SystemPreislisten.hmPreise.get("Podo").get(preisgruppe);
 		}
 		return null;
 	}
@@ -924,6 +927,8 @@ public class RezTools {
 			return "Logo";
 		}else if(reznr.startsWith("RH")){
 			return "Reha";
+		}else if(reznr.startsWith("PO")){
+			return "Podo";
 		}
 		return "Physio";
 	}

@@ -3,44 +3,29 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import org.jdesktop.swingworker.SwingWorker;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-import org.therapi.reha.patient.Dokumentation;
 
-import patientenFenster.MyAccessory;
-
-import systemEinstellungen.SysUtilKrankenkasse.MyVorlagenTableModel;
-import systemEinstellungen.SysUtilKrankenkasse.TitelEditor;
-import systemEinstellungen.SysUtilPatient.MyDefaultTableModel;
 import systemTools.JCompTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -51,6 +36,10 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JXTable progtab = null;
 	MyProgTableModel modprog = new MyProgTableModel();
 
@@ -66,13 +55,19 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		
 		super(new BorderLayout());
 		//System.out.println("Aufruf SysUtilFremdprogramme");
-		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
+		this.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+		
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
 	     add(getVorlagenSeite(),BorderLayout.CENTER);
 	     add(getKnopfPanel(),BorderLayout.SOUTH);
-	     validate();
+	     SwingUtilities.invokeLater(new Runnable(){
+	    	 public void run(){
+	    		 validate();		 
+	    	 }
+	     });
+	     
 	     return;
 	}
 	
@@ -91,7 +86,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			speichern.addActionListener(this);
 			
 										//      1.                      2.    3.    4.     5.     6.    7.      8.     9.
-			FormLayout jpanlay = new FormLayout("right:max(150dlu;p), 60dlu, 60dlu, 4dlu, 60dlu",
+			FormLayout jpanlay = new FormLayout("right:max(150dlu;p), 60dlu:g, 60dlu, 4dlu, 60dlu,0dlu",
 	       //1.    2. 3.   4.   5.   6.     7.    8. 9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
 			"p, 10dlu, p");
 			
@@ -141,7 +136,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 		grafpfad.setEditable(false);
 		//FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 180dlu, 4dlu, 60dlu",				
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
-		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 160dlu, 4dlu, 60dlu",
+		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 160dlu:g, 4dlu, 60dlu,5dlu",
        //1.    2.      3.   4.   5. 6.   7.   8. 9.    10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
 		"120dlu, 2dlu,p,2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu,p, 10dlu");
 		
@@ -248,10 +243,10 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			if(svorlage.trim().equals("")){
 				return;
 			}
-			Vector vec = new Vector();
+			Vector<String> vec = new Vector<String>();
 			vec.add("");
 			vec.add(svorlage);
-			modprog.addRow((Vector)vec.clone());
+			modprog.addRow((Vector<?>)vec.clone());
 			progtab.validate();
 			int rows = modprog.getRowCount(); 
 			final int xrows = rows -1;
@@ -341,7 +336,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
         public void propertyChange(PropertyChangeEvent e) {
             if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                     || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                final File f = (File) e.getNewValue();
+                //final File f = (File) e.getNewValue();
             }
         }
     });
@@ -376,7 +371,7 @@ class MyProgTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Class getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) {
 		 return String.class;
     }
 	

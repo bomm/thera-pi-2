@@ -219,7 +219,7 @@ public class Beteiligung  extends JXPanel{
 					anzahlTagesBehandlungen++;
 				}else{
 					if((reznum.length()>2)){
-						if( ("KGMAERLORH".contains(reznum.substring(0,2))) ){
+						if( ("KGMAERLORHPO".contains(reznum.substring(0,2))) ){
 							vec = SqlInfo.holeFelder("select * from verordn where rez_nr ='"+reznum+"' LIMIT 1");
 							if(vec.size()<=0){
 								vec = SqlInfo.holeFelder("select * from lza where rez_nr ='"+reznum+"' LIMIT 1");

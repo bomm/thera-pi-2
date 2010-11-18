@@ -48,7 +48,7 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	JRtaRadioButton[] rbuts = {null,null,null,null,null};
 	JButton[] button = {null,null,null,null,null,null,null};
 	JRtaComboBox disziplin = null;
-	String[] diszi = {"KG","MA","ER","LO","RH"};
+	String[] diszi = {"KG","MA","ER","LO","RH","PO"};
 	String aktuelleID = "-1";
 	int aktuelleRow = -1;
 
@@ -83,7 +83,7 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		builder.getPanel().validate();
 		builder.addSeparator("Disziplin auswählen", cc.xyw(1, 3, 6));
 
-		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha"});
+		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
 		disziplin.setActionCommand("disziplin");
 		disziplin.addActionListener(this);
 		modkuerzel.setColumnIdentifiers(new String[] {"Kürzel","Langtext","Disziplin","id"});

@@ -26,6 +26,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -40,6 +41,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
 
 import sqlTools.PLServerAuslesen;
 import sqlTools.SqlInfo;
@@ -91,9 +93,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaCheckBox bezeich = null;
 	JRtaCheckBox neuaufalt = null;
 	Vector<String> delvec = new Vector<String>();
-	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif"};	
+	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif","potarif"};	
 
-	String[] disziplin = {"Physio","Massage","Ergo","Logo","Reha"};
+	String[] disziplin = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
  	JRtaComboBox kuerzelcombo = new JRtaComboBox();
 	KeyListener kl = null;
 	
@@ -143,7 +145,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jcmb[0].addActionListener(this);
 		builder.add(jcmb[0],cc.xyw(3,1,7));
 		
-		String[] xkuerzel = {"KG","MA","ER","LO","RH"};
+		String[] xkuerzel = {"KG","MA","ER","LO","RH","PO"};
 		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"'" );
 		if(xvec.size() > 0){
 			//System.out.println(xvec);
@@ -260,6 +262,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		preislisten.getColumn(5).setMaxWidth(50);
 		preislisten.getColumn(5).setCellRenderer(new MitteRenderer());
 		preislisten.setSortable(false);
+		preislisten.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0));
+		MyListener myEnterListener = new MyListener();		
+		preislisten.registerKeyboardAction(myEnterListener, "Enter",
+		KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),JComponent.WHEN_FOCUSED);
+
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(preislisten);
 		
 		jscr.validate();
@@ -301,6 +308,28 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		}
 		return null;
 	}
+
+	private class MyListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//Object src = e.getSource();
+			String actionCmd = e.getActionCommand();
+			if (actionCmd.equals("Enter")) {
+				int row = preislisten.getSelectedRow();
+				int col = preislisten.getSelectedColumn();
+				//System.out.println(row+" / "+col);
+				preislisten.getCellEditor(row, col).stopCellEditing();
+				if(col== preislisten.getColumnCount()-1){
+					col=0;
+				}else{
+					col++;
+				}
+				preislisten.setRowSelectionInterval(row, row);
+				preislisten.setColumnSelectionInterval(col, col);
+			}
+		}
+	}
+	
+	
 	private void fuelleMitWerten(){
 		int aktiv;
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
@@ -352,7 +381,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
 			int einstellung = ((Integer) SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
 			jcmb[2].setSelectedIndex(einstellung);
-			String[] xkuerzel = {"KG","MA","ER","LO","RH"};
+			String[] xkuerzel = {"KG","MA","ER","LO","RH","PO"};
 			kuerzelcombo.setDataVector(SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"'" ));
 			
 
@@ -378,7 +407,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			 				   "Wir übernehmen aber keinerlei Garantie dafür, daß dies zu jedem Zeitpunkt\n"+
 			 				   "der Fall ist.\n\nBitte kontrollieren Sie nach jedem Preislistenimport die Daten auf\n"+
 			 				   "Vollständigkeit und Richtigkeit der einzelnen Preise und Positionen.\n\n Herzlichen Dank dafür!");
-						String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+						String[] lists = {"Physio","Massage","Ergo","Logo","REHA","Podo"};
 						plEinlesen.setText("<html>Verfügbare Preislisten für <b><font color='#ff0000'>"+lists[jcmb[0].getSelectedIndex()]+"</font></b> ermitteln");
 						jcmb[3].removeAllItems();
 						jcmb[3].addItem((String) jcmb[1].getSelectedItem());
@@ -398,7 +427,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			doZurueck();
 		}
 		if(cmd.equals("pleinlesen")){
-			String[] lists = {"Physio","Massage","Ergo","Logo","Reha"};
+			String[] lists = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 			testeAllepreise(lists[jcmb[0].getSelectedIndex()]);
 		}
 		if(cmd.equals("plwahl")){
@@ -531,7 +560,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				xgueltig = "";
 			}
 			
-			String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
+			String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 			String dis = diszis[jcmb[0].getSelectedIndex()]; 
 			int diswelche = jcmb[1].getSelectedIndex()+1;
 
@@ -908,7 +937,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		try{
 		int pgs = jcmb[0].getSelectedIndex();
 		int pgGruppe = jcmb[1].getSelectedIndex();
-		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
+		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 		setCursor(Reha.thisClass.normalCursor);
 		return SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe);
 		}catch(Exception ex){

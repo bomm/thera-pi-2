@@ -89,7 +89,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	String aktDfue;
 	String aktRechnung;
 	String aktDisziplin = "";
-	String[] diszis = {"KG","MA","ER","LO"};
+	String[] diszis = {"KG","MA","ER","LO","PO"};
 	
 	boolean annahmeAdresseOk = false;
 	/*******Controls für die linke Seite*********/
@@ -188,7 +188,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		pb.getPanel().setBackground(Color.WHITE);
 		//pb.add(getIVPanel(),cc.xy(2,1));
 		pb.addLabel("Heilmittel auswählen",cc.xy(2,2));
-		cmbDiszi = new JRtaComboBox(new String[] {"Physio-Rezept","Massage/Lymphdrainage-Rezept","Ergotherapie-Rezept","Logopädie-Rezept"});
+		cmbDiszi = new JRtaComboBox(new String[] {"Physio-Rezept","Massage/Lymphdrainage-Rezept","Ergotherapie-Rezept","Logopädie-Rezept","Podologie-Rezept"});
 		cmbDiszi.setSelectedItem(SystemConfig.initRezeptKlasse);
 		cmbDiszi.setActionCommand("einlesen");
 		
@@ -290,7 +290,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		if(cmd.equals("einlesen")){
 			//rootKasse.removeAllChildren();
 			//String[] reznr = {"KG","MA","ER","LO"};
-			String[] diszis = {"Physio","Massage","Ergo","Logo"};
+			String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
 			aktDisziplin = diszis[cmbDiszi.getSelectedIndex()];
 			//abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
 			if(abrRez.rezeptSichtbar){
@@ -305,7 +305,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		}
 	}
 	public void einlesenErneuern(){
-		String[] diszis = {"Physio","Massage","Ergo","Logo"};
+		String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
 		aktDisziplin = diszis[cmbDiszi.getSelectedIndex()];
 		//abrRez.setKuerzelVec(reznr[cmbDiszi.getSelectedIndex()]);
 		if(abrRez.rezeptSichtbar){
@@ -1756,6 +1756,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			return "pglo";
 		}else if(disziplin.equals("Reha")){
 			return "pgrh";
+		}else if(disziplin.equals("Podo")){
+			return "pgpo";
 		}else{
 			return "pgkg";
 		}

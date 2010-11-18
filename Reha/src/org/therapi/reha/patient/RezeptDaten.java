@@ -181,6 +181,9 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 					}else if(xreznummer.contains("RH")){
 						//preisvec = ParameterLaden.vRHPreise;
 						preisvec = SystemPreislisten.hmPreise.get("Reha").get(prgruppe);
+					}else if(xreznummer.contains("PO")){
+						//preisvec = ParameterLaden.vRHPreise;
+						preisvec = SystemPreislisten.hmPreise.get("Podo").get(prgruppe);
 					}
 					////System.out.println(preisvec);
 					////System.out.println("PreisGruppe = "+prgruppe);
