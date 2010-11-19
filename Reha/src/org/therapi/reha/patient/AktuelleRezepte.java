@@ -2170,7 +2170,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			bereitsbezahlt = true;
 		}
 
-		/*int art = */RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		/*int art = */RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
 		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
 	}
 	public void setZuzahlImage(int imageno){
@@ -2185,7 +2185,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.repaint();
 	}
 	private void doBarcode(){
-		/*int art = */RezTools.testeRezGebArt(false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		/*int art = */RezTools.testeRezGebArt(true,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
 		//String ik = "510884019";
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
 		SystemConfig.hmAdrRDaten.put("<Bcode>","*"+(String)Reha.thisClass.patpanel.vecaktrez.get(1)+"*");

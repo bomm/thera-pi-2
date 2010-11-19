@@ -429,7 +429,7 @@ public class RezTools {
 		}
 	}
 */
-	public static int testeRezGebArt(boolean hintergrund,String srez,String termine){
+	public static int testeRezGebArt(boolean testefuerbarcode,boolean hintergrund,String srez,String termine){
 		int iret = 0;
 		Vector<String> vAktTermine = null;
 		boolean bTermine = false;
@@ -591,9 +591,14 @@ public class RezTools {
 		zm.preisgruppe = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(41)));
 		zm.gesamtZahl = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(64)));
 		//Hausbesuch als logischen wert
-
+		
 		if(iret==0){
-			constructGanzFreiRezHMap(zm);
+			if(testefuerbarcode){
+				constructNormalRezHMap(zm,false);
+				SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
+			}else{
+				constructGanzFreiRezHMap(zm);				
+			}
 		}
 		if(iret==1){
 			constructAnfangFreiRezHMap(zm,true);
@@ -604,7 +609,12 @@ public class RezTools {
 		if(iret==3){
 			constructEndeFreiRezHMap(zm,false);
 		}
-
+		/*
+		System.out.println(macheUmsatzZeile(
+				SqlInfo.holeFelder("select * from verordn where rez_nr='"+
+						Reha.thisClass.patpanel.vecaktrez.get(1)+"' LIMIT 1"),"")
+				);
+		*/		
 		//System.out.println("ZZ-Variante = "+iret);
 		return iret;
 	}
