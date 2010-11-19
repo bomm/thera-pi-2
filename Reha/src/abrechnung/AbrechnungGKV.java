@@ -727,6 +727,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		ik_physika = kassenIKs.get(0).get(3);
 		ik_papier = kassenIKs.get(0).get(4);
 		ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_physika+"' LIMIT 1");
+		/*
+		System.out.println("  kasse = "+ik_kasse);
+		System.out.println("kostent = "+ik_kostent);
+		System.out.println(" nutzer = "+ik_nutzer);
+		System.out.println("physika = "+ik_physika);
+		System.out.println("  email = "+ik_email);
+		*/
 
 		if(abrechnungsModus.equals(ABR_MODE_302)){
 			if(ik_email.equals("")){
@@ -737,6 +744,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			}
 			if(ik_email.equals("")){
 				ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_kostent+"' LIMIT 1");
+			}
+			if(ik_email.equals("")){
+				ik_email = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+ik_physika+"' LIMIT 1");
 			}
 
 			if(ik_email.trim().equals("")){
