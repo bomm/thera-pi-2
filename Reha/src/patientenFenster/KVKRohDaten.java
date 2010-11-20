@@ -476,6 +476,8 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 				buf.append("pger='"+pg+"', ");
 				buf.append("pglo='"+pg+"', ");
 				buf.append("pgrh='"+pg+"' ");
+				buf.append("pgpo='"+pg+"' ");
+				
 				buf.append("where id='"+Integer.toString(id)+"' LIMIT 1");
 				/*
 				String sql = "update kass_adr set kassen_nam1='"+name1+"', kassen_nam2='"+name2+"', strasse='"+

@@ -594,6 +594,7 @@ public class RezTools {
 		
 		if(iret==0){
 			if(testefuerbarcode){
+				constructGanzFreiRezHMap(zm);
 				constructNormalRezHMap(zm,false);
 				SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 			}else{

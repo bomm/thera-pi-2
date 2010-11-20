@@ -16,12 +16,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
 import systemTools.JRtaTextField;
+import theraPiUpdates.JCompTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -34,7 +36,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
 	JRtaTextField[] tfs = {null,null,null,null,null,null,null,
-			null,null,null,null,null,null,null};
+			null,null,null,null,null,null,null,null};
 	JButton abbruch = null;
 	JButton speichern = null;
 	Vector<String> originale = new Vector<String>();
@@ -46,6 +48,12 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 		/****/
 		setBackgroundPainter(Reha.thisClass.compoundPainter.get("SystemInit"));
 		/****/
+		/*
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(getVorlagenSeite());
+		jscr.validate();
+		jscr.getVerticalScrollBar().setUnitIncrement(15);
+		add(jscr,BorderLayout.CENTER);
+		*/
 	    add(getVorlagenSeite(),BorderLayout.CENTER);
 	    add(getKnopfPanel(),BorderLayout.SOUTH);
 	    new SwingWorker<Void,Void>(){
@@ -69,7 +77,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 			nummernkreisok = false;
 			return;
 		}
-		for(int i = 0; i < 14;i++){
+		for(int i = 0; i < 15;i++){
 			originale.add(vec.get(0).get(i));
 			tfs[i].setText(originale.get(i));
 		}
@@ -77,19 +85,19 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
-       //1.    2. 3.   4.   5.   6. 7.   8.  9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.  20.    21.   22.   23.
-		"p, 0dlu, p, p,7dlu,p,2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, "+
+       //1.    2. 3. 4.   5.   6.   7.   8.  9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.  20.    21.   22.   23.
+		"p, 0dlu, p, p,0dlu,p,2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, "+
 	   // 21.  22.  23.  24. 25.  26. 27. 28.  29.  30.  31.  32.  33. 34.  35.  36.
-		"2dlu ,p , 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu,  p, 2dlu, p, 2dlu, p, 2dlu, p ");
+		"2dlu, p , 2dlu ,p , 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu,  p, 2dlu, p, 2dlu, p, 2dlu, p ");
 
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
-		JLabel lab = new JLabel("Nummernkreis von Mandant: "+Reha.aktIK);
-		lab.setFont(new Font("Tahoma",Font.BOLD,12));
-		builder.add(lab,cc.xyw(3, 4, 7));
-		lab = new JLabel("nächste Nummer für...");
+		//JLabel lab = new JLabel("Nummernkreis von Mandant: "+Reha.aktIK);
+		//lab.setFont(new Font("Tahoma",Font.BOLD,12));
+		//builder.add(lab,cc.xyw(3, 4, 7));
+		JLabel lab = new JLabel("nächste Nummer für...");
 		builder.add(lab,cc.xyw(1, 6, 7));
 
 		builder.addLabel("Patient",cc.xy(1,8));
@@ -121,45 +129,51 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 		tfs[5] = new JRtaTextField("ZAHLEN",true);
 		tfs[5].setName("rh");
 		builder.add(tfs[5],cc.xy(3,18));
-
-		builder.addLabel("Rechnungsnummer",cc.xy(1,20));
+		
+		builder.addLabel("Podologie-Verordnung",cc.xy(1,20));
 		tfs[6] = new JRtaTextField("ZAHLEN",true);
-		tfs[6].setName("rnr");
+		tfs[6].setName("po");
 		builder.add(tfs[6],cc.xy(3,20));
+		
 
-		builder.addLabel("ESOL (§302)",cc.xy(1,22));
+		builder.addLabel("Rechnungsnummer",cc.xy(1,22));
 		tfs[7] = new JRtaTextField("ZAHLEN",true);
-		tfs[7].setName("esol");
+		tfs[7].setName("rnr");
 		builder.add(tfs[7],cc.xy(3,22));
 
-		builder.addLabel("Berichte",cc.xy(1,24));
+		builder.addLabel("ESOL (§302)",cc.xy(1,24));
 		tfs[8] = new JRtaTextField("ZAHLEN",true);
-		tfs[8].setName("bericht");
+		tfs[8].setName("esol");
 		builder.add(tfs[8],cc.xy(3,24));
 
-		builder.addLabel("Ausfallrechnung",cc.xy(1,26));
+		builder.addLabel("Berichte",cc.xy(1,26));
 		tfs[9] = new JRtaTextField("ZAHLEN",true);
-		tfs[9].setName("afrnr");
+		tfs[9].setName("bericht");
 		builder.add(tfs[9],cc.xy(3,26));
 
-		builder.addLabel("Rezeptgebührrechn.",cc.xy(1,28));
+		builder.addLabel("Ausfallrechnung",cc.xy(1,28));
 		tfs[10] = new JRtaTextField("ZAHLEN",true);
-		tfs[10].setName("rgrnr");
+		tfs[10].setName("afrnr");
 		builder.add(tfs[10],cc.xy(3,28));
 
-		builder.addLabel("Dokumentation",cc.xy(1,30));
+		builder.addLabel("Rezeptgebührrechn.",cc.xy(1,30));
 		tfs[11] = new JRtaTextField("ZAHLEN",true);
-		tfs[11].setName("doku");
+		tfs[11].setName("rgrnr");
 		builder.add(tfs[11],cc.xy(3,30));
 
-		builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,32));
+		builder.addLabel("Dokumentation",cc.xy(1,32));
 		tfs[12] = new JRtaTextField("ZAHLEN",true);
-		tfs[12].setName("dfue");
+		tfs[12].setName("doku");
 		builder.add(tfs[12],cc.xy(3,32));
 
-		//builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,32));
+		builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,34));
 		tfs[13] = new JRtaTextField("ZAHLEN",true);
-		tfs[13].setName("mandant");
+		tfs[13].setName("dfue");
+		builder.add(tfs[13],cc.xy(3,34));
+
+		//builder.addLabel("DFÜ-Nr. (§302)",cc.xy(1,32));
+		tfs[14] = new JRtaTextField("ZAHLEN",true);
+		tfs[14].setName("mandant");
 
 		return builder.getPanel();
 	}
@@ -227,7 +241,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 		String meldung = "Folgende Nummern wurden geändert\n";
 		String cmd = (!nummernkreisok ? "insert into nummern set " : "update nummern set ") ;
 		int edited = 0;
-		for(int i = 0; i < 14; i++){
+		for(int i = 0; i < 15; i++){
 			if(! tfs[i].getText().trim().equals(originale.get(i))){
 				edited++;
 				cmd = cmd+(edited > 1 ? "," : "")+tfs[i].getName()+"='"+tfs[i].getText().trim()+"'";
@@ -242,7 +256,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 			if(frage == JOptionPane.YES_OPTION){
 				SqlInfo.sqlAusfuehren(cmd);
 			}else{
-				for(int i = 0; i < 14; i++){
+				for(int i = 0; i < 15; i++){
 					tfs[i].setText(originale.get(i));
 				}
 			}
