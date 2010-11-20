@@ -85,9 +85,9 @@ public class FTPTools {
 				ftpClient.disconnect();
 
 	    	} catch (SocketException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage());
-	    	} catch (IOException e1) {
-				JOptionPane.showMessageDialog(null, e1.getMessage());    		
+				//JOptionPane.showMessageDialog(null, e1.getMessage());
+	    	} catch (IOException e2) {
+				//JOptionPane.showMessageDialog(null, e1.getMessage());    		
 
 	    	}
 		return files;  
@@ -252,7 +252,7 @@ public class FTPTools {
 	     			//fos.close();
 	     			//ftpClient.logout();
 	     			//ftpClient.disconnect();
-	     			System.err.println("Scheiß-Transfer fehlgeschlagen");
+	     			//System.err.println("Scheiß-Transfer fehlgeschlagen");
 	     			//System.out.println("Datei = "+quelldat);
 	     			
 	 			}
