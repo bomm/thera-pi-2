@@ -2353,7 +2353,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list,rueckgabe);
-			tDlg.setPreferredSize(new Dimension(200,200));
+			tDlg.setPreferredSize(new Dimension(200,200+25));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
 			tDlg.setVisible(true);

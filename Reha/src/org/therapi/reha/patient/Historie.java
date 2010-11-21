@@ -810,7 +810,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list,rueckgabe);
-			tDlg.setPreferredSize(new Dimension(200,200));
+			tDlg.setPreferredSize(new Dimension(200,200+25));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
 			tDlg.setVisible(true);

@@ -16,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -44,6 +45,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	private JList jList = null;
 	private RehaTPEventClass rtp = null;
 	public int rueckgabe;
+	private JButton abfeuern = null;
 	
 	public ToolsDialog(JXFrame owner,String titel,JList list,int rueckgabe){
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
@@ -90,6 +92,10 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	private JXPanel getContent(JList list){
 		content = new JXPanel(new BorderLayout());
 		content.add(new JScrollPane(list), BorderLayout.CENTER);
+		abfeuern = new JButton("abfeuern...");
+		abfeuern.setActionCommand("abfeuern");
+		abfeuern.addActionListener(this);
+		content.add(abfeuern,BorderLayout.SOUTH);
 		
 		return content;
 	}
@@ -109,7 +115,10 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		if(arg0.getActionCommand().equals("abfeuern")){
+			this.rueckgabe = jList.getSelectedIndex();
+			FensterSchliessen("dieses");
+		}
 		
 	}
 
@@ -221,6 +230,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		this.jtp.removeMouseMotionListener(this.mymouse);
 		this.jList.removeKeyListener(this);
 		this.jList.removeMouseListener(this);
+		this.abfeuern.removeActionListener(this);
 		this.mymouse = null; 
 		if(this.rtp != null){
 			this.rtp.removeRehaTPEventListener((RehaTPEventListener) this);

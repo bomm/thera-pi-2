@@ -123,7 +123,7 @@ public class PatientToolBarLogic {
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktueller Patient",list,rueckgabe);
-			tDlg.setPreferredSize(new Dimension(300,200));
+			tDlg.setPreferredSize(new Dimension(300,200+25));
 			tDlg.setLocation(pt.x-200,pt.y+30);
 			tDlg.pack();
 			tDlg.setVisible(true);
