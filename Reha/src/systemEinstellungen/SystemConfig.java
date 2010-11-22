@@ -170,6 +170,8 @@ public class SystemConfig {
 	public static String sGutachtenOrt;
 	
 	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
+	
+	public static HashMap<String,String> hmOtherDefaults = new HashMap<String,String>();
 	                     
 	public SystemConfig(){
 	
