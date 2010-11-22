@@ -489,34 +489,42 @@ public class OOTools{
         	//cell.setValue( ((Date)value).getTime());
         }
 	}
+	public static String doOODate(String datum){
+		String aDateStr = null;
+		try{
+			aDateStr = datum.substring(3,5) + "/" + 
+			datum.substring(0,2) + "/" + 
+			datum.substring(6);
+		}catch(NullPointerException ex){
+			aDateStr = "";
+		}
+		return String.valueOf(aDateStr);
+	}
 	public static void doCellDateFormatGerman(ISpreadsheetDocument spreadsheetDocument,XSheetCellCursor cellCursor,int col,int row,boolean jahrvierstellig) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
 		XCell cell= cellCursor.getCellByPosition(col,row);
-
 
 	    com.sun.star.util.XNumberFormatsSupplier xNumberFormatsSupplier =
 	          (com.sun.star.util.XNumberFormatsSupplier)
 	          UnoRuntime.queryInterface(
 	          com.sun.star.util.XNumberFormatsSupplier.class, spreadsheetDocument.getSpreadsheetDocument() );
-	 
-
+	    /******************/
 		if(xNumberFormatsSupplier == null){
-			System.out.println("Supplyer = null");
+			System.out.println("XNumberFormatsSupplier = null");
 			return;
 		}
-
+	    /******************/
 		com.sun.star.util.XNumberFormats xNumberFormats = (XNumberFormats)
 	          xNumberFormatsSupplier.getNumberFormats();
-	 
-
+		/******************/
 		com.sun.star.util.XNumberFormatTypes xNumberFormatTypes =
 			          (com.sun.star.util.XNumberFormatTypes)
 			          UnoRuntime.queryInterface(
 			          com.sun.star.util.XNumberFormatTypes.class, xNumberFormats );
-
+		/******************/
 		com.sun.star.lang.Locale aLocale = new com.sun.star.lang.Locale();
-	      int nFormat = xNumberFormatTypes.getStandardFormat(
+	    int nFormat = xNumberFormatTypes.getStandardFormat(
 	          com.sun.star.util.NumberFormat.DATE, aLocale );
-        
+	    /******************/
         com.sun.star.beans.XPropertySet xPropSet = (XPropertySet) UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);
         xPropSet.setPropertyValue("NumberFormat", nFormat- (jahrvierstellig ? 1 : 0));
 	}

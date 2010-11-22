@@ -959,10 +959,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 						}else if(obj instanceof Date){
 							try{
 								if(datumsFormat.format(obj).length()==10){
-									String aDateStr = datumsFormat.format(obj).substring(3,5) + "/" + 
-									datumsFormat.format(obj).substring(0,2) + "/" + 
-									datumsFormat.format(obj).substring(6);
-									OOTools.doCellFormula(cellCursor, y, i+1, aDateStr);
+									OOTools.doCellFormula(cellCursor, y, i+1, OOTools.doOODate(datumsFormat.format(obj)));
 									OOTools.doCellDateFormatGerman(spreadsheetDocument, cellCursor, y, i+1,true);
 								}
 							}catch(Exception ex){
