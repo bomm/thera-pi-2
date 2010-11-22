@@ -1108,10 +1108,11 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			 *  
 			 */
 			
-			//SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");			
-			SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
-			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
-			SqlInfo.sqlAusfuehren("delete from volle where rez_nr='"+abgerechneteRezepte.get(i2)+"'");
+			//SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+abgerechneteRezepte.get(i2)+"' LIMIT 1");
+			String delrez = String.valueOf(abgerechneteRezepte.get(i2));
+			SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+delrez+"' LIMIT 1");
+			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+delrez+"' LIMIT 1");
+			SqlInfo.sqlAusfuehren("delete from volle where rez_nr='"+delrez+"'");
 			if(aktiverPatient.equals(abgerechnetePatienten.get(i2)) ){
 				posteAktualisierung(aktiverPatient.toString());
 				//Reha.thisClass.patpanel.aktRezept.setzeKarteiLasche();

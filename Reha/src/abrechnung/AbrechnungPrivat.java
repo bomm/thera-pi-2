@@ -508,12 +508,12 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		SqlInfo.sqlAusfuehren(rechnungBuf.toString());		
 	}
 	private void doUebertrag(){
-		 String rez_nr = Reha.thisClass.patpanel.vecaktrez.get(1).toString();
+		 String rez_nr = String.valueOf(Reha.thisClass.patpanel.vecaktrez.get(1).toString());
 		 
 		 SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
 		 
 		 if(Reha.thisClass.patpanel.vecaktrez.get(62).trim().equals("T")){
-			 SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+Reha.thisClass.patpanel.vecaktrez.get(1).trim()+"' LIMIT 1");			
+			 SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+rez_nr+"' LIMIT 1");			
 		 }
 
 		 SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");

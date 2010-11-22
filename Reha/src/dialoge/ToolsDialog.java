@@ -92,7 +92,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	private JXPanel getContent(JList list){
 		content = new JXPanel(new BorderLayout());
 		content.add(new JScrollPane(list), BorderLayout.CENTER);
-		abfeuern = new JButton("abfeuern...");
+		abfeuern = new JButton("ausführen....");
 		abfeuern.setActionCommand("abfeuern");
 		abfeuern.addActionListener(this);
 		content.add(abfeuern,BorderLayout.SOUTH);

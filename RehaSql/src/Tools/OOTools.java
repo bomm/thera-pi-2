@@ -489,7 +489,7 @@ public class OOTools{
         	//cell.setValue( ((Date)value).getTime());
         }
 	}
-	public static void doDateFormatGerman(ISpreadsheetDocument spreadsheetDocument,XSheetCellCursor cellCursor,int col,int row) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
+	public static void doCellDateFormatGerman(ISpreadsheetDocument spreadsheetDocument,XSheetCellCursor cellCursor,int col,int row) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
 		XCell cell= cellCursor.getCellByPosition(col,row);
 
 		 // Query the number formats supplier of the spreadsheet document
