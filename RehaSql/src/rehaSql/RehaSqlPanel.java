@@ -958,8 +958,13 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 							OOTools.doCellValue(cellCursor, y, i+1, (String) (obj==Boolean.TRUE ? "ja" : "nein"));
 						}else if(obj instanceof Date){
 							try{
-								
-								OOTools.doCellValue(cellCursor, y, i+1, (String) datumsFormat.format(obj));								
+								if(datumsFormat.format(obj).length()==10){
+									String aDateStr = datumsFormat.format(obj).substring(3,5) + "/" + 
+									datumsFormat.format(obj).substring(0,2) + "/" + 
+									datumsFormat.format(obj).substring(6);
+									OOTools.doCellFormula(cellCursor, y, i+1, aDateStr);
+									OOTools.doDateFormatGerman(spreadsheetDocument, cellCursor, y, i+1);
+								}
 							}catch(Exception ex){
 								OOTools.doCellValue(cellCursor, y, i+1, (String)obj.toString());
 							}
