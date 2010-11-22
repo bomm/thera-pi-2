@@ -963,7 +963,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 									datumsFormat.format(obj).substring(0,2) + "/" + 
 									datumsFormat.format(obj).substring(6);
 									OOTools.doCellFormula(cellCursor, y, i+1, aDateStr);
-									OOTools.doCellDateFormatGerman(spreadsheetDocument, cellCursor, y, i+1);
+									OOTools.doCellDateFormatGerman(spreadsheetDocument, cellCursor, y, i+1,true);
 								}
 							}catch(Exception ex){
 								OOTools.doCellValue(cellCursor, y, i+1, (String)obj.toString());

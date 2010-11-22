@@ -489,11 +489,11 @@ public class OOTools{
         	//cell.setValue( ((Date)value).getTime());
         }
 	}
-	public static void doCellDateFormatGerman(ISpreadsheetDocument spreadsheetDocument,XSheetCellCursor cellCursor,int col,int row) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
+	public static void doCellDateFormatGerman(ISpreadsheetDocument spreadsheetDocument,XSheetCellCursor cellCursor,int col,int row,boolean jahrvierstellig) throws IndexOutOfBoundsException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
 		XCell cell= cellCursor.getCellByPosition(col,row);
 
-		 // Query the number formats supplier of the spreadsheet document
-	      com.sun.star.util.XNumberFormatsSupplier xNumberFormatsSupplier =
+
+	    com.sun.star.util.XNumberFormatsSupplier xNumberFormatsSupplier =
 	          (com.sun.star.util.XNumberFormatsSupplier)
 	          UnoRuntime.queryInterface(
 	          com.sun.star.util.XNumberFormatsSupplier.class, spreadsheetDocument.getSpreadsheetDocument() );
@@ -503,26 +503,22 @@ public class OOTools{
 			System.out.println("Supplyer = null");
 			return;
 		}
-	      // Get the number formats from the supplier
-	      com.sun.star.util.XNumberFormats xNumberFormats = (XNumberFormats)
+
+		com.sun.star.util.XNumberFormats xNumberFormats = (XNumberFormats)
 	          xNumberFormatsSupplier.getNumberFormats();
 	 
-	     // Query the XNumberFormatTypes interface
+
 		com.sun.star.util.XNumberFormatTypes xNumberFormatTypes =
-	          (com.sun.star.util.XNumberFormatTypes)
-	          UnoRuntime.queryInterface(
-	          com.sun.star.util.XNumberFormatTypes.class, xNumberFormats );
-		
-		
-		// Get the number format index key of the default currency format,
-	      // note the empty locale for default locale
-	      com.sun.star.lang.Locale aLocale = new com.sun.star.lang.Locale();
+			          (com.sun.star.util.XNumberFormatTypes)
+			          UnoRuntime.queryInterface(
+			          com.sun.star.util.XNumberFormatTypes.class, xNumberFormats );
+
+		com.sun.star.lang.Locale aLocale = new com.sun.star.lang.Locale();
 	      int nFormat = xNumberFormatTypes.getStandardFormat(
 	          com.sun.star.util.NumberFormat.DATE, aLocale );
         
-	      //System.out.println("Format = "+nFormat);
         com.sun.star.beans.XPropertySet xPropSet = (XPropertySet) UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);
-        xPropSet.setPropertyValue("NumberFormat", nFormat-1);
+        xPropSet.setPropertyValue("NumberFormat", nFormat- (jahrvierstellig ? 1 : 0));
 	}
 	
 	public static void doCellFormula(XSheetCellCursor cellCursor,int col,int row,String formula) throws IndexOutOfBoundsException{
