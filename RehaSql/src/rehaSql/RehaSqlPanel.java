@@ -505,10 +505,12 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			return;
 		}
 		String prepstatement = vecStatements.get(ind-1).get(1);
-		prepstatement = testeAufPlatzhalter(prepstatement);
-		if(prepstatement.equals("")){
-			JOptionPane.showMessageDialog(null,"Fehler in der Eingabe");
-			return;
+		if(prepstatement.indexOf("^") >= 0 || prepstatement.indexOf("where")>=0){
+			prepstatement = testeAufPlatzhalter(prepstatement);
+			if(prepstatement.equals("")){
+				JOptionPane.showMessageDialog(null,"Fehler in der Eingabe");
+				return;
+			}
 		}
 		sqlstatement.setText(prepstatement);
 		buts[1].requestFocus();
