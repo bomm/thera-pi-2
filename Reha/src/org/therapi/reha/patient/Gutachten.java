@@ -678,7 +678,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			list.setCellRenderer(new IconListRenderer(icons));	
 			int rueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Gutachten / E-Bericht",list,rueckgabe);
-			tDlg.setPreferredSize(new Dimension(300,200+25));
+			tDlg.setPreferredSize(new Dimension(300,200+
+					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
 			tDlg.setVisible(true);

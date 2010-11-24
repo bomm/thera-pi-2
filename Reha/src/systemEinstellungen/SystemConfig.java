@@ -171,7 +171,9 @@ public class SystemConfig {
 	
 	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
 	
-	public static HashMap<String,String> hmOtherDefaults = new HashMap<String,String>();
+	public static HashMap<String,Object> hmOtherDefaults = new HashMap<String,Object>();
+	
+	
 	                     
 	public SystemConfig(){
 	
@@ -1091,6 +1093,12 @@ public class SystemConfig {
 		}
 		//System.out.println("Keystore-Passwort = "+hmAbrechnung.get("hmkeystorepw"));
 	}
+	public static void OtherDefaultsInit(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		hmOtherDefaults.put("ToolsDlgClickCount",(Integer)inif.getIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks") );
+		hmOtherDefaults.put("ToolsDlgShowButton",(Boolean)(inif.getIntegerProperty("Aussehen", "WerkzeugaufrufButtonZeigen")==0 ? false : true) );
+		//System.out.println("Default1 = "+hmOtherDefaults.get("ToolsDlgClickCount"));
+	}	
 	public static void SystemIconsInit(){
 		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",
 				"nichtgesperrt","rezeptgebuehr","ausfallrechnung","arztbericht","privatrechnung",
