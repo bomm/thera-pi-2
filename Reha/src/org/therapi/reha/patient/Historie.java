@@ -706,6 +706,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			int mod = tabhistorie.convertRowIndexToModel(row);
 			String rez_nr = dtblm.getValueAt(mod, 0).toString().trim();
 			SqlInfo.transferRowToAnotherDB("lza", "verordn","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
+			String xcmd = "update verordn set abschluss='F' where rez_nr='"+rez_nr+"' LIMIT 1";
+			SqlInfo.sqlAusfuehren(xcmd);
+
 			SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+rez_nr+"'");
 			TableTool.loescheRowAusModel(tabhistorie, row);
 			new sqlTools.ExUndHop().setzeStatement("delete from faktura where rez_nr='"+rez_nr+"'");
