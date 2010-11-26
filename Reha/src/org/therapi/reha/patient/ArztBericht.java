@@ -295,7 +295,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		//System.out.println("Rückgabe des JPanels");
 		return pb.getPanel();
 	}
-	@SuppressWarnings("unchecked")
+
 	private JScrollPane getFunktionsPanel(){
 
 		FormLayout lay = new FormLayout(
