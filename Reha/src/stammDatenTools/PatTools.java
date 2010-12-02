@@ -62,7 +62,12 @@ public class PatTools {
 			String zeile3 = "";
 			String branrede = "";
 			int jahrheute = Integer.valueOf(DatFunk.sHeute().substring(6));
-			int jahrgeboren = Integer.valueOf(geboren.substring(6));
+			int jahrgeboren = 0;
+			try{
+				jahrgeboren = Integer.valueOf(geboren.substring(6));
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Irgend eine Arschgeige hat einmal mehr kein Geburtstag eingegeben");
+			}
 			int ialter = jahrheute - jahrgeboren;
 			
 			

@@ -639,6 +639,7 @@ private KVKWrapper kvw;
 		knopf3.setPreferredSize(new Dimension(70, 20));
 		knopf3.addActionListener(this);		
 		knopf3.setActionCommand("einlesen");
+		knopf3.setName("einlesen");
 		knopf3.addKeyListener(this);
 		knopf3.setMnemonic(KeyEvent.VK_C);
 		if(SystemConfig.sReaderAktiv.equals("0")){
@@ -649,6 +650,7 @@ private KVKWrapper kvw;
 		knopf4.setPreferredSize(new Dimension(70, 20));
 		knopf4.addActionListener(this);		
 		knopf4.setActionCommand("speichern");
+		knopf4.setName("speichern");
 		knopf4.addKeyListener(this);
 		knopf4.setMnemonic(KeyEvent.VK_S);
 		
@@ -656,6 +658,7 @@ private KVKWrapper kvw;
 		knopf5.setPreferredSize(new Dimension(70, 20));
 		knopf5.addActionListener(this);		
 		knopf5.setActionCommand("abbrechen");
+		knopf5.setName("abbrechen");
 		knopf5.addKeyListener(this);
 		knopf5.setMnemonic(KeyEvent.VK_A);
 		
@@ -1077,12 +1080,14 @@ private KVKWrapper kvw;
 		
 		knopf0 = new JButton("entfernen");
 		knopf0.setPreferredSize(new Dimension(70, 20));
-		knopf0.addActionListener(this);		
+		knopf0.addActionListener(this);	
+		knopf0.setName("entfernen");
 		knopf0.setActionCommand("deldoc");
 		knopf0.addKeyListener(this);
 		knopf1 = new JButton("hinzu");
 		knopf1.setPreferredSize(new Dimension(70, 20));
-		knopf1.addActionListener(this);		
+		knopf1.addActionListener(this);
+		knopf1.setName("hinzu");
 		knopf1.setActionCommand("adddoc");
 		knopf1.addKeyListener(this);
 		 
@@ -1492,19 +1497,23 @@ private KVKWrapper kvw;
 		////System.out.println("Neuanlage Pressed "+arg0.getKeyCode());
 		if(arg0.getKeyCode()== 10 || arg0.getKeyCode()==0){
 			arg0.consume();
-			if(((JComponent)arg0.getSource()).getName().equals("einlesen")){
-				einlesen();
-				return;
-			}
-			if(((JComponent)arg0.getSource()).getName().equals("speichern")){
-				schreibeInDb();
-				return;
-			}
-			if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
-				((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
-				finalise();
-				((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-				return;
+			try{
+				if(((JComponent)arg0.getSource()).getName().equals("einlesen")){
+					einlesen();
+					return;
+				}
+				if(((JComponent)arg0.getSource()).getName().equals("speichern")){
+					schreibeInDb();
+					return;
+				}
+				if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
+					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
+					finalise();
+					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
+					return;
+				}
+			}catch(Exception ex){
+				
 			}
 			
 		}

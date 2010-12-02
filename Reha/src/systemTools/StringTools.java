@@ -14,12 +14,37 @@ public class StringTools {
 		String neuString = "";
 		try{
 		for(int y = 0; y < 1; y++){
-			
 
 			if(  (test.indexOf(" ") < 0)  && (test.indexOf("-") < 0) ){
 				neuString = test.substring(0,1).toUpperCase()+
 				 (test.length() > 1 ? test.substring(1).toLowerCase() : "");
 				test = String.valueOf(neuString.trim());
+				/***********/
+				if(test.indexOf("Mc") > -1){
+					try{
+						if(test.length() >=3){
+							if(!test.substring(2,3).equals(" ")){
+								test = "Mc"+test.substring(2,3).toUpperCase()+test.substring(4).toLowerCase();
+							}
+						}
+					}catch(Exception ex){
+						
+					}
+				}
+				/*
+				if(test.indexOf("Mac") > -1){
+					try{
+						if(test.length() >=4){
+							if(!test.substring(3,4).equals(" ")){
+								test = "Mac"+test.substring(3,4).toUpperCase()+test.substring(4).toLowerCase(); 
+							}
+						}
+					}catch(Exception ex){
+						
+					}
+				}
+				*/
+				/***********/
 				return test;
 			}
 			
@@ -67,6 +92,7 @@ public class StringTools {
 				test = String.valueOf(neuString.trim());
 				//System.out.println("in - Ergebnis = "+test);
 			}
+			
 			/*
 			if(test.indexOf("/") > -1){
 				neuString = "";
@@ -82,7 +108,6 @@ public class StringTools {
 			*/
 
 		}
-		
 		if(test.indexOf("prof.") > -1){
 			neuString = test.replaceAll("prof.", "Prof.");
 			test = String.valueOf(neuString.trim());
