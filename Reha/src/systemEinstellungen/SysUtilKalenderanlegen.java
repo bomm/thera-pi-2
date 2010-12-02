@@ -373,7 +373,7 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 					break;
 				}
 				String frage = "Bitte beachten Sie!\n\n"+
-								"1. Stellen Sie sicher, daß Sie zum Zeitpunkt der Kalenderanlage möglichst er einzige Benutzer im Netzwerk sind\n"+
+								"1. Stellen Sie sicher, dass Sie zum Zeitpunkt der Kalenderanlage möglichst der einzige Benutzer im Netzwerk sind\n"+
 								"2. Wurde die Kalenderanlage gestartet, brechen Sie den Vorgang bitte keinesfalls ab\n"+
 								"3. Die Kalenderanlage kann einige Zeit in Anspruch nehmen. Sie sehen den Fortschritt anhand des 'Laufbalkens'\n\n"+
 								"Wollen Sie jetzt das Kalenderjahr wie folgt anlegen:\n"+
