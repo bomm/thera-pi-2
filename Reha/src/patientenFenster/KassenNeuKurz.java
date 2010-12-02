@@ -495,8 +495,10 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		if( ((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
-			tfs[0].setText(tfs[0].getText().replace("?", ""));
+		if(((JComponent)arg0.getSource()).getName() != null){
+			if( ((JComponent)arg0.getSource()).getName().equals("KUERZEL")){
+				tfs[0].setText(tfs[0].getText().replace("?", ""));
+			}
 		}
 	}
 

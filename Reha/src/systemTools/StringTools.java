@@ -59,6 +59,20 @@ public class StringTools {
 				test = String.valueOf(neuString.trim());
 				//System.out.println("in - Ergebnis = "+test);
 			}
+			/*
+			if(test.indexOf("/") > -1){
+				neuString = "";
+				String[] splitString = test.split("/");
+				for(int i = 0;i < splitString.length;i++){
+					neuString = neuString + 
+								(splitString[i].substring(0,1).toUpperCase())+
+							 (splitString[i].length() > 1 ? splitString[i].substring(1).toLowerCase() : "");
+					neuString = neuString + (i < (splitString.length-1) ? "/" : "");
+				}
+				test = String.valueOf(neuString.trim());
+			}
+			*/
+
 		}
 		
 		if(test.indexOf("prof.") > -1){
@@ -81,12 +95,14 @@ public class StringTools {
 			neuString = test.replaceAll("Med.", "med.");
 			test = String.valueOf(neuString.trim());
 		}
-
 		if(test.indexOf(" Von ") > -1){
 			neuString = test.replaceAll(" Von ", " von ");
 			test = String.valueOf(neuString.trim());
 		}
-		
+		if(test.indexOf("Von ") > -1){
+			neuString = test.replaceAll("Von ", " von ");
+			test = String.valueOf(neuString.trim());
+		}
 		if(test.indexOf(" Und ") > -1){
 			neuString = test.replaceAll(" Und ", " und ");
 			test = String.valueOf(neuString.trim());
@@ -95,16 +111,32 @@ public class StringTools {
 			neuString = test.replaceAll(" Zu ", " zu ");
 			test = String.valueOf(neuString.trim());
 		}
+		if(test.indexOf(" VON ") > -1){
+			neuString = test.replaceAll(" VON ", " von ");
+			test = String.valueOf(neuString.trim());
+		}
+		
+		if(test.indexOf(" UND ") > -1){
+			neuString = test.replaceAll(" UND ", " und ");
+			test = String.valueOf(neuString.trim());
+		}
+		if(test.indexOf(" ZU ") > -1){
+			neuString = test.replaceAll(" ZU ", " zu ");
+			test = String.valueOf(neuString.trim());
+		}
+
 		if(test.indexOf(" An ") > -1){
 			neuString = test.replaceAll(" An ", " an ");
 			test = String.valueOf(neuString.trim());
 		}
-
+		if(test.indexOf(" Am ") > -1){
+			neuString = test.replaceAll(" Am ", " am ");
+			test = String.valueOf(neuString.trim());
+		}
 		if(test.indexOf(" Auf ") > -1){
 			neuString = test.replaceAll(" Auf ", " auf ");
 			test = String.valueOf(neuString.trim());
 		}
-
 		if(test.indexOf(" Der ") > -1){
 			neuString = test.replaceAll(" Der ", " der ");
 			test = String.valueOf(neuString.trim());
@@ -113,8 +145,16 @@ public class StringTools {
 			neuString = test.replaceAll(" Bei ", " bei ");
 			test = String.valueOf(neuString.trim());
 		}
+		if(test.indexOf(" Beim ") > -1){
+			neuString = test.replaceAll(" Beim ", " bei ");
+			test = String.valueOf(neuString.trim());
+		}
 		if(test.indexOf(" Den ") > -1){
 			neuString = test.replaceAll(" Den ", " den ");
+			test = String.valueOf(neuString.trim());
+		}
+		if(test.indexOf(" Dem ") > -1){
+			neuString = test.replaceAll(" Dem ", " dem ");
 			test = String.valueOf(neuString.trim());
 		}
 		if(test.indexOf(" Die ") > -1){
@@ -125,20 +165,60 @@ public class StringTools {
 			neuString = test.replaceAll("-Die ", "-die ");
 			test = neuString;
 		}
+		if(test.indexOf(" Ob ") > -1){
+			neuString = test.replaceAll(" Ob ", " ob ");
+			test = neuString;
+		}
+		if(test.indexOf(" Über ") > -1){
+			neuString = test.replaceAll(" Über ", " über ");
+			test = neuString;
+		}
+		if(test.indexOf(" Überm ") > -1){
+			neuString = test.replaceAll(" Überm ", " überm ");
+			test = neuString;
+		}
+		if(test.indexOf(" Unter ") > -1){
+			neuString = test.replaceAll(" Unter ", " unter ");
+			test = neuString;
+		}
+		if(test.indexOf(" A.d. ") > -1){
+			neuString = test.replaceAll(" A.d. ", " a.d. ");
+			test = neuString;
+		}
+		if(test.indexOf(" U.d. ") > -1){
+			neuString = test.replaceAll(" U.d. ", " u.d. ");
+			test = neuString;
+		}
 		if(test.indexOf("Aok") > -1){
 			neuString = test.replaceAll("Aok", "AOK");
+			test = neuString;
+		}
+		if(test.indexOf("Gek") > -1){
+			neuString = test.replaceAll("Gek", "GEK");
 			test = neuString;
 		}
 		if(test.indexOf("Bkk") > -1){
 			neuString = test.replaceAll("Bkk", "BKK");
 			test = neuString;
 		}
+		if(test.indexOf("Bek ") > -1){
+			neuString = test.replaceAll("Bek ", "BEK ");
+			test = neuString;
+		}
 		if(test.indexOf("Ikk") > -1){
-			neuString = test.replaceAll("ikk", "IKK");
+			neuString = test.replaceAll("Ikk", "IKK");
+			test = neuString;
+		}
+		if(test.indexOf("Lkk") > -1){
+			neuString = test.replaceAll("Lkk", "LKK");
 			test = neuString;
 		}
 		if(test.indexOf("Tkk") > -1){
 			neuString = test.replaceAll("Tkk", "TKK");
+			test = neuString;
+		}
+		if(test.indexOf("Dak") > -1){
+			neuString = test.replaceAll("Dak", "DAK");
 			test = neuString;
 		}
 		if(test.indexOf("Dak") > -1){
@@ -159,11 +239,12 @@ public class StringTools {
 			neuString = test.replaceAll("gesundheitskasse", "Gesundheitskasse");
 			test = neuString;
 		}
-
+		
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
 			////System.out.println(ex);
 			return ""+test;
 		}
+		
 		return test;
 		//return neuString.trim();
 	}
