@@ -49,8 +49,16 @@ public class StringTools {
 			
 			if(test.indexOf("-") > -1){
 				neuString = "";
+				String praefix = "";
 				String[] splitString = test.split("-");
+				if(splitString[0].indexOf(" ") >= 0){
+					praefix = splitString[0].substring(0,splitString[0].lastIndexOf(" ")+1);
+					splitString[0] = String.valueOf(splitString[0].substring(splitString[0].lastIndexOf(" ")+1)).trim();
+				}
 				for(int i = 0;i < splitString.length;i++){
+					if(i==0){
+						neuString = neuString+praefix;
+					}
 					neuString = neuString + 
 								(splitString[i].substring(0,1).toUpperCase())+
 							 (splitString[i].length() > 1 ? splitString[i].substring(1).toLowerCase() : "");
