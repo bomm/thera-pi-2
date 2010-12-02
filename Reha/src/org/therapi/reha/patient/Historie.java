@@ -811,14 +811,16 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten",
 					"Behandlungstage in Clipboard","Transfer in aktuelle Rezepte"});
 			list.setCellRenderer(new IconListRenderer(icons));	
-			int rueckgabe = -1;
-			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list,rueckgabe);
+			Reha.toolsDlgRueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list);
 			tDlg.setPreferredSize(new Dimension(200,200+
 					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
+			tDlg.setModal(true);
+			tDlg.activateListener();
 			tDlg.setVisible(true);
-			switch(tDlg.rueckgabe){
+			switch(Reha.toolsDlgRueckgabe){
 			case 0:
 				if(!Rechte.hatRecht(Rechte.Historie_gesamtumsatz, true)){
 					return;

@@ -859,11 +859,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						if(! inEinzelTermine){
 							inEinzelTermine = true;
 							try{
-							holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));
+								if(aktTerminBuffer.size() > row){
+									holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));		
+								}else{
+									termineInTabelle( null);
+								}
+							
 							}catch(Exception ex){
 								ex.printStackTrace();
-								JOptionPane.showMessageDialog(null, "Fehler in holeEintelTermine");
-								JOptionPane.showMessageDialog(null, ex.getMessage());
+								//JOptionPane.showMessageDialog(null, "Fehler in holeEinzelTermine-1");
+								//JOptionPane.showMessageDialog(null, ex.getMessage());
 							}
 							aktuellAngezeigt = row;
 							//holeEinzelTermineAktuell(0,null,aktTerminBuffer.get(row));
@@ -874,7 +879,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 
 					}catch(Exception ex){
-						JOptionPane.showMessageDialog(null, "Fehler in holeEinzelTermine");
+						JOptionPane.showMessageDialog(null, "Fehler in holeEinzelTermine-2");
 						JOptionPane.showMessageDialog(null, ex.getMessage());
 					}
 					
@@ -1030,22 +1035,27 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		termineInTabelle((Vector)retvec.clone());
 		}catch(Exception ex){
 			ex.printStackTrace();
+			termineInTabelle(null);
 		}
 	}
 	private void termineInTabelle( Vector<Vector<String>> terms){
 		dtermm.setRowCount(0);
 		//System.out.println(terms);
-		for(int i = 0; i < terms.size();i++){
-			if(i==0){
-				SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terms.get(i).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(i).get(0))) );	
+		if(terms != null){
+			for(int i = 0; i < terms.size();i++){
+				if(i==0){
+					SystemConfig.hmAdrRDaten.put("<Rerstdat>",(terms.get(i).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(i).get(0))) );	
+				}
+				dtermm.addRow((Vector<?>)terms.get(i));
 			}
-			dtermm.addRow((Vector<?>)terms.get(i));
+			SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terms.get(terms.size()-1).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(terms.size()-1).get(0))) );
+			tabaktterm.validate();
+			anzahlTermine.setText("Anzahl Termine: "+terms.size());
+		}else{
+			SystemConfig.hmAdrRDaten.put("<Rletztdat>", "  .  .    " );
+			tabaktterm.validate();
+			anzahlTermine.setText("Anzahl Termine: "+"0");
 		}
-		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terms.get(terms.size()-1).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(terms.size()-1).get(0))) );
-		
-		tabaktterm.validate();
-		anzahlTermine.setText("Anzahl Termine: "+terms.size());
-		
 	}
 	@SuppressWarnings({ "unchecked", "unused" })
 	private void holeEinzelTermineAktuell(int row,Vector<String> vvec,String aufruf){
@@ -1265,7 +1275,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 								}catch(Exception ex){
 		    						setCursor(Reha.thisClass.normalCursor);
 									ex.printStackTrace();
-									JOptionPane.showMessageDialog(null, "Fehler im ListSelection-Listener aktuelle Rezepte");
+									inEinzelTermine = false;
+									//JOptionPane.showMessageDialog(null, "Fehler im ListSelection-Listener aktuelle Rezepte");
 								}
 								return null;
 							}
@@ -1670,9 +1681,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
 					String xcmd = "update verordn set zzstatus='"+0+"', befr='T',rez_bez='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
-					new ExUndHop().setzeStatement(xcmd);
+					SqlInfo.sqlAusfuehren(xcmd);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[0],currow,1);
 					tabaktrez.validate();
+					doVectorAktualisieren(new int[]{12,14,39},new String[] {"T","F","0"});
 				}	
 			}
 			if(cmd.equals("statusbezahlt")){
@@ -1685,9 +1697,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
 					String xcmd = "update verordn set zzstatus='"+1+"', befr='F',rez_bez='T' where rez_nr='"+xreznr+"' LIMIT 1"; 
-					new ExUndHop().setzeStatement(xcmd);
+					SqlInfo.sqlAusfuehren(xcmd);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[1],currow,1);
 					tabaktrez.validate();
+					doVectorAktualisieren(new int[]{12,14,39},new String[] {"F","T","1"});
 				}	
 			
 			}
@@ -1701,9 +1714,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(currow >=0){
 					xreznr = (String)tabaktrez.getValueAt(currow,0);
 					String xcmd = "update verordn set zzstatus='"+2+"', befr='F', rez_geb='0.00',rez_bez='F' where rez_nr='"+xreznr+"' LIMIT 1"; 
-					new ExUndHop().setzeStatement(xcmd);
+					SqlInfo.sqlAusfuehren(xcmd);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[2],currow,1);
 					tabaktrez.validate();
+					doVectorAktualisieren(new int[]{12,13,14,39},new String[] {"F","0.00","F","2"});
 				}	
 			}
 			if(cmd.equals("rezeptbrief")){
@@ -1724,6 +1738,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			
 		}
 
+	}
+	public void doVectorAktualisieren(int[]elemente,String[] werte){
+		for(int i = 0; i < elemente.length;i++){
+			Reha.thisClass.patpanel.vecaktrez.set(elemente[i],werte[i]);
+		}
 	}
 	private void doDeleteBehandlungen(){
 		if(this.tabaktterm.getRowCount()  <= 0){
@@ -2024,19 +2043,31 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 	}
 	private void privatRechnung(){
-		//Preisgruppe ermitteln
-		int preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41));
-		Point pt = aktrbut[3].getLocationOnScreen();
-		pt.x = pt.x-75;
-		pt.y = pt.y+30;
-		AbrechnungPrivat abrechnungPrivat = new AbrechnungPrivat(Reha.thisFrame,"Privat-/BG-/Nachsorge-Rechnung erstellen",-1,preisgruppe);
-		abrechnungPrivat.setLocation(pt);
-		abrechnungPrivat.pack();
-		abrechnungPrivat.setVisible(true);
-		int rueckgabe = abrechnungPrivat.rueckgabe;
-		abrechnungPrivat = null;
-		if(rueckgabe==-2){
-			neuanlageRezept(false,"");
+		try{
+			//Preisgruppe ermitteln
+			int preisgruppe = 0;
+			try{
+				preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41));
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler in Preisgruppe "+ex.getMessage());
+				ex.printStackTrace();
+			}
+			Point pt = aktrbut[3].getLocationOnScreen();
+			pt.x = pt.x-75;
+			pt.y = pt.y+30;
+			AbrechnungPrivat abrechnungPrivat = new AbrechnungPrivat(Reha.thisFrame,"Privat-/BG-/Nachsorge-Rechnung erstellen",-1,preisgruppe);
+			abrechnungPrivat.setLocation(pt);
+			abrechnungPrivat.pack();
+			abrechnungPrivat.setModal(true);
+			abrechnungPrivat.setVisible(true);
+			int rueckgabe = abrechnungPrivat.rueckgabe;
+			abrechnungPrivat = null;
+			if(rueckgabe==-2){
+				neuanlageRezept(false,"");
+			}
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Funktion privatRechnung(), Exception = "+ex.getMessage());
+			ex.printStackTrace();
 		}
 
 	}
@@ -2169,7 +2200,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			bereitsbezahlt = true;
 		}
-
+		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
+		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 		/*int art = */RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
 		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
 	}
@@ -2185,6 +2225,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.repaint();
 	}
 	private void doBarcode(){
+		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
+		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 		/*int art = */RezTools.testeRezGebArt(true,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
 		//String ik = "510884019";
 		SystemConfig.hmAdrRDaten.put("<Bcik>",Reha.aktIK);
@@ -2362,7 +2412,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 	class ToolsDlgAktuelleRezepte{
 		public ToolsDlgAktuelleRezepte(String command,Point pt){
-
+			//boolean testcase = true;
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
 			icons.put("Rezeptgebühren kassieren",SystemConfig.hmSysIcons.get("rezeptgebuehr"));
 			icons.put("BarCode auf Rezept drucken",SystemConfig.hmSysIcons.get("barcode"));
@@ -2374,14 +2424,67 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Behandlungstage in Clipboard","Transfer in Historie"});
 			list.setCellRenderer(new IconListRenderer(icons));	
-			int rueckgabe = -1;
-			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list,rueckgabe);
+			Reha.toolsDlgRueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list);
 			tDlg.setPreferredSize(new Dimension(250,230+
 					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
+			tDlg.setModal(true);
+			tDlg.activateListener();
 			tDlg.setVisible(true);
-			switch(tDlg.rueckgabe){
+			/*
+			if(testcase){
+				Reha.thisClass.dbLabel.setText("RWert von Tool = "+Reha.toolsDlgRueckgabe);
+			}
+			*/
+			if(Reha.toolsDlgRueckgabe > -1){
+				if(Reha.toolsDlgRueckgabe==0){
+					tDlg = null;
+					if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
+					rezeptGebuehr();
+					return;
+				}else if(Reha.toolsDlgRueckgabe==1){
+					tDlg = null;
+					if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
+					doBarcode();
+					return;
+				}else if(Reha.toolsDlgRueckgabe==2){
+					tDlg = null;
+					if(!Rechte.hatRecht(Rechte.Rezept_ausfallrechnung, true)){return;}
+					ausfallRechnung();
+					return;
+				}else if(Reha.toolsDlgRueckgabe==3){
+					tDlg = null;
+					rezeptAbschliessen();
+					return;
+				}else if(Reha.toolsDlgRueckgabe==4){
+					tDlg = null;
+					if(!Rechte.hatRecht(Rechte.Rezept_privatrechnung, true)){return;}
+					try{
+						privatRechnung();
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, ex.getMessage());
+					}
+					return;
+				}else if(Reha.toolsDlgRueckgabe==5){
+					tDlg = null;
+					doTageDrucken();
+					return;
+				}else if(Reha.toolsDlgRueckgabe==6){
+					tDlg = null;
+					if(!Rechte.hatRecht(Rechte.Sonstiges_rezepttransfer, true)){
+						return;
+					}
+					int anfrage = JOptionPane.showConfirmDialog(null, "Das ausgewählte Rezept wirklich in die Historie transferieren?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+					if(anfrage == JOptionPane.YES_OPTION){
+						doUebertrag();					
+					}
+					return;
+				}
+			}
+			/*
+			switch(Reha.toolsDlgRueckgabe){
 			case 0:
 				if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
 				rezeptGebuehr();
@@ -2413,6 +2516,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				break;
 			}
+			*/
 			tDlg = null;
 			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}

@@ -121,14 +121,16 @@ public class PatientToolBarLogic {
 					"SMS für Patient erstellen (Alt+S)", 
 					"Zusatzinformationen zum aktuellen Patient (Alt+I)"});
 			list.setCellRenderer(new IconListRenderer(icons));	
-			int rueckgabe = -1;
-			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktueller Patient",list,rueckgabe);
+			Reha.toolsDlgRueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktueller Patient",list);
 			tDlg.setPreferredSize(new Dimension(300,200+
 					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-200,pt.y+30);
 			tDlg.pack();
+			tDlg.setModal(true);
+			tDlg.activateListener();
 			tDlg.setVisible(true);
-			switch(tDlg.rueckgabe){
+			switch(Reha.toolsDlgRueckgabe){
 			case 0:
 				if(!Rechte.hatRecht(Rechte.Patient_email, true)){
 					return;

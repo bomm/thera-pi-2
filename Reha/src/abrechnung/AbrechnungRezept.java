@@ -1481,14 +1481,22 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 			//Jetzt untersuchen ob Wegegeld angehängt werden kann! (nur möglich wenn hauptziffer abgerechnet wird.
 			if( (vollepackung) && (this.anzahlposhb > 1)){
-				//Kilometer im Patientenstamm angegeben und es existiert eine Kilometerziffer 
-				if(anzahlkm > 7 && (!kilometerpos.trim().equals(""))){
+				//Kilometer im Patientenstamm angegeben und es existiert eine Kilometerziffer
+				boolean kilometerbesser = true; 
+				if( (!kilometerpos.trim().equals("")) && (!pauschalepos.trim().equals("")) ){
+						kilometerbesser = RezTools.kmBesserAlsPauschale(pauschalepos, kilometerpos, Double.valueOf(anzahlkm), Integer.parseInt(preisgruppe), aktDisziplin);	
+				}
+				if(kilometerbesser && (!kilometerpos.trim().equals(""))){
+				//if(anzahlkm > 7 && (!kilometerpos.trim().equals(""))){
 					abrfallAnhaengen(    i+1,   node,  tag,   kilometerpos,    anzahlkm ,immerfrei);
 					//Kilometer im Patientenstamm auf 0 gesetzt und es existiert eine Pauschalenziffer
-				}else if(anzahlkm <= 7 && (!pauschalepos.trim().equals(""))){
+				}else if((!kilometerbesser) && (!pauschalepos.trim().equals(""))){	
+				//}else if(anzahlkm <= 7 && (!pauschalepos.trim().equals(""))){
 					abrfallAnhaengen(    i+1,   node,  tag,   pauschalepos,    Double.parseDouble("1.00"),immerfrei);
-				}else if(anzahlkm <= 7 && (!kilometerpos.trim().equals("")) &&
-						(!pauschalepos.trim().equals(""))){
+				}else if( (anzahlkm <= 0) && (!kilometerpos.trim().equals("")) &&
+						(pauschalepos.trim().equals(""))){
+				//}else if(anzahlkm <= 7 && (!kilometerpos.trim().equals("")) &&
+						//(!pauschalepos.trim().equals(""))){
 					JOptionPane.showMessageDialog(null,"Diese Kasse kann nur mit Kilometer abgerechnet werden.\n"+
 							"Die Angaben im Pateientenstamm lauten auf 0-Kilometer, bitte korrigieren");
 					abrfallAnhaengen(    i+1,   node,  tag,   kilometerpos,    Double.parseDouble("1.00"),immerfrei);
@@ -1557,13 +1565,21 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		//Jetzt untersuchen ob Wegegeld angehängt werden kann! (nur möglich wenn hauptziffer abgerechnet wird.
 		if( (vollepackung) && (this.anzahlposhb > 1)){
 			//Kilometer im Patientenstamm angegeben und es existiert eine Kilometerziffer 
-			if(anzahlkm > 7 && (!kilometerpos.trim().equals(""))){
+			boolean kilometerbesser = true; 
+			if( (!kilometerpos.trim().equals("")) && (!pauschalepos.trim().equals("")) ){
+					kilometerbesser = RezTools.kmBesserAlsPauschale(pauschalepos, kilometerpos, Double.valueOf(anzahlkm), Integer.parseInt(preisgruppe), aktDisziplin);	
+			}
+			if(kilometerbesser && (!kilometerpos.trim().equals(""))){
+			//if(anzahlkm > 7 && (!kilometerpos.trim().equals(""))){
 				abrfallAnhaengen(    basisindex+1,   node,  tag,   kilometerpos,    anzahlkm ,immerfrei);
 				//Kilometer im Patientenstamm auf 0 gesetzt und es existiert eine Pauschalenziffer
-			}else if(anzahlkm <= 7 && (!pauschalepos.trim().equals(""))){
+			}else if((!kilometerbesser) && (!pauschalepos.trim().equals(""))){	
+			//}else if(anzahlkm <= 7 && (!pauschalepos.trim().equals(""))){
 				abrfallAnhaengen(    basisindex+1,   node,  tag,   pauschalepos,    Double.parseDouble("1.00"),immerfrei);
-			}else if(anzahlkm <= 7 && (!kilometerpos.trim().equals("")) &&
-					(!pauschalepos.trim().equals(""))){
+			}else if((anzahlkm <= 0) && (!kilometerpos.trim().equals("")) &&
+					(pauschalepos.trim().equals(""))){				
+			//}else if(anzahlkm <= 7 && (!kilometerpos.trim().equals("")) &&
+					//(!pauschalepos.trim().equals(""))){
 					JOptionPane.showMessageDialog(null,"Diese Kasse kann nur mit Kilometer abgerechnet werden.\n"+
 							"Die Angaben im Pateientenstamm lauten auf 0-Kilometer, bitte korrigieren");
 					abrfallAnhaengen(    basisindex+1,   node,  tag,   kilometerpos,    Double.parseDouble("1.00"),immerfrei);

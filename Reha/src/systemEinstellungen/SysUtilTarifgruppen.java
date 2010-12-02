@@ -72,7 +72,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	String[] hbmehrereart = {"nicht abrechenbar","x9902 Mehrere o. Wegegeld","x9934 Mehrere incl. Wegegeld","8602 BG (Einzel) o. Wegegeld","53 Beih. (Einzel) o. Wegegeld"};
 	String[] hbeinzelart = {"nicht abrechenbar","x9901 Einzel o. Wegegeld","x9933 Einzel incl. Wegegeld","8602 BG Einzel o. Wegegeld","53 Beih. Einzel o. Wegegeld"};
 	String[] wgkm = {"nicht abrechenbar","x9907 (teilw.GKV u.teilw.BG)","8603 (teilw. BG)","54 (Beihilfe)"};
-	String[] wgpausch = {"nicht abrechenbar","x9903 (teilw. GKV)"};
+	String[] wgpausch = {"nicht abrechenbar","x9903 (teilw. GKV)","x9906 (teilw. GKV)"};
 	JLabel lbltgruppe = null; 
 	public SysUtilTarifgruppen(){
 		super(new BorderLayout());
@@ -371,6 +371,8 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				vec.add("nicht abrechenbar");
 			}else if(wert.trim().contains("9903")){
 				vec.add("x9903 (teilw. GKV)");
+			}else if(wert.trim().contains("9906")){
+				vec.add("x9906 (teilw. GKV)");
 			}else{
 				vec.add("nicht abrechenbar");				
 			}
@@ -403,7 +405,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		String[] resulthbeinzel = {"",disziindex[idiszi]+"9901",disziindex[idiszi]+"9933","8602","53"};
 		String[] resulthbmehrere = {"",disziindex[idiszi]+"9902",disziindex[idiszi]+"9934","8602","53"};
 		String[] resultwgkm = {"",disziindex[idiszi]+"9907","8603","54"};
-		String[] resultwgpausch = {"",disziindex[idiszi]+"9903"};
+		String[] resultwgpausch = {"",disziindex[idiszi]+"9903",disziindex[idiszi]+"9906"};
 
 		for(int i = 0;i<lang;i++){
 			try{
@@ -421,7 +423,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				
 				inif.setIntegerProperty("ZuzahlRegeln_"+diszi, "ZuzahlRegel"+(i+1),zzreg , null);
 				
-				//Preisver�nderung-einstellen
+				//Preisveränderung-einstellen
 				/**********
 				 * Abpr�fen welche Disziplin
 				 */
@@ -589,7 +591,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	}
 	private void doNeueGruppe(){
 		String message = "<html><b>In der Folge wird eine neue Tarifgruppe angelegt,<br>gültig für die Disziplinen<br><br>"+
-		"<font color='#0000ff'>Physio<br>Massage<br>Ergo<br>Logo<br>Reha</font><br><br>"+
+		"<font color='#0000ff'>Physio<br>Massage<br>Ergo<br>Logo<br>Reha<br>Podo</font><br><br>"+
 		"Wollen Sie die Tarifgruppe jetzt anlegen<b><br></html>";
 		int anfrage = JOptionPane.showConfirmDialog(null, message, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage == JOptionPane.YES_OPTION){

@@ -2351,14 +2351,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					"Neue OO-Writer-Doku erstellen",
 					"Neue OO-Calc-Doku erstellen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
-			int rueckgabe = -1;
-			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list,rueckgabe);
+			Reha.toolsDlgRueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list);
 			tDlg.setPreferredSize(new Dimension(200,200+
 					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
+			tDlg.setModal(true);
+			tDlg.activateListener();
 			tDlg.setVisible(true);
-			switch(tDlg.rueckgabe){
+			switch(Reha.toolsDlgRueckgabe){
 			case 0:
 				if(!Rechte.hatRecht(Rechte.Doku_scannen, true)){
 					return;

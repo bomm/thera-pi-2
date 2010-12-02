@@ -434,6 +434,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				srgeb+"', "+
 				"rez_bez='T', zzstatus='1' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35).trim()+"' LIMIT 1";
 				boolean allesok = SqlInfo.sqlAusfuehren(cmd2.toString());
+				this.aktuelleRezepte.doVectorAktualisieren(new int[]{14,39}, new String[]{"T","1"});
 				if(!allesok){
 					JOptionPane.showMessageDialog(null, "Fehler-Nr. 2 beim einstellen der Rezeptgebühr im Rezept\n\n"+
 							"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+

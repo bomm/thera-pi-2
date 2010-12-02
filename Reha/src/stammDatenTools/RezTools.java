@@ -129,6 +129,26 @@ public class RezTools {
 		return (Vector)retvec.clone();
 	}
 	
+	public static Object[] holeTermineAnzahlUndLetzter(String termine){
+		Object[] retobj = {null,null};
+		try{
+			String[] tlines = termine.split("\n");
+			int lines = tlines.length;
+			if(lines <= 0){
+				retobj[0] = 0;
+				retobj[1] = null;
+				return retobj;
+			}
+			String[] terdat = null;
+			terdat = tlines[lines-1].split("@");
+			retobj[0] = Integer.valueOf(lines);
+			retobj[1] = String.valueOf(terdat[0]);
+		}catch(Exception ex){
+			
+		}
+		return retobj;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static Vector<String> holeEinzelTermineAusRezept(String xreznr,String termine){
 		Vector<String> xvec = null;
@@ -152,11 +172,11 @@ public class RezTools {
 		}
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
-
+		String[] terdat = null;
 		for(int i = 0;i<lines;i++){
-			String[] terdat = tlines[i].split("@");
+			terdat = tlines[i].split("@");
 			//int ieinzel = terdat.length;
-			retvec.add((terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
+			retvec.add((terdat[0].trim().equals("") ? "  .  .    " : String.valueOf(terdat[0])));
 		}
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
@@ -277,6 +297,7 @@ public class RezTools {
 	}
 /***************************************/
 	public static String getPreisAktFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		try{
 		int lang = vec.size(),i;
 		String ret = "0.00";
 		for(i = 0; i < lang;i++){
@@ -286,6 +307,10 @@ public class RezTools {
 			}
 		}
 		return ret;
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return "0.00";
+		}
 	}
 	public static String getPreisAltFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
 		int lang = vec.size(),i;
@@ -760,7 +785,7 @@ public class RezTools {
 		////System.out.println("nach nullzuweisung " +xrezgeb.toString());
 		int[] anzahl = {0,0,0,0};
 		int[] artdbeh = {0,0,0,0};
-		/***************/ //Einbauen f�r Barcode
+		/***************/ //Einbauen für Barcode
 		int[] gesanzahl = {0,0,0,0};
 		int i;
 		BigDecimal einzelpreis = null;
@@ -953,6 +978,10 @@ public class RezTools {
 		String pos = "";
 		Double preis =0.00;
 		Double wgkm = 0.00;
+		
+		@SuppressWarnings("unused")
+		String pospauschale = "";
+		Double preispauschale =0.00;
 		//Double wgpauschal = 0.00;
 		// erst testen ob HB-Einzeln oder HB-Mehrere
 		int anzahl = Integer.parseInt(vec.get(64));
@@ -968,6 +997,7 @@ public class RezTools {
 			 }
 			 if(zweiPositionenBeiHB(disziplin,Integer.toString(preisgruppe))){
 				 //Weggebühr und pauschale
+				 /* In Betrieb bis 26.11.2010 *****************
 				 if( (wgkm=Double.parseDouble(vec.get(7))) > 7 ){
 					 //Kilometer verwenden
 					 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(2);
@@ -983,6 +1013,20 @@ public class RezTools {
 					 retobj[1] = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue();
 					 return retobj;
 				 }
+				 */
+				 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(2);
+				 preis = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+				 BigDecimal kms = BigDecimal.valueOf(preis).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl))));
+				 kms = kms.multiply(BigDecimal.valueOf(wgkm));
+
+				 pospauschale = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(3);
+				 preispauschale = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+				 if(kms.doubleValue() > BigDecimal.valueOf(preispauschale).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue()){
+					 retobj[1] = kms.doubleValue();
+				 }else{
+					 retobj[1] = BigDecimal.valueOf(preispauschale).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue();
+				 }
+				 return retobj;
 			 }
 		}else{
 			//Mehrere Hausbesuch
@@ -1001,8 +1045,12 @@ public class RezTools {
 			
 		String disziplin = putRezNrGetDisziplin(vec.get(0).get(1));
 		String pos = "";
+		String preis = "";
+		String pospauschale = "";
+		@SuppressWarnings("unused")
+		String preispauschale = "";
 		int preisgruppe = Integer.parseInt(vec.get(0).get(41));
-		String preis;
+		
 		Double wgkm;
 		for(int i = 0;i<4;i++){
 			if(!vec.get(0).get(i+8).trim().equals("0")){
@@ -1035,7 +1083,12 @@ public class RezTools {
 					 if(zweiPositionenBeiHB(disziplin,Integer.toString((preisgruppe==0 ? 1 : preisgruppe)))){
 						 //Weggebühr und pauschale
 						 ////System.out.println("Kasse kennt km und Pauschale...");
-						 if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 7 ){
+						 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(2);
+						 pospauschale = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(3);
+						 wgkm = Double.parseDouble(vec.get(0).get(7));
+						 
+						 if( kmBesserAlsPauschale(pospauschale,pos,wgkm,preisgruppe,disziplin) ){
+						 //if( (wgkm=Double.parseDouble(vec.get(0).get(7))) > 7 ){
 							 //Kilometer verwenden
 							 ////System.out.println("Kilometer verwenden...");
 							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(2);
@@ -1048,11 +1101,11 @@ public class RezTools {
 						 }else{
 							 //Pauschale verwenden
 							 ////System.out.println("Pauschale verwenden....");
-							 pos = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(3);
-							 preis = RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)));
+							 pospauschale = SystemPreislisten.hmHBRegeln.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)).get(3);
+							 preis = RezTools.getPreisAktFromPos(pospauschale, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)));
 							 //System.out.println("Pos = "+pos);
 							 //System.out.println("Preis = "+preis);
-							 retvec.set(5, pos);
+							 retvec.set(5, pospauschale);
 							 retvec.set(11,preis);
 						 }
 					 }else{
@@ -1081,7 +1134,27 @@ public class RezTools {
 		}
 		return retvec;
 	}
-
+	public static boolean kmBesserAlsPauschale(String pospauschal,String poskm,Double anzahlkm,int preisgruppe,String disziplin){
+		String meldung = ""; 
+		try{
+			String preiskm;
+			String preispauschal;
+			meldung = " Pospauschal = "+pospauschal+"\n"+
+			          "PosKilometer = "+poskm+"\n"+
+			          "   Anzahl km = "+anzahlkm+"\n"+
+			          " Preisgruppe = "+preisgruppe+"\n"+
+			          "   Disziplin = "+disziplin;
+			preiskm = RezTools.getPreisAktFromPos(poskm, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)));
+			BigDecimal kms = BigDecimal.valueOf(Double.parseDouble(preiskm)).multiply(BigDecimal.valueOf(anzahlkm));
+			preispauschal = RezTools.getPreisAktFromPos(pospauschal, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get((preisgruppe==0 ? 0 : preisgruppe-1)));
+			BigDecimal pauschal = BigDecimal.valueOf(Double.parseDouble(preispauschal));
+			return (kms.doubleValue() > pauschal.doubleValue());
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler in der Ermittlung km-Abrechnung besser als Pauschale\n"+meldung);
+		}
+		return false;
+	}
 	public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb,int realhbAnz){
 		
 		//Object[] retobj = {new BigDecimal(new Double(0.00)),(Double)rezgeb};
@@ -1164,16 +1237,18 @@ public class RezTools {
 					/*******************************/
 					if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden können
 						//System.out.println("Es könnten Kilometer abgerechnet werden");
-						if(zm.km > 7 ){
-							//System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
-
+						if( kmBesserAlsPauschale(kmpausch,
+													kmgeld,
+													Double.parseDouble(Integer.toString(zm.km)),
+													zm.preisgruppe,
+													RezTools.putRezNrGetDisziplin(SystemConfig.hmAdrRDaten.get("<Rnummer>"))
+												) 	){
+							//Mit Kilometerabrechnung verdient man mehr
 							preis = PreisUeberPosition(kmgeld,
 									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",""+zm.km+"km*"+preis);
-							//SystemConfig.hmAdrRDaten.put("<Rwegreis>",preis );
 							/*******************************/
 							bdpreis = new BigDecimal(new Double(preis)).multiply(new BigDecimal(new Double(zm.km)));
-							//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
 							retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
@@ -1202,15 +1277,12 @@ public class RezTools {
 							//hier zuerst die kilometer ermitteln mal Kilometerpreis = der Endpreis
 						}else{// Keine Kilometer angegeben also pauschale verwenden
 							//System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
-							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verf�gung stellt
-								//System.out.println("Die Kasse stellt eine Wegpauschale zur Verf�gung");
+							if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
 								SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);
 								preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 										zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
-								//SystemConfig.hmAdrRDaten.put("<Rwegreis>", preis);
 								/*******************************/
 								bdpreis = new BigDecimal(new Double(preis));
-								//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 								bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
 								retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 								SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
@@ -1248,16 +1320,13 @@ public class RezTools {
 							
 						}
 					}else{// es können keine Kilometer abgerechnet werden
-						//System.out.println("Die Kasse stellt keine Kilometerabrechnung Verfügung");
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
 						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
-						//SystemConfig.hmAdrRDaten.put("<Rwegpreis>", preis);
 						if(preis != null){
 							/*******************************/
 							bdpreis = new BigDecimal(new Double(preis));
 							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
-							//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 							retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 							if(zz.equals("1")){// Zuzahlungspflichtig
@@ -1292,18 +1361,14 @@ public class RezTools {
 
 					}
 				}else{//nur Mit-Hausbesuch
-					//System.out.println("Es ist keine volle HB-Ziffer abrechenbar deshalb -> Mithausbesuch");
 					SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbmit); 
 					preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
 							zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
-					//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 					/*******************************/
 					if(preis != null){
 						bdpreis = new BigDecimal(new Double(preis));
 						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
-						//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 						retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
-						//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 						if(zz.equals("1")){// Zuzahlungspflichtig
 							SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 							bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -1347,14 +1412,10 @@ public class RezTools {
 				SystemConfig.hmAdrRDaten.put("<Rhbpos>",hbpos);
 				preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rhbpos>"),
 						zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
-				//SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 				/*******************************/
 				bdpreis = new BigDecimal(new Double(preis));
 				bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
-				//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-				////System.out.println("Der Positionswert-HB = "+bdposwert);
 				retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
-				////System.out.println("Der Rezeptwert nach Addition  = "+((BigDecimal)retobj[0]).doubleValue());
 				SystemConfig.hmAdrRDaten.put("<Rhbpreis>", preis);
 
 				bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
@@ -1368,18 +1429,15 @@ public class RezTools {
 
 				if(!kmgeld.equals("")){// Wenn Kilometer abgerechnet werden k�nnen
 					//System.out.println("Es könnten Kilometer abgerechnet werden");
-					if(zm.km > 7 ){
-						//System.out.println("Es wurden auch Kilometer angegeben also wird nach km abgerechnet");
-						
+					if( kmBesserAlsPauschale(kmpausch,kmgeld,Double.parseDouble(Integer.toString(zm.km)),zm.preisgruppe,RezTools.putRezNrGetDisziplin(SystemConfig.hmAdrRDaten.get("<Rnummer>"))) ){
+						//Kilometerabrechnung besser als Pauschale
 						preis = PreisUeberPosition(kmgeld,
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>",""+zm.km+"km*"+preis );
-						//SystemConfig.hmAdrRDaten.put("<Rwegpreis>", preis);
 						/*******************************/
 						
 						bdpreis = new BigDecimal(new Double(preis)).multiply(new BigDecimal(new Double(zm.km)));
 						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
-						//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 						retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
 
@@ -1396,15 +1454,12 @@ public class RezTools {
 
 					}else{
 						//System.out.println("Es wurden keine Kilometer angegeben also wird nach Ortspauschale abgerechnet");
-						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verf�gung stellt
-							//System.out.println("Die Kasse stellt eine Wegpauschale zur Verfügung");
+						if(!kmpausch.equals("")){//Wenn die Kasse keine Pauschale zur Verfügung stellt
 							SystemConfig.hmAdrRDaten.put("<Rwegpos>",kmpausch);	
 							preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 									zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),true);
-							//SystemConfig.hmAdrRDaten.put("<Rwegpreis>",preis );
 							/*******************************/
 							bdpreis = new BigDecimal(new Double(preis));
-							//bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
 							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
 							retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));

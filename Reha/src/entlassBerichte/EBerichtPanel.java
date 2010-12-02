@@ -1240,14 +1240,16 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			JList list = new JList(	new Object[] {"Textbausteine abrufen", 
 					"Bodymass-Index", "ICD-10(GM) Recherche"});
 			list.setCellRenderer(new IconListRenderer(icons));	
-			int rueckgabe = -1;
-			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: ärztliche Gutachten",list,rueckgabe);
+			Reha.toolsDlgRueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: ärztliche Gutachten",list);
 			tDlg.setPreferredSize(new Dimension(250,200+
 					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-20,pt.y+30);
 			tDlg.pack();
+			tDlg.setModal(true);
+			tDlg.activateListener();
 			tDlg.setVisible(true);
-			switch(tDlg.rueckgabe){
+			switch(Reha.toolsDlgRueckgabe){
 			case 0:
 				doTextBausteine();
 				break;

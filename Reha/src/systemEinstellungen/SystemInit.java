@@ -256,15 +256,22 @@ private JScrollPane getParameterListe(){
 	*/ 
 	treeitem = new DefaultMutableTreeNode("Kostenträgerdatei einlesen");
 	node.add(treeitem ); 
-	root.add(node);
+	//root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Emailparameter");
-	root.add(node);
+	node = new DefaultMutableTreeNode( "sonstige Einstellungen");
+	treeitem = new DefaultMutableTreeNode( "Emailparameter");
+	node.add(treeitem);
+	//root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Fremdprogramme");
-	root.add(node);
+	treeitem = new DefaultMutableTreeNode( "Fremdprogramme");
+	node.add(treeitem);
+	//root.add(node);
 	/***/
-	node = new DefaultMutableTreeNode( "Fortlaufender Nummernkreis");
+	treeitem = new DefaultMutableTreeNode( "Fortlaufender Nummernkreis");
+	node.add(treeitem);
+	//
+	treeitem = new DefaultMutableTreeNode( "Befreiungen zurücksetzen/Jahreswechsel");
+	node.add(treeitem);
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "Software-Updateservice");
@@ -685,6 +692,19 @@ private void auswertenSysUtil(String util){
 				}
 			}
 		}
+		if(util.equals("Befreiungen zurücksetzen/Jahreswechsel")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilJahresUmstellung();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+		
 		
 		
 

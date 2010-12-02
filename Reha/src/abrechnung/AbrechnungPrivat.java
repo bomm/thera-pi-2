@@ -131,6 +131,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	public AbrechnungPrivat(JXFrame owner,String titel,int rueckgabe,int preisgruppe) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		final int ipg = preisgruppe-1;
+		/*
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -141,6 +142,10 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 				return null;
 			}
 		}.execute();
+		*/
+		disziplin = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
+		preisliste = SystemPreislisten.hmPreise.get(disziplin).get(ipg);
+		preisok = true;
 
 		this.rueckgabe = rueckgabe;
 		this.preisgruppe = preisgruppe;
@@ -159,7 +164,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		this.pinPanel.setName("Privatrechnung");
 		this.jtp.setRightDecoration(this.pinPanel);
 		this.setContentPane(jtp);
-		this.setModal(true);
+		//this.setModal(true);
 		this.setResizable(false);
 		this.rtp = new RehaTPEventClass();
 		this.rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -533,6 +538,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	}
 	
 	private void doNeuerTarif(){
+		//System.out.println("Disziplin = "+this.disziplin);
+		//System.out.println("AktGruppe = "+this.aktGruppe);
 		preisliste = SystemPreislisten.hmPreise.get(this.disziplin).get(this.aktGruppe);
 		//System.out.println("stelle neuen Tarif ein....");
 		String pos = "";

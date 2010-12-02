@@ -676,14 +676,16 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					
 			
 			list.setCellRenderer(new IconListRenderer(icons));	
-			int rueckgabe = -1;
-			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Gutachten / E-Bericht",list,rueckgabe);
+			Reha.toolsDlgRueckgabe = -1;
+			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Gutachten / E-Bericht",list);
 			tDlg.setPreferredSize(new Dimension(300,200+
 					((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
+			tDlg.setModal(true);
+			tDlg.activateListener();
 			tDlg.setVisible(true);
-			switch(tDlg.rueckgabe){
+			switch(Reha.toolsDlgRueckgabe){
 			case 0:
 				if(!Rechte.hatRecht(Rechte.Gutachten_copy, true)){return;}
 				doBerichtCopy();

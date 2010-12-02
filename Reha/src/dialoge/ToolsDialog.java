@@ -46,17 +46,19 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	private JXPanel content = null;
 	private JList jList = null;
 	private RehaTPEventClass rtp = null;
-	public int rueckgabe;
-	private JButton abfeuern = null;
 	
-	public ToolsDialog(JXFrame owner,String titel,JList list,int rueckgabe){
+	private JButton abfeuern = null;
+	private MouseListener toolsMl = null;
+
+	
+	public ToolsDialog(JXFrame owner,String titel,JList list){
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		this.setUndecorated(true);
 		this.setName("ToolsDlg");	
 		this.jList = list;
 		this.jList.addKeyListener(this);
-		this.jList.addMouseListener(this);
-		this.rueckgabe = rueckgabe;
+		//this.jList.addMouseListener(this);
+	
 		this.jtp = new JXTitledPanel();
 		this.jtp.setName("ToolsDlg");
 		this.mymouse = new DragWin(this);
@@ -71,7 +73,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		this.pinPanel.setName("ToolsDlg");
 		this.jtp.setRightDecoration(this.pinPanel);
 		this.setContentPane(jtp);
-		this.setModal(true);
+		//this.setModal(true);
 		this.setResizable(false);
 		this.rtp = new RehaTPEventClass();
 		this.rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -103,7 +105,38 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		return content;
 	}
 	
-	
+	public void activateListener(){
+		toolsMl = new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
+					if( ((JComponent)arg0.getSource()) instanceof JList){
+						Reha.toolsDlgRueckgabe = Integer.valueOf(jList.getSelectedIndex());
+						FensterSchliessen("dieses");
+					}
+				}
+				
+			}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+			}
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+			}
+		};
+		this.jList.addMouseListener(toolsMl);
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				jList.requestFocus();		
+			}
+		});
+	}
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
@@ -119,7 +152,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getActionCommand().equals("abfeuern")){
-			this.rueckgabe = jList.getSelectedIndex();
+			Reha.toolsDlgRueckgabe = Integer.valueOf(jList.getSelectedIndex());
 			FensterSchliessen("dieses");
 		}
 		
@@ -168,8 +201,12 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
+			if( ((JComponent)arg0.getSource()) instanceof JList){
+				Reha.toolsDlgRueckgabe = Integer.valueOf(jList.getSelectedIndex());
+				FensterSchliessen("dieses");
+			}
+		}
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
@@ -183,12 +220,14 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	}
 	@Override
 	public void mousePressed(MouseEvent arg0) {
+		/*
 		if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
 			if( ((JComponent)arg0.getSource()) instanceof JList){
 				this.rueckgabe = jList.getSelectedIndex();
 				FensterSchliessen("dieses");
 			}
 		}
+		*/
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
@@ -200,12 +239,12 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyCode()==10){
 			if( ((JComponent)arg0.getSource()) instanceof JList){
-				this.rueckgabe = jList.getSelectedIndex();
+				Reha.toolsDlgRueckgabe = Integer.valueOf(jList.getSelectedIndex());
 				FensterSchliessen("dieses");
 			}
 		}
 		if(arg0.getKeyCode()==27){
-			this.rueckgabe = -1;
+			Reha.toolsDlgRueckgabe = Integer.valueOf(-1);
 			FensterSchliessen("dieses");			
 		}
 		
@@ -228,11 +267,16 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		FensterSchliessen("dieses");
 		
 	}
+	
 	public void FensterSchliessen(String welches){
 		this.jtp.removeMouseListener(this.mymouse);
 		this.jtp.removeMouseMotionListener(this.mymouse);
 		this.jList.removeKeyListener(this);
 		this.jList.removeMouseListener(this);
+		if(toolsMl != null){
+			this.jList.removeMouseListener(toolsMl);
+			toolsMl = null;
+		}
 		if(abfeuern != null){
 			this.abfeuern.removeActionListener(this);			
 		}

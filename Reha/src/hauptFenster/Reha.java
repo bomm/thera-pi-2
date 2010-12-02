@@ -299,7 +299,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2010-11-24/01-DB=";
+	public static String aktuelleVersion = "V=2010-11-29/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -307,6 +307,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean timerInBearbeitung = false;
 	
 	public static boolean updatesBereit = false;
+	public static int toolsDlgRueckgabe = -1;
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
@@ -2451,12 +2452,15 @@ final class DatenbankStarten implements Runnable{
 				new SocketClient().setzeInitStand("Gutachten Parameter einlesen");
 
 				SystemConfig.GutachtenInit();
-				
+
 				SystemConfig.AbrechnungParameter();
 				
 				SystemConfig.OtherDefaultsInit();
+				
+				SystemConfig.JahresUmstellung();
 
 				new Thread(new PreisListenLaden()).start();
+				
 			}catch (InterruptedException e1) {
 					e1.printStackTrace();
 			}catch (NullPointerException e2) {

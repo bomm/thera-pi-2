@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.Verschluesseln;
 import terminKalender.DatFunk;
@@ -180,6 +181,7 @@ public class SystemConfig {
 	}
 	public void SystemStart(String homedir){
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		/*
 		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
 		String jahrHeute = DatFunk.sHeute().substring(6);
 		PDFformularPfad = ini.getStringProperty("Formulare","PDFFormularPfad");
@@ -195,14 +197,15 @@ public class SystemConfig {
 		}else{
 			//System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
 		}
-			
+		vorJahr = Integer.valueOf(Integer.valueOf(aktJahr)-1).toString();
+		*/	
 		try {
 			dieseMaschine = java.net.InetAddress.getLocalHost();
 		}
 		catch (java.net.UnknownHostException uhe) {
 			//System.out.println(uhe);
 		}
-		vorJahr = Integer.valueOf(Integer.valueOf(aktJahr)-1).toString();
+		
 	}
 	public void SystemInit(int i){
 		switch(i){
@@ -1098,7 +1101,39 @@ public class SystemConfig {
 		hmOtherDefaults.put("ToolsDlgClickCount",(Integer)inif.getIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks") );
 		hmOtherDefaults.put("ToolsDlgShowButton",(Boolean)(inif.getIntegerProperty("Aussehen", "WerkzeugaufrufButtonZeigen")==0 ? false : true) );
 		//System.out.println("Default1 = "+hmOtherDefaults.get("ToolsDlgClickCount"));
-	}	
+	}
+	
+	public static void JahresUmstellung(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		aktJahr = inif.getStringProperty("SystemIntern","AktJahr");
+		String jahrHeute = DatFunk.sHeute().substring(6);
+		if(! aktJahr.equals(jahrHeute) ){
+			/*
+			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
+					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
+					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
+			//System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
+			 */
+			aktJahr = String.valueOf(jahrHeute);
+
+			inif.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
+			inif.save();
+		}else{
+			//System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
+		}
+		vorJahr = Integer.valueOf(Integer.valueOf(aktJahr)-1).toString();
+		String umstellung = SqlInfo.holeEinzelFeld("select altesjahr from jahresabschluss LIMIT 1" );
+		if(! vorJahr.equals(umstellung)){
+			String htmlstring = "<html><b><font color='#ff0000'>Achtung !</font><br><br>Die Umstellung der Rezeptgebührbefreiungen aus<br>"+
+				"dem <font color='#ff0000'>Kalenderjahr "+vorJahr+"</font> "+
+				"wurde noch nicht durchgeführt.<br><br>Rezeptebühren und Kassenabrechnung können deshalb fehlerhaft sein.<br><br>"+
+				"Bitte informieren Sie den Systemadministrator umgehend<br><br>"+
+				"Sollten Sie die Berechtigung für die Umstellung haben, <font color='#ff0000'>stellen Sie bitte selbst um:</font><br>"+
+				"System-Initialisierung -> sonstige Einstellungen -> Befreiungen zurücksetzen/Jahreswechsel</b></html>";
+			JOptionPane.showMessageDialog(null,htmlstring);
+		}
+	}
+	
 	public static void SystemIconsInit(){
 		String[] bilder = {"neu","edit","delete","print","save","find","stop","zuzahlfrei","zuzahlok","zuzahlnichtok",
 				"nichtgesperrt","rezeptgebuehr","ausfallrechnung","arztbericht","privatrechnung",
