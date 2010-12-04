@@ -61,6 +61,7 @@ import patientenFenster.HistorDaten;
 import patientenFenster.KeinRezept;
 import rechteTools.Rechte;
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
@@ -708,10 +709,22 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			SqlInfo.transferRowToAnotherDB("lza", "verordn","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
 			String xcmd = "update verordn set abschluss='F' where rez_nr='"+rez_nr+"' LIMIT 1";
 			SqlInfo.sqlAusfuehren(xcmd);
-
 			SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+rez_nr+"'");
 			TableTool.loescheRowAusModel(tabhistorie, row);
-			new sqlTools.ExUndHop().setzeStatement("delete from faktura where rez_nr='"+rez_nr+"'");
+
+			int anfrage = JOptionPane.showConfirmDialog(null, "Sollen die zugehörigen Rechnungsdaten in der Faktura gelöscht werden?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage == JOptionPane.YES_OPTION){
+				SqlInfo.sqlAusfuehren("delete from faktura where rez_nr='"+rez_nr+"'");
+				SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+rez_nr+"'");
+				if(Reha.thisClass.abrechnungpanel != null){
+					String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
+					String aktDisziplin = diszis[Reha.thisClass.abrechnungpanel.cmbDiszi.getSelectedIndex()];
+					if(RezTools.putRezNrGetDisziplin(rez_nr).equals(aktDisziplin)){
+						Reha.thisClass.abrechnungpanel.einlesenErneuern();
+					}
+				}
+			}
+			//new sqlTools.ExUndHop().setzeStatement("delete from faktura where rez_nr='"+rez_nr+"'");
 			setzeKarteiLasche();
 			Reha.thisClass.patpanel.aktRezept.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
 			}catch(Exception ex){

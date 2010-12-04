@@ -1793,7 +1793,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			}
 			doAbschlussTest();
 			if(Reha.thisClass.abrechnungpanel != null){
-				String[] diszis = {"Physio","Massage","Ergo","Logo"};
+				String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
 				String aktDisziplin = diszis[Reha.thisClass.abrechnungpanel.cmbDiszi.getSelectedIndex()];
 				if(RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1)).equals(aktDisziplin)){
 					Reha.thisClass.abrechnungpanel.einlesenErneuern();
@@ -2373,9 +2373,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", rez_nr, true, Arrays.asList(new String[] {"id"}));
 			SqlInfo.sqlAusfuehren("delete from verordn where rez_nr='"+rez_nr+"'");
 			Reha.thisClass.patpanel.aktRezept.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29),"");
+			final String xrez_nr = String.valueOf(rez_nr);
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
-					Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");					
+					Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
+					SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+xrez_nr+"'");
+					if(Reha.thisClass.abrechnungpanel != null){
+						String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
+						String aktDisziplin = diszis[Reha.thisClass.abrechnungpanel.cmbDiszi.getSelectedIndex()];
+						if(RezTools.putRezNrGetDisziplin(xrez_nr).equals(aktDisziplin)){
+							Reha.thisClass.abrechnungpanel.einlesenErneuern();
+						}
+					}
+					
 				}
 			});
 			setzeKarteiLasche();

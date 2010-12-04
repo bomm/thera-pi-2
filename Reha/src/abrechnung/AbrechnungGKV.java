@@ -408,21 +408,25 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		
 		JXTTreeNode meinitem = null;
 		for(int i = 0;i<vecKassen.size();i++){
-			cmd = "select n_name from pat5 where pat_intern='"+
+			try{
+				cmd = "select n_name from pat5 where pat_intern='"+
 				vecKassen.get(i).get(1)+"' LIMIT 1";
 
-			String name = SqlInfo.holeFelder(cmd).get(0).get(0);
+				String name = SqlInfo.holeFelder(cmd).get(0).get(0);
 
-			KnotenObjekt rezeptknoten = new KnotenObjekt(vecKassen.get(i).get(0)+"-"+name,
-					vecKassen.get(i).get(0),
-					(vecKassen.get(i).get(2).equals("T")? true : false),
-					vecKassen.get(i).get(3),"");
-			rezeptknoten.ktraeger = ktraeger;
-			rezeptknoten.pat_intern = vecKassen.get(i).get(1);
-			meinitem = new JXTTreeNode(rezeptknoten,true);
+				KnotenObjekt rezeptknoten = new KnotenObjekt(vecKassen.get(i).get(0)+"-"+name,
+						vecKassen.get(i).get(0),
+						(vecKassen.get(i).get(2).equals("T")? true : false),
+						vecKassen.get(i).get(3),"");
+				rezeptknoten.ktraeger = ktraeger;
+				rezeptknoten.pat_intern = vecKassen.get(i).get(1);
+				meinitem = new JXTTreeNode(rezeptknoten,true);
 
-			treeModelKasse.insertNodeInto(meinitem,node,node.getChildCount());
-			treeKasse.validate();
+				treeModelKasse.insertNodeInto(meinitem,node,node.getChildCount());
+				treeKasse.validate();
+			}catch(Exception ex){
+				
+			}
 		}
 
 	}

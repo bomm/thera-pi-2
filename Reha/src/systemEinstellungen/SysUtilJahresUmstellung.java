@@ -155,6 +155,7 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		}
 	}
 	public void doUmstellen(){
+		String reset = Integer.toString(Integer.parseInt(nextyear.getText())-1);
 		Vector <Vector<String>> vec = null;
 		String cmd = "select t2.id from verordn as t2 inner join pat5 as t1 on (t2.pat_intern = t1.pat_intern) where t2.befr='T' and t2.zzstatus='0' and (not t1.jahrfrei like '"+letztesjahr.getText()+"%')";
 		vec = SqlInfo.holeFelder(cmd);
@@ -168,8 +169,11 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		int atmen = 0;
 		for(int i = 0; i < umstellrezept;i++ ){
 			progress.setValue(i);
-			cmd = "select * from verordn where id = '"+vec.get(i).get(0)+"' LIMIT 1";
-			SqlInfo.holeFelder(cmd);
+			//cmd = "select * from verordn where id = '"+vec.get(i).get(0)+"' LIMIT 1";
+			//SqlInfo.holeFelder(cmd);
+			cmd = "update verordn set befr='F',rez_geb='0.00',rez_bez='F',zzstatus='2',jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
+			System.out.println(cmd);
+			SqlInfo.sqlAusfuehren(cmd);
 			atmen++;
 			if(atmen > 10){
 				try {
@@ -181,14 +185,20 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 			}
 		}
 		//dann den Patstamm updaten mit einem updatebefehl
+		cmd = "update pat5 set befreit='F',bef_ab=null,bef_dat=null,jahrfrei='"+reset+"' where befreit = 'T' and bef_dat like '"+reset+"%'";
+		SqlInfo.sqlAusfuehren(cmd);
+		//System.out.println(cmd);
 		//dann die jahresabschluss Tabelle auf Vordermann bringen
+		cmd = "update jahresabschluss set altesjahr='"+reset+"',umgestellt='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'";
+		SqlInfo.sqlAusfuehren(cmd);
+		//System.out.println(cmd);
 	}
 	
 	public void doTesten(){
 		long tage = DatFunk.TageDifferenz(DatFunk.sHeute(), "01.01."+nextyear.getText());
 		if(tage > 7){
 			String meldung = "<html>Es sind noch <b>"+Long.toString(tage)+" Tage</b> bis zum Jahreswechsel!<br>"+
-			"Die Umstellung <u>sollte</u> frühestens <b>7 Tage</b> vor Jahreswechsel durchgeführt werden!<br><br>"+
+			"Die Umstellung <u>sollte</u> möglichst <b>zeitnah zum Jahreswechsel</b> durchgeführt werden!<br><br>"+
 			"<b>Der <u>ideale</u> Zeitpunkt der Umstellung ist der letzte oder der erste Arbeitstag im Kalenderjahr!</b><br><br>"+
 			"<b><font color='#ff0000'>Wenn Sie aber der Ansicht sind es müßte jetzt partout umgestellt werden - bitteschön!</font></b></html>";
 			JOptionPane.showMessageDialog(null,meldung);
