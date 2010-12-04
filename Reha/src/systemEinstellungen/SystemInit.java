@@ -256,7 +256,7 @@ private JScrollPane getParameterListe(){
 	*/ 
 	treeitem = new DefaultMutableTreeNode("Kostenträgerdatei einlesen");
 	node.add(treeitem ); 
-	//root.add(node);
+	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "sonstige Einstellungen");
 	treeitem = new DefaultMutableTreeNode( "Emailparameter");

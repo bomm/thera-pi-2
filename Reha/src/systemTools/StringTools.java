@@ -13,9 +13,10 @@ public class StringTools {
 		String test = String.valueOf(string.trim());
 		String neuString = "";
 		try{
+		boolean zerhackt = false;	
 		for(int y = 0; y < 1; y++){
 
-			if(  (test.indexOf(" ") < 0)  && (test.indexOf("-") < 0) ){
+			if(  (test.indexOf(" ") < 0)  && (test.indexOf("-") < 0) && (test.indexOf("/") < 0) ){
 				neuString = test.substring(0,1).toUpperCase()+
 				 (test.length() > 1 ? test.substring(1).toLowerCase() : "");
 				test = String.valueOf(neuString.trim());
@@ -24,7 +25,7 @@ public class StringTools {
 					try{
 						if(test.length() >=3){
 							if(!test.substring(2,3).equals(" ")){
-								test = "Mc"+test.substring(2,3).toUpperCase()+test.substring(4).toLowerCase();
+								test = "Mc"+test.substring(2,3).toUpperCase()+test.substring(3).toLowerCase();
 							}
 						}
 					}catch(Exception ex){
@@ -57,6 +58,7 @@ public class StringTools {
 					neuString = neuString + " ";
 				}
 				test = String.valueOf(neuString.trim());
+				zerhackt = true;
 			}
 
 			if(test.indexOf(" - ") > -1){
@@ -69,6 +71,7 @@ public class StringTools {
 					neuString = neuString + (i < (splitString.length-1) ? " - " : "");
 				}
 				test = String.valueOf(neuString.trim());
+				zerhackt = true;
 				break;
 			}
 			
@@ -90,23 +93,25 @@ public class StringTools {
 					neuString = neuString + (i < (splitString.length-1) ? "-" : "");
 				}
 				test = String.valueOf(neuString.trim());
+				zerhackt = true;
 				//System.out.println("in - Ergebnis = "+test);
 			}
 			
-			/*
-			if(test.indexOf("/") > -1){
+			
+			if(test.indexOf("/") > -1 && !zerhackt){
 				neuString = "";
 				String[] splitString = test.split("/");
 				for(int i = 0;i < splitString.length;i++){
-					neuString = neuString + 
+					splitString[i] = splitString[i].trim();
+
+					neuString = neuString +
 								(splitString[i].substring(0,1).toUpperCase())+
 							 (splitString[i].length() > 1 ? splitString[i].substring(1).toLowerCase() : "");
-					neuString = neuString + (i < (splitString.length-1) ? "/" : "");
+					neuString = neuString + (i < (splitString.length-1) ? " / " : "");
 				}
 				test = String.valueOf(neuString.trim());
+				//System.out.println(test);
 			}
-			*/
-
 		}
 		if(test.indexOf("prof.") > -1){
 			neuString = test.replaceAll("prof.", "Prof.");
@@ -254,8 +259,8 @@ public class StringTools {
 			neuString = test.replaceAll("Dak", "DAK");
 			test = neuString;
 		}
-		if(test.indexOf("Dak") > -1){
-			neuString = test.replaceAll("Dak", "DAK");
+		if(test.indexOf("Ddg") > -1){
+			neuString = test.replaceAll("Ddg", "DDG");
 			test = neuString;
 		}
 		if(test.indexOf("str.") > -1){

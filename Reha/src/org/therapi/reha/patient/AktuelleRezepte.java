@@ -2388,6 +2388,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		
 	}
+	private void fuelleTage(){
+		int akt = 		this.tabaktrez.getSelectedRow();
+		if(akt < 0){
+			JOptionPane.showMessageDialog(null, "Kein aktuelles Rezept für Übertrag in Clipboard ausgewählt");
+			return;
+		}
+		String stage = "";
+		int tage = this.dtermm.getRowCount();
+		 
+
+		for(int i = 0; i < tage;i++){
+			stage = stage +(i > 0 ? ", " : "")+ dtermm.getValueAt(i, 0).toString();
+		}
+		SystemConfig.hmAdrRDaten.put("<Rtage>", String.valueOf(stage));
+	}
 	private void doTageDrucken(){
 		int akt = 		this.tabaktrez.getSelectedRow();
 		if(akt < 0){
@@ -2397,7 +2412,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String stage = "Rezeptnummer: "+this.tabaktrez.getValueAt(akt,0).toString()+" - Rezeptdatum: "+this.tabaktrez.getValueAt(akt,2).toString()+"\n";
 		int tage = this.dtermm.getRowCount();
 		 
- 
+
 		for(int i = 0; i < tage;i++){
 			stage = stage + Integer.toString(i+1)+"\t"+dtermm.getValueAt(i, 0).toString()+"\n";
 		}
@@ -2462,6 +2477,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					tDlg = null;
 					if(!Rechte.hatRecht(Rechte.Rezept_privatrechnung, true)){return;}
 					try{
+						fuelleTage();
 						privatRechnung();
 					}catch(Exception ex){
 						JOptionPane.showMessageDialog(null, ex.getMessage());

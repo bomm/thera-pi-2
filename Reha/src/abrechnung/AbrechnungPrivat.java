@@ -17,6 +17,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -905,6 +908,12 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	private void starteErsetzen(){
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
+		/***************/
+		Set<?> entries = SystemConfig.hmAdrRDaten.entrySet();
+	    Iterator<?> it = entries.iterator();
+	    //entries = SystemConfig.hmAdrRDaten.entrySet();
+	    //it = entries.iterator();
+		/***************/
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
 		} catch (TextException e) {
@@ -931,7 +940,22 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<Pgeboren>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<panrede>")){
 				placeholders[i].getTextRange().setText(SystemConfig.hmAdrPDaten.get("<Panrede>"));
+			}else{
+				/*********Rezeptdaten überprüfen***********/
+			    while (it.hasNext()) {
+				      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+				      try{
+					      if(((String)entry.getKey()).toLowerCase().equals(placeholders[i].getDisplayText().toLowerCase())){
+					    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+					    	  break;
+					      }
+				      }catch(Exception ex){
+				    	  break;
+				      }
+			    }
+			    /**********************/
 			}
+			
 		}
 		
 	}
@@ -958,6 +982,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		textEndbetrag.getCell(1,0).getTextService().getText().setText(dcf.format(rechnungGesamt.doubleValue())+" EUR");
 
 	}
+	
 	private void starteDrucken() throws DocumentException, InterruptedException{
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
