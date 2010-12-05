@@ -711,8 +711,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			SqlInfo.sqlAusfuehren(xcmd);
 			SqlInfo.sqlAusfuehren("delete from lza where rez_nr='"+rez_nr+"'");
 			TableTool.loescheRowAusModel(tabhistorie, row);
-
-			int anfrage = JOptionPane.showConfirmDialog(null, "Sollen die zugehörigen Rechnungsdaten in der Faktura gelöscht werden?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			String htmlstring = "<html><b><font color='#ff0000'>Achtung!!!!</font><br>"+
+			"Wenn Sie das Rezept lediglich zur Ansicht in die aktuelle Rezepte transferieren<br>"+
+			"sollten Sie die zugehörigen Fakturadaten <font color='#ff0000'>nicht löschen.</font><br><br>"+
+			"Wenn Sie das Rezept jedoch <u>neu abrechnen</u> wollen, sollten Sie<br>"+
+			"die Fakturadaten <font color='#ff0000'>unbedingt löschen</font>.<br><br>"+
+			"Wollen Sie die Fakturadaten jetzt löschen?</b></html>";
+			int anfrage = JOptionPane.showConfirmDialog(null, htmlstring, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(anfrage == JOptionPane.YES_OPTION){
 				SqlInfo.sqlAusfuehren("delete from faktura where rez_nr='"+rez_nr+"'");
 				SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+rez_nr+"'");

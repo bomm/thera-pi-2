@@ -909,8 +909,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
 		/***************/
-		Set<?> entries = SystemConfig.hmAdrRDaten.entrySet();
-	    Iterator<?> it = entries.iterator();
+		Set<?> entries = null; //SystemConfig.hmAdrRDaten.entrySet();
+	    Iterator<?> it = null; //entries.iterator();
 	    //entries = SystemConfig.hmAdrRDaten.entrySet();
 	    //it = entries.iterator();
 		/***************/
@@ -920,6 +920,9 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			e.printStackTrace();
 		}
 		for (int i = 0; i < placeholders.length; i++) {
+			entries = SystemConfig.hmAdrRDaten.entrySet();
+		    it = entries.iterator();
+		    //System.out.println("Original: "+placeholders[i].getDisplayText().toLowerCase());
 			if(placeholders[i].getDisplayText().toLowerCase().equals("<pri1>")){
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri1>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri2>")){
@@ -945,11 +948,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			    while (it.hasNext()) {
 				      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 				      try{
+				    	  //System.out.println("HashMap - Rdaten:"+((String)entry.getKey()).toLowerCase());
 					      if(((String)entry.getKey()).toLowerCase().equals(placeholders[i].getDisplayText().toLowerCase())){
 					    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 					    	  break;
 					      }
 				      }catch(Exception ex){
+				    	  ex.printStackTrace();
 				    	  break;
 				      }
 			    }
