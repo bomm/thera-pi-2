@@ -397,7 +397,10 @@ class RehaStarter extends SwingWorker<Integer,Void>{
 	protected Integer doInBackground() throws Exception {
 		String programm = TheraPi.proghome+"Reha.jar";
 		System.out.println("In TheraPi.jar Programmstart = "+programm);
-		String start = new String("javaw -jar "+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant);
+
+		String start = new String("java -jar "+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant /*+" > "+TheraPi.proghome+TheraPi.StartMandant.split("@")[0]+".log" */);
+		//String start = new String("cmd.exe /C start "+TheraPi.proghome.replace("/",File.separator)+"runtherapi.bat "+TheraPi.StartMandant+" "+TheraPi.StartMandant.split("@")[0]+".log");
+		
 		System.out.println("Kommando ist "+start);
 		//JOptionPane.showMessageDialog(null, start);
 		Runtime.getRuntime().exec(start);

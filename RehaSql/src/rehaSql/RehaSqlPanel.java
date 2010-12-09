@@ -507,6 +507,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		String prepstatement = vecStatements.get(ind-1).get(1);
 		if(prepstatement.indexOf("^") >= 0 || prepstatement.indexOf("where")>=0){
 			prepstatement = testeAufPlatzhalter(prepstatement);
+			System.out.println("prepstatement="+prepstatement);
 			if(prepstatement.equals("")){
 				JOptionPane.showMessageDialog(null,"Fehler in der Eingabe");
 				return;
@@ -527,7 +528,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		boolean noendfound = false;
 		while ((start = stext.indexOf("^")) >= 0){
 			noendfound = true;
-			for(int i = 1;i < 150;i++){
+			for(int i = 1;i < 350;i++){
 				if(stext.substring(start+i,start+(i+1)).equals("^")){
 					dummy = stext.substring(start,start+(i+1));
 					String sanweisung = dummy.toString().replace("^", "");
@@ -563,7 +564,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			}
 		}
 		
-		return sret;
+		return (sret.equals("") ? text : sret);
 	}
 
 	@Override

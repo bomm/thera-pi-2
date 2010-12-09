@@ -55,7 +55,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	JButton bnr4;
 	JButton bnr5;
 	JButton[] buts = {null,null,null,null,null};
-	JRtaRadioButton[] jrbtb = {null,null,null,null,null};
+	JRtaRadioButton[] jrbtb = {null,null,null,null,null,null};
 	TableModel Tabelle;
 	MyTBTableModel tbmod = null;
 	JXTable tbtab = null;
@@ -70,7 +70,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	JButton sysvars;
 	
 	String aktuellediszi = "Physio";
-	String[] dbs = {"tbkg","tbma","tber","tblo","tbrh"};
+	String[] dbs = {"tbkg","tbma","tber","tblo","tbrh","tbpo"};
 	List allediszis;
 	String aktuelledb = "tbkg";
 	boolean neu;
@@ -82,7 +82,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		super();
 		
 			setOpaque(false);
-			allediszis = Arrays.asList(new String[] {"Physio","Massage","Ergo","Logo","Reha"});
+			allediszis = Arrays.asList(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
 	FormLayout laybau = new FormLayout("10dlu,fill:0:grow,10dlu",
 	 		
 	"10dlu,p,10dlu,fill:0:grow(1.0),10dlu,p,10dlu,p,10dlu,fill:0:grow(0.5),10dlu,p,10dlu");
@@ -318,7 +318,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	
 	
 	private JPanel getRadios(){
-		FormLayout radioPan = new FormLayout("p,6dlu,p,6dlu,p,6dlu,p,6dlu,p","p");
+		FormLayout radioPan = new FormLayout("p,6dlu,p,6dlu,p,6dlu,p,6dlu,p,6dlu,p","p");
 		PanelBuilder pb = new PanelBuilder(radioPan);
 		pb.getPanel().setOpaque(false);
 		CellConstraints ccrad = new CellConstraints();
@@ -346,14 +346,20 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		jrbtb[3].setActionCommand("Logo");
 		bg.add(jrbtb[3]);
 		jrbtb[3].addActionListener(this);
-		
 		pb.add(jrbtb[3],ccrad.xy(7,1));
+
 		jrbtb[4] = new JRtaRadioButton("Reha");
 		jrbtb[4].setActionCommand("Reha");
 		bg.add(jrbtb[4]);
 		jrbtb[4].addActionListener(this);
-		
 		pb.add(jrbtb[4],ccrad.xy(9,1));
+		
+		jrbtb[5] = new JRtaRadioButton("Podo");
+		jrbtb[5].setActionCommand("Podo");
+		bg.add(jrbtb[5]);
+		jrbtb[5].addActionListener(this);
+		pb.add(jrbtb[5],ccrad.xy(11,1));
+		
 		pb.getPanel().validate();
 		return pb.getPanel();
 	}
@@ -489,6 +495,13 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 				regleCheckBoxen(4);
 				return;
 			}
+			if(cmd.equals("Podo")){
+				//checkbox[4].setSelected(true);
+				System.out.println("ActionCommand = "+cmd);
+				regleCheckBoxen(5);
+				return;
+			}
+
 			return;
 		}
 		if(cmd.equals("comboBoxChanged") && combobox.getItemCount() > 0){
@@ -606,7 +619,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	/*************************************/
 	private void doSpeichern(){
 		int row = tbtab.getSelectedRow();
-		String[] klasse = {"KG","MA","ER","LO","RH"};
+		String[] klasse = {"KG","MA","ER","LO","RH","PO"};
 		if(!neu && row < 0){
 			doAbbrechen();
 			return;

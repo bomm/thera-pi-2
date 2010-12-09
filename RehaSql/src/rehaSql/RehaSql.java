@@ -55,7 +55,7 @@ public class RehaSql implements WindowListener {
 	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
 	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
-	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
+	public static String dbIpAndName = "jdbc:mysql://192.168.2.3:3306/rtadaten";
 	public static String dbUser = "rtauser";
 	public static String dbPassword = "rtacurie";
 	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";

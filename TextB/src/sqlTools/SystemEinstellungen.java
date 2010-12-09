@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class SystemEinstellungen {
-	static String[] disziplinen = {"Physio","Massage","Ergo","Logo","Reha"};
+	static String[] disziplinen = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 	public static HashMap<String,Vector<String>> hmThema = new HashMap<String,Vector<String>>();
 	public static HashMap<String,Vector<String>> hmOberbegriff = new HashMap<String,Vector<String>>();
 
 	public static void ladeGelenke(String[] args){
 	INIFile inif = null;
 	if(args.length <= 0){
-		inif = new INIFile("C:/RehaVerwaltung/ini/textbaustein.ini");	
+		inif = new INIFile("C:/RehaVerwaltung/ini/510841109/thbericht.ini");	
 	}else{
 		inif = new INIFile(args[1]);
 	}

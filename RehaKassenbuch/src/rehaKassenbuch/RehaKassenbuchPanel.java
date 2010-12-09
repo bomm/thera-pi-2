@@ -145,7 +145,7 @@ public class RehaKassenbuchPanel extends JXPanel{
 	private void doDelete(){
 		int item = kbvorhanden.getSelectedIndex(); 
 		if(item >= 0){
-			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie das Kassenbuch --> "+kbvorhanden.getSelectedValue().toString()+" <-- wirklich l�schen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie das Kassenbuch --> "+kbvorhanden.getSelectedValue().toString()+" <-- wirklich löschen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(anfrage == JOptionPane.YES_OPTION){
 				String cmd = "drop table "+ kbvorhanden.getSelectedValue().toString();
 				SqlInfo.sqlAusfuehren(cmd);
