@@ -15,6 +15,8 @@ import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
+import rehaBillEdit.RehaBillPanel;
+
 import Tools.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
@@ -38,7 +40,8 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 	OffenepostenPanel oppanel = null;
 	OffenepostenMahnungen omahnpanel = null;
 	OffenepostenEinstellungen oeinstellungpanel = null;
-	
+	RehaBillPanel  rehaBillPanel = null;
+	OffenepostenRgAf oprgaf = null;
 	public OffenepostenTab(){
 		super();
 		setOpaque(false);
@@ -49,11 +52,17 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		oppanel = new OffenepostenPanel(this);
 		jtb.addTab("Rechnungen ausbuchen", oppanel);
 
+		rehaBillPanel = new RehaBillPanel(this);
+		jtb.addTab("Rechn. korrigieren / - Kopie", rehaBillPanel);
+		
 		omahnpanel = new OffenepostenMahnungen(this);
 		jtb.addTab("Mahnungen erstellen", omahnpanel);
 		
 		oeinstellungpanel = new OffenepostenEinstellungen(this);
 		jtb.addTab("Einstellungen", oeinstellungpanel);
+		
+		oprgaf = new OffenepostenRgAf(this);
+		jtb.addTab("Rezeptgebühr-/Ausfallrechnung", oprgaf);
 
         jtb.addChangeListener(this);
 		doHeader();
@@ -104,15 +113,33 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
                 "Hier werden die Funktionen die später Nebraska zu dem machen was Nebraske ist\n"+
                 "entwickelt und getestet");
 		vecimg.add(ico);
+		vectitel.add("Rezeptgebührrechungen / Ausfallrechnungen");
+		vecdescript.add("....Experimentierpanal von Bodo und Jürgen.\n" +
+                "Hier werden die Funktionen die später Nebraska zu dem machen was Nebraske ist\n"+
+                "entwickelt und getestet");
+		vecimg.add(ico);
+
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent arg0) {
 		JTabbedPane pane = (JTabbedPane)arg0.getSource();
         int sel = pane.getSelectedIndex();
+        try{
+        	if(sel==0){
+        		oppanel.setzeFocus();
+        	}else if(sel==1){
+        		rehaBillPanel.setzeFocus();
+        	}
+        }catch(Exception ex){
+        	
+        }
         jxh.setTitle(vectitel.get(sel));
         jxh.setDescription(vecdescript.get(sel));
         jxh.setIcon(vecimg.get(sel));   
+	}
+	public void setFirstFocus(){
+		oppanel.setzeFocus();		
 	}
 	
 	public String getNotBefore(){

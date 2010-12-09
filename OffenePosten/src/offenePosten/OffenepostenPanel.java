@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,8 +34,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-
-
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
@@ -92,7 +88,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		});
 
 	}
-	private void setzeFocus(){
+	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				suchen.requestFocus();

@@ -1,4 +1,4 @@
-package offenePosten;
+package rehaBillEdit;
 
 import java.awt.Color;
 import java.text.DateFormat;

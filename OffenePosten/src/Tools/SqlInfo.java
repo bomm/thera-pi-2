@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import offenePosten.OffenePosten;
 
+
 public class SqlInfo {
 	
 /***********************************/	
@@ -670,6 +671,58 @@ public class SqlInfo {
 		}
 		return is;
 	}
+	/*************************************/
+	public static String holeEinzelFeld(String xstmt){
+		Statement stmt = null;
+		ResultSet rs = null;
+		String ret = "";
+		ResultSetMetaData rsMetaData = null;
+		try {
+			stmt =  OffenePosten.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+		try{
+			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String sstmt = xstmt;
+			rs = stmt.executeQuery(sstmt);
+			while(rs.next()){
+						 ret =  (rs.getString(1)==null  ? "" :  rs.getString(1)).trim() ;
+						 break;
+			}
+			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			return ret;
+		}catch(SQLException ev){
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
+		}
+		finally {
+			if(rsMetaData != null){
+				rsMetaData = null;
+			}
+			if (rs != null) {
+				try {
+					rs.close();
+					rs = null;
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+					stmt = null;
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+		return ret;
+	}
+/*****************************************/
 
 
 }
