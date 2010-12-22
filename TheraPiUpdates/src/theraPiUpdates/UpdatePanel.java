@@ -15,19 +15,26 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -39,6 +46,9 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+
+
+
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -78,6 +88,12 @@ public class UpdatePanel extends JXPanel{
 	ImageIcon icoupdate;
 	public FTPFile[] ffile = null;
 	
+	static String dbIpAndName = "";
+	static String dbUser = "";
+	static String dbPassword = "";
+	
+	public static boolean DbOk;
+	public Connection conn;
 	
 	UpdatePanel(TheraPiUpdates xeltern,UpdateTab xupdateTab){
 	
@@ -194,6 +210,22 @@ public class UpdatePanel extends JXPanel{
 		boolean ok = true;
 		for(int i = 0; i < updatefiles.size();i++){
 			if(updatefiles.get(i).get(0).equals(upddatei)){
+				if(upddatei.equals("TabellenUpdate.sql")){
+					int anfrage = JOptionPane.showConfirmDialog(null, "Soll der Tabellen-Update jetzt durchgeführt werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(anfrage==JOptionPane.YES_OPTION){
+						doTabellenUpdate();	
+						tabmod.setValueAt((ImageIcon) icokeinupdate,row, 3);
+					}
+					break;
+				}
+				if(upddatei.equals("ProgrammAusfuehren.sql")){
+					int anfrage = JOptionPane.showConfirmDialog(null, "Soll das im Change-Log aufgeführte Programm jetzt gestartet werden?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(anfrage==JOptionPane.YES_OPTION){
+						doProgExecute();	
+						tabmod.setValueAt((ImageIcon) icokeinupdate,row, 3);
+					}
+					break;
+				}
 				String cmd = "<html>Wollen Sie die Update-Datei <b>"+updatefiles.get(i).get(0)+"</b> nach<br>"+
 				"<b>"+updatefiles.get(i).get(1)+"</b> kopieren</html>";
 				int anfrage = JOptionPane.showConfirmDialog(null, cmd,"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
@@ -341,37 +373,9 @@ public class UpdatePanel extends JXPanel{
 		
 		
 		/************************/
-		/*
-		File f = new File(TheraPiUpdates.proghome+"update.conf");
-		if(!f.exists()){
-			JOptionPane.showMessageDialog(null, "Ihr System ist nicht für automatisches Update eingerichtet.\n"+
-					"Bitte wenden Sie sich an den Systemadministrator");
-			return;
-		}
-		try{
-			reader = new FileReader(TheraPiUpdates.proghome+"update.conf");
-			in = new BufferedReader(reader);
-			while ((zeile = in.readLine()) != null) {
-				updatefile = zeile;
-				break;
-			}
-			updatedir = updatefile.substring(0,updatefile.lastIndexOf("/")).trim()+"/";
-			in.close();
-			reader.close();
-			System.out.println("Updatefile = "+updatefile);
-			System.out.println("UpdateDir = "+updatedir);
-			}catch (IOException e) {
-				e.printStackTrace();
-			}
-			f = new File(updatefile);
-			if(!f.exists()){
-				//JOptionPane.showMessageDialog(null, "Das angegebene Update-Verzeichnis existiert nicht");
-				return;
-			}
-			*/
-
+	
 		try {
-			Vector<Object> dummy = new Vector<Object>();
+			Vector<String> dummy = new Vector<String>();
 			zeile = "";
 			reader = new FileReader(xupdatefile);
 			in = new BufferedReader(reader);
@@ -404,7 +408,7 @@ public class UpdatePanel extends JXPanel{
 									dummy.add(updatedir+sourceAndTarget[0].trim());
 									dummy.add(home.replace("%mandantik%", mandvec.get(i)[0]));
 									if(! targetvec.contains(dummy.get(1))){
-										updatefiles.add( ((Vector<String>)dummy.clone()));									
+										updatefiles.add( (Vector<String>) ((Vector<String>)dummy.clone()) );									
 									}
 								}
 							}
@@ -425,6 +429,194 @@ public class UpdatePanel extends JXPanel{
 			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Update-Informationen.\nBitte informieren Sie den Administrator umgehend");
 		}
 	}
+	/*******************************************************/
+	private void doProgExecute(){
+		ftpt = new FTPTools();
+		Long xgross = Long.parseLong(tab.getValueAt(tab.getSelectedRow(), 2).toString());
+		ftpt.holeDatei("ProgrammAusfuehren.sql", TheraPiUpdates.proghome, true, getInstance(),xgross);
+		ftpt = null;
+		pbar.setValue(0);
+	    File file = null;
+	    FileReader freader = null;
+	    LineNumberReader lnreader = null;
+	    Vector<String> vecstmt = new Vector<String>();
+	    try{
+		      file = new File(TheraPiUpdates.proghome+"ProgrammAusfuehren.sql");
+		      freader = new FileReader(file);
+		      lnreader = new LineNumberReader(freader);
+		      String line = "";
+		      while ((line = lnreader.readLine()) != null){
+		    	  if(!String.valueOf(line).trim().equals("")){
+			    	  vecstmt.add(String.valueOf(line));		    		  
+		    	  }
+		    	  System.out.println("Statement = "+line);
+		      }
+	    } catch (FileNotFoundException e) {
+				e.printStackTrace();
+		} catch (IOException e) {
+				e.printStackTrace();
+		}
+	    finally{
+		      try {
+				freader.close();
+				lnreader.close();
+		      } catch (IOException e) {
+				e.printStackTrace();
+		      }
+	    }
+	    if(vecstmt.size() > 0){
+	    	String cmd = vecstmt.get(0);
+	    	cmd = cmd.replace("@proghome/", TheraPiUpdates.proghome);
+	    	final String command = String.valueOf(cmd);
+	    	new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					Runtime.getRuntime().exec(command);
+					return null;
+				}
+	    		
+	    	}.execute();
+	    }else{
+	    	JOptionPane.showMessageDialog(null,"Keine Programm zur Ausführung gefunden");
+	    }
+
+		
+	}
+	private void doTabellenUpdate(){
+		String ik = "";
+		ftpt = new FTPTools();
+		Long xgross = Long.parseLong(tab.getValueAt(tab.getSelectedRow(), 2).toString());
+		ftpt.holeDatei("TabellenUpdate.sql", TheraPiUpdates.proghome, true, getInstance(),xgross);
+		ftpt = null;
+		pbar.setValue(0);
+	    File file = null;
+	    FileReader freader = null;
+	    LineNumberReader lnreader = null;
+	    Vector<String> vecstmt = new Vector<String>();
+	    try{
+		      file = new File(TheraPiUpdates.proghome+"TabellenUpdate.sql");
+		      freader = new FileReader(file);
+		      lnreader = new LineNumberReader(freader);
+		      String line = "";
+		      while ((line = lnreader.readLine()) != null){
+		    	  if(!String.valueOf(line).trim().equals("")){
+			    	  vecstmt.add(String.valueOf(line));		    		  
+		    	  }
+		    	  System.out.println("Statement = "+line);
+		      }
+	    } catch (FileNotFoundException e) {
+				e.printStackTrace();
+		} catch (IOException e) {
+				e.printStackTrace();
+		}
+	    finally{
+	      try {
+			freader.close();
+			lnreader.close();
+	      } catch (IOException e) {
+			e.printStackTrace();
+	      }
+	    }
+	    if(vecstmt.size() > 0){
+	    	SwingUtilities.invokeLater(new Runnable(){
+	    		public void run(){
+	    	    	TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));	    			
+	    		}
+	    	});
+
+			for(int i = 0; i < mandvec.size();i++){
+				
+				ik = mandvec.get(i)[0];
+				holeDBZugang(TheraPiUpdates.proghome+"ini/"+ik+"/rehajava.ini");
+				StarteDB();
+				for(int x = 0; x < vecstmt.size();x++){
+					try {
+						SqlInfo.sqlAusfuehren(conn, vecstmt.get(x));
+						System.out.println("Execute = "+vecstmt.get(x));
+						//System.out.println("Warnings = "+conn.getWarnings().getSQLState());
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Fehler in der Ausführung des Sql-Statements\n"+vecstmt.get(x));
+						e.printStackTrace();
+					}
+				}
+				StopeDB();
+			}
+	    	SwingUtilities.invokeLater(new Runnable(){
+	    		public void run(){
+	    	    	TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));	    			
+	    		}
+	    	});
+
+	    }else{
+	    	JOptionPane.showMessageDialog(null,"Keine Statements für Tabellen-Update gefunden");
+	    }
+	}
+	/*******************************************************/
+	private void StopeDB(){
+		if (conn != null){
+			try{
+			conn.close();}
+			catch(final SQLException e){}
+		}
+	}
+	private void StarteDB(){
+		final String sDB = "SQL";
+		if (conn != null){
+			try{
+			conn.close();}
+			catch(final SQLException e){}
+		}
+		try{
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+        } catch (InstantiationException e) {
+			e.printStackTrace();
+    		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+    		DbOk = false;
+    		return ;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+    		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+    		DbOk = false;
+    		return ;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+    		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+    		DbOk = false;
+    		return ;
+		}	
+    	try {
+    		
+			conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+			DbOk = true;
+			System.out.println("Datenbankkontakt hergestellt");
+    	} 
+    	catch (final SQLException ex) {
+    		System.out.println("SQLException: " + ex.getMessage());
+    		System.out.println("SQLState: " + ex.getSQLState());
+    		System.out.println("VendorError: " + ex.getErrorCode());
+    		DbOk = false;
+    
+    	}
+        return;
+	}
+
+	private void holeDBZugang(String pfad){
+			System.out.println("hole daten aus INI-Datei "+pfad);
+			INIFile inif = new INIFile(pfad);
+			dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
+			dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
+			String pw = inif.getStringProperty("DatenBank","DBPasswort1");
+			String decrypted = null;
+			if(pw != null){
+				Verschluesseln man = Verschluesseln.getInstance();
+				man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+				decrypted = man.decrypt (pw);
+			}else{
+				decrypted = new String("");
+			}
+			dbPassword = decrypted.toString();
+	}
+	
 	
 	/************************************************************************/
 
