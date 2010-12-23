@@ -649,7 +649,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 			(!neu ? "where id='"+this.akteditid+"'" : "");
 		SqlInfo.sqlAusfuehren(cmd);
 		//System.out.println(stitel);
-		doAbbrechen();
+
 		if(neu){
 			String id = SqlInfo.holeFelder("select max(id) from "+getDb()).get(0).get(0);
 			Vector<String> xneu = new Vector<String>();
@@ -659,19 +659,36 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 			xneu.add(sober);
 			xneu.add(id);
 			tbmod.addRow(xneu);
+			tbtab.validate();
+			for(int i = 0;i < tbmod.getRowCount();i++){
+				if(tbtab.getValueAt(i,4).toString().equals(id)){
+					tbtab.setRowSelectionInterval(i, i);
+					tbtab.scrollRowToVisible(i);
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							tbtab.scrollRowToVisible(tbtab.getRowCount());
+						}
+					});
+					break;
+				}
+			}
 		}else{
 			if(row >= 0){
 				int xrow = tbtab.convertRowIndexToModel(row);
 				System.out.println("Tabelle wird aktualisiert...."+stitel);
+				System.out.println("Aktualisiere Row = "+xrow);
 				tbmod.setValueAt(stitel, xrow, 0);	
 				tbmod.setValueAt((String)textblock.getSelectedItem(), xrow, 1);
 				tbmod.setValueAt((String)rang.getSelectedItem(), xrow, 2);
 				tbmod.setValueAt(sober, xrow, 3);
 				tbtab.validate();
 				tftitel.setText((String)tbmod.getValueAt(xrow,0));
+			
+				tbtab.setRowSelectionInterval(row, row);
 			}
 
 		}
+		doAbbrechen();
 		
 	}
 	/*************************************/
@@ -684,10 +701,12 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 		this.textblock.setEnabled(false);
 		this.rang.setEnabled(false);
 		this.akteditid = "";
+		
 		int row = -1;
 		if( (row = this.tbtab.getSelectedRow()) >= 0){
 			this.ladeText(row);
 		}
+		
 	}
 
 	private void regleCheckBoxen(int box){

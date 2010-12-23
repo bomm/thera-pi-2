@@ -69,12 +69,12 @@ public class OffenePosten implements WindowListener{
 	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
 	public static HashMap<String,String> hmFirmenDaten  = null;
 	public static HashMap<String,String> hmAdrPDaten = new HashMap<String,String>();
-	
-	public static String hmRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
-	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
-	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
-	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
-	
+	/*
+	public static String hmRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
+	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
+	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
+	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
+	*/
 	
 	public static boolean testcase = false;
 	

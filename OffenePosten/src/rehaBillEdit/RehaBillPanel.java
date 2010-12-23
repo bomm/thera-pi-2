@@ -981,9 +981,9 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 					System.out.println(einzelPreis);
 					System.out.println(gesamtPreis);
 					System.out.println(rechnungGesamt);
-					System.out.println(OffenePosten.hmRechnungPrivat);
-					starteDokument( OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.rhRechnungKasse );
-					System.out.println(OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.rhRechnungKasse);
+					System.out.println(OffenePosten.hmAbrechnung.get("hmpriformular"));
+					starteDokument( OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("rehagkvformular")+".Kopie.ott" );
+					System.out.println(OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("rehagkvformular")+".Kopie.ott");
 					starteErsetzen();
 					aktuellePosition = 0;
 					startePositionen();
@@ -1034,7 +1034,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 
 			}
 			try {
-				System.out.println(OffenePosten.hmRechnungPrivat);
+				//System.out.println(OffenePosten.hmRechnungPrivat);
 				starteDokument( OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("hmpriformular")+".Kopie.ott" );
 				System.out.println(OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("hmpriformular")+".Kopie.ott" );
 				starteErsetzenPrivat();
@@ -1083,7 +1083,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			System.out.println(einzelPreis);
 			System.out.println(gesamtPreis);
 			System.out.println(rechnungGesamt);
-			System.out.println(OffenePosten.hmRechnungPrivat);
+			//System.out.println(OffenePosten.hmRechnungPrivat);
 			starteDokument( OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("hmbgeformular")+".Kopie.ott" );
 			System.out.println(OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("hmbgeformular")+".Kopie.ott" );
 			starteErsetzenBG();
@@ -1246,6 +1246,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	
 	/*********************************************************************/	
 	public void starteDokument(String url) throws Exception{
+		System.out.println("Starte Dokument = "+url);
 		IDocumentService documentService = null;;
 		documentService = OffenePosten.officeapplication.getDocumentService();
 		IDocumentDescriptor docdescript = new DocumentDescriptor();
