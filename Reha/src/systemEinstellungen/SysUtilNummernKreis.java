@@ -36,7 +36,7 @@ public class SysUtilNummernKreis extends JXPanel implements KeyListener, ActionL
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
 	JRtaTextField[] tfs = {null,null,null,null,null,null,null,
-			null,null,null,null,null,null,null,null};
+						   null,null,null,null,null,null,null,null};
 	JButton abbruch = null;
 	JButton speichern = null;
 	Vector<String> originale = new Vector<String>();
