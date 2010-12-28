@@ -58,7 +58,7 @@ public final class INIFile
     /** Variable to represent the timestamp format */
     private String mstrTimeStampFmt = "dd.mm.yyyy hh:mm:ss";
 
-    /** Variable to denote the successfull load operation. */
+    /** Variable to denote the successful load operation. */
     private boolean mblnLoaded = false;
 
     /** Variable to hold the ini file name and full path */
@@ -86,6 +86,17 @@ public final class INIFile
 /*------------------------------------------------------------------------------
  * Getters
 ------------------------------------------------------------------------------*/
+    /**  Lemmi 20101224: neue Funktion:
+     * Check file loading success
+     * @return TRUE if file was loaded successfully
+     */
+    public Boolean IsFileLoaded()
+    {
+        return this.mblnLoaded;
+    }
+
+     
+    
     /**
      * Returns the ini file name being used.
      * @return the INI file name.
