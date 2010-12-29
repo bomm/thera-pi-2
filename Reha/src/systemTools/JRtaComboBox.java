@@ -72,6 +72,7 @@ public void listenerLoeschen(){
 	this.removeActionListener(this);
 }
 
+// Lemmi Doku: Der erste Wert sagt, was angezeigt wird, der zweite Wert ist der Rückgabewert bei der Benutzerauswahl
 public void setDataVector2Dim(Vector<Vector<String>> ve,int item,int ret){
 	this.removeAllItems();
 	this.vec = ve;
