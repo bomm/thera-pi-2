@@ -32,6 +32,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import offenePosten.OffenepostenPanel.eSpalte;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -80,7 +82,7 @@ public class OffenepostenMahnungen extends JXPanel{
 	
 	JRtaTextField[] rtfs = {null,null,null,null,null,null,null,null,null,null,null,null};
 	JRtaCheckBox cbMahnsperre = null;
-	int aktuelleMahnstufe = 1;
+	int aktuelleMahnstufe = 1;  // initialisierung
 	
 	MyMahnungenTableModel tabmod = null;
 	JXTable tab = null;
@@ -106,10 +108,16 @@ public class OffenepostenMahnungen extends JXPanel{
 		
 	}
 	
+	// Lemmi Doku: Gesamt-Layout des Dialogs
 	private JXPanel getContent(){
-		String xwerte = "fill:0:grow(0.5),fill:0:grow(0.5),2dlu";
+		//String xwerte = "fill:0:grow(0.5),fill:0:grow(0.5),2dlu";
+		String xwerte = "220dlu,fill:0:grow(1.0),5dlu";
 		//                 1  2  3   4  5   6      7
-		String ywerte = "0dlu,p,0dlu,p,0dlu,p,fill:0:grow(1.0)";
+//		String ywerte = "0dlu,p,0dlu,p,0dlu,p,fill:0:grow(1.0)";
+		// Lemmi 20101225: y-Einteilung geändert 
+		//                 1  2  3   4                 5  
+		String ywerte = "0dlu,p,0dlu,fill:p:grow(1.0),5dlu";
+		
 		content = new JXPanel();
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
@@ -118,14 +126,20 @@ public class OffenepostenMahnungen extends JXPanel{
 		content.add(getRadioPanel(),cc.xyw(1,2,2,CellConstraints.FILL,CellConstraints.TOP));
 		content.add(getRechnungDatenPanel(),cc.xy(1,4));
 		content.add(getTablePanel(),cc.xy(2,4,CellConstraints.FILL,CellConstraints.FILL));
-		content.add(getButtonPanel(),cc.xy(1,6,CellConstraints.FILL,CellConstraints.TOP));
+		
+		// Lemmi 20101215: "ButtonPanel" rausgenommen und die Knöpfe im "RechnungDatenPanel" mit eingebaut
+//		content.add(getButtonPanel(),cc.xy(1,6,CellConstraints.FILL,CellConstraints.TOP));
+
 		content.validate();
 		return content;
 	}
+	
+/* Lemmi 20101215: "ButtonPanel" rausgenommen und die Knöpfe im "getRechnungDatenPanel" mit eingebaut
 	private JXPanel getButtonPanel(){
 		JXPanel buttonpan = new JXPanel();
 		//                     1            2          3            4           5           6          7
-		String xwerte = "fill:0:grow(0.25),80dlu,fill:0:grow(0.25),80dlu,fill:0:grow(0.25),80dlu,fill:0:grow(0.25)";
+//		String xwerte = "fill:0:grow(0.25),80dlu,fill:0:grow(0.25),80dlu,fill:0:grow(0.25),80dlu,fill:0:grow(0.25)";
+		String xwerte = "fill:0:grow(0.25),80dlu,fill:0:grow(0.25),30dlu,fill:0:grow(0.25),30dlu,fill:0:grow(0.25)";
 		String ywerte = "15dlu,p,15dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
@@ -136,6 +150,9 @@ public class OffenepostenMahnungen extends JXPanel{
 		buttonpan.validate();
 		return buttonpan;
 	}
+*/
+
+	// Lemmi Doku: Tabelle mit den Rechnungsdaten
 	private JXPanel getTablePanel(){
 		JXPanel tablepan = new JXPanel();
 		String xwerte = "fill:0:grow(1.0)";
@@ -144,6 +161,7 @@ public class OffenepostenMahnungen extends JXPanel{
 		CellConstraints cc = new CellConstraints();
 		tablepan.setLayout(lay);
 		
+		// Kopf der Liste erstellen
 		tabmod = new MyMahnungenTableModel();
 		Vector<Vector<String>> felder = SqlInfo.holeFelder("describe rliste");
 		String[] spalten = new String[felder.size()];
@@ -153,14 +171,20 @@ public class OffenepostenMahnungen extends JXPanel{
 		tabmod.setColumnIdentifiers(spalten);
 		tab = new JXTable(tabmod);
 		tab.setHorizontalScrollEnabled(true);
-		tab.getColumn(0).setCellRenderer(new Tools.MitteRenderer());
-		tab.getColumn(4).setCellRenderer(new Tools.MitteRenderer());
-		tab.getColumn(5).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(6).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(8).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(5).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(6).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(8).setCellEditor(new Tools.DblCellEditor());
+		tab.getColumn(eSpalte.cX_NUMMER.iValue).setCellRenderer(new Tools.MitteRenderer());
+		tab.getColumn(eSpalte.cR_KLASSE.iValue).setCellRenderer(new Tools.MitteRenderer());
+		tab.getColumn(eSpalte.cR_BETRAG.iValue).setCellRenderer(new Tools.DoubleTableCellRenderer());
+		tab.getColumn(eSpalte.cR_OFFEN.iValue).setCellRenderer(new Tools.DoubleTableCellRenderer());
+		tab.getColumn(eSpalte.cR_ZUZAHL.iValue).setCellRenderer(new Tools.DoubleTableCellRenderer());
+		tab.getColumn(eSpalte.cR_BETRAG.iValue).setCellEditor(new Tools.DblCellEditor());
+		tab.getColumn(eSpalte.cR_OFFEN.iValue).setCellEditor(new Tools.DblCellEditor());
+		tab.getColumn(eSpalte.cR_ZUZAHL.iValue).setCellEditor(new Tools.DblCellEditor());
+		
+		// Lemmi 20101220: Die Spalte R_NUMMER unsichtbar machen
+		tab.getColumn(eSpalte.cR_NUMMER.iValue).setMinWidth(0);
+		tab.getColumn(eSpalte.cR_NUMMER.iValue).setMaxWidth(0);
+
+		
 		tab.getSelectionModel().addListSelectionListener( new MahnungListSelectionHandler());
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		
@@ -173,15 +197,16 @@ public class OffenepostenMahnungen extends JXPanel{
 		return tablepan;
 	}
 	
+	// Lemmi Doku: Die Textfelder auf der linken Dialog-Seite
 	private JXPanel getRechnungDatenPanel(){
 		JXPanel rechnungpan = new JXPanel();
 		
-		//                1     2     3    4         5     6    7     8     9    10    11   12     13
-		String xwerte = "15dlu,60dlu,5dlu,100dlu:g,15dlu";
+		//                1     2     3    4         5   6     7     8     9    10    11   12     13
+		String xwerte = "15dlu,60dlu,5dlu,100dlu:g,3dlu";
 		//                1    2  3   4  5   6  7   8  9  10 11  12 13  14 15  16 17  18  19
 		String ywerte = "25dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,"+
-		//20 21 22 23  24 25
-		"p,2dlu,p,2dlu,p,2dlu";
+		//20 21 22 23  24 25  26  27 28  29 30 31
+		"p,2dlu,p,2dlu,p,4dlu,p,2dlu,p,2dlu,p,2dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		rechnungpan.setLayout(lay);
@@ -212,7 +237,9 @@ public class OffenepostenMahnungen extends JXPanel{
 
 		lab = new JLabel("R-Nr.");
 		rechnungpan.add(lab,cc.xy(2,10));
-		rtfs[4] = new JRtaTextField("ZAHLEN",true);
+		// Lemmi 20101220: Die Rechnungs-Nummer kann auch alphanumerisch sein !
+//		rtfs[4] = new JRtaTextField("ZAHLEN",true);
+		rtfs[4] = new JRtaTextField("nix",true);
 		rtfs[4].setFont(fontfett);
 		rechnungpan.add(rtfs[4],cc.xy(4,10));
 
@@ -258,8 +285,12 @@ public class OffenepostenMahnungen extends JXPanel{
 		rechnungpan.add(lab,cc.xy(2,24));
 		cbMahnsperre = new JRtaCheckBox("Mahnsperre verhängt");
 		rechnungpan.add(cbMahnsperre,cc.xy(4,24));
-		
 
+		// Lemmi 20101225: die Knöpfe aus der früheren "ButtonPanel" hier eingebaut, damit die Daten-Tabelle möglichst groß werden kann
+		rechnungpan.add((mahnbuts[0] = ButtonTools.macheButton("Mahnung drucken", "mahnungstarten", al)),cc.xy(4,26));
+		rechnungpan.add((mahnbuts[1] = ButtonTools.macheButton("^ ^ ^", "vorheriger", al)),cc.xy(4,28));
+		rechnungpan.add((mahnbuts[2] = ButtonTools.macheButton("v v v", "naechster", al)),cc.xy(4,30));
+		
 		rechnungpan.validate();
 		return rechnungpan;
 
@@ -361,7 +392,7 @@ public class OffenepostenMahnungen extends JXPanel{
 			JOptionPane.showMessageDialog(null, "Keine Rechnung in der Tabelle ausgewählt");
 			return;
 		}
-		if(row < tab.getRowCount()){
+		if(row < tab.getRowCount() - 1){  // Lemmi 20101225: "- 1" ergänzt
 			tab.setRowSelectionInterval(row+1, row+1);
 		}else{
 			JOptionPane.showMessageDialog(null, "Sie sind bereits am Tabellenende angelangt");
@@ -381,6 +412,9 @@ public class OffenepostenMahnungen extends JXPanel{
 			return;
 		}
 	}
+
+	
+	// Lemmi 20101220: In der ganzen Routine harte Spalten-Zahlen ersetzt durch "eSpalte.c??????.iValue"
 	private void doMahnungStarten(){
 		if(cbMahnsperre.isSelected()){
 			JOptionPane.showMessageDialog(null,"Diese Rechnung ist mit einer Mahnsperre belegt und kann deshalb nicht angemaht werden!");
@@ -426,20 +460,22 @@ public class OffenepostenMahnungen extends JXPanel{
 			JOptionPane.showMessageDialog(null, "Mahndaten können nicht in die Tabelle geschrieben werden bitte manuell eintragen!");
 			return;
 		}
-		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 15);
+		
+		//int id = (Integer)tabmod.getValueAt(tab.convertRowIndexToModel(row), 15);
+		int id = (Integer)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cID.iValue);
+		
 		String cmd = "";
 		switch(aktuelleMahnstufe){
-		case 1: 
-			cmd = "update rliste set mahndat1='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
-			break;
-		case 2:
-			cmd = "update rliste set mahndat2='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
-			break;
-		case 3:
-			cmd = "update rliste set mahndat3='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
-			break;
-			
-		}
+			case 1: 
+				cmd = "update rliste set mahndat1='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
+				break;
+			case 2:
+				cmd = "update rliste set mahndat2='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
+				break;
+			case 3:
+				cmd = "update rliste set mahndat3='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
+				break;
+		}  // end switch
 		if(!OffenePosten.testcase){
 			SqlInfo.sqlAusfuehren(cmd);			
 		}
@@ -474,6 +510,9 @@ public class OffenepostenMahnungen extends JXPanel{
 		tab.validate();
 		tab.repaint();
 	}
+	
+	
+	// Lemmi Doku: die hinterlegten Suchkriterien für die einzelnen Mahnstufen
 	private void doSuchen(){
 		String nichtvorDatum = eltern.getNotBefore();
 		int frist1 = eltern.getFrist(1);
@@ -537,22 +576,25 @@ public class OffenepostenMahnungen extends JXPanel{
 			int durchlauf = 0;
 			while(rs.next()){
 				vec.clear();
-				vec.add(rs.getInt(1)); //r_nummer
-				vec.add(rs.getDate(2)); // r_datum
-				vec.add( (rs.getString(3)==null ? "" : rs.getString(3)) );// r_kasse
-				vec.add( (rs.getString(4)==null ? "" : rs.getString(4)) );//r_name
-				vec.add( (rs.getString(5)==null ? "" : rs.getString(5)) );//r_klasse
-				vec.add(rs.getBigDecimal(6).doubleValue());//r_betrag
-				vec.add(rs.getBigDecimal(7).doubleValue());//r_offen
-				vec.add(rs.getDate(8));//r_bezdatum
-				vec.add(rs.getBigDecimal(9).doubleValue());//r_zuzahl
-				vec.add(rs.getDate(10));//mahndat1
-				vec.add(rs.getDate(11));//mahndat2
-				vec.add(rs.getDate(12));//mahndat3
-				vec.add( (rs.getString(13)==null ?  Boolean.FALSE : (rs.getString(13).equals("T") ? Boolean.TRUE : Boolean.FALSE)) );//mahnsperr
-				vec.add( (rs.getString(14)==null ? "" : rs.getString(14)) );//pat_intern
-				vec.add( (rs.getString(15)==null ? "" : rs.getString(15)));//ikktraeger
-				vec.add(rs.getInt(16));//id
+				// Lemmi 20101202: Fixe Spalten-Nummern durch lesbare Parameter ersetzt
+				vec.add( (rs.getString("x_nummer")==null ? rs.getString("r_nummer") : rs.getString("x_nummer"))); //"x_nummer"
+				vec.add(rs.getInt("r_nummer")); //r_nummer
+				vec.add(rs.getDate("r_datum")); // r_datum
+				vec.add( (rs.getString("r_kasse")==null ? "" : rs.getString("r_kasse")) );// r_kasse
+				vec.add( (rs.getString("r_name")==null ? "" : rs.getString("r_name")) );//r_name
+				vec.add( (rs.getString("r_klasse")==null ? "" : rs.getString("r_klasse")) );//r_klasse
+				vec.add(rs.getBigDecimal("r_betrag").doubleValue());//r_betrag
+				vec.add(rs.getBigDecimal("r_offen").doubleValue());//r_offen
+				vec.add(rs.getDate("r_bezdatum"));//r_bezdatum
+				vec.add(rs.getDate("r_stornodat"));//r_stornodat
+				vec.add(rs.getBigDecimal("r_zuzahl").doubleValue());//r_zuzahl
+				vec.add(rs.getDate("mahndat1"));//mahndat1
+				vec.add(rs.getDate("mahndat2"));//mahndat2
+				vec.add(rs.getDate("mahndat3"));//mahndat3
+				vec.add( (rs.getString("mahnsperr")==null ?  Boolean.FALSE : (rs.getString("mahnsperr").equals("T") ? Boolean.TRUE : Boolean.FALSE)) );//mahnsperr
+				vec.add( (rs.getString("pat_intern")==null ? "" : rs.getString("pat_intern")) );//pat_intern
+				vec.add( (rs.getString("ikktraeger")==null ? "" : rs.getString("ikktraeger")));//ikktraeger
+				vec.add(rs.getInt("id"));//id
 				
 				tabmod.addRow( (Vector<?>) vec.clone());
 				if(durchlauf>200){
@@ -600,11 +642,10 @@ public class OffenepostenMahnungen extends JXPanel{
 	
 
 	class MyMahnungenTableModel extends DefaultTableModel{
-		   /**
-		 * 
-		 */
+	
 		private static final long serialVersionUID = 1L;
 
+/* Lemmi 20101220: ausgeklammert, weil hier nicht verwendet		
 		public Class<?> getColumnClass(int columnIndex) {
 			switch(columnIndex){
 			case 0:
@@ -643,9 +684,9 @@ public class OffenepostenMahnungen extends JXPanel{
 			}
 		   return String.class;
 	    }
-
+*/
 		public boolean isCellEditable(int row, int col) {
-			if(col==12){
+			if(col==12){  // Lemmi Frage: was immer hier mal mit der Spalte 12 gemeint war ????
 				return true;				
 			}
 			return false;
@@ -684,30 +725,53 @@ public class OffenepostenMahnungen extends JXPanel{
 			JOptionPane.showMessageDialog(null,"Keine offene Rechnung ausgewählt");
 			return;
 		}
-		String rnr = tabmod.getValueAt( tab.convertRowIndexToModel(row)  ,0).toString();
-		String cmd = "select rnummer from faktura where rnummer = '"+rnr+"' LIMIT 1";
-		//System.out.println(cmd);
-		if(SqlInfo.gibtsSchon(cmd)){
-			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			try{
-				doFakturaGedoense(rnr,row);
-			}catch(Exception ex){
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (neu)");
+		// Lemmi 20101220: Ersetzte harten Spaltenwert gegen sprechenden Parameter
+//		String rnr = tabmod.getValueAt( tab.convertRowIndexToModel(row), 0).toString();
+		String rnr = tabmod.getValueAt( tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString();
+		 
+		if ( rnr.equals("0") ){ 		// Lemmi 20101220: neu: Abwicklung der RGR und AFR -Rechnungen
+			String strPatIntern = tabmod.getValueAt( tab.convertRowIndexToModel(row), eSpalte.cPATINTERN.iValue).toString();
+			String cmd = "select pat_intern from pat5 where pat_intern = '" + strPatIntern + "' LIMIT 1";
+			//System.out.println(cmd);
+			if(SqlInfo.gibtsSchon(cmd)){
+				OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				try{
+					doAdressePat( strPatIntern, row );
+				}catch(Exception ex){
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (RGR & AFR)");
+				}
+				OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}	
+		} else {  // Abwicklung der KK-Rechnungen
+		
+			String cmd = "select rnummer from faktura where rnummer = '"+rnr+"' LIMIT 1";
+			//System.out.println(cmd);
+			if(SqlInfo.gibtsSchon(cmd)){
+				OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				try{
+					doFakturaGedoense(rnr,row);
+				}catch(Exception ex){
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (neu)");
+				}
+				OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				// bereits in der neuen faktura Datenbank enthalten also kann man sich den mit mit dbf&co sparen
+			}else{
+				OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				try{
+					doDbfGedoense(rnr,row);
+				}catch(Exception ex){
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (alt)");
+				}
+				OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
-			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			// bereits in der neuen faktura Datenbank enthalten also kann man sich den mit mit dbf&co sparen
-		}else{
-			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			try{
-				doDbfGedoense(rnr,row);
-			}catch(Exception ex){
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (alt)");
-			}
-			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
+	
+	// Lemmi Doku: Füllt die Textfelder links mit Adressdaten aus der Tabelle "faktura" ?
+	// Lemmi 20101220: In der ganzen Routine harte Spalten-Zahlen ersetzt durch "eSpalte.c??????.iValue"
 	private void doFakturaGedoense(String rnr,int row){
 		Vector<Vector<String>> vecx =
 			SqlInfo.holeFelder("select kassen_nam,kassen_na2,strasse,plz,ort from faktura where rnummer='"+
@@ -721,12 +785,12 @@ public class OffenepostenMahnungen extends JXPanel{
 		rtfs[2].setText( vecx.get(0).get(2));
 		rtfs[3].setText( vecx.get(0).get(3)+" "+vecx.get(0).get(4));
 		
-		rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), 0).toString() );
-		rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), 1).toString()) );
-		rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 5) ) );
-		rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6) ) );
+		rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString() );
+		rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
+		rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
+		rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
 		
-		Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 9);
+		Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT1.iValue);
 		if(test==null){
 			rtfs[8].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
@@ -735,7 +799,7 @@ public class OffenepostenMahnungen extends JXPanel{
 			rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		
-		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 10);
+		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT2.iValue);
 		if(test==null){
 			rtfs[9].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
@@ -743,7 +807,7 @@ public class OffenepostenMahnungen extends JXPanel{
 		}else{
 			rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
-		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 11);
+		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT3.iValue);
 		if(test==null){
 			rtfs[10].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
@@ -751,11 +815,63 @@ public class OffenepostenMahnungen extends JXPanel{
 		}else{
 			rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
-		cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), 12) );
-
-
+		cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNSPERR.iValue) );
 		
 	}
+
+	// Lemmi 20101220: Neue Routine, analog zu "doFakturaGedoense"
+	// Lemmi Doku: Für RGR und AFR: Füllt die Textfelder links mit Adressdaten aus der Tabelle "pat5" ?
+	private void doAdressePat( String strPatIntern, int row ){
+		Vector<Vector<String>> vecx =
+//			SqlInfo.holeFelder("select kassen_nam,kassen_na2,strasse,plz,ort from faktura where rnummer='"+
+//					rnr+"' and lfnr='0' LIMIT 1");
+			SqlInfo.holeFelder("select anrede, v_name, n_name, strasse,plz,ort from pat5 where pat_intern='" +
+					strPatIntern + "' LIMIT 1");
+		if(vecx.size() <= 0){
+			JOptionPane.showMessageDialog(null, "Rechnungsdaten können nicht ermittelt werden");
+			return;
+		}
+		rtfs[0].setText( vecx.get(0).get(0));								// anrede
+		rtfs[1].setText( vecx.get(0).get(1) + " " + vecx.get(0).get(2));  	// v_name n_name
+		rtfs[2].setText( vecx.get(0).get(3));								// strasse
+		rtfs[3].setText( vecx.get(0).get(4) +" " + vecx.get(0).get(5)); 	// plz ort
+		
+		rtfs[4].setText( (String)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cX_NUMMER.iValue) );
+		rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
+		rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
+		rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
+		
+		Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT1.iValue);
+		if(test==null){
+			rtfs[8].setText("  .  .    ");
+		}else if(test.toString().trim().length() != 10){
+			rtfs[8].setText("  .  .    ");	
+		}else{
+			rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
+		}
+		
+		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT2.iValue);
+		if(test==null){
+			rtfs[9].setText("  .  .    ");
+		}else if(test.toString().trim().length() != 10){
+			rtfs[9].setText("  .  .    ");	
+		}else{
+			rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
+		}
+		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT3.iValue);
+		if(test==null){
+			rtfs[10].setText("  .  .    ");
+		}else if(test.toString().trim().length() != 10){
+			rtfs[10].setText("  .  .    ");
+		}else{
+			rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
+		}
+		cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNSPERR.iValue) );
+		
+	}
+
+	
+	// Lemmi 20101220: In der ganzen Routine harte Spalten-Zahlen ersetzt durch "eSpalte.c??????.iValue"
 	private void doDbfGedoense(String rnr, int row){
 		String rdatei = ((String)OffenePosten.mahnParameter.get("diralterechnungen"))+rnr+".dbf";
 		f = new File(rdatei);
@@ -779,12 +895,12 @@ public class OffenepostenMahnungen extends JXPanel{
 					ex.printStackTrace();
 					JOptionPane.showConfirmDialog(null,"Keine verwertbaren Adesssdaten vorhanden in 'ehemaliger' Rechnungsdatei "+rdatei);					
 				}
-				rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), 0).toString() );
-				rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), 1).toString()) );
-				rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 5) ) );
-				rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6) ) );
+				rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString() );
+				rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
+				rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
+				rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
 				
-				Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 9);
+				Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT1.iValue);
 				if(test==null){
 					rtfs[8].setText("  .  .    ");
 				}else if(test.toString().trim().length() != 10){
@@ -793,7 +909,7 @@ public class OffenepostenMahnungen extends JXPanel{
 					rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
 				}
 				
-				test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 10);
+				test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT2.iValue);
 				if(test==null){
 					rtfs[9].setText("  .  .    ");
 				}else if(test.toString().trim().length() != 10){
@@ -801,7 +917,7 @@ public class OffenepostenMahnungen extends JXPanel{
 				}else{
 					rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
 				}
-				test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), 11);
+				test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT3.iValue);
 				if(test==null){
 					rtfs[10].setText("  .  .    ");
 				}else if(test.toString().trim().length() != 10){
@@ -809,7 +925,7 @@ public class OffenepostenMahnungen extends JXPanel{
 				}else{
 					rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
 				}
-				cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), 12) );
+				cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNSPERR.iValue) );
 				
 			}else{
 				JOptionPane.showConfirmDialog(null,"Keine verwertbaren Adesssdaten vorhanden in 'ehemaliger' Rechnungsdatei "+rdatei);

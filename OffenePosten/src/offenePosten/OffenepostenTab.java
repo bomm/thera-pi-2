@@ -59,11 +59,12 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		jtb.addTab("Mahnungen erstellen", omahnpanel);
 		
 		oeinstellungpanel = new OffenepostenEinstellungen(this);
-		jtb.addTab("Einstellungen", oeinstellungpanel);
+		jtb.addTab("Einstellungen für Mahnungen", oeinstellungpanel);
 		
+/* Lemmi 20101225 ausgeklammert, da anderweitig gelöst
 		oprgaf = new OffenepostenRgAf(this);
 		jtb.addTab("Rezeptgebühr-/Ausfallrechnung", oprgaf);
-
+*/
         jtb.addChangeListener(this);
 		doHeader();
         jxh = new JXHeader();
@@ -97,22 +98,24 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		vecimg.add(ico);
 		
 		
-		vectitel.add("Zertifikate auswerten");
-		vecdescript.add("....Hier können Sie die Zertifikatskette einsehen\n" +
-                "Neue Zertifikate einlesen (neue Datenannahmestellen)\n" +
-                "und schlußendlich überpüfen wie lange welches Zertifikat gültig ist");
+		vectitel.add("Rechnung korrigieren & Rechnungskopie");
+		vecdescript.add("<html>....Hier kann eine <b>Heilmittel-</b>Rechnung nochmals überarbeitet und erneut ausgedruckt werden. " +
+                "Die Rechnungsnummer bleibt dabei unverändert. Das Rechnungsdokumnet kann in OpenOffice noch manuell bearbeitet werden.<br>" +
+                "<font color=#FF0000>Korrekturen von Rechnungsgebühren-Rechnungen werden nicht hier erstellt</font>, sondern am Rezept via Werkzeug oder in der IV bzw. §302-Abrechnung. " +
+                "Der wiederholte Audruck von Ausfallrechnungen wird ggf. zukünfig ebenfalls beim Rezept via Werkzeug möglich sein. " );
 		vecimg.add(ico);
 		
-		vectitel.add("Manuell verschlüsseln");
-		vecdescript.add("....Hier können Sie Dateien manuell verschlüsseln\n" +
-                "Weshalb auch immer....");
+		vectitel.add("Mahnung erstellen");
+		vecdescript.add("....Hier können Mahnungen erzeugt und dokumentiert werden.\n" +
+                "Siehe auch den nächsten Reiter mit den Steuerungs-Einstellungen hierzu.");
 		vecimg.add(ico);
 
-		vectitel.add("Test- und Experimentierpanel");
-		vecdescript.add("....Diese Seite ist bislang noch Bodo und Jürgen vorbehalten (leider).\n" +
-                "Hier werden die Funktionen die später Nebraska zu dem machen was Nebraske ist\n"+
-                "entwickelt und getestet");
+		vectitel.add("Einstellungen für Mahnungen");
+		vecdescript.add("....Hiermit wird der vorige Reiter 'Mahnung erstellen' gesteuert.\n" +
+                "Einstellung der Fristen zwischen den Mahnungen und das Ausdrucken derselben.\n"+
+                "Filter zum generellen Ausblenden ab einem bestimmten Datum.");
 		vecimg.add(ico);
+		
 		vectitel.add("Rezeptgebührrechungen / Ausfallrechnungen");
 		vecdescript.add("....Experimentierpanal von Bodo und Jürgen.\n" +
                 "Hier werden die Funktionen die später Nebraska zu dem machen was Nebraske ist\n"+
