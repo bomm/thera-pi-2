@@ -520,6 +520,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}.execute();
 	}
 	public void ende()	{
+		
+		// Lemmi 20101223: Operationen, die auf jeden Fall vor Programmende ausgeführt werden müssen
+		doBeforeExitAufJedenFall();
+
 		try {
 			Runtime.getRuntime().exec("cmd /c start.bat");
 		} catch (IOException e) {
@@ -528,6 +532,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		System.exit(0);
 	}
 	public void beendeSofort(){
+		
+		// Lemmi 20101223: Operationen, die auf jeden Fall vor Programmende ausgeführt werden müssen
+		doBeforeExitAufJedenFall();
+
 		this.jFrame.removeWindowListener(this);
 		if(Reha.thisClass.conn != null){
 			try {
@@ -550,9 +558,17 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			Reha.fangoTimer.stop();
 			Reha.timerLaeuft = false;
 		}
-		System.exit(0);
+			System.exit(0);
 
 		System.exit(0);
+	}
+	
+	// Lemmi 20101223: Operationen, die auf jeden Fall vor Programmende ausgeführt werden müssen
+	public void doBeforeExitAufJedenFall() {
+		
+		// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog in die INI schreiben	
+		SystemConfig.BedienungIni_WriteToIni(); 
+		
 	}
 	
 	private void doCompoundPainter(){
@@ -1560,6 +1576,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 
 	private JMenuItem getExitMenuItem() {
+		
 		if (exitMenuItem == null) {
 			exitMenuItem = new JMenuItem();
 			exitMenuItem.setText("Thera-Pi beenden");
@@ -2001,6 +2018,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
+		
+		// Lemmi 20101223: Operationen, die auf jeden Fall vor Programmende ausgeführt werden müssen
+		doBeforeExitAufJedenFall();
+		
 		if(JOptionPane.showConfirmDialog(null, "thera-\u03C0 wirklich schließen?", "Bitte bestätigen", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION ) {
 			if(Reha.DbOk &&  (Reha.thisClass.conn != null) ){
 				Date zeit = new Date();
@@ -2428,7 +2449,15 @@ final class DatenbankStarten implements Runnable{
 				SystemConfig.GeraeteListe();
 
 				SystemConfig.CompanyInit();
+				
+				// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog
+				new SocketClient().setzeInitStand("Bedienung.INI einlesen");
+				SystemConfig.BedienungIni_ReadFromIni();
 
+				// Lemmi 20101224 Steuerparanmeter für RGR und AFR in OP-Verwaltung
+				new SocketClient().setzeInitStand("Bedienung.INI einlesen");
+				SystemConfig.OffenePostenIni_ReadFromIni();
+				
 				FileTools.deleteAllFiles(new File(SystemConfig.hmVerzeichnisse.get("Temp")));
 				if(SystemConfig.sBarcodeAktiv.equals("1")){
 					try {
@@ -2454,11 +2483,9 @@ final class DatenbankStarten implements Runnable{
 				SystemConfig.GutachtenInit();
 
 				SystemConfig.AbrechnungParameter();
-				
-				SystemConfig.OtherDefaultsInit();
-				
+			
 				SystemConfig.JahresUmstellung();
-
+				
 				new Thread(new PreisListenLaden()).start();
 				
 			}catch (InterruptedException e1) {

@@ -35,6 +35,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 
+import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 import events.PatStammEvent;
@@ -108,7 +109,6 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				setzeFocus();
 			}
 		});
-		
 	}
 	private void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -149,8 +149,21 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	 * @return void
 	 */
 	private void initialize() {
+		
+		// Lemmi 20101212: zuletzt eingestellte und gemerkte Dimension des Suchfensters zurückholen
+		Dimension dim = new Dimension(300, 400);  // Diese Defaultwerte haben keine Wirkung !
+/*		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		if ( inif.getStringProperty("PatientenSuche", "SuchFensterBreite") != null )  // Prüfung auf Existenz
+			dim.width = inif.getIntegerProperty("PatientenSuche", "SuchFensterBreite");
+		if ( inif.getStringProperty("PatientenSuche", "SuchFensterHoehe") != null )  // Prüfung auf Existenz
+			dim.height = inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe");
+*/
+		dim.width = SystemConfig.hmPatientenSuchenDlgIni.get("fensterbreite");
+		dim.height = SystemConfig.hmPatientenSuchenDlgIni.get("fensterhoehe");
+		
+		this.setSize(dim);
+		
 		this.setUndecorated(true);
-		this.setSize(300, 400);
 		this.setTitle("Dialog-Test");
 		this.setContentPane(getJContentPane());
 		/*
@@ -187,7 +200,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			gridBagConstraints.gridy = 0;
 			gridBagConstraints.weightx = 1.0D;
 			gridBagConstraints.weighty = 1.0D;
-			gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+			gridBagConstraints.insets = new Insets(5, 5, 5, 5);  // Lemmi: weißer Rand zwischen Fenster und innerem grauen Bereich
 
 			JXPanel gridJx = new JXPanel();
 			gridJx.setLayout(new GridBagLayout());
@@ -201,18 +214,25 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 
 			
 			jContent = new JXPanel(new BorderLayout());
-			jContent.setSize(new Dimension(286, 162));
+			jContent.setSize(new Dimension(286, 162)); 
 			jContent.add(getJButton(), BorderLayout.SOUTH);
 			JXPanel jp1 = new JXPanel(new FlowLayout());
 			jp1.setBorder(null);
-			JLabel jlb = new JLabel("Patient suchen: ");
+			
+			// Lemmi 20101212: Das Labelfeld für einen Hinweis auf aktuelle Rezepte "mißbraucht"
+			JLabel jlb = new JLabel( suchart==3 ? "<html>Nur die <b>aktuellen</b> Rezepte" : "Patient suchen: ");  // Lemmi 20101212: Prompt für die Eingabe eines Suchkriteriums
 			jp1.add(jlb);
 			
 			jtext = getJTextField();
-			jtext.setPreferredSize(new Dimension(100,20));
+			// Lemmi 20101212: Das Such-Eingabefeld unsichtbar gemacht - wird hier nicht benötigt
+			if(suchart==3){
+				jtext.setPreferredSize(new Dimension(0,0));
+			} else{
+				jtext.setPreferredSize(new Dimension(100,20));
+			}
 			jtext.addKeyListener(new java.awt.event.KeyAdapter() {   
 				public void keyPressed(java.awt.event.KeyEvent e) {    
-					if (e.getKeyCode() == 10){
+					if (e.getKeyCode() == 10){   // RETURN gedrückt
 						e.consume();
 						new SwingWorker<Void,Void>(){
 
@@ -224,13 +244,13 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 						}.execute();
 						
 					}
-					if (e.getKeyCode() == 27){
+					if (e.getKeyCode() == 27){   // ESC gedrückt
 						e.consume();
 						setVisible(false);
 						sucheBeenden();
 					}
 
-					if (e.getKeyCode() == 40){
+					if (e.getKeyCode() == 40){  // Lemmi: was meint das ?
 						e.consume();
 						if (jtable.getRowCount() > 0){
 							jtable.requestFocus();
@@ -251,7 +271,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					////System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
 				}
 			});
-			jp1.add(jtext);
+			jp1.add(jtext);  // Lemmi: Suchfeld im Dialog einfügen (im Norden = oben)
 			jContent.add(jp1, BorderLayout.NORTH);
 			
 			/**
@@ -264,13 +284,27 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			reiheVector.addElement("Nachname");
 			reiheVector.addElement("Vorname");
 			reiheVector.addElement("Geboren");
-			reiheVector.addElement("Pat-Nr.");			
+			reiheVector.addElement("Pat-Nr.");
+			if(suchart==3)   // Lemmi 20101212: komplettes if mit neuer Spalte "Rezepte" ergänzt
+				reiheVector.addElement("Rezepte");			
+			
 			tblDataModel = new DefaultTableModel();
 			tblDataModel.setColumnIdentifiers(reiheVector);
 			jtable = new JXTable(tblDataModel);
 			this.jtable.getColumnModel().getColumn(0).setPreferredWidth(100);
-			this.jtable.getColumn(3).setMinWidth(0);	
-			this.jtable.getColumn(3).setMaxWidth(0);
+			this.jtable.getColumn(3).setMinWidth(0);	// Breite der Spalte pat_intern
+			this.jtable.getColumn(3).setMaxWidth(0);	// Breite der Spalte pat_intern
+			
+			// Lemmi 20101212: Einige maximale Spaltenbreiten fixiert
+			if(suchart==3) {  // Spielereine, funktioniert alles
+//				this.jtable.getColumn(0).setWidth(200);  // Nachname
+//				this.jtable.getColumn(1).setMaxWidth(250);  // Vorname
+//				this.jtable.getColumn(1).setPreferredWidth(200);  // Vorname
+				this.jtable.getColumn(2).setPreferredWidth(80);  // Geboren
+				this.jtable.getColumn(2).setMaxWidth(100);  // Geboren
+//				this.jtable.setGridColor(Color.red);
+			}
+			
 			
 			InputMap inputMap = jtable.getInputMap(JComponent.WHEN_FOCUSED);
 
@@ -297,7 +331,6 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 						setVisible(false);
 						sucheBeenden();						
 					}
-
 				}
 			});
 						
@@ -322,12 +355,20 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jtp.setContentContainer(gridJx);
 			jtp.validate();
 			jContentPane.add(jtp, BorderLayout.CENTER);
-			jtext.requestFocus();
 			
+			if(suchart==3){
+				// NOTHING to do
+				// Lemmi 20101212: bei Suchart 3 brauchen wir kein Suchwert-Eingabefeld im Ergebnisdialog
+			}
+			else {
+				jtext.requestFocus();
+			}
 		}
 		return jContentPane;
 	}
 	public void sucheAbfeuern(){
+		// Lemmi 20101212 speichere Position und Dimension und Suchart in der INI-Datei für nächsten Aufruf
+		PatSuchenDlgIniSave();
 		String s1 = String.valueOf("#PATSUCHEN");
 		String s2 = (String) jtable.getValueAt(jtable.getSelectedRow(), 3);
 		setDetails(s1,s2) ;
@@ -345,6 +386,35 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		pEvt.setDetails(s1,s2,fname) ;
 		PatStammEventClass.firePatStammEvent(pEvt);		
 	}
+	// Lemmi 20101212: Merken der Defaultwerte für den nächsten Aufruf
+	// speichere Dimension und Suchart in der INI-Datei für nächsten Aufruf
+	public void PatSuchenDlgIniSave(){
+		Dimension dim = SuchenDialog.this.getSize();
+		//Dimension dim = SuchenDialog.this.get
+/*		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		inif.setIntegerProperty("PatientenSuche", "SuchFensterBreite", dim.width, " letzte Breite des Suchfensters");
+		inif.setIntegerProperty("PatientenSuche", "SuchFensterHoehe", dim.height, " letzte Höhe des Suchfensters");
+		inif.setIntegerProperty("PatientenSuche", "Suchart", suchart, " letzte angewählte Suchart Suchfensters");
+		inif.save();
+*/		
+		SystemConfig.hmPatientenSuchenDlgIni.put("fensterbreite", dim.width);
+		SystemConfig.hmPatientenSuchenDlgIni.put("fensterhoehe", dim.height);
+		SystemConfig.hmPatientenSuchenDlgIni.put("suchart", suchart);
+	}
+/*
+	public void OtherDefaultsRead(){
+		int x = suchart;
+		Dimension dim = Dimension(100, 200);
+		//Dimension dim = SuchenDialog.this.get
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		x = inif.getIntegerProperty("PatientenSuche", "SuchFensterBreite");
+		if ( x > 0 ) dim.width = x;
+		x = inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe");
+		if ( x > 0 ) dim.height = x; 
+		suchart = inif.getIntegerProperty("PatientenSuche", "Suchart");
+//		inif.save();
+	}
+*/
 	
 
 	/**
@@ -356,7 +426,9 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		if (jXTitledPanel == null) {
 			jXTitledPanel = new JXTitledPanel();
 			
-			String kriterium[]={"Nachname Vorname","Patienten-ID","Vorname Nachname",null,null,null,null};
+			// Lemmi 20101212: Erweitert um "Patienten mit aktuellen Rezepten"
+			String kriterium[]={"Nachname Vorname","Patienten-ID","Vorname Nachname","Nur Patienten mit aktuellen Rezepten",null,null,null};
+			
 			jXTitledPanel.setTitle("Suche Patient..."+this.fname+" nach "+kriterium[suchart]);
 			jXTitledPanel.setTitleForeground(Color.WHITE);
 			jXTitledPanel.setName("PatSuchen");
@@ -459,7 +531,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 						Dimension dim = SuchenDialog.this.getSize();
 						int oX = e.getXOnScreen();
 						int oY = e.getYOnScreen();
-						for(int i = 0;i<1;i++){
+						for(int i = 0;i<1;i++){  // Lemmi Frage: Was ist denn das für eine magische Konstruktion: Warum kein switch????
 							if(sizeart==1){ //nord-west
 								dim.width = (oX > orgbounds[0] ? dim.width-(oX-orgbounds[0]) : dim.width+(orgbounds[0]-oX));
 								dim.height = (oY > orgbounds[1] ? dim.height-(oY-orgbounds[1]) : dim.height+(orgbounds[1]-oY));						
@@ -632,39 +704,41 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		ResultSet rs = null;
 		String sstmt = "";
 		//Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
-		Vector<String> reiheVector = new Vector<String>();
+		
+		// Lemmi 20101212: AUSKOMMENTIERT, da hier nicht verwendet !!!
+/*		Vector<String> reiheVector = new Vector<String>();
 		reiheVector.addElement("Nachname");
 		reiheVector.addElement("Nachname");
 		reiheVector.addElement("Geboren");
 		reiheVector.addElement("Patientennummer");
+*/		
 		String[] suche;
 		setCursor(Reha.thisClass.wartenCursor);	
-		if(suchart == 0){
-			
 		
-		if (jTextField.getText().trim().contains(" ") ){
-			suche = jTextField.getText().split(" ");
-			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
-				sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern  from pat5 where n_name LIKE '"+
-				StringTools.Escaped(suche[0].trim()) +"%' AND v_name LIKE '"+StringTools.Escaped(suche[1].trim())+"%' order by n_name,v_name";
-			}else{ //ADS
-				sstmt = "Select n_name,v_name,geboren,pat_intern  from pat5 where n_name LIKE UPPER('"+
-				suche[0].trim() + "%') AND v_name LIKE UPPER('" + StringTools.Escaped(suche[1].trim()) +"%') order by n_name,v_name";
-			}
-		}else{
-			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
-				sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where n_name LIKE '"+
-				StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
-			}else{ //ADS
-				sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where n_name LIKE UPPER('"+
-				StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
-			}
-		}
+		if(suchart == 0){  // "Name Vorname" 
 		
-		}else if(suchart == 1){
+			if (jTextField.getText().trim().contains(" ") ){
+				suche = jTextField.getText().split(" ");
+				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
+					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern  from pat5 where n_name LIKE '"+
+					StringTools.Escaped(suche[0].trim()) +"%' AND v_name LIKE '"+StringTools.Escaped(suche[1].trim())+"%' order by n_name,v_name";
+				}else{ //ADS
+					sstmt = "Select n_name,v_name,geboren,pat_intern  from pat5 where n_name LIKE UPPER('"+
+					suche[0].trim() + "%') AND v_name LIKE UPPER('" + StringTools.Escaped(suche[1].trim()) +"%') order by n_name,v_name";
+				}
+			}else{
+				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
+					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where n_name LIKE '"+
+					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
+				}else{ //ADS
+					sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where n_name LIKE UPPER('"+
+					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
+				}
+			}
+		
+		}else if(suchart == 1){    // "Patienten-ID"
 			sstmt = "select n_name,v_name,geboren,pat_intern from pat5 where pat_intern = '"+jTextField.getText().trim()+"' LIMIT 1";
-		}else if(suchart == 2){
-			
+		}else if(suchart == 2){  // "Vorname Name"  (Erweiterung von Drud)
 			
 			if (jTextField.getText().trim().contains(" ") ){
 				suche = jTextField.getText().split(" ");
@@ -685,6 +759,9 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				}
 			}
 			
+		}else if(suchart==3){    		// Lemmi 20101212: Erweitert um "Nur Patienten mit aktuellen Rezepten"
+//			sstmt = "select p.n_name, p.v_name, DATE_FORMAT(p.geboren,'%d.%m.%Y') AS geboren, p.pat_intern, r.rez_nr from pat5 as p INNER JOIN verordn as r ON p.pat_intern = r.pat_intern ORDER BY p.n_name asc, r.rez_nr asc";
+			sstmt = "SELECT p.n_name, p.v_name, DATE_FORMAT(p.geboren,'%d.%m.%Y') AS geboren, p.pat_intern, GROUP_CONCAT(r.rez_nr ORDER BY r.rez_nr ASC SEPARATOR ', ') FROM verordn AS r INNER JOIN pat5 AS p where p.pat_intern = r.pat_intern GROUP BY p.pat_intern ORDER BY P.n_name";
 		}else{
 			return;
 		}
@@ -697,7 +774,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				Vector<String> rowVector = new Vector<String>();
 				while( rs.next()){
 					rowVector.clear();
-					for(int i = 1; i <= 4; i++){
+					//for(int i = 1; i <= 4; i++)
+					for(int i = 1; i <= (suchart == 3 ? 5 : 4 ); i++){  // Lemmi 20101212: optional von 4 auf 5 erweitert
 						rowVector.addElement(rs.getString(i) != null ? rs.getString(i) : "");
 					}
 					setzeReihe((Vector<String>)rowVector.clone());
