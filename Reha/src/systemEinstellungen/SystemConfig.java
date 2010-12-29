@@ -1,9 +1,5 @@
 package systemEinstellungen;
 
-
-
-
-
 import hauptFenster.Reha;
 
 import java.awt.Color;
@@ -158,7 +154,8 @@ public class SystemConfig {
 	public static Vector<String>rezBarCodForm = null;
 	
 
-	public static HashMap<String,Vector<String>> hmTherapBausteine = null; 
+	public static HashMap<String,Vector<String>> hmTherapBausteine = null;
+
 	public static String[] berichttitel = {null,null,null,null};
 	public static String  thberichtdatei = "";
 	public static HashMap<String,ImageIcon> hmSysIcons = null;
@@ -172,9 +169,14 @@ public class SystemConfig {
 	
 	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
 	
-	public static HashMap<String,Object> hmOtherDefaults = new HashMap<String,Object>();
+	public static HashMap<String,Object> hmPatientenWerkzeugDlgIni = new HashMap<String,Object>();
+
+	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog	
+	public static HashMap<String,Integer> hmPatientenSuchenDlgIni = new HashMap<String,Integer>();
 	
-	
+	// Lemmi 20101224 Steuerparanmeter für RGR und AFR Behandlung in OffenePosten und Mahnungen	
+	public static HashMap<String,Integer> hmZusatzInOffenPostenIni = new HashMap<String,Integer>();
+
 	                     
 	public SystemConfig(){
 	
@@ -939,6 +941,96 @@ public class SystemConfig {
 			hmFirmenDaten.put(stitel[i],inif.getStringProperty("Firma",stitel[i] ) );
 		}
 	}
+	
+	
+	// Lemmi 20101224 Steuerparanmeter für RGR und AFR in OffenPosten und Mahnungen, zentral einlesen
+	public static void OffenePostenIni_ReadFromIni(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/offeneposten.ini");
+
+		// Voreinstellung von Defaultwerten
+		hmZusatzInOffenPostenIni.put("RGRinOPverwaltung", 0);
+		hmZusatzInOffenPostenIni.put("AFRinOPverwaltung", 0);
+
+		try{
+			if ( inif.getStringProperty("ZusaetzlicheRechnungen", "RGRinOPverwaltung") != null )  // Prüfung auf Existenz
+				hmZusatzInOffenPostenIni.put("RGRinOPverwaltung", inif.getIntegerProperty("ZusaetzlicheRechnungen", "RGRinOPverwaltung"));
+			if ( inif.getStringProperty("ZusaetzlicheRechnungen", "AFRinOPverwaltung") != null )  // Prüfung auf Existenz
+				hmZusatzInOffenPostenIni.put("AFRinOPverwaltung", inif.getIntegerProperty("ZusaetzlicheRechnungen", "AFRinOPverwaltung"));
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Die Datei 'offeneposten.ini' zur aktuellen IK-Nummer kann nicht gelesen werden.");
+		}
+	}
+	
+
+	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog aus der INI zentral einlesen
+	public static void BedienungIni_ReadFromIni(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		
+//		if ( inif.IsFileLoaded() )
+//			int x = 5;
+		// funktioniert auch mit Defaultwerten, wenn die INI-Datei bis dato NICHT existiert. In BedienungIni_WriteToIni()
+		// wird dann eine komplette INI angelegt !
+		
+		// Voreinstellung von Defaultwerten
+		hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount", 2);
+		hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton", false);
+				
+		if ( inif.getStringProperty("Bedienung", "WerkzeugaufrufMausklicks") != null )  // Prüfung auf Existenz
+			hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount",inif.getIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks") );
+		if ( inif.getStringProperty("Aussehen", "WerkzeugaufrufButtonZeigen") != null )  // Prüfung auf Existenz
+			hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton",(Integer)inif.getIntegerProperty("Aussehen", "WerkzeugaufrufButtonZeigen") == 1 ? true : false );
+		//System.out.println("Default1 = "+hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount"));
+		
+		
+		// Voreinstellung von Defaultwerten
+		hmPatientenSuchenDlgIni.put("suchart",0);
+		hmPatientenSuchenDlgIni.put("fensterbreite", 300);
+		hmPatientenSuchenDlgIni.put("fensterhoehe", 400);
+		try{
+			if ( inif.getStringProperty("PatientenSuche", "Suchart") != null )  // Prüfung auf Existenz
+				hmPatientenSuchenDlgIni.put("suchart", inif.getIntegerProperty("PatientenSuche", "Suchart"));
+			if ( inif.getStringProperty("PatientenSuche", "SuchFensterBreite") != null )  // Prüfung auf Existenz
+				hmPatientenSuchenDlgIni.put("fensterbreite", inif.getIntegerProperty("PatientenSuche", "SuchFensterBreite"));
+			if ( inif.getStringProperty("PatientenSuche", "SuchFensterHoehe") != null )  // Prüfung auf Existenz
+				hmPatientenSuchenDlgIni.put("fensterhoehe", inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe"));
+				
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Die Datei 'bedienung.ini' zur aktuellen IK-Nummer kann nicht gelesen werden.");
+		}
+	}
+
+	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog in die INI schreiben	
+	public static void BedienungIni_WriteToIni(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+
+		// Sofern alle Parameter hier wieder in die INI geschrieben werden, legt das eine komplette INI an !
+	
+		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks", Integer.parseInt(hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount").toString()), " Anzahl Klicks für Werkzeugaufruf");
+		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufButtonZeigen", (Boolean)hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 1 : 0, " Zusatzknopf im Werkzeugdialog");
+		
+		inif.setIntegerProperty("PatientenSuche", "SuchFensterBreite", hmPatientenSuchenDlgIni.get("fensterbreite"), " letzte Breite des Suchfensters");
+		inif.setIntegerProperty("PatientenSuche", "SuchFensterHoehe", hmPatientenSuchenDlgIni.get("fensterhoehe"), " letzte Höhe des Suchfensters");
+		inif.setIntegerProperty("PatientenSuche", "Suchart", hmPatientenSuchenDlgIni.get("suchart"), " letzte angewählte Suchart Suchfensters");
+
+		inif.save();  // Daten wegschreiben
+
+/*		
+		// Wegschreiben der INI-Parameter in die Datenbank TESTHALBER
+		inidb.WritePropInteger("bedienung.ini", "Bedienung", "WerkzeugaufrufMausklicks", 
+								Integer.parseInt(hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount").toString()), "Anzahl Klicks für Werkzeugaufruf");
+		inidb.WritePropInteger("bedienung.ini", "Bedienung", "WerkzeugaufrufButtonZeigen", 
+								(Boolean)hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 1 : 0, "Zusatzknopf im Werkzeugdialog");
+	
+		inidb.WritePropInteger("bedienung.ini", "PatientenSuche", "SuchFensterBreite", 
+								hmPatientenSuchenDlgIni.get("fensterbreite"), "letzte Breite des Suchfensters"); 
+		inidb.WritePropInteger("bedienung.ini", "PatientenSuche", "SuchFensterHoehe", 
+								hmPatientenSuchenDlgIni.get("fensterhoehe"), " letzte Höhe des Suchfensters");
+		inidb.WritePropInteger("bedienung.ini", "PatientenSuche", "Suchart", 
+								hmPatientenSuchenDlgIni.get("suchart"), " letzte angewählte Suchart im Suchfenster");
+*/		
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public static void FremdProgs(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
@@ -1095,12 +1187,6 @@ public class SystemConfig {
 			JOptionPane.showMessageDialog(null,"Zertifikatsdatenbank nicht vorhanden oder fehlerhaft.\nAbrechnung nach § 302 kann nicht durchgeführt werden.");
 		}
 		//System.out.println("Keystore-Passwort = "+hmAbrechnung.get("hmkeystorepw"));
-	}
-	public static void OtherDefaultsInit(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
-		hmOtherDefaults.put("ToolsDlgClickCount",(Integer)inif.getIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks") );
-		hmOtherDefaults.put("ToolsDlgShowButton",(Boolean)(inif.getIntegerProperty("Aussehen", "WerkzeugaufrufButtonZeigen")==0 ? false : true) );
-		//System.out.println("Default1 = "+hmOtherDefaults.get("ToolsDlgClickCount"));
 	}
 	
 	public static void JahresUmstellung(){

@@ -256,6 +256,10 @@ private JScrollPane getParameterListe(){
 	*/ 
 	treeitem = new DefaultMutableTreeNode("Kostenträgerdatei einlesen");
 	node.add(treeitem ); 
+
+	// Lemmi 20101228: OP & Mahnungen eingebaut
+	treeitem = new DefaultMutableTreeNode( "Offene Posten & Mahnung");
+	node.add(treeitem);
 	root.add(node);
 	/***/
 	node = new DefaultMutableTreeNode( "sonstige Einstellungen");
@@ -272,10 +276,17 @@ private JScrollPane getParameterListe(){
 	//
 	treeitem = new DefaultMutableTreeNode( "Befreiungen zurücksetzen/Jahreswechsel");
 	node.add(treeitem);
+	//root.add(node);
+	/***/
+	// Lemmi 20101225: Bedienung eingebaut
+	treeitem = new DefaultMutableTreeNode( "Bedienung");
+	node.add(treeitem);
 	root.add(node);
+	
 	/***/
 	node = new DefaultMutableTreeNode( "Software-Updateservice");
 	root.add(node);
+	
 
 
 
@@ -704,10 +715,36 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
-		
-		
-		
 
+		// Lemmi 20101225: Neue Seite Bedienung eingebaut
+		if(util.equals("Bedienung")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilBedienung(null);
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+
+		// Lemmi 20101228: Neue Seite OP & Mahnung eingebaut
+		if(util.equals("Offene Posten & Mahnung")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilOpMahnung(null);
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+
+		
 		if(SystemConfig.hmSysIcons.get("werkzeuge") == null){
 			SystemConfig.hmSysIcons.put("werkzeuge",new ImageIcon(Reha.proghome+"icons/werkzeug.gif"));
 		}
