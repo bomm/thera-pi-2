@@ -1,5 +1,10 @@
 package org.therapi.reha.patient;
 
+// Lemmi 20101212: zusätzliche Imports: Die letzte benutzte Suchart aus der INI-Datei holen und setzen
+import hauptFenster.Reha;
+import systemEinstellungen.INIFile;
+
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -49,7 +54,20 @@ public class PatientToolBarPanel extends JXPanel{
 		setLayout(lay);
 		JLabel lbl = new JLabel("Kriterium:");
 		add(lbl,cc.xy(2,2));
-		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","Patienten-ID","Vorname Name","4.Kriterium noch unbelegt","5.Kriterium noch unbelegt","6.Kriterium noch unbelegt","7.Kriterium noch unbelegt"});
+		
+		// Lemmi 20101212: Erweitert um "Nur Patienten mit aktuellen Rezepten"
+		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","Patienten-ID","Vorname Name","Nur Patienten mit aktuellen Rezepten","5.Kriterium noch unbelegt","6.Kriterium noch unbelegt","7.Kriterium noch unbelegt"});
+			
+		// Lemmi 20101212: Die letzte benutzte Suchart aus der INI-Datei holen und wieder setzen
+/*		int suchart = 0;
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		if ( inif.getStringProperty("PatientenSuche", "Suchart") != null )  // Prüfung auf Existenz
+				suchart = inif.getIntegerProperty("PatientenSuche", "Suchart");
+*/				
+		int suchart = SystemConfig.hmPatientenSuchenDlgIni.get("suchart");
+
+		patientHauptPanel.jcom.setSelectedIndex(suchart);
+		
 		patientHauptPanel.jcom.setBackground(new Color(247,209,176));
 		add(patientHauptPanel.jcom,cc.xyw(15, 2, 3));
 		add(patientHauptPanel.jcom,cc.xyw(4,2,8));
