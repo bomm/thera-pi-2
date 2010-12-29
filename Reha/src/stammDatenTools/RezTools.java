@@ -467,7 +467,7 @@ public class RezTools {
 		//
 		
 		
-		//1. Schritt haben wir bereits Termineintr�ge die man auswerten kann
+		//1. Schritt haben wir bereits Termineinträge die man auswerten kann
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
@@ -670,7 +670,7 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );		
-		for(i = 0;i < 4;i++){
+		for(i = 0;i < 4;i++){   // Lemmi-Doku: Zusammenhang zwischen vecaktrez und Heilmitteln
 			anzahl[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
 			artdbeh[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+8));
 			preise[i] = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));
@@ -696,6 +696,7 @@ public class RezTools {
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)Reha.thisClass.patpanel.vecaktrez.get(48+i) );
 				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
 				
+				// Lemmi Doku: Berechnung der 10% Zuzahlung für die aktuelle HM-Position [i]
 				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
 
 				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
