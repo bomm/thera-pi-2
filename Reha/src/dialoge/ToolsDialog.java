@@ -96,7 +96,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	private JXPanel getContent(JList list){
 		content = new JXPanel(new BorderLayout());
 		content.add(new JScrollPane(list), BorderLayout.CENTER);
-		if((Boolean)SystemConfig.hmOtherDefaults.get("ToolsDlgShowButton")){
+		if( (Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton")){
 			abfeuern = new JButton("ausführen....");
 			abfeuern.setActionCommand("abfeuern");
 			abfeuern.addActionListener(this);
@@ -109,7 +109,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 		toolsMl = new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
+				if(arg0.getClickCount()== (Integer) SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount")){
 					if( ((JComponent)arg0.getSource()) instanceof JList){
 						Reha.toolsDlgRueckgabe = Integer.valueOf(jList.getSelectedIndex());
 						FensterSchliessen("dieses");
@@ -201,7 +201,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
+		if(arg0.getClickCount()== (Integer) SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount")){
 			if( ((JComponent)arg0.getSource()) instanceof JList){
 				Reha.toolsDlgRueckgabe = Integer.valueOf(jList.getSelectedIndex());
 				FensterSchliessen("dieses");
@@ -221,7 +221,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		/*
-		if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
+		if(arg0.getClickCount()== (Integer) SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount")){
 			if( ((JComponent)arg0.getSource()) instanceof JList){
 				this.rueckgabe = jList.getSelectedIndex();
 				FensterSchliessen("dieses");

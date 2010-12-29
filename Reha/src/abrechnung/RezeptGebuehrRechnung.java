@@ -78,6 +78,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	DecimalFormat dcf = new DecimalFormat ( "#########0.00" );
 	String rgnrNummer;
 	boolean buchen;
+	
 	public RezeptGebuehrRechnung(JXFrame owner,String titel,int rueckgabe,HashMap<String,String> hmRezgeb,boolean auchbuchen){
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		this.setUndecorated(true);
@@ -139,7 +140,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	private void setzeFelderOhneBuchung(){
 		try{
 			String cmd = "select reznr,rdatum,rgbetrag,rpbetrag from rgaffaktura where reznr='"+
-			hmRezgeb.get("<rgreznum>")+"' LIMIT 1";
+						hmRezgeb.get("<rgreznum>")+"' LIMIT 1";
 			//System.out.println(cmd);
 			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
 			if(vec.size() <= 0){
@@ -254,6 +255,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		}
 		FensterSchliessen("dieses");
 	}
+	
 	private void buchungStarten(){
 		
 		StringBuffer buf = new StringBuffer();
@@ -267,9 +269,93 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
+		
+		// vvv Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
+		if ( SystemConfig.hmZusatzInOffenPostenIni.get("RGRinOPverwaltung") == 1) {
+			String strHelp = "";
+			StringBuffer buf2 = new StringBuffer();
+			buf2.append("insert into rliste set ");
+			buf2.append("r_nummer='0', ");
+			buf2.append("x_nummer='" + hmRezgeb.get("<rgnr>") + "', ");
+			buf2.append("r_datum='" + DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");  // N_name, V_name
+	
+			// Patienten-Name, Vorname holen und eintragen
+			String cmd = "select n_name, v_name from pat5 where id='" + hmRezgeb.get("<rgpatintern>") + "'";
+			//System.out.println(cmd);
+			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+			if(vec.size() <= 0) strHelp = "Patient, unbekannt";
+			else 				strHelp = vec.get(0).get(0) + ", " + vec.get(0).get(1);  
+			buf2.append("r_kasse='" + strHelp + "', ");
+			
+			// Hole die ersten beiden Buchstaben aus der Rezeptnummer als "Klasse"
+			strHelp = hmRezgeb.get("<rgreznum>");
+			buf2.append("r_klasse='" + strHelp.substring(0, 2) + "', ");
+			
+			buf2.append("r_betrag='" + hmRezgeb.get("<rgbetrag>").replace(",",".") + "', ");
+			buf2.append("r_offen='" + hmRezgeb.get("<rgbetrag>").replace(",",".") + "', ");
+			buf2.append("r_zuzahl='0.00', ");		
+			buf2.append("pat_intern='" + hmRezgeb.get("<rgpatintern>") + "', ");
+			buf2.append("ikktraeger='" + hmRezgeb.get("<rgreznum>") + "'");  // Rezept-Nummer ER23
+			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
+		}
+		// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
 	}
+
+/*	
+	// Lemmi 20101220: Routine zum Umkopieren von rgaffaktura nach rliste
+	private void kopiereAlleRgrNachRliste() {
+		String cmd = "select * from rgaffaktura";
+		String strHelp = "";
+		//System.out.println(cmd);
+		Vector<Vector<String>> vec2 = SqlInfo.holeFelder(cmd);
+		
+		int iSize2 = vec2.size();
+		
+		for ( int z = 0; z < vec2.size(); z++ ){  // Datensatz für Datensatz
+
+			// prüfen, ob diese RGR oder AFR bereits in rliste eingetragen ist
+			cmd = "select x_nummer from rliste where x_nummer='" + vec2.get(z).get(0) + "'";
+			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+//			strHelp = vec.get(0).get(0);
+
+			int iSize = vec.size();
+			
+			if(vec.size() <= 0){  // nur wenn es den Datensatz in rliste noch NICHT gibt
+			
+				StringBuffer buf2 = new StringBuffer();
+				buf2.append("insert into rliste set ");
+				buf2.append("r_nummer='0', ");
+				buf2.append("x_nummer='" + vec2.get(z).get(0) + "', ");
+				buf2.append("r_datum='" + vec2.get(z).get(7) + "', ");
+		
+				// Patienten-Name, Vorname holen und eintragen
+				cmd = "select n_name, v_name from pat5 where id='" + vec2.get(z).get(2) + "'";
+				vec.clear();
+				vec = SqlInfo.holeFelder(cmd);
+				if(vec.size() <= 0) strHelp = "Patient, unbekannt";
+				else 				strHelp = vec.get(0).get(0) + ", " + vec.get(0).get(1);
+				buf2.append("r_kasse='" + strHelp + "', ");
+				
+				strHelp = vec2.get(z).get(1);
+				buf2.append("r_klasse='" + strHelp.substring(0, 2) + "', ");  // Hole die ersten beiden Buchstaben aus der Rezeptnummer als "Klasse"
+				
+				buf2.append("r_betrag='" + vec2.get(z).get(3) + "', ");
+				buf2.append("r_offen='" + vec2.get(z).get(4) + "', ");
+				buf2.append("r_zuzahl='0.00', ");		
+				buf2.append("pat_intern='" + vec2.get(z).get(2) + "', ");
+				buf2.append("ikktraeger='" + vec2.get(z).get(1) + "' ");  // Rezept-Nummer ER23
+				sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
+			}
+		}
+	}
+*/
+	
 	private void buchungUpdaten(){
 		
+//		kopiereAlleRgrNachRliste();
+//		return;
+		
+		// Lemmi Doku: Schreibt die RGR-Buchung in die Datei "rgaffaktura"
 		StringBuffer buf = new StringBuffer();
 		buf.append("update rgaffaktura set ");
 		buf.append("rnr='"+hmRezgeb.get("<rgnr>")+"', ");
@@ -283,6 +369,37 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append(" where rnr='"+hmRezgeb.get("<rgnr>")+"' LIMIT 1");
 		//System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
+		
+		// vvv Lemmi 20101220: Eintrag der RGR auch in die Tabelle "rliste"
+		if ( SystemConfig.hmZusatzInOffenPostenIni.get("RGRinOPverwaltung") == 1) {
+			String strHelp = "";
+			StringBuffer buf2 = new StringBuffer();
+			buf2.append("update rliste set ");
+			buf2.append("r_nummer='0', ");
+			buf2.append("x_nummer='" + hmRezgeb.get("<rgnr>") + "', ");
+			buf2.append("r_datum='" + DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+	
+			// Patienten-Name, Vorname holen und eintragen
+			String cmd = "select n_name, v_name from pat5 where id='" + hmRezgeb.get("<rgpatintern>") + "'";
+			//System.out.println(cmd);
+			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+			if(vec.size() <= 0) strHelp = "Patient, unbekannt";
+			else 				strHelp = vec.get(0).get(0) + ", " + vec.get(0).get(1);  // N_name, V_name
+			buf2.append("r_kasse='" + strHelp + "', ");
+			
+			// Hole die ersten beiden Buchstaben aus der Rezeptnummer als "Klasse"
+			strHelp = hmRezgeb.get("<rgreznum>");
+			buf2.append("r_klasse='" + strHelp.substring(0, 2) + "', ");  
+			
+			buf2.append("r_betrag='" + hmRezgeb.get("<rgbetrag>").replace(",",".") + "', ");
+			buf2.append("r_offen='" + hmRezgeb.get("<rgbetrag>").replace(",",".") + "', ");
+			buf2.append("r_zuzahl='0.00', ");		
+			buf2.append("pat_intern='" + hmRezgeb.get("<rgpatintern>") + "', ");
+			buf2.append("ikktraeger='" + hmRezgeb.get("<rgreznum>") + "' ");  // Rezept-Nummer ER23
+			buf2.append(" where x_nummer='" + hmRezgeb.get("<rgnr>") + "' LIMIT 1");
+			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
+		}
+		// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
 	}
 	
 	@SuppressWarnings("unchecked")
