@@ -1,6 +1,8 @@
 package offenePosten;
 
+import hauptFenster.Reha;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
@@ -16,6 +18,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
+
+import static java.lang.Math.max;
 
 
 
@@ -38,7 +42,7 @@ public class OffenePosten implements WindowListener{
 	 * @param args
 	 */
 	public static boolean DbOk;
-	JFrame jFrame;
+	static JFrame jFrame;  // Lemmi 20101225: hier ein "static" eingeführt um die Fensterdimension lesen zu können
 	public static JFrame thisFrame = null;
 	public Connection conn;
 	public static OffenePosten thisClass;
@@ -56,13 +60,13 @@ public class OffenePosten implements WindowListener{
 	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
 	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
-	public static String dbIpAndName = "jdbc:mysql://192.168.2.3:3306/rtadaten";
-	public static String dbUser = "rtauser";
-	public static String dbPassword = "rtacurie";
-	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
-	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
-	public static String progHome = "C:/RehaVerwaltung/";
-	public static String aktIK = "510841109";
+	public static String dbIpAndName = "jdbc:mysql://192.168.0.172:3306/kgprax";
+	public static String dbUser = "thera";
+	public static String dbPassword = "thera";
+	public static String officeProgrammPfad = "c:/Programme/OpenOffice.org 3";
+	public static String officeNativePfad = "c:/RehaVerwaltung/Libraries/lib/openofficeorg/";
+	public static String progHome = "c:/RehaVerwaltung/";
+	public static String aktIK = "480952331";
 
 	public static HashMap<String,Object> mahnParameter = new HashMap<String,Object>();
 	
@@ -70,22 +74,30 @@ public class OffenePosten implements WindowListener{
 	public static HashMap<String,String> hmFirmenDaten  = null;
 	public static HashMap<String,String> hmAdrPDaten = new HashMap<String,String>();
 	/*
-	public static String hmRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
-	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
-	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
-	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivat.ott.Kopie.ott";
+	public static String hmRechnungPrivat = "c:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String hmRechnungKasse = "c:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String rhRechnungPrivat = "c:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
+	public static String rhRechnungKasse = "c:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	*/
+
+	// Lemmi 20101225 Fenstergröße in OffenePosten und Mahnungen	
+	public static HashMap<String,Integer> hmOffenPostenDlgIni = new HashMap<String,Integer>();
+
+
 	
 	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
 		OffenePosten application = new OffenePosten();
 		application.getInstance();
-		
+
 		if(args.length > 0 || testcase){
 			if(!testcase){
-				System.out.println("hole daten aus INI-Datei "+args[0]);
-				INIFile inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
+				progHome = args[0];
+				aktIK = args[1];
+				
+				System.out.println("hole daten aus INI-Datei "+progHome);
+				INIFile inif = new INIFile(progHome+"ini/"+aktIK+"/rehajava.ini");
 				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
 				dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
 				String pw = inif.getStringProperty("DatenBank","DBPasswort1");
@@ -98,30 +110,27 @@ public class OffenePosten implements WindowListener{
 					decrypted = new String("");
 				}
 				dbPassword = decrypted.toString();
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/fremdprog.ini");
+				
+				inif = new INIFile(progHome+"ini/"+aktIK+"/fremdprog.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
-				progHome = args[0];
-				aktIK = args[1];
 				
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/offeneposten.ini");
-				mahnParameter.put("frist1", (Integer) inif.getIntegerProperty("General","TageBisMahnung1") );
-				mahnParameter.put("frist2", (Integer) inif.getIntegerProperty("General","TageBisMahnung2") );
-				mahnParameter.put("frist3", (Integer) inif.getIntegerProperty("General","TageBisMahnung3") );
-				mahnParameter.put("einzelmahnung", (Boolean) (inif.getIntegerProperty("General","EinzelMahnung").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-				mahnParameter.put("drucker", (String) inif.getStringProperty("General","MahnungDrucker") );
-				mahnParameter.put("exemplare", (Integer) inif.getIntegerProperty("General","MahnungExemplare") );
-				mahnParameter.put("inofficestarten", (Boolean) (inif.getIntegerProperty("General","InOfficeStarten").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-				mahnParameter.put("erstsuchenab", (String) inif.getStringProperty("General","AuswahlErstAb") );
-				mahnParameter.put("formular1", (String) inif.getStringProperty("General","FormularMahnung1")  );
-				mahnParameter.put("formular2", (String) inif.getStringProperty("General","FormularMahnung2")  );
-				mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
-				mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
-				mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
-				AbrechnungParameter(progHome);
-				FirmenDaten(progHome);
+				// Lemmi 20101225: Fenstergröße in OffenePosten und Mahnungen
+				// .. hier auch gleich alle anderen Paramter aus der offenposten.ini mit in die Routine verfrachtet
+				OffenePostenIni_ReadFromIni();
 
 			}else{
+				
+				// Lemmi 20101225: Fenstergröße in OffenePosten und Mahnungen
+				INIFile inif = new INIFile(progHome + "ini/" + aktIK + "/offeneposten.ini");
+				hmOffenPostenDlgIni.put("fensterbreite", 1000);
+				hmOffenPostenDlgIni.put("fensterhoehe", 750);
+				if ( inif.getStringProperty("DialogFenster", "FensterBreite") != null )  // Prüfung auf Existenz
+					hmOffenPostenDlgIni.put("fensterbreite", inif.getIntegerProperty("DialogFenster", "FensterBreite"));
+				if ( inif.getStringProperty("DialogFenster", "FensterHoehe") != null )  // Prüfung auf Existenz
+					hmOffenPostenDlgIni.put("fensterhoehe", inif.getIntegerProperty("DialogFenster", "FensterHoehe"));
+
+				
 				mahnParameter.put("frist1", (Integer) 31 );
 				mahnParameter.put("frist2", (Integer) 11 );
 				mahnParameter.put("frist3", (Integer) 11);
@@ -135,10 +144,12 @@ public class OffenePosten implements WindowListener{
 				mahnParameter.put("formular3", (String) "2009-01-01" );
 				mahnParameter.put("formular4", (String) "2009-01-01" );
 				mahnParameter.put("diralterechnungen", "l:/projekte/rta/dbf/rechnung/" );
-				AbrechnungParameter(progHome);
-				FirmenDaten(progHome);
 
 			}
+			AbrechnungParameter(progHome);
+			FirmenDaten(progHome);
+			
+
 			if(testcase){
 				System.out.println(mahnParameter);
 				System.out.println("TestCase = "+testcase);
@@ -167,7 +178,11 @@ public class OffenePosten implements WindowListener{
 						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
 						System.exit(0);
 					}
-					OffenePosten.starteOfficeApplication();
+					try{
+						OffenePosten.starteOfficeApplication();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 					return null;
 				}
 				
@@ -177,9 +192,61 @@ public class OffenePosten implements WindowListener{
 			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\nReha-Statistik kann nicht gestartet werden");
 			System.exit(0);
 		}
-		
+
 	}
 	/********************/
+
+	// Lemmi 20101225: Fenstergröße in OffenePosten und Mahnungen
+	public static void OffenePostenIni_ReadFromIni(){
+		INIFile inif = new INIFile(progHome + "ini/" + aktIK + "/offeneposten.ini");
+
+		// Voreinstellung von Defaultwerten
+		hmOffenPostenDlgIni.put("fensterbreite", 1000);
+		hmOffenPostenDlgIni.put("fensterhoehe", 750);
+		
+		if ( inif.getStringProperty("DialogFenster", "FensterBreite") != null )  // Prüfung auf Existenz
+			hmOffenPostenDlgIni.put("fensterbreite", inif.getIntegerProperty("DialogFenster", "FensterBreite"));
+		if ( inif.getStringProperty("DialogFenster", "FensterHoehe") != null )  // Prüfung auf Existenz
+			hmOffenPostenDlgIni.put("fensterhoehe", inif.getIntegerProperty("DialogFenster", "FensterHoehe"));
+	
+		
+//		inif = new INIFile(progHome+"ini/"+aktIK+"/offeneposten.ini");
+		mahnParameter.put("frist1", (Integer) inif.getIntegerProperty("General","TageBisMahnung1") );
+		mahnParameter.put("frist2", (Integer) inif.getIntegerProperty("General","TageBisMahnung2") );
+		mahnParameter.put("frist3", (Integer) inif.getIntegerProperty("General","TageBisMahnung3") );
+		mahnParameter.put("einzelmahnung", (Boolean) (inif.getIntegerProperty("General","EinzelMahnung").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
+		mahnParameter.put("drucker", (String) inif.getStringProperty("General","MahnungDrucker") );
+		mahnParameter.put("exemplare", (Integer) inif.getIntegerProperty("General","MahnungExemplare") );
+		mahnParameter.put("inofficestarten", (Boolean) (inif.getIntegerProperty("General","InOfficeStarten").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
+		mahnParameter.put("erstsuchenab", (String) inif.getStringProperty("General","AuswahlErstAb") );
+		mahnParameter.put("formular1", (String) inif.getStringProperty("General","FormularMahnung1")  );
+		mahnParameter.put("formular2", (String) inif.getStringProperty("General","FormularMahnung2")  );
+		mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
+		mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
+		mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
+	}
+	
+	// Lemmi 20101224 Steuerparanmeter für RGR und AFR in OffenPosten und Mahnungen, zentral abspeichern
+	public static void OffenePostenIni_WriteToIni(){
+		INIFile inif = new INIFile(progHome + "ini/" + aktIK + "/offeneposten.ini");
+
+		// akuelle Dimension des jFrame bestimmen und eintragen
+		Dimension dim = jFrame.getSize();
+		hmOffenPostenDlgIni.put("fensterbreite", max(dim.width, 584 ) );  // nicht niedriger als 584
+		hmOffenPostenDlgIni.put("fensterhoehe", max(dim.height, 504 ) );  // nicht schmäler als 504
+		
+		inif.setIntegerProperty("DialogFenster", "FensterBreite", hmOffenPostenDlgIni.get("fensterbreite"), " letzte Breite des Suchfensters");
+		inif.setIntegerProperty("DialogFenster", "FensterHoehe", hmOffenPostenDlgIni.get("fensterhoehe"), " letzte Höhe des Suchfensters");
+
+		inif.save();  // Daten wegschreiben
+	}	
+
+	// Lemmi 20101225: Operationen, die auf jeden Fall vor Programmende ausgeführt werden müssen
+	public void doBeforeExitAufJedenFall() {
+		// Lemmi 20101225 Fenster-Größen in OffenPosten und Mahnungen, zentral abspeichern
+		OffenePostenIni_WriteToIni();
+	}
+
 	
 	public JFrame getJFrame(){
 		try {
@@ -196,7 +263,13 @@ public class OffenePosten implements WindowListener{
 		thisClass = this;
 		jFrame = new JFrame();
 		jFrame.addWindowListener(this);
-		jFrame.setSize(1000,750);
+
+		// Lemmi 20101225: Merken und Wiederverwenden der ggf. neu eingestellten Fenstergröße
+		if( testcase )
+			jFrame.setSize(1000,750);
+		else 
+			jFrame.setSize(hmOffenPostenDlgIni.get("fensterbreite"), hmOffenPostenDlgIni.get("fensterhoehe")) ;
+
 		jFrame.setTitle("Thera-Pi  Offene-Posten / Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
@@ -310,6 +383,10 @@ public class OffenePosten implements WindowListener{
 				e.printStackTrace();
 			}
 		}
+
+		// Lemmi 20101215: Auf jeden Fall vor dem Ende durchführen:
+		doBeforeExitAufJedenFall();
+		
 		System.exit(0);
 	}
 	@Override
@@ -322,6 +399,9 @@ public class OffenePosten implements WindowListener{
 				e.printStackTrace();
 			}
 		}
+		// Lemmi 20101215: Auf jeden Fall vor dem Ende durchführen:
+		doBeforeExitAufJedenFall();
+		
 		System.exit(0);
 	}
 	@Override
@@ -457,6 +537,5 @@ public class OffenePosten implements WindowListener{
             e.printStackTrace();
         }
     }
-	
 
 }

@@ -1246,7 +1246,6 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	
 	/*********************************************************************/	
 	public void starteDokument(String url) throws Exception{
-		System.out.println("Starte Dokument = "+url);
 		IDocumentService documentService = null;;
 		documentService = OffenePosten.officeapplication.getDocumentService();
 		IDocumentDescriptor docdescript = new DocumentDescriptor();
