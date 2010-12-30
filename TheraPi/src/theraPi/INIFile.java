@@ -12,7 +12,7 @@ package theraPi;
  * 07/07/2004    - Added support for data type specific getters and setters.
  *                 Updated main method to reflect above changes.
  * 26/08/2004    - Added support for section level and property level comments.
- *                 Introduction of seperate class for property values.
+ *                 Introduction of separate class for property values.
  *                 Added addSection method.
  *                 Sections and properties now retail their order (LinkedHashMap)
  *                 Method implementation changes.
