@@ -9,6 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 import javax.swing.BorderFactory;
@@ -24,6 +28,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -167,13 +172,94 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		progress.setMaximum(umstellrezept-1);
 		progress.setStringPainted(true);
 		int atmen = 0;
+		String reznr = "";
+		String patintern = "";
+		String patname = "";
+		String meldung = "";
+		int anfrage = -1;
+		int anzahl = -1;
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(new File(Reha.proghome+"umstellung"+reset+".txt")));
+		} catch (IOException e1) {
+			JOptionPane.showMessageDialog(null,"Fehler im BufferedWriter");
+			e1.printStackTrace();
+		}
+
 		for(int i = 0; i < umstellrezept;i++ ){
 			progress.setValue(i);
 			//cmd = "select * from verordn where id = '"+vec.get(i).get(0)+"' LIMIT 1";
 			//SqlInfo.holeFelder(cmd);
-			cmd = "update verordn set befr='F',rez_geb='0.00',rez_bez='F',zzstatus='2',jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
-			System.out.println(cmd);
-			SqlInfo.sqlAusfuehren(cmd);
+			try{
+				anzahl = RezTools.holeEinzelTermineAusRezept("",SqlInfo.holeEinzelFeld("select termine from verordn where id='"+vec.get(i).get(0)+"' LIMIT 1")).size();
+				reznr = SqlInfo.holeEinzelFeld("select rez_nr from verordn where id='"+vec.get(i).get(0)+"' LIMIT 1");
+				patintern = SqlInfo.holeEinzelFeld("select pat_intern from verordn where id='"+vec.get(i).get(0)+"' LIMIT 1");
+				patname = SqlInfo.holeEinzelFeld("select concat(n_name,', ',v_name) as name from pat5 where pat_intern='"+patintern+"' LIMIT 1");
+				int aktbefreit = -1;
+				try{
+					aktbefreit = Integer.parseInt( 
+							SqlInfo.holeEinzelFeld("select bef_dat from pat5 where pat_intern='"+patintern+"' LIMIT 1").substring(0,4));
+					
+				}catch(Exception ex){
+					writer.newLine();
+					writer.write("!!!!!!!!!Fehler bei Rezept --> "+reznr+" - Patient: "+patname+" ***********************");
+					writer.newLine();
+					aktbefreit = Integer.parseInt(reset);
+				}
+				
+				if(anzahl >= Integer.parseInt(SqlInfo.holeEinzelFeld("select anzahl1 from verordn where id='"+vec.get(i).get(0)+"' LIMIT 1"))){
+					//Wenn das Rezept bereits voll ist.....
+					meldung = "Das Rezept ->"+reznr+" hat bereits "+Integer.toString(anzahl)+" Termine und ist damit voll.\n"+
+					"Patient: "+patname+"\n\n"+
+					"Den Befreiungsstatus für dieses Rezept auf BEFREIT belassen?\n";
+					anfrage = JOptionPane.showConfirmDialog(null, meldung, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+					if(anfrage == JOptionPane.YES_OPTION){
+						cmd = "update verordn set jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
+						SqlInfo.sqlAusfuehren(cmd);
+						writer.write("!!!!!!!!!Rezept voll nicht umgesetzt --> "+reznr+" - Patient: "+patname+" ***********************");
+						writer.newLine();
+					}else{
+						cmd = "update verordn set befr='F',rez_geb='0.00',rez_bez='F',zzstatus='2',jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
+						SqlInfo.sqlAusfuehren(cmd);
+						writer.write("Rezept voll aber trotzdem umgesetzt --> "+reznr+" - Patient: "+patname+" ***********************");
+						writer.newLine();
+					}
+				}else{
+					if(aktbefreit <= Integer.parseInt(reset)){
+						cmd = "update verordn set befr='F',rez_geb='0.00',rez_bez='F',zzstatus='2',jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
+						SqlInfo.sqlAusfuehren(cmd);
+						writer.write("Rezept regulär umgesetzt --> "+reznr+" - Patient: "+patname+" ***********************");
+						writer.newLine();
+					}else{
+						meldung = "Der Patient: "+patname+" hat bereits eine Befreiung für das Jahr "+
+						Integer.toString(aktbefreit)+" eingetragen!\n"+
+						"Soll das Rezept --> "+reznr+" auf Status BEFREIT belassen werden?\n";
+						anfrage = JOptionPane.showConfirmDialog(null, meldung, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+						if(anfrage == JOptionPane.YES_OPTION){
+							cmd = "update verordn set jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
+							SqlInfo.sqlAusfuehren(cmd);
+							writer.write("!!!!!!!!!Rezept nicht!!!! umgesetzt --> "+reznr+" - Patient: "+patname+" ist bereits für "+Integer.toString(aktbefreit)+" befreit");
+							writer.newLine();
+						}else{
+							cmd = "update verordn set befr='F',rez_geb='0.00',rez_bez='F',zzstatus='2',jahrfrei='"+reset+"' where id='"+vec.get(i).get(0)+"' LIMIT 1";
+							SqlInfo.sqlAusfuehren(cmd);
+							writer.write("Rezept regulär umgesetzt --> "+reznr+" - Patient: "+patname+" ***********************");
+							writer.newLine();
+						}
+						
+					}
+				}
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Achtung es ist ein Fehler aufgetreten bei der Umstellung des Rezeptes mit id = "+vec.get(i).get(0));
+				try {
+					writer.newLine();
+					writer.write("!!!!!!!!!Fehler bei Rezept --> "+reznr+" - Patient: "+patname+" ***********************");
+					writer.newLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				ex.printStackTrace();
+			}
 			atmen++;
 			if(atmen > 10){
 				try {
@@ -184,14 +270,29 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 				atmen = 0;
 			}
 		}
-		//dann den Patstamm updaten mit einem updatebefehl
-		cmd = "update pat5 set befreit='F',bef_ab=null,bef_dat=null,jahrfrei='"+reset+"' where befreit = 'T' and bef_dat like '"+reset+"%'";
-		SqlInfo.sqlAusfuehren(cmd);
-		//System.out.println(cmd);
-		//dann die jahresabschluss Tabelle auf Vordermann bringen
-		cmd = "update jahresabschluss set altesjahr='"+reset+"',umgestellt='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'";
-		SqlInfo.sqlAusfuehren(cmd);
-		//System.out.println(cmd);
+		try{
+			//dann den Patstamm updaten mit einem updatebefehl
+			cmd = "update pat5 set befreit='F',bef_ab=null,bef_dat=null,jahrfrei='"+reset+"' where befreit = 'T' and bef_dat like '"+reset+"%'";
+			SqlInfo.sqlAusfuehren(cmd);
+			writer.newLine();
+			writer.write(cmd);
+			writer.newLine();
+			//System.out.println(cmd);
+			//dann die jahresabschluss Tabelle auf Vordermann bringen
+			cmd = "update jahresabschluss set altesjahr='"+reset+"',umgestellt='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			writer.newLine();
+			writer.write(cmd);
+			writer.newLine();
+			//System.out.println(cmd);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Umsetzung der Patienten");
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void doTesten(){
