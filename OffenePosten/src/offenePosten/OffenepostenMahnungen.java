@@ -79,8 +79,25 @@ public class OffenepostenMahnungen extends JXPanel{
 	ButtonGroup bgroup = new ButtonGroup();
 	JRtaRadioButton[] rbMahnart = {null,null,null,null};
 	JButton suchen = null;
+
+	// Lemmi-Doku: Das sind die Textfelder auf der linken Seite
+	JRtaTextField[] rtfs = {null,null,null,null,null,
+							null,null,null,null,null,
+							null,null}; 
+	// Lemmi 20110102: Harte Indices ersetzt durch sprechende Namen
+	final int cMNAME1 = 0;
+	final int cMNAME2 = 1;
+	final int cMSTRASSE = 2;
+	final int cMPLZORT = 3;
+	final int cMRNUMMER = 4;
+	final int cMRDATUM = 5;
+	final int cMRBETRAG = 6;
+	final int cMROFFEN = 7;
+	final int cMMAHNDAT1 = 8;
+	final int cMMAHNDAT2 = 9;
+	final int cMMAHNDAT3 = 10;
 	
-	JRtaTextField[] rtfs = {null,null,null,null,null,null,null,null,null,null,null,null};
+	
 	JRtaCheckBox cbMahnsperre = null;
 	int aktuelleMahnstufe = 1;  // initialisierung
 	
@@ -127,7 +144,7 @@ public class OffenepostenMahnungen extends JXPanel{
 		content.add(getRechnungDatenPanel(),cc.xy(1,4));
 		content.add(getTablePanel(),cc.xy(2,4,CellConstraints.FILL,CellConstraints.FILL));
 		
-		// Lemmi 20101215: "ButtonPanel" rausgenommen und die Knöpfe im "RechnungDatenPanel" mit eingebaut
+		// Lemmi 20101215: "ButtonPanel" rausgenommen und die Knöpfe direkt im "RechnungDatenPanel" mit eingebaut, damit die Tabelle wachsen kann
 //		content.add(getButtonPanel(),cc.xy(1,6,CellConstraints.FILL,CellConstraints.TOP));
 
 		content.validate();
@@ -184,7 +201,6 @@ public class OffenepostenMahnungen extends JXPanel{
 		tab.getColumn(eSpalte.cR_NUMMER.iValue).setMinWidth(0);
 		tab.getColumn(eSpalte.cR_NUMMER.iValue).setMaxWidth(0);
 
-		
 		tab.getSelectionModel().addListSelectionListener( new MahnungListSelectionHandler());
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		
@@ -217,69 +233,69 @@ public class OffenepostenMahnungen extends JXPanel{
 		
 		lab = new JLabel("Name1");
 		rechnungpan.add(lab,cc.xy(2,2));
-		rtfs[0] = new JRtaTextField("nix",true);
-		rechnungpan.add(rtfs[0],cc.xy(4,2));
+		rtfs[cMNAME1] = new JRtaTextField("nix",true);
+		rechnungpan.add(rtfs[cMNAME1],cc.xy(4,2));
 		
 		lab = new JLabel("Name2");
 		rechnungpan.add(lab,cc.xy(2,4));
-		rtfs[1] = new JRtaTextField("nix",true);
-		rechnungpan.add(rtfs[1],cc.xy(4,4));
+		rtfs[cMNAME2] = new JRtaTextField("nix",true);
+		rechnungpan.add(rtfs[cMNAME2],cc.xy(4,4));
 
 		lab = new JLabel("Strasse");
 		rechnungpan.add(lab,cc.xy(2,6));
-		rtfs[2] = new JRtaTextField("nix",true);
-		rechnungpan.add(rtfs[2],cc.xy(4,6));
+		rtfs[cMSTRASSE] = new JRtaTextField("nix",true);
+		rechnungpan.add(rtfs[cMSTRASSE],cc.xy(4,6));
 
 		lab = new JLabel("PLZ/Ort");
 		rechnungpan.add(lab,cc.xy(2,8));
-		rtfs[3] = new JRtaTextField("nix",true);
-		rechnungpan.add(rtfs[3],cc.xy(4,8));
+		rtfs[cMPLZORT] = new JRtaTextField("nix",true);
+		rechnungpan.add(rtfs[cMPLZORT],cc.xy(4,8));
 
 		lab = new JLabel("R-Nr.");
 		rechnungpan.add(lab,cc.xy(2,10));
 		// Lemmi 20101220: Die Rechnungs-Nummer kann auch alphanumerisch sein !
-//		rtfs[4] = new JRtaTextField("ZAHLEN",true);
-		rtfs[4] = new JRtaTextField("nix",true);
-		rtfs[4].setFont(fontfett);
-		rechnungpan.add(rtfs[4],cc.xy(4,10));
+//		rtfs[cMRNUMMER] = new JRtaTextField("ZAHLEN",true);
+		rtfs[cMRNUMMER] = new JRtaTextField("nix",true);
+		rtfs[cMRNUMMER].setFont(fontfett);
+		rechnungpan.add(rtfs[cMRNUMMER],cc.xy(4,10));
 
 		lab = new JLabel("R-Datum");
 		rechnungpan.add(lab,cc.xy(2,12));
-		rtfs[5] = new JRtaTextField("DATUM",true);
-		rtfs[5].setFont(fontfett);
-		rechnungpan.add(rtfs[5],cc.xy(4,12));
+		rtfs[cMRDATUM] = new JRtaTextField("DATUM",true);
+		rtfs[cMRDATUM].setFont(fontfett);
+		rechnungpan.add(rtfs[cMRDATUM],cc.xy(4,12));
 
 		lab = new JLabel("R-Betrag");
 		rechnungpan.add(lab,cc.xy(2,14));
-		rtfs[6] = new JRtaTextField("F",true,"6.2","LINKS");
-		rtfs[6].setFont(fontfett);
-		rtfs[6].setForeground(Color.BLUE);
-		rechnungpan.add(rtfs[6],cc.xy(4,14));
+		rtfs[cMRBETRAG] = new JRtaTextField("F",true,"6.2","LINKS");
+		rtfs[cMRBETRAG].setFont(fontfett);
+		rtfs[cMRBETRAG].setForeground(Color.BLUE);
+		rechnungpan.add(rtfs[cMRBETRAG],cc.xy(4,14));
 		
 		lab = new JLabel("R-Offen");
 		rechnungpan.add(lab,cc.xy(2,16));
-		rtfs[7] = new JRtaTextField("F",true,"6.2","LINKS");
-		rtfs[7].setFont(fontfett);
-		rtfs[7].setForeground(Color.RED);
-		rechnungpan.add(rtfs[7],cc.xy(4,16));
+		rtfs[cMROFFEN] = new JRtaTextField("F",true,"6.2","LINKS");
+		rtfs[cMROFFEN].setFont(fontfett);
+		rtfs[cMROFFEN].setForeground(Color.RED);
+		rechnungpan.add(rtfs[cMROFFEN],cc.xy(4,16));
 		
 		lab = new JLabel("1. Mahnung");
 		rechnungpan.add(lab,cc.xy(2,18));
-		rtfs[8] = new JRtaTextField("DATUM",true);
-		rtfs[8].setFont(fontfett);
-		rechnungpan.add(rtfs[8],cc.xy(4,18));
+		rtfs[cMMAHNDAT1] = new JRtaTextField("DATUM",true);
+		rtfs[cMMAHNDAT1].setFont(fontfett);
+		rechnungpan.add(rtfs[cMMAHNDAT1],cc.xy(4,18));
 
 		lab = new JLabel("2. Mahnung");
 		rechnungpan.add(lab,cc.xy(2,20));
-		rtfs[9] = new JRtaTextField("DATUM",true);
-		rtfs[9].setFont(fontfett);
-		rechnungpan.add(rtfs[9],cc.xy(4,20));
+		rtfs[cMMAHNDAT2] = new JRtaTextField("DATUM",true);
+		rtfs[cMMAHNDAT2].setFont(fontfett);
+		rechnungpan.add(rtfs[cMMAHNDAT2],cc.xy(4,20));
 		
 		lab = new JLabel("3. Mahnung");
 		rechnungpan.add(lab,cc.xy(2,22));
-		rtfs[10] = new JRtaTextField("DATUM",true);
-		rtfs[10].setFont(fontfett);
-		rechnungpan.add(rtfs[10],cc.xy(4,22));
+		rtfs[cMMAHNDAT3] = new JRtaTextField("DATUM",true);
+		rtfs[cMMAHNDAT3].setFont(fontfett);
+		rechnungpan.add(rtfs[cMMAHNDAT3],cc.xy(4,22));
 		
 		lab = new JLabel("Mahnsperre?");
 		rechnungpan.add(lab,cc.xy(2,24));
@@ -417,22 +433,23 @@ public class OffenepostenMahnungen extends JXPanel{
 	// Lemmi 20101220: In der ganzen Routine harte Spalten-Zahlen ersetzt durch "eSpalte.c??????.iValue"
 	private void doMahnungStarten(){
 		if(cbMahnsperre.isSelected()){
-			JOptionPane.showMessageDialog(null,"Diese Rechnung ist mit einer Mahnsperre belegt und kann deshalb nicht angemaht werden!");
+			JOptionPane.showMessageDialog(null,"Diese Rechnung ist mit einer Mahnsperre belegt und kann deshalb nicht angemahnt werden!");
 			return;
 		}
 		initHashMap();
-		mahnParameter.put("<Mname1>", rtfs[0].getText().trim());		
-		mahnParameter.put("<Mname2>", rtfs[1].getText().trim());
-		mahnParameter.put("<Mstrasse>", rtfs[2].getText().trim());
-		mahnParameter.put("<Mplzort>", rtfs[3].getText().trim());
-		mahnParameter.put("<Mrnummer>", rtfs[4].getText().trim());
-		mahnParameter.put("<Mrdatum>", rtfs[5].getText().trim());
-		mahnParameter.put("<Mrbetrag>", rtfs[6].getText().trim());
-		mahnParameter.put("<Mroffen>", rtfs[7].getText().trim());
+		mahnParameter.put("<Mname1>", rtfs[cMNAME1].getText().trim());		
+		mahnParameter.put("<Mname2>", rtfs[cMNAME2].getText().trim());
+		mahnParameter.put("<Mstrasse>", rtfs[cMSTRASSE].getText().trim());
+		mahnParameter.put("<Mplzort>", rtfs[cMPLZORT].getText().trim());
+		mahnParameter.put("<Mrnummer>", rtfs[cMRNUMMER].getText().trim());
+		mahnParameter.put("<Mrdatum>", rtfs[cMRDATUM].getText().trim());
+		mahnParameter.put("<Mrbetrag>", rtfs[cMRBETRAG].getText().trim());
+		mahnParameter.put("<Mroffen>", rtfs[cMROFFEN].getText().trim());
 		mahnParameter.put("<Mheute>", DatFunk.sHeute());
-		mahnParameter.put("<Mmahndat1>", (rtfs[8].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));
-		mahnParameter.put("<Mmahndat2>", (rtfs[9].getText().trim().length()==10 ? rtfs[9].getText().trim() : ""));
-		mahnParameter.put("<Mmahndat3>", (rtfs[10].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));
+		mahnParameter.put("<Mmahndat1>", (rtfs[cMMAHNDAT1].getText().trim().length()==10 ? rtfs[cMMAHNDAT1].getText().trim() : ""));
+		mahnParameter.put("<Mmahndat2>", (rtfs[cMMAHNDAT2].getText().trim().length()==10 ? rtfs[cMMAHNDAT2].getText().trim() : ""));
+//		mahnParameter.put("<Mmahndat3>", (rtfs[10].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));      Lemmi Fehler: die letzte 8 ist falsch
+		mahnParameter.put("<Mmahndat3>", (rtfs[cMMAHNDAT3].getText().trim().length()==10 ? rtfs[cMMAHNDAT3].getText().trim() : ""));  // Lemmi 20110102: obigen Fehler korrigiert
 		String datei = OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/Mahnung"+Integer.toString(aktuelleMahnstufe)+".ott";
 		try{
 			starteMahnDruck(datei);
@@ -497,11 +514,12 @@ public class OffenepostenMahnungen extends JXPanel{
 		mahnParameter.put("<Mmahndat3>", "");
 	}
 	
+	// Lemmi-Doku: lösche alle Eingebfelder auf der linken Seite
 	private void doAllesAufNull(){
-		for(int i = 0;i < 11; i++){
-			if(i==5 || i==8 || i==9 || i==10){
+		for(int i = 0;i < rtfs.length; i++){
+			if(i==cMRDATUM || i==cMMAHNDAT1 || i==cMMAHNDAT2 || i==cMMAHNDAT3 ){  // Lemmi-Doku: Das sind Datums-Felder
 				rtfs[i].setText("  .  .    ");
-			}else{
+			}else{								// Lemmi Doku: Das sind die Text-Eingabefelder
 				rtfs[i].setText("");				
 			}
 		}
@@ -686,7 +704,8 @@ public class OffenepostenMahnungen extends JXPanel{
 	    }
 */
 		public boolean isCellEditable(int row, int col) {
-			if(col==12){  // Lemmi Frage: was immer hier mal mit der Spalte 12 gemeint war ????
+//			if(col==12){  // Lemmi Frage: was immer hier mal mit der Spalte 12 gemeint war ???? Nach alter rListe ist es die Mahnsperre !
+			if ( col == eSpalte.cMAHNSPERR.iValue ) {
 				return true;				
 			}
 			return false;
@@ -780,40 +799,40 @@ public class OffenepostenMahnungen extends JXPanel{
 			JOptionPane.showMessageDialog(null, "Rechnungsdaten können nicht ermittelt werden");
 			return;
 		}
-		rtfs[0].setText( vecx.get(0).get(0));
-		rtfs[1].setText( vecx.get(0).get(1));
-		rtfs[2].setText( vecx.get(0).get(2));
-		rtfs[3].setText( vecx.get(0).get(3)+" "+vecx.get(0).get(4));
+		rtfs[cMNAME1].setText( vecx.get(0).get(0));
+		rtfs[cMNAME2].setText( vecx.get(0).get(1));
+		rtfs[cMSTRASSE].setText( vecx.get(0).get(2));
+		rtfs[cMPLZORT].setText( vecx.get(0).get(3)+" "+vecx.get(0).get(4));
 		
-		rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString() );
-		rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
-		rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
-		rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
+		rtfs[cMRNUMMER].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString() );
+		rtfs[cMRDATUM].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
+		rtfs[cMRBETRAG].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
+		rtfs[cMROFFEN].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
 		
 		Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT1.iValue);
 		if(test==null){
-			rtfs[8].setText("  .  .    ");
+			rtfs[cMMAHNDAT1].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
-			rtfs[8].setText("  .  .    ");	
+			rtfs[cMMAHNDAT1].setText("  .  .    ");	
 		}else{
-			rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
+			rtfs[cMMAHNDAT1].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		
 		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT2.iValue);
 		if(test==null){
-			rtfs[9].setText("  .  .    ");
+			rtfs[cMMAHNDAT2].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
-			rtfs[9].setText("  .  .    ");	
+			rtfs[cMMAHNDAT2].setText("  .  .    ");	
 		}else{
-			rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
+			rtfs[cMMAHNDAT2].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT3.iValue);
 		if(test==null){
-			rtfs[10].setText("  .  .    ");
+			rtfs[cMMAHNDAT3].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
-			rtfs[10].setText("  .  .    ");
+			rtfs[cMMAHNDAT3].setText("  .  .    ");
 		}else{
-			rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
+			rtfs[cMMAHNDAT3].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNSPERR.iValue) );
 		
@@ -831,40 +850,40 @@ public class OffenepostenMahnungen extends JXPanel{
 			JOptionPane.showMessageDialog(null, "Rechnungsdaten können nicht ermittelt werden");
 			return;
 		}
-		rtfs[0].setText( vecx.get(0).get(0));								// anrede
-		rtfs[1].setText( vecx.get(0).get(1) + " " + vecx.get(0).get(2));  	// v_name n_name
-		rtfs[2].setText( vecx.get(0).get(3));								// strasse
-		rtfs[3].setText( vecx.get(0).get(4) +" " + vecx.get(0).get(5)); 	// plz ort
+		rtfs[cMNAME1].setText( vecx.get(0).get(0));								// anrede
+		rtfs[cMNAME2].setText( vecx.get(0).get(1) + " " + vecx.get(0).get(2));  	// v_name n_name
+		rtfs[cMSTRASSE].setText( vecx.get(0).get(3));								// strasse
+		rtfs[cMPLZORT].setText( vecx.get(0).get(4) +" " + vecx.get(0).get(5)); 	// plz ort
 		
-		rtfs[4].setText( (String)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cX_NUMMER.iValue) );
-		rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
-		rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
-		rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
+		rtfs[cMRNUMMER].setText( (String)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cX_NUMMER.iValue) );
+		rtfs[cMRDATUM].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
+		rtfs[cMRBETRAG].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
+		rtfs[cMROFFEN].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
 		
 		Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT1.iValue);
 		if(test==null){
-			rtfs[8].setText("  .  .    ");
+			rtfs[cMMAHNDAT1].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
-			rtfs[8].setText("  .  .    ");	
+			rtfs[cMMAHNDAT1].setText("  .  .    ");	
 		}else{
-			rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
+			rtfs[cMMAHNDAT1].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		
 		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT2.iValue);
 		if(test==null){
-			rtfs[9].setText("  .  .    ");
+			rtfs[cMMAHNDAT2].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
-			rtfs[9].setText("  .  .    ");	
+			rtfs[cMMAHNDAT2].setText("  .  .    ");	
 		}else{
-			rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
+			rtfs[cMMAHNDAT2].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT3.iValue);
 		if(test==null){
-			rtfs[10].setText("  .  .    ");
+			rtfs[cMMAHNDAT3].setText("  .  .    ");
 		}else if(test.toString().trim().length() != 10){
-			rtfs[10].setText("  .  .    ");
+			rtfs[cMMAHNDAT3].setText("  .  .    ");
 		}else{
-			rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
+			rtfs[cMMAHNDAT3].setText(DatFunk.sDatInDeutsch(test.toString()));
 		}
 		cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNSPERR.iValue) );
 		
@@ -885,45 +904,45 @@ public class OffenepostenMahnungen extends JXPanel{
 			if(dbfreader.hasNextRecord()){
 				Object aobj[] = dbfreader.nextRecord();
 				try{
-					rtfs[0].setText( StringTools.EGross((String) aobj[0]) );
-					rtfs[1].setText( StringTools.EGross((String) aobj[1]) );
-					rtfs[2].setText( StringTools.EGross((String) aobj[2]) );
-					rtfs[3].setText( ((String) aobj[3])+" "+StringTools.EGross((String) aobj[4]) );
+					rtfs[cMNAME1].setText( StringTools.EGross((String) aobj[0]) );
+					rtfs[cMNAME2].setText( StringTools.EGross((String) aobj[1]) );
+					rtfs[cMSTRASSE].setText( StringTools.EGross((String) aobj[2]) );
+					rtfs[cMPLZORT].setText( ((String) aobj[3])+" "+StringTools.EGross((String) aobj[4]) );
 					dbfreader.close();
 					dbfreader = null;
 				}catch(Exception ex){
 					ex.printStackTrace();
 					JOptionPane.showConfirmDialog(null,"Keine verwertbaren Adesssdaten vorhanden in 'ehemaliger' Rechnungsdatei "+rdatei);					
 				}
-				rtfs[4].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString() );
-				rtfs[5].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
-				rtfs[6].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
-				rtfs[7].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
+				rtfs[cMRNUMMER].setText( tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_NUMMER.iValue).toString() );
+				rtfs[cMRDATUM].setText( DatFunk.sDatInDeutsch(tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_DATUM.iValue).toString()) );
+				rtfs[cMRBETRAG].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_BETRAG.iValue) ) );
+				rtfs[cMROFFEN].setText( dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cR_OFFEN.iValue) ) );
 				
 				Date test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT1.iValue);
 				if(test==null){
-					rtfs[8].setText("  .  .    ");
+					rtfs[cMMAHNDAT1].setText("  .  .    ");
 				}else if(test.toString().trim().length() != 10){
-					rtfs[8].setText("  .  .    ");	
+					rtfs[cMMAHNDAT1].setText("  .  .    ");	
 				}else{
-					rtfs[8].setText(DatFunk.sDatInDeutsch(test.toString()));
+					rtfs[cMMAHNDAT1].setText(DatFunk.sDatInDeutsch(test.toString()));
 				}
 				
 				test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT2.iValue);
 				if(test==null){
-					rtfs[9].setText("  .  .    ");
+					rtfs[cMMAHNDAT2].setText("  .  .    ");
 				}else if(test.toString().trim().length() != 10){
-					rtfs[9].setText("  .  .    ");	
+					rtfs[cMMAHNDAT2].setText("  .  .    ");	
 				}else{
-					rtfs[9].setText(DatFunk.sDatInDeutsch(test.toString()));
+					rtfs[cMMAHNDAT2].setText(DatFunk.sDatInDeutsch(test.toString()));
 				}
 				test = (Date)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNDAT3.iValue);
 				if(test==null){
-					rtfs[10].setText("  .  .    ");
+					rtfs[cMMAHNDAT3].setText("  .  .    ");
 				}else if(test.toString().trim().length() != 10){
-					rtfs[10].setText("  .  .    ");
+					rtfs[cMMAHNDAT3].setText("  .  .    ");
 				}else{
-					rtfs[10].setText(DatFunk.sDatInDeutsch(test.toString()));
+					rtfs[cMMAHNDAT3].setText(DatFunk.sDatInDeutsch(test.toString()));
 				}
 				cbMahnsperre.setSelected( (Boolean)tabmod.getValueAt(tab.convertRowIndexToModel(row), eSpalte.cMAHNSPERR.iValue) );
 				

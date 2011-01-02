@@ -183,7 +183,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		
 		// Lemmi 20101220: Neuer Knopf zum Storno, sowie Prompt & Eingabefeld für den "Offen"-Betrag.
 		content.add((buts[1] = ButtonTools.macheButton("storno", "storno", al)),cc.xy(16,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		buts[1].setMnemonic('b');
+		buts[1].setMnemonic('x');  // mit ALT+x kann auch storniert werden
 		
 		lab = new JLabel("noch offen:");
 		content.add(lab,cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));

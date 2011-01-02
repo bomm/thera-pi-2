@@ -85,7 +85,7 @@ public class OffenePosten implements WindowListener{
 
 
 	
-	public static boolean testcase = false;
+	public static boolean testcase = true;
 	
 	public static void main(String[] args) {
 		OffenePosten application = new OffenePosten();
