@@ -344,10 +344,18 @@ public class Reha301Auswerten extends JXPanel{
 		StringBuffer buf = new StringBuffer();
 		String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
 		String adress = tab.getValueAt(tab.getSelectedRow(), 5).toString();
+		
 		buf.append("<html>");
+		buf.append(
+		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
+         ".rechtsbuendig {text-align: right;}"+
+         ".zentriert {text-align: center;}"+
+         ".blocksatz {text-align: justify;}"+
+         "</style>" ); 
+
 		buf.append("<table>");
-		buf.append("<tr><td textalign='align-right'>Anrede</td><td>"+pat.split("#")[0]+"</td></tr>");
-		buf.append("<tr><td textalign='align-right'>Name</td><td>"+pat.split("#")[1]+", "+pat.split("#")[2]+"</td></tr>");
+		buf.append("<tr><td class='rechtsbuendig>Anrede</td><td>"+pat.split("#")[0]+"</td></tr>");
+		buf.append("<tr><td class='rechtsbuendig>Name</td><td>"+pat.split("#")[1]+", "+pat.split("#")[2]+"</td></tr>");
 		buf.append("<tr><td>Strasse</td><td>"+adress.split("#")[0]+"</td></tr>");
 		buf.append("<tr><td>Ort</td><td>"+adress.split("#")[1]+" "+adress.split("#")[2]+"</td></tr>");
 		buf.append("</table>");
