@@ -161,7 +161,7 @@ public class Reha301 implements WindowListener  {
 			application.getJFrame();
 			*/
 			
-			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter �bergeben!\nReha-Sql kann nicht gestartet werden");
+			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\nReha-Sql kann nicht gestartet werden");
 			System.exit(0);
 			
 		}
@@ -184,7 +184,7 @@ public class Reha301 implements WindowListener  {
 		thisClass = this;
 		jFrame = new JFrame();
 		jFrame.addWindowListener(this);
-		jFrame.setSize(1000,500);
+		jFrame.setSize(1000,650);
 		jFrame.setTitle("Thera-Pi  §301  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);

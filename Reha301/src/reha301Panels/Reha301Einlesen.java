@@ -5,11 +5,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -22,6 +20,7 @@ import javax.swing.JTextArea;
 
 import org.jdesktop.swingx.JXPanel;
 
+import reha301.Reha301Tab;
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.IntegerTools;
@@ -31,8 +30,6 @@ import Tools.StringTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import reha301.Reha301Tab;
 
 
 public class Reha301Einlesen extends JXPanel{
@@ -278,7 +275,7 @@ public class Reha301Einlesen extends JXPanel{
 		int offset = 0; int numRead = 0; 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String inhalt = null;
-		int zeilen = 0;
+		//int zeilen = 0;
 		while (true) {
 			numRead = is.read(bytes,offset,1);
 			if(numRead > 0){
@@ -876,7 +873,7 @@ public class Reha301Einlesen extends JXPanel{
 				{dbHmap.put("a09", "Eilfall"); return "A09 - J - Eilfall = JA";}
 			}
 			if(index.equals("N"))
-			{dbHmap.put("a09", "");return "A09 - N - Eilfall = NEIN";}
+			{dbHmap.put("a09", "Normalfall");return "A09 - N - Eilfall = NEIN";}
 		}
 		if(art.equals("A10")){
 			if(index.equals("1"))
