@@ -346,7 +346,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 		aktrbut[0] = new JButton();
 		aktrbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
-		aktrbut[0].setToolTipText("neues Rezept anlegen");
+		aktrbut[0].setToolTipText("<html>neues Rezept anlegen<br><br>" +
+								  "Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
+								  "<br>wird das letzte Rezept das Patienten kopiert!");
 		aktrbut[0].setActionCommand("rezneu");
 		aktrbut[0].addActionListener(this);		
 		jtb.add(aktrbut[0]);
@@ -445,7 +447,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 					}
 					if(rezGeschlossen()){return;}
-					neuanlageRezept(false,"");
+					neuanlageRezept(false,"",false);
 				}
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
 				   if(Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
@@ -481,7 +483,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(arg0.getKeyCode()==10){
 					arg0.consume();
 					if(rezGeschlossen()){return;}
-					neuanlageRezept(false,"");
+					neuanlageRezept(false,"",false);
 				}
 				if(arg0.getKeyCode()==27){
 					arg0.consume();
@@ -510,17 +512,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
 	}
 
+	// Lemmi Doku: RMT Menü in "aktuelle Rezepte" zur Einstellung des Zuzahlungsstatus
 	private JPopupMenu getTerminPopupMenu(){
 		JPopupMenu jPopupMenu = new JPopupMenu();
-		JMenuItem item = new JMenuItem("Zuzahlungsstatus auf befreit setzen");
+		// Lemmi 20101231: Icon zugefügt
+		JMenuItem item = new JMenuItem("Zuzahlungsstatus auf befreit setzen", new ImageIcon(Reha.proghome+"icons/frei.png"));
 		item.setActionCommand("statusfrei");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
-		item = new JMenuItem("auf bereits bezahlt setzen");
+		// Lemmi 20101231: Icon zugefügt
+		item = new JMenuItem("... auf bereits bezahlt setzen", new ImageIcon(Reha.proghome+"icons/Haken_klein.gif"));
 		item.setActionCommand("statusbezahlt");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
-		item = new JMenuItem("auf nicht befreit und nicht bezahlt");
+		// Lemmi 20101231: Icon zugefügt
+		item = new JMenuItem("... auf nicht befreit und nicht bezahlt", new ImageIcon(Reha.proghome+"icons/Kreuz.png"));
 		item.setActionCommand("statusnichtbezahlt");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
@@ -1426,6 +1432,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		// TODO Auto-generated method stub
 		
 		String cmd = arg0.getActionCommand();
+		
 		for(int i = 0; i < 1; i++){
 			if(cmd.equals("terminplus")){
 				if(rezGeschlossen()){return;}
@@ -1551,10 +1558,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				if(Reha.thisClass.patpanel.autoPatid <= 0){
 					JOptionPane.showMessageDialog(null,"Oh Herr laß halten...\n\n"+
-							"....und für welchen Patient wollen Sie ein neues Rezept anlegen....");
+							"....und für welchen Patienten wollen Sie ein neues Rezept anlegen....");
 					return;
 				}
-				neuanlageRezept(true,"");
+				// Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage wenn Ctrl gedrückt ist
+				//neuanlageRezept(true,"");
+				//int iCtrlPressed = arg0.CTRL_MASK;
+				//int iModifier = arg0.getModifiers();
+				//System.out.println ( "iCtrlPressed=" + iCtrlPressed + ", iModifier=" + iModifier + "");
+				boolean bCtrlPressed = ( (arg0.getModifiers() & arg0.CTRL_MASK) == arg0.CTRL_MASK ); 
+				neuanlageRezept(true,"", bCtrlPressed);
+				
 				break;
 			}
 			if(cmd.equals("rezedit")){
@@ -1564,7 +1578,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 				if(rezGeschlossen()){return;}
-				neuanlageRezept(false,"");
+				neuanlageRezept(false,"",false);
 				break;
 			}
 			if(cmd.equals("rezdelete")){
@@ -2075,7 +2089,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			int rueckgabe = abrechnungPrivat.rueckgabe;
 			abrechnungPrivat = null;
 			if(rueckgabe==-2){
-				neuanlageRezept(false,"");
+				neuanlageRezept(false,"",false);
 			}
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null, "Funktion privatRechnung(), Exception = "+ex.getMessage());
@@ -2461,7 +2475,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		return "";
 	}
  
-	public void neuanlageRezept(boolean lneu,String feldname){
+
+	// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+//	public void neuanlageRezept( boolean lneu, String feldname ) { 
+	public void neuanlageRezept( boolean lneu, String feldname, boolean bCtrlPressed ){
+
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
@@ -2487,10 +2505,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.getSmartTitledPanel().setPreferredSize(new Dimension (480,630));
 		neuRez.setPinPanel(pinPanel);
 		if(lneu){
-			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname));
-			neuRez.getSmartTitledPanel().setTitle("RezeptNeuanlage");
-		}else{
-			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(Reha.thisClass.patpanel.vecaktrez,lneu,feldname));
+			// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+			//neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname));
+			// neuRez.getSmartTitledPanel().setTitle("RezeptNeuanlage");
+			// vvv Lemmi 20110101:
+			//neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname, bCtrlPressed));
+			RezNeuanlage rezNeuAn = new RezNeuanlage(null,lneu,feldname, bCtrlPressed);
+			neuRez.getSmartTitledPanel().setContentContainer( rezNeuAn );
+			if ( rezNeuAn.strKopiervorlage.isEmpty() )
+				neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
+			else
+				neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage als Kopie von <-- " + rezNeuAn.strKopiervorlage );
+			// ^^^ Lemmi 20110101
+		}else{  // Lemmi Doku: Hier wird ein existierendes Rezept mittels Doppelklick geöffnet:
+			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(Reha.thisClass.patpanel.vecaktrez,lneu,feldname, false));
 			neuRez.getSmartTitledPanel().setTitle("editieren Rezept ---> "+Reha.thisClass.patpanel.vecaktrez.get(1));
 		}
 		neuRez.getSmartTitledPanel().getContentContainer().setName("RezeptNeuanlage");
@@ -2499,6 +2527,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.setLocationRelativeTo(null);
 		neuRez.pack();
 		neuRez.setVisible(true);
+		
 		neuRez.dispose();
 		neuRez = null;
 		pinPanel = null;
@@ -2767,9 +2796,17 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		// TODO Auto-generated method stub
 		try{
-			
+			// Lemmi Doku: hier kommt der Event für den Abbruch des Rezept-Fensters mittels rotem Punkt!!!!!
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
+					
+/* geht hier nicht, weil der Dialog PinPanel trotzdem alles zumacht !					
+					// Lemmi 20100102: Abbruch ohen Änderung-Speichern verhindern
+					if ( ((RezNeuanlage)getSmartTitledPanel().getContentContainer()).HasChanged() &&
+						 ((RezNeuanlage)getSmartTitledPanel().getContentContainer()).askForCancelUsaved() == 1
+					   ) 
+						return;
+*/					
 					//System.out.println("In rezNeuDlg set Visible false***************");
 					this.setVisible(false);
 					this.dispose();
