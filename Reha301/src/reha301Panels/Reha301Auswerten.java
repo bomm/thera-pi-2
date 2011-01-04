@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
+import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,7 +26,9 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import Tools.DatFunk;
 import Tools.INIFile;
 import Tools.JCompTools;
+import Tools.JRtaComboBox;
 import Tools.SqlInfo;
+import Tools.StringTools;
 import Tools.WartenAufDB;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -42,6 +47,8 @@ public class Reha301Auswerten extends JXPanel{
 	public JXTable tab = null;
 	public MyTableModel tabmod;
 	public JEditorPane[] editpan = {null,null,null};
+	public JComboBox patcombo = null;
+	private Vector<Vector<String>> vec_patstamm = null;
 	
 	ActionListener al = null;
 	int anzeigeart = -1;
@@ -50,6 +57,7 @@ public class Reha301Auswerten extends JXPanel{
 	public Reha301Auswerten(Reha301Tab xeltern){
 		super(new BorderLayout());
 		eltern = xeltern;
+		this.ActivateListener();
 		add(getContent(),BorderLayout.CENTER);
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -75,7 +83,7 @@ public class Reha301Auswerten extends JXPanel{
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
 		tabmod = new MyTableModel();
-		tabmod.setColumnIdentifiers(new String[] {"lfnr","import","Sender","Nachrichtentyp","Name, Vorname","Adresse","VSNR","Kostenträger","Krankenkasse","Datum","",""});
+		tabmod.setColumnIdentifiers(new String[] {"lfnr","import","Sender","Nachrichtentyp","Name, Vorname","Adresse","VSNR","Kostenträger","Krankenkasse","Datum","","",""});
 		tab = new JXTable(tabmod);
 		tab.getColumn(0).setMaxWidth(25);
 		tab.getColumn(1).setMaxWidth(45);
@@ -91,7 +99,8 @@ public class Reha301Auswerten extends JXPanel{
 		tab.getColumn(10).setMaxWidth(0);
 		tab.getColumn(11).setMinWidth(0);
 		tab.getColumn(11).setMaxWidth(0);
-
+		tab.getColumn(12).setMinWidth(0);
+		tab.getColumn(12).setMaxWidth(0);
 		tab.setEditable(false);
 		tab.setSortable(false);
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
@@ -163,8 +172,17 @@ public class Reha301Auswerten extends JXPanel{
 		jscr.validate();
         pan.add(jscr,cc.xy(4,4,CellConstraints.FILL,CellConstraints.FILL));
         
-		lab = new JLabel("Patienten Stammdaten");
-		pan.add(lab,cc.xy(6,2,CellConstraints.FILL,CellConstraints.FILL));
+		//lab = new JLabel("Patienten Stammdaten");
+		//pan.add(lab,cc.xy(6,2,CellConstraints.LEFT,CellConstraints.FILL));
+		
+		patcombo = new JComboBox();
+		//patcombo.setActionCommand("auswerten");
+		//patcombo.addActionListener(al);
+	
+		
+		
+		pan.add(patcombo,cc.xy(6,2));
+		
         editpan[1] = new JEditorPane();
 		editpan[1].setContentType("text/html");
 		editpan[1].setEditable(false);
@@ -185,6 +203,11 @@ public class Reha301Auswerten extends JXPanel{
 				if(cmd.equals("einlesen")){
 
 				}
+				if(cmd.equals("auswerten")){
+					//System.out.println(combo.getValue());
+					System.out.println(patcombo.getSelectedIndex());
+				}
+
 			}
 		};
 	}
@@ -328,12 +351,26 @@ public class Reha301Auswerten extends JXPanel{
 					}
 					vecobj.add((String) patgeboren);
 					vecobj.add((String) vec.get(i).get(7));
+					vecobj.add((String) pat[3]);
 					tabmod.addRow( (Vector<?>)vecobj.clone());
 					
 					
 				}
 				tab.setRowSelectionInterval(0, 0);
 				show301PatData(0);
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						try{
+							doSucheNachPat();
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						return null;
+					}
+					
+				}.execute();
+
 			}
 			tab.validate();
 		}catch(Exception ex){
@@ -348,6 +385,7 @@ public class Reha301Auswerten extends JXPanel{
 		String ktraeger = tab.getValueAt(tab.getSelectedRow(), 7).toString();
 		String anlass = tab.getValueAt(tab.getSelectedRow(), 3).toString();
 		String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
+		String geboren = DatFunk.sDatInDeutsch(tab.getValueAt(tab.getSelectedRow(), 12).toString());
 		buf.append("<html><head>");
 		buf.append(
 		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
@@ -362,6 +400,7 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("<tr><td colspan='2';class='rbrot'>"+anlass+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Anrede</td><td>"+pat.split("#")[0]+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Name</td><td>"+pat.split("#")[1]+", "+pat.split("#")[2]+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>geboren</td><td>"+geboren+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Strasse</td><td>"+adress.split("#")[0]+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Ort</td><td>"+adress.split("#")[1]+" "+adress.split("#")[2]+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>VSNR</td><td>"+vsnr+"</td></tr>");
@@ -370,6 +409,34 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("</table>");
 		buf.append("</html>");
 		editpan[0].setText(buf.toString());
+	}
+	private void doSucheNachPat(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
+				String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
+				//String cmd = "select concat(n_name,', ',v_name) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+				String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+				"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
+				System.out.println(cmd);
+				Vector<Vector<String>> dumvec = SqlInfo.holeFelder(cmd);
+				
+				if(dumvec.size() > 0){
+					//combo.setDataVectorWithStartElement((Vector<Vector<String>>)dumvec.clone(), 0, 5, "./.");
+					for(int i = 0; i < dumvec.size();i++){
+						patcombo.addItem(StringTools.EGross(String.valueOf(dumvec.get(i).get(0)).toString()));
+					}
+					patcombo.setSelectedIndex(1);
+					patcombo.validate();
+					System.out.println("direkt nach setSelecte = "+patcombo.getSelectedIndex());
+				}
+
+				return null;
+			}
+			
+		}.execute();
+
 	}
 	
 /********************************************************/	
@@ -402,6 +469,11 @@ public class Reha301Auswerten extends JXPanel{
 	        }
 	    }
 	}
-	
+
+
+
 	
 }
+	
+	
+

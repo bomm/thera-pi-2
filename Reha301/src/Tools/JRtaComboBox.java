@@ -18,11 +18,12 @@ public class JRtaComboBox extends JComboBox implements ActionListener,PropertyCh
 /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6867094510690570951L;
+private static final long serialVersionUID = 6867094510690570951L;
 public Vector<?> vec  = null;
 public int cmbdisplay;
 public int cmbretvalue;
 public String startElement = "";
+
 public JRtaComboBox(){
 	super();
 	addKeyListener(this);
@@ -85,14 +86,18 @@ public void setDataVector2Dim(Vector<Vector<String>> ve,int item,int ret){
 }
 
 public void setDataVectorVector(Vector<Vector<String>> ve,int item,int ret){
-	this.removeAllItems();
-	this.vec = ve;
-	this.cmbdisplay = item;
-	this.cmbretvalue = ret;
-	if(this.vec.get(0) instanceof Vector<?>){
-		fillCombo(this.vec);		
-	}else{
-		fillOneDimension(this.vec);
+	try{
+		this.removeAllItems();
+		this.vec = ve;
+		this.cmbdisplay = item;
+		this.cmbretvalue = ret;
+		if(this.vec.get(0) instanceof Vector<?>){
+			fillCombo(this.vec);		
+		}else{
+			fillOneDimension(this.vec);
+		}
+	}catch(Exception ex){
+		ex.printStackTrace();
 	}
 }
 public void setDataVectorWithStartElement(Vector<Vector<String>> ve,int item,int ret,String startElement){
@@ -167,10 +172,23 @@ private void fillCombo(Vector<?> ve){
 }
 
 public Object getSecValue(){
-	if(this.startElement.equals("")){
+	System.out.println("Vectorgröße = "+vec.size());
+	if(this.startElement.equals("") ){
+
+		System.out.println("in 1");
+		System.out.println("index = "+this.getSelectedIndex());
 		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );		
+	}else if(this.startElement == null){
+		System.out.println("in 2");
+		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
 	}else{
-		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(this.cmbretvalue) );
+		System.out.println("in 3");
+		if( (this.getSelectedIndex()-1) >= 0){
+			return ((Object)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(this.cmbretvalue) );	
+		}else{
+			return ((Object)((Vector<?>)vec.get(0)).get(this.cmbretvalue) );
+		}
+		
 	}
 
 }
@@ -184,14 +202,13 @@ public Object getValue(){
 public Object getValueAt(int pos){
 	if(vec.size()<=0){return "";}
 	if(this.startElement.equals("")){
-		//System.out.println(startElement);
-		//System.out.println(this.getSelectedIndex());
 		return ((String)((Vector<?>)vec.get(this.getSelectedIndex())).get(pos) );		
 	}else{
 		if(this.getSelectedIndex()==0){return "";}
 		return ((String)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(pos) );		
 	}
 }
+@SuppressWarnings("unchecked")
 public void setNewValueAtCurrentPosition(int pos,Object newvalue){
 
 	if(this.startElement.equals("")){
@@ -200,10 +217,12 @@ public void setNewValueAtCurrentPosition(int pos,Object newvalue){
 		((Vector<Object>)vec.get(this.getSelectedIndex()-1)).set(pos,(String)newvalue);
 	}
 }
+@SuppressWarnings("unchecked")
 public void addNewVector(Vector<String> newvec){
 	((Vector<Vector<String>>)vec).add( (Vector<String>) newvec);
 	addItem( (String)((Vector<String>)newvec).get(this.cmbdisplay) );
 }
+@SuppressWarnings("unchecked")
 public void removeVector(int pos){
 	if(this.startElement.equals("")){
 		((Vector<Object>)vec).remove(pos);		
@@ -276,9 +295,15 @@ public void keyTyped(KeyEvent arg0) {
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
 	try{
+		/*
+		System.out.println("interner ActionListener="+this.getSelectedIndex());
 		this.getParent().dispatchEvent(arg0);
+		this.getParent().getParent().dispatchEvent(arg0);
+		this.getParent().getParent().getParent().dispatchEvent(arg0);
+		this.getParent().getParent().getParent().getParent().dispatchEvent(arg0);
+		*/		
 	}catch(java.lang.NullPointerException ex){
-		
+		ex.printStackTrace();
 	}
 }
 
