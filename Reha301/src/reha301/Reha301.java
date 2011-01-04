@@ -50,8 +50,8 @@ public class Reha301 implements WindowListener  {
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
 	public static String dbUser = "rtauser";
 	public static String dbPassword = "rtacurie";
-	//public static String officeProgrammPfad = "C:/Program Files (x86)/OpenOffice.org 3";
-	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
+	public static String officeProgrammPfad = "C:/Program Files (x86)/OpenOffice.org 3";
+	//public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
 	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
 	public static String progHome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";
@@ -185,7 +185,7 @@ public class Reha301 implements WindowListener  {
 		thisClass = this;
 		jFrame = new JFrame();
 		jFrame.addWindowListener(this);
-		jFrame.setSize(1000,650);
+		jFrame.setSize(1000,720);
 		jFrame.setTitle("Thera-Pi  §301  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);

@@ -1,11 +1,11 @@
 package reha301Panels;
 
+
+
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
@@ -15,14 +15,18 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+import reha301.Reha301;
+import reha301.Reha301Tab;
 import Tools.DatFunk;
 import Tools.INIFile;
 import Tools.JCompTools;
@@ -34,9 +38,6 @@ import Tools.WartenAufDB;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-import reha301.Reha301;
-import reha301.Reha301Tab;
-
 public class Reha301Auswerten extends JXPanel{
 
 	/**
@@ -47,7 +48,7 @@ public class Reha301Auswerten extends JXPanel{
 	public JXTable tab = null;
 	public MyTableModel tabmod;
 	public JEditorPane[] editpan = {null,null,null};
-	public JRtaComboBox patcombo = null;
+	public JComboBox patcombo = null;
 	private Vector<Vector<String>> vec_patstamm = null;
 	
 	ActionListener al = null;
@@ -78,7 +79,7 @@ public class Reha301Auswerten extends JXPanel{
 	public JXPanel getContent(){
 		JXPanel pan = new JXPanel();
 		String xwerte = "10dlu,fill:0:grow(1.0),10dlu";
-		String ywerte = "10dlu,200dlu,10dlu:g";
+		String ywerte = "10dlu,fill:0:grow(0.4),fill:0:grow(0.6)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -105,6 +106,7 @@ public class Reha301Auswerten extends JXPanel{
 		tab.setSortable(false);
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		tab.validate();
+		tab.getSelectionModel().addListSelectionListener( new MyAuswertungListSelectionHandler());		
 		tab.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -162,7 +164,7 @@ public class Reha301Auswerten extends JXPanel{
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
-		JLabel lab = new JLabel("301-er Daten");
+		JLabel lab = new JLabel("<html><b>301-er Daten</b></html>");
 		pan.add(lab,cc.xy(4,2,CellConstraints.FILL,CellConstraints.FILL));
 		editpan[0] = new JEditorPane();
 		editpan[0].setContentType("text/html");
@@ -172,17 +174,19 @@ public class Reha301Auswerten extends JXPanel{
 		jscr.validate();
         pan.add(jscr,cc.xy(4,4,CellConstraints.FILL,CellConstraints.FILL));
         
-		//lab = new JLabel("Patienten Stammdaten");
-		//pan.add(lab,cc.xy(6,2,CellConstraints.LEFT,CellConstraints.FILL));
-		
-		patcombo = new JRtaComboBox();
-		patcombo.setVisible(true);
-		//patcombo.setActionCommand("auswerten");
+        JXPanel pan2 = new JXPanel();
+        FormLayout lay2 = new FormLayout("fill:0:grow(0.33),2dlu,fill:0:grow(0.66)","p");
+        CellConstraints cc2 = new CellConstraints();
+        pan2.setLayout(lay2);
+		lab = new JLabel("<html><b>Thera-Pi</b> Stammdaten</html>");
+		pan2.add(lab,cc2.xy(1,1,CellConstraints.FILL,CellConstraints.FILL));
+		patcombo = new JComboBox();
+		patcombo.setActionCommand("auswerten");
 		//patcombo.addActionListener(al);
-	
+		pan2.add(patcombo,cc2.xy(3,1,CellConstraints.FILL,CellConstraints.FILL));
+		pan2.validate();
 		
-		
-		pan.add(patcombo,cc.xy(6,2));
+		pan.add(pan2,cc.xy(6,2,CellConstraints.FILL,CellConstraints.FILL));
 		
         editpan[1] = new JEditorPane();
 		editpan[1].setContentType("text/html");
@@ -206,7 +210,8 @@ public class Reha301Auswerten extends JXPanel{
 				}
 				if(cmd.equals("auswerten")){
 					//System.out.println(combo.getValue());
-					System.out.println(patcombo.getSelectedIndex());
+					//System.out.println(patcombo.getSelectedIndex());
+					show301PatExist(patcombo.getSelectedIndex());
 				}
 
 			}
@@ -358,8 +363,8 @@ public class Reha301Auswerten extends JXPanel{
 					
 				}
 				tab.setRowSelectionInterval(0, 0);
-				show301PatData(0);
-				doSucheNachPat();
+				//show301PatData(0);
+				//doSucheNachPat();
 
 			}
 			tab.validate();
@@ -402,6 +407,63 @@ public class Reha301Auswerten extends JXPanel{
 		editpan[0].setText(buf.toString());
 		
 	}
+	private void show301PatExist(int combovalue){
+		//                                                                                        0     1      2      3       4      5       6  7      8       9      10 
+		//String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id
+		StringBuffer buf = new StringBuffer();
+		String anrede = vec_patstamm.get(combovalue).get(1);
+		String patnname = vec_patstamm.get(combovalue).get(2);
+		String patvname = vec_patstamm.get(combovalue).get(3);
+		String geboren = DatFunk.sDatInDeutsch(vec_patstamm.get(combovalue).get(4));
+		String strasse = vec_patstamm.get(combovalue).get(5);
+		String plz = vec_patstamm.get(combovalue).get(6);
+		String ort = vec_patstamm.get(combovalue).get(7);
+		String kkasse = vec_patstamm.get(combovalue).get(9);
+		
+		
+		buf.append("<html><head>");
+		buf.append(
+		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
+         ".rechtsbuendig {text-align: right;}"+
+         ".rbrot {text-align: right;color:#ff0000;}"+
+         ".rbblau {text-align: right;color:#0000ff;}"+
+         ".rbtherapie {text-align: right;color:#e77817;}"+
+         ".zentriert {text-align: center;}"+
+         ".blocksatz {text-align: justify;}"+
+         "</style>" ); 
+		buf.append("</head>");
+		buf.append("<table style='font-family:Arial'>");
+		buf.append("<tr><td colspan='2';class='rbrot'>Patient im Therapie Pat-Stamm</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Anrede</td><td>"+StringTools.EGross(anrede)+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Name</td><td>"+StringTools.EGross(patnname)+", "+StringTools.EGross(patvname)+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>geboren</td><td>"+geboren+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Strasse</td><td>"+StringTools.EGross(strasse)+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Ort</td><td>"+plz+" "+StringTools.EGross(ort)+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Krankenkasse</td><td>"+StringTools.EGross(kkasse)+"</td></tr>");
+		buf.append("</table>");
+		buf.append("</html>");
+		editpan[1].setText(buf.toString());
+		
+	}	
+	private void show301NoPatExist(){
+		StringBuffer buf = new StringBuffer();
+		buf.append("<html><head>");
+		buf.append(
+		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
+         ".rechtsbuendig {text-align: right;}"+
+         ".rbrot {text-align: right;color:#ff0000;}"+
+         ".rbblau {text-align: right;color:#0000ff;}"+
+         ".rbtherapie {text-align: right;color:#e77817;}"+
+         ".zentriert {text-align: center;}"+
+         ".blocksatz {text-align: justify;}"+
+         "</style>" ); 
+		buf.append("</head>");
+		buf.append("<table style='font-family:Arial'>");
+		buf.append("<tr><td colspan='2';class='rbrot'>Patient existiert nicht</td></tr>");
+		buf.append("</table>");
+		buf.append("</html>");
+		editpan[1].setText(buf.toString());		
+	}
 	private void doSucheNachPat(){
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -411,7 +473,7 @@ public class Reha301Auswerten extends JXPanel{
 					patcombo.removeAllItems();
 					String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
 					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
-					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					//String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
 					vec_patstamm = SqlInfo.holeFelder(cmd);
@@ -420,7 +482,11 @@ public class Reha301Auswerten extends JXPanel{
 						for(int i = 0; i < vec_patstamm.size();i++){
 							patcombo.addItem(Integer.toString(i+1)+" von "+Integer.toString(vec_patstamm.size())+" - "+StringTools.EGross(String.valueOf(vec_patstamm.get(i).get(0)).toString()));
 						}
-						patcombo.validate();
+						patcombo.addActionListener(al);
+						patcombo.setSelectedIndex(0);
+						return null;
+					}else{
+						show301NoPatExist();
 					}
 					patcombo.addActionListener(al);
 				}catch(Exception ex){
@@ -464,6 +530,35 @@ public class Reha301Auswerten extends JXPanel{
 	        }
 	    }
 	}
+	class MyAuswertungListSelectionHandler implements ListSelectionListener {
+		
+	    public void valueChanged(ListSelectionEvent e) {
+	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	        
+	        //int firstIndex = e.getFirstIndex();
+	        //int lastIndex = e.getLastIndex();
+	        boolean isAdjusting = e.getValueIsAdjusting();
+	        if(isAdjusting){
+	        	return;
+	        }
+			//StringBuffer output = new StringBuffer();
+	        if (lsm.isSelectionEmpty()) {
+
+	        } else {
+	            int minIndex = lsm.getMinSelectionIndex();
+	            int maxIndex = lsm.getMaxSelectionIndex();
+	            for (int i = minIndex; i <= maxIndex; i++) {
+	                if (lsm.isSelectedIndex(i)) {
+	    				show301PatData(i);
+	    				doSucheNachPat();
+	                    break;
+	                }
+	            }
+	        }
+
+	    }
+	}
+	
 
 
 
