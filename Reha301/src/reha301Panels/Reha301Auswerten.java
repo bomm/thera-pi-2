@@ -47,7 +47,7 @@ public class Reha301Auswerten extends JXPanel{
 	public JXTable tab = null;
 	public MyTableModel tabmod;
 	public JEditorPane[] editpan = {null,null,null};
-	public JComboBox patcombo = null;
+	public JRtaComboBox patcombo = null;
 	private Vector<Vector<String>> vec_patstamm = null;
 	
 	ActionListener al = null;
@@ -175,7 +175,8 @@ public class Reha301Auswerten extends JXPanel{
 		//lab = new JLabel("Patienten Stammdaten");
 		//pan.add(lab,cc.xy(6,2,CellConstraints.LEFT,CellConstraints.FILL));
 		
-		patcombo = new JComboBox();
+		patcombo = new JRtaComboBox();
+		patcombo.setVisible(true);
 		//patcombo.setActionCommand("auswerten");
 		//patcombo.addActionListener(al);
 	
@@ -358,18 +359,7 @@ public class Reha301Auswerten extends JXPanel{
 				}
 				tab.setRowSelectionInterval(0, 0);
 				show301PatData(0);
-				new SwingWorker<Void,Void>(){
-					@Override
-					protected Void doInBackground() throws Exception {
-						try{
-							doSucheNachPat();
-						}catch(Exception ex){
-							ex.printStackTrace();
-						}
-						return null;
-					}
-					
-				}.execute();
+				doSucheNachPat();
 
 			}
 			tab.validate();
@@ -386,6 +376,7 @@ public class Reha301Auswerten extends JXPanel{
 		String anlass = tab.getValueAt(tab.getSelectedRow(), 3).toString();
 		String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
 		String geboren = DatFunk.sDatInDeutsch(tab.getValueAt(tab.getSelectedRow(), 12).toString());
+		
 		buf.append("<html><head>");
 		buf.append(
 		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
@@ -409,27 +400,29 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("</table>");
 		buf.append("</html>");
 		editpan[0].setText(buf.toString());
+		
 	}
 	private void doSucheNachPat(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
-				String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
-				//String cmd = "select concat(n_name,', ',v_name) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
-				String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
-				"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
-				System.out.println(cmd);
-				Vector<Vector<String>> dumvec = SqlInfo.holeFelder(cmd);
-				
-				if(dumvec.size() > 0){
-					//combo.setDataVectorWithStartElement((Vector<Vector<String>>)dumvec.clone(), 0, 5, "./.");
-					for(int i = 0; i < dumvec.size();i++){
-						patcombo.addItem(StringTools.EGross(String.valueOf(dumvec.get(i).get(0)).toString()));
+				try{
+					String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
+					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
+					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+					//String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+					"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
+					vec_patstamm = SqlInfo.holeFelder(cmd);
+					
+					if(vec_patstamm.size() > 0){
+						//combo.setDataVectorWithStartElement((Vector<Vector<String>>)dumvec.clone(), 0, 5, "./.");
+						for(int i = 0; i < vec_patstamm.size();i++){
+							patcombo.addItem(Integer.toString(i+1)+" von "+Integer.toString(vec_patstamm.size())+" - "+StringTools.EGross(String.valueOf(vec_patstamm.get(i).get(0)).toString()));
+						}
+						patcombo.validate();
 					}
-					patcombo.setSelectedIndex(1);
-					patcombo.validate();
-					System.out.println("direkt nach setSelecte = "+patcombo.getSelectedIndex());
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
 
 				return null;
