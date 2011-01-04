@@ -65,8 +65,60 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 								  null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null};
-	public JRtaCheckBox[] jcb = {null,null,null,null,null,null};
+	// Lemmi 20101231: Harte Index-Zahlen für "jtf" durch sprechende Konstanten ersetzt ! 
+	final int cKTRAEG = 0;
+	final int cARZT   = 1;
+	final int cREZDAT = 2;
+	final int cBEGINDAT = 3;
+	final int cANZ1   = 4;		// ACHTUNG die Positionen cANZ1 bis cANZ4 müssen immer nacheinander definiert sein
+	final int cANZ2   = 5;
+	final int cANZ3   = 6;
+	final int cANZ4   = 7;
+	final int cFREQ   = 8;
+	final int cDAUER  = 9;
+	final int cANGEL   = 10;
+	final int cKASID   = 11;
+	final int cARZTID  = 12;
+	final int cPREISGR = 13;
+	final int cHEIMBEW = 14;
+	final int cBEFREIT = 15;
+	final int cPOS1    = 16;	// ACHTUNG die Positionen cPOS1 bis cPOS4 müssen immer nacheinander definiert sein
+	final int cPOS2    = 17;
+	final int cPOS3    = 18;
+	final int cPOS4    = 19;
+	final int cPREIS1    = 20;	// ACHTUNG die Positionen cPREIS1 bis cPREIS4 müssen immer nacheinander definiert sein
+	final int cPREIS2    = 21;
+	final int cPREIS3    = 22;
+	final int cPREIS4    = 23;
+	final int cANLAGDAT  = 24;
+	final int cANZKM     = 25;
+	final int cPATID     = 26;
+	final int cPATINT    = 27;
+	final int cZZSTAT    = 28;
+	final int cHEIMBEWPATSTAM = 29;
+	
+	// Lemmi 20101231: Merken der Originalwerte der eingelesenen Textfelder, Combo- und Check-Boxen
+	Vector<Object> originale = new Vector<Object>();
+
+	public JRtaCheckBox[] jcb = {null,null,null,null};
+	// Lemmi 20101231: Harte Index-Zahlen für "jcb" durch sprechende Konstanten ersetzt ! 
+	final int cBEGRADR = 0;
+	final int cHAUSB   = 1;
+	final int cTBANGEF = 2;
+	final int cVOLLHB  = 3;
+	
 	public JRtaComboBox[] jcmb = {null,null,null,null,null,null,null,null,null};
+	// Lemmi 20101231: Harte Index-Zahlen für "jcmb" durch sprechende Konstanten ersetzt ! 
+	final int cRKLASSE = 0;
+	final int cVERORD  = 1;
+	final int cLEIST1  = 2;	// ACHTUNG die Positionen cLEIST1 bis cLEIST4 müssen immer nacheinander definiert sein
+	final int cLEIST2  = 3;
+	final int cLEIST3  = 4;
+	final int cLEIST4  = 5;
+	final int cINDI    = 6;
+	final int cBARCOD  = 7;
+	final int cFARBCOD = 8;
+
 	
 	public JTextArea jta = null;
 	
@@ -76,7 +128,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	public boolean neu = false;
 	public String feldname = "";
-	public Vector<String> vec = null;
+	
+	// Lemmi 20110101: bCtrlPressed und strKopiervorlage zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+	boolean bCtrlPressed = false;
+	public String strKopiervorlage = "";
+	
+	public Vector<String> vec = null;  // Lemmi Doku: Das bekommt den 'vecaktrez' aus dem rufenden Programm (AktuelleRezepte)
 	public Vector<Vector<String>> preisvec = null;
 	private boolean klassenReady = false;
 	private boolean initReady = false;
@@ -98,13 +155,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	JLabel kassenLab;
 	JLabel arztLab;
 
-	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
-	
-		
+	// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+//	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
+	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname, boolean bCtrlPressed){
 		super();
 		this.neu = neu;
 		this.feldname = sfeldname;
 		this.vec = vec;
+		this.bCtrlPressed = bCtrlPressed;
 		
 		setName("RezeptNeuanlage");
 		rtp = new RehaTPEventClass();
@@ -128,21 +186,21 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		});	
 		initReady = true;
 		if(!neu){
-			if(!Rechte.hatRecht(Rechte.Rezept_editvoll, false)){
+			if(!Rechte.hatRecht(Rechte.Rezept_editvoll, false)){  // Lemmi Doku: Das sieht aus wie der Read-Only-Modus für das Rezept
 				new SwingWorker<Void,Void>(){
 					@Override
-					protected Void doInBackground() throws Exception {
-						for(int i = 0; i < jtf.length;i++){
+					protected Void doInBackground() throws Exception { 
+						for(int i = 0; i < jtf.length; i++){  // Lemmi Doku: alle Textfelder unbedienbar machen
 							if(jtf[i] != null){
 								jtf[i].setEnabled(false);
 							}
 						}
-						for(int i = 0; i < jcb.length;i++){
+						for(int i = 0; i < jcb.length;i++){  // Lemmi Doku: alle CheckBoxen unbedienbar machen
 							if(jcb[i] != null){
 								jcb[i].setEnabled(false);
 							}
 						}
-						for(int i = 0; i < jcmb.length;i++){
+						for(int i = 0; i < jcmb.length;i++){ // Lemmi Doku: alle ComboBoxen unbedienbar machen
 							if(jcmb[i] != null){
 								jcmb[i].setEnabled(false);
 							}
@@ -153,26 +211,26 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				}.execute();
 			}
 		}
-		
 
 	}
+
 	public void macheFarbcodes(){
 		farbcodes[0] = "kein Farbcode";
-		jcmb[8].addItem(farbcodes[0]);
+		jcmb[cFARBCOD].addItem(farbcodes[0]);
 		
 		for (int i = 0;i < 9;i++){
 			farbcodes[i+1] = SystemConfig.vSysColsBedeut.get(i+14);
-			jcmb[8].addItem(farbcodes[i+1]);
+			jcmb[cFARBCOD].addItem(farbcodes[i+1]);
 		}
 		if(! this.neu){
 			int itest = StringTools.ZahlTest(this.vec.get(57));
 			if(itest >= 0){
-				jcmb[8].setSelectedItem( (String)SystemConfig.vSysColsBedeut.get(itest) );			
+				jcmb[cFARBCOD].setSelectedItem( (String)SystemConfig.vSysColsBedeut.get(itest) );			
 			}else{
-				jcmb[8].setSelectedIndex(0);
+				jcmb[cFARBCOD].setSelectedIndex(0);
 			}
 		}else{
-			jcmb[8].setSelectedIndex(0);			
+			jcmb[cFARBCOD].setSelectedIndex(0);			
 		}
 		
 	}
@@ -184,8 +242,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			   int aid,kid;
 		 			   boolean beenden = false;
 		 			   String meldung = "";
-		 			   kid = StringTools.ZahlTest(jtf[11].getText());
-		 			   aid = StringTools.ZahlTest(jtf[12].getText());
+		 			   kid = StringTools.ZahlTest(jtf[cKASID].getText());
+		 			   aid = StringTools.ZahlTest(jtf[cARZTID].getText());
 		 			   if(kid < 0 && aid < 0){
 		 				   beenden = true;
 		 				   meldung = "Achtung - dem Patientenstamm ist keine verwertbare Krankenkasse\n"+
@@ -205,11 +263,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 				  aufraeumen();
 		 				  ((JXDialog)getParent().getParent().getParent().getParent().getParent()).dispose();
 		 			   }else{
-			 			   holePreisGruppe(jtf[11].getText().trim());
+			 			   holePreisGruppe(jtf[cKASID].getText().trim());
 				 			  SwingUtilities.invokeLater(new Runnable(){
 				 				  public  void run()
 				 				  {
-				 					  jcmb[0].requestFocus();
+				 					  jcmb[cRKLASSE].requestFocus();
 				 				  }
 				 			  });	   		
 		 			   }
@@ -218,17 +276,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			   int aid,kid;
 		 			   //boolean beenden = false;
 		 			   //String meldung = "";
-		 			   kid = StringTools.ZahlTest(jtf[11].getText());
-		 			   aid = StringTools.ZahlTest(jtf[12].getText());
+		 			   kid = StringTools.ZahlTest(jtf[cKASID].getText());
+		 			   aid = StringTools.ZahlTest(jtf[cARZTID].getText());
 		 			   if(kid < 0 && aid < 0){
-		 				   jtf[11].setText(Integer.toString(Reha.thisClass.patpanel.kid));
-		 				   jtf[12].setText(Integer.toString(Reha.thisClass.patpanel.aid));
-		 				   jtf[0].setText(Reha.thisClass.patpanel.patDaten.get(13));
+		 				   jtf[cKASID].setText(Integer.toString(Reha.thisClass.patpanel.kid));
+		 				   jtf[cARZTID].setText(Integer.toString(Reha.thisClass.patpanel.aid));
+		 				   jtf[cKTRAEG].setText(Reha.thisClass.patpanel.patDaten.get(13));
 		 			   }else if(kid >= 0 && aid < 0){
-		 				   jtf[12].setText(Integer.toString(Reha.thisClass.patpanel.aid));
+		 				   jtf[cARZTID].setText(Integer.toString(Reha.thisClass.patpanel.aid));
 		 			   }else if(kid < 0 && aid >= 0){
-		 				   jtf[11].setText(Integer.toString(Reha.thisClass.patpanel.kid));
-		 				   jtf[0].setText(Reha.thisClass.patpanel.patDaten.get(13));
+		 				   jtf[cKASID].setText(Integer.toString(Reha.thisClass.patpanel.kid));
+		 				   jtf[cKTRAEG].setText(Reha.thisClass.patpanel.patDaten.get(13));
 		 			   }else{
 		 				   //System.out.println("*****************Keine Preisgruppen bezogen*******************");
 		 				  //preisgruppen
@@ -238,7 +296,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 			   SwingUtilities.invokeLater(new Runnable(){
 			 			 	   public  void run()
 			 			 	   {
-			 			 		   jtf[0].requestFocus();
+			 			 		   jtf[cKTRAEG].requestFocus();
 			 			 	   }
 			 			});	   		
 		 		   }
@@ -286,6 +344,76 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	/********************************************/
 
+	// Lemmi 20101231: Merken der Originalwerte der eingelesenen Textfelder
+	// ACHTUNG: Die Reihenfolge der Abfragen muß in SaveChangeStatus() und HasChanged() exakt identisch sein ! 
+	private void SaveChangeStatus(){
+		int i;
+		originale.clear();  // vorherige Merkung wegwerfen
+
+		// Alle Text-Eingabefelder
+		for ( i = 0; i < jtf.length; i++ ) {
+			//String strText = jtf[i].getText();
+			originale.add( jtf[i].getText() );
+		}
+		
+		// Das Feld mit "Ärztliche Diagnose"
+		originale.add( jta.getText() );
+		
+		// alle ComboBoxen
+		for ( i = 0; i < jcmb.length; i++ ) {
+			originale.add( (Integer)jcmb[i].getSelectedIndex() );  // Art d. Verordn. etc.
+		}
+		
+		// alle CheckBoxen
+		for ( i = 0; i < jcb.length; i++ ) {  
+			originale.add( (Boolean)(jcb[i].isSelected() ) );  // 
+		}
+	}
+	
+	// Lemmi 20101231: prüft, ob sich Einträge geändert haben
+	// ACHTUNG: Die Reihenfolge der Abfragen muß in SaveChangeStatus() und HasChanged() exakt identisch sein ! 
+	public Boolean HasChanged(){
+		int i, idx = 0;
+		
+		// Alle Text-Eingabefelder
+		for ( i = 0; i < jtf.length; i++) {
+			if(! jtf[i].getText().equals( originale.get(idx++) ) )
+				return true;
+		}
+		
+		// Das Feld mit "Ärztliche Diagnose"
+		if(! jta.getText().equals( originale.get(idx++) ) )	   // Ärztliche Diagnose
+			return true;
+		
+		// alle ComboBoxen
+		for ( i = 0; i < jcmb.length; i++) {	// ComboBoxen 
+			if( jcmb[i].getSelectedIndex() != (Integer)originale.get(idx++) )	// Art d. Verordn. etc.
+				return true;
+		}		
+		
+		// alle CheckBoxen
+		for ( i = 0; i < jcb.length; i++) {		// CheckBoxen
+			if( jcb[i].isSelected() != (Boolean)originale.get(idx++) )	// Begründung außer der Regel vorhanden ? .....
+				return true;
+		}		
+
+		return false;
+	}
+
+	// Lemmi 20101231: Stndard-Abfrage nach Prüfung, ob sich Einträge geändert haben
+	// fragt nach, ob wirklich ungesichert abgebrochen werden soll !
+	public int askForCancelUsaved(){
+/*		if ( JOptionPane.NO_OPTION 
+		 == JOptionPane.showConfirmDialog(null, "Es wurden Rezept-Anngaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
+				 								"Angaben wurden geändert", JOptionPane.YES_NO_OPTION ) ) {
+*/
+		String[] strOptions = {"ja", "nein"};  // Defaultwert euf "nein" gesetzt !
+		return JOptionPane.showOptionDialog(null, "Es wurden Rezept-Anngaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
+				 "Angaben wurden geändert", 
+				 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				 strOptions, strOptions[1] );
+	 }
+	
 	private JScrollPane getDatenPanel(){  //1                  2      3    4          5              6      7        8       
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu, 5dlu, right:max(60dlu;p), 4dlu, 60dlu",
 			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16   17  18 19   20   21  22   23  24   25  
@@ -300,59 +428,62 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.getPanel().setOpaque(false);
 		//String ywerte = "";
 	
-		jtf[0] = new JRtaTextField("NIX",false); // kasse/kostenträger
-		jtf[1] = new JRtaTextField("NIX",false); // arzt
-		jtf[2] = new JRtaTextField("DATUM",true); // rezeptdatum
-		jtf[3] = new JRtaTextField("DATUM",true); // spätester beginn
-		jtf[4] = new JRtaTextField("ZAHLEN",true); // Anzahl 1
-		jtf[5] = new JRtaTextField("ZAHLEN",true); // Anzahl 2
-		jtf[6] = new JRtaTextField("ZAHLEN",true); // Anzahl 3
-		jtf[7] = new JRtaTextField("ZAHLEN",true); // Anzahl 4
-		jtf[8] = new JRtaTextField("GROSS",true); // Frequenz		
-		jtf[9] = new JRtaTextField("ZAHLEN",true); // Dauer		
-		jtf[10] = new JRtaTextField("GROSS",true); // angelegt von
-		jtf[11] = new JRtaTextField("GROSS",false); //kassenid
-		jtf[12] = new JRtaTextField("GROSS",false); //arztid
-		// ************alles nachfolgende mu� noch eingebaut werden.....
-		jtf[13] = new JRtaTextField("GROSS",false); //preisgruppe
-		jtf[14] = new JRtaTextField("GROSS",false); //heimbewohner
-		jtf[15] = new JRtaTextField("GROSS",false); //befreit
-		jtf[16] = new JRtaTextField("",false); //POS1		
-		jtf[17] = new JRtaTextField("",false); //POS2
-		jtf[18] = new JRtaTextField("",false); //POS3
-		jtf[19] = new JRtaTextField("",false); //POS4
-		jtf[20] = new JRtaTextField("",false); //PREIS1
-		jtf[21] = new JRtaTextField("",false); //PREIS2
-		jtf[22] = new JRtaTextField("",false); //PREIS3
-		jtf[23] = new JRtaTextField("",false); //PREIS4
-		jtf[24] = new JRtaTextField("DATUM",false); // ANLAGEDATUM
-		jtf[25] = new JRtaTextField("",false); // KILOMETER
-		jtf[26] = new JRtaTextField("",false); //id von Patient
-		jtf[27] = new JRtaTextField("",false); //pat_intern von Patient
-		jtf[28] = new JRtaTextField("",false); //zzstatus
-		jtf[29] = new JRtaTextField("",false); //Heimbewohner aus PatStamm
 
-		jcmb[0] = new JRtaComboBox();
+		// Lemmi 20101231: Harte Index-Zahlen für "jtf" durch sprechende Konstanten ersetzt ! 
+		jtf[cKTRAEG] = new JRtaTextField("NIX",false); // kasse/kostenträger
+		jtf[cARZT]   = new JRtaTextField("NIX",false); // arzt
+		jtf[cREZDAT] = new JRtaTextField("DATUM",true); // rezeptdatum
+		jtf[cBEGINDAT] = new JRtaTextField("DATUM",true); // spätester beginn
+		jtf[cANZ1]   = new JRtaTextField("ZAHLEN",true); // Anzahl 1
+		jtf[cANZ2]   = new JRtaTextField("ZAHLEN",true); // Anzahl 2
+		jtf[cANZ3]   = new JRtaTextField("ZAHLEN",true); // Anzahl 3
+		jtf[cANZ4]   = new JRtaTextField("ZAHLEN",true); // Anzahl 4
+		jtf[cFREQ]   = new JRtaTextField("GROSS",true); // Frequenz		
+		jtf[cDAUER]  = new JRtaTextField("ZAHLEN",true); // Dauer		
+		jtf[cANGEL]  = new JRtaTextField("GROSS",true); // angelegt von
+		jtf[cKASID]  = new JRtaTextField("GROSS",false); //kassenid
+		jtf[cARZTID] = new JRtaTextField("GROSS",false); //arztid
+		// ************ manches / nicht alles nachfolgende muss noch eingebaut werden.....
+		jtf[cPREISGR] = new JRtaTextField("GROSS",false); //preisgruppe
+		jtf[cHEIMBEW] = new JRtaTextField("GROSS",false); //heimbewohner
+		jtf[cBEFREIT] = new JRtaTextField("GROSS",false); //befreit
+		jtf[cPOS1] = new JRtaTextField("",false); //POS1		
+		jtf[cPOS2] = new JRtaTextField("",false); //POS2
+		jtf[cPOS3] = new JRtaTextField("",false); //POS3
+		jtf[cPOS4] = new JRtaTextField("",false); //POS4
+		jtf[cPREIS1] = new JRtaTextField("",false); //PREIS1
+		jtf[cPREIS2] = new JRtaTextField("",false); //PREIS2
+		jtf[cPREIS3] = new JRtaTextField("",false); //PREIS3
+		jtf[cPREIS4] = new JRtaTextField("",false); //PREIS4
+		jtf[cANLAGDAT] = new JRtaTextField("DATUM",false); // ANLAGEDATUM
+		jtf[cANZKM]    = new JRtaTextField("",false); // KILOMETER
+		jtf[cPATID]    = new JRtaTextField("",false); //id von Patient
+		jtf[cPATINT]   = new JRtaTextField("",false); //pat_intern von Patient
+		jtf[cZZSTAT]   = new JRtaTextField("",false); //zzstatus
+		jtf[cHEIMBEWPATSTAM] = new JRtaTextField("",false); //Heimbewohner aus PatStamm
+
+		
+		jcmb[cRKLASSE] = new JRtaComboBox();
 		int lang = SystemConfig.rezeptKlassenAktiv.size();
 		for(int i = 0;i < lang;i++){
-			jcmb[0].addItem(SystemConfig.rezeptKlassenAktiv.get(i).get(0));	
+			jcmb[cRKLASSE].addItem(SystemConfig.rezeptKlassenAktiv.get(i).get(0));	
 		}
 		
 		jpan.addLabel("Rezeptklasse auswählen",cc.xy(1, 3));
-		jpan.add(jcmb[0],cc.xyw(3, 3,5));
-		jcmb[0].setActionCommand("rezeptklasse");
-		jcmb[0].addActionListener(this);
+		jpan.add(jcmb[cRKLASSE],cc.xyw(3, 3,5));
+		jcmb[cRKLASSE].setActionCommand("rezeptklasse");
+		jcmb[cRKLASSE].addActionListener(this);
 		/********************/
 		
 		if(this.neu){
-			jcmb[0].setSelectedItem(SystemConfig.initRezeptKlasse);
+			jcmb[cRKLASSE].setSelectedItem(SystemConfig.initRezeptKlasse);
 		}else{
 			for(int i = 0;i < lang;i++){
 				if(this.vec.get(1).substring(0,2).equals(SystemConfig.rezeptKlassenAktiv.get(i).get(1))){
-					jcmb[0].setSelectedIndex(i);
+					jcmb[cRKLASSE].setSelectedIndex(i);
 				}
 			}
-			jcmb[0].setEnabled(false);
+			jcmb[cRKLASSE].setEnabled(false);
 		}			
 
 		
@@ -366,22 +497,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				if(!Rechte.hatRecht(Rechte.Rezept_editvoll,false)){
 					return;
 				}
-				if(jtf[0].getText().trim().startsWith("?")){
-					jtf[0].requestFocus();
+				if(jtf[cKTRAEG].getText().trim().startsWith("?")){
+					jtf[cKTRAEG].requestFocus();
 				}else{
-					jtf[0].setText("?"+jtf[0].getText().trim());
-					jtf[0].requestFocus();
+					jtf[cKTRAEG].setText("?"+jtf[cKTRAEG].getText().trim());
+					jtf[cKTRAEG].requestFocus();
 				}
-				String[] suchkrit = new String[] {jtf[0].getText().replace("?", ""),jtf[11].getText()};
-				jtf[0].setText(String.valueOf(suchkrit[0]));
+				String[] suchkrit = new String[] {jtf[cKTRAEG].getText().replace("?", ""),jtf[cKASID].getText()};
+				jtf[cKTRAEG].setText(String.valueOf(suchkrit[0]));
 				kassenAuswahl(suchkrit);
 			}
 		});
 	
-		jtf[0].setName("ktraeger");
-		jtf[0].addKeyListener(this);
+		jtf[cKTRAEG].setName("ktraeger");
+		jtf[cKTRAEG].addKeyListener(this);
 		jpan.add(kassenLab,cc.xy(1,7));
-		jpan.add(jtf[0],cc.xy(3,7));
+		jpan.add(jtf[cKTRAEG],cc.xy(3,7));
 		
 		arztLab = new JLabel("verordn. Arzt");
 		arztLab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
@@ -391,149 +522,148 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				if(!Rechte.hatRecht(Rechte.Rezept_editvoll,false)){
 					return;
 				}
-				if(jtf[1].getText().trim().startsWith("?")){
-					jtf[1].requestFocus();
+				if(jtf[cARZT].getText().trim().startsWith("?")){
+					jtf[cARZT].requestFocus();
 				}else{
-					jtf[1].setText("?"+jtf[1].getText().trim());
-					jtf[1].requestFocus();
+					jtf[cARZT].setText("?"+jtf[cARZT].getText().trim());
+					jtf[cARZT].requestFocus();
 				}
-				String[] suchkrit = new String[] {jtf[1].getText().replace("?", ""),jtf[12].getText()};
-				jtf[1].setText(String.valueOf(suchkrit[0]));
+				String[] suchkrit = new String[] {jtf[cARZT].getText().replace("?", ""),jtf[cARZTID].getText()};
+				jtf[cARZT].setText(String.valueOf(suchkrit[0]));
 				arztAuswahl(suchkrit);
 			}
 		});
 
-		jtf[1].setName("arzt");
-		jtf[1].addKeyListener(this);		
+		jtf[cARZT].setName("arzt");
+		jtf[cARZT].addKeyListener(this);		
 		jpan.add(arztLab,cc.xy(5,7));
-		jpan.add(jtf[1],cc.xy(7,7));
+		jpan.add(jtf[cARZT],cc.xy(7,7));
 		
 
-		jtf[2].setName("rez_datum");
-		jtf[2].addFocusListener(this);
+		jtf[cREZDAT].setName("rez_datum");
+		jtf[cREZDAT].addFocusListener(this);
 		jpan.addLabel("Rezeptdatum",cc.xy(1,9));
-		jpan.add(jtf[2],cc.xy(3,9));
+		jpan.add(jtf[cREZDAT],cc.xy(3,9));
 		
 
-		jtf[3].setName("lastdate");
+		jtf[cBEGINDAT].setName("lastdate");
 		jpan.addLabel("spätester Beh.Beginn",cc.xy(5,9));
-		jpan.add(jtf[3],cc.xy(7,9));
+		jpan.add(jtf[cBEGINDAT],cc.xy(7,9));
 
-		jcmb[1] = new JRtaComboBox(new String[] {"Erstverodnung","Folgeverordnung",
-				"außerhalb des Regelfalles"});
-		jcmb[1].setActionCommand("verordnungsart");
-		jcmb[1].addActionListener(this);
+		jcmb[cVERORD] = new JRtaComboBox(new String[] {"Erstverodnung","Folgeverordnung", "außerhalb des Regelfalles"});
+		jcmb[cVERORD].setActionCommand("verordnungsart");
+		jcmb[cVERORD].addActionListener(this);
 		jpan.addLabel("Art d. Verordn.",cc.xy(1, 11));
-		jpan.add(jcmb[1],cc.xy(3, 11));
-		jcb[0] = new JRtaCheckBox("vorhanden");
-		jcb[0].setOpaque(false);
-		jcb[0].setEnabled(false);
+		jpan.add(jcmb[cVERORD],cc.xy(3, 11));
+		jcb[cBEGRADR] = new JRtaCheckBox("vorhanden");
+		jcb[cBEGRADR].setOpaque(false);
+		jcb[cBEGRADR].setEnabled(false);
 		jpan.addLabel("Begründ. für adR",cc.xy(5, 11));
-		jpan.add(jcb[0],cc.xy(7, 11));
+		jpan.add(jcb[cBEGRADR],cc.xy(7, 11));
 		
-		jcb[1] = new JRtaCheckBox("Ja / Nein");
-		jcb[1].setOpaque(false);
-		jcb[1].setActionCommand("Hausbesuche");
-		jcb[1].addActionListener(this);
+		jcb[cHAUSB] = new JRtaCheckBox("Ja / Nein");
+		jcb[cHAUSB].setOpaque(false);
+		jcb[cHAUSB].setActionCommand("Hausbesuche");
+		jcb[cHAUSB].addActionListener(this);
 		jpan.addLabel("Hausbesuch",cc.xy(1, 13));
-		jpan.add(jcb[1],cc.xy(3, 13));
+		jpan.add(jcb[cHAUSB],cc.xy(3, 13));
 
-		jcb[5] = new JRtaCheckBox("abrechnen");
-		jcb[5].setOpaque(false);
-		jcb[5].setToolTipText("Nur aktiv wenn Patient Heimbewohner und Hausbesuch angekreuzt");
+		jcb[cVOLLHB] = new JRtaCheckBox("abrechnen");
+		jcb[cVOLLHB].setOpaque(false);
+		jcb[cVOLLHB].setToolTipText("Nur aktiv wenn Patient Heimbewohner und Hausbesuch angekreuzt");
 		jpan.addLabel("volle HB-Gebühr",cc.xy(5,13));
 		if(neu){
-			jcb[5].setEnabled(false);
-			jcb[5].setSelected(false);
+			jcb[cVOLLHB].setEnabled(false);
+			jcb[cVOLLHB].setSelected(false);
 		}else{
 			if(Reha.thisClass.patpanel.patDaten.get(44).equals("T")){
 				// Wenn Heimbewohner
 				if(this.vec.get(43).equals("T")){
-					jcb[5].setEnabled(true);
-					jcb[5].setSelected( (this.vec.get(61).equals("T") ? true : false));
+					jcb[cVOLLHB].setEnabled(true);
+					jcb[cVOLLHB].setSelected( (this.vec.get(61).equals("T") ? true : false));
 				}else{
-					jcb[5].setEnabled(false);
-					jcb[5].setSelected(false);
+					jcb[cVOLLHB].setEnabled(false);
+					jcb[cVOLLHB].setSelected(false);
 				}
 			}else{
 				// Wenn kein(!!) Heimbewohner
 				if(this.vec.get(43).equals("T")){
-					jcb[5].setEnabled(false);
-					jcb[5].setSelected(true);
+					jcb[cVOLLHB].setEnabled(false);
+					jcb[cVOLLHB].setSelected(true);
 				}else{
-					jcb[5].setEnabled(false);
-					jcb[5].setSelected(false);
+					jcb[cVOLLHB].setEnabled(false);
+					jcb[cVOLLHB].setSelected(false);
 				}
 			}
 		}
-		jpan.add(jcb[5],cc.xy(7,13));
+		jpan.add(jcb[cVOLLHB],cc.xy(7,13));
 		
 
 
-		jcb[2] = new JRtaCheckBox("angefordert");
-		jcb[2].setOpaque(false);
+		jcb[cTBANGEF] = new JRtaCheckBox("angefordert");
+		jcb[cTBANGEF].setOpaque(false);
 		jpan.addLabel("Therapiebericht",cc.xy(1, 15));
-		jpan.add(jcb[2],cc.xy(3, 15));
+		jpan.add(jcb[cTBANGEF],cc.xy(3, 15));
 		
 		jpan.addSeparator("Verordnete Heilmittel", cc.xyw(1,17,7));
 
-		jtf[4].setName("anzahl1");
-		jtf[4].addFocusListener(this);
+		jtf[cANZ1].setName("anzahl1");
+		jtf[cANZ1].addFocusListener(this);
 		jpan.addLabel("Anzahl / Heilmittel 1",cc.xy(1, 19));
-		jpan.add(jtf[4],cc.xy(3, 19));
-		jcmb[2] = new JRtaComboBox();
-		jcmb[2].setName("leistung1");
-		jcmb[2].setActionCommand("leistung1");
-		jcmb[2].addActionListener(this);
-		jpan.add(jcmb[2],cc.xyw(5, 19,3));
+		jpan.add(jtf[cANZ1],cc.xy(3, 19));
+		jcmb[cLEIST1] = new JRtaComboBox();
+		jcmb[cLEIST1].setName("leistung1");
+		jcmb[cLEIST1].setActionCommand("leistung1");
+		jcmb[cLEIST1].addActionListener(this);
+		jpan.add(jcmb[cLEIST1],cc.xyw(5, 19,3));
 		
 		jpan.addLabel("Anzahl / Heilmittel 2",cc.xy(1, 21));
-		jpan.add(jtf[5],cc.xy(3, 21));
-		jcmb[3] = new JRtaComboBox();
-		jcmb[3].setName("leistung2");
-		jcmb[3].setActionCommand("leistung2");
-		jcmb[3].addActionListener(this);
-		jpan.add(jcmb[3],cc.xyw(5, 21,3));
+		jpan.add(jtf[cANZ2],cc.xy(3, 21));
+		jcmb[cLEIST2] = new JRtaComboBox();
+		jcmb[cLEIST2].setName("leistung2");
+		jcmb[cLEIST2].setActionCommand("leistung2");
+		jcmb[cLEIST2].addActionListener(this);
+		jpan.add(jcmb[cLEIST2],cc.xyw(5, 21,3));
 		
 		jpan.addLabel("Anzahl / Heilmittel 3",cc.xy(1, 23));
-		jpan.add(jtf[6],cc.xy(3, 23));
-		jcmb[4] = new JRtaComboBox();
-		jcmb[4].setActionCommand("leistung3");
-		jcmb[4].setName("leistung3");
-		jcmb[4].addActionListener(this);
-		jpan.add(jcmb[4],cc.xyw(5, 23,3));
+		jpan.add(jtf[cANZ3],cc.xy(3, 23));
+		jcmb[cLEIST3] = new JRtaComboBox();
+		jcmb[cLEIST3].setActionCommand("leistung3");
+		jcmb[cLEIST3].setName("leistung3");
+		jcmb[cLEIST3].addActionListener(this);
+		jpan.add(jcmb[cLEIST3],cc.xyw(5, 23,3));
 
 		jpan.addLabel("Anzahl / Heilmittel 4",cc.xy(1, 25));
-		jpan.add(jtf[7],cc.xy(3, 25));
-		jcmb[5] = new JRtaComboBox();
-		jcmb[5].setActionCommand("leistung4");
-		jcmb[5].setName("leistung4");
-		jcmb[5].addActionListener(this);
-		jpan.add(jcmb[5],cc.xyw(5, 25,3));
+		jpan.add(jtf[cANZ4],cc.xy(3, 25));
+		jcmb[cLEIST4] = new JRtaComboBox();
+		jcmb[cLEIST4].setActionCommand("leistung4");
+		jcmb[cLEIST4].setName("leistung4");
+		jcmb[cLEIST4].addActionListener(this);
+		jpan.add(jcmb[cLEIST4],cc.xyw(5, 25,3));
 		
 		jpan.addSeparator("Durchführungsbestimmungen", cc.xyw(1,27,7));
 		
 		jpan.addLabel("Behandlungsfrequenz",cc.xy(1, 29));		
-		jpan.add(jtf[8],cc.xy(3, 29));	
+		jpan.add(jtf[cFREQ],cc.xy(3, 29));	
 
 		jpan.addLabel("Dauer der Behandl. in Min.",cc.xy(5, 29));
-		jpan.add(jtf[9],cc.xy(7, 29));
+		jpan.add(jtf[cDAUER],cc.xy(7, 29));
 
 		
 		jpan.addLabel("Indikationsschlüssel",cc.xy(1, 31));		
-		jcmb[6] = new JRtaComboBox();
-		jpan.add(jcmb[6],cc.xy(3, 31));
+		jcmb[cINDI] = new JRtaComboBox();
+		jpan.add(jcmb[cINDI],cc.xy(3, 31));
 		
 		klassenReady = true;
-		fuelleIndis((String)jcmb[0].getSelectedItem());	
+		fuelleIndis((String)jcmb[cRKLASSE].getSelectedItem());	
 	
 		jpan.addLabel("Barcode-Format",cc.xy(5, 31));
-		//jcmb[7] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
-		jcmb[7] = new JRtaComboBox(SystemConfig.rezBarCodName);
-		jpan.add(jcmb[7],cc.xy(7, 31));
+		//jcmb[cBARCOD] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
+		jcmb[cBARCOD] = new JRtaComboBox(SystemConfig.rezBarCodName);
+		jpan.add(jcmb[cBARCOD],cc.xy(7, 31));
 		
 		jpan.addLabel("FarbCode im TK",cc.xy(1, 33));
-		jcmb[8] = new JRtaComboBox();
+		jcmb[cFARBCOD] = new JRtaComboBox();
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -542,9 +672,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}.execute();
 
-		jpan.add(jcmb[8],cc.xy(3, 33));
+		jpan.add(jcmb[cFARBCOD],cc.xy(3, 33));
 		jpan.addLabel("Angelegt von",cc.xy(5, 33));
-		jpan.add(jtf[10],cc.xy(7, 33));
+		jpan.add(jtf[cANGEL],cc.xy(7, 33));
 		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,35,7));
 		jta = new JTextArea();
 		jta.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.5f)));
@@ -563,18 +693,32 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		if(this.neu){
 			this.holePreisGruppe(Reha.thisClass.patpanel.patDaten.get(68).trim());
-			this.ladePreisliste(jcmb[0].getSelectedItem().toString().trim(), preisgruppen[jcmb[0].getSelectedIndex()]);
-			this.fuelleIndis(jcmb[0].getSelectedItem().toString().trim());
+			this.ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);
+			this.fuelleIndis(jcmb[cRKLASSE].getSelectedItem().toString().trim());
+
+			// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
 			ladeZusatzDatenNeu();
+			if ( this.bCtrlPressed )
+				doKopiereLetztesRezeptDesPatienten();  // hier drin wird auch "ladeZusatzDatenNeu()" aufgerufen
+			//else ladeZusatzDatenNeu();
 		}else{
 			this.holePreisGruppe(this.vec.get(37));
-			this.ladePreisliste(jcmb[0].getSelectedItem().toString().trim(), preisgruppen[jcmb[0].getSelectedIndex()]);
-			this.fuelleIndis(jcmb[0].getSelectedItem().toString().trim());
+			this.ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);
+			this.fuelleIndis(jcmb[cRKLASSE].getSelectedItem().toString().trim());
 			ladeZusatzDatenAlt();
 		}
+
 		jscr.validate();
+
+		// Lemmi 20101231: Merken der Originalwerte der eingelesenen Textfelder
+		SaveChangeStatus();
+		
 		return jscr;
 	}
+	
+
+	
+	
 	public int leistungTesten(int combo,int veczahl){
 		int retwert = 0;
 		if(veczahl==-1 || veczahl==0){
@@ -596,17 +740,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("rezeptklasse") && klassenReady){
-			this.ladePreisliste(jcmb[0].getSelectedItem().toString().trim(), preisgruppen[jcmb[0].getSelectedIndex()]);			
-			this.fuelleIndis((String)jcmb[0].getSelectedItem());
+			this.ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);			
+			this.fuelleIndis((String)jcmb[cRKLASSE].getSelectedItem());
 			return;
 		}
 		/*********************/		
 		if(e.getActionCommand().equals("verordnungsart") && klassenReady){
-			if(jcmb[1].getSelectedIndex()==2){
-				jcb[0].setEnabled(true);
+			if(jcmb[cVERORD].getSelectedIndex()==2){
+				jcb[cBEGRADR].setEnabled(true);
 			}else{
-				jcb[0].setSelected(false);
-				jcb[0].setEnabled(false);				
+				jcb[cBEGRADR].setSelected(false);
+				jcb[cBEGRADR].setEnabled(false);				
 			}
 			return;
 		}
@@ -660,37 +804,37 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 
 		if(e.getActionCommand().equals("Hausbesuche") ){
-			if(jcb[1].isSelected()){
+			if(jcb[cHAUSB].isSelected()){
 				// Hausbesuch gewählt
 				if(Reha.thisClass.patpanel.patDaten.get(44).equals("T")){
 					//System.out.println("aktuelle Preisgruppe = "+preisgruppe);
-					if(this.preisgruppe!=1 && (jcmb[0].getSelectedIndex() <= 1) ){
-						jcb[5].setEnabled(true);						
+					if(this.preisgruppe!=1 && (jcmb[cRKLASSE].getSelectedIndex() <= 1) ){
+						jcb[cVOLLHB].setEnabled(true);						
 					}
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-								jcb[1].requestFocus();		 		   
+								jcb[cHAUSB].requestFocus();		 		   
 					 	   }
 					});	
 				}else{
-					jcb[5].setEnabled(false);
-					jcb[5].setSelected(true);
+					jcb[cVOLLHB].setEnabled(false);
+					jcb[cVOLLHB].setSelected(true);
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run()
 					 	   {
-								jcb[1].requestFocus();		 		   
+								jcb[cHAUSB].requestFocus();		 		   
 					 	   }
 					});	
 				}
 			}else{
 				// Haubesuch abgewählt
-				jcb[5].setEnabled(false);
-				jcb[5].setSelected(false);
+				jcb[cVOLLHB].setEnabled(false);
+				jcb[cVOLLHB].setSelected(false);
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run()
 				 	   {
-							jcb[1].requestFocus();		 		   
+							jcb[cHAUSB].requestFocus();		 		   
 				 	   }
 				});	
 			}
@@ -716,6 +860,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			return; 
 		}
 	}
+	
+	
+	/* Lemmi 20101231: diese Routine ersetzt durch nachfolgenden Routine, weil diese Routine ein "Scheck" gegen die Zukunft ist!
 	private boolean anzahlTest(){
 		int itest;
 		int maxanzahl=0,aktanzahl=0;
@@ -746,24 +893,59 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		return true;
 	}
+*/	
+	// Lemmi 20101231: Harte Index-Zahlen für "jcmb" und "jtf" durch sprechende Konstanten ersetzt !
+	// Lemmi Doku: prüft ob die Heilmittel überhaupt und in der korrekten Reihenfolge eingetragen worden sind
+	private boolean anzahlTest(){
+		int itest;
+		int maxanzahl=0, aktanzahl=0;
+		
+		for(int i = 0; i < 4; i++) {  // über alle 4 Leistungs- und Anzahl-Positionen rennen
+			itest = jcmb[cLEIST1 + i].getSelectedIndex();
+			if(itest > 0){
+				if(i == 0 ){  // die 1. Position besonders abfragen - diese muß existieren !
+					try{
+						maxanzahl = Integer.parseInt(jtf[cANZ1 + i].getText());
+					}catch(Exception ex){
+						maxanzahl = 0;
+					}
+				}else{
+					try{
+						aktanzahl = Integer.parseInt(jtf[cANZ1 + i].getText());
+					}catch(Exception ex){
+						aktanzahl = 0;
+					}
+					if(aktanzahl > maxanzahl){
+						String cmd = "Sie haben mehrere Heilmittel mit unterschiedlicher Anzahl eingegeben.\n"+
+						"Bitte geben Sie die Heilmittel so ein daß das Heilmittel mit der größten Anzahl oben steht\n"+
+						"und dann (bezogen auf die Anzahl) in absteigender Reihgenfolge nach unten"; 
+						JOptionPane.showMessageDialog(null,cmd);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
 	private void doRechnen(int comb){
 		//unbelegt
 	}
 	@SuppressWarnings("unused")
 	private void mustHmrCheck(){
-		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()])==1  ){
+		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[cRKLASSE].getSelectedIndex()])==1  ){
 			this.hmrcheck.setEnabled(false);
 		}
 	}
 	private void doHmrCheck( ){
-		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()])==0  ){
+		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[cRKLASSE].getSelectedIndex()])==0  ){
 			this.hmrcheck.setEnabled(true);
 			JOptionPane.showMessageDialog(null, "HMR-Check ist bei diesem Kostenträger nicht erforderlich");
 			return;
 		}
-		//System.out.println(SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[0].getSelectedIndex()]));
-		int itest = 0; //jcmb[2].getSelectedIndex();
-		String indi = (String)jcmb[6].getSelectedItem();
+		//System.out.println(SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]));
+		int itest = 0; //jcmb[cLEIST1].getSelectedIndex();
+		String indi = (String)jcmb[cINDI].getSelectedItem();
 		if(indi.equals("") || indi.contains("kein IndiSchl.")){
 			JOptionPane.showMessageDialog(null, "<html><b>Kein Indikationsschlüssel angegeben.<br>Die Angaben sind <font color='#ff0000'>nicht</font> gemäß den gültigen Heilmittelrichtlinien!</b></html>");
 			return;
@@ -771,6 +953,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		indi = indi.replace(" ", "");
 		Vector<Integer> anzahlen = new Vector<Integer>();
 		Vector<String> hmpositionen = new Vector<String>();
+		
+		/* Lemmi 20101231: diesen Block ersetzt durch nachfolgenden Block, weil dieser Block ein "Scheck" gegen die Zukunft ist!
 		for(int i = 2;i <= 5;i++ ){
 			itest = jcmb[i].getSelectedIndex();
 			if(itest > 0){
@@ -778,7 +962,19 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				hmpositionen.add(preisvec.get(itest-1).get(2));
 			}
 		}
-		if(jtf[2].getText().trim().equals(".  .")){
+		*/
+		// Lemmi 20101231: Harte Index-Zahlen für "jcmb" und "jtf" durch sprechende Konstanten ersetzt ! 
+		for(int i = 0; i < 4; i++ ) {   // Lemmi Doku: Nacheinander alle 4  Leistungen abfragen und Anzahlen addieren 
+			itest = jcmb[cLEIST1 + i].getSelectedIndex();
+			if(itest > 0){
+				anzahlen.add( Integer.parseInt(jtf[cANZ1 + i].getText()) );
+				hmpositionen.add(preisvec.get(itest-1).get(2));
+			}
+		}
+
+		
+		
+		if(jtf[cREZDAT].getText().trim().equals(".  .")){
 			JOptionPane.showMessageDialog(null, "Rezeptdatum nicht korrekt angegeben HMR-Check nicht möglich");
 			return;
 		}
@@ -787,15 +983,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					"Ergotherapie-Rezept","Logopädie-Rezept","REHA-Verordnung"};
 			boolean checkok = new HMRCheck(
 					indi,
-					Arrays.asList(idiszi).indexOf((String)jcmb[0].getSelectedItem().toString()),
+					Arrays.asList(idiszi).indexOf((String)jcmb[cRKLASSE].getSelectedItem().toString()),
 					anzahlen,
 					hmpositionen,
-					preisgruppen[jcmb[0].getSelectedIndex()],
+					preisgruppen[jcmb[cRKLASSE].getSelectedIndex()],
 					preisvec,
-					jcmb[1].getSelectedIndex(),
+					jcmb[cVERORD].getSelectedIndex(),
 					(this.neu ? "" : this.vec.get(1).trim()),
-					jtf[2].getText().trim(),
-					(jtf[3].getText().trim().equals(".  .") ? jtf[2].getText().trim() : jtf[3].getText().trim())
+					jtf[cREZDAT].getText().trim(),
+					(jtf[cBEGINDAT].getText().trim().equals(".  .") ? jtf[cREZDAT].getText().trim() : jtf[cBEGINDAT].getText().trim())
 					).check();
 			if(checkok){
 				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
@@ -808,42 +1004,42 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 	
 	private boolean komplettTest(){
-		if(jtf[0].getText().trim().equals("")){
+		if(jtf[cKTRAEG].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Kostenträger' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
-						jtf[0].requestFocus();
+						jtf[cKTRAEG].requestFocus();
 			 	   }
 			});	   		
 			return false;
 		}
-		if(jtf[1].getText().trim().equals("")){
+		if(jtf[cARZT].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'verordn. Arzt' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
-						jtf[1].requestFocus();
+						jtf[cARZT].requestFocus();
 			 	   }
 			});	   		
 			return false;
 		}
-		if(jtf[9].getText().trim().equals("")){
+		if(jtf[cDAUER].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Behandlungsdauer' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
-						jtf[9].requestFocus();
+						jtf[cDAUER].requestFocus();
 			 	   }
 			});	   		
 			return false;
 		}
-		if(jtf[10].getText().trim().equals("")){
+		if(jtf[cANGEL].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Angelegt von' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
 			 	   public  void run()
 			 	   {
-						jtf[10].requestFocus();
+						jtf[cANGEL].requestFocus();
 			 	   }
 			});	   		
 			return false;
@@ -852,15 +1048,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	private void ladePreisliste(String item,int preisgruppe){
 		String[] artdbeh=null;
-		if(!this.neu && jcmb[2].getItemCount()>0){
+		if(!this.neu && jcmb[cLEIST1].getItemCount()>0){
 			artdbeh = new String[]{
-					String.valueOf(jcmb[2].getValueAt(1)),String.valueOf(jcmb[3].getValueAt(1)),
-					String.valueOf(jcmb[4].getValueAt(1)),String.valueOf(jcmb[5].getValueAt(1))};
+					String.valueOf(jcmb[cLEIST1].getValueAt(1)),String.valueOf(jcmb[cLEIST2].getValueAt(1)),
+					String.valueOf(jcmb[cLEIST3].getValueAt(1)),String.valueOf(jcmb[cLEIST4].getValueAt(1))};
 		}
-		jcmb[2].removeAllItems();
-		jcmb[3].removeAllItems();
-		jcmb[4].removeAllItems();
-		jcmb[5].removeAllItems();
+		jcmb[cLEIST1].removeAllItems();
+		jcmb[cLEIST2].removeAllItems();
+		jcmb[cLEIST3].removeAllItems();
+		jcmb[cLEIST4].removeAllItems();
 		
 		if(item.toLowerCase().contains("physio") ){
 			aktuelleDisziplin = "Physio";
@@ -891,8 +1087,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 
 	private void fuelleIndis(String item){
-		if(jcmb[6].getItemCount() > 0){
-			jcmb[6].removeAllItems();
+		if(jcmb[cINDI].getItemCount() > 0){
+			jcmb[cINDI].removeAllItems();
 		}
 		if(item.toLowerCase().contains("reha")){
 			return;
@@ -913,16 +1109,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			indis = Reha.thisClass.patpanel.aktRezept.indpodo; 
 		}
 		for(int i = 0; i < anz; i++){
-			jcmb[6].addItem(indis[i]);
+			jcmb[cINDI].addItem(indis[i]);
 		}
 		
 		return;
 	}
 	public void ladePreise(String[] artdbeh){
-		jcmb[2].setDataVectorWithStartElement(preisvec,0,9,"./.");
-		jcmb[3].setDataVectorWithStartElement(preisvec,0,9,"./.");
-		jcmb[4].setDataVectorWithStartElement(preisvec,0,9,"./.");
-		jcmb[5].setDataVectorWithStartElement(preisvec,0,9,"./.");
+		jcmb[cLEIST1].setDataVectorWithStartElement(preisvec,0,9,"./.");
+		jcmb[cLEIST2].setDataVectorWithStartElement(preisvec,0,9,"./.");
+		jcmb[cLEIST3].setDataVectorWithStartElement(preisvec,0,9,"./.");
+		jcmb[cLEIST4].setDataVectorWithStartElement(preisvec,0,9,"./.");
 		if(artdbeh != null){
 			for(int i = 0; i < 4;i++){
 				if(artdbeh[i].equals("")){
@@ -935,21 +1131,42 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		return;		
 	}
 	
+	
+//	static int x = 1;
+	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("arzt")){
-			String[] suchkrit = new String[] {jtf[1].getText().replace("?", ""),jtf[12].getText()};
-			jtf[1].setText(String.valueOf(suchkrit[0]));
+			String[] suchkrit = new String[] {jtf[cARZT].getText().replace("?", ""),jtf[cARZTID].getText()};
+			jtf[cARZT].setText(String.valueOf(suchkrit[0]));
 			arztAuswahl(suchkrit);
 		}
 		if(arg0.getKeyChar()=='?' && ((JComponent)arg0.getSource()).getName().equals("ktraeger")){
-			String[] suchkrit = new String[] {jtf[0].getText().replace("?", ""),jtf[11].getText()};
-			jtf[0].setText(suchkrit[0]);
+			String[] suchkrit = new String[] {jtf[cKTRAEG].getText().replace("?", ""),jtf[cKASID].getText()};
+			jtf[cKTRAEG].setText(suchkrit[0]);
 			kassenAuswahl(suchkrit);
 		}
-		if(arg0.getKeyCode()==27){
+		if(arg0.getKeyCode()==27){  // Lemmi Doku: Taste "ESC" gedrückt: besser wäre die Abfrage nach "KeyEvent.VK_ESCAPE"
 			doAbbrechen();
 		}
+
+		/* Lemmi Experimental
+		if(arg0.getKeyCode()==KeyEvent.VK_S && arg0.isControlDown()){  // Lemmi Doku: Taste "Strg+S" gedrückt: besser wäre die Abfrage nach "KeyEvent.VK_ESCAPE"
+			System.out.println("ausgelöst " + x++ );
+			jcb[1].se
+			ansehen: Favoriten: key map bei jta,, actiomap bei jcmb und jcb
+		}
+		else
+			System.out.println("irgendwas" );
+		*/	
+
+		
+/* Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+		if(arg0.getKeyCode() == KeyEvent.VK_CONTROL){  // Lemmi Doku: Taste "Ctrl" gedrückt
+			if( this.neu )  // nur dann, wenn ein neues Rezept angelegt werden soll !
+				doKopiereletztesRezeptDesPatienten();
+		}
+*/		
 	}
 
 	@Override
@@ -971,35 +1188,35 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				return;
 			}
 			if( ((JComponent)arg0.getSource()).getName().equals("anzahl1") ){
-				String text = jtf[4].getText();
-				jtf[5].setText(text);
-				jtf[6].setText(text);
-				jtf[7].setText(text);				
+				String text = jtf[cANZ1].getText();
+				jtf[cANZ2].setText(text);
+				jtf[cANZ3].setText(text);
+				jtf[cANZ4].setText(text);				
 				return;
 			}
 		}
 	}
 	
 	private void arztAuswahl(String[] suchenach){
-		jtf[2].requestFocus();
-		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {jtf[1],new JRtaTextField("",false),jtf[12]},String.valueOf(jtf[1].getText().trim()));
+		jtf[cREZDAT].requestFocus();
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {jtf[cARZT],new JRtaTextField("",false),jtf[cARZTID]},String.valueOf(jtf[cARZT].getText().trim()));
 		awahl.setModal(true);
 		awahl.setLocationRelativeTo(this);
 		awahl.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 			jtf[2].requestFocus();
+		 			jtf[cREZDAT].requestFocus();
 		 	   }
 		});
 		try{
 			String aneu = "";
-			if(! Reha.thisClass.patpanel.patDaten.get(63).contains( ("@"+(aneu = jtf[12].getText().trim())+"@\n")) ){
+			if(! Reha.thisClass.patpanel.patDaten.get(63).contains( ("@"+(aneu = jtf[cARZTID].getText().trim())+"@\n")) ){
 				String aliste = Reha.thisClass.patpanel.patDaten.get(63)+ "@"+aneu+"@\n";
 				Reha.thisClass.patpanel.patDaten.set(63,aliste+ "@"+aneu+"@\n");
 				Reha.thisClass.patpanel.getLogic().arztListeSpeichernString(aliste,false,Reha.thisClass.patpanel.aktPatID);
 				SwingUtilities.invokeLater(new Runnable(){
 				 	   public  void run(){
-				 			jtf[2].requestFocus();
+				 			jtf[cREZDAT].requestFocus();
 				 	   }
 				});
 				
@@ -1013,13 +1230,13 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					Reha.thisClass.patpanel.getLogic().arztListeSpeichernString(aliste,false,Reha.thisClass.patpanel.aktPatID);
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run(){
-					 			jtf[2].requestFocus();
+					 			jtf[REZDAT].requestFocus();
 					 	   }
 					});
 				}else{
 					SwingUtilities.invokeLater(new Runnable(){
 					 	   public  void run(){
-					 			jtf[2].requestFocus();
+					 			jtf[REZDAT].requestFocus();
 					 	   }
 					});
 				}
@@ -1036,22 +1253,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 	}
 	private void kassenAuswahl(String[] suchenach){
-		jtf[1].requestFocus();
-		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[0],jtf[26],jtf[11]},jtf[0].getText().trim());
+		jtf[cARZT].requestFocus();
+		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {jtf[cKTRAEG],jtf[cPATID],jtf[cKASID]},jtf[cKTRAEG].getText().trim());
 		kwahl.setModal(true);
 		kwahl.setLocationRelativeTo(this);
 		kwahl.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable(){
 		 	   public  void run(){
-		 		   if(jtf[11].getText().equals("")){
+		 		   if(jtf[cKASID].getText().equals("")){
 		 			   String meldung = "Achtung - kann Preisgruppe nicht ermitteln!\n"+
 		 			   "Das bedeutet diese Rezept kann später nicht abgerechnet werden!\n\n"+
 		 			   "Und bedenken Sie bitte Ihr Kürzel wird dauerhaft diesem Rezept zugeordnet....";
 			 			  JOptionPane.showMessageDialog(null,meldung);		 			   
 		 		   }else{
-			 		   	holePreisGruppe(jtf[11].getText().trim());
-						ladePreisliste(jcmb[0].getSelectedItem().toString().trim(), preisgruppen[jcmb[0].getSelectedIndex()]);
-						jtf[1].requestFocus();
+			 		   	holePreisGruppe(jtf[cKASID].getText().trim());
+						ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);
+						jtf[cARZT].requestFocus();
 		 		   }
 		 	   }
 		});
@@ -1073,9 +1290,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 						preisgruppen[i-1] = Integer.parseInt(vec.get(0).get(i))-1;
 					}
 					preisgruppe = Integer.parseInt((String)vec.get(0).get(0))-1;
-					jtf[13].setText((String)vec.get(0).get(0));
-					ladePreisliste(jcmb[0].getSelectedItem().toString().trim(), preisgruppen[jcmb[0].getSelectedIndex()]);
-					fuelleIndis(jcmb[0].getSelectedItem().toString().trim());
+					jtf[cPREISGR].setText((String)vec.get(0).get(0));
+					ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);
+					fuelleIndis(jcmb[cRKLASSE].getSelectedItem().toString().trim());
 					ladeZusatzDatenNeu();
 				}else{
 					JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
@@ -1097,7 +1314,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				preisgruppen[i-1] = Integer.parseInt(vec.get(0).get(i))-1;
 			}
 			preisgruppe = Integer.parseInt((String)vec.get(0).get(0))-1;
-			jtf[13].setText((String)vec.get(0).get(0));
+			jtf[cPREISGR].setText((String)vec.get(0).get(0));
 		}else{
 			JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
 		}
@@ -1110,96 +1327,97 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	 * 
 	 * 
 	 */
+	// Lemmi Doku: holt Daten aus dem aktuellen Patienten und trägt sie im Rezept ein
 	private void ladeZusatzDatenNeu(){
 		//String tests = "";
-		jtf[0].setText(Reha.thisClass.patpanel.patDaten.get(13));
-		jtf[11].setText(Reha.thisClass.patpanel.patDaten.get(68)); //kassenid
-		if(jtf[11].getText().trim().equals("")){
+		jtf[cKTRAEG].setText(Reha.thisClass.patpanel.patDaten.get(13));
+		jtf[cKASID].setText(Reha.thisClass.patpanel.patDaten.get(68)); //kassenid
+		if(jtf[cKASID].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null,"Achtung - kann Preisgruppe nicht ermitteln - Rezept kann später nicht abgerechnet werden!");
 		}
-		jtf[1].setText(Reha.thisClass.patpanel.patDaten.get(25));
-		jtf[12].setText(Reha.thisClass.patpanel.patDaten.get(67)); //arztid					
+		jtf[cARZT].setText(Reha.thisClass.patpanel.patDaten.get(25));
+		jtf[cARZTID].setText(Reha.thisClass.patpanel.patDaten.get(67)); //arztid					
 		//tests = Reha.thisClass.patpanel.patDaten.get(31);		// bef_dat = Datum der Befreiung
-		jtf[14].setText(Reha.thisClass.patpanel.patDaten.get(44)); //heimbewohn
-		jtf[15].setText(Reha.thisClass.patpanel.patDaten.get(30)); //befreit
-		jtf[25].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
-		jtf[26].setText(Reha.thisClass.patpanel.patDaten.get(66)); //id von Patient
-		jtf[27].setText(Reha.thisClass.patpanel.patDaten.get(29)); //pat_intern von Patient
+		jtf[cHEIMBEW].setText(Reha.thisClass.patpanel.patDaten.get(44)); //heimbewohn
+		jtf[cBEFREIT].setText(Reha.thisClass.patpanel.patDaten.get(30)); //befreit
+		jtf[cANZKM].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
+		jtf[cPATID].setText(Reha.thisClass.patpanel.patDaten.get(66)); //id von Patient
+		jtf[cPATINT].setText(Reha.thisClass.patpanel.patDaten.get(29)); //pat_intern von Patient
 
 	}
 	/***********
 	 * 
 	 * 
 	 */
-	
+	// Lemmi Doku: lädt die Daten aus dem übergebenen Rezept-Vektor in die Dialog-Felder des Rezepts
 	private void ladeZusatzDatenAlt(){
 		String test = StringTools.NullTest(this.vec.get(36));
-		jtf[0].setText(test); //kasse
+		jtf[cKTRAEG].setText(test); //kasse
 		test = StringTools.NullTest(this.vec.get(37));
-		jtf[11].setText(test);  //kid
+		jtf[cKASID].setText(test);  //kid
 		test = StringTools.NullTest(this.vec.get(15));
-		jtf[1].setText(test); //arzt
+		jtf[cARZT].setText(test); //arzt
 		test = StringTools.NullTest(this.vec.get(16));
-		jtf[12].setText(test); //arztid
+		jtf[cARZTID].setText(test); //arztid
 		test = StringTools.NullTest(this.vec.get(2));
 		if(!test.equals("")){
-			jtf[2].setText(DatFunk.sDatInDeutsch(test));
+			jtf[cREZDAT].setText(DatFunk.sDatInDeutsch(test));
 		}
 		test = StringTools.NullTest(this.vec.get(40));
 		if(!test.equals("")){
-			jtf[3].setText(DatFunk.sDatInDeutsch(test));
+			jtf[cBEGINDAT].setText(DatFunk.sDatInDeutsch(test));
 		}
 		int itest = StringTools.ZahlTest(this.vec.get(27));
 		if(itest >=0){
-			jcmb[1].setSelectedIndex(itest);
+			jcmb[cVERORD].setSelectedIndex(itest);
 		}
 		test = StringTools.NullTest(this.vec.get(42));
-		jcb[0].setSelected((test.equals("T")?true:false));
+		jcb[cBEGRADR].setSelected((test.equals("T")?true:false));
 		test = StringTools.NullTest(this.vec.get(43));
-		jcb[1].setSelected((test.equals("T")?true:false));
+		jcb[cHAUSB].setSelected((test.equals("T")?true:false));
 		test = StringTools.NullTest(this.vec.get(55));
-		jcb[2].setSelected((test.equals("T")?true:false));
+		jcb[cTBANGEF].setSelected((test.equals("T")?true:false));
 		test = StringTools.NullTest(this.vec.get(3));
-		jtf[4].setText(test);
+		jtf[cANZ1].setText(test);
 		test = StringTools.NullTest(this.vec.get(4));
-		jtf[5].setText(test);
+		jtf[cANZ2].setText(test);
 		test = StringTools.NullTest(this.vec.get(5));
-		jtf[6].setText(test);
+		jtf[cANZ3].setText(test);
 		test = StringTools.NullTest(this.vec.get(6));
-		jtf[7].setText(test);
+		jtf[cANZ4].setText(test);
 		itest = StringTools.ZahlTest(this.vec.get(8));
-		jcmb[2].setSelectedIndex(leistungTesten(0,itest));
+		jcmb[cLEIST1].setSelectedIndex(leistungTesten(0,itest));
 		itest = StringTools.ZahlTest(this.vec.get(9));
-		jcmb[3].setSelectedIndex(leistungTesten(1,itest));
+		jcmb[cLEIST2].setSelectedIndex(leistungTesten(1,itest));
 		itest = StringTools.ZahlTest(this.vec.get(10));
-		jcmb[4].setSelectedIndex(leistungTesten(2,itest));
+		jcmb[cLEIST3].setSelectedIndex(leistungTesten(2,itest));
 		itest = StringTools.ZahlTest(this.vec.get(11));
-		jcmb[5].setSelectedIndex(leistungTesten(3,itest));
+		jcmb[cLEIST4].setSelectedIndex(leistungTesten(3,itest));
 		test = StringTools.NullTest(this.vec.get(52));
-		jtf[8].setText(test);
+		jtf[cFREQ].setText(test);
 		test = StringTools.NullTest(this.vec.get(47));
-		jtf[9].setText(test);
+		jtf[cDAUER].setText(test);
 		test = StringTools.NullTest(this.vec.get(44));
-		jcmb[6].setSelectedItem(test);
+		jcmb[cINDI].setSelectedItem(test);
 		itest = StringTools.ZahlTest(this.vec.get(46));
-		jcmb[7].setSelectedIndex(itest);
+		jcmb[cBARCOD].setSelectedIndex(itest);
 		test = StringTools.NullTest(this.vec.get(45));
-		jtf[10].setText(test);
+		jtf[cANGEL].setText(test);
 		if(!test.trim().equals("")){
-			jtf[10].setEnabled(false);				
+			jtf[cANGEL].setEnabled(false);				
 		}
 		jta.setText( StringTools.NullTest(this.vec.get(23)) );
-		if(!jtf[11].getText().equals("")){
-			holePreisGruppe(jtf[11].getText().trim());				
+		if(!jtf[cKASID].getText().equals("")){
+			holePreisGruppe(jtf[cKASID].getText().trim());				
 		}else{
 			JOptionPane.showMessageDialog(null, "Ermittlung der Preisgruppen erforderlich");				
 		}
 		
-		jtf[14].setText(Reha.thisClass.patpanel.patDaten.get(44)); //heimbewohn
-		jtf[15].setText(Reha.thisClass.patpanel.patDaten.get(30)); //befreit
-		jtf[25].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
-		jtf[26].setText(this.vec.get(38)); //id von Patient
-		jtf[27].setText(this.vec.get(0)); //pat_intern von Patient
+		jtf[cHEIMBEW].setText(Reha.thisClass.patpanel.patDaten.get(44)); //heimbewohn
+		jtf[cBEFREIT].setText(Reha.thisClass.patpanel.patDaten.get(30)); //befreit
+		jtf[cANZKM].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
+		jtf[cPATID].setText(this.vec.get(38)); //id von Patient
+		jtf[cPATINT].setText(this.vec.get(0)); //pat_intern von Patient
 	}
 	
 	/********************************/
@@ -1254,11 +1472,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			String stest = "";
 			int itest = -1;
 			StringBuffer sbuf = new StringBuffer();
-			sbuf.append("update verordn set ktraeger='"+jtf[0].getText()+"', ");
-			sbuf.append("kid='"+jtf[11].getText()+"', ");
-			sbuf.append("arzt='"+jtf[1].getText()+"', ");
-			sbuf.append("arztid='"+jtf[12].getText()+"', ");
-			stest = jtf[2].getText().trim();
+			sbuf.append("update verordn set ktraeger='"+jtf[cKTRAEG].getText()+"', ");
+			sbuf.append("kid='"+jtf[cKASID].getText()+"', ");
+			sbuf.append("arzt='"+jtf[cARZT].getText()+"', ");
+			sbuf.append("arztid='"+jtf[cARZTID].getText()+"', ");
+			stest = jtf[cREZDAT].getText().trim();
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
@@ -1267,7 +1485,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(row >= 0){
 				Reha.thisClass.patpanel.aktRezept.tabaktrez.getModel().setValueAt(stest, row, 2);	
 			}
-			String stest2 = jtf[3].getText().trim();
+			String stest2 = jtf[cBEGINDAT].getText().trim();
 			if(stest2.equals(".  .")){
 				stest2 = DatFunk.sDatPlusTage(stest, 10);
 			}
@@ -1277,15 +1495,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest2)+"', ");
 			sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 			sbuf.append("lastedit='"+Reha.aktUser+"', ");
-			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[1].getSelectedIndex()).toString()+"', ");
-			sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("hausbes='"+(jcb[1].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("arztbericht='"+(jcb[2].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("anzahl1='"+jtf[4].getText()+"', ");		
-			sbuf.append("anzahl2='"+jtf[5].getText()+"', ");
-			sbuf.append("anzahl3='"+jtf[6].getText()+"', ");
-			sbuf.append("anzahl4='"+jtf[7].getText()+"', ");
-			itest = jcmb[2].getSelectedIndex();
+			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[cVERORD].getSelectedIndex()).toString()+"', ");
+			sbuf.append("begruendadr='"+(jcb[cBEGRADR].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("hausbes='"+(jcb[cHAUSB].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("arztbericht='"+(jcb[cTBANGEF].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("anzahl1='"+jtf[cANZ1].getText()+"', ");		
+			sbuf.append("anzahl2='"+jtf[cANZ2].getText()+"', ");
+			sbuf.append("anzahl3='"+jtf[cANZ3].getText()+"', ");
+			sbuf.append("anzahl4='"+jtf[cANZ4].getText()+"', ");
+			itest = jcmb[cLEIST1].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise1='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1299,7 +1517,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("kuerzel1='', ");
 
 			}
-			itest = jcmb[3].getSelectedIndex();
+			itest = jcmb[cLEIST2].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise2='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1311,7 +1529,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos2='', ");
 				sbuf.append("kuerzel2='', ");
 			}
-			itest = jcmb[4].getSelectedIndex();
+			itest = jcmb[cLEIST3].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise3='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1323,7 +1541,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos3='', ");
 				sbuf.append("kuerzel3='', ");
 			}
-			itest = jcmb[5].getSelectedIndex();
+			itest = jcmb[cLEIST4].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise4='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1335,24 +1553,24 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("pos3='', ");
 				sbuf.append("kuerzel3='', ");
 			}
-			sbuf.append("frequenz='"+jtf[8].getText()+"', ");
-			sbuf.append("dauer='"+jtf[9].getText()+"', ");
-			if(jcmb[6].getSelectedIndex() > 0){
-				sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");			
+			sbuf.append("frequenz='"+jtf[cFREQ].getText()+"', ");
+			sbuf.append("dauer='"+jtf[cDAUER].getText()+"', ");
+			if(jcmb[cINDI].getSelectedIndex() > 0){
+				sbuf.append("indikatschl='"+(String)jcmb[cINDI].getSelectedItem()+"', ");			
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
-			sbuf.append("barcodeform='"+Integer.valueOf(jcmb[7].getSelectedIndex()).toString()+"', ");
-			sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
-			sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
+			sbuf.append("barcodeform='"+Integer.valueOf(jcmb[cBARCOD].getSelectedIndex()).toString()+"', ");
+			sbuf.append("angelegtvon='"+jtf[cANGEL].getText()+"', ");
+			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
 			
-			if(jcmb[8].getSelectedIndex() > 0){
-				sbuf.append("farbcode='"+Integer.valueOf(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
+			if(jcmb[cFARBCOD].getSelectedIndex() > 0){
+				sbuf.append("farbcode='"+Integer.valueOf(14+jcmb[cFARBCOD].getSelectedIndex()-1).toString()+"', ");	
 			}else{
 				sbuf.append("farbcode='-1', ");
 			}
-			////System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[13].getText());
-			Integer izuzahl = Integer.valueOf(jtf[13].getText());
+			////System.out.println("Speichern bestehendes Rezept -> Preisgruppe = "+jtf[cPREISGR].getText());
+			Integer izuzahl = Integer.valueOf(jtf[cPREISGR].getText());
 			String szzstatus = "";
 			@SuppressWarnings("unused")
 			String unter18 = "F";
@@ -1430,17 +1648,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			//String[] str;
 			sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 			sbuf.append("jahrfrei='"+Reha.thisClass.patpanel.patDaten.get(69)+"', ");
-			sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
-			sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("anzahlkm='"+(jtf[25].getText().trim().equals("") ? "0.00" : jtf[25].getText().trim())+"', ");
-			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.parseInt(jtf[13].getText())-1 )+"'");
+			sbuf.append("heimbewohn='"+jtf[cHEIMBEW].getText()+"', ");
+			sbuf.append("hbvoll='"+(jcb[cVOLLHB].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("anzahlkm='"+(jtf[cANZKM].getText().trim().equals("") ? "0.00" : jtf[cANZKM].getText().trim())+"', ");
+			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.parseInt(jtf[cPREISGR].getText())-1 )+"'");
 			sbuf.append(" where id='"+this.vec.get(35)+"' LIMIT 1");
 
 			SqlInfo.sqlAusfuehren(sbuf.toString());
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 			aufraeumen();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
-			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[13].getText()+" gespeichert");
+			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[cPREISGR].getText()+" gespeichert");
 			setCursor(Reha.thisClass.cdefault);
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -1477,36 +1695,36 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			int rezidneu = SqlInfo.holeId("verordn", "diagnose");
 			sbuf.append("update verordn set rez_nr='"+nummer.toUpperCase()+
 					Integer.valueOf(reznr).toString()+"', ");
-			sbuf.append("pat_intern='"+jtf[27].getText()+"', ");
-			sbuf.append("patid='"+jtf[26].getText()+"', ");
-			sbuf.append("ktraeger='"+jtf[0].getText()+"', ");
-			sbuf.append("kid='"+jtf[11].getText()+"', ");
-			sbuf.append("arzt='"+jtf[1].getText()+"', ");
-			sbuf.append("arztid='"+jtf[12].getText()+"', ");
+			sbuf.append("pat_intern='"+jtf[cPATINT].getText()+"', ");
+			sbuf.append("patid='"+jtf[cPATID].getText()+"', ");
+			sbuf.append("ktraeger='"+jtf[cKTRAEG].getText()+"', ");
+			sbuf.append("kid='"+jtf[cKASID].getText()+"', ");
+			sbuf.append("arzt='"+jtf[cARZT].getText()+"', ");
+			sbuf.append("arztid='"+jtf[cARZTID].getText()+"', ");
 			stest = DatFunk.sHeute();
 			sbuf.append("datum='"+DatFunk.sDatInSQL(stest)+"', ");
-			stest = jtf[2].getText().trim();
+			stest = jtf[cREZDAT].getText().trim();
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
 			sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
-			String stest2 = jtf[3].getText().trim();
+			String stest2 = jtf[cBEGINDAT].getText().trim();
 			if(stest2.equals(".  .")){
 				stest2 = DatFunk.sDatPlusTage(stest, 10);
 			}
 			sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest2)+"', ");
 			sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 			sbuf.append("lastedit='"+Reha.aktUser+"', ");
-			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[1].getSelectedIndex()).toString()+"', ");
-			sbuf.append("begruendadr='"+(jcb[0].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("hausbes='"+(jcb[1].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("arztbericht='"+(jcb[2].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("anzahl1='"+jtf[4].getText()+"', ");		
-			sbuf.append("anzahl2='"+jtf[5].getText()+"', ");
-			sbuf.append("anzahl3='"+jtf[6].getText()+"', ");
-			sbuf.append("anzahl4='"+jtf[7].getText()+"', ");
-			sbuf.append("anzahlhb='"+jtf[4].getText()+"', ");
-			itest = jcmb[2].getSelectedIndex();
+			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[cVERORD].getSelectedIndex()).toString()+"', ");
+			sbuf.append("begruendadr='"+(jcb[cBEGRADR].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("hausbes='"+(jcb[cHAUSB].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("arztbericht='"+(jcb[cTBANGEF].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("anzahl1='"+jtf[cANZ1].getText()+"', ");		
+			sbuf.append("anzahl2='"+jtf[cANZ2].getText()+"', ");
+			sbuf.append("anzahl3='"+jtf[cANZ3].getText()+"', ");
+			sbuf.append("anzahl4='"+jtf[cANZ4].getText()+"', ");
+			sbuf.append("anzahlhb='"+jtf[cANZ1].getText()+"', ");
+			itest = jcmb[cLEIST1].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise1='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1515,7 +1733,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("art_dbeh1='0', ");
 			}
-			itest = jcmb[3].getSelectedIndex();
+			itest = jcmb[cLEIST2].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise2='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1524,7 +1742,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("art_dbeh2='0', ");
 			}
-			itest = jcmb[4].getSelectedIndex();
+			itest = jcmb[cLEIST3].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise3='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1533,7 +1751,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("art_dbeh3='0', ");
 			}
-			itest = jcmb[5].getSelectedIndex();
+			itest = jcmb[cLEIST4].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(9)+"', ");
 				sbuf.append("preise4='"+preisvec.get(itest-1).get(3)+"', ");
@@ -1542,24 +1760,24 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("art_dbeh4='0', ");
 			}
-			sbuf.append("frequenz='"+jtf[8].getText()+"', ");
-			sbuf.append("dauer='"+jtf[9].getText()+"', ");
-			if(jcmb[6].getSelectedIndex() > 0){
-				sbuf.append("indikatschl='"+(String)jcmb[6].getSelectedItem()+"', ");			
+			sbuf.append("frequenz='"+jtf[cFREQ].getText()+"', ");
+			sbuf.append("dauer='"+jtf[cDAUER].getText()+"', ");
+			if(jcmb[cINDI].getSelectedIndex() > 0){
+				sbuf.append("indikatschl='"+(String)jcmb[cINDI].getSelectedItem()+"', ");			
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
-			sbuf.append("barcodeform='"+Integer.toString(jcmb[7].getSelectedIndex())+"', ");
-			sbuf.append("angelegtvon='"+jtf[10].getText()+"', ");
-			sbuf.append("preisgruppe='"+jtf[13].getText()+"', ");
-			if(jcmb[8].getSelectedIndex() > 0){
-				sbuf.append("farbcode='"+Integer.toString(14+jcmb[8].getSelectedIndex()-1).toString()+"', ");	
+			sbuf.append("barcodeform='"+Integer.toString(jcmb[cBARCOD].getSelectedIndex())+"', ");
+			sbuf.append("angelegtvon='"+jtf[cANGEL].getText()+"', ");
+			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
+			if(jcmb[cFARBCOD].getSelectedIndex() > 0){
+				sbuf.append("farbcode='"+Integer.toString(14+jcmb[cFARBCOD].getSelectedIndex()-1).toString()+"', ");	
 			}else{
 				sbuf.append("farbcode='-1', ");
 			}
 			
 	/*******************************************/		
-			Integer izuzahl = Integer.valueOf(jtf[13].getText());
+			Integer izuzahl = Integer.valueOf(jtf[cPREISGR].getText());
 			String unter18 = "F";
 			String szzstatus = "";
 			for(int i = 0; i < 1;i++){
@@ -1602,15 +1820,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("diagnose='"+StringTools.Escaped(jta.getText())+"', ");
 			sbuf.append("unter18='"+unter18+"', ");
 			sbuf.append("jahrfrei='"+Reha.thisClass.patpanel.patDaten.get(69)+"', ");
-			sbuf.append("heimbewohn='"+jtf[14].getText()+"', ");
-			sbuf.append("hbvoll='"+(jcb[5].isSelected() ? "T" : "F")+"', ");
-			sbuf.append("anzahlkm='"+(jtf[25].getText().trim().equals("") ? "0.00" : jtf[25].getText().trim())+"', ");		
+			sbuf.append("heimbewohn='"+jtf[cHEIMBEW].getText()+"', ");
+			sbuf.append("hbvoll='"+(jcb[cVOLLHB].isSelected() ? "T" : "F")+"', ");
+			sbuf.append("anzahlkm='"+(jtf[cANZKM].getText().trim().equals("") ? "0.00" : jtf[cANZKM].getText().trim())+"', ");		
 			sbuf.append("befr='"+Reha.thisClass.patpanel.patDaten.get(30)+"', ");
-			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.valueOf(jtf[13].getText())-1 )+"'");
+			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.valueOf(jtf[cPREISGR].getText())-1 )+"'");
 			sbuf.append("where id='"+Integer.toString(rezidneu)+"'  LIMIT 1");
 			SqlInfo.sqlAusfuehren(sbuf.toString());
-			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[13].getText()+" gespeichert");
-			Reha.thisClass.patpanel.aktRezept.holeRezepte(jtf[27].getText(),nummer.toUpperCase()+Integer.toString(reznr));
+			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[cPREISGR].getText()+" gespeichert");
+			Reha.thisClass.patpanel.aktRezept.holeRezepte(jtf[cPATINT].getText(),nummer.toUpperCase()+Integer.toString(reznr));
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 			aufraeumen();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -1625,7 +1843,115 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		
 	}
+	
+	// Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+	private void doKopiereLetztesRezeptDesPatienten() {
+		/** KONZEPT
+		 holle alle Rezepte aus den Tabellen "verordn" und "lza" zum aktuellen Patienten sortiert und finde das neueste als erstes in der Liste
+		 falls es Rezepte zu mehreren Disziplinen gibt, müßte man hier noch interaktiv abfragen, welches gemeint sein soll (nicht eingebaut)
+		 dann hole die Daten aus dem alten Rezept in einen Vektor analog vekcaktrez und schiebe sie in das Rezept via ladeZusatzDatenAlt()
+		 lösche alle Felder aus dem Vektor, die im akt. rezept gar nicht sein können (zB cREZDAT)
+		 dann setzte nochmal neue Daten drüber ladeZusatzDatenNeu()
+		 **/
+		
+		// Definition der Inices für den Vektor "vecaktrez"  
+		// Lemmi Todo: DAS MUSS VOLLSTÄNDIG GEMACHT UND AN ZENTRALE STELLE VERSCHOBEN WERDEN !!!
+		final int cVAR_PATID = 0;
+		final int cVAR_REZNR = 1;
+		final int cVAR_REZDATUM = 2;
+
+		final int cVAR_BEFREIT = 12;  // BEFR
+		final int cVAR_REZGEBUEHR = 13;
+		final int cVAR_BEZAHLT = 14;  // REZ_BEZ
+		final int cVAR_ARZTNAM = 15;
+		final int cVAR_ARZTID = 16;
+
+		final int cVAR_PREIS1 = 18;
+		final int cVAR_PREIS2 = 19;
+		final int cVAR_PREIS3 = 20;
+		final int cVAR_PREIS4 = 21;
+		final int cVAR_DATANGEL = 22;
+		final int cVAR_DIAGNOSE = 23;
+		
+		final int cVAR_TERMINE = 34;
+		
+		final int cVAR_ZZSTAT = 39;
+		final int cVAR_LASTDAT = 40;  // spätester Behandlungsbginn
+		
+		final int cVAR_INDI = 44;
+		final int cVAR_ANGEL = 45;
+		final int cVAR_BARCOD = 46;  // BARCODEFORM
+		final int cVAR_DAUER = 47;
+		final int cVAR_POS1 = 48;
+		final int cVAR_POS2 = 49;
+		final int cVAR_POS3 = 50;
+		final int cVAR_POS4 = 51;
+		final int cVAR_FREQ = 52;
+		final int cVAR_LASTEDIT = 53;
+		final int cVAR_BERID = 54;
+		final int cVAR_ARZTBER = 55;
+		final int cVAR_LASTEDDATE = 56;
+		final int cVAR_FARBCOD = 57;
+		final int cVAR_RSPLIT = 58;
+		final int cVAR_JAHRFREI = 59;
+
+		
+		String strPatID = jtf[cPATID].getText();
+		
+		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PATID = '"+strPatID+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
+//		rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
+
+		// Was heben wir in der Historie?
+		Vector<String> vecLZA = null;
+		vecLZA = ((Vector<String>)SqlInfo.holeSatz( "lza", " * ", "PATID = '"+strPatID+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
+		
+		// das neuere Rezept gewinnt als Kopiervorlage:
+		if (    ( vecLZA.size() > 0  && vec.size() > 0 ) 
+			 && ( vecLZA.get(cVAR_REZDATUM).compareTo(vec.get(cVAR_REZDATUM)) > 0 )  // wenn das Datum in lza größer ist
+		   ) {
+			vec.clear();
+			vec = (Vector<String>)vecLZA.clone();
+		} else if ( vecLZA.size() > 0  && vec.size() == 0 ) {  // wenn nur etwas in der Historie gefunden werden konnte 
+			vec.clear();
+			vec = (Vector<String>)vecLZA.clone();
+		}
+		vecLZA.clear();
+		
+		// für die Rückmeldung zum Setezen der Dailogüberschrift
+		strKopiervorlage = "";
+		
+		if ( vec.size() > 0 ) {   // nur wenn etwas gefunden werden konnte !
+	
+			// Titel des Dialogs individualisieren für die Rückmeldung zum Setezen der Dailogüberschrift
+			strKopiervorlage = vec.get(cVAR_REZNR);
+	
+			// Löschen der auf jeden Fall "falsch weil alt" Komponenten
+			vec.set(cVAR_REZNR, "");
+			vec.set(cVAR_REZDATUM, "");
+			vec.set(cVAR_TERMINE, "");
+			vec.set(cVAR_ZZSTAT, "");
+			vec.set(cVAR_LASTDAT, "");
+			
+			vec.set(cVAR_ANGEL, "");
+			vec.set(cVAR_LASTEDIT, "");
+			
+			vec.set(cVAR_BEFREIT, "");
+
+			vec.set(cVAR_BEZAHLT, "F" );    // Das kann noch nicht bezahlt sein (Rezeptgebühr)
+			
+			ladeZusatzDatenAlt();  // Eintragen von vec in die Dilaog-Felder
+			ladeZusatzDatenNeu();  // Hier nochmals die neuen Daten ermitteln - schölißlich heban wir ein neues Rezept !
+
+			// vec wieder löschen - er hat seinen Transport-Dienst geleistet
+			vec.clear();
+		}
+	}  // end of doKopiereLetztesRezeptDesPatienten()
+	
 	private void doAbbrechen(){
+		// Lemmi 20101231: Verhinderung von Datenverlust bei unbeabsichtigtem Zumachen des geänderten Rezept-Dialoges
+		if ( HasChanged() && askForCancelUsaved() == 1 )
+			return;
+			
 		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
 	}

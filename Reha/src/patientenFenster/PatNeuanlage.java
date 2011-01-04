@@ -103,8 +103,11 @@ public JRtaTextField[] jtf = {null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
 		                      null,null,null,null,null,
-		                      null,null,null,null, null};
-JRtaCheckBox[]jcheck  ={null,null,null,null,null,null,null,null,null,null,null};
+		                      null,null}; //,null,null, null};
+JRtaCheckBox[]jcheck  ={null,null,null,null,null,
+						null,null,null,null,null,
+						null};
+
 
 JXTable doclist = null;
 MyDocTableModel docmod = null;
@@ -117,6 +120,9 @@ JButton pic0 = null;
 JButton pic1 = null;
 
 JRtaComboBox cbanrede = null;
+
+//Lemmi 20110103: Merken der Originalwerte der eingelesenen Textfelder, Combo- und Check-Boxen
+Vector<Object> originale = new Vector<Object>();
 
 String kassenid = ""; 
 String befreitdatum = "";
@@ -344,6 +350,8 @@ private KVKWrapper kvw;
 		validate();
 		repaint();
 		
+		// Lemmi 20110103: Merken der Originalwerte der eingelesenen Textfelder
+//		SaveChangeStatus();
 	}
 	
 	
@@ -454,6 +462,7 @@ private KVKWrapper kvw;
 				if(!jtf[35].getText().trim().equals("")){
 					jcheck[10].setEnabled(true);
 				}
+				
 				//System.out.println("Gehe auf Feld 1 -> "+getInstance().feldname);
 				if(! "".equals(getInstance().feldname)){
 					SwingUtilities.invokeLater(new Runnable(){
@@ -803,6 +812,7 @@ private KVKWrapper kvw;
 					kassenLab = new JLabel("Kasse");
 					kassenLab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
 					kassenLab.setHorizontalTextPosition(JLabel.LEFT);
+					
 					kassenLab.addMouseListener(new MouseAdapter(){
 						public void mousePressed(MouseEvent ev){
 							if(editvoll){
@@ -1457,6 +1467,9 @@ private KVKWrapper kvw;
 		}else if(com.equals("speichern")){
 			schreibeInDb();
 		}else if(com.equals("abbrechen")){
+			// Lemmi 20110103: Verhinderung von Datenverlust bei unbeabsichtigtem Zumachen des geänderten Patientent-Dialoges
+//			if ( HasChanged() && askForCancelUsaved() == 1 )
+	//			return;
 			finalise();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 		}else if(com.equals("adddoc")){
@@ -1507,6 +1520,11 @@ private KVKWrapper kvw;
 					return;
 				}
 				if(((JComponent)arg0.getSource()).getName().equals("abbrechen")){
+					
+					// Lemmi 20110103: Verhinderung von Datenverlust bei unbeabsichtigtem Zumachen des geänderten Patientent-Dialoges
+//					if ( HasChanged() && askForCancelUsaved() == 1 )
+//						return;
+					
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 					finalise();
 					((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -1518,6 +1536,11 @@ private KVKWrapper kvw;
 			
 		}
 		if(arg0.getKeyCode()==27){
+			
+			// Lemmi 20110103: Verhinderung von Datenverlust bei unbeabsichtigtem Zumachen des geänderten Patientent-Dialoges
+//			if ( HasChanged() && askForCancelUsaved() == 1 )
+//				return;
+
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 			finalise();
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
@@ -1968,6 +1991,70 @@ private KVKWrapper kvw;
 		}
 		
 	}
+	
+/*  Lemmi ToDo: Den intransparente Handhabung mit jtf[0] und Anrede prüfen !!!
+	// Lemmi 20110103: Merken der Originalwerte der eingelesenen Textfelder
+	// ACHTUNG: Die Reihenfolge der Abfragen muß in SaveChangeStatus() und HasChanged() exakt identisch sein ! 
+	private void SaveChangeStatus(){
+		int i;
+		originale.clear();  // vorherige Merkung wegwerfen
+
+		// Alle Text-Eingabefelder
+		for ( i = 0; i < jtf.length; i++ ) {
+			//String strText = jtf[i].getText();
+			originale.add( jtf[i].getText() );
+		}
+		
+		// Einzelne Text-Felder
+//		originale.add( jta.getText() );
+		
+		// alle ComboBoxen
+		originale.add( (Integer)cbanrede.getSelectedIndex() );  
+
+		// alle CheckBoxen
+		for ( i = 0; i < jcheck.length; i++ ) {  
+			originale.add( (Boolean)(jcheck[i].isSelected() ) );  // 
+		}
+	}
+	
+	// Lemmi 20110103: prüft, ob sich Einträge geändert haben
+	// ACHTUNG: Die Reihenfolge der Abfragen muß in SaveChangeStatus() und HasChanged() exakt identisch sein ! 
+	public Boolean HasChanged()  {
+		int i, idx = 0;
+		
+		// Alle Text-Eingabefelder
+		for ( i = 0; i < jtf.length; i++) {
+			String strTex1 = ">" + jtf[i].getText() + "<    >" + originale.get(idx++) + "<";
+			if(! jtf[i].getText().equals( originale.get(idx++) ) )
+				return true;
+		}
+		
+		// Einzelne Textfelder
+//		if(! jta.getText().equals( originale.get(idx++) ) )	   
+//			return true;
+		
+		// alle ComboBoxen
+		if( cbanrede.getSelectedIndex() != (Integer)originale.get(idx++) )	// Art d. Verordn. etc.
+			return true;
+		
+		// alle CheckBoxen
+		for ( i = 0; i < jcheck.length; i++) {		// CheckBoxen
+			if( jcheck[i].isSelected() != (Boolean)originale.get(idx++) )	// Begründung außer der Regel vorhanden ? .....
+				return true;
+		}		
+
+		return false;
+	}
+
+	// Lemmi 20110103: Stndard-Abfrage nach Prüfung, ob sich Einträge geändert haben
+	// fragt nach, ob wirklich ungesichert abgebrochen werden soll !
+	public int askForCancelUsaved(){
+		String[] strOptions = {"ja", "nein"};  // Defaultwert euf "nein" gesetzt !
+		return JOptionPane.showOptionDialog(null, "Es wurden Patienten-Anngaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
+				 "Angaben wurden geändert", 
+				 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				 strOptions, strOptions[1] );
+	 }
 
 }
 class ArztListeSpeichern{
@@ -1985,4 +2072,5 @@ class ArztListeSpeichern{
 		Reha.thisClass.patpanel.patDaten.set(63,aliste);
 		//System.out.println(cmd);
 	}
+*/	
 }

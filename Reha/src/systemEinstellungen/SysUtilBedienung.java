@@ -41,8 +41,6 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
 	JRtaTextField[] tfs = {null,null};
-	Integer cANZTFS = 2;  // Anzahl der benutzten Textfelder
-	
 	JButton abbruch = null;
 	JButton speichern = null;
 	JButton[] buts = {null,null};
@@ -104,7 +102,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	// Merken der Originalwerte der eingelesenen Textfelder
 	private void SaveChangeStatus(){
 		originale.clear();
-		for ( int i = 0; i < cANZTFS; i++ ) {
+		for ( int i = 0; i < tfs.length; i++ ) {
 			originale.add( tfs[i].getText() );
 		}
 		
@@ -113,7 +111,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	// prüft, ob sich Einträge geändert haben
 	private Boolean HasChanged(){
 		
-		for ( int i = 0; i < cANZTFS; i++) {
+		for ( int i = 0; i < tfs.length; i++) {
 			if(! tfs[i].getText().trim().equals(originale.get(i)))
 				return true;
 		}
