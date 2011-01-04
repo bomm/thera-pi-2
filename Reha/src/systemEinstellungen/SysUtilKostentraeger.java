@@ -253,7 +253,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				} else if ( inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr).equals("") ){ 
 					ktrmod.setValueAt(img[1],i,3); // noch nicht in INI-Datei -> "update"
 				} else if ( DatFunk.TageDifferenz(DatFunk.sHeute(), ktrmod.getValueAt(i,1).toString()) <= 0){
-					if ( dateiNameCheck(dateiName,(String) ktrmod.getValueAt(i, 2)) ){// Wenn Dateiname aktueller als INI-Dateiname (Monat/Quartal, insbesondere aber auch Version
+					if ( dateiNameCheck(dateiName,inif.getStringProperty("KTraegerDateien", "KTDatei"+kANr)) ){// Wenn Dateiname aktueller als INI-Dateiname (Monat/Quartal, insbesondere aber auch Version
 						ktrmod.setValueAt(img[1],i,3); // GKV bereits gültig und neuer als Ini
 					} else {
 						ktrmod.setValueAt(img[0],i,3); //"DB aktuell 2"// GKV bereits gültig (ok), aber älter als Ini
