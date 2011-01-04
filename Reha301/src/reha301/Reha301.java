@@ -50,7 +50,7 @@ public class Reha301 implements WindowListener  {
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
 	public static String dbUser = "rtauser";
 	public static String dbPassword = "rtacurie";
-	public static String officeProgrammPfad = "C:/Programme/OpenOffice.org 3";
+	public static String officeProgrammPfad = "C:/Program Files (x86)/OpenOffice.org 3";
 	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
 	public static String progHome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";

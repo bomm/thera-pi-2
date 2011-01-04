@@ -344,20 +344,29 @@ public class Reha301Auswerten extends JXPanel{
 		StringBuffer buf = new StringBuffer();
 		String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
 		String adress = tab.getValueAt(tab.getSelectedRow(), 5).toString();
-		
-		buf.append("<html>");
+		String vsnr = tab.getValueAt(tab.getSelectedRow(), 6).toString();
+		String ktraeger = tab.getValueAt(tab.getSelectedRow(), 7).toString();
+		String anlass = tab.getValueAt(tab.getSelectedRow(), 3).toString();
+		String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
+		buf.append("<html><head>");
 		buf.append(
 		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
          ".rechtsbuendig {text-align: right;}"+
+         ".rbrot {text-align: right;color:#ff0000;}"+
+         ".rbblau {text-align: right;color:#0000ff;}"+
          ".zentriert {text-align: center;}"+
          ".blocksatz {text-align: justify;}"+
          "</style>" ); 
-
-		buf.append("<table>");
-		buf.append("<tr><td class='rechtsbuendig>Anrede</td><td>"+pat.split("#")[0]+"</td></tr>");
-		buf.append("<tr><td class='rechtsbuendig>Name</td><td>"+pat.split("#")[1]+", "+pat.split("#")[2]+"</td></tr>");
-		buf.append("<tr><td>Strasse</td><td>"+adress.split("#")[0]+"</td></tr>");
-		buf.append("<tr><td>Ort</td><td>"+adress.split("#")[1]+" "+adress.split("#")[2]+"</td></tr>");
+		buf.append("</head>");
+		buf.append("<table style='font-family:Arial'>");
+		buf.append("<tr><td colspan='2';class='rbrot'>"+anlass+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Anrede</td><td>"+pat.split("#")[0]+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Name</td><td>"+pat.split("#")[1]+", "+pat.split("#")[2]+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Strasse</td><td>"+adress.split("#")[0]+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Ort</td><td>"+adress.split("#")[1]+" "+adress.split("#")[2]+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>VSNR</td><td>"+vsnr+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Kostenträger</td><td>"+ktraeger+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Krankenkasse</td><td>"+kkasse.split("#")[0]+"</td></tr>");
 		buf.append("</table>");
 		buf.append("</html>");
 		editpan[0].setText(buf.toString());
