@@ -407,6 +407,8 @@ public class Reha301Auswerten extends JXPanel{
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
+					patcombo.removeActionListener(al);
+					patcombo.removeAllItems();
 					String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
 					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
 					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
@@ -415,12 +417,12 @@ public class Reha301Auswerten extends JXPanel{
 					vec_patstamm = SqlInfo.holeFelder(cmd);
 					
 					if(vec_patstamm.size() > 0){
-						//combo.setDataVectorWithStartElement((Vector<Vector<String>>)dumvec.clone(), 0, 5, "./.");
 						for(int i = 0; i < vec_patstamm.size();i++){
 							patcombo.addItem(Integer.toString(i+1)+" von "+Integer.toString(vec_patstamm.size())+" - "+StringTools.EGross(String.valueOf(vec_patstamm.get(i).get(0)).toString()));
 						}
 						patcombo.validate();
 					}
+					patcombo.addActionListener(al);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
