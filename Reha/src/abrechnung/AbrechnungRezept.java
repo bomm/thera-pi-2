@@ -2340,7 +2340,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		//Bearbeitungsgebühr
 		
 	}
-	private String[] getAdressParams(String patid){
+	public String[] getAdressParams(String patid){
 		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
 		String cmd = "select anrede,titel,n_name,v_name,strasse,plz,ort from pat5 where id='"+
@@ -2352,7 +2352,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			};
 		return AdressTools.machePrivatAdresse(obj,true);
 	}
-	private String[] holeAbweichendeAdresse(String patid){
+	public String[] holeAbweichendeAdresse(String patid){
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
 		String cmd = "select abwanrede,abwtitel,abwn_name,abwv_name,abwstrasse,abwplz,abwort from pat5 where id='"+
 			patid+"' LIMIT 1";

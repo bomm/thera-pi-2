@@ -1949,9 +1949,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	private void doAbbrechen(){
 		// Lemmi 20101231: Verhinderung von Datenverlust bei unbeabsichtigtem Zumachen des geänderten Rezept-Dialoges
-		if ( HasChanged() && askForCancelUsaved() == 1 )
+		/*
+		if ( HasChanged() && askForCancelUsaved() == JOptionPane.NO_OPTION )
 			return;
-			
+		*/	
 		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
 	}

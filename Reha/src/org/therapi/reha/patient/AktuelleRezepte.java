@@ -25,6 +25,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -96,6 +97,7 @@ import systemTools.StringTools;
 import terminKalender.DatFunk;
 import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
+import abrechnung.RezeptGebuehrRechnung;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -2468,6 +2470,146 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }	
 
+	// Lemmi 20101218: kopiert aus AbrechnungRezept.java und die Datenherkunfts-Variablen verändert bzw. angepasst.
+	private void doRezeptgebuehrRechnung(Point location){
+		boolean buchen = true;
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		
+//		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+aktRezNum.getText()+
+//		"' AND rnr LIKE 'RGR-%' LIMIT 1");
+		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+
+				(String)Reha.thisClass.patpanel.vecaktrez.get(1) + "' AND rnr LIKE 'RGR-%' LIMIT 1");
+		
+		if(testvec.size() > 0){
+			int anfrage = JOptionPane.showConfirmDialog(null, "Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!"+
+					"Wollen Sie eine Kopie erstellen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage != JOptionPane.YES_OPTION){
+				return;				
+			}
+			buchen = false;
+		} else {
+			// vvv Prüfungen aus der Bar-Quittung auch hier !
+			if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("0") ){
+				JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
+				return;
+			}
+			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))){
+				JOptionPane.showMessageDialog(null,"Stand heute ist der Patient noch nicht Volljährig - Zuzahlung deshalb (bislang) noch nicht erforderlich");
+				return;
+			}
+		
+			if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
+					(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
+				JOptionPane.showMessageDialog(null, "<html>Zuzahlung für Rezept  <b>" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) 
+						  + "</b>  wurde bereits in bar geleistet.\n" 
+						  + "Eine Rezeptgebühren-Rechnung kann deshalb nicht mehr erstellt werden.", 
+						  "Rezeptgebühren-Rechnung nicht mehr möglich", JOptionPane.WARNING_MESSAGE, null);
+				return;
+			}
+			// ^^^  Prüfungen aus der Bar-Quittung auch hier !
+			
+		}
+		
+		
+		
+		HashMap<String,String> hmRezgeb = new HashMap<String,String>();
+		int rueckgabe = -1;
+		int i;
+		String behandl = "";
+		String strZuzahlung = "0.00";
+		
+		// Lemmi: Nutzung der Routine aus der RG-Barzahlung, um "geprüft" einige Varibalen vorzubelegen
+		// Lemmi Doku: Hier werden die Variablen für die Vorlage initialisiert bzw. zurückgesetzt
+		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
+		SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
+		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
+		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
+		RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		
+//		for(int i = 0; i < vec_poskuerzel.size();i++){
+//		behandl=behandl+vec_posanzahl.get(i)+"*"+vec_poskuerzel.get(i)+(i < (vec_poskuerzel.size()-1) ? "," : "" );
+		// String mit den Anzahlen und HM-Kürzeln erzeugen
+		for(i = 0; i < 4; i++){
+			if (   (        Reha.thisClass.patpanel.vecaktrez.get(65+i) != null) 
+				&& ((String)Reha.thisClass.patpanel.vecaktrez.get(65+i)).length() > 0 )  {
+				behandl += ((behandl.length() > 0) ? ", " : "") + (String)Reha.thisClass.patpanel.vecaktrez.get(3+i) + " * " + (String)Reha.thisClass.patpanel.vecaktrez.get(65+i);
+			}
+		}
+		
+		// Zuzahlung zusammenziehen
+		Double dZuzahl = 0.0;
+		for(i = 0; i < 4; i++){
+			if ( Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rproz"+(i+1)+">").replaceAll(",", ".")) > 0.00 ) {
+				dZuzahl += Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rgesamt"+(i+1)+">").replaceAll(",", "."));
+				   
+//				dZuzahl += Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rproz"+(i+1)+">").replaceAll(",", ".")) *
+//						   Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Ranzahl"+(i+1)+">").replaceAll(",", "."));
+			}
+		}
+		dZuzahl += Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rpauschale>").replaceAll(",", "."));  // 10 Euro dazu
+		
+		strZuzahlung = (String)Reha.thisClass.patpanel.vecaktrez.get(13);
+		strZuzahlung = dfx.format(dZuzahl);
+		strZuzahlung = SystemConfig.hmAdrRDaten.get("<Rendbetrag>");
+		
+/*		String test1 = "";  // Mal die Rezeptdaten auflisten !
+		int iMax = Reha.thisClass.patpanel.vecaktrez.size();
+		for( i = 0; i < iMax; i++){
+			test1 = test1 + i + " = " + (String)Reha.thisClass.patpanel.vecaktrez.get(i) + "\n";
+			if ( i > 63 ){
+				int x = 5;
+				x += 1;
+			}
+		}
+*/		
+		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+
+//		String cmd = "select abwadress,id from pat5 where pat_intern='"+vec_rez.get(0).get(0)+"' LIMIT 1";
+		String cmd = "select abwadress,id from pat5 where pat_intern='"+(String)Reha.thisClass.patpanel.vecaktrez.get(0)+"' LIMIT 1";
+		Vector<Vector<String>> adrvec = SqlInfo.holeFelder(cmd);
+		String[] adressParams = null;
+		
+		abrRez = new AbrechnungRezept(null);
+		if(adrvec.get(0).get(0).equals("T")){
+			adressParams = abrRez.holeAbweichendeAdresse(adrvec.get(0).get(1));
+		}else{
+			adressParams = abrRez.getAdressParams(adrvec.get(0).get(1));
+		}
+//		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
+		hmRezgeb.put("<rgreznum>",(String)Reha.thisClass.patpanel.vecaktrez.get(1));
+				
+		hmRezgeb.put("<rgbehandlung>",behandl);
+		
+//		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));
+		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)));
+	
+//		hmRezgeb.put("<rgbetrag>",dfx.format(zuzahlungWert));  Lemmi xxx
+		hmRezgeb.put("<rgbetrag>",strZuzahlung); 
+		
+		hmRezgeb.put("<rgpauschale>","5,00");
+		hmRezgeb.put("<rggesamt>","0,00");
+		hmRezgeb.put("<rganrede>",adressParams[0]);
+		hmRezgeb.put("<rgname>",adressParams[1]);
+		hmRezgeb.put("<rgstrasse>",adressParams[2]);
+		hmRezgeb.put("<rgort>",adressParams[3]);
+		hmRezgeb.put("<rgbanrede>",adressParams[4]);
+		
+//		hmRezgeb.put("<rgpatintern>",vec_rez.get(0).get(0));
+		hmRezgeb.put("<rgpatintern>",(String)Reha.thisClass.patpanel.vecaktrez.get(0));
+		
+		RezeptGebuehrRechnung rgeb = new RezeptGebuehrRechnung(Reha.thisFrame,"Nachberechnung Rezeptgebühren",rueckgabe,hmRezgeb,buchen);
+		rgeb.setSize(new Dimension(250,300));
+		rgeb.setLocation(location.x-50,location.y-50);
+		rgeb.pack();
+		rgeb.setVisible(true);
+	}
 	
 /**********************************************/
 
