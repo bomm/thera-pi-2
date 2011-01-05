@@ -2662,7 +2662,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list);
-			tDlg.setPreferredSize(new Dimension(250, 255 +   // Lemmi: Breite, Höhe des Werkzeug-Dialogs
+			tDlg.setPreferredSize(new Dimension(275, 255 +   // Lemmi: Breite, Höhe des Werkzeug-Dialogs
 					((Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
