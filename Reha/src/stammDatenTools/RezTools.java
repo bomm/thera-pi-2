@@ -467,7 +467,7 @@ public class RezTools {
 		//
 		
 		
-		//1. Schritt haben wir bereits Termineinträge die man auswerten kann
+		//1. Schritt haben wir bereits Termineintr�ge die man auswerten kann
 		if( (vAktTermine = holeEinzelTermineAusRezept("",termine)).size() > 0 ){
 			// Es gibt Termine in der Tabelle
 			bTermine = true;
@@ -570,9 +570,43 @@ public class RezTools {
 				}else{// es gibt Termine im Vorjahr
 					Object[] obj = JahresWechsel(vAktTermine,SystemConfig.vorJahr);
 					if(!(Boolean)obj[0]){// alle Termine waren im Vorjahr 
-						iret = 0;
+						//System.out.println("1 - Termine aus dem Vorjahr(frei) = "+obj[1]+" Termine aus diesem Jahr(Zuzahlung) = "+obj[2]);
+						if(vAktTermine.size() < maxAnzahl()){
+							String meldung = "<html>Während der Befreiung wurden <b>"+Integer.toString(vAktTermine.size())+"  von "+
+							Integer.toString(maxAnzahl())+" Behandlungen</b> durchgeführt!<br>"+
+									"Rezeptgebühren müssen also noch für <b>"+Integer.toString(maxAnzahl()-vAktTermine.size())+" Behandlungen</b> entrichtet werden.<br>"+
+									"<br><br>Ist das korrekt?<br><br></html>";
+							int anfrage = JOptionPane.showConfirmDialog(null, meldung, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_CANCEL_OPTION);
+							if(anfrage == JOptionPane.YES_OPTION){
+								zm.allefrei = false;
+								zm.allezuzahl = false;
+								zm.anfangfrei = true;
+								zm.teil1 = vAktTermine.size();
+								zm.teil2 = maxAnzahl()-vAktTermine.size();
+								iret = 1;
+							}else if(anfrage == JOptionPane.CANCEL_OPTION){
+								return -1;
+								
+							}else{
+								Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Anzahl Behandlungen ein für die\nRezeptgebühren berechnet werden sollen:", Integer.toString(maxAnzahl()-vAktTermine.size()));
+								if(ret == null){
+									//iret = 0;
+									return -1;
+								}else{
+									zm.allefrei = false;
+									zm.allezuzahl = false;
+									zm.anfangfrei = true;
+									zm.teil1 = maxAnzahl()-Integer.parseInt((String)ret);
+									zm.teil2 = Integer.parseInt((String)ret);
+									iret = 1;
+								}
+							}
+						}else{
+							iret = 0;	
+						}
+						
 					}else{// gemischte Termine
-						//System.out.println("Termine aus dem Vorjahr(frei) = "+obj[1]+" Termine aus diesem Jahr(Zuzahlung) = "+obj[2]);
+						//System.out.println("2 -Termine aus dem Vorjahr(frei) = "+obj[1]+" Termine aus diesem Jahr(Zuzahlung) = "+obj[2]);
 						zm.allefrei = false;
 						zm.allezuzahl = false;
 						zm.anfangfrei = true;
@@ -670,7 +704,7 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );		
-		for(i = 0;i < 4;i++){   // Lemmi-Doku: Zusammenhang zwischen vecaktrez und Heilmitteln
+		for(i = 0;i < 4;i++){
 			anzahl[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
 			artdbeh[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+8));
 			preise[i] = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));
@@ -696,7 +730,6 @@ public class RezTools {
 				SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)Reha.thisClass.patpanel.vecaktrez.get(48+i) );
 				SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", dfx.format(preise[i]) );
 				
-				// Lemmi Doku: Berechnung der 10% Zuzahlung für die aktuelle HM-Position [i]
 				einzelpreis = preise[i].divide(BigDecimal.valueOf(new Double(10.000)));
 
 				poswert = preise[i].multiply(BigDecimal.valueOf(new Double(anzahl[i]))); 
@@ -921,9 +954,17 @@ public class RezTools {
 				ret[0] = true;
 				ret[1] = Integer.valueOf(i);
 				ret[2] = maxAnzahl()-(Integer)ret[1];
-				break;
+				return ret;
 			}
 		}
+		/*
+		if(maxAnzahl() > vtage.size()){
+			ret[0] = true;
+			ret[1] = Integer.valueOf(vtage.size());
+			ret[2] = maxAnzahl()-(Integer)ret[1];
+		}
+		System.out.println("maximale Anzahl "+maxAnzahl());
+		*/
 		return ret;
 	}
 	public static int maxAnzahl(){
@@ -1575,8 +1616,9 @@ public class RezTools {
 	}
 	/***************************************************/
 	/***************************************************/
-	public static Object[] jahresWechselCheck(Vector<Vector<Object>> behandlungsfall){
+	public static Object[] jahresWechselCheck(Vector<Vector<Object>> behandlungsfall,boolean unter18){
 		//                Jahreswechsel       ab Position  vollständig im alten Jahr
+		//unter18 wird hier nicht mehr ausgewertet, als Parameter aber noch belassen
 		Object[]  ret = {Boolean.valueOf(false), -1       ,Boolean.valueOf(false)};
 		if( ((String)behandlungsfall.get(0).get(0)).endsWith(SystemConfig.aktJahr)){
 			return ret;

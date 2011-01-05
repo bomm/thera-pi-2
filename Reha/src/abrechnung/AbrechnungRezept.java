@@ -1193,10 +1193,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		@SuppressWarnings("unused")
 		boolean jahresWechsel = false;
 		zuZahlungsPos = "3";
+		
 		if(SystemPreislisten.hmZuzahlRegeln.get(aktDisziplin).get(Integer.valueOf(preisgruppe)-1).equals("0")){
+			
 			zuZahlungsIndex = zzpflicht[0];
 			zuZahlungsPos = "0";
 			doTreeFreiAb(0,nodes,false);
+			doTarifWechselCheck();
 			return;
 		}
 		if(patU18){
@@ -1208,7 +1211,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			doTreeFreiAb(0,nodes,false);
 			zuZahlungsIndex = zzpflicht[0];
 			zuZahlungsPos = "0";
-			//doTreeFreiAb(0,vec_tabelle.size(),false);
+
+			doTarifWechselCheck();
+			return;
 
 		}else{
 			Object[] u18 = RezTools.unter18Check(vec_tabelle, DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)) );
@@ -1223,7 +1228,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				doTreeFreiAb(0,nodes,false);
 				zuZahlungsIndex = zzpflicht[0];
 				zuZahlungsPos = "0";
-				//doTreeFreiAb(0,vec_tabelle.size(),false);
+				
+				doTarifWechselCheck();
+				return;
+
+				
 			}else if(( (Boolean)u18[0]) && ( (Boolean)u18[2])) {
 				//Während der Behandlung 18 geworden, Rezept muß gesplittet werden;
 				unter18 = true;
@@ -1235,10 +1244,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				doTreeFreiAb((Integer)u18[1],nodes,true);
 				zuZahlungsIndex = zzpflicht[5];
 				zuZahlungsPos = "5";
+				
+				doTarifWechselCheck();
+				return;
 			}
 		}
 
-		Object[] newYear = RezTools.jahresWechselCheck(vec_tabelle);
+		Object[] newYear = RezTools.jahresWechselCheck(vec_tabelle,unter18);
 		//System.out.println("Jahreswechsel = "+newYear[0]+" / JahresWechsel ab Position = "+newYear[1]+" / Rezept vollständig im Vorjahr  = "+newYear[2]);
 		/*
 		int wechselfall = 0;
@@ -1247,6 +1259,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		*/
 		if((Boolean)newYear[0] && (Boolean)newYear[2]){
 			//Das Rezept ist komplett im Vorjahr abgearbeitet worden
+			
 			if(patVorjahrFrei && (!unter18)){
 				//altfall = 1;
 				doTreeFreiAb(0,nodes,false);
@@ -2227,7 +2240,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	    		SucheNachAllem.doPatSuchen(vec_rez.get(0).get(0).trim(), vec_rez.get(0).get(1),this);
 
 	    	}
-	    	if(event.getURL().toString().contains("nozz.de")){         // Lemmi: Rate mal Doku ????
+	    	if(event.getURL().toString().contains("nozz.de")){
 	    		PointerInfo info = MouseInfo.getPointerInfo();
 	    	    Point location = info.getLocation();
 	    		doRezeptgebuehrRechnung(location);
@@ -2270,8 +2283,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	/*************************
 	 * 	
 	 */
-	private void doRezeptgebuehrRechnung(Point location){   // Lemmi 20101218: testhalber geändert auf public für externen Aufruf: fkt. nicht !
-	//public void doRezeptgebuehrRechnung(Point location){
+	private void doRezeptgebuehrRechnung(Point location){
 		boolean buchen = true;
 		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+aktRezNum.getText()+
 					"' AND rnr LIKE 'RGR-%' LIMIT 1");
@@ -2328,8 +2340,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		//Bearbeitungsgebühr
 		
 	}
-//	private String[] getAdressParams(String patid){  Lemmi 20101218 auf public geändert, damit extern verwendbar
-	public String[] getAdressParams(String patid){
+	private String[] getAdressParams(String patid){
 		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
 		String cmd = "select anrede,titel,n_name,v_name,strasse,plz,ort from pat5 where id='"+
@@ -2341,9 +2352,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			};
 		return AdressTools.machePrivatAdresse(obj,true);
 	}
-	
-//	private String[] holeAbweichendeAdresse(String patid){  Lemmi 20101218 auf public geändert, damit extern verwendbar
-	public String[] holeAbweichendeAdresse(String patid){
+	private String[] holeAbweichendeAdresse(String patid){
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"
 		String cmd = "select abwanrede,abwtitel,abwn_name,abwv_name,abwstrasse,abwplz,abwort from pat5 where id='"+
 			patid+"' LIMIT 1";
