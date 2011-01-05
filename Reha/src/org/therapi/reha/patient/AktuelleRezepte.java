@@ -1567,7 +1567,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				//int iCtrlPressed = arg0.CTRL_MASK;
 				//int iModifier = arg0.getModifiers();
 				//System.out.println ( "iCtrlPressed=" + iCtrlPressed + ", iModifier=" + iModifier + "");
-				boolean bCtrlPressed = ( (arg0.getModifiers() & arg0.CTRL_MASK) == arg0.CTRL_MASK ); 
+				boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK ); 
 				neuanlageRezept(true,"", bCtrlPressed);
 				
 				break;
@@ -2695,7 +2695,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
 					PointerInfo info = MouseInfo.getPointerInfo();
 		    	    Point location = info.getLocation();
-		    		//doRezeptgebuehrRechnung(location);
+		    		doRezeptgebuehrRechnung(location);
 		    		
 //		    		abrRez = new AbrechnungRezept(null);
 //		    		this.abrRez.setRechtsAufNull();
