@@ -183,6 +183,7 @@ public class SystemConfig {
 	}
 	public void SystemStart(String homedir){
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		PDFformularPfad = ini.getStringProperty("Formulare","PDFFormularPfad");
 		/*
 		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
 		String jahrHeute = DatFunk.sHeute().substring(6);
@@ -1209,7 +1210,7 @@ public class SystemConfig {
 		}
 		vorJahr = Integer.valueOf(Integer.valueOf(aktJahr)-1).toString();
 		String umstellung = SqlInfo.holeEinzelFeld("select altesjahr from jahresabschluss LIMIT 1" );
-		if(! vorJahr.equals(umstellung)){
+		if( (Integer.parseInt(jahrHeute) - Integer.parseInt(umstellung)) > 1){
 			String htmlstring = "<html><b><font color='#ff0000'>Achtung !</font><br><br>Die Umstellung der Rezeptgebührbefreiungen aus<br>"+
 				"dem <font color='#ff0000'>Kalenderjahr "+vorJahr+"</font> "+
 				"wurde noch nicht durchgeführt.<br><br>Rezeptebühren und Kassenabrechnung können deshalb fehlerhaft sein.<br><br>"+

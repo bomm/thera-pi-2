@@ -1153,6 +1153,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
 		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
+		Reha.thisClass.patpanel.vecaktrez.set(34,sb.toString());
 		if(aktuellAngezeigt>=0){
 			try{
 				aktTerminBuffer.set(aktuellAngezeigt, sb.toString());
@@ -1578,7 +1579,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 				if(rezGeschlossen()){return;}
-				neuanlageRezept(false,"",false);
+				neuanlageRezept(false,"");
 				break;
 			}
 			if(cmd.equals("rezdelete")){
@@ -1712,7 +1713,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					doVectorAktualisieren(new int[]{12,14,39},new String[] {"T","F","0"});
 				}	
 			}
-			
 			if(cmd.equals("statusbezahlt")){
 				if(!Rechte.hatRecht(Rechte.Rezept_editvoll, true)){
 					return;
@@ -2203,24 +2203,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		      }
 		   
 	}
-	public void doRezeptGebuehr(Point pt){		// Lemmi Doku: Bares Kassieren der Rezeptgebühr 
+	public void doRezeptGebuehr(Point pt){
 		boolean bereitsbezahlt = false;
-		
-		// vvv Lemmi 20101218: Prüfung, ob es eine RGR-RECHNUNG bereits gibt, falls ja, geht hier gar nix !
-		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select rnr from rgaffaktura where reznr='"+
-						(String)Reha.thisClass.patpanel.vecaktrez.get(1)+
-						"' AND rnr LIKE 'RGR-%' LIMIT 1");
-		
-		if(testvec.size() > 0){
-			JOptionPane.showMessageDialog(null, "<html>Für dieses Rezept  <b>" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) 
-											  + "</b>  wurde bereits eine Rezeptgebühren-Rechnung <b>" + testvec.get(0) + "</b> angelegt!\n" 
-											  + "Eine Barzahlungs-Quittung kann nicht mehr erstellt werden.", 
-											  "Bar-Quittung nicht mehr möglich", JOptionPane.WARNING_MESSAGE, null);
-				return;				
-		}
-		// ^^^ Lemmi 20101218: Prüfung, ob es eine RGR-RECHNUNG bereits gibt, falls ja, geht hier gar nix !
-		
-		
 		// noch zu erledigen
 		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
 		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
@@ -2236,14 +2220,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
 				(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
 			String reznr = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
-			int frage = JOptionPane.showConfirmDialog(null,"<html>Zuzahlung für Rezept <b>" + reznr + "</b> bereits in bar geleistet!\n\n Wollen Sie eine Kopie erstellen?",
-														   "Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung für Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
 			}
 			bereitsbezahlt = true;
 		}
-		// Lemmi Doku: Hier werden die Variablen für die Vorlage initialisiert bzw. zurückgesetzt
 		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
 		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
 		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
@@ -2254,151 +2236,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
-		/*int art = */RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
-		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
+		/*int art = */
+		if(RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34)) >= 0){
+			new RezeptGebuehren(this,bereitsbezahlt,false,pt);	
+		}
 	}
-	
-	// Lemmi 20101218: kopiert aus AbrechnungRezept.java und die Datenherkunfts-Variablen verändert bzw. angepasst.
-	private void doRezeptgebuehrRechnung(Point location){
-		boolean buchen = true;
-		DecimalFormat dfx = new DecimalFormat( "0.00" );
-		
-//		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+aktRezNum.getText()+
-//		"' AND rnr LIKE 'RGR-%' LIMIT 1");
-		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select reznr from rgaffaktura where reznr='"+
-				(String)Reha.thisClass.patpanel.vecaktrez.get(1) + "' AND rnr LIKE 'RGR-%' LIMIT 1");
-		
-		if(testvec.size() > 0){
-			int anfrage = JOptionPane.showConfirmDialog(null, "Für dieses Rezept wurde bereits eine Rezeptgebührrechnung angelegt!"+
-					"Wollen Sie eine Kopie erstellen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-			if(anfrage != JOptionPane.YES_OPTION){
-				return;				
-			}
-			buchen = false;
-		} else {
-			// vvv Prüfungen aus der Bar-Quittung auch hier !
-			if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("0") ){
-				JOptionPane.showMessageDialog(null,"Zuzahlung nicht erforderlich!");
-				return;
-			}
-			if(DatFunk.Unter18(DatFunk.sHeute(), DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))){
-				JOptionPane.showMessageDialog(null,"Stand heute ist der Patient noch nicht Volljährig - Zuzahlung deshalb (bislang) noch nicht erforderlich");
-				return;
-			}
-		
-			if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
-					(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
-				JOptionPane.showMessageDialog(null, "<html>Zuzahlung für Rezept  <b>" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) 
-						  + "</b>  wurde bereits in bar geleistet.\n" 
-						  + "Eine Rezeptgebühren-Rechnung kann deshalb nicht mehr erstellt werden.", 
-						  "Rezeptgebühren-Rechnung nicht mehr möglich", JOptionPane.WARNING_MESSAGE, null);
-				return;
-			}
-			// ^^^  Prüfungen aus der Bar-Quittung auch hier !
-			
-		}
-		
-		
-		
-		HashMap<String,String> hmRezgeb = new HashMap<String,String>();
-		int rueckgabe = -1;
-		int i;
-		String behandl = "";
-		String strZuzahlung = "0.00";
-		
-		// Lemmi: Nutzung der Routine aus der RG-Barzahlung, um "geprüft" einige Varibalen vorzubelegen
-		// Lemmi Doku: Hier werden die Variablen für die Vorlage initialisiert bzw. zurückgesetzt
-		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
-		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
-		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
-		SystemConfig.hmAdrRDaten.put("<Rhbgesamt>", "0,00");
-		SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");
-		SystemConfig.hmAdrRDaten.put("<Rwegpreis>", "0,00");
-		SystemConfig.hmAdrRDaten.put("<Rwegproz>", "0,00");
-		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
-		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
-		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
-		RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
-		
-//		for(int i = 0; i < vec_poskuerzel.size();i++){
-//		behandl=behandl+vec_posanzahl.get(i)+"*"+vec_poskuerzel.get(i)+(i < (vec_poskuerzel.size()-1) ? "," : "" );
-		// String mit den Anzahlen und HM-Kürzeln erzeugen
-		for(i = 0; i < 4; i++){
-			if (   (        Reha.thisClass.patpanel.vecaktrez.get(65+i) != null) 
-				&& ((String)Reha.thisClass.patpanel.vecaktrez.get(65+i)).length() > 0 )  {
-				behandl += ((behandl.length() > 0) ? ", " : "") + (String)Reha.thisClass.patpanel.vecaktrez.get(3+i) + " * " + (String)Reha.thisClass.patpanel.vecaktrez.get(65+i);
-			}
-		}
-		
-		// Zuzahlung zusammenziehen
-		Double dZuzahl = 0.0;
-		for(i = 0; i < 4; i++){
-			if ( Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rproz"+(i+1)+">").replaceAll(",", ".")) > 0.00 ) {
-				dZuzahl += Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rgesamt"+(i+1)+">").replaceAll(",", "."));
-				   
-//				dZuzahl += Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rproz"+(i+1)+">").replaceAll(",", ".")) *
-//						   Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Ranzahl"+(i+1)+">").replaceAll(",", "."));
-			}
-		}
-		dZuzahl += Double.parseDouble(SystemConfig.hmAdrRDaten.get("<Rpauschale>").replaceAll(",", "."));  // 10 Euro dazu
-		
-		strZuzahlung = (String)Reha.thisClass.patpanel.vecaktrez.get(13);
-		strZuzahlung = dfx.format(dZuzahl);
-		strZuzahlung = SystemConfig.hmAdrRDaten.get("<Rendbetrag>");
-		
-/*		String test1 = "";  // Mal die Rezeptdaten auflisten !
-		int iMax = Reha.thisClass.patpanel.vecaktrez.size();
-		for( i = 0; i < iMax; i++){
-			test1 = test1 + i + " = " + (String)Reha.thisClass.patpanel.vecaktrez.get(i) + "\n";
-			if ( i > 63 ){
-				int x = 5;
-				x += 1;
-			}
-		}
-*/		
-		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
-		//"anrede,titel,nachname,vorname,strasse,plz,ort"
-
-//		String cmd = "select abwadress,id from pat5 where pat_intern='"+vec_rez.get(0).get(0)+"' LIMIT 1";
-		String cmd = "select abwadress,id from pat5 where pat_intern='"+(String)Reha.thisClass.patpanel.vecaktrez.get(0)+"' LIMIT 1";
-		Vector<Vector<String>> adrvec = SqlInfo.holeFelder(cmd);
-		String[] adressParams = null;
-		
-		abrRez = new AbrechnungRezept(null);
-		if(adrvec.get(0).get(0).equals("T")){
-			adressParams = abrRez.holeAbweichendeAdresse(adrvec.get(0).get(1));
-		}else{
-			adressParams = abrRez.getAdressParams(adrvec.get(0).get(1));
-		}
-//		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
-		hmRezgeb.put("<rgreznum>",(String)Reha.thisClass.patpanel.vecaktrez.get(1));
-				
-		hmRezgeb.put("<rgbehandlung>",behandl);
-		
-//		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));
-		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)));
-	
-//		hmRezgeb.put("<rgbetrag>",dfx.format(zuzahlungWert));  Lemmi xxx
-		hmRezgeb.put("<rgbetrag>",strZuzahlung); 
-		
-		hmRezgeb.put("<rgpauschale>","5,00");
-		hmRezgeb.put("<rggesamt>","0,00");
-		hmRezgeb.put("<rganrede>",adressParams[0]);
-		hmRezgeb.put("<rgname>",adressParams[1]);
-		hmRezgeb.put("<rgstrasse>",adressParams[2]);
-		hmRezgeb.put("<rgort>",adressParams[3]);
-		hmRezgeb.put("<rgbanrede>",adressParams[4]);
-		
-//		hmRezgeb.put("<rgpatintern>",vec_rez.get(0).get(0));
-		hmRezgeb.put("<rgpatintern>",(String)Reha.thisClass.patpanel.vecaktrez.get(0));
-		
-		RezeptGebuehrRechnung rgeb = new RezeptGebuehrRechnung(Reha.thisFrame,"Nachberechnung Rezeptgebühren",rueckgabe,hmRezgeb,buchen);
-		rgeb.setSize(new Dimension(250,300));
-		rgeb.setLocation(location.x-50,location.y-50);
-		rgeb.pack();
-		rgeb.setVisible(true);
-	}
-	
 	public void setZuzahlImage(int imageno){
 		int row = tabaktrez.getSelectedRow();
 		if(row < 0){
@@ -2475,11 +2317,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		return "";
 	}
  
-
-	// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
-//	public void neuanlageRezept( boolean lneu, String feldname ) { 
-	public void neuanlageRezept( boolean lneu, String feldname, boolean bCtrlPressed ){
-
+	public void neuanlageRezept(boolean lneu,String feldname){
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
@@ -2527,7 +2365,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.setLocationRelativeTo(null);
 		neuRez.pack();
 		neuRez.setVisible(true);
-		
 		neuRez.dispose();
 		neuRez = null;
 		pinPanel = null;
@@ -2651,10 +2488,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("Rezeptgebühr-Rechnung erstellen",SystemConfig.hmSysIcons.get("privatrechnung"));
 			
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren",     "BarCode auf Rezept drucken", "Ausfallrechnung drucken", 
-												  "Rezept ab-/aufschließen",      "Privat-/BG-/Nachsorge-Rechnung erstellen",
-												  "Behandlungstage in Clipboard", "Transfer in Historie", 
-												  "Rezeptgebühr-Rechnung erstellen" });   // Lemmi 20101218: eingefügt  Rezeptgebühr-Rechnung aus dem Rezept heraus erzeugen
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Behandlungstage in Clipboard","Transfer in Historie"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list);
@@ -2670,13 +2504,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				Reha.thisClass.dbLabel.setText("RWert von Tool = "+Reha.toolsDlgRueckgabe);
 			}
 			*/
-			
-/*			
-			switch (Reha.toolsDlgRueckgabe) {
-			case 0:
-				break;
-			}
-*/			
 			if(Reha.toolsDlgRueckgabe > -1){
 				if(Reha.toolsDlgRueckgabe==0){
 					tDlg = null;
@@ -2799,6 +2626,14 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			// Lemmi Doku: hier kommt der Event für den Abbruch des Rezept-Fensters mittels rotem Punkt!!!!!
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
+					
+/* geht hier nicht, weil der Dialog PinPanel trotzdem alles zumacht !					
+					// Lemmi 20100102: Abbruch ohen Änderung-Speichern verhindern
+					if ( ((RezNeuanlage)getSmartTitledPanel().getContentContainer()).HasChanged() &&
+						 ((RezNeuanlage)getSmartTitledPanel().getContentContainer()).askForCancelUsaved() == 1
+					   ) 
+						return;
+*/					
 					
 /* geht hier nicht, weil der Dialog PinPanel trotzdem alles zumacht !					
 					// Lemmi 20100102: Abbruch ohen Änderung-Speichern verhindern

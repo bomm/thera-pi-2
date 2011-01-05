@@ -221,7 +221,7 @@ public class ToolsDialog extends JXDialog implements FocusListener, ActionListen
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		/*
-		if(arg0.getClickCount()== (Integer) SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount")){
+		if(arg0.getClickCount()== (Integer) SystemConfig.hmOtherDefaults.get("ToolsDlgClickCount")){
 			if( ((JComponent)arg0.getSource()) instanceof JList){
 				this.rueckgabe = jList.getSelectedIndex();
 				FensterSchliessen("dieses");

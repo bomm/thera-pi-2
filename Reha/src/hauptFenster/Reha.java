@@ -2455,7 +2455,7 @@ final class DatenbankStarten implements Runnable{
 
 				SystemConfig.AbrechnungParameter();
 				
-				SystemConfig.OtherDefaultsInit();
+				SystemConfig.BedienungIni_ReadFromIni();
 				
 				SystemConfig.JahresUmstellung();
 
