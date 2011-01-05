@@ -1568,7 +1568,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				//int iModifier = arg0.getModifiers();
 				//System.out.println ( "iCtrlPressed=" + iCtrlPressed + ", iModifier=" + iModifier + "");
 				boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK ); 
-				neuanlageRezept(true,"", bCtrlPressed);
+
+				neuanlageRezept(true,"", false);
+				//Kopieren funktioniert mit der aktuellen Version von
+				//RezNeuanlage.java nicht
+				//neuanlageRezept(true,"", bCtrlPressed);
 				
 				break;
 			}

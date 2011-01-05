@@ -246,7 +246,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static BarCodeScanner barcodeScanner = null;
 		
 	public static RehaSockServer RehaSock = null;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static CompoundPainter[] RehaPainter = {null,null,null,null,null};
 	public Vector<Object> aktiveFenster = new Vector<Object>();
 	public static String proghome = "";
@@ -309,7 +309,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean updatesBereit = false;
 	public static int toolsDlgRueckgabe = -1;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
 		String prog = java.lang.System.getProperty("user.dir");
 		String homedir = java.lang.System.getProperty("user.home");
@@ -876,7 +876,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private JXFrame getJFrame() {
 		if (jFrame == null) {
 			jFrame = new JXFrame();
