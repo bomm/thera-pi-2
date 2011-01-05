@@ -1901,8 +1901,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		final int cVAR_RSPLIT = 58;
 		final int cVAR_JAHRFREI = 59;
 
+		//Funktion ist immer noch suboptimal, da der Kostenträger des Rezeptes noch nicht übernommen wird. 
 		
-		String strPat_Intern = jtf[cPATINT].getText();
+		
+		//String strPat_Intern = jtf[cPATINT].getText();
 		
 		//vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
 		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "REZ_NR = '"+rezToCopy+"'", Arrays.asList(new String[] {}) ));
@@ -1948,8 +1950,30 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			vec.set(cVAR_BEZAHLT, "F" );    // Das kann noch nicht bezahlt sein (Rezeptgebühr)
 			
 			ladeZusatzDatenAlt();  // Eintragen von vec in die Dilaog-Felder
+			
 			ladeZusatzDatenNeu();  // Hier nochmals die neuen Daten ermitteln - schölißlich heban wir ein neues Rezept !
 
+			jtf[cKTRAEG].setText(vec.get(36)); //ktraeger
+			jtf[cKASID].setText(vec.get(37)); //kassenid
+			jtf[cARZT].setText(vec.get(15)); //arzt
+			jtf[cARZTID].setText(vec.get(16)); //arztid
+
+			
+			preisgruppe = Integer.parseInt(vec.get(41));
+			//erneuter Aufruf damit die korrekte Preisgruppe genommen wird GKV vs. BGE etc.
+			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
+			if(!vec.get(8).equals("0")){
+				jcmb[cLEIST1].setSelectedVecIndex(9, vec.get(8));//art_dbeh1	
+			}
+			if(!vec.get(9).equals("0")){
+				jcmb[cLEIST2].setSelectedVecIndex(9, vec.get(9));//art_dbeh2	
+			}
+			if(!vec.get(10).equals("0")){
+				jcmb[cLEIST3].setSelectedVecIndex(9, vec.get(10));//art_dbeh3	
+			}
+			if(!vec.get(11).equals("0")){
+				jcmb[cLEIST4].setSelectedVecIndex(9, vec.get(11));//art_dbeh4	
+			}
 			// vec wieder löschen - er hat seinen Transport-Dienst geleistet
 			vec.clear();
 		}
