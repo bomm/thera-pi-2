@@ -13,7 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -44,9 +43,16 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 	JLabel letztesjahr = null;
 	JLabel letztesdatum = null;
 	JLabel nextyear = null;
-	JButton[] buts = {null,null};
+	/*
+	JLabel preisgruppen = null;
+	JLabel infolab = null;
+	*/
+	JButton[] buts = {null,null,null};
+	
+	
 	int umstellpatient = 0;
 	int umstellrezept = 0;
+	
 	JProgressBar progress = null;
 	private static final long serialVersionUID = 1L;
 	
@@ -116,6 +122,15 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		progress = new JProgressBar();
 		builder.add(progress,cc.xyw(2,17,3));
 		
+		/*
+		preisgruppen = new JLabel("");
+		builder.add(preisgruppen, cc.xy(2,19,CellConstraints.FILL,CellConstraints.DEFAULT));
+		buts[2] = ButtonTools.macheBut("preisgr.", "tarifemachen", this);
+		builder.add(buts[2], cc.xy(4,19,CellConstraints.FILL,CellConstraints.DEFAULT));
+		infolab = new JLabel("");
+		builder.add(infolab, cc.xy(2,21,CellConstraints.FILL,CellConstraints.DEFAULT));
+		*/
+
 		return builder.getPanel();
 
 	}
@@ -158,6 +173,18 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 				}
 			}.execute();
 		}
+		/*
+		if(cmd.equals("tarifemachen")){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					doTarifeErzeugen();
+					return null;
+				}
+			}.execute();
+		}
+		*/
+		
 	}
 	public void doUmstellen(){
 		String reset = Integer.toString(Integer.parseInt(nextyear.getText())-1);
@@ -325,5 +352,50 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		//buts[0].setEnabled(false);
 		
 	}
+	/*
+	private void doTarifeErzeugen(){
+		Vector<Vector<String>> kass_vec = null;
+		int anzahlinrez=0,anzahlinlza=0;
+		int atmen = 0;
+		String cmd = "";
+		for(int i = 7; i < 11; i++){
+			kass_vec = SqlInfo.holeFelder("select kassen_nam1,id from kass_adr where preisgruppe='"+Integer.toString(i)+"'");
+			for(int y = 0; y < kass_vec.size();y++){
+				infolab.setText("PG="+Integer.toString(i)+" "+kass_vec.get(y).get(0)+" "+
+						Integer.toString(y+1)+" von "+Integer.toString(kass_vec.size()));
+				anzahlinrez = Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from verordn where kid ='"+kass_vec.get(y).get(1)+"'"));
+				if(anzahlinrez > 0){
+					cmd = "update verordn set preisgruppe='"+
+					Integer.toString(i)+"', ktraeger='"+kass_vec.get(y).get(0)+
+					"' where kid='"+kass_vec.get(y).get(1)+"'";
+					preisgruppen.setText("R-"+kass_vec.get(y).get(0)+"mit "+Integer.toString(anzahlinrez)+" Rezepten");
+					SqlInfo.sqlAusfuehren(cmd);
+					//System.out.println(cmd);
+				}
+				anzahlinlza = Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from lza where kid ='"+kass_vec.get(y).get(1)+"'"));
+				if(anzahlinlza > 0){
+					cmd = "update lza set preisgruppe='"+
+					Integer.toString(i)+"', ktraeger='"+kass_vec.get(y).get(0)+
+					"' where kid='"+kass_vec.get(y).get(1)+"'";
+					preisgruppen.setText("L-"+kass_vec.get(y).get(0)+" mit "+Integer.toString(anzahlinlza)+" Rezepten");
+					SqlInfo.sqlAusfuehren(cmd);
+					//System.out.println(cmd);
+				}
+				
+				atmen++;
+				if(atmen > 25){
+					try {
+						Thread.sleep(50);
+						atmen = 0;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
+		JOptionPane.showMessageDialog(null,"Feddisch mit der Umsetzung");
+	}
+	*/
 
 }

@@ -281,6 +281,8 @@ public class StringTools {
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
 			////System.out.println(ex);
 			return ""+test;
+		}catch(Exception ex){
+			return ""+test;
 		}
 		
 		return test;
