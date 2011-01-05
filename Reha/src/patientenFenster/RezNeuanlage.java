@@ -31,6 +31,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.AktuelleRezepte;
 
 import rechteTools.Rechte;
 import sqlTools.SqlInfo;
@@ -154,6 +155,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	
 	JLabel kassenLab;
 	JLabel arztLab;
+	
+	String rezToCopy = null;
 
 	// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
 //	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
@@ -163,7 +166,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		this.feldname = sfeldname;
 		this.vec = vec;
 		this.bCtrlPressed = bCtrlPressed;
-		
+		if(this.bCtrlPressed && this.neu){
+			rezToCopy = AktuelleRezepte.getActiveRezNr();
+			aktuelleDisziplin = RezTools.putRezNrGetDisziplin(rezToCopy);
+		}
 		setName("RezeptNeuanlage");
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -1853,7 +1859,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 lösche alle Felder aus dem Vektor, die im akt. rezept gar nicht sein können (zB cREZDAT)
 		 dann setzte nochmal neue Daten drüber ladeZusatzDatenNeu()
 		 **/
-		
+		if(rezToCopy == null){return;}
 		// Definition der Inices für den Vektor "vecaktrez"  
 		// Lemmi Todo: DAS MUSS VOLLSTÄNDIG GEMACHT UND AN ZENTRALE STELLE VERSCHOBEN WERDEN !!!
 		final int cVAR_PATID = 0;
@@ -1898,9 +1904,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		String strPat_Intern = jtf[cPATINT].getText();
 		
-		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
-//		rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
+		//vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
+		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "REZ_NR = '"+rezToCopy+"'", Arrays.asList(new String[] {}) ));
 
+		/*
 		// Was heben wir in der Historie?
 		Vector<String> vecLZA = null;
 		vecLZA = ((Vector<String>)SqlInfo.holeSatz( "lza", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
@@ -1916,13 +1923,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			vec = (Vector<String>)vecLZA.clone();
 		}
 		vecLZA.clear();
-		
+		*/
 		// für die Rückmeldung zum Setezen der Dailogüberschrift
 		strKopiervorlage = "";
 		
 		if ( vec.size() > 0 ) {   // nur wenn etwas gefunden werden konnte !
-	
+			
 			// Titel des Dialogs individualisieren für die Rückmeldung zum Setezen der Dailogüberschrift
+			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
 			strKopiervorlage = vec.get(cVAR_REZNR);
 	
 			// Löschen der auf jeden Fall "falsch weil alt" Komponenten
