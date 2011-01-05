@@ -1571,11 +1571,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 				 
 
-				neuanlageRezept(true,"", false);
+				//neuanlageRezept(true,"", false);
 				//Kopieren funktioniert mit der aktuellen Version von
 				//RezNeuanlage.java nicht
-				//boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK );
-				//neuanlageRezept(true,"", bCtrlPressed);
+				boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK );
+				neuanlageRezept(true,"", bCtrlPressed);
 				
 				break;
 			}
@@ -1771,6 +1771,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			
 		}
 
+	}
+	public static String getActiveRezNr(){
+		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
+		if(row >= 0){
+			return Reha.thisClass.patpanel.aktRezept.tabaktrez.getValueAt(row, 0).toString();
+		}
+		return null;
 	}
 	public void doVectorAktualisieren(int[]elemente,String[] werte){
 		for(int i = 0; i < elemente.length;i++){
