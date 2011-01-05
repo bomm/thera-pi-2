@@ -1896,14 +1896,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		final int cVAR_JAHRFREI = 59;
 
 		
-		String strPatID = jtf[cPATID].getText();
+		String strPat_Intern = jtf[cPATINT].getText();
 		
-		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PATID = '"+strPatID+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
+		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
 //		rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
 
 		// Was heben wir in der Historie?
 		Vector<String> vecLZA = null;
-		vecLZA = ((Vector<String>)SqlInfo.holeSatz( "lza", " * ", "PATID = '"+strPatID+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
+		vecLZA = ((Vector<String>)SqlInfo.holeSatz( "lza", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
 		
 		// das neuere Rezept gewinnt als Kopiervorlage:
 		if (    ( vecLZA.size() > 0  && vec.size() > 0 ) 

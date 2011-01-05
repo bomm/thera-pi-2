@@ -450,6 +450,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   if(Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
 					   Point point = arg0.getPoint();
 					   int row = tabaktrez.rowAtPoint(point);
+					   if(row < 0){return;}
 					   tabaktrez.columnAtPoint(point);
 					   tabaktrez.setRowSelectionInterval(row, row);
 					   ZeigePopupMenu(arg0);
@@ -2485,7 +2486,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("Rezeptgebühr-Rechnung erstellen",SystemConfig.hmSysIcons.get("privatrechnung"));
 			
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Behandlungstage in Clipboard","Transfer in Historie"});
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Behandlungstage in Clipboard","Transfer in Historie","Rezeptgebühr-Rechnung erstellen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list);
