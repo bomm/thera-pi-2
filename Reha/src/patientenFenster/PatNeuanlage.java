@@ -2058,6 +2058,7 @@ private KVKWrapper kvw;
 
 }
 */
+}
 class ArztListeSpeichern{
 	public ArztListeSpeichern(Vector<Vector<String>> vec,boolean neu,String xpatintern){
 		if(vec.size() <= 0){
@@ -2074,4 +2075,3 @@ class ArztListeSpeichern{
 		//System.out.println(cmd);
 	}
 }	
-}
