@@ -184,24 +184,6 @@ public class SystemConfig {
 	public void SystemStart(String homedir){
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		PDFformularPfad = ini.getStringProperty("Formulare","PDFFormularPfad");
-		/*
-		aktJahr = ini.getStringProperty("SystemIntern","AktJahr");
-		String jahrHeute = DatFunk.sHeute().substring(6);
-		PDFformularPfad = ini.getStringProperty("Formulare","PDFFormularPfad");
-		
-		if(! aktJahr.equals(jahrHeute) ){
-			JOptionPane.showMessageDialog(null, "Wichtiger Hinweis!!!!!\n\nDer letzte Programmstart war im Kalenderjahr -->"+aktJahr+"\n"+
-					"Bitte fragen Sie den Administrator ob alle Befreiungen des Jahes "+aktJahr+" zurückgesetzt wurden\n"+
-					"Beginnen Sie erst dann mit der Arbeit wenn sichergestellt ist daß alle Jahresabschlußarbeiten erledigt worden sind!!!!");
-			//System.out.println("Aktuelles Jahr wurde veränder auf "+jahrHeute);
-			aktJahr = String.valueOf(jahrHeute);
-			ini.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
-			ini.save();
-		}else{
-			//System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
-		}
-		vorJahr = Integer.valueOf(Integer.valueOf(aktJahr)-1).toString();
-		*/	
 		try {
 			dieseMaschine = java.net.InetAddress.getLocalHost();
 		}
