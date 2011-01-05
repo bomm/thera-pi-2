@@ -2203,8 +2203,24 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		      }
 		   
 	}
-	public void doRezeptGebuehr(Point pt){
+	public void doRezeptGebuehr(Point pt){		// Lemmi Doku: Bares Kassieren der Rezeptgebühr 
 		boolean bereitsbezahlt = false;
+		
+		// vvv Lemmi 20101218: Prüfung, ob es eine RGR-RECHNUNG bereits gibt, falls ja, geht hier gar nix !
+		Vector<Vector<String>> testvec = SqlInfo.holeFelder("select rnr from rgaffaktura where reznr='"+
+						(String)Reha.thisClass.patpanel.vecaktrez.get(1)+
+						"' AND rnr LIKE 'RGR-%' LIMIT 1");
+		
+		if(testvec.size() > 0){
+			JOptionPane.showMessageDialog(null, "<html>Für dieses Rezept  <b>" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) 
+											  + "</b>  wurde bereits eine Rezeptgebühren-Rechnung <b>" + testvec.get(0) + "</b> angelegt!\n" 
+											  + "Eine Barzahlungs-Quittung kann nicht mehr erstellt werden.", 
+											  "Bar-Quittung nicht mehr möglich", JOptionPane.WARNING_MESSAGE, null);
+				return;				
+		}
+		// ^^^ Lemmi 20101218: Prüfung, ob es eine RGR-RECHNUNG bereits gibt, falls ja, geht hier gar nix !
+		
+		
 		// noch zu erledigen
 		// erst prüfen ob Zuzahlstatus = 0, wenn ja zurück;
 		// dann prüfen ob bereits bezahlt wenn ja fragen ob Kopie erstellt werden soll;
@@ -2220,12 +2236,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
 				(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
 			String reznr = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
-			int frage = JOptionPane.showConfirmDialog(null,"Zuzahlung für Rezept "+reznr+" bereits geleistet!\n\n Wollen Sie eine Kopie erstellen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			int frage = JOptionPane.showConfirmDialog(null,"<html>Zuzahlung für Rezept <b>" + reznr + "</b> bereits in bar geleistet!\n\n Wollen Sie eine Kopie erstellen?",
+														   "Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
 			}
 			bereitsbezahlt = true;
 		}
+		// Lemmi Doku: Hier werden die Variablen für die Vorlage initialisiert bzw. zurückgesetzt
 		SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
 		SystemConfig.hmAdrRDaten.put("<Rhbpreis>", "0,00");
 		SystemConfig.hmAdrRDaten.put("<Rhbproz>", "0,00");
@@ -2236,10 +2254,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rweggesamt>", "0,00");
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
-		/*int art = */
-		if(RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34)) >= 0){
-			new RezeptGebuehren(this,bereitsbezahlt,false,pt);	
-		}
+		/*int art = */RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
 	}
 	public void setZuzahlImage(int imageno){
 		int row = tabaktrez.getSelectedRow();
