@@ -35,7 +35,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 import events.PatStammEvent;

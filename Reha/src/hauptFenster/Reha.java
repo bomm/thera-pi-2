@@ -2457,6 +2457,8 @@ final class DatenbankStarten implements Runnable{
 				
 				SystemConfig.BedienungIni_ReadFromIni();
 				
+				SystemConfig.OffenePostenIni_ReadFromIni();
+				
 				SystemConfig.JahresUmstellung();
 
 				new Thread(new PreisListenLaden()).start();

@@ -1,10 +1,6 @@
 package org.therapi.reha.patient;
 
 // Lemmi 20101212: zusätzliche Imports: Die letzte benutzte Suchart aus der INI-Datei holen und setzen
-import hauptFenster.Reha;
-import systemEinstellungen.INIFile;
-
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;

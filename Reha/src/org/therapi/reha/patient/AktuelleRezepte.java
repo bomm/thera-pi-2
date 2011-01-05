@@ -25,7 +25,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +87,6 @@ import stammDatenTools.ZuzahlTools;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.AdressTools;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
 import systemTools.JCompTools;
@@ -98,7 +96,6 @@ import systemTools.StringTools;
 import terminKalender.DatFunk;
 import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
-import abrechnung.RezeptGebuehrRechnung;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -1579,7 +1576,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 				if(rezGeschlossen()){return;}
-				neuanlageRezept(false,"");
+				neuanlageRezept(false,"",false);
 				break;
 			}
 			if(cmd.equals("rezdelete")){
@@ -2317,7 +2314,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		return "";
 	}
  
-	public void neuanlageRezept(boolean lneu,String feldname){
+	public void neuanlageRezept(boolean lneu,String feldname,boolean bCtrlPressed){
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
@@ -2555,7 +2552,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
 					PointerInfo info = MouseInfo.getPointerInfo();
 		    	    Point location = info.getLocation();
-		    		doRezeptgebuehrRechnung(location);
+		    		//doRezeptgebuehrRechnung(location);
 		    		
 //		    		abrRez = new AbrechnungRezept(null);
 //		    		this.abrRez.setRechtsAufNull();
@@ -2565,40 +2562,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 			}
-			/*
-			switch(Reha.toolsDlgRueckgabe){
-			case 0:
-				if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
-				rezeptGebuehr();
-				break;
-			case 1:
-				doBarcode();
-				break;
-			case 2:
-				if(!Rechte.hatRecht(Rechte.Rezept_ausfallrechnung, true)){return;}
-				ausfallRechnung();
-				break;
-			case 3:
-				rezeptAbschliessen();
-				break;
-			case 4:
-				if(!Rechte.hatRecht(Rechte.Rezept_privatrechnung, true)){return;}
-				privatRechnung();
-				break;
-			case 5:
-				doTageDrucken();
-				break;
-			case 6:
-				if(!Rechte.hatRecht(Rechte.Sonstiges_rezepttransfer, true)){
-					return;
-				}
-				int anfrage = JOptionPane.showConfirmDialog(null, "Das ausgewählte Rezept wirklich in die Historie transferieren?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-				if(anfrage == JOptionPane.YES_OPTION){
-					doUebertrag();					
-				}
-				break;
-			}
-			*/
+
 			tDlg = null;
 			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}
