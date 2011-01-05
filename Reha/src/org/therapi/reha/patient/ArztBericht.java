@@ -1099,7 +1099,7 @@ class TextBausteine extends AbstractAction {
 		
 		
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private void setzeHmAufNull(){
 		Set entries = SystemConfig.hmAdrBDaten.entrySet();
 	    Iterator it = entries.iterator();

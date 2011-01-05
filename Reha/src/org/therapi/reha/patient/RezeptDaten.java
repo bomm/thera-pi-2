@@ -297,7 +297,7 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 		
 		
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public String leistungTesten(int leistung,Vector<Vector<String>> preisevec,int veczahl){
 		String retwert = "----";
 		if(veczahl==-1 || veczahl==0){

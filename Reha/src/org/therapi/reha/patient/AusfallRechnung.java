@@ -402,7 +402,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			this.dispose();
 		}
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);

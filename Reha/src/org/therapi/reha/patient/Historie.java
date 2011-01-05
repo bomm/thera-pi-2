@@ -633,7 +633,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		return ret;
 	}
 	/*************************************************/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void holeRezepte(String patint,String rez_nr){
 		final String xpatint = patint;
 		final String xrez_nr = rez_nr;

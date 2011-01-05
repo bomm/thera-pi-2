@@ -769,7 +769,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		final String xrez_nr = rez_nr;
 
 		new SwingWorker<Void,Void>(){
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings("rawtypes")
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
@@ -996,7 +996,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 		SystemConfig.hmAdrRDaten.put("<Rerstdat>","");		
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void holeEinzelTermineAusRezept(String xreznr,String termine){
 		try{
 		Vector<String> xvec = null;
@@ -1109,6 +1109,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
 		////System.out.println("Anzahl Termine = "+lines);
+		@SuppressWarnings("rawtypes")
 		Vector tvec = new Vector();
 		dtermm.setRowCount(0);
 		String[] terdat = null;
@@ -1127,7 +1128,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					tvec.add(String.valueOf(terdat[y]));					
 				}
 			}
-			dtermm.addRow((Vector)tvec.clone());
+			dtermm.addRow((Vector<?>)tvec.clone());
 		}
 		tabaktterm.validate();
 		tabaktterm.repaint();
@@ -1567,11 +1568,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				//int iCtrlPressed = arg0.CTRL_MASK;
 				//int iModifier = arg0.getModifiers();
 				//System.out.println ( "iCtrlPressed=" + iCtrlPressed + ", iModifier=" + iModifier + "");
-				boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK ); 
+
+				 
 
 				neuanlageRezept(true,"", false);
 				//Kopieren funktioniert mit der aktuellen Version von
 				//RezNeuanlage.java nicht
+				//boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK );
 				//neuanlageRezept(true,"", bCtrlPressed);
 				
 				break;
