@@ -163,7 +163,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		"SELECT * FROM `lza` WHERE `PAT_INTERN` = " + strPatIntern + " AND rez_nr like \"" + strDiszi + "%\"" +
 		" union " +
 		"SELECT * FROM `verordn` WHERE `PAT_INTERN` = " + strPatIntern + " AND rez_nr like \"" + strDiszi + "%\"" +
-		" ORDER BY REZ_NR asc, rez_datum desc LIMIT 1";
+		" ORDER BY rez_datum desc LIMIT 1";
 		
 		starteSuche( cmd, "vorlage" );
 	}

@@ -80,6 +80,7 @@ import patientenFenster.RezNeuanlage;
 import patientenFenster.RezTest;
 import patientenFenster.RezTestPanel;
 import patientenFenster.RezeptGebuehren;
+import patientenFenster.RezeptVorlage;
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -199,7 +200,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			protected Void doInBackground() throws Exception {
 				try{
 					vollPanel = new JXPanel();
-					FormLayout vplay = new FormLayout("fill:0:grow(0.75),5dlu,fill:0:grow(0.25),5dlu","13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+					// Lemmi 20110105: Layout etwas dynamischer gestaltet
+// alt				FormLayout vplay = new FormLayout("fill:0:grow(0,75),5dlu,fill:0:grow(0.25),5dlu",
+//												  	  "13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+					FormLayout vplay = new FormLayout("fill:0:grow(0.6),5dlu,fill:0:grow(0.4),5dlu",
+													  "13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
 					CellConstraints vpcc = new CellConstraints();
 					vollPanel.setLayout(vplay);
 					vollPanel.setOpaque(false);
@@ -347,7 +352,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
 		aktrbut[0].setToolTipText("<html>neues Rezept anlegen<br><br>" +
 								  "Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
-								  "<br>wird das letzte Rezept das Patienten kopiert!");
+								  "<br>wird das letzte Rezept das Patienten kopiert!<br><br>" + 
+								  "Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,"+
+								  "<br>wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!" 
+								  );
 		aktrbut[0].setActionCommand("rezneu");
 		aktrbut[0].addActionListener(this);		
 		jtb.add(aktrbut[0]);
@@ -397,6 +405,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		return jtb;
 	}
+	
+	// Lemmi Doku: Liste mit den aktuellen Rezepten
 	public JXPanel getTabelle(){
 		JXPanel dummypan = new JXPanel(new BorderLayout());
 		dummypan.setOpaque(false);
@@ -409,11 +419,16 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.setDoubleBuffered(true);
 		tabaktrez.setEditable(false);
 		tabaktrez.setSortable(false);
-		tabaktrez.getColumn(0).setMaxWidth(75);
+//		tabaktrez.getColumn(0).setMaxWidth(75);
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 		tabaktrez.getColumn(1).setCellRenderer(renderer);
 		tabaktrez.getColumn(1).setMaxWidth(45);
 		tabaktrez.getColumn(3).setMaxWidth(75);
+		
+		// Lemmi 20110105: Maximal Spaltenbreite dieser Datumsangaben auch begrenzen
+		tabaktrez.getColumn(2).setMaxWidth(75);
+		tabaktrez.getColumn(4).setMaxWidth(75);
+		
 		tabaktrez.getColumn(5).setMaxWidth(45);
 		tabaktrez.getColumn(5).setCellRenderer(renderer);
 
@@ -446,7 +461,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 					}
 					if(rezGeschlossen()){return;}
-					neuanlageRezept(false,"",false);
+					neuanlageRezept(false,"","");
 				}
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
 				   if(Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
@@ -483,7 +498,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(arg0.getKeyCode()==10){
 					arg0.consume();
 					if(rezGeschlossen()){return;}
-					neuanlageRezept(false,"",false);
+					neuanlageRezept(false,"","");
 				}
 				if(arg0.getKeyCode()==27){
 					arg0.consume();
@@ -531,6 +546,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		item.addActionListener(this);
 		jPopupMenu.add(item);
 
+		jPopupMenu.addSeparator();
+
+		// Lemmi 201110106: Knopf zum Kopieren des aktiven Rezeptes zugefügt
+		item = new JMenuItem("Angewähltes bzw. aktives Rezept kopieren");  // new ImageIcon(Reha.proghome+"icons/Kreuz.png"));
+		item.setActionCommand("KopiereAngewaehltes");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+
 		return jPopupMenu;
 	}
 	private JPopupMenu getBehandlungsartLoeschenMenu(){
@@ -539,11 +562,24 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		item.setActionCommand("deletebehandlungen");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
-		jPopupMenu.addSeparator();
+
 		item = new JMenuItem("alle Behandlungsarten den Rezeptdaten angleichen");
 		item.setActionCommand("angleichenbehandlungen");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
+
+		jPopupMenu.addSeparator();
+
+		// vvv Lemmi 20110105: aktuellen Behandler auf alle leeren Behandler kopieren
+		item = new JMenuItem("gewählten Behandler in alle leeren Behandler-Felder kopieren");
+		item.setActionCommand("behandlerkopieren");
+		// aktuell gewählte Zeile finden - mit Sicherung, wenn keine angewählt worden ist !
+		int iPos = tabaktterm.getSelectedRow();
+		if ( iPos < 0 || iPos >= tabaktterm.getRowCount() || tabaktterm.getStringAt(tabaktterm.getSelectedRow(), 1).isEmpty() )
+			item.setEnabled(false);
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		// ^^^  Lemmi 20110105: aktuellen Behandler auf alle leeren Behandler kopieren
 
 		return  jPopupMenu; 
 	}
@@ -577,7 +613,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		return jtb;
 	}
 
-	
+	// Lemmi-Doku: Liste mit den Terminen am aktuellen Rezept
 	public JScrollPane getTermine(){
 		
 		dtermm = new MyTermTableModel();
@@ -642,7 +678,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//tabaktterm.getColumnModel().getColumn(0).setCellEditor(new DatumTableCellEditor(new JFormattedTextField()));
 		//tabaktterm.getColumn(0).setCellEditor(new MyDateEditor(new SimpleDateFormat("dd.mm.yyyyy")));
 		tabaktterm.setAutoStartEditOnKeyStroke(true);
-		tabaktterm.getColumn(0).setMinWidth(60);
+		tabaktterm.getColumn(0).setMinWidth(40);
+		
+		// vvv Lemmi 20110105: Layout etwas dynamischer gestaltet
+		tabaktterm.getColumn(0).setMaxWidth(80);
+		tabaktterm.getColumn(1).setMaxWidth(80);
+		// ^^^ Lemmi 20110105: Layout etwas dynamischer gestaltet
+
 		tabaktterm.getColumn(1).setMinWidth(60);
 		tabaktterm.getColumn(2).setMinWidth(40);
 		tabaktterm.getColumn(3).setMinWidth(40);
@@ -1509,7 +1551,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					if(tabaktterm.getRowCount() > 0){
 						tabaktterm.setRowSelectionInterval(tabaktterm.getRowCount()-1, tabaktterm.getRowCount()-1);
 					}
-					anzahlTermine.setText("Anzahl Terimine: "+tabaktterm.getRowCount());
+					anzahlTermine.setText("Anzahl Termine: "+tabaktterm.getRowCount());
 				
 					new Thread(){
 						public void run(){
@@ -1569,13 +1611,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				//int iModifier = arg0.getModifiers();
 				//System.out.println ( "iCtrlPressed=" + iCtrlPressed + ", iModifier=" + iModifier + "");
 
-				 
-
 				//neuanlageRezept(true,"", false);
 				//Kopieren funktioniert mit der aktuellen Version von
 				//RezNeuanlage.java nicht
 				boolean bCtrlPressed = ( (arg0.getModifiers() & KeyEvent.CTRL_MASK) == KeyEvent.CTRL_MASK );
-				neuanlageRezept(true,"", bCtrlPressed);
+				boolean bShiftPressed = ( (arg0.getModifiers() & KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK );
+				String strModus = "";
+				if ( bCtrlPressed ) strModus = "KopiereLetztes";
+				else if ( bShiftPressed ) strModus = "KopiereAngewaehltes";
+				neuanlageRezept( true,"", strModus );
 				
 				break;
 			}
@@ -1586,7 +1630,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 				if(rezGeschlossen()){return;}
-				neuanlageRezept(false,"",false);
+				neuanlageRezept(false,"", "");
 				break;
 			}
 			if(cmd.equals("rezdelete")){
@@ -1720,6 +1764,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					doVectorAktualisieren(new int[]{12,14,39},new String[] {"T","F","0"});
 				}	
 			}
+			
 			if(cmd.equals("statusbezahlt")){
 				if(!Rechte.hatRecht(Rechte.Rezept_editvoll, true)){
 					return;
@@ -1751,8 +1796,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[2],currow,1);
 					tabaktrez.validate();
 					doVectorAktualisieren(new int[]{12,13,14,39},new String[] {"F","0.00","F","2"});
-				}	
+				}
+				
 			}
+			
+			// Lemmi 201110106: Knopf zum Kopieren des aktiven Rezeptes zugefügt
+			if(cmd.equals("KopiereAngewaehltes")) {
+				neuanlageRezept( true,"", "KopiereAngewaehltes" );
+			}
+
 			if(cmd.equals("rezeptbrief")){
 				formulareAuswerten();				
 			}
@@ -1769,6 +1821,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				doAngleichenBehandlungen();
 			}
 			
+			// Lemmi 20110105: aktuellen Behandler auf alle leeren Behandler kopieren
+			if(cmd.equals("behandlerkopieren")){
+				doBehandlerKopieren();
+			}
 		}
 
 	}
@@ -1784,6 +1840,31 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			Reha.thisClass.patpanel.vecaktrez.set(elemente[i],werte[i]);
 		}
 	}
+	
+	// Lemmi 20110105: aktuellen Behandler auf alle leeren Behandler kopieren
+	// Neue Routine
+	// nimmt den Behandler aus der aktuell markierten Zeile und kopiert ihn auf alle leeren Behandlerfelder
+	private void doBehandlerKopieren(){
+		if(this.tabaktterm.getRowCount()  <= 0){
+			return;
+		}
+
+		// aktuell gewählte Zeile finden - mit Sicherung, wenn keine angewählt worden ist !
+		int iPos = tabaktterm.getSelectedRow();
+		if ( iPos < 0 || iPos >= tabaktterm.getRowCount() )
+			return;
+		
+		// Behandler aus aktuell angewähler Zeile holen
+		String strBehandler = tabaktterm.getStringAt(tabaktterm.getSelectedRow(), 1);
+		if ( !strBehandler.isEmpty() ) {
+			for (int i = 0; i < tabaktterm.getRowCount(); i++ ) {
+				if ( tabaktterm.getStringAt(i, 1).isEmpty() )  // nur wenn der Behandler leer ist eintragen.
+					 tabaktterm.setValueAt(strBehandler, i, 1);
+			}
+			termineSpeichern();
+		}
+	}	
+	
 	private void doDeleteBehandlungen(){
 		if(this.tabaktterm.getRowCount()  <= 0){
 			return;
@@ -2103,7 +2184,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			int rueckgabe = abrechnungPrivat.rueckgabe;
 			abrechnungPrivat = null;
 			if(rueckgabe==-2){
-				neuanlageRezept(false,"",false);
+				neuanlageRezept(false,"","");
 			}
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null, "Funktion privatRechnung(), Exception = "+ex.getMessage());
@@ -2347,7 +2428,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		return "";
 	}
  
-	public void neuanlageRezept(boolean lneu,String feldname,boolean bCtrlPressed){
+
+	// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+//	public void neuanlageRezept( boolean lneu, String feldname ) { 
+	public void neuanlageRezept( boolean lneu, String feldname, String strModus ){
+
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
 			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
@@ -2373,20 +2458,36 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.getSmartTitledPanel().setPreferredSize(new Dimension (480,630));
 		neuRez.setPinPanel(pinPanel);
 		if(lneu){
-			// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
-			//neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname));
-			// neuRez.getSmartTitledPanel().setTitle("RezeptNeuanlage");
-			// vvv Lemmi 20110101:
-			//neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(null,lneu,feldname, bCtrlPressed));
-			RezNeuanlage rezNeuAn = new RezNeuanlage(null,lneu,feldname, bCtrlPressed);
+			// vvv Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+			Vector<String> vecKopiervorlage = new Vector<String>();
+			if ( strModus.equals("KopiereLetztes") ) {
+				RezeptVorlage vorlage = new RezeptVorlage(aktrbut[0].getLocationOnScreen());
+				vorlage.setModal(true);
+				vorlage.toFront();
+				vorlage.setVisible(true);
+				String strKopierDiszi = vorlage.strSelected;
+				// Die Kopiervorlage steht jetzt in vorlage.vecResult oder es wurde nichts gefunden !
+				vecKopiervorlage = vorlage.vecResult;
+				vorlage= null;
+			}
+			if ( strModus.equals("KopiereAngewaehltes") ) {
+				String rezToCopy = AktuelleRezepte.getActiveRezNr();
+				vecKopiervorlage = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "REZ_NR = '" +
+									rezToCopy + "'", Arrays.asList(new String[] {}) ));
+
+			}
+			// ^^^ Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+			
+			RezNeuanlage rezNeuAn = new RezNeuanlage((Vector<String>)vecKopiervorlage.clone(),lneu,feldname);
 			neuRez.getSmartTitledPanel().setContentContainer( rezNeuAn );
-			if ( rezNeuAn.strKopiervorlage.isEmpty() )
+			//if ( rezNeuAn.strKopiervorlage.isEmpty() )
+			if ( vecKopiervorlage.size() < 1 )
 				neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
-			else
-				neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage als Kopie von <-- " + rezNeuAn.strKopiervorlage );
-			// ^^^ Lemmi 20110101
+			else 			// Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+				neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage als Kopie von <-- " + vecKopiervorlage.get(1) );
+			
 		}else{  // Lemmi Doku: Hier wird ein existierendes Rezept mittels Doppelklick geöffnet:
-			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(Reha.thisClass.patpanel.vecaktrez,lneu,feldname, false));
+			neuRez.getSmartTitledPanel().setContentContainer(new RezNeuanlage(Reha.thisClass.patpanel.vecaktrez,lneu,feldname));
 			neuRez.getSmartTitledPanel().setTitle("editieren Rezept ---> "+Reha.thisClass.patpanel.vecaktrez.get(1));
 		}
 		neuRez.getSmartTitledPanel().getContentContainer().setName("RezeptNeuanlage");
@@ -2395,6 +2496,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		neuRez.setLocationRelativeTo(null);
 		neuRez.pack();
 		neuRez.setVisible(true);
+		
 		neuRez.dispose();
 		neuRez = null;
 		pinPanel = null;
@@ -2658,11 +2760,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("Rezeptgebühr-Rechnung erstellen",SystemConfig.hmSysIcons.get("privatrechnung"));
 			
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren", "BarCode auf Rezept drucken", "Ausfallrechnung drucken", "Rezept ab-/aufschließen","Privat-/BG-/Nachsorge-Rechnung erstellen","Behandlungstage in Clipboard","Transfer in Historie","Rezeptgebühr-Rechnung erstellen"});
+			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren",     "BarCode auf Rezept drucken", "Ausfallrechnung drucken", 
+												  "Rezept ab-/aufschließen",      "Privat-/BG-/Nachsorge-Rechnung erstellen",
+												  "Behandlungstage in Clipboard", "Transfer in Historie", 
+												  "Rezeptgebühr-Rechnung erstellen" });   // Lemmi 20101218: eingefügt  Rezeptgebühr-Rechnung aus dem Rezept heraus erzeugen
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list);
-			tDlg.setPreferredSize(new Dimension(275, 255 +   // Lemmi: Breite, Höhe des Werkzeug-Dialogs
+			tDlg.setPreferredSize(new Dimension(250, 255 +   // Lemmi: Breite, Höhe des Werkzeug-Dialogs
 					((Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
@@ -2763,14 +2868,6 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 			// Lemmi Doku: hier kommt der Event für den Abbruch des Rezept-Fensters mittels rotem Punkt!!!!!
 			if(evt.getDetails()[0] != null){
 				if(evt.getDetails()[0].equals(this.getName())){
-					
-/* geht hier nicht, weil der Dialog PinPanel trotzdem alles zumacht !					
-					// Lemmi 20100102: Abbruch ohen Änderung-Speichern verhindern
-					if ( ((RezNeuanlage)getSmartTitledPanel().getContentContainer()).HasChanged() &&
-						 ((RezNeuanlage)getSmartTitledPanel().getContentContainer()).askForCancelUsaved() == 1
-					   ) 
-						return;
-*/					
 					
 /* geht hier nicht, weil der Dialog PinPanel trotzdem alles zumacht !					
 					// Lemmi 20100102: Abbruch ohen Änderung-Speichern verhindern

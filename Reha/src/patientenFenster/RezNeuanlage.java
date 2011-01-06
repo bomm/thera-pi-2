@@ -130,8 +130,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	public boolean neu = false;
 	public String feldname = "";
 	
-	// Lemmi 20110101: bCtrlPressed und strKopiervorlage zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
-	boolean bCtrlPressed = false;
+	// Lemmi 20110101: strKopiervorlage zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+	//boolean bCtrlPressed = false;
 	public String strKopiervorlage = "";
 	
 	public Vector<String> vec = null;  // Lemmi Doku: Das bekommt den 'vecaktrez' aus dem rufenden Programm (AktuelleRezepte)
@@ -156,20 +156,28 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	JLabel kassenLab;
 	JLabel arztLab;
 	
-	String rezToCopy = null;
-
+	// Lemmi 20110106: Lieber Hr. Steinhilber: Diese Funktion an andere Stelle verlegt, weil Architekturänderung
+//	String rezToCopy = null;
+	
+	String[] strRezepklassenAktiv = null;
+	
 	// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
-//	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
-	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname, boolean bCtrlPressed){
+	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
+//	public RezNeuanlage(Vector<String> vec,boolean neu,String sfeldname, boolean bCtrlPressed){
 		super();
 		this.neu = neu;
 		this.feldname = sfeldname;
-		this.vec = vec;
-		this.bCtrlPressed = bCtrlPressed;
-		if(this.bCtrlPressed && this.neu){
-			rezToCopy = AktuelleRezepte.getActiveRezNr();
-			aktuelleDisziplin = RezTools.putRezNrGetDisziplin(rezToCopy);
+		this.vec = vec;  // Lemmi 20110106  Wird auch für das Kopieren verwendet !!!!
+//		this.bCtrlPressed = bCtrlPressed;
+		
+		if( vec.size() > 0 && this.neu ) {
+			// Lemmi 20110106: Lieber Hr. Steinhilber: Diese Funktion an andere Stelle verlegt, weil Architekturänderung
+			//rezToCopy = AktuelleRezepte.getActiveRezNr();
+			//aktuelleDisziplin = RezTools.putRezNrGetDisziplin(rezToCopy);
+			aktuelleDisziplin = RezTools.putRezNrGetDisziplin(vec.get(1) );
 		}
+
+		
 		setName("RezeptNeuanlage");
 		rtp = new RehaTPEventClass();
 		rtp.addRehaTPEventListener((RehaTPEventListener) this);
@@ -468,13 +476,15 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[cZZSTAT]   = new JRtaTextField("",false); //zzstatus
 		jtf[cHEIMBEWPATSTAM] = new JRtaTextField("",false); //Heimbewohner aus PatStamm
 
-		
 		jcmb[cRKLASSE] = new JRtaComboBox();
 		int lang = SystemConfig.rezeptKlassenAktiv.size();
+		strRezepklassenAktiv = new String[lang];
 		for(int i = 0;i < lang;i++){
 			jcmb[cRKLASSE].addItem(SystemConfig.rezeptKlassenAktiv.get(i).get(0));	
+			// Lemmi 20110106: Belegung der Indices zur ComboBox für spätere Auswahlen:
+			strRezepklassenAktiv[i] = SystemConfig.rezeptKlassenAktiv.get(i).get(1);  // hier speichern wir die Kürzel für spätere Aktivitäten
 		}
-		
+
 		jpan.addLabel("Rezeptklasse auswählen",cc.xy(1, 3));
 		jpan.add(jcmb[cRKLASSE],cc.xyw(3, 3,5));
 		jcmb[cRKLASSE].setActionCommand("rezeptklasse");
@@ -703,10 +713,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			this.fuelleIndis(jcmb[cRKLASSE].getSelectedItem().toString().trim());
 
 			// Lemmi 20110101: bCtrlPressed zugefügt. Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
-			ladeZusatzDatenNeu();
-			if ( this.bCtrlPressed )
+			ladeZusatzDatenNeu();  // das muß auch als Voraussetzung für doKopiereLetztesRezeptDesPatienten gemacht werden
+			if ( this.neu && vec.size() > 0 )
 				doKopiereLetztesRezeptDesPatienten();  // hier drin wird auch "ladeZusatzDatenNeu()" aufgerufen
-			//else ladeZusatzDatenNeu();
+			
 		}else{
 			this.holePreisGruppe(this.vec.get(37));
 			this.ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);
@@ -986,7 +996,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		if(hmpositionen.size() > 0){
 			String[] idiszi = {"Physio-Rezept","Massage/Lymphdrainage-Rezept",
-					"Ergotherapie-Rezept","Logopädie-Rezept","REHA-Verordnung"};
+					"Ergotherapie-Rezept","Logopädie-Rezept","REHA-Verordnung"};  // Lemmi Fehler: Wa ist die Podologie ? Warum müssen diese "Standard-Strings immer neu aufgeführt werden? (genau EINAML an zentraler Stelle reicht! dt. für die 2-Buchstaben-Kürzel !
 			boolean checkok = new HMRCheck(
 					indi,
 					Arrays.asList(idiszi).indexOf((String)jcmb[cRKLASSE].getSelectedItem().toString()),
@@ -1859,7 +1869,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		 lösche alle Felder aus dem Vektor, die im akt. rezept gar nicht sein können (zB cREZDAT)
 		 dann setzte nochmal neue Daten drüber ladeZusatzDatenNeu()
 		 **/
-		if(rezToCopy == null){return;}
+
+		// Lemmi 20110106: Lieber Hr. Steinhilber: Diese Funktion an andere Stelle verlegt, weil Architekturänderung
+		//if(rezToCopy == null){return;}
+		
 		// Definition der Inices für den Vektor "vecaktrez"  
 		// Lemmi Todo: DAS MUSS VOLLSTÄNDIG GEMACHT UND AN ZENTRALE STELLE VERSCHOBEN WERDEN !!!
 		final int cVAR_PATID = 0;
@@ -1903,37 +1916,24 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 		//Funktion ist immer noch suboptimal, da der Kostenträger des Rezeptes noch nicht übernommen wird. 
 		
-		
 		//String strPat_Intern = jtf[cPATINT].getText();
-		
-		//vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
-		vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "REZ_NR = '"+rezToCopy+"'", Arrays.asList(new String[] {}) ));
 
-		/*
-		// Was heben wir in der Historie?
-		Vector<String> vecLZA = null;
-		vecLZA = ((Vector<String>)SqlInfo.holeSatz( "lza", " * ", "PAT_INTERN = '"+strPat_Intern+"' ORDER BY rez_datum DESC", Arrays.asList(new String[] {}) ));
-		
-		// das neuere Rezept gewinnt als Kopiervorlage:
-		if (    ( vecLZA.size() > 0  && vec.size() > 0 ) 
-			 && ( vecLZA.get(cVAR_REZDATUM).compareTo(vec.get(cVAR_REZDATUM)) > 0 )  // wenn das Datum in lza größer ist
-		   ) {
-			vec.clear();
-			vec = (Vector<String>)vecLZA.clone();
-		} else if ( vecLZA.size() > 0  && vec.size() == 0 ) {  // wenn nur etwas in der Historie gefunden werden konnte 
-			vec.clear();
-			vec = (Vector<String>)vecLZA.clone();
-		}
-		vecLZA.clear();
-		*/
+		// Lemmi 20110106: Lieber Hr. Steinhilber: Diese Funktion an andere Stelle verlegt, weil Architekturänderung
+		//vec = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "REZ_NR = '"+rezToCopy+"'", Arrays.asList(new String[] {}) ));
+
+
 		// für die Rückmeldung zum Setezen der Dailogüberschrift
 		strKopiervorlage = "";
 		
 		if ( vec.size() > 0 ) {   // nur wenn etwas gefunden werden konnte !
-			
+
 			// Titel des Dialogs individualisieren für die Rückmeldung zum Setezen der Dailogüberschrift
-			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
 			strKopiervorlage = vec.get(cVAR_REZNR);
+
+			// Lemmi 20110106: Lieber Hr. Steinhilber: Das fkt. nicht, weil jcmb nicht den hier angebenen Inhalt besitzt !
+///			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
+			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(strRezepklassenAktiv).indexOf(strKopiervorlage.substring(0,2)) );
+			
 	
 			// Löschen der auf jeden Fall "falsch weil alt" Komponenten
 			vec.set(cVAR_REZNR, "");
@@ -1960,8 +1960,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 			
 			preisgruppe = Integer.parseInt(vec.get(41));
+			
+			// Lemmi 20110106: Lieber Hr. Steinhilber: Das fkt. nicht !
 			//erneuter Aufruf damit die korrekte Preisgruppe genommen wird GKV vs. BGE etc.
-			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
+///			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
+			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(strRezepklassenAktiv).indexOf(strKopiervorlage.substring(0,2)) );
+			
 			if(!vec.get(8).equals("0")){
 				jcmb[cLEIST1].setSelectedVecIndex(9, vec.get(8));//art_dbeh1	
 			}
@@ -1974,17 +1978,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(!vec.get(11).equals("0")){
 				jcmb[cLEIST4].setSelectedVecIndex(9, vec.get(11));//art_dbeh4	
 			}
-			// vec wieder löschen - er hat seinen Transport-Dienst geleistet
+			// vec wieder löschen - er hat seinen Transport-Dienst für das Kopieren geleistet
 			vec.clear();
 		}
 	}  // end of doKopiereLetztesRezeptDesPatienten()
 	
 	private void doAbbrechen(){
 		// Lemmi 20101231: Verhinderung von Datenverlust bei unbeabsichtigtem Zumachen des geänderten Rezept-Dialoges
-		/*
 		if ( HasChanged() && askForCancelUsaved() == JOptionPane.NO_OPTION )
 			return;
-		*/	
+	
 		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
 	}
