@@ -424,8 +424,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.setDoubleBuffered(true);
 		tabaktrez.setEditable(false);
 		tabaktrez.setSortable(false);
-//		tabaktrez.getColumn(0).setMaxWidth(75);
+		tabaktrez.getColumn(0).setMaxWidth(75);
 		TableCellRenderer renderer = new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
+		tabaktrez.getColumn(1).setCellRenderer(renderer);
+		tabaktrez.getColumn(1).setMaxWidth(45);
+		tabaktrez.getColumn(3).setMaxWidth(75);
+		tabaktrez.getColumn(5).setMaxWidth(45);
+		tabaktrez.getColumn(5).setCellRenderer(renderer);
+
+		//tabaktrez.getColumn(4).setMaxWidth(70);
+		tabaktrez.getColumn(6).setMinWidth(0);
+		tabaktrez.getColumn(6).setMaxWidth(0);		
+		tabaktrez.getColumn(7).setMinWidth(0);
+		tabaktrez.getColumn(7).setMaxWidth(0);			
+		/*
 		tabaktrez.getColumn(1).setCellRenderer(renderer);
 		tabaktrez.getColumn(1).setMaxWidth(45);
 		tabaktrez.getColumn(3).setMaxWidth(75);
@@ -441,7 +453,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktrez.getColumn(6).setMinWidth(0);
 		tabaktrez.getColumn(6).setMaxWidth(0);		
 		tabaktrez.getColumn(7).setMinWidth(0);
-		tabaktrez.getColumn(7).setMaxWidth(0);		
+		tabaktrez.getColumn(7).setMaxWidth(0);	
+		tabaktrez.getColumn(0).setMaxWidth(75);
+		
+		tabaktrez.getColumn(1).setCellRenderer(renderer);
+		tabaktrez.getColumn(1).setMaxWidth(45);
+		tabaktrez.getColumn(3).setMaxWidth(75);
+		tabaktrez.getColumn(5).setMaxWidth(45);
+		tabaktrez.getColumn(5).setCellRenderer(renderer);
+	
+		//tabaktrez.getColumn(4).setMaxWidth(70);
+		tabaktrez.getColumn(6).setMinWidth(0);
+		tabaktrez.getColumn(6).setMaxWidth(0);		
+		tabaktrez.getColumn(7).setMinWidth(0);
+		tabaktrez.getColumn(7).setMaxWidth(0);
+		*/		
 		tabaktrez.validate();
 		tabaktrez.setName("AktRez");
 		tabaktrez.setSelectionMode(0);
