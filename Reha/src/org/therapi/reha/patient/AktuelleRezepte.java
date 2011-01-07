@@ -356,10 +356,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		aktrbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
 		//Strg-Funktion in normalen Betrieben eher nutzlos und erheblich gehleranfällig /st.
 		aktrbut[0].setToolTipText("<html>neues Rezept anlegen<br><br>" +
-								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,"+
-								"<br>wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!"+ 
+								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,<br>"+
+								"<br>wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!<br>"+ 
 								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
-								"<br>wird das letzte Rezept das Patienten kopiert!<br><br>" 
+								"<br>wird das letzte Rezept das Patienten kopiert!<br><br></html>" 
 								  );
 		aktrbut[0].setActionCommand("rezneu");
 		aktrbut[0].addActionListener(this);		
@@ -1745,7 +1745,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					xverfasser = Reha.thisClass.patpanel.berichte.holeVerfasser();
 					neuber = false;
 					berid = iexistiert;
-					String meldung = "<html>Für das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>\nVorhandener Bericht wird jetzt geöffnet";
+					String meldung = "<html>Für das Rezept <b>"+xreznr+"</b> existiert bereits ein Bericht.<br>Vorhandener Bericht wird jetzt geöffnet</html>";
 					JOptionPane.showMessageDialog(null, meldung);
 				}
 				////System.out.println("ArztberichtFenster erzeugen!");
@@ -2339,8 +2339,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 		if(testvec.size() > 0){
 			JOptionPane.showMessageDialog(null, "<html>Für dieses Rezept  <b>" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) 
-											  + "</b>  wurde bereits eine Rezeptgebühren-Rechnung <b>" + testvec.get(0) + "</b> angelegt!\n" 
-											  + "Eine Barzahlungs-Quittung kann nicht mehr erstellt werden.", 
+											  + "</b>  wurde bereits eine Rezeptgebühren-Rechnung <b>" + testvec.get(0) + "</b> angelegt!<br>" 
+											  + "Eine Barzahlungs-Quittung kann nicht mehr erstellt werden.</html>", 
 											  "Bar-Quittung nicht mehr möglich", JOptionPane.WARNING_MESSAGE, null);
 				return;				
 		}
@@ -2362,7 +2362,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
 				(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
 			String reznr = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
-			int frage = JOptionPane.showConfirmDialog(null,"<html>Zuzahlung für Rezept <b>" + reznr + "</b> bereits in bar geleistet!\n\n Wollen Sie eine Kopie erstellen?",
+			int frage = JOptionPane.showConfirmDialog(null,"<html>Zuzahlung für Rezept <b>" + reznr + "</b> bereits in bar geleistet!<br><br> Wollen Sie eine Kopie erstellen?</html>",
 														   "Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.NO_OPTION){
 				return;
@@ -2664,8 +2664,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if( (boolean)Reha.thisClass.patpanel.vecaktrez.get(39).equals("1") || 
 					(Double.parseDouble((String)Reha.thisClass.patpanel.vecaktrez.get(13)) > 0.00) ){
 				JOptionPane.showMessageDialog(null, "<html>Zuzahlung für Rezept  <b>" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) 
-						  + "</b>  wurde bereits in bar geleistet.\n" 
-						  + "Eine Rezeptgebühren-Rechnung kann deshalb nicht mehr erstellt werden.", 
+						  + "</b>  wurde bereits in bar geleistet.<br>" 
+						  + "Eine Rezeptgebühren-Rechnung kann deshalb nicht mehr erstellt werden.</html>", 
 						  "Rezeptgebühren-Rechnung nicht mehr möglich", JOptionPane.WARNING_MESSAGE, null);
 				return;
 			}
