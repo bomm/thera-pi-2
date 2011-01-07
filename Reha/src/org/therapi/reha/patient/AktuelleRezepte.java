@@ -354,11 +354,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 		aktrbut[0] = new JButton();
 		aktrbut[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
+		//Strg-Funktion in normalen Betrieben eher nutzlos und erheblich gehleranfällig /st.
 		aktrbut[0].setToolTipText("<html>neues Rezept anlegen<br><br>" +
-								  "Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
-								  "<br>wird das letzte Rezept das Patienten kopiert!<br><br>" + 
-								  "Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,"+
-								  "<br>wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!" 
+								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,"+
+								"<br>wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!"+ 
+								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
+								"<br>wird das letzte Rezept das Patienten kopiert!<br><br>" 
 								  );
 		aktrbut[0].setActionCommand("rezneu");
 		aktrbut[0].addActionListener(this);		
