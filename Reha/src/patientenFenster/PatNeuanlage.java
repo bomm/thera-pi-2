@@ -485,7 +485,7 @@ private KVKWrapper kvw;
 				|| jtf[4].getText().trim().equals("") || jtf[5].getText().trim().equals("")
 				|| jtf[6].getText().trim().equals("") || jtf[12].getText().trim().equals("")
 				|| jtf[11].getText().trim().equals(".  .") || jtf[17].getText().trim().equals("") ){
-			JOptionPane.showMessageDialog(null, "Die Daten des Patienten wurden unvollständig eingegeben!\n\nSpeichern ist nicht m�glich.\n");
+			JOptionPane.showMessageDialog(null, "Die Daten des Patienten wurden unvollständig eingegeben!\n\nSpeichern ist nicht möglich.\n");
 			cbanrede.requestFocus();
 			return;
 		}

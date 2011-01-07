@@ -18,6 +18,7 @@ import javax.swing.event.HyperlinkListener;
 
 import org.jdesktop.swingx.JXPanel;
 
+import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
@@ -37,6 +38,7 @@ public class PatientStammDatenPanel extends JXPanel{
 	JEditorPane htmlPane = null;	
 	StringBuffer buf1 = new StringBuffer();
 	StringBuffer buf2 = new StringBuffer();
+	StringBuffer buf3 = new StringBuffer();
 	PatientStammDatenLogic stammDatenLogic = null;
 	public PatientStammDatenPanel(PatientHauptPanel patHauptPanel){
 		super();
@@ -176,7 +178,7 @@ public class PatientStammDatenPanel extends JXPanel{
 			buf1.append("<img src='file:///"+Reha.proghome+"icons/evolution-addressbook.png' width=32 height=32 border=0>");
 			buf1.append("</tr></td>" );
 			buf1.append(getAkutDaten());
-
+			buf1.append(getBefreiungsDaten());
 			buf1.append("</table>");
 			buf1.append("</font>");
 			buf1.append("</div>");
@@ -231,12 +233,32 @@ public class PatientStammDatenPanel extends JXPanel{
 		}
 		return buf2.toString();
 	}
+	private String getBefreiungsDaten(){
+		buf3.setLength(0);
+		buf3.trimToSize();
+		String dummy;
+		buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
+		dummy = patientHauptPanel.patDaten.get(31).trim();
+		if(dummy.length()==10){
+			buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf3.append(makeLink("Befreiung bis: <font color=#FF0000>"+DatFunk.sDatInDeutsch(dummy)+"</font>","AKUT_DAT"));
+			buf3.append("</tr></td>");
+		}
+		dummy = patientHauptPanel.patDaten.get(69).trim();
+		if(! dummy.equals("")){
+			buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
+			buf3.append(makeLink("Vorjahr befreit: <font color=#FF0000>"+(dummy.equals(SystemConfig.vorJahr) ? "JA" : "NEIN")+"</font>","VORJAHR"));
+			buf3.append("</tr></td>");
+		}
+		System.out.println(dummy);
+		return buf3.toString();
+	}
 	private String getLeerHtml(){
-		buf2.setLength(0);
-		buf2.trimToSize();
-		buf2.append("<html>");
-		buf2.append("<div style=margin-left:5px;>");
-		buf2.append("<font face=\"Tahoma\"><style=margin-left=5px;>");
+		buf3.setLength(0);
+		buf3.trimToSize();
+		buf3.append("<html>");
+		buf3.append("<div style=margin-left:5px;>");
+		buf3.append("<font face=\"Tahoma\"><style=margin-left=5px;>");
 			/*"<br>"+*/
 		buf2.append("<table>");
 			/*****Rezept****/
