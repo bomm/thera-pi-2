@@ -1,6 +1,6 @@
 package offenePosten;
 
-import hauptFenster.Reha;
+
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
@@ -111,7 +111,7 @@ public class OffenePosten implements WindowListener{
 				}
 				dbPassword = decrypted.toString();
 				
-				inif = new INIFile(progHome+"ini/"+aktIK+"/fremdprog.ini");
+				inif = new INIFile(progHome+"ini/"+aktIK+"/rehajava.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				

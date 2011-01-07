@@ -1,7 +1,7 @@
 package offenePosten;
 
 
-import hauptFenster.Reha;
+
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,7 +37,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import rechteTools.Rechte;
+
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
