@@ -2508,7 +2508,6 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 			}
 			// ^^^ Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
-			
 			RezNeuanlage rezNeuAn = new RezNeuanlage((Vector<String>)vecKopiervorlage.clone(),lneu,feldname);
 			neuRez.getSmartTitledPanel().setContentContainer( rezNeuAn );
 			//if ( rezNeuAn.strKopiervorlage.isEmpty() )
