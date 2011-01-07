@@ -201,10 +201,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				try{
 					vollPanel = new JXPanel();
 					// Lemmi 20110105: Layout etwas dynamischer gestaltet
-// alt				FormLayout vplay = new FormLayout("fill:0:grow(0,75),5dlu,fill:0:grow(0.25),5dlu",
-//												  	  "13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
-					FormLayout vplay = new FormLayout("fill:0:grow(0.6),5dlu,fill:0:grow(0.4),5dlu",
-													  "13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+					FormLayout vplay = new FormLayout("fill:0:grow(0,75),5dlu,fill:0:grow(0.25),5dlu",
+												  	  "13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
+				//Das soll nicht "dynamische" gestaltet werden sondern genau so belassen werden
+				//wie es ist! Ansonsten muß bei den meisten Diagnosen gescrollt werden
+				//und genau das ist Murks in einer View die einem einen schnellen Gesamtüberblick verschaffen soll!
+				//Steinhilber	
+				
+					//FormLayout vplay = new FormLayout("fill:0:grow(0.6),5dlu,fill:0:grow(0.4),5dlu",
+					//								  "13dlu,53dlu,5dlu,fill:0:grow(1.00),0dlu");
 					CellConstraints vpcc = new CellConstraints();
 					vollPanel.setLayout(vplay);
 					vollPanel.setOpaque(false);
