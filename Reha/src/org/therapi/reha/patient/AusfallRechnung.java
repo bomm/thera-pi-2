@@ -322,11 +322,11 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
-		sb.append(DatFunk.sHeute()+" - unentschuldigt oder zu spät abgesagt - Rechnung!!\n");
+		sb.append(DatFunk.sHeute()+" - unentschuldigt oder zu spät abgesagt - Rechnung!! - Rechnung-Nr.: "+SystemConfig.hmAdrAFRDaten.get("<AFRnummer>")+"\n");
 		sb.append(Reha.thisClass.patpanel.pmemo[1].getText());
 		Reha.thisClass.patpanel.pmemo[1].setText(sb.toString());
 		String cmd = "update pat5 set pat_text='"+sb.toString()+"' where pat_intern = '"+Reha.thisClass.patpanel.aktPatID+"'";
-		new ExUndHop().setzeStatement(cmd);
+		SqlInfo.sqlAusfuehren(cmd);
 	}
 	private void macheAFRHmap(){
 		String mappos = "";

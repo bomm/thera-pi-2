@@ -357,7 +357,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//Strg-Funktion in normalen Betrieben eher nutzlos und erheblich gehleranfällig /st.
 		aktrbut[0].setToolTipText("<html>neues Rezept anlegen<br><br>" +
 								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,<br>"+
-								"<br>wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!<br>"+ 
+								"wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!<br><br>"+ 
 								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
 								"<br>wird das letzte Rezept das Patienten kopiert!<br><br></html>" 
 								  );

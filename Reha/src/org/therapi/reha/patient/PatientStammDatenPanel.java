@@ -241,13 +241,13 @@ public class PatientStammDatenPanel extends JXPanel{
 		dummy = patientHauptPanel.patDaten.get(31).trim();
 		if(dummy.length()==10){
 			buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
-			buf3.append(makeLink("Befreiung bis: <font color=#FF0000>"+DatFunk.sDatInDeutsch(dummy)+"</font>","AKUT_DAT"));
+			buf3.append(makeLink("Befreiung bis: <font color=#FF0000><b>"+DatFunk.sDatInDeutsch(dummy)+"</b></font>","AKUT_DAT"));
 			buf3.append("</tr></td>");
 		}
 		dummy = patientHauptPanel.patDaten.get(69).trim();
 		if(! dummy.equals("")){
 			buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
-			buf3.append(makeLink("Vorjahr befreit: <font color=#FF0000>"+(dummy.equals(SystemConfig.vorJahr) ? "JA" : "NEIN")+"</font>","VORJAHR"));
+			buf3.append(makeLink("Vorjahr befreit: <font color=#FF0000><b>"+(dummy.equals(SystemConfig.vorJahr) ? "JA" : "NEIN")+"</b></font>","VORJAHR"));
 			buf3.append("</tr></td>");
 		}
 		System.out.println(dummy);
