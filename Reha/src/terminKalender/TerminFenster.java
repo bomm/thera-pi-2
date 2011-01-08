@@ -1188,8 +1188,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						if (e.getKeyCode()==122 && e.isShiftDown()){
 							//F11 + Shift
-							terminBestaetigen(tspalte);
-							gruppeAusschalten();
+							if(!Rechte.hatRecht(Rechte.Kalender_terminconfirm, true)){
+								gruppeAusschalten();
+							}else{
+								terminBestaetigen(tspalte);
+								gruppeAusschalten();
+							}
 							oSpalten[tspalte].requestFocus();
 							break;
 						}
