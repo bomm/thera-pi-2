@@ -822,6 +822,7 @@ public class OffenepostenMahnungen extends JXPanel{
 		
 	}
 	/*******************************/
+	@SuppressWarnings("rawtypes")
 	private void starteMahnDruck(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
@@ -862,8 +863,7 @@ public class OffenepostenMahnungen extends JXPanel{
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 			////System.out.println(placeholderDisplayText);	
-		    /*****************/			
-			Set entries = mahnParameter.entrySet();
+		    Set entries = mahnParameter.entrySet();
 		    Iterator it = entries.iterator();
 		    while (it.hasNext()) {
 		      Map.Entry entry = (Map.Entry) it.next();

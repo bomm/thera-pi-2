@@ -9,8 +9,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import offenePosten.OffenepostenPanel.MyOffenePostenTableModel;
-
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
