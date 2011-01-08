@@ -41,9 +41,7 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 	OffenepostenMahnungen omahnpanel = null;
 	OffenepostenEinstellungen oeinstellungpanel = null;
 	RehaBillPanel  rehaBillPanel = null;
-	// Lemmi 20101225 ausgeklammert, da anderweitig gelöst (RGR aund AFR-Rechnungen direkt in "rliste")
-	//OffenepostenRgAf oprgaf = null;
-	
+	OffenepostenRgAf oprgaf = null;
 	public OffenepostenTab(){
 		super();
 		setOpaque(false);
@@ -51,22 +49,21 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		jtb = new JTabbedPane();
 		jtb.setUI(new WindowsTabbedPaneUI());
 		
-		oppanel = new OffenepostenPanel(this);  // Lemmi Doku: ACHTUNG: das muß das nullte Panel sein, weil der Rest der Programmierung hart darauf eintgestellt ist
+		oppanel = new OffenepostenPanel(this);
 		jtb.addTab("Rechnungen ausbuchen", oppanel);
 
-		rehaBillPanel = new RehaBillPanel(this); // Lemmi Doku: ACHTUNG: das muß das erste Panel sein, weil der Rest der Programmierung hart darauf eintgestellt ist
+		rehaBillPanel = new RehaBillPanel(this);
 		jtb.addTab("Rechn. korrigieren / - Kopie", rehaBillPanel);
 		
 		omahnpanel = new OffenepostenMahnungen(this);
 		jtb.addTab("Mahnungen erstellen", omahnpanel);
 		
 		oeinstellungpanel = new OffenepostenEinstellungen(this);
-		jtb.addTab("Einstellungen für Mahnungen", oeinstellungpanel);
+		jtb.addTab("Einstellungen", oeinstellungpanel);
 		
-/* Lemmi 20101225 ausgeklammert, da anderweitig gelöst (RGR aund AFR-Rechnungen direkt in "rliste")
 		oprgaf = new OffenepostenRgAf(this);
 		jtb.addTab("Rezeptgebühr-/Ausfallrechnung", oprgaf);
-*/
+
         jtb.addChangeListener(this);
 		doHeader();
         jxh = new JXHeader();
@@ -92,8 +89,6 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		ImageIcon ico;
         String ss = System.getProperty("user.dir")+File.separator+"icons"+File.separator+"nebraska_scale.jpg";
         ico = new ImageIcon(ss);
-        
-     // Lemmi Frage: was passiert, wenn ich vorne ein anderes Panel einfüge !
 		vectitel.add("Bezahlte Rechnungen ausbuchen / Teilzahlungen buchen");
 		vecdescript.add("<html>Hier haben Sie die Möglichkeit Rechnungen nach verschiedenen Kriterien zu suchen.<br>" +
                 "Wenn Sie die Rechnung die Sie suchen gefunden haben und die Rechnung <b>vollständig</b> bezahlt wurde,<br>" +
@@ -101,30 +96,29 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
                 "Wurde lediglich eine Teilzahlung geleistet, muß zuvor die noch bestehende Restforderung im Textfeld <b>noch offen</b> eingetragen werden.</html>");
 		vecimg.add(ico);
 		
-		vectitel.add("Rechnung korrigieren & Rechnungskopie");
-		vecdescript.add("<html>....Hier kann eine <b>Heilmittel-</b>Rechnung nochmals überarbeitet und erneut ausgedruckt werden. " +
-                "Die Rechnungsnummer bleibt dabei unverändert. Das Rechnungsdokumnet kann in OpenOffice noch manuell bearbeitet werden.<br>" +
-                "<font color=#FF0000>Korrekturen von Rechnungsgebühren-Rechnungen werden nicht hier erstellt</font>, sondern am Rezept via Werkzeug oder in der IV bzw. §302-Abrechnung. " +
-                "Der wiederholte Audruck von Ausfallrechnungen wird ggf. zukünfig ebenfalls beim Rezept via Werkzeug möglich sein. " );
+		
+		vectitel.add("Zertifikate auswerten");
+		vecdescript.add("....Hier können Sie die Zertifikatskette einsehen\n" +
+                "Neue Zertifikate einlesen (neue Datenannahmestellen)\n" +
+                "und schlußendlich überpüfen wie lange welches Zertifikat gültig ist");
 		vecimg.add(ico);
 		
-		vectitel.add("Mahnung erstellen");
-		vecdescript.add("....Hier können Mahnungen erzeugt und dokumentiert werden.\n" +
-                "Siehe auch den nächsten Reiter mit den Steuerungs-Einstellungen für Mahnungen.");
+		vectitel.add("Manuell verschlüsseln");
+		vecdescript.add("....Hier können Sie Dateien manuell verschlüsseln\n" +
+                "Weshalb auch immer....");
 		vecimg.add(ico);
 
-		vectitel.add("Einstellungen für Mahnungen");
-		vecdescript.add("....Hiermit wird der vorige Reiter 'Mahnung erstellen' gesteuert.\n" +
-                "Einstellung der Fristen zwischen den Mahnungen und das Ausdrucken derselben.\n"+
-                "Filter zum generellen Ausblenden ab einem bestimmten Datum.");
+		vectitel.add("Test- und Experimentierpanel");
+		vecdescript.add("....Diese Seite ist bislang noch Bodo und Jürgen vorbehalten (leider).\n" +
+                "Hier werden die Funktionen die später Nebraska zu dem machen was Nebraske ist\n"+
+                "entwickelt und getestet");
 		vecimg.add(ico);
-		
-		/* Lemmi 20101225 ausgeklammert, da anderweitig gelöst (RGR aund AFR-Rechnungen direkt in "rliste")
 		vectitel.add("Rezeptgebührrechungen / Ausfallrechnungen");
-		vecdescript.add("....text noch eintragen.\n" +
-				"text noch eintragen");
+		vecdescript.add("....Experimentierpanal von Bodo und Jürgen.\n" +
+                "Hier werden die Funktionen die später Nebraska zu dem machen was Nebraske ist\n"+
+                "entwickelt und getestet");
 		vecimg.add(ico);
-		*/
+
 	}
 
 	@Override
@@ -132,8 +126,8 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		JTabbedPane pane = (JTabbedPane)arg0.getSource();
         int sel = pane.getSelectedIndex();
         try{
-        	if(sel==0){				// Lemmi Frage: was passiert, wenn ich vorne ein anderes Panel einfüge !
-        		oppanel.setzeFocus();   
+        	if(sel==0){
+        		oppanel.setzeFocus();
         	}else if(sel==1){
         		rehaBillPanel.setzeFocus();
         	}
@@ -145,7 +139,7 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
         jxh.setIcon(vecimg.get(sel));   
 	}
 	public void setFirstFocus(){
-		oppanel.setzeFocus();		// Lemmi Frage: was passiert, wenn ich vorne ein anderes Panel einfüge !
+		oppanel.setzeFocus();		
 	}
 	
 	public String getNotBefore(){

@@ -1,5 +1,11 @@
 package rehaBillEdit;
 
+
+
+
+
+
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -32,12 +38,20 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 
+
+
+
 import offenePosten.OffenePosten;
 import offenePosten.OffenepostenTab;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+
+
+
+
+
 
 
 import Tools.ButtonTools;
@@ -131,22 +145,15 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	}
 	
 	private JXPanel getContent(){
-		// Lemmi 20110102: Layout geändert, daß Tabelle maximal werden kann
-		//String xwerte = "fill:0:grow(0.33),fill:0:grow(0.66)";
-		//String ywerte = "0dlu,250dlu:g,0dlu";
-		String xwerte = "220dlu,fill:0:grow(1.0),5dlu";
-		String ywerte = "0dlu,fill:0:grow(1.0)";
+		String xwerte = "fill:0:grow(0.33),fill:0:grow(0.66)";
+		String ywerte = "0dlu,250dlu:g,0dlu";
 		
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		content = new JXPanel();
 		content.setLayout(lay);
-		// Lemmi 20110102: Layout geändert, daß Tabelle maximal werden kann
-//		content.add(getEdits(),cc.xy(1,2,CellConstraints.DEFAULT,CellConstraints.TOP));
-//		content.add(getTable(),cc.xy(2,2,CellConstraints.DEFAULT,CellConstraints.TOP));
-		content.add(getEdits(),cc.xy(1,2,CellConstraints.DEFAULT,CellConstraints.FILL));
-		content.add(getTable(),cc.xy(2,2,CellConstraints.FILL,CellConstraints.FILL));
-		
+		content.add(getEdits(),cc.xy(1,2,CellConstraints.DEFAULT,CellConstraints.TOP));
+		content.add(getTable(),cc.xy(2,2,CellConstraints.DEFAULT,CellConstraints.TOP));
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setzeFocus();
@@ -162,15 +169,12 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			}
 		});
 	}
-	
-	
 	private JXPanel getEdits(){
 		
 		//                1    2    3     4        5    6     7
 		String xwerte = "5dlu,60dlu,2dlu,100dlu:g,2dlu,25dlu,5dlu";
 		//                1    2  3   4  5  6   7   8  9  10  11 12 13   14 15  16  17  18 19   20  21 22  23 24  25  26 27
 		String ywerte = "15dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,10dlu,p,15dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu";
-//		String ywerte = "15dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,10dlu,p,fill:0:grow(1.0),p,2dlu,p,2dlu,p,2dlu,p,15dlu";
 		
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
@@ -263,20 +267,17 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		jpan.validate();
 		return jpan;
 	}
-	
 	private JXPanel getTable(){
-		// Lemmi 20110102: Layout geändert, daß Tabelle maximal werden kann
-		String xwerte = "fill:0:grow(1.0)";
-//		String ywerte = "15dlu,155dlu:g,5dlu,p,5dlu";
-		String ywerte = "15dlu,fill:0:grow(1.0),5dlu,p";
 		
+		String xwerte = "fill:0:grow(1.0)";
+		String ywerte = "15dlu,155dlu:g,5dlu,p,5dlu";
 		
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		JXPanel jpan = new JXPanel();
 		jpan.setLayout(lay);
 		
-		while(!OffenePosten.DbOk){  // Lemmi Frage: Was ist denn das ?????
+		while(!OffenePosten.DbOk){
 			
 		}
 		tabmod = new MyOffenePostenTableModel();
@@ -294,7 +295,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		tab.setHorizontalScrollEnabled(true);
 		DateTableCellEditor tble = new DateTableCellEditor();
 
-		// Lemmi Doku: Editoren zu den einzelnen Eingabefeldern zuordnen
+
 		for(int i = 0; i < feldNamen.size();i++){
 			if(feldNamen.get(i).get(1).contains("decimal(")){
 				tab.getColumn(i).setCellRenderer(new Tools.DoubleTableCellRenderer());
@@ -318,12 +319,9 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		tabmod.addTableModelListener(this);
 		
-		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
-		// Lemmi Fehler: die folgende Zeile mit dem validate hat gefehlt
-		jscr.validate();
-
-		jpan.add(jscr,cc.xy(1,2)); // Lemmi Doku: fügt das Tabellen-Panel in das übergeordnete Panel ein
 		
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
+		jpan.add(jscr,cc.xy(1,2));
 		
 		String xwerte2 = "0dlu,60dlu,5dlu,60dlu,5dlu,60dlu,15dlu,60dlu";
 		String ywerte2 = "0dlu,p,5dlu";
@@ -340,8 +338,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		buts[2].setEnabled(false);
 		buts[3].setEnabled(false);
 		butpan.validate();
-		jpan.add(butpan,cc.xy(1,4));  // Lemmi Doku: fügt das Knopf-Panel in das übergeordnete Panel unter der Tabelle ein
-
+		jpan.add(butpan,cc.xy(1,4));
 		jpan.validate();
 		return jpan;
 	}
@@ -1249,6 +1246,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	
 	/*********************************************************************/	
 	public void starteDokument(String url) throws Exception{
+		System.out.println("Starte Dokument = "+url);
 		IDocumentService documentService = null;;
 		documentService = OffenePosten.officeapplication.getDocumentService();
 		IDocumentDescriptor docdescript = new DocumentDescriptor();
