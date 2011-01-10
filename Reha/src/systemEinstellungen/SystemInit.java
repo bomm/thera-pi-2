@@ -258,9 +258,14 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 
 	// Lemmi 20101228: OP & Mahnungen eingebaut
+	/* Die Offenen Posten in der aktuellen Form funktionieren hinten und vorne nicht
+	 * solange dies so ist werden die OffenenPosten wieder zurückgebaut auf deren
+	 * ursprüngliche Fassung
 	treeitem = new DefaultMutableTreeNode( "Offene Posten & Mahnung");
 	node.add(treeitem);
+	*/
 	root.add(node);
+
 	/***/
 	node = new DefaultMutableTreeNode( "sonstige Einstellungen");
 	treeitem = new DefaultMutableTreeNode( "Emailparameter");

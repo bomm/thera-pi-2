@@ -2017,6 +2017,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							//Abgeschlossen trotz verspäteter Behandlungsbeginn;
 						}
 					}
+				}else if(differenz <= 10 && differenz >= 0){
+					if(DatFunk.TageDifferenz(vgldat3, vgldat2) > 0){
+						int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn nach der Angabe --> spätester Beginn, Frist ist somit überschritten.\n\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+						//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
+						if(anfrage != JOptionPane.YES_OPTION){
+							return;
+						}else{
+							//Abgeschlossen trotz verspäteter Behandlungsbeginn;
+						}
+					}
+					// Hier noch einbauen falls spätester Beginn kürzer als die 
 				}
 				/***/
 				if(Reha.thisClass.patpanel.patDaten.get(14).trim().equals("")){
@@ -2465,7 +2476,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	public void neuanlageRezept( boolean lneu, String feldname, String strModus ){
 
 		if(Reha.thisClass.patpanel.aid < 0 || Reha.thisClass.patpanel.kid < 0){
-			String meldung = "Hausarzt und/oder Krankenkasse sind nicht verwertbar.\n"+
+			String meldung = "Hausarzt und/oder Krankenkasse im Patientenstamm sind nicht verwertbar.\n"+
 			"Die jeweils ungültigen Angaben sind -> kursiv <- dargestellt.\n\n"+
 			"Bitte korrigieren Sie die entsprechenden Angaben";
 			JOptionPane.showMessageDialog(null, meldung);
@@ -2630,7 +2641,22 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	}
 	public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
-    }	
+    }
+	private void do301FallSteuerung(){
+		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
+		int row = tabaktrez.getSelectedRow();
+		if(row < 0){JOptionPane.showMessageDialog(null,"Kein Rezept für Fallsteuerung ausgewählt"); return;}
+		String aktrez = tabaktrez.getValueAt(row,0).toString().trim(); 
+		int rezepte = Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from dta301 where rez_nr ='"+aktrez+"'"));
+		
+		if(rezepte <= 0){
+			String meldung = "<html>Diese Verordnung wurde vom Kostenträger <b>nicht elektronisch</b> übermittelt!<br>"+
+			"Verwendung für die Fallsteuerung nach §301 ist deshalb <b>nicht möglich.</b><br></html>";
+			JOptionPane.showMessageDialog(null,meldung); 
+			return;
+		}
+		// Hier der Aufruf der Fallsteuerungs .JAR
+	}
 
 	// Lemmi 20101218: kopiert aus AbrechnungRezept.java und die Datenherkunfts-Variablen verändert bzw. angepasst.
 	private void doRezeptgebuehrRechnung(Point location){
@@ -2788,16 +2814,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			icons.put("Transfer in Historie",SystemConfig.hmSysIcons.get("redo"));
 			// Lemmi 20101218: angehängt  Rezeptgebühr-Rechnung aus dem Rezept heraus erzeugen
 			icons.put("Rezeptgebühr-Rechnung erstellen",SystemConfig.hmSysIcons.get("privatrechnung"));
+			icons.put("§301 Reha-Fallsteuerung",SystemConfig.hmSysIcons.get("abrdreieins"));
 			
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Rezeptgebühren kassieren",     "BarCode auf Rezept drucken", "Ausfallrechnung drucken", 
 												  "Rezept ab-/aufschließen",      "Privat-/BG-/Nachsorge-Rechnung erstellen",
 												  "Behandlungstage in Clipboard", "Transfer in Historie", 
-												  "Rezeptgebühr-Rechnung erstellen" });   // Lemmi 20101218: eingefügt  Rezeptgebühr-Rechnung aus dem Rezept heraus erzeugen
+												  "Rezeptgebühr-Rechnung erstellen",
+												  "§301 Reha-Fallsteuerung" });   // Lemmi 20101218: eingefügt  Rezeptgebühr-Rechnung aus dem Rezept heraus erzeugen
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: aktuelle Rezepte",list);
-			tDlg.setPreferredSize(new Dimension(275, 255 +   // Lemmi: Breite, Höhe des Werkzeug-Dialogs
+			tDlg.setPreferredSize(new Dimension(275, (255+28) +   // Lemmi: Breite, Höhe des Werkzeug-Dialogs
 					((Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
@@ -2868,6 +2896,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 //		    		abrRez.doRezeptgebuehrRechnung(location);
 
 					return;
+				}else if(Reha.toolsDlgRueckgabe==8){
+					do301FallSteuerung();
 				}
 			}
 
