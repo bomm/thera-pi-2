@@ -3,6 +3,7 @@ package reha301Panels;
 
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -25,18 +28,25 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+import reha301.Dta301Model;
 import reha301.Reha301;
 import reha301.Reha301Tab;
+import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.INIFile;
 import Tools.JCompTools;
-import Tools.JRtaComboBox;
+import Tools.JRtaTextField;
+import Tools.RezTools;
 import Tools.SqlInfo;
 import Tools.StringTools;
+import Tools.SystemPreislisten;
 import Tools.WartenAufDB;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import dialoge.ArztAuswahl;
+import dialoge.KassenAuswahl;
 
 public class Reha301Auswerten extends JXPanel{
 
@@ -50,11 +60,18 @@ public class Reha301Auswerten extends JXPanel{
 	public JEditorPane[] editpan = {null,null,null};
 	public JComboBox patcombo = null;
 	private Vector<Vector<String>> vec_patstamm = null;
+	private JButton[] buts = {null,null,null,null};
 	
 	ActionListener al = null;
 	int anzeigeart = -1;
 	public String[] artderNachricht = {"Nachr.Typ unbekannt","Bewilligung","Ablehnung","Verl. Zustimmung","Verl. Ablehnung","sonstige Nachricht"};
-	public String patBetroffen = null; 
+	public String patBetroffen = null;
+	public boolean patneuangelegt = false;
+	public String patneuepatnr = "";
+	public boolean rezneuangelegt = false;
+	public String rezneuereznr = "";
+	Object[] rVTraeger;
+	Dta301Model dta301mod = null;
 	public Reha301Auswerten(Reha301Tab xeltern){
 		super(new BorderLayout());
 		eltern = xeltern;
@@ -65,7 +82,10 @@ public class Reha301Auswerten extends JXPanel{
 			protected Void doInBackground() throws Exception {
 				try{
 					String cmd = "select eingelesen,sender,nachrichtentyp,patangaben,versicherungsnr,ktraeger,datum,id,leistung,eilfall from dta301 where eingelesen='F' order by datum";
+					dta301mod = new Dta301Model(tab,-1);
 					regleTabelle(cmd,1);
+					SystemPreislisten.ladePreise("Reha");
+					SystemPreislisten.ladePreise("Physio");
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -113,7 +133,7 @@ public class Reha301Auswerten extends JXPanel{
 				if(arg0.getClickCount()==2){
 					if(anzeigeart==1){
 						if(tab.getSelectedRow()>=0){
-							doPatUntersuchen(tab.getSelectedRow(),arg0.getLocationOnScreen());							
+							//doPatUntersuchen(tab.getSelectedRow(),arg0.getLocationOnScreen());							
 						}
 					}
 					
@@ -164,6 +184,9 @@ public class Reha301Auswerten extends JXPanel{
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
+		
+		pan.add(getButtonPanel(),cc.xy(2,4,CellConstraints.FILL,CellConstraints.TOP));
+		
 		JLabel lab = new JLabel("<html><b>301-er Daten</b></html>");
 		pan.add(lab,cc.xy(4,2,CellConstraints.FILL,CellConstraints.FILL));
 		editpan[0] = new JEditorPane();
@@ -171,6 +194,7 @@ public class Reha301Auswerten extends JXPanel{
 		editpan[0].setEditable(false);
 		editpan[0].setOpaque(true);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(editpan[0]);
+		jscr.setBorder(BorderFactory.createLineBorder(Color.RED));
 		jscr.validate();
         pan.add(jscr,cc.xy(4,4,CellConstraints.FILL,CellConstraints.FILL));
         
@@ -193,9 +217,27 @@ public class Reha301Auswerten extends JXPanel{
 		editpan[1].setEditable(false);
 		editpan[1].setOpaque(true);
 		jscr = JCompTools.getTransparentScrollPane(editpan[1]);
+		jscr.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		jscr.validate();
         pan.add(jscr,cc.xy(6,4,CellConstraints.FILL,CellConstraints.FILL));
         
+		pan.validate();
+		return pan;
+	}
+	private JXPanel getButtonPanel(){
+		JXPanel pan = new JXPanel();
+		//                1         2            3            4         5        6             7
+		String xwerte = "0dlu,fill:0:grow(1.0),0dlu";
+		//                1    2   3  4              5    6  7
+		String ywerte = "10dlu,p,2dlu,p,2dlu,p,10dlu";
+		FormLayout lay = new FormLayout(xwerte,ywerte);
+		CellConstraints cc = new CellConstraints();
+		pan.setLayout(lay);		
+		buts[0] = ButtonTools.macheButton("Patient neu anlegen", "patneuanlage", al);
+		pan.add(buts[0],cc.xy(2,2));
+		buts[1] = ButtonTools.macheButton("Verordnung anlegen", "rezneuanlage", al);
+		pan.add(buts[1],cc.xy(2,4));
+		
 		pan.validate();
 		return pan;
 	}
@@ -213,21 +255,29 @@ public class Reha301Auswerten extends JXPanel{
 					//System.out.println(patcombo.getSelectedIndex());
 					show301PatExist(patcombo.getSelectedIndex());
 				}
-
+				if(cmd.equals("patneuanlage")){
+					doPatNeuanlage();
+				}
+				if(cmd.equals("rezneuanlage")){
+					doRezNeuanlage();
+				}
 			}
 		};
 	}
+	@SuppressWarnings("unused")
 	private void doPatUntersuchen(int row,Point pos){
 		String[] teilen = tab.getValueAt(row,4).toString().split("#");
 		String cmd = "select * from pat5 where n_name='"+teilen[1]+"' and v_name='"+teilen[2]+"' and "+
 		"geboren='"+tab.getValueAt(row,10).toString()+"'";
 		//System.out.println(tab.getValueAt(row,10));
 		Vector<Vector<String>> patvec = SqlInfo.holeFelder(cmd);
+
 		if(patvec.size()<=0){
 			JOptionPane.showMessageDialog(null, "Patient nicht in Datenbank vorhanden");
 		}else{
 			doPatientenWahl(tab.getValueAt(row,11).toString(),pos);
 		}
+
 	}
 	private void doPatientenWahl(String id,Point pos){
 		Reha301PatAuswahl patwahl = new Reha301PatAuswahl(this,id);
@@ -239,10 +289,12 @@ public class Reha301Auswerten extends JXPanel{
 		
 	}
 	/********************************************/
-	public void doSetPatientFuerNachricht(String patid){
+	private Vector<Object> doSetPatientFuerNachricht(String patid){
+		dta301mod.show_X_PatData();
+		Vector<Object> vecobj = new Vector<Object>();
 		patBetroffen = String.valueOf(patid);
 		String ktraeger = tab.getValueAt(tab.getSelectedRow(), 7).toString();
-		String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
+		//String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
 		String id = tab.getValueAt(tab.getSelectedRow(), 11).toString();
 		String diag1 = SqlInfo.holeEinzelFeld("select diagschluessel from dta301 where id ='"+id+"' LIMIT 1");
 		String[] diag2 = diag1.split("\\+");
@@ -250,7 +302,7 @@ public class Reha301Auswerten extends JXPanel{
 		if(diag2[2].split(":")[0].startsWith("M") || diag2[2].split(":")[0].startsWith("S") ){
 			diaggruppe = "04";
 		}
-		Object[] rVTraeger = testeDTAIni(ktraeger,diaggruppe);
+		rVTraeger = testeDTAIni(ktraeger,diaggruppe);
 		String diagnose = diag2[2].split(":")[0];
 		String fallart = SqlInfo.holeEinzelFeld("select leistung from dta301 where id ='"+id+"' LIMIT 1");
 		String eilfall = SqlInfo.holeEinzelFeld("select eilfall from dta301 where id ='"+id+"' LIMIT 1");
@@ -258,6 +310,7 @@ public class Reha301Auswerten extends JXPanel{
 		System.out.println();
 		if( ((Integer)rVTraeger[0]) >= 0){
 			//RV-Träger
+			/*
 			System.out.println("Patient="+patBetroffen);
 			System.out.println("Kostenträger="+ktraeger);
 			System.out.println("Diagnose="+diagnose);
@@ -268,6 +321,15 @@ public class Reha301Auswerten extends JXPanel{
 			for(int i = 0; i < rVTraeger.length;i++){
 				System.out.println(rVTraeger[i]);
 			}
+			*/
+			vecobj.add(rVTraeger);
+			vecobj.add(patBetroffen);
+			vecobj.add(ktraeger);
+			vecobj.add(diagnose);
+			vecobj.add(fallart);
+			vecobj.add(eilfall);
+			vecobj.add(preisgruppe);
+			vecobj.add(diaggruppe);
 			
 		}else{
 			//KrankenKasse
@@ -276,13 +338,14 @@ public class Reha301Auswerten extends JXPanel{
 		//Verordnung überpüfen
 		//Verordnung anlegen
 		//
+		return vecobj;
 	}
 	/********************************************/	
 	private Object[] testeDTAIni(String ktraeger,String diaggruppe){
 		Object[] retobject = {-1,null,null,null,null,null};
 		System.out.println(ktraeger+" - "+diaggruppe);
 		INIFile ini = new INIFile(Reha301.progHome+"ini/"+Reha301.aktIK+"/dta301.ini");
-		if(ini==null){System.out.println("ini=NULL !!!!!");}
+
 		String gruppe = ini.getStringProperty("RehaGruppen", diaggruppe);
 		if(gruppe == null){
 			return retobject.clone();
@@ -358,6 +421,7 @@ public class Reha301Auswerten extends JXPanel{
 					vecobj.add((String) patgeboren);
 					vecobj.add((String) vec.get(i).get(7));
 					vecobj.add((String) pat[3]);
+					
 					tabmod.addRow( (Vector<?>)vecobj.clone());
 					
 					
@@ -374,14 +438,6 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	private void show301PatData(int row){
 		StringBuffer buf = new StringBuffer();
-		String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
-		String adress = tab.getValueAt(tab.getSelectedRow(), 5).toString();
-		String vsnr = tab.getValueAt(tab.getSelectedRow(), 6).toString();
-		String ktraeger = tab.getValueAt(tab.getSelectedRow(), 7).toString();
-		String anlass = tab.getValueAt(tab.getSelectedRow(), 3).toString();
-		String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
-		String geboren = DatFunk.sDatInDeutsch(tab.getValueAt(tab.getSelectedRow(), 12).toString());
-		
 		buf.append("<html><head>");
 		buf.append(
 		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
@@ -393,33 +449,27 @@ public class Reha301Auswerten extends JXPanel{
          "</style>" ); 
 		buf.append("</head>");
 		buf.append("<table style='font-family:Arial'>");
-		buf.append("<tr><td colspan='2';class='rbrot'>"+anlass+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>Anrede</td><td>"+pat.split("#")[0]+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>Name</td><td>"+pat.split("#")[1]+", "+pat.split("#")[2]+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>geboren</td><td>"+geboren+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>Strasse</td><td>"+adress.split("#")[0]+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>Ort</td><td>"+adress.split("#")[1]+" "+adress.split("#")[2]+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>VSNR</td><td>"+vsnr+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>Kostenträger</td><td>"+ktraeger+"</td></tr>");
-		buf.append("<tr><td class='rbblau'>Krankenkasse</td><td>"+kkasse.split("#")[0]+"</td></tr>");
+		/******************/
+		buf.append("<tr><td colspan='2';class='rbrot'>"+dta301mod.getDtaNachrichtAnlass()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Anrede</td><td>"+dta301mod.getPatAnrede()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Name</td><td>"+dta301mod.getPatNachname()+", "+dta301mod.getPatVorname()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>geboren</td><td>"+dta301mod.getPatGeboren()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Strasse</td><td>"+dta301mod.getPatStrasse()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Ort</td><td>"+dta301mod.getPatPlz()+" "+dta301mod.getPatOrt()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>VSNR</td><td>"+dta301mod.getPatVsnr()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Kostenträger</td><td>"+dta301mod.getDtaKtraegerIK()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Krankenkasse</td><td>"+dta301mod.getPatKassenName()+"</td></tr>");
+
+		/******************/
 		buf.append("</table>");
 		buf.append("</html>");
 		editpan[0].setText(buf.toString());
 		
 	}
 	private void show301PatExist(int combovalue){
-		//                                                                                        0     1      2      3       4      5       6  7      8       9      10 
-		//String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id
 		StringBuffer buf = new StringBuffer();
-		String anrede = vec_patstamm.get(combovalue).get(1);
-		String patnname = vec_patstamm.get(combovalue).get(2);
-		String patvname = vec_patstamm.get(combovalue).get(3);
-		String geboren = DatFunk.sDatInDeutsch(vec_patstamm.get(combovalue).get(4));
-		String strasse = vec_patstamm.get(combovalue).get(5);
-		String plz = vec_patstamm.get(combovalue).get(6);
-		String ort = vec_patstamm.get(combovalue).get(7);
-		String kkasse = vec_patstamm.get(combovalue).get(9);
-		
+
+		dta301mod.setXPatData(vec_patstamm.get(combovalue));
 		
 		buf.append("<html><head>");
 		buf.append(
@@ -433,13 +483,16 @@ public class Reha301Auswerten extends JXPanel{
          "</style>" ); 
 		buf.append("</head>");
 		buf.append("<table style='font-family:Arial'>");
-		buf.append("<tr><td colspan='2';class='rbrot'>Patient im Therapie Pat-Stamm</td></tr>");
-		buf.append("<tr><td class='rbtherapie'>Anrede</td><td>"+StringTools.EGross(anrede)+"</td></tr>");
-		buf.append("<tr><td class='rbtherapie'>Name</td><td>"+StringTools.EGross(patnname)+", "+StringTools.EGross(patvname)+"</td></tr>");
-		buf.append("<tr><td class='rbtherapie'>geboren</td><td>"+geboren+"</td></tr>");
-		buf.append("<tr><td class='rbtherapie'>Strasse</td><td>"+StringTools.EGross(strasse)+"</td></tr>");
-		buf.append("<tr><td class='rbtherapie'>Ort</td><td>"+plz+" "+StringTools.EGross(ort)+"</td></tr>");
-		buf.append("<tr><td class='rbtherapie'>Krankenkasse</td><td>"+StringTools.EGross(kkasse)+"</td></tr>");
+		buf.append("<tr><td colspan='2';class='rbrot'>Patient im Thera-Pi Pat-Stamm</td></tr>");
+		/****************************/
+		buf.append("<tr><td class='rbtherapie'>Anrede</td><td>"+dta301mod.getX_patAnrede()+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Name</td><td>"+dta301mod.getX_patNachname()+", "+dta301mod.getX_patVorname()+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>geboren</td><td>"+dta301mod.getX_patGeboren()+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Strasse</td><td>"+dta301mod.getX_patStrasse()+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Ort</td><td>"+dta301mod.getX_patPlz()+" "+dta301mod.getX_patOrt()+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Krankenkasse</td><td>"+dta301mod.getX_patKassenName()+"</td></tr>");
+		buf.append("<tr><td class='rbtherapie'>Patienten-ID</td><td>"+dta301mod.getX_patIntern()+"</td></tr>");
+		/****************************/
 		buf.append("</table>");
 		buf.append("</html>");
 		editpan[1].setText(buf.toString());
@@ -464,6 +517,26 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("</html>");
 		editpan[1].setText(buf.toString());		
 	}
+	private void show301WasCreated(String patcreate){
+		StringBuffer buf = new StringBuffer();
+		buf.append("<html><head>");
+		buf.append(
+		 "<style type='text/css'>.linksbuendig {text-align: left;}"+
+         ".rechtsbuendig {text-align: right;}"+
+         ".rbrot {text-align: right;color:#ff0000;}"+
+         ".rbblau {text-align: right;color:#0000ff;}"+
+         ".rbtherapie {text-align: right;color:#e77817;}"+
+         ".zentriert {text-align: center;}"+
+         ".blocksatz {text-align: justify;}"+
+         "</style>" ); 
+		buf.append("</head>");
+		buf.append("<table style='font-family:Arial'>");
+		buf.append("<tr><td colspan='2';class='rbrot'>Patient wurde angelegt mit ID = "+patcreate+"</td></tr>");
+		buf.append("</table>");
+		buf.append("</html>");
+		editpan[1].setText(buf.toString());		
+	}
+	
 	private void doSucheNachPat(){
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -473,7 +546,7 @@ public class Reha301Auswerten extends JXPanel{
 					patcombo.removeAllItems();
 					String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
 					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
-					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id,kassenid,arzt,arztid,kv_nummer,arzt_num from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					//String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
 					vec_patstamm = SqlInfo.holeFelder(cmd);
@@ -549,8 +622,22 @@ public class Reha301Auswerten extends JXPanel{
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
+	                	dta301mod.setDtaID();
+	                	dta301mod.set301Data();
 	    				show301PatData(i);
 	    				doSucheNachPat();
+	    				if(! (Boolean) tab.getValueAt(i, 1)){
+	    					do301KommData();
+		    				rezneuangelegt = false;
+		    				patneuangelegt = false;
+		    				buts[0].setEnabled(true);
+		    				buts[1].setEnabled(true);
+	    				}else{
+		    				rezneuangelegt = true;
+		    				patneuangelegt = true;
+		    				buts[0].setEnabled(false);
+		    				buts[1].setEnabled(false);
+	    				}
 	                    break;
 	                }
 	            }
@@ -558,10 +645,261 @@ public class Reha301Auswerten extends JXPanel{
 
 	    }
 	}
+/**************************************************************/
+	private void do301KommData(){
+		
+	}
+/**************************************************************/
+	private void doPatNeuanlage(){
+//Sind sind sich sicher daß keiner der rechts aufgeführten Patienten der richtige ist???
+		if(patcombo.getItemCount() > 0){
+			int anfrage = JOptionPane.showConfirmDialog(null, "Sind Sie sicher daß kein passender Patient in Ihrem Pat-Stamm vorhanden ist?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage != JOptionPane.YES_OPTION){
+				return;	
+			}
+		}
+
+		try{
+			//Zuerst das Kassengedönse
+			if(dta301mod.getPatKassenIk()==null || dta301mod.getPatKassenIk().equals("")){JOptionPane.showMessageDialog(null,"IK der Krankenkasse ist nicht verfügbar, Patientenanlage wird abgebrochen");}
+			String cmdkassex = "select id from kass_adr where ik_kasse='"+dta301mod.getPatKassenIk()+"' LIMIT 1";
+			String idkassex = SqlInfo.holeEinzelFeld(cmdkassex);
+			if(idkassex.trim().equals("")){
+				String[] retwerte = kassenAuswahl(new String[] {dta301mod.getPatKassenIk(),""});
+				if(retwerte[2].equals("-1") || retwerte[2].equals("")){
+					JOptionPane.showMessageDialog(null, "<html><b>Achtung!!!<br><br><b>Kasse</b> konnte nicht zugeordnet werden<br><br>Patientenanlage wird abgebrochen!</html>");
+					return;
+				}
+				dta301mod.setPatKassenId(String.valueOf(retwerte[2]));
+				dta301mod.setPatKassenName(String.valueOf(retwerte[0]));
+			}else{
+				dta301mod.setPatKassenId(String.valueOf(idkassex));
+				dta301mod.setPatKassenName(SqlInfo.holeEinzelFeld("select kassen_nam1 from kass_adr where id='"+idkassex+"' LIMIT 1"));
+			}
+			//Jetzt den Arzt
+			String[] retwerte = arztAuswahl(new String[] {"",""});
+			if(retwerte[2].equals("-1") || retwerte[2].equals("")){
+				JOptionPane.showMessageDialog(null, "<html><b>Achtung!!!<br><br><b>Arzt</b> konnte nicht zugeordnet werden<br><br>Patientenanlage wird abgebrochen!</html>");
+				return;
+			}
+			dta301mod.setPatArztName(String.valueOf(retwerte[0]));
+			dta301mod.setPatArztNummer(String.valueOf(retwerte[1]));
+			dta301mod.setPatArztId(String.valueOf(retwerte[2]));
+			
+			int patnummer = SqlInfo.erzeugeNummer("pat");
+			patneuepatnr = Integer.toString(patnummer);
+			patneuangelegt = true;
+
+			dta301mod.setPatIntern(String.valueOf(patneuepatnr));
+			//so jetzt haben wir alles was wir brauchen das wollen wir jetzt sehen//
+			dta301mod.show301Data();
+			dta301mod.show_X_PatData();
+			
+			StringBuffer buf = new StringBuffer();
+			buf.append("insert into pat5 set ");
+			buf.append("pat_intern='"+patneuepatnr+"', ");
+			buf.append("anrede='"+dta301mod.getPatAnrede()+"', ");
+			buf.append("n_name='"+dta301mod.getPatNachname()+"', ");
+			buf.append("v_name='"+dta301mod.getPatVorname()+"', ");
+			buf.append("strasse='"+dta301mod.getPatStrasse()+"', ");
+			buf.append("plz='"+dta301mod.getPatPlz()+"', ");
+			buf.append("ort='"+dta301mod.getPatOrt()+"', ");
+			buf.append("geboren='"+DatFunk.sDatInSQL(dta301mod.getPatGeboren())+"', ");
+			buf.append("anamnese='"+"Pat wurde vom 301-er automatisch angelegt\nVSNR-"+dta301mod.getPatVsnr()+"-', ");
+			buf.append("kassenid='"+dta301mod.getPatKassenId()+"', ");
+			buf.append("kasse='"+dta301mod.getPatKassenName()+"', ");
+			buf.append("kv_nummer='"+dta301mod.getPatKassenIk()+"', ");
+			buf.append("arzt='"+dta301mod.getPatArztName()+"', ");
+			buf.append("arzt_num='"+dta301mod.getPatArztNummer()+"', ");
+			buf.append("arztid='"+dta301mod.getPatArztId()+"'");
+			SqlInfo.sqlAusfuehren(buf.toString());
+			show301WasCreated(patneuepatnr);
+			System.out.println(buf.toString());
+			JOptionPane.showMessageDialog(null, "<html>Der Patient wurde <b>erfolgreich</b> angelegt.</html>");			
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "<html><b>Fehler bei der Anlage des Patienten !!!</b></html>");
+		}
+		buts[0].setEnabled(false);
+	}
+	/*******************************************************************************/
+	/*******************************************************************************/
+	private void doRezNeuanlage(){
+		String id = dta301mod.getDtaId();//tab.getValueAt(tab.getSelectedRow(), 11).toString();
+		String ktraeger = dta301mod.getDtaKtraegerIK();//tab.getValueAt(tab.getSelectedRow(), 7).toString();
+		String welcherpat = "";
+		if(patcombo.getItemCount() > 0 && (!patneuangelegt)){
+			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie die Verordnung auf den (rechts) ausgewählten Patienten übertragen?\nGewähle Patienten-ID = "+vec_patstamm.get(patcombo.getSelectedIndex()).get(8), "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage != JOptionPane.YES_OPTION){
+				return;	
+			}
+			welcherpat = dta301mod.getX_patIntern();//String.valueOf(vec_patstamm.get(patcombo.getSelectedIndex()).get(8));
+			dta301mod.transferXPatDataTo301();
+		}else if(patcombo.getItemCount() <= 0 && (patneuangelegt) ){
+			welcherpat = dta301mod.getPatIntern();//patneuepatnr;
+		}else{
+			JOptionPane.showMessageDialog(null, "Kein bestehender Patient ausgewählt und kein neuer Patient angelegt - das geht einfach nicht!!!!");
+			return;
+		}
+		Vector<Object> vecobj = doSetPatientFuerNachricht(welcherpat);
+		
+		doNurZumTesten(vecobj);
+		
+		JOptionPane.showMessageDialog(null, "<html>Die Verordnung wurde <b>erfolgreich</b> angelegt.</html>");
+		int preisgruppe = Integer.parseInt((String)vecobj.get(6));
+		int posgruppe = 0;
+		String disziplin = null;
+		if( ((String)vecobj.get(4)).equals("MED") ){posgruppe=2; disziplin="Reha";	}
+		if( ((String)vecobj.get(4)).equals("AR") ){posgruppe=3;	disziplin="Reha";}
+		if( ((String)vecobj.get(4)).equals("NACHSORGE") ){posgruppe=4;	disziplin="Physio";}
+		
+		
+		String kuerzel = (String) ((Object[])vecobj.get(0))[posgruppe]; // (String)vecobj.get(posgruppe); 
+
+		String preisid = RezTools.getIDFromKurzform(kuerzel, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));	
+
+		String preis = RezTools.getPreisAktFromID(preisid, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+		
+		String preispos = RezTools.getPosFromID(preisid, null, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+
+		System.out.println("Der Preis beträgt "+preis);
+		System.out.println("Preis-ID = "+preisid);
+		System.out.println("Kürzel = "+kuerzel);
+		System.out.println("Die Positionsnummer = "+preispos);
+		
+		String kid = SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse ='"+ktraeger+"' LIMIT 1");
+ 
+		if(kid.trim().equals("")){
+			
+			String meldung = "Ein Kostenträger mit der IK "+ktraeger+" ist im aktuellen Kassen-Stamm\n"+
+			"nicht enthalten!!!!\n\n"+
+			"Bitte legen Sie zuerst den Kostenträger in Thera-Pi an.";
+			
+			JOptionPane.showMessageDialog(null,meldung);
+			return;
+		}
+		
+		String ktraegername = SqlInfo.holeEinzelFeld("select kassen_nam1 from kass_adr where id ='"+kid+"' LIMIT 1");
+		
+		int reznummer = SqlInfo.erzeugeNummer((disziplin.equals("Reha") ? "rh" : "kg"));
+
+		rezneuereznr = (disziplin.equals("Reha") ? "RH" : "KG")+Integer.toString(reznummer);
+		rezneuangelegt = true;
+		StringBuffer buf = new StringBuffer();
+		buf.append("insert into verordn set ");
+		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
+		buf.append("rez_nr='"+rezneuereznr+"', ");
+		buf.append("rez_datum='"+SqlInfo.holeEinzelFeld("select datum from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1")+"', ");
+		buf.append("datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+		String anzahlen = SqlInfo.holeEinzelFeld("select tage from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1");
+		buf.append("anzahl1='"+anzahlen+"', ");
+		buf.append("anzahl2='"+anzahlen+"', ");
+		buf.append("anzahl3='"+anzahlen+"', ");
+		buf.append("anzahl4='"+anzahlen+"', ");
+		buf.append("art_dbeh1='"+preisid+"', ");
+		buf.append("preise1='"+preis+"', ");
+		buf.append("pos1='"+preispos+"', ");
+		buf.append("kuerzel1='"+kuerzel+"', ");
+		buf.append("dauer='"+(disziplin.equals("Reha") ? "30" : "15")+"', ");
+		buf.append("zzregel='"+"0"+"', ");
+		buf.append("zzstatus='"+"0"+"', ");
+		buf.append("kid='"+kid+"', ");
+		buf.append("ktraeger='"+ktraegername+"', ");
+		buf.append("arzt='"+dta301mod.getPatArztName()+"', ");
+		buf.append("arztid='"+dta301mod.getPatArztId()+"', ");
+		buf.append("farbcode='"+""+"', ");
+		buf.append("jahrfrei='"+""+"', ");
+		buf.append("frequenz='"+(disziplin.equals("Reha") ? "5" : "")+"', ");
+		buf.append("barcodeform='"+(disziplin.equals("Reha") ? "4" : "0")+"', ");
+		buf.append("preisgruppe='"+Integer.toString(preisgruppe)+"', ");
+		buf.append("angelegtvon='"+"dta301"+"', ");
+		buf.append("diagnose='"+(String)vecobj.get(3)+"\n"+(String)vecobj.get(5)+"'");
+		System.out.println("\n"+buf.toString());
+		SqlInfo.sqlAusfuehren(buf.toString());
+		/************Jetzt die Dta301 beschreiben********/
+		buf.setLength(0);
+		buf.trimToSize();
+		buf.append("update dta301 set rez_nr='"+rezneuereznr+"', ");
+		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
+		buf.append("eingelesen='"+"T"+"' where id='"+id+"' LIMIT 1");
+		SqlInfo.sqlAusfuehren(buf.toString());
+		/************Dann die Tabelle regeln********/
+		int xrow = tab.convertRowIndexToModel(tab.getSelectedRow());
+		tabmod.setValueAt(Boolean.valueOf(true),xrow, 1);
+		buts[1].setEnabled(false);
+		buts[0].setEnabled(false);
+	}
 	
+	
+	public void doNurZumTesten(Vector<Object> vecobj){
+		for(int i = 0; i < vecobj.size(); i++){
+			if(vecobj.get(i) instanceof Object[]){
+				for(int o = 0; o < ((Object[])vecobj.get(i)).length;o++){
+					System.out.println("Object["+Integer.toString(o)+"] = "+((Object[])vecobj.get(i))[o] );
+				}
+			}else{
+				String[] titel = {"","Patient=","Kostenträger=","Diagnose=","Fallart=",
+						"Eilfall=","Preisgruppe=","Diagnosegruppe="
+				};
+				/*
+				System.out.println("Patient="+patBetroffen);
+				System.out.println("Kostenträger="+ktraeger);
+				System.out.println("Diagnose="+diagnose);
+				System.out.println("Fallart="+fallart);
+				System.out.println("Eilfall="+eilfall);
+				System.out.println("Preisgruppe="+preisgruppe);
+				System.out.println("Diagnosegruppe="+diaggruppe);
+				*/
+				System.out.println(Integer.toString(i)+" - "+titel[i]+vecobj.get(i));
+			}
+			
+		}
+		/*
+		for(int i = 0; i < SystemPreislisten.hmPreise.get("Reha").size();i++){
+				
+		}
+		*/
+		
+	}
 
 
+	private String[] kassenAuswahl(String[] suchenach){
+		String[] ret = {"","",""};
+		JRtaTextField rettf1 = new JRtaTextField("nix",false);
+		JRtaTextField rettf2 = new JRtaTextField("nix",false);
+		JRtaTextField rettf3 = new JRtaTextField("nix",false);
+		//String[] suchenachx = new String[] {"",""};
+		KassenAuswahl kwahl = new KassenAuswahl(null,"KassenAuswahl",suchenach,new JRtaTextField[] {rettf1,rettf2,rettf3},"");
+		kwahl.setModal(true);
+		kwahl.setLocationRelativeTo(this);
+		kwahl.setVisible(true);
+		kwahl.dispose();
+		kwahl = null;
+		ret[0] = rettf1.getText().trim();
+		ret[1] = rettf2.getText().trim();
+		ret[2] = rettf3.getText().trim();
+		return(ret);
+	}
+	
+	private String[] arztAuswahl(String[] suchenach){
+		String[] ret = {"","",""};
+		JRtaTextField rettf1 = new JRtaTextField("nix",false);
+		JRtaTextField rettf2 = new JRtaTextField("nix",false);
+		JRtaTextField rettf3 = new JRtaTextField("nix",false);
+		ArztAuswahl awahl = new ArztAuswahl(null,"ArztAuswahl",suchenach,new JRtaTextField[] {rettf1,rettf2,rettf3},"");
+		awahl.setModal(true);
+		awahl.setLocationRelativeTo(this);
+		awahl.setVisible(true);
+		awahl.dispose();
+		awahl = null;
+		ret[0] = rettf1.getText().trim();
+		ret[1] = rettf2.getText().trim();
+		ret[2] = rettf3.getText().trim();
+		System.out.println(ret[0]);
+		System.out.println(ret[1]);
+		System.out.println(ret[2]);
+		return(ret);
 
+	}
 	
 }
 	

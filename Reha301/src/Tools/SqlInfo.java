@@ -4,6 +4,12 @@ package Tools;
 
 
 
+
+
+
+
+
+
 import java.awt.Cursor;
 import java.io.InputStream;
 import java.sql.ResultSet;
@@ -19,7 +25,55 @@ import reha301.Reha301;
 
 
 
+
+
 public class SqlInfo {
+	
+	public static int erzeugeNummer(String nummer){
+		int reznr = -1;
+		/****** Zunächst eine neue Rezeptnummer holen ******/
+		Vector<String> numvec = null;
+		try {
+			Reha301.thisClass.conn.setAutoCommit(false);
+			//String numcmd = nummer+",id";
+			////System.out.println("numcmd = "+numcmd);
+			//numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
+			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", " FOR UPDATE");
+			////System.out.println(Reha.aktIK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if(numvec.size() > 0){
+			try{
+			reznr = Integer.parseInt( (String)((Vector<String>) numvec).get(0) );
+			String cmd = "update nummern set "+nummer+"='"+(reznr+1)+"' where id='"+((Vector<String>) numvec).get(1)+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			}catch(Exception ex){
+				ex.printStackTrace();
+				reznr = -1;
+			}
+			try {
+				Reha301.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				Reha301.thisClass.conn.rollback();
+				Reha301.thisClass.conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		numvec = null;
+		return reznr;
+
+	}
+	
 	
 /***********************************/	
 	public static boolean gibtsSchon(String sstmt){
@@ -77,12 +131,34 @@ public class SqlInfo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-	
+		try{
+			Reha301.thisFrame.setCursor(Reha301.thisClass.wartenCursor);
+			String dieseMaschine = null;
+			try {
+				dieseMaschine = java.net.InetAddress.getLocalHost().toString();
+			}
+			catch (java.net.UnknownHostException uhe) {
+				//System.out.println(uhe);
+			}
+
+			String sstmt1 = "insert into "+tabelle+" set "+feld+" = '"+dieseMaschine+"'";
+			stmt.execute(sstmt1);			
+			String sstmt2 = "select id from "+tabelle+" where "+feld+" = '"+dieseMaschine+"'";
+			rs = stmt.executeQuery(sstmt2);
+			if(rs.next()){
+				retid = rs.getInt("id");
+			}
+			Reha301.thisFrame.setCursor(Reha301.thisClass.normalCursor);
+		}catch(SQLException ev){
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
+		}	
 		finally {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -90,6 +166,7 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
@@ -215,7 +292,7 @@ public class SqlInfo {
 	}
 /*****************************************/
 
-	public static Vector holeFeldForUpdate(String tabelle, String feld, String kriterium){
+	public static Vector<String> holeFeldForUpdate(String tabelle, String feld, String kriterium){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
@@ -228,23 +305,22 @@ public class SqlInfo {
 			e.printStackTrace();
 		}
 		try{
-			
-			String sstmt = "select "+feld+" from "+tabelle+" where "+kriterium;
+			String sstmt = "select "+feld+" from "+tabelle+kriterium;
 			rs = stmt.executeQuery(sstmt);
 			if(rs.next()){
 				 retvec.add( (rs.getString(1)==null  ? "" :  rs.getString(1)) );						 
 				 retvec.add( (rs.getString(2)==null  ? "" :  rs.getString(2)) );
 			}
-			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
 				try {
 					rs.close();
+					rs = null;
 				} catch (SQLException sqlEx) { // ignore }
 					rs = null;
 				}
@@ -252,12 +328,13 @@ public class SqlInfo {
 			if (stmt != null) {
 				try {
 					stmt.close();
+					stmt = null;
 				} catch (SQLException sqlEx) { // ignore }
 					stmt = null;
 				}
 			}
 		}
-		return (Vector)retvec.clone();
+		return (Vector<String>)retvec;
 	}
 
 	/*******************************/

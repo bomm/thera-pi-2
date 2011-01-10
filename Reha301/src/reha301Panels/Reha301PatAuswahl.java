@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -144,7 +143,7 @@ public class Reha301PatAuswahl extends JDialog{
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("einlesen")){
-					eltern.doSetPatientFuerNachricht(patvec.get(combo.getSelectedIndex()).get(5));
+					//eltern.doSetPatientFuerNachricht(patvec.get(combo.getSelectedIndex()).get(5));
 					dispose();
 				}
 			}
