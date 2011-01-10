@@ -419,7 +419,7 @@ public class Umsaetze extends JXPanel{
 		return kalUsers.size();
 	}
 	/**********************/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private int ermittleFaelle(String datum_von,String datum_bis){
 		int lang = kalUsers.size();
 		int behandler = 0;

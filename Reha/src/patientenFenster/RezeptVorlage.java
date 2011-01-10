@@ -403,8 +403,9 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 	private RezeptVorlage getInstance(){
 		return this;
 	}
-/*	
+	/*	
 	private void doBuchen(){
+
 		StringBuffer buf = new StringBuffer();
 		buf.append("insert into rgaffaktura set ");
 		buf.append("rnr='"+afrNummer+"', ");
@@ -415,7 +416,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		////System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());
-		
+				
 		// vvv Lemmi 20101220: Eintrag der AFR auch in Tabelle "rliste" (Offene Posten & Mahnungen)
 		if ( SystemConfig.hmZusatzInOffenPostenIni.get("AFRinOPverwaltung") == 1) {
 			String strHelp = "";
@@ -445,6 +446,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
 			// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste" (Offene Posten & Mahnungen)
 		}
+		
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
@@ -512,7 +514,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		afrNummer = "AFR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("afrnr"));
 		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>",afrNummer);
 	}
-*/	
+	*/
 	public void keyPressed(KeyEvent event) {
 		if(event.getKeyCode()==10){
 			event.consume();

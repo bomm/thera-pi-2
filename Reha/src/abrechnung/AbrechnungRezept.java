@@ -298,7 +298,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
         jscr.validate();
 		return jscr;
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setKuerzelVec(String xreznummer,String preisgr){
 		if(xreznummer.startsWith("KG")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("KG", Integer.parseInt(preisgr.trim())-1);
@@ -3113,7 +3113,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		sortiereVector(vec_tabelle,0);
 		
 	}
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void sortiereVector(Vector vec,int dimension){
 		final int xdimension = dimension;
 		Comparator<Vector> comparator = new Comparator<Vector>() {
@@ -3522,7 +3523,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		return ret;
 	}
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void macheVector(Vector vec, String svec,int type){
 		//type 0 = String, type 1 = int;
 		String ergebnis = svec.substring(1);

@@ -271,6 +271,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
 		
 		// vvv Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
+		/*
 		if ( SystemConfig.hmZusatzInOffenPostenIni.get("RGRinOPverwaltung") == 1) {
 			String strHelp = "";
 			StringBuffer buf2 = new StringBuffer();
@@ -298,6 +299,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			buf2.append("ikktraeger='" + hmRezgeb.get("<rgreznum>") + "'");  // Rezept-Nummer ER23
 			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
 		}
+		*/
 		// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
 	}
 
@@ -369,7 +371,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append(" where rnr='"+hmRezgeb.get("<rgnr>")+"' LIMIT 1");
 		//System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
-		
+		/*
 		// vvv Lemmi 20101220: Eintrag der RGR auch in die Tabelle "rliste"
 		if ( SystemConfig.hmZusatzInOffenPostenIni.get("RGRinOPverwaltung") == 1) {
 			String strHelp = "";
@@ -400,9 +402,10 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
 		}
 		// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
+		*/
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
@@ -434,7 +437,8 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 			Set<?> entries = hmRezgeb.entrySet();
 		    Iterator<?> it = entries.iterator();
 			    while (it.hasNext()) {
-			      Map.Entry entry = (Map.Entry) it.next();
+			      @SuppressWarnings("rawtypes")
+				Map.Entry entry = (Map.Entry) it.next();
 			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 			    	  try{
 			    		  

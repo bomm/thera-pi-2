@@ -291,6 +291,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());
 		
 		// vvv Lemmi 20101220: Eintrag der AFR auch in Tabelle "rliste" (Offene Posten & Mahnungen)
+		/*
 		if ( SystemConfig.hmZusatzInOffenPostenIni.get("AFRinOPverwaltung") == 1) {
 			String strHelp = "";
 			StringBuffer buf2 = new StringBuffer();
@@ -319,6 +320,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
 			// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste" (Offene Posten & Mahnungen)
 		}
+		*/
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
