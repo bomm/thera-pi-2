@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -18,14 +19,18 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import reha301.Dta301Model;
@@ -72,18 +77,34 @@ public class Reha301Auswerten extends JXPanel{
 	public String rezneuereznr = "";
 	Object[] rVTraeger;
 	Dta301Model dta301mod = null;
+	
+	public DefaultMutableTreeNode root;
+	public DefaultTreeModel treeModel;
+	public JXTree tree;
+
 	public Reha301Auswerten(Reha301Tab xeltern){
 		super(new BorderLayout());
 		eltern = xeltern;
+		setOpaque(false);
 		this.ActivateListener();
 		add(getContent(),BorderLayout.CENTER);
+		initReha301Auswerten();
+		ladPreislisten();
+		validate();
+	}
+	public void ladPreislisten(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-					String cmd = "select eingelesen,sender,nachrichtentyp,patangaben,versicherungsnr,ktraeger,datum,id,leistung,eilfall from dta301 where eingelesen='F' order by datum";
-					dta301mod = new Dta301Model(tab,-1);
-					regleTabelle(cmd,1);
+					while(!Reha301.DbOk){
+						try {
+							Thread.sleep(25);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					System.out.println("Reha301-Datenbank = o.k.");
 					SystemPreislisten.ladePreise("Reha");
 					SystemPreislisten.ladePreise("Physio");
 				}catch(Exception ex){
@@ -93,18 +114,37 @@ public class Reha301Auswerten extends JXPanel{
 			}
 			
 		}.execute();
-		validate();
+		
+	}
+	public void initReha301Auswerten(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					//                      0        1          2            3          4                5       6  7    8        9      10        
+					String cmd = "select eingelesen,sender,nachrichtentyp,patangaben,versicherungsnr,ktraeger,datum,id,leistung,eilfall,eingelesenam from dta301 where eingelesen='F' order by datum";
+					dta301mod = new Dta301Model(tab,-1);
+					regleTabelle(cmd,1);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+			
+		}.execute();
 	}
 
 	public JXPanel getContent(){
 		JXPanel pan = new JXPanel();
 		String xwerte = "10dlu,fill:0:grow(1.0),10dlu";
-		String ywerte = "10dlu,fill:0:grow(0.4),fill:0:grow(0.6)";
+		String ywerte = "10dlu,fill:0:grow(0.25),fill:0:grow(0.75)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
+		pan.setOpaque(false);
 		tabmod = new MyTableModel();
-		tabmod.setColumnIdentifiers(new String[] {"lfnr","import","Sender","Nachrichtentyp","Name, Vorname","Adresse","VSNR","Kostenträger","Krankenkasse","Datum","","",""});
+		//                                          0       1        2          3                4              5        6      7               8            9    10  11 12   13                                          
+		tabmod.setColumnIdentifiers(new String[] {"lfnr","import","Sender","Nachrichtentyp","Name, Vorname","Adresse","VSNR","Kostenträger","Krankenkasse","Datum","","","","verarbeitet"});
 		tab = new JXTable(tabmod);
 		tab.getColumn(0).setMaxWidth(25);
 		tab.getColumn(1).setMaxWidth(45);
@@ -184,8 +224,8 @@ public class Reha301Auswerten extends JXPanel{
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
-		
-		pan.add(getButtonPanel(),cc.xy(2,4,CellConstraints.FILL,CellConstraints.TOP));
+		pan.setOpaque(false);
+		pan.add(getButtonPanel(),cc.xy(2,4,CellConstraints.FILL,CellConstraints.FILL));
 		
 		JLabel lab = new JLabel("<html><b>301-er Daten</b></html>");
 		pan.add(lab,cc.xy(4,2,CellConstraints.FILL,CellConstraints.FILL));
@@ -226,22 +266,89 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	private JXPanel getButtonPanel(){
 		JXPanel pan = new JXPanel();
-		//                1         2            3            4         5        6             7
-		String xwerte = "0dlu,fill:0:grow(1.0),0dlu";
-		//                1    2   3  4              5    6  7
-		String ywerte = "10dlu,p,2dlu,p,2dlu,p,10dlu";
+		//                1         2            3           4         5        6             7
+		String xwerte = "0dlu,fill:0:grow(0.5),2dlu,fill:0:grow(0.5),0dlu";
+		//                1    2   3  4  5     6                7
+		String ywerte = "0dlu,p,2dlu,p,2dlu,fill:0:grow(1.0),0dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);		
-		buts[0] = ButtonTools.macheButton("Patient neu anlegen", "patneuanlage", al);
-		pan.add(buts[0],cc.xy(2,2));
+		pan.setOpaque(false);
 		buts[1] = ButtonTools.macheButton("Verordnung anlegen", "rezneuanlage", al);
-		pan.add(buts[1],cc.xy(2,4));
-		
+		pan.add(buts[1],cc.xy(2,2));
+		buts[0] = ButtonTools.macheButton("Patient neu anlegen >>", "patneuanlage", al);
+		pan.add(buts[0],cc.xy(4,2));
+		pan.add(tree301(),cc.xyw(2,6,3,CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		return pan;
 	}
-	
+	private JScrollPane tree301(){
+		JXPanel pan = new JXPanel();
+		//                1         2            3            4         5        6             7
+		String xwerte = "0dlu,fill:0:grow(1.0),0dlu";
+		//                1    2   3  4              5    6  7
+		String ywerte = "0dlu,fill:0:grow(1.0),0dlu";
+		FormLayout lay = new FormLayout(xwerte,ywerte);
+		CellConstraints cc = new CellConstraints(); 
+		
+		root = new DefaultMutableTreeNode( "301-Nachrichten" );
+		treeModel = new DefaultTreeModel(root);
+		File dir = new File(Reha301.encodepfad);
+		File[] files = dir.listFiles();
+		DefaultMutableTreeNode node = null;
+		for(int i = 0; i < files.length;i++){
+			if(files[i].getName().toUpperCase().endsWith(".AUF")){
+				System.out.println( files[i].getName()+"-"+files[i].lastModified() );
+				node = new DefaultMutableTreeNode( files[i].getName());
+				root.add(node);
+			}
+		}
+		tree = new JXTree( root );
+		tree.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount()==2){
+					System.out.println(tree.getSelectionPath().getLastPathComponent().toString());
+				}
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		tree.setVisible(true);
+		tree.validate();
+		//pan.add(tree,cc.xy(2,2,CellConstraints.FILL,CellConstraints.FILL));
+		//JScrollPane jscr = JCompTools.getTransparentScrollPane(pan);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(tree);
+		jscr.validate();
+		jscr.setVisible(true);
+		jscr.setBackground(Color.RED);
+		System.out.println(tree);
+		return jscr;
+	}
 	public void ActivateListener(){
 		al = new ActionListener(){
 			@Override
@@ -290,7 +397,7 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	/********************************************/
 	private Vector<Object> doSetPatientFuerNachricht(String patid){
-		dta301mod.show_X_PatData();
+		//dta301mod.show_X_PatData();
 		Vector<Object> vecobj = new Vector<Object>();
 		patBetroffen = String.valueOf(patid);
 		String ktraeger = tab.getValueAt(tab.getSelectedRow(), 7).toString();
@@ -421,6 +528,11 @@ public class Reha301Auswerten extends JXPanel{
 					vecobj.add((String) patgeboren);
 					vecobj.add((String) vec.get(i).get(7));
 					vecobj.add((String) pat[3]);
+					if( ((String) vec.get(i).get(10)).trim().length() < 10){
+						vecobj.add("");
+					}else{
+						vecobj.add(DatFunk.sDatInDeutsch((String) vec.get(i).get(10)));	
+					}
 					
 					tabmod.addRow( (Vector<?>)vecobj.clone());
 					
@@ -459,6 +571,7 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("<tr><td class='rbblau'>VSNR</td><td>"+dta301mod.getPatVsnr()+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Kostenträger</td><td>"+dta301mod.getDtaKtraegerIK()+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Krankenkasse</td><td>"+dta301mod.getPatKassenName()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Krankenk.-IK</td><td>"+dta301mod.getPatKassenIk()+"</td></tr>");
 
 		/******************/
 		buf.append("</table>");
@@ -692,8 +805,8 @@ public class Reha301Auswerten extends JXPanel{
 
 			dta301mod.setPatIntern(String.valueOf(patneuepatnr));
 			//so jetzt haben wir alles was wir brauchen das wollen wir jetzt sehen//
-			dta301mod.show301Data();
-			dta301mod.show_X_PatData();
+			//dta301mod.show301Data();
+			//dta301mod.show_X_PatData();
 			
 			StringBuffer buf = new StringBuffer();
 			buf.append("insert into pat5 set ");
@@ -820,11 +933,14 @@ public class Reha301Auswerten extends JXPanel{
 		buf.trimToSize();
 		buf.append("update dta301 set rez_nr='"+rezneuereznr+"', ");
 		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
-		buf.append("eingelesen='"+"T"+"' where id='"+id+"' LIMIT 1");
+		buf.append("eingelesen='"+"T"+"', ");
+		buf.append("eingelesenam='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
+		buf.append("where id='"+id+"' LIMIT 1");
 		SqlInfo.sqlAusfuehren(buf.toString());
 		/************Dann die Tabelle regeln********/
 		int xrow = tab.convertRowIndexToModel(tab.getSelectedRow());
 		tabmod.setValueAt(Boolean.valueOf(true),xrow, 1);
+		tabmod.setValueAt((String)DatFunk.sHeute(),xrow, 13);
 		buts[1].setEnabled(false);
 		buts[0].setEnabled(false);
 	}

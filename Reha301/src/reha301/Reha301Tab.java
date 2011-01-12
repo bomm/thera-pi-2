@@ -15,6 +15,13 @@ import reha301Panels.Reha301Auswerten;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
+import java.lang.management.ManagementFactory;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+
 
 public class Reha301Tab extends JXPanel {
 	/**
@@ -27,7 +34,7 @@ public class Reha301Tab extends JXPanel {
 	public JXHeader jxh;
 	
 	Reha301Einlesen reha301Einlesen = null;
-	Reha301Auswerten reha301Produzieren = null;
+	Reha301Auswerten reha301Auswerten = null;
 	
 	Reha301Tab(){
 		super();
@@ -35,8 +42,8 @@ public class Reha301Tab extends JXPanel {
 		reha301Tab = new JTabbedPane();
 		reha301Tab.setUI(new WindowsTabbedPaneUI());
 		
-		reha301Produzieren = new Reha301Auswerten(this);
-		reha301Tab.add("Nachrichten auswerten/importieren",reha301Produzieren);
+		reha301Auswerten = new Reha301Auswerten(this);
+		reha301Tab.add("Nachrichten auswerten/importieren",reha301Auswerten);
 
 		reha301Einlesen = new Reha301Einlesen(this);
 		reha301Tab.add("Nachrichten einlesen",reha301Einlesen);
@@ -50,6 +57,9 @@ public class Reha301Tab extends JXPanel {
         reha301Tab.validate();
 		validate();
 		
+	}
+	public void activateNachricht(){
+		reha301Auswerten.initReha301Auswerten();
 	}
 
 }

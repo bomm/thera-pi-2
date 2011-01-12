@@ -243,4 +243,19 @@ public class StringTools {
 		}
 		return ret;
 	}
+	public static int killLeadingZero(String zahl){
+		int ret = 0;
+		for(int i = 0; i < zahl.length();i++){
+			try{
+				if(! "0".contains(zahl.substring(i,i+1))){
+					System.out.println("Zahl = "+zahl.substring(i));
+					return Integer.parseInt(zahl.substring(i));
+				}
+			}catch(Exception ex){
+				return 0;
+			}
+		}
+		return ret;
+	}
+
 }

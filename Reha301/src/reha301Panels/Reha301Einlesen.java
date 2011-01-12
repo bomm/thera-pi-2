@@ -1,32 +1,49 @@
 package reha301Panels;
 
+
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
+import org.thera_pi.nebraska.crypto.NebraskaDecryptor;
+import org.thera_pi.nebraska.crypto.NebraskaFileException;
+import org.thera_pi.nebraska.crypto.NebraskaKeystore;
+import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
+import org.thera_pi.nebraska.gui.NebraskaMain;
 
+import reha301.Reha301;
 import reha301.Reha301Tab;
+
 import Tools.ButtonTools;
 import Tools.DatFunk;
+import Tools.INIFile;
 import Tools.IntegerTools;
 import Tools.JCompTools;
 import Tools.SqlInfo;
 import Tools.StringTools;
+import Tools.Verschluesseln;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -46,6 +63,7 @@ public class Reha301Einlesen extends JXPanel{
 	boolean bewilligung = false;
 	boolean auftragsleistung = false;
 	boolean erstertext = true;
+	
 	int UNTS = 0;
 	Vector<String> edifact_vec = new Vector<String>();
 	StringBuffer buf = new StringBuffer();
@@ -60,6 +78,12 @@ public class Reha301Einlesen extends JXPanel{
 
 	int nachrichtentyp = -1;
 	boolean erstercheck = false;
+	// 0 = Sender, 1 = Sender, 2 = Empfänger mit Entschl., 3 = Physik Empfänger, 4 = Originalgr.
+	// 5 = Encoded-Größe, 6 = log.Dateiname, 7 = physik.Dateiname
+	Object[] decodeparms = {null,null,null,null,null,null,null,null};
+	String decodedfile = null;
+	
+	String encodepfad = Reha301.encodepfad; //"C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	
 	public Reha301Einlesen(Reha301Tab xeltern){
 		super(new BorderLayout());
@@ -73,23 +97,75 @@ public class Reha301Einlesen extends JXPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("einlesen")){
-					starteEinlesen();
+					if(decodedfile==null){
+						JOptionPane.showMessageDialog(null,"Keine Entschlüsselte Datei verfügbar");
+						return;
+					}
+					starteEinlesen(decodedfile);
+					decodedfile = null;
+					
+					return;
+				}
+				if(cmd.equals("decode")){
+					doDecode();
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							eltern.activateNachricht();
+							return null;
+						}
+						
+					}.execute();
 				}
 			}
 		};
 	}
-	private void starteEinlesen(){
-		doEinlesen("C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/bewi.txt");
-		//System.out.println(dbHmap);
+	private void doDecode(){
+		String pfad = dateiDialog(encodepfad);
+		if(pfad.trim().equals("")){return;}
+		pfad = pfad.replace("\\", "/");
+		String datei = pfad.substring(pfad.lastIndexOf("/")+1);
+		//System.out.println("Ausgewählte Datei = "+datei);
+		//System.out.println("Kompletter Pfad = "+pfad);
+		if(datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")){
+			boolean test = testeAuftragsDatei(pfad,datei);
+			if(!test){
+				return;
+			}
+			test = false;
+			try {
+				test = doEntschluesseln(pfad,datei);
+			} catch (NebraskaCryptoException e) {
+				e.printStackTrace();
+			} catch (NebraskaNotInitializedException e) {
+				e.printStackTrace();
+			} catch (NebraskaFileException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(!test){
+				return;
+			}
+			starteEinlesen(this.decodedfile);
+			System.out.println("#AktualisierePat@20202@KG76271");
+		}else{
+			JOptionPane.showMessageDialog(null,"Die ausgewählte Datei ist keine Auftragsdatei gemäß DTA nach §301");
+		}
+	}
+	private void starteEinlesen(String filename){
+		doEinlesen(filename);
+		//doEinlesen("C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/bewi.txt");
 	}
 	private void regleNachricht(){
+
 		if(nachrichtentyp == 1){
 			if(dbHmap.get("beauftragtestelle")==null){
 				//dbHmap.put("beauftragtestelle",dbHmap.get("ktraeger"));
 				dbHmap.put("beauftragtestelle","");
 			}
 			doBewilligungSpeichern();
-			doPatTest();
+			//doPatTest();
 		}
 	}
 	private void doPatTest(){
@@ -128,12 +204,14 @@ public class Reha301Einlesen extends JXPanel{
 	private JXPanel getLinkeSeite(){
 		JXPanel pan = new JXPanel();
 		String xwerte = "2dlu,fill:0:grow(1.0),2dlu";
-		String ywerte = "5dlu,p,fill:0:grow(1.0),5dlu";
+		String ywerte = "5dlu,p,15dlu,p,fill:0:grow(1.0),5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
-		buts[0] = ButtonTools.macheButton("Datei einlesen", "einlesen", al);
-		pan.add(buts[0],cc.xy(2,2));
+		buts[0] = ButtonTools.macheButton("Nachricht einlesen", "einlesen", al);
+		buts[1] = ButtonTools.macheButton("Nachricht entschlüsseln", "decode", al);
+		pan.add(buts[1],cc.xy(2,2));
+		pan.add(buts[0],cc.xy(2,4));
 		pan.validate();
 		return pan;
 	}
@@ -248,6 +326,7 @@ public class Reha301Einlesen extends JXPanel{
 					}
 				
 				}
+				JOptionPane.showMessageDialog(null, "In dieser Datei sind "+Integer.toString(anzahlunts)+" Nachrichten enthalten");
 				//Untersuchen wieviel Nachrichten enthalten sind
 				//JOptionPane.showMessageDialog(null, "In dieser Datei sind "+Integer.toString(anzahlunts)+" Nachrichten enthalten");
 			}else{
@@ -944,4 +1023,142 @@ public class Reha301Einlesen extends JXPanel{
 		return ret;
 	}
 	
+	private String dateiDialog(String pfad){
+		String sret = "";
+		final JFileChooser chooser = new JFileChooser("Auftragsdatei .AUF-Datei wählen");
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        final File file = new File(pfad);
+
+        chooser.setCurrentDirectory(file);
+
+        chooser.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
+                        || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
+                    //final File f = (File) e.getNewValue();
+                }
+            }
+
+        });
+        chooser.setVisible(true);
+        
+        final int result = chooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File inputVerzFile = chooser.getSelectedFile();
+            //String inputVerzStr = inputVerzFile.getPath();
+            
+
+            if(inputVerzFile.getName().trim().equals("")){
+            	sret = "";
+            }else{
+            	//sret = inputVerzFile.getName().trim();
+            	sret = inputVerzFile.getPath().toString();	
+            }
+        }else{
+        	sret = ""; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
+        }
+        chooser.setVisible(false); 
+
+        return sret;
+	}
+	
+	private boolean testeAuftragsDatei(String pfad,String datei){
+		boolean bret = true;
+		String auftragsdatei = null;
+		try {
+			auftragsdatei = new String(BytesFromFile(new File(pfad)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(auftragsdatei.getBytes().length != 348){
+			JOptionPane.showMessageDialog(null, "Der Aufbau dieser Auftragsdatei ist nicht korrekt");
+			return false;
+		}
+		// 0 = Sender, 1 = Sender, 2 = Empfänger mit Entschl., 3 = Physik Empfänger, 4 = Originalgr.
+		// 5 = Encoded-Größe, 6 = log.Dateiname, 7 = physik. Dateiname
+		//Object[] decodeparms = {null,null,null,null,null,null,null};
+		decodeparms[7] = (String) auftragsdatei.substring(19,19+8);
+		decodeparms[0] = (String) auftragsdatei.substring(32,32+15).trim();
+		decodeparms[1] = (String) auftragsdatei.substring(47,47+15).trim();
+		decodeparms[2] = (String) auftragsdatei.substring(62,62+15).trim();
+		decodeparms[3] = (String) auftragsdatei.substring(77,77+15).trim();
+		decodeparms[4] = (Integer) IntegerTools.trailNullAndRetInt(auftragsdatei.substring(178,178+12));
+		decodeparms[5] = (Integer) IntegerTools.trailNullAndRetInt(auftragsdatei.substring(190,190+12));
+		decodeparms[6] = (String) auftragsdatei.substring(104,104+25).trim();
+		/*
+		for(int i = 0; i < 8;i++){
+			System.out.println(decodeparms[i]);
+		}
+		*/
+		if(! datei.toUpperCase().startsWith((String)decodeparms[7])){
+			JOptionPane.showMessageDialog(null, "Dateiname der Auftragsdatei und der Dateiname innehalb der Datei stimmen nicht überein");
+			return false;
+		}
+		return bret;
+	}
+	 public static byte[] BytesFromFile(File file) throws IOException {
+	        InputStream is = new FileInputStream(file);
+	        long length = file.length();
+	    
+	        if (length > Integer.MAX_VALUE) {
+	      System.out.println("Datei zu groß zum einlesen");
+	      	return null;
+	        }
+
+	        byte[] bytes = new byte[(int)length];
+	        int offset = 0;
+	        int numRead = 0;
+	        while (offset < bytes.length && (numRead=is.read(bytes, 
+	                    offset, bytes.length-offset)) >= 0) {
+	            offset += numRead;
+	        }
+	        if (offset < bytes.length) {
+	            throw new IOException("Datei konnte nicht komplett gelesen werden "
+	                                + file.getName());
+	        }
+	        is.close();
+	        return bytes;
+	}
+	private boolean doEntschluesseln(String pfad,String datei) throws NebraskaCryptoException, NebraskaNotInitializedException, NebraskaFileException, IOException{
+		boolean bret = true;
+		// 0 = Sender, 1 = Sender, 2 = Empfänger mit Entschl., 3 = Physik Empfänger, 4 = Originalgr.
+		// 5 = Encoded-Größe, 6 = log.Dateiname, 7 = physik. Dateiname
+		//decodeparms
+		String inipath = Reha301.progHome+"nebraska_windows.conf";
+		INIFile file = new INIFile(inipath);
+		int anzahl = file.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
+		String kstorefile=null;String kstorealias=null;String kstorepw=null; 
+		for(int i = 1; i <= anzahl;i++){
+			if(file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+decodeparms[2])){
+				kstorefile = file.getStringProperty("KeyStores","KeyStoreFile"+Integer.toString(i));
+								
+				String pw = String.valueOf(file.getStringProperty("KeyStores","KeyStorePw"+Integer.toString(i)));
+				Verschluesseln man = Verschluesseln.getInstance();
+				man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+				kstorepw = man.decrypt (pw);
+				
+				kstorealias =  file.getStringProperty("KeyStores","KeyStoreAlias"+Integer.toString(i));
+				
+			}
+		}
+		NebraskaKeystore keystore = 
+			new NebraskaKeystore(kstorefile,
+						kstorepw,
+						"abc",
+						kstorealias);
+		String filein =pfad.substring(0,pfad.length()-4);
+		//System.out.println("FileIn = "+"*"+filein+"*");
+		
+		NebraskaDecryptor decrypt = keystore.getDecryptor();
+		FileInputStream fin = new FileInputStream(filein);
+		FileOutputStream fout = new FileOutputStream(filein+".org");
+		decrypt.decrypt(fin, fout);
+		fin.close();
+		fout.flush();
+		fout.close();
+		decodedfile = String.valueOf(filein+".org");
+		return bret;
+	}
 }
