@@ -27,6 +27,7 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
+import org.therapi.reha.patient.LadeProg;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JSysteminitInternal;
@@ -636,8 +637,9 @@ private void auswertenSysUtil(String util){
 				@Override
 				protected Void doInBackground() throws Exception {
 					try {
-						Runtime.getRuntime().exec("java -jar "+Reha.proghome+"Nebraska.jar "+Reha.aktIK);
-					} catch (IOException e) {
+						new LadeProg(Reha.proghome+"Nebraska.jar "+Reha.aktIK);						
+						//Runtime.getRuntime().exec("java -jar "+Reha.proghome+"Nebraska.jar "+Reha.aktIK);
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					return null;

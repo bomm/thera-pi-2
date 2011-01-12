@@ -4,6 +4,7 @@ import hauptFenster.Reha;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -301,6 +302,17 @@ public class SystemConfig {
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","LookAndFeel"));
 
 			OpenOfficePfad = ini.getStringProperty("OpenOffice.org","OfficePfad");
+			if(!pfadOk(OpenOfficePfad)){
+				String meldung = "Es konnte keine gültige OpenOffice-Installation entdeckt werden\n"+
+				"Bislang zeigt der Pfad auf OO.org auf "+OpenOfficePfad+"\n\n"+
+				"Öffnen Sie bitte in Thera-Pi die System-Initialisierung und\n"+
+				"gehen Sie dann auf die Seite -> sonsige Einstellungen -> Fremdprogramme.\n\n"+
+				"Stellen Sie dann bitte auf dieser Seite den Pfad zu OpenOffice.org ein\n\n"+
+				"Auf der selben Seite stellen Sie dann bitte Ihren PDF-Reader ein\n\n"+
+				"Abschließend beenden Sie bitte Thera-Pi und starten Sie dann Thera-Pi erneut\n\n"+
+				"Everything should then be fine - wie der Schwabe zu sagen pflegt!";
+				JOptionPane.showMessageDialog(null, meldung);
+			}
 			OpenOfficeNativePfad = ini.getStringProperty("OpenOffice.org","OfficeNativePfad");
 			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
@@ -308,6 +320,10 @@ public class SystemConfig {
 			//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
 			////System.out.println("HomeDir = "+homeDir);
 			return;
+	}
+	private static boolean pfadOk(String pfad){
+		File f = new File(pfad);
+		return f.exists();
 	}
 	
 	@SuppressWarnings("unchecked")

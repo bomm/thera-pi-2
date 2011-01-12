@@ -554,7 +554,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 
 			}
 			Reha.thisClass.progressStarten(true);
-			String xgueltig = gueltig.getText();
+			String xgueltig = gueltig.getText().trim();
 			int regel = jcmb[2].getSelectedIndex();
 			if(xgueltig.trim().equals(".  .") || xgueltig.trim().equals("") ){
 				xgueltig = "";
@@ -889,9 +889,10 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		int ipreis = jcmb[1].getSelectedIndex()+1;
 		int anzahl = preisvec.size();
 		modpreis.setRowCount(0);
-		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha"};
+		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 		//String disziplin = jcmb[0].getSelectedItem().toString();
 		int preisgruppe = jcmb[1].getSelectedIndex();
+		int idisziplin = jcmb[0].getSelectedIndex();
 		////System.out.println("Preisvec = "+preisvec);
 		Vector vec = new Vector();
 		int idpos = 0;
@@ -917,13 +918,14 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			modpreis.addRow((Vector)vec.clone());
 		}
 		try{
-		if(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe).equals("")){
+		if(SystemPreislisten.hmNeuePreiseAb.get(diszi[idisziplin]).get(preisgruppe).equals("")){
 			gueltig.setText("  .  .    ");
 			//System.out.println("Gültigkeitsdatum nicht angegeben");
 		}else{
-			gueltig.setText(SystemPreislisten.hmNeuePreiseAb.get(diszi[preisgruppe]).get(preisgruppe));			
+			gueltig.setText(SystemPreislisten.hmNeuePreiseAb.get(diszi[idisziplin]).get(preisgruppe));			
 		}
 		}catch(Exception ex){
+			ex.printStackTrace();
 			gueltig.setText("  .  .    ");
 		}
 
