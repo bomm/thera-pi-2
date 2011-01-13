@@ -681,11 +681,12 @@ public class OOTools{
 				Reha.starteOfficeApplication();
 			}
 			IDocumentService documentService = Reha.officeapplication.getDocumentService();
-			IDocument document = documentService.constructNewDocument(IDocument.WRITER, DocumentDescriptor.DEFAULT);
+			IDocument document = documentService.constructNewDocument(IDocument.WRITER,DocumentDescriptor.DEFAULT );
 			textDocument = (ITextDocument)document;
 			OOTools.inDenVordergrund(textDocument);
 			////System.out.println("In den Vordergrund");
-			textDocument.getFrame().setFocus();
+				textDocument.getFrame().setFocus();	
+			
 		} 
 		catch (OfficeApplicationException exception) {
 			exception.printStackTrace();

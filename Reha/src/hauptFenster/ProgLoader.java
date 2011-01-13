@@ -27,6 +27,7 @@ import rehaInternalFrame.JArztInternal;
 import rehaInternalFrame.JBarkassenInternal;
 import rehaInternalFrame.JBenutzerInternal;
 import rehaInternalFrame.JBeteiligungInternal;
+import rehaInternalFrame.JDta301Internal;
 import rehaInternalFrame.JGutachtenInternal;
 import rehaInternalFrame.JKasseInternal;
 import rehaInternalFrame.JPatientInternal;
@@ -59,6 +60,7 @@ import benutzerVerwaltung.BenutzerRechte;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
+import dta301.Dta301;
 import entlassBerichte.EBerichtPanel;
 import events.RehaTPEvent;
 
@@ -79,7 +81,7 @@ public JBeteiligungInternal beteiligungjry = null;
 public JUrlaubInternal urlaubjry = null;
 public JBenutzerInternal benutzerjry = null;
 public JSysteminitInternal systeminitjry = null;
-
+public JDta301Internal dta301jry = null;
 //public static JTerminInternal tjry = null;
 //public static JGutachtenInternal gjry = null;
 
@@ -523,6 +525,54 @@ public void loescheVerkauf(){
 	verkaufjry = null;
 	Reha.thisClass.verkaufpanel = null;
 }
+/***************************Fallsteuerung nach § 301*********************************/
+public void Dta301Fenster(int setPos,String sparam) {
+	if(! Reha.DbOk){
+		return;
+	}
+	if(!Rechte.hatRecht(Rechte.Sonstiges_verkaufsmodul, true)){
+		return;
+	}
+	JComponent vk = AktiveFenster.getFensterAlle("DTA301");
+	if(vk != null){
+		////System.out.println("InternalFrame Anmeldungen bereits geöffnet");
+		containerHandling(((JDta301Internal)vk).getDesktop());
+		((JDta301Internal)vk).aktiviereDiesenFrame( ((JDta301Internal)vk).getName());
+		if( ((JDta301Internal)vk).isIcon() ){
+			try {
+				((JDta301Internal)vk).setIcon(false);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+		return;
+	}
+	Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+	String name = "DTA301"+WinNum.NeueNummer();
+	int containerNr = setPos;
+	containerHandling(containerNr);
+	dta301jry = new JDta301Internal("thera-\u03C0  - Fallsteuerung nach §301 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
+	AktiveFenster.setNeuesFenster(name,(JComponent)dta301jry,1,(Container)dta301jry.getContentPane());
+	dta301jry.setName(name);
+	dta301jry.setSize(new Dimension(500,500));
+	dta301jry.setPreferredSize(new Dimension(500,500));
+	Reha.thisClass.dta301panel = new Dta301(dta301jry); 
+	dta301jry.setContent(Reha.thisClass.dta301panel);	
+	dta301jry.addComponentListener(Reha.thisClass);
+	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	dta301jry.setLocation(comps*15, comps*15);
+	dta301jry.pack();
+	dta301jry.setVisible(true);
+	Reha.thisClass.desktops[containerNr].add(dta301jry);
+	dta301jry.aktiviereDiesenFrame( dta301jry.getName());
+	Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+}
+
+public void loescheDta301(){
+	dta301jry = null;
+	Reha.thisClass.dta301panel = null;
+}
+
 /***********************Barkasse abrechnen*************************/
 public void BarkassenFenster(int setPos,String sparam) {
 	if(! Reha.DbOk){

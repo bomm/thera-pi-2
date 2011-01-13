@@ -152,6 +152,7 @@ import com.jgoodies.looks.Options;
 import com.sun.star.uno.Exception;
 
 import dialoge.RehaSmartDialog;
+import dta301.Dta301;
 import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
 import events.RehaEventClass;
@@ -177,6 +178,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public AbrechnungReha rehaabrechnungpanel = null;
 	public BenutzerRechte benutzerrechtepanel = null;
 	public SystemInit systeminitpanel = null;
+	public Dta301 dta301panel = null;
 	
 	public final int patiddiff = 5746;
 	private JXFrame jFrame = null;
