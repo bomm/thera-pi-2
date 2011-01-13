@@ -118,65 +118,65 @@ public class PatientStammDatenPanel extends JXPanel{
 			/*****Rezept****/
 			/*******/
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">"+"<img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=36 height=36 border=0>");
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(0).trim()),"ANREDE")+" "+
 					makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(1).trim()),"TITEL"));
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte3\" align=\"left\">");
 			buf1.append("<b><font color=#000000>"+makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(2)),"N_NAME")+", "+
 					makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(3)),"V_NAME")+"</font></b>");
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append("geb.: "+"<b><font color=#000000>"+makeLink(DatFunk.sDatInDeutsch(patientHauptPanel.patDaten.get(4)),"GEBOREN")+"</font></b>");
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(21)),"STRASSE"));
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink(patientHauptPanel.patDaten.get(23),"PLZ")+" "+makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(24)),"ORT"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append("&nbsp;");
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink("Tel.(p): "+StringTools.EGross(patientHauptPanel.patDaten.get(18)),"TELEFONP"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 			
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink("Tel.(g): "+StringTools.EGross(patientHauptPanel.patDaten.get(19)),"TELEFONG"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 			
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink("Mobil: "+StringTools.EGross(patientHauptPanel.patDaten.get(20)),"TELEFONM"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink("Email: "+patientHauptPanel.patDaten.get(50).toLowerCase(),"EMAILA"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append("&nbsp;");
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append("<img src='file:///"+Reha.proghome+"icons/krankenkasse.png' width=30 height=30 border=0><b>"+"+"+"</b>");
 			buf1.append("<img src='file:///"+Reha.proghome+"icons/system-users.png' width=30 height=30 border=0>");
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(13)),"KASSE"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink("Hausarzt: "+StringTools.EGross(patientHauptPanel.patDaten.get(25)),"ARZT"));
-			buf1.append("</tr></td>");
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append("&nbsp;");
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append("<img src='file:///"+Reha.proghome+"icons/evolution-addressbook.png' width=32 height=32 border=0>");
-			buf1.append("</tr></td>" );
+			buf1.append("</td></tr>" );
 			buf1.append(getAkutDaten());
 			buf1.append(getBefreiungsDaten());
 			buf1.append("</table>");
@@ -207,29 +207,29 @@ public class PatientStammDatenPanel extends JXPanel{
 		buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 		dummy = patientHauptPanel.patDaten.get(56).trim().replace("<", "&#60;");
 		buf2.append(makeLink("Therapeut: "+(dummy.equals("") ? "<font color=#FF0000>k.A.</font>" : dummy.toString()),"THERAPEUT"));
-		buf2.append("</tr></td>");
+		buf2.append("</td></tr>" );
 		if(patientHauptPanel.patDaten.get(33).equals("T")){
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 			dummy = patientHauptPanel.patDaten.get(46).trim().replace("<", "&#60;");
 			buf2.append(makeLink("Akutpat.: <font color=#FF0000>JA bis "+(dummy.length()==10 ? DatFunk.sDatInDeutsch(dummy.toString()) : "k.A.")+"</font>","AKUTBIS"));
-			buf2.append("</tr></td>");
+			buf2.append("</td></tr>" );
 		}else{
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf2.append(makeLink("Akutpat.: Nein","AKUTBIS"));
-			buf2.append("</tr></td>");
+			buf2.append("</td></tr>" );
 		}
 		if(! patientHauptPanel.patDaten.get(36).trim().equals("")){
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf2.append("<u><i>Terminwünsche</i></u>");
-			buf2.append("</tr></td>");		
+			buf2.append("</td></tr>" );		
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf2.append(makeLink(patientHauptPanel.patDaten.get(36).replace("<", "&#60;"),"TERMINE1"));
-			buf2.append("</tr></td>");		
+			buf2.append("</td></tr>" );		
 		}
 		if(! patientHauptPanel.patDaten.get(37).trim().equals("")){
 			buf2.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf2.append(makeLink(patientHauptPanel.patDaten.get(37).replace("<", "&#60;"),"TERMINE2"));
-			buf2.append("</tr></td>");		
+			buf2.append("</td></tr>" );		
 		}
 		return buf2.toString();
 	}
@@ -242,13 +242,13 @@ public class PatientStammDatenPanel extends JXPanel{
 		if(dummy.length()==10){
 			buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf3.append(makeLink("Befreiung bis: <font color=#FF0000><b>"+DatFunk.sDatInDeutsch(dummy)+"</b></font>","AKUT_DAT"));
-			buf3.append("</tr></td>");
+			buf3.append("</td></tr>" );
 		}
 		dummy = patientHauptPanel.patDaten.get(69).trim();
 		if(! dummy.equals("")){
 			buf3.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf3.append(makeLink("Vorjahr befreit: <font color=#FF0000><b>"+(dummy.equals(SystemConfig.vorJahr) ? "JA" : "NEIN")+"</b></font>","VORJAHR"));
-			buf3.append("</tr></td>");
+			buf3.append("</td></tr>" );
 		}
 		System.out.println(dummy);
 		return buf3.toString();

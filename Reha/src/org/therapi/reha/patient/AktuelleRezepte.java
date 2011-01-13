@@ -905,7 +905,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					}
 				}
 				/************** Bis hierher hat man die Sätze eingelesen ********************/
-				Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
+				try{
+					Reha.thisClass.patpanel.multiTab.setTitleAt(0,macheHtmlTitel(anz,"aktuelle Rezepte"));
+				}catch(Exception ex){};	
 				int row = 0;
 				if(anz > 0){
 					setzeRezeptPanelAufNull(false);
