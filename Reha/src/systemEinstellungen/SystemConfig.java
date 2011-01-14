@@ -178,6 +178,8 @@ public class SystemConfig {
 	// Lemmi 20101224 Steuerparanmeter für RGR und AFR Behandlung in OffenePosten und Mahnungen	
 	public static HashMap<String,Integer> hmZusatzInOffenPostenIni = new HashMap<String,Integer>();
 
+	public static String dta301InBox = null;
+	public static String dta301OutBox = null;
 	                     
 	public SystemConfig(){
 	
@@ -463,7 +465,12 @@ public class SystemConfig {
 		decrypted = man.decrypt (pw);
 		hmEmailIntern.put("Password",decrypted);
 		hmEmailIntern.put("SenderAdresse",emailini.getStringProperty("EmailIntern","SenderAdresse"));			
-		hmEmailIntern.put("Bestaetigen",emailini.getStringProperty("EmailIntern","EmpfangBestaetigen"));			
+		hmEmailIntern.put("Bestaetigen",emailini.getStringProperty("EmailIntern","EmpfangBestaetigen"));	
+		if(new File(Reha.proghome+"ini/"+Reha.aktIK+"/dta301.ini").exists()){
+			INIFile dtaini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/dta301.ini");
+			dta301InBox = dtaini.getStringProperty("DatenPfade301", "inbox");
+			dta301OutBox = dtaini.getStringProperty("DatenPfade301", "outbox");
+		}
 
 	}	
 	
@@ -1165,8 +1172,8 @@ public class SystemConfig {
 		}else if(System.getProperty("os.name").contains("String für MaxOSX????")){
 			INI_FILE = Reha.proghome+"nebraska_mac.conf";
 		}
-		org.thera_pi.nebraska.gui.utils.Verschluesseln man = org.thera_pi.nebraska.gui.utils.Verschluesseln.getInstance();
-		man.init(org.thera_pi.nebraska.gui.utils.Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+		Verschluesseln man = Verschluesseln.getInstance();
+		man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 		try{
 			inif = new INIFile(INI_FILE);
 			String pw = null;

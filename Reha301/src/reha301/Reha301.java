@@ -74,8 +74,10 @@ public class Reha301 implements WindowListener  {
 	
 	public static boolean nachrichtfuerRezept = false;
 	public static String argsRezeptnummer = "";
-	
-	public static String encodepfad = "C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
+
+	public static String inbox = "//192.168.2.3/programme/data301/540840108/inbox/"; //C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
+	public static String outbox = "//192.168.2.3/programme/data301/540840108/outbox/"; 
+	//public static String encodepfad = "C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	/*
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
 	public static String dbUser = "rtauser";
@@ -200,7 +202,7 @@ public class Reha301 implements WindowListener  {
 		jFrame = new JFrame();
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,550);
-		jFrame.setTitle("Thera-Pi  §301  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
+		jFrame.setTitle("Thera-Pi  §301-er  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
 		jFrame.getContentPane().add (new Reha301Tab());

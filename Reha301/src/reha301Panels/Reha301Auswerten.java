@@ -2,22 +2,32 @@ package reha301Panels;
 
 
 
+
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
@@ -25,6 +35,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -32,20 +43,29 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.MattePainter;
 
 import reha301.Dta301Model;
 import reha301.Reha301;
 import reha301.Reha301Tab;
+
 import Tools.ButtonTools;
+import Tools.Colors;
 import Tools.DatFunk;
 import Tools.INIFile;
 import Tools.JCompTools;
 import Tools.JRtaTextField;
+import Tools.OOTools;
 import Tools.RezTools;
 import Tools.SqlInfo;
 import Tools.StringTools;
 import Tools.SystemPreislisten;
 import Tools.WartenAufDB;
+
+
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.TextException;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -78,14 +98,30 @@ public class Reha301Auswerten extends JXPanel{
 	Object[] rVTraeger;
 	Dta301Model dta301mod = null;
 	
-	public DefaultMutableTreeNode root;
+	public JXTreeNode root;
 	public DefaultTreeModel treeModel;
 	public JXTree tree;
 
+	Vector<String> vecgelesen = new Vector<String>();
+	
 	public Reha301Auswerten(Reha301Tab xeltern){
 		super(new BorderLayout());
 		eltern = xeltern;
 		setOpaque(false);
+		/**************************/
+		CompoundPainter<Object> cp = null;
+		MattePainter mp = null;
+		LinearGradientPaint p = null;
+		/*****************/
+		Point2D start = new Point2D.Float(0, 0);
+		Point2D end = new Point2D.Float(960,100);
+	    float[] dist = {0.0f, 0.75f};
+	    Color[] colors = {Color.WHITE,Colors.PiOrange.alpha(0.25f)};
+	    p =  new LinearGradientPaint(start, end, dist, colors);
+	    mp = new MattePainter(p);
+	    cp = new CompoundPainter<Object>(mp);
+	    this.setBackgroundPainter(cp);
+		/**************************/
 		this.ActivateListener();
 		add(getContent(),BorderLayout.CENTER);
 		initReha301Auswerten();
@@ -170,6 +206,10 @@ public class Reha301Auswerten extends JXPanel{
 		tab.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getButton()==3){
+					ZeigePopupMenu(arg0);
+					return;
+				}
 				if(arg0.getClickCount()==2){
 					if(anzeigeart==1){
 						if(tab.getSelectedRow()>=0){
@@ -215,6 +255,21 @@ public class Reha301Auswerten extends JXPanel{
 		pan.validate();
 		return pan;
 	}
+	private void ZeigePopupMenu(java.awt.event.MouseEvent me){
+		JPopupMenu jPop = doPopUpMenue();
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	private JPopupMenu doPopUpMenue(){
+		JPopupMenu jPopupMenu = new JPopupMenu();
+		// Lemmi 20101231: Icon zugefügt
+		JMenuItem item = new JMenuItem("Nachricht im OO-Writer öffnen");
+		item.setActionCommand("nachrichtinwriter");
+		item.addActionListener(al);
+		jPopupMenu.add(item);
+
+		return jPopupMenu;
+		
+	}
 	private JXPanel getActionPanel(){
 		JXPanel pan = new JXPanel();
 		//                1         2            3            4         5        6             7
@@ -227,18 +282,19 @@ public class Reha301Auswerten extends JXPanel{
 		pan.setOpaque(false);
 		pan.add(getButtonPanel(),cc.xy(2,4,CellConstraints.FILL,CellConstraints.FILL));
 		
-		JLabel lab = new JLabel("<html><b>301-er Daten</b></html>");
+		JLabel lab = new JLabel("<html><b><font color='#0000ff'>301-er Daten</font></b></html>");
 		pan.add(lab,cc.xy(4,2,CellConstraints.FILL,CellConstraints.FILL));
 		editpan[0] = new JEditorPane();
 		editpan[0].setContentType("text/html");
 		editpan[0].setEditable(false);
 		editpan[0].setOpaque(true);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(editpan[0]);
-		jscr.setBorder(BorderFactory.createLineBorder(Color.RED));
+		jscr.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		jscr.validate();
         pan.add(jscr,cc.xy(4,4,CellConstraints.FILL,CellConstraints.FILL));
         
         JXPanel pan2 = new JXPanel();
+        pan2.setOpaque(false);
         FormLayout lay2 = new FormLayout("fill:0:grow(0.33),2dlu,fill:0:grow(0.66)","p");
         CellConstraints cc2 = new CellConstraints();
         pan2.setLayout(lay2);
@@ -256,9 +312,15 @@ public class Reha301Auswerten extends JXPanel{
 		editpan[1].setContentType("text/html");
 		editpan[1].setEditable(false);
 		editpan[1].setOpaque(true);
-		jscr = JCompTools.getTransparentScrollPane(editpan[1]);
+		JXPanel panneu = new JXPanel(new BorderLayout());
+		panneu.setOpaque(false);
+		panneu.setAlpha(.5f);
+		panneu.add(editpan[1],BorderLayout.CENTER);
+		jscr = JCompTools.getTransparentScrollPane(panneu);
+		//jscr = JCompTools.getTransparentScrollPane(editpan[1]);
 		jscr.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		jscr.validate();
+
         pan.add(jscr,cc.xy(6,4,CellConstraints.FILL,CellConstraints.FILL));
         
 		pan.validate();
@@ -266,10 +328,10 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	private JXPanel getButtonPanel(){
 		JXPanel pan = new JXPanel();
-		//                1         2            3           4         5        6             7
+		//                1         2            3  4   5       6             7
 		String xwerte = "0dlu,fill:0:grow(0.5),2dlu,fill:0:grow(0.5),0dlu";
-		//                1    2   3  4  5     6                7
-		String ywerte = "0dlu,p,2dlu,p,2dlu,fill:0:grow(1.0),0dlu";
+		//                1   2  3   4  5     6                7
+		String ywerte = "0dlu,p,15dlu,p,2dlu,fill:0:grow(1.0),0dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);		
@@ -278,37 +340,68 @@ public class Reha301Auswerten extends JXPanel{
 		pan.add(buts[1],cc.xy(2,2));
 		buts[0] = ButtonTools.macheButton("Patient neu anlegen >>", "patneuanlage", al);
 		pan.add(buts[0],cc.xy(4,2));
+		JLabel lab = new JLabel("<html><b><font color='#ff0000'>eingetroffene Nachrichten</font></b></html>");
+		pan.add(lab,cc.xy(2,4));
 		pan.add(tree301(),cc.xyw(2,6,3,CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		return pan;
 	}
 	private JScrollPane tree301(){
-		JXPanel pan = new JXPanel();
-		//                1         2            3            4         5        6             7
-		String xwerte = "0dlu,fill:0:grow(1.0),0dlu";
-		//                1    2   3  4              5    6  7
-		String ywerte = "0dlu,fill:0:grow(1.0),0dlu";
-		FormLayout lay = new FormLayout(xwerte,ywerte);
-		CellConstraints cc = new CellConstraints(); 
-		
-		root = new DefaultMutableTreeNode( "301-Nachrichten" );
+		KnotenObjekt kobjekt = null;
+		kobjekt = new KnotenObjekt("301-Nachrichten","",false,"","");
+		root = new JXTreeNode( kobjekt,true );
 		treeModel = new DefaultTreeModel(root);
-		File dir = new File(Reha301.encodepfad);
+		File dir = new File(Reha301.inbox);
 		File[] files = dir.listFiles();
 		DefaultMutableTreeNode node = null;
 		for(int i = 0; i < files.length;i++){
 			if(files[i].getName().toUpperCase().endsWith(".AUF")){
 				System.out.println( files[i].getName()+"-"+files[i].lastModified() );
-				node = new DefaultMutableTreeNode( files[i].getName());
-				root.add(node);
+				kobjekt = new KnotenObjekt(files[i].getName(),"",false,"","");
+				root.add(new JXTreeNode(kobjekt,true));
+				//node = new DefaultMutableTreeNode( files[i].getName());
+				//root.add(node);
 			}
 		}
 		tree = new JXTree( root );
+		tree.setCellRenderer(new MyRenderer(new ImageIcon(Reha301.progHome+"icons/Haken_klein.gif")));
 		tree.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(arg0.getClickCount()==2){
-					System.out.println(tree.getSelectionPath().getLastPathComponent().toString());
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
+					String treelabel = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel;
+					if(treelabel.toUpperCase().endsWith(".AUF")){
+						if(!vecgelesen.contains(treelabel)){
+							int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie die Nachricht "+treelabel+" einlesen und verarbeiten?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+							if(anfrage == JOptionPane.YES_OPTION){
+								final String xtreelabel = treelabel;
+								new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										Reha301.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+										Reha301Einlesen einlesen = new Reha301Einlesen(eltern);
+										einlesen.decodeAndRead(Reha301.inbox+xtreelabel);
+										vecgelesen.add(String.valueOf(xtreelabel));
+										Reha301.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+										((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.fertig = true;
+										return null;
+									}
+									
+								}.execute();
+							}
+						}else{
+							JOptionPane.showMessageDialog(null, "Diese Nachricht wurde bereits verarbeitet");
+						}
+					}
+				}
+				if(arg0.getClickCount()==1 && arg0.getButton()==3){
+					try{
+						String treelabel = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel;
+						if(treelabel.toUpperCase().endsWith(".AUF")){
+							doNachrichtenPopUp(arg0);
+						}
+					}catch(Exception ex){}
 				}
 				
 			}
@@ -338,6 +431,7 @@ public class Reha301Auswerten extends JXPanel{
 			}
 			
 		});
+		tree.setOpaque(false);
 		tree.setVisible(true);
 		tree.validate();
 		//pan.add(tree,cc.xy(2,2,CellConstraints.FILL,CellConstraints.FILL));
@@ -363,14 +457,53 @@ public class Reha301Auswerten extends JXPanel{
 					show301PatExist(patcombo.getSelectedIndex());
 				}
 				if(cmd.equals("patneuanlage")){
+					if(tab.getRowCount()<=0){return;}
 					doPatNeuanlage();
 				}
 				if(cmd.equals("rezneuanlage")){
+					if(tab.getRowCount()<=0){return;}
 					doRezNeuanlage();
 				}
+				if(cmd.equals("nachrichtinwriter")){
+					doNachrichtInWriter();
+				}
+
+				
 			}
 		};
 	}
+	private void doNachrichtenPopUp(java.awt.event.MouseEvent me){
+		JPopupMenu jPop = doNachrichtenMenue();
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	private JPopupMenu doNachrichtenMenue(){
+		JPopupMenu jPopupMenu = new JPopupMenu();
+		// Lemmi 20101231: Icon zugefügt
+		JMenuItem item = new JMenuItem("untersuche Nachricht");
+		item.setActionCommand("nachrichtuntersuchen");
+		item.addActionListener(al);
+		jPopupMenu.add(item);
+		return jPopupMenu;
+		
+	}
+	private void doNachrichtInWriter(){
+		ITextDocument document = OOTools.starteLeerenWriter(true);
+		try {
+			document.getTextService().getCursorService().getTextCursor().getCharacterProperties().setFontName("Courier New");
+			document.getTextService().getCursorService().getTextCursor().getCharacterProperties().setFontSize(9.f);
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		document.getTextService().getText().setText(
+				SqlInfo.holeEinzelFeld("select edifact from dta301 where id='"+dta301mod.getDtaID()+"' LIMIT 1"));
+	}
+	private void doNachrichtDirektDrucken(){
+		
+	}
+	private void doNachrichtEmail(){
+		
+	}
+	
 	@SuppressWarnings("unused")
 	private void doPatUntersuchen(int row,Point pos){
 		String[] teilen = tab.getValueAt(row,4).toString().split("#");
@@ -1016,6 +1149,101 @@ public class Reha301Auswerten extends JXPanel{
 		return(ret);
 
 	}
+	/************************************************************/
+	private static class JXTreeNode extends DefaultMutableTreeNode {
+    	/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2195590211796817012L;
+		@SuppressWarnings("unused")
+		public boolean enabled = false;
+    	private KnotenObjekt knotenObjekt = null;
+    	public JXTreeNode(KnotenObjekt obj,boolean enabled){
+    		super();
+    		this.enabled = enabled;
+   			this.knotenObjekt = obj;
+   			if(obj != null){
+   				this.setUserObject(obj);
+   			}
+    	}
+    	/*
+		public boolean isEnabled() {
+			return enabled;
+		}
+		*/
+		
+		public KnotenObjekt getObject(){
+			return knotenObjekt;
+		}
+    }
+	/***************************************/	
+	class KnotenObjekt{
+		public String titel;
+		public boolean fertig;
+		public String rez_num;
+		public String ktraeger;
+		public String pat_intern;
+		public String entschluessel;
+		public String ikkasse;
+		public String preisgruppe;
+		
+		public KnotenObjekt(String titel,String rez_num,boolean fertig,String ikkasse,String preisgruppe){
+			this.titel = titel;
+			this.fertig = fertig;
+			this.rez_num = rez_num;
+			this.ikkasse = ikkasse;
+			this.preisgruppe = preisgruppe;
+		}
+	}
+	/*************************************/	
+	private class MyRenderer extends DefaultTreeCellRenderer {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2333990367290526356L;
+		Icon fertigIcon;
+
+		public MyRenderer(Icon icon) {
+		fertigIcon = icon;
+		}
+
+		public Component getTreeCellRendererComponent(
+		JTree tree,
+		Object value,
+		boolean sel,
+		boolean expanded,
+		boolean leaf,
+		int row,
+		boolean hasFocus) {
+
+		super.getTreeCellRendererComponent(
+		tree, value, sel,
+		expanded, leaf, row,
+		hasFocus);
+		KnotenObjekt o = ((JXTreeNode)value).knotenObjekt;
+		if (leaf && istFertig(value)) {
+			setIcon(fertigIcon);
+			this.setText(o.titel);
+			setToolTipText("Verordnung "+o.rez_num+" kann dirket abgerechnet werden.");
+		} else {
+			setToolTipText(null);
+			this.setText(o.titel);
+		}
+		return this;
+		}	
+
+	}
+	protected boolean istFertig(Object value) {
+		DefaultMutableTreeNode node =
+		(DefaultMutableTreeNode)value;
+		KnotenObjekt fertig =
+		(KnotenObjekt)(node.getUserObject());
+		boolean istfertig = fertig.fertig;
+		if(istfertig){
+			return true;
+		}
+		return false;
+	}	
 	
 }
 	

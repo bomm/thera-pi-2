@@ -41,15 +41,18 @@ import Tools.DatFunk;
 import Tools.INIFile;
 import Tools.IntegerTools;
 import Tools.JCompTools;
+import Tools.OOTools;
 import Tools.SqlInfo;
 import Tools.StringTools;
 import Tools.Verschluesseln;
+
+import ag.ion.bion.officelayer.text.ITextDocument;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 
-public class Reha301Einlesen extends JXPanel{
+public class Reha301Einlesen{
 
 	/**
 	 * 
@@ -67,14 +70,14 @@ public class Reha301Einlesen extends JXPanel{
 	int UNTS = 0;
 	Vector<String> edifact_vec = new Vector<String>();
 	StringBuffer buf = new StringBuffer();
-	
+	StringBuffer fallbuf = new StringBuffer();
 	Vector<String> db_vec = new Vector<String>();
 	HashMap<String,String> dbHmap = new HashMap<String,String>();
 	//String name,vorname,titel,geboren,strasse,ort,plz,ikkasse,telefon;
 	String[] hmtitel =	{"sender","datum","bearbeiter","aktenzeichen","funktionag","beauftragtestelle",
 			"versicherungsnr","berechtigtennr","massnahmennr","geschlechtfamstand","national",
 			"artderleistung","diagschluessel","anrede","nachname","vorname","geboren",
-			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage","a12","a09"};
+			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage","a12","a09","pnabm","adr0","adr1"};
 
 	int nachrichtentyp = -1;
 	boolean erstercheck = false;
@@ -83,14 +86,22 @@ public class Reha301Einlesen extends JXPanel{
 	Object[] decodeparms = {null,null,null,null,null,null,null,null};
 	String decodedfile = null;
 	
-	String encodepfad = Reha301.encodepfad; //"C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
+	String encodepfad = Reha301.inbox; //"C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	
 	public Reha301Einlesen(Reha301Tab xeltern){
-		super(new BorderLayout());
+		//super(new BorderLayout());
 		eltern = xeltern;
-		ActivateListener();
-		add(getFormLayout(),BorderLayout.CENTER);
+		//ActivateListener();
+		//add(getFormLayout(),BorderLayout.CENTER);
 	}
+	public void decodeAndRead(String dir){
+		encodepfad = dir;
+		doDecode(encodepfad);
+		//starteEinlesen(encodepfad);
+		encodepfad = null;
+		eltern.activateNachricht();
+	}
+	
 	public void ActivateListener(){
 		al = new ActionListener(){
 			@Override
@@ -101,13 +112,13 @@ public class Reha301Einlesen extends JXPanel{
 						JOptionPane.showMessageDialog(null,"Keine Entschlüsselte Datei verfügbar");
 						return;
 					}
-					starteEinlesen(decodedfile);
+					starteEinlesen(decodedfile,"");
 					decodedfile = null;
 					
 					return;
 				}
 				if(cmd.equals("decode")){
-					doDecode();
+					doDecode("");
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
@@ -120,8 +131,8 @@ public class Reha301Einlesen extends JXPanel{
 			}
 		};
 	}
-	private void doDecode(){
-		String pfad = dateiDialog(encodepfad);
+	private void doDecode(String pfad){
+		//String pfad = dateiDialog(encodepfad);
 		if(pfad.trim().equals("")){return;}
 		pfad = pfad.replace("\\", "/");
 		String datei = pfad.substring(pfad.lastIndexOf("/")+1);
@@ -147,24 +158,28 @@ public class Reha301Einlesen extends JXPanel{
 			if(!test){
 				return;
 			}
-			starteEinlesen(this.decodedfile);
+			starteEinlesen(this.decodedfile,datei);
 			System.out.println("#AktualisierePat@20202@KG76271");
 		}else{
 			JOptionPane.showMessageDialog(null,"Die ausgewählte Datei ist keine Auftragsdatei gemäß DTA nach §301");
 		}
 	}
-	private void starteEinlesen(String filename){
-		doEinlesen(filename);
+	private void starteEinlesen(String filename,String datei){
+		doEinlesen(filename,datei);
 		//doEinlesen("C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/bewi.txt");
 	}
-	private void regleNachricht(){
+	private void regleNachricht(String pfad,String datei){
 
 		if(nachrichtentyp == 1){
 			if(dbHmap.get("beauftragtestelle")==null){
 				//dbHmap.put("beauftragtestelle",dbHmap.get("ktraeger"));
 				dbHmap.put("beauftragtestelle","");
 			}
-			doBewilligungSpeichern();
+			try {
+				doBewilligungSpeichern(pfad,datei);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			//doPatTest();
 		}
 	}
@@ -237,7 +252,7 @@ public class Reha301Einlesen extends JXPanel{
 		pan.validate();
 		return pan;
 	}
-	private void doBewilligungSpeichern(){
+	private void doBewilligungSpeichern(String pfad,String datei) throws IOException{
 		String bedingung = "versicherungsnr='"+dbHmap.get("versicherungsnr")+"' and datum='"+
 		dbHmap.get("datum")+"' and nachrichtentyp='"+(bewilligung ? "1" : "2")+"'";
 		int anzahl = SqlInfo.zaehleSaetze("dta301", bedingung);
@@ -255,8 +270,17 @@ public class Reha301Einlesen extends JXPanel{
 			"#"+dbHmap.get("ikkasse")+"', vnranspruchsberechtigter='"+dbHmap.get("vnranspruchsberechtigter")+"', "+
 			"ktraeger='"+dbHmap.get("ktraeger")+"', pnaab='"+dbHmap.get("beauftragtestelle")+"', auftragsleistung='"+
 			(auftragsleistung ? "T" : "F")+"', tage='"+dbHmap.get("tage")+"',edifact='"+buf.toString()+"', "+
-			"eilfall='"+dbHmap.get("a09")+"', leistung='"+dbHmap.get("a12")+"'";
+			"eilfall='"+dbHmap.get("a09")+"', leistung='"+dbHmap.get("a12")+"', "+
+			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"'";
 			SqlInfo.sqlAusfuehren(bedingung);
+			/*
+			int anfrage = JOptionPane.showConfirmDialog(null, "Nachricht im OpenOffice.org-Writer öffnen?","Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+			if(anfrage == JOptionPane.YES_OPTION){
+				ITextDocument document = OOTools.starteLeerenWriter(true);
+				document.getTextService().getText().setText(buf.toString());
+			}
+			*/
+
 			//System.out.println(bedingung);
 		}else{
 			//JOptionPane.showMessageDialog(null, "Die Bewilligung ist bereits in der Datenbank enthalten");
@@ -267,12 +291,12 @@ public class Reha301Einlesen extends JXPanel{
 			dbHmap.put(hmtitel[i],"");
 		}
 	}
-	private void doEinlesen(String datei){
+	private void doEinlesen(String pfad,String datei){
 		try {
 			Object[] obj = null;
-			getVectorFromFile(new File(datei));
+			getVectorFromFile(new File(pfad));
 			//Die Datei in die Textarea schreiben
-			meldung.setText("");
+			//meldung.setText("");
 			String[] unz = null;
 			if(edifact_vec.size()>0){
 				String UNZ = edifact_vec.get(edifact_vec.size()-1);
@@ -291,10 +315,13 @@ public class Reha301Einlesen extends JXPanel{
 					zeilen = 0;
 					buf.setLength(0);
 					buf.trimToSize();
+					fallbuf.setLength(0);
+					fallbuf.trimToSize();
 					for(int i = start; i < edifact_vec.size();i++){
 						zeilen++;
+						fallbuf.append(edifact_vec.get(i)+"\n");
 						if(edifact_vec.get(i).startsWith("UNH")){
-							meldung.setText(meldung.getText()+(nachricht > 1 ? "\n\n" : "")+"******************Nachricht Nr. "+nachricht+" von "+anzahlunts+" ****************\n\n");
+							//meldung.setText(meldung.getText()+(nachricht > 1 ? "\n\n" : "")+"******************Nachricht Nr. "+nachricht+" von "+anzahlunts+" ****************\n\n");
 							nachricht++;
 						}
 						/*****************Bewilligung************/
@@ -306,7 +333,7 @@ public class Reha301Einlesen extends JXPanel{
 							obj = doAuswertenBewilligung(doUebersetzen(edifact_vec.get(i)),i);
 							if(obj[0] != null){
 								buf.append(StringTools.Escaped(obj[0].toString())+"\n");
-								meldung.setText(meldung.getText()+obj[0].toString()+"\n");
+								//meldung.setText(meldung.getText()+obj[0].toString()+"\n");
 							}
 						}
 						/******************************************/
@@ -319,7 +346,7 @@ public class Reha301Einlesen extends JXPanel{
 										IntegerTools.trailNullAndRetInt(edifact_vec.get(i).split("\\+")[1])+
 										" in Nachricht "+nachricht+" ist nicht korrekt");
 							}
-							regleNachricht();
+							regleNachricht(pfad,datei);
 							start = i+1;
 							break;
 						}

@@ -1,10 +1,13 @@
 package Tools;
 
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
+
 
 import org.jdesktop.swingworker.SwingWorker;
 
@@ -103,7 +106,7 @@ public class OOTools{
 				if(stext.substring(start+i,start+(i+1)).equals("^")){
 					dummy = stext.substring(start,start+(i+1));
 					String sanweisung = dummy.toString().replace("^", "");
-					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
+					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert eingeben fï¿½r: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
 					if(ret==null){
 						return true;
 							//sucheErsetze(dummy,"");
@@ -144,6 +147,32 @@ public class OOTools{
 	}
 	
 	/*******************************************************************************************/
+	public static ITextDocument starteLeerenWriter(boolean visible){
+		ITextDocument textDocument = null;
+		try {
+			if(!Reha301.officeapplication.isActive()){
+				Reha301.starteOfficeApplication();
+			}
+			DocumentDescriptor docdescript = DocumentDescriptor.DEFAULT;
+			docdescript.setHidden(!visible);
+			IDocumentService documentService = Reha301.officeapplication.getDocumentService();
+			IDocument document = documentService.constructNewDocument(IDocument.WRITER,docdescript );
+			textDocument = (ITextDocument)document;
+			if(visible){
+				OOTools.inDenVordergrund(textDocument);
+				textDocument.getFrame().setFocus();
+			}
+		} 
+		catch (OfficeApplicationException exception) {
+			exception.printStackTrace();
+		} 
+		catch (NOAException exception) {
+			exception.printStackTrace();
+		}
+		return textDocument;
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	/*******************************************************************************************/
 	/*******************************************************************************************/

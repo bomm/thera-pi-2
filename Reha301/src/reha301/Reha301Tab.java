@@ -45,8 +45,8 @@ public class Reha301Tab extends JXPanel {
 		reha301Auswerten = new Reha301Auswerten(this);
 		reha301Tab.add("Nachrichten auswerten/importieren",reha301Auswerten);
 
-		reha301Einlesen = new Reha301Einlesen(this);
-		reha301Tab.add("Nachrichten einlesen",reha301Einlesen);
+		//reha301Einlesen = new Reha301Einlesen(this);
+		//reha301Tab.add("Nachrichten einlesen",reha301Einlesen);
 		
 
 		jxh = new JXHeader();
