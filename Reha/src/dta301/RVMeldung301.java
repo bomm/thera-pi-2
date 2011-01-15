@@ -112,7 +112,7 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("CTA+ABT+","CTA+ABT+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
 		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
 			buf301Body.append(test+EOL+NEWLINE);zeilen++;
@@ -154,9 +154,8 @@ public class RVMeldung301 {
 		gesamtbuf.append(buf301Header.toString());
 		gesamtbuf.append(buf301Body.toString());
 		gesamtbuf.append(buf301Footer.toString());
-		doOriginalDatei();
-		
 
+		//doOriginalDatei();
 		//Datei erstellen
 		//int intAktEREH = -1;
 		//String strAktEREH = null;
@@ -164,11 +163,91 @@ public class RVMeldung301 {
 		//long decodedSize = -1;
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+		if(doKeyStoreAktion()){
+			//Mail Versenden
+			//In neue Tabelle schreiben
+		}
+		
+	}
+	public void doUnterbrechung(String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis){
+		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
+		holeVector();
+		int zeilen = 1;
+		String test = "";
+		buf301Body.append("UNH+00001+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
+		buf301Body.append("BGM+06++10'"+NEWLINE);zeilen++; 
+		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
+		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("PNA+MS++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(5).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
+		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+			if( ! (test =  springeAufUndHole("RFF+AHN:","RFF+AHN:")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+		}
+		buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("FCA+AD'"+NEWLINE);zeilen++;
+		
+		buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","ADR++")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","ADR+1+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+		/******************/
+		buf301Body.append("PRC+ADMIN6'"+NEWLINE);zeilen++;	
+		buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+Dta301CodeListen.codeB08[ubgrund][0]+":B08"+EOL+NEWLINE);zeilen++;
+		//String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis
+		if(ubart==0){
+			buf301Body.append("DTM+158:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
+		}else if(ubart==1){
+			buf301Body.append("DTM+159"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
+		}else if(ubart==2){
+			buf301Body.append("DTM+324"+
+					mache10erDatum(beginnDatum)+
+					mache10erDatum(endeDatum)+":711"+EOL+NEWLINE);zeilen++;
+		}
+		if(!hinweis.equals("")){
+			buf301Body.append("FTX+TXT+++B:"+normalizeString(hinweis)+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append("UNT+"+
+				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
+				EOL+NEWLINE);zeilen++;
+		doKopfDaten();
+		doFussDaten();
+		gesamtbuf.append(buf301Header.toString());
+		gesamtbuf.append(buf301Body.toString());
+		gesamtbuf.append(buf301Footer.toString());
+		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
+		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+		if(doKeyStoreAktion()){
+			//Mail Versenden
+			//In neue Tabelle schreiben
+		}
 
+		
+	}
+	private boolean doKeyStoreAktion(){
 		try {
 			originalSize =gesamtbuf.length();
 			doDateiErstellen(0);
-			
 			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
 			NebraskaKeystore store = new NebraskaKeystore(keystore, SystemConfig.hmAbrechnung.get("hmkeystorepw"),"123456", Reha.aktIK);
 			NebraskaEncryptor encryptor = store.getEncryptor(EMPFAENGERIK);
@@ -179,6 +258,7 @@ public class RVMeldung301 {
 			System.out.println("Verschlüsselte Größe = "+encryptedSize);
 			doAuftragsDatei();
 			doDateiErstellen(1);
+			return true;
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -189,25 +269,12 @@ public class RVMeldung301 {
 		} catch (NebraskaNotInitializedException e) {
 			e.printStackTrace();
 		}
-		
-		//AUF-Datei erstellen
-
-		//Email erstellen
-		
-		//ab dafür
-		
-		/*
-				f = new File(Reha.proghome+"edifact/"+Reha.aktIK+"/"+"esol0"+aktEsol+".auf");
-				fw = new FileWriter(f);
-			    bw = new BufferedWriter(fw); 
-			    bw.write(auftragsBuf.toString()); 
-			    bw.close(); 
-			    fw.close();
-		 
-		 */
-		
+		return false;
 	}
-
+	
+	private String normalizeString(String in){
+		return in.replace(",", "?,").replace(":", "?:");
+	}
 	private void doDateiErstellen(int art) throws IOException{
 		File f = null;
 		FileWriter fw = null;

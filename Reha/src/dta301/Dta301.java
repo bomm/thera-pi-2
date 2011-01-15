@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -14,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -21,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -32,6 +35,8 @@ import org.thera_pi.nebraska.gui.utils.ButtonTools;
 import rehaInternalFrame.JDta301Internal;
 import sqlTools.SqlInfo;
 import systemTools.JCompTools;
+import systemTools.JRtaComboBox;
+import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
@@ -61,9 +66,19 @@ public class Dta301 extends JXPanel implements FocusListener {
 	String reznummer = "";
 	String patnummer = "";
 	
+	//Beginn-Mitteilung
 	JRtaTextField beginndatum = null;
 	JRtaTextField beginnstunde = null;
 	JRtaTextField beginnminute = null;
+
+	//Unterbrechungsmeldung
+	JRtaRadioButton[] ubradio = {null,null,null};
+	JRtaTextField ubbeginndatum = null;
+	JRtaTextField ubendedatum = null;
+	ButtonGroup ubbg = new ButtonGroup();
+	JRtaComboBox ucombo = null;
+	JTextArea ueditpan = null;
+	
 	
 	JButton[] buts = {null,null,null,null,null};
 	
@@ -103,32 +118,24 @@ public class Dta301 extends JXPanel implements FocusListener {
 		al = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(!is301Ok){
-					JOptionPane.showMessageDialog(null,"Diese Verordnung ist nicht für DTA-301 vorgesehen");
-					return;
-				}
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("beginnsenden")){
-					setCursor(Reha.thisClass.wartenCursor);
-					new SwingWorker<Void,Void>(){
-						@Override
-						protected Void doInBackground() throws Exception {
-							
-							try{
-								buts[0].setEnabled(false);
-								doRegle301(0,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
-								JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
-								buts[0].setEnabled(true);
-								
-							}catch(Exception ex){
-								ex.printStackTrace();
-							}
-							setCursor(Reha.thisClass.normalCursor);
-							return null;
-						}
-						
-					}.execute();
-					
+					if(!is301Ok){
+						JOptionPane.showMessageDialog(null,"Diese Verordnung ist nicht für DTA-301 vorgesehen");
+						return;
+					}
+					doBeginn();
+					return;
+				}
+				if(cmd.startsWith("ubart")){
+					doRegleFelder(cmd.substring(5));
+				}
+				if(cmd.startsWith("ubsenden")){
+					if(!is301Ok){
+						JOptionPane.showMessageDialog(null,"Diese Verordnung ist nicht für DTA-301 vorgesehen");
+						return;
+					}
+					doUnterbrechung();					
 				}
 			}
 		};
@@ -202,23 +209,71 @@ public class Dta301 extends JXPanel implements FocusListener {
 		headerpan.add(pan,BorderLayout.CENTER);
 		return headerpan;
 	}
+	/******************************************************/
 	private JXPanel getUnterbrechung(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
 		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
-		String xwerte = "";
-		String ywerte = "";
+		//                 1     2       3                4   5   6
+		String xwerte = "100dlu,0dlu,right:max(100dlu;p),5dlu,p,20dlu";
+		//                 1  2  3   4  5   6  7    8  9  10   11 12 13   14   15   16
+		String ywerte = "25dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,25dlu,25dlu,p,fill:0:grow(1.0)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
+		ubradio[0] = new JRtaRadioButton("Beginn einer Unterbrechung melden");
+		ubradio[1] = new JRtaRadioButton("Ende einer Unterbrechung melden");
+		ubradio[2] = new JRtaRadioButton("Beginn und Ende einer Unterbrechung melden");
+		for(int i = 0;i < 3 ; i++){
+			ubbg.add(ubradio[i]);
+			ubradio[i].setActionCommand("ubart"+Integer.toString(i));
+			ubradio[i].addActionListener(al);
+			pan.add(ubradio[i],cc.xyw(2,2+(i*2),4 ));
+		}
+		ubradio[0].setSelected(true);
+		JLabel lab = new JLabel("Erster Tag der Unterbrechung");
+		lab.setForeground(Color.BLUE);
+		pan.add(lab,cc.xy(3,8));
+		ubbeginndatum = new JRtaTextField("DATUM",true);
+		ubbeginndatum.setText(DatFunk.sHeute());
+		pan.add(ubbeginndatum,cc.xy(5,8));
+		lab = new JLabel("Letzter Tag der Unterbrechung");
+		lab.setForeground(Color.BLUE);
+		pan.add(lab,cc.xy(3,10));
+		ubendedatum = new JRtaTextField("DATUM",true);
+		ubendedatum.setText(DatFunk.sHeute());
+		pan.add(ubendedatum,cc.xy(5,10));
+		ucombo = new JRtaComboBox();
+		String[][] codeListe = Dta301CodeListen.codeB08;
+		for(int i = 0; i < codeListe.length;i++){
+		  ucombo.addItem(codeListe[i][1]);
+		}
+		ucombo.setSelectedIndex(2);
+		pan.add(ucombo,cc.xyw(3,12,3));
+		ubendedatum.setEnabled(false);
+		ueditpan = new JTextArea();
+		ueditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		ueditpan.setFont(new Font("Courier",Font.PLAIN,11));
+		ueditpan.setLineWrap(true);
+		ueditpan.setName("notitzen");
+		ueditpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
+		ueditpan.setWrapStyleWord(true);
+		ueditpan.setEditable(true);
+		ueditpan.setBackground(Color.WHITE);
+		ueditpan.setForeground(Color.BLUE);
+		pan.add(ueditpan,cc.xyw(3,14,3,CellConstraints.FILL,CellConstraints.FILL));
+		
+		buts[1] = ButtonTools.macheBut("Nachricht erzeugen und senden", "ubsenden", al);
+		pan.add(buts[1],cc.xyw(3, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
 		
 		pan.validate();
 		headerpan.add(getHeader(1),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
 		return headerpan;
 	}
+	/************************************************/
 	private JXPanel getEntlassung(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
@@ -389,10 +444,98 @@ public class Dta301 extends JXPanel implements FocusListener {
 			RVMeldung301 meldung301 = new RVMeldung301(art,id);
 			meldung301.doBeginn(this.beginndatum.getText().trim(),
 					this.beginnstunde.getText().trim()+this.beginnminute.getText().trim());
+			return;
+		}
+		if(art==1){
+			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			int iart = -1;
+			for(int i  = 0; i < 3; i++){
+				if(ubradio[i].isSelected()){
+					iart = i;
+					break;
+				}
+			}
+			meldung301.doUnterbrechung(this.ubbeginndatum.getText().trim(),
+					this.ubendedatum.getText().trim(),iart,ucombo.getSelectedIndex(),this.ueditpan.getText().trim());
+			return;
 		}
 	}
-
-	
+	/*****************************************************/
+	private void doRegleFelder(String art){
+		if(art.equals("0")){
+			this.ubbeginndatum.setEnabled(true);
+			this.ubendedatum.setEnabled(false);
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					ubbeginndatum.requestFocus();					
+				}
+			});
+			return;
+		}
+		if(art.equals("1")){
+			this.ubbeginndatum.setEnabled(false);
+			this.ubendedatum.setEnabled(true);
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					ubendedatum.requestFocus();					
+				}
+			});
+			return;
+		}
+		if(art.equals("2")){
+			this.ubbeginndatum.setEnabled(true);
+			this.ubendedatum.setEnabled(true);
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					ubbeginndatum.requestFocus();					
+				}
+			});
+			return;
+		}
+	}
+	private void doBeginn(){
+		setCursor(Reha.thisClass.wartenCursor);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				
+				try{
+					buts[0].setEnabled(false);
+					doRegle301(0,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
+					buts[0].setEnabled(true);
+					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				setCursor(Reha.thisClass.normalCursor);
+				return null;
+			}
+			
+		}.execute();
+	}
+	private void doUnterbrechung(){
+		setCursor(Reha.thisClass.wartenCursor);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				
+				try{
+					buts[0].setEnabled(false);
+					doRegle301(1,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
+					buts[0].setEnabled(true);
+					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				setCursor(Reha.thisClass.normalCursor);
+				return null;
+			}
+			
+		}.execute();
+	}
+	/*****************************************************/	
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
