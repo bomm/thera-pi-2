@@ -5,10 +5,18 @@ import hauptFenster.Reha;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
+import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
+import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
+import org.thera_pi.nebraska.crypto.NebraskaFileException;
+import org.thera_pi.nebraska.crypto.NebraskaKeystore;
+import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
+
 import sqlTools.SqlInfo;
+import systemEinstellungen.SystemConfig;
 import terminKalender.DatFunk;
 import utils.StringTools;
 
@@ -50,11 +58,13 @@ public class RVMeldung301 {
 	StringBuffer buf301Body = new StringBuffer();
 	StringBuffer buf301Footer = new StringBuffer();
 	StringBuffer gesamtbuf = new StringBuffer();
+	StringBuffer auftragsBuf = new StringBuffer();
 	Vector<Vector<String>> vecdta = null;
 	Vector<String> originaldata = new Vector<String>();
 	int intAktEREH = -1;
-	long originalSize = -1;
-	long decodedSize = -1;
+	String strAktEREH = null;
+	int originalSize = -1;
+	int encryptedSize = -1;
 	
 	RVMeldung301(int art, String id){
 		
@@ -80,7 +90,10 @@ public class RVMeldung301 {
 		buf301Footer.trimToSize();
 		gesamtbuf.setLength(0);
 		gesamtbuf.trimToSize();
+		auftragsBuf.setLength(0);
+		auftragsBuf.trimToSize();
 		vecdta = SqlInfo.holeFelder("select * from dta301 where id='"+id+"' LIMIT 1");
+		EMPFAENGERIK = vecdta.get(0).get(3);
 		
 	}
 	
@@ -143,11 +156,39 @@ public class RVMeldung301 {
 		gesamtbuf.append(buf301Footer.toString());
 		doOriginalDatei();
 		
+
 		//Datei erstellen
-		//Größe festhalten
-		
-		//Verschlüsseln
-		//Größe festhalten
+		//int intAktEREH = -1;
+		//String strAktEREH = null;
+		//long originalSize = -1;
+		//long decodedSize = -1;
+		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
+		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+
+		try {
+			originalSize =gesamtbuf.length();
+			doDateiErstellen(0);
+			
+			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
+			NebraskaKeystore store = new NebraskaKeystore(keystore, SystemConfig.hmAbrechnung.get("hmkeystorepw"),"123456", Reha.aktIK);
+			NebraskaEncryptor encryptor = store.getEncryptor(EMPFAENGERIK);
+			String inFile = (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".ORG").toLowerCase();
+			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));
+			encryptedSize = Integer.parseInt(Long.toString(size));
+			System.out.println("       Originalgröße = "+originalSize);
+			System.out.println("Verschlüsselte Größe = "+encryptedSize);
+			doAuftragsDatei();
+			doDateiErstellen(1);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NebraskaCryptoException e) {
+			e.printStackTrace();
+		} catch (NebraskaFileException e) {
+			e.printStackTrace();
+		} catch (NebraskaNotInitializedException e) {
+			e.printStackTrace();
+		}
 		
 		//AUF-Datei erstellen
 
@@ -167,7 +208,31 @@ public class RVMeldung301 {
 		
 	}
 
-
+	private void doDateiErstellen(int art) throws IOException{
+		File f = null;
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		if(art == 0){
+			f = new File( (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".ORG").toLowerCase() );
+			fw = new FileWriter(f);
+		    bw = new BufferedWriter(fw); 
+		    bw.write(gesamtbuf.toString()); 
+		    bw.flush();
+		    fw.flush();
+		    fw.close();
+		    return;
+		}else if(art == 1){
+			f = new File( (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".AUF").toLowerCase() );
+			fw = new FileWriter(f);
+		    bw = new BufferedWriter(fw); 
+		    bw.write(auftragsBuf.toString()); 
+		    bw.flush();
+		    fw.flush();
+		    fw.close();
+		    return;
+		}
+		
+	}
 	private void doOriginalDatei(){
 		
 	}
@@ -189,6 +254,13 @@ public class RVMeldung301 {
 		}
 		return datesplit[3].substring(0,2)+datesplit[3].substring(3,5);
 	}
+	private String getEdiDatumFromDeutsch(String deutschDat){
+		if(deutschDat.trim().length()<10){
+			return "";
+		}
+		return deutschDat.substring(6)+deutschDat.substring(3,5)+deutschDat.substring(0,2);
+	}
+	
 	private void holeVector(){
 		originaldata.clear();
 		//final byte ZEILENENDE = "\n".getBytes()[0];
@@ -232,4 +304,39 @@ public class RVMeldung301 {
 			return dats[2]+dats[1]+dats[0];
 		}
 	}
+	private void doAuftragsDatei(){
+		String abrDateiName="REH-RTA    ";
+		auftragsBuf.append("500000"+"01"+"00000348"+"000");
+		auftragsBuf.append("EREH"+this.strAktEREH);
+		auftragsBuf.append("     ");
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Reha.aktIK, " ", false, 15));
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Reha.aktIK, " ", false, 15));
+		auftragsBuf.append(StringTools.fuelleMitZeichen(EMPFAENGERIK, " ", false, 15));
+		auftragsBuf.append(StringTools.fuelleMitZeichen(EMPFAENGERIK, " ", false, 15));
+		auftragsBuf.append("000000");
+		auftragsBuf.append("000000");
+		auftragsBuf.append(abrDateiName);
+		auftragsBuf.append(getEdiDatumFromDeutsch(DatFunk.sHeute())+getEdiTimeString(true));
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", false, 14));
+		auftragsBuf.append("000000");
+		auftragsBuf.append("0");
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(originalSize), "0", true, 12) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(encryptedSize), "0", true, 12) );
+		auftragsBuf.append("I800");
+		auftragsBuf.append("0303");
+		auftragsBuf.append("   ");
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 5) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 8) );
+		auftragsBuf.append("0");
+		auftragsBuf.append("00");
+		auftragsBuf.append("0");
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 10) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 6) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 28) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 44) );
+		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 30) );
+	}
+	
 }

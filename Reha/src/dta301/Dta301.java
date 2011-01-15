@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -21,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
@@ -107,7 +109,26 @@ public class Dta301 extends JXPanel implements FocusListener {
 				}
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("beginnsenden")){
-					doRegle301(0,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					setCursor(Reha.thisClass.wartenCursor);
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							
+							try{
+								buts[0].setEnabled(false);
+								doRegle301(0,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+								JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
+								buts[0].setEnabled(true);
+								
+							}catch(Exception ex){
+								ex.printStackTrace();
+							}
+							setCursor(Reha.thisClass.normalCursor);
+							return null;
+						}
+						
+					}.execute();
+					
 				}
 			}
 		};
@@ -115,13 +136,18 @@ public class Dta301 extends JXPanel implements FocusListener {
 	private JXPanel getContent(){
 		content = new JXPanel(new BorderLayout());
 		content.setOpaque(false);
+		//UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
+		//UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
 		tabPan = new JTabbedPane();
 		tabPan.setOpaque(false);
 		tabPan.setUI(new WindowsTabbedPaneUI());
+		
+		
+
 		tabPan.add("Beginn-Mitteilung", beginn=getBeginn());
 		tabPan.add("Unterbrechung melden",unterbrechung=getUnterbrechung());
 		tabPan.add("Entlass-Mitteilung",abschluss=getEntlassung());
-		tabPan.add("alle Nachrichten",uebersicht=getUebersicht());
+		tabPan.add("Übersicht Fall-Nachrichten",uebersicht=getUebersicht());
 		content.add(tabPan,BorderLayout.CENTER);
 		content.add(getFallDaten(),BorderLayout.WEST);
 		return content;
@@ -130,7 +156,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	private JXPanel getBeginn(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
-		headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "100dlu,right:max(100dlu;p),5dlu,p,20dlu";
@@ -138,7 +164,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
-		JLabel lab = new JLabel("Datum der Aufnahme");
+		JLabel lab = new JLabel("Datum der Eingangsuntersuchung");
 		lab.setForeground(Color.BLUE);
 		pan.add(lab,cc.xy(2,2));
 		beginndatum = new JRtaTextField("DATUM",true);
@@ -179,7 +205,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	private JXPanel getUnterbrechung(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
-		headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "";
@@ -196,7 +222,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	private JXPanel getEntlassung(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
-		headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "";
@@ -213,7 +239,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	private JXPanel getUebersicht(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
-		headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "";
@@ -329,11 +355,13 @@ public class Dta301 extends JXPanel implements FocusListener {
 	}
 	private JXHeader getHeader(int welcher){
 		JXHeader head = new JXHeader();
+		head.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		
 		switch(welcher){
 		case 0:
 	        head.setTitle("Beginn-Mitteilung für Rehaleistungen (inkl. Nachsorgeleistung)");
-	        head.setDescription("<html><br>Tragen Sie hier bitte das <u>Datum der Eingangsuntersuchung</u> des Patienten sowie die <u>Uhrzeit</u> der Aufnahme ein.</html>");
-	        head.setIcon(null);
+	        head.setDescription("<html>Tragen Sie hier bitte das <u>Datum der Eingangsuntersuchung</u> des Patienten sowie die <u>Uhrzeit</u> der Aufnahme ein.</html>");
+	        head.setIcon(new ImageIcon(Reha.proghome+"icons/start.jpg"));
 	        break;
 		case 1:
 	        head.setTitle("Unterbrechung eine Reha");

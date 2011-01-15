@@ -554,8 +554,8 @@ public void Dta301Fenster(int setPos,String sparam) {
 	dta301jry = new JDta301Internal("thera-\u03C0  - Fallsteuerung nach §301 ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)dta301jry,1,(Container)dta301jry.getContentPane());
 	dta301jry.setName(name);
-	dta301jry.setSize(new Dimension(700,450));
-	dta301jry.setPreferredSize(new Dimension(700,450));
+	dta301jry.setSize(new Dimension(780,470));
+	dta301jry.setPreferredSize(new Dimension(780,470));
 	Reha.thisClass.dta301panel = new Dta301(dta301jry); 
 	dta301jry.setContent(Reha.thisClass.dta301panel);	
 	dta301jry.addComponentListener(Reha.thisClass);
