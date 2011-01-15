@@ -111,8 +111,8 @@ public class RVMeldung301 {
 		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(5).toString())+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
-		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++;//Hier die div. IK's einbauen
+		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++;//hier nach Inikationsgruppen untersuchen
 		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
 		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
 			buf301Body.append(test+EOL+NEWLINE);zeilen++;
@@ -183,7 +183,7 @@ public class RVMeldung301 {
 		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(5).toString())+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
 		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
 		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
 		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
@@ -214,7 +214,6 @@ public class RVMeldung301 {
 		buf301Body.append("PRC+ADMIN6'"+NEWLINE);zeilen++;	
 		buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("IMD+++"+Dta301CodeListen.codeB08[ubgrund][0]+":B08"+EOL+NEWLINE);zeilen++;
-		//String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis
 		if(ubart==0){
 			buf301Body.append("DTM+158:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
 		}else if(ubart==1){
@@ -241,7 +240,8 @@ public class RVMeldung301 {
 			//Mail Versenden
 			//In neue Tabelle schreiben
 		}
-
+	}
+	public void doEntlassung(String entlassDatum,String uhrZeit){
 		
 	}
 	private boolean doKeyStoreAktion(){
@@ -300,9 +300,7 @@ public class RVMeldung301 {
 		}
 		
 	}
-	private void doOriginalDatei(){
-		
-	}
+
 	private void doKopfDaten(){
 		buf301Header.append(UNA+DOPPELPUNKT+PLUS+STARTCHARS+EOL+NEWLINE);
 		buf301Header.append(UNB+PLUS+"UNOC:3"+PLUS+Reha.aktIK+PLUS+EMPFAENGERIK+
@@ -327,27 +325,12 @@ public class RVMeldung301 {
 		}
 		return deutschDat.substring(6)+deutschDat.substring(3,5)+deutschDat.substring(0,2);
 	}
-	
 	private void holeVector(){
 		originaldata.clear();
-		//final byte ZEILENENDE = "\n".getBytes()[0];
-		byte[] ende = {13};
-		final String ERSATZ = new String(ende);
-		final byte[] SYSTEMZEILE = {(System.getProperty("line.separator").getBytes().length == 2 ? 
-				System.getProperty("line.separator").getBytes()[1] : 
-					System.getProperty("line.separator").getBytes()[0]	)};
-
 		String[] data = vecdta.get(0).get(28).split("\n");
-		//String[] data = vecdta.get(0).get(28).split(System.getProperty("line.separator"));
 		for(int i = 0; i < data.length;i++){
 			originaldata.add(String.valueOf(data[i]));
 		}
-		/*
-		for(int i = 0; i < data.length;i++){
-			System.out.println("Element "+Integer.toString(i)+" = "+originaldata.get(i));
-		}
-		*/
-
 	}
 	private String springeAufUndHole(String springeauf,String hole){
 		String ret = "";
