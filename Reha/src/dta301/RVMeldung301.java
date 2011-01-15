@@ -119,7 +119,7 @@ public class RVMeldung301 {
 			if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
 				buf301Body.append(test+EOL+NEWLINE);zeilen++;
 			}
-			if( ! (test =  springeAufUndHole("RFF+AHN:","RFF+AHN:")).equals("")){
+			if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
 				buf301Body.append(test+EOL+NEWLINE);zeilen++;
 			}
 		}
@@ -191,7 +191,7 @@ public class RVMeldung301 {
 			if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
 				buf301Body.append(test+EOL+NEWLINE);zeilen++;
 			}
-			if( ! (test =  springeAufUndHole("RFF+AHN:","RFF+AHN:")).equals("")){
+			if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
 				buf301Body.append(test+EOL+NEWLINE);zeilen++;
 			}
 		}
