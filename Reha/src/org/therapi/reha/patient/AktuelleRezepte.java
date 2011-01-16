@@ -2509,7 +2509,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				vorlage.setModal(true);
 				vorlage.toFront();
 				vorlage.setVisible(true);
-				String strKopierDiszi = vorlage.strSelected;
+				String strKopierDiszi = vorlage.strSelectedDiszi;
 				// Die Kopiervorlage steht jetzt in vorlage.vecResult oder es wurde nichts gefunden !
 				vecKopiervorlage = vorlage.vecResult;
 				vorlage= null;
