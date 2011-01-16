@@ -60,6 +60,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	/**
 	 * 
 	 */
+	// Lemmi Doku: Das sind die Text-Eingabefgelder im Rezept
 	public JRtaTextField[] jtf = {null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null,
@@ -1102,6 +1103,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 	}
 
+	// Lemmi-Doku: Holt die passenden Inikationsschlüssel gemäß aktiver Disziplin
 	private void fuelleIndis(String item){
 		if(jcmb[cINDI].getItemCount() > 0){
 			jcmb[cINDI].removeAllItems();
@@ -1111,7 +1113,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		}
 		int anz = 0;
 		String[] indis = null;
-		if(item.toLowerCase().contains("physio") || item.toLowerCase().contains("massage") ){
+		if(    item.toLowerCase().contains("physio") 
+			|| item.toLowerCase().contains("massage") ){
 			anz = Reha.thisClass.patpanel.aktRezept.indphysio.length;
 			indis = Reha.thisClass.patpanel.aktRezept.indphysio; 
 		}else if(item.toLowerCase().contains("ergo")){
@@ -1130,17 +1133,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		return;
 	}
+
 	public void ladePreise(String[] artdbeh){
 		jcmb[cLEIST1].setDataVectorWithStartElement(preisvec,0,9,"./.");
 		jcmb[cLEIST2].setDataVectorWithStartElement(preisvec,0,9,"./.");
 		jcmb[cLEIST3].setDataVectorWithStartElement(preisvec,0,9,"./.");
 		jcmb[cLEIST4].setDataVectorWithStartElement(preisvec,0,9,"./.");
-		if(artdbeh != null){
-			for(int i = 0; i < 4;i++){
+		if(artdbeh != null){ 
+			for (int i = 0; i < 4; i++){
 				if(artdbeh[i].equals("")){
-					jcmb[i+2].setSelectedIndex(0);
+					// Lemmi 20110116 ersetzt durch Zeile unten drunter. 
+					//Alt:  jcmb[i+2].setSelectedIndex(0);
+					jcmb[cLEIST1+i].setSelectedIndex(0);
 				}else{
-					jcmb[i+2].setSelectedVecIndex(1, artdbeh[i]);		
+					// Lemmi 20110116 ersetzt durch Zeile unten drunter. 
+					//Alt: jcmb[i+2].setSelectedVecIndex(1, artdbeh[i]);
+					jcmb[cLEIST1+i].setSelectedVecIndex(1, artdbeh[i]);
 				}
 			}
 		}
@@ -1339,6 +1347,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					"Untersuchen Sie die Krankenkasse im Kassenstamm un weisen Sie dieser Kasse die entsprechend Preisgruppe zu");
 		}
 	}
+	
 	/***********
 	 * 
 	 * 
@@ -1359,13 +1368,14 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[cANZKM].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
 		jtf[cPATID].setText(Reha.thisClass.patpanel.patDaten.get(66)); //id von Patient
 		jtf[cPATINT].setText(Reha.thisClass.patpanel.patDaten.get(29)); //pat_intern von Patient
-
 	}
+	
 	/***********
 	 * 
 	 * 
 	 */
 	// Lemmi Doku: lädt die Daten aus dem übergebenen Rezept-Vektor in die Dialog-Felder des Rezepts
+	// 		       und setzt auch dei ComboBoxen und CheckBoxen
 	private void ladeZusatzDatenAlt(){
 		String test = StringTools.NullTest(this.vec.get(36));
 		jtf[cKTRAEG].setText(test); //kasse
@@ -1401,6 +1411,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[cANZ3].setText(test);
 		test = StringTools.NullTest(this.vec.get(6));
 		jtf[cANZ4].setText(test);
+		
 		itest = StringTools.ZahlTest(this.vec.get(8));
 		jcmb[cLEIST1].setSelectedIndex(leistungTesten(0,itest));
 		itest = StringTools.ZahlTest(this.vec.get(9));
@@ -1409,14 +1420,18 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcmb[cLEIST3].setSelectedIndex(leistungTesten(2,itest));
 		itest = StringTools.ZahlTest(this.vec.get(11));
 		jcmb[cLEIST4].setSelectedIndex(leistungTesten(3,itest));
+		
 		test = StringTools.NullTest(this.vec.get(52));
 		jtf[cFREQ].setText(test);
 		test = StringTools.NullTest(this.vec.get(47));
 		jtf[cDAUER].setText(test);
+		
 		test = StringTools.NullTest(this.vec.get(44));
 		jcmb[cINDI].setSelectedItem(test);
+		
 		itest = StringTools.ZahlTest(this.vec.get(46));
 		jcmb[cBARCOD].setSelectedIndex(itest);
+		
 		test = StringTools.NullTest(this.vec.get(45));
 		jtf[cANGEL].setText(test);
 		if(!test.trim().equals("")){
@@ -1581,6 +1596,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
 			
 			if(jcmb[cFARBCOD].getSelectedIndex() > 0){
+				// Lemmi Frage: was bedeutet "14+" in der folgenden Zeile:
 				sbuf.append("farbcode='"+Integer.valueOf(14+jcmb[cFARBCOD].getSelectedIndex()-1).toString()+"', ");	
 			}else{
 				sbuf.append("farbcode='-1', ");
@@ -1807,7 +1823,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					szzstatus = "0";
 					break;
 				}
-				////System.out.println("ZuzahlStatus = Zuzahlung (zun�chst) erforderlich, pr�fe ob befreit oder unter 18");
+				////System.out.println("ZuzahlStatus = Zuzahlung (zunï¿½chst) erforderlich, prï¿½fe ob befreit oder unter 18");
 				if(Reha.thisClass.patpanel.patDaten.get(30).equals("T")){
 					//System.out.println("2. ZuzahlStatus = Patient ist befreit");
 					szzstatus = "0";				
@@ -1855,7 +1871,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			JOptionPane.showMessageDialog(null, "Fehler beim Abspeichern dieses Rezeptes.\n"+
 					"Bitte notieren Sie den Namen des Patienten und die Rezeptnummer\n"+
 					"und informieren Sie umgehend den Administrator");
-
 		}
 		
 	}
@@ -1878,13 +1893,21 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		final int cVAR_PATID = 0;
 		final int cVAR_REZNR = 1;
 		final int cVAR_REZDATUM = 2;
-
+		final int cVAR_ANZAHL1 = 3;
+		final int cVAR_ANZAHL2 = 4;
+		final int cVAR_ANZAHL3 = 5;
+		final int cVAR_ANZAHL4 = 6;
+		final int cVAR_ANZAHLKM = 7;
+		final int cVAR_ARTDBEH1 = 8;  // Art der Behandlung
+		final int cVAR_ARTDBEH2 = 9;
+		final int cVAR_ARTDBEH3 = 10;
+		final int cVAR_ARTDBEH4 = 11;
 		final int cVAR_BEFREIT = 12;  // BEFR
 		final int cVAR_REZGEBUEHR = 13;
 		final int cVAR_BEZAHLT = 14;  // REZ_BEZ
 		final int cVAR_ARZTNAM = 15;
 		final int cVAR_ARZTID = 16;
-
+		final int cVAR_AERZTE = 17;
 		final int cVAR_PREIS1 = 18;
 		final int cVAR_PREIS2 = 19;
 		final int cVAR_PREIS3 = 20;
@@ -1896,7 +1919,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		final int cVAR_ZZSTAT = 39;
 		final int cVAR_LASTDAT = 40;  // spätester Behandlungsbginn
-		
+		final int cVAR_PREISGR = 41;
+		final int cVAR_BEGRUENDADR = 42;
+		final int cVAR_HAUSBES = 43;
 		final int cVAR_INDI = 44;
 		final int cVAR_ANGEL = 45;
 		final int cVAR_BARCOD = 46;  // BARCODEFORM
@@ -1949,9 +1974,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 			vec.set(cVAR_BEZAHLT, "F" );    // Das kann noch nicht bezahlt sein (Rezeptgebühr)
 			
-			ladeZusatzDatenAlt();  // Eintragen von vec in die Dilaog-Felder
+			ladeZusatzDatenAlt();  // Eintragen von vec in die Dialog-Felder
 			
-			ladeZusatzDatenNeu();  // Hier nochmals die neuen Daten ermitteln - schölißlich heban wir ein neues Rezept !
+			ladeZusatzDatenNeu();  // Hier nochmals die neuen Daten ermitteln - schließlich haben wir ein neues Rezept !
 
 			jtf[cKTRAEG].setText(vec.get(36)); //ktraeger
 			jtf[cKASID].setText(vec.get(37)); //kassenid
@@ -1961,23 +1986,30 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			
 			preisgruppe = Integer.parseInt(vec.get(41));
 			
-			// Lemmi 20110106: Lieber Hr. Steinhilber: Das fkt. nicht !
+			// Lemmi 20110106: Lieber Hr. Steinhilber: Das fkt. nicht, weil hier nicht alle Disziplinen aktiv sein müssen !
 			//erneuter Aufruf damit die korrekte Preisgruppe genommen wird GKV vs. BGE etc.
 ///			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(new String[] {"KG","MA","ER","LO","RH","PO"}).indexOf(rezToCopy.substring(0,2))  );
-			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(strRezepklassenAktiv).indexOf(strKopiervorlage.substring(0,2)) );
+			// Lemmi 20110116: die ganze Zeile ist überflüssig, weil das vorab alles schon korrekt gesetzt worden ist !
+			//                 wenn man die Zeile benutzt wird zudem der gewählte INDI-Schlüssel wieder gelöscht !
+//			jcmb[cRKLASSE].setSelectedIndex( Arrays.asList(strRezepklassenAktiv).indexOf(strKopiervorlage.substring(0,2)) );
 			
-			if(!vec.get(8).equals("0")){
-				jcmb[cLEIST1].setSelectedVecIndex(9, vec.get(8));//art_dbeh1	
+			
+			/* Lemmi 20110116: Lieber Hr. Steinhilber: Die Leistungen werden bereits durch den obigen Aufruf von "ladeZusatzDatenAlt()" gesetzt.
+			 * Lemmi Frage: warum sollte das hier nochmals gemacht werden?
+			if(!vec.get(cVAR_ARTDBEH1).equals("0")){
+				jcmb[cLEIST1].setSelectedVecIndex(9, vec.get(cVAR_ARTDBEH1));//art_dbeh1	
 			}
-			if(!vec.get(9).equals("0")){
-				jcmb[cLEIST2].setSelectedVecIndex(9, vec.get(9));//art_dbeh2	
+			if(!vec.get(cVAR_ARTDBEH2).equals("0")){
+				jcmb[cLEIST2].setSelectedVecIndex(9, vec.get(cVAR_ARTDBEH2));//art_dbeh2	
 			}
-			if(!vec.get(10).equals("0")){
-				jcmb[cLEIST3].setSelectedVecIndex(9, vec.get(10));//art_dbeh3	
+			if(!vec.get(cVAR_ARTDBEH3).equals("0")){
+				jcmb[cLEIST3].setSelectedVecIndex(9, vec.get(cVAR_ARTDBEH3));//art_dbeh3	
 			}
-			if(!vec.get(11).equals("0")){
-				jcmb[cLEIST4].setSelectedVecIndex(9, vec.get(11));//art_dbeh4	
+			if(!vec.get(cVAR_ARTDBEH4).equals("0")){
+				jcmb[cLEIST4].setSelectedVecIndex(9, vec.get(cVAR_ARTDBEH4));//art_dbeh4	
 			}
+			*/
+			
 			// vec wieder löschen - er hat seinen Transport-Dienst für das Kopieren geleistet
 			vec.clear();
 		}
@@ -1992,10 +2024,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		//Wenn meine Damen einen Vorgang abbrechen wollen, dann wollen sie den Vorgang abbrechen
 		//und nicht gefrag werden ob sie den Vorgang abbrechen wollen.
 		//Steinhilber
-		/*
-		if ( HasChanged() && askForCancelUsaved() == JOptionPane.NO_OPTION )
-			return;
-		*/
+		// Lemmi 20110116: Gerne auch mit Steuer-Parameter
+		if( (Boolean)SystemConfig.hmRezeptDlgIni.get("RezAendAbbruchWarn")) {
+			if ( HasChanged() && askForCancelUsaved() == JOptionPane.NO_OPTION )
+				return;
+		}
+			
 		aufraeumen();
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();		
 	}

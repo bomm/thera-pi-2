@@ -86,9 +86,10 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 	public JButton abbrechen;
 //	public String afrNummer;
 
-	public String strSelected = "";
+	public String strSelectedDiszi = "";
 	Vector<String> vecDiszi = new Vector<String>();
 	public Vector<String> vecResult = new Vector<String>();
+	public boolean bHasSelfDisposed = false;
 	
 	public RezeptVorlage(Point pt){
 		super(null,"RezeptVorlage");		
@@ -102,9 +103,9 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 					"SELECT \"verordn\", `PAT_INTERN`,`REZ_NR`, `REZ_DATUM` FROM `verordn` ver WHERE `PAT_INTERN` = " + strPatIntern +
 					") uni";
 		//				ORDER BY REZ_NR asc, rez_datum desc
-		starteSuche( cmd, "diszi" );
+		starteSuche( cmd, "diszi" );  // das füllt den Member-Vektor "vecDiszi"
 		
-		
+
 		pinPanel = new PinPanel();
 		pinPanel.setName("RezeptVorlage");
 		pinPanel.getGruen().setVisible(false);
@@ -119,7 +120,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		rgb.setLayout(new BorderLayout());
 
 		
-		// Das erzeugt den farbigen Fensterhintergrund mit Farbverlauf
+		// Das erzeugt den farbigen Fensterhintergrund mit Farbverlauf für den Dialog
 		new SwingWorker<Void,Void>(){
 
 			@Override
@@ -147,8 +148,11 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		// prüfe die Anzahl der gefundenen Ergebnisse und treffe voreilige Entscheidungen !
 		//int iTest = vecDiszi.size();
 		if ( vecDiszi.size() < 2 ) {
-			if ( vecDiszi.size() == 1 ) strSelected = vecDiszi.get( 0 );
+			if ( vecDiszi.size() == 1 ) strSelectedDiszi = vecDiszi.get( 0 );
+			// mit der Disziplin such wir jetzt noch das konkrete letzte Rezept zu dieser Disziplin
+			starteSucheVorlage( (String)Reha.thisClass.patpanel.vecaktrez.get(0), strSelectedDiszi );
 			this.dispose();
+			bHasSelfDisposed = true;
 			return;
 		}
 
@@ -159,13 +163,14 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 	// ermittelt die ganz konkrete Vorlage für die Kopieraktion
 	private void starteSucheVorlage( String strPatIntern, String strDiszi) {
 		
+		// Suche neuestes Rezept inkl. der vorab bestimmten Disziplin
 		String cmd = 
 		"SELECT * FROM `lza` WHERE `PAT_INTERN` = " + strPatIntern + " AND rez_nr like \"" + strDiszi + "%\"" +
 		" union " +
 		"SELECT * FROM `verordn` WHERE `PAT_INTERN` = " + strPatIntern + " AND rez_nr like \"" + strDiszi + "%\"" +
 		" ORDER BY rez_datum desc LIMIT 1";
 		
-		starteSuche( cmd, "vorlage" );
+		starteSuche( cmd, "vorlage" );  // das füllt den Member-Vektor "vecResult"
 	}
 
 	
@@ -187,10 +192,9 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 			rs = stmt.executeQuery(sstmt);
 			
 			if ( strMode.equals("diszi") ) while( rs.next() ) {
-				// Lemmi 20101202: Fixe Spalten-Nummern durch lesbare Parameter ersetzt
-				vecDiszi.add( rs.getString("diszi") );
+				vecDiszi.add( rs.getString("diszi") );  // das schaut nur die Disziplinen aus gefundenen Rezepten an
 			}  // end if while
-			else if ( strMode.equals("vorlage") ) {
+			else if ( strMode.equals("vorlage") ) {   // das schaut konkrete Rezepte an
 				vecResult.clear();
 				ResultSetMetaData rsMetaData = rs.getMetaData() ;
 				int numberOfColumns = rsMetaData.getColumnCount()+1;
@@ -235,7 +239,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		pb.getPanel().setOpaque(false);
 		
 		pb.addLabel("<html>Es existieren Rezepte in mehreren Disziplinen.<br><br>" + 
-					"Bitte die Disziplin wählen, deren letztes Rezept Sie JETZT kopieren wollen",
+					"Bitte die Disziplin wählen, deren letztes Rezept Sie JETZT kopieren wollen</html>",
 					cc.xyw(2, 2, 5));
 
 		int iAnzAktiv = SystemConfig.rezeptKlassenAktiv.size();
@@ -252,7 +256,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 					rbDiszi[0] = new JRtaRadioButton(SystemConfig.rezeptKlassenAktiv.get(iAktiv).get(1));
 					if ( bFirst ) {
 						rbDiszi[0].setSelected(true);
-						strSelected = vecDiszi.get(iVorh);
+						strSelectedDiszi = vecDiszi.get(iVorh);
 					}
 					rbDiszi[0].setName(SystemConfig.rezeptKlassenAktiv.get(iAktiv).get(1));
 					rbDiszi[0].addActionListener(this);
@@ -269,61 +273,6 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 			}
 		}
 
-/*		
-		pb.addLabel("Heilmittel 1",cc.xy(3, 4));
-		String lab = (String)Reha.thisClass.patpanel.vecaktrez.get(48);
-		leistung[0] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[0].setOpaque(false);
-		if(!lab.equals("")){
-			leistung[0].setSelected(true);			
-		}else{
-			leistung[0].setSelected(false);
-			leistung[0].setEnabled(false);
-		}
-		pb.add(leistung[0],cc.xyw(5, 4, 2));
-		
-		pb.addLabel("Heilmittel 2",cc.xy(3, 6));
-		lab = (String)Reha.thisClass.patpanel.vecaktrez.get(49);
-		leistung[1] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[1].setOpaque(false);
-		if(!lab.equals("")){
-						
-		}else{
-			leistung[1].setSelected(false);
-			leistung[1].setEnabled(false);
-		}
-		pb.add(leistung[1],cc.xyw(5, 6, 2));
-
-		pb.addLabel("Heilmittel 3",cc.xy(3, 8));
-		lab = (String)Reha.thisClass.patpanel.vecaktrez.get(50);
-		leistung[2] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[2].setOpaque(false);
-		if(!lab.equals("")){
-						
-		}else{
-			leistung[2].setSelected(false);
-			leistung[2].setEnabled(false);
-		}
-		pb.add(leistung[2],cc.xyw(5, 8, 2));
-
-		pb.addLabel("Heilmittel 4",cc.xy(3, 10));
-		lab = (String)Reha.thisClass.patpanel.vecaktrez.get(51);
-		leistung[3] = new JRtaCheckBox((lab.equals("") ? "----" : lab));
-		leistung[3].setOpaque(false);
-		if(!lab.equals("")){
-						
-		}else{
-			leistung[3].setSelected(false);
-			leistung[3].setEnabled(false);
-		}
-		pb.add(leistung[3],cc.xyw(5, 10, 2));
-
-		pb.addLabel("Eintragen in Memo",cc.xy(3, 12));
-		leistung[4] = new JRtaCheckBox("Fehldaten");
-		leistung[4].setOpaque(false);
-		leistung[4].setSelected(true);
-		pb.add(leistung[4],cc.xyw(5, 12, 2));
-*/		
 		uebernahme = new JButton("kopieren");
 		uebernahme.setActionCommand("kopieren");
 		uebernahme.addActionListener(this);
@@ -379,22 +328,19 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		// TODO Auto-generated method stub
 		if(arg0.getActionCommand().equals("kopieren")){
 			// hier wird vecResult gefüllt
-			starteSucheVorlage( (String)Reha.thisClass.patpanel.vecaktrez.get(0), strSelected );
+			starteSucheVorlage( (String)Reha.thisClass.patpanel.vecaktrez.get(0), strSelectedDiszi );
 //			Vector<String> vecTest = new Vector<String>();
 //			vecTest = vecResult;
 			this.dispose();
 		}
 		if( vecDiszi.contains( arg0.getActionCommand()) ) {  // Wenn eine der gefundenen Disziplinen angewählt worden ist
-			strSelected = arg0.getActionCommand();
+			strSelectedDiszi = arg0.getActionCommand();
 			// hier wird vecResult gefüllt
-			starteSucheVorlage( (String)Reha.thisClass.patpanel.vecaktrez.get(0), strSelected );
-//			Vector<String> vecTest = new Vector<String>();
-//			vecTest = vecResult;
-
+			starteSucheVorlage( (String)Reha.thisClass.patpanel.vecaktrez.get(0), strSelectedDiszi );
 			this.dispose();
 		}
 		if(arg0.getActionCommand().equals("abbrechen")){
-			strSelected = "";
+			strSelectedDiszi = "";
 			vecResult.clear();
 			this.dispose();
 		}
@@ -510,7 +456,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 			
 		}
 		SystemConfig.hmAdrAFRDaten.put("<AFRgesamt>",df.format( gesamt));
-		/// Hier mu� noch die Rechnungsnummer bezogen und eingetragen werden
+		/// Hier muß noch die Rechnungsnummer bezogen und eingetragen werden
 		afrNummer = "AFR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("afrnr"));
 		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>",afrNummer);
 	}
