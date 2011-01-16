@@ -40,7 +40,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	 * 
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
-	JRtaTextField[] tfs = {null,null};
+	JRtaTextField[] tfs = {null,null,null};
 	JButton abbruch = null;
 	JButton speichern = null;
 	JButton[] buts = {null,null};
@@ -121,6 +121,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	
 	JRtaComboBox cmbBut = new JRtaComboBox();
 	JRtaComboBox cmbClk = new JRtaComboBox();
+	JRtaComboBox cmbRezAbbruch = new JRtaComboBox();
 	Vector<Vector<String>>vecJN = new Vector<Vector<String>>();
 	Vector<Vector<String>>vec12 = new Vector<Vector<String>>();
 	
@@ -129,8 +130,10 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
        //1.    2. 3. 4.   5.   6.   7.   8.  9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.  20.    21.   22.   23.
 		"p, 0dlu, p, p,0dlu,p,2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, "+
-	   // 21.  22.  23.  24. 25.  26. 27. 28.  29.  30.  31.  32.  33. 34.  35.  36.
-		"2dlu, p , 2dlu ,p , 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu,  p, 2dlu, p, 2dlu, p, 2dlu, p ");
+	   // 21.  22.  23.  24. 25.  26. 27. 28.  29.  30.  31.  32.  33. 34.  35.  36.  37   38   39  40   41  42  43   44  45  46
+		"2dlu, p , 2dlu ,p , 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  2dlu,  p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p," +
+	   // 47    48  49   50  51   52
+		" 2dlu, p, 2dlu, p, 2dlu, p ");
 
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -144,7 +147,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		
 
 
-		JLabel lab3 = new JLabel("<html><b>Werkzeug-Dialoge <font color=#0000FF>(Benutzer individulle Einstellung)</font></b></html>");
+		JLabel lab3 = new JLabel("<html><b>Werkzeug-Dialoge <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
 		builder.add(lab3,cc.xyw(1, iAktY, 11));
 		
 		iAktY += 2;
@@ -196,6 +199,43 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		builder.addSeparator("", cc.xyw(1,iAktY,11));
 		iAktY += 1;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
+
+		iAktY += 2;
+		JLabel lab4 = new JLabel("<html><b>Rezept-Dialog <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
+		builder.add(lab4,cc.xyw(1, iAktY, 11));
+
+		
+		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
+		iAktY += 2;
+		builder.addLabel("Warnung bei Rezeptabbruch nach Änderung",cc.xy(1,iAktY));
+//		builder.addLabel("(0, 1)",cc.xy(5,iAktY));
+		tfs[2] = new JRtaTextField("Zahlen", true);
+		tfs[2].setName("zusatzknopf");
+		tfs[2].setText((Boolean)SystemConfig.hmRezeptDlgIni.get("RezAendAbbruchWarn") ? "1" : "0");
+//		builder.add(tfs[2],cc.xy(3,iAktY));
+		// ComboBox vorbereiten
+//		vec.clear();  // für die nächste Belegung freimachen
+//		Collections.addAll( vec, "Ja",   "1" );
+//		vecJN.add(0,(Vector<String>) vec.clone());
+//		vec.clear();  // für die nächste Belegung freimachen
+//		Collections.addAll( vec, "Nein", "0" );
+//		vecJN.add(1,(Vector<String>) vec.clone());
+		cmbRezAbbruch.setDataVectorVector(vecJN, 0, 1);
+		cmbRezAbbruch.setSelectedItem(tfs[2].getText().equals("0") ? "Nein" : "Ja" );  // setze den aktuell gewählten Wert
+		cmbRezAbbruch.setActionCommand("cmbRezAbbruch");
+		cmbRezAbbruch.addActionListener(this);
+		builder.add(cmbRezAbbruch, cc.xy(3,iAktY));
+		
+		// Trennlinie mit Leerzeilen
+		iAktY += 2;
+		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
+		//-------------------------------------------------------------------------------
+		iAktY += 1;
+		builder.addSeparator("", cc.xyw(1,iAktY,11));
+		iAktY += 1;
+		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
+		iAktY += 1;
+
 		
 		
 		return builder.getPanel();
@@ -270,6 +310,12 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 			tfs[1].setText((String)cmbClk.getSecValue());
 			return;
 		}
+		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
+		if(cmd.equals("cmbRezAbbruch")){
+			tfs[2].setText((String)cmbRezAbbruch.getSecValue());
+			return;
+		}
+		
 	}
 	
 	
@@ -279,10 +325,13 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		// Die benutzerindividuellen Daten müssen in die INI-Datei weggespeichert werden
 		SystemConfig.hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount", Integer.parseInt(tfs[1].getText()) );
 		SystemConfig.hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton", tfs[0].getText().equals("1") ? true : false );
-	
-		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks", Integer.parseInt(SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount").toString()), " Anzahl Klicks für Werkzeugaufruf");
-		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufButtonZeigen", (Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 1 : 0, " Zusatzknopf im Werkzeugdialog");
 
+//		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks", Integer.parseInt(SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount").toString()), " Anzahl Klicks für Werkzeugaufruf");
+//		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufButtonZeigen", (Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 1 : 0, " Zusatzknopf im Werkzeugdialog");
+
+		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
+		SystemConfig.hmRezeptDlgIni.put("RezAendAbbruchWarn", tfs[2].getText().equals("1") ? true : false );
+		
 		inif.save();  // Daten wegschreiben
 
 		// Merken der aktuell vorhandenen Textfelder
