@@ -210,7 +210,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		builder.addLabel("Warnung bei Rezeptabbruch nach Änderung",cc.xy(1,iAktY));
 //		builder.addLabel("(0, 1)",cc.xy(5,iAktY));
 		tfs[2] = new JRtaTextField("Zahlen", true);
-		tfs[2].setName("zusatzknopf");
+		tfs[2].setName("rezabbruchwarn");
 		tfs[2].setText((Boolean)SystemConfig.hmRezeptDlgIni.get("RezAendAbbruchWarn") ? "1" : "0");
 //		builder.add(tfs[2],cc.xy(3,iAktY));
 		// ComboBox vorbereiten
@@ -320,24 +320,25 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	
 	
 	private void doSpeichern(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+//		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
 		
 		// Die benutzerindividuellen Daten müssen in die INI-Datei weggespeichert werden
 		SystemConfig.hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount", Integer.parseInt(tfs[1].getText()) );
 		SystemConfig.hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton", tfs[0].getText().equals("1") ? true : false );
 
+		// Lemmi 20110116: auskommentiert, weil zentrales Wegschreiben in die INI
 //		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks", Integer.parseInt(SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount").toString()), " Anzahl Klicks für Werkzeugaufruf");
 //		inif.setIntegerProperty("Bedienung", "WerkzeugaufrufButtonZeigen", (Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton") ? 1 : 0, " Zusatzknopf im Werkzeugdialog");
 
 		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
 		SystemConfig.hmRezeptDlgIni.put("RezAendAbbruchWarn", tfs[2].getText().equals("1") ? true : false );
 		
-		inif.save();  // Daten wegschreiben
+//		inif.save();  // Daten wegschreiben
 
 		// Merken der aktuell vorhandenen Textfelder
 		SaveChangeStatus();
 
-		
+		SystemConfig.BedienungIni_WriteToIni();
 /*		
 		String meldung = "Folgende Nummern wurden geändert\n";
 		String cmd = (!nummernkreisok ? "insert into nummern set " : "update nummern set ") ;

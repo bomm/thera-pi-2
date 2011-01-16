@@ -176,7 +176,7 @@ public class SystemConfig {
 	public static HashMap<String,Integer> hmPatientenSuchenDlgIni = new HashMap<String,Integer>();
 	
 	// Lemmi 20110116 Steuerparanmeter für den Rezept-Dialog	
-	public static HashMap<String,Object> hmRezeptDlgIni = new HashMap<String,Object>();
+	public static HashMap<String,Object> hmRezeptDlgIni = new HashMap<String,Object>(); 
 	
 	
 	// Lemmi 20101224 Steuerparanmeter für RGR und AFR Behandlung in OffenePosten und Mahnungen	
