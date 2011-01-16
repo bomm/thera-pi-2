@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
@@ -108,7 +110,7 @@ public class RVMeldung301 {
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MS++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(5).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++;//Hier die div. IK's einbauen
@@ -131,6 +133,9 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","ADR++")+EOL+NEWLINE);zeilen++;
 		if( ! (test =  springeAufUndHole("PNA+BM+","ADR+1+")).equals("")){
 			buf301Body.append(test+EOL+NEWLINE);zeilen++;
@@ -163,9 +168,17 @@ public class RVMeldung301 {
 		//long decodedSize = -1;
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+		
 		if(doKeyStoreAktion()){
 			//Mail Versenden
 			//In neue Tabelle schreiben
+			String cmd = "insert into dtafall set nachrichttyp='3', nachrichtart='3', pat_intern='"+
+			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
+			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
+			StringTools.Escaped(gesamtbuf.toString())+"',"+
+			"nachrichtauf='"+
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			SqlInfo.sqlAusfuehren(cmd);
 		}
 		
 	}
@@ -180,7 +193,7 @@ public class RVMeldung301 {
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		buf301Body.append("PNA+MS++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(5).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MT++"+Reha.aktIK+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
@@ -203,6 +216,9 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","ADR++")+EOL+NEWLINE);zeilen++;
 		if( ! (test =  springeAufUndHole("PNA+BM+","ADR+1+")).equals("")){
 			buf301Body.append(test+EOL+NEWLINE);zeilen++;
@@ -217,9 +233,9 @@ public class RVMeldung301 {
 		if(ubart==0){
 			buf301Body.append("DTM+158:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
 		}else if(ubart==1){
-			buf301Body.append("DTM+159"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("DTM+159:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
 		}else if(ubart==2){
-			buf301Body.append("DTM+324"+
+			buf301Body.append("DTM+324:"+
 					mache10erDatum(beginnDatum)+
 					mache10erDatum(endeDatum)+":711"+EOL+NEWLINE);zeilen++;
 		}
@@ -239,6 +255,14 @@ public class RVMeldung301 {
 		if(doKeyStoreAktion()){
 			//Mail Versenden
 			//In neue Tabelle schreiben
+			String cmd = "insert into dtafall set nachrichttyp='4', nachrichtart='4', pat_intern='"+
+			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
+			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
+			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
+			"nachrichtauf='"+
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			
 		}
 	}
 	public void doEntlassung(String entlassDatum,String uhrZeit){
@@ -327,7 +351,7 @@ public class RVMeldung301 {
 	}
 	private void holeVector(){
 		originaldata.clear();
-		String[] data = vecdta.get(0).get(28).split("\n");
+		String[] data = vecdta.get(0).get(29).split("\n");
 		for(int i = 0; i < data.length;i++){
 			originaldata.add(String.valueOf(data[i]));
 		}
@@ -355,6 +379,8 @@ public class RVMeldung301 {
 		}
 	}
 	private void doAuftragsDatei(){
+		auftragsBuf.setLength(0);
+		auftragsBuf.trimToSize();
 		String abrDateiName="REH-RTA    ";
 		auftragsBuf.append("500000"+"01"+"00000348"+"000");
 		auftragsBuf.append("EREH"+this.strAktEREH);

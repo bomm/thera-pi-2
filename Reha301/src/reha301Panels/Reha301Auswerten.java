@@ -463,6 +463,7 @@ public class Reha301Auswerten extends JXPanel{
 				if(cmd.equals("rezneuanlage")){
 					if(tab.getRowCount()<=0){return;}
 					doRezNeuanlage();
+					//doUebetragAufPatient();
 				}
 				if(cmd.equals("nachrichtinwriter")){
 					doNachrichtInWriter();
@@ -1076,6 +1077,21 @@ public class Reha301Auswerten extends JXPanel{
 		tabmod.setValueAt((String)DatFunk.sHeute(),xrow, 13);
 		buts[1].setEnabled(false);
 		buts[0].setEnabled(false);
+		//Hier die neue Tabelle dtafall beschreiben//
+		buf.setLength(0);
+		buf.trimToSize();
+		buf.append("insert into dtafall ");
+		buf.append("(nachrichttyp,nachrichtart,pat_intern,rez_nr,nachrichtdatum,nachrichtorg) ");
+		//buf.append("VALUES ");
+		buf.append("(select nachrichtentyp,id,pat_intern,rez_nr,datum,esol from dta301 where id='"+id+"' LIMIT 1"+")");
+		System.out.println(buf.toString());
+		SqlInfo.sqlAusfuehren(buf.toString());
+		//Jetzt nachfragen ob neuer Bericht angelegt werden soll
+		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie für diesen Fall einen Entlassbericht anlegen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		if(anfrage != JOptionPane.YES_OPTION){
+			return;	
+		}
+
 	}
 	
 	

@@ -76,7 +76,7 @@ public class Reha301 implements WindowListener  {
 	public static String argsRezeptnummer = "";
 
 	public static String inbox = "//192.168.2.3/programme/data301/540840108/inbox/"; //C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
-	public static String outbox = "//192.168.2.3/programme/data301/540840108/outbox/"; 
+	public static String outbox ="//192.168.2.3/programme/data301/540840108/outbox/"; 
 	//public static String encodepfad = "C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	/*
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";

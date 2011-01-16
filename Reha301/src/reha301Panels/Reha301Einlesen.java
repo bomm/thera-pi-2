@@ -77,7 +77,7 @@ public class Reha301Einlesen{
 	String[] hmtitel =	{"sender","datum","bearbeiter","aktenzeichen","funktionag","beauftragtestelle",
 			"versicherungsnr","berechtigtennr","massnahmennr","geschlechtfamstand","national",
 			"artderleistung","diagschluessel","anrede","nachname","vorname","geboren",
-			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage","a12","a09","pnabm","adr0","adr1"};
+			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage","a12","a09","pnabm","adr0","adr1","klinik"};
 
 	int nachrichtentyp = -1;
 	boolean erstercheck = false;
@@ -271,7 +271,7 @@ public class Reha301Einlesen{
 			"ktraeger='"+dbHmap.get("ktraeger")+"', pnaab='"+dbHmap.get("beauftragtestelle")+"', auftragsleistung='"+
 			(auftragsleistung ? "T" : "F")+"', tage='"+dbHmap.get("tage")+"',edifact='"+buf.toString()+"', "+
 			"eilfall='"+dbHmap.get("a09")+"', leistung='"+dbHmap.get("a12")+"', "+
-			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"'";
+			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"', receiver='"+dbHmap.get("klinik")+"'";
 			SqlInfo.sqlAusfuehren(bedingung);
 			/*
 			int anfrage = JOptionPane.showConfirmDialog(null, "Nachricht im OpenOffice.org-Writer öffnen?","Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
@@ -545,7 +545,9 @@ public class Reha301Einlesen{
 		}
 		//Klinik
 		if(zeile.startsWith("PNA+MT")){
+			dbHmap.put("klinik",zeile);
 			ret[0] = String.valueOf("Klinik-IK: "+teile[3]);
+			dbHmap.put("klinik",String.valueOf(teile[3]));
 			return ret;
 		}
 		//Krankenkasse
