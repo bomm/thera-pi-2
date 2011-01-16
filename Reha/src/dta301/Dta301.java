@@ -32,11 +32,13 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
 import rehaInternalFrame.JDta301Internal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
@@ -89,8 +91,10 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JRtaTextField entlassminute = null;
 	JRtaComboBox entlassafcombo = null;
 	JRtaComboBox entlassartcombo = null;
-	JXTable tabentlass = null;
-	MyTermTableModel modentlass = null;	
+	
+	//Übersicht der Nachrichten
+	JXTable tabuebersicht = null;
+	MyTermTableModel moduebersicht = null;	
 	
 	
 	JButton[] buts = {null,null,null,null,null};
@@ -149,6 +153,13 @@ public class Dta301 extends JXPanel implements FocusListener {
 						return;
 					}
 					doUnterbrechung();					
+				}
+				if(cmd.startsWith("entlsenden")){
+					if(!is301Ok){
+						JOptionPane.showMessageDialog(null,"Diese Verordnung ist nicht für DTA-301 vorgesehen");
+						return;
+					}
+					doEntlassung();					
 				}
 			}
 		};
@@ -294,15 +305,17 @@ public class Dta301 extends JXPanel implements FocusListener {
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "100dlu,right:max(100dlu;p),5dlu,50dlu,20dlu";
-		String ywerte = "25dlu,p,5dlu,p,5dlu,p,5dlu,p,fill:0:grow(1.0),5dlu";
+		String ywerte = "25dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,25dlu,p,fill:0:grow(1.0),5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
 		//Tagestabelle bauen
+		/*
 		modentlass = new MyTermTableModel();
 		String[] column = 	{"Beh.Datum","Behandler","Text","Beh.Art",""};
 		modentlass.setColumnIdentifiers(column);
 		tabentlass = new JXTable(modentlass);
+		*/
 		//Arbeitsfähigkeits Combo bauen
 		entlassafcombo = new JRtaComboBox();
 		String[][] arbfaehig = Dta301CodeListen.codeB02;
@@ -329,10 +342,39 @@ public class Dta301 extends JXPanel implements FocusListener {
 		entlassletztdatum = new JRtaTextField("DATUM",true);
 		entlassletztdatum.setText(SystemConfig.hmAdrRDaten.get("<Rletztdat>"));
 		pan.add(entlassletztdatum,cc.xy(4,4));
-		//
-		pan.add(entlassafcombo,cc.xyw(2,6,3));
-		pan.add(entlassartcombo,cc.xyw(2,8,3));
 		
+		lab = new JLabel("Uhrzeit der Entlassung");
+		lab.setForeground(Color.BLUE);
+		pan.add(lab,cc.xy(2,6));
+		/***********/
+		JXPanel pan2 = new JXPanel();
+		pan2.setOpaque(false);
+		String xwerte2 = "p:g,p,p:g";
+		String ywerte2 = "p";
+		FormLayout lay2 = new FormLayout(xwerte2,ywerte2);
+		CellConstraints cc2 = new CellConstraints();
+		pan2.setLayout(lay2);
+		entlassstunde = new JRtaTextField("STUNDEN",true);
+		entlassstunde.setName("entlassstunde");
+		entlassstunde.addFocusListener(this);
+		entlassstunde.setText("00");
+		pan2.add(entlassstunde,cc2.xy(1,1));
+		pan2.add(new JLabel(" : "),cc2.xy(2,1));
+		entlassminute = new JRtaTextField("MINUTEN",true);
+		entlassminute.setName("entlassminute");
+		entlassminute.addFocusListener(this);
+		entlassminute.setText("00");
+		pan2.add(entlassminute,cc2.xy(3, 1));
+		pan2.validate();
+		pan.add(pan2,cc.xy(4, 6,CellConstraints.FILL,CellConstraints.FILL));
+		/************/
+		
+		//
+		pan.add(entlassafcombo,cc.xyw(2,8,3));
+		pan.add(entlassartcombo,cc.xyw(2,10,3));
+
+		buts[2] = ButtonTools.macheBut("Nachricht erzeugen und senden", "entlsenden", al);
+		pan.add(buts[2],cc.xyw(2, 12, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(2),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
@@ -344,15 +386,26 @@ public class Dta301 extends JXPanel implements FocusListener {
 		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
-		String xwerte = "";
-		String ywerte = "";
+		String xwerte = "25dlu,fill:0:grow(1.0),25dlu";
+		String ywerte = "25dlu,p,5dlu,fill:0:grow(1.0),25dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
-		
+		JLabel lab = new JLabel("Übersicht der Nachrichten zu diesem Fall");
+		lab.setForeground(Color.BLUE);
+		pan.add(lab,cc.xy(2,2));
+		String[] headers = {"Anlass","Datum","Bearbeiter"};
+		moduebersicht = new MyTermTableModel();
+		moduebersicht.setColumnIdentifiers(headers);
+		tabuebersicht = new JXTable(moduebersicht);
+		tabuebersicht.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabuebersicht);
+		jscr.validate();
+		pan.add(jscr, cc.xy(2,4,CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(3),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
+		doTabelleFuellen();
 		return headerpan;
 	}
 	private JXPanel getFallDaten(){
@@ -452,6 +505,43 @@ public class Dta301 extends JXPanel implements FocusListener {
 		fallPan.setText(buf.toString());
 		return;
 	}
+	private void doTabelleFuellen(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					String[] anlass = {"Unbekannter Anlass","Bewilligung","Ablehnung",
+							"Aufnahmemitteilung","Unterbrechungsmeldung","Entlassmitteilung",
+							"E-Bericht","Rechnung"};
+					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter from dtafall where pat_intern='"+
+					String.valueOf(Reha.thisClass.patpanel.patDaten.get(29))+
+					"' and rez_nr='"+
+					String.valueOf(Reha.thisClass.patpanel.vecaktrez.get(1))+
+					"' order by nachrichtdatum,id";
+					Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
+					Vector<String> dummy = new Vector<String>();
+					String test = null;
+					moduebersicht.setRowCount(0);
+					System.out.println(vec);
+					System.out.println(cmd);
+					for(int i = 0;i < vec.size();i++){
+						dummy.clear();
+						dummy.trimToSize();
+						test = vec.get(i).get(0);
+						dummy.add(anlass[Integer.parseInt(test)]);
+						dummy.add(DatFunk.sDatInDeutsch(vec.get(i).get(1)));
+						dummy.add(vec.get(i).get(2));
+						moduebersicht.addRow((Vector<String>)dummy.clone());
+					}
+					tabuebersicht.validate();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+			
+		}.execute();
+	}
 	private void disableButtons(){
 		
 	}
@@ -506,6 +596,17 @@ public class Dta301 extends JXPanel implements FocusListener {
 					this.ubendedatum.getText().trim(),iart,ucombo.getSelectedIndex(),this.ueditpan.getText().trim());
 			return;
 		}
+		if(art==2){
+			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			meldung301.doEntlassung(this.entlasserstdatum.getText().trim(),
+					this.entlassletztdatum.getText().trim(),
+					this.entlassstunde.getText().trim()+this.entlassminute.getText().trim(),
+					entlassafcombo.getSelectedIndex(),
+					entlassartcombo.getSelectedIndex());
+
+			return;
+		}
+
 	}
 	/*****************************************************/
 	private void doRegleFelder(String art){
@@ -582,6 +683,28 @@ public class Dta301 extends JXPanel implements FocusListener {
 			
 		}.execute();
 	}
+	private void doEntlassung(){
+		setCursor(Reha.thisClass.wartenCursor);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				
+				try{
+					buts[0].setEnabled(false);
+					doRegle301(2,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
+					buts[0].setEnabled(true);
+					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				setCursor(Reha.thisClass.normalCursor);
+				return null;
+			}
+			
+		}.execute();
+	}
+
 	/*****************************************************/	
 	@Override
 	public void focusGained(FocusEvent arg0) {
@@ -609,23 +732,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 			    public boolean isCellEditable(int row, int col) {
 			        //Note that the data/cell address is constant,
 			        //no matter where the cell appears onscreen.
-			    	if(Reha.thisClass.patpanel.vecaktrez.get(62).equals("T")){
-			    		return false;
-			    	}
-			        if (col == 0){
-			        	return true;
-			        }else if(col == 1){
-			        	return true;
-			        }else if(col == 2){
-			        	return true;
-			        }else if(col == 3){
-			        	return true;
-			        }else if(col == 11){
-			        	return true;
-			        } else{
-			          return false;
-			        }
-			      }
+			    	return false;
+			    }
 		}
 
 
