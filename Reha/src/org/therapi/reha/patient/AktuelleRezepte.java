@@ -357,9 +357,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//Strg-Funktion in normalen Betrieben eher nutzlos und erheblich gehleranfällig /st.
 		aktrbut[0].setToolTipText("<html>neues Rezept anlegen<br><br>" +
 								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Shift</font></b> gedrückt,<br>"+
-								"wird das aktuell unterlegte bzw. aktive Rezept das Patienten kopiert!<br><br>"+ 
+								"wird das aktuell unterlegte bzw. <font color='#0000ff'>aktive Rezept</font> das Patienten kopiert!<br><br>"+ 
 								"Halten sie gleichzeitig Die Taste <b><font color='#0000ff'>Strg</font></b> gedrückt,"+
-								"<br>wird das letzte Rezept das Patienten kopiert!<br><br></html>" 
+								"<br>wird <font color='#0000ff'>das jüngste Rezept</font> das Patienten kopiert!<br><br></html>" 
 								  );
 		aktrbut[0].setActionCommand("rezneu");
 		aktrbut[0].addActionListener(this);		
@@ -580,11 +580,18 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		jPopupMenu.addSeparator();
 
 		// Lemmi 201110106: Knopf zum Kopieren des aktiven Rezeptes zugefügt
-		item = new JMenuItem("Angewähltes bzw. aktives Rezept kopieren");  // new ImageIcon(Reha.proghome+"icons/Kreuz.png"));
+		item = new JMenuItem("Angewähltes Rezept kopieren");  // new ImageIcon(Reha.proghome+"icons/Kreuz.png"));
 		item.setActionCommand("KopiereAngewaehltes");
 		item.addActionListener(this);
 		jPopupMenu.add(item);
 
+		// Lemmi 201110113: Knopf zum Kopieren des jüngsten Rezeptes zugefügt
+		item = new JMenuItem("Jüngstes Rezept kopieren");  // new ImageIcon(Reha.proghome+"icons/Kreuz.png"));
+		item.setActionCommand("KopiereLetztes");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		
+		
 		return jPopupMenu;
 	}
 	private JPopupMenu getBehandlungsartLoeschenMenu(){
@@ -1838,6 +1845,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				neuanlageRezept( true,"", "KopiereAngewaehltes" );
 			}
 
+			// Lemmi 201110113: Knopf zum Kopieren des jüngsten Rezeptes zugefügt
+			if(cmd.equals("KopiereLetztes")) {
+				neuanlageRezept( true,"", "KopiereLetztes" );
+			}
+
 			if(cmd.equals("rezeptbrief")){
 				formulareAuswerten();				
 			}
@@ -2506,15 +2518,21 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			Vector<String> vecKopiervorlage = new Vector<String>();
 			if ( strModus.equals("KopiereLetztes") ) {
 				RezeptVorlage vorlage = new RezeptVorlage(aktrbut[0].getLocationOnScreen());
-				vorlage.setModal(true);
-				vorlage.toFront();
-				vorlage.setVisible(true);
-				String strKopierDiszi = vorlage.strSelectedDiszi;
-				// Die Kopiervorlage steht jetzt in vorlage.vecResult oder es wurde nichts gefunden !
+				if ( !vorlage.bHasSelfDisposed ) {  // wenn es nur eine Disziplin gibt, hat sich der Auswahl-Dialog bereits selbst disposed !
+					vorlage.setModal(true);
+					vorlage.toFront();
+					vorlage.setVisible(true);
+				}
+				//String strKopierDiszi = vorlage.strSelectedDiszi;
+				// Die Rezept-Kopiervorlage steht jetzt in vorlage.vecResult oder es wurde nichts gefunden !
 				vecKopiervorlage = vorlage.vecResult;
+				
+				if ( !vorlage.bHasSelfDisposed ) {  // wenn es nur eine Disziplin gibt, hat sich der Auswahl-Dialog bereits selbst disposed !
+					vorlage.dispose();
+				}
 				vorlage= null;
 			}
-			if ( strModus.equals("KopiereAngewaehltes") ) {
+			if ( strModus.equals("KopiereAngewaehltes") ) {  // Vorschlag von J. Steinhilber integriert: Kopiere das angewählte Rezept
 				String rezToCopy = AktuelleRezepte.getActiveRezNr();
 				vecKopiervorlage = ((Vector<String>)SqlInfo.holeSatz( "verordn", " * ", "REZ_NR = '" +
 									rezToCopy + "'", Arrays.asList(new String[] {}) ));
