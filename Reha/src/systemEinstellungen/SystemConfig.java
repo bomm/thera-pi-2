@@ -175,6 +175,10 @@ public class SystemConfig {
 	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog	
 	public static HashMap<String,Integer> hmPatientenSuchenDlgIni = new HashMap<String,Integer>();
 	
+	// Lemmi 20110116 Steuerparanmeter für den Rezept-Dialog	
+	public static HashMap<String,Object> hmRezeptDlgIni = new HashMap<String,Object>();
+	
+	
 	// Lemmi 20101224 Steuerparanmeter für RGR und AFR Behandlung in OffenePosten und Mahnungen	
 	public static HashMap<String,Integer> hmZusatzInOffenPostenIni = new HashMap<String,Integer>();
 
@@ -979,13 +983,18 @@ public class SystemConfig {
 		
 		// Voreinstellung von Defaultwerten
 		hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount", 2);
-		hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton", false);
-				
 		if ( inif.getStringProperty("Bedienung", "WerkzeugaufrufMausklicks") != null )  // Prüfung auf Existenz
 			hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount",inif.getIntegerProperty("Bedienung", "WerkzeugaufrufMausklicks") );
-		if ( inif.getStringProperty("Aussehen", "WerkzeugaufrufButtonZeigen") != null )  // Prüfung auf Existenz
-			hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton",(Integer)inif.getIntegerProperty("Aussehen", "WerkzeugaufrufButtonZeigen") == 1 ? true : false );
+
+		hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton", false);
+		if ( inif.getStringProperty("Bedienung", "WerkzeugaufrufButtonZeigen") != null )  // Prüfung auf Existenz
+			hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton",(Integer)inif.getIntegerProperty("Bedienung", "WerkzeugaufrufButtonZeigen") == 1 ? true : false );
 		//System.out.println("Default1 = "+hmPatientenWerkzeugDlgIni.get("ToolsDlgClickCount"));
+		
+		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
+		hmRezeptDlgIni.put("RezAendAbbruchWarn", false);
+		if ( inif.getStringProperty("Rezept", "RezeptAenderungAbbruchWarnung") != null )  // Prüfung auf Existenz
+			hmRezeptDlgIni.put("RezAendAbbruchWarn",(Integer)inif.getIntegerProperty("Rezept", "RezeptAenderungAbbruchWarnung") == 1 ? true : false );
 		
 		
 		// Voreinstellung von Defaultwerten
@@ -999,7 +1008,6 @@ public class SystemConfig {
 				hmPatientenSuchenDlgIni.put("fensterbreite", inif.getIntegerProperty("PatientenSuche", "SuchFensterBreite"));
 			if ( inif.getStringProperty("PatientenSuche", "SuchFensterHoehe") != null )  // Prüfung auf Existenz
 				hmPatientenSuchenDlgIni.put("fensterhoehe", inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe"));
-				
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Die Datei 'bedienung.ini' zur aktuellen IK-Nummer kann nicht gelesen werden.");
 		}
@@ -1018,6 +1026,10 @@ public class SystemConfig {
 		inif.setIntegerProperty("PatientenSuche", "SuchFensterHoehe", hmPatientenSuchenDlgIni.get("fensterhoehe"), " letzte Höhe des Suchfensters");
 		inif.setIntegerProperty("PatientenSuche", "Suchart", hmPatientenSuchenDlgIni.get("suchart"), " letzte angewählte Suchart Suchfensters");
 
+		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
+		inif.setIntegerProperty("Rezept", "RezeptAenderungAbbruchWarnung", (Boolean)hmRezeptDlgIni.get("RezAendAbbruchWarn") ? 1 : 0, " Abfrage Abbruch bei Rezeptänderungen mit Warnung");
+		
+		
 		inif.save();  // Daten wegschreiben
 
 /*		
