@@ -2276,7 +2276,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 
 	class MyTermTableModel extends DefaultTableModel{
-		   /**
+	   /**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
