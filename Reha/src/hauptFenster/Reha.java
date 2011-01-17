@@ -301,7 +301,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-01-07/01-DB=";
+	public static String aktuelleVersion = "V=2011-01-17/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1514,7 +1514,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men = new JMenuItem("Sql-Modul");
 			men.setActionCommand("sqlmodul");
 			men.addActionListener(this);
+			toolsMenu.add(men);
+			toolsMenu.addSeparator();
+			men = new JMenuItem("§301 Reha-Fallsteuerung");
+			men.setActionCommand("fallsteuerung");
+			men.addActionListener(this);
 			toolsMenu.add(men);		
+
 
 		}
 		return toolsMenu;
@@ -2259,6 +2265,16 @@ public void actionPerformed(ActionEvent arg0) {
 		new LadeProg(Reha.proghome+"RehaSql.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
+	if(cmd.equals("fallsteuerung")){
+		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){
+			return;
+		}
+		new LadeProg(Reha.proghome+"Reha301.jar "+
+				" "+Reha.proghome+" "+Reha.aktIK);
+		return;
+	}
+
+	
 	
 }
 /*********************************************/

@@ -269,7 +269,7 @@ public class RVMeldung301 {
 		holeVector();
 		int zeilen = 1;
 		String test = "";
-		buf301Body.append("UNH+00001+MEDR03:D:08A:KR:97B'"+NEWLINE);zeilen++;
+		buf301Body.append("UNH+00001+MEDR03:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+04++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen

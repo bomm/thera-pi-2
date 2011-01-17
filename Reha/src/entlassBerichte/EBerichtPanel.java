@@ -19,12 +19,16 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -46,6 +50,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.therapi.reha.patient.LadeProg;
 
+import rechteTools.Rechte;
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
@@ -59,6 +64,7 @@ import systemTools.StringTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.text.IText;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
@@ -1228,6 +1234,58 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			arztbaus.setVisible(true);
 		}
 	}
+	private void do301FallSteuerung(){
+		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
+		String textcontent = document.getTextService().getText().getText();
+		String[] teile = textcontent.split("\n");
+		String ohneumbruch = null;
+		String LEER = " ";
+		String reststring = "";
+		Vector<String> dtavec = new Vector<String>();
+		for(int i = 0; i < teile.length;i++){
+			ohneumbruch = teile[i].replace("\f","").replace("\r","").replace("\n","");
+			reststring = String.valueOf(ohneumbruch);
+			//System.out.println(ohneumbruch);
+			if(ohneumbruch.length()==0){
+				//System.out.println("0-länge = 0 - Nur Umbruch");
+				dtavec.add("");
+			}else if(ohneumbruch.length() > 0 && ohneumbruch.length() <= 70){
+				if(ohneumbruch.trim().length()>0){
+					//System.out.println("1-länge = "+ohneumbruch.trim().length()+" "+ohneumbruch.trim());
+					dtavec.add(ohneumbruch.trim());
+				}
+			}else if(ohneumbruch.length() > 70){
+
+				for(int i2 = 0; i2 < reststring.length();i2++){
+					if(reststring.length() < 70){
+						if(reststring.trim().length() > 0){
+							//System.out.println("2-länge = "+reststring.trim().length()+" "+reststring.trim());
+							dtavec.add(reststring.trim());
+						}
+						break;
+					}else{
+						for(int i3 = 69; i3 >= 0; i3--){
+							if(reststring.substring(i3,i3+1).equals(LEER)){
+								if(reststring.substring(0,i3).trim().length()>0){
+									//System.out.println("4-länge = "+reststring.substring(0,i3).trim().length()+" "+
+										//	reststring.substring(0,i3).trim());
+									dtavec.add(reststring.substring(0,i3).trim());
+								}
+								reststring = reststring.substring(i3).trim();
+								break;
+							}else if(i == 0){
+								dtavec.add(reststring);
+							}
+						}
+					}
+				}
+			}
+		}
+		for(int i = 0; i < dtavec.size();i++){
+			//System.out.println(dtavec.get(i));
+		}
+
+	}
 
 /********************************************/
 	class ToolsDlgEbericht{
@@ -1236,9 +1294,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
 			icons.put("Textbausteine abrufen",SystemConfig.hmSysIcons.get("arztbericht"));
 			icons.put("Bodymass-Index",SystemConfig.hmSysIcons.get("barcode"));
-			icons.put("ICD-10(GM) Recherche",SystemConfig.hmSysIcons.get("info2"));			
+			icons.put("ICD-10(GM) Recherche",SystemConfig.hmSysIcons.get("info2"));
+			icons.put("§301 Reha-Fallsteuerung",SystemConfig.hmSysIcons.get("abrdreieins"));
 			JList list = new JList(	new Object[] {"Textbausteine abrufen", 
-					"Bodymass-Index", "ICD-10(GM) Recherche"});
+					"Bodymass-Index", "ICD-10(GM) Recherche","§301 Reha-Fallsteuerung"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: ärztliche Gutachten",list);
@@ -1258,6 +1317,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				break;
 			case 2:
 				new LadeProg(Reha.proghome+"ICDSuche.jar");
+				break;
+			case 3:
+				do301FallSteuerung();
 				break;
 			}
 			tDlg = null;

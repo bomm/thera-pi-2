@@ -664,7 +664,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			icons.put("Reha-Anwesenheitsbescheinigung",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("GKV-Verlängerungsantrag",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("LVA-Entlassmitteilung",SystemConfig.hmSysIcons.get("neu"));
-			icons.put("§301 Kommunikation",SystemConfig.hmSysIcons.get("neu"));
+
 			
 			JList list = new JList(	new Object[] {"Stammdaten in neues Gutachten übertragen", 
 					"ASP-Patienten-Information","ASP-Verordnung",
@@ -673,8 +673,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					"IRENA-Beginnmitteilung",
 					"BfA - Reha-Verlängerung","LVA - Wiedereingliederung","BfA - Wiedereingliederung",
 					"BfA - AHB-Aufnahmemitteilung","ASP-Rechnungsformular","IRENA-Rechnungsformular",
-					"Reha-Anwesenheitsbescheinigung","GKV-Verlängerungsantrag","LVA-Entlassmitteilung",
-					"§301 Kommunikation"});
+					"Reha-Anwesenheitsbescheinigung","GKV-Verlängerungsantrag","LVA-Entlassmitteilung"});
 					
 			
 			list.setCellRenderer(new IconListRenderer(icons));	
@@ -766,15 +765,6 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 							" "+Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
 							Reha.thisClass.patpanel.vecaktrez.get(1)+" "+
 							Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-				break;
-			case 19:
-				//§301
-				try{
-					new LadeProg(Reha.proghome+"Reha301.jar "+
-							" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.thisClass.patpanel.vecaktrez.get(1));
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
