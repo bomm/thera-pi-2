@@ -686,7 +686,7 @@ public class Ns2 implements ActionListener {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void holeKTL(boolean ktlneu){
 		Vector<Vector<String>> vec = null;
 		String ktltabelle = "";

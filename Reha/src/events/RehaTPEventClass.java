@@ -14,7 +14,8 @@ public class RehaTPEventClass{
     protected static javax.swing.event.EventListenerList listenerList =
         new javax.swing.event.EventListenerList();
 
-    @SuppressWarnings("unchecked")
+    
+	@SuppressWarnings("rawtypes")
 	private static List _listeners = new ArrayList();
     
     @SuppressWarnings("unchecked")
@@ -24,7 +25,8 @@ public class RehaTPEventClass{
     public synchronized void removeListener(RehaTPEventListener l){
     	_listeners.remove(l);
     }
-    @SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	public static void _fireRehaTPEvent(RehaTPEvent evt) {
         
         // Each listener occupies two elements - the first is the listener class

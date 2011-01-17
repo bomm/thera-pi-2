@@ -5,7 +5,6 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -507,6 +505,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	}
 	private void doTabelleFuellen(){
 		new SwingWorker<Void,Void>(){
+			@SuppressWarnings("unchecked")
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{

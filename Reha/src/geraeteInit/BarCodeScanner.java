@@ -33,7 +33,8 @@ import dialoge.SchluesselDialog;
 
 public class BarCodeScanner implements Runnable, SerialPortEventListener{
 	   static CommPortIdentifier portId = null;
-	   @SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	static Enumeration  portList = null;
 	   InputStream inputStream = null;
 	   static OutputStream outputStream = null;
@@ -128,7 +129,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		////System.out.println("Scanner-Thread beendet");
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public void serialEvent(SerialPortEvent event)  {
 		switch (event.getEventType()) {
@@ -193,6 +194,7 @@ public class BarCodeScanner implements Runnable, SerialPortEventListener{
 		    	byteArrayOutputStream.close();
 				if(outString.length()>= 2){
 					if("KGMAERLORHPO".contains(outString.substring(0,2))){
+						@SuppressWarnings("rawtypes")
 						Vector tvec = null;
 						JComponent termin = AktiveFenster.getFensterAlle("TerminFenster");
 						if(termin != null){

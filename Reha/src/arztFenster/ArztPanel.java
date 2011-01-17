@@ -475,7 +475,8 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		// TODO Auto-generated method stub
 		
 	}
-	@SuppressWarnings("unchecked")
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String sc = arg0.getActionCommand();
@@ -516,7 +517,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			ta.setForeground(Color.BLUE);
 			int row = arzttbl.getSelectedRow();
 			String sid =  (String) arzttbl.getValueAt(row,9);
-			Vector<String> vec = SqlInfo.holeSatz("arzt", "MTEXT", "id='"+sid+"'", (List)new ArrayList());
+			Vector<String> vec = SqlInfo.holeSatz("arzt", "MTEXT", "id='"+sid+"'", (List<String>)new ArrayList<String>());
 			ta.setText((String) vec.get(0));
 			return;
 		}
@@ -623,7 +624,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	public void neuanlageArzt(String id){
 		ArztNeuDlg neuArzt = new ArztNeuDlg();
 		//JDialog neuPat = new JDialog();
@@ -638,7 +639,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		}
 
 		neuArzt.setPinPanel(pinPanel);
-		neuArzt.getSmartTitledPanel().setContentContainer(new ArztNeuanlage(neuArzt,getInstance(),new Vector(),id));
+		neuArzt.getSmartTitledPanel().setContentContainer(new ArztNeuanlage(neuArzt,getInstance(),new Vector<String>(),id));
 		neuArzt.getSmartTitledPanel().getContentContainer().setName("ArztNeuanlage");
 		neuArzt.setName("ArztNeuanlage");
 		//neuPat.setContentPane(new PatNeuanlage(new Vector()));
@@ -785,8 +786,8 @@ class MyArztTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
-	public Class getColumnClass(int columnIndex) {
+
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return String.class;}
 		  /* if(columnIndex==1){return JLabel.class;}*/
 		   else{return String.class;}
@@ -798,9 +799,9 @@ class MyArztTableModel extends DefaultTableModel{
 	        //no matter where the cell appears onscreen.
 	    	return true;
 	      }
-		@SuppressWarnings("unchecked")
+
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			String theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex); 
+			String theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex); 
 			Object result = null;
 			//result = theData.toUpperCase();
 			result = theData;

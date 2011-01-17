@@ -373,7 +373,8 @@ public class Eb4 implements ActionListener {
 			}.execute();
 		}
 	}
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void holeKTL(boolean ktlneu){
 		Vector<Vector<String>> vec = null;
 		String ktltabelle = "";

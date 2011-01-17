@@ -407,7 +407,8 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			//System.out.println("Return Gedrückt");
 		}
 	}
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings("rawtypes")
 	public static void starteAusfallRechnung(String url){
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);

@@ -282,8 +282,8 @@ class MyArztTableModel extends DefaultTableModel{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
-	public Class getColumnClass(int columnIndex) {
+
+	public Class<?> getColumnClass(int columnIndex) {
 		   if(columnIndex==0){return Boolean.class;}
 		  /* if(columnIndex==1){return JLabel.class;}*/
 		   else{return String.class;}
@@ -296,13 +296,13 @@ class MyArztTableModel extends DefaultTableModel{
 	    	return true;
 	      }
 	    
-		@SuppressWarnings("unchecked")
+
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			Object theData = null;
 			if(columnIndex > 0){
-				theData = (String) ((Vector)getDataVector().get(rowIndex)).get(columnIndex);				
+				theData = (String) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex);				
 			}else{
-				theData = (Boolean) ((Vector)getDataVector().get(rowIndex)).get(columnIndex);
+				theData = (Boolean) ((Vector<?>)getDataVector().get(rowIndex)).get(columnIndex);
 			}
 			Object result = null;
 			result = theData;

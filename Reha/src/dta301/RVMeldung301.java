@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
 import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
