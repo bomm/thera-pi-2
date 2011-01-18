@@ -268,7 +268,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		ubendedatum.setText(DatFunk.sHeute());
 		pan.add(ubendedatum,cc.xy(5,10));
 		ucombo = new JRtaComboBox();
-		String[][] codeListe = Dta301CodeListen.codeB08;
+		String[][] codeListe = Dta301CodeListen.getCodeListe("B08");
 		for(int i = 0; i < codeListe.length;i++){
 		  ucombo.addItem(codeListe[i][1]);
 		}
@@ -316,13 +316,13 @@ public class Dta301 extends JXPanel implements FocusListener {
 		*/
 		//Arbeitsfähigkeits Combo bauen
 		entlassafcombo = new JRtaComboBox();
-		String[][] arbfaehig = Dta301CodeListen.codeB02;
+		String[][] arbfaehig = Dta301CodeListen.getCodeListe("B02");
 		for(int i = 0; i < arbfaehig.length;i++){
 			entlassafcombo.addItem(String.valueOf(arbfaehig[i][1]));
 		}
 		//Entlassform Combo bauen
 		entlassartcombo = new JRtaComboBox();
-		arbfaehig = Dta301CodeListen.codeB07;
+		arbfaehig = Dta301CodeListen.getCodeListe("B07");
 		for(int i = 0; i < arbfaehig.length;i++){
 			entlassartcombo.addItem(String.valueOf(arbfaehig[i][1]));
 		}

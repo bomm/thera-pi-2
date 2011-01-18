@@ -71,6 +71,7 @@ import ag.ion.noa.filter.OpenOfficeFilter;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import dialoge.ToolsDialog;
+import dta301.RVMeldung301;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
@@ -1232,55 +1233,29 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	private void do301FallSteuerung(){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
-		String textcontent = document.getTextService().getText().getText();
-		String[] teile = textcontent.split("\n");
-		String ohneumbruch = null;
-		String LEER = " ";
-		String reststring = "";
-		Vector<String> dtavec = new Vector<String>();
-		for(int i = 0; i < teile.length;i++){
-			ohneumbruch = teile[i].replace("\f","").replace("\r","").replace("\n","");
-			reststring = String.valueOf(ohneumbruch);
-			//System.out.println(ohneumbruch);
-			if(ohneumbruch.length()==0){
-				//System.out.println("0-länge = 0 - Nur Umbruch");
-				dtavec.add("");
-			}else if(ohneumbruch.length() > 0 && ohneumbruch.length() <= 70){
-				if(ohneumbruch.trim().length()>0){
-					//System.out.println("1-länge = "+ohneumbruch.trim().length()+" "+ohneumbruch.trim());
-					dtavec.add(ohneumbruch.trim());
-				}
-			}else if(ohneumbruch.length() > 70){
 
-				for(int i2 = 0; i2 < reststring.length();i2++){
-					if(reststring.length() < 70){
-						if(reststring.trim().length() > 0){
-							//System.out.println("2-länge = "+reststring.trim().length()+" "+reststring.trim());
-							dtavec.add(reststring.trim());
-						}
-						break;
-					}else{
-						for(int i3 = 69; i3 >= 0; i3--){
-							if(reststring.substring(i3,i3+1).equals(LEER)){
-								if(reststring.substring(0,i3).trim().length()>0){
-									//System.out.println("4-länge = "+reststring.substring(0,i3).trim().length()+" "+
-										//	reststring.substring(0,i3).trim());
-									dtavec.add(reststring.substring(0,i3).trim());
-								}
-								reststring = reststring.substring(i3).trim();
-								break;
-							}else if(i == 0){
-								dtavec.add(reststring);
-							}
-						}
-					}
-				}
+		String cmd = "select id from dta301 where pat_intern = '"+
+		this.pat_intern+"' and nachrichtentyp='1' ORDER by eingelesenam DESC LIMIT 1";
+		String id = SqlInfo.holeEinzelFeld(cmd);
+		if(id.equals("")){
+			JOptionPane.showMessageDialog(null, "Entlassbericht kann nicht übermittelt werden\n"+
+					"Vermutlich wurde dieser Fall nicht im 301-Verfahren übermittelt");
+			return;
+		}
+		RVMeldung301 meldung301 = new RVMeldung301(4,id);
+		meldung301.doEbericht(this);
+		/*
+		String textcontent = document.getTextService().getText().getText();
+		StringTools.fliessTextZerhacken(StringTools.do301String(textcontent), 70,"\n");
+		
+		for(int i = 0; i < 5;i++){
+			if(!bta[i].getText().trim().equals("")){
+				System.out.println("*****Beginn - Zerhacktes Ergebnis von Dianose-JTextArea "+Integer.toString(i+1)+"******");
+				StringTools.fliessTextZerhacken(StringTools.do301String(bta[i].getText()), 40,	"\r\n" );
+				System.out.println("*****Ende - Zerhacktes Ergebnis von Dianose-JTextArea "+Integer.toString(i+1)+"******\n");
 			}
 		}
-		for(int i = 0; i < dtavec.size();i++){
-			//System.out.println(dtavec.get(i));
-		}
-
+		*/
 	}
 
 /********************************************/

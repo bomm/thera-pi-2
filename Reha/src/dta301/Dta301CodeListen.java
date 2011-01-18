@@ -3,7 +3,7 @@ package dta301;
 public class Dta301CodeListen {
 	
 	//Arbeitsfähigkeit (nur RV)
-	public static String[][] codeB01 = {
+	private static String[][] codeB01 = {
 		{"0","Maßnahme nicht ordnungsgemäß abgeschlossen gestorben"},
 		{"1","Arbeitsfähig"},
 		{"3","Arbeitsunfähig"},
@@ -12,14 +12,14 @@ public class Dta301CodeListen {
 		{"9","Beurteilung nicht erforderlich (Altersrentner,Angehöriger)"}
 	};
 	//Arbeitsfähigkeit bei Entlassung
-	public static String[][] codeB02 = {
+	private static String[][] codeB02 = {
 		{"1","Arbeitsfähig entlassen"},
 		{"2","Arbeitsunfähig entlassen"},
 		{"3","Arbeitsfähig mit Schungszeit entlassen (BGE)"},
 		{"9","Meldung nicht erforderlich (Altersrentner,Angehöriger)"}
 	};
 	//AU-Zeiten der letzten 12 Monate (nur RV)
-	public static String[][] codeB03 = {
+	private static String[][] codeB03 = {
 		{"0","Keine Arbeitsunfähigkeitszeiten währen der letzten 12 Monate"},		
 		{"1","Bis unter 3 Monate arbeitsunfähig"},
 		{"2","3 bis unter 6 Monate arbeitsunfähig"},
@@ -27,7 +27,7 @@ public class Dta301CodeListen {
 		{"9","Nicht erwererbstätig (Altersrentner,Vorruhestantsgeldempfänger)"}
 	};
 	//Art der Fahrtkostenerstattung
-	public static String[][] codeB04 = {
+	private static String[][] codeB04 = {
 		{"01","Keine Angabe"},
 		{"02","Keine Auszahlung an Patienten durch Klinik"},
 		{"03","Klinik zahlt ausgew. Betrag zzgl. genehm. Nebenkosten aus"},
@@ -45,7 +45,7 @@ public class Dta301CodeListen {
 		{"99","Klinik zahlt Fahrkosten gemäß besonderer Vereinbarung aus"}
 	};
 	//Funktion des Erläuterungstextes (nur RV)
-	public static String[][] codeB05 = {
+	private static String[][] codeB05 = {
 		{"1","Erläuterung für nachfolgende Maßnahmen (Blatt 1)"},
 		{"2","Letzte Medikation (Blatt 1)"},
 		{"3","Beschreibung des Leistungsbildes"},
@@ -53,7 +53,7 @@ public class Dta301CodeListen {
 		{"5","Freier medizinischer Entlassungsbericht"}
 	};
 	//Entlassform (nur RV)
-	public static String[][] codeB06 = {
+	private static String[][] codeB06 = {
 		{"1","Regulär"},
 		{"2","Vorzeitig auf ärztliche Veranlassung"},
 		{"3","Vorzeitig mit ärztlichem Einverständnis"},
@@ -64,7 +64,7 @@ public class Dta301CodeListen {
 		{"9","Gestorben"}
 	};
 	//Erläuterung zur Entlassung
-	public static String[][] codeB07 = {
+	private static String[][] codeB07 = {
 		{"01","Behandlung regulär beendet"},
 		{"03","Behandlung aus sonstigen Gründen beendet"},
 		{"04","Behandlung gegen ärztlichen Rat beendet"},
@@ -76,7 +76,7 @@ public class Dta301CodeListen {
 		{"10","Behandlung aus disziplinarischen Gründen beendet"}
 	};
 	//Erläuterung zur Unterbrechung
-	public static String[][] codeB08 = {
+	private static String[][] codeB08 = {
 		{"01","Familienheimfahrt"},
 		{"02","Todesfall in der Familie"},
 		{"03","Interkurrente Erkrankung"},
@@ -84,7 +84,7 @@ public class Dta301CodeListen {
 		{"09","Sonstiger Grund"}
 	};
 	//Indikationsgruppenzuordnung
-	public static String[][] codeB09 = {
+	private static String[][] codeB09 = {
 		{"01","Krankheiten des Herzens und des Kreislaufs"},
 		{"02","Krankheiten der Gefäße"},
 		{"03","Entzündliche rheumatische Erkrankungen"},
@@ -108,7 +108,7 @@ public class Dta301CodeListen {
 		{"21","Sostige"}
 	};
 	//Ursache der Erkrankung
-	public static String[][] codeB10 = {
+	private static String[][] codeB10 = {
 		{"0","1-5 triff nicht zu"},
 		{"1","Arbeitsunfall einschließlich Wegeunfall"},
 		{"2","Berufskrankheit"},
@@ -117,20 +117,20 @@ public class Dta301CodeListen {
 		{"5","Meldepflichtige Erkrankung"}
 	};
 	//Art der Versorgung
-	public static String[][] codeB11 = {
+	private static String[][] codeB11 = {
 		{"1","stationär"},
 		{"2","ganztägig ambulant"},
 		{"3","ambulant (nur RV)"}
 	};	
 	//Erläuterung zur ambulanten Leistung (nur RV)
-	public static String[][] codeB12 = {
+	private static String[][] codeB12 = {
 		{"1","Meldung des 1.Behandlungstages bzw. 1.Abschnitt"},
 		{"2","Meldung des 2 bis n-ten Beh.Tages bzw. Abschnitts"},
 		{"3","Meldung des letzten Behandl.tages bzw. letzter Abschnitt"},
 		{"4","Meldung des gesamten Behandlung"}
 	};	
 	//DMP-Patient (nur RV)
-	public static String[][] codeB13 = {
+	private static String[][] codeB13 = {
 		{"0","kein DMP-Patient"},
 		{"1","Diabetes mellitus Typ 1"},
 		{"2","Diabetes mellitus Typ 2"},
@@ -146,7 +146,7 @@ public class Dta301CodeListen {
 	 * 
 	 */
 	//Anreise
-	public static String[][] codeA01 = {
+	private static String[][] codeA01 = {
 		{"1","Anreise mit öffentliche Verkehrsmittel, Patient löst Fahrkarte selbst"},
 		{"2","Anreise mit öffentliche Verkehrsmittel, Fahrkarte wird gestellt"},
 		{"3","Anreise mit PKW"},
@@ -156,7 +156,7 @@ public class Dta301CodeListen {
 	};	
 	
 	//Antragsart (nur RV)
-	public static String[][] codeA02 = {
+	private static String[][] codeA02 = {
 		{"11","Normale medizinische Reha einschl. RPK"},
 		{"12","Entwöhnungsbehandlung (stationäre Suchtleistung)"},
 		{"13","CA-Leistung für den Versicherten"},
@@ -168,7 +168,7 @@ public class Dta301CodeListen {
 		{"99","Auftragsheilbehandlung"},
 	};	
 	//Art der Suchterkrankung
-	public static String[][] codeA03 = {
+	private static String[][] codeA03 = {
 		{"1","Keine Suchterkrankung bekannt"},
 		{"2","Alkoholabhängigkeit"},
 		{"3","Medikamentenabhängigkeit"},
@@ -178,13 +178,13 @@ public class Dta301CodeListen {
 		{"7","Eßstörungen"}
 	};
 	//Auftragsleistung
-	public static String[][] codeA04 = {
+	private static String[][] codeA04 = {
 		{"1","Keine Auftragsleistung"},
 		{"2","Vollständige Fallabwicklung durch beauftragte Stelle"},
 		{"3","Bewilligung durch beauftragte Stelle, weitere Abwicklung durch Klinik"}
 	};
 	//Begleitperson Hinreise
-	public static String[][] codeA05 = {
+	private static String[][] codeA05 = {
 		{"1","Anreise keine Begleitperson"},
 		{"2","Anreise Begleitperson (Erwachsene)"},
 		{"3","Anreise Begleitperson (Kind)"},
@@ -192,7 +192,7 @@ public class Dta301CodeListen {
 		{"9","Anreise mehr als eine Begleitperson (Familienkur)"}
 	};
 	//Begleitperson Rückreise
-	public static String[][] codeA06 = {
+	private static String[][] codeA06 = {
 		{"1","Rückreise keine Begleitperson"},
 		{"2","Rückreise Begleitperson (Erwachsene)"},
 		{"3","Rückreise Begleitperson (Kind)"},
@@ -200,7 +200,7 @@ public class Dta301CodeListen {
 		{"9","Rückreise mehr als eine Begleitperson (Familienkur)"}
 	};
 	//Begleitperson Aufenthalt
-	public static String[][] codeA07 = {
+	private static String[][] codeA07 = {
 		{"1","Aufenthalt keine Begleitperson"},
 		{"2","Aufenthalt Begleitperson (Erwachsene)"},
 		{"3","Aufenthalt Begleitperson (Kind)"},
@@ -208,7 +208,7 @@ public class Dta301CodeListen {
 		{"9","Aufenthalt mehr als eine Begleitperson (Familienkur)"}
 	};
 	//Behinderung
-	public static String[][] codeA08 = {
+	private static String[][] codeA08 = {
 		{"01","Keine Schwerbehinderung bekannt"},
 		{"02","Geistige Behinderung"},
 		{"03","Anfallskrankheit"},
@@ -221,18 +221,18 @@ public class Dta301CodeListen {
 		{"10","Nicht näher sepzifiz. Schwerbehinderung"}
 	};
 	//Eilfall
-	public static String[][] codeA09 = {
+	private static String[][] codeA09 = {
 		{"J","JA"},
 		{"N","NEIN"}
 	};
 	//Entgeldkategorie
-	public static String[][] codeA10 = {
+	private static String[][] codeA10 = {
 		{"1","Vergütung"},
 		{"2","Zuschuß"},
 		{"3","Fallpauschale"}
 	};
 	//Maßnahmeart
-	public static String[][] codeA11 = {
+	private static String[][] codeA11 = {
 		{"01","Noch keine Angaben möglich"},
 		{"10","Normale medizinische Heilbehandlung"},
 		{"21","Normale Leistung wegen psychischer Erkrankung"},
@@ -249,7 +249,7 @@ public class Dta301CodeListen {
 		{"99","Auftragsheilbehandlung"}
 	};
 	//Verfahrensart Anspruchsgrundlage
-	public static String[][] codeA12 = {
+	private static String[][] codeA12 = {
 		{"71","Anschlußrehabilitation"},
 		{"72","Wiederholungsheilbehandlung"},
 		{"73","Vorleistung nach §6 Abs.2 RehaAnglG"},
@@ -273,16 +273,105 @@ public class Dta301CodeListen {
 		{"98","Mutter/Kind Vorsorgekur nach §24 SGB V"}
 	};
 	//Zuzahlungseinzug
-	public static String[][] codeA13 = {
+	private static String[][] codeA13 = {
 		{"1","Keine Zuzahlung"},
 		{"2","Zuzahlungsbetrag soll von der Klinik eingezogen werden"},
 		{"3","Zuzahlungsbetrag soll von der Klinik nicht(!!) eingezogen werden"}
 	};
 	//Zwischenrechnung erlaubt
-	public static String[][] codeA14 = {
+	private static String[][] codeA14 = {
 		{"J","JA"},
 		{"N","NEIN"}
-	};	
+	};
+	/***********
+	 * 
+	 * Es folgen die C-CodeListen
+	 * 
+	 */	
+	//Arbeitshaltung im Stehen (nur RV)
+	private static String[][] codeC01 = {
+		{"1","Keine Angaben"},
+		{"2","Ständig"},
+		{"3","Überwiegend"},
+		{"4","Zeitweise"}
+	};
+	//Arbeitshaltung im Sitzen (nur RV)
+	private static String[][] codeC02 = {
+		{"1","Keine Angaben"},
+		{"2","Ständig"},
+		{"3","Überwiegend"},
+		{"4","Zeitweise"}
+	};
+	//Arbeitshaltung im Gehen (nur RV)
+	private static String[][] codeC03 = {
+		{"1","Keine Angaben"},
+		{"2","Ständig"},
+		{"3","Überwiegend"},
+		{"4","Zeitweise"}
+	};
+	//Arbeitsschwere (nur RV)
+	private static String[][] codeC04 = {
+		{"1","Keine Angaben"},
+		{"2","Schwere Arbeiten"},
+		{"3","Mittelschwere Arbeiten"},
+		{"4","Leichte bis mittelschwere Arbeiten"},
+		{"5","Leichte Arbeiten"}
+	};
+	//Leistungsfähigkeit im bisherigen Beruf (nur RV)
+	private static String[][] codeC05 = {
+		{"5","Mindestens 6 Stunden"},
+		{"6","Mindestens 3 und unter 6 Stunden"},
+		{"7","Weniger als 3 Stunden"},
+		{"9","Keine Angaben erforderlich"}
+	};
+	//Leistungsfähigkeit auf dem allgemeinen Arbeitsmarkt (nur RV)
+	private static String[][] codeC06 = {
+		{"5","Mindestens 6 Stunden"},
+		{"6","Mindestens 3 und unter 6 Stunden"},
+		{"7","Weniger als 3 Stunden"},
+		{"9","Keine Angaben erforderlich"}
+	};
+	//Arbeitsorganisation Tagesschicht (nur RV)
+	private static String[][] codeC07 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Arbeitsorganisation Früh-/Spätschicht (nur RV)
+	private static String[][] codeC08 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Arbeitsorganisation Nachtschicht (nur RV)
+	private static String[][] codeC09 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Keine wesentlichen Einschränkungen (nur RV)
+	private static String[][] codeC10 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Belastbarkeit (geistig/psychisch) (nur RV)
+	private static String[][] codeC11 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Sinnesorgane (nur RV)
+	private static String[][] codeC12 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Bewegungs-/Haltungsapparat (nur RV)
+	private static String[][] codeC13 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	//Gefährdungs-/Belastungsfaktoren (nur RV)
+	private static String[][] codeC14 = {
+		{"J","JA"},
+		{"N","NEIN"}
+	};
+	
 
 	public static String[][] getCodeListe(String codeListe){
 		String[][] ret = {{"unbekannt","unbekannt"}};
@@ -313,6 +402,21 @@ public class Dta301CodeListen {
 		if(codeListe.equals("A12")){return codeA12;}
 		if(codeListe.equals("A13")){return codeA13;}
 		if(codeListe.equals("A14")){return codeA14;}
+		/****************/
+		if(codeListe.equals("C01")){return codeC01;}
+		if(codeListe.equals("C02")){return codeC02;}
+		if(codeListe.equals("C03")){return codeC03;}
+		if(codeListe.equals("C04")){return codeC04;}
+		if(codeListe.equals("C05")){return codeC05;}
+		if(codeListe.equals("C06")){return codeC06;}
+		if(codeListe.equals("C07")){return codeC07;}
+		if(codeListe.equals("C08")){return codeC08;}
+		if(codeListe.equals("C09")){return codeC09;}
+		if(codeListe.equals("C10")){return codeC10;}
+		if(codeListe.equals("C11")){return codeC11;}
+		if(codeListe.equals("C12")){return codeC12;}
+		if(codeListe.equals("C13")){return codeC13;}
+		if(codeListe.equals("C14")){return codeC14;}
 
 		return ret;
 	}

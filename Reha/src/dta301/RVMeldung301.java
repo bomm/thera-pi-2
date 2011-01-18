@@ -9,16 +9,22 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
+import entlassBerichte.EBerichtPanel;
+
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.IntegerTools;
+import systemTools.StringTools;
 import terminKalender.DatFunk;
-import utils.StringTools;
+
 
 public class RVMeldung301 {
 	static String UNA = "UNA";
@@ -66,7 +72,9 @@ public class RVMeldung301 {
 	int originalSize = -1;
 	int encryptedSize = -1;
 	
-	RVMeldung301(int art, String id){
+	boolean shouldBreak = false;
+	
+	public RVMeldung301(int art, String id){
 		
 		/*
 		EMPFAENGERIK = recipient;
@@ -96,11 +104,170 @@ public class RVMeldung301 {
 		EMPFAENGERIK = vecdta.get(0).get(3);
 		
 	}
+	/************************************************************/
+	public void doEbericht(EBerichtPanel epanel){
+		holeVector();
+		int zeilen = 1;
+		shouldBreak = false;
+		String test = "";
+		String seite = "";
+		String diagtext = "";
+		Vector<String> flvec = new Vector<String>();
+		buf301Body.append("UNH+00001+MEDR03:D:08A:KR:97B'"+NEWLINE);zeilen++;
+		buf301Body.append("BGM+21++10'"+NEWLINE);zeilen++; 
+		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
+		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		//buf301Body.append("PNA+MS++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
+		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
+		//Arzt 1
+		buf301Body.append("CTA+DRL"+(epanel.barzttf[0].getText().trim().equals("")?"":"+"+epanel.barzttf[0].getText().trim())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+DRS"+(epanel.barzttf[2].getText().trim().equals("")?"":"+"+epanel.barzttf[2].getText().trim())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+DRO"+(epanel.barzttf[1].getText().trim().equals("")?"":"+"+epanel.barzttf[1].getText().trim())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
+		buf301Body.append("DTM+242:"+(epanel.btf[27].getText().trim().equals("")
+				? this.mache10erDatum(DatFunk.sHeute())+":102" :
+				mache10erDatum(epanel.btf[27].getText().trim())+":102")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+			if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+		}
+		buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("FCA+MD'"+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
+		
+		buf301Body.append("PRC+BL1:::03"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+epanel.bcmb[0].getSelectedItem().toString()+"B06"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+epanel.bcmb[1].getSelectedItem().toString()+"B01"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+epanel.bcmb[17].getSelectedItem().toString()+"B10"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+epanel.bcmb[18].getSelectedItem().toString()+"B03"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+epanel.bcmb[19].getSelectedItem().toString()+"B13"+EOL+NEWLINE);zeilen++;
+		int[] iseite = {2,5,8,11,14};
+		int[] isicher = {3,6,9,12,15};
+		int[] ierfolg = {4,7,10,13,16};
+		for(int i = 0;i < 5;i++){
+			test = epanel.btf[17+i].getText().trim();
+			if(!test.equals("")){
+				seite = ( ! epanel.bcmb[iseite[i]].getSelectedItem().toString().trim().equals("")
+						? epanel.bcmb[iseite[i]].getSelectedItem().toString()
+						: "");
+				seite = seite+"+";
+				seite = seite+ ( ! epanel.bcmb[isicher[i]].getSelectedItem().toString().trim().equals("")
+						? epanel.bcmb[isicher[i]].getSelectedItem().toString()
+						: "");
+				seite = seite+":::";
+				seite = seite+( ! epanel.bcmb[ierfolg[i]].getSelectedItem().toString().trim().equals("")
+						? epanel.bcmb[ierfolg[i]].getSelectedItem().toString()
+								: "");
+				buf301Body.append("CIN+DIA+"+test+":10R::"+seite+EOL+NEWLINE);zeilen++;	
+			}
+		}
+		buf301Body.append("RFF+AEA:99999"+EOL+NEWLINE);zeilen++;
+		flvec = StringTools.fliessTextZerhacken(StringTools.do301String(epanel.btf[25].getText().trim()), 70, "\n");
+		if(flvec.size() > 1 ){
+			buf301Body.append("FTX+BRF+++B:"+flvec.get(0)+EOL+NEWLINE);zeilen++;
+			buf301Body.append("FTX+BRF+++B:"+flvec.get(1)+EOL+NEWLINE);zeilen++;
+		}else{
+			buf301Body.append("FTX+BRF+++B:"+flvec.get(0)+EOL+NEWLINE);zeilen++;
+		}
+		test = Integer.toString(IntegerTools.trailNullAndRetInt(epanel.btf[22].getText()));
+		buf301Body.append("QTY+AGW:"+test+":KG"+EOL+NEWLINE);zeilen++;
+		test = Integer.toString(IntegerTools.trailNullAndRetInt(epanel.btf[23].getText()));
+		buf301Body.append("QTY+EGW:"+test+":KG"+EOL+NEWLINE);zeilen++;
+		test = Integer.toString(IntegerTools.trailNullAndRetInt(epanel.btf[24].getText()));
+		buf301Body.append("QTY+GRO:"+test+":CM"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PAS+2"+EOL+NEWLINE);zeilen++;
+		test = mache10erDatum(epanel.btf[15].getText())+mache10erDatum(epanel.btf[16].getText());
+		buf301Body.append("DTM+322:"+test+":711"+EOL+NEWLINE);zeilen++;
+		for(int i = 0; i < 17; i++){
+			if(epanel.bchb[i].isSelected()){
+				test = StringTools.fuelleMitZeichen(Integer.toString(i+1), "0", true, 2);
+				buf301Body.append("CLI+VMS+"+test+":MSN"+EOL+NEWLINE);zeilen++;
+			}
+		}
+		buf301Body.append("PRC+B1X:::03"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CLI+DTX"+EOL+NEWLINE);zeilen++;
+		for(int i = 0;i < 5;i++){
+			test = epanel.btf[17+i].getText().trim();
+			if(!test.equals("")){
+				diagtext = StringTools.do301String(epanel.bta[i].getText());
+				flvec = StringTools.fliessTextZerhacken(diagtext, 40, "\n");
+				test = "FTX+TXT+++B:";
+				for(int i2 = 0;i2 < flvec.size();i2++){
+					test = test+flvec.get(i2);
+					if(i2 == (flvec.size()-1)){
+						break;
+					}
+					test=test+"+";
+				}
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+		}
+		buf301Body.append("CLI+MAS"+EOL+NEWLINE);zeilen++;
+		flvec = StringTools.fliessTextZerhacken(StringTools.do301String(epanel.bta[5].getText().trim()), 70, "\n");
+		if(flvec.size()<=0){
+			buf301Body.append("FTX+TXT+++B"+EOL+NEWLINE);zeilen++;
+		}else{
+			for(int i = 0; i < flvec.size();i++){
+				buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;
+			}
+		}
+		buf301Body.append("PRC+B1a:::02"+EOL+NEWLINE);zeilen++;
+		for(int i = 1;i < 15;i++){
+			buf301Body.append("CIN+SML+"+getSMLResult(epanel,i)+":C"+StringTools.fuelleMitZeichen(Integer.toString(i), "0", true, 2)+EOL+NEWLINE);zeilen++;	
+		}
+		test = StringTools.do301String(epanel.bta[7].getText().trim()); 
+		if(!test.equals("")){
+			flvec = StringTools.fliessTextZerhacken(test,70,"\n");
+			for(int i = 0; i < flvec.size();i++){
+				buf301Body.append("FTX+SMX+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;				
+			}
+		}else{
+			buf301Body.append("FTX+SMX+++B"+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append("PRC+Bb1:::02"+EOL+NEWLINE);zeilen++;
+		//
+		test = StringTools.do301String(epanel.bta[8].getText().trim()); 
+		if(!test.equals("")){
+			flvec = StringTools.fliessTextZerhacken(test,70,"\n");
+			for(int i = 0; i < flvec.size();i++){
+				buf301Body.append("FTX+FTX+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;				
+			}
+		}else{
+			buf301Body.append("FTX+FTX+++B"+EOL+NEWLINE);zeilen++;
+		}
+		
+		try {
+			doDateiErstellenFrei("C:/testbericht.txt",buf301Body.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	/************************************************************/
 	public void doBeginn(String beginnDatum,String uhrZeit){
 		holeVector();
 		int zeilen = 1;
+		shouldBreak = false;
 		String test = "";
 		buf301Body.append("UNH+00001+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+01++10'"+NEWLINE);zeilen++;
@@ -184,6 +351,7 @@ public class RVMeldung301 {
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
 		holeVector();
 		int zeilen = 1;
+		shouldBreak = false;
 		String test = "";
 		buf301Body.append("UNH+00001+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+06++10'"+NEWLINE);zeilen++; 
@@ -227,7 +395,7 @@ public class RVMeldung301 {
 		/******************/
 		buf301Body.append("PRC+ADMIN6'"+NEWLINE);zeilen++;	
 		buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("IMD+++"+Dta301CodeListen.codeB08[ubgrund][0]+":B08"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B08")[ubgrund][0]+":B08"+EOL+NEWLINE);zeilen++;
 		if(ubart==0){
 			buf301Body.append("DTM+158:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
 		}else if(ubart==1){
@@ -266,6 +434,7 @@ public class RVMeldung301 {
 	public void doEntlassung(String erstDatum,String letztDatum,String uhrZeit,int arbeitsfaehig,int entlassform){
 		holeVector();
 		int zeilen = 1;
+		shouldBreak = false;
 		String test = "";
 		buf301Body.append("UNH+00001+MEDR03:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+04++10'"+NEWLINE);zeilen++; 
@@ -302,8 +471,8 @@ public class RVMeldung301 {
 		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PRC+ETL'"+NEWLINE);zeilen++;
-		buf301Body.append("IMD+++"+Dta301CodeListen.codeB02[arbeitsfaehig][0]+":B02"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("IMD+++"+Dta301CodeListen.codeB07[entlassform][0]+":B07"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B02")[arbeitsfaehig][0]+":B02"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B07")[entlassform][0]+":B07"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("DTM+194:"+mache10erDatum(erstDatum)+":102"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("DTM+293:"+mache10erDatum(letztDatum)+":102"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("DTM+96:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
@@ -384,6 +553,18 @@ public class RVMeldung301 {
 		    return;
 		}
 		
+	}
+	private void doDateiErstellenFrei(String datname,String in) throws IOException{
+		File f = null;
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		f = new File( datname );
+		fw = new FileWriter(f);
+	    bw = new BufferedWriter(fw); 
+	    bw.write(in); 
+	    bw.flush();
+	    fw.flush();
+	    fw.close();
 	}
 
 	private void doKopfDaten(){
@@ -474,6 +655,107 @@ public class RVMeldung301 {
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 28) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 44) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 30) );
+	}
+	
+	private String getSMLResult(EBerichtPanel epanel,int i){
+		String ret = "";
+		switch(i){
+		case 1: //Stehen
+			if(epanel.bchb[24].isSelected()){return "2";}
+			if(epanel.bchb[25].isSelected()){return "3";}
+			if(epanel.bchb[26].isSelected()){return "4";}
+			JOptionPane.showMessageDialog(null,"Angaben zur Arbeitshaltung fehlerhaft oder unvollständig");
+			shouldBreak = true;
+			return "1";
+		case 2: //Sitzen
+			if(epanel.bchb[30].isSelected()){return "2";}
+			if(epanel.bchb[31].isSelected()){return "3";}
+			if(epanel.bchb[32].isSelected()){return "4";}
+			JOptionPane.showMessageDialog(null,"Angaben zur Arbeitshaltung fehlerhaft oder unvollständig");
+			shouldBreak = true;
+			return "1";
+		case 3: //Gehen
+			if(epanel.bchb[27].isSelected()){return "2";}
+			if(epanel.bchb[28].isSelected()){return "3";}
+			if(epanel.bchb[29].isSelected()){return "4";}
+			JOptionPane.showMessageDialog(null,"Angaben zur Arbeitshaltung fehlerhaft oder unvollständig");
+			shouldBreak = true;
+			return "1";
+		case 4: //Arbeitsschwere
+			if(epanel.bchb[20].isSelected()){return "2";}
+			if(epanel.bchb[21].isSelected()){return "3";}
+			if(epanel.bchb[22].isSelected()){return "4";}
+			if(epanel.bchb[23].isSelected()){return "5";}
+			JOptionPane.showMessageDialog(null,"Angaben zur Arbeitsschwere fehlerhaft oder unvollständig");
+			shouldBreak = true;
+			return "1";
+		case 5: //Leistungsfähigk im zuletzt ausgeübten Beruf			
+			if(epanel.bchb[17].isSelected()){return "5";}
+			if(epanel.bchb[18].isSelected()){return "6";}
+			if(epanel.bchb[19].isSelected()){return "7";}
+			JOptionPane.showMessageDialog(null,"Angaben zur Leistungsfähigkeit (letzte Tätigkeit) fehlerhaft oder unvollständig");
+			shouldBreak = true;
+			return "9";
+		case 6: //Leistungsfähigk auf d. allgem. Arbeitsmarkt			
+			if(epanel.bchb[41].isSelected()){return "5";}
+			if(epanel.bchb[42].isSelected()){return "6";}
+			if(epanel.bchb[43].isSelected()){return "7";}
+			JOptionPane.showMessageDialog(null,"Angaben zur Leistungsfähigkeit (allgem. Arbeitsmarkt) fehlerhaft oder unvollständig");
+			shouldBreak = true;
+			return "9";
+		case 7: //Tagesschicht
+			if(epanel.bchb[33].isSelected()){return "J";}
+			return "N";
+		case 8: //Früh-/Spätschicht
+			if(epanel.bchb[34].isSelected()){return "J";}
+			return "N";
+		case 9: //Nachtschicht
+			if(epanel.bchb[35].isSelected()){return "J";}
+			return "N";
+		case 10: //Keine wesentlichen Einschränkungen
+			if(epanel.bchb[36].isSelected() && (!epanel.bta[7].getText().trim().equals(""))){
+				JOptionPane.showMessageDialog(null,"Keine Einschränkung angekreuzt aber Einschränkungen im Text benannt -> nicht möglch");
+				shouldBreak = true;
+				return "J";
+			}
+			if(epanel.bchb[36].isSelected()){return "J";}
+			return "N";
+		case 11: //Balastbarkeit (geistig/psychisch)
+			if(epanel.bchb[37].isSelected() && (epanel.bta[7].getText().trim().equals(""))){
+				JOptionPane.showMessageDialog(null,"174 angekreuzt aber Einschränkungen im Text nicht benannt -> nicht möglch");
+				shouldBreak = true;
+				return "J";
+			}
+			if(epanel.bchb[37].isSelected()){return "J";}
+			return "N";
+		case 12: //Sinnesorgane
+			if(epanel.bchb[38].isSelected() && (epanel.bta[7].getText().trim().equals(""))){
+				JOptionPane.showMessageDialog(null,"175 angekreuzt aber Einschränkungen im Text nicht benannt -> nicht möglch");
+				shouldBreak = true;
+				return "J";
+			}
+			if(epanel.bchb[38].isSelected()){return "J";}
+			return "N";
+		case 13: //Bewegungs-/Haltungsapparat
+			if(epanel.bchb[39].isSelected() && (epanel.bta[7].getText().trim().equals(""))){
+				JOptionPane.showMessageDialog(null,"176 angekreuzt aber Einschränkungen im Text nicht benannt -> nicht möglch");
+				shouldBreak = true;
+				return "J";
+			}
+			if(epanel.bchb[39].isSelected()){return "J";}
+			return "N";
+		case 14: //Gefährdungs- und Belastungsfaktoren
+			if(epanel.bchb[40].isSelected() && (epanel.bta[7].getText().trim().equals(""))){
+				JOptionPane.showMessageDialog(null,"177 angekreuzt aber Einschränkungen im Text nicht benannt -> nicht möglch");
+				shouldBreak = true;
+				return "J";
+			}
+			if(epanel.bchb[40].isSelected()){return "J";}
+			return "N";
+
+		}
+		
+		return ret;
 	}
 	
 }
