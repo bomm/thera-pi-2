@@ -59,6 +59,7 @@ import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
+import abrechnung.AbrechnungDlg;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.text.ITextCursor;
@@ -175,7 +176,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	public JRtaComboBox[] acmb = {  null,null,null};
 			
 	public int[] druckversion = {0,0,0,0,0,0}; 
-	public String[] aerzte; 
+	public String[] aerzte;
+	
+	public AbrechnungDlg abrDlg = null;
 	
 	String[] varinhalt = {
 			"^Heute^", //0
@@ -1233,30 +1236,38 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 	private void do301FallSteuerung(){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
+		setCursor(Reha.thisClass.wartenCursor);
+		abrDlg = new AbrechnungDlg();
+		abrDlg.pack();
+		abrDlg.setLocationRelativeTo(getInstance());
+		abrDlg.setzeLabel("starte Aufbereitung E-Bericht");
+		abrDlg.setVisible(true);
 
-		String cmd = "select id from dta301 where pat_intern = '"+
-		this.pat_intern+"' and nachrichtentyp='1' ORDER by eingelesenam DESC LIMIT 1";
-		String id = SqlInfo.holeEinzelFeld(cmd);
-		if(id.equals("")){
-			JOptionPane.showMessageDialog(null, "Entlassbericht kann nicht übermittelt werden\n"+
-					"Vermutlich wurde dieser Fall nicht im 301-Verfahren übermittelt");
-			return;
-		}
-		RVMeldung301 meldung301 = new RVMeldung301(4,id);
-		meldung301.doEbericht(this);
-		/*
-		String textcontent = document.getTextService().getText().getText();
-		StringTools.fliessTextZerhacken(StringTools.do301String(textcontent), 70,"\n");
-		
-		for(int i = 0; i < 5;i++){
-			if(!bta[i].getText().trim().equals("")){
-				System.out.println("*****Beginn - Zerhacktes Ergebnis von Dianose-JTextArea "+Integer.toString(i+1)+"******");
-				StringTools.fliessTextZerhacken(StringTools.do301String(bta[i].getText()), 40,	"\r\n" );
-				System.out.println("*****Ende - Zerhacktes Ergebnis von Dianose-JTextArea "+Integer.toString(i+1)+"******\n");
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+
+				String cmd = "select id from dta301 where pat_intern = '"+
+				pat_intern+"' and nachrichtentyp='1' ORDER by eingelesenam DESC LIMIT 1";
+				String id = SqlInfo.holeEinzelFeld(cmd);
+				if(id.equals("")){
+					JOptionPane.showMessageDialog(null, "Entlassbericht kann nicht übermittelt werden\n"+
+							"Vermutlich wurde dieser Fall nicht im 301-Verfahren übermittelt");
+					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+					return null;
+				}
+				RVMeldung301 meldung301 = new RVMeldung301(4,id);
+				meldung301.doEbericht(getInstance());
+				setCursor(Reha.thisClass.normalCursor);
+				abrDlg.setVisible(false);
+				abrDlg.dispose();
+				abrDlg = null;
+				return null;
 			}
-		}
-		*/
+			
+		}.execute();
 	}
+	
 
 /********************************************/
 	class ToolsDlgEbericht{

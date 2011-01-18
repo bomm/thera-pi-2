@@ -1,5 +1,10 @@
 package dta301;
 
+import java.util.Arrays;
+import java.util.List;
+
+import systemTools.StringTools;
+
 public class Dta301CodeListen {
 	
 	//Arbeitsfähigkeit (nur RV)
@@ -371,7 +376,38 @@ public class Dta301CodeListen {
 		{"J","JA"},
 		{"N","NEIN"}
 	};
-	
+	private static List<String> fettDruck(){
+		List<String> liste = Arrays.asList(new String[] {"Allgemeine und klinische",
+				"Familienanamnese:","Eigenanamnese:",
+				"Bisherige Reha",
+				"Vegetative Anamne",
+				"Risikofaktoren",
+				"Jetzige Beschwerden",
+				StringTools.do301String("Spezielle männliche"),
+				"Spezielle weibliche",
+				StringTools.do301String("Krankheitsverständnis des"),
+				StringTools.do301String("Krankheitsverständnis der"),
+				StringTools.do301String("Gegenwärtige Therapie"),
+				StringTools.do301String("Medikation:"),
+				StringTools.do301String("Sonstige Maßnahmen:"),
+				StringTools.do301String("Behandelnde Ärzte:"),
+				StringTools.do301String("Allgemeine Sozialanamnese:"),
+				StringTools.do301String("Arbeits- und Berufsanamnese:"),
+				StringTools.do301String("Aufnahmebefund, Vorbefunde,"),
+				StringTools.do301String("Internistisch-körperlicher"),
+				StringTools.do301String("Orthopädischer Befund:"),
+				StringTools.do301String("Neurologischer Befund:"),
+				StringTools.do301String("Psychischer Befund:"),
+				StringTools.do301String("Vor-Befunde:"),
+				StringTools.do301String("Labor bei der Aufnahme und EKG:"),
+				StringTools.do301String("Rehabilitationsziele:"),
+				StringTools.do301String("Rehabilitationsverlauf:"),
+				StringTools.do301String("Rehabilitationsergebnis:"),
+				StringTools.do301String("Sozialmedizinische Epikrise:"),
+				StringTools.do301String("Therapieempfehlungen:"),
+		});
+		return liste;                                           
+	}
 
 	public static String[][] getCodeListe(String codeListe){
 		String[][] ret = {{"unbekannt","unbekannt"}};
@@ -430,6 +466,15 @@ public class Dta301CodeListen {
 			}
 		}
 		return sret;
+	}
+	public static boolean mussFettDruck(String string){
+		for(int i = 0 ; i < fettDruck().size() ; i++){
+			if( string.contains(fettDruck().get(i))){
+				return true;
+			}
+		}
+		return false;
+		
 	}
 
 }

@@ -106,6 +106,7 @@ public class RVMeldung301 {
 	}
 	/************************************************************/
 	public void doEbericht(EBerichtPanel epanel){
+		epanel.abrDlg.setzeLabel("erzeuge Blatt 1");
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
@@ -203,6 +204,7 @@ public class RVMeldung301 {
 				buf301Body.append("CLI+VMS+"+test+":MSN"+EOL+NEWLINE);zeilen++;
 			}
 		}
+		epanel.abrDlg.setzeLabel("erzeuge Blatt 1b Sozialmedizin");
 		buf301Body.append("PRC+B1X:::03"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("CLI+DTX"+EOL+NEWLINE);zeilen++;
 		for(int i = 0;i < 5;i++){
@@ -243,6 +245,8 @@ public class RVMeldung301 {
 		}else{
 			buf301Body.append("FTX+SMX+++B"+EOL+NEWLINE);zeilen++;
 		}
+		//KTL
+		epanel.abrDlg.setzeLabel("untersuche KTL-Codes");
 		buf301Body.append("PRC+Bb1:::02"+EOL+NEWLINE);zeilen++;
 		//
 		test = StringTools.do301String(epanel.bta[8].getText().trim()); 
@@ -252,14 +256,133 @@ public class RVMeldung301 {
 				buf301Body.append("FTX+FTX+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;				
 			}
 		}else{
-			buf301Body.append("FTX+FTX+++B"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("FTX+TXT+++B"+EOL+NEWLINE);zeilen++;
 		}
-		
+		//KTL-Seite1 (1-25)
+		boolean wenigerAls25 = false;
+		String ktlcode="",ktldauer="",ktlanzahl="",ktlfehler="",ktltext="";
+		for(int i = 0; i < 25;i++){
+			if(epanel.ktlcmb[i].getSelectedIndex()>0){
+				ktlcode = epanel.ktltfc[i].getText().trim();
+				ktldauer = epanel.ktltfd[i].getText().trim();
+				ktlanzahl = epanel.ktltfa[i].getText().trim();
+				ktltext = StringTools.do301String(epanel.ktlcmb[i].getSelectedItem().toString().trim());
+				if(ktlcode.equals("") || ktldauer.equals("") || ktlanzahl.equals("") || ktltext.equals("") ){
+					ktlfehler = "Fehlerhafter KTL auf KTL-Blatt 1, Maßnahmenummer "+Integer.toString(i+1);
+					JOptionPane.showMessageDialog(null,ktlfehler);
+					shouldBreak = true;
+				}
+				buf301Body.append("CLI+KTL+"+ktlcode+ktldauer+":KTL"+EOL+NEWLINE);zeilen++;
+				buf301Body.append("IMD+++"+Integer.toString(i+1)+EOL+NEWLINE);zeilen++;
+				flvec = StringTools.fliessTextZerhacken(ktltext,70,"\n");
+				for(int i2 = 0; i2 < flvec.size();i2++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i2)+EOL+NEWLINE);zeilen++;
+					if(i2 == 1){break;} // mehr als 2 Zeilen sind nicht erlaubt
+				}
+				buf301Body.append("QTY+3:"+ktlanzahl+EOL+NEWLINE);zeilen++;
+			}else{
+				wenigerAls25 = true;
+				break;
+			}
+		}
+		//KTL-Seite 2 (1-25) wird erforderlich
+		if(!wenigerAls25 && epanel.ktlcmb[25].getSelectedIndex()>0){
+			buf301Body.append("PRC+Bb2:::02"+EOL+NEWLINE);zeilen++;
+			test = StringTools.do301String(epanel.bta[9].getText().trim()); 
+			if(!test.equals("")){
+				flvec = StringTools.fliessTextZerhacken(test,70,"\n");
+				for(int i = 0; i < flvec.size();i++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;				
+				}
+			}else{
+				buf301Body.append("FTX+TXT+++B"+EOL+NEWLINE);zeilen++;
+			}
+			for(int i = 0; i < 25;i++){
+				if(epanel.ktlcmb[i+25].getSelectedIndex()>0){
+					ktlcode = epanel.ktltfc[i+25].getText().trim();
+					ktldauer = epanel.ktltfd[i+25].getText().trim();
+					ktlanzahl = epanel.ktltfa[i+25].getText().trim();
+					ktltext = StringTools.do301String(epanel.ktlcmb[i+25].getSelectedItem().toString().trim());
+					if(ktlcode.equals("") || ktldauer.equals("") || ktlanzahl.equals("") || ktltext.equals("") ){
+						ktlfehler = "Fehlerhafter KTL auf KTL-Blatt 2, Maßnahmenummer "+Integer.toString(i+1);
+						JOptionPane.showMessageDialog(null,ktlfehler);
+						shouldBreak = true;
+					}
+					buf301Body.append("CLI+KTL+"+ktlcode+ktldauer+":KTL"+EOL+NEWLINE);zeilen++;
+					buf301Body.append("IMD+++"+Integer.toString(i+1)+EOL+NEWLINE);zeilen++;
+					flvec = StringTools.fliessTextZerhacken(ktltext,70,"\n");
+					for(int i2 = 0; i2 < flvec.size();i2++){
+						buf301Body.append("FTX+TXT+++B:"+flvec.get(i2)+EOL+NEWLINE);zeilen++;
+						if(i2 == 1){break;} // mehr als 2 Zeilen sind nicht erlaubt
+					}
+					buf301Body.append("QTY+3:"+ktlanzahl+EOL+NEWLINE);zeilen++;
+				}else{
+					break;
+				}
+			}
+			
+		}
+		epanel.abrDlg.setzeLabel("erzeuge Freitext");
+		buf301Body.append("PRC+BER:::01"+EOL+NEWLINE);zeilen++;
+		//Jetzt den Freitext holen und aufbereiten - der größte Scheiß aller Zeiten!!!
+		test = StringTools.do301String(epanel.document.getTextService().getText().getText());
+		flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+		int seiten = flvec.size()/53;
+		if( (flvec.size() % 53) > 0){seiten++;}
+		buf301Body.append("QTY+3:"+Integer.toString(seiten)+EOL+NEWLINE);zeilen++;
+		int aktuellezeile = -1;
+		System.out.println("Seitenanzahl = "+seiten);
+		for(int i = 0; i < seiten;i++){
+			buf301Body.append("CLI+LDT"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("IMD+++5:B05"+EOL+NEWLINE);zeilen++;
+			for(int i2=0; i2 < 53; i2++){
+				aktuellezeile = (i*53 )+i2;
+				test = flvec.get(aktuellezeile);
+				if(test.trim().equals("")){
+					buf301Body.append("FTX+LTX+++B"+EOL+NEWLINE);zeilen++;
+				}else{
+					buf301Body.append("FTX+LTX+++"+(Dta301CodeListen.mussFettDruck(test) ? "F:" : "B:")
+							+test+EOL+NEWLINE);zeilen++;
+				}
+				if(aktuellezeile==(flvec.size()-1)){
+					break;
+				}
+			}
+		}
+		buf301Body.append("UNT+"+
+				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
+				EOL+NEWLINE);zeilen++;
+		if(this.shouldBreak){
+			JOptionPane.showMessageDialog(null, "In der Erstellung des E-Berichtes nach §301 ist ein Fehler aufgetreten.\nVersand findet nicht statt!!!");
+			return;
+		}
+		doKopfDaten();
+		doFussDaten();
+		gesamtbuf.append(buf301Header.toString());
+		gesamtbuf.append(buf301Body.toString());
+		gesamtbuf.append(buf301Footer.toString());
+		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
+		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+		epanel.abrDlg.setzeLabel("E-Bericht verschlüsseln");
+		if(doKeyStoreAktion()){
+			//Mail Versenden
+			epanel.abrDlg.setzeLabel("E-Bericht versenden");
+			//In neue Tabelle schreiben
+			String cmd = "insert into dtafall set nachrichttyp='6', nachrichtart='6', pat_intern='"+
+			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
+			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
+			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
+			"nachrichtauf='"+
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+		}
+		/*
 		try {
 			doDateiErstellenFrei("C:/testbericht.txt",buf301Body.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
 		
 	}
 	
@@ -406,7 +529,12 @@ public class RVMeldung301 {
 					mache10erDatum(endeDatum)+":711"+EOL+NEWLINE);zeilen++;
 		}
 		if(!hinweis.equals("")){
-			buf301Body.append("FTX+TXT+++B:"+normalizeString(hinweis)+EOL+NEWLINE);zeilen++;
+			Vector<String> flvec = new Vector<String>();
+			test = StringTools.do301String(hinweis);
+			flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+			for(int i = 0; i < flvec.size();i++){
+				buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
+			}
 		}
 		buf301Body.append("UNT+"+
 				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
