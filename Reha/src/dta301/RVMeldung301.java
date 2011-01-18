@@ -654,7 +654,7 @@ public class RVMeldung301 {
 		return false;
 	}
 	
-	private String normalizeString(String in){
+	public String normalizeString(String in){
 		return in.replace(",", "?,").replace(":", "?:");
 	}
 	private void doDateiErstellen(int art) throws IOException{
@@ -682,7 +682,7 @@ public class RVMeldung301 {
 		}
 		
 	}
-	private void doDateiErstellenFrei(String datname,String in) throws IOException{
+	public void doDateiErstellenFrei(String datname,String in) throws IOException{
 		File f = null;
 		FileWriter fw = null;
 		BufferedWriter bw = null;

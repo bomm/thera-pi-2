@@ -423,6 +423,7 @@ public class Dta301CodeListen {
 		if(codeListe.equals("B10")){return codeB10;}
 		if(codeListe.equals("B11")){return codeB11;}
 		if(codeListe.equals("B12")){return codeB12;}
+		if(codeListe.equals("B13")){return codeB13;}
 		/****************/
 		if(codeListe.equals("A01")){return codeA01;}
 		if(codeListe.equals("A02")){return codeA02;}
