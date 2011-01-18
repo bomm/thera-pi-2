@@ -118,6 +118,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jScrp.setPreferredSize(new Dimension(180, 100));
 		DropShadowBorder dropShadow = new DropShadowBorder(Color.BLACK, 10, 1, 5, false, true, true, true);
 		jScrp.setBorder(dropShadow);
+		jScrp.getVerticalScrollBar().setUnitIncrement(15);
 		/**
 		 * Jetz generieren wir den Taskpane-Container anschlie�end die TaskPanes
 		 */
