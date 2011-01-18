@@ -1,5 +1,7 @@
 package systemTools;
 
+import java.util.Vector;
+
 public class StringTools {
 	
 	public static String EGross(String string){
@@ -359,4 +361,65 @@ public class StringTools {
 		}
 		return "Physio";
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static Vector<String> fliessTextZerhacken(String textcontent,int max_line_lenght,String trenner){
+		String[] teile = textcontent.split(trenner);
+		String ohneumbruch = null;
+		String LEER = " ";
+		String reststring = "";
+		Vector<String> dtavec = new Vector<String>();
+		for(int i = 0; i < teile.length;i++){
+			ohneumbruch = teile[i].replace("\f","").replace("\r","").replace("\n","").replace("\t","");
+			reststring = String.valueOf(ohneumbruch);
+			if(ohneumbruch.length()==0){
+				dtavec.add("");
+			}else if(ohneumbruch.length() > 0 && ohneumbruch.length() <= max_line_lenght){
+				if(ohneumbruch.trim().length()>0){
+					dtavec.add(ohneumbruch.trim());
+				}
+			}else if(ohneumbruch.length() > max_line_lenght){
+
+				for(int i2 = 0; i2 < reststring.length();i2++){
+					if(reststring.length() <= max_line_lenght){
+						if(reststring.trim().length() > 0){
+							dtavec.add(reststring.trim());
+						}
+						break;
+					}else{
+						for(int i3 = max_line_lenght-1; i3 >= 0; i3--){
+							if(reststring.substring(i3,i3+1).equals(LEER)){
+								if(reststring.substring(0,i3).trim().length()>0){
+									dtavec.add(reststring.substring(0,i3).trim());
+								}
+								reststring = reststring.substring(i3).trim();
+								break;
+							}else if(i == 0){
+								if(reststring.length() > max_line_lenght){
+									continue;
+								}else{
+									dtavec.add(reststring);
+									break;
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		}
+		for(int i = 0; i < dtavec.size();i++){
+			System.out.println("L="+StringTools.fuelleMitZeichen(
+					Integer.toString(dtavec.get(i).length()), "0", true, 3)+": "+dtavec.get(i));
+		}
+		
+		return (Vector<String>)dtavec.clone();
+	}
+	public static String do301String(String string){
+		String ret = string;
+		//ret = ret.replace("ü","}").replace("ä","{").replace("ö","|").replace("ß","~");
+		ret = ret.replace(":", "?:").replace(",","?,");
+		return ret;
+	}
+
 }
