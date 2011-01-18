@@ -1277,9 +1277,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			icons.put("Textbausteine abrufen",SystemConfig.hmSysIcons.get("arztbericht"));
 			icons.put("Bodymass-Index",SystemConfig.hmSysIcons.get("barcode"));
 			icons.put("ICD-10(GM) Recherche",SystemConfig.hmSysIcons.get("info2"));
-			icons.put("§301 Reha-Fallsteuerung",SystemConfig.hmSysIcons.get("abrdreieins"));
+			icons.put("§301 Reha E-Bericht übertragen",SystemConfig.hmSysIcons.get("abrdreieins"));
 			JList list = new JList(	new Object[] {"Textbausteine abrufen", 
-					"Bodymass-Index", "ICD-10(GM) Recherche","§301 Reha-Fallsteuerung"});
+					"Bodymass-Index", "ICD-10(GM) Recherche","§301 Reha E-Bericht übertragen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: ärztliche Gutachten",list);
