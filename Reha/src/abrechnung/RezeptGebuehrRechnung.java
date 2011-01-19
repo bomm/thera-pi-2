@@ -353,10 +353,6 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 */
 	
 	private void buchungUpdaten(){
-		
-//		kopiereAlleRgrNachRliste();
-//		return;
-		
 		// Lemmi Doku: Schreibt die RGR-Buchung in die Datei "rgaffaktura"
 		StringBuffer buf = new StringBuffer();
 		buf.append("update rgaffaktura set ");
@@ -369,40 +365,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		buf.append(" where rnr='"+hmRezgeb.get("<rgnr>")+"' LIMIT 1");
-		//System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
-		/*
-		// vvv Lemmi 20101220: Eintrag der RGR auch in die Tabelle "rliste"
-		if ( SystemConfig.hmZusatzInOffenPostenIni.get("RGRinOPverwaltung") == 1) {
-			String strHelp = "";
-			StringBuffer buf2 = new StringBuffer();
-			buf2.append("update rliste set ");
-			buf2.append("r_nummer='0', ");
-			buf2.append("x_nummer='" + hmRezgeb.get("<rgnr>") + "', ");
-			buf2.append("r_datum='" + DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-	
-			// Patienten-Name, Vorname holen und eintragen
-			String cmd = "select n_name, v_name from pat5 where id='" + hmRezgeb.get("<rgpatintern>") + "'";
-			//System.out.println(cmd);
-			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
-			if(vec.size() <= 0) strHelp = "Patient, unbekannt";
-			else 				strHelp = vec.get(0).get(0) + ", " + vec.get(0).get(1);  // N_name, V_name
-			buf2.append("r_kasse='" + strHelp + "', ");
-			
-			// Hole die ersten beiden Buchstaben aus der Rezeptnummer als "Klasse"
-			strHelp = hmRezgeb.get("<rgreznum>");
-			buf2.append("r_klasse='" + strHelp.substring(0, 2) + "', ");  
-			
-			buf2.append("r_betrag='" + hmRezgeb.get("<rgbetrag>").replace(",",".") + "', ");
-			buf2.append("r_offen='" + hmRezgeb.get("<rgbetrag>").replace(",",".") + "', ");
-			buf2.append("r_zuzahl='0.00', ");		
-			buf2.append("pat_intern='" + hmRezgeb.get("<rgpatintern>") + "', ");
-			buf2.append("ikktraeger='" + hmRezgeb.get("<rgreznum>") + "' ");  // Rezept-Nummer ER23
-			buf2.append(" where x_nummer='" + hmRezgeb.get("<rgnr>") + "' LIMIT 1");
-			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
-		}
-		// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
-		*/
 	}
 	
 	

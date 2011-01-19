@@ -1516,7 +1516,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.addActionListener(this);
 			toolsMenu.add(men);
 			toolsMenu.addSeparator();
-			men = new JMenuItem("§301 Reha-Fallsteuerung");
+			men = new JMenuItem("§301 Reha Fall-Steuerung");
 			men.setActionCommand("fallsteuerung");
 			men.addActionListener(this);
 			toolsMenu.add(men);		

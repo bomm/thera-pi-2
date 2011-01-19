@@ -17,7 +17,6 @@ import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,7 +29,6 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
@@ -287,40 +285,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		buf.append("rgesamt='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
 		buf.append("roffen='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
-		////System.out.println(buf.toString());
 		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());
-		
-		// vvv Lemmi 20101220: Eintrag der AFR auch in Tabelle "rliste" (Offene Posten & Mahnungen)
-		/*
-		if ( SystemConfig.hmZusatzInOffenPostenIni.get("AFRinOPverwaltung") == 1) {
-			String strHelp = "";
-			StringBuffer buf2 = new StringBuffer();
-			buf2.append("insert into rliste set ");
-			buf2.append("r_nummer='0', ");
-			buf2.append("x_nummer='" + afrNummer + "', ");
-			buf2.append("r_datum='" + DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-	
-			// Patienten-Name holen und eintragen
-			String cmd = "select n_name, v_name from pat5 where id='" + (String)Reha.thisClass.patpanel.vecaktrez.get(0) + "'";
-			//System.out.println(cmd);
-			Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
-			if(vec.size() <= 0) strHelp = "Patient, unbekannt";
-			else 				strHelp = vec.get(0).get(0) + ", " + vec.get(0).get(1);  // N_name, V_name
-			buf2.append("r_kasse='" + strHelp + "', ");
-			
-			// Hole die ersten beiden Buchstaben aus der Rezeptnummer als "Klasse"
-			strHelp = (String)Reha.thisClass.patpanel.vecaktrez.get(1);
-			buf2.append("r_klasse='" + strHelp.substring(0, 2) + "', ");  
-			
-			buf2.append("r_betrag='" + (String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
-			buf2.append("r_offen='" + (String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
-			buf2.append("r_zuzahl='0.00', ");		
-			buf2.append("pat_intern='" + (String)Reha.thisClass.patpanel.vecaktrez.get(0) + "', ");
-			buf2.append("ikktraeger='" + (String)Reha.thisClass.patpanel.vecaktrez.get(1) + "'");  // Rezept-Nummer, z.B. ER23
-			sqlTools.SqlInfo.sqlAusfuehren(buf2.toString());		
-			// ^^^ Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste" (Offene Posten & Mahnungen)
-		}
-		*/
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
@@ -340,10 +305,6 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		String sart = "";
 		Double gesamt = new Double(0.00);
 		int preisgruppe = 0;
-		/*
-		List<String> lAdrAFRDaten = Arrays.asList(new String[]{"<AFRposition1>","<AFRposition2>","<AFRposition3>"
-				,"<AFRposition4>","<AFRpreis1>","<AFRpreis2>","<AFRpreis3>","<AFRpreis4>","<AFRgesamt>","<AFRnummer>"});
-		*/	
 		DecimalFormat df = new DecimalFormat( "0.00" );
 		
 		for(int i = 0 ; i < 4; i++){
@@ -384,7 +345,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 			
 		}
 		SystemConfig.hmAdrAFRDaten.put("<AFRgesamt>",df.format( gesamt));
-		/// Hier mu� noch die Rechnungsnummer bezogen und eingetragen werden
+		/// Hier muß noch die Rechnungsnummer bezogen und eingetragen werden
 		afrNummer = "AFR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("afrnr"));
 		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>",afrNummer);
 	}
@@ -435,14 +396,11 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
 		} catch (TextException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		for (int i = 0; i < placeholders.length; i++) {
-			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-			////System.out.println(placeholderDisplayText);	
 		    /*****************/			
 			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
 		    Iterator<?> it = entries.iterator();

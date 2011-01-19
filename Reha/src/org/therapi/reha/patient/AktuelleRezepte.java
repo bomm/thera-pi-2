@@ -2539,6 +2539,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 			}
 			// ^^^ Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+			@SuppressWarnings("unchecked")
 			RezNeuanlage rezNeuAn = new RezNeuanlage((Vector<String>)vecKopiervorlage.clone(),lneu,feldname);
 			neuRez.getSmartTitledPanel().setContentContainer( rezNeuAn );
 			//if ( rezNeuAn.strKopiervorlage.isEmpty() )
@@ -2666,9 +2667,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
 		int row = tabaktrez.getSelectedRow();
 		if(row < 0){JOptionPane.showMessageDialog(null,"Kein Rezept für Fallsteuerung ausgewählt"); return;}
-		String aktrez = tabaktrez.getValueAt(row,0).toString().trim();
-		
-		int rezepte = Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from dta301 where rez_nr ='"+aktrez+"'"));
+		//String aktrez = tabaktrez.getValueAt(row,0).toString().trim();
+		//int rezepte = Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from dta301 where rez_nr ='"+aktrez+"'"));
 		/*
 		if(rezepte <= 0){
 			String meldung = "<html>Diese Verordnung wurde vom Kostenträger <b>nicht elektronisch</b> übermittelt!<br>"+

@@ -1,7 +1,6 @@
 package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
-import hauptFenster.SuchenDialog;
 
 import java.io.BufferedReader;
 import java.io.File;
