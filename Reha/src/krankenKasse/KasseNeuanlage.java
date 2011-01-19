@@ -457,6 +457,8 @@ public class KasseNeuanlage extends JXPanel implements ActionListener, KeyListen
 		but.setOpaque(false);
 		jtf[0] = new JRtaTextField("GROSS", true);
 		jtf[0].setName("KUERZEL");
+		jtf[0].setToolTipText("<html>Das Kürzele einer Kasse besteht aus insgesamt 6 Zeichen 'AAA-AA'<br>"+
+		"Z.B. <b>AOK-RT</b> für AOK Reutlingen</html>");
 		MaskFormatter uppercase = null;
 		try {
 			uppercase = new MaskFormatter("AAA-AA");

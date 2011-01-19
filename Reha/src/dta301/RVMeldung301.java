@@ -127,9 +127,9 @@ public class RVMeldung301 {
 		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
 		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
 		//Arzt 1
-		buf301Body.append("CTA+DRL"+(epanel.barzttf[0].getText().trim().equals("")?"":"+"+epanel.barzttf[0].getText().trim())+EOL+NEWLINE);zeilen++;
-		buf301Body.append("CTA+DRS"+(epanel.barzttf[2].getText().trim().equals("")?"":"+"+epanel.barzttf[2].getText().trim())+EOL+NEWLINE);zeilen++;
-		buf301Body.append("CTA+DRO"+(epanel.barzttf[1].getText().trim().equals("")?"":"+"+epanel.barzttf[1].getText().trim())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+DRL"+(epanel.barzttf[0].getText().trim().equals("")?"":"+:"+epanel.barzttf[0].getText().trim())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+DRS"+(epanel.barzttf[2].getText().trim().equals("")?"":"+:"+epanel.barzttf[2].getText().trim())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("CTA+DRO"+(epanel.barzttf[1].getText().trim().equals("")?"":"+:"+epanel.barzttf[1].getText().trim())+EOL+NEWLINE);zeilen++;
 		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
 		buf301Body.append("DTM+242:"+(epanel.btf[27].getText().trim().equals("")
 				? this.mache10erDatum(DatFunk.sHeute())+":102" :

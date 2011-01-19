@@ -165,6 +165,9 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
 		tfs[0].addKeyListener(this);
 		tfs[0].addFocusListener(this);
 		tfs[0].setName("kuerzel");
+		tfs[0].setToolTipText("<html>Das Kürzele einer Kasse besteht aus insgesamt 6 Zeichen 'AAA-AA'<br>"+
+		"Z.B. <b>AOK-RT</b> für AOK Reutlingen</html>");
+
 		MaskFormatter uppercase = null;
 		try {
 			uppercase = new MaskFormatter("AAA-AA");

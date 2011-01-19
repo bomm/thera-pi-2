@@ -227,6 +227,18 @@ public class RoogleFenster extends RehaSmartDialog implements TableModelListener
 		this.validate();
 		setTableSelection(jxTable,0,0);
 		//thisClass = this;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				erstFocus();
+			}
+		});
+	}
+	private void erstFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				jxTable.requestFocus();
+			}
+		});
 	}
 	/******************************************/
 	public RoogleFenster getInstance(){
