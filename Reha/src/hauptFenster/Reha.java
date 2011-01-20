@@ -1461,8 +1461,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
 			abrechnungMenu.addSeparator();
-			men = new JMenuItem("Rechnungskorrektur / Rechnungskopie");
-			men.setActionCommand("rechnungskorrektur");
+			men = new JMenuItem("Rezeptgebührrechnung/Ausfallrechnung");
+			men.setActionCommand("rgaffaktura");
 			men.addActionListener(this);
 			abrechnungMenu.add(men);
 		}
@@ -2236,12 +2236,12 @@ public void actionPerformed(ActionEvent arg0) {
 		new RezeptFahnder();
 		return;
 	}
-	if(cmd.equals("rechnungskorrektur")){
-		if(! Rechte.hatRecht(Rechte.Funktion_kassenabrechnung, false)){
-			JOptionPane.showMessageDialog(null, "Keine Berechtigung -> Funktion Korrektur einer Rechnung");
+	if(cmd.equals("rgaffaktura")){
+		if(! Rechte.hatRecht(Rechte.Funktion_kassenbuch, false)){
+			JOptionPane.showMessageDialog(null, "Keine Berechtigung -> Funktion Ausbuchen RGAF-Faktura");
 			return;
 		}
-		new LadeProg(Reha.proghome+"RehaBillEdit.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		new LadeProg(Reha.proghome+"Oprgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
 	if(cmd.equals("kassenbuch")){
