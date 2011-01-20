@@ -270,7 +270,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		}
 		try{
 			rs = stmt.executeQuery(buf.toString());
-
+			String test = "";
 			if(rs.next()){
 				for(int i = 0; i < 7;i++){
 					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
@@ -283,7 +283,9 @@ public class Eb1 implements ActionListener,ComponentListener {
 					}
 				}
 				for(int i = 0; i < 17;i++){
-					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+					test = ( rs.getString(eltern.bchb[i].getName())==null ? "0" : rs.getString(eltern.bchb[i].getName()));
+					//eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+					eltern.bchb[i].setSelected( test.equals("1") ? true : false );
 				}
 				for(int i = 0; i < 20;i++){
 					eltern.bcmb[i].setSelectedItem( (rs.getString(eltern.bcmb[i].getName())==null  ? "" :  rs.getString(eltern.bcmb[i].getName())) );
@@ -1715,9 +1717,13 @@ public class Eb1 implements ActionListener,ComponentListener {
 		}else{
 			// Hier noch das RV - Entlassdatum einbauen ggfls. ebenfalls alte labels zeigen
 			if(eltern.btf[15].getText().length()==10){
-				if(DatFunk.TageDifferenz("31.12.2007",eltern.btf[15].getText() ) < 0){
-					setzeNeueLabels(false);
-				}else{
+				try{
+					if(DatFunk.TageDifferenz("31.12.2007",eltern.btf[15].getText() ) < 0){
+						setzeNeueLabels(false);
+					}else{
+						setzeNeueLabels(true);
+					}
+				}catch(Exception ex){
 					setzeNeueLabels(true);
 				}
 			}else{

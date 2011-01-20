@@ -94,12 +94,13 @@ public class Reha301Einlesen{
 		//ActivateListener();
 		//add(getFormLayout(),BorderLayout.CENTER);
 	}
-	public void decodeAndRead(String dir){
+	public boolean decodeAndRead(String dir){
 		encodepfad = dir;
-		doDecode(encodepfad);
+		boolean erfolg = doDecode(encodepfad);
 		//starteEinlesen(encodepfad);
 		encodepfad = null;
 		eltern.activateNachricht();
+		return erfolg;
 	}
 	
 	public void ActivateListener(){
@@ -131,9 +132,9 @@ public class Reha301Einlesen{
 			}
 		};
 	}
-	private void doDecode(String pfad){
+	private boolean doDecode(String pfad){
 		//String pfad = dateiDialog(encodepfad);
-		if(pfad.trim().equals("")){return;}
+		if(pfad.trim().equals("")){return false;}
 		pfad = pfad.replace("\\", "/");
 		String datei = pfad.substring(pfad.lastIndexOf("/")+1);
 		//System.out.println("Ausgewählte Datei = "+datei);
@@ -141,7 +142,7 @@ public class Reha301Einlesen{
 		if(datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")){
 			boolean test = testeAuftragsDatei(pfad,datei);
 			if(!test){
-				return;
+				return false;
 			}
 			test = false;
 			try {
@@ -156,13 +157,15 @@ public class Reha301Einlesen{
 				e.printStackTrace();
 			}
 			if(!test){
-				return;
+				return false;
 			}
 			starteEinlesen(this.decodedfile,datei);
 			System.out.println("#AktualisierePat@20202@KG76271");
 		}else{
 			JOptionPane.showMessageDialog(null,"Die ausgewählte Datei ist keine Auftragsdatei gemäß DTA nach §301");
+			return false;
 		}
+		return true;
 	}
 	private void starteEinlesen(String filename,String datei){
 		doEinlesen(filename,datei);
@@ -390,7 +393,7 @@ public class Reha301Einlesen{
 				baos.flush();
 				baos.close();
 				is.close();
-				System.out.println("Einlesen beendet");
+				//System.out.println("Einlesen beendet");
 				break;
 			}
 			//Testen auf Zeilenende = \n
@@ -1046,9 +1049,9 @@ public class Reha301Einlesen{
 	/****************************************/
 	private String doUebersetzen(String zeile){
 		String ret = zeile;
-		ret = ret.replace("}","ü");
-		ret = ret.replace("{","ä");
-		ret = ret.replace("~","ß");
+		ret = ret.replace("}","ü").replace("{","ä").replace("|","ö").replace("~","ß");
+		//ret = ret.replace("{","ä");
+		//ret = ret.replace("~","ß");
 		return ret;
 	}
 	

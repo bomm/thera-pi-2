@@ -91,7 +91,7 @@ public class Reha301 implements WindowListener  {
 	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String rhRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	*/
-	public static boolean testcase = true;
+	public static boolean testcase = false;
 	
 	public static void main(String[] args) {
 		Reha301 application = new Reha301();
@@ -113,11 +113,14 @@ public class Reha301 implements WindowListener  {
 					decrypted = new String("");
 				}
 				dbPassword = decrypted.toString();
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/fremdprog.ini");
+				inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];
 				aktIK = args[1];
+				INIFile ini301 = new INIFile(args[0]+"ini/"+args[1]+"/dta301.ini");
+				inbox = ini301.getStringProperty("DatenPfade301", "inbox");
+				outbox = ini301.getStringProperty("DatenPfade301", "outbox");
 				if(args.length == 3){
 					nachrichtfuerRezept = true;
 					argsRezeptnummer = args[2];

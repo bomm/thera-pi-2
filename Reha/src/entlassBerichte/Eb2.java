@@ -135,13 +135,16 @@ public class Eb2 {
 		try{
 			
 			rs = stmt.executeQuery(buf.toString());
+			String test = "";
 			if(rs.next()){
 				eltern.bta[7].setText( (rs.getString(eltern.bta[7].getName())==null  ? "" :  rs.getString(eltern.bta[7].getName())) ) ;
 				for(int i = 25; i < 27;i++){
 						eltern.btf[i].setText( (rs.getString(eltern.btf[i].getName())==null  ? "" :  rs.getString(eltern.btf[i].getName()))  );
 				}
 				for(int i = 17; i < 42;i++){
-					eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+					test = ( rs.getString(eltern.bchb[i].getName())==null ? "0" : rs.getString(eltern.bchb[i].getName())); 
+					//eltern.bchb[i].setSelected( ( rs.getString(eltern.bchb[i].getName()).equals("1") ? true : false) );
+					eltern.bchb[i].setSelected( test.equals("1") ? true : false );
 				}
 			}
 			

@@ -187,7 +187,7 @@ public class Eb3 implements RehaEventListener  {
 								        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 								        	framegetrennt = false;
 											eltern.meldeInitOk(2);
-											JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
+											//JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
 					        			}
 					        			if(ins != null){
 					        				ins.close();
