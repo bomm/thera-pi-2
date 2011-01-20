@@ -35,7 +35,8 @@ public class RehaTPEventClass{
         Iterator listeners = _listeners.iterator();
         while( listeners.hasNext() ) {
             ( (RehaTPEventListener) listeners.next() ).rehaTPEventOccurred(evt);
-        }    }
+        }    
+    }
 
 
     // This methods allows classes to unregister for RehaEvents

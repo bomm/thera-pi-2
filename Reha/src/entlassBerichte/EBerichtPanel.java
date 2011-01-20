@@ -1250,9 +1250,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				pat_intern+"' and nachrichtentyp='1' ORDER by eingelesenam DESC LIMIT 1";
 				String id = SqlInfo.holeEinzelFeld(cmd);
 				if(id.equals("")){
+					setCursor(Reha.thisClass.normalCursor);
+					abrDlg.setVisible(false);
+					abrDlg.dispose();
+					abrDlg = null;
 					JOptionPane.showMessageDialog(null, "Entlassbericht kann nicht übermittelt werden\n"+
 							"Vermutlich wurde dieser Fall nicht im 301-Verfahren übermittelt");
-					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 					return null;
 				}
 				RVMeldung301 meldung301 = new RVMeldung301(4,id);

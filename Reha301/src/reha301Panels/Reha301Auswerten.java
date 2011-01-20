@@ -1098,10 +1098,13 @@ public class Reha301Auswerten extends JXPanel{
 		String fallid = SqlInfo.holeEinzelFeld("select max(id) from dtafall");
 		
 		//Jetzt nachfragen ob neuer Bericht angelegt werden soll
+		/* Nein - die Nachfragerei schenken wir uns - eine Reha muß einen E-Bericht abliefern
 		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie jetzt für diesen Fall einen Entlassbericht anlegen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage != JOptionPane.YES_OPTION){
 			return;	
 		}
+		*/
+		
 		//Testen ob Rentenversicherung//
 		//Hier den E-Bericht anlegen
 		int berichtid = SqlInfo.erzeugeNummer("bericht");
@@ -1126,7 +1129,8 @@ public class Reha301Auswerten extends JXPanel{
 				buf.append("update dta301 set berichtid='"+Integer.toString(berichtid)+"' ");
 				buf.append("where id='"+id+"' LIMIT 1");
 				SqlInfo.sqlAusfuehren(buf.toString());
-				//Bearbeitereintragen
+
+				//Bearbeitereintragen in dtafall
 				buf.setLength(0);
 				buf.trimToSize();
 				buf.append("update dtafall set bearbeiter='301-er Automat' ");

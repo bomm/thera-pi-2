@@ -218,7 +218,7 @@ public class RVMeldung301 {
 					if(i2 == (flvec.size()-1)){
 						break;
 					}
-					test=test+"+";
+					test=test+":"+NEWLINE;
 				}
 				buf301Body.append(test+EOL+NEWLINE);zeilen++;
 			}
