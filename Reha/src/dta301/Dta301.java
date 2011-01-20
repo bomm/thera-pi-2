@@ -558,17 +558,17 @@ public class Dta301 extends JXPanel implements FocusListener {
 	        head.setTitle("Unterbrechung eine Reha");
 	        head.setDescription("<html><br>Hier melden Sie <u>Reha-Unterbrechungen</u> sowie den <u>Grund der Unterbrechung</u> (z.B.Krankheit.)<br>"+
 	        		"Tragen Sie den <u>ersten Fehltag</u> und den <u>letzten Fehltag</u> ein.<br>Bei Bedarf ergänzen Sie die Nachricht durch einen <u>kurzen</u> Text.</html>");
-	        head.setIcon(null);
+	        head.setIcon(new ImageIcon(Reha.proghome+"icons/break.jpg"));
 	        break;
 		case 2:
 	        head.setTitle("Entlass-Mitteilung eines Reha-Patienten");
 	        head.setDescription("<html><br><u>Kontrollieren Sie im Rezeptstamm die einzelnen Datumswerte</u> auf Richtigkeit.<br><br>Tragen Sie dann das <u>Datum der Aufnahme</u> und das <u>Datum der Entlassung</u> ein.</html>");
-	        head.setIcon(null);
+	        head.setIcon(new ImageIcon(Reha.proghome+"icons/ziel.jpg"));
 	        break;
 		case 3:
 	        head.setTitle("Übersicht über alle Meldungen die diesen Fall betreffen");
 	        head.setDescription("<html><br>Datmit eine lückenlose Fall-Kontrolle möglich ist können Sie sich hier<br>einen Überblick über die gesamte Kommunikation mit dem jeweiligen Kostenträger verschaffen.</html>");
-	        head.setIcon(null);
+	        head.setIcon(new ImageIcon(Reha.proghome+"icons/uebersicht.jpg"));
 	        break;
 	        
 		}
