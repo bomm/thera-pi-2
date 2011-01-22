@@ -71,7 +71,8 @@ public class RVMeldung301 {
 	String strAktEREH = null;
 	int originalSize = -1;
 	int encryptedSize = -1;
-	
+	int anzahlUnhs = 1;
+	int aktUnh = 1;
 	boolean shouldBreak = false;
 	
 	public RVMeldung301(int art, String id){
@@ -101,6 +102,8 @@ public class RVMeldung301 {
 		auftragsBuf.setLength(0);
 		auftragsBuf.trimToSize();
 		vecdta = SqlInfo.holeFelder("select * from dta301 where id='"+id+"' LIMIT 1");
+		anzahlUnhs = 1;
+		aktUnh = 1;
 		EMPFAENGERIK = vecdta.get(0).get(3);
 		
 	}
@@ -114,7 +117,8 @@ public class RVMeldung301 {
 		String seite = "";
 		String diagtext = "";
 		Vector<String> flvec = new Vector<String>();
-		buf301Body.append("UNH+00001+MEDR03:D:08A:KR:97B'"+NEWLINE);zeilen++;
+		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+		buf301Body.append("UNH+"+aktunh+"+MEDR03:D:08A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+21++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
@@ -331,7 +335,7 @@ public class RVMeldung301 {
 		if( (flvec.size() % 53) > 0){seiten++;}
 		buf301Body.append("QTY+3:"+Integer.toString(seiten)+EOL+NEWLINE);zeilen++;
 		int aktuellezeile = -1;
-		System.out.println("Seitenanzahl = "+seiten);
+		//System.out.println("Seitenanzahl = "+seiten);
 		for(int i = 0; i < seiten;i++){
 			buf301Body.append("CLI+LDT"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("IMD+++5:B05"+EOL+NEWLINE);zeilen++;
@@ -349,8 +353,9 @@ public class RVMeldung301 {
 				}
 			}
 		}
+		//String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
 		buf301Body.append("UNT+"+
-				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
+				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
 				EOL+NEWLINE);zeilen++;
 		if(this.shouldBreak){
 			JOptionPane.showMessageDialog(null, "In der Erstellung des E-Berichtes nach §301 ist ein Fehler aufgetreten.\nVersand findet nicht statt!!!");
@@ -358,6 +363,7 @@ public class RVMeldung301 {
 		}
 		doKopfDaten();
 		doFussDaten();
+		anzahlUnhs++;
 		gesamtbuf.append(buf301Header.toString());
 		gesamtbuf.append(buf301Body.toString());
 		gesamtbuf.append(buf301Footer.toString());
@@ -368,7 +374,7 @@ public class RVMeldung301 {
 			//Mail Versenden
 			epanel.abrDlg.setzeLabel("E-Bericht versenden");
 			//In neue Tabelle schreiben
-			String cmd = "insert into dtafall set nachrichttyp='6', nachrichtart='6', pat_intern='"+
+			String cmd = "insert into dtafall set nachrichttyp='7', nachrichtart='7', pat_intern='"+
 			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
@@ -387,13 +393,29 @@ public class RVMeldung301 {
 	}
 	
 	/************************************************************/
-	public void doBeginn(String beginnDatum,String uhrZeit){
+	public void doBeginn(String beginnDatum,String uhrZeit,String fliesstext,int aufnahmeart,boolean bewilligt){
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
 		String test = "";
-		buf301Body.append("UNH+00001+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
-		buf301Body.append("BGM+01++10'"+NEWLINE);zeilen++;
+		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+		buf301Body.append("UNH+"+aktunh+"+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
+		//Aufnahmeanzeige
+		if(aufnahmeart==0){
+			if(bewilligt){
+				buf301Body.append("BGM+01++10'"+NEWLINE);zeilen++;		
+			}else{
+				buf301Body.append("BGM+02++10'"+NEWLINE);zeilen++;
+			}
+		}
+		//Rückstellung
+		if(aufnahmeart==1){
+			buf301Body.append("BGM+08++10'"+NEWLINE);zeilen++;
+		}
+		//Absage
+		if(aufnahmeart==2){
+			buf301Body.append("BGM+07++10'"+NEWLINE);zeilen++;
+		}
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
@@ -431,23 +453,91 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PRC+ADMIN3'"+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
+		//Aufnahmemitteilung
+		//*******************//
+		if(aufnahmeart==0){
+			buf301Body.append("PRC+ADMIN3'"+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
 
-		buf301Body.append("DTM+194:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("DTM+163:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("UNT+"+
-				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
-				EOL+NEWLINE);zeilen++;
-		doKopfDaten();
-		doFussDaten();
-		
+			buf301Body.append("DTM+194:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("DTM+163:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
+			if(!fliesstext.equals("")){
+				Vector<String> flvec = new Vector<String>();
+				test = StringTools.do301String(fliesstext);
+				flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+				for(int i = 0; i < flvec.size();i++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
+				}
+			}
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+			doKopfDaten();
+			doFussDaten();
+		}
+		//Rückstellung
+		if(aufnahmeart==1){
+			buf301Body.append("PRC+ADMIN1'"+NEWLINE);zeilen++;
+			buf301Body.append("DTM+341:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
+			if(!fliesstext.equals("")){
+				Vector<String> flvec = new Vector<String>();
+				test = StringTools.do301String(fliesstext);
+				flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+				for(int i = 0; i < flvec.size();i++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
+				}
+			}
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+
+			doKopfDaten();
+			doFussDaten();			
+		}
+		//Absage
+		if(aufnahmeart==2){
+			buf301Body.append("PRC+ADMIN2'"+NEWLINE);zeilen++;
+			buf301Body.append("DTM+46:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
+			if(!fliesstext.equals("")){
+				Vector<String> flvec = new Vector<String>();
+				test = StringTools.do301String(fliesstext);
+				flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+				for(int i = 0; i < flvec.size();i++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
+				}
+			}
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+
+			doKopfDaten();
+			doFussDaten();			
+		}
+		//Geplante Aufnahme melden
+		if(aufnahmeart==3){
+			buf301Body.append("PRC+ADMIN1'"+NEWLINE);zeilen++;
+			buf301Body.append("DTM+291:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
+			if(!fliesstext.equals("")){
+				Vector<String> flvec = new Vector<String>();
+				test = StringTools.do301String(fliesstext);
+				flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+				for(int i = 0; i < flvec.size();i++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
+				}
+			}
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+
+			doKopfDaten();
+			doFussDaten();			
+		}
 
 		gesamtbuf.append(buf301Header.toString());
 		gesamtbuf.append(buf301Body.toString());
 		gesamtbuf.append(buf301Footer.toString());
-
+		anzahlUnhs++;
 		//doOriginalDatei();
 		//Datei erstellen
 		//int intAktEREH = -1;
@@ -460,7 +550,12 @@ public class RVMeldung301 {
 		if(doKeyStoreAktion()){
 			//Mail Versenden
 			//In neue Tabelle schreiben
-			String cmd = "insert into dtafall set nachrichttyp='3', nachrichtart='3', pat_intern='"+
+			String typ = "";
+			if(aufnahmeart==0){typ="3";}
+			if(aufnahmeart==1){typ="11";}
+			if(aufnahmeart==2){typ="9";}
+			if(aufnahmeart==3){typ="10";}
+			String cmd = "insert into dtafall set nachrichttyp='"+typ+"', nachrichtart='"+typ+"', pat_intern='"+
 			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.Escaped(gesamtbuf.toString())+"',"+
@@ -470,13 +565,172 @@ public class RVMeldung301 {
 		}
 		
 	}
+	public void doVerlaengerung(String beginnDatum,String endeDatum,int vart, String hinweis){
+		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
+		holeVector();
+		int zeilen = 1;
+		shouldBreak = false;
+		String test = "";
+		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+		buf301Body.append("UNH+"+aktunh+"+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
+		if(vart==0){
+			buf301Body.append("BGM+10++10'"+NEWLINE);zeilen++;	
+		}
+		if(vart==1){
+			buf301Body.append("BGM+03++10'"+NEWLINE);zeilen++;	
+		}
+		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
+		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
+		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
+		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+			if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+		}
+		buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("FCA+AD'"+NEWLINE);zeilen++;
+		
+		buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append(springeAufUndHole("PNA+BM+","ADR++")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","ADR+1+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+		/******************/
+		buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
+		buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
+		long tage = DatFunk.TageDifferenz(beginnDatum, endeDatum);
+		buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(Long.toString(tage), "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
+
+
+		buf301Body.append("UNT+"+
+				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+				EOL+NEWLINE);zeilen++;
+				
+		
+				
+/*
+				
+*/				
+		/***************Medizinsiche Begündung*****************/
+		if(vart==1){
+			anzahlUnhs ++;
+			aktUnh++;
+			aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+
+			zeilen = 1;
+			test = "";
+			buf301Body.append("UNH+"+aktunh+"+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
+			buf301Body.append("BGM+05++10'"+NEWLINE);zeilen++;
+			buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
+			buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+			buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
+			buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
+			buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+				if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
+					buf301Body.append(test+EOL+NEWLINE);zeilen++;
+				}
+				if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
+					buf301Body.append(test+EOL+NEWLINE);zeilen++;
+				}
+			}
+			buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append("FCA+AD'"+NEWLINE);zeilen++;
+			
+			buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+			buf301Body.append(springeAufUndHole("PNA+BM+","ADR++")+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+BM+","ADR+1+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
+			buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+			/******************/
+			buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
+			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
+			if(!hinweis.equals("")){
+				Vector<String> flvec = new Vector<String>();
+				test = StringTools.do301String("Medizinische Begündung:\n"+hinweis);
+				flvec = StringTools.fliessTextZerhacken(test, 70, "\n");
+				for(int i = 0; i < flvec.size();i++){
+					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
+				}
+			}			
+			buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(Long.toString(tage), "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
+
+
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+			
+		}
+		/***************Ende der Medizinsiche Begündung*****************/
+		doKopfDaten();
+		doFussDaten();
+		gesamtbuf.append(buf301Header.toString());
+		gesamtbuf.append(buf301Body.toString());
+		gesamtbuf.append(buf301Footer.toString());
+		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
+		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+		anzahlUnhs++;
+		if(doKeyStoreAktion()){
+			//Mail Versenden
+			//In neue Tabelle schreiben
+			String cmd = "insert into dtafall set nachrichttyp='5', nachrichtart='5', pat_intern='"+
+			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
+			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
+			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
+			"nachrichtauf='"+
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			SqlInfo.sqlAusfuehren(cmd);
+			
+		}
+	}
+ 
 	public void doUnterbrechung(String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis){
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
 		String test = "";
-		buf301Body.append("UNH+00001+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
+		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+		buf301Body.append("UNH+"+aktunh+"+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+06++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
@@ -537,7 +791,7 @@ public class RVMeldung301 {
 			}
 		}
 		buf301Body.append("UNT+"+
-				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
+				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
 				EOL+NEWLINE);zeilen++;
 		doKopfDaten();
 		doFussDaten();
@@ -546,6 +800,7 @@ public class RVMeldung301 {
 		gesamtbuf.append(buf301Footer.toString());
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+		anzahlUnhs++;
 		if(doKeyStoreAktion()){
 			//Mail Versenden
 			//In neue Tabelle schreiben
@@ -559,12 +814,14 @@ public class RVMeldung301 {
 			
 		}
 	}
-	public void doEntlassung(String erstDatum,String letztDatum,String uhrZeit,int arbeitsfaehig,int entlassform){
+	public void doEntlassung(String erstDatum,String letztDatum,String uhrZeit,
+			int arbeitsfaehig,int entlassform,boolean mitfahrgeld,String fahrgeld,String hinweis){
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
 		String test = "";
-		buf301Body.append("UNH+00001+MEDR03:D:01A:KR:97B'"+NEWLINE);zeilen++;
+		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+		buf301Body.append("UNH+"+aktunh+"+MEDR03:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+04++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
@@ -605,19 +862,38 @@ public class RVMeldung301 {
 		buf301Body.append("DTM+293:"+mache10erDatum(letztDatum)+":102"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("DTM+96:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("UNT+"+
-				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+00001"+
+				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
 				EOL+NEWLINE);zeilen++;
+
+		/**************Zusätzliche Fahrgeldrechnung erstellen*************/
+
+		if(mitfahrgeld){
+			anzahlUnhs++;
+			aktUnh++;
+			zeilen=1;
+
+			zeilen = doRechnungKopf(zeilen,fahrgeld,hinweis,
+					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
+			zeilen = doFahrgeld(zeilen,fahrgeld,hinweis,
+					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+		}
 		doKopfDaten();
 		doFussDaten();
+
 		gesamtbuf.append(buf301Header.toString());
 		gesamtbuf.append(buf301Body.toString());
 		gesamtbuf.append(buf301Footer.toString());
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+
+		/**************Zusätzliche Fahrgeldrechnung erstellen*************/
 		if(doKeyStoreAktion()){
 			//Mail Versenden
 			//In neue Tabelle schreiben
-			String cmd = "insert into dtafall set nachrichttyp='5', nachrichtart='5', pat_intern='"+
+			String cmd = "insert into dtafall set nachrichttyp='6', nachrichtart='6', pat_intern='"+
 			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
@@ -625,6 +901,67 @@ public class RVMeldung301 {
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
 		}
+	}
+	private int doRechnungKopf(int zeilen,String gesamt,String hinweis,
+			String aufnahmedatum,String entlassdatum,boolean beientlass){
+		String test = "";
+		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+		buf301Body.append("UNH+"+aktunh+"+MEDR04:D:01A:KR:97B'"+NEWLINE);zeilen++;
+		buf301Body.append("BGM+30++10'"+NEWLINE);zeilen++; 
+		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
+		buf301Body.append("DTM+3:"+DATUM10+":102'"+NEWLINE);zeilen++;
+		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		//Rechnungsnummer im RTA
+		int rnummer = SqlInfo.erzeugeNummer("rnr");
+		buf301Body.append("RFF+CKN:"+Integer.toString(rnummer)+EOL+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("RFF+MOA+39:"+gesamt+":EUR"+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
+		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
+		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
+		buf301Body.append("RFF+AEP:"+Integer.toString(rnummer) +EOL+NEWLINE);zeilen++;
+		buf301Body.append("FII+BF+"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("FCA+RD'"+NEWLINE);zeilen++;
+		// Wirklich Schlußrechnung wenn mit Entlassungsmitteilung erzeugt????
+		buf301Body.append("GIS+02:RA'"+NEWLINE);zeilen++;
+		buf301Body.append("DTM+194:"+aufnahmedatum+":102'"+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
+		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
+		buf301Body.append("PRC+ETG'"+NEWLINE);zeilen++;
+		/*
+		buf301Body.append("CLI+ENT+"+verfahren+"050299"+":ENT'"+NEWLINE);zeilen++;
+		buf301Body.append("DTM+263:"+aufnahmedatum+entlassdatum+":711'"+NEWLINE);zeilen++;
+		buf301Body.append("QTY+47:1:ANZ'"+NEWLINE);zeilen++;
+		buf301Body.append("QTY+193:0:ANZ'"+NEWLINE);zeilen++;
+		buf301Body.append("MOA+146:"+gesamt+":EUR'"+NEWLINE);zeilen++;
+		*/
+		return zeilen;
+		
+	}
+	public int doFahrgeld(int zeilen,String gesamt,String hinweis,
+			String aufnahmedatum,String entlassdatum,boolean beientlass){
+		String verfahren = untersucheCodeListe(":A12",2);
+		buf301Body.append("CLI+ENT+"+verfahren+"050299"+":ENT'"+NEWLINE);zeilen++;
+		buf301Body.append("DTM+263:"+aufnahmedatum+entlassdatum+":711'"+NEWLINE);zeilen++;
+		buf301Body.append("QTY+47:1:ANZ'"+NEWLINE);zeilen++;
+		buf301Body.append("QTY+193:0:ANZ'"+NEWLINE);zeilen++;
+		buf301Body.append("MOA+146:"+gesamt+":EUR'"+NEWLINE);zeilen++;
+		return zeilen;
+	}
+	public void doRechnung(String erstDatum,String letztDatum,String uhrZeit,int arbeitsfaehig,int entlassform){
+		
 	}
 	private boolean doKeyStoreAktion(){
 		try {
@@ -636,8 +973,8 @@ public class RVMeldung301 {
 			String inFile = (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".ORG").toLowerCase();
 			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));
 			encryptedSize = Integer.parseInt(Long.toString(size));
-			System.out.println("       Originalgröße = "+originalSize);
-			System.out.println("Verschlüsselte Größe = "+encryptedSize);
+			//System.out.println("       Originalgröße = "+originalSize);
+			//System.out.println("Verschlüsselte Größe = "+encryptedSize);
 			doAuftragsDatei();
 			doDateiErstellen(1);
 			return true;
@@ -702,7 +1039,8 @@ public class RVMeldung301 {
 				LFDNUMMER+PLUS+PLUS+"REH"+LFDNUMMER+EOL+NEWLINE);
 	}
 	private void doFussDaten(){
-		buf301Footer.append("UNZ+00001+"+LFDNUMMER+EOL);
+		String unhs = StringTools.fuelleMitZeichen(Integer.toString(anzahlUnhs), "0", true, 5);
+		buf301Footer.append("UNZ+"+unhs+"+"+LFDNUMMER+EOL);
 	}
 	
 	private String getEdiTimeString(boolean mitsekunden){
@@ -739,6 +1077,18 @@ public class RVMeldung301 {
 		}
 		return ret;
 	}
+	private String untersucheCodeListe(String codeliste,int element){
+		//Z.B. :A12
+		String ret = "";
+		for(int i = 0; i < originaldata.size();i++){
+			if(originaldata.get(i).endsWith(codeliste)){
+				String[] sret = originaldata.get(i).split("+");
+				return String.valueOf(sret[element].split(":")[0]);
+			}
+		}
+		return ret;
+	}
+
 	private String mache10erDatum(String datum){
 		
 		if(datum.contains("-")){

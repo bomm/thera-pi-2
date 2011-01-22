@@ -728,10 +728,10 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			}else{
 				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where n_name LIKE '"+
-					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
+					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name,geboren";
 				}else{ //ADS
 					sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where n_name LIKE UPPER('"+
-					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
+					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name,geboren";
 				}
 			}
 		
@@ -751,10 +751,10 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			}else{
 				if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
 					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where v_name LIKE '"+
-					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name";
+					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name,geboren";
 				}else{ //ADS
 					sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where v_name LIKE UPPER('"+
-					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name";
+					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name,geboren";
 				}
 			}
 			

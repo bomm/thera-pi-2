@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,6 +39,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.JCompTools;
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
@@ -61,6 +63,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JXPanel unterbrechung = null;
 	JXPanel abschluss = null;
 	JXPanel uebersicht = null;
+	JXPanel verlaengerung = null;
 	JTabbedPane tabPan = null;
 	
 	JEditorPane fallPan = null;
@@ -70,10 +73,14 @@ public class Dta301 extends JXPanel implements FocusListener {
 	String patnummer = "";
 	
 	//Beginn-Mitteilung
+	JRtaRadioButton[] beginnradio = {null,null,null}; 
+	ButtonGroup bggroup = new ButtonGroup();
 	JRtaTextField beginndatum = null;
 	JRtaTextField beginnstunde = null;
 	JRtaTextField beginnminute = null;
-
+	JTextArea beginneditpan = null;
+	
+	
 	//Unterbrechungsmeldung
 	JRtaRadioButton[] ubradio = {null,null,null};
 	JRtaTextField ubbeginndatum = null;
@@ -82,6 +89,14 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JRtaComboBox ucombo = null;
 	JTextArea ueditpan = null;
 	
+	//Verlängerungsanzeige/Antrag
+	JRtaRadioButton[] vbradio = {null,null};
+	JRtaTextField vbbeginndatum = null;
+	JRtaTextField vbendedatum = null;
+	ButtonGroup vbbg = new ButtonGroup();
+	JRtaComboBox vcombo = null;
+	JTextArea veditpan = null;
+
 	//Entlassmitteilung
 	JRtaTextField entlasserstdatum = null;
 	JRtaTextField entlassletztdatum = null;
@@ -89,6 +104,9 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JRtaTextField entlassminute = null;
 	JRtaComboBox entlassafcombo = null;
 	JRtaComboBox entlassartcombo = null;
+	JRtaCheckBox entlassmitfahrgeld = null;
+	JRtaTextField entlassfahrgeld = null;
+	JTextArea entlasstpan = null;
 	
 	//Übersicht der Nachrichten
 	JXTable tabuebersicht = null;
@@ -135,10 +153,12 @@ public class Dta301 extends JXPanel implements FocusListener {
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
 				if(cmd.equals("beginnsenden")){
+					/*
 					if(!is301Ok){
 						JOptionPane.showMessageDialog(null,"Diese Verordnung ist nicht für DTA-301 vorgesehen");
 						return;
 					}
+					*/
 					doBeginn();
 					return;
 				}
@@ -159,6 +179,14 @@ public class Dta301 extends JXPanel implements FocusListener {
 					}
 					doEntlassung();					
 				}
+				if(cmd.startsWith("vbsenden")){
+					if(!is301Ok){
+						JOptionPane.showMessageDialog(null,"Diese Verordnung ist nicht für DTA-301 vorgesehen");
+						return;
+					}
+					doVerlaengerung();					
+				}
+
 			}
 		};
 	}
@@ -173,10 +201,11 @@ public class Dta301 extends JXPanel implements FocusListener {
 		
 		
 
-		tabPan.add("Beginn-Mitteilung", beginn=getBeginn());
-		tabPan.add("Unterbrechung melden",unterbrechung=getUnterbrechung());
+		tabPan.add("Aufnahme/Absage", beginn=getBeginn());
+		tabPan.add("Unterbrechung",unterbrechung=getUnterbrechung());
+		tabPan.add("Verlängerung",verlaengerung=getVerlaengerung());
 		tabPan.add("Entlass-Mitteilung",abschluss=getEntlassung());
-		tabPan.add("Übersicht Fall-Nachrichten",uebersicht=getUebersicht());
+		tabPan.add("Nachrichtenübersicht",uebersicht=getUebersicht());
 		content.add(tabPan,BorderLayout.CENTER);
 		content.add(getFallDaten(),BorderLayout.WEST);
 		return content;
@@ -188,20 +217,38 @@ public class Dta301 extends JXPanel implements FocusListener {
 		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
-		String xwerte = "100dlu,right:max(100dlu;p),50dlu,p,20dlu";
-		String ywerte = "40dlu,p,5dlu,p,25dlu,p,fill:0:grow(1.0)";
+		//                 1             2           3   4   5   
+		String xwerte = "100dlu,right:max(100dlu;p),50dlu,p,20dlu:g";
+		//		          1    2  3   4  5   6  7   8   9   10    11  12   13
+		String ywerte = "25dlu,p,2dlu,p,2dlu,p,20dlu,p,2dlu,p,2dlu,35dlu,2dlu,p,fill:0:grow(1.0)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
-		JLabel lab = new JLabel("Datum der Eingangsuntersuchung");
+		/****Aufnahme oder Absage*****/
+		beginnradio[0] = new JRtaRadioButton("Nachricht ist eine Aufnahmemitteilung");
+		beginnradio[0].setOpaque(false);
+		bggroup.add(beginnradio[0]);
+		beginnradio[1] = new JRtaRadioButton("Nachricht ist eine Rückstellung der Aufnahme");
+		bggroup.add(beginnradio[1]);
+		beginnradio[1].setOpaque(false);
+		beginnradio[2] = new JRtaRadioButton("Nachricht ist eine Absage an den Kostenträger");
+		bggroup.add(beginnradio[2]);
+		beginnradio[2].setOpaque(false);
+
+		beginnradio[0].setSelected(true);
+		pan.add(beginnradio[0],cc.xyw(2, 2, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(beginnradio[1],cc.xyw(2, 4, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(beginnradio[2],cc.xyw(2, 6, 3, CellConstraints.FILL,CellConstraints.FILL));
+		/************Datum und Uhrzeit*******/
+		JLabel lab = new JLabel("Datum der Aufnahme / Rückstellung");
 		lab.setForeground(Color.BLUE);
-		pan.add(lab,cc.xy(2,2));
+		pan.add(lab,cc.xy(2,8));
 		beginndatum = new JRtaTextField("DATUM",true);
 		beginndatum.setText(DatFunk.sHeute());
-		pan.add(beginndatum,cc.xy(4,2));
+		pan.add(beginndatum,cc.xy(4,8));
 		lab = new JLabel("Uhrzeit der Aufnahme");
 		lab.setForeground(Color.BLUE);
-		pan.add(lab,cc.xy(2,4));
+		pan.add(lab,cc.xy(2,10));
 		/***********/
 		JXPanel pan2 = new JXPanel();
 		pan2.setOpaque(false);
@@ -222,10 +269,24 @@ public class Dta301 extends JXPanel implements FocusListener {
 		beginnminute.setText("00");
 		pan2.add(beginnminute,cc2.xy(3, 1));
 		pan2.validate();
-		pan.add(pan2,cc.xy(4, 4,CellConstraints.FILL,CellConstraints.FILL));
-		/************/
+		pan.add(pan2,cc.xy(4, 10,CellConstraints.FILL,CellConstraints.FILL));
+		/*********Textfeld für die Nachricht*********/
+		beginneditpan = new JTextArea();
+		beginneditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		beginneditpan.setFont(new Font("Courier",Font.PLAIN,11));
+		beginneditpan.setLineWrap(true);
+		beginneditpan.setName("beginnabsage");
+		beginneditpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
+		beginneditpan.setWrapStyleWord(true);
+		beginneditpan.setEditable(true);
+		beginneditpan.setBackground(Color.WHITE);
+		beginneditpan.setForeground(Color.BLUE);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(beginneditpan);
+		jscr.validate();
+		pan.add(jscr,cc.xyw(2,12,3,CellConstraints.FILL,CellConstraints.FILL));
+		/*********Button zum Abfeuern********/
 		buts[0] = ButtonTools.macheBut("Nachricht erzeugen und senden", "beginnsenden", al);
-		pan.add(buts[0],cc.xyw(2, 6, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(buts[0],cc.xyw(2, 14, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(0),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
@@ -241,7 +302,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		//                 1     2       3                4   5   6
 		String xwerte = "100dlu,0dlu,right:max(100dlu;p),5dlu,50dlu,20dlu";
 		//                 1  2  3   4  5   6  7    8  9  10   11 12 13   14   15   16
-		String ywerte = "25dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,25dlu,25dlu,p,fill:0:grow(1.0)";
+		String ywerte = "25dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,35dlu,25dlu,p,fill:0:grow(1.0)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -285,7 +346,9 @@ public class Dta301 extends JXPanel implements FocusListener {
 		ueditpan.setEditable(true);
 		ueditpan.setBackground(Color.WHITE);
 		ueditpan.setForeground(Color.BLUE);
-		pan.add(ueditpan,cc.xyw(3,14,3,CellConstraints.FILL,CellConstraints.FILL));
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(ueditpan);
+		jscr.validate();
+		pan.add(jscr,cc.xyw(3,14,3,CellConstraints.FILL,CellConstraints.FILL));
 		
 		buts[1] = ButtonTools.macheBut("Nachricht erzeugen und senden", "ubsenden", al);
 		pan.add(buts[1],cc.xyw(3, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
@@ -296,6 +359,73 @@ public class Dta301 extends JXPanel implements FocusListener {
 		return headerpan;
 	}
 	/************************************************/
+	private JXPanel getVerlaengerung(){
+		JXPanel headerpan = new JXPanel(new BorderLayout());
+		headerpan.setOpaque(false);
+		//headerpan.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		JXPanel pan = new JXPanel();
+		pan.setOpaque(false);
+		//                 1     2       3                4   5   6
+		String xwerte = "100dlu,0dlu,right:max(100dlu;p),5dlu,50dlu,20dlu";
+		//                 1  2  3   4  5   6  7    8  9  10   11 12 13   14   15   16
+		String ywerte = "25dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,35dlu,25dlu,p,fill:0:grow(1.0)";
+		FormLayout lay = new FormLayout(xwerte,ywerte);
+		CellConstraints cc = new CellConstraints();
+		pan.setLayout(lay);
+		vbradio[0] = new JRtaRadioButton("Verlängerung anzeigen");
+		vbradio[1] = new JRtaRadioButton("Verlängerung beantragen mit Begründung");
+		
+		for(int i = 0;i < 2 ; i++){
+			vbbg.add(vbradio[i]);
+			vbradio[i].setActionCommand("vbart"+Integer.toString(i));
+			vbradio[i].addActionListener(al);
+			pan.add(vbradio[i],cc.xyw(2,2+(i*2),4 ));
+		}
+		vbradio[0].setSelected(true);
+		JLabel lab = new JLabel("Erster Tag der Verlängerung");
+		lab.setForeground(Color.BLUE);
+		pan.add(lab,cc.xy(3,8));
+		vbbeginndatum = new JRtaTextField("DATUM",true);
+		vbbeginndatum.setText(DatFunk.sHeute());
+		pan.add(vbbeginndatum,cc.xy(5,8));
+		lab = new JLabel("Letzter Tag der Verlängerung");
+		lab.setForeground(Color.BLUE);
+		pan.add(lab,cc.xy(3,10));
+		vbendedatum = new JRtaTextField("DATUM",true);
+		vbendedatum.setText(DatFunk.sHeute());
+		pan.add(vbendedatum,cc.xy(5,10));
+		/*
+		vcombo = new JRtaComboBox();
+		String[][] codeListe = Dta301CodeListen.getCodeListe("B08");
+		for(int i = 0; i < codeListe.length;i++){
+		  ucombo.addItem(codeListe[i][1]);
+		}
+		vcombo.setSelectedIndex(2);
+		pan.add(vcombo,cc.xyw(3,12,3));
+		*/
+		veditpan = new JTextArea();
+		veditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		veditpan.setFont(new Font("Courier",Font.PLAIN,11));
+		veditpan.setLineWrap(true);
+		veditpan.setName("notitzen");
+		veditpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
+		veditpan.setWrapStyleWord(true);
+		veditpan.setEditable(true);
+		veditpan.setBackground(Color.WHITE);
+		veditpan.setForeground(Color.BLUE);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(veditpan);
+		jscr.validate();
+		pan.add(jscr,cc.xyw(3,14,3,CellConstraints.FILL,CellConstraints.FILL));
+		
+		buts[3] = ButtonTools.macheBut("Nachricht erzeugen und senden", "vbsenden", al);
+		pan.add(buts[3],cc.xyw(3, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
+		
+		pan.validate();
+		headerpan.add(getHeader(1),BorderLayout.NORTH);
+		headerpan.add(pan,BorderLayout.CENTER);
+		return headerpan;
+	}	
+	/************************************************/
 	private JXPanel getEntlassung(){
 		JXPanel headerpan = new JXPanel(new BorderLayout());
 		headerpan.setOpaque(false);
@@ -303,7 +433,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "100dlu,right:max(100dlu;p),5dlu,50dlu,20dlu";
-		String ywerte = "25dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,25dlu,p,fill:0:grow(1.0),5dlu";
+		//                1   2   3   4   5  6  7   8  9   10 11  12     13  14    15
+		String ywerte = "25dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,35dlu,5dlu,p, 35dlu,p,fill:0:grow(1.0),5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -366,13 +497,31 @@ public class Dta301 extends JXPanel implements FocusListener {
 		pan2.validate();
 		pan.add(pan2,cc.xy(4, 6,CellConstraints.FILL,CellConstraints.FILL));
 		/************/
-		
 		//
 		pan.add(entlassafcombo,cc.xyw(2,8,3));
 		pan.add(entlassartcombo,cc.xyw(2,10,3));
 
+		entlasstpan = new JTextArea();
+		entlasstpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		entlasstpan.setFont(new Font("Courier",Font.PLAIN,11));
+		entlasstpan.setLineWrap(true);
+		entlasstpan.setName("notitzen");
+		entlasstpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
+		entlasstpan.setWrapStyleWord(true);
+		entlasstpan.setEditable(true);
+		entlasstpan.setBackground(Color.WHITE);
+		entlasstpan.setForeground(Color.BLUE);
+		JScrollPane jscr = JCompTools.getTransparentScrollPane(entlasstpan);
+		jscr.validate();
+		pan.add(jscr,cc.xyw(2,12,3,CellConstraints.FILL,CellConstraints.FILL));
+		entlassmitfahrgeld = new JRtaCheckBox("Fahrtgeld in Rechnung stellen");
+		entlassmitfahrgeld.setHorizontalTextPosition(SwingConstants.LEFT);
+		pan.add(entlassmitfahrgeld,cc2.xy(2,14));
+		entlassfahrgeld = new JRtaTextField("D",true,"6.2","RECHTS");
+		pan.add(entlassfahrgeld,cc.xy(4,14));
+		
 		buts[2] = ButtonTools.macheBut("Nachricht erzeugen und senden", "entlsenden", al);
-		pan.add(buts[2],cc.xyw(2, 12, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(buts[2],cc.xyw(2, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(2),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
@@ -510,8 +659,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 			protected Void doInBackground() throws Exception {
 				try{
 					String[] anlass = {"Unbekannter Anlass","Bewilligung","Ablehnung",
-							"Aufnahmemitteilung","Unterbrechungsmeldung","Entlassmitteilung",
-							"E-Bericht","Rechnung"};
+							"Aufnahmemitteilung","Unterbrechungsmeldung","Verlängerung","Entlassmitteilung",
+							"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung"};
 					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter from dtafall where pat_intern='"+
 					String.valueOf(Reha.thisClass.patpanel.patDaten.get(29))+
 					"' and rez_nr='"+
@@ -521,8 +670,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 					Vector<String> dummy = new Vector<String>();
 					String test = null;
 					moduebersicht.setRowCount(0);
-					System.out.println(vec);
-					System.out.println(cmd);
+					//System.out.println(vec);
+					//System.out.println(cmd);
 					for(int i = 0;i < vec.size();i++){
 						dummy.clear();
 						dummy.trimToSize();
@@ -550,8 +699,9 @@ public class Dta301 extends JXPanel implements FocusListener {
 		
 		switch(welcher){
 		case 0:
-	        head.setTitle("Beginn-Mitteilung für Rehaleistungen (inkl. Nachsorgeleistung)");
-	        head.setDescription("<html>Tragen Sie hier bitte das <u>Datum der Eingangsuntersuchung</u> des Patienten sowie die <u>Uhrzeit</u> der Aufnahme ein.</html>");
+	        head.setTitle("Aufnahme oder Absage einer Rehaleistungen mitteilen");
+	        head.setDescription("<html>Tragen Sie hier bitte das <u>Datum der Eingangsuntersuchung</u> des Patienten sowie die <u>Uhrzeit</u> der Aufnahme ein.<br>"+
+	        		"Im Fall einer Absage benutzen Sie bitte die untere Rubrik</html>");
 	        head.setIcon(new ImageIcon(Reha.proghome+"icons/start.jpg"));
 	        break;
 		case 1:
@@ -575,14 +725,26 @@ public class Dta301 extends JXPanel implements FocusListener {
 		
 		return head;
 	}
-	private void doRegle301(int art,String id){
+	private boolean doRegle301(int art,String id){
 		if(art==0){
+			if(!executeNachricht(art)){return false;}
 			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			int aufnahmeart = -1;
+			for(int i = 0; i < 3;i++){
+				if(beginnradio[i].isSelected()){
+					aufnahmeart = i;
+					break;
+				}
+			}
 			meldung301.doBeginn(this.beginndatum.getText().trim(),
-					this.beginnstunde.getText().trim()+this.beginnminute.getText().trim());
-			return;
+					this.beginnstunde.getText().trim()+this.beginnminute.getText().trim(),
+					beginneditpan.getText().trim(),aufnahmeart,true
+					);
+			doTabelleFuellen();
+			return true;
 		}
 		if(art==1){
+			if(!executeNachricht(art)){return false;}
 			RVMeldung301 meldung301 = new RVMeldung301(art,id);
 			int iart = -1;
 			for(int i  = 0; i < 3; i++){
@@ -593,18 +755,45 @@ public class Dta301 extends JXPanel implements FocusListener {
 			}
 			meldung301.doUnterbrechung(this.ubbeginndatum.getText().trim(),
 					this.ubendedatum.getText().trim(),iart,ucombo.getSelectedIndex(),this.ueditpan.getText().trim());
-			return;
+			doTabelleFuellen();
+			return true;
 		}
 		if(art==2){
+			if(!executeNachricht(art)){return false;}
 			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			//JRtaCheckBox entlassmitfahrgeld = null;
+			//JRtaTextField entlassfahrgeld = null;
+			//JTextArea entlasstpan = null;
+
 			meldung301.doEntlassung(this.entlasserstdatum.getText().trim(),
 					this.entlassletztdatum.getText().trim(),
 					this.entlassstunde.getText().trim()+this.entlassminute.getText().trim(),
 					entlassafcombo.getSelectedIndex(),
-					entlassartcombo.getSelectedIndex());
-
-			return;
+					entlassartcombo.getSelectedIndex(),
+					entlassmitfahrgeld.isSelected(),
+					entlassfahrgeld.getText(),
+					entlasstpan.getText()
+					);
+			doTabelleFuellen();
+			return true;
 		}
+		if(art==3){
+			if(!executeNachricht(art)){return false;}
+			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			int iart = -1;
+			for(int i  = 0; i < 3; i++){
+				if(vbradio[i].isSelected()){
+					iart = i;
+					break;
+				}
+			}
+			meldung301.doVerlaengerung(this.vbbeginndatum.getText().trim(),
+					this.vbendedatum.getText().trim(),iart,this.veditpan.getText().trim());
+			doTabelleFuellen();
+			return true;
+		}
+
+		return false;
 
 	}
 	/*****************************************************/
@@ -641,6 +830,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		}
 	}
 	private void doBeginn(){
+		
 		setCursor(Reha.thisClass.wartenCursor);
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -648,7 +838,11 @@ public class Dta301 extends JXPanel implements FocusListener {
 				
 				try{
 					buts[0].setEnabled(false);
-					doRegle301(0,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					if(! doRegle301(0,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1")) ){
+						buts[0].setEnabled(true);
+						setCursor(Reha.thisClass.normalCursor);
+						return null;
+					}
 					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
 					buts[0].setEnabled(true);
 					
@@ -661,6 +855,32 @@ public class Dta301 extends JXPanel implements FocusListener {
 			
 		}.execute();
 	}
+	private void doVerlaengerung(){
+		setCursor(Reha.thisClass.wartenCursor);
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				
+				try{
+					buts[3].setEnabled(false);
+					if(! doRegle301(3,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"))){
+						buts[3].setEnabled(true);
+						setCursor(Reha.thisClass.normalCursor);
+						return null;
+					}
+					JOptionPane.showMessageDialog(null, "Verlängerung erfolgreich versandt!");
+					buts[3].setEnabled(true);
+					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				setCursor(Reha.thisClass.normalCursor);
+				return null;
+			}
+			
+		}.execute();
+	}
+
 	private void doUnterbrechung(){
 		setCursor(Reha.thisClass.wartenCursor);
 		new SwingWorker<Void,Void>(){
@@ -668,10 +888,14 @@ public class Dta301 extends JXPanel implements FocusListener {
 			protected Void doInBackground() throws Exception {
 				
 				try{
-					buts[0].setEnabled(false);
-					doRegle301(1,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					buts[1].setEnabled(false);
+					if(! doRegle301(1,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"))){
+						buts[1].setEnabled(true);
+						setCursor(Reha.thisClass.normalCursor);
+						return null;
+					}
 					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
-					buts[0].setEnabled(true);
+					buts[1].setEnabled(true);
 					
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -689,10 +913,15 @@ public class Dta301 extends JXPanel implements FocusListener {
 			protected Void doInBackground() throws Exception {
 				
 				try{
-					buts[0].setEnabled(false);
-					doRegle301(2,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1"));
+					buts[2].setEnabled(false);
+					if(! doRegle301(2,SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+patnummer+"' and rez_nr='"+reznummer+"' and nachrichtentyp='1' LIMIT 1")) ){
+						buts[2].setEnabled(true);
+						setCursor(Reha.thisClass.normalCursor);
+						return null;						
+					}
 					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
-					buts[0].setEnabled(true);
+					buts[2].setEnabled(true);
+					setCursor(Reha.thisClass.normalCursor);
 					
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -703,6 +932,137 @@ public class Dta301 extends JXPanel implements FocusListener {
 			
 		}.execute();
 	}
+	/*****************************************************/
+	private boolean executeNachricht(int art){
+		String meldung = null;
+				int aufnahmeart = 0;
+				int unterbart = 0;
+				int verlart = 0;
+		boolean keingrundbeginn = beginneditpan.getText().trim().equals("");
+
+		//Aufnahme/Rückstellung/Absage**********************************************/
+		if(art == 0){
+			for(int i = 0; i < 3;i++){
+				if(beginnradio[i].isSelected()){
+					aufnahmeart = i;
+					break;
+				}
+			}
+			if(aufnahmeart == 0){
+				meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>"+
+				"Narchittyp: <b>Aufnahmemitteilung"+
+				"</b><br><br>Aufnahmedatum: <b>"+beginndatum.getText()+
+				"</b><br><br>Aufnahme Uhrzeit: <b>"+beginnstunde.getText()+":"+beginnminute.getText()+
+				"</b><br><br><b>Begründung bei Aufnahme i.d.R. nicht erforderlich</b>"+
+				"</html>";		
+			}else if(aufnahmeart == 1){
+				meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>"+
+				"Narchittyp: <b>Rückstellung einer Aufnahme"+
+				"</b><br><br>Rückstellung bis Datum: <b>"+beginndatum.getText()+
+				"</b><br><br><b>Rückstellung Uhrzeit nicht erforderlich"+
+				"</b><br><br>"+(keingrundbeginn ? 
+						"<b><font color='#ff0000'>Achtung bei Rückstellung muß eine Begründung eingegeben werden</font></b>" : 
+							"<b>Begründung für Rückstellung o.k. ??</b>")+
+				"</html>";		
+			}else if(aufnahmeart == 2){
+				meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>"+
+				"Narchittyp: <b>Absage an den Kostenträger"+
+				"</b><br><br>Absagedatum bis Datum: <b>"+beginndatum.getText()+
+				"</b><br><br><b>Absage Uhrzeit nicht erforderlich"+
+				"</b><br><br>"+(keingrundbeginn ? 
+						"<b><font color='#ff0000'>Achtung bei Absagen muß eine Begründung eingegeben werden</font></b>" : 
+							"<b>Begründung für Absage o.k. ??</b>")+
+				"</html>";		
+			}
+		}
+		
+		//Unterbrechung**********************************************/		
+		if(art == 1){
+			for(int i = 0; i < 3;i++){
+				if(ubradio[i].isSelected()){
+					unterbart = i;
+					break;
+				}
+			}
+			meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>";
+			if(unterbart==0){
+				meldung = meldung + "Narchittyp: <b>Beginn einer Unterbrechung melden"+
+				"</b><br><br>Erster Tag der Unterbrechung: <b>"+ubbeginndatum.getText()+
+				"</b><br><br>Grund der Unterbrechung: "+ucombo.getSelectedItem().toString()+
+				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
+				"</b></html>";
+			}
+			if(unterbart==1){
+				meldung = meldung + "Narchittyp: <b>Ende einer Unterbrechung melden"+
+				"</b><br><br>Letzter Tag der Unterbrechung: <b>"+ubendedatum.getText()+
+				"</b><br><br>Grund der Unterbrechung: "+ucombo.getSelectedItem().toString()+
+				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
+				"</b></html>";
+			}
+			if(unterbart==2){
+				meldung = meldung + "Narchittyp: <b>Beginn und Ende einer Unterbrechung melden"+
+				"</b><br><br>Erster Tag der Unterbrechung: <b>"+ubbeginndatum.getText()+				
+				"</b><br><br>Letzter Tag der Unterbrechung: <b>"+ubendedatum.getText()+
+				"</b><br><br>Grund der Unterbrechung: "+ucombo.getSelectedItem().toString()+
+				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
+				"</b></html>";
+			}
+		}
+		//Entlassmitteilung**********************************************/
+		if(art == 2){
+			meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>";
+			meldung = meldung + "Narchittyp: <b>Entlassmitteilung"+
+			"</b><br><br>Aufnahmetag: <b>"+entlasserstdatum.getText()+
+			"</b><br><br>Entlasstag: <b>"+entlassletztdatum.getText()+
+			"</b><br><br>Entlass-Uhrzeit: <b>"+entlassstunde.getText()+":"+entlassminute.getText();
+			if(!entlassmitfahrgeld.isSelected()){
+				meldung = meldung + "</b><br><br>Fahrgeld wird berechnet: <font color='#ff0000'><b>NEIN</b></font>"+
+				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
+				"</b></html>";
+			}else{
+				meldung = meldung + "</b><br><br>Fahrgeld wird berechnet: <font color='#ff0000'><b>JA</b></font>"+
+				"</b><br><br><b>Höhe des Fahrgeldes: <b>"+entlassfahrgeld.getText()+
+				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
+				"</b></html>";
+			}
+		}
+		//Verlängerungs Mitteilung/Antrag**********************************************/
+		if(art == 3){
+			verlart = (vbradio[0].isSelected() ? 0 : 1);
+			meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>";
+			if(verlart == 0){
+				meldung = meldung + "Narchittyp: <b>Verlängerungsmitteilung"+
+				"</b><br><br>Erster Tag der Verlängerung: <b>"+vbbeginndatum.getText()+
+				"</b><br><br>Letzter Tag der Verlängerung: <b>"+vbendedatum.getText()+
+				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich";
+			}else{
+				meldung = meldung + "Narchittyp: <b>Antrag auf Verlängerung"+
+				"</b><br><br>Erster Tag der Verlängerung: <b>"+vbbeginndatum.getText()+
+				"</b><br><br>Letzter Tag der Verlängerung: <b>"+vbendedatum.getText();
+				if(veditpan.getText().trim().equals("")){
+					meldung = meldung+"</b><br><br><b><font color='#ff0000'>Achtung bei Absagen muß eine Begründung eingegeben werden</font>"+
+					"</b></html>";
+				}else{
+					meldung = meldung+"</b><br><br><b>Medizinsiche Begründung wurde eingegeben"+
+					"</b></html>";
+				}
+			}
+		}
+
+		int anfrage = JOptionPane.showConfirmDialog(null, meldung, "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		if(anfrage != JOptionPane.YES_OPTION){
+			return false;
+		}
+		if((art==0) && (aufnahmeart > 0) && (keingrundbeginn)){
+			return false;
+		}
+		if((art==3) && (aufnahmeart > 0) && (veditpan.getText().trim().equals(""))){
+			return false;
+		}
+
+		return true;
+	}
+ 
 
 	/*****************************************************/	
 	@Override

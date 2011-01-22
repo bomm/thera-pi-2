@@ -77,7 +77,8 @@ public class Reha301Einlesen{
 	String[] hmtitel =	{"sender","datum","bearbeiter","aktenzeichen","funktionag","beauftragtestelle",
 			"versicherungsnr","berechtigtennr","massnahmennr","geschlechtfamstand","national",
 			"artderleistung","diagschluessel","anrede","nachname","vorname","geboren",
-			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage","a12","a09","pnabm","adr0","adr1","klinik"};
+			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage",
+			"a12","a09","pnabm","adr0","adr1","klinik","aufnahmegeplant","aufnahmefruehestens"};
 
 	int nachrichtentyp = -1;
 	boolean erstercheck = false;
@@ -85,7 +86,8 @@ public class Reha301Einlesen{
 	// 5 = Encoded-Größe, 6 = log.Dateiname, 7 = physik.Dateiname
 	Object[] decodeparms = {null,null,null,null,null,null,null,null};
 	String decodedfile = null;
-	
+	boolean erstdiagnose = false;
+	int anzahldiagnosen = 0;
 	String encodepfad = Reha301.inbox; //"C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	
 	public Reha301Einlesen(Reha301Tab xeltern){
@@ -139,7 +141,7 @@ public class Reha301Einlesen{
 		String datei = pfad.substring(pfad.lastIndexOf("/")+1);
 		//System.out.println("Ausgewählte Datei = "+datei);
 		//System.out.println("Kompletter Pfad = "+pfad);
-		if(datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")){
+		if( (datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")) ){
 			boolean test = testeAuftragsDatei(pfad,datei);
 			if(!test){
 				return false;
@@ -159,8 +161,15 @@ public class Reha301Einlesen{
 			if(!test){
 				return false;
 			}
+			System.out.println("1 - this.decodedfile="+this.decodedfile+" --- datei="+datei);
 			starteEinlesen(this.decodedfile,datei);
 			System.out.println("#AktualisierePat@20202@KG76271");
+		}else if(pfad.length()>0){
+			System.out.println("Pfad = "+pfad.replace("\\", "/"));
+			this.decodedfile = pfad.replace(".auf", ".org");
+			System.out.println("2 -this.decodedfile="+this.decodedfile+" --- datei="+datei);
+			starteEinlesen(this.decodedfile,datei);
+			//return false;
 		}else{
 			JOptionPane.showMessageDialog(null,"Die ausgewählte Datei ist keine Auftragsdatei gemäß DTA nach §301");
 			return false;
@@ -372,9 +381,12 @@ public class Reha301Einlesen{
 		edifact_vec.trimToSize();
 		dbHmap.clear();
 		doHmapLeeren();
+		int count13 = 0;
+		int count10 = 0;
 		InputStream is = new FileInputStream(file); 
 		final byte ZEILENENDE = "\n".getBytes()[0];
 		byte[] ende = {13};
+		byte letztes_byte = 0;
 		final String ERSATZ = new String(ende);
 		final byte SYSTEMZEILE = (System.getProperty("line.separator").getBytes().length == 2 ? 
 				System.getProperty("line.separator").getBytes()[1] : 
@@ -385,6 +397,10 @@ public class Reha301Einlesen{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String inhalt = null;
 		//int zeilen = 0;
+		byte fragezeichen = "?".getBytes()[0];
+		byte hochkomma = "'".getBytes()[0];
+		//System.out.println("ByteWert für Fragezeichen = "+fragezeichen.getBytes()[0]);
+		//System.out.println("ByteWert für Hochkomma    = "+hochkomma.getBytes()[0]);
 		while (true) {
 			numRead = is.read(bytes,offset,1);
 			if(numRead > 0){
@@ -397,11 +413,21 @@ public class Reha301Einlesen{
 				break;
 			}
 			//Testen auf Zeilenende = \n
-			if(bytes[0] == ZEILENENDE || bytes[0]==SYSTEMZEILE || bytes[0]==10){
+			if(bytes[0] == 13){
+				count13++;
+			}
+			if(bytes[0] == 10){
+				count10++;
+			}
+			byte[] b = {bytes[0]};
+			//System.out.print("Byte="+new String(b)+" / Wert="+bytes[0]);
+			if(bytes[0] == ZEILENENDE || bytes[0]==SYSTEMZEILE || bytes[0]==10 ||
+					(bytes[0]==hochkomma && letztes_byte!=fragezeichen)  ){
 				inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
 				//Jetzt testen ob letztes Zeichen auch wirklich Zeilenende ist.
 				//System.out.println("------------->Zeilenende entdeckt "+zeilen);
 				//zeilen++;
+				
 				if(inhalt.substring(inhalt.length()-1).equals("'")){
 					baos.flush();
 					baos.close();
@@ -411,15 +437,18 @@ public class Reha301Einlesen{
 					}
 					baos = new ByteArrayOutputStream();
 				}
+			}else{
+				letztes_byte = bytes[0]; 
 			}
 		}
-		
+		//JOptionPane.showMessageDialog(null,"Count13 ="+Integer.toString(count13)+"\nCount10="+Integer.toString(count10));
  	
 	}
 	/*********************************/
 	private Object[] doAuswertenBewilligung(String zeile,int i){
 		Object[] ret = {null,(Integer) i};
 		String[] teile = null;
+		String test = null;
 		teile = zeile.split("\\+");
 		/*************/
 		if(zeile.startsWith("ADR++1:")){
@@ -443,8 +472,18 @@ public class Reha301Einlesen{
 			return ret;
 		}
 		if(zeile.startsWith("CIN+DIA+")){
-			ret[0] = "Diagnoseschlüssel: "+teile[2].split(":")[0]+" - "+ (teile[2].split(":")[1].equals("10R")? "RV-Träger (10R)" : "GKV (10K)");
-			dbHmap.put("diagschluessel", zeile);
+			String rvgkv = (teile[2].split(":")[1].equals("10R") || teile[2].split(":")[1].equals("I0R") ? "RV-Träger (10R)" : "GKV (10K)");
+			anzahldiagnosen++;
+			//ret[0] = "Diagnoseschlüssel: "+teile[2].split(":")[0]+" - "+ (teile[2].split(":")[1].equals("10R")? "RV-Träger (10R)" : "GKV (10K)");
+			ret[0] = "Diagnoseschlüssel: "+teile[2].split(":")[0]+" - "+ rvgkv;
+			if(!erstdiagnose){
+				dbHmap.put("diagschluessel", zeile);
+				erstdiagnose = true;
+			}else{
+				String meldung = "Achtung mehrere Reharelevante Diagnosen\n\nDiagnose "+Integer.toString(anzahldiagnosen)+
+				" = "+rvgkv;
+				JOptionPane.showMessageDialog(null, meldung);
+			}
 			return ret;
 		}
 		if(zeile.startsWith("COM+")){
@@ -471,7 +510,25 @@ public class Reha301Einlesen{
 			ret[0] = String.valueOf("Art der Daten: "+regleFCA(teile[1]));
 			return ret;
 		}
-		
+		//"aufnahmegeplant","aufnahmefruehestens"}
+		//Aufnahme geplant am
+		if(zeile.startsWith("DTM+291:")){
+			String datum = teile[1].substring(4,14);
+			datum = datum.substring(6,8)+"."+datum.substring(4,6)+"."+datum.substring(0,4);
+			ret[0] = String.valueOf("Aufnahme geplant für den: "+datum);
+			dbHmap.put("aufnahmegeplant",DatFunk.sDatInSQL(datum));
+			return ret;
+			
+		}
+		//Aufnahme frühestens am
+		if(zeile.startsWith("DTM+231:")){
+			String datum = teile[1].substring(4,14);
+			datum = datum.substring(6,8)+"."+datum.substring(4,6)+"."+datum.substring(0,4);
+			ret[0] = String.valueOf("!!!!!Aufnahme frühestens am: "+datum);
+			dbHmap.put("aufnahmefruehestens",DatFunk.sDatInSQL(datum));
+			return ret;
+		}
+
 		if(zeile.startsWith("DTM+137:")){
 			String datum = teile[1].substring(4,14);
 			datum = datum.substring(6,8)+"."+datum.substring(4,6)+"."+datum.substring(0,4);
@@ -713,12 +770,21 @@ public class Reha301Einlesen{
 			return ret;
 		}
 		if(zeile.startsWith("FTX+TXT+++B:")){
+			test = String.valueOf(teile[4].split(":")[1]).trim();
 			if(erstertext){
-				ret[0] = "\n"+String.valueOf(teile[4].split(":")[1]);
+				//test = String.valueOf(teile[4].split(":")[1]);
+				ret[0] = "\n"+test+
+						(teile[4].split(":").length > 2 ? teile[4].split(":")[2] :
+							"").trim();
 				erstertext = false;
 				return ret;
+			}else{
+				//test = String.valueOf(teile[4].split(":")[1]);
+				ret[0] = test+
+						(teile[4].split(":").length > 2 ? teile[4].split(":")[2] :
+							"").trim();
 			}
-			ret[0] = String.valueOf(teile[4].split(":")[1]);
+			//ret[0] = String.valueOf(teile[4].split(":")[1]);
 		}
 		return ret;
 	}

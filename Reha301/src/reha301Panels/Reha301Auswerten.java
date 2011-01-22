@@ -545,7 +545,8 @@ public class Reha301Auswerten extends JXPanel{
 		String diag1 = SqlInfo.holeEinzelFeld("select diagschluessel from dta301 where id ='"+id+"' LIMIT 1");
 		String[] diag2 = diag1.split("\\+");
 		String diaggruppe = null;
-		if(diag2[2].split(":")[0].startsWith("M") || diag2[2].split(":")[0].startsWith("S") ){
+		if(diag2[2].split(":")[0].startsWith("M") || diag2[2].split(":")[0].startsWith("S") || 
+				diag2[2].split(":")[0].startsWith("Q")){
 			diaggruppe = "04";
 		}
 		rVTraeger = testeDTAIni(ktraeger,diaggruppe);
@@ -980,6 +981,7 @@ public class Reha301Auswerten extends JXPanel{
 	/*******************************************************************************/
 	/*******************************************************************************/
 	private void doRezNeuanlage(){
+		try{
 		String id = dta301mod.getDtaId();//tab.getValueAt(tab.getSelectedRow(), 11).toString();
 		String ktraeger = dta301mod.getDtaKtraegerIK();//tab.getValueAt(tab.getSelectedRow(), 7).toString();
 		String welcherpat = "";
@@ -999,8 +1001,8 @@ public class Reha301Auswerten extends JXPanel{
 		Vector<Object> vecobj = doSetPatientFuerNachricht(welcherpat);
 		
 		//***************/doNurZumTesten(vecobj);
+		//doNurZumTesten(vecobj);
 		
-		JOptionPane.showMessageDialog(null, "<html>Die Verordnung wurde <b>erfolgreich</b> angelegt.</html>");
 		int preisgruppe = Integer.parseInt((String)vecobj.get(6));
 		int posgruppe = 0;
 		String disziplin = null;
@@ -1046,6 +1048,7 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("rez_nr='"+rezneuereznr+"', ");
 		buf.append("rez_datum='"+SqlInfo.holeEinzelFeld("select datum from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1")+"', ");
 		buf.append("datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+		buf.append("lastdate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
 		String anzahlen = SqlInfo.holeEinzelFeld("select tage from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1");
 		buf.append("anzahl1='"+anzahlen+"', ");
 		buf.append("anzahl2='"+anzahlen+"', ");
@@ -1093,10 +1096,9 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("insert into dtafall ");
 		buf.append("(nachrichttyp,nachrichtart,pat_intern,rez_nr,nachrichtdatum,nachrichtorg) ");
 		buf.append("(select nachrichtentyp,id,pat_intern,rez_nr,datum,esol from dta301 where id='"+id+"' LIMIT 1"+")");
-
 		SqlInfo.sqlAusfuehren(buf.toString());
 		String fallid = SqlInfo.holeEinzelFeld("select max(id) from dtafall");
-		
+		JOptionPane.showMessageDialog(null, "<html>Die Verordnung <b>"+rezneuereznr+"</b> wurde <b>erfolgreich</b> angelegt.</html>");
 		//Jetzt nachfragen ob neuer Bericht angelegt werden soll
 		/* Nein - die Nachfragerei schenken wir uns - eine Reha muß einen E-Bericht abliefern
 		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie jetzt für diesen Fall einen Entlassbericht anlegen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
@@ -1167,6 +1169,9 @@ public class Reha301Auswerten extends JXPanel{
 		}else{
 			//Nachsorge
 		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 
 
 	}
@@ -1215,6 +1220,7 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	
 	public void doNurZumTesten(Vector<Object> vecobj){
+		System.out.println("Eintritt in die Testroutine");
 		for(int i = 0; i < vecobj.size(); i++){
 			if(vecobj.get(i) instanceof Object[]){
 				for(int o = 0; o < ((Object[])vecobj.get(i)).length;o++){
