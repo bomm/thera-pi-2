@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
@@ -19,7 +20,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -46,6 +49,9 @@ import systemTools.JRtaTextField;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.TextException;
+
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
@@ -56,6 +62,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	 * 
 	 */
 	ActionListener al = null;
+	MouseListener ml = null;
 	MouseListener tblmouse = null;
 	JDta301Internal internal = null;
 	JXPanel content = null;
@@ -186,7 +193,53 @@ public class Dta301 extends JXPanel implements FocusListener {
 					}
 					doVerlaengerung();					
 				}
+				if(cmd.equals("original")){
+					int row = tabuebersicht.getSelectedRow();
+					if(row < 0){return;}
+					//String id = tabuebersicht.getValueAt(row,3).toString();
+					//String typ = tabuebersicht.getValueAt(row,0).toString();
+					//boolean bewilligung =  tabuebersicht.getValueAt(row,0).toString().equals("Bewilligung");
+					String scmd = "select nachrichtorg from dtafall where id ='"+
+					tabuebersicht.getValueAt(row,3)+"' LIMIT 1";
+					doZeigeEdifact(SqlInfo.holeEinzelFeld(scmd));
+				}
+				if(cmd.equals("aufbereitet")){
+					int row = tabuebersicht.getSelectedRow();
+					if(row < 0){return;}
+					String id = tabuebersicht.getValueAt(row,3).toString();
+					Vector<Vector<String>> vec = SqlInfo.holeFelder("select pat_intern,rez_nr from dtafall where id ='"+id+"' LIMIT 1");
+					String scmd = "select edifact from dta301 where pat_intern='"+
+					vec.get(0).get(0)+"' and rez_nr='"+vec.get(0).get(1)+"' and nachrichtentyp='1' LIMIT 1";
+					doZeigeEdifact(SqlInfo.holeEinzelFeld(scmd));
+				}
 
+				
+			}
+		};
+		ml = new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getSource() instanceof JXTable){
+					if(e.getClickCount()==1 && e.getButton()==3){
+						int row = tabuebersicht.getSelectedRow();
+						if(row < 0){return;}
+						String typ = tabuebersicht.getValueAt(row,0).toString();
+						boolean bewilligung =  tabuebersicht.getValueAt(row,0).toString().equals("Bewilligung");
+						doNachrichtenPopUp(e,bewilligung,typ);
+					}
+				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
 			}
 		};
 	}
@@ -541,11 +594,15 @@ public class Dta301 extends JXPanel implements FocusListener {
 		JLabel lab = new JLabel("Übersicht der Nachrichten zu diesem Fall");
 		lab.setForeground(Color.BLUE);
 		pan.add(lab,cc.xy(2,2));
-		String[] headers = {"Anlass","Datum","Bearbeiter"};
+		String[] headers = {"Anlass","Datum","Bearbeiter",""};
 		moduebersicht = new MyTermTableModel();
 		moduebersicht.setColumnIdentifiers(headers);
 		tabuebersicht = new JXTable(moduebersicht);
 		tabuebersicht.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
+		tabuebersicht.getColumn(3).setMinWidth(0);
+		tabuebersicht.getColumn(3).setMaxWidth(30);
+		tabuebersicht.setName("uebersicht");
+		tabuebersicht.addMouseListener(ml);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabuebersicht);
 		jscr.validate();
 		pan.add(jscr, cc.xy(2,4,CellConstraints.FILL,CellConstraints.FILL));
@@ -632,11 +689,6 @@ public class Dta301 extends JXPanel implements FocusListener {
 				buf.append("</b></font></td></tr>");
 				is301Ok = true;
 			}
-			
-			
-			
-			
-			
 			/****************************/
 			getEndeHtml(buf);
 			//fallPan.setText(buf.toString());
@@ -660,8 +712,9 @@ public class Dta301 extends JXPanel implements FocusListener {
 				try{
 					String[] anlass = {"Unbekannter Anlass","Bewilligung","Ablehnung",
 							"Aufnahmemitteilung","Unterbrechungsmeldung","Verlängerung","Entlassmitteilung",
-							"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung"};
-					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter from dtafall where pat_intern='"+
+							"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung",
+							"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung"};
+					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter,id from dtafall where pat_intern='"+
 					String.valueOf(Reha.thisClass.patpanel.patDaten.get(29))+
 					"' and rez_nr='"+
 					String.valueOf(Reha.thisClass.patpanel.vecaktrez.get(1))+
@@ -679,7 +732,11 @@ public class Dta301 extends JXPanel implements FocusListener {
 						dummy.add(anlass[Integer.parseInt(test)]);
 						dummy.add(DatFunk.sDatInDeutsch(vec.get(i).get(1)));
 						dummy.add(vec.get(i).get(2));
+						dummy.add(vec.get(i).get(3));
 						moduebersicht.addRow((Vector<String>)dummy.clone());
+					}
+					if(moduebersicht.getRowCount()>0){
+						tabuebersicht.setRowSelectionInterval(0, 0);
 					}
 					tabuebersicht.validate();
 				}catch(Exception ex){
@@ -894,7 +951,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 						setCursor(Reha.thisClass.normalCursor);
 						return null;
 					}
-					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
+					JOptionPane.showMessageDialog(null, "Unterbrechungsmeldung erfolgreich versandt!");
 					buts[1].setEnabled(true);
 					
 				}catch(Exception ex){
@@ -919,7 +976,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 						setCursor(Reha.thisClass.normalCursor);
 						return null;						
 					}
-					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
+					JOptionPane.showMessageDialog(null, "Entlassmitteilung erfolgreich versandt!");
 					buts[2].setEnabled(true);
 					setCursor(Reha.thisClass.normalCursor);
 					
@@ -1062,8 +1119,44 @@ public class Dta301 extends JXPanel implements FocusListener {
 
 		return true;
 	}
- 
+	private void doNachrichtenPopUp(java.awt.event.MouseEvent me, boolean bewilligung,String typ){
+		JPopupMenu jPop = doNachrichtenMenue(bewilligung,typ);
+		jPop.show( me.getComponent(), me.getX(), me.getY() ); 
+	}
+	private JPopupMenu doNachrichtenMenue(boolean bewilligung, String typ){
+		JPopupMenu jPopupMenu = new JPopupMenu();
 
+		JMenuItem item = new JMenuItem("Original "+typ+" im OO-Writer öffnen");
+		item.setActionCommand("original");
+		item.addActionListener(al);
+		jPopupMenu.add(item);
+		if(bewilligung){
+			item = new JMenuItem("Bearbeitete "+typ+" im OO-Writer öffnen");
+			item.setActionCommand("aufbereitet");
+			item.addActionListener(al);
+			jPopupMenu.add(item);
+		}
+		jPopupMenu.addSeparator();
+		item = new JMenuItem("Nachricht löschen");
+		item.setActionCommand("deletemessage");
+		item.addActionListener(al);
+		jPopupMenu.add(item);
+
+		return jPopupMenu;
+		
+	}	
+ 
+	private void doZeigeEdifact(String buf){
+		ITextDocument document = oOorgTools.OOTools.starteLeerenWriter();
+		try {
+			document.getTextService().getCursorService().getTextCursor().getCharacterProperties().setFontName("Courier New");
+			document.getTextService().getCursorService().getTextCursor().getCharacterProperties().setFontSize(9.f);
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		document.getTextService().getText().setText(buf);
+
+	}
 	/*****************************************************/	
 	@Override
 	public void focusGained(FocusEvent arg0) {

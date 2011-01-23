@@ -870,6 +870,7 @@ public class RVMeldung301 {
 		if(mitfahrgeld){
 			anzahlUnhs++;
 			aktUnh++;
+			aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh),"0",true,5);
 			zeilen=1;
 
 			zeilen = doRechnungKopf(zeilen,fahrgeld,hinweis,
@@ -893,7 +894,8 @@ public class RVMeldung301 {
 		if(doKeyStoreAktion()){
 			//Mail Versenden
 			//In neue Tabelle schreiben
-			String cmd = "insert into dtafall set nachrichttyp='6', nachrichtart='6', pat_intern='"+
+			String typus = (mitfahrgeld ? "12" : "6");
+			String cmd = "insert into dtafall set nachrichttyp='"+typus+"', nachrichtart='"+typus+"', pat_intern='"+
 			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
@@ -1082,7 +1084,7 @@ public class RVMeldung301 {
 		String ret = "";
 		for(int i = 0; i < originaldata.size();i++){
 			if(originaldata.get(i).endsWith(codeliste)){
-				String[] sret = originaldata.get(i).split("+");
+				String[] sret = originaldata.get(i).split("\\+");
 				return String.valueOf(sret[element].split(":")[0]);
 			}
 		}
