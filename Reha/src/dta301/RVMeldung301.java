@@ -74,6 +74,7 @@ public class RVMeldung301 {
 	int anzahlUnhs = 1;
 	int aktUnh = 1;
 	boolean shouldBreak = false;
+	boolean imtest = true;
 	
 	public RVMeldung301(int art, String id){
 		
@@ -458,7 +459,7 @@ public class RVMeldung301 {
 		if(aufnahmeart==0){
 			buf301Body.append("PRC+ADMIN3'"+NEWLINE);zeilen++;
 			buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
-			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
 
 			buf301Body.append("DTM+194:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("DTM+163:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
@@ -618,9 +619,10 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
 		/******************/
 		buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
-		buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
+		buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
 		long tage = DatFunk.TageDifferenz(beginnDatum, endeDatum);
+		tage++;
 		buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(Long.toString(tage), "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
 
 
@@ -682,7 +684,7 @@ public class RVMeldung301 {
 			buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
 			/******************/
 			buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
-			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
 			buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
 			if(!hinweis.equals("")){
 				Vector<String> flvec = new Vector<String>();
@@ -972,7 +974,7 @@ public class RVMeldung301 {
 			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
 			NebraskaKeystore store = new NebraskaKeystore(keystore, SystemConfig.hmAbrechnung.get("hmkeystorepw"),"123456", Reha.aktIK);
 			NebraskaEncryptor encryptor = store.getEncryptor(EMPFAENGERIK);
-			String inFile = (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".ORG").toLowerCase();
+			String inFile = (SystemConfig.dta301OutBox+(imtest ? "T" : "E")+"REH"+strAktEREH+".ORG").toLowerCase();
 			long size = encryptor.encrypt(inFile, inFile.replace(".org", ""));
 			encryptedSize = Integer.parseInt(Long.toString(size));
 			//System.out.println("       Originalgröße = "+originalSize);
@@ -1001,7 +1003,7 @@ public class RVMeldung301 {
 		FileWriter fw = null;
 		BufferedWriter bw = null;
 		if(art == 0){
-			f = new File( (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".ORG").toLowerCase() );
+			f = new File( (SystemConfig.dta301OutBox+(imtest ? "T" : "E")+"REH"+strAktEREH+".ORG").toLowerCase() );
 			fw = new FileWriter(f);
 		    bw = new BufferedWriter(fw); 
 		    bw.write(gesamtbuf.toString()); 
@@ -1010,7 +1012,7 @@ public class RVMeldung301 {
 		    fw.close();
 		    return;
 		}else if(art == 1){
-			f = new File( (SystemConfig.dta301OutBox+"EREH"+strAktEREH+".AUF").toLowerCase() );
+			f = new File( (SystemConfig.dta301OutBox+(imtest ? "T" : "E")+"REH"+strAktEREH+".AUF").toLowerCase() );
 			fw = new FileWriter(f);
 		    bw = new BufferedWriter(fw); 
 		    bw.write(auftragsBuf.toString()); 
@@ -1105,7 +1107,7 @@ public class RVMeldung301 {
 		auftragsBuf.trimToSize();
 		String abrDateiName="REH-RTA    ";
 		auftragsBuf.append("500000"+"01"+"00000348"+"000");
-		auftragsBuf.append("EREH"+this.strAktEREH);
+		auftragsBuf.append((imtest ? "T" : "E")+"REH"+this.strAktEREH);
 		auftragsBuf.append("     ");
 		auftragsBuf.append(StringTools.fuelleMitZeichen(vecdta.get(0).get(4).toString(), " ", false, 15));
 		auftragsBuf.append(StringTools.fuelleMitZeichen(vecdta.get(0).get(4).toString(), " ", false, 15));
@@ -1124,12 +1126,13 @@ public class RVMeldung301 {
 		auftragsBuf.append(StringTools.fuelleMitZeichen(Integer.toString(encryptedSize), "0", true, 12) );
 		auftragsBuf.append("I800");
 		auftragsBuf.append("0303");
-		auftragsBuf.append("   ");
+		auftragsBuf.append("U");
+		auftragsBuf.append("  ");
 		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 5) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 8) );
 		auftragsBuf.append("0");
 		auftragsBuf.append("00");
-		auftragsBuf.append("0");
+		auftragsBuf.append("5");
 		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 10) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen("0", "0", true, 6) );
 		auftragsBuf.append(StringTools.fuelleMitZeichen(" ", " ", true, 28) );
