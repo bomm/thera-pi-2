@@ -89,6 +89,7 @@ public class Reha301Einlesen{
 	boolean erstdiagnose = false;
 	int anzahldiagnosen = 0;
 	String encodepfad = Reha301.inbox; //"C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
+	File auftragfile = null;
 	
 	public Reha301Einlesen(Reha301Tab xeltern){
 		//super(new BorderLayout());
@@ -96,8 +97,9 @@ public class Reha301Einlesen{
 		//ActivateListener();
 		//add(getFormLayout(),BorderLayout.CENTER);
 	}
-	public boolean decodeAndRead(String dir){
+	public boolean decodeAndRead(String dir,File xfile){
 		encodepfad = dir;
+		auftragfile = xfile;
 		boolean erfolg = doDecode(encodepfad);
 		//starteEinlesen(encodepfad);
 		encodepfad = null;
@@ -141,7 +143,9 @@ public class Reha301Einlesen{
 		String datei = pfad.substring(pfad.lastIndexOf("/")+1);
 		//System.out.println("Ausgewählte Datei = "+datei);
 		//System.out.println("Kompletter Pfad = "+pfad);
-		if( (datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")) ){
+		//System.out.println("Auftragsfile = "+this.auftragfile.getName());
+		if( datei.length() > 0){
+		//if( (datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")) ){
 			boolean test = testeAuftragsDatei(pfad,datei);
 			if(!test){
 				return false;
@@ -161,15 +165,18 @@ public class Reha301Einlesen{
 			if(!test){
 				return false;
 			}
-			System.out.println("1 - this.decodedfile="+this.decodedfile+" --- datei="+datei);
+			//System.out.println("1 - this.decodedfile="+this.decodedfile+" --- datei="+datei);
+			
 			starteEinlesen(this.decodedfile,datei);
+			
+			//Wichtig für die Aktualisierung in Therapie
 			System.out.println("#AktualisierePat@20202@KG76271");
-		}else if(pfad.length()>0){
+		/*)}else if(pfad.length()>0){
 			System.out.println("Pfad = "+pfad.replace("\\", "/"));
 			this.decodedfile = pfad.replace(".auf", ".org");
 			System.out.println("2 -this.decodedfile="+this.decodedfile+" --- datei="+datei);
 			starteEinlesen(this.decodedfile,datei);
-			//return false;
+			//return false;*/
 		}else{
 			JOptionPane.showMessageDialog(null,"Die ausgewählte Datei ist keine Auftragsdatei gemäß DTA nach §301");
 			return false;
@@ -177,6 +184,8 @@ public class Reha301Einlesen{
 		return true;
 	}
 	private void starteEinlesen(String filename,String datei){
+		//System.out.println("Starte Einlesen Filename = "+filename);
+		//System.out.println("Starte Einlesen Dateiname = "+datei);
 		doEinlesen(filename,datei);
 		//doEinlesen("C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/bewi.txt");
 	}
@@ -306,7 +315,15 @@ public class Reha301Einlesen{
 	private void doEinlesen(String pfad,String datei){
 		try {
 			Object[] obj = null;
-			getVectorFromFile(new File(pfad));
+			File xpfad = new File(pfad);
+			String test = new String(BytesFromFile(xpfad));
+
+			if(test.indexOf("\\n")>= 0 || test.indexOf("\\r")>= 0){
+				getVectorFromFile(xpfad,true);	
+			}else{
+				getVectorFromFile(xpfad,false);
+			}
+			
 			//Die Datei in die Textarea schreiben
 			//meldung.setText("");
 			String[] unz = null;
@@ -329,6 +346,8 @@ public class Reha301Einlesen{
 					buf.trimToSize();
 					fallbuf.setLength(0);
 					fallbuf.trimToSize();
+					erstdiagnose = false;
+					anzahldiagnosen = 0; 
 					for(int i = start; i < edifact_vec.size();i++){
 						zeilen++;
 						fallbuf.append(edifact_vec.get(i)+"\n");
@@ -376,7 +395,7 @@ public class Reha301Einlesen{
 		}
 	}
 
-	public void getVectorFromFile(File file) throws IOException { 
+	public void getVectorFromFile(File file,boolean mitlinefeed) throws IOException { 
 		edifact_vec.clear();
 		edifact_vec.trimToSize();
 		dbHmap.clear();
@@ -421,24 +440,36 @@ public class Reha301Einlesen{
 			}
 			byte[] b = {bytes[0]};
 			//System.out.print("Byte="+new String(b)+" / Wert="+bytes[0]);
-			if(bytes[0] == ZEILENENDE || bytes[0]==SYSTEMZEILE || bytes[0]==10 ||
-					(bytes[0]==hochkomma && letztes_byte!=fragezeichen)  ){
-				inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
-				//Jetzt testen ob letztes Zeichen auch wirklich Zeilenende ist.
-				//System.out.println("------------->Zeilenende entdeckt "+zeilen);
-				//zeilen++;
-				
-				if(inhalt.substring(inhalt.length()-1).equals("'")){
-					baos.flush();
-					baos.close();
-					if(!inhalt.trim().equals("")){
-						//System.out.println("Vector angehängt "+inhalt);
-						edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));
+			if(mitlinefeed){
+				if(bytes[0] == ZEILENENDE || bytes[0]==SYSTEMZEILE || bytes[0]==10 ){
+					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
+					if(inhalt.substring(inhalt.length()-1).equals("'")){
+						baos.flush();
+						baos.close();
+						if(!inhalt.trim().equals("")){
+							//System.out.println("Vector angehängt "+inhalt);
+							edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));
+						}
+						baos = new ByteArrayOutputStream();
 					}
-					baos = new ByteArrayOutputStream();
+				}else{
+					letztes_byte = bytes[0]; 
 				}
 			}else{
-				letztes_byte = bytes[0]; 
+				if(	(bytes[0]==hochkomma && letztes_byte!=fragezeichen)  ){
+					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
+					if(inhalt.substring(inhalt.length()-1).equals("'")){
+						baos.flush();
+						baos.close();
+						if(!inhalt.trim().equals("")){
+							//System.out.println("Vector angehängt "+inhalt);
+							edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));
+						}
+						baos = new ByteArrayOutputStream();
+					}
+				}else{
+					letztes_byte = bytes[0]; 
+				}
 			}
 		}
 		//JOptionPane.showMessageDialog(null,"Count13 ="+Integer.toString(count13)+"\nCount10="+Integer.toString(count10));
@@ -1100,9 +1131,9 @@ public class Reha301Einlesen{
 			if(index.equals("1"))
 				return "A13 - 1 - Keine Zuzahlung";
 			if(index.equals("2"))
-				return "A13 - 2 - Zuzahlungsbetrag soll von der Klinik eingezogen werden";
+				return "A13 - 2 - Zuzahlung soll von der Klinik eingezogen werden";
 			if(index.equals("3"))
-				return "A13 - 3 - Zuzahlungsbetrag soll von der Klinik nicht(!!) eingezogen werden";
+				return "A13 - 3 - Zuzahlung soll von der Klinik nicht(!!) eingezogen werden";
 		}
 		if(art.equals("A14")){
 			if(index.equals("J"))
@@ -1187,13 +1218,17 @@ public class Reha301Einlesen{
 		decodeparms[6] = (String) auftragsdatei.substring(104,104+25).trim();
 		/*
 		for(int i = 0; i < 8;i++){
-			System.out.println(decodeparms[i]);
+			System.out.println("Eingelesene Parameter = "+Integer.toString(i)+" "+decodeparms[i]);
 		}
 		*/
+
+		/*
 		if(! datei.toUpperCase().startsWith((String)decodeparms[7])){
 			JOptionPane.showMessageDialog(null, "Dateiname der Auftragsdatei und der Dateiname innehalb der Datei stimmen nicht überein");
 			return false;
 		}
+		*/
+		//System.out.println("Dateiname in der Auftragsdatei = "+(String)decodeparms[7]);
 		return bret;
 	}
 	 public static byte[] BytesFromFile(File file) throws IOException {
@@ -1219,11 +1254,33 @@ public class Reha301Einlesen{
 	        is.close();
 	        return bytes;
 	}
-	private boolean doEntschluesseln(String pfad,String datei) throws NebraskaCryptoException, NebraskaNotInitializedException, NebraskaFileException, IOException{
+	private boolean doEntschluesseln(String xpfad,String xdatei) throws NebraskaCryptoException, NebraskaNotInitializedException, NebraskaFileException, IOException{
 		boolean bret = true;
 		// 0 = Sender, 1 = Sender, 2 = Empfänger mit Entschl., 3 = Physik Empfänger, 4 = Originalgr.
 		// 5 = Encoded-Größe, 6 = log.Dateiname, 7 = physik. Dateiname
 		//decodeparms
+		
+		//Ab hier testen ob etwas zum Entschlüsseln vorhanden ist.
+		 
+		File dir = new File(Reha301.inbox);
+		File[] files = dir.listFiles();
+		String vergleich = auftragfile.getName().substring(0,auftragfile.getName().indexOf("."));
+		//System.out.println("der Vergleich lautet "+vergleich);
+		String  encdatei = "";
+		for(int i = 0; i < files.length;i++){
+			if( (files[i].getName().startsWith(vergleich)) && 
+			(! files[i].getName().equals(auftragfile.getName())) && 
+			(! files[i].getName().toLowerCase().endsWith(".org"))){
+				encdatei = files[i].getName();
+				break;
+			}
+			
+		}
+		if(encdatei.equals("")){
+			JOptionPane.showMessageDialog(null, "Keine Datei für die Entschlüsselung gefunden");
+			return false;
+		}
+
 		String inipath = Reha301.progHome+"nebraska_windows.conf";
 		INIFile file = new INIFile(inipath);
 		int anzahl = file.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
@@ -1246,17 +1303,17 @@ public class Reha301Einlesen{
 						kstorepw,
 						"abc",
 						kstorealias);
-		String filein =pfad.substring(0,pfad.length()-4);
+		//String filein = "";//pfad.substring(0,pfad.length()-4);
 		//System.out.println("FileIn = "+"*"+filein+"*");
 		
 		NebraskaDecryptor decrypt = keystore.getDecryptor();
-		FileInputStream fin = new FileInputStream(filein);
-		FileOutputStream fout = new FileOutputStream(filein+".org");
+		FileInputStream fin = new FileInputStream(Reha301.inbox+encdatei);
+		FileOutputStream fout = new FileOutputStream(Reha301.inbox+vergleich.trim()+".org");
 		decrypt.decrypt(fin, fout);
 		fin.close();
 		fout.flush();
 		fout.close();
-		decodedfile = String.valueOf(filein+".org");
+		decodedfile = String.valueOf(Reha301.inbox+vergleich.trim()+".org");
 		return bret;
 	}
 }

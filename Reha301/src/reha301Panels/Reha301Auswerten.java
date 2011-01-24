@@ -351,19 +351,16 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	private JScrollPane tree301(){
 		KnotenObjekt kobjekt = null;
-		kobjekt = new KnotenObjekt("301-Nachrichten","",false,"","");
+		kobjekt = new KnotenObjekt("301-Nachrichten","",false,null,"");
 		root = new JXTreeNode( kobjekt,true );
 		treeModel = new DefaultTreeModel(root);
 		File dir = new File(Reha301.inbox);
 		File[] files = dir.listFiles();
 		DefaultMutableTreeNode node = null;
 		for(int i = 0; i < files.length;i++){
-			if(files[i].getName().toUpperCase().endsWith(".AUF")){
-				//System.out.println( files[i].getName()+"-"+files[i].lastModified() );
-				kobjekt = new KnotenObjekt(files[i].getName(),"",false,"","");
+			if( (files[i].getName().toUpperCase().endsWith(".AUF")) || (files[i].length()==348) ){
+				kobjekt = new KnotenObjekt(files[i].getName(),"",false,files[i],Long.toString(files[i].length()));
 				root.add(new JXTreeNode(kobjekt,true));
-				//node = new DefaultMutableTreeNode( files[i].getName());
-				//root.add(node);
 			}
 		}
 		tree = new JXTree( root );
@@ -373,18 +370,19 @@ public class Reha301Auswerten extends JXPanel{
 			public void mouseClicked(MouseEvent arg0) {
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					String treelabel = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel;
-					if(treelabel.toUpperCase().endsWith(".AUF")){
+					if(((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.groesse.equals("348") ){
 						if(!vecgelesen.contains(treelabel)){
 							int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie die Nachricht "+treelabel+" einlesen und verarbeiten?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 							if(anfrage == JOptionPane.YES_OPTION){
 								final String xtreelabel = treelabel;
+								final File xfile = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.file;
 								new SwingWorker<Void,Void>(){
 									@Override
 									protected Void doInBackground()
 											throws Exception {
 										Reha301.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 										Reha301Einlesen einlesen = new Reha301Einlesen(eltern);
-										if(einlesen.decodeAndRead(Reha301.inbox+xtreelabel)){
+										if(einlesen.decodeAndRead(Reha301.inbox+xtreelabel,xfile)){
 											vecgelesen.add(String.valueOf(xtreelabel));
 											((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.fertig = true;
 										}
@@ -1310,15 +1308,16 @@ public class Reha301Auswerten extends JXPanel{
 		public String ktraeger;
 		public String pat_intern;
 		public String entschluessel;
-		public String ikkasse;
-		public String preisgruppe;
+		public File file;
+		public String groesse;
 		
-		public KnotenObjekt(String titel,String rez_num,boolean fertig,String ikkasse,String preisgruppe){
+		
+		public KnotenObjekt(String titel,String rez_num,boolean fertig,File file,String groesse){
 			this.titel = titel;
 			this.fertig = fertig;
 			this.rez_num = rez_num;
-			this.ikkasse = ikkasse;
-			this.preisgruppe = preisgruppe;
+			this.file = file;
+			this.groesse = groesse;
 		}
 	}
 	/*************************************/	

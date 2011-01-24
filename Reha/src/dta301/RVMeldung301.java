@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
@@ -17,6 +18,7 @@ import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
+import emailHandling.EmailSendenExtern;
 import entlassBerichte.EBerichtPanel;
 
 import sqlTools.SqlInfo;
@@ -817,71 +819,87 @@ public class RVMeldung301 {
 		}
 	}
 	public void doEntlassung(String erstDatum,String letztDatum,String uhrZeit,
-			int arbeitsfaehig,int entlassform,boolean mitfahrgeld,String fahrgeld,String hinweis){
-		holeVector();
-		int zeilen = 1;
-		shouldBreak = false;
-		String test = "";
-		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
-		buf301Body.append("UNH+"+aktunh+"+MEDR03:D:01A:KR:97B'"+NEWLINE);zeilen++;
-		buf301Body.append("BGM+04++10'"+NEWLINE);zeilen++; 
-		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
-		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
-		//buf301Body.append("PNA+MS++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
-		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
-		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
-		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
-			buf301Body.append(test+EOL+NEWLINE);zeilen++;
-			if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
+			int arbeitsfaehig,int entlassform,boolean mitfahrgeld,String fahrgeld,String hinweis,
+			boolean nurfahrgeld){
+		if(!nurfahrgeld){
+			holeVector();
+			int zeilen = 1;
+			shouldBreak = false;
+			String test = "";
+			String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+			
+			buf301Body.append("UNH+"+aktunh+"+MEDR03:D:01A:KR:97B'"+NEWLINE);zeilen++;
+			buf301Body.append("BGM+04++10'"+NEWLINE);zeilen++; 
+			buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
+			buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+			//buf301Body.append("PNA+MS++"+Reha.aktIK+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
+			buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
+			buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+				if( ! (test =  springeAufUndHole("PNA+AB+","CTA+BEA+")).equals("")){
+					buf301Body.append(test+EOL+NEWLINE);zeilen++;
+				}
+				if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
+					buf301Body.append(test+EOL+NEWLINE);zeilen++;
+				}
+			}
+			buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append("FCA+MD'"+NEWLINE);zeilen++;
+			
+			buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
 				buf301Body.append(test+EOL+NEWLINE);zeilen++;
 			}
-			if( ! (test =  springeAufUndHole("PNA+AB+","RFF+AHN:")).equals("")){
-				buf301Body.append(test+EOL+NEWLINE);zeilen++;
-			}
-		}
-		buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("FCA+MD'"+NEWLINE);zeilen++;
-		
-		buf301Body.append(springeAufUndHole("PNA+BM+","PNA+BM+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGU:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AGF:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+ADE:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","RFF+AEN:")+EOL+NEWLINE);zeilen++;
-		if( ! (test =  springeAufUndHole("PNA+BM+","RFF+ALX:")).equals("")){
-			buf301Body.append(test+EOL+NEWLINE);zeilen++;
-		}
-		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
-		buf301Body.append("PRC+ETL'"+NEWLINE);zeilen++;
-		buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B02")[arbeitsfaehig][0]+":B02"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B07")[entlassform][0]+":B07"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("DTM+194:"+mache10erDatum(erstDatum)+":102"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("DTM+293:"+mache10erDatum(letztDatum)+":102"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("DTM+96:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
-		buf301Body.append("UNT+"+
+			buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
+			buf301Body.append("PRC+ETL'"+NEWLINE);zeilen++;
+			buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B02")[arbeitsfaehig][0]+":B02"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B07")[entlassform][0]+":B07"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("DTM+194:"+mache10erDatum(erstDatum)+":102"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("DTM+293:"+mache10erDatum(letztDatum)+":102"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("DTM+96:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;
+
+			/**************Zusätzliche Fahrgeldrechnung erstellen*************/
+
+			if(mitfahrgeld){
+				anzahlUnhs++;
+				aktUnh++;
+				aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh),"0",true,5);
+				zeilen=1;
+				zeilen = doRechnungKopf(zeilen,fahrgeld,hinweis,
+				mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
+				zeilen = doFahrgeld(zeilen,fahrgeld,hinweis,
+				mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
+				buf301Body.append("UNT+"+
 				StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
 				EOL+NEWLINE);zeilen++;
-
-		/**************Zusätzliche Fahrgeldrechnung erstellen*************/
-
-		if(mitfahrgeld){
-			anzahlUnhs++;
-			aktUnh++;
-			aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh),"0",true,5);
-			zeilen=1;
-
+			}
+		}else{
+			//nur fahrgeld
+			holeVector();
+			int zeilen = 1;
+			shouldBreak = false;
+			String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
 			zeilen = doRechnungKopf(zeilen,fahrgeld,hinweis,
 					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
 			zeilen = doFahrgeld(zeilen,fahrgeld,hinweis,
 					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
 			buf301Body.append("UNT+"+
-					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
-					EOL+NEWLINE);zeilen++;
+			StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+			EOL+NEWLINE);zeilen++;
 		}
 		doKopfDaten();
 		doFussDaten();
@@ -944,13 +962,7 @@ public class RVMeldung301 {
 		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PRC+ETG'"+NEWLINE);zeilen++;
-		/*
-		buf301Body.append("CLI+ENT+"+verfahren+"050299"+":ENT'"+NEWLINE);zeilen++;
-		buf301Body.append("DTM+263:"+aufnahmedatum+entlassdatum+":711'"+NEWLINE);zeilen++;
-		buf301Body.append("QTY+47:1:ANZ'"+NEWLINE);zeilen++;
-		buf301Body.append("QTY+193:0:ANZ'"+NEWLINE);zeilen++;
-		buf301Body.append("MOA+146:"+gesamt+":EUR'"+NEWLINE);zeilen++;
-		*/
+
 		return zeilen;
 		
 	}
@@ -981,6 +993,47 @@ public class RVMeldung301 {
 			//System.out.println("Verschlüsselte Größe = "+encryptedSize);
 			doAuftragsDatei();
 			doDateiErstellen(1);
+			//Hier Die Email
+			try{
+				String ik_email = "select email1 from kass_adr where ik_kass='"+EMPFAENGERIK+"' LIMIT 1";
+				if(ik_email.equals("")){
+					JOptionPane.showMessageDialog(null,"Dem Empfänger "+EMPFAENGERIK+" wurde keine Emailadresse zugewiesen!");
+					return false;
+				}
+				String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
+				String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
+				String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
+				String pass1 = SystemConfig.hmEmailExtern.get("Password");
+				String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
+				
+				String recipient = (imtest ? "" : ik_email+";") +SystemConfig.hmEmailExtern.get("SenderAdresse");
+
+				String text = "";
+				boolean authx = (authent.equals("0") ? false : true);
+				boolean bestaetigen = false;
+				String endfile = inFile.substring(inFile.lastIndexOf("/")+1).trim();
+				System.out.println("Endflile = "+endfile);
+				String[] aufDat = {inFile.replace(".org", ".auf"),endfile.replace(".org", ".auf") };
+				String[] encodedDat = {inFile.replace(".org", ""),endfile.replace(".org", "")};
+				ArrayList<String[]> attachments = new ArrayList<String[]>();
+				attachments.add(encodedDat);
+				attachments.add(aufDat);
+
+				System.out.println("Sender-IK = "+vecdta.get(0).get(4).toString());
+				EmailSendenExtern oMail = new EmailSendenExtern();
+				try{
+					oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
+					oMail = null;
+				}catch(Exception e){
+					e.printStackTrace( );
+					JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
+		        			"Mögliche Ursachen:\n"+
+		        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
+		        			"- Sie haben keinen Kontakt zum Internet");
+				}
+			}catch(Exception ex){
+					ex.printStackTrace();
+			}
 			return true;
 			
 		} catch (IOException e) {

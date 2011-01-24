@@ -112,6 +112,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JRtaComboBox entlassafcombo = null;
 	JRtaComboBox entlassartcombo = null;
 	JRtaCheckBox entlassmitfahrgeld = null;
+	JRtaCheckBox entlassnurfahrgeld = null;
 	JRtaTextField entlassfahrgeld = null;
 	JTextArea entlasstpan = null;
 	
@@ -486,8 +487,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwerte = "100dlu,right:max(100dlu;p),5dlu,50dlu,20dlu";
-		//                1   2   3   4   5  6  7   8  9   10 11  12     13  14    15
-		String ywerte = "25dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,35dlu,5dlu,p, 35dlu,p,fill:0:grow(1.0),5dlu";
+		//                1   2   3   4   5  6  7   8  9   10 11  12     13  14 15 16   17  18 
+		String ywerte = "25dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,p,5dlu,35dlu,5dlu,p,2dlu,p, 35dlu,p,fill:0:grow(1.0),5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -572,9 +573,11 @@ public class Dta301 extends JXPanel implements FocusListener {
 		pan.add(entlassmitfahrgeld,cc2.xy(2,14));
 		entlassfahrgeld = new JRtaTextField("D",true,"6.2","RECHTS");
 		pan.add(entlassfahrgeld,cc.xy(4,14));
-		
+		entlassnurfahrgeld = new JRtaCheckBox("Nur Fahrtgeld in Rechnung stellen");
+		entlassnurfahrgeld.setHorizontalTextPosition(SwingConstants.LEFT);
+		pan.add(entlassnurfahrgeld,cc2.xy(2,16));
 		buts[2] = ButtonTools.macheBut("Nachricht erzeugen und senden", "entlsenden", al);
-		pan.add(buts[2],cc.xyw(2, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(buts[2],cc.xyw(2, 18, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(2),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
@@ -829,7 +832,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 					entlassartcombo.getSelectedIndex(),
 					entlassmitfahrgeld.isSelected(),
 					entlassfahrgeld.getText(),
-					entlasstpan.getText()
+					entlasstpan.getText(),
+					entlassnurfahrgeld.isSelected()
 					);
 			doTabelleFuellen();
 			return true;
@@ -1068,10 +1072,14 @@ public class Dta301 extends JXPanel implements FocusListener {
 		//Entlassmitteilung**********************************************/
 		if(art == 2){
 			meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>";
-			meldung = meldung + "Narchittyp: <b>Entlassmitteilung"+
-			"</b><br><br>Aufnahmetag: <b>"+entlasserstdatum.getText()+
-			"</b><br><br>Entlasstag: <b>"+entlassletztdatum.getText()+
-			"</b><br><br>Entlass-Uhrzeit: <b>"+entlassstunde.getText()+":"+entlassminute.getText();
+			if(!entlassnurfahrgeld.isSelected()){
+				meldung = meldung + "Narchittyp: <b>Entlassmitteilung"+
+				"</b><br><br>Aufnahmetag: <b>"+entlasserstdatum.getText()+
+				"</b><br><br>Entlasstag: <b>"+entlassletztdatum.getText()+
+				"</b><br><br>Entlass-Uhrzeit: <b>"+entlassstunde.getText()+":"+entlassminute.getText();
+			}else{
+				meldung = meldung + "Narchittyp: <b>Nur Fahrgeldberechnung";
+			}
 			if(!entlassmitfahrgeld.isSelected()){
 				meldung = meldung + "</b><br><br>Fahrgeld wird berechnet: <font color='#ff0000'><b>NEIN</b></font>"+
 				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
@@ -1081,6 +1089,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 				"</b><br><br><b>Höhe des Fahrgeldes: <b>"+entlassfahrgeld.getText()+
 				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich"+
 				"</b></html>";
+
 			}
 		}
 		//Verlängerungs Mitteilung/Antrag**********************************************/
