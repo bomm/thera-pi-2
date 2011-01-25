@@ -51,6 +51,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		if(printPan == null){
 			return null;
 		}
+		try{
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		int pixelWidth = printPan.getWidth();
 		int pixelHeight = printPan.getHeight();
@@ -104,29 +105,13 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 
         }
         else {
-/*        	
-        	InputStream is = new ByteArrayInputStream(bufferedImageToByteArray(bufimg));  
-           graphicInfo = new GraphicInfo(is, pixelWidth,
-                    true, pixelHeight, true, VertOrientation.TOP, HoriOrientation.LEFT,
-                     TextContentAnchorType.AS_CHARACTER);
-*/                     
+
         	//System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
         	//System.out.println("Seitenverh�ltnis = "+verhaeltnis);
         	
             graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
                     TextContentAnchorType.AS_CHARACTER);
-            /*
-        	graphicInfo = new GraphicInfo(new FileInputStream(imagePath), pixelWidth,
-                    true, pixelHeight, true, VertOrientation.TOP, HoriOrientation.LEFT,
-                    TextContentAnchorType.AS_CHARACTER);
-            */        
-                    
-            /*
-          graphicInfo = new GraphicInfo(new FileInputStream(imagePath), pixelWidth,
-              true, pixelHeight, true, VertOrientation.TOP, HoriOrientation.LEFT,
-              TextContentAnchorType.AT_PARAGRAPH);
-           */   
         }
 
         ITextContentService textContentService = textDocument.getTextService()
@@ -141,7 +126,9 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
             textDocumentImage);
 
 		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
-
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		
 		return null;
 	}
