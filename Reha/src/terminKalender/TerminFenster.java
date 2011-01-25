@@ -223,9 +223,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public static int DRAG_UNKNOWN = 2;
 	public static int DRAG_NONE = -1;
 	public static int DRAG_MODE = -1;
-	public String DRAG_UHR;
-	public String DRAG_PAT;	
-	public String DRAG_NUMMER;
+	public String DRAG_UHR = "";
+	public String DRAG_PAT = "";	
+	public String DRAG_NUMMER = "";
 	public boolean terminGedropt = false;
 	public boolean setFromMouse = false;
 	public boolean terminBreak = false;

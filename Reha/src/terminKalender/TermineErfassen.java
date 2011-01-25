@@ -61,7 +61,7 @@ public class TermineErfassen implements Runnable {
 							//"Gescannte Rezeptnummer -> "+scanrez);
 					//return;
 				}
-				System.out.println("Erstfund = "+erstfund);
+				//System.out.println("Erstfund = "+erstfund);
 				if(erstfund >= 0){
 					scheibeTermin();
 					JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
@@ -514,7 +514,7 @@ public class TermineErfassen implements Runnable {
 		sbuftermine.append(terminneu);
 
 /*******************************/
-		System.out.println("Unter 18 = "+unter18+" Vorjahrfei = "+vorjahrfrei);
+		//System.out.println("Unter 18 = "+unter18+" Vorjahrfei = "+vorjahrfrei);
 		if(!unter18 && !vorjahrfrei){
 			//System.out.println("In Variante 1");
 			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
@@ -544,6 +544,8 @@ public class TermineErfassen implements Runnable {
 					//System.out.println("In Variante 5");
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");					
 				}
+			}else{
+				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");
 			}
 		}else{
 			//System.out.println("In Variante 6");
