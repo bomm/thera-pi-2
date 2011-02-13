@@ -165,10 +165,10 @@ public class RezTools {
 			terms = termine;
 		}
 		if(terms==null){
-			return (Vector)retvec.clone();
+			return (Vector<String>)retvec.clone();
 		}
 		if(terms.equals("")){
-			return (Vector)retvec.clone();
+			return (Vector<String>)retvec.clone();
 		}
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
@@ -178,7 +178,7 @@ public class RezTools {
 			//int ieinzel = terdat.length;
 			retvec.add((terdat[0].trim().equals("") ? "  .  .    " : String.valueOf(terdat[0])));
 		}
-		Comparator comparator = new Comparator<String>() {
+		Comparator<String> comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
 		        String strings1 = DatFunk.sDatInSQL(s1);
 		        String strings2 = DatFunk.sDatInSQL(s2);
@@ -186,7 +186,7 @@ public class RezTools {
 		    }
 		};	
 		Collections.sort(retvec,comparator);
-		return (Vector)retvec.clone();
+		return (Vector<String>)retvec.clone();
 	}
 	public static String holePosAusIdUndRezNr(String id,String reznr){
 		String diszi = RezTools.putRezNrGetDisziplin(reznr);

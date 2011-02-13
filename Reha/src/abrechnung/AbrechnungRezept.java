@@ -1066,12 +1066,17 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		
 	}
 	private void doTherapieBericht(String berichtsposition){
+		if(root.getChildCount() <= 0){
+			JOptionPane.showMessageDialog(null,"Es sind keine Behandlungspositionen ermittelbar.\nWurden evtl. Positionen aus der Preisliste gelöscht?");
+			return;
+		}
 		JXTTreeTableNode xnode = (JXTTreeTableNode)root.getChildAt(root.getChildCount()-1);
 		JXTTreeTableNode ynode = (JXTTreeTableNode) getBasicNodeFromChild(xnode);
 		abrfallAnhaengen(xnode.getChildCount()-1,   ynode,  ynode.abr.datum,   berichtsposition,    Double.parseDouble("1.00"),true);
 	}
 	/*****************************************************************************************/
 	private void ermittleAbrechnungsfall(boolean construct){
+		try{
 		vectage = RezTools.macheTerminVector( vec_rez.get(0).get(34));
 		//Vector<Vector<String>> vecabrfaelle = new Vector<Vector<String>>();
 		//Vector<String> vecabrfall = new Vector<String>();
@@ -1129,21 +1134,23 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			if(behandlungen.length > 0 && (!splitvec.trim().equals(""))){
 				//Es stehen Behandlungsdaten im Terminblatt;
 				//Positionen = length+hbposanzahl;
-				////System.out.println("Länge des Feldes = "+behandlungen.length);
+				System.out.println("Länge des Feldes = "+behandlungen.length);
 				//anzahlbehandlungen = behandlungen.length;
-				////System.out.println("Konstruiere Abrechnungsfall aus behandlungen.length");
+				
 				if((i+1) <= Integer.parseInt(vec_rez.get(0).get(3))){
+					//System.out.println("in if");
 					constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb,i,false);	
 				}else if((i+1) > Integer.parseInt(vec_rez.get(0).get(3))){
+					//System.out.println("in else if");
 					constructTagVector(vectage.get(i).get(0),behandlungen,behandlungen.length,anzahlhb,i,true);
 					toomuchhinweis = true;
 				}
 			}else{
 				//Es sind keine  Behandlungsformen im Terminblatt verzeichnet;
 				//in anzahlbehandlungen steht die tatsächliche Anzahl
-				////System.out.println("Keine Behandlungen im Terminblatt = "+anzahlbehandlungen);
-				////System.out.println("Anzahl-Hausbesuch  keine Beh. im Terminblatt= "+anzahlhb);
-				////System.out.println("Konstruiere Abrechnungsfall aus Rezeptangaben");
+				//System.out.println("Keine Behandlungen im Terminblatt = "+anzahlbehandlungen);
+				//System.out.println("Anzahl-Hausbesuch  keine Beh. im Terminblatt= "+anzahlhb);
+				//System.out.println("Konstruiere Abrechnungsfall aus Rezeptangaben");
 				if((i+1) <= Integer.parseInt(vec_rez.get(0).get(3))){
 					constructTagVector(vectage.get(i).get(0),null,anzahlbehandlungen,anzahlhb,i,false);	
 				}else if((i+1) > Integer.parseInt(vec_rez.get(0).get(3))){
@@ -1162,6 +1169,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			aktNode = null;
 			aktRow = -1;
 		}
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
+		}
 	}
 	/******************************
 	 * 
@@ -1173,7 +1183,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		zuZahlungsIndex = 	zzpflicht[3];
 		zuZahlungsPos = "3";
 		int nodes;
-		if((nodes =getNodeCount())<= 0){return;}
+		//System.out.println("Einsprung in doGebuehren");
+		if((nodes =getNodeCount())<= 0){
+			//System.out.println("NodeCount <= 0");
+			return;
+		}
 		
 		@SuppressWarnings("unused")
 		boolean amBeginnFrei = false;
@@ -1193,9 +1207,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		@SuppressWarnings("unused")
 		boolean jahresWechsel = false;
 		zuZahlungsPos = "3";
-		
+		//System.out.println("Einsprung 2 in doGebuehren");
 		if(SystemPreislisten.hmZuzahlRegeln.get(aktDisziplin).get(Integer.valueOf(preisgruppe)-1).equals("0")){
-			
+			//System.out.println("keine Zuzahlung bei dieser Kasse");
 			zuZahlungsIndex = zzpflicht[0];
 			zuZahlungsPos = "0";
 			doTreeFreiAb(0,nodes,false);
@@ -1203,6 +1217,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			return;
 		}
 		if(patU18){
+			//System.out.println("Patient unter 18");
 			unter18 = true;
 			vollFrei = true;
 			amBeginnFrei = true;
@@ -1218,8 +1233,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}else{
 			Object[] u18 = RezTools.unter18Check(vec_tabelle, DatFunk.sDatInDeutsch(vec_pat.get(0).get(2)) );
 			//System.out.println("Unter 18 = "+u18[0]+" / ab Position = "+u18[1]+" Splitting erforderlich = "+u18[2]);
+			//System.out.println("else von U 18");
 			if( ( (Boolean)u18[0]) && (! (Boolean)u18[2]) ){
 				//Während der Kompletten Behandlung unter 18;
+				//System.out.println("Patient während Behandlung komplett U 18");
 				unter18 = true;
 				vollFrei = true;
 				amBeginnFrei = true;
@@ -1235,6 +1252,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				
 			}else if(( (Boolean)u18[0]) && ( (Boolean)u18[2])) {
 				//Während der Behandlung 18 geworden, Rezept muß gesplittet werden;
+				//System.out.println("Patient während Behandlung 18 geworden");
 				unter18 = true;
 				teilFrei = true;
 				amBeginnFrei = true;
@@ -1256,18 +1274,24 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int wechselfall = 0;
 		int altfall = 0;
 		int neufall = 0;
+		
+		for(int i = 0; i < newYear.length;i++){
+			System.out.println("Werte von newYear = "+newYear[i]);
+		}
 		*/
 		if((Boolean)newYear[0] && (Boolean)newYear[2]){
 			//Das Rezept ist komplett im Vorjahr abgearbeitet worden
-			
+			//System.out.println("Altfall 0");
 			if(patVorjahrFrei && (!unter18)){
 				//altfall = 1;
+				//System.out.println("Altfall 1");
 				doTreeFreiAb(0,nodes,false);
 				mitPauschale = false;
 				zuZahlungsIndex = zzpflicht[1];
 				zuZahlungsPos = "1";
 			}else{
 				//altfall = 2;
+				//System.out.println("Altfall 2");
 				doTreeFreiAb(0,nodes,true);
 				mitPauschale = true;
 				zuZahlungsIndex = zzpflicht[3];
@@ -1695,18 +1719,28 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	/*******************************/
 	@SuppressWarnings("unchecked")
 	private void constructTagVector(String datum,String[] behandlungen,int anzahlbehandlungen,int anzahlhb,int tag,boolean toomuch){
+		try{
 		String[] abrfall = new String[anzahlbehandlungen];
 		String[] id = new String[anzahlbehandlungen];
 		Object[] abrObject = {"",""};
 		if(behandlungen!=null){
+			boolean posgefunden = true;
+			String posnr = "";
 			for(int i = 0; i < anzahlbehandlungen;i++){
 				//abrfall[i] = RezTools.getKurzformFromPos(behandlungen[i].trim(), preisgruppe, preisvec);
-				////System.out.println("Behandlung = "+behandlungen[i]);
+				//System.out.println("Behandlung = "+behandlungen[i]);
 				abrObject = RezTools.getKurzformUndIDFromPos(behandlungen[i].trim(), preisgruppe, preisvec);
+				if(abrObject[0].toString().equals("")){
+					posgefunden = false;
+					posnr = behandlungen[i].trim();
+				}
 				abrfall[i] = abrObject[0].toString();
 				id[i] = abrObject[1].toString();
 				////System.out.println(""+i+". Behandlung aus Terminblatt = "+abrfall[i]);
 				////System.out.println(""+i+". id = "+id[i]);
+			}
+			if(!posgefunden){
+				JOptionPane.showMessageDialog(null, "<html>Achtung eine der Rezeptpositionen z.B. <b>"+posnr+"</b> konnte nicht gefunden werden.<br>Wurde evtl. eine Preislistenposition gelöscht oder verändert?</html>");
 			}
 		}else{
 			for(int i = 0; i < anzahlbehandlungen;i++){
@@ -1714,9 +1748,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 						vec_rez.get(0).get(i+8),preisvec).toString();
 				id[i]= vec_rez.get(0).get(i+8).toString();
 				
-				////System.out.println(""+i+". Behandlung aus RezeptTabelle = "+abrfall[i]);
+				//System.out.println(""+i+". Behandlung aus RezeptTabelle = "+abrfall[i]);
 			}
 		}
+		//Das ist ein Riesenscheiß
 		//System.out.println("anzahl Behandlungen =*************************"+anzahlbehandlungen);
 		int posanzahl = 0;
 		
@@ -1746,7 +1781,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					vecdummy.add(Boolean.valueOf(false));
 
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
-					////System.out.println(vecdummy);
+					//System.out.println(vecdummy);
 				}else if(toomuch){
 					toomuch = true;
 					vecdummy.add(datum);
@@ -1769,13 +1804,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					vecdummy.add(Boolean.valueOf(false));
 
 					vec_tabelle.add((Vector<Object>)vecdummy.clone());
-					////System.out.println(vecdummy);
+					//System.out.println("in toomuch "+vecdummy);
 
 				}
 			}
 		}
 		if(toomuch){
 			//JOptionPane.showMessageDialog(null,"Achtung - Sie rechnen mehr Behandlungstage ab als im Rezept angegeben wurde!");			
+		}
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
 		}
 
 	}
@@ -2939,8 +2977,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int neu = 0;
 		try{
 			for(int i = 0; i < vec_tabelle.size();i++){
-				System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
-				System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
+				//System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
+				//System.out.println(vec_tabelle.get(i).get(0)+" - Tage = "+tag);
 				if(vec_tabelle.get(i).get(0).equals(tag)){
 					if(neu==0){
 						abr =constuctAbrFall(i,einfuegen+1);
@@ -2954,9 +2992,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				}
 			}
 			if(node==null){
-				System.out.println("Node = null Tage = -> "+tag);
-				System.out.println("Größe von vec_tabelle = -> "+vec_tabelle.size());
-				System.out.println("GetNodeCount() = -> "+getNodeCount());
+				//System.out.println("Node = null Tage = -> "+tag);
+				//System.out.println("Größe von vec_tabelle = -> "+vec_tabelle.size());
+				//System.out.println("GetNodeCount() = -> "+getNodeCount());
 				abr = constuctNewAbrFall(vec_tabelle.size()-1,einfuegen+1,tag);
 				node = new JXTTreeTableNode(abr.datum,abr,true);
 			}

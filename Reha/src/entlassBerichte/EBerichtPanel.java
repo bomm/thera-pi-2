@@ -173,6 +173,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 									null,null,null,null,null,null,null,null,null,null
 	};
 	public JRtaComboBox[] acmb = {  null,null,null};
+
+
 			
 	public int[] druckversion = {0,0,0,0,0,0}; 
 	public String[] aerzte;
@@ -412,26 +414,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		
 		/**************************************************/
 		if(cmd.equals("gutsave")){
-			if(berichtart.equals("entlassbericht")){
-				if(this.neu){
-					doSpeichernNeu();	
-					JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");
-					Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
-				}else{
-					if(doSpeichernAlt()){
-						JOptionPane.showMessageDialog(null,"Entlassbericht wurde erfolgreich gespeichert");	
-					}
-				}
-			}else if(berichtart.equals("nachsorgedokumentation")){
-				if(this.neu){
-					doSpeichernNachsorgeNeu();
-					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
-					Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
-				}else{
-					doSpeichernNachsorgeAlt();
-					JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");
-				}
-			}
+			doSave(true);
 		}
 		/**************************************************/			
 		if(cmd.equals("gutvorschau")){
@@ -539,6 +522,30 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 		}
 		
+	}
+	public void doSave(boolean mitmeldung){
+		if(berichtart.equals("entlassbericht")){
+			if(this.neu){
+				doSpeichernNeu();	
+				if(mitmeldung){	JOptionPane.showMessageDialog(null,"Entlassbericht wurde gespeichert");}
+				Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
+			}else{
+				if(doSpeichernAlt()){
+					if(mitmeldung){JOptionPane.showMessageDialog(null,"Entlassbericht wurde erfolgreich gespeichert");}	
+				}else{
+					JOptionPane.showMessageDialog(null,"Fehler beim speichern des Entlassberichtes!!!");
+				}
+			}
+		}else if(berichtart.equals("nachsorgedokumentation")){
+			if(this.neu){
+				doSpeichernNachsorgeNeu();
+				if(mitmeldung){JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");}
+				Reha.thisClass.patpanel.gutachten.holeGutachten(Reha.thisClass.patpanel.aktPatID, "");
+			}else{
+				doSpeichernNachsorgeAlt();
+				if(mitmeldung){JOptionPane.showMessageDialog(null,"Nachsorge-Dokumentation wurde gespeichert");}
+			}
+		}
 	}
 	public void insertTextAtCurrentPosition(String xtext){
 		
@@ -698,7 +705,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 	}
 /**
  * @throws DocumentException ***********************************************************************/		
-
+	public boolean doBerichtTest(){
+		return false;
+	}
 	private boolean doSpeichernAlt() {
 		Reha.thisClass.progressStarten(true);
 		setCursor(Reha.thisClass.wartenCursor);
@@ -1233,9 +1242,39 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			arztbaus.setVisible(true);
 		}
 	}
+	private void starteTest(){
+		setCursor(Reha.thisClass.wartenCursor);
+		this.doSave(false);
+		Object[] obj = ebTest();
+		if(((Integer)obj[0]) > 0 || ((Integer)obj[1]) > 0 ){
+			setCursor(Reha.thisClass.cdefault);
+			JOptionPane.showMessageDialog(jry,((StringBuffer)obj[2]).toString());
+		}
+		setCursor(Reha.thisClass.cdefault);
+	}
 	private void do301FallSteuerung(){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
 		setCursor(Reha.thisClass.wartenCursor);
+		this.doSave(false);
+		Object[] obj = ebTest();
+		if(((Integer)obj[0]) > 0){
+			setCursor(Reha.thisClass.cdefault);
+			JOptionPane.showMessageDialog(jry,((StringBuffer)obj[2]).toString());
+			if(((Integer)obj[0]) > 0){
+				JOptionPane.showMessageDialog(jry,"Entlassbericht enthält Fehler §301 wird nicht gestartet");
+				return;
+			}
+		}
+		if(((Integer)obj[1]) > 0){
+			JOptionPane.showMessageDialog(jry,((StringBuffer)obj[2]).toString());
+			int anfrage = JOptionPane.showConfirmDialog(jry, "Entlassbericht trotz Warnung(en) übermitteln?",
+					"Wichtige Benutzeranfrage!",JOptionPane.YES_NO_OPTION);
+			if(anfrage != JOptionPane.YES_OPTION){
+				return;
+			}
+		}
+	
+
 		abrDlg = new AbrechnungDlg();
 		abrDlg.pack();
 		abrDlg.setLocationRelativeTo(getInstance());
@@ -1254,7 +1293,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					abrDlg.setVisible(false);
 					abrDlg.dispose();
 					abrDlg = null;
-					JOptionPane.showMessageDialog(null, "Entlassbericht kann nicht übermittelt werden\n"+
+					JOptionPane.showMessageDialog(jry, "Entlassbericht kann nicht übermittelt werden\n"+
 							"Vermutlich wurde dieser Fall nicht im 301-Verfahren übermittelt");
 					return null;
 				}
@@ -1270,6 +1309,299 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}.execute();
 	}
 	
+	public Object[] ebTest(){
+		Object[] oret = {(Integer)0,(Integer)0,null};
+		int ifehler = 0;
+		int iwarnung = 0;
+		StringBuffer buf = new StringBuffer();
+		StringBuffer kopf = new StringBuffer();
+		kopf.append("<html><head>");
+		kopf.append("<STYLE TYPE=\"text/css\">");
+		kopf.append("<!--");
+		kopf.append("A{text-decoration:none;background-color:transparent;border:none}");
+		kopf.append("TD{font-family: Arial; font-size: 12pt; padding-left:5px;padding-right:30px}");
+		kopf.append(".spalte1{color:#0000FF;}");
+		kopf.append(".spalte2{color:#FF0000;vertical-align:top;}");
+		kopf.append(".spalte3{color:#333333;}");
+		kopf.append(".spalte4{color:#FF950e;vertical-align:top;}");
+		kopf.append("--->");
+		kopf.append("</STYLE>");
+		kopf.append("</head>");
+		kopf.append("<div style=margin-left:30px;>");
+		kopf.append("<font face=\"Tahoma\"><style=margin-left=30px;>");
+		kopf.append("<br>");
+		kopf.append("<table>");
+		
+		//Stammdaten
+		if(cbktraeger.getSelectedItem().toString().contains("DRV")){
+			if(btf[0].getText().trim().equals("")){
+				ifehler++;
+				buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Versicherungsnummer</td><td class=\"spalte1\">fehlt</td></tr>");
+			}
+		}
+		if(btf[2].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Name, Vorname</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[3].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Geburtsdatum</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[4].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Strasse</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[5].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Postleitzahl</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[6].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Ort</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		//Aufnahme-/Enlassdatum
+		if(btf[15].getText().trim().length() < 10){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Aufnahmedatum</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[16].getText().trim().length() < 10){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassdatum</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(bcmb[0].getSelectedItem().toString().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassform</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(bcmb[1].getSelectedItem().toString().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitsfähigkeit</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		int diagnosen = 0;
+		for(int i = 0; i < 5;i++){
+			if(bta[i].getText().length() > 0 || btf[i+17].getText().length() > 0){
+				diagnosen++;
+				if(bta[i].getText().length() > 0 && btf[i+17].getText().length() <= 0){
+					ifehler++;
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnoseschlüssel "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
+				}else if(bta[i].getText().length() <= 0 && btf[i+17].getText().length() > 0){
+					ifehler++;
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
+				}
+			}
+		}
+		//Hier Seitenlokalisation, DiagSicherheit u. Behandl.Ergebnis
+		int[] erhoehen = {2,5,8,11,14};
+		for(int i = 0; i < diagnosen; i++){
+			//Seitenlokalisation
+			if(bcmb[erhoehen[i]].getSelectedItem().toString().trim().equals("")){
+				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Seitenlokalisation "+Integer.toString(i+1)+"</td><td class=\"spalte1\">keine Angaben</td></tr>");
+				iwarnung++;
+			}
+			//DiagSicherheit
+			if(bcmb[erhoehen[i]+1].getSelectedItem().toString().trim().equals("")){
+				buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosesicherheit "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
+				ifehler++;
+			}
+			//BehandlErgebnis
+			if(bcmb[erhoehen[i]+2].getSelectedItem().toString().trim().equals("")){
+				buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Behandlungsergebnis "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
+				ifehler++;
+			}
+		}
+		
+		//Gewicht, Größe etc.
+		if(btf[22].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Aufnahmegewicht</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[23].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassgewicht</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(btf[24].getText().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Körpergröße</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		//ursache der AU-Zeiten, DMP
+		if(bcmb[17].getSelectedItem().toString().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Ursache der Erkrankung</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(bcmb[18].getSelectedItem().toString().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitsunfähigkeitszeiten</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		if(bcmb[19].getSelectedItem().toString().trim().equals("")){
+			ifehler++;
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Angabe zu DMP</td><td class=\"spalte1\">fehlt</td></tr>");
+		}
+		//Jetzt Empfehlungen
+		int tips = 0;
+		for(int i = 0; i < 17;i++){
+			if(bchb[i].isSelected()){
+				tips++;
+			}
+		}
+		if(tips==0){
+			if(bta[5].getText().trim().equals("")){
+				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Keinerlei Empfehlungen angekreuzt </td><td class=\"spalte1\">keine Angaben</td></tr>");
+				iwarnung++;
+			}else{
+				buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Empfehlungen erläutert aber<br>nicht angekreuzt </td><td class=\"spalte1\">keine Angaben</td></tr>");
+				ifehler++;
+			}
+		}else{
+			if(bta[5].getText().trim().equals("")){
+				buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Empfehlungen angekreuzt aber<br>nicht erläutert</td><td class=\"spalte1\">keine Angaben</td></tr>");
+				ifehler++;
+			}
+			if(bchb[14].isSelected() || bta[5].getText().contains("Wiedereinglied")){
+				if(bchb[14].isSelected() && (!bta[5].getText().contains("Wiedereinglied"))){
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Wiedereingliederung angekreuzt<br>aber nicht erläutert</td><td class=\"spalte1\">keine Angaben</td></tr>");
+					ifehler++;
+				}
+				if( (!bchb[14].isSelected()) && (bta[5].getText().contains("Wiedereinglied"))){
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Wiedereingliederung erläutert<br>aber nicht angekreuzt</td><td class=\"spalte1\">keine Angaben</td></tr>");
+					ifehler++;
+				}
+			}
+		}
+		if(btf[27].getText().trim().length() < 10){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Unterschriftsdatum</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		int unterschriften = 0;
+		for(int i = 0; i < 3; i++){
+			if(!barzttf[i].getText().trim().equals("")){
+				unterschriften++;
+			}
+		}
+		if(unterschriften==0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arztnamen (Unterschriften)</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		//Beruf
+		if(btf[25].getText().trim().equals("")){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Bezeicnung der Tätigkeit</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		int hittest = 0;
+		for(int i = 17 ; i < 20;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0 || hittest > 1){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Leistungsfähigkeit letzte Tätigkeit gar nicht<br>oder öfters als 1 Mal angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 20 ; i < 24;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0 || hittest > 1){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Körperliche Arbeitsschwere gar nicht<br>oder öfters als 1 Mal angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 24 ; i < 27;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0 || hittest > 1){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitshaltung im Stehen gar nicht<br>oder öfters als 1 Mal angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 27 ; i < 30;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0 || hittest > 1){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitshaltung im Gehen gar nicht oder<br>öfters als 1 Mal angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 30 ; i < 33;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0 || hittest > 1){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitshaltung im Sitzen gar nicht oder<br>öfters als 1 Mal angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 33 ; i < 36;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitsorganisation (Schichten)<br>nicht angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		boolean nolimits = bchb[36].isSelected(); 
+		hittest = 0;
+		for(int i = 37 ; i < 41 ;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(nolimits && hittest> 0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Keine Einschränkung angekreuzt und<br>negatives Leistungsbild angekreuzt (geht gar nicht!!)</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		if(!nolimits && hittest <= 0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Keine Einschränkung nicht(!!) angekreuzt und kein<br>negatives Leistungsbild spezifiziert (geht gar nicht!!)</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		if(nolimits && bta[7].getText().trim().length() > 0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Keine Einschränkung angekreuzt aber negatives<br>Leistungsbeschreibung spezifieziert (geht gar nicht!!)</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		if(hittest > 0 && bta[7].getText().trim().length() <= 0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Einschränkungen angekreuzt aber keine Beschreibung des<br>negativen Leistungsbildes spezifieziert (geht gar nicht!!)</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 41 ; i < 44 ;i++){
+			if(bchb[i].isSelected()){
+				hittest++;
+			}
+		}
+		if(hittest == 0 || hittest > 1){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Leistungsfähigkeit allgemeiner Arbeitsmarkt<br>gar nicht oder öfters als 1 Mal angekreuzt</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		hittest = 0;
+		for(int i = 0; i < 50; i++){
+			if(ktlcmb[i].getSelectedIndex() > 0){
+				hittest++;
+			}
+		}
+		if(ktlcmb[0].getSelectedIndex() <= 0 || hittest == 0){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">KTL-Code 1 nicht belegt oder<br>gar keine KTLs eingegeben</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		int lang = document.getTextService().getText().getText().length();
+		if(lang < 200){
+			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Freitext unvollständig<br>oder nicht vorhanden</td><td class=\"spalte1\">fehlt</td></tr>");
+			ifehler++;
+		}
+		if(ifehler > 0 || iwarnung > 0){
+			oret[0]= (Integer)ifehler;
+			oret[1]= (Integer)iwarnung;
+			oret[2]= (StringBuffer) kopf.append(buf.toString()).append("</table></html>");
+		}
+
+		return oret;
+	}
+	
 
 /********************************************/
 	class ToolsDlgEbericht{
@@ -1279,9 +1611,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			icons.put("Textbausteine abrufen",SystemConfig.hmSysIcons.get("arztbericht"));
 			icons.put("Bodymass-Index",SystemConfig.hmSysIcons.get("barcode"));
 			icons.put("ICD-10(GM) Recherche",SystemConfig.hmSysIcons.get("info2"));
+			icons.put("RV E-Bericht prüfen",SystemConfig.hmSysIcons.get("ebcheck"));
 			icons.put("§301 Reha E-Bericht übertragen",SystemConfig.hmSysIcons.get("abrdreieins"));
+
 			JList list = new JList(	new Object[] {"Textbausteine abrufen", 
-					"Bodymass-Index", "ICD-10(GM) Recherche","§301 Reha E-Bericht übertragen"});
+					"Bodymass-Index", "ICD-10(GM) Recherche",
+					"RV E-Bericht prüfen","§301 Reha E-Bericht übertragen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: ärztliche Gutachten",list);
@@ -1303,11 +1638,14 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				new LadeProg(Reha.proghome+"ICDSuche.jar");
 				break;
 			case 3:
+				starteTest();
+				break;
+			case 4:
 				do301FallSteuerung();
 				break;
 			}
 			tDlg = null;
-			//////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
+			//System.out.println("Rückgabewert = "+Reha.toolsDlgRueckgabe);
 		}
 	}
 /**********************************************/	

@@ -419,6 +419,11 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		}else{
 			PrintProperties printprop = new PrintProperties ((short) 2 ,null);
 			textDocument.getPrintService().print(printprop);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			textDocument.close();
 			textDocument = null;
 		}

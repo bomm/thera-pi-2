@@ -556,7 +556,7 @@ public void Dta301Fenster(int setPos,String sparam) {
 	dta301jry.setName(name);
 	dta301jry.setSize(new Dimension(780,500));
 	dta301jry.setPreferredSize(new Dimension(820,600));
-	Reha.thisClass.dta301panel = new Dta301(dta301jry); 
+	Reha.thisClass.dta301panel = new Dta301(dta301jry,sparam); 
 	dta301jry.setContent(Reha.thisClass.dta301panel);	
 	dta301jry.addComponentListener(Reha.thisClass);
 	//int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
@@ -650,8 +650,8 @@ public void RehaabrechnungFenster(int setPos,String sparam) {
 	rehaabrechnungjry = new JRehaabrechnungInternal("thera-\u03C0  - ganztägig ambulante Reha abrechnen ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)rehaabrechnungjry,1,(Container)rehaabrechnungjry.getContentPane());
 	rehaabrechnungjry.setName(name);
-	rehaabrechnungjry.setSize(new Dimension(500,400));
-	rehaabrechnungjry.setPreferredSize(new Dimension(500,400));
+	rehaabrechnungjry.setSize(new Dimension(500,430));
+	rehaabrechnungjry.setPreferredSize(new Dimension(500,430));
 	Reha.thisClass.rehaabrechnungpanel = new AbrechnungReha(rehaabrechnungjry); 
 	rehaabrechnungjry.setContent(Reha.thisClass.rehaabrechnungpanel);	
 	rehaabrechnungjry.addComponentListener(Reha.thisClass);
@@ -928,7 +928,9 @@ public static void PasswortDialog(int setPos) {
 	int x = (screenSize.width - rSmart.getWidth()) / 2;
 	int y = (screenSize.height - rSmart.getHeight()) / 2;
 	rSmart.setLocation(x, y); 
+	rSmart.toFront();
 	rSmart.setVisible(true);
+	rSmart.toFront();
 	Reha.thisFrame.setCursor(new Cursor((Cursor.DEFAULT_CURSOR)));	
 	if(Reha.progRechte.equals("")){
 		System.exit(0);

@@ -94,39 +94,6 @@ public class AbrechnungDrucken {
 			JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = TextException" );
 			e.printStackTrace();
 		}
-
-		
-		/*
-		new SwingWorker<Void,Void>(){
-			@Override
-			protected Void doInBackground() throws Exception {
-				try{
-					setRechnungsBetrag();
-					ersetzePlatzhalter();
-					
-					if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
-						textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-					}else{
-						int exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmgkvrexemplare"));
-						Thread.sleep(100);
-						PrintProperties printprop = new PrintProperties ((short)exemplare,null);
-						textDocument.getPrintService().print(printprop);
-						Thread.sleep(200);
-						textDocument.close();
-						Thread.sleep(100);
-						
-						
-
-					}
-					eltern.abrDruck = null;
-					//textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-				return null;
-			}
-		}.execute();
-		*/
 	}
 	/********************/
 

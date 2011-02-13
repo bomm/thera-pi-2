@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -132,13 +134,14 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("CTA+BEA+","CTA+BEA+")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("RFF+FI:","RFF+FI:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
+		buf301Body.append("ADR+2++"+SystemConfig.hmFirmenDaten.get("Ort")+EOL+NEWLINE);zeilen++; //Ort der Unterschriften
 		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
 		//Arzt 1
 		buf301Body.append("CTA+DRL"+(epanel.barzttf[0].getText().trim().equals("")?"":"+:"+epanel.barzttf[0].getText().trim())+EOL+NEWLINE);zeilen++;
 		buf301Body.append("CTA+DRS"+(epanel.barzttf[2].getText().trim().equals("")?"":"+:"+epanel.barzttf[2].getText().trim())+EOL+NEWLINE);zeilen++;
 		buf301Body.append("CTA+DRO"+(epanel.barzttf[1].getText().trim().equals("")?"":"+:"+epanel.barzttf[1].getText().trim())+EOL+NEWLINE);zeilen++;
 		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
-		buf301Body.append("DTM+242:"+(epanel.btf[27].getText().trim().equals("")
+		buf301Body.append("DTM+242:"+(epanel.btf[27].getText().trim().length() < 10
 				? this.mache10erDatum(DatFunk.sHeute())+":102" :
 				mache10erDatum(epanel.btf[27].getText().trim())+":102")+EOL+NEWLINE);zeilen++;
 		if( ! (test =  springeAufUndHole("PNA+AB+","PNA+AB+")).equals("")){
@@ -297,7 +300,7 @@ public class RVMeldung301 {
 				}
 				buf301Body.append("CLI+KTL+"+ktlcode+ktldauer+":KTL"+EOL+NEWLINE);zeilen++;
 				buf301Body.append("IMD+++"+Integer.toString(i+1)+EOL+NEWLINE);zeilen++;
-				flvec = StringTools.fliessTextZerhacken(ktltext,70,"\n");
+				flvec = StringTools.fliessTextZerhacken(ktltext,54,"\n");
 				for(int i2 = 0; i2 < flvec.size();i2++){
 					buf301Body.append("FTX+TXT+++B:"+flvec.get(i2)+EOL+NEWLINE);zeilen++;
 					if(i2 == 1){break;} // mehr als 2 Zeilen sind nicht erlaubt
@@ -333,7 +336,7 @@ public class RVMeldung301 {
 					}
 					buf301Body.append("CLI+KTL+"+ktlcode+ktldauer+":KTL"+EOL+NEWLINE);zeilen++;
 					buf301Body.append("IMD+++"+Integer.toString(i+1)+EOL+NEWLINE);zeilen++;
-					flvec = StringTools.fliessTextZerhacken(ktltext,70,"\n");
+					flvec = StringTools.fliessTextZerhacken(ktltext,54,"\n");
 					for(int i2 = 0; i2 < flvec.size();i2++){
 						buf301Body.append("FTX+TXT+++B:"+flvec.get(i2)+EOL+NEWLINE);zeilen++;
 						if(i2 == 1){break;} // mehr als 2 Zeilen sind nicht erlaubt
@@ -739,7 +742,7 @@ public class RVMeldung301 {
 			"nachrichtauf='"+
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
-			
+			/*************************/
 		}
 	}
  
@@ -980,12 +983,12 @@ public class RVMeldung301 {
 		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PRC+ETG'"+NEWLINE);zeilen++;
-
 		return zeilen;
 		
 	}
 	public int doFahrgeld(int zeilen,String gesamt,String hinweis,
 			String aufnahmedatum,String entlassdatum,boolean beientlass){
+	
 		String verfahren = untersucheCodeListe(":A12",2);
 		buf301Body.append("CLI+ENT+"+verfahren+"050299"+":ENT'"+NEWLINE);zeilen++;
 		buf301Body.append("DTM+263:"+aufnahmedatum+entlassdatum+":711'"+NEWLINE);zeilen++;
@@ -994,8 +997,78 @@ public class RVMeldung301 {
 		buf301Body.append("MOA+146:"+gesamt+":EUR'"+NEWLINE);zeilen++;
 		return zeilen;
 	}
-	public void doRechnung(String erstDatum,String letztDatum,String uhrZeit,int arbeitsfaehig,int entlassform){
-		
+	private int doPositionen(int zeilen,Object[] obj,String aufnahmedatum,String entlassdatum){
+		//1+2 = Verfahrensart med oder AHB
+		//3 = Art der Versorgung (ganztägig ambulant)
+		//3 - 85,39 - LVA-MED
+		//1 - 25,20 - AHBBefund
+		//2 - 12,50 - Fako2  = Taxi
+		//1 - 2,50 - Fako1 = Fahrtkosten
+
+		String[] positionen = {"Fako1","Fako2","AHBBefund"}; 
+		List<String> list1 = Arrays.asList(positionen);
+
+		String[] schluessel = {"50299","50270","50110","12300"}; 
+
+		String clisegment = "";
+		int pos = -1;
+		if( (pos=list1.indexOf((String)obj[2])) < 0){
+			clisegment = schluessel[3];
+		}else{
+			clisegment = schluessel[pos];
+		}
+		String verfahren = untersucheCodeListe(":A12",2);
+		String versorgungsart = (clisegment.startsWith("5") ? "0" :untersucheCodeListe(":B11",3)); 
+		buf301Body.append("CLI+ENT+"+verfahren+versorgungsart+clisegment+":ENT'"+NEWLINE);zeilen++;
+		buf301Body.append("DTM+263:"+aufnahmedatum+entlassdatum+":711'"+NEWLINE);zeilen++;
+		buf301Body.append("QTY+47:"+obj[0]+":ANZ'"+NEWLINE);zeilen++;
+		buf301Body.append("QTY+193:0:ANZ'"+NEWLINE);zeilen++;
+		buf301Body.append("MOA+146:"+obj[1]+":EUR'"+NEWLINE);zeilen++;
+
+		return zeilen;
+	}
+	public void doRechnung(String erstDatum,String letztDatum,
+			Vector<Object[]> vecobj, String gesamt){
+			if(erstDatum.trim().length() < 10 || letztDatum.trim().length() < 10){
+				JOptionPane.showMessageDialog(null,"Fehler in der Abrechnung nach DTA-301, Datumswerte sind nicht korrekt");
+				return;
+			}
+			String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
+			holeVector();
+			int zeilen = 1;
+			shouldBreak = false;
+//			private int doRechnungKopf(int zeilen,String gesamt,String hinweis,
+//			String aufnahmedatum,String entlassdatum,boolean beientlass){
+			zeilen = doRechnungKopf(zeilen, gesamt,"",mache10erDatum(erstDatum),mache10erDatum(letztDatum),false);
+			for(int i = 0; i < vecobj.size(); i++){
+				zeilen = doPositionen(zeilen,(Object[])vecobj.get(i),mache10erDatum(erstDatum),mache10erDatum(letztDatum));
+			}
+			buf301Body.append("UNT+"+
+					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
+					EOL+NEWLINE);zeilen++;			
+			doKopfDaten();
+			doFussDaten();
+
+			gesamtbuf.append(buf301Header.toString());
+			gesamtbuf.append(buf301Body.toString());
+			gesamtbuf.append(buf301Footer.toString());
+			intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
+			strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
+
+			if(doKeyStoreAktion()){
+				//Mail Versenden
+				//In neue Tabelle schreiben
+				String typus = "8";
+				String cmd = "insert into dtafall set nachrichttyp='"+typus+"', nachrichtart='"+typus+"', pat_intern='"+
+				vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
+				"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
+				StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
+				"nachrichtauf='"+
+				StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+			}
+			
+			
 	}
 	private boolean doKeyStoreAktion(){
 		try {
@@ -1030,14 +1103,14 @@ public class RVMeldung301 {
 				boolean authx = (authent.equals("0") ? false : true);
 				boolean bestaetigen = false;
 				String endfile = inFile.substring(inFile.lastIndexOf("/")+1).trim();
-				System.out.println("Endflile = "+endfile);
+				//System.out.println("Endflile = "+endfile);
 				String[] aufDat = {inFile.replace(".org", ".auf"),endfile.replace(".org", ".auf") };
 				String[] encodedDat = {inFile.replace(".org", ""),endfile.replace(".org", "")};
 				ArrayList<String[]> attachments = new ArrayList<String[]>();
 				attachments.add(encodedDat);
 				attachments.add(aufDat);
 
-				System.out.println("Sender-IK = "+vecdta.get(0).get(4).toString());
+				//System.out.println("Sender-IK = "+vecdta.get(0).get(4).toString());
 				EmailSendenExtern oMail = new EmailSendenExtern();
 				try{
 					oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);

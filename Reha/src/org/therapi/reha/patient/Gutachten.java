@@ -143,7 +143,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung","",""};
 		dtblm.setColumnIdentifiers(column);
 		tabbericht = new JXTable(dtblm);
-		tabbericht.setEditable(true);
+		//tabbericht.setEditable(true);
+		tabbericht.setSortable(false);
 		tabbericht.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub

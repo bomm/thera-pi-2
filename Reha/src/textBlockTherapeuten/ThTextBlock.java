@@ -97,9 +97,10 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 	String[] sysInhalt2;
 	
 	String reznummer = null;
+	int zuletztaktiv = -1;
 	private RehaTPEventClass rtp = null;
 	
-		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr,String xreznummer) {
+		public ThTextBlock(JXFrame owner, String name,String diag,ArztBericht abr,String xreznummer,int letztaktiv) {
 			super(owner, name);
 			//System.out.println("Name des Fensters = "+name);
 			setSize(450,600);
@@ -107,7 +108,7 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 			this.setName(name);
 			this.abr = abr;
 			this.reznummer = xreznummer;
-			
+			this.zuletztaktiv = letztaktiv;
 			rtp = new RehaTPEventClass();
 			rtp.addRehaTPEventListener((RehaTPEventListener) this);
 
@@ -242,8 +243,13 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 						new SwingWorker<Void,Void>(){
 							@Override
 							protected Void doInBackground() throws Exception {
-								String mwk = macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});
-								//////System.out.println(mwk);
+								String mwk = "";
+								if(zuletztaktiv >= 0){
+									mwk = "(tbblock='"+Integer.toString(zuletztaktiv+1)+"') AND "+ macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});									
+								}else{
+									mwk = macheWhereKlausel(" (tbthema='"+suchkrit+"') AND ",suchenach.getText(),new String[] {"tbtitel","tbtext"});									
+								}
+								//System.out.println(mwk);
 								fuelleSucheInTabelle(mwk);
 								return null;
 							}
@@ -334,7 +340,8 @@ public class ThTextBlock extends RehaSmartDialog implements RehaTPEventListener,
 		    String xtitel = "<html>Textbausteine -->&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#ffffff'>"+diag+"</font></b>";
 		    super.getSmartTitledPanel().setTitle(xtitel);
 		    this.suchkrit = diag;
-			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tb"+this.reznummer.substring(0,2).toLowerCase(), "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"' ORDER BY blockrang" , Arrays.asList(new String[] {}));
+			Vector<Vector<String>> vec = SqlInfo.holeSaetze("tb"+this.reznummer.substring(0,2).toLowerCase(), "CONCAT(tbblock,' - ',tbrang) AS blockrang,tbtitel,id", "tbthema='"+diag+"'"+
+					(zuletztaktiv >=0 ? " AND tbblock='"+Integer.toString(zuletztaktiv+1)+"' " : " ")+ "ORDER BY blockrang" , Arrays.asList(new String[] {}));
 			int anz = vec.size();
 			//Vector<String> vec2 = new Vector<String>();
 			modtextblock.setRowCount(0);

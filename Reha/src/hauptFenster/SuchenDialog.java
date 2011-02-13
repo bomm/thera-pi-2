@@ -219,12 +219,12 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jp1.setBorder(null);
 			
 			// Lemmi 20101212: Das Labelfeld für einen Hinweis auf aktuelle Rezepte "mißbraucht"
-			JLabel jlb = new JLabel( suchart==3 ? "<html>Nur die <b>aktuellen</b> Rezepte" : "Patient suchen: ");  // Lemmi 20101212: Prompt für die Eingabe eines Suchkriteriums
+			JLabel jlb = new JLabel( suchart==6 ? "<html>Nur die <b>aktuellen</b> Rezepte" : "Patient suchen: ");  // Lemmi 20101212: Prompt für die Eingabe eines Suchkriteriums
 			jp1.add(jlb);
 			
 			jtext = getJTextField();
 			// Lemmi 20101212: Das Such-Eingabefeld unsichtbar gemacht - wird hier nicht benötigt
-			if(suchart==3){
+			if(suchart==6){
 				jtext.setPreferredSize(new Dimension(0,0));
 			} else{
 				jtext.setPreferredSize(new Dimension(100,20));
@@ -284,9 +284,9 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			reiheVector.addElement("Vorname");
 			reiheVector.addElement("Geboren");
 			reiheVector.addElement("Pat-Nr.");
-			if(suchart==3)   // Lemmi 20101212: komplettes if mit neuer Spalte "Rezepte" ergänzt
+			if(suchart==6){   // Lemmi 20101212: komplettes if mit neuer Spalte "Rezepte" ergänzt
 				reiheVector.addElement("Rezepte");			
-			
+			}
 			tblDataModel = new DefaultTableModel();
 			tblDataModel.setColumnIdentifiers(reiheVector);
 			jtable = new JXTable(tblDataModel);
@@ -295,7 +295,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			this.jtable.getColumn(3).setMaxWidth(0);	// Breite der Spalte pat_intern
 			
 			// Lemmi 20101212: Einige maximale Spaltenbreiten fixiert
-			if(suchart==3) {  // Spielereine, funktioniert alles
+			if(suchart==6) {  // Spielereine, funktioniert alles
 //				this.jtable.getColumn(0).setWidth(200);  // Nachname
 //				this.jtable.getColumn(1).setMaxWidth(250);  // Vorname
 //				this.jtable.getColumn(1).setPreferredWidth(200);  // Vorname
@@ -355,9 +355,10 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jtp.validate();
 			jContentPane.add(jtp, BorderLayout.CENTER);
 			
-			if(suchart==3){
+			if(suchart==6){
 				// NOTHING to do
 				// Lemmi 20101212: bei Suchart 3 brauchen wir kein Suchwert-Eingabefeld im Ergebnisdialog
+				jtext.setText("");
 			}
 			else {
 				jtext.requestFocus();
@@ -426,7 +427,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jXTitledPanel = new JXTitledPanel();
 			
 			// Lemmi 20101212: Erweitert um "Patienten mit aktuellen Rezepten"
-			String kriterium[]={"Nachname Vorname","Patienten-ID","Vorname Nachname","Nur Patienten mit aktuellen Rezepten",null,null,null};
+			String kriterium[]={"Nachname Vorname","Patienten-ID","Vorname Nachname",
+					"Telefon privat","Telefon geschäftl.","Notitzen", "Nur Patienten mit aktuellen Rezepten"};
 			
 			jXTitledPanel.setTitle("Suche Patient..."+this.fname+" nach "+kriterium[suchart]);
 			jXTitledPanel.setTitleForeground(Color.WHITE);
@@ -736,7 +738,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			}
 		
 		}else if(suchart == 1){    // "Patienten-ID"
-			sstmt = "select n_name,v_name,geboren,pat_intern from pat5 where pat_intern = '"+jTextField.getText().trim()+"' LIMIT 1";
+			sstmt = "select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where pat_intern = '"+jTextField.getText().trim()+"' LIMIT 1";
 		}else if(suchart == 2){  // "Vorname Name"  (Erweiterung von Drud)
 			
 			if (jTextField.getText().trim().contains(" ") ){
@@ -753,14 +755,19 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where v_name LIKE '"+
 					StringTools.Escaped(jTextField.getText().trim()) +"%'  order by n_name,v_name,geboren";
 				}else{ //ADS
-					sstmt = "Select n_name,v_name,geboren,pat_intern from pat5 where v_name LIKE UPPER('"+
+					sstmt = "Select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') AS geboren,pat_intern from pat5 where v_name LIKE UPPER('"+
 					StringTools.Escaped(jTextField.getText().trim()) +"%') order by n_name,v_name,geboren";
 				}
 			}
-			
-		}else if(suchart==3){    		// Lemmi 20101212: Erweitert um "Nur Patienten mit aktuellen Rezepten"
+		}else if(suchart==3){ // Telfon privat
+			sstmt = "select n_name,v_name,concat(DATE_FORMAT(geboren,'%d.%m.%Y'),'-',telefonp) as geboren,pat_intern from pat5 where telefonp LIKE '%"+jTextField.getText().trim()+"%' ORDER BY n_name,v_name,geboren";
+		}else if(suchart==4){// Telefon geschäftilich
+			sstmt = "select n_name,v_name,concat(DATE_FORMAT(geboren,'%d.%m.%Y'),'-',telefonp) as geboren,pat_intern from pat5 where telefong LIKE '%"+jTextField.getText().trim()+"%' ORDER BY n_name,v_name,geboren";
+		}else if(suchart==5){ // In Notitzen
+			sstmt = "select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') as geboren,pat_intern from pat5 where anamnese LIKE '%"+jTextField.getText().trim()+"%' ORDER BY n_name,v_name,geboren";
+		}else if(suchart==6){    		// Lemmi 20101212: Erweitert um "Nur Patienten mit aktuellen Rezepten"
 //			sstmt = "select p.n_name, p.v_name, DATE_FORMAT(p.geboren,'%d.%m.%Y') AS geboren, p.pat_intern, r.rez_nr from pat5 as p INNER JOIN verordn as r ON p.pat_intern = r.pat_intern ORDER BY p.n_name asc, r.rez_nr asc";
-			sstmt = "SELECT p.n_name, p.v_name, DATE_FORMAT(p.geboren,'%d.%m.%Y') AS geboren, p.pat_intern, GROUP_CONCAT(r.rez_nr ORDER BY r.rez_nr ASC SEPARATOR ', ') FROM verordn AS r INNER JOIN pat5 AS p where p.pat_intern = r.pat_intern GROUP BY p.pat_intern ORDER BY P.n_name";
+			sstmt = "SELECT p.n_name, p.v_name, DATE_FORMAT(p.geboren,'%d.%m.%Y') AS geboren, p.pat_intern, GROUP_CONCAT(r.rez_nr ORDER BY r.rez_nr ASC SEPARATOR ', ') FROM verordn AS r INNER JOIN pat5 AS p where p.pat_intern = r.pat_intern GROUP BY p.pat_intern ORDER BY p.n_name";
 		}else{
 			return;
 		}
@@ -771,10 +778,11 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			try{
 				rs = stmt.executeQuery(sstmt);
 				Vector<String> rowVector = new Vector<String>();
+				int reihen = (suchart == 6 ? 5 : 4 );
 				while( rs.next()){
 					rowVector.clear();
 					//for(int i = 1; i <= 4; i++)
-					for(int i = 1; i <= (suchart == 3 ? 5 : 4 ); i++){  // Lemmi 20101212: optional von 4 auf 5 erweitert
+					for(int i = 1; i <= reihen ; i++){  // Lemmi 20101212: optional von 4 auf 5 erweitert
 						rowVector.addElement(rs.getString(i) != null ? rs.getString(i) : "");
 					}
 					setzeReihe((Vector<String>)rowVector.clone());
@@ -782,9 +790,11 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				setCursor(Reha.thisClass.normalCursor);
 				
 			}catch(SQLException ev){
+				ev.getMessage();
 			}	
 
 		}catch(SQLException ex) {
+			ex.getMessage();
 		}
 
 		finally {
@@ -817,79 +827,6 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	}
 	}
 	
-	/*
-	private void sucheHistorie(String patnr){
-		Statement stmt = null;
-		ResultSet rs = null;
-		String sstmt = "";
-		Vector <Vector<String[]>>dataVector = new Vector<Vector<String[]>>();
-		Vector<String> reiheVector = new Vector<String>();
-		reiheVector.addElement("RezeptNr");
-		reiheVector.addElement("Datum");
-		reiheVector.addElement("PatNr.");
-		reiheVector.addElement("Anzahl1");
-		String[] suche;
-		if (jTextField.getText().trim().contains(" ") ){
-			suche = jTextField.getText().split(" ");
-			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
-				sstmt = "Select REZ_NR,DATE_FORMAT(REZ_DATUM,'%d.%m.%Y') AS REZ_DATUM,PAT_INTERN,ANZAHL1  from lza where PAT_INTERN = '"+
-				patnr+"' order by DATE_FORMAT(REZ_DATUM,'%Y.%m.%d')";
-			}else{
-				sstmt = "Select REZ_NR,REZ_DATUM,PAT_INTERN,ANZAHL1  from lza where PAT_INTERN = '"+
-				patnr+"' order by REZ_DATUM";
-			}
-			
-		}else{
-			if (!SystemConfig.vDatenBank.get(0).get(2).equals("ADS")){
-				sstmt = "Select REZ_NR,DATE_FORMAT(REZ_DATUM,'%d.%m.%Y') AS REZ_DATUM,PAT_INTERN,ANZAHL1  from lza where PAT_INTERN = '"+
-				patnr+"' order by DATE_FORMAT(REZ_DATUM,'%Y.%m.%d')";
-			}else{
-				sstmt = "Select REZ_NR,REZ_DATUM,PAT_INTERN,ANZAHL1  from lza where PAT_INTERN = '"+
-				patnr+"' order by REZ_DATUM";
-			}
-		}
-		try {
-			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE );
-			try{
-				rs = (ResultSet) stmt.executeQuery(sstmt);		
-				while( rs.next()){
-					Vector rowVector = new Vector();
-					for(int i = 1; i <= 4; i++){
-						rowVector.addElement(rs.getString(i));
-					}
-					dataVector.addElement(rowVector);
-				}
-				((DefaultTableModel) this.jtable.getModel()).setDataVector(dataVector,reiheVector);
-				this.jtable.getColumnModel().getColumn(0).setPreferredWidth(100);
-				this.jtable.getColumn(3).setMinWidth(0);	
-				this.jtable.getColumn(3).setMaxWidth(0);
-			}catch(SQLException ev){
-			}	
-
-		}catch(SQLException ex) {
-			System.out.println("von stmt -SQLState: " + ex.getSQLState());
-		}
-
-		finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException sqlEx) { // ignore }
-					rs = null;
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) { // ignore }
-					stmt = null;
-				}
-			}
-
-		}
-	}
-	*/
 	private void setDetails(String Event,String PatNummer){
 			this.sEventDetails[0] = Event;
 			this.sEventDetails[1] = PatNummer;

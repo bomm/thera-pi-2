@@ -31,6 +31,7 @@ import patientenFenster.KassenAuswahl;
 import rehaInternalFrame.JRehaabrechnungInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.PatTools;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaCheckBox;
@@ -55,6 +56,7 @@ import ag.ion.noa.internal.printing.PrintProperties;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import dta301.RVMeldung301;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 
@@ -80,7 +82,7 @@ public class AbrechnungReha extends JXPanel{
 	JRtaComboBox[] jcmb = {null,null,null,null};
 	JRtaTextField[] tfrehanr = {null};
 	
-	JRtaCheckBox[] jckb = {null};
+	JRtaCheckBox[] jckb = {null,null};
 	JRtaTextField[] tfpatanzahl = {null};
 	JRtaTextField[] tfpatpreis = {null};
 	JRtaTextField[] tfpatgesamt = {null};
@@ -91,6 +93,7 @@ public class AbrechnungReha extends JXPanel{
 	Vector<Vector<String>> kassvec = new Vector<Vector<String>>();
 	Vector<Vector<String>> rechnungvec = new Vector<Vector<String>>();
 	Vector<Vector<String>> patvec = new Vector<Vector<String>>();
+	Vector<String> tagevec = new Vector<String>();
 
 	DecimalFormat dcf = new DecimalFormat("####0.00");
 	BigDecimal[] zeilenPreis = {BigDecimal.valueOf(Double.parseDouble("0.00")),
@@ -225,8 +228,8 @@ public class AbrechnungReha extends JXPanel{
 		FormLayout lay = new FormLayout(
 		//     1           2    3    4     5     6    7     8
 		"fill:0:grow(0.5),40dlu,5dlu,120dlu,5dlu,40dlu,5dlu,40dlu,fill:0:grow(0.5)",
-		//  1  2  3    4  5   6  7   8  9  10 11  12  13 14  15  16  17  18 19 20
-		"20dlu,p,15dlu,p,2dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,20dlu,p,5dlu,p,2dlu,p"
+		//  1  2  3    4  5   6  7   8  9  10 11  12  13 14  15  16 17 18 19   20
+		"15dlu,p,15dlu,p,2dlu,p,5dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu,p,5dlu,p,2dlu,p"
 		);
 		CellConstraints cc = new CellConstraints();
 		content = new JXPanel();
@@ -262,29 +265,35 @@ public class AbrechnungReha extends JXPanel{
 		kasseGesamt.setHorizontalAlignment(JLabel.RIGHT);
 		content.add(kasseGesamt,cc.xy(8,16));
 		
+		jckb[1] = new JRtaCheckBox("nach §301 abrechnen und zusätzlich 1 Original drucken");
+		jckb[1].setOpaque(false);
+		jckb[1].setForeground(Color.BLUE);
+		content.add(jckb[1] ,cc.xyw(4,18,5));
+		
 		jckb[0] = new JRtaCheckBox("zusätzlich Eigenanteile der Patienten abrechnen");
+		jckb[0].setOpaque(false);
 		jckb[0].setActionCommand("auchpatliquidieren");
 		jckb[0].addActionListener(al);
-		content.add(jckb[0] ,cc.xyw(2,18,7));
+		content.add(jckb[0] ,cc.xyw(2,20,7));
 		tfpatanzahl[0]= new JRtaTextField("ZAHLEN",true);
 		tfpatanzahl[0].setEnabled(false);
-		content.add(tfpatanzahl[0] ,cc.xy(2,20));
+		content.add(tfpatanzahl[0] ,cc.xy(2,22));
 		jcmbpat[0]=macheCombo("combopat");
 		jcmbpat[0].setEnabled(false);
-		content.add(jcmbpat[0],cc.xy(4, 20));
+		content.add(jcmbpat[0],cc.xy(4, 22));
 		tfpatpreis[0] = new JRtaTextField("FL",true,"6.2","RECHTS");
 		tfpatpreis[0].setEnabled(false);
-		content.add(tfpatpreis[0],cc.xy(6,20));
+		content.add(tfpatpreis[0],cc.xy(6,22));
 		tfpatgesamt[0] = new JRtaTextField("FL",true,"6.2","RECHTS");
 		tfpatgesamt[0].setEditable(false);
-		content.add(tfpatgesamt[0],cc.xy(8,20));
+		content.add(tfpatgesamt[0],cc.xy(8,22));
 		lab = new JLabel("Patientenrechung Summe :");
 		lab.setForeground(Color.BLUE);
-		content.add(lab,cc.xy(4,22));
+		content.add(lab,cc.xy(4,24));
 		patGesamt = new JLabel("0,00");
 		patGesamt.setForeground(Color.RED);
 		patGesamt.setHorizontalAlignment(JLabel.RIGHT);
-		content.add(patGesamt,cc.xy(8,22));
+		content.add(patGesamt,cc.xy(8,24));
 		content.validate();
 		return content;
 	}
@@ -336,6 +345,8 @@ public class AbrechnungReha extends JXPanel{
 			suchenach = "RH"+rehanummer;
 		}
 		rehavec.clear();
+		tagevec.clear();
+		abrechnungOk = true;
 		rehavec = SqlInfo.holeFelder("select * from verordn where rez_nr='"+suchenach+"' LIMIT 1");
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -363,6 +374,28 @@ public class AbrechnungReha extends JXPanel{
 			}
 		}
 		jcmbpat[0].setDataVectorWithStartElement(SystemPreislisten.hmPreise.get("Reha").get(preisgruppe-1), 0, 9, "./.");
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					tagevec = RezTools.holeEinzelTermineAusRezept("", rehavec.get(0).get(34));
+					if(Integer.parseInt(tfanzahl[0].getText().trim()) != tagevec.size()){
+						String meldung = "Achtung!\nDie Anzahl der erfaßten Einzeltermine stimmt nicht mit der\n"+
+						"Anzahl der Verordnung überein!\n\n"+
+						"Anzahl der erfaßten Einzeltermine = "+Integer.toString(tagevec.size())+"\n"+
+						"Anzahl laut Angaben auf der Verordnung = "+tfanzahl[0].getText().trim()+"\n\n"+
+						"Eine Fortsetzung der Abrechnung ist nicht empfehlenswert\n";
+						JOptionPane.showMessageDialog(internal, meldung);
+					}
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null, "Fehler beim Bezug der Behandlungstermine!\nFortsetzung der Abrechnung ist nicht empfehlenswert.");
+					return null;
+				}
+
+				return null;
+			}
+			
+		}.execute();
 	}
 	
 	
@@ -433,6 +466,7 @@ public class AbrechnungReha extends JXPanel{
 				jcmb[i].removeAllItems();				
 			}
 		}
+		jckb[1].setSelected(false);
 		jckb[0].setSelected(false);
 		patGesamt.setText(" ");
 		kasseGesamt.setText(" ");
@@ -571,17 +605,25 @@ public class AbrechnungReha extends JXPanel{
 				try {
 					getInstance().setCursor(Reha.thisClass.wartenCursor);
 					if(abrechnungOk){
+						//System.out.println("AbrechnungOK-1 = "+abrechnungOk);
 						doHauptRechnungDrucken();
-						if(abrechnungOk){doFaktura();}
-						if(abrechnungOk){doAnlegenOP();}
+						//System.out.println("AbrechnungOK-2 = "+abrechnungOk);
+						doFaktura();
+						//System.out.println("AbrechnungOK-3 = "+abrechnungOk);
+						doAnlegenOP();
+						//System.out.println("AbrechnungOK-4 = "+abrechnungOk);
 						if(jckb[0].isSelected()){
 							Thread.sleep(300);
-							if(abrechnungOk){doEigenanteilDrucken();}
-							if(abrechnungOk){doFaktura();}
-							if(abrechnungOk){doAnlegenOP();	}
+							doEigenanteilDrucken();
+							doFaktura();
+							doAnlegenOP();
+						}
+
+						if(jckb[1].isSelected()){
+							abrechnungOk = do301er();
 						}
 						if(!abrechnungOk){
-							JOptionPane.showConfirmDialog(null, "Während der Rechnungserstellung iste ein Fehler aufgetreten!");
+							JOptionPane.showConfirmDialog(null, "Während der Rechnungserstellung ist ein Fehler aufgetreten!");
 						}else{
 							if(Reha.vollbetrieb){
 								doUebertragen();								
@@ -594,6 +636,7 @@ public class AbrechnungReha extends JXPanel{
 					}
 					getInstance().setCursor(Reha.thisClass.cdefault);
 				} catch (Exception e) {
+					e.printStackTrace();
 					getInstance().setCursor(Reha.thisClass.cdefault);
 					JOptionPane.showMessageDialog(null, "Fehler bei der Abrechnung\n"+e.getMessage());
 					e.printStackTrace();
@@ -603,7 +646,39 @@ public class AbrechnungReha extends JXPanel{
 			}
 		}.execute();
 	}
-	
+	private boolean do301er(){
+		try{
+			Object[] obj = {null,null,null};
+			Vector<Object[]> objvec = new Vector<Object[]>();
+			for(int i = 0; i < 4; i++){
+				if(tfanzahl[i].getText().trim().equals("0")){
+					break;
+				}else{
+					obj[0] = tfanzahl[i].getText().trim();
+					obj[1] = tfpreis[i].getText().trim();
+					obj[2] = jcmb[i].getValueAt(2).toString().trim();
+					objvec.add(obj.clone());
+					//System.out.println(obj[0]+" - "+obj[1]+" - "+obj[2]);
+				}
+			}
+			if(objvec.size() <= 0){
+				JOptionPane.showMessageDialog(null, "Keine Positionen angegeben, keine Abrechnung möglich - ganz einfach!");
+				return false;
+			}
+			String id = SqlInfo.holeEinzelFeld("select id from dta301 where pat_intern='"+
+					rehavec.get(0).get(0)+"' and rez_nr='"+rehavec.get(0).get(1)+"' and nachrichtentyp='1' LIMIT 1");
+			if(id.equals("")){
+				JOptionPane.showMessageDialog(null, "Dieser Fall wurde nicht als DTA-301 Fall angelegt\nund kann deshalb auch nicht nach 301 abgerechnet werden!");
+				return true;
+			}
+			//System.out.println("Gesamtbetrag = "+dcf.format(gesamtPreis.doubleValue()) );
+			//System.out.println("ID von dta301 = "+id );
+			RVMeldung301 meldung = new RVMeldung301(11,id);
+			meldung.doRechnung(tagevec.get(0), tagevec.get(tagevec.size()-1), objvec, dcf.format(gesamtPreis.doubleValue()));
+			return true;
+		}catch(Exception ex){ex.printStackTrace();return false;}
+		
+	}
 	private void doUebertragen(){
 		String delrez = String.valueOf(rehavec.get(0).get(1));
 		SqlInfo.transferRowToAnotherDB("verordn", "lza","rez_nr", delrez, true, Arrays.asList(new String[] {"id"}));
@@ -815,12 +890,17 @@ public class AbrechnungReha extends JXPanel{
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehagkvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehagkvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehagkvexemplare"));
-			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().contains("LVA")||
-					jcmb[0].getSelectedItem().toString().toUpperCase().contains("BFA")){
+			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().startsWith("LVA")||
+					jcmb[0].getSelectedItem().toString().toUpperCase().startsWith("BFA") ||
+					jcmb[0].getSelectedItem().toString().toUpperCase().startsWith("KNAPPSCH")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
-				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
+				if(this.jckb[1].isSelected()){
+					this.druckExemplare = 1;
+				}else{
+					this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));	
+				}
 				//testik = 1;
 			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().contains("PRI")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehapriik");
@@ -833,6 +913,7 @@ public class AbrechnungReha extends JXPanel{
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
+				
 				//testik = 3;
 			}
 			hmRechnung.put("<pri8>",this.druckIk);
@@ -865,6 +946,7 @@ public class AbrechnungReha extends JXPanel{
 			startePositionen(vecposrechnung,gesamtPreis);
 			starteDrucken(this.druckExemplare);
 		}catch(Exception ex){
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "In der Abrechnung ist ein Fehler aufgetreten, bitte beheben Sie den Fehler und starten Sie die Abrechnung erneut");
 			abrechnungOk = false;
 		}
@@ -944,7 +1026,7 @@ public class AbrechnungReha extends JXPanel{
 		}
 		textEndbetrag.getCell(1,0).getTextService().getText().setText(dcf.format(gesamt.doubleValue())+" EUR");
 	}
-	private void starteDrucken(int exemplare) throws DocumentException{
+	private void starteDrucken(int exemplare){
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
@@ -953,14 +1035,32 @@ public class AbrechnungReha extends JXPanel{
 				}
 			});
 		}else{
-			PrintProperties printprop = new PrintProperties ((short)exemplare,null);
-			textDocument.getPrintService().print(printprop);
+			//System.out.println("Vor PrintProperties");
+			PrintProperties printprop = new PrintProperties ((short)exemplare);
+			try {
+				//System.out.println("Vor print(printprop)");
+				textDocument.getPrintService().print(printprop);
+				//System.out.println("Vor textDocument.close()");
+				while(textDocument.getPrintService().isActivePrinterBusy()){
+					Thread.sleep(50);
+				}
+				Thread.sleep(150);
+				textDocument.close();
+				//System.out.println("Nach textDocument.close()");
+			} catch (DocumentException e1) {
+				e1.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NOAException e) {
+				e.printStackTrace();
+			}
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			textDocument.close();
+			
 		}
 	}
 	

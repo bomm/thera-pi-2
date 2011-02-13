@@ -301,7 +301,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-01-25/01-DB=";
+	public static String aktuelleVersion = "V=2011-01-28/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -309,6 +309,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean timerInBearbeitung = false;
 	
 	public static boolean updatesBereit = false;
+	public static boolean updatesChecken = true;
 	public static int toolsDlgRueckgabe = -1;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -467,6 +468,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			UIManager.put("Button.disabledForeground",new Color(112,126,106)/*original = Color.BLACK*/);
 		}
 		UIManager.put("ComboBox.disabledForeground", Color.RED);
+		
 		/***********************/		
  
 		javax.swing.plaf.FontUIResource fontUIDresource = new FontUIResource("Tahoma", Font.PLAIN, 11);
@@ -1085,6 +1087,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				@Override
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
+						INIFile updateini = new INIFile(Reha.proghome+"ini/tpupdate.ini");
+						try{
+							Reha.updatesChecken = (updateini.getIntegerProperty("TheraPiUpdates", "UpdateChecken") > 0 ? true : false);
+						}catch(NullPointerException ex){
+							Reha.updatesChecken = true;
+						}
+						if(!Reha.updatesChecken){
+							return null;
+						}
 						TestForUpdates tfupd = null;
 						tfupd = new TestForUpdates();
 						Reha.updatesBereit = tfupd.doFtpTest();

@@ -16,6 +16,7 @@ private static final long serialVersionUID = 1L;
 	}
 	
 
+	@SuppressWarnings("unused")
 	public void setValue(Object value) {
 		if(value instanceof String){
 			if(value == null){

@@ -60,8 +60,6 @@ public class LadeProg {
 				       br.close();
 				       System.out.println("Process.beendet");
 				       process = null;
-
-
 				} catch (IOException e) {
 					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 					e.printStackTrace();

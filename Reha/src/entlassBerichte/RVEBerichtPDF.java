@@ -472,7 +472,7 @@ public class RVEBerichtPDF {
 		}
 		bf = BaseFont.createFont(BaseFont.COURIER,BaseFont.CP1252,BaseFont.NOT_EMBEDDED);
 		/*************************************************************************/
-		// Gewichte und K�rpergr��e             1                              2                            3
+		// Gewichte und Körpergröße             1                              2                            3
 		Float[][] poswert5 = {getFloats(29.25f,116.50f,fy1),getFloats(29.25f,108.25f,fy1),getFloats(29.25f,99.80f,fy1) }; 
 		for(int i = 22; i < 25;i++){
 			text = eltern.btf[i].getText().trim();
@@ -533,7 +533,7 @@ public class RVEBerichtPDF {
 			ystartunten -= (yschritt+zaehler);
 			ystartoben = (ystartunten+yschritt);
 		}
-		// Erl�uternungen Box
+		// Erläuternungen Box
 		Float[] empfunten =  getFloats(24.50f,40.0f,0.5f);
 		Float[] empfoben =  getFloats(201.00f,51.25f,0.5f);
 		ct = new ColumnText(cb);
@@ -544,6 +544,15 @@ public class RVEBerichtPDF {
 		ct.addText(ph);
 		ct.go();
 		/*****************************************************************/
+		//Hier die Ärzte
+		Float[][] faerzte = {getFloats(23.25f,(23.50f-5.90f),fy0),
+				getFloats(84.50f,(23.50f-5.90f),fy0),
+				getFloats(145.00f,(23.50f-5.90f),fy0)};
+		setzeText(cb,faerzte[0][0], faerzte[0][1],faerzte[0][2],bf,9,eltern.barzttf[0].getText());
+		setzeText(cb,faerzte[1][0], faerzte[1][1],faerzte[1][2],bf,9,eltern.barzttf[1].getText());
+		setzeText(cb,faerzte[2][0], faerzte[2][1],faerzte[2][2],bf,9,eltern.barzttf[2].getText());
+		
+		/*****************************************************************/		
 		// Der Block rechts oben mit der Einrichtungsadresse
 		StringBuffer reha = new StringBuffer();
 		int lang = SystemConfig.vGutachtenAbsAdresse.size();

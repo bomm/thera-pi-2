@@ -1228,6 +1228,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String sdat = "";
 		for(int i = 0;i<reihen;i++){
 			sdat = (dtermm.getValueAt(i,0)!= null ? ((String)dtermm.getValueAt(i,0)).trim() : ".  .");
+			if(i==0){SystemConfig.hmAdrRDaten.put("<Rerstdat>",sdat);}
+			if(i==(reihen-1)){SystemConfig.hmAdrRDaten.put("<Rletztdat>",sdat);}
+
 			dtermm.setValueAt((sdat.equals(".  .") ? " " : DatFunk.sDatInSQL(sdat)), i, 4);
 			sb.append((sdat.equals(".  .") ?  "  .  .    @" : sdat)+"@");
 			sb.append((dtermm.getValueAt(i,1)!= null ? ((String)dtermm.getValueAt(i,1)).trim() : "")+"@");
@@ -2678,7 +2681,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		*/
 		
-		Reha.thisClass.progLoader.Dta301Fenster(1, "");
+		Reha.thisClass.progLoader.Dta301Fenster(1, (String)Reha.thisClass.patpanel.vecaktrez.get(1));
 		// Hier der Aufruf der Fallsteuerungs .JAR
 	}
 

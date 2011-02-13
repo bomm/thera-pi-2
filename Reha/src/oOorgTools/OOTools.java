@@ -648,7 +648,7 @@ public class OOTools{
 		    		  }
 		    	  }
 		    	  if(key.contains("<btitel")){
-			    	  ////System.out.println("enth�lt titel");
+			    	  ////System.out.println("enthält titel");
 		    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
 		    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
 		    			  if(((String)entry.getValue()).trim().equals("")){
@@ -663,7 +663,11 @@ public class OOTools{
 		    	  
 		      }else if( (!(key.contains("<bblock") || key.contains("<btitel"))) && key.equals(placeholderDisplayText)  ){
 			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+			    	  if((key.contains("<blang")) && ((String)entry.getValue()).trim().equals("") ){
+			    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+			    	  }else{
+				    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));			    		  
+			    	  }
 			    	  break;
 			      }
 		      }else{

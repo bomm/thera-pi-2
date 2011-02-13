@@ -80,6 +80,7 @@ public class Eb3 implements RehaEventListener  {
 	boolean pdfok = false;
 	boolean inseitenaufbau = false;
 	boolean framegetrennt = true;
+	boolean zugabe = false;
 	InputStream startStream = null;
 	
 	public Eb3(EBerichtPanel xeltern){
@@ -144,16 +145,21 @@ public class Eb3 implements RehaEventListener  {
 			        	if(eltern.neu){
 			        		// wenn noch kein frame erstellt wurde und der outbuffe leer ist;
 			        	
-			        			//System.out.println("Neuanlage Bericht -> constructNewDocument");
-			        			if(!Reha.officeapplication.isActive()){
-			        				Reha.starteOfficeApplication();
-			        			}
-			        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
-					        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
-					        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
-					        	framegetrennt = false;
-								eltern.meldeInitOk(2);
-
+		        			//System.out.println("Neuanlage Bericht -> constructNewDocument");
+		        			if(!Reha.officeapplication.isActive()){
+		        				Reha.starteOfficeApplication();
+		        			}
+		        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+				        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
+				        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
+				        	framegetrennt = false;
+							eltern.meldeInitOk(2);
+		        			SwingUtilities.invokeLater(new Runnable(){
+		        				public void run(){
+				        			eltern.jry.setSize(eltern.jry.getWidth()+(zugabe ? 1 : -1), eltern.jry.getHeight());
+				        			zugabe = (zugabe ? false : true);
+		        				}
+		        			});
 			        	}else{
 							if(!Reha.officeapplication.isActive()){
 								//System.out.println("Aktiviere Office...");
@@ -173,12 +179,24 @@ public class Eb3 implements RehaEventListener  {
 						        			DocumentDescriptor descript = new DocumentDescriptor();
 						        			//descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 						        			try{
-						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
-						        			eltern.meldeInitOk(2);
+							        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+							        			eltern.meldeInitOk(2);
+							        			SwingUtilities.invokeLater(new Runnable(){
+							        				public void run(){
+									        			eltern.jry.setSize(eltern.jry.getWidth()+(zugabe ? 1 : -1), eltern.jry.getHeight());
+									        			zugabe = (zugabe ? false : true);
+							        				}
+							        			});
 						        			}catch(Exception ex){
 												Reha.starteOfficeApplication();
 							        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
 							        			eltern.meldeInitOk(2);
+							        			SwingUtilities.invokeLater(new Runnable(){
+							        				public void run(){
+									        			eltern.jry.setSize(eltern.jry.getWidth()+(zugabe ? 1 : -1), eltern.jry.getHeight());
+									        			zugabe = (zugabe ? false : true);
+							        				}
+							        			});
 						        			}
 					        			}else{
 					        				DocumentDescriptor descript = new DocumentDescriptor();

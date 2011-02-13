@@ -117,7 +117,7 @@ public class PatientHauptLogic {
 			
 			// Lemmi 20101212: Anzahl der zu erwartenden Datensätze eingebaut, Unterscheidung von suchart = 3
 			int suchart = patientHauptPanel.jcom.getSelectedIndex();
-			if(suchart==3){
+			if(suchart==6){
 				sstmt = "SELECT COUNT(*) from verordn";
 				strStamm = "aktiven Rezeptstamm";
 			}else{

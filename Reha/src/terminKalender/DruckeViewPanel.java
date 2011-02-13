@@ -31,9 +31,24 @@ import ag.ion.noa.graphic.GraphicInfo;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import com.sun.star.beans.PropertyValue;
+import com.sun.star.beans.XPropertySet;
+import com.sun.star.comp.helper.Bootstrap;
+import com.sun.star.container.XNameContainer;
+import com.sun.star.graphic.XGraphic;
+import com.sun.star.graphic.XGraphicProvider;
+import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.text.HoriOrientation;
 import com.sun.star.text.TextContentAnchorType;
 import com.sun.star.text.VertOrientation;
+import com.sun.star.text.XText;
+import com.sun.star.text.XTextContent;
+import com.sun.star.text.XTextCursor;
+import com.sun.star.ucb.XFileIdentifierConverter;
+import com.sun.star.uno.AnyConverter;
+import com.sun.star.uno.UnoRuntime;
+import com.sun.star.uno.XComponentContext;
 
 
 
@@ -73,7 +88,9 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         boolean useStream = true;
 
         
-        String imagePath = Reha.proghome+"ScreenShots/termin__temp.jpg";
+        String imagePath = Reha.proghome.replace("C:/","//")+"ScreenShots/termin__temp.jpg";
+        //String imagePath = "file:///"+Reha.proghome.replace("C:/", "")+"ScreenShots/termin__temp.jpg";
+        //"file:///tmp/myDocument.odt
         GraphicInfo graphicInfo = null;
 
         float fx =  new Float(pixelWidth);
@@ -95,7 +112,9 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         }
         
         //System.out.println("Die neuen Ma�e sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
-
+        XMultiServiceFactory multiServiceFactory = null;
+        XTextCursor xcursor = null;
+        XTextCursor xTextCursor = null;
         if(!useStream) {
           //with url
         	
@@ -109,21 +128,69 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         	//System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
         	//System.out.println("Seitenverh�ltnis = "+verhaeltnis);
         	
-            graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
+            graphicInfo = new GraphicInfo(imagePath, new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
                     TextContentAnchorType.AS_CHARACTER);
+            
+            System.out.println(graphicInfo.getUrl());
+            //URL = file:/C:/RehaVerwaltung/Reha/file:/RehaVerwaltung/ScreenShots/termin__temp.jpg
+            /*
+        	graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
+                    false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
+                    TextContentAnchorType.AS_CHARACTER);
+             */    
+            /*
+            multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class,
+                    textDocument.getXTextDocument());
+            XText xText = textDocument.getXTextDocument().getText();
+            
+            xTextCursor = xText.createTextCursor();
+            */
+            //XComponentContext
+            /*
+            try{
+                XComponentContext xcomponentcontext = (XComponentContext) Bootstrap.createInitialComponentContext(null);
+                XGraphic xGrafik = (XGraphic)getGraphicFromURL(xcomponentcontext, imagePath);
+            }catch(Exception ex){
+            	System.out.println("Exception in XComponentContext");
+            	ex.printStackTrace();
+            	System.out.println("**************Ende Exception in XComponentContext");
+            }
+			*/
+
+
+            /*
+             * 
+            Object oFCProvider = _xMCF.createInstanceWithContext("com.sun.star.ucb.FileContentProvider", this.m_xContext);
+            XFileIdentifierConverter xFileIdentifierConverter = (XFileIdentifierConverter) UnoRuntime.queryInterface(XFileIdentifierConverter.class, oFCProvider);
+            String sImageUrl = xFileIdentifierConverter.getFileURLFromSystemPath(_sImageSystemPath, oFile.getAbsolutePath());
+
+            Object oFCProvider = multiServiceFactory.createInstanceWithContext("com.sun.star.ucb.FileContentProvider", xText);
+ 
+            XFileIdentifierConverter xFileIdentifierConverter = (XFileIdentifierConverter) UnoRuntime.queryInterface(XFileIdentifierConverter.class, oFCProvider);
+            String sImageUrl = xFileIdentifierConverter.getFileURLFromSystemPath(_sImageSystemPath, oFile.getAbsolutePath());
+            XGraphic xGraphic = getGraphic(sImageUrl);
+			*/
+            Thread.sleep(100);
         }
 
+        //embedGraphic(graphicInfo,multiServiceFactory,xTextCursor);
+        
+        
+        
         ITextContentService textContentService = textDocument.getTextService()
             .getTextContentService();
 
         ITextCursor textCursor = textDocument.getTextService().getText()
             .getTextCursorService().getTextCursor();
+        
 
+        
         ITextDocumentImage textDocumentImage = textContentService
             .constructNewImage(graphicInfo);
         textContentService.insertTextContent(textCursor.getEnd(),
             textDocumentImage);
+		
 
 		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(Exception ex){
@@ -132,6 +199,57 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		
 		return null;
 	}
+	
+	
+
+	private void embedGraphic(GraphicInfo grProps,
+	                XMultiServiceFactory xMSF, XTextCursor xCursor) {
+
+	        XNameContainer xBitmapContainer = null;
+	        XText xText = xCursor.getText();
+	        XTextContent xImage = null;
+	        String internalURL = null;
+	        String url = null;
+
+	        try {
+	                xBitmapContainer = (XNameContainer) UnoRuntime.queryInterface(
+	                                XNameContainer.class, xMSF.createInstance(
+	                                                "com.sun.star.drawing.BitmapTable"));
+	                xImage = (XTextContent) UnoRuntime.queryInterface(
+	                                XTextContent.class,     xMSF.createInstance(
+	                                                "com.sun.star.text.TextGraphicObject"));
+	                XPropertySet xProps = (XPropertySet) UnoRuntime.queryInterface(
+	                                XPropertySet.class, xImage);
+
+	                // helper-stuff to let OOo create an internal name of the graphic
+	                // that can be used later (internal name consists of various checksums)
+	                //url = "file:///RehaVerwaltung/ScreenShots/termin__temp.jpg";
+	                url = "C:/RehaVerwaltung/ScreenShots/termin__temp.jpg";
+
+	                xBitmapContainer.insertByName("someID",(Object) url);
+	                //xBitmapContainer.insertByName("someID", grProps.getUrl());
+	                internalURL = AnyConverter.toString(xBitmapContainer
+	                                .getByName("someID"));
+
+	                xProps.setPropertyValue("AnchorType",
+	                                com.sun.star.text.TextContentAnchorType.AS_CHARACTER);
+	                xProps.setPropertyValue("GraphicURL", internalURL);
+	                xProps.setPropertyValue("Width", (int) grProps.getWidth());
+	                xProps.setPropertyValue("Height", (int) grProps.getHeight());
+
+	                // inser the graphic at the cursor position
+	                xText.insertTextContent(xCursor, xImage, false);
+
+	                // remove the helper-entry
+	                xBitmapContainer.removeByName("someID");
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	                System.out.println("Failed to insert Graphic");
+	                System.out.println(url);
+	        }
+	}
+	
+	
 	public static byte[] bufferedImageToByteArray(BufferedImage img) throws ImageFormatException, IOException{
 		if(img != null){
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -153,6 +271,28 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		}
 	}
 	
+    public XGraphic getGraphicFromURL(XComponentContext xContext, String sURL ){
+    	XGraphic xGraphic = null;
+    	try {
+    		XGraphicProvider xGraphicProvider =
+    			(XGraphicProvider) UnoRuntime.queryInterface(
+    					XGraphicProvider.class,
+    					xContext.getServiceManager().createInstanceWithContext(
+    							"com.sun.star.graphic.GraphicProvider",
+    							xContext));
+    		PropertyValue[] aMediaProperties = new PropertyValue[1];
+    		aMediaProperties[0] = new PropertyValue();
+    		aMediaProperties[0].Name = "URL";
+    		aMediaProperties[0].Value = sURL;
+    		xGraphic = xGraphicProvider.queryGraphic(aMediaProperties);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	return xGraphic;
+    }
+
+	
+	
 	private void speichernQualitaet(String stitel,Float fQuality){
 //		img, "jpg", new File("C:\\ScreenShots\\"+stitel+".jpg")
 		IIOImage imgq = new IIOImage((RenderedImage) bufimg, null, null);
@@ -161,14 +301,15 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
         param.setCompressionQuality(fQuality);
         File fimg = new File(Reha.proghome+"ScreenShots/termin__temp.jpg");
+
         try {
 			writer.setOutput(ImageIO.createImageOutputStream(fimg));
 			writer.write(null, imgq, param);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        //writer.write(null, img, param);
 	}	
 
 	

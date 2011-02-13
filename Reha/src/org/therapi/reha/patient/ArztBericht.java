@@ -49,6 +49,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.AdressTools;
 import systemTools.Colors;
 import systemTools.JCompTools;
@@ -95,7 +96,7 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	private JTextArea[] icfblock = {null,null,null,null};
 	private ThTextBlock thblock = null;
 	private String disziplin = null;
-	private int zuletztaktiv = 0;
+	private int zuletztaktiv = -1;
 	private boolean gespeichert = false;
 	private boolean ishmnull = true;
 	private String pat_intern = "";
@@ -918,9 +919,88 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	      //System.out.println("Key = "+(String)entry.getKey()+"\n"+"Wert = "+entry.getValue());
 	    }
 	    */
+		if(aufrufvon==0){
+			//aus aktuellen Rezepten
+			//"<Berstdat>","<Bletztdat>","<Banzahl1>","<Banzahl2>","<Banzahl3>","<Banzahl4>",
+			//"<Bposition1>","<Bposition2>","<Bposition3>","<Bposition4>"});
+			SystemConfig.hmAdrBDaten.put("<Berstdat>",SystemConfig.hmAdrRDaten.get("<Rerstdat>"));
+			SystemConfig.hmAdrBDaten.put("<Bletztdat>",SystemConfig.hmAdrRDaten.get("<Rletztdat>"));
+			SystemConfig.hmAdrBDaten.put("<Banzahl1>",SystemConfig.hmAdrRDaten.get("<Ranzahl1>"));
+			SystemConfig.hmAdrBDaten.put("<Banzahl2>",SystemConfig.hmAdrRDaten.get("<Ranzahl2>"));
+			SystemConfig.hmAdrBDaten.put("<Banzahl3>",SystemConfig.hmAdrRDaten.get("<Ranzahl3>"));
+			SystemConfig.hmAdrBDaten.put("<Banzahl4>",SystemConfig.hmAdrRDaten.get("<Ranzahl4>"));
+			/*
+			SystemConfig.hmAdrBDaten.put("<Blang1>",SystemConfig.hmAdrRDaten.get("<Rposition1>"));
+			SystemConfig.hmAdrBDaten.put("<Blang2>",SystemConfig.hmAdrRDaten.get("<Rposition2>"));
+			SystemConfig.hmAdrBDaten.put("<Blang3>",SystemConfig.hmAdrRDaten.get("<Rposition3>"));
+			SystemConfig.hmAdrBDaten.put("<Blang4>",SystemConfig.hmAdrRDaten.get("<Rposition4>"));
+			*/
+			String diszi = RezTools.putRezNrGetDisziplin(reznr);
+			regleBHashMap(diszi,Reha.thisClass.patpanel.vecaktrez.get(41),
+					Reha.thisClass.patpanel.vecaktrez.get(8),Reha.thisClass.patpanel.vecaktrez.get(9),
+					Reha.thisClass.patpanel.vecaktrez.get(10),Reha.thisClass.patpanel.vecaktrez.get(11));
+		}else{
+			//
+			String diszi = RezTools.putRezNrGetDisziplin(reznr);
+			Vector<Vector<String>> veclza = SqlInfo.holeFelder("select termine,preisgruppe,anzahl1,anzahl2,"+
+					"anzahl3,anzahl4,art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4 from verordn where rez_nr='"+reznr+"' LIMIT 1");
+			if( veclza.size() <= 0){
+				veclza = SqlInfo.holeFelder("select termine,preisgruppe,anzahl1,anzahl2,"+
+						"anzahl3,anzahl4,art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4 from lza where rez_nr='"+reznr+"' LIMIT 1");
+			}
+			
+			if(veclza.size()>0){
+				Vector<String> termvec = RezTools.holeEinzelTermineAusRezept("", veclza.get(0).get(0));
+				if(termvec.size()>0){
+					SystemConfig.hmAdrBDaten.put("<Berstdat>",termvec.get(0));
+					SystemConfig.hmAdrBDaten.put("<Bletztdat>",termvec.get(termvec.size()-1));
+				}else{
+					SystemConfig.hmAdrBDaten.put("<Berstdat>","");
+					SystemConfig.hmAdrBDaten.put("<Bletztdat>","");
+				}
+				SystemConfig.hmAdrBDaten.put("<Banzahl1>",veclza.get(0).get(2));
+				SystemConfig.hmAdrBDaten.put("<Banzahl2>",veclza.get(0).get(3));
+				SystemConfig.hmAdrBDaten.put("<Banzahl3>",veclza.get(0).get(4));
+				SystemConfig.hmAdrBDaten.put("<Banzahl4>",veclza.get(0).get(5));
+				regleBHashMap(diszi,veclza.get(0).get(1),
+						veclza.get(0).get(6),veclza.get(0).get(7),
+						veclza.get(0).get(8),veclza.get(0).get(9));
+
+			}
+		}
 	    OOTools.starteTherapieBericht(SystemConfig.thberichtdatei);
 
 		
+	}
+	private void regleBHashMap(String disziplin,String preisgruppe,String id1,String id2,String id3, String id4){
+		int ipg = Integer.parseInt(preisgruppe);
+		String dummy = "";
+		//System.out.println(disziplin+"-"+preisgruppe+"-"+id1+"-"+id2+"-"+id3+"-"+id4);
+		for(int i = 1; i < 5; i++){
+			SystemConfig.hmAdrBDaten.put("<Blang"+Integer.toString(i)+">","");
+		}
+		if(! id1.equals("0")){
+			dummy = RezTools.getLangtextFromID(id1, Integer.toString(ipg-1), SystemPreislisten.hmPreise.get(disziplin).get(ipg-1));
+			SystemConfig.hmAdrBDaten.put("<Blang1>",String.valueOf(dummy));
+		}
+		if(! id2.equals("0")){
+			dummy = RezTools.getLangtextFromID(id2, Integer.toString(ipg-1), SystemPreislisten.hmPreise.get(disziplin).get(ipg-1));
+			SystemConfig.hmAdrBDaten.put("<Blang2>",String.valueOf(dummy));
+		}
+		if(! id3.equals("0")){
+			dummy = RezTools.getLangtextFromID(id3, Integer.toString(ipg-1), SystemPreislisten.hmPreise.get(disziplin).get(ipg-1));
+			SystemConfig.hmAdrBDaten.put("<Blang3>",String.valueOf(dummy));
+		}
+		if(! id4.equals("0")){
+			dummy = RezTools.getLangtextFromID(id4, Integer.toString(ipg-1), SystemPreislisten.hmPreise.get(disziplin).get(ipg-1));
+			SystemConfig.hmAdrBDaten.put("<Blang4>",String.valueOf(dummy));
+		}
+		/*
+		System.out.println(SystemConfig.hmAdrBDaten.get("<Blang1>"));
+		System.out.println(SystemConfig.hmAdrBDaten.get("<Blang2>"));
+		System.out.println(SystemConfig.hmAdrBDaten.get("<Blang3>"));
+		System.out.println(SystemConfig.hmAdrBDaten.get("<Blang4>"));
+		*/
 	}
 	public ArztBericht getInstance(){
 		return this;
@@ -961,7 +1041,7 @@ class TextBausteine extends AbstractAction {
 		if(thblock == null){
 			//System.out.println("thblock == null");
 			initok = false;
-			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem(),getInstance(),reznr);
+			thblock = new ThTextBlock(null,"textblock",(String)tbwahl.getSelectedItem(),getInstance(),reznr,zuletztaktiv);
 			thblock.setModal(true);
 			thblock.setLocationRelativeTo(grundPanel);
 			thblock.pack();

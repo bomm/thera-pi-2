@@ -347,7 +347,8 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 		String[] column = 	{"ID","Titel","Verfasser","erstellt","Empfänger","letzte Änderung",""};
 		dtblm.setColumnIdentifiers(column);
 		tabbericht = new JXTable(dtblm);
-		tabbericht.setEditable(true);
+		tabbericht.setEditable(false);
+		tabbericht.setSortable(false);
 		tabbericht.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent arg0) {
 				// TODO Auto-generated method stub
