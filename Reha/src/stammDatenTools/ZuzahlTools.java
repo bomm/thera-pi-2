@@ -62,6 +62,7 @@ public class ZuzahlTools {
 		if(tage.size()==0){
 			return ret;
 		}
+		@SuppressWarnings("rawtypes")
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
 		        String strings1 = DatFunk.sDatInSQL(s1);
@@ -148,6 +149,7 @@ public class ZuzahlTools {
 		if(tage.size()==0){
 			return ret;
 		}
+		@SuppressWarnings("rawtypes")
 		Comparator comparator = new Comparator<String>() {
 			public int compare(String s1, String s2) {
 		        String strings1 = DatFunk.sDatInSQL(s1);
@@ -156,10 +158,10 @@ public class ZuzahlTools {
 		    }
 		};	
 		Collections.sort(tage,comparator);	
-		String unter18 = (String)((Vector)vec.get(0)).get(4);
-		String pat_int = (String)((Vector)vec.get(0)).get(2);
-		String aktzzstatus = (String)((Vector)vec.get(0)).get(6);
-		String aktzzregel = (String)((Vector)vec.get(0)).get(5);
+		String unter18 = (String)((Vector<String>)vec.get(0)).get(4);
+		String pat_int = (String)((Vector<String>)vec.get(0)).get(2);
+		String aktzzstatus = (String)((Vector<String>)vec.get(0)).get(6);
+		String aktzzregel = (String)((Vector<String>)vec.get(0)).get(5);
 		if(unter18.equals("T") && (!aktzzregel.equals("0"))){
 			String stichtag = "";
 			String geburtstag = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren", "pat_intern='"+pat_int+"'"));
@@ -198,7 +200,8 @@ public class ZuzahlTools {
 		return ret;
 	}
 	/********************************************************/
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	public static void jahresWechselTest(String rez_nr,boolean azTest,boolean jahrTest){
 		Vector vec = SqlInfo.holeFelder("select termine,id from verordn where rez_nr='"+rez_nr+"' LIMIT 1");
 		vec = RezTools.holeEinzelTermineAusRezept(null,(String)((Vector)vec.get(0)).get(0));

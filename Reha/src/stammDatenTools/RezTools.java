@@ -113,10 +113,10 @@ public class RezTools {
 			terms = termine;
 		}
 		if(terms==null){
-			return (Vector)retvec.clone();
+			return (Vector<String>)retvec.clone();
 		}
 		if(terms.equals("")){
-			return (Vector)retvec.clone();
+			return (Vector<String>)retvec.clone();
 		}
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
@@ -126,7 +126,7 @@ public class RezTools {
 			//int ieinzel = terdat.length;
 			retvec.add(terdat[3].trim());
 		}
-		return (Vector)retvec.clone();
+		return (Vector<String>)retvec.clone();
 	}
 	
 	public static Object[] holeTermineAnzahlUndLetzter(String termine){
