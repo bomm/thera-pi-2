@@ -500,18 +500,22 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 			reznum.getText()+
 			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
 			"°"+Reha.thisClass.patpanel.rezlabs[14].getText();
-			Reha.thisClass.copyLabel.setText(dragText);
-			Reha.thisClass.bunker.setText("TERMDATEXT"+"°"+dragText);
+			Reha.thisClass.copyLabel.setText(String.valueOf(dragText));
+			Reha.thisClass.bunker.setText("TERMDATEXT"+"°"+String.valueOf(dragText));
+			String[] daten = { (Reha.thisClass.patpanel.patDaten.get(0).startsWith("F") ? "F-" : "H-")+
+					Reha.thisClass.patpanel.patDaten.get(2)+","+
+					Reha.thisClass.patpanel.patDaten.get(3),
+					Reha.thisClass.patpanel.vecaktrez.get(1),
+					Reha.thisClass.patpanel.vecaktrez.get(47)						
+			};
+			
 			if(Reha.thisClass.terminpanel != null){
-				String[] daten = { (Reha.thisClass.patpanel.patDaten.get(0).startsWith("F") ? "F-" : "H-")+
-						Reha.thisClass.patpanel.patDaten.get(2)+","+
-						Reha.thisClass.patpanel.patDaten.get(3),
-						Reha.thisClass.patpanel.vecaktrez.get(1),
-						Reha.thisClass.patpanel.vecaktrez.get(47)						
-				};
-				Reha.thisClass.terminpanel.setDatenVonExternInSpeicherNehmen(daten);
+				Reha.thisClass.terminpanel.setDatenVonExternInSpeicherNehmen(daten.clone());
 				Reha.thisClass.shiftLabel.setText("bereit für F2= "+daten[0]+"°"+daten[1]+"°"+daten[2]+" Min.");
+			}else{
+				Reha.thisClass.shiftLabel.setText("");
 			}
+			
 		}
 		
 	}

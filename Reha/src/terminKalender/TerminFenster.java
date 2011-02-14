@@ -346,7 +346,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			fgp = new FinalGlassPane(eltern);
 			eltern.setGlassPane(fgp);
 		}
-
+		getDatenVonExternInSpeicherNehmen();
 		return ViewPanel;
 
 	}
@@ -2942,6 +2942,25 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		datenSpeicher[1]= String.valueOf(daten[1]);		
 		datenSpeicher[3]= String.valueOf(daten[2]);		
 		Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
+	}
+	private void getDatenVonExternInSpeicherNehmen(){
+		if(Reha.thisClass.bunker.getText().indexOf("°") >= 0 ){
+			try{
+				String[] teilen = Reha.thisClass.bunker.getText().split("°");
+				if(teilen.length <= 0){return;}
+				teilen[3] = teilen[3].toUpperCase();
+				teilen[3] = teilen[3].replaceAll(" MIN.", "");
+
+				datenSpeicher[0]= teilen[1];		
+				datenSpeicher[1]= teilen[2];		
+				datenSpeicher[3]= teilen[3];
+				Reha.thisClass.copyLabel.setText(datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
+				Reha.thisClass.shiftLabel.setText("bereit für F2= "+datenSpeicher[0]+"°"+datenSpeicher[1]+"°"+datenSpeicher[3]+" Min.");
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler bei der Vorbereitung des Datenspeichers");
+			}
+			
+		}	
 	}
 	private void datenInSpeicherNehmen(){
 		int aktbehandler = -1;
