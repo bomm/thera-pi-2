@@ -513,7 +513,7 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 				Reha.thisClass.terminpanel.setDatenVonExternInSpeicherNehmen(daten.clone());
 				Reha.thisClass.shiftLabel.setText("bereit für F2= "+daten[0]+"°"+daten[1]+"°"+daten[2]+" Min.");
 			}else{
-				Reha.thisClass.shiftLabel.setText("");
+				Reha.thisClass.shiftLabel.setText(" ");
 			}
 			
 		}
