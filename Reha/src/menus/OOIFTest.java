@@ -61,6 +61,7 @@ public class OOIFTest extends JXPanel{
 		      }
 		    }
 	}
+		@SuppressWarnings("unused")
 		private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent)
 	      throws Throwable {
 			

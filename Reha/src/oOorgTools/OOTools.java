@@ -519,7 +519,7 @@ public class OOTools{
 	}
 	
 	/*******************************************************************************************/
-	@SuppressWarnings("unchecked")
+
 	public static void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
 		//String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 		//String drucker = "";
@@ -553,7 +553,7 @@ public class OOTools{
 			Set<?> entries = taxWerte.entrySet();
 		    Iterator<?> it = entries.iterator();
 			    while (it.hasNext()) {
-			      Map.Entry entry = (Map.Entry) it.next();
+			      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 			    	  try{
 			    		  
