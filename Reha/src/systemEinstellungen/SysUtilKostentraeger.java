@@ -156,8 +156,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		
 	}
 	private void starteSession(String land,String jahr) throws IOException{
-		String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kostentraegerdateien.gkvnet";
-		//String urltext = "file:///C:/RehaVerwaltung/Test/gkv.htm";
+		//String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kostentraegerdateien.gkvnet";
+		String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kotr.gkvnet";
 		String text = null;
 		URL url = new URL(urltext);
 		   
