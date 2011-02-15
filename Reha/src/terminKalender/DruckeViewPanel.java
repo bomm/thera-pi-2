@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.imageio.IIOImage;
@@ -33,11 +32,9 @@ import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.beans.XPropertySet;
-import com.sun.star.comp.helper.Bootstrap;
 import com.sun.star.container.XNameContainer;
 import com.sun.star.graphic.XGraphic;
 import com.sun.star.graphic.XGraphicProvider;
-import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.text.HoriOrientation;
 import com.sun.star.text.TextContentAnchorType;
@@ -45,7 +42,6 @@ import com.sun.star.text.VertOrientation;
 import com.sun.star.text.XText;
 import com.sun.star.text.XTextContent;
 import com.sun.star.text.XTextCursor;
-import com.sun.star.ucb.XFileIdentifierConverter;
 import com.sun.star.uno.AnyConverter;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
@@ -60,6 +56,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		this.printPan = pan;
 		execute();
 	}
+	@SuppressWarnings("unused")
 	@Override
 	protected Void doInBackground() throws Exception {
 		// TODO Auto-generated method stub
@@ -202,6 +199,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 	
 	
 
+	@SuppressWarnings("unused")
 	private void embedGraphic(GraphicInfo grProps,
 	                XMultiServiceFactory xMSF, XTextCursor xCursor) {
 

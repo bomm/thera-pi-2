@@ -1,38 +1,24 @@
 package terminKalender;
 
-import javax.swing.JPanel;
-import java.awt.Frame;
 import java.awt.BorderLayout;
-import javax.swing.JDialog;
+import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.BoxLayout;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
-
-import javax.swing.JList;
-
-import systemEinstellungen.SystemConfig;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.ListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.SystemColor;
-import java.awt.List;
-import java.awt.Cursor;
-import java.awt.Button;
-import java.awt.Rectangle;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import java.awt.FlowLayout;
+import systemEinstellungen.SystemConfig;
 
 public class SetWahl extends JDialog {
 
@@ -145,6 +131,7 @@ public class SetWahl extends JDialog {
 	 * @return javax.swing.JList	
 	 */
 
+	@SuppressWarnings("rawtypes")
 	private void ListeFuellen(DefaultListModel model){
 		int i,max = 0;
 		max = SystemConfig.aTerminKalender.size();
@@ -235,5 +222,35 @@ public class SetWahl extends JDialog {
 			ListeFuellen(model);
 		}
 		return jList1;
+	}
+
+
+	public void setBehandler(String[] behandler) {
+		this.behandler = behandler;
+	}
+
+
+	public String[] getBehandler() {
+		return behandler;
+	}
+
+
+	public void setSetname(String setname) {
+		this.setname = setname;
+	}
+
+
+	public String getSetname() {
+		return setname;
+	}
+
+
+	public void setjList(JList jList) {
+		this.jList = jList;
+	}
+
+
+	public JList getjList() {
+		return jList;
 	}
 }  //  @jve:decl-index=0:visual-constraint="103,28"

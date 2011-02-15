@@ -141,6 +141,7 @@ public class DruckFenster extends RehaSmartDialog implements ActionListener, Key
 			termineVec.add((Vector<String>)dummyTermin.clone());
 		}
 		if(dummyTermin.size() > 0){
+			@SuppressWarnings("rawtypes")
 			Comparator<Vector> comparator = new Comparator<Vector>() {
 				@Override
 				public int compare(Vector o1, Vector o2) {

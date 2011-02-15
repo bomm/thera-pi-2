@@ -75,7 +75,7 @@ public  kalenderPanel KalenderPanel() {
 public void  ListenerSetzen(int aktPanel){
 	this.panelNummer = aktPanel;
 	this.dragImage = SystemConfig.hmSysIcons.get("buttongruen");
-	this.dragImage2 = SystemConfig.hmSysIcons.get("buttongruen").getImage().getScaledInstance(8,8,Image.SCALE_SMOOTH);
+	this.setDragImage2(SystemConfig.hmSysIcons.get("buttongruen").getImage().getScaledInstance(8,8,Image.SCALE_SMOOTH));
 	//this.
 	return;
 }
@@ -610,7 +610,7 @@ public void paintComponent( Graphics g ) {
 		iMaxHoehe = this.getSize().height;
 		fPixelProMinute = (float) iMaxHoehe;
 		fPixelProMinute =(float) fPixelProMinute / minutenInsgesamt;
-		iPixelProMinute = ((int) (fPixelProMinute));
+		setiPixelProMinute(((int) (fPixelProMinute)));
 		xStart = 2;
 		xEnde = this.getSize().width;
 		Point posInScreen = this.getLocationOnScreen();
@@ -632,7 +632,7 @@ public void paintComponent( Graphics g ) {
 	}
 	public void zeitInit(int von, int bis){
 		zeitSpanneVon = von;
-		zeitSpanneBis = bis;
+		setZeitSpanneBis(bis);
 		minutenInsgesamt = bis-von;
 		oCol = new SystemFarben();
 	}
@@ -790,7 +790,7 @@ public void paintComponent( Graphics g ) {
 		return aktivPunkt;
 	}
 	public void shiftGedrueckt(boolean sg){
-		this.shiftGedrueckt = sg;
+		this.setShiftGedrueckt(sg);
 	}
 	public void gruppierungZeichnen(int[] gruppe){
 		String sStart=""; //Startzeit			
@@ -845,6 +845,30 @@ public void paintComponent( Graphics g ) {
 
 	public float getPixels(){
 		return this.fPixelProMinute;
+	}
+	public void setZeitSpanneBis(int zeitSpanneBis) {
+		this.zeitSpanneBis = zeitSpanneBis;
+	}
+	public int getZeitSpanneBis() {
+		return zeitSpanneBis;
+	}
+	public void setiPixelProMinute(int iPixelProMinute) {
+		this.iPixelProMinute = iPixelProMinute;
+	}
+	public int getiPixelProMinute() {
+		return iPixelProMinute;
+	}
+	public void setShiftGedrueckt(boolean shiftGedrueckt) {
+		this.shiftGedrueckt = shiftGedrueckt;
+	}
+	public boolean isShiftGedrueckt() {
+		return shiftGedrueckt;
+	}
+	public void setDragImage2(Image dragImage2) {
+		this.dragImage2 = dragImage2;
+	}
+	public Image getDragImage2() {
+		return dragImage2;
 	}
 
 

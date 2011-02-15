@@ -78,7 +78,7 @@ public class RVMeldung301 {
 	int anzahlUnhs = 1;
 	int aktUnh = 1;
 	boolean shouldBreak = false;
-	boolean imtest = true;
+	boolean imtest = false;
 	
 	public RVMeldung301(int art, String id){
 		
@@ -1097,7 +1097,8 @@ public class RVMeldung301 {
 				String pass1 = SystemConfig.hmEmailExtern.get("Password");
 				String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
 				
-				String recipient = (imtest ? "" : ik_email+";") +SystemConfig.hmEmailExtern.get("SenderAdresse");
+				String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
+				//String recipient = (imtest ? "" : ik_email+";") +SystemConfig.hmEmailExtern.get("SenderAdresse");
 
 				String text = "";
 				boolean authx = (authent.equals("0") ? false : true);
