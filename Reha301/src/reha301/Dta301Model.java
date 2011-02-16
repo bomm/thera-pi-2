@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingx.JXTable;
 
 import Tools.DatFunk;
+import Tools.SqlInfo;
 import Tools.StringTools;
 
 public class Dta301Model {
@@ -46,6 +47,8 @@ public class Dta301Model {
 	private String patArztName = null;
 	private String patArztNummer = null;
 	private String patArztId = null;
+	
+	private String patTelefon = null;
 
 	private String x_patAnrede = null;
 	private String x_patNachname = null;
@@ -63,6 +66,7 @@ public class Dta301Model {
 	private String x_patArztName = null;
 	private String x_patArztId = null;
 	private String x_patArztNummer = null;
+	private String x_patTelefon = null;
 	private JXTable table = null;
 	
 	public Dta301Model(JXTable table,int row){
@@ -86,6 +90,7 @@ public class Dta301Model {
 			x_patArztId = vec_patstamm.get(13);
 			x_patKassenIk = vec_patstamm.get(14);
 			x_patArztNummer = vec_patstamm.get(15);
+			x_patTelefon = vec_patstamm.get(16);
 		}catch(Exception ex){
 			x_patAnrede = null;
 			x_patNachname = null;
@@ -102,6 +107,7 @@ public class Dta301Model {
 			x_patArztId = null;
 			x_patKassenIk = null;
 			x_patArztNummer = null;
+			x_patTelefon = null;
 			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der passenden Patientendaten im Thera-Pi Pat.Stamm");
 		}
 	}
@@ -120,6 +126,7 @@ public class Dta301Model {
 		this.patArztNummer = String.valueOf(x_patArztNummer);
 		this.patArztId = String.valueOf(x_patArztId);
 		this.patIntern = String.valueOf(x_patIntern);
+		this.patTelefon = String.valueOf(x_patTelefon);
 	}
 	public void set301Data(){
 		try{
@@ -130,24 +137,41 @@ public class Dta301Model {
 			String anlass = table.getValueAt(table.getSelectedRow(), 3).toString();
 			String kkasse = table.getValueAt(table.getSelectedRow(), 8).toString();
 			String geboren = DatFunk.sDatInDeutsch(table.getValueAt(table.getSelectedRow(), 12).toString());		
-			this.patAnrede= pat.split("#")[0];
-			this.patNachname = pat.split("#")[1];
-			this.patVorname = pat.split("#")[2];
+			this.patAnrede= (pat.split("#").length >= 1 ? pat.split("#")[0] : "");
+			this.patNachname = (pat.split("#").length >= 2 ? pat.split("#")[1] : "");
+			this.patVorname = (pat.split("#").length >= 3 ? pat.split("#")[2] : "");
 			this.patStrasse =  adress.split("#")[0];
 			this.patPlz =  adress.split("#")[1];
 			this.patOrt =  adress.split("#")[2];
 			this.patVsnr = vsnr;
-			this.dtaKtraegerIK = ktraeger;
-			this.patKassenName = kkasse.split("#")[0];
-			this.patKassenIk = kkasse.split("#")[1];	
+			try{
+				this.dtaKtraegerIK = ktraeger;				
+			}catch(Exception ex){
+				this.dtaKtraegerIK = "";
+			}
+
+			try{
+				this.patKassenName = (kkasse.split("#").length >=1 ? kkasse.split("#")[0] : "");	
+			}catch(Exception ex){
+				this.patKassenName = "";
+			}
+			try{
+				this.patKassenIk = kkasse.split("#")[1];
+				this.patKassenIk = (kkasse.split("#").length >=2 ? kkasse.split("#")[1] : "");	
+			}catch(Exception ex){
+				this.patKassenIk = "";
+			}
+	
 			this.dtaNachrichtAnlass = anlass;
 			this.patGeboren = geboren;
 			this.patKassenId = null;
 			this.patArztName = null;
 			this.patArztNummer = null;
 			this.patArztId = null;
+			this.patTelefon = SqlInfo.holeEinzelFeld("select adr0 from dta301 where id='"+this.getDtaID()+"' LIMIT 1");
 			
 		}catch(Exception ex){
+			ex.printStackTrace();
 			this.patAnrede = null;
 			this.patNachname = null;
 			this.patVorname = null;
@@ -164,6 +188,7 @@ public class Dta301Model {
 			this.patArztName = null;
 			this.patArztNummer = null;
 			this.patArztId = null;
+			this.patTelefon = null;
 			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der 301-er Daten, Klasse Dta301Model");
 		}
 	}
@@ -453,6 +478,22 @@ public class Dta301Model {
 
 	public String getX_patArztNummer() {
 		return x_patArztNummer;
+	}
+
+	public void setPatTelefon(String patTelefon) {
+		this.patTelefon = patTelefon;
+	}
+
+	public String getPatTelefon() {
+		return patTelefon;
+	}
+
+	public void setX_patTelefon(String x_patTelefon) {
+		this.x_patTelefon = x_patTelefon;
+	}
+
+	public String getX_patTelefon() {
+		return x_patTelefon;
 	}
 
 	public void setTable(JXTable table) {

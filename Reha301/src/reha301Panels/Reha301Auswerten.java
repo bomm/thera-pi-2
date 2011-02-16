@@ -380,6 +380,7 @@ public class Reha301Auswerten extends JXPanel{
 									@Override
 									protected Void doInBackground()
 											throws Exception {
+										try{
 										Reha301.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 										Reha301Einlesen einlesen = new Reha301Einlesen(eltern);
 										if(einlesen.decodeAndRead(Reha301.inbox+xtreelabel,xfile)){
@@ -388,6 +389,9 @@ public class Reha301Auswerten extends JXPanel{
 										}
 										Reha301.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 										doNachrichtVerschieben(((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel);
+										}catch(Exception ex){
+											ex.printStackTrace();
+										}
 										return null;
 									}
 									
@@ -801,7 +805,7 @@ public class Reha301Auswerten extends JXPanel{
 					patcombo.removeAllItems();
 					String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
 					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
-					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id,kassenid,arzt,arztid,kv_nummer,arzt_num from pat5 where n_name='"+pat.split("#")[1]+"' and "+
+					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id,kassenid,arzt,arztid,kv_nummer,arzt_num,telefonp from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					//String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
 					vec_patstamm = SqlInfo.holeFelder(cmd);
@@ -966,7 +970,8 @@ public class Reha301Auswerten extends JXPanel{
 			buf.append("kv_nummer='"+dta301mod.getPatKassenIk()+"', ");
 			buf.append("arzt='"+dta301mod.getPatArztName()+"', ");
 			buf.append("arzt_num='"+dta301mod.getPatArztNummer()+"', ");
-			buf.append("arztid='"+dta301mod.getPatArztId()+"'");
+			buf.append("arztid='"+dta301mod.getPatArztId()+"', ");
+			buf.append("telefonp='"+dta301mod.getPatTelefon()+"'");
 			SqlInfo.sqlAusfuehren(buf.toString());
 			show301WasCreated(patneuepatnr);
 			//System.out.println(buf.toString());
@@ -997,10 +1002,16 @@ public class Reha301Auswerten extends JXPanel{
 			return;
 		}
 		Vector<Object> vecobj = doSetPatientFuerNachricht(welcherpat);
-		
+		StringBuffer buf = new StringBuffer();
+		//nachfolgende 3 Zeilen später wieder ausschalten
+		//rezneuereznr = (String) JOptionPane.showInputDialog(null, "Rezeptnummer eingeben", "RH");
+		//int berichtid = Integer.parseInt((String) JOptionPane.showInputDialog(null, "Berichtnummer eingeben", ""));
+		//String disziplin = "Reha";
 		//***************/doNurZumTesten(vecobj);
 		//doNurZumTesten(vecobj);
-		
+		/*
+		 * Muß später wieder eingeschaltet werden
+		 */ 
 		int preisgruppe = Integer.parseInt((String)vecobj.get(6));
 		int posgruppe = 0;
 		String disziplin = null;
@@ -1017,10 +1028,7 @@ public class Reha301Auswerten extends JXPanel{
 		
 		String preispos = RezTools.getPosFromID(preisid, null, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
 
-		//System.out.println("Der Preis beträgt "+preis);
-		//System.out.println("Preis-ID = "+preisid);
-		//System.out.println("Kürzel = "+kuerzel);
-		//System.out.println("Die Positionsnummer = "+preispos);
+		
 		
 		String kid = SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse ='"+ktraeger+"' LIMIT 1");
  
@@ -1040,7 +1048,7 @@ public class Reha301Auswerten extends JXPanel{
 
 		rezneuereznr = (disziplin.equals("Reha") ? "RH" : "KG")+Integer.toString(reznummer);
 		rezneuangelegt = true;
-		StringBuffer buf = new StringBuffer();
+		
 		buf.append("insert into verordn set ");
 		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
 		buf.append("rez_nr='"+rezneuereznr+"', ");
@@ -1072,6 +1080,7 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("diagnose='"+(String)vecobj.get(3)+"\n"+(String)vecobj.get(5)+"'");
 		//System.out.println("\n"+buf.toString());
 		SqlInfo.sqlAusfuehren(buf.toString());
+		/*Bis hierher ausgeschaltet für selbsterzeugte Bewilligung*/
 		/************Jetzt die Dta301 beschreiben********/
 		buf.setLength(0);
 		buf.trimToSize();
@@ -1097,22 +1106,23 @@ public class Reha301Auswerten extends JXPanel{
 		SqlInfo.sqlAusfuehren(buf.toString());
 		String fallid = SqlInfo.holeEinzelFeld("select max(id) from dtafall");
 		JOptionPane.showMessageDialog(null, "<html>Die Verordnung <b>"+rezneuereznr+"</b> wurde <b>erfolgreich</b> angelegt.</html>");
-		//Jetzt nachfragen ob neuer Bericht angelegt werden soll
-		/* Nein - die Nachfragerei schenken wir uns - eine Reha muß einen E-Bericht abliefern
-		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie jetzt für diesen Fall einen Entlassbericht anlegen?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-		if(anfrage != JOptionPane.YES_OPTION){
-			return;	
-		}
-		*/
+
 		
 		//Testen ob Rentenversicherung//
 		//Hier den E-Bericht anlegen
+		/*
+		 * Unbedingt wieder einschalten
+		 */
 		int berichtid = SqlInfo.erzeugeNummer("bericht");
 		if(disziplin.equals("Reha")){
 			//Reha
 			if(isRVTraeger){
 				//RV-Träger
 				//Berichtübersicht erstellen
+				
+				/*Später wieder einschalten
+				 * 
+				 */
 				String cmd = "insert into berhist set pat_intern='"+dta301mod.getPatIntern()+"', "+
 				"berichtid='"+Integer.toString(berichtid)+"', "+
 				"berichttyp='DRV E-Bericht', "+
@@ -1122,7 +1132,7 @@ public class Reha301Auswerten extends JXPanel{
 				"erstelldat='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', "+
 				"empfid='0'";
 				SqlInfo.sqlAusfuehren(cmd);
-				
+				/**bis hierher ausgeschaltet**/				
 				//Berichtid in dta301 eintragen
 				buf.setLength(0);
 				buf.trimToSize();
@@ -1136,7 +1146,7 @@ public class Reha301Auswerten extends JXPanel{
 				buf.append("update dtafall set bearbeiter='301-er Automat' ");
 				buf.append("where id='"+fallid+"' LIMIT 1");
 				SqlInfo.sqlAusfuehren(buf.toString());
-				
+				/*Später wieder einschalten*/
 				//Bericht erstellen
 				buf.setLength(0);
 				buf.trimToSize();
@@ -1158,7 +1168,7 @@ public class Reha301Auswerten extends JXPanel{
 				buf.append("berichtid='"+Integer.toString(berichtid)+"',");
 				buf.append("terleut1='', terleut2=''");
 				SqlInfo.sqlAusfuehren(buf.toString());
-				
+				/**bis hierher ausgeschaltet**/
 				
 				
 			}else{

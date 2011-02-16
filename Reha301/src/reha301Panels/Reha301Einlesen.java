@@ -78,7 +78,7 @@ public class Reha301Einlesen{
 			"versicherungsnr","berechtigtennr","massnahmennr","geschlechtfamstand","national",
 			"artderleistung","diagschluessel","anrede","nachname","vorname","geboren",
 			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage",
-			"a12","a09","pnabm","adr0","adr1","klinik","aufnahmegeplant","aufnahmefruehestens"};
+			"a12","a09","pnabm","adr0","adr1","klinik","aufnahmegeplant","aufnahmefruehestens","telefon"};
 
 	int nachrichtentyp = -1;
 	boolean erstercheck = false;
@@ -292,7 +292,8 @@ public class Reha301Einlesen{
 			"ktraeger='"+dbHmap.get("ktraeger")+"', pnaab='"+dbHmap.get("beauftragtestelle")+"', auftragsleistung='"+
 			(auftragsleistung ? "T" : "F")+"', tage='"+dbHmap.get("tage")+"',edifact='"+buf.toString()+"', "+
 			"eilfall='"+dbHmap.get("a09")+"', leistung='"+dbHmap.get("a12")+"', "+
-			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"', receiver='"+dbHmap.get("klinik")+"'";
+			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"', receiver='"+dbHmap.get("klinik")+"',"+
+			"adr0='"+dbHmap.get("telefon").replace("/"," ")+"'";
 			SqlInfo.sqlAusfuehren(bedingung);
 			/*
 			int anfrage = JOptionPane.showConfirmDialog(null, "Nachricht im OpenOffice.org-Writer öffnen?","Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
@@ -317,12 +318,13 @@ public class Reha301Einlesen{
 			Object[] obj = null;
 			File xpfad = new File(pfad);
 			String test = new String(BytesFromFile(xpfad));
-
-			if(test.indexOf("\\n")>= 0 || test.indexOf("\\r")>= 0){
+			if(test.indexOf("\n")>= 0 || test.indexOf("\r")>= 0){
 				getVectorFromFile(xpfad,true);	
 			}else{
 				getVectorFromFile(xpfad,false);
 			}
+			//test.replace("\n", "");
+			//test.replace("\r", "");
 			
 			//Die Datei in die Textarea schreiben
 			//meldung.setText("");
@@ -420,6 +422,7 @@ public class Reha301Einlesen{
 		byte hochkomma = "'".getBytes()[0];
 		//System.out.println("ByteWert für Fragezeichen = "+fragezeichen.getBytes()[0]);
 		//System.out.println("ByteWert für Hochkomma    = "+hochkomma.getBytes()[0]);
+		int zeile = 0;
 		while (true) {
 			numRead = is.read(bytes,offset,1);
 			if(numRead > 0){
@@ -428,24 +431,34 @@ public class Reha301Einlesen{
 				baos.flush();
 				baos.close();
 				is.close();
+				inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
+				if(inhalt.length()>1){
+					edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));	
+				}
 				//System.out.println("Einlesen beendet");
 				break;
 			}
 			//Testen auf Zeilenende = \n
 			if(bytes[0] == 13){
 				count13++;
+				//continue;
 			}
 			if(bytes[0] == 10){
 				count10++;
+				//continue;
 			}
 			byte[] b = {bytes[0]};
 			//System.out.print("Byte="+new String(b)+" / Wert="+bytes[0]);
 			if(mitlinefeed){
+				
+				//System.out.println("Mit-Linefeed");
 				if(bytes[0] == ZEILENENDE || bytes[0]==SYSTEMZEILE || bytes[0]==10 ){
 					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
 					if(inhalt.substring(inhalt.length()-1).equals("'")){
+						//System.out.println("Mit-Linefeed und Ende der Zeile erkannt");
 						baos.flush();
 						baos.close();
+						//System.out.println("Zeile "+(zeile++)+" = "+String.valueOf(inhalt.substring(0,inhalt.length()-1)));
 						if(!inhalt.trim().equals("")){
 							//System.out.println("Vector angehängt "+inhalt);
 							edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));
@@ -456,7 +469,9 @@ public class Reha301Einlesen{
 					letztes_byte = bytes[0]; 
 				}
 			}else{
+				//System.out.println("Ohne-Linefeed");
 				if(	(bytes[0]==hochkomma && letztes_byte!=fragezeichen)  ){
+					System.out.println("Ohne-Linefeed - Zeile erkannt");
 					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
 					if(inhalt.substring(inhalt.length()-1).equals("'")){
 						baos.flush();
@@ -483,10 +498,14 @@ public class Reha301Einlesen{
 		teile = zeile.split("\\+");
 		/*************/
 		if(zeile.startsWith("ADR++1:")){
-			ret[0] = String.valueOf(teile[2].split(":")[1]+"\n"+teile[4]+" "+teile[3])+"\n";
-			dbHmap.put("strasse",teile[2].split(":")[1]);
-			dbHmap.put("plz",teile[4]);
-			dbHmap.put("ort",teile[3]);
+			try{
+				ret[0] = String.valueOf(teile[2].split(":")[1]+"\n"+teile[4]+" "+teile[3])+"\n";
+				dbHmap.put("strasse",teile[2].split(":")[1]);
+				dbHmap.put("plz",teile[4]);
+				dbHmap.put("ort",teile[3]);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			return ret;
 		}
 		if(zeile.startsWith("ADR+1++")){
@@ -518,13 +537,14 @@ public class Reha301Einlesen{
 			return ret;
 		}
 		if(zeile.startsWith("COM+")){
-			if(teile[2].trim().equals("TE")){
-				ret[0] = String.valueOf("Telefon: "+teile[1]);	
-				dbHmap.put("telefon",teile[1] );
-			}else if(teile[2].trim().equals("FX")){
-				ret[0] = String.valueOf("Fax: "+teile[1]);	
-			}else if(teile[2].trim().equals("EM")){
-				ret[0] = String.valueOf("Email: "+teile[1]);	
+			if(teile.length < 2){ret[0]="";return ret;}
+			if(teile[1].trim().endsWith(":TE")){
+				ret[0] = String.valueOf("Telefon: "+teile[1].split(":")[0]);	
+				dbHmap.put("telefon",teile[1].split(":")[0] );
+			}else if(teile[2].trim().equals(":FX")){
+				ret[0] = String.valueOf("Fax: "+teile[1].split(":")[0]);	
+			}else if(teile[2].trim().equals(":EM")){
+				ret[0] = String.valueOf("Email: "+teile[1].split(":")[0]);	
 			}
 			return ret;
 		}
@@ -575,8 +595,8 @@ public class Reha301Einlesen{
 		}
 		if(zeile.startsWith("DTM+48:")){
 			String datum = teile[1].split(":")[1];
-			ret[0] = String.valueOf("Bewilligte Tage: "+datum);
-			dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum) ));
+			ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+			dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
 			return ret;
 		}
 		if(zeile.startsWith("DTM+55:")){
@@ -586,13 +606,18 @@ public class Reha301Einlesen{
 			return ret;
 		}
 		if(zeile.startsWith("DTM+329:")){
+			try{
 			String datum = teile[1].split(":")[1];
 			datum = datum.substring(6,8)+"."+datum.substring(4,6)+"."+datum.substring(0,4);
 			ret[0] = String.valueOf("Geburtsdatum: "+datum);
 			dbHmap.put("geboren",DatFunk.sDatInSQL(datum));
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			return ret;
 		}
 		if(zeile.startsWith("NAT+2+")){
+			if(teile.length < 3){ret[0] = "Nationalität: D"; return ret;}
 			ret[0] = String.valueOf("Nationalität: "+teile[2]);
 			dbHmap.put("national",zeile);
 			return ret;
@@ -646,9 +671,14 @@ public class Reha301Einlesen{
 			ret[0] = "\n"+String.valueOf("Krankenkasse-IK: "+teile[3]);
 			dbHmap.put("ikkasse",teile[3]);
 			if(teile.length==8){
-				ret[0] = String.valueOf(ret[0]+"\n"+teile[6].split(":")[1]+"\n"+teile[7].split(":")[1]);
+				ret[0] = String.valueOf(ret[0]+"\n"+
+						(teile[6].split(":").length >= 2 ? teile[6].split(":")[1]+"\n" : "")+
+						(teile[7].split(":").length >= 2 ? teile[7].split(":")[1]+"\n" : ""));
+
+				
 			}else if(teile.length==7){
-				ret[0] = String.valueOf(ret[0]+"\n"+teile[6].split(":")[1]);
+				ret[0] = String.valueOf(ret[0]+"\n"+
+						(teile[6].split(":").length >= 2 ? teile[6].split(":")[1]+"\n" : ""));
 			}
 			return ret;
 		}
@@ -1216,11 +1246,11 @@ public class Reha301Einlesen{
 		decodeparms[4] = (Integer) IntegerTools.trailNullAndRetInt(auftragsdatei.substring(178,178+12));
 		decodeparms[5] = (Integer) IntegerTools.trailNullAndRetInt(auftragsdatei.substring(190,190+12));
 		decodeparms[6] = (String) auftragsdatei.substring(104,104+25).trim();
-		/*
+		
 		for(int i = 0; i < 8;i++){
 			System.out.println("Eingelesene Parameter = "+Integer.toString(i)+" "+decodeparms[i]);
 		}
-		*/
+		
 
 		/*
 		if(! datei.toUpperCase().startsWith((String)decodeparms[7])){
@@ -1284,9 +1314,15 @@ public class Reha301Einlesen{
 		String inipath = Reha301.progHome+"nebraska_windows.conf";
 		INIFile file = new INIFile(inipath);
 		int anzahl = file.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
+		System.out.println("\n\n\nAnzahl Keystores = "+anzahl);
 		String kstorefile=null;String kstorealias=null;String kstorepw=null; 
 		for(int i = 1; i <= anzahl;i++){
-			if(file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+decodeparms[2])){
+			/*
+			System.out.println("\nAlias im Store = "+file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)));
+			System.out.println("Gesuchter Alias = "+"IK"+((String)decodeparms[2]));
+			System.out.println("Sind identisch ="+file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+((String)decodeparms[2]).trim() ));
+			*/
+			if(file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+((String)decodeparms[2]).trim() )){
 				kstorefile = file.getStringProperty("KeyStores","KeyStoreFile"+Integer.toString(i));
 								
 				String pw = String.valueOf(file.getStringProperty("KeyStores","KeyStorePw"+Integer.toString(i)));
@@ -1295,9 +1331,14 @@ public class Reha301Einlesen{
 				kstorepw = man.decrypt (pw);
 				
 				kstorealias =  file.getStringProperty("KeyStores","KeyStoreAlias"+Integer.toString(i));
-				
+				break;
 			}
 		}
+		/*
+		System.out.println("KeystoreFile = "+kstorefile);
+		System.out.println("KeystorePw   = "+kstorepw);
+		System.out.println("KeystoreAlias = "+kstorealias);
+		*/
 		NebraskaKeystore keystore = 
 			new NebraskaKeystore(kstorefile,
 						kstorepw,

@@ -40,6 +40,7 @@ public class Reha301PatAuswahl extends JDialog{
 	Vector<Vector<String>> nachrichtenvec = new Vector<Vector<String>>();
 	String verordnungsart = null;
 	String eilfall = null;
+	
 	public Reha301PatAuswahl(Reha301Auswerten xeltern,String id){
 		super();
 		setTitle("Patient auswählen");

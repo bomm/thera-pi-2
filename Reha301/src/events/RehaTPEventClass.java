@@ -46,6 +46,7 @@ public class RehaTPEventClass{
 		listenerList.remove(RehaTPEventListener.class, rehaListener);
 		////System.out.println("Aktive Listener: "+listenerList.getListenerList().length);
 	}
+	
     // Hier wird gefeuert
     public static void fireRehaTPEvent(RehaTPEvent evt) {
         Object[] listeners = listenerList.getListenerList();
