@@ -87,7 +87,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JRtaTextField beginnstunde = null;
 	JRtaTextField beginnminute = null;
 	JTextArea beginneditpan = null;
-	
+	JRtaCheckBox beginncheck = null;
 	
 	//Unterbrechungsmeldung
 	JRtaRadioButton[] ubradio = {null,null,null};
@@ -157,6 +157,11 @@ public class Dta301 extends JXPanel implements FocusListener {
 			}
 		});
 	}
+	public void aktualisieren(String xreznummer){
+		this.reznummer = xreznummer;
+		holeDaten();
+		doTabelleFuellen();
+	}
 	private void makeListeners(){
 		al = new ActionListener(){
 			@Override
@@ -205,9 +210,10 @@ public class Dta301 extends JXPanel implements FocusListener {
 					int row = tabuebersicht.getSelectedRow();
 					if(row < 0){return;}
 					String id = tabuebersicht.getValueAt(row,3).toString();
+					String typ = (tabuebersicht.getValueAt(row,0).toString().contains("Ablehnung") ? "2" : "1");
 					Vector<Vector<String>> vec = SqlInfo.holeFelder("select pat_intern,rez_nr from dtafall where id ='"+id+"' LIMIT 1");
 					String scmd = "select edifact from dta301 where pat_intern='"+
-					vec.get(0).get(0)+"' and rez_nr='"+vec.get(0).get(1)+"' and nachrichtentyp='1' LIMIT 1";
+					vec.get(0).get(0)+"' and rez_nr='"+vec.get(0).get(1)+"' and nachrichtentyp='"+typ+"' LIMIT 1";
 					doZeigeEdifact(SqlInfo.holeEinzelFeld(scmd));
 				}
 
@@ -281,11 +287,12 @@ public class Dta301 extends JXPanel implements FocusListener {
 		//                 1             2           3   4   5   
 		String xwerte = "100dlu,right:max(100dlu;p),50dlu,p,20dlu:g";
 		//		          1    2  3   4  5   6  7   8   9   10    11  12   13
-		String ywerte = "25dlu,p,2dlu,p,2dlu,p,20dlu,p,2dlu,p,2dlu,35dlu,2dlu,p,fill:0:grow(1.0)";
+		String ywerte = "25dlu,p,2dlu,p,2dlu,p,2dlu,p,20dlu,p,2dlu,p,2dlu,35dlu,2dlu,p,fill:0:grow(1.0)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
 		/****Aufnahme oder Absage*****/
+		beginncheck = new JRtaCheckBox("Bewilligung liegt vor");
 		beginnradio[0] = new JRtaRadioButton("Nachricht ist eine Aufnahmemitteilung");
 		beginnradio[0].setOpaque(false);
 		bggroup.add(beginnradio[0]);
@@ -297,19 +304,21 @@ public class Dta301 extends JXPanel implements FocusListener {
 		beginnradio[2].setOpaque(false);
 
 		beginnradio[0].setSelected(true);
-		pan.add(beginnradio[0],cc.xyw(2, 2, 3, CellConstraints.FILL,CellConstraints.FILL));
-		pan.add(beginnradio[1],cc.xyw(2, 4, 3, CellConstraints.FILL,CellConstraints.FILL));
-		pan.add(beginnradio[2],cc.xyw(2, 6, 3, CellConstraints.FILL,CellConstraints.FILL));
+		beginncheck.setSelected(true);
+		pan.add(beginncheck,   cc.xyw(2, 2, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(beginnradio[0],cc.xyw(2, 4, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(beginnradio[1],cc.xyw(2, 6, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(beginnradio[2],cc.xyw(2, 8, 3, CellConstraints.FILL,CellConstraints.FILL));
 		/************Datum und Uhrzeit*******/
 		JLabel lab = new JLabel("Datum der Aufnahme / Rückstellung");
 		lab.setForeground(Color.BLUE);
-		pan.add(lab,cc.xy(2,8));
+		pan.add(lab,cc.xy(2,10));
 		beginndatum = new JRtaTextField("DATUM",true);
 		beginndatum.setText(DatFunk.sHeute());
-		pan.add(beginndatum,cc.xy(4,8));
+		pan.add(beginndatum,cc.xy(4,10));
 		lab = new JLabel("Uhrzeit der Aufnahme");
 		lab.setForeground(Color.BLUE);
-		pan.add(lab,cc.xy(2,10));
+		pan.add(lab,cc.xy(2,12));
 		/***********/
 		JXPanel pan2 = new JXPanel();
 		pan2.setOpaque(false);
@@ -330,7 +339,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		beginnminute.setText(getEdiTimeString()[1]);
 		pan2.add(beginnminute,cc2.xy(3, 1));
 		pan2.validate();
-		pan.add(pan2,cc.xy(4, 10,CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(pan2,cc.xy(4, 12,CellConstraints.FILL,CellConstraints.FILL));
 		/*********Textfeld für die Nachricht*********/
 		beginneditpan = new JTextArea();
 		beginneditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -344,10 +353,10 @@ public class Dta301 extends JXPanel implements FocusListener {
 		beginneditpan.setForeground(Color.BLUE);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(beginneditpan);
 		jscr.validate();
-		pan.add(jscr,cc.xyw(2,12,3,CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(jscr,cc.xyw(2,14,3,CellConstraints.FILL,CellConstraints.FILL));
 		/*********Button zum Abfeuern********/
 		buts[0] = ButtonTools.macheBut("Nachricht erzeugen und senden", "beginnsenden", al);
-		pan.add(buts[0],cc.xyw(2, 14, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(buts[0],cc.xyw(2, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(0),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
@@ -811,7 +820,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 			}
 			meldung301.doBeginn(this.beginndatum.getText().trim(),
 					this.beginnstunde.getText().trim()+this.beginnminute.getText().trim(),
-					beginneditpan.getText().trim(),aufnahmeart,true
+					beginneditpan.getText().trim(),aufnahmeart,beginncheck.isSelected()
 					);
 			doTabelleFuellen();
 			return true;
@@ -1152,7 +1161,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		item.setActionCommand("original");
 		item.addActionListener(al);
 		jPopupMenu.add(item);
-		if(bewilligung){
+		if(bewilligung || typ.equals("Ablehnung")){
 			item = new JMenuItem("Bearbeitete "+typ+" im OO-Writer öffnen");
 			item.setActionCommand("aufbereitet");
 			item.addActionListener(al);

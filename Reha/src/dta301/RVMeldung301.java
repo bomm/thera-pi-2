@@ -1210,7 +1210,7 @@ public class RVMeldung301 {
 		originaldata.clear();
 		String[] data = vecdta.get(0).get(29).split("\n");
 		for(int i = 0; i < data.length;i++){
-			originaldata.add(String.valueOf(data[i]));
+			originaldata.add(String.valueOf(data[i]).replace("\n", "").replace("\r", ""));
 		}
 	}
 	private String springeAufUndHole(String springeauf,String hole){
@@ -1219,7 +1219,7 @@ public class RVMeldung301 {
 			if(originaldata.get(i).startsWith(springeauf)){
 				for(int x = i; x < originaldata.size();x++){
 					if(originaldata.get(x).startsWith(hole)){
-						return String.valueOf(originaldata.get(x).toString());
+						return String.valueOf(originaldata.get(x).toString().replace("\n","").replace("\r",""));
 					}
 				}
 			}
