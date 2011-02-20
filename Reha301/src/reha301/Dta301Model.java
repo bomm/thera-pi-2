@@ -140,9 +140,9 @@ public class Dta301Model {
 			this.patAnrede= (pat.split("#").length >= 1 ? pat.split("#")[0] : "");
 			this.patNachname = (pat.split("#").length >= 2 ? pat.split("#")[1] : "");
 			this.patVorname = (pat.split("#").length >= 3 ? pat.split("#")[2] : "");
-			this.patStrasse =  adress.split("#")[0];
-			this.patPlz =  adress.split("#")[1];
-			this.patOrt =  adress.split("#")[2];
+			this.patStrasse =  (adress.split("#").length >= 1 ? adress.split("#")[0] : "");
+			this.patPlz =  (adress.split("#").length >= 2 ? adress.split("#")[1] : "");
+			this.patOrt =  (adress.split("#").length >= 3 ? adress.split("#")[2] : "");
 			this.patVsnr = vsnr;
 			try{
 				this.dtaKtraegerIK = ktraeger;				

@@ -170,7 +170,7 @@ public class Reha301Einlesen{
 			starteEinlesen(this.decodedfile,datei);
 			
 			//Wichtig für die Aktualisierung in Therapie
-			System.out.println("#AktualisierePat@20202@KG76271");
+			
 		/*)}else if(pfad.length()>0){
 			System.out.println("Pfad = "+pfad.replace("\\", "/"));
 			this.decodedfile = pfad.replace(".auf", ".org");
@@ -202,7 +202,22 @@ public class Reha301Einlesen{
 				e.printStackTrace();
 			}
 			//doPatTest();
+			return;
 		}
+		if(nachrichtentyp == 2){
+			if(dbHmap.get("beauftragtestelle")==null){
+				//dbHmap.put("beauftragtestelle",dbHmap.get("ktraeger"));
+				dbHmap.put("beauftragtestelle","");
+			}
+			try {
+				doBewilligungSpeichern(pfad,datei);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			//doPatTest();
+			return;
+		}
+
 	}
 	private void doPatTest(){
 		String sqlcmd = "select * from pat5 where n_name ='"+
@@ -295,6 +310,7 @@ public class Reha301Einlesen{
 			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"', receiver='"+dbHmap.get("klinik")+"',"+
 			"adr0='"+dbHmap.get("telefon").replace("/"," ")+"'";
 			SqlInfo.sqlAusfuehren(bedingung);
+			//System.out.println(bedingung);
 			/*
 			int anfrage = JOptionPane.showConfirmDialog(null, "Nachricht im OpenOffice.org-Writer öffnen?","Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(anfrage == JOptionPane.YES_OPTION){
@@ -305,7 +321,8 @@ public class Reha301Einlesen{
 
 			//System.out.println(bedingung);
 		}else{
-			//JOptionPane.showMessageDialog(null, "Die Bewilligung ist bereits in der Datenbank enthalten");
+			//System.out.println("Die Bewilligung ist bereits in der Datenbank enthalten");
+			JOptionPane.showMessageDialog(null, "Die Bewilligung ist bereits in der Datenbank enthalten");
 		}
 	}
 	private void doHmapLeeren(){
@@ -370,6 +387,18 @@ public class Reha301Einlesen{
 							}
 						}
 						/******************************************/
+						if(edifact_vec.get(start).contains("+MEDR02:D")){
+							if(!erstercheck){
+								nachrichtentyp = 2;
+								erstercheck = true;
+							}
+							obj = doAuswertenBewilligung(doUebersetzen(edifact_vec.get(i)),i);
+							if(obj[0] != null){
+								buf.append(StringTools.Escaped(obj[0].toString())+"\n");
+								//meldung.setText(meldung.getText()+obj[0].toString()+"\n");
+							}
+						}
+						/******************************************/
 						//Hier die neuen Anlässe einer Nachricht
 						//wie z.B. Antwort auf Verlängerungsantrag etc.
 						/******************************************/
@@ -384,7 +413,7 @@ public class Reha301Einlesen{
 							break;
 						}
 					}
-				
+					//System.out.println(fallbuf.toString());
 				}
 				JOptionPane.showMessageDialog(null, "In dieser Datei sind "+Integer.toString(anzahlunts)+" Nachrichten enthalten");
 				//Untersuchen wieviel Nachrichten enthalten sind
@@ -471,7 +500,7 @@ public class Reha301Einlesen{
 			}else{
 				//System.out.println("Ohne-Linefeed");
 				if(	(bytes[0]==hochkomma && letztes_byte!=fragezeichen)  ){
-					System.out.println("Ohne-Linefeed - Zeile erkannt");
+					//System.out.println("Ohne-Linefeed - Zeile erkannt");
 					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
 					if(inhalt.substring(inhalt.length()-1).equals("'")){
 						baos.flush();
@@ -532,7 +561,7 @@ public class Reha301Einlesen{
 			}else{
 				String meldung = "Achtung mehrere Reharelevante Diagnosen\n\nDiagnose "+Integer.toString(anzahldiagnosen)+
 				" = "+rvgkv;
-				JOptionPane.showMessageDialog(null, meldung);
+				//JOptionPane.showMessageDialog(null, meldung);
 			}
 			return ret;
 		}
@@ -685,6 +714,12 @@ public class Reha301Einlesen{
 		//Patient !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*******************
 		//***********************************************************
 		if(zeile.startsWith("PNA+BM")){
+			/*
+			System.out.println("Zeileninhalt = "+zeile);
+			for(int ii = 0; ii < teile.length;ii++){
+				System.out.println("Teilstück "+ii+" = "+teile[ii]);
+			}
+			*/
 			String inhalt = "";
 			if(!teile[2].trim().equals("")){
 				inhalt = "\n"+String.valueOf("KV-Nummer: "+teile[2]);
@@ -725,6 +760,9 @@ public class Reha301Einlesen{
 				inhalt = inhalt + "\nGeburtsname: "+	teile[10].split(":")[1];
 				ret[0] = inhalt;
 			}
+			// 0  1  2 3 4 5 6
+			//PNA+BM+ + +1+ +1:Finckh+:Konrad'
+
 			return ret;
 		}
 		//Beteiligte Institution: Beauftragte Stelle
@@ -872,6 +910,9 @@ public class Reha301Einlesen{
 		if(wert.equals("11")){
 			bewilligung= true;
 			return String.valueOf("11 - Bewilligung einer Leistung");
+		}else if(wert.equals("12")){
+			bewilligung = false;
+			return String.valueOf("18 - Absage einer Leistung");
 		}else if(wert.equals("18")){
 			bewilligung = false;
 			return String.valueOf("18 - Ablehnung einer Leistung");
@@ -1135,19 +1176,19 @@ public class Reha301Einlesen{
 			if(index.equals("71"))
 				{dbHmap.put("a12", "AR");return "A12 - 71 - Verfahrensart = Anschlußrehabilitation";}
 			if(index.equals("72"))
-				{dbHmap.put("a12", "Wiederholungsheilbehandlung");return "A12 - 72 - Verfahrensart = Wiederholungsheilbehandlung";}
+				{dbHmap.put("a12", "MED");return "A12 - 72 - Verfahrensart = Wiederholungsheilbehandlung";}
 			if(index.equals("73"))
-				return "A12 - 73 - Verfahrensart = Vorleistung nach § 6 Abs.2 RehaAnglG";
+				{dbHmap.put("a12", "MED");return "A12 - 73 - Verfahrensart = Vorleistung nach § 6 Abs.2 RehaAnglG";}
 			if(index.equals("74"))
-				return "A12 - 74 - Verfahrensart = Rehabehandlung in mehreren Behandl.abschnitten";
+				{dbHmap.put("a12", "MED");return "A12 - 74 - Verfahrensart = Rehabehandlung in mehreren Behandl.abschnitten";}
 			if(index.equals("75"))
-				return "A12 - 75 - Verfahrensart = Erstattungsfall";
+				{dbHmap.put("a12", "MED");return "A12 - 75 - Verfahrensart = Erstattungsfall";}
 			if(index.equals("76"))
-				return "A12 - 76 - Verfahrensart = Verfahren nach § 51 SGB V, § 105a AFG";
+				{dbHmap.put("a12", "MED");return "A12 - 76 - Verfahrensart = Verfahren nach § 51 SGB V, § 105a AFG";}
 			if(index.equals("77"))
-				return "A12 - 77 - Verfahrensart = Reha-Leistung aus dem Rentenverfahren";
+				{dbHmap.put("a12", "MED");return "A12 - 77 - Verfahrensart = Reha-Leistung aus dem Rentenverfahren";}
 			if(index.equals("78"))
-				return "A12 - 78 - Verfahrensart = Reha-Leistung nach Rechtsbehelf";
+				{dbHmap.put("a12", "MED");return "A12 - 78 - Verfahrensart = Reha-Leistung nach Rechtsbehelf";}
 			if(index.equals("79"))
 				{dbHmap.put("a12", "MED");return "A12 - 79 - Verfahrensart = Normales Reha-Verfahren";}
 			if(index.equals("80"))
@@ -1231,7 +1272,7 @@ public class Reha301Einlesen{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if(auftragsdatei.getBytes().length != 348){
+		if(auftragsdatei.getBytes().length > 348){
 			JOptionPane.showMessageDialog(null, "Der Aufbau dieser Auftragsdatei ist nicht korrekt");
 			return false;
 		}
@@ -1246,11 +1287,11 @@ public class Reha301Einlesen{
 		decodeparms[4] = (Integer) IntegerTools.trailNullAndRetInt(auftragsdatei.substring(178,178+12));
 		decodeparms[5] = (Integer) IntegerTools.trailNullAndRetInt(auftragsdatei.substring(190,190+12));
 		decodeparms[6] = (String) auftragsdatei.substring(104,104+25).trim();
-		
+		/*
 		for(int i = 0; i < 8;i++){
 			System.out.println("Eingelesene Parameter = "+Integer.toString(i)+" "+decodeparms[i]);
 		}
-		
+		*/
 
 		/*
 		if(! datei.toUpperCase().startsWith((String)decodeparms[7])){
@@ -1266,8 +1307,8 @@ public class Reha301Einlesen{
 	        long length = file.length();
 	    
 	        if (length > Integer.MAX_VALUE) {
-	      System.out.println("Datei zu groß zum einlesen");
-	      	return null;
+	        	System.out.println("Datei zu groß zum einlesen");
+	        	return null;
 	        }
 
 	        byte[] bytes = new byte[(int)length];
@@ -1314,7 +1355,7 @@ public class Reha301Einlesen{
 		String inipath = Reha301.progHome+"nebraska_windows.conf";
 		INIFile file = new INIFile(inipath);
 		int anzahl = file.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
-		System.out.println("\n\n\nAnzahl Keystores = "+anzahl);
+		//System.out.println("\n\n\nAnzahl Keystores = "+anzahl);
 		String kstorefile=null;String kstorealias=null;String kstorepw=null; 
 		for(int i = 1; i <= anzahl;i++){
 			/*

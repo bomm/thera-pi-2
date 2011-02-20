@@ -351,15 +351,15 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	private JScrollPane tree301(){
 		KnotenObjekt kobjekt = null;
-		kobjekt = new KnotenObjekt("301-Nachrichten","",false,null,"");
+		kobjekt = new KnotenObjekt("301-Nachrichten","",false,null,-1);
 		root = new JXTreeNode( kobjekt,true );
 		treeModel = new DefaultTreeModel(root);
 		File dir = new File(Reha301.inbox);
 		File[] files = dir.listFiles();
 		DefaultMutableTreeNode node = null;
 		for(int i = 0; i < files.length;i++){
-			if( (files[i].getName().toUpperCase().endsWith(".AUF")) || (files[i].length()==348) ){
-				kobjekt = new KnotenObjekt(files[i].getName(),"",false,files[i],Long.toString(files[i].length()));
+			if( (files[i].getName().toUpperCase().endsWith(".AUF")) || (files[i].length()==348) || (files[i].length()==334)){
+				kobjekt = new KnotenObjekt(files[i].getName(),"",false,files[i],Integer.parseInt(Long.toString(files[i].length())));
 				root.add(new JXTreeNode(kobjekt,true));
 			}
 		}
@@ -370,7 +370,9 @@ public class Reha301Auswerten extends JXPanel{
 			public void mouseClicked(MouseEvent arg0) {
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					String treelabel = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel;
-					if(((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.groesse.equals("348") ){
+					int gross = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.groesse;
+					if( (gross==348) || (gross==334) ){
+						//System.out.println("'Größe der Datei <= 348");
 						if(!vecgelesen.contains(treelabel)){
 							int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie die Nachricht "+treelabel+" einlesen und verarbeiten?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 							if(anfrage == JOptionPane.YES_OPTION){
@@ -383,18 +385,21 @@ public class Reha301Auswerten extends JXPanel{
 										try{
 										Reha301.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 										Reha301Einlesen einlesen = new Reha301Einlesen(eltern);
-										if(einlesen.decodeAndRead(Reha301.inbox+xtreelabel,xfile)){
+										boolean erfolg = false;
+										if( (erfolg=einlesen.decodeAndRead(Reha301.inbox+xtreelabel,xfile))){
 											vecgelesen.add(String.valueOf(xtreelabel));
 											((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.fertig = true;
+										}else{
+											//System.out.println("Ergenis von einlesen = "+erfolg);
 										}
 										Reha301.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 										doNachrichtVerschieben(((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel);
+										//System.out.println("Nach Naricht verschieben");
 										}catch(Exception ex){
 											ex.printStackTrace();
 										}
 										return null;
 									}
-									
 								}.execute();
 							}
 						}else{
@@ -469,7 +474,12 @@ public class Reha301Auswerten extends JXPanel{
 				}
 				if(cmd.equals("rezneuanlage")){
 					if(tab.getRowCount()<=0){return;}
-					doRezNeuanlage();
+					if(!tab.getValueAt(tab.getSelectedRow(), 3).toString().contains("Ablehnung")){
+						doRezNeuanlage();
+					}else{
+						doAblehnung();	
+					}
+					
 					//doUebetragAufPatient();
 				}
 				if(cmd.equals("nachrichtinwriter")){
@@ -644,6 +654,7 @@ public class Reha301Auswerten extends JXPanel{
 					vecobj.add((String)vec.get(i).get(1));
 					vecobj.add((String) artderNachricht[Integer.parseInt(vec.get(i).get(2))]+"-"+vec.get(i).get(8)+"-"+vec.get(i).get(9));
 					pat = vec.get(i).get(3).split("#");
+					//System.out.println(vec.get(i).get(3));
 					patangaben = "";
 					ortsangaben = "";
 					kassenangaben = "";
@@ -654,8 +665,16 @@ public class Reha301Auswerten extends JXPanel{
 						try{
 							patgeboren = pat[3];
 						}catch(Exception ex){
-							
+							ex.printStackTrace();
 						}
+					}else{
+						try{
+							patangaben =pat[0]+"#"+pat[1]+"#"+pat[2];
+							patgeboren = pat[3];
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+
 					}
 					vecobj.add((String) patangaben);
 					vecobj.add((String) ortsangaben);
@@ -804,7 +823,12 @@ public class Reha301Auswerten extends JXPanel{
 					patcombo.removeActionListener(al);
 					patcombo.removeAllItems();
 					String pat = tab.getValueAt(tab.getSelectedRow(), 4).toString();
+					if(pat.trim().equals("")){
+						return null;
+					}
 					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
+					//System.out.println("Patangaben = "+pat);
+					//System.out.println("geboren = "+geboren);
 					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id,kassenid,arzt,arztid,kv_nummer,arzt_num,telefonp from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					//String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
@@ -983,6 +1007,61 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	/*******************************************************************************/
 	/*******************************************************************************/
+	private void doAblehnung(){
+		String id = dta301mod.getDtaId();//tab.getValueAt(tab.getSelectedRow(), 11).toString();
+		String welcherpat = "";
+		welcherpat = dta301mod.getX_patIntern();//String.valueOf(vec_patstamm.get(patcombo.getSelectedIndex()).get(8));
+		dta301mod.transferXPatDataTo301();
+		Vector<Vector<String>> vecreznr = SqlInfo.holeFelder("select rez_nr,rez_datum from verordn where rez_nr like 'RH%' and pat_intern ='"+dta301mod.getPatIntern()+"'");
+		if(vecreznr.size() <= 0){
+			JOptionPane.showMessageDialog(null, "Für diesen Patient wurde keine Reha-Verordnung angelegt");
+			StringBuffer buf = new StringBuffer();
+			buf.append("update dta301 set ");
+			buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
+			buf.append("eingelesen='"+"T"+"', ");
+			buf.append("eingelesenam='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
+			buf.append("where id='"+id+"' LIMIT 1");
+			SqlInfo.sqlAusfuehren(buf.toString());	
+			int xrow = tab.convertRowIndexToModel(tab.getSelectedRow());
+			tabmod.setValueAt(Boolean.valueOf(true),xrow, 1);
+			tabmod.setValueAt((String)DatFunk.sHeute(),xrow, 13);
+			buts[1].setEnabled(false);
+			buts[0].setEnabled(false);			
+			return;
+		}
+		int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie die Absage dieser Reha-Verordnung zuordnen:\n"+
+				vecreznr.get(0).get(0)+" mit Datum "+DatFunk.sDatInDeutsch(vecreznr.get(0).get(1)), "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+		if(anfrage != JOptionPane.YES_OPTION){
+			return;	
+		}
+		StringBuffer buf = new StringBuffer();
+		buf.append("insert into dtafall set ");
+		buf.append("nachrichttyp='2', ");
+		buf.append("nachrichtart='2', ");
+		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
+		buf.append("rez_nr='"+vecreznr.get(0).get(0)+"', ");
+		buf.append("nachrichtdatum='"+SqlInfo.holeEinzelFeld("select datum from dta301 where id ='"+id+"' LIMIT 1")+"', ");
+		buf.append("nachrichtorg='"+
+				StringTools.EscapedDouble(SqlInfo.holeEinzelFeld("select esol from dta301 where id ='"+id+"' LIMIT 1"))+"', ");
+		buf.append("bearbeiter='301-er Automat'");
+		//System.out.println(buf.toString());
+		SqlInfo.sqlAusfuehren(buf.toString());
+		buf.setLength(0);
+		buf.trimToSize();
+		buf.append("update dta301 set rez_nr='"+vecreznr.get(0).get(0)+"', ");
+		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
+		buf.append("eingelesen='"+"T"+"', ");
+		buf.append("eingelesenam='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' ");
+		buf.append("where id='"+id+"' LIMIT 1");
+		SqlInfo.sqlAusfuehren(buf.toString());		
+		/************Dann die Tabelle regeln********/
+		int xrow = tab.convertRowIndexToModel(tab.getSelectedRow());
+		tabmod.setValueAt(Boolean.valueOf(true),xrow, 1);
+		tabmod.setValueAt((String)DatFunk.sHeute(),xrow, 13);
+		buts[1].setEnabled(false);
+		buts[0].setEnabled(false);
+		
+	}
 	private void doRezNeuanlage(){
 		try{
 		String id = dta301mod.getDtaId();//tab.getValueAt(tab.getSelectedRow(), 11).toString();
@@ -1012,6 +1091,7 @@ public class Reha301Auswerten extends JXPanel{
 		/*
 		 * Muß später wieder eingeschaltet werden
 		 */ 
+		
 		int preisgruppe = Integer.parseInt((String)vecobj.get(6));
 		int posgruppe = 0;
 		String disziplin = null;
@@ -1169,7 +1249,9 @@ public class Reha301Auswerten extends JXPanel{
 				buf.append("terleut1='', terleut2=''");
 				SqlInfo.sqlAusfuehren(buf.toString());
 				/**bis hierher ausgeschaltet**/
-				
+				//Dieser System.out bewirkt die Aktualisierung//
+				System.out.println("#AktualisierePat@"+
+						dta301mod.getPatIntern()+"@"+rezneuereznr);
 				
 			}else{
 				//Krankenkasse
@@ -1187,25 +1269,36 @@ public class Reha301Auswerten extends JXPanel{
 	private void doNachrichtVerschieben(String datei){
 		//JOptionPane.showMessageDialog(null,"Gesuchte Dateien = "+datei);
 		String datnamen = datei.substring(0,datei.length()-4);
+		String nurdat = datei.substring(datei.indexOf("/")+1);
+		nurdat = nurdat.substring(0,nurdat.indexOf("."));
+		//System.out.println("Der Reine Dateinamen = "+nurdat);
 		int anfrage = JOptionPane.showConfirmDialog(null, "Sollen die Datei --> "+datnamen+" <-- jetzt in den Ordner 'erledigt' verschoben werden?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage != JOptionPane.YES_OPTION){
 			return;	
 		}
+		File dir = new File(Reha301.inbox);
 		Reha301.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		try{
-			FileTools.copyFile(new File(Reha301.inbox+datei), new File(Reha301.inbox+"erledigt/"+datei), 1024*8, true);
-		}catch(IOException e){
-			//e.printStackTrace();
+		File[] files = dir.listFiles();
+		for(int i = 0; i < files.length;i++){
+			//System.out.println("name="+files[i].getName());
+			//System.out.println("pfad="+files[i].getPath());
+			if(files[i].getName().startsWith(nurdat) ){
+				try {
+					//System.out.println("Kopiere "+files[i].getPath().replace("\\", "/")+" nach\n"+Reha301.inbox+"erledigt/"+files[i].getName()+"\n");
+					FileTools.copyFile(new File(files[i].getPath().replace("\\", "/")), 
+							new File(Reha301.inbox+"erledigt/"+files[i].getName()), 1024*8, true);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+		
 		try{
-			FileTools.copyFile(new File(Reha301.inbox+datnamen), new File(Reha301.inbox+"erledigt/"+datnamen), 1024*8, true);
-		}catch(IOException e){
-			//e.printStackTrace();
-		}
-		try{
+			//System.out.println("3. Lösche Dateien: "+Reha301.inbox+datnamen);
 			FileTools.delFileWithPraefix(new File(Reha301.inbox), datnamen);				
 		}catch(Exception ex){
-			//ex.printStackTrace();
+			ex.printStackTrace();
 		}
 		try{
 			JXTreeNode node = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent());
@@ -1238,7 +1331,7 @@ public class Reha301Auswerten extends JXPanel{
 				String[] titel = {"","Patient=","Kostenträger=","Diagnose=","Fallart=",
 						"Eilfall=","Preisgruppe=","Diagnosegruppe="
 				};
-				System.out.println(Integer.toString(i)+" - "+titel[i]+vecobj.get(i));
+				//System.out.println(Integer.toString(i)+" - "+titel[i]+vecobj.get(i));
 			}
 			
 		}
@@ -1319,10 +1412,10 @@ public class Reha301Auswerten extends JXPanel{
 		public String pat_intern;
 		public String entschluessel;
 		public File file;
-		public String groesse;
+		public int groesse;
 		
 		
-		public KnotenObjekt(String titel,String rez_num,boolean fertig,File file,String groesse){
+		public KnotenObjekt(String titel,String rez_num,boolean fertig,File file,int groesse){
 			this.titel = titel;
 			this.fertig = fertig;
 			this.rez_num = rez_num;
