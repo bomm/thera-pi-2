@@ -267,12 +267,12 @@ public class Dta301 extends JXPanel implements FocusListener {
 		tabPan.setUI(new WindowsTabbedPaneUI());
 		
 		
-
+		tabPan.add("Nachrichtenübersicht",uebersicht=getUebersicht());
 		tabPan.add("Aufnahme/Absage", beginn=getBeginn());
 		tabPan.add("Unterbrechung",unterbrechung=getUnterbrechung());
 		tabPan.add("Verlängerung",verlaengerung=getVerlaengerung());
 		tabPan.add("Entlass-Mitteilung",abschluss=getEntlassung());
-		tabPan.add("Nachrichtenübersicht",uebersicht=getUebersicht());
+		
 		content.add(tabPan,BorderLayout.CENTER);
 		content.add(getFallDaten(),BorderLayout.WEST);
 		return content;

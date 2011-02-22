@@ -1086,8 +1086,8 @@ public class RVMeldung301 {
 			doDateiErstellen(1);
 			//Hier Die Email
 			try{
-				String ik_email = "select email1 from kass_adr where ik_kass='"+EMPFAENGERIK+"' LIMIT 1";
-				if(ik_email.equals("")){
+				String ik_email = SqlInfo.holeEinzelFeld("select email1 from kass_adr where ik_kasse='"+EMPFAENGERIK+"' LIMIT 1");
+				if( ik_email.equals("") ){
 					JOptionPane.showMessageDialog(null,"Dem Empfänger "+EMPFAENGERIK+" wurde keine Emailadresse zugewiesen!");
 					return false;
 				}
@@ -1097,9 +1097,12 @@ public class RVMeldung301 {
 				String pass1 = SystemConfig.hmEmailExtern.get("Password");
 				String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
 				
-				String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
-				//String recipient = (imtest ? "" : ik_email+";") +SystemConfig.hmEmailExtern.get("SenderAdresse");
-
+				//String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
+				String recipient = (imtest ? "" : ik_email+",") +SystemConfig.hmEmailExtern.get("SenderAdresse");
+				int frage = JOptionPane.showConfirmDialog(null, "Sind die unten angegebenen Emailadressen korrekt?\n\n"+recipient+"\n","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+				if(frage != JOptionPane.YES_OPTION){
+					return false;
+				}
 				String text = "";
 				boolean authx = (authent.equals("0") ? false : true);
 				boolean bestaetigen = false;

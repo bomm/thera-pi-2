@@ -62,7 +62,7 @@ public class EmailSendenExtern {
         //System.out.println("Auth = "+auth);
             // Eine neue Message erzeugen
             Message msg = new MimeMessage(session);
-            // Hier werden die Absender- und Empf�ngeradressen gesetzt
+            // Hier werden die Absender- und Empfängeradressen gesetzt
             msg.setFrom(new InternetAddress(senderAddress));
         	msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
                     recipientsAddress, false));            	
