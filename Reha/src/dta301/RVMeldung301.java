@@ -113,7 +113,7 @@ public class RVMeldung301 {
 		
 	}
 	/************************************************************/
-	public void doEbericht(EBerichtPanel epanel){
+	public boolean doEbericht(EBerichtPanel epanel){
 		epanel.abrDlg.setzeLabel("erzeuge Blatt 1");
 		holeVector();
 		int zeilen = 1;
@@ -381,7 +381,7 @@ public class RVMeldung301 {
 				EOL+NEWLINE);zeilen++;
 		if(this.shouldBreak){
 			JOptionPane.showMessageDialog(null, "In der Erstellung des E-Berichtes nach §301 ist ein Fehler aufgetreten.\nVersand findet nicht statt!!!");
-			return;
+			return false;
 		}
 		doKopfDaten();
 		doFussDaten();
@@ -403,19 +403,13 @@ public class RVMeldung301 {
 			"nachrichtauf='"+
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
+			return true;
 		}
-		/*
-		try {
-			doDateiErstellenFrei("C:/testbericht.txt",buf301Body.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		*/
-		
+		return false;
 	}
 	
 	/************************************************************/
-	public void doBeginn(String beginnDatum,String uhrZeit,String fliesstext,int aufnahmeart,boolean bewilligt){
+	public boolean doBeginn(String beginnDatum,String uhrZeit,String fliesstext,int aufnahmeart,boolean bewilligt){
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
@@ -584,10 +578,12 @@ public class RVMeldung301 {
 			"nachrichtauf='"+
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
+			return true;
 		}
-		
+		return false;
 	}
-	public void doVerlaengerung(String beginnDatum,String endeDatum,int vart, String hinweis){
+	
+	public boolean doVerlaengerung(String beginnDatum,String endeDatum,int vart, String hinweis){
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
 		holeVector();
 		int zeilen = 1;
@@ -742,11 +738,13 @@ public class RVMeldung301 {
 			"nachrichtauf='"+
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
+			return true;
 			/*************************/
 		}
+		return false;
 	}
  
-	public void doUnterbrechung(String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis){
+	public boolean doUnterbrechung(String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis){
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
 		holeVector();
 		int zeilen = 1;
@@ -834,10 +832,11 @@ public class RVMeldung301 {
 			"nachrichtauf='"+
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
-			
+			return true;
 		}
+		return false;
 	}
-	public void doEntlassung(String erstDatum,String letztDatum,String uhrZeit,
+	public boolean doEntlassung(String erstDatum,String letztDatum,String uhrZeit,
 			int arbeitsfaehig,int entlassform,boolean mitfahrgeld,String fahrgeld,String hinweis,
 			boolean nurfahrgeld){
 		if(!nurfahrgeld){
@@ -943,7 +942,9 @@ public class RVMeldung301 {
 			"nachrichtauf='"+
 			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 			SqlInfo.sqlAusfuehren(cmd);
+			return true;
 		}
+		return false;
 	}
 	private int doRechnungKopf(int zeilen,String gesamt,String hinweis,
 			String aufnahmedatum,String entlassdatum,boolean beientlass){
@@ -1027,11 +1028,11 @@ public class RVMeldung301 {
 
 		return zeilen;
 	}
-	public void doRechnung(String erstDatum,String letztDatum,
+	public boolean doRechnung(String erstDatum,String letztDatum,
 			Vector<Object[]> vecobj, String gesamt){
 			if(erstDatum.trim().length() < 10 || letztDatum.trim().length() < 10){
 				JOptionPane.showMessageDialog(null,"Fehler in der Abrechnung nach DTA-301, Datumswerte sind nicht korrekt");
-				return;
+				return false;
 			}
 			String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
 			holeVector();
@@ -1066,7 +1067,9 @@ public class RVMeldung301 {
 				"nachrichtauf='"+
 				StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
 				SqlInfo.sqlAusfuehren(cmd);
+				return true;
 			}
+			return false;
 			
 			
 	}
@@ -1074,6 +1077,10 @@ public class RVMeldung301 {
 		try {
 			originalSize =gesamtbuf.length();
 			doDateiErstellen(0);
+			int frage1 = JOptionPane.showConfirmDialog(null, "Die Nachricht --> "+strAktEREH+" <-- auf folgende IK verschlüsseln?\n\n"+EMPFAENGERIK+"\n\n","Achtun wichtige Anfrage",JOptionPane.YES_NO_OPTION);
+			if(frage1 != JOptionPane.YES_OPTION){
+				return false;
+			}
 			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
 			NebraskaKeystore store = new NebraskaKeystore(keystore, SystemConfig.hmAbrechnung.get("hmkeystorepw"),"123456", Reha.aktIK);
 			NebraskaEncryptor encryptor = store.getEncryptor(EMPFAENGERIK);
@@ -1093,13 +1100,16 @@ public class RVMeldung301 {
 				}
 				String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
 				String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
-				String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
-				String pass1 = SystemConfig.hmEmailExtern.get("Password");
+				//String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
+				//String pass1 = SystemConfig.hmEmailExtern.get("Password");
+				String benutzer = "dta301@rta.de";
+				String pass1 = "dta301rta";
 				String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
 				
+				String recipient = ik_email;
 				//String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
-				String recipient = (imtest ? "" : ik_email+",") +SystemConfig.hmEmailExtern.get("SenderAdresse");
-				int frage = JOptionPane.showConfirmDialog(null, "Sind die unten angegebenen Emailadressen korrekt?\n\n"+recipient+"\n","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+				//String recipient = (imtest ? "" : ik_email+",") +SystemConfig.hmEmailExtern.get("SenderAdresse");
+				int frage = JOptionPane.showConfirmDialog(null, "Ist die unten angegebene Emailadresse korrekt?\n\n"+recipient+"\n","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 				if(frage != JOptionPane.YES_OPTION){
 					return false;
 				}
@@ -1113,12 +1123,14 @@ public class RVMeldung301 {
 				ArrayList<String[]> attachments = new ArrayList<String[]>();
 				attachments.add(encodedDat);
 				attachments.add(aufDat);
-
+				
 				//System.out.println("Sender-IK = "+vecdta.get(0).get(4).toString());
 				EmailSendenExtern oMail = new EmailSendenExtern();
 				try{
-					oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
+					oMail.sendMail(smtphost, benutzer, pass1, benutzer, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
+					//oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
 					oMail = null;
+					return true;
 				}catch(Exception e){
 					e.printStackTrace( );
 					JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
@@ -1126,11 +1138,11 @@ public class RVMeldung301 {
 		        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
 		        			"- Sie haben keinen Kontakt zum Internet");
 				}
+				
 			}catch(Exception ex){
 					ex.printStackTrace();
+					return false;
 			}
-			return true;
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NebraskaCryptoException e) {
@@ -1158,6 +1170,7 @@ public class RVMeldung301 {
 		    bw.flush();
 		    fw.flush();
 		    fw.close();
+		    bw.close();
 		    return;
 		}else if(art == 1){
 			f = new File( (SystemConfig.dta301OutBox+(imtest ? "T" : "E")+"REH"+strAktEREH+".AUF").toLowerCase() );
@@ -1167,6 +1180,7 @@ public class RVMeldung301 {
 		    bw.flush();
 		    fw.flush();
 		    fw.close();
+		    bw.close();
 		    return;
 		}
 		

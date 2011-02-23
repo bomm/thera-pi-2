@@ -188,7 +188,7 @@ public class PatientMemoPanel extends JXPanel{
 	     jpan2.add(jtoolb);
 		jpan.add(jpan2,BorderLayout.NORTH);
 		jpan.add(span,BorderLayout.CENTER);
-		patientHauptPanel.memotab.addTab("Notitzen", jpan);
+		patientHauptPanel.memotab.addTab("Notizen", jpan);
 		/******************************************/
 		JToolBar jtoolb2 = new JToolBar();
 		jtoolb2.setOpaque(false);
