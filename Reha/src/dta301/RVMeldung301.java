@@ -77,6 +77,7 @@ public class RVMeldung301 {
 	int encryptedSize = -1;
 	int anzahlUnhs = 1;
 	int aktUnh = 1;
+	int lastCIN = -1;
 	boolean shouldBreak = false;
 	boolean imtest = false;
 	
@@ -474,8 +475,11 @@ public class RVMeldung301 {
 		if(aufnahmeart==0){
 			buf301Body.append("PRC+ADMIN3'"+NEWLINE);zeilen++;
 			buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;
-			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
-
+			String cin = springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R");
+			buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+			while( ! (cin=springeAufUndHoleNaechsten(cin,"CIN+").replace(":I0R",":10R")).equals("") ){
+				buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+			}
 			buf301Body.append("DTM+194:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("DTM+163:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
 			if(!fliesstext.equals("")){
@@ -636,7 +640,13 @@ public class RVMeldung301 {
 		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
 		/******************/
 		buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
-		buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
+		//buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
+		String cin = springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R");
+		buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+		while( ! (cin=springeAufUndHoleNaechsten(cin,"CIN+").replace(":I0R",":10R")).equals("") ){
+			buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+		}
+
 		buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
 		long tage = DatFunk.TageDifferenz(beginnDatum, endeDatum);
 		tage++;
@@ -701,7 +711,13 @@ public class RVMeldung301 {
 			buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
 			/******************/
 			buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
-			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
+			//buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
+			cin = springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R");
+			buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+			while( ! (cin=springeAufUndHoleNaechsten(cin,"CIN+").replace(":I0R",":10R")).equals("") ){
+				buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+			}
+			
 			buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
 			if(!hinweis.equals("")){
 				Vector<String> flvec = new Vector<String>();
@@ -883,7 +899,13 @@ public class RVMeldung301 {
 			buf301Body.append("PRC+ETL'"+NEWLINE);zeilen++;
 			buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B02")[arbeitsfaehig][0]+":B02"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B07")[entlassform][0]+":B07"+EOL+NEWLINE);zeilen++;
-			buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
+			//buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
+			String cin = springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R");
+			buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+			while( ! (cin=springeAufUndHoleNaechsten(cin,"CIN+").replace(":I0R",":10R")).equals("") ){
+				buf301Body.append(cin+EOL+NEWLINE);zeilen++;
+			}
+
 			buf301Body.append("DTM+194:"+mache10erDatum(erstDatum)+":102"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("DTM+293:"+mache10erDatum(letztDatum)+":102"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("DTM+96:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
@@ -1104,10 +1126,12 @@ public class RVMeldung301 {
 				//String pass1 = SystemConfig.hmEmailExtern.get("Password");
 				String benutzer = "dta301@rta.de";
 				String pass1 = "dta301rta";
-				String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
+				//String sender = SystemConfig.hmEmailExtern.get("SenderAdresse"); 
 				
 				String recipient = ik_email;
+				
 				//String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
+				
 				//String recipient = (imtest ? "" : ik_email+",") +SystemConfig.hmEmailExtern.get("SenderAdresse");
 				int frage = JOptionPane.showConfirmDialog(null, "Ist die unten angegebene Emailadresse korrekt?\n\n"+recipient+"\n","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 				if(frage != JOptionPane.YES_OPTION){
@@ -1128,7 +1152,6 @@ public class RVMeldung301 {
 				EmailSendenExtern oMail = new EmailSendenExtern();
 				try{
 					oMail.sendMail(smtphost, benutzer, pass1, benutzer, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
-					//oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
 					oMail = null;
 					return true;
 				}catch(Exception e){
@@ -1236,6 +1259,7 @@ public class RVMeldung301 {
 			if(originaldata.get(i).startsWith(springeauf)){
 				for(int x = i; x < originaldata.size();x++){
 					if(originaldata.get(x).startsWith(hole)){
+						lastCIN = Integer.valueOf(x);
 						return String.valueOf(originaldata.get(x).toString().replace("\n","").replace("\r",""));
 					}
 				}
@@ -1243,6 +1267,19 @@ public class RVMeldung301 {
 		}
 		return ret;
 	}
+	private String springeAufUndHoleNaechsten(String springeauf,String hole){
+		String ret = "";
+		if(originaldata.size() > (lastCIN+1)){
+			if(originaldata.get(lastCIN+1).startsWith(hole)){
+				lastCIN += 1;
+				return String.valueOf(originaldata.get(lastCIN).toString().replace("\n","").replace("\r",""));
+			}else{
+				return ret;
+			}
+		}
+		return ret;
+	}
+
 	private String untersucheCodeListe(String codeliste,int element){
 		//Z.B. :A12
 		String ret = "";

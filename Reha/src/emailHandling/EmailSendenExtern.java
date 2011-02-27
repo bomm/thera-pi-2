@@ -1,4 +1,13 @@
 package emailHandling;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -81,7 +90,20 @@ public class EmailSendenExtern {
             if(attachments.size()>0){
             	DataSource source = null;
             	for(int i = 0;i<attachments.size();i++){
+            		
             		messageBodyPart = new MimeBodyPart();
+            		/*
+            		FileInputStream file;
+					try {
+						file = new FileInputStream(attachments.get(i)[0]);
+	            		messageBodyPart.setDataHandler(new DataHandler(new Mail3Attachment(file, "application/octet-stream")));
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					*/
+            	      
     	           	source = new FileDataSource(attachments.get(i)[0]);
     	           	messageBodyPart.setDataHandler(new DataHandler(source));
     	           	messageBodyPart.setFileName(attachments.get(i)[1]);
@@ -92,7 +114,7 @@ public class EmailSendenExtern {
             msg.setContent(multipart);
 /*********************/            
             // Hier lassen sich HEADER-Informationen hinzuf�gen
-            msg.setHeader("Test", "Test");
+            //msg.setHeader("Test", "Test");
             if(bestaetigen){
             	msg.addHeader("Return-Receipt-To", senderAddress);	
             }
@@ -121,7 +143,7 @@ public class EmailSendenExtern {
         
             /*
         	javax.swing.JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
-        			"M�gliche Ursachen:\n"+
+        			"Mögliche Ursachen:\n"+
         			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
         			"- Sie haben kein Kontakt zum Internet");
             //e.printStackTrace( );
@@ -188,6 +210,107 @@ public class EmailSendenExtern {
             return new PasswordAuthentication(this.user, this.password);
         }
     }
+    
+/******************************************************/
+   class Mail3Attachment implements DataSource
+    {
+      /** Datei */
+      private byte[] m_File;
+      /** MimeType */
+      private String m_MimeType;
+
+      /**
+       * Erzeugt ein DataSource-Objekt über einen String
+       * @param p_File Datei als String
+       * @param p_MimeType MimeType
+       */
+      public Mail3Attachment(String p_File, String p_MimeType)
+      {
+        try
+        {
+          m_File = p_File.getBytes("iso-8859-1");
+          m_MimeType = p_MimeType;
+        }
+        catch (UnsupportedEncodingException ueException)
+        {
+          ueException.printStackTrace();
+        }
+      }  
+
+      /**
+       * Erzeugt ein DataSource-Objekt über einen InputStream
+       * @param p_File Datei als InputStream
+       * @param p_MimeType MimeType der Datei
+       */
+      public Mail3Attachment(InputStream p_File, String p_MimeType) throws IOException
+      {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        int ch;
+
+        // Gepuffertes lesen
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(p_File);
+
+        while((ch = bufferedInputStream.read()) != -1)
+        {
+          os.write(ch);
+        }
+        m_File = os.toByteArray();
+        m_MimeType = p_MimeType;
+      }
+
+      /**
+       * Erzeugt ein DataSource-Objekt über ein byte-Array
+       * @param p_File Datei als byte-Array
+       * @param p_MimeType MimeType der Datei
+       */
+      public Mail3Attachment(byte[] p_File, String p_MimeType)
+      {
+        m_File = p_File;
+        m_MimeType = p_MimeType;
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see javax.activation.DataSource#getInputStream()
+       */
+      public InputStream getInputStream() throws IOException
+      {
+        if (m_File == null)
+        {
+          throw new IOException("Keine Daten vorhanden");
+        }
+        return new ByteArrayInputStream(m_File);
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see javax.activation.DataSource#getOutputStream()
+       */
+      public OutputStream getOutputStream() throws IOException
+      {
+        throw new IOException("Nicht implementiert");
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see javax.activation.DataSource#getContentType()
+       */
+      public String getContentType()
+      {
+        return m_MimeType;
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see javax.activation.DataSource#getName()
+       */
+      public String getName()
+      {
+        return "dummy";
+      }
+    }
+
+    
    
 /*
     public static void main(String[] args) {

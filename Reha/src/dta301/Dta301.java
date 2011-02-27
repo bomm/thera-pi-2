@@ -928,6 +928,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 					}
 					JOptionPane.showMessageDialog(null, "Beginnmitteilung erfolgreich versandt!");
 					buts[0].setEnabled(true);
+					tabPan.setSelectedIndex(0);
 					
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -953,6 +954,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 					}
 					JOptionPane.showMessageDialog(null, "Verlängerung erfolgreich versandt!");
 					buts[3].setEnabled(true);
+					tabPan.setSelectedIndex(0);
 					
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -979,6 +981,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 					}
 					JOptionPane.showMessageDialog(null, "Unterbrechungsmeldung erfolgreich versandt!");
 					buts[1].setEnabled(true);
+					tabPan.setSelectedIndex(0);
 					
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -1005,7 +1008,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 					JOptionPane.showMessageDialog(null, "Entlassmitteilung erfolgreich versandt!");
 					buts[2].setEnabled(true);
 					setCursor(Reha.thisClass.normalCursor);
-					
+					tabPan.setSelectedIndex(0);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
