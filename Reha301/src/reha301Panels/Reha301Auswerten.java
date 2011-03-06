@@ -554,14 +554,23 @@ public class Reha301Auswerten extends JXPanel{
 		String ktraeger = tab.getValueAt(tab.getSelectedRow(), 7).toString();
 		//String kkasse = tab.getValueAt(tab.getSelectedRow(), 8).toString();
 		String id = tab.getValueAt(tab.getSelectedRow(), 11).toString();
-		String diag1 = SqlInfo.holeEinzelFeld("select diagschluessel from dta301 where id ='"+id+"' LIMIT 1");
-		String[] diag2 = diag1.split("\\+");
-		String diaggruppe = null;
+		//String diag1 = SqlInfo.holeEinzelFeld("select diagschluessel from dta301 where id ='"+id+"' LIMIT 1");
+		String diag1 = SqlInfo.holeEinzelFeld("select esol from dta301 where id ='"+id+"' LIMIT 1");
+		/*String[] diag2 = diag1.split("\\+");
 		if(diag2[2].split(":")[0].startsWith("M") || diag2[2].split(":")[0].startsWith("S") || 
-				diag2[2].split(":")[0].startsWith("Q")){
+				diag2[2].split(":")[0].startsWith("Q") || diag2[2].split(":")[0].startsWith("T") ){
+			diaggruppe = "04";
+		}
+		*/
+		String diaggruppe = null;
+		//Die muß ersetzt werden durch Abteilung 2300;
+		if(diag1.indexOf("CTA+ABT+2300") >= 0){
 			diaggruppe = "04";
 		}
 		rVTraeger = testeDTAIni(ktraeger,diaggruppe);
+		
+		diag1 = SqlInfo.holeEinzelFeld("select diagschluessel from dta301 where id ='"+id+"' LIMIT 1");
+		String[] diag2 = diag1.split("\\+");
 		String diagnose = diag2[2].split(":")[0];
 		String fallart = SqlInfo.holeEinzelFeld("select leistung from dta301 where id ='"+id+"' LIMIT 1");
 		String eilfall = SqlInfo.holeEinzelFeld("select eilfall from dta301 where id ='"+id+"' LIMIT 1");
@@ -1091,76 +1100,93 @@ public class Reha301Auswerten extends JXPanel{
 		/*
 		 * Muß später wieder eingeschaltet werden
 		 */ 
-		
-		int preisgruppe = Integer.parseInt((String)vecobj.get(6));
-		int posgruppe = 0;
+		boolean neuvo = true;		
+		Vector<Vector<String>> vecrhtest = SqlInfo.holeFelder("select rez_nr from verordn where pat_intern='"+dta301mod.getPatIntern()+"' and rez_nr like 'RH%'");
+		/******/
 		String disziplin = null;
-		if( ((String)vecobj.get(4)).equals("MED") ){posgruppe=2; disziplin="Reha";	}
-		if( ((String)vecobj.get(4)).equals("AR") ){posgruppe=3;	disziplin="Reha";}
-		if( ((String)vecobj.get(4)).equals("NACHSORGE") ){posgruppe=4;	disziplin="Physio";}
-		
-		
-		String kuerzel = (String) ((Object[])vecobj.get(0))[posgruppe]; // (String)vecobj.get(posgruppe); 
-
-		String preisid = RezTools.getIDFromKurzform(kuerzel, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));	
-
-		String preis = RezTools.getPreisAktFromID(preisid, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
-		
-		String preispos = RezTools.getPosFromID(preisid, null, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
-
-		
-		
-		String kid = SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse ='"+ktraeger+"' LIMIT 1");
- 
-		if(kid.trim().equals("")){
+		if(vecrhtest.size() > 0){
+			String msg = "Für diesen Patient existiert bereits eine oder mehrere Reha-Verordnung(en)\n\n";
+			msg = msg+vecrhtest.get(0).get(0)+"\n\n";
+			msg = msg+"Wollen Sie den Fall auf diese Verordnung übertragen?";
+			int frage = JOptionPane.showConfirmDialog(null, msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			if(frage == JOptionPane.YES_OPTION){
+				neuvo = false;
+				rezneuereznr = String.valueOf(vecrhtest.get(0).get(0));
+				disziplin = "Reha";
+			}
+		}
+		if(neuvo){
+			int preisgruppe = Integer.parseInt((String)vecobj.get(6));
+			int posgruppe = 0;
 			
-			String meldung = "Ein Kostenträger mit der IK "+ktraeger+" ist im aktuellen Kassen-Stamm\n"+
-			"nicht enthalten!!!!\n\n"+
-			"Bitte legen Sie zuerst den Kostenträger in Thera-Pi an.";
+			if( ((String)vecobj.get(4)).equals("MED") ){posgruppe=2; disziplin="Reha";	}
+			if( ((String)vecobj.get(4)).equals("AR") ){posgruppe=3;	disziplin="Reha";}
+			if( ((String)vecobj.get(4)).equals("NACHSORGE") ){posgruppe=4;	disziplin="Physio";}
 			
-			JOptionPane.showMessageDialog(null,meldung);
-			return;
+			
+			String kuerzel = (String) ((Object[])vecobj.get(0))[posgruppe]; // (String)vecobj.get(posgruppe); 
+
+			String preisid = RezTools.getIDFromKurzform(kuerzel, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));	
+
+			String preis = RezTools.getPreisAktFromID(preisid, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+			
+			String preispos = RezTools.getPosFromID(preisid, null, SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1));
+
+			
+			
+			String kid = SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse ='"+ktraeger+"' LIMIT 1");
+	 
+			if(kid.trim().equals("")){
+				
+				String meldung = "Ein Kostenträger mit der IK "+ktraeger+" ist im aktuellen Kassen-Stamm\n"+
+				"nicht enthalten!!!!\n\n"+
+				"Bitte legen Sie zuerst den Kostenträger in Thera-Pi an.";
+				
+				JOptionPane.showMessageDialog(null,meldung);
+				return;
+			}
+			
+			String ktraegername = SqlInfo.holeEinzelFeld("select kassen_nam1 from kass_adr where id ='"+kid+"' LIMIT 1");
+			
+			int reznummer = SqlInfo.erzeugeNummer((disziplin.equals("Reha") ? "rh" : "kg"));
+
+			rezneuereznr = (disziplin.equals("Reha") ? "RH" : "KG")+Integer.toString(reznummer);
+			rezneuangelegt = true;
+			
+			buf.append("insert into verordn set ");
+			buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
+			buf.append("rez_nr='"+rezneuereznr+"', ");
+			buf.append("rez_datum='"+SqlInfo.holeEinzelFeld("select datum from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1")+"', ");
+			buf.append("datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+			buf.append("lastdate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
+			String anzahlen = SqlInfo.holeEinzelFeld("select tage from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1");
+			buf.append("anzahl1='"+anzahlen+"', ");
+			buf.append("anzahl2='"+anzahlen+"', ");
+			buf.append("anzahl3='"+anzahlen+"', ");
+			buf.append("anzahl4='"+anzahlen+"', ");
+			buf.append("art_dbeh1='"+preisid+"', ");
+			buf.append("preise1='"+preis+"', ");
+			buf.append("pos1='"+preispos+"', ");
+			buf.append("kuerzel1='"+kuerzel+"', ");
+			buf.append("dauer='"+(disziplin.equals("Reha") ? "30" : "15")+"', ");
+			buf.append("zzregel='"+"0"+"', ");
+			buf.append("zzstatus='"+"0"+"', ");
+			buf.append("kid='"+kid+"', ");
+			buf.append("ktraeger='"+ktraegername+"', ");
+			buf.append("arzt='"+dta301mod.getPatArztName()+"', ");
+			buf.append("arztid='"+dta301mod.getPatArztId()+"', ");
+			buf.append("farbcode='"+""+"', ");
+			buf.append("jahrfrei='"+""+"', ");
+			buf.append("frequenz='"+(disziplin.equals("Reha") ? "5" : "")+"', ");
+			buf.append("barcodeform='"+(disziplin.equals("Reha") ? "4" : "0")+"', ");
+			buf.append("preisgruppe='"+Integer.toString(preisgruppe)+"', ");
+			buf.append("angelegtvon='"+"dta301"+"', ");
+			buf.append("diagnose='"+(String)vecobj.get(3)+"\n"+(String)vecobj.get(5)+"'");
+			//System.out.println("\n"+buf.toString());
+			SqlInfo.sqlAusfuehren(buf.toString());
+			/*Bis hierher ausgeschaltet für selbsterzeugte Bewilligung*/
 		}
 		
-		String ktraegername = SqlInfo.holeEinzelFeld("select kassen_nam1 from kass_adr where id ='"+kid+"' LIMIT 1");
-		
-		int reznummer = SqlInfo.erzeugeNummer((disziplin.equals("Reha") ? "rh" : "kg"));
-
-		rezneuereznr = (disziplin.equals("Reha") ? "RH" : "KG")+Integer.toString(reznummer);
-		rezneuangelegt = true;
-		
-		buf.append("insert into verordn set ");
-		buf.append("pat_intern='"+dta301mod.getPatIntern()+"', ");
-		buf.append("rez_nr='"+rezneuereznr+"', ");
-		buf.append("rez_datum='"+SqlInfo.holeEinzelFeld("select datum from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1")+"', ");
-		buf.append("datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-		buf.append("lastdate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");
-		String anzahlen = SqlInfo.holeEinzelFeld("select tage from dta301 where id='"+dta301mod.getDtaId()+"' LIMIT 1");
-		buf.append("anzahl1='"+anzahlen+"', ");
-		buf.append("anzahl2='"+anzahlen+"', ");
-		buf.append("anzahl3='"+anzahlen+"', ");
-		buf.append("anzahl4='"+anzahlen+"', ");
-		buf.append("art_dbeh1='"+preisid+"', ");
-		buf.append("preise1='"+preis+"', ");
-		buf.append("pos1='"+preispos+"', ");
-		buf.append("kuerzel1='"+kuerzel+"', ");
-		buf.append("dauer='"+(disziplin.equals("Reha") ? "30" : "15")+"', ");
-		buf.append("zzregel='"+"0"+"', ");
-		buf.append("zzstatus='"+"0"+"', ");
-		buf.append("kid='"+kid+"', ");
-		buf.append("ktraeger='"+ktraegername+"', ");
-		buf.append("arzt='"+dta301mod.getPatArztName()+"', ");
-		buf.append("arztid='"+dta301mod.getPatArztId()+"', ");
-		buf.append("farbcode='"+""+"', ");
-		buf.append("jahrfrei='"+""+"', ");
-		buf.append("frequenz='"+(disziplin.equals("Reha") ? "5" : "")+"', ");
-		buf.append("barcodeform='"+(disziplin.equals("Reha") ? "4" : "0")+"', ");
-		buf.append("preisgruppe='"+Integer.toString(preisgruppe)+"', ");
-		buf.append("angelegtvon='"+"dta301"+"', ");
-		buf.append("diagnose='"+(String)vecobj.get(3)+"\n"+(String)vecobj.get(5)+"'");
-		//System.out.println("\n"+buf.toString());
-		SqlInfo.sqlAusfuehren(buf.toString());
-		/*Bis hierher ausgeschaltet für selbsterzeugte Bewilligung*/
 		/************Jetzt die Dta301 beschreiben********/
 		buf.setLength(0);
 		buf.trimToSize();
@@ -1185,7 +1211,7 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("(select nachrichtentyp,id,pat_intern,rez_nr,datum,esol from dta301 where id='"+id+"' LIMIT 1"+")");
 		SqlInfo.sqlAusfuehren(buf.toString());
 		String fallid = SqlInfo.holeEinzelFeld("select max(id) from dtafall");
-		JOptionPane.showMessageDialog(null, "<html>Die Verordnung <b>"+rezneuereznr+"</b> wurde <b>erfolgreich</b> angelegt.</html>");
+		JOptionPane.showMessageDialog(null, "<html>Die Verordnung <b>"+rezneuereznr+"</b> wurde <b>erfolgreich</b> "+(neuvo ? "angelegt." : "aktualisiert.")+"</html>");
 
 		
 		//Testen ob Rentenversicherung//
@@ -1296,7 +1322,8 @@ public class Reha301Auswerten extends JXPanel{
 		
 		try{
 			//System.out.println("3. Lösche Dateien: "+Reha301.inbox+datnamen);
-			FileTools.delFileWithPraefix(new File(Reha301.inbox), datnamen);				
+			//FileTools.delFileWithPraefix(new File(Reha301.inbox), datnamen);	
+			FileTools.delFileWithPraefix(new File(Reha301.inbox), nurdat);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
