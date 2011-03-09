@@ -231,6 +231,13 @@ public class Dta301 extends JXPanel implements FocusListener {
 						boolean bewilligung =  tabuebersicht.getValueAt(row,0).toString().equals("Bewilligung");
 						doNachrichtenPopUp(e,bewilligung,typ);
 					}
+					if(e.getClickCount()==2 && e.getButton()==1){
+						int row = tabuebersicht.getSelectedRow();
+						if(row < 0){return;}
+						String scmd = "select nachrichtorg from dtafall where id ='"+
+						tabuebersicht.getValueAt(row,3)+"' LIMIT 1";
+						doZeigeEdifact(SqlInfo.holeEinzelFeld(scmd));
+					}
 				}
 			}
 			@Override

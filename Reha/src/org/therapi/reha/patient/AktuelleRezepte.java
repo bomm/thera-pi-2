@@ -884,6 +884,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[zzbild], i, 1);
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgrezstatus[rezstatus],i,5);
+					
+					if(vec.get(i).get(0).startsWith("RH") && Reha.thisClass.dta301panel != null){
+						final String testreznum = String.valueOf(vec.get(i).get(0)); 
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground()
+									throws Exception {
+									Reha.thisClass.dta301panel.aktualisieren(testreznum);
+								return null;
+							}
+						}.execute();
+					}
+
 					if(i==0){
 						//final int ix = i;
 						if(suchePatUeberRez){
@@ -1376,6 +1389,20 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		                			Reha.thisClass.patpanel.aktRezept.rezAngezeigt = (String)tabaktrez.getValueAt(ix, 0);
 		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
 		    						setCursor(Reha.thisClass.normalCursor);
+		    						final String testreznum = (String)tabaktrez.getValueAt(ix, 0).toString();
+		    						//System.out.println("**********"+testreznum+" "+Reha.thisClass.dta301panel);
+		    						new SwingWorker<Void,Void>(){
+										@Override
+										protected Void doInBackground()
+												throws Exception {
+												if( (testreznum.startsWith("RH")) && (Reha.thisClass.dta301panel != null) ){
+													Reha.thisClass.dta301panel.aktualisieren(testreznum);
+													//x
+												}
+											return null;
+										}
+		    							
+		    						}.execute();
 								}catch(Exception ex){
 		    						setCursor(Reha.thisClass.normalCursor);
 									ex.printStackTrace();

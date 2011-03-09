@@ -1249,8 +1249,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(((Integer)obj[0]) > 0 || ((Integer)obj[1]) > 0 ){
 			setCursor(Reha.thisClass.cdefault);
 			JOptionPane.showMessageDialog(jry,((StringBuffer)obj[2]).toString());
+		}else{
+			setCursor(Reha.thisClass.cdefault);
+			JOptionPane.showMessageDialog(jry,"Der Entlassbericht ist fehlerfrei");
 		}
-		setCursor(Reha.thisClass.cdefault);
+		
 	}
 	private void do301FallSteuerung(){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){return;}
@@ -1378,12 +1381,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		int diagnosen = 0;
 		for(int i = 0; i < 5;i++){
-			if(bta[i].getText().length() > 0 || btf[i+17].getText().length() > 0){
+			if(bta[i].getText().trim().length() > 0 || btf[i+17].getText().trim().length() > 0){
 				diagnosen++;
-				if(bta[i].getText().length() > 0 && btf[i+17].getText().length() <= 0){
+				if(bta[i].getText().trim().length() > 0 && btf[i+17].getText().trim().length() <= 0){
 					ifehler++;
 					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnoseschlüssel "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
-				}else if(bta[i].getText().length() <= 0 && btf[i+17].getText().length() > 0){
+				}else if(bta[i].getText().trim().length() <= 0 && btf[i+17].getText().trim().length() > 0){
 					ifehler++;
 					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
 				}
