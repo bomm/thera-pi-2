@@ -209,7 +209,7 @@ public class RVMeldung301 {
 			}
 		}
 		buf301Body.append("RFF+AEA:99999"+EOL+NEWLINE);zeilen++;
-		flvec = StringTools.fliessTextZerhacken(StringTools.do301String(epanel.btf[25].getText().trim()), 70, "\n");
+		flvec = StringTools.fliessTextZerhacken(StringTools.do301String(epanel.btf[25].getText().trim()), 55, "\n");
 		if(flvec.size() > 1 ){
 			buf301Body.append("FTX+BRF+++B:"+flvec.get(0)+EOL+NEWLINE);zeilen++;
 			buf301Body.append("FTX+BRF+++B:"+flvec.get(1)+EOL+NEWLINE);zeilen++;
