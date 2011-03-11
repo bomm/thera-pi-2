@@ -1031,12 +1031,13 @@ public class RVMeldung301 {
 		String[] positionen = {"Fako1","Fako2","AHBBefund"}; 
 		List<String> list1 = Arrays.asList(positionen);
 
-		String[] schluessel = {"50299","50270","50110","12300"}; 
+		String[] schluessel = {"50299","50270","50110","70501"}; 
 
 		String clisegment = "";
 		int pos = -1;
 		if( (pos=list1.indexOf((String)obj[2])) < 0){
-			clisegment = schluessel[3];
+			return zeilen;
+			//clisegment = schluessel[3];
 		}else{
 			clisegment = schluessel[pos];
 		}

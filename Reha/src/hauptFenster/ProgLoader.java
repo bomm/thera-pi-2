@@ -535,7 +535,8 @@ public void Dta301Fenster(int setPos,String sparam) {
 	}
 	JComponent vk = AktiveFenster.getFensterAlle("DTA301");
 	if(vk != null){
-		Reha.thisClass.dta301panel.aktualisieren(Reha.thisClass.patpanel.vecaktrez.get(1));
+		Reha.thisClass.dta301panel.aktualisieren(sparam);
+		//Reha.thisClass.dta301panel.aktualisieren(Reha.thisClass.patpanel.vecaktrez.get(1));
 		////System.out.println("InternalFrame Anmeldungen bereits geöffnet");
 		containerHandling(((JDta301Internal)vk).getDesktop());
 		((JDta301Internal)vk).aktiviereDiesenFrame( ((JDta301Internal)vk).getName());

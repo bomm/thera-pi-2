@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXHeader;
@@ -109,6 +110,11 @@ public class PassWort extends JXPanel implements KeyListener, ActionListener{
 		this.add(jgrid,BorderLayout.CENTER);
 		this.setVisible(true);
 		this.addKeyListener(this);
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				pwTextFeld.requestFocus();
+			}
+		});
 
 	}
 
