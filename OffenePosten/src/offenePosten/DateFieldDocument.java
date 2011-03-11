@@ -29,7 +29,6 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 private boolean init = false;
 	 SimpleDateFormat datumsFormat = new SimpleDateFormat ("dd.MM.yyyy"); //Konv.
 	 // **** Attribute Ende
-
 	 // **** Konstruktor 1
 	 public DateFieldDocument(JFormattedTextField textComponent,boolean datumHeute) { 
 	  this.textComponent = textComponent;       // Hiermit wird jetzt gearbeitet
