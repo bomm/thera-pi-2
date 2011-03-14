@@ -98,26 +98,27 @@ public class OffenePosten implements WindowListener{
 					decrypted = new String("");
 				}
 				dbPassword = decrypted.toString();
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
+				INIFile rinif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];
 				aktIK = args[1];
 				
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/offeneposten.ini");
-				mahnParameter.put("frist1", (Integer) inif.getIntegerProperty("General","TageBisMahnung1") );
-				mahnParameter.put("frist2", (Integer) inif.getIntegerProperty("General","TageBisMahnung2") );
-				mahnParameter.put("frist3", (Integer) inif.getIntegerProperty("General","TageBisMahnung3") );
-				mahnParameter.put("einzelmahnung", (Boolean) (inif.getIntegerProperty("General","EinzelMahnung").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-				mahnParameter.put("drucker", (String) inif.getStringProperty("General","MahnungDrucker") );
-				mahnParameter.put("exemplare", (Integer) inif.getIntegerProperty("General","MahnungExemplare") );
-				mahnParameter.put("inofficestarten", (Boolean) (inif.getIntegerProperty("General","InOfficeStarten").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-				mahnParameter.put("erstsuchenab", (String) inif.getStringProperty("General","AuswahlErstAb") );
-				mahnParameter.put("formular1", (String) inif.getStringProperty("General","FormularMahnung1")  );
-				mahnParameter.put("formular2", (String) inif.getStringProperty("General","FormularMahnung2")  );
-				mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
-				mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
-				mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
+				INIFile oinif = new INIFile(args[0]+"ini/"+args[1]+"/offeneposten.ini");
+				mahnParameter.put("frist1", (Integer) oinif.getIntegerProperty("General","TageBisMahnung1") );
+				mahnParameter.put("frist2", (Integer) oinif.getIntegerProperty("General","TageBisMahnung2") );
+				mahnParameter.put("frist3", (Integer) oinif.getIntegerProperty("General","TageBisMahnung3") );
+				mahnParameter.put("einzelmahnung", (Boolean) (oinif.getIntegerProperty("General","EinzelMahnung") == 1 ? Boolean.TRUE : Boolean.FALSE) );
+				mahnParameter.put("drucker", (String) oinif.getStringProperty("General","MahnungDrucker") );
+				mahnParameter.put("exemplare", (Integer) oinif.getIntegerProperty("General","MahnungExemplare") );
+				mahnParameter.put("inofficestarten", (Boolean) (oinif.getIntegerProperty("General","InOfficeStarten") == 1 ? Boolean.TRUE : Boolean.FALSE) );
+				mahnParameter.put("erstsuchenab", (String) oinif.getStringProperty("General","AuswahlErstAb") );
+				mahnParameter.put("formular1", (String) oinif.getStringProperty("General","FormularMahnung1")  );
+				mahnParameter.put("formular2", (String) oinif.getStringProperty("General","FormularMahnung2")  );
+				mahnParameter.put("formular3", (String) oinif.getStringProperty("General","FormularMahnung3")  );
+				mahnParameter.put("formular4", (String) oinif.getStringProperty("General","FormularMahnung4")  );
+				mahnParameter.put("diralterechnungen", (String) oinif.getStringProperty("General","DirAlteRechnungen")  );
+				System.out.println(mahnParameter);
 				AbrechnungParameter(progHome);
 				FirmenDaten(progHome);
 
