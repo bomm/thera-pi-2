@@ -620,13 +620,16 @@ public class Dta301 extends JXPanel implements FocusListener {
 		JLabel lab = new JLabel("Übersicht der Nachrichten zu diesem Fall");
 		lab.setForeground(Color.BLUE);
 		pan.add(lab,cc.xy(2,2));
-		String[] headers = {"Anlass","Datum","Bearbeiter",""};
+		String[] headers = {"Anlass","Datum","Bearbeiter","id","esol","icr"};
 		moduebersicht = new MyTermTableModel();
 		moduebersicht.setColumnIdentifiers(headers);
 		tabuebersicht = new JXTable(moduebersicht);
 		tabuebersicht.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
+		tabuebersicht.getColumn(0).setMinWidth(150);
 		tabuebersicht.getColumn(3).setMinWidth(0);
-		tabuebersicht.getColumn(3).setMaxWidth(30);
+		tabuebersicht.getColumn(3).setMaxWidth(35);
+		tabuebersicht.getColumn(4).setMaxWidth(60);
+		tabuebersicht.getColumn(5).setMaxWidth(60);
 		tabuebersicht.setName("uebersicht");
 		tabuebersicht.addMouseListener(ml);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tabuebersicht);
@@ -745,7 +748,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 							"Aufnahmemitteilung","Unterbrechungsmeldung","Verlängerung","Entlassmitteilung",
 							"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung",
 							"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung"};
-					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter,id from dtafall where pat_intern='"+
+					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter,id,esolname,icr from dtafall where pat_intern='"+
 					String.valueOf(Reha.thisClass.patpanel.patDaten.get(29))+
 					"' and rez_nr='"+
 					reznummer+
@@ -765,6 +768,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 						dummy.add(DatFunk.sDatInDeutsch(vec.get(i).get(1)));
 						dummy.add(vec.get(i).get(2));
 						dummy.add(vec.get(i).get(3));
+						dummy.add(vec.get(i).get(4));
+						dummy.add(vec.get(i).get(5));
 						moduebersicht.addRow((Vector<String>)dummy.clone());
 					}
 					if(moduebersicht.getRowCount()>0){
@@ -1108,7 +1113,9 @@ public class Dta301 extends JXPanel implements FocusListener {
 				meldung = meldung + "Narchittyp: <b>Entlassmitteilung"+
 				"</b><br><br>Aufnahmetag: <b>"+entlasserstdatum.getText()+
 				"</b><br><br>Entlasstag: <b>"+entlassletztdatum.getText()+
-				"</b><br><br>Entlass-Uhrzeit: <b>"+entlassstunde.getText()+":"+entlassminute.getText();
+				"</b><br><br>Entlass-Uhrzeit: <b>"+entlassstunde.getText()+":"+entlassminute.getText()+
+				"</b><br><br>Arbeitsfähigkeit: <b><font color='#ff0000'>"+entlassafcombo.getSelectedItem().toString()+"</font>"+
+				"</b><br><br>Arbeitsform: <b>"+entlassartcombo.getSelectedItem().toString();
 			}else{
 				meldung = meldung + "Narchittyp: <b>Nur Fahrgeldberechnung";
 			}

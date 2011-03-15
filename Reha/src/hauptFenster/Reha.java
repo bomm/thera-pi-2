@@ -2252,7 +2252,7 @@ public void actionPerformed(ActionEvent arg0) {
 			JOptionPane.showMessageDialog(null, "Keine Berechtigung -> Funktion Ausbuchen RGAF-Faktura");
 			return;
 		}
-		new LadeProg(Reha.proghome+"Oprgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
 	if(cmd.equals("kassenbuch")){

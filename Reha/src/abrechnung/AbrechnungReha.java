@@ -674,7 +674,7 @@ public class AbrechnungReha extends JXPanel{
 			//System.out.println("Gesamtbetrag = "+dcf.format(gesamtPreis.doubleValue()) );
 			//System.out.println("ID von dta301 = "+id );
 			RVMeldung301 meldung = new RVMeldung301(11,id);
-			meldung.doRechnung(tagevec.get(0), tagevec.get(tagevec.size()-1), objvec, dcf.format(gesamtPreis.doubleValue()));
+			meldung.doRechnung(tagevec.get(0), tagevec.get(tagevec.size()-1), objvec, dcf.format(gesamtPreis.doubleValue()),Integer.parseInt(aktRechnung));
 			return true;
 		}catch(Exception ex){ex.printStackTrace();return false;}
 		

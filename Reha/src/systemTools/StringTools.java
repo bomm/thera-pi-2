@@ -418,7 +418,7 @@ public class StringTools {
 	}
 	public static String do301String(String string){
 		String ret = string;
-		ret = ret.replace("?", "??").replace("'","?'").replace(":", "?:");
+		ret = ret.replace("?", "??").replace("'","?'").replace(":", "?:").replace("+", "?+");
 		ret = ret.replace("ü","}").replace("ä","{").replace("ö","|").replace("ß","~");
 		ret = ret.replace("Ü","]").replace("Ä","[").replace("Ö","\\");
 		//ret = ret.replace(":", "?:").replace(",","?,");

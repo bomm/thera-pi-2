@@ -393,7 +393,7 @@ public class RVMeldung301 {
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
 		epanel.abrDlg.setzeLabel("E-Bericht verschlüsseln");
-		if(doKeyStoreAktion()){
+		if(doKeyStoreAktion(true)){
 			//Mail Versenden
 			epanel.abrDlg.setzeLabel("E-Bericht versenden");
 			//In neue Tabelle schreiben
@@ -402,7 +402,9 @@ public class RVMeldung301 {
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
 			"nachrichtauf='"+
-			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"', "+
+			"esolname='"+(imtest ? "T" : "E")+"REH"+strAktEREH+"', "+
+			"icr='"+LFDNUMMER+"'";
 			SqlInfo.sqlAusfuehren(cmd);
 			return true;
 		}
@@ -567,7 +569,7 @@ public class RVMeldung301 {
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
 		
-		if(doKeyStoreAktion()){
+		if(doKeyStoreAktion(true)){
 			//Mail Versenden
 			//In neue Tabelle schreiben
 			String typ = "";
@@ -580,13 +582,28 @@ public class RVMeldung301 {
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.Escaped(gesamtbuf.toString())+"',"+
 			"nachrichtauf='"+
-			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"', "+
+			"esolname='"+(imtest ? "T" : "E")+"REH"+strAktEREH+"', "+
+			"icr='"+LFDNUMMER+"'";
+
 			SqlInfo.sqlAusfuehren(cmd);
 			return true;
 		}
 		return false;
 	}
-	
+	/*********************************
+	 * 
+	 * 
+	 * 
+	 * 
+	 * @param beginnDatum
+	 * @param endeDatum
+	 * @param vart
+	 * @param hinweis
+	 * @return
+	 * 
+	 * 
+	 */
 	public boolean doVerlaengerung(String beginnDatum,String endeDatum,int vart, String hinweis){
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
 		holeVector();
@@ -744,16 +761,22 @@ public class RVMeldung301 {
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
 		anzahlUnhs++;
-		if(doKeyStoreAktion()){
+		if(doKeyStoreAktion(true)){
 			//Mail Versenden
 			//In neue Tabelle schreiben
-			String cmd = "insert into dtafall set nachrichttyp='5', nachrichtart='5', pat_intern='"+
-			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
-			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
-			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
-			"nachrichtauf='"+
-			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
-			SqlInfo.sqlAusfuehren(cmd);
+			try{
+				String cmd = "insert into dtafall set nachrichttyp='5', nachrichtart='5', pat_intern='"+
+				vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
+				"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
+				StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
+				"nachrichtauf='"+
+				StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"', "+
+				"esolname='"+(imtest ? "T" : "E")+"REH"+strAktEREH+"', "+
+				"icr='"+LFDNUMMER+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			return true;
 			/*************************/
 		}
@@ -838,7 +861,7 @@ public class RVMeldung301 {
 		intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
 		anzahlUnhs++;
-		if(doKeyStoreAktion()){
+		if(doKeyStoreAktion(true)){
 			//Mail Versenden
 			//In neue Tabelle schreiben
 			String cmd = "insert into dtafall set nachrichttyp='4', nachrichtart='4', pat_intern='"+
@@ -846,7 +869,9 @@ public class RVMeldung301 {
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
 			"nachrichtauf='"+
-			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"', "+
+			"esolname='"+(imtest ? "T" : "E")+"REH"+strAktEREH+"', "+
+			"icr='"+LFDNUMMER+"'";
 			SqlInfo.sqlAusfuehren(cmd);
 			return true;
 		}
@@ -921,7 +946,7 @@ public class RVMeldung301 {
 				aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh),"0",true,5);
 				zeilen=1;
 				zeilen = doRechnungKopf(zeilen,fahrgeld,hinweis,
-				mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
+				mache10erDatum(erstDatum),mache10erDatum(letztDatum),true,9999);
 				zeilen = doFahrgeld(zeilen,fahrgeld,hinweis,
 				mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
 				buf301Body.append("UNT+"+
@@ -935,7 +960,7 @@ public class RVMeldung301 {
 			shouldBreak = false;
 			String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
 			zeilen = doRechnungKopf(zeilen,fahrgeld,hinweis,
-					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
+					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true,9999);
 			zeilen = doFahrgeld(zeilen,fahrgeld,hinweis,
 					mache10erDatum(erstDatum),mache10erDatum(letztDatum),true);
 			buf301Body.append("UNT+"+
@@ -952,7 +977,7 @@ public class RVMeldung301 {
 		strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
 
 		/**************Zusätzliche Fahrgeldrechnung erstellen*************/
-		if(doKeyStoreAktion()){
+		if(doKeyStoreAktion(true)){
 			//Mail Versenden
 			//In neue Tabelle schreiben
 			String typus = (mitfahrgeld ? "12" : "6");
@@ -962,14 +987,17 @@ public class RVMeldung301 {
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
 			"nachrichtauf='"+
-			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+			StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"', "+
+			"esolname='"+(imtest ? "T" : "E")+"REH"+strAktEREH+"', "+
+			"icr='"+LFDNUMMER+"'";
 			SqlInfo.sqlAusfuehren(cmd);
 			return true;
 		}
 		return false;
 	}
 	private int doRechnungKopf(int zeilen,String gesamt,String hinweis,
-			String aufnahmedatum,String entlassdatum,boolean beientlass){
+			String aufnahmedatum,String entlassdatum,boolean beientlass,int xrnummer){
+		
 		String test = "";
 		String aktunh = StringTools.fuelleMitZeichen(Integer.toString(aktUnh), "0", true, 5);
 		buf301Body.append("UNH+"+aktunh+"+MEDR04:D:01A:KR:97B'"+NEWLINE);zeilen++;
@@ -978,8 +1006,8 @@ public class RVMeldung301 {
 		buf301Body.append("DTM+3:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		//Rechnungsnummer im RTA
-		int rnummer = SqlInfo.erzeugeNummer("rnr");
-		buf301Body.append("RFF+CKN:"+Integer.toString(rnummer)+EOL+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		//int rnummer = SqlInfo.erzeugeNummer("rnr");
+		buf301Body.append("RFF+CKN:"+Integer.toString(xrnummer)+EOL+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		buf301Body.append("MOA+39:"+gesamt+":EUR"+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
@@ -989,7 +1017,7 @@ public class RVMeldung301 {
 		buf301Body.append("PNA+MT++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++; //Hier die div. IK's einbauen
 		buf301Body.append("CTA+ABT+2300"+EOL+NEWLINE);zeilen++; //hier nach Inikationsgruppen untersuchen
 		buf301Body.append("RFF+AES:"+(REHANUMMER =vecdta.get(0).get(2).toString()) +EOL+NEWLINE);zeilen++;
-		buf301Body.append("RFF+AEP:"+Integer.toString(rnummer) +EOL+NEWLINE);zeilen++;
+		buf301Body.append("RFF+AEP:"+Integer.toString(xrnummer) +EOL+NEWLINE);zeilen++;
 		buf301Body.append("FII+BF+"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("AGR+BY:","AGR+BY:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append("FCA+RD'"+NEWLINE);zeilen++;
@@ -1035,12 +1063,13 @@ public class RVMeldung301 {
 
 		String clisegment = "";
 		int pos = -1;
-		if( (pos=list1.indexOf((String)obj[2])) < 0){
+		if( (pos=list1.indexOf(((String)obj[2]).trim()) ) < 0){
 			return zeilen;
 			//clisegment = schluessel[3];
 		}else{
 			clisegment = schluessel[pos];
 		}
+		System.out.println((String)obj[2]);
 		String verfahren = untersucheCodeListe(":A12",2);
 		String versorgungsart = (clisegment.startsWith("5") ? "0" :untersucheCodeListe(":B11",3)); 
 		buf301Body.append("CLI+ENT+"+verfahren+versorgungsart+clisegment+":ENT'"+NEWLINE);zeilen++;
@@ -1048,11 +1077,10 @@ public class RVMeldung301 {
 		buf301Body.append("QTY+47:"+obj[0]+":ANZ'"+NEWLINE);zeilen++;
 		buf301Body.append("QTY+193:0:ANZ'"+NEWLINE);zeilen++;
 		buf301Body.append("MOA+146:"+obj[1]+":EUR'"+NEWLINE);zeilen++;
-
 		return zeilen;
 	}
 	public boolean doRechnung(String erstDatum,String letztDatum,
-			Vector<Object[]> vecobj, String gesamt){
+			Vector<Object[]> vecobj, String gesamt,int rnr){
 			if(erstDatum.trim().length() < 10 || letztDatum.trim().length() < 10){
 				JOptionPane.showMessageDialog(null,"Fehler in der Abrechnung nach DTA-301, Datumswerte sind nicht korrekt");
 				return false;
@@ -1063,10 +1091,12 @@ public class RVMeldung301 {
 			shouldBreak = false;
 //			private int doRechnungKopf(int zeilen,String gesamt,String hinweis,
 //			String aufnahmedatum,String entlassdatum,boolean beientlass){
-			zeilen = doRechnungKopf(zeilen, gesamt,"",mache10erDatum(erstDatum),mache10erDatum(letztDatum),false);
+			zeilen = doRechnungKopf(zeilen, gesamt,"",mache10erDatum(erstDatum),mache10erDatum(letztDatum),false,rnr);
 			for(int i = 0; i < vecobj.size(); i++){
 				zeilen = doPositionen(zeilen,(Object[])vecobj.get(i),mache10erDatum(erstDatum),mache10erDatum(letztDatum));
 			}
+			System.out.println(buf301Body.toString());
+			
 			buf301Body.append("UNT+"+
 					StringTools.fuelleMitZeichen(Integer.toString(zeilen),"0",true,5)+"+"+aktunh+
 					EOL+NEWLINE);zeilen++;			
@@ -1079,7 +1109,7 @@ public class RVMeldung301 {
 			intAktEREH = SqlInfo.erzeugeNummerMitMax("esol", 999);
 			strAktEREH = "0"+StringTools.fuelleMitZeichen(Integer.toString(intAktEREH), "0", true, 3);
 
-			if(doKeyStoreAktion()){
+			if(doKeyStoreAktion(true)){
 				//Mail Versenden
 				//In neue Tabelle schreiben
 				String typus = "8";
@@ -1088,7 +1118,9 @@ public class RVMeldung301 {
 				"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 				StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
 				"nachrichtauf='"+
-				StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"'";
+				StringTools.Escaped(auftragsBuf.toString())+"', bearbeiter='"+Reha.aktUser+"', "+
+				"esolname='"+(imtest ? "T" : "E")+"REH"+strAktEREH+"', "+
+				"icr='"+LFDNUMMER+"'";
 				SqlInfo.sqlAusfuehren(cmd);
 				return true;
 			}
@@ -1096,7 +1128,7 @@ public class RVMeldung301 {
 			
 			
 	}
-	private boolean doKeyStoreAktion(){
+	private boolean doKeyStoreAktion(boolean mitemail){
 		try {
 			originalSize =gesamtbuf.length();
 			doDateiErstellen(0);
@@ -1134,10 +1166,14 @@ public class RVMeldung301 {
 				//String recipient = SystemConfig.hmEmailExtern.get("SenderAdresse");
 				
 				//String recipient = (imtest ? "" : ik_email+",") +SystemConfig.hmEmailExtern.get("SenderAdresse");
+				if(!mitemail){
+					return true;
+				}
 				int frage = JOptionPane.showConfirmDialog(null, "Ist die unten angegebene Emailadresse korrekt?\n\n"+recipient+"\n","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 				if(frage != JOptionPane.YES_OPTION){
-					return false;
+					return true;
 				}
+
 				String text = "";
 				boolean authx = (authent.equals("0") ? false : true);
 				boolean bestaetigen = false;
@@ -1160,9 +1196,12 @@ public class RVMeldung301 {
 					JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
 		        			"Mögliche Ursachen:\n"+
 		        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
-		        			"- Sie haben keinen Kontakt zum Internet");
+		        			"- Sie haben keinen Kontakt zum Internet\n\n"+
+		        			"Bitte senden Sie die Datei --> "+encodedDat[1]+" <-- manuell");
+					return true;
 				}
-				
+
+
 			}catch(Exception ex){
 					ex.printStackTrace();
 					return false;
