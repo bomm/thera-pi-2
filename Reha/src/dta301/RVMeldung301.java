@@ -1091,6 +1091,9 @@ public class RVMeldung301 {
 			shouldBreak = false;
 //			private int doRechnungKopf(int zeilen,String gesamt,String hinweis,
 //			String aufnahmedatum,String entlassdatum,boolean beientlass){
+			/******
+			 * Hier müssen noch die Tagessätze aus "gesamt" abgezogen werden 
+			 ******/
 			zeilen = doRechnungKopf(zeilen, gesamt,"",mache10erDatum(erstDatum),mache10erDatum(letztDatum),false,rnr);
 			for(int i = 0; i < vecobj.size(); i++){
 				zeilen = doPositionen(zeilen,(Object[])vecobj.get(i),mache10erDatum(erstDatum),mache10erDatum(letztDatum));
