@@ -145,7 +145,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	}
 	
 	private JXPanel getContent(){
-		String xwerte = "fill:0:grow(0.33),fill:0:grow(0.66)";
+		String xwerte = "fill:0:grow(0.40),5dlu,fill:0:grow(0.60)";
 		String ywerte = "0dlu,250dlu:g,0dlu";
 		
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -153,7 +153,8 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		content = new JXPanel();
 		content.setLayout(lay);
 		content.add(getEdits(),cc.xy(1,2,CellConstraints.DEFAULT,CellConstraints.TOP));
-		content.add(getTable(),cc.xy(2,2,CellConstraints.DEFAULT,CellConstraints.TOP));
+		content.add(getTable(),cc.xy(3,2,CellConstraints.DEFAULT,CellConstraints.TOP));
+
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setzeFocus();
@@ -172,7 +173,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	private JXPanel getEdits(){
 		
 		//                1    2    3     4        5    6     7
-		String xwerte = "5dlu,60dlu,2dlu,100dlu:g,2dlu,25dlu,5dlu";
+		String xwerte = "5dlu:g,60dlu:g,2dlu,75dlu:g,2dlu,40dlu:g,5dlu:g";
 		//                1    2  3   4  5  6   7   8  9  10  11 12 13   14 15  16  17  18 19   20  21 22  23 24  25  26 27
 		String ywerte = "15dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,10dlu,p,15dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu";
 		
@@ -943,56 +944,10 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			
 		}else if( fuerwen.equals("privat") && (!heilmittel) ){
 			System.out.println("in privat und kein heilmittel==reha");
-			
+			doREHAWiederholungsdruck(preisvec);
 		}else if( fuerwen.equals("institution") && (!heilmittel) ){
-			try{
-				System.out.println("in institution und kein heilmittel==reha");
-				System.out.println("in kasse und kein heilmittel");
-				hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
-				hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
-				hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
-				hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
-				hmAdresse.put("<pri5>",rnummerAlt.getText() );
-				hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
-				
-				for(int i = 0; i < tabmod.getRowCount();i++){
-					try{
-						int id = ((Integer)tabmod.getValueAt(i, 8));
-						String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
-						//System.out.println(langtext);
-						String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
-						//System.out.println(preis);
-						originalLangtext.add(langtext);
-						originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
-						einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
-						gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
-						aktuellePosition++;	
-						
-					}catch(Exception ex){
-						ex.printStackTrace();
-					}
-
-				}
-				try {
-					System.out.println(originalAnzahl);
-					System.out.println(einzelPreis);
-					System.out.println(gesamtPreis);
-					System.out.println(rechnungGesamt);
-					System.out.println(OffenePosten.hmAbrechnung.get("hmpriformular"));
-					starteDokument( OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("rehagkvformular")+".Kopie.ott" );
-					System.out.println(OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("rehagkvformular")+".Kopie.ott");
-					starteErsetzen();
-					aktuellePosition = 0;
-					startePositionen();
-					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			
-			
+			System.out.println("Institution und Reha");
+			doREHAWiederholungsdruck(preisvec);
 		}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -1096,7 +1051,56 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		
 		
 	}
-	
+	public void doREHAWiederholungsdruck(Vector<Vector<String>> preisvec){
+		hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
+		hmAdresse.put("<pri2>",((String)tabmod.getValueAt(0, 1)).trim() );
+		hmAdresse.put("<pri3>",((String)tabmod.getValueAt(0, 2)).trim() );
+		hmAdresse.put("<pri4>",((String)tabmod.getValueAt(0, 3)).trim()+" "+((String)tabmod.getValueAt(0, 4)).trim() );
+
+		hmAdresse.put("<pri5>",rnummerAlt.getText() );
+		hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+		/*
+		hmAdresse.put("<pri6>",rnummerAlt.getText() );
+		hmAdresse.put("<pri8>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
+		*/
+		Vector<String> vec = SqlInfo.holeSatz("pat5","n_name,v_name,geboren", "pat_intern='"+((String)tabmod.getValueAt(0, 31))+"'", Arrays.asList(new String[] {}));
+		hmAdresse.put("<pri7>",vec.get(0));
+		hmAdresse.put("<pri8>",vec.get(1));
+		hmAdresse.put("<pri9>",DatFunk.sDatInDeutsch(vec.get(2)));
+		
+
+		for(int i = 0; i < tabmod.getRowCount();i++){
+			try{
+				int id = ((Integer)tabmod.getValueAt(i, 8));
+				String langtext = RezTools.getLangtextFromID(Integer.toString(id), preisvec).replace("30Min.", "").replace("45Min.", "");
+				String preis = RezTools.getPreisAktFromID(Integer.toString(id), preisvec);
+				originalLangtext.add(langtext);
+				originalAnzahl.add( ((Integer)tabmod.getValueAt(i, 11)) );
+				einzelPreis.add( ((Double)tabmod.getValueAt(i, 12)) );
+				gesamtPreis.add( ((Double)tabmod.getValueAt(i, 17)) );
+				aktuellePosition++;	
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
+		}
+		try {
+			System.out.println(originalAnzahl);
+			System.out.println(einzelPreis);
+			System.out.println(gesamtPreis);
+			System.out.println(rechnungGesamt);
+			//System.out.println(OffenePosten.hmRechnungPrivat);
+			starteDokument( OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("rehadrvformular")+".Kopie.ott" );
+			System.out.println(OffenePosten.progHome+"vorlagen/"+OffenePosten.aktIK+"/"+OffenePosten.hmAbrechnung.get("rehadrvformular")+".Kopie.ott" );
+			starteErsetzenBG();
+			aktuellePosition = 0;
+			startePositionen();
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 	/*********************************************************************/
 	public void doBegleitzetteldruck(String xreznr){
 		String aktrezept = "";

@@ -746,6 +746,8 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("<tr><td class='rbblau'>Kostenträger</td><td>"+dta301mod.getDtaKtraegerIK()+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Krankenkasse</td><td>"+dta301mod.getPatKassenName()+"</td></tr>");
 		buf.append("<tr><td class='rbblau'>Krankenk.-IK</td><td>"+dta301mod.getPatKassenIk()+"</td></tr>");
+		buf.append("<tr><td class='rbblau'>Hausarzt</td><td>"+dta301mod.getPatArztName()+" "+
+				dta301mod.getPatArztOrt()+"</td></tr>");
 
 		/******************/
 		buf.append("</table>");
@@ -969,7 +971,7 @@ public class Reha301Auswerten extends JXPanel{
 				dta301mod.setPatKassenName(SqlInfo.holeEinzelFeld("select kassen_nam1 from kass_adr where id='"+idkassex+"' LIMIT 1"));
 			}
 			//Jetzt den Arzt
-			String[] retwerte = arztAuswahl(new String[] {"",""});
+			String[] retwerte = arztAuswahl(new String[] {dta301mod.getPatArztName()+" "+dta301mod.getPatArztOrt(),""});
 			if(retwerte[2].equals("-1") || retwerte[2].equals("")){
 				JOptionPane.showMessageDialog(null, "<html><b>Achtung!!!<br><br><b>Arzt</b> konnte nicht zugeordnet werden<br><br>Patientenanlage wird abgebrochen!</html>");
 				return;

@@ -60,10 +60,11 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		
 		oeinstellungpanel = new OffenepostenEinstellungen(this);
 		jtb.addTab("Einstellungen", oeinstellungpanel);
-		
+
+		/*
 		oprgaf = new OffenepostenRgAf(this);
 		jtb.addTab("Rezeptgebühr-/Ausfallrechnung", oprgaf);
-
+		*/
         jtb.addChangeListener(this);
 		doHeader();
         jxh = new JXHeader();

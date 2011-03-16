@@ -190,7 +190,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		neupan.add(neukasse,cc2.xy(1,1));
 
 		suchekasse = new JButton("suchen");
-		suchekasse.setToolTipText("suche Arzt");
+		suchekasse.setToolTipText("suche Kasse");
 		suchekasse.setName("suchekasse");
 		suchekasse.setMnemonic(KeyEvent.VK_S);
 		suchekasse.addKeyListener(akl);
@@ -202,7 +202,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 	    }); 
 		neupan.add(suchekasse,cc2.xy(3,1));
 		uebernahmekasse = new JButton("übernahme");
-		uebernahmekasse.setToolTipText("ausgewählten Arzt übernehmen");
+		uebernahmekasse.setToolTipText("ausgewählte Kasse übernehmen");
 		uebernahmekasse.setName("suchearzt");
 		uebernahmekasse.addKeyListener(akl);
 		uebernahmekasse.addActionListener(new ActionListener(){
@@ -213,7 +213,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		neupan.add(uebernahmekasse,cc2.xy(5,1));
 		abbrechenkasse = new JButton("abbrechen");
 		abbrechenkasse.setToolTipText("Kassenauswahl abbrechen");		
-		abbrechenkasse.setName("suchearzt");
+		abbrechenkasse.setName("suchekasse");
 		abbrechenkasse.setMnemonic(KeyEvent.VK_A);
 		abbrechenkasse.addKeyListener(akl);
 		abbrechenkasse.addActionListener(new ActionListener(){

@@ -78,8 +78,13 @@ public class Reha301Einlesen{
 			"versicherungsnr","berechtigtennr","massnahmennr","geschlechtfamstand","national",
 			"artderleistung","diagschluessel","anrede","nachname","vorname","geboren",
 			"strasse","plz","ort","ikkasse","vnranspruchsberechtigter","ktraeger","tage",
-			"a12","a09","pnabm","adr0","adr1","klinik","aufnahmegeplant","aufnahmefruehestens","telefon"};
-
+			"a12","a09","pnabm","adr0","adr1","klinik","aufnahmegeplant","aufnahmefruehestens","telefon","haname","haadresse"};
+	boolean pnaMsActive = false;
+	boolean pnaMrActive = false;
+	boolean pnaByActive = false;
+	boolean pnaMtActive = false;
+	boolean pnaHaActive = false;
+	boolean pnaBmActive = false;
 	int nachrichtentyp = -1;
 	boolean erstercheck = false;
 	// 0 = Sender, 1 = Sender, 2 = Empfänger mit Entschl., 3 = Physik Empfänger, 4 = Originalgr.
@@ -198,6 +203,7 @@ public class Reha301Einlesen{
 			}
 			try {
 				doBewilligungSpeichern(pfad,datei);
+				doHmapLeeren();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -211,6 +217,7 @@ public class Reha301Einlesen{
 			}
 			try {
 				doBewilligungSpeichern(pfad,datei);
+				doHmapLeeren();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -308,7 +315,9 @@ public class Reha301Einlesen{
 			(auftragsleistung ? "T" : "F")+"', tage='"+dbHmap.get("tage")+"',edifact='"+buf.toString()+"', "+
 			"eilfall='"+dbHmap.get("a09")+"', leistung='"+dbHmap.get("a12")+"', "+
 			"esol='"+StringTools.EscapedDouble(fallbuf.toString())+"', receiver='"+dbHmap.get("klinik")+"',"+
-			"adr0='"+dbHmap.get("telefon").replace("/"," ")+"'";
+			"adr0='"+dbHmap.get("telefon").replace("/"," ")+"',"+
+			"adr1='"+dbHmap.get("haname")+"#"+dbHmap.get("haadresse")+"'";
+
 			SqlInfo.sqlAusfuehren(bedingung);
 			//System.out.println(bedingung);
 			/*
@@ -318,7 +327,6 @@ public class Reha301Einlesen{
 				document.getTextService().getText().setText(buf.toString());
 			}
 			*/
-
 			//System.out.println(bedingung);
 		}else{
 			//System.out.println("Die Bewilligung ist bereits in der Datenbank enthalten");
@@ -520,6 +528,34 @@ public class Reha301Einlesen{
  	
 	}
 	/*********************************/
+	private void setPnaActive(String pna){
+		pnaMsActive = false;
+		pnaMrActive = false;
+		pnaByActive = false;
+		pnaMtActive = false;
+		pnaHaActive = false;
+		pnaBmActive = false;
+		if(pna.equals("MS")){
+			pnaMsActive = true;
+			return;
+		}else if(pna.equals("MR")){
+			pnaMrActive = true;
+			return;
+		}else if(pna.equals("BY")){
+			pnaByActive = true;
+			return;
+		}else if(pna.equals("MT")){
+			pnaMtActive = true;
+			return;
+		}else if(pna.equals("HA")){
+			pnaHaActive = true;
+			return;
+		}else if(pna.equals("BM")){
+			pnaBmActive = true;
+			return;
+		}
+	}
+	/*********************************/
 	private Object[] doAuswertenBewilligung(String zeile,int i){
 		Object[] ret = {null,(Integer) i};
 		String[] teile = null;
@@ -532,6 +568,9 @@ public class Reha301Einlesen{
 				dbHmap.put("strasse",teile[2].split(":")[1]);
 				dbHmap.put("plz",teile[4]);
 				dbHmap.put("ort",teile[3]);
+				if(pnaHaActive){
+					dbHmap.put("haadresse", String.valueOf(teile[3]));
+				}
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
@@ -670,11 +709,13 @@ public class Reha301Einlesen{
 		if(zeile.startsWith("PNA+MS")){
 			ret[0] = String.valueOf("Sender-IK: "+teile[3]);
 			dbHmap.put("sender",teile[3]);
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Receiver
 		if(zeile.startsWith("PNA+MR")){
 			ret[0] = String.valueOf("Empfänger-IK: "+teile[3]);
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Kostenträger
@@ -686,6 +727,7 @@ public class Reha301Einlesen{
 				ret[0] = String.valueOf(ret[0]+"\n"+teile[6].split(":")[1]);
 			}
 			dbHmap.put("ktraeger",teile[3]);
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Klinik
@@ -693,6 +735,7 @@ public class Reha301Einlesen{
 			dbHmap.put("klinik",zeile);
 			ret[0] = String.valueOf("Klinik-IK: "+teile[3]);
 			dbHmap.put("klinik",String.valueOf(teile[3]));
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Krankenkasse
@@ -760,6 +803,7 @@ public class Reha301Einlesen{
 				inhalt = inhalt + "\nGeburtsname: "+	teile[10].split(":")[1];
 				ret[0] = inhalt;
 			}
+			setPnaActive(teile[1]);
 			// 0  1  2 3 4 5 6
 			//PNA+BM+ + +1+ +1:Finckh+:Konrad'
 
@@ -798,7 +842,11 @@ public class Reha301Einlesen{
 		}
 		//Hausarzt
 		if(zeile.startsWith("PNA+HA")){
-			ret[0] = "PNA+HA = Hausarzt noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			ret[0] = "Hausarzt = "+zeile;
+			setPnaActive(teile[1]);
+			String pnaha = (teile[6].split(":").length > 0 ? teile[6].split(":")[1] : "");
+			pnaha = pnaha + (teile.length >= 8 ? " "+teile[7].split(":")[1] : "");
+			dbHmap.put("haname", pnaha);
 			return ret;
 		}
 		//Facharzt oder andere behandelnde Person

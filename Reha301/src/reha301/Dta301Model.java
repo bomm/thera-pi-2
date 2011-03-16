@@ -47,6 +47,7 @@ public class Dta301Model {
 	private String patArztName = null;
 	private String patArztNummer = null;
 	private String patArztId = null;
+	private String patArztOrt = null;
 	
 	private String patTelefon = null;
 
@@ -66,6 +67,7 @@ public class Dta301Model {
 	private String x_patArztName = null;
 	private String x_patArztId = null;
 	private String x_patArztNummer = null;
+	private String x_patArztOrt = null;
 	private String x_patTelefon = null;
 	private JXTable table = null;
 	
@@ -91,6 +93,7 @@ public class Dta301Model {
 			x_patKassenIk = vec_patstamm.get(14);
 			x_patArztNummer = vec_patstamm.get(15);
 			x_patTelefon = vec_patstamm.get(16);
+			x_patArztOrt = "";
 		}catch(Exception ex){
 			x_patAnrede = null;
 			x_patNachname = null;
@@ -108,6 +111,7 @@ public class Dta301Model {
 			x_patKassenIk = null;
 			x_patArztNummer = null;
 			x_patTelefon = null;
+			x_patArztOrt = null;
 			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der passenden Patientendaten im Thera-Pi Pat.Stamm");
 		}
 	}
@@ -127,6 +131,7 @@ public class Dta301Model {
 		this.patArztId = String.valueOf(x_patArztId);
 		this.patIntern = String.valueOf(x_patIntern);
 		this.patTelefon = String.valueOf(x_patTelefon);
+		this.patArztOrt = String.valueOf(x_patArztOrt);
 	}
 	public void set301Data(){
 		try{
@@ -165,11 +170,20 @@ public class Dta301Model {
 			this.dtaNachrichtAnlass = anlass;
 			this.patGeboren = geboren;
 			this.patKassenId = null;
-			this.patArztName = null;
+			try{
+				this.patArztName = SqlInfo.holeEinzelFeld("select adr1 from dta301 where id='"+this.getDtaID()+"' LIMIT 1").split("#")[0];	
+			}catch(Exception ex){
+				this.patArztName = "";
+			}
+			
 			this.patArztNummer = null;
 			this.patArztId = null;
 			this.patTelefon = SqlInfo.holeEinzelFeld("select adr0 from dta301 where id='"+this.getDtaID()+"' LIMIT 1");
-			
+			try{
+				this.patArztOrt = SqlInfo.holeEinzelFeld("select adr1 from dta301 where id='"+this.getDtaID()+"' LIMIT 1").split("#")[1];
+			}catch(Exception ex){
+				this.patArztOrt = "";
+			}
 		}catch(Exception ex){
 			ex.printStackTrace();
 			this.patAnrede = null;
@@ -189,6 +203,7 @@ public class Dta301Model {
 			this.patArztNummer = null;
 			this.patArztId = null;
 			this.patTelefon = null;
+			this.patArztOrt = null;
 			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der 301-er Daten, Klasse Dta301Model");
 		}
 	}
@@ -494,6 +509,22 @@ public class Dta301Model {
 
 	public String getX_patTelefon() {
 		return x_patTelefon;
+	}
+
+	public void setPatArztOrt(String patArztOrt) {
+		this.patArztOrt = patArztOrt;
+	}
+
+	public String getPatArztOrt() {
+		return patArztOrt;
+	}
+
+	public void setX_patArztOrt(String x_patArztOrt) {
+		this.x_patArztOrt = x_patArztOrt;
+	}
+
+	public String getX_patArztOrt() {
+		return x_patArztOrt;
 	}
 
 	public void setTable(JXTable table) {
