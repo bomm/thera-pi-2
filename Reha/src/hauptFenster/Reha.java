@@ -301,7 +301,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-03-09/01-DB=";
+	public static String aktuelleVersion = "V=2011-03-18/02-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -311,6 +311,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean updatesBereit = false;
 	public static boolean updatesChecken = true;
 	public static int toolsDlgRueckgabe = -1;
+	
+	public RehaIOServer rehaIOServer = null;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -554,8 +556,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			Reha.fangoTimer.stop();
 			Reha.timerLaeuft = false;
 		}
-		System.exit(0);
-
+		if(rehaIOServer != null){
+			try {
+				rehaIOServer.serv.close();
+				System.out.println("RehaIO-SocketServer geschlossen");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		System.exit(0);
 	}
 	
@@ -1114,6 +1122,21 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}
 				
 			}.execute();
+			
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
+					try {
+						Reha.thisClass.rehaIOServer = new RehaIOServer();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.out.println("RehaIOServer wurde initialisiert");
+					return null;
+				}
+				
+			}.execute();
+			
 		}
 		
 		
@@ -1613,6 +1636,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 							Reha.fangoTimer.stop();
 							Reha.timerLaeuft = false;
 						}
+						if(rehaIOServer != null){
+							try {
+								rehaIOServer.serv.close();
+								System.out.println("RehaIO-SocketServer geschlossen");
+							} catch (IOException e2) {
+								e2.printStackTrace();
+							}
+						}
+
 						System.exit(0);
 					}else{
 						return;
@@ -2062,6 +2094,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.fangoTimer.stop();
 				Reha.timerLaeuft = false;
 			}
+			if(rehaIOServer != null){
+				try {
+					rehaIOServer.serv.close();
+					System.out.println("RehaIO-SocketServer geschlossen");					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			System.exit(0);
 		}else{
 			return;

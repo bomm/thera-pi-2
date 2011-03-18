@@ -38,6 +38,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	JButton uebernahme = null;
 	JButton zurueck = null;
 	JButton abbrechen = null;
+	JButton weiter = null;
 	Vector<String> varvec = null;
 	ThTextBlock thbl = null;
 	JRtaTextField rueck = null;
@@ -145,20 +146,29 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 	
 	private JPanel getButtonPanel(){
 		FormLayout lay = new FormLayout(
-		        // 1                2          3             4      5    
-				"fill:0:grow(0.33),50dlu,fill:0:grow(0.33),50dlu,fill:0:grow(0.33)",
+		        // 1                2          3            4      5    
+				"fill:0:grow(0.25),50dlu,fill:0:grow(0.25),50dlu,fill:0:grow(0.25),50dlu,fill:0:grow(0.25)",
 				// 1  2  3  
 				"5dlu,p,5dlu");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder pb = new PanelBuilder(lay);
 		pb.getPanel().setOpaque(false);
+		
+		weiter = new JButton("weiter");
+		weiter.setActionCommand("weiter");
+		weiter.setName("weiter");
+		weiter.addActionListener(this);
+		weiter.addKeyListener(this);
+		weiter.setMnemonic(KeyEvent.VK_W);
+		pb.add(weiter,cc.xy(2,2));
+
 		uebernahme = new JButton("übernehmen");
 		uebernahme.setActionCommand("uebernahme");
 		uebernahme.setName("uebernahme");
 		uebernahme.addActionListener(this);
 		uebernahme.addKeyListener(this);
 		uebernahme.setMnemonic(KeyEvent.VK_U);
-		pb.add(uebernahme,cc.xy(2,2));
+		pb.add(uebernahme,cc.xy(4,2));
 		
 		abbrechen = new JButton("abbrechen");
 		abbrechen.setActionCommand("abbrechen");
@@ -166,7 +176,7 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		abbrechen.addActionListener(this);
 		abbrechen.addKeyListener(this);
 		abbrechen.setMnemonic(KeyEvent.VK_A);		
-		pb.add(abbrechen,cc.xy(4,2));		
+		pb.add(abbrechen,cc.xy(6,2));		
 		return pb.getPanel();
 	}
 	
@@ -306,11 +316,18 @@ public class TbEingabeNeu extends JXPanel implements ActionListener,KeyListener,
 		String cmd = e.getActionCommand();
 		if(cmd.equals("abbrechen")){
 			this.rueck.setText("");
-			this.thbl.wechsleRueckwaerts();	
+			this.thbl.wechsleRueckwaerts();
+			return;
 		}
 		if(cmd.equals("uebernahme")){
 			werteUebergeben();
-			this.thbl.wechsleRueckwaerts();	
+			this.thbl.wechsleRueckwaerts();
+			return;
+		}
+		if(cmd.equals("weiter")){
+			machText();
+			tbeingabe.requestFocus();
+			return;
 		}
 		
 		

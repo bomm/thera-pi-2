@@ -1390,6 +1390,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					ifehler++;
 					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+"</td><td class=\"spalte1\">fehlt</td></tr>");
 				}
+				if(bta[i].getText().trim().length() > 120){
+					String lang = Integer.toString(bta[i].getText().trim().length());
+					ifehler++;
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+" ist länger als 120 Zeichen</td><td class=\"spalte1\">"+"tatsächliche Länge ist "+lang+"</td></tr>");					
+				}
 			}
 		}
 		//Hier Seitenlokalisation, DiagSicherheit u. Behandl.Ergebnis

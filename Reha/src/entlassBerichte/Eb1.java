@@ -274,6 +274,15 @@ public class Eb1 implements ActionListener,ComponentListener {
 			if(rs.next()){
 				for(int i = 0; i < 7;i++){
 					eltern.bta[i].setText( (rs.getString(eltern.bta[i].getName())==null  ? "" :  rs.getString(eltern.bta[i].getName())) ) ;
+					if(i < 5){
+						if(eltern.bta[i].getText().length() > 120){
+							String diagnr = Integer.toString(i+1);
+							String diaglength = Integer.toString(eltern.bta[i].getText().length());
+							JOptionPane.showMessageDialog(null, 
+									"Die Länge der Diagnose Nr. "+diagnr+" beträgt "+diaglength+" Zeichen.\nErlaubt sind (max.) 120 Zeichen!!!" );
+							
+						}
+					}
 				}
 				for(int i = 0; i < 25;i++){
 					if("AUFDAT3ENTDAT3UNTDATGEBOREN".contains(eltern.btf[i].getName())){
