@@ -533,7 +533,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		String cmd = "select * from faktura where rnummer='"+c+"' order by id,lfnr";
 		try{
 			suchen(cmd);
-			bestueckeLabels( (tab.getRowCount() > 0) );
+			bestueckeLabels( (tabmod.getRowCount() > 0) );
 			rechneNeu(false);
 			if(tab.getRowCount() > 0){
 				buts[0].setEnabled(true);
