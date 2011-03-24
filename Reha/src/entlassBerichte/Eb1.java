@@ -14,6 +14,8 @@ import java.awt.event.ComponentListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -25,7 +27,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
-
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.DocumentFilter.FilterBypass;
+import javax.swing.text.PlainDocument;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -45,12 +53,12 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class Eb1 implements ActionListener,ComponentListener {
 	JXPanel pan = null;
-
 	EBerichtPanel eltern = null;
 	Font fontgross = null;
 	Font fontklein = null;
 	Font fontnormal = null;
 	Font fontcourier = null;
+	Font fontcourier2 = null;
 	Font fontarialfett = null;
 	Font fontarialnormal = null;
 	String[] seite = {"","R","L","B"};
@@ -112,6 +120,7 @@ public class Eb1 implements ActionListener,ComponentListener {
 		fontarialfett =new Font("Arial",Font.BOLD,12);
 		fontarialnormal =new Font("Arial",Font.PLAIN,12);		
 		fontcourier =new Font("Courier New",Font.PLAIN,12);
+		fontcourier2 =new Font("Courier New",Font.PLAIN,14);
 		//pan.add(getTitel());
 		//JPanel cs = constructSeite();
 		//cs.validate();
@@ -124,11 +133,24 @@ public class Eb1 implements ActionListener,ComponentListener {
 					eltern.btf[i].setFont(fontcourier);
 					eltern.btf[i].setForeground(Color.BLUE);
 				}
+				AbstractDocument doc = null; 
+
 				for(int i = 0; i < 7;i++){
-					eltern.bta[i].setFont(fontcourier);
+					if(i < 5){
+						eltern.bta[i].setRows(3);
+						eltern.bta[i].setColumns(40);
+						doc = (AbstractDocument)eltern.bta[i].getDocument();
+				        doc.setDocumentFilter(new DocumentLineLengthFilter(40,i));
+						//((DiagDoc)eltern.bta[i].getDocument()).setArea(eltern.bta[i]);
+					}else{
+							
+					}
+					eltern.bta[i].setFont(fontcourier);					
 					eltern.bta[i].setForeground(Color.BLUE);
-					eltern.bta[i].setWrapStyleWord(true);
 					eltern.bta[i].setLineWrap(true);
+					eltern.bta[i].setWrapStyleWord(true);
+					
+
 					eltern.bta[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
 				}
 				pan.validate();
@@ -1224,6 +1246,9 @@ public class Eb1 implements ActionListener,ComponentListener {
 		lab.setForeground(Color.RED);		
 		tit.add(lab,cctit.xy(2,12));
 		eltern.bta[3] = new JTextArea();
+		//AbstractDocument doc = (AbstractDocument)eltern.bta[3].getDocument();
+        //doc.setDocumentFilter(new DocumentLineLengthFilter(40));
+
 		eltern.bta[3].setName("DIAG4");
 		tit.add(eltern.bta[3],cctit.xy(2, 13,CellConstraints.FILL,CellConstraints.FILL));
 
@@ -1798,6 +1823,271 @@ public class Eb1 implements ActionListener,ComponentListener {
 		if (window1 != null) {
 		window1.validate();
 		}
+	}
+	/**********************************************/
+	class DiagDoc extends PlainDocument {
+
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private int maxLength_ = Integer.MAX_VALUE;
+		private int maxLineLength_ = Integer.MAX_VALUE;
+		private JTextArea area_ = null;
+
+	    /**
+	     * Erzeugt ein javax.swing.text.Document fuer das JTextField.
+	     * 
+	     * @param maxLength
+	     *            maximale Zeichenanzahl
+	     */
+	    public DiagDoc(final int maxLength,final int maxLineLength) {
+	        this.maxLength_ = maxLength;
+	        this.maxLineLength_ = maxLineLength;
+	        
+	    }
+	    public void setArea(final JTextArea area){
+	    	area_ = area;	    	
+	    }
+
+	    /**
+	     * Fügt den String nur dann ein, wenn die maximale Anzahl noch nicht überschritten ist.
+	     * 
+	     * @param offs
+	     *            Offset (Position, an der der String eingefuegt werden soll)
+	     * @param str
+	     *            einzufuegender String
+	     * @param a
+	     *            Attribut-Set (werden hier nicht weiter beachtet)
+	     * @throws BadLocationException
+	     *             wird "von oben" durchgereicht
+	     * @see javax.swing.text.AttributeSet
+	     */
+	    public void insertString(final int offs, final String str,
+	            final AttributeSet a) throws BadLocationException {
+	        if (str == null) {
+	            return;
+	        }
+	        
+	        
+	        int actualLength = this.getLength();
+	        int actualPos = 0;
+	        String[] zeilen = null;
+	        if (actualLength + str.length() < this.maxLength_) {
+	        	
+	            
+	            if( this.getText(0, this.getLength()).length() > 0){
+		            zeilen = this.getText(0, this.getLength()).split("\\n");
+		            for(int i = 0; i < zeilen.length;i++){
+		            	if(zeilen[i].length() == 40){
+		            		
+		            		super.insertString(offs, "\n"+str, a);
+		            		//
+		            		//JOptionPane.showMessageDialog(null,"Zeile "+Integer.toString(i+1)+" ist länger als 40 Zeichen\n\nErlaub sind max. 3 Zeilen mit je max. 40 Zeichen");
+		            	}
+		            }
+	            }
+	            super.insertString(offs, str, a);
+	            
+	        } else {
+	            // z.B. beep()
+	        }
+	    }
+
 	}	
+	
+	/**********************************************/
+	class DocumentLineLengthFilter extends DocumentFilter
+
+	{
+
+	    int maxLineLen;
+	    int bta;
+
+
+
+	    public DocumentLineLengthFilter(int maxLineLen,int bta)
+
+	    {
+
+	        this.maxLineLen = maxLineLen;
+	        this.bta = bta;
+
+	    }
+
+
+
+	    private boolean validOperation(Document document, int offset, int removedLength, String insertedString)
+
+	        throws BadLocationException
+
+	    {
+
+	        String text = document.getText(0, document.getLength());
+
+	        //System.out.println("Text:\n"+text);
+
+	        //System.out.println("Operation: removing "+removedLength+" at "+offset+", inserting "+insertedString.length());
+
+	        String newTextPrefix = text.substring(0, offset);
+
+	        String newTextSuffix = text.substring(offset+removedLength, text.length());
+
+	        String newText = newTextPrefix+insertedString+newTextSuffix;
+
+	        //System.out.println("New Text:\n"+newText);
+
+	        return allLineLengthsValid(newText);
+
+	    }
+
+
+
+	    private boolean allLineLengthsValid(String text)
+
+	    {
+
+	        StringTokenizer st = new StringTokenizer(text, "\n");
+
+	        int count = 0;
+
+	        while (st.hasMoreTokens())
+
+	        {
+
+	            String line = st.nextToken();
+
+	            if (line.length() > maxLineLen)
+
+	            {
+
+	                //System.out.println("Line "+count+" will become too long! ("+line.length()+">"+maxLineLen+")");
+	        		eltern.bta[bta].setForeground(Color.RED);
+	                return false;
+
+	            }
+
+	            count++;
+
+	        }
+	        if(count >=3){
+	        	eltern.bta[bta].setForeground(Color.RED);
+	        }
+	        return true;
+
+	    }
+
+
+
+	    public void remove(DocumentFilter.FilterBypass fb, int offset, int length)
+
+	        throws BadLocationException
+
+	    {
+
+	        if (validOperation(fb.getDocument(), offset, length, ""))
+
+	        {
+
+	            //System.out.println("Removing "+length+" at "+offset+ " is OK");
+	            eltern.bta[bta].setForeground(Color.BLUE);
+	            super.remove(fb, offset, length);
+
+	        }
+
+	        else
+
+	        {
+	        	if(length == 1){
+	        		super.remove(fb, offset, length);
+	        		//System.out.println("Removing "+length+" at "+offset+ " is OK");
+	        		eltern.bta[bta].setForeground(Color.RED);
+	        	}else{
+	        		//System.out.println("Removing "+length+" at "+offset+ " is NOT OK");	
+	        		eltern.bta[bta].setForeground(Color.RED);
+	        	}
+	            
+
+	        }
+
+
+
+	    }
+
+
+
+
+
+	    public void insertString(FilterBypass fb, int offset, String str, AttributeSet a)
+
+	        throws BadLocationException
+
+	    {
+
+	        if (validOperation(fb.getDocument(), offset, 0, str))
+
+	        {
+
+	            //System.out.println("Inserting "+str+" at "+offset+ " is OK");
+	            eltern.bta[bta].setForeground(Color.BLUE);
+	            super.insertString(fb, offset, str, a);
+
+	        }
+
+	        else
+
+	        {
+	            //System.out.println("Inserting "+str+" at "+offset+ " is NOT OK");
+	            eltern.bta[bta].setForeground(Color.RED);
+
+	        }
+
+
+
+	    }
+
+
+
+	    public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a)
+
+	        throws BadLocationException
+
+	    {
+
+	        if (validOperation(fb.getDocument(), offset, length, str))
+
+	        {
+
+	            //System.out.println("Replacing with "+str+" at "+offset+" is OK");
+	            eltern.bta[bta].setForeground(Color.BLUE);
+	            super.replace(fb, offset, length, str, a);
+	            
+
+	        }
+
+	        else
+
+	        {
+
+	        	if(str.length() > 1 || str.equals("\n")){
+	        		super.insertString(fb, offset, str, a);
+	        		//System.out.println("Replacing with "+str+" at "+offset+" is OK");
+	        		eltern.bta[bta].setForeground(Color.RED);
+	        	}else{
+	        		eltern.bta[bta].setForeground(Color.RED);
+	        		//System.out.println("Replacing with "+str+" at "+offset+" is NOT OK");	
+	        	}
+
+	            
+
+	        }
+
+	    }
+
+
+
+	}
+	
+	/**********************************************/
 }
 

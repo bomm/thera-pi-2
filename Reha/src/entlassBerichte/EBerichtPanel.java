@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -1366,11 +1367,35 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(btf[15].getText().trim().length() < 10){
 			ifehler++;
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Aufnahmedatum</td><td class=\"spalte1\">fehlt</td></tr>");
+		}else{
+			long datvergleich = DatFunk.TageDifferenz(btf[15].getText().trim(),DatFunk.sHeute());
+			if(datvergleich > 50 || datvergleich < 0){
+				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Aufnahmedatum ist bedenklich, Aufnahmedatum=</td><td class=\"spalte1\">"+btf[15].getText().trim()+"</td></tr>");
+				iwarnung++;
+			}
 		}
 		if(btf[16].getText().trim().length() < 10){
 			ifehler++;
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassdatum</td><td class=\"spalte1\">fehlt</td></tr>");
+		}else{
+			long datvergleich = DatFunk.TageDifferenz(btf[16].getText().trim(),DatFunk.sHeute());
+			//System.out.println(datvergleich);
+			if(datvergleich > 50 || datvergleich < 0){
+				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Entlassdatum ist bedenklich, Entlassdatum=</td><td class=\"spalte1\">"+btf[16].getText().trim()+"</td></tr>");
+				iwarnung++;
+			}
 		}
+		if(btf[15].getText().trim().length() == 10 && btf[16].getText().trim().length() == 10){
+			long datvergleich = DatFunk.TageDifferenz(btf[15].getText().trim(),btf[16].getText().trim());
+			//System.out.println(datvergleich);
+			if(datvergleich < 0){
+				buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassdatum liegt vor dem Aufnahmedatum</td><td class=\"spalte1\">"+
+						"&nbsp;</td></tr>");
+				ifehler++;
+			}
+			
+		}
+		//*******************//
 		if(bcmb[0].getSelectedItem().toString().trim().equals("")){
 			ifehler++;
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassform</td><td class=\"spalte1\">fehlt</td></tr>");
@@ -1380,6 +1405,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Arbeitsfähigkeit</td><td class=\"spalte1\">fehlt</td></tr>");
 		}
 		int diagnosen = 0;
+		int zeilen = 0;
 		for(int i = 0; i < 5;i++){
 			if(bta[i].getText().trim().length() > 0 || btf[i+17].getText().trim().length() > 0){
 				diagnosen++;
@@ -1394,6 +1420,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					String lang = Integer.toString(bta[i].getText().trim().length());
 					ifehler++;
 					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+" ist länger als 120 Zeichen</td><td class=\"spalte1\">"+"tatsächliche Länge ist "+lang+"</td></tr>");					
+				}
+				if(bta[i].getText().trim().replace("\n","").length() > 0){
+					if( (zeilen = testeZeilen(bta[i].getText().trim(),i+1)) > 3){
+						ifehler++;
+						buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+" erlaubt sind 3 Zeilen </td><td class=\"spalte1\">"+"tatsächliche Zeilenanzahl  ist "+zeilen+"</td></tr>");					
+					}
 				}
 			}
 		}
@@ -1477,6 +1509,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		if(btf[27].getText().trim().length() < 10){
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Unterschriftsdatum</td><td class=\"spalte1\">fehlt</td></tr>");
 			ifehler++;
+		}else{
+			long datvergleich = DatFunk.TageDifferenz(btf[27].getText().trim(),DatFunk.sHeute());
+			//System.out.println(datvergleich);
+			if(datvergleich > 50 || datvergleich < 0){
+				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Unterschriftsdatum ist bedenklich, Unterschriftsdatum=</td><td class=\"spalte1\">"+btf[27].getText().trim()+"</td></tr>");
+				iwarnung++;
+			}
 		}
 		int unterschriften = 0;
 		for(int i = 0; i < 3; i++){
@@ -1608,6 +1647,27 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 
 		return oret;
+	}
+	private int testeZeilen(String txt,int diagnr){
+		String diagtext = txt.replace("\n"," ").replace("\r", " ").replace("\t", " ");
+		/**************/
+		
+		Vector<String> flvec = StringTools.fliessTextZerhacken(diagtext, 41, "\n");
+		String test = "<html><b>Diagnosetext Nr. "+Integer.toString(diagnr)+"</b><br><br>";
+		test = test + "<font face=\"Courier new\"><font color=#FF0000>&nbsp;&nbsp;&nbsp;1234567890123456789012345678901234567890</font><br>";
+		for(int i2 = 0;i2 < flvec.size();i2++){
+			test = test+Integer.toString(i2+1)+".&nbsp;"+flvec.get(i2);
+			if(i2 == (flvec.size()-1) ){
+				break;
+			}
+			test=test+"<br>";
+		}
+		test = test+"</font></html>"; 
+		JOptionPane.showMessageDialog(null, test);
+		return flvec.size();
+		
+		/**************/		
+		//return StringTools.fliessTextZerhacken(diagtext, 40, "\n").size();
 	}
 	
 

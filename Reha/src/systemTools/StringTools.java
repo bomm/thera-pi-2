@@ -378,6 +378,7 @@ public class StringTools {
 				if(ohneumbruch.trim().length()>0){
 					dtavec.add(ohneumbruch.trim());
 				}
+				//hier neu >= anstatt >
 			}else if(ohneumbruch.length() > max_line_lenght){
 
 				for(int i2 = 0; i2 < reststring.length();i2++){
@@ -395,6 +396,7 @@ public class StringTools {
 								reststring = reststring.substring(i3).trim();
 								break;
 							}else if(i == 0){
+								//hier neu >= anstatt >
 								if(reststring.length() > max_line_lenght){
 									continue;
 								}else{

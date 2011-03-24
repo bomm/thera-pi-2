@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.imageio.IIOImage;
@@ -82,11 +83,11 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 		document = documentService.loadDocument(url,docdescript);
         ITextDocument textDocument = (ITextDocument) document;
 
-        boolean useStream = true;
+        boolean useStream = false;
 
         
-        String imagePath = Reha.proghome.replace("C:/","//")+"ScreenShots/termin__temp.jpg";
-        //String imagePath = "file:///"+Reha.proghome.replace("C:/", "")+"ScreenShots/termin__temp.jpg";
+        String imagePath = (Reha.proghome+"ScreenShots/termin__temp.jpg").replace("\\", "/");
+        //String imagePath = "file:///"+Reha.proghome.replace("C:/", "/")+"ScreenShots/termin__temp.jpg";
         //"file:///tmp/myDocument.odt
         GraphicInfo graphicInfo = null;
 
@@ -115,7 +116,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         if(!useStream) {
           //with url
         	
-          graphicInfo = new GraphicInfo(imagePath, pixelWidth, true, pixelHeight, true,
+          graphicInfo = new GraphicInfo(imagePath, Float.valueOf(pixelWidth).intValue(), true, Float.valueOf(pixelHeight).intValue(), true,
               VertOrientation.TOP, HoriOrientation.LEFT,
               TextContentAnchorType.AT_FRAME);
 
@@ -124,18 +125,20 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 
         	//System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
         	//System.out.println("Seitenverh�ltnis = "+verhaeltnis);
-        	
+        	/*
             graphicInfo = new GraphicInfo(imagePath, new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
                     TextContentAnchorType.AS_CHARACTER);
             
             System.out.println(graphicInfo.getUrl());
+            */
+        	
             //URL = file:/C:/RehaVerwaltung/Reha/file:/RehaVerwaltung/ScreenShots/termin__temp.jpg
-            /*
+            
         	graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
                     TextContentAnchorType.AS_CHARACTER);
-             */    
+                
             /*
             multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class,
                     textDocument.getXTextDocument());
@@ -143,6 +146,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
             
             xTextCursor = xText.createTextCursor();
             */
+            
             //XComponentContext
             /*
             try{
@@ -170,7 +174,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 			*/
             Thread.sleep(100);
         }
-
+        
         //embedGraphic(graphicInfo,multiServiceFactory,xTextCursor);
         
         

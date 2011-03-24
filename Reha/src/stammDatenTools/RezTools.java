@@ -926,6 +926,9 @@ public class RezTools {
 		for(int i = 0;i<lines;i++){
 			terdat = tlines[i].split("@");
 			int ieinzel = terdat.length;
+			if(ieinzel <= 1){
+				return (Vector<Vector<String>>) termine.clone();
+			}
 			////System.out.println("Anzahl Splits = "+ieinzel);
 			tvec.clear();
 			for(int y = 0; y < ieinzel;y++){

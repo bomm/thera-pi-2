@@ -16,6 +16,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyboardFocusManager;
 import java.awt.LinearGradientPaint;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -301,7 +302,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-03-18/02-DB=";
+	public static String aktuelleVersion = "V=2011-03-23/02-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -313,6 +314,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static int toolsDlgRueckgabe = -1;
 	
 	public RehaIOServer rehaIOServer = null;
+	public static int xport = 6000;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -512,8 +514,21 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.thisClass.setDivider(5);
 				Reha.thisClass.doCompoundPainter();
 				Reha.thisClass.starteTimer();
+				
+			    SwingUtilities.invokeLater(new Runnable(){
+			    	public void run(){
+			    		try{
+			    			Reha.thisClass.rehaIOServer = new RehaIOServer(6000);
+			    			System.out.println("RehaIOServer wurde initialisiert");
+			    		}catch(NullPointerException ex){
+			    			System.out.println("RehaIOServer = null");
+			    		}
+			    	}
+			    });
+				
 			}
 		});
+
 		
 	}
 	public void setzeInitEnde(){
@@ -837,7 +852,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 		
 	}
-	
+
 	public void aktiviereNaechsten(int welchen){
 		JInternalFrame[] frame = desktops[welchen].getAllFrames();
 		if(frame.length > 0){
@@ -892,6 +907,41 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	private JXFrame getJFrame() {
 		if (jFrame == null) {
 			jFrame = new JXFrame();
+				/*
+				@Override
+				public void setVisible(final boolean visible) {
+
+				  if (visible) {
+				      //setDisposed(false);
+				  }
+				  if (!visible || !isVisible()) { 
+				      super.setVisible(visible);
+				  }
+
+				  if (visible) {
+				      int state = super.getExtendedState();
+				      state &= ~JFrame.ICONIFIED;
+				      super.setExtendedState(state);
+				      super.setAlwaysOnTop(true);
+				      super.toFront();
+				      super.requestFocus();
+				      super.setAlwaysOnTop(false);
+				  }
+
+				}
+
+				@Override
+				public void toFront() {
+				  super.setVisible(true);
+				  int state = super.getExtendedState();
+				  state &= ~JFrame.ICONIFIED;
+				  super.setExtendedState(state);
+				  super.setAlwaysOnTop(true);
+				  super.toFront();
+				  super.requestFocus();
+				  super.setAlwaysOnTop(false);
+				}	
+				*/
 			thisClass = this;
 			jFrame.addWindowListener(this);
 			jFrame.addWindowStateListener(this);			
@@ -1122,21 +1172,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}
 				
 			}.execute();
-			
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws java.lang.Exception {
-					try {
-						Reha.thisClass.rehaIOServer = new RehaIOServer();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					System.out.println("RehaIOServer wurde initialisiert");
-					return null;
-				}
-				
-			}.execute();
-			
 		}
 		
 		
@@ -1167,6 +1202,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 	    });
 		*/
+
 	    return jFrame;
 	}
 	public static void setSystemConfig(SystemConfig sysConf){
@@ -2321,14 +2357,21 @@ public void actionPerformed(ActionEvent arg0) {
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){
 			return;
 		}
+		if(RehaIOServer.reha301IsActive){
+			JOptionPane.showMessageDialog(null,"Das 301-er Modul läuft bereits");
+			return;
+		}
 		new LadeProg(Reha.proghome+"Reha301.jar "+
-				" "+Reha.proghome+" "+Reha.aktIK);
+				" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		return;
 	}
 
 	
 	
 }
+
+
 /*********************************************/
 }
 
@@ -2599,7 +2642,6 @@ final class ErsterLogin implements Runnable{
 			}
 		}.start();
 		ProgLoader.PasswortDialog(0);
-
 	}
 	public void run() {
 		Login();

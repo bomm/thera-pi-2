@@ -236,17 +236,21 @@ public class RVMeldung301 {
 		buf301Body.append("CLI+DTX"+EOL+NEWLINE);zeilen++;
 		/************Diagnosetexte******/
 		for(int i = 0;i < 5;i++){
-			test = epanel.btf[17+i].getText().trim();
+			test = epanel.btf[17+i].getText();
 			if(!test.equals("")){
 				if(test.trim().length() > 120){
 					JOptionPane.showMessageDialog(null,"Achtung: Diagnosetext:"+Integer.toString(i+1)+" ist größer als 120 Zeichen");
 				}
-				diagtext = StringTools.do301String(epanel.bta[i].getText());
-				flvec = StringTools.fliessTextZerhacken(diagtext, 40, "\n");
+				diagtext = StringTools.do301String(epanel.bta[i].getText()).trim().replace("\n"," ").replace("\r", " ").replace("\t", " ");
+				flvec = StringTools.fliessTextZerhacken(diagtext, 41, "\n");
 				test = "FTX+TXT+++B:";
 				for(int i2 = 0;i2 < flvec.size();i2++){
 					test = test+flvec.get(i2);
-					if(i2 == (flvec.size()-1)){
+					if(i2 >= 3){
+						JOptionPane.showMessageDialog(null,"Achtung mehr als 3 Zeilen Diagnosetext bei Diagnose "+Integer.toString(i+1)+"\n\n"+
+								"Manueller Eingriff in die Edifakt-Nachricht notwendig");
+					}
+					if(i2 == (flvec.size()-1) ){
 						break;
 					}
 					test=test+":"+NEWLINE;

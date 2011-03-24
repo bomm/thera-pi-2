@@ -512,9 +512,10 @@ public class RVEBerichtPDF {
 			setzeText(cb,poswert6[i][0], poswert6[i][1],poswert6[i][2],bf,12,text);						
 		}
 		/***********Jetzt der mehrzeilige Text der Diagnosen 1-5******************/
-		cb.setCharacterSpacing(0.5f);
+		cb.setCharacterSpacing(0.4f);
 		float xstart = 82.f;
-		float xend = 282.f;
+		//float xend = 282.f;
+		float xend = 302.f;
 		float ystartunten = 495.f;
 		float ystartoben = 530.f;
 		float yschritt = 35.f;

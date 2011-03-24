@@ -47,7 +47,7 @@ public class LadeProg {
 					alist.add(0,"-jar");
 					alist.add(0,"java");
 					Process process = new ProcessBuilder(alist).start();
-					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+					//Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 				       InputStream is = process.getInputStream();
 				       InputStreamReader isr = new InputStreamReader(is);
 				       BufferedReader br = new BufferedReader(isr);

@@ -453,7 +453,7 @@ public class PatientHauptLogic {
 			final String xrez = evt.getDetails()[2].trim();
 			patientHauptPanel.aktPatID = xpatint;
 			// Anzeigedaten holen
-
+			//System.out.println("In Thera-Pi PatID="+xpatint+" Rezeptnummer="+xrez);
 			new Thread(){
 				public void run(){
 					new SwingWorker<Void,Void>(){
@@ -667,6 +667,7 @@ public class PatientHauptLogic {
 				Reha.thisClass.patpanel.getStammDaten().parseHTML(false);
 			}
 		}catch(Exception ex){
+			ex.printStackTrace();
 			Reha.thisClass.patpanel.patDatenOk = true;
 		}
 		
