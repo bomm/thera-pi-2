@@ -51,6 +51,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 import reha301.Dta301Model;
 import reha301.Reha301;
 import reha301.Reha301Tab;
+import reha301.SocketClient;
 
 import Tools.ButtonTools;
 import Tools.Colors;
@@ -92,7 +93,10 @@ public class Reha301Auswerten extends JXPanel{
 	
 	ActionListener al = null;
 	int anzeigeart = -1;
-	public String[] artderNachricht = {"Nachr.Typ unbekannt","Bewilligung","Ablehnung","Verl. Zustimmung","Verl. Ablehnung","sonstige Nachricht"};
+	public String[] artderNachricht = {"Unbekannter Anlass","Bewilligung","Ablehnung",
+			"Aufnahmemitteilung","Unterbrechungsmeldung","Verlängerung","Entlassmitteilung",
+			"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung",
+			"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung","Bestätigung der Verlängerung"};
 	public String patBetroffen = null;
 	public boolean patneuangelegt = false;
 	public String patneuepatnr = "";
@@ -1010,7 +1014,8 @@ public class Reha301Auswerten extends JXPanel{
 			SqlInfo.sqlAusfuehren(buf.toString());
 			show301WasCreated(patneuepatnr);
 			//System.out.println(buf.toString());
-			JOptionPane.showMessageDialog(null, "<html>Der Patient wurde <b>erfolgreich</b> angelegt.</html>");			
+			JOptionPane.showMessageDialog(null, "<html>Der Patient wurde <b>erfolgreich</b> angelegt.</html>");
+			new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATFIND+"#"+patneuepatnr);
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null, "<html><b>Fehler bei der Anlage des Patienten !!!</b></html>");
 		}

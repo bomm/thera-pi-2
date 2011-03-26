@@ -1,7 +1,5 @@
 package hauptFenster;
 
-import geraeteInit.BarCodeScanner;
-
 import java.awt.AWTEvent;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -16,7 +14,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.KeyboardFocusManager;
 import java.awt.LinearGradientPaint;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -158,6 +155,7 @@ import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
+import geraeteInit.BarCodeScanner;
 
 //@SuppressWarnings("unused")
 
@@ -302,7 +300,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-03-23/02-DB=";
+	public static String aktuelleVersion = "V=2011-03-26/02-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;

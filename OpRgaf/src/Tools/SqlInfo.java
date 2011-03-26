@@ -96,7 +96,7 @@ public class SqlInfo {
 		return retid;
 	}
 /*******************************/
-	public static Vector holeSatz(String tabelle, String felder, String kriterium, List ausschliessen){
+	public static Vector<String> holeSatz(String tabelle, String felder, String kriterium, List<String> ausschliessen){
 		Statement stmt = null;
 		ResultSet rs = null;
 		Vector<String> retvec = new Vector<String>();
@@ -148,7 +148,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retvec.clone();
+		return (Vector<String>)retvec.clone();
 	}
 /*****************************************/
 	/*******************************/

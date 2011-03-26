@@ -17,6 +17,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+import reha301Panels.RehaIOMessages;
+
 import Tools.INIFile;
 import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -77,6 +79,11 @@ public class Reha301 implements WindowListener  {
 
 	public static String inbox = "//192.168.2.3/programme/data301/540840108/inbox/"; //C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	public static String outbox ="//192.168.2.3/programme/data301/540840108/outbox/"; 
+	
+	public static int rehaPort = -1;
+	
+	public static int xport = 7000;
+	
 	//public static String encodepfad = "C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	/*
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
@@ -122,11 +129,15 @@ public class Reha301 implements WindowListener  {
 				inbox = ini301.getStringProperty("DatenPfade301", "inbox");
 				outbox = ini301.getStringProperty("DatenPfade301", "outbox");
 				if(args.length == 3){
-					nachrichtfuerRezept = true;
-					argsRezeptnummer = args[2];
+					try{
+						rehaPort = Integer.parseInt(args[2]);
+						//new SocketClient().setzeRehaNachricht(rehaPort, "Reha301#IrgendEineNachricht");
+						//JOptionPane.showMessageDialog(null, "Modul Reha301 registriert Port "+Integer.toString(rehaPort));
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, "Fehler im Modul Reha301, kann den IO-Port nicht ermitteln");
+					}
 				}
 			}
-
 			final Reha301 xapplication = application;
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -152,6 +163,13 @@ public class Reha301 implements WindowListener  {
 				
 			}.execute();
 			application.getJFrame();
+			new SocketClient().setzeRehaNachricht(rehaPort, "Reha301#"+RehaIOMessages.IS_STARTET);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			//new SocketClient().setzeRehaNachricht(rehaPort, "Reha301#"+RehaIOMessages.MUST_PATANDREZFIND+"#28222#RH7194");
 		}else{
 			/*
 			final Reha301 xapplication = application;
@@ -278,7 +296,7 @@ public class Reha301 implements WindowListener  {
 			}	
         	try {
         		
-   				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+   				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName+"?jdbcCompliantTruncation=false",dbUser,dbPassword);
 				Reha301.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
@@ -382,6 +400,7 @@ public class Reha301 implements WindowListener  {
 			try {
 				Reha301.thisClass.conn.close();
 				System.out.println("Datenbankverbindung wurde geschlossen");
+				new SocketClient().setzeRehaNachricht(rehaPort, "Reha301#"+RehaIOMessages.IS_FINISHED);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

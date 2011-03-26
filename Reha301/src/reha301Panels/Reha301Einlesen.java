@@ -396,9 +396,16 @@ public class Reha301Einlesen{
 						}
 						/******************************************/
 						if(edifact_vec.get(start).contains("+MEDR02:D")){
-							if(!erstercheck){
-								nachrichtentyp = 2;
-								erstercheck = true;
+							if(edifact_vec.get(edifact_vec.size()-3).contains("PCR+ADMIN5")){
+								if(!erstercheck){
+									nachrichtentyp = 14;
+									erstercheck = true;
+								}
+							}else{
+								if(!erstercheck){
+									nachrichtentyp = 2;
+									erstercheck = true;
+								}
 							}
 							obj = doAuswertenBewilligung(doUebersetzen(edifact_vec.get(i)),i);
 							if(obj[0] != null){
@@ -658,13 +665,26 @@ public class Reha301Einlesen{
 		if(zeile.startsWith("DTM+182:")){
 			String datum = teile[1].substring(4,14);
 			datum = datum.substring(6,8)+"."+datum.substring(4,6)+"."+datum.substring(0,4);
-			ret[0] = String.valueOf("Datum der "+(bewilligung ? "Bewilligung: " : "Ablehnung: ")+datum);
+			String art = "";
+			if(nachrichtentyp == 1){
+				art = "Bewilligung: ";
+			}else if(nachrichtentyp == 2){
+				art = "Ablehnung: ";
+			}else if(nachrichtentyp == 14){
+				art = "Bestätigung einer Verlängerung: ";
+			}
+			ret[0] = String.valueOf("Datum der "+art+datum);
 			return ret;
 		}
 		if(zeile.startsWith("DTM+48:")){
 			String datum = teile[1].split(":")[1];
-			ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
-			dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+			if(teile[1].split(":")[2].equals("804")){
+				ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+				dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+			}else if(teile[1].split(":")[2].equals("102")){
+				ret[0] = String.valueOf("Bewilligte Tage: "+edifact_vec.get( ((Integer)ret[1])+1 ).split("\\+")[1].split(":")[1]  );
+				dbHmap.put("tage","");
+			}
 			return ret;
 		}
 		if(zeile.startsWith("DTM+55:")){
@@ -842,10 +862,15 @@ public class Reha301Einlesen{
 		}
 		//Hausarzt
 		if(zeile.startsWith("PNA+HA")){
+			String pnaha = "";
 			ret[0] = "Hausarzt = "+zeile;
 			setPnaActive(teile[1]);
-			String pnaha = (teile[6].split(":").length > 0 ? teile[6].split(":")[1] : "");
-			pnaha = pnaha + (teile.length >= 8 ? " "+teile[7].split(":")[1] : "");
+			try{
+				pnaha = (teile[6].split(":").length > 0 ? teile[6].split(":")[1] : "");
+				pnaha = pnaha + (teile.length >= 8 ? " "+teile[7].split(":")[1] : "");
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null, "Fehler bei Hausarzt = \n\n"+zeile+"\n");
+			}
 			dbHmap.put("haname", pnaha);
 			return ret;
 		}
@@ -963,7 +988,10 @@ public class Reha301Einlesen{
 			return String.valueOf("18 - Absage einer Leistung");
 		}else if(wert.equals("18")){
 			bewilligung = false;
-			return String.valueOf("18 - Ablehnung einer Leistung");
+			return String.valueOf("18 - Absage einer Leistung");
+		}else if(wert.equals("15")){
+				bewilligung = false;
+				return String.valueOf("15 - Bestätigung einer Verlängerung");
 		}else if(wert.equals("50")){
 			bewilligung= true;
 			auftragsleistung = true;

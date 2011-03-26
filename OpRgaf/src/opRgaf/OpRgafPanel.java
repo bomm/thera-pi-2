@@ -1,8 +1,11 @@
 package opRgaf;
 
+
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,7 +16,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -35,12 +43,30 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+
+
+
+
+
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
 import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 import Tools.SqlInfo;
+
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.document.IDocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextField;
+import ag.ion.bion.officelayer.text.ITextFieldService;
+import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
+import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -74,6 +100,8 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	BigDecimal suchOffen = BigDecimal.valueOf(Double.parseDouble("0.00"));
 	BigDecimal suchGesamt = BigDecimal.valueOf(Double.parseDouble("0.00"));
 	DecimalFormat dcf = new DecimalFormat("###0.00");
+	
+	private HashMap<String,String> hmRezgeb = new HashMap<String,String>();
 	/*
 	final String stmtString = 
 		"select concat(t2.n_name, ', ',t2.v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y'))," +
@@ -82,7 +110,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	*/
 	final String stmtString = 
 		"select concat(t2.n_name, ', ',t2.v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y'))," +
-		"t1.rnr,t1.rdatum,t1.rgesamt,t1.roffen,t1.rpbetrag,t1.rbezdatum,t1.rmahndat1,t1.rmahndat2,t3.kassen_nam1,t1.rezr,t1.id "+
+		"t1.rnr,t1.rdatum,t1.rgesamt,t1.roffen,t1.rpbetrag,t1.rbezdatum,t1.rmahndat1,t1.rmahndat2,t3.kassen_nam1,t1.reznr,t1.id "+
 		"from rgaffaktura as t1 inner join pat5 as t2 on (t1.pat_intern = t2.pat_intern) "+
 		"left join kass_adr as t3 ON ( t2.kassenid = t3.id )";
 	int gefunden;
@@ -128,8 +156,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 				"Noch offen =","Noch offen >","Noch offen <",
 				"Pat. Nachname =","Pat. Nachname beginnt mit",
 				"Rezeptnummer =",
-				"Rechnungsdatum =","Rechnungsdatum >","Rechnungsdatum <",
-				"Rezeptnummer ="};
+				"Rechnungsdatum =","Rechnungsdatum >","Rechnungsdatum <"};
 
 		combo = new JRtaComboBox(args);
 		content.add(combo,cc.xy(4,2));
@@ -187,8 +214,8 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		tab.getColumn(6).setCellEditor(tble);
 		tab.getColumn(7).setCellEditor(tble);
 		tab.getColumn(8).setCellEditor(tble);
-		tab.getColumn(10).setMaxWidth(80);
-		tab.getColumn(10).setMaxWidth(50);
+		tab.getColumn(10).setMinWidth(80);
+		tab.getColumn(11).setMaxWidth(50);
 		tab.getSelectionModel().addListSelectionListener( new OPListSelectionHandler());
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		
@@ -284,10 +311,52 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 					doAusbuchen();
 					tabmod.addTableModelListener(getInstance());
 					setzeFocus();
+					return;
+				}
+				if(cmd.equals("kopie")){
+					doKopie();
+					setzeFocus();
+					return;
 				}
 			}
-			
 		};
+	}
+	private void doKopie(){
+		if(tabmod.getRowCount() <= 0){
+			return;
+		}
+		final String rnr = tab.getValueAt(tab.getSelectedRow(), 1).toString();
+		if(rnr.startsWith("AFR")){
+
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+
+						try{
+						//System.out.println("in Ausfallrechnung");
+						//(Point pt, String pat_intern,String rez_nr,String rnummer,String rdatum){
+						String id = tab.getValueAt(tab.getSelectedRow(), 11).toString(); 
+						String rez_nr = SqlInfo.holeEinzelFeld("select reznr from rgaffaktura where id='"+id+"' LIMIT 1");
+						String pat_intern = SqlInfo.holeEinzelFeld("select pat_intern from rgaffaktura where id='"+id+"' LIMIT 1");
+						String rdatum = SqlInfo.holeEinzelFeld("select rdatum from rgaffaktura where id='"+id+"' LIMIT 1");
+						AusfallRechnung ausfall = new AusfallRechnung(anzahlSaetze.getLocationOnScreen(),pat_intern,
+								rez_nr,rnr,rdatum);
+						ausfall.setModal(true);
+						ausfall.setLocationRelativeTo(null);
+						ausfall.toFront();
+						ausfall.setVisible(true);
+						ausfall = null;
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						return null;
+					}
+				}.execute();
+				return;
+		}
+		if(rnr.startsWith("RGR")){
+			doRezeptgebKopie();
+		}
 	}
 	private void sucheEinleiten(){
 		new SwingWorker<Void,Void>(){
@@ -326,7 +395,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		}
 		int row = tab.getSelectedRow();
 		if(row < 0){
-			JOptionPane.showMessageDialog(null, "Keine Rechnung zum Ausbuchen ausgew�hlt");
+			JOptionPane.showMessageDialog(null, "Keine Rechnung zum Ausbuchen ausgewählt");
 			return;
 		}
 		String offeninTabelle = dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4));
@@ -344,7 +413,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		tabmod.setValueAt(Double.parseDouble(tfs[0].getText().replace(",", ".")), tab.convertRowIndexToModel(row), 4);
 
 
-		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 10);
+		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 11);
 		String cmd = "update rgaffaktura set roffen='"+tfs[0].getText().replace(",", ".")+"', rbezdatum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id ='"+Integer.toString(id)+"' LIMIT 1";
 		/*
@@ -440,10 +509,6 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		case 13:
 			cmd = stmtString+" where rdatum <'"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
 			break;
-		case 14:
-			cmd = stmtString+" where t1.reznr ='"+suchen.getText().trim()+"'";
-			break;
-			
 		}
 		
 		}catch(Exception ex){
@@ -661,7 +726,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 				int row = arg0.getFirstRow();
 				String colname = colnamen[col].toString();
 				String value = "";
-				String id = Integer.toString((Integer)tabmod.getValueAt(row,10));
+				String id = Integer.toString((Integer)tabmod.getValueAt(row,11));
 				if( tabmod.getColumnClass(col) == Boolean.class){
 					value = (tabmod.getValueAt(row,col) == Boolean.FALSE ? "F" : "T");
 				}else if(tabmod.getColumnClass(col) == Date.class){
@@ -701,8 +766,179 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 			
 			return;
 		}
-
 	}
+	
+	private void doRezeptgebKopie(){
+		if(tabmod.getRowCount() <= 0){return;}
+		String db = "";
+		String id = tab.getValueAt(tab.getSelectedRow(), 11).toString(); 
+		String rgnr = tab.getValueAt(tab.getSelectedRow(), 1).toString();
+		String rez_nr = SqlInfo.holeEinzelFeld("select reznr from rgaffaktura where id='"+id+"' LIMIT 1");
+		String pat_intern = SqlInfo.holeEinzelFeld("select pat_intern from rgaffaktura where id='"+id+"' LIMIT 1");
+		String rdatum = SqlInfo.holeEinzelFeld("select rdatum from rgaffaktura where id='"+id+"' LIMIT 1");
+		String rezgeb = SqlInfo.holeEinzelFeld("select rgbetrag from rgaffaktura where id='"+id+"' LIMIT 1");
+		String pauschale = SqlInfo.holeEinzelFeld("select rpbetrag from rgaffaktura where id='"+id+"' LIMIT 1");
+		String gesamt = SqlInfo.holeEinzelFeld("select rgesamt from rgaffaktura where id='"+id+"' LIMIT 1");
+		System.out.println("Rezeptnummer = "+rez_nr);
+		new InitHashMaps();
+		/*
+		Vector<String> patDaten = SqlInfo.holeSatz("pat5", " * ", "pat_intern='"+pat_intern+"'", Arrays.asList(new String[] {}));
+		InitHashMaps.constructPatHMap(patDaten);
+		*/
+		String test = SqlInfo.holeEinzelFeld("select id from verordn where rez_nr = '"+rez_nr+"' LIMIT 1");
+		Vector<String> vecaktrez = null;
+		if(test.equals("")){
+			test = SqlInfo.holeEinzelFeld("select id from lza where rez_nr = '"+rez_nr+"' LIMIT 1");
+			if(test.equals("")){
+				//this.dispose();
+				//return;
+			}else{
+				vecaktrez = SqlInfo.holeSatz("lza", " anzahl1,kuerzel1,kuerzel2,"+
+						"kuerzel3,kuerzel4,kuerzel5,kuerzel6 ", "id='"+test+"'", Arrays.asList(new String[] {}));
+				db = "lza";
+			}
+		}else{
+			vecaktrez = SqlInfo.holeSatz("verordn", " anzahl1,kuerzel1,kuerzel2,"+
+					"kuerzel3,kuerzel4,kuerzel5,kuerzel6 ", "id='"+test+"'", Arrays.asList(new String[] {}));
+			db = "verordn";
 
+		}
+		String behandlungen = vecaktrez.get(0)+"*"+
+			(! vecaktrez.get(1).trim().equals("") ? "" +vecaktrez.get(1) : "") +
+			(! vecaktrez.get(2).trim().equals("") ? "," +vecaktrez.get(2) : "") +
+			(! vecaktrez.get(3).trim().equals("") ? "," +vecaktrez.get(3) : "") +
+			(! vecaktrez.get(4).trim().equals("") ? "," +vecaktrez.get(4) : "") +
+			(! vecaktrez.get(5).trim().equals("") ? "," +vecaktrez.get(5) : "") +
+			(! vecaktrez.get(6).trim().equals("") ? "," +vecaktrez.get(6) : "");
+		
+		String cmd = "select abwadress,id from pat5 where pat_intern='"+pat_intern+"' LIMIT 1";
+		Vector<Vector<String>> adrvec = SqlInfo.holeFelder(cmd);
+		String[] adressParams = null;
+		if(adrvec.get(0).get(0).equals("T")){
+			adressParams = holeAbweichendeAdresse(adrvec.get(0).get(1));
+		}else{
+			adressParams = getAdressParams(adrvec.get(0).get(1));
+		}
+
+		hmRezgeb.put("<rgreznum>",rez_nr);
+		hmRezgeb.put("<rgbehandlung>",behandlungen);
+		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(
+				SqlInfo.holeEinzelFeld("select rez_datum from "+db+" where rez_nr='"+rez_nr+"' LIMIT 1") ));
+		hmRezgeb.put("<rgbetrag>",rezgeb.replace(".", ","));
+		hmRezgeb.put("<rgpauschale>",pauschale.replace(".", ","));
+		hmRezgeb.put("<rggesamt>",gesamt.replace(".", ","));
+		hmRezgeb.put("<rganrede>",adressParams[0]);
+		hmRezgeb.put("<rgname>",adressParams[1]);
+		hmRezgeb.put("<rgstrasse>",adressParams[2]);
+		hmRezgeb.put("<rgort>",adressParams[3]);
+		hmRezgeb.put("<rgbanrede>",adressParams[4]);
+		hmRezgeb.put("<rgorigdatum>", DatFunk.sDatInDeutsch(rdatum));
+		hmRezgeb.put("<rgnr>", rgnr);
+		//System.out.println(hmRezgeb);
+		String url = OpRgaf.progHome+"vorlagen/"+OpRgaf.aktIK+"/RezeptgebuehrRechnung.ott.Kopie.ott";
+		try {
+			officeStarten(url);
+		} catch (OfficeApplicationException e) {
+			e.printStackTrace();
+		} catch (NOAException e) {
+			e.printStackTrace();
+		} catch (TextException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public String[] getAdressParams(String patid){
+		//anr=17,titel=18,nname=0,vname=1,strasse=3,plz=4,ort=5,abwadress=19
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+		String cmd = "select anrede,titel,n_name,v_name,strasse,plz,ort from pat5 where id='"+
+		patid+"' LIMIT 1";
+		Vector<Vector<String>> abwvec = SqlInfo.holeFelder(cmd);
+		Object[] obj = { (Object)abwvec.get(0).get(0),(Object)abwvec.get(0).get(1),(Object)abwvec.get(0).get(2),
+			(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
+			(Object)abwvec.get(0).get(6)
+			};
+		return AdressTools.machePrivatAdresse(obj,true);
+	}
+	
+	public String[] holeAbweichendeAdresse(String patid){
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+		String cmd = "select abwanrede,abwtitel,abwn_name,abwv_name,abwstrasse,abwplz,abwort from pat5 where id='"+
+			patid+"' LIMIT 1";
+		Vector<Vector<String>> abwvec = SqlInfo.holeFelder(cmd);
+		Object[] obj = { (Object)abwvec.get(0).get(0),(Object)abwvec.get(0).get(1),(Object)abwvec.get(0).get(2),
+				(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
+				(Object)abwvec.get(0).get(6)
+				};
+		return AdressTools.machePrivatAdresse(obj,true);
+	}
+	
+	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
+		IDocumentService documentService = null;
+		OpRgaf.thisFrame.setCursor(OpRgaf.thisClass.wartenCursor);
+		////System.out.println("Starte Datei -> "+url);
+		if(!OpRgaf.officeapplication.isActive()){
+			OpRgaf.starteOfficeApplication();
+		}
+
+		documentService = OpRgaf.officeapplication.getDocumentService();
+
+        IDocumentDescriptor docdescript = new DocumentDescriptor();
+       	docdescript.setHidden(true);
+        docdescript.setAsTemplate(true);
+		IDocument document = null;
+
+		document = documentService.loadDocument(url,docdescript);
+		ITextDocument textDocument = (ITextDocument)document;
+		/**********************/
+		//OOTools.druckerSetzen(textDocument, SystemConfig.hmAbrechnung.get("hmgkvrechnungdrucker"));
+		/**********************/
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+
+		placeholders = textFieldService.getPlaceholderFields();
+		String placeholderDisplayText = "";
+
+		for (int i = 0; i < placeholders.length; i++) {
+			placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			Set<?> entries = hmRezgeb.entrySet();
+		    Iterator<?> it = entries.iterator();
+			    while (it.hasNext()) {
+			      @SuppressWarnings("rawtypes")
+				Map.Entry entry = (Map.Entry) it.next();
+			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+			    	  try{
+			    		  
+			    	  }catch(com.sun.star.uno.RuntimeException ex){
+			    		  //System.out.println("Fehler bei "+placeholderDisplayText);
+			    	  }
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+
+			    	  break;
+			      }
+			    }
+		}
+		//if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		/*	
+		}else{
+			PrintProperties printprop = new PrintProperties ((short) 2 ,null);
+			textDocument.getPrintService().print(printprop);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			textDocument.close();
+			textDocument = null;
+		}
+		*/
+		
+		
+	}
+	
+	
 
 }

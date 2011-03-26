@@ -1,44 +1,44 @@
-package systemTools;
+package Tools;
 
 import java.util.Vector;
 
-import systemEinstellungen.SystemPreislisten;
+
 
 public class LeistungTools {
-	
 	public static String[] getLeistung(String hmart,String hmposition,int preisgruppe){
 		String ret[] = {"",""};
 		Vector<Vector<String>> vec = null;
+		String preisliste = null; 
 		int ipos = Integer.parseInt(hmposition);
 		for(int i = 0;i <1;){
 			if(hmart.equals("KG")){
 				//vec = ParameterLaden.vKGPreise;
-				vec = SystemPreislisten.hmPreise.get("Physio").get(preisgruppe);
+				preisliste = "kgtarif"+Integer.toString(preisgruppe);
 				break;
 			}
 			if(hmart.equals("MA")){
 				//vec = ParameterLaden.vMAPreise;
-				vec = SystemPreislisten.hmPreise.get("Massage").get(preisgruppe);
+				preisliste = "matarif"+Integer.toString(preisgruppe);
 				break;
 			}
 			if(hmart.equals("ER")){
 				//vec = ParameterLaden.vERPreise;
-				vec = SystemPreislisten.hmPreise.get("Ergo").get(preisgruppe);				
+				preisliste = "ertarif"+Integer.toString(preisgruppe);				
 				break;
 			}
 			if(hmart.equals("LO")){
 				//vec = ParameterLaden.vLOPreise;
-				vec = SystemPreislisten.hmPreise.get("Logo").get(preisgruppe);
+				preisliste = "lotarif"+Integer.toString(preisgruppe);
 				break;
 			}
 			if(hmart.equals("RH")){
 				//vec = ParameterLaden.vRHPreise;
-				vec = SystemPreislisten.hmPreise.get("Reha").get(preisgruppe);				
+				preisliste = "rhtarif"+Integer.toString(preisgruppe);				
 				break;
 			}
 			if(hmart.equals("PO")){
 				//vec = ParameterLaden.vRHPreise;
-				vec = SystemPreislisten.hmPreise.get("Podo").get(preisgruppe);				
+				preisliste = "potarif"+Integer.toString(preisgruppe);				
 				break;
 			}
 
@@ -46,16 +46,13 @@ public class LeistungTools {
 			return ret;
 			
 		}
-		int lang = vec.size();
-		for(int i = 0; i <lang;i++){
-			if( Integer.parseInt( (String) ((Vector<String>)vec.get(i)).get(9)) == ipos ){
-				return new String[] {String.valueOf( (String) ((Vector<String>)vec.get(i)).get(0)),
-						String.valueOf( (String) ((Vector<String>)vec.get(i)).get(1))};
-				
-			}
-			
+		String cmd = "select leistung,kuerzel from "+preisliste+" where id = '"+hmposition+"' LIMIT 1";
+		vec = SqlInfo.holeFelder(cmd);
+		if(vec.size() == 1){
+			return new String[] {String.valueOf(vec.get(0).get(0)),String.valueOf(vec.get(0).get(1))};
 		}
 		return ret;
 	}
+	
 
 }

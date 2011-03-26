@@ -100,7 +100,7 @@ public class OpRgafMahnungen extends JXPanel{
 	
 	final String stmtString = 
 		"select concat(t2.n_name, ', ',t2.v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y'))," +
-		"t1.rnr,t1.rdatum,t1.rgesamt,t1.roffen,t1.rpbetrag,t1.rbezdatum,t1.rmahndat1,t1.rmahndat2,t3.kassen_nam1,t1.rznr,t1.id "+
+		"t1.rnr,t1.rdatum,t1.rgesamt,t1.roffen,t1.rpbetrag,t1.rbezdatum,t1.rmahndat1,t1.rmahndat2,t3.kassen_nam1,t1.reznr,t1.id "+
 		"from rgaffaktura as t1 inner join pat5 as t2 on (t1.pat_intern = t2.pat_intern) "+
 		"left join kass_adr as t3 ON ( t2.kassenid = t3.id )";
 	int gefunden;
@@ -432,10 +432,12 @@ public class OpRgafMahnungen extends JXPanel{
 		}
 	}
 	private void doMahnungStarten(){
+		/*
 		if(cbMahnsperre.isSelected()){
 			JOptionPane.showMessageDialog(null,"Diese Rechnung ist mit einer Mahnsperre belegt und kann deshalb nicht angemaht werden!");
 			return;
 		}
+		*/
 		initHashMap();
 		mahnParameter.put("<Mname1>", rtfs[0].getText().trim());		
 		mahnParameter.put("<Mname2>", rtfs[1].getText().trim());
@@ -449,22 +451,13 @@ public class OpRgafMahnungen extends JXPanel{
 		mahnParameter.put("<Mmahndat1>", (rtfs[8].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));
 		mahnParameter.put("<Mmahndat2>", (rtfs[9].getText().trim().length()==10 ? rtfs[9].getText().trim() : ""));
 		//mahnParameter.put("<Mmahndat3>", (rtfs[10].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));
-		String datei = OpRgaf.progHome+"vorlagen/"+OpRgaf.aktIK+"/Mahnung"+Integer.toString(aktuelleMahnstufe)+".ott";
+		String datei = OpRgaf.progHome+"vorlagen/"+OpRgaf.aktIK+"/RGAFMahnung"+Integer.toString(aktuelleMahnstufe)+".ott";
 		try{
 			starteMahnDruck(datei);
-			if((Boolean) OpRgaf.mahnParameter.get("inofficestarten")){
-				if(textDocument != null){
-					textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);	
-				}else{
-					JOptionPane.showMessageDialog(null,"Kann den OpenOffice-Writer nicht starten 'textDocument' ist bereits null" );
-				}
+			if(textDocument != null){
+				textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);	
 			}else{
-				int exemplare = (Integer) OpRgaf.mahnParameter.get("exemplare");
-				Thread.sleep(100);
-				PrintProperties printprop = new PrintProperties ((short)exemplare,null);
-				textDocument.getPrintService().print(printprop);
-				Thread.sleep(200);
-				textDocument.close();
+				JOptionPane.showMessageDialog(null,"Kann den OpenOffice-Writer nicht starten 'textDocument' ist bereits null" );
 			}
 			
 		}catch(Exception ex){
@@ -480,7 +473,7 @@ public class OpRgafMahnungen extends JXPanel{
 		String cmd = "";
 		switch(aktuelleMahnstufe){
 		case 1: 
-			cmd = "update rrgaffaktura set rmahndat1='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
+			cmd = "update rgaffaktura set rmahndat1='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";
 			break;
 		case 2:
 			cmd = "update rgaffaktura set rmahndat2='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id='"+Integer.toString(id)+"' LIMIT 1";

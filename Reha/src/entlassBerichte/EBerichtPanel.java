@@ -1265,8 +1265,18 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			setCursor(Reha.thisClass.cdefault);
 			JOptionPane.showMessageDialog(jry,((StringBuffer)obj[2]).toString());
 			if(((Integer)obj[0]) > 0){
-				JOptionPane.showMessageDialog(jry,"Entlassbericht enthält Fehler §301 wird nicht gestartet");
-				return;
+				if(Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+					int anfrage = JOptionPane.showConfirmDialog(jry, "Entlassbericht enthält Fehler\n"+
+							"Sie als SuperUser können den E-Bericht trotzdem übertragen\n\n"+
+							"Wollen Sie den Entlassbericht tatsächlich übertragen?",
+							"Wichtige Benutzeranfrage!",JOptionPane.YES_NO_OPTION);
+					if(anfrage != JOptionPane.YES_OPTION){
+						return;
+					}
+				}else{
+					JOptionPane.showMessageDialog(jry,"Entlassbericht enthält Fehler §301 wird nicht gestartet");
+					return;
+				}
 			}
 		}
 		if(((Integer)obj[1]) > 0){
@@ -1657,6 +1667,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		test = test + "<font face=\"Courier new\"><font color=#FF0000>&nbsp;&nbsp;&nbsp;1234567890123456789012345678901234567890</font><br>";
 		for(int i2 = 0;i2 < flvec.size();i2++){
 			test = test+Integer.toString(i2+1)+".&nbsp;"+flvec.get(i2);
+			if(flvec.get(i2).length()> 40){
+				test = test + "<br><b><font color=#FF0000>Fehler bei Diagnose "+Integer.toString(i2)+" Länge = "+Integer.toString(flvec.get(i2).length())+"</font></b>";
+			}
+			if(flvec.size() >= 4){
+				test = test + "<br><b><font color=#FF0000>Fehler bei Diagnose "+Integer.toString(i2)+" Zeilen = "+Integer.toString(flvec.size())+" erlaubt sind max. 4.</font></b>";			
+			}
+
 			if(i2 == (flvec.size()-1) ){
 				break;
 			}

@@ -747,7 +747,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 					String[] anlass = {"Unbekannter Anlass","Bewilligung","Ablehnung",
 							"Aufnahmemitteilung","Unterbrechungsmeldung","Verlängerung","Entlassmitteilung",
 							"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung",
-							"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung"};
+							"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung","Bestätigung der Verlängerung"};
 					String cmd = "select nachrichttyp,nachrichtdatum,bearbeiter,id,esolname,icr from dtafall where pat_intern='"+
 					String.valueOf(Reha.thisClass.patpanel.patDaten.get(29))+
 					"' and rez_nr='"+

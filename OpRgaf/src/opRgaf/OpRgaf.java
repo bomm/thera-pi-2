@@ -210,7 +210,8 @@ public class OpRgaf implements WindowListener{
 		final OpRgafTab xotab = otab;
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				xotab.setFirstFocus();		
+				xotab.setFirstFocus();
+				new InitHashMaps();
 			}
 		});
 		return jFrame;
