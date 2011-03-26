@@ -78,6 +78,8 @@ public class OffenePosten implements WindowListener{
 	
 	public static boolean testcase = false;
 	
+	OffenepostenTab otab = null;
+	
 	public static void main(String[] args) {
 		OffenePosten application = new OffenePosten();
 		application.getInstance();
@@ -201,16 +203,16 @@ public class OffenePosten implements WindowListener{
 		jFrame.setTitle("Thera-Pi  Offene-Posten / Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
-		OffenepostenTab otab = new OffenepostenTab();
+		otab = new OffenepostenTab();
 		otab.setHeader(0);
 		
 		jFrame.getContentPane().add (otab);
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
-		final OffenepostenTab xotab = otab;
+		
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				xotab.setFirstFocus();		
+				otab.setFirstFocus();		
 			}
 		});
 		return jFrame;

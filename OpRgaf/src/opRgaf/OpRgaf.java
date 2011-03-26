@@ -78,6 +78,7 @@ public class OpRgaf implements WindowListener{
 	*/
 	
 	public static boolean testcase = false;
+	public OpRgafTab otab = null;
 	
 	public static void main(String[] args) {
 		OpRgaf application = new OpRgaf();
@@ -201,17 +202,18 @@ public class OpRgaf implements WindowListener{
 		jFrame.setTitle("Thera-Pi  Rezeptgebührrechnung/Ausfallrechnung/Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
-		OpRgafTab otab = new OpRgafTab();
+		otab = new OpRgafTab();
 		otab.setHeader(0);
 		
 		jFrame.getContentPane().add (otab);
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
-		final OpRgafTab xotab = otab;
+
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				xotab.setFirstFocus();
 				new InitHashMaps();
+				otab.setFirstFocus();				
+				
 			}
 		});
 		return jFrame;

@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -140,7 +141,11 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
         jxh.setIcon(vecimg.get(sel));   
 	}
 	public void setFirstFocus(){
-		oppanel.setzeFocus();		
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				oppanel.setzeFocus();		
+			}
+		});
 	}
 	
 	public String getNotBefore(){
