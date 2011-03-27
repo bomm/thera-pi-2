@@ -2323,7 +2323,7 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("rgaffaktura")){
-		if(! Rechte.hatRecht(Rechte.Funktion_kassenbuch, false)){
+		if(! Rechte.hatRecht(Rechte.Funktion_barkasse, false)){
 			JOptionPane.showMessageDialog(null, "Keine Berechtigung -> Funktion Ausbuchen RGAF-Faktura");
 			return;
 		}
