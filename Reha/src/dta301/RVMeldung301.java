@@ -793,6 +793,7 @@ public class RVMeldung301 {
  
 	public boolean doUnterbrechung(String beginnDatum,String endeDatum,int ubart,int ubgrund, String hinweis){
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
+		String fallart = "";
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
@@ -843,12 +844,15 @@ public class RVMeldung301 {
 		buf301Body.append("IMD+++"+Dta301CodeListen.getCodeListe("B08")[ubgrund][0]+":B08"+EOL+NEWLINE);zeilen++;
 		if(ubart==0){
 			buf301Body.append("DTM+158:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
+			fallart = "4";
 		}else if(ubart==1){
 			buf301Body.append("DTM+159:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
+			fallart = "15";
 		}else if(ubart==2){
 			buf301Body.append("DTM+324:"+
 					mache10erDatum(beginnDatum)+
 					mache10erDatum(endeDatum)+":711"+EOL+NEWLINE);zeilen++;
+			fallart = "16";		
 		}
 		if(!hinweis.equals("")){
 			Vector<String> flvec = new Vector<String>();
@@ -872,7 +876,7 @@ public class RVMeldung301 {
 		if(doKeyStoreAktion(true)){
 			//Mail Versenden
 			//In neue Tabelle schreiben
-			String cmd = "insert into dtafall set nachrichttyp='4', nachrichtart='4', pat_intern='"+
+			String cmd = "insert into dtafall set nachrichttyp='"+fallart+"', nachrichtart='"+fallart+"', pat_intern='"+
 			vecdta.get(0).get(1).toString()+"', rez_nr='"+vecdta.get(0).get(2).toString()+"', "+
 			"nachrichtdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', nachrichtorg='"+
 			StringTools.EscapedDouble(gesamtbuf.toString())+"',"+
