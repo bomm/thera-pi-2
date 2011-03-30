@@ -825,6 +825,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		if(row < 0){JOptionPane.showMessageDialog(null,"Kein Rezept für Fallsteuerung ausgewählt"); return;}
 		Reha.thisClass.progLoader.Dta301Fenster(1, tabhistorie.getValueAt(row, 0).toString());
 	}
+	private void doRgebKopie(){
+		if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
+		int row = tabhistorie.getSelectedRow();
+		if(row < 0){JOptionPane.showMessageDialog(null,"Kein Rezept für Rezeptgebühr-Kopie ausgewählt"); return;}
+	}
 	
 	class ToolsDlgHistorie{
 		public ToolsDlgHistorie(String command,Point pt){
@@ -833,14 +838,16 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			icons.put("Gesamtumsatz dieses Patienten",SystemConfig.hmSysIcons.get("euro"));
 			icons.put("Behandlungstage in Clipboard",SystemConfig.hmSysIcons.get("einzeltage"));
 			icons.put("Transfer in aktuelle Rezepte",SystemConfig.hmSysIcons.get("undo"));
+			icons.put("Rezeptgebührquittung (Kopie)",SystemConfig.hmSysIcons.get("rezeptgebuehr"));
 			icons.put("§301 Reha-Fallsteuerung",SystemConfig.hmSysIcons.get("abrdreieins"));
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten",
-					"Behandlungstage in Clipboard","Transfer in aktuelle Rezepte","§301 Reha-Fallsteuerung"});
+					"Behandlungstage in Clipboard","Transfer in aktuelle Rezepte",
+					"Rezeptgebührquittung (Kopie)","§301 Reha-Fallsteuerung"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list);
-			tDlg.setPreferredSize(new Dimension(200,200+
+			tDlg.setPreferredSize(new Dimension(225,200+
 					((Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
@@ -876,10 +883,10 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				}
 				break;
 			case 3:
-				do301FallSteuerung();
+				doRgebKopie();
 				break;
 			case 4:
-				//privatRechnung();
+				do301FallSteuerung();
 				break;
 				
 			}

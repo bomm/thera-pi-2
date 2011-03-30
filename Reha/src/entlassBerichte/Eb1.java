@@ -14,7 +14,6 @@ import java.awt.event.ComponentListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -32,8 +31,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
-import javax.swing.text.DocumentFilter.FilterBypass;
-import javax.swing.text.PlainDocument;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -1825,77 +1822,6 @@ public class Eb1 implements ActionListener,ComponentListener {
 		}
 	}
 	/**********************************************/
-	class DiagDoc extends PlainDocument {
-
-	    /**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private int maxLength_ = Integer.MAX_VALUE;
-		private int maxLineLength_ = Integer.MAX_VALUE;
-		private JTextArea area_ = null;
-
-	    /**
-	     * Erzeugt ein javax.swing.text.Document fuer das JTextField.
-	     * 
-	     * @param maxLength
-	     *            maximale Zeichenanzahl
-	     */
-	    public DiagDoc(final int maxLength,final int maxLineLength) {
-	        this.maxLength_ = maxLength;
-	        this.maxLineLength_ = maxLineLength;
-	        
-	    }
-	    public void setArea(final JTextArea area){
-	    	area_ = area;	    	
-	    }
-
-	    /**
-	     * Fügt den String nur dann ein, wenn die maximale Anzahl noch nicht überschritten ist.
-	     * 
-	     * @param offs
-	     *            Offset (Position, an der der String eingefuegt werden soll)
-	     * @param str
-	     *            einzufuegender String
-	     * @param a
-	     *            Attribut-Set (werden hier nicht weiter beachtet)
-	     * @throws BadLocationException
-	     *             wird "von oben" durchgereicht
-	     * @see javax.swing.text.AttributeSet
-	     */
-	    public void insertString(final int offs, final String str,
-	            final AttributeSet a) throws BadLocationException {
-	        if (str == null) {
-	            return;
-	        }
-	        
-	        
-	        int actualLength = this.getLength();
-	        int actualPos = 0;
-	        String[] zeilen = null;
-	        if (actualLength + str.length() < this.maxLength_) {
-	        	
-	            
-	            if( this.getText(0, this.getLength()).length() > 0){
-		            zeilen = this.getText(0, this.getLength()).split("\\n");
-		            for(int i = 0; i < zeilen.length;i++){
-		            	if(zeilen[i].length() == 40){
-		            		
-		            		super.insertString(offs, "\n"+str, a);
-		            		//
-		            		//JOptionPane.showMessageDialog(null,"Zeile "+Integer.toString(i+1)+" ist länger als 40 Zeichen\n\nErlaub sind max. 3 Zeilen mit je max. 40 Zeichen");
-		            	}
-		            }
-	            }
-	            super.insertString(offs, str, a);
-	            
-	        } else {
-	            // z.B. beep()
-	        }
-	    }
-
-	}	
-	
 	/**********************************************/
 	class DocumentLineLengthFilter extends DocumentFilter
 

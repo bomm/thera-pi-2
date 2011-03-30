@@ -94,9 +94,10 @@ public class Reha301Auswerten extends JXPanel{
 	ActionListener al = null;
 	int anzeigeart = -1;
 	public String[] artderNachricht = {"Unbekannter Anlass","Bewilligung","Ablehnung",
-			"Aufnahmemitteilung","Unterbrechungsmeldung","Verlängerung","Entlassmitteilung",
+			"Aufnahmemitteilung","Unterbrechung (Beginn)","Verlängerung","Entlassmitteilung",
 			"E-Bericht","Rechnung","Absage an den Kostenträger","Einberufung","Rückstellung",
-			"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung","Bestätigung der Verlängerung"};
+			"Entlassmitteilung und Fahrgeldabrechnung","Fahrgeldabrechnung","Bestätigung der Verlängerung," +
+					"Unterbrechung (Ende)","Unterbrechung (Beginn und Ende)"};
 	public String patBetroffen = null;
 	public boolean patneuangelegt = false;
 	public String patneuepatnr = "";
@@ -1226,6 +1227,32 @@ public class Reha301Auswerten extends JXPanel{
 		/*
 		 * Unbedingt wieder einschalten
 		 */
+
+
+		int berichte = SqlInfo.zaehleSaetze("bericht2", "pat_intern='"+dta301mod.getPatIntern()+"'");
+		if(berichte > 0){
+			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Bericht-ID an auf die dieser Fall übertragen werden soll.\n(Leer lasse für neuen Bericht)", "");
+			if(ret != null){
+				//Bearbeitereintragen in dtafall
+				if(! ((String)ret).trim().equals("")){
+					buf.setLength(0);
+					buf.trimToSize();
+					buf.append("update dtafall set bearbeiter='301-er Automat' ");
+					buf.append("where id='"+fallid+"' LIMIT 1");
+					SqlInfo.sqlAusfuehren(buf.toString());
+					
+					buf.setLength(0);
+					buf.trimToSize();
+					buf.append("update dta301 set berichtid='"+((String)ret).trim()+"' ");
+					buf.append("where id='"+id+"' LIMIT 1");
+					SqlInfo.sqlAusfuehren(buf.toString());
+					return;
+				}
+			}
+		}
+		//buf.append("update dta301 set berichtid='"+Integer.toString(berichtid)+"' ");
+		//buf.append("where id='"+id+"' LIMIT 1");
+
 		int berichtid = SqlInfo.erzeugeNummer("bericht");
 		if(disziplin.equals("Reha")){
 			//Reha
