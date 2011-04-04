@@ -51,6 +51,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
+import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 import Tools.SqlInfo;
@@ -93,6 +94,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	JLabel summeRechnung;
 	JLabel summeGesamtOffen;
 	JLabel anzahlSaetze;
+	JRtaCheckBox bar = null;
 	
 	JButton kopie;
 	
@@ -142,7 +144,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	private JXPanel getContent(){
 		content = new JXPanel();
 		//				 1     2     3    4     5     6      7    8      9    10    11   12    13   14     15  
-		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,50dlu:g,5dlu,50dlu,2dlu,40dlu,2dlu,35dlu,10dlu";
+		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,50dlu:g,5dlu,50dlu,5dlu,50dlu,2dlu,40dlu,2dlu,35dlu,10dlu";
 		//				 1     2  3     4       5    6      7
 		String ywerte = "10dlu,p,2dlu,150dlu:g,5dlu,80dlu,0dlu";	
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -156,7 +158,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 				"Noch offen =","Noch offen >","Noch offen <",
 				"Pat. Nachname =","Pat. Nachname beginnt mit",
 				"Rezeptnummer =",
-				"Rechnungsdatum =","Rechnungsdatum >","Rechnungsdatum <"};
+				"Rechnungsdatum =","Rechnungsdatum >","Rechnungsdatum <","Krankenkasse beginnt mit","Freie Bedingung"};
 
 		combo = new JRtaComboBox(args);
 		content.add(combo,cc.xy(4,2));
@@ -168,17 +170,23 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		suchen.addKeyListener(kl);
 		content.add(suchen,cc.xy(8,2));
 
-		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(10,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		bar = new JRtaCheckBox("bar in Kasse");
+		if(OpRgaf.mahnParameter.get("inkasse").equals("Kasse")){
+			bar.setSelected(true);
+		}
+		
+		content.add(bar,cc.xy(10,2));
+		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		buts[0].setMnemonic('a');
 		
 		lab = new JLabel("noch offen:");
-		content.add(lab,cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		content.add(lab,cc.xy(14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		tfs[0] = new JRtaTextField("F",true,"6.2","");
 		tfs[0].setHorizontalAlignment(SwingConstants.RIGHT);
 		tfs[0].setText("0,00");
 		tfs[0].setName("offen");
 		tfs[0].addKeyListener(kl);
-		content.add(tfs[0],cc.xy(14,2));
+		content.add(tfs[0],cc.xy(16,2));
 		while(!OpRgaf.DbOk){
 			
 		}
@@ -222,7 +230,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
-		content.add(jscr,cc.xyw(2,4,13));
+		content.add(jscr,cc.xyw(2,4,16));
 		
 		JXPanel auswertung = new JXPanel();
 		//                 1        2   3    4        5     6  7
@@ -256,7 +264,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		auswertung.add(anzahlSaetze,cc2.xy(4,8));
 		
 		auswertung.add(ButtonTools.macheButton("Kopie erstellen", "kopie", al),cc2.xy(6,2));
-		content.add(auswertung,cc.xyw(1,6,15));
+		content.add(auswertung,cc.xyw(1,6,17));
 		content.validate();
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -409,18 +417,33 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		gesamtOffen = gesamtOffen.subtract( BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4)) );
 		gesamtOffen = gesamtOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
 
+		String cmd = "";
+		if(OpRgaf.mahnParameter.get("inkasse").equals("Kasse")){
+			BigDecimal einnahme = BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4));
+			einnahme = einnahme.subtract(BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ));
+			cmd = "insert into kasse set einnahme='"+dcf.format(einnahme).replace(",", ".")+"', datum='"+
+			DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
+			tabmod.getValueAt(tab.convertRowIndexToModel(row), 1)+","+
+			tabmod.getValueAt(tab.convertRowIndexToModel(row), 0)+"',"+
+			"rez_nr='"+tabmod.getValueAt(tab.convertRowIndexToModel(row), 10)+"'";
+			System.out.println(cmd);
+			SqlInfo.sqlAusfuehren(cmd);
+		}
+		
 		tabmod.setValueAt(new Date(), tab.convertRowIndexToModel(row), 6);		
 		tabmod.setValueAt(Double.parseDouble(tfs[0].getText().replace(",", ".")), tab.convertRowIndexToModel(row), 4);
 
 
+
 		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 11);
-		String cmd = "update rgaffaktura set roffen='"+tfs[0].getText().replace(",", ".")+"', rbezdatum='"+
+		cmd = "update rgaffaktura set roffen='"+tfs[0].getText().replace(",", ".")+"', rbezdatum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id ='"+Integer.toString(id)+"' LIMIT 1";
 		/*
 		if(!OpRgaf.testcase){
 			SqlInfo.sqlAusfuehren(cmd);			
 		}
 		*/
+		//hier rein die Kasseneinnahme
 		SqlInfo.sqlAusfuehren(cmd);
 		schreibeAbfrage();			
 		tfs[0].setText("0,00");			
@@ -509,6 +532,13 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		case 13:
 			cmd = stmtString+" where rdatum <'"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
 			break;
+		case 14:
+			cmd = stmtString+" where t3.kassen_nam1 like'"+suchen.getText().trim()+"%'";
+			break;
+		case 15:
+			cmd = stmtString+" where "+suchen.getText().trim();
+			break;
+
 		}
 		
 		}catch(Exception ex){

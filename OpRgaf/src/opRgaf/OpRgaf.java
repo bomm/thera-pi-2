@@ -120,6 +120,7 @@ public class OpRgaf implements WindowListener{
 				mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
 				mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
 				mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
+				mahnParameter.put("inkasse", (String) inif.getStringProperty("General","WohinBuchen")  );
 				AbrechnungParameter(progHome);
 				FirmenDaten(progHome);
 
@@ -138,6 +139,7 @@ public class OpRgaf implements WindowListener{
 				mahnParameter.put("formular3", (String) inif.getStringProperty("General","FormularMahnung3")  );
 				mahnParameter.put("formular4", (String) inif.getStringProperty("General","FormularMahnung4")  );
 				mahnParameter.put("diralterechnungen", (String) inif.getStringProperty("General","DirAlteRechnungen")  );
+				mahnParameter.put("inkasse", (String) inif.getStringProperty("General","InKasseBuchen")  );
 				AbrechnungParameter(progHome);
 				FirmenDaten(progHome);
 			}
@@ -278,7 +280,8 @@ public class OpRgaf implements WindowListener{
 			}	
         	try {
         		
-   				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+   				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName+"?jdbcCompliantTruncation=false"
+   						,dbUser,dbPassword);
 				OpRgaf.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
