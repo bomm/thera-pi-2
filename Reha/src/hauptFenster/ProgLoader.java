@@ -10,12 +10,10 @@ import java.beans.PropertyVetoException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenPanel;
-import menus.OOIFTest;
 
 import org.therapi.reha.patient.PatientHauptPanel;
 
@@ -41,9 +39,7 @@ import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
-
 import systemTools.PassWort;
-
 import systemTools.WinNum;
 import terminKalender.DatFunk;
 import terminKalender.TerminFenster;
@@ -57,7 +53,6 @@ import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
 import barKasse.Barkasse;
 import benutzerVerwaltung.BenutzerRechte;
-
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import dta301.Dta301;
@@ -809,7 +804,7 @@ public void loescheUrlaub(){
 	Reha.thisClass.urlaubpanel = null;
 }
 /***************************Verkäufe in der Praxis*********************************/
-
+/*
 public static void InternalGut2(){
 	JInternalFrame iframe = new JInternalFrame();
 	iframe.setSize(900,650);
@@ -830,6 +825,7 @@ public static void InternalGut2(){
 
 	
 }
+*/
 
 /**************Patientenverwaltung Echtfunktion***********************/
 public void ProgPatientenVerwaltung(int setPos) {

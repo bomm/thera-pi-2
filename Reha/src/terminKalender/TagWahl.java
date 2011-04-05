@@ -1,20 +1,18 @@
 package terminKalender;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JLabel;
-import java.awt.Rectangle;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 import java.awt.Color;
-import java.util.Date;
-import java.awt.event.KeyEvent;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import systemTools.JRtaTextField;
 

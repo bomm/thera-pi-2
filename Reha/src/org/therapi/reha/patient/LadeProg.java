@@ -32,7 +32,7 @@ public class LadeProg {
 			JOptionPane.showMessageDialog(null,"Diese Software ist auf Ihrem System nicht installiert!");
 			return;
 		}
-		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		//String vmload = "java -jar ";
 		//String commandx = vmload + prog; 
 
