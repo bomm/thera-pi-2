@@ -31,7 +31,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.therapi.reha.patient.AktuelleRezepte;
 
 import rechteTools.Rechte;
 import sqlTools.SqlInfo;
@@ -1876,6 +1875,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	}
 	
 	// Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
+	@SuppressWarnings("unused")
 	private void doKopiereLetztesRezeptDesPatienten() {
 		/** KONZEPT
 		 holle alle Rezepte aus den Tabellen "verordn" und "lza" zum aktuellen Patienten sortiert und finde das neueste als erstes in der Liste

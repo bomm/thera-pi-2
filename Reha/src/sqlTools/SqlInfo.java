@@ -385,7 +385,7 @@ public class SqlInfo {
 				}
 			}
 		}
-		return (Vector)retkomplett;
+		return (Vector<Vector<String>>)retkomplett;
 	}
 /*****************************************/
 	public static String macheWhereKlausel(String praefix,String test,String[] suchein){

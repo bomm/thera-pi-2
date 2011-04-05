@@ -6,7 +6,6 @@ import hauptFenster.Reha;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,42 +19,19 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import oOorgTools.OOTools;
-
-//import offenePosten.OffenePosten;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.therapi.reha.patient.PatientHauptPanel;
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
-import systemTools.LeistungTools;
-import terminKalender.DatFunk;
-
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.document.IDocumentDescriptor;
-import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextField;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -346,9 +322,6 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 		}
 
 	}
-	private RezeptVorlage getInstance(){
-		return this;
-	}
 	/*	
 	private void doBuchen(){
 
@@ -475,7 +448,7 @@ public class RezeptVorlage extends RehaSmartDialog implements RehaTPEventListene
 			//System.out.println("Return Gedrückt");
 		}
 		if( event.getKeyCode() == KeyEvent.VK_ESCAPE ){  // 27  Abbruch mit der Tastatur
-			int iTest = KeyEvent.VK_ENTER;
+			//int iTest = KeyEvent.VK_ENTER;
 			this.dispose();
 		}
 	}
