@@ -1598,7 +1598,7 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 		int lang = dtblm.getRowCount(),i;
 		int durchlauf = 0;
 		int tkstart,tkdauer,plstart,pldauer;
-		Vector vec = null;
+		Vector<Vector<String>> vec = null;
 		String name,nummer;
 		boolean leer = false;
 
@@ -2279,7 +2279,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 	int schichtArt = -1;
 	int selektivArt = -1;
 	SuchenSeite eltern;
-	Vector machevec = new Vector();
+	Vector<Object> machevec = new Vector<Object>();
 	
 
 	public void setzeStatement(SuchenSeite xeltern){
@@ -2355,7 +2355,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			setFortschrittRang(0,DatFunk.TageDifferenz( eltern.getStartDatum(), eltern.getStopDatum() ) );
 			setFortschrittSetzen(0);
 			setFortschrittZeigen(true);
-			Vector abtlg = new Vector(Arrays.asList(abtei));
+			Vector<String> abtlg = new Vector<String>(Arrays.asList(abtei));
 			Vector yvec = null;
 			sperrDatum.clear();
 			int aktuell;
@@ -3479,14 +3479,14 @@ class WorkerTabelle extends SwingWorker<Void,Void>{
 		return null;
 	}
 	/************************/
-	private int XSperrenVerarbeiten(int akt,Vector vecx,String zeit){
+	private int XSperrenVerarbeiten(int akt,Vector<String> vecx,String zeit){
 		Statement stmtx = null;
 		ResultSet rsx = null;
 		boolean neu = true;
 		
 		String sperre;
-		sperre = (String)((Vector)vecx).get(13)+
-							(String)((Vector)vecx).get(14) ;
+		sperre = (String)((Vector<String>)vecx).get(13)+
+							(String)((Vector<String>)vecx).get(14) ;
 		
 		if(neu){
 			String cmd = "sperre='"+sperre+"'";
