@@ -2356,7 +2356,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 			setFortschrittSetzen(0);
 			setFortschrittZeigen(true);
 			Vector<String> abtlg = new Vector<String>(Arrays.asList(abtei));
-			Vector yvec = null;
+			Vector<Object> yvec = null;
 			sperrDatum.clear();
 			int aktuell;
 			String sperre;
@@ -3071,40 +3071,40 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		return false;
 	}
 	
-	private Vector sucheNachFreien(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
-		Vector vec = null;
+	private Vector<Object> sucheNachFreien(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
+		Vector<Object> vec = null;
 		if(name.equals("") && nummer.equals("") ){
 			vec = macheVector(rs,name,nummer,skollege,ikollege,ii,defdauer);
 		}	
 		return vec;
 	}
-	private Vector sucheNachGruppenFreien(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,int gruppennr,Vector grupdat,boolean suchleer) throws SQLException{
+	private Vector<Object> sucheNachGruppenFreien(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,int gruppennr,Vector<?> grupdat,boolean suchleer) throws SQLException{
 //		//System.out.println("Gültig ab:"+ datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(gruppennr)[0]));
-		Vector vec = null;
+		Vector<Object> vec = null;
 		vec = macheGruppenVector(rs,name,nummer,skollege,ikollege,ii,defdauer,grupdat,suchleer);
 		return vec;
 	}
 
-	private Vector sucheNachNamen(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii) throws SQLException{
-		Vector vec = null;
+	private Vector<Object> sucheNachNamen(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii) throws SQLException{
+		Vector<Object> vec = null;
 		if(name.contains(suchkrit1)){
 			vec = macheVector(rs,name,nummer,skollege,ikollege,ii,-1);
 		}	
 		return vec;
 	}
-	private Vector sucheNachSelect(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
-		Vector vec = null;
+	private Vector<Object> sucheNachSelect(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
+		Vector<Object> vec = null;
 		vec = macheVector(rs,name,nummer,skollege,ikollege,ii,defdauer);
 		vec.set(6, selektbeginn);
 		return vec;
 	}
-	private Vector sucheNachKGG(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
-		Vector vec = null;
+	private Vector<Object> sucheNachKGG(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
+		Vector<Object> vec = null;
 		vec = macheKGGVector(rs,name,nummer,skollege,ikollege,ii,defdauer);
 		return vec;
 	}
 	
-	private Vector macheVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
+	private Vector<Object> macheVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
 		//Vector vec = new Vector();
 		machevec.clear();
 		machevec.trimToSize();
@@ -3139,10 +3139,10 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		machevec.add(rs.getString("BELEGT"));
 		machevec.add(Boolean.valueOf(false));
 
-		return (Vector)machevec.clone();
+		return (Vector<Object>)machevec.clone();
 	}
 
-	private Vector macheKGGVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
+	private Vector<Object> macheKGGVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer) throws SQLException{
 		machevec.clear();
 		machevec.trimToSize();
 		//Vector vec = new Vector();
@@ -3177,10 +3177,10 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		machevec.add(rs.getString("BELEGT"));
 		machevec.add(Boolean.valueOf(false));
 
-		return (Vector)machevec.clone();
+		return (Vector<Object>)machevec.clone();
 	}
 
-	private Vector macheGruppenVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,Vector vecgruppe,boolean suchleer) throws SQLException{
+	private Vector<Object> macheGruppenVector(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,Vector vecgruppe,boolean suchleer) throws SQLException{
 		
 		machevec.clear();
 		machevec.trimToSize();
@@ -3239,7 +3239,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		machevec.add(rs.getString("BELEGT"));
 		machevec.add(Boolean.valueOf(true));
 
-		return (Vector)machevec.clone();
+		return (Vector<Object>)machevec.clone();
 	}
 
 	
@@ -3596,7 +3596,7 @@ class WorkerTabelle2 extends SwingWorker<Void,Void>{
 		int anzahl;
 		int verarbeitet;
 		sperrDatum.clear();
-		Vector nvec;
+		//Vector nvec;
 		String sperre;
 		while(true){
 			anzahl = dtblm.getRowCount();
@@ -3644,7 +3644,7 @@ class WorkerTabelle2 extends SwingWorker<Void,Void>{
 			
 		}
 		setWorkerFertig(true);
-		nvec = null;
+		//nvec = null;
 		sperre = null;
 		img = null;
 		img2 = null;
