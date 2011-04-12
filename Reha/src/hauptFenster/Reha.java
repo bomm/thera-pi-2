@@ -2361,7 +2361,7 @@ public void actionPerformed(ActionEvent arg0) {
 		}
 		new LadeProg(Reha.proghome+"Reha301.jar "+
 				" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
-		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		return;
 	}
 

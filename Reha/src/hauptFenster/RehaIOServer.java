@@ -16,14 +16,18 @@ import org.jdesktop.swingx.JXFrame;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 
-class RehaIOServer extends SwingWorker<Void,Void>{
+public class RehaIOServer extends SwingWorker<Void,Void>{
 	public ServerSocket serv = null;
 	StringBuffer sb = new StringBuffer();
 	InputStream input = null;
 	OutputStream output = null;
 	//public int port = 6000;
 	public static boolean reha301IsActive = false;
+	public static int reha301reversePort = -1;
 	public static boolean offenePostenIsActive = false;
+	public static int offenePostenreversePort = -1;
+	public static boolean rgAfIsActive = false;
+	public static int rgAfreversePort = -1;
 	
 	public RehaIOServer(int x){
 		Reha.xport = x;
@@ -86,15 +90,23 @@ class RehaIOServer extends SwingWorker<Void,Void>{
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
 			if(Reha.thisClass.patpanel != null){
 				System.out.println("Suche PatientenIK="+op.split("#")[2]+" mit Rezeptnummer="+op.split("#")[3]);
-				this.posteAktualisiePatUndRez(op.split("#")[2], op.split("#")[3]);
+				this.posteAktualisierePatUndRez(op.split("#")[2], op.split("#")[3]);
 				System.out.println("erledigt");
 			}
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
 			if(Reha.thisClass.patpanel != null){
-				this.posteAktualisiePat(op.split("#")[2]);
+				this.posteAktualisierePat(op.split("#")[2]);
 			}
 		}
 		//JOptionPane.showMessageDialog(null, "Hallo Reha hier spricht das 301-er Modul");
+	}
+	private void doReversePort(String op){
+//		new SocketClient().setzeRehaNachricht(rehaPort, "AppName#"+"Reha301#"+Integer.toString(Reha301.xport));
+		if(op.split("#")[1].equals("Reha301")){
+			reha301reversePort = Integer.parseInt(op.split("#")[2]);
+			new ReverseSocket().setzeRehaNachricht(reha301reversePort, "Thera-Pi meldet: Modul "+op.split("#")[1]+" auf Port "+op.split("#")[2]+" akzeptiert");
+			new ReverseSocket().setzeRehaNachricht(reha301reversePort, "Thera-Pi meldet: Modul "+op.split("#")[1]+" Neueste Nachricht = Port:"+Integer.toString(reha301reversePort));
+		}
 	}
 	@Override
 	protected Void doInBackground() throws Exception {
@@ -155,7 +167,10 @@ class RehaIOServer extends SwingWorker<Void,Void>{
 					
 				}else if(sb.toString().startsWith("OffenePosten#")){
 					doOffenePosten(String.valueOf(sb.toString()));
+				}else if(sb.toString().startsWith("AppName#")){
+					doReversePort(sb.toString());
 				}
+
 			}
 
 //			return null;
@@ -165,7 +180,7 @@ class RehaIOServer extends SwingWorker<Void,Void>{
 		return this;
 	}
 	
-	private void posteAktualisiePatUndRez(String patid,String reznum){
+	private void posteAktualisierePatUndRez(String patid,String reznum){
 		final String xpatid = patid;
 		final String xreznum = reznum;
 		new SwingWorker<Void,Void>(){
@@ -187,7 +202,7 @@ class RehaIOServer extends SwingWorker<Void,Void>{
 			
 		}.execute();
 	}
-	private void posteAktualisiePat(String patid){
+	private void posteAktualisierePat(String patid){
 		final String xpatid = patid;
 		new SwingWorker<Void,Void>(){
 			@Override

@@ -1,6 +1,7 @@
 package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
+import hauptFenster.RehaIOServer;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -829,6 +830,22 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
 		int row = tabhistorie.getSelectedRow();
 		if(row < 0){JOptionPane.showMessageDialog(null,"Kein Rezept für Rezeptgebühr-Kopie ausgewählt"); return;}
+		//testen ob in kasse also bezahlt, dann die Werte holen
+		//wenn nicht bezahlt testen ob OpRgaf läuft falls nicht starten
+		//dann über sockComm die Rechnung suchen und drucken
+		//evtl. OpRgaf wieder beenden
+		String sreznum = tabhistorie.getValueAt(row,0).toString();
+		String srezdat = tabhistorie.getValueAt(row,3).toString();
+		String einnahme = SqlInfo.holeEinzelFeld("select einnahme from kasse where rez_nr = '"+sreznum+"' LIMIT 1");
+		if(einnahme.equals("")){
+			JOptionPane.showMessageDialog(null,"Kein Bezahl-Eintrag im Kassenbuch für Rezept -> "+sreznum+
+					"\n\nEvtl. wurde eine Rezeptgebührrechnung erstellt?");
+			return;
+		}
+		if(! RehaIOServer.rgAfIsActive){
+		}
+ 
+		JOptionPane.showMessageDialog(null,"Funktion noch nicht implementiert");
 	}
 	
 	class ToolsDlgHistorie{
