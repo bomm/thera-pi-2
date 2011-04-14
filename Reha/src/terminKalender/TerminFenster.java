@@ -3121,7 +3121,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								
 								if (ende2 >= ende1){
 									JOptionPane.showMessageDialog (null, "Der nachfolgende Block ist von kürzerer Dauer\n"+
-											"als er für die von Ihnen gewünscht Operation sein müßte\n\n"+
+											"als er für die von Ihnen gewünschte Operation sein müßte\n\n"+
 											"Kopiert wird daher --> nix!");
 									wartenAufReady = false;
 									
@@ -3198,7 +3198,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							////System.out.println("case 4: pa�t nicht  zeiten:"+zeit1+" / "+zeit2+" / "+zeit3+" / "+zeit4);
 							JOptionPane.showMessageDialog (null, "Die von Ihnen angegebene Startzeit "+datenSpeicher[2]+"\n"+
 									" und die Dauer des Termines von "+datenSpeicher[3]+" Minuten, passt hinten und\n"+
-									"verne nicht. Entweder ergibt dies Startzeit eine Überschneidung mit \n"+
+									"vorne nicht. Entweder ergibt dies Startzeit eine Überschneidung mit \n"+
 									"dem vorherigen oder mit dem nachfolgenden Termin\n\n"+
 									"Kopiert wird daher --> nix!");
 							wartenAufReady = false;
