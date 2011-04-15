@@ -45,6 +45,8 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			offenePostenIsActive = false;
+			Reha.thisFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
+			Reha.thisFrame.setVisible(true);
 			Reha.thisFrame.toFront();
 			System.out.println("301-er  Modul beendet");
 			return;
@@ -63,28 +65,13 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			reha301IsActive = false;
-			/*
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
 					Reha.thisFrame.setVisible(true);
-                	Reha.thisFrame.toFront();
-                	Reha.thisFrame.repaint();
-                	Reha.thisFrame.requestFocus();
-                }
-            });
-			*/
-			SwingUtilities.invokeLater(new Runnable(){
-				public void run(){
-					//Reha.thisFrame.setVisible(false);
-					Reha.thisFrame.setVisible(true);
-					Reha.thisFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
-					Reha.thisFrame.toFront();
-					Reha.thisFrame.repaint();
-					//Reha.thisFrame.requestFocus();
+					return null;
 				}
-			});
-
+			}.execute();
 			System.out.println("301-er  Modul beendet");
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){

@@ -300,7 +300,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-04-04/01-DB=";
+	public static String aktuelleVersion = "V=2011-04-13/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -313,6 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	
 	public RehaIOServer rehaIOServer = null;
 	public static int xport = 6000;
+	public static boolean isStarted = false;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -904,42 +905,42 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	@SuppressWarnings("rawtypes")
 	private JXFrame getJFrame() {
 		if (jFrame == null) {
-			jFrame = new JXFrame();
-				/*
-				@Override
+			jFrame = new JXFrame();/*{
+				
+				private static final long serialVersionUID = 1L;
+
+				//@Override
 				public void setVisible(final boolean visible) {
+					if(!isStarted){return;}
+					if(getState()!=JFrame.NORMAL) { setState(JFrame.NORMAL); }
+					
+					  if (!visible || !isVisible()) { 
+					      super.setVisible(visible);
+					  }
 
-				  if (visible) {
-				      //setDisposed(false);
-				  }
-				  if (!visible || !isVisible()) { 
-				      super.setVisible(visible);
-				  }
-
-				  if (visible) {
-				      int state = super.getExtendedState();
-				      state &= ~JFrame.ICONIFIED;
-				      super.setExtendedState(state);
-				      super.setAlwaysOnTop(true);
-				      super.toFront();
-				      super.requestFocus();
-				      super.setAlwaysOnTop(false);
-				  }
-
+					  if (visible) {
+					      int state = super.getExtendedState();
+					      state &= ~JFrame.ICONIFIED;
+					      super.setExtendedState(state);
+					      super.setAlwaysOnTop(true);
+					      super.toFront();
+					      super.requestFocus();
+					      super.setAlwaysOnTop(false);
+					  }
 				}
 
-				@Override
+				//@Override
 				public void toFront() {
-				  super.setVisible(true);
-				  int state = super.getExtendedState();
-				  state &= ~JFrame.ICONIFIED;
-				  super.setExtendedState(state);
-				  super.setAlwaysOnTop(true);
-				  super.toFront();
-				  super.requestFocus();
-				  super.setAlwaysOnTop(false);
+					  super.setVisible(true);
+					  int state = super.getExtendedState();
+					  state &= ~JFrame.ICONIFIED;
+					  super.setExtendedState(state);
+					  super.setAlwaysOnTop(true);
+					  super.toFront();
+					  super.requestFocus();
+					  super.setAlwaysOnTop(false);
 				}	
-				*/
+			};*/	
 			thisClass = this;
 			jFrame.addWindowListener(this);
 			jFrame.addWindowStateListener(this);			
@@ -1087,6 +1088,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			desktops[1].addMouseMotionListener(this);
 			desktops[1].addComponentListener(this);
 			desktops[1].addContainerListener(this);
+			
+			//desktops[1].add(new WorkFlow("WorkFlow",null,1));
 			
 		    jpUnten.add(desktops[1]);
 		    jp2.add(jpUnten,BorderLayout.CENTER);
@@ -2357,6 +2360,11 @@ public void actionPerformed(ActionEvent arg0) {
 		}
 		if(RehaIOServer.reha301IsActive){
 			JOptionPane.showMessageDialog(null,"Das 301-er Modul läuft bereits");
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					new ReverseSocket().setzeRehaNachricht(RehaIOServer.reha301reversePort,"Reha301#"+RehaIOMessages.MUST_GOTOFRONT );		
+				}
+			});
 			return;
 		}
 		new LadeProg(Reha.proghome+"Reha301.jar "+
@@ -2649,6 +2657,7 @@ final class ErsterLogin implements Runnable{
 				Reha.thisFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
 				Reha.thisClass.setDivider(5);
 				Reha.thisFrame.getRootPane().validate();
+				Reha.isStarted = true;
 				Reha.thisFrame.setVisible(true);
 				new SwingWorker<Void,Void>(){
 					@Override

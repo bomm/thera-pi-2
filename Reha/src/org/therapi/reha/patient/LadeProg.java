@@ -58,7 +58,7 @@ public class LadeProg {
 				       is.close();
 				       isr.close();
 				       br.close();
-				       System.out.println("Process.beendet");
+				       //System.out.println("Process.beendet");
 				       process = null;
 				} catch (IOException e) {
 					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);

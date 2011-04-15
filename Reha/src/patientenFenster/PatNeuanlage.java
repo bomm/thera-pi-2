@@ -1449,7 +1449,7 @@ private KVKWrapper kvw;
 			kvkr = null;
 			//cbanrede.requestFocus();
 		}else{
-			String fehlertext = "Fehler beim einlesen der Versichertenkarte.\nBitter erneut einlesen\n\n"+
+			String fehlertext = "Fehler beim einlesen der Versichertenkarte.\nBitte erneut einlesen\n\n"+
 						"Fehler-Code: "+SystemConfig.hmKVKDaten.get("Fehlercode")+"\n"+
 						"Fehler-Text: "+SystemConfig.hmKVKDaten.get("Fehlertext")+"\n";
 			JOptionPane.showMessageDialog(null,fehlertext);

@@ -783,12 +783,20 @@ public class SystemConfig {
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		hmContainer.put("Kasse", inif.getIntegerProperty("Container", "StarteIn"));	
 		hmContainer.put("KasseOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
+
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
 		hmContainer.put("Patient", inif.getIntegerProperty("Container", "StarteIn"));	
 		hmContainer.put("PatientOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
+		/*
+		hmContainer.put("PatientDimX",  inif.getIntegerProperty("SizeAndLocation", "DimX"));
+		hmContainer.put("PatientDimY",  inif.getIntegerProperty("SizeAndLocation", "DimY"));
+		hmContainer.put("PatientLocX",  inif.getIntegerProperty("SizeAndLocation", "LocX"));
+		hmContainer.put("PatientLocY",  inif.getIntegerProperty("SizeAndLocation", "LocY"));
+		*/
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
 		hmContainer.put("Kalender", inif.getIntegerProperty("Container", "StarteIn"));
 		hmContainer.put("KalenderOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
+
 		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
 		hmContainer.put("Arzt", inif.getIntegerProperty("Container", "StarteIn"));	
 		hmContainer.put("ArztOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));

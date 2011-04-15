@@ -755,6 +755,7 @@ public class RezTools {
 						
 			}
 		}
+		//System.out.println(SystemConfig.hmAdrRDaten);
 		/*****************************************************/
 		if(zm.hausbesuch){ //Hausbesuch
 			Object[] obi = hbNormal(zm,rezwert,rezgeb,Integer.valueOf(((String)Reha.thisClass.patpanel.vecaktrez.get(64))));

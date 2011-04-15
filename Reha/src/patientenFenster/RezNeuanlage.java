@@ -1579,9 +1579,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				sbuf.append("kuerzel4='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
 				sbuf.append("art_dbeh4='0', ");
-				sbuf.append("preise3='0.00', ");
-				sbuf.append("pos3='', ");
-				sbuf.append("kuerzel3='', ");
+				sbuf.append("preise4='0.00', ");
+				sbuf.append("pos4='', ");
+				sbuf.append("kuerzel4='', ");
 			}
 			sbuf.append("frequenz='"+jtf[cFREQ].getText()+"', ");
 			sbuf.append("dauer='"+jtf[cDAUER].getText()+"', ");
@@ -1691,6 +1691,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).dispose();
 			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[cPREISGR].getText()+" gespeichert");
 			setCursor(Reha.thisClass.cdefault);
+			//System.out.println(sbuf.toString());
 		}catch(Exception ex){
 			ex.printStackTrace();
 			setCursor(Reha.thisClass.cdefault);
