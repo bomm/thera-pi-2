@@ -28,7 +28,8 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 	public static int offenePostenreversePort = -1;
 	public static boolean rgAfIsActive = false;
 	public static int rgAfreversePort = -1;
-	
+	public static boolean rehaWorkFlowIsActive = false;
+	public static int rehaWorkFlowreversePort = -1;
 	public RehaIOServer(int x){
 		Reha.xport = x;
 		execute();
@@ -52,6 +53,19 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 			return;
 		}
 	}
+	private void doWorkFlow(String op){
+		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
+			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
+			rehaWorkFlowIsActive = true;
+			System.out.println("Work-Flow  Modul gestartet");
+			return;
+		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
+			rehaWorkFlowIsActive = false;
+			System.out.println("Work-Flow Modul beendet - Meldung von WorkFlow");
+			return;
+		}
+	}
+
 	/*****
 	 * 
 	 * 
@@ -91,8 +105,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 //		new SocketClient().setzeRehaNachricht(rehaPort, "AppName#"+"Reha301#"+Integer.toString(Reha301.xport));
 		if(op.split("#")[1].equals("Reha301")){
 			reha301reversePort = Integer.parseInt(op.split("#")[2]);
-			new ReverseSocket().setzeRehaNachricht(reha301reversePort, "Thera-Pi meldet: Modul "+op.split("#")[1]+" auf Port "+op.split("#")[2]+" akzeptiert");
-			new ReverseSocket().setzeRehaNachricht(reha301reversePort, "Thera-Pi meldet: Modul "+op.split("#")[1]+" Neueste Nachricht = Port:"+Integer.toString(reha301reversePort));
+		}else if(op.split("#")[1].equals("WorkFlow")){
+			rehaWorkFlowreversePort = Integer.parseInt(op.split("#")[2]);
+			System.out.println("Port fuer den Work-Flow Manager = "+op.split("#")[2]);
 		}
 	}
 	@Override
@@ -151,9 +166,10 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 				/***************************/
 				if(sb.toString().startsWith("Reha301#")){
 					doReha301(String.valueOf(sb.toString()) );
-					
 				}else if(sb.toString().startsWith("OffenePosten#")){
 					doOffenePosten(String.valueOf(sb.toString()));
+				}else if(sb.toString().startsWith("WorkFlow#")){
+					doWorkFlow(String.valueOf(sb.toString()));
 				}else if(sb.toString().startsWith("AppName#")){
 					doReversePort(sb.toString());
 				}

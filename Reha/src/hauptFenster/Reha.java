@@ -1591,6 +1591,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("fallsteuerung");
 			men.addActionListener(this);
 			toolsMenu.add(men);		
+			toolsMenu.addSeparator();
+			men = new JMenuItem("Work-Flow Manager");
+			men.setActionCommand("workflow");
+			men.addActionListener(this);
+			toolsMenu.add(men);		
 
 
 		}
@@ -2368,6 +2373,23 @@ public void actionPerformed(ActionEvent arg0) {
 			return;
 		}
 		new LadeProg(Reha.proghome+"Reha301.jar "+
+				" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
+		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+		return;
+	}
+	if(cmd.equals("workflow")){
+		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){
+			return;
+		}
+		if(RehaIOServer.rehaWorkFlowIsActive){
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaWorkFlowreversePort,"ZeigeFrame#"+RehaIOMessages.MUST_GOTOFRONT );		
+				}
+			});
+			return;
+		}
+		new LadeProg(Reha.proghome+"WorkFlow.jar "+
 				" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
 		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		return;
