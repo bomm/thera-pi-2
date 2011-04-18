@@ -1210,7 +1210,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if( ((JComponent)arg0.getSource()).getName().equals("rez_datum") ){
 				return;
 			}
-			if( ((JComponent)arg0.getSource()).getName().equals("anzahl1") ){
+			if( ((JComponent)arg0.getSource()).getName().equals("anzahl1") && neu ){
 				String text = jtf[cANZ1].getText();
 				jtf[cANZ2].setText(text);
 				jtf[cANZ3].setText(text);
