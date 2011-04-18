@@ -175,7 +175,20 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	final int MASKEN_ANSICHT = 2;
 	public String[] terminangaben = {"" /*Name*/, "" /*RezeptNr.*/ , "" /*Startzeit*/ , "" /*Dauer*/, "" /*Endzeit*/, "" /*BlockNr.*/}; 
 	public String[] terminrueckgabe = {"" /*Name*/, "" /*RezeptNr.*/ , "" /*Startzeit*/ , "" /*Dauer*/, "" /*Endzeit*/, "" /*BlockNr.*/};
-
+	
+	public class BestaetigungsDaten {
+		boolean best; //Diese HMPosNr ist zu bestätigen oder nicht TODO welcher Wert ist nun zugewiesen TRUE oder FALSE?
+		String hMPosNr ="./."; //Heilmittelpositionsnummer TODO Default gesetzt auf ./.
+		int anzBBT; //Anzahl der bereits bestätigten termine (dieser HMPosNr) TODO Default nicht gesetzt
+		int vOMenge; //verordnete Menge dieser HMPos - TODO Default nicht gesetz
+		//TODO wozu ist nachfolgendes gut?
+		BestaetigungsDaten(boolean best, String hmPosNr, int anzBBT, int vOMenge) {
+			this.best=best;
+			this.hMPosNr=hMPosNr;
+			this.anzBBT=anzBBT;
+			this.vOMenge=vOMenge;
+		}
+	}
 	public int focus[] = {0,0};
 	public boolean hasFocus = false;
 	private RehaTPEventClass xEvent;
@@ -4313,9 +4326,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			return;
 		}
 		if (ansicht == WOCHEN_ANSICHT){
-		   	JOptionPane.showMessageDialog(null,"Behandlungsbestätigung ist nur für den aktuellen Tag in der -> Normalansicht <- möglich");
-		   	gruppeAusschalten();
-		   	return;
+			JOptionPane.showMessageDialog(null,"Behandlungsbestätigung ist nur für den aktuellen Tag in der -> Normalansicht <- möglich");
+			gruppeAusschalten();
+			return;
 		}
 		String pat_int;
 		int xaktBehandler= 0;
@@ -4361,59 +4374,133 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		final String swdatum = sdatum;
 
 		final int swbehandler = xaktBehandler; 
-		
+
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+				int i,j,count =0;
+				boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
+				Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
 				Vector vec = null;
-				Vector tvec = null;
 				String copyright = "\u00AE"  ;
 				try{
-				vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
-				if (vec.size() > 0){
-					StringBuffer termbuf = new StringBuffer();
-					termbuf.append((String) vec.get(0));
-					if(termbuf.toString().contains(swdatum)){
-						JOptionPane.showMessageDialog(null, "Dieser Termin ist am "+DatFunk.sDatInDeutsch(swdatum)+" bereits erfasst");
-						gruppeAusschalten();
-						return null; 
-					}
-					tvec = RezTools.splitteTermine(termbuf.toString());
-					int anzahl = Integer.parseInt((String)vec.get(1));
-					/*
-					System.out.println("Termine bislang = "+tvec.size());
-					System.out.println("Angaben lt. Rezept = "+anzahl);
-					System.out.println("Vector  = "+tvec);
-					System.out.println("StringBuffer = "+termbuf.toString());
-					*/
-					if(tvec.size() >= anzahl){
-						if(tvec.size()==anzahl){
-							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- bereits voll!\n\nEine zusätzliche Behandlung wird nicht eingetragen");
-							///rezept voll
-							// nachfragen ob wirklich schreiben
-						}else{
-							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- bereits übervoll!!!!\n\nEine zusätzliche Behandlung wird nicht eingetragen");
-							//rezept bereits übervoll
-							//nachfragen ob wirklich schreiben
+					vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
+					if (vec.size() > 0){
+						StringBuffer termbuf = new StringBuffer();
+						termbuf.append((String) vec.get(0));
+						if(termbuf.toString().contains(swdatum)){
+							JOptionPane.showMessageDialog(null, "Dieser Termin ist am "+DatFunk.sDatInDeutsch(swdatum)+" bereits erfasst");
+							gruppeAusschalten();
+							return null; 
 						}
-					}else{
-						if(tvec.size() == (anzahl-1)){
-							JOptionPane.showMessageDialog(null, "Achtung das Rezept ist mit -> "+anzahl+" Behandlungen <- jetzt voll!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten");
-							try{
-								RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));	
-							}catch(Exception ex){
-								JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+						for (i=0;i<=3;i++){
+							hMPos.get(i).hMPosNr = ((vec.get(2+i).toString().isEmpty() || // wenn keine HMPosNr. angegeben 
+									Integer.parseInt((String) vec.get(1+((i == 0) ? 0 : 11)))==0) ? // _oder_ die verordnete Anzahl dieser HMPos = 0 
+											"./." :  vec.get(2+i).toString());  // dann ./., ansonsten übernehme HMPosNr
+							hMPos.get(i).vOMenge = Integer.parseInt((String) vec.get(1+((i == 0) ? 0 : 11)));
+							if (hMPos.get(i).hMPosNr.equals("./.")){
+								hMPos.get(i).vOMenge = 0;
+							}
+							count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
+							if (!hMPos.get(i).hMPosNr.equals("./.")){
+							}
+							for ( j = -1 ; ( j = vec.get(0).toString().indexOf(hMPos.get(i).hMPosNr, j+1 ) ) != -1 ; count ++ ); { 
+								//Zählt die Anzahl der bestätigten Termine mit dieser HMPosNr; 
+								//TODO Doppelbehandlungen! -> hängen von der Art der Speicherung der bestätigten HMPos in "termine" ab
+							}
+							hMPos.get(i).anzBBT = count; //außerhalb der if-Abfrage i.O. -> dann anzBBT = count(==0)
+						}
+
+						count = 0; //Prüfen, ob es nur eine HMPos gibt, bei der anzBBT < vOMenge; dann überspringe AuswahlFenster und bestätige diese HMPos
+						for (i=0; i<=3; i++){
+							if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
+								count++;
 							}
 						}
-						termbuf.append(macheNeuTermin(DatFunk.sDatInDeutsch(swdatum), ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),
-								"",(String) vec.get(2),(String) vec.get(3),(String) vec.get(4),(String) vec.get(5)));
+						if (count == 1){
+							for (i=0; i<=3; i++){
+								if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
+									hMPos.get(i).best = true;
+									springen = true;
+									break;
+								}
+							}
+						}
+
+						count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
+						for (i=0; i<=3; i++){
+							if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
+								hMPos.get(i).best = false;
+								count++;
+							}
+						}
+						if (count == 4){
+							JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+									"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
+									"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+							return null;
+						}
+
+						count = 0; // Prüfen, ob eine oder mehrere HMPos bereits übervoll bestätigt sind
+						for (i=0; i<=3; i++){
+							if (hMPos.get(i).anzBBT > hMPos.get(i).vOMenge){
+								hMPos.get(i).best = false;
+								count++;
+							}
+						}
+						if (count !=0){
+							JOptionPane.showMessageDialog(null, "Achtung: die verordneten Mengen der Verordnung "+swreznum+ " wurden bereits überschritten!\n\n" +
+									"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
+									"Bitte prüfen Sie die Verordnungsmengen und die bestätigten Termindaten!");
+							return null;
+						}
+
+						if (!springen){ // TerminBestätigenAuswahlFenster anzeigen oder überspringen
+							TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,hMPos);
+							termBestAusw.pack();
+							termBestAusw.setLocationRelativeTo(ViewPanel);				
+							termBestAusw.setVisible(true);
+						}
+
+						count = 0; // Dialog abgebrochen
+						for (i=0; i < 4 ; i++){
+							count += (hMPos.get(i).best ? 1 : 0);
+						}
+						if (count == 0){
+							return null;
+						}
+						
+						count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
+						for (i=0; i<=3; i++){
+							if ((hMPos.get(i).anzBBT + (hMPos.get(i).best ? 1 : 0)) == hMPos.get(i).vOMenge){
+								count++;
+							}	
+							if (count == 4){
+								JOptionPane.showMessageDialog(null, "Achtung das Rezept "+swreznum+" ist jetzt voll bestätigt!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten!");
+								try{
+									RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));	
+								}catch(Exception ex){
+									JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+								}						
+							}
+						}	
+
+						termbuf.append(macheNeuTermin(DatFunk.sDatInDeutsch(swdatum), ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),"",
+								(String) (hMPos.get(0).best ? vec.get(2) : ""),
+								(String) (hMPos.get(1).best ? vec.get(3) : ""),
+								(String) (hMPos.get(2).best ? vec.get(4) : ""),
+								(String) (hMPos.get(3).best ? vec.get(5) : "")));
 						/********************************/
 						boolean unter18 =  ( ((String)vec.get(7)).equals("T") ? true : false );
 						boolean vorjahrfrei = ( ((String)vec.get(8)).equals("") ? false : true );
 						if(!unter18 && !vorjahrfrei){
 							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
 						}else if(unter18 && !vorjahrfrei){
-							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus �ndern;
+							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ändern;
 							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
 							////System.out.println("Geboren = "+geboren);
 							if(DatFunk.Unter18(DatFunk.sDatInDeutsch(swdatum), geboren)){
@@ -4424,7 +4511,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 						}else if(!unter18 && vorjahrfrei){
 							String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
-							//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 							if(!bef_dat.equals("T")){
 								if(DatFunk.DatumsWert("31.12."+vec.get(9)) < DatFunk.DatumsWert(swdatum) ){
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
@@ -4446,12 +4532,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						"behandler='"+( (swbehandler+1) < 10 ? "0"+Integer.toString(swbehandler+1)+"BEHANDLER" : Integer.toString(swbehandler+1)+"BEHANDLER"   )+"' "+
 						"AND TS"+sblock+"='"+swbeginn+"' AND T"+sblock+"='"+swaltname+
 						"' AND N"+sblock+"='"+sworigreznum+"'"; 
- 
+
 						SqlInfo.aktualisiereSatz("flexkc",
 								toupdate,
 								towhere);
-						//System.out.println("Update-Blöcke: "+toupdate);
-						//System.out.println("Update-Bedingung: "+towhere);
 						/**********Ende Datenbank beschreiben*************/
 						((ArrayList<Vector<String>>) vTerm.get(swbehandler)).get(0).set(aktiveSpalte[0],copyright+swname);
 						oSpalten[aktiveSpalte[2]].repaint();
@@ -4461,17 +4545,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								Reha.thisClass.patpanel.aktRezept.updateEinzelTermine(termbuf.toString());
 							}
 						}
+					}else{
+						JOptionPane.showMessageDialog(null, "Dieses Rezept existiert nicht bzw. ist bereits abgerechnet!!");	
 					}
-					
-				}else{
-					JOptionPane.showMessageDialog(null, "Dieses Rezept existiert nicht bzw. ist bereits abgerechnet!!");
-				}
-
-				}catch(Exception ex){
+				}catch(Exception ex){				
 					ex.printStackTrace();
+				}finally{
+					vec = null;
+					hMPos = null;					
 				}
-				vec = null;
-				tvec = null;
 				return null;
 			}
 		}.execute();
@@ -4484,10 +4566,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			"@"+
 			text+
 			"@"+
-			pos1+
-			( pos2.trim().equals("") ? "" : ","+ pos2 )+
-			( pos3.trim().equals("") ? "" : ","+ pos3 )+
-			( pos4.trim().equals("") ? "" : ","+ pos4 )+
+			pos1+  //TODO Trennzeichen "," immer übergeben? anderes Trennzeichen wählen? wird z.B. nur HMPos3 bestätigt: ""+","+""+","+"HMPOs3"+","+""  = ",,HMPos3,"
+			( pos2.trim().equals("") ? "," : ","+ pos2 )+
+			( pos3.trim().equals("") ? "," : ","+ pos3 )+
+			( pos4.trim().equals("") ? "," : ","+ pos4 )+
 			"@"+
 			DatFunk.sDatInSQL(datum)+"\n";
 		return ret;
