@@ -4457,7 +4457,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}else if ((count == 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
 								hMPos.get(doppelBehA).best = true;
 								hMPos.get(doppelBehB).best = true;
-								springen = false; // TODO Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
+								springen = true; // TODO Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
 						}
 
 						count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
