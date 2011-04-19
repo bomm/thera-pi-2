@@ -177,11 +177,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public String[] terminrueckgabe = {"" /*Name*/, "" /*RezeptNr.*/ , "" /*Startzeit*/ , "" /*Dauer*/, "" /*Endzeit*/, "" /*BlockNr.*/};
 	
 	public class BestaetigungsDaten {
-		boolean best; //Diese HMPosNr ist zu bestätigen oder nicht TODO welcher Wert ist nun zugewiesen TRUE oder FALSE?
-		String hMPosNr ="./."; //Heilmittelpositionsnummer TODO Default gesetzt auf ./.
-		int anzBBT; //Anzahl der bereits bestätigten termine (dieser HMPosNr) TODO Default nicht gesetzt
-		int vOMenge; //verordnete Menge dieser HMPos - TODO Default nicht gesetz
-		//TODO wozu ist nachfolgendes gut?
+		boolean best; //Diese HMPosNr ist zu bestätigen oder nicht 
+		String hMPosNr ="./."; //Heilmittelpositionsnummer Default gesetzt auf ./.
+		int anzBBT; //Anzahl der bereits bestätigten Termine (dieser HMPosNr) 
+		int vOMenge; //verordnete Menge dieser HMPos
 		BestaetigungsDaten(boolean best, String hmPosNr, int anzBBT, int vOMenge) {
 			this.best=best;
 			this.hMPosNr=hMPosNr;
