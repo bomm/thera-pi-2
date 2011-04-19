@@ -43,13 +43,9 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 //Drud 110418
-//TODO 1. Definition der Termin-Grammatik in feld 'termine' der tabelle 'verordn' in TerminFenster.java Z. 4569 
-//TODO 2. Eindeutige Zuordnung der geleisteten Termine zur richtigen Heilmittelzeile bei Doppelbehandlungen in TerminFenster.java Z. 4413
-//TODO 3. Anpassung anderer Programmteile für den Umgang mit einer geänderten 'termine'-Grammatik, insbesondere die manuelle Termineintragung im PatientenFenster
 //TODO 4. Kompatibilität von bereits mit der bisherigen Grammatik bestätigten Terminen prüfen
 //TODO 5. Source/ItemStateChanged hier - geht das auch schöner?
-//TODO 6. Anpassung des Umsatzbeteiligung-Moduls, um nur die tatsächlich geleisteten Heilmittel anzuzeigen
-//TODO 7. Korrekt erfasste VO führt teilw. zu Fehlerhinweisen in der Abrechnung nach §302, z.B. bei der Standard-LogoVO 
+//TODO 6. Anpassung des Umsatzbeteiligung-Moduls, um nur die tatsächlich geleisteten Heilmittel anzuzeigen 
 
 public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements   ActionListener, WindowListener, KeyListener, ItemListener{
 	private static final long serialVersionUID = -2972115133247099975L;
@@ -68,7 +64,6 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 	private JXButton okbut;
 	private JXButton abbruchbut;
 	public Vector<BestaetigungsDaten> hMPosLC = null;
-	public Vector<BestaetigungsDaten> hMPosOV = null;
 
 	public TerminBestaetigenAuswahlFenster(JXFrame owner, String name,Vector<TerminFenster.BestaetigungsDaten> hMPos){
 		super(owner, "Eltern-TermBest"+WinNum.NeueNummer());
@@ -83,12 +78,12 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 			AnzRezept[i] = new JXLabel("VO_Menge");
 
 			btm[i].setEnabled((hMPosLC.get(i).anzBBT < hMPosLC.get(i).vOMenge) ? true : false);
-			//btm[i].setSelected(hMPosLC.get(i).best);
 			HMPosNr[i].setText(hMPosLC.get(i).hMPosNr);
 			AnzTermine[i].setText(Integer.toString(hMPosLC.get(i).anzBBT));
 			AnzRezept[i].setText(Integer.toString(hMPosLC.get(i).vOMenge));
 
 			btm[i].addItemListener(this);
+			btm[i].setSelected(hMPosLC.get(i).best);  //TODO TerminFenster hat bereits eine Vorauswahl getroffen (z.B. Doppelbehandlungen)!
 			btm[i].addKeyListener(this);
 		}
 		SpaltenUeberschrift[0]= new JXLabel("bestätigen");
@@ -114,7 +109,7 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				jcc.setBackgroundPainter(Reha.thisClass.compoundPainter.get("TerminBestaetigenNeu"));
+				jcc.setBackgroundPainter(Reha.thisClass.compoundPainter.get("TerminBestaetigenAuswahlFenster"));
 				return null;
 			}
 		}.execute();
@@ -193,10 +188,8 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 			}.start();
 		}
 		if(arg0.getActionCommand().equals("abbruch")){
-			setVisible(false);
-			this.dispose();
+			reset();
 		}
-
 	}
 	private void zurueck(){
 		int counter = 0;
@@ -206,11 +199,10 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		if (counter != 0){
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
-					setVisible(false);
 					for (int i=0;i<4;i++){
 						hMPosLC.get(i).best = btm[i].isSelected();
-						hMPosLC.get(i).anzBBT = Integer.parseInt(AnzTermine[i].getText());
 					}
+					setVisible(false);
 				}
 			});
 			this.dispose();
@@ -218,12 +210,19 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 			JOptionPane.showMessageDialog(null, "Sie haben noch keine Heilmittelposition ausgewählt!");
 		}
 	}
+	private void reset(){
+		for (int i=0; i <btm.length; i++){
+			hMPosLC.get(i).best = false;
+			setVisible(false);
+			this.dispose();
+		}
+	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE){ //ESC 27
 			arg0.consume();
-			this.dispose();
+			reset();
 		}
 		if(arg0.getKeyCode() == KeyEvent.VK_ENTER ){ //ENTER 10
 			((JComponent) arg0.getSource()).requestFocus();
@@ -241,7 +240,7 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		}	
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 			e.consume();
-			this.dispose();
+			reset();
 		}	
 	}
 
@@ -254,7 +253,7 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		}	
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 			e.consume();
-			this.dispose();
+			reset();
 		}	
 	}
 

@@ -4378,6 +4378,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			@Override
 			protected Void doInBackground() throws Exception {
 				int i,j,count =0;
+				boolean doppelBeh = false;
+				int doppelBehA = 0, doppelBehB = 0;
 				boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
 				Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
 				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
@@ -4406,15 +4408,39 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 							count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
 							if (!hMPos.get(i).hMPosNr.equals("./.")){
-							}
-							for ( j = -1 ; ( j = vec.get(0).toString().indexOf(hMPos.get(i).hMPosNr, j+1 ) ) != -1 ; count ++ ); { 
-								//Zählt die Anzahl der bestätigten Termine mit dieser HMPosNr; 
-								//TODO Doppelbehandlungen! -> hängen von der Art der Speicherung der bestätigten HMPos in "termine" ab
+								for ( j = -1 ; ( j = vec.get(0).toString().indexOf(hMPos.get(i).hMPosNr, j+1 ) ) != -1 ; count ++ ); { 
+									//Zählt die Anzahl der bestätigten Termine mit dieser HMPosNr; 
+									//TODO Doppelbehandlungen! -> hängen von der Art der Speicherung der bestätigten HMPos in "termine" ab
+								}
 							}
 							hMPos.get(i).anzBBT = count; //außerhalb der if-Abfrage i.O. -> dann anzBBT = count(==0)
 						}
 
+						//Erkenne Doppelbehandlung
+						for (i = 0; i<3; i++){ // 3 braucht nicht getestet werden
+							for (j = i+1; j<=3; j++){ // 0 braucht nicht getestet werden
+								if (!(hMPos.get(i).vOMenge == 0) && hMPos.get(i).hMPosNr.equals(hMPos.get(j).hMPosNr) && (hMPos.get(i).vOMenge == hMPos.get(j).vOMenge)){ 
+									// TODO eine HMPosNr kommt doppelt vor 
+									//&& die verordnete Menge ist identisch
+									// -> Die oben ermitelte anzBBT wurde doppelt ermittelt -> sie muss halbiert werden (strenge Annahme: beide wurden identisch oft bestätigt):
+									try{
+										hMPos.get(i).anzBBT /= 2;
+										hMPos.get(j).anzBBT /= 2;
+									}catch (Exception Ex){
+										JOptionPane.showMessageDialog(null, "Es wurde eine Doppelbehandlung erkannt\n die bestätigten Termine sind nicht gleichmäßig verteilt");
+									}
+									doppelBeh = true;
+									doppelBehA = i;
+									doppelBehB = j;
+									i=3;
+									j=4;
+									break;
+								}
+							}
+						}
+						
 						count = 0; //Prüfen, ob es nur eine HMPos gibt, bei der anzBBT < vOMenge; dann überspringe AuswahlFenster und bestätige diese HMPos
+						//alternativ: nur die beiden Doppelbehandlungspositionen sind noch offen
 						for (i=0; i<=3; i++){
 							if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
 								count++;
@@ -4428,6 +4454,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									break;
 								}
 							}
+						}else if ((count == 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
+								hMPos.get(doppelBehA).best = true;
+								hMPos.get(doppelBehB).best = true;
+								springen = false; // TODO Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
 						}
 
 						count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
@@ -4565,10 +4595,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			"@"+
 			text+
 			"@"+
-			pos1+  //TODO Trennzeichen "," immer übergeben? anderes Trennzeichen wählen? wird z.B. nur HMPos3 bestätigt: ""+","+""+","+"HMPOs3"+","+""  = ",,HMPos3,"
-			( pos2.trim().equals("") ? "," : ","+ pos2 )+
-			( pos3.trim().equals("") ? "," : ","+ pos3 )+
-			( pos4.trim().equals("") ? "," : ","+ pos4 )+
+			pos1 + ( pos1.trim().equals("") || pos2.trim().equals("") ? "" : "," )+ 
+			pos2 + ( pos2.trim().equals("") || pos3.trim().equals("") ? "" : "," )+
+			pos3 + ( pos3.trim().equals("") || pos4.trim().equals("") ? "" : "," )+
+			pos4 +  // TODO es gibt trotz Umstellung weiterhin drei Fälle in denen Kommas falsch gesetzt werden 1&3,2&4 bzw. 1&4 -> dann fehlen Kommas
 			"@"+
 			DatFunk.sDatInSQL(datum)+"\n";
 		return ret;
