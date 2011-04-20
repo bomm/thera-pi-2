@@ -4515,8 +4515,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									termBestAusw.setModal(true);
 									termBestAusw.setVisible(true);
 						}
-
+						/*
+						 * Hier noch ein Fehler!!!!!
+						 * wenn der Benutzer keinen Dialog will
+						 * ist hMPos.get(i).best immer false
+						 * ein Job für Drud
+						 * 
+						 */
 						count = 0; // Dialog abgebrochen
+
 						for (i=0; i < 4 ; i++){
 							count += (hMPos.get(i).best ? 1 : 0);
 						}
