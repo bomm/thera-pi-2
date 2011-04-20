@@ -20,6 +20,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -1199,17 +1200,29 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							//F9
 							break;
 						}
+						//F11 + Shift
 						if (e.getKeyCode()==122 && e.isShiftDown()){
-							//F11 + Shift
 							if(!Rechte.hatRecht(Rechte.Kalender_terminconfirm, true)){
 								gruppeAusschalten();
 							}else{
-								terminBestaetigen(tspalte);
+								terminBestaetigen(tspalte,false);
 								gruppeAusschalten();
 							}
 							oSpalten[tspalte].requestFocus();
 							break;
 						}
+						//F11 + Strg erzwingt in jeden Fall den Dialog
+						if (e.getKeyCode()==122 && e.isControlDown()){
+							if(!Rechte.hatRecht(Rechte.Kalender_terminconfirm, true)){
+								gruppeAusschalten();
+							}else{
+								terminBestaetigen(tspalte,true);
+								gruppeAusschalten();
+							}
+							oSpalten[tspalte].requestFocus();
+							break;
+						}
+						
 						if (e.getKeyCode()==122 && (!e.isShiftDown()) && (!e.isControlDown())
 								&& (!e.isAltDown())){
 							//nur F11 ohne Shift etc.
@@ -3562,7 +3575,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				break;
 			}
 			if (((AbstractButton) arg0.getSource()).getText() == "bestätigen"){
-				terminBestaetigen(1 /*TODO kennt tspalte nicht (ersatzweise 1); tspalte wird auch garnicht gelesen ?!*/);
+				terminBestaetigen(1,false /*TODO kennt tspalte nicht (ersatzweise 1); tspalte wird auch garnicht gelesen ?!*/);
 				gruppeAusschalten();
 				//oSpalten[tspalte].requestFocus();
 				break;
@@ -4317,7 +4330,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	@Override
 	public void dragGestureRecognized(DragGestureEvent arg0) {
 	}
-	public void terminBestaetigen(int spalte){
+	public void terminBestaetigen(int spalte,boolean forceDlg){
 		if ( (Rechte.hatRecht(Rechte.Kalender_terminconfirminpast, false)) || (this.getAktuellerTag().equals(DatFunk.sHeute())) ){
 			gruppeAusschalten();
 		} else if (!Rechte.hatRecht(Rechte.Kalender_terminconfirminpast, true)){
@@ -4348,11 +4361,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			gruppeAusschalten();
 			return;
 		}
-		String sname = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(0).get(aktiveSpalte[0]));
-		String sreznum = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(1).get(aktiveSpalte[0]));
+		String sname = ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(xaktBehandler)).get(0)).get(aktiveSpalte[0]));
+		String sreznum = ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(xaktBehandler)).get(1)).get(aktiveSpalte[0]));
 		String sorigreznum = sreznum;
-		String sbeginn = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(2).get(aktiveSpalte[0]));
-		String sdatum = ((String) ((ArrayList<Vector<String>>) vTerm.get(xaktBehandler)).get(5).get(4));
+		String sbeginn = ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(xaktBehandler)).get(2)).get(aktiveSpalte[0]));
+		String sende = ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(xaktBehandler)).get(4)).get(aktiveSpalte[0]));
+
+		String sdatum = ((String) ((Vector<?>)((ArrayList<?>) vTerm.get(xaktBehandler)).get(5)).get(4));
 		int occur = -1;
 		if( (occur = sreznum.indexOf("\\")) > -1){
 			sorigreznum = sreznum.replace("\\", "\\\\"); 
@@ -4370,9 +4385,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		final String swaltname = sname;
 		final String swname = sname.replaceAll("\u00AE"  ,"");
 		final String swbeginn = sbeginn;
+		final String swende = sende;
 		final String swdatum = sdatum;
+		 
 
-		final int swbehandler = xaktBehandler; 
+		final int swbehandler = xaktBehandler;
+		
+		final boolean xforceDlg = forceDlg;
 
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -4389,7 +4408,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				Vector vec = null;
 				String copyright = "\u00AE"  ;
 				try{
-					vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
+					vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4,preisgruppe", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 					if (vec.size() > 0){
 						StringBuffer termbuf = new StringBuffer();
 						termbuf.append((String) vec.get(0));
@@ -4487,12 +4506,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									"Bitte prüfen Sie die Verordnungsmengen und die bestätigten Termindaten!");
 							return null;
 						}
-
-						if (!springen){ // TerminBestätigenAuswahlFenster anzeigen oder überspringen
-							TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,hMPos);
-							termBestAusw.pack();
-							termBestAusw.setLocationRelativeTo(ViewPanel);				
-							termBestAusw.setVisible(true);
+						// TerminBestätigenAuswahlFenster anzeigen oder überspringen
+						if ((!springen && (Boolean)SystemConfig.hmTerminBestaetigen.get("dlgzeigen") ) || xforceDlg){ 
+									TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,hMPos,sworigreznum,Integer.parseInt((String)vec.get(15)));
+									termBestAusw.pack();
+									termBestAusw.setLocation(computeLocation(termBestAusw,swbeginn,swende));
+									termBestAusw.setzeFocus();
+									termBestAusw.setModal(true);
+									termBestAusw.setVisible(true);
 						}
 
 						count = 0; // Dialog abgebrochen
@@ -4602,7 +4623,32 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			"@"+
 			DatFunk.sDatInSQL(datum)+"\n";
 		return ret;
-	}	
+	}
+	private Point computeLocation(Window win,String start,String ende){
+		int xwin = win.getWidth();
+		int ywin = win.getHeight();
+		
+		Point p = oSpalten[aktiveSpalte[2]].getLocationOnScreen();
+		try{
+			float ypos = Float.valueOf(oSpalten[aktiveSpalte[2]].getFloatPixelProMinute()*
+					(Float.valueOf(ZeitFunk.MinutenSeitMitternacht(ende))-Float.valueOf(ZeitFunk.MinutenSeitMitternacht(SystemConfig.KalenderUmfang[0]))) );
+			//Zuerst Y-testen
+			if( (Math.round(p.y+ypos+ywin) > p.y+oSpalten[aktiveSpalte[2]].getHeight()) ){
+				//Fenster würde nach unten ins Nirvana abtauchen
+				ypos = Float.valueOf(oSpalten[aktiveSpalte[2]].getFloatPixelProMinute()*
+						(Float.valueOf(ZeitFunk.MinutenSeitMitternacht(start))-Float.valueOf(ZeitFunk.MinutenSeitMitternacht(SystemConfig.KalenderUmfang[0]))) );
+				p.y = Math.round( (p.y+ypos)-ywin);
+			}else{
+				p.y = Math.round(p.y+ypos);			
+			}
+			//Jetzt X-testen damit nichts nach rechts abhaut
+			if(p.x+xwin > ViewPanel.getLocationOnScreen().x +ViewPanel.getWidth()){
+				p.x = (ViewPanel.getLocationOnScreen().x +ViewPanel.getWidth()) - xwin;
+			}
+		}catch(Exception ex){/*wird nicht ausgewertet*/}
+		
+		return p;
+	}
 	
 	public void gruppeAusschalten(){
 		shiftGedrueckt = false;
