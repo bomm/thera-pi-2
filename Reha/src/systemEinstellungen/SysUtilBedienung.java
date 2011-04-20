@@ -40,7 +40,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	 * 
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
-	JRtaTextField[] tfs = {null,null,null};
+	JRtaTextField[] tfs = {null,null,null,null};
 	JButton abbruch = null;
 	JButton speichern = null;
 	JButton[] buts = {null,null};
@@ -122,6 +122,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	JRtaComboBox cmbBut = new JRtaComboBox();
 	JRtaComboBox cmbClk = new JRtaComboBox();
 	JRtaComboBox cmbRezAbbruch = new JRtaComboBox();
+	JRtaComboBox cmbShowHmDlg = new JRtaComboBox();
 	Vector<Vector<String>>vecJN = new Vector<Vector<String>>();
 	Vector<Vector<String>>vec12 = new Vector<Vector<String>>();
 	
@@ -226,6 +227,8 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		cmbRezAbbruch.addActionListener(this);
 		builder.add(cmbRezAbbruch, cc.xy(3,iAktY));
 		
+
+		
 		// Trennlinie mit Leerzeilen
 		iAktY += 2;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
@@ -234,9 +237,34 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		builder.addSeparator("", cc.xyw(1,iAktY,11));
 		iAktY += 1;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
-		iAktY += 1;
+
+		//iAktY += 1;
+
+		JOptionPane.showMessageDialog(null, "aktuelle Y-Position im Layout = "+iAktY);
+		iAktY += 2;
+		lab3 = new JLabel("<html><b>Heilmittel-Dialoge <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
+		builder.add(lab3,cc.xyw(1, iAktY, 11));
+		iAktY += 2;
+		builder.addLabel("Bei Terminbestätigung (Shift-F11) zeigen wenn erforderlich",cc.xy(1,iAktY));
 
 		
+		tfs[3] = new JRtaTextField("Zahlen", true);
+		tfs[3].setName("hmdlgzeigen");
+		tfs[3].setText((Boolean)SystemConfig.hmTerminBestaetigen.get("dlgzeigen") ? "1" : "0");
+		cmbShowHmDlg.setDataVectorVector(vecJN, 0, 1);
+		cmbShowHmDlg.setSelectedItem(tfs[3].getText().equals("0") ? "Nein" : "Ja" );  // setze den aktuell gewählten Wert
+		cmbShowHmDlg.setActionCommand("cmbShowHmDlg");
+		cmbShowHmDlg.addActionListener(this);
+		builder.add(cmbShowHmDlg, cc.xy(3,iAktY));
+		
+		// Trennlinie mit Leerzeilen
+		iAktY += 2;
+		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
+		//-------------------------------------------------------------------------------
+		iAktY += 1;
+		builder.addSeparator("", cc.xyw(1,iAktY,11));
+		iAktY += 1;
+		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
 		
 		return builder.getPanel();
 	}
@@ -315,7 +343,12 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 			tfs[2].setText((String)cmbRezAbbruch.getSecValue());
 			return;
 		}
-		
+		if(cmd.equals("cmbShowHmDlg")){
+			tfs[3].setText((String)cmbShowHmDlg.getSecValue());
+			return;
+		}
+
+
 	}
 	
 	
@@ -332,6 +365,8 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 
 		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
 		SystemConfig.hmRezeptDlgIni.put("RezAendAbbruchWarn", tfs[2].getText().equals("1") ? true : false );
+		// HeilmittelDialog bei Terminbestätigen zeigen falls notwendig /st.
+		SystemConfig.hmTerminBestaetigen.put("dlgzeigen",tfs[3].getText().equals("1") ? true : false );
 		
 //		inif.save();  // Daten wegschreiben
 
@@ -339,6 +374,8 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		SaveChangeStatus();
 
 		SystemConfig.BedienungIni_WriteToIni();
+		
+		//JOptionPane.showMessageDialog(null,"Einstellungen wurden erfolgreich in bedienung.ini gespeichert");
 /*		
 		String meldung = "Folgende Nummern wurden geändert\n";
 		String cmd = (!nummernkreisok ? "insert into nummern set " : "update nummern set ") ;

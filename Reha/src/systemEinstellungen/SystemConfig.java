@@ -181,6 +181,10 @@ public class SystemConfig {
 	
 	// Lemmi 20101224 Steuerparanmeter für RGR und AFR Behandlung in OffenePosten und Mahnungen	
 	public static HashMap<String,Integer> hmZusatzInOffenPostenIni = new HashMap<String,Integer>();
+	
+	public static HashMap<String,Object> hmTerminBestaetigen = new HashMap<String,Object>();
+	
+	public static boolean desktopHorizontal = true;
 
 	public static String dta301InBox = null;
 	public static String dta301OutBox = null;
@@ -306,7 +310,14 @@ public class SystemConfig {
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","FensterFarbeRGB"));
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","FensterTitel"));
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","LookAndFeel"));
+			if ( ini.getStringProperty("HauptFenster", "HorizontalTeilen") != null ){
+				desktopHorizontal = ((Integer)ini.getIntegerProperty("HauptFenster", "HorizontalTeilen") == 1 ? true : false) ;
+			}else{
+				ini.setStringProperty("HauptFenster", "HorizontalTeilen","1",null);
+				ini.save();
+			}
 
+			
 			OpenOfficePfad = ini.getStringProperty("OpenOffice.org","OfficePfad");
 			if(!pfadOk(OpenOfficePfad)){
 				String meldung = "Es konnte keine gültige OpenOffice-Installation entdeckt werden\n"+
@@ -323,6 +334,7 @@ public class SystemConfig {
 			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
 			homeDir = Reha.proghome;
+			 
 			//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
 			////System.out.println("HomeDir = "+homeDir);
 			return;
@@ -984,6 +996,7 @@ public class SystemConfig {
 
 	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog aus der INI zentral einlesen
 	public static void BedienungIni_ReadFromIni(){
+		boolean mustsave = false;
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
 		
 //		if ( inif.IsFileLoaded() )
@@ -1006,7 +1019,15 @@ public class SystemConfig {
 		if ( inif.getStringProperty("Rezept", "RezeptAenderungAbbruchWarnung") != null )  // Prüfung auf Existenz
 			hmRezeptDlgIni.put("RezAendAbbruchWarn",(Integer)inif.getIntegerProperty("Rezept", "RezeptAenderungAbbruchWarnung") == 1 ? true : false );
 		
-		
+		///Zeigt den Terminbestätigungsdialog wenn erforderlich, siehe Erweiterung von Drud
+		//Ist der Wert false wird der Dialog nie gezeigt /st.
+		if ( inif.getStringProperty("Termine", "HMDialogZeigen") != null ){
+			hmTerminBestaetigen.put("dlgzeigen",((Integer)inif.getIntegerProperty("Termine", "HMDialogZeigen") == 1 ? true : false) );
+		}else{
+			inif.setStringProperty("Termine", "HMDialogZeigen","1",null);
+			mustsave = true;
+		}
+
 		// Voreinstellung von Defaultwerten
 		hmPatientenSuchenDlgIni.put("suchart",0);
 		hmPatientenSuchenDlgIni.put("fensterbreite", 300);
@@ -1020,6 +1041,9 @@ public class SystemConfig {
 				hmPatientenSuchenDlgIni.put("fensterhoehe", inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe"));
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Die Datei 'bedienung.ini' zur aktuellen IK-Nummer kann nicht gelesen werden.");
+		}
+		if(mustsave){
+			inif.save();
 		}
 	}
 
@@ -1038,6 +1062,7 @@ public class SystemConfig {
 
 		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
 		inif.setIntegerProperty("Rezept", "RezeptAenderungAbbruchWarnung", (Boolean)hmRezeptDlgIni.get("RezAendAbbruchWarn") ? 1 : 0, " Abfrage Abbruch bei Rezeptänderungen mit Warnung");
+		inif.setIntegerProperty("Termine", "HMDialogZeigen", (Boolean)hmTerminBestaetigen.get("dlgzeigen") ? 1 : 0, null);
 		
 		
 		inif.save();  // Daten wegschreiben
