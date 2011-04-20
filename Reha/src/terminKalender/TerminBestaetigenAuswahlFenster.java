@@ -31,10 +31,11 @@ import org.jdesktop.swingx.JXPanel;
 
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemPreislisten;
+import systemTools.JRtaCheckBox;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
 import terminKalender.TerminFenster.BestaetigungsDaten;
-import utils.JRtaCheckBox;
+
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
