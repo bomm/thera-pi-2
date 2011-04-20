@@ -1762,6 +1762,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					}
             	  }
             	});
+            Reha.thisClass.Rehaprogress.setIndeterminate(false);
+            /*
             new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -1785,6 +1787,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					return null;
 				}
             }.execute();
+            */
         }
         catch (OfficeApplicationException e) {
 			Reha.thisClass.messageLabel = new JLabel("OO.org nicht Verfügbar!!!");
