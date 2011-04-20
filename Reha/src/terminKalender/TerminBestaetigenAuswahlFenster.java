@@ -43,8 +43,6 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 //Drud 110418
-//TODO 4. Kompatibilität von bereits mit der bisherigen Grammatik bestätigten Terminen prüfen
-//TODO 5. Source/ItemStateChanged hier - geht das auch schöner?
 //TODO 6. Anpassung des Umsatzbeteiligung-Moduls, um nur die tatsächlich geleisteten Heilmittel anzuzeigen 
 
 public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements   ActionListener, WindowListener, KeyListener, ItemListener{
@@ -291,19 +289,18 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 	
 	@Override
 	public void itemStateChanged(ItemEvent arg0) {
-
-		//TODO: gibt es einen schöneren Weg herauszufinden, in welcher Zeile die CheckBox ausgewählt wurde?
-		int chkBoxID = arg0.getSource().toString().indexOf("[");
-		chkBoxID++;
-		int chkBoxNr = Integer.parseInt(arg0.getSource().toString().substring(chkBoxID).substring(0, 1));
-
+		int chkBoxNr= -1;
+		try{  // was ist wenn eine Componente ItemChanged feuert, deren Name sich nicht zu einem Integer parsen lässt?
+			chkBoxNr = Integer.parseInt(((JComponent)arg0.getSource()).getName());
+		}catch (Exception Ex){
+			System.out.println(Ex);
+		}
 		if (arg0.getStateChange() == ItemEvent.SELECTED) {
 			AnzTermine[chkBoxNr].setText(Integer.toString(Integer.parseInt(AnzTermine[chkBoxNr].getText())+1)); 
 			AnzTermine[chkBoxNr].setForeground(Color.BLUE);
 		} else {
 			AnzTermine[chkBoxNr].setText(Integer.toString(Integer.parseInt(AnzTermine[chkBoxNr].getText())-1));
 			AnzTermine[chkBoxNr].setForeground(Color.BLACK);
-
 		}
 		validate();
 	}
