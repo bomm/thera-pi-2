@@ -82,6 +82,8 @@ public class RezTools {
 			if(! behandlungen.equals("")){
 				einzelbehandlung = behandlungen.split(",");
 				//Scheiße weil Doppelbehandlungen zusammengefaßt werden
+				//Wird verwendet von: TerminFenster.terminBestaetigen()
+				//dort werden Doppelbehandlungen nachträglich erkannt und korrigiert
 				for(int i2 = 0; i2 < einzelbehandlung.length;i2++){
 					trefferbei = positionen.indexOf(einzelbehandlung[i2]);
 					if(trefferbei >= 0){
