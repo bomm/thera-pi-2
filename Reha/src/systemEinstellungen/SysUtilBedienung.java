@@ -240,7 +240,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 
 		//iAktY += 1;
 
-		JOptionPane.showMessageDialog(null, "aktuelle Y-Position im Layout = "+iAktY);
+		//JOptionPane.showMessageDialog(null, "aktuelle Y-Position im Layout = "+iAktY);
 		iAktY += 2;
 		lab3 = new JLabel("<html><b>Heilmittel-Dialoge <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
 		builder.add(lab3,cc.xyw(1, iAktY, 11));
