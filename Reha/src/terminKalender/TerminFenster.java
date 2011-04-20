@@ -4514,14 +4514,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									termBestAusw.setzeFocus();
 									termBestAusw.setModal(true);
 									termBestAusw.setVisible(true);
+						}else{
+							/*
+							 * Hier noch ein dicker Fehler!!!!!
+							 * wenn der Benutzer keinen Dialog will
+							 * ist hMPos.get(i).best immer false
+							 * ein Job für Drud
+							 * 
+							 */							
 						}
-						/*
-						 * Hier noch ein Fehler!!!!!
-						 * wenn der Benutzer keinen Dialog will
-						 * ist hMPos.get(i).best immer false
-						 * ein Job für Drud
-						 * 
-						 */
+
 						count = 0; // Dialog abgebrochen
 
 						for (i=0; i < 4 ; i++){
@@ -4530,6 +4532,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if (count == 0){
 							return null;
 						}
+
+						
+						System.out.println("Count hat den Wert: "+count);
 						
 						count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
 						for (i=0; i<=3; i++){
