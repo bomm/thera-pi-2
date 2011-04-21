@@ -4516,12 +4516,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									termBestAusw.setVisible(true);
 						}else{
 							/*
-							 * Hier noch ein dicker Fehler!!!!!
-							 * wenn der Benutzer keinen Dialog will
-							 * ist hMPos.get(i).best immer false
-							 * ein Job für Drud
-							 * 
-							 */							
+							 * Der Nutzer wünscht kein Auswahlfenster:
+							 * bestätige alle noch offenen Heilmittel
+							 *   
+							 */		
+							for (i=0; i<=3; i++){
+								hMPos.get(i).best = (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge);
+							}
 						}
 
 						count = 0; // Dialog abgebrochen
