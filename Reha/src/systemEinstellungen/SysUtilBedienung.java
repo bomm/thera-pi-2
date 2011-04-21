@@ -242,7 +242,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 
 		//JOptionPane.showMessageDialog(null, "aktuelle Y-Position im Layout = "+iAktY);
 		iAktY += 2;
-		lab3 = new JLabel("<html><b>Heilmittel-Dialoge <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
+		lab3 = new JLabel("<html><b>Heilmittel-Dialog <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
 		builder.add(lab3,cc.xyw(1, iAktY, 11));
 		iAktY += 2;
 		builder.addLabel("Bei Terminbestätigung (Shift-F11) zeigen wenn erforderlich",cc.xy(1,iAktY));
@@ -375,7 +375,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 
 		SystemConfig.BedienungIni_WriteToIni();
 		
-		//JOptionPane.showMessageDialog(null,"Einstellungen wurden erfolgreich in bedienung.ini gespeichert");
+		JOptionPane.showMessageDialog(null,"Einstellungen wurden erfolgreich in bedienung.ini gespeichert");
 /*		
 		String meldung = "Folgende Nummern wurden geändert\n";
 		String cmd = (!nummernkreisok ? "insert into nummern set " : "update nummern set ") ;
