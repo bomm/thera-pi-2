@@ -4533,9 +4533,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if (count == 0){
 							return null;
 						}
-
-						
-						System.out.println("Count hat den Wert: "+count);
 						
 						count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
 						for (i=0; i<=3; i++){
