@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
@@ -46,9 +45,6 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			offenePostenIsActive = false;
-			Reha.thisFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
-			Reha.thisFrame.setVisible(true);
-			Reha.thisFrame.toFront();
 			System.out.println("301-er  Modul beendet");
 			return;
 		}

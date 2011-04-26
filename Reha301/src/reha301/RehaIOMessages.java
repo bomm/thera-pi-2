@@ -9,4 +9,5 @@ public class RehaIOMessages {
 	public static String MUST_LZAFIND = "LZASUCHEN";
 	public static String MUST_DOKUFIND = "DOKUSUCHEN";
 	public static String MUST_OPFIND = "OPSUCHEN";
+	public static String MUST_GOTOFRONT = "TOFRONT";
 }

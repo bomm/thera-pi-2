@@ -501,7 +501,7 @@ public class FTPTools {
      			//fos.close();
      			//ftpClient.logout();
      			//ftpClient.disconnect();
-     			System.err.println("Scheiß-Transfer fehlgeschlagen");
+     			//System.err.println("Scheiß-Transfer fehlgeschlagen");
      			System.out.println("Datei = "+quelldat);
      			
  			}
@@ -644,18 +644,18 @@ public class FTPTools {
 			
 			/*********************************/
 			
-			ftpClient.setSendBufferSize(1024);
+			ftpClient.setSendBufferSize(1024*8);
 			System.out.println(ftpClient.getReplyString());
 			
 			OutputStream fos = ftpClient.storeFileStream(datfern);
 
 			if(!FTPReply.isPositiveIntermediate(ftpClient.getReplyCode())) {
-     			System.err.println("Scheiß-Transfer fehlgeschlagen");
+     			//System.err.println("Scheiß-Transfer fehlgeschlagen");
      			System.out.println("Datei = "+datfern);
  			}
 			
 			int n = 0;
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[1024*8];
 			
 			int gesamt = 0;
 			

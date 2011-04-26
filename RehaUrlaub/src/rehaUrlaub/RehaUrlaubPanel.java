@@ -918,7 +918,7 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 	}
 	public BigDecimal ermittleTag(String tag, int kaluser){
 		String cmd = "select * from flexkc where datum='"+DatFunk.sDatInSQL(tag)+"' and behandler='"+
-		(kaluser < 10 ? "0"+Integer.toString(kaluser)+"BEHANDLER" : Integer.toString(kaluser))+"BEHANDLER"+"' LIMIT 1";
+		(kaluser < 10 ? "0"+Integer.toString(kaluser)+"BEHANDLER" : Integer.toString(kaluser)+"BEHANDLER")+"' LIMIT 1";
 		//System.out.println(cmd);
 		BigDecimal bdret = analysiereTag(SqlInfo.holeFelder(cmd));
 		return bdret;
@@ -1102,7 +1102,7 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 		BigDecimal tagdauer = BigDecimal.valueOf(Double.parseDouble("0.000"));
 		BigDecimal ausfalldauer = BigDecimal.valueOf(Double.parseDouble("0.000"));
 
-		
+			//System.out.println(termine);
 			bloecke = Integer.parseInt( termine.get(0).get(termine.get(0).size()-6) );
 			
 			tagdauer = BigDecimal.valueOf(Double.parseDouble("0.000"));

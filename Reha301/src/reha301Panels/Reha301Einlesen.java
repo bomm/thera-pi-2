@@ -388,7 +388,7 @@ public class Reha301Einlesen{
 								nachrichtentyp = 1;
 								erstercheck = true;
 							}
-							obj = doAuswertenBewilligung(doUebersetzen(edifact_vec.get(i)),i);
+							obj = doAuswertenBewilligung(StringTools.do301NormalizeString(edifact_vec.get(i)),i);
 							if(obj[0] != null){
 								buf.append(StringTools.Escaped(obj[0].toString())+"\n");
 								//meldung.setText(meldung.getText()+obj[0].toString()+"\n");
@@ -407,7 +407,7 @@ public class Reha301Einlesen{
 									erstercheck = true;
 								}
 							}
-							obj = doAuswertenBewilligung(doUebersetzen(edifact_vec.get(i)),i);
+							obj = doAuswertenBewilligung(StringTools.do301NormalizeString(edifact_vec.get(i)),i);
 							if(obj[0] != null){
 								buf.append(StringTools.Escaped(obj[0].toString())+"\n");
 								//meldung.setText(meldung.getText()+obj[0].toString()+"\n");
@@ -783,6 +783,7 @@ public class Reha301Einlesen{
 				System.out.println("Teilstück "+ii+" = "+teile[ii]);
 			}
 			*/
+
 			String inhalt = "";
 			if(!teile[2].trim().equals("")){
 				inhalt = "\n"+String.valueOf("KV-Nummer: "+teile[2]);

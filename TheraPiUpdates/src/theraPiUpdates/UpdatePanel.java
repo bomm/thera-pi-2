@@ -482,6 +482,12 @@ public class UpdatePanel extends JXPanel{
 
 		
 	}
+	public static String Escaped(String string){
+		String escaped = string.replaceAll("\'", "\\\\'");
+		escaped = escaped.replaceAll("\"", "\\\\\"");
+		return escaped;
+	}
+
 	private void doTabellenUpdate(){
 		String ik = "";
 		ftpt = new FTPTools();
@@ -500,7 +506,8 @@ public class UpdatePanel extends JXPanel{
 		      String line = "";
 		      while ((line = lnreader.readLine()) != null){
 		    	  if(!String.valueOf(line).trim().equals("")){
-			    	  vecstmt.add(String.valueOf(line));		    		  
+			    	  //vecstmt.add(String.valueOf(Escaped(line)));		    		  
+			    	  vecstmt.add(String.valueOf(line));
 		    	  }
 		    	  System.out.println("Statement = "+line);
 		      }
@@ -528,6 +535,7 @@ public class UpdatePanel extends JXPanel{
 				
 				ik = mandvec.get(i)[0];
 				holeDBZugang(TheraPiUpdates.proghome+"ini/"+ik+"/rehajava.ini");
+				System.out.println("Mandant "+TheraPiUpdates.proghome+"ini/"+ik+"/rehajava.ini");
 				StarteDB();
 				for(int x = 0; x < vecstmt.size();x++){
 					try {
@@ -535,7 +543,8 @@ public class UpdatePanel extends JXPanel{
 						System.out.println("Execute = "+vecstmt.get(x));
 						//System.out.println("Warnings = "+conn.getWarnings().getSQLState());
 					} catch (Exception e) {
-						JOptionPane.showMessageDialog(null, "Fehler in der Ausführung des Sql-Statements\n"+vecstmt.get(x));
+						JOptionPane.showMessageDialog(null,"Fehler beim anlegen der Tabelle"); 
+						//JOptionPane.showMessageDialog(null, "Fehler in der Ausführung des Sql-Statements\n"+vecstmt.get(x));
 						e.printStackTrace();
 					}
 				}

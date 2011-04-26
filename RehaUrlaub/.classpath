@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/unoloader.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/dbf/jdbf.jar"/>
 	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/sql/mysql-connector-java-5.1.5-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

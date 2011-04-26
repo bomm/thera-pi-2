@@ -257,5 +257,20 @@ public class StringTools {
 		}
 		return ret;
 	}
+	public static String do301String(String string){
+		String ret = string;
+		ret = ret.replace("?", "??").replace("'","?'").replace(":", "?:").replace("+", "?+");
+		ret = ret.replace("ü","}").replace("ä","{").replace("ö","|").replace("ß","~");
+		ret = ret.replace("Ü","]").replace("Ä","[").replace("Ö","\\");
+		//ret = ret.replace(":", "?:").replace(",","?,");
+		return ret;
+	}
+	public static String do301NormalizeString(String string){
+		String ret = string;
+		ret = ret.replace("}","ü").replace("{","ä").replace("|","ö").replace("~","ß");
+		ret = ret.replace("]","Ü").replace("[","Ä").replace("\\","Ö");
+		ret = ret.replace("??","?").replace("?:",":").replace("?'","'");
+		return ret;
+	}
 
 }

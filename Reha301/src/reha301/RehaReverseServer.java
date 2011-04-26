@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 
 
-public class RehaIOServer extends SwingWorker<Void,Void>{
+public class RehaReverseServer extends SwingWorker<Void,Void>{
 	public ServerSocket serv = null;
 	StringBuffer sb = new StringBuffer();
 	InputStream input = null;
@@ -22,26 +22,13 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 	public static boolean reha301IsActive = false;
 	public static boolean offenePostenIsActive = false;
 	
-	public RehaIOServer(int x){
+	public RehaReverseServer(int x){
 		Reha301.xport = x;
 		execute();
 	}	
 		
 	public String getPort(){
 		return Integer.toString(Reha301.xport);
-	}
-	private void doOffenePosten(String op){
-		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
-			Reha301.thisFrame.setCursor(Reha301.thisClass.cdefault);
-			offenePostenIsActive = true;
-			System.out.println("301-er  Modul gestartet");
-			return;
-		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
-			offenePostenIsActive = false;
-			Reha301.thisFrame.toFront();
-			System.out.println("301-er  Modul beendet");
-			return;
-		}
 	}
 	/*****
 	 * 
@@ -52,7 +39,6 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
 			Reha301.thisFrame.setCursor(Reha301.thisClass.cdefault);
 			reha301IsActive = true;
-			System.out.println("301-er  Modul gestartet");
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			reha301IsActive = false;
@@ -67,7 +53,10 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_GOTOFRONT)){
+			Reha301.thisFrame.setVisible(true);
 		}
+				
 		//JOptionPane.showMessageDialog(null, "Hallo Reha hier spricht das 301-er Modul");
 	}
 	@Override
@@ -78,18 +67,16 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					serv = new ServerSocket(Reha301.xport);
 					break;
 				} catch (Exception e) {
-					System.out.println("In Exception währen der Portsuche - 1");
+					//System.out.println("In Exception währen der Portsuche - 1");
 					if(serv != null){
 						try {
 							serv.close();
 						} catch (IOException e1) {
-							System.out.println("In Exception währen der Portsuche - 2");
+							//System.out.println("In Exception währen der Portsuche - 2");
 							e1.printStackTrace();
 						}
 						serv = null;
 					}
-					//e.printStackTrace();
-					System.out.println("Port: "+Reha301.xport+" bereits belegt");
 					Reha301.xport++;
 				}
 			}
@@ -99,7 +86,7 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 				serv = null;
 				return null;
 			}
-			System.out.println("IO-SocketServer installiert auf Port: "+Reha301.xport);
+			Reha301.xportOk = true;
 			Socket client = null;
 			while(true){
 				try {
@@ -124,18 +111,17 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					System.out.println("In Exception währen der while input.read()-Schleife");
 				}
 				/***************************/
+				System.out.println("In Reha301 - eingegangene Nachricht = "+sb.toString());
 				if(sb.toString().startsWith("Reha301#")){
 					doReha301(String.valueOf(sb.toString()) );
 					
-				}else if(sb.toString().startsWith("OffenePosten#")){
-					doOffenePosten(String.valueOf(sb.toString()));
 				}
 			}
 
 //			return null;
 
 		}
-	private RehaIOServer getInstance(){
+	private RehaReverseServer getInstance(){
 		return this;
 	}
 	

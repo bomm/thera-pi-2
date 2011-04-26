@@ -104,7 +104,6 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
 
-import preisListenHandling.MachePreisListe;
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
 import rehaInternalFrame.OOODesktopManager;

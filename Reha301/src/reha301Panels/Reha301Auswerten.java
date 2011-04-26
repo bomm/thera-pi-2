@@ -59,6 +59,7 @@ import Tools.DatFunk;
 import Tools.FileTools;
 import Tools.INIFile;
 import Tools.JCompTools;
+import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 import Tools.OOTools;
 import Tools.RezTools;
@@ -1231,6 +1232,7 @@ public class Reha301Auswerten extends JXPanel{
 
 		int berichte = SqlInfo.zaehleSaetze("bericht2", "pat_intern='"+dta301mod.getPatIntern()+"'");
 		if(berichte > 0){
+			//JRtaComboBox combo = new JRtaComboBox();
 			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Bericht-ID an auf die dieser Fall übertragen werden soll.\n(Leer lasse für neuen Bericht)", "");
 			if(ret != null){
 				//Bearbeitereintragen in dtafall

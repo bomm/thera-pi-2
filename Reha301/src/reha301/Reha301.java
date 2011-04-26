@@ -1,8 +1,11 @@
 package reha301;
 
+
+
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -83,6 +86,8 @@ public class Reha301 implements WindowListener  {
 	public static int rehaPort = -1;
 	
 	public static int xport = 7000;
+	public static boolean xportOk = false;
+	public RehaReverseServer rehaReverseServer = null;
 	
 	//public static String encodepfad = "C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	/*
@@ -131,6 +136,7 @@ public class Reha301 implements WindowListener  {
 				if(args.length == 3){
 					try{
 						rehaPort = Integer.parseInt(args[2]);
+						
 						//new SocketClient().setzeRehaNachricht(rehaPort, "Reha301#IrgendEineNachricht");
 						//JOptionPane.showMessageDialog(null, "Modul Reha301 registriert Port "+Integer.toString(rehaPort));
 					}catch(Exception ex){
@@ -158,6 +164,7 @@ public class Reha301 implements WindowListener  {
 						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-301 kann nicht gestartet werden");				
 					}
 					Reha301.starteOfficeApplication();
+					
 					return null;
 				}
 				
@@ -220,7 +227,49 @@ public class Reha301 implements WindowListener  {
 			e.printStackTrace();
 		}
 		thisClass = this;
-		jFrame = new JFrame();
+		jFrame = new JFrame(){
+			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void setVisible(final boolean visible) {
+				
+				if(getState()!=JFrame.NORMAL) { setState(JFrame.NORMAL); }
+
+				  if (visible) {
+				      //setDisposed(false);
+				  }
+				  if (!visible || !isVisible()) { 
+				      super.setVisible(visible);
+				  }
+
+				  if (visible) {
+				      int state = super.getExtendedState();
+				      state &= ~JFrame.ICONIFIED;
+				      super.setExtendedState(state);
+				      super.setAlwaysOnTop(true);
+				      super.toFront();
+				      super.requestFocus();
+				      super.setAlwaysOnTop(false);
+				  }
+			}
+
+			@Override
+			public void toFront() {
+				  super.setVisible(true);
+				  int state = super.getExtendedState();
+				  state &= ~JFrame.ICONIFIED;
+				  super.setExtendedState(state);
+				  super.setAlwaysOnTop(true);
+				  super.toFront();
+				  super.requestFocus();
+				  super.setAlwaysOnTop(false);
+			}	
+		};	
+
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,550);
 		jFrame.setTitle("Thera-Pi  §301-er  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
@@ -229,6 +278,31 @@ public class Reha301 implements WindowListener  {
 		jFrame.getContentPane().add (new Reha301Tab());
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+				while( Reha301.xport < 7050 && Reha301.xportOk == false){
+					try {
+						Thread.sleep(50);
+						rehaReverseServer = new RehaReverseServer(Reha301.xport);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				if(Reha301.xportOk){
+					new SocketClient().setzeRehaNachricht(rehaPort, "AppName#"+"Reha301#"+Integer.toString(Reha301.xport));
+				}else{
+					System.out.println(Reha301.xport+" - "+Reha301.xportOk);
+				}
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+			
+		}.execute();
+		
 		return jFrame;
 	}
 	
@@ -392,6 +466,14 @@ public class Reha301 implements WindowListener  {
 				e.printStackTrace();
 			}
 		}
+		if(rehaReverseServer != null){
+			try {
+				rehaReverseServer.serv.close();
+				System.out.println("RehaIO-SocketServer geschlossen");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		System.exit(0);
 	}
 	@Override
@@ -405,6 +487,15 @@ public class Reha301 implements WindowListener  {
 				e.printStackTrace();
 			}
 		}
+		if(rehaReverseServer != null){
+			try {
+				rehaReverseServer.serv.close();
+				System.out.println("RehaIO-SocketServer geschlossen");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		System.exit(0);
 	}
 	@Override
