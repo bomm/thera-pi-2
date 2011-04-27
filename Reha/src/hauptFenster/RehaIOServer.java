@@ -10,7 +10,6 @@ import java.net.SocketException;
 import javax.swing.JOptionPane;
 
 import org.jdesktop.swingworker.SwingWorker;
-import org.jdesktop.swingx.JXFrame;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;

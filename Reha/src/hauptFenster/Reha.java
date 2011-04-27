@@ -1100,10 +1100,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			jxRechtsUnten.updateUI();
 			/********************************/
 			
-
-			jSplitRechtsOU = UIFSplitPane.createStrippedSplitPane(JSplitPane.VERTICAL_SPLIT,
-		             jxRechtsOben,
-		             jxRechtsUnten);
+			if(SystemConfig.desktopHorizontal){
+				jSplitRechtsOU = UIFSplitPane.createStrippedSplitPane(JSplitPane.VERTICAL_SPLIT,
+			             jxRechtsOben,
+			             jxRechtsUnten);
+			}else{
+				jSplitRechtsOU = UIFSplitPane.createStrippedSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+			             jxRechtsOben,
+			             jxRechtsUnten);
+				
+			}
 			jSplitRechtsOU.addPropertyChangeListener(new PropertyChangeListener(){
 				@Override
 				public void propertyChange(PropertyChangeEvent arg0) {
@@ -1890,11 +1896,18 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         }, AWTEvent.MOUSE_EVENT_MASK);
         */
     }
+    public void setVertDivider(int variante){
+    	//Diese Funktion wäre etwas für Michael Schütt
+    }
     public void setDivider(int variante){
     	final int xvariante = variante;
     	SwingUtilities.invokeLater(new Runnable(){
       	   public  void run()
-      	   {	
+      	   {
+      		   if(!SystemConfig.desktopHorizontal){
+      			   setVertDivider(xvariante);
+      			   return;
+      		   }
       		   int i;
       		   for(i=0;i<1;i++){
       			   if(xvariante==1){
