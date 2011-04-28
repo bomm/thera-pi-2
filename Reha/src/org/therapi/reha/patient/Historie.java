@@ -839,7 +839,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		//evtl. OpRgaf wieder beenden
 		String sreznum = tabhistorie.getValueAt(row,0).toString();
 		String srezdat = tabhistorie.getValueAt(row,2).toString();
-		String einnahme = SqlInfo.holeEinzelFeld("select einnahme from kasse where rez_nr = '"+sreznum+"' LIMIT 1");
+		String einnahme = SqlInfo.holeEinzelFeld("select einnahme from kasse where rez_nr = '"+sreznum+
+				"' or ktext like '%"+sreznum+"%'LIMIT 1");
 		if(einnahme.equals("")){
 			int frage = JOptionPane.showConfirmDialog(null,"Kein Bezahl-Eintrag im Kassenbuch für Rezept -> "+sreznum+
 					"\n\nEvtl. wurde eine Rezeptgebührrechnung erstellt?\n\n"+"Wollen Sie die RGAF-Verwaltung jetzt aufrufen?",
@@ -856,7 +857,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		SystemConfig.hmRgkDaten.put("<Rgknummer>", String.valueOf(sreznum));
 		SystemConfig.hmRgkDaten.put("<Rgkdatum>", srezdat);
 		SystemConfig.hmRgkDaten.put("<Rgkbetrag>", String.valueOf(einnahme.replace(".", ",")));
-		String bezdatum = SqlInfo.holeEinzelFeld("select datum from kasse where rez_nr = '"+sreznum+"' LIMIT 1");
+		String bezdatum = SqlInfo.holeEinzelFeld("select datum from kasse where rez_nr = '"+sreznum+
+				"' or ktext like '%"+sreznum+"%'LIMIT 1");
 		SystemConfig.hmRgkDaten.put("<Rgkbezahldatum>", String.valueOf(DatFunk.sDatInDeutsch(bezdatum)));
 		OOTools.starteRGKopie(Reha.proghome+"vorlagen/"+Reha.aktIK+"/Rezeptgebuehr.ott.Kopie.ott",SystemConfig.rezGebDrucker);
 	}
