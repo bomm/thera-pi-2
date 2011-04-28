@@ -1898,6 +1898,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     }
     public void setVertDivider(int variante){
     	//Diese Funktion wäre etwas für Michael Schütt
+    	/*
+    	 * Im Grunde würde es genügen wenn Strg+Pfeil-Links/oder Rechts gedrückt wird,
+    	 * die Arbeitsflächen entweder hälftig oder voll sichtbar darzustellen
+    	 * den Rest müßte man dann einfacht mit der Maus herstellen.
+    	 * 
+    	 */
     }
     public void setDivider(int variante){
     	final int xvariante = variante;

@@ -849,7 +849,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				if(! RehaIOServer.rgAfIsActive){
 					new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+sreznum);					
 				}else{
-					
+					/*ToDo*/
 				}
 			}
 			return;
