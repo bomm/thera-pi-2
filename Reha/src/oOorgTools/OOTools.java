@@ -99,7 +99,7 @@ public class OOTools{
 			
 		}
 	}
-	
+	/**************************************************************************************/
 	public static void starteStandardFormular(String url,String drucker) {
 		IDocumentService documentService = null;
 		ITextDocument textDocument = null;
@@ -284,6 +284,147 @@ public class OOTools{
 		});
 
 	}
+	/**************************************************************************************/
+	public static void starteRGKopie(String url,String drucker) {
+		IDocumentService documentService = null;
+		ITextDocument textDocument = null;
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+		//System.out.println("Starte Datei -> "+url);
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+		}
+		try{
+			documentService = Reha.officeapplication.getDocumentService();
+
+		} catch (OfficeApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		IDocumentDescriptor docdescript = new DocumentDescriptor();
+		docdescript.setHidden(true);
+		docdescript.setAsTemplate(true);
+		IDocument document = null;
+		//ITextTable[] tbl = null;
+		
+		try {
+			document = documentService.loadDocument(url,docdescript);
+		} catch (NOAException e) {
+
+			e.printStackTrace();
+		}
+		textDocument = (ITextDocument)document;
+		/**********************/
+		if(drucker != null){
+			String druckerName = null;
+			try {
+				druckerName = textDocument.getPrintService().getActivePrinter().getName();
+			} catch (NOAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
+			IPrinter iprint = null;
+			if(! druckerName.equals(drucker)){
+				try {
+					iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
+				} catch (NOAException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					textDocument.getPrintService().setActivePrinter(iprint);
+				} catch (NOAException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		/**********************/
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String placeholderDisplayText = "";
+		try{
+		for (int i = 0; i < placeholders.length; i++) {
+			//boolean loeschen = false;
+			boolean schonersetzt = false;
+			try{
+				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+				//System.out.println(placeholderDisplayText);
+			}catch(com.sun.star.uno.RuntimeException ex){
+				//System.out.println("************catch()*******************");
+				ex.printStackTrace();
+			}
+
+		    /*****************/			
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
+		    while (it.hasNext()) {
+		      Map.Entry<?,?> entry = (Map.Entry<?, ?>) it.next();
+		      if(entry.getKey().toString().toLowerCase().equals(placeholderDisplayText)){
+		    	  if(entry.getValue().toString().trim().equals("")){
+		    		  placeholders[i].getTextRange().setText("\b");
+		    		  //OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(entry.getValue().toString());		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    entries = SystemConfig.hmRgkDaten.entrySet();
+		    it = entries.iterator();
+		    while (it.hasNext() && (!schonersetzt)) {
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  placeholders[i].getTextRange().setText("");
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    if(!schonersetzt){
+		    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    }
+		    /*****************/
+		}
+		}catch(java.lang.IllegalArgumentException ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Fehler in der Dokumentvorlage");
+			if(document != null){
+				document.close();
+				try {
+					Reha.officeapplication.deactivate();
+				} catch (OfficeApplicationException e) {
+					e.printStackTrace();
+				}
+				Reha.officeapplication.dispose();
+				return;
+			}
+		}
+		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
+		viewCursor.getPageCursor().jumpToFirstPage();
+
+		final ITextDocument xtextDocument = textDocument;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				xtextDocument.getFrame().setFocus();
+			}
+		});
+
+	}
+
 	/*******************************************************************************************/
 	public static void starteBacrodeFormular(String url,String drucker){
 		IDocumentService documentService = null;;

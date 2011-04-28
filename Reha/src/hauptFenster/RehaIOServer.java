@@ -22,12 +22,16 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 	//public int port = 6000;
 	public static boolean reha301IsActive = false;
 	public static int reha301reversePort = -1;
+	
 	public static boolean offenePostenIsActive = false;
 	public static int offenePostenreversePort = -1;
+	
 	public static boolean rgAfIsActive = false;
 	public static int rgAfreversePort = -1;
+	
 	public static boolean rehaWorkFlowIsActive = false;
 	public static int rehaWorkFlowreversePort = -1;
+	
 	public RehaIOServer(int x){
 		Reha.xport = x;
 		execute();

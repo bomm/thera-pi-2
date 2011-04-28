@@ -49,6 +49,8 @@ import javax.swing.table.TableCellRenderer;
 import jxTableTools.DateTableCellEditor;
 import jxTableTools.TableTool;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -57,6 +59,7 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
+import org.thera_pi.nebraska.gui.utils.DatFunk;
 
 import patientenFenster.HistorDaten;
 import patientenFenster.KeinRezept;
@@ -835,17 +838,27 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		//dann über sockComm die Rechnung suchen und drucken
 		//evtl. OpRgaf wieder beenden
 		String sreznum = tabhistorie.getValueAt(row,0).toString();
-		String srezdat = tabhistorie.getValueAt(row,3).toString();
+		String srezdat = tabhistorie.getValueAt(row,2).toString();
 		String einnahme = SqlInfo.holeEinzelFeld("select einnahme from kasse where rez_nr = '"+sreznum+"' LIMIT 1");
 		if(einnahme.equals("")){
-			JOptionPane.showMessageDialog(null,"Kein Bezahl-Eintrag im Kassenbuch für Rezept -> "+sreznum+
-					"\n\nEvtl. wurde eine Rezeptgebührrechnung erstellt?");
+			int frage = JOptionPane.showConfirmDialog(null,"Kein Bezahl-Eintrag im Kassenbuch für Rezept -> "+sreznum+
+					"\n\nEvtl. wurde eine Rezeptgebührrechnung erstellt?\n\n"+"Wollen Sie die RGAF-Verwaltung jetzt aufrufen?",
+					"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			if(frage == JOptionPane.YES_OPTION){
+				if(! RehaIOServer.rgAfIsActive){
+					new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+sreznum);					
+				}else{
+					
+				}
+			}
 			return;
 		}
-		if(! RehaIOServer.rgAfIsActive){
-		}
- 
-		JOptionPane.showMessageDialog(null,"Funktion noch nicht implementiert");
+		SystemConfig.hmRgkDaten.put("<Rgknummer>", String.valueOf(sreznum));
+		SystemConfig.hmRgkDaten.put("<Rgkdatum>", srezdat);
+		SystemConfig.hmRgkDaten.put("<Rgkbetrag>", String.valueOf(einnahme.replace(".", ",")));
+		String bezdatum = SqlInfo.holeEinzelFeld("select datum from kasse where rez_nr = '"+sreznum+"' LIMIT 1");
+		SystemConfig.hmRgkDaten.put("<Rgkbezahldatum>", String.valueOf(DatFunk.sDatInDeutsch(bezdatum)));
+		OOTools.starteRGKopie(Reha.proghome+"vorlagen/"+Reha.aktIK+"/Rezeptgebuehr.ott.Kopie.ott",SystemConfig.rezGebDrucker);
 	}
 	
 	class ToolsDlgHistorie{
