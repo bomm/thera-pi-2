@@ -772,6 +772,7 @@ public class Reha301Einlesen{
 				ret[0] = String.valueOf(ret[0]+"\n"+
 						(teile[6].split(":").length >= 2 ? teile[6].split(":")[1]+"\n" : ""));
 			}
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Patient !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*******************
@@ -834,31 +835,37 @@ public class Reha301Einlesen{
 		if(zeile.startsWith("PNA+AB")){
 			ret[0] = "PNA+AB = Beteiligte Institution: Beauftragte Stelle noch nicht belegt!!!!!!!!!!!\n"+zeile;
 			dbHmap.put("beauftragtestelle",teile[3]);
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Beteiligte Institution: Veranlassendes Krankenhaus
 		if(zeile.startsWith("PNA+RP")){
 			ret[0] = "PNA+RP = Beteiligte Institution: Veranlassendes Krankenhaus noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Beteiligte Institution: Einweisender Arzt
 		if(zeile.startsWith("PNA+OP")){
 			ret[0] = "PNA+OP = Beteiligte Institution: Einweisender Arzt noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Beteiligte Institution: Anspruchsberechtigter
 		if(zeile.startsWith("PNA+BR")){
 			ret[0] = "PNA+BR = Beteiligte Institution: Anspruchsberechtigter noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Mitteilungsempfänger
 		if(zeile.startsWith("PNA+ME")){
 			ret[0] = "PNA+ME = Mitteilungsempfänger noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Nächster Angehöriger
 		if(zeile.startsWith("PNA+NA")){
 			ret[0] = "PNA+NA = Nächster Angehöriger noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Hausarzt
@@ -878,16 +885,19 @@ public class Reha301Einlesen{
 		//Facharzt oder andere behandelnde Person
 		if(zeile.startsWith("PNA+DR")){
 			ret[0] = "PNA+DR = Facharzt oder andere behandelnde Person noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Arbeitgeber
 		if(zeile.startsWith("PNA+AG")){
 			ret[0] = "PNA+AG = Arbeitgeber noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Arbeitsamt
 		if(zeile.startsWith("PNA+AA")){
 			ret[0] = "PNA+AA = Arbeitsamt noch nicht belegt!!!!!!!!!!!\n"+zeile;
+			setPnaActive(teile[1]);
 			return ret;
 		}
 		//Gesundheitsamt (nur Bayern)

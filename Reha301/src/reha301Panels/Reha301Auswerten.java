@@ -1092,8 +1092,11 @@ public class Reha301Auswerten extends JXPanel{
 			}
 			welcherpat = dta301mod.getX_patIntern();//String.valueOf(vec_patstamm.get(patcombo.getSelectedIndex()).get(8));
 			dta301mod.transferXPatDataTo301();
+			new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATFIND+"#"+dta301mod.getPatIntern());
+
 		}else if(patcombo.getItemCount() <= 0 && (patneuangelegt) ){
 			welcherpat = dta301mod.getPatIntern();//patneuepatnr;
+			new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATFIND+"#"+dta301mod.getPatIntern());
 		}else{
 			JOptionPane.showMessageDialog(null, "Kein bestehender Patient ausgewählt und kein neuer Patient angelegt - das geht einfach nicht!!!!");
 			return;
@@ -1112,6 +1115,7 @@ public class Reha301Auswerten extends JXPanel{
 		boolean neuvo = true;		
 		Vector<Vector<String>> vecrhtest = SqlInfo.holeFelder("select rez_nr from verordn where pat_intern='"+dta301mod.getPatIntern()+"' and rez_nr like 'RH%'");
 		/******/
+		boolean rhrezexist = false;
 		String disziplin = null;
 		if(vecrhtest.size() > 0){
 			String msg = "Für diesen Patient existiert bereits eine oder mehrere Reha-Verordnung(en)\n\n";
@@ -1122,6 +1126,7 @@ public class Reha301Auswerten extends JXPanel{
 				neuvo = false;
 				rezneuereznr = String.valueOf(vecrhtest.get(0).get(0));
 				disziplin = "Reha";
+				rhrezexist = true;
 			}
 		}
 		if(neuvo){
@@ -1231,7 +1236,7 @@ public class Reha301Auswerten extends JXPanel{
 
 
 		int berichte = SqlInfo.zaehleSaetze("bericht2", "pat_intern='"+dta301mod.getPatIntern()+"'");
-		if(berichte > 0){
+		if(berichte > 0 && rhrezexist ){
 			//JRtaComboBox combo = new JRtaComboBox();
 			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Bericht-ID an auf die dieser Fall übertragen werden soll.\n(Leer lasse für neuen Bericht)", "");
 			if(ret != null){
