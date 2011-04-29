@@ -239,7 +239,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 	}
 	
 	public void ListenerSchliessen(){
-		////System.out.println("In ListenerSchlie�en - Basisklasse");
+		//////System.out.println("In ListenerSchlie�en - Basisklasse");
 		if(xEvent != null){
 			xEvent.removeRehaTPEventListener(this);
 			xEvent = null;
@@ -249,7 +249,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		}
 	}
 	public void Schliessen(){
-		////System.out.println("In Schliessen-Funktion der basisklasse");
+		//////System.out.println("In Schliessen-Funktion der basisklasse");
 		try{
 			ListenerTools.removeListeners(this);
 			this.removeWindowListener(this);
@@ -264,18 +264,18 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 	
 	@Override
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
-		////System.out.println("In SmartDialog evt = "+evt);
+		//////System.out.println("In SmartDialog evt = "+evt);
 		try{
 				if(evt.getDetails()[1].equals("ROT")){ 
-					////System.out.println("RehaSmartDialog hat EventListener gel�scht");
+					//////System.out.println("RehaSmartDialog hat EventListener gel�scht");
 					xEvent.removeRehaTPEventListener((RehaTPEventListener)this);
 					xEvent = null;
 					this.dispose();
 				}
 
 		}catch(java.lang.NullPointerException e){
-			////System.out.println("Event = "+evt.getDetails()[1]);
-			////System.out.println("In RehaSmartDialog - Null Pointerexception = "+e);
+			//////System.out.println("Event = "+evt.getDetails()[1]);
+			//////System.out.println("In RehaSmartDialog - Null Pointerexception = "+e);
 			
 		}
 	}
@@ -295,14 +295,14 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		// TODO Auto-generated method stub
 		ListenerSchliessen();
 		this.removeWindowListener(this);
-		////System.out.println("Basisklasse wird geschlossen - "+getName()+" IgnoreReturn = "+ignorereturn);
+		//////System.out.println("Basisklasse wird geschlossen - "+getName()+" IgnoreReturn = "+ignorereturn);
 
 		
 	}
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		//System.out.println("In Closing der Elternklasse "+arg0);
+		////System.out.println("In Closing der Elternklasse "+arg0);
 		// TODO Auto-generated method stub
 			
 	}
@@ -342,7 +342,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		////System.out.println("In Click Klick Y bei "+arg0);
+		//////System.out.println("In Click Klick Y bei "+arg0);
 		// TODO Auto-generated method stub
 		
 	}
@@ -365,7 +365,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	@Override
 	public void mousePressed(java.awt.event.MouseEvent e) {
-		////System.out.println("Klick bei "+e.getY());
+		//////System.out.println("Klick bei "+e.getY());
 		if (e.getY() <= 25){
 			clickY = e.getY();
 			clickX = e.getX();
@@ -405,13 +405,13 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 	@Override
 	public void mouseDragged(java.awt.event.MouseEvent e) {
 		//int center = (int) getSize().getHeight();
-		////System.out.println("in Mousedragged");
-		////System.out.println("Insize = "+insize+" clickY="+clickY);
-		////System.out.println("Klick Y bei "+e.getY());
+		//////System.out.println("in Mousedragged");
+		//////System.out.println("Insize = "+insize+" clickY="+clickY);
+		//////System.out.println("Klick Y bei "+e.getY());
 		//clickX = e.getX();
 		if (! insize && clickY > 0){
 			//RehaSmartDialog.thisClass.getLocationOnScreen();
-			////System.out.println("in Mousedragged");
+			//////System.out.println("in Mousedragged");
 			final java.awt.event.MouseEvent ex = e;
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
@@ -617,19 +617,19 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		////System.out.println("SmartDialog Pressed "+arg0.getKeyCode());
+		//////System.out.println("SmartDialog Pressed "+arg0.getKeyCode());
 	}
 
 
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		////System.out.println("SmartDialog Released "+arg0);		
+		//////System.out.println("SmartDialog Released "+arg0);		
 	}
 
 	
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		////System.out.println("SmartDialog Typed "+arg0);
+		//////System.out.println("SmartDialog Typed "+arg0);
 	}
 	
 	

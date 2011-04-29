@@ -102,9 +102,9 @@ public class Verschluesseln {
     Verschluesseln man = Verschluesseln.getInstance();
     man.init(man.password.toCharArray(), man.salt, man.iterations);
     final String encrypted = man.encrypt("Bastie");
-    System.out.println ("Verschl�sselt :"+encrypted);
+    //System.out.println ("Verschl�sselt :"+encrypted);
     final String decrypted = man.decrypt (encrypted);
-    System.out.println("Entschl�sselt :"+decrypted);
+    //System.out.println("Entschl�sselt :"+decrypted);
   }
   */
 

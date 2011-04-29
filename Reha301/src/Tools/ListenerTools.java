@@ -25,7 +25,7 @@ public class ListenerTools {
                     }catch(Exception e){
                         // It is possible that someone could create a listener
                         // that doesn't extend from EventListener.  If so,ignore it
-                        ////System.out.println("Listener " + params[0] + " does not extend EventListener");
+                        //////System.out.println("Listener " + params[0] + " does not extend EventListener");
                         continue;
                     }
                     for ( int j = 0; j < listeners.length; j++)
@@ -33,9 +33,9 @@ public class ListenerTools {
                         try {
                             method.invoke(comp, new Object[]{listeners[j]});
                             listeners[j] = null;
-                            ////System.out.println("removed Listener " + name + "+ for comp " + comp );
+                            //////System.out.println("removed Listener " + name + "+ for comp " + comp );
                         }catch(Exception e){
-                           // //System.out.println("Cannot invoke removeListener method " + e);
+                           // ////System.out.println("Cannot invoke removeListener method " + e);
                             // Continue on.  The reason for removing alllisteners is to
                             // make sure that we don't have a listener holdingon to something
                             // which will keep it from being garbage collected.We want to
@@ -48,7 +48,7 @@ public class ListenerTools {
                     // one argument is removePropertyChangeListener.  If it is
                     // something other than that, flag it and move on.
                     //if (!name.equals("removePropertyChangeListener"))
-                        //System.out.println("    Wrong number of Args " + name);
+                        ////System.out.println("    Wrong number of Args " + name);
                 }
             }
         }

@@ -49,7 +49,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
                 	Reha301.thisFrame.repaint();
                 }
             });
-			System.out.println("301-er  Modul beendet");
+			//System.out.println("301-er  Modul beendet");
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
@@ -67,12 +67,12 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					serv = new ServerSocket(Reha301.xport);
 					break;
 				} catch (Exception e) {
-					//System.out.println("In Exception währen der Portsuche - 1");
+					////System.out.println("In Exception währen der Portsuche - 1");
 					if(serv != null){
 						try {
 							serv.close();
 						} catch (IOException e1) {
-							//System.out.println("In Exception währen der Portsuche - 2");
+							////System.out.println("In Exception währen der Portsuche - 2");
 							e1.printStackTrace();
 						}
 						serv = null;
@@ -108,10 +108,10 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.out.println("In Exception währen der while input.read()-Schleife");
+					//System.out.println("In Exception währen der while input.read()-Schleife");
 				}
 				/***************************/
-				System.out.println("In Reha301 - eingegangene Nachricht = "+sb.toString());
+				//System.out.println("In Reha301 - eingegangene Nachricht = "+sb.toString());
 				if(sb.toString().startsWith("Reha301#")){
 					doReha301(String.valueOf(sb.toString()) );
 					

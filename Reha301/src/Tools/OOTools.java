@@ -300,7 +300,7 @@ public class OOTools{
 		/*
 		com.sun.star.beans.Property[] props = xStyleProps.getPropertySetInfo().getProperties();
 		for (int i = 0; i < props.length; i++) {
-		//System.out.println(props[i] .Name + " = "
+		////System.out.println(props[i] .Name + " = "
 		+ xStyleProps.getPropertyValue(props[i].Name));
 		}
 		//z.B. f�r A5
@@ -490,7 +490,7 @@ public class OOTools{
         }else if(value instanceof Integer){
         	cell.setValue((Integer)value);
         }else if(value instanceof Date){
-        	//System.out.println("date");
+        	////System.out.println("date");
         	//cell.setValue( ((Date)value).getTime());
         }
 	}
@@ -514,7 +514,7 @@ public class OOTools{
 	          com.sun.star.util.XNumberFormatsSupplier.class, spreadsheetDocument.getSpreadsheetDocument() );
 	    /******************/
 		if(xNumberFormatsSupplier == null){
-			System.out.println("XNumberFormatsSupplier = null");
+			//System.out.println("XNumberFormatsSupplier = null");
 			return;
 		}
 	    /******************/
@@ -634,13 +634,13 @@ public class OOTools{
 
 			// print all available formats
 
-			//System.out.println("Reading the clipboard...");
-			//System.out.println("Available clipboard formats:");
+			////System.out.println("Reading the clipboard...");
+			////System.out.println("Available clipboard formats:");
 
 			DataFlavor aUniFlv = null;
 
 			for (int i=0;i<aDflvArr.length;i++)	{
-				//System.out.println( "MimeType: " + 
+				////System.out.println( "MimeType: " + 
 	            //    aDflvArr[i].MimeType + 
 	              //  " HumanPresentableName: " + 
 	            //    aDflvArr[i].HumanPresentableName );    
@@ -655,7 +655,7 @@ public class OOTools{
 			}
 			try{
 				if (aUniFlv != null){
-	                //System.out.println("Unicode text on the clipboard...");
+	                ////System.out.println("Unicode text on the clipboard...");
 	                Object aData = xTransferable.getTransferData(aUniFlv);      
 				}
 			}catch(UnsupportedFlavorException ex){

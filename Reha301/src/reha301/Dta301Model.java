@@ -553,7 +553,7 @@ public class Dta301Model {
 		buf.append("ArztId     "+this.x_patArztId+"\n");
 		buf.append("PatId      "+this.x_patId+"\n");
 		buf.append("***********Ende Pat_X-Data******************\n");
-		System.out.println(buf.toString());
+		//System.out.println(buf.toString());
 	}
 	public void show301Data(){
 		StringBuffer buf = new StringBuffer();
@@ -576,7 +576,7 @@ public class Dta301Model {
 		buf.append("Kostentr.  "+this.dtaKtraegerIK+"\n");
 		buf.append("Anlass     "+this.dtaNachrichtAnlass+"\n");
 		buf.append("***********Ende 301-Data******************\n");
-		System.out.println(buf.toString());
+		//System.out.println(buf.toString());
 	}
 	public void showRezeptData(){
 		StringBuffer buf = new StringBuffer();
@@ -584,6 +584,6 @@ public class Dta301Model {
 		buf.append("RezeptNr.   "+this.rezNummer+"\n");
 		buf.append("BarcodeForm "+this.barcodeForm+"\n");
 		buf.append("***********Ende Rezept-Data******************\n");
-		System.out.println(buf.toString());
+		//System.out.println(buf.toString());
 	}
 }

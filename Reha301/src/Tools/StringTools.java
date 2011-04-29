@@ -158,7 +158,7 @@ public class StringTools {
 		}
 
 		}catch(java.lang.StringIndexOutOfBoundsException ex){
-			//System.out.println(ex);
+			////System.out.println(ex);
 			return ""+test;
 		}
 
@@ -248,7 +248,7 @@ public class StringTools {
 		for(int i = 0; i < zahl.length();i++){
 			try{
 				if(! "0".contains(zahl.substring(i,i+1))){
-					System.out.println("Zahl = "+zahl.substring(i));
+					//System.out.println("Zahl = "+zahl.substring(i));
 					return Integer.parseInt(zahl.substring(i));
 				}
 			}catch(Exception ex){

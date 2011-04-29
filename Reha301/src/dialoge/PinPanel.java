@@ -123,7 +123,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 				rEvt.setRehaEvent("PinPanelEvent");
 				rEvt.setDetails(sEvent,"ROT") ;
 				RehaTPEventClass.fireRehaTPEvent(rEvt);
-				//System.out.println(rEvt);						
+				////System.out.println(rEvt);						
 
 				int comps = this.getComponentCount();
 				Component comp = null;

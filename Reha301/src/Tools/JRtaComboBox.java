@@ -172,17 +172,17 @@ private void fillCombo(Vector<?> ve){
 }
 
 public Object getSecValue(){
-	System.out.println("Vectorgröße = "+vec.size());
+	//System.out.println("Vectorgröße = "+vec.size());
 	if(this.startElement.equals("") ){
 
-		System.out.println("in 1");
-		System.out.println("index = "+this.getSelectedIndex());
+		//System.out.println("in 1");
+		//System.out.println("index = "+this.getSelectedIndex());
 		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );		
 	}else if(this.startElement == null){
-		System.out.println("in 2");
+		//System.out.println("in 2");
 		return ((Object)((Vector<?>)vec.get(this.getSelectedIndex())).get(this.cmbretvalue) );
 	}else{
-		System.out.println("in 3");
+		//System.out.println("in 3");
 		if( (this.getSelectedIndex()-1) >= 0){
 			return ((Object)((Vector<?>)vec.get(this.getSelectedIndex()-1)).get(this.cmbretvalue) );	
 		}else{
@@ -296,7 +296,7 @@ public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
 	try{
 		/*
-		System.out.println("interner ActionListener="+this.getSelectedIndex());
+		//System.out.println("interner ActionListener="+this.getSelectedIndex());
 		this.getParent().dispatchEvent(arg0);
 		this.getParent().getParent().dispatchEvent(arg0);
 		this.getParent().getParent().getParent().dispatchEvent(arg0);

@@ -149,7 +149,7 @@ public class Reha301Auswerten extends JXPanel{
 							e.printStackTrace();
 						}
 					}
-					//System.out.println("Reha301-Datenbank = o.k.");
+					////System.out.println("Reha301-Datenbank = o.k.");
 					SystemPreislisten.ladePreise("Reha");
 					SystemPreislisten.ladePreise("Physio");
 				}catch(Exception ex){
@@ -378,7 +378,7 @@ public class Reha301Auswerten extends JXPanel{
 					String treelabel = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel;
 					int gross = ((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.groesse;
 					if( (gross==348) || (gross==334) ){
-						//System.out.println("'Größe der Datei <= 348");
+						////System.out.println("'Größe der Datei <= 348");
 						if(!vecgelesen.contains(treelabel)){
 							int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie die Nachricht "+treelabel+" einlesen und verarbeiten?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 							if(anfrage == JOptionPane.YES_OPTION){
@@ -396,11 +396,11 @@ public class Reha301Auswerten extends JXPanel{
 											vecgelesen.add(String.valueOf(xtreelabel));
 											((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.fertig = true;
 										}else{
-											//System.out.println("Ergenis von einlesen = "+erfolg);
+											////System.out.println("Ergenis von einlesen = "+erfolg);
 										}
 										Reha301.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 										doNachrichtVerschieben(((JXTreeNode)tree.getSelectionPath().getLastPathComponent()).knotenObjekt.titel);
-										//System.out.println("Nach Naricht verschieben");
+										////System.out.println("Nach Naricht verschieben");
 										}catch(Exception ex){
 											ex.printStackTrace();
 										}
@@ -458,7 +458,7 @@ public class Reha301Auswerten extends JXPanel{
 		jscr.validate();
 		jscr.setVisible(true);
 		jscr.setBackground(Color.RED);
-		//System.out.println(tree);
+		////System.out.println(tree);
 		return jscr;
 	}
 	public void ActivateListener(){
@@ -470,8 +470,8 @@ public class Reha301Auswerten extends JXPanel{
 
 				}
 				if(cmd.equals("auswerten")){
-					//System.out.println(combo.getValue());
-					//System.out.println(patcombo.getSelectedIndex());
+					////System.out.println(combo.getValue());
+					////System.out.println(patcombo.getSelectedIndex());
 					show301PatExist(patcombo.getSelectedIndex());
 				}
 				if(cmd.equals("patneuanlage")){
@@ -533,7 +533,7 @@ public class Reha301Auswerten extends JXPanel{
 		String[] teilen = tab.getValueAt(row,4).toString().split("#");
 		String cmd = "select * from pat5 where n_name='"+teilen[1]+"' and v_name='"+teilen[2]+"' and "+
 		"geboren='"+tab.getValueAt(row,10).toString()+"'";
-		//System.out.println(tab.getValueAt(row,10));
+		////System.out.println(tab.getValueAt(row,10));
 		Vector<Vector<String>> patvec = SqlInfo.holeFelder(cmd);
 
 		if(patvec.size()<=0){
@@ -581,19 +581,19 @@ public class Reha301Auswerten extends JXPanel{
 		String fallart = SqlInfo.holeEinzelFeld("select leistung from dta301 where id ='"+id+"' LIMIT 1");
 		String eilfall = SqlInfo.holeEinzelFeld("select eilfall from dta301 where id ='"+id+"' LIMIT 1");
 		String preisgruppe = SqlInfo.holeEinzelFeld("select preisgruppe from kass_adr where ik_kostent ='"+ktraeger+"' LIMIT 1");
-		//System.out.println();
+		////System.out.println();
 		if( ((Integer)rVTraeger[0]) >= 0){
 			//RV-Träger
 			/*
-			System.out.println("Patient="+patBetroffen);
-			System.out.println("Kostenträger="+ktraeger);
-			System.out.println("Diagnose="+diagnose);
-			System.out.println("Fallart="+fallart);
-			System.out.println("Eilfall="+eilfall);
-			System.out.println("Preisgruppe="+preisgruppe);
-			System.out.println("Diagnosegruppe="+diaggruppe);
+			//System.out.println("Patient="+patBetroffen);
+			//System.out.println("Kostenträger="+ktraeger);
+			//System.out.println("Diagnose="+diagnose);
+			//System.out.println("Fallart="+fallart);
+			//System.out.println("Eilfall="+eilfall);
+			//System.out.println("Preisgruppe="+preisgruppe);
+			//System.out.println("Diagnosegruppe="+diaggruppe);
 			for(int i = 0; i < rVTraeger.length;i++){
-				System.out.println(rVTraeger[i]);
+				//System.out.println(rVTraeger[i]);
 			}
 			*/
 			isRVTraeger = true;
@@ -619,7 +619,7 @@ public class Reha301Auswerten extends JXPanel{
 	/********************************************/	
 	private Object[] testeDTAIni(String ktraeger,String diaggruppe){
 		Object[] retobject = {-1,null,null,null,null,null,null};
-		//System.out.println(ktraeger+" - "+diaggruppe);
+		////System.out.println(ktraeger+" - "+diaggruppe);
 		INIFile ini = new INIFile(Reha301.progHome+"ini/"+Reha301.aktIK+"/dta301.ini");
 
 		String gruppe = ini.getStringProperty("RehaGruppen", diaggruppe);
@@ -645,7 +645,7 @@ public class Reha301Auswerten extends JXPanel{
 	private void regleTabelle(String statement,int tabart){
 //		"select eingelesen,sender,nachrichtentyp,patangaben,versicherungsnr,ktraeger,datum from dta301 where eingelesen='F' order by datum";
 
-		//System.out.println(statement);
+		////System.out.println(statement);
 		try{
 			if(! WartenAufDB.IsDbOk()){
 				JOptionPane.showMessageDialog(null, "Datenbank konnte nicht gestartet werden");
@@ -669,7 +669,7 @@ public class Reha301Auswerten extends JXPanel{
 					vecobj.add((String)vec.get(i).get(1));
 					vecobj.add((String) artderNachricht[Integer.parseInt(vec.get(i).get(2))]+"-"+vec.get(i).get(8)+"-"+vec.get(i).get(9));
 					pat = vec.get(i).get(3).split("#");
-					//System.out.println(vec.get(i).get(3));
+					////System.out.println(vec.get(i).get(3));
 					patangaben = "";
 					ortsangaben = "";
 					kassenangaben = "";
@@ -844,8 +844,8 @@ public class Reha301Auswerten extends JXPanel{
 						return null;
 					}
 					String geboren = tab.getValueAt(tab.getSelectedRow(), 12).toString();
-					//System.out.println("Patangaben = "+pat);
-					//System.out.println("geboren = "+geboren);
+					////System.out.println("Patangaben = "+pat);
+					////System.out.println("geboren = "+geboren);
 					String cmd = "select concat(n_name,', ',v_name,', ',DATE_FORMAT(geboren,'%d.%m.%Y')) as name,anrede,n_name,v_name,geboren,strasse,plz,ort,pat_intern,kasse,id,kassenid,arzt,arztid,kv_nummer,arzt_num,telefonp from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					//String cmd = "select n_name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+pat.split("#")[1]+"' and "+
 					"v_name='"+pat.split("#")[2]+"' and geboren = '"+geboren+"'";
@@ -937,6 +937,16 @@ public class Reha301Auswerten extends JXPanel{
 		    				patneuangelegt = true;
 		    				buts[0].setEnabled(false);
 		    				buts[1].setEnabled(false);
+		    				SwingUtilities.invokeLater(new Runnable(){
+		    					public void run(){
+				    				Vector<Vector<String>> xvec = SqlInfo.holeFelder("select pat_intern,rez_nr from dta301 where id = '"+
+				    						dta301mod.getDtaId()+"' LIMIT 1");
+				    				if(xvec.size() > 0){
+				    					new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATANDREZFIND+"#"+
+				    							xvec.get(0).get(0)+"#"+xvec.get(0).get(1));
+				    				}
+		    					}
+		    				});
 	    				}
 	                    break;
 	                }
@@ -1015,7 +1025,7 @@ public class Reha301Auswerten extends JXPanel{
 			buf.append("telefonp='"+dta301mod.getPatTelefon()+"'");
 			SqlInfo.sqlAusfuehren(buf.toString());
 			show301WasCreated(patneuepatnr);
-			//System.out.println(buf.toString());
+			////System.out.println(buf.toString());
 			JOptionPane.showMessageDialog(null, "<html>Der Patient wurde <b>erfolgreich</b> angelegt.</html>");
 			new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATFIND+"#"+patneuepatnr);
 		}catch(Exception ex){
@@ -1062,7 +1072,7 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("nachrichtorg='"+
 				StringTools.EscapedDouble(SqlInfo.holeEinzelFeld("select esol from dta301 where id ='"+id+"' LIMIT 1"))+"', ");
 		buf.append("bearbeiter='301-er Automat'");
-		//System.out.println(buf.toString());
+		////System.out.println(buf.toString());
 		SqlInfo.sqlAusfuehren(buf.toString());
 		buf.setLength(0);
 		buf.trimToSize();
@@ -1196,7 +1206,7 @@ public class Reha301Auswerten extends JXPanel{
 			buf.append("preisgruppe='"+Integer.toString(preisgruppe)+"', ");
 			buf.append("angelegtvon='"+"dta301"+"', ");
 			buf.append("diagnose='"+(String)vecobj.get(3)+"\n"+(String)vecobj.get(5)+"'");
-			//System.out.println("\n"+buf.toString());
+			////System.out.println("\n"+buf.toString());
 			SqlInfo.sqlAusfuehren(buf.toString());
 			/*Bis hierher ausgeschaltet für selbsterzeugte Bewilligung*/
 		}
@@ -1317,9 +1327,10 @@ public class Reha301Auswerten extends JXPanel{
 				SqlInfo.sqlAusfuehren(buf.toString());
 				/**bis hierher ausgeschaltet**/
 				//Dieser System.out bewirkt die Aktualisierung//
-				System.out.println("#AktualisierePat@"+
-						dta301mod.getPatIntern()+"@"+rezneuereznr);
-				
+				//System.out.println("#AktualisierePat@"+
+				//		dta301mod.getPatIntern()+"@"+rezneuereznr);
+				new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATANDREZFIND+"#"+
+						dta301mod.getPatIntern()+"#"+rezneuereznr);
 			}else{
 				//Krankenkasse
 			}
@@ -1338,7 +1349,7 @@ public class Reha301Auswerten extends JXPanel{
 		String datnamen = datei.substring(0,datei.length()-4);
 		String nurdat = datei.substring(datei.indexOf("/")+1);
 		nurdat = nurdat.substring(0,nurdat.indexOf("."));
-		//System.out.println("Der Reine Dateinamen = "+nurdat);
+		////System.out.println("Der Reine Dateinamen = "+nurdat);
 		int anfrage = JOptionPane.showConfirmDialog(null, "Sollen die Datei --> "+datnamen+" <-- jetzt in den Ordner 'erledigt' verschoben werden?", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 		if(anfrage != JOptionPane.YES_OPTION){
 			return;	
@@ -1347,11 +1358,11 @@ public class Reha301Auswerten extends JXPanel{
 		Reha301.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		File[] files = dir.listFiles();
 		for(int i = 0; i < files.length;i++){
-			//System.out.println("name="+files[i].getName());
-			//System.out.println("pfad="+files[i].getPath());
+			////System.out.println("name="+files[i].getName());
+			////System.out.println("pfad="+files[i].getPath());
 			if(files[i].getName().startsWith(nurdat) ){
 				try {
-					//System.out.println("Kopiere "+files[i].getPath().replace("\\", "/")+" nach\n"+Reha301.inbox+"erledigt/"+files[i].getName()+"\n");
+					////System.out.println("Kopiere "+files[i].getPath().replace("\\", "/")+" nach\n"+Reha301.inbox+"erledigt/"+files[i].getName()+"\n");
 					FileTools.copyFile(new File(files[i].getPath().replace("\\", "/")), 
 							new File(Reha301.inbox+"erledigt/"+files[i].getName()), 1024*8, true);
 
@@ -1362,7 +1373,7 @@ public class Reha301Auswerten extends JXPanel{
 		}
 		
 		try{
-			//System.out.println("3. Lösche Dateien: "+Reha301.inbox+datnamen);
+			////System.out.println("3. Lösche Dateien: "+Reha301.inbox+datnamen);
 			//FileTools.delFileWithPraefix(new File(Reha301.inbox), datnamen);	
 			FileTools.delFileWithPraefix(new File(Reha301.inbox), nurdat);
 		}catch(Exception ex){
@@ -1389,17 +1400,17 @@ public class Reha301Auswerten extends JXPanel{
 	}
 	
 	public void doNurZumTesten(Vector<Object> vecobj){
-		System.out.println("Eintritt in die Testroutine");
+		//System.out.println("Eintritt in die Testroutine");
 		for(int i = 0; i < vecobj.size(); i++){
 			if(vecobj.get(i) instanceof Object[]){
 				for(int o = 0; o < ((Object[])vecobj.get(i)).length;o++){
-					System.out.println("Object["+Integer.toString(o)+"] = "+((Object[])vecobj.get(i))[o] );
+					//System.out.println("Object["+Integer.toString(o)+"] = "+((Object[])vecobj.get(i))[o] );
 				}
 			}else{
 				String[] titel = {"","Patient=","Kostenträger=","Diagnose=","Fallart=",
 						"Eilfall=","Preisgruppe=","Diagnosegruppe="
 				};
-				//System.out.println(Integer.toString(i)+" - "+titel[i]+vecobj.get(i));
+				////System.out.println(Integer.toString(i)+" - "+titel[i]+vecobj.get(i));
 			}
 			
 		}
@@ -1438,9 +1449,9 @@ public class Reha301Auswerten extends JXPanel{
 		ret[0] = rettf1.getText().trim();
 		ret[1] = rettf2.getText().trim();
 		ret[2] = rettf3.getText().trim();
-		//System.out.println(ret[0]);
-		//System.out.println(ret[1]);
-		//System.out.println(ret[2]);
+		////System.out.println(ret[0]);
+		////System.out.println(ret[1]);
+		////System.out.println(ret[2]);
 		return(ret);
 
 	}

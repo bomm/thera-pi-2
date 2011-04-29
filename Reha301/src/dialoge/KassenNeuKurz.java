@@ -459,7 +459,7 @@ public class KassenNeuKurz extends JXPanel implements ActionListener,KeyListener
  			JOptionPane.showMessageDialog(null,htmlMeldung );
  		}
  		
- 		System.out.println(felder2);
+ 		//System.out.println(felder2);
  		if(felder2.size() > 0){
  			int[] feldnum = {5,6,10,8,9,0,1, 3, 4, 2};
  			int[] editnum = {1,2,3 ,4,5,9,10,11,12,13};

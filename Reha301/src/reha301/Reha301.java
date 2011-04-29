@@ -111,7 +111,7 @@ public class Reha301 implements WindowListener  {
 		
 		if(args.length > 0 || testcase){
 			if(!testcase){
-				System.out.println("hole daten aus INI-Datei "+args[0]);
+				//System.out.println("hole daten aus INI-Datei "+args[0]);
 				INIFile inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
 				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
 				dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
@@ -293,7 +293,7 @@ public class Reha301 implements WindowListener  {
 				if(Reha301.xportOk){
 					new SocketClient().setzeRehaNachricht(rehaPort, "AppName#"+"Reha301#"+Integer.toString(Reha301.xport));
 				}else{
-					System.out.println(Reha301.xport+" - "+Reha301.xportOk);
+					//System.out.println(Reha301.xport+" - "+Reha301.xportOk);
 				}
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -354,17 +354,17 @@ public class Reha301 implements WindowListener  {
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 	        } catch (InstantiationException e) {
 				e.printStackTrace();
-        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+        		//System.out.println(sDB+"Treiberfehler: " + e.getMessage());
         		Reha301.DbOk = false;
 	    		return ;
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
-        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+        		//System.out.println(sDB+"Treiberfehler: " + e.getMessage());
         		Reha301.DbOk = false;
 	    		return ;
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+        		//System.out.println(sDB+"Treiberfehler: " + e.getMessage());
         		Reha301.DbOk = false;
 	    		return ;
 			}	
@@ -372,12 +372,12 @@ public class Reha301 implements WindowListener  {
         		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName+"?jdbcCompliantTruncation=false",dbUser,dbPassword);
 				Reha301.DbOk = true;
-    			System.out.println("Datenbankkontakt hergestellt");
+    			//System.out.println("Datenbankkontakt hergestellt");
         	} 
         	catch (final SQLException ex) {
-        		System.out.println("SQLException: " + ex.getMessage());
-        		System.out.println("SQLState: " + ex.getSQLState());
-        		System.out.println("VendorError: " + ex.getErrorCode());
+        		//System.out.println("SQLException: " + ex.getMessage());
+        		//System.out.println("SQLState: " + ex.getSQLState());
+        		//System.out.println("VendorError: " + ex.getErrorCode());
         		Reha301.DbOk = false;
         
         	}
@@ -412,13 +412,13 @@ public class Reha301 implements WindowListener  {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Kein Kontakt zu MySql bei 1 & 1");
-        		System.out.println(sDB+"Treiberfehler: " + e.getMessage());
+        		//System.out.println(sDB+"Treiberfehler: " + e.getMessage());
         		Reha301.DbOk = false;
 	    		return ;
 			}	
         	try {
-    			System.out.println("Starte de.root1.jpmdbc.Drive");
-    			//System.out.println("Starte Serveradresse:192.168.2.2");
+    			//System.out.println("Starte de.root1.jpmdbc.Drive");
+    			////System.out.println("Starte Serveradresse:192.168.2.2");
     			//obj.connMySql = (Connection) DriverManager.getConnection("jdbc:mysql://192.168.2.2:3306/dbf","entwickler","entwickler");
     			Properties connProperties = new Properties();
     			connProperties.setProperty("user", "dbo336243054");
@@ -434,13 +434,13 @@ public class Reha301 implements WindowListener  {
         		
    				//obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
 				Reha301.DbOk = true;
-    			System.out.println("Datenbankkontakt hergestellt");
+    			//System.out.println("Datenbankkontakt hergestellt");
         	} 
         	catch (final SQLException ex) {
 				JOptionPane.showMessageDialog(null, "Kein Kontakt zu MySql bei 1 & 1");
-        		System.out.println("SQLException: " + ex.getMessage());
-        		System.out.println("SQLState: " + ex.getSQLState());
-        		System.out.println("VendorError: " + ex.getErrorCode());
+        		//System.out.println("SQLException: " + ex.getMessage());
+        		//System.out.println("SQLState: " + ex.getSQLState());
+        		//System.out.println("VendorError: " + ex.getErrorCode());
         		Reha301.DbOk = false;
         
         	}
@@ -461,7 +461,7 @@ public class Reha301 implements WindowListener  {
 		if(Reha301.thisClass.conn != null){
 			try {
 				Reha301.thisClass.conn.close();
-				System.out.println("Datenbankverbindung wurde geschlossen");
+				//System.out.println("Datenbankverbindung wurde geschlossen");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -469,7 +469,7 @@ public class Reha301 implements WindowListener  {
 		if(rehaReverseServer != null){
 			try {
 				rehaReverseServer.serv.close();
-				System.out.println("RehaIO-SocketServer geschlossen");
+				//System.out.println("RehaIO-SocketServer geschlossen");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -481,7 +481,7 @@ public class Reha301 implements WindowListener  {
 		if(Reha301.thisClass.conn != null){
 			try {
 				Reha301.thisClass.conn.close();
-				System.out.println("Datenbankverbindung wurde geschlossen");
+				//System.out.println("Datenbankverbindung wurde geschlossen");
 				new SocketClient().setzeRehaNachricht(rehaPort, "Reha301#"+RehaIOMessages.IS_FINISHED);
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -490,7 +490,7 @@ public class Reha301 implements WindowListener  {
 		if(rehaReverseServer != null){
 			try {
 				rehaReverseServer.serv.close();
-				System.out.println("RehaIO-SocketServer geschlossen");
+				//System.out.println("RehaIO-SocketServer geschlossen");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -519,7 +519,7 @@ public class Reha301 implements WindowListener  {
 
         try
         {
-        	//System.out.println("**********Open-Office wird gestartet***************");
+        	////System.out.println("**********Open-Office wird gestartet***************");
             String path = OPEN_OFFICE_ORG_PATH;
             Map <String, String>config = new HashMap<String, String>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
@@ -534,7 +534,7 @@ public class Reha301 implements WindowListener  {
             	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
             	      if (docs.length == 1) { 
             	        docs[0].close();
-            	        //System.out.println("Letztes Dokument wurde geschlossen");
+            	        ////System.out.println("Letztes Dokument wurde geschlossen");
             	      }
             	    }
             	    catch (DocumentException e) {

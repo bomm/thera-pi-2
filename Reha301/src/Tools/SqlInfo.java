@@ -36,10 +36,10 @@ public class SqlInfo {
 		try {
 			Reha301.thisClass.conn.setAutoCommit(false);
 			//String numcmd = nummer+",id";
-			////System.out.println("numcmd = "+numcmd);
+			//////System.out.println("numcmd = "+numcmd);
 			//numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", "mandant='"+Reha.aktIK+"' FOR UPDATE");
 			numvec = SqlInfo.holeFeldForUpdate("nummern", nummer+",id", " FOR UPDATE");
-			////System.out.println(Reha.aktIK);
+			//////System.out.println(Reha.aktIK);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -96,9 +96,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -138,7 +138,7 @@ public class SqlInfo {
 				dieseMaschine = java.net.InetAddress.getLocalHost().toString();
 			}
 			catch (java.net.UnknownHostException uhe) {
-				//System.out.println(uhe);
+				////System.out.println(uhe);
 			}
 
 			String sstmt1 = "insert into "+tabelle+" set "+feld+" = '"+dieseMaschine+"'";
@@ -150,9 +150,9 @@ public class SqlInfo {
 			}
 			Reha301.thisFrame.setCursor(Reha301.thisClass.normalCursor);
 		}catch(SQLException ev){
-			//System.out.println("SQLException: " + ev.getMessage());
-			//System.out.println("SQLState: " + ev.getSQLState());
-			//System.out.println("VendorError: " + ev.getErrorCode());
+			////System.out.println("SQLException: " + ev.getMessage());
+			////System.out.println("SQLState: " + ev.getSQLState());
+			////System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -207,9 +207,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -268,9 +268,9 @@ public class SqlInfo {
 			}
 			//Reha.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -312,9 +312,9 @@ public class SqlInfo {
 				 retvec.add( (rs.getString(2)==null  ? "" :  rs.getString(2)) );
 			}
 		}catch(SQLException ev){
-			//System.out.println("SQLException: " + ev.getMessage());
-			//System.out.println("SQLState: " + ev.getSQLState());
-			//System.out.println("VendorError: " + ev.getErrorCode());
+			////System.out.println("SQLException: " + ev.getMessage());
+			////System.out.println("SQLState: " + ev.getSQLState());
+			////System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -372,9 +372,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -421,9 +421,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -458,14 +458,14 @@ public class SqlInfo {
 		try{
 			
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium+" LIMIT 1";
-			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
+			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
-			//System.out.println(ret);
+			////System.out.println(ret);
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -500,14 +500,14 @@ public class SqlInfo {
 		try{
 			
 			String sstmt = "update "+tabelle+" set "+sets+" where "+kriterium;
-			//System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
+			////System.out.println("SqlInfo-Statement:\n"+sstmt+"\n*************");
 			Object ret = stmt.execute(sstmt);
-			//System.out.println(ret);
+			////System.out.println(ret);
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -553,9 +553,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -607,9 +607,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -655,9 +655,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -693,9 +693,9 @@ public class SqlInfo {
 			geklappt =  stmt.execute(sstmt);
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (stmt != null) {
@@ -730,9 +730,9 @@ public class SqlInfo {
 			}
 			
 		}catch(SQLException ev){
-			System.out.println("SQLException: " + ev.getMessage());
-			System.out.println("SQLState: " + ev.getSQLState());
-			System.out.println("VendorError: " + ev.getErrorCode());
+			//System.out.println("SQLException: " + ev.getMessage());
+			//System.out.println("SQLState: " + ev.getSQLState());
+			//System.out.println("VendorError: " + ev.getErrorCode());
 		}	
 		finally {
 			if (rs != null) {
@@ -777,9 +777,9 @@ public class SqlInfo {
 			//Reha301.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			return ret;
 		}catch(SQLException ev){
-			//System.out.println("SQLException: " + ev.getMessage());
-			//System.out.println("SQLState: " + ev.getSQLState());
-			//System.out.println("VendorError: " + ev.getErrorCode());
+			////System.out.println("SQLException: " + ev.getMessage());
+			////System.out.println("SQLState: " + ev.getSQLState());
+			////System.out.println("VendorError: " + ev.getErrorCode());
 		}
 		finally {
 			if(rsMetaData != null){

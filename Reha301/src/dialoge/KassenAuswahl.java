@@ -129,18 +129,18 @@ public class KassenAuswahl extends RehaSmartDialog{
 						pinPanel = null;
 						this.dispose();
 						super.dispose();
-						//System.out.println("****************Arztkurz -> Listener entfernt**************");				
+						////System.out.println("****************Arztkurz -> Listener entfernt**************");				
 					}
 				}
 			}
 		}catch(NullPointerException ne){
-			//System.out.println("In PatNeuanlage" +evt);
+			////System.out.println("In PatNeuanlage" +evt);
 		}
 	}
 	
 	public void doAbbrechen(){
 		if(kassenbisher.length() <= 1){
-			////System.out.println("Arzt = "+arztbisher);
+			//////System.out.println("Arzt = "+arztbisher);
 			elterntfs[0].setText("***nachtragen!!!***");			
 			elterntfs[1].setText("999999999");
 			
@@ -151,7 +151,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 			rtp = null;
 			pinPanel = null;
-			//System.out.println("****************Arztkurz -> Listener entfernt**************");
+			////System.out.println("****************Arztkurz -> Listener entfernt**************");
 		}
 		dispose();
 	}
@@ -349,7 +349,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 		try{
 			grundPanel.remove(knk);
 		}catch(java.lang.NullPointerException ex){
-			//System.out.println(ex);
+			////System.out.println(ex);
 		}
 		grundPanel.add(this.content);
 		SwingUtilities.invokeLater(new Runnable(){
@@ -413,7 +413,7 @@ public class KassenAuswahl extends RehaSmartDialog{
 			if(arg0.getKeyCode() == 27){
 				arg0.consume();
 				if(kassenbisher.length() <= 1){
-					////System.out.println("Arzt = "+arztbisher);
+					//////System.out.println("Arzt = "+arztbisher);
 					elterntfs[0].setText("***nachtragen!!!***");			
 					elterntfs[1].setText("999999999");
 					

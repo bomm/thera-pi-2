@@ -142,7 +142,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	}
 	public void setDValueFromS(String value){
 		String wert = value.replaceAll(",","."); 
-		////System.out.println(wert);
+		//////System.out.println(wert);
 		
 		DecimalFormat df = new DecimalFormat ( "#########0.00" );
 		setText( (wert.trim().equals("") ? df.format(Double.parseDouble("0.00")) : df.format(Double.parseDouble(wert)) )  );
@@ -274,7 +274,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	    MaskFormatter formatter = null;
 	    try {
 	      if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage())) {
-	    	  ////System.out.println("Formatter - Locale = Germany");
+	    	  //////System.out.println("Formatter - Locale = Germany");
 	        formatter = new MaskFormatter ("##.##.####");
 	      }
 	      else {
@@ -316,8 +316,8 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
   protected static class DateInputVerifier extends InputVerifier {
     public boolean verify (final JComponent input) {
-    ////System.out.println("Input getText = "+((JRtaTextField)input).getText());
-    ////System.out.println("L�nge des Inputs = "+((JRtaTextField)input).getText().length());    
+    //////System.out.println("Input getText = "+((JRtaTextField)input).getText());
+    //////System.out.println("L�nge des Inputs = "+((JRtaTextField)input).getText().length());    
       if (input instanceof JRtaTextField) {
         return this.isAlowedDate((JRtaTextField)input);
       }
@@ -332,7 +332,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
      if(inhalt.equals("  .  .    ")){
     	 return true;
      }
-    	////System.out.println("In verify / input = "+input.getText());
+    	//////System.out.println("In verify / input = "+input.getText());
       final DateFormat sdf = this.getDateFormat ();
       try {
     	String teil = inhalt.substring(6).trim();
@@ -348,15 +348,15 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
     			jahrtausend = inhalt.substring(0,6).trim()+"20"+teil;    			
     		}
     		input.setText(jahrtausend);
-    		////System.out.println("Datum = "+jahrtausend);
+    		//////System.out.println("Datum = "+jahrtausend);
     	}
     	if(inhalt.length() >= 8){
-    		////System.out.println("L�nge des Strings = "+input.getText().length());
+    		//////System.out.println("L�nge des Strings = "+input.getText().length());
     		if(inhalt.substring(6,7).equals("0")){
     			String korrekt = inhalt.substring(0,6);
     			korrekt = korrekt+"20"+inhalt.substring(6,8);
     			input.setText(korrekt);
-    			////System.out.println("korrigiertes Datum = "+korrekt);
+    			//////System.out.println("korrigiertes Datum = "+korrekt);
     		}
     	}
     	
@@ -372,12 +372,12 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
         if (input.getPlaceHolder() != null) {
           String noMaskValue = null;
           if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage ())) {
-        	  ////System.out.println("InputVerifier - Locale = Germany");
+        	  //////System.out.println("InputVerifier - Locale = Germany");
             noMaskValue = input.getText().replace ('.',input.getPlaceHolder ());
           }
           else {
             noMaskValue = input.getText().replace ('-',input.getPlaceHolder ());
-      	  	////System.out.println("InputVerifier - Locale = English");
+      	  	//////System.out.println("InputVerifier - Locale = English");
           }
           for (char c : noMaskValue.toCharArray()) {
             if (c != input.getPlaceHolder()) return false;
@@ -418,7 +418,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 @Override
 public void propertyChange(PropertyChangeEvent arg0) {
-	////System.out.println("PropertyChangeListener "+arg0);
+	//////System.out.println("PropertyChangeListener "+arg0);
 	
 	if(((JRtaTextField) arg0.getSource()).type.equals("FL")){
 		String zahl = ((JRtaTextField)arg0.getSource()).getText();
@@ -448,7 +448,7 @@ public void focusLost(FocusEvent e) {
 	try{
 	e.getComponent().getParent().dispatchEvent(e);
 	}catch(java.lang.NullPointerException ex){
-		//System.out.println("in JRtaTextField Execption");
+		////System.out.println("in JRtaTextField Execption");
 		// nixlos in der Hos
 	}
 }
@@ -468,10 +468,10 @@ public void focusGained(FocusEvent e) {
 
 	 		   if(getSelectOnFocus()){
 		 		   ((JRtaTextField) xe.getComponent()).select(0,((JRtaTextField) xe.getComponent()).getText().length());
-		 		   ////System.out.println(((JRtaTextField) xe.getComponent()).getName()+" soll bei Focus eine Selection erhalten");
+		 		   //////System.out.println(((JRtaTextField) xe.getComponent()).getName()+" soll bei Focus eine Selection erhalten");
 	 		   }else{
 	 			   ((JRtaTextField) xe.getComponent()).setCaretPosition(0);					
-	 			   ////System.out.println(((JRtaTextField) xe.getComponent()).getName()+" soll bei Focus keine(!!!!) Selection erhalten");					
+	 			   //////System.out.println(((JRtaTextField) xe.getComponent()).getName()+" soll bei Focus keine(!!!!) Selection erhalten");					
 	 		   }
 	
 	 	   }
@@ -509,7 +509,7 @@ public void focusGained(FocusEvent e) {
         }
     	if(((JRtaTextField)event.getSource()).type.equals("DATUM")){
     		
-    		////System.out.println("Feld ist Datumsfeld und KeyCode = "+event.getKeyCode());
+    		//////System.out.println("Feld ist Datumsfeld und KeyCode = "+event.getKeyCode());
     		if(code == 127){
     			((JRtaTextField)event.getSource()).setText("  .  .    ");
     			((JRtaTextField)event.getSource()).setCaretPosition(0);
@@ -563,7 +563,7 @@ class NurZahlenDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			super.insertString(offs, str, a);
-			////System.out.println("Offset: "+offs);
+			//////System.out.println("Offset: "+offs);
 			text = textField.getText();
 			if ((text.length() == 1) & (text.equals("-")))
 				return;
@@ -598,9 +598,9 @@ class NurNormalDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			//	super.insertString(offs, str, a);
-			////System.out.println("str = "+str);
-			////System.out.println("Offset = "+offs);
-			////System.out.println("a = "+a);
+			//////System.out.println("str = "+str);
+			//////System.out.println("Offset = "+offs);
+			//////System.out.println("a = "+a);
 			text = textField.getText().trim();
 			if(text.length() > 0){
 				if(!str.substring(offs,1).equals(" ")){
@@ -647,7 +647,7 @@ class NurGrossDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			//	super.insertString(offs, str, a);
-			////System.out.println("Offset: "+offs);
+			//////System.out.println("Offset: "+offs);
 			text = textField.getText();
 			/*
 			if(!str.contains("�")){
@@ -692,7 +692,7 @@ class NurKleinDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			//	super.insertString(offs, str, a);
-			////System.out.println("Offset: "+offs);
+			//////System.out.println("Offset: "+offs);
 			text = textField.getText();
 			super.insertString(offs,str.toLowerCase(), a);
 			return;
@@ -728,7 +728,7 @@ class NurStundenDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			super.insertString(offs, str, a);
-			////System.out.println("Offset: "+offs);
+			//////System.out.println("Offset: "+offs);
 			text = textField.getText();
 			if (new Integer(text) > 24){
 				super.remove(offs, 1);
@@ -767,7 +767,7 @@ class NurMinutenDocument extends javax.swing.text.PlainDocument
 		try
 		{
 			super.insertString(offs, str, a);
-			////System.out.println("Offset: "+offs);
+			//////System.out.println("Offset: "+offs);
 			text = textField.getText();
 			if (new Integer(text) > 59){
 				super.remove(offs, 1);
@@ -818,7 +818,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 		  }
 	  }
 	  catch(Exception KonstrEx) { KonstrEx.printStackTrace(); }
-	  ////System.out.println("In Exception 1 KonstrEX - Zeichen = ");
+	  //////System.out.println("In Exception 1 KonstrEX - Zeichen = ");
 	 }
 	 // **** Konstruktor 1 Ende
 	 // **** Konstruktor 2
@@ -830,7 +830,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   insertString(0, initString, null);       // initialisieren
 	  }
 	  catch(Exception KonstrEx) { KonstrEx.printStackTrace(); }
-	  ////System.out.println("In Exception 2 KonstrEX - Zeichen = ");
+	  //////System.out.println("In Exception 2 KonstrEX - Zeichen = ");
 	 }
 	 // **** Konstruktor 2 Ende
 
@@ -838,7 +838,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 public void insertString(int offset, String zeichen, 
 	       AttributeSet attributeSet) 
 	       throws BadLocationException {
-		  ////System.out.println("In insert String - Zeichen = "+zeichen);
+		  //////System.out.println("In insert String - Zeichen = "+zeichen);
 	  if(zeichen.equals(initString) || zeichen.equals("  .  .    ")) { // Wenn initString oder leeres Datum, gleich rein
 		  if (zeichen.equals("  .  .    ") ){
 			  if(!this.init){

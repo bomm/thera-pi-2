@@ -42,9 +42,9 @@ public class RehaTPEventClass{
     // This methods allows classes to unregister for RehaEvents
 	public void removeRehaTPEventListener(RehaTPEventListener rehaListener) {
 		// TODO Auto-generated method stub
-		////System.out.println("Object Listener gel�scht "+rehaListener);
+		//////System.out.println("Object Listener gel�scht "+rehaListener);
 		listenerList.remove(RehaTPEventListener.class, rehaListener);
-		////System.out.println("Aktive Listener: "+listenerList.getListenerList().length);
+		//////System.out.println("Aktive Listener: "+listenerList.getListenerList().length);
 	}
 	
     // Hier wird gefeuert
@@ -61,7 +61,7 @@ public class RehaTPEventClass{
 
 	public void addRehaTPEventListener(RehaTPEventListener rehaListener) {
 		// TODO Auto-generated method stub
-		////System.out.println("Object Listener hinzugef�gt "+rehaListener);
+		//////System.out.println("Object Listener hinzugef�gt "+rehaListener);
 		listenerList.add(RehaTPEventListener.class, rehaListener);
 	}
 

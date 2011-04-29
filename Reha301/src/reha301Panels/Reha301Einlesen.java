@@ -146,9 +146,9 @@ public class Reha301Einlesen{
 		if(pfad.trim().equals("")){return false;}
 		pfad = pfad.replace("\\", "/");
 		String datei = pfad.substring(pfad.lastIndexOf("/")+1);
-		//System.out.println("Ausgewählte Datei = "+datei);
-		//System.out.println("Kompletter Pfad = "+pfad);
-		//System.out.println("Auftragsfile = "+this.auftragfile.getName());
+		////System.out.println("Ausgewählte Datei = "+datei);
+		////System.out.println("Kompletter Pfad = "+pfad);
+		////System.out.println("Auftragsfile = "+this.auftragfile.getName());
 		if( datei.length() > 0){
 		//if( (datei.toUpperCase().startsWith("EREH") && datei.toUpperCase().endsWith(".AUF")) ){
 			boolean test = testeAuftragsDatei(pfad,datei);
@@ -170,16 +170,16 @@ public class Reha301Einlesen{
 			if(!test){
 				return false;
 			}
-			//System.out.println("1 - this.decodedfile="+this.decodedfile+" --- datei="+datei);
+			////System.out.println("1 - this.decodedfile="+this.decodedfile+" --- datei="+datei);
 			
 			starteEinlesen(this.decodedfile,datei);
 			
 			//Wichtig für die Aktualisierung in Therapie
 			
 		/*)}else if(pfad.length()>0){
-			System.out.println("Pfad = "+pfad.replace("\\", "/"));
+			//System.out.println("Pfad = "+pfad.replace("\\", "/"));
 			this.decodedfile = pfad.replace(".auf", ".org");
-			System.out.println("2 -this.decodedfile="+this.decodedfile+" --- datei="+datei);
+			//System.out.println("2 -this.decodedfile="+this.decodedfile+" --- datei="+datei);
 			starteEinlesen(this.decodedfile,datei);
 			//return false;*/
 		}else{
@@ -189,8 +189,8 @@ public class Reha301Einlesen{
 		return true;
 	}
 	private void starteEinlesen(String filename,String datei){
-		//System.out.println("Starte Einlesen Filename = "+filename);
-		//System.out.println("Starte Einlesen Dateiname = "+datei);
+		////System.out.println("Starte Einlesen Filename = "+filename);
+		////System.out.println("Starte Einlesen Dateiname = "+datei);
 		doEinlesen(filename,datei);
 		//doEinlesen("C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/bewi.txt");
 	}
@@ -319,7 +319,7 @@ public class Reha301Einlesen{
 			"adr1='"+dbHmap.get("haname")+"#"+dbHmap.get("haadresse")+"'";
 
 			SqlInfo.sqlAusfuehren(bedingung);
-			//System.out.println(bedingung);
+			////System.out.println(bedingung);
 			/*
 			int anfrage = JOptionPane.showConfirmDialog(null, "Nachricht im OpenOffice.org-Writer öffnen?","Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
 			if(anfrage == JOptionPane.YES_OPTION){
@@ -327,9 +327,9 @@ public class Reha301Einlesen{
 				document.getTextService().getText().setText(buf.toString());
 			}
 			*/
-			//System.out.println(bedingung);
+			////System.out.println(bedingung);
 		}else{
-			//System.out.println("Die Bewilligung ist bereits in der Datenbank enthalten");
+			////System.out.println("Die Bewilligung ist bereits in der Datenbank enthalten");
 			JOptionPane.showMessageDialog(null, "Die Bewilligung ist bereits in der Datenbank enthalten");
 		}
 	}
@@ -428,7 +428,7 @@ public class Reha301Einlesen{
 							break;
 						}
 					}
-					//System.out.println(fallbuf.toString());
+					////System.out.println(fallbuf.toString());
 				}
 				JOptionPane.showMessageDialog(null, "In dieser Datei sind "+Integer.toString(anzahlunts)+" Nachrichten enthalten");
 				//Untersuchen wieviel Nachrichten enthalten sind
@@ -464,8 +464,8 @@ public class Reha301Einlesen{
 		//int zeilen = 0;
 		byte fragezeichen = "?".getBytes()[0];
 		byte hochkomma = "'".getBytes()[0];
-		//System.out.println("ByteWert für Fragezeichen = "+fragezeichen.getBytes()[0]);
-		//System.out.println("ByteWert für Hochkomma    = "+hochkomma.getBytes()[0]);
+		////System.out.println("ByteWert für Fragezeichen = "+fragezeichen.getBytes()[0]);
+		////System.out.println("ByteWert für Hochkomma    = "+hochkomma.getBytes()[0]);
 		int zeile = 0;
 		while (true) {
 			numRead = is.read(bytes,offset,1);
@@ -479,7 +479,7 @@ public class Reha301Einlesen{
 				if(inhalt.length()>1){
 					edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));	
 				}
-				//System.out.println("Einlesen beendet");
+				////System.out.println("Einlesen beendet");
 				break;
 			}
 			//Testen auf Zeilenende = \n
@@ -492,19 +492,19 @@ public class Reha301Einlesen{
 				//continue;
 			}
 			byte[] b = {bytes[0]};
-			//System.out.print("Byte="+new String(b)+" / Wert="+bytes[0]);
+			////System.out.print("Byte="+new String(b)+" / Wert="+bytes[0]);
 			if(mitlinefeed){
 				
-				//System.out.println("Mit-Linefeed");
+				////System.out.println("Mit-Linefeed");
 				if(bytes[0] == ZEILENENDE || bytes[0]==SYSTEMZEILE || bytes[0]==10 ){
 					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
 					if(inhalt.substring(inhalt.length()-1).equals("'")){
-						//System.out.println("Mit-Linefeed und Ende der Zeile erkannt");
+						////System.out.println("Mit-Linefeed und Ende der Zeile erkannt");
 						baos.flush();
 						baos.close();
-						//System.out.println("Zeile "+(zeile++)+" = "+String.valueOf(inhalt.substring(0,inhalt.length()-1)));
+						////System.out.println("Zeile "+(zeile++)+" = "+String.valueOf(inhalt.substring(0,inhalt.length()-1)));
 						if(!inhalt.trim().equals("")){
-							//System.out.println("Vector angehängt "+inhalt);
+							////System.out.println("Vector angehängt "+inhalt);
 							edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));
 						}
 						baos = new ByteArrayOutputStream();
@@ -513,15 +513,15 @@ public class Reha301Einlesen{
 					letztes_byte = bytes[0]; 
 				}
 			}else{
-				//System.out.println("Ohne-Linefeed");
+				////System.out.println("Ohne-Linefeed");
 				if(	(bytes[0]==hochkomma && letztes_byte!=fragezeichen)  ){
-					//System.out.println("Ohne-Linefeed - Zeile erkannt");
+					////System.out.println("Ohne-Linefeed - Zeile erkannt");
 					inhalt = new String(baos.toByteArray()).replace(ERSATZ,"").replace("\n", "");
 					if(inhalt.substring(inhalt.length()-1).equals("'")){
 						baos.flush();
 						baos.close();
 						if(!inhalt.trim().equals("")){
-							//System.out.println("Vector angehängt "+inhalt);
+							////System.out.println("Vector angehängt "+inhalt);
 							edifact_vec.add(String.valueOf(inhalt.substring(0,inhalt.length()-1)));
 						}
 						baos = new ByteArrayOutputStream();
@@ -779,9 +779,9 @@ public class Reha301Einlesen{
 		//***********************************************************
 		if(zeile.startsWith("PNA+BM")){
 			/*
-			System.out.println("Zeileninhalt = "+zeile);
+			//System.out.println("Zeileninhalt = "+zeile);
 			for(int ii = 0; ii < teile.length;ii++){
-				System.out.println("Teilstück "+ii+" = "+teile[ii]);
+				//System.out.println("Teilstück "+ii+" = "+teile[ii]);
 			}
 			*/
 
@@ -1376,7 +1376,7 @@ public class Reha301Einlesen{
 		decodeparms[6] = (String) auftragsdatei.substring(104,104+25).trim();
 		/*
 		for(int i = 0; i < 8;i++){
-			System.out.println("Eingelesene Parameter = "+Integer.toString(i)+" "+decodeparms[i]);
+			//System.out.println("Eingelesene Parameter = "+Integer.toString(i)+" "+decodeparms[i]);
 		}
 		*/
 
@@ -1386,7 +1386,7 @@ public class Reha301Einlesen{
 			return false;
 		}
 		*/
-		//System.out.println("Dateiname in der Auftragsdatei = "+(String)decodeparms[7]);
+		////System.out.println("Dateiname in der Auftragsdatei = "+(String)decodeparms[7]);
 		return bret;
 	}
 	 public static byte[] BytesFromFile(File file) throws IOException {
@@ -1394,7 +1394,7 @@ public class Reha301Einlesen{
 	        long length = file.length();
 	    
 	        if (length > Integer.MAX_VALUE) {
-	        	System.out.println("Datei zu groß zum einlesen");
+	        	//System.out.println("Datei zu groß zum einlesen");
 	        	return null;
 	        }
 
@@ -1423,7 +1423,7 @@ public class Reha301Einlesen{
 		File dir = new File(Reha301.inbox);
 		File[] files = dir.listFiles();
 		String vergleich = auftragfile.getName().substring(0,auftragfile.getName().indexOf("."));
-		//System.out.println("der Vergleich lautet "+vergleich);
+		////System.out.println("der Vergleich lautet "+vergleich);
 		String  encdatei = "";
 		for(int i = 0; i < files.length;i++){
 			if( (files[i].getName().startsWith(vergleich)) && 
@@ -1442,13 +1442,13 @@ public class Reha301Einlesen{
 		String inipath = Reha301.progHome+"nebraska_windows.conf";
 		INIFile file = new INIFile(inipath);
 		int anzahl = file.getIntegerProperty("KeyStores", "KeyStoreAnzahl");
-		//System.out.println("\n\n\nAnzahl Keystores = "+anzahl);
+		////System.out.println("\n\n\nAnzahl Keystores = "+anzahl);
 		String kstorefile=null;String kstorealias=null;String kstorepw=null; 
 		for(int i = 1; i <= anzahl;i++){
 			/*
-			System.out.println("\nAlias im Store = "+file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)));
-			System.out.println("Gesuchter Alias = "+"IK"+((String)decodeparms[2]));
-			System.out.println("Sind identisch ="+file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+((String)decodeparms[2]).trim() ));
+			//System.out.println("\nAlias im Store = "+file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)));
+			//System.out.println("Gesuchter Alias = "+"IK"+((String)decodeparms[2]));
+			//System.out.println("Sind identisch ="+file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+((String)decodeparms[2]).trim() ));
 			*/
 			if(file.getStringProperty("KeyStores", "KeyStoreAlias"+Integer.toString(i)).equals("IK"+((String)decodeparms[2]).trim() )){
 				kstorefile = file.getStringProperty("KeyStores","KeyStoreFile"+Integer.toString(i));
@@ -1463,9 +1463,9 @@ public class Reha301Einlesen{
 			}
 		}
 		/*
-		System.out.println("KeystoreFile = "+kstorefile);
-		System.out.println("KeystorePw   = "+kstorepw);
-		System.out.println("KeystoreAlias = "+kstorealias);
+		//System.out.println("KeystoreFile = "+kstorefile);
+		//System.out.println("KeystorePw   = "+kstorepw);
+		//System.out.println("KeystoreAlias = "+kstorealias);
 		*/
 		NebraskaKeystore keystore = 
 			new NebraskaKeystore(kstorefile,
@@ -1473,7 +1473,7 @@ public class Reha301Einlesen{
 						"abc",
 						kstorealias);
 		//String filein = "";//pfad.substring(0,pfad.length()-4);
-		//System.out.println("FileIn = "+"*"+filein+"*");
+		////System.out.println("FileIn = "+"*"+filein+"*");
 		
 		NebraskaDecryptor decrypt = keystore.getDecryptor();
 		FileInputStream fin = new FileInputStream(Reha301.inbox+encdatei);
