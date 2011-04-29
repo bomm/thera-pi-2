@@ -101,7 +101,7 @@ public class RehaSql implements WindowListener {
 					decrypted = new String("");
 				}
 				dbPassword = decrypted.toString();
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/fremdprog.ini");
+				inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];

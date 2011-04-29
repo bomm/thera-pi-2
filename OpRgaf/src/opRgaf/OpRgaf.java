@@ -20,6 +20,9 @@ import org.jdesktop.swingworker.SwingWorker;
 
 
 
+
+
+import RehaIO.RehaReverseServer;
 import Tools.INIFile;
 import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -38,6 +41,20 @@ public class OpRgaf implements WindowListener{
 	/**
 	 * @param args
 	 */
+	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
+	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+	public final Cursor kreuzCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+	public final Cursor cmove = new Cursor(Cursor.MOVE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnsize = new Cursor(Cursor.N_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnwsize = new Cursor(Cursor.NW_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnesize = new Cursor(Cursor.NE_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cswsize = new Cursor(Cursor.SW_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cwsize = new Cursor(Cursor.W_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor csesize = new Cursor(Cursor.SE_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cssize = new Cursor(Cursor.S_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
+	public final Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:	
+
 	public static boolean DbOk;
 	JFrame jFrame;
 	public static JFrame thisFrame = null;
@@ -54,8 +71,6 @@ public class OpRgaf implements WindowListener{
 	
 	
 */
-	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
-	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
 	public static String dbUser = "rtauser";
@@ -79,6 +94,9 @@ public class OpRgaf implements WindowListener{
 	
 	public static boolean testcase = false;
 	public OpRgafTab otab = null;
+	public static int xport = -1;
+	public static boolean xportOk = false;
+	public RehaReverseServer rehaReverseServer = null;
 	
 	public static void main(String[] args) {
 		OpRgaf application = new OpRgaf();

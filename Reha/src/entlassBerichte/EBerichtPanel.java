@@ -1416,6 +1416,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		int diagnosen = 0;
 		int zeilen = 0;
+		String icdcode = "";
 		for(int i = 0; i < 5;i++){
 			if(bta[i].getText().trim().length() > 0 || btf[i+17].getText().trim().length() > 0){
 				diagnosen++;
@@ -1437,7 +1438,18 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 						buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Diagnosetext "+Integer.toString(i+1)+" erlaubt sind 3 Zeilen </td><td class=\"spalte1\">"+"tatsächliche Zeilenanzahl  ist "+zeilen+"</td></tr>");					
 					}
 				}
-			}
+				try{
+					icdcode = SqlInfo.holeEinzelFeld("select id from icd10 where schluessel2 like "+
+							"'"+btf[i+17].getText().trim()+"%' LIMIT 1");
+					if(icdcode.trim().equals("")){
+						ifehler++;
+						buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">ICD-10 Diagnoseschlüssel "+Integer.toString(i+1)+"</td><td class=\"spalte1\">existiert nicht</td></tr>");
+					}
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null,"Fehler bei der Kontrolle des ICD-10 Codes");
+					ifehler++;
+				}
+			}	
 		}
 		//Hier Seitenlokalisation, DiagSicherheit u. Behandl.Ergebnis
 		int[] erhoehen = {2,5,8,11,14};
