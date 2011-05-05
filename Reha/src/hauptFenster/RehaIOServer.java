@@ -40,6 +40,14 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 	public String getPort(){
 		return Integer.toString(Reha.xport);
 	}
+	
+	/**********
+	 * 
+	 * 
+	 * OffenePosten
+	 * 
+	 * 
+	 */
 	private void doOffenePosten(String op){
 		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
 			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
@@ -48,23 +56,40 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			offenePostenIsActive = false;
 			offenePostenreversePort = -1;
-			System.out.println("301-er  Modul beendet");
 			return;
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
+			if(Reha.thisClass.patpanel != null){
+				this.posteAktualisierePat(op.split("#")[2]);
+			}
 		}
 	}
+	/**********
+	 * 
+	 * 
+	 * WorkFlow
+	 * 
+	 * 
+	 */
+
 	private void doWorkFlow(String op){
 		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
 			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 			rehaWorkFlowIsActive = true;
-			System.out.println("Work-Flow  Modul gestartet");
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			rehaWorkFlowIsActive = false;
 			rehaWorkFlowreversePort = -1;
-			System.out.println("Work-Flow Modul beendet - Meldung von WorkFlow");
 			return;
 		}
 	}
+	/**********
+	 * 
+	 * 
+	 * OpRgaf
+	 * 
+	 * 
+	 */
+	
 	private void doOpRgaf(String op){
 		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
 			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
@@ -73,21 +98,24 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			rgAfIsActive = false;
 			rgAfreversePort = -1;
-			System.out.println("OpRgaf Modul beendet - Meldung von OpRgaf");
 			return;
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
+			if(Reha.thisClass.patpanel != null){
+				this.posteAktualisierePatUndRez(op.split("#")[2], op.split("#")[3]);
+			}
 		}
 	}
-
-	/*****
+	/**********
 	 * 
 	 * 
 	 * 301-er
+	 * 
+	 * 
 	 */
 	private void doReha301(String op){
 		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
 			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 			reha301IsActive = true;
-			System.out.println("301-er  Modul gestartet");
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			reha301IsActive = false;
@@ -99,32 +127,41 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					return null;
 				}
 			}.execute();
-			System.out.println("301-er  Modul beendet");
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
 			if(Reha.thisClass.patpanel != null){
-				System.out.println("Suche PatientenIK="+op.split("#")[2]+" mit Rezeptnummer="+op.split("#")[3]);
 				this.posteAktualisierePatUndRez(op.split("#")[2], op.split("#")[3]);
-				System.out.println("erledigt");
 			}
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
 			if(Reha.thisClass.patpanel != null){
 				this.posteAktualisierePat(op.split("#")[2]);
 			}
 		}
-		//JOptionPane.showMessageDialog(null, "Hallo Reha hier spricht das 301-er Modul");
 	}
-	/*******************************/
+	
+	
+	/*************
+	 * 
+	 * 
+	 * 
+	 * ReversePort-Handling
+	 * 
+	 * 
+	 * ******************/
 	private void doReversePort(String op){
 //		new SocketClient().setzeRehaNachricht(rehaPort, "AppName#"+"Reha301#"+Integer.toString(Reha301.xport));
 		if(op.split("#")[1].equals("Reha301")){
 			reha301reversePort = Integer.parseInt(op.split("#")[2]);
+			System.out.println("Port fuer den 301-er Manager = "+op.split("#")[2]);
 		}else if(op.split("#")[1].equals("WorkFlow")){
 			rehaWorkFlowreversePort = Integer.parseInt(op.split("#")[2]);
 			System.out.println("Port fuer den Work-Flow Manager = "+op.split("#")[2]);
 		}else if(op.split("#")[1].equals("OpRgaf")){
 			rgAfreversePort = Integer.parseInt(op.split("#")[2]);
-			System.out.println("Port fuer OpRgaf.Modul = "+op.split("#")[2]);
+			System.out.println("Port fuer OpRgaf Modul = "+op.split("#")[2]);
+		}else if(op.split("#")[1].equals("OffenePosten")){
+			offenePostenreversePort = Integer.parseInt(op.split("#")[2]);
+			System.out.println("Port fuer OffenePosten Modul = "+op.split("#")[2]);
 		}
 	}
 	/*******************************/
@@ -136,18 +173,17 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					serv = new ServerSocket(Reha.xport);
 					break;
 				} catch (Exception e) {
-					System.out.println("In Exception währen der Portsuche - 1");
+					//System.out.println("In Exception währen der Portsuche - 1");
 					if(serv != null){
 						try {
 							serv.close();
 						} catch (IOException e1) {
-							System.out.println("In Exception währen der Portsuche - 2");
+							//System.out.println("In Exception währen der Portsuche - 2");
 							e1.printStackTrace();
 						}
 						serv = null;
 					}
-					//e.printStackTrace();
-					System.out.println("Port: "+Reha.xport+" bereits belegt");
+					//System.out.println("Port: "+Reha.xport+" bereits belegt");
 					Reha.xport++;
 				}
 			}
@@ -169,9 +205,7 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 				sb.setLength(0);
 				sb.trimToSize();
 				input = client.getInputStream();
-				//output = client.getOutputStream();
 				int byteStream;
-				//String test = "";
 				try {
 					while( (byteStream =  input.read()) > -1){
 						char b = (char)byteStream;
@@ -179,25 +213,26 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.out.println("In Exception währen der while input.read()-Schleife");
+					//System.out.println("In Exception währen der while input.read()-Schleife");
 				}
 				/***************************/
 				if(sb.toString().startsWith("Reha301#")){
 					doReha301(String.valueOf(sb.toString()) );
+					
 				}else if(sb.toString().startsWith("OffenePosten#")){
 					doOffenePosten(String.valueOf(sb.toString()));
+					
 				}else if(sb.toString().startsWith("WorkFlow#")){
 					doWorkFlow(String.valueOf(sb.toString()));
+					
 				}else if(sb.toString().startsWith("OpRgaf#")){
 					doOpRgaf(String.valueOf(sb.toString()));
+					
 				}else if(sb.toString().startsWith("AppName#")){
 					doReversePort(sb.toString());
 				}
 
 			}
-
-//			return null;
-
 		}
 	private RehaIOServer getInstance(){
 		return this;
@@ -209,20 +244,18 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				//System.out.println("Suche Patient:"+xpatid+" und Rezept:"+xreznum);
 				try{
-				String s1 = String.valueOf("#PATSUCHEN");
-				String s2 = xpatid;
-				PatStammEvent pEvt = new PatStammEvent(getInstance());
-				pEvt.setPatStammEvent("PatSuchen");
-				pEvt.setDetails(s1,s2,xreznum) ;
-				PatStammEventClass.firePatStammEvent(pEvt);
+					String s1 = String.valueOf("#PATSUCHEN");
+					String s2 = xpatid;
+					PatStammEvent pEvt = new PatStammEvent(getInstance());
+					pEvt.setPatStammEvent("PatSuchen");
+					pEvt.setDetails(s1,s2,xreznum) ;
+					PatStammEventClass.firePatStammEvent(pEvt);
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
 				return null;
 			}
-			
 		}.execute();
 	}
 	private void posteAktualisierePat(String patid){
@@ -238,7 +271,6 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 				PatStammEventClass.firePatStammEvent(pEvt);		
 				return null;
 			}
-			
 		}.execute();
 	}
 	

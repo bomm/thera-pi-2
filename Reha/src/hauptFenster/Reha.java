@@ -2343,25 +2343,37 @@ public void actionPerformed(ActionEvent arg0) {
 		new LadeProg(Reha.proghome+"RehaStatistik.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("offeneposten")){
 		if(!Rechte.hatRecht(Rechte.Funktion_offeneposten, true)){
 			return;
 		}
-		new LadeProg(Reha.proghome+"OffenePosten.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		if(! RehaIOServer.offenePostenIsActive){
+			new LadeProg(Reha.proghome+"OffenePosten.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport);
+		}else{
+			new ReverseSocket().setzeRehaNachricht(RehaIOServer.offenePostenreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
+		}
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("rezeptfahnder")){
 		new RezeptFahnder();
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("rgaffaktura")){
 		if(! Rechte.hatRecht(Rechte.Funktion_barkasse, false)){
 			JOptionPane.showMessageDialog(null, "Keine Berechtigung -> Funktion Ausbuchen RGAF-Faktura");
 			return;
 		}
-		new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)));
+		if(! RehaIOServer.rgAfIsActive){
+			new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport);
+		}else{
+			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
+		}
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("kassenbuch")){
 		if(!Rechte.hatRecht(Rechte.Funktion_kassenbuch, true)){
 			return;

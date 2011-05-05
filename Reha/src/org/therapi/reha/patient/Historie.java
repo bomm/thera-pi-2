@@ -883,7 +883,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					
 				}.execute();
 			}else{
-				new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#ToFront");
+				new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
 				new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#"+RehaIOMessages.MUST_REZFIND+"#"+tabhistorie.getValueAt(row,0).toString());
 			}
 			return;
