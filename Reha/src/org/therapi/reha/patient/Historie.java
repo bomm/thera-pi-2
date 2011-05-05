@@ -1,7 +1,9 @@
 package org.therapi.reha.patient;
 
 import hauptFenster.Reha;
+import hauptFenster.RehaIOMessages;
 import hauptFenster.RehaIOServer;
+import hauptFenster.ReverseSocket;
 
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -842,25 +844,50 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		String einnahme = SqlInfo.holeEinzelFeld("select einnahme from kasse where rez_nr = '"+sreznum+
 				"' or ktext like '%"+sreznum+"%'LIMIT 1");
 		if(einnahme.equals("")){
-			int frage = JOptionPane.showConfirmDialog(null,"Kein Bezahl-Eintrag im Kassenbuch für Rezept -> "+sreznum+
-					"\n\nEvtl. wurde eine Rezeptgebührrechnung erstellt?\n\n"+"Wollen Sie die RGAF-Verwaltung jetzt aufrufen?",
-					"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
-			if(frage == JOptionPane.YES_OPTION){
-				if(! RehaIOServer.rgAfIsActive){
-					new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+sreznum);					
-				}else{
-					/*ToDo*/
-				}
+			einnahme = SqlInfo.holeEinzelFeld("select reznr from rgaffaktura where reznr = '"+sreznum+
+					"' LIMIT 1");
+		}else{
+			SystemConfig.hmRgkDaten.put("<Rgknummer>", String.valueOf(sreznum));
+			SystemConfig.hmRgkDaten.put("<Rgkdatum>", srezdat);
+			SystemConfig.hmRgkDaten.put("<Rgkbetrag>", String.valueOf(einnahme.replace(".", ",")));
+			String bezdatum = SqlInfo.holeEinzelFeld("select datum from kasse where rez_nr = '"+sreznum+
+					"' or ktext like '%"+sreznum+"%'LIMIT 1");
+			SystemConfig.hmRgkDaten.put("<Rgkbezahldatum>", String.valueOf(DatFunk.sDatInDeutsch(bezdatum)));
+			OOTools.starteRGKopie(Reha.proghome+"vorlagen/"+Reha.aktIK+"/Rezeptgebuehr.ott.Kopie.ott",SystemConfig.rezGebDrucker);
+			return;
+		}
+		if(einnahme.equals("")){
+			JOptionPane.showMessageDialog(null, "Das Rezept wurde weder bar bezahlt noch existiert eine Rezeptgebührrechnung!!");
+			return;
+		}else{	
+			if(! RehaIOServer.rgAfIsActive){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						try{
+							new LadeProg(Reha.proghome+"OpRgaf.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport);
+							long start = System.currentTimeMillis();
+							while(!RehaIOServer.rgAfIsActive){
+								Thread.sleep(50);
+								if( (System.currentTimeMillis()-start) > 5000){
+									JOptionPane.showMessageDialog(null, "Kann den Suchenbefehl auf OpRgaf nicht absetzen");
+									return null;
+								}
+							}
+							new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#"+RehaIOMessages.MUST_REZFIND+"#"+tabhistorie.getValueAt(tabhistorie.getSelectedRow(),0).toString());
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						return null;
+					}
+					
+				}.execute();
+			}else{
+				new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#ToFront");
+				new ReverseSocket().setzeRehaNachricht(RehaIOServer.rgAfreversePort,"Reha#"+RehaIOMessages.MUST_REZFIND+"#"+tabhistorie.getValueAt(row,0).toString());
 			}
 			return;
 		}
-		SystemConfig.hmRgkDaten.put("<Rgknummer>", String.valueOf(sreznum));
-		SystemConfig.hmRgkDaten.put("<Rgkdatum>", srezdat);
-		SystemConfig.hmRgkDaten.put("<Rgkbetrag>", String.valueOf(einnahme.replace(".", ",")));
-		String bezdatum = SqlInfo.holeEinzelFeld("select datum from kasse where rez_nr = '"+sreznum+
-				"' or ktext like '%"+sreznum+"%'LIMIT 1");
-		SystemConfig.hmRgkDaten.put("<Rgkbezahldatum>", String.valueOf(DatFunk.sDatInDeutsch(bezdatum)));
-		OOTools.starteRGKopie(Reha.proghome+"vorlagen/"+Reha.aktIK+"/Rezeptgebuehr.ott.Kopie.ott",SystemConfig.rezGebDrucker);
 	}
 	
 	class ToolsDlgHistorie{

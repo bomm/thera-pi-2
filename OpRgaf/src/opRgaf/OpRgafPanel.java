@@ -465,10 +465,15 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	}
 	
 	
-
+	public void sucheRezept(String rezept){
+		suchen.setText(rezept);
+		combo.setSelectedIndex(10);
+		doSuchen();
+	}
 	
 	private void doSuchen(){
 		if(suchen.getText().trim().equals("")){
+			
 			return;
 		}
 		//tab.setRowSorter(null);

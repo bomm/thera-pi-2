@@ -175,6 +175,9 @@ public class OpRgafTab extends JXPanel implements ChangeListener{
 		
 		return -1;
 	}
+	public void sucheRezept(String rezept){
+		opRgafPanel.sucheRezept(rezept);
+	}
 
 
 }

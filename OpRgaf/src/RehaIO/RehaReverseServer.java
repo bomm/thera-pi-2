@@ -32,34 +32,14 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 	public String getPort(){
 		return Integer.toString(OpRgaf.xport);
 	}
-	/*****
-	 * 
-	 * 
-	 * 301-er
-	 */
-	private void doOpRgaf(String op){
-		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
-			OpRgaf.thisFrame.setCursor(OpRgaf.thisClass.cdefault);
-			OpRgafIsActive = true;
-			return;
-		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
-			OpRgafIsActive = false;
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                	OpRgaf.thisFrame.toFront();
-                	OpRgaf.thisFrame.repaint();
-                }
-            });
-			System.out.println("301-er  Modul beendet");
-			return;
-		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
-		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
-		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_GOTOFRONT)){
+	
+	private void doReha(String op){
+		if(op.split("#")[1].equals("ToFront")){
 			OpRgaf.thisFrame.setVisible(true);
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_REZFIND)){
+			OpRgaf.thisClass.otab.sucheRezept(op.split("#")[2]);
 		}
-				
-		//JOptionPane.showMessageDialog(null, "Hallo Reha hier spricht das 301-er Modul");
+
 	}
 	@Override
 	protected Void doInBackground() throws Exception {
@@ -90,6 +70,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 			}
 			OpRgaf.xportOk = true;
 			Socket client = null;
+
 			while(true){
 				try {
 					client = serv.accept();
@@ -113,10 +94,9 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					System.out.println("In Exception währen der while input.read()-Schleife");
 				}
 				/***************************/
-				System.out.println("In OpRgaf - eingegangene Nachricht = "+sb.toString());
-				if(sb.toString().startsWith("OpRgaf#")){
-					doOpRgaf(String.valueOf(sb.toString()) );
-					
+				
+				if(sb.toString().startsWith("Reha#")){
+					doReha(String.valueOf(sb.toString()) );
 				}
 			}
 

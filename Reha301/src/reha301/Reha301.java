@@ -344,7 +344,7 @@ public class Reha301 implements WindowListener  {
 		private void StarteDB(){
 			final Reha301 obj = Reha301.thisClass;
 
-			final String sDB = "SQL";
+			//final String sDB = "SQL";
 			if (obj.conn != null){
 				try{
 				obj.conn.close();}
@@ -399,7 +399,7 @@ public class Reha301 implements WindowListener  {
 		private void StarteDB(){
 			final Reha301 obj = Reha301.thisClass;
 
-			final String sDB = "SQL";
+			//final String sDB = "SQL";
 			if (obj.conn != null){
 				try{
 				obj.conn.close();}

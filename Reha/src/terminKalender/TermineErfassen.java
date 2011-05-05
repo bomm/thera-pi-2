@@ -448,14 +448,14 @@ public class TermineErfassen implements Runnable {
 					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+
 					"</font><br>Das Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr<br>"+
 					"verwendet werden!!!!<br><br>"+
-					"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
-					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?</font></html>";
+					"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+scanrez+"</font><br><br></html>";
+
 				}else if((Integer)objTerm[1] == 3){
 					message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
 					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+"</font><br>"+
 					"<br>Das Rezept ist somit bereits <font size='7'> übervoll</font> und darf für aktuelle Behandlung nicht mehr<br>"+
-					"verwendet werden!!!!<br><br>"+
-					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?</font></html>";
+					"verwendet werden!!!!</font><br><br></html>";
+
 				}
 				JOptionPane.showMessageDialog(null, message);
 				return;

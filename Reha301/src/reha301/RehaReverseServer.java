@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 
@@ -121,7 +120,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 //			return null;
 
 		}
-	private RehaReverseServer getInstance(){
+	public RehaReverseServer getInstance(){
 		return this;
 	}
 	

@@ -1,6 +1,8 @@
 package opRgaf;
 
 
+
+
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -22,7 +24,9 @@ import org.jdesktop.swingworker.SwingWorker;
 
 
 
+import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
+import RehaIO.SocketClient;
 import Tools.INIFile;
 import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -97,6 +101,7 @@ public class OpRgaf implements WindowListener{
 	public static int xport = -1;
 	public static boolean xportOk = false;
 	public RehaReverseServer rehaReverseServer = null;
+	public static int rehaReversePort = -1;
 	
 	public static void main(String[] args) {
 		OpRgaf application = new OpRgaf();
@@ -141,7 +146,9 @@ public class OpRgaf implements WindowListener{
 				mahnParameter.put("inkasse", (String) inif.getStringProperty("General","WohinBuchen")  );
 				AbrechnungParameter(progHome);
 				FirmenDaten(progHome);
-
+				if(args.length >= 3){
+					rehaReversePort = Integer.parseInt(args[2]);
+				}
 			}else{
 				INIFile inif = new INIFile(progHome+"ini/"+aktIK+"/oprgaf.ini");
 				mahnParameter.put("frist1", (Integer) inif.getIntegerProperty("General","TageBisMahnung1") );
@@ -216,7 +223,57 @@ public class OpRgaf implements WindowListener{
 			e.printStackTrace();
 		}
 		thisClass = this;
-		jFrame = new JFrame();
+		jFrame = new JFrame(){
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void setVisible(final boolean visible) {
+			
+			if(getState()!=JFrame.NORMAL) { setState(JFrame.NORMAL); }
+
+			  if (visible) {
+			      //setDisposed(false);
+			  }
+			  if (!visible || !isVisible()) { 
+			      super.setVisible(visible);
+			  }
+
+			  if (visible) {
+			      int state = super.getExtendedState();
+			      state &= ~JFrame.ICONIFIED;
+			      super.setExtendedState(state);
+			      super.setAlwaysOnTop(true);
+			      super.toFront();
+			      super.requestFocus();
+			      super.setAlwaysOnTop(false);
+			  }
+		}
+
+		@Override
+		public void toFront() {
+			  super.setVisible(true);
+			  int state = super.getExtendedState();
+			  state &= ~JFrame.ICONIFIED;
+			  super.setExtendedState(state);
+			  super.setAlwaysOnTop(true);
+			  super.toFront();
+			  super.requestFocus();
+			  super.setAlwaysOnTop(false);
+		}	
+		};	
+		
+		new InitHashMaps();
+
+		try{
+			rehaReverseServer = new RehaReverseServer(7000);
+		}catch(Exception ex){
+			rehaReverseServer = null;
+		}
+
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,675);
 		jFrame.setTitle("Thera-Pi  Rezeptgebührrechnung/Ausfallrechnung/Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
@@ -224,18 +281,18 @@ public class OpRgaf implements WindowListener{
 		jFrame.setLocationRelativeTo(null);
 		otab = new OpRgafTab();
 		otab.setHeader(0);
+		otab.setFirstFocus();
 		
 		jFrame.getContentPane().add (otab);
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
+		try{
+			new SocketClient().setzeRehaNachricht(OpRgaf.rehaReversePort,"AppName#OpRgaf#"+Integer.toString(OpRgaf.xport));
+			new SocketClient().setzeRehaNachricht(OpRgaf.rehaReversePort,"OpRgaf#"+RehaIOMessages.IS_STARTET);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Socketkommunikation");
+		}
 
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				new InitHashMaps();
-				otab.setFirstFocus();				
-				
-			}
-		});
 		return jFrame;
 	}
 	
@@ -346,6 +403,16 @@ public class OpRgaf implements WindowListener{
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+		if(OpRgaf.thisClass.rehaReverseServer != null){
+			try{
+				new SocketClient().setzeRehaNachricht(OpRgaf.rehaReversePort,"OpRgaf#"+RehaIOMessages.IS_FINISHED);
+				rehaReverseServer.serv.close();
+				System.out.println("ReverseServer geschlossen");
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
 		}
 		System.exit(0);
 	}
