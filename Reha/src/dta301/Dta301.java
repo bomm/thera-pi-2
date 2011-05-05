@@ -31,6 +31,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import jxTableTools.TableTool;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
@@ -51,6 +53,7 @@ import systemTools.StringTools;
 import terminKalender.DatFunk;
 
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -215,6 +218,17 @@ public class Dta301 extends JXPanel implements FocusListener {
 					String scmd = "select edifact from dta301 where pat_intern='"+
 					vec.get(0).get(0)+"' and rez_nr='"+vec.get(0).get(1)+"' and nachrichtentyp='"+typ+"' LIMIT 1";
 					doZeigeEdifact(SqlInfo.holeEinzelFeld(scmd));
+				}
+				if(cmd.equals("deletemessage")){
+					int row = tabuebersicht.getSelectedRow();
+					if(row < 0){return;}
+					String id = tabuebersicht.getValueAt(row,3).toString();
+					int frage = JOptionPane.showConfirmDialog(null,"Die Nachricht mit ID = "+id+" wirklich löschen?",
+							"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage==JOptionPane.YES_OPTION){
+						SqlInfo.sqlAusfuehren("delete from dtafall where id = '"+id+"' LIMIT 1");
+						TableTool.loescheRowAusModel(tabuebersicht, row);
+					}
 				}
 
 				
@@ -1204,6 +1218,9 @@ public class Dta301 extends JXPanel implements FocusListener {
 			e.printStackTrace();
 		}
 		document.getTextService().getText().setText(buf);
+		IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
+		viewCursor.getPageCursor().jumpToFirstPage();
+
 
 	}
 	/*****************************************************/	

@@ -2388,13 +2388,20 @@ public void actionPerformed(ActionEvent arg0) {
 		new LadeProg(Reha.proghome+"GBriefe.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("sqlmodul")){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_sqlmodul, true)){
 			return;
 		}
-		new LadeProg(Reha.proghome+"RehaSql.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+		if(!RehaIOServer.rehaSqlIsActive){
+			new LadeProg(Reha.proghome+"RehaSql.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)));	
+		}else{
+			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaSqlreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT );			
+		}
+		
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("fallsteuerung")){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){
 			return;
@@ -2413,6 +2420,7 @@ public void actionPerformed(ActionEvent arg0) {
 		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		return;
 	}
+	/*****************************/
 	if(cmd.equals("workflow")){
 		if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){
 			return;
