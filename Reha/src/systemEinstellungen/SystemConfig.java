@@ -1067,7 +1067,10 @@ public class SystemConfig {
 		
 		
 		inif.save();  // Daten wegschreiben
-
+		
+		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		ini.setStringProperty("HauptFenster", "HorizontalTeilen",(SystemConfig.desktopHorizontal ? "1" : "0"),null);
+		ini.save();
 /*		
 		// Wegschreiben der INI-Parameter in die Datenbank TESTHALBER
 		inidb.WritePropInteger("bedienung.ini", "Bedienung", "WerkzeugaufrufMausklicks", 

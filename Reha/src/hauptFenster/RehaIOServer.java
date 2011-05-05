@@ -32,6 +32,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 	public static boolean rehaWorkFlowIsActive = false;
 	public static int rehaWorkFlowreversePort = -1;
 	
+	public static boolean rehaSqlIsActive = false;
+	public static int rehaSqlreversePort = -1;
+
 	public RehaIOServer(int x){
 		Reha.xport = x;
 		execute();
@@ -41,6 +44,35 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		return Integer.toString(Reha.xport);
 	}
 	
+	/**********
+	 * 
+	 * 
+	 * RehaSql
+	 * 
+	 * 
+	 */
+	private void doRehaSql(String op){
+		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
+			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
+			rehaSqlIsActive = true;
+			return;
+		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
+			rehaSqlIsActive = false;
+			rehaSqlreversePort = -1;
+			return;
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATFIND)){
+			if(Reha.thisClass.patpanel != null){
+				this.posteAktualisierePat(op.split("#")[2]);
+			}
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_PATANDREZFIND)){
+			if(Reha.thisClass.patpanel != null){
+				this.posteAktualisierePatUndRez(op.split("#")[2], op.split("#")[3]);
+			}
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_REZFIND)){
+			
+		}
+	}
+
 	/**********
 	 * 
 	 * 
@@ -162,6 +194,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		}else if(op.split("#")[1].equals("OffenePosten")){
 			offenePostenreversePort = Integer.parseInt(op.split("#")[2]);
 			System.out.println("Port fuer OffenePosten Modul = "+op.split("#")[2]);
+		}else if(op.split("#")[1].equals("RehaSql")){
+			rehaSqlreversePort = Integer.parseInt(op.split("#")[2]);
+			System.out.println("Port fuer RehaSql = "+op.split("#")[2]);
 		}
 	}
 	/*******************************/
@@ -227,6 +262,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					
 				}else if(sb.toString().startsWith("OpRgaf#")){
 					doOpRgaf(String.valueOf(sb.toString()));
+					
+				}else if(sb.toString().startsWith("RehaSql#")){
+					doRehaSql(String.valueOf(sb.toString()));
 					
 				}else if(sb.toString().startsWith("AppName#")){
 					doReversePort(sb.toString());

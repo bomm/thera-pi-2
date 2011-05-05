@@ -40,11 +40,11 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	 * 
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
-	JRtaTextField[] tfs = {null,null,null,null};
+	JRtaTextField[] tfs = {null,null,null,null,null};
 	JButton abbruch = null;
 	JButton speichern = null;
 	JButton[] buts = {null,null};
-	
+	boolean neustartRequire = false;
 	Vector<String> originale = new Vector<String>();
 	boolean nummernkreisok = true;
 
@@ -112,8 +112,12 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	private Boolean HasChanged(){
 		
 		for ( int i = 0; i < tfs.length; i++) {
-			if(! tfs[i].getText().trim().equals(originale.get(i)))
+			if(! tfs[i].getText().trim().equals(originale.get(i))){
+				if(i==4){
+					neustartRequire = true;
+				}
 				return true;
+			}
 		}
 		
 		return false;
@@ -123,8 +127,10 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	JRtaComboBox cmbClk = new JRtaComboBox();
 	JRtaComboBox cmbRezAbbruch = new JRtaComboBox();
 	JRtaComboBox cmbShowHmDlg = new JRtaComboBox();
+	JRtaComboBox cmbDesktop = new JRtaComboBox();
 	Vector<Vector<String>>vecJN = new Vector<Vector<String>>();
 	Vector<Vector<String>>vec12 = new Vector<Vector<String>>();
+	Vector<Vector<String>>vecHV = new Vector<Vector<String>>();
 	
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.    10     11
@@ -165,6 +171,15 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		vec.clear();  // für die nächste Belegung freimachen
 		Collections.addAll( vec, "Nein", "0" );
 		vecJN.add(1,(Vector<String>) vec.clone());
+		vec.clear();
+
+		Collections.addAll( vec, "vertikal", "0" );
+		vecHV.add(0,(Vector<String>) vec.clone());
+		vec.clear();  // für die nächste Belegung freimachen
+		Collections.addAll( vec, "horizontal",   "1" );
+		vecHV.add(1,(Vector<String>) vec.clone());
+		vec.clear();  // für die nächste Belegung freimachen
+		
 		cmbBut.setDataVectorVector(vecJN, 0, 1);
 		cmbBut.setSelectedItem(tfs[0].getText().equals("0") ? "Nein" : "Ja" );  // setze den aktuell gewählten Wert
 		cmbBut.setActionCommand("cmbBut");
@@ -266,6 +281,29 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		iAktY += 1;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
 		
+		iAktY += 2;
+		lab3 = new JLabel("<html><b>Arbeitsflächen <font color=#0000FF>(Benutzer individuelle Einstellung)</font></b></html>");
+		builder.add(lab3,cc.xyw(1, iAktY, 11));
+		iAktY += 2;
+		builder.addLabel("Horizontal (übereinander) oder vertikal (nebeneinander) teilen",cc.xy(1,iAktY));
+		tfs[4] = new JRtaTextField("Zahlen", true);
+		tfs[4].setName("desktop");
+		tfs[4].setText((Boolean)SystemConfig.desktopHorizontal ? "1" : "0");
+		cmbDesktop.setDataVectorVector(vecHV, 0, 1);
+		cmbDesktop.setSelectedItem(tfs[4].getText().equals("1") ? "horizontal" : "vertikal" );  // setze den aktuell gewählten Wert
+		cmbDesktop.setActionCommand("cmbDesktop");
+		cmbDesktop.addActionListener(this);
+		builder.add(cmbDesktop, cc.xy(3,iAktY));
+
+		// Trennlinie mit Leerzeilen
+		iAktY += 2;
+		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
+		//-------------------------------------------------------------------------------
+		iAktY += 1;
+		builder.addSeparator("", cc.xyw(1,iAktY,11));
+		iAktY += 1;
+		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
+
 		return builder.getPanel();
 	}
 	
@@ -347,6 +385,10 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 			tfs[3].setText((String)cmbShowHmDlg.getSecValue());
 			return;
 		}
+		if(cmd.equals("cmbDesktop")){
+			tfs[4].setText((String)cmbDesktop.getSecValue());
+			return;
+		}
 
 
 	}
@@ -354,7 +396,10 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	
 	private void doSpeichern(){
 //		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
-		
+		if(HasChanged() && neustartRequire){
+			JOptionPane.showMessageDialog(null,"Sie haben die Einstellung für die Arbeitsflächen verändert.\n\n"+
+					"Diese Einstellung wird erst nach einem Neustart von Thera-Pi wirksam!");
+		}
 		// Die benutzerindividuellen Daten müssen in die INI-Datei weggespeichert werden
 		SystemConfig.hmPatientenWerkzeugDlgIni.put("ToolsDlgClickCount", Integer.parseInt(tfs[1].getText()) );
 		SystemConfig.hmPatientenWerkzeugDlgIni.put("ToolsDlgShowButton", tfs[0].getText().equals("1") ? true : false );
@@ -368,41 +413,12 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		// HeilmittelDialog bei Terminbestätigen zeigen falls notwendig /st.
 		SystemConfig.hmTerminBestaetigen.put("dlgzeigen",tfs[3].getText().equals("1") ? true : false );
 		
-//		inif.save();  // Daten wegschreiben
-
-		// Merken der aktuell vorhandenen Textfelder
+		SystemConfig.desktopHorizontal = (tfs[4].getText().equals("1") ? true : false );
+		
 		SaveChangeStatus();
-
+		neustartRequire = false;
 		SystemConfig.BedienungIni_WriteToIni();
 		
 		JOptionPane.showMessageDialog(null,"Einstellungen wurden erfolgreich in bedienung.ini gespeichert");
-/*		
-		String meldung = "Folgende Nummern wurden geändert\n";
-		String cmd = (!nummernkreisok ? "insert into nummern set " : "update nummern set ") ;
-		int edited = 0;
-		for(int i = 0; i < 15; i++){
-			if(! tfs[i].getText().trim().equals(originale.get(i))){
-				edited++;
-				cmd = cmd+(edited > 1 ? "," : "")+tfs[i].getName()+"='"+tfs[i].getText().trim()+"'";
-				meldung = meldung+tfs[i].getName()+" = "+tfs[i].getText().trim()+"\n";
-			}
-		}
-		if(edited > 0){
-			cmd = cmd+ " LIMIT 1";
-			//cmd = cmd+(!nummernkreisok ? "" : " where mandant = '"+Reha.aktIK+"' LIMIT 1");
-			meldung = meldung+"\n\n"+"Diese Nummern abspeichern?"+"\n";
-			int frage = JOptionPane.showConfirmDialog(null, meldung, "Die geänderten Nummern abspeichern", JOptionPane.YES_NO_OPTION);
-			if(frage == JOptionPane.YES_OPTION){
-				SqlInfo.sqlAusfuehren(cmd);
-			}else{
-				for(int i = 0; i < 15; i++){
-					tfs[i].setText(originale.get(i));
-				}
-			}
-		}else{
-			JOptionPane.showMessageDialog(null,"Nummernkreis wurde nicht verändert (gute Entscheidung!!)");
-			SystemInit.abbrechen();
-		}
-*/	
 	}
 }
