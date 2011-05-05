@@ -43,6 +43,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+import RehaIO.RehaIOMessages;
+import RehaIO.SocketClient;
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.DblCellEditor;
@@ -375,6 +377,35 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			JOptionPane.showMessageDialog(null, "Fehler beim Einlesen der Statements");
 		}
 	}
+	
+	private void benachrichtigeReha(final int row){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				int spalten = tabmod.getColumnCount();
+				String pat="",rez="";
+				for(int i = 0; i < spalten;i++){
+					if(tabmod.getColumnName(i).toString().trim().toLowerCase().equals("rez_nr") ||
+							tabmod.getColumnName(i).toString().trim().equals("reznr")){
+						rez = tabmod.getValueAt(row, i).toString();
+					}else if(tabmod.getColumnName(i).toString().trim().toLowerCase().equals("pat_intern")){
+						pat = tabmod.getValueAt(row, i).toString();
+					}
+				}
+				if((!pat.equals("")) || (!rez.equals(""))){
+					if( (!pat.equals("")) && (rez.equals("")) ){
+						new SocketClient().setzeRehaNachricht(RehaSql.rehaReversePort,"RehaSql#"+RehaIOMessages.MUST_PATFIND+"#"+pat);
+					}else if( (!pat.equals("")) && (!rez.equals("")) ){
+						new SocketClient().setzeRehaNachricht(RehaSql.rehaReversePort,"RehaSql#"+RehaIOMessages.MUST_PATANDREZFIND+"#"+pat+"#"+rez);
+					}else if( (pat.equals("")) && (!rez.equals("")) ){
+						new SocketClient().setzeRehaNachricht(RehaSql.rehaReversePort,"RehaSql#"+RehaIOMessages.MUST_REZFIND+"#"+rez);
+					}
+				}
+				return null;
+			}
+			
+		}.execute();
+	}
 
 	class BillListSelectionHandler implements ListSelectionListener {
 		
@@ -391,7 +422,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
-	                	//System.out.println("Satz "+i);
+	                	benachrichtigeReha(i);
 	                    break;
 	                }
 	            }

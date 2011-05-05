@@ -17,7 +17,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-
+import RehaIO.RehaIOMessages;
+import RehaIO.RehaReverseServer;
+import RehaIO.SocketClient;
 import Tools.INIFile;
 import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -81,6 +83,12 @@ public class RehaSql implements WindowListener {
 	*/
 	public static boolean testcase = false;
 	
+	public static int xport = -1;
+	public static boolean xportOk = false;
+	public RehaReverseServer rehaReverseServer = null;
+	public static int rehaReversePort = -1;
+	
+	
 	public static void main(String[] args) {
 		RehaSql application = new RehaSql();
 		application.getInstance();
@@ -106,6 +114,9 @@ public class RehaSql implements WindowListener {
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];
 				aktIK = args[1];
+				if(args.length >= 3){
+					rehaReversePort = Integer.parseInt(args[2]);
+				}
 			}
 
 			final RehaSql xapplication = application;
@@ -183,7 +194,53 @@ public class RehaSql implements WindowListener {
 			e.printStackTrace();
 		}
 		thisClass = this;
-		jFrame = new JFrame();
+		jFrame = new JFrame(){
+			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void setVisible(final boolean visible) {
+				
+				if(getState()!=JFrame.NORMAL) { setState(JFrame.NORMAL); }
+
+				  if (visible) {
+				      //setDisposed(false);
+				  }
+				  if (!visible || !isVisible()) { 
+				      super.setVisible(visible);
+				  }
+
+				  if (visible) {
+				      int state = super.getExtendedState();
+				      state &= ~JFrame.ICONIFIED;
+				      super.setExtendedState(state);
+				      super.setAlwaysOnTop(true);
+				      super.toFront();
+				      super.requestFocus();
+				      super.setAlwaysOnTop(false);
+				  }
+			}
+
+			@Override
+			public void toFront() {
+				  super.setVisible(true);
+				  int state = super.getExtendedState();
+				  state &= ~JFrame.ICONIFIED;
+				  super.setExtendedState(state);
+				  super.setAlwaysOnTop(true);
+				  super.toFront();
+				  super.requestFocus();
+				  super.setAlwaysOnTop(false);
+			}	
+		};	
+		try{
+			rehaReverseServer = new RehaReverseServer(7000);
+		}catch(Exception ex){
+			rehaReverseServer = null;
+		}
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,500);
 		jFrame.setTitle("Thera-Pi  Sql-Modul  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"] - Äußerste Vorsicht ist geboten!!!");
@@ -192,6 +249,13 @@ public class RehaSql implements WindowListener {
 		jFrame.getContentPane().add (new RehaSqlTab());
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
+		try{
+			new SocketClient().setzeRehaNachricht(RehaSql.rehaReversePort,"AppName#RehaSql#"+Integer.toString(RehaSql.xport));
+			new SocketClient().setzeRehaNachricht(RehaSql.rehaReversePort,"RehaSql#"+RehaIOMessages.IS_STARTET);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Socketkommunikation");
+		}
+
 		return jFrame;
 	}
 	
@@ -367,6 +431,16 @@ public class RehaSql implements WindowListener {
 				e.printStackTrace();
 			}
 		}
+		if(RehaSql.thisClass.rehaReverseServer != null){
+			try{
+				new SocketClient().setzeRehaNachricht(RehaSql.rehaReversePort,"RehaSql#"+RehaIOMessages.IS_FINISHED);
+				rehaReverseServer.serv.close();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
+		}
+		
 		System.exit(0);
 	}
 	@Override
