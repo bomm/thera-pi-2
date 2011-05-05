@@ -34,7 +34,7 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaCheckBox;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
-import terminKalender.TerminFenster.BestaetigungsDaten;
+
 
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -69,7 +69,7 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 	
 
 
-	public TerminBestaetigenAuswahlFenster(JXFrame owner, String name,Vector<TerminFenster.BestaetigungsDaten> hMPos,String reznum,int preisgruppe){
+	public TerminBestaetigenAuswahlFenster(JXFrame owner, String name,Vector<BestaetigungsDaten> hMPos,String reznum,int preisgruppe){
 		super(owner, "Eltern-TermBest"+WinNum.NeueNummer());
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		

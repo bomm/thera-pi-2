@@ -3,6 +3,7 @@ package terminKalender;
 import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -10,17 +11,10 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import errorMail.ErrorMail;
-
-
-
-
-import rehaInternalFrame.JPatientInternal;
-import rehaInternalFrame.JTerminInternal;
-import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+
 
 public class TermineErfassen implements Runnable {
 	String scanrez = null;
@@ -38,10 +32,12 @@ public class TermineErfassen implements Runnable {
 	public boolean vorjahrfrei = false;
 	public static int errorint = 0;
 	public StringBuffer sbuftermine;
+	static TermineErfassen thisClass = null;
 	public TermineErfassen(String reznr, Vector termvec){
 		scanrez = reznr.trim();
 		firstfound = false;
 		erstfund = -1;
+		thisClass = this;
 
 	}
 	@Override
@@ -170,7 +166,7 @@ public class TermineErfassen implements Runnable {
 	}
 	/********************/
 	public int testeVerordnung() throws Exception{
-		vec = SqlInfo.holeSatz("verordn","termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
+		vec = SqlInfo.holeSatz("verordn","termine,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl1,anzahl2,anzahl3,anzahl4,preisgruppe"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 		if(vec.size()==0){
 			vec = SqlInfo.holeSatz("lza","termine"," rez_nr='"+scanrez+"'",Arrays.asList(new String[]{}));
 			if(vec.size()==0){
@@ -188,8 +184,8 @@ public class TermineErfassen implements Runnable {
 			//JOptionPane.showMessageDialog(null, "Dieser Termin wurde heute bereits erfa�t");
 			return 3;
 		}
-		unter18 =  ( ((String)vec.get(7)).equals("T") ? true : false );
-		vorjahrfrei = ( ((String)vec.get(8)).equals("") ? false : true );
+		unter18 =  ( ((String)vec.get(6)).equals("T") ? true : false );
+		vorjahrfrei = ( ((String)vec.get(7)).equals("") ? false : true );
 		// 0 = Tage ist noch nicht erfaßt
 		return 0;
 	}
@@ -426,92 +422,61 @@ public class TermineErfassen implements Runnable {
 		//String termkollege = 
 		sbuftermine = new StringBuffer();
 		vec2 = null;
-		String terminneu = "";
+
+		Object[] objTerm = BehandlungenAnalysieren(scanrez,false,false,false,((Vector<String>)vec.clone()),null);
 		if(! ((String)vec.get(0)).trim().equals("")){
 			
 			sbuftermine.append((String)vec.get(0));
-			//System.out.println("****Beginn Termine bisher****\n"+sbuftermine.toString()+"****Ende Termine****");
-			////System.out.println("termine bisher = "+sbuftermine.toString());
-			//hier die Einzelnen Termin holen
-			vec2 = RezTools.splitteTermine(sbuftermine.toString());
-			int anzahl = vec2.size();
-			int lautrezept = Integer.valueOf((String)vec.get(1)); 
-			if(anzahl >= lautrezept){
+			
+			/*
+			private static Object[] BehandlungenAnalysieren(String swreznum,
+					boolean doppeltOk,boolean xforceDlg,boolean alletermine,
+					Vector<String> vecx,Point pt){
+			*/
+			 
+			if( (Integer)objTerm[1] > 0){
 				String message = "";
-				int variante = -1;
-				if(anzahl == lautrezept){
-					variante = 0;
+				String anzahl = "??????"; //muß noch mit Max.Anzahl der Verordnung belegt werden 
+				if((Integer)objTerm[1] == 1 || (Integer)objTerm[1] == 2 ){
+
 					/*
 						JOptionPane.showMessageDialog(null, "<html><b><font size='5'>Dieses Rezept wurde am heutigen Tab bereits erfaßt!<br><br>"+
 								"Das gescannte Rezept -><font size='6' color='#ff0000'> "+scanrez+"<br></font></html>");
 					 
 					 */
 					message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
-					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+lautrezept+
+					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+
 					"</font><br>Das Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr<br>"+
 					"verwendet werden!!!!<br><br>"+
 					"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
 					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?</font></html>";
-				}else if(anzahl > lautrezept){
-					variante = 1;
+				}else if((Integer)objTerm[1] == 3){
 					message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
-					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+lautrezept+"</font><br>"+
+					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+"</font><br>"+
 					"<br>Das Rezept ist somit bereits <font size='7'> übervoll</font> und darf für aktuelle Behandlung nicht mehr<br>"+
 					"verwendet werden!!!!<br><br>"+
 					"Wollen Sie die aktuelle Behandlung trotzdem auf dieses Rezept buchen?</font></html>";
 				}
-				int frage = JOptionPane.showConfirmDialog(null, message, "Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-				if(variante > 0){
-					/*
-					new ErrorMail("Hinweis das Rezept ist bereits"+(variante==0 ? " voll. " : " übervoll!!! ")+" Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
-							SystemConfig.dieseMaschine.toString(),
-							Reha.aktUser,
-							SystemConfig.hmEmailIntern.get("Username"),
-							"Fehler-Mail!!!!!");
-					*/		
-					
-				}
-				if(frage == JOptionPane.NO_OPTION){
-				  return;
-				}
-				terminneu = macheNeuTermin("zu viele Behandlungen");
-				/*
-				new ErrorMail("Trotz Hinweis!!! Aufnahme in das Rezept. Rezept ist aber bereits"+(variante==0 ? " voll. " : " übervoll!!! ")+" Rezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
-						SystemConfig.dieseMaschine.toString(),
-						Reha.aktUser,
-						SystemConfig.hmEmailIntern.get("Username"),
-						"Fehler-Mail!!!!!");
-				*/
+				JOptionPane.showMessageDialog(null, message);
+				return;
 			}else{
 				////System.out.println("Es sind noch Termine Frei");
-				terminneu = macheNeuTermin("");
-				if(anzahl == (lautrezept-1)){
+				if((Integer)objTerm[1] == 0){
 					String message = "<html><b><font size='5'>Das Rezept ist jetzt voll"+
 					"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
 					"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
 					JOptionPane.showMessageDialog(null, message);
-					try{
-						RezTools.fuelleVolleTabelle(scanrez, this.kollege);	
-					}catch(Exception ex){
-						JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
-					}
-					
-					//Hier rein die Behandlung der Tabelle volle!!!!!!
-					/*
-					new ErrorMail("Letzte Behandlung Rezept = voll.\nRezept ="+scanrez+"\nMitarbeiterspalte:"+this.kollege,
-							SystemConfig.dieseMaschine.toString(),
-							Reha.aktUser,
-							SystemConfig.hmEmailIntern.get("Username"),
-							"Rezept voll!!!!!");
-					*/		
+					sbuftermine.append((String)objTerm[0]);
+				}else{
+					sbuftermine.append((String)objTerm[0]);
 				}
 			}
 				
 		}else{
 			////System.out.println("der Termin ist der erste Termin.");
-			terminneu = macheNeuTermin("");			
+			sbuftermine.append((String)objTerm[0]);			
 		}
-		sbuftermine.append(terminneu);
+		
 
 /*******************************/
 		//System.out.println("Unter 18 = "+unter18+" Vorjahrfei = "+vorjahrfrei);
@@ -521,7 +486,7 @@ public class TermineErfassen implements Runnable {
 		}else if( (unter18) && (!vorjahrfrei) ){
 			/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus �ndern;
 			//System.out.println("Pat_intern = "+vec.get(9));
-			String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
+			String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(8)+"'" ));
 			//System.out.println("Geboren = "+geboren);
 			boolean u18 = DatFunk.Unter18(DatFunk.sHeute(), geboren);
 			//System.out.println(u18);
@@ -534,10 +499,10 @@ public class TermineErfassen implements Runnable {
 			}
 
 		}else if(!unter18 && vorjahrfrei){
-			String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
+			String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
 			//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 			if(!bef_dat.equals("T")){
-				if(DatFunk.DatumsWert("31.12."+vec.get(9)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
+				if(DatFunk.DatumsWert("31.12."+vec.get(8)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
 					//System.out.println("In Variante 4");
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");
 				}else{
@@ -567,14 +532,285 @@ public class TermineErfassen implements Runnable {
 			"@"+
 			text+
 			"@"+
-			(String)vec.get(2)+
+			(String)vec.get(1)+
+			( ((String)vec.get(2)).trim().equals("") ? "" : ","+ ((String)vec.get(2)) )+
 			( ((String)vec.get(3)).trim().equals("") ? "" : ","+ ((String)vec.get(3)) )+
 			( ((String)vec.get(4)).trim().equals("") ? "" : ","+ ((String)vec.get(4)) )+
-			( ((String)vec.get(5)).trim().equals("") ? "" : ","+ ((String)vec.get(5)) )+
 			"@"+
 			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
 		return ret;
 			
 	}
-	
+	public static String macheNeuTermin2(String pos1,String pos2,String pos3,String pos4){
+		String ret =
+			DatFunk.sHeute()+
+			"@"+
+			(thisClass==null ? "" : thisClass.kollege)+
+			"@"+
+			""+
+			"@"+
+			pos1 + ( pos1.trim().equals("") || pos2.trim().equals("") ? "" : "," )+ 
+			pos2 + ( pos2.trim().equals("") || pos3.trim().equals("") ? "" : "," )+
+			pos3 + ( pos3.trim().equals("") || pos4.trim().equals("") ? "" : "," )+
+			pos4 +  // TODO es gibt trotz Umstellung weiterhin drei Fälle in denen Kommas falsch gesetzt werden könnten: 1&3,2&4 bzw. 1&4 -> dann fehlen Kommas
+			"@"+
+			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
+		return ret;
+	}
+
+	/***********************************************************************************/
+
+		public static Object[] BehandlungenAnalysieren(String swreznum,
+				boolean doppeltOk,boolean xforceDlg,boolean alletermine,
+				Vector<String> vecx,Point pt){
+		
+		int i,j,count =0;
+		boolean doppelBeh = false;
+		int doppelBehA = 0, doppelBehB = 0;
+		boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
+		Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+		Vector<String> vec = null;
+		String copyright = "\u00AE"  ;
+		StringBuffer termbuf = new StringBuffer();
+
+		int iposindex = -1;
+		boolean erstedoppel = true;
+		
+		Object[] retObj = {null,null,null};
+
+		try{
+			// die anzahlen 1-4 werden jetzt zusammenhängend ab index 11 abgerufen
+			if(vecx==null){
+				vec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl1,anzahl2,anzahl3,anzahl4,preisgruppe", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));	
+			}else{
+				vec = vecx;
+			}
+			
+			if (vec.size() > 0){
+				termbuf = new StringBuffer();
+				if(alletermine){
+					termbuf.append((String) vec.get(0));	
+				}
+				/*
+				if(termbuf.toString().contains(swdatum)){
+					JOptionPane.showMessageDialog(null, "Dieser Termin ist am "+DatFunk.sDatInDeutsch(swdatum)+" bereits erfasst");
+					
+					return null; 
+				}
+				*/
+				Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
+				for (i=0;i<=3;i++){
+					if(vec.get(1+i).toString().trim().equals("")){
+						hMPos.get(i).hMPosNr = "./.";
+						hMPos.get(i).vOMenge = 0;
+					}else{
+						hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
+						hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
+					}
+					//Hier wart noch ein Jenseits-Fehler drin z.B. bei 6xKG,6xKG,1xEis (= 12 x KG als Doppelbehandlung plus 1 x Eis)
+					//vermutlich aufgrund von der von mir zusammengemurksten Funktion -> holePosUndAnzahlAusTerminen(String string)
+					count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
+					if (!hMPos.get(i).hMPosNr.equals("./.")){
+						//Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
+						if ( (iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
+							(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) == iposindex)	){
+							//Einzeltermin
+							count = Integer.parseInt(termine.get(1).get(termine.get(0).indexOf(hMPos.get(i).hMPosNr)).toString());
+						}else if((iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
+								(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) != iposindex)	){
+							//Doppeltermin
+							if(!erstedoppel){
+								doppelBehB = i;	
+								count = Integer.parseInt(termine.get(1).get(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr)).toString());
+							}else{
+								doppelBehA = i;
+								doppelBeh = true;
+								erstedoppel = false;
+								count = Integer.parseInt(termine.get(1).get(termine.get(0).indexOf(hMPos.get(i).hMPosNr)).toString());
+							}
+						}
+					}
+					hMPos.get(i).anzBBT = count; //außerhalb der if-Abfrage i.O. -> dann anzBBT = count(==0)
+				}
+				/*
+				System.out.println("**********************");
+					System.out.println(" Doppelbehandlung = "+doppelBeh);
+					System.out.println("Position Doppel 1 = "+doppelBehA);
+					System.out.println("Position Doppel 2 = "+doppelBehB);
+				for(int ix = 0; ix < 4;ix++){
+					System.out.println("\n    Positions-Nr. = "+hMPos.get(ix).hMPosNr);
+					System.out.println(" verordnete Menge = "+hMPos.get(ix).vOMenge);
+					System.out.println("bereits geleistet = "+hMPos.get(ix).anzBBT);
+				}
+				System.out.println("**********************");
+				*/
+
+				
+				count = 0; //Prüfen, ob es nur eine HMPos gibt, bei der anzBBT < vOMenge; dann überspringe AuswahlFenster und bestätige diese HMPos
+				//alternativ: nur die beiden Doppelbehandlungspositionen sind noch offen
+				for (i=0; i<=3; i++){
+					if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
+						count++;
+					}
+				}
+				if (count == 1){
+					for (i=0; i<=3; i++){
+						if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
+							hMPos.get(i).best = true;
+							springen = true;
+							break;
+						}
+					}
+				}else if ((count == 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
+						hMPos.get(doppelBehA).best = true;
+						hMPos.get(doppelBehB).best = true;
+						springen = true; // false: Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
+				}
+
+				count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
+				for (i=0; i<=3; i++){
+					if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
+						hMPos.get(i).best = false;
+						count++;
+					}
+				}
+				//Testen ob beide oder auch nur eine der Doppelbehandlungen voll ist.
+				if(doppelBeh){
+					if(hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ||
+							hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge	){
+						if(hMPos.get(doppelBehA).anzBBT != hMPos.get(doppelBehB).anzBBT){
+							/*
+							JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+									"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
+									"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
+									"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+							*/		
+							retObj[0] = termbuf.toString();
+							retObj[1] = 1; //bereits voll mit Doppelbehandlung
+							return 	retObj.clone();								
+						}
+						count = 4;
+					}
+				}
+				
+				if (count == 4){
+					/*
+					JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+							"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
+							"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+					*/		
+					retObj[0] = termbuf.toString();
+					retObj[1] = 2; //bereits voll normalfall
+					return 	retObj.clone();								
+				}
+
+				count = 0; // Prüfen, ob eine oder mehrere HMPos bereits übervoll bestätigt sind
+				for (i=0; i<=3; i++){
+					if (hMPos.get(i).anzBBT > hMPos.get(i).vOMenge){
+						hMPos.get(i).best = false;
+						count++;
+					}
+				}
+				if (count !=0){
+					/*
+					JOptionPane.showMessageDialog(null, "Achtung: die verordneten Mengen der Verordnung "+swreznum+ " wurden bereits überschritten!\n\n" +
+							"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
+							"Bitte prüfen Sie die Verordnungsmengen und die bestätigten Termindaten!");
+					*/		
+					retObj[0] = termbuf.toString();
+					retObj[1] = 3; //bereits übervoll
+					return 	retObj.clone();								
+
+				}
+				// TerminBestätigenAuswahlFenster anzeigen oder überspringen
+				if (xforceDlg || (!springen && (Boolean)SystemConfig.hmTerminBestaetigen.get("dlgzeigen") ) ){
+							
+							TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,(Vector<BestaetigungsDaten>)hMPos,swreznum,Integer.parseInt((String)vec.get(15)));
+							termBestAusw.pack();
+							if(pt==null){
+								termBestAusw.setLocationRelativeTo(null);
+							}else{
+								termBestAusw.setLocation(pt);
+							}
+							//
+							termBestAusw.setzeFocus();
+							termBestAusw.setModal(true);
+							termBestAusw.setVisible(true);
+							
+							
+				}else{
+					/*
+					 * Der Nutzer wünscht kein Auswahlfenster:
+					 * bestätige alle noch offenen Heilmittel
+					 *   
+					 */		
+					for (i=0; i<=3; i++){
+						hMPos.get(i).best = (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge);
+					}
+				}
+
+				count = 0; // Dialog abgebrochen
+
+				for (i=0; i < 4 ; i++){
+					count += (hMPos.get(i).best ? 1 : 0);
+				}
+				if (count == 0){
+					retObj[0] = termbuf.toString();
+					retObj[1] = 4; //abgebrochen
+					return 	retObj.clone();								
+
+				}
+				
+				count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
+				for (i=0; i<=3; i++){
+					if ((hMPos.get(i).anzBBT + (hMPos.get(i).best ? 1 : 0)) == hMPos.get(i).vOMenge){
+						count++;
+					}	
+					if (count == 4){
+						try{
+							RezTools.fuelleVolleTabelle(swreznum, (thisClass == null ?  "" : thisClass.kollege) );	
+						}catch(Exception ex){
+							JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+						}						
+
+						termbuf.append(TermineErfassen.macheNeuTermin2(
+								(String) (hMPos.get(0).best ? vec.get(1) : ""),
+								(String) (hMPos.get(1).best ? vec.get(2) : ""),
+								(String) (hMPos.get(2).best ? vec.get(3) : ""),
+								(String) (hMPos.get(3).best ? vec.get(4) : "")));
+						//hier zunächst den neuen Termin basteln;
+						retObj[0] = termbuf.toString();
+						retObj[1] = 0; //normalfall mind. eine Bahndlung konnte noch eingetragen werden und jetz Rezept voll
+						return retObj.clone(); 
+					}
+				}
+				termbuf.append(TermineErfassen.macheNeuTermin2(
+						(String) (hMPos.get(0).best ? vec.get(1) : ""),
+						(String) (hMPos.get(1).best ? vec.get(2) : ""),
+						(String) (hMPos.get(2).best ? vec.get(3) : ""),
+						(String) (hMPos.get(3).best ? vec.get(4) : "")));
+				//hier zunächst den neuen Termin basteln;
+				retObj[0] = termbuf.toString();
+				retObj[1] = -1; //Behandlung(en) konnten eingetragen werden Rezept hat noch Luft nach oben
+				return 	retObj.clone();								
+
+			}	
+			}catch(Exception ex){				
+				ex.printStackTrace();
+			}finally{
+				vec = null;
+				hMPos = null;					
+			}
+			retObj[0] = termbuf.toString();
+			retObj[1] = 5; //Rezept wurde nicht gefunden
+			return 	retObj.clone();								
+
+		
+	}
 }
+/************************************/
+

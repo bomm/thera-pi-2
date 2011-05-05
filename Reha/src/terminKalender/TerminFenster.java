@@ -177,18 +177,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public String[] terminangaben = {"" /*Name*/, "" /*RezeptNr.*/ , "" /*Startzeit*/ , "" /*Dauer*/, "" /*Endzeit*/, "" /*BlockNr.*/}; 
 	public String[] terminrueckgabe = {"" /*Name*/, "" /*RezeptNr.*/ , "" /*Startzeit*/ , "" /*Dauer*/, "" /*Endzeit*/, "" /*BlockNr.*/};
 	
-	public class BestaetigungsDaten {
-		boolean best; //Diese HMPosNr ist zu bestätigen oder nicht 
-		String hMPosNr ="./."; //Heilmittelpositionsnummer Default gesetzt auf ./.
-		int anzBBT; //Anzahl der bereits bestätigten Termine (dieser HMPosNr) 
-		int vOMenge; //verordnete Menge dieser HMPos
-		BestaetigungsDaten(boolean best, String hmPosNr, int anzBBT, int vOMenge) {
-			this.best=best;
-			this.hMPosNr=hMPosNr;
-			this.anzBBT=anzBBT;
-			this.vOMenge=vOMenge;
-		}
-	}
 	public int focus[] = {0,0};
 	public boolean hasFocus = false;
 	private RehaTPEventClass xEvent;
@@ -4396,6 +4384,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+				/*****************************************/
 				int i,j,count =0;
 				boolean doppelBeh = false;
 				int doppelBehA = 0, doppelBehB = 0;
@@ -4405,10 +4394,14 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
 				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
 				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-				Vector vec = null;
+				Vector<String> vec = null;
 				String copyright = "\u00AE"  ;
+				int iposindex = -1;
+				boolean erstedoppel = true;
+
 				try{
-					vec = SqlInfo.holeSatz("verordn", "termine,anzahl1,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl2,anzahl3,anzahl4,preisgruppe", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
+					// die anzahlen 1-4 werden jetzt zusammenhängend ab index 11 abgerufen
+					vec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl1,anzahl2,anzahl3,anzahl4,preisgruppe", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 					if (vec.size() > 0){
 						StringBuffer termbuf = new StringBuffer();
 						termbuf.append((String) vec.get(0));
@@ -4417,47 +4410,54 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							gruppeAusschalten();
 							return null; 
 						}
+						Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
 						for (i=0;i<=3;i++){
-							hMPos.get(i).hMPosNr = ((vec.get(2+i).toString().isEmpty() || // wenn keine HMPosNr. angegeben 
-									Integer.parseInt((String) vec.get(1+((i == 0) ? 0 : 11)))==0) ? // _oder_ die verordnete Anzahl dieser HMPos = 0 
-											"./." :  vec.get(2+i).toString());  // dann ./., ansonsten übernehme HMPosNr
-							hMPos.get(i).vOMenge = Integer.parseInt((String) vec.get(1+((i == 0) ? 0 : 11)));
-							if (hMPos.get(i).hMPosNr.equals("./.")){
+							if(vec.get(1+i).toString().trim().equals("")){
+								hMPos.get(i).hMPosNr = "./.";
 								hMPos.get(i).vOMenge = 0;
+							}else{
+								hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
+								hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
 							}
+							//Hier wart noch ein Jenseits-Fehler drin z.B. bei 6xKG,6xKG,1xEis (= 12 x KG als Doppelbehandlung plus 1 x Eis)
+							//vermutlich aufgrund von der von mir zusammengemurksten Funktion -> holePosUndAnzahlAusTerminen(String string)
 							count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
 							if (!hMPos.get(i).hMPosNr.equals("./.")){
-								Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
-								if (termine.get(0).indexOf(hMPos.get(i).hMPosNr) >=0){
+								//Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
+								if ( (iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
+									(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) == iposindex)	){
+									//Einzeltermin
 									count = Integer.parseInt(termine.get(1).get(termine.get(0).indexOf(hMPos.get(i).hMPosNr)).toString());
+								}else if((iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
+										(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) != iposindex)	){
+									//Doppeltermin
+									if(!erstedoppel){
+										doppelBehB = i;	
+										count = Integer.parseInt(termine.get(1).get(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr)).toString());
+									}else{
+										doppelBehA = i;
+										doppelBeh = true;
+										erstedoppel = false;
+										count = Integer.parseInt(termine.get(1).get(termine.get(0).indexOf(hMPos.get(i).hMPosNr)).toString());
+									}
 								}
 							}
 							hMPos.get(i).anzBBT = count; //außerhalb der if-Abfrage i.O. -> dann anzBBT = count(==0)
 						}
-
-						//Erkenne Doppelbehandlung
-						for (i = 0; i<3; i++){ // 3 braucht nicht getestet werden
-							for (j = i+1; j<=3; j++){ // 0 braucht nicht getestet werden
-								if (!(hMPos.get(i).vOMenge == 0) && hMPos.get(i).hMPosNr.equals(hMPos.get(j).hMPosNr) && (hMPos.get(i).vOMenge == hMPos.get(j).vOMenge)){ 
-									//eine HMPosNr kommt doppelt vor 
-									//&& die verordnete Menge ist identisch
-									// -> Die oben ermitelte anzBBT wurde doppelt ermittelt -> sie muss halbiert werden (strenge Annahme: beide wurden identisch oft bestätigt):
-									try{
-										hMPos.get(i).anzBBT /= 2;
-										hMPos.get(j).anzBBT /= 2;
-									}catch (Exception Ex){
-										JOptionPane.showMessageDialog(null, "Es wurde eine Doppelbehandlung erkannt\n die bestätigten Termine sind nicht gleichmäßig verteilt");
-									}
-									doppelBeh = true;
-									doppelBehA = i;
-									doppelBehB = j;
-									i=3;
-									j=4;
-									break;
-								}
-							}
+						/*
+						System.out.println("**********************");
+							System.out.println(" Doppelbehandlung = "+doppelBeh);
+							System.out.println("Position Doppel 1 = "+doppelBehA);
+							System.out.println("Position Doppel 2 = "+doppelBehB);
+						for(int ix = 0; ix < 4;ix++){
+							System.out.println("\n    Positions-Nr. = "+hMPos.get(ix).hMPosNr);
+							System.out.println(" verordnete Menge = "+hMPos.get(ix).vOMenge);
+							System.out.println("bereits geleistet = "+hMPos.get(ix).anzBBT);
 						}
-						
+						System.out.println("**********************");
+						*/
+
+					
 						count = 0; //Prüfen, ob es nur eine HMPos gibt, bei der anzBBT < vOMenge; dann überspringe AuswahlFenster und bestätige diese HMPos
 						//alternativ: nur die beiden Doppelbehandlungspositionen sind noch offen
 						for (i=0; i<=3; i++){
@@ -4486,6 +4486,21 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								count++;
 							}
 						}
+						//Testen ob beide oder auch nur eine der Doppelbehandlungen voll ist.
+						if(doppelBeh){
+							if(hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ||
+									hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge	){
+								if(hMPos.get(doppelBehA).anzBBT != hMPos.get(doppelBehB).anzBBT){
+									JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+											"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
+											"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
+											"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+									return null;									
+								}
+								count = 4;
+							}
+						}
+						
 						if (count == 4){
 							JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
 									"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
@@ -4508,7 +4523,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						// TerminBestätigenAuswahlFenster anzeigen oder überspringen
 						if ((!springen && (Boolean)SystemConfig.hmTerminBestaetigen.get("dlgzeigen") ) || xforceDlg){ 
-									TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,hMPos,sworigreznum,Integer.parseInt((String)vec.get(15)));
+									TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,(Vector<BestaetigungsDaten>)hMPos,sworigreznum,Integer.parseInt((String)vec.get(15)));
 									termBestAusw.pack();
 									termBestAusw.setLocation(computeLocation(termBestAusw,swbeginn,swende));
 									termBestAusw.setzeFocus();
@@ -4550,18 +4565,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}	
 
 						termbuf.append(macheNeuTermin(DatFunk.sDatInDeutsch(swdatum), ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),"",
-								(String) (hMPos.get(0).best ? vec.get(2) : ""),
-								(String) (hMPos.get(1).best ? vec.get(3) : ""),
-								(String) (hMPos.get(2).best ? vec.get(4) : ""),
-								(String) (hMPos.get(3).best ? vec.get(5) : "")));
+								(String) (hMPos.get(0).best ? vec.get(1) : ""),
+								(String) (hMPos.get(1).best ? vec.get(2) : ""),
+								(String) (hMPos.get(2).best ? vec.get(3) : ""),
+								(String) (hMPos.get(3).best ? vec.get(4) : "")));
 						/********************************/
-						boolean unter18 =  ( ((String)vec.get(7)).equals("T") ? true : false );
-						boolean vorjahrfrei = ( ((String)vec.get(8)).equals("") ? false : true );
+						boolean unter18 =  ( ((String)vec.get(6)).equals("T") ? true : false );
+						boolean vorjahrfrei = ( ((String)vec.get(7)).equals("") ? false : true );
 						if(!unter18 && !vorjahrfrei){
 							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
 						}else if(unter18 && !vorjahrfrei){
 							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ändern;
-							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(9)+"'" ));
+							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(8)+"'" ));
 							////System.out.println("Geboren = "+geboren);
 							if(DatFunk.Unter18(DatFunk.sDatInDeutsch(swdatum), geboren)){
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
@@ -4570,9 +4585,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}
 
 						}else if(!unter18 && vorjahrfrei){
-							String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" );
+							String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
 							if(!bef_dat.equals("T")){
-								if(DatFunk.DatumsWert("31.12."+vec.get(9)) < DatFunk.DatumsWert(swdatum) ){
+								if(DatFunk.DatumsWert("31.12."+vec.get(8)) < DatFunk.DatumsWert(swdatum) ){
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
 								}else{
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");					
@@ -4614,6 +4629,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					vec = null;
 					hMPos = null;					
 				}
+				/***********************************************************************/
 				return null;
 			}
 		}.execute();

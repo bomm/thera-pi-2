@@ -96,6 +96,7 @@ import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
+import terminKalender.TermineErfassen;
 import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
 import abrechnung.RezeptGebuehrRechnung;
@@ -1551,61 +1552,67 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(cmd.equals("terminplus")){
 				if(rezGeschlossen()){return;}
 				try{
-				Vector<String> vec = new Vector<String>();
-				vec.add(DatFunk.sHeute());
-				vec.add("");
-				vec.add("");
-				vec.add( (((String)Reha.thisClass.patpanel.vecaktrez.get(48)).trim().equals("") ? "" : (String)Reha.thisClass.patpanel.vecaktrez.get(48)) +
-						(((String)Reha.thisClass.patpanel.vecaktrez.get(49)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(49)) +
-						(((String)Reha.thisClass.patpanel.vecaktrez.get(50)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(50)) +
-						(((String)Reha.thisClass.patpanel.vecaktrez.get(51)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(51)) 
-						);
-				vec.add(DatFunk.sDatInSQL(DatFunk.sHeute()));
-				dtermm.addRow((Vector<String>)vec.clone());
-				tabaktterm.validate();
-				int tanzahl = tabaktterm.getRowCount();
-				anzahlTermine.setText("Anzahl Terimine: "+Integer.toString(tanzahl));
-				termineSpeichern();
-				starteTests();
+					//Nur zum Test der Funktion im Normalbetrieb nicht!!!! aktivieren
+					/*
+					System.out.println("****vorher*****");
+					System.out.println(RezTools.holePosUndAnzahlAusRezept((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
+					System.out.println(RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
+					*/
+					//Diese Ergebnisse könnten in einer neuen Funktion eingesetzt werden so daß sie die Aufgaben von Drud's Funktion nachbilden
 
-
-				tabaktterm.setRowSelectionInterval(tanzahl-1, tanzahl-1);
-				try{
-					if(tanzahl== Integer.parseInt( Reha.thisClass.patpanel.vecaktrez.get(3))){
-						RezTools.fuelleVolleTabelle( ((String)Reha.thisClass.patpanel.vecaktrez.get(1)) , Reha.aktUser);					
+					//Object[] objTerm = BehandlungenAnalysieren(Reha.thisClass.patpanel.vecaktrez.get(1),false,false,false,((Vector<String>)vec.clone()),null);
+					Object[] objTerm = TermineErfassen.BehandlungenAnalysieren(Reha.thisClass.patpanel.vecaktrez.get(1),false,false,false,null,null);
+					//System.out.println("objTerm[0]="+objTerm[0]);
+					//System.out.println("objTerm[1]="+objTerm[1]);
+					if( (Integer)objTerm[1] <= 0){
+						Vector<String> vec = new Vector<String>();
+						vec.add(DatFunk.sHeute());
+						vec.add("");
+						vec.add("");
+						vec.add( ((String)objTerm[0]).split("@")[3]);
+						/*
+						vec.add( (((String)Reha.thisClass.patpanel.vecaktrez.get(48)).trim().equals("") ? "" : (String)Reha.thisClass.patpanel.vecaktrez.get(48)) +
+								(((String)Reha.thisClass.patpanel.vecaktrez.get(49)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(49)) +
+								(((String)Reha.thisClass.patpanel.vecaktrez.get(50)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(50)) +
+								(((String)Reha.thisClass.patpanel.vecaktrez.get(51)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(51)) 
+								);
+						*/		
+						vec.add(DatFunk.sDatInSQL(DatFunk.sHeute()));
+						dtermm.addRow((Vector<String>)vec.clone());
+						termineSpeichern();
+						starteTests();
+						if((Integer)objTerm[1] == 0){
+							JOptionPane.showMessageDialog(null,"Das Rezept ist jetzt voll!");
+						}
 					}
-				}catch(Exception ex){
-					JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
-				}
-				/*
-				int max = ((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().getMaximum();
+					tabaktterm.validate();
+					int tanzahl = tabaktterm.getRowCount();
+					anzahlTermine.setText("Anzahl Terimine: "+Integer.toString(tanzahl));
+
+					tabaktterm.setRowSelectionInterval(tanzahl-1, tanzahl-1);
+					try{
+						if(tanzahl== Integer.parseInt( Reha.thisClass.patpanel.vecaktrez.get(3))){
+							RezTools.fuelleVolleTabelle( ((String)Reha.thisClass.patpanel.vecaktrez.get(1)) , Reha.aktUser);					
+						}
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+					}
 				
-				Rectangle visible = ((JViewport)tabaktterm.getParent()).getVisibleRect();
-			    Rectangle bounds = ((JViewport)tabaktterm.getParent()).getBounds();
-			    visible.y = bounds.height - visible.height;
-			    ((JViewport)tabaktterm.getParent()).scrollRectToVisible(visible);
-			    */
-			    //((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().setValue(max+1);
-			    /*
-				((JScrollPane)tabaktterm.getParent().getParent()).getVerticalScrollBar().setValue(max+1);
-				((JScrollPane)tabaktterm.getParent().getParent()).validate();
-				//tabaktterm.scrollRectToVisible(tabaktterm.getCellRect(tanzahl+1, 0, false));
-				 
-				 */
-				SwingUtilities.invokeLater(new Runnable(){
-					public void run(){
-						tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
-					}
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
+						}
+						
+					});
 					
-				});
-				
-				tabaktterm.validate();
-				tabaktterm.repaint();
-				//Nur zum Test der Funktion im Normalbetrieb nicht!!!! aktivieren
-				//System.out.println(RezTools.holePosUndAnzahlAusRezept((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
-				//System.out.println(RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
-
-				//tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
+					tabaktterm.validate();
+					tabaktterm.repaint();
+					/*
+					System.out.println("****nachher*****");
+					System.out.println(RezTools.holePosUndAnzahlAusRezept((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
+					System.out.println(RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
+					*/
+					//RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1));
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}

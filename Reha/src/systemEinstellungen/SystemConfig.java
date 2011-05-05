@@ -1025,7 +1025,7 @@ public class SystemConfig {
 		if ( inif.getStringProperty("Termine", "HMDialogZeigen") != null ){
 			hmTerminBestaetigen.put("dlgzeigen",((Integer)inif.getIntegerProperty("Termine", "HMDialogZeigen") == 1 ? true : false) );
 		}else{
-			inif.setStringProperty("Termine", "HMDialogZeigen","1",null);
+			inif.setStringProperty("Termine", "HMDialogZeigen","0",null);
 			mustsave = true;
 		}
 
