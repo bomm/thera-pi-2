@@ -833,7 +833,7 @@ public class TermineErfassen implements Runnable {
 	}
 		private static int welcheIstMaxInt(int i1,int i2){
 			if(i1 > i2){return 1;}
-			if(i1==1){return 0;}
+			if(i1==i2){return 0;}
 			return 2;
 		}
 }
