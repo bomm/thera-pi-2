@@ -76,43 +76,76 @@ public class RezTools {
 	}
 	public static Vector<ArrayList<?>> holePosUndAnzahlAusTerminen(String xreznr){
 		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
-		Vector<String> termvec = holeEinzelZiffernAusRezept(xreznr,"");
+
+		Vector<String> rezvec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,"+
+				"pos4", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
+		Vector<String> termvec = holeEinzelZiffernAusRezept(null,rezvec.get(0));
+
+		boolean doppelbeh = false;
+		boolean durchlaufen = false;
+		boolean testen = true;
+		int doppelbehindex = -1;
+		String doppelbehpos = "";
+		
+		ArrayList<String> positionen = new ArrayList<String>();
 		String behandlungen = null;
 		String[] einzelbehandlung = null;
-		ArrayList<String> positionen = new ArrayList<String>();
 		ArrayList<Integer>anzahl = new ArrayList<Integer>();
-		int trefferbei = -1;
+		
+		String aktpos = "";
+		for(int i = 1; i < 5; i++ ){
+			if(rezvec.get(i).trim().equals("")){
+				break;
+			}else if((i == 1)){
+				positionen.add(String.valueOf(rezvec.get(i)));
+				anzahl.add(0);
+				aktpos = String.valueOf(rezvec.get(i));
+				
+			}else{
+				if(rezvec.get(i).equals(aktpos)){
+					doppelbeh = true;
+					if(testen){
+						doppelbehindex = i;
+						doppelbehpos = String.valueOf(rezvec.get(i));
+						testen = false;
+					}
+				}
+				positionen.add(String.valueOf(rezvec.get(i)));
+				anzahl.add(0);
+				aktpos = String.valueOf(rezvec.get(i));
+			}
+		}
+		int index = -1;
 		
 		for(int i = 0; i < termvec.size();i++){
 			behandlungen = termvec.get(i);
 			if(! behandlungen.equals("")){
 				einzelbehandlung = behandlungen.split(",");
-				//Scheiße weil Doppelbehandlungen zusammengefaßt werden
-				//Wird verwendet von: TerminFenster.terminBestaetigen()
-				//dort werden Doppelbehandlungen nachträglich erkannt und korrigiert
-				String aktpos = "";
+				durchlaufen = false;
 				for(int i2 = 0; i2 < einzelbehandlung.length;i2++){
-					//System.out.println("Durchlauf = "+i2);
-					trefferbei = positionen.indexOf(einzelbehandlung[i2]);
-					if( (trefferbei >= 0)  && 
-						(positionen.lastIndexOf(einzelbehandlung[i2]) == trefferbei ) &&
-						(positionen.size() >= (i2+1)) ){
-						anzahl.set(i2, anzahl.get(i2) +1 );
-					}else if( (trefferbei >= 0)  && 
-							(positionen.lastIndexOf(einzelbehandlung[i2]) != trefferbei ) && 
-							(positionen.size() >= (i2+1)) ){
-						anzahl.set(i2, anzahl.get(i2) +1 );
-						
+					if(doppelbeh){
+						index = positionen.indexOf(einzelbehandlung[i2]);
+						if( (einzelbehandlung[i2].equals(doppelbehpos)) && (!durchlaufen)){
+							durchlaufen = true; 
+							anzahl.set(index, anzahl.get(index)+1);
+						}else if((einzelbehandlung[i2].equals(doppelbehpos)) && (durchlaufen)){
+							anzahl.set(doppelbehindex, anzahl.get(doppelbehindex)+1);
+						}else{
+							anzahl.set(index, anzahl.get(index)+1);
+						}
 					}else{
-						positionen.add(einzelbehandlung[i2]);
-						anzahl.add(1);
+						index = positionen.indexOf(einzelbehandlung[i2]); 
+						anzahl.set(index, anzahl.get(index)+1);
 					}
-					aktpos = String.valueOf(einzelbehandlung[i2]);
 				}
 			}
-		}
-		//System.out.println("Positionen = "+positionen);
-		//System.out.println("Anzahlen = "+anzahl);
+		}	
+		for(int i = (anzahl.size()-1); i >= 0; i--){
+			if(anzahl.get(i)==0){
+				anzahl.remove(i);
+				positionen.remove(i);
+			}	
+		}	
 		xvec.add((ArrayList<?>)positionen.clone());
 		xvec.add((ArrayList<?>)anzahl.clone());
 		return xvec;

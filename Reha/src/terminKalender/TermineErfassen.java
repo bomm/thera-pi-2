@@ -6,6 +6,7 @@ import hauptFenster.Reha;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -549,14 +550,36 @@ public class TermineErfassen implements Runnable {
 			"@"+
 			""+
 			"@"+
+			/*
 			pos1 + ( pos1.trim().equals("") || pos2.trim().equals("") ? "" : "," )+ 
 			pos2 + ( pos2.trim().equals("") || pos3.trim().equals("") ? "" : "," )+
 			pos3 + ( pos3.trim().equals("") || pos4.trim().equals("") ? "" : "," )+
-			pos4 +  // TODO es gibt trotz Umstellung weiterhin drei Fälle in denen Kommas falsch gesetzt werden könnten: 1&3,2&4 bzw. 1&4 -> dann fehlen Kommas
+			pos4 +  
+			*/
+			machePositionsString(Arrays.asList(pos1,pos2,pos3,pos4))+
 			"@"+
 			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
 		return ret;
 	}
+	private static String machePositionsString(List<String> list){
+		String ret = "";
+		for(int i = 0; i < list.size();i++){
+			if(!list.get(i).equals("")){
+				if(i==0){
+					ret = ret+list.get(i);
+				}else{
+					if(ret.length() > 0){
+						//erstes element war nicht leer
+						ret = ret+","+list.get(i);
+					}else{
+						ret = ret+list.get(i);
+					}
+				}
+			}
+		}
+		return String.valueOf(ret);
+	}
+	
 
 	/***********************************************************************************/
 
@@ -603,6 +626,8 @@ public class TermineErfassen implements Runnable {
 				}
 				*/
 				Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
+				//System.out.println(termine.get(0));
+				//System.out.println(termine.get(1));
 				for (i=0;i<=3;i++){
 					if(vec.get(1+i).toString().trim().equals("")){
 						hMPos.get(i).hMPosNr = "./.";
