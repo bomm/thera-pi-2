@@ -103,7 +103,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 	private JXPanel getContent(){
 		content = new JXPanel();
 		//				 1     2     3    4     5     6      7    8      9    10      11   12    13   14     15  
-		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,40dlu:g,2dlu,50dlu,5dlu,50dlu,2dlu,40dlu,2dlu,35dlu,10dlu";
+		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,40dlu:g,2dlu,50dlu,5dlu,50dlu,2dlu,40dlu,1dlu,50dlu,10dlu";
 		//				 1     2  3     4       5    6      7
 		String ywerte = "10dlu,p,2dlu,150dlu:g,5dlu,80dlu,0dlu";	
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -135,17 +135,19 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		content.add(but,cc.xy(10,2));
 
 
-		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		buts[0].setMnemonic('a');
 		
-		lab = new JLabel("noch offen:");
-		content.add(lab,cc.xy(14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		lab = new JLabel("Geldeingang");
+		content.add(lab,cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		tfs[0] = new JRtaTextField("F",true,"6.2","");
 		tfs[0].setHorizontalAlignment(SwingConstants.RIGHT);
 		tfs[0].setText("0,00");
 		tfs[0].setName("offen");
 		tfs[0].addKeyListener(kl);
-		content.add(tfs[0],cc.xy(16,2));
+		content.add(tfs[0],cc.xy(14,2));
+		
+		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(16,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		buts[0].setMnemonic('a');
+
 		while(!OffenePosten.DbOk){
 			
 		}
@@ -305,35 +307,55 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 			}
 		}.execute();
 	}
+	private void setzeBezahlBetrag(final int i){
+		tfs[0].setText(dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(i), 6)));
+	}
 	private void doAusbuchen(){
-		if(!tfs[0].getText().equals("0,00")){
-			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den Restbetrag von "+tfs[0].getText()+" in der Rechnung speichern","Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-			if( ! (anfrage == JOptionPane.YES_OPTION) ){
-				return;
-			}
-		}
+
+		
 		int row = tab.getSelectedRow();
 		if(row < 0){
 			JOptionPane.showMessageDialog(null, "Keine Rechnung zum Ausbuchen ausgewählt");
 			return;
 		}
-		String offeninTabelle = dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6));
+		BigDecimal nochoffen = BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6));
+		BigDecimal eingang = BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) );
+		BigDecimal restbetrag = nochoffen.subtract(eingang);
+
+
+		/*String offeninTabelle = dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6));
 		if(offeninTabelle.equals("0,00") && tfs[0].getText().equals("0,00")){
 			JOptionPane.showMessageDialog(null,"Diese Rechnung ist bereits auf bezahlt gesetzt");
 			return;
+		}*/
+		if(nochoffen.equals(BigDecimal.valueOf(Double.parseDouble("0.0")))){
+			JOptionPane.showMessageDialog(null,"Diese Rechnung ist bereits auf bezahlt gesetzt");
+			return;
 		}
+		/*
 		suchOffen = suchOffen.subtract( BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6)) );
 		suchOffen = suchOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
 
+		
 		gesamtOffen = gesamtOffen.subtract( BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6)) );
 		gesamtOffen = gesamtOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
-
+		
 		
 		tabmod.setValueAt(Double.parseDouble(tfs[0].getText().replace(",", ".")), tab.convertRowIndexToModel(row), 6);
+		*/
+		suchOffen = suchOffen.subtract( eingang );
+		//suchOffen = suchOffen.add( restbetrag );
 
+		
+		gesamtOffen = gesamtOffen.subtract( eingang );
+		//gesamtOffen = gesamtOffen.add( restbetrag );
+		
+		
+		tabmod.setValueAt((Double)restbetrag.doubleValue(), tab.convertRowIndexToModel(row), 6);
 
+		
 		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 15);
-		String cmd = "update rliste set r_offen='"+tfs[0].getText().replace(",", ".")+"', r_bezdatum='"+
+		String cmd = "update rliste set r_offen='"+Double.toString(restbetrag.doubleValue()).replace(",", ".")+"', r_bezdatum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id ='"+Integer.toString(id)+"' LIMIT 1";
 		
 		if(!OffenePosten.testcase){
@@ -638,6 +660,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 	                if (lsm.isSelectedIndex(i)) {
 	                	benachrichtigeReha(i);
 	                	benachrichtigeBillPanel(i);
+	                	setzeBezahlBetrag(i);
 	                    break;
 	                }
 	            }
