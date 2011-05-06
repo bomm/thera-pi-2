@@ -703,21 +703,16 @@ public class TermineErfassen implements Runnable {
 						count++;
 					}
 				}
+				
 				//Testen ob beide oder auch nur eine der Doppelbehandlungen voll ist.
+				
 				if(doppelBeh){
-					if(hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ||
-							hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge	){
-						if(hMPos.get(doppelBehA).anzBBT != hMPos.get(doppelBehB).anzBBT){
-							/*
-							JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-									"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
-									"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
-									"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
-							*/		
-							retObj[0] = termbuf.toString();
-							retObj[1] = 1; //bereits voll mit Doppelbehandlung
-							return 	retObj.clone();								
-						}
+					 
+					int max = welcheIstMaxInt(hMPos.get(doppelBehA).vOMenge, hMPos.get(doppelBehB).vOMenge);
+					if(max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge){
+						count = 4;
+					}
+					if(max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge){
 						count = 4;
 					}
 				}
@@ -836,6 +831,11 @@ public class TermineErfassen implements Runnable {
 
 		
 	}
+		private static int welcheIstMaxInt(int i1,int i2){
+			if(i1 > i2){return 1;}
+			if(i1==1){return 0;}
+			return 2;
+		}
 }
 /************************************/
 

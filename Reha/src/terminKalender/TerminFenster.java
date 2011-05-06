@@ -4488,16 +4488,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						//Testen ob beide oder auch nur eine der Doppelbehandlungen voll ist.
 						if(doppelBeh){
-							if(hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ||
-									hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge	){
-								if(hMPos.get(doppelBehA).anzBBT != hMPos.get(doppelBehB).anzBBT){
-									JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-											"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
-											"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
-											"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
-									return null;									
-								}
-								count = 4;
+							
+							int max = welcheIstMaxInt( hMPos.get(doppelBehA).vOMenge, hMPos.get(doppelBehB).vOMenge);
+							if(max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge){
+								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+										"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
+										"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
+										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+								return null;								
+
+							}
+							if(max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge){
+								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+										"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
+										"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
+										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+								return null;									
 							}
 						}
 						
@@ -4634,6 +4640,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 		}.execute();
 	}
+	private static int welcheIstMaxInt(int i1,int i2){
+		if(i1 > i2){return 1;}
+		if(i1==1){return 0;}
+		return 2;
+	}
+
 	public static String macheNeuTermin(String datum, String kollege,String text,String pos1,String pos2,String pos3,String pos4){
 		String ret =
 			datum+
