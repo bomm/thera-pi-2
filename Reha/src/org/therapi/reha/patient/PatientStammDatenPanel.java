@@ -1,23 +1,39 @@
 package org.therapi.reha.patient;
 
+import hauptFenster.AktiveFenster;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TooManyListenersException;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.StringTools;
@@ -25,6 +41,9 @@ import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import events.PatStammEvent;
+import events.PatStammEventClass;
 
 
 public class PatientStammDatenPanel extends JXPanel{
@@ -85,6 +104,42 @@ public class PatientStammDatenPanel extends JXPanel{
         parseHTML(false);
         JScrollPane jscr = JCompTools.getTransparentScrollPane(htmlPane);
         jscr.validate();
+        DropTarget dndt = new DropTarget();
+		DropTargetListener dropTargetListener =
+			 new DropTargetListener() {
+			  public void dragEnter(DropTargetDragEvent e) {}
+			  public void dragExit(DropTargetEvent e) {}
+			  public void dragOver(DropTargetDragEvent e) {}
+			  public void drop(DropTargetDropEvent e) {
+				  String mitgebracht = "";
+			    try {
+			      Transferable tr = e.getTransferable();
+			      DataFlavor[] flavors = tr.getTransferDataFlavors();
+			      for (int i = 0; i < flavors.length; i++){
+			        	mitgebracht  = (String) tr.getTransferData(flavors[i]);
+			      }
+			      ////System.out.println(mitgebracht);
+			      if(mitgebracht.indexOf("°") >= 0){
+			    	  if( ! mitgebracht.split("°")[0].contains("TERMDAT")){
+			    		  return;
+			    	  }
+			    	  doPatientDrop(mitgebracht.split("°")[2].trim());
+			      }
+			      ////System.out.println(mitgebracht+" auf Patientenstamm gedropt");
+			    } catch (Throwable t) { t.printStackTrace(); }
+			    // Ein Problem ist aufgetreten
+			    e.dropComplete(true);
+			  }
+			  public void dropActionChanged(
+			         DropTargetDragEvent e) {}
+		};
+		try {
+			dndt.addDropTargetListener(dropTargetListener);
+		} catch (TooManyListenersException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}        
+		htmlPane.setDropTarget(dndt);
 		return jscr;
 	}
 	private String makeLink(String toLink,String linkTarget){
@@ -369,6 +424,83 @@ public class PatientStammDatenPanel extends JXPanel{
 		return jpan;
 		
 	}
+	
+	private void doPatientDrop(String rez_nr){
+		String pat_int = "";
+		String reznr = rez_nr;
+		boolean inhistorie = false;
+		int ind = reznr.indexOf("\\");
+		if(ind >= 0){
+			reznr = reznr.substring(0,ind);
+		}
+		
+		Vector<String> vec = SqlInfo.holeSatz("verordn", "pat_intern", "rez_nr='"+reznr+"'",(List<?>) new ArrayList<String>() );
+		if(vec.size() == 0){
+			vec = SqlInfo.holeSatz("lza", "pat_intern", "rez_nr='"+reznr+"'",(List<?>) new ArrayList<String>() );
+			if(vec.size() == 0){
+				JOptionPane.showMessageDialog(null,"Rezept weder im aktuellen Rezeptstamm noch in der Historie vorhanden!\nIst die eingetragene Rezeptnummer korrekt?");
+				return;
+			}else{
+				JOptionPane.showMessageDialog(null,"Rezept ist bereits abgerechnet und somit in der Historie des Patienten!");
+				inhistorie = true;
+			}
+		}
+		vec = SqlInfo.holeSatz("pat5", "pat_intern", "pat_intern='"+vec.get(0)+"'",(List<?>) new ArrayList<String>() );
+		if(vec.size() == 0){
+			JOptionPane.showMessageDialog(null,"Patient mit zugeordneter Rezeptnummer -> "+reznr+" <- wurde nicht gefunden");
+			return;
+		}
+		pat_int = (String) vec.get(0);
+		JComponent patient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+		final String xreznr = reznr;
+		final boolean xinhistorie = inhistorie;
+		if(patient == null){
+			final String xpat_int = pat_int;
+			new SwingWorker<Void,Void>(){
+				protected Void doInBackground() throws Exception {
+					JComponent xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+					while( (xpatient == null) ){
+						Thread.sleep(20);
+						xpatient = AktiveFenster.getFensterAlle("PatientenVerwaltung");
+					}
+					while(  (!AktuelleRezepte.initOk) ){
+						Thread.sleep(20);
+					}
+					
+					String s1 = "#PATSUCHEN";
+					String s2 = (String) xpat_int;
+					PatStammEvent pEvt = new PatStammEvent(Reha.thisClass.terminpanel);
+					pEvt.setPatStammEvent("PatSuchen");
+					pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+					PatStammEventClass.firePatStammEvent(pEvt);
+					if(xinhistorie){
+						Reha.thisClass.patpanel.getTab().setSelectedIndex(1);	
+					}else{
+						Reha.thisClass.patpanel.getTab().setSelectedIndex(0);
+					}
+
+					return null;
+				}
+				
+			}.execute();
+		}else{
+			Reha.thisClass.progLoader.ProgPatientenVerwaltung(1);
+			String s1 = "#PATSUCHEN";
+			String s2 = (String) pat_int;
+			PatStammEvent pEvt = new PatStammEvent(Reha.thisClass.terminpanel);
+			pEvt.setPatStammEvent("PatSuchen");
+			pEvt.setDetails(s1,s2,"#REZHOLEN-"+xreznr) ;
+			PatStammEventClass.firePatStammEvent(pEvt);
+			if(xinhistorie){
+				Reha.thisClass.patpanel.getTab().setSelectedIndex(1);	
+			}else{
+				Reha.thisClass.patpanel.getTab().setSelectedIndex(0);
+			}
+
+		}		
+	}
+
 	
 	
 }

@@ -170,9 +170,13 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			}
 		});
 	}
+	public void setOnBillPanel(String suchkrit){
+		tfs[0].setText(suchkrit);
+		starteSuche();
+	}
 	private JXPanel getEdits(){
 		
-		//                1    2    3     4        5    6     7
+		//                1       2     3     4        5    6     7
 		String xwerte = "5dlu:g,60dlu:g,2dlu,75dlu:g,2dlu,40dlu:g,5dlu:g";
 		//                1    2  3   4  5  6   7   8  9  10  11 12 13   14 15  16  17  18 19   20  21 22  23 24  25  26 27
 		String ywerte = "15dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,10dlu,p,15dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu";
@@ -197,7 +201,8 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		});
 		jpan.add(tfs[0],cc.xy(4,2));
 		
-		JButton but = ButtonTools.macheButton("los...", "suchen", al);
+		JButton but = ButtonTools.macheButton("suchen", "suchen", al);
+		but.setMnemonic('s');
 		jpan.add(but,cc.xy(6,2));
 		
 		lab = new JLabel("Name1");
@@ -1180,7 +1185,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			if(!tabmod.getValueAt(i, 19).toString().trim().equals(aktrezept) ){
 				try {
 					druckKopie.setDaten(namenvornamen,status,aktrezept,position,anzahl,abrtage,einzelpreis,preis,rezgeb,mitpauschale);
-					System.out.println("druckKopie -1");
+					//System.out.println("druckKopie -1");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1205,7 +1210,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 				if(i== (lang-1)){
 					try {
 						druckKopie.setDaten(namenvornamen,status,aktrezept,position,anzahl,abrtage,einzelpreis,preis,rezgeb,mitpauschale);
-						System.out.println("druckKopie -1");
+						//System.out.println("druckKopie -1");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1226,7 +1231,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 				mitpauschale = ((Double)tabmod.getValueAt(i, 20) > 0. ? true : false);
 				try {
 					druckKopie.setDaten(namenvornamen,status,aktrezept,position,anzahl,abrtage,einzelpreis,preis,rezgeb,mitpauschale);
-					System.out.println("druckKopie -2");
+					//System.out.println("druckKopie -2");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1242,7 +1247,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 				}
 				status = String.valueOf(tabmod.getValueAt(i, 6).toString().trim());
 				aktrezept = String.valueOf(tabmod.getValueAt(i, 19).toString().trim());
-				mitpauschale = ((Double)tabmod.getValueAt(0, 20) > 0. ? true : false);
+				mitpauschale = ((Double)tabmod.getValueAt(i, 20) > 0. ? true : false);
 			}
 		}
 		druckKopie.setIKundRnr(OffenePosten.aktIK,rnummerAlt.getText(),hmAdresse);

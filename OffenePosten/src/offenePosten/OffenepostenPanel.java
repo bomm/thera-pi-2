@@ -37,6 +37,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+import RehaIO.RehaIOMessages;
+import RehaIO.SocketClient;
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
@@ -100,8 +102,8 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 	
 	private JXPanel getContent(){
 		content = new JXPanel();
-		//				 1     2     3    4     5     6      7    8      9    10    11   12    13   14     15  
-		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,50dlu:g,5dlu,50dlu,2dlu,40dlu,2dlu,35dlu,10dlu";
+		//				 1     2     3    4     5     6      7    8      9    10      11   12    13   14     15  
+		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,40dlu:g,2dlu,50dlu,5dlu,50dlu,2dlu,40dlu,2dlu,35dlu,10dlu";
 		//				 1     2  3     4       5    6      7
 		String ywerte = "10dlu,p,2dlu,150dlu:g,5dlu,80dlu,0dlu";	
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -110,12 +112,12 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		
 		JLabel lab = new JLabel("Suchkriterium");
 		content.add(lab,cc.xy(2,2));
-		String[] args = {"Rechnungsnummer =","Rechnungsnummer >","Rechnungsnummer <",
-				"Rechnungsbetrag =","Rechnungsbetrag >","Rechnungsbetrag <",
-				"Noch offen =","Noch offen >","Noch offen <",
+		String[] args = {"Rechnungsnummer =","Rechnungsnummer >=","Rechnungsnummer <=",
+				"Rechnungsbetrag =","Rechnungsbetrag >=","Rechnungsbetrag <=",
+				"Noch offen =","Noch offen >=","Noch offen <=",
 				"R_Kasse =","R_Kasse enthalten in",
 				"R_Name =","R_Name enthalten in",
-				"Rechnungsdatum =","Rechnungsdatum >","Rechnungsdatum <"};
+				"Rechnungsdatum =","Rechnungsdatum >=","Rechnungsdatum <="};
 
 		combo = new JRtaComboBox(args);
 		content.add(combo,cc.xy(4,2));
@@ -126,18 +128,24 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		suchen.setName("suchen");
 		suchen.addKeyListener(kl);
 		content.add(suchen,cc.xy(8,2));
+		
+		//neu
+		JButton but = ButtonTools.macheButton("suchen", "suchen", al);
+		but.setMnemonic('s');
+		content.add(but,cc.xy(10,2));
 
-		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(10,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+
+		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		buts[0].setMnemonic('a');
 		
 		lab = new JLabel("noch offen:");
-		content.add(lab,cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		content.add(lab,cc.xy(14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		tfs[0] = new JRtaTextField("F",true,"6.2","");
 		tfs[0].setHorizontalAlignment(SwingConstants.RIGHT);
 		tfs[0].setText("0,00");
 		tfs[0].setName("offen");
 		tfs[0].addKeyListener(kl);
-		content.add(tfs[0],cc.xy(14,2));
+		content.add(tfs[0],cc.xy(16,2));
 		while(!OffenePosten.DbOk){
 			
 		}
@@ -174,7 +182,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
-		content.add(jscr,cc.xyw(2,4,13));
+		content.add(jscr,cc.xyw(2,4,15));
 		
 		JXPanel auswertung = new JXPanel();
 		String xwerte2 = "10dlu,150dlu,5dlu,100dlu";
@@ -261,6 +269,9 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 					doAusbuchen();
 					tabmod.addTableModelListener(getInstance());
 					setzeFocus();
+				}
+				if(cmd.equals("suchen")){
+					sucheEinleiten();
 				}
 			}
 			
@@ -376,28 +387,28 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 			cmd = "select * from rliste where r_nummer ='"+suchen.getText().trim()+"'";
 			break;
 		case 1:
-			cmd = "select * from rliste where r_nummer >'"+suchen.getText().trim()+"'";
+			cmd = "select * from rliste where r_nummer >='"+suchen.getText().trim()+"'";
 			break;
 		case 2:
-			cmd = "select * from rliste where r_nummer <'"+suchen.getText().trim()+"'";
+			cmd = "select * from rliste where r_nummer <='"+suchen.getText().trim()+"'";
 			break;
 		case 3:
 			cmd = "select * from rliste where r_betrag ='"+suchen.getText().trim().replace(",", ".")+"'";
 			break;
 		case 4:
-			cmd = "select * from rliste where r_betrag >'"+suchen.getText().trim().replace(",", ".")+"'";
+			cmd = "select * from rliste where r_betrag >='"+suchen.getText().trim().replace(",", ".")+"'";
 			break;
 		case 5:
-			cmd = "select * from rliste where r_betrag <'"+suchen.getText().trim().replace(",", ".")+"'";
+			cmd = "select * from rliste where r_betrag <='"+suchen.getText().trim().replace(",", ".")+"'";
 			break;
 		case 6:
 			cmd = "select * from rliste where r_offen ='"+suchen.getText().trim().replace(",", ".")+"'";
 			break;
 		case 7:
-			cmd = "select * from rliste where r_offen >'"+suchen.getText().trim().replace(",", ".")+"'";
+			cmd = "select * from rliste where r_offen >='"+suchen.getText().trim().replace(",", ".")+"'";
 			break;
 		case 8:
-			cmd = "select * from rliste where r_offen <'"+suchen.getText().trim().replace(",", ".")+"'";
+			cmd = "select * from rliste where r_offen <='"+suchen.getText().trim().replace(",", ".")+"'";
 			break;
 		case 9:
 			cmd = "select * from rliste where r_kasse ='"+suchen.getText().trim()+"'";
@@ -415,10 +426,10 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 			cmd = "select * from rliste where r_datum ='"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
 			break;
 		case 14:
-			cmd = "select * from rliste where r_datum >'"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
+			cmd = "select * from rliste where r_datum >='"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
 			break;
 		case 15:
-			cmd = "select * from rliste where r_datum <'"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
+			cmd = "select * from rliste where r_datum <='"+DatFunk.sDatInSQL(suchen.getText().trim())+"'";
 			break;
 
 		}
@@ -443,6 +454,24 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 			setzeFocus();
 		}
 
+	}
+	
+	public void benachrichtigeReha(final int i){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				String patintern = tab.getValueAt(i, 13).toString().trim();
+				if(!patintern.equals("")){
+					new SocketClient().setzeRehaNachricht(OffenePosten.rehaReversePort,"OffenePosten#"+RehaIOMessages.MUST_PATFIND+"#"+patintern);
+				}
+			}
+		});
+	}
+	public void benachrichtigeBillPanel(final int i){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				eltern.setOnBillPanel(tab.getValueAt(i, 0).toString().trim());
+			}
+		});
 	}
 	
 	
@@ -607,7 +636,8 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
-	                	//System.out.println("Satz "+i);
+	                	benachrichtigeReha(i);
+	                	benachrichtigeBillPanel(i);
 	                    break;
 	                }
 	            }

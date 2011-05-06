@@ -1025,7 +1025,15 @@ public class SystemConfig {
 		if ( inif.getStringProperty("Termine", "HMDialogZeigen") != null ){
 			hmTerminBestaetigen.put("dlgzeigen",((Integer)inif.getIntegerProperty("Termine", "HMDialogZeigen") == 1 ? true : false) );
 		}else{
+			hmTerminBestaetigen.put("dlgzeigen",false);
 			inif.setStringProperty("Termine", "HMDialogZeigen","0",null);
+			mustsave = true;
+		}
+		if ( inif.getStringProperty("Termine", "HMDialogDiffZeigen") != null ){
+			hmTerminBestaetigen.put("dlgdiffzeigen",((Integer)inif.getIntegerProperty("Termine", "HMDialogDiffZeigen") == 1 ? true : false) );
+		}else{
+			hmTerminBestaetigen.put("dlgdiffzeigen",false);
+			inif.setStringProperty("Termine", "HMDialogDiffZeigen","0",null);
 			mustsave = true;
 		}
 
@@ -1064,8 +1072,9 @@ public class SystemConfig {
 		// Lemmi 20110116: Abfrage Abbruch bei Rezeptänderungen mit Warnung
 		inif.setIntegerProperty("Rezept", "RezeptAenderungAbbruchWarnung", (Boolean)hmRezeptDlgIni.get("RezAendAbbruchWarn") ? 1 : 0, " Abfrage Abbruch bei Rezeptänderungen mit Warnung");
 		inif.setIntegerProperty("Termine", "HMDialogZeigen", (Boolean)hmTerminBestaetigen.get("dlgzeigen") ? 1 : 0, null);
-		
-		
+		inif.setIntegerProperty("Termine", "HMDialogZeigen", (Boolean)hmTerminBestaetigen.get("dlgzeigen") ? 1 : 0, null);
+		inif.setIntegerProperty("Termine", "HMDialogDiffZeigen",(Boolean)hmTerminBestaetigen.get("dlgdiffzeigen") ? 1 : 0, null);
+
 		inif.save();  // Daten wegschreiben
 		
 		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");

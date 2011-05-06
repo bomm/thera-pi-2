@@ -40,7 +40,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	 * 
 	 */
 	private static final long serialVersionUID = 858117043130060154L;
-	JRtaTextField[] tfs = {null,null,null,null,null};
+	JRtaTextField[] tfs = {null,null,null,null,null,null};
 	JButton abbruch = null;
 	JButton speichern = null;
 	JButton[] buts = {null,null};
@@ -127,7 +127,9 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	JRtaComboBox cmbClk = new JRtaComboBox();
 	JRtaComboBox cmbRezAbbruch = new JRtaComboBox();
 	JRtaComboBox cmbShowHmDlg = new JRtaComboBox();
+	JRtaComboBox cmbShowDiffOnly = new JRtaComboBox();
 	JRtaComboBox cmbDesktop = new JRtaComboBox();
+	
 	Vector<Vector<String>>vecJN = new Vector<Vector<String>>();
 	Vector<Vector<String>>vec12 = new Vector<Vector<String>>();
 	Vector<Vector<String>>vecHV = new Vector<Vector<String>>();
@@ -271,8 +273,20 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		cmbShowHmDlg.setActionCommand("cmbShowHmDlg");
 		cmbShowHmDlg.addActionListener(this);
 		builder.add(cmbShowHmDlg, cc.xy(3,iAktY));
+
+		iAktY += 2;
+		builder.addLabel("Dialog nur zeigen bei unterschiedlicher Mengenangabe",cc.xy(1,iAktY));
+		tfs[5] = new JRtaTextField("Zahlen", true);
+		tfs[5].setName("diffmenge");
+		tfs[5].setText((Boolean)SystemConfig.hmTerminBestaetigen.get("dlgdiffzeigen") ? "1" : "0");
+		cmbShowDiffOnly.setDataVectorVector(vecJN, 0, 1);
+		cmbShowDiffOnly.setSelectedItem(tfs[5].getText().equals("0") ? "Nein" : "Ja" );  // setze den aktuell gewählten Wert
+		cmbShowDiffOnly.setActionCommand("cmbShowDiffOnly");
+		cmbShowDiffOnly.addActionListener(this);
+		builder.add(cmbShowDiffOnly, cc.xy(3,iAktY));
 		
 		// Trennlinie mit Leerzeilen
+		
 		iAktY += 2;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
 		//-------------------------------------------------------------------------------
@@ -296,6 +310,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		builder.add(cmbDesktop, cc.xy(3,iAktY));
 
 		// Trennlinie mit Leerzeilen
+		/*
 		iAktY += 2;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
 		//-------------------------------------------------------------------------------
@@ -303,7 +318,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		builder.addSeparator("", cc.xyw(1,iAktY,11));
 		iAktY += 1;
 		builder.addLabel(" ",cc.xyw(1, iAktY, 11));
-
+		*/
 		return builder.getPanel();
 	}
 	
@@ -385,6 +400,10 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 			tfs[3].setText((String)cmbShowHmDlg.getSecValue());
 			return;
 		}
+		if(cmd.equals("cmbShowDiffOnly")){
+			tfs[5].setText((String)cmbShowDiffOnly.getSecValue());
+			return;
+		}
 		if(cmd.equals("cmbDesktop")){
 			tfs[4].setText((String)cmbDesktop.getSecValue());
 			return;
@@ -412,6 +431,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 		SystemConfig.hmRezeptDlgIni.put("RezAendAbbruchWarn", tfs[2].getText().equals("1") ? true : false );
 		// HeilmittelDialog bei Terminbestätigen zeigen falls notwendig /st.
 		SystemConfig.hmTerminBestaetigen.put("dlgzeigen",tfs[3].getText().equals("1") ? true : false );
+		SystemConfig.hmTerminBestaetigen.put("dlgdiffzeigen",tfs[5].getText().equals("1") ? true : false );
 		
 		SystemConfig.desktopHorizontal = (tfs[4].getText().equals("1") ? true : false );
 		

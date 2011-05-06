@@ -129,9 +129,19 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
         int sel = pane.getSelectedIndex();
         try{
         	if(sel==0){
-        		oppanel.setzeFocus();
+        		SwingUtilities.invokeLater(new Runnable(){
+        			public void run(){
+        				oppanel.setzeFocus();		
+        			}
+        		});
+        		
         	}else if(sel==1){
-        		rehaBillPanel.setzeFocus();
+        		SwingUtilities.invokeLater(new Runnable(){
+        			public void run(){
+                		rehaBillPanel.setzeFocus();		
+        			}
+        		});
+
         	}
         }catch(Exception ex){
         	
@@ -147,7 +157,9 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 			}
 		});
 	}
-	
+	public void setOnBillPanel(String suchkrit){
+		rehaBillPanel.setOnBillPanel(suchkrit);
+	}
 	public String getNotBefore(){
 		try{
 			return DatFunk.sDatInSQL(oeinstellungpanel.tfs[4].getText());

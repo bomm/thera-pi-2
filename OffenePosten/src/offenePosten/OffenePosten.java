@@ -3,6 +3,7 @@ package offenePosten;
 import java.awt.Cursor;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,10 +16,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+
+
 import org.jdesktop.swingworker.SwingWorker;
 
 
 
+import RehaIO.RehaIOMessages;
+import RehaIO.RehaReverseServer;
+import RehaIO.SocketClient;
 import Tools.INIFile;
 import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -80,6 +86,12 @@ public class OffenePosten implements WindowListener{
 	
 	OffenepostenTab otab = null;
 	
+	public static int xport = -1;
+	public static boolean xportOk = false;
+	public RehaReverseServer rehaReverseServer = null;
+	public static int rehaReversePort = -1;
+
+	
 	public static void main(String[] args) {
 		OffenePosten application = new OffenePosten();
 		application.getInstance();
@@ -123,6 +135,9 @@ public class OffenePosten implements WindowListener{
 				System.out.println(mahnParameter);
 				AbrechnungParameter(progHome);
 				FirmenDaten(progHome);
+				if(args.length >= 3){
+					rehaReversePort = Integer.parseInt(args[2]);
+				}
 
 			}else{
 				mahnParameter.put("frist1", (Integer) 31 );
@@ -197,7 +212,54 @@ public class OffenePosten implements WindowListener{
 			e.printStackTrace();
 		}
 		thisClass = this;
-		jFrame = new JFrame();
+		jFrame = new JFrame(){
+			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void setVisible(final boolean visible) {
+				
+				if(getState()!=JFrame.NORMAL) { setState(JFrame.NORMAL); }
+
+				  if (visible) {
+				      //setDisposed(false);
+				  }
+				  if (!visible || !isVisible()) { 
+				      super.setVisible(visible);
+				  }
+
+				  if (visible) {
+				      int state = super.getExtendedState();
+				      state &= ~JFrame.ICONIFIED;
+				      super.setExtendedState(state);
+				      super.setAlwaysOnTop(true);
+				      super.toFront();
+				      super.requestFocus();
+				      super.setAlwaysOnTop(false);
+				  }
+			}
+
+			@Override
+			public void toFront() {
+				  super.setVisible(true);
+				  int state = super.getExtendedState();
+				  state &= ~JFrame.ICONIFIED;
+				  super.setExtendedState(state);
+				  super.setAlwaysOnTop(true);
+				  super.toFront();
+				  super.requestFocus();
+				  super.setAlwaysOnTop(false);
+			}	
+		};
+		try{
+			rehaReverseServer = new RehaReverseServer(7000);
+		}catch(Exception ex){
+			rehaReverseServer = null;
+			ex.printStackTrace();
+		}
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,750);
 		jFrame.setTitle("Thera-Pi  Offene-Posten / Mahnwesen  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
@@ -215,6 +277,15 @@ public class OffenePosten implements WindowListener{
 				otab.setFirstFocus();		
 			}
 		});
+
+		try{
+			new SocketClient().setzeRehaNachricht(OffenePosten.rehaReversePort,"AppName#OffenePosten#"+Integer.toString(OffenePosten.xport));
+			new SocketClient().setzeRehaNachricht(OffenePosten.rehaReversePort,"OffenePosten#"+RehaIOMessages.IS_STARTET);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Socketkommunikation");
+			ex.printStackTrace();
+		}
+
 		return jFrame;
 	}
 	
@@ -313,6 +384,14 @@ public class OffenePosten implements WindowListener{
 				e.printStackTrace();
 			}
 		}
+		if(OffenePosten.thisClass.rehaReverseServer != null){
+			new SocketClient().setzeRehaNachricht(OffenePosten.rehaReversePort,"OffenePosten#"+RehaIOMessages.IS_FINISHED);
+			try {
+				OffenePosten.thisClass.rehaReverseServer.serv.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		System.exit(0);
 	}
 	@Override
@@ -325,6 +404,15 @@ public class OffenePosten implements WindowListener{
 				e.printStackTrace();
 			}
 		}
+		if(OffenePosten.thisClass.rehaReverseServer != null){
+			new SocketClient().setzeRehaNachricht(OffenePosten.rehaReversePort,"OffenePosten#"+RehaIOMessages.IS_FINISHED);
+			try {
+				OffenePosten.thisClass.rehaReverseServer.serv.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		System.exit(0);
 	}
 	@Override
