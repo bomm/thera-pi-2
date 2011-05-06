@@ -48,6 +48,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 
+import RehaIO.RehaIOMessages;
+import RehaIO.SocketClient;
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
@@ -143,8 +145,8 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	
 	private JXPanel getContent(){
 		content = new JXPanel();
-		//				 1     2     3    4     5     6      7    8      9    10    11   12    13   14     15  
-		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu,1dlu,50dlu:g,5dlu,50dlu,5dlu,50dlu,2dlu,40dlu,2dlu,35dlu,10dlu";
+		//				 1     2     3    4      5      6      7    8       9    10    11   12   13   14    15  
+		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu:g,1dlu,50dlu:g,2dlu,50dlu,5dlu,50dlu,5dlu,50dlu,2dlu,50dlu,2dlu,35dlu,10dlu";
 		//				 1     2  3     4       5    6      7
 		String ywerte = "10dlu,p,2dlu,150dlu:g,5dlu,80dlu,0dlu";	
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -169,17 +171,18 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		suchen.setName("suchen");
 		suchen.addKeyListener(kl);
 		content.add(suchen,cc.xy(8,2));
-
+		
+		buts[1] = ButtonTools.macheButton("suchen", "suchen", al);
+		buts[1].setMnemonic('s');
+		content.add(buts[1],cc.xy(10,2,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		
 		bar = new JRtaCheckBox("bar in Kasse");
 		if(OpRgaf.mahnParameter.get("inkasse").equals("Kasse")){
 			bar.setSelected(true);
 		}
+		content.add(bar,cc.xy(12,2));
 		
-		content.add(bar,cc.xy(10,2));
-		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		buts[0].setMnemonic('a');
-		
-		lab = new JLabel("noch offen:");
+		lab = new JLabel("Geldeingang:");
 		content.add(lab,cc.xy(14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		tfs[0] = new JRtaTextField("F",true,"6.2","");
 		tfs[0].setHorizontalAlignment(SwingConstants.RIGHT);
@@ -187,6 +190,10 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		tfs[0].setName("offen");
 		tfs[0].addKeyListener(kl);
 		content.add(tfs[0],cc.xy(16,2));
+
+		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(18,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		buts[0].setMnemonic('a');
+
 		while(!OpRgaf.DbOk){
 			
 		}
@@ -230,7 +237,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
-		content.add(jscr,cc.xyw(2,4,16));
+		content.add(jscr,cc.xyw(2,4,18));
 		
 		JXPanel auswertung = new JXPanel();
 		//                 1        2   3    4        5     6  7
@@ -326,6 +333,11 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 					setzeFocus();
 					return;
 				}
+				if(cmd.equals("suchen")){
+					sucheEinleiten();
+					return;
+				}
+
 			}
 		};
 	}
@@ -366,6 +378,10 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 			doRezeptgebKopie();
 		}
 	}
+	private void setzeBezahlBetrag(final int i){
+		tfs[0].setText(dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(i), 4)));
+	}
+
 	private void sucheEinleiten(){
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -395,43 +411,45 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		}.execute();
 	}
 	private void doAusbuchen(){
-		if(!tfs[0].getText().equals("0,00")){
-			int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie den Restbetrag von "+tfs[0].getText()+" in der Rechnung speichern","Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-			if( ! (anfrage == JOptionPane.YES_OPTION) ){
-				return;
-			}
-		}
 		int row = tab.getSelectedRow();
 		if(row < 0){
 			JOptionPane.showMessageDialog(null, "Keine Rechnung zum Ausbuchen ausgewählt");
 			return;
 		}
-		String offeninTabelle = dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4));
-		if(offeninTabelle.equals("0,00") && tfs[0].getText().equals("0,00")){
+		BigDecimal nochoffen = BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4));
+		BigDecimal eingang = BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) );
+		BigDecimal restbetrag = nochoffen.subtract(eingang);
+		
+		if(row < 0){
+			JOptionPane.showMessageDialog(null, "Keine Rechnung zum Ausbuchen ausgewählt");
+			return;
+		}
+		if(nochoffen.equals(BigDecimal.valueOf(Double.parseDouble("0.0")))){
 			JOptionPane.showMessageDialog(null,"Diese Rechnung ist bereits auf bezahlt gesetzt");
 			return;
 		}
-		suchOffen = suchOffen.subtract( BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4)) );
-		suchOffen = suchOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
 
-		gesamtOffen = gesamtOffen.subtract( BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4)) );
-		gesamtOffen = gesamtOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
+		suchOffen = suchOffen.subtract(eingang );
+		//suchOffen = suchOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
+
+		gesamtOffen = gesamtOffen.subtract(eingang);
+		//gesamtOffen = gesamtOffen.add( BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ) );
 
 		String cmd = "";
 		if(OpRgaf.mahnParameter.get("inkasse").equals("Kasse")){
-			BigDecimal einnahme = BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4));
-			einnahme = einnahme.subtract(BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ));
-			cmd = "insert into kasse set einnahme='"+dcf.format(einnahme).replace(",", ".")+"', datum='"+
+			//BigDecimal einnahme = BigDecimal.valueOf((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4));
+			//einnahme = einnahme.subtract(BigDecimal.valueOf(Double.parseDouble(tfs[0].getText().replace(",", ".")) ));
+			cmd = "insert into kasse set einnahme='"+dcf.format(eingang).replace(",", ".")+"', datum='"+
 			DatFunk.sDatInSQL(DatFunk.sHeute())+"', ktext='"+
 			tabmod.getValueAt(tab.convertRowIndexToModel(row), 1)+","+
 			tabmod.getValueAt(tab.convertRowIndexToModel(row), 0)+"',"+
 			"rez_nr='"+tabmod.getValueAt(tab.convertRowIndexToModel(row), 10)+"'";
-			System.out.println(cmd);
+			//System.out.println(cmd);
 			SqlInfo.sqlAusfuehren(cmd);
 		}
 		
 		tabmod.setValueAt(new Date(), tab.convertRowIndexToModel(row), 6);		
-		tabmod.setValueAt(Double.parseDouble(tfs[0].getText().replace(",", ".")), tab.convertRowIndexToModel(row), 4);
+		tabmod.setValueAt((Double)restbetrag.doubleValue(), tab.convertRowIndexToModel(row), 4);
 
 
 
@@ -739,7 +757,14 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
+	                	setzeBezahlBetrag(i);
+	                	String id = tab.getValueAt(i, 11).toString();
+						String rez_nr = SqlInfo.holeEinzelFeld("select reznr from rgaffaktura where id='"+id+"' LIMIT 1");
+						String pat_intern = SqlInfo.holeEinzelFeld("select pat_intern from rgaffaktura where id='"+id+"' LIMIT 1");
+						new SocketClient().setzeRehaNachricht(OpRgaf.rehaReversePort,"OpRgaf#"+
+								RehaIOMessages.MUST_PATANDREZFIND+"#"+pat_intern+"#"+rez_nr);
 	                	//System.out.println("Satz "+i);
+						
 	                    break;
 	                }
 	            }

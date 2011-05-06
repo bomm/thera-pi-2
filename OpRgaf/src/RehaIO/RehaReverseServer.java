@@ -34,7 +34,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 	}
 	
 	private void doReha(String op){
-		if(op.split("#")[1].equals("ToFront")){
+		if(op.split("#")[1].equals(RehaIOMessages.MUST_GOTOFRONT)){
 			OpRgaf.thisFrame.setVisible(true);
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_REZFIND)){
 			OpRgaf.thisClass.otab.sucheRezept(op.split("#")[2]);

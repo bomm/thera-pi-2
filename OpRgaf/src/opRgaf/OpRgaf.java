@@ -98,6 +98,7 @@ public class OpRgaf implements WindowListener{
 	
 	public static boolean testcase = false;
 	public OpRgafTab otab = null;
+
 	public static int xport = -1;
 	public static boolean xportOk = false;
 	public RehaReverseServer rehaReverseServer = null;
