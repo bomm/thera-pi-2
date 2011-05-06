@@ -707,6 +707,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 				String cmd = "update rliste set "+colname+"='"+value+"' where id='"+id+"' LIMIT 1";
 				//System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
+				tfs[0].setText(dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6)));
 			
 			}catch(Exception ex){
 				JOptionPane.showMessageDialog(null,"Fehler in der Dateneingbe");
