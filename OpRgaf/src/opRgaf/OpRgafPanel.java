@@ -146,7 +146,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 	private JXPanel getContent(){
 		content = new JXPanel();
 		//				 1     2     3    4      5      6      7    8       9    10    11   12   13   14    15  
-		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,30dlu:g,1dlu,50dlu:g,2dlu,50dlu,5dlu,50dlu,5dlu,50dlu,2dlu,50dlu,2dlu,35dlu,10dlu";
+		String xwerte = "10dlu,50dlu,2dlu,90dlu,10dlu,  p,1dlu,50dlu:g,2dlu,50dlu,5dlu,50dlu,5dlu,50dlu,2dlu,50dlu,2dlu,50dlu,10dlu";
 		//				 1     2  3     4       5    6      7
 		String ywerte = "10dlu,p,2dlu,150dlu:g,5dlu,80dlu,0dlu";	
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -166,15 +166,15 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		content.add(combo,cc.xy(4,2));
 		
 		lab = new JLabel("finde:");
-		content.add(lab,cc.xy(6,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		content.add(lab,cc.xy(6,2));
 		suchen = new JRtaTextField("nix",true);
 		suchen.setName("suchen");
 		suchen.addKeyListener(kl);
-		content.add(suchen,cc.xy(8,2));
+		content.add(suchen,cc.xy(8,2,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
 		buts[1] = ButtonTools.macheButton("suchen", "suchen", al);
 		buts[1].setMnemonic('s');
-		content.add(buts[1],cc.xy(10,2,CellConstraints.LEFT,CellConstraints.DEFAULT));
+		content.add(buts[1],cc.xy(10,2));
 		
 		bar = new JRtaCheckBox("bar in Kasse");
 		if(OpRgaf.mahnParameter.get("inkasse").equals("Kasse")){
@@ -183,7 +183,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		content.add(bar,cc.xy(12,2));
 		
 		lab = new JLabel("Geldeingang:");
-		content.add(lab,cc.xy(14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		content.add(lab,cc.xy(14,2));
 		tfs[0] = new JRtaTextField("F",true,"6.2","");
 		tfs[0].setHorizontalAlignment(SwingConstants.RIGHT);
 		tfs[0].setText("0,00");
@@ -191,7 +191,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		tfs[0].addKeyListener(kl);
 		content.add(tfs[0],cc.xy(16,2));
 
-		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(18,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		content.add((buts[0] = ButtonTools.macheButton("ausbuchen", "ausbuchen", al)),cc.xy(18,2));
 		buts[0].setMnemonic('a');
 
 		while(!OpRgaf.DbOk){
@@ -237,7 +237,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 		
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(tab);
-		content.add(jscr,cc.xyw(2,4,18));
+		content.add(jscr,cc.xyw(2,4,17));
 		
 		JXPanel auswertung = new JXPanel();
 		//                 1        2   3    4        5     6  7
@@ -454,7 +454,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 
 
 		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 11);
-		cmd = "update rgaffaktura set roffen='"+tfs[0].getText().replace(",", ".")+"', rbezdatum='"+
+		cmd = "update rgaffaktura set roffen='"+dcf.format(restbetrag).replace(",", ".")+"', rbezdatum='"+
 		DatFunk.sDatInSQL(DatFunk.sHeute())+"' where id ='"+Integer.toString(id)+"' LIMIT 1";
 		/*
 		if(!OpRgaf.testcase){
@@ -817,6 +817,7 @@ public class OpRgafPanel extends JXPanel implements TableModelListener{
 				String cmd = "update rgaffaktura set "+colname+"="+(value != null ? "'"+value+"'" : "null")+" where id='"+id+"' LIMIT 1";
 				//System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
+				tfs[0].setText(dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 4)));
 			
 			}catch(Exception ex){
 				System.out.println(ex);
