@@ -37,6 +37,7 @@ import com.sun.star.container.XNameContainer;
 import com.sun.star.graphic.XGraphic;
 import com.sun.star.graphic.XGraphicProvider;
 import com.sun.star.lang.XMultiServiceFactory;
+import com.sun.star.lib.uno.helper.UnoUrl;
 import com.sun.star.text.HoriOrientation;
 import com.sun.star.text.TextContentAnchorType;
 import com.sun.star.text.VertOrientation;
@@ -46,6 +47,7 @@ import com.sun.star.text.XTextCursor;
 import com.sun.star.uno.AnyConverter;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
+import com.sun.star.util.URL;
 
 
 
@@ -90,8 +92,8 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         //String imagePath = "file:///"+Reha.proghome.replace("C:/", "/")+"ScreenShots/termin__temp.jpg";
         
         imagePath = "file:///"+imagePath;
-
-
+        System.out.println(imagePath);
+        
         //"file:///tmp/myDocument.odt
         GraphicInfo graphicInfo = null;
 
@@ -113,7 +115,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         	fy = testy;
         }
         
-        //System.out.println("Die neuen Ma�e sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
+        //System.out.println("Die neuen Maße sind X:"+new Float(fx).intValue()+" / Y:"+new Float(fy).intValue());
         XMultiServiceFactory multiServiceFactory = null;
         XTextCursor xcursor = null;
         XTextCursor xTextCursor = null;
@@ -123,6 +125,8 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
           graphicInfo = new GraphicInfo(imagePath, Float.valueOf(pixelWidth).intValue(), true, Float.valueOf(pixelHeight).intValue(), true,
               VertOrientation.TOP, HoriOrientation.LEFT,
               TextContentAnchorType.AT_FRAME);
+          Thread.sleep(100);
+
 
         }
         else {
@@ -142,6 +146,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         	graphicInfo = new GraphicInfo(new FileInputStream(imagePath), new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
                     TextContentAnchorType.AS_CHARACTER);
+        	Thread.sleep(100);
                 
             /*
             multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class,
@@ -190,7 +195,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
             .getTextCursorService().getTextCursor();
         
 
-        
+        Thread.sleep(100);
         ITextDocumentImage textDocumentImage = textContentService
             .constructNewImage(graphicInfo);
         textContentService.insertTextContent(textCursor.getEnd(),
@@ -199,6 +204,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 
 		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(Exception ex){
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 			ex.printStackTrace();
 		}
 		

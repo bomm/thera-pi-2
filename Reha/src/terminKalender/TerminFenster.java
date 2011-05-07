@@ -4506,6 +4506,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								return null;									
 							}
 						}
+						/*
+						 * Hier muß noch eine Prüfung entwickelt werden ob die Hauptposition voll ist.
+						 * Bsp. Rez = 6xKG,6xEis, bestätigt wurden bislang 5xKG,4xEis,
+						 * Eis darf isoliert nicht als quasi 7-ter Termin verabreicht werden.
+						 * 
+						 */
 						
 						if (count == 4){
 							JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
@@ -4554,6 +4560,12 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if (count == 0){
 							return null;
 						}
+						/*
+						 * Hier muß noch eine Prüfung entwickelt werden ob die Hauptposition voll ist.
+						 * Bsp. Rez = 6xKG,6xEis, bestätigt wurden bislang 5xKG,4xEis,
+						 * Eis darf isoliert nicht als quasi 7-ter Termin verabreicht werden.
+						 * 
+						 */
 						
 						count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
 						for (i=0; i<=3; i++){
