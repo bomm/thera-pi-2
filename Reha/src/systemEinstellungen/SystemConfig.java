@@ -1021,7 +1021,9 @@ public class SystemConfig {
 			hmRezeptDlgIni.put("RezAendAbbruchWarn",(Integer)inif.getIntegerProperty("Rezept", "RezeptAenderungAbbruchWarnung") == 1 ? true : false );
 		
 		///Zeigt den Terminbestätigungsdialog wenn erforderlich, siehe Erweiterung von Drud
-		//Ist der Wert false wird der Dialog nie gezeigt /st.
+		//Ist der Wert false wird der Dialog nie gezeigt
+		//mit Strg+F11 anstatt Shift+F11 kann die Anzeige des Dialoges
+		//aber unabhängig von dieser Einstellung erzwungen werden /st.
 		if ( inif.getStringProperty("Termine", "HMDialogZeigen") != null ){
 			hmTerminBestaetigen.put("dlgzeigen",((Integer)inif.getIntegerProperty("Termine", "HMDialogZeigen") == 1 ? true : false) );
 		}else{
