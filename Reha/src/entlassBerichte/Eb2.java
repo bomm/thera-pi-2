@@ -26,6 +26,7 @@ import org.jdesktop.swingx.JXPanel;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
+import systemTools.SetMaxText;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -949,6 +950,7 @@ public class Eb2 {
 		plinks.add(getRand(Color.GRAY),ccli.xywh(4, 2, 1, 2));
 		eltern.btf[25] = new JRtaTextField("nix",false);
 		eltern.btf[25].setName("TAET");
+		eltern.btf[25].setDocument(new SetMaxText(55));
 		plinks.add(eltern.btf[25],ccli.xy(6, 3,CellConstraints.FILL,CellConstraints.BOTTOM));
 		plinks.add(getRand(Color.GRAY),ccli.xywh(8, 2, 1, 2));
 		plinks.add(getLabelKleinRot("Berufsklassenschlüssel"),ccli.xy(10,2));

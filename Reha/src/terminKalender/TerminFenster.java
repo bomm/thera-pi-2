@@ -4509,8 +4509,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						/*
 						 * Hier muß noch eine Prüfung entwickelt werden ob die Hauptposition voll ist.
 						 * Bsp. Rez = 6xKG,6xEis, bestätigt wurden bislang 6xKG,5xEis,
-						 * Die bereits voll Anzeige muß dann hier erscheinen.
-						 * Eis darf isoliert nicht als quasi 7-ter Termin verabreicht werden.
+						 * Die "bereits voll Anzeige" für count==4 muß dann hier erscheinen.
+						 * Eis (etc.) darf mnicht isoliert als quasi 7-ter Termin verabreicht werden.
 						 * Das läßt sich zwar auch regeln indem im Rezept die Anzahl für Eis um 1 reduziert wird,
 						 * das macht aber vermutlich niemand....
 						 * 
