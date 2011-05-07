@@ -475,7 +475,8 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 	private JPopupMenu getTerminPopupMenu() {
 		JPopupMenu jPopupMenu = new JPopupMenu();
 		JMenuItem  jmen = new JMenuItem();
-		jmen.setText((this.desktop==0 ? "in den unteren Container verschieben" : "in den oberen Container verschieben"));
+		jmen.setText((this.desktop==0 ? "in den "+(SystemConfig.desktopHorizontal ? "unteren" : "rechten" )+
+				" Container verschieben" : "in den "+(SystemConfig.desktopHorizontal ? "oberen" : "linken" )+" Container verschieben"));
 		jmen.setIcon((this.desktop==0 ? new ImageIcon(Reha.proghome+"/icons/unten.gif") :
 			new ImageIcon(Reha.proghome+"/icons/oben.gif")));
 		jmen.setRolloverEnabled(true);

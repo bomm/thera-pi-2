@@ -1897,6 +1897,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         */
     }
     public void setVertDivider(int variante){
+    	System.out.println("Variante = "+variante);
     	//Diese Funktion wäre etwas für Michael Schütt
     	/*
     	 * Im Grunde würde es genügen wenn Strg+Pfeil-Links/oder Rechts gedrückt wird,
@@ -1907,6 +1908,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     }
     public void setDivider(int variante){
     	final int xvariante = variante;
+    	
     	SwingUtilities.invokeLater(new Runnable(){
       	   public  void run()
       	   {
