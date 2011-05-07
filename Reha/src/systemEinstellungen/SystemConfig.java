@@ -1029,6 +1029,9 @@ public class SystemConfig {
 			inif.setStringProperty("Termine", "HMDialogZeigen","0",null);
 			mustsave = true;
 		}
+		//nur wenn unterschiedliche Anzahlen im Rezept vermerkt und auch nur solange
+		//bis es nichts mehr zu zeigen gibt, sprich die Heilmittel mit der geringeren Anzahl
+		//bereits bis zur Maximalanzahl bestätigt wurden
 		if ( inif.getStringProperty("Termine", "HMDialogDiffZeigen") != null ){
 			hmTerminBestaetigen.put("dlgdiffzeigen",((Integer)inif.getIntegerProperty("Termine", "HMDialogDiffZeigen") == 1 ? true : false) );
 		}else{
