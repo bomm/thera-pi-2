@@ -88,6 +88,10 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         
         String imagePath = (Reha.proghome+"ScreenShots/termin__temp.jpg").replace("\\", "/");
         //String imagePath = "file:///"+Reha.proghome.replace("C:/", "/")+"ScreenShots/termin__temp.jpg";
+        
+        imagePath = "file:///"+imagePath;
+
+
         //"file:///tmp/myDocument.odt
         GraphicInfo graphicInfo = null;
 
