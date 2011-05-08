@@ -119,7 +119,7 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 		optimize.setHorizontalTextPosition(SwingConstants.LEFT);
 		optimize.setOpaque(false);
 		
-		builder.addLabel("Fenster startet....",cc.xy(1,1));
+		builder.addLabel("Fenster startet im.....",cc.xy(1,1));
 		builder.add(oben,cc.xyw(3, 1,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		builder.add(unten,cc.xyw(3, 3,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		builder.add(optimize,cc.xyw(2, 5,4,CellConstraints.RIGHT,CellConstraints.DEFAULT));
