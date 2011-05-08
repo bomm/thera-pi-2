@@ -142,6 +142,7 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				comboFuellen();
+				fuelleMitWerten();
        	  	}
 		});
 		
